@@ -2,13 +2,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import Books from "./Books";
+import Dashboard from "./Dashboard";
 import store from "./store";
 
-const App = () => {
+const BentoApp = () => {
   return (
     <div>
-      <Books/>
+      <Dashboard/>
     </div>
   );
 }
@@ -17,7 +17,7 @@ const rootElement = document.getElementById("root");
 
 ReactDOM.render(
   <Provider store={store}>
-    <App/>
+    <BentoApp/>
   </Provider>,
   rootElement
 );

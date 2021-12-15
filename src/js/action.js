@@ -8,31 +8,41 @@ const setData = (content) => {
 	}
 }
 
+// dispatching data to be appended to the
+// current state
 const appendData = (obj) => {
 	return (dispatch) => {
 		dispatch(setData(obj));
 	}
 }
 
+// facilitate retrieving phenopackets data from server
 const makeGetRequest = (url) => async (dispatch, getState) => {
-        try {
-            await sleep(1000)
+    try {
+        // simulate network lag
+        await sleep(1000)
+        
+        // fetch data
         const response = await axios.get(url);
-            console.log(response.data);
-            // TODO: validate response
-            var state = getState()
+        // TODO: validate response
+        console.log(response.data);
 
-            // append data from the network
-            dispatch(setData({"name" : state.name, "books": Array.concat(state.books, response.data)}));
-        } catch (err){
-            console.log(err);
-        }
-	}
+        // append data from the network
+        var state = getState()
+        dispatch(setData({"client" : state.client, "phenopackets": Array.concat(state.phenopackets, response.data)}));
+    } catch (err){
+        console.log(err);
+    }
+}
 
-    function sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-      }
+// TODO: compartmentalize int to a 'utils.js' file of some sort
+// utility functions --
 
+// - delay function
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+// --
 
 export {
 	appendData,

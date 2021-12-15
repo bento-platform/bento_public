@@ -1,7 +1,7 @@
 // reducer.js
 const INITIAL_STATE = {
-	name: '',
-	books: []
+	client: '',
+	phenopackets: []
 }
 
 export default (state = INITIAL_STATE, action={}) => {
