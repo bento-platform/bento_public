@@ -1,7 +1,7 @@
 const webpack = require('webpack'); // only add this if you don't have yet
 
-// replace accordingly './.env' with the path of your .env file 
-require('dotenv').config({ path: './.env' }); 
+// load client.env
+require('dotenv').config({ path: './client.env' }); 
 
 
 module.exports = {

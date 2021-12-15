@@ -4,7 +4,8 @@
 
 First, run
 ```
-    cp etc/public.env .env
+    cp etc/example.client.env client.env
+    cp etc/example.server.env server.env
 ```
 and modify the contents according to your needs.
 

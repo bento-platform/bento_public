@@ -4,9 +4,27 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+
+	"github.com/kelseyhightower/envconfig"
 )
 
+type BentoConfig struct {
+	KatsuUrl string `envconfig:"KATSU_URL"`
+}
+
 func main() {
+	var cfg BentoConfig
+	err := envconfig.Process("", &cfg)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(2)
+	}
+
+	fmt.Println(fmt.Sprintf(`Config -- 
+		Katsu URL: %v
+	`, cfg.KatsuUrl))
+
 	// TODO: migrate to using Echo
 	myhttp := http.NewServeMux()
 	fs := http.FileServer(http.Dir("./www/"))
