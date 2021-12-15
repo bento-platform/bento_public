@@ -1,21 +1,23 @@
-import React from 'react';
-import ReactDOM from 'react-dom'; 
-import "core-js"; 
- 
-const App = (props) => {
-    return ( 
-    <div>
-        <h2>{props.text}</h2>
-    </div> 
-    );
-};
+// index.js
+import React from "react";
+import ReactDOM from "react-dom";
+import { Provider } from "react-redux";
+import Books from "./Books";
+import store from "./store";
 
-   
+const App = () => {
+  return (
+    <div>
+      <Books/>
+    </div>
+  );
+}
+
+const rootElement = document.getElementById("root");
 
 ReactDOM.render(
-    <div>
-        <App text="Webpack React and Golang" /> 
-    </div>
-    ,
-    document.getElementById("app")
+  <Provider store={store}>
+    <App/>
+  </Provider>,
+  rootElement
 );

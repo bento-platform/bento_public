@@ -10,7 +10,9 @@ module.exports = {
             } 
         ]
     },
-    entry: "./src/js",
+    entry: {
+        js: ['babel-polyfill', './src/js'],
+      },
     output: {
         path: __dirname + '/build/www',
         publicPath: '',
