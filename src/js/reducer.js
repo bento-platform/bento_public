@@ -1,6 +1,5 @@
 // reducer.js
 const INITIAL_STATE = {
-	client: '',
 	phenopackets: []
 }
 

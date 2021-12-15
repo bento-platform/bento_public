@@ -1,3 +1,9 @@
+const webpack = require('webpack'); // only add this if you don't have yet
+
+// replace accordingly './.env' with the path of your .env file 
+require('dotenv').config({ path: './.env' }); 
+
+
 module.exports = {
     module: {
         rules: [
@@ -20,5 +26,11 @@ module.exports = {
     },
     devServer: {
         contentBase: './distgetuk'
-    } 
+    },
+    plugins: [
+        //new Dotenv()
+        new webpack.DefinePlugin({
+            "process.env": JSON.stringify(process.env)
+        }),
+    ]
 };
