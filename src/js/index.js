@@ -3,7 +3,9 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 
-import Dashboard from "./Dashboard";
+import * as V from 'victory';
+
+import Dashboard from "./components/Dashboard";
 
 import store from "./store";
 
@@ -21,5 +23,5 @@ ReactDOM.render(
   <Provider store={store}>
     <BentoApp/>
   </Provider>,
-rootElement
+  rootElement
 );

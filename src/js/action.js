@@ -20,7 +20,7 @@ const appendData = (obj) => {
 const makeGetRequest = (url) => async (dispatch, getState) => {
     try {
         // simulate network lag
-        await sleep(1000)
+        //await sleep(1000)
         
         // fetch data
         const response = await axios.get(url);
@@ -29,13 +29,16 @@ const makeGetRequest = (url) => async (dispatch, getState) => {
 
         // append data from the network
         var state = getState()
-        dispatch(setData({"client" : state.client, "phenopackets": Array.concat(state.phenopackets, response.data)}));
+        dispatch(setData({
+            "client" : state.client, 
+            "phenopackets": Array.concat(state.phenopackets, response.data)
+        }));
     } catch (err){
         console.log(err);
     }
 }
 
-// TODO: compartmentalize int to a 'utils.js' file of some sort
+// TODO: compartmentalize as a 'utils.js' file of some sort
 // utility functions --
 
 // - delay function
