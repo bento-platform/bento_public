@@ -7,7 +7,7 @@ import { Row, Col } from 'react-bootstrap'
 import { JsonFormatter } from 'react-json-formatter'
 
 import { dataUrl, katsuUrl } from "../constants"
-import { makeGetRequest, makeGetOverviewRequest } from "../action";
+import { makeGetOverviewRequest } from "../action";
 
 import Header from "./Header.js"
 
@@ -19,12 +19,11 @@ class Dashboard extends React.Component {
 
     fetchData() {
         // fetch data from server
-        this.props.makeGetRequest(dataUrl);
         this.props.makeGetOverviewRequest(katsuUrl);
     }
 
     render() {
-        const { phenopackets, overview } = this.props;
+        const { overview } = this.props;
         // TODO: refactor
         //          - simple overview data presentation PoC
         const experimentTypeData = [];
@@ -134,12 +133,10 @@ class Dashboard extends React.Component {
 }
 
 const mapDispatchToProps = {
-	makeGetRequest,
     makeGetOverviewRequest
 }
 
 const mapStateToProps = state => ({
-	phenopackets: state.phenopackets,
 	overview: state.overview
 });
 
