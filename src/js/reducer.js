@@ -1,6 +1,7 @@
 // reducer.js
 const INITIAL_STATE = {
-	phenopackets: []
+	phenopackets: [],
+	overview: {}
 }
 
 export default (state = INITIAL_STATE, action={}) => {
@@ -8,7 +9,12 @@ export default (state = INITIAL_STATE, action={}) => {
 		case "SET_DATA":
 			return {
 				...state,
-				...action.content
+				phenopackets : action.content.phenopackets
+			};
+		case "SET_OVERVIEW":
+			return {
+				...state,
+				overview : action.content.overview
 			};
 		default:
 			return state;

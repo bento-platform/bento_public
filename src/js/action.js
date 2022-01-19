@@ -1,18 +1,12 @@
 // action.js
 import axios from "axios"
 
-const setData = (content) => {
-	return {
-		type: "SET_DATA",
-		content
-	}
-}
+import { sleep } from "./utils.js"
 
-// dispatching data to be appended to the
-// current state
-const appendData = (obj) => {
-	return (dispatch) => {
-		dispatch(setData(obj));
+const setContent = (type, content) => {
+	return {
+		type,
+		content
 	}
 }
 
@@ -20,17 +14,16 @@ const appendData = (obj) => {
 const makeGetRequest = (url) => async (dispatch, getState) => {
     try {
         // simulate network lag
-        //await sleep(1000)
+        await sleep(1500)
         
         // fetch data
         const response = await axios.get(url);
         // TODO: validate response
-        console.log(response.data);
+        // console.log(response.data);
 
         // append data from the network
         var state = getState()
-        dispatch(setData({
-            "client" : state.client, 
+        dispatch(setContent("SET_DATA", {
             "phenopackets": Array.concat(state.phenopackets, response.data)
         }));
     } catch (err){
@@ -38,16 +31,27 @@ const makeGetRequest = (url) => async (dispatch, getState) => {
     }
 }
 
-// TODO: compartmentalize as a 'utils.js' file of some sort
-// utility functions --
+// facilitate retrieving katsu overview data from server
+const makeGetOverviewRequest = (url) => async (dispatch) => {
+    try {
+        // simulate network lag
+        await sleep(1000)
+        
+        // fetch data
+        const response = await axios.get(url);
+        // TODO: validate response
+        // console.log(response.data);
 
-// - delay function
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+        // append data from the network
+        dispatch(setContent("SET_OVERVIEW", {
+            "overview": response.data
+        }));
+    } catch (err){
+        console.log(err);
+    }
 }
-// --
 
 export {
-	appendData,
-    makeGetRequest
+    makeGetRequest,
+    makeGetOverviewRequest
 }
