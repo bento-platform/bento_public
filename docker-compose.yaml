@@ -1,0 +1,19 @@
+version: '3.7'
+
+services:
+  public:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${BENTO_PUBLIC_IMAGE}:${BENTO_PUBLIC_VERSION}
+    container_name: ${BENTO_PUBLIC_CONTAINER_NAME}
+    networks: 
+      - bridge-net
+    environment:
+      - KATSU_URL=${BENTO_PUBLIC_KATSU_URL}
+    ports:
+      - "${BENTO_PUBLIC_EXTERNAL_PORT}:${BENTO_PUBLIC_INTERNAL_PORT}"
+
+networks: 
+  bridge-net:
+    external: true
