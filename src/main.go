@@ -103,7 +103,7 @@ func main() {
 			return c.JSON(http.StatusInternalServerError, err)
 		}
 
-		var jsonLike map[string]interface{}
+		jsonLike := make(map[string]interface{})
 		json.Unmarshal(body, &jsonLike)
 
 		return c.JSON(http.StatusOK, jsonLike)

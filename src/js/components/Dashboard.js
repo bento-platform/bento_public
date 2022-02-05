@@ -3,6 +3,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { Button, Container } from 'react-bootstrap';
 import { Row, Col } from 'react-bootstrap'
+import Spinner from 'react-bootstrap/Spinner'
 
 import { JsonFormatter } from 'react-json-formatter'
 
@@ -12,6 +13,7 @@ import { makeGetOverviewRequest } from "../action";
 import Header from "./Header.js"
 
 import { VictoryPie } from 'victory';
+
 
 class Dashboard extends React.Component {
 
@@ -23,11 +25,12 @@ class Dashboard extends React.Component {
     }
 
     render() {
-        const { overview } = this.props;
+        const { overview, isFetchingData } = this.props;
         // TODO: refactor
         //          - simple overview data presentation PoC
         const experimentTypeData = [];
         const experimentLibrarySourceData = [];
+
         if (typeof overview != undefined && Object.keys(overview).length > 0) {
             // experiments
             var experiments = overview.data_type_specific.experiments;
@@ -60,7 +63,8 @@ class Dashboard extends React.Component {
                 </Row>
                 <Row>
                     <Col className="text-center" xs={{ span: 4, offset: 4 }} md={{ span: 6, offset: 3 }}>
-                        <Button variant="primary" onClick={() => this.fetchData()}>Get Data</Button>
+                        <Button variant="primary" onClick={() => this.fetchData()} disabled={isFetchingData}>Get Data</Button>
+                        <Spinner animation="border" hidden={!isFetchingData}/>
                     </Col>
                 </Row>
                 <Row>
@@ -137,7 +141,8 @@ const mapDispatchToProps = {
 }
 
 const mapStateToProps = state => ({
-	overview: state.overview
+	overview: state.overview,
+	isFetchingData: state.isFetchingData
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
