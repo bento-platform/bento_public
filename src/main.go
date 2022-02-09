@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 
 	"github.com/kelseyhightower/envconfig"
@@ -90,34 +91,57 @@ func main() {
 	})
 
 	// Katsu testing
-	e.GET("/katsu", func(c echo.Context) error {
-		jsonLike := make(map[string]map[string]interface{})
+	e.POST("/katsu", func(c echo.Context) error {
+		// Retrieve query parameters JSON from POST body
+		qpJson := make([]map[string]interface{}, 0)
+		err := json.NewDecoder(c.Request().Body).Decode(&qpJson)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, err)
+		}
+		fmt.Printf("Received %v from request body\n", qpJson)
 
-		for _, qf := range queryableFields {
-			jsonLike[qf] = make(map[string]interface{})
-
-			for _, qv := range queryableFieldValues[qf] {
-				resp, err := http.Get(fmt.Sprintf("%s/api/public?%s=%s", cfg.KatsuUrl, qf, qv)) // ?extra_properties=\"age_group\":\"adult\"&extra_properties=\"smoking\":\"non-smoker\"
-				if err != nil {
-					fmt.Println(err)
-					return c.JSON(http.StatusInternalServerError, err)
+		// Prepare query parameters JSON for Katsu as GET query parameters
+		queryString := "?"
+		extraPropertiesQStrPortion := "" //"extra_properties="age_group":"adult", "smoking":"non-smoker""
+		for _, qp := range qpJson {
+			fmt.Printf("%v\n", qp)
+			// check if it is an extra property
+			if qp["is_extra_property_key"] == true {
+				if extraPropertiesQStrPortion == "" {
+					// prepend query parameter key to the string on first iteration
+					extraPropertiesQStrPortion = "extra_properties="
+				} else {
+					// append a tailing comma on each other interation
+					extraPropertiesQStrPortion += ", "
 				}
-				defer resp.Body.Close()
 
-				// Read response body and conver to a generic JSON-like datastructure
-				body, err := ioutil.ReadAll(resp.Body)
-				if err != nil {
-					fmt.Println(err)
-					return c.JSON(http.StatusInternalServerError, err)
-				}
-
-				tmpJsonLike := make(map[string]interface{})
-				json.Unmarshal(body, &tmpJsonLike)
-
-				jsonLike[qf][qv] = tmpJsonLike
+				extraPropertiesQStrPortion += fmt.Sprintf("\"%s\":\"%s\"", qp["key"], qp["value"])
+			} else {
+				queryString += fmt.Sprintf("%s=%s&", qp["key"], qp["value"])
 			}
 		}
-		// Fetch Overview
+		queryString += url.QueryEscape(extraPropertiesQStrPortion)
+
+		fmt.Printf("Using %v extra_properties query string \n", extraPropertiesQStrPortion)
+		fmt.Printf("Using %v query string\n", queryString)
+
+		// Query Katsu
+		resp, err := http.Get(fmt.Sprintf("%s/api/public%s", cfg.KatsuUrl, queryString)) // ?extra_properties=\"age_group\":\"adult\"&extra_properties=\"smoking\":\"non-smoker\"
+		if err != nil {
+			fmt.Println(err)
+			return c.JSON(http.StatusInternalServerError, err)
+		}
+		defer resp.Body.Close()
+
+		// Read response body and convert to a generic JSON-like datastructure
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			fmt.Println(err)
+			return c.JSON(http.StatusInternalServerError, err)
+		}
+
+		jsonLike := make(map[string]interface{})
+		json.Unmarshal(body, &jsonLike)
 
 		return c.JSON(http.StatusOK, jsonLike)
 	})

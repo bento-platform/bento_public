@@ -131,8 +131,6 @@ const makeGetKatsuPublic = () => async (dispatch, getState) => {
         // simulate network lag
         await sleep(1000)
         
-        console.log("Hello")
-        console.log("Mocking call to " + katsuUrl)
 
         var qpsWithValue = []
         var checkedParametersStack = getState().queryParameterCheckedStack
@@ -147,6 +145,34 @@ const makeGetKatsuPublic = () => async (dispatch, getState) => {
             })
         })
         console.log(qpsWithValue)
+
+        // POST query parameters
+        // TODO: validate response
+        const response = await axios.post(katsuUrl, qpsWithValue)
+            .catch(function (error) {
+                if (error.response) {
+                    // Request made and server responded
+                    console.log(error.response.data);
+                    console.log(error.response.status);
+                    console.log(error.response.headers);
+                } else if (error.request) {
+                    // The request was made but no response was received
+                    console.log(error.request);
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.log('Error', error.message);
+                }
+
+                dispatch(setContent("SET_FETCHING_DATA", {
+                    "fetch": false
+                }));
+            });
+
+        console.log(response)
+        // append data from the network
+        dispatch(setContent("SET_OVERVIEW", {
+            "overview": response.data
+        }));
         
         // TODO: format query and fetch from Katsu
     } catch (err){

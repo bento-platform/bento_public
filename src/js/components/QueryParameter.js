@@ -47,14 +47,14 @@ class QueryParameter extends React.Component {
         const { Item } = this.props;
         var This = this
         return (
-            <Row>
-                <Col><input type="checkbox" value={Item.term} onChange={e => this.handleCheckboxChange(e)} /> </Col>
-                <Col>{Item.term}</Col>
-                <Col>{
+            <Row style={{margin: "1rem"}}>
+                <Col xs={{ span: 2, offset: 2  }}><input type="checkbox" value={Item.term} onChange={e => this.handleCheckboxChange(e)} /> </Col>
+                <Col xs={{ span: 4 }}>{Item.term}</Col>
+                <Col xs={{ span: 4 }}>{
                     function(){
                     if (Item.type == "enum") {
                         return <select key={Item.term} name="values" onChange={e => This.handleValueChange(e)}>
-                            <option value="" > - </option>
+                            <option value="" ></option>
                             {Item.values.map((item) => <option value={item.key} >{item}</option>)}
                         </select>
                     } else {

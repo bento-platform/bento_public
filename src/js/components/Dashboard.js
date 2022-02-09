@@ -49,23 +49,6 @@ class Dashboard extends React.Component {
             isFetchingData,
             queryParameterStack } = this.props;
 
-
-        // TODO: refactor
-        //          - simple overview data presentation PoC
-        const sexTypeData = [];
-
-        if (typeof overview != undefined && Object.keys(overview).length > 0) {
-            // get sexes
-            var sexTypes = overview.sex;
-            var keys = Object.keys(sexTypes);
-            var values = Object.values(sexTypes);
-            for (var i = 0; i < keys.length; i++) {
-                sexTypeData.push({x: keys[i], y: values[i].count})
-            }
-        }
-
-        // --
-
         return (
             <Container>
                 <Row>
@@ -93,29 +76,7 @@ class Dashboard extends React.Component {
                     </Col>
                 </Row>
                 <Row>
-                    <Col md={{ span: 8 }}>
-                        <Row>
-                        {
-                            // verify 'experimentTypeData'
-                            typeof sexTypeData == undefined || sexTypeData.length === 0 
-                            ? // display nothing if there is no data
-                            <span>Nothing here...</span> 
-                            :
-                            <div>
-                                <span>Sex</span>
-                                <VictoryPie
-                                    width={800}
-                                    data={sexTypeData}
-                                    // data accessor for x values
-                                    x="x"
-                                    // data accessor for y values
-                                    y="y" />
-                            </div>
-                        }
-                        </Row>
-                    </Col>
-                    <Col md={{ span: 4 }}>
-                        <Row>
+                    <Col md={{ span: 4, offset: 4 }}>
                         {
                             // verify 'overview'
                             typeof overview == undefined || Object.keys(overview).length === 0 
@@ -131,7 +92,6 @@ class Dashboard extends React.Component {
                                     numberStyle: { color: 'darkorange' }
                                 }} />
                         }
-                        </Row>
                     </Col>
                 </Row>
             </Container>
