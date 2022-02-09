@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 
@@ -13,8 +14,15 @@ import (
 )
 
 type BentoConfig struct {
-	KatsuUrl string `envconfig:"KATSU_URL"`
+	KatsuUrl string `envconfig:"BENTO_PUBLIC_KATSU_URL"`
 }
+
+var queryableFields = []string{"sex"}
+var queryableFieldValues = map[string][]string{
+	"sex": []string{"male", "female"},
+}
+
+var katsuQueryConfig = make(map[string]interface{})
 
 func main() {
 	var cfg BentoConfig
@@ -27,6 +35,21 @@ func main() {
 	fmt.Println(fmt.Sprintf(`Config -- 
 		Katsu URL: %v
 	`, cfg.KatsuUrl))
+
+	// Load katsu query configuration
+	// TODO: refactor to fetch this config from a Katsu REST endpoint
+	content, err := ioutil.ReadFile("./katsu.config.json")
+	if err != nil {
+		log.Fatal("Error when opening file: ", err)
+	}
+
+	// Now let's unmarshall the data into `payload`
+	err = json.Unmarshal(content, &katsuQueryConfig)
+	if err != nil {
+		log.Fatal("Error during Unmarshal(): ", err)
+	}
+
+	//fmt.Println(katsuQueryConfig)
 
 	// Begin Echo
 
@@ -62,49 +85,39 @@ func main() {
 
 	// -- Data
 	// TODO: Remove dummy data
-	e.GET("/data", func(c echo.Context) error {
-		data := []map[string]interface{}{
-			{
-				"id":       0,
-				"sampleId": "HG0100",
-				"age":      45,
-			},
-			{
-				"id":       1,
-				"sampleId": "HG0101",
-				"age":      60,
-			},
-			{
-				"id":       2,
-				"sampleId": "HG0102",
-				"age":      20,
-			},
-		}
-
-		return c.JSON(http.StatusOK, data)
+	e.GET("/fields", func(c echo.Context) error {
+		return c.JSON(http.StatusOK, katsuQueryConfig)
 	})
 
 	// Katsu testing
 	e.GET("/katsu", func(c echo.Context) error {
+		jsonLike := make(map[string]map[string]interface{})
+
+		for _, qf := range queryableFields {
+			jsonLike[qf] = make(map[string]interface{})
+
+			for _, qv := range queryableFieldValues[qf] {
+				resp, err := http.Get(fmt.Sprintf("%s/api/public?%s=%s", cfg.KatsuUrl, qf, qv)) // ?extra_properties=\"age_group\":\"adult\"&extra_properties=\"smoking\":\"non-smoker\"
+				if err != nil {
+					fmt.Println(err)
+					return c.JSON(http.StatusInternalServerError, err)
+				}
+				defer resp.Body.Close()
+
+				// Read response body and conver to a generic JSON-like datastructure
+				body, err := ioutil.ReadAll(resp.Body)
+				if err != nil {
+					fmt.Println(err)
+					return c.JSON(http.StatusInternalServerError, err)
+				}
+
+				tmpJsonLike := make(map[string]interface{})
+				json.Unmarshal(body, &tmpJsonLike)
+
+				jsonLike[qf][qv] = tmpJsonLike
+			}
+		}
 		// Fetch Overview
-		// (TODO: refactor to use Katsu's "public" overview, rather than the "private" one)
-		resp, err := http.Get(fmt.Sprintf("%s/api/overview", cfg.KatsuUrl))
-		if err != nil {
-			fmt.Println(err)
-			return c.JSON(http.StatusInternalServerError, err)
-		}
-
-		defer resp.Body.Close()
-
-		// Read response body and conver to a generic JSON-like datastructure
-		body, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			fmt.Println(err)
-			return c.JSON(http.StatusInternalServerError, err)
-		}
-
-		jsonLike := make(map[string]interface{})
-		json.Unmarshal(body, &jsonLike)
 
 		return c.JSON(http.StatusOK, jsonLike)
 	})

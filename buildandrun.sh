@@ -4,6 +4,7 @@
 mkdir -p build/www
 # - prepare server .env
 cp server.env build/.env
+cp katsu.config.json build/
 
 # go to src directory and build go binary
 cd src
