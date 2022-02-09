@@ -36,6 +36,8 @@ RUN apk update && \
 RUN mkdir -p /runner/www
 
 # Client
+COPY --from=nodebuilder /node/katsu.config.json /runner
+
 COPY --from=nodebuilder /node/build/www /runner/www
 COPY --from=nodebuilder /node/src/index.html /runner/www
 

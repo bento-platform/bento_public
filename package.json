@@ -21,8 +21,11 @@
     "react-bootstrap": "^2.0.3",
     "react-dom": "^16.13.1",
     "react-json-formatter": "^0.2.1",
+    "react-notify-bootstrap": "^1.0.23",
     "react-redux": "^7.2.6",
+    "react-spinners": "^0.11.0",
     "redux-thunk": "^2.4.1",
+    "style-loader": "^3.3.1",
     "victory": "^36.2.0"
   },
   "devDependencies": {

@@ -2,53 +2,52 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Button, Container } from 'react-bootstrap';
-import { Row, Col } from 'react-bootstrap'
-
 import { JsonFormatter } from 'react-json-formatter'
+import { Row, Col } from 'react-bootstrap'
+import Spinner from 'react-bootstrap/Spinner'
 
-import { dataUrl, katsuUrl } from "../constants"
-import { makeGetOverviewRequest } from "../action";
+import QueryParameter from './QueryParameter'
 
+import { queryableFieldsUrl, katsuUrl } from "../constants"
+import { 
+    makeGetQueryableFieldsRequest, 
+    makeGetOverviewRequest,
+    makeGetKatsuPublic ,
+    addQueryParameterToCheckedStack, 
+    removeQueryParameterFromCheckedStack
+} from "../action";
+
+    
 import Header from "./Header.js"
 
 import { VictoryPie } from 'victory';
 
+
 class Dashboard extends React.Component {
 
-    componentDidMount() {}
-
+    constructor(props) {
+        super(props)
+    
+        // fetch data from server
+        this.props.makeGetQueryableFieldsRequest(queryableFieldsUrl);
+    }
+    
     fetchData() {
         // fetch data from server
         this.props.makeGetOverviewRequest(katsuUrl);
     }
 
-    render() {
-        const { overview } = this.props;
-        // TODO: refactor
-        //          - simple overview data presentation PoC
-        const experimentTypeData = [];
-        const experimentLibrarySourceData = [];
-        if (typeof overview != undefined && Object.keys(overview).length > 0) {
-            // experiments
-            var experiments = overview.data_type_specific.experiments;
-            
-            // get types
-            var experimentTypes = experiments.experiment_type;
-            var keys = Object.keys(experimentTypes);
-            var values = Object.values(experimentTypes);
-            for (var i = 0; i < keys.length; i++) {
-                experimentTypeData.push({x: keys[i], y: values[i]})
-            }
+    queryKatsuPublic() {
+        // fetch data from server
+        this.props.makeGetKatsuPublic();
+    }
 
-            // get library sources
-            var experimentLibrarySources = experiments.library_source;
-            var keys = Object.keys(experimentLibrarySources);
-            var values = Object.values(experimentLibrarySources);
-            for (var i = 0; i < keys.length; i++) {
-                experimentLibrarySourceData.push({x: keys[i], y: values[i]})
-            }
-        }
-        // --
+    render() {
+        const { 
+            queryableFields, 
+            overview, 
+            isFetchingData,
+            queryParameterStack } = this.props;
 
         return (
             <Container>
@@ -56,59 +55,28 @@ class Dashboard extends React.Component {
                     <Header/>
                 </Row>
                 <Row>
-                    <span>Overview :</span>
+                    <span>Search Stuff :</span>
+                </Row>
+                <Row>
+                    {
+                        // verify 'queryParameterStack'
+                        typeof queryParameterStack == undefined || queryParameterStack.length === 0 
+                        ? // display nothing if there is no data
+                        <span>Nothing here...</span> 
+                        :
+                        <div>
+                            {queryParameterStack}
+                        </div>
+                    }
                 </Row>
                 <Row>
                     <Col className="text-center" xs={{ span: 4, offset: 4 }} md={{ span: 6, offset: 3 }}>
-                        <Button variant="primary" onClick={() => this.fetchData()}>Get Data</Button>
+                        <Button variant="primary" onClick={() => this.queryKatsuPublic()} disabled={isFetchingData}>Get Data</Button>
+                        <Spinner animation="border" hidden={!isFetchingData}/>
                     </Col>
                 </Row>
                 <Row>
-                    <Col md={{ span: 8 }}>
-                        <Row>
-                            <span>Experiments</span>
-                        </Row>
-                        <Row>
-                        {
-                            // verify 'experimentTypeData'
-                            typeof experimentTypeData == undefined || experimentTypeData.length === 0 
-                            ? // display nothing if there is no data
-                            <span>Nothing here...</span> 
-                            :
-                            <div>
-                                <span>Types</span>
-                                <VictoryPie
-                                    width={800}
-                                    data={experimentTypeData}
-                                    // data accessor for x values
-                                    x="x"
-                                    // data accessor for y values
-                                    y="y" />
-                            </div>
-                        }
-                        </Row>
-                        <Row>
-                        {
-                            // verify 'experimentLibrarySourceData'
-                            typeof experimentLibrarySourceData == undefined || experimentLibrarySourceData.length === 0 
-                            ? // display nothing if there is no data
-                            <></> 
-                            :
-                            <div>
-                                <span>Library Sources</span>
-                                <VictoryPie
-                                    width={800}
-                                    data={experimentLibrarySourceData}
-                                    // data accessor for x values
-                                    x="x"
-                                    // data accessor for y values
-                                    y="y" />
-                            </div>
-                        }
-                        </Row>
-                    </Col>
-                    <Col md={{ span: 4 }}>
-                        <Row>
+                    <Col md={{ span: 4, offset: 4 }}>
                         {
                             // verify 'overview'
                             typeof overview == undefined || Object.keys(overview).length === 0 
@@ -124,7 +92,6 @@ class Dashboard extends React.Component {
                                     numberStyle: { color: 'darkorange' }
                                 }} />
                         }
-                        </Row>
                     </Col>
                 </Row>
             </Container>
@@ -133,11 +100,19 @@ class Dashboard extends React.Component {
 }
 
 const mapDispatchToProps = {
-    makeGetOverviewRequest
+    makeGetQueryableFieldsRequest,
+    makeGetOverviewRequest,
+    makeGetKatsuPublic,
+    addQueryParameterToCheckedStack,
+    removeQueryParameterFromCheckedStack
 }
 
 const mapStateToProps = state => ({
-	overview: state.overview
+	queryableFields: state.queryableFields,
+	overview: state.overview,
+	isFetchingData: state.isFetchingData,
+
+    queryParameterStack: state.queryParameterStack
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

@@ -10,7 +10,7 @@ services:
     networks: 
       - bridge-net
     environment:
-      - KATSU_URL=${BENTO_PUBLIC_KATSU_URL}
+      - BENTO_PUBLIC_KATSU_URL=${BENTO_PUBLIC_KATSU_URL}
     ports:
       - "${BENTO_PUBLIC_EXTERNAL_PORT}:${BENTO_PUBLIC_INTERNAL_PORT}"
 

@@ -1,0 +1,23 @@
+{
+	"disease.term": {
+		"type": "string",
+		"term": "Disease"
+	},
+	"sex": {
+		"type": "enum",
+		"values": ["male", "female"],
+		"term": "Sex"
+	},
+	"extra_properties": {
+		"age_group": {
+			"type": "enum",
+			"values": ["adult", "child"],
+			"term": "Age Group"
+		},
+		"smoking": {
+			"type": "enum",
+			"values": ["smoker", "non-smoker"],
+			"term": "Smoking"
+		}
+	}
+}
