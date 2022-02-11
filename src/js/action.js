@@ -21,7 +21,7 @@ const makeGetQueryableFieldsRequest = (url) => async (dispatch) => {
             "fetch": true
         }));
         
-        await sleep(1000)
+        // await sleep(1000)
 
         // fetch data
         // TODO: validate response
@@ -86,7 +86,7 @@ const makeGetOverviewRequest = (url) => async (dispatch) => {
             "fetch": true
         }));
         // simulate network lag
-        await sleep(1000)
+        // await sleep(1000)
         
         // fetch data
         // TODO: validate response
@@ -129,7 +129,7 @@ const makeGetKatsuPublic = () => async (dispatch, getState) => {
             "fetch": true
         }));
         // simulate network lag
-        await sleep(1000)
+        // await sleep(1000)
         
 
         var qpsWithValue = []
@@ -140,8 +140,11 @@ const makeGetKatsuPublic = () => async (dispatch, getState) => {
 
             qpsWithValue.push({
                 key: item.key,
+                type: item.type,
                 is_extra_property_key: item.is_extra_property_key,
-                value: item.value
+                value: item.value,
+                rangeMin: item.rangeMin,
+                rangeMax: item.rangeMax
             })
         })
         console.log(qpsWithValue)
@@ -184,7 +187,7 @@ const makeGetKatsuPublic = () => async (dispatch, getState) => {
     }));
 }
 
-const addQueryParameterToCheckedStack = (item, value) => async (dispatch, getState) => {
+const addQueryParameterToCheckedStack = (item, value, min, max) => async (dispatch, getState) => {
     try {
         var state = getState()
         console.log(item)
@@ -194,9 +197,12 @@ const addQueryParameterToCheckedStack = (item, value) => async (dispatch, getSta
             dispatch(setContent("ADD_QUERY_PARAMETER_TO_CHECKED_STACK", {
                 "queryParameter": {
                     key: item.key,
+                    type: item.type,
                     term: item.term,
                     is_extra_property_key: item.is_extra_property_key,
-                    value: value
+                    value: value,
+                    rangeMin: min,
+                    rangeMax: max
                 }
             }));
         // }
@@ -205,28 +211,42 @@ const addQueryParameterToCheckedStack = (item, value) => async (dispatch, getSta
     }
 }
 
-const updateQueryParameterValueInCheckedStack = (item, itemValue) => async (dispatch, getState) => {
+const updateQueryParameterValueInCheckedStack = (item, itemValue, min, max) => async (dispatch, getState) => {
     try {
         var state = getState()
-        
+   
         var foundItem = state.queryParameterCheckedStack.find((param)=>param.term === item.term)
         if (foundItem != undefined) {
             var index = state.queryParameterCheckedStack.indexOf(foundItem)
-            // if (state.queryParameterCheckedStack.indexOf(item) >= 0) {
-                // append data from the network
-                await dispatch(setContent("REMOVE_QUERY_PARAMETER_FROM_CHECKED_STACK", {
-                    "index": index
-                }));
+
+            await dispatch(setContent("REMOVE_QUERY_PARAMETER_FROM_CHECKED_STACK", {
+                "index": index
+            }));
+
+            if (item.type == "range") {
+                console.log("Mocking update range")
 
                 dispatch(setContent("ADD_QUERY_PARAMETER_TO_CHECKED_STACK", {
                     "queryParameter": {
                         key: item.key,
+                        type: item.type,
+                        term: item.term,
+                        is_extra_property_key: item.is_extra_property_key,
+                        rangeMin: min,
+                        rangeMax: max
+                    }
+                }));
+            } else {
+                dispatch(setContent("ADD_QUERY_PARAMETER_TO_CHECKED_STACK", {
+                    "queryParameter": {
+                        key: item.key,
+                        type: item.type,
                         term: item.term,
                         is_extra_property_key: item.is_extra_property_key,
                         value: itemValue
                     }
                 }));
-            // }
+            }
         }
     } catch (err){
         console.log(err);

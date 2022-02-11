@@ -18,11 +18,6 @@ type BentoConfig struct {
 	KatsuUrl string `envconfig:"BENTO_PUBLIC_KATSU_URL"`
 }
 
-var queryableFields = []string{"sex"}
-var queryableFieldValues = map[string][]string{
-	"sex": []string{"male", "female"},
-}
-
 var katsuQueryConfig = make(map[string]interface{})
 
 func main() {
@@ -100,27 +95,58 @@ func main() {
 		}
 		fmt.Printf("Received %v from request body\n", qpJson)
 
+		// Security check
+		// - ensure all fields received are available
+		// - reject request if any keys presenet are not available
+		fmt.Println("Security check ---")
+		for _, qp := range qpJson {
+			key := qp["key"].(string)
+
+			fmt.Printf("Validating %s\n", qp)
+			if katsuQueryConfig[key] == nil && katsuQueryConfig["extra_properties"].(map[string]interface{})[key] == nil {
+				fmt.Println("--- failed")
+
+				// TODO: formalize response type
+				return c.JSON(http.StatusBadRequest, map[string]interface{}{
+					"error": fmt.Sprintf("%s not available", key),
+				})
+			}
+		}
+		fmt.Println("--- done")
+
 		// Prepare query parameters JSON for Katsu as GET query parameters
 		queryString := "?"
-		extraPropertiesQStrPortion := "" //"extra_properties="age_group":"adult", "smoking":"non-smoker""
+		extraPropertiesQStrPortion := ""
 		for _, qp := range qpJson {
 			fmt.Printf("%v\n", qp)
 			// check if it is an extra property
 			if qp["is_extra_property_key"] == true {
 				if extraPropertiesQStrPortion == "" {
-					// prepend query parameter key to the string on first iteration
-					extraPropertiesQStrPortion = "extra_properties="
+					// prepend json opening list bracket
+					extraPropertiesQStrPortion = "["
 				} else {
 					// append a tailing comma on each other interation
-					extraPropertiesQStrPortion += ", "
+					extraPropertiesQStrPortion += ","
 				}
 
-				extraPropertiesQStrPortion += fmt.Sprintf("\"%s\":\"%s\"", qp["key"], qp["value"])
+				if qp["type"] == "range" {
+					extraPropertiesQStrPortion += fmt.Sprintf("{\"%s\":{\"range_min\":\"%s\",\"range_max\":\"%s\"}}", qp["key"], qp["rangeMin"], qp["rangeMax"])
+				} else {
+					extraPropertiesQStrPortion += fmt.Sprintf("{\"%s\":\"%s\"}", qp["key"], qp["value"])
+				}
 			} else {
-				queryString += fmt.Sprintf("%s=%s&", qp["key"], qp["value"])
+				if qp["type"] == "range" {
+					queryString += fmt.Sprintf("%s=%s&", qp["key"], url.QueryEscape(fmt.Sprintf("{\"range_min\":\"%s\",\"range_max\":\"%s\"}", qp["rangeMin"], qp["rangeMax"])))
+				} else {
+					queryString += fmt.Sprintf("%s=%s&", qp["key"], qp["value"])
+				}
 			}
 		}
-		queryString += url.QueryEscape(extraPropertiesQStrPortion)
+		if extraPropertiesQStrPortion != "" {
+			extraPropertiesQStrPortion += "]"
+
+			queryString += ("extra_properties=" + url.QueryEscape(extraPropertiesQStrPortion))
+		}
 
 		fmt.Printf("Using %v extra_properties query string \n", extraPropertiesQStrPortion)
 		fmt.Printf("Using %v query string\n", queryString)
