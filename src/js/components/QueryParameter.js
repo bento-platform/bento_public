@@ -3,6 +3,10 @@ import React from "react";
 import { connect } from "react-redux";
 import { Row, Col } from 'react-bootstrap'
 
+import { Select } from 'antd';
+import "antd/dist/antd.css";
+
+
 import Header from "./Header.js"
 
 import { 
@@ -49,6 +53,14 @@ class QueryParameter extends React.Component {
         this.props.updateQueryParameterValueInCheckedStack(this.props.Item, newValue)
     }
 
+    handleAntdSelectValueChange = (e) => {
+        this.setState({
+            inputValue: e
+        });
+
+        this.props.updateQueryParameterValueInCheckedStack(this.props.Item, e)
+    }
+
     handleRangeMinChange = (e) => {
         const newValue = e.target.value;
         this.setState({
@@ -78,10 +90,13 @@ class QueryParameter extends React.Component {
                 <Col xs={{ span: 4 }}>{
                     function(){
                     if (Item.type == "enum") {
-                        return <select key={Item.term} name="values" onChange={e => This.handleValueChange(e)}>
-                            <option value="" ></option>
-                            {Item.values.map((item) => <option value={item.key} >{item}</option>)}
-                        </select>
+                        return <Select
+                            showSearch
+                            style={{ width: "100%" }}
+                            onChange={e => This.handleAntdSelectValueChange(e)} >
+                            <Select.Option key={Item.key} value=""></Select.Option>
+                            {Item.values.map((item) =><Select.Option key={item} value={item.key}>{item}</Select.Option>)}
+                        </Select>
                     } else if(Item.type == "range"){
                         return <Row>
                             <Col xs={{ span: 4 }}>
