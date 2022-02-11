@@ -3,7 +3,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { Row, Col } from 'react-bootstrap'
 
-import { Select } from 'antd';
+import { Select, Checkbox } from 'antd';
 import "antd/dist/antd.css";
 
 
@@ -85,7 +85,9 @@ class QueryParameter extends React.Component {
         var This = this
         return (
             <Row style={{margin: "1rem"}}>
-                <Col xs={{ span: 2, offset: 2  }}><input type="checkbox" value={Item.term} onChange={e => this.handleCheckboxChange(e)} /> </Col>
+                <Col xs={{ span: 2, offset: 2  }}>
+                    <Checkbox value={Item.term} onChange={e => this.handleCheckboxChange(e)}></Checkbox>
+                </Col>
                 <Col xs={{ span: 4 }}>{Item.term}</Col>
                 <Col xs={{ span: 4 }}>{
                     function(){
