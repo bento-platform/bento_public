@@ -3,7 +3,11 @@ import React from "react";
 import { connect } from "react-redux";
 import { Row, Col } from 'react-bootstrap'
 
-import { Select, Checkbox } from 'antd';
+import { 
+    Select, 
+    Checkbox,
+    InputNumber
+} from 'antd';
 import "antd/dist/antd.css";
 
 
@@ -53,16 +57,15 @@ class QueryParameter extends React.Component {
         this.props.updateQueryParameterValueInCheckedStack(this.props.Item, newValue)
     }
 
-    handleAntdSelectValueChange = (e) => {
+    handleAntdSelectValueChange = (newValue) => {
         this.setState({
-            inputValue: e
+            inputValue: newValue
         });
 
-        this.props.updateQueryParameterValueInCheckedStack(this.props.Item, e)
+        this.props.updateQueryParameterValueInCheckedStack(this.props.Item, newValue)
     }
 
-    handleRangeMinChange = (e) => {
-        const newValue = e.target.value;
+    handleRangeMinChange = (newValue) => {
         this.setState({
             rangeMin: newValue
         });
@@ -70,8 +73,7 @@ class QueryParameter extends React.Component {
         this.props.updateQueryParameterValueInCheckedStack(this.props.Item, newValue, newValue, this.state.rangeMax)
     }
 
-    handleRangeMaxChange = (e) => {
-        const newValue = e.target.value;
+    handleRangeMaxChange = (newValue) => {
         this.setState({
             rangeMax: newValue
         });
@@ -86,7 +88,7 @@ class QueryParameter extends React.Component {
         return (
             <Row style={{margin: "1rem"}}>
                 <Col xs={{ span: 2, offset: 2  }}>
-                    <Checkbox value={Item.term} onChange={e => this.handleCheckboxChange(e)}></Checkbox>
+                    <Checkbox onChange={e => this.handleCheckboxChange(e)}></Checkbox>
                 </Col>
                 <Col xs={{ span: 4 }}>{Item.term}</Col>
                 <Col xs={{ span: 4 }}>{
@@ -102,11 +104,11 @@ class QueryParameter extends React.Component {
                     } else if(Item.type == "range"){
                         return <Row>
                             <Col xs={{ span: 4 }}>
-                                <input type="number" id="range-min" name="range" min="0" style={{maxWidth: "100%"}} onChange={e => This.handleRangeMinChange(e)}/>
+                                <InputNumber id="range-min" name="range" min="0" style={{maxWidth: "100%"}} onChange={e => This.handleRangeMinChange(e)}/>
                             </Col>
                             <Col xs={{ span: 4 }} style={{textAlign: "center"}}>to</Col>
                             <Col xs={{ span: 4 }}>
-                                <input type="number" id="range-max" name="range" min="0" style={{maxWidth: "100%"}} onChange={e => This.handleRangeMaxChange(e)}/>
+                                <InputNumber id="range-max" name="range" min="0" style={{maxWidth: "100%"}} onChange={e => This.handleRangeMaxChange(e)}/>
                             </Col>
                         </Row>
                     } else {
