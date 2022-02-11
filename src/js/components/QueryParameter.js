@@ -90,7 +90,7 @@ class QueryParameter extends React.Component {
                 <Col xs={{ span: 2, offset: 2  }}>
                     <Checkbox onChange={e => this.handleCheckboxChange(e)}></Checkbox>
                 </Col>
-                <Col xs={{ span: 4 }}>{Item.term}</Col>
+                <Col xs={{ span: 4 }} md={{ span: 2 }}>{Item.term}</Col>
                 <Col xs={{ span: 4 }}>{
                     function(){
                     if (Item.type == "enum") {
