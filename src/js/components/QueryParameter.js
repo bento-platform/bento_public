@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { Row, Col } from 'react-bootstrap'
 
 import { 
+    Input,
     Select, 
     Checkbox,
     InputNumber
@@ -112,10 +113,7 @@ class QueryParameter extends React.Component {
                             </Col>
                         </Row>
                     } else {
-                        return <input
-                            type="text"
-                            onChange={e => This.handleValueChange(e)}
-                        />
+                        return <Input onChange={e => This.handleValueChange(e)} />
                     }
                 }()}</Col>
             </Row>
