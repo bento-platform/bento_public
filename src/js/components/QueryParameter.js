@@ -11,7 +11,6 @@ import {
 } from 'antd';
 import "antd/dist/antd.css";
 
-
 import Header from "./Header.js"
 
 import { 
@@ -19,7 +18,9 @@ import {
     updateQueryParameterValueInCheckedStack,
     removeQueryParameterFromCheckedStack 
 } from "../action";
-
+import { 
+    debuglog
+} from "../utils"
  
 
 class QueryParameter extends React.Component {
@@ -36,7 +37,7 @@ class QueryParameter extends React.Component {
         var checked = e.target.checked
 
         if (checked) {
-            console.log("Checked")
+            debuglog("Checked")
             if (this.props.Item.type == "range"){
                 this.props.addQueryParameterToCheckedStack(this.props.Item, undefined, this.state.rangeMin, this.state.rangeMax)
             }
@@ -44,7 +45,7 @@ class QueryParameter extends React.Component {
                 this.props.addQueryParameterToCheckedStack(this.props.Item, this.state.inputValue)
             }
         } else {
-            console.log("Not checked")
+            debuglog("Not checked")
             this.props.removeQueryParameterFromCheckedStack(this.props.Item)
         }
     }

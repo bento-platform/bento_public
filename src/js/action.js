@@ -2,7 +2,7 @@
 import React from "react";
 import axios from "axios"
 
-import { sleep } from "./utils.js"
+import { debuglog } from "./utils.js"
 import { katsuUrl } from "./constants"
 
 import QueryParameter from './components/QueryParameter'
@@ -135,8 +135,8 @@ const makeGetKatsuPublic = () => async (dispatch, getState) => {
         var qpsWithValue = []
         var checkedParametersStack = getState().queryParameterCheckedStack
         checkedParametersStack.forEach(function(item, index){
-            console.log(item)
-            console.log(index)
+            debuglog(item)
+            debuglog(index)
 
             qpsWithValue.push({
                 key: item.key,
@@ -147,7 +147,7 @@ const makeGetKatsuPublic = () => async (dispatch, getState) => {
                 rangeMax: item.rangeMax
             })
         })
-        console.log(qpsWithValue)
+        debuglog(qpsWithValue)
 
         // POST query parameters
         // TODO: validate response
@@ -189,9 +189,9 @@ const makeGetKatsuPublic = () => async (dispatch, getState) => {
 
 const addQueryParameterToCheckedStack = (item, value, min, max) => async (dispatch, getState) => {
     try {
-        var state = getState()
-        console.log(item)
-        console.log(value)
+        // var state = getState()
+        debuglog(item)
+        debuglog(value)
         // if (state.queryParameterCheckedStack.indexOf(item) < 0) {
             // append data from the network
             dispatch(setContent("ADD_QUERY_PARAMETER_TO_CHECKED_STACK", {
@@ -224,8 +224,6 @@ const updateQueryParameterValueInCheckedStack = (item, itemValue, min, max) => a
             }));
 
             if (item.type == "range") {
-                console.log("Mocking update range")
-
                 dispatch(setContent("ADD_QUERY_PARAMETER_TO_CHECKED_STACK", {
                     "queryParameter": {
                         key: item.key,
