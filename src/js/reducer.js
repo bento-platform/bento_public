@@ -1,4 +1,6 @@
 // reducer.js
+import { debuglog } from "./utils"
+
 const INITIAL_STATE = {
 	isFetchingData: false,
 	overview: {},
@@ -30,11 +32,11 @@ export default (state = INITIAL_STATE, action={}) => {
 
 
 		case "SET_QUERY_PARAMETER_STACK":
-			console.log("Reducing SET_QUERY_PARAMETER_STACK")
+			debuglog("Reducing SET_QUERY_PARAMETER_STACK")
 
-			console.log("Current stack: " + state.queryParameterStack)		
+			debuglog("Current stack: " + state.queryParameterStack)		
 			var newStack = action.content.items
-			console.log("New stack: " + newStack)
+			debuglog("New stack: " + newStack)
 			
 			return {
 				...state,
@@ -44,23 +46,23 @@ export default (state = INITIAL_STATE, action={}) => {
 
 
 		case "ADD_QUERY_PARAMETER_TO_CHECKED_STACK":
-			console.log("Reducing ADD_QUERY_PARAMETER_TO_CHECKED_STACK")
+			debuglog("Reducing ADD_QUERY_PARAMETER_TO_CHECKED_STACK")
 
-			console.log("Current stack: " + state.queryParameterCheckedStack)		
+			debuglog("Current stack: " + state.queryParameterCheckedStack)		
 			var newStack = state.queryParameterCheckedStack.concat([action.content.queryParameter])
-			console.log("New stack: " + newStack)
+			debuglog("New stack: " + newStack)
 			
 			return {
 				...state,
 				queryParameterCheckedStack : newStack,
 			};
 		case "REMOVE_QUERY_PARAMETER_FROM_CHECKED_STACK":
-			console.log("Reducing REMOVE_QUERY_PARAMETER_FROM_CHECKED_STACK")
+			debuglog("Reducing REMOVE_QUERY_PARAMETER_FROM_CHECKED_STACK")
 			
-			console.log("Current stack: " + state.queryParameterCheckedStack)		
+			debuglog("Current stack: " + state.queryParameterCheckedStack)		
 			var newStack = [...state.queryParameterCheckedStack]
 			newStack.splice(action.content.index, 1)
-			console.log("New stack: " + newStack)
+			debuglog("New stack: " + newStack)
 
 			return {
 				...state,

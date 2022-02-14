@@ -4,12 +4,12 @@ import { connect } from "react-redux";
 import { Row, Col } from 'react-bootstrap'
 
 import { 
+    Input,
     Select, 
     Checkbox,
     InputNumber
 } from 'antd';
 import "antd/dist/antd.css";
-
 
 import Header from "./Header.js"
 
@@ -18,7 +18,9 @@ import {
     updateQueryParameterValueInCheckedStack,
     removeQueryParameterFromCheckedStack 
 } from "../action";
-
+import { 
+    debuglog
+} from "../utils"
  
 
 class QueryParameter extends React.Component {
@@ -35,7 +37,7 @@ class QueryParameter extends React.Component {
         var checked = e.target.checked
 
         if (checked) {
-            console.log("Checked")
+            debuglog("Checked")
             if (this.props.Item.type == "range"){
                 this.props.addQueryParameterToCheckedStack(this.props.Item, undefined, this.state.rangeMin, this.state.rangeMax)
             }
@@ -43,7 +45,7 @@ class QueryParameter extends React.Component {
                 this.props.addQueryParameterToCheckedStack(this.props.Item, this.state.inputValue)
             }
         } else {
-            console.log("Not checked")
+            debuglog("Not checked")
             this.props.removeQueryParameterFromCheckedStack(this.props.Item)
         }
     }
@@ -112,10 +114,7 @@ class QueryParameter extends React.Component {
                             </Col>
                         </Row>
                     } else {
-                        return <input
-                            type="text"
-                            onChange={e => This.handleValueChange(e)}
-                        />
+                        return <Input onChange={e => This.handleValueChange(e)} />
                     }
                 }()}</Col>
             </Row>
