@@ -1,0 +1,17 @@
+version: '3.7'
+
+services:
+  public:
+    extends:
+      file: docker-compose.yaml
+      service: public
+    ports:
+      - "${BENTO_PUBLIC_EXTERNAL_PORT}:${BENTO_PUBLIC_INTERNAL_PORT}"
+    networks: 
+      - bridge-net
+
+networks: 
+  bridge-net:
+    external: true
+
+  katsu-db:
