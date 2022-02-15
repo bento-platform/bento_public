@@ -29,7 +29,7 @@ class QueryParameter extends React.Component {
         this.state = {
             inputValue: '',
             rangeMin: 0,
-            rangeMax: 0,
+            rangeMax: 1,
             checked: false
         };
     }
@@ -118,7 +118,7 @@ class QueryParameter extends React.Component {
                                 <InputNumber id="range-min" name="range" 
                                     value={This.state.rangeMin}
                                     min="0" 
-                                    max={This.state.rangeMax} 
+                                    max={This.state.rangeMax - 1} 
                                     disabled={!This.state.checked}
                                     style={{maxWidth: "100%"}} 
                                     onChange={e => This.handleRangeMinChange(e)}/>
@@ -127,7 +127,7 @@ class QueryParameter extends React.Component {
                             <Col xs={{ span: 4 }}>
                                 <InputNumber id="range-max" name="range" 
                                     value={This.state.rangeMax}
-                                    min={This.state.rangeMin} 
+                                    min={This.state.rangeMin + 1} 
                                     disabled={!This.state.checked}
                                     style={{maxWidth: "100%"}} 
                                     onChange={e => This.handleRangeMaxChange(e)}/>
