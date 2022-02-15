@@ -4,5 +4,3 @@ server.env
 build/*
 node_modules/*
 package-lock.json
-
-katsu.config.json

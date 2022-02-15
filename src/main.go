@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -18,7 +17,7 @@ type BentoConfig struct {
 	KatsuUrl string `envconfig:"BENTO_PUBLIC_KATSU_URL"`
 }
 
-var katsuQueryConfig = make(map[string]interface{})
+var katsuQueryConfigCache = make(map[string]interface{})
 
 func main() {
 	var cfg BentoConfig
@@ -31,21 +30,6 @@ func main() {
 	fmt.Println(fmt.Sprintf(`Config -- 
 		Katsu URL: %v
 	`, cfg.KatsuUrl))
-
-	// Load katsu query configuration
-	// TODO: refactor to fetch this config from a Katsu REST endpoint
-	content, err := ioutil.ReadFile("./katsu.config.json")
-	if err != nil {
-		log.Fatal("Error when opening file: ", err)
-	}
-
-	// Now let's unmarshall the data into `payload`
-	err = json.Unmarshal(content, &katsuQueryConfig)
-	if err != nil {
-		log.Fatal("Error during Unmarshal(): ", err)
-	}
-
-	//fmt.Println(katsuQueryConfig)
 
 	// Begin Echo
 
@@ -82,7 +66,30 @@ func main() {
 	// -- Data
 	// TODO: Remove dummy data
 	e.GET("/fields", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, katsuQueryConfig)
+		// Query Katsu for publicly available search fields
+		resp, err := http.Get(fmt.Sprintf("%s/api/public_search_fields", cfg.KatsuUrl)) // ?extra_properties=\"age_group\":\"adult\"&extra_properties=\"smoking\":\"non-smoker\"
+		if err != nil {
+			fmt.Println(err)
+			// TODO: formalize response type
+			return c.JSON(http.StatusInternalServerError, err)
+		}
+		defer resp.Body.Close()
+
+		// Read response body and convert to a generic JSON-like datastructure
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			fmt.Println(err)
+			// TODO: formalize response type
+			return c.JSON(http.StatusInternalServerError, err)
+		}
+
+		jsonLike := make(map[string]interface{})
+		json.Unmarshal(body, &jsonLike)
+
+		katsuQueryConfigCache = jsonLike
+
+		// TODO: formalize response type
+		return c.JSON(http.StatusOK, jsonLike)
 	})
 
 	// Katsu testing
@@ -103,7 +110,7 @@ func main() {
 			key := qp["key"].(string)
 
 			fmt.Printf("Validating %s\n", qp)
-			if katsuQueryConfig[key] == nil && katsuQueryConfig["extra_properties"].(map[string]interface{})[key] == nil {
+			if katsuQueryConfigCache[key] == nil && katsuQueryConfigCache["extra_properties"].(map[string]interface{})[key] == nil {
 				fmt.Println("--- failed")
 
 				// TODO: formalize response type
@@ -155,6 +162,7 @@ func main() {
 		resp, err := http.Get(fmt.Sprintf("%s/api/public%s", cfg.KatsuUrl, queryString)) // ?extra_properties=\"age_group\":\"adult\"&extra_properties=\"smoking\":\"non-smoker\"
 		if err != nil {
 			fmt.Println(err)
+			// TODO: formalize response type
 			return c.JSON(http.StatusInternalServerError, err)
 		}
 		defer resp.Body.Close()
@@ -163,12 +171,14 @@ func main() {
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			fmt.Println(err)
+			// TODO: formalize response type
 			return c.JSON(http.StatusInternalServerError, err)
 		}
 
 		jsonLike := make(map[string]interface{})
 		json.Unmarshal(body, &jsonLike)
 
+		// TODO: formalize response type
 		return c.JSON(http.StatusOK, jsonLike)
 	})
 
