@@ -198,7 +198,7 @@ const addQueryParameterToCheckedStack = (item, value, min, max) => async (dispat
                 "queryParameter": {
                     key: item.key,
                     type: item.type,
-                    term: item.term,
+                    title: item.title,
                     is_extra_property_key: item.is_extra_property_key,
                     value: value,
                     rangeMin: min,
@@ -215,7 +215,7 @@ const updateQueryParameterValueInCheckedStack = (item, itemValue, min, max) => a
     try {
         var state = getState()
    
-        var foundItem = state.queryParameterCheckedStack.find((param)=>param.term === item.term)
+        var foundItem = state.queryParameterCheckedStack.find((param)=>param.title === item.title)
         if (foundItem != undefined) {
             var index = state.queryParameterCheckedStack.indexOf(foundItem)
 
@@ -228,7 +228,7 @@ const updateQueryParameterValueInCheckedStack = (item, itemValue, min, max) => a
                     "queryParameter": {
                         key: item.key,
                         type: item.type,
-                        term: item.term,
+                        title: item.title,
                         is_extra_property_key: item.is_extra_property_key,
                         rangeMin: min,
                         rangeMax: max
@@ -239,7 +239,7 @@ const updateQueryParameterValueInCheckedStack = (item, itemValue, min, max) => a
                     "queryParameter": {
                         key: item.key,
                         type: item.type,
-                        term: item.term,
+                        title: item.title,
                         is_extra_property_key: item.is_extra_property_key,
                         value: itemValue
                     }
@@ -259,7 +259,7 @@ const removeQueryParameterFromCheckedStack = (item) => async (dispatch, getState
     try {
         var state = getState()
         
-        var foundItem = state.queryParameterCheckedStack.find((param)=>param.term === item.term)
+        var foundItem = state.queryParameterCheckedStack.find((param)=>param.title === item.title)
         if (foundItem != undefined) {
             var index = state.queryParameterCheckedStack.indexOf(foundItem)
             // if (state.queryParameterCheckedStack.indexOf(item) >= 0) {

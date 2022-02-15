@@ -30,6 +30,7 @@ class QueryParameter extends React.Component {
             inputValue: '',
             rangeMin: 0,
             rangeMax: 0,
+            checked: false
         };
     }
 
@@ -48,6 +49,10 @@ class QueryParameter extends React.Component {
             debuglog("Not checked")
             this.props.removeQueryParameterFromCheckedStack(this.props.Item)
         }
+
+        this.setState({
+            checked: checked
+        })
     }
 
     handleValueChange = (e) => {
@@ -85,36 +90,51 @@ class QueryParameter extends React.Component {
     
     
     render() {
-        const { Item } = this.props;
+        const { Item, queryParameterCheckedStack } = this.props;
         var This = this
         return (
             <Row style={{margin: "1rem"}}>
                 <Col xs={{ span: 2, offset: 2  }}>
-                    <Checkbox onChange={e => this.handleCheckboxChange(e)}></Checkbox>
+                    <Checkbox 
+                        checked={This.state.checked} 
+                        onChange={e => This.handleCheckboxChange(e)}
+                        disabled={queryParameterCheckedStack.length >= 2 && !This.state.checked}></Checkbox>
                 </Col>
-                <Col xs={{ span: 4 }} md={{ span: 2 }}>{Item.term}</Col>
+                <Col xs={{ span: 4 }} md={{ span: 2 }}>{Item.title}</Col>
                 <Col xs={{ span: 4 }}>{
                     function(){
-                    if (Item.type == "enum") {
+                    if (Item.type == "array") {
                         return <Select
+                            disabled={!This.state.checked}
                             showSearch
                             style={{ width: "100%" }}
                             onChange={e => This.handleAntdSelectValueChange(e)} >
                             <Select.Option key={Item.key} value=""></Select.Option>
-                            {Item.values.map((item) =><Select.Option key={item} value={item.key}>{item}</Select.Option>)}
+                            {Item.items.enum.map((item) =><Select.Option key={item} value={item.key}>{item}</Select.Option>)}
                         </Select>
                     } else if(Item.type == "range"){
                         return <Row>
                             <Col xs={{ span: 4 }}>
-                                <InputNumber id="range-min" name="range" min="0" style={{maxWidth: "100%"}} onChange={e => This.handleRangeMinChange(e)}/>
+                                <InputNumber id="range-min" name="range" 
+                                    value={This.state.rangeMin}
+                                    min="0" 
+                                    max={This.state.rangeMax} 
+                                    disabled={!This.state.checked}
+                                    style={{maxWidth: "100%"}} 
+                                    onChange={e => This.handleRangeMinChange(e)}/>
                             </Col>
                             <Col xs={{ span: 4 }} style={{textAlign: "center"}}>to</Col>
                             <Col xs={{ span: 4 }}>
-                                <InputNumber id="range-max" name="range" min="0" style={{maxWidth: "100%"}} onChange={e => This.handleRangeMaxChange(e)}/>
+                                <InputNumber id="range-max" name="range" 
+                                    value={This.state.rangeMax}
+                                    min={This.state.rangeMin} 
+                                    disabled={!This.state.checked}
+                                    style={{maxWidth: "100%"}} 
+                                    onChange={e => This.handleRangeMaxChange(e)}/>
                             </Col>
                         </Row>
                     } else {
-                        return <Input onChange={e => This.handleValueChange(e)} />
+                        return <Input onChange={e => This.handleValueChange(e)} disabled={!This.state.checked} />
                     }
                 }()}</Col>
             </Row>
@@ -129,6 +149,7 @@ const mapDispatchToProps = {
 }
 
 const mapStateToProps = state => ({
+    queryParameterCheckedStack: state.queryParameterCheckedStack
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(QueryParameter);
