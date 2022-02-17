@@ -66,6 +66,7 @@ class Dashboard extends React.Component {
                     <span>Search Stuff :</span>
                 </Row>
                 <Row>
+                    <Col sm={{ span: 10 }}>
                     {
                         // verify 'queryParameterStack'
                         typeof queryParameterStack == undefined || queryParameterStack.length === 0 
@@ -76,15 +77,8 @@ class Dashboard extends React.Component {
                             {queryParameterStack}
                         </div>
                     }
-                </Row>
-                <Row>
-                    <Col className="text-center" xs={{ span: 4, offset: 4 }} md={{ span: 6, offset: 3 }}>
-                        <Button variant="primary" onClick={() => this.queryKatsuPublic()} disabled={isFetchingData}>Get Data</Button>
-                        <Spinner animation="border" hidden={!isFetchingData}/>
                     </Col>
-                </Row>
-                <Row>
-                    <Col md={{ span: 4, offset: 4 }}>
+                    <Col md={{ span: 2 }}>
                         {
                             // verify 'queryResponseData'
                             typeof queryResponseData == undefined || Object.keys(queryResponseData).length === 0 
@@ -100,6 +94,12 @@ class Dashboard extends React.Component {
                                     numberStyle: { color: 'darkorange' }
                                 }} />
                         }
+                    </Col>
+                </Row>
+                <Row>
+                    <Col className="text-center" xs={{ span: 4, offset: 4 }} md={{ span: 6, offset: 3 }}>
+                        <Button variant="primary" onClick={() => this.queryKatsuPublic()} disabled={isFetchingData}>Get Data</Button>
+                        <Spinner animation="border" hidden={!isFetchingData}/>
                     </Col>
                 </Row>
             </Container>
