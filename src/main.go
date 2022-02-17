@@ -61,6 +61,95 @@ func main() {
 	e.Use(middleware.Static("./www"))
 
 	// -- Data
+
+	e.GET("/overview", func(c echo.Context) error {
+		// TEMP: simulation
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"overview": map[string]interface{}{
+				"sex": map[string]interface{}{
+					"male": map[string]interface{}{
+						"count": 10,
+					},
+					"female": map[string]interface{}{
+						"count": 12,
+					},
+				},
+				"diseases": map[string]interface{}{
+					"myocarditis": map[string]interface{}{
+						"count": 2,
+					},
+					"blood clots": map[string]interface{}{
+						"count": 4,
+					},
+					"cancer": map[string]interface{}{
+						"count": 6,
+					},
+				},
+				"experiments": map[string]interface{}{
+					"RT-PCR": map[string]interface{}{
+						"count": 7,
+					},
+					"RT-qPCR": map[string]interface{}{
+						"count": 3,
+					},
+				},
+				"age": map[string]interface{}{
+					"50": map[string]interface{}{
+						"count": 6,
+					},
+					"60": map[string]interface{}{
+						"count": 4,
+					},
+					"70": map[string]interface{}{
+						"count": 1,
+					},
+				},
+				"mobility": map[string]interface{}{
+					"functioning": map[string]interface{}{
+						"count": 12,
+					},
+					"non-mobile": map[string]interface{}{
+						"count": 8,
+					},
+					"sometimes mobile": map[string]interface{}{
+						"count": 2,
+					},
+				},
+			},
+		})
+
+		// TODO: implement
+
+		// // Query Katsu for publicly available overview
+		// resp, err := http.Get(fmt.Sprintf("%s/api/public_overview", cfg.KatsuUrl))
+		// if err != nil {
+		// 	fmt.Println(err)
+
+		// 	return c.JSON(http.StatusInternalServerError, ErrorResponse{
+		// 		Message: err.Error(),
+		// 	})
+		// }
+		// defer resp.Body.Close()
+
+		// // Read response body and convert to a generic JSON-like datastructure
+		// body, err := ioutil.ReadAll(resp.Body)
+		// if err != nil {
+		// 	fmt.Println(err)
+
+		// 	return c.JSON(http.StatusInternalServerError, ErrorResponse{
+		// 		Message: err.Error(),
+		// 	})
+		// }
+
+		// jsonLike := make(map[string]interface{})
+		// json.Unmarshal(body, &jsonLike)
+
+		// katsuQueryConfigCache = jsonLike
+
+		// // TODO: formalize response type
+		// return c.JSON(http.StatusOK, jsonLike)
+	})
+
 	e.GET("/fields", func(c echo.Context) error {
 		// Query Katsu for publicly available search fields
 		resp, err := http.Get(fmt.Sprintf("%s/api/public_search_fields", cfg.KatsuUrl)) // ?extra_properties=\"age_group\":\"adult\"&extra_properties=\"smoking\":\"non-smoker\"
@@ -110,6 +199,8 @@ func main() {
 		// - ensure all fields received are available
 		// - reject request if any keys presenet are not available
 		fmt.Println("Security check ---")
+		fmt.Printf("katsuQueryConfigCache : %v\n", katsuQueryConfigCache)
+
 		for _, qp := range qpJson {
 			key := qp["key"].(string)
 
