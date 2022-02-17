@@ -27,7 +27,6 @@ import {
     
 import Header from "./Header.js"
 
-import { VictoryPie } from 'victory';
 
 
 class Dashboard extends React.Component {
@@ -58,7 +57,10 @@ class Dashboard extends React.Component {
                     <Header/>
                 </Row>
                 <Row>
-                    <PublicOverview/>
+                    <Col>
+                    <h2>Overview: </h2>
+                        <PublicOverview/>
+                    </Col>
                 </Row>
                 <Row>
                     <span>Search Stuff :</span>

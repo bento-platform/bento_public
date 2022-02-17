@@ -74,6 +74,47 @@ func main() {
 						"count": 12,
 					},
 				},
+				"diseases": map[string]interface{}{
+					"myocarditis": map[string]interface{}{
+						"count": 2,
+					},
+					"blood clots": map[string]interface{}{
+						"count": 4,
+					},
+					"cancer": map[string]interface{}{
+						"count": 6,
+					},
+				},
+				"experiments": map[string]interface{}{
+					"RT-PCR": map[string]interface{}{
+						"count": 7,
+					},
+					"RT-qPCR": map[string]interface{}{
+						"count": 3,
+					},
+				},
+				"age": map[string]interface{}{
+					"50": map[string]interface{}{
+						"count": 6,
+					},
+					"60": map[string]interface{}{
+						"count": 4,
+					},
+					"70": map[string]interface{}{
+						"count": 1,
+					},
+				},
+				"mobility": map[string]interface{}{
+					"functioning": map[string]interface{}{
+						"count": 12,
+					},
+					"non-mobile": map[string]interface{}{
+						"count": 8,
+					},
+					"sometimes mobile": map[string]interface{}{
+						"count": 2,
+					},
+				},
 			},
 		})
 
@@ -158,6 +199,8 @@ func main() {
 		// - ensure all fields received are available
 		// - reject request if any keys presenet are not available
 		fmt.Println("Security check ---")
+		fmt.Printf("katsuQueryConfigCache : %v\n", katsuQueryConfigCache)
+
 		for _, qp := range qpJson {
 			key := qp["key"].(string)
 
