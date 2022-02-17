@@ -36,9 +36,6 @@ func main() {
 	// Instantiate Server
 	e := echo.New()
 
-	// Service Connections:
-	// -- TODO: Katsu Service?
-
 	// Configure Server
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
@@ -70,8 +67,10 @@ func main() {
 		resp, err := http.Get(fmt.Sprintf("%s/api/public_search_fields", cfg.KatsuUrl)) // ?extra_properties=\"age_group\":\"adult\"&extra_properties=\"smoking\":\"non-smoker\"
 		if err != nil {
 			fmt.Println(err)
-			// TODO: formalize response type
-			return c.JSON(http.StatusInternalServerError, err)
+
+			return c.JSON(http.StatusInternalServerError, ErrorResponse{
+				message: err.Error(),
+			})
 		}
 		defer resp.Body.Close()
 
@@ -79,8 +78,10 @@ func main() {
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			fmt.Println(err)
-			// TODO: formalize response type
-			return c.JSON(http.StatusInternalServerError, err)
+
+			return c.JSON(http.StatusInternalServerError, ErrorResponse{
+				message: err.Error(),
+			})
 		}
 
 		jsonLike := make(map[string]interface{})
@@ -98,7 +99,9 @@ func main() {
 		qpJson := make([]map[string]interface{}, 0)
 		err := json.NewDecoder(c.Request().Body).Decode(&qpJson)
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, err)
+			return c.JSON(http.StatusInternalServerError, ErrorResponse{
+				message: fmt.Sprintf("%s not available", err),
+			})
 		}
 		fmt.Printf("Received %v from request body\n", qpJson)
 
@@ -113,9 +116,8 @@ func main() {
 			if katsuQueryConfigCache[key] == nil && katsuQueryConfigCache["extra_properties"].(map[string]interface{})[key] == nil {
 				fmt.Println("--- failed")
 
-				// TODO: formalize response type
-				return c.JSON(http.StatusBadRequest, map[string]interface{}{
-					"error": fmt.Sprintf("%s not available", key),
+				return c.JSON(http.StatusBadRequest, ErrorResponse{
+					message: fmt.Sprintf("%s not available", key),
 				})
 			}
 		}
@@ -162,8 +164,10 @@ func main() {
 		resp, err := http.Get(fmt.Sprintf("%s/api/public%s", cfg.KatsuUrl, queryString)) // ?extra_properties=\"age_group\":\"adult\"&extra_properties=\"smoking\":\"non-smoker\"
 		if err != nil {
 			fmt.Println(err)
-			// TODO: formalize response type
-			return c.JSON(http.StatusInternalServerError, err)
+
+			return c.JSON(http.StatusInternalServerError, ErrorResponse{
+				message: err.Error(),
+			})
 		}
 		defer resp.Body.Close()
 
@@ -171,8 +175,10 @@ func main() {
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			fmt.Println(err)
-			// TODO: formalize response type
-			return c.JSON(http.StatusInternalServerError, err)
+
+			return c.JSON(http.StatusInternalServerError, ErrorResponse{
+				message: err.Error(),
+			})
 		}
 
 		jsonLike := make(map[string]interface{})
@@ -184,4 +190,9 @@ func main() {
 
 	// Run
 	e.Logger.Fatal(e.Start(":8090"))
+}
+
+// TODO: refactor
+type ErrorResponse struct {
+	message string
 }
