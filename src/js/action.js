@@ -14,6 +14,50 @@ const setContent = (type, content) => {
 	}
 }
 
+// facilitate retrieving katsu public-overview data from server
+const makeGetOverviewRequest = (url) => async (dispatch) => {
+    try {
+        dispatch(setContent("SET_FETCHING_DATA", {
+            "fetch": true
+        }));
+        // simulate network lag
+        // await sleep(1000)
+        
+        // fetch data
+        // TODO: validate response
+        const response = await axios.get(url)
+            .catch(function (error) {
+                if (error.response) {
+                    // Request made and server responded
+                    console.log(error.response.data);
+                    console.log(error.response.status);
+                    console.log(error.response.headers);
+                } else if (error.request) {
+                    // The request was made but no response was received
+                    console.log(error.request);
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.log('Error', error.message);
+                }
+
+                dispatch(setContent("SET_FETCHING_DATA", {
+                    "fetch": false
+                }));
+            });
+
+        // append data from the network
+        dispatch(setContent("SET_OVERVIEW", {
+            "overview": response.data
+        }));
+    } catch (err){
+        console.log(err);
+
+        dispatch(setContent("SET_FETCHING_DATA", {
+            "fetch": false
+        }));
+    }
+}
+
 // retrieve queryable fields
 const makeGetQueryableFieldsRequest = (url) => async (dispatch) => {
     try {
@@ -52,6 +96,7 @@ const makeGetQueryableFieldsRequest = (url) => async (dispatch) => {
         var keys = [];
         Object.keys(queryableFields).forEach(function(key) {
             if (key == "extra_properties") {
+                // obtain key-value pairs from the second level of nested objects
                 Object.keys(queryableFields[key]).forEach(function(extra_property_key) {
                     queryableFields[key][extra_property_key]["key"] = extra_property_key
                     queryableFields[key][extra_property_key]["is_extra_property_key"] = true
@@ -59,6 +104,7 @@ const makeGetQueryableFieldsRequest = (url) => async (dispatch) => {
                     keys.push(queryableFields[key][extra_property_key]);
                 });
             } else {
+                // obtain key-value pairs from the first level of nested objects
                 queryableFields[key]["key"] = key
                 queryableFields[key]["is_extra_property_key"] = false
 
@@ -69,50 +115,6 @@ const makeGetQueryableFieldsRequest = (url) => async (dispatch) => {
         qpList = keys.map((item) => <QueryParameter key={item.key} Item={item} />); 
         dispatch(setContent("SET_QUERY_PARAMETER_STACK", {
             "items": qpList
-        }));
-    } catch (err){
-        console.log(err);
-
-        dispatch(setContent("SET_FETCHING_DATA", {
-            "fetch": false
-        }));
-    }
-}
-
-// facilitate retrieving katsu overview data from server
-const makeGetOverviewRequest = (url) => async (dispatch) => {
-    try {
-        dispatch(setContent("SET_FETCHING_DATA", {
-            "fetch": true
-        }));
-        // simulate network lag
-        // await sleep(1000)
-        
-        // fetch data
-        // TODO: validate response
-        const response = await axios.get(url)
-            .catch(function (error) {
-                if (error.response) {
-                    // Request made and server responded
-                    console.log(error.response.data);
-                    console.log(error.response.status);
-                    console.log(error.response.headers);
-                } else if (error.request) {
-                    // The request was made but no response was received
-                    console.log(error.request);
-                } else {
-                    // Something happened in setting up the request that triggered an Error
-                    console.log('Error', error.message);
-                }
-
-                dispatch(setContent("SET_FETCHING_DATA", {
-                    "fetch": false
-                }));
-            });
-
-        // append data from the network
-        dispatch(setContent("SET_OVERVIEW", {
-            "overview": response.data
         }));
     } catch (err){
         console.log(err);
@@ -173,8 +175,8 @@ const makeGetKatsuPublic = () => async (dispatch, getState) => {
 
         console.log(response)
         // append data from the network
-        dispatch(setContent("SET_OVERVIEW", {
-            "overview": response.data
+        dispatch(setContent("SET_QUERY_RESPONSE_DATA", {
+            "queryResponseData": response.data
         }));
         
         // TODO: format query and fetch from Katsu
