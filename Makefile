@@ -14,6 +14,8 @@ export $(shell sed 's/=.*//' $(env))
 
 run-public:
 	docker-compose -f docker-compose.yaml up -d public
+run-public-dev: 
+	docker-compose -f docker-compose.dev.yaml up -d public
 
 clean-public:
 	docker rm ${BENTO_PUBLIC_CONTAINER_NAME} --force; \

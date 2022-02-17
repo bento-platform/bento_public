@@ -2,7 +2,7 @@
 import React from "react";
 import axios from "axios"
 
-import { sleep } from "./utils.js"
+import { debuglog } from "./utils.js"
 import { katsuUrl } from "./constants"
 
 import QueryParameter from './components/QueryParameter'
@@ -21,7 +21,7 @@ const makeGetQueryableFieldsRequest = (url) => async (dispatch) => {
             "fetch": true
         }));
         
-        await sleep(1000)
+        // await sleep(1000)
 
         // fetch data
         // TODO: validate response
@@ -86,7 +86,7 @@ const makeGetOverviewRequest = (url) => async (dispatch) => {
             "fetch": true
         }));
         // simulate network lag
-        await sleep(1000)
+        // await sleep(1000)
         
         // fetch data
         // TODO: validate response
@@ -129,22 +129,25 @@ const makeGetKatsuPublic = () => async (dispatch, getState) => {
             "fetch": true
         }));
         // simulate network lag
-        await sleep(1000)
+        // await sleep(1000)
         
 
         var qpsWithValue = []
         var checkedParametersStack = getState().queryParameterCheckedStack
         checkedParametersStack.forEach(function(item, index){
-            console.log(item)
-            console.log(index)
+            debuglog(item)
+            debuglog(index)
 
             qpsWithValue.push({
                 key: item.key,
+                type: item.type,
                 is_extra_property_key: item.is_extra_property_key,
-                value: item.value
+                value: item.value,
+                rangeMin: item.rangeMin,
+                rangeMax: item.rangeMax
             })
         })
-        console.log(qpsWithValue)
+        debuglog(qpsWithValue)
 
         // POST query parameters
         // TODO: validate response
@@ -184,19 +187,22 @@ const makeGetKatsuPublic = () => async (dispatch, getState) => {
     }));
 }
 
-const addQueryParameterToCheckedStack = (item, value) => async (dispatch, getState) => {
+const addQueryParameterToCheckedStack = (item, value, min, max) => async (dispatch, getState) => {
     try {
-        var state = getState()
-        console.log(item)
-        console.log(value)
+        // var state = getState()
+        debuglog(item)
+        debuglog(value)
         // if (state.queryParameterCheckedStack.indexOf(item) < 0) {
             // append data from the network
             dispatch(setContent("ADD_QUERY_PARAMETER_TO_CHECKED_STACK", {
                 "queryParameter": {
                     key: item.key,
-                    term: item.term,
+                    type: item.type,
+                    title: item.title,
                     is_extra_property_key: item.is_extra_property_key,
-                    value: value
+                    value: value,
+                    rangeMin: min,
+                    rangeMax: max
                 }
             }));
         // }
@@ -205,28 +211,40 @@ const addQueryParameterToCheckedStack = (item, value) => async (dispatch, getSta
     }
 }
 
-const updateQueryParameterValueInCheckedStack = (item, itemValue) => async (dispatch, getState) => {
+const updateQueryParameterValueInCheckedStack = (item, itemValue, min, max) => async (dispatch, getState) => {
     try {
         var state = getState()
-        
-        var foundItem = state.queryParameterCheckedStack.find((param)=>param.term === item.term)
+   
+        var foundItem = state.queryParameterCheckedStack.find((param)=>param.title === item.title)
         if (foundItem != undefined) {
             var index = state.queryParameterCheckedStack.indexOf(foundItem)
-            // if (state.queryParameterCheckedStack.indexOf(item) >= 0) {
-                // append data from the network
-                await dispatch(setContent("REMOVE_QUERY_PARAMETER_FROM_CHECKED_STACK", {
-                    "index": index
-                }));
 
+            await dispatch(setContent("REMOVE_QUERY_PARAMETER_FROM_CHECKED_STACK", {
+                "index": index
+            }));
+
+            if (item.type == "range") {
                 dispatch(setContent("ADD_QUERY_PARAMETER_TO_CHECKED_STACK", {
                     "queryParameter": {
                         key: item.key,
-                        term: item.term,
+                        type: item.type,
+                        title: item.title,
+                        is_extra_property_key: item.is_extra_property_key,
+                        rangeMin: min,
+                        rangeMax: max
+                    }
+                }));
+            } else {
+                dispatch(setContent("ADD_QUERY_PARAMETER_TO_CHECKED_STACK", {
+                    "queryParameter": {
+                        key: item.key,
+                        type: item.type,
+                        title: item.title,
                         is_extra_property_key: item.is_extra_property_key,
                         value: itemValue
                     }
                 }));
-            // }
+            }
         }
     } catch (err){
         console.log(err);
@@ -241,7 +259,7 @@ const removeQueryParameterFromCheckedStack = (item) => async (dispatch, getState
     try {
         var state = getState()
         
-        var foundItem = state.queryParameterCheckedStack.find((param)=>param.term === item.term)
+        var foundItem = state.queryParameterCheckedStack.find((param)=>param.title === item.title)
         if (foundItem != undefined) {
             var index = state.queryParameterCheckedStack.indexOf(foundItem)
             // if (state.queryParameterCheckedStack.indexOf(item) >= 0) {

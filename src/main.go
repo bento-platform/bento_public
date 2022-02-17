@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -18,12 +17,7 @@ type BentoConfig struct {
 	KatsuUrl string `envconfig:"BENTO_PUBLIC_KATSU_URL"`
 }
 
-var queryableFields = []string{"sex"}
-var queryableFieldValues = map[string][]string{
-	"sex": []string{"male", "female"},
-}
-
-var katsuQueryConfig = make(map[string]interface{})
+var katsuQueryConfigCache = make(map[string]interface{})
 
 func main() {
 	var cfg BentoConfig
@@ -37,28 +31,10 @@ func main() {
 		Katsu URL: %v
 	`, cfg.KatsuUrl))
 
-	// Load katsu query configuration
-	// TODO: refactor to fetch this config from a Katsu REST endpoint
-	content, err := ioutil.ReadFile("./katsu.config.json")
-	if err != nil {
-		log.Fatal("Error when opening file: ", err)
-	}
-
-	// Now let's unmarshall the data into `payload`
-	err = json.Unmarshal(content, &katsuQueryConfig)
-	if err != nil {
-		log.Fatal("Error during Unmarshal(): ", err)
-	}
-
-	//fmt.Println(katsuQueryConfig)
-
 	// Begin Echo
 
 	// Instantiate Server
 	e := echo.New()
-
-	// Service Connections:
-	// -- TODO: Katsu Service?
 
 	// Configure Server
 	e.Use(middleware.Recover())
@@ -85,9 +61,35 @@ func main() {
 	e.Use(middleware.Static("./www"))
 
 	// -- Data
-	// TODO: Remove dummy data
 	e.GET("/fields", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, katsuQueryConfig)
+		// Query Katsu for publicly available search fields
+		resp, err := http.Get(fmt.Sprintf("%s/api/public_search_fields", cfg.KatsuUrl)) // ?extra_properties=\"age_group\":\"adult\"&extra_properties=\"smoking\":\"non-smoker\"
+		if err != nil {
+			fmt.Println(err)
+
+			return c.JSON(http.StatusInternalServerError, ErrorResponse{
+				Message: err.Error(),
+			})
+		}
+		defer resp.Body.Close()
+
+		// Read response body and convert to a generic JSON-like datastructure
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			fmt.Println(err)
+
+			return c.JSON(http.StatusInternalServerError, ErrorResponse{
+				Message: err.Error(),
+			})
+		}
+
+		jsonLike := make(map[string]interface{})
+		json.Unmarshal(body, &jsonLike)
+
+		katsuQueryConfigCache = jsonLike
+
+		// TODO: formalize response type
+		return c.JSON(http.StatusOK, jsonLike)
 	})
 
 	// Katsu testing
@@ -96,40 +98,77 @@ func main() {
 		qpJson := make([]map[string]interface{}, 0)
 		err := json.NewDecoder(c.Request().Body).Decode(&qpJson)
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, err)
+			fmt.Println(err)
+
+			return c.JSON(http.StatusBadRequest, ErrorResponse{
+				Message: err.Error(),
+			})
 		}
 		fmt.Printf("Received %v from request body\n", qpJson)
 
+		// Security check
+		// - ensure all fields received are available
+		// - reject request if any keys presenet are not available
+		fmt.Println("Security check ---")
+		for _, qp := range qpJson {
+			key := qp["key"].(string)
+
+			fmt.Printf("Validating %s\n", qp)
+			if katsuQueryConfigCache[key] == nil && katsuQueryConfigCache["extra_properties"].(map[string]interface{})[key] == nil {
+				fmt.Println("--- failed")
+
+				return c.JSON(http.StatusBadRequest, ErrorResponse{
+					Message: fmt.Sprintf("%s not available", key),
+				})
+			}
+		}
+		fmt.Println("--- done")
+
 		// Prepare query parameters JSON for Katsu as GET query parameters
 		queryString := "?"
-		extraPropertiesQStrPortion := "" //"extra_properties="age_group":"adult", "smoking":"non-smoker""
+		extraPropertiesQStrPortion := ""
 		for _, qp := range qpJson {
 			fmt.Printf("%v\n", qp)
 			// check if it is an extra property
 			if qp["is_extra_property_key"] == true {
 				if extraPropertiesQStrPortion == "" {
-					// prepend query parameter key to the string on first iteration
-					extraPropertiesQStrPortion = "extra_properties="
+					// prepend json opening list bracket
+					extraPropertiesQStrPortion = "["
 				} else {
 					// append a tailing comma on each other interation
-					extraPropertiesQStrPortion += ", "
+					extraPropertiesQStrPortion += ","
 				}
 
-				extraPropertiesQStrPortion += fmt.Sprintf("\"%s\":\"%s\"", qp["key"], qp["value"])
+				if qp["type"] == "range" {
+					extraPropertiesQStrPortion += fmt.Sprintf("{\"%s\":{\"range_min\":\"%s\",\"range_max\":\"%s\"}}", qp["key"], qp["rangeMin"], qp["rangeMax"])
+				} else {
+					extraPropertiesQStrPortion += fmt.Sprintf("{\"%s\":\"%s\"}", qp["key"], qp["value"])
+				}
 			} else {
-				queryString += fmt.Sprintf("%s=%s&", qp["key"], qp["value"])
+				if qp["type"] == "range" {
+					queryString += fmt.Sprintf("%s=%s&", qp["key"], url.QueryEscape(fmt.Sprintf("{\"range_min\":\"%s\",\"range_max\":\"%s\"}", qp["rangeMin"], qp["rangeMax"])))
+				} else {
+					queryString += fmt.Sprintf("%s=%s&", qp["key"], qp["value"])
+				}
 			}
 		}
-		queryString += url.QueryEscape(extraPropertiesQStrPortion)
+		if extraPropertiesQStrPortion != "" {
+			extraPropertiesQStrPortion += "]"
+
+			queryString += ("extra_properties=" + url.QueryEscape(extraPropertiesQStrPortion))
+		}
 
 		fmt.Printf("Using %v extra_properties query string \n", extraPropertiesQStrPortion)
 		fmt.Printf("Using %v query string\n", queryString)
 
 		// Query Katsu
-		resp, err := http.Get(fmt.Sprintf("%s/api/public%s", cfg.KatsuUrl, queryString)) // ?extra_properties=\"age_group\":\"adult\"&extra_properties=\"smoking\":\"non-smoker\"
+		resp, err := http.Get(fmt.Sprintf("%s/api/public%s", cfg.KatsuUrl, queryString))
 		if err != nil {
 			fmt.Println(err)
-			return c.JSON(http.StatusInternalServerError, err)
+
+			return c.JSON(http.StatusBadRequest, ErrorResponse{
+				Message: err.Error(),
+			})
 		}
 		defer resp.Body.Close()
 
@@ -137,15 +176,24 @@ func main() {
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			fmt.Println(err)
-			return c.JSON(http.StatusInternalServerError, err)
+
+			return c.JSON(http.StatusBadRequest, ErrorResponse{
+				Message: err.Error(),
+			})
 		}
 
 		jsonLike := make(map[string]interface{})
 		json.Unmarshal(body, &jsonLike)
 
+		// TODO: formalize response type
 		return c.JSON(http.StatusOK, jsonLike)
 	})
 
 	// Run
 	e.Logger.Fatal(e.Start(":8090"))
+}
+
+// TODO: refactor
+type ErrorResponse struct {
+	Message string `json:"message"`
 }
