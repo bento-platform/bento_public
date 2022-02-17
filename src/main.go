@@ -61,7 +61,6 @@ func main() {
 	e.Use(middleware.Static("./www"))
 
 	// -- Data
-	// TODO: Remove dummy data
 	e.GET("/fields", func(c echo.Context) error {
 		// Query Katsu for publicly available search fields
 		resp, err := http.Get(fmt.Sprintf("%s/api/public_search_fields", cfg.KatsuUrl)) // ?extra_properties=\"age_group\":\"adult\"&extra_properties=\"smoking\":\"non-smoker\"
@@ -69,7 +68,7 @@ func main() {
 			fmt.Println(err)
 
 			return c.JSON(http.StatusInternalServerError, ErrorResponse{
-				message: err.Error(),
+				Message: err.Error(),
 			})
 		}
 		defer resp.Body.Close()
@@ -80,7 +79,7 @@ func main() {
 			fmt.Println(err)
 
 			return c.JSON(http.StatusInternalServerError, ErrorResponse{
-				message: err.Error(),
+				Message: err.Error(),
 			})
 		}
 
@@ -99,8 +98,10 @@ func main() {
 		qpJson := make([]map[string]interface{}, 0)
 		err := json.NewDecoder(c.Request().Body).Decode(&qpJson)
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, ErrorResponse{
-				message: fmt.Sprintf("%s not available", err),
+			fmt.Println(err)
+
+			return c.JSON(http.StatusBadRequest, ErrorResponse{
+				Message: err.Error(),
 			})
 		}
 		fmt.Printf("Received %v from request body\n", qpJson)
@@ -117,7 +118,7 @@ func main() {
 				fmt.Println("--- failed")
 
 				return c.JSON(http.StatusBadRequest, ErrorResponse{
-					message: fmt.Sprintf("%s not available", key),
+					Message: fmt.Sprintf("%s not available", key),
 				})
 			}
 		}
@@ -161,12 +162,12 @@ func main() {
 		fmt.Printf("Using %v query string\n", queryString)
 
 		// Query Katsu
-		resp, err := http.Get(fmt.Sprintf("%s/api/public%s", cfg.KatsuUrl, queryString)) // ?extra_properties=\"age_group\":\"adult\"&extra_properties=\"smoking\":\"non-smoker\"
+		resp, err := http.Get(fmt.Sprintf("%s/api/public%s", cfg.KatsuUrl, queryString))
 		if err != nil {
 			fmt.Println(err)
 
-			return c.JSON(http.StatusInternalServerError, ErrorResponse{
-				message: err.Error(),
+			return c.JSON(http.StatusBadRequest, ErrorResponse{
+				Message: err.Error(),
 			})
 		}
 		defer resp.Body.Close()
@@ -176,8 +177,8 @@ func main() {
 		if err != nil {
 			fmt.Println(err)
 
-			return c.JSON(http.StatusInternalServerError, ErrorResponse{
-				message: err.Error(),
+			return c.JSON(http.StatusBadRequest, ErrorResponse{
+				Message: err.Error(),
 			})
 		}
 
@@ -194,5 +195,5 @@ func main() {
 
 // TODO: refactor
 type ErrorResponse struct {
-	message string
+	Message string `json:"message"`
 }
