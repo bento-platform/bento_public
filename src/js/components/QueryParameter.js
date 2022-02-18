@@ -1,5 +1,6 @@
 // Dashboard.js
 import React from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Row, Col } from 'react-bootstrap'
 
@@ -101,46 +102,54 @@ class QueryParameter extends React.Component {
                         disabled={queryParameterCheckedStack.length >= 2 && !This.state.checked}></Checkbox>
                 </Col>
                 <Col xs={{ span: 4 }} md={{ span: 2 }}>{Item.title}</Col>
-                <Col xs={{ span: 4 }}>{
+                <Col xs={{ span: 4 }}>
+                {
                     function(){
-                    if (Item.type == "array") {
-                        return <Select
-                            disabled={!This.state.checked}
-                            showSearch
-                            style={{ width: "100%" }}
-                            onChange={e => This.handleAntdSelectValueChange(e)} >
-                            <Select.Option key={Item.key} value=""></Select.Option>
-                            {Item.items.enum.map((item) =><Select.Option key={item} value={item.key}>{item}</Select.Option>)}
-                        </Select>
-                    } else if(Item.type == "range"){
-                        return <Row>
-                            <Col xs={{ span: 4 }}>
-                                <InputNumber id="range-min" name="range" 
-                                    value={This.state.rangeMin}
-                                    min="0" 
-                                    max={This.state.rangeMax - 1} 
-                                    disabled={!This.state.checked}
-                                    style={{maxWidth: "100%"}} 
-                                    onChange={e => This.handleRangeMinChange(e)}/>
-                            </Col>
-                            <Col xs={{ span: 4 }} style={{textAlign: "center"}}>to</Col>
-                            <Col xs={{ span: 4 }}>
-                                <InputNumber id="range-max" name="range" 
-                                    value={This.state.rangeMax}
-                                    min={This.state.rangeMin + 1} 
-                                    disabled={!This.state.checked}
-                                    style={{maxWidth: "100%"}} 
-                                    onChange={e => This.handleRangeMaxChange(e)}/>
-                            </Col>
-                        </Row>
-                    } else {
-                        return <Input onChange={e => This.handleValueChange(e)} disabled={!This.state.checked} />
-                    }
-                }()}</Col>
+                        if (Item.type == "array") {
+                            return <Select
+                                disabled={!This.state.checked}
+                                showSearch
+                                style={{ width: "100%" }}
+                                onChange={e => This.handleAntdSelectValueChange(e)} >
+                                <Select.Option key={Item.key} value=""></Select.Option>
+                                {Item.items.enum.map((item) =><Select.Option key={item} value={item.key}>{item}</Select.Option>)}
+                            </Select>
+                        } else if(Item.type == "range"){
+                            return <Row>
+                                <Col xs={{ span: 4 }}>
+                                    <InputNumber id="range-min" name="range" 
+                                        value={This.state.rangeMin}
+                                        min="0" 
+                                        max={This.state.rangeMax - 1} 
+                                        disabled={!This.state.checked}
+                                        style={{maxWidth: "100%"}} 
+                                        onChange={e => This.handleRangeMinChange(e)}/>
+                                </Col>
+                                <Col xs={{ span: 4 }} style={{textAlign: "center"}}>to</Col>
+                                <Col xs={{ span: 4 }}>
+                                    <InputNumber id="range-max" name="range" 
+                                        value={This.state.rangeMax}
+                                        min={This.state.rangeMin + 1} 
+                                        disabled={!This.state.checked}
+                                        style={{maxWidth: "100%"}} 
+                                        onChange={e => This.handleRangeMaxChange(e)}/>
+                                </Col>
+                            </Row>
+                        } else {
+                            return <Input onChange={e => This.handleValueChange(e)} disabled={!This.state.checked} />
+                        }
+                    }()
+                }
+                </Col>
             </Row>
         );
 	}
 }
+
+QueryParameter.propTypes = {
+    Item: PropTypes.any,
+    queryParameterCheckedStack: PropTypes.array
+};
 
 const mapDispatchToProps = {
     addQueryParameterToCheckedStack,

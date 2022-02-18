@@ -35,7 +35,7 @@ class PublicOverview extends React.Component {
                                             qpList.push({x: _key, y:item[key][_key]})
                                         });
                                         
-                                        return <Col sm={12} md={6} lg={4} style={{height: "100%"}}>
+                                        return <Col key={key} sm={12} md={6} lg={4} style={{height: "100%"}}>
                                             <h3 style={{textAlign:"center"}}>{key}</h3>
                                             {/* TODO: upgrade pie chart / visualization library */}
                                             <VictoryPie 
