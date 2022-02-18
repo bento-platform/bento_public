@@ -67,53 +67,27 @@ func main() {
 		return c.JSON(http.StatusOK, map[string]interface{}{
 			"overview": map[string]interface{}{
 				"sex": map[string]interface{}{
-					"male": map[string]interface{}{
-						"count": 10,
-					},
-					"female": map[string]interface{}{
-						"count": 12,
-					},
+					"male":   10,
+					"female": 12,
 				},
 				"diseases": map[string]interface{}{
-					"myocarditis": map[string]interface{}{
-						"count": 2,
-					},
-					"blood clots": map[string]interface{}{
-						"count": 4,
-					},
-					"cancer": map[string]interface{}{
-						"count": 6,
-					},
+					"myocarditis": 2,
+					"blood clots": 4,
+					"cancer":      6,
 				},
 				"experiments": map[string]interface{}{
-					"RT-PCR": map[string]interface{}{
-						"count": 7,
-					},
-					"RT-qPCR": map[string]interface{}{
-						"count": 3,
-					},
+					"RT-PCR":  7,
+					"RT-qPCR": 3,
 				},
 				"age": map[string]interface{}{
-					"50": map[string]interface{}{
-						"count": 6,
-					},
-					"60": map[string]interface{}{
-						"count": 4,
-					},
-					"70": map[string]interface{}{
-						"count": 1,
-					},
+					"50": 6,
+					"60": 4,
+					"70": 1,
 				},
 				"mobility": map[string]interface{}{
-					"functioning": map[string]interface{}{
-						"count": 12,
-					},
-					"non-mobile": map[string]interface{}{
-						"count": 8,
-					},
-					"sometimes mobile": map[string]interface{}{
-						"count": 2,
-					},
+					"functioning":      12,
+					"non-mobile":       8,
+					"sometimes mobile": 2,
 				},
 			},
 		})

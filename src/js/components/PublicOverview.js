@@ -32,7 +32,7 @@ class PublicOverview extends React.Component {
                                         // accumulate all pie charts in a single array
                                         var qpList = [];
                                         Object.keys(item[key]).forEach(function(_key) {              
-                                            qpList.push({x: _key, y:item[key][_key]["count"]})
+                                            qpList.push({x: _key, y:item[key][_key]})
                                         });
                                         
                                         return <Col sm={12} md={6} lg={4} style={{height: "100%"}}>
