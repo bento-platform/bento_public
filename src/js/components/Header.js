@@ -6,12 +6,15 @@ import { client } from "../constants"
 
 class Header extends React.Component {
 
-    componentDidMount() {}
+    componentDidMount() {
+        document.title = "Bento-Public : " + client;
+    }
 
     render() {
         return (
             <div>
-                <h1>Hello {client}!</h1>
+                <h4>Bento-Public</h4>
+                <h5>{client}</h5>
             </div>
         );
 	}
