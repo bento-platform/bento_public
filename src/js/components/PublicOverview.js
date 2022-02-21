@@ -15,7 +15,7 @@ class PublicOverview extends React.Component {
     }    
     
     render() {
-        const { overview } = this.props;
+        const { overview, queryParameterStack } = this.props;
         // type check
         if ( typeof overview != undefined && Object.keys(overview).length > 0 ) {
             var ov = overview.overview;
@@ -52,10 +52,14 @@ class PublicOverview extends React.Component {
                                         Object.keys(value).forEach(function(_key) {   
                                             qpList.push({x: _key, y:value[_key]})
                                         });
+
+                                        // determine title
+                                        var title = queryParameterStack.find(e => e.hasOwnProperty("key") && e.key == key)?.props?.Item?.title ?? "-"
+
                                         
                                         // return pie chart
                                         return <Col key={key} sm={12} md={6} lg={4} style={{height: "100%"}}>
-                                            <h3 style={{textAlign:"center"}}>{key}</h3>
+                                            <h3 style={{textAlign:"center"}}>{title}</h3>
                                             {/* TODO: upgrade pie chart / visualization library */}
                                             <VictoryPie 
                                                 data={qpList} 
@@ -81,7 +85,8 @@ const mapDispatchToProps = {
 }
 
 const mapStateToProps = state => ({
-    overview: state.overview
+    overview: state.overview,
+    queryParameterStack: state.queryParameterStack
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PublicOverview);
