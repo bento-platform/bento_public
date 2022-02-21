@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { Row, Col } from 'react-bootstrap'
 import { JsonFormatter } from 'react-json-formatter'
 
-import { VictoryPie } from 'victory';
+import { VictoryPie, VictoryChart, VictoryBar } from 'victory';
 
 class PublicOverview extends React.Component {
     constructor(props) {
@@ -13,7 +13,7 @@ class PublicOverview extends React.Component {
  
         };
     }    
-    
+
     render() {
         const { overview, queryParameterStack } = this.props;
         // type check
@@ -55,22 +55,41 @@ class PublicOverview extends React.Component {
 
                                         // determine title
                                         var title = queryParameterStack.find(e => e.hasOwnProperty("key") && e.key == key)?.props?.Item?.title ?? "-"
+                                        var type = queryParameterStack.find(e => e.hasOwnProperty("key") && e.key == key)?.props?.Item?.type ?? "-"
 
-                                        
-                                        // return pie chart
-                                        return <Col key={key} sm={12} md={6} lg={4} style={{height: "100%"}}>
-                                            <h3 style={{textAlign:"center"}}>{title}</h3>
-                                            {/* TODO: upgrade pie chart / visualization library */}
-                                            <VictoryPie 
-                                                data={qpList} 
-                                                width={200} height={200} 
-                                                style={{
-                                                    labels: {
-                                                    fontSize: 6
-                                                    }
-                                                }}
+
+                                        {/* TODO: upgrade pie chart & histograms / visualization library */}
+                                        if (type == "number") {
+                                            // return histogram
+                                            return <Col key={key} md={12} lg={6} style={{height: "100%"}}>
+                                                <h3 style={{textAlign:"center"}}>{title}</h3>
+                                                <VictoryChart
+                                                    domainPadding={10}
+                                                >
+                                                    <VictoryBar
+                                                        style={{ data: { fill: "#c43a31" } }}
+                                                        x="x"
+                                                        y="y"
+                                                        data={qpList}
                                                 />
-                                        </Col>
+                                                </VictoryChart>
+                                            </Col>
+                                        } else {
+                                            // return pie chart
+                                            return <Col key={key} sm={12} md={6} lg={4} style={{height: "100%"}}>
+                                                <h3 style={{textAlign:"center"}}>{title}</h3>
+                                                <VictoryPie 
+                                                    data={qpList} 
+                                                    width={200} height={200} 
+                                                    style={{
+                                                        labels: {
+                                                        fontSize: 6
+                                                        }
+                                                    }}
+                                                />
+                                            </Col>
+                                        }
+                                        
                                     }
                                 })
                         }
