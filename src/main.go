@@ -96,8 +96,6 @@ func main() {
 		jsonLike := make(map[string]interface{})
 		json.Unmarshal(body, &jsonLike)
 
-		katsuQueryConfigCache = jsonLike
-
 		// TODO: formalize response type
 		return c.JSON(http.StatusOK, map[string]interface{}{
 			"overview": jsonLike,
@@ -163,6 +161,9 @@ func main() {
 
 		for _, qp := range qpJson {
 			key := qp["key"].(string)
+			qpType := qp["type"].(string)
+
+			fmt.Printf("Checking %v : %v\n", key, qpType)
 
 			fmt.Printf("Validating %s\n", qp)
 			if katsuQueryConfigCache[key] == nil && katsuQueryConfigCache["extra_properties"].(map[string]interface{})[key] == nil {
@@ -171,6 +172,25 @@ func main() {
 				return c.JSON(http.StatusBadRequest, ErrorResponse{
 					Message: fmt.Sprintf("%s not available", key),
 				})
+			}
+
+			if qpType == "number" {
+				// Verify range
+				min := qp["rangeMin"].(float64)
+				max := qp["rangeMax"].(float64)
+
+				fmt.Printf("Checking %v : %v\n", min, max)
+				fmt.Printf("katsuQueryConfigCache : %v \n", katsuQueryConfigCache)
+
+				threshold := katsuQueryConfigCache[key].(map[string]interface{})["multipleOf"].(float64)
+
+				if max-min < threshold {
+					fmt.Println("--- failed")
+
+					return c.JSON(http.StatusBadRequest, ErrorResponse{
+						Message: fmt.Sprintf("%f:%f range too narrow (minimum: %f)", min, max, threshold),
+					})
+				}
 			}
 		}
 		fmt.Println("--- done")
