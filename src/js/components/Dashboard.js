@@ -10,12 +10,14 @@ import PublicOverview from './PublicOverview'
 import QueryParameter from './QueryParameter'
 
 import { 
+    configUrl,
     publicOverviewUrl,
     queryableFieldsUrl, 
     katsuUrl 
 } from "../constants"
 
 import { 
+    makeGetConfigRequest,
     makeGetOverviewRequest,
     makeGetQueryableFieldsRequest, 
     makeGetKatsuPublic,
@@ -35,6 +37,7 @@ class Dashboard extends React.Component {
         super(props)
     
         // fetch data from server
+        this.props.makeGetConfigRequest(configUrl);
         this.props.makeGetOverviewRequest(publicOverviewUrl);
         this.props.makeGetQueryableFieldsRequest(queryableFieldsUrl);
     }
@@ -108,6 +111,7 @@ class Dashboard extends React.Component {
 }
 
 const mapDispatchToProps = {
+    makeGetConfigRequest,
     makeGetQueryableFieldsRequest,
     makeGetOverviewRequest,
     makeGetKatsuPublic,

@@ -14,7 +14,8 @@ import (
 )
 
 type BentoConfig struct {
-	KatsuUrl string `envconfig:"BENTO_PUBLIC_KATSU_URL"`
+	KatsuUrl           string `envconfig:"BENTO_PUBLIC_KATSU_URL"`
+	MaxQueryParameters int    `envconfig:"BENTO_PUBLIC_MAX_QUERY_PARAMETERS"`
 }
 
 var katsuQueryConfigCache = make(map[string]interface{})
@@ -29,7 +30,8 @@ func main() {
 
 	fmt.Println(fmt.Sprintf(`Config -- 
 		Katsu URL: %v
-	`, cfg.KatsuUrl))
+		Maximum no. Query Parameters: %d
+	`, cfg.KatsuUrl, cfg.MaxQueryParameters))
 
 	// Begin Echo
 
@@ -61,67 +63,45 @@ func main() {
 	e.Use(middleware.Static("./www"))
 
 	// -- Data
+	e.GET("/config", func(c echo.Context) error {
+		// make some server-side configurations available to the front end
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"maxQueryParameters": cfg.MaxQueryParameters,
+		})
+	})
 
 	e.GET("/overview", func(c echo.Context) error {
-		// TEMP: simulation
+
+		// Query Katsu for publicly available overview
+		resp, err := http.Get(fmt.Sprintf("%s/api/public_overview", cfg.KatsuUrl))
+		if err != nil {
+			fmt.Println(err)
+
+			return c.JSON(http.StatusInternalServerError, ErrorResponse{
+				Message: err.Error(),
+			})
+		}
+		defer resp.Body.Close()
+
+		// Read response body and convert to a generic JSON-like datastructure
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			fmt.Println(err)
+
+			return c.JSON(http.StatusInternalServerError, ErrorResponse{
+				Message: err.Error(),
+			})
+		}
+
+		jsonLike := make(map[string]interface{})
+		json.Unmarshal(body, &jsonLike)
+
+		katsuQueryConfigCache = jsonLike
+
+		// TODO: formalize response type
 		return c.JSON(http.StatusOK, map[string]interface{}{
-			"overview": map[string]interface{}{
-				"sex": map[string]interface{}{
-					"male":   10,
-					"female": 12,
-				},
-				"diseases": map[string]interface{}{
-					"myocarditis": 2,
-					"blood clots": 4,
-					"cancer":      6,
-				},
-				"experiments": map[string]interface{}{
-					"RT-PCR":  7,
-					"RT-qPCR": 3,
-				},
-				"age": map[string]interface{}{
-					"50": 6,
-					"60": 4,
-					"70": 1,
-				},
-				"mobility": map[string]interface{}{
-					"functioning":      12,
-					"non-mobile":       8,
-					"sometimes mobile": 2,
-				},
-			},
+			"overview": jsonLike,
 		})
-
-		// TODO: implement
-
-		// // Query Katsu for publicly available overview
-		// resp, err := http.Get(fmt.Sprintf("%s/api/public_overview", cfg.KatsuUrl))
-		// if err != nil {
-		// 	fmt.Println(err)
-
-		// 	return c.JSON(http.StatusInternalServerError, ErrorResponse{
-		// 		Message: err.Error(),
-		// 	})
-		// }
-		// defer resp.Body.Close()
-
-		// // Read response body and convert to a generic JSON-like datastructure
-		// body, err := ioutil.ReadAll(resp.Body)
-		// if err != nil {
-		// 	fmt.Println(err)
-
-		// 	return c.JSON(http.StatusInternalServerError, ErrorResponse{
-		// 		Message: err.Error(),
-		// 	})
-		// }
-
-		// jsonLike := make(map[string]interface{})
-		// json.Unmarshal(body, &jsonLike)
-
-		// katsuQueryConfigCache = jsonLike
-
-		// // TODO: formalize response type
-		// return c.JSON(http.StatusOK, jsonLike)
 	})
 
 	e.GET("/fields", func(c echo.Context) error {
@@ -174,6 +154,12 @@ func main() {
 		// - reject request if any keys presenet are not available
 		fmt.Println("Security check ---")
 		fmt.Printf("katsuQueryConfigCache : %v\n", katsuQueryConfigCache)
+
+		if len(qpJson) > cfg.MaxQueryParameters {
+			return c.JSON(http.StatusBadRequest, ErrorResponse{
+				Message: fmt.Sprintf("Too many query parameters - maximum is %d", cfg.MaxQueryParameters),
+			})
+		}
 
 		for _, qp := range qpJson {
 			key := qp["key"].(string)

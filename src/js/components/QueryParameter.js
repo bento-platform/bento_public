@@ -91,7 +91,7 @@ class QueryParameter extends React.Component {
     
     
     render() {
-        const { Item, queryParameterCheckedStack } = this.props;
+        const { Item, queryParameterCheckedStack, maxQueryParameters } = this.props;
         var This = this
         return (
             <Row style={{margin: "1rem"}}>
@@ -99,7 +99,7 @@ class QueryParameter extends React.Component {
                     <Checkbox 
                         checked={This.state.checked} 
                         onChange={e => This.handleCheckboxChange(e)}
-                        disabled={queryParameterCheckedStack.length >= 2 && !This.state.checked}></Checkbox>
+                        disabled={queryParameterCheckedStack.length >= maxQueryParameters && !This.state.checked}></Checkbox>
                 </Col>
                 <Col xs={{ span: 4 }} md={{ span: 2 }}>{Item.title}</Col>
                 <Col xs={{ span: 4 }}>
@@ -158,6 +158,7 @@ const mapDispatchToProps = {
 }
 
 const mapStateToProps = state => ({
+    maxQueryParameters: state.config.maxQueryParameters,
     queryParameterCheckedStack: state.queryParameterCheckedStack
 });
 
