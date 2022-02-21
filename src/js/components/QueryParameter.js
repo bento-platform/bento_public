@@ -40,7 +40,7 @@ class QueryParameter extends React.Component {
 
         if (checked) {
             debuglog("Checked")
-            if (this.props.Item.type == "range"){
+            if (this.props.Item.type == "number"){
                 this.props.addQueryParameterToCheckedStack(this.props.Item, undefined, this.state.rangeMin, this.state.rangeMax)
             }
             else {
@@ -114,7 +114,7 @@ class QueryParameter extends React.Component {
                                 <Select.Option key={Item.key} value=""></Select.Option>
                                 {Item.items.enum.map((item) =><Select.Option key={item} value={item.key}>{item}</Select.Option>)}
                             </Select>
-                        } else if(Item.type == "range"){
+                        } else if(Item.type == "number"){
                             return <Row>
                                 <Col xs={{ span: 4 }}>
                                     <InputNumber id="range-min" name="range" 

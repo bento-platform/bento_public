@@ -190,13 +190,13 @@ func main() {
 					extraPropertiesQStrPortion += ","
 				}
 
-				if qp["type"] == "range" {
+				if qp["type"] == "number" {
 					extraPropertiesQStrPortion += fmt.Sprintf("{\"%s\":{\"range_min\":\"%s\",\"range_max\":\"%s\"}}", qp["key"], qp["rangeMin"], qp["rangeMax"])
 				} else {
 					extraPropertiesQStrPortion += fmt.Sprintf("{\"%s\":\"%s\"}", qp["key"], qp["value"])
 				}
 			} else {
-				if qp["type"] == "range" {
+				if qp["type"] == "number" {
 					queryString += fmt.Sprintf("%s=%s&", qp["key"], url.QueryEscape(fmt.Sprintf("{\"range_min\":\"%s\",\"range_max\":\"%s\"}", qp["rangeMin"], qp["rangeMax"])))
 				} else {
 					queryString += fmt.Sprintf("%s=%s&", qp["key"], qp["value"])

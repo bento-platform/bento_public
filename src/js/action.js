@@ -268,7 +268,7 @@ const updateQueryParameterValueInCheckedStack = (item, itemValue, min, max) => a
                 "index": index
             }));
 
-            if (item.type == "range") {
+            if (item.type == "number") {
                 dispatch(setContent("ADD_QUERY_PARAMETER_TO_CHECKED_STACK", {
                     "queryParameter": {
                         key: item.key,
