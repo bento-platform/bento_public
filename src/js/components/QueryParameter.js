@@ -105,38 +105,50 @@ class QueryParameter extends React.Component {
                 <Col xs={{ span: 4 }}>
                 {
                     function(){
-                        if (Item.type == "array") {
-                            return <Select
-                                disabled={!This.state.checked}
-                                showSearch
-                                style={{ width: "100%" }}
-                                onChange={e => This.handleAntdSelectValueChange(e)} >
-                                <Select.Option key={Item.key} value=""></Select.Option>
-                                {Item.items.enum.map((item) =><Select.Option key={item} value={item.key}>{item}</Select.Option>)}
-                            </Select>
+                        if (Item.type == "string") {
+                            if (Item.enum != undefined) {
+                                return <Select
+                                    disabled={!This.state.checked}
+                                    showSearch
+                                    style={{ width: "100%" }}
+                                    onChange={e => This.handleAntdSelectValueChange(e)} >
+                                    <Select.Option key={Item.key} value=""></Select.Option>
+                                    {Item.enum.map((item) =><Select.Option key={item} value={item.key}>{item}</Select.Option>)}
+                                </Select>
+                            } else {
+                                return <Input onChange={e => This.handleValueChange(e)} disabled={!This.state.checked} />
+                            }
                         } else if(Item.type == "number"){
-                            return <Row>
-                                <Col xs={{ span: 4 }}>
-                                    <InputNumber id="range-min" name="range" 
-                                        value={This.state.rangeMin}
-                                        step={Item.bin_size}
-                                        min="0" 
-                                        max={This.state.rangeMax - Item.bin_size} 
-                                        disabled={!This.state.checked}
-                                        style={{maxWidth: "100%"}} 
-                                        onChange={e => This.handleRangeMinChange(e)}/>
-                                </Col>
-                                <Col xs={{ span: 4 }} style={{textAlign: "center"}}>to</Col>
-                                <Col xs={{ span: 4 }}>
-                                    <InputNumber id="range-max" name="range" 
-                                        value={This.state.rangeMax}
-                                        step={Item.bin_size}
-                                        min={This.state.rangeMin + Item.bin_size} 
-                                        disabled={!This.state.checked}
-                                        style={{maxWidth: "100%"}} 
-                                        onChange={e => This.handleRangeMaxChange(e)}/>
-                                </Col>
-                            </Row>
+                            if (Item.is_range != undefined && Item.is_range) {
+                                return <Row>
+                                    <Col xs={{ span: 4 }}>
+                                        <InputNumber id="range-min" name="range" 
+                                            value={This.state.rangeMin}
+                                            step={Item.bin_size}
+                                            min="0" 
+                                            max={This.state.rangeMax - Item.bin_size} 
+                                            disabled={!This.state.checked}
+                                            style={{maxWidth: "100%"}} 
+                                            onChange={e => This.handleRangeMinChange(e)}/>
+                                    </Col>
+                                    <Col xs={{ span: 4 }} style={{textAlign: "center"}}>to</Col>
+                                    <Col xs={{ span: 4 }}>
+                                        <InputNumber id="range-max" name="range" 
+                                            value={This.state.rangeMax}
+                                            step={Item.bin_size}
+                                            min={This.state.rangeMin + Item.bin_size} 
+                                            disabled={!This.state.checked}
+                                            style={{maxWidth: "100%"}} 
+                                            onChange={e => This.handleRangeMaxChange(e)}/>
+                                    </Col>
+                                </Row>
+                            } else {
+                                return <InputNumber id="number" name="number" 
+                                    value={This.state.value}
+                                    disabled={!This.state.checked}
+                                    style={{maxWidth: "100%"}} 
+                                    onChange={e => This.handleValueChange(e)}/>
+                            }
                         } else {
                             return <Input onChange={e => This.handleValueChange(e)} disabled={!This.state.checked} />
                         }
