@@ -2,6 +2,7 @@
 import { debuglog } from "./utils"
 
 const INITIAL_STATE = {
+	config: {},
 	overview: {},
 	queryableFields: {},
 	queryParameterStack: [],
@@ -18,6 +19,12 @@ export default (state = INITIAL_STATE, action={}) => {
 				isFetchingData : action.content.fetch
 			};
 
+		case "SET_CONFIG":
+			return {
+				...state,
+				config : action.content.config,
+				isFetchingData : false
+			};
 		case "SET_OVERVIEW":
 			return {
 				...state,

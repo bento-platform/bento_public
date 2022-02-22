@@ -15,6 +15,49 @@ const setContent = (type, content) => {
 }
 
 // facilitate retrieving katsu public-overview data from server
+const makeGetConfigRequest = (url) => async (dispatch) => {
+    try {
+        dispatch(setContent("SET_FETCHING_DATA", {
+            "fetch": true
+        }));
+        // simulate network lag
+        // await sleep(1000)
+        
+        // fetch data
+        // TODO: validate response
+        const response = await axios.get(url)
+            .catch(function (error) {
+                if (error.response) {
+                    // Request made and server responded
+                    console.log(error.response.data);
+                    console.log(error.response.status);
+                    console.log(error.response.headers);
+                } else if (error.request) {
+                    // The request was made but no response was received
+                    console.log(error.request);
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.log('Error', error.message);
+                }
+
+                dispatch(setContent("SET_FETCHING_DATA", {
+                    "fetch": false
+                }));
+            });
+
+        // append data from the network
+        dispatch(setContent("SET_CONFIG", {
+            "config": response.data
+        }));
+    } catch (err){
+        console.log(err);
+
+        dispatch(setContent("SET_FETCHING_DATA", {
+            "fetch": false
+        }));
+    }
+}
+
 const makeGetOverviewRequest = (url) => async (dispatch) => {
     try {
         dispatch(setContent("SET_FETCHING_DATA", {
@@ -225,7 +268,7 @@ const updateQueryParameterValueInCheckedStack = (item, itemValue, min, max) => a
                 "index": index
             }));
 
-            if (item.type == "range") {
+            if (item.type == "number") {
                 dispatch(setContent("ADD_QUERY_PARAMETER_TO_CHECKED_STACK", {
                     "queryParameter": {
                         key: item.key,
@@ -282,6 +325,7 @@ const removeQueryParameterFromCheckedStack = (item) => async (dispatch, getState
 
 
 export {
+    makeGetConfigRequest,
     makeGetQueryableFieldsRequest,
     makeGetOverviewRequest,
     makeGetKatsuPublic,

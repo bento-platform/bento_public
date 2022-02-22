@@ -1,5 +1,6 @@
 // Dashboard.js
 import React from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Row, Col } from 'react-bootstrap'
 
@@ -29,7 +30,7 @@ class QueryParameter extends React.Component {
         this.state = {
             inputValue: '',
             rangeMin: 0,
-            rangeMax: 1,
+            rangeMax: 1 * props.Item.multipleOf,
             checked: false
         };
     }
@@ -39,7 +40,7 @@ class QueryParameter extends React.Component {
 
         if (checked) {
             debuglog("Checked")
-            if (this.props.Item.type == "range"){
+            if (this.props.Item.type == "number"){
                 this.props.addQueryParameterToCheckedStack(this.props.Item, undefined, this.state.rangeMin, this.state.rangeMax)
             }
             else {
@@ -90,7 +91,7 @@ class QueryParameter extends React.Component {
     
     
     render() {
-        const { Item, queryParameterCheckedStack } = this.props;
+        const { Item, queryParameterCheckedStack, maxQueryParameters } = this.props;
         var This = this
         return (
             <Row style={{margin: "1rem"}}>
@@ -98,49 +99,59 @@ class QueryParameter extends React.Component {
                     <Checkbox 
                         checked={This.state.checked} 
                         onChange={e => This.handleCheckboxChange(e)}
-                        disabled={queryParameterCheckedStack.length >= 2 && !This.state.checked}></Checkbox>
+                        disabled={queryParameterCheckedStack.length >= maxQueryParameters && !This.state.checked}></Checkbox>
                 </Col>
                 <Col xs={{ span: 4 }} md={{ span: 2 }}>{Item.title}</Col>
-                <Col xs={{ span: 4 }}>{
+                <Col xs={{ span: 4 }}>
+                {
                     function(){
-                    if (Item.type == "array") {
-                        return <Select
-                            disabled={!This.state.checked}
-                            showSearch
-                            style={{ width: "100%" }}
-                            onChange={e => This.handleAntdSelectValueChange(e)} >
-                            <Select.Option key={Item.key} value=""></Select.Option>
-                            {Item.items.enum.map((item) =><Select.Option key={item} value={item.key}>{item}</Select.Option>)}
-                        </Select>
-                    } else if(Item.type == "range"){
-                        return <Row>
-                            <Col xs={{ span: 4 }}>
-                                <InputNumber id="range-min" name="range" 
-                                    value={This.state.rangeMin}
-                                    min="0" 
-                                    max={This.state.rangeMax - 1} 
-                                    disabled={!This.state.checked}
-                                    style={{maxWidth: "100%"}} 
-                                    onChange={e => This.handleRangeMinChange(e)}/>
-                            </Col>
-                            <Col xs={{ span: 4 }} style={{textAlign: "center"}}>to</Col>
-                            <Col xs={{ span: 4 }}>
-                                <InputNumber id="range-max" name="range" 
-                                    value={This.state.rangeMax}
-                                    min={This.state.rangeMin + 1} 
-                                    disabled={!This.state.checked}
-                                    style={{maxWidth: "100%"}} 
-                                    onChange={e => This.handleRangeMaxChange(e)}/>
-                            </Col>
-                        </Row>
-                    } else {
-                        return <Input onChange={e => This.handleValueChange(e)} disabled={!This.state.checked} />
-                    }
-                }()}</Col>
+                        if (Item.type == "array") {
+                            return <Select
+                                disabled={!This.state.checked}
+                                showSearch
+                                style={{ width: "100%" }}
+                                onChange={e => This.handleAntdSelectValueChange(e)} >
+                                <Select.Option key={Item.key} value=""></Select.Option>
+                                {Item.items.enum.map((item) =><Select.Option key={item} value={item.key}>{item}</Select.Option>)}
+                            </Select>
+                        } else if(Item.type == "number"){
+                            return <Row>
+                                <Col xs={{ span: 4 }}>
+                                    <InputNumber id="range-min" name="range" 
+                                        value={This.state.rangeMin}
+                                        step={Item.multipleOf}
+                                        min="0" 
+                                        max={This.state.rangeMax - Item.multipleOf} 
+                                        disabled={!This.state.checked}
+                                        style={{maxWidth: "100%"}} 
+                                        onChange={e => This.handleRangeMinChange(e)}/>
+                                </Col>
+                                <Col xs={{ span: 4 }} style={{textAlign: "center"}}>to</Col>
+                                <Col xs={{ span: 4 }}>
+                                    <InputNumber id="range-max" name="range" 
+                                        value={This.state.rangeMax}
+                                        step={Item.multipleOf}
+                                        min={This.state.rangeMin + Item.multipleOf} 
+                                        disabled={!This.state.checked}
+                                        style={{maxWidth: "100%"}} 
+                                        onChange={e => This.handleRangeMaxChange(e)}/>
+                                </Col>
+                            </Row>
+                        } else {
+                            return <Input onChange={e => This.handleValueChange(e)} disabled={!This.state.checked} />
+                        }
+                    }()
+                }
+                </Col>
             </Row>
         );
 	}
 }
+
+QueryParameter.propTypes = {
+    Item: PropTypes.any,
+    queryParameterCheckedStack: PropTypes.array
+};
 
 const mapDispatchToProps = {
     addQueryParameterToCheckedStack,
@@ -149,6 +160,7 @@ const mapDispatchToProps = {
 }
 
 const mapStateToProps = state => ({
+    maxQueryParameters: state.config.maxQueryParameters,
     queryParameterCheckedStack: state.queryParameterCheckedStack
 });
 
