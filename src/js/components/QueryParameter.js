@@ -30,7 +30,7 @@ class QueryParameter extends React.Component {
         this.state = {
             inputValue: '',
             rangeMin: 0,
-            rangeMax: 1 * props.Item.multipleOf,
+            rangeMax: 1 * props.Item.bin_size,
             checked: false
         };
     }
@@ -119,9 +119,9 @@ class QueryParameter extends React.Component {
                                 <Col xs={{ span: 4 }}>
                                     <InputNumber id="range-min" name="range" 
                                         value={This.state.rangeMin}
-                                        step={Item.multipleOf}
+                                        step={Item.bin_size}
                                         min="0" 
-                                        max={This.state.rangeMax - Item.multipleOf} 
+                                        max={This.state.rangeMax - Item.bin_size} 
                                         disabled={!This.state.checked}
                                         style={{maxWidth: "100%"}} 
                                         onChange={e => This.handleRangeMinChange(e)}/>
@@ -130,8 +130,8 @@ class QueryParameter extends React.Component {
                                 <Col xs={{ span: 4 }}>
                                     <InputNumber id="range-max" name="range" 
                                         value={This.state.rangeMax}
-                                        step={Item.multipleOf}
-                                        min={This.state.rangeMin + Item.multipleOf} 
+                                        step={Item.bin_size}
+                                        min={This.state.rangeMin + Item.bin_size} 
                                         disabled={!This.state.checked}
                                         style={{maxWidth: "100%"}} 
                                         onChange={e => This.handleRangeMaxChange(e)}/>

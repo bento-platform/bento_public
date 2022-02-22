@@ -182,7 +182,7 @@ func main() {
 				fmt.Printf("Checking %v : %v\n", min, max)
 				fmt.Printf("katsuQueryConfigCache : %v \n", katsuQueryConfigCache)
 
-				threshold := katsuQueryConfigCache[key].(map[string]interface{})["multipleOf"].(float64)
+				threshold := katsuQueryConfigCache[key].(map[string]interface{})["bin_size"].(float64)
 
 				if max-min < threshold {
 					fmt.Println("--- failed")
