@@ -219,7 +219,7 @@ func main() {
 				if qp["type"] == "number" {
 					queryString += fmt.Sprintf("%s=%s&", qp["key"], url.QueryEscape(fmt.Sprintf("{\"range_min\":\"%s\",\"range_max\":\"%s\"}", qp["rangeMin"], qp["rangeMax"])))
 				} else {
-					queryString += fmt.Sprintf("%s=%s&", qp["key"], qp["value"])
+					queryString += fmt.Sprintf("%s=%s&", qp["key"], url.QueryEscape(qp["value"].(string)))
 				}
 			}
 		}
