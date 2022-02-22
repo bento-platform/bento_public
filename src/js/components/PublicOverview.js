@@ -68,6 +68,12 @@ class PublicOverview extends React.Component {
                                                     domainPadding={10}
                                                 >
                                                     <VictoryAxis
+                                                        dependentAxis
+                                                        style={{ 
+                                                            tickLabels: { fontSize: 10 , angle: -45}
+                                                        }}
+                                                    />
+                                                    <VictoryAxis
                                                         style={{ 
                                                             tickLabels: { fontSize: 10 , angle: -45}
                                                         }}
@@ -88,6 +94,12 @@ class PublicOverview extends React.Component {
                                                     <VictoryChart
                                                         domainPadding={10}
                                                     >
+                                                        <VictoryAxis
+                                                            dependentAxis
+                                                            style={{ 
+                                                                tickLabels: { fontSize: 10 , angle: -45}
+                                                            }}
+                                                        />
                                                         <VictoryAxis
                                                             style={{ 
                                                                 tickLabels: { fontSize: 10 , angle: -45}
