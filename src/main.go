@@ -166,11 +166,38 @@ func main() {
 			fmt.Printf("Checking %v : %v\n", key, qpType)
 
 			fmt.Printf("Validating %s\n", qp)
+
+			var cachedConfigKey map[string]interface{}
+
 			if katsuQueryConfigCache[key] == nil && katsuQueryConfigCache["extra_properties"].(map[string]interface{})[key] == nil {
+				// exit
 				fmt.Println("--- failed")
 
 				return c.JSON(http.StatusBadRequest, ErrorResponse{
 					Message: fmt.Sprintf("%s not available", key),
+				})
+			}
+			if katsuQueryConfigCache[key] != nil {
+				cachedConfigKey = katsuQueryConfigCache[key].(map[string]interface{})
+			} else {
+				cachedConfigKey = katsuQueryConfigCache["extra_properties"].(map[string]interface{})[key].(map[string]interface{})
+			}
+
+			fmt.Printf("cachedConfigKey %v\n", cachedConfigKey)
+			var queryable bool
+			if cachedConfigKey["queryable"] == nil {
+				queryable = false
+			} else {
+				queryable = cachedConfigKey["queryable"].(bool)
+			}
+			fmt.Printf("queryable %v\n", queryable)
+
+			if !queryable {
+				// exit
+				fmt.Println("--- failed")
+
+				return c.JSON(http.StatusBadRequest, ErrorResponse{
+					Message: fmt.Sprintf("%s not queryable", key),
 				})
 			}
 
@@ -180,9 +207,8 @@ func main() {
 				max := qp["rangeMax"].(float64)
 
 				fmt.Printf("Checking %v : %v\n", min, max)
-				fmt.Printf("katsuQueryConfigCache : %v \n", katsuQueryConfigCache)
 
-				threshold := katsuQueryConfigCache[key].(map[string]interface{})["multipleOf"].(float64)
+				threshold := cachedConfigKey["bin_size"].(float64)
 
 				if max-min < threshold {
 					fmt.Println("--- failed")
@@ -219,7 +245,7 @@ func main() {
 				if qp["type"] == "number" {
 					queryString += fmt.Sprintf("%s=%s&", qp["key"], url.QueryEscape(fmt.Sprintf("{\"range_min\":\"%s\",\"range_max\":\"%s\"}", qp["rangeMin"], qp["rangeMax"])))
 				} else {
-					queryString += fmt.Sprintf("%s=%s&", qp["key"], qp["value"])
+					queryString += fmt.Sprintf("%s=%s&", qp["key"], url.QueryEscape(qp["value"].(string)))
 				}
 			}
 		}
