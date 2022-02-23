@@ -2,11 +2,12 @@
 import { debuglog } from "./utils"
 
 const INITIAL_STATE = {
-	isFetchingData: false,
 	overview: {},
 	queryableFields: {},
 	queryParameterStack: [],
-	queryParameterCheckedStack: []
+	queryParameterCheckedStack: [],
+	queryResponseData: {},
+	isFetchingData: false
 }
 
 export default (state = INITIAL_STATE, action={}) => {
@@ -21,6 +22,12 @@ export default (state = INITIAL_STATE, action={}) => {
 			return {
 				...state,
 				overview : action.content.overview,
+				isFetchingData : false
+			};
+		case "SET_QUERY_RESPONSE_DATA":
+			return {
+				...state,
+				queryResponseData : action.content.queryResponseData,
 				isFetchingData : false
 			};
 		case "SET_QUERYABLE_FIELDS":
