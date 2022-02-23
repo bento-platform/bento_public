@@ -6,6 +6,8 @@ import { JsonFormatter } from 'react-json-formatter'
 
 import { VictoryPie, VictoryChart, VictoryBar, VictoryAxis } from 'victory';
 
+import { Divider } from 'antd';
+
 class PublicOverview extends React.Component {
     constructor(props) {
         super(props);
@@ -35,32 +37,59 @@ class PublicOverview extends React.Component {
                     <></> 
                     : // display the available data 
                     <Row>
-                        {
-                            // iterate over all key-value pairs
-                            Object.entries(all_vars)
-                                // .map returns an array containing all items returned 
-                                // from each function call (i.e, an array of pie charts)
-                                .map((item) => {
-                                    let key = item[0]
-                                    let value = item[1]
+                    {
+                        // iterate over all key-value pairs
+                        Object.entries(all_vars)
+                            // .map returns an array containing all items returned 
+                            // from each function call (i.e, an array of pie charts)
+                            .map((item) => {
+                                let key = item[0]
+                                let value = item[1]
 
-                                    // skip extra_properties and only iterate over actual objects
-                                    if (key != "extra_properties" && Object.prototype.toString.call(value) === '[object Object]') {
+                                // skip extra_properties and only iterate over actual objects
+                                if (key != "extra_properties" && Object.prototype.toString.call(value) === '[object Object]') {
 
-                                        // accumulate all pie chart data-points
-                                        var qpList = [];
-                                        Object.keys(value).forEach(function(_key) {   
-                                            qpList.push({x: _key, y:value[_key]})
-                                        });
+                                    // accumulate all pie chart data-points
+                                    var qpList = [];
+                                    Object.keys(value).forEach(function(_key) {   
+                                        qpList.push({x: _key, y:value[_key]})
+                                    });
 
-                                        // determine title
-                                        var title = queryParameterStack.find(e => e.hasOwnProperty("key") && e.key == key)?.props?.Item?.title ?? "-"
-                                        var type = queryParameterStack.find(e => e.hasOwnProperty("key") && e.key == key)?.props?.Item?.type ?? "-"
-                                        var chart = queryParameterStack.find(e => e.hasOwnProperty("key") && e.key == key)?.props?.Item?.chart ?? "-"
+                                    // determine title
+                                    var title = queryParameterStack.find(e => e.hasOwnProperty("key") && e.key == key)?.props?.Item?.title ?? "-"
+                                    var type = queryParameterStack.find(e => e.hasOwnProperty("key") && e.key == key)?.props?.Item?.type ?? "-"
+                                    var chart = queryParameterStack.find(e => e.hasOwnProperty("key") && e.key == key)?.props?.Item?.chart ?? "-"
 
 
-                                        {/* TODO: upgrade pie chart & histograms / visualization library */}
-                                        if (type == "number") {
+                                    {/* TODO: upgrade pie chart & histograms / visualization library */}
+                                    if (type == "number") {
+                                        // return histogram
+                                        return <Col key={key} md={12} lg={6} style={{height: "100%"}}>
+                                            <h3 style={{textAlign:"center"}}>{title}</h3>
+                                            <VictoryChart
+                                                domainPadding={10}
+                                            >
+                                                <VictoryAxis
+                                                    dependentAxis
+                                                    style={{ 
+                                                        tickLabels: { fontSize: 10 , angle: -45}
+                                                    }}
+                                                />
+                                                <VictoryAxis
+                                                    style={{ 
+                                                        tickLabels: { fontSize: 10 , angle: -45}
+                                                    }}
+                                                />
+                                                <VictoryBar
+                                                    style={{ data: { fill: "#c43a31" } }}
+                                                    x="x"
+                                                    y="y"
+                                                    data={qpList}
+                                            />
+                                            </VictoryChart>
+                                        </Col>
+                                    } else {
+                                        if (chart == "bar"){
                                             // return histogram
                                             return <Col key={key} md={12} lg={6} style={{height: "100%"}}>
                                                 <h3 style={{textAlign:"center"}}>{title}</h3>
@@ -87,57 +116,31 @@ class PublicOverview extends React.Component {
                                                 </VictoryChart>
                                             </Col>
                                         } else {
-                                            if (chart == "bar"){
-                                                // return histogram
-                                                return <Col key={key} md={12} lg={6} style={{height: "100%"}}>
-                                                    <h3 style={{textAlign:"center"}}>{title}</h3>
-                                                    <VictoryChart
-                                                        domainPadding={10}
-                                                    >
-                                                        <VictoryAxis
-                                                            dependentAxis
-                                                            style={{ 
-                                                                tickLabels: { fontSize: 10 , angle: -45}
-                                                            }}
-                                                        />
-                                                        <VictoryAxis
-                                                            style={{ 
-                                                                tickLabels: { fontSize: 10 , angle: -45}
-                                                            }}
-                                                        />
-                                                        <VictoryBar
-                                                            style={{ data: { fill: "#c43a31" } }}
-                                                            x="x"
-                                                            y="y"
-                                                            data={qpList}
-                                                    />
-                                                    </VictoryChart>
-                                                </Col>
-                                            } else {
-                                                // default
+                                            // default
 
-                                                // return pie chart
-                                                return <Col key={key} sm={12} md={6} lg={4} style={{height: "100%"}}>
-                                                    <h3 style={{textAlign:"center"}}>{title}</h3>
-                                                    <VictoryPie 
-                                                        data={qpList} 
-                                                        width={200} height={200} 
-                                                        style={{
-                                                            labels: {
-                                                            fontSize: 6
-                                                            }
-                                                        }}
-                                                    />
-                                                </Col>
-                                            }
-
+                                            // return pie chart
+                                            return <Col key={key} sm={12} md={6} lg={4} style={{height: "100%"}}>
+                                                <h3 style={{textAlign:"center"}}>{title}</h3>
+                                                <VictoryPie 
+                                                    data={qpList} 
+                                                    width={200} height={200} 
+                                                    style={{
+                                                        labels: {
+                                                        fontSize: 6
+                                                        }
+                                                    }}
+                                                />
+                                            </Col>
                                         }
-                                        
+
                                     }
-                                })
-                        }
+                                    
+                                }
+                            })
+                    }
                     </Row>
                 }
+                <Divider />
             </>
         );
 	}
