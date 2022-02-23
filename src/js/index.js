@@ -9,11 +9,18 @@ import Dashboard from "./components/Dashboard";
 
 import store from "./store";
 
+import { Layout } from 'antd';
+const { Header, Footer, Sider, Content } = Layout;
+
 const BentoApp = () => {
   return (
-    <div>
-      <Dashboard/>
-    </div>
+    <Layout>
+    <Layout>
+      <Content>
+        <Dashboard/>
+      </Content>
+    </Layout>
+  </Layout>
   );
 }
 
