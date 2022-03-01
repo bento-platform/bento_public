@@ -46,19 +46,74 @@ class PublicOverview extends React.Component {
                                 let key = item[0]
                                 let value = item[1]
 
+                                // let field = queryableFields[key]
+                                var field = queryParameterStack.find(e => e.hasOwnProperty("key") && e.key == key)?.props?.Item
+                                
+                                // determine title
+                                var title = queryParameterStack.find(e => e.hasOwnProperty("key") && e.key == key)?.props?.Item?.title ?? "-"
+                                var type = queryParameterStack.find(e => e.hasOwnProperty("key") && e.key == key)?.props?.Item?.type ?? "-"
+                                var chart = queryParameterStack.find(e => e.hasOwnProperty("key") && e.key == key)?.props?.Item?.chart ?? "-"
+
                                 // skip extra_properties and only iterate over actual objects
-                                if (key != "extra_properties" && Object.prototype.toString.call(value) === '[object Object]') {
+                                if (field != undefined && key != "extra_properties" && Object.prototype.toString.call(value) === '[object Object]') {
 
                                     // accumulate all pie chart data-points
+                                    var taperLeft = undefined;
+                                    var taperRight = undefined;
+                                    var leftTaper = 0;
+                                    var rightTaper = 0;
+                                    var binSize = 0;
+
+                                    if (field["bin_size"] != undefined) {
+                                        binSize = field["bin_size"]
+                                    }
+
+                                    if (field["taper_left"] != undefined) {
+                                        leftTaper = field["taper_left"]
+                                    }
+                                    if (field["taper_right"] != undefined) {
+                                        rightTaper = field["taper_right"]
+                                    }
+
                                     var qpList = [];
                                     Object.keys(value).forEach(function(_key) {   
-                                        qpList.push({x: _key, y:value[_key]})
+                                        let intKey = parseInt(_key)
+                                        if (intKey != NaN && field != undefined && field["type"] == "number") {
+                                            if (intKey < leftTaper) {
+                                                var tlkey = "< " + leftTaper
+                                                if (taperLeft == undefined){
+                                                    taperLeft = {x: tlkey , y:value[_key]}
+                                                } else {
+                                                    taperLeft.y += value[_key]
+                                                }
+                                            } 
+                                            else if (intKey >= (rightTaper+binSize)) {
+                                                var trkey = ">= " + (rightTaper+binSize)
+                                                if (taperRight == undefined){
+                                                    taperRight = {x: trkey , y:value[_key]}
+                                                } else {
+                                                    taperRight.y += value[_key]
+                                                }
+                                            } 
+                                            else {
+                                                qpList.push({x: _key, y:value[_key]})
+                                            }
+                                        }
+                                        else {
+                                            qpList.push({x: _key, y:value[_key]})
+                                        }
                                     });
 
-                                    // determine title
-                                    var title = queryParameterStack.find(e => e.hasOwnProperty("key") && e.key == key)?.props?.Item?.title ?? "-"
-                                    var type = queryParameterStack.find(e => e.hasOwnProperty("key") && e.key == key)?.props?.Item?.type ?? "-"
-                                    var chart = queryParameterStack.find(e => e.hasOwnProperty("key") && e.key == key)?.props?.Item?.chart ?? "-"
+                                    if (taperLeft != undefined){
+                                        // prepend left taper
+                                        qpList.unshift(taperLeft)
+                                    }
+
+                                    if (taperRight != undefined){
+                                        // append right taper
+                                        qpList.push(taperRight)
+                                    }
+
 
 
                                     {/* TODO: upgrade pie chart & histograms / visualization library */}
