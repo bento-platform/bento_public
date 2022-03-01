@@ -237,13 +237,13 @@ func main() {
 				}
 
 				if qp["type"] == "number" {
-					extraPropertiesQStrPortion += fmt.Sprintf("{\"%s\":{\"rangeMin\":%d,\"rangeMax\":%d}}", qp["key"], int(qp["rangeMin"].(float64)), int(qp["rangeMax"].(float64)))
+					extraPropertiesQStrPortion += fmt.Sprintf("{\"%s\":{\"rangeMin\":%f,\"rangeMax\":%f}}", qp["key"], qp["rangeMin"].(float64), qp["rangeMax"].(float64))
 				} else {
 					extraPropertiesQStrPortion += fmt.Sprintf("{\"%s\":\"%s\"}", qp["key"], qp["value"])
 				}
 			} else {
 				if qp["type"] == "number" {
-					queryString += fmt.Sprintf("%s=%s&", qp["key"], url.QueryEscape(fmt.Sprintf("{\"rangeMin\":%d,\"rangeMax\":%d}", int(qp["rangeMin"].(float64)), int(qp["rangeMax"].(float64)))))
+					queryString += fmt.Sprintf("%s=%s&", qp["key"], url.QueryEscape(fmt.Sprintf("{\"rangeMin\":%f,\"rangeMax\":%f}", qp["rangeMin"].(float64), qp["rangeMax"].(float64))))
 				} else {
 					queryString += fmt.Sprintf("%s=%s&", qp["key"], url.QueryEscape(qp["value"].(string)))
 				}
