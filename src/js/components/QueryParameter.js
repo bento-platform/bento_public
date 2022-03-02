@@ -127,7 +127,7 @@ class QueryParameter extends React.Component {
                                 if (Item.is_range != undefined && Item.is_range) {
                                     return <Row>
                                         <Col xs={{ span: 4 }}>
-                                            <InputNumber id="range-min" name="range" 
+                                            <InputNumber id={Item.key} name="range-min"
                                                 value={This.state.rangeMin}
                                                 step={Item.bin_size}
                                                 min={_minimum} 
@@ -138,7 +138,7 @@ class QueryParameter extends React.Component {
                                         </Col>
                                         <Col xs={{ span: 4 }} style={{textAlign: "center"}}>to</Col>
                                         <Col xs={{ span: 4 }}>
-                                            <InputNumber id="range-max" name="range" 
+                                            <InputNumber id={Item.key} name="range-max" 
                                                 value={This.state.rangeMax}
                                                 step={Item.bin_size}
                                                 min={This.state.rangeMin + Item.bin_size} 
