@@ -107,6 +107,9 @@ class QueryParameter extends React.Component {
                     <Col xs={{ span: 4 }}>
                     {
                         function(){
+                            let _minimum =  Item.minimum != undefined ? Item.minimum : -Infinity
+                            let _maximum =  Item.maximum != undefined ? Item.maximum : Infinity
+
                             if (Item.type == "string") {
                                 if (Item.enum != undefined) {
                                     return <Select
@@ -127,7 +130,7 @@ class QueryParameter extends React.Component {
                                             <InputNumber id="range-min" name="range" 
                                                 value={This.state.rangeMin}
                                                 step={Item.bin_size}
-                                                min="0" 
+                                                min={_minimum} 
                                                 max={This.state.rangeMax - Item.bin_size} 
                                                 disabled={!This.state.checked}
                                                 style={{maxWidth: "100%"}} 
@@ -139,6 +142,7 @@ class QueryParameter extends React.Component {
                                                 value={This.state.rangeMax}
                                                 step={Item.bin_size}
                                                 min={This.state.rangeMin + Item.bin_size} 
+                                                max={_maximum} 
                                                 disabled={!This.state.checked}
                                                 style={{maxWidth: "100%"}} 
                                                 onChange={e => This.handleRangeMaxChange(e)}/>
