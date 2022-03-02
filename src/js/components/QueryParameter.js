@@ -158,6 +158,9 @@ class QueryParameter extends React.Component {
                         }()
                     }
                     </Col>
+                    <Col>
+                        <span>{Item.units}</span>
+                    </Col>
                 </Row>
             );
         } 
