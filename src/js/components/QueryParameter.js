@@ -112,7 +112,7 @@ class QueryParameter extends React.Component {
 
                             if (Item.type == "string") {
                                 if (Item.enum != undefined) {
-                                    return <Select
+                                    return <Select id={Item.key}
                                         disabled={!This.state.checked}
                                         showSearch
                                         style={{ width: "100%" }}
@@ -149,7 +149,7 @@ class QueryParameter extends React.Component {
                                         </Col>
                                     </Row>
                                 } else {
-                                    return <InputNumber id="number" name="number" 
+                                    return <InputNumber id={Item.key} name="number" 
                                         value={This.state.value}
                                         disabled={!This.state.checked}
                                         style={{maxWidth: "100%"}} 
