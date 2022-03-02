@@ -210,6 +210,24 @@ func main() {
 
 				threshold := cachedConfigKey["bin_size"].(float64)
 
+				valueMin, isMapContainsMinimumKey := cachedConfigKey["minimum"]
+				if isMapContainsMinimumKey && min < valueMin.(float64) {
+					fmt.Println("--- failed")
+
+					return c.JSON(http.StatusBadRequest, ErrorResponse{
+						Message: fmt.Sprintf("%f rangeMin too low (limit: %f)", min, valueMin),
+					})
+				}
+
+				valueMax, isMapContainsMaximumKey := cachedConfigKey["maximum"]
+				if isMapContainsMaximumKey && max > valueMax.(float64) {
+					fmt.Println("--- failed")
+
+					return c.JSON(http.StatusBadRequest, ErrorResponse{
+						Message: fmt.Sprintf("%f rangeMax too high (limit: %f)", max, valueMax),
+					})
+				}
+
 				if max-min < threshold {
 					fmt.Println("--- failed")
 
