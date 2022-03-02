@@ -98,7 +98,7 @@ class QueryParameter extends React.Component {
             return (
                 <Row style={{margin: "1rem"}}>
                     <Col xs={{ span: 2, offset: 2  }}>
-                        <Checkbox 
+                        <Checkbox id={Item.key}
                             checked={This.state.checked} 
                             onChange={e => This.handleCheckboxChange(e)}
                             disabled={queryParameterCheckedStack.length >= maxQueryParameters && !This.state.checked}></Checkbox>
