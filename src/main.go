@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math"
 	"net/http"
 	"net/url"
 	"os"
@@ -164,7 +165,7 @@ func main() {
 		fmt.Printf("katsuQueryConfigCache : %v\n", katsuQueryConfigCache)
 
 		if len(qpJson) == 0 {
-			return c.JSON(http.StatusFailedDependency, ErrorResponse{
+			return c.JSON(http.StatusBadRequest, ErrorResponse{
 				Message: "Not enough query parameters provided - must at least 1",
 			})
 		}
@@ -243,11 +244,11 @@ func main() {
 					})
 				}
 
-				if max-min < threshold {
+				if math.Mod(max, threshold) != 0 || math.Mod(min, threshold) != 0 {
 					fmt.Println("--- failed")
 
 					return c.JSON(http.StatusBadRequest, ErrorResponse{
-						Message: fmt.Sprintf("%f:%f range too narrow (minimum: %f)", min, max, threshold),
+						Message: fmt.Sprintf("%f:%f invalid values: must be a multiple of bin_size %f", min, max, threshold),
 					})
 				}
 			}
