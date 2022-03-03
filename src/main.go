@@ -163,6 +163,11 @@ func main() {
 		fmt.Println("Security check ---")
 		fmt.Printf("katsuQueryConfigCache : %v\n", katsuQueryConfigCache)
 
+		if len(qpJson) == 0 {
+			return c.JSON(http.StatusFailedDependency, ErrorResponse{
+				Message: "Not enough query parameters provided - must at least 1",
+			})
+		}
 		if len(qpJson) > cfg.MaxQueryParameters {
 			return c.JSON(http.StatusBadRequest, ErrorResponse{
 				Message: fmt.Sprintf("Too many query parameters - maximum is %d", cfg.MaxQueryParameters),
