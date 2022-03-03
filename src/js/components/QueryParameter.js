@@ -98,7 +98,7 @@ class QueryParameter extends React.Component {
             return (
                 <Row style={{margin: "1rem"}}>
                     <Col xs={{ span: 2, offset: 2  }}>
-                        <Checkbox 
+                        <Checkbox id={Item.key}
                             checked={This.state.checked} 
                             onChange={e => This.handleCheckboxChange(e)}
                             disabled={queryParameterCheckedStack.length >= maxQueryParameters && !This.state.checked}></Checkbox>
@@ -107,9 +107,12 @@ class QueryParameter extends React.Component {
                     <Col xs={{ span: 4 }}>
                     {
                         function(){
+                            let _minimum =  Item.minimum != undefined ? Item.minimum : -Infinity
+                            let _maximum =  Item.maximum != undefined ? Item.maximum : Infinity
+
                             if (Item.type == "string") {
                                 if (Item.enum != undefined) {
-                                    return <Select
+                                    return <Select id={Item.key}
                                         disabled={!This.state.checked}
                                         showSearch
                                         style={{ width: "100%" }}
@@ -124,10 +127,10 @@ class QueryParameter extends React.Component {
                                 if (Item.is_range != undefined && Item.is_range) {
                                     return <Row>
                                         <Col xs={{ span: 4 }}>
-                                            <InputNumber id="range-min" name="range" 
+                                            <InputNumber id={Item.key} name="range-min"
                                                 value={This.state.rangeMin}
                                                 step={Item.bin_size}
-                                                min="0" 
+                                                min={_minimum} 
                                                 max={This.state.rangeMax - Item.bin_size} 
                                                 disabled={!This.state.checked}
                                                 style={{maxWidth: "100%"}} 
@@ -135,17 +138,18 @@ class QueryParameter extends React.Component {
                                         </Col>
                                         <Col xs={{ span: 4 }} style={{textAlign: "center"}}>to</Col>
                                         <Col xs={{ span: 4 }}>
-                                            <InputNumber id="range-max" name="range" 
+                                            <InputNumber id={Item.key} name="range-max" 
                                                 value={This.state.rangeMax}
                                                 step={Item.bin_size}
                                                 min={This.state.rangeMin + Item.bin_size} 
+                                                max={_maximum} 
                                                 disabled={!This.state.checked}
                                                 style={{maxWidth: "100%"}} 
                                                 onChange={e => This.handleRangeMaxChange(e)}/>
                                         </Col>
                                     </Row>
                                 } else {
-                                    return <InputNumber id="number" name="number" 
+                                    return <InputNumber id={Item.key} name="number" 
                                         value={This.state.value}
                                         disabled={!This.state.checked}
                                         style={{maxWidth: "100%"}} 
@@ -157,6 +161,9 @@ class QueryParameter extends React.Component {
                         
                         }()
                     }
+                    </Col>
+                    <Col>
+                        <span>{Item.units}</span>
                     </Col>
                 </Row>
             );
