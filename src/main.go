@@ -18,6 +18,15 @@ type BentoConfig struct {
 	MaxQueryParameters int    `envconfig:"BENTO_PUBLIC_MAX_QUERY_PARAMETERS"`
 }
 
+type QueryParameter struct {
+	IsExtraPropertyKey bool    `json:"is_extra_property_key"`
+	RangeMin           float64 `json:"rangeMin"`
+	RangeMax           float64 `json:"rangeMax"`
+	Value              string  `json:"value"`
+	Key                string  `json:"key"`
+	Type               string  `json:"type"`
+}
+
 var katsuQueryConfigCache = make(map[string]interface{})
 
 func main() {
@@ -136,7 +145,8 @@ func main() {
 	// Katsu testing
 	e.POST("/katsu", func(c echo.Context) error {
 		// Retrieve query parameters JSON from POST body
-		qpJson := make([]map[string]interface{}, 0)
+		// qpJson := make([]map[string]interface{}, 0)
+		qpJson := make([]QueryParameter, 0)
 		err := json.NewDecoder(c.Request().Body).Decode(&qpJson)
 		if err != nil {
 			fmt.Println(err)
@@ -160,8 +170,8 @@ func main() {
 		}
 
 		for _, qp := range qpJson {
-			key := qp["key"].(string)
-			qpType := qp["type"].(string)
+			key := qp.Key
+			qpType := qp.Type
 
 			fmt.Printf("Checking %v : %v\n", key, qpType)
 
@@ -203,8 +213,8 @@ func main() {
 
 			if qpType == "number" {
 				// Verify range
-				min := qp["rangeMin"].(float64)
-				max := qp["rangeMax"].(float64)
+				min := qp.RangeMin
+				max := qp.RangeMax
 
 				fmt.Printf("Checking %v : %v\n", min, max)
 
@@ -245,7 +255,7 @@ func main() {
 		for _, qp := range qpJson {
 			fmt.Printf("%v\n", qp)
 			// check if it is an extra property
-			if qp["is_extra_property_key"] == true {
+			if qp.IsExtraPropertyKey {
 				if extraPropertiesQStrPortion == "" {
 					// prepend json opening list bracket
 					extraPropertiesQStrPortion = "["
@@ -254,16 +264,16 @@ func main() {
 					extraPropertiesQStrPortion += ","
 				}
 
-				if qp["type"] == "number" {
-					extraPropertiesQStrPortion += fmt.Sprintf("{\"%s\":{\"rangeMin\":%f,\"rangeMax\":%f}}", qp["key"], qp["rangeMin"].(float64), qp["rangeMax"].(float64))
+				if qp.Type == "number" {
+					extraPropertiesQStrPortion += fmt.Sprintf("{\"%s\":{\"rangeMin\":%f,\"rangeMax\":%f}}", qp.Key, qp.RangeMin, qp.RangeMax)
 				} else {
-					extraPropertiesQStrPortion += fmt.Sprintf("{\"%s\":\"%s\"}", qp["key"], qp["value"])
+					extraPropertiesQStrPortion += fmt.Sprintf("{\"%s\":\"%s\"}", qp.Key, qp.Value)
 				}
 			} else {
-				if qp["type"] == "number" {
-					queryString += fmt.Sprintf("%s=%s&", qp["key"], url.QueryEscape(fmt.Sprintf("{\"rangeMin\":%f,\"rangeMax\":%f}", qp["rangeMin"].(float64), qp["rangeMax"].(float64))))
+				if qp.Type == "number" {
+					queryString += fmt.Sprintf("%s=%s&", qp.Key, url.QueryEscape(fmt.Sprintf("{\"rangeMin\":%f,\"rangeMax\":%f}", qp.RangeMin, qp.RangeMax)))
 				} else {
-					queryString += fmt.Sprintf("%s=%s&", qp["key"], url.QueryEscape(qp["value"].(string)))
+					queryString += fmt.Sprintf("%s=%s&", qp.Key, url.QueryEscape(qp.Value))
 				}
 			}
 		}
