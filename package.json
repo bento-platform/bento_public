@@ -27,6 +27,7 @@
     "react-notify-bootstrap": "^1.0.23",
     "react-redux": "^7.2.6",
     "react-spinners": "^0.11.0",
+    "recharts": "^2.1.9",
     "redux-thunk": "^2.4.1",
     "style-loader": "^2.0.0",
     "victory": "^36.2.0"
