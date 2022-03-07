@@ -54,6 +54,8 @@ class PublicOverview extends React.Component {
                                 var type = queryParameterStack.find(e => e.hasOwnProperty("key") && e.key == key)?.props?.Item?.type ?? "-"
                                 var chart = queryParameterStack.find(e => e.hasOwnProperty("key") && e.key == key)?.props?.Item?.chart ?? "-"
 
+                                var qpList = [];
+
                                 // skip extra_properties and only iterate over actual objects
                                 if (field != undefined && key != "extra_properties" && Object.prototype.toString.call(value) === '[object Object]') {
 
@@ -63,6 +65,7 @@ class PublicOverview extends React.Component {
                                     var leftTaper = 0;
                                     var rightTaper = 0;
                                     var binSize = 0;
+                                    var monthlybins = {}
 
                                     if (field["bin_size"] != undefined) {
                                         binSize = field["bin_size"]
@@ -75,43 +78,64 @@ class PublicOverview extends React.Component {
                                         rightTaper = field["taper_right"]
                                     }
 
-                                    var qpList = [];
-                                    Object.keys(value).forEach(function(_key) {   
-                                        let intKey = parseInt(_key)
-                                        if (intKey != NaN && field != undefined && field["type"] == "number") {
-                                            if (intKey < leftTaper) {
-                                                var tlkey = "< " + leftTaper
-                                                if (taperLeft == undefined){
-                                                    taperLeft = {x: tlkey , y:value[_key]}
-                                                } else {
-                                                    taperLeft.y += value[_key]
+                                    if (field != undefined && 
+                                        field["type"] == "string" && 
+                                        field["format"] =="date") {
+                                        //
+                                        Object.keys(value).forEach(function(_key) {
+                                            var attemptedDate = new Date(_key)
+                                            var monthStr = attemptedDate.yyyydashmm()
+                                            // verify if monthly bin exists - add to dict if not
+                                            if (monthlybins[monthStr] == undefined){
+                                                monthlybins[monthStr] = value[_key]
+                                            } else {
+                                                monthlybins[monthStr] =  monthlybins[monthStr] + value[_key]
+                                            }
+                                        })
+                                        Object.keys(monthlybins).forEach(function(_key) {
+                                            qpList.push({x:_key,y:monthlybins[_key]})
+                                        })
+
+
+                                    }
+                                    else {
+                                        Object.keys(value).forEach(function(_key) {   
+                                            let intKey = parseInt(_key)
+                                            if (intKey != NaN && field != undefined && field["type"] == "number") {
+                                                if (intKey < leftTaper) {
+                                                    var tlkey = "< " + leftTaper
+                                                    if (taperLeft == undefined){
+                                                        taperLeft = {x: tlkey , y:value[_key]}
+                                                    } else {
+                                                        taperLeft.y += value[_key]
+                                                    }
+                                                } 
+                                                else if (intKey >= (rightTaper+binSize)) {
+                                                    var trkey = ">= " + (rightTaper+binSize)
+                                                    if (taperRight == undefined){
+                                                        taperRight = {x: trkey , y:value[_key]}
+                                                    } else {
+                                                        taperRight.y += value[_key]
+                                                    }
+                                                } 
+                                                else {
+                                                    qpList.push({x: _key, y:value[_key]})
                                                 }
-                                            } 
-                                            else if (intKey >= (rightTaper+binSize)) {
-                                                var trkey = ">= " + (rightTaper+binSize)
-                                                if (taperRight == undefined){
-                                                    taperRight = {x: trkey , y:value[_key]}
-                                                } else {
-                                                    taperRight.y += value[_key]
-                                                }
-                                            } 
+                                            }
                                             else {
                                                 qpList.push({x: _key, y:value[_key]})
                                             }
+                                        });
+    
+                                        if (taperLeft != undefined){
+                                            // prepend left taper
+                                            qpList.unshift(taperLeft)
                                         }
-                                        else {
-                                            qpList.push({x: _key, y:value[_key]})
+    
+                                        if (taperRight != undefined){
+                                            // append right taper
+                                            qpList.push(taperRight)
                                         }
-                                    });
-
-                                    if (taperLeft != undefined){
-                                        // prepend left taper
-                                        qpList.unshift(taperLeft)
-                                    }
-
-                                    if (taperRight != undefined){
-                                        // append right taper
-                                        qpList.push(taperRight)
                                     }
 
 
