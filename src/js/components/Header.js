@@ -12,6 +12,7 @@ class Header extends React.Component {
     }
 
     render() {
+        const { portalUrl } = this.props;
         return (
             <div className="site-page-header-ghost-wrapper">
                 <PageHeader
@@ -19,7 +20,7 @@ class Header extends React.Component {
                     title="Bento-Public"
                     subTitle={client}
                     extra={[
-                        <Button href={portalUrl}target="_blank" >Portal</Button>
+                        <Button href={portalUrl} target="_blank" >Portal</Button>
                     ]} />
             </div>
         );
@@ -28,6 +29,8 @@ class Header extends React.Component {
 
 const mapDispatchToProps = {}
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+    portalUrl: state.config.portalUrl
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

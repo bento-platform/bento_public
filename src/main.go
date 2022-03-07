@@ -17,6 +17,7 @@ import (
 type BentoConfig struct {
 	KatsuUrl           string `envconfig:"BENTO_PUBLIC_KATSU_URL"`
 	MaxQueryParameters int    `envconfig:"BENTO_PUBLIC_MAX_QUERY_PARAMETERS"`
+	BentoPortalUrl     string `envconfig:"BENTO_PUBLIC_PORTAL_URL"`
 }
 
 type QueryParameter struct {
@@ -41,7 +42,8 @@ func main() {
 	fmt.Println(fmt.Sprintf(`Config -- 
 		Katsu URL: %v
 		Maximum no. Query Parameters: %d
-	`, cfg.KatsuUrl, cfg.MaxQueryParameters))
+		Bento Portal Url: %s
+	`, cfg.KatsuUrl, cfg.MaxQueryParameters, cfg.BentoPortalUrl))
 
 	// Begin Echo
 
@@ -77,6 +79,7 @@ func main() {
 		// make some server-side configurations available to the front end
 		return c.JSON(http.StatusOK, map[string]interface{}{
 			"maxQueryParameters": cfg.MaxQueryParameters,
+			"bentoPortalUrl":     cfg.BentoPortalUrl,
 		})
 	})
 
