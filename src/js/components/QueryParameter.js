@@ -74,6 +74,12 @@ class QueryParameter extends React.Component {
     }
 
     handleRangeMinChange = (newValue) => {
+        // Floor to the nearest bin_size
+        if (this.props.Item.type == "number" && this.props.Item.bin_size != undefined) {
+            var diff = newValue % this.props.Item.bin_size
+            newValue = newValue - diff
+        }
+        
         this.setState({
             rangeMin: newValue
         });
@@ -82,6 +88,12 @@ class QueryParameter extends React.Component {
     }
 
     handleRangeMaxChange = (newValue) => {
+        // Floor to the nearest bin_size
+        if (this.props.Item.type == "number" && this.props.Item.bin_size != undefined) {
+            var diff = newValue % this.props.Item.bin_size
+            newValue = newValue - diff
+        }
+        
         this.setState({
             rangeMax: newValue
         });
