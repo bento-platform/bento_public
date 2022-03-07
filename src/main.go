@@ -24,6 +24,8 @@ type QueryParameter struct {
 	IsExtraPropertyKey bool    `json:"is_extra_property_key"`
 	RangeMin           float64 `json:"rangeMin"`
 	RangeMax           float64 `json:"rangeMax"`
+	DateAfter          string  `json:"dateAfter"`
+	DateBefore         string  `json:"dateBefore"`
 	Value              string  `json:"value"`
 	Key                string  `json:"key"`
 	Type               string  `json:"type"`
@@ -276,13 +278,21 @@ func main() {
 				if qp.Type == "number" {
 					extraPropertiesQStrPortion += fmt.Sprintf("{\"%s\":{\"rangeMin\":%f,\"rangeMax\":%f}}", qp.Key, qp.RangeMin, qp.RangeMax)
 				} else {
-					extraPropertiesQStrPortion += fmt.Sprintf("{\"%s\":\"%s\"}", qp.Key, qp.Value)
+					if qp.DateAfter != "" && qp.DateBefore != "" {
+						extraPropertiesQStrPortion += fmt.Sprintf("{\"%s\":{\"after\":\"%s\",\"before\":\"%s\"}}", qp.Key, qp.DateAfter, qp.DateBefore)
+					} else {
+						extraPropertiesQStrPortion += fmt.Sprintf("{\"%s\":\"%s\"}", qp.Key, qp.Value)
+					}
 				}
 			} else {
 				if qp.Type == "number" {
 					queryString += fmt.Sprintf("%s=%s&", qp.Key, url.QueryEscape(fmt.Sprintf("{\"rangeMin\":%f,\"rangeMax\":%f}", qp.RangeMin, qp.RangeMax)))
 				} else {
-					queryString += fmt.Sprintf("%s=%s&", qp.Key, url.QueryEscape(qp.Value))
+					if qp.DateAfter != "" && qp.DateBefore != "" {
+						queryString += fmt.Sprintf("%s=%s&", qp.Key, url.QueryEscape(fmt.Sprintf("{\"after\":\"%s\",\"before\":\"%s\"}", qp.DateAfter, qp.DateBefore)))
+					} else {
+						queryString += fmt.Sprintf("%s=%s&", qp.Key, url.QueryEscape(qp.Value))
+					}
 				}
 			}
 		}
