@@ -8,7 +8,8 @@ import {
     Input,
     Select, 
     Checkbox,
-    InputNumber
+    InputNumber,
+    DatePicker
 } from 'antd';
 import "antd/dist/antd.css";
 
@@ -31,6 +32,8 @@ class QueryParameter extends React.Component {
             inputValue: '',
             rangeMin: 0,
             rangeMax: 1 * props.Item.bin_size,
+            dateAfter: '',
+            dateBefore: '',
             checked: false
         };
     }
@@ -101,6 +104,33 @@ class QueryParameter extends React.Component {
         this.props.updateQueryParameterValueInCheckedStack(this.props.Item, newValue, this.state.rangeMin, newValue)
     }
     
+    handleDateAfterChange = (newDate) => {
+        console.log(newDate)
+        var ndFmt =  newDate.format("YYYY-MM-DD")
+        var currentDateBefore = this.state.dateBefore
+        this.setState({
+            dateAfter: ndFmt
+        });
+        
+
+        this.props.updateQueryParameterValueInCheckedStack(this.props.Item, undefined, 
+            undefined, undefined, 
+            ndFmt, currentDateBefore)
+    }
+    handleDateBeforeChange = (newDate) => {
+        console.log(newDate)
+        var ndFmt =  newDate.format("YYYY-MM-DD")
+        var currentDateAfter = this.state.dateAfter
+        this.setState({
+            dateBefore: ndFmt
+        });
+        
+
+        this.props.updateQueryParameterValueInCheckedStack(this.props.Item, undefined, 
+            undefined, undefined, 
+            currentDateAfter, ndFmt)
+    }
+    
     
     render() {
         const { Item, queryParameterCheckedStack, maxQueryParameters } = this.props;
@@ -121,9 +151,27 @@ class QueryParameter extends React.Component {
                         function(){
                             let _minimum =  Item.minimum != undefined ? Item.minimum : -Infinity
                             let _maximum =  Item.maximum != undefined ? Item.maximum : Infinity
+                            
 
                             if (Item.type == "string") {
-                                if (Item.enum != undefined) {
+                                // if date
+                                if (Item.format != undefined && Item.format == "date") {
+                                    return <Row>
+                                        <Col xs={{ span: 5 }}>
+                                            <DatePicker id={Item.key} name="date-after"
+                                                disabled={!This.state.checked}
+                                                onChange={This.handleDateAfterChange} />
+                                        </Col>
+                                        <Col xs={{ span: 2 }} style={{textAlign: "center"}}>to</Col>
+                                        <Col xs={{ span: 5 }}>
+                                            <DatePicker id={Item.key} name="date-before"
+                                                disabled={!This.state.checked}
+                                                onChange={This.handleDateBeforeChange} />
+                                        </Col>
+                                    </Row>
+                                }
+                                else if (Item.enum != undefined) {
+
                                     return <Select id={Item.key}
                                         disabled={!This.state.checked}
                                         showSearch

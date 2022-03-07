@@ -189,7 +189,9 @@ const makeGetKatsuPublic = () => async (dispatch, getState) => {
                 is_extra_property_key: item.is_extra_property_key,
                 value: item.value,
                 rangeMin: item.rangeMin,
-                rangeMax: item.rangeMax
+                rangeMax: item.rangeMax,
+                dateAfter: item.dateAfter,
+                dateBefore: item.dateBefore
             })
         })
         debuglog(qpsWithValue)
@@ -256,7 +258,7 @@ const addQueryParameterToCheckedStack = (item, value, min, max) => async (dispat
     }
 }
 
-const updateQueryParameterValueInCheckedStack = (item, itemValue, min, max) => async (dispatch, getState) => {
+const updateQueryParameterValueInCheckedStack = (item, itemValue, min, max, dateAfter, dateBefore) => async (dispatch, getState) => {
     try {
         var state = getState()
    
@@ -277,6 +279,19 @@ const updateQueryParameterValueInCheckedStack = (item, itemValue, min, max) => a
                         is_extra_property_key: item.is_extra_property_key,
                         rangeMin: min,
                         rangeMax: max
+                    }
+                }));
+            } else if (item.type == "string" && 
+                        item.format != undefined && 
+                        item.format == "date") {
+                dispatch(setContent("ADD_QUERY_PARAMETER_TO_CHECKED_STACK", {
+                    "queryParameter": {
+                        key: item.key,
+                        type: item.type,
+                        title: item.title,
+                        is_extra_property_key: item.is_extra_property_key,
+                        dateAfter: dateAfter,
+                        dateBefore: dateBefore
                     }
                 }));
             } else {
