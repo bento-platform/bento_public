@@ -1,7 +1,8 @@
-const { CLIENT, HOST, DEBUG, MAX_QUERY_PARAMETERS } = process.env;
+const { CLIENT, HOST, DEBUG, PORTAL_URL, MAX_QUERY_PARAMETERS } = process.env;
 
 export const debug = (DEBUG.toLowerCase() === 'true');
 export const client = CLIENT;
+export const portalUrl = PORTAL_URL;
 export const maxQueryParameters = MAX_QUERY_PARAMETERS;
 
 

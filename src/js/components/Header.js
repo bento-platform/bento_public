@@ -2,7 +2,8 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { client } from "../constants"
+import { client, portalUrl } from "../constants"
+import { PageHeader, Button } from 'antd';
 
 class Header extends React.Component {
 
@@ -12,9 +13,14 @@ class Header extends React.Component {
 
     render() {
         return (
-            <div>
-                <h4>Bento-Public</h4>
-                <h5>{client}</h5>
+            <div className="site-page-header-ghost-wrapper">
+                <PageHeader
+                    ghost={false}
+                    title="Bento-Public"
+                    subTitle={client}
+                    extra={[
+                        <Button href={portalUrl}target="_blank" >Portal</Button>
+                    ]} />
             </div>
         );
 	}

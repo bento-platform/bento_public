@@ -6,21 +6,21 @@ import { Provider } from "react-redux";
 import * as V from 'victory';
 
 import Dashboard from "./components/Dashboard";
+import Header from "./components/Header"
 
 import store from "./store";
 
 import { Layout } from 'antd';
-const { Header, Footer, Sider, Content } = Layout;
+const { Content } = Layout;
 
 const BentoApp = () => {
   return (
     <Layout>
-    <Layout>
       <Content>
+        <Header/>
         <Dashboard/>
       </Content>
     </Layout>
-  </Layout>
   );
 }
 
