@@ -34,7 +34,8 @@ class QueryParameter extends React.Component {
             rangeMax: 1 * props.Item.bin_size,
             dateAfter: '',
             dateBefore: '',
-            checked: false
+            checked: false,
+            error: false,
         };
     }
 
@@ -82,7 +83,7 @@ class QueryParameter extends React.Component {
             var diff = newValue % this.props.Item.bin_size
             newValue = newValue - diff
         }
-        
+
         this.setState({
             rangeMin: newValue
         });
@@ -106,8 +107,24 @@ class QueryParameter extends React.Component {
     
     handleDateAfterChange = (newDate) => {
         console.log(newDate)
-        var ndFmt =  newDate.format("YYYY-MM-DD")
-        var currentDateBefore = this.state.dateBefore
+        var ndFmt = ''
+
+        if (newDate !== null) {
+            var ndFmt =  newDate.format("YYYY-MM-DD")
+            var newD = new Date(ndFmt)
+            // check date range mismatch
+            var currentDateBefore = this.state.dateBefore
+            var currentDateBeforeDate = new Date(this.state.dateBefore)
+
+            if (newD > currentDateBeforeDate) {
+                console.log("error: new date is after current 'before' date")
+                this.setState({
+                    error: true
+                }); 
+                return
+            }
+        }
+        
         this.setState({
             dateAfter: ndFmt
         });
@@ -119,8 +136,23 @@ class QueryParameter extends React.Component {
     }
     handleDateBeforeChange = (newDate) => {
         console.log(newDate)
-        var ndFmt =  newDate.format("YYYY-MM-DD")
-        var currentDateAfter = this.state.dateAfter
+        var ndFmt = ''
+        if (newDate !== null) {
+            ndFmt =  newDate.format("YYYY-MM-DD")
+            var newD = new Date(ndFmt)
+            // check date range mismatch
+            var currentDateAfter = this.state.dateAfter
+            var currentDateAfterDate = new Date(this.state.dateAfter)
+    
+            if (newD < currentDateAfterDate) {
+                console.log("error: new date is before current 'after' date")
+                this.setState({
+                    error: true
+                }); 
+                return
+            }
+        }
+        
         this.setState({
             dateBefore: ndFmt
         });
@@ -160,12 +192,14 @@ class QueryParameter extends React.Component {
                                         <Col xs={{ span: 5 }}>
                                             <DatePicker id={Item.key} name="date-after"
                                                 disabled={!This.state.checked}
+                                                status={This.state.error ? "error" : ""}
                                                 onChange={This.handleDateAfterChange} />
                                         </Col>
                                         <Col xs={{ span: 2 }} style={{textAlign: "center"}}>to</Col>
                                         <Col xs={{ span: 5 }}>
                                             <DatePicker id={Item.key} name="date-before"
                                                 disabled={!This.state.checked}
+                                                status={This.state.error ? "error" : ""}
                                                 onChange={This.handleDateBeforeChange} />
                                         </Col>
                                     </Row>
