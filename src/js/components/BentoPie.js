@@ -43,10 +43,6 @@ const BentoPie = ({ title, data, height }) => {
   const bentoFormatData = data.map((e) => ({ name: e.x, value: e.y }));
   const totalCount = bentoFormatData.reduce((sum, e) => sum + e.value, 0);
 
-
-  console.log("BENTO PIE");
-  console.log({ data: data });
-
   const onEnter = (_data, index) => {
     setActiveIndex(index);
   };
@@ -62,8 +58,6 @@ const BentoPie = ({ title, data, height }) => {
   const onClick = (data) => {
     console.log("click");
   };
-
- 
 
   const wrapperStyle = {
     display: "flex",
