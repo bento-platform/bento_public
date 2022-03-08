@@ -9,3 +9,12 @@ export const debuglog = (thing) => {
         console.log(thing)
     }
 }
+
+
+Date.prototype.yyyydashmm = function() {
+    var mm = this.getMonth() + 1; // getMonth() is zero-based
+
+    return [this.getFullYear(),
+            (mm>9 ? '' : '0') + mm
+            ].join('-');
+};

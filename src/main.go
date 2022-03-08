@@ -81,7 +81,7 @@ func main() {
 		// make some server-side configurations available to the front end
 		return c.JSON(http.StatusOK, map[string]interface{}{
 			"maxQueryParameters": cfg.MaxQueryParameters,
-			"bentoPortalUrl":     cfg.BentoPortalUrl,
+			"portalUrl":          cfg.BentoPortalUrl,
 		})
 	})
 

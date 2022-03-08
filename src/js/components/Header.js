@@ -11,6 +11,9 @@ class Header extends React.Component {
         document.title = "Bento-Public : " + client;
     }
 
+    buttonHandler(url) {
+        window.open(url, "_blank")
+    }
     render() {
         const { portalUrl } = this.props;
         return (
@@ -20,7 +23,7 @@ class Header extends React.Component {
                     title="Bento-Public"
                     subTitle={client}
                     extra={[
-                        <Button href={portalUrl} target="_blank" >Portal</Button>
+                        <Button onClick={() => this.buttonHandler(portalUrl)}>Portal</Button>
                     ]} />
             </div>
         );
