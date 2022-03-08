@@ -127,7 +127,7 @@ class PublicOverview extends React.Component {
                       if (type == "number") {
                         // return histogram
                         return (
-                          <Col key={key} md={12} lg={6} style={{ height: "100%" }}>
+                          <Col key={key} md={12} lg={6} xl={4} style={{ height: "100%" }}>
                             <BentoBarChart title={title} data={qpList} units={units} height={CHART_HEIGHT} />
                           </Col>
                         );
@@ -135,7 +135,7 @@ class PublicOverview extends React.Component {
                         if (chart == "bar") {
                           // return histogram
                           return (
-                            <Col key={key} md={12} lg={6} style={{ height: "100%" }}>
+                            <Col key={key} md={12} lg={6} xl={4} style={{ height: "100%" }}>
                               <BentoBarChart title={title} data={qpList} height={CHART_HEIGHT} />
                             </Col>
                           );
@@ -144,7 +144,7 @@ class PublicOverview extends React.Component {
 
                           // return pie chart
                           return (
-                            <Col key={key} sm={12} md={6} lg={4} style={{ height: "100%" }}>
+                            <Col key={key} sm={12} md={6} lg={4} xl={4} style={{ height: "100%" }}>
                               <BentoPie title={title} data={qpList} height={CHART_HEIGHT} />
                             </Col>
                           );

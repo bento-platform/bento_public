@@ -2,6 +2,7 @@ import React from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Label } from "recharts";
 
 const ASPECT_RATIO = 1.2;
+const MAX_LABEL_CHARS = 15;
 
 const BentoBarChart = ({ title, data, units, height }) => {
   const titleStyle = {
@@ -17,7 +18,10 @@ const BentoBarChart = ({ title, data, units, height }) => {
   };
 
   const tickFormatter = (tickLabel) => {
-    return null;
+    if (tickLabel.length <= MAX_LABEL_CHARS) {
+      return tickLabel;
+    }
+    return tickLabel.substring(0, MAX_LABEL_CHARS) + "...";
   };
 
   const totalCount = data.reduce((sum, e) => sum + e.y, 0);
@@ -25,14 +29,8 @@ const BentoBarChart = ({ title, data, units, height }) => {
   return (
     <div style={wrapperStyle}>
       <div style={titleStyle}>{title}</div>
-      <BarChart
-        width={height * ASPECT_RATIO}
-        height={height}
-        data={data}
-        // margin={{ top: 50, right: 80, bottom: 30, left: 80 }}
-        margin={{ bottom: 50 }}
-      >
-        <XAxis dataKey="x" height={20} angle={-45} dy={15}>
+      <BarChart width={height * ASPECT_RATIO} height={height} data={data} margin={{ bottom: 100 }}>
+        <XAxis dataKey="x" height={20} angle={-45} dy={15} tickFormatter={tickFormatter}>
           <Label value={units} offset={-40} position="insideBottom" />
         </XAxis>
         <YAxis>
@@ -49,10 +47,6 @@ const BarTooltip = ({ active, payload, totalCount }) => {
   if (!active) {
     return null;
   }
-
-
-  console.log({active:active, payload:payload, totalCount:totalCount})
-
 
   const name = payload[0]?.payload?.x || "";
   const value = payload[0]?.value || 0;
