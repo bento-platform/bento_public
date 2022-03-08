@@ -1,13 +1,12 @@
 import React from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Label } from "recharts";
 
-const ASPECT_RATIO = 2.0;
+const ASPECT_RATIO = 1.2;
 
 const BentoBarChart = ({ title, data, units, height }) => {
   const titleStyle = {
     fontStyle: "italic",
     fontSize: "1.5em",
-    marginBottom: "-15px",
     textAlign: "center",
   };
 
@@ -51,7 +50,11 @@ const BarTooltip = ({ active, payload, totalCount }) => {
     return null;
   }
 
-  const name = payload[0]?.name || "";
+
+  console.log({active:active, payload:payload, totalCount:totalCount})
+
+
+  const name = payload[0]?.payload?.x || "";
   const value = payload[0]?.value || 0;
   const percentage = totalCount ? Math.round((value / totalCount) * 100) : 0;
 
@@ -82,7 +85,6 @@ const BarTooltip = ({ active, payload, totalCount }) => {
     <div style={toolTipStyle}>
       <p style={labelStyle}>{name}</p>
       <p style={countStyle}>
-        {" "}
         {value} ({percentage}%)
       </p>
     </div>
