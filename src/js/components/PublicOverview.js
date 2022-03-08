@@ -1,13 +1,12 @@
 // Dashboard.js
 import React from "react";
 import { connect } from "react-redux";
-import { Row, Col } from 'react-bootstrap'
-import { JsonFormatter } from 'react-json-formatter'
+import { Row, Col } from "react-bootstrap";
+import { Divider } from "antd";
+import BentoPie from "./BentoPie";
+import BentoBarChart from "./BentoBarChart";
 
-import { VictoryPie, VictoryChart, VictoryBar, VictoryAxis } from 'victory';
-
-import { Divider } from 'antd';
-
+const CHART_HEIGHT = 300;
 class PublicOverview extends React.Component {
     constructor(props) {
         super(props);
@@ -53,6 +52,7 @@ class PublicOverview extends React.Component {
                                 var title = queryParameterStack.find(e => e.hasOwnProperty("key") && e.key == key)?.props?.Item?.title ?? "-"
                                 var type = queryParameterStack.find(e => e.hasOwnProperty("key") && e.key == key)?.props?.Item?.type ?? "-"
                                 var chart = queryParameterStack.find(e => e.hasOwnProperty("key") && e.key == key)?.props?.Item?.chart ?? "-"
+                                var units = queryParameterStack.find((e) => e.hasOwnProperty("key") && e.key == key)?.props?.Item?.units ?? "";
 
                                 var qpList = [];
 
@@ -138,78 +138,30 @@ class PublicOverview extends React.Component {
                                         }
                                     }
 
-
-
-                                    {/* TODO: upgrade pie chart & histograms / visualization library */}
                                     if (type == "number") {
                                         // return histogram
-                                        return <Col key={key} md={12} lg={6} style={{height: "100%"}}>
-                                            <h3 style={{textAlign:"center"}}>{title}</h3>
-                                            <VictoryChart
-                                                domainPadding={10}
-                                            >
-                                                <VictoryAxis
-                                                    dependentAxis
-                                                    style={{ 
-                                                        tickLabels: { fontSize: 10 , angle: -45}
-                                                    }}
-                                                />
-                                                <VictoryAxis
-                                                    style={{ 
-                                                        tickLabels: { fontSize: 10 , angle: -45}
-                                                    }}
-                                                />
-                                                <VictoryBar
-                                                    style={{ data: { fill: "#c43a31" } }}
-                                                    x="x"
-                                                    y="y"
-                                                    data={qpList}
-                                            />
-                                            </VictoryChart>
+                                        return (
+                                            <Col key={key} md={12} lg={6} xl={4} style={{ height: "100%" }}>
+                                              <BentoBarChart title={title} data={qpList} units={units} height={CHART_HEIGHT} />
                                         </Col>
+                                        );
                                     } else {
                                         if (chart == "bar"){
                                             // return histogram
-                                            return <Col key={key} md={12} lg={6} style={{height: "100%"}}>
-                                                <h3 style={{textAlign:"center"}}>{title}</h3>
-                                                <VictoryChart
-                                                    domainPadding={10}
-                                                >
-                                                    <VictoryAxis
-                                                        dependentAxis
-                                                        style={{ 
-                                                            tickLabels: { fontSize: 10 , angle: -45}
-                                                        }}
-                                                    />
-                                                    <VictoryAxis
-                                                        style={{ 
-                                                            tickLabels: { fontSize: 10 , angle: -45}
-                                                        }}
-                                                    />
-                                                    <VictoryBar
-                                                        style={{ data: { fill: "#c43a31" } }}
-                                                        x="x"
-                                                        y="y"
-                                                        data={qpList}
-                                                />
-                                                </VictoryChart>
-                                            </Col>
+                                            return (
+                                                <Col key={key} md={12} lg={6} xl={4} style={{ height: "100%" }}>
+                                                <BentoBarChart title={title} data={qpList} height={CHART_HEIGHT} />
+                                                </Col>
+                                            );
                                         } else {
                                             // default
 
                                             // return pie chart
-                                            return <Col key={key} sm={12} md={6} lg={4} style={{height: "100%"}}>
-                                                <h3 style={{textAlign:"center"}}>{title}</h3>
-                                                <VictoryPie 
-                                                    data={qpList} 
-                                                    width={200} height={200} 
-                                                    style={{
-                                                        labels: {
-                                                        fontSize: 6
-                                                        }
-                                                    }}
-                                                />
-                                            </Col>
+                                            return (
+                                                <Col key={key} sm={12} md={6} lg={4} xl={4} style={{ height: "100%" }}>
+                                                <BentoPie title={title} data={qpList} height={CHART_HEIGHT} />
+                                                </Col>
+                                            );
                                         }
 
                                     }
