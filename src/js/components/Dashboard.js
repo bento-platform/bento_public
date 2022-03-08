@@ -26,8 +26,6 @@ import {
     removeQueryParameterFromCheckedStack
 } from "../action";
 
-    
-import Header from "./Header.js"
 
 
 
@@ -56,9 +54,6 @@ class Dashboard extends React.Component {
 
         return (
             <Container>
-                <Row>
-                    <Header/>
-                </Row>
                 <Row>
                     <Col>
                     <h2>Overview: </h2>

@@ -8,7 +8,8 @@ import {
     Input,
     Select, 
     Checkbox,
-    InputNumber
+    InputNumber,
+    DatePicker
 } from 'antd';
 import "antd/dist/antd.css";
 
@@ -31,7 +32,10 @@ class QueryParameter extends React.Component {
             inputValue: '',
             rangeMin: 0,
             rangeMax: 1 * props.Item.bin_size,
-            checked: false
+            dateAfter: '',
+            dateBefore: '',
+            checked: false,
+            error: false,
         };
     }
 
@@ -79,7 +83,7 @@ class QueryParameter extends React.Component {
             var diff = newValue % this.props.Item.bin_size
             newValue = newValue - diff
         }
-        
+
         this.setState({
             rangeMin: newValue
         });
@@ -99,6 +103,64 @@ class QueryParameter extends React.Component {
         });
 
         this.props.updateQueryParameterValueInCheckedStack(this.props.Item, newValue, this.state.rangeMin, newValue)
+    }
+    
+    handleDateAfterChange = (newDate) => {
+        console.log(newDate)
+        var ndFmt = ''
+
+        if (newDate !== null) {
+            var ndFmt =  newDate.format("YYYY-MM-DD")
+            var newD = new Date(ndFmt)
+            // check date range mismatch
+            var currentDateBefore = this.state.dateBefore
+            var currentDateBeforeDate = new Date(this.state.dateBefore)
+
+            if (newD > currentDateBeforeDate) {
+                console.log("error: new date is after current 'before' date")
+                this.setState({
+                    error: true
+                }); 
+                return
+            }
+        }
+        
+        this.setState({
+            dateAfter: ndFmt
+        });
+        
+
+        this.props.updateQueryParameterValueInCheckedStack(this.props.Item, undefined, 
+            undefined, undefined, 
+            ndFmt, currentDateBefore)
+    }
+    handleDateBeforeChange = (newDate) => {
+        console.log(newDate)
+        var ndFmt = ''
+        if (newDate !== null) {
+            ndFmt =  newDate.format("YYYY-MM-DD")
+            var newD = new Date(ndFmt)
+            // check date range mismatch
+            var currentDateAfter = this.state.dateAfter
+            var currentDateAfterDate = new Date(this.state.dateAfter)
+    
+            if (newD < currentDateAfterDate) {
+                console.log("error: new date is before current 'after' date")
+                this.setState({
+                    error: true
+                }); 
+                return
+            }
+        }
+        
+        this.setState({
+            dateBefore: ndFmt
+        });
+        
+
+        this.props.updateQueryParameterValueInCheckedStack(this.props.Item, undefined, 
+            undefined, undefined, 
+            currentDateAfter, ndFmt)
     }
     
     
@@ -121,9 +183,29 @@ class QueryParameter extends React.Component {
                         function(){
                             let _minimum =  Item.minimum != undefined ? Item.minimum : -Infinity
                             let _maximum =  Item.maximum != undefined ? Item.maximum : Infinity
+                            
 
                             if (Item.type == "string") {
-                                if (Item.enum != undefined) {
+                                // if date
+                                if (Item.format != undefined && Item.format == "date") {
+                                    return <Row>
+                                        <Col xs={{ span: 5 }}>
+                                            <DatePicker id={Item.key} name="date-after"
+                                                disabled={!This.state.checked}
+                                                status={This.state.error ? "error" : ""}
+                                                onChange={This.handleDateAfterChange} />
+                                        </Col>
+                                        <Col xs={{ span: 2 }} style={{textAlign: "center"}}>to</Col>
+                                        <Col xs={{ span: 5 }}>
+                                            <DatePicker id={Item.key} name="date-before"
+                                                disabled={!This.state.checked}
+                                                status={This.state.error ? "error" : ""}
+                                                onChange={This.handleDateBeforeChange} />
+                                        </Col>
+                                    </Row>
+                                }
+                                else if (Item.enum != undefined) {
+
                                     return <Select id={Item.key}
                                         disabled={!This.state.checked}
                                         showSearch
