@@ -23,7 +23,7 @@ class Header extends React.Component {
                     title="Bento-Public"
                     subTitle={client}
                     extra={[
-                        <Button onClick={() => this.buttonHandler(portalUrl)}>Portal</Button>
+                        <Button key="0" onClick={() => this.buttonHandler(portalUrl)}>Portal</Button>
                     ]} />
             </div>
         );
