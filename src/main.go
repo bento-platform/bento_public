@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"time"
 
 	"github.com/kelseyhightower/envconfig"
 	"github.com/labstack/echo"
@@ -254,6 +255,37 @@ func main() {
 
 					return c.JSON(http.StatusBadRequest, ErrorResponse{
 						Message: fmt.Sprintf("%f:%f invalid values: must be a multiple of bin_size %f", min, max, threshold),
+					})
+				}
+			} else { // qpType == "string" ?
+				// date validation
+				if qp.DateAfter != "" && qp.DateBefore != "" {
+					dateAfter, error := time.Parse("2006-01-02", qp.DateAfter)
+					if error != nil {
+						fmt.Println("--- failed")
+						return c.JSON(http.StatusBadRequest, ErrorResponse{
+							Message: fmt.Sprintf("%s", error),
+						})
+					}
+					dateBefore, error := time.Parse("2006-01-02", qp.DateBefore)
+					if error != nil {
+						fmt.Println("--- failed")
+						return c.JSON(http.StatusBadRequest, ErrorResponse{
+							Message: fmt.Sprintf("%s", error),
+						})
+					}
+
+					if dateAfter.After(dateBefore) {
+						fmt.Println("--- failed")
+						return c.JSON(http.StatusBadRequest, ErrorResponse{
+							Message: fmt.Sprintf("invalid dates: '%s' - '%s'", dateAfter, dateBefore),
+						})
+					}
+
+				} else if (qp.DateAfter == "" && qp.DateBefore != "") || (qp.DateAfter != "" && qp.DateBefore == "") {
+					fmt.Println("--- failed")
+					return c.JSON(http.StatusBadRequest, ErrorResponse{
+						Message: fmt.Sprintf("invalid dates: '%s' - '%s' ; both must be in format YYYY-MM-DD", qp.DateAfter, qp.DateBefore),
 					})
 				}
 			}
