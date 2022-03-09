@@ -3,6 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Row, Col } from 'react-bootstrap'
+import moment from "moment";
 
 import { 
     Input,
@@ -37,6 +38,20 @@ class QueryParameter extends React.Component {
             checked: false,
             error: false,
         };
+    }
+
+    disabledDateAfter = (current) => {
+        if (this.state.dateBefore != '') {
+            return current && current > moment(this.state.dateBefore, "YYYY-MM-DD");
+        }
+        return false
+    }
+
+    disabledDateBefore = (current) => {
+        if (this.state.dateAfter != '') {
+            return current && current < moment(this.state.dateAfter, "YYYY-MM-DD");
+        }
+        return false
     }
 
     handleCheckboxChange = (e) => {
@@ -190,15 +205,17 @@ class QueryParameter extends React.Component {
                                 if (Item.format != undefined && Item.format == "date") {
                                     return <Row>
                                         <Col xs={{ span: 5 }}>
-                                            <DatePicker id={Item.key} name="date-after"
+                                            <DatePicker id={Item.key} key={Item.key} name="date-after"
                                                 disabled={!This.state.checked}
+                                                disabledDate={This.disabledDateAfter}
                                                 status={This.state.error ? "error" : ""}
                                                 onChange={This.handleDateAfterChange} />
                                         </Col>
                                         <Col xs={{ span: 2 }} style={{textAlign: "center"}}>to</Col>
                                         <Col xs={{ span: 5 }}>
-                                            <DatePicker id={Item.key} name="date-before"
+                                            <DatePicker id={Item.key} key={Item.key} name="date-before"
                                                 disabled={!This.state.checked}
+                                                disabledDate={This.disabledDateBefore}
                                                 status={This.state.error ? "error" : ""}
                                                 onChange={This.handleDateBeforeChange} />
                                         </Col>
