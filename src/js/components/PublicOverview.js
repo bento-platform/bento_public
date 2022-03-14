@@ -99,7 +99,7 @@ class PublicOverview extends React.Component {
 
                                     }
                                     else {
-                                        Object.keys(value).forEach(function(_key) {   
+                                        Object.keys(value).forEach(function(_key, _index, _fullArr) {   
                                             let intKey = parseInt(_key)
                                             if (intKey != NaN && field != undefined && field["type"] == "number") {
                                                 if (intKey < leftTaper) {
@@ -119,7 +119,18 @@ class PublicOverview extends React.Component {
                                                     }
                                                 } 
                                                 else {
-                                                    qpList.push({x: _key, y:value[_key]})
+                                                    // number range tag
+                                                    let xTag = ""
+                                                    let leftVal = _key
+                                                    // add rightVal if exists
+                                                    if ((_index + 1) < _fullArr.length) {
+                                                        let rightVal = _fullArr[_index + 1]
+                                                        xTag = leftVal + " - " + rightVal
+                                                    } else {
+                                                        xTag = leftVal
+                                                    }
+
+                                                    qpList.push({x: xTag, y:value[_key]})
                                                 }
                                             }
                                             else {
