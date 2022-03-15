@@ -318,7 +318,8 @@ func main() {
 				}
 			} else {
 				if qp.Type == "number" {
-					queryString += fmt.Sprintf("%s=%s&", qp.Key, url.QueryEscape(fmt.Sprintf("{\"rangeMin\":%f,\"rangeMax\":%f}", qp.RangeMin, qp.RangeMax)))
+					queryString += fmt.Sprintf("%s_range_min=%f&", qp.Key, qp.RangeMin)
+					queryString += fmt.Sprintf("%s_range_max=%f&", qp.Key, qp.RangeMax)
 				} else {
 					if qp.DateAfter != "" && qp.DateBefore != "" {
 						queryString += fmt.Sprintf("%s=%s&", qp.Key, url.QueryEscape(fmt.Sprintf("{\"after\":\"%s\",\"before\":\"%s\"}", qp.DateAfter, qp.DateBefore)))
