@@ -37,7 +37,7 @@ const BentoBarChart = ({ title, data, units, height }) => {
   return (
     <div style={wrapperStyle}>
       <div style={titleStyle}>{title}</div>
-      <BarChart width={height * ASPECT_RATIO} height={height} data={data} margin={{ bottom: 100 }}>
+      <BarChart width={height * ASPECT_RATIO} height={height} data={data} margin={{top: 10, bottom: 100 }}>
         <XAxis dataKey="x" height={20} angle={-45} tickFormatter={tickFormatter} tickMargin={TICK_MARGIN}>
           <Label value={units} offset={UNITS_LABEL_OFFSET} position="insideBottom" />
         </XAxis>
