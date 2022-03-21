@@ -5,7 +5,7 @@ import { polarToCartesian } from "recharts/es6/util/PolarUtils";
 import { COLORS } from "../constants";
 
 const RADIAN = Math.PI / 180;
-const chartAspectRatio = 1.3;
+const chartAspectRatio = 1.4;
 const LABEL_THRESHOLD = 0.05;
 const MAX_LABEL_CHARS = 14;
 
