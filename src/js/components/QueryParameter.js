@@ -198,7 +198,7 @@ class QueryParameter extends React.Component {
                         {Item.title}
                     </Col>
                     <Col xs={{ span: 1 }}>
-                        <Tooltip placement="right" title={Item.description}>
+                        <Tooltip placement="topLeft" title={Item.description}>
                             <QuestionCircleOutlined />
                         </Tooltip>    
                     </Col>                    
