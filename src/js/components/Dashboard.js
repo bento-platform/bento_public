@@ -61,7 +61,7 @@ class Dashboard extends React.Component {
                     </Col>
                 </Row>
                 <Row>
-                    <span>Search Stuff :</span>
+                    <span>Search :</span>
                 </Row>
                 <Row>
                     <Col sm={{ span: 10 }}>

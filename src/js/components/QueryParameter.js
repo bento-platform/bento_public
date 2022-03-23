@@ -10,9 +10,11 @@ import {
     Select, 
     Checkbox,
     InputNumber,
-    DatePicker
+    DatePicker,
+    Tooltip
 } from 'antd';
 import "antd/dist/antd.css";
+import { QuestionCircleOutlined } from '@ant-design/icons';
 
 import Header from "./Header.js"
 
@@ -192,7 +194,14 @@ class QueryParameter extends React.Component {
                             onChange={e => This.handleCheckboxChange(e)}
                             disabled={queryParameterCheckedStack.length >= maxQueryParameters && !This.state.checked}></Checkbox>
                     </Col>
-                    <Col xs={{ span: 4 }} md={{ span: 2 }}>{Item.title}</Col>
+                    <Col xs={{ span: 3 }} md={{ span: 2 }}>
+                        {Item.title}
+                    </Col>
+                    <Col xs={{ span: 1 }}>
+                        <Tooltip placement="right" title={Item.description}>
+                            <QuestionCircleOutlined />
+                        </Tooltip>    
+                    </Col>                    
                     <Col xs={{ span: 4 }}>
                     {
                         function(){
