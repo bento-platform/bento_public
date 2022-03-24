@@ -14,15 +14,15 @@ const setContent = (type, content) => {
 	}
 }
 
-// retrieve queryable fields
-const makeGetQueryableFieldsRequest = (url) => async (dispatch) => {
+// facilitate retrieving katsu public-overview data from server
+const makeGetConfigRequest = (url) => async (dispatch) => {
     try {
         dispatch(setContent("SET_FETCHING_DATA", {
             "fetch": true
         }));
-        
+        // simulate network lag
         // await sleep(1000)
-
+        
         // fetch data
         // TODO: validate response
         const response = await axios.get(url)
@@ -45,30 +45,9 @@ const makeGetQueryableFieldsRequest = (url) => async (dispatch) => {
                 }));
             });
 
-
-        // accumulate fields in a single array
-        var queryableFields = response.data
-        var qpList = [];
-        var keys = [];
-        Object.keys(queryableFields).forEach(function(key) {
-            if (key == "extra_properties") {
-                Object.keys(queryableFields[key]).forEach(function(extra_property_key) {
-                    queryableFields[key][extra_property_key]["key"] = extra_property_key
-                    queryableFields[key][extra_property_key]["is_extra_property_key"] = true
-
-                    keys.push(queryableFields[key][extra_property_key]);
-                });
-            } else {
-                queryableFields[key]["key"] = key
-                queryableFields[key]["is_extra_property_key"] = false
-
-                keys.push(queryableFields[key]);
-            }
-        });
-
-        qpList = keys.map((item) => <QueryParameter key={item.key} Item={item} />); 
-        dispatch(setContent("SET_QUERY_PARAMETER_STACK", {
-            "items": qpList
+        // append data from the network
+        dispatch(setContent("SET_CONFIG", {
+            "config": response.data
         }));
     } catch (err){
         console.log(err);
@@ -79,7 +58,6 @@ const makeGetQueryableFieldsRequest = (url) => async (dispatch) => {
     }
 }
 
-// facilitate retrieving katsu overview data from server
 const makeGetOverviewRequest = (url) => async (dispatch) => {
     try {
         dispatch(setContent("SET_FETCHING_DATA", {
@@ -123,6 +101,73 @@ const makeGetOverviewRequest = (url) => async (dispatch) => {
     }
 }
 
+// retrieve queryable fields
+const makeGetQueryableFieldsRequest = (url) => async (dispatch) => {
+    try {
+        dispatch(setContent("SET_FETCHING_DATA", {
+            "fetch": true
+        }));
+        
+        // await sleep(1000)
+
+        // fetch data
+        // TODO: validate response
+        const response = await axios.get(url)
+            .catch(function (error) {
+                if (error.response) {
+                    // Request made and server responded
+                    console.log(error.response.data);
+                    console.log(error.response.status);
+                    console.log(error.response.headers);
+                } else if (error.request) {
+                    // The request was made but no response was received
+                    console.log(error.request);
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.log('Error', error.message);
+                }
+
+                dispatch(setContent("SET_FETCHING_DATA", {
+                    "fetch": false
+                }));
+            });
+
+
+        // accumulate fields in a single array
+        var queryableFields = response.data
+        var qpList = [];
+        var keys = [];
+        Object.keys(queryableFields).forEach(function(key) {
+            if (key == "extra_properties") {
+                // obtain key-value pairs from the second level of nested objects
+                Object.keys(queryableFields[key]).forEach(function(extra_property_key) {
+                    queryableFields[key][extra_property_key]["key"] = extra_property_key
+                    queryableFields[key][extra_property_key]["is_extra_property_key"] = true
+
+                    keys.push(queryableFields[key][extra_property_key]);
+                });
+            } else {
+                // obtain key-value pairs from the first level of nested objects
+                queryableFields[key]["key"] = key
+                queryableFields[key]["is_extra_property_key"] = false
+
+                keys.push(queryableFields[key]);
+            }
+        });
+
+        qpList = keys.map((item) => <QueryParameter key={item.key} Item={item} />); 
+        dispatch(setContent("SET_QUERY_PARAMETER_STACK", {
+            "items": qpList
+        }));
+    } catch (err){
+        console.log(err);
+
+        dispatch(setContent("SET_FETCHING_DATA", {
+            "fetch": false
+        }));
+    }
+}
+
 const makeGetKatsuPublic = () => async (dispatch, getState) => {
     try {
         dispatch(setContent("SET_FETCHING_DATA", {
@@ -144,7 +189,9 @@ const makeGetKatsuPublic = () => async (dispatch, getState) => {
                 is_extra_property_key: item.is_extra_property_key,
                 value: item.value,
                 rangeMin: item.rangeMin,
-                rangeMax: item.rangeMax
+                rangeMax: item.rangeMax,
+                dateAfter: item.dateAfter,
+                dateBefore: item.dateBefore
             })
         })
         debuglog(qpsWithValue)
@@ -173,8 +220,8 @@ const makeGetKatsuPublic = () => async (dispatch, getState) => {
 
         console.log(response)
         // append data from the network
-        dispatch(setContent("SET_OVERVIEW", {
-            "overview": response.data
+        dispatch(setContent("SET_QUERY_RESPONSE_DATA", {
+            "queryResponseData": response.data
         }));
         
         // TODO: format query and fetch from Katsu
@@ -211,7 +258,7 @@ const addQueryParameterToCheckedStack = (item, value, min, max) => async (dispat
     }
 }
 
-const updateQueryParameterValueInCheckedStack = (item, itemValue, min, max) => async (dispatch, getState) => {
+const updateQueryParameterValueInCheckedStack = (item, itemValue, min, max, dateAfter, dateBefore) => async (dispatch, getState) => {
     try {
         var state = getState()
    
@@ -223,7 +270,7 @@ const updateQueryParameterValueInCheckedStack = (item, itemValue, min, max) => a
                 "index": index
             }));
 
-            if (item.type == "range") {
+            if (item.type == "number") {
                 dispatch(setContent("ADD_QUERY_PARAMETER_TO_CHECKED_STACK", {
                     "queryParameter": {
                         key: item.key,
@@ -232,6 +279,19 @@ const updateQueryParameterValueInCheckedStack = (item, itemValue, min, max) => a
                         is_extra_property_key: item.is_extra_property_key,
                         rangeMin: min,
                         rangeMax: max
+                    }
+                }));
+            } else if (item.type == "string" && 
+                        item.format != undefined && 
+                        item.format == "date") {
+                dispatch(setContent("ADD_QUERY_PARAMETER_TO_CHECKED_STACK", {
+                    "queryParameter": {
+                        key: item.key,
+                        type: item.type,
+                        title: item.title,
+                        is_extra_property_key: item.is_extra_property_key,
+                        dateAfter: dateAfter,
+                        dateBefore: dateBefore
                     }
                 }));
             } else {
@@ -280,6 +340,7 @@ const removeQueryParameterFromCheckedStack = (item) => async (dispatch, getState
 
 
 export {
+    makeGetConfigRequest,
     makeGetQueryableFieldsRequest,
     makeGetOverviewRequest,
     makeGetKatsuPublic,

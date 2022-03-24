@@ -10,6 +10,7 @@ cd src
 go build -o ../build/reactapp
 
 # copy root html to main build output directory
+cp favicon.ico ../build/www/favicon.ico
 cp index.html ../build/www/index.html
 
 # build react bundle.js

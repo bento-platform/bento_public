@@ -2,11 +2,13 @@
 import { debuglog } from "./utils"
 
 const INITIAL_STATE = {
-	isFetchingData: false,
+	config: {},
 	overview: {},
 	queryableFields: {},
 	queryParameterStack: [],
-	queryParameterCheckedStack: []
+	queryParameterCheckedStack: [],
+	queryResponseData: {},
+	isFetchingData: false
 }
 
 export default (state = INITIAL_STATE, action={}) => {
@@ -17,10 +19,22 @@ export default (state = INITIAL_STATE, action={}) => {
 				isFetchingData : action.content.fetch
 			};
 
+		case "SET_CONFIG":
+			return {
+				...state,
+				config : action.content.config,
+				isFetchingData : false
+			};
 		case "SET_OVERVIEW":
 			return {
 				...state,
 				overview : action.content.overview,
+				isFetchingData : false
+			};
+		case "SET_QUERY_RESPONSE_DATA":
+			return {
+				...state,
+				queryResponseData : action.content.queryResponseData,
 				isFetchingData : false
 			};
 		case "SET_QUERYABLE_FIELDS":

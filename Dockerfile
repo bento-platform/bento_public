@@ -36,11 +36,15 @@ RUN apk update && \
 RUN mkdir -p /runner/www
 
 # Client
-COPY --from=nodebuilder /node/build/www /runner/www
+COPY --from=nodebuilder /node/src/favicon.ico /runner/www
 COPY --from=nodebuilder /node/src/index.html /runner/www
+
+COPY --from=nodebuilder /node/build/www /runner/www
 
 # Server
 COPY --from=gobuilder /build/src/reactapp /runner
+
+
 WORKDIR /runner
 ENTRYPOINT [ "./reactapp" ]
 

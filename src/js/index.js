@@ -6,14 +6,21 @@ import { Provider } from "react-redux";
 import * as V from 'victory';
 
 import Dashboard from "./components/Dashboard";
+import Header from "./components/Header"
 
 import store from "./store";
 
+import { Layout } from 'antd';
+const { Content } = Layout;
+
 const BentoApp = () => {
   return (
-    <div>
-      <Dashboard/>
-    </div>
+    <Layout>
+      <Content>
+        <Header/>
+        <Dashboard/>
+      </Content>
+    </Layout>
   );
 }
 

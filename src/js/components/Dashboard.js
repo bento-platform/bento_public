@@ -6,21 +6,27 @@ import { JsonFormatter } from 'react-json-formatter'
 import { Row, Col } from 'react-bootstrap'
 import Spinner from 'react-bootstrap/Spinner'
 
+import PublicOverview from './PublicOverview'
 import QueryParameter from './QueryParameter'
 
-import { queryableFieldsUrl, katsuUrl } from "../constants"
 import { 
-    makeGetQueryableFieldsRequest, 
+    configUrl,
+    publicOverviewUrl,
+    queryableFieldsUrl, 
+    katsuUrl 
+} from "../constants"
+
+import { 
+    makeGetConfigRequest,
     makeGetOverviewRequest,
-    makeGetKatsuPublic ,
+    makeGetQueryableFieldsRequest, 
+    makeGetKatsuPublic,
+
     addQueryParameterToCheckedStack, 
     removeQueryParameterFromCheckedStack
 } from "../action";
 
-    
-import Header from "./Header.js"
 
-import { VictoryPie } from 'victory';
 
 
 class Dashboard extends React.Component {
@@ -29,12 +35,9 @@ class Dashboard extends React.Component {
         super(props)
     
         // fetch data from server
+        this.props.makeGetConfigRequest(configUrl);
+        this.props.makeGetOverviewRequest(publicOverviewUrl);
         this.props.makeGetQueryableFieldsRequest(queryableFieldsUrl);
-    }
-    
-    fetchData() {
-        // fetch data from server
-        this.props.makeGetOverviewRequest(katsuUrl);
     }
 
     queryKatsuPublic() {
@@ -45,19 +48,23 @@ class Dashboard extends React.Component {
     render() {
         const { 
             queryableFields, 
-            overview, 
+            queryResponseData, 
             isFetchingData,
             queryParameterStack } = this.props;
 
         return (
             <Container>
                 <Row>
-                    <Header/>
+                    <Col>
+                    <h2>Overview: </h2>
+                        <PublicOverview/>
+                    </Col>
                 </Row>
                 <Row>
-                    <span>Search Stuff :</span>
+                    <span>Search :</span>
                 </Row>
                 <Row>
+                    <Col sm={{ span: 10 }}>
                     {
                         // verify 'queryParameterStack'
                         typeof queryParameterStack == undefined || queryParameterStack.length === 0 
@@ -68,23 +75,16 @@ class Dashboard extends React.Component {
                             {queryParameterStack}
                         </div>
                     }
-                </Row>
-                <Row>
-                    <Col className="text-center" xs={{ span: 4, offset: 4 }} md={{ span: 6, offset: 3 }}>
-                        <Button variant="primary" onClick={() => this.queryKatsuPublic()} disabled={isFetchingData}>Get Data</Button>
-                        <Spinner animation="border" hidden={!isFetchingData}/>
                     </Col>
-                </Row>
-                <Row>
-                    <Col md={{ span: 4, offset: 4 }}>
+                    <Col md={{ span: 2 }}>
                         {
-                            // verify 'overview'
-                            typeof overview == undefined || Object.keys(overview).length === 0 
+                            // verify 'queryResponseData'
+                            typeof queryResponseData == undefined || Object.keys(queryResponseData).length === 0 
                             ? // display message if there is no data
                             <></> 
                             : // display the available data 
                             <JsonFormatter 
-                                json={JSON.stringify(overview)} 
+                                json={JSON.stringify(queryResponseData)} 
                                 tabWith='4' 
                                 JsonStyle={{
                                     propertyStyle: { color: 'red' },
@@ -94,12 +94,19 @@ class Dashboard extends React.Component {
                         }
                     </Col>
                 </Row>
+                <Row>
+                    <Col className="text-center" xs={{ span: 4, offset: 4 }} md={{ span: 6, offset: 3 }}>
+                        <Button variant="primary" onClick={() => this.queryKatsuPublic()} disabled={isFetchingData}>Get Data</Button>
+                        <Spinner animation="border" hidden={!isFetchingData}/>
+                    </Col>
+                </Row>
             </Container>
         );
 	}
 }
 
 const mapDispatchToProps = {
+    makeGetConfigRequest,
     makeGetQueryableFieldsRequest,
     makeGetOverviewRequest,
     makeGetKatsuPublic,
@@ -109,7 +116,7 @@ const mapDispatchToProps = {
 
 const mapStateToProps = state => ({
 	queryableFields: state.queryableFields,
-	overview: state.overview,
+	queryResponseData: state.queryResponseData,
 	isFetchingData: state.isFetchingData,
 
     queryParameterStack: state.queryParameterStack
