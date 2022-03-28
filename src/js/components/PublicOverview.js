@@ -156,6 +156,16 @@ class PublicOverview extends React.Component {
                                         }
                                     }
 
+                                    // move 'missing' object to end of list
+                                    var missingObject = qpList.filter(obj => {
+                                        console.log(obj)
+                                        return obj.x === 'missing'
+                                    })
+                                    if (missingObject != undefined && missingObject.length > 0) {
+                                        // fancy one liner to splice the object out and re-append it
+                                        qpList.push(qpList.splice(qpList.indexOf(missingObject[0]), 1)[0]);
+                                    }
+
                                     if (type == "number") {
                                         // return histogram
                                         return (
