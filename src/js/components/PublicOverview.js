@@ -81,10 +81,17 @@ class PublicOverview extends React.Component {
                                     if (field != undefined && 
                                         field["type"] == "string" && 
                                         field["format"] =="date") {
-                                        //
+                                        
                                         Object.keys(value).forEach(function(_key) {
                                             var attemptedDate = new Date(_key)
                                             var monthStr = attemptedDate.yyyydashmm()
+
+                                            // if not a valid date, add to "missing"
+                                            if (isNaN(attemptedDate.valueOf())){
+                                                monthlybins["missing"] = (monthlybins["missing"] ?? 0) + 1;
+                                                return   //ie, continue
+                                            }
+
                                             // verify if monthly bin exists - add to dict if not
                                             if (monthlybins[monthStr] == undefined){
                                                 monthlybins[monthStr] = value[_key]
