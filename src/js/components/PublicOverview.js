@@ -88,7 +88,7 @@ class PublicOverview extends React.Component {
 
                                             // if not a valid date, add to "missing"
                                             if (isNaN(attemptedDate.valueOf())){
-                                                monthlybins["missing"] = (monthlybins["missing"] ?? 0) + 1;
+                                                monthlybins["missing"] = (monthlybins["missing"] ?? 0) + value[_key];
                                                 return   //ie, continue
                                             }
 
