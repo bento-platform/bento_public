@@ -1,14 +1,14 @@
 import React from "react";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Label } from "recharts";
+import { BarChart, Bar, Cell, XAxis, YAxis, Tooltip, Label } from "recharts";
 
 const ASPECT_RATIO = 1.2;
 const MAX_TICK_LABEL_CHARS = 15;
 const UNITS_LABEL_OFFSET = -60;
+const FILL_COLOUR = "#ff0000";
+const MISSING_FILL_COLOUR = "#bbbbbb";
 
 // vertical spacing betweeen tick line and centre of tick label
-const TICK_MARGIN = 20; 
-
-
+const TICK_MARGIN = 20;
 
 const BentoBarChart = ({ title, data, units, height }) => {
   const titleStyle = {
@@ -30,14 +30,21 @@ const BentoBarChart = ({ title, data, units, height }) => {
     return tickLabel.substring(0, MAX_TICK_LABEL_CHARS) + "...";
   };
 
+  const fill = (entry) => {
+    return entry.x == "missing" ? MISSING_FILL_COLOUR : FILL_COLOUR;
+  };
+
   const totalCount = data.reduce((sum, e) => sum + e.y, 0);
-  let longestTickLabelLength = Math.max(...data.map(e => e.x.toString().length))
-  longestTickLabelLength = Math.min(longestTickLabelLength, MAX_TICK_LABEL_CHARS)
+  let longestTickLabelLength = Math.max(...data.map((e) => e.x.toString().length));
+  longestTickLabelLength = Math.min(longestTickLabelLength, MAX_TICK_LABEL_CHARS);
+
+  // remove "missing" field if zero
+  data = data.filter(e => !(e.x === "missing" && e.y === 0) )
 
   return (
     <div style={wrapperStyle}>
       <div style={titleStyle}>{title}</div>
-      <BarChart width={height * ASPECT_RATIO} height={height} data={data} margin={{top: 10, bottom: 100 }}>
+      <BarChart width={height * ASPECT_RATIO} height={height} data={data} margin={{ top: 10, bottom: 100 }}>
         <XAxis dataKey="x" height={20} angle={-45} tickFormatter={tickFormatter} tickMargin={TICK_MARGIN}>
           <Label value={units} offset={UNITS_LABEL_OFFSET} position="insideBottom" />
         </XAxis>
@@ -45,7 +52,9 @@ const BentoBarChart = ({ title, data, units, height }) => {
           <Label value="Count" offset={-10} position="left" angle={270} />
         </YAxis>
         <Tooltip content={<BarTooltip totalCount={totalCount} />} />
-        <Bar dataKey="y" fill="#ff0000" isAnimationActive={false} />
+        <Bar dataKey="y" isAnimationActive={false}>
+          {data.map((entry) => <Cell key={entry.x} fill={fill(entry)} />)}
+        </Bar>
       </BarChart>
     </div>
   );
