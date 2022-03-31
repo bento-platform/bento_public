@@ -43,17 +43,27 @@ class QueryParameter extends React.Component {
     }
 
     disabledDateAfter = (current) => {
+        // TODO: disable dates earlier than first date in dataset
         if (this.state.dateBefore != '') {
-            return current && current > moment(this.state.dateBefore, "YYYY-MM-DD");
+            return current && 
+                (current > moment(this.state.dateBefore, "YYYY-MM-DD") || 
+                 current > moment());
+        } else {
+            return current && 
+                current > moment(); // disable dates later than today 
         }
-        return false
     }
 
     disabledDateBefore = (current) => {
+        // TODO: disable dates earlier than first date in dataset
         if (this.state.dateAfter != '') {
-            return current && current < moment(this.state.dateAfter, "YYYY-MM-DD");
+            return current && 
+                (current < moment(this.state.dateAfter, "YYYY-MM-DD") || 
+                 current > moment());
+        } else {
+            return current && 
+                current > moment(); // disable dates later than today 
         }
-        return false
     }
 
     handleCheckboxChange = (e) => {
