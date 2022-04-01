@@ -56,7 +56,9 @@ class Dashboard extends React.Component {
             <Container>
                 <Row>
                     <Col>
-                    <h2>Overview: </h2>
+                        <h2>Overview: </h2>
+                        <Spinner animation="border" hidden={!isFetchingData}/>
+
                         <PublicOverview/>
                     </Col>
                 </Row>
