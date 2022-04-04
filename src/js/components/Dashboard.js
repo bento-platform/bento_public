@@ -50,6 +50,9 @@ class Dashboard extends React.Component {
             queryableFields, 
             queryResponseData, 
             isFetchingData,
+            isFetchingConfig,
+            isFetchingFields,
+            isFetchingOverview,
             queryParameterStack } = this.props;
 
         return (
@@ -57,7 +60,7 @@ class Dashboard extends React.Component {
                 <Row>
                     <Col>
                         <h2>Overview: </h2>
-                        <Spinner animation="border" hidden={!isFetchingData}/>
+                        <Spinner animation="border" hidden={!isFetchingConfig && !isFetchingFields && !isFetchingOverview}/>
 
                         <PublicOverview/>
                     </Col>
@@ -120,6 +123,9 @@ const mapStateToProps = state => ({
 	queryableFields: state.queryableFields,
 	queryResponseData: state.queryResponseData,
 	isFetchingData: state.isFetchingData,
+	isFetchingConfig: state.isFetchingConfig,
+	isFetchingOverview: state.isFetchingOverview,
+	isFetchingFields: state.isFetchingFields,
 
     queryParameterStack: state.queryParameterStack
 });

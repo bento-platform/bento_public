@@ -3,8 +3,11 @@ import { debuglog } from "./utils"
 
 const INITIAL_STATE = {
 	config: {},
+	isFetchingConfig: false,
 	overview: {},
+	isFetchingOverview: false,
 	queryableFields: {},
+	isFetchingFields: false,
 	queryParameterStack: [],
 	queryParameterCheckedStack: [],
 	queryResponseData: {},
@@ -18,18 +21,33 @@ export default (state = INITIAL_STATE, action={}) => {
 				...state,
 				isFetchingData : action.content.fetch
 			};
-
+		case "SET_FETCHING_CONFIG":
+			return {
+				...state,
+				isFetchingConfig : action.content.fetch
+			};
+		case "SET_FETCHING_OVERVIEW":
+			return {
+				...state,
+				isFetchingOverview : action.content.fetch
+			};
+		case "SET_FETCHING_FIELDS":
+			return {
+				...state,
+				isFetchingFields : action.content.fetch
+			};
+		
 		case "SET_CONFIG":
 			return {
 				...state,
 				config : action.content.config,
-				isFetchingData : false
+				isFetchingConfig : false
 			};
 		case "SET_OVERVIEW":
 			return {
 				...state,
 				overview : action.content.overview,
-				isFetchingData : false
+				isFetchingOverview : false
 			};
 		case "SET_QUERY_RESPONSE_DATA":
 			return {
@@ -41,7 +59,7 @@ export default (state = INITIAL_STATE, action={}) => {
 			return {
 				...state,
 				queryableFields : action.content.queryableFields,
-				isFetchingData : false
+				isFetchingFields : false
 			};
 
 
@@ -55,7 +73,7 @@ export default (state = INITIAL_STATE, action={}) => {
 			return {
 				...state,
 				queryParameterStack : newStack,
-				isFetchingData : false
+				isFetchingFields : false
 			};
 
 
