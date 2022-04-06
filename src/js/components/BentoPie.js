@@ -39,7 +39,7 @@ const BentoPie = ({ title, data, height }) => {
 
   const [activeIndex, setActiveIndex] = useState(undefined);
 
-  data = data.filter((e) => e.value !== 0);
+  data = data.filter((e) => e.y !== 0);
   const bentoFormatData = data.map((e) => ({ name: e.x, value: e.y }));
   const totalCount = bentoFormatData.reduce((sum, e) => sum + e.value, 0);
 
