@@ -1,5 +1,5 @@
 // Header.js
-import React from "react";
+import React, {useEffect} from "react";
 import { connect, useSelector } from "react-redux";
 import { PageHeader, Button } from "antd";
 import { client } from "../constants";
@@ -7,8 +7,10 @@ import { client } from "../constants";
 const Header = () => {
   const portalUrl = useSelector((state) => state.config.portalUrl);
 
-  document.title = "Bento-Public : " + client;
-
+  useEffect(() => {
+    document.title = "Bento-Public : " + client;
+  }, []);
+  
   const buttonHandler = (url) => {
     window.open(url, "_blank");
   };
