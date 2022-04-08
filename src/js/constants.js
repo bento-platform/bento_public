@@ -4,7 +4,6 @@ export const debug = (DEBUG.toLowerCase() === 'true');
 export const client = CLIENT;
 export const maxQueryParameters = MAX_QUERY_PARAMETERS;
 
-
 export const configUrl = HOST + "/config";
 export const publicOverviewUrl = HOST + "/overview";
 export const queryableFieldsUrl = HOST + "/fields";
@@ -44,8 +43,6 @@ export const COLORS = [
   "#abd9e9",
   "#74add1",
   "#4575b4",
-
-
 ]
 
 export const BAR_CHART_FILL = "#4575b4"

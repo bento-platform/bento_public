@@ -10,34 +10,17 @@ import PublicOverview from './PublicOverview'
 import QueryParameter from './QueryParameter'
 
 import { 
-    configUrl,
-    publicOverviewUrl,
-    queryableFieldsUrl, 
-    katsuUrl 
-} from "../constants"
-
-import { 
     makeGetConfigRequest,
     makeGetOverviewRequest,
     makeGetQueryableFieldsRequest, 
     makeGetKatsuPublic,
-
-    addQueryParameterToCheckedStack, 
-    removeQueryParameterFromCheckedStack
 } from "../action";
-
-
 
 
 class Search extends React.Component {
 
     constructor(props) {
         super(props)
-    
-        // fetch data from server
-        this.props.makeGetConfigRequest(configUrl);
-        this.props.makeGetOverviewRequest(publicOverviewUrl);
-        this.props.makeGetQueryableFieldsRequest(queryableFieldsUrl);
     }
 
     queryKatsuPublic() {
@@ -47,12 +30,8 @@ class Search extends React.Component {
 
     render() {
         const { 
-            queryableFields, 
             queryResponseData, 
             isFetchingData,
-            isFetchingConfig,
-            isFetchingFields,
-            isFetchingOverview,
             queryParameterStack } = this.props;
 
         return (
@@ -107,18 +86,11 @@ const mapDispatchToProps = {
     makeGetQueryableFieldsRequest,
     makeGetOverviewRequest,
     makeGetKatsuPublic,
-    addQueryParameterToCheckedStack,
-    removeQueryParameterFromCheckedStack
 }
 
 const mapStateToProps = state => ({
-	queryableFields: state.queryableFields,
 	queryResponseData: state.queryResponseData,
 	isFetchingData: state.isFetchingData,
-	isFetchingConfig: state.isFetchingConfig,
-	isFetchingOverview: state.isFetchingOverview,
-	isFetchingFields: state.isFetchingFields,
-
     queryParameterStack: state.queryParameterStack
 });
 

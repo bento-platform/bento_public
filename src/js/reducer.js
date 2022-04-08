@@ -6,7 +6,6 @@ const INITIAL_STATE = {
 	isFetchingConfig: false,
 	overview: {},
 	isFetchingOverview: false,
-	queryableFields: {},
 	isFetchingFields: false,
 	queryParameterStack: [],
 	queryParameterCheckedStack: [],
@@ -56,14 +55,6 @@ export default (state = INITIAL_STATE, action={}) => {
 				queryResponseData : action.content.queryResponseData,
 				isFetchingData : false
 			};
-		case "SET_QUERYABLE_FIELDS":
-			return {
-				...state,
-				queryableFields : action.content.queryableFields,
-				isFetchingFields : false
-			};
-
-
 		case "SET_QUERY_PARAMETER_STACK":
 			debuglog("Reducing SET_QUERY_PARAMETER_STACK")
 
