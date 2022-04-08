@@ -1,7 +1,7 @@
 // Dashboard.js
 import React from "react";
 import { connect } from "react-redux";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, Spinner } from "react-bootstrap";
 import { Divider } from "antd";
 import BentoPie from "./BentoPie";
 import BentoBarChart from "./BentoBarChart";
@@ -33,7 +33,7 @@ class PublicOverview extends React.Component {
                     // verify 'overview'
                     typeof overview == undefined || Object.keys(overview).length === 0 
                     ? // display message if there is no data
-                    <></> 
+                    <Spinner animation="border" />
                     : // display the available data 
                     <Row>
                     {
