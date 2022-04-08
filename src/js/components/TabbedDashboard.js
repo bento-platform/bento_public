@@ -6,7 +6,7 @@ import { configUrl, publicOverviewUrl, queryableFieldsUrl } from "../constants";
 import { makeGetConfigRequest, makeGetOverviewRequest, makeGetQueryableFieldsRequest } from "../action";
 
 const TabbedDashboard = ({}) => {
-  const visibleTab = useSelector((state) => state.visibleTab);
+  const activeTab = useSelector((state) => state.activeTab);
   const dispatch = useDispatch();
 
   // fetch data from server on first render
@@ -22,7 +22,7 @@ const TabbedDashboard = ({}) => {
       {{
         Overview: <PublicOverview />,
         Search: <Search />,
-      }[visibleTab] || <PublicOverview />}
+      }[activeTab] || <PublicOverview />}
     </>
   );
 };

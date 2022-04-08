@@ -29,7 +29,7 @@ import {
 
 
 
-class Dashboard extends React.Component {
+class Search extends React.Component {
 
     constructor(props) {
         super(props)
@@ -57,14 +57,6 @@ class Dashboard extends React.Component {
 
         return (
             <Container>
-                <Row>
-                    <Col>
-                        <h2>Overview: </h2>
-                        <Spinner animation="border" hidden={!isFetchingConfig && !isFetchingFields && !isFetchingOverview}/>
-
-                        <PublicOverview/>
-                    </Col>
-                </Row>
                 <Row>
                     <span>Search :</span>
                 </Row>
@@ -130,4 +122,4 @@ const mapStateToProps = state => ({
     queryParameterStack: state.queryParameterStack
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
+export default connect(mapStateToProps, mapDispatchToProps)(Search);

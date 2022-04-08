@@ -2,14 +2,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-
-import * as V from 'victory';
-
-import Dashboard from "./components/Dashboard";
+import TabbedDashboard from "./components/TabbedDashboard";
 import Header from "./components/Header"
-
 import store from "./store";
-
 import { Layout } from 'antd';
 const { Content } = Layout;
 
@@ -18,7 +13,7 @@ const BentoApp = () => {
     <Layout>
       <Content>
         <Header/>
-        <Dashboard/>
+        <TabbedDashboard/>
       </Content>
     </Layout>
   );

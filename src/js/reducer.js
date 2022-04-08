@@ -11,7 +11,8 @@ const INITIAL_STATE = {
 	queryParameterStack: [],
 	queryParameterCheckedStack: [],
 	queryResponseData: {},
-	isFetchingData: false
+	isFetchingData: false,
+	activeTab: ""
 }
 
 export default (state = INITIAL_STATE, action={}) => {
@@ -100,6 +101,13 @@ export default (state = INITIAL_STATE, action={}) => {
 				...state,
 				queryParameterCheckedStack : newStack,
 			};		
+
+		case "SET_ACTIVE_TAB":
+			console.log({action: action})
+			return {
+				...state,
+				activeTab : action.content.activeTab
+			};
 		default:
 			return state;
 	}
