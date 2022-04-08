@@ -1,7 +1,7 @@
 // Dashboard.js
 import React from "react";
 import { connect } from "react-redux";
-import { Row, Col, Spinner } from "react-bootstrap";
+import { Row, Col, Container, Spinner } from "react-bootstrap";
 import { Divider } from "antd";
 import BentoPie from "./BentoPie";
 import BentoBarChart from "./BentoBarChart";
@@ -28,7 +28,7 @@ class PublicOverview extends React.Component {
         }
 
         return (
-            <>
+            <Container>
                 {
                     // verify 'overview'
                     typeof overview == undefined || Object.keys(overview).length === 0 
@@ -200,7 +200,7 @@ class PublicOverview extends React.Component {
                     </Row>
                 }
                 <Divider />
-            </>
+            </Container>
         );
 	}
 }
