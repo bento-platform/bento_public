@@ -11,7 +11,7 @@ const INITIAL_STATE = {
 	queryParameterCheckedStack: [],
 	queryResponseData: {},
 	isFetchingData: false,
-	activeTab: ""
+	activeTab: "Overview"
 }
 
 export default (state = INITIAL_STATE, action={}) => {
