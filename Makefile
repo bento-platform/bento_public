@@ -17,6 +17,9 @@ run-public:
 run-public-dev: 
 	docker-compose -f docker-compose.dev.yaml up -d public
 
+stop-public:
+	docker-compose -f docker-compose.yaml stop public
+
 clean-public:
 	docker rm ${BENTO_PUBLIC_CONTAINER_NAME} --force; \
 	docker rmi ${BENTO_PUBLIC_IMAGE}:${BENTO_PUBLIC_VERSION} --force;
