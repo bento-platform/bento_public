@@ -338,14 +338,6 @@ const removeQueryParameterFromCheckedStack = (item) => async (dispatch, getState
     }
 }
 
-
-const setActiveTab = (tab) => async (dispatch, getState) => {
-    dispatch(setContent("SET_ACTIVE_TAB", {
-        "activeTab": tab
-    }));
-}
-
-
 export {
     makeGetConfigRequest,
     makeGetQueryableFieldsRequest,
@@ -354,5 +346,4 @@ export {
     addQueryParameterToCheckedStack,
     updateQueryParameterValueInCheckedStack,
     removeQueryParameterFromCheckedStack,
-    setActiveTab
 }

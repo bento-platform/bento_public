@@ -6,7 +6,7 @@ import { JsonFormatter } from 'react-json-formatter'
 import { Row, Col } from 'react-bootstrap'
 import Spinner from 'react-bootstrap/Spinner'
 
-import PublicOverview from './PublicOverview'
+// do not remove, needed even though not referenced here
 import QueryParameter from './QueryParameter'
 
 import { 
@@ -36,9 +36,6 @@ class Search extends React.Component {
 
         return (
             <Container>
-                <Row>
-                    <span>Search :</span>
-                </Row>
                 <Row>
                     <Col sm={{ span: 10 }}>
                     {
