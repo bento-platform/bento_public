@@ -338,14 +338,12 @@ const removeQueryParameterFromCheckedStack = (item) => async (dispatch, getState
     }
 }
 
-
 export {
     makeGetConfigRequest,
     makeGetQueryableFieldsRequest,
     makeGetOverviewRequest,
     makeGetKatsuPublic,
-
     addQueryParameterToCheckedStack,
     updateQueryParameterValueInCheckedStack,
-    removeQueryParameterFromCheckedStack
+    removeQueryParameterFromCheckedStack,
 }

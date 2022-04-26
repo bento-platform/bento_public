@@ -1,0 +1,4 @@
+/* reduce gap between tab title and active tab indicator */
+.ant-tabs-ink-bar {
+    bottom: 25px !important;
+}

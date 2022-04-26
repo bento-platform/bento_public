@@ -1,5 +1,6 @@
 import React from "react";
 import { BarChart, Bar, Cell, XAxis, YAxis, Tooltip, Label } from "recharts";
+import {BAR_CHART_FILL, BAR_CHART_MISSING_FILL} from "../constants"
 
 const ASPECT_RATIO = 1.2;
 const MAX_TICK_LABEL_CHARS = 15;
@@ -31,7 +32,7 @@ const BentoBarChart = ({ title, data, units, height }) => {
   };
 
   const fill = (entry) => {
-    return entry.x == "missing" ? MISSING_FILL_COLOUR : FILL_COLOUR;
+    return entry.x == "missing" ? BAR_CHART_MISSING_FILL : BAR_CHART_FILL;
   };
 
   const totalCount = data.reduce((sum, e) => sum + e.y, 0);
