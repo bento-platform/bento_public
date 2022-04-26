@@ -18,15 +18,20 @@ const TabbedDashboard = ({}) => {
     dispatch(makeGetQueryableFieldsRequest(queryableFieldsUrl));
   }, []);
 
+  const tabTitleStyle = {fontSize: "20px", fontWeight: 600}
+  const tabBarStyle = {marginBottom: "20px"}
+
+  const overviewTabTitle = <p style={tabTitleStyle}>Overview</p>
+  const searchTabTitle = <p style={tabTitleStyle}>Search</p>
+
   return (
     <div style={{paddingLeft: "25px"}}>
-    <Tabs defaultActiveKey="overview" size="large">
-      <TabPane tab="Overview" key="overview" size="large"><PublicOverview /></TabPane>
-      <TabPane tab="Search" key="search"><Search /></TabPane>
+    <Tabs defaultActiveKey="overview" size="large" tabBarStyle={tabBarStyle} centered>
+      <TabPane tab={overviewTabTitle} key="overview" size="large"><PublicOverview /></TabPane>
+      <TabPane tab={searchTabTitle} key="search"><Search /></TabPane>
     </Tabs>
     </div>
   )
-
 
 };
 

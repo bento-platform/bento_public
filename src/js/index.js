@@ -6,6 +6,7 @@ import TabbedDashboard from "./components/TabbedDashboard";
 import Header from "./components/Header"
 import store from "./store";
 import { Layout } from 'antd';
+import "../styles.css"
 const { Content } = Layout;
 
 const BentoApp = () => {
