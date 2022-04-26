@@ -1,39 +1,35 @@
 // Header.js
-import React from "react";
-import { connect } from "react-redux";
+import React, {useEffect} from "react";
+import { useSelector } from "react-redux";
+import { PageHeader, Button } from "antd";
+import { client } from "../constants";
 
-import { client, portalUrl } from "../constants"
-import { PageHeader, Button } from 'antd';
 
-class Header extends React.Component {
+const Header = () => {
+  const portalUrl = useSelector((state) => state.config.portalUrl);
+  useEffect(() => {
+    document.title = "Bento-Public : " + client;
+  }, []);
+  
+  const buttonHandler = (url) => {
+    window.open(url, "_blank");
+  };
 
-    componentDidMount() {
-        document.title = "Bento-Public : " + client;
-    }
+  return (
+    <div className="site-page-header-ghost-wrapper">
+      <PageHeader
+        ghost={false}
+        title="Bento-Public"
+        subTitle={client}
+        extra={[<>
+          <Button key="0" onClick={() => buttonHandler(portalUrl)}>
+            Portal
+          </Button>
+          </>
+        ]}
+      />
+    </div>
+  );
+};
 
-    buttonHandler(url) {
-        window.open(url, "_blank")
-    }
-    render() {
-        const { portalUrl } = this.props;
-        return (
-            <div className="site-page-header-ghost-wrapper">
-                <PageHeader
-                    ghost={false}
-                    title="Bento-Public"
-                    subTitle={client}
-                    extra={[
-                        <Button key="0" onClick={() => this.buttonHandler(portalUrl)}>Portal</Button>
-                    ]} />
-            </div>
-        );
-	}
-}
-
-const mapDispatchToProps = {}
-
-const mapStateToProps = state => ({
-    portalUrl: state.config.portalUrl
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+export default Header;

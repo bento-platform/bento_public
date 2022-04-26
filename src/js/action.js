@@ -17,7 +17,7 @@ const setContent = (type, content) => {
 // facilitate retrieving katsu public-overview data from server
 const makeGetConfigRequest = (url) => async (dispatch) => {
     try {
-        dispatch(setContent("SET_FETCHING_DATA", {
+        dispatch(setContent("SET_FETCHING_CONFIG", {
             "fetch": true
         }));
         // simulate network lag
@@ -40,7 +40,7 @@ const makeGetConfigRequest = (url) => async (dispatch) => {
                     console.log('Error', error.message);
                 }
 
-                dispatch(setContent("SET_FETCHING_DATA", {
+                dispatch(setContent("SET_FETCHING_CONFIG", {
                     "fetch": false
                 }));
             });
@@ -52,7 +52,7 @@ const makeGetConfigRequest = (url) => async (dispatch) => {
     } catch (err){
         console.log(err);
 
-        dispatch(setContent("SET_FETCHING_DATA", {
+        dispatch(setContent("SET_FETCHING_CONFIG", {
             "fetch": false
         }));
     }
@@ -60,7 +60,7 @@ const makeGetConfigRequest = (url) => async (dispatch) => {
 
 const makeGetOverviewRequest = (url) => async (dispatch) => {
     try {
-        dispatch(setContent("SET_FETCHING_DATA", {
+        dispatch(setContent("SET_FETCHING_OVERVIEW", {
             "fetch": true
         }));
         // simulate network lag
@@ -83,7 +83,7 @@ const makeGetOverviewRequest = (url) => async (dispatch) => {
                     console.log('Error', error.message);
                 }
 
-                dispatch(setContent("SET_FETCHING_DATA", {
+                dispatch(setContent("SET_FETCHING_OVERVIEW", {
                     "fetch": false
                 }));
             });
@@ -95,7 +95,7 @@ const makeGetOverviewRequest = (url) => async (dispatch) => {
     } catch (err){
         console.log(err);
 
-        dispatch(setContent("SET_FETCHING_DATA", {
+        dispatch(setContent("SET_FETCHING_OVERVIEW", {
             "fetch": false
         }));
     }
@@ -104,7 +104,7 @@ const makeGetOverviewRequest = (url) => async (dispatch) => {
 // retrieve queryable fields
 const makeGetQueryableFieldsRequest = (url) => async (dispatch) => {
     try {
-        dispatch(setContent("SET_FETCHING_DATA", {
+        dispatch(setContent("SET_FETCHING_FIELDS", {
             "fetch": true
         }));
         
@@ -127,7 +127,7 @@ const makeGetQueryableFieldsRequest = (url) => async (dispatch) => {
                     console.log('Error', error.message);
                 }
 
-                dispatch(setContent("SET_FETCHING_DATA", {
+                dispatch(setContent("SET_FETCHING_FIELDS", {
                     "fetch": false
                 }));
             });
@@ -162,7 +162,7 @@ const makeGetQueryableFieldsRequest = (url) => async (dispatch) => {
     } catch (err){
         console.log(err);
 
-        dispatch(setContent("SET_FETCHING_DATA", {
+        dispatch(setContent("SET_FETCHING_FIELDS", {
             "fetch": false
         }));
     }
@@ -338,14 +338,12 @@ const removeQueryParameterFromCheckedStack = (item) => async (dispatch, getState
     }
 }
 
-
 export {
     makeGetConfigRequest,
     makeGetQueryableFieldsRequest,
     makeGetOverviewRequest,
     makeGetKatsuPublic,
-
     addQueryParameterToCheckedStack,
     updateQueryParameterValueInCheckedStack,
-    removeQueryParameterFromCheckedStack
+    removeQueryParameterFromCheckedStack,
 }

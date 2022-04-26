@@ -3,12 +3,14 @@ import { debuglog } from "./utils"
 
 const INITIAL_STATE = {
 	config: {},
+	isFetchingConfig: false,
 	overview: {},
-	queryableFields: {},
+	isFetchingOverview: false,
+	isFetchingFields: false,
 	queryParameterStack: [],
 	queryParameterCheckedStack: [],
 	queryResponseData: {},
-	isFetchingData: false
+	isFetchingData: false,
 }
 
 export default (state = INITIAL_STATE, action={}) => {
@@ -18,18 +20,33 @@ export default (state = INITIAL_STATE, action={}) => {
 				...state,
 				isFetchingData : action.content.fetch
 			};
-
+		case "SET_FETCHING_CONFIG":
+			return {
+				...state,
+				isFetchingConfig : action.content.fetch
+			};
+		case "SET_FETCHING_OVERVIEW":
+			return {
+				...state,
+				isFetchingOverview : action.content.fetch
+			};
+		case "SET_FETCHING_FIELDS":
+			return {
+				...state,
+				isFetchingFields : action.content.fetch
+			};
+		
 		case "SET_CONFIG":
 			return {
 				...state,
 				config : action.content.config,
-				isFetchingData : false
+				isFetchingConfig : false
 			};
 		case "SET_OVERVIEW":
 			return {
 				...state,
 				overview : action.content.overview,
-				isFetchingData : false
+				isFetchingOverview : false
 			};
 		case "SET_QUERY_RESPONSE_DATA":
 			return {
@@ -37,14 +54,6 @@ export default (state = INITIAL_STATE, action={}) => {
 				queryResponseData : action.content.queryResponseData,
 				isFetchingData : false
 			};
-		case "SET_QUERYABLE_FIELDS":
-			return {
-				...state,
-				queryableFields : action.content.queryableFields,
-				isFetchingData : false
-			};
-
-
 		case "SET_QUERY_PARAMETER_STACK":
 			debuglog("Reducing SET_QUERY_PARAMETER_STACK")
 
@@ -55,7 +64,7 @@ export default (state = INITIAL_STATE, action={}) => {
 			return {
 				...state,
 				queryParameterStack : newStack,
-				isFetchingData : false
+				isFetchingFields : false
 			};
 
 
@@ -82,6 +91,7 @@ export default (state = INITIAL_STATE, action={}) => {
 				...state,
 				queryParameterCheckedStack : newStack,
 			};		
+
 		default:
 			return state;
 	}
