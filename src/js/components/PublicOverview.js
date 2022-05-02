@@ -49,25 +49,21 @@ class PublicOverview extends React.Component {
                         let key = item[0];
                         let value = item[1];
 
-                        // let field = queryableFields[key]
-                        var field = queryParameterStack.find((e) => e.hasOwnProperty("key") && e.key == key)
-                          ?.props?.Item;
+                        console.log({PUBLIC_CHART_ITEM: item})
+                        const chartParams = queryParameterStack.find((e) => e.hasOwnProperty("key") && e.key == key)
 
-                        // determine title
-                        var title =
-                          queryParameterStack.find((e) => e.hasOwnProperty("key") && e.key == key)?.props
-                            ?.Item?.title ?? "-";
-                        var type =
-                          queryParameterStack.find((e) => e.hasOwnProperty("key") && e.key == key)?.props
-                            ?.Item?.type ?? "-";
-                        var chart =
-                          queryParameterStack.find((e) => e.hasOwnProperty("key") && e.key == key)?.props
-                            ?.Item?.chart ?? "-";
-                        var units =
-                          queryParameterStack.find((e) => e.hasOwnProperty("key") && e.key == key)?.props
-                            ?.Item?.units ?? "";
+                        console.log({chartParams: chartParams})
+                        if (!chartParams){
+                          return null
+                        }
 
-                        var qpList = [];
+                        const field = chartParams.props?.Item;
+                        const title = chartParams.props?.Item?.title ?? "-";
+                        const type = chartParams.props?.Item?.type ?? "-";
+                        const chart = chartParams.props?.Item?.chart ?? "-";
+                        const units = chartParams.props?.Item?.units ?? "";
+
+                        const qpList = [];
 
                         // skip extra_properties and only iterate over actual objects
                         if (
