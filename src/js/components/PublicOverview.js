@@ -50,18 +50,18 @@ class PublicOverview extends React.Component {
                         let value = item[1];
 
                         console.log({PUBLIC_CHART_ITEM: item})
-                        const chartParams = queryParameterStack.find((e) => e.hasOwnProperty("key") && e.key == key)
+                        const field = queryParameterStack.find((e) => e.hasOwnProperty("key") && e.key == key)?.props?.Item;
 
-                        console.log({chartParams: chartParams})
-                        if (!chartParams){
+                        console.log({field: field})
+                        if (!field){
                           return null
                         }
 
-                        const field = chartParams.props?.Item;
-                        const title = chartParams.props?.Item?.title ?? "-";
-                        const type = chartParams.props?.Item?.type ?? "-";
-                        const chart = chartParams.props?.Item?.chart ?? "-";
-                        const units = chartParams.props?.Item?.units ?? "";
+                        const title = field.title ?? "-";
+                        const type = field.type ?? "-";
+                        const chart = field.chart ?? "-";
+                        const units = field.units ?? "";
+                        const orderedCategories = field.enum;
 
                         const qpList = [];
 
