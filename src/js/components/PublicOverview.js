@@ -14,6 +14,22 @@ class PublicOverview extends React.Component {
         };
     }    
 
+    orderCategories = (data, ordering) => {
+      return data.sort((a,b) => {
+          let aIndex = ordering.indexOf(a.x)
+          let bIndex = ordering.indexOf(b.x)
+  
+          // send any categories not found to end of array
+          if (aIndex < 0) {
+              aIndex = Number.MAX_VALUE
+          }
+          if (bIndex < 0)[
+              bIndex = Number.MAX_VALUE
+          ]
+          return aIndex - bIndex
+      } )
+    }
+
     render() {
         const { overview, queryParameterStack } = this.props;
         // type check
@@ -49,10 +65,7 @@ class PublicOverview extends React.Component {
                         let key = item[0];
                         let value = item[1];
 
-                        console.log({PUBLIC_CHART_ITEM: item})
                         const field = queryParameterStack.find((e) => e.hasOwnProperty("key") && e.key == key)?.props?.Item;
-
-                        console.log({field: field})
                         if (!field){
                           return null
                         }
@@ -61,9 +74,9 @@ class PublicOverview extends React.Component {
                         const type = field.type ?? "-";
                         const chart = field.chart ?? "-";
                         const units = field.units ?? "";
-                        const orderedCategories = field.enum;
+                        const categoryOrdering = field.enum;
 
-                        const qpList = [];
+                        let qpList = [];
 
                         // skip extra_properties and only iterate over actual objects
                         if (
@@ -167,6 +180,11 @@ class PublicOverview extends React.Component {
                           if (missingObject != undefined && missingObject.length > 0) {
                             // fancy one liner to splice the object out and re-append it
                             qpList.push(qpList.splice(qpList.indexOf(missingObject[0]), 1)[0]);
+                          }
+
+                          // order categories according to config file, where applicable
+                          if (categoryOrdering){
+                            qpList = this.orderCategories(qpList, categoryOrdering)
                           }
 
                           if (type == "number") {
