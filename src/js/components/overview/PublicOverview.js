@@ -26,8 +26,6 @@ const PublicOverview = ({ overview, queryParameterStack }) => {
     arr[index].data = parseData(chart);
   });
 
-  console.log('data', all_charts);
-
   return (
     <Container>
       <Row>
@@ -43,7 +41,7 @@ const PublicOverview = ({ overview, queryParameterStack }) => {
           </Typography.Title>
         </div>
         <OverviewDisplayData
-          all_charts={all_charts_obj}
+          all_charts={all_charts}
           queryParameterStack={queryParameterStack}
         />
       </Row>

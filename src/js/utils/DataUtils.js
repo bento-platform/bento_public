@@ -1,4 +1,4 @@
-export const orderCategories = (data, ordering) =>
+const orderCategories = (data, ordering) =>
   data.sort((a, b) => {
     let aIndex = ordering.indexOf(a.x);
     let bIndex = ordering.indexOf(b.x);
@@ -11,7 +11,7 @@ export const orderCategories = (data, ordering) =>
     return aIndex - bIndex;
   });
 
-export const parseDateData = (inputData) => {
+const parseDateData = (inputData) => {
   const formattedData = [];
 
   Object.keys(inputData).forEach((_key) => {
@@ -39,12 +39,7 @@ export const parseDateData = (inputData) => {
   return formattedData;
 };
 
-export const parseNumericalData = (
-  inputData,
-  leftTaper,
-  rightTaper,
-  binSize
-) => {
+const parseNumericalData = (inputData, leftTaper, rightTaper, binSize) => {
   let formattedData = [];
   let taperLeft, taperRight;
 
@@ -97,7 +92,7 @@ export const parseNumericalData = (
   return formattedData;
 };
 
-export const parseDataGeneral = (inputData) =>
+const parseDataGeneral = (inputData) =>
   Object.keys(inputData).map((key) => ({ x: key, y: inputData[key] }));
 
 export const binMissingData = (data) => {
