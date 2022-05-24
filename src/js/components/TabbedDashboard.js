@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useDispatch, connect } from 'react-redux';
+import { useDispatch, connect, useSelector } from 'react-redux';
 import { Tabs } from 'antd';
 import Search from './Search';
 import PublicOverview from './overview/PublicOverview';
@@ -28,6 +28,8 @@ const TabbedDashboard = ({ overview, queryParameterStack }) => {
 
   const overviewTabTitle = <p style={tabTitleStyle}>Overview</p>;
   const searchTabTitle = <p style={tabTitleStyle}>Search</p>;
+
+  // const overviewState = useSelector();
 
   return (
     <div style={{ paddingLeft: '25px' }}>

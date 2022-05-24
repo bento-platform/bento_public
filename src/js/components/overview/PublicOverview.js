@@ -45,6 +45,7 @@ const PublicOverview = ({ overview, queryParameterStack }) => {
           queryParameterStack={queryParameterStack}
         />
       </Row>
+
       <Divider />
     </Container>
   );

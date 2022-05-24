@@ -9,15 +9,10 @@ const Chart = ({ chartType, data, title, units }) => {
     switch (chartType) {
       case 'bar':
         return (
-          <BentoBarChart
-            title={title}
-            data={data}
-            height={CHART_HEIGHT}
-            units={units}
-          />
+          <BentoBarChart data={data} height={CHART_HEIGHT} units={units} />
         );
       case 'pie':
-        return <BentoPie title={title} data={data} height={CHART_HEIGHT} />;
+        return <BentoPie data={data} height={CHART_HEIGHT} />;
       default:
         return <p>chart type doesnt exists</p>;
     }
