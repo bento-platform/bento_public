@@ -1,14 +1,12 @@
 import React, { useEffect } from 'react';
-import { useDispatch, connect, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Tabs } from 'antd';
 import Search from './Search';
 import PublicOverview from './overview/PublicOverview';
-import { configUrl, publicOverviewUrl, queryableFieldsUrl } from '../constants';
-import {
-  makeGetConfigRequest,
-  makeGetOverviewRequest,
-  makeGetQueryableFieldsRequest,
-} from '../action';
+
+import { makeGetDataRequest } from '../features/data';
+import { makeGetConfigRequest } from '../features/config';
+
 import Loader from './Loader';
 
 const { TabPane } = Tabs;
@@ -18,9 +16,8 @@ const TabbedDashboard = () => {
 
   // fetch data from server on first render
   useEffect(() => {
-    dispatch(makeGetConfigRequest(configUrl));
-    dispatch(makeGetOverviewRequest(publicOverviewUrl));
-    dispatch(makeGetQueryableFieldsRequest(queryableFieldsUrl));
+    dispatch(makeGetConfigRequest());
+    dispatch(makeGetDataRequest());
   }, []);
 
   const tabTitleStyle = { fontSize: '20px', fontWeight: 600 };
@@ -29,7 +26,9 @@ const TabbedDashboard = () => {
   const overviewTabTitle = <p style={tabTitleStyle}>Overview</p>;
   const searchTabTitle = <p style={tabTitleStyle}>Search</p>;
 
-  const { overview, queryParameterStack } = useSelector((state) => state);
+  const { overview, queryParameterStack, isFetchingData } = useSelector(
+    (state) => state.data
+  );
 
   return (
     <div style={{ paddingLeft: '25px' }}>
@@ -40,7 +39,7 @@ const TabbedDashboard = () => {
         centered
       >
         <TabPane tab={overviewTabTitle} key="overview" size="large">
-          {overview?.overview ? (
+          {!isFetchingData ? (
             <PublicOverview
               overview={overview.overview}
               queryParameterStack={queryParameterStack}

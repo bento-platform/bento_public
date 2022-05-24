@@ -2,29 +2,12 @@ import React from 'react';
 import { Row, Container } from 'react-bootstrap';
 import { Divider, Typography } from 'antd';
 
-import { parseData } from '../../utils/DataUtils';
+import { useSelector } from 'react-redux';
 
 import OverviewDisplayData from './OverviewDisplayData';
 
-const PublicOverview = ({ overview, queryParameterStack }) => {
-  const all_charts_obj = { ...overview, ...overview.extra_properties };
-  delete all_charts_obj.extra_properties;
-  delete all_charts_obj.individuals;
-
-  const all_charts = Object.entries(all_charts_obj).map((item) => ({
-    name: item[0],
-    data: item[1],
-  }));
-
-  all_charts.forEach((chart, index, arr) => {
-    arr[index].properties = queryParameterStack.find(
-      (e) => e?.key == chart.name
-    )?.props?.Item;
-  });
-
-  all_charts.forEach((chart, index, arr) => {
-    arr[index].data = parseData(chart);
-  });
+const PublicOverview = () => {
+  const { chartData, individuals } = useSelector((state) => state.data);
 
   return (
     <Container>
@@ -37,13 +20,10 @@ const PublicOverview = ({ overview, queryParameterStack }) => {
           }}
         >
           <Typography.Title level={5}>
-            Individuals: {overview.individuals}
+            Individuals: {individuals}
           </Typography.Title>
         </div>
-        <OverviewDisplayData
-          all_charts={all_charts}
-          queryParameterStack={queryParameterStack}
-        />
+        <OverviewDisplayData allCharts={chartData} />
       </Row>
 
       <Divider />

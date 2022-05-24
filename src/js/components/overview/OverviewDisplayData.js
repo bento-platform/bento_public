@@ -3,8 +3,8 @@ import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
 import MakeChartCard from './MakeChartCard';
 import NewChartCard from './NewChartCard';
 
-const OverviewDisplayData = ({ all_charts }) => {
-  const [orderedCharts, setOrderedCharts] = useState(all_charts);
+const OverviewDisplayData = ({ allCharts }) => {
+  const [orderedCharts, setOrderedCharts] = useState(allCharts);
 
   console.log('ordered charts = ', orderedCharts);
 
@@ -59,7 +59,7 @@ const OverviewDisplayData = ({ all_charts }) => {
       <ManageChartsDrawer
         onManageDrawerClose={onClose}
         manageDrawerVisible={visible}
-        allCharts={all_charts.map((e) => ({
+        allCharts={allCharts.map((e) => ({
           name: e.name,
         }))}
       />

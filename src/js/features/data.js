@@ -1,75 +1,87 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { debuglog } from './utils';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
+import { publicOverviewUrl, queryableFieldsUrl } from '../constants';
+import { parseData } from '../utils/DataUtils';
 
-export const dataSlice = createSlice({
+// TODO: convert this to a serialisable function (to check remove middleware)
+export const makeGetDataRequest = createAsyncThunk(
+  'data/getConfigData',
+  async () => {
+    const [ov, f] = await Promise.all([
+      axios.get(publicOverviewUrl),
+      axios.get(queryableFieldsUrl),
+    ]);
+    return { overview: ov.data.overview, queryParameterStack: f.data };
+  }
+);
+
+const initialState = {
+  fields: {},
+  isFetchingData: true,
+  overview: {},
+  chartData: [],
+  individuals: 0,
+  queryParameterStack: {},
+};
+
+const data = createSlice({
   name: 'data',
-  initialState: {
-    config: {},
-    isFetchingConfig: false,
-    overview: {},
-    isFetchingOverview: false,
-    isFetchingFields: false,
-    queryParameterStack: [],
-    queryParameterCheckedStack: [],
-    queryResponseData: {},
-    isFetchingData: false,
-  },
-  reducers: {
-    SET_FETCHING_DATA: (state, action) => {
-      state.isFetchingData = action.content.fetch;
+  initialState,
+  reducers: {},
+  extraReducers: {
+    [makeGetDataRequest.pending]: (state) => {
+      state.isFetchingData = true;
     },
-    SET_FETCHING_CONFIG: (state, action) => {
-      state.isFetchingConfig = action.content.fetch;
-    },
-    SET_FETCHING_OVERVIEW: (state, action) => {
-      state.isFetchingOverview = action.content.fetch;
-    },
-    SET_FETCHING_FIELDS: (state, action) => {
-      state.isFetchingFields = action.content.fetch;
-    },
-    SET_CONFIG: (state, action) => {
-      state.config = action.content.config;
-      state.isFetchingConfig = false;
-    },
-    SET_OVERVIEW: (state, action) => {
-      (state.overview = action.content.overview),
-        (state.isFetchingOverview = false);
-    },
-    SET_QUERY_RESPONSE_DATA: (state, action) => {
-      (state.queryResponseData = action.content.queryResponseData),
-        (state.isFetchingData = false);
-    },
-    SET_QUERY_PARAMETER_STACK: (state, action) => {
-      debuglog('Reducing SET_QUERY_PARAMETER_STACK');
+    [makeGetDataRequest.fulfilled]: (state, { payload }) => {
+      const overview = payload.overview;
+      const queryParameterStack = payload.queryParameterStack;
+      const individuals = overview.individuals;
 
-      debuglog('Current stack: ' + state.queryParameterStack);
-      const newStack = action.content.items;
-      debuglog('New stack: ' + newStack);
+      let fields = {
+        ...queryParameterStack,
+        ...queryParameterStack.extra_properties,
+      };
+      delete fields.extra_properties;
 
-      state.queryParameterStack = newStack;
-      state.isFetchingFields = false;
+      fields = Object.entries(fields).map((item) => ({
+        name: item[0],
+        data: item[1],
+      }));
+
+      console.log(fields);
+      const all_charts_obj = { ...overview, ...overview.extra_properties };
+      delete all_charts_obj.extra_properties;
+      delete all_charts_obj.individuals;
+
+      console.log(all_charts_obj);
+
+      const all_charts = Object.entries(all_charts_obj).map((item) => ({
+        name: item[0],
+        data: item[1],
+        isDisplayed: true,
+      }));
+      console.log(all_charts);
+
+      all_charts.forEach((chart, index, arr) => {
+        arr[index].properties = fields.find((e) => e.name == chart.name)?.data;
+      });
+      console.log(all_charts);
+      all_charts.forEach((chart, index, arr) => {
+        arr[index].data = parseData(chart);
+      });
+
+      state.queryParameterStack = queryParameterStack;
+      state.overview = overview;
+      state.chartData = all_charts;
+      state.individuals = individuals;
+      state.isFetchingData = false;
     },
-    ADD_QUERY_PARAMETER_TO_CHECKED_STACK: (state, action) => {
-      debuglog('Reducing ADD_QUERY_PARAMETER_TO_CHECKED_STACK');
-
-      debuglog('Current stack: ' + state.queryParameterCheckedStack);
-      const newStack = state.queryParameterCheckedStack.concat([
-        action.content.queryParameter,
-      ]);
-      debuglog('New stack: ' + newStack);
-      state.queryParameterCheckedStack = newStack;
-    },
-    REMOVE_QUERY_PARAMETER_FROM_CHECKED_STACK: (state, action) => {
-      debuglog('Reducing REMOVE_QUERY_PARAMETER_FROM_CHECKED_STACK');
-
-      debuglog('Current stack: ' + state.queryParameterCheckedStack);
-      const newStack = [...state.queryParameterCheckedStack];
-      newStack.splice(action.content.index, 1);
-      debuglog('New stack: ' + newStack);
-
-      state.queryParameterCheckedStack = newStack;
+    [makeGetDataRequest.rejected]: (state) => {
+      state.isFetchingData = false;
     },
   },
 });
 
-export default dataSlice.reducer;
+export const {} = data.actions;
+
+export default data.reducer;
