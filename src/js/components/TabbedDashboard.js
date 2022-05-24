@@ -13,7 +13,7 @@ import Loader from './Loader';
 
 const { TabPane } = Tabs;
 
-const TabbedDashboard = ({ overview, queryParameterStack }) => {
+const TabbedDashboard = () => {
   const dispatch = useDispatch();
 
   // fetch data from server on first render
@@ -29,7 +29,7 @@ const TabbedDashboard = ({ overview, queryParameterStack }) => {
   const overviewTabTitle = <p style={tabTitleStyle}>Overview</p>;
   const searchTabTitle = <p style={tabTitleStyle}>Search</p>;
 
-  // const overviewState = useSelector();
+  const { overview, queryParameterStack } = useSelector((state) => state);
 
   return (
     <div style={{ paddingLeft: '25px' }}>
@@ -57,11 +57,4 @@ const TabbedDashboard = ({ overview, queryParameterStack }) => {
   );
 };
 
-const mapDispatchToProps = {};
-
-const mapStateToProps = (state) => ({
-  overview: state.overview,
-  queryParameterStack: state.queryParameterStack,
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(TabbedDashboard);
+export default TabbedDashboard;
