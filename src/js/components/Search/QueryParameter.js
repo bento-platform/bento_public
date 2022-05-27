@@ -203,139 +203,83 @@ const QueryParameter = ({
     // );
   };
 
-  if (Item.data.queryable) {
-    return (
-      <Row style={{ margin: '1rem' }}>
-        <Col xs={{ span: 2, offset: 2 }}>
-          <Checkbox
-            id={Item.name}
-            checked={state.checked}
-            onChange={(e) => handleCheckboxChange(e)}
-            // disabled={
-            //   this.props.queryParameterCheckedStack.length >= maxQueryParameters &&
-            //   !state.checked
-            // }
-          />
-        </Col>
-        <Col xs={{ span: 3 }} md={{ span: 2 }}>
-          {Item.data.title}
-        </Col>
-        <Col xs={{ span: 1 }}>
-          <Tooltip placement="topLeft" title={Item.data.description}>
-            <QuestionCircleOutlined />
-          </Tooltip>
-        </Col>
-        <Col xs={{ span: 4 }}>
-          {(function () {
-            let _minimum =
-              Item.data.minimum != undefined ? Item.data.minimum : -Infinity;
-            let _maximum =
-              Item.data.maximum != undefined ? Item.data.maximum : Infinity;
+  return (
+    <Row style={{ margin: '1rem' }}>
+      <Col xs={{ span: 2, offset: 2 }}>
+        <Checkbox
+          id={Item.name}
+          checked={state.checked}
+          onChange={(e) => handleCheckboxChange(e)}
+          // disabled={
+          //   this.props.queryParameterCheckedStack.length >= maxQueryParameters &&
+          //   !state.checked
+          // }
+        />
+      </Col>
+      <Col xs={{ span: 3 }} md={{ span: 2 }}>
+        {Item.data.title}
+      </Col>
+      <Col xs={{ span: 1 }}>
+        <Tooltip placement="topLeft" title={Item.data.description}>
+          <QuestionCircleOutlined />
+        </Tooltip>
+      </Col>
+      <Col xs={{ span: 4 }}>
+        {(function () {
+          let _minimum =
+            Item.data.minimum != undefined ? Item.data.minimum : -Infinity;
+          let _maximum =
+            Item.data.maximum != undefined ? Item.data.maximum : Infinity;
 
-            if (Item.data.type == 'string') {
-              // if date
-              if (Item.data.format != undefined && Item.data.format == 'date') {
-                return (
-                  <Row>
-                    <Col xs={{ span: 5 }}>
-                      <DatePicker
-                        id={Item.name}
-                        key={Item.name}
-                        name="date-after"
-                        disabled={!state.checked}
-                        disabledDate={disabledDateAfter}
-                        status={state.error ? 'error' : ''}
-                        onChange={handleDateAfterChange}
-                      />
-                    </Col>
-                    <Col xs={{ span: 2 }} style={{ textAlign: 'center' }}>
-                      to
-                    </Col>
-                    <Col xs={{ span: 5 }}>
-                      <DatePicker
-                        id={Item.name}
-                        key={Item.name}
-                        name="date-before"
-                        disabled={!state.checked}
-                        disabledDate={disabledDateBefore}
-                        status={state.error ? 'error' : ''}
-                        onChange={handleDateBeforeChange}
-                      />
-                    </Col>
-                  </Row>
-                );
-              } else if (Item.data.enum != undefined) {
-                return (
-                  <Select
-                    id={Item.name}
-                    disabled={!state.checked}
-                    showSearch
-                    style={{ width: '100%' }}
-                    onChange={(e) => handleAntdSelectValueChange(e)}
-                  >
-                    <Select.Option key={Item.name} value=""></Select.Option>
-                    {Item.data.enum.map((item) => (
-                      <Select.Option key={item} value={Item.name}>
-                        {item}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                );
-              } else {
-                return (
-                  <Input
-                    onChange={(e) => handleValueChange(e)}
-                    disabled={!state.checked}
-                  />
-                );
-              }
-            } else if (Item.data.type == 'number') {
-              if (Item.data.is_range != undefined && Item.data.is_range) {
-                return (
-                  <Row>
-                    <Col xs={{ span: 4 }}>
-                      <InputNumber
-                        id={Item.name}
-                        name="range-min"
-                        value={state.rangeMin}
-                        step={Item.data.bin_size}
-                        min={_minimum}
-                        max={state.rangeMax - Item.data.bin_size}
-                        disabled={!state.checked}
-                        style={{ maxWidth: '100%' }}
-                        onChange={(e) => handleRangeMinChange(e)}
-                      />
-                    </Col>
-                    <Col xs={{ span: 4 }} style={{ textAlign: 'center' }}>
-                      to
-                    </Col>
-                    <Col xs={{ span: 4 }}>
-                      <InputNumber
-                        id={Item.name}
-                        name="range-max"
-                        value={state.rangeMax}
-                        step={Item.data.bin_size}
-                        min={state.rangeMin + Item.data.bin_size}
-                        max={_maximum}
-                        disabled={!state.checked}
-                        style={{ maxWidth: '100%' }}
-                        onChange={(e) => handleRangeMaxChange(e)}
-                      />
-                    </Col>
-                  </Row>
-                );
-              } else {
-                return (
-                  <InputNumber
-                    id={Item.name}
-                    name="number"
-                    value={state.value}
-                    disabled={!state.checked}
-                    style={{ maxWidth: '100%' }}
-                    onChange={(e) => handleValueChange(e)}
-                  />
-                );
-              }
+          if (Item.data.type == 'string') {
+            // if date
+            if (Item.data.format != undefined && Item.data.format == 'date') {
+              return (
+                <Row>
+                  <Col xs={{ span: 5 }}>
+                    <DatePicker
+                      id={Item.name}
+                      key={Item.name}
+                      name="date-after"
+                      disabled={!state.checked}
+                      disabledDate={disabledDateAfter}
+                      status={state.error ? 'error' : ''}
+                      onChange={handleDateAfterChange}
+                    />
+                  </Col>
+                  <Col xs={{ span: 2 }} style={{ textAlign: 'center' }}>
+                    to
+                  </Col>
+                  <Col xs={{ span: 5 }}>
+                    <DatePicker
+                      id={Item.name}
+                      key={Item.name}
+                      name="date-before"
+                      disabled={!state.checked}
+                      disabledDate={disabledDateBefore}
+                      status={state.error ? 'error' : ''}
+                      onChange={handleDateBeforeChange}
+                    />
+                  </Col>
+                </Row>
+              );
+            } else if (Item.data.enum != undefined) {
+              return (
+                <Select
+                  id={Item.name}
+                  disabled={!state.checked}
+                  showSearch
+                  style={{ width: '100%' }}
+                  onChange={(e) => handleAntdSelectValueChange(e)}
+                >
+                  <Select.Option key={Item.name} value=""></Select.Option>
+                  {Item.data.enum.map((item) => (
+                    <Select.Option key={item} value={Item.name}>
+                      {item}
+                    </Select.Option>
+                  ))}
+                </Select>
+              );
             } else {
               return (
                 <Input
@@ -344,16 +288,68 @@ const QueryParameter = ({
                 />
               );
             }
-          })()}
-        </Col>
-        <Col>
-          <span>{Item.units}</span>
-        </Col>
-      </Row>
-    );
-  }
-
-  return <></>;
+          } else if (Item.data.type == 'number') {
+            if (Item.data.is_range != undefined && Item.data.is_range) {
+              return (
+                <Row>
+                  <Col xs={{ span: 4 }}>
+                    <InputNumber
+                      id={Item.name}
+                      name="range-min"
+                      value={state.rangeMin}
+                      step={Item.data.bin_size}
+                      min={_minimum}
+                      max={state.rangeMax - Item.data.bin_size}
+                      disabled={!state.checked}
+                      style={{ maxWidth: '100%' }}
+                      onChange={(e) => handleRangeMinChange(e)}
+                    />
+                  </Col>
+                  <Col xs={{ span: 4 }} style={{ textAlign: 'center' }}>
+                    to
+                  </Col>
+                  <Col xs={{ span: 4 }}>
+                    <InputNumber
+                      id={Item.name}
+                      name="range-max"
+                      value={state.rangeMax}
+                      step={Item.data.bin_size}
+                      min={state.rangeMin + Item.data.bin_size}
+                      max={_maximum}
+                      disabled={!state.checked}
+                      style={{ maxWidth: '100%' }}
+                      onChange={(e) => handleRangeMaxChange(e)}
+                    />
+                  </Col>
+                </Row>
+              );
+            } else {
+              return (
+                <InputNumber
+                  id={Item.name}
+                  name="number"
+                  value={state.value}
+                  disabled={!state.checked}
+                  style={{ maxWidth: '100%' }}
+                  onChange={(e) => handleValueChange(e)}
+                />
+              );
+            }
+          } else {
+            return (
+              <Input
+                onChange={(e) => handleValueChange(e)}
+                disabled={!state.checked}
+              />
+            );
+          }
+        })()}
+      </Col>
+      <Col>
+        <span>{Item.data.units}</span>
+      </Col>
+    </Row>
+  );
 };
 
 QueryParameter.propTypes = {

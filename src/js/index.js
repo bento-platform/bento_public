@@ -8,6 +8,7 @@ import { store } from './store';
 import { Layout } from 'antd';
 import '../styles.css';
 const { Content } = Layout;
+import 'antd/dist/antd.css';
 
 const BentoApp = () => {
   return (
