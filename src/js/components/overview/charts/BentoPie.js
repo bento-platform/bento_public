@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import {
-  PieChart, Pie, Cell, Curve, Tooltip, Sector,
-} from 'recharts';
+import { PieChart, Pie, Cell, Curve, Tooltip, Sector } from 'recharts';
 import { polarToCartesian } from 'recharts/es6/util/PolarUtils';
 
 import { COLORS } from '../../../constants';
@@ -37,8 +35,6 @@ const labelShortName = (name) => {
 const titleHeaderHeight = 31;
 
 function BentoPie({ title, data, height }) {
-  console.log({ height });
-
   const [activeIndex, setActiveIndex] = useState(undefined);
 
   data = data.filter((e) => e.y !== 0);
@@ -68,9 +64,7 @@ function BentoPie({ title, data, height }) {
   };
 
   const renderLabel = (params, activeIndex) => {
-    const {
-      cx, cy, midAngle, outerRadius, fill, payload, index,
-    } = params;
+    const { cx, cy, midAngle, outerRadius, fill, payload, index } = params;
 
     // skip rendering this static label if the sector is selected.
     // this will let the 'renderActiveState' draw without overlapping.
@@ -102,13 +96,13 @@ function BentoPie({ title, data, height }) {
       params.cx,
       params.cy,
       params.outerRadius,
-      midAngle,
+      midAngle
     );
     const endPoint = polarToCartesian(
       params.cx,
       params.cy,
       params.outerRadius + offsetRadius,
-      midAngle,
+      midAngle
     );
     const lineProps = {
       ...params,
@@ -245,10 +239,7 @@ function BentoPie({ title, data, height }) {
         <p style={labelStyle}>{name}</p>
         <p style={countStyle}>
           {' '}
-          {value}
-          {' '}
-          (
-          {percentage}
+          {value} ({percentage}
           %)
         </p>
       </div>

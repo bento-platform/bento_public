@@ -3,6 +3,17 @@ import axios from 'axios';
 import { publicOverviewUrl, queryableFieldsUrl } from '../constants';
 import { parseData } from '../utils/DataUtils';
 
+import {
+  verifyData,
+  saveValue,
+  getValue,
+  convertSequenceAndDisplayData,
+} from '../utils/localStorage';
+
+import { LS_CHARTS_KEY } from '../constants';
+import { useDispatch } from 'react-redux';
+import { addQueryableFields } from './query';
+
 // TODO: convert this to a serialisable function (to check remove middleware)
 export const makeGetDataRequest = createAsyncThunk(
   'data/getConfigData',
@@ -27,7 +38,25 @@ const initialState = {
 const data = createSlice({
   name: 'data',
   initialState,
-  reducers: {},
+  reducers: {
+    rearrange: (state, { payload }) => {
+      const chartsCopy = [...state.chartData];
+
+      let temp = payload.map((e) => chartsCopy.find((i) => e === i.name));
+      state.chartData = temp;
+      saveValue(LS_CHARTS_KEY, convertSequenceAndDisplayData(state.chartData));
+    },
+    disableChart: (state, { payload }) => {
+      state.chartData.find((e) => e.name === payload).isDisplayed = false;
+      saveValue(LS_CHARTS_KEY, convertSequenceAndDisplayData(state.chartData));
+    },
+    setDisplayedCharts: (state, { payload }) => {
+      state.chartData.forEach((val, ind, arr) => {
+        arr[ind].isDisplayed = payload.includes(val.name);
+      });
+      saveValue(LS_CHARTS_KEY, convertSequenceAndDisplayData(state.chartData));
+    },
+  },
   extraReducers: {
     [makeGetDataRequest.pending]: (state) => {
       state.isFetchingData = true;
@@ -48,24 +77,19 @@ const data = createSlice({
         data: item[1],
       }));
 
-      console.log(fields);
       const all_charts_obj = { ...overview, ...overview.extra_properties };
       delete all_charts_obj.extra_properties;
       delete all_charts_obj.individuals;
 
-      console.log(all_charts_obj);
-
-      const all_charts = Object.entries(all_charts_obj).map((item) => ({
+      let all_charts = Object.entries(all_charts_obj).map((item) => ({
         name: item[0],
         data: item[1],
         isDisplayed: true,
       }));
-      console.log(all_charts);
 
       all_charts.forEach((chart, index, arr) => {
         arr[index].properties = fields.find((e) => e.name == chart.name)?.data;
       });
-      console.log(all_charts);
       all_charts.forEach((chart, index, arr) => {
         arr[index].data = parseData(chart);
       });
@@ -75,6 +99,31 @@ const data = createSlice({
       state.chartData = all_charts;
       state.individuals = individuals;
       state.isFetchingData = false;
+      state.fields = fields;
+
+      let convertedData = convertSequenceAndDisplayData(state.chartData);
+
+      const localValue = getValue(LS_CHARTS_KEY, convertedData, (val) =>
+        verifyData(val, convertedData)
+      );
+
+      const temp = [...state.chartData];
+
+      console.log(
+        localValue.map((e) => ({
+          ...temp.find((v) => v.name === e.name),
+          isDisplayed: e.isDisplayed,
+        }))
+      );
+
+      state.chartData = localValue.map((e) => ({
+        ...temp.find((v) => v.name === e.name),
+        isDisplayed: e.isDisplayed,
+      }));
+
+      convertedData = convertSequenceAndDisplayData(state.chartData);
+
+      saveValue(LS_CHARTS_KEY, convertedData);
     },
     [makeGetDataRequest.rejected]: (state) => {
       state.isFetchingData = false;
@@ -82,6 +131,6 @@ const data = createSlice({
   },
 });
 
-export const {} = data.actions;
+export const { rearrange, disableChart, setDisplayedCharts } = data.actions;
 
 export default data.reducer;

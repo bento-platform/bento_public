@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Tree } from 'antd';
 
-const ChartTree = ({ allCharts }) => {
-  const [aData, setAData] = useState(
-    allCharts.map((e) => ({ title: e.name, key: e.name }))
+import { useSelector, useDispatch } from 'react-redux';
+import { rearrange, setDisplayedCharts } from '../../../features/data';
+
+const ChartTree = () => {
+  const dispatch = useDispatch();
+
+  const allCharts = useSelector((state) =>
+    state.data.chartData.map((e) => ({ title: e.name, key: e.name }))
   );
 
   const onChartDrop = (info) => {
-    console.log('info', info);
     const dropKey = info.node.key;
     const dragKey = info.dragNode.key;
     const dropPos = info.node.pos.split('-');
@@ -19,12 +23,9 @@ const ChartTree = ({ allCharts }) => {
         if (data[i].key === key) {
           return callback(data[i], i, data);
         }
-        if (data[i].children) {
-          loop(data[i].children, key, callback);
-        }
       }
     };
-    const data = [...aData];
+    const data = [...allCharts];
 
     // Find dragObject
     let dragObj;
@@ -34,35 +35,28 @@ const ChartTree = ({ allCharts }) => {
       dragObj = item;
     });
 
-    let ar;
-    let i;
+    let ar, i;
     loop(data, dropKey, (_item, index, arr) => {
       ar = arr;
       i = index;
     });
+
     if (dropPosition === -1) {
       ar.splice(i, 0, dragObj);
     } else {
       ar.splice(i + 1, 0, dragObj);
     }
 
-    setAData(data);
+    dispatch(rearrange(data.map((e) => e.key)));
   };
 
-  const [checkedKeys, setCheckedKeys] = useState([]);
-  const [selectedKeys, setSelectedKeys] = useState([]);
+  const checkedKeys = useSelector((state) =>
+    state.data.chartData.filter((e) => e.isDisplayed).map((e) => e.name)
+  );
 
   const onCheck = (checkedKeysValue) => {
-    console.log('onCheck', checkedKeysValue);
-    setCheckedKeys(checkedKeysValue);
+    dispatch(setDisplayedCharts(checkedKeysValue));
   };
-
-  const onSelect = (selectedKeysValue, info) => {
-    console.log('onSelect', info);
-    setSelectedKeys(selectedKeysValue);
-  };
-
-  console.log('aaaa data = ', aData);
 
   return (
     <Tree
@@ -71,11 +65,9 @@ const ChartTree = ({ allCharts }) => {
       blockNode
       checkable
       onDrop={onChartDrop}
-      treeData={aData}
+      treeData={allCharts}
       onCheck={onCheck}
       checkedKeys={checkedKeys}
-      onSelect={onSelect}
-      selectedKeys={selectedKeys}
     />
   );
 };

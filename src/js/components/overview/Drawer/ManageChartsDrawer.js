@@ -2,11 +2,7 @@ import React from 'react';
 import { Drawer } from 'antd';
 import ChartTree from './chartTree';
 
-const ManageChartsDrawer = ({
-  onManageDrawerClose,
-  manageDrawerVisible,
-  allCharts,
-}) => {
+const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }) => {
   return (
     <Drawer
       title="Basic Drawer"
@@ -14,7 +10,7 @@ const ManageChartsDrawer = ({
       onClose={onManageDrawerClose}
       visible={manageDrawerVisible}
     >
-      <ChartTree allCharts={allCharts} />
+      <ChartTree />
     </Drawer>
   );
 };

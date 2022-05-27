@@ -14,6 +14,7 @@ const MakeChartCard = ({
   onMoveChartUp,
   onRemoveChart,
   onMoveChartDown,
+  onShowDrawer,
 }) => {
   const props = chart.properties;
 
@@ -32,10 +33,8 @@ const MakeChartCard = ({
     },
     {
       icon: <PlusOutlined />,
-      description: 'Add other charts',
-      onClick: () => {
-        console.log('Add clicked');
-      },
+      description: 'Manage charts',
+      onClick: onShowDrawer,
     },
     {
       icon: <CloseOutlined />,

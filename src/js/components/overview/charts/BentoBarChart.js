@@ -17,7 +17,6 @@ const BentoBarChart = ({ title, data, units, height }) => {
     fontSize: '1.5em',
     textAlign: 'center',
   };
-  console.log('data for bar chart', data);
 
   const wrapperStyle = {
     display: 'flex',

@@ -1,37 +1,38 @@
 import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { disableChart, rearrange } from '../../features/data';
 import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
 import MakeChartCard from './MakeChartCard';
 import NewChartCard from './NewChartCard';
 
-const OverviewDisplayData = ({ allCharts }) => {
-  const [orderedCharts, setOrderedCharts] = useState(allCharts);
+const OverviewDisplayData = () => {
+  const dispatch = useDispatch();
 
-  console.log('ordered charts = ', orderedCharts);
+  const orderedCharts = useSelector((state) => state.data.chartData);
 
   const onMoveChartUp = (chartName) => {
-    let temp = [...orderedCharts];
-    const i = temp.findIndex((e) => e.name === chartName);
+    let temp = [...orderedCharts.map((e) => e.name)];
+    const i = temp.findIndex((e) => e === chartName);
     if (i === 0) return;
     const tempValue = temp[i];
     temp[i] = temp[i - 1];
     temp[i - 1] = tempValue;
-
-    setOrderedCharts(temp);
+    console.log('temppppp', temp);
+    dispatch(rearrange(temp));
   };
 
   const onMoveChartDown = (chartName) => {
-    let temp = [...orderedCharts];
-    const i = temp.findIndex((e) => e.name === chartName);
+    let temp = [...orderedCharts.map((e) => e.name)];
+    const i = temp.findIndex((e) => e === chartName);
     if (i === temp.length - 1) return;
     const tempValue = temp[i];
     temp[i] = temp[i + 1];
     temp[i + 1] = tempValue;
-
-    setOrderedCharts(temp);
+    dispatch(rearrange(temp));
   };
 
   const onRemoveChart = (chartName) => {
-    setOrderedCharts(orderedCharts.filter((e) => e.name !== chartName));
+    dispatch(disableChart(chartName));
   };
 
   const [visible, setVisible] = useState(false);
@@ -46,22 +47,22 @@ const OverviewDisplayData = ({ allCharts }) => {
 
   return (
     <>
-      {orderedCharts.map((chart) => (
-        <MakeChartCard
-          key={chart.name}
-          chart={chart}
-          onMoveChartUp={onMoveChartUp}
-          onMoveChartDown={onMoveChartDown}
-          onRemoveChart={onRemoveChart}
-        />
-      ))}
+      {orderedCharts
+        .filter((e) => e.isDisplayed)
+        .map((chart) => (
+          <MakeChartCard
+            key={chart.name}
+            chart={chart}
+            onMoveChartUp={onMoveChartUp}
+            onMoveChartDown={onMoveChartDown}
+            onRemoveChart={onRemoveChart}
+            onShowDrawer={showDrawer}
+          />
+        ))}
       <NewChartCard onClick={showDrawer} />
       <ManageChartsDrawer
         onManageDrawerClose={onClose}
         manageDrawerVisible={visible}
-        allCharts={allCharts.map((e) => ({
-          name: e.name,
-        }))}
       />
     </>
   );
