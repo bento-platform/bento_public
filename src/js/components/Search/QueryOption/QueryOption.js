@@ -1,4 +1,5 @@
 import React from 'react';
+import InputOption from './InputOption';
 import NumberInputOption from './numberInputOption';
 import NumberRange from './NumberRange';
 
@@ -11,6 +12,8 @@ const QueryOption = ({ queryType, ...otherProps }) => {
         return <NumberInputOption {...otherProps} />;
       case 'range':
         return <NumberRange {...otherProps} />;
+      case 'input':
+        return <InputOption {...otherProps} />;
       default:
         return <p>option type doesnt exist</p>;
     }

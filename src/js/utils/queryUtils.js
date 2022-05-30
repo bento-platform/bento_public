@@ -12,5 +12,5 @@ export const determineQueryType = ({
   } else if (type === 'number') {
     if (is_range) return 'range';
     else return 'numberInput';
-  } else return Input;
+  } else return 'input';
 };
