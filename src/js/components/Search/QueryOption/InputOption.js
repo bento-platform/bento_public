@@ -9,7 +9,9 @@ const InputOption = ({ name, isChecked }) => {
   const [value, setValue] = useState('');
 
   useEffect(() => {
-    dispatch(addQueryParam({ name, queryType: 'input', params: { value } }));
+    if (isChecked) {
+      dispatch(addQueryParam({ name, queryType: 'input', params: { value } }));
+    }
   }, [isChecked, value]);
 
   const handleValueChange = (e) => {

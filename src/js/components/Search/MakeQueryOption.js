@@ -22,7 +22,10 @@ const MakeQueryOption = ({ queryField }) => {
     if (checked) {
       setChecked(false);
       dispatch(removeQueryParam(name));
-    } else checkedCount < maxCount && setChecked(true);
+    } else {
+      console.log(checkedCount < maxCount);
+      checkedCount < maxCount && setChecked(true);
+    }
   };
 
   return (
