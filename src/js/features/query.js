@@ -1,42 +1,33 @@
 import { katsuUrl } from '../constants';
-import { debuglog } from '../utils.js';
 import axios from 'axios';
 
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { determineQueryType } from '../utils/queryUtils';
+import { determineQueryType, getRelatedFields } from '../utils/queryUtils';
 
 export const makeGetKatsuPublic = createAsyncThunk(
   'query/makeGetKatsuPublic',
   async (_ignore, thunkAPI) => {
-    const qpsWithValue = [];
-    const checkedParametersStack =
-      thunkAPI.getState().query.queryParameterCheckedStack;
-    checkedParametersStack.forEach(function (item, index) {
-      debuglog(item);
-      debuglog(index);
+    const fieldData = thunkAPI.getState().query.queryableFields;
+    const findInData = (key) => fieldData.find((e) => e.name === key);
 
-      qpsWithValue.push({
-        key: item.key,
-        type: item.type,
-        is_extra_property_key: item.is_extra_property_key,
-        value: item.value,
-        rangeMin: item.rangeMin,
-        rangeMax: item.rangeMax,
-        dateAfter: item.dateAfter,
-        dateBefore: item.dateBefore,
-      });
-    });
-    debuglog(qpsWithValue);
+    const queryParams = thunkAPI.getState().query.queryParams;
 
-    return await axios.post(katsuUrl, qpsWithValue);
+    const queryParamsModified = queryParams.map((e) => ({
+      key: e.name,
+      type: findInData(e.name)?.data.type,
+      is_extra_property_key: findInData(e.name)?.isExtraProperty,
+      ...getRelatedFields(e.queryType, e.params),
+    }));
+
+    return await axios
+      .post(katsuUrl, queryParamsModified)
+      .then((res) => res.data);
   }
 );
 
 const initialState = {
   isFetchingData: false,
-  queryParameterStack: [],
-  queryParameterCheckedStack: [],
-  queryResponseData: {},
+  queryResponseData: { status: 'initial' },
   queryableFields: [],
   queryParams: [],
   queryParamCount: 0,
@@ -69,104 +60,18 @@ const query = createSlice({
         }
       });
     },
-    addQueryParameterToCheckedStack: (state, { payload }) => {
-      const { item, value, min, max } = payload;
-
-      const newStack = state.queryParameterCheckedStack.concat([
-        {
-          key: item.key,
-          type: item.type,
-          title: item.title,
-          is_extra_property_key: item.is_extra_property_key,
-          value: value,
-          rangeMin: min,
-          rangeMax: max,
-        },
-      ]);
-
-      state.queryParameterCheckedStack = newStack;
-    },
-    updateQueryParameterValueInCheckedStack: (state, { payload }) => {
-      const { item, itemValue, min, max, dateAfter, dateBefore } = payload;
-      const foundItem = state.queryParameterCheckedStack.find(
-        (param) => param.title === item.title
-      );
-
-      if (foundItem != undefined) {
-        const index = state.queryParameterCheckedStack.indexOf(foundItem);
-
-        state.queryParameterCheckedStack = [
-          ...state.queryParameterCheckedStack,
-        ].splice(index, 1);
-
-        if (item.type == 'number') {
-          state.queryParameterCheckedStack =
-            state.queryParameterCheckedStack.concat([
-              {
-                key: item.key,
-                type: item.type,
-                title: item.title,
-                is_extra_property_key: item.is_extra_property_key,
-                rangeMin: min,
-                rangeMax: max,
-              },
-            ]);
-        } else if (
-          item.type == 'string' &&
-          item.format != undefined &&
-          item.format == 'date'
-        ) {
-          state.queryParameterCheckedStack =
-            state.queryParameterCheckedStack.concat([
-              {
-                key: item.key,
-                type: item.type,
-                title: item.title,
-                is_extra_property_key: item.is_extra_property_key,
-                dateAfter: dateAfter,
-                dateBefore: dateBefore,
-              },
-            ]);
-        } else {
-          state.queryParameterCheckedStack =
-            state.queryParameterCheckedStack.concat([
-              {
-                key: item.key,
-                type: item.type,
-                title: item.title,
-                is_extra_property_key: item.is_extra_property_key,
-                value: itemValue,
-              },
-            ]);
-        }
-      }
-    },
-    removeQueryParameterFromCheckedStack: (state, { payload }) => {
-      const item = payload;
-      const foundItem = state.queryParameterCheckedStack.find(
-        (param) => param.title === item.title
-      );
-      if (foundItem != undefined) {
-        const index = state.queryParameterCheckedStack.indexOf(foundItem);
-
-        dispatch(
-          setContent('REMOVE_QUERY_PARAMETER_FROM_CHECKED_STACK', {
-            index: index,
-          })
-        );
-
-        state.queryParameterCheckedStack = [
-          ...state.queryParameterCheckedStack,
-        ].splice(index, 1);
-      }
-    },
   },
   extraReducers: {
     [makeGetKatsuPublic.pending]: (state) => {
       state.isFetchingData = true;
     },
     [makeGetKatsuPublic.fulfilled]: (state, { payload }) => {
-      state.queryResponseData = payload.data;
+      if (payload.hasOwnProperty('message'))
+        state.queryResponseData = {
+          status: 'message',
+          message: payload.message,
+        };
+      else state.queryResponseData = { status: 'count', count: payload.count };
 
       state.isFetchingData = false;
     },

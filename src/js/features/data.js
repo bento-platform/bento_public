@@ -11,8 +11,6 @@ import {
 } from '../utils/localStorage';
 
 import { LS_CHARTS_KEY } from '../constants';
-import { useDispatch } from 'react-redux';
-import { addQueryableFields } from './query';
 
 // TODO: convert this to a serialisable function (to check remove middleware)
 export const makeGetDataRequest = createAsyncThunk(
@@ -75,6 +73,9 @@ const data = createSlice({
       fields = Object.entries(fields).map((item) => ({
         name: item[0],
         data: item[1],
+        isExtraProperty: queryParameterStack.extra_properties.hasOwnProperty(
+          item[0]
+        ),
       }));
 
       const all_charts_obj = { ...overview, ...overview.extra_properties };
@@ -108,13 +109,6 @@ const data = createSlice({
       );
 
       const temp = [...state.chartData];
-
-      console.log(
-        localValue.map((e) => ({
-          ...temp.find((v) => v.name === e.name),
-          isDisplayed: e.isDisplayed,
-        }))
-      );
 
       state.chartData = localValue.map((e) => ({
         ...temp.find((v) => v.name === e.name),

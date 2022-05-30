@@ -14,3 +14,17 @@ export const determineQueryType = ({
     else return 'numberInput';
   } else return 'input';
 };
+
+export const getRelatedFields = (
+  type,
+  { value, dateAfter, dateBefore, rangeMin, rangeMax }
+) => {
+  switch (type) {
+    case 'date':
+      return { dateAfter, dateBefore };
+    case 'range':
+      return { rangeMin, rangeMax };
+    default:
+      return { value };
+  }
+};

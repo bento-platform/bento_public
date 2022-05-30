@@ -22,17 +22,21 @@ const MakeQueryOption = ({ queryField }) => {
     if (checked) {
       setChecked(false);
       dispatch(removeQueryParam(name));
-    } else {
-      console.log(checkedCount < maxCount);
-      checkedCount < maxCount && setChecked(true);
-    }
+    } else checkedCount < maxCount && setChecked(true);
   };
+
+  const disabled = checked ? false : checkedCount < maxCount ? false : true;
 
   return (
     <>
       <Row style={{ margin: '1rem' }}>
         <Col xs={{ span: 2, offset: 2 }}>
-          <Checkbox id={name} checked={checked} onChange={onCheckToggle} />
+          <Checkbox
+            id={name}
+            checked={checked}
+            onChange={onCheckToggle}
+            disabled={disabled}
+          />
         </Col>
         <Col xs={{ span: 3 }} md={{ span: 2 }}>
           {data.title}
@@ -52,9 +56,6 @@ const MakeQueryOption = ({ queryField }) => {
             isChecked={checked}
           />
         </Col>
-        {/* <Col>
-          <span>{data.units}</span>
-        </Col> */}
       </Row>
     </>
   );

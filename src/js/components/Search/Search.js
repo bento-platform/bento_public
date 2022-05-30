@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
-import { Button, Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
+import { Button } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { addQueryableFields, makeGetKatsuPublic } from '../../features/query';
 import SearchFieldsStack from './searchFieldsStack';
+import SearchResults from './SearchResults';
 
 const Search = () => {
   const dispatch = useDispatch();
@@ -17,8 +19,10 @@ const Search = () => {
     dispatch(makeGetKatsuPublic());
   };
 
-  const { queryResponseData, isFetchingData, queryParameterStack } =
-    useSelector((state) => state.query);
+  const buttonDisabled =
+    useSelector((state) => state.query.queryParamCount) === 0;
+
+  const isFetchingData = useSelector((state) => state.query.isFetchingData);
 
   return (
     <Container>
@@ -34,9 +38,12 @@ const Search = () => {
           md={{ span: 6, offset: 3 }}
         >
           <Button
-            variant="primary"
+            type="primary"
             onClick={queryKatsuPublic}
-            disabled={isFetchingData}
+            size="large"
+            shape="round"
+            loading={isFetchingData}
+            disabled={buttonDisabled}
           >
             Get Data
           </Button>
@@ -44,10 +51,7 @@ const Search = () => {
       </Row>
       <Row>
         <Col className="text-center">
-          {/* <SearchResults
-            queryResponseData={queryResponseData}
-            isFetchingData={isFetchingData}
-          /> */}
+          <SearchResults />
         </Col>
       </Row>
     </Container>
