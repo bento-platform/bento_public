@@ -1,6 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { publicOverviewUrl, queryableFieldsUrl } from '../constants';
+import {
+  publicOverviewUrl,
+  queryableFieldsUrl,
+} from '../constants/configConstants';
 import { parseData } from '../utils/DataUtils';
 
 import {
@@ -10,7 +13,7 @@ import {
   convertSequenceAndDisplayData,
 } from '../utils/localStorage';
 
-import { LS_CHARTS_KEY } from '../constants';
+import { LS_CHARTS_KEY } from '../constants/overviewConstants';
 
 // TODO: convert this to a serialisable function (to check remove middleware)
 export const makeGetDataRequest = createAsyncThunk(

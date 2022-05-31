@@ -1,6 +1,9 @@
 import React from 'react';
 import { BarChart, Bar, Cell, XAxis, YAxis, Tooltip, Label } from 'recharts';
-import { BAR_CHART_FILL, BAR_CHART_MISSING_FILL } from '../../../constants';
+import {
+  BAR_CHART_FILL,
+  BAR_CHART_MISSING_FILL,
+} from '../../../constants/overviewConstants';
 
 const ASPECT_RATIO = 1.2;
 const MAX_TICK_LABEL_CHARS = 15;

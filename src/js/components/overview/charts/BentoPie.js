@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { PieChart, Pie, Cell, Curve, Tooltip, Sector } from 'recharts';
 import { polarToCartesian } from 'recharts/es6/util/PolarUtils';
 
-import { COLORS } from '../../../constants';
+import { COLORS } from '../../../constants/overviewConstants';
 
 const RADIAN = Math.PI / 180;
 const chartAspectRatio = 1.4;

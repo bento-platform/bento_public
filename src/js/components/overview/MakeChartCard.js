@@ -8,6 +8,7 @@ import {
   PlusOutlined,
   CloseOutlined,
 } from '@ant-design/icons';
+import { chartTypes } from '../../constants/overviewConstants';
 
 const MakeChartCard = ({
   chart,
@@ -68,8 +69,8 @@ const MakeChartCard = ({
         <Chart
           chartType={
             props?.type === 'number' || chart.props?.chart === 'bar'
-              ? 'bar'
-              : 'pie'
+              ? chartTypes.BAR
+              : chartTypes.PIE
           }
           data={chart.data}
           units={props?.units || undefined}

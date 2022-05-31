@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { PageHeader, Button } from 'antd';
-import { client } from '../constants';
+import { client } from '../constants/configConstants';
 
 const Header = () => {
   const portalUrl = useSelector((state) => state.config.portalUrl);

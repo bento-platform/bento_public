@@ -1,4 +1,4 @@
-import { katsuUrl } from '../constants';
+import { katsuUrl } from '../constants/configConstants';
 import axios from 'axios';
 
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
