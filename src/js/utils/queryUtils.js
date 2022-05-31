@@ -1,3 +1,5 @@
+import { queryTypes } from '../constants/queryConstants';
+
 // cannot destructure enum as it is a keyword
 export const determineQueryType = ({
   type,
@@ -6,13 +8,13 @@ export const determineQueryType = ({
   ...otherProps
 }) => {
   if (type === 'string') {
-    if (format === 'date') return 'date';
-    else if (otherProps.enum) return 'select';
-    else return 'input';
+    if (format === 'date') return queryTypes.DATE;
+    else if (otherProps.enum) return queryTypes.SELECT;
+    else return queryTypes.INPUT;
   } else if (type === 'number') {
-    if (is_range) return 'range';
-    else return 'numberInput';
-  } else return 'input';
+    if (is_range) return queryTypes.RANGE;
+    else return queryTypes.NUMBER_INPUT;
+  } else return queryTypes.INPUT;
 };
 
 export const getRelatedFields = (
@@ -20,9 +22,9 @@ export const getRelatedFields = (
   { value, dateAfter, dateBefore, rangeMin, rangeMax }
 ) => {
   switch (type) {
-    case 'date':
+    case queryTypes.DATE:
       return { dateAfter, dateBefore };
-    case 'range':
+    case queryTypes.RANGE:
       return { rangeMin, rangeMax };
     default:
       return { value };

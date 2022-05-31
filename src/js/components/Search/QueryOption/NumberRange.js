@@ -3,6 +3,7 @@ import { Row, Col } from 'react-bootstrap';
 import { InputNumber } from 'antd';
 import { useDispatch } from 'react-redux';
 import { addQueryParam } from '../../../features/query';
+import { queryTypes } from '../../../constants/queryConstants';
 
 const NumberRange = ({ name, data, isChecked }) => {
   const [rangeMin, setRangeMin] = useState(0);
@@ -16,7 +17,7 @@ const NumberRange = ({ name, data, isChecked }) => {
       dispatch(
         addQueryParam({
           name,
-          queryType: 'range',
+          queryType: queryTypes.RANGE,
           params: { rangeMin, rangeMax },
         })
       );

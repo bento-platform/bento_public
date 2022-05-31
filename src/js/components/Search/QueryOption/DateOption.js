@@ -4,6 +4,7 @@ import { DatePicker } from 'antd';
 import { useDispatch } from 'react-redux';
 import { addQueryParam } from '../../../features/query';
 import moment from 'moment';
+import { queryTypes } from '../../../constants/queryConstants';
 
 const DateOption = ({ name, data, isChecked }) => {
   const [dateBefore, setdateBefore] = useState('');
@@ -19,7 +20,7 @@ const DateOption = ({ name, data, isChecked }) => {
       dispatch(
         addQueryParam({
           name,
-          queryType: 'date',
+          queryType: queryTypes.DATE,
           params: { dateAfter, dateBefore },
         })
       );

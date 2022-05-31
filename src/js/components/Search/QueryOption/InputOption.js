@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Input } from 'antd';
 import { useDispatch } from 'react-redux';
 import { addQueryParam } from '../../../features/query';
+import { queryTypes } from '../../../constants/queryConstants';
 
 const InputOption = ({ name, isChecked }) => {
   const dispatch = useDispatch();
@@ -10,7 +11,9 @@ const InputOption = ({ name, isChecked }) => {
 
   useEffect(() => {
     if (isChecked) {
-      dispatch(addQueryParam({ name, queryType: 'input', params: { value } }));
+      dispatch(
+        addQueryParam({ name, queryType: queryTypes.INPUT, params: { value } })
+      );
     }
   }, [isChecked, value]);
 

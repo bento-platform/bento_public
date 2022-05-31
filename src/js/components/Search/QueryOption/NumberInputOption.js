@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { InputNumber } from 'antd';
 import { useDispatch } from 'react-redux';
 import { addQueryParam } from '../../../features/query';
+import { queryTypes } from '../../../constants/queryConstants';
 
 const NumberInputOption = ({ name, isChecked }) => {
   const dispatch = useDispatch();
@@ -10,7 +11,13 @@ const NumberInputOption = ({ name, isChecked }) => {
 
   useEffect(() => {
     if (isChecked) {
-      dispatch(addQueryParam({ name, queryType: 'number', params: { value } }));
+      dispatch(
+        addQueryParam({
+          name,
+          queryType: queryTypes.NUMBER_INPUT,
+          params: { value },
+        })
+      );
     }
   }, [isChecked, value]);
 
