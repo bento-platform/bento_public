@@ -44,6 +44,7 @@ const Search = () => {
             shape="round"
             loading={isFetchingData}
             disabled={buttonDisabled}
+            style={{ margin: '10px' }}
           >
             Get Data
           </Button>
