@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { PieChart, Pie, Cell, Curve, Tooltip, Sector } from 'recharts';
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Curve,
+  Tooltip,
+  Sector,
+  ResponsiveContainer,
+} from 'recharts';
 import { polarToCartesian } from 'recharts/es6/util/PolarUtils';
 
 import { COLORS } from '../../../constants/overviewConstants';
@@ -29,7 +37,7 @@ const labelShortName = (name) => {
   if (name.length <= MAX_LABEL_CHARS) {
     return name;
   }
-  return `${name.substring(0, MAX_LABEL_CHARS)}...`;
+  return `${name.substring(0, MAX_LABEL_CHARS - 3)}...`;
 };
 
 const titleHeaderHeight = 31;
@@ -248,7 +256,6 @@ function BentoPie({ title, data, height }) {
 
   return (
     <div style={wrapperStyle}>
-      <div style={titleStyle}>{title}</div>
       <PieChart height={height} width={height * chartAspectRatio}>
         <Pie
           data={bentoFormatData}

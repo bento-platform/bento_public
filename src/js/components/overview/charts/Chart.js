@@ -3,14 +3,14 @@ import { chartTypes } from '../../../constants/overviewConstants';
 import BentoBarChart from './BentoBarChart';
 import BentoPie from './BentoPie';
 
-const CHART_HEIGHT = 300;
+import { CHART_HEIGHT } from '../../../constants/overviewConstants';
 
 const Chart = ({ chartType, data, title, units }) => {
   const renderChartSwitch = () => {
     switch (chartType) {
       case chartTypes.BAR:
         return (
-          <BentoBarChart data={data} height={CHART_HEIGHT} units={units} />
+          <BentoBarChart data={data} height={CHART_HEIGHT + 30} units={units} />
         );
       case chartTypes.PIE:
         return <BentoPie data={data} height={CHART_HEIGHT} />;

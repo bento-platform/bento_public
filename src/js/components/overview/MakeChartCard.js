@@ -8,7 +8,7 @@ import {
   PlusOutlined,
   CloseOutlined,
 } from '@ant-design/icons';
-import { chartTypes } from '../../constants/overviewConstants';
+import { CARD_STYLE, chartTypes } from '../../constants/overviewConstants';
 
 const MakeChartCard = ({
   chart,
@@ -63,7 +63,7 @@ const MakeChartCard = ({
     >
       <Card
         title={props.title}
-        style={{ height: '415px' }}
+        style={CARD_STYLE}
         extra={<Space size="small">{ed}</Space>}
       >
         <Chart

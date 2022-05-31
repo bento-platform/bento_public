@@ -5,7 +5,7 @@ import ChartTree from './chartTree';
 const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }) => {
   return (
     <Drawer
-      title="Basic Drawer"
+      title="Manage Charts"
       placement="right"
       onClose={onManageDrawerClose}
       visible={manageDrawerVisible}

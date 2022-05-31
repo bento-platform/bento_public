@@ -8,7 +8,10 @@ const ChartTree = () => {
   const dispatch = useDispatch();
 
   const allCharts = useSelector((state) =>
-    state.data.chartData.map((e) => ({ title: e.name, key: e.name }))
+    state.data.chartData.map((e) => ({
+      title: e.properties?.title || e.name,
+      key: e.name,
+    }))
   );
 
   const onChartDrop = (info) => {

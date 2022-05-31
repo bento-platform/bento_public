@@ -13,16 +13,22 @@ const orderCategories = (data, ordering) =>
 
 const parseDateData = (inputData) => {
   const formattedData = [];
+  const monthlybins = {};
+  const options = {
+    year: 'numeric',
+    month: 'short',
+  };
 
   Object.keys(inputData).forEach((_key) => {
     const attemptedDate = new Date(_key);
-    const monthStr = attemptedDate.yyyydashmm();
 
     // if not a valid date, add to "missing"
     if (isNaN(attemptedDate.valueOf())) {
       monthlybins.missing = (monthlybins.missing ?? 0) + inputData[_key];
       return; // ie, continue
     }
+
+    const monthStr = attemptedDate.toLocaleDateString('en-US', options);
 
     // verify if monthly bin exists - add to dict if not
     if (monthlybins[monthStr] == undefined) {

@@ -2,6 +2,7 @@ import React from 'react';
 import { Col } from 'react-bootstrap';
 import { Card } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import { CARD_STYLE } from '../../constants/overviewConstants';
 
 const NewChartCard = ({ onClick }) => {
   return (
@@ -13,12 +14,7 @@ const NewChartCard = ({ onClick }) => {
       style={{ height: '100%' }}
       onClick={onClick}
     >
-      <Card
-        style={{
-          height: '415px',
-        }}
-        hoverable
-      >
+      <Card style={CARD_STYLE} hoverable>
         <PlusOutlined
           style={{
             fontSize: '50px',
