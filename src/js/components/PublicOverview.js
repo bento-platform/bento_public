@@ -14,6 +14,22 @@ class PublicOverview extends React.Component {
         };
     }    
 
+    orderCategories = (data, ordering) => {
+      return data.sort((a,b) => {
+          let aIndex = ordering.indexOf(a.x)
+          let bIndex = ordering.indexOf(b.x)
+  
+          // send any categories not found to end of array
+          if (aIndex < 0) {
+              aIndex = Number.MAX_VALUE
+          }
+          if (bIndex < 0)[
+              bIndex = Number.MAX_VALUE
+          ]
+          return aIndex - bIndex
+      } )
+    }
+
     render() {
         const { overview, queryParameterStack } = this.props;
         // type check
@@ -49,25 +65,18 @@ class PublicOverview extends React.Component {
                         let key = item[0];
                         let value = item[1];
 
-                        // let field = queryableFields[key]
-                        var field = queryParameterStack.find((e) => e.hasOwnProperty("key") && e.key == key)
-                          ?.props?.Item;
+                        const field = queryParameterStack.find((e) => e.hasOwnProperty("key") && e.key == key)?.props?.Item;
+                        if (!field){
+                          return null
+                        }
 
-                        // determine title
-                        var title =
-                          queryParameterStack.find((e) => e.hasOwnProperty("key") && e.key == key)?.props
-                            ?.Item?.title ?? "-";
-                        var type =
-                          queryParameterStack.find((e) => e.hasOwnProperty("key") && e.key == key)?.props
-                            ?.Item?.type ?? "-";
-                        var chart =
-                          queryParameterStack.find((e) => e.hasOwnProperty("key") && e.key == key)?.props
-                            ?.Item?.chart ?? "-";
-                        var units =
-                          queryParameterStack.find((e) => e.hasOwnProperty("key") && e.key == key)?.props
-                            ?.Item?.units ?? "";
+                        const title = field.title ?? "-";
+                        const type = field.type ?? "-";
+                        const chart = field.chart ?? "-";
+                        const units = field.units ?? "";
+                        const categoryOrdering = field.enum;
 
-                        var qpList = [];
+                        let qpList = [];
 
                         // skip extra_properties and only iterate over actual objects
                         if (
@@ -171,6 +180,11 @@ class PublicOverview extends React.Component {
                           if (missingObject != undefined && missingObject.length > 0) {
                             // fancy one liner to splice the object out and re-append it
                             qpList.push(qpList.splice(qpList.indexOf(missingObject[0]), 1)[0]);
+                          }
+
+                          // order categories according to config file, where applicable
+                          if (categoryOrdering){
+                            qpList = this.orderCategories(qpList, categoryOrdering)
                           }
 
                           if (type == "number") {
