@@ -42,9 +42,9 @@ const data = createSlice({
   reducers: {
     rearrange: (state, { payload }) => {
       const chartsCopy = [...state.chartData];
-
-      let temp = payload.map((e) => chartsCopy.find((i) => e === i.name));
-      state.chartData = temp;
+      state.chartData = payload.map((e) =>
+        chartsCopy.find((i) => e === i.name)
+      );
       saveValue(LS_CHARTS_KEY, convertSequenceAndDisplayData(state.chartData));
     },
     disableChart: (state, { payload }) => {
@@ -93,8 +93,6 @@ const data = createSlice({
 
       all_charts.forEach((chart, index, arr) => {
         arr[index].properties = fields.find((e) => e.name == chart.name)?.data;
-      });
-      all_charts.forEach((chart, index, arr) => {
         arr[index].data = parseData(chart);
       });
 
@@ -111,10 +109,8 @@ const data = createSlice({
         verifyData(val, convertedData)
       );
 
-      const temp = [...state.chartData];
-
       state.chartData = localValue.map((e) => ({
-        ...temp.find((v) => v.name === e.name),
+        ...state.chartData.find((v) => v.name === e.name),
         isDisplayed: e.isDisplayed,
       }));
 
