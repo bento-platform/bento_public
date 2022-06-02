@@ -25,7 +25,7 @@ const MakeQueryOption = ({ queryField }) => {
     } else checkedCount < maxCount && setChecked(true);
   };
 
-  const disabled = checked ? false : checkedCount < maxCount ? false : true;
+  const disabled = checked ? false : checkedCount >= maxCount;
 
   return (
     <>
