@@ -11,22 +11,18 @@ const OverviewDisplayData = () => {
   const orderedCharts = useSelector((state) => state.data.chartData);
 
   const onMoveChartUp = (chartName) => {
-    let temp = [...orderedCharts.map((e) => e.name)];
+    let temp = orderedCharts.map((e) => e.name);
     const i = temp.findIndex((e) => e === chartName);
     if (i === 0) return;
-    const tempValue = temp[i];
-    temp[i] = temp[i - 1];
-    temp[i - 1] = tempValue;
+    [temp[i], temp[i - 1]] = [temp[i - 1], temp[i]];
     dispatch(rearrange(temp));
   };
 
   const onMoveChartDown = (chartName) => {
-    let temp = [...orderedCharts.map((e) => e.name)];
+    let temp = orderedCharts.map((e) => e.name);
     const i = temp.findIndex((e) => e === chartName);
     if (i === temp.length - 1) return;
-    const tempValue = temp[i];
-    temp[i] = temp[i + 1];
-    temp[i + 1] = tempValue;
+    [temp[i], temp[i + 1]] = [temp[i + 1], temp[i]];
     dispatch(rearrange(temp));
   };
 
