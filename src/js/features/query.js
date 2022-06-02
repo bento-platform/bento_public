@@ -43,9 +43,10 @@ const query = createSlice({
         .map((e) => ({ ...e, queryType: determineQueryType(e.data) }));
     },
     addQueryParam: (state, { payload }) => {
-      if (state.queryParams.map((e) => e.name).includes(payload.name)) {
-        state.queryParams.find((e) => e.name === payload.name).params =
-          payload.params;
+      const element = state.queryParams.find((e) => e.name === payload.name);
+
+      if (element) {
+        element.params = payload.params;
       } else {
         state.queryParams.push(payload);
         state.queryParamCount++;
