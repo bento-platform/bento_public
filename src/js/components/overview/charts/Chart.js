@@ -5,7 +5,7 @@ import BentoPie from './BentoPie';
 
 import { CHART_HEIGHT } from '../../../constants/overviewConstants';
 
-const Chart = ({ chartType, data, title, units }) => {
+const Chart = ({ chartType, data, units }) => {
   const renderChartSwitch = () => {
     switch (chartType) {
       case chartTypes.BAR:

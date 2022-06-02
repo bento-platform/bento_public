@@ -68,7 +68,7 @@ const MakeChartCard = ({
       >
         <Chart
           chartType={
-            props?.type === 'number' || chart.props?.chart === 'bar'
+            props?.type === 'number' || props?.chart === 'bar'
               ? chartTypes.BAR
               : chartTypes.PIE
           }
