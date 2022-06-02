@@ -123,8 +123,7 @@ function BarTooltip({ active, payload, totalCount }) {
     <div style={toolTipStyle}>
       <p style={labelStyle}>{name}</p>
       <p style={countStyle}>
-        {value} ({percentage}
-        %)
+        {value} ({percentage}%)
       </p>
     </div>
   );
