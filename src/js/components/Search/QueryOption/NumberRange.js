@@ -48,7 +48,7 @@ const NumberRange = ({ name, data, isChecked }) => {
           name="range-min"
           value={rangeMin}
           step={data.bin_size}
-          min={data.minimum || -Infinity}
+          min={data.minimum ?? -Infinity}
           max={rangeMax - data.bin_size}
           disabled={!isChecked}
           style={{ maxWidth: '100%' }}
@@ -65,7 +65,7 @@ const NumberRange = ({ name, data, isChecked }) => {
           value={rangeMax}
           step={data.bin_size}
           min={rangeMin + data.bin_size}
-          max={data.maximum || Infinity}
+          max={data.maximum ?? Infinity}
           disabled={!isChecked}
           style={{ maxWidth: '100%' }}
           onChange={(e) => handleRangeMaxChange(e)}
