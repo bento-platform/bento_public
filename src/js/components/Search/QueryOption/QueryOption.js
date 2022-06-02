@@ -20,7 +20,7 @@ const QueryOption = ({ queryType, ...otherProps }) => {
       case queryTypes.SELECT:
         return <SelectOption {...otherProps} />;
       default:
-        return <p>option type doesnt exist</p>;
+        return null;
     }
   };
 
