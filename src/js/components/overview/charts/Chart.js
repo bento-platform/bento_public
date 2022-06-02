@@ -9,6 +9,7 @@ const Chart = ({ chartType, data, units }) => {
   const renderChartSwitch = () => {
     switch (chartType) {
       case chartTypes.BAR:
+        // bar charts can be rendered slightly larger as they do not clip
         return (
           <BentoBarChart data={data} height={CHART_HEIGHT + 30} units={units} />
         );
