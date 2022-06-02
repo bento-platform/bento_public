@@ -16,7 +16,6 @@ const DateOption = ({ name, data, isChecked }) => {
   useEffect(() => {
     //update query params
     if (isChecked) {
-      console.log('checked');
       dispatch(
         addQueryParam({
           name,

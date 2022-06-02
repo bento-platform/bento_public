@@ -17,7 +17,6 @@ const OverviewDisplayData = () => {
     const tempValue = temp[i];
     temp[i] = temp[i - 1];
     temp[i - 1] = tempValue;
-    console.log('temppppp', temp);
     dispatch(rearrange(temp));
   };
 
