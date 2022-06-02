@@ -37,7 +37,8 @@ const labelShortName = (name) => {
   if (name.length <= MAX_LABEL_CHARS) {
     return name;
   }
-  return `${name.substring(0, MAX_LABEL_CHARS - 3)}...`;
+  // removing 3 character cause ... s add three characters
+  return `${name.substring(0, MAX_LABEL_CHARS - 3)}\u2026`;
 };
 
 const titleHeaderHeight = 31;
