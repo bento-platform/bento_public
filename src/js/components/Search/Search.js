@@ -3,7 +3,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { Button } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { addQueryableFields, makeGetKatsuPublic } from '../../features/query';
-import SearchFieldsStack from './searchFieldsStack';
+import SearchFieldsStack from './SearchFieldsStack';
 import SearchResults from './SearchResults';
 
 const Search = () => {

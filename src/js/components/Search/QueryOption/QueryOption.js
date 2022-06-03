@@ -2,7 +2,7 @@ import React from 'react';
 import { queryTypes } from '../../../constants/queryConstants';
 import DateOption from './DateOption';
 import InputOption from './InputOption';
-import NumberInputOption from './numberInputOption';
+import NumberInputOption from './NumberInputOption';
 import NumberRange from './NumberRange';
 import SelectOption from './SelectOption';
 

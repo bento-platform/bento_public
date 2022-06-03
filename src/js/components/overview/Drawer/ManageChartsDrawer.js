@@ -1,6 +1,6 @@
 import React from 'react';
 import { Drawer } from 'antd';
-import ChartTree from './chartTree';
+import ChartTree from './ChartTree';
 
 const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }) => {
   return (
