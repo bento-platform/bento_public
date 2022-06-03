@@ -8,12 +8,6 @@ import SearchResults from './SearchResults';
 
 const Search = () => {
   const dispatch = useDispatch();
-  const fields = useSelector((state) => state.data.fields);
-
-  // Update queryable fields
-  useEffect(() => {
-    dispatch(addQueryableFields(fields));
-  }, []);
 
   const queryKatsuPublic = () => {
     dispatch(makeGetKatsuPublic());
