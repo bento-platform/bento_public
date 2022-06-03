@@ -4,7 +4,7 @@ import {
   publicOverviewUrl,
   queryableFieldsUrl,
 } from '../constants/configConstants';
-import { parseData } from '../utils/DataUtils';
+import { parseData } from '../utils/dataUtils';
 
 import {
   verifyData,
