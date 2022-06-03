@@ -14,7 +14,9 @@ export const determineQueryType = ({
   } else if (type === 'number') {
     if (is_range) return queryTypes.RANGE;
     else return queryTypes.NUMBER_INPUT;
-  } else return queryTypes.INPUT;
+  } else {
+    return queryTypes.INPUT;
+  }
 };
 
 export const getRelatedFields = (
