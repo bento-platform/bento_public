@@ -2,13 +2,12 @@ export const verifyData = (nArr, oArr) => {
   if (nArr.length !== oArr.length) {
     return false;
   }
-
-  return oArr.every(
-    (e) =>
-      nArr.findIndex(
-        (v) => v.name === e.name && typeof v?.isDisplayed === 'boolean'
-      ) !== -1
-  );
+  const nArrMap = {};
+  for (const { name, isDisplayed } of nArr) {
+    if (name && typeof isDisplayed === 'boolean') nArrMap[name] = true;
+    else return false;
+  }
+  return oArr.every((e) => nArrMap[e.name]);
 };
 
 export const saveValue = (key, value) => {
@@ -26,12 +25,12 @@ export const getValue = (key, defaultVal, verifyFunc) => {
     if (serializedState === null) {
       return defaultVal;
     }
-    const unsearlizedState = JSON.parse(serializedState);
-    if (!verifyFunc(unsearlizedState)) {
+    const unsearializedState = JSON.parse(serializedState);
+    if (!verifyFunc(unsearializedState)) {
       return defaultVal;
     }
 
-    return unsearlizedState;
+    return unsearializedState;
   } catch (err) {
     return defaultVal;
   }
