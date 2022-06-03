@@ -1,15 +1,11 @@
-const orderCategories = (data, ordering) =>
-  data.sort((a, b) => {
-    let aIndex = ordering.indexOf(a.x);
-    let bIndex = ordering.indexOf(b.x);
-
-    // send any categories not found to end of array
-    if (aIndex < 0) {
-      aIndex = Number.MAX_VALUE;
-    }
-    if (bIndex < 0) [(bIndex = Number.MAX_VALUE)];
-    return aIndex - bIndex;
+const orderCategories = (data, ordering) => {
+  const sequenceMap = {};
+  ordering.forEach((el, i) => {
+    sequenceMap[el.toLowerCase()] = i;
   });
+  const getIndex = (el) => sequenceMap[el.toLowerCase()] ?? Number.MAX_VALUE;
+  return data.sort((a, b) => getIndex(a.x) - getIndex(b.x));
+};
 
 const parseDateData = (inputData) => {
   const formattedData = [];
@@ -19,12 +15,12 @@ const parseDateData = (inputData) => {
     month: 'short',
   };
 
-  Object.keys(inputData).forEach((_key) => {
-    const attemptedDate = new Date(_key);
+  Object.entries(inputData).forEach(([key, value]) => {
+    const attemptedDate = new Date(key);
 
     // if not a valid date, add to "missing"
     if (isNaN(attemptedDate.valueOf())) {
-      monthlybins.missing = (monthlybins.missing ?? 0) + inputData[_key];
+      monthlybins.missing = (monthlybins.missing ?? 0) + value;
       return; // ie, continue
     }
 
@@ -32,16 +28,15 @@ const parseDateData = (inputData) => {
 
     // verify if monthly bin exists - add to dict if not
     if (monthlybins[monthStr] == undefined) {
-      monthlybins[monthStr] = inputData[_key];
+      monthlybins[monthStr] = value;
     } else {
-      monthlybins[monthStr] = monthlybins[monthStr] + inputData[_key];
+      monthlybins[monthStr] = monthlybins[monthStr] + value;
     }
   });
 
-  Object.keys(monthlybins).forEach((_key) => {
-    formattedData.push({ x: _key, y: monthlybins[_key] });
+  Object.entries(monthlybins).forEach(([key, value]) => {
+    formattedData.push({ x: key, y: value });
   });
-
   return formattedData;
 };
 
@@ -49,22 +44,22 @@ const parseNumericalData = (inputData, leftTaper, rightTaper, binSize) => {
   let formattedData = [];
   let taperLeft, taperRight;
 
-  Object.keys(inputData).forEach((key, index, arr) => {
+  Object.entries(inputData).forEach(([key, value], index, arr) => {
     const intKey = parseInt(key);
     if (intKey != NaN) {
       if (intKey < leftTaper) {
         const tlkey = `< ${leftTaper}`;
-        if (taperLeft == undefined) {
-          taperLeft = { x: tlkey, y: inputData[key] };
+        if (taperLeft === undefined) {
+          taperLeft = { x: tlkey, y: value };
         } else {
-          taperLeft.y += inputData[key];
+          taperLeft.y += value;
         }
       } else if (intKey >= rightTaper + binSize) {
         const trkey = `>= ${rightTaper + binSize}`;
-        if (taperRight == undefined) {
-          taperRight = { x: trkey, y: inputData[key] };
+        if (taperRight === undefined) {
+          taperRight = { x: trkey, y: value };
         } else {
-          taperRight.y += inputData[key];
+          taperRight.y += value;
         }
       } else {
         // number range tag
@@ -78,10 +73,10 @@ const parseNumericalData = (inputData, leftTaper, rightTaper, binSize) => {
           xTag = leftVal;
         }
 
-        formattedData.push({ x: xTag, y: inputData[key] });
+        formattedData.push({ x: xTag, y: value });
       }
     } else {
-      formattedData.push({ x: key, y: inputData[key] });
+      formattedData.push({ x: key, y: value });
     }
   });
 
@@ -99,17 +94,7 @@ const parseNumericalData = (inputData, leftTaper, rightTaper, binSize) => {
 };
 
 const parseDataGeneral = (inputData) =>
-  Object.keys(inputData).map((key) => ({ x: key, y: inputData[key] }));
-
-export const binMissingData = (data) => {
-  const missingObject = data.filter((obj) => obj.x === 'missing');
-
-  if (missingObject.length > 0) {
-    // fancy one liner to splice the object out and re-append it
-    data.push(data.splice(data.indexOf(missingObject[0]), 1)[0]);
-  }
-  return data;
-};
+  Object.entries(inputData).map(([key, value]) => ({ x: key, y: value }));
 
 export const parseData = ({ data, properties: props }) => {
   const leftTaper = props.taper_left || 0;
@@ -118,21 +103,19 @@ export const parseData = ({ data, properties: props }) => {
 
   let formattedData = [];
 
-  if (props.type === 'string' && props.format === 'date') {
+  if (props.type === 'string' && props.format === 'date')
     formattedData = parseDateData(data);
-  } else if (props.type === 'numerical') {
+  else if (props.type === 'numerical')
     formattedData = parseNumericalData(data, leftTaper, rightTaper, binSize);
-  } else {
-    formattedData = parseDataGeneral(data);
-  }
+  else formattedData = parseDataGeneral(data);
 
   // move 'missing' object to end of list
-  formattedData = binMissingData(formattedData);
+  const missingIndex = formattedData.findIndex((e) => e.x === 'missing');
+  if (missingIndex !== -1)
+    formattedData.push(formattedData.splice(missingIndex, 1)[0]);
 
   // order categories according to config file, where applicable
-  if (props.enum) {
-    formattedData = orderCategories(formattedData, props.enum);
-  }
+  if (props.enum) formattedData = orderCategories(formattedData, props.enum);
 
   return formattedData;
 };
