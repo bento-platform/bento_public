@@ -26,9 +26,7 @@ const TabbedDashboard = () => {
   const overviewTabTitle = <p style={tabTitleStyle}>Overview</p>;
   const searchTabTitle = <p style={tabTitleStyle}>Search</p>;
 
-  const { overview, queryParameterStack, isFetchingData } = useSelector(
-    (state) => state.data
-  );
+  const isFetchingData = useSelector((state) => state.data.isFetchingData);
 
   return (
     <div style={{ paddingLeft: '25px' }}>
@@ -39,14 +37,7 @@ const TabbedDashboard = () => {
         centered
       >
         <TabPane tab={overviewTabTitle} key="overview" size="large">
-          {!isFetchingData ? (
-            <PublicOverview
-              overview={overview.overview}
-              queryParameterStack={queryParameterStack}
-            />
-          ) : (
-            <Loader />
-          )}
+          {!isFetchingData ? <PublicOverview /> : <Loader />}
         </TabPane>
         <TabPane tab={searchTabTitle} key="search">
           <Search />
