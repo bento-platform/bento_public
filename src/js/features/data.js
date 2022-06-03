@@ -76,7 +76,7 @@ const data = createSlice({
       fields = Object.entries(fields).map((item) => ({
         name: item[0],
         data: item[1],
-        isExtraProperty: queryParameterStack.extra_properties.hasOwnProperty(
+        isExtraProperty: queryParameterStack?.extra_properties.hasOwnProperty(
           item[0]
         ),
       }));
