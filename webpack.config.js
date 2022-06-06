@@ -1,12 +1,12 @@
 const webpack = require('webpack'); // only add this if you don't have yet
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const path = require('path');
 
 // load client.env
 require('dotenv').config({ path: './client.env' });
 
 module.exports = {
   mode: 'development',
+  devtool: 'inline-source-map',
   module: {
     rules: [
       {
