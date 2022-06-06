@@ -46,7 +46,7 @@ const parseNumericalData = (inputData, leftTaper, rightTaper, binSize) => {
 
   Object.entries(inputData).forEach(([key, value], index, arr) => {
     const intKey = parseInt(key);
-    if (intKey != NaN) {
+    if (!Number.isNaN(intKey)) {
       if (intKey < leftTaper) {
         const tlkey = `< ${leftTaper}`;
         if (taperLeft === undefined) {
@@ -109,13 +109,13 @@ export const parseData = ({ data, properties: props }) => {
     formattedData = parseNumericalData(data, leftTaper, rightTaper, binSize);
   else formattedData = parseDataGeneral(data);
 
+  // order categories according to config file, where applicable
+  if (props.enum) formattedData = orderCategories(formattedData, props.enum);
+
   // move 'missing' object to end of list
   const missingIndex = formattedData.findIndex((e) => e.x === 'missing');
   if (missingIndex !== -1)
     formattedData.push(formattedData.splice(missingIndex, 1)[0]);
-
-  // order categories according to config file, where applicable
-  if (props.enum) formattedData = orderCategories(formattedData, props.enum);
 
   return formattedData;
 };

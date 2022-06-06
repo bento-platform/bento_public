@@ -25,12 +25,12 @@ export const getValue = (key, defaultVal, verifyFunc) => {
     if (serializedState === null) {
       return defaultVal;
     }
-    const unsearializedState = JSON.parse(serializedState);
-    if (!verifyFunc(unsearializedState)) {
+    const unserializedState = JSON.parse(serializedState);
+    if (!verifyFunc(unserializedState)) {
       return defaultVal;
     }
 
-    return unsearializedState;
+    return unserializedState;
   } catch (err) {
     return defaultVal;
   }

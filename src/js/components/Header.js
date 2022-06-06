@@ -22,7 +22,9 @@ const Header = () => {
         subTitle={client}
         extra={
           <>
-            <Button onClick={() => buttonHandler(portalUrl)}>Portal</Button>
+            <Button onClick={() => buttonHandler(portalUrl)}>
+              Portal Haha
+            </Button>
           </>
         }
       />
