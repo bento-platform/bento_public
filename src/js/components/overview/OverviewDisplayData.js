@@ -5,10 +5,17 @@ import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
 import MakeChartCard from './MakeChartCard';
 import NewChartCard from './NewChartCard';
 
+import {
+  saveValue,
+  convertSequenceAndDisplayData,
+} from '../../utils/localStorage';
+import { LS_CHARTS_KEY } from '../../constants/overviewConstants';
+
 const OverviewDisplayData = () => {
   const dispatch = useDispatch();
 
   const orderedCharts = useSelector((state) => state.data.chartData);
+  saveValue(LS_CHARTS_KEY, convertSequenceAndDisplayData(orderedCharts));
 
   const onMoveChartUp = (chartName) => {
     let temp = orderedCharts.map((e) => e.name);
