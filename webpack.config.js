@@ -4,9 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 // load client.env
 require('dotenv').config({ path: './client.env' });
 
-module.exports = {
-  mode: 'development',
-  devtool: 'inline-source-map',
+const config = {
   module: {
     rules: [
       {
@@ -53,4 +51,11 @@ module.exports = {
   optimization: {
     runtimeChunk: 'single',
   },
+};
+
+module.exports = (_env, argv) => {
+  if (argv.mode === 'development') {
+    config.devtool = 'inline-source-map';
+  }
+  return config;
 };
