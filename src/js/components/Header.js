@@ -23,7 +23,7 @@ const Header = () => {
         extra={
           <>
             <Button onClick={() => buttonHandler(portalUrl)}>
-              Portal Haha
+              Portal
             </Button>
           </>
         }
