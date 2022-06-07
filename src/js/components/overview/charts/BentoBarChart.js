@@ -1,46 +1,53 @@
-import React from "react";
-import { BarChart, Bar, Cell, XAxis, YAxis, Tooltip, Label } from "recharts";
-import {BAR_CHART_FILL, BAR_CHART_MISSING_FILL} from "../constants"
+import React from 'react';
+import { BarChart, Bar, Cell, XAxis, YAxis, Tooltip, Label } from 'recharts';
+import {
+  BAR_CHART_FILL,
+  BAR_CHART_MISSING_FILL,
+} from '../../../constants/overviewConstants';
 
 const ASPECT_RATIO = 1.2;
 const MAX_TICK_LABEL_CHARS = 15;
 const UNITS_LABEL_OFFSET = -60;
-const FILL_COLOUR = "#576f9e";
-const MISSING_FILL_COLOUR = "#bbbbbb";
+const FILL_COLOUR = '#576f9e';
+const MISSING_FILL_COLOUR = '#bbbbbb';
 
 // vertical spacing betweeen tick line and tick label
 const TICK_MARGIN = 5;
 
 const BentoBarChart = ({ title, data, units, height }) => {
   const titleStyle = {
-    fontStyle: "italic",
-    fontSize: "1.5em",
-    textAlign: "center",
+    fontStyle: 'italic',
+    fontSize: '1.5em',
+    textAlign: 'center',
   };
 
   const wrapperStyle = {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
   };
 
   const tickFormatter = (tickLabel) => {
     if (tickLabel.length <= MAX_TICK_LABEL_CHARS) {
       return tickLabel;
     }
-    return tickLabel.substring(0, MAX_TICK_LABEL_CHARS) + "...";
+    return `${tickLabel.substring(0, MAX_TICK_LABEL_CHARS)}...`;
   };
 
-  const fill = (entry) => {
-    return entry.x == "missing" ? BAR_CHART_MISSING_FILL : BAR_CHART_FILL;
-  };
+  const fill = (entry) =>
+    entry.x == 'missing' ? BAR_CHART_MISSING_FILL : BAR_CHART_FILL;
 
   const totalCount = data.reduce((sum, e) => sum + e.y, 0);
-  let longestTickLabelLength = Math.max(...data.map((e) => e.x.toString().length));
-  longestTickLabelLength = Math.min(longestTickLabelLength, MAX_TICK_LABEL_CHARS);
+  let longestTickLabelLength = Math.max(
+    ...data.map((e) => e.x.toString().length)
+  );
+  longestTickLabelLength = Math.min(
+    longestTickLabelLength,
+    MAX_TICK_LABEL_CHARS
+  );
 
   // remove "missing" field if zero
-  data = data.filter((e) => !(e.x === "missing" && e.y === 0));
+  data = data.filter((e) => !(e.x === 'missing' && e.y === 0));
 
   return (
     <div style={wrapperStyle}>
@@ -58,9 +65,13 @@ const BentoBarChart = ({ title, data, units, height }) => {
           tickFormatter={tickFormatter}
           tickMargin={TICK_MARGIN}
           textAnchor="end"
-          interval={"preserveStartEnd"}
+          interval="preserveStartEnd"
         >
-          <Label value={units} offset={UNITS_LABEL_OFFSET} position="insideBottom" />
+          <Label
+            value={units}
+            offset={UNITS_LABEL_OFFSET}
+            position="insideBottom"
+          />
         </XAxis>
         <YAxis>
           <Label value="Count" offset={-10} position="left" angle={270} />
@@ -76,36 +87,36 @@ const BentoBarChart = ({ title, data, units, height }) => {
   );
 };
 
-const BarTooltip = ({ active, payload, totalCount }) => {
+function BarTooltip({ active, payload, totalCount }) {
   if (!active) {
     return null;
   }
 
-  const name = payload[0]?.payload?.x || "";
+  const name = payload[0]?.payload?.x || '';
   const value = payload[0]?.value || 0;
   const percentage = totalCount ? Math.round((value / totalCount) * 100) : 0;
 
   const toolTipStyle = {
-    backgroundColor: "rgba(255, 255, 255, 0.9)",
-    padding: "5px",
-    border: "1px solid grey",
-    boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.9)",
-    borderRadius: "2px",
-    textAlign: "left",
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    padding: '5px',
+    border: '1px solid grey',
+    boxShadow: '0px 0px 2px rgba(0, 0, 0, 0.9)',
+    borderRadius: '2px',
+    textAlign: 'left',
   };
 
   const labelStyle = {
-    fontWeight: "bold",
-    fontSize: "12px",
-    padding: "0",
-    margin: "0",
+    fontWeight: 'bold',
+    fontSize: '12px',
+    padding: '0',
+    margin: '0',
   };
 
   const countStyle = {
-    fontWeight: "normal",
-    fontSize: "11px",
-    padding: "0",
-    margin: "0",
+    fontWeight: 'normal',
+    fontSize: '11px',
+    padding: '0',
+    margin: '0',
   };
 
   return (
@@ -116,6 +127,6 @@ const BarTooltip = ({ active, payload, totalCount }) => {
       </p>
     </div>
   );
-};
+}
 
 export default BentoBarChart;
