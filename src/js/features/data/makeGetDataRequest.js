@@ -1,23 +1,23 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 import {
   publicOverviewUrl,
   queryableFieldsUrl,
-} from '../../constants/configConstants';
-import { parseData } from '../../utils/dataUtils';
+} from "../../constants/configConstants";
+import { parseData } from "../../utils/dataUtils";
 
 import {
   verifyData,
   saveValue,
   getValue,
   convertSequenceAndDisplayData,
-} from '../../utils/localStorage';
+} from "../../utils/localStorage";
 
-import { LS_CHARTS_KEY } from '../../constants/overviewConstants';
-import { addQueryableFields } from '../query';
+import { LS_CHARTS_KEY } from "../../constants/overviewConstants";
+import { addQueryableFields } from "../query";
 
 export const makeGetDataRequest = createAsyncThunk(
-  'data/getConfigData',
+  "data/getConfigData",
   async (_ignore, thunkAPI) => {
     try {
       const [overview, queryParameterStack] = await Promise.all([
@@ -45,11 +45,18 @@ export const makeGetDataRequest = createAsyncThunk(
 
       // extracting individuals from overview
       const individuals = overview.individuals;
-      delete overview.individuals;
 
-      // converting data into more readable form
+      // unwinding extra properties to allChartsObj
       const allChartsObj = { ...overview, ...overview.extra_properties };
       delete allChartsObj.extra_properties;
+
+      // removing all non-chart keys
+      Object.entries(allChartsObj).forEach(([key, value]) => {
+        if (typeof value !== "object") {
+          delete allChartsObj[key];
+        } else if (!Object.values(value).every((v) => typeof v === "number"))
+          delete allChartsObj[key];
+      });
 
       let allCharts = Object.entries(allChartsObj).map((item) => ({
         name: item[0],
@@ -57,7 +64,7 @@ export const makeGetDataRequest = createAsyncThunk(
         isDisplayed: true,
       }));
       allCharts.forEach((chart, index, arr) => {
-        arr[index].properties = fields.find((e) => e.name == chart.name)?.data;
+        arr[index].properties = fields.find((e) => e.name === chart.name)?.data;
         arr[index].data = parseData(chart);
       });
 
