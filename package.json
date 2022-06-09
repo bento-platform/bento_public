@@ -58,5 +58,11 @@
   "bugs": {
     "url": "https://github.com/bento-platform/bento_public/issues"
   },
-  "homepage": "https://github.com/bento-platform/bento_public#readme"
+  "homepage": "https://github.com/bento-platform/bento_public#readme",
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "semi": true,
+    "singleQuote": true
+  }
 }
