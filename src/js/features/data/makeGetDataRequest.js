@@ -1,23 +1,23 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
 import {
   publicOverviewUrl,
   queryableFieldsUrl,
-} from "../../constants/configConstants";
-import { parseData } from "../../utils/dataUtils";
+} from '../../constants/configConstants';
+import { parseData } from '../../utils/dataUtils';
 
 import {
   verifyData,
   saveValue,
   getValue,
   convertSequenceAndDisplayData,
-} from "../../utils/localStorage";
+} from '../../utils/localStorage';
 
-import { LS_CHARTS_KEY } from "../../constants/overviewConstants";
-import { addQueryableFields } from "../query";
+import { LOCALSTORAGE_CHARTS_KEY } from '../../constants/overviewConstants';
+import { addQueryableFields } from '../query';
 
 export const makeGetDataRequest = createAsyncThunk(
-  "data/getConfigData",
+  'data/getConfigData',
   async (_ignore, thunkAPI) => {
     try {
       const [overview, queryParameterStack] = await Promise.all([
@@ -52,9 +52,9 @@ export const makeGetDataRequest = createAsyncThunk(
 
       // removing all non-chart keys
       Object.entries(allChartsObj).forEach(([key, value]) => {
-        if (typeof value !== "object") {
+        if (typeof value !== 'object') {
           delete allChartsObj[key];
-        } else if (!Object.values(value).every((v) => typeof v === "number"))
+        } else if (!Object.values(value).every((v) => typeof v === 'number'))
           delete allChartsObj[key];
       });
 
@@ -70,8 +70,10 @@ export const makeGetDataRequest = createAsyncThunk(
 
       // comparing to the local store and updating itself
       let convertedData = convertSequenceAndDisplayData(allCharts);
-      const localValue = getValue(LS_CHARTS_KEY, convertedData, (val) =>
-        verifyData(val, convertedData)
+      const localValue = getValue(
+        LOCALSTORAGE_CHARTS_KEY,
+        convertedData,
+        (val) => verifyData(val, convertedData)
       );
       allCharts = localValue.map((e) => ({
         ...allCharts.find((v) => v.name === e.name),
@@ -80,7 +82,7 @@ export const makeGetDataRequest = createAsyncThunk(
 
       //saving to local storage
       convertedData = convertSequenceAndDisplayData(allCharts);
-      saveValue(LS_CHARTS_KEY, convertedData);
+      saveValue(LOCALSTORAGE_CHARTS_KEY, convertedData);
 
       return { individuals, allCharts };
     } catch (error) {

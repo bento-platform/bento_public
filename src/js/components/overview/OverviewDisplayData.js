@@ -8,7 +8,7 @@ import {
   saveValue,
   convertSequenceAndDisplayData,
 } from '../../utils/localStorage';
-import { LS_CHARTS_KEY } from '../../constants/overviewConstants';
+import { LOCALSTORAGE_CHARTS_KEY } from '../../constants/overviewConstants';
 import { Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
@@ -16,7 +16,10 @@ const OverviewDisplayData = () => {
   const dispatch = useDispatch();
 
   const orderedCharts = useSelector((state) => state.data.chartData);
-  saveValue(LS_CHARTS_KEY, convertSequenceAndDisplayData(orderedCharts));
+  saveValue(
+    LOCALSTORAGE_CHARTS_KEY,
+    convertSequenceAndDisplayData(orderedCharts)
+  );
 
   const onRemoveChart = (chartName) => {
     dispatch(disableChart(chartName));

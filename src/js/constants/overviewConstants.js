@@ -42,7 +42,7 @@ export const COLORS = [
 export const BAR_CHART_FILL = '#4575b4';
 export const BAR_CHART_MISSING_FILL = '#bbbbbb';
 
-export const LS_CHARTS_KEY = 'charts';
+export const LOCALSTORAGE_CHARTS_KEY = 'charts';
 
 export const CHART_HEIGHT = 300;
 
