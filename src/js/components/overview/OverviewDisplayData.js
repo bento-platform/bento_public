@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { disableChart } from '../../features/data';
 import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
 import MakeChartCard from './MakeChartCard';
-import NewChartCard from './NewChartCard';
 import {
   saveValue,
   convertSequenceAndDisplayData,
@@ -46,7 +45,6 @@ const OverviewDisplayData = () => {
             onRemoveChart={onRemoveChart}
           />
         ))}
-      <NewChartCard onClick={showDrawer} />
       <ManageChartsDrawer
         onManageDrawerClose={onClose}
         manageDrawerVisible={visible}
