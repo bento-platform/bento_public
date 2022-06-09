@@ -54,6 +54,7 @@ const MakeChartCard = ({ chart, onRemoveChart }) => {
       <Card
         title={props.title}
         style={CARD_STYLE}
+        size="small"
         extra={<Space size="small">{ed}</Space>}
       >
         <Chart
