@@ -20,7 +20,7 @@ const TabbedDashboard = () => {
     dispatch(makeGetDataRequest());
   }, []);
 
-  const tabTitleStyle = { fontSize: '20px', fontWeight: 600 };
+  const tabTitleStyle = { fontSize: '20px', fontWeight: 500 };
   const tabBarStyle = { marginBottom: '20px' };
 
   const overviewTabTitle = <p style={tabTitleStyle}>Overview</p>;

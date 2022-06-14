@@ -3,7 +3,7 @@ import axios from 'axios';
 import { configUrl } from '../constants/configConstants';
 
 export const makeGetConfigRequest = createAsyncThunk(
-  'confg/getConfigData',
+  'config/getConfigData',
   async () => {
     return axios
       .get(configUrl)

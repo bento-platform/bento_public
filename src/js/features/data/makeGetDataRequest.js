@@ -13,7 +13,7 @@ import {
   convertSequenceAndDisplayData,
 } from '../../utils/localStorage';
 
-import { LS_CHARTS_KEY } from '../../constants/overviewConstants';
+import { LOCALSTORAGE_CHARTS_KEY } from '../../constants/overviewConstants';
 import { addQueryableFields } from '../query';
 
 export const makeGetDataRequest = createAsyncThunk(
@@ -45,11 +45,18 @@ export const makeGetDataRequest = createAsyncThunk(
 
       // extracting individuals from overview
       const individuals = overview.individuals;
-      delete overview.individuals;
 
-      // converting data into more readable form
+      // unwinding extra properties to allChartsObj
       const allChartsObj = { ...overview, ...overview.extra_properties };
       delete allChartsObj.extra_properties;
+
+      // removing all non-chart keys
+      Object.entries(allChartsObj).forEach(([key, value]) => {
+        if (typeof value !== 'object') {
+          delete allChartsObj[key];
+        } else if (!Object.values(value).every((v) => typeof v === 'number'))
+          delete allChartsObj[key];
+      });
 
       let allCharts = Object.entries(allChartsObj).map((item) => ({
         name: item[0],
@@ -57,14 +64,16 @@ export const makeGetDataRequest = createAsyncThunk(
         isDisplayed: true,
       }));
       allCharts.forEach((chart, index, arr) => {
-        arr[index].properties = fields.find((e) => e.name == chart.name)?.data;
+        arr[index].properties = fields.find((e) => e.name === chart.name)?.data;
         arr[index].data = parseData(chart);
       });
 
       // comparing to the local store and updating itself
       let convertedData = convertSequenceAndDisplayData(allCharts);
-      const localValue = getValue(LS_CHARTS_KEY, convertedData, (val) =>
-        verifyData(val, convertedData)
+      const localValue = getValue(
+        LOCALSTORAGE_CHARTS_KEY,
+        convertedData,
+        (val) => verifyData(val, convertedData)
       );
       allCharts = localValue.map((e) => ({
         ...allCharts.find((v) => v.name === e.name),
@@ -73,7 +82,7 @@ export const makeGetDataRequest = createAsyncThunk(
 
       //saving to local storage
       convertedData = convertSequenceAndDisplayData(allCharts);
-      saveValue(LS_CHARTS_KEY, convertedData);
+      saveValue(LOCALSTORAGE_CHARTS_KEY, convertedData);
 
       return { individuals, allCharts };
     } catch (error) {

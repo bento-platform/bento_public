@@ -8,3 +8,10 @@ body {
   min-height: 100%;
   background-color: #eff2f5;
 }
+
+.floating-button {
+  position:fixed;
+  right:5em;
+  bottom:1.5em;
+  transform: scale(125%);
+}

@@ -14,6 +14,7 @@ const PublicOverview = () => {
       <Row>
         <div
           style={{
+            pointerEvents: 'none',
             textAlign: 'right',
             transform: 'translateY(-80px)',
             color: '#AAA',

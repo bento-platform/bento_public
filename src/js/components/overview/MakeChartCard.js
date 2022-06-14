@@ -2,41 +2,31 @@ import React from 'react';
 import { Col } from 'react-bootstrap';
 import Chart from './charts/Chart';
 import { Card, Button, Tooltip, Space } from 'antd';
-import {
-  UpOutlined,
-  DownOutlined,
-  PlusOutlined,
-  CloseOutlined,
-} from '@ant-design/icons';
+import { CloseOutlined } from '@ant-design/icons';
 import { CARD_STYLE, chartTypes } from '../../constants/overviewConstants';
 
-const MakeChartCard = ({
-  chart,
-  onMoveChartUp,
-  onRemoveChart,
-  onMoveChartDown,
-  onShowDrawer,
-}) => {
+const MakeChartCard = ({ chart, onRemoveChart }) => {
   const props = chart.properties;
 
   const extraOptionsData = [
-    {
-      icon: <UpOutlined />,
-      description: 'Move the chart up',
-      onClick: () => onMoveChartUp(chart.name),
-    },
-    {
-      icon: <DownOutlined />,
-      description: 'Move the chart down',
-      onClick: () => {
-        onMoveChartDown(chart.name);
-      },
-    },
-    {
-      icon: <PlusOutlined />,
-      description: 'Manage charts',
-      onClick: onShowDrawer,
-    },
+    // to enable extra buttons, follow the commented examples
+    // {
+    //   icon: <UpOutlined />,
+    //   description: 'Move the chart up',
+    //   onClick: () => onMoveChartUp(chart.name),
+    // },
+    // {
+    //   icon: <DownOutlined />,
+    //   description: 'Move the chart down',
+    //   onClick: () => {
+    //     onMoveChartDown(chart.name);
+    //   },
+    // },
+    // {
+    //   icon: <PlusOutlined />,
+    //   description: 'Manage charts',
+    //   onClick: onShowDrawer,
+    // },
     {
       icon: <CloseOutlined />,
       description: 'Remove this chart',
@@ -64,6 +54,7 @@ const MakeChartCard = ({
       <Card
         title={props.title}
         style={CARD_STYLE}
+        size="small"
         extra={<Space size="small">{ed}</Space>}
       >
         <Chart
