@@ -1,10 +1,10 @@
-import React from "react";
-import { Row, Container } from "react-bootstrap";
-import { Divider, Typography } from "antd";
+import React from 'react';
+import { Row, Container } from 'react-bootstrap';
+import { Divider, Typography } from 'antd';
 
-import { useSelector } from "react-redux";
+import { useSelector } from 'react-redux';
 
-import OverviewDisplayData from "./OverviewDisplayData";
+import OverviewDisplayData from './OverviewDisplayData';
 
 const PublicOverview = () => {
   const { chartData, individuals } = useSelector((state) => state.data);
@@ -14,10 +14,10 @@ const PublicOverview = () => {
       <Row>
         <div
           style={{
-            pointerEvents: "none",
-            textAlign: "right",
-            transform: "translateY(-80px)",
-            color: "#AAA",
+            pointerEvents: 'none',
+            textAlign: 'right',
+            transform: 'translateY(-80px)',
+            color: '#AAA',
           }}
         >
           <Typography.Title level={5}>

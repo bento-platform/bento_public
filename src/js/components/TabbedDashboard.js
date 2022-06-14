@@ -1,13 +1,13 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Tabs } from "antd";
-import Search from "./Search/Search";
-import PublicOverview from "./overview/PublicOverview";
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Tabs } from 'antd';
+import Search from './Search/Search';
+import PublicOverview from './overview/PublicOverview';
 
-import { makeGetDataRequest } from "../features/data";
-import { makeGetConfigRequest } from "../features/config";
+import { makeGetDataRequest } from '../features/data';
+import { makeGetConfigRequest } from '../features/config';
 
-import Loader from "./Loader";
+import Loader from './Loader';
 
 const { TabPane } = Tabs;
 
@@ -20,8 +20,8 @@ const TabbedDashboard = () => {
     dispatch(makeGetDataRequest());
   }, []);
 
-  const tabTitleStyle = { fontSize: "20px", fontWeight: 500 };
-  const tabBarStyle = { marginBottom: "20px" };
+  const tabTitleStyle = { fontSize: '20px', fontWeight: 500 };
+  const tabBarStyle = { marginBottom: '20px' };
 
   const overviewTabTitle = <p style={tabTitleStyle}>Overview</p>;
   const searchTabTitle = <p style={tabTitleStyle}>Search</p>;
@@ -29,7 +29,7 @@ const TabbedDashboard = () => {
   const isFetchingData = useSelector((state) => state.data.isFetchingData);
 
   return (
-    <div style={{ paddingLeft: "25px" }}>
+    <div style={{ paddingLeft: '25px' }}>
       <Tabs
         defaultActiveKey="overview"
         size="large"
