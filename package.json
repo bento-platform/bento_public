@@ -1,11 +1,11 @@
 {
-  "name": "webpack-reactjs",
+  "name": "bento_public",
   "version": "1.0.0",
-  "description": "",
+  "description": "A publicly accessible portal for clinical datasets, where users are able to see high-level statistics of the data available through predefined variables of interest and search the data using limitied variables at a time. This portal allows users to gain a generic understanding of the data available (secure and firewalled) without the need to access it directly. Initially, this portal facilitates the search in English language only, but the French language will be added at a later time.",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack --mode=development",
-    "build": "webpack",
+    "build": "webpack --mode=production",
+    "watch": "webpack --mode=development --watch",
     "gobuild": "./buildandrun.sh"
   },
   "keywords": [],
@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
+    "@reduxjs/toolkit": "^1.8.1",
     "antd": "^4.18.6",
     "axios": "^0.24.0",
     "babel-polyfill": "^6.26.0",
@@ -34,16 +35,34 @@
     "victory": "^36.2.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.9.0",
+    "@babel/core": "^7.17.12",
     "@babel/plugin-transform-runtime": "^7.9.0",
     "@babel/preset-env": "^7.9.0",
     "@babel/preset-react": "^7.9.4",
+    "@webpack-cli/serve": "^1.6.1",
     "babel-core": "^6.26.3",
     "babel-loader": "^8.1.0",
+    "cross-env": "^7.0.3",
     "dotenv-webpack": "^7.0.3",
+    "html-webpack-plugin": "^5.5.0",
     "redux": "^4.1.0",
-    "webpack": "^4.42.1",
-    "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.10.3"
+    "webpack": "^5.72.1",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-middleware": "^5.3.1",
+    "webpack-dev-server": "^4.9.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bento-platform/bento_public.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bento-platform/bento_public/issues"
+  },
+  "homepage": "https://github.com/bento-platform/bento_public#readme",
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "semi": true,
+    "singleQuote": true
   }
 }

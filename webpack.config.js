@@ -1,41 +1,61 @@
 const webpack = require('webpack'); // only add this if you don't have yet
-const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 // load client.env
-require('dotenv').config({ path: './client.env' }); 
+require('dotenv').config({ path: './client.env' });
 
-
-module.exports = {
-    module: {
-        rules: [
-            {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                use: {
-                    loader: "babel-loader"
-                }
-            },
-            {
-                test: /\.(sass|less|css)$/,
-                loaders: ['style-loader', 'css-loader', 'less-loader']
-            }
-        ]
-    },
-    entry: {
-        js: ['babel-polyfill', './src/js'],
+const config = {
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        type: 'javascript/auto',
+        use: {
+          loader: 'babel-loader',
+        },
       },
-    output: {
-        path: __dirname + '/build/www',
-        publicPath: '',
-        filename: 'js/bundle.js'
-    },
-    devServer: {
-        contentBase: './distgetuk'
-    },
-    plugins: [
-        //new Dotenv()
-        new webpack.DefinePlugin({
-            "process.env": JSON.stringify(process.env)
-        }),
-    ]
+      {
+        test: /\.(sass|less|css)$/,
+        use: [
+          { loader: 'style-loader' },
+          { loader: 'css-loader' },
+          { loader: 'less-loader' },
+        ],
+      },
+    ],
+  },
+  entry: {
+    js: ['babel-polyfill', './src/js'],
+  },
+  output: {
+    path: __dirname + '/build/www',
+    publicPath: '',
+    // filename: "js/bundle.js",
+    filename: 'js/[name][chunkhash].js',
+  },
+  devServer: {
+    static: './dist',
+    contentBase: './distgetuk',
+  },
+  plugins: [
+    //new Dotenv()
+    new webpack.DefinePlugin({
+      'process.env': JSON.stringify(process.env),
+    }),
+    new HtmlWebpackPlugin({
+      title: 'Development',
+      inject: false,
+    }),
+  ],
+  optimization: {
+    runtimeChunk: 'single',
+  },
+};
+
+module.exports = (_env, argv) => {
+  if (argv.mode === 'development') {
+    config.devtool = 'inline-source-map';
+  }
+  return config;
 };
