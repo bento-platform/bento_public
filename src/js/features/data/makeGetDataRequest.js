@@ -16,6 +16,17 @@ import {
 import { LOCALSTORAGE_CHARTS_KEY } from '../../constants/overviewConstants';
 import { addQueryableFields } from '../query';
 
+/**
+ * Check wether a given property has the shape of a chart configuration, i.e.
+ * an object where every key is associated with a numerical value
+ * @param {object} prop
+ * @returns
+ */
+const isChartConfig = (prop) => {
+  if (typeof prop !== 'object') return false;
+  return Object.values(prop).every((v) => typeof v === 'number');
+}
+
 export const makeGetDataRequest = createAsyncThunk(
   'data/getConfigData',
   async (_ignore, thunkAPI) => {
@@ -53,23 +64,19 @@ export const makeGetDataRequest = createAsyncThunk(
       };
       if (allChartsObj.extra_properties) delete allChartsObj.extra_properties;
 
-      // removing all non-chart keys
-      Object.entries(allChartsObj).forEach(([key, value]) => {
-        if (typeof value !== 'object') {
-          delete allChartsObj[key];
-        } else if (!Object.values(value).every((v) => typeof v === 'number'))
-          delete allChartsObj[key];
-      });
 
-      let allCharts = Object.entries(allChartsObj).map((item) => ({
-        name: item[0],
-        data: item[1],
-        isDisplayed: true,
-      }));
-      allCharts.forEach((chart, index, arr) => {
-        arr[index].properties = fields.find((e) => e.name === chart.name)?.data;
-        arr[index].data = parseData(chart);
-      });
+      let allCharts = Object.entries(allChartsObj)
+        .filter(([_, value]) => isChartConfig(value))
+        .map(([name, rawData]) => {
+          const properties = fields.find((e) => e.name === name)?.data;
+          const data = parseData({data: rawData, properties});
+          return {
+            name,
+            data,
+            properties,
+            isDisplayed: true,
+          }
+        });
 
       // comparing to the local store and updating itself
       let convertedData = convertSequenceAndDisplayData(allCharts);
