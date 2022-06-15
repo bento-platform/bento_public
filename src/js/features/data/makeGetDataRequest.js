@@ -28,14 +28,14 @@ export const makeGetDataRequest = createAsyncThunk(
       // converting fields to usable form
       let fields = {
         ...queryParameterStack,
-        ...queryParameterStack.extra_properties,
+        ...(queryParameterStack.extra_properties ?? {}),
       };
-      delete fields.extra_properties;
+      if (fields.extra_properties) delete fields.extra_properties;
 
       fields = Object.entries(fields).map((item) => ({
         name: item[0],
         data: item[1],
-        isExtraProperty: queryParameterStack?.extra_properties.hasOwnProperty(
+        isExtraProperty: queryParameterStack.extra_properties?.hasOwnProperty(
           item[0]
         ),
       }));
@@ -47,8 +47,11 @@ export const makeGetDataRequest = createAsyncThunk(
       const individuals = overview.individuals;
 
       // unwinding extra properties to allChartsObj
-      const allChartsObj = { ...overview, ...overview.extra_properties };
-      delete allChartsObj.extra_properties;
+      const allChartsObj = {
+        ...overview,
+        ...(overview.extra_properties ?? {}),
+      };
+      if (allChartsObj.extra_properties) delete allChartsObj.extra_properties;
 
       // removing all non-chart keys
       Object.entries(allChartsObj).forEach(([key, value]) => {
