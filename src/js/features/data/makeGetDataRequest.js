@@ -16,6 +16,17 @@ import {
 import { LOCALSTORAGE_CHARTS_KEY } from '../../constants/overviewConstants';
 import { addQueryableFields } from '../query';
 
+/**
+ * Check wether a given property has the shape of a chart configuration, i.e.
+ * an object where every key is associated with a numerical value
+ * @param {object} prop
+ * @returns
+ */
+const isChartConfig = (prop) => {
+  if (typeof prop !== 'object') return false;
+  return Object.values(prop).every((v) => typeof v === 'number');
+};
+
 export const makeGetDataRequest = createAsyncThunk(
   'data/getConfigData',
   async (_ignore, thunkAPI) => {
@@ -26,16 +37,16 @@ export const makeGetDataRequest = createAsyncThunk(
       ]).then(([ov, f]) => [ov.data.overview, f.data]);
 
       // converting fields to usable form
-      let fields = {
-        ...queryParameterStack,
-        ...queryParameterStack.extra_properties,
+      const { extra_properties, ...everything_else } = queryParameterStack;
+      const fieldMap = {
+        ...everything_else,
+        ...extra_properties,
       };
-      delete fields.extra_properties;
 
-      fields = Object.entries(fields).map((item) => ({
+      let fields = Object.entries(fieldMap).map((item) => ({
         name: item[0],
         data: item[1],
-        isExtraProperty: queryParameterStack?.extra_properties.hasOwnProperty(
+        isExtraProperty: queryParameterStack.extra_properties?.hasOwnProperty(
           item[0]
         ),
       }));
@@ -47,26 +58,24 @@ export const makeGetDataRequest = createAsyncThunk(
       const individuals = overview.individuals;
 
       // unwinding extra properties to allChartsObj
-      const allChartsObj = { ...overview, ...overview.extra_properties };
-      delete allChartsObj.extra_properties;
+      const { extra_properties_ovw, ...everything_else_ovw } = overview;
+      const allChartsObj = {
+        ...extra_properties_ovw,
+        ...everything_else_ovw,
+      };
 
-      // removing all non-chart keys
-      Object.entries(allChartsObj).forEach(([key, value]) => {
-        if (typeof value !== 'object') {
-          delete allChartsObj[key];
-        } else if (!Object.values(value).every((v) => typeof v === 'number'))
-          delete allChartsObj[key];
-      });
-
-      let allCharts = Object.entries(allChartsObj).map((item) => ({
-        name: item[0],
-        data: item[1],
-        isDisplayed: true,
-      }));
-      allCharts.forEach((chart, index, arr) => {
-        arr[index].properties = fields.find((e) => e.name === chart.name)?.data;
-        arr[index].data = parseData(chart);
-      });
+      let allCharts = Object.entries(allChartsObj)
+        .filter(([_, value]) => isChartConfig(value))
+        .map(([name, rawData]) => {
+          const properties = fieldMap[name];
+          const data = parseData({ data: rawData, properties });
+          return {
+            name,
+            data,
+            properties,
+            isDisplayed: true,
+          };
+        });
 
       // comparing to the local store and updating itself
       let convertedData = convertSequenceAndDisplayData(allCharts);
