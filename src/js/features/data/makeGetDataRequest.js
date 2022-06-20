@@ -25,7 +25,7 @@ import { addQueryableFields } from '../query';
 const isChartConfig = (prop) => {
   if (typeof prop !== 'object') return false;
   return Object.values(prop).every((v) => typeof v === 'number');
-}
+};
 
 export const makeGetDataRequest = createAsyncThunk(
   'data/getConfigData',
@@ -37,13 +37,13 @@ export const makeGetDataRequest = createAsyncThunk(
       ]).then(([ov, f]) => [ov.data.overview, f.data]);
 
       // converting fields to usable form
-      let fields = {
-        ...queryParameterStack,
-        ...(queryParameterStack.extra_properties ?? {}),
+      const { extra_properties, ...everything_else } = queryParameterStack;
+      const fieldMap = {
+        ...everything_else,
+        ...extra_properties,
       };
-      if (fields.extra_properties) delete fields.extra_properties;
 
-      fields = Object.entries(fields).map((item) => ({
+      let fields = Object.entries(fieldMap).map((item) => ({
         name: item[0],
         data: item[1],
         isExtraProperty: queryParameterStack.extra_properties?.hasOwnProperty(
@@ -58,24 +58,23 @@ export const makeGetDataRequest = createAsyncThunk(
       const individuals = overview.individuals;
 
       // unwinding extra properties to allChartsObj
+      const { extra_properties_ovw, ...everything_else_ovw } = overview;
       const allChartsObj = {
-        ...overview,
-        ...(overview.extra_properties ?? {}),
+        ...extra_properties_ovw,
+        ...everything_else_ovw,
       };
-      if (allChartsObj.extra_properties) delete allChartsObj.extra_properties;
-
 
       let allCharts = Object.entries(allChartsObj)
         .filter(([_, value]) => isChartConfig(value))
         .map(([name, rawData]) => {
-          const properties = fields.find((e) => e.name === name)?.data;
-          const data = parseData({data: rawData, properties});
+          const properties = fieldMap[name];
+          const data = parseData({ data: rawData, properties });
           return {
             name,
             data,
             properties,
             isDisplayed: true,
-          }
+          };
         });
 
       // comparing to the local store and updating itself
