@@ -27,6 +27,11 @@ const isChartConfig = (prop) => {
   return Object.values(prop).every((v) => typeof v === 'number');
 };
 
+const flattenExtraProperties = (obj) => {
+  const { extra_properties, ...everything_else } = obj;
+  return { ...everything_else, ...extra_properties };
+};
+
 export const makeGetDataRequest = createAsyncThunk(
   'data/getConfigData',
   async (_ignore, thunkAPI) => {
@@ -37,11 +42,7 @@ export const makeGetDataRequest = createAsyncThunk(
       ]).then(([ov, f]) => [ov.data.overview, f.data]);
 
       // converting fields to usable form
-      const { extra_properties, ...everything_else } = queryParameterStack;
-      const fieldMap = {
-        ...everything_else,
-        ...extra_properties,
-      };
+      const fieldMap = flattenExtraProperties(queryParameterStack)
 
       let fields = Object.entries(fieldMap).map((item) => ({
         name: item[0],
@@ -57,12 +58,7 @@ export const makeGetDataRequest = createAsyncThunk(
       // extracting individuals from overview
       const individuals = overview.individuals;
 
-      // unwinding extra properties to allChartsObj
-      const { extra_properties_ovw, ...everything_else_ovw } = overview;
-      const allChartsObj = {
-        ...extra_properties_ovw,
-        ...everything_else_ovw,
-      };
+      const allChartsObj = flattenExtraProperties(overview)
 
       let allCharts = Object.entries(allChartsObj)
         .filter(([_, value]) => isChartConfig(value))
