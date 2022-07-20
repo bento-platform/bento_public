@@ -6,7 +6,6 @@ import {
   Curve,
   Tooltip,
   Sector,
-  ResponsiveContainer,
 } from 'recharts';
 import { polarToCartesian } from 'recharts/es6/util/PolarUtils';
 
@@ -26,13 +25,6 @@ const countTextStyle = {
   fill: '#999',
 };
 
-const titleStyle = {
-  fontStyle: 'italic',
-  fontSize: '1.5em',
-  marginBottom: '-15px',
-  textAlign: 'center',
-};
-
 const labelShortName = (name) => {
   if (name.length <= MAX_LABEL_CHARS) {
     return name;
@@ -41,9 +33,7 @@ const labelShortName = (name) => {
   return `${name.substring(0, MAX_LABEL_CHARS - 3)}\u2026`;
 };
 
-const titleHeaderHeight = 31;
-
-function BentoPie({ title, data, height }) {
+function BentoPie({ data, height }) {
   const [activeIndex, setActiveIndex] = useState(undefined);
 
   data = data.filter((e) => e.y !== 0);
@@ -60,10 +50,6 @@ function BentoPie({ title, data, height }) {
 
   const onLeave = () => {
     setActiveIndex(undefined);
-  };
-
-  const onClick = (data) => {
-    console.log('click');
   };
 
   const wrapperStyle = {
@@ -159,32 +145,12 @@ function BentoPie({ title, data, height }) {
     const {
       cx,
       cy,
-      midAngle,
       innerRadius,
       outerRadius,
       startAngle,
       endAngle,
       fill,
-      payload,
     } = params;
-
-    const name = payload.name === 'null' ? '(Empty)' : payload.name;
-    const offsetRadius = 20;
-    const sin = Math.sin(-RADIAN * midAngle);
-    const cos = Math.cos(-RADIAN * midAngle);
-    const sx = cx + (outerRadius + 10) * cos;
-    const sy = cy + (outerRadius + 10) * sin;
-    const mx = cx + (outerRadius + offsetRadius) * cos;
-    const my = cy + (outerRadius + offsetRadius) * sin;
-    const ex = mx + (cos >= 0 ? 1 : -1) * 22;
-    const ey = my;
-    const textAnchor = cos >= 0 ? 'start' : 'end';
-
-    const currentTextStyle = {
-      ...textStyle,
-      fontWeight: 'bold',
-      fontStyle: payload.name === 'null' ? 'italic' : 'normal',
-    };
 
     // render arc around active segment
     return (
@@ -268,7 +234,6 @@ function BentoPie({ title, data, height }) {
           label={renderLabel}
           labelLine={false}
           isAnimationActive={false}
-          onClick={onClick}
           onMouseEnter={onEnter}
           onMouseLeave={onLeave}
           onMouseOver={onHover}

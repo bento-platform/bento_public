@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { DatePicker } from 'antd';
 import { useDispatch } from 'react-redux';
-import { addQueryParam } from '../../../features/query';
+import { addQueryParam } from '../../../features/search/query';
 import moment from 'moment';
 import {
   queryTypes,

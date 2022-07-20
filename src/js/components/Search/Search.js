@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { Button } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
-import { addQueryableFields, makeGetKatsuPublic } from '../../features/query';
+import { makeGetKatsuPublic } from '../../features/search/query';
 import SearchFieldsStack from './SearchFieldsStack';
 import SearchResults from './SearchResults';
 

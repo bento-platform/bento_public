@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Input } from 'antd';
 import { useDispatch } from 'react-redux';
-import { addQueryParam } from '../../../features/query';
+import { addQueryParam } from '../../../features/search/query';
 import { queryTypes } from '../../../constants/queryConstants';
 
 const InputOption = ({ name, isChecked }) => {

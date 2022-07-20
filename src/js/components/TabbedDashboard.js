@@ -4,8 +4,8 @@ import { Tabs } from "antd";
 import Search from "./Search/Search";
 import PublicOverview from "./overview/PublicOverview";
 
-import { makeGetDataRequest } from "../features/data";
-import { makeGetConfigRequest } from "../features/config";
+import { makeGetDataRequest } from "../features/data/data";
+import { makeGetConfigRequest } from "../features/config/config";
 
 import Loader from "./Loader";
 

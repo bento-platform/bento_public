@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
-// import QueryParameter from './QueryParameter';
 import MakeQueryOption from './MakeQueryOption';
 
 const SearchFieldsStack = () => {

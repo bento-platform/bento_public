@@ -4,7 +4,7 @@ import { Row, Col } from 'react-bootstrap';
 import { Checkbox } from 'antd';
 import QueryOption from './QueryOption/QueryOption';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeQueryParam } from '../../features/query';
+import { removeQueryParam } from '../../features/search/query';
 
 const MakeQueryOption = ({ queryField }) => {
   const dispatch = useDispatch();

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import { InputNumber } from 'antd';
 import { useDispatch } from 'react-redux';
-import { addQueryParam } from '../../../features/query';
+import { addQueryParam } from '../../../features/search/query';
 import { queryTypes } from '../../../constants/queryConstants';
 
 const NumberRange = ({ name, data, isChecked }) => {

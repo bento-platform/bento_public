@@ -1,8 +1,8 @@
-import { katsuUrl } from '../constants/configConstants';
+import { katsuUrl } from '../../constants/configConstants';
 import axios from 'axios';
 
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { determineQueryType, getRelatedFields } from '../utils/queryUtils';
+import { determineQueryType, getRelatedFields } from '../../utils/queryUtils';
 
 export const makeGetKatsuPublic = createAsyncThunk(
   'query/makeGetKatsuPublic',

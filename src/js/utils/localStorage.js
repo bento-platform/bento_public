@@ -1,13 +1,17 @@
-export const verifyData = (nArr, oArr) => {
-  if (nArr.length !== oArr.length) {
-    return false;
-  }
-  const nArrMap = {};
-  for (const { name, isDisplayed } of nArr) {
-    if (name && typeof isDisplayed === 'boolean') nArrMap[name] = true;
-    else return false;
-  }
-  return oArr.every((e) => nArrMap[e.name]);
+export const verifyData = (nObj, oObj) => {
+  const verifyCharts = (nCharts, oCharts) => {
+    if (nCharts.length !== oCharts.length) return false;
+
+    const nChartsMap = {};
+    for (const { id, isDisplayed } of nCharts) {
+      if (id && typeof isDisplayed === 'boolean') nChartsMap[id] = true;
+      else return false;
+    }
+    return oCharts.every((e) => nChartsMap[e.id]);
+  };
+
+  if (Object.keys(oObj).length !== Object.keys(nObj).length) return false;
+  return Object.entries(oObj).every(([key, charts]) => verifyCharts(nObj[key], charts));
 };
 
 export const saveValue = (key, value) => {
@@ -36,5 +40,10 @@ export const getValue = (key, defaultVal, verifyFunc) => {
   }
 };
 
-export const convertSequenceAndDisplayData = (arr) =>
-  arr.map((e) => ({ name: e.name, isDisplayed: e.isDisplayed }));
+export const convertSequenceAndDisplayData = (sections) => {
+  const temp = {};
+  sections.forEach(({ sectionTitle, charts }) => {
+    temp[sectionTitle] = charts.map(({ id, isDisplayed }) => ({ id, isDisplayed }));
+  });
+  return temp;
+};
