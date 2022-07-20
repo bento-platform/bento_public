@@ -6,7 +6,8 @@
   "scripts": {
     "build": "webpack --mode=production",
     "watch": "webpack --mode=development --watch",
-    "gobuild": "./buildandrun.sh"
+    "gobuild": "./buildandrun.sh",
+    "lint": "npx eslint src/js/**"
   },
   "keywords": [],
   "author": "",
@@ -44,6 +45,8 @@
     "babel-loader": "^8.1.0",
     "cross-env": "^7.0.3",
     "dotenv-webpack": "^7.0.3",
+    "eslint": "^8.21.0",
+    "eslint-plugin-react": "^7.30.1",
     "html-webpack-plugin": "^5.5.0",
     "redux": "^4.1.0",
     "webpack": "^5.72.1",
@@ -63,6 +66,7 @@
     "trailingComma": "es5",
     "tabWidth": 2,
     "semi": true,
-    "singleQuote": true
+    "singleQuote": true,
+    "printWidth": 100
   }
 }
