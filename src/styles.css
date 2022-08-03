@@ -9,9 +9,45 @@ body {
   background-color: #eff2f5;
 }
 
+.overview-section {
+    margin: 0 40px;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.chart-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 15px;
+}
+
 .floating-button {
   position:fixed;
   right:5em;
   bottom:1.5em;
   transform: scale(125%);
+}
+
+@media only screen and (max-width: 1065px) {
+    .chart-grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
+    .overview {
+        width: 350px;
+    }
+}
+
+@media only screen and (min-width: 1065px) and (max-width: 1490px) {
+
+    .chart-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 15px;
+    }
+    .overview {
+        width: 815px;
+    }
 }
