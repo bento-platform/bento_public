@@ -1,14 +1,10 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-// import QueryParameter from './QueryParameter';
+import React from 'react';
 import MakeQueryOption from './MakeQueryOption';
 
-const SearchFieldsStack = () => {
-  const params = useSelector((state) => state.query.queryableFields);
-
+const SearchFieldsStack = ({ queryFields }) => {
   return (
     <>
-      {params.map((e, i) => (
+      {queryFields.map((e, i) => (
         <MakeQueryOption key={i} queryField={e} />
       ))}
     </>
