@@ -20,11 +20,11 @@
     "babel-polyfill": "^6.26.0",
     "bootstrap": "^5.1.3",
     "css-loader": "^5.2.7",
+    "dotenv": "^16.0.1",
     "less": "^4.1.1",
     "less-loader": "7.3.0",
     "mini-css-extract-plugin": "^2.4.5",
     "react": "^16.13.1",
-    "react-bootstrap": "^2.0.3",
     "react-dom": "^16.13.1",
     "react-json-formatter": "^0.2.1",
     "react-notify-bootstrap": "^1.0.23",
@@ -48,6 +48,7 @@
     "eslint": "^8.21.0",
     "eslint-plugin-react": "^7.30.1",
     "html-webpack-plugin": "^5.5.0",
+    "prettier": "2.7.1",
     "redux": "^4.1.0",
     "webpack": "^5.72.1",
     "webpack-cli": "^4.9.2",
@@ -67,6 +68,6 @@
     "tabWidth": 2,
     "semi": true,
     "singleQuote": true,
-    "printWidth": 100
+    "printWidth": 120
   }
 }

@@ -4,10 +4,11 @@ import { Tabs } from 'antd';
 import Search from './Search/Search';
 import PublicOverview from './overview/PublicOverview';
 
-import { makeGetDataRequest } from '../features/data';
-import { makeGetConfigRequest } from '../features/config';
+import { makeGetDataRequest } from '../features/data/data';
+import { makeGetConfigRequest } from '../features/config/config';
 
 import Loader from './Loader';
+import { makeGetSearchFields } from '../features/search/query';
 
 const { TabPane } = Tabs;
 
@@ -18,6 +19,7 @@ const TabbedDashboard = () => {
   useEffect(() => {
     dispatch(makeGetConfigRequest());
     dispatch(makeGetDataRequest());
+    dispatch(makeGetSearchFields());
   }, []);
 
   const tabTitleStyle = { fontSize: '20px', fontWeight: 500 };
@@ -26,21 +28,17 @@ const TabbedDashboard = () => {
   const overviewTabTitle = <p style={tabTitleStyle}>Overview</p>;
   const searchTabTitle = <p style={tabTitleStyle}>Search</p>;
 
-  const isFetchingData = useSelector((state) => state.data.isFetchingData);
+  const isFetchingOverviewData = useSelector((state) => state.data.isFetchingData);
+  const isFetchingSearchFields = useSelector((state) => state.query.isFetchingFields);
 
   return (
     <div style={{ paddingLeft: '25px' }}>
-      <Tabs
-        defaultActiveKey="overview"
-        size="large"
-        tabBarStyle={tabBarStyle}
-        centered
-      >
+      <Tabs defaultActiveKey="overview" size="large" tabBarStyle={tabBarStyle} centered>
         <TabPane tab={overviewTabTitle} key="overview" size="large">
-          {!isFetchingData ? <PublicOverview /> : <Loader />}
+          {!isFetchingOverviewData ? <PublicOverview /> : <Loader />}
         </TabPane>
         <TabPane tab={searchTabTitle} key="search">
-          <Search />
+          {!isFetchingSearchFields ? <Search /> : <Loader />}
         </TabPane>
       </Tabs>
     </div>

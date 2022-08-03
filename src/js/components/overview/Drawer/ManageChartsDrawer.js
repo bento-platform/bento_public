@@ -1,8 +1,14 @@
 import React from 'react';
-import { Drawer } from 'antd';
+import { useSelector } from 'react-redux';
+
+import { Drawer, Typography } from 'antd';
+const { Title } = Typography;
+
 import ChartTree from './ChartTree';
 
 const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }) => {
+  const sections = useSelector((state) => state.data.sections);
+
   return (
     <Drawer
       title="Manage Charts"
@@ -10,7 +16,12 @@ const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }) => {
       onClose={onManageDrawerClose}
       visible={manageDrawerVisible}
     >
-      <ChartTree />
+      {sections.map(({ sectionTitle, charts }, i) => (
+        <div key={i}>
+          <Title level={5}>{sectionTitle}</Title>
+          <ChartTree charts={charts} section={sectionTitle} />
+        </div>
+      ))}
     </Drawer>
   );
 };
