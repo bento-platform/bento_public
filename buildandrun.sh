@@ -1,6 +1,7 @@
 #!/bin/sh
 
 # prepare output directories
+rm -rf build
 mkdir -p build/www
 # - prepare server .env
 cp server.env build/.env
