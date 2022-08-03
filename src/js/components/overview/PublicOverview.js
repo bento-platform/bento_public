@@ -18,11 +18,11 @@ const PublicOverview = () => {
 
   return (
     <div className="container">
+      <div style={{ pointerEvents: 'none', color: '#AAA', position: 'absolute', top: '-5.5em', right: '3em' }}>
+        <Typography.Title level={5}>Individuals: {individuals}</Typography.Title>
+      </div>
       <Row justify="center">
         <Col>
-          <div style={{ pointerEvents: 'none', color: '#AAA', position: 'fixed', top: '6.5em', right: '3em' }}>
-            <Typography.Title level={5}>Individuals: {individuals}</Typography.Title>
-          </div>
           {sections.map(({ sectionTitle, charts }, i) => (
             <div key={i} className="overview">
               <OverviewSection index={i} title={sectionTitle} chartData={charts} />
