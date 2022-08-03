@@ -18,8 +18,9 @@ const TabbedDashboard = () => {
   // fetch data from server on first render
   useEffect(() => {
     dispatch(makeGetConfigRequest());
-    dispatch(makeGetDataRequest());
-    dispatch(makeGetSearchFields());
+    dispatch(makeGetDataRequest()).then(() => { // Sequential call intended for backend related issues
+      dispatch(makeGetSearchFields());
+    });
   }, []);
 
   const tabTitleStyle = { fontSize: '20px', fontWeight: 500 };
