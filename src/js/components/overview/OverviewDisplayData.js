@@ -1,63 +1,31 @@
-import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { disableChart } from '../../features/data';
-import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
-import MakeChartCard from './MakeChartCard';
-import {
-  saveValue,
-  convertSequenceAndDisplayData,
-} from '../../utils/localStorage';
-import { LOCALSTORAGE_CHARTS_KEY } from '../../constants/overviewConstants';
-import { Button } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import { Row, Col } from 'antd';
 
-const OverviewDisplayData = () => {
+import MakeChartCard from './MakeChartCard';
+import { disableChart } from '../../features/data/data';
+
+const OverviewDisplayData = ({ section, allCharts }) => {
   const dispatch = useDispatch();
 
-  const orderedCharts = useSelector((state) => state.data.chartData);
-  saveValue(
-    LOCALSTORAGE_CHARTS_KEY,
-    convertSequenceAndDisplayData(orderedCharts)
-  );
+  const orderedCharts = allCharts;
 
-  const onRemoveChart = (chartName) => {
-    dispatch(disableChart(chartName));
-  };
-
-  const [visible, setVisible] = useState(false);
-
-  const showDrawer = () => {
-    setVisible(true);
-  };
-
-  const onClose = () => {
-    setVisible(false);
+  const onRemoveChart = ({ section, id }) => {
+    dispatch(disableChart({ section, id }));
   };
 
   return (
-    <>
-      {orderedCharts
-        .filter((e) => e.isDisplayed)
-        .map((chart) => (
-          <MakeChartCard
-            key={chart.name}
-            chart={chart}
-            onRemoveChart={onRemoveChart}
-          />
-        ))}
-      <ManageChartsDrawer
-        onManageDrawerClose={onClose}
-        manageDrawerVisible={visible}
-      />
-      <Button
-        type="primary"
-        shape="circle"
-        icon={<PlusOutlined />}
-        size="large"
-        className="floating-button"
-        onClick={showDrawer}
-      />
-    </>
+    <Row>
+      <Col span={24}>
+        <div className="chart-grid">
+          {orderedCharts
+            .filter((e) => e.isDisplayed)
+            .map((chart) => (
+              <MakeChartCard key={chart.name} chart={chart} section={section} onRemoveChart={onRemoveChart} />
+            ))}
+        </div>
+      </Col>
+    </Row>
   );
 };
 
