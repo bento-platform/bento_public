@@ -1,37 +1,24 @@
 import React from 'react';
-import { Col } from 'react-bootstrap';
 import Chart from './charts/Chart';
 import { Card, Button, Tooltip, Space } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
-import { CARD_STYLE, chartTypes } from '../../constants/overviewConstants';
+import { CARD_STYLE } from '../../constants/overviewConstants';
 
-const MakeChartCard = ({ chart, onRemoveChart }) => {
-  const props = chart.properties;
+const MakeChartCard = ({ section, chart, onRemoveChart }) => {
+  const { name, title, data, chartType, config, id } = chart;
 
   const extraOptionsData = [
-    // to enable extra buttons, follow the commented examples
+    // to enable extra buttons, follow the commented example
     // {
     //   icon: <UpOutlined />,
     //   description: 'Move the chart up',
     //   onClick: () => onMoveChartUp(chart.name),
     // },
-    // {
-    //   icon: <DownOutlined />,
-    //   description: 'Move the chart down',
-    //   onClick: () => {
-    //     onMoveChartDown(chart.name);
-    //   },
-    // },
-    // {
-    //   icon: <PlusOutlined />,
-    //   description: 'Manage charts',
-    //   onClick: onShowDrawer,
-    // },
     {
       icon: <CloseOutlined />,
       description: 'Remove this chart',
       onClick: () => {
-        onRemoveChart(chart.name);
+        onRemoveChart({ section, id });
       },
     },
   ];
@@ -43,31 +30,11 @@ const MakeChartCard = ({ chart, onRemoveChart }) => {
   ));
 
   return (
-    <Col
-      key={chart.name}
-      sm={12}
-      md={6}
-      lg={4}
-      xl={4}
-      style={{ height: '100%' }}
-    >
-      <Card
-        title={props.title}
-        style={CARD_STYLE}
-        size="small"
-        extra={<Space size="small">{ed}</Space>}
-      >
-        <Chart
-          chartType={
-            props?.type === 'number' || props?.chart === 'bar'
-              ? chartTypes.BAR
-              : chartTypes.PIE
-          }
-          data={chart.data}
-          units={props?.units || undefined}
-        />
+    <div key={name} style={{ height: '100%', width: '430px' }}>
+      <Card title={title} style={CARD_STYLE} size="small" extra={<Space size="small">{ed}</Space>}>
+        <Chart chartType={chartType} data={data} units={config?.units || undefined} />
       </Card>
-    </Col>
+    </div>
   );
 };
 

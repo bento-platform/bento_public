@@ -1,23 +1,13 @@
 import React from 'react';
 import { Tree } from 'antd';
 
-import { useSelector, useDispatch } from 'react-redux';
-import { rearrange, setDisplayedCharts } from '../../../features/data';
+import { useDispatch } from 'react-redux';
+import { rearrange, setDisplayedCharts } from '../../../features/data/data';
 
-const changePostiion = (arr, fromIndex, toIndex) => {
-  const element = arr.splice(fromIndex, 1)[0];
-  arr.splice(toIndex, 0, element);
-};
-
-const ChartTree = () => {
+const ChartTree = ({ charts, section }) => {
   const dispatch = useDispatch();
 
-  const allCharts = useSelector((state) =>
-    state.data.chartData.map((e) => ({
-      title: e.properties?.title || e.name,
-      key: e.name,
-    }))
-  );
+  const allCharts = charts.map(({ title, id }) => ({ title, key: id }));
 
   const onChartDrop = (info) => {
     const originalLocation = parseInt(info.dragNode.pos.substring(2));
@@ -26,15 +16,13 @@ const ChartTree = () => {
     const data = [...allCharts];
     const element = data.splice(originalLocation, 1)[0];
     data.splice(newLocation, 0, element);
-    dispatch(rearrange(data.map((e) => e.key)));
+    dispatch(rearrange({ section, arrangement: data.map((e) => e.key) }));
   };
 
-  const checkedKeys = useSelector((state) =>
-    state.data.chartData.filter((e) => e.isDisplayed).map((e) => e.name)
-  );
+  const checkedKeys = charts.filter((e) => e.isDisplayed).map((e) => e.id);
 
   const onCheck = (checkedKeysValue) => {
-    dispatch(setDisplayedCharts(checkedKeysValue));
+    dispatch(setDisplayedCharts({ section, charts: checkedKeysValue }));
   };
 
   return (

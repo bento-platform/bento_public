@@ -15,9 +15,9 @@ const Header = () => {
   };
 
   return (
-    <div className="site-page-header-ghost-wrapper">
+    <div>
       <PageHeader
-        ghost={false}
+        ghost
         title="Bento-Public"
         subTitle={client}
         extra={

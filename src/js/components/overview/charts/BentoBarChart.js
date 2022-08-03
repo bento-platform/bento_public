@@ -1,15 +1,10 @@
 import React from 'react';
 import { BarChart, Bar, Cell, XAxis, YAxis, Tooltip, Label } from 'recharts';
-import {
-  BAR_CHART_FILL,
-  BAR_CHART_MISSING_FILL,
-} from '../../../constants/overviewConstants';
+import { BAR_CHART_FILL, BAR_CHART_MISSING_FILL } from '../../../constants/overviewConstants';
 
 const ASPECT_RATIO = 1.2;
 const MAX_TICK_LABEL_CHARS = 15;
 const UNITS_LABEL_OFFSET = -60;
-const FILL_COLOUR = '#576f9e';
-const MISSING_FILL_COLOUR = '#bbbbbb';
 
 // vertical spacing betweeen tick line and tick label
 const TICK_MARGIN = 5;
@@ -34,17 +29,9 @@ const BentoBarChart = ({ title, data, units, height }) => {
     return `${tickLabel.substring(0, MAX_TICK_LABEL_CHARS)}...`;
   };
 
-  const fill = (entry) =>
-    entry.x == 'missing' ? BAR_CHART_MISSING_FILL : BAR_CHART_FILL;
+  const fill = (entry) => (entry.x === 'missing' ? BAR_CHART_MISSING_FILL : BAR_CHART_FILL);
 
   const totalCount = data.reduce((sum, e) => sum + e.y, 0);
-  let longestTickLabelLength = Math.max(
-    ...data.map((e) => e.x.toString().length)
-  );
-  longestTickLabelLength = Math.min(
-    longestTickLabelLength,
-    MAX_TICK_LABEL_CHARS
-  );
 
   // remove "missing" field if zero
   data = data.filter((e) => !(e.x === 'missing' && e.y === 0));
@@ -52,12 +39,7 @@ const BentoBarChart = ({ title, data, units, height }) => {
   return (
     <div style={wrapperStyle}>
       <div style={titleStyle}>{title}</div>
-      <BarChart
-        width={height * ASPECT_RATIO}
-        height={height}
-        data={data}
-        margin={{ top: 10, bottom: 100, right: 20 }}
-      >
+      <BarChart width={height * ASPECT_RATIO} height={height} data={data} margin={{ top: 10, bottom: 100, right: 20 }}>
         <XAxis
           dataKey="x"
           height={20}
@@ -67,11 +49,7 @@ const BentoBarChart = ({ title, data, units, height }) => {
           textAnchor="end"
           interval="preserveStartEnd"
         >
-          <Label
-            value={units}
-            offset={UNITS_LABEL_OFFSET}
-            position="insideBottom"
-          />
+          <Label value={units} offset={UNITS_LABEL_OFFSET} position="insideBottom" />
         </XAxis>
         <YAxis>
           <Label value="Count" offset={-10} position="left" angle={270} />

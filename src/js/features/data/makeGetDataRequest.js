@@ -1,110 +1,59 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import {
-  publicOverviewUrl,
-  queryableFieldsUrl,
-} from '../../constants/configConstants';
-import { parseData } from '../../utils/dataUtils';
+import { publicOverviewUrl } from '../../constants/configConstants';
 
-import {
-  verifyData,
-  saveValue,
-  getValue,
-  convertSequenceAndDisplayData,
-} from '../../utils/localStorage';
+import { verifyData, saveValue, getValue, convertSequenceAndDisplayData } from '../../utils/localStorage';
 
 import { LOCALSTORAGE_CHARTS_KEY } from '../../constants/overviewConstants';
-import { addQueryableFields } from '../query';
 
-/**
- * Check wether a given property has the shape of a chart configuration, i.e.
- * an object where every key is associated with a numerical value
- * @param {object} prop
- * @returns
- */
-const isChartConfig = (prop) => {
-  if (typeof prop !== 'object') return false;
-  return Object.values(prop).every((v) => typeof v === 'number');
-};
+export const makeGetDataRequest = createAsyncThunk('data/makeGetDataRequest', async () => {
+  try {
+    const overviewResponse = await axios.get(publicOverviewUrl).then((res) => res.data.overview);
+    const sections = overviewResponse.layout;
+    const normalizeChart = (chart) => ({
+      chartType: chart.chart_type,
+      isDisplayed: true,
+      name: chart.field,
+      ...overviewResponse.fields[chart.field],
+      data: overviewResponse.fields[chart.field].data.map(({ label, value }) => ({
+        x: label,
+        y: value,
+      })),
+    });
 
-const flattenExtraProperties = (obj) => {
-  const { extra_properties, ...everything_else } = obj;
-  return { ...everything_else, ...extra_properties };
-};
+    const sectionData = sections.map(({ section_title, charts }) => ({
+      sectionTitle: section_title,
+      charts: charts.map(normalizeChart),
+    }));
 
-export const makeGetDataRequest = createAsyncThunk(
-  'data/getConfigData',
-  async (_ignore, thunkAPI) => {
-    try {
-      const [overview, queryParameterStack] = await Promise.all([
-        axios.get(publicOverviewUrl),
-        axios.get(queryableFieldsUrl),
-      ]).then(([ov, f]) => [ov.data.overview, f.data]);
-
-      // converting fields to usable form
-      const fieldMap = flattenExtraProperties(queryParameterStack)
-
-      let fields = Object.entries(fieldMap).map((item) => ({
-        name: item[0],
-        data: item[1],
-        isExtraProperty: queryParameterStack.extra_properties?.hasOwnProperty(
-          item[0]
-        ),
+    // comparing to the local store and updating itself
+    let convertedData = convertSequenceAndDisplayData(sectionData);
+    const localValue = getValue(LOCALSTORAGE_CHARTS_KEY, convertedData, (val) => verifyData(val, convertedData));
+    sectionData.forEach(({ sectionTitle, charts }, i, arr) => {
+      arr[i].charts = localValue[sectionTitle].map(({ id, isDisplayed }) => ({
+        ...charts.find((c) => c.id === id),
+        isDisplayed,
       }));
+    });
 
-      //updating the query store with the fields to prevent 2 api calls
-      thunkAPI.dispatch(addQueryableFields(fields));
+    //saving to local storage
+    convertedData = convertSequenceAndDisplayData(sectionData);
+    saveValue(LOCALSTORAGE_CHARTS_KEY, convertedData);
 
-      // extracting individuals from overview
-      const individuals = overview.individuals;
-
-      const allChartsObj = flattenExtraProperties(overview)
-
-      let allCharts = Object.entries(allChartsObj)
-        .filter(([_, value]) => isChartConfig(value))
-        .map(([name, rawData]) => {
-          const properties = fieldMap[name];
-          const data = parseData({ data: rawData, properties });
-          return {
-            name,
-            data,
-            properties,
-            isDisplayed: true,
-          };
-        });
-
-      // comparing to the local store and updating itself
-      let convertedData = convertSequenceAndDisplayData(allCharts);
-      const localValue = getValue(
-        LOCALSTORAGE_CHARTS_KEY,
-        convertedData,
-        (val) => verifyData(val, convertedData)
-      );
-      allCharts = localValue.map((e) => ({
-        ...allCharts.find((v) => v.name === e.name),
-        isDisplayed: e.isDisplayed,
-      }));
-
-      //saving to local storage
-      convertedData = convertSequenceAndDisplayData(allCharts);
-      saveValue(LOCALSTORAGE_CHARTS_KEY, convertedData);
-
-      return { individuals, allCharts };
-    } catch (error) {
-      throw Error(error);
-    }
+    return { sectionData, individuals: overviewResponse.counts.individuals };
+  } catch (error) {
+    console.error(error);
+    throw Error(error);
   }
-);
+});
 
 export default {
   [makeGetDataRequest.pending]: (state) => {
     state.isFetchingData = true;
   },
   [makeGetDataRequest.fulfilled]: (state, { payload }) => {
-    const { allCharts, individuals } = payload;
-
-    state.chartData = allCharts;
-    state.individuals = individuals;
+    state.sections = payload.sectionData;
+    state.individuals = payload.individuals;
     state.isFetchingData = false;
   },
   [makeGetDataRequest.rejected]: (state) => {
