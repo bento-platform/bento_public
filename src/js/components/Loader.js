@@ -1,15 +1,15 @@
-import { Row, Col } from 'antd';
+import { Row, Col, Spin } from 'antd';
+import { Loading3QuartersOutlined } from '@ant-design/icons';
 import React from 'react';
-import { Spinner } from 'react-bootstrap';
 
-function Loader() {
+const Loader = () => {
   return (
     <Row justify="center">
       <Col>
-        <Spinner animation="border" />
+        <Spin indicator={<Loading3QuartersOutlined style={{ fontSize: 40 }} spin />} />
       </Col>
     </Row>
   );
-}
+};
 
 export default Loader;

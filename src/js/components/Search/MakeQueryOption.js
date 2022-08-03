@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import OptionDescription from './OptionDescription';
-import { Row, Col } from 'react-bootstrap';
-import { Checkbox } from 'antd';
-import QueryOption from './QueryOption/QueryOption';
+import { Row, Col, Checkbox } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeQueryParam } from '../../features/query';
+import { removeQueryParam } from '../../features/search/query';
+import SelectOption from './SelectOption';
 
 const MakeQueryOption = ({ queryField }) => {
   const dispatch = useDispatch();
 
-  const { data, name, queryType } = queryField;
+  const { title, id, description, config, options } = queryField;
 
   const [checked, setChecked] = useState(false);
 
@@ -21,7 +20,7 @@ const MakeQueryOption = ({ queryField }) => {
   const onCheckToggle = () => {
     if (checked) {
       setChecked(false);
-      dispatch(removeQueryParam(name));
+      dispatch(removeQueryParam(id));
     } else checkedCount < maxCount && setChecked(true);
   };
 
@@ -29,32 +28,16 @@ const MakeQueryOption = ({ queryField }) => {
 
   return (
     <>
-      <Row style={{ margin: '1rem' }}>
-        <Col xs={{ span: 2, offset: 2 }}>
-          <Checkbox
-            id={name}
-            checked={checked}
-            onChange={onCheckToggle}
-            disabled={disabled}
-          />
+      <Row style={{ marginTop: '1rem' }}>
+        <Col span={3} offset={2}>
+          <Checkbox id={id} checked={checked} onChange={onCheckToggle} disabled={disabled} />
         </Col>
-        <Col xs={{ span: 3 }} md={{ span: 2 }}>
-          {data.title}
+        <Col span={7}>{title}</Col>
+        <Col span={2}>
+          <OptionDescription description={`${description} ${config?.units ? '(in ' + config.units + ')' : ''}`} />
         </Col>
-        <Col xs={{ span: 1 }}>
-          <OptionDescription
-            description={`${data.description} ${
-              data.units ? '(in ' + data.units + ')' : ''
-            }`}
-          />
-        </Col>
-        <Col xs={{ span: 4 }}>
-          <QueryOption
-            name={name}
-            queryType={queryType}
-            data={data}
-            isChecked={checked}
-          />
+        <Col span={10}>
+          <SelectOption id={id} options={options} isChecked={checked} />
         </Col>
       </Row>
     </>
