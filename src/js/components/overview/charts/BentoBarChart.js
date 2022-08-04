@@ -42,7 +42,7 @@ const BentoBarChart = ({ title, data, units, height }) => {
   const totalCount = data.reduce((sum, e) => sum + e.y, 0);
 
   // remove "missing" field if zero
-  data = data.filter((e) => !(e.x === 'missing' && e.y === 0));
+  data = data.filter((e) => !(e.x === 'missing'));
 
   return (
     <div style={wrapperStyle}>

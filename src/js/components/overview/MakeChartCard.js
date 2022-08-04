@@ -1,6 +1,6 @@
 import React from 'react';
 import Chart from './charts/Chart';
-import { Card, Button, Tooltip, Space } from 'antd';
+import { Card, Button, Tooltip, Space, Typography } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import { CARD_STYLE } from '../../constants/overviewConstants';
 
@@ -28,6 +28,15 @@ const MakeChartCard = ({ section, chart, onRemoveChart }) => {
       <Button shape="circle" icon={opt.icon} onClick={opt.onClick} />
     </Tooltip>
   ));
+
+  const missingCount = data.find((e) => e.x === 'missing')?.y ?? 0;
+  const missingDataText = (
+    <Typography.Text key={-1} type="secondary" italic>
+      {missingCount} missing
+    </Typography.Text>
+  );
+
+  if (missingCount) ed.unshift(missingDataText);
 
   return (
     <div key={name} style={{ height: '100%', width: '430px' }}>
