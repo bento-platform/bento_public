@@ -1,6 +1,9 @@
 import React from 'react';
+
 import { BarChart, Bar, Cell, XAxis, YAxis, Tooltip, Label } from 'recharts';
+
 import { BAR_CHART_FILL, BAR_CHART_MISSING_FILL } from '../../../constants/overviewConstants';
+import { TOOL_TIP_STYLE, COUNT_STYLE, LABEL_STYLE } from './common/styles';
 
 const ASPECT_RATIO = 1.2;
 const MAX_TICK_LABEL_CHARS = 15;
@@ -74,33 +77,10 @@ function BarTooltip({ active, payload, totalCount }) {
   const value = payload[0]?.value || 0;
   const percentage = totalCount ? Math.round((value / totalCount) * 100) : 0;
 
-  const toolTipStyle = {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    padding: '5px',
-    border: '1px solid grey',
-    boxShadow: '0px 0px 2px rgba(0, 0, 0, 0.9)',
-    borderRadius: '2px',
-    textAlign: 'left',
-  };
-
-  const labelStyle = {
-    fontWeight: 'bold',
-    fontSize: '12px',
-    padding: '0',
-    margin: '0',
-  };
-
-  const countStyle = {
-    fontWeight: 'normal',
-    fontSize: '11px',
-    padding: '0',
-    margin: '0',
-  };
-
   return (
-    <div style={toolTipStyle}>
-      <p style={labelStyle}>{name}</p>
-      <p style={countStyle}>
+    <div style={TOOL_TIP_STYLE}>
+      <p style={LABEL_STYLE}>{name}</p>
+      <p style={COUNT_STYLE}>
         {value} ({percentage}%)
       </p>
     </div>

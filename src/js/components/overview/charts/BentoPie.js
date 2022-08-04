@@ -1,15 +1,9 @@
 import React, { useState } from 'react';
-import {
-  PieChart,
-  Pie,
-  Cell,
-  Curve,
-  Tooltip,
-  Sector,
-} from 'recharts';
+import { PieChart, Pie, Cell, Curve, Tooltip, Sector } from 'recharts';
 import { polarToCartesian } from 'recharts/es6/util/PolarUtils';
 
 import { COLORS } from '../../../constants/overviewConstants';
+import { TOOL_TIP_STYLE, LABEL_STYLE, COUNT_STYLE } from './common/styles';
 
 const RADIAN = Math.PI / 180;
 const chartAspectRatio = 1.4;
@@ -87,18 +81,8 @@ function BentoPie({ data, height }) {
     };
 
     const offsetRadius = 20;
-    const startPoint = polarToCartesian(
-      params.cx,
-      params.cy,
-      params.outerRadius,
-      midAngle
-    );
-    const endPoint = polarToCartesian(
-      params.cx,
-      params.cy,
-      params.outerRadius + offsetRadius,
-      midAngle
-    );
+    const startPoint = polarToCartesian(params.cx, params.cy, params.outerRadius, midAngle);
+    const endPoint = polarToCartesian(params.cx, params.cy, params.outerRadius + offsetRadius, midAngle);
     const lineProps = {
       ...params,
       fill: 'none',
@@ -108,33 +92,14 @@ function BentoPie({ data, height }) {
 
     return (
       <g>
-        <Curve
-          {...lineProps}
-          type="linear"
-          className="recharts-pie-label-line"
-        />
+        <Curve {...lineProps} type="linear" className="recharts-pie-label-line" />
 
-        <path
-          d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`}
-          stroke={fill}
-          fill="none"
-        />
+        <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
         <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
-        <text
-          x={ex + (cos >= 0 ? 1 : -1) * 12}
-          y={ey + 3}
-          textAnchor={textAnchor}
-          style={currentTextStyle}
-        >
+        <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey + 3} textAnchor={textAnchor} style={currentTextStyle}>
           {labelShortName(name)}
         </text>
-        <text
-          x={ex + (cos >= 0 ? 1 : -1) * 12}
-          y={ey}
-          dy={14}
-          textAnchor={textAnchor}
-          style={countTextStyle}
-        >
+        <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={14} textAnchor={textAnchor} style={countTextStyle}>
           {`(${payload.value})`}
         </text>
       </g>
@@ -142,15 +107,7 @@ function BentoPie({ data, height }) {
   };
 
   const renderActiveLabel = (params) => {
-    const {
-      cx,
-      cy,
-      innerRadius,
-      outerRadius,
-      startAngle,
-      endAngle,
-      fill,
-    } = params;
+    const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = params;
 
     // render arc around active segment
     return (
@@ -186,33 +143,10 @@ function BentoPie({ data, height }) {
     const value = payload[0]?.value || 0;
     const percentage = totalCount ? Math.round((value / totalCount) * 100) : 0;
 
-    const toolTipStyle = {
-      backgroundColor: 'rgba(255, 255, 255, 0.9)',
-      padding: '5px',
-      border: '1px solid grey',
-      boxShadow: '0px 0px 2px rgba(0, 0, 0, 0.9)',
-      borderRadius: '2px',
-      textAlign: 'left',
-    };
-
-    const labelStyle = {
-      fontWeight: 'bold',
-      fontSize: '12px',
-      padding: '0',
-      margin: '0',
-    };
-
-    const countStyle = {
-      fontWeight: 'normal',
-      fontSize: '11px',
-      padding: '0',
-      margin: '0',
-    };
-
     return (
-      <div style={toolTipStyle}>
-        <p style={labelStyle}>{name}</p>
-        <p style={countStyle}>
+      <div style={TOOL_TIP_STYLE}>
+        <p style={LABEL_STYLE}>{name}</p>
+        <p style={COUNT_STYLE}>
           {' '}
           {value} ({percentage}
           %)
