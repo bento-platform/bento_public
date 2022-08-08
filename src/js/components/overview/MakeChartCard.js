@@ -1,7 +1,7 @@
 import React from 'react';
 import Chart from './charts/Chart';
 import { Card, Button, Tooltip, Space, Typography } from 'antd';
-import { CloseOutlined } from '@ant-design/icons';
+import { CloseOutlined, TeamOutlined } from '@ant-design/icons';
 import { CARD_STYLE } from '../../constants/overviewConstants';
 
 const MakeChartCard = ({ section, chart, onRemoveChart }) => {
@@ -32,7 +32,7 @@ const MakeChartCard = ({ section, chart, onRemoveChart }) => {
   const missingCount = data.find((e) => e.x === 'missing')?.y ?? 0;
   const missingDataText = (
     <Typography.Text key={-1} type="secondary" italic>
-      {missingCount} missing
+      <TeamOutlined /> {missingCount} missing
     </Typography.Text>
   );
 
