@@ -42,7 +42,6 @@ function BentoPie({ data, height }) {
   if (data.length !== length) {
     data.push({ x: 'Other', y: sum - data.reduce((acc, e) => acc + e.y, 0) });
   }
-  console.log('data', data);
   const bentoFormatData = data.map((e) => ({ name: e.x, value: e.y }));
   const totalCount = bentoFormatData.reduce((sum, e) => sum + e.value, 0);
 
