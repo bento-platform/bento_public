@@ -2,7 +2,13 @@ import React, { useState } from 'react';
 import { PieChart, Pie, Cell, Curve, Tooltip, Sector } from 'recharts';
 import { polarToCartesian } from 'recharts/es6/util/PolarUtils';
 
-import { COLORS, TOOL_TIP_STYLE, LABEL_STYLE, COUNT_STYLE } from '../../../constants/overviewConstants';
+import {
+  COLORS,
+  TOOL_TIP_STYLE,
+  LABEL_STYLE,
+  COUNT_STYLE,
+  GROUP_THRESHOLD,
+} from '../../../constants/overviewConstants';
 
 const RADIAN = Math.PI / 180;
 const chartAspectRatio = 1.4;
@@ -30,6 +36,13 @@ function BentoPie({ data, height }) {
   const [activeIndex, setActiveIndex] = useState(undefined);
 
   data = data.filter((e) => e.y !== 0);
+  const sum = data.reduce((acc, e) => acc + e.y, 0);
+  const length = data.length;
+  data = data.filter((e) => e.y / sum > GROUP_THRESHOLD);
+  if (data.length !== length) {
+    data.push({ x: 'Other', y: sum - data.reduce((acc, e) => acc + e.y, 0) });
+  }
+  console.log('data', data);
   const bentoFormatData = data.map((e) => ({ name: e.x, value: e.y }));
   const totalCount = bentoFormatData.reduce((sum, e) => sum + e.value, 0);
 

@@ -70,3 +70,5 @@ export const COUNT_STYLE = {
   padding: '0',
   margin: '0',
 };
+
+export const GROUP_THRESHOLD = 0.17; //
