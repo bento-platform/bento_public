@@ -9,6 +9,7 @@ import { LOCALSTORAGE_CHARTS_KEY } from '../../constants/overviewConstants';
 export const makeGetDataRequest = createAsyncThunk('data/makeGetDataRequest', async () => {
   try {
     const overviewResponse = await axios.get(publicOverviewUrl).then((res) => res.data.overview);
+    const metadata = overviewResponse.datasets;
     const sections = overviewResponse.layout;
     const normalizeChart = (chart) => ({
       chartType: chart.chart_type,
@@ -40,7 +41,7 @@ export const makeGetDataRequest = createAsyncThunk('data/makeGetDataRequest', as
     convertedData = convertSequenceAndDisplayData(sectionData);
     saveValue(LOCALSTORAGE_CHARTS_KEY, convertedData);
 
-    return { sectionData, individuals: overviewResponse.counts.individuals };
+    return { sectionData, individuals: overviewResponse.counts.individuals, metadata };
   } catch (error) {
     console.error(error);
     throw Error(error);
@@ -54,6 +55,7 @@ export default {
   [makeGetDataRequest.fulfilled]: (state, { payload }) => {
     state.sections = payload.sectionData;
     state.individuals = payload.individuals;
+    state.metadata = payload.metadata;
     state.isFetchingData = false;
   },
   [makeGetDataRequest.rejected]: (state) => {

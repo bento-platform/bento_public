@@ -6,6 +6,7 @@ const initialState = {
   isFetchingData: true,
   sections: [],
   individuals: 0,
+  metadata: [],
 };
 
 const data = createSlice({
@@ -20,9 +21,7 @@ const data = createSlice({
     },
     disableChart: (state, { payload }) => {
       const { section, id } = payload;
-      state.sections
-        .find((e) => e.sectionTitle === section)
-        .charts.find((e) => e.id === id).isDisplayed = false;
+      state.sections.find((e) => e.sectionTitle === section).charts.find((e) => e.id === id).isDisplayed = false;
     },
     setDisplayedCharts: (state, { payload }) => {
       const { section, charts } = payload;
