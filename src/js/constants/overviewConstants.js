@@ -71,4 +71,4 @@ export const COUNT_STYLE = {
   margin: '0',
 };
 
-export const OTHER_THRESHOLD = 0.17; //
+export const OTHER_THRESHOLD = 0.01; //
