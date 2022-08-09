@@ -9,7 +9,7 @@ import { makeGetConfigRequest } from '../features/config/config';
 
 import Loader from './Loader';
 import { makeGetSearchFields } from '../features/search/query';
-import MetadataTab from './Metadata/MetadataTab';
+import ProvenanceTab from './Provenance/ProvenanceTab';
 
 const { TabPane } = Tabs;
 
@@ -42,8 +42,8 @@ const TabbedDashboard = () => {
         <TabPane tab={<TabTitle title="Search" />} key="search">
           {!isFetchingSearchFields ? <Search /> : <Loader />}
         </TabPane>
-        <TabPane tab={<TabTitle title="Metadata" />} key="metadata">
-          <MetadataTab />
+        <TabPane tab={<TabTitle title="Provenance" />} key="Provenance">
+          <ProvenanceTab />
         </TabPane>
       </Tabs>
     </div>
