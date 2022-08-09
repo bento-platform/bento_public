@@ -2,6 +2,7 @@ import React from 'react';
 import Chart from './charts/Chart';
 import { Card, Button, Tooltip, Space, Typography } from 'antd';
 import { CloseOutlined, TeamOutlined } from '@ant-design/icons';
+
 import { CARD_STYLE } from '../../constants/overviewConstants';
 
 const MakeChartCard = ({ section, chart, onRemoveChart }) => {
