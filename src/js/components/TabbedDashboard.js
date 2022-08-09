@@ -18,7 +18,8 @@ const TabbedDashboard = () => {
   // fetch data from server on first render
   useEffect(() => {
     dispatch(makeGetConfigRequest());
-    dispatch(makeGetDataRequest()).then(() => { // Sequential call intended for backend related issues
+    dispatch(makeGetDataRequest()).then(() => {
+      // Sequential call intended for backend related issues
       dispatch(makeGetSearchFields());
     });
   }, []);
@@ -26,8 +27,7 @@ const TabbedDashboard = () => {
   const tabTitleStyle = { fontSize: '20px', fontWeight: 500 };
   const tabBarStyle = { marginBottom: '20px' };
 
-  const overviewTabTitle = <p style={tabTitleStyle}>Overview</p>;
-  const searchTabTitle = <p style={tabTitleStyle}>Search</p>;
+  const TabTitle = ({ title }) => <p style={tabTitleStyle}>{title}</p>;
 
   const isFetchingOverviewData = useSelector((state) => state.data.isFetchingData);
   const isFetchingSearchFields = useSelector((state) => state.query.isFetchingFields);
@@ -35,10 +35,10 @@ const TabbedDashboard = () => {
   return (
     <div style={{ paddingLeft: '25px' }}>
       <Tabs defaultActiveKey="overview" size="large" tabBarStyle={tabBarStyle} centered>
-        <TabPane tab={overviewTabTitle} key="overview" size="large">
+        <TabPane tab={<TabTitle title="Overview" />} key="overview" size="large">
           {!isFetchingOverviewData ? <PublicOverview /> : <Loader />}
         </TabPane>
-        <TabPane tab={searchTabTitle} key="search">
+        <TabPane tab={<TabTitle title="Search" />} key="search">
           {!isFetchingSearchFields ? <Search /> : <Loader />}
         </TabPane>
       </Tabs>
