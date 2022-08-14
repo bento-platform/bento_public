@@ -17,11 +17,11 @@ const config = {
       },
       {
         test: /\.(sass|less|css)$/,
-        use: [
-          { loader: 'style-loader' },
-          { loader: 'css-loader' },
-          { loader: 'less-loader' },
-        ],
+        use: [{ loader: 'style-loader' }, { loader: 'css-loader' }, { loader: 'less-loader' }],
+      },
+      {
+        test: /\.(png|jpe?g|gif|svg)$/i,
+        use: [{ loader: 'file-loader' }],
       },
     ],
   },
