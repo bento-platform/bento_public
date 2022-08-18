@@ -13,8 +13,8 @@ const ExtraPropertiesTable = ({ extraProperties }) => {
           dataIndex: 'values',
           key: 'values',
           render: (_, { values }) =>
-            values.map((v) => (
-              <Tag color="cyan">
+            values.map((v, i) => (
+              <Tag key={i} color="cyan">
                 <LinkIfUrl text={v.value} />
               </Tag>
             )),

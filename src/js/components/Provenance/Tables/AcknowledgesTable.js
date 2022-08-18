@@ -17,8 +17,8 @@ const AcknowledgesTable = ({ acknowledges }) => {
           dataIndex: 'funders',
           key: 'funders',
           render: (_, { funders }) =>
-            funders.map((f) => (
-              <Tag color="cyan">
+            funders.map((f, i) => (
+              <Tag key={i} color="cyan">
                 <LinkIfUrl text={f.name} />
                 {f.abbreviation ? `(${f.abbreviation})` : ''}
               </Tag>

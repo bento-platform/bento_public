@@ -16,7 +16,7 @@ const DatasetProvenance = ({ metadata }) => {
       <Card
         title={<Title level={3}>{metadata.title}</Title>}
         extra={[
-          <Title level={4} type="secondary" italic>
+          <Title key="1" level={4} type="secondary" italic>
             v{metadata.version}
           </Title>,
         ]}
