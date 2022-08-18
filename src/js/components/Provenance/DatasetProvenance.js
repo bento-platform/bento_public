@@ -26,22 +26,22 @@ const DatasetProvenance = ({ metadata }) => {
 
         {/* --- CREATOR, PRIVACY, LICENSES, KEYWORD ---*/}
         <Descriptions style={{ paddingTop: '20px' }}>
-          <Item label="Created by">
+          <Item label={<DescriptionTitle title="Created By" />}>
             {metadata.creators.map((creator) => (
               <Text key={creator}>
                 {creator.name} ({creator.abbreviation})
               </Text>
             ))}
           </Item>
-          <Item label="Privacy">{metadata.privacy}</Item>
-          <Item label="Licenses">
+          <Item label={<DescriptionTitle title="Privacy" />}>{metadata.privacy}</Item>
+          <Item label={<DescriptionTitle title="Licenses" />}>
             {metadata.licenses.map((l, i) => (
               <Tag key={i} color="cyan">
                 {l.name}
               </Tag>
             ))}
           </Item>
-          <Item label="Keywords">
+          <Item label={<DescriptionTitle title="Keywords" />}>
             {metadata.keywords.map((keyword, i) => (
               <Tag key={i} color="cyan">
                 {keyword.value}
@@ -83,3 +83,5 @@ const TableTitle = ({ title }) => {
     </Title>
   );
 };
+
+const DescriptionTitle = ({ title }) => <b>{title}</b>;
