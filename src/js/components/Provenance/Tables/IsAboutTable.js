@@ -1,6 +1,6 @@
 import React from 'react';
-import { Table, Tag, Typography } from 'antd';
-const { Link } = Typography;
+import { Table, Tag } from 'antd';
+import LinkIfUrl from '../../Util/LinkIfUrl';
 
 const IsAboutTable = ({ isAbout }) => {
   return (
@@ -12,7 +12,7 @@ const IsAboutTable = ({ isAbout }) => {
           title: 'Identifier',
           dataIndex: 'identifier.identifier',
           key: 'identifier.identifier',
-          render: (_, { identifier }) => <Link href={identifier.identifier}>{identifier.identifier}</Link>,
+          render: (_, { identifier }) => <LinkIfUrl text={identifier.identifier} />,
         },
         {
           title: 'Identifier Source',

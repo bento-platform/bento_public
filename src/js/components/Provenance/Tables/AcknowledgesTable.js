@@ -1,6 +1,6 @@
 import React from 'react';
-import { Table, Tag, Typography } from 'antd';
-const { Link } = Typography;
+import { Table, Tag } from 'antd';
+import LinkIfUrl from '../../Util/LinkIfUrl';
 
 const AcknowledgesTable = ({ acknowledges }) => {
   return (
@@ -19,7 +19,7 @@ const AcknowledgesTable = ({ acknowledges }) => {
           render: (_, { funders }) =>
             funders.map((f) => (
               <Tag color="cyan">
-                <Link href={f.name}>{f.name}</Link>
+                <LinkIfUrl text={f.name} />
                 {f.abbreviation ? `(${f.abbreviation})` : ''}
               </Tag>
             )),

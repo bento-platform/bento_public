@@ -1,5 +1,6 @@
 import React from 'react';
 import { Table, Tag } from 'antd';
+import LinkIfUrl from '../../Util/LinkIfUrl';
 
 const ExtraPropertiesTable = ({ extraProperties }) => {
   return (
@@ -11,7 +12,12 @@ const ExtraPropertiesTable = ({ extraProperties }) => {
           title: 'Values',
           dataIndex: 'values',
           key: 'values',
-          render: (_, { values }) => values.map((v) => <Tag color="cyan">{v.value}</Tag>),
+          render: (_, { values }) =>
+            values.map((v) => (
+              <Tag color="cyan">
+                <LinkIfUrl text={v.value} />
+              </Tag>
+            )),
         },
       ]}
       pagination={false}

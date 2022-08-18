@@ -26,11 +26,7 @@ const DistributionsTable = ({ distributions }) => {
           title: 'Unit',
           dataIndex: 'unit',
           key: 'unit',
-          render: (_, { unit }) => (
-            <Tag key={unit.value} color="cyan">
-              {unit.value}
-            </Tag>
-          ),
+          render: (_, { unit }) => unit.value,
         },
         {
           title: 'Access',
@@ -39,7 +35,11 @@ const DistributionsTable = ({ distributions }) => {
               title: 'Landing Page',
               dataIndex: 'access.landingPage',
               key: 'access.landingPage',
-              render: (_, { access }) => <Link href={access.landingPage}>{access.landingPage}</Link>,
+              render: (_, { access }) => (
+                <Link href={access.landingPage} target="_blank">
+                  {access.landingPage}
+                </Link>
+              ),
             },
             {
               title: 'Authorizations',
@@ -56,6 +56,7 @@ const DistributionsTable = ({ distributions }) => {
         },
       ]}
       pagination={false}
+      bordered
     />
   );
 };
