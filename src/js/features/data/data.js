@@ -1,12 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 import makeGetDataRequestReducers, { makeGetDataRequest } from './makeGetDataRequest';
+import { demo } from '../../constants/configConstants';
 
 const initialState = {
   isFetchingData: true,
   sections: [],
   individuals: 0,
-  metadata: [],
+  metadata: [demo],
 };
 
 const data = createSlice({

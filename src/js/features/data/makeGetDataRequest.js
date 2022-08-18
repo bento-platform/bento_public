@@ -55,7 +55,7 @@ export default {
   [makeGetDataRequest.fulfilled]: (state, { payload }) => {
     state.sections = payload.sectionData;
     state.individuals = payload.individuals;
-    state.metadata = payload.metadata;
+    // state.metadata = payload.metadata;
     state.isFetchingData = false;
   },
   [makeGetDataRequest.rejected]: (state) => {
