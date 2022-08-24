@@ -39,7 +39,8 @@ function BentoPie({ data, height }) {
   data = data.filter((e) => e.y !== 0);
   const sum = data.reduce((acc, e) => acc + e.y, 0);
   const length = data.length;
-  data = data.filter((e) => e.y / sum > OTHER_THRESHOLD);
+  const temp = data.filter((e) => e.y / sum > OTHER_THRESHOLD);
+  data = temp.length === length - 1 ? data : temp;
   if (data.length !== length) {
     data.push({ x: 'Other', y: sum - data.reduce((acc, e) => acc + e.y, 0) });
   }
