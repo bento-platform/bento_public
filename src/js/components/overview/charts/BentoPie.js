@@ -8,6 +8,7 @@ import {
   LABEL_STYLE,
   COUNT_STYLE,
   OTHER_THRESHOLD,
+  CHART_MISSING_FILL,
 } from '../../../constants/overviewConstants';
 
 const RADIAN = Math.PI / 180;
@@ -35,8 +36,10 @@ const labelShortName = (name) => {
 function BentoPie({ data, height }) {
   const [activeIndex, setActiveIndex] = useState(undefined);
 
+  // Changing immutable data to mutable data
+  data = [...data];
+
   // combining sections with less than OTHER_THRESHOLD
-  data = data.filter((e) => e.y !== 0);
   const sum = data.reduce((acc, e) => acc + e.y, 0);
   const length = data.length;
   const temp = data.filter((e) => e.y / sum > OTHER_THRESHOLD);
@@ -188,9 +191,11 @@ function BentoPie({ data, height }) {
           activeIndex={activeIndex}
           activeShape={renderActiveLabel}
         >
-          {data.map((entry, index) => (
-            <Cell key={index} fill={COLORS[index % COLORS.length]} />
-          ))}
+          {data.map((entry, index) => {
+            let fill = COLORS[index % COLORS.length];
+            fill = entry.x.toLowerCase() === 'missing' ? CHART_MISSING_FILL : fill;
+            return <Cell key={index} fill={fill} />;
+          })}
         </Pie>
         <Tooltip
           content={<CustomTooltip totalCount={totalCount} />}

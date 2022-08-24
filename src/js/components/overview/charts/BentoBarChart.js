@@ -3,7 +3,7 @@ import { BarChart, Bar, Cell, XAxis, YAxis, Tooltip, Label } from 'recharts';
 
 import {
   BAR_CHART_FILL,
-  BAR_CHART_MISSING_FILL,
+  CHART_MISSING_FILL,
   TOOL_TIP_STYLE,
   COUNT_STYLE,
   LABEL_STYLE,
@@ -36,7 +36,7 @@ const BentoBarChart = ({ title, data, units, height }) => {
     return `${tickLabel.substring(0, MAX_TICK_LABEL_CHARS)}...`;
   };
 
-  const fill = (entry) => (entry.x === 'missing' ? BAR_CHART_MISSING_FILL : BAR_CHART_FILL);
+  const fill = (entry) => (entry.x === 'missing' ? CHART_MISSING_FILL : BAR_CHART_FILL);
 
   const totalCount = data.reduce((sum, e) => sum + e.y, 0);
 
