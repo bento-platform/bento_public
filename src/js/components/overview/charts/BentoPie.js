@@ -42,7 +42,8 @@ function BentoPie({ data, height }) {
   // combining sections with less than OTHER_THRESHOLD
   const sum = data.reduce((acc, e) => acc + e.y, 0);
   const length = data.length;
-  const temp = data.filter((e) => e.y / sum > OTHER_THRESHOLD);
+  const threshold = OTHER_THRESHOLD * sum;
+  const temp = data.filter((e) => e.y > threshold);
   data = temp.length === length - 1 ? data : temp;
   if (data.length !== length) {
     data.push({ x: 'Other', y: sum - data.reduce((acc, e) => acc + e.y, 0) });
