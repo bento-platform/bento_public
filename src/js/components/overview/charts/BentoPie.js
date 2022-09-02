@@ -46,6 +46,7 @@ function BentoPie({ data, height }) {
   const temp = data.filter((e) => e.y > threshold);
   data = temp.length === length - 1 ? data : temp;
   if (data.length !== length) {
+    // length - 1 intentional: if there is just one category bellow threshold the "Other" category is not necessary
     data.push({ x: 'Other', y: sum - data.reduce((acc, e) => acc + e.y, 0) });
   }
 
