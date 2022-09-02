@@ -24,20 +24,26 @@ const MakeChartCard = ({ section, chart, onRemoveChart }) => {
     },
   ];
 
-  const ed = extraOptionsData.map((opt, index) => (
-    <Tooltip key={index} title={opt.description}>
-      <Button shape="circle" icon={opt.icon} onClick={opt.onClick} />
-    </Tooltip>
-  ));
+  const ed = [];
 
+  // missing count label
   const missingCount = data.find((e) => e.x === 'missing')?.y ?? 0;
-  const missingDataText = (
-    <Typography.Text key={-1} type="secondary" italic>
-      <TeamOutlined /> {missingCount} missing
-    </Typography.Text>
-  );
 
-  if (missingCount) ed.unshift(missingDataText);
+  if (missingCount)
+    ed.push(
+      <Typography.Text key={0} type="secondary" italic>
+        <TeamOutlined /> {missingCount} missing
+      </Typography.Text>
+    );
+
+  // controls (buttons)
+  extraOptionsData.forEach((opt) => {
+    ed.push(
+      <Tooltip key={ed.length} title={opt.description}>
+        <Button shape="circle" icon={opt.icon} onClick={opt.onClick} />
+      </Tooltip>
+    );
+  });
 
   return (
     <div key={name} style={{ height: '100%', width: '430px' }}>
