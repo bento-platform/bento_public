@@ -51,7 +51,6 @@ function BentoPie({ data, height }) {
   }
 
   const bentoFormatData = data.map((e) => ({ name: e.x, value: e.y }));
-  const totalCount = bentoFormatData.reduce((sum, e) => sum + e.value, 0);
 
   const onEnter = (_data, index) => {
     setActiveIndex(index);
@@ -200,7 +199,7 @@ function BentoPie({ data, height }) {
           })}
         </Pie>
         <Tooltip
-          content={<CustomTooltip totalCount={totalCount} />}
+          content={<CustomTooltip totalCount={sum} />}
           isAnimationActive={false}
           allowEscapeViewBox={{ x: true, y: true }}
         />
