@@ -1,14 +1,13 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { searchFieldsUrl } from '../../constants/configConstants';
+import { printAPIError } from '../../utils/error';
 
 export const makeGetSearchFields = createAsyncThunk('query/makeGetSearchFields', async () => {
-  try {
-    return await axios.get(searchFieldsUrl).then((res) => res.data);
-  } catch (error) {
-    console.error(error);
-    throw Error(error);
-  }
+  return axios
+    .get(searchFieldsUrl)
+    .then((res) => res.data)
+    .catch(printAPIError);
 });
 
 export default {
