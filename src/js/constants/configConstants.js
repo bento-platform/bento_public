@@ -8,3 +8,4 @@ export const configUrl = HOST + '/config';
 export const publicOverviewUrl = HOST + '/overview';
 export const searchFieldsUrl = HOST + '/fields';
 export const katsuUrl = HOST + '/katsu';
+export const provenanceUrl = HOST + '/provenance';
