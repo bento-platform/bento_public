@@ -5,7 +5,7 @@ import DatasetProvenance from './DatasetProvenance';
 
 const ProvenanceTab = () => {
   const { data, isFetching: loading } = useSelector((state) => state.provenance);
-  console.log('ProvenanceTab', data);
+
   return (
     <div className="container">
       <Row justify="center">

@@ -24,7 +24,7 @@ const provenance = createSlice({
       state.isFetching = true;
     },
     [makeGetProvenanceRequest.fulfilled]: (state, { payload }) => {
-      state.data = payload;
+      state.data = payload.datasets;
       state.isFetching = false;
     },
     [makeGetProvenanceRequest.rejected]: (state) => {
