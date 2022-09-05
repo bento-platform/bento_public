@@ -4,14 +4,14 @@ import { useSelector } from 'react-redux';
 import DatasetProvenance from './DatasetProvenance';
 
 const ProvenanceTab = () => {
-  const datasets = useSelector((state) => state.data.metadata);
-
+  const { data, isFetching: loading } = useSelector((state) => state.provenance);
+  console.log('ProvenanceTab', data);
   return (
     <div className="container">
       <Row justify="center">
         <Col>
-          {datasets.map((dataset, i) => (
-            <DatasetProvenance key={i} metadata={dataset} />
+          {data.map((dataset, i) => (
+            <DatasetProvenance key={i} metadata={dataset} Loading={loading} />
           ))}
         </Col>
       </Row>

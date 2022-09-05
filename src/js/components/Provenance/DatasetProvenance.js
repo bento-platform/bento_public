@@ -10,7 +10,7 @@ const { Item } = Descriptions;
 const { Text, Title } = Typography;
 const { Meta } = Card;
 
-const DatasetProvenance = ({ metadata }) => {
+const DatasetProvenance = ({ metadata, loading }) => {
   return (
     <div style={{ paddingBottom: '40px' }}>
       <Card
@@ -20,6 +20,7 @@ const DatasetProvenance = ({ metadata }) => {
             v{metadata.version}
           </Title>,
         ]}
+        Loading={loading}
       >
         {/* --- DESCRIPTION ---*/}
         <Meta description={<Text italic>{metadata.description}</Text>} />

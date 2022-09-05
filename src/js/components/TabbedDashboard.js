@@ -1,14 +1,15 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Tabs } from 'antd';
-import Search from './Search/Search';
-import PublicOverview from './overview/PublicOverview';
 
 import { makeGetDataRequest } from '../features/data/data';
 import { makeGetConfigRequest } from '../features/config/config';
+import { makeGetSearchFields } from '../features/search/query';
+import { makeGetProvenanceRequest } from '../features/provenance/provenance';
 
 import Loader from './Loader';
-import { makeGetSearchFields } from '../features/search/query';
+import PublicOverview from './overview/PublicOverview';
+import Search from './Search/Search';
 import ProvenanceTab from './Provenance/ProvenanceTab';
 
 const { TabPane } = Tabs;
@@ -23,6 +24,7 @@ const TabbedDashboard = () => {
       // Sequential call intended for backend related issues
       dispatch(makeGetSearchFields());
     });
+    dispatch(makeGetProvenanceRequest());
   }, []);
 
   const tabTitleStyle = { fontSize: '20px', fontWeight: 500 };
