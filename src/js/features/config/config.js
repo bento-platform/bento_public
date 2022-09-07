@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { configUrl } from '../../constants/configConstants';
+import { printAPIError } from '../../utils/error';
 
 export const makeGetConfigRequest = createAsyncThunk('config/getConfigData', async () => {
   return axios
