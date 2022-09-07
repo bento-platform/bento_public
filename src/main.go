@@ -187,36 +187,36 @@ func main() {
 		return c.JSON(http.StatusOK, jsonLike)
 	})
 
-		e.GET("/provenance", func(c echo.Context) error {
-    		// Query Katsu for publicly available search fields
-    		resp, err := http.Get(fmt.Sprintf("%s/api/public_dataset", cfg.KatsuUrl)) // ?extra_properties=\"age_group\":\"adult\"&extra_properties=\"smoking\":\"non-smoker\"
-    		if err != nil {
-    			fmt.Println(err)
+    e.GET("/provenance", func(c echo.Context) error {
+        // Query Katsu for publicly available search fields
+        resp, err := http.Get(fmt.Sprintf("%s/api/public_dataset", cfg.KatsuUrl)) // ?extra_properties=\"age_group\":\"adult\"&extra_properties=\"smoking\":\"non-smoker\"
+        if err != nil {
+            fmt.Println(err)
 
-    			return c.JSON(http.StatusInternalServerError, ErrorResponse{
-    				Message: err.Error(),
-    			})
-    		}
-    		defer resp.Body.Close()
+            return c.JSON(http.StatusInternalServerError, ErrorResponse{
+                Message: err.Error(),
+            })
+        }
+        defer resp.Body.Close()
 
-    		// Read response body and convert to a generic JSON-like datastructure
-    		body, err := ioutil.ReadAll(resp.Body)
-    		if err != nil {
-    			fmt.Println(err)
+        // Read response body and convert to a generic JSON-like datastructure
+        body, err := ioutil.ReadAll(resp.Body)
+        if err != nil {
+            fmt.Println(err)
 
-    			return c.JSON(http.StatusInternalServerError, ErrorResponse{
-    				Message: err.Error(),
-    			})
-    		}
+            return c.JSON(http.StatusInternalServerError, ErrorResponse{
+                Message: err.Error(),
+            })
+        }
 
-    		jsonLike := make(map[string]interface{})
-    		json.Unmarshal(body, &jsonLike)
+        jsonLike := make(map[string]interface{})
+        json.Unmarshal(body, &jsonLike)
 
-    		katsuQueryConfigCache = jsonLike
+        katsuQueryConfigCache = jsonLike
 
-    		// TODO: formalize response type
-    		return c.JSON(http.StatusOK, jsonLike)
-    	})
+        // TODO: formalize response type
+        return c.JSON(http.StatusOK, jsonLike)
+    })
 
 	// Run
 	e.Logger.Fatal(e.Start(":8090"))
