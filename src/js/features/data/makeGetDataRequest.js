@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { publicOverviewUrl } from '../../constants/configConstants';
+import { MAX_CHARTS, publicOverviewUrl } from '../../constants/configConstants';
 
 import { verifyData, saveValue, getValue, convertSequenceAndDisplayData } from '../../utils/localStorage';
 
@@ -10,9 +10,9 @@ export const makeGetDataRequest = createAsyncThunk('data/makeGetDataRequest', as
   try {
     const overviewResponse = await axios.get(publicOverviewUrl).then((res) => res.data.overview);
     const sections = overviewResponse.layout;
-    const normalizeChart = (chart) => ({
+    const normalizeChart = (chart, i) => ({
       chartType: chart.chart_type,
-      isDisplayed: true,
+      isDisplayed: i < MAX_CHARTS,
       name: chart.field,
       ...overviewResponse.fields[chart.field],
       data: overviewResponse.fields[chart.field].data.map(({ label, value }) => ({
