@@ -118,47 +118,45 @@ func main() {
 
 	// get request handler for /katsu that relays the request to the Katsu API and returns response
 	e.GET("/katsu", func(c echo.Context) error {
-	    // get query parameters
-	    q := c.QueryParams()
-	    // convert query parameters to a string
-	    qs := url.Values{}
-	    for k, v := range q {
-	        qs.Set(k, v[0])
-        }
-        // make a get request to the Katsu API
-        resp, err := http.Get(fmt.Sprintf("%s/api/public?%s", cfg.KatsuUrl, qs.Encode()))
-        if err != nil {
-            fmt.Println(err)
+		// get query parameters
+		q := c.QueryParams()
+		// convert query parameters to a string
+		qs := url.Values{}
+		for k, v := range q {
+			qs.Set(k, v[0])
+		}
+		// make a get request to the Katsu API
+		resp, err := http.Get(fmt.Sprintf("%s/api/public?%s", cfg.KatsuUrl, qs.Encode()))
+		if err != nil {
+			fmt.Println(err)
 
-            return c.JSON(http.StatusInternalServerError, ErrorResponse{
-                Message: err.Error(),
-            })
-        }
-        defer resp.Body.Close()
-        // Read response body and convert to a generic JSON-like datastructure
-        body, err := ioutil.ReadAll(resp.Body)
-        if err != nil {
-            fmt.Println(err)
+			return c.JSON(http.StatusInternalServerError, ErrorResponse{
+				Message: err.Error(),
+			})
+		}
+		defer resp.Body.Close()
+		// Read response body and convert to a generic JSON-like datastructure
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			fmt.Println(err)
 
-            return c.JSON(http.StatusInternalServerError, ErrorResponse{
-                Message: err.Error(),
-            })
-        }
+			return c.JSON(http.StatusInternalServerError, ErrorResponse{
+				Message: err.Error(),
+			})
+		}
 
-        jsonLike := make(map[string]interface{})
-        json.Unmarshal(body, &jsonLike)
+		jsonLike := make(map[string]interface{})
+		json.Unmarshal(body, &jsonLike)
 
-        katsuQueryConfigCache = jsonLike
+		katsuQueryConfigCache = jsonLike
 
-        // TODO: formalize response type
-        return c.JSON(http.StatusOK, jsonLike)
-    })
-
-
+		// TODO: formalize response type
+		return c.JSON(http.StatusOK, jsonLike)
+	})
 
 	e.GET("/fields", func(c echo.Context) error {
 		// Query Katsu for publicly available search fields
-		resp, err := http.Get(fmt.Sprintf("%s/api/public_search_fields", cfg.KatsuUrl)) // ?extra_properties=\"age_group\":\"adult\"&extra_properties=\"smoking\":\"non-smoker\"
+		resp, err := http.Get(fmt.Sprintf("%s/api/public_search_fields", cfg.KatsuUrl))
 		if err != nil {
 			fmt.Println(err)
 
@@ -187,36 +185,36 @@ func main() {
 		return c.JSON(http.StatusOK, jsonLike)
 	})
 
-    e.GET("/provenance", func(c echo.Context) error {
-        // Query Katsu for publicly available search fields
-        resp, err := http.Get(fmt.Sprintf("%s/api/public_dataset", cfg.KatsuUrl)) // ?extra_properties=\"age_group\":\"adult\"&extra_properties=\"smoking\":\"non-smoker\"
-        if err != nil {
-            fmt.Println(err)
+	e.GET("/provenance", func(c echo.Context) error {
+		// Query Katsu for datasets provenance
+		resp, err := http.Get(fmt.Sprintf("%s/api/public_dataset", cfg.KatsuUrl))
+		if err != nil {
+			fmt.Println(err)
 
-            return c.JSON(http.StatusInternalServerError, ErrorResponse{
-                Message: err.Error(),
-            })
-        }
-        defer resp.Body.Close()
+			return c.JSON(http.StatusInternalServerError, ErrorResponse{
+				Message: err.Error(),
+			})
+		}
+		defer resp.Body.Close()
 
-        // Read response body and convert to a generic JSON-like datastructure
-        body, err := ioutil.ReadAll(resp.Body)
-        if err != nil {
-            fmt.Println(err)
+		// Read response body and convert to a generic JSON-like datastructure
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			fmt.Println(err)
 
-            return c.JSON(http.StatusInternalServerError, ErrorResponse{
-                Message: err.Error(),
-            })
-        }
+			return c.JSON(http.StatusInternalServerError, ErrorResponse{
+				Message: err.Error(),
+			})
+		}
 
-        jsonLike := make(map[string]interface{})
-        json.Unmarshal(body, &jsonLike)
+		jsonLike := make(map[string]interface{})
+		json.Unmarshal(body, &jsonLike)
 
-        katsuQueryConfigCache = jsonLike
+		katsuQueryConfigCache = jsonLike
 
-        // TODO: formalize response type
-        return c.JSON(http.StatusOK, jsonLike)
-    })
+		// TODO: formalize response type
+		return c.JSON(http.StatusOK, jsonLike)
+	})
 
 	// Run
 	e.Logger.Fatal(e.Start(":8090"))
