@@ -24,7 +24,9 @@ const provenance = createSlice({
       state.isFetching = true;
     },
     [makeGetProvenanceRequest.fulfilled]: (state, { payload }) => {
-      state.data = payload.datasets;
+      // use the dats file if available, otherwise use whatever property has
+      // been defined on the dataset
+      state.data = payload.datasets.map((d) => d.dats_file ?? d);
       state.isFetching = false;
     },
     [makeGetProvenanceRequest.rejected]: (state) => {
