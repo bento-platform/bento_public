@@ -1,7 +1,8 @@
 import React from 'react';
 import Chart from './charts/Chart';
-import { Card, Button, Tooltip, Space } from 'antd';
-import { CloseOutlined } from '@ant-design/icons';
+import { Card, Button, Tooltip, Space, Typography } from 'antd';
+import { CloseOutlined, TeamOutlined } from '@ant-design/icons';
+
 import { CARD_STYLE } from '../../constants/overviewConstants';
 
 const MakeChartCard = ({ section, chart, onRemoveChart }) => {
@@ -23,11 +24,26 @@ const MakeChartCard = ({ section, chart, onRemoveChart }) => {
     },
   ];
 
-  const ed = extraOptionsData.map((opt, index) => (
-    <Tooltip key={index} title={opt.description}>
-      <Button shape="circle" icon={opt.icon} onClick={opt.onClick} />
-    </Tooltip>
-  ));
+  const ed = [];
+
+  // missing count label
+  const missingCount = data.find((e) => e.x === 'missing')?.y ?? 0;
+
+  if (missingCount)
+    ed.push(
+      <Typography.Text key={0} type="secondary" italic>
+        <TeamOutlined /> {missingCount} missing
+      </Typography.Text>
+    );
+
+  // controls (buttons)
+  extraOptionsData.forEach((opt) => {
+    ed.push(
+      <Tooltip key={ed.length} title={opt.description}>
+        <Button shape="circle" icon={opt.icon} onClick={opt.onClick} />
+      </Tooltip>
+    );
+  });
 
   return (
     <div key={name} style={{ height: '100%', width: '430px' }}>
