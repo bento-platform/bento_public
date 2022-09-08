@@ -40,10 +40,35 @@ export const COLORS = [
 // ]
 
 export const BAR_CHART_FILL = '#4575b4';
-export const BAR_CHART_MISSING_FILL = '#bbbbbb';
+export const CHART_MISSING_FILL = '#bbbbbb';
 
 export const LOCALSTORAGE_CHARTS_KEY = 'charts';
 
 export const CHART_HEIGHT = 300;
 
 export const CARD_STYLE = { width: '430px', height: '415px', margin: '5px 0' };
+
+export const TOOL_TIP_STYLE = {
+  backgroundColor: 'rgba(255, 255, 255, 0.9)',
+  padding: '5px',
+  border: '1px solid grey',
+  boxShadow: '0px 0px 2px rgba(0, 0, 0, 0.9)',
+  borderRadius: '2px',
+  textAlign: 'left',
+};
+
+export const LABEL_STYLE = {
+  fontWeight: 'bold',
+  fontSize: '12px',
+  padding: '0',
+  margin: '0',
+};
+
+export const COUNT_STYLE = {
+  fontWeight: 'normal',
+  fontSize: '11px',
+  padding: '0',
+  margin: '0',
+};
+
+export const OTHER_THRESHOLD = 0.01; //
