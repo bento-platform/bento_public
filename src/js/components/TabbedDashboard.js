@@ -8,7 +8,7 @@ import { makeGetSearchFields } from '../features/search/query';
 import { makeGetProvenanceRequest } from '../features/provenance/provenance';
 
 import Loader from './Loader';
-import PublicOverview from './overview/PublicOverview';
+import PublicOverview from './Overview/PublicOverview';
 import Search from './Search/Search';
 import ProvenanceTab from './Provenance/ProvenanceTab';
 
