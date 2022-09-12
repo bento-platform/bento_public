@@ -10,7 +10,7 @@ RUN mkdir -p build/www
 RUN npm run build
 
 
-FROM golang:1.16.13-alpine3.15 as gobuilder
+FROM golang:1.19.1-alpine3.16 as gobuilder
 
 RUN apk update && \
     apk upgrade && \
