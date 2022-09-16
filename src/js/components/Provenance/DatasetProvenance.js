@@ -5,6 +5,7 @@ import IsAboutTable from './Tables/IsAboutTable';
 import AcknowledgesTable from './Tables/AcknowledgesTable';
 import SpatialCoverageTable from './Tables/SpatialCoverageTable';
 import ExtraPropertiesTable from './Tables/ExtraPropertiesTable';
+import PublicationsTable from './Tables/PublicationsTable';
 
 const { Item } = Descriptions;
 const { Text, Title } = Typography;
@@ -58,6 +59,10 @@ const DatasetProvenance = ({ metadata, loading }) => {
         {/* --- IS ABOUT ---*/}
         <TableTitle title="Is About" />
         <IsAboutTable isAbout={metadata.isAbout} />
+
+        {/* --- PUBLICATIONS ---*/}
+        <TableTitle title="Primary Publications" />
+        <PublicationsTable publications={metadata.primaryPublications} />
 
         {/* --- ACKNOWLEDGES ---*/}
         <TableTitle title="Acknowledges" />
