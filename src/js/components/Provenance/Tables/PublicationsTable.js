@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Tag } from 'antd';
+import { Table, Tag, Typography } from 'antd';
 import LinkIfUrl from '../../Util/LinkIfUrl';
 
 const PublicationsTable = ({ publications }) => {
@@ -7,7 +7,20 @@ const PublicationsTable = ({ publications }) => {
     <Table
       dataSource={publications}
       columns={[
-        { title: 'Title', dataIndex: 'title', key: 'title' },
+        {
+          title: 'Title',
+          dataIndex: 'title',
+          key: 'title',
+          render: (_, { title, identifier }) =>
+            identifier.identifier === '' ? (
+              title
+            ) : (
+              <Typography.Link href={`https://dx.doi.org/${identifier.identifier}`} target="_blank">
+                {title}
+              </Typography.Link>
+            ),
+        },
+        { title: 'Publication Venue', dataIndex: 'publicationVenue', key: 'publicationVenue' },
         {
           title: 'Authors',
           dataIndex: 'authors',
