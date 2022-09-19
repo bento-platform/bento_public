@@ -6,6 +6,7 @@ import AcknowledgesTable from './Tables/AcknowledgesTable';
 import SpatialCoverageTable from './Tables/SpatialCoverageTable';
 import ExtraPropertiesTable from './Tables/ExtraPropertiesTable';
 import PublicationsTable from './Tables/PublicationsTable';
+import CreatedByTable from './Tables/CreatedByTable';
 
 const { Item } = Descriptions;
 const { Text, Title } = Typography;
@@ -51,6 +52,10 @@ const DatasetProvenance = ({ metadata, loading }) => {
             ))}
           </Item>
         </Descriptions>
+
+        {/* --- CREATED BY ---*/}
+        <TableTitle title="Created By" />
+        <CreatedByTable creators={metadata.creators} />
 
         {/* --- DISTRIBUTIONS ---*/}
         <TableTitle title="Distributions" />
