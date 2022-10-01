@@ -5,6 +5,8 @@ import IsAboutTable from './Tables/IsAboutTable';
 import AcknowledgesTable from './Tables/AcknowledgesTable';
 import SpatialCoverageTable from './Tables/SpatialCoverageTable';
 import ExtraPropertiesTable from './Tables/ExtraPropertiesTable';
+import PublicationsTable from './Tables/PublicationsTable';
+import CreatedByTable from './Tables/CreatedByTable';
 
 const { Item } = Descriptions;
 const { Text, Title } = Typography;
@@ -27,29 +29,34 @@ const DatasetProvenance = ({ metadata, loading }) => {
 
         {/* --- CREATOR, PRIVACY, LICENSES, KEYWORD ---*/}
         <Descriptions style={{ paddingTop: '20px' }}>
-          <Item label={<DescriptionTitle title="Created By" />}>
-            {metadata.creators.map((creator) => (
-              <Text key={creator}>
-                {creator.name} ({creator.abbreviation})
-              </Text>
-            ))}
-          </Item>
-          <Item label={<DescriptionTitle title="Privacy" />}>{metadata.privacy}</Item>
-          <Item label={<DescriptionTitle title="Licenses" />}>
-            {metadata.licenses.map((l, i) => (
-              <Tag key={i} color="cyan">
-                {l.name}
-              </Tag>
-            ))}
-          </Item>
-          <Item label={<DescriptionTitle title="Keywords" />}>
-            {metadata.keywords.map((keyword, i) => (
-              <Tag key={i} color="cyan">
-                {keyword.value}
-              </Tag>
-            ))}
-          </Item>
+          {metadata.privacy && (
+            <Item span={12} label={<DescriptionTitle title="Privacy" />}>
+              {metadata.privacy}
+            </Item>
+          )}
+          {metadata.licenses.length && (
+            <Item span={12} label={<DescriptionTitle title="Licenses" />}>
+              {metadata.licenses.map((l, i) => (
+                <Tag key={i} color="cyan">
+                  {l.name}
+                </Tag>
+              ))}
+            </Item>
+          )}
+          {metadata.keywords.length && (
+            <Item span={24} label={<DescriptionTitle title="Keywords" />}>
+              {metadata.keywords.map((keyword, i) => (
+                <Tag key={i} color="cyan">
+                  {keyword.value}
+                </Tag>
+              ))}
+            </Item>
+          )}
         </Descriptions>
+
+        {/* --- CREATED BY ---*/}
+        <TableTitle title="Created By" />
+        <CreatedByTable creators={metadata.creators} />
 
         {/* --- DISTRIBUTIONS ---*/}
         <TableTitle title="Distributions" />
@@ -58,6 +65,10 @@ const DatasetProvenance = ({ metadata, loading }) => {
         {/* --- IS ABOUT ---*/}
         <TableTitle title="Is About" />
         <IsAboutTable isAbout={metadata.isAbout} />
+
+        {/* --- PUBLICATIONS ---*/}
+        <TableTitle title="Primary Publications" />
+        <PublicationsTable publications={metadata.primaryPublications} />
 
         {/* --- ACKNOWLEDGES ---*/}
         <TableTitle title="Acknowledges" />
