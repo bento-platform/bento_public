@@ -21,6 +21,7 @@ const CreatedByTable = ({ creators }) => {
           dataIndex: 'roles',
           key: 'roles',
           render: (_, { roles }) =>
+            roles &&
             roles.map((r, i) => (
               <Tag key={i} color="cyan">
                 {r.value}
