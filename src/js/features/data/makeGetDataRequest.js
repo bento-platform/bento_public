@@ -5,6 +5,7 @@ import { MAX_CHARTS, publicOverviewUrl } from '../../constants/configConstants';
 import { verifyData, saveValue, getValue, convertSequenceAndDisplayData } from '../../utils/localStorage';
 
 import { LOCALSTORAGE_CHARTS_KEY } from '../../constants/overviewConstants';
+import { serializeChartData } from '../../utils/chart';
 
 export const makeGetDataRequest = createAsyncThunk('data/makeGetDataRequest', async () => {
   try {
@@ -15,10 +16,7 @@ export const makeGetDataRequest = createAsyncThunk('data/makeGetDataRequest', as
       isDisplayed: i < MAX_CHARTS,
       name: chart.field,
       ...overviewResponse.fields[chart.field],
-      data: overviewResponse.fields[chart.field].data.map(({ label, value }) => ({
-        x: label,
-        y: value,
-      })),
+      data: serializeChartData(overviewResponse.fields[chart.field].data),
     });
 
     const sectionData = sections.map(({ section_title, charts }) => ({
