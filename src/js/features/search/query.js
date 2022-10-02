@@ -10,6 +10,8 @@ const initialState = {
   queryParams: {},
   queryParamCount: 0,
   isValid: false,
+  biosampleChartData: [],
+  experimentChartData: [],
 };
 
 const query = createSlice({

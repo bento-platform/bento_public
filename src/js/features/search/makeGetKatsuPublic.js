@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { katsuUrl } from '../../constants/configConstants';
+import { serializeChartData } from '../../utils/chart';
 
 export const makeGetKatsuPublic = createAsyncThunk('query/makeGetKatsuPublic', async (_ignore, thunkAPI) => {
   const queryParams = thunkAPI.getState().query.queryParams;
@@ -18,7 +19,11 @@ export default {
         status: 'message',
         message: payload.message,
       };
-    else state.queryResponseData = { status: 'count', count: payload.count };
+    else {
+      state.queryResponseData = { status: 'count', count: payload.count };
+      state.biosampleChartData = serializeChartData(payload.biosamples.sampled_tissue);
+      state.experimentChartData = serializeChartData(payload.experiments.experiment_type);
+    }
 
     state.isValid = true;
     state.isFetchingData = false;
