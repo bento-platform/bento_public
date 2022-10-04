@@ -1,27 +1,30 @@
-// index.js
-import React from "react";
-import ReactDOM from "react-dom";
-import { Provider } from "react-redux";
-
-import * as V from 'victory';
-
-import Dashboard from "./components/Dashboard";
-
-import store from "./store";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import TabbedDashboard from './components/TabbedDashboard';
+import SiteHeader from './components/SiteHeader';
+import { store } from './store';
+import { Layout } from 'antd';
+const { Content } = Layout;
+import 'antd/dist/antd.css';
+import '../styles.css';
 
 const BentoApp = () => {
   return (
-    <div>
-      <Dashboard/>
-    </div>
+    <Layout>
+      <SiteHeader />
+      <Content style={{ padding: '0 30px', marginTop: '10px' }}>
+        <TabbedDashboard />
+      </Content>
+    </Layout>
   );
-}
+};
 
-const rootElement = document.getElementById("root");
+const rootElement = document.getElementById('root');
 
 ReactDOM.render(
   <Provider store={store}>
-    <BentoApp/>
+    <BentoApp />
   </Provider>,
   rootElement
 );

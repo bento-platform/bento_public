@@ -1,11 +1,14 @@
-// store.js
-import { createStore, applyMiddleware } from "redux";
-import thunk from 'redux-thunk';
-import reducer from "./reducer";
+import { configureStore } from '@reduxjs/toolkit';
+import configReducer from './features/config/config';
+import dataReducer from './features/data/data';
+import queryReducer from './features/search/query';
+import provenanceReducer from './features/provenance/provenance';
 
-const store = createStore(
-  reducer,
-  applyMiddleware(thunk)
-);
-
-export default store;
+export const store = configureStore({
+  reducer: {
+    config: configReducer,
+    data: dataReducer,
+    query: queryReducer,
+    provenance: provenanceReducer,
+  },
+});
