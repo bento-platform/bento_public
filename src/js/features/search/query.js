@@ -10,7 +10,9 @@ const initialState = {
   queryParams: {},
   queryParamCount: 0,
   isValid: false,
+  biosampleCount: 0,
   biosampleChartData: [],
+  experimentCount: 0,
   experimentChartData: [],
 };
 

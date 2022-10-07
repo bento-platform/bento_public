@@ -21,7 +21,9 @@ export default {
       };
     else {
       state.queryResponseData = { status: 'count', count: payload.count };
+      state.biosampleCount = payload.biosamples.count;
       state.biosampleChartData = serializeChartData(payload.biosamples.sampled_tissue);
+      state.experimentCount = payload.experiments.count;
       state.experimentChartData = serializeChartData(payload.experiments.experiment_type);
     }
 
