@@ -26,6 +26,7 @@
     "mini-css-extract-plugin": "^2.4.5",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-icons": "^4.4.0",
     "react-json-formatter": "^0.2.1",
     "react-notify-bootstrap": "^1.0.23",
     "react-redux": "^7.2.6",
