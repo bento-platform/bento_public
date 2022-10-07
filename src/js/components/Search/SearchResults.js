@@ -33,7 +33,7 @@ const SearchResults = () => {
             <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
               <Statistic
                 title="Individual Count"
-                value={isValid && status === 'count' ? (status === 'count' ? count : message) : '----'}
+                value={isValid ? (status === 'count' ? count : message) : '----'}
                 valueStyle={{ color: '#1890ff' }}
                 prefix={<TeamOutlined />}
               />
