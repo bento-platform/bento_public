@@ -1,14 +1,17 @@
 import React from 'react';
 import { Table, Tag, Typography } from 'antd';
+import { useTranslation } from 'react-i18next';
 const { Link } = Typography;
 
 const DistributionsTable = ({ distributions }) => {
+  const { t } = useTranslation();
+
   return (
     <Table
       dataSource={distributions}
       columns={[
         {
-          title: 'Formats',
+          title: t('Formats'),
           dataIndex: 'formats',
           key: 'formats',
           render: (_, { formats }) => (
@@ -18,21 +21,22 @@ const DistributionsTable = ({ distributions }) => {
           ),
         },
         {
-          title: 'Size',
+          title: t('Size'),
           dataIndex: 'size',
           key: 'size',
+          render: (text) => t(text),
         },
         {
-          title: 'Unit',
+          title: t('Unit'),
           dataIndex: 'unit',
           key: 'unit',
-          render: (_, { unit }) => unit.value,
+          render: (_, { unit }) => t(unit.value),
         },
         {
-          title: 'Access',
+          title: t('Access'),
           children: [
             {
-              title: 'Landing Page',
+              title: t('Landing Page'),
               dataIndex: 'access.landingPage',
               key: 'access.landingPage',
               render: (_, { access }) => (
@@ -42,13 +46,13 @@ const DistributionsTable = ({ distributions }) => {
               ),
             },
             {
-              title: 'Authorizations',
+              title: t('Authorizations'),
               dataIndex: 'access.authorizations',
               key: 'access.authorizations',
               render: (_, { access }) =>
                 access.authorizations.map((a, i) => (
                   <Tag key={i} color="cyan">
-                    {a.value}
+                    {t(a.value)}
                   </Tag>
                 )),
             },
