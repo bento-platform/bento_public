@@ -1,11 +1,15 @@
 import React from 'react';
 import { Row, Col, Button, Typography } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+
 import { makeGetKatsuPublic } from '../../features/search/query';
+
 import SearchFieldsStack from './SearchFieldsStack';
 import SearchResults from './SearchResults';
 
 const Search = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
 
   const searchSections = useSelector((state) => state.query.querySections);
@@ -21,7 +25,7 @@ const Search = () => {
       <Col style={{ width: '900px' }}>
         {searchSections.map((e, i) => (
           <div key={i} style={{ marginBottom: '20px' }}>
-            <Typography.Title level={4}>{e.section_title}</Typography.Title>
+            <Typography.Title level={4}>{t(e.section_title)}</Typography.Title>
             <SearchFieldsStack key={i} queryFields={e.fields} />
           </div>
         ))}
@@ -36,7 +40,7 @@ const Search = () => {
               disabled={buttonDisabled}
               style={{ margin: '20px' }}
             >
-              Get Data
+              {t('Get Data')}
             </Button>
           </Col>
         </Row>
