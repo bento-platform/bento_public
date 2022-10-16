@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { Tabs } from 'antd';
 
 import { makeGetDataRequest } from '../features/data/data';
@@ -16,6 +17,7 @@ const { TabPane } = Tabs;
 
 const TabbedDashboard = () => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   // fetch data from server on first render
   useEffect(() => {
@@ -38,13 +40,13 @@ const TabbedDashboard = () => {
   return (
     <div style={{ paddingLeft: '25px' }}>
       <Tabs defaultActiveKey="overview" size="large" tabBarStyle={tabBarStyle} centered>
-        <TabPane tab={<TabTitle title="Overview" />} key="overview" size="large">
+        <TabPane tab={<TabTitle title={t('Overview')} />} key="overview" size="large">
           {!isFetchingOverviewData ? <PublicOverview /> : <Loader />}
         </TabPane>
-        <TabPane tab={<TabTitle title="Search" />} key="search">
+        <TabPane tab={<TabTitle title={t('Search')} />} key="search">
           {!isFetchingSearchFields ? <Search /> : <Loader />}
         </TabPane>
-        <TabPane tab={<TabTitle title="Provenance" />} key="Provenance">
+        <TabPane tab={<TabTitle title={t('Provenance')} />} key="Provenance">
           <ProvenanceTab />
         </TabPane>
       </Tabs>

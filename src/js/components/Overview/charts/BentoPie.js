@@ -10,6 +10,7 @@ import {
   OTHER_THRESHOLD,
   CHART_MISSING_FILL,
 } from '../../../constants/overviewConstants';
+import { useTranslation } from 'react-i18next';
 
 const RADIAN = Math.PI / 180;
 const chartAspectRatio = 1.4;
@@ -34,6 +35,8 @@ const labelShortName = (name) => {
 };
 
 function BentoPie({ data, height }) {
+  const { t } = useTranslation();
+
   const [activeIndex, setActiveIndex] = useState(undefined);
 
   // Changing immutable data to mutable data
@@ -115,10 +118,10 @@ function BentoPie({ data, height }) {
         <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
         <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
         <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey + 3} textAnchor={textAnchor} style={currentTextStyle}>
-          {labelShortName(name)}
+          {labelShortName(t(name))}
         </text>
         <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={14} textAnchor={textAnchor} style={countTextStyle}>
-          {`(${payload.value})`}
+          {`(${t(payload.value)})`}
         </text>
       </g>
     );

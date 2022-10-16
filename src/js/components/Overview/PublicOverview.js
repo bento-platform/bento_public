@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Button, Divider, Typography, Row, Col } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 
 import { convertSequenceAndDisplayData, saveValue } from '../../utils/localStorage';
 import { LOCALSTORAGE_CHARTS_KEY } from '../../constants/overviewConstants';
@@ -10,6 +11,8 @@ import OverviewSection from './OverviewSection';
 import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
 
 const PublicOverview = () => {
+  const { t } = useTranslation();
+
   const { sections, individuals } = useSelector((state) => state.data);
 
   saveValue(LOCALSTORAGE_CHARTS_KEY, convertSequenceAndDisplayData(sections));
@@ -19,7 +22,9 @@ const PublicOverview = () => {
   return (
     <div className="container">
       <div style={{ pointerEvents: 'none', color: '#AAA', position: 'absolute', top: '-5.5em', right: '3em' }}>
-        <Typography.Title level={5}>Individuals: {individuals}</Typography.Title>
+        <Typography.Title level={5}>
+          {t('Individuals')}: {individuals}
+        </Typography.Title>
       </div>
       <Row justify="center">
         <Col>
