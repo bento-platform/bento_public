@@ -20,6 +20,8 @@ const TICK_MARGIN = 5;
 const BentoBarChart = ({ title, data, units, height }) => {
   const { t } = useTranslation();
 
+  data = data.map((d) => ({ ...d, x: t(d.x) }));
+
   const titleStyle = {
     fontStyle: 'italic',
     fontSize: '1.5em',
