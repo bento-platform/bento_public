@@ -9,9 +9,6 @@ const translation = {
   Individuals: 'Individuals',
   in: 'in',
   'Get Data': 'Get Data',
-  'Individual Count': 'Individual Count',
-  'Biosample Count': 'Biosample Count',
-  'Experiment Count': 'Experiment Count',
   Biosamples: 'Biosamples',
   Experiments: 'Experiments',
   'No Results': 'No Results',
@@ -56,6 +53,7 @@ const translation = {
   MALE: 'MALE',
   FEMALE: 'FEMALE',
   'I have no problems in walking about': 'I have no problems in walking about',
+  Results: 'Results',
 };
 
 export default translation;

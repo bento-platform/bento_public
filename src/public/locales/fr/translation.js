@@ -6,12 +6,9 @@ const translation = {
   Count: 'Compter',
   Portal: 'Portail',
   missing: 'manquant',
-  Individuals: 'Individus',
+  Individuals: 'Participants',
   in: 'dans',
-  'Get Data': 'Obtenir des données',
-  'Individual Count': 'Comptage individuel',
-  'Biosample Count': "Comptage d'échantillon biologique",
-  'Experiment Count': "Comptage d'expérience",
+  'Get Data': 'Obtenir',
   Biosamples: 'Échantillons biologiques',
   Experiments: 'Expériences',
   'No Results': 'Aucun résultat',
@@ -56,6 +53,7 @@ const translation = {
   'Lab Test Result': 'Résultats des tests de laboratoire',
   'Experiment Types': "Types d'expériences",
   'I have no problems in walking about': 'Je n’ai aucun problème à marcher',
+  Results: 'Résultats',
 };
 
 export default translation;

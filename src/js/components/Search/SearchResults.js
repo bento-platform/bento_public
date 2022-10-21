@@ -36,19 +36,19 @@ const SearchResults = () => {
           <Col span={6}>
             <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
               <Statistic
-                title={t('Individual Count')}
+                title={t('Individuals')}
                 value={isValid ? (status === 'count' ? count : message) : '----'}
                 valueStyle={{ color: '#1890ff' }}
                 prefix={<TeamOutlined />}
               />
               <Statistic
-                title={t('Biosample Count')}
+                title={t('Biosamples')}
                 value={isValid && status === 'count' && biosampleCount ? biosampleCount : '----'}
                 valueStyle={{ color: '#1890ff' }}
                 prefix={<BiDna />}
               />
               <Statistic
-                title={t('Experiment Count')}
+                title={t('Experiments')}
                 value={isValid && status === 'count' && experimentCount ? experimentCount : '----'}
                 valueStyle={{ color: '#1890ff' }}
                 prefix={<AiOutlineExperiment />}
