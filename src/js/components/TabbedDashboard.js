@@ -11,6 +11,7 @@ import Loader from './Loader';
 import PublicOverview from './Overview/PublicOverview';
 import Search from './Search/Search';
 import ProvenanceTab from './Provenance/ProvenanceTab';
+import BeaconQueryUi from './Beacon/BeaconQueryUi'
 
 const { TabPane } = Tabs;
 
@@ -43,6 +44,9 @@ const TabbedDashboard = () => {
         </TabPane>
         <TabPane tab={<TabTitle title="Search" />} key="search">
           {!isFetchingSearchFields ? <Search /> : <Loader />}
+        </TabPane>
+        <TabPane tab={<TabTitle title="Beacon" />} key="beacon">
+          <BeaconQueryUi /> 
         </TabPane>
         <TabPane tab={<TabTitle title="Provenance" />} key="Provenance">
           <ProvenanceTab />
