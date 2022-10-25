@@ -10,6 +10,7 @@ import bqc19_logo from '../../../assets/bqc19_logo_blue.png'
 
 
 // TODO
+// "clear form"
 // entity search type if not too much trouble (only need to change endpoint and result icon, 
 // needs dynamic endpoint and to modify result icon
 
@@ -42,8 +43,6 @@ const BeaconQueryUi = () => {
 
   }, [exampleFilters])
 
-
-  console.log("QUERY UI")
 
   // conditionally put another logo if there's a logo link in service-info? (or perhaps there's one already)
 
@@ -155,6 +154,11 @@ const BeaconQueryUi = () => {
     setFilters([]);
   };
 
+  const handleClearForm = () => {
+    handle_remove_filters()
+    form.resetFields()
+  }
+
   const setQueryValues = (buttonValues) => {
     console.log({ buttonValues: buttonValues });
 
@@ -250,7 +254,7 @@ const BeaconQueryUi = () => {
                 <Button style={buttonStyle} onClick={handle_remove_filters}>
                   Clear Filters
                 </Button>
-                <Button style={{...buttonStyle, marginLeft: "20px"}} onClick={handle_remove_filters}>
+                <Button style={{...buttonStyle, marginLeft: "20px"}} onClick={handleClearForm}>
                   Clear Form
                 </Button>
                 </div>
