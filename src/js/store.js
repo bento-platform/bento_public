@@ -3,6 +3,7 @@ import configReducer from './features/config/config';
 import dataReducer from './features/data/data';
 import queryReducer from './features/search/query';
 import provenanceReducer from './features/provenance/provenance';
+import beaconReducer from './features/beacon/beaconQuery'
 
 export const store = configureStore({
   reducer: {
@@ -10,5 +11,6 @@ export const store = configureStore({
     data: dataReducer,
     query: queryReducer,
     provenance: provenanceReducer,
+    beacon: beaconReducer
   },
 });
