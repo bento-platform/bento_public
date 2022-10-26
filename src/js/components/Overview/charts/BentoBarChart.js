@@ -1,5 +1,6 @@
 import React from 'react';
 import { BarChart, Bar, Cell, XAxis, YAxis, Tooltip, Label } from 'recharts';
+import { useTranslation } from 'react-i18next';
 
 import {
   BAR_CHART_FILL,
@@ -17,6 +18,10 @@ const UNITS_LABEL_OFFSET = -60;
 const TICK_MARGIN = 5;
 
 const BentoBarChart = ({ title, data, units, height }) => {
+  const { t } = useTranslation();
+
+  data = data.map((d) => ({ ...d, x: t(d.x) }));
+
   const titleStyle = {
     fontStyle: 'italic',
     fontSize: '1.5em',
@@ -56,15 +61,15 @@ const BentoBarChart = ({ title, data, units, height }) => {
           textAnchor="end"
           interval="preserveStartEnd"
         >
-          <Label value={units} offset={UNITS_LABEL_OFFSET} position="insideBottom" />
+          <Label value={t(units)} offset={UNITS_LABEL_OFFSET} position="insideBottom" />
         </XAxis>
         <YAxis>
-          <Label value="Count" offset={-10} position="left" angle={270} />
+          <Label value={t('Count')} offset={-10} position="left" angle={270} />
         </YAxis>
         <Tooltip content={<BarTooltip totalCount={totalCount} />} />
         <Bar dataKey="y" isAnimationActive={false}>
           {data.map((entry) => (
-            <Cell key={entry.x} fill={fill(entry)} />
+            <Cell key={t(entry.x)} fill={fill(entry)} />
           ))}
         </Bar>
       </BarChart>
@@ -73,6 +78,8 @@ const BentoBarChart = ({ title, data, units, height }) => {
 };
 
 function BarTooltip({ active, payload, totalCount }) {
+  const { t } = useTranslation();
+
   if (!active) {
     return null;
   }
@@ -83,7 +90,7 @@ function BarTooltip({ active, payload, totalCount }) {
 
   return (
     <div style={TOOL_TIP_STYLE}>
-      <p style={LABEL_STYLE}>{name}</p>
+      <p style={LABEL_STYLE}>{t(name)}</p>
       <p style={COUNT_STYLE}>
         {value} ({percentage}%)
       </p>

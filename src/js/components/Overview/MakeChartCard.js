@@ -2,10 +2,13 @@ import React from 'react';
 import Chart from './charts/Chart';
 import { Card, Button, Tooltip, Space, Typography } from 'antd';
 import { CloseOutlined, TeamOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 
 import { CARD_STYLE } from '../../constants/overviewConstants';
 
 const MakeChartCard = ({ section, chart, onRemoveChart }) => {
+  const { t } = useTranslation();
+
   const { name, title, data, chartType, config, id, description } = chart;
 
   const extraOptionsData = [
@@ -32,7 +35,7 @@ const MakeChartCard = ({ section, chart, onRemoveChart }) => {
   if (missingCount)
     ed.push(
       <Typography.Text key={0} type="secondary" italic>
-        <TeamOutlined /> {missingCount} missing
+        <TeamOutlined /> {missingCount} {t('missing')}
       </Typography.Text>
     );
 
@@ -48,7 +51,7 @@ const MakeChartCard = ({ section, chart, onRemoveChart }) => {
   return (
     <div key={name} style={{ height: '100%', width: '430px' }}>
       <Card
-        title={<Tooltip title={description}>{title}</Tooltip>}
+        title={<Tooltip title={description}>{t(title)}</Tooltip>}
         style={CARD_STYLE}
         size="small"
         extra={<Space size="small">{ed}</Space>}

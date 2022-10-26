@@ -1,15 +1,25 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Button, Layout, Row, Col, Typography } from 'antd';
+import { Button, Layout, Row, Col, Typography, Space } from 'antd';
 const { Header } = Layout;
+import i18n from 'i18next';
+import { useTranslation } from 'react-i18next';
 
-import bentoLogo from '../../assets/bento.svg';
+import bentoLogo from '../../public/assets/bento.svg';
 import { client } from '../constants/configConstants';
 
 const SiteHeader = () => {
+  const { t } = useTranslation();
+
   useEffect(() => {
     document.title = 'Bento-Public : ' + client;
   }, []);
+
+  const [language, setLanguage] = useState(i18n.language);
+  const changeLanguage = () => {
+    i18n.changeLanguage(language === 'en' ? 'fr' : 'en');
+    setLanguage(language === 'en' ? 'fr' : 'en');
+  };
 
   const portalUrl = useSelector((state) => state.config.portalUrl);
 
@@ -26,8 +36,13 @@ const SiteHeader = () => {
             {client}
           </Typography.Title>
         </Col>
-        <Col offset={19} span={1}>
-          <Button onClick={buttonHandler}>Portal</Button>
+        <Col offset={18} span={2}>
+          <Space>
+            <Button type="primary" onClick={changeLanguage}>
+              {language}
+            </Button>
+            <Button onClick={buttonHandler}>{t('Portal')}</Button>
+          </Space>
         </Col>
       </Row>
     </Header>

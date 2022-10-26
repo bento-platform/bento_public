@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Select } from 'antd';
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+
 import { addQueryParam } from '../../features/search/query';
 
 const SelectOption = ({ id, isChecked, options }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
 
   const [value, setValue] = useState(options[0]);
@@ -29,7 +32,7 @@ const SelectOption = ({ id, isChecked, options }) => {
     >
       {options.map((item) => (
         <Select.Option key={item} value={item}>
-          {item}
+          {t(item)}
         </Select.Option>
       ))}
     </Select>

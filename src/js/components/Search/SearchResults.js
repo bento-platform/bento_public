@@ -1,15 +1,19 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Card, Col, Empty, Row, Statistic, Typography, Space } from 'antd';
+import { Card, Col, Row, Statistic, Typography, Space } from 'antd';
 import { TeamOutlined } from '@ant-design/icons';
 import { AiOutlineExperiment } from 'react-icons/ai';
 import { BiDna } from 'react-icons/bi';
+import { useTranslation } from 'react-i18next';
 
 import BentoPie from '../Overview/charts/BentoPie';
+import CustomEmpty from '../Util/CustomEmpty';
 
 import { CHART_HEIGHT } from '../../constants/overviewConstants';
 
 const SearchResults = () => {
+  const { t } = useTranslation();
+
   const { status, count, message } = useSelector((state) => state.query.queryResponseData);
   const isValid = useSelector((state) => state.query.isValid);
 
@@ -32,19 +36,19 @@ const SearchResults = () => {
           <Col span={6}>
             <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
               <Statistic
-                title="Individual Count"
+                title={t('Individuals')}
                 value={isValid ? (status === 'count' ? count : message) : '----'}
                 valueStyle={{ color: '#1890ff' }}
                 prefix={<TeamOutlined />}
               />
               <Statistic
-                title="Biosample Count"
+                title={t('Biosamples')}
                 value={isValid && status === 'count' && biosampleCount ? biosampleCount : '----'}
                 valueStyle={{ color: '#1890ff' }}
                 prefix={<BiDna />}
               />
               <Statistic
-                title="Experiment Count"
+                title={t('Experiments')}
                 value={isValid && status === 'count' && experimentCount ? experimentCount : '----'}
                 valueStyle={{ color: '#1890ff' }}
                 prefix={<AiOutlineExperiment />}
@@ -52,19 +56,19 @@ const SearchResults = () => {
             </Space>
           </Col>
           <Col span={9}>
-            <Typography.Title level={5}>Biosamples</Typography.Title>
+            <Typography.Title level={5}>{t('Biosamples')}</Typography.Title>
             {isValid && biosampleChartData && status === 'count' ? (
               <BentoPie data={biosampleChartData} height={CHART_HEIGHT} />
             ) : (
-              <Empty />
+              <CustomEmpty />
             )}
           </Col>
           <Col span={9}>
-            <Typography.Title level={5}>Experiments</Typography.Title>
+            <Typography.Title level={5}>{t('Experiments')}</Typography.Title>
             {isValid && experimentChartData && status === 'count' ? (
               <BentoPie data={experimentChartData} height={CHART_HEIGHT} />
             ) : (
-              <Empty />
+              <CustomEmpty />
             )}
           </Col>
         </Row>

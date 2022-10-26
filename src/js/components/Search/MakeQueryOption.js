@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import OptionDescription from './OptionDescription';
 import { Row, Col, Checkbox } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+
+import OptionDescription from './OptionDescription';
 import { removeQueryParam } from '../../features/search/query';
 import SelectOption from './SelectOption';
 
 const MakeQueryOption = ({ queryField }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
 
   const { title, id, description, config, options } = queryField;
@@ -32,9 +35,11 @@ const MakeQueryOption = ({ queryField }) => {
         <Col span={3} offset={2}>
           <Checkbox id={id} checked={checked} onChange={onCheckToggle} disabled={disabled} />
         </Col>
-        <Col span={7}>{title}</Col>
+        <Col span={7}>{t(title)}</Col>
         <Col span={2}>
-          <OptionDescription description={`${description} ${config?.units ? '(in ' + config.units + ')' : ''}`} />
+          <OptionDescription
+            description={`${t(description)} ${config?.units ? '(' + t('in') + ' ' + t(config.units) + ')' : ''}`}
+          />
         </Col>
         <Col span={10}>
           <SelectOption id={id} options={options} isChecked={checked} />
