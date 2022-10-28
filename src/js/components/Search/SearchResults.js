@@ -26,7 +26,7 @@ const SearchResults = () => {
   const wrapperStyle = {
     padding: '40px',
     minHeight: '150px',
-    maxHeight: '150px',
+    maxHeight: '475px',
   };
 
   return (

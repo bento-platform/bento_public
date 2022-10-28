@@ -32,6 +32,12 @@ body {
   transform: scale(125%);
 }
 
+.floating-search {
+    position:fixed;
+    right:5em;
+    bottom:3em;
+}
+
 @media only screen and (max-width: 1065px) {
     .chart-grid {
         grid-template-columns: repeat(1, 1fr);
