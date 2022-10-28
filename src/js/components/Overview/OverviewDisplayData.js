@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { Row, Col } from 'antd';
+import { Row, Col, Space } from 'antd';
 
 import MakeChartCard from './MakeChartCard';
 import { disableChart } from '../../features/data/data';
@@ -15,15 +15,15 @@ const OverviewDisplayData = ({ section, allCharts }) => {
   };
 
   return (
-    <Row>
+    <Row justify="center">
       <Col span={24}>
-        <div className="chart-grid">
+        <Space size={[15, 15]} wrap>
           {orderedCharts
             .filter((e) => e.isDisplayed)
             .map((chart) => (
               <MakeChartCard key={chart.name} chart={chart} section={section} onRemoveChart={onRemoveChart} />
             ))}
-        </div>
+        </Space>
       </Col>
     </Row>
   );
