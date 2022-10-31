@@ -9,14 +9,10 @@ body {
   background-color: #eff2f5;
 }
 
-.overview-section {
-    margin: 0 40px;
-}
-
 .container {
     max-width: 1400px;
     margin: 0 auto;
-    position: relative; /* used for positionning the counts */
+    position: relative; /* used for positioning the counts */
 }
 
 .floating-button {
@@ -30,4 +26,5 @@ body {
     position:fixed;
     right:5em;
     bottom:3em;
+    transform: scale(125%);
 }
