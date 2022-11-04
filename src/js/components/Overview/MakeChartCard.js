@@ -1,10 +1,10 @@
 import React from 'react';
 import Chart from './charts/Chart';
 import { Card, Button, Tooltip, Space, Typography } from 'antd';
-import { CloseOutlined, TeamOutlined } from '@ant-design/icons';
+import { CloseOutlined, TeamOutlined, QuestionOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 
-import { CARD_STYLE } from '../../constants/overviewConstants';
+const CARD_STYLE = { width: '430px', height: '415px', margin: '5px 0', borderRadius: '11px' };
 
 const MakeChartCard = ({ section, chart, onRemoveChart }) => {
   const { t } = useTranslation();

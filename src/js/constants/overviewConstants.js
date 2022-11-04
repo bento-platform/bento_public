@@ -46,8 +46,6 @@ export const LOCALSTORAGE_CHARTS_KEY = 'charts';
 
 export const CHART_HEIGHT = 300;
 
-export const CARD_STYLE = { width: '430px', height: '415px', margin: '5px 0' };
-
 export const TOOL_TIP_STYLE = {
   backgroundColor: 'rgba(255, 255, 255, 0.9)',
   padding: '5px',
