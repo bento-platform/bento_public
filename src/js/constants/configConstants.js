@@ -3,7 +3,7 @@ const { CLIENT, HOST, DEBUG } = process.env;
 export const debug = DEBUG.toLowerCase() === 'true';
 export const client = CLIENT;
 
-export const MAX_CHARTS = 9;
+export const MAX_CHARTS = 3;
 
 export const configUrl = HOST + '/config';
 export const publicOverviewUrl = HOST + '/overview';

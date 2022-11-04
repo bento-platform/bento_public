@@ -31,7 +31,7 @@ const MakeQueryOption = ({ queryField }) => {
 
   return (
     <>
-      <Row style={{ marginTop: '1rem' }}>
+      <Row style={{ width: '900px' }}>
         <Col span={3} offset={2}>
           <Checkbox id={id} checked={checked} onChange={onCheckToggle} disabled={disabled} />
         </Col>
