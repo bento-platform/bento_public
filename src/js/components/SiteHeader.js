@@ -27,8 +27,8 @@ const SiteHeader = () => {
 
   return (
     <Header style={{ backgroundColor: '#fff' }}>
-      <Row align="middle">
-        <Col span={4}>
+      <Row align="middle" justify="space-between">
+        <Col>
           <Space>
             <img style={{ height: '35px' }} src={bentoLogo} alt="logo" />
             <Typography.Title style={{ marginBottom: '-4px' }} level={4} type="secondary">
@@ -36,7 +36,7 @@ const SiteHeader = () => {
             </Typography.Title>
           </Space>
         </Col>
-        <Col offset={18} span={2}>
+        <Col>
           <Space>
             <Button type="primary" onClick={changeLanguage}>
               {language}
