@@ -23,8 +23,8 @@ body {
 }
 
 .floating-search {
-    position:fixed;
-    right:5em;
-    bottom:3em;
-    transform: scale(125%);
+    position:fixed !important;
+    right:5em !important;
+    bottom:3em !important;
+    transform: scale(125%) !important;
 }
