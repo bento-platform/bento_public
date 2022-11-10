@@ -1,10 +1,10 @@
 import React from 'react';
 import Chart from './charts/Chart';
 import { Card, Button, Tooltip, Space, Typography } from 'antd';
-import { CloseOutlined, TeamOutlined } from '@ant-design/icons';
+import { CloseOutlined, TeamOutlined, QuestionOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 
-import { CARD_STYLE } from '../../constants/overviewConstants';
+const CARD_STYLE = { width: '430px', height: '415px', margin: '5px 0', borderRadius: '11px' };
 
 const MakeChartCard = ({ section, chart, onRemoveChart }) => {
   const { t } = useTranslation();
@@ -12,12 +12,11 @@ const MakeChartCard = ({ section, chart, onRemoveChart }) => {
   const { name, title, data, chartType, config, id, description } = chart;
 
   const extraOptionsData = [
-    // to enable extra buttons, follow the commented example
-    // {
-    //   icon: <UpOutlined />,
-    //   description: 'Move the chart up',
-    //   onClick: () => onMoveChartUp(chart.name),
-    // },
+    {
+      icon: <QuestionOutlined />,
+      description: description,
+      onClick: () => {},
+    },
     {
       icon: <CloseOutlined />,
       description: 'Remove this chart',
@@ -50,12 +49,7 @@ const MakeChartCard = ({ section, chart, onRemoveChart }) => {
 
   return (
     <div key={name} style={{ height: '100%', width: '430px' }}>
-      <Card
-        title={<Tooltip title={description}>{t(title)}</Tooltip>}
-        style={CARD_STYLE}
-        size="small"
-        extra={<Space size="small">{ed}</Space>}
-      >
+      <Card title={t(title)} style={CARD_STYLE} size="small" extra={<Space size="small">{ed}</Space>}>
         <Chart chartType={chartType} data={data} units={config?.units || undefined} />
       </Card>
     </div>

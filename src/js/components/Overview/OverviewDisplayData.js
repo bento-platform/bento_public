@@ -18,7 +18,7 @@ const getframeWidth = (width) => {
     return 360;
   } else if (width < 1420) {
     return 910;
-  } else return 1370;
+  } else return 1325;
 };
 
 const OverviewDisplayData = ({ section, allCharts }) => {
