@@ -12,6 +12,7 @@ import '../public/locales/en/translation.js';
 import '../public/locales/fr/translation.js';
 
 import './i18n';
+import SiteFooter from './components/SiteFooter';
 
 const BentoApp = () => {
   return (
@@ -20,6 +21,7 @@ const BentoApp = () => {
       <Content style={{ padding: '0 30px', marginTop: '10px' }}>
         <TabbedDashboard />
       </Content>
+      <SiteFooter />
     </Layout>
   );
 };
