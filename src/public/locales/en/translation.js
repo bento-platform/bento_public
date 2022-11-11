@@ -41,6 +41,7 @@ const translation = {
   Authors: 'Authors',
   Dates: 'Dates',
   Description: 'Description',
+  'Manage Charts': 'Manage Charts',
 
   // Non-Default
   Age: 'Age',

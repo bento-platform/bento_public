@@ -41,6 +41,7 @@ const translation = {
   Authors: 'Auteurs',
   Dates: 'Dates',
   Description: 'La description',
+  'Manage Charts': 'Gérer les graphiques',
 
   // Non-Default
   MALE: 'HOMME',
