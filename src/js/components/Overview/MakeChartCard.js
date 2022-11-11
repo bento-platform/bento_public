@@ -14,7 +14,7 @@ const MakeChartCard = ({ section, chart, onRemoveChart }) => {
   const extraOptionsData = [
     {
       icon: <QuestionOutlined />,
-      description: description,
+      description: t(description),
       onClick: () => {},
     },
     {
