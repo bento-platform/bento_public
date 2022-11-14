@@ -41,6 +41,8 @@ function BentoPie({ data, height }) {
 
   // Changing immutable data to mutable data
   data = [...data];
+  // remove "missing" field if zero
+  data = data.filter((e) => !(e.x === 'missing'));
 
   // combining sections with less than OTHER_THRESHOLD
   const sum = data.reduce((acc, e) => acc + e.y, 0);
