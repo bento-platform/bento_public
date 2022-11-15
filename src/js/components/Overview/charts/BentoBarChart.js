@@ -20,6 +20,8 @@ const TICK_MARGIN = 5;
 const BentoBarChart = ({ title, data, units, height }) => {
   const { t } = useTranslation();
 
+  // remove "missing" field if zero
+  data = data.filter((e) => !(e.x === 'missing'));
   data = data.map((d) => ({ ...d, x: t(d.x) }));
 
   const titleStyle = {
@@ -44,9 +46,6 @@ const BentoBarChart = ({ title, data, units, height }) => {
   const fill = (entry) => (entry.x === 'missing' ? CHART_MISSING_FILL : BAR_CHART_FILL);
 
   const totalCount = data.reduce((sum, e) => sum + e.y, 0);
-
-  // remove "missing" field if zero
-  data = data.filter((e) => !(e.x === 'missing'));
 
   return (
     <div style={wrapperStyle}>
