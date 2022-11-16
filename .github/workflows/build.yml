@@ -11,10 +11,12 @@ name: Build and push bento_public
 #       - master
 
 # on: workflow_dispatch
+
 on:
   push:
     branches:
-      - "testing-build"  
+      - "testing-build"
+
 jobs:
   build-push:
     runs-on: ubuntu-latest
@@ -54,33 +56,13 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
 
-      - name: Set up Go
-        uses: actions/setup-go@v1
+      - name: Build and push production image
+        uses: docker/build-push-action@v3
+        if: ${{ github.event_name == 'release' }}
         with:
-          go-version: 1.19
-
-      - name: Set up NPM
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-        
-      - run: npm install
-      - run: mkdir -p build/www
-      - run: npm run build
-
-      - run: export GO111MODULE=off && \
-             export GOPATH=/go && \
-             export GOBIN=$GOPATH/bin && \
-             go get . && \
-             go build -o ./reactapp
-
-      # - name: Build and push production image
-      #   uses: docker/build-push-action@v3
-      #   if: ${{ github.event_name == 'release' }}
-      #   with:
-      #     context: .
-      #     file: Dockerfile
-      #     push: true
-      #     tags: ${{ steps.meta.outputs.tags }}
-      #     labels: ${{ steps.meta.outputs.labels }}
-      #     platforms: linux/amd64,linux/arm64
+          context: .
+          file: Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/amd64,linux/arm64
