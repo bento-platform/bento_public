@@ -12,6 +12,7 @@ export const makeGetConfigRequest = createAsyncThunk('config/getConfigData', asy
 
 const initialState = {
   isFetchingConfig: false,
+  clientName: '',
   portalUrl: '',
   maxQueryParameters: 0,
 };
@@ -25,6 +26,7 @@ const config = createSlice({
       state.isFetchingConfig = true;
     },
     [makeGetConfigRequest.fulfilled]: (state, { payload }) => {
+      state.clientName = payload.clientName;
       state.portalUrl = payload.portalUrl;
       state.maxQueryParameters = payload.maxQueryParameters;
       state.isFetchingConfig = false;

@@ -12,7 +12,7 @@ go build -o ../build/reactapp
 
 # build react bundle.js
 cd ../
-npm run build
+npm run build-dev
 
 # start go http server
 cd build
