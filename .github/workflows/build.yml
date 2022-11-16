@@ -1,21 +1,14 @@
 name: Build and push bento_public
 
-# on:
-#   release:
-#     types: [ published ]
-#   pull_request:
-#     branches:
-#       - master
-#   push:
-#     branches:
-#       - master
-
-# on: workflow_dispatch
-
 on:
+  release:
+    types: [ published ]
+  pull_request:
+    branches:
+      - master
   push:
     branches:
-      - "testing-build"
+      - master
 
 jobs:
   build-push:
