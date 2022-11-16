@@ -6,13 +6,13 @@ import i18n from 'i18next';
 import { useTranslation } from 'react-i18next';
 
 import bentoLogo from '../../public/assets/bento.svg';
-import { client } from '../constants/configConstants';
 
 const SiteHeader = () => {
   const { t } = useTranslation();
 
+  const clientName = useSelector((state) => state.config.clientName);
   useEffect(() => {
-    document.title = 'Bento-Public : ' + client;
+    document.title = 'Bento-Public : ' + clientName;
   }, []);
 
   const [language, setLanguage] = useState(i18n.language);
@@ -32,7 +32,7 @@ const SiteHeader = () => {
           <Space>
             <img style={{ height: '35px' }} src={bentoLogo} alt="logo" />
             <Typography.Title style={{ marginBottom: '-4px' }} level={4} type="secondary">
-              {client}
+              {clientName}
             </Typography.Title>
           </Space>
         </Col>
