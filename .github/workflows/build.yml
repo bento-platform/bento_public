@@ -43,26 +43,25 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
 
-      - name: Set up production image metadata
-        id: meta
+      - name: Set up development image metadata
+        id: meta-dev
         uses: docker/metadata-action@v4
-        if: ${{ github.event_name == 'release' }}
         with:
           images: |
-            ghcr.io/bento-platform/bento_public
+            ghcr.io/bento-platform/bento_beacon
           flavor: |
-            latest=true
+            latest=false
           tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest-dev,enable={{is_default_branch}}
+            type=ref,event=pr
+            type=sha,prefix=sha-
 
-      - name: Build and push production image
+      - name: Build and push development image
         uses: docker/build-push-action@v3
-        # if: ${{ github.event_name == 'release' }}
         with:
           context: .
-          file: Dockerfile
+          file: dev.Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta-dev.outputs.tags }}
+          labels: ${{ steps.meta-dev.outputs.labels }}
           platforms: linux/amd64,linux/arm64
