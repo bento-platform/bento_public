@@ -58,8 +58,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-        run: npm install
-        run: npm test
+      - run: npm install
+      - run: npm test
 
       # - name: Build and push production image
       #   uses: docker/build-push-action@v3
