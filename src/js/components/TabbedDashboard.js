@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { Tabs } from 'antd';
+import { Tabs, Typography } from 'antd';
+const { TabPane } = Tabs;
+const { Title } = Typography;
 
 import { makeGetDataRequest } from '../features/data/data';
 import { makeGetConfigRequest } from '../features/config/config';
@@ -12,8 +14,6 @@ import Loader from './Loader';
 import PublicOverview from './Overview/PublicOverview';
 import Search from './Search/Search';
 import ProvenanceTab from './Provenance/ProvenanceTab';
-
-const { TabPane } = Tabs;
 
 const TabbedDashboard = () => {
   const dispatch = useDispatch();
@@ -36,10 +36,23 @@ const TabbedDashboard = () => {
 
   const isFetchingOverviewData = useSelector((state) => state.data.isFetchingData);
   const isFetchingSearchFields = useSelector((state) => state.query.isFetchingFields);
+  const individuals = useSelector((state) => state.data.individuals);
+
+  const individualCount = (
+    <Title level={5}>
+      {t('Individuals')}: {individuals}
+    </Title>
+  );
 
   return (
     <div style={{ paddingLeft: '25px' }}>
-      <Tabs defaultActiveKey="overview" size="large" tabBarStyle={tabBarStyle} centered>
+      <Tabs
+        tabBarExtraContent={{ right: individualCount }}
+        defaultActiveKey="overview"
+        size="large"
+        tabBarStyle={tabBarStyle}
+        centered
+      >
         <TabPane tab={<TabTitle title={t('Overview')} />} key="overview" size="large">
           {!isFetchingOverviewData ? <PublicOverview /> : <Loader />}
         </TabPane>
