@@ -42,7 +42,7 @@ const TabbedDashboard = () => {
     </Title>
   );
 
-  const TabPanes = [
+  const tabPanes = [
     {
       title: 'Overview',
       content: <PublicOverview />,
@@ -63,14 +63,14 @@ const TabbedDashboard = () => {
     },
   ];
 
-  const MappedTabPanes = TabPanes.map(({ title, content, loading, key }) => ({
+  const mappedTabPanes = tabPanes.map(({ title, content, loading, key }) => ({
     label: <TabTitle title={title} />,
     children: loading ? <Loader /> : content,
     key,
   }));
 
   return (
-    <Tabs tabBarExtraContent={{ right: individualCount }} defaultActiveKey="overview" items={MappedTabPanes} centered />
+    <Tabs tabBarExtraContent={{ right: individualCount }} defaultActiveKey="overview" items={mappedTabPanes} centered />
   );
 };
 

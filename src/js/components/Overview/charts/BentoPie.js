@@ -39,11 +39,9 @@ function BentoPie({ data, height }) {
 
   const [activeIndex, setActiveIndex] = useState(undefined);
 
-  // Changing immutable data to mutable data
-  data = [...data];
-
-  data = data.filter((e) => !(e.x === 'missing'));
-  data = data.map((d) => ({ ...d, x: t(d.x) }));
+  data = [...data] // Changing immutable data to mutable data
+    .filter((e) => !(e.x === 'missing'))
+    .map((d) => ({ ...d, x: t(d.x) })); // Translating the labels
 
   // combining sections with less than OTHER_THRESHOLD
   const sum = data.reduce((acc, e) => acc + e.y, 0);
