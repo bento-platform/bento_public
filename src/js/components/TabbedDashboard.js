@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Tabs, Typography } from 'antd';
-const { TabPane } = Tabs;
 const { Title } = Typography;
 
 import { makeGetDataRequest } from '../features/data/data';
@@ -30,7 +29,6 @@ const TabbedDashboard = () => {
   }, []);
 
   const tabTitleStyle = { fontSize: '20px', fontWeight: 500 };
-  const tabBarStyle = { marginBottom: '20px' };
 
   const TabTitle = ({ title }) => <p style={tabTitleStyle}>{title}</p>;
 
@@ -44,26 +42,35 @@ const TabbedDashboard = () => {
     </Title>
   );
 
+  const TabPanes = [
+    {
+      title: 'Overview',
+      content: <PublicOverview />,
+      loading: isFetchingOverviewData,
+      key: 'overview',
+    },
+    {
+      title: 'Search',
+      content: <Search />,
+      loading: isFetchingSearchFields,
+      key: 'search',
+    },
+    {
+      title: 'Provenance',
+      content: <ProvenanceTab />,
+      loading: false,
+      key: 'provenance',
+    },
+  ];
+
+  const MappedTabPanes = TabPanes.map(({ title, content, loading, key }) => ({
+    label: <TabTitle title={title} />,
+    children: loading ? <Loader /> : content,
+    key,
+  }));
+
   return (
-    <div style={{ paddingLeft: '25px' }}>
-      <Tabs
-        tabBarExtraContent={{ right: individualCount }}
-        defaultActiveKey="overview"
-        size="large"
-        tabBarStyle={tabBarStyle}
-        centered
-      >
-        <TabPane tab={<TabTitle title={t('Overview')} />} key="overview" size="large">
-          {!isFetchingOverviewData ? <PublicOverview /> : <Loader />}
-        </TabPane>
-        <TabPane tab={<TabTitle title={t('Search')} />} key="search">
-          {!isFetchingSearchFields ? <Search /> : <Loader />}
-        </TabPane>
-        <TabPane tab={<TabTitle title={t('Provenance')} />} key="Provenance">
-          <ProvenanceTab />
-        </TabPane>
-      </Tabs>
-    </div>
+    <Tabs tabBarExtraContent={{ right: individualCount }} defaultActiveKey="overview" items={MappedTabPanes} centered />
   );
 };
 
