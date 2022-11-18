@@ -29,9 +29,9 @@ const SiteHeader = () => {
     <Header style={{ backgroundColor: '#fff' }}>
       <Row align="middle" justify="space-between">
         <Col>
-          <Space>
-            <img style={{ height: '35px' }} src={bentoLogo} alt="logo" />
-            <Typography.Title style={{ marginBottom: '-4px' }} level={4} type="secondary">
+          <Space align="start">
+            <img style={{ marginTop: '11px', height: '35px' }} src={bentoLogo} alt="logo" />
+            <Typography.Title style={{ transform: 'translateY(-10px)' }} level={4} type="secondary">
               {client}
             </Typography.Title>
           </Space>
