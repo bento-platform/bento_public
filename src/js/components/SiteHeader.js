@@ -38,10 +38,12 @@ const SiteHeader = () => {
         </Col>
         <Col>
           <Space>
-            <Button type="primary" onClick={changeLanguage}>
+            <Button shape="round" onClick={changeLanguage}>
               {language}
             </Button>
-            <Button onClick={buttonHandler}>{t('Portal')}</Button>
+            <Button type="primary" shape="round" onClick={buttonHandler}>
+              {t('Portal')}
+            </Button>
           </Space>
         </Col>
       </Row>
