@@ -41,8 +41,9 @@ function BentoPie({ data, height }) {
 
   // Changing immutable data to mutable data
   data = [...data];
-  // remove "missing" field if zero
+
   data = data.filter((e) => !(e.x === 'missing'));
+  data = data.map((d) => ({ ...d, x: t(d.x) }));
 
   // combining sections with less than OTHER_THRESHOLD
   const sum = data.reduce((acc, e) => acc + e.y, 0);
@@ -120,7 +121,7 @@ function BentoPie({ data, height }) {
         <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
         <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
         <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey + 3} textAnchor={textAnchor} style={currentTextStyle}>
-          {labelShortName(t(name))}
+          {labelShortName(name)}
         </text>
         <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={14} textAnchor={textAnchor} style={countTextStyle}>
           {`(${t(payload.value)})`}
