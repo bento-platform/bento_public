@@ -9,17 +9,11 @@ body {
   background-color: #eff2f5;
 }
 
-.container {
-    max-width: 1400px;
-    margin: 0 auto;
-    position: relative; /* used for positioning the counts */
-}
-
 .floating-button {
-  position:fixed;
-  right:5em;
-  bottom:1.5em;
-  transform: scale(125%);
+    position:fixed;
+    right:5em;
+    bottom:1.5em;
+    transform: scale(125%);
 }
 
 .floating-search {

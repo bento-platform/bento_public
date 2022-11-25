@@ -26,7 +26,7 @@ const DatasetProvenance = ({ metadata, loading }) => {
             {t(metadata.version)}
           </Title>,
         ]}
-        style={{ borderRadius: '11px' }}
+        style={{ borderRadius: '11px', maxWidth: '1400px' }}
         Loading={loading}
       >
         {/* --- DESCRIPTION ---*/}
