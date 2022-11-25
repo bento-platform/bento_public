@@ -29,19 +29,21 @@ const SiteHeader = () => {
     <Header style={{ backgroundColor: '#fff' }}>
       <Row align="middle" justify="space-between">
         <Col>
-          <Space>
-            <img style={{ height: '35px' }} src={bentoLogo} alt="logo" />
-            <Typography.Title style={{ marginBottom: '-4px' }} level={4} type="secondary">
+          <Space align="start">
+            <img style={{ marginTop: '11px', height: '35px' }} src={bentoLogo} alt="logo" />
+            <Typography.Title style={{ transform: 'translateY(-10px)' }} level={4} type="secondary">
               {client}
             </Typography.Title>
           </Space>
         </Col>
         <Col>
           <Space>
-            <Button type="primary" onClick={changeLanguage}>
+            <Button shape="round" onClick={changeLanguage}>
               {language}
             </Button>
-            <Button onClick={buttonHandler}>{t('Portal')}</Button>
+            <Button type="primary" shape="round" onClick={buttonHandler}>
+              {t('Portal')}
+            </Button>
           </Space>
         </Col>
       </Row>

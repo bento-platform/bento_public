@@ -13,7 +13,7 @@ const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }) => {
   const sections = useSelector((state) => state.data.sections);
 
   return (
-    <Drawer title={t('Manage Charts')} placement="right" onClose={onManageDrawerClose} visible={manageDrawerVisible}>
+    <Drawer title={t('Manage Charts')} placement="right" onClose={onManageDrawerClose} open={manageDrawerVisible}>
       {sections.map(({ sectionTitle, charts }, i) => (
         <div key={i}>
           <Title level={5}>{t(sectionTitle)}</Title>

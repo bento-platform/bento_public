@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { Tabs } from 'antd';
+import { Tabs, Typography } from 'antd';
+const { Title } = Typography;
 
 import { makeGetDataRequest } from '../features/data/data';
 import { makeGetConfigRequest } from '../features/config/config';
@@ -12,8 +13,6 @@ import Loader from './Loader';
 import PublicOverview from './Overview/PublicOverview';
 import Search from './Search/Search';
 import ProvenanceTab from './Provenance/ProvenanceTab';
-
-const { TabPane } = Tabs;
 
 const TabbedDashboard = () => {
   const dispatch = useDispatch();
@@ -29,28 +28,60 @@ const TabbedDashboard = () => {
     dispatch(makeGetProvenanceRequest());
   }, []);
 
-  const tabTitleStyle = { fontSize: '20px', fontWeight: 500 };
-  const tabBarStyle = { marginBottom: '20px' };
-
-  const TabTitle = ({ title }) => <p style={tabTitleStyle}>{title}</p>;
+  const [activeKey, setActiveKey] = useState('overview');
 
   const isFetchingOverviewData = useSelector((state) => state.data.isFetchingData);
   const isFetchingSearchFields = useSelector((state) => state.query.isFetchingFields);
+  const individuals = useSelector((state) => state.data.individuals);
+
+  const TabTitle = ({ title }) => (
+    <Title level={4} style={{ margin: '0' }}>
+      {title}
+    </Title>
+  );
+
+  const individualCount =
+    activeKey === 'overview' ? (
+      <Title level={5} type="secondary" style={{ position: 'absolute', width: '150px', right: '50px', top: '-10px' }}>
+        {t('Individuals')}: {individuals}
+      </Title>
+    ) : null;
+
+  const tabPanes = [
+    {
+      title: 'Overview',
+      content: <PublicOverview />,
+      loading: isFetchingOverviewData,
+      key: 'overview',
+    },
+    {
+      title: 'Search',
+      content: <Search />,
+      loading: isFetchingSearchFields,
+      key: 'search',
+    },
+    {
+      title: 'Provenance',
+      content: <ProvenanceTab />,
+      loading: false,
+      key: 'provenance',
+    },
+  ];
+
+  const mappedTabPanes = tabPanes.map(({ title, content, loading, key }) => ({
+    label: <TabTitle title={title} />,
+    children: loading ? <Loader /> : content,
+    key,
+  }));
 
   return (
-    <div style={{ paddingLeft: '25px' }}>
-      <Tabs defaultActiveKey="overview" size="large" tabBarStyle={tabBarStyle} centered>
-        <TabPane tab={<TabTitle title={t('Overview')} />} key="overview" size="large">
-          {!isFetchingOverviewData ? <PublicOverview /> : <Loader />}
-        </TabPane>
-        <TabPane tab={<TabTitle title={t('Search')} />} key="search">
-          {!isFetchingSearchFields ? <Search /> : <Loader />}
-        </TabPane>
-        <TabPane tab={<TabTitle title={t('Provenance')} />} key="Provenance">
-          <ProvenanceTab />
-        </TabPane>
-      </Tabs>
-    </div>
+    <Tabs
+      tabBarExtraContent={{ right: individualCount }}
+      defaultActiveKey="overview"
+      items={mappedTabPanes}
+      onChange={setActiveKey}
+      centered
+    />
   );
 };
 
