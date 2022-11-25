@@ -42,7 +42,7 @@ const TabbedDashboard = () => {
 
   const individualCount =
     activeKey === 'overview' ? (
-      <Title level={5} type="secondary">
+      <Title level={5} type="secondary" style={{ position: 'absolute', width: '150px', right: '50px', top: '-10px' }}>
         {t('Individuals')}: {individuals}
       </Title>
     ) : null;
