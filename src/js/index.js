@@ -6,7 +6,6 @@ import SiteHeader from './components/SiteHeader';
 import { store } from './store';
 import { Layout } from 'antd';
 const { Content } = Layout;
-import 'antd/dist/antd.css';
 import '../styles.css';
 import '../public/locales/en/translation.js';
 import '../public/locales/fr/translation.js';
