@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Button, Divider, Row, Col } from 'antd';
+import { Divider, Row, Col, FloatButton } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
 import { convertSequenceAndDisplayData, saveValue } from '../../utils/localStorage';
@@ -33,12 +33,11 @@ const PublicOverview = () => {
 
       {/* Drawer & Button */}
       <ManageChartsDrawer onManageDrawerClose={() => setDrawerVisible(false)} manageDrawerVisible={drawerVisible} />
-      <Button
+      <FloatButton
         type="primary"
-        shape="circle"
         icon={<PlusOutlined />}
-        size="large"
-        className="floating-button"
+        tooltip="Manage Charts"
+        style={{ right: '5em', bottom: '1.5em', transform: 'scale(125%)' }}
         onClick={() => setDrawerVisible(true)}
       />
     </>
