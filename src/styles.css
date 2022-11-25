@@ -1,12 +1,8 @@
-/* reduce gap between tab title and active tab indicator */
-.ant-tabs-ink-bar {
-  bottom: 25px !important;
-}
-
 html,
 body {
-  min-height: 100%;
-  background-color: #eff2f5;
+    min-height: 100%;
+    background-color: #eff2f5;
+    margin: 0;
 }
 
 .floating-button {

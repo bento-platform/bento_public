@@ -28,16 +28,18 @@ const TabbedDashboard = () => {
     dispatch(makeGetProvenanceRequest());
   }, []);
 
-  const tabTitleStyle = { fontSize: '20px', fontWeight: 500 };
-
-  const TabTitle = ({ title }) => <p style={tabTitleStyle}>{title}</p>;
+  const TabTitle = ({ title }) => (
+    <Title level={4} style={{ margin: '0' }}>
+      {title}
+    </Title>
+  );
 
   const isFetchingOverviewData = useSelector((state) => state.data.isFetchingData);
   const isFetchingSearchFields = useSelector((state) => state.query.isFetchingFields);
   const individuals = useSelector((state) => state.data.individuals);
 
   const individualCount = (
-    <Title level={5}>
+    <Title level={5} type="secondary">
       {t('Individuals')}: {individuals}
     </Title>
   );
