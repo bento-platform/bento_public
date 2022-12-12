@@ -52,6 +52,9 @@ const config = {
   optimization: {
     runtimeChunk: 'single',
   },
+  experiments: {
+    topLevelAwait: true,
+  },
 };
 
 module.exports = (_env, argv) => {
