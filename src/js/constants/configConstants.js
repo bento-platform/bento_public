@@ -1,12 +1,7 @@
-const { CLIENT, HOST, DEBUG } = process.env;
-
-export const debug = DEBUG.toLowerCase() === 'true';
-export const client = CLIENT;
-
 export const MAX_CHARTS = 3;
 
-export const configUrl = HOST + '/config';
-export const publicOverviewUrl = HOST + '/overview';
-export const searchFieldsUrl = HOST + '/fields';
-export const katsuUrl = HOST + '/katsu';
-export const provenanceUrl = HOST + '/provenance';
+export const configUrl = '/config';
+export const publicOverviewUrl = '/overview';
+export const searchFieldsUrl = '/fields';
+export const katsuUrl = '/katsu';
+export const provenanceUrl = '/provenance';

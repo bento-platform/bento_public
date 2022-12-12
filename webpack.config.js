@@ -2,9 +2,6 @@ const webpack = require('webpack'); // only add this if you don't have yet
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-// load client.env
-require('dotenv').config({ path: './client.env' });
-
 const config = {
   module: {
     rules: [
@@ -44,10 +41,6 @@ const config = {
     contentBase: './distgetuk',
   },
   plugins: [
-    //new Dotenv()
-    new webpack.DefinePlugin({
-      'process.env': JSON.stringify(process.env),
-    }),
     new HtmlWebpackPlugin({
       title: 'Development',
       inject: false,
