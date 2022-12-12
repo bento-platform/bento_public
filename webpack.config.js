@@ -1,8 +1,6 @@
 const webpack = require('webpack'); // only add this if you don't have yet
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-
-// load client.env
-require('dotenv').config({ path: './client.env' });
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const config = {
   module: {
@@ -23,6 +21,10 @@ const config = {
         test: /\.(png|jpe?g|gif|svg)$/i,
         use: [{ loader: 'file-loader' }],
       },
+      {
+        test: /\.html$/i,
+        loader: 'html-loader',
+      },
     ],
   },
   entry: {
@@ -39,17 +41,19 @@ const config = {
     contentBase: './distgetuk',
   },
   plugins: [
-    //new Dotenv()
-    new webpack.DefinePlugin({
-      'process.env': JSON.stringify(process.env),
-    }),
     new HtmlWebpackPlugin({
       title: 'Development',
       inject: false,
     }),
+    new CopyWebpackPlugin({
+      patterns: [{ from: 'src/public', to: 'public' }],
+    }),
   ],
   optimization: {
     runtimeChunk: 'single',
+  },
+  experiments: {
+    topLevelAwait: true,
   },
 };
 

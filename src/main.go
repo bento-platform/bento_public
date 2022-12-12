@@ -14,6 +14,7 @@ import (
 )
 
 type BentoConfig struct {
+	ClientName         string `envconfig:"BENTO_PUBLIC_CLIENT_NAME"`
 	KatsuUrl           string `envconfig:"BENTO_PUBLIC_KATSU_URL"`
 	MaxQueryParameters int    `envconfig:"BENTO_PUBLIC_MAX_QUERY_PARAMETERS"`
 	BentoPortalUrl     string `envconfig:"BENTO_PUBLIC_PORTAL_URL"`
@@ -41,10 +42,11 @@ func main() {
 	}
 
 	fmt.Println(fmt.Sprintf(`Config --
+		Client Name: %s
 		Katsu URL: %v
 		Maximum no. Query Parameters: %d
 		Bento Portal Url: %s
-	`, cfg.KatsuUrl, cfg.MaxQueryParameters, cfg.BentoPortalUrl))
+	`, cfg.ClientName, cfg.KatsuUrl, cfg.MaxQueryParameters, cfg.BentoPortalUrl))
 
 	// Begin Echo
 
@@ -79,6 +81,7 @@ func main() {
 	e.GET("/config", func(c echo.Context) error {
 		// make some server-side configurations available to the front end
 		return c.JSON(http.StatusOK, map[string]interface{}{
+			"clientName":         cfg.ClientName,
 			"maxQueryParameters": cfg.MaxQueryParameters,
 			"portalUrl":          cfg.BentoPortalUrl,
 		})
