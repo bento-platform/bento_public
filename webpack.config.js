@@ -1,5 +1,6 @@
 const webpack = require('webpack'); // only add this if you don't have yet
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const config = {
   module: {
@@ -19,6 +20,10 @@ const config = {
       {
         test: /\.(png|jpe?g|gif|svg)$/i,
         use: [{ loader: 'file-loader' }],
+      },
+      {
+        test: /\.html$/i,
+        loader: 'html-loader',
       },
     ],
   },
@@ -40,9 +45,15 @@ const config = {
       title: 'Development',
       inject: false,
     }),
+    new CopyWebpackPlugin({
+      patterns: [{ from: 'src/public', to: 'public' }],
+    }),
   ],
   optimization: {
     runtimeChunk: 'single',
+  },
+  experiments: {
+    topLevelAwait: true,
   },
 };
 

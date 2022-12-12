@@ -1,5 +1,7 @@
 import def_fr_trans from './default_translation_fr.json';
-import fr_trans from './translation_fr.json';
+import axios from 'axios';
+
+const fr_trans = await axios.get('/public/locales/fr/translation_fr.json').then((response) => response.data);
 
 const translation = {
   // Default Translation

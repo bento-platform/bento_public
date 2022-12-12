@@ -5,13 +5,6 @@ body {
     margin: 0;
 }
 
-.floating-button {
-    position:fixed;
-    right:5em;
-    bottom:1.5em;
-    transform: scale(125%);
-}
-
 .floating-search {
     position:fixed !important;
     right:5em !important;
