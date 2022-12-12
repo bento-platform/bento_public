@@ -47,6 +47,7 @@
     "@webpack-cli/serve": "^1.6.1",
     "babel-core": "^6.26.3",
     "babel-loader": "^8.1.0",
+    "copy-webpack-plugin": "^11.0.0",
     "cross-env": "^7.0.3",
     "dotenv-webpack": "^7.0.3",
     "eslint": "^8.21.0",

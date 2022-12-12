@@ -1,5 +1,6 @@
 const webpack = require('webpack'); // only add this if you don't have yet
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 // load client.env
 require('dotenv').config({ path: './client.env' });
@@ -46,6 +47,9 @@ const config = {
     new HtmlWebpackPlugin({
       title: 'Development',
       inject: false,
+    }),
+    new CopyWebpackPlugin({
+      patterns: [{ from: 'src/public', to: 'public' }],
     }),
   ],
   optimization: {
