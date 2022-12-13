@@ -7,7 +7,7 @@ WORKDIR /node
 RUN npm install
 
 RUN mkdir -p build/www
-RUN npm run build
+RUN npm run build-dev
 
 
 FROM golang:1.19.1-alpine3.16 as gobuilder
