@@ -27,16 +27,16 @@ const SiteHeader = () => {
 
   return (
     <Header style={{ backgroundColor: '#fff' }}>
-      <Row align="middle" justify="space-between">
-        <Col>
-          <Space align="start">
-            <img style={{ marginTop: '11px', height: '35px' }} src={bentoLogo} alt="logo" />
-            <Typography.Title style={{ transform: 'translateY(-10px)' }} level={4} type="secondary">
+      <Row align="middle" justify="space-between" style={{height: "64px"}}>
+        <Col style={{height: "100%"}}>
+          <Space align="start" size={20}>
+            <img style={{ marginTop: '15px', height: '32px' }} src={bentoLogo} alt="logo" />
+            <Typography.Title level={1} style={{fontSize: "18px", margin: 0, lineHeight: "64px"}} type="secondary">
               {clientName}
             </Typography.Title>
           </Space>
         </Col>
-        <Col>
+        <Col style={{height: "100%"}}>
           <Space>
             <Button shape="round" onClick={changeLanguage}>
               {language}
