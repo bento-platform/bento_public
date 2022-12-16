@@ -12,12 +12,12 @@ const SiteHeader = () => {
 
   const clientName = useSelector((state) => state.config.clientName);
   useEffect(() => {
-    document.title = clientName ? "Bento" : `Bento: ${clientName}`;
+    document.title = (clientName && clientName.trim()) ? `Bento: ${clientName}` : "Bento";
   }, [clientName]);
 
   const [language, setLanguage] = useState(i18n.language);
   const changeLanguage = () => {
-    i18n.changeLanguage(language === 'en' ? 'fr' : 'en');
+    i18n.changeLanguage(language === 'en' ? 'fr' : 'en').catch(console.error);
     setLanguage(language === 'en' ? 'fr' : 'en');
   };
 
