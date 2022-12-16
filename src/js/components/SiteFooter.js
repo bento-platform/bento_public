@@ -34,7 +34,7 @@ const SiteFooter = () => {
             </Link>
             .
           </Text>
-          <Link href="/public/TermsofUse.html" target="_blank">
+          <Link href="/public/terms.html" target="_blank">
             Terms of Use
           </Link>
         </Space>
