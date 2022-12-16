@@ -69,7 +69,7 @@ const TabbedDashboard = () => {
   ];
 
   const mappedTabPanes = tabPanes.map(({ title, content, loading, key }) => ({
-    label: <TabTitle title={title} />,
+    label: <TabTitle title={t(title)} />,
     children: loading ? <Loader /> : content,
     key,
   }));
