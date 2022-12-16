@@ -12,7 +12,7 @@ const SiteHeader = () => {
 
   const clientName = useSelector((state) => state.config.clientName);
   useEffect(() => {
-    document.title = 'Bento-Public : ' + clientName;
+    document.title = 'Bento: ' + clientName;
   }, []);
 
   const [language, setLanguage] = useState(i18n.language);
