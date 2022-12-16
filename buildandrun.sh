@@ -1,8 +1,9 @@
 #!/bin/sh
 
-# prepare output directories
+# clean & prepare output directories
 rm -rf build
 mkdir -p build/www
+
 # - prepare server .env
 cp server.env build/.env
 
@@ -16,9 +17,11 @@ npm run build-dev
 
 # start go http server
 cd build
+
 # - load (export) .env
 set -a
 . ./.env
 set +a
+
 # - run
 ./reactapp

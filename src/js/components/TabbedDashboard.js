@@ -4,8 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { Tabs, Typography } from 'antd';
 const { Title } = Typography;
 
-import { makeGetDataRequest } from '../features/data/data';
 import { makeGetConfigRequest } from '../features/config/config';
+import { makeGetAboutRequest } from '../features/content/content';
+import { makeGetDataRequest } from '../features/data/data';
 import { makeGetSearchFields } from '../features/search/query';
 import { makeGetProvenanceRequest } from '../features/provenance/provenance';
 
@@ -21,6 +22,7 @@ const TabbedDashboard = () => {
   // fetch data from server on first render
   useEffect(() => {
     dispatch(makeGetConfigRequest());
+    dispatch(makeGetAboutRequest());
     dispatch(makeGetDataRequest()).then(() => {
       // Sequential call intended for backend related issues
       dispatch(makeGetSearchFields());
@@ -69,7 +71,7 @@ const TabbedDashboard = () => {
   ];
 
   const mappedTabPanes = tabPanes.map(({ title, content, loading, key }) => ({
-    label: <TabTitle title={title} />,
+    label: <TabTitle title={t(title)} />,
     children: loading ? <Loader /> : content,
     key,
   }));

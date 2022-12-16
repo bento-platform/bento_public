@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Divider, Row, Col, FloatButton, Card } from 'antd';
+import { Divider, Row, Col, FloatButton, Card, Skeleton } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
 import { convertSequenceAndDisplayData, saveValue } from '../../utils/localStorage';
@@ -9,9 +9,6 @@ import { LOCALSTORAGE_CHARTS_KEY } from '../../constants/overviewConstants';
 import OverviewSection from './OverviewSection';
 import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
 
-import about from '../../../public/about.html';
-const aboutTemplate = { __html: about };
-
 const PublicOverview = () => {
   const { sections } = useSelector((state) => state.data);
 
@@ -19,13 +16,17 @@ const PublicOverview = () => {
 
   const [drawerVisible, setDrawerVisible] = useState(false);
 
+  const { isFetchingAbout, aboutHTML } = useSelector(state => state.content)
+
   return (
     <>
       <div className="container">
         <Row justify="center">
           <Col>
             <Card style={{ borderRadius: '11px' }}>
-              <div dangerouslySetInnerHTML={aboutTemplate} />
+              {isFetchingAbout
+                ? <Skeleton title={false} paragraph={{rows: 2}} />
+                : <div dangerouslySetInnerHTML={{ __html: aboutHTML }} />}
             </Card>
             {sections.map(({ sectionTitle, charts }, i) => (
               <div key={i} className="overview">
