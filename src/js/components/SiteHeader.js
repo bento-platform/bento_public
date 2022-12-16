@@ -12,8 +12,8 @@ const SiteHeader = () => {
 
   const clientName = useSelector((state) => state.config.clientName);
   useEffect(() => {
-    document.title = 'Bento: ' + clientName;
-  }, []);
+    document.title = clientName ? "Bento" : `Bento: ${clientName}`;
+  }, [clientName]);
 
   const [language, setLanguage] = useState(i18n.language);
   const changeLanguage = () => {
