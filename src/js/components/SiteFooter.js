@@ -25,7 +25,7 @@ const SiteFooter = () => {
           </Text>
           <Text type="secondary">
             Bento is licensed under the{' '}
-            <Link href="https://github.com/bento-platform/bento_web/blob/master/LICENSE" target="_blank">
+            <Link href="https://github.com/bento-platform/bento_public/blob/main/LICENSE" target="_blank">
               LGPLv3
             </Link>
             . The source code is available on{' '}
