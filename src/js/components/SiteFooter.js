@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Layout, Row, Typography, Space } from 'antd';
 const { Footer } = Layout;
 const { Title, Text, Link } = Typography;
@@ -6,6 +7,8 @@ const { Title, Text, Link } = Typography;
 import bentoLogo from '../../public/assets/bento.svg';
 
 const SiteFooter = () => {
+  const { t } = useTranslation();
+
   return (
     <Footer>
       <Row justify="center">
@@ -39,7 +42,7 @@ const SiteFooter = () => {
           </div>
           <div>
             <Link href="/public/terms.html" target="_blank">
-              Terms of Use
+              {t("Terms of Use")}
             </Link>
           </div>
         </Space>
