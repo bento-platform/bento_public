@@ -25,12 +25,13 @@ const SiteHeader = () => {
 
   const buttonHandler = () => window.open(portalUrl, '_blank');
 
+  // noinspection HtmlUnknownTarget
   return (
     <Header style={{ backgroundColor: '#fff' }}>
       <Row align="middle" justify="space-between" style={{height: "64px"}}>
         <Col style={{height: "100%"}}>
           <Space align="start" size={20}>
-            <img style={{ marginTop: '15px', height: '32px' }} src={bentoLogo} alt="logo" />
+            <img style={{ marginTop: '15px', height: '32px' }} src="/public/assets/branding.png" alt="logo" />
             <Typography.Title level={1} style={{fontSize: "18px", margin: 0, lineHeight: "64px"}} type="secondary">
               {clientName}
             </Typography.Title>
