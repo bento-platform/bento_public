@@ -16,17 +16,19 @@ const PublicOverview = () => {
 
   const [drawerVisible, setDrawerVisible] = useState(false);
 
-  const { isFetchingAbout, aboutHTML } = useSelector(state => state.content)
+  const { isFetchingAbout, aboutHTML } = useSelector((state) => state.content);
 
   return (
     <>
       <div className="container">
         <Row justify="center">
           <Col>
-            <Card style={{ borderRadius: '11px' }}>
-              {isFetchingAbout
-                ? <Skeleton title={false} paragraph={{rows: 2}} />
-                : <div dangerouslySetInnerHTML={{ __html: aboutHTML }} />}
+            <Card style={{ borderRadius: '11px', maxWidth: '1323px' }}>
+              {isFetchingAbout ? (
+                <Skeleton title={false} paragraph={{ rows: 2 }} />
+              ) : (
+                <div dangerouslySetInnerHTML={{ __html: aboutHTML }} />
+              )}
             </Card>
             {sections.map(({ sectionTitle, charts }, i) => (
               <div key={i} className="overview">
