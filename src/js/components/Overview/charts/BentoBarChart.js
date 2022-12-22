@@ -12,7 +12,7 @@ import {
 
 const ASPECT_RATIO = 1.2;
 const MAX_TICK_LABEL_CHARS = 15;
-const UNITS_LABEL_OFFSET = -60;
+const UNITS_LABEL_OFFSET = -75;
 const TICKS_SHOW_ALL_LABELS_BELOW = 11;  // Below this # of X-axis ticks, force-show all labels
 
 // vertical spacing between tick line and tick label
