@@ -13,8 +13,9 @@ import {
 const ASPECT_RATIO = 1.2;
 const MAX_TICK_LABEL_CHARS = 15;
 const UNITS_LABEL_OFFSET = -60;
+const TICKS_SHOW_ALL_LABELS_BELOW = 11;  // Below this # of X-axis ticks, force-show all labels
 
-// vertical spacing betweeen tick line and tick label
+// vertical spacing between tick line and tick label
 const TICK_MARGIN = 5;
 
 const BentoBarChart = ({ title, data, units, height }) => {
@@ -58,7 +59,7 @@ const BentoBarChart = ({ title, data, units, height }) => {
           tickFormatter={tickFormatter}
           tickMargin={TICK_MARGIN}
           textAnchor="end"
-          interval="preserveStartEnd"
+          interval={data.length < TICKS_SHOW_ALL_LABELS_BELOW ? 0 : "preserveStartEnd"}
         >
           <Label value={t(units)} offset={UNITS_LABEL_OFFSET} position="insideBottom" />
         </XAxis>
