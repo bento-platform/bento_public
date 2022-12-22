@@ -5,8 +5,6 @@ const { Header } = Layout;
 import i18n from 'i18next';
 import { useTranslation } from 'react-i18next';
 
-import bentoLogo from '../../public/assets/bento.svg';
-
 const SiteHeader = () => {
   const { t } = useTranslation();
 
