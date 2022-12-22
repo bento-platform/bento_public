@@ -34,13 +34,13 @@ const PublicationsTable = ({ publications }) => {
           title: t('Authors'),
           dataIndex: 'authors',
           key: 'authors',
-          render: (_, { authors }) => authors.map((author) => <Tag color="cyan">{author}</Tag>),
+          render: (_, { authors }) => authors.map((author, i) => <Tag key={i} color="cyan">{author}</Tag>),
         },
         {
           title: t('Dates'),
           dataIndex: 'dates',
           key: 'dates',
-          render: (_, { dates }) => dates.map((date) => <Tag color="cyan">{date}</Tag>),
+          render: (_, { dates }) => dates.map((date, i) => <Tag key={i} color="cyan">{date}</Tag>),
         },
         {
           title: t('Identifier'),
