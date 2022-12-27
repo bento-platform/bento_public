@@ -31,8 +31,8 @@ const Counts = () => {
     <>
       <Typography.Title level={3}>{t('Counts')}</Typography.Title>
       <Space direction="horizontal">
-        {data.map(({ title, icon, count }) => (
-          <Card>
+        {data.map(({ title, icon, count }, i) => (
+          <Card key={i}>
             <Statistic title={t(title)} value={count} valueStyle={{ color: '#1890ff' }} prefix={icon} />
           </Card>
         ))}
