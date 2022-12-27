@@ -31,9 +31,9 @@ const SearchResults = () => {
 
   return (
     <div style={wrapperStyle}>
-      <Card style={{ borderRadius: '10px', padding: '10px 33px', width: '900px' }}>
+      <Card style={{ borderRadius: '10px', padding: '10px 33px', width: '1000px' }}>
         <Row gutter={16}>
-          <Col span={6}>
+          <Col span={4}>
             <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
               <Statistic
                 title={t('Individuals')}
@@ -55,7 +55,7 @@ const SearchResults = () => {
               />
             </Space>
           </Col>
-          <Col span={9}>
+          <Col span={10}>
             <Typography.Title level={5}>{t('Biosamples')}</Typography.Title>
             {isValid && biosampleChartData && status === 'count' ? (
               <BentoPie data={biosampleChartData} height={CHART_HEIGHT} />
@@ -63,7 +63,7 @@ const SearchResults = () => {
               <CustomEmpty />
             )}
           </Col>
-          <Col span={9}>
+          <Col span={10}>
             <Typography.Title level={5}>{t('Experiments')}</Typography.Title>
             {isValid && experimentChartData && status === 'count' ? (
               <BentoPie data={experimentChartData} height={CHART_HEIGHT} />
