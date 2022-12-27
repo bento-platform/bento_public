@@ -58,7 +58,7 @@ const SearchResults = () => {
           <Col span={10}>
             <Typography.Title level={5}>{t('Biosamples')}</Typography.Title>
             {isValid && biosampleChartData && status === 'count' ? (
-              <BentoPie data={biosampleChartData} height={CHART_HEIGHT} />
+              <BentoPie data={biosampleChartData} height={CHART_HEIGHT} sort={true} />
             ) : (
               <CustomEmpty />
             )}
@@ -66,7 +66,7 @@ const SearchResults = () => {
           <Col span={10}>
             <Typography.Title level={5}>{t('Experiments')}</Typography.Title>
             {isValid && experimentChartData && status === 'count' ? (
-              <BentoPie data={experimentChartData} height={CHART_HEIGHT} />
+              <BentoPie data={experimentChartData} height={CHART_HEIGHT} sort={true} />
             ) : (
               <CustomEmpty />
             )}

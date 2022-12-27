@@ -34,7 +34,7 @@ const labelShortName = (name) => {
   return `${name.substring(0, MAX_LABEL_CHARS - 3)}\u2026`;
 };
 
-function BentoPie({ data, height }) {
+function BentoPie({ data, height, sort }) {
   const { t } = useTranslation();
 
   const [activeIndex, setActiveIndex] = useState(undefined);
@@ -42,6 +42,8 @@ function BentoPie({ data, height }) {
   data = [...data] // Changing immutable data to mutable data
     .filter((e) => !(e.x === 'missing'))
     .map((d) => ({ ...d, x: t(d.x) })); // Translating the labels
+
+  sort && data.sort((a, b) => a.y - b.y);
 
   // combining sections with less than OTHER_THRESHOLD
   const sum = data.reduce((acc, e) => acc + e.y, 0);
