@@ -38,7 +38,7 @@ export const makeGetDataRequest = createAsyncThunk('data/makeGetDataRequest', as
     convertedData = convertSequenceAndDisplayData(sectionData);
     saveValue(LOCALSTORAGE_CHARTS_KEY, convertedData);
 
-    return { sectionData, individuals: overviewResponse.counts.individuals };
+    return { sectionData, counts: overviewResponse.counts };
   } catch (error) {
     console.error(error);
     throw Error(error);
@@ -51,7 +51,7 @@ export default {
   },
   [makeGetDataRequest.fulfilled]: (state, { payload }) => {
     state.sections = payload.sectionData;
-    state.individuals = payload.individuals;
+    state.counts = payload.counts;
     state.isFetchingData = false;
   },
   [makeGetDataRequest.rejected]: (state) => {
