@@ -22,9 +22,9 @@ export default {
     else {
       state.queryResponseData = { status: 'count', count: payload.count };
       state.biosampleCount = payload.biosamples.count;
-      state.biosampleChartData = serializeChartData(payload.biosamples.sampled_tissue);
+      state.biosampleChartData = serializeChartData(payload.biosamples.sampled_tissue).sort((a, b) => a.y - b.y);
       state.experimentCount = payload.experiments.count;
-      state.experimentChartData = serializeChartData(payload.experiments.experiment_type);
+      state.experimentChartData = serializeChartData(payload.experiments.experiment_type).sort((a, b) => a.y - b.y);
     }
 
     state.isValid = true;
