@@ -18,44 +18,50 @@ const TICKS_SHOW_ALL_LABELS_BELOW = 11;  // Below this # of X-axis ticks, force-
 // vertical spacing between tick line and tick label
 const TICK_MARGIN = 5;
 
-const BentoBarChart = ({ title, data, units, height }) => {
-  const { t } = useTranslation();
-
-  // remove "missing" field if zero
-  data = data.filter((e) => !(e.x === 'missing'));
-  data = data.map((d) => ({ ...d, x: t(d.x) }));
-
-  const titleStyle = {
+const styles = {
+  title: {
     fontStyle: 'italic',
     fontSize: '1.5em',
     textAlign: 'center',
-  };
-
-  const wrapperStyle = {
+  },
+  wrapper: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-  };
+  },
+};
 
-  const tickFormatter = (tickLabel) => {
-    if (tickLabel.length <= MAX_TICK_LABEL_CHARS) {
-      return tickLabel;
-    }
-    return `${tickLabel.substring(0, MAX_TICK_LABEL_CHARS)}...`;
-  };
+const tickFormatter = (tickLabel) => {
+  if (tickLabel.length <= MAX_TICK_LABEL_CHARS) {
+    return tickLabel;
+  }
+  return `${tickLabel.substring(0, MAX_TICK_LABEL_CHARS)}...`;
+};
+const fill = (entry) => (entry.x === 'missing' ? CHART_MISSING_FILL : BAR_CHART_FILL);
 
-  const fill = (entry) => (entry.x === 'missing' ? CHART_MISSING_FILL : BAR_CHART_FILL);
+const BentoBarChart = ({ title, data, units, height }) => {
+  const { t } = useTranslation();
+
+  data = data
+    .filter((e) => !(e.x === 'missing'))  // remove "missing" field if zero
+    .map((d) => ({ ...d, x: t(d.x) }));  // translate label
 
   const totalCount = data.reduce((sum, e) => sum + e.y, 0);
 
+  // Regarding XAxis.ticks below:
+  //  The weird conditional is added from https://github.com/recharts/recharts/issues/2593#issuecomment-1311678397
+  //  Basically, if data is empty, Recharts will default to a domain of [0, "auto"] and our tickFormatter trips up
+  //  on formatting a non-string. This hack manually overrides the ticks for the axis and blanks it out.
+  //    - David L, 2023-01-03
   return (
-    <div style={wrapperStyle}>
-      <div style={titleStyle}>{title}</div>
+    <div style={styles.wrapper}>
+      <div style={styles.title}>{title}</div>
       <BarChart width={height * ASPECT_RATIO} height={height} data={data} margin={{ top: 10, bottom: 100, right: 20 }}>
         <XAxis
           dataKey="x"
           height={20}
           angle={-45}
+          ticks={data.length ? undefined : [""]}
           tickFormatter={tickFormatter}
           tickMargin={TICK_MARGIN}
           textAnchor="end"
