@@ -18,6 +18,7 @@ type BentoConfig struct {
 	KatsuUrl           string `envconfig:"BENTO_PUBLIC_KATSU_URL"`
 	MaxQueryParameters int    `envconfig:"BENTO_PUBLIC_MAX_QUERY_PARAMETERS"`
 	BentoPortalUrl     string `envconfig:"BENTO_PUBLIC_PORTAL_URL"`
+	Port               int    `envconfig:"INTERNAL_PORT" default:"8090"`
 }
 
 type QueryParameter struct {
@@ -46,7 +47,8 @@ func main() {
 		Katsu URL: %v
 		Maximum no. Query Parameters: %d
 		Bento Portal Url: %s
-	`, cfg.ClientName, cfg.KatsuUrl, cfg.MaxQueryParameters, cfg.BentoPortalUrl))
+		Port: %d
+	`, cfg.ClientName, cfg.KatsuUrl, cfg.MaxQueryParameters, cfg.BentoPortalUrl, cfg.Port))
 
 	// Begin Echo
 
@@ -220,7 +222,7 @@ func main() {
 	})
 
 	// Run
-	e.Logger.Fatal(e.Start(":8090"))
+	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", cfg.Port)))
 }
 
 // TODO: refactor
