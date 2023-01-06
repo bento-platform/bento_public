@@ -1,4 +1,4 @@
-FROM node:12-alpine3.14 as nodebuilder
+FROM --platform=$BUILDPLATFORM node:18-alpine3.16 as nodebuilder
 
 RUN mkdir /node
 COPY . /node
@@ -10,7 +10,7 @@ RUN mkdir -p build/www
 RUN npm run build-dev
 
 
-FROM golang:1.19.1-alpine3.16 as gobuilder
+FROM golang:1.19-alpine3.16 as gobuilder
 
 RUN apk update && \
     apk upgrade && \
@@ -28,7 +28,7 @@ RUN export GO111MODULE=off && \
 RUN ls -lah
 
 
-FROM alpine:3.7
+FROM alpine:3.16
 
 RUN apk update && \
     apk upgrade
@@ -43,4 +43,3 @@ COPY --from=gobuilder /build/src/reactapp /runner
 
 WORKDIR /runner
 ENTRYPOINT [ "./reactapp" ]
-
