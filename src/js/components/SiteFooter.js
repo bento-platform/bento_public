@@ -14,10 +14,10 @@ const SiteFooter = () => {
       <Row justify="center">
         <Space size={8} direction="vertical" align="center">
           <div>
-            <Title level={5} type="secondary">
+            <Title level={5} type="secondary" style={{ marginBottom: '0' }}>
               Powered by
             </Title>
-            <img style={{ height: '25px' }} src={bentoLogo} alt="Bento" />
+            <img style={{ height: '36px' }} src={bentoLogo} alt="Bento" />
           </div>
           <div>
             <Text type="secondary">
