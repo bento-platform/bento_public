@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Button, Typography, Space } from 'antd';
+import { Row, Typography, Space } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
@@ -13,8 +13,6 @@ const Search = () => {
   const dispatch = useDispatch();
 
   const searchSections = useSelector((state) => state.query.querySections);
-  const buttonDisabled = useSelector((state) => state.query.queryParamCount) === 0;
-  const isFetchingData = useSelector((state) => state.query.isFetchingData);
 
   const queryKatsuPublic = () => {
     dispatch(makeGetKatsuPublic());
