@@ -31,23 +31,12 @@ const Search = () => {
             {searchSections.map((e, i) => (
               <div key={i}>
                 <Typography.Title level={4}>{t(e.section_title)}</Typography.Title>
-                <SearchFieldsStack key={i} queryFields={e.fields} />
+                <SearchFieldsStack key={i} queryFields={e.fields} queryKatsuPublicFunc={queryKatsuPublic}/>
               </div>
             ))}
           </Space>
         </Space>
       </Row>
-      <Button
-        type="primary"
-        onClick={queryKatsuPublic}
-        size="large"
-        shape="round"
-        loading={isFetchingData}
-        disabled={buttonDisabled}
-        className="floating-search"
-      >
-        {t('Get Data')}
-      </Button>
     </>
   );
 };

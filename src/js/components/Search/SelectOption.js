@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { addQueryParam } from '../../features/search/query';
 
-const SelectOption = ({ id, isChecked, options }) => {
+const SelectOption = ({ id, isChecked, options, queryKatsuPublicFunc }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -19,6 +19,7 @@ const SelectOption = ({ id, isChecked, options }) => {
 
   const handleValueChange = (newValue) => {
     setValue(newValue);
+    queryKatsuPublicFunc();
   };
 
   return (

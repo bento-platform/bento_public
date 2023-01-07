@@ -7,7 +7,7 @@ import OptionDescription from './OptionDescription';
 import { removeQueryParam } from '../../features/search/query';
 import SelectOption from './SelectOption';
 
-const MakeQueryOption = ({ queryField }) => {
+const MakeQueryOption = ({ queryField , queryKatsuPublicFunc }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -25,6 +25,8 @@ const MakeQueryOption = ({ queryField }) => {
       setChecked(false);
       dispatch(removeQueryParam(id));
     } else checkedCount < maxCount && setChecked(true);
+
+    queryKatsuPublicFunc();
   };
 
   const disabled = checked ? false : checkedCount >= maxCount;
@@ -42,7 +44,7 @@ const MakeQueryOption = ({ queryField }) => {
           />
         </Col>
         <Col span={10}>
-          <SelectOption id={id} options={options} isChecked={checked} />
+          <SelectOption id={id} options={options} isChecked={checked} queryKatsuPublicFunc={queryKatsuPublicFunc} />
         </Col>
       </Row>
     </>
