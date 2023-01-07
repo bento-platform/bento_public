@@ -36,9 +36,12 @@ RUN apk update && \
 RUN mkdir -p /runner/www
 
 COPY --from=nodebuilder /node/build/www /runner/www
+COPY --from=nodebuilder /node/package.json /runner/package.json
 
 # Server
 COPY --from=gobuilder /build/src/reactapp /runner
+
+ENV BENTO_PUBLIC_PACKAGE_JSON_PATH=/runner/package.json
 
 
 WORKDIR /runner

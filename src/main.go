@@ -13,7 +13,20 @@ import (
 	"github.com/labstack/echo/middleware"
 )
 
+const ConfigLogTemplate = `Config --
+	Service ID: %s
+	package.json: %s
+	Client Name: %s
+	Katsu URL: %v
+	Maximum no. Query Parameters: %d
+	Bento Portal Url: %s
+	Port: %d
+
+`
+
 type BentoConfig struct {
+	ServiceId          string `envconfig:"BENTO_PUBLIC_SERVICE_ID"`
+	PackageJsonPath    string `envconfig:"BENTO_PUBLIC_PACKAGE_JSON_PATH" default:"../package.json"`
 	ClientName         string `envconfig:"BENTO_PUBLIC_CLIENT_NAME"`
 	KatsuUrl           string `envconfig:"BENTO_PUBLIC_KATSU_URL"`
 	MaxQueryParameters int    `envconfig:"BENTO_PUBLIC_MAX_QUERY_PARAMETERS"`
@@ -35,6 +48,7 @@ type QueryParameter struct {
 var katsuQueryConfigCache = make(map[string]interface{})
 
 func main() {
+	// Initialize configuration from environment variables
 	var cfg BentoConfig
 	err := envconfig.Process("", &cfg)
 	if err != nil {
@@ -42,13 +56,33 @@ func main() {
 		os.Exit(2)
 	}
 
-	fmt.Println(fmt.Sprintf(`Config --
-		Client Name: %s
-		Katsu URL: %v
-		Maximum no. Query Parameters: %d
-		Bento Portal Url: %s
-		Port: %d
-	`, cfg.ClientName, cfg.KatsuUrl, cfg.MaxQueryParameters, cfg.BentoPortalUrl, cfg.Port))
+	// Load JS package.json to extract version number
+	packageJson, err := ioutil.ReadFile(cfg.PackageJsonPath)
+	if err != nil {
+		fmt.Println("Error reading package.json")
+		os.Exit(1)
+	}
+
+	var packageJsonContents map[string]interface{}
+	err = json.Unmarshal(packageJson, &packageJsonContents)
+	if err != nil {
+		fmt.Println("Error parsing package.json")
+		os.Exit(1)
+	}
+
+	var version = fmt.Sprintf("%s", packageJsonContents["version"])
+
+	fmt.Printf("Bento-Public version %s\n", version)
+	fmt.Printf(
+		ConfigLogTemplate,
+		cfg.ServiceId,
+		cfg.PackageJsonPath,
+		cfg.ClientName,
+		cfg.KatsuUrl,
+		cfg.MaxQueryParameters,
+		cfg.BentoPortalUrl,
+		cfg.Port,
+	)
 
 	// Begin Echo
 
@@ -78,6 +112,25 @@ func main() {
 	// Begin MVC Routes
 	// -- Root : static files
 	e.Use(middleware.Static("./www"))
+
+	// -- GA4GH-compatible service information response
+	e.GET("/service-info", func(c echo.Context) error {
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"id":      cfg.ServiceId,
+			"name":    "Bento Public",
+			"version": version,
+			"type": map[string]interface{}{
+				"group":    "ca.c3g.bento",
+				"artifact": "public",
+				"version":  version,
+			},
+			"organization": map[string]interface{}{
+				"name": "C3G",
+				"url":  "https://www.computationalgenomics.ca",
+			},
+			"contactUrl": "mailto:info@c3g.ca",
+		})
+	})
 
 	// -- Data
 	e.GET("/config", func(c echo.Context) error {
