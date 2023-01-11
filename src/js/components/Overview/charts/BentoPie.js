@@ -43,7 +43,7 @@ function BentoPie({ data, height, sort }) {
     .filter((e) => !(e.x === 'missing'))
     .map((d) => ({ ...d, x: t(d.x) })); // Translating the labels
 
-  sort && data.sort((a, b) => a.y - b.y);
+  if (sort) data.sort((a, b) => a.y - b.y);
 
   // combining sections with less than OTHER_THRESHOLD
   const sum = data.reduce((acc, e) => acc + e.y, 0);
