@@ -5,7 +5,11 @@ import makeGetDataRequestReducers, { makeGetDataRequest } from './makeGetDataReq
 const initialState = {
   isFetchingData: true,
   sections: [],
-  individuals: 0,
+  counts: {
+    individuals: 0,
+    biosamples: 0,
+    experiments: 0,
+  },
   metadata: [],
 };
 
