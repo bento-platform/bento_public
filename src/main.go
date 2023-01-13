@@ -129,6 +129,9 @@ func main() {
 				"url":  "https://www.computationalgenomics.ca",
 			},
 			"contactUrl": "mailto:info@c3g.ca",
+			"bento": map[string]interface{}{
+				"serviceKind": "bento",
+			},
 		})
 	})
 
