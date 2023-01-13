@@ -70,7 +70,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	var version = fmt.Sprintf("%s", packageJsonContents["version"])
+	var version = packageJsonContents["version"]
 
 	fmt.Printf("Bento-Public version %s\n", version)
 	fmt.Printf(
