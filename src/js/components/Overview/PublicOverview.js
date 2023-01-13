@@ -8,6 +8,7 @@ import { LOCALSTORAGE_CHARTS_KEY } from '../../constants/overviewConstants';
 
 import OverviewSection from './OverviewSection';
 import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
+import Counts from './Counts';
 
 const PublicOverview = () => {
   const { sections } = useSelector((state) => state.data);
@@ -30,6 +31,7 @@ const PublicOverview = () => {
                 <div dangerouslySetInnerHTML={{ __html: aboutHTML }} />
               )}
             </Card>
+            <Counts />
             {sections.map(({ sectionTitle, charts }, i) => (
               <div key={i} className="overview">
                 <OverviewSection index={i} title={sectionTitle} chartData={charts} />

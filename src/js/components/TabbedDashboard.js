@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Tabs, Typography } from 'antd';
@@ -30,24 +30,14 @@ const TabbedDashboard = () => {
     dispatch(makeGetProvenanceRequest());
   }, []);
 
-  const [activeKey, setActiveKey] = useState('overview');
-
   const isFetchingOverviewData = useSelector((state) => state.data.isFetchingData);
   const isFetchingSearchFields = useSelector((state) => state.query.isFetchingFields);
-  const individuals = useSelector((state) => state.data.individuals);
 
   const TabTitle = ({ title }) => (
     <Title level={4} style={{ margin: '0' }}>
       {title}
     </Title>
   );
-
-  const individualCount =
-    activeKey === 'overview' ? (
-      <Title level={5} type="secondary" style={{ position: 'absolute', width: '150px', right: '50px', top: '-10px' }}>
-        {t('Individuals')}: {individuals}
-      </Title>
-    ) : null;
 
   const tabPanes = [
     {
@@ -76,15 +66,7 @@ const TabbedDashboard = () => {
     key,
   }));
 
-  return (
-    <Tabs
-      tabBarExtraContent={{ right: individualCount }}
-      defaultActiveKey="overview"
-      items={mappedTabPanes}
-      onChange={setActiveKey}
-      centered
-    />
-  );
+  return <Tabs defaultActiveKey="overview" items={mappedTabPanes} centered />;
 };
 
 export default TabbedDashboard;

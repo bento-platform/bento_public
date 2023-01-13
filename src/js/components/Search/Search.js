@@ -23,7 +23,7 @@ const Search = () => {
   return (
     <>
       <Row justify="center">
-        <Space direction="vertical">
+        <Space direction="vertical" align="center">
           <SearchResults />
           <Space direction="vertical" size="large">
             {searchSections.map((e, i) => (
