@@ -9,8 +9,7 @@ import SearchResults from './SearchResults';
 
 const Search = () => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
-
+  
   const searchSections = useSelector((state) => state.query.querySections);
 
   return (
