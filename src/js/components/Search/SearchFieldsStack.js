@@ -2,11 +2,11 @@ import React from 'react';
 import MakeQueryOption from './MakeQueryOption';
 import { Space } from 'antd';
 
-const SearchFieldsStack = ({ queryFields, queryKatsuPublicFunc }) => {
+const SearchFieldsStack = ({ queryFields }) => {
   return (
     <Space direction="vertical" size="small">
       {queryFields.map((e, i) => (
-        <MakeQueryOption key={i} queryField={e} queryKatsuPublicFunc={queryKatsuPublicFunc} />
+        <MakeQueryOption key={i} queryField={e} />
       ))}
     </Space>
   );

@@ -3,7 +3,6 @@ import { Row, Typography, Space } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
-import { makeGetKatsuPublic } from '../../features/search/query';
 
 import SearchFieldsStack from './SearchFieldsStack';
 import SearchResults from './SearchResults';
@@ -14,12 +13,6 @@ const Search = () => {
 
   const searchSections = useSelector((state) => state.query.querySections);
 
-  const queryKatsuPublic = () => {
-    dispatch(makeGetKatsuPublic());
-    // scroll to top
-    window.scrollTo(0, 0);
-  };
-
   return (
     <>
       <Row justify="center">
@@ -29,7 +22,7 @@ const Search = () => {
             {searchSections.map((e, i) => (
               <div key={i}>
                 <Typography.Title level={4}>{t(e.section_title)}</Typography.Title>
-                <SearchFieldsStack key={i} queryFields={e.fields} queryKatsuPublicFunc={queryKatsuPublic}/>
+                <SearchFieldsStack key={i} queryFields={e.fields} />
               </div>
             ))}
           </Space>
