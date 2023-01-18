@@ -1,16 +1,22 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Row, Typography, Space } from 'antd';
-import { useSelector } from 'react-redux';
+import { useSelector,useDispatch  } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 
 import SearchFieldsStack from './SearchFieldsStack';
 import SearchResults from './SearchResults';
 
+import { makeGetKatsuPublic } from '../../features/search/query';
+
 const Search = () => {
   const { t } = useTranslation();
-  
+  const dispatch = useDispatch();
   const searchSections = useSelector((state) => state.query.querySections);
+
+  useEffect(() => {
+    dispatch(makeGetKatsuPublic());
+  }, []);
 
   return (
     <>

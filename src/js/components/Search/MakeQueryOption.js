@@ -27,8 +27,6 @@ const MakeQueryOption = ({ queryField }) => {
       setChecked(false);
       dispatch(removeQueryParam(id));
     } else checkedCount < maxCount && setChecked(true);
-
-    dispatch(makeGetKatsuPublic());
   };
 
   const disabled = checked ? false : checkedCount >= maxCount;
