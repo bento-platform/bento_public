@@ -24,7 +24,7 @@ const SelectOption = ({ id, isChecked, options, optionalDispatch}) => {
       return;
     }
     // --
-    if (optionalDispatch != undefined) {
+    if (optionalDispatch) {
       dispatch(optionalDispatch());
     }
     // --
