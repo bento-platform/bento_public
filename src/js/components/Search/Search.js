@@ -1,26 +1,22 @@
-import React from 'react';
-import { Row, Button, Typography, Space } from 'antd';
-import { useSelector, useDispatch } from 'react-redux';
+import React, {useEffect} from 'react';
+import { Row, Typography, Space } from 'antd';
+import { useSelector,useDispatch  } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
-import { makeGetKatsuPublic } from '../../features/search/query';
 
 import SearchFieldsStack from './SearchFieldsStack';
 import SearchResults from './SearchResults';
 
+import { makeGetKatsuPublic } from '../../features/search/query';
+
 const Search = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-
   const searchSections = useSelector((state) => state.query.querySections);
-  const buttonDisabled = useSelector((state) => state.query.queryParamCount) === 0;
-  const isFetchingData = useSelector((state) => state.query.isFetchingData);
 
-  const queryKatsuPublic = () => {
+  useEffect(() => {
     dispatch(makeGetKatsuPublic());
-    // scroll to top
-    window.scrollTo(0, 0);
-  };
+  }, []);
 
   return (
     <>
@@ -37,17 +33,6 @@ const Search = () => {
           </Space>
         </Space>
       </Row>
-      <Button
-        type="primary"
-        onClick={queryKatsuPublic}
-        size="large"
-        shape="round"
-        loading={isFetchingData}
-        disabled={buttonDisabled}
-        className="floating-search"
-      >
-        {t('Get Data')}
-      </Button>
     </>
   );
 };

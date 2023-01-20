@@ -7,6 +7,8 @@ import OptionDescription from './OptionDescription';
 import { removeQueryParam } from '../../features/search/query';
 import SelectOption from './SelectOption';
 
+import { makeGetKatsuPublic } from '../../features/search/query';
+
 const MakeQueryOption = ({ queryField }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -42,7 +44,7 @@ const MakeQueryOption = ({ queryField }) => {
           />
         </Col>
         <Col span={10}>
-          <SelectOption id={id} options={options} isChecked={checked} />
+          <SelectOption id={id} options={options} isChecked={checked} optionalDispatch={makeGetKatsuPublic}/>
         </Col>
       </Row>
     </>
