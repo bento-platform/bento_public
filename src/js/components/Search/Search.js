@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import { Row, Button, Typography, Space } from 'antd';
 import { UpOutlined } from '@ant-design/icons';
 import { useSelector,useDispatch  } from 'react-redux';
@@ -18,7 +18,16 @@ const Search = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const searchSections = useSelector((state) => state.query.querySections);
-  const isFetchingData = useSelector((state) => state.query.isFetchingData);
+  
+  const [atTop, setAtTop] = useState(true);
+
+  useEffect(() => {
+    window.onscroll = () => {
+      window.pageYOffset > 0 ? setAtTop(false) : setAtTop(true);
+    }
+
+    return () => (window.onscroll = null);
+  });
 
   useEffect(() => {
     dispatch(makeGetKatsuPublic());
@@ -44,9 +53,9 @@ const Search = () => {
         onClick={scrollToTop}
         size="large"
         shape="round"
-        loading={isFetchingData}
         className="floating-search"
         icon={<UpOutlined />}
+        disabled={atTop}
       >
         {t('Back to top')}
       </Button>
