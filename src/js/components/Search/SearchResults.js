@@ -15,6 +15,7 @@ const SearchResults = () => {
   const { t } = useTranslation();
 
   const { status, count, message } = useSelector((state) => state.query.queryResponseData);
+  const isFetchingData = useSelector((state) => state.query.isFetchingData);
   const isValid = useSelector((state) => state.query.isValid);
 
   const biosampleCount = useSelector((state) => state.query.biosampleCount);
@@ -31,7 +32,9 @@ const SearchResults = () => {
 
   return (
     <div style={wrapperStyle}>
-      <Card style={{ borderRadius: '10px', padding: '10px 33px', width: '1200px', minHeight: '28rem' }}>
+      <Card 
+        style={{ borderRadius: '10px', padding: '10px 33px', width: '1200px', minHeight: '28rem' }}
+        loading={isFetchingData}>
         <Row gutter={16}>
           <Col span={4}>
             <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
