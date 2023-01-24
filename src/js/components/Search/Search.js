@@ -10,6 +10,10 @@ import SearchResults from './SearchResults';
 
 import { makeGetKatsuPublic } from '../../features/search/query';
 
+const scrollToTop = () => {
+  window.scrollTo(0, 0);
+};
+
 const Search = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -19,10 +23,6 @@ const Search = () => {
   useEffect(() => {
     dispatch(makeGetKatsuPublic());
   }, []);
-
-  const scrollToTop = () => {
-    window.scrollTo(0, 0);
-  };
 
   return (
     <>
@@ -46,8 +46,8 @@ const Search = () => {
         shape="round"
         loading={isFetchingData}
         className="floating-search"
+        icon={<UpOutlined />}
       >
-        <UpOutlined />
         {t('Back to top')}
       </Button>
     </>
