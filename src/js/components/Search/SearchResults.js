@@ -31,7 +31,7 @@ const SearchResults = () => {
 
   return (
     <div style={wrapperStyle}>
-      <Card style={{ borderRadius: '10px', padding: '10px 33px', width: '1200px', minHeight: '400px' }}>
+      <Card style={{ borderRadius: '10px', padding: '10px 33px', width: '1200px', minHeight: '28rem' }}>
         <Row gutter={16}>
           <Col span={4}>
             <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
