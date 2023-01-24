@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
-import { Row, Typography, Space } from 'antd';
+import { Row, Button, Typography, Space } from 'antd';
+import { UpOutlined } from '@ant-design/icons';
 import { useSelector,useDispatch  } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
@@ -13,10 +14,15 @@ const Search = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const searchSections = useSelector((state) => state.query.querySections);
+  const isFetchingData = useSelector((state) => state.query.isFetchingData);
 
   useEffect(() => {
     dispatch(makeGetKatsuPublic());
   }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo(0, 0);
+  };
 
   return (
     <>
@@ -33,6 +39,17 @@ const Search = () => {
           </Space>
         </Space>
       </Row>
+      <Button
+        type="primary"
+        onClick={scrollToTop}
+        size="large"
+        shape="round"
+        loading={isFetchingData}
+        className="floating-search"
+      >
+        <UpOutlined />
+        {t('Back to top')}
+      </Button>
     </>
   );
 };
