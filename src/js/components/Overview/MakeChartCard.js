@@ -1,8 +1,9 @@
 import React from 'react';
 import Chart from './charts/Chart';
-import { Card, Button, Tooltip, Space, Typography } from 'antd';
+import { Card, Button, Tooltip, Space, Typography, Row } from 'antd';
 import { CloseOutlined, TeamOutlined, QuestionOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
+import CustomEmpty from '../Util/CustomEmpty';
 
 const CARD_STYLE = { width: '430px', height: '415px', margin: '5px 0', borderRadius: '11px' };
 
@@ -50,7 +51,13 @@ const MakeChartCard = ({ section, chart, onRemoveChart }) => {
   return (
     <div key={name} style={{ height: '100%', width: '430px' }}>
       <Card title={t(title)} style={CARD_STYLE} size="small" extra={<Space size="small">{ed}</Space>}>
-        <Chart chartType={chartType} data={data} units={config?.units || undefined} />
+        {data.filter((e) => !(e.x === 'missing')).length !== 0 ? (
+          <Chart chartType={chartType} data={data} units={config?.units || undefined} />
+        ) : (
+          <Row style={{ height: '350px ' }} justify="center" align="middle">
+            <CustomEmpty text="No Data" />
+          </Row>
+        )}
       </Card>
     </div>
   );

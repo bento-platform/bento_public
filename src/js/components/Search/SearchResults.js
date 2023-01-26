@@ -63,7 +63,7 @@ const SearchResults = () => {
             {isValid && biosampleChartData && status === 'count' ? (
               <BentoPie data={biosampleChartData} height={CHART_HEIGHT} sort={true} />
             ) : (
-              <CustomEmpty />
+              <CustomEmpty text="No Results" />
             )}
           </Col>
           <Col span={10}>
@@ -71,7 +71,7 @@ const SearchResults = () => {
             {isValid && experimentChartData && status === 'count' ? (
               <BentoPie data={experimentChartData} height={CHART_HEIGHT} sort={true} />
             ) : (
-              <CustomEmpty />
+              <CustomEmpty text="No Results" />
             )}
           </Col>
         </Row>
