@@ -15,6 +15,7 @@ const initialState = {
   clientName: '',
   portalUrl: '',
   maxQueryParameters: 0,
+  translated: true,
 };
 
 const config = createSlice({
@@ -29,6 +30,7 @@ const config = createSlice({
       state.clientName = payload.clientName;
       state.portalUrl = payload.portalUrl;
       state.maxQueryParameters = payload.maxQueryParameters;
+      state.translated = payload.translated;
       state.isFetchingConfig = false;
     },
     [makeGetConfigRequest.rejected]: (state) => {
