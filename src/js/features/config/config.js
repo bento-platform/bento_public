@@ -15,7 +15,7 @@ const initialState = {
   clientName: '',
   portalUrl: '',
   maxQueryParameters: 0,
-  translated: true,
+  translated: false,
 };
 
 const config = createSlice({
