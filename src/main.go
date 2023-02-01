@@ -21,7 +21,7 @@ const ConfigLogTemplate = `Config --
 	Maximum no. Query Parameters: %d
 	Bento Portal Url: %s
 	Port: %d
-
+    translated: %b
 `
 
 type BentoConfig struct {
@@ -32,7 +32,7 @@ type BentoConfig struct {
 	MaxQueryParameters int    `envconfig:"BENTO_PUBLIC_MAX_QUERY_PARAMETERS"`
 	BentoPortalUrl     string `envconfig:"BENTO_PUBLIC_PORTAL_URL"`
 	Port               int    `envconfig:"INTERNAL_PORT" default:"8090"`
-	translated         bool   `envconfig:"TRANSLATED" default:"true"`
+	Translated         bool   `envconfig:"TRANSLATED" default:"true"`
 }
 
 type QueryParameter struct {
@@ -83,6 +83,7 @@ func main() {
 		cfg.MaxQueryParameters,
 		cfg.BentoPortalUrl,
 		cfg.Port,
+		cfg.Translated,
 	)
 
 	// Begin Echo
@@ -143,7 +144,7 @@ func main() {
 			"clientName":         cfg.ClientName,
 			"maxQueryParameters": cfg.MaxQueryParameters,
 			"portalUrl":          cfg.BentoPortalUrl,
-			"translated":         cfg.translated,
+			"translated":         cfg.Translated,
 		})
 	})
 
