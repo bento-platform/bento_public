@@ -4,9 +4,10 @@ import { Button, Layout, Row, Col, Typography, Space } from 'antd';
 const { Header } = Layout;
 import i18n from 'i18next';
 import { useTranslation } from 'react-i18next';
+import { DEFAULT_TRANSLATION } from '../constants/configConstants';
 
 const SiteHeader = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(DEFAULT_TRANSLATION);
 
   const clientName = useSelector((state) => state.config.clientName);
   const translated = useSelector((state) => state.config.translated);
