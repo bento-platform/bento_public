@@ -132,7 +132,7 @@ func main() {
 			},
 			"contactUrl": "mailto:info@c3g.ca",
 			"bento": map[string]interface{}{
-				"serviceKind": "bento",
+				"serviceKind": "public",
 			},
 		})
 	})
