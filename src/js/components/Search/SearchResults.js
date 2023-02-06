@@ -10,9 +10,10 @@ import CustomEmpty from '../Util/CustomEmpty';
 import ExpSvg from '../Util/ExpSvg';
 
 import { CHART_HEIGHT, COUNTS_FILL } from '../../constants/overviewConstants';
+import { DEFAULT_TRANSLATION } from '../../constants/configConstants';
 
 const SearchResults = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(DEFAULT_TRANSLATION);
 
   const { status, count, message } = useSelector((state) => state.query.queryResponseData);
   const isFetchingData = useSelector((state) => state.query.isFetchingData);

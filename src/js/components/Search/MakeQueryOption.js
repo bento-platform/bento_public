@@ -8,9 +8,10 @@ import { removeQueryParam } from '../../features/search/query';
 import SelectOption from './SelectOption';
 
 import { makeGetKatsuPublic } from '../../features/search/query';
+import { ANY_TRANSLATION } from '../../constants/configConstants';
 
 const MakeQueryOption = ({ queryField }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(ANY_TRANSLATION);
   const dispatch = useDispatch();
 
   const { title, id, description, config, options } = queryField;
@@ -44,7 +45,7 @@ const MakeQueryOption = ({ queryField }) => {
           />
         </Col>
         <Col span={10}>
-          <SelectOption id={id} options={options} isChecked={checked} optionalDispatch={makeGetKatsuPublic}/>
+          <SelectOption id={id} options={options} isChecked={checked} optionalDispatch={makeGetKatsuPublic} />
         </Col>
       </Row>
     </>
