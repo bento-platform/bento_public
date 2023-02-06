@@ -9,13 +9,14 @@ import SpatialCoverageTable from './Tables/SpatialCoverageTable';
 import ExtraPropertiesTable from './Tables/ExtraPropertiesTable';
 import PublicationsTable from './Tables/PublicationsTable';
 import CreatedByTable from './Tables/CreatedByTable';
+import { ANY_TRANSLATION } from '../../constants/configConstants';
 
 const { Item } = Descriptions;
 const { Text, Title } = Typography;
 const { Meta } = Card;
 
 const DatasetProvenance = ({ metadata, loading }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(ANY_TRANSLATION);
 
   return (
     <div style={{ paddingBottom: '40px' }}>
