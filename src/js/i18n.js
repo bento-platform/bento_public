@@ -17,7 +17,7 @@ i18n
     supportedLngs: ['en', 'fr'],
     load: 'all',
 
-    debug: true,
+    debug: false,
     backend: {
       loadPath: '/public/locales/{{lng}}/{{ns}}_{{lng}}.json',
     },
