@@ -6,6 +6,7 @@ import { BiDna } from 'react-icons/bi';
 import { useTranslation } from 'react-i18next';
 
 import ExpSvg from '../Util/ExpSvg';
+import { COUNTS_FILL } from '../../constants/overviewConstants';
 
 const Counts = () => {
   const { t } = useTranslation();
@@ -34,7 +35,7 @@ const Counts = () => {
       <Space direction="horizontal">
         {data.map(({ title, icon, count }, i) => (
           <Card key={i}>
-            <Statistic title={t(title)} value={count} valueStyle={{ color: '#75787a' }} prefix={icon} />
+            <Statistic title={t(title)} value={count} valueStyle={{ color: COUNTS_FILL }} prefix={icon} />
           </Card>
         ))}
       </Space>
