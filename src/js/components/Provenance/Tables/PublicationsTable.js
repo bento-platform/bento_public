@@ -1,49 +1,58 @@
 import React from 'react';
 import { Table, Tag, Typography } from 'antd';
+import { useTranslation } from 'react-i18next';
+
 import LinkIfUrl from '../../Util/LinkIfUrl';
 
 const PublicationsTable = ({ publications }) => {
+  const { t } = useTranslation();
+
   return (
     <Table
       dataSource={publications}
       columns={[
         {
-          title: 'Title',
+          title: t('Title'),
           dataIndex: 'title',
           key: 'title',
           render: (_, { title, identifier }) =>
             identifier.identifier === '' ? (
-              title
+              t(title)
             ) : (
               <Typography.Link href={`https://dx.doi.org/${identifier.identifier}`} target="_blank">
-                {title}
+                {t(title)}
               </Typography.Link>
             ),
         },
-        { title: 'Publication Venue', dataIndex: 'publicationVenue', key: 'publicationVenue' },
         {
-          title: 'Authors',
+          title: t('Publication Venue'),
+          dataIndex: 'publicationVenue',
+          key: 'publicationVenue',
+          render: (text) => t(text),
+        },
+        {
+          title: t('Authors'),
           dataIndex: 'authors',
           key: 'authors',
-          render: (_, { authors }) => authors.map((author) => <Tag color="cyan">{author}</Tag>),
+          render: (_, { authors }) => authors.map((author, i) => <Tag key={i} color="cyan">{author}</Tag>),
         },
         {
-          title: 'Dates',
+          title: t('Dates'),
           dataIndex: 'dates',
           key: 'dates',
-          render: (_, { dates }) => dates.map((date) => <Tag color="cyan">{date}</Tag>),
+          render: (_, { dates }) => dates.map((date, i) => <Tag key={i} color="cyan">{date}</Tag>),
         },
         {
-          title: 'Identifier',
+          title: t('Identifier'),
           dataIndex: 'identifier.identifier',
           key: 'identifier.identifier',
           render: (_, { identifier }) => <LinkIfUrl text={identifier.identifier} />,
         },
         {
-          title: 'Identifier Source',
+          title: t('Identifier Source'),
           dataIndex: 'identifier.identifierSource',
           key: 'identifier.identifierSource',
-          render: (_, { identifier }) => identifier.identifierSource,
+          render: (_, { identifier }) => t(identifier.identifierSource),
         },
       ]}
       pagination={false}

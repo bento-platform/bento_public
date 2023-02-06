@@ -1,13 +1,16 @@
 import React from 'react';
-import { Tree } from 'antd';
-
 import { useDispatch } from 'react-redux';
+
+import { Tree } from 'antd';
+import { useTranslation } from 'react-i18next';
+
 import { rearrange, setDisplayedCharts } from '../../../features/data/data';
 
 const ChartTree = ({ charts, section }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
-  const allCharts = charts.map(({ title, id }) => ({ title, key: id }));
+  const allCharts = charts.map(({ title, id }) => ({ title: t(title), key: id }));
 
   const onChartDrop = (info) => {
     const originalLocation = parseInt(info.dragNode.pos.substring(2));

@@ -1,15 +1,19 @@
 import React from 'react';
 import { Table, Tag } from 'antd';
+import { useTranslation } from 'react-i18next';
+
 import LinkIfUrl from '../../Util/LinkIfUrl';
 
 const ExtraPropertiesTable = ({ extraProperties }) => {
+  const { t } = useTranslation();
+
   return (
     <Table
       dataSource={extraProperties}
       columns={[
-        { title: 'Category', dataIndex: 'category', key: 'category' },
+        { title: t('Category'), dataIndex: 'category', key: 'category', render: (text) => t(text) },
         {
-          title: 'Values',
+          title: t('Values'),
           dataIndex: 'values',
           key: 'values',
           render: (_, { values }) =>

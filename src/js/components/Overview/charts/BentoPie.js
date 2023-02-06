@@ -10,6 +10,7 @@ import {
   OTHER_THRESHOLD,
   CHART_MISSING_FILL,
 } from '../../../constants/overviewConstants';
+import { useTranslation } from 'react-i18next';
 
 const RADIAN = Math.PI / 180;
 const chartAspectRatio = 1.4;
@@ -33,11 +34,16 @@ const labelShortName = (name) => {
   return `${name.substring(0, MAX_LABEL_CHARS - 3)}\u2026`;
 };
 
-function BentoPie({ data, height }) {
+function BentoPie({ data, height, sort }) {
+  const { t } = useTranslation();
+
   const [activeIndex, setActiveIndex] = useState(undefined);
 
-  // Changing immutable data to mutable data
-  data = [...data];
+  data = [...data] // Changing immutable data to mutable data
+    .filter((e) => !(e.x === 'missing'))
+    .map((d) => ({ ...d, x: t(d.x) })); // Translating the labels
+
+  if (sort) data.sort((a, b) => a.y - b.y);
 
   // combining sections with less than OTHER_THRESHOLD
   const sum = data.reduce((acc, e) => acc + e.y, 0);
@@ -118,7 +124,7 @@ function BentoPie({ data, height }) {
           {labelShortName(name)}
         </text>
         <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={14} textAnchor={textAnchor} style={countTextStyle}>
-          {`(${payload.value})`}
+          {`(${t(payload.value)})`}
         </text>
       </g>
     );

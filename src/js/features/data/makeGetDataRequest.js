@@ -5,6 +5,7 @@ import { MAX_CHARTS, publicOverviewUrl } from '../../constants/configConstants';
 import { verifyData, saveValue, getValue, convertSequenceAndDisplayData } from '../../utils/localStorage';
 
 import { LOCALSTORAGE_CHARTS_KEY } from '../../constants/overviewConstants';
+import { serializeChartData } from '../../utils/chart';
 
 export const makeGetDataRequest = createAsyncThunk('data/makeGetDataRequest', async () => {
   try {
@@ -15,10 +16,7 @@ export const makeGetDataRequest = createAsyncThunk('data/makeGetDataRequest', as
       isDisplayed: i < MAX_CHARTS,
       name: chart.field,
       ...overviewResponse.fields[chart.field],
-      data: overviewResponse.fields[chart.field].data.map(({ label, value }) => ({
-        x: label,
-        y: value,
-      })),
+      data: serializeChartData(overviewResponse.fields[chart.field].data),
     });
 
     const sectionData = sections.map(({ section_title, charts }) => ({
@@ -40,7 +38,7 @@ export const makeGetDataRequest = createAsyncThunk('data/makeGetDataRequest', as
     convertedData = convertSequenceAndDisplayData(sectionData);
     saveValue(LOCALSTORAGE_CHARTS_KEY, convertedData);
 
-    return { sectionData, individuals: overviewResponse.counts.individuals };
+    return { sectionData, counts: overviewResponse.counts };
   } catch (error) {
     console.error(error);
     throw Error(error);
@@ -53,7 +51,7 @@ export default {
   },
   [makeGetDataRequest.fulfilled]: (state, { payload }) => {
     state.sections = payload.sectionData;
-    state.individuals = payload.individuals;
+    state.counts = payload.counts;
     state.isFetchingData = false;
   },
   [makeGetDataRequest.rejected]: (state) => {
