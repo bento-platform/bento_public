@@ -34,30 +34,10 @@ const TabbedDashboard = () => {
   const isFetchingOverviewData = useSelector((state) => state.data.isFetchingData);
   const isFetchingSearchFields = useSelector((state) => state.query.isFetchingFields);
 
-<<<<<<< HEAD
-  return (
-    <div style={{ paddingLeft: '25px' }}>
-      <Tabs defaultActiveKey="overview" size="large" tabBarStyle={tabBarStyle} centered>
-        <TabPane tab={<TabTitle title="Overview" />} key="overview" size="large">
-          {!isFetchingOverviewData ? <PublicOverview /> : <Loader />}
-        </TabPane>
-        <TabPane tab={<TabTitle title="Search" />} key="search">
-          {!isFetchingSearchFields ? <Search /> : <Loader />}
-        </TabPane>
-        <TabPane tab={<TabTitle title="Beacon" />} key="beacon">
-          <BeaconQueryUi /> 
-        </TabPane>
-        <TabPane tab={<TabTitle title="Provenance" />} key="Provenance">
-          <ProvenanceTab />
-        </TabPane>
-      </Tabs>
-    </div>
-=======
   const TabTitle = ({ title }) => (
     <Title level={4} style={{ margin: '0' }}>
       {title}
     </Title>
->>>>>>> main
   );
 
   const tabPanes = [
