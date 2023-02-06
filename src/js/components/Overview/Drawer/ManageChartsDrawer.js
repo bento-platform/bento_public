@@ -7,8 +7,10 @@ import { useTranslation } from 'react-i18next';
 
 import ChartTree from './ChartTree';
 
+import { ANY_TRANSLATION } from '../../../constants/configConstants';
+
 const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(ANY_TRANSLATION);
 
   const sections = useSelector((state) => state.data.sections);
 
