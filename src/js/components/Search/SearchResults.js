@@ -2,12 +2,12 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Card, Col, Row, Statistic, Typography, Space } from 'antd';
 import { TeamOutlined } from '@ant-design/icons';
-import { AiOutlineExperiment } from 'react-icons/ai';
 import { BiDna } from 'react-icons/bi';
 import { useTranslation } from 'react-i18next';
 
 import BentoPie from '../Overview/charts/BentoPie';
 import CustomEmpty from '../Util/CustomEmpty';
+import ExpSvg from '../Util/ExpSvg';
 
 import { CHART_HEIGHT } from '../../constants/overviewConstants';
 
@@ -32,29 +32,30 @@ const SearchResults = () => {
 
   return (
     <div style={wrapperStyle}>
-      <Card 
+      <Card
         style={{ borderRadius: '10px', padding: '10px 33px', width: '1200px', minHeight: '28rem' }}
-        loading={isFetchingData}>
+        loading={isFetchingData}
+      >
         <Row gutter={16}>
           <Col span={4}>
             <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
               <Statistic
                 title={t('Individuals')}
                 value={isValid ? (status === 'count' ? count : t(message)) : '----'}
-                valueStyle={{ color: '#1890ff' }}
+                valueStyle={{ color: '#75787a' }}
                 prefix={<TeamOutlined />}
               />
               <Statistic
                 title={t('Biosamples')}
                 value={isValid && status === 'count' && biosampleCount ? biosampleCount : '----'}
-                valueStyle={{ color: '#1890ff' }}
+                valueStyle={{ color: '#75787a' }}
                 prefix={<BiDna />}
               />
               <Statistic
                 title={t('Experiments')}
                 value={isValid && status === 'count' && experimentCount ? experimentCount : '----'}
-                valueStyle={{ color: '#1890ff' }}
-                prefix={<AiOutlineExperiment />}
+                valueStyle={{ color: '#75787a' }}
+                prefix={<ExpSvg />}
               />
             </Space>
           </Col>
@@ -63,7 +64,7 @@ const SearchResults = () => {
             {isValid && biosampleChartData && status === 'count' ? (
               <BentoPie data={biosampleChartData} height={CHART_HEIGHT} sort={true} />
             ) : (
-              <CustomEmpty />
+              <CustomEmpty text="No Results" />
             )}
           </Col>
           <Col span={10}>
@@ -71,7 +72,7 @@ const SearchResults = () => {
             {isValid && experimentChartData && status === 'count' ? (
               <BentoPie data={experimentChartData} height={CHART_HEIGHT} sort={true} />
             ) : (
-              <CustomEmpty />
+              <CustomEmpty text="No Results" />
             )}
           </Col>
         </Row>
