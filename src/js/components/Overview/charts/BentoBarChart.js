@@ -9,11 +9,12 @@ import {
   COUNT_STYLE,
   LABEL_STYLE,
 } from '../../../constants/overviewConstants';
+import { ANY_TRANSLATION } from '../../../constants/configConstants';
 
 const ASPECT_RATIO = 1.2;
 const MAX_TICK_LABEL_CHARS = 15;
 const UNITS_LABEL_OFFSET = -75;
-const TICKS_SHOW_ALL_LABELS_BELOW = 11;  // Below this # of X-axis ticks, force-show all labels
+const TICKS_SHOW_ALL_LABELS_BELOW = 11; // Below this # of X-axis ticks, force-show all labels
 
 // vertical spacing between tick line and tick label
 const TICK_MARGIN = 5;
@@ -40,11 +41,11 @@ const tickFormatter = (tickLabel) => {
 const fill = (entry) => (entry.x === 'missing' ? CHART_MISSING_FILL : BAR_CHART_FILL);
 
 const BentoBarChart = ({ title, data, units, height }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(ANY_TRANSLATION);
 
   data = data
-    .filter((e) => !(e.x === 'missing'))  // remove "missing" field if zero
-    .map((d) => ({ ...d, x: t(d.x) }));  // translate label
+    .filter((e) => !(e.x === 'missing')) // remove "missing" field if zero
+    .map((d) => ({ ...d, x: t(d.x) })); // translate label
 
   const totalCount = data.reduce((sum, e) => sum + e.y, 0);
 
@@ -61,11 +62,11 @@ const BentoBarChart = ({ title, data, units, height }) => {
           dataKey="x"
           height={20}
           angle={-45}
-          ticks={data.length ? undefined : [""]}
+          ticks={data.length ? undefined : ['']}
           tickFormatter={tickFormatter}
           tickMargin={TICK_MARGIN}
           textAnchor="end"
-          interval={data.length < TICKS_SHOW_ALL_LABELS_BELOW ? 0 : "preserveStartEnd"}
+          interval={data.length < TICKS_SHOW_ALL_LABELS_BELOW ? 0 : 'preserveStartEnd'}
         >
           <Label value={t(units)} offset={UNITS_LABEL_OFFSET} position="insideBottom" />
         </XAxis>

@@ -11,6 +11,7 @@ import {
   CHART_MISSING_FILL,
 } from '../../../constants/overviewConstants';
 import { useTranslation } from 'react-i18next';
+import { ANY_TRANSLATION } from '../../../constants/configConstants';
 
 const RADIAN = Math.PI / 180;
 const chartAspectRatio = 1.4;
@@ -35,7 +36,7 @@ const labelShortName = (name) => {
 };
 
 function BentoPie({ data, height, sort }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(ANY_TRANSLATION);
 
   const [activeIndex, setActiveIndex] = useState(undefined);
 
