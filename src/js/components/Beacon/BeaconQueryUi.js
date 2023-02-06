@@ -4,9 +4,7 @@ import { Input, Form, Button, Select } from 'antd';
 import FilterFormItem from './FilterFormItem';
 import { makeBeaconQuery } from '../../features/beacon/beaconQuery';
 import BeaconQueryResults from './BeaconQueryResults';
-import BottomPanels from './BottomPanels';
-// import beacon_logo from '../../../assets/beacon_logo_t.png'
-// import bqc19_logo from '../../../assets/bqc19_logo_blue.png'
+
 
 
 // TODO
@@ -270,14 +268,9 @@ const BeaconQueryUi = () => {
           </Form>
         </div>
         <div style={resultsStyle}>
-        {/* <div style={imagesStyle}>
-          <img style={{ height: '120px' }} src={bqc19_logo} alt="BQC19 logo" />
-          <img style={{ height: '60px' }} src={beacon_logo} alt="Beacon logo" />
-        </div> */}
         <BeaconQueryResults countResponse={countResponse} />
         </div>
       </div>
-      <BottomPanels setQueryValues={setQueryValues} beaconResponse={response} />
     </div>
   );
 };

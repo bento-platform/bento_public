@@ -54,6 +54,12 @@ const TabbedDashboard = () => {
       key: 'search',
     },
     {
+      title: 'Beacon',
+      content: <BeaconQueryUi />,
+      loading: isFetchingSearchFields,
+      key: 'beacon',
+    },
+    {
       title: 'Provenance',
       content: <ProvenanceTab />,
       loading: false,
