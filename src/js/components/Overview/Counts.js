@@ -7,9 +7,10 @@ import { useTranslation } from 'react-i18next';
 
 import ExpSvg from '../Util/ExpSvg';
 import { COUNTS_FILL } from '../../constants/overviewConstants';
+import { DEFAULT_TRANSLATION } from '../../constants/configConstants';
 
 const Counts = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(DEFAULT_TRANSLATION);
 
   const data = [
     {

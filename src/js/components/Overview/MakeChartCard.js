@@ -4,11 +4,12 @@ import { Card, Button, Tooltip, Space, Typography, Row } from 'antd';
 import { CloseOutlined, TeamOutlined, QuestionOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import CustomEmpty from '../Util/CustomEmpty';
+import { ANY_TRANSLATION } from '../../constants/configConstants';
 
 const CARD_STYLE = { width: '430px', height: '415px', margin: '5px 0', borderRadius: '11px' };
 
 const MakeChartCard = ({ section, chart, onRemoveChart }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(ANY_TRANSLATION);
 
   const { name, title, data, chartType, config, id, description } = chart;
 
