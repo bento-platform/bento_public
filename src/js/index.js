@@ -7,8 +7,6 @@ import { store } from './store';
 import { Layout } from 'antd';
 const { Content } = Layout;
 import '../styles.css';
-import '../public/locales/en/translation.js';
-import '../public/locales/fr/translation.js';
 
 import './i18n';
 import SiteFooter from './components/SiteFooter';
