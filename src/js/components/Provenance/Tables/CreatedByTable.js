@@ -1,9 +1,10 @@
 import React from 'react';
 import { Table, Tag } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { ANY_TRANSLATION } from '../../../constants/configConstants';
 
 const CreatedByTable = ({ creators }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(ANY_TRANSLATION);
 
   return (
     <Table

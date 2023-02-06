@@ -3,9 +3,10 @@ import { Table, Tag } from 'antd';
 import { useTranslation } from 'react-i18next';
 
 import LinkIfUrl from '../../Util/LinkIfUrl';
+import { ANY_TRANSLATION } from '../../../constants/configConstants';
 
 const IsAboutTable = ({ isAbout }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(ANY_TRANSLATION);
 
   return (
     <Table
