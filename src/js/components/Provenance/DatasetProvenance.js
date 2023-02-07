@@ -9,14 +9,15 @@ import SpatialCoverageTable from './Tables/SpatialCoverageTable';
 import ExtraPropertiesTable from './Tables/ExtraPropertiesTable';
 import PublicationsTable from './Tables/PublicationsTable';
 import CreatedByTable from './Tables/CreatedByTable';
-import { ANY_TRANSLATION } from '../../constants/configConstants';
+import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '../../constants/configConstants';
 
 const { Item } = Descriptions;
 const { Text, Title } = Typography;
 const { Meta } = Card;
 
 const DatasetProvenance = ({ metadata, loading }) => {
-  const { t } = useTranslation(ANY_TRANSLATION);
+  const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
+  const { t: td } = useTranslation(DEFAULT_TRANSLATION);
 
   return (
     <div style={{ paddingBottom: '40px' }}>
@@ -36,12 +37,12 @@ const DatasetProvenance = ({ metadata, loading }) => {
         {/* --- CREATOR, PRIVACY, LICENSES, KEYWORD ---*/}
         <Descriptions style={{ paddingTop: '20px' }}>
           {metadata.privacy && (
-            <Item span={12} label={<DescriptionTitle title={t('Privacy')} />}>
+            <Item span={12} label={<DescriptionTitle title={td('Privacy')} />}>
               {t(metadata.privacy)}
             </Item>
           )}
           {metadata.licenses.length && (
-            <Item span={12} label={<DescriptionTitle title={t('Licenses')} />}>
+            <Item span={12} label={<DescriptionTitle title={td('Licenses')} />}>
               {metadata.licenses.map((l, i) => (
                 <Tag key={i} color="cyan">
                   {t(l.name)}
@@ -50,7 +51,7 @@ const DatasetProvenance = ({ metadata, loading }) => {
             </Item>
           )}
           {metadata.keywords.length && (
-            <Item span={24} label={<DescriptionTitle title={t('Keywords')} />}>
+            <Item span={24} label={<DescriptionTitle title={td('Keywords')} />}>
               {metadata.keywords.map((keyword, i) => (
                 <Tag key={i} color="cyan">
                   {t(keyword.value)}
@@ -96,7 +97,7 @@ const DatasetProvenance = ({ metadata, loading }) => {
 export default DatasetProvenance;
 
 const TableTitleWitTranslation = ({ title }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(DEFAULT_TRANSLATION);
 
   return (
     <Title level={4} style={{ paddingTop: '20px' }}>

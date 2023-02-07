@@ -8,4 +8,3 @@ export const provenanceUrl = '/provenance';
 
 export const DEFAULT_TRANSLATION = 'default_translation';
 export const NON_DEFAULT_TRANSLATION = 'translation';
-export const ANY_TRANSLATION = [DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION];

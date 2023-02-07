@@ -8,10 +8,11 @@ import { removeQueryParam } from '../../features/search/query';
 import SelectOption from './SelectOption';
 
 import { makeGetKatsuPublic } from '../../features/search/query';
-import { ANY_TRANSLATION } from '../../constants/configConstants';
+import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '../../constants/configConstants';
 
 const MakeQueryOption = ({ queryField }) => {
-  const { t } = useTranslation(ANY_TRANSLATION);
+  const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
+  const { t: td } = useTranslation(DEFAULT_TRANSLATION);
   const dispatch = useDispatch();
 
   const { title, id, description, config, options } = queryField;
@@ -41,7 +42,7 @@ const MakeQueryOption = ({ queryField }) => {
         <Col span={7}>{t(title)}</Col>
         <Col span={2}>
           <OptionDescription
-            description={`${t(description)} ${config?.units ? '(' + t('in') + ' ' + t(config.units) + ')' : ''}`}
+            description={`${t(description)} ${config?.units ? '(' + td('in') + ' ' + t(config.units) + ')' : ''}`}
           />
         </Col>
         <Col span={10}>

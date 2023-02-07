@@ -1,17 +1,18 @@
 import React from 'react';
 import { Table } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { ANY_TRANSLATION } from '../../../constants/configConstants';
+import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '../../../constants/configConstants';
 
 const SpatialCoverageTable = ({ spatialCoverage }) => {
-  const { t } = useTranslation(ANY_TRANSLATION);
+  const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
+  const { t: td } = useTranslation(DEFAULT_TRANSLATION);
 
   return (
     <Table
       dataSource={spatialCoverage}
       columns={[
-        { title: t('Name'), dataIndex: 'name', key: 'name', render: (text) => t(text) },
-        { title: t('Description'), dataIndex: 'description', key: 'description', render: (text) => t(text) },
+        { title: td('Name'), dataIndex: 'name', key: 'name', render: (text) => t(text) },
+        { title: td('Description'), dataIndex: 'description', key: 'description', render: (text) => t(text) },
       ]}
       pagination={false}
     />

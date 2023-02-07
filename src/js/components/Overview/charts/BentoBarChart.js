@@ -9,7 +9,7 @@ import {
   COUNT_STYLE,
   LABEL_STYLE,
 } from '../../../constants/overviewConstants';
-import { ANY_TRANSLATION } from '../../../constants/configConstants';
+import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '../../../constants/configConstants';
 
 const ASPECT_RATIO = 1.2;
 const MAX_TICK_LABEL_CHARS = 15;
@@ -41,7 +41,8 @@ const tickFormatter = (tickLabel) => {
 const fill = (entry) => (entry.x === 'missing' ? CHART_MISSING_FILL : BAR_CHART_FILL);
 
 const BentoBarChart = ({ title, data, units, height }) => {
-  const { t } = useTranslation(ANY_TRANSLATION);
+  const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
+  const { t: td } = useTranslation(DEFAULT_TRANSLATION);
 
   data = data
     .filter((e) => !(e.x === 'missing')) // remove "missing" field if zero
@@ -71,7 +72,7 @@ const BentoBarChart = ({ title, data, units, height }) => {
           <Label value={t(units)} offset={UNITS_LABEL_OFFSET} position="insideBottom" />
         </XAxis>
         <YAxis>
-          <Label value={t('Count')} offset={-10} position="left" angle={270} />
+          <Label value={td('Count')} offset={-10} position="left" angle={270} />
         </YAxis>
         <Tooltip content={<BarTooltip totalCount={totalCount} />} />
         <Bar dataKey="y" isAnimationActive={false}>
@@ -85,7 +86,7 @@ const BentoBarChart = ({ title, data, units, height }) => {
 };
 
 function BarTooltip({ active, payload, totalCount }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
 
   if (!active) {
     return null;

@@ -11,7 +11,7 @@ import {
   CHART_MISSING_FILL,
 } from '../../../constants/overviewConstants';
 import { useTranslation } from 'react-i18next';
-import { ANY_TRANSLATION } from '../../../constants/configConstants';
+import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '../../../constants/configConstants';
 
 const RADIAN = Math.PI / 180;
 const chartAspectRatio = 1.4;
@@ -36,7 +36,8 @@ const labelShortName = (name) => {
 };
 
 function BentoPie({ data, height, sort }) {
-  const { t } = useTranslation(ANY_TRANSLATION);
+  const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
+  const { t: td } = useTranslation(DEFAULT_TRANSLATION);
 
   const [activeIndex, setActiveIndex] = useState(undefined);
 
@@ -54,7 +55,7 @@ function BentoPie({ data, height, sort }) {
   // length - 1 intentional: if there is just one category bellow threshold the "Other" category is not necessary
   data = temp.length === length - 1 ? data : temp;
   if (data.length !== length) {
-    data.push({ x: 'Other', y: sum - data.reduce((acc, e) => acc + e.y, 0) });
+    data.push({ x: td('Other'), y: sum - data.reduce((acc, e) => acc + e.y, 0) });
   }
 
   const bentoFormatData = data.map((e) => ({ name: e.x, value: e.y }));

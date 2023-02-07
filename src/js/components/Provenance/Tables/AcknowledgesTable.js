@@ -3,23 +3,24 @@ import { Table, Tag } from 'antd';
 import { useTranslation } from 'react-i18next';
 
 import LinkIfUrl from '../../Util/LinkIfUrl';
-import { ANY_TRANSLATION } from '../../../constants/configConstants';
+import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '../../../constants/configConstants';
 
 const AcknowledgesTable = ({ acknowledges }) => {
-  const { t } = useTranslation(ANY_TRANSLATION);
+  const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
+  const { t: td } = useTranslation(DEFAULT_TRANSLATION);
 
   return (
     <Table
       dataSource={acknowledges}
       columns={[
         {
-          title: t('Name'),
+          title: td('Name'),
           dataIndex: 'name',
           key: 'name',
           render: (text) => t(text),
         },
         {
-          title: t('Funders'),
+          title: td('Funders'),
           dataIndex: 'funders',
           key: 'funders',
           render: (_, { funders }) =>

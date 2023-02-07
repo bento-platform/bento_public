@@ -4,12 +4,13 @@ import { Card, Button, Tooltip, Space, Typography, Row } from 'antd';
 import { CloseOutlined, TeamOutlined, QuestionOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import CustomEmpty from '../Util/CustomEmpty';
-import { ANY_TRANSLATION } from '../../constants/configConstants';
+import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '../../constants/configConstants';
 
 const CARD_STYLE = { width: '430px', height: '415px', margin: '5px 0', borderRadius: '11px' };
 
 const MakeChartCard = ({ section, chart, onRemoveChart }) => {
-  const { t } = useTranslation(ANY_TRANSLATION);
+  const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
+  const { t: td } = useTranslation(DEFAULT_TRANSLATION);
 
   const { name, title, data, chartType, config, id, description } = chart;
 
@@ -36,7 +37,7 @@ const MakeChartCard = ({ section, chart, onRemoveChart }) => {
   if (missingCount)
     ed.push(
       <Typography.Text key={0} type="secondary" italic>
-        <TeamOutlined /> {missingCount} {t('missing')}
+        <TeamOutlined /> {missingCount} {td('missing')}
       </Typography.Text>
     );
 

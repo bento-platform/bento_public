@@ -7,15 +7,16 @@ import { useTranslation } from 'react-i18next';
 
 import ChartTree from './ChartTree';
 
-import { ANY_TRANSLATION } from '../../../constants/configConstants';
+import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '../../../constants/configConstants';
 
 const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }) => {
-  const { t } = useTranslation(ANY_TRANSLATION);
+  const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
+  const { t: td } = useTranslation(DEFAULT_TRANSLATION);
 
   const sections = useSelector((state) => state.data.sections);
 
   return (
-    <Drawer title={t('Manage Charts')} placement="right" onClose={onManageDrawerClose} open={manageDrawerVisible}>
+    <Drawer title={td('Manage Charts')} placement="right" onClose={onManageDrawerClose} open={manageDrawerVisible}>
       {sections.map(({ sectionTitle, charts }, i) => (
         <div key={i}>
           <Title level={5}>{t(sectionTitle)}</Title>

@@ -1,29 +1,30 @@
 import React from 'react';
 import { Table, Tag } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { ANY_TRANSLATION } from '../../../constants/configConstants';
+import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '../../../constants/configConstants';
 
 const CreatedByTable = ({ creators }) => {
-  const { t } = useTranslation(ANY_TRANSLATION);
+  const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
+  const { t: td } = useTranslation(DEFAULT_TRANSLATION);
 
   return (
     <Table
       dataSource={creators}
       columns={[
         {
-          title: t('Name'),
+          title: td('Name'),
           dataIndex: 'name',
           key: 'name',
           render: (text) => t(text),
         },
         {
-          title: t('Abbreviation'),
+          title: td('Abbreviation'),
           dataIndex: 'abbreviation',
           key: 'abbreviation',
           render: (text) => t(text),
         },
         {
-          title: t('Roles'),
+          title: td('Roles'),
           dataIndex: 'roles',
           key: 'roles',
           render: (_, { roles }) =>
