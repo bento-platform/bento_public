@@ -9,10 +9,11 @@ import BentoPie from '../Overview/charts/BentoPie';
 import CustomEmpty from '../Util/CustomEmpty';
 import ExpSvg from '../Util/ExpSvg';
 
-import { CHART_HEIGHT } from '../../constants/overviewConstants';
+import { CHART_HEIGHT, COUNTS_FILL } from '../../constants/overviewConstants';
+import { DEFAULT_TRANSLATION } from '../../constants/configConstants';
 
 const SearchResults = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(DEFAULT_TRANSLATION);
 
   const { status, count, message } = useSelector((state) => state.query.queryResponseData);
   const isFetchingData = useSelector((state) => state.query.isFetchingData);
@@ -42,19 +43,19 @@ const SearchResults = () => {
               <Statistic
                 title={t('Individuals')}
                 value={isValid ? (status === 'count' ? count : t(message)) : '----'}
-                valueStyle={{ color: '#75787a' }}
+                valueStyle={{ color: COUNTS_FILL }}
                 prefix={<TeamOutlined />}
               />
               <Statistic
                 title={t('Biosamples')}
                 value={isValid && status === 'count' && biosampleCount ? biosampleCount : '----'}
-                valueStyle={{ color: '#75787a' }}
+                valueStyle={{ color: COUNTS_FILL }}
                 prefix={<BiDna />}
               />
               <Statistic
                 title={t('Experiments')}
                 value={isValid && status === 'count' && experimentCount ? experimentCount : '----'}
-                valueStyle={{ color: '#75787a' }}
+                valueStyle={{ color: COUNTS_FILL }}
                 prefix={<ExpSvg />}
               />
             </Space>

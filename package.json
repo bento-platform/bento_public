@@ -24,6 +24,7 @@
     "dotenv": "^16.0.1",
     "i18next": "^21.10.0",
     "i18next-browser-languagedetector": "^6.1.8",
+    "i18next-http-backend": "^2.1.1",
     "less": "^4.1.1",
     "less-loader": "7.3.0",
     "mini-css-extract-plugin": "^2.4.5",

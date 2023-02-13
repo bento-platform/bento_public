@@ -1,17 +1,19 @@
 import React from 'react';
 import { Table, Tag, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '../../../constants/configConstants';
 const { Link } = Typography;
 
 const DistributionsTable = ({ distributions }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
+  const { t: td } = useTranslation(DEFAULT_TRANSLATION);
 
   return (
     <Table
       dataSource={distributions}
       columns={[
         {
-          title: t('Formats'),
+          title: td('Formats'),
           dataIndex: 'formats',
           key: 'formats',
           render: (_, { formats }) => (
@@ -21,22 +23,22 @@ const DistributionsTable = ({ distributions }) => {
           ),
         },
         {
-          title: t('Size'),
+          title: td('Size'),
           dataIndex: 'size',
           key: 'size',
           render: (text) => t(text),
         },
         {
-          title: t('Unit'),
+          title: td('Unit'),
           dataIndex: 'unit',
           key: 'unit',
           render: (_, { unit }) => t(unit.value),
         },
         {
-          title: t('Access'),
+          title: td('Access'),
           children: [
             {
-              title: t('Landing Page'),
+              title: td('Landing Page'),
               dataIndex: 'access.landingPage',
               key: 'access.landingPage',
               render: (_, { access }) => (
@@ -46,7 +48,7 @@ const DistributionsTable = ({ distributions }) => {
               ),
             },
             {
-              title: t('Authorizations'),
+              title: td('Authorizations'),
               dataIndex: 'access.authorizations',
               key: 'access.authorizations',
               render: (_, { access }) =>

@@ -5,10 +5,11 @@ import { Tree } from 'antd';
 import { useTranslation } from 'react-i18next';
 
 import { rearrange, setDisplayedCharts } from '../../../features/data/data';
+import { NON_DEFAULT_TRANSLATION } from '../../../constants/configConstants';
 
 const ChartTree = ({ charts, section }) => {
   const dispatch = useDispatch();
-  const { t } = useTranslation();
+  const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
 
   const allCharts = charts.map(({ title, id }) => ({ title: t(title), key: id }));
 
