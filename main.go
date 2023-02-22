@@ -26,7 +26,7 @@ const ConfigLogTemplate = `Config --
 
 type BentoConfig struct {
 	ServiceId          string `envconfig:"BENTO_PUBLIC_SERVICE_ID"`
-	PackageJsonPath    string `envconfig:"BENTO_PUBLIC_PACKAGE_JSON_PATH" default:"../package.json"`
+	PackageJsonPath    string `envconfig:"BENTO_PUBLIC_PACKAGE_JSON_PATH" default:"./package.json"`
 	ClientName         string `envconfig:"BENTO_PUBLIC_CLIENT_NAME"`
 	KatsuUrl           string `envconfig:"BENTO_PUBLIC_KATSU_URL"`
 	MaxQueryParameters int    `envconfig:"BENTO_PUBLIC_MAX_QUERY_PARAMETERS"`
