@@ -31,7 +31,8 @@ RUN ls -lah
 FROM alpine:3.16
 
 RUN apk update && \
-    apk upgrade
+    apk upgrade && \
+    apk add bash
 
 RUN mkdir -p /runner/www
 
@@ -39,10 +40,11 @@ COPY --from=nodebuilder /node/build/www /runner/www
 COPY --from=nodebuilder /node/package.json /runner/package.json
 
 # Server
-COPY --from=gobuilder /build/src/reactapp /runner
+COPY --from=gobuilder /build/src/reactapp /runner/reactapp
 
 ENV BENTO_PUBLIC_PACKAGE_JSON_PATH=/runner/package.json
 
-
 WORKDIR /runner
-ENTRYPOINT [ "./reactapp" ]
+
+ENTRYPOINT [ "/bin/bash", "./entrypoint.bash" ]
+CMD [ "./reactapp" ]

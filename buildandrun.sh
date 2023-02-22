@@ -8,7 +8,7 @@ mkdir -p build/www
 cp server.env build/.env
 
 # go to src directory and build go binary
-cd src
+cd src || exit
 go build -o ../build/reactapp
 
 # build react bundle.js
@@ -16,7 +16,7 @@ cd ../
 npm run build-dev
 
 # start go http server
-cd build
+cd build || exit
 
 # - load (export) .env
 set -a
