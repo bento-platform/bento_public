@@ -19,8 +19,7 @@ RUN apk update && \
 RUN mkdir /build
 COPY . /build
 WORKDIR /build/src
-RUN export GO111MODULE=off && \
-    export GOPATH=/go && \
+RUN export GOPATH=/go && \
     export GOBIN=$GOPATH/bin && \
     go get . && \
     go build -o ./reactapp

@@ -16,6 +16,7 @@ import (
 const ConfigLogTemplate = `Config --
 	Service ID: %s
 	package.json: %s
+	Static Files: %s
 	Client Name: %s
 	Katsu URL: %v
 	Maximum no. Query Parameters: %d
@@ -27,6 +28,7 @@ const ConfigLogTemplate = `Config --
 type BentoConfig struct {
 	ServiceId          string `envconfig:"BENTO_PUBLIC_SERVICE_ID"`
 	PackageJsonPath    string `envconfig:"BENTO_PUBLIC_PACKAGE_JSON_PATH" default:"./package.json"`
+	StaticFilesPath    string `envconfig:"BENTO_PUBLIC_STATIC_FILES_PATH" default:"./www"`
 	ClientName         string `envconfig:"BENTO_PUBLIC_CLIENT_NAME"`
 	KatsuUrl           string `envconfig:"BENTO_PUBLIC_KATSU_URL"`
 	MaxQueryParameters int    `envconfig:"BENTO_PUBLIC_MAX_QUERY_PARAMETERS"`
@@ -78,6 +80,7 @@ func main() {
 		ConfigLogTemplate,
 		cfg.ServiceId,
 		cfg.PackageJsonPath,
+		cfg.StaticFilesPath,
 		cfg.ClientName,
 		cfg.KatsuUrl,
 		cfg.MaxQueryParameters,
@@ -113,7 +116,7 @@ func main() {
 
 	// Begin MVC Routes
 	// -- Root : static files
-	e.Use(middleware.Static("./www"))
+	e.Use(middleware.Static(cfg.StaticFilesPath))
 
 	// -- GA4GH-compatible service information response
 	e.GET("/service-info", func(c echo.Context) error {
