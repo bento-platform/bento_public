@@ -199,7 +199,7 @@ func main() {
 			})
 		}
 		defer resp.Body.Close()
-		// Read response body and convert to a generic JSON-like datastructure
+		// Read response body and convert to a generic JSON-like data structure
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			fmt.Println(err)
