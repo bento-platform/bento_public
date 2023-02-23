@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM node:18-alpine3.16 as nodebuilder
+FROM --platform=$BUILDPLATFORM node:18-alpine3.17 as nodebuilder
 
 RUN mkdir /node
 COPY . /node
@@ -10,7 +10,7 @@ RUN mkdir -p build/www
 RUN npm run build-dev
 
 
-FROM golang:1.20-bullseye as gobuilder
+FROM golang:1.19-bullseye as gobuilder
 
 RUN apt-get update -y && \
     apt-get upgrade -y && \
@@ -25,22 +25,17 @@ RUN ls -lah
 
 FROM ghcr.io/bento-platform/bento_base_image:plain-debian-2023.02.23
 
-RUN apt-get update -y && \
-    apt-get upgrade -y && \
-    apt-get install -y bash gosu && \
-    rm -rf /var/lib/apt/lists/*
+RUN mkdir -p /bento-public/www
 
-RUN mkdir -p /runner/www
-
-COPY --from=nodebuilder /node/build/www /runner/www
-COPY --from=nodebuilder /node/package.json /runner/package.json
+COPY --from=nodebuilder /node/build/www /bento-public/www
+COPY --from=nodebuilder /node/package.json /bento-public/package.json
 
 # Server
-COPY --from=gobuilder /build/reactapp /runner/reactapp
+COPY --from=gobuilder /build/reactapp /bento-public/reactapp
 
-ENV BENTO_PUBLIC_PACKAGE_JSON_PATH=/runner/package.json
+ENV BENTO_PUBLIC_PACKAGE_JSON_PATH=/bento-public/package.json
 
-WORKDIR /runner
+WORKDIR /bento-public
 
 COPY entrypoint.bash .
 
