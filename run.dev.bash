@@ -8,7 +8,7 @@ ls -la
 npm install
 
 # Run nodemon as a watcher to recompile Go
-npx nodemon
+npx nodemon main.go
 
 # Run webpack watch to recompile JS files
 npm run watch &

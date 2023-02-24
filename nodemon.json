@@ -1,6 +1,7 @@
 {
   "events": {
-    "restart": "PID=$(lsof -t -i :$INTERNAL_PORT | tr '\n' ' '); if [[ -n $PID ]]; then echo \"killing PID(s): $PID\"; kill -KILL $PID 2> /dev/null; fi"
+    "crash": "PID=$(lsof -t -i :$INTERNAL_PORT | tr '\n' ' '); if [ -n $PID ]; then echo \"killing PID(s): $PID\"; kill -KILL $PID 2> /dev/null; fi",
+    "restart": "PID=$(lsof -t -i :$INTERNAL_PORT | tr '\n' ' '); if [ -n $PID ]; then echo \"killing PID(s): $PID\"; kill -KILL $PID 2> /dev/null; fi"
   },
   "execMap": {
     "go": "go run"
@@ -13,5 +14,5 @@
     ".github",
     ".git"
   ],
-  "delay": 0.5
+  "delay": 500
 }
