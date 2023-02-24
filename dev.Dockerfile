@@ -1,13 +1,14 @@
-FROM ghcr.io/bento-platform/bento_base_image:node-debian-2023.02.23
+FROM ghcr.io/bento-platform/bento_base_image:node-debian-2023.02.24
 
 RUN apt-get update -y && apt-get install -y ca-certificates
 
 # Use bullseye-backports to get go 1.19 instead of 1.15
+# Install lsof to help killing the PID binding the port if needed
 RUN echo "deb https://deb.debian.org/debian bullseye-backports main contrib non-free" >> /etc/apt/sources.list &&\
     echo "deb-src https://deb.debian.org/debian bullseye-backports main contrib non-free" >> /etc/apt/sources.list && \
     apt-get update -y && \
     apt-get upgrade -y && \
-    apt-get -t bullseye-backports install -y golang-go && \
+    apt-get -t bullseye-backports install -y golang-go lsof && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /bento-public
@@ -22,6 +23,7 @@ RUN npm ci
 
 COPY entrypoint.bash .
 COPY run.dev.bash .
+COPY nodemon.json .
 
 ENTRYPOINT [ "bash", "./entrypoint.bash" ]
 CMD [ "bash", "./run.dev.bash" ]
