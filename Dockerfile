@@ -23,7 +23,7 @@ RUN go build -o ./reactapp
 RUN ls -lah
 
 
-FROM ghcr.io/bento-platform/bento_base_image:plain-debian-2023.02.24
+FROM ghcr.io/bento-platform/bento_base_image:plain-debian-2023.02.27
 
 RUN mkdir -p /bento-public/www
 
