@@ -81,3 +81,5 @@ export const defaultTranslationObject: TranslationObject = {
     Other: 'Autre',
   },
 };
+
+export const RADIAN = Math.PI / 180;

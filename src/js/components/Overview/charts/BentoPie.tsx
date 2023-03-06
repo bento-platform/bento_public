@@ -6,7 +6,6 @@
 
 import React, { useState } from 'react';
 import { PieChart, Pie, Cell, Curve, Tooltip, Sector } from 'recharts';
-import { polarToCartesian } from 'recharts/types/util/PolarUtils';
 import { Props } from 'recharts/types/polar/Pie';
 type PieProps = Props;
 import CSS from 'csstype';
@@ -18,6 +17,7 @@ import {
   OTHER_THRESHOLD,
   CHART_MISSING_FILL,
   CHART_WRAPPER_STYLE,
+  RADIAN,
 } from './chartConstants';
 import {
   ChartDataItem,
@@ -28,8 +28,8 @@ import {
   UnitaryMapCallback,
 } from './chartTypes';
 import { useChartTheme, useChartTranslation } from './ChartConfigProvider';
+import { polarToCartesian } from './chartUtils';
 
-const RADIAN = Math.PI / 180;
 const chartAspectRatio = 1.4;
 const LABEL_THRESHOLD = 0.05;
 const MAX_LABEL_CHARS = 14;

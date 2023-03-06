@@ -58,7 +58,7 @@ const BentoBarChart = ({
   const t = useChartTranslation();
   const { fill: chartFill, missing } = useChartTheme().bar[theme];
 
-  const fill = (entry: ChartDataItem) => (entry.x === 'missing' ? chartFill : missing);
+  const fill = (entry: ChartDataItem) => (entry.x === 'missing' ? missing : chartFill);
 
   data = [...data];
   if (preFilter) data = data.filter(preFilter);
