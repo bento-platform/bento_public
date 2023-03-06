@@ -10,6 +10,7 @@ import '../styles.css';
 
 import './i18n';
 import SiteFooter from './components/SiteFooter';
+import { ChartConfigProvider } from './components/Overview/charts/ChartConfigProvider';
 
 const BentoApp = () => {
   return (
@@ -27,7 +28,9 @@ const rootElement = document.getElementById('root');
 
 ReactDOM.render(
   <Provider store={store}>
-    <BentoApp />
+    <ChartConfigProvider>
+      <BentoApp />
+    </ChartConfigProvider>
   </Provider>,
   rootElement
 );

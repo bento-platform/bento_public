@@ -1,9 +1,9 @@
 import React from 'react';
-import { chartTypes } from '../../../constants/overviewConstants';
-import BentoBarChart from './BentoBarChart';
-import BentoPie from './BentoPie';
+import { chartTypes } from '../../constants/overviewConstants';
+import BentoBarChart from './charts/BentoBarChart';
+import BentoPie from './charts/BentoPie';
 
-import { CHART_HEIGHT } from '../../../constants/overviewConstants';
+import { CHART_HEIGHT } from '../../constants/overviewConstants';
 
 const Chart = ({ chartType, data, units }) => {
   const renderChartSwitch = () => {

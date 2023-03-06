@@ -1,0 +1,1 @@
+current lang is changable but everything else is fixed after declaration

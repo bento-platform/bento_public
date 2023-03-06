@@ -1,5 +1,5 @@
 import React from 'react';
-import Chart from './charts/Chart';
+import Chart from './Chart';
 import { Card, Button, Tooltip, Space, Typography, Row } from 'antd';
 import { CloseOutlined, TeamOutlined, QuestionOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
