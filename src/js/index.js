@@ -11,16 +11,21 @@ import '../styles.css';
 import './i18n';
 import SiteFooter from './components/SiteFooter';
 import { ChartConfigProvider } from './components/Overview/charts/ChartConfigProvider';
+import { useTranslation } from 'react-i18next';
 
 const BentoApp = () => {
+  const { i18n } = useTranslation();
+
   return (
-    <Layout>
-      <SiteHeader />
-      <Content style={{ padding: '0 30px', marginTop: '10px' }}>
-        <TabbedDashboard />
-      </Content>
-      <SiteFooter />
-    </Layout>
+    <ChartConfigProvider Lng={i18n.language}>
+      <Layout>
+        <SiteHeader />
+        <Content style={{ padding: '0 30px', marginTop: '10px' }}>
+          <TabbedDashboard />
+        </Content>
+        <SiteFooter />
+      </Layout>
+    </ChartConfigProvider>
   );
 };
 
@@ -28,9 +33,7 @@ const rootElement = document.getElementById('root');
 
 ReactDOM.render(
   <Provider store={store}>
-    <ChartConfigProvider>
-      <BentoApp />
-    </ChartConfigProvider>
+    <BentoApp />
   </Provider>,
   rootElement
 );

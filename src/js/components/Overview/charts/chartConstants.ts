@@ -1,5 +1,5 @@
 import CSS from 'csstype';
-import { HexColor, TranslationObject } from './chartTypes';
+import { ChartTheme, HexColor, TranslationObject } from './chartTypes';
 
 // Bento-web colours
 export const COLORS: HexColor[] = [
@@ -27,6 +27,18 @@ export const COLORS: HexColor[] = [
 
 export const BAR_CHART_FILL = '#4575b4';
 export const CHART_MISSING_FILL = '#bbbbbb';
+
+export const DEFAULT_CHART_THEME: ChartTheme = {
+  pie: {
+    default: COLORS,
+  },
+  bar: {
+    default: {
+      fill: BAR_CHART_FILL,
+      missing: CHART_MISSING_FILL,
+    },
+  },
+};
 
 export const TOOL_TIP_STYLE: CSS.Properties = {
   backgroundColor: 'rgba(255, 255, 255, 0.9)',

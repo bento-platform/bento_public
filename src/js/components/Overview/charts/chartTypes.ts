@@ -17,15 +17,24 @@ interface TooltipPayloadItem {
 
 export type HexColor = `#${string}`;
 
-export type ChartTheme<T extends string> = {
-  [key in T]: HexColor[];
-} & {
-  default: HexColor[];
+export type ChartTheme = {
+  pie: {
+    [key in string]: HexColor[];
+  } & {
+    default: HexColor[];
+  };
+  bar: {
+    [key in string]: { fill: HexColor; missing: HexColor };
+  } & {
+    default: { fill: HexColor; missing: HexColor };
+  };
 };
 
 export type FilterCallback<T> = (value: T, index: number, array: T[]) => boolean;
 export type UnitaryMapCallback<T> = (value: T, index: number, array: T[]) => T;
 // export type BinaryMapCallback<T, U> = (value: T, index: number, array: T[]) => U;
+
+export type ChartFilterCallback = FilterCallback<ChartDataItem>;
 
 export type SupportedLng = 'en' | 'fr';
 

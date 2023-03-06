@@ -12,7 +12,6 @@ type PieProps = Props;
 import CSS from 'csstype';
 
 import {
-  COLORS,
   TOOL_TIP_STYLE,
   LABEL_STYLE,
   COUNT_STYLE,
@@ -20,8 +19,15 @@ import {
   CHART_MISSING_FILL,
   CHART_WRAPPER_STYLE,
 } from './chartConstants';
-import { ChartDataItem, ChartDataType, FilterCallback, TooltipPayload, UnitaryMapCallback } from './chartTypes';
-import { useChartTranslation } from './ChartConfigProvider';
+import {
+  ChartDataItem,
+  ChartDataType,
+  ChartFilterCallback,
+  ChartTheme,
+  TooltipPayload,
+  UnitaryMapCallback,
+} from './chartTypes';
+import { useChartTheme, useChartTranslation } from './ChartConfigProvider';
 
 const RADIAN = Math.PI / 180;
 const chartAspectRatio = 1.4;
@@ -53,16 +59,19 @@ const BentoPie = ({
   dataMap,
   postFilter,
   removeEmpty = true,
+  colorTheme = 'default',
 }: {
   data: ChartDataType;
   height: number;
-  sort: boolean;
-  preFilter?: FilterCallback<ChartDataItem>;
+  sort?: boolean;
+  preFilter?: ChartFilterCallback;
   dataMap?: UnitaryMapCallback<ChartDataItem>;
-  postFilter?: FilterCallback<ChartDataItem>;
-  removeEmpty: boolean;
+  postFilter?: ChartFilterCallback;
+  removeEmpty?: boolean;
+  colorTheme?: keyof ChartTheme['pie'];
 }) => {
   const t = useChartTranslation();
+  const theme = useChartTheme().pie[colorTheme];
 
   const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined);
 
@@ -125,7 +134,7 @@ const BentoPie = ({
           activeShape={renderActiveLabel}
         >
           {data.map((entry, index) => {
-            let fill = COLORS[index % COLORS.length];
+            let fill = theme[index % theme.length];
             fill = entry.x.toLowerCase() === 'missing' ? CHART_MISSING_FILL : fill;
             return <Cell key={index} fill={fill} />;
           })}

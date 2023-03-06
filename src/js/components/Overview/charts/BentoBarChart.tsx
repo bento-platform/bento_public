@@ -1,17 +1,17 @@
 import React from 'react';
 import { BarChart, Bar, Cell, XAxis, YAxis, Tooltip, Label } from 'recharts';
 import CSS from 'csstype';
-import {
-  BAR_CHART_FILL,
-  CHART_MISSING_FILL,
-  TOOL_TIP_STYLE,
-  COUNT_STYLE,
-  LABEL_STYLE,
-  CHART_WRAPPER_STYLE,
-} from './chartConstants';
+import { TOOL_TIP_STYLE, COUNT_STYLE, LABEL_STYLE, CHART_WRAPPER_STYLE } from './chartConstants';
 
-import { ChartDataItem, ChartDataType, FilterCallback, TooltipPayload, UnitaryMapCallback } from './chartTypes';
-import { useChartTranslation } from './ChartConfigProvider';
+import {
+  ChartDataItem,
+  ChartDataType,
+  ChartFilterCallback,
+  ChartTheme,
+  TooltipPayload,
+  UnitaryMapCallback,
+} from './chartTypes';
+import { useChartTheme, useChartTranslation } from './ChartConfigProvider';
 
 const ASPECT_RATIO = 1.2;
 const MAX_TICK_LABEL_CHARS = 15;
@@ -33,7 +33,6 @@ const tickFormatter = (tickLabel: string) => {
   }
   return `${tickLabel.substring(0, MAX_TICK_LABEL_CHARS)}...`;
 };
-const fill = (entry: ChartDataItem) => (entry.x === 'missing' ? CHART_MISSING_FILL : BAR_CHART_FILL);
 
 const BentoBarChart = ({
   title,
@@ -44,17 +43,22 @@ const BentoBarChart = ({
   postFilter,
   height,
   removeEmpty = true,
+  theme = 'default',
 }: {
   title?: string;
   data: ChartDataType;
   units: string;
-  preFilter?: FilterCallback<ChartDataItem>;
+  preFilter?: ChartFilterCallback;
   dataMap?: UnitaryMapCallback<ChartDataItem>;
-  postFilter?: FilterCallback<ChartDataItem>;
+  postFilter?: ChartFilterCallback;
   height: number;
-  removeEmpty: boolean;
+  removeEmpty?: boolean;
+  theme?: keyof ChartTheme['bar'];
 }) => {
   const t = useChartTranslation();
+  const { fill: chartFill, missing } = useChartTheme().bar[theme];
+
+  const fill = (entry: ChartDataItem) => (entry.x === 'missing' ? chartFill : missing);
 
   data = [...data];
   if (preFilter) data = data.filter(preFilter);
