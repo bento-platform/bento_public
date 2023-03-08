@@ -13,7 +13,7 @@ import {
   TICK_MARGIN,
 } from './chartConstants';
 
-import { BarChartProps, ChartDataItem, TooltipPayload } from './chartTypes';
+import type { BarChartProps, ChartDataItem, TooltipPayload } from './chartTypes';
 import { useChartTheme, useChartTranslation } from './ChartConfigProvider';
 
 const tickFormatter = (tickLabel: string) => {

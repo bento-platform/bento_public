@@ -8,7 +8,7 @@ import React, { useState } from 'react';
 import { PieChart, Pie, Cell, Curve, Tooltip, Sector } from 'recharts';
 import { Props } from 'recharts/types/polar/Pie';
 type PieProps = Props;
-import CSS from 'csstype';
+import type CSS from 'csstype';
 
 import {
   TOOL_TIP_STYLE,
@@ -24,7 +24,7 @@ import {
   COUNT_TEXT_STYLE,
   TEXT_STYLE,
 } from './chartConstants';
-import { PieChartProps, TooltipPayload } from './chartTypes';
+import type { PieChartProps, TooltipPayload } from './chartTypes';
 import { useChartTheme, useChartTranslation } from './ChartConfigProvider';
 import { polarToCartesian } from './chartUtils';
 
