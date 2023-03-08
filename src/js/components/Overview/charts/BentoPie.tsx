@@ -24,14 +24,7 @@ import {
   COUNT_TEXT_STYLE,
   TEXT_STYLE,
 } from './chartConstants';
-import {
-  ChartDataItem,
-  ChartDataType,
-  ChartFilterCallback,
-  ChartTheme,
-  TooltipPayload,
-  UnitaryMapCallback,
-} from './chartTypes';
+import { PieChartProps, TooltipPayload } from './chartTypes';
 import { useChartTheme, useChartTranslation } from './ChartConfigProvider';
 import { polarToCartesian } from './chartUtils';
 
@@ -46,22 +39,13 @@ const labelShortName = (name: string) => {
 const BentoPie = ({
   data,
   height,
-  sort = true,
   preFilter,
   dataMap,
   postFilter,
+  sort = true,
   removeEmpty = true,
   colorTheme = 'default',
-}: {
-  data: ChartDataType;
-  height: number;
-  sort?: boolean;
-  preFilter?: ChartFilterCallback;
-  dataMap?: UnitaryMapCallback<ChartDataItem>;
-  postFilter?: ChartFilterCallback;
-  removeEmpty?: boolean;
-  colorTheme?: keyof ChartTheme['pie'];
-}) => {
+}: PieChartProps) => {
   const t = useChartTranslation();
   const theme = useChartTheme().pie[colorTheme];
 

@@ -13,14 +13,7 @@ import {
   TICK_MARGIN,
 } from './chartConstants';
 
-import {
-  ChartDataItem,
-  ChartDataType,
-  ChartFilterCallback,
-  ChartTheme,
-  TooltipPayload,
-  UnitaryMapCallback,
-} from './chartTypes';
+import { BarChartProps, ChartDataItem, TooltipPayload } from './chartTypes';
 import { useChartTheme, useChartTranslation } from './ChartConfigProvider';
 
 const tickFormatter = (tickLabel: string) => {
@@ -31,28 +24,18 @@ const tickFormatter = (tickLabel: string) => {
 };
 
 const BentoBarChart = ({
-  title,
   data,
+  height,
   units,
+  title,
   preFilter,
   dataMap,
   postFilter,
-  height,
   removeEmpty = true,
-  theme = 'default',
-}: {
-  title?: string;
-  data: ChartDataType;
-  units: string;
-  preFilter?: ChartFilterCallback;
-  dataMap?: UnitaryMapCallback<ChartDataItem>;
-  postFilter?: ChartFilterCallback;
-  height: number;
-  removeEmpty?: boolean;
-  theme?: keyof ChartTheme['bar'];
-}) => {
+  colorTheme = 'default',
+}: BarChartProps) => {
   const t = useChartTranslation();
-  const { fill: chartFill, missing } = useChartTheme().bar[theme];
+  const { fill: chartFill, missing } = useChartTheme().bar[colorTheme];
 
   const fill = (entry: ChartDataItem) => (entry.x === 'missing' ? missing : chartFill);
 

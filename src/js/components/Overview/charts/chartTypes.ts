@@ -47,3 +47,24 @@ export type LngDictionary = {
 export type TranslationObject = {
   [key in SupportedLng]: LngDictionary;
 };
+
+// ###################  COMPONENT PROPS #####################
+interface BaseChartProps {
+  data: ChartDataType;
+  height: number;
+  preFilter?: ChartFilterCallback;
+  dataMap?: UnitaryMapCallback<ChartDataItem>;
+  postFilter?: ChartFilterCallback;
+  removeEmpty?: boolean;
+}
+
+export interface PieChartProps extends BaseChartProps {
+  colorTheme?: keyof ChartTheme['pie'];
+  sort?: boolean;
+}
+
+export interface BarChartProps extends BaseChartProps {
+  colorTheme?: keyof ChartTheme['bar'];
+  title?: string;
+  units: string;
+}
