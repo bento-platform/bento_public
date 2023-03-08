@@ -1,7 +1,17 @@
 import React from 'react';
 import { BarChart, Bar, Cell, XAxis, YAxis, Tooltip, Label } from 'recharts';
-import CSS from 'csstype';
-import { TOOL_TIP_STYLE, COUNT_STYLE, LABEL_STYLE, CHART_WRAPPER_STYLE } from './chartConstants';
+import {
+  TOOL_TIP_STYLE,
+  COUNT_STYLE,
+  LABEL_STYLE,
+  CHART_WRAPPER_STYLE,
+  MAX_TICK_LABEL_CHARS,
+  TITLE_STYLE,
+  ASPECT_RATIO,
+  TICKS_SHOW_ALL_LABELS_BELOW,
+  UNITS_LABEL_OFFSET,
+  TICK_MARGIN,
+} from './chartConstants';
 
 import {
   ChartDataItem,
@@ -12,20 +22,6 @@ import {
   UnitaryMapCallback,
 } from './chartTypes';
 import { useChartTheme, useChartTranslation } from './ChartConfigProvider';
-
-const ASPECT_RATIO = 1.2;
-const MAX_TICK_LABEL_CHARS = 15;
-const UNITS_LABEL_OFFSET = -75;
-const TICKS_SHOW_ALL_LABELS_BELOW = 11; // Below this # of X-axis ticks, force-show all labels
-
-// vertical spacing between tick line and tick label
-const TICK_MARGIN = 5;
-
-const TITLE_STYLE: CSS.Properties = {
-  fontStyle: 'italic',
-  fontSize: '1.5em',
-  textAlign: 'center',
-};
 
 const tickFormatter = (tickLabel: string) => {
   if (tickLabel.length <= MAX_TICK_LABEL_CHARS) {

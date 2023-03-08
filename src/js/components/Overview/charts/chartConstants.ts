@@ -1,6 +1,19 @@
 import CSS from 'csstype';
 import { ChartTheme, HexColor, TranslationObject } from './chartTypes';
 
+// ################### PACKAGE CONSTANTS ###################
+export const defaultTranslationObject: TranslationObject = {
+  en: {
+    Count: 'Count',
+    Other: 'Other',
+  },
+  fr: {
+    Count: 'Comptage',
+    Other: 'Autre',
+  },
+};
+
+// ################### THEME CONSTANTS ###################
 // Bento-web colours
 export const COLORS: HexColor[] = [
   '#3366CC',
@@ -40,6 +53,9 @@ export const DEFAULT_CHART_THEME: ChartTheme = {
   },
 };
 
+// ################### CHART STYLES ###################
+
+// common
 export const TOOL_TIP_STYLE: CSS.Properties = {
   backgroundColor: 'rgba(255, 255, 255, 0.9)',
   padding: '5px',
@@ -69,17 +85,36 @@ export const CHART_WRAPPER_STYLE: CSS.Properties = {
   alignItems: 'center',
 };
 
-export const OTHER_THRESHOLD = 0.01; //
-
-export const defaultTranslationObject: TranslationObject = {
-  en: {
-    Count: 'Count',
-    Other: 'Other',
-  },
-  fr: {
-    Count: 'Comptage',
-    Other: 'Autre',
-  },
+// bar chart
+export const TITLE_STYLE: CSS.Properties = {
+  fontStyle: 'italic',
+  fontSize: '1.5em',
+  textAlign: 'center',
 };
 
+// pie chart
+export const TEXT_STYLE: CSS.Properties = {
+  fontSize: '11px',
+  fill: '#333',
+};
+export const COUNT_TEXT_STYLE: CSS.Properties = {
+  fontSize: '10px',
+  fill: '#999',
+};
+
+// ################### CHART CONSTANTS ###################
+// bar chart
+export const ASPECT_RATIO = 1.2;
+export const MAX_TICK_LABEL_CHARS = 15;
+export const UNITS_LABEL_OFFSET = -75;
+export const TICKS_SHOW_ALL_LABELS_BELOW = 11; // Below this # of X-axis ticks, force-show all labels
+export const TICK_MARGIN = 5; // vertical spacing between tick line and tick label
+
+// pie chart
+export const CHART_ASPECT_RATIO = 1.4;
+export const LABEL_THRESHOLD = 0.05;
+export const MAX_LABEL_CHARS = 14;
+export const OTHER_THRESHOLD = 0.01;
+
+// ################### UTIL CONSTANTS ###################
 export const RADIAN = Math.PI / 180;

@@ -18,6 +18,11 @@ import {
   CHART_MISSING_FILL,
   CHART_WRAPPER_STYLE,
   RADIAN,
+  MAX_LABEL_CHARS,
+  CHART_ASPECT_RATIO,
+  LABEL_THRESHOLD,
+  COUNT_TEXT_STYLE,
+  TEXT_STYLE,
 } from './chartConstants';
 import {
   ChartDataItem,
@@ -29,19 +34,6 @@ import {
 } from './chartTypes';
 import { useChartTheme, useChartTranslation } from './ChartConfigProvider';
 import { polarToCartesian } from './chartUtils';
-
-const chartAspectRatio = 1.4;
-const LABEL_THRESHOLD = 0.05;
-const MAX_LABEL_CHARS = 14;
-
-const textStyle: CSS.Properties = {
-  fontSize: '11px',
-  fill: '#333',
-};
-const countTextStyle: CSS.Properties = {
-  fontSize: '10px',
-  fill: '#999',
-};
 
 const labelShortName = (name: string) => {
   if (name.length <= MAX_LABEL_CHARS) {
@@ -116,7 +108,7 @@ const BentoPie = ({
 
   return (
     <div style={CHART_WRAPPER_STYLE}>
-      <PieChart height={height} width={height * chartAspectRatio}>
+      <PieChart height={height} width={height * CHART_ASPECT_RATIO}>
         <Pie
           data={bentoFormatData}
           dataKey="value"
@@ -172,7 +164,7 @@ const renderLabel: PieProps['label'] = (params) => {
   const textAnchor = cos >= 0 ? 'start' : 'end';
 
   const currentTextStyle: CSS.Properties = {
-    ...textStyle,
+    ...TEXT_STYLE,
     fontWeight: payload.selected ? 'bold' : 'normal',
     fontStyle: payload.name === 'null' ? 'italic' : 'normal',
   };
@@ -195,7 +187,7 @@ const renderLabel: PieProps['label'] = (params) => {
       <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey + 3} textAnchor={textAnchor} style={currentTextStyle}>
         {labelShortName(name)}
       </text>
-      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={14} textAnchor={textAnchor} style={countTextStyle}>
+      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={14} textAnchor={textAnchor} style={COUNT_TEXT_STYLE}>
         {`(${payload.value})`}
       </text>
     </g>
