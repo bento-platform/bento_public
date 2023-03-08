@@ -100,14 +100,14 @@ const BentoPie = ({
           cy="50%"
           innerRadius={35}
           outerRadius={80}
-          label={renderLabel}
+          label={RenderLabel}
           labelLine={false}
           isAnimationActive={false}
           onMouseEnter={onEnter}
           onMouseLeave={onLeave}
           onMouseOver={onHover}
           activeIndex={activeIndex}
-          activeShape={renderActiveLabel}
+          activeShape={RenderActiveLabel}
         >
           {data.map((entry, index) => {
             let fill = theme[index % theme.length];
@@ -125,7 +125,7 @@ const BentoPie = ({
   );
 };
 
-const renderLabel: PieProps['label'] = (params) => {
+const RenderLabel: PieProps['label'] = (params) => {
   const { cx, cy, midAngle, outerRadius, fill, payload, index, activeIndex } = params;
 
   // skip rendering this static label if the sector is selected.
@@ -178,7 +178,7 @@ const renderLabel: PieProps['label'] = (params) => {
   );
 };
 
-const renderActiveLabel: PieProps['activeShape'] = (params) => {
+const RenderActiveLabel: PieProps['activeShape'] = (params) => {
   const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = params;
 
   // render arc around active segment
