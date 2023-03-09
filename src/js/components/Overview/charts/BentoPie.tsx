@@ -1,9 +1,3 @@
-// TODO: Add comments telling how can you translate
-// TODO: Add a way for default translation
-// TODO: Add default inputs
-// TODO: Add theme selection for chart
-// TODO: Add comment on how to remove missing
-
 import React, { useState } from 'react';
 import { PieChart, Pie, Cell, Curve, Tooltip, Sector } from 'recharts';
 import { Props } from 'recharts/types/polar/Pie';
