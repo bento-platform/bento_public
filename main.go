@@ -50,6 +50,11 @@ type QueryParameter struct {
 
 var katsuQueryConfigCache = make(map[string]interface{})
 
+func internalServerError(err error, c echo.Context) error {
+	fmt.Println(err)
+	return c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
+}
+
 func main() {
 	// Initialize configuration from environment variables
 	var cfg BentoConfig
@@ -159,23 +164,20 @@ func main() {
 		// Query Katsu for publicly available overview
 		req, err := http.NewRequest("GET", fmt.Sprintf("%s/api/public_overview", cfg.KatsuUrl), nil)
 		if err != nil {
-			fmt.Println(err)
-			return c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
+			return internalServerError(err, c)
 		}
 		// We are inside a container context, so set the 'internal' flag
 		req.Header.Add("X-CHORD-Internal", "1")
 		resp, err := client.Do(req)
 		if err != nil {
-			fmt.Println(err)
-			return c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
+			return internalServerError(err, c)
 		}
 		defer resp.Body.Close()
 
 		// Read response body and convert to a generic JSON-like data structure
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			fmt.Println(err)
-			return c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
+			return internalServerError(err, c)
 		}
 
 		jsonLike := make(map[string]interface{})
