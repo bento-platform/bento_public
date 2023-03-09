@@ -202,7 +202,6 @@ func main() {
 		resp, err := http.Get(fmt.Sprintf("%s/api/public?%s", cfg.KatsuUrl, qs.Encode()))
 		if err != nil {
 			fmt.Println(err)
-
 			return c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
 		}
 		defer resp.Body.Close()
@@ -210,7 +209,6 @@ func main() {
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			fmt.Println(err)
-
 			return c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
 		}
 
