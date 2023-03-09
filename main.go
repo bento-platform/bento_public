@@ -201,15 +201,13 @@ func main() {
 		// make a get request to the Katsu API
 		resp, err := http.Get(fmt.Sprintf("%s/api/public?%s", cfg.KatsuUrl, qs.Encode()))
 		if err != nil {
-			fmt.Println(err)
-			return c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
+			return internalServerError(err, c)
 		}
 		defer resp.Body.Close()
 		// Read response body and convert to a generic JSON-like data structure
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			fmt.Println(err)
-			return c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
+			return internalServerError(err, c)
 		}
 
 		jsonLike := make(map[string]interface{})
@@ -225,16 +223,14 @@ func main() {
 		// Query Katsu for publicly available search fields
 		resp, err := http.Get(fmt.Sprintf("%s/api/public_search_fields", cfg.KatsuUrl))
 		if err != nil {
-			fmt.Println(err)
-			return c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
+			return internalServerError(err, c)
 		}
 		defer resp.Body.Close()
 
 		// Read response body and convert to a generic JSON-like datastructure
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			fmt.Println(err)
-			return c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
+			return internalServerError(err, c)
 		}
 
 		jsonLike := make(map[string]interface{})
@@ -250,17 +246,14 @@ func main() {
 		// Query Katsu for datasets provenance
 		resp, err := http.Get(fmt.Sprintf("%s/api/public_dataset", cfg.KatsuUrl))
 		if err != nil {
-			fmt.Println(err)
-
-			return c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
+			return internalServerError(err, c)
 		}
 		defer resp.Body.Close()
 
 		// Read response body and convert to a generic JSON-like datastructure
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			fmt.Println(err)
-			return c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
+			return internalServerError(err, c)
 		}
 
 		jsonLike := make(map[string]interface{})
