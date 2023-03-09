@@ -160,28 +160,22 @@ func main() {
 		req, err := http.NewRequest("GET", fmt.Sprintf("%s/api/public_overview", cfg.KatsuUrl), nil)
 		if err != nil {
 			fmt.Println(err)
-			return c.JSON(http.StatusInternalServerError, ErrorResponse{
-				Message: err.Error(),
-			})
+			return c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
 		}
 		// We are inside a container context, so set the 'internal' flag
 		req.Header.Add("X-CHORD-Internal", "1")
 		resp, err := client.Do(req)
 		if err != nil {
 			fmt.Println(err)
-			return c.JSON(http.StatusInternalServerError, ErrorResponse{
-				Message: err.Error(),
-			})
+			return c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
 		}
 		defer resp.Body.Close()
 
-		// Read response body and convert to a generic JSON-like datastructure
+		// Read response body and convert to a generic JSON-like data structure
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			fmt.Println(err)
-			return c.JSON(http.StatusInternalServerError, ErrorResponse{
-				Message: err.Error(),
-			})
+			return c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
 		}
 
 		jsonLike := make(map[string]interface{})
@@ -207,9 +201,7 @@ func main() {
 		if err != nil {
 			fmt.Println(err)
 
-			return c.JSON(http.StatusInternalServerError, ErrorResponse{
-				Message: err.Error(),
-			})
+			return c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
 		}
 		defer resp.Body.Close()
 		// Read response body and convert to a generic JSON-like data structure
@@ -217,9 +209,7 @@ func main() {
 		if err != nil {
 			fmt.Println(err)
 
-			return c.JSON(http.StatusInternalServerError, ErrorResponse{
-				Message: err.Error(),
-			})
+			return c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
 		}
 
 		jsonLike := make(map[string]interface{})
@@ -236,10 +226,7 @@ func main() {
 		resp, err := http.Get(fmt.Sprintf("%s/api/public_search_fields", cfg.KatsuUrl))
 		if err != nil {
 			fmt.Println(err)
-
-			return c.JSON(http.StatusInternalServerError, ErrorResponse{
-				Message: err.Error(),
-			})
+			return c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
 		}
 		defer resp.Body.Close()
 
@@ -247,10 +234,7 @@ func main() {
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			fmt.Println(err)
-
-			return c.JSON(http.StatusInternalServerError, ErrorResponse{
-				Message: err.Error(),
-			})
+			return c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
 		}
 
 		jsonLike := make(map[string]interface{})
@@ -268,9 +252,7 @@ func main() {
 		if err != nil {
 			fmt.Println(err)
 
-			return c.JSON(http.StatusInternalServerError, ErrorResponse{
-				Message: err.Error(),
-			})
+			return c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
 		}
 		defer resp.Body.Close()
 
@@ -278,10 +260,7 @@ func main() {
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			fmt.Println(err)
-
-			return c.JSON(http.StatusInternalServerError, ErrorResponse{
-				Message: err.Error(),
-			})
+			return c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
 		}
 
 		jsonLike := make(map[string]interface{})
