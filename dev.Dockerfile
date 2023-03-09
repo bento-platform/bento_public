@@ -25,5 +25,7 @@ COPY entrypoint.bash .
 COPY run.dev.bash .
 COPY nodemon.json .
 
+ENV BENTO_PUBLIC_STATIC_FILES_PATH=/bento-public/build/www
+
 ENTRYPOINT [ "bash", "./entrypoint.bash" ]
 CMD [ "bash", "./run.dev.bash" ]
