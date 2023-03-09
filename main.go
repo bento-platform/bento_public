@@ -181,7 +181,10 @@ func main() {
 		}
 
 		jsonLike := make(map[string]interface{})
-		json.Unmarshal(body, &jsonLike)
+		err = json.Unmarshal(body, &jsonLike)
+		if err != nil {
+			return internalServerError(err, c)
+		}
 
 		// TODO: formalize response type
 		return c.JSON(http.StatusOK, map[string]interface{}{
@@ -211,7 +214,10 @@ func main() {
 		}
 
 		jsonLike := make(map[string]interface{})
-		json.Unmarshal(body, &jsonLike)
+		err = json.Unmarshal(body, &jsonLike)
+		if err != nil {
+			return internalServerError(err, c)
+		}
 
 		katsuQueryConfigCache = jsonLike
 
@@ -234,7 +240,10 @@ func main() {
 		}
 
 		jsonLike := make(map[string]interface{})
-		json.Unmarshal(body, &jsonLike)
+		err = json.Unmarshal(body, &jsonLike)
+		if err != nil {
+			return internalServerError(err, c)
+		}
 
 		katsuQueryConfigCache = jsonLike
 
@@ -257,7 +266,10 @@ func main() {
 		}
 
 		jsonLike := make(map[string]interface{})
-		json.Unmarshal(body, &jsonLike)
+		err = json.Unmarshal(body, &jsonLike)
+		if err != nil {
+			return internalServerError(err, c)
+		}
 
 		katsuQueryConfigCache = jsonLike
 
