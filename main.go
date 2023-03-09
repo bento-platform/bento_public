@@ -89,6 +89,9 @@ func main() {
 		cfg.Translated,
 	)
 
+	// Set up HTTP client
+	client := &http.Client{}
+
 	// Begin Echo
 
 	// Instantiate Server
@@ -154,10 +157,18 @@ func main() {
 	e.GET("/overview", func(c echo.Context) error {
 
 		// Query Katsu for publicly available overview
-		resp, err := http.Get(fmt.Sprintf("%s/api/public_overview", cfg.KatsuUrl))
+		req, err := http.NewRequest("GET", fmt.Sprintf("%s/api/public_overview", cfg.KatsuUrl), nil)
 		if err != nil {
 			fmt.Println(err)
-
+			return c.JSON(http.StatusInternalServerError, ErrorResponse{
+				Message: err.Error(),
+			})
+		}
+		// We are inside a container context, so set the 'internal' flag
+		req.Header.Add("X-CHORD-Internal", "1")
+		resp, err := client.Do(req)
+		if err != nil {
+			fmt.Println(err)
 			return c.JSON(http.StatusInternalServerError, ErrorResponse{
 				Message: err.Error(),
 			})
@@ -168,7 +179,6 @@ func main() {
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			fmt.Println(err)
-
 			return c.JSON(http.StatusInternalServerError, ErrorResponse{
 				Message: err.Error(),
 			})
