@@ -5,7 +5,7 @@ import { TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
 import { useTranslation } from 'react-i18next';
 
-import BentoPie from '../Overview/charts/BentoPie';
+import { PieChart } from 'bento-charts';
 import CustomEmpty from '../Util/CustomEmpty';
 import ExpSvg from '../Util/ExpSvg';
 
@@ -63,7 +63,7 @@ const SearchResults = () => {
           <Col span={10}>
             <Typography.Title level={5}>{t('Biosamples')}</Typography.Title>
             {isValid && biosampleChartData && status === 'count' ? (
-              <BentoPie data={biosampleChartData} height={CHART_HEIGHT} sort={true} />
+              <PieChart data={biosampleChartData} height={CHART_HEIGHT} sort={true} />
             ) : (
               <CustomEmpty text="No Results" />
             )}
@@ -71,7 +71,7 @@ const SearchResults = () => {
           <Col span={10}>
             <Typography.Title level={5}>{t('Experiments')}</Typography.Title>
             {isValid && experimentChartData && status === 'count' ? (
-              <BentoPie data={experimentChartData} height={CHART_HEIGHT} sort={true} />
+              <PieChart data={experimentChartData} height={CHART_HEIGHT} sort={true} />
             ) : (
               <CustomEmpty text="No Results" />
             )}
