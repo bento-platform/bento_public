@@ -21,6 +21,7 @@
     "@types/recharts": "^1.8.24",
     "antd": "^5.0.0",
     "axios": "^0.24.0",
+    "bento-charts": "^1.0.7",
     "bootstrap": "^5.1.3",
     "css-loader": "^5.2.7",
     "dotenv": "^16.0.1",
