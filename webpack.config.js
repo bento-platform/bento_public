@@ -1,3 +1,5 @@
+const path = require('path');
+
 const webpack = require('webpack'); // only add this if you don't have yet
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -46,6 +48,9 @@ const config = {
   },
   devtool: 'source-map',
   resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src/js'),
+    },
     extensions: ['.tsx', '.ts', '.js'],
   },
 };
