@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"os"
@@ -69,7 +69,7 @@ func main() {
 	}
 
 	// Load JS package.json to extract version number
-	packageJson, err := ioutil.ReadFile(cfg.PackageJsonPath)
+	packageJson, err := os.ReadFile(cfg.PackageJsonPath)
 	if err != nil {
 		fmt.Println("Error reading package.json")
 		os.Exit(1)
@@ -132,7 +132,7 @@ func main() {
 
 		// Read response body and convert to a generic JSON-like data structure
 
-		body, err := ioutil.ReadAll(resp.Body)
+		body, err := io.ReadAll(resp.Body)
 		if err != nil {
 			return internalServerError(err, c)
 		}
