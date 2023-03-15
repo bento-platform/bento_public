@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { searchFieldsUrl } from '../../constants/configConstants';
-import { printAPIError } from '../../utils/error';
+import { searchFieldsUrl } from '@/constants/configConstants';
+import { printAPIError } from '@/utils/error.util';
 
 export const makeGetSearchFields = createAsyncThunk('query/makeGetSearchFields', async () => {
   return axios

@@ -4,17 +4,17 @@ import { useTranslation } from 'react-i18next';
 import { Tabs, Typography } from 'antd';
 const { Title } = Typography;
 
-import { makeGetConfigRequest } from '../features/config/config';
-import { makeGetAboutRequest } from '../features/content/content';
-import { makeGetDataRequest } from '../features/data/data';
-import { makeGetSearchFields } from '../features/search/query';
-import { makeGetProvenanceRequest } from '../features/provenance/provenance';
+import { makeGetConfigRequest } from '@/features/config/config.store';
+import { makeGetAboutRequest } from '@/features/content/content.store';
+import { makeGetDataRequest } from '@/features/data/data';
+import { makeGetSearchFields } from '@/features/search/query';
+import { makeGetProvenanceRequest } from '@/features/provenance/provenance';
 
 import Loader from './Loader';
 import PublicOverview from './Overview/PublicOverview';
 import Search from './Search/Search';
 import ProvenanceTab from './Provenance/ProvenanceTab';
-import { DEFAULT_TRANSLATION } from '../constants/configConstants';
+import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 
 const TabbedDashboard = () => {
   const dispatch = useDispatch();

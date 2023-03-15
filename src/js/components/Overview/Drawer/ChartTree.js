@@ -1,11 +1,10 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-
 import { Tree } from 'antd';
 import { useTranslation } from 'react-i18next';
 
-import { rearrange, setDisplayedCharts } from '../../../features/data/data';
-import { NON_DEFAULT_TRANSLATION } from '../../../constants/configConstants';
+import { rearrange, setDisplayedCharts } from '@/features/data/data';
+import { NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
 
 const ChartTree = ({ charts, section }) => {
   const dispatch = useDispatch();
