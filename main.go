@@ -37,17 +37,6 @@ type BentoConfig struct {
 	Translated         bool   `envconfig:"BENTO_PUBLIC_TRANSLATED" default:"true"`
 }
 
-type QueryParameter struct {
-	IsExtraPropertyKey bool    `json:"is_extra_property_key"`
-	RangeMin           float64 `json:"rangeMin"`
-	RangeMax           float64 `json:"rangeMax"`
-	DateAfter          string  `json:"dateAfter"`
-	DateBefore         string  `json:"dateBefore"`
-	Value              string  `json:"value"`
-	Key                string  `json:"key"`
-	Type               string  `json:"type"`
-}
-
 type JsonLike map[string]interface{}
 
 func internalServerError(err error, c echo.Context) error {
