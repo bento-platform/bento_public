@@ -55,6 +55,10 @@ func internalServerError(err error, c echo.Context) error {
 	return c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
 }
 
+func identityJSONTransform(j JsonLike) JsonLike {
+	return j
+}
+
 func main() {
 	// Initialize configuration from environment variables
 	var cfg BentoConfig
@@ -142,9 +146,7 @@ func main() {
 		return c.JSON(http.StatusOK, rf(jsonLike))
 	}
 	katsuRequestBasic := func(path string, c echo.Context) error {
-		return katsuRequest(path, nil, c, func(j JsonLike) JsonLike {
-			return j
-		})
+		return katsuRequest(path, nil, c, identityJSONTransform)
 	}
 
 	// Begin Echo
@@ -212,6 +214,7 @@ func main() {
 	e.GET("/overview", func(c echo.Context) error {
 		// TODO: formalize response type
 		return katsuRequest("/api/public_overview", nil, c, func(j JsonLike) JsonLike {
+			// Wrap the response from Katsu in {overview: ...} (for some reason)
 			return JsonLike{"overview": j}
 		})
 	})
@@ -227,9 +230,7 @@ func main() {
 		}
 
 		// make a get request to the Katsu API
-		return katsuRequest("/api/public", qs, c, func(j JsonLike) JsonLike {
-			return j
-		})
+		return katsuRequest("/api/public", qs, c, identityJSONTransform)
 	})
 
 	e.GET("/fields", func(c echo.Context) error {
