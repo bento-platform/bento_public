@@ -1,6 +1,6 @@
 const path = require('path');
 
-const webpack = require('webpack'); // only add this if you don't have yet
+// const webpack = require('webpack'); // only add this if you don't have yet
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 

@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { List } from 'antd';
 
 import MakeChartCard from './MakeChartCard';
-import { disableChart } from '../../features/data/data';
+import { disableChart } from '@/features/data/data.store';
 
 const getColumnCount = (width) => {
   if (width < 990) {

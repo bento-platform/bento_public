@@ -6,7 +6,7 @@ const { Title } = Typography;
 
 import { makeGetConfigRequest } from '@/features/config/config.store';
 import { makeGetAboutRequest } from '@/features/content/content.store';
-import { makeGetDataRequest } from '@/features/data/data';
+import { makeGetDataRequestThunk } from '@/features/data/data.store';
 import { makeGetSearchFields } from '@/features/search/query';
 import { makeGetProvenanceRequest } from '@/features/provenance/provenance';
 
@@ -24,7 +24,7 @@ const TabbedDashboard = () => {
   useEffect(() => {
     dispatch(makeGetConfigRequest());
     dispatch(makeGetAboutRequest());
-    dispatch(makeGetDataRequest()).then(() => {
+    dispatch(makeGetDataRequestThunk()).then(() => {
       // Sequential call intended for backend related issues
       dispatch(makeGetSearchFields());
     });
