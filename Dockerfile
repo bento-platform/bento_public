@@ -20,8 +20,6 @@ WORKDIR /build
 COPY . .
 RUN go build -o ./reactapp
 
-RUN ls -lah
-
 
 FROM ghcr.io/bento-platform/bento_base_image:plain-debian-2023.02.27
 

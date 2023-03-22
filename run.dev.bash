@@ -4,8 +4,6 @@ export BENTO_PUBLIC_STATIC_FILES_PATH=/bento-public/build/www
 
 cd /bento-public || exit
 
-ls -la
-
 # Install/update node dependencies
 npm install
 
