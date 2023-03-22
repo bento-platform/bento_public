@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-# Configure git, since we override the default entrypoint
-/set_gitconfig.bash
-
 export BENTO_PUBLIC_STATIC_FILES_PATH=/bento-public/build/www
 
 cd /bento-public || exit
