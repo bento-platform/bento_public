@@ -22,6 +22,7 @@ const ConfigLogTemplate = `Config --
 	Bento Portal Url: %s
 	Port: %d
 	Translated: %t
+	Beacon URL: %s
 `
 
 type BentoConfig struct {
@@ -33,6 +34,7 @@ type BentoConfig struct {
 	BentoPortalUrl     string `envconfig:"BENTO_PUBLIC_PORTAL_URL"`
 	Port               int    `envconfig:"INTERNAL_PORT" default:"8090"`
 	Translated         bool   `envconfig:"BENTO_PUBLIC_TRANSLATED" default:"true"`
+	BeaconUrl          string `envconfig:"BEACON_URL"`
 }
 
 type QueryParameter struct {
@@ -84,6 +86,7 @@ func main() {
 		cfg.BentoPortalUrl,
 		cfg.Port,
 		cfg.Translated,
+		cfg.BeaconUrl,
 	)
 
 	// Begin Echo
@@ -145,6 +148,7 @@ func main() {
 			"maxQueryParameters": cfg.MaxQueryParameters,
 			"portalUrl":          cfg.BentoPortalUrl,
 			"translated":         cfg.Translated,
+			"beaconUrl":		  cfg.BeaconUrl,
 		})
 	})
 
