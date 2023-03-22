@@ -3,13 +3,11 @@ import axios from 'axios';
 import { printAPIError } from '../../utils/error';
 
 
-
-// temp url, should go in client.env
-const BEACON_INDIVIDUALS = "https://bentov2.local/api/beacon/individuals"
-
-export const makeBeaconQuery = createAsyncThunk('beaconQuery/makeBeaconQuery', async (payload) => {
+export const makeBeaconQuery = createAsyncThunk('beaconQuery/makeBeaconQuery', async (payload, { getState }) => {
+  const beaconUrl = getState().config.beaconUrl
+  const beaconIndividualsEndpoint = beaconUrl + '/individuals'
   return axios
-    .post(BEACON_INDIVIDUALS, payload)
+    .post(beaconIndividualsEndpoint, payload)
     .then((res) => res.data)
     .catch(printAPIError);
 });
