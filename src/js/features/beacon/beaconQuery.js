@@ -4,8 +4,7 @@ import { printAPIError } from '../../utils/error';
 
 
 export const makeBeaconQuery = createAsyncThunk('beaconQuery/makeBeaconQuery', async (payload, { getState }) => {
-  const beaconUrl = getState().config.beaconUrl
-  const beaconIndividualsEndpoint = beaconUrl + '/individuals'
+  const beaconIndividualsEndpoint = getState()?.config?.beaconUrl + '/individuals'
   return axios
     .post(beaconIndividualsEndpoint, payload)
     .then((res) => res.data)
