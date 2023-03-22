@@ -16,6 +16,7 @@ const initialState = {
   portalUrl: '',
   maxQueryParameters: 0,
   translated: false,
+  beaconUrl: '',
 };
 
 const config = createSlice({
@@ -31,6 +32,7 @@ const config = createSlice({
       state.portalUrl = payload.portalUrl;
       state.maxQueryParameters = payload.maxQueryParameters;
       state.translated = payload.translated;
+      state.beaconUrl = payload.beaconUrl;
       state.isFetchingConfig = false;
     },
     [makeGetConfigRequest.rejected]: (state) => {
