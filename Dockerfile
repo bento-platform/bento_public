@@ -7,7 +7,7 @@ WORKDIR /node
 RUN npm install
 
 RUN mkdir -p build/www
-RUN npm run build-dev
+RUN npm run build
 
 
 FROM golang:1.19-bullseye as gobuilder
