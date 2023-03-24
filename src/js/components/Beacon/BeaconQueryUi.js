@@ -116,7 +116,7 @@ const BeaconQueryUi = () => {
     }
 
     const payload = {
-      meta: {},
+      meta: {"apiVersion": "2.0.0"},
       query: { requestParameters: { g_variant: query }, filters: payloadFilters, includeResultsetResponses: 'ALL' },
     };
 
