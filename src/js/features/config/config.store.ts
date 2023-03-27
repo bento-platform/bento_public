@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { configUrl } from '@/constants/configConstants';
 import { printAPIError } from '@/utils/error.util';
-import { ConfigResponse } from '@/types/ConfigResponse.interface';
+import { ConfigResponse } from '@/types/configResponse';
 
 export const makeGetConfigRequest = createAsyncThunk<ConfigResponse, void, { rejectValue: string }>(
   'config/getConfigData',

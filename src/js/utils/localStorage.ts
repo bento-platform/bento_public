@@ -1,5 +1,5 @@
-import { LocalStorageData, Sections } from '@/types/Data.interface';
-import { ValueOf } from '@/types/util.types';
+import { LocalStorageData, Sections } from '@/types/data';
+import { ValueOf } from '@/types/util';
 
 export const verifyData = (nObj: any, oObj: LocalStorageData) => {
   const verifyCharts = (nCharts: any, oCharts: ValueOf<LocalStorageData>) => {

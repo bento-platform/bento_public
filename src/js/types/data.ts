@@ -1,4 +1,4 @@
-import { OverviewResponseDataField } from '@/types/OverviewResponse.interface';
+import { OverviewResponseDataField } from '@/types/overviewResponse';
 
 export type Sections = Section[];
 

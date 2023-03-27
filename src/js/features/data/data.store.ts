@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { makeGetDataRequestThunk } from './makeGetDataRequest.thunk';
-import { Sections } from '@/types/Data.interface';
-import { Counts } from '@/types/OverviewResponse.interface';
+import { Sections } from '@/types/data';
+import { Counts } from '@/types/overviewResponse';
 
 interface DataState {
   isFetchingData: boolean;

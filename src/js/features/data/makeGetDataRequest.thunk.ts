@@ -6,8 +6,8 @@ import { verifyData, saveValue, getValue, convertSequenceAndDisplayData } from '
 
 import { LOCALSTORAGE_CHARTS_KEY } from '@/constants/overviewConstants';
 import { serializeChartData } from '@/utils/chart';
-import { LocalStorageData, Sections } from '@/types/Data.interface';
-import { Chart, Counts, OverviewResponse } from '@/types/OverviewResponse.interface';
+import { LocalStorageData, Sections } from '@/types/data';
+import { Chart, Counts, OverviewResponse } from '@/types/overviewResponse';
 import { printAPIError } from '@/utils/error.util';
 
 export const makeGetDataRequestThunk = createAsyncThunk<
