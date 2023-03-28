@@ -9,7 +9,6 @@ const BeaconQueryResults = ({countResponse}) => {
 
     const resultsStyle = {
         height: "300px"
-        
     };
 
     const Title = () => {
