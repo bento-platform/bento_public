@@ -18,12 +18,13 @@ const initialState = {
 const beaconConfig = createSlice({
   name: 'beaconConfig',
   initialState,
-  reducers: {
+  reducers: {},
+  extraReducers: {
     [getBeaconConfig.pending]: (state) => {
       state.isFetching = true;
     },
     [getBeaconConfig.fulfilled]: (state, { payload }) => {
-      console.log({ beaconConfig: payload });
+      // console.log({ beaconConfig: payload });
       state.response = payload;
       state.isFetching = false;
     },
@@ -31,7 +32,6 @@ const beaconConfig = createSlice({
       state.isFetching = false;
     },
   },
-  extraReducers: {},
 });
 
 export default beaconConfig.reducer;

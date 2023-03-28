@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Input, Form, Button, Select } from 'antd';
 import FilterFormItem from './FilterFormItem';
+import { getBeaconConfig } from '../../features/beacon/beaconConfig';
 import { makeBeaconQuery } from '../../features/beacon/beaconQuery';
 import BeaconQueryResults from './BeaconQueryResults';
 
@@ -19,9 +20,11 @@ import BeaconQueryResults from './BeaconQueryResults';
 // ... this is more than we need though, with extra bookkeeping
 // but it may fix the "form reset" issue 
 
+// only render beacon tab is there's a beacon for this instance
+
 
 const BeaconQueryUi = () => {
-  const { response, isFetching } = useSelector((state) => state.beacon);
+  const { response, isFetching } = useSelector((state) => state.beaconQuery);
   const countResponse = response?.responseSummary?.count ?? '---'
   const [filters, setFilters] = useState([]);
   const [exampleFilters, setExampleFilters] = useState([])
@@ -29,6 +32,15 @@ const BeaconQueryUi = () => {
 
   const dispatch = useDispatch();
   // dynamically add example filters if present
+
+  // retrieve beacon config here instead of on main dashboard
+  // easier to spawn instances with or without beacons
+  useEffect(() => {
+    console.log("getting beacon config")
+    dispatch(getBeaconConfig())
+  }, [])
+
+
   useEffect(() => {
     if (!filters) {return}
     filters.forEach((f) => {
@@ -41,11 +53,15 @@ const BeaconQueryUi = () => {
 
   }, [exampleFilters])
 
-
   // conditionally put another logo if there's a logo link in service-info? (or perhaps there's one already)
 
   // TODO: pulldown to select entity for query (individuals, variants, experiments, biosamples...
   // ... and change the results logo accordingly... for now do individuals
+
+
+
+  // retrieve config for this beacon: assembly, url for logo... 
+  // todo: retrieve correct filtering terms for this beacon
 
   const formFields = [
     {
