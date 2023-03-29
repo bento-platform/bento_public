@@ -24,7 +24,13 @@ import BeaconQueryResults from './BeaconQueryResults';
 
 
 const BeaconQueryUi = () => {
-  const { response, isFetching } = useSelector((state) => state.beaconQuery);
+  const { response, isFetchingQueryResponse } = useSelector((state) => state.beaconQuery);
+  const { config, isFetchingBeaconConfig } = useSelector((state) => state?.beaconConfig)
+  const beaconAssemblyIds = Object.keys(config?.overview?.counts?.variants ?? {})
+  const beaconLogoUrl = config?.organization?.logoUrl
+  const orgName = config?.organization?.name
+  const orgUrl = config?.organization?.welcomeUrl
+  const beaconName = config?.name
   const countResponse = response?.responseSummary?.count ?? '---'
   const [filters, setFilters] = useState([]);
   const [exampleFilters, setExampleFilters] = useState([])
@@ -36,7 +42,6 @@ const BeaconQueryUi = () => {
   // retrieve beacon config here instead of on main dashboard
   // easier to spawn instances with or without beacons
   useEffect(() => {
-    console.log("getting beacon config")
     dispatch(getBeaconConfig())
   }, [])
 
@@ -53,6 +58,11 @@ const BeaconQueryUi = () => {
 
   }, [exampleFilters])
 
+  // useEffect(() => {
+  //   form.setFieldsValue(formInitialValues);
+  // }, [form, formInitialValues]);
+
+
   // conditionally put another logo if there's a logo link in service-info? (or perhaps there's one already)
 
   // TODO: pulldown to select entity for query (individuals, variants, experiments, biosamples...
@@ -62,6 +72,14 @@ const BeaconQueryUi = () => {
 
   // retrieve config for this beacon: assembly, url for logo... 
   // todo: retrieve correct filtering terms for this beacon
+
+
+  const assemblyIdOptions = beaconAssemblyIds.map((assembly) => <Select.Option key={assembly} value={assembly}>{assembly}</Select.Option>);
+
+  const formInitialValues = {"assemblyId" : assemblyIdOptions.length && assemblyIdOptions[0]}
+  console.log({formInitialValues})
+
+
 
   const formFields = [
     {
@@ -92,8 +110,7 @@ const BeaconQueryUi = () => {
       name: 'Assembly Id',
       rules: [{}],
       placeholder: '',
-      help: '(only GRCh38 available)',
-      initialValue: 'GRCh38',
+      initialValue: '',
     },
   ];
 
@@ -191,6 +208,7 @@ const BeaconQueryUi = () => {
     setExampleFilters(buttonFilters)
   };
 
+
   const resultsStyle = {
     marginTop: '-40px',
     minHeight: '150px',
@@ -245,7 +263,7 @@ const BeaconQueryUi = () => {
     <div style={wrapperStyle}>
       <div style={topWrapperStyle}>
         <div style={formWrapperStyle}>
-          <Form form={form} onFinish={handleFinish} style={{ width: '800px' }}>
+          <Form form={form} initialValues={formInitialValues} onFinish={handleFinish} style={{ width: '800px' }}>
             {formFields.map((f) => (
               <Form.Item
                 key={f.key}
@@ -256,7 +274,7 @@ const BeaconQueryUi = () => {
                 initialValue={f.initialValue}
                 {...formItemLayout}
               >
-                {f.key != "assemblyId" ? <Input placeholder={f.placeholder} /> : <Select ><Select.Option value="GRCh38" >{"GRCh38"}</Select.Option></Select>}
+                {f.key != "assemblyId" ? <Input placeholder={f.placeholder} /> : <Select defaultValue={f.defaultValue}>{assemblyIdOptions}</Select>}
               </Form.Item>
             ))}
             <Form.Item>

@@ -12,7 +12,7 @@ export const getBeaconConfig = createAsyncThunk('beaconConfig/getBeaconConfig', 
 
 const initialState = {
   isFetchingBeaconConfig: false,
-  beaconConfig: {},
+  config: {},
 };
 
 const beaconConfig = createSlice({
