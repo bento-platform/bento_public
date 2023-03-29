@@ -12,7 +12,7 @@ export const makeBeaconQuery = createAsyncThunk('beaconQuery/makeBeaconQuery', a
 });
 
 const initialState = {
-  isFetching: false,
+  isFetchingConfig: false,
   response: {},
 };
 
@@ -22,15 +22,15 @@ const beaconQuery = createSlice({
   reducers: {},
   extraReducers: {
     [makeBeaconQuery.pending]: (state) => {
-      state.isFetching = true;
+      state.isFetchingConfig = true;
     },
     [makeBeaconQuery.fulfilled]: (state, { payload }) => {
       console.log({beaconResponse: payload})
       state.response = payload
-      state.isFetching = false;
+      state.isFetchingConfig = false;
     },
     [makeBeaconQuery.rejected]: (state) => {
-      state.isFetching = false;
+      state.isFetchingConfig = false;
     },
   },
 });
