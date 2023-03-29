@@ -12,7 +12,7 @@ export const getBeaconConfig = createAsyncThunk('beaconConfig/getBeaconConfig', 
 
 const initialState = {
   isFetching: false,
-  response: {},
+  config: {},
 };
 
 const beaconConfig = createSlice({
@@ -24,8 +24,7 @@ const beaconConfig = createSlice({
       state.isFetching = true;
     },
     [getBeaconConfig.fulfilled]: (state, { payload }) => {
-      // console.log({ beaconConfig: payload });
-      state.response = payload;
+      state.config = payload?.response;
       state.isFetching = false;
     },
     [getBeaconConfig.rejected]: (state) => {
