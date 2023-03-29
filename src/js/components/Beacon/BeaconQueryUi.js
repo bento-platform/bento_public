@@ -15,6 +15,10 @@ import BeaconQueryResults from './BeaconQueryResults';
 
 // switch to one-based
 
+// component for id box
+
+// fix results component (should match dashboard)
+
 // actually store filters in "filters" instead of just indexes 
 // they can be objects of id, op, value instead of objects of "index"
 // ... this is more than we need though, with extra bookkeeping
@@ -27,10 +31,6 @@ const BeaconQueryUi = () => {
   const { response, isFetchingQueryResponse } = useSelector((state) => state.beaconQuery);
   const config = useSelector((state) => state?.beaconConfig?.config)
   const beaconAssemblyIds = Object.keys(config?.overview?.counts?.variants ?? {})
-  const beaconLogoUrl = config?.organization?.logoUrl
-  const orgName = config?.organization?.name
-  const orgUrl = config?.organization?.welcomeUrl
-  const beaconName = config?.name
   const countResponse = response?.responseSummary?.count ?? '---'
   const [filters, setFilters] = useState([]);
   const [exampleFilters, setExampleFilters] = useState([])
