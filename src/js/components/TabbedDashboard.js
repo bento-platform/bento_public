@@ -9,6 +9,7 @@ import { makeGetAboutRequest } from '../features/content/content';
 import { makeGetDataRequest } from '../features/data/data';
 import { makeGetSearchFields } from '../features/search/query';
 import { makeGetProvenanceRequest } from '../features/provenance/provenance';
+import { getBeaconConfig } from '../features/beacon/beaconConfig';
 
 import Loader from './Loader';
 import PublicOverview from './Overview/PublicOverview';
@@ -29,16 +30,22 @@ const TabbedDashboard = () => {
       dispatch(makeGetSearchFields());
     });
     dispatch(makeGetProvenanceRequest());
+    dispatch(getBeaconConfig());
+
   }, []);
 
   const isFetchingOverviewData = useSelector((state) => state.data.isFetchingData);
   const isFetchingSearchFields = useSelector((state) => state.query.isFetchingFields);
+  const isFetchingBeaconConfig = useSelector((state) => state?.beaconConfig?.isFetchingBeaconConfig)
 
   const TabTitle = ({ title }) => (
     <Title level={4} style={{ margin: '0' }}>
       {title}
     </Title>
   );
+
+
+  // TODO: only render beacon tab if beacon being used 
 
   const tabPanes = [
     {
@@ -56,7 +63,7 @@ const TabbedDashboard = () => {
     {
       title: 'Beacon',
       content: <BeaconQueryUi />,
-      loading: isFetchingSearchFields,
+      loading: isFetchingBeaconConfig,
       key: 'beacon',
     },
     {

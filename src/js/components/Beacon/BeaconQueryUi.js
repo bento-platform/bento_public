@@ -25,7 +25,7 @@ import BeaconQueryResults from './BeaconQueryResults';
 
 const BeaconQueryUi = () => {
   const { response, isFetchingQueryResponse } = useSelector((state) => state.beaconQuery);
-  const { config, isFetchingBeaconConfig } = useSelector((state) => state?.beaconConfig)
+  const config = useSelector((state) => state?.beaconConfig?.config)
   const beaconAssemblyIds = Object.keys(config?.overview?.counts?.variants ?? {})
   const beaconLogoUrl = config?.organization?.logoUrl
   const orgName = config?.organization?.name
@@ -37,15 +37,8 @@ const BeaconQueryUi = () => {
   const [form] = Form.useForm();
 
   const dispatch = useDispatch();
+
   // dynamically add example filters if present
-
-  // retrieve beacon config here instead of on main dashboard
-  // easier to spawn instances with or without beacons
-  useEffect(() => {
-    dispatch(getBeaconConfig())
-  }, [])
-
-
   useEffect(() => {
     if (!filters) {return}
     filters.forEach((f) => {
@@ -55,7 +48,6 @@ const BeaconQueryUi = () => {
         [`filterValue${f.index}`]: exampleFilters[(f.index-1)].value,
       });
     });
-
   }, [exampleFilters])
 
   // useEffect(() => {
