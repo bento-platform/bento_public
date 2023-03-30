@@ -3,8 +3,8 @@ import { Select } from 'antd';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
-import { addQueryParam } from '../../features/search/query';
-import { NON_DEFAULT_TRANSLATION } from '../../constants/configConstants';
+import { addQueryParam } from '@/features/search/query.store';
+import { NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
 
 const SelectOption = ({ id, isChecked, options, optionalDispatch }) => {
   const { t } = useTranslation(NON_DEFAULT_TRANSLATION);

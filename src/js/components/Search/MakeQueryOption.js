@@ -4,11 +4,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 import OptionDescription from './OptionDescription';
-import { removeQueryParam } from '../../features/search/query';
+import { removeQueryParam } from '@/features/search/query.store';
 import SelectOption from './SelectOption';
 
-import { makeGetKatsuPublic } from '../../features/search/query';
-import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '../../constants/configConstants';
+import { makeGetKatsuPublic } from '../../features/search/query.store';
+import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
 
 const MakeQueryOption = ({ queryField }) => {
   const { t } = useTranslation(NON_DEFAULT_TRANSLATION);

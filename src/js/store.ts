@@ -3,7 +3,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import configReducer from '@/features/config/config.store';
 import contentReducer from '@/features/content/content.store';
 import dataReducer from '@/features/data/data.store';
-import queryReducer from '@/features/search/query';
+import queryReducer from '@/features/search/query.store';
 import provenanceReducer from '@/features/provenance/provenance.store';
 
 export const store = configureStore({
