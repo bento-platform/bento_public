@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Input, Form, Button, Select } from 'antd';
 import FilterFormItem from './FilterFormItem';
-import { getBeaconConfig } from '../../features/beacon/beaconConfig';
 import { makeBeaconQuery } from '../../features/beacon/beaconQuery';
 import BeaconQueryResults from './BeaconQueryResults';
 
@@ -15,16 +14,14 @@ import BeaconQueryResults from './BeaconQueryResults';
 
 // switch to one-based
 
-// component for id box
-
-// fix results component (should match dashboard)
-
 // actually store filters in "filters" instead of just indexes 
 // they can be objects of id, op, value instead of objects of "index"
 // ... this is more than we need though, with extra bookkeeping
 // but it may fix the "form reset" issue 
 
 // only render beacon tab is there's a beacon for this instance
+
+// retrieve correct filtering terms for this beacon
 
 
 const BeaconQueryUi = () => {
@@ -50,28 +47,14 @@ const BeaconQueryUi = () => {
     });
   }, [exampleFilters])
 
-  // useEffect(() => {
-  //   form.setFieldsValue(formInitialValues);
-  // }, [form, formInitialValues]);
+  const assemblyIdOptions = beaconAssemblyIds.map((assembly) => (
+    <Select.Option key={assembly} value={assembly}>{assembly}</Select.Option>
+  ));
+  const formInitialValues = {"Assembly Id" : beaconAssemblyIds.length == 1 && beaconAssemblyIds[0]}
 
-
-  // conditionally put another logo if there's a logo link in service-info? (or perhaps there's one already)
-
-  // TODO: pulldown to select entity for query (individuals, variants, experiments, biosamples...
-  // ... and change the results logo accordingly... for now do individuals
-
-
-
-  // retrieve config for this beacon: assembly, url for logo... 
-  // todo: retrieve correct filtering terms for this beacon
-
-
-  const assemblyIdOptions = beaconAssemblyIds.map((assembly) => <Select.Option key={assembly} value={assembly}>{assembly}</Select.Option>);
-
-  const formInitialValues = {"assemblyId" : assemblyIdOptions.length && assemblyIdOptions[0]}
-  console.log({formInitialValues})
-
-
+  useEffect(() => {
+    form.setFieldsValue(formInitialValues);
+  }, [form, formInitialValues]);
 
   const formFields = [
     {
@@ -255,7 +238,7 @@ const BeaconQueryUi = () => {
     <div style={wrapperStyle}>
       <div style={topWrapperStyle}>
         <div style={formWrapperStyle}>
-          <Form form={form} initialValues={formInitialValues} onFinish={handleFinish} style={{ width: '800px' }}>
+          <Form form={form} onFinish={handleFinish} style={{ width: '800px' }}>
             {formFields.map((f) => (
               <Form.Item
                 key={f.key}
@@ -263,7 +246,6 @@ const BeaconQueryUi = () => {
                 label={f.name}
                 rules={f.rules}
                 help={f.help}
-                initialValue={f.initialValue}
                 {...formItemLayout}
               >
                 {f.key != "assemblyId" ? <Input placeholder={f.placeholder} /> : <Select defaultValue={f.defaultValue}>{assemblyIdOptions}</Select>}
