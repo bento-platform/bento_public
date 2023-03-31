@@ -32,6 +32,9 @@ const config = {
     static: './dist',
     contentBase: './distgetuk',
   },
+  watchOptions: {
+    poll: 1000,
+  },
   plugins: [
     new HtmlWebpackPlugin({
       title: 'Development',
