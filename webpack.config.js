@@ -29,8 +29,13 @@ const config = {
     ],
   },
   devServer: {
+    host: "0.0.0.0",
+    hot: true,
     static: './dist',
     contentBase: './distgetuk',
+  },
+  watchOptions: {
+    poll: 1000,
   },
   plugins: [
     new HtmlWebpackPlugin({
