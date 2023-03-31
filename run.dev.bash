@@ -13,9 +13,10 @@ npm install
 npm run build-dev
 
 # Run nodemon as a watcher to recompile Go
-npx nodemon main.go
+npx nodemon main.go &
 
 # Run webpack watch to recompile JS files
 npm run watch &
+echo "====================== WEBPACK WATCHING ======================"
 
 wait
