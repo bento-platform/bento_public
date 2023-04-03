@@ -1,23 +1,23 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
 import { Divider, Row, Col, FloatButton, Card, Skeleton } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
-import { convertSequenceAndDisplayData, saveValue } from '../../utils/localStorage';
-import { LOCALSTORAGE_CHARTS_KEY } from '../../constants/overviewConstants';
+import { convertSequenceAndDisplayData, saveValue } from '@/utils/localStorage';
+import { LOCALSTORAGE_CHARTS_KEY } from '@/constants/overviewConstants';
 
 import OverviewSection from './OverviewSection';
 import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
 import Counts from './Counts';
+import { useAppSelector } from '@/hooks';
 
 const PublicOverview = () => {
-  const { sections } = useSelector((state) => state.data);
+  const { sections } = useAppSelector((state) => state.data);
 
   saveValue(LOCALSTORAGE_CHARTS_KEY, convertSequenceAndDisplayData(sections));
 
   const [drawerVisible, setDrawerVisible] = useState(false);
 
-  const { isFetchingAbout, aboutHTML } = useSelector((state) => state.content);
+  const { isFetchingAbout, aboutHTML } = useAppSelector((state) => state.content);
 
   return (
     <>
@@ -34,7 +34,7 @@ const PublicOverview = () => {
             <Counts />
             {sections.map(({ sectionTitle, charts }, i) => (
               <div key={i} className="overview">
-                <OverviewSection index={i} title={sectionTitle} chartData={charts} />
+                <OverviewSection title={sectionTitle} chartData={charts} />
                 <Divider />
               </div>
             ))}

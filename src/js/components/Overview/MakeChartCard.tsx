@@ -4,15 +4,16 @@ import { Card, Button, Tooltip, Space, Typography, Row } from 'antd';
 import { CloseOutlined, TeamOutlined, QuestionOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import CustomEmpty from '../Util/CustomEmpty';
-import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '../../constants/configConstants';
+import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
+import { ChartDataField } from '@/types/data';
 
 const CARD_STYLE = { width: '430px', height: '415px', margin: '5px 0', borderRadius: '11px' };
 
-const MakeChartCard = ({ section, chart, onRemoveChart }) => {
+const MakeChartCard = ({ section, chart, onRemoveChart }: MakeChartCardProps) => {
   const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
   const { t: td } = useTranslation(DEFAULT_TRANSLATION);
 
-  const { name, title, data, chartType, config, id, description } = chart;
+  const { title, data, chartType, config, id, description } = chart;
 
   const extraOptionsData = [
     {
@@ -51,10 +52,10 @@ const MakeChartCard = ({ section, chart, onRemoveChart }) => {
   });
 
   return (
-    <div key={name} style={{ height: '100%', width: '430px' }}>
+    <div key={id} style={{ height: '100%', width: '430px' }}>
       <Card title={t(title)} style={CARD_STYLE} size="small" extra={<Space size="small">{ed}</Space>}>
         {data.filter((e) => !(e.x === 'missing')).length !== 0 ? (
-          <Chart chartType={chartType} data={data} units={config?.units || undefined} />
+          <Chart chartType={chartType} data={data} units={config?.units || ''} />
         ) : (
           <Row style={{ height: '350px ' }} justify="center" align="middle">
             <CustomEmpty text="No Data" />
@@ -64,5 +65,11 @@ const MakeChartCard = ({ section, chart, onRemoveChart }) => {
     </div>
   );
 };
+
+export interface MakeChartCardProps {
+  section: string;
+  chart: ChartDataField;
+  onRemoveChart: (arg: { section: string; id: string }) => void;
+}
 
 export default MakeChartCard;

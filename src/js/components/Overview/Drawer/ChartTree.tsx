@@ -1,18 +1,19 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { Tree } from 'antd';
+import { Tree, TreeProps } from 'antd';
 import { useTranslation } from 'react-i18next';
 
 import { rearrange, setDisplayedCharts } from '@/features/data/data.store';
 import { NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
+import { ChartDataField } from '@/types/data';
 
-const ChartTree = ({ charts, section }) => {
+const ChartTree = ({ charts, section }: ChartTreeProps) => {
   const dispatch = useDispatch();
   const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
 
   const allCharts = charts.map(({ title, id }) => ({ title: t(title), key: id }));
 
-  const onChartDrop = (info) => {
+  const onChartDrop: TreeProps['onDrop'] = (info) => {
     const originalLocation = parseInt(info.dragNode.pos.substring(2));
     const newLocation = info.dropPosition - 1;
 
@@ -24,7 +25,7 @@ const ChartTree = ({ charts, section }) => {
 
   const checkedKeys = charts.filter((e) => e.isDisplayed).map((e) => e.id);
 
-  const onCheck = (checkedKeysValue) => {
+  const onCheck: TreeProps['onCheck'] = (checkedKeysValue) => {
     dispatch(setDisplayedCharts({ section, charts: checkedKeysValue }));
   };
 
@@ -41,5 +42,10 @@ const ChartTree = ({ charts, section }) => {
     />
   );
 };
+
+export interface ChartTreeProps {
+  charts: ChartDataField[];
+  section: string;
+}
 
 export default ChartTree;
