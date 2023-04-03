@@ -7,8 +7,8 @@ const { Title } = Typography;
 import { makeGetConfigRequest } from '@/features/config/config.store';
 import { makeGetAboutRequest } from '@/features/content/content.store';
 import { makeGetDataRequestThunk } from '@/features/data/data.store';
-import { makeGetSearchFields } from '@/features/search/query';
-import { makeGetProvenanceRequest } from '@/features/provenance/provenance';
+import { makeGetSearchFields } from '@/features/search/query.store';
+import { makeGetProvenanceRequest } from '@/features/provenance/provenance.store';
 
 import Loader from './Loader';
 import PublicOverview from './Overview/PublicOverview';

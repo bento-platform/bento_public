@@ -6,8 +6,8 @@ import { useTranslation } from 'react-i18next';
 import SearchFieldsStack from './SearchFieldsStack';
 import SearchResults from './SearchResults';
 
-import { makeGetKatsuPublic } from '../../features/search/query';
-import { NON_DEFAULT_TRANSLATION } from '../../constants/configConstants';
+import { makeGetKatsuPublic } from '@/features/search/query.store';
+import { NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
 
 const Search = () => {
   const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
