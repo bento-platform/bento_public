@@ -1,13 +1,13 @@
 import React from 'react';
 import { Table, Tag } from 'antd';
-import { useTranslation } from 'react-i18next';
 
 import LinkIfUrl from '../../Util/LinkIfUrl';
-import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '../../../constants/configConstants';
+import { useTranslationCustom, useTranslationDefault } from '@/hooks';
+import { ProvenanceStoreDataset } from '@/types/provenance';
 
-const ExtraPropertiesTable = ({ extraProperties }) => {
-  const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
-  const { t: td } = useTranslation(DEFAULT_TRANSLATION);
+const ExtraPropertiesTable = ({ extraProperties }: ExtraPropertiesTableProps) => {
+  const t = useTranslationCustom();
+  const td = useTranslationDefault();
 
   return (
     <Table
@@ -30,5 +30,9 @@ const ExtraPropertiesTable = ({ extraProperties }) => {
     />
   );
 };
+
+export interface ExtraPropertiesTableProps {
+  extraProperties: ProvenanceStoreDataset['extraProperties'];
+}
 
 export default ExtraPropertiesTable;

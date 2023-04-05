@@ -1,12 +1,12 @@
 import React from 'react';
 import { Table, Tag, Typography } from 'antd';
-import { useTranslation } from 'react-i18next';
-import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '../../../constants/configConstants';
 const { Link } = Typography;
+import { useTranslationDefault, useTranslationCustom } from '@/hooks';
+import { ProvenanceStoreDataset } from '@/types/provenance';
 
-const DistributionsTable = ({ distributions }) => {
-  const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
-  const { t: td } = useTranslation(DEFAULT_TRANSLATION);
+const DistributionsTable = ({ distributions }: DistributionsTableProps) => {
+  const t = useTranslationCustom();
+  const td = useTranslationDefault();
 
   return (
     <Table
@@ -16,11 +16,7 @@ const DistributionsTable = ({ distributions }) => {
           title: td('Formats'),
           dataIndex: 'formats',
           key: 'formats',
-          render: (_, { formats }) => (
-            <Tag key={formats} color="cyan">
-              {formats}
-            </Tag>
-          ),
+          render: (_, { formats }) => <Tag color="cyan">{formats}</Tag>,
         },
         {
           title: td('Size'),
@@ -67,4 +63,7 @@ const DistributionsTable = ({ distributions }) => {
   );
 };
 
+export interface DistributionsTableProps {
+  distributions: ProvenanceStoreDataset['distributions'];
+}
 export default DistributionsTable;
