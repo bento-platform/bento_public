@@ -4,15 +4,23 @@ import { aboutUrl } from '../../constants/contentConstants';
 import { printAPIError } from '../../utils/error';
 
 export const makeGetAboutRequest = createAsyncThunk('content/getAboutHTML', async () => {
-  return axios
-    .get(aboutUrl)
+  const en_aboutHTML = await axios
+    .get(`${aboutUrl}en_about.html`)
     .then((res) => res.data)
     .catch(printAPIError);
+
+  const fr_aboutHTML = await axios
+    .get(`${aboutUrl}fr_about.html`)
+    .then((res) => res.data)
+    .catch(printAPIError);
+
+  return { en_aboutHTML, fr_aboutHTML };
 });
 
 const initialState = {
   isFetchingAbout: true,
-  aboutHTML: "",
+  en_aboutHTML: "",
+  fr_aboutHTML: "",
 };
 
 const content = createSlice({
@@ -24,7 +32,8 @@ const content = createSlice({
       state.isFetchingAbout = true;
     },
     [makeGetAboutRequest.fulfilled]: (state, { payload }) => {
-      state.aboutHTML = payload;
+      state.eng_aboutHTML = payload.en_aboutHTML;
+      state.fr_aboutHTML = payload.fr_aboutHTML;
       state.isFetchingAbout = false;
     },
     [makeGetAboutRequest.rejected]: (state) => {
