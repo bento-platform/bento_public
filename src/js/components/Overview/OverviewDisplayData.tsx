@@ -4,8 +4,9 @@ import { List } from 'antd';
 
 import MakeChartCard from './MakeChartCard';
 import { disableChart } from '@/features/data/data.store';
+import { ChartDataField } from '@/types/data';
 
-const getColumnCount = (width) => {
+const getColumnCount = (width: number) => {
   if (width < 990) {
     return 1;
   } else if (width < 1420) {
@@ -13,7 +14,7 @@ const getColumnCount = (width) => {
   } else return 3;
 };
 
-const getframeWidth = (width) => {
+const getframeWidth = (width: number) => {
   if (width < 990) {
     return 360;
   } else if (width < 1420) {
@@ -21,14 +22,14 @@ const getframeWidth = (width) => {
   } else return 1325;
 };
 
-const OverviewDisplayData = ({ section, allCharts }) => {
+const OverviewDisplayData = ({ section, allCharts }: OverviewDisplayDataProps) => {
   const dispatch = useDispatch();
 
   const { width } = useWindowSize();
 
   const orderedCharts = allCharts;
 
-  const onRemoveChart = ({ section, id }) => {
+  const onRemoveChart = ({ section, id }: { section: string; id: string }) => {
     dispatch(disableChart({ section, id }));
   };
 
@@ -38,7 +39,7 @@ const OverviewDisplayData = ({ section, allCharts }) => {
       grid={{ gutter: 0, column: getColumnCount(width) }}
       dataSource={orderedCharts.filter((e) => e.isDisplayed)}
       renderItem={(chart) => (
-        <MakeChartCard key={chart.name} chart={chart} section={section} onRemoveChart={onRemoveChart} />
+        <MakeChartCard key={chart.id} chart={chart} section={section} onRemoveChart={onRemoveChart} />
       )}
     />
   );
@@ -46,8 +47,8 @@ const OverviewDisplayData = ({ section, allCharts }) => {
 
 const useWindowSize = () => {
   const [windowSize, setWindowSize] = useState({
-    width: undefined,
-    height: undefined,
+    width: 0,
+    height: 0,
   });
 
   useEffect(() => {
@@ -64,5 +65,10 @@ const useWindowSize = () => {
 
   return windowSize;
 };
+
+export interface OverviewDisplayDataProps {
+  section: string;
+  allCharts: ChartDataField[];
+}
 
 export default OverviewDisplayData;

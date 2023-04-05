@@ -1,14 +1,15 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { chartTypes } from '../../constants/overviewConstants';
+import { chartTypes } from '@/constants/overviewConstants';
 import { BarChart, PieChart } from 'bento-charts';
 
-import { CHART_HEIGHT } from '../../constants/overviewConstants';
+import { CHART_HEIGHT } from '@/constants/overviewConstants';
+import { ChartData } from '@/types/data';
 
-const Chart = ({ chartType, data, units }) => {
+const Chart = ({ chartType, data, units }: ChartProps) => {
   const { t } = useTranslation();
-  const translateMap = ({ x, y }) => ({ x: t(x), y });
-  const removeMissing = ({ x }) => x !== 'missing';
+  const translateMap = ({ x, y }: { x: string; y: number }) => ({ x: t(x), y });
+  const removeMissing = ({ x }: { x: string }) => x !== 'missing';
 
   const renderChartSwitch = () => {
     switch (chartType) {
@@ -32,5 +33,11 @@ const Chart = ({ chartType, data, units }) => {
 
   return <>{renderChartSwitch()}</>;
 };
+
+export interface ChartProps {
+  chartType: string;
+  data: ChartData[];
+  units: string;
+}
 
 export default Chart;

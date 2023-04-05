@@ -1,13 +1,13 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { Typography, Card, Space, Statistic } from 'antd';
 import { TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
 import { useTranslation } from 'react-i18next';
 
 import ExpSvg from '../Util/ExpSvg';
-import { COUNTS_FILL } from '../../constants/overviewConstants';
-import { DEFAULT_TRANSLATION } from '../../constants/configConstants';
+import { COUNTS_FILL } from '@/constants/overviewConstants';
+import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
+import { useAppSelector } from '@/hooks';
 
 const Counts = () => {
   const { t } = useTranslation(DEFAULT_TRANSLATION);
@@ -16,17 +16,17 @@ const Counts = () => {
     {
       title: 'Individuals',
       icon: <TeamOutlined />,
-      count: useSelector((state) => state.data.counts.individuals),
+      count: useAppSelector((state) => state.data.counts.individuals),
     },
     {
       title: 'Biosamples',
       icon: <BiDna />,
-      count: useSelector((state) => state.data.counts.biosamples),
+      count: useAppSelector((state) => state.data.counts.biosamples),
     },
     {
       title: 'Experiments',
       icon: <ExpSvg />,
-      count: useSelector((state) => state.data.counts.experiments),
+      count: useAppSelector((state) => state.data.counts.experiments),
     },
   ];
 

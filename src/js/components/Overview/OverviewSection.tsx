@@ -3,9 +3,10 @@ import { Typography, Space } from 'antd';
 import { useTranslation } from 'react-i18next';
 
 import OverviewDisplayData from './OverviewDisplayData';
-import { NON_DEFAULT_TRANSLATION } from '../../constants/configConstants';
+import { NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
+import { ChartDataField } from '@/types/data';
 
-const OverviewSection = ({ title, chartData }) => {
+const OverviewSection = ({ title, chartData }: { title: string; chartData: ChartDataField[] }) => {
   const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
 
   return (
