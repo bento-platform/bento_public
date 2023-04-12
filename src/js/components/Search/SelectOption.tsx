@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { addQueryParam } from '@/features/search/query.store';
 import { NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
 
-const SelectOption = ({ id, isChecked, options, optionalDispatch }) => {
+const SelectOption = ({ id, isChecked, options, optionalDispatch }: SelectOptionProps) => {
   const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
   const dispatch = useDispatch();
 
@@ -31,7 +31,7 @@ const SelectOption = ({ id, isChecked, options, optionalDispatch }) => {
     // --
   }, [isChecked, value, options]);
 
-  const handleValueChange = (newValue) => {
+  const handleValueChange = (newValue: string) => {
     setValue(newValue);
   };
 
@@ -52,5 +52,12 @@ const SelectOption = ({ id, isChecked, options, optionalDispatch }) => {
     </Select>
   );
 };
+
+export interface SelectOptionProps {
+  id: string;
+  isChecked: boolean;
+  options: string[];
+  optionalDispatch?: () => void;
+}
 
 export default SelectOption;

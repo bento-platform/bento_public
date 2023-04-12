@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { Button, Layout, Row, Col, Typography, Space } from 'antd';
 const { Header } = Layout;
 import i18n from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { DEFAULT_TRANSLATION } from '../constants/configConstants';
+import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
+import { useAppSelector } from '@/hooks';
 
 const SiteHeader = () => {
   const { t } = useTranslation(DEFAULT_TRANSLATION);
 
-  const clientName = useSelector((state) => state.config.clientName);
-  const translated = useSelector((state) => state.config.translated);
-  const portalUrl = useSelector((state) => state.config.portalUrl);
+  const clientName = useAppSelector((state) => state.config.clientName);
+  const translated = useAppSelector((state) => state.config.translated);
+  const portalUrl = useAppSelector((state) => state.config.portalUrl);
 
   useEffect(() => {
     document.title = clientName && clientName.trim() ? `Bento: ${clientName}` : 'Bento';

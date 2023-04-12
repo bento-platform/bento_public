@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Tabs, Typography } from 'antd';
 const { Title } = Typography;
@@ -15,6 +15,7 @@ import PublicOverview from './Overview/PublicOverview';
 import Search from './Search/Search';
 import ProvenanceTab from './Provenance/ProvenanceTab';
 import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
+import { useAppSelector } from '@/hooks';
 
 const TabbedDashboard = () => {
   const dispatch = useDispatch();
@@ -24,17 +25,15 @@ const TabbedDashboard = () => {
   useEffect(() => {
     dispatch(makeGetConfigRequest());
     dispatch(makeGetAboutRequest());
-    dispatch(makeGetDataRequestThunk()).then(() => {
-      // Sequential call intended for backend related issues
-      dispatch(makeGetSearchFields());
-    });
+    dispatch(makeGetDataRequestThunk());
+    dispatch(makeGetSearchFields());
     dispatch(makeGetProvenanceRequest());
   }, []);
 
-  const isFetchingOverviewData = useSelector((state) => state.data.isFetchingData);
-  const isFetchingSearchFields = useSelector((state) => state.query.isFetchingFields);
+  const isFetchingOverviewData = useAppSelector((state) => state.data.isFetchingData);
+  const isFetchingSearchFields = useAppSelector((state) => state.query.isFetchingFields);
 
-  const TabTitle = ({ title }) => (
+  const TabTitle = ({ title }: { title: string }) => (
     <Title level={4} style={{ margin: '0' }}>
       {title}
     </Title>
