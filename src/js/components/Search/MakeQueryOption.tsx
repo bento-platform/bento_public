@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Row, Col, Checkbox } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 import OptionDescription from './OptionDescription';
@@ -9,8 +9,10 @@ import SelectOption from './SelectOption';
 
 import { makeGetKatsuPublic } from '../../features/search/query.store';
 import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
+import { useAppSelector } from '@/hooks';
+import { Field } from '@/types/search';
 
-const MakeQueryOption = ({ queryField }) => {
+const MakeQueryOption = ({ queryField }: MakeQueryOptionProps) => {
   const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
   const { t: td } = useTranslation(DEFAULT_TRANSLATION);
   const dispatch = useDispatch();
@@ -19,7 +21,7 @@ const MakeQueryOption = ({ queryField }) => {
 
   const [checked, setChecked] = useState(false);
 
-  const [checkedCount, maxCount] = useSelector((state) => [
+  const [checkedCount, maxCount] = useAppSelector((state) => [
     state.query.queryParamCount,
     state.config.maxQueryParameters,
   ]);
@@ -52,5 +54,9 @@ const MakeQueryOption = ({ queryField }) => {
     </>
   );
 };
+
+interface MakeQueryOptionProps {
+  queryField: Field;
+}
 
 export default MakeQueryOption;

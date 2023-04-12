@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { Card, Col, Row, Statistic, Typography, Space } from 'antd';
 import { TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
@@ -9,21 +8,22 @@ import { PieChart } from 'bento-charts';
 import CustomEmpty from '../Util/CustomEmpty';
 import ExpSvg from '../Util/ExpSvg';
 
-import { CHART_HEIGHT, COUNTS_FILL } from '../../constants/overviewConstants';
-import { DEFAULT_TRANSLATION } from '../../constants/configConstants';
+import { CHART_HEIGHT, COUNTS_FILL } from '@/constants/overviewConstants';
+import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
+import { useAppSelector } from '@/hooks';
 
 const SearchResults = () => {
   const { t } = useTranslation(DEFAULT_TRANSLATION);
 
-  const { status, count, message } = useSelector((state) => state.query.queryResponseData);
-  const isFetchingData = useSelector((state) => state.query.isFetchingData);
-  const isValid = useSelector((state) => state.query.isValid);
+  const { status, count, message } = useAppSelector((state) => state.query.queryResponseData);
+  const isFetchingData = useAppSelector((state) => state.query.isFetchingData);
+  const isValid = useAppSelector((state) => state.query.isValid);
 
-  const biosampleCount = useSelector((state) => state.query.biosampleCount);
-  const biosampleChartData = useSelector((state) => state.query.biosampleChartData);
+  const biosampleCount = useAppSelector((state) => state.query.biosampleCount);
+  const biosampleChartData = useAppSelector((state) => state.query.biosampleChartData);
 
-  const experimentCount = useSelector((state) => state.query.experimentCount);
-  const experimentChartData = useSelector((state) => state.query.experimentChartData);
+  const experimentCount = useAppSelector((state) => state.query.experimentCount);
+  const experimentChartData = useAppSelector((state) => state.query.experimentChartData);
 
   const wrapperStyle = {
     padding: '40px',

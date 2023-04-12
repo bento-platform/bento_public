@@ -13,7 +13,7 @@ export interface Field {
   description: string;
   id: string;
   mapping: string;
-  options: (null | string)[];
+  options: string[];
   title: string;
   mapping_for_search_filter?: string;
 }
@@ -29,9 +29,11 @@ export interface Config {
 }
 
 export interface KatsuSearchResponse {
+  status: string;
   biosamples: Biosamples;
   count: number;
   experiments: Experiments;
+  message: string;
 }
 
 export interface Biosamples {

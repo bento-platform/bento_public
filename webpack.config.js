@@ -6,7 +6,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const config = {
   mode: 'development',
-  entry: './src/js/index.js',
+  entry: './src/js/index.tsx',
   output: {
     path: __dirname + '/build/www',
     publicPath: '',
@@ -50,6 +50,7 @@ const config = {
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src/js'),
+      '@public': path.resolve(__dirname, 'src/public'),
     },
     extensions: ['.tsx', '.ts', '.js'],
   },

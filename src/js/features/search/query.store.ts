@@ -3,26 +3,28 @@ import { makeGetKatsuPublic } from './makeGetKatsuPublic.thunk';
 import { makeGetSearchFields } from './makeGetSearchFields.thunk';
 import { serializeChartData } from '@/utils/chart';
 import { KatsuSearchResponse, SearchFieldResponse } from '@/types/search';
-import { Datum } from '@/types/overviewResponse';
+import { ChartData } from '@/types/data';
 
 type queryState = {
   isFetchingFields: boolean;
   isFetchingData: boolean;
   queryResponseData: KatsuSearchResponse;
-  querySections: SearchFieldResponse;
+  querySections: SearchFieldResponse['sections'];
   queryParams: { [key: string]: string };
   queryParamCount: number;
   isValid: boolean;
   biosampleCount: number;
-  biosampleChartData: Datum[];
+  biosampleChartData: ChartData[];
   experimentCount: number;
-  experimentChartData: Datum[];
+  experimentChartData: ChartData[];
 };
 
 const initialState: queryState = {
   isFetchingFields: false,
   isFetchingData: false,
   queryResponseData: {
+    status: '',
+    message: '',
     biosamples: {
       count: 0,
       sampled_tissue: [],
@@ -33,9 +35,7 @@ const initialState: queryState = {
       experiment_type: [],
     },
   },
-  querySections: {
-    sections: [],
-  },
+  querySections: [],
   queryParams: {},
   queryParamCount: 0,
   isValid: false,
@@ -82,7 +82,7 @@ const query = createSlice({
       state.isFetchingFields = true;
     });
     builder.addCase(makeGetSearchFields.fulfilled, (state, { payload }) => {
-      state.querySections = payload;
+      state.querySections = payload.sections;
       state.isFetchingFields = false;
     });
     builder.addCase(makeGetSearchFields.rejected, (state) => {

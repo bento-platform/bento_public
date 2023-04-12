@@ -20,7 +20,8 @@
     "baseUrl": "./",
     "paths": {
       "@/*": ["src/js/*"],
+      "@public/*": ["src/public/*"],
     }
   },
-  "include": ["./src/"]
+  "include": ["./src/", "./src/custom.d.ts"],
 }
