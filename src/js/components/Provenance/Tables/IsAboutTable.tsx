@@ -1,13 +1,13 @@
 import React from 'react';
 import { Table, Tag } from 'antd';
-import { useTranslation } from 'react-i18next';
 
 import LinkIfUrl from '../../Util/LinkIfUrl';
-import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '../../../constants/configConstants';
+import { useTranslationCustom, useTranslationDefault } from '@/hooks';
+import { ProvenanceStoreDataset } from '@/types/provenance';
 
-const IsAboutTable = ({ isAbout }) => {
-  const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
-  const { t: td } = useTranslation(DEFAULT_TRANSLATION);
+const IsAboutTable = ({ isAbout }: IsAboutTableProps) => {
+  const t = useTranslationCustom();
+  const td = useTranslationDefault();
 
   return (
     <Table
@@ -32,5 +32,9 @@ const IsAboutTable = ({ isAbout }) => {
     />
   );
 };
+
+export interface IsAboutTableProps {
+  isAbout: ProvenanceStoreDataset['isAbout'];
+}
 
 export default IsAboutTable;

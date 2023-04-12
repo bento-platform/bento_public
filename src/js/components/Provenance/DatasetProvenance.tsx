@@ -9,13 +9,14 @@ import SpatialCoverageTable from './Tables/SpatialCoverageTable';
 import ExtraPropertiesTable from './Tables/ExtraPropertiesTable';
 import PublicationsTable from './Tables/PublicationsTable';
 import CreatedByTable from './Tables/CreatedByTable';
-import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '../../constants/configConstants';
+import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
+import { ProvenanceStoreDataset } from '@/types/provenance';
 
 const { Item } = Descriptions;
 const { Text, Title } = Typography;
 const { Meta } = Card;
 
-const DatasetProvenance = ({ metadata, loading }) => {
+const DatasetProvenance = ({ metadata, loading }: DatasetProvenanceProps) => {
   const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
   const { t: td } = useTranslation(DEFAULT_TRANSLATION);
 
@@ -29,7 +30,7 @@ const DatasetProvenance = ({ metadata, loading }) => {
           </Title>,
         ]}
         style={{ borderRadius: '11px', maxWidth: '1400px' }}
-        Loading={loading}
+        loading={loading}
       >
         {/* --- DESCRIPTION ---*/}
         <Meta description={<Text italic>{t(metadata.description)}</Text>} />
@@ -94,9 +95,14 @@ const DatasetProvenance = ({ metadata, loading }) => {
   );
 };
 
+export type DatasetProvenanceProps = {
+  metadata: ProvenanceStoreDataset;
+  loading: boolean;
+};
+
 export default DatasetProvenance;
 
-const TableTitleWitTranslation = ({ title }) => {
+const TableTitleWitTranslation = ({ title }: { title: string }) => {
   const { t } = useTranslation(DEFAULT_TRANSLATION);
 
   return (
@@ -106,4 +112,4 @@ const TableTitleWitTranslation = ({ title }) => {
   );
 };
 
-const DescriptionTitle = ({ title }) => <b>{title}</b>;
+const DescriptionTitle = ({ title }: { title: string }) => <b>{title}</b>;

@@ -1,11 +1,11 @@
 import React from 'react';
 import { Table, Tag } from 'antd';
-import { useTranslation } from 'react-i18next';
-import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '../../../constants/configConstants';
+import { ProvenanceStoreDataset } from '@/types/provenance';
+import { useTranslationDefault, useTranslationCustom } from '@/hooks';
 
-const CreatedByTable = ({ creators }) => {
-  const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
-  const { t: td } = useTranslation(DEFAULT_TRANSLATION);
+const CreatedByTable = ({ creators }: CreatedByTableProps) => {
+  const t = useTranslationCustom();
+  const td = useTranslationDefault();
 
   return (
     <Table
@@ -40,5 +40,9 @@ const CreatedByTable = ({ creators }) => {
     />
   );
 };
+
+export interface CreatedByTableProps {
+  creators: ProvenanceStoreDataset['creators'];
+}
 
 export default CreatedByTable;
