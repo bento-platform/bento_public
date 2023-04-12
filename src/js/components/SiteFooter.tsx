@@ -4,7 +4,7 @@ import { Layout, Row, Typography, Space } from 'antd';
 const { Footer } = Layout;
 const { Title, Text, Link } = Typography;
 
-import bentoLogo from '../../public/assets/bento.svg';
+import bentoLogo from '@public/assets/bento.svg';
 
 const SiteFooter = () => {
   const { t } = useTranslation();
@@ -42,7 +42,7 @@ const SiteFooter = () => {
           </div>
           <div>
             <Link href="/public/terms.html" target="_blank">
-              {t("Terms of Use")}
+              {t('Terms of Use')}
             </Link>
           </div>
         </Space>
