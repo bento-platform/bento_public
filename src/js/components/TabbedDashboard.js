@@ -16,10 +16,11 @@ import PublicOverview from './Overview/PublicOverview';
 import Search from './Search/Search';
 import ProvenanceTab from './Provenance/ProvenanceTab';
 import BeaconQueryUi from './Beacon/BeaconQueryUi'
+import { DEFAULT_TRANSLATION } from '../constants/configConstants';
 
 const TabbedDashboard = () => {
   const dispatch = useDispatch();
-  const { t } = useTranslation();
+  const { t } = useTranslation(DEFAULT_TRANSLATION);
 
   // fetch data from server on first render
   useEffect(() => {

@@ -5,14 +5,15 @@ import { TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
 import { useTranslation } from 'react-i18next';
 
-import BentoPie from '../Overview/charts/BentoPie';
+import { PieChart } from 'bento-charts';
 import CustomEmpty from '../Util/CustomEmpty';
 import ExpSvg from '../Util/ExpSvg';
 
-import { CHART_HEIGHT } from '../../constants/overviewConstants';
+import { CHART_HEIGHT, COUNTS_FILL } from '../../constants/overviewConstants';
+import { DEFAULT_TRANSLATION } from '../../constants/configConstants';
 
 const SearchResults = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(DEFAULT_TRANSLATION);
 
   const { status, count, message } = useSelector((state) => state.query.queryResponseData);
   const isFetchingData = useSelector((state) => state.query.isFetchingData);
@@ -42,19 +43,19 @@ const SearchResults = () => {
               <Statistic
                 title={t('Individuals')}
                 value={isValid ? (status === 'count' ? count : t(message)) : '----'}
-                valueStyle={{ color: '#75787a' }}
+                valueStyle={{ color: COUNTS_FILL }}
                 prefix={<TeamOutlined />}
               />
               <Statistic
                 title={t('Biosamples')}
                 value={isValid && status === 'count' && biosampleCount ? biosampleCount : '----'}
-                valueStyle={{ color: '#75787a' }}
+                valueStyle={{ color: COUNTS_FILL }}
                 prefix={<BiDna />}
               />
               <Statistic
                 title={t('Experiments')}
                 value={isValid && status === 'count' && experimentCount ? experimentCount : '----'}
-                valueStyle={{ color: '#75787a' }}
+                valueStyle={{ color: COUNTS_FILL }}
                 prefix={<ExpSvg />}
               />
             </Space>
@@ -62,7 +63,7 @@ const SearchResults = () => {
           <Col span={10}>
             <Typography.Title level={5}>{t('Biosamples')}</Typography.Title>
             {isValid && biosampleChartData && status === 'count' ? (
-              <BentoPie data={biosampleChartData} height={CHART_HEIGHT} sort={true} />
+              <PieChart data={biosampleChartData} height={CHART_HEIGHT} sort={true} />
             ) : (
               <CustomEmpty text="No Results" />
             )}
@@ -70,7 +71,7 @@ const SearchResults = () => {
           <Col span={10}>
             <Typography.Title level={5}>{t('Experiments')}</Typography.Title>
             {isValid && experimentChartData && status === 'count' ? (
-              <BentoPie data={experimentChartData} height={CHART_HEIGHT} sort={true} />
+              <PieChart data={experimentChartData} height={CHART_HEIGHT} sort={true} />
             ) : (
               <CustomEmpty text="No Results" />
             )}

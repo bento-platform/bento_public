@@ -4,24 +4,14 @@
 rm -rf build
 mkdir -p build/www
 
-# - prepare server .env
-cp server.env build/.env
-
-# go to src directory and build go binary
-cd src
-go build -o ../build/reactapp
-
 # build react bundle.js
-cd ../
 npm run build-dev
-
-# start go http server
-cd build
 
 # - load (export) .env
 set -a
-. ./.env
+. server.env
 set +a
 
 # - run
-./reactapp
+export BENTO_PUBLIC_STATIC_FILES_PATH="$PWD/build/www"
+go run main.go

@@ -7,9 +7,10 @@ import SearchFieldsStack from './SearchFieldsStack';
 import SearchResults from './SearchResults';
 
 import { makeGetKatsuPublic } from '../../features/search/query';
+import { NON_DEFAULT_TRANSLATION } from '../../constants/configConstants';
 
 const Search = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
   const dispatch = useDispatch();
   const searchSections = useSelector((state) => state.query.querySections);
 

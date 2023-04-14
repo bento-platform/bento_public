@@ -8,7 +8,7 @@ added at a later time.
 
 ## Prerequisites:
 - Node Package Manager
-- Go version >= 1.15
+- Go version >= 1.19
 
 ## Getting started:
 
@@ -21,15 +21,11 @@ and modify the contents according to your needs.
 If needed, install the relevant Go dependencies:
 
 ```bash
-go get github.com/kelseyhightower/envconfig
-go get github.com/labstack/echo
-go get github.com/labstack/echo/middleware
+go mod download
 ```
 
 Finally, install the NPM dependencies and run the build process:
 ```bash
-export GO111MODULE=off
-
 npm install
 npm run gobuild
 ```

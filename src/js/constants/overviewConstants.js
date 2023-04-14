@@ -42,6 +42,8 @@ export const COLORS = [
 export const BAR_CHART_FILL = '#4575b4';
 export const CHART_MISSING_FILL = '#bbbbbb';
 
+export const COUNTS_FILL = '#75787a';
+
 export const LOCALSTORAGE_CHARTS_KEY = 'charts';
 
 export const CHART_HEIGHT = 300;
