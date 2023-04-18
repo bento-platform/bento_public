@@ -19,22 +19,20 @@ const ConfigLogTemplate = `Config --
 	Static Files: %s
 	Client Name: %s
 	Katsu URL: %v
-	Maximum no. Query Parameters: %d
 	Bento Portal Url: %s
 	Port: %d
 	Translated: %t
 `
 
 type BentoConfig struct {
-	ServiceId          string `envconfig:"BENTO_PUBLIC_SERVICE_ID"`
-	PackageJsonPath    string `envconfig:"BENTO_PUBLIC_PACKAGE_JSON_PATH" default:"./package.json"`
-	StaticFilesPath    string `envconfig:"BENTO_PUBLIC_STATIC_FILES_PATH" default:"./www"`
-	ClientName         string `envconfig:"BENTO_PUBLIC_CLIENT_NAME"`
-	KatsuUrl           string `envconfig:"BENTO_PUBLIC_KATSU_URL"`
-	MaxQueryParameters int    `envconfig:"BENTO_PUBLIC_MAX_QUERY_PARAMETERS"`
-	BentoPortalUrl     string `envconfig:"BENTO_PUBLIC_PORTAL_URL"`
-	Port               int    `envconfig:"INTERNAL_PORT" default:"8090"`
-	Translated         bool   `envconfig:"BENTO_PUBLIC_TRANSLATED" default:"true"`
+	ServiceId       string `envconfig:"BENTO_PUBLIC_SERVICE_ID"`
+	PackageJsonPath string `envconfig:"BENTO_PUBLIC_PACKAGE_JSON_PATH" default:"./package.json"`
+	StaticFilesPath string `envconfig:"BENTO_PUBLIC_STATIC_FILES_PATH" default:"./www"`
+	ClientName      string `envconfig:"BENTO_PUBLIC_CLIENT_NAME"`
+	KatsuUrl        string `envconfig:"BENTO_PUBLIC_KATSU_URL"`
+	BentoPortalUrl  string `envconfig:"BENTO_PUBLIC_PORTAL_URL"`
+	Port            int    `envconfig:"INTERNAL_PORT" default:"8090"`
+	Translated      bool   `envconfig:"BENTO_PUBLIC_TRANSLATED" default:"true"`
 }
 
 type JsonLike map[string]interface{}
@@ -81,7 +79,6 @@ func main() {
 		cfg.StaticFilesPath,
 		cfg.ClientName,
 		cfg.KatsuUrl,
-		cfg.MaxQueryParameters,
 		cfg.BentoPortalUrl,
 		cfg.Port,
 		cfg.Translated,
@@ -92,7 +89,7 @@ func main() {
 
 	// Create Katsu request helper closure
 	type responseFormatter func(JsonLike) JsonLike
-	katsuRequest := func(path string, qs url.Values, c echo.Context, rf responseFormatter) error {
+	katsuRequestJsonOnly := func(path string, qs url.Values, c echo.Context, rf responseFormatter) (JsonLike, error) {
 		var req *http.Request
 		var err error
 
@@ -100,12 +97,12 @@ func main() {
 			req, err = http.NewRequest(
 				"GET", fmt.Sprintf("%s%s?%s", cfg.KatsuUrl, path, qs.Encode()), nil)
 			if err != nil {
-				return internalServerError(err, c)
+				return nil, internalServerError(err, c)
 			}
 		} else {
 			req, err = http.NewRequest("GET", fmt.Sprintf("%s%s", cfg.KatsuUrl, path), nil)
 			if err != nil {
-				return internalServerError(err, c)
+				return nil, internalServerError(err, c)
 			}
 		}
 
@@ -114,7 +111,7 @@ func main() {
 
 		resp, err := client.Do(req)
 		if err != nil {
-			return internalServerError(err, c)
+			return nil, internalServerError(err, c)
 		}
 
 		defer resp.Body.Close()
@@ -123,13 +120,22 @@ func main() {
 
 		body, err := io.ReadAll(resp.Body)
 		if err != nil {
-			return internalServerError(err, c)
+			return nil, internalServerError(err, c)
 		}
 
 		jsonLike := make(JsonLike)
 		err = json.Unmarshal(body, &jsonLike)
 		if err != nil {
-			return internalServerError(err, c)
+			return nil, internalServerError(err, c)
+		}
+
+		return jsonLike, nil
+	}
+	katsuRequest := func(path string, qs url.Values, c echo.Context, rf responseFormatter) error {
+		jsonLike, err := katsuRequestJsonOnly(path, qs, c, rf)
+
+		if err != nil {
+			return err
 		}
 
 		return c.JSON(http.StatusOK, rf(jsonLike))
@@ -192,9 +198,17 @@ func main() {
 	// -- Data
 	e.GET("/config", func(c echo.Context) error {
 		// make some server-side configurations available to the front end
+		// - fetch overview from katsu and obtain part of the configuration
+		// - TODO: cache so a public-overview call to katsu isn't made every
+		//   time a call is made to config
+		publicOverview, err := katsuRequestJsonOnly("/api/public_overview", nil, c, identityJSONTransform)
+		if err != nil {
+			return internalServerError(err, c)
+		}
+
 		return c.JSON(http.StatusOK, JsonLike{
 			"clientName":         cfg.ClientName,
-			"maxQueryParameters": cfg.MaxQueryParameters,
+			"maxQueryParameters": publicOverview["max_query_parameters"],
 			"portalUrl":          cfg.BentoPortalUrl,
 			"translated":         cfg.Translated,
 		})
