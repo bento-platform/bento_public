@@ -7,10 +7,13 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"time"
 
 	"github.com/kelseyhightower/envconfig"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+
+	cache "github.com/patrickmn/go-cache"
 )
 
 const ConfigLogTemplate = `Config --
@@ -196,14 +199,33 @@ func main() {
 	})
 
 	// -- Data
+	// Create a cache with a default expiration time of 5 minutes, and which
+	// purges expired items every 10 minutes
+	var katsuCache = cache.New(5*time.Minute, 10*time.Minute)
 	e.GET("/config", func(c echo.Context) error {
 		// make some server-side configurations available to the front end
 		// - fetch overview from katsu and obtain part of the configuration
-		// - TODO: cache so a public-overview call to katsu isn't made every
+		// - cache so a public-overview call to katsu isn't made every
 		//   time a call is made to config
-		publicOverview, err := katsuRequestJsonOnly("/api/public_overview", nil, c, identityJSONTransform)
-		if err != nil {
-			return internalServerError(err, c)
+		var (
+			publicOverview JsonLike
+			err            error
+		)
+
+		// restore from cache if present/not expired
+		if x, found := katsuCache.Get("publicOverview"); found {
+			fmt.Println("'publicOverview' found in 'katsuCache' - restoring")
+			publicOverview = x.(JsonLike)
+		} else {
+			fmt.Println("'publicOverview' not found in 'katsuCache - fetching")
+			publicOverview, err = katsuRequestJsonOnly("/api/public_overview", nil, c, identityJSONTransform)
+			if err != nil {
+				fmt.Println("something went wrong fetching 'publicOverview' for 'katsuCache': ", err)
+				return internalServerError(err, c)
+			}
+
+			fmt.Println("storing 'publicOverview' in 'katsuCache'")
+			katsuCache.Set("publicOverview", publicOverview, cache.DefaultExpiration)
 		}
 
 		return c.JSON(http.StatusOK, JsonLike{
