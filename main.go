@@ -202,6 +202,7 @@ func main() {
 	// Create a cache with a default expiration time of 5 minutes, and which
 	// purges expired items every 10 minutes
 	var katsuCache = cache.New(5*time.Minute, 10*time.Minute)
+
 	e.GET("/config", func(c echo.Context) error {
 		// make some server-side configurations available to the front end
 		// - fetch overview from katsu and obtain part of the configuration
@@ -213,11 +214,12 @@ func main() {
 		)
 
 		// restore from cache if present/not expired
-		if x, found := katsuCache.Get("publicOverview"); found {
+		if publicOverviewInterface, didFind := katsuCache.Get("publicOverview"); didFind {
 			fmt.Println("'publicOverview' found in 'katsuCache' - restoring")
-			publicOverview = x.(JsonLike)
+			publicOverview = publicOverviewInterface.(JsonLike)
 		} else {
-			fmt.Println("'publicOverview' not found in 'katsuCache - fetching")
+			// fetch from katsu and store in cache
+			fmt.Println("'publicOverview' not found or expired in 'katsuCache - fetching")
 			publicOverview, err = katsuRequestJsonOnly("/api/public_overview", nil, c, identityJSONTransform)
 			if err != nil {
 				fmt.Println("something went wrong fetching 'publicOverview' for 'katsuCache': ", err)
@@ -237,11 +239,29 @@ func main() {
 	})
 
 	e.GET("/overview", func(c echo.Context) error {
-		// TODO: formalize response type
-		return katsuRequest("/api/public_overview", nil, c, func(j JsonLike) JsonLike {
-			// Wrap the response from Katsu in {overview: ...} (for some reason)
-			return JsonLike{"overview": j}
-		})
+		var (
+			publicOverview JsonLike
+			err            error
+		)
+
+		// restore from cache if present/not expired
+		if publicOverviewInterface, didFind := katsuCache.Get("publicOverview"); didFind {
+			fmt.Println("'publicOverview' found in 'katsuCache' - restoring")
+			publicOverview = publicOverviewInterface.(JsonLike)
+		} else {
+			// fetch from katsu and store in cache
+			fmt.Println("'publicOverview' not found or expired in 'katsuCache - fetching")
+			publicOverview, err = katsuRequestJsonOnly("/api/public_overview", nil, c, identityJSONTransform)
+			if err != nil {
+				fmt.Println("something went wrong fetching 'publicOverview' for 'katsuCache': ", err)
+				return internalServerError(err, c)
+			}
+
+			fmt.Println("storing 'publicOverview' in 'katsuCache'")
+			katsuCache.Set("publicOverview", publicOverview, cache.DefaultExpiration)
+		}
+
+		return c.JSON(http.StatusOK, JsonLike{"overview": publicOverview})
 	})
 
 	// get request handler for /katsu that relays the request to the Katsu API and returns response
