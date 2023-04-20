@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM node:18-alpine3.16 as nodebuilder
+FROM --platform=$BUILDPLATFORM node:18-alpine3.17 as nodebuilder
 
 RUN mkdir /node
 COPY . /node
@@ -7,42 +7,35 @@ WORKDIR /node
 RUN npm install
 
 RUN mkdir -p build/www
-RUN npm run build-dev
+RUN npm run build
 
 
-FROM golang:1.19-alpine3.16 as gobuilder
+FROM golang:1.19-bullseye as gobuilder
 
-RUN apk update && \
-    apk upgrade && \
-    apk add git
+RUN apt-get update -y && \
+    apt-get upgrade -y && \
+    apt-get install -y git
 
-RUN mkdir /build
-COPY . /build
-WORKDIR /build/src
-RUN export GO111MODULE=off && \
-    export GOPATH=/go && \
-    export GOBIN=$GOPATH/bin && \
-    go get . && \
-    go build -o ./reactapp
-
-RUN ls -lah
+WORKDIR /build
+COPY . .
+RUN go build -o ./reactapp
 
 
-FROM alpine:3.16
+FROM ghcr.io/bento-platform/bento_base_image:plain-debian-2023.03.22
 
-RUN apk update && \
-    apk upgrade
+RUN mkdir -p /bento-public/www
 
-RUN mkdir -p /runner/www
-
-COPY --from=nodebuilder /node/build/www /runner/www
-COPY --from=nodebuilder /node/package.json /runner/package.json
+COPY --from=nodebuilder /node/build/www /bento-public/www
+COPY --from=nodebuilder /node/package.json /bento-public/package.json
 
 # Server
-COPY --from=gobuilder /build/src/reactapp /runner
+COPY --from=gobuilder /build/reactapp /bento-public/reactapp
 
-ENV BENTO_PUBLIC_PACKAGE_JSON_PATH=/runner/package.json
+ENV BENTO_PUBLIC_PACKAGE_JSON_PATH=/bento-public/package.json
 
+WORKDIR /bento-public
 
-WORKDIR /runner
-ENTRYPOINT [ "./reactapp" ]
+COPY entrypoint.bash .
+
+ENTRYPOINT [ "/bin/bash", "./entrypoint.bash" ]
+CMD [ "./reactapp" ]
