@@ -18,7 +18,7 @@ export type ContentState = {
   aboutHTML: string;
 };
 
-const initialState = {
+const initialState: ContentState = {
   isFetchingAbout: true,
   aboutHTML: '',
 };
