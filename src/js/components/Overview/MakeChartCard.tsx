@@ -19,7 +19,6 @@ const MakeChartCard = ({ section, chart, onRemoveChart }: MakeChartCardProps) =>
     {
       icon: <QuestionOutlined />,
       description: t(description),
-      onClick: () => {},
     },
     {
       icon: <CloseOutlined />,

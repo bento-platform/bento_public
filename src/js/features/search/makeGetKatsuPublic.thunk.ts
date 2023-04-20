@@ -8,7 +8,7 @@ import { RootState } from '@/store';
 export const makeGetKatsuPublic = createAsyncThunk<
   KatsuSearchResponse,
   void,
-  { state: RootState; rejectValue: String }
+  { state: RootState; rejectValue: string }
 >('query/makeGetKatsuPublic', async (_ignore, thunkAPI) => {
   const queryParams = thunkAPI.getState().query.queryParams;
 

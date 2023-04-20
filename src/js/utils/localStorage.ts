@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { LocalStorageData, Sections } from '@/types/data';
 import { ValueOf } from '@/types/util';
 

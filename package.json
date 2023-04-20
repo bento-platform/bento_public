@@ -8,7 +8,7 @@
     "build-dev": "webpack --mode=development",
     "watch": "webpack --mode=development --watch",
     "gobuild": "./buildandrun.sh",
-    "lint": "npx eslint \"src/js/**/*.{js,jsx}\""
+    "lint": "npx eslint \"src/js/**/*.{js,jsx,ts,tsx}\""
   },
   "keywords": [],
   "author": "",
@@ -45,11 +45,13 @@
     "victory": "^36.2.0"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.58.0",
     "@webpack-cli/serve": "^1.6.1",
     "copy-webpack-plugin": "^11.0.0",
     "cross-env": "^7.0.3",
     "dotenv-webpack": "^7.0.3",
     "eslint": "^8.31.0",
+    "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-react": "^7.30.1",
     "file-loader": "^6.2.0",
     "html-loader": "^4.2.0",
