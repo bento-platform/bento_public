@@ -134,6 +134,7 @@ func main() {
 
 		return jsonLike, nil
 	}
+
 	katsuRequest := func(path string, qs url.Values, c echo.Context, rf responseFormatter) error {
 		jsonLike, err := katsuRequestJsonOnly(path, qs, c, rf)
 
@@ -143,6 +144,7 @@ func main() {
 
 		return c.JSON(http.StatusOK, rf(jsonLike))
 	}
+
 	katsuRequestBasic := func(path string, c echo.Context) error {
 		return katsuRequest(path, nil, c, identityJSONTransform)
 	}
@@ -157,6 +159,30 @@ func main() {
 
 		fmt.Println("storing 'publicOverview' in 'katsuCache'")
 		katsuCache.Set("publicOverview", publicOverview, cache.DefaultExpiration)
+
+		return publicOverview, nil
+	}
+
+	getKatsuPublicOverview := func(c echo.Context, katsuCache *cache.Cache) (JsonLike, error) {
+		// make some server-side configurations available to the front end
+		// - fetch overview from katsu and obtain part of the configuration
+		// - cache so a public-overview call to katsu isn't made every
+		//   time a call is made to config
+		var (
+			publicOverview JsonLike
+			err            error
+		)
+
+		if publicOverviewInterface, didFind := katsuCache.Get("publicOverview"); didFind {
+			fmt.Println("'publicOverview' found in 'katsuCache' - restoring")
+			publicOverview = publicOverviewInterface.(JsonLike)
+		} else {
+			// fetch from katsu and store in cache
+			publicOverview, err = fetchAndSetKatsuPublic(c, katsuCache)
+			if err != nil {
+				return nil, err
+			}
+		}
 
 		return publicOverview, nil
 	}
@@ -218,25 +244,10 @@ func main() {
 	var katsuCache = cache.New(5*time.Minute, 10*time.Minute)
 
 	e.GET("/config", func(c echo.Context) error {
-		// make some server-side configurations available to the front end
-		// - fetch overview from katsu and obtain part of the configuration
-		// - cache so a public-overview call to katsu isn't made every
-		//   time a call is made to config
-		var (
-			publicOverview JsonLike
-			err            error
-		)
-
 		// restore from cache if present/not expired
-		if publicOverviewInterface, didFind := katsuCache.Get("publicOverview"); didFind {
-			fmt.Println("'publicOverview' found in 'katsuCache' - restoring")
-			publicOverview = publicOverviewInterface.(JsonLike)
-		} else {
-			// fetch from katsu and store in cache
-			publicOverview, err = fetchAndSetKatsuPublic(c, katsuCache)
-			if err != nil {
-				return internalServerError(err, c)
-			}
+		publicOverview, err := getKatsuPublicOverview(c, katsuCache)
+		if err != nil {
+			return internalServerError(err, c)
 		}
 
 		return c.JSON(http.StatusOK, JsonLike{
@@ -248,23 +259,12 @@ func main() {
 	})
 
 	e.GET("/overview", func(c echo.Context) error {
-		var (
-			publicOverview JsonLike
-			err            error
-		)
-
 		// restore from cache if present/not expired
-		if publicOverviewInterface, didFind := katsuCache.Get("publicOverview"); didFind {
-			fmt.Println("'publicOverview' found in 'katsuCache' - restoring")
-			publicOverview = publicOverviewInterface.(JsonLike)
-		} else {
-			// fetch from katsu and store in cache
-			publicOverview, err = fetchAndSetKatsuPublic(c, katsuCache)
-			if err != nil {
-				return internalServerError(err, c)
-			}
+		publicOverview, err := getKatsuPublicOverview(c, katsuCache)
+		if err != nil {
+			return internalServerError(err, c)
 		}
-
+		fmt.Println("for fun")
 		return c.JSON(http.StatusOK, JsonLike{"overview": publicOverview})
 	})
 
