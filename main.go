@@ -147,6 +147,20 @@ func main() {
 		return katsuRequest(path, nil, c, identityJSONTransform)
 	}
 
+	fetchAndSetKatsuPublic := func(c echo.Context, katsuCache *cache.Cache) (JsonLike, error) {
+		fmt.Println("'publicOverview' not found or expired in 'katsuCache - fetching")
+		publicOverview, err := katsuRequestJsonOnly("/api/public_overview", nil, c, identityJSONTransform)
+		if err != nil {
+			fmt.Println("something went wrong fetching 'publicOverview' for 'katsuCache': ", err)
+			return nil, err
+		}
+
+		fmt.Println("storing 'publicOverview' in 'katsuCache'")
+		katsuCache.Set("publicOverview", publicOverview, cache.DefaultExpiration)
+
+		return publicOverview, nil
+	}
+
 	// Begin Echo
 
 	// Instantiate Server
@@ -219,15 +233,10 @@ func main() {
 			publicOverview = publicOverviewInterface.(JsonLike)
 		} else {
 			// fetch from katsu and store in cache
-			fmt.Println("'publicOverview' not found or expired in 'katsuCache - fetching")
-			publicOverview, err = katsuRequestJsonOnly("/api/public_overview", nil, c, identityJSONTransform)
+			publicOverview, err = fetchAndSetKatsuPublic(c, katsuCache)
 			if err != nil {
-				fmt.Println("something went wrong fetching 'publicOverview' for 'katsuCache': ", err)
 				return internalServerError(err, c)
 			}
-
-			fmt.Println("storing 'publicOverview' in 'katsuCache'")
-			katsuCache.Set("publicOverview", publicOverview, cache.DefaultExpiration)
 		}
 
 		return c.JSON(http.StatusOK, JsonLike{
@@ -250,15 +259,10 @@ func main() {
 			publicOverview = publicOverviewInterface.(JsonLike)
 		} else {
 			// fetch from katsu and store in cache
-			fmt.Println("'publicOverview' not found or expired in 'katsuCache - fetching")
-			publicOverview, err = katsuRequestJsonOnly("/api/public_overview", nil, c, identityJSONTransform)
+			publicOverview, err = fetchAndSetKatsuPublic(c, katsuCache)
 			if err != nil {
-				fmt.Println("something went wrong fetching 'publicOverview' for 'katsuCache': ", err)
 				return internalServerError(err, c)
 			}
-
-			fmt.Println("storing 'publicOverview' in 'katsuCache'")
-			katsuCache.Set("publicOverview", publicOverview, cache.DefaultExpiration)
 		}
 
 		return c.JSON(http.StatusOK, JsonLike{"overview": publicOverview})
