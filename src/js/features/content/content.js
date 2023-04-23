@@ -1,16 +1,16 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { aboutUrl } from '../../constants/contentConstants';
+import { partialAboutUrl } from '../../constants/contentConstants';
 import { printAPIError } from '../../utils/error';
 
 export const makeGetAboutRequest = createAsyncThunk('content/getAboutHTML', async () => {
   const en_aboutHTML = await axios
-    .get(`${aboutUrl}en_about.html`)
+    .get(`${partialAboutUrl}en_about.html`)
     .then((res) => res.data)
     .catch(printAPIError);
 
   const fr_aboutHTML = await axios
-    .get(`${aboutUrl}fr_about.html`)
+    .get(`${partialAboutUrl}fr_about.html`)
     .then((res) => res.data)
     .catch(printAPIError);
 
