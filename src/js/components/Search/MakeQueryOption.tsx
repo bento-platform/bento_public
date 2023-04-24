@@ -7,7 +7,7 @@ import OptionDescription from './OptionDescription';
 import { removeQueryParam } from '@/features/search/query.store';
 import SelectOption from './SelectOption';
 
-import { makeGetKatsuPublic } from '../../features/search/query.store';
+import { makeGetKatsuPublic } from '@/features/search/query.store';
 import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { useAppSelector } from '@/hooks';
 import { Field } from '@/types/search';

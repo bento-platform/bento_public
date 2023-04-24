@@ -6,7 +6,7 @@ import MakeChartCard from './MakeChartCard';
 import { disableChart } from '@/features/data/data.store';
 import { ChartDataField } from '@/types/data';
 
-const getColumnCount = (width: number) => {
+const getColumnCount = (width: number): number => {
   if (width < 990) {
     return 1;
   } else if (width < 1420) {
@@ -14,7 +14,7 @@ const getColumnCount = (width: number) => {
   } else return 3;
 };
 
-const getframeWidth = (width: number) => {
+const getframeWidth = (width: number): number => {
   if (width < 990) {
     return 360;
   } else if (width < 1420) {
