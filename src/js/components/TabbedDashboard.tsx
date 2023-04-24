@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Tabs, Typography } from 'antd';
 const { Title } = Typography;
@@ -15,10 +14,10 @@ import PublicOverview from './Overview/PublicOverview';
 import Search from './Search/Search';
 import ProvenanceTab from './Provenance/ProvenanceTab';
 import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
-import { useAppSelector } from '@/hooks';
+import { useAppDispatch, useAppSelector } from '@/hooks';
 
 const TabbedDashboard = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { t } = useTranslation(DEFAULT_TRANSLATION);
 
   // fetch data from server on first render

@@ -1,14 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useRef, useEffect, useState } from 'react';
 import { Select } from 'antd';
-import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 import { addQueryParam } from '@/features/search/query.store';
 import { NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
+import { useAppDispatch } from '@/hooks';
 
 const SelectOption = ({ id, isChecked, options, optionalDispatch }: SelectOptionProps) => {
   const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const [value, setValue] = useState(options[0]);
 
@@ -57,7 +58,7 @@ export interface SelectOptionProps {
   id: string;
   isChecked: boolean;
   options: string[];
-  optionalDispatch?: () => void;
+  optionalDispatch?: any;
 }
 
 export default SelectOption;

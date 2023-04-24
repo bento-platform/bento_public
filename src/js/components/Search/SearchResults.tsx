@@ -2,18 +2,16 @@ import React from 'react';
 import { Card, Col, Row, Statistic, Typography, Space } from 'antd';
 import { TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
-import { useTranslation } from 'react-i18next';
 
 import { PieChart } from 'bento-charts';
 import CustomEmpty from '../Util/CustomEmpty';
 import ExpSvg from '../Util/ExpSvg';
 
 import { CHART_HEIGHT, COUNTS_FILL } from '@/constants/overviewConstants';
-import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
-import { useAppSelector } from '@/hooks';
+import { useAppSelector, useTranslationDefault } from '@/hooks';
 
 const SearchResults = () => {
-  const { t } = useTranslation(DEFAULT_TRANSLATION);
+  const t = useTranslationDefault();
 
   const { status, count, message } = useAppSelector((state) => state.query.queryResponseData);
   const isFetchingData = useAppSelector((state) => state.query.isFetchingData);
