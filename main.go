@@ -264,7 +264,7 @@ func main() {
 		if err != nil {
 			return internalServerError(err, c)
 		}
-		fmt.Println("for fun")
+
 		return c.JSON(http.StatusOK, JsonLike{"overview": publicOverview})
 	})
 
