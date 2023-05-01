@@ -27,7 +27,7 @@ export const saveValue = (key: string, value: any) => {
   }
 };
 
-export const getValue = <T>(key: string, defaultVal: T, verifyFunc: (arg: any) => boolean) => {
+export const getValue = <T>(key: string, defaultVal: T, verifyFunc: (arg: any) => boolean): T => {
   try {
     const serializedState = localStorage.getItem(key);
     if (serializedState === null) {
@@ -40,6 +40,8 @@ export const getValue = <T>(key: string, defaultVal: T, verifyFunc: (arg: any) =
 
     return unserializedState as T;
   } catch (err) {
+    console.log(err);
+    console.log('Error retrieving state from localStorage');
     return defaultVal;
   }
 };
