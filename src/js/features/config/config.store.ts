@@ -6,12 +6,11 @@ import { ConfigResponse } from '@/types/configResponse';
 
 export const makeGetConfigRequest = createAsyncThunk<ConfigResponse, void, { rejectValue: string }>(
   'config/getConfigData',
-  async (_, { rejectWithValue }) => {
-    return (await axios
+  (_, { rejectWithValue }) =>
+    axios
       .get(configUrl)
       .then((res) => res.data)
-      .catch(printAPIError(rejectWithValue))) as ConfigResponse;
-  }
+      .catch(printAPIError(rejectWithValue))
 );
 
 export interface ConfigState extends ConfigResponse {

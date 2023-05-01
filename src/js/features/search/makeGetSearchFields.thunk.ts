@@ -6,10 +6,10 @@ import { SearchFieldResponse } from '@/types/search';
 
 export const makeGetSearchFields = createAsyncThunk<SearchFieldResponse, void, { rejectValue: string }>(
   'query/makeGetSearchFields',
-  async (_, { rejectWithValue }) => {
-    return axios
+  (_, { rejectWithValue }) =>
+    axios
       .get(searchFieldsUrl)
       .then((res) => res.data)
-      .catch(printAPIError(rejectWithValue));
-  }
+      .catch(printAPIError(rejectWithValue))
+
 );

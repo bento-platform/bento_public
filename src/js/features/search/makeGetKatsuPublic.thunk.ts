@@ -9,11 +9,11 @@ export const makeGetKatsuPublic = createAsyncThunk<
   KatsuSearchResponse,
   void,
   { state: RootState; rejectValue: string }
->('query/makeGetKatsuPublic', async (_ignore, thunkAPI) => {
+>('query/makeGetKatsuPublic', (_ignore, thunkAPI) => {
   const queryParams = thunkAPI.getState().query.queryParams;
 
-  return (await axios
+  return axios
     .get(katsuUrl, { params: queryParams })
     .then((res) => res.data)
-    .catch(printAPIError(thunkAPI.rejectWithValue))) as KatsuSearchResponse;
+    .catch(printAPIError(thunkAPI.rejectWithValue));
 });

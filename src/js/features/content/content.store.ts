@@ -5,12 +5,11 @@ import { printAPIError } from '@/utils/error.util';
 
 export const makeGetAboutRequest = createAsyncThunk<string, void, { rejectValue: string }>(
   'content/getAboutHTML',
-  async (_, { rejectWithValue }) => {
-    return (await axios
+  (_, { rejectWithValue }) =>
+    axios
       .get(aboutUrl)
       .then((res) => res.data)
-      .catch(printAPIError(rejectWithValue))) as string;
-  }
+      .catch(printAPIError(rejectWithValue))
 );
 
 export type ContentState = {

@@ -6,12 +6,11 @@ import { ProvenanceAPIResponse, ProvenanceStore } from '@/types/provenance';
 
 export const makeGetProvenanceRequest = createAsyncThunk<ProvenanceAPIResponse, void, { rejectValue: string }>(
   'provenance/getProvenance',
-  async () => {
-    return (await axios
+  () =>
+    axios
       .get(provenanceUrl)
       .then((res) => res.data)
-      .catch(printAPIError)) as ProvenanceAPIResponse;
-  }
+      .catch(printAPIError)
 );
 
 export type ProvenanceState = {
