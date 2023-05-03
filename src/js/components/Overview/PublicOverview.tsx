@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Divider, Row, Col, FloatButton, Card, Skeleton } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
@@ -8,6 +8,7 @@ import { LOCALSTORAGE_CHARTS_KEY } from '@/constants/overviewConstants';
 import OverviewSection from './OverviewSection';
 import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
 import Counts from './Counts';
+import i18n from '@/i18n';
 import { useAppSelector } from '@/hooks';
 
 const PublicOverview = () => {
@@ -17,7 +18,18 @@ const PublicOverview = () => {
 
   const [drawerVisible, setDrawerVisible] = useState(false);
 
-  const { isFetchingAbout, aboutHTML } = useAppSelector((state) => state.content);
+  const { isFetchingAbout, en_aboutHTML, fr_aboutHTML } = useAppSelector((state) => state.content);
+
+  const [aboutContent, setAboutContent] = useState('');
+
+  useEffect(() => {
+    const activeLanguage = i18n.language;
+    if (activeLanguage === 'en') {
+      setAboutContent(en_aboutHTML);
+    } else if (activeLanguage === 'fr') {
+      setAboutContent(fr_aboutHTML);
+    }
+  }, [i18n.language, en_aboutHTML, fr_aboutHTML]);
 
   return (
     <>
@@ -28,7 +40,7 @@ const PublicOverview = () => {
               {isFetchingAbout ? (
                 <Skeleton title={false} paragraph={{ rows: 2 }} />
               ) : (
-                <div dangerouslySetInnerHTML={{ __html: aboutHTML }} />
+                <div dangerouslySetInnerHTML={{ __html: aboutContent }} />
               )}
             </Card>
             <Counts />
