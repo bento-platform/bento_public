@@ -24,14 +24,13 @@ const TabbedDashboard = () => {
 
   // fetch data from server on first render
   useEffect(() => {
-    dispatch(makeGetConfigRequest());
+    dispatch(makeGetConfigRequest()).then(() => dispatch(getBeaconConfig()));
     dispatch(makeGetAboutRequest());
     dispatch(makeGetDataRequest()).then(() => {
       // Sequential call intended for backend related issues
       dispatch(makeGetSearchFields());
     });
     dispatch(makeGetProvenanceRequest());
-    dispatch(getBeaconConfig());
 
   }, []);
 
