@@ -4,29 +4,30 @@ import { partialAboutUrl } from '@/constants/contentConstants';
 import { printAPIError } from '@/utils/error.util';
 
 export const makeGetAboutRequest = createAsyncThunk('content/getAboutHTML', async () => {
-  const en_aboutHTML = await axios
-    .get(`${partialAboutUrl}en_about.html`)
+  const en = await axios
+    .get(`${partialAboutUrl}/en_about.html`)
     .then((res) => res.data)
     .catch(printAPIError);
 
-  const fr_aboutHTML = await axios
-    .get(`${partialAboutUrl}fr_about.html`)
+  const fr = await axios
+    .get(`${partialAboutUrl}/fr_about.html`)
     .then((res) => res.data)
     .catch(printAPIError);
 
-  return { en_aboutHTML, fr_aboutHTML };
+  return { en, fr };
 });
 
 export type ContentState = {
   isFetchingAbout: boolean;
-  en_aboutHTML: string;
-  fr_aboutHTML: string;
+  about: { [key: string]: string };
 };
 
 const initialState: ContentState = {
   isFetchingAbout: true,
-  en_aboutHTML: "",
-  fr_aboutHTML: "",
+  about: {
+    en: "",
+    fr: ""
+  },
 };
 
 const content = createSlice({
@@ -37,9 +38,9 @@ const content = createSlice({
     builder.addCase(makeGetAboutRequest.pending, (state) => {
       state.isFetchingAbout = true;
     });
-    builder.addCase(makeGetAboutRequest.fulfilled, (state, { payload }: PayloadAction<{ en_aboutHTML: string; fr_aboutHTML: string }>) => {
-      state.en_aboutHTML = payload.en_aboutHTML;
-      state.fr_aboutHTML = payload.fr_aboutHTML;
+    builder.addCase(makeGetAboutRequest.fulfilled, (state, { payload }: PayloadAction<{ en: string; fr: string }>) => {
+      state.about.en = payload.en;
+      state.about.fr = payload.fr;
       state.isFetchingAbout = false;
     });
     builder.addCase(makeGetAboutRequest.rejected, (state) => {
