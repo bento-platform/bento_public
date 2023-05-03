@@ -1,1 +1,1 @@
-export const partialAboutUrl = '/public/';
+export const partialAboutUrl = '/public';
