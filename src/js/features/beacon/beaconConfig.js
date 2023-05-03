@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { printAPIError } from '../../utils/error';
+import { printAPIError } from '../../utils/error.util.ts';
 
 export const getBeaconConfig = createAsyncThunk('beaconConfig/getBeaconConfig', async (_, { getState }) => {
   const beaconInfoEndpoint = getState()?.config?.beaconUrl + '/info';
