@@ -8,8 +8,8 @@ import { LOCALSTORAGE_CHARTS_KEY } from '@/constants/overviewConstants';
 import OverviewSection from './OverviewSection';
 import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
 import Counts from './Counts';
-import i18n from '@/i18n';
 import { useAppSelector } from '@/hooks';
+import { useTranslation } from 'react-i18next';
 
 const PublicOverview = () => {
   const { sections } = useAppSelector((state) => state.data);
@@ -18,18 +18,17 @@ const PublicOverview = () => {
 
   const [drawerVisible, setDrawerVisible] = useState(false);
 
-  const { isFetchingAbout, en_aboutHTML, fr_aboutHTML } = useAppSelector((state) => state.content);
+  const { isFetchingAbout, about } = useAppSelector((state) => state.content);
 
   const [aboutContent, setAboutContent] = useState('');
 
+  const { i18n } = useTranslation();
+
   useEffect(() => {
     const activeLanguage = i18n.language;
-    if (activeLanguage === 'en') {
-      setAboutContent(en_aboutHTML);
-    } else if (activeLanguage === 'fr') {
-      setAboutContent(fr_aboutHTML);
-    }
-  }, [i18n.language, en_aboutHTML, fr_aboutHTML]);
+    const activeAbout = about[activeLanguage];
+    setAboutContent(activeAbout);
+  }, [i18n.language, about]);
 
   return (
     <>
