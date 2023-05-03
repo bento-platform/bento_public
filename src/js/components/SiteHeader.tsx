@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Button, Layout, Row, Col, Typography, Space } from 'antd';
 const { Header } = Layout;
 import i18n from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { useAppSelector } from '@/hooks';
+import { useNavigate } from 'react-router-dom';
 
 const SiteHeader = () => {
   const { t } = useTranslation(DEFAULT_TRANSLATION);
+  const navigate = useNavigate();
 
   const clientName = useAppSelector((state) => state.config.clientName);
   const translated = useAppSelector((state) => state.config.translated);
@@ -17,14 +19,9 @@ const SiteHeader = () => {
     document.title = clientName && clientName.trim() ? `Bento: ${clientName}` : 'Bento';
   }, [clientName]);
 
-  const [language, setLanguage] = useState(i18n.language);
-  useEffect(() => {
-    if (!translated) setLanguage('en');
-  }, []);
-
   const changeLanguage = () => {
-    i18n.changeLanguage(language === 'en' ? 'fr' : 'en').catch(console.error);
-    setLanguage(language === 'en' ? 'fr' : 'en');
+    const newLang = i18n.language === 'en' ? 'fr' : 'en';
+    navigate(`/${newLang}`);
   };
 
   const buttonHandler = () => window.open(portalUrl, '_blank');
@@ -45,7 +42,7 @@ const SiteHeader = () => {
           <Space>
             {translated && (
               <Button shape="round" onClick={changeLanguage}>
-                {language}
+                {i18n.language === 'en' ? 'Français' : 'English'}
               </Button>
             )}
             <Button type="primary" shape="round" onClick={buttonHandler}>
