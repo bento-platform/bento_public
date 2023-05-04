@@ -13,15 +13,16 @@ import { useAppSelector, useTranslationDefault } from '@/hooks';
 const SearchResults = () => {
   const t = useTranslationDefault();
 
-  const { status, count, message } = useAppSelector((state) => state.query.queryResponseData);
   const isFetchingData = useAppSelector((state) => state.query.isFetchingData);
-  const isValid = useAppSelector((state) => state.query.isValid);
 
   const biosampleCount = useAppSelector((state) => state.query.biosampleCount);
   const biosampleChartData = useAppSelector((state) => state.query.biosampleChartData);
 
   const experimentCount = useAppSelector((state) => state.query.experimentCount);
   const experimentChartData = useAppSelector((state) => state.query.experimentChartData);
+
+  const individualCount = useAppSelector((state) => state.query.individualCount);
+  const message = useAppSelector((state) => state.query.message);
 
   const wrapperStyle = {
     padding: '40px',
@@ -40,19 +41,19 @@ const SearchResults = () => {
             <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
               <Statistic
                 title={t('Individuals')}
-                value={isValid ? (status === 'count' ? count : t(message)) : '----'}
+                value={message ? t(message) : individualCount}
                 valueStyle={{ color: COUNTS_FILL }}
                 prefix={<TeamOutlined />}
               />
               <Statistic
                 title={t('Biosamples')}
-                value={isValid && status === 'count' && biosampleCount ? biosampleCount : '----'}
+                value={message ? '----' : biosampleCount}
                 valueStyle={{ color: COUNTS_FILL }}
                 prefix={<BiDna />}
               />
               <Statistic
                 title={t('Experiments')}
-                value={isValid && status === 'count' && experimentCount ? experimentCount : '----'}
+                value={message ? '----' : experimentCount}
                 valueStyle={{ color: COUNTS_FILL }}
                 prefix={<ExpSvg />}
               />
@@ -60,7 +61,7 @@ const SearchResults = () => {
           </Col>
           <Col span={10}>
             <Typography.Title level={5}>{t('Biosamples')}</Typography.Title>
-            {isValid && biosampleChartData && status === 'count' ? (
+            {(!message && biosampleChartData.length) ? (
               <PieChart data={biosampleChartData} height={CHART_HEIGHT} sort={true} />
             ) : (
               <CustomEmpty text="No Results" />
@@ -68,7 +69,7 @@ const SearchResults = () => {
           </Col>
           <Col span={10}>
             <Typography.Title level={5}>{t('Experiments')}</Typography.Title>
-            {isValid && experimentChartData && status === 'count' ? (
+            {(!message && experimentChartData.length) ? (
               <PieChart data={experimentChartData} height={CHART_HEIGHT} sort={true} />
             ) : (
               <CustomEmpty text="No Results" />
