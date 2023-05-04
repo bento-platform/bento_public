@@ -7,7 +7,6 @@ import OptionDescription from './OptionDescription';
 import { removeQueryParam } from '@/features/search/query.store';
 import SelectOption from './SelectOption';
 
-import { makeGetKatsuPublic } from '@/features/search/query.store';
 import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { useAppSelector } from '@/hooks';
 import { Field } from '@/types/search';
@@ -48,7 +47,7 @@ const MakeQueryOption = ({ queryField }: MakeQueryOptionProps) => {
           />
         </Col>
         <Col span={10}>
-          <SelectOption id={id} options={options} isChecked={checked} optionalDispatch={makeGetKatsuPublic} />
+          <SelectOption id={id} options={options} isChecked={checked} />
         </Col>
       </Row>
     </>
