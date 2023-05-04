@@ -61,6 +61,9 @@ const query = createSlice({
       }
       state.isValid = false;
     },
+    setQueryParams: (state, { payload }) => {
+      state.queryParams = payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(makeGetKatsuPublic.pending, (state) => {
@@ -91,6 +94,6 @@ const query = createSlice({
   },
 });
 
-export const { addQueryParam, removeQueryParam } = query.actions;
+export const { addQueryParam, removeQueryParam, setQueryParams } = query.actions;
 export { makeGetKatsuPublic, makeGetSearchFields };
 export default query.reducer;

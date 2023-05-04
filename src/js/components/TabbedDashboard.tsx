@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { Tabs, Typography } from 'antd';
+
 const { Title } = Typography;
 
 import { makeGetConfigRequest } from '@/features/config/config.store';
@@ -24,9 +25,6 @@ const TabbedDashboard = () => {
   const location = useLocation();
   const { page } = useParams<{ page?: string }>();
 
-  let tab = 'overview';
-
-  // fetch data from server on first render
   useEffect(() => {
     dispatch(makeGetConfigRequest());
     dispatch(makeGetAboutRequest());
@@ -35,34 +33,19 @@ const TabbedDashboard = () => {
     dispatch(makeGetProvenanceRequest());
   }, []);
 
-  useEffect(() => {
-    console.log('page', page);
-    if (page) {
-      if (page === 'search') {
-        tab = 'search';
-      } else if (page === 'provenance') {
-        tab = 'provenance';
-      } else {
-        tab = 'overview';
-      }
-    } else {
-      tab = 'overview';
-    }
-  }, [page]);
-
   const isFetchingOverviewData = useAppSelector((state) => state.data.isFetchingData);
   const isFetchingSearchFields = useAppSelector((state) => state.query.isFetchingFields);
 
-  const onChange = (key: string) => {
-    console.log('Trigger Tab Change ' + key);
-    const currentPath = location.pathname;
-    const currentPathParts = currentPath.split('/');
-    const currentLang = currentPathParts[1];
-    if (key === 'overview') key = '';
-    const newPath = `/${currentLang}/${key}`;
-    // setTab(key);
-    navigate(newPath);
-  };
+  const onChange = useCallback(
+    (key: string) => {
+      const currentPath = location.pathname;
+      const currentPathParts = currentPath.split('/');
+      const currentLang = currentPathParts[1];
+      const newPath = `/${currentLang}/${key === 'overview' ? '' : key}`;
+      navigate(newPath);
+    },
+    [location, navigate]
+  );
 
   const TabTitle = ({ title }: { title: string }) => (
     <Title level={4} style={{ margin: '0' }}>
@@ -101,12 +84,14 @@ const TabbedDashboard = () => {
 };
 
 const getTabKey = (page: string | undefined) => {
-  if (page === 'search') {
-    return 'search';
-  } else if (page === 'provenance') {
-    return 'provenance';
-  } else {
-    return 'overview';
+  switch (page) {
+    case 'search':
+      return 'search';
+    case 'provenance':
+      return 'provenance';
+    default:
+      return 'overview';
   }
 };
+
 export default TabbedDashboard;
