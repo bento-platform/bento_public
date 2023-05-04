@@ -25,8 +25,8 @@ export type ContentState = {
 const initialState: ContentState = {
   isFetchingAbout: true,
   about: {
-    en: "",
-    fr: ""
+    en: '',
+    fr: '',
   },
 };
 
@@ -39,7 +39,7 @@ const content = createSlice({
       state.isFetchingAbout = true;
     });
     builder.addCase(makeGetAboutRequest.fulfilled, (state, { payload }: PayloadAction<{ en: string; fr: string }>) => {
-      state.about = { ...payload}
+      state.about = { ...payload };
       state.isFetchingAbout = false;
     });
     builder.addCase(makeGetAboutRequest.rejected, (state) => {
