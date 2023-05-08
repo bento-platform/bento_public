@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import { Row, Typography, Space, FloatButton } from 'antd';
 import { useTranslation } from 'react-i18next';
 
@@ -12,32 +12,37 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 type QueryParams = { [key: string]: string };
 
-const Search = () => {
-  const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
+const SearchRouter = () => {
   const dispatch = useAppDispatch();
   const location = useLocation();
   const navigate = useNavigate();
 
   const searchSections = useAppSelector((state) => state.query.querySections);
   const maxQueryParameters = useAppSelector((state) => state.config.maxQueryParameters);
-  const queryParams = useAppSelector((state) => state.query.queryParams);
+  const isFetchingSearchFields = useAppSelector((state) => state.query.isFetchingFields);
 
-  const searchFields = useMemo(
-    () => searchSections.flatMap(({ fields }) => fields.map((field) => ({ id: field.id, options: field.options }))),
-    [searchSections]
+  const searchFields = searchSections.flatMap(({ fields }) =>
+    fields.map((field) => ({ id: field.id, options: field.options }))
   );
 
-  const validateQuery = (key: string, value: string) => {
-    const field = searchFields.find((e) => e.id === key);
-    return field && field.options.includes(value);
-  };
+  console.log('searchFields: ', searchFields);
+  const validateQuery = (query: URLSearchParams) => {
+    const validateQueryParam = (key: string, value: string) => {
+      const field = searchFields.find((e) => e.id === key);
+      // add debug statements
+      console.log('key: ', key);
+      console.log('field: ', field);
+      console.log('value: ', value);
+      console.log('field.options: ', field?.options);
+      console.log('field.options.includes(value): ', field?.options.includes(value));
+      return field && field.options.includes(value);
+    };
 
-  useEffect(() => {
-    const queryParam = new URLSearchParams(location.search);
-    const queryParamArray = Array.from(queryParam.entries()).map(([key, value]) => ({ key, value }));
+    const queryParamArray = Array.from(query.entries()).map(([key, value]) => ({ key, value }));
+    console.log('queryParamArray: ', queryParamArray);
 
     const validQueryParamArray = queryParamArray
-      .filter(({ key, value }) => validateQuery(key, value))
+      .filter(({ key, value }) => validateQueryParam(key, value))
       .slice(0, maxQueryParameters);
 
     const validQueryParamsObject = validQueryParamArray.reduce<QueryParams>((acc, { key, value }) => {
@@ -45,21 +50,35 @@ const Search = () => {
       return acc;
     }, {});
 
-    if (JSON.stringify(validQueryParamArray) !== JSON.stringify(queryParamArray)) {
-      const queryString = new URLSearchParams(validQueryParamsObject).toString();
-      navigate(`?${queryString}`, { replace: true });
-    } else {
-      if (JSON.stringify(queryParams) !== JSON.stringify(validQueryParamsObject)) {
-        dispatch(setQueryParams(validQueryParamsObject));
-        dispatch(makeGetKatsuPublic());
-      }
+    console.log(JSON.stringify(validQueryParamArray), JSON.stringify(queryParamArray));
 
-      const currentQueryParams = new URLSearchParams(queryParams).toString();
-      if (location.search !== `?${currentQueryParams}`) {
-        navigate(`?${currentQueryParams}`, { replace: true });
-      }
+    return { valid: JSON.stringify(validQueryParamArray) === JSON.stringify(queryParamArray), validQueryParamsObject };
+  };
+
+  useEffect(() => {
+    if (isFetchingSearchFields) return;
+    console.log('SearchRouter: ', location);
+    const queryParam = new URLSearchParams(location.search);
+    const { valid, validQueryParamsObject } = validateQuery(queryParam);
+    if (valid) {
+      // CHECK CURRENT STATE
+      console.log('Valid query params: ', validQueryParamsObject);
+      dispatch(setQueryParams(validQueryParamsObject));
+      dispatch(makeGetKatsuPublic());
+    } else {
+      // REDIRECT TO VALID QUERY
+      console.log('Redirecting to : ', `/en/search?${new URLSearchParams(validQueryParamsObject).toString()}`);
+      navigate(`/en/search?${new URLSearchParams(validQueryParamsObject).toString()}`);
     }
-  }, [location.search, queryParams, validateQuery]);
+  }, []);
+
+  return <Search />;
+};
+
+const Search = () => {
+  const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
+
+  const searchSections = useAppSelector((state) => state.query.querySections);
 
   return (
     <>
@@ -81,4 +100,4 @@ const Search = () => {
   );
 };
 
-export default Search;
+export default SearchRouter;
