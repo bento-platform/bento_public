@@ -30,7 +30,7 @@ const MakeQueryOption = ({ queryField }: MakeQueryOptionProps) => {
     navigate(`${location.pathname}?${new URLSearchParams(queryParams).toString()}`, { replace: true });
   }, [queryParams]);
 
-  const isChecked = queryParams.hasOwnProperty(id);
+  const isChecked = Object.prototype.hasOwnProperty.call(queryParams, id);
 
   const onCheckToggle = () => {
     if (isChecked) {

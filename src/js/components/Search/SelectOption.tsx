@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Select } from 'antd';
 import { useTranslation } from 'react-i18next';
 
