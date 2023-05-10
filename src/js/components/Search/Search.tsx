@@ -25,21 +25,13 @@ const SearchRouter = () => {
     fields.map((field) => ({ id: field.id, options: field.options }))
   );
 
-  console.log('searchFields: ', searchFields);
   const validateQuery = (query: URLSearchParams) => {
     const validateQueryParam = (key: string, value: string) => {
       const field = searchFields.find((e) => e.id === key);
-      // add debug statements
-      console.log('key: ', key);
-      console.log('field: ', field);
-      console.log('value: ', value);
-      console.log('field.options: ', field?.options);
-      console.log('field.options.includes(value): ', field?.options.includes(value));
       return field && field.options.includes(value);
     };
 
     const queryParamArray = Array.from(query.entries()).map(([key, value]) => ({ key, value }));
-    console.log('queryParamArray: ', queryParamArray);
 
     const validQueryParamArray = queryParamArray
       .filter(({ key, value }) => validateQueryParam(key, value))
