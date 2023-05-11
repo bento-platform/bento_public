@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Divider, Row, Col, FloatButton, Card, Skeleton } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
@@ -9,6 +9,7 @@ import OverviewSection from './OverviewSection';
 import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
 import Counts from './Counts';
 import { useAppSelector } from '@/hooks';
+import { useTranslation } from 'react-i18next';
 
 const PublicOverview = () => {
   const { sections } = useAppSelector((state) => state.data);
@@ -17,7 +18,17 @@ const PublicOverview = () => {
 
   const [drawerVisible, setDrawerVisible] = useState(false);
 
-  const { isFetchingAbout, aboutHTML } = useAppSelector((state) => state.content);
+  const { isFetchingAbout, about } = useAppSelector((state) => state.content);
+
+  const [aboutContent, setAboutContent] = useState('');
+
+  const { i18n } = useTranslation();
+
+  useEffect(() => {
+    const activeLanguage = i18n.language;
+    const activeAbout = about[activeLanguage];
+    setAboutContent(activeAbout);
+  }, [i18n.language, about]);
 
   return (
     <>
@@ -28,7 +39,7 @@ const PublicOverview = () => {
               {isFetchingAbout ? (
                 <Skeleton title={false} paragraph={{ rows: 2 }} />
               ) : (
-                <div dangerouslySetInnerHTML={{ __html: aboutHTML }} />
+                <div dangerouslySetInnerHTML={{ __html: aboutContent }} />
               )}
             </Card>
             <Counts />

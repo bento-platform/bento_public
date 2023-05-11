@@ -1,25 +1,33 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { aboutUrl } from '@/constants/contentConstants';
+import { partialAboutUrl } from '@/constants/contentConstants';
 import { printAPIError } from '@/utils/error.util';
 
-export const makeGetAboutRequest = createAsyncThunk<string, void, { rejectValue: string }>(
-  'content/getAboutHTML',
-  (_, { rejectWithValue }) =>
-    axios
-      .get(aboutUrl)
-      .then((res) => res.data)
-      .catch(printAPIError(rejectWithValue))
-);
+export const makeGetAboutRequest = createAsyncThunk('content/getAboutHTML', async () => {
+  const en = await axios
+    .get(`${partialAboutUrl}/en_about.html`)
+    .then((res) => res.data)
+    .catch(printAPIError);
+
+  const fr = await axios
+    .get(`${partialAboutUrl}/fr_about.html`)
+    .then((res) => res.data)
+    .catch(printAPIError);
+
+  return { en, fr };
+});
 
 export type ContentState = {
   isFetchingAbout: boolean;
-  aboutHTML: string;
+  about: { [key: string]: string };
 };
 
 const initialState: ContentState = {
   isFetchingAbout: true,
-  aboutHTML: '',
+  about: {
+    en: '',
+    fr: '',
+  },
 };
 
 const content = createSlice({
@@ -30,8 +38,8 @@ const content = createSlice({
     builder.addCase(makeGetAboutRequest.pending, (state) => {
       state.isFetchingAbout = true;
     });
-    builder.addCase(makeGetAboutRequest.fulfilled, (state, { payload }: PayloadAction<string>) => {
-      state.aboutHTML = payload;
+    builder.addCase(makeGetAboutRequest.fulfilled, (state, { payload }: PayloadAction<{ en: string; fr: string }>) => {
+      state.about = { ...payload };
       state.isFetchingAbout = false;
     });
     builder.addCase(makeGetAboutRequest.rejected, (state) => {
