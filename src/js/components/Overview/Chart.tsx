@@ -25,7 +25,18 @@ const Chart = ({ chartType, data, units }: ChartProps) => {
           />
         );
       case chartTypes.PIE:
-        return <PieChart data={data} height={CHART_HEIGHT} preFilter={removeMissing} dataMap={translateMap} />;
+        return (
+          <PieChart
+            data={data}
+            height={CHART_HEIGHT}
+            preFilter={removeMissing}
+            dataMap={translateMap}
+            onClick={(a) => {
+              console.log('clicked');
+              console.log(a);
+            }}
+          />
+        );
       default:
         return <p>chart type doesnt exists</p>;
     }
