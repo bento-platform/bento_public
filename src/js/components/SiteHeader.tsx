@@ -3,7 +3,7 @@ import { Button, Layout, Row, Col, Typography, Space } from 'antd';
 const { Header } = Layout;
 import i18n from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
+import { DEFAULT_TRANSLATION, langFullNames } from '@/constants/configConstants';
 import { useAppSelector } from '@/hooks';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -44,7 +44,7 @@ const SiteHeader = () => {
           <Space>
             {translated && (
               <Button shape="round" onClick={changeLanguage}>
-                {i18n.language === 'en' ? 'Français' : 'English'}
+                {i18n.language === 'en' ? langFullNames.fr : langFullNames.en}
               </Button>
             )}
             <Button type="primary" shape="round" onClick={buttonHandler}>

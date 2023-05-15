@@ -20,10 +20,10 @@ const MakeQueryOption = ({ queryField }: MakeQueryOptionProps) => {
 
   const { title, id, description, config, options } = queryField;
 
-  const [checkedCount, maxCount, queryParams] = useAppSelector((state) => [
+  const [checkedCount, queryParams, maxCount] = useAppSelector((state) => [
     state.query.queryParamCount,
-    state.config.maxQueryParameters,
     state.query.queryParams,
+    state.config.maxQueryParameters,
   ]);
 
   useEffect(() => {
