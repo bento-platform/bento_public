@@ -5,7 +5,11 @@ import Filter from './Filter';
 // - should be able to remove a particular filter
 
 const Filters = ({ filters, form, querySections }) => {
-  return filters.map((f) => <Filter key={f.index} filter={f} form={form} querySections={querySections} />);
+  return (
+    <div style={{minWidth: "500px", display: "flex", flexDirection: "column", padding: 0}}>
+      {filters.map((f) => <Filter key={f.index} filter={f} form={form} querySections={querySections} />)}
+    </div>
+  ) 
 };
 
 export default Filters;
