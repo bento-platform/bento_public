@@ -9,13 +9,14 @@ import SelectOption from './SelectOption';
 import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { useAppDispatch, useAppSelector } from '@/hooks';
 import { Field } from '@/types/search';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const MakeQueryOption = ({ queryField }: MakeQueryOptionProps) => {
   const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
   const { t: td } = useTranslation(DEFAULT_TRANSLATION);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const { title, id, description, config, options } = queryField;
 
@@ -26,12 +27,10 @@ const MakeQueryOption = ({ queryField }: MakeQueryOptionProps) => {
   ]);
 
   useEffect(() => {
-    navigate(`/en/search?${new URLSearchParams(queryParams).toString()}`);
+    navigate(`${location.pathname}?${new URLSearchParams(queryParams).toString()}`, { replace: true });
   }, [queryParams]);
 
-  const isChecked = queryParams.hasOwnProperty(id);
-
-  // console.log('id', id, 'queryParams', queryParams, 'queryParams.hasOwnProperty(id)', queryParams.hasOwnProperty(id));
+  const isChecked = Object.prototype.hasOwnProperty.call(queryParams, id);
 
   const onCheckToggle = () => {
     if (isChecked) {

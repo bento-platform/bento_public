@@ -5,11 +5,12 @@ import i18n from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { useAppSelector } from '@/hooks';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const SiteHeader = () => {
   const { t } = useTranslation(DEFAULT_TRANSLATION);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const clientName = useAppSelector((state) => state.config.clientName);
   const translated = useAppSelector((state) => state.config.translated);
@@ -21,7 +22,8 @@ const SiteHeader = () => {
 
   const changeLanguage = () => {
     const newLang = i18n.language === 'en' ? 'fr' : 'en';
-    navigate(`/${newLang}`);
+    const path = (location.pathname + location.search).replace(`/${i18n.language}/`, `/${newLang}/`);
+    navigate(path, { replace: true });
   };
 
   const buttonHandler = () => window.open(portalUrl, '_blank');

@@ -12,7 +12,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 type QueryParams = { [key: string]: string };
 
-const SearchRouter = () => {
+const SearchRouter: React.FC = () => {
   const dispatch = useAppDispatch();
   const location = useLocation();
   const navigate = useNavigate();
@@ -49,25 +49,22 @@ const SearchRouter = () => {
 
   useEffect(() => {
     if (isFetchingSearchFields) return;
-    console.log('SearchRouter: ', location);
     const queryParam = new URLSearchParams(location.search);
     const { valid, validQueryParamsObject } = validateQuery(queryParam);
     if (valid) {
-      // CHECK CURRENT STATE
       console.log('Valid query params: ', validQueryParamsObject);
       dispatch(setQueryParams(validQueryParamsObject));
       dispatch(makeGetKatsuPublic());
     } else {
-      // REDIRECT TO VALID QUERY
       console.log('Redirecting to : ', `/en/search?${new URLSearchParams(validQueryParamsObject).toString()}`);
-      navigate(`/en/search?${new URLSearchParams(validQueryParamsObject).toString()}`);
+      navigate(`${location.pathname}?${new URLSearchParams(validQueryParamsObject).toString()}`);
     }
   }, []);
 
   return <Search />;
 };
 
-const Search = () => {
+const Search: React.FC = () => {
   const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
 
   const searchSections = useAppSelector((state) => state.query.querySections);
