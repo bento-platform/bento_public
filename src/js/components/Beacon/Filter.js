@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
-import { Input, Form, Option, Select, Space, Tooltip} from 'antd';
-import { InfoCircleOutlined } from '@ant-design/icons';
+import { Button, Input, Form, Option, Select, Space, Tooltip} from 'antd';
+import { CloseOutlined, InfoCircleOutlined } from '@ant-design/icons';
+
+
 
 // TODOs:
 // helptext (possibly as tooltip over search key)
 // should be able to remove a particular filter 
 
-const Filter = ({ filter, form, querySections }) => {
+const Filter = ({ filter, form, querySections, removeFilter }) => {
   const [valueOptions, setValueOptions] = useState([{ value: '' }]);
 
   const handleSelectKey = (_, option) => {
@@ -22,11 +24,19 @@ const Filter = ({ filter, form, querySections }) => {
     });
   }, [valueOptions]);
 
-  const searchKeyOptions = (arr) => {
+  const renderLabel = (searchField) => {
+    const units = searchField.config?.units
+    const unitsString = units? `\t(${units})` : ""
+    return searchField.title + unitsString
+  }
+
+  console.log({querySections})
+
+  const searchKeyOptions = (arr) =>    {
     return arr.map((qs) => ({
       label: qs.section_title,
       options: qs.fields.map((field) => ({
-        label: field.title,
+        label: renderLabel(field),
         value: field.id,
         optionsThisKey: searchValueOptions(field.options),
       })),
@@ -53,6 +63,7 @@ const Filter = ({ filter, form, querySections }) => {
       >
         <Select style={{ width: 220 }} options={valueOptions} />
       </Form.Item>
+      <Button onClick={() => removeFilter(filter)}><CloseOutlined /></Button>
     </Space.Compact>
   );
 };
