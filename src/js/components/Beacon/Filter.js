@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Input, Form, Select, Space } from 'antd';
+import { Input, Form, Option, Select, Space, Tooltip} from 'antd';
+import { InfoCircleOutlined } from '@ant-design/icons';
 
-// helptext
-// should be able to remove a particular filter
+// TODOs:
+// helptext (possibly as tooltip over search key)
+// should be able to remove a particular filter 
 
 const Filter = ({ filter, form, querySections }) => {
   const [valueOptions, setValueOptions] = useState([{ value: '' }]);
@@ -20,18 +22,18 @@ const Filter = ({ filter, form, querySections }) => {
     });
   }, [valueOptions]);
 
-  const searchKeyOptions = (obj) => {
-    return obj.map((qs) => ({
+  const searchKeyOptions = (arr) => {
+    return arr.map((qs) => ({
       label: qs.section_title,
       options: qs.fields.map((field) => ({
         label: field.title,
         value: field.id,
-        optionsThisKey: searchValueOtions(field.options),
+        optionsThisKey: searchValueOptions(field.options),
       })),
     }));
   };
 
-  const searchValueOtions = (arr) => {
+ const searchValueOptions = (arr) => {
     return arr.map((v) => ({ label: v, value: v }));
   };
 
@@ -40,7 +42,7 @@ const Filter = ({ filter, form, querySections }) => {
       <Form.Item name={`filterId${filter.index}`} rules={[{ required: true, message: 'search field required' }]}>
         <Select
           placeholder={'select a search field'}
-          style={{ width: 250 }}
+          style={{ width: 220 }}
           onSelect={handleSelectKey}
           options={searchKeyOptions(querySections)}
         />
@@ -48,9 +50,8 @@ const Filter = ({ filter, form, querySections }) => {
       <Form.Item
         name={`filterValue${filter.index}`}
         rules={[{ required: true, message: 'value required' }]}
-        style={{ width: '150px' }}
       >
-        <Select style={{ width: 250 }} options={valueOptions} />
+        <Select style={{ width: 220 }} options={valueOptions} />
       </Form.Item>
     </Space.Compact>
   );
