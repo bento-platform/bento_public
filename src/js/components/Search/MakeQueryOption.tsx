@@ -20,10 +20,10 @@ const MakeQueryOption = ({ queryField }: MakeQueryOptionProps) => {
 
   const { title, id, description, config, options } = queryField;
 
-  const [checkedCount, maxCount, queryParams] = useAppSelector((state) => [
+  const [checkedCount, queryParams, maxCount] = useAppSelector((state) => [
     state.query.queryParamCount,
-    state.config.maxQueryParameters,
     state.query.queryParams,
+    state.config.maxQueryParameters,
   ]);
 
   useEffect(() => {
@@ -49,10 +49,10 @@ const MakeQueryOption = ({ queryField }: MakeQueryOptionProps) => {
         <Col span={3} offset={2}>
           <Checkbox id={id} checked={isChecked} onChange={onCheckToggle} disabled={disabled} />
         </Col>
-        <Col span={7}>{t(title)}</Col>
+        <Col span={7}>{`${t(title)} ${config?.units ? '(' + td('in') + ' ' + t(config.units) + ')' : ''}`}</Col>
         <Col span={2}>
           <OptionDescription
-            description={`${t(description)} ${config?.units ? '(' + td('in') + ' ' + t(config.units) + ')' : ''}`}
+            description={t(description)}
           />
         </Col>
         <Col span={10}>

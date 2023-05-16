@@ -12,7 +12,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 type QueryParams = { [key: string]: string };
 
-const SearchRouter: React.FC = () => {
+const RoutedSearch: React.FC = () => {
   const dispatch = useAppDispatch();
   const location = useLocation();
   const navigate = useNavigate();
@@ -25,10 +25,10 @@ const SearchRouter: React.FC = () => {
     fields.map((field) => ({ id: field.id, options: field.options }))
   );
 
-  const validateQuery = (query: URLSearchParams) => {
-    const validateQueryParam = (key: string, value: string) => {
+  const validateQuery = (query: URLSearchParams): {valid: boolean; validQueryParamsObject: QueryParams} => {
+    const validateQueryParam = (key: string, value: string): boolean => {
       const field = searchFields.find((e) => e.id === key);
-      return field && field.options.includes(value);
+      return Boolean(field && field.options.includes(value));
     };
 
     const queryParamArray = Array.from(query.entries()).map(([key, value]) => ({ key, value }));
@@ -75,10 +75,10 @@ const Search: React.FC = () => {
         <Space direction="vertical" align="center">
           <SearchResults />
           <Space direction="vertical" size="large">
-            {searchSections.map((section, i) => (
+            {searchSections.map(({section_title, fields}, i) => (
               <div key={i}>
-                <Typography.Title level={4}>{t(section.section_title)}</Typography.Title>
-                <SearchFieldsStack key={i} queryFields={section.fields} />
+                <Typography.Title level={4}>{t(section_title)}</Typography.Title>
+                <SearchFieldsStack key={i} queryFields={fields} />
               </div>
             ))}
           </Space>
@@ -89,4 +89,4 @@ const Search: React.FC = () => {
   );
 };
 
-export default SearchRouter;
+export default RoutedSearch;
