@@ -25,7 +25,7 @@ const RoutedSearch: React.FC = () => {
     fields.map((field) => ({ id: field.id, options: field.options }))
   );
 
-  const validateQuery = (query: URLSearchParams): {valid: boolean; validQueryParamsObject: QueryParams} => {
+  const validateQuery = (query: URLSearchParams): { valid: boolean; validQueryParamsObject: QueryParams } => {
     const validateQueryParam = (key: string, value: string): boolean => {
       const field = searchFields.find((e) => e.id === key);
       return Boolean(field && field.options.includes(value));
@@ -42,8 +42,6 @@ const RoutedSearch: React.FC = () => {
       return acc;
     }, {});
 
-    console.log(JSON.stringify(validQueryParamArray), JSON.stringify(queryParamArray));
-
     return { valid: JSON.stringify(validQueryParamArray) === JSON.stringify(queryParamArray), validQueryParamsObject };
   };
 
@@ -52,11 +50,10 @@ const RoutedSearch: React.FC = () => {
     const queryParam = new URLSearchParams(location.search);
     const { valid, validQueryParamsObject } = validateQuery(queryParam);
     if (valid) {
-      console.log('Valid query params: ', validQueryParamsObject);
       dispatch(setQueryParams(validQueryParamsObject));
       dispatch(makeGetKatsuPublic());
     } else {
-      console.log('Redirecting to : ', `/en/search?${new URLSearchParams(validQueryParamsObject).toString()}`);
+      console.debug('Redirecting to : ', `/en/search?${new URLSearchParams(validQueryParamsObject).toString()}`);
       navigate(`${location.pathname}?${new URLSearchParams(validQueryParamsObject).toString()}`);
     }
   }, []);
@@ -75,7 +72,7 @@ const Search: React.FC = () => {
         <Space direction="vertical" align="center">
           <SearchResults />
           <Space direction="vertical" size="large">
-            {searchSections.map(({section_title, fields}, i) => (
+            {searchSections.map(({ section_title, fields }, i) => (
               <div key={i}>
                 <Typography.Title level={4}>{t(section_title)}</Typography.Title>
                 <SearchFieldsStack key={i} queryFields={fields} />

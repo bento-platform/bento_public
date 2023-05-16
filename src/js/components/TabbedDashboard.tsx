@@ -42,7 +42,6 @@ const TabbedDashboard = () => {
       const currentPathParts = currentPath.split('/');
       const currentLang = currentPathParts[1];
       const newPath = `/${currentLang}/${key === 'overview' ? '' : key}`;
-      console.log('onChange: ', newPath);
       navigate(newPath);
     },
     [location, navigate]
