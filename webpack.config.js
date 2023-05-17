@@ -1,10 +1,12 @@
-const webpack = require('webpack'); // only add this if you don't have yet
+const path = require('path');
+
+// const webpack = require('webpack'); // only add this if you don't have yet
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const config = {
   mode: 'development',
-  entry: './src/js/index.js',
+  entry: './src/js/index.tsx',
   output: {
     path: __dirname + '/build/www',
     publicPath: '',
@@ -49,6 +51,10 @@ const config = {
   },
   devtool: 'source-map',
   resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src/js'),
+      '@public': path.resolve(__dirname, 'src/public'),
+    },
     extensions: ['.tsx', '.ts', '.js'],
   },
 };
