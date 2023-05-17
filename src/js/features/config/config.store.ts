@@ -24,6 +24,7 @@ const initialState: ConfigState = {
   maxQueryParameters: 0,
   translated: false,
   beaconUrl: '',
+  beaconEnabled: false,
 };
 
 const configStore = createSlice({
@@ -41,6 +42,7 @@ const configStore = createSlice({
       state.translated = payload.translated;
       state.isFetchingConfig = false;
       state.beaconUrl = payload.beaconUrl;
+      state.beaconEnabled = payload.beaconEnabled;
       state.isFetchingConfig = false;
     });
     builder.addCase(makeGetConfigRequest.rejected, (state) => {
