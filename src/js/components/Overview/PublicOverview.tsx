@@ -43,12 +43,14 @@ const PublicOverview = () => {
               )}
             </Card>
             <Counts />
-            {sections.map(({ sectionTitle, charts }, i) => (
-              <div key={i} className="overview">
-                <OverviewSection title={sectionTitle} chartData={charts} />
-                <Divider />
-              </div>
-            ))}
+            {sections
+              .filter(({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1)
+              .map(({ sectionTitle, charts }, i) => (
+                <div key={i} className="overview">
+                  <OverviewSection title={sectionTitle} chartData={charts} />
+                  <Divider />
+                </div>
+              ))}
           </Col>
         </Row>
       </div>

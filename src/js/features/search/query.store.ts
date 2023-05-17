@@ -11,6 +11,7 @@ type queryState = {
   querySections: SearchFieldResponse['sections'];
   queryParams: { [key: string]: string };
   queryParamCount: number;
+  queryChanged: boolean;
   biosampleCount: number;
   biosampleChartData: ChartData[];
   experimentCount: number;
@@ -20,12 +21,13 @@ type queryState = {
 };
 
 const initialState: queryState = {
-  isFetchingFields: false,
+  isFetchingFields: true,
   isFetchingData: false,
   message: '',
   querySections: [],
   queryParams: {},
   queryParamCount: 0,
+  queryChanged: false,
   biosampleCount: 0,
   biosampleChartData: [],
   experimentCount: 0,
@@ -40,12 +42,19 @@ const query = createSlice({
     addQueryParam: (state, { payload }) => {
       if (!(payload.id in state.queryParams)) state.queryParamCount++;
       state.queryParams[payload.id] = payload.value;
+      state.queryChanged = true;
     },
     removeQueryParam: (state, { payload: id }) => {
       if (id in state.queryParams) {
         delete state.queryParams[id];
         state.queryParamCount--;
+        state.queryChanged = true;
       }
+    },
+    setQueryParams: (state, { payload }) => {
+      state.queryParams = payload;
+      state.queryParamCount = Object.keys(payload).length;
+      state.queryChanged = false;
     },
   },
   extraReducers: (builder) => {
@@ -81,6 +90,6 @@ const query = createSlice({
   },
 });
 
-export const { addQueryParam, removeQueryParam } = query.actions;
+export const { addQueryParam, removeQueryParam, setQueryParams } = query.actions;
 export { makeGetKatsuPublic, makeGetSearchFields };
 export default query.reducer;
