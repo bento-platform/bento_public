@@ -28,7 +28,6 @@ const App = () => {
     } else {
       navigate(`/${i18n.language}`);
     }
-    console.log('Changed language to: ', lang);
   }, [lang, i18n, navigate]);
 
   return (
@@ -46,6 +45,7 @@ const App = () => {
 
 const BentoApp = () => {
   const { i18n } = useTranslation();
+  console.log('i18n.language', i18n.language);
 
   return (
     <ChartConfigProvider Lng={i18n.language ?? 'en'}>
