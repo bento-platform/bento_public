@@ -34,8 +34,8 @@ const TabbedDashboard = () => {
 
   const isFetchingOverviewData = useAppSelector((state) => state.data.isFetchingData);
   const isFetchingSearchFields = useAppSelector((state) => state.query.isFetchingFields);
-  const isFetchingBeaconConfig = useAppSelector((state) => state?.beaconConfig?.isFetchingBeaconConfig)
-
+  const isFetchingBeaconConfig = useAppSelector((state) => state.beaconConfig?.isFetchingBeaconConfig)
+  const renderBeaconUi = useAppSelector((state) => state.config?.beaconEnabled)
 
   const TabTitle = ({ title }: { title: string }) => (
     <Title level={4} style={{ margin: '0' }}>
@@ -51,29 +51,33 @@ const TabbedDashboard = () => {
       title: 'Overview',
       content: <PublicOverview />,
       loading: isFetchingOverviewData,
+      active: true,
       key: 'overview',
     },
     {
       title: 'Search',
       content: <Search />,
       loading: isFetchingSearchFields,
+      active: true,
       key: 'search',
     },
     {
       title: 'Beacon',
       content: <BeaconQueryUi />,
       loading: isFetchingBeaconConfig,
+      active: renderBeaconUi,
       key: 'beacon',
     },
     {
       title: 'Provenance',
       content: <ProvenanceTab />,
       loading: false,
+      active: true,
       key: 'provenance',
     },
   ];
 
-  const mappedTabPanes = tabPanes.map(({ title, content, loading, key }) => ({
+  const mappedTabPanes = tabPanes.filter(t => t.active).map(({ title, content, loading, key }) => ({
     label: <TabTitle title={t(title)} />,
     children: loading ? <Loader /> : content,
     key,
