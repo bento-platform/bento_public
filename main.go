@@ -150,7 +150,7 @@ func main() {
 	}
 
 	fetchAndSetKatsuPublic := func(c echo.Context, katsuCache *cache.Cache) (JsonLike, error) {
-		fmt.Println("'publicOverview' not found or expired in 'katsuCache - fetching")
+		fmt.Println("'publicOverview' not found or expired in 'katsuCache' - fetching")
 		publicOverview, err := katsuRequestJsonOnly("/api/public_overview", nil, c, identityJSONTransform)
 		if err != nil {
 			fmt.Println("something went wrong fetching 'publicOverview' for 'katsuCache': ", err)
