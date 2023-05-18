@@ -5,12 +5,12 @@ const FORM_FIELDS = [
   {
     key: 'referenceName',
     name: 'Chromosome',
-    rules: [{required: true}],
+    rules: [{}],
     placeholder: '1-22, X, Y, MT',
     initialValue: '',
   },
-  { key: 'start', name: 'Variant start', rules: [{required: true}], placeholder: 'eg 100', initialValue: '' },
-  { key: 'end', name: 'Variant end', rules: [{required: true}], placeholder: 'eg 200', initialValue: '' },
+  { key: 'start', name: 'Variant start', rules: [{}], placeholder: 'eg 100', initialValue: '' },
+  { key: 'end', name: 'Variant end', rules: [{}], placeholder: 'eg 200', initialValue: '' },
   {
     key: 'referenceBases',
     name: 'Reference base(s)',
@@ -28,7 +28,7 @@ const FORM_FIELDS = [
   {
     key: 'assemblyId',
     name: 'Assembly Id',
-    rules: [{required: true}],
+    rules: [{}],
     placeholder: '',
     initialValue: '',
   },
