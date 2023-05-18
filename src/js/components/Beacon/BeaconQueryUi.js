@@ -11,7 +11,6 @@ import VariantsForm from './VariantsForm';
 // TODOs
 // switch to one-based (ie convert one -> zero here)
 // example searches, either hardcoded or configurable
-// only render beacon tab if there's a beacon for this instance
 // only render variants part of the form if variants are present
 
 const BeaconQueryUi = () => {
@@ -23,6 +22,24 @@ const BeaconQueryUi = () => {
   const beaconUrl = useAppSelector((state) => state.config?.beaconUrl);
 
   const dispatch = useDispatch();
+  const launchEmptyQuery = () => dispatch(makeBeaconQuery(requestPayload({}, [])));
+
+  // get beacon stats on first render
+  useEffect(() => {
+    // wait for config
+    if (!beaconUrl) {
+      return;
+    }
+    launchEmptyQuery();
+  }, [config]);
+
+
+  // set assembly id options mataching what's in gohan
+
+  useEffect(() => {
+    console.log('setting form initial values');
+    form.setFieldsValue(formInitialValues);
+  }, [form, formInitialValues]);
 
   const assemblyIdOptions = beaconAssemblyIds.map((assembly) => (
     <Select.Option key={assembly} value={assembly}>
@@ -31,33 +48,29 @@ const BeaconQueryUi = () => {
   ));
   const formInitialValues = { 'Assembly Id': beaconAssemblyIds.length == 1 && beaconAssemblyIds[0] };
 
-  // get beacon stats on first render
-  useEffect(() => {
-    // wait for config
-    if (!beaconUrl) {
-      return;  
-    }  
-    const payload = packageBeaconJSON({})
-    dispatch(makeBeaconQuery(payload));
-  }, [config])
 
-  useEffect(() => {
-    console.log('setting form initial values');
-    form.setFieldsValue(formInitialValues);
-  }, [form, formInitialValues]);
+  // beacon request handling
 
   const packageFilters = (values) => {
-    return filters.filter((f) => f.active).map((f) => ({
+    return filters
+      .filter((f) => f.active)
+      .map((f) => ({
         id: values[`filterId${f.index}`],
-        operator: "=",
+        operator: '=',
         value: values[`filterValue${f.index}`],
       }));
   };
 
+  const requestPayload = (query, payloadFilters) => ({
+    meta: { apiVersion: '2.0.0' },
+    query: { requestParameters: { g_variant: query }, filters: payloadFilters },
+    bento: { showSummaryStatitics: 'true' },
+  });
+
   const packageBeaconJSON = (values) => {
     let query = {};
     const payloadFilters = packageFilters(values);
-    const hasVariantsQuery = values['Chromosome'] || values['Variant start'] || values['Reference base(s)'];
+    const hasVariantsQuery = (values && values['Chromosome']) || values['Variant start'] || values['Reference base(s)'];
     if (hasVariantsQuery) {
       query = {
         referenceName: values['Chromosome'],
@@ -74,13 +87,12 @@ const BeaconQueryUi = () => {
         query.alternateBases = values['Alternate base(s)'];
       }
     }
-    const payload = {
-      meta: { apiVersion: '2.0.0' },
-      query: { requestParameters: { g_variant: query }, filters: payloadFilters },
-      bento: { showSummaryStatitics: 'true' },
-    };
-    return payload;
+
+    return requestPayload(query, payloadFilters);
   };
+
+
+  // form utils
 
   const handleFinish = (formValues) => {
     console.log('Received values of form: ');
@@ -95,13 +107,27 @@ const BeaconQueryUi = () => {
   const handleClearForm = () => {
     setFilters([]);
     form.resetFields();
+    launchEmptyQuery();
   };
+
+  const variantsHelp = 'sometext about variants';
+  const metadataHelp = 'some text about metadata';
+  const SearchToolTip = ({ text }) => {
+    return (
+      <Tooltip title={text}>
+        <InfoCircleOutlined />
+      </Tooltip>
+    );
+  };
+
+  
+  // styles
 
   const wrapperStyle = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    justfifyContent: "space-between"
+    justfifyContent: 'space-between',
   };
 
   const variantsFormStyle = {
@@ -111,53 +137,62 @@ const BeaconQueryUi = () => {
   };
 
   const cardBodyStyle = {
-    padding: "0 24px 5px 24px",
-  }
+    padding: '0 24px 5px 24px',
+  };
 
   const cardHeadStyle = {
-    border: "0"
-  }
+    border: '0',
+  };
 
   const innerCardStyle = {
-    margin: "0 5px 0 0"
-  }
+    margin: '0 5px 0 0',
+  };
 
   const buttonAreaStyle = {
-    padding: "24px"
-  }
+    padding: '20px 5px',
+  };
 
   const buttonStyle = {
-    margin: "0 10px 0 0"
-  }
-
-  const variantsHelp = "sometext about variants"
-  const metadataHelp = "some text about metadata"
-
-  const SearchToolTip = ({text}) => {return <Tooltip title={text}><InfoCircleOutlined/></Tooltip>}
-  
-  
-// add row/col/gutter? why isn't flex working?
-
+    margin: '0 10px 0 0',
+  };
 
   return (
     <div style={wrapperStyle}>
       <BeaconSearchResults />
-      <Card title="Search" style={{ borderRadius: '10px', maxWidth: '1200px' }} bodyStyle={cardBodyStyle} headStyle={cardHeadStyle}>
-      <Form form={form} onFinish={handleFinish} style={variantsFormStyle} layout="vertical">
-      <Card title='Variants' style={innerCardStyle} headStyle={cardHeadStyle} bodyStyle={cardBodyStyle} extra={<SearchToolTip text={variantsHelp}/>}>
-        <VariantsForm assemblyIdOptions={assemblyIdOptions} form={form} /></Card>
-          <Card title='Metadata' style={innerCardStyle} headStyle={cardHeadStyle} bodyStyle={cardBodyStyle} extra={<SearchToolTip text={variantsHelp}/>}>
+      <Card
+        title="Search"
+        style={{ borderRadius: '10px', maxWidth: '1200px' }}
+        bodyStyle={cardBodyStyle}
+        headStyle={cardHeadStyle}
+      >
+        <Form form={form} onFinish={handleFinish} style={variantsFormStyle} layout="vertical">
+          <Card
+            title="Variants"
+            style={innerCardStyle}
+            headStyle={cardHeadStyle}
+            bodyStyle={cardBodyStyle}
+            extra={<SearchToolTip text={variantsHelp} />}
+          >
+            <VariantsForm assemblyIdOptions={assemblyIdOptions} form={form} />
+          </Card>
+          <Card
+            title="Metadata"
+            style={innerCardStyle}
+            headStyle={cardHeadStyle}
+            bodyStyle={cardBodyStyle}
+            extra={<SearchToolTip text={metadataHelp} />}
+          >
             <Filters filters={filters} setFilters={setFilters} form={form} querySections={querySections} />
-            </Card>
-            <div style={buttonAreaStyle}>
-          <Button type="primary" htmlType="submit" style={buttonStyle} >
-            Search Beacon
-          </Button>
-          <Button onClick={handleClearForm} style={buttonStyle}>
-          Clear Form
-        </Button>
-        </div>
-      </Form>
+          </Card>
+          <div style={buttonAreaStyle}>
+            <Button type="primary" htmlType="submit" style={buttonStyle}>
+              Search Beacon
+            </Button>
+            <Button onClick={handleClearForm} style={buttonStyle}>
+              Clear Form
+            </Button>
+          </div>
+        </Form>
       </Card>
     </div>
   );
