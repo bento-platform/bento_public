@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { Button, Col, Form, Input, Row, Select, Space } from 'antd';
 
+TODOs:
+// some form validation
+// show which fields are required without removing the ability to leave the form blank
+
 const FORM_FIELDS = [
   {
     key: 'referenceName',
