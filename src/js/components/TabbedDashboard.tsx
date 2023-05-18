@@ -43,9 +43,6 @@ const TabbedDashboard = () => {
     </Title>
   );
 
-
-  // TODO: only render beacon tab if beacon being used 
-
   const tabPanes = [
     {
       title: 'Overview',
