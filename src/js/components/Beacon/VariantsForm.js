@@ -35,21 +35,15 @@ const FORM_FIELDS = [
 ];
 
 const VariantsForm = ({ assemblyIdOptions, form }) => {
-  const { Option } = Select;
   const formStyle = {
     maxWidth: '1200px',
     display: 'flex',
+    background: "white",
+    padding: "10px",
+    borderRadius: '10px'
   };
 
   const formItemLayout = {
-    // labelCol: {
-    //   md: { span: 22 },
-    //   lg: { span: 22 },
-    // },
-    // wrapperCol: {
-    //   md: { span: 22 },
-    //   lg: { span: 22 },
-    // },
     style: {width: "150px", padding: "0 5px 0 5px"}
   };
 

@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Button, Input, Form, Option, Select, Space, Tooltip} from 'antd';
+import { Button, Input, Form, Option, Select, Space, Tooltip } from 'antd';
 import { CloseOutlined, InfoCircleOutlined } from '@ant-design/icons';
 
 // TODOs:
 // helptext (possibly as tooltip over search key)
-// should be able to remove a particular filter 
+// any search key (eg "sex") selected in one filter should not available in other
+// for clarity they should probably appear, but be greyed out
+// this requires rendering select options as <Option> components
 
 const Filter = ({ filter, form, querySections, removeFilter }) => {
   const [valueOptions, setValueOptions] = useState([{ value: '' }]);
@@ -12,10 +14,8 @@ const Filter = ({ filter, form, querySections, removeFilter }) => {
   const handleSelectKey = (_, option) => {
     // set dropdown options for a particular key
     // ie for key "sex", set options to "MALE", "FEMALE", etc
-
     setValueOptions(option.optionsThisKey);
   };
-
 
   // rerender default option when key changes
   useEffect(() => {
@@ -25,14 +25,12 @@ const Filter = ({ filter, form, querySections, removeFilter }) => {
   }, [valueOptions]);
 
   const renderLabel = (searchField) => {
-    const units = searchField.config?.units
-    const unitsString = units? `(${units})` : ""
-    return searchField.title + unitsString
-  }
+    const units = searchField.config?.units;
+    const unitsString = units ? ` (${units})` : '';
+    return searchField.title + unitsString;
+  };
 
-  console.log({querySections})
-
-  const searchKeyOptions = (arr) =>    {
+  const searchKeyOptions = (arr) => {
     return arr.map((qs) => ({
       label: qs.section_title,
       options: qs.fields.map((field) => ({
@@ -43,10 +41,9 @@ const Filter = ({ filter, form, querySections, removeFilter }) => {
     }));
   };
 
- const searchValueOptions = (arr) => {
+  const searchValueOptions = (arr) => {
     return arr.map((v) => ({ label: v, value: v }));
   };
-
 
   return (
     <Space.Compact>
@@ -58,13 +55,12 @@ const Filter = ({ filter, form, querySections, removeFilter }) => {
           options={searchKeyOptions(querySections)}
         />
       </Form.Item>
-      <Form.Item
-        name={`filterValue${filter.index}`}
-        rules={[{ required: true, message: 'value required' }]}
-      >
+      <Form.Item name={`filterValue${filter.index}`} rules={[{ required: true, message: 'value required' }]}>
         <Select style={{ width: 220 }} options={valueOptions} />
       </Form.Item>
-      <Button onClick={() => removeFilter(filter)}><CloseOutlined /></Button>
+      <Button onClick={() => removeFilter(filter)}>
+        <CloseOutlined />
+      </Button>
     </Space.Compact>
   );
 };

@@ -39,8 +39,7 @@ const BeaconSearchResults = () => {
   return (
     <div style={wrapperStyle}>
       <Card
-        style={{ borderRadius: '10px', padding: '10px 33px', width: '1200px', minHeight: '28rem' }}
-        loading={isFetchingQueryResponse}
+        style={{ borderRadius: '10px', padding: '10px 33px', margin: "0", width: '1200px', minHeight: '28rem' }}
       >
         <Row gutter={16}>
           <Col span={4}>
