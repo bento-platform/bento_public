@@ -14,7 +14,7 @@ import { serializeChartData } from '@/utils/chart';
 const BeaconSearchResults = () => {
   const t = useTranslationDefault();
 
-  const { response, isFetchingQueryResponse } = useAppSelector((state) => state.beaconQuery);
+  const { response } = useAppSelector((state) => state.beaconQuery);
   const individualCount = useAppSelector((state) => state.beaconQuery?.response?.responseSummary?.count);
   
   const { info } = response;

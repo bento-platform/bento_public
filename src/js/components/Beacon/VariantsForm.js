@@ -1,7 +1,7 @@
 import React from 'react';
 import { Col, Form, Input, Row, Select } from 'antd';
 
-TODOs:
+// TODOs:
 // some form validation
 // show which fields are required without removing the ability to leave the form blank
 
@@ -38,7 +38,7 @@ const FORM_FIELDS = [
   },
 ];
 
-const VariantsForm = ({ assemblyIdOptions, form }) => {
+const VariantsForm = ({ assemblyIdOptions }) => {
   const formStyle = {
     maxWidth: '1200px',
     display: 'flex',

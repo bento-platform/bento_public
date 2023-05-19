@@ -82,7 +82,7 @@ const BeaconQueryUi = () => {
       query = {
         referenceName: values['Chromosome'],
         start: [values['Variant start']],
-        assemblyId: values['Assembly Id'],
+        assemblyId: values['Assembly ID'],
       };
       if (values['Variant end']) {
         query.end = [values['Variant end']];
