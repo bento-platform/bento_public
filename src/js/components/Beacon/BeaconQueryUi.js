@@ -114,6 +114,7 @@ const BeaconQueryUi = () => {
   const handleClearForm = () => {
     setFilters([]);
     form.resetFields();
+    form.setFieldsValue(formInitialValues);
     launchEmptyQuery();
   };
 
