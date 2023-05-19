@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Button, Col, Form, Input, Row, Select, Space } from 'antd';
+import React from 'react';
+import { Col, Form, Input, Row, Select } from 'antd';
 
 TODOs:
 // some form validation
@@ -31,7 +31,7 @@ const FORM_FIELDS = [
   },
   {
     key: 'assemblyId',
-    name: 'Assembly Id',
+    name: 'Assembly ID',
     rules: [{}],
     placeholder: '',
     initialValue: '',

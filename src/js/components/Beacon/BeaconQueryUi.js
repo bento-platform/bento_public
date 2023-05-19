@@ -9,9 +9,16 @@ import BeaconSearchResults from './BeaconSearchResults';
 import VariantsForm from './VariantsForm';
 
 // TODOs
+// form verification
 // switch to one-based (ie convert one -> zero here)
 // example searches, either hardcoded or configurable
 // only render variants part of the form if variants are present
+// better helptext (#1691)
+
+const UI_INSTRUCTIONS = "Search by genomic variants, clinical metadata or both."
+const VARIANTS_HELP = "Variants search requires the fields Chromosome, Variant start, Assembly ID, and at least one of Variant end or Alternate base(s)"
+const METADATA_HELP = 'Click "Add Filter" to choose a search field'
+
 
 const BeaconQueryUi = () => {
   const config = useSelector((state) => state?.beaconConfig?.config);
@@ -35,18 +42,18 @@ const BeaconQueryUi = () => {
 
 
   // set assembly id options mataching what's in gohan
-
   useEffect(() => {
     console.log('setting form initial values');
+    console.log({formInitialValues})
     form.setFieldsValue(formInitialValues);
-  }, [form, formInitialValues]);
+  }, [config]);
 
   const assemblyIdOptions = beaconAssemblyIds.map((assembly) => (
     <Select.Option key={assembly} value={assembly}>
       {assembly}
     </Select.Option>
   ));
-  const formInitialValues = { 'Assembly Id': beaconAssemblyIds.length == 1 && beaconAssemblyIds[0] };
+  const formInitialValues = { 'Assembly ID': beaconAssemblyIds.length == 1 && beaconAssemblyIds[0] };
 
 
   // beacon request handling
@@ -110,8 +117,6 @@ const BeaconQueryUi = () => {
     launchEmptyQuery();
   };
 
-  const variantsHelp = 'sometext about variants';
-  const metadataHelp = 'some text about metadata';
   const SearchToolTip = ({ text }) => {
     return (
       <Tooltip title={text}>
@@ -165,13 +170,14 @@ const BeaconQueryUi = () => {
         bodyStyle={cardBodyStyle}
         headStyle={cardHeadStyle}
       >
+        <p style={{margin: "-10px 0 5px 5px", padding: "0", color: "grey"}}>{UI_INSTRUCTIONS}</p>
         <Form form={form} onFinish={handleFinish} style={variantsFormStyle} layout="vertical">
           <Card
             title="Variants"
             style={innerCardStyle}
             headStyle={cardHeadStyle}
             bodyStyle={cardBodyStyle}
-            extra={<SearchToolTip text={variantsHelp} />}
+            extra={<SearchToolTip text={VARIANTS_HELP} />}
           >
             <VariantsForm assemblyIdOptions={assemblyIdOptions} form={form} />
           </Card>
@@ -180,7 +186,7 @@ const BeaconQueryUi = () => {
             style={innerCardStyle}
             headStyle={cardHeadStyle}
             bodyStyle={cardBodyStyle}
-            extra={<SearchToolTip text={metadataHelp} />}
+            extra={<SearchToolTip text={METADATA_HELP} />}
           >
             <Filters filters={filters} setFilters={setFilters} form={form} querySections={querySections} />
           </Card>

@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react';
-import { Button, Input, Form, Option, Select, Space, Tooltip } from 'antd';
-import { CloseOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import React, { useEffect, useState } from 'react';
+import { Button, Form, Select, Space } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
 
 // TODOs:
-// helptext (possibly as tooltip over search key)
 // any search key (eg "sex") selected in one filter should not available in other
 // for clarity they should probably appear, but be greyed out
 // this requires rendering select options as <Option> components
