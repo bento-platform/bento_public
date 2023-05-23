@@ -133,7 +133,7 @@ const BeaconQueryUi = () => {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    justfifyContent: 'space-between',
+    justifyContent: 'space-between',
   };
 
   const variantsFormStyle = {
