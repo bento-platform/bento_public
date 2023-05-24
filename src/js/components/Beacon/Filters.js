@@ -15,7 +15,7 @@ import { Button, Form, Tooltip } from 'antd';
 const Filters = ({ filters, setFilters, form, querySections }) => {
   const maxFilters = useAppSelector((state) => state.config.maxQueryParameters);
 
-  const newFilter = (n) => ({ index: ` ${n}`, active: true });
+  const newFilter = (n) => ({ index: n, active: true });
 
   const removeFilter = (filter) => {
     // set to active: false
@@ -31,11 +31,6 @@ const Filters = ({ filters, setFilters, form, querySections }) => {
     const f = newFilter(filterIndex);
     setFilters((filters) => [...filters, f]);
   };
-
-  // const handleClearForm = () => {
-  //   setFilters([]);
-  //   form.resetFields();
-  // };
 
   const buttonStyle = { margin: '10px 0' };
 
