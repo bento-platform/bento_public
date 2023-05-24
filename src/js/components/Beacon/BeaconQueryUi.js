@@ -18,12 +18,12 @@ import VariantsForm from './VariantsForm';
 const UI_INSTRUCTIONS = "Search by genomic variants, clinical metadata or both."
 const VARIANTS_HELP = "Variants search requires the fields Chromosome, Variant start, Assembly ID, and at least one of Variant end or Alternate base(s)"
 const METADATA_HELP = 'Click "Add Filter" to choose a search field'
-
+const STARTER_FILTER = {index: 1, active: true}
 
 const BeaconQueryUi = () => {
   const config = useSelector((state) => state?.beaconConfig?.config);
   const beaconAssemblyIds = Object.keys(config?.overview?.counts?.variants ?? {});
-  const [filters, setFilters] = useState([]);
+  const [filters, setFilters] = useState([STARTER_FILTER]);
   const [form] = Form.useForm();
   const querySections = useAppSelector((state) => state.query.querySections);
   const beaconUrl = useAppSelector((state) => state.config?.beaconUrl);
@@ -59,6 +59,12 @@ const BeaconQueryUi = () => {
   // beacon request handling
 
   const packageFilters = (values) => {
+
+    // ignore optional first filter when left blank 
+    if (filters.length == 1 && !values.filterId1) {
+      return []
+    }
+
     return filters
       .filter((f) => f.active)
       .map((f) => ({

@@ -7,7 +7,7 @@ import { CloseOutlined } from '@ant-design/icons';
 // for clarity they should probably appear, but be greyed out
 // this requires rendering select options as <Option> components
 
-const Filter = ({ filter, form, querySections, removeFilter }) => {
+const Filter = ({ filter, form, querySections, removeFilter, isRequired }) => {
   const [valueOptions, setValueOptions] = useState([{ value: '' }]);
 
   const handleSelectKey = (_, option) => {
@@ -46,7 +46,7 @@ const Filter = ({ filter, form, querySections, removeFilter }) => {
 
   return (
     <Space.Compact>
-      <Form.Item name={`filterId${filter.index}`} rules={[{ required: true, message: 'search field required' }]}>
+      <Form.Item name={`filterId${filter.index}`} rules={[{ required: isRequired, message: 'search field required' }]}>
         <Select
           placeholder={'select a search field'}
           style={{ width: 220 }}
@@ -54,7 +54,7 @@ const Filter = ({ filter, form, querySections, removeFilter }) => {
           options={searchKeyOptions(querySections)}
         />
       </Form.Item>
-      <Form.Item name={`filterValue${filter.index}`} rules={[{ required: true, message: 'value required' }]}>
+      <Form.Item name={`filterValue${filter.index}`} rules={[{ required: isRequired, message: 'value required' }]}>
         <Select style={{ width: 220 }} options={valueOptions} />
       </Form.Item>
       <Button onClick={() => removeFilter(filter)}>

@@ -32,6 +32,10 @@ const Filters = ({ filters, setFilters, form, querySections }) => {
     setFilters((filters) => [...filters, f]);
   };
 
+  // UI starts with an optional filter, which can be left blank
+  const isRequired = filters.length > 1
+
+  
   const buttonStyle = { margin: '10px 0' };
 
   return (
@@ -45,7 +49,7 @@ const Filters = ({ filters, setFilters, form, querySections }) => {
       </div>
       <div style={{ minWidth: '484px', display: 'flex', flexDirection: 'column', padding: 0 }}>
         {activeFilters.map((f) => (
-          <Filter key={f.index} filter={f} form={form} querySections={querySections} removeFilter={removeFilter} />
+          <Filter key={f.index} filter={f} form={form} querySections={querySections} removeFilter={removeFilter} isRequired={isRequired}/>
         ))}
       </div>
     </Form.Item>
