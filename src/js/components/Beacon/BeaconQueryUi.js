@@ -16,8 +16,8 @@ import VariantsForm from './VariantsForm';
 // better helptext (#1691)
 
 const UI_INSTRUCTIONS = "Search by genomic variants, clinical metadata or both."
-const VARIANTS_HELP = "Variants search requires the fields Chromosome, Variant start, Assembly ID, and at least one of Variant end or Alternate base(s)"
-const METADATA_HELP = 'Click "Add Filter" to choose a search field'
+const VARIANTS_HELP = "Variants search requires the fields Chromosome, Variant start, Assembly ID, and at least one of Variant end or Alternate base(s)."
+const METADATA_HELP = 'Search over clinical or phenotypic properties.'
 const STARTER_FILTER = {index: 1, active: true}
 
 const BeaconQueryUi = () => {
@@ -118,7 +118,7 @@ const BeaconQueryUi = () => {
   };
 
   const handleClearForm = () => {
-    setFilters([]);
+    setFilters([STARTER_FILTER]);
     form.resetFields();
     form.setFieldsValue(formInitialValues);
     launchEmptyQuery();
