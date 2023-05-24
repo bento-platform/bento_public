@@ -48,7 +48,7 @@ const Filters = ({ filters, setFilters, form, querySections }) => {
           </Button>
         </Tooltip>
       </div>
-      <div style={{ minWidth: '480px', display: 'flex', flexDirection: 'column', padding: 0 }}>
+      <div style={{ minWidth: '484px', display: 'flex', flexDirection: 'column', padding: 0 }}>
         {activeFilters.map((f) => (
           <Filter key={f.index} filter={f} form={form} querySections={querySections} removeFilter={removeFilter} />
         ))}
