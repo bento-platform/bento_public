@@ -1,14 +1,13 @@
 import React, { useEffect } from 'react';
 import { Button, Layout, Row, Col, Typography, Space } from 'antd';
 const { Header } = Layout;
-import i18n from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { DEFAULT_TRANSLATION, langFullNames } from '@/constants/configConstants';
 import { useAppSelector } from '@/hooks';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const SiteHeader = () => {
-  const { t } = useTranslation(DEFAULT_TRANSLATION);
+  const { t, i18n } = useTranslation(DEFAULT_TRANSLATION);
   const navigate = useNavigate();
   const location = useLocation();
 

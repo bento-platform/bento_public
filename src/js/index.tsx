@@ -25,10 +25,10 @@ const App = () => {
   useEffect(() => {
     if (lang === 'en' || lang === 'fr') {
       i18n.changeLanguage(lang);
-    } else {
-      navigate(`/${i18n.language}`);
+    } else if (i18n.language) {
+      navigate(`/${i18n.language}/`);
     }
-  }, [lang, i18n, navigate]);
+  }, [lang, i18n.language, navigate]);
 
   return (
     <Layout>
