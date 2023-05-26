@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Button, Layout, Row, Col, Typography, Space } from 'antd';
 const { Header } = Layout;
 import { useTranslation } from 'react-i18next';
-import { DEFAULT_TRANSLATION, LNG_CHANGE, LNGS_FULL_NAMES, SUPPORTED_LNGS } from '@/constants/configConstants';
+import { DEFAULT_TRANSLATION, LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
 import { useAppSelector } from '@/hooks';
 import { useNavigate, useLocation } from 'react-router-dom';
 
