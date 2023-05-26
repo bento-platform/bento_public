@@ -27,59 +27,43 @@ const VariantsForm = ({ assemblyIdOptions, form }) => {
     borderRadius: '10px',
   };
 
+  // forgiving chromosome regex that accepts X, Y, M or any number with one or two digits
+  const chromosomeRegex = /^([0-9]{1,2}|X|x|Y|y|M|m|MT|mt)$/;
+  const nucleotidesRegex = /^(a|c|g|t|n|A|C|G|T|N)*$/;
+  const digitsRegex = /^[0-9]+$/;
+
   const formFields = {
-    referenceName: { name: 'Chromosome', rules: [{}], placeholder: '1-22, X, Y, MT', initialValue: '', type: 'string' },
+    referenceName: { name: 'Chromosome', rules: [{pattern: chromosomeRegex, message: 'Enter a chromosome name, eg: "17" or "X"'}], placeholder: '1-22, X, Y, M', initialValue: '', type: 'string' },
     start: {
       name: 'Variant start',
-      rules: [{}],
+      rules: [{pattern: digitsRegex, message: 'enter a postion number, eg "200"'}],
       placeholder: 'eg 100',
       initialValue: '',
       type: 'number',
     },
     end: {
       name: 'Variant end',
-      rules: [{}],
+      rules: [{pattern: digitsRegex, message: 'enter a postion number, eg "200"'}],
       placeholder: 'eg 200',
       initialValue: '',
       type: 'number',
     },
     referenceBases: {
       name: 'Reference base(s)',
-      rules: [{}],
+      rules: [{pattern: nucleotidesRegex, message: "enter any combination of A, C, T, or N"}],
       placeholder: 'A, C, G, T or N',
       initialValue: '',
       type: 'string',
     },
     alternateBases: {
       name: 'Alternate base(s)',
-      rules: [{}],
+      rules: [{pattern: nucleotidesRegex, message: "enter any combination of A, C, T, or N"}],
       placeholder: 'A, C, G, T or N',
       initialValue: '',
       type: 'string',
     },
     assemblyId: { name: 'Assembly ID', rules: [{}], placeholder: '', initialValue: '' },
   };
-
-  const isChromosome = (c) => {
-    // forgiving chromosome regex that accepts X, Y, M or any number with one or two digits
-    const chrRegex = /^([0-9]{1,2}|X|x|Y|y|M|m)$/;
-    return chrRegex.test(c);
-  };
-
-  const isNucleotide = (n) => {
-    const nucRegex = /(a|c|g|t|n|A|C|G|T|N)*/;
-    return nucRegex.test(n);
-  };
-
-  const hasDigitsOnly = (d) => {
-    // non-empty string of digits
-    const digitsRegex = /^[0-9]+$/;
-    return digitsRegex.test(d);
-  };
-
-  const handleChange = (e) => {
-    console.log({e})
-  }
 
   const formItemStyle = { width: '150px', padding: '0 5px 0 0px' };
 
