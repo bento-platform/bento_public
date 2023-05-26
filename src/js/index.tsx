@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { HashRouter, Routes, Route, useParams, useNavigate } from 'react-router-dom';
 import { Layout } from 'antd';
 import { ChartConfigProvider } from 'bento-charts';
+import { SUPPORTED_LNGS } from './constants/configConstants';
 
 import './i18n';
 import '../styles.css';
@@ -15,6 +16,7 @@ import SiteFooter from './components/SiteFooter';
 
 import { store } from './store';
 
+const LNGS_ARRAY = Object.values(SUPPORTED_LNGS);
 const { Content } = Layout;
 
 const App = () => {
@@ -23,12 +25,14 @@ const App = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (lang === 'en' || lang === 'fr') {
+    if (lang && LNGS_ARRAY.includes(lang)) {
       i18n.changeLanguage(lang);
+    } else if (i18n.language) {
+      navigate(`/${i18n.language}/`);
     } else {
-      navigate(`/${i18n.language}`);
+      navigate(`/${SUPPORTED_LNGS.ENGLISH}/`);
     }
-  }, [lang, i18n, navigate]);
+  }, [lang, i18n.language, navigate]);
 
   return (
     <Layout>
@@ -48,7 +52,7 @@ const BentoApp = () => {
   console.log('i18n.language', i18n.language);
 
   return (
-    <ChartConfigProvider Lng={i18n.language ?? 'en'}>
+    <ChartConfigProvider Lng={i18n.language ?? SUPPORTED_LNGS.ENGLISH}>
       <Routes>
         <Route path="/:lang?/*" element={<App />} />
       </Routes>

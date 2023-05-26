@@ -2,6 +2,7 @@ import i18n, { InitOptions } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import HttpApi from 'i18next-http-backend';
+import { SUPPORTED_LNGS } from './constants/configConstants';
 
 const languageDetector = new LanguageDetector(null, {
   order: ['htmlTag', 'cookie', 'localStorage', 'path', 'subdomain'],
@@ -9,13 +10,13 @@ const languageDetector = new LanguageDetector(null, {
 });
 
 const options: InitOptions = {
-  fallbackLng: 'en',
+  fallbackLng: SUPPORTED_LNGS.ENGLISH,
 
   // have a common namespace used around the full app
   ns: ['translation', 'default_translation'],
   defaultNS: 'translation',
 
-  supportedLngs: ['en', 'fr'],
+  supportedLngs: Object.values(SUPPORTED_LNGS),
   load: 'all',
 
   debug: false,
