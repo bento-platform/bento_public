@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Button, Layout, Row, Col, Typography, Space } from 'antd';
 const { Header } = Layout;
 import { useTranslation } from 'react-i18next';
-import { DEFAULT_TRANSLATION, langFullNames } from '@/constants/configConstants';
+import { DEFAULT_TRANSLATION, LNG_CHANGE, LNGS_FULL_NAMES, SUPPORTED_LNGS } from '@/constants/configConstants';
 import { useAppSelector } from '@/hooks';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -20,7 +20,7 @@ const SiteHeader = () => {
   }, [clientName]);
 
   const changeLanguage = () => {
-    const newLang = i18n.language === 'en' ? 'fr' : 'en';
+    const newLang = LNG_CHANGE[i18n.language];
     const path = (location.pathname + location.search).replace(`/${i18n.language}/`, `/${newLang}/`);
     navigate(path, { replace: true });
   };
@@ -43,7 +43,7 @@ const SiteHeader = () => {
           <Space>
             {translated && (
               <Button shape="round" onClick={changeLanguage}>
-                {i18n.language === 'en' ? langFullNames.fr : langFullNames.en}
+                {LNGS_FULL_NAMES[LNG_CHANGE[i18n.language]]}
               </Button>
             )}
             <Button type="primary" shape="round" onClick={buttonHandler}>

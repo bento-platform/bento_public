@@ -9,7 +9,18 @@ export const provenanceUrl = '/provenance';
 export const DEFAULT_TRANSLATION = 'default_translation';
 export const NON_DEFAULT_TRANSLATION = 'translation';
 
-export const langFullNames = {
-  en: 'English',
-  fr: 'Français',
+export const SUPPORTED_LNGS = {
+  ENGLISH: 'en',
+  FRENCH: 'fr',
+};
+
+// Language change from eng to fr, and vice-versa
+export const LNG_CHANGE = {
+  [SUPPORTED_LNGS.ENGLISH]: SUPPORTED_LNGS.FRENCH,
+  [SUPPORTED_LNGS.FRENCH]: SUPPORTED_LNGS.ENGLISH,
+};
+
+export const LNGS_FULL_NAMES = {
+  [SUPPORTED_LNGS.ENGLISH]: 'English',
+  [SUPPORTED_LNGS.FRENCH]: 'Français',
 };

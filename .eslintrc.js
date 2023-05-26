@@ -21,6 +21,12 @@ module.exports = {
     'no-unused-vars': 'off', // disable no-unused-vars since @typescript-eslint/no-unused-vars does the same
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }], // enable @typescript-eslint/no-unused-vars
     '@typescript-eslint/no-non-null-assertion': 'off',
+    "comma-dangle": ["error", {
+      "arrays": "always-multiline",
+      "objects": "always-multiline",
+      "imports": "always-multiline",
+      "exports": "always-multiline",
+  }],
   },
   settings: {
     react: {
