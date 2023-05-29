@@ -9,7 +9,7 @@ import { Col, Form, Input, Row, Select } from 'antd';
 // chrom, start, assemblyID, end
 // chrom, start, assemblyID, ref, alt
 
-const VariantsForm = ({ assemblyIdOptions, form }) => {
+const VariantsForm = ({ assemblyIdOptions }) => {
   const formStyle = {
     maxWidth: '1200px',
     display: 'flex',
