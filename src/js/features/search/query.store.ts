@@ -8,41 +8,31 @@ import { ChartData } from '@/types/data';
 type queryState = {
   isFetchingFields: boolean;
   isFetchingData: boolean;
-  queryResponseData: KatsuSearchResponse;
   querySections: SearchFieldResponse['sections'];
   queryParams: { [key: string]: string };
   queryParamCount: number;
-  isValid: boolean;
+  queryChanged: boolean;
   biosampleCount: number;
   biosampleChartData: ChartData[];
   experimentCount: number;
   experimentChartData: ChartData[];
+  message: string;
+  individualCount: number;
 };
 
 const initialState: queryState = {
-  isFetchingFields: false,
+  isFetchingFields: true,
   isFetchingData: false,
-  queryResponseData: {
-    status: '',
-    message: '',
-    biosamples: {
-      count: 0,
-      sampled_tissue: [],
-    },
-    count: 0,
-    experiments: {
-      count: 0,
-      experiment_type: [],
-    },
-  },
+  message: '',
   querySections: [],
   queryParams: {},
   queryParamCount: 0,
-  isValid: false,
+  queryChanged: false,
   biosampleCount: 0,
   biosampleChartData: [],
   experimentCount: 0,
   experimentChartData: [],
+  individualCount: 0,
 };
 
 const query = createSlice({
@@ -52,14 +42,19 @@ const query = createSlice({
     addQueryParam: (state, { payload }) => {
       if (!(payload.id in state.queryParams)) state.queryParamCount++;
       state.queryParams[payload.id] = payload.value;
-      state.isValid = false;
+      state.queryChanged = true;
     },
     removeQueryParam: (state, { payload: id }) => {
       if (id in state.queryParams) {
         delete state.queryParams[id];
         state.queryParamCount--;
+        state.queryChanged = true;
       }
-      state.isValid = false;
+    },
+    setQueryParams: (state, { payload }) => {
+      state.queryParams = payload;
+      state.queryParamCount = Object.keys(payload).length;
+      state.queryChanged = false;
     },
   },
   extraReducers: (builder) => {
@@ -67,13 +62,17 @@ const query = createSlice({
       state.isFetchingData = true;
     });
     builder.addCase(makeGetKatsuPublic.fulfilled, (state, { payload }: PayloadAction<KatsuSearchResponse>) => {
-      state.queryResponseData = payload;
       state.isFetchingData = false;
-      state.isValid = true;
+      if ('message' in payload) {
+        state.message = payload.message;
+        return;
+      }
+      state.message = '';
       state.biosampleCount = payload.biosamples.count;
       state.biosampleChartData = serializeChartData(payload.biosamples.sampled_tissue);
       state.experimentCount = payload.experiments.count;
       state.experimentChartData = serializeChartData(payload.experiments.experiment_type);
+      state.individualCount = payload.count;
     });
     builder.addCase(makeGetKatsuPublic.rejected, (state) => {
       state.isFetchingData = false;
@@ -91,6 +90,6 @@ const query = createSlice({
   },
 });
 
-export const { addQueryParam, removeQueryParam } = query.actions;
+export const { addQueryParam, removeQueryParam, setQueryParams } = query.actions;
 export { makeGetKatsuPublic, makeGetSearchFields };
 export default query.reducer;

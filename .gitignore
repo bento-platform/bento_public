@@ -8,3 +8,4 @@ dist/*
 .prettierrc
 .idea/
 .vscode/
+www/

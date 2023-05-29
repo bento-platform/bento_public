@@ -1,3 +1,5 @@
+import { Datum } from '@/types/overviewResponse';
+
 export interface SearchFieldResponse {
   sections: Section[];
 }
@@ -28,25 +30,21 @@ export interface Config {
   enum?: null;
 }
 
-export interface KatsuSearchResponse {
-  status: string;
+export type KatsuSearchResponse =
+  | {
   biosamples: Biosamples;
   count: number;
   experiments: Experiments;
-  message: string;
 }
+  | { message: string };
+
 
 export interface Biosamples {
   count: number;
-  sampled_tissue: SampledTissue[];
-}
-
-export interface SampledTissue {
-  label: string;
-  value: number;
+  sampled_tissue: Datum[];
 }
 
 export interface Experiments {
   count: number;
-  experiment_type: SampledTissue[];
+  experiment_type: Datum[];
 }
