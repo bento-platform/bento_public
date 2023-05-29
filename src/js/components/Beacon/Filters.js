@@ -6,12 +6,6 @@ import { Button, Form, Tooltip } from 'antd';
 // ideally:
 // - should not permit you to make multiple queries on the same key (Redmine #1688)
 
-// - have one filter already available when you load the page, to make the UI clearer. 
-// You should only need to click "add filter" for filters after the first one. 
-// Currently this will break the form if you don't use the filter though, 
-// since filters are not allow to be blank
-
-
 const Filters = ({ filters, setFilters, form, querySections }) => {
   const maxFilters = useAppSelector((state) => state.config.maxQueryParameters);
 
@@ -35,7 +29,6 @@ const Filters = ({ filters, setFilters, form, querySections }) => {
   // UI starts with an optional filter, which can be left blank
   const isRequired = filters.length > 1
 
-  
   const buttonStyle = { margin: '10px 0' };
 
   return (
