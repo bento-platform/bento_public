@@ -40,7 +40,6 @@ const BeaconQueryUi = () => {
     launchEmptyQuery();
   }, [config]);
 
-
   // set assembly id options mataching what's in gohan
   useEffect(() => {
     console.log('setting form initial values');
@@ -54,7 +53,6 @@ const BeaconQueryUi = () => {
     </Select.Option>
   ));
   const formInitialValues = { 'Assembly ID': beaconAssemblyIds.length == 1 && beaconAssemblyIds[0] };
-
 
   // beacon request handling
 
@@ -80,6 +78,11 @@ const BeaconQueryUi = () => {
     bento: { showSummaryStatitics: 'true' },
   });
 
+  // following GA4GH recommendations, UI is one-based, but API is zero-based, "half-open"
+  // so to convert to zero-based, we only modify the start value 
+  // see eg https://genome-blog.soe.ucsc.edu/blog/2016/12/12/the-ucsc-genome-browser-coordinate-counting-systems/ 
+  const convertStartToZeroBased = (start) => Number(start)-1 
+
   const packageBeaconJSON = (values) => {
     let query = {};
     const payloadFilters = packageFilters(values);
@@ -87,7 +90,7 @@ const BeaconQueryUi = () => {
     if (hasVariantsQuery) {
       query = {
         referenceName: values['Chromosome'],
-        start: [values['Variant start']],
+        start: [convertStartToZeroBased(values['Variant start'])],
         assemblyId: values['Assembly ID'],
       };
       if (values['Variant end']) {
@@ -103,7 +106,6 @@ const BeaconQueryUi = () => {
 
     return requestPayload(query, payloadFilters);
   };
-
 
   // form utils
 
@@ -131,7 +133,6 @@ const BeaconQueryUi = () => {
       </Tooltip>
     );
   };
-
   
   // styles
 
