@@ -10,9 +10,6 @@ import { Col, Form, Input, Row, Select } from 'antd';
 // chrom, start, assemblyID, ref, alt
 
 const VariantsForm = ({ assemblyIdOptions, form }) => {
-  console.log({ form });
-
-
   const formStyle = {
     maxWidth: '1200px',
     display: 'flex',
@@ -39,7 +36,7 @@ const VariantsForm = ({ assemblyIdOptions, form }) => {
     },
     start: {
       name: 'Variant start',
-      rules: [{ pattern: digitsRegex, message: 'enter a postion number, eg "200"' }],
+      rules: [{ pattern: digitsRegex, message: 'enter a postion number, eg "100"' }],
       placeholder: 'eg 100',
       initialValue: '',
       type: 'number',

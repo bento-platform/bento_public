@@ -17,7 +17,6 @@ const Filters = ({ filters, setFilters, form, querySections }) => {
   };
 
   const activeFilters = filters.filter((f) => f.active);
-
   const hasMaxFilters = activeFilters.length >= maxFilters;
 
   const handleAddFilter = () => {
