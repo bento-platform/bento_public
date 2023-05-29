@@ -261,8 +261,8 @@ func main() {
 			"maxQueryParameters": publicOverview["max_query_parameters"],
 			"portalUrl":          cfg.BentoPortalUrl,
 			"translated":         cfg.Translated,
-			"beaconUrl":		  cfg.BeaconUrl,
-			"beaconEnabled":	  cfg.BeaconEnabled,
+			"beaconUrl":          cfg.BeaconUrl,
+			"beaconEnabled":      cfg.BeaconEnabled,
 		})
 	})
 
