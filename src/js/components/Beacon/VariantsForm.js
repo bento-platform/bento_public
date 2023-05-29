@@ -1,23 +1,17 @@
 import React from 'react';
-import { Col, Form, Input, InputNumber, Row, Select } from 'antd';
+import { Col, Form, Input, Row, Select } from 'antd';
 
 // TODOs:
-// some form validation
 // show which fields are required without removing the ability to leave the form blank
 
-// chrom
-// start
-// assemblyId
-// end OR (alt + ref)
-// (end OR alternate)
-
-// so form state has to be one of these:
+// form state has to be one of these:
 // empty (except for autofilled assemblyID)
 // chrom, start, assemblyID, end
 // chrom, start, assemblyID, ref, alt
 
 const VariantsForm = ({ assemblyIdOptions, form }) => {
   console.log({ form });
+
 
   const formStyle = {
     maxWidth: '1200px',
@@ -27,37 +21,46 @@ const VariantsForm = ({ assemblyIdOptions, form }) => {
     borderRadius: '10px',
   };
 
-  // forgiving chromosome regex that accepts X, Y, M or any number with one or two digits
-  const chromosomeRegex = /^([0-9]{1,2}|X|x|Y|y|M|m|MT|mt)$/;
+  // forgiving chromosome regex
+  // accepts X, Y, etc and any one- or two-digit non-zero number
+  // note that, eg, polar bears have 37 pairs of chromosomes...
+  const chromosomeRegex = /^([1-9][0-9]?|X|x|Y|y|M|m|MT|mt)$/;  
+
   const nucleotidesRegex = /^(a|c|g|t|n|A|C|G|T|N)*$/;
   const digitsRegex = /^[0-9]+$/;
 
   const formFields = {
-    referenceName: { name: 'Chromosome', rules: [{pattern: chromosomeRegex, message: 'Enter a chromosome name, eg: "17" or "X"'}], placeholder: '1-22, X, Y, M', initialValue: '', type: 'string' },
+    referenceName: {
+      name: 'Chromosome',
+      rules: [{ pattern: chromosomeRegex, message: 'Enter a chromosome name, eg: "17" or "X"' }],
+      placeholder: '1-22, X, Y, M',
+      initialValue: '',
+      type: 'string',
+    },
     start: {
       name: 'Variant start',
-      rules: [{pattern: digitsRegex, message: 'enter a postion number, eg "200"'}],
+      rules: [{ pattern: digitsRegex, message: 'enter a postion number, eg "200"' }],
       placeholder: 'eg 100',
       initialValue: '',
       type: 'number',
     },
     end: {
       name: 'Variant end',
-      rules: [{pattern: digitsRegex, message: 'enter a postion number, eg "200"'}],
+      rules: [{ pattern: digitsRegex, message: 'enter a postion number, eg "200"' }],
       placeholder: 'eg 200',
       initialValue: '',
       type: 'number',
     },
     referenceBases: {
       name: 'Reference base(s)',
-      rules: [{pattern: nucleotidesRegex, message: "enter any combination of A, C, T, or N"}],
-      placeholder: 'A, C, G, T or N',
+      rules: [{ pattern: nucleotidesRegex, message: 'enter any combination of A, C, G, T, or N' }],
+      placeholder: 'A, C, G, G, T or N',
       initialValue: '',
       type: 'string',
     },
     alternateBases: {
       name: 'Alternate base(s)',
-      rules: [{pattern: nucleotidesRegex, message: "enter any combination of A, C, T, or N"}],
+      rules: [{ pattern: nucleotidesRegex, message: 'enter any combination of A, C, G, T, or N' }],
       placeholder: 'A, C, G, T or N',
       initialValue: '',
       type: 'string',
@@ -70,9 +73,9 @@ const VariantsForm = ({ assemblyIdOptions, form }) => {
   const VariantInput = ({ field }) => {
     return (
       <div style={formItemStyle}>
-      <Form.Item name={field.name} label={field.name} rules={field.rules} help={field.help}>
-        <Input placeholder={field.placeholder} />
-      </Form.Item>
+        <Form.Item name={field.name} label={field.name} rules={field.rules} help={field.help}>
+          <Input placeholder={field.placeholder} />
+        </Form.Item>
       </div>
     );
   };
