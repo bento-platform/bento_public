@@ -21,7 +21,7 @@ const SearchResultsPane = ({
   const t = useTranslationDefault();
 
   return (
-    <div style={{padding: '10px'}}>
+    <div style={{padding: '5px'}}>
       <Card
         style={{ borderRadius: '10px', padding: '10px 33px', width: '1200px', minHeight: '28rem' }}
         loading={isFetchingData}
