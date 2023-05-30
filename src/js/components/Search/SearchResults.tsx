@@ -11,10 +11,13 @@ const SearchResults = () => {
   const individualCount = useAppSelector((state) => state.query.individualCount);
   const message = useAppSelector((state) => state.query.message);
 
+  // existing code treats non-empty message as sign of insufficient data
+  const hasInsufficientData = message !== '' ;
+
   return (
     <SearchResultsPane
       isFetchingData={isFetchingData}
-      hasInsufficientData={message}
+      hasInsufficientData={hasInsufficientData}
       message={message}
       individualCount={individualCount}
       biosampleCount={biosampleCount}
