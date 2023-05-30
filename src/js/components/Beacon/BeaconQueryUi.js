@@ -83,7 +83,7 @@ const BeaconQueryUi = () => {
   const packageBeaconJSON = (values) => {
     let query = {};
     const payloadFilters = packageFilters(values);
-    const hasVariantsQuery = (values && values['Chromosome']) || values['Variant start'] || values['Reference base(s)'];
+    const hasVariantsQuery = (values?.['Chromosome']) || values?.['Variant start'] || values?.['Reference base(s)'];
     if (hasVariantsQuery) {
       query = {
         referenceName: values['Chromosome'],
