@@ -25,7 +25,6 @@ const beaconQuery = createSlice({
       state.isFetchingQueryResponse = true;
     },
     [makeBeaconQuery.fulfilled]: (state, { payload }) => {
-      console.log({beaconResponse: payload})
       state.response = payload
       state.isFetchingQueryResponse = false;
     },

@@ -41,8 +41,6 @@ const BeaconQueryUi = () => {
 
   // set assembly id options mataching what's in gohan
   useEffect(() => {
-    console.log('setting form initial values');
-    console.log({formInitialValues})
     form.setFieldsValue(formInitialValues);
   }, [config]);
 
@@ -109,12 +107,7 @@ const BeaconQueryUi = () => {
   // form utils
 
   const handleFinish = (formValues) => {
-    console.log('Received values of form: ');
-    console.log({ formValues: formValues });
     const jsonPayload = packageBeaconJSON(formValues);
-
-    console.log({ queryPayload: jsonPayload });
-
     dispatch(makeBeaconQuery(jsonPayload));
   };
 
