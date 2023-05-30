@@ -20,14 +20,8 @@ const SearchResultsPane = ({
 }) => {
   const t = useTranslationDefault();
 
-  const wrapperStyle = {
-    padding: '40px',
-    minHeight: '150px',
-    maxHeight: '475px',
-  };
-
   return (
-    <div style={wrapperStyle}>
+    <div style={{padding: '10px'}}>
       <Card
         style={{ borderRadius: '10px', padding: '10px 33px', width: '1200px', minHeight: '28rem' }}
         loading={isFetchingData}
