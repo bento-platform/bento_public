@@ -6,6 +6,9 @@ import { Button, Form, Tooltip } from 'antd';
 // ideally:
 // - should not permit you to make multiple queries on the same key (Redmine #1688)
 
+const BUTTON_STYLE = { margin: '10px 0' };
+
+
 const Filters = ({ filters, setFilters, form, querySections }) => {
   const maxFilters = useAppSelector((state) => state.config.maxQueryParameters);
 
@@ -28,13 +31,11 @@ const Filters = ({ filters, setFilters, form, querySections }) => {
   // UI starts with an optional filter, which can be left blank
   const isRequired = filters.length > 1;
 
-  const buttonStyle = { margin: '10px 0' };
-
   return (
     <Form.Item>
       <div style={{ display: 'flex', padding: 0 }}>
         <Tooltip title={hasMaxFilters ? `maximum of ${maxFilters} filters permitted` : null}>
-          <Button style={buttonStyle} onClick={handleAddFilter} disabled={hasMaxFilters}>
+          <Button style={BUTTON_STYLE} onClick={handleAddFilter} disabled={hasMaxFilters}>
             Add Filter
           </Button>
         </Tooltip>
