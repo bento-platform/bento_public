@@ -3,6 +3,8 @@ import { useAppSelector } from '@/hooks';
 import { serializeChartData } from '@/utils/chart';
 import SearchResultsPane from '../Search/SearchResultsPane';
 
+const ZERO_COUNT_MESSAGE = 'Insufficient data available.';
+
 const BeaconSearchResults = () => {
   const { response } = useAppSelector((state) => state.beaconQuery);
   const individualCount = useAppSelector((state) => state.beaconQuery?.response?.responseSummary?.count);
@@ -19,14 +21,11 @@ const BeaconSearchResults = () => {
   const experimentCount = experiments.count ?? 0;
   const experimentChartData = serializeChartData(experiments?.experiment_type ?? []);
 
-  // shown when count = 0
-  const message = 'Insufficient data available.';
-
   return (
     <SearchResultsPane
       isFetchingData={isFetchingData}
       hasInsufficientData={hasInsufficientData}
-      message={message}
+      message={ZERO_COUNT_MESSAGE}
       individualCount={individualCount}
       biosampleCount={biosampleCount}
       biosampleChartData={biosampleChartData}
