@@ -95,7 +95,14 @@ const TabbedDashboard = () => {
     key,
   }));
 
-  return <Tabs activeKey={page ?? 'overview'} items={mappedTabPanes} onChange={onChange} centered />;
+  const getTabKey = (page: string | undefined ) => {
+    if (page && mappedTabPanes.map(t => t.key).includes(page)) {
+      return page
+    }
+    return 'overview'
+  };
+
+  return <Tabs activeKey={getTabKey(page)} items={mappedTabPanes} onChange={onChange} centered />;
 };
 
 export default TabbedDashboard;
