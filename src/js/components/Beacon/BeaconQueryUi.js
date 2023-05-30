@@ -19,6 +19,39 @@ const VARIANTS_HELP = "Variants search requires the fields Chromosome, Variant s
 const METADATA_HELP = 'Search over clinical or phenotypic properties.';
 const STARTER_FILTER = {index: 1, active: true};
 
+const WRAPPER_STYLE = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+};
+
+const VARIANTS_FORM_STYLE = {
+  maxWidth: '1200px',
+  display: 'flex',
+  flexWrap: 'wrap',
+};
+
+const CARD_BODY_STYLE = {
+  padding: '0 24px 5px 24px',
+};
+
+const CARD_HEAD_STYLE = {
+  border: '0',
+};
+
+const INNER_CARD_STYLE = {
+  margin: '0 5px 0 0',
+};
+
+const BUTTON_AREA_STYLE = {
+  padding: '20px 5px',
+};
+
+const BUTTON_STYLE = {
+  margin: '0 10px 0 0',
+};
+
 const BeaconQueryUi = () => {
   const config = useSelector((state) => state?.beaconConfig?.config);
   const beaconAssemblyIds = Object.keys(config?.overview?.counts?.variants ?? {});
@@ -126,75 +159,40 @@ const BeaconQueryUi = () => {
     );
   };
   
-  // styles
-
-  const wrapperStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  };
-
-  const variantsFormStyle = {
-    maxWidth: '1200px',
-    display: 'flex',
-    flexWrap: 'wrap',
-  };
-
-  const cardBodyStyle = {
-    padding: '0 24px 5px 24px',
-  };
-
-  const cardHeadStyle = {
-    border: '0',
-  };
-
-  const innerCardStyle = {
-    margin: '0 5px 0 0',
-  };
-
-  const buttonAreaStyle = {
-    padding: '20px 5px',
-  };
-
-  const buttonStyle = {
-    margin: '0 10px 0 0',
-  };
-
   return (
-    <div style={wrapperStyle}>
+    <div style={WRAPPER_STYLE}>
       <BeaconSearchResults />
       <Card
         title="Search"
         style={{ borderRadius: '10px', maxWidth: '1200px' }}
-        bodyStyle={cardBodyStyle}
-        headStyle={cardHeadStyle}
+        bodyStyle={CARD_BODY_STYLE}
+        headStyle={CARD_HEAD_STYLE}
       >
         <p style={{margin: "-10px 0 5px 5px", padding: "0", color: "grey"}}>{UI_INSTRUCTIONS}</p>
-        <Form form={form} onFinish={handleFinish} style={variantsFormStyle} layout="vertical">
+        <Form form={form} onFinish={handleFinish} style={VARIANTS_FORM_STYLE} layout="vertical">
           <Card
             title="Variants"
-            style={innerCardStyle}
-            headStyle={cardHeadStyle}
-            bodyStyle={cardBodyStyle}
+            style={INNER_CARD_STYLE}
+            headStyle={CARD_HEAD_STYLE}
+            bodyStyle={CARD_BODY_STYLE}
             extra={<SearchToolTip text={VARIANTS_HELP} />}
           >
             <VariantsForm assemblyIdOptions={assemblyIdOptions} form={form} />
           </Card>
           <Card
             title="Metadata"
-            style={innerCardStyle}
-            headStyle={cardHeadStyle}
-            bodyStyle={cardBodyStyle}
+            style={INNER_CARD_STYLE}
+            headStyle={CARD_HEAD_STYLE}
+            bodyStyle={CARD_BODY_STYLE}
             extra={<SearchToolTip text={METADATA_HELP} />}
           >
             <Filters filters={filters} setFilters={setFilters} form={form} querySections={querySections} />
           </Card>
-          <div style={buttonAreaStyle}>
-            <Button type="primary" htmlType="submit" style={buttonStyle}>
+          <div style={BUTTON_AREA_STYLE}>
+            <Button type="primary" htmlType="submit" style={BUTTON_STYLE}>
               Search Beacon
             </Button>
-            <Button onClick={handleClearForm} style={buttonStyle}>
+            <Button onClick={handleClearForm} style={BUTTON_STYLE}>
               Clear Form
             </Button>
           </div>
