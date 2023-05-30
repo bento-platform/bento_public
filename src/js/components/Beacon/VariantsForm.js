@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, Form, Input, Row, Select } from 'antd';
+import { Col, Row } from 'antd';
 import VariantInput from './VariantInput';
 import AssemblyIdSelect from './AssemblyIdSelect';
 
