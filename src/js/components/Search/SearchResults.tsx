@@ -61,7 +61,7 @@ const SearchResults = () => {
           </Col>
           <Col span={10}>
             <Typography.Title level={5}>{t('Biosamples')}</Typography.Title>
-            {(!message && biosampleChartData.length) ? (
+            {!message && biosampleChartData.length ? (
               <PieChart data={biosampleChartData} height={CHART_HEIGHT} sort={true} />
             ) : (
               <CustomEmpty text="No Results" />
@@ -69,7 +69,7 @@ const SearchResults = () => {
           </Col>
           <Col span={10}>
             <Typography.Title level={5}>{t('Experiments')}</Typography.Title>
-            {(!message && experimentChartData.length) ? (
+            {!message && experimentChartData.length ? (
               <PieChart data={experimentChartData} height={CHART_HEIGHT} sort={true} />
             ) : (
               <CustomEmpty text="No Results" />
