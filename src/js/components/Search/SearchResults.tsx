@@ -12,7 +12,7 @@ const SearchResults = () => {
   const message = useAppSelector((state) => state.query.message);
 
   // existing code treats non-empty message as sign of insufficient data
-  const hasInsufficientData = message !== '' ;
+  const hasInsufficientData = message !== '';
 
   return (
     <SearchResultsPane
