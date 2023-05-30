@@ -10,7 +10,6 @@ import VariantsForm from './VariantsForm';
 
 // TODOs
 // form verification
-// switch to one-based (ie convert one -> zero here)
 // example searches, either hardcoded or configurable
 // only render variants part of the form if variants are present
 // better helptext (#1691)
@@ -81,7 +80,7 @@ const BeaconQueryUi = () => {
   // following GA4GH recommendations, UI is one-based, but API is zero-based, "half-open"
   // so to convert to zero-based, we only modify the start value 
   // see eg https://genome-blog.soe.ucsc.edu/blog/2016/12/12/the-ucsc-genome-browser-coordinate-counting-systems/ 
-  const convertStartToZeroBased = (start) => Number(start)-1 
+  const convertToZeroBased = (start) => Number(start)-1 
 
   const packageBeaconJSON = (values) => {
     let query = {};
@@ -90,7 +89,7 @@ const BeaconQueryUi = () => {
     if (hasVariantsQuery) {
       query = {
         referenceName: values['Chromosome'],
-        start: [convertStartToZeroBased(values['Variant start'])],
+        start: [convertToZeroBased(values['Variant start'])],
         assemblyId: values['Assembly ID'],
       };
       if (values['Variant end']) {
