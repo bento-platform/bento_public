@@ -29,8 +29,7 @@ const Filter = ({ filter, form, querySections, removeFilter, isRequired }) => {
     return searchField.title + unitsString;
   };
 
-  const searchKeyOptions = (arr) => {
-    return arr.map((qs) => ({
+  const searchKeyOptions = (arr) => arr.map((qs) => ({
       label: qs.section_title,
       options: qs.fields.map((field) => ({
         label: renderLabel(field),
@@ -38,11 +37,9 @@ const Filter = ({ filter, form, querySections, removeFilter, isRequired }) => {
         optionsThisKey: searchValueOptions(field.options),
       })),
     }));
-  };
 
-  const searchValueOptions = (arr) => {
-    return arr.map((v) => ({ label: v, value: v }));
-  };
+  const searchValueOptions = (arr) => arr.map((v) => ({ label: v, value: v }));
+
 
   return (
     <Space.Compact>
