@@ -14,10 +14,10 @@ import VariantsForm from './VariantsForm';
 // only render variants part of the form if variants are present
 // better helptext (#1691)
 
-const UI_INSTRUCTIONS = "Search by genomic variants, clinical metadata or both."
-const VARIANTS_HELP = "Variants search requires the fields Chromosome, Variant start, Assembly ID, and at least one of Variant end or Alternate base(s)."
-const METADATA_HELP = 'Search over clinical or phenotypic properties.'
-const STARTER_FILTER = {index: 1, active: true}
+const UI_INSTRUCTIONS = "Search by genomic variants, clinical metadata or both.";
+const VARIANTS_HELP = "Variants search requires the fields Chromosome, Variant start, Assembly ID, and at least one of Variant end or Alternate base(s).";
+const METADATA_HELP = 'Search over clinical or phenotypic properties.';
+const STARTER_FILTER = {index: 1, active: true};
 
 const BeaconQueryUi = () => {
   const config = useSelector((state) => state?.beaconConfig?.config);
@@ -58,7 +58,7 @@ const BeaconQueryUi = () => {
     // ignore optional first filter when left blank 
     if (filters.length == 1 && !values.filterId1) {
       return []
-    }
+    };
 
     return filters
       .filter((f) => f.active)

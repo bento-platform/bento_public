@@ -38,8 +38,8 @@ const TabbedDashboard = () => {
 
   const isFetchingOverviewData = useAppSelector((state) => state.data.isFetchingData);
   const isFetchingSearchFields = useAppSelector((state) => state.query.isFetchingFields);
-  const isFetchingBeaconConfig = useAppSelector((state) => state.beaconConfig?.isFetchingBeaconConfig)
-  const renderBeaconUi = useAppSelector((state) => state.config?.beaconEnabled)
+  const isFetchingBeaconConfig = useAppSelector((state) => state.beaconConfig?.isFetchingBeaconConfig);
+  const renderBeaconUi = useAppSelector((state) => state.config?.beaconEnabled);
 
   const onChange = useCallback(
     (key: string) => {

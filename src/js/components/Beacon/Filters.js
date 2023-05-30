@@ -26,7 +26,7 @@ const Filters = ({ filters, setFilters, form, querySections }) => {
   };
 
   // UI starts with an optional filter, which can be left blank
-  const isRequired = filters.length > 1
+  const isRequired = filters.length > 1;
 
   const buttonStyle = { margin: '10px 0' };
 
