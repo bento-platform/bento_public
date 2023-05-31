@@ -11,5 +11,4 @@ export const makeGetSearchFields = createAsyncThunk<SearchFieldResponse, void, {
       .get(searchFieldsUrl)
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue))
-
 );

@@ -51,9 +51,7 @@ const MakeQueryOption = ({ queryField }: MakeQueryOptionProps) => {
         </Col>
         <Col span={7}>{`${t(title)} ${config?.units ? '(' + td('in') + ' ' + t(config.units) + ')' : ''}`}</Col>
         <Col span={2}>
-          <OptionDescription
-            description={t(description)}
-          />
+          <OptionDescription description={t(description)} />
         </Col>
         <Col span={10}>
           <SelectOption id={id} options={options} isChecked={isChecked} />

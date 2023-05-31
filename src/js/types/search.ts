@@ -32,12 +32,11 @@ export interface Config {
 
 export type KatsuSearchResponse =
   | {
-  biosamples: Biosamples;
-  count: number;
-  experiments: Experiments;
-}
+      biosamples: Biosamples;
+      count: number;
+      experiments: Experiments;
+    }
   | { message: string };
-
 
 export interface Biosamples {
   count: number;
