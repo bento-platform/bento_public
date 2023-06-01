@@ -28,7 +28,7 @@ const SelectOption = ({ id, isChecked, options }: SelectOptionProps) => {
       onChange={handleValueChange}
       value={defaultValue}
       defaultValue={defaultValue}
-      options={options.map((item) => ({ value: item, label: t(item)}))}
+      options={options.map((item) => ({ value: item, label: t(item) }))}
     />
   );
 };
