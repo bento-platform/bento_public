@@ -90,7 +90,7 @@ const BeaconQueryUi = () => {
 
     // ignore optional first filter when left blank 
     if (filters.length == 1 && !values.filterId1) {
-      return []
+      return [];
     };
 
     return filters
@@ -111,7 +111,7 @@ const BeaconQueryUi = () => {
   // following GA4GH recommendations, UI is one-based, but API is zero-based, "half-open"
   // so to convert to zero-based, we only modify the start value 
   // see eg https://genome-blog.soe.ucsc.edu/blog/2016/12/12/the-ucsc-genome-browser-coordinate-counting-systems/ 
-  const convertToZeroBased = (start) => Number(start)-1 
+  const convertToZeroBased = (start) => Number(start)-1; 
 
   const packageBeaconJSON = (values) => {
     let query = {};

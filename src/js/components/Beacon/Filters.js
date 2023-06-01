@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import Filter from './Filter';
 import { useAppSelector } from '@/hooks';
 import { Button, Form, Tooltip } from 'antd';

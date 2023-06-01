@@ -16,7 +16,7 @@ import Loader from './Loader';
 import PublicOverview from './Overview/PublicOverview';
 import Search from './Search/Search';
 import ProvenanceTab from './Provenance/ProvenanceTab';
-import BeaconQueryUi from './Beacon/BeaconQueryUi'
+import BeaconQueryUi from './Beacon/BeaconQueryUi';
 import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { useAppDispatch, useAppSelector } from '@/hooks';
 
@@ -97,9 +97,9 @@ const TabbedDashboard = () => {
 
   const getTabKey = (page: string | undefined ) => {
     if (page && mappedTabPanes.map(t => t.key).includes(page)) {
-      return page
+      return page;
     }
-    return 'overview'
+    return 'overview';
   };
 
   return <Tabs activeKey={getTabKey(page)} items={mappedTabPanes} onChange={onChange} centered />;

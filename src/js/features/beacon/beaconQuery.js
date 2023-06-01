@@ -4,7 +4,7 @@ import { printAPIError } from '../../utils/error.util.ts';
 
 
 export const makeBeaconQuery = createAsyncThunk('beaconQuery/makeBeaconQuery', async (payload, { getState }) => {
-  const beaconIndividualsEndpoint = getState()?.config?.beaconUrl + '/individuals'
+  const beaconIndividualsEndpoint = getState()?.config?.beaconUrl + '/individuals';
   return axios
     .post(beaconIndividualsEndpoint, payload)
     .then((res) => res.data)
@@ -25,7 +25,7 @@ const beaconQuery = createSlice({
       state.isFetchingQueryResponse = true;
     },
     [makeBeaconQuery.fulfilled]: (state, { payload }) => {
-      state.response = payload
+      state.response = payload;
       state.isFetchingQueryResponse = false;
     },
     [makeBeaconQuery.rejected]: (state) => {
