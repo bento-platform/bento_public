@@ -8,7 +8,6 @@ import { Button, Form, Tooltip } from 'antd';
 
 const BUTTON_STYLE = { margin: '10px 0' };
 
-
 const Filters = ({ filters, setFilters, form, querySections }) => {
   const maxFilters = useAppSelector((state) => state.config.maxQueryParameters);
 
@@ -42,7 +41,14 @@ const Filters = ({ filters, setFilters, form, querySections }) => {
       </div>
       <div style={{ minWidth: '484px', display: 'flex', flexDirection: 'column', padding: 0 }}>
         {activeFilters.map((f) => (
-          <Filter key={f.index} filter={f} form={form} querySections={querySections} removeFilter={removeFilter} isRequired={isRequired}/>
+          <Filter
+            key={f.index}
+            filter={f}
+            form={form}
+            querySections={querySections}
+            removeFilter={removeFilter}
+            isRequired={isRequired}
+          />
         ))}
       </div>
     </Form.Item>

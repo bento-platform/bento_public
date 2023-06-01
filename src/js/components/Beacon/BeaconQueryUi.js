@@ -14,10 +14,11 @@ import VariantsForm from './VariantsForm';
 // only render variants part of the form if variants are present
 // better helptext (#1691)
 
-const UI_INSTRUCTIONS = "Search by genomic variants, clinical metadata or both.";
-const VARIANTS_HELP = "Variants search requires the fields Chromosome, Variant start, Assembly ID, and at least one of Variant end or Alternate base(s).";
+const UI_INSTRUCTIONS = 'Search by genomic variants, clinical metadata or both.';
+const VARIANTS_HELP =
+  'Variants search requires the fields Chromosome, Variant start, Assembly ID, and at least one of Variant end or Alternate base(s).';
 const METADATA_HELP = 'Search over clinical or phenotypic properties.';
-const STARTER_FILTER = {index: 1, active: true};
+const STARTER_FILTER = { index: 1, active: true };
 
 const WRAPPER_STYLE = {
   display: 'flex',
@@ -87,11 +88,10 @@ const BeaconQueryUi = () => {
   // beacon request handling
 
   const packageFilters = (values) => {
-
-    // ignore optional first filter when left blank 
+    // ignore optional first filter when left blank
     if (filters.length == 1 && !values.filterId1) {
       return [];
-    };
+    }
 
     return filters
       .filter((f) => f.active)
@@ -109,14 +109,14 @@ const BeaconQueryUi = () => {
   });
 
   // following GA4GH recommendations, UI is one-based, but API is zero-based, "half-open"
-  // so to convert to zero-based, we only modify the start value 
-  // see eg https://genome-blog.soe.ucsc.edu/blog/2016/12/12/the-ucsc-genome-browser-coordinate-counting-systems/ 
-  const convertToZeroBased = (start) => Number(start)-1; 
+  // so to convert to zero-based, we only modify the start value
+  // see eg https://genome-blog.soe.ucsc.edu/blog/2016/12/12/the-ucsc-genome-browser-coordinate-counting-systems/
+  const convertToZeroBased = (start) => Number(start) - 1;
 
   const packageBeaconJSON = (values) => {
     let query = {};
     const payloadFilters = packageFilters(values);
-    const hasVariantsQuery = (values?.['Chromosome']) || values?.['Variant start'] || values?.['Reference base(s)'];
+    const hasVariantsQuery = values?.['Chromosome'] || values?.['Variant start'] || values?.['Reference base(s)'];
     if (hasVariantsQuery) {
       query = {
         referenceName: values['Chromosome'],
@@ -158,7 +158,7 @@ const BeaconQueryUi = () => {
       </Tooltip>
     );
   };
-  
+
   return (
     <div style={WRAPPER_STYLE}>
       <BeaconSearchResults />
@@ -168,7 +168,7 @@ const BeaconQueryUi = () => {
         bodyStyle={CARD_BODY_STYLE}
         headStyle={CARD_HEAD_STYLE}
       >
-        <p style={{margin: "-10px 0 5px 5px", padding: "0", color: "grey"}}>{UI_INSTRUCTIONS}</p>
+        <p style={{ margin: '-10px 0 5px 5px', padding: '0', color: 'grey' }}>{UI_INSTRUCTIONS}</p>
         <Form form={form} onFinish={handleFinish} style={VARIANTS_FORM_STYLE} layout="vertical">
           <Card
             title="Variants"

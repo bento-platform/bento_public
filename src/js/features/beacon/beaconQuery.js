@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { printAPIError } from '../../utils/error.util.ts';
 
-
 export const makeBeaconQuery = createAsyncThunk('beaconQuery/makeBeaconQuery', async (payload, { getState }) => {
   const beaconIndividualsEndpoint = getState()?.config?.beaconUrl + '/individuals';
   return axios

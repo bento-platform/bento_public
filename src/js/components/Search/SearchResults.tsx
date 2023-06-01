@@ -26,7 +26,6 @@ const SearchResults = () => {
       experimentChartData={experimentChartData}
     />
   );
-
 };
 
 export default SearchResults;

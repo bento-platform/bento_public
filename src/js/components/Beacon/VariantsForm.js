@@ -11,11 +11,10 @@ import AssemblyIdSelect from './AssemblyIdSelect';
 // chrom, start, assemblyID, end
 // chrom, start, assemblyID, ref, alt
 
-
 // forgiving chromosome regex
 // accepts X, Y, etc and any one- or two-digit non-zero number
 // note that, eg, polar bears have 37 pairs of chromosomes...
-const CHROMOSOME_REGEX = /^([1-9][0-9]?|X|x|Y|y|M|m|MT|mt)$/;  
+const CHROMOSOME_REGEX = /^([1-9][0-9]?|X|x|Y|y|M|m|MT|mt)$/;
 
 const NUCLEOTIDES_REGEX = /^(a|c|g|t|n|A|C|G|T|N)*$/;
 const DIGITS_REGEX = /^[0-9]+$/;
@@ -61,7 +60,6 @@ const FORM_FIELDS = {
 
 const FORM_ITEM_STYLE = { width: '150px', padding: '0 5px 0 0px' };
 
-
 const VariantsForm = ({ assemblyIdOptions }) => {
   const formStyle = {
     maxWidth: '1200px',
@@ -82,7 +80,7 @@ const VariantsForm = ({ assemblyIdOptions }) => {
         <Row>
           <VariantInput field={FORM_FIELDS.referenceBases} style={FORM_ITEM_STYLE} />
           <VariantInput field={FORM_FIELDS.alternateBases} style={FORM_ITEM_STYLE} />
-          <AssemblyIdSelect field={FORM_FIELDS.assemblyId} options={assemblyIdOptions} style={FORM_ITEM_STYLE}/>
+          <AssemblyIdSelect field={FORM_FIELDS.assemblyId} options={assemblyIdOptions} style={FORM_ITEM_STYLE} />
         </Row>
       </Col>
     </div>

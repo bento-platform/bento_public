@@ -33,7 +33,6 @@ const TabbedDashboard = () => {
     dispatch(makeGetDataRequestThunk());
     dispatch(makeGetSearchFields());
     dispatch(makeGetProvenanceRequest());
-
   }, []);
 
   const isFetchingOverviewData = useAppSelector((state) => state.data.isFetchingData);
@@ -89,14 +88,16 @@ const TabbedDashboard = () => {
     },
   ];
 
-  const mappedTabPanes = tabPanes.filter(t => t.active).map(({ title, content, loading, key }) => ({
-    label: <TabTitle title={t(title)} />,
-    children: loading ? <Loader /> : content,
-    key,
-  }));
+  const mappedTabPanes = tabPanes
+    .filter((t) => t.active)
+    .map(({ title, content, loading, key }) => ({
+      label: <TabTitle title={t(title)} />,
+      children: loading ? <Loader /> : content,
+      key,
+    }));
 
-  const getTabKey = (page: string | undefined ) => {
-    if (page && mappedTabPanes.map(t => t.key).includes(page)) {
+  const getTabKey = (page: string | undefined) => {
+    if (page && mappedTabPanes.map((t) => t.key).includes(page)) {
       return page;
     }
     return 'overview';
