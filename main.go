@@ -26,7 +26,7 @@ const ConfigLogTemplate = `Config --
 	Port: %d
 	Translated: %t
 	Beacon URL: %s
-	Beacon enabled: %t
+	Beacon UI enabled: %t
 `
 
 type BentoConfig struct {
@@ -39,7 +39,7 @@ type BentoConfig struct {
 	Port               int    `envconfig:"INTERNAL_PORT" default:"8090"`
 	Translated         bool   `envconfig:"BENTO_PUBLIC_TRANSLATED" default:"true"`
 	BeaconUrl          string `envconfig:"BEACON_URL"`
-	BeaconEnabled	   bool   `envconfig:"BENTO_BEACON_ENABLED"`
+	BeaconUiEnabled	   bool   `envconfig:"BENTO_BEACON_UI_ENABLED"`
 }
 
 type JsonLike map[string]interface{}
@@ -90,7 +90,7 @@ func main() {
 		cfg.Port,
 		cfg.Translated,
 		cfg.BeaconUrl,
-		cfg.BeaconEnabled,
+		cfg.BeaconUiEnabled,
 	)
 
 	// Set up HTTP client
@@ -262,7 +262,7 @@ func main() {
 			"portalUrl":          cfg.BentoPortalUrl,
 			"translated":         cfg.Translated,
 			"beaconUrl":          cfg.BeaconUrl,
-			"beaconEnabled":      cfg.BeaconEnabled,
+			"beaconUiEnabled":    cfg.BeaconUiEnabled,
 		})
 	})
 

@@ -4,5 +4,5 @@ export interface ConfigResponse {
   maxQueryParameters: number;
   translated: boolean;
   beaconUrl: string;
-  beaconEnabled: boolean;
+  beaconUiEnabled: boolean;
 }
