@@ -1,7 +1,7 @@
 import React from 'react';
 import Filter from './Filter';
 import { useAppSelector } from '@/hooks';
-import { Button, Form, Tooltip } from 'antd';
+import { Button, Form, Space, Tooltip } from 'antd';
 
 // ideally:
 // - should not permit you to make multiple queries on the same key (Redmine #1688)
@@ -32,14 +32,14 @@ const Filters = ({ filters, setFilters, form, querySections }) => {
 
   return (
     <Form.Item>
-      <div style={{ display: 'flex', padding: 0 }}>
+      <Space style={{ display: 'flex', padding: 0 }}>
         <Tooltip title={hasMaxFilters ? `maximum of ${maxFilters} filters permitted` : null}>
           <Button style={BUTTON_STYLE} onClick={handleAddFilter} disabled={hasMaxFilters}>
             Add Filter
           </Button>
         </Tooltip>
-      </div>
-      <div style={{ minWidth: '484px', display: 'flex', flexDirection: 'column', padding: 0 }}>
+      </Space>
+      <Space style={{ minWidth: '484px', display: 'flex', flexDirection: 'column', padding: 0 }}>
         {activeFilters.map((f) => (
           <Filter
             key={f.index}
@@ -50,7 +50,7 @@ const Filters = ({ filters, setFilters, form, querySections }) => {
             isRequired={isRequired}
           />
         ))}
-      </div>
+      </Space>
     </Form.Item>
   );
 };
