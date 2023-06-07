@@ -40,17 +40,16 @@ const BeaconQueryUi = () => {
   const dispatch = useDispatch();
   const launchEmptyQuery = () => dispatch(makeBeaconQuery(requestPayload({}, [])));
 
-  // get beacon stats on first render
   useEffect(() => {
     // wait for config
     if (!beaconUrl) {
       return;
     }
+    
+    // retrieve stats
     launchEmptyQuery();
-  }, [config]);
 
-  // set assembly id options mataching what's in gohan
-  useEffect(() => {
+    // set assembly id options mataching what's in gohan
     form.setFieldsValue(formInitialValues);
   }, [config]);
 
