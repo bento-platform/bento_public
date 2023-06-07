@@ -45,7 +45,7 @@ const BeaconQueryUi = () => {
     if (!beaconUrl) {
       return;
     }
-    
+
     // retrieve stats
     launchEmptyQuery();
 
