@@ -39,7 +39,7 @@ const Filters = ({ filters, setFilters, form, querySections }) => {
           </Button>
         </Tooltip>
       </Space>
-      <Space style={{ minWidth: '484px', display: 'flex', flexDirection: 'column', padding: 0 }}>
+      <div style={{ minWidth: '484px', display: 'flex', flexDirection: 'column', padding: 0 }}>
         {activeFilters.map((f) => (
           <Filter
             key={f.index}
@@ -50,7 +50,7 @@ const Filters = ({ filters, setFilters, form, querySections }) => {
             isRequired={isRequired}
           />
         ))}
-      </Space>
+      </div>
     </Form.Item>
   );
 };
