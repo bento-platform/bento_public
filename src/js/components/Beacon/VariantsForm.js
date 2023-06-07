@@ -59,18 +59,11 @@ const FORM_FIELDS = {
 };
 
 const FORM_ITEM_STYLE = { width: '150px', padding: '0 5px 0 0px' };
+const FORM_STYLE = { maxWidth: '1200px', display: 'flex', background: 'white', padding: '10px', borderRadius: '10px' };
 
 const VariantsForm = ({ assemblyIdOptions }) => {
-  const formStyle = {
-    maxWidth: '1200px',
-    display: 'flex',
-    background: 'white',
-    padding: '10px',
-    borderRadius: '10px',
-  };
-
   return (
-    <div style={formStyle}>
+    <div style={FORM_STYLE}>
       <Col>
         <Row>
           <VariantInput field={FORM_FIELDS.referenceName} style={FORM_ITEM_STYLE} />
