@@ -7,6 +7,15 @@ import Filters from './Filters';
 import { makeBeaconQuery } from '../../features/beacon/beaconQuery';
 import BeaconSearchResults from './BeaconSearchResults';
 import VariantsForm from './VariantsForm';
+import {
+  WRAPPER_STYLE,
+  VARIANTS_FORM_STYLE,
+  CARD_BODY_STYLE,
+  CARD_HEAD_STYLE,
+  INNER_CARD_STYLE,
+  BUTTON_AREA_STYLE,
+  BUTTON_STYLE,
+} from '../../constants/beaconConstants';
 
 // TODOs
 // form verification
@@ -19,39 +28,6 @@ const VARIANTS_HELP =
   'Variants search requires the fields Chromosome, Variant start, Assembly ID, and at least one of Variant end or Alternate base(s).';
 const METADATA_HELP = 'Search over clinical or phenotypic properties.';
 const STARTER_FILTER = { index: 1, active: true };
-
-const WRAPPER_STYLE = {
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-};
-
-const VARIANTS_FORM_STYLE = {
-  maxWidth: '1200px',
-  display: 'flex',
-  flexWrap: 'wrap',
-};
-
-const CARD_BODY_STYLE = {
-  padding: '0 24px 5px 24px',
-};
-
-const CARD_HEAD_STYLE = {
-  border: '0',
-};
-
-const INNER_CARD_STYLE = {
-  margin: '0 5px 0 0',
-};
-
-const BUTTON_AREA_STYLE = {
-  padding: '20px 5px',
-};
-
-const BUTTON_STYLE = {
-  margin: '0 10px 0 0',
-};
 
 const BeaconQueryUi = () => {
   const config = useSelector((state) => state?.beaconConfig?.config);
