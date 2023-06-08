@@ -68,11 +68,21 @@ const VariantsForm = ({ assemblyIdOptions }) => {
   return (
     <div style={FORM_STYLE}>
       <Row gutter={FORM_ROW_GUTTER}>
-        <Col span={8}><VariantInput field={FORM_FIELDS.referenceName} /></Col>
-        <Col span={8}><VariantInput field={FORM_FIELDS.start} /></Col>
-        <Col span={8}><VariantInput field={FORM_FIELDS.end} /></Col>
-        <Col span={8}><VariantInput field={FORM_FIELDS.referenceBases} /></Col>
-        <Col span={8}><VariantInput field={FORM_FIELDS.alternateBases} /></Col>
+        <Col span={8}>
+          <VariantInput field={FORM_FIELDS.referenceName} />
+        </Col>
+        <Col span={8}>
+          <VariantInput field={FORM_FIELDS.start} />
+        </Col>
+        <Col span={8}>
+          <VariantInput field={FORM_FIELDS.end} />
+        </Col>
+        <Col span={8}>
+          <VariantInput field={FORM_FIELDS.referenceBases} />
+        </Col>
+        <Col span={8}>
+          <VariantInput field={FORM_FIELDS.alternateBases} />
+        </Col>
         <Col span={8}>
           <AssemblyIdSelect field={FORM_FIELDS.assemblyId} options={assemblyIdOptions} />
         </Col>

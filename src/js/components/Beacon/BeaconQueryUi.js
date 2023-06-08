@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useAppSelector } from '@/hooks';
-import {Button, Card, Col, Form, Row, Select, Tooltip} from 'antd';
+import { Button, Card, Col, Form, Row, Select, Tooltip } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import Filters from './Filters';
 import { makeBeaconQuery } from '@/features/beacon/beaconQuery';
