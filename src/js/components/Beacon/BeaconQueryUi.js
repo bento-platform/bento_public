@@ -1,27 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useAppSelector } from '@/hooks';
-import { Button, Card, Form, Select, Tooltip } from 'antd';
+import {Button, Card, Col, Form, Row, Select, Tooltip} from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import Filters from './Filters';
-import { makeBeaconQuery } from '../../features/beacon/beaconQuery';
+import { makeBeaconQuery } from '@/features/beacon/beaconQuery';
 import BeaconSearchResults from './BeaconSearchResults';
 import VariantsForm from './VariantsForm';
 import {
   WRAPPER_STYLE,
-  VARIANTS_FORM_STYLE,
+  FORM_ROW_GUTTERS,
   CARD_BODY_STYLE,
   CARD_HEAD_STYLE,
-  INNER_CARD_STYLE,
   BUTTON_AREA_STYLE,
   BUTTON_STYLE,
-} from '../../constants/beaconConstants';
+} from '@/constants/beaconConstants';
 
 // TODOs
 // form verification
 // example searches, either hardcoded or configurable
 // only render variants part of the form if variants are present
-// better helptext (#1691)
+// better help text (#1691)
 
 const UI_INSTRUCTIONS = 'Search by genomic variants, clinical metadata or both.';
 const VARIANTS_HELP =
@@ -58,13 +57,13 @@ const BeaconQueryUi = () => {
       {assembly}
     </Select.Option>
   ));
-  const formInitialValues = { 'Assembly ID': beaconAssemblyIds.length == 1 && beaconAssemblyIds[0] };
+  const formInitialValues = { 'Assembly ID': beaconAssemblyIds.length === 1 && beaconAssemblyIds[0] };
 
   // beacon request handling
 
   const packageFilters = (values) => {
     // ignore optional first filter when left blank
-    if (filters.length == 1 && !values.filterId1) {
+    if (filters.length === 1 && !values.filterId1) {
       return [];
     }
 
@@ -139,38 +138,46 @@ const BeaconQueryUi = () => {
       <BeaconSearchResults />
       <Card
         title="Search"
-        style={{ borderRadius: '10px', maxWidth: '1200px' }}
+        style={{ borderRadius: '10px', maxWidth: '1200px', width: '100%' }}
         bodyStyle={CARD_BODY_STYLE}
         headStyle={CARD_HEAD_STYLE}
       >
         <p style={{ margin: '-10px 0 5px 5px', padding: '0', color: 'grey' }}>{UI_INSTRUCTIONS}</p>
-        <Form form={form} onFinish={handleFinish} style={VARIANTS_FORM_STYLE} layout="vertical">
-          <Card
-            title="Variants"
-            style={INNER_CARD_STYLE}
-            headStyle={CARD_HEAD_STYLE}
-            bodyStyle={CARD_BODY_STYLE}
-            extra={<SearchToolTip text={VARIANTS_HELP} />}
-          >
-            <VariantsForm assemblyIdOptions={assemblyIdOptions} form={form} />
-          </Card>
-          <Card
-            title="Metadata"
-            style={INNER_CARD_STYLE}
-            headStyle={CARD_HEAD_STYLE}
-            bodyStyle={CARD_BODY_STYLE}
-            extra={<SearchToolTip text={METADATA_HELP} />}
-          >
-            <Filters filters={filters} setFilters={setFilters} form={form} querySections={querySections} />
-          </Card>
-          <div style={BUTTON_AREA_STYLE}>
-            <Button type="primary" htmlType="submit" style={BUTTON_STYLE}>
-              Search Beacon
-            </Button>
-            <Button onClick={handleClearForm} style={BUTTON_STYLE}>
-              Clear Form
-            </Button>
-          </div>
+        <Form form={form} onFinish={handleFinish} layout="vertical">
+          <Row gutter={FORM_ROW_GUTTERS}>
+            <Col xs={24} lg={12}>
+              <Card
+                title="Variants"
+                headStyle={CARD_HEAD_STYLE}
+                bodyStyle={CARD_BODY_STYLE}
+                extra={<SearchToolTip text={VARIANTS_HELP} />}
+              >
+                <VariantsForm assemblyIdOptions={assemblyIdOptions} form={form} />
+              </Card>
+            </Col>
+            <Col xs={24} lg={12}>
+              <Card
+                title="Metadata"
+                headStyle={CARD_HEAD_STYLE}
+                bodyStyle={CARD_BODY_STYLE}
+                extra={<SearchToolTip text={METADATA_HELP} />}
+              >
+                <Filters filters={filters} setFilters={setFilters} form={form} querySections={querySections} />
+              </Card>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={24}>
+              <div style={BUTTON_AREA_STYLE}>
+                <Button type="primary" htmlType="submit" style={BUTTON_STYLE}>
+                  Search Beacon
+                </Button>
+                <Button onClick={handleClearForm} style={BUTTON_STYLE}>
+                  Clear Form
+                </Button>
+              </div>
+            </Col>
+          </Row>
         </Form>
       </Card>
     </div>

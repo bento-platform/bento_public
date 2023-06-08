@@ -7,8 +7,11 @@ import { CloseOutlined } from '@ant-design/icons';
 // for clarity they should probably appear, but be greyed out
 // this requires rendering select options as <Option> components
 
+const FILTER_FORM_ITEM_STYLE = {flex: 1, marginInlineEnd: -1};
+const FILTER_FORM_ITEM_INNER_STYLE = {width: "100%"};
+
 const Filter = ({ filter, form, querySections, removeFilter, isRequired }) => {
-  const [valueOptions, setValueOptions] = useState([{ value: '' }]);
+  const [valueOptions, setValueOptions] = useState([{ label: '', value: '' }]);
 
   const handleSelectKey = (_, option) => {
     // set dropdown options for a particular key
@@ -43,16 +46,18 @@ const Filter = ({ filter, form, querySections, removeFilter, isRequired }) => {
 
   return (
     <Space.Compact>
-      <Form.Item name={`filterId${filter.index}`} rules={[{ required: isRequired, message: 'search field required' }]}>
+      <Form.Item name={`filterId${filter.index}`} rules={[{ required: isRequired, message: 'search field required' }]}
+                 style={FILTER_FORM_ITEM_STYLE}>
         <Select
           placeholder={'select a search field'}
-          style={{ width: 220 }}
+          style={FILTER_FORM_ITEM_INNER_STYLE}
           onSelect={handleSelectKey}
           options={searchKeyOptions(querySections)}
         />
       </Form.Item>
-      <Form.Item name={`filterValue${filter.index}`} rules={[{ required: isRequired, message: 'value required' }]}>
-        <Select style={{ width: 220 }} options={valueOptions} />
+      <Form.Item name={`filterValue${filter.index}`} rules={[{ required: isRequired, message: 'value required' }]}
+                 style={FILTER_FORM_ITEM_STYLE}>
+        <Select style={FILTER_FORM_ITEM_INNER_STYLE} options={valueOptions} />
       </Form.Item>
       <Button onClick={() => removeFilter(filter)}>
         <CloseOutlined />

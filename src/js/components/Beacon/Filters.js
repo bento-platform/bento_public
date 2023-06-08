@@ -15,7 +15,7 @@ const Filters = ({ filters, setFilters, form, querySections }) => {
 
   const removeFilter = (filter) => {
     // set to active: false
-    setFilters(filters.map((f) => (f.index == filter.index ? { index: filter.index, active: false } : f)));
+    setFilters(filters.map((f) => (f.index === filter.index ? { index: filter.index, active: false } : f)));
   };
 
   const activeFilters = filters.filter((f) => f.active);
@@ -39,7 +39,7 @@ const Filters = ({ filters, setFilters, form, querySections }) => {
           </Button>
         </Tooltip>
       </Space>
-      <div style={{ minWidth: '484px', display: 'flex', flexDirection: 'column', padding: 0 }}>
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
         {activeFilters.map((f) => (
           <Filter
             key={f.index}
