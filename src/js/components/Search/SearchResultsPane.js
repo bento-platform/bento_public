@@ -21,13 +21,13 @@ const SearchResultsPane = ({
   const t = useTranslationDefault();
 
   return (
-    <div style={{ padding: '5px' }}>
+    <div style={{ paddingBottom: 8, display: 'flex', justifyContent: 'center', width: '100%' }}>
       <Card
-        style={{ borderRadius: '10px', padding: '10px 33px', width: '1200px', minHeight: '28rem' }}
+        style={{ borderRadius: '10px', padding: '10px 33px', maxWidth: '1200px', width: '100%', minHeight: '28rem' }}
         loading={isFetchingData}
       >
         <Row gutter={16}>
-          <Col span={4}>
+          <Col xs={24} lg={4}>
             <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
               <Statistic
                 title={t('Individuals')}
@@ -49,7 +49,7 @@ const SearchResultsPane = ({
               />
             </Space>
           </Col>
-          <Col span={10}>
+          <Col xs={24} lg={10}>
             <Typography.Title level={5}>{t('Biosamples')}</Typography.Title>
             {!hasInsufficientData && biosampleChartData.length ? (
               <PieChart data={biosampleChartData} height={CHART_HEIGHT} sort={true} />
@@ -57,7 +57,7 @@ const SearchResultsPane = ({
               <CustomEmpty text="No Results" />
             )}
           </Col>
-          <Col span={10}>
+          <Col xs={24} lg={10}>
             <Typography.Title level={5}>{t('Experiments')}</Typography.Title>
             {!hasInsufficientData && experimentChartData.length ? (
               <PieChart data={experimentChartData} height={CHART_HEIGHT} sort={true} />

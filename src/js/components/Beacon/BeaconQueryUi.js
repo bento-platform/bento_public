@@ -10,6 +10,7 @@ import VariantsForm from './VariantsForm';
 import {
   WRAPPER_STYLE,
   FORM_ROW_GUTTERS,
+  CARD_STYLE,
   CARD_BODY_STYLE,
   CARD_HEAD_STYLE,
   BUTTON_AREA_STYLE,
@@ -148,6 +149,7 @@ const BeaconQueryUi = () => {
             <Col xs={24} lg={12}>
               <Card
                 title="Variants"
+                style={CARD_STYLE}
                 headStyle={CARD_HEAD_STYLE}
                 bodyStyle={CARD_BODY_STYLE}
                 extra={<SearchToolTip text={VARIANTS_HELP} />}
@@ -158,6 +160,7 @@ const BeaconQueryUi = () => {
             <Col xs={24} lg={12}>
               <Card
                 title="Metadata"
+                style={CARD_STYLE}
                 headStyle={CARD_HEAD_STYLE}
                 bodyStyle={CARD_BODY_STYLE}
                 extra={<SearchToolTip text={METADATA_HELP} />}

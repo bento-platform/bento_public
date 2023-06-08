@@ -7,6 +7,10 @@ export const WRAPPER_STYLE = {
 
 export const FORM_ROW_GUTTERS = [16, 16];
 
+export const CARD_STYLE = {
+  height: '100%',
+};
+
 export const CARD_BODY_STYLE = {
   padding: '0 24px 5px 24px',
 };
