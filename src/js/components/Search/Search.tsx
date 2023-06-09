@@ -61,6 +61,11 @@ const RoutedSearch: React.FC = () => {
   return <Search />;
 };
 
+const WIDTH_100P_STYLE = { width: '100%' };
+const SEARCH_SPACE_ITEM_STYLE = { item: WIDTH_100P_STYLE };
+const SEARCH_SECTION_SPACE_ITEM_STYLE = { item: { display: 'flex', justifyContent: 'center' } };
+const SEARCH_SECTION_STYLE = { maxWidth: 1200 };
+
 const Search: React.FC = () => {
   const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
 
@@ -69,11 +74,11 @@ const Search: React.FC = () => {
   return (
     <>
       <Row justify="center">
-        <Space direction="vertical" align="center">
+        <Space direction="vertical" align="center" style={WIDTH_100P_STYLE} styles={SEARCH_SPACE_ITEM_STYLE}>
           <SearchResults />
-          <Space direction="vertical" size="large">
+          <Space direction="vertical" size="large" style={WIDTH_100P_STYLE} styles={SEARCH_SECTION_SPACE_ITEM_STYLE}>
             {searchSections.map(({ section_title, fields }, i) => (
-              <div key={i}>
+              <div key={i} style={SEARCH_SECTION_STYLE}>
                 <Typography.Title level={4}>{t(section_title)}</Typography.Title>
                 <SearchFieldsStack key={i} queryFields={fields} />
               </div>
