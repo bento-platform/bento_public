@@ -1,4 +1,4 @@
-import {CSSProperties} from "react";
+import { CSSProperties } from 'react';
 
 export const WRAPPER_STYLE: CSSProperties = {
   display: 'flex',
