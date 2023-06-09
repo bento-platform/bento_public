@@ -49,7 +49,7 @@ const BeaconQueryUi = () => {
     // retrieve stats
     launchEmptyQuery();
 
-    // set assembly id options mataching what's in gohan
+    // set assembly id options matching what's in gohan
     form.setFieldsValue(formInitialValues);
   }, [config]);
 
