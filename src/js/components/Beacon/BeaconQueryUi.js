@@ -143,7 +143,7 @@ const BeaconQueryUi = () => {
         bodyStyle={CARD_BODY_STYLE}
         headStyle={CARD_HEAD_STYLE}
       >
-        <p style={{ margin: '-10px 0 5px 5px', padding: '0', color: 'grey' }}>{UI_INSTRUCTIONS}</p>
+        <p style={{ margin: '-8px 0 8px 0', padding: '0', color: 'grey' }}>{UI_INSTRUCTIONS}</p>
         <Form form={form} onFinish={handleFinish} layout="vertical">
           <Row gutter={FORM_ROW_GUTTERS}>
             <Col xs={24} lg={12}>

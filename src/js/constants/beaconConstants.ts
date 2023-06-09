@@ -20,7 +20,7 @@ export const CARD_HEAD_STYLE = {
 };
 
 export const BUTTON_AREA_STYLE = {
-  padding: '20px 5px',
+  padding: '16px 0',
 };
 
 export const BUTTON_STYLE = {
