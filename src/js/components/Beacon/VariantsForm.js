@@ -12,11 +12,11 @@ import AssemblyIdSelect from './AssemblyIdSelect';
 // chrom, start, assemblyID, ref, alt
 
 // forgiving chromosome regex
-// accepts X, Y, etc and any one- or two-digit non-zero number
+// accepts X, Y, etc. and any one- or two-digit non-zero number
 // note that, eg, polar bears have 37 pairs of chromosomes...
 const CHROMOSOME_REGEX = /^([1-9][0-9]?|X|x|Y|y|M|m|MT|mt)$/;
 
-const NUCLEOTIDES_REGEX = /^(a|c|g|t|n|A|C|G|T|N)*$/;
+const NUCLEOTIDES_REGEX = /^([acgtnACGTN])*$/;
 const DIGITS_REGEX = /^[0-9]+$/;
 
 const FORM_FIELDS = {
@@ -58,24 +58,35 @@ const FORM_FIELDS = {
   assemblyId: { name: 'Assembly ID', rules: [{}], placeholder: '', initialValue: '' },
 };
 
-const FORM_ITEM_STYLE = { width: '150px', padding: '0 5px 0 0px' };
-const FORM_STYLE = { maxWidth: '1200px', display: 'flex', background: 'white', padding: '10px', borderRadius: '10px' };
+const FORM_STYLE = {
+  display: 'flex',
+  flexDirection: 'column',
+};
+const FORM_ROW_GUTTER = [12, 0];
 
 const VariantsForm = ({ assemblyIdOptions }) => {
   return (
     <div style={FORM_STYLE}>
-      <Col>
-        <Row>
-          <VariantInput field={FORM_FIELDS.referenceName} style={FORM_ITEM_STYLE} />
-          <VariantInput field={FORM_FIELDS.start} style={FORM_ITEM_STYLE} />
-          <VariantInput field={FORM_FIELDS.end} style={FORM_ITEM_STYLE} />
-        </Row>
-        <Row>
-          <VariantInput field={FORM_FIELDS.referenceBases} style={FORM_ITEM_STYLE} />
-          <VariantInput field={FORM_FIELDS.alternateBases} style={FORM_ITEM_STYLE} />
-          <AssemblyIdSelect field={FORM_FIELDS.assemblyId} options={assemblyIdOptions} style={FORM_ITEM_STYLE} />
-        </Row>
-      </Col>
+      <Row gutter={FORM_ROW_GUTTER}>
+        <Col span={8}>
+          <VariantInput field={FORM_FIELDS.referenceName} />
+        </Col>
+        <Col span={8}>
+          <VariantInput field={FORM_FIELDS.start} />
+        </Col>
+        <Col span={8}>
+          <VariantInput field={FORM_FIELDS.end} />
+        </Col>
+        <Col span={8}>
+          <VariantInput field={FORM_FIELDS.referenceBases} />
+        </Col>
+        <Col span={8}>
+          <VariantInput field={FORM_FIELDS.alternateBases} />
+        </Col>
+        <Col span={8}>
+          <AssemblyIdSelect field={FORM_FIELDS.assemblyId} options={assemblyIdOptions} />
+        </Col>
+      </Row>
     </div>
   );
 };

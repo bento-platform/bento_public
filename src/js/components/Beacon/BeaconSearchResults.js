@@ -9,7 +9,7 @@ const BeaconSearchResults = () => {
   const { response } = useAppSelector((state) => state.beaconQuery);
   const individualCount = useAppSelector((state) => state.beaconQuery?.response?.responseSummary?.count);
   const isFetchingData = useAppSelector((state) => state.beaconQuery?.isFetchingQueryResponse);
-  const hasInsufficientData = individualCount == 0;
+  const hasInsufficientData = individualCount === 0;
 
   const { info } = response;
 

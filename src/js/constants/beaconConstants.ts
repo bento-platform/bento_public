@@ -1,32 +1,30 @@
-export const WRAPPER_STYLE = {
+import { CSSProperties } from 'react';
+
+export const WRAPPER_STYLE: CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'space-between',
 };
 
-export const VARIANTS_FORM_STYLE = {
-  maxWidth: '1200px',
-  display: 'flex',
-  flexWrap: 'wrap',
+export const FORM_ROW_GUTTERS = [16, 16];
+
+export const CARD_STYLE: CSSProperties = {
+  height: '100%',
 };
 
-export const CARD_BODY_STYLE = {
+export const CARD_BODY_STYLE: CSSProperties = {
   padding: '0 24px 5px 24px',
 };
 
-export const CARD_HEAD_STYLE = {
+export const CARD_HEAD_STYLE: CSSProperties = {
   border: '0',
 };
 
-export const INNER_CARD_STYLE = {
-  margin: '0 5px 0 0',
+export const BUTTON_AREA_STYLE: CSSProperties = {
+  padding: '16px 0',
 };
 
-export const BUTTON_AREA_STYLE = {
-  padding: '20px 5px',
-};
-
-export const BUTTON_STYLE = {
+export const BUTTON_STYLE: CSSProperties = {
   margin: '0 10px 0 0',
 };
