@@ -10,11 +10,13 @@ import { makeGetAboutRequest } from '@/features/content/content.store';
 import { makeGetDataRequestThunk } from '@/features/data/data.store';
 import { makeGetSearchFields } from '@/features/search/query.store';
 import { makeGetProvenanceRequest } from '@/features/provenance/provenance.store';
+import { getBeaconConfig } from '@/features/beacon/beaconConfig';
 
 import Loader from './Loader';
 import PublicOverview from './Overview/PublicOverview';
 import Search from './Search/Search';
 import ProvenanceTab from './Provenance/ProvenanceTab';
+import BeaconQueryUi from './Beacon/BeaconQueryUi';
 import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { useAppDispatch, useAppSelector } from '@/hooks';
 
@@ -26,7 +28,7 @@ const TabbedDashboard = () => {
   const { page } = useParams<{ page?: string }>();
 
   useEffect(() => {
-    dispatch(makeGetConfigRequest());
+    dispatch(makeGetConfigRequest()).then(() => dispatch(getBeaconConfig()));
     dispatch(makeGetAboutRequest());
     dispatch(makeGetDataRequestThunk());
     dispatch(makeGetSearchFields());
@@ -35,6 +37,8 @@ const TabbedDashboard = () => {
 
   const isFetchingOverviewData = useAppSelector((state) => state.data.isFetchingData);
   const isFetchingSearchFields = useAppSelector((state) => state.query.isFetchingFields);
+  const isFetchingBeaconConfig = useAppSelector((state) => state.beaconConfig?.isFetchingBeaconConfig);
+  const renderBeaconUi = useAppSelector((state) => state.config?.beaconUiEnabled);
 
   const onChange = useCallback(
     (key: string) => {
@@ -58,40 +62,48 @@ const TabbedDashboard = () => {
       title: 'Overview',
       content: <PublicOverview />,
       loading: isFetchingOverviewData,
+      active: true,
       key: 'overview',
     },
     {
       title: 'Search',
       content: <Search />,
       loading: isFetchingSearchFields,
+      active: true,
       key: 'search',
+    },
+    {
+      title: 'Beacon',
+      content: <BeaconQueryUi />,
+      loading: isFetchingBeaconConfig,
+      active: renderBeaconUi,
+      key: 'beacon',
     },
     {
       title: 'Provenance',
       content: <ProvenanceTab />,
       loading: false,
+      active: true,
       key: 'provenance',
     },
   ];
 
-  const mappedTabPanes = tabPanes.map(({ title, content, loading, key }) => ({
-    label: <TabTitle title={t(title)} />,
-    children: loading ? <Loader /> : content,
-    key,
-  }));
+  const mappedTabPanes = tabPanes
+    .filter((t) => t.active)
+    .map(({ title, content, loading, key }) => ({
+      label: <TabTitle title={t(title)} />,
+      children: loading ? <Loader /> : content,
+      key,
+    }));
 
-  return <Tabs defaultActiveKey={getTabKey(page)} items={mappedTabPanes} onChange={onChange} centered />;
-};
+  const getTabKey = (page: string | undefined) => {
+    if (page && mappedTabPanes.map((t) => t.key).includes(page)) {
+      return page;
+    }
+    return 'overview';
+  };
 
-const getTabKey = (page: string | undefined) => {
-  switch (page) {
-    case 'search':
-      return 'search';
-    case 'provenance':
-      return 'provenance';
-    default:
-      return 'overview';
-  }
+  return <Tabs activeKey={getTabKey(page)} items={mappedTabPanes} onChange={onChange} centered />;
 };
 
 export default TabbedDashboard;

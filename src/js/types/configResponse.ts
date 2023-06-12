@@ -3,4 +3,6 @@ export interface ConfigResponse {
   portalUrl: string;
   maxQueryParameters: number;
   translated: boolean;
+  beaconUrl: string;
+  beaconUiEnabled: boolean;
 }

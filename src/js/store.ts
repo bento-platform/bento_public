@@ -5,6 +5,8 @@ import contentReducer from '@/features/content/content.store';
 import dataReducer from '@/features/data/data.store';
 import queryReducer from '@/features/search/query.store';
 import provenanceReducer from '@/features/provenance/provenance.store';
+import beaconConfigReducer from './features/beacon/beaconConfig';
+import beaconQueryReducer from './features/beacon/beaconQuery';
 
 export const store = configureStore({
   reducer: {
@@ -13,6 +15,8 @@ export const store = configureStore({
     data: dataReducer,
     query: queryReducer,
     provenance: provenanceReducer,
+    beaconConfig: beaconConfigReducer,
+    beaconQuery: beaconQueryReducer,
   },
 });
 
