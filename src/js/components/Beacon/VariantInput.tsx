@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Input } from 'antd';
-import { Rule } from 'antd/es/form'; 
+import { FormField } from '@/types/beacon';
 
 const VariantInput = ({ field }: VariantInputProps) => {
   return (
@@ -11,14 +11,6 @@ const VariantInput = ({ field }: VariantInputProps) => {
     </div>
   );
 };
-
-export interface FormField {
-  name: string;
-  rules: Rule[];
-  placeholder: string;
-  initialValue: string;
-  type: string;
-}
 
 export interface VariantInputProps {
   field: FormField
