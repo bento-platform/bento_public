@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { Col, Row } from 'antd';
 import VariantInput from './VariantInput';
 import AssemblyIdSelect from './AssemblyIdSelect';
@@ -58,13 +58,14 @@ const FORM_FIELDS = {
   assemblyId: { name: 'Assembly ID', rules: [{}], placeholder: '', initialValue: '' },
 };
 
-const FORM_STYLE = {
+const FORM_STYLE: CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
 };
-const FORM_ROW_GUTTER = [12, 0];
 
-const VariantsForm = ({ assemblyIdOptions }) => {
+const FORM_ROW_GUTTER: [number, number] = [12, 0];
+
+const VariantsForm = ({ assemblyIdOptions }: VariantsFormProps) => {
   return (
     <div style={FORM_STYLE}>
       <Row gutter={FORM_ROW_GUTTER}>
@@ -90,5 +91,9 @@ const VariantsForm = ({ assemblyIdOptions }) => {
     </div>
   );
 };
+
+export interface VariantsFormProps {
+  assemblyIdOptions: JSX.Element[];
+}
 
 export default VariantsForm;
