@@ -19,17 +19,17 @@ const beaconQuery = createSlice({
   name: 'beaconQuery',
   initialState,
   reducers: {},
-  extraReducers: {
-    [makeBeaconQuery.pending]: (state) => {
+  extraReducers: (builder) => {
+    builder.addCase(makeBeaconQuery.pending, (state) => {
       state.isFetchingQueryResponse = true;
-    },
-    [makeBeaconQuery.fulfilled]: (state, { payload }) => {
+    });
+    builder.addCase(makeBeaconQuery.fulfilled, (state, { payload }) => {
       state.response = payload;
       state.isFetchingQueryResponse = false;
-    },
-    [makeBeaconQuery.rejected]: (state) => {
+    });
+    builder.addCase(makeBeaconQuery.rejected, (state) => {
       state.isFetchingQueryResponse = false;
-    },
+    });
   },
 });
 

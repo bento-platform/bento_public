@@ -19,17 +19,17 @@ const beaconConfig = createSlice({
   name: 'beaconConfig',
   initialState,
   reducers: {},
-  extraReducers: {
-    [getBeaconConfig.pending]: (state) => {
+  extraReducers: (builder) => {
+    builder.addCase(getBeaconConfig.pending, (state) => {
       state.isFetchingBeaconConfig = true;
-    },
-    [getBeaconConfig.fulfilled]: (state, { payload }) => {
+    });
+    builder.addCase(getBeaconConfig.fulfilled, (state, { payload }) => {
       state.config = payload?.response;
       state.isFetchingBeaconConfig = false;
-    },
-    [getBeaconConfig.rejected]: (state) => {
+    });
+    builder.addCase(getBeaconConfig.rejected, (state) => {
       state.isFetchingBeaconConfig = false;
-    },
+    });
   },
 });
 
