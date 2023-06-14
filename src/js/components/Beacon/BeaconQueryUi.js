@@ -17,7 +17,7 @@ import {
   BUTTON_AREA_STYLE,
   BUTTON_STYLE,
 } from '@/constants/beaconConstants';
-import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
+import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
 
 // TODOs
 // form verification
@@ -32,7 +32,7 @@ const METADATA_HELP = 'Search over clinical or phenotypic properties.';
 const STARTER_FILTER = { index: 1, active: true };
 
 const BeaconQueryUi = () => {
-  // const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
+  const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
   const { t: td } = useTranslation(DEFAULT_TRANSLATION);
 
   const config = useSelector((state) => state?.beaconConfig?.config);
