@@ -21,7 +21,7 @@ const DownloadDats = ({ metadata }: { metadata: ProvenanceStoreDataset }) => {
         URL.revokeObjectURL(url);
     };
 
-    const isDatsFileEmpty = Object.keys(metadata.dats_file).length === 0;
+    const isDatsFileEmpty = metadata && metadata.dats_file ? Object.keys(metadata.dats_file).length === 0 : true;
 
     return (
         <Space style={{ marginTop: '20px', justifyContent: 'center' }}>
