@@ -30,8 +30,11 @@ const METADATA_HELP = 'Search over clinical or phenotypic properties.';
 const STARTER_FILTER = { index: 1, active: true };
 
 const BeaconQueryUi = () => {
-  const config = useSelector((state) => state?.beaconConfig?.config);
-  const beaconAssemblyIds = Object.keys(config?.overview?.counts?.variants ?? {});
+  // const config = useSelector((state) => state?.beaconConfig?.config);
+
+  const isFetchingBeaconConfig = useAppSelector(state => state.beaconConfig.isFetchingBeaconConfig)
+  // const beaconAssemblyIds = Object.keys(config?.overview?.counts?.variants ?? {});
+  const beaconAssemblyIds = useAppSelector(state => state.beaconConfig.beaconAssemblyIds)
   const [filters, setFilters] = useState([STARTER_FILTER]);
   const [form] = Form.useForm();
   const querySections = useAppSelector((state) => state.query.querySections);
@@ -51,7 +54,7 @@ const BeaconQueryUi = () => {
 
     // set assembly id options matching what's in gohan
     form.setFieldsValue(formInitialValues);
-  }, [config]);
+  }, [isFetchingBeaconConfig]);
 
   const assemblyIdOptions = beaconAssemblyIds.map((assembly) => (
     <Select.Option key={assembly} value={assembly}>
