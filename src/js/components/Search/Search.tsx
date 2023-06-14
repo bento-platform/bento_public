@@ -53,7 +53,7 @@ const RoutedSearch: React.FC = () => {
       dispatch(setQueryParams(validQueryParamsObject));
       dispatch(makeGetKatsuPublic());
     } else {
-      console.debug('Redirecting to : ', `/en/search?${new URLSearchParams(validQueryParamsObject).toString()}`);
+      console.debug('Redirecting to : ', `${location.pathname}?${new URLSearchParams(validQueryParamsObject).toString()}`);
       navigate(`${location.pathname}?${new URLSearchParams(validQueryParamsObject).toString()}`);
     }
   }, [location.search]);
