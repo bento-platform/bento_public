@@ -56,7 +56,8 @@ const RoutedSearch: React.FC = () => {
       console.debug('Redirecting to : ', `/en/search?${new URLSearchParams(validQueryParamsObject).toString()}`);
       navigate(`${location.pathname}?${new URLSearchParams(validQueryParamsObject).toString()}`);
     }
-  }, []);
+    
+  }, [location.search]);
 
   return <Search />;
 };
