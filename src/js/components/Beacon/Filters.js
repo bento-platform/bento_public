@@ -11,7 +11,7 @@ import Filter from './Filter';
 const BUTTON_STYLE = { margin: '10px 0' };
 
 const Filters = ({ filters, setFilters, form, querySections }) => {
-  const {t: td} = useTranslation(DEFAULT_TRANSLATION);
+  const { t: td } = useTranslation(DEFAULT_TRANSLATION);
 
   const maxFilters = useAppSelector((state) => state.config.maxQueryParameters);
 
@@ -37,9 +37,9 @@ const Filters = ({ filters, setFilters, form, querySections }) => {
   return (
     <Form.Item>
       <Space style={{ display: 'flex', padding: 0 }}>
-        <Tooltip title={hasMaxFilters ? `${td("maximum of")} ${maxFilters} ${td("filters permitted")}` : null}>
+        <Tooltip title={hasMaxFilters ? `${td('maximum of')} ${maxFilters} ${td('filters permitted')}` : null}>
           <Button style={BUTTON_STYLE} onClick={handleAddFilter} disabled={hasMaxFilters}>
-            {td("Add Filter")}
+            {td('Add Filter')}
           </Button>
         </Tooltip>
       </Space>

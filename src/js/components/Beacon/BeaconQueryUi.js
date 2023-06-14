@@ -143,7 +143,7 @@ const BeaconQueryUi = () => {
     <div style={WRAPPER_STYLE}>
       <BeaconSearchResults />
       <Card
-        title={td("Search")}
+        title={td('Search')}
         style={{ borderRadius: '10px', maxWidth: '1200px', width: '100%' }}
         bodyStyle={CARD_BODY_STYLE}
         headStyle={CARD_HEAD_STYLE}

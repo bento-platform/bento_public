@@ -68,7 +68,10 @@ const Filter = ({ filter, form, querySections, removeFilter, isRequired }) => {
         rules={[{ required: isRequired, message: td('value required') }]}
         style={FILTER_FORM_ITEM_STYLE}
       >
-        <Select style={FILTER_FORM_ITEM_INNER_STYLE} options={valueOptions.map(({label, value})=>({label: t(label), value}))} />
+        <Select
+          style={FILTER_FORM_ITEM_INNER_STYLE}
+          options={valueOptions.map(({ label, value }) => ({ label: t(label), value }))}
+        />
       </Form.Item>
       <Button onClick={() => removeFilter(filter)}>
         <CloseOutlined />
