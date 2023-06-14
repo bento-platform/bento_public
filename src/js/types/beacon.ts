@@ -46,7 +46,39 @@ export interface BeaconQueryResponse {
       };
     };
   };
-  responseSummary: {
+  responseSummary?: {
     count: number;
   };
+}
+
+export interface PayloadFilter {
+  id: string;
+  value: string;
+
+  //inequalities handled in "value", not operator
+  // no negation yet in UI (but exists in API)
+  operator: '=';
+}
+
+type EmptyObject = Record<string, never>;
+
+export type PayloadVariantsQuery =
+  | {
+      referenceName: string;
+      referenceBases?: string;
+      alternateBases?: string;
+      assemblyId: string;
+      start: number[];
+      end?: number[];
+    }
+  | EmptyObject;
+
+export interface BeaconQueryPayload {
+  meta: { apiVersion: string };
+  query: { requestParameters: { g_variant: PayloadVariantsQuery }; filters: PayloadFilter[] };
+  bento?: { showSummaryStatitics: boolean };
+}
+
+export interface FormValues {
+  [key: string]: any;
 }

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useAppSelector } from '@/hooks';
+import { useAppSelector, useAppDispatch } from '@/hooks';
 import { Button, Card, Col, Form, Row, Select, Tooltip } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import Filters from './Filters';
 import { makeBeaconQuery } from '@/features/beacon/beaconQuery';
 import BeaconSearchResults from './BeaconSearchResults';
 import VariantsForm from './VariantsForm';
+import { BeaconQueryPayload, FormValues, PayloadFilter, PayloadVariantsQuery } from '@/types/beacon';
 import {
   WRAPPER_STYLE,
   FORM_ROW_GUTTERS,
@@ -30,17 +30,14 @@ const METADATA_HELP = 'Search over clinical or phenotypic properties.';
 const STARTER_FILTER = { index: 1, active: true };
 
 const BeaconQueryUi = () => {
-  // const config = useSelector((state) => state?.beaconConfig?.config);
-
   const isFetchingBeaconConfig = useAppSelector(state => state.beaconConfig.isFetchingBeaconConfig)
-  // const beaconAssemblyIds = Object.keys(config?.overview?.counts?.variants ?? {});
   const beaconAssemblyIds = useAppSelector(state => state.beaconConfig.beaconAssemblyIds)
   const [filters, setFilters] = useState([STARTER_FILTER]);
   const [form] = Form.useForm();
   const querySections = useAppSelector((state) => state.query.querySections);
   const beaconUrl = useAppSelector((state) => state.config?.beaconUrl);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const launchEmptyQuery = () => dispatch(makeBeaconQuery(requestPayload({}, [])));
 
   useEffect(() => {
@@ -65,34 +62,32 @@ const BeaconQueryUi = () => {
 
   // beacon request handling
 
-  const packageFilters = (values) => {
+  const packageFilters = (values: FormValues): PayloadFilter[] => {
     // ignore optional first filter when left blank
     if (filters.length === 1 && !values.filterId1) {
       return [];
     }
 
-    return filters
-      .filter((f) => f.active)
-      .map((f) => ({
+    return filters.filter((f) => f.active).map((f) => ({
         id: values[`filterId${f.index}`],
         operator: '=',
         value: values[`filterValue${f.index}`],
       }));
   };
 
-  const requestPayload = (query, payloadFilters) => ({
+  const requestPayload = (query: PayloadVariantsQuery, payloadFilters: PayloadFilter[]): BeaconQueryPayload => ({
     meta: { apiVersion: '2.0.0' },
     query: { requestParameters: { g_variant: query }, filters: payloadFilters },
-    bento: { showSummaryStatitics: 'true' },
+    bento: { showSummaryStatitics: true },
   });
 
   // following GA4GH recommendations, UI is one-based, but API is zero-based, "half-open"
   // so to convert to zero-based, we only modify the start value
   // see eg https://genome-blog.soe.ucsc.edu/blog/2016/12/12/the-ucsc-genome-browser-coordinate-counting-systems/
-  const convertToZeroBased = (start) => Number(start) - 1;
+  const convertToZeroBased = (start: string) => Number(start) - 1;
 
-  const packageBeaconJSON = (values) => {
-    let query = {};
+  const packageBeaconJSON = (values: FormValues) => {
+    let query = {} as PayloadVariantsQuery
     const payloadFilters = packageFilters(values);
     const hasVariantsQuery = values?.['Chromosome'] || values?.['Variant start'] || values?.['Reference base(s)'];
     if (hasVariantsQuery) {
@@ -117,7 +112,7 @@ const BeaconQueryUi = () => {
 
   // form utils
 
-  const handleFinish = (formValues) => {
+  const handleFinish = (formValues: any) => {
     const jsonPayload = packageBeaconJSON(formValues);
     dispatch(makeBeaconQuery(jsonPayload));
   };
@@ -126,10 +121,10 @@ const BeaconQueryUi = () => {
     setFilters([STARTER_FILTER]);
     form.resetFields();
     form.setFieldsValue(formInitialValues);
-    launchEmptyQuery();
+    launchEmptyQuery(); 
   };
 
-  const SearchToolTip = ({ text }) => {
+  const SearchToolTip = ({ text }: ({text: string})) => {
     return (
       <Tooltip title={text}>
         <InfoCircleOutlined />
@@ -157,7 +152,7 @@ const BeaconQueryUi = () => {
                 bodyStyle={CARD_BODY_STYLE}
                 extra={<SearchToolTip text={VARIANTS_HELP} />}
               >
-                <VariantsForm assemblyIdOptions={assemblyIdOptions} form={form} />
+                <VariantsForm assemblyIdOptions={assemblyIdOptions} />
               </Card>
             </Col>
             <Col xs={24} lg={12}>
