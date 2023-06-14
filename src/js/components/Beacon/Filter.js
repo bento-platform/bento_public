@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button, Form, Select, Space } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
+import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
 
 // TODOs:
 // any search key (eg "sex") selected in one filter should not available in other
@@ -11,6 +13,9 @@ const FILTER_FORM_ITEM_STYLE = { flex: 1, marginInlineEnd: -1 };
 const FILTER_FORM_ITEM_INNER_STYLE = { width: '100%' };
 
 const Filter = ({ filter, form, querySections, removeFilter, isRequired }) => {
+  const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
+  const { t: td } = useTranslation(DEFAULT_TRANSLATION);
+
   const [valueOptions, setValueOptions] = useState([{ label: '', value: '' }]);
 
   const handleSelectKey = (_, option) => {
@@ -36,7 +41,7 @@ const Filter = ({ filter, form, querySections, removeFilter, isRequired }) => {
     arr.map((qs) => ({
       label: qs.section_title,
       options: qs.fields.map((field) => ({
-        label: renderLabel(field),
+        label: renderLabel(t(field)),
         value: field.id,
         optionsThisKey: searchValueOptions(field.options),
       })),
@@ -48,11 +53,11 @@ const Filter = ({ filter, form, querySections, removeFilter, isRequired }) => {
     <Space.Compact>
       <Form.Item
         name={`filterId${filter.index}`}
-        rules={[{ required: isRequired, message: 'search field required' }]}
+        rules={[{ required: isRequired, message: td('search field required') }]}
         style={FILTER_FORM_ITEM_STYLE}
       >
         <Select
-          placeholder={'select a search field'}
+          placeholder={td('select a search field')}
           style={FILTER_FORM_ITEM_INNER_STYLE}
           onSelect={handleSelectKey}
           options={searchKeyOptions(querySections)}
@@ -60,10 +65,10 @@ const Filter = ({ filter, form, querySections, removeFilter, isRequired }) => {
       </Form.Item>
       <Form.Item
         name={`filterValue${filter.index}`}
-        rules={[{ required: isRequired, message: 'value required' }]}
+        rules={[{ required: isRequired, message: td('value required') }]}
         style={FILTER_FORM_ITEM_STYLE}
       >
-        <Select style={FILTER_FORM_ITEM_INNER_STYLE} options={valueOptions} />
+        <Select style={FILTER_FORM_ITEM_INNER_STYLE} options={valueOptions.map(({label, value})=>({label: t(label), value}))} />
       </Form.Item>
       <Button onClick={() => removeFilter(filter)}>
         <CloseOutlined />
