@@ -9,6 +9,7 @@ import SpatialCoverageTable from './Tables/SpatialCoverageTable';
 import ExtraPropertiesTable from './Tables/ExtraPropertiesTable';
 import PublicationsTable from './Tables/PublicationsTable';
 import CreatedByTable from './Tables/CreatedByTable';
+import DownloadDats from './DownloadDats';
 import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { ProvenanceStoreDataset } from '@/types/provenance';
 
@@ -90,6 +91,9 @@ const DatasetProvenance = ({ metadata, loading }: DatasetProvenanceProps) => {
         {/* --- EXTRA PROPERTIES ---*/}
         <TableTitleWitTranslation title="Extra Properties" />
         <ExtraPropertiesTable extraProperties={metadata.extraProperties} />
+
+        {/* --- DOWNLOAD DATS --- */}
+        <DownloadDats metadata={metadata} />
       </Card>
     </div>
   );
