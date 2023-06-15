@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { printAPIError } from '../../utils/error.util';
-import { BeaconConfigResponse } from '@/types/beacon';
+import { BeaconConfigResponse, BeaconAssemblyIds } from '@/types/beacon';
 import { RootState } from '@/store';
 
 export const getBeaconConfig = createAsyncThunk<BeaconConfigResponse, void, { state: RootState; rejectValue: string }>(
@@ -17,7 +17,7 @@ export const getBeaconConfig = createAsyncThunk<BeaconConfigResponse, void, { st
 
 type BeaconConfigInitialStateType = {
   isFetchingBeaconConfig: boolean;
-  beaconAssemblyIds: string[];
+  beaconAssemblyIds: BeaconAssemblyIds;
 };
 
 const initialState: BeaconConfigInitialStateType = {
