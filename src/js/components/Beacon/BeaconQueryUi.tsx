@@ -112,7 +112,7 @@ const BeaconQueryUi = () => {
 
   // form utils
 
-  const handleFinish = (formValues: any) => {
+  const handleFinish = (formValues: FormValues) => {
     const jsonPayload = packageBeaconJSON(formValues);
     dispatch(makeBeaconQuery(jsonPayload));
   };
