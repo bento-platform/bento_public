@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Form, Select, Space } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
+import { FormFilter } from '@/types/beacon';
+import { Section, Field } from '@/types/search';
+import { FormInstance} from 'antd/es/form'
+
 
 // TODOs:
 // any search key (eg "sex") selected in one filter should not available in other
@@ -10,7 +14,7 @@ import { CloseOutlined } from '@ant-design/icons';
 const FILTER_FORM_ITEM_STYLE = { flex: 1, marginInlineEnd: -1 };
 const FILTER_FORM_ITEM_INNER_STYLE = { width: '100%' };
 
-const Filter = ({ filter, form, querySections, removeFilter, isRequired }) => {
+const Filter = ({ filter, form, querySections, removeFilter, isRequired }: FilterProps) => {
   const [valueOptions, setValueOptions] = useState([{ label: '', value: '' }]);
 
   const handleSelectKey = (_, option) => {
@@ -26,13 +30,13 @@ const Filter = ({ filter, form, querySections, removeFilter, isRequired }) => {
     });
   }, [valueOptions]);
 
-  const renderLabel = (searchField) => {
+  const renderLabel = (searchField: Field) => {
     const units = searchField.config?.units;
     const unitsString = units ? ` (${units})` : '';
     return searchField.title + unitsString;
   };
 
-  const searchKeyOptions = (arr) =>
+  const searchKeyOptions = (arr: Section[]) =>
     arr.map((qs) => ({
       label: qs.section_title,
       options: qs.fields.map((field) => ({
@@ -42,7 +46,7 @@ const Filter = ({ filter, form, querySections, removeFilter, isRequired }) => {
       })),
     }));
 
-  const searchValueOptions = (arr) => arr.map((v) => ({ label: v, value: v }));
+  const searchValueOptions = (arr: Field["options"]) => arr.map((v) => ({ label: v, value: v }));
 
   return (
     <Space.Compact>
@@ -71,5 +75,13 @@ const Filter = ({ filter, form, querySections, removeFilter, isRequired }) => {
     </Space.Compact>
   );
 };
+
+export interface FilterProps {
+  filter: FormFilter;
+  form: FormInstance<any>;
+  querySections: Section[];
+  removeFilter: (filter: FormFilter) => void;
+  isRequired: boolean;
+}
 
 export default Filter;
