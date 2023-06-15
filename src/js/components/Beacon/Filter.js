@@ -33,15 +33,15 @@ const Filter = ({ filter, form, querySections, removeFilter, isRequired }) => {
 
   const renderLabel = (searchField) => {
     const units = searchField.config?.units;
-    const unitsString = units ? ` (${units})` : '';
-    return searchField.title + unitsString;
+    const unitsString = units ? ` (${t(units)})` : '';
+    return t(searchField.title) + unitsString;
   };
 
   const searchKeyOptions = (arr) =>
     arr.map((qs) => ({
       label: qs.section_title,
       options: qs.fields.map((field) => ({
-        label: renderLabel(t(field)),
+        label: renderLabel(field),
         value: field.id,
         optionsThisKey: searchValueOptions(field.options),
       })),
