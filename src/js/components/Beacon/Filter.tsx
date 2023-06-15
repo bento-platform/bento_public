@@ -83,7 +83,7 @@ const Filter = ({ filter, form, querySections, removeFilter, isRequired }: Filte
 
 export interface FilterProps {
   filter: FormFilter;
-  form: FormInstance<any>;
+  form: FormInstance;
   querySections: Section[];
   removeFilter: (filter: FormFilter) => void;
   isRequired: boolean;

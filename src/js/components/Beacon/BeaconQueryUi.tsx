@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '@/hooks';
-import { Button, Card, Col, Form, Row, Select, Tooltip } from 'antd';
+import { Button, Card, Col, Form, Row, Tooltip } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import Filters from './Filters';
 import { makeBeaconQuery } from '@/features/beacon/beaconQuery';
@@ -30,8 +30,8 @@ const METADATA_HELP = 'Search over clinical or phenotypic properties.';
 const STARTER_FILTER = { index: 1, active: true };
 
 const BeaconQueryUi = () => {
-  const isFetchingBeaconConfig = useAppSelector(state => state.beaconConfig.isFetchingBeaconConfig)
-  const beaconAssemblyIds = useAppSelector(state => state.beaconConfig.beaconAssemblyIds)
+  const isFetchingBeaconConfig = useAppSelector(state => state.beaconConfig.isFetchingBeaconConfig);
+  const beaconAssemblyIds = useAppSelector(state => state.beaconConfig.beaconAssemblyIds);
   const [filters, setFilters] = useState<FormFilter[]>([STARTER_FILTER]);
   const [form] = Form.useForm();
   const querySections = useAppSelector((state) => state.query.querySections);
@@ -82,7 +82,7 @@ const BeaconQueryUi = () => {
   const convertToZeroBased = (start: string) => Number(start) - 1;
 
   const packageBeaconJSON = (values: FormValues) => {
-    let query = {} as PayloadVariantsQuery
+    let query = {} as PayloadVariantsQuery;
     const payloadFilters = packageFilters(values);
     const hasVariantsQuery = values?.['Chromosome'] || values?.['Variant start'] || values?.['Reference base(s)'];
     if (hasVariantsQuery) {

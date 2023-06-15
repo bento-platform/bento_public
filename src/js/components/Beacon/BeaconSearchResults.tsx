@@ -6,7 +6,7 @@ const BeaconSearchResults = () => {
   const isFetchingData = useAppSelector((state) => state.beaconQuery?.isFetchingQueryResponse);
   const {individualCount, biosampleCount, biosampleChartData, experimentCount, experimentChartData} = useAppSelector((state) => state.beaconQuery);
   const hasInsufficientData = individualCount === 0;
-  const message = hasInsufficientData? 'Insufficient data available.' : ''
+  const message = hasInsufficientData? 'Insufficient data available.' : '';
 
   return (
     <SearchResultsPane
