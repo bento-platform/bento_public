@@ -6,16 +6,17 @@ import { BeaconQueryPayload, BeaconQueryResponse } from '@/types/beacon';
 import { serializeChartData } from '@/utils/chart';
 import { ChartData } from '@/types/data';
 
-export const makeBeaconQuery = createAsyncThunk<BeaconQueryResponse, BeaconQueryPayload, { state: RootState; rejectValue: string }>(
-  'beaconQuery/makeBeaconQuery',
-  async (payload, { getState }) => {
-    const beaconIndividualsEndpoint = getState()?.config?.beaconUrl + '/individuals';
-    return axios
-      .post(beaconIndividualsEndpoint, payload)
-      .then((res) => res.data)
-      .catch(printAPIError);
-  }
-);
+export const makeBeaconQuery = createAsyncThunk<
+  BeaconQueryResponse,
+  BeaconQueryPayload,
+  { state: RootState; rejectValue: string }
+>('beaconQuery/makeBeaconQuery', async (payload, { getState }) => {
+  const beaconIndividualsEndpoint = getState()?.config?.beaconUrl + '/individuals';
+  return axios
+    .post(beaconIndividualsEndpoint, payload)
+    .then((res) => res.data)
+    .catch(printAPIError);
+});
 
 type BeaconQueryInitialStateType = {
   isFetchingQueryResponse: boolean;

@@ -89,7 +89,7 @@ const VariantsForm = ({ beaconAssemblyIds }: VariantsFormProps) => {
 };
 
 export interface VariantsFormProps {
-  beaconAssemblyIds: BeaconAssemblyIds
+  beaconAssemblyIds: BeaconAssemblyIds;
 }
 
 export default VariantsForm;

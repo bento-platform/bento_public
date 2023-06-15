@@ -7,7 +7,7 @@ export const WRAPPER_STYLE: CSSProperties = {
   justifyContent: 'space-between',
 };
 
-export const FORM_ROW_GUTTERS:[number, number] = [16, 16];
+export const FORM_ROW_GUTTERS: [number, number] = [16, 16];
 
 export const CARD_STYLE: CSSProperties = {
   height: '100%',

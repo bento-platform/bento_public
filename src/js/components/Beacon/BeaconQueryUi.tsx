@@ -30,8 +30,8 @@ const METADATA_HELP = 'Search over clinical or phenotypic properties.';
 const STARTER_FILTER = { index: 1, active: true };
 
 const BeaconQueryUi = () => {
-  const isFetchingBeaconConfig = useAppSelector(state => state.beaconConfig.isFetchingBeaconConfig);
-  const beaconAssemblyIds = useAppSelector(state => state.beaconConfig.beaconAssemblyIds);
+  const isFetchingBeaconConfig = useAppSelector((state) => state.beaconConfig.isFetchingBeaconConfig);
+  const beaconAssemblyIds = useAppSelector((state) => state.beaconConfig.beaconAssemblyIds);
   const [filters, setFilters] = useState<FormFilter[]>([STARTER_FILTER]);
   const [form] = Form.useForm();
   const querySections = useAppSelector((state) => state.query.querySections);
@@ -63,7 +63,9 @@ const BeaconQueryUi = () => {
       return [];
     }
 
-    return filters.filter((f) => f.active).map((f) => ({
+    return filters
+      .filter((f) => f.active)
+      .map((f) => ({
         id: values[`filterId${f.index}`],
         operator: '=',
         value: values[`filterValue${f.index}`],
@@ -116,10 +118,10 @@ const BeaconQueryUi = () => {
     setFilters([STARTER_FILTER]);
     form.resetFields();
     form.setFieldsValue(formInitialValues);
-    launchEmptyQuery(); 
+    launchEmptyQuery();
   };
 
-  const SearchToolTip = ({ text }: ({text: string})) => {
+  const SearchToolTip = ({ text }: { text: string }) => {
     return (
       <Tooltip title={text}>
         <InfoCircleOutlined />

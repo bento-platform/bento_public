@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction } from 'react';
 import Filter from './Filter';
 import { useAppSelector } from '@/hooks';
 import { Button, Form, Space, Tooltip } from 'antd';
-import { FormInstance} from 'antd/es/form';
+import { FormInstance } from 'antd/es/form';
 import { FormFilter } from '@/types/beacon';
 import { SearchFieldResponse } from '@/types/search';
 

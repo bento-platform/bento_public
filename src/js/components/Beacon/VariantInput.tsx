@@ -4,8 +4,8 @@ import { FormField } from '@/types/beacon';
 
 const VariantInput = ({ field }: VariantInputProps) => {
   return (
-    <div >
-      <Form.Item name={field.name} label={field.name} rules={field.rules} >
+    <div>
+      <Form.Item name={field.name} label={field.name} rules={field.rules}>
         <Input placeholder={field.placeholder} />
       </Form.Item>
     </div>
@@ -13,7 +13,7 @@ const VariantInput = ({ field }: VariantInputProps) => {
 };
 
 export interface VariantInputProps {
-  field: FormField
+  field: FormField;
 }
 
 export default VariantInput;
