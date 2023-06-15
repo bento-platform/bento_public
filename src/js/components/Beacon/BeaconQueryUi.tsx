@@ -53,11 +53,6 @@ const BeaconQueryUi = () => {
     form.setFieldsValue(formInitialValues);
   }, [isFetchingBeaconConfig]);
 
-  const assemblyIdOptions = beaconAssemblyIds.map((assembly) => (
-    <Select.Option key={assembly} value={assembly}>
-      {assembly}
-    </Select.Option>
-  ));
   const formInitialValues = { 'Assembly ID': beaconAssemblyIds.length === 1 && beaconAssemblyIds[0] };
 
   // beacon request handling
@@ -152,7 +147,7 @@ const BeaconQueryUi = () => {
                 bodyStyle={CARD_BODY_STYLE}
                 extra={<SearchToolTip text={VARIANTS_HELP} />}
               >
-                <VariantsForm assemblyIdOptions={assemblyIdOptions} />
+                <VariantsForm beaconAssemblyIds={beaconAssemblyIds} />
               </Card>
             </Col>
             <Col xs={24} lg={12}>

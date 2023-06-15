@@ -2,6 +2,7 @@ import React, { CSSProperties } from 'react';
 import { Col, Row } from 'antd';
 import VariantInput from './VariantInput';
 import AssemblyIdSelect from './AssemblyIdSelect';
+import { BeaconAssemblyIds } from '@/types/beacon';
 
 // TODOs:
 // show which fields are required without removing the ability to leave the form blank
@@ -60,7 +61,7 @@ const FORM_STYLE: CSSProperties = {
 
 const FORM_ROW_GUTTER: [number, number] = [12, 0];
 
-const VariantsForm = ({ assemblyIdOptions }: VariantsFormProps) => {
+const VariantsForm = ({ beaconAssemblyIds }: VariantsFormProps) => {
   return (
     <div style={FORM_STYLE}>
       <Row gutter={FORM_ROW_GUTTER}>
@@ -80,7 +81,7 @@ const VariantsForm = ({ assemblyIdOptions }: VariantsFormProps) => {
           <VariantInput field={FORM_FIELDS.alternateBases} />
         </Col>
         <Col span={8}>
-          <AssemblyIdSelect field={FORM_FIELDS.assemblyId} options={assemblyIdOptions} />
+          <AssemblyIdSelect field={FORM_FIELDS.assemblyId} beaconAssemblyIds={beaconAssemblyIds} />
         </Col>
       </Row>
     </div>
@@ -88,7 +89,7 @@ const VariantsForm = ({ assemblyIdOptions }: VariantsFormProps) => {
 };
 
 export interface VariantsFormProps {
-  assemblyIdOptions: JSX.Element[];
+  beaconAssemblyIds: BeaconAssemblyIds
 }
 
 export default VariantsForm;
