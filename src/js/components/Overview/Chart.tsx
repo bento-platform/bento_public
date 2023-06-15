@@ -5,12 +5,11 @@ import { BarChart, PieChart } from 'bento-charts';
 
 import { CHART_HEIGHT } from '@/constants/overviewConstants';
 import { ChartData } from '@/types/data';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Chart = ({ chartType, data, units, id }: ChartProps) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const location = useLocation();
   const translateMap = ({ x, y }: { x: string; y: number }) => ({ x: t(x), y });
   const removeMissing = ({ x }: { x: string }) => x !== 'missing';
 
@@ -26,7 +25,7 @@ const Chart = ({ chartType, data, units, id }: ChartProps) => {
             preFilter={removeMissing}
             dataMap={translateMap}
             onClick={(d) => {
-              navigate(`${location.pathname.slice(0, 3)}/search?${id}=${d.payload.x}`);
+              navigate(`/${i18n.language}/search?${id}=${d.payload.x}`);
             }}
           />
         );
@@ -38,7 +37,7 @@ const Chart = ({ chartType, data, units, id }: ChartProps) => {
             preFilter={removeMissing}
             dataMap={translateMap}
             onClick={(d) => {
-              navigate(`${location.pathname.slice(0, 3)}/search?${id}=${d.name}`);
+              navigate(`/${i18n.language}/search?${id}=${d.name}`);
             }}
           />
         );
