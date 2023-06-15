@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Form, Select, Space } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
-import { FormFilter } from '@/types/beacon';
+import { FormFilter, FilterOption, FilterPullDownKey, FilterPullDownValue, GenericOptionType } from '@/types/beacon';
 import { Section, Field } from '@/types/search';
-import { FormInstance} from 'antd/es/form'
-
+import { FormInstance } from 'antd/es/form';
 
 // TODOs:
 // any search key (eg "sex") selected in one filter should not available in other
@@ -17,10 +16,15 @@ const FILTER_FORM_ITEM_INNER_STYLE = { width: '100%' };
 const Filter = ({ filter, form, querySections, removeFilter, isRequired }: FilterProps) => {
   const [valueOptions, setValueOptions] = useState([{ label: '', value: '' }]);
 
-  const handleSelectKey = (_, option) => {
+  const handleSelectKey = (_: unknown, option: GenericOptionType) => {
     // set dropdown options for a particular key
     // ie for key "sex", set options to "MALE", "FEMALE", etc
-    setValueOptions(option.optionsThisKey);
+
+    // narrow type of option
+    // ant design has conflicting type inference when options are nested in more than one layer
+    const currentOption = option as FilterPullDownKey;
+
+    setValueOptions(currentOption.optionsThisKey);
   };
 
   // rerender default option when key changes
@@ -36,8 +40,8 @@ const Filter = ({ filter, form, querySections, removeFilter, isRequired }: Filte
     return searchField.title + unitsString;
   };
 
-  const searchKeyOptions = (arr: Section[]) =>
-    arr.map((qs) => ({
+  const searchKeyOptions = (arr: Section[]): FilterOption[] => {
+    return arr.map((qs) => ({
       label: qs.section_title,
       options: qs.fields.map((field) => ({
         label: renderLabel(field),
@@ -45,8 +49,9 @@ const Filter = ({ filter, form, querySections, removeFilter, isRequired }: Filte
         optionsThisKey: searchValueOptions(field.options),
       })),
     }));
+  };
 
-  const searchValueOptions = (arr: Field["options"]) => arr.map((v) => ({ label: v, value: v }));
+  const searchValueOptions = (arr: Field['options']): FilterPullDownValue[] => arr.map((v) => ({ label: v, value: v }));
 
   return (
     <Space.Compact>
