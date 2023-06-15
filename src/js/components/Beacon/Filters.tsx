@@ -1,34 +1,36 @@
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import Filter from './Filter';
 import { useAppSelector } from '@/hooks';
 import { Button, Form, Space, Tooltip } from 'antd';
+import { FormInstance} from 'antd/es/form'
+import { FormFilter } from '@/types/beacon';
+import { SearchFieldResponse } from '@/types/search';
 
 // ideally:
 // - should not permit you to make multiple queries on the same key (Redmine #1688)
 
 const BUTTON_STYLE = { margin: '10px 0' };
 
-const Filters = ({ filters, setFilters, form, querySections }) => {
+const Filters = ({ filters, setFilters, form, querySections }: FiltersProps) => {
   const maxFilters = useAppSelector((state) => state.config.maxQueryParameters);
+  const activeFilters = filters.filter((f) => f.active);
+  const hasMaxFilters = activeFilters.length >= maxFilters;
 
-  const newFilter = (n) => ({ index: n, active: true });
+  // UI starts with an optional filter, which can be left blank
+  const isRequired = filters.length > 1;
 
-  const removeFilter = (filter) => {
+  const newFilter = (n: number) => ({ index: n, active: true });
+
+  const removeFilter = (filter: FormFilter) => {
     // set to active: false
     setFilters(filters.map((f) => (f.index === filter.index ? { index: filter.index, active: false } : f)));
   };
-
-  const activeFilters = filters.filter((f) => f.active);
-  const hasMaxFilters = activeFilters.length >= maxFilters;
 
   const handleAddFilter = () => {
     const filterIndex = filters.length + 1;
     const f = newFilter(filterIndex);
     setFilters((filters) => [...filters, f]);
   };
-
-  // UI starts with an optional filter, which can be left blank
-  const isRequired = filters.length > 1;
 
   return (
     <Form.Item>
@@ -54,5 +56,12 @@ const Filters = ({ filters, setFilters, form, querySections }) => {
     </Form.Item>
   );
 };
+
+export interface FiltersProps {
+  filters: FormFilter[];
+  setFilters: Dispatch<SetStateAction<FormFilter[]>>;
+  form: FormInstance<any>;
+  querySections: SearchFieldResponse['sections'];
+}
 
 export default Filters;
