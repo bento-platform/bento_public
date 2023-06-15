@@ -51,6 +51,12 @@ export interface BeaconQueryResponse {
   };
 }
 
+// tracks filter data inside the form
+export interface FormFilter {
+  index: number;
+  active: boolean;
+}
+
 export interface PayloadFilter {
   id: string;
   value: string;
