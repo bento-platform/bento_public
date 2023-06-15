@@ -97,7 +97,7 @@ const BeaconQueryUi = () => {
         assemblyId: values['Assembly ID'],
       };
       if (values['Variant end']) {
-        query.end = [values['Variant end']];
+        query.end = [Number(values['Variant end'])];
       }
       if (values['Reference base(s)']) {
         query.referenceBases = values['Reference base(s)'];
