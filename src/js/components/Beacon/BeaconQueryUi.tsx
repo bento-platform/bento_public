@@ -6,7 +6,7 @@ import Filters from './Filters';
 import { makeBeaconQuery } from '@/features/beacon/beaconQuery';
 import BeaconSearchResults from './BeaconSearchResults';
 import VariantsForm from './VariantsForm';
-import { BeaconQueryPayload, FormValues, PayloadFilter, PayloadVariantsQuery } from '@/types/beacon';
+import { BeaconQueryPayload, FormFilter, FormValues, PayloadFilter, PayloadVariantsQuery } from '@/types/beacon';
 import {
   WRAPPER_STYLE,
   FORM_ROW_GUTTERS,
@@ -32,7 +32,7 @@ const STARTER_FILTER = { index: 1, active: true };
 const BeaconQueryUi = () => {
   const isFetchingBeaconConfig = useAppSelector(state => state.beaconConfig.isFetchingBeaconConfig)
   const beaconAssemblyIds = useAppSelector(state => state.beaconConfig.beaconAssemblyIds)
-  const [filters, setFilters] = useState([STARTER_FILTER]);
+  const [filters, setFilters] = useState<FormFilter[]>([STARTER_FILTER]);
   const [form] = Form.useForm();
   const querySections = useAppSelector((state) => state.query.querySections);
   const beaconUrl = useAppSelector((state) => state.config?.beaconUrl);
