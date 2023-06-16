@@ -3,7 +3,7 @@ import { useAppSelector } from '@/hooks';
 import SearchResultsPane from '../Search/SearchResultsPane';
 
 const BeaconSearchResults = () => {
-  const isFetchingData = useAppSelector((state) => state.beaconQuery?.isFetchingQueryResponse);
+  const isFetchingData = useAppSelector((state) => state.beaconQuery.isFetchingQueryResponse);
   const { individualCount, biosampleCount, biosampleChartData, experimentCount, experimentChartData } = useAppSelector(
     (state) => state.beaconQuery
   );
