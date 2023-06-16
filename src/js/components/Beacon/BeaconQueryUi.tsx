@@ -3,7 +3,7 @@ import { useAppSelector, useAppDispatch } from '@/hooks';
 import { Button, Card, Col, Form, Row, Tooltip } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import Filters from './Filters';
-import { makeBeaconQuery } from '@/features/beacon/beaconQuery';
+import { makeBeaconQuery } from '@/features/beacon/beaconQuery.store';
 import BeaconSearchResults from './BeaconSearchResults';
 import VariantsForm from './VariantsForm';
 import { BeaconQueryPayload, FormFilter, FormValues, PayloadFilter, PayloadVariantsQuery } from '@/types/beacon';

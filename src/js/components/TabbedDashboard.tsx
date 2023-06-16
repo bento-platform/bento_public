@@ -10,7 +10,7 @@ import { makeGetAboutRequest } from '@/features/content/content.store';
 import { makeGetDataRequestThunk } from '@/features/data/data.store';
 import { makeGetSearchFields } from '@/features/search/query.store';
 import { makeGetProvenanceRequest } from '@/features/provenance/provenance.store';
-import { getBeaconConfig } from '@/features/beacon/beaconConfig';
+import { getBeaconConfig } from '@/features/beacon/beaconConfig.store';
 
 import Loader from './Loader';
 import PublicOverview from './Overview/PublicOverview';
