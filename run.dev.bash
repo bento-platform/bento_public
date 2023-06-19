@@ -5,7 +5,7 @@ export BENTO_PUBLIC_STATIC_FILES_PATH=/bento-public/build/www
 cd /bento-public || exit
 
 # Install/update node dependencies
-npm install
+# npm install
 
 # Build dev before starting the go webserver.
 # main.go uses Echo's Static middleware to route static files.
