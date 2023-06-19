@@ -19,6 +19,12 @@ const CHROMOSOME_REGEX = /^([1-9][0-9]?|X|x|Y|y|M|m|MT|mt)$/;
 const NUCLEOTIDES_REGEX = /^([acgtnACGTN])*$/;
 const DIGITS_REGEX = /^[0-9]+$/;
 
+const FORM_STYLE = {
+  display: 'flex',
+  flexDirection: 'column',
+};
+const FORM_ROW_GUTTER = [12, 0];
+
 const FORM_FIELDS = {
   referenceName: {
     name: 'Chromosome',
@@ -57,12 +63,6 @@ const FORM_FIELDS = {
   },
   assemblyId: { name: 'Assembly ID', rules: [{}], placeholder: '', initialValue: '' },
 };
-
-const FORM_STYLE = {
-  display: 'flex',
-  flexDirection: 'column',
-};
-const FORM_ROW_GUTTER = [12, 0];
 
 const VariantsForm = ({ assemblyIdOptions }) => {
   return (

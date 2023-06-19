@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { useAppSelector } from '@/hooks';
 import { Button, Card, Col, Form, Row, Select, Tooltip } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
@@ -16,6 +17,7 @@ import {
   BUTTON_AREA_STYLE,
   BUTTON_STYLE,
 } from '@/constants/beaconConstants';
+import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
 
 // TODOs
 // form verification
@@ -30,6 +32,9 @@ const METADATA_HELP = 'Search over clinical or phenotypic properties.';
 const STARTER_FILTER = { index: 1, active: true };
 
 const BeaconQueryUi = () => {
+  const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
+  const { t: td } = useTranslation(DEFAULT_TRANSLATION);
+
   const config = useSelector((state) => state?.beaconConfig?.config);
   const beaconAssemblyIds = Object.keys(config?.overview?.counts?.variants ?? {});
   const [filters, setFilters] = useState([STARTER_FILTER]);
@@ -55,7 +60,7 @@ const BeaconQueryUi = () => {
 
   const assemblyIdOptions = beaconAssemblyIds.map((assembly) => (
     <Select.Option key={assembly} value={assembly}>
-      {assembly}
+      {t(assembly)}
     </Select.Option>
   ));
   const formInitialValues = { 'Assembly ID': beaconAssemblyIds.length === 1 && beaconAssemblyIds[0] };
@@ -128,7 +133,7 @@ const BeaconQueryUi = () => {
 
   const SearchToolTip = ({ text }) => {
     return (
-      <Tooltip title={text}>
+      <Tooltip title={td(text)}>
         <InfoCircleOutlined />
       </Tooltip>
     );
@@ -138,17 +143,17 @@ const BeaconQueryUi = () => {
     <div style={WRAPPER_STYLE}>
       <BeaconSearchResults />
       <Card
-        title="Search"
+        title={td('Search')}
         style={{ borderRadius: '10px', maxWidth: '1200px', width: '100%' }}
         bodyStyle={CARD_BODY_STYLE}
         headStyle={CARD_HEAD_STYLE}
       >
-        <p style={{ margin: '-8px 0 8px 0', padding: '0', color: 'grey' }}>{UI_INSTRUCTIONS}</p>
+        <p style={{ margin: '-8px 0 8px 0', padding: '0', color: 'grey' }}>{td(UI_INSTRUCTIONS)}</p>
         <Form form={form} onFinish={handleFinish} layout="vertical">
           <Row gutter={FORM_ROW_GUTTERS}>
             <Col xs={24} lg={12}>
               <Card
-                title="Variants"
+                title={td('Variants')}
                 style={CARD_STYLE}
                 headStyle={CARD_HEAD_STYLE}
                 bodyStyle={CARD_BODY_STYLE}
@@ -159,7 +164,7 @@ const BeaconQueryUi = () => {
             </Col>
             <Col xs={24} lg={12}>
               <Card
-                title="Metadata"
+                title={td('Metadata')}
                 style={CARD_STYLE}
                 headStyle={CARD_HEAD_STYLE}
                 bodyStyle={CARD_BODY_STYLE}
@@ -173,10 +178,10 @@ const BeaconQueryUi = () => {
             <Col span={24}>
               <div style={BUTTON_AREA_STYLE}>
                 <Button type="primary" htmlType="submit" style={BUTTON_STYLE}>
-                  Search Beacon
+                  {td('Search Beacon')}
                 </Button>
                 <Button onClick={handleClearForm} style={BUTTON_STYLE}>
-                  Clear Form
+                  {td('Clear Form')}
                 </Button>
               </div>
             </Col>
