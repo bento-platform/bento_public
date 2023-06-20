@@ -54,7 +54,7 @@ const MakeChartCard = ({ section, chart, onRemoveChart }: MakeChartCardProps) =>
     <div key={id} style={{ height: '100%', width: '430px' }}>
       <Card title={t(title)} style={CARD_STYLE} size="small" extra={<Space size="small">{ed}</Space>}>
         {data.filter((e) => !(e.x === 'missing')).length !== 0 ? (
-          <Chart chartType={chartType} data={data} units={config?.units || ''} />
+          <Chart chartType={chartType} data={data} units={config?.units || ''} id={id} />
         ) : (
           <Row style={{ height: '350px ' }} justify="center" align="middle">
             <CustomEmpty text="No Data" />

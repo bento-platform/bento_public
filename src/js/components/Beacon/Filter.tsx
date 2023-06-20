@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button, Form, Select, Space } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import { FormInstance } from 'antd/es/form';
 import { FormFilter, FilterOption, FilterPullDownKey, FilterPullDownValue, GenericOptionType } from '@/types/beacon';
 import { Section, Field } from '@/types/search';
+import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
 
 // TODOs:
 // any search key (eg "sex") selected in one filter should not available in other
@@ -14,6 +16,9 @@ const FILTER_FORM_ITEM_STYLE = { flex: 1, marginInlineEnd: -1 };
 const FILTER_FORM_ITEM_INNER_STYLE = { width: '100%' };
 
 const Filter = ({ filter, form, querySections, removeFilter, isRequired }: FilterProps) => {
+  const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
+  const { t: td } = useTranslation(DEFAULT_TRANSLATION);
+
   const [valueOptions, setValueOptions] = useState([{ label: '', value: '' }]);
 
   const handleSelectKey = (_: unknown, option: GenericOptionType) => {
@@ -36,8 +41,8 @@ const Filter = ({ filter, form, querySections, removeFilter, isRequired }: Filte
 
   const renderLabel = (searchField: Field) => {
     const units = searchField.config?.units;
-    const unitsString = units ? ` (${units})` : '';
-    return searchField.title + unitsString;
+    const unitsString = units ? ` (${t(units)})` : '';
+    return t(searchField.title) + unitsString;
   };
 
   const searchKeyOptions = (arr: Section[]): FilterOption[] => {
@@ -57,11 +62,11 @@ const Filter = ({ filter, form, querySections, removeFilter, isRequired }: Filte
     <Space.Compact>
       <Form.Item
         name={`filterId${filter.index}`}
-        rules={[{ required: isRequired, message: 'search field required' }]}
+        rules={[{ required: isRequired, message: td('search field required') as string }]}
         style={FILTER_FORM_ITEM_STYLE}
       >
         <Select
-          placeholder={'select a search field'}
+          placeholder={td('select a search field')}
           style={FILTER_FORM_ITEM_INNER_STYLE}
           onSelect={handleSelectKey}
           options={searchKeyOptions(querySections)}
@@ -69,10 +74,13 @@ const Filter = ({ filter, form, querySections, removeFilter, isRequired }: Filte
       </Form.Item>
       <Form.Item
         name={`filterValue${filter.index}`}
-        rules={[{ required: isRequired, message: 'value required' }]}
+        rules={[{ required: isRequired, message: td('value required') as string }]}
         style={FILTER_FORM_ITEM_STYLE}
       >
-        <Select style={FILTER_FORM_ITEM_INNER_STYLE} options={valueOptions} />
+        <Select
+          style={FILTER_FORM_ITEM_INNER_STYLE}
+          options={valueOptions.map(({ label, value }) => ({ label: t(label), value }))}
+        />
       </Form.Item>
       <Button onClick={() => removeFilter(filter)}>
         <CloseOutlined />

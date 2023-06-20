@@ -29,3 +29,6 @@ Finally, install the NPM dependencies and run the build process:
 npm install
 npm run gobuild
 ```
+
+## Translations in dev mode
+Add your English to French translations in `www/public/locales/fr/translation_fr.json` for them to appear on the website.

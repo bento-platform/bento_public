@@ -1,10 +1,12 @@
 import React, { Dispatch, SetStateAction } from 'react';
-import Filter from './Filter';
 import { useAppSelector } from '@/hooks';
+import { useTranslation } from 'react-i18next';
 import { Button, Form, Space, Tooltip } from 'antd';
 import { FormInstance } from 'antd/es/form';
 import { FormFilter } from '@/types/beacon';
 import { SearchFieldResponse } from '@/types/search';
+import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
+import Filter from './Filter';
 
 // ideally:
 // - should not permit you to make multiple queries on the same key (Redmine #1688)
@@ -12,6 +14,8 @@ import { SearchFieldResponse } from '@/types/search';
 const BUTTON_STYLE = { margin: '10px 0' };
 
 const Filters = ({ filters, setFilters, form, querySections }: FiltersProps) => {
+  const { t: td } = useTranslation(DEFAULT_TRANSLATION);
+
   const maxFilters = useAppSelector((state) => state.config.maxQueryParameters);
   const activeFilters = filters.filter((f) => f.active);
   const hasMaxFilters = activeFilters.length >= maxFilters;
@@ -35,9 +39,9 @@ const Filters = ({ filters, setFilters, form, querySections }: FiltersProps) => 
   return (
     <Form.Item>
       <Space style={{ display: 'flex', padding: 0 }}>
-        <Tooltip title={hasMaxFilters ? `maximum of ${maxFilters} filters permitted` : null}>
+        <Tooltip title={hasMaxFilters ? `${td('maximum of')} ${maxFilters} ${td('filters permitted')}` : null}>
           <Button style={BUTTON_STYLE} onClick={handleAddFilter} disabled={hasMaxFilters}>
-            Add Filter
+            {td('Add Filter')}
           </Button>
         </Tooltip>
       </Space>
