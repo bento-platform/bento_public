@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslationCustom, useTranslationDefault } from '@/hooks';
 import { Button, Form, Select, Space } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import { FormInstance } from 'antd/es/form';
 import { FormFilter, FilterOption, FilterPullDownKey, FilterPullDownValue, GenericOptionType } from '@/types/beacon';
 import { Section, Field } from '@/types/search';
-import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
 
 // TODOs:
 // any search key (eg "sex") selected in one filter should not available in other
@@ -16,8 +15,8 @@ const FILTER_FORM_ITEM_STYLE = { flex: 1, marginInlineEnd: -1 };
 const FILTER_FORM_ITEM_INNER_STYLE = { width: '100%' };
 
 const Filter = ({ filter, form, querySections, removeFilter, isRequired }: FilterProps) => {
-  const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
-  const { t: td } = useTranslation(DEFAULT_TRANSLATION);
+  const t = useTranslationCustom();
+  const td = useTranslationDefault();
 
   const [valueOptions, setValueOptions] = useState([{ label: '', value: '' }]);
 
@@ -62,7 +61,7 @@ const Filter = ({ filter, form, querySections, removeFilter, isRequired }: Filte
     <Space.Compact>
       <Form.Item
         name={`filterId${filter.index}`}
-        rules={[{ required: isRequired, message: td('search field required') as string }]}
+        rules={[{ required: isRequired, message: td('search field required') }]}
         style={FILTER_FORM_ITEM_STYLE}
       >
         <Select
@@ -74,7 +73,7 @@ const Filter = ({ filter, form, querySections, removeFilter, isRequired }: Filte
       </Form.Item>
       <Form.Item
         name={`filterValue${filter.index}`}
-        rules={[{ required: isRequired, message: td('value required') as string }]}
+        rules={[{ required: isRequired, message: td('value required') }]}
         style={FILTER_FORM_ITEM_STYLE}
       >
         <Select
