@@ -69,7 +69,7 @@ export type PayloadVariantsQuery =
 export interface BeaconQueryPayload {
   meta: { apiVersion: string };
   query: { requestParameters: { g_variant: PayloadVariantsQuery }; filters: PayloadFilter[] };
-  bento?: { showSummaryStatitics: boolean };
+  bento?: { showSummaryStatistics: boolean };
 }
 
 // ----------------------------
