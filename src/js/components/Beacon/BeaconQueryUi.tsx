@@ -78,7 +78,7 @@ const BeaconQueryUi = () => {
   const requestPayload = (query: PayloadVariantsQuery, payloadFilters: PayloadFilter[]): BeaconQueryPayload => ({
     meta: { apiVersion: '2.0.0' },
     query: { requestParameters: { g_variant: query }, filters: payloadFilters },
-    bento: { showSummaryStatitics: true },
+    bento: { showSummaryStatistics: true },
   });
 
   // following GA4GH recommendations, UI is one-based, but API is zero-based, "half-open"
