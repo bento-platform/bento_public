@@ -7,6 +7,7 @@ import CustomEmpty from '../Util/CustomEmpty';
 import ExpSvg from '../Util/ExpSvg';
 import { CHART_HEIGHT, COUNTS_FILL } from '@/constants/overviewConstants';
 import { useTranslationDefault } from '@/hooks';
+import { ChartData } from '@/types/data';
 
 const SearchResultsPane = ({
   isFetchingData,
@@ -17,7 +18,7 @@ const SearchResultsPane = ({
   biosampleChartData,
   experimentCount,
   experimentChartData,
-}) => {
+}: SearchResultsPaneProps) => {
   const t = useTranslationDefault();
 
   return (
@@ -70,5 +71,16 @@ const SearchResultsPane = ({
     </div>
   );
 };
+
+export interface SearchResultsPaneProps {
+  isFetchingData: boolean;
+  hasInsufficientData: boolean;
+  message: string;
+  individualCount: number;
+  biosampleCount: number;
+  biosampleChartData: ChartData[];
+  experimentCount: number;
+  experimentChartData: ChartData[];
+}
 
 export default SearchResultsPane;

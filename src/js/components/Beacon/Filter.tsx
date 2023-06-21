@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslationCustom, useTranslationDefault } from '@/hooks';
 import { Button, Form, Select, Space } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
-import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
+import { FormInstance } from 'antd/es/form';
+import { FormFilter, FilterOption, FilterPullDownKey, FilterPullDownValue, GenericOptionType } from '@/types/beacon';
+import { Section, Field } from '@/types/search';
 
 // TODOs:
 // any search key (eg "sex") selected in one filter should not available in other
@@ -12,16 +14,21 @@ import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '@/constants/config
 const FILTER_FORM_ITEM_STYLE = { flex: 1, marginInlineEnd: -1 };
 const FILTER_FORM_ITEM_INNER_STYLE = { width: '100%' };
 
-const Filter = ({ filter, form, querySections, removeFilter, isRequired }) => {
-  const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
-  const { t: td } = useTranslation(DEFAULT_TRANSLATION);
+const Filter = ({ filter, form, querySections, removeFilter, isRequired }: FilterProps) => {
+  const t = useTranslationCustom();
+  const td = useTranslationDefault();
 
   const [valueOptions, setValueOptions] = useState([{ label: '', value: '' }]);
 
-  const handleSelectKey = (_, option) => {
+  const handleSelectKey = (_: unknown, option: GenericOptionType) => {
     // set dropdown options for a particular key
     // ie for key "sex", set options to "MALE", "FEMALE", etc
-    setValueOptions(option.optionsThisKey);
+
+    // narrow type of option
+    // ant design has conflicting type inference when options are nested in more than one layer
+    const currentOption = option as FilterPullDownKey;
+
+    setValueOptions(currentOption.optionsThisKey);
   };
 
   // rerender default option when key changes
@@ -31,14 +38,14 @@ const Filter = ({ filter, form, querySections, removeFilter, isRequired }) => {
     });
   }, [valueOptions]);
 
-  const renderLabel = (searchField) => {
+  const renderLabel = (searchField: Field) => {
     const units = searchField.config?.units;
     const unitsString = units ? ` (${t(units)})` : '';
     return t(searchField.title) + unitsString;
   };
 
-  const searchKeyOptions = (arr) =>
-    arr.map((qs) => ({
+  const searchKeyOptions = (arr: Section[]): FilterOption[] => {
+    return arr.map((qs) => ({
       label: qs.section_title,
       options: qs.fields.map((field) => ({
         label: renderLabel(field),
@@ -46,8 +53,9 @@ const Filter = ({ filter, form, querySections, removeFilter, isRequired }) => {
         optionsThisKey: searchValueOptions(field.options),
       })),
     }));
+  };
 
-  const searchValueOptions = (arr) => arr.map((v) => ({ label: v, value: v }));
+  const searchValueOptions = (arr: Field['options']): FilterPullDownValue[] => arr.map((v) => ({ label: v, value: v }));
 
   return (
     <Space.Compact>
@@ -79,5 +87,13 @@ const Filter = ({ filter, form, querySections, removeFilter, isRequired }) => {
     </Space.Compact>
   );
 };
+
+export interface FilterProps {
+  filter: FormFilter;
+  form: FormInstance;
+  querySections: Section[];
+  removeFilter: (filter: FormFilter) => void;
+  isRequired: boolean;
+}
 
 export default Filter;

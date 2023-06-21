@@ -1,7 +1,10 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { Dispatch, SetStateAction } from 'react';
 import { useAppSelector } from '@/hooks';
+import { useTranslation } from 'react-i18next';
 import { Button, Form, Space, Tooltip } from 'antd';
+import { FormInstance } from 'antd/es/form';
+import { FormFilter } from '@/types/beacon';
+import { SearchFieldResponse } from '@/types/search';
 import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import Filter from './Filter';
 
@@ -10,29 +13,28 @@ import Filter from './Filter';
 
 const BUTTON_STYLE = { margin: '10px 0' };
 
-const Filters = ({ filters, setFilters, form, querySections }) => {
+const Filters = ({ filters, setFilters, form, querySections }: FiltersProps) => {
   const { t: td } = useTranslation(DEFAULT_TRANSLATION);
 
   const maxFilters = useAppSelector((state) => state.config.maxQueryParameters);
+  const activeFilters = filters.filter((f) => f.active);
+  const hasMaxFilters = activeFilters.length >= maxFilters;
 
-  const newFilter = (n) => ({ index: n, active: true });
+  // UI starts with an optional filter, which can be left blank
+  const isRequired = filters.length > 1;
 
-  const removeFilter = (filter) => {
+  const newFilter = (n: number) => ({ index: n, active: true });
+
+  const removeFilter = (filter: FormFilter) => {
     // set to active: false
     setFilters(filters.map((f) => (f.index === filter.index ? { index: filter.index, active: false } : f)));
   };
-
-  const activeFilters = filters.filter((f) => f.active);
-  const hasMaxFilters = activeFilters.length >= maxFilters;
 
   const handleAddFilter = () => {
     const filterIndex = filters.length + 1;
     const f = newFilter(filterIndex);
     setFilters((filters) => [...filters, f]);
   };
-
-  // UI starts with an optional filter, which can be left blank
-  const isRequired = filters.length > 1;
 
   return (
     <Form.Item>
@@ -58,5 +60,12 @@ const Filters = ({ filters, setFilters, form, querySections }) => {
     </Form.Item>
   );
 };
+
+export interface FiltersProps {
+  filters: FormFilter[];
+  setFilters: Dispatch<SetStateAction<FormFilter[]>>;
+  form: FormInstance;
+  querySections: SearchFieldResponse['sections'];
+}
 
 export default Filters;
