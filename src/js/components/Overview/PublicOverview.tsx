@@ -10,6 +10,7 @@ import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
 import Counts from './Counts';
 import { useAppSelector } from '@/hooks';
 import { useTranslation } from 'react-i18next';
+import LastIngestionInfo from './LastIngestion';
 
 const PublicOverview = () => {
   const { sections } = useAppSelector((state) => state.data);
@@ -51,6 +52,7 @@ const PublicOverview = () => {
                   <Divider />
                 </div>
               ))}
+            <LastIngestionInfo />
           </Col>
         </Row>
       </div>
