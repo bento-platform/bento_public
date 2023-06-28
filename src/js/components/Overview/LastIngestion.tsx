@@ -8,7 +8,7 @@ import { useAppSelector } from '@/hooks';
 import { ingestionData } from '@/types/lastIngestionResponse';
 
 const formatDataType = (dataType: string) => {
-  return (dataType ? dataType.charAt(0).toUpperCase() + dataType.slice(1) + 's' : 'Unknown Data Type');
+  return dataType ? dataType.charAt(0).toUpperCase() + dataType.slice(1) + 's' : 'Unknown Data Type';
 };
 
 const LastIngestionInfo: React.FC = () => {
@@ -17,14 +17,16 @@ const LastIngestionInfo: React.FC = () => {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return (!isNaN(date.getTime()) ? date.toLocaleString(i18n.language, {
-      year: 'numeric',
-      month: 'long',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true,
-    }) : 'Invalid Date');
+    return !isNaN(date.getTime())
+      ? date.toLocaleString(i18n.language, {
+          year: 'numeric',
+          month: 'long',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true,
+        })
+      : 'Invalid Date';
   };
 
   return (

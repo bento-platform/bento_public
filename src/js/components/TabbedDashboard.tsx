@@ -13,7 +13,6 @@ import { makeGetProvenanceRequest } from '@/features/provenance/provenance.store
 import { makeGetIngestionDataRequest } from '@/features/ingestion/ingestion.store';
 import { getBeaconConfig } from '@/features/beacon/beaconConfig.store';
 
-
 import Loader from './Loader';
 import PublicOverview from './Overview/PublicOverview';
 import Search from './Search/Search';

@@ -31,10 +31,13 @@ const IngestionDataStore = createSlice({
     builder.addCase(makeGetIngestionDataRequest.pending, (state) => {
       state.isFetchingIngestionData = true;
     });
-    builder.addCase(makeGetIngestionDataRequest.fulfilled, (state, { payload }: PayloadAction<LastIngestionResponse>) => {
-      state.ingestionData = payload;
-      state.isFetchingIngestionData = false;
-    });
+    builder.addCase(
+      makeGetIngestionDataRequest.fulfilled,
+      (state, { payload }: PayloadAction<LastIngestionResponse>) => {
+        state.ingestionData = payload;
+        state.isFetchingIngestionData = false;
+      }
+    );
     builder.addCase(makeGetIngestionDataRequest.rejected, (state) => {
       state.isFetchingIngestionData = false;
     });
