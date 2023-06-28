@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { useAppSelector } from '@/hooks';
-import { RunData } from '@/types/lastIngestionResponse';
+import { ingestionData } from '@/types/lastIngestionResponse';
 
 const formatDataType = (dataType: string) => {
   return (dataType ? dataType.charAt(0).toUpperCase() + dataType.slice(1) + 's' : 'Unknown Data Type');
@@ -13,7 +13,7 @@ const formatDataType = (dataType: string) => {
 
 const LastIngestionInfo: React.FC = () => {
   const { t, i18n } = useTranslation(DEFAULT_TRANSLATION);
-  const workflows: RunData[] = useAppSelector((state) => state.runData?.runData) || [];
+  const workflows: ingestionData[] = useAppSelector((state) => state.ingestionData?.ingestionData) || [];
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);

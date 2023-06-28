@@ -18,7 +18,7 @@ id: string;
 start_time: string;
 }
 
-export interface RunData {
+export interface ingestionData {
 end_time: string;
 request: Request;
 run_id: string;
@@ -26,5 +26,5 @@ run_log: RunLog;
 state: string;
 }
 
-export type LastIngestionResponse = RunData[];
+export type LastIngestionResponse = ingestionData[];
   
