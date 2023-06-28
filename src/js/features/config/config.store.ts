@@ -22,6 +22,7 @@ const initialState: ConfigState = {
   clientName: '',
   portalUrl: '',
   maxQueryParameters: 0,
+  countThreshold: 0,
   translated: false,
   beaconUrl: '',
   beaconUiEnabled: false,
@@ -39,6 +40,7 @@ const configStore = createSlice({
       state.clientName = payload.clientName;
       state.portalUrl = payload.portalUrl;
       state.maxQueryParameters = payload.maxQueryParameters;
+      state.countThreshold = payload.countThreshold;
       state.translated = payload.translated;
       state.isFetchingConfig = false;
       state.beaconUrl = payload.beaconUrl;
