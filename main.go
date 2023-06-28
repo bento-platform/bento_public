@@ -30,16 +30,16 @@ const ConfigLogTemplate = `Config --
 `
 
 type BentoConfig struct {
-	ServiceId          string `envconfig:"BENTO_PUBLIC_SERVICE_ID"`
-	PackageJsonPath    string `envconfig:"BENTO_PUBLIC_PACKAGE_JSON_PATH" default:"./package.json"`
-	StaticFilesPath    string `envconfig:"BENTO_PUBLIC_STATIC_FILES_PATH" default:"./www"`
-	ClientName         string `envconfig:"BENTO_PUBLIC_CLIENT_NAME"`
-	KatsuUrl           string `envconfig:"BENTO_PUBLIC_KATSU_URL"`
-	BentoPortalUrl     string `envconfig:"BENTO_PUBLIC_PORTAL_URL"`
-	Port               int    `envconfig:"INTERNAL_PORT" default:"8090"`
-	Translated         bool   `envconfig:"BENTO_PUBLIC_TRANSLATED" default:"true"`
-	BeaconUrl          string `envconfig:"BEACON_URL"`
-	BeaconUiEnabled	   bool   `envconfig:"BENTO_BEACON_UI_ENABLED"`
+	ServiceId       string `envconfig:"BENTO_PUBLIC_SERVICE_ID"`
+	PackageJsonPath string `envconfig:"BENTO_PUBLIC_PACKAGE_JSON_PATH" default:"./package.json"`
+	StaticFilesPath string `envconfig:"BENTO_PUBLIC_STATIC_FILES_PATH" default:"./www"`
+	ClientName      string `envconfig:"BENTO_PUBLIC_CLIENT_NAME"`
+	KatsuUrl        string `envconfig:"BENTO_PUBLIC_KATSU_URL"`
+	BentoPortalUrl  string `envconfig:"BENTO_PUBLIC_PORTAL_URL"`
+	Port            int    `envconfig:"INTERNAL_PORT" default:"8090"`
+	Translated      bool   `envconfig:"BENTO_PUBLIC_TRANSLATED" default:"true"`
+	BeaconUrl       string `envconfig:"BEACON_URL"`
+	BeaconUiEnabled bool   `envconfig:"BENTO_BEACON_UI_ENABLED"`
 }
 
 type JsonLike map[string]interface{}
@@ -259,6 +259,7 @@ func main() {
 		return c.JSON(http.StatusOK, JsonLike{
 			"clientName":         cfg.ClientName,
 			"maxQueryParameters": publicOverview["max_query_parameters"],
+			"countThreshold":     publicOverview["count_threshold"],
 			"portalUrl":          cfg.BentoPortalUrl,
 			"translated":         cfg.Translated,
 			"beaconUrl":          cfg.BeaconUrl,
