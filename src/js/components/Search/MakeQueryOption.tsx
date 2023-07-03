@@ -18,7 +18,7 @@ const MakeQueryOption = ({ queryField }: MakeQueryOptionProps) => {
   const { title, id, description, config, options } = queryField;
 
   const maxQueryParameters = useAppSelector((state) => state.config.maxQueryParameters);
-  const {queryParamCount, queryParams} = useAppSelector((state) => state.query);
+  const { queryParamCount, queryParams } = useAppSelector((state) => state.query);
 
   const isChecked = Object.prototype.hasOwnProperty.call(queryParams, id);
 

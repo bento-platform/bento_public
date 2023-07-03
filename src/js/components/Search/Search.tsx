@@ -27,9 +27,10 @@ const RoutedSearch: React.FC = () => {
     isFetchingFields: isFetchingSearchFields,
   } = useAppSelector((state) => state.query);
 
-  const searchFields = useMemo(() => searchSections.flatMap(({ fields }) =>
-    fields.map((field) => ({ id: field.id, options: field.options }))
-  ), [searchSections]);
+  const searchFields = useMemo(
+    () => searchSections.flatMap(({ fields }) => fields.map((field) => ({ id: field.id, options: field.options }))),
+    [searchSections]
+  );
 
   const validateQuery = (query: URLSearchParams): { valid: boolean; validQueryParamsObject: QueryParams } => {
     const validateQueryParam = (key: string, value: string): boolean => {
@@ -54,7 +55,7 @@ const RoutedSearch: React.FC = () => {
   // Synchronize Redux query params state from URL
   useEffect(() => {
     if (isFetchingSearchFields) return;
-    if (!location.pathname.endsWith("/search")) return;
+    if (!location.pathname.endsWith('/search')) return;
     const queryParam = new URLSearchParams(location.search);
     const { valid, validQueryParamsObject } = validateQuery(queryParam);
     if (valid) {
@@ -68,7 +69,7 @@ const RoutedSearch: React.FC = () => {
 
   // Synchronize URL from Redux query params state
   useEffect(() => {
-    if (!location.pathname.endsWith("/search")) return;
+    if (!location.pathname.endsWith('/search')) return;
     navigate(buildQueryParamsUrl(location.pathname, queryParams), { replace: true });
   }, [queryParams]);
 
