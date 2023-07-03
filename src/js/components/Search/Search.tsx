@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Row, Typography, Space, FloatButton } from 'antd';
 import { useTranslation } from 'react-i18next';
 
@@ -12,18 +12,26 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 type QueryParams = { [key: string]: string };
 
+const buildQueryParamsUrl = (pathName: string, qp: QueryParams): string =>
+  `${pathName}?${new URLSearchParams(qp).toString()}`;
+const checkQueryParamsEqual = (qp1: QueryParams, qp2: QueryParams): boolean =>
+  [...new Set(...Object.keys(qp1), ...Object.keys(qp2))].reduce((acc, v) => acc && qp1[v] === qp2[v], true);
+
 const RoutedSearch: React.FC = () => {
   const dispatch = useAppDispatch();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const searchSections = useAppSelector((state) => state.query.querySections);
   const maxQueryParameters = useAppSelector((state) => state.config.maxQueryParameters);
-  const isFetchingSearchFields = useAppSelector((state) => state.query.isFetchingFields);
+  const {
+    querySections: searchSections,
+    queryParams,
+    isFetchingFields: isFetchingSearchFields,
+  } = useAppSelector((state) => state.query);
 
-  const searchFields = searchSections.flatMap(({ fields }) =>
+  const searchFields = useMemo(() => searchSections.flatMap(({ fields }) =>
     fields.map((field) => ({ id: field.id, options: field.options }))
-  );
+  ), [searchSections]);
 
   const validateQuery = (query: URLSearchParams): { valid: boolean; validQueryParamsObject: QueryParams } => {
     const validateQueryParam = (key: string, value: string): boolean => {
@@ -45,21 +53,29 @@ const RoutedSearch: React.FC = () => {
     return { valid: JSON.stringify(validQueryParamArray) === JSON.stringify(queryParamArray), validQueryParamsObject };
   };
 
+  // Synchronize Redux query params state from URL
   useEffect(() => {
     if (isFetchingSearchFields) return;
+    if (!location.pathname.endsWith("/search")) return;
     const queryParam = new URLSearchParams(location.search);
     const { valid, validQueryParamsObject } = validateQuery(queryParam);
     if (valid) {
-      dispatch(setQueryParams(validQueryParamsObject));
-      dispatch(makeGetKatsuPublic());
+      if (!checkQueryParamsEqual(validQueryParamsObject, queryParams)) {
+        // Only update the state & refresh if we have a new set of query params from the URL.
+        dispatch(setQueryParams(validQueryParamsObject));
+        dispatch(makeGetKatsuPublic());
+      }
     } else {
-      console.debug(
-        'Redirecting to : ',
-        `${location.pathname}?${new URLSearchParams(validQueryParamsObject).toString()}`
-      );
-      navigate(`${location.pathname}?${new URLSearchParams(validQueryParamsObject).toString()}`);
+      console.debug('Redirecting to : ', buildQueryParamsUrl(location.pathname, validQueryParamsObject));
+      navigate(buildQueryParamsUrl(location.pathname, validQueryParamsObject));
     }
   }, [location.search]);
+
+  // Synchronize URL from Redux query params state
+  useEffect(() => {
+    if (!location.pathname.endsWith("/search")) return;
+    navigate(buildQueryParamsUrl(location.pathname, queryParams), { replace: true });
+  }, [queryParams]);
 
   return <Search />;
 };

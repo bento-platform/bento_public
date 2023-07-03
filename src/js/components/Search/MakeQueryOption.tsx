@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Row, Col, Checkbox } from 'antd';
 import { useTranslation } from 'react-i18next';
 
@@ -9,26 +9,16 @@ import SelectOption from './SelectOption';
 import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { useAppDispatch, useAppSelector } from '@/hooks';
 import { Field } from '@/types/search';
-import { useLocation, useNavigate } from 'react-router-dom';
 
 const MakeQueryOption = ({ queryField }: MakeQueryOptionProps) => {
   const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
   const { t: td } = useTranslation(DEFAULT_TRANSLATION);
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const location = useLocation();
 
   const { title, id, description, config, options } = queryField;
 
-  const [checkedCount, queryParams, maxCount] = useAppSelector((state) => [
-    state.query.queryParamCount,
-    state.query.queryParams,
-    state.config.maxQueryParameters,
-  ]);
-
-  useEffect(() => {
-    navigate(`${location.pathname}?${new URLSearchParams(queryParams).toString()}`, { replace: true });
-  }, [queryParams]);
+  const maxQueryParameters = useAppSelector((state) => state.config.maxQueryParameters);
+  const {queryParamCount, queryParams} = useAppSelector((state) => state.query);
 
   const isChecked = Object.prototype.hasOwnProperty.call(queryParams, id);
 
@@ -41,7 +31,7 @@ const MakeQueryOption = ({ queryField }: MakeQueryOptionProps) => {
     dispatch(makeGetKatsuPublic());
   };
 
-  const disabled = isChecked ? false : checkedCount >= maxCount;
+  const disabled = isChecked ? false : queryParamCount >= maxQueryParameters;
 
   return (
     <>
