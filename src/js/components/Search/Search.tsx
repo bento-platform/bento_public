@@ -26,6 +26,7 @@ const RoutedSearch: React.FC = () => {
     querySections: searchSections,
     queryParams,
     isFetchingFields: isFetchingSearchFields,
+    attemptedFetch,
   } = useAppSelector((state) => state.query);
 
   const searchFields = useMemo(
@@ -60,7 +61,7 @@ const RoutedSearch: React.FC = () => {
     const queryParam = new URLSearchParams(location.search);
     const { valid, validQueryParamsObject } = validateQuery(queryParam);
     if (valid) {
-      if (!checkQueryParamsEqual(validQueryParamsObject, queryParams)) {
+      if (!attemptedFetch || !checkQueryParamsEqual(validQueryParamsObject, queryParams)) {
         // Only update the state & refresh if we have a new set of query params from the URL.
         dispatch(setQueryParams(validQueryParamsObject));
         dispatch(makeGetKatsuPublic());
@@ -74,6 +75,7 @@ const RoutedSearch: React.FC = () => {
   // Synchronize URL from Redux query params state
   useEffect(() => {
     if (!location.pathname.endsWith('/search')) return;
+    if (!attemptedFetch) return;
     navigate(buildQueryParamsUrl(location.pathname, queryParams), { replace: true });
   }, [queryParams]);
 
