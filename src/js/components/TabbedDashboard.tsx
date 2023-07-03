@@ -48,6 +48,9 @@ const TabbedDashboard = () => {
       const currentPathParts = currentPath.split('/');
       const currentLang = currentPathParts[1];
       const newPath = `/${currentLang}/${key === 'overview' ? '' : key}`;
+      // If we're going to the search page, insert query params into the URL pulled from the Redux state.
+      // This is important to keep the URL updated if we've searched something, navigated away, and now
+      // are returning to the search page.
       navigate(key === 'search' ? buildQueryParamsUrl(newPath, queryParams) : newPath);
     },
     [location, navigate, queryParams]
