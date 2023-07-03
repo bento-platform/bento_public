@@ -14,8 +14,6 @@ type QueryParams = { [key: string]: string };
 
 const buildQueryParamsUrl = (pathName: string, qp: QueryParams): string =>
   `${pathName}?${new URLSearchParams(qp).toString()}`;
-const checkQueryParamsEqual = (qp1: QueryParams, qp2: QueryParams): boolean =>
-  [...new Set(...Object.keys(qp1), ...Object.keys(qp2))].reduce((acc, v) => acc && qp1[v] === qp2[v], true);
 
 const RoutedSearch: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -60,11 +58,8 @@ const RoutedSearch: React.FC = () => {
     const queryParam = new URLSearchParams(location.search);
     const { valid, validQueryParamsObject } = validateQuery(queryParam);
     if (valid) {
-      if (!checkQueryParamsEqual(validQueryParamsObject, queryParams)) {
-        // Only update the state & refresh if we have a new set of query params from the URL.
-        dispatch(setQueryParams(validQueryParamsObject));
-        dispatch(makeGetKatsuPublic());
-      }
+      dispatch(setQueryParams(validQueryParamsObject));
+      dispatch(makeGetKatsuPublic());
     } else {
       console.debug('Redirecting to : ', buildQueryParamsUrl(location.pathname, validQueryParamsObject));
       navigate(buildQueryParamsUrl(location.pathname, validQueryParamsObject));

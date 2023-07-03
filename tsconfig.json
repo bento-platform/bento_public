@@ -5,7 +5,6 @@
     "strictNullChecks": true,
     "module": "es6",
     "target": "es5",
-    "downlevelIteration": true,
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
