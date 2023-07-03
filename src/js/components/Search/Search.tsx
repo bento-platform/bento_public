@@ -1,19 +1,17 @@
 import React, { useEffect, useMemo } from 'react';
 import { Row, Typography, Space, FloatButton } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import SearchFieldsStack from './SearchFieldsStack';
 import SearchResults from './SearchResults';
 
-import { makeGetKatsuPublic, setQueryParams } from '@/features/search/query.store';
 import { NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
+import { makeGetKatsuPublic, setQueryParams } from '@/features/search/query.store';
 import { useAppDispatch, useAppSelector } from '@/hooks';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { buildQueryParamsUrl } from '@/utils/search';
 
-type QueryParams = { [key: string]: string };
-
-const buildQueryParamsUrl = (pathName: string, qp: QueryParams): string =>
-  `${pathName}?${new URLSearchParams(qp).toString()}`;
+import type { QueryParams } from '@/types/search';
 
 const RoutedSearch: React.FC = () => {
   const dispatch = useAppDispatch();

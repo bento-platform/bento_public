@@ -1,5 +1,7 @@
 import { Datum } from '@/types/overviewResponse';
 
+export type QueryParams = { [key: string]: string };
+
 export interface SearchFieldResponse {
   sections: Section[];
 }

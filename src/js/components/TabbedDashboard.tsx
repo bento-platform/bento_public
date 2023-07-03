@@ -19,6 +19,7 @@ import ProvenanceTab from './Provenance/ProvenanceTab';
 import BeaconQueryUi from './Beacon/BeaconQueryUi';
 import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { useAppDispatch, useAppSelector } from '@/hooks';
+import { buildQueryParamsUrl } from '@/utils/search';
 
 const TabbedDashboard = () => {
   const dispatch = useAppDispatch();
@@ -37,6 +38,7 @@ const TabbedDashboard = () => {
 
   const isFetchingOverviewData = useAppSelector((state) => state.data.isFetchingData);
   const isFetchingSearchFields = useAppSelector((state) => state.query.isFetchingFields);
+  const queryParams = useAppSelector((state) => state.query.queryParams);
   const isFetchingBeaconConfig = useAppSelector((state) => state.beaconConfig?.isFetchingBeaconConfig);
   const renderBeaconUi = useAppSelector((state) => state.config?.beaconUiEnabled);
 
@@ -46,9 +48,9 @@ const TabbedDashboard = () => {
       const currentPathParts = currentPath.split('/');
       const currentLang = currentPathParts[1];
       const newPath = `/${currentLang}/${key === 'overview' ? '' : key}`;
-      navigate(newPath);
+      navigate(key === 'search' ? buildQueryParamsUrl(newPath, queryParams) : newPath);
     },
-    [location, navigate]
+    [location, navigate, queryParams]
   );
 
   const TabTitle = ({ title }: { title: string }) => (
