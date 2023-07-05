@@ -13,8 +13,12 @@ import { buildQueryParamsUrl } from '@/utils/search';
 
 import type { QueryParams } from '@/types/search';
 
-const checkQueryParamsEqual = (qp1: QueryParams, qp2: QueryParams): boolean =>
-  [...new Set(...Object.keys(qp1), ...Object.keys(qp2))].reduce((acc, v) => acc && qp1[v] === qp2[v], true);
+const checkQueryParamsEqual = (qp1: QueryParams, qp2: QueryParams): boolean => {
+  const qp1Keys = Object.keys(qp1);
+  const qp2Keys = Object.keys(qp2);
+  const params = [...new Set([...qp1Keys, ...qp2Keys])];
+  return params.reduce((acc, v) => acc && qp1[v] === qp2[v], true);
+}
 
 const RoutedSearch: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -61,6 +65,10 @@ const RoutedSearch: React.FC = () => {
     const queryParam = new URLSearchParams(location.search);
     const { valid, validQueryParamsObject } = validateQuery(queryParam);
     if (valid) {
+      console.log({
+        valid: validQueryParamsObject,
+        params: queryParams
+      });
       if (!attemptedFetch || !checkQueryParamsEqual(validQueryParamsObject, queryParams)) {
         // Only update the state & refresh if we have a new set of query params from the URL.
         dispatch(setQueryParams(validQueryParamsObject));
