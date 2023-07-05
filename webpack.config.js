@@ -43,9 +43,7 @@ const config = {
       inject: false,
     }),
     new CopyWebpackPlugin({
-      patterns: [
-        { from: 'src/public', to: 'public' },
-      ],
+      patterns: [{ from: 'src/public', to: 'public' }],
     }),
   ],
   optimization: {
