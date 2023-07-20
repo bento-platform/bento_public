@@ -186,8 +186,11 @@ func main() {
 		return katsuRequest(path, nil, c, identityJSONTransform)
 	}
 
-	wesRequestBasic := func(path string, c echo.Context) error {
-		return wesRequest(path, url.Values{}, c, identityJSONTransform)
+	wesRequestWithDetailsAndPublic := func(c echo.Context) error {
+		qs := url.Values{}
+		qs.Add("with_details", "true")
+		qs.Add("public", "true")
+		return wesRequest("/runs", qs, c, identityJSONTransform)
 	}
 
 	fetchAndSetKatsuPublic := func(c echo.Context, katsuCache *cache.Cache) (JsonLike, error) {
@@ -341,9 +344,7 @@ func main() {
 		return katsuRequestBasic("/api/public_search_fields", c)
 	})
 
-	e.GET("/wesruns", func(c echo.Context) error {
-		return wesRequestBasic("/runs?with_details=true&public=true", c)
-	})
+	e.GET("/wesruns", wesRequestWithDetailsAndPublic)
 
 	e.GET("/provenance", func(c echo.Context) error {
 		// Query Katsu for datasets provenance
