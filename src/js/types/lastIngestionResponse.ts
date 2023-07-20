@@ -18,11 +18,18 @@ interface RunLog {
   start_time: string;
 }
 
-export interface ingestionData {
+export interface ingestionDetails {
   end_time: string;
   request: Request;
   run_id: string;
   run_log: RunLog;
+  state: string;
+  task_logs: null;
+}
+
+export interface ingestionData {
+  details: ingestionDetails;
+  run_id: string;
   state: string;
 }
 
