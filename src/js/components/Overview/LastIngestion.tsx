@@ -19,13 +19,13 @@ const LastIngestionInfo: React.FC = () => {
     const date = new Date(dateString);
     return !isNaN(date.getTime())
       ? date.toLocaleString(i18n.language, {
-          year: 'numeric',
-          month: 'long',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: true,
-        })
+        year: 'numeric',
+        month: 'long',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+      })
       : 'Invalid Date';
   };
 
@@ -33,14 +33,14 @@ const LastIngestionInfo: React.FC = () => {
     <>
       <Typography.Title level={3}>{t('Latest Data Ingestion')}</Typography.Title>
       <Space direction="horizontal">
-        {workflows.map((workflow) => (
-          <Card key={workflow.run_id}>
+        {workflows.map(({ details: { request, end_time }, run_id }) => (
+          <Card key={run_id}>
             <Space direction="vertical">
               <Typography.Text style={{ color: 'rgba(0,0,0,0.45)' }}>
-                {t(formatDataType(workflow.request.tags.workflow_metadata.data_type))}
+                {t(formatDataType(request.tags.workflow_metadata.data_type))}
               </Typography.Text>
               <Typography.Text>
-                <CalendarOutlined /> {formatDate(workflow.end_time)}
+                <CalendarOutlined /> {formatDate(end_time)}
               </Typography.Text>
             </Space>
           </Card>
