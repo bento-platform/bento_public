@@ -342,7 +342,7 @@ func main() {
 	})
 
 	e.GET("/wesruns", func(c echo.Context) error {
-		return wesRequestBasic("/runs_public", c)
+		return wesRequestBasic("/runs?with_details=true&public=true", c)
 	})
 
 	e.GET("/provenance", func(c echo.Context) error {
