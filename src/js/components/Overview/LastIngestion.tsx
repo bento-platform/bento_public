@@ -33,14 +33,14 @@ const LastIngestionInfo: React.FC = () => {
     <>
       <Typography.Title level={3}>{t('Latest Data Ingestion')}</Typography.Title>
       <Space direction="horizontal">
-        {workflows.map(({ details: { request, end_time }, run_id }) => (
+        {workflows.map(({ details: { request, run_log } = {}, run_id }) => (
           <Card key={run_id}>
             <Space direction="vertical">
               <Typography.Text style={{ color: 'rgba(0,0,0,0.45)' }}>
-                {t(formatDataType(request.tags.workflow_metadata.data_type))}
+                {t(formatDataType(request?.tags?.workflow_metadata?.data_type ?? 'Unknown Data Type'))}
               </Typography.Text>
               <Typography.Text>
-                <CalendarOutlined /> {formatDate(end_time)}
+                <CalendarOutlined /> {formatDate(run_log?.end_time ?? 'Invalid Date')}
               </Typography.Text>
             </Space>
           </Card>
