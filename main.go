@@ -52,6 +52,7 @@ func internalServerError(err error, c echo.Context) error {
 	return c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
 }
 
+// This function assumes JSON to be an object or an array of objects.
 func jsonDeserialize(body []byte) (interface{}, error) {
 	var i interface{}
 	err := json.Unmarshal(body, &i)
@@ -66,6 +67,7 @@ func jsonDeserialize(body []byte) (interface{}, error) {
 		for i, item := range v {
 			m, ok := item.(map[string]interface{})
 			if !ok {
+				// Error occurs if array elements are not JSON objects
 				return nil, errors.New("invalid JSON array element")
 			}
 			jsonArray[i] = JsonLike(m)
