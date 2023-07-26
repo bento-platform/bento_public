@@ -40,7 +40,8 @@ const IngestionDataStore = createSlice({
         payload.forEach((ingestion) => {
           const dataType = ingestion.details.request.tags.workflow_metadata.data_type;
           const endTime = ingestion.details.run_log.end_time;
-          if (!state.lastEndTimesByDataType[dataType] || state.lastEndTimesByDataType[dataType] < endTime) {
+          const previousEndTime = state.lastEndTimesByDataType[dataType];
+          if (!previousEndTime || new Date(endTime) > new Date(previousEndTime)) {
             state.lastEndTimesByDataType[dataType] = endTime;
           }
         });
