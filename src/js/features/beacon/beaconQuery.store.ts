@@ -1,21 +1,21 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { printAPIError } from '../../utils/error.util';
 import { RootState } from '@/store';
 import { BeaconQueryPayload, BeaconQueryResponse } from '@/types/beacon';
 import { serializeChartData } from '@/utils/chart';
+import { printAPIError } from '@/utils/error.util';
 import { ChartData } from '@/types/data';
 
 export const makeBeaconQuery = createAsyncThunk<
   BeaconQueryResponse,
   BeaconQueryPayload,
   { state: RootState; rejectValue: string }
->('beaconQuery/makeBeaconQuery', async (payload, { getState }) => {
+>('beaconQuery/makeBeaconQuery', async (payload, { getState, rejectWithValue }) => {
   const beaconIndividualsEndpoint = getState()?.config?.beaconUrl + '/individuals';
   return axios
     .post(beaconIndividualsEndpoint, payload)
     .then((res) => res.data)
-    .catch(printAPIError);
+    .catch(printAPIError(rejectWithValue));
 });
 
 type BeaconQueryInitialStateType = {
