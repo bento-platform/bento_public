@@ -16,11 +16,13 @@ export const makeGetIngestionDataRequest = createAsyncThunk<LastIngestionRespons
 export interface IngestionDataState {
   isFetchingIngestionData: boolean;
   ingestionData: ingestionData[];
+  lastEndTimesByDataType: { [dataType: string]: string };
 }
 
 const initialState: IngestionDataState = {
   isFetchingIngestionData: false,
   ingestionData: [],
+  lastEndTimesByDataType: {},
 };
 
 const IngestionDataStore = createSlice({
@@ -35,6 +37,13 @@ const IngestionDataStore = createSlice({
       makeGetIngestionDataRequest.fulfilled,
       (state, { payload }: PayloadAction<LastIngestionResponse>) => {
         state.ingestionData = payload;
+        payload.forEach(ingestion => {
+          const dataType = ingestion.details.request.tags.workflow_metadata.data_type;
+          const endTime = ingestion.details.run_log.end_time;
+          if (!state.lastEndTimesByDataType[dataType] || state.lastEndTimesByDataType[dataType] < endTime) {
+            state.lastEndTimesByDataType[dataType] = endTime;
+          }
+        });
         state.isFetchingIngestionData = false;
       }
     );
