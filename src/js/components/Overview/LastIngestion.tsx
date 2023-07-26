@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 
 import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { useAppSelector } from '@/hooks';
-import { ingestionData } from '@/types/lastIngestionResponse';
 
 const formatDataType = (dataType: string) => {
   return dataType ? dataType.charAt(0).toUpperCase() + dataType.slice(1) + 's' : 'Unknown Data Type';
@@ -13,7 +12,7 @@ const formatDataType = (dataType: string) => {
 
 const LastIngestionInfo: React.FC = () => {
   const { t, i18n } = useTranslation(DEFAULT_TRANSLATION);
-  const workflows: ingestionData[] = useAppSelector((state) => state.ingestionData?.ingestionData) || [];
+  const lastEndTimesByDataType = useAppSelector((state) => state.ingestionData?.lastEndTimesByDataType) || {};
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -33,14 +32,14 @@ const LastIngestionInfo: React.FC = () => {
     <>
       <Typography.Title level={3}>{t('Latest Data Ingestion')}</Typography.Title>
       <Space direction="horizontal">
-        {workflows.map(({ details: { request, run_log } = {}, run_id }) => (
-          <Card key={run_id}>
+        {Object.entries(lastEndTimesByDataType).map(([dataType, endTime]) => (
+          <Card key={dataType}>
             <Space direction="vertical">
               <Typography.Text style={{ color: 'rgba(0,0,0,0.45)' }}>
-                {t(formatDataType(request?.tags?.workflow_metadata?.data_type ?? 'Unknown Data Type'))}
+                {t(formatDataType(dataType))}
               </Typography.Text>
               <Typography.Text>
-                <CalendarOutlined /> {formatDate(run_log?.end_time ?? 'Invalid Date')}
+                <CalendarOutlined /> {formatDate(endTime)}
               </Typography.Text>
             </Space>
           </Card>
