@@ -37,7 +37,7 @@ const IngestionDataStore = createSlice({
       makeGetIngestionDataRequest.fulfilled,
       (state, { payload }: PayloadAction<LastIngestionResponse>) => {
         state.ingestionData = payload;
-        payload.forEach(ingestion => {
+        payload.forEach((ingestion) => {
           const dataType = ingestion.details.request.tags.workflow_metadata.data_type;
           const endTime = ingestion.details.run_log.end_time;
           if (!state.lastEndTimesByDataType[dataType] || state.lastEndTimesByDataType[dataType] < endTime) {
