@@ -1,17 +1,17 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { printAPIError } from '../../utils/error.util';
 import { BeaconConfigResponse, BeaconAssemblyIds } from '@/types/beacon';
 import { RootState } from '@/store';
+import { printAPIError } from '@/utils/error.util';
 
 export const getBeaconConfig = createAsyncThunk<BeaconConfigResponse, void, { state: RootState; rejectValue: string }>(
   'beaconConfig/getBeaconConfig',
-  (_, { getState }) => {
+  (_, { getState, rejectWithValue }) => {
     const beaconInfoEndpoint = getState()?.config?.beaconUrl + '/info';
     return axios
       .get(beaconInfoEndpoint)
       .then((res) => res.data)
-      .catch(printAPIError);
+      .catch(printAPIError(rejectWithValue));
   }
 );
 
