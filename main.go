@@ -344,7 +344,7 @@ func main() {
 		return katsuRequestBasic("/api/public_search_fields", c)
 	})
 
-	e.GET("/wesruns", wesRequestWithDetailsAndPublic)
+	e.GET("/wes-runs", wesRequestWithDetailsAndPublic)
 
 	e.GET("/provenance", func(c echo.Context) error {
 		// Query Katsu for datasets provenance
