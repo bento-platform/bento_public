@@ -52,7 +52,7 @@ func internalServerError(err error, c echo.Context) error {
 	return c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
 }
 
-func identityJSONTransform(body []byte) (interface{}, error) {
+func jsonDeserialize(body []byte) (interface{}, error) {
 	var i interface{}
 	err := json.Unmarshal(body, &i)
 	if err != nil {
@@ -183,14 +183,14 @@ func main() {
 	}
 
 	katsuRequestBasic := func(path string, c echo.Context) error {
-		return katsuRequest(path, nil, c, identityJSONTransform)
+		return katsuRequest(path, nil, c, jsonDeserialize)
 	}
 
 	wesRequestWithDetailsAndPublic := func(c echo.Context) error {
 		qs := url.Values{}
 		qs.Add("with_details", "true")
 		qs.Add("public", "true")
-		return wesRequest("/runs", qs, c, identityJSONTransform)
+		return wesRequest("/runs", qs, c, jsonDeserialize)
 	}
 
 	fetchAndSetKatsuPublic := func(c echo.Context, katsuCache *cache.Cache) (JsonLike, error) {
@@ -199,7 +199,7 @@ func main() {
 			fmt.Sprintf("%s%s", cfg.KatsuUrl, "/api/public_overview"),
 			nil,
 			c,
-			identityJSONTransform,
+			jsonDeserialize,
 		)
 		if err != nil {
 			fmt.Println("something went wrong fetching 'publicOverview' for 'katsuCache': ", err)
@@ -335,7 +335,7 @@ func main() {
 		}
 
 		// make a get request to the Katsu API
-		return katsuRequest("/api/public", qs, c, identityJSONTransform)
+		return katsuRequest("/api/public", qs, c, jsonDeserialize)
 	})
 
 	e.GET("/fields", func(c echo.Context) error {
