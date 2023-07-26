@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import { Typography, Card, Space } from 'antd';
 import { CalendarOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
@@ -14,7 +14,7 @@ const LastIngestionInfo: React.FC = () => {
   const { t, i18n } = useTranslation(DEFAULT_TRANSLATION);
   const lastEndTimesByDataType = useAppSelector((state) => state.ingestionData?.lastEndTimesByDataType) || {};
 
-  const formatDate = (dateString: string) => {
+  const formatDate = useCallback((dateString: string) => {
     const date = new Date(dateString);
     return !isNaN(date.getTime())
       ? date.toLocaleString(i18n.language, {
@@ -26,7 +26,7 @@ const LastIngestionInfo: React.FC = () => {
           hour12: true,
         })
       : 'Invalid Date';
-  };
+  }, [i18n.language]);
 
   return (
     <>
