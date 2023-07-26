@@ -23,7 +23,7 @@ const ConfigLogTemplate = `Config --
 	Static Files: %s
 	Client Name: %s
 	Katsu URL: %v
-	Wes URL: %v
+	WES URL: %v
 	Bento Portal Url: %s
 	Port: %d
 	Translated: %t
