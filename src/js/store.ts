@@ -16,7 +16,7 @@ export const store = configureStore({
     data: dataReducer,
     query: queryReducer,
     provenance: provenanceReducer,
-    ingestionData: IngestionDataReducer,
+    IngestionData: IngestionDataReducer,
     beaconConfig: beaconConfigReducer,
     beaconQuery: beaconQueryReducer,
   },

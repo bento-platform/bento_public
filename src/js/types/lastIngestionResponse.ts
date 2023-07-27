@@ -18,7 +18,7 @@ interface RunLog {
   start_time: string;
 }
 
-export interface ingestionDetails {
+export interface IngestionDetails {
   end_time: string;
   request: Request;
   run_id: string;
@@ -27,10 +27,10 @@ export interface ingestionDetails {
   task_logs: null;
 }
 
-export interface ingestionData {
-  details: ingestionDetails;
+export interface IngestionData {
+  details: IngestionDetails;
   run_id: string;
   state: string;
 }
 
-export type LastIngestionResponse = ingestionData[];
+export type LastIngestionResponse = IngestionData[];

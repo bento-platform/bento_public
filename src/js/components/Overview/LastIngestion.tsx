@@ -12,7 +12,7 @@ const formatDataType = (dataType: string) => {
 
 const LastIngestionInfo: React.FC = () => {
   const { t, i18n } = useTranslation(DEFAULT_TRANSLATION);
-  const lastEndTimesByDataType = useAppSelector((state) => state.ingestionData?.lastEndTimesByDataType) || {};
+  const lastEndTimesByDataType = useAppSelector((state) => state.IngestionData?.lastEndTimesByDataType) || {};
 
   const formatDate = useCallback(
     (dateString: string) => {
