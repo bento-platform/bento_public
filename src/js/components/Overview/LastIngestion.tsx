@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Typography, Card, Space } from 'antd';
+import { Typography, Card, Space, Empty } from 'antd';
 import { CalendarOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 
@@ -31,22 +31,28 @@ const LastIngestionInfo: React.FC = () => {
     [i18n.language]
   );
 
+  const hasData = Object.keys(lastEndTimesByDataType).length > 0;
+
   return (
-    <>
+    <Space direction="vertical" size={0}>
       <Typography.Title level={3}>{t('Latest Data Ingestion')}</Typography.Title>
       <Space direction="horizontal">
-        {Object.entries(lastEndTimesByDataType).map(([dataType, endTime]) => (
-          <Card key={dataType}>
-            <Space direction="vertical">
-              <Typography.Text style={{ color: 'rgba(0,0,0,0.45)' }}>{t(formatDataType(dataType))}</Typography.Text>
-              <Typography.Text>
-                <CalendarOutlined /> {formatDate(endTime)}
-              </Typography.Text>
-            </Space>
-          </Card>
-        ))}
+        {hasData ? (
+          Object.entries(lastEndTimesByDataType).map(([dataType, endTime]) => (
+            <Card key={dataType}>
+              <Space direction="vertical">
+                <Typography.Text style={{ color: 'rgba(0,0,0,0.45)' }}>{t(formatDataType(dataType))}</Typography.Text>
+                <Typography.Text>
+                  <CalendarOutlined /> {formatDate(endTime)}
+                </Typography.Text>
+              </Space>
+            </Card>
+          ))
+        ) : (
+          <Empty description={t('Ingestion history is empty.')} />
+        )}
       </Space>
-    </>
+    </Space>
   );
 };
 
