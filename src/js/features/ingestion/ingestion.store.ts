@@ -2,10 +2,10 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { lastIngestionsUrl } from '@/constants/configConstants';
 import { printAPIError } from '@/utils/error.util';
-import { IngestionData, LastIngestionResponse } from '@/types/lastIngestionResponse';
+import { ingestionData, LastIngestionResponse } from '@/types/lastIngestionResponse';
 
 export const makeGetIngestionDataRequest = createAsyncThunk<LastIngestionResponse, void, { rejectValue: string }>(
-  'IngestionData/getIngestionData',
+  'ingestionData/getIngestionData',
   (_, { rejectWithValue }) =>
     axios
       .get(lastIngestionsUrl)
@@ -15,18 +15,18 @@ export const makeGetIngestionDataRequest = createAsyncThunk<LastIngestionRespons
 
 export interface IngestionDataState {
   isFetchingIngestionData: boolean;
-  IngestionData: IngestionData[];
+  ingestionData: ingestionData[];
   lastEndTimesByDataType: { [dataType: string]: string };
 }
 
 const initialState: IngestionDataState = {
   isFetchingIngestionData: false,
-  IngestionData: [],
+  ingestionData: [],
   lastEndTimesByDataType: {},
 };
 
 const IngestionDataStore = createSlice({
-  name: 'IngestionData',
+  name: 'ingestionData',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -36,7 +36,7 @@ const IngestionDataStore = createSlice({
     builder.addCase(
       makeGetIngestionDataRequest.fulfilled,
       (state, { payload }: PayloadAction<LastIngestionResponse>) => {
-        state.IngestionData = payload;
+        state.ingestionData = payload;
         payload.forEach((ingestion) => {
           const dataType = ingestion.details.request.tags.workflow_metadata.data_type;
           const endTime = ingestion.details.run_log.end_time;
