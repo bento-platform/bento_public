@@ -27,10 +27,10 @@ export interface IngestionDetails {
   task_logs: null;
 }
 
-export interface ingestionData {
+export interface IngestionData {
   details: IngestionDetails;
   run_id: string;
   state: string;
 }
 
-export type LastIngestionResponse = ingestionData[];
+export type LastIngestionResponse = IngestionData[];

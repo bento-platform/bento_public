@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { lastIngestionsUrl } from '@/constants/configConstants';
 import { printAPIError } from '@/utils/error.util';
-import { ingestionData, LastIngestionResponse } from '@/types/lastIngestionResponse';
+import { IngestionData, LastIngestionResponse } from '@/types/lastIngestionResponse';
 
 export const makeGetIngestionDataRequest = createAsyncThunk<LastIngestionResponse, void, { rejectValue: string }>(
   'ingestionData/getIngestionData',
@@ -15,7 +15,7 @@ export const makeGetIngestionDataRequest = createAsyncThunk<LastIngestionRespons
 
 export interface IngestionDataState {
   isFetchingIngestionData: boolean;
-  ingestionData: ingestionData[];
+  ingestionData: IngestionData[];
   lastEndTimesByDataType: { [dataType: string]: string };
 }
 
