@@ -49,7 +49,7 @@ const LastIngestionInfo: React.FC = () => {
             </Card>
           ))
         ) : (
-          <Empty description={t('Ingestion history is empty.')} />
+          <Empty description={t('Ingestion History Is Empty')} />
         )}
       </Space>
     </Space>

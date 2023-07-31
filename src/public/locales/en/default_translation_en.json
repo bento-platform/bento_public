@@ -69,5 +69,7 @@
   "enter a postion number, eg \"200\"": "enter a postion number, eg \"200\"",
   "enter any combination of A, C, G, T, or N": "enter any combination of A, C, G, T, or N",
   "eg": "eg",
-  "or": "or"
+  "or": "or",
+  "Ingestion History Is Empty": "Ingestion History Is Empty",
+  "Latest Data Ingestion": "Latest Data Ingestion"
 }
