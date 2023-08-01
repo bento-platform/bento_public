@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -22,6 +23,7 @@ const ConfigLogTemplate = `Config --
 	Static Files: %s
 	Client Name: %s
 	Katsu URL: %v
+	WES URL: %v
 	Bento Portal Url: %s
 	Port: %d
 	Translated: %t
@@ -30,16 +32,17 @@ const ConfigLogTemplate = `Config --
 `
 
 type BentoConfig struct {
-	ServiceId          string `envconfig:"BENTO_PUBLIC_SERVICE_ID"`
-	PackageJsonPath    string `envconfig:"BENTO_PUBLIC_PACKAGE_JSON_PATH" default:"./package.json"`
-	StaticFilesPath    string `envconfig:"BENTO_PUBLIC_STATIC_FILES_PATH" default:"./www"`
-	ClientName         string `envconfig:"BENTO_PUBLIC_CLIENT_NAME"`
-	KatsuUrl           string `envconfig:"BENTO_PUBLIC_KATSU_URL"`
-	BentoPortalUrl     string `envconfig:"BENTO_PUBLIC_PORTAL_URL"`
-	Port               int    `envconfig:"INTERNAL_PORT" default:"8090"`
-	Translated         bool   `envconfig:"BENTO_PUBLIC_TRANSLATED" default:"true"`
-	BeaconUrl          string `envconfig:"BEACON_URL"`
-	BeaconUiEnabled	   bool   `envconfig:"BENTO_BEACON_UI_ENABLED"`
+	ServiceId       string `envconfig:"BENTO_PUBLIC_SERVICE_ID"`
+	PackageJsonPath string `envconfig:"BENTO_PUBLIC_PACKAGE_JSON_PATH" default:"./package.json"`
+	StaticFilesPath string `envconfig:"BENTO_PUBLIC_STATIC_FILES_PATH" default:"./www"`
+	ClientName      string `envconfig:"BENTO_PUBLIC_CLIENT_NAME"`
+	KatsuUrl        string `envconfig:"BENTO_PUBLIC_KATSU_URL"`
+	WesUrl          string `envconfig:"BENTO_PUBLIC_WES_URL"`
+	BentoPortalUrl  string `envconfig:"BENTO_PUBLIC_PORTAL_URL"`
+	Port            int    `envconfig:"INTERNAL_PORT" default:"8090"`
+	Translated      bool   `envconfig:"BENTO_PUBLIC_TRANSLATED" default:"true"`
+	BeaconUrl       string `envconfig:"BEACON_URL"`
+	BeaconUiEnabled bool   `envconfig:"BENTO_BEACON_UI_ENABLED"`
 }
 
 type JsonLike map[string]interface{}
@@ -49,8 +52,33 @@ func internalServerError(err error, c echo.Context) error {
 	return c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
 }
 
-func identityJSONTransform(j JsonLike) JsonLike {
-	return j
+// This function assumes JSON to be an object or an array of objects.
+func jsonDeserialize(body []byte) (interface{}, error) {
+	var i interface{}
+	err := json.Unmarshal(body, &i)
+	if err != nil {
+		return nil, err
+	}
+
+	switch v := i.(type) {
+	case []interface{}:
+		// JSON array
+		jsonArray := make([]JsonLike, len(v))
+		for i, item := range v {
+			m, ok := item.(map[string]interface{})
+			if !ok {
+				// Error occurs if array elements are not JSON objects
+				return nil, errors.New("invalid JSON array element")
+			}
+			jsonArray[i] = JsonLike(m)
+		}
+		return jsonArray, nil
+	case map[string]interface{}:
+		// JSON object
+		return JsonLike(v), nil
+	default:
+		return nil, errors.New("invalid JSON: not an object or an array")
+	}
 }
 
 func main() {
@@ -86,6 +114,7 @@ func main() {
 		cfg.StaticFilesPath,
 		cfg.ClientName,
 		cfg.KatsuUrl,
+		cfg.WesUrl,
 		cfg.BentoPortalUrl,
 		cfg.Port,
 		cfg.Translated,
@@ -96,20 +125,19 @@ func main() {
 	// Set up HTTP client
 	client := &http.Client{}
 
-	// Create Katsu request helper closure
-	type responseFormatter func(JsonLike) JsonLike
-	katsuRequestJsonOnly := func(path string, qs url.Values, c echo.Context, rf responseFormatter) (JsonLike, error) {
+	// Create request helper closure
+	type responseFormatterFunc func([]byte) (interface{}, error)
+	genericRequestJsonOnly := func(url string, qs url.Values, c echo.Context, rf responseFormatterFunc) (interface{}, error) {
 		var req *http.Request
 		var err error
 
 		if qs != nil {
-			req, err = http.NewRequest(
-				"GET", fmt.Sprintf("%s%s?%s", cfg.KatsuUrl, path, qs.Encode()), nil)
+			req, err = http.NewRequest("GET", fmt.Sprintf("%s?%s", url, qs.Encode()), nil)
 			if err != nil {
 				return nil, internalServerError(err, c)
 			}
 		} else {
-			req, err = http.NewRequest("GET", fmt.Sprintf("%s%s", cfg.KatsuUrl, path), nil)
+			req, err = http.NewRequest("GET", url, nil)
 			if err != nil {
 				return nil, internalServerError(err, c)
 			}
@@ -125,42 +153,64 @@ func main() {
 
 		defer resp.Body.Close()
 
-		// Read response body and convert to a generic JSON-like data structure
-
+		// Read response body
 		body, err := io.ReadAll(resp.Body)
 		if err != nil {
 			return nil, internalServerError(err, c)
 		}
 
-		jsonLike := make(JsonLike)
-		err = json.Unmarshal(body, &jsonLike)
+		// Apply the response formatter function to convert the body to the desired format
+		result, err := rf(body)
 		if err != nil {
 			return nil, internalServerError(err, c)
 		}
 
-		return jsonLike, nil
+		return result, nil
 	}
 
-	katsuRequest := func(path string, qs url.Values, c echo.Context, rf responseFormatter) error {
-		jsonLike, err := katsuRequestJsonOnly(path, qs, c, rf)
-
+	katsuRequest := func(path string, qs url.Values, c echo.Context, rf responseFormatterFunc) error {
+		result, err := genericRequestJsonOnly(fmt.Sprintf("%s%s", cfg.KatsuUrl, path), qs, c, rf)
 		if err != nil {
 			return err
 		}
+		return c.JSON(http.StatusOK, result)
+	}
 
-		return c.JSON(http.StatusOK, rf(jsonLike))
+	wesRequest := func(path string, qs url.Values, c echo.Context, rf responseFormatterFunc) error {
+		result, err := genericRequestJsonOnly(fmt.Sprintf("%s%s", cfg.WesUrl, path), qs, c, rf)
+		if err != nil {
+			return err
+		}
+		return c.JSON(http.StatusOK, result)
 	}
 
 	katsuRequestBasic := func(path string, c echo.Context) error {
-		return katsuRequest(path, nil, c, identityJSONTransform)
+		return katsuRequest(path, nil, c, jsonDeserialize)
+	}
+
+	wesRequestWithDetailsAndPublic := func(c echo.Context) error {
+		qs := url.Values{}
+		qs.Add("with_details", "true")
+		qs.Add("public", "true")
+		return wesRequest("/runs", qs, c, jsonDeserialize)
 	}
 
 	fetchAndSetKatsuPublic := func(c echo.Context, katsuCache *cache.Cache) (JsonLike, error) {
 		fmt.Println("'publicOverview' not found or expired in 'katsuCache' - fetching")
-		publicOverview, err := katsuRequestJsonOnly("/api/public_overview", nil, c, identityJSONTransform)
+		publicOverviewInterface, err := genericRequestJsonOnly(
+			fmt.Sprintf("%s%s", cfg.KatsuUrl, "/api/public_overview"),
+			nil,
+			c,
+			jsonDeserialize,
+		)
 		if err != nil {
 			fmt.Println("something went wrong fetching 'publicOverview' for 'katsuCache': ", err)
 			return nil, err
+		}
+
+		publicOverview, ok := publicOverviewInterface.(JsonLike)
+		if !ok {
+			return nil, fmt.Errorf("failed to assert 'publicOverview' as JsonLike")
 		}
 
 		fmt.Println("storing 'publicOverview' in 'katsuCache'")
@@ -287,7 +337,7 @@ func main() {
 		}
 
 		// make a get request to the Katsu API
-		return katsuRequest("/api/public", qs, c, identityJSONTransform)
+		return katsuRequest("/api/public", qs, c, jsonDeserialize)
 	})
 
 	e.GET("/fields", func(c echo.Context) error {
@@ -295,6 +345,8 @@ func main() {
 		// TODO: formalize response type
 		return katsuRequestBasic("/api/public_search_fields", c)
 	})
+
+	e.GET("/wes-runs", wesRequestWithDetailsAndPublic)
 
 	e.GET("/provenance", func(c echo.Context) error {
 		// Query Katsu for datasets provenance

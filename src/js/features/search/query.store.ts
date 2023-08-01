@@ -5,9 +5,10 @@ import { serializeChartData } from '@/utils/chart';
 import { KatsuSearchResponse, SearchFieldResponse } from '@/types/search';
 import { ChartData } from '@/types/data';
 
-type queryState = {
+type QueryState = {
   isFetchingFields: boolean;
   isFetchingData: boolean;
+  attemptedFetch: boolean;
   querySections: SearchFieldResponse['sections'];
   queryParams: { [key: string]: string };
   queryParamCount: number;
@@ -20,9 +21,10 @@ type queryState = {
   individualCount: number;
 };
 
-const initialState: queryState = {
+const initialState: QueryState = {
   isFetchingFields: true,
   isFetchingData: false,
+  attemptedFetch: false,
   message: '',
   querySections: [],
   queryParams: {},
@@ -63,6 +65,7 @@ const query = createSlice({
     });
     builder.addCase(makeGetKatsuPublic.fulfilled, (state, { payload }: PayloadAction<KatsuSearchResponse>) => {
       state.isFetchingData = false;
+      state.attemptedFetch = true;
       if ('message' in payload) {
         state.message = payload.message;
         return;
@@ -76,6 +79,7 @@ const query = createSlice({
     });
     builder.addCase(makeGetKatsuPublic.rejected, (state) => {
       state.isFetchingData = false;
+      state.attemptedFetch = true;
     });
     builder.addCase(makeGetSearchFields.pending, (state) => {
       state.isFetchingFields = true;

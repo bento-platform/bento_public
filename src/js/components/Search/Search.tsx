@@ -1,28 +1,41 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Row, Typography, Space, FloatButton } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import SearchFieldsStack from './SearchFieldsStack';
 import SearchResults from './SearchResults';
 
-import { makeGetKatsuPublic, setQueryParams } from '@/features/search/query.store';
 import { NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
+import { makeGetKatsuPublic, setQueryParams } from '@/features/search/query.store';
 import { useAppDispatch, useAppSelector } from '@/hooks';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { buildQueryParamsUrl } from '@/utils/search';
 
-type QueryParams = { [key: string]: string };
+import type { QueryParams } from '@/types/search';
+
+const checkQueryParamsEqual = (qp1: QueryParams, qp2: QueryParams): boolean => {
+  const qp1Keys = Object.keys(qp1);
+  const qp2Keys = Object.keys(qp2);
+  const params = [...new Set([...qp1Keys, ...qp2Keys])];
+  return params.reduce((acc, v) => acc && qp1[v] === qp2[v], true);
+};
 
 const RoutedSearch: React.FC = () => {
   const dispatch = useAppDispatch();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const searchSections = useAppSelector((state) => state.query.querySections);
   const maxQueryParameters = useAppSelector((state) => state.config.maxQueryParameters);
-  const isFetchingSearchFields = useAppSelector((state) => state.query.isFetchingFields);
+  const {
+    querySections: searchSections,
+    queryParams,
+    isFetchingFields: isFetchingSearchFields,
+    attemptedFetch,
+  } = useAppSelector((state) => state.query);
 
-  const searchFields = searchSections.flatMap(({ fields }) =>
-    fields.map((field) => ({ id: field.id, options: field.options }))
+  const searchFields = useMemo(
+    () => searchSections.flatMap(({ fields }) => fields.map((field) => ({ id: field.id, options: field.options }))),
+    [searchSections]
   );
 
   const validateQuery = (query: URLSearchParams): { valid: boolean; validQueryParamsObject: QueryParams } => {
@@ -45,18 +58,30 @@ const RoutedSearch: React.FC = () => {
     return { valid: JSON.stringify(validQueryParamArray) === JSON.stringify(queryParamArray), validQueryParamsObject };
   };
 
+  // Synchronize Redux query params state from URL
   useEffect(() => {
     if (isFetchingSearchFields) return;
+    if (!location.pathname.endsWith('/search')) return;
     const queryParam = new URLSearchParams(location.search);
     const { valid, validQueryParamsObject } = validateQuery(queryParam);
     if (valid) {
-      dispatch(setQueryParams(validQueryParamsObject));
-      dispatch(makeGetKatsuPublic());
+      if (!attemptedFetch || !checkQueryParamsEqual(validQueryParamsObject, queryParams)) {
+        // Only update the state & refresh if we have a new set of query params from the URL.
+        dispatch(setQueryParams(validQueryParamsObject));
+        dispatch(makeGetKatsuPublic());
+      }
     } else {
-      console.debug('Redirecting to : ', `/en/search?${new URLSearchParams(validQueryParamsObject).toString()}`);
-      navigate(`${location.pathname}?${new URLSearchParams(validQueryParamsObject).toString()}`);
+      console.debug('Redirecting to : ', buildQueryParamsUrl(location.pathname, validQueryParamsObject));
+      navigate(buildQueryParamsUrl(location.pathname, validQueryParamsObject));
     }
-  }, []);
+  }, [location.search]);
+
+  // Synchronize URL from Redux query params state
+  useEffect(() => {
+    if (!location.pathname.endsWith('/search')) return;
+    if (!attemptedFetch) return;
+    navigate(buildQueryParamsUrl(location.pathname, queryParams), { replace: true });
+  }, [queryParams]);
 
   return <Search />;
 };

@@ -10,7 +10,8 @@ import { makeGetAboutRequest } from '@/features/content/content.store';
 import { makeGetDataRequestThunk } from '@/features/data/data.store';
 import { makeGetSearchFields } from '@/features/search/query.store';
 import { makeGetProvenanceRequest } from '@/features/provenance/provenance.store';
-import { getBeaconConfig } from '@/features/beacon/beaconConfig';
+import { makeGetIngestionDataRequest } from '@/features/ingestion/ingestion.store';
+import { getBeaconConfig } from '@/features/beacon/beaconConfig.store';
 
 import Loader from './Loader';
 import PublicOverview from './Overview/PublicOverview';
@@ -19,6 +20,7 @@ import ProvenanceTab from './Provenance/ProvenanceTab';
 import BeaconQueryUi from './Beacon/BeaconQueryUi';
 import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { useAppDispatch, useAppSelector } from '@/hooks';
+import { buildQueryParamsUrl } from '@/utils/search';
 
 const TabbedDashboard = () => {
   const dispatch = useAppDispatch();
@@ -33,10 +35,12 @@ const TabbedDashboard = () => {
     dispatch(makeGetDataRequestThunk());
     dispatch(makeGetSearchFields());
     dispatch(makeGetProvenanceRequest());
+    dispatch(makeGetIngestionDataRequest());
   }, []);
 
   const isFetchingOverviewData = useAppSelector((state) => state.data.isFetchingData);
   const isFetchingSearchFields = useAppSelector((state) => state.query.isFetchingFields);
+  const queryParams = useAppSelector((state) => state.query.queryParams);
   const isFetchingBeaconConfig = useAppSelector((state) => state.beaconConfig?.isFetchingBeaconConfig);
   const renderBeaconUi = useAppSelector((state) => state.config?.beaconUiEnabled);
 
@@ -46,9 +50,12 @@ const TabbedDashboard = () => {
       const currentPathParts = currentPath.split('/');
       const currentLang = currentPathParts[1];
       const newPath = `/${currentLang}/${key === 'overview' ? '' : key}`;
-      navigate(newPath);
+      // If we're going to the search page, insert query params into the URL pulled from the Redux state.
+      // This is important to keep the URL updated if we've searched something, navigated away, and now
+      // are returning to the search page.
+      navigate(key === 'search' ? buildQueryParamsUrl(newPath, queryParams) : newPath);
     },
-    [location, navigate]
+    [location, navigate, queryParams]
   );
 
   const TabTitle = ({ title }: { title: string }) => (
