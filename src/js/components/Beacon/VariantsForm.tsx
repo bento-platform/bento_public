@@ -65,26 +65,28 @@ const VariantsForm = ({ beaconAssemblyIds }: VariantsFormProps) => {
     assemblyId: { name: 'Assembly ID', rules: [{}], placeholder: '', initialValue: '' },
   };
 
+  const variantsError = beaconAssemblyIds.includes('error');
+
   return (
     <div style={FORM_STYLE}>
       <Row gutter={FORM_ROW_GUTTER}>
         <Col span={8}>
-          <VariantInput field={formFields.referenceName} />
+          <VariantInput field={formFields.referenceName} disabled={variantsError} />
         </Col>
         <Col span={8}>
-          <VariantInput field={formFields.start} />
+          <VariantInput field={formFields.start} disabled={variantsError} />
         </Col>
         <Col span={8}>
-          <VariantInput field={formFields.end} />
+          <VariantInput field={formFields.end} disabled={variantsError} />
         </Col>
         <Col span={8}>
-          <VariantInput field={formFields.referenceBases} />
+          <VariantInput field={formFields.referenceBases} disabled={variantsError} />
         </Col>
         <Col span={8}>
-          <VariantInput field={formFields.alternateBases} />
+          <VariantInput field={formFields.alternateBases} disabled={variantsError} />
         </Col>
         <Col span={8}>
-          <AssemblyIdSelect field={formFields.assemblyId} beaconAssemblyIds={beaconAssemblyIds} />
+          <AssemblyIdSelect field={formFields.assemblyId} beaconAssemblyIds={beaconAssemblyIds} disabled={variantsError} />
         </Col>
       </Row>
     </div>

@@ -34,9 +34,7 @@ const beaconConfig = createSlice({
       state.isFetchingBeaconConfig = true;
     });
     builder.addCase(getBeaconConfig.fulfilled, (state, { payload }) => {
-      // extract config values here instead of saving the entire thing
-      const assemblyIds = Object.keys(payload.response?.overview?.counts?.variants ?? []);
-      state.beaconAssemblyIds = assemblyIds.filter(id => id != "error")
+      state.beaconAssemblyIds = Object.keys(payload.response?.overview?.counts?.variants ?? []);
       state.isFetchingBeaconConfig = false;
     });
     builder.addCase(getBeaconConfig.rejected, (state) => {

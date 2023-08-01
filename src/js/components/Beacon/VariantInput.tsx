@@ -4,12 +4,12 @@ import { Form, Input } from 'antd';
 import { FormField } from '@/types/beacon';
 import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 
-const VariantInput = ({ field }: VariantInputProps) => {
+const VariantInput = ({ field, disabled }: VariantInputProps) => {
   const { t: td } = useTranslation(DEFAULT_TRANSLATION);
   return (
     <div>
       <Form.Item name={field.name} label={td(field.name)} rules={field.rules}>
-        <Input placeholder={field.placeholder} />
+        <Input placeholder={field.placeholder} disabled={disabled}/>
       </Form.Item>
     </div>
   );
@@ -17,6 +17,7 @@ const VariantInput = ({ field }: VariantInputProps) => {
 
 export interface VariantInputProps {
   field: FormField;
+  disabled: boolean;
 }
 
 export default VariantInput;
