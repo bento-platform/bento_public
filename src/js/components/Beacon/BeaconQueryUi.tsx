@@ -22,10 +22,8 @@ import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 // TODOs
 // form verification
 // example searches, either hardcoded or configurable
-// only render variants part of the form if variants are present
 // better help text (#1691)
 
-const UI_INSTRUCTIONS = 'Search by genomic variants, clinical metadata or both.';
 const VARIANTS_HELP =
   'Variants search requires the fields Chromosome, Variant start, Assembly ID, and at least one of Variant end or Alternate base(s).';
 const METADATA_HELP = 'Search over clinical or phenotypic properties.';
@@ -35,6 +33,7 @@ const BeaconQueryUi = () => {
   const { t: td } = useTranslation(DEFAULT_TRANSLATION);
   const [form] = Form.useForm();
   const [filters, setFilters] = useState<FormFilter[]>([STARTER_FILTER]);
+  const [hasVariants, setHasVariants] = useState<boolean>(false);
   const isFetchingBeaconConfig = useAppSelector((state) => state.beaconConfig.isFetchingBeaconConfig);
   const beaconAssemblyIds = useAppSelector((state) => state.beaconConfig.beaconAssemblyIds);
   const querySections = useAppSelector((state) => state.query.querySections);
@@ -42,6 +41,8 @@ const BeaconQueryUi = () => {
 
   const dispatch = useAppDispatch();
   const launchEmptyQuery = () => dispatch(makeBeaconQuery(requestPayload({}, [])));
+  const formInitialValues = { 'Assembly ID': beaconAssemblyIds.length === 1 && beaconAssemblyIds[0] };
+  const uiInstructions = hasVariants? 'Search by genomic variants, clinical metadata or both.': '';
 
   useEffect(() => {
     // wait for config
@@ -52,11 +53,11 @@ const BeaconQueryUi = () => {
     // retrieve stats
     launchEmptyQuery();
 
+    setHasVariants(beaconAssemblyIds.length > 0 );
+
     // set assembly id options matching what's in gohan
     form.setFieldsValue(formInitialValues);
   }, [isFetchingBeaconConfig]);
-
-  const formInitialValues = { 'Assembly ID': beaconAssemblyIds.length === 1 && beaconAssemblyIds[0] };
 
   // beacon request handling
 
@@ -141,10 +142,10 @@ const BeaconQueryUi = () => {
         bodyStyle={CARD_BODY_STYLE}
         headStyle={CARD_HEAD_STYLE}
       >
-        <p style={{ margin: '-8px 0 8px 0', padding: '0', color: 'grey' }}>{td(UI_INSTRUCTIONS)}</p>
+        <p style={{ margin: '-8px 0 8px 0', padding: '0', color: 'grey' }}>{td(uiInstructions)}</p>
         <Form form={form} onFinish={handleFinish} layout="vertical">
           <Row gutter={FORM_ROW_GUTTERS}>
-            <Col xs={24} lg={12}>
+            {hasVariants && <Col xs={24} lg={12}>
               <Card
                 title={td('Variants')}
                 style={CARD_STYLE}
@@ -154,8 +155,8 @@ const BeaconQueryUi = () => {
               >
                 <VariantsForm beaconAssemblyIds={beaconAssemblyIds} />
               </Card>
-            </Col>
-            <Col xs={24} lg={12}>
+            </Col>}
+            <Col xs={24} lg={hasVariants? 12: 24}>
               <Card
                 title={td('Metadata')}
                 style={CARD_STYLE}
