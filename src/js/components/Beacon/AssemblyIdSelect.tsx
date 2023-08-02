@@ -14,7 +14,9 @@ const AssemblyIdSelect = ({ field, beaconAssemblyIds, disabled }: AssemblyIdSele
 
   return (
     <Form.Item name={field.name} label={td(field.name)} rules={field.rules}>
-      <Select style={{ width: '100%' }} disabled={disabled}>{assemblyIdOptions}</Select>
+      <Select style={{ width: '100%' }} disabled={disabled}>
+        {assemblyIdOptions}
+      </Select>
     </Form.Item>
   );
 };

@@ -42,7 +42,7 @@ const BeaconQueryUi = () => {
   const dispatch = useAppDispatch();
   const launchEmptyQuery = () => dispatch(makeBeaconQuery(requestPayload({}, [])));
   const formInitialValues = { 'Assembly ID': beaconAssemblyIds.length === 1 && beaconAssemblyIds[0] };
-  const uiInstructions = hasVariants? 'Search by genomic variants, clinical metadata or both.': '';
+  const uiInstructions = hasVariants ? 'Search by genomic variants, clinical metadata or both.' : '';
 
   useEffect(() => {
     // wait for config
@@ -53,7 +53,7 @@ const BeaconQueryUi = () => {
     // retrieve stats
     launchEmptyQuery();
 
-    setHasVariants(beaconAssemblyIds.length > 0 );
+    setHasVariants(beaconAssemblyIds.length > 0);
 
     // set assembly id options matching what's in gohan
     form.setFieldsValue(formInitialValues);
@@ -145,18 +145,20 @@ const BeaconQueryUi = () => {
         <p style={{ margin: '-8px 0 8px 0', padding: '0', color: 'grey' }}>{td(uiInstructions)}</p>
         <Form form={form} onFinish={handleFinish} layout="vertical">
           <Row gutter={FORM_ROW_GUTTERS}>
-            {hasVariants && <Col xs={24} lg={12}>
-              <Card
-                title={td('Variants')}
-                style={CARD_STYLE}
-                headStyle={CARD_HEAD_STYLE}
-                bodyStyle={CARD_BODY_STYLE}
-                extra={<SearchToolTip text={VARIANTS_HELP} />}
-              >
-                <VariantsForm beaconAssemblyIds={beaconAssemblyIds} />
-              </Card>
-            </Col>}
-            <Col xs={24} lg={hasVariants? 12: 24}>
+            {hasVariants && (
+              <Col xs={24} lg={12}>
+                <Card
+                  title={td('Variants')}
+                  style={CARD_STYLE}
+                  headStyle={CARD_HEAD_STYLE}
+                  bodyStyle={CARD_BODY_STYLE}
+                  extra={<SearchToolTip text={VARIANTS_HELP} />}
+                >
+                  <VariantsForm beaconAssemblyIds={beaconAssemblyIds} />
+                </Card>
+              </Col>
+            )}
+            <Col xs={24} lg={hasVariants ? 12 : 24}>
               <Card
                 title={td('Metadata')}
                 style={CARD_STYLE}

@@ -86,7 +86,11 @@ const VariantsForm = ({ beaconAssemblyIds }: VariantsFormProps) => {
           <VariantInput field={formFields.alternateBases} disabled={variantsError} />
         </Col>
         <Col span={8}>
-          <AssemblyIdSelect field={formFields.assemblyId} beaconAssemblyIds={beaconAssemblyIds} disabled={variantsError} />
+          <AssemblyIdSelect
+            field={formFields.assemblyId}
+            beaconAssemblyIds={beaconAssemblyIds}
+            disabled={variantsError}
+          />
         </Col>
       </Row>
     </div>

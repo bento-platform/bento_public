@@ -9,7 +9,7 @@ const VariantInput = ({ field, disabled }: VariantInputProps) => {
   return (
     <div>
       <Form.Item name={field.name} label={td(field.name)} rules={field.rules}>
-        <Input placeholder={field.placeholder} disabled={disabled}/>
+        <Input placeholder={field.placeholder} disabled={disabled} />
       </Form.Item>
     </div>
   );
