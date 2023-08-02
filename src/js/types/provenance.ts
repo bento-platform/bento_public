@@ -11,6 +11,7 @@ export interface Dataset {
   description: string;
   title: string;
   version: string;
+  identifier: string;
 }
 
 export interface DatsFile {
