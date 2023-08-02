@@ -353,6 +353,14 @@ func main() {
 		return katsuRequestBasic("/api/public_dataset", c)
 	})
 
+	e.GET("/datasets/:id/dats", func(c echo.Context) error {
+		id := c.Param("id")
+		relativeUrl := fmt.Sprintf("/api/datasets/%s/dats", id)
+
+		// Query Katsu for dats file using dataset id
+		return katsuRequestBasic(relativeUrl, c)
+	})
+
 	// Run
 	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", cfg.Port)))
 }
