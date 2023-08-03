@@ -4,7 +4,7 @@ import { Form, Select } from 'antd';
 import { FormField, BeaconAssemblyIds } from '@/types/beacon';
 import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 
-const AssemblyIdSelect = ({ field, beaconAssemblyIds }: AssemblyIdSelectProps) => {
+const AssemblyIdSelect = ({ field, beaconAssemblyIds, disabled }: AssemblyIdSelectProps) => {
   const { t: td } = useTranslation(DEFAULT_TRANSLATION);
   const assemblyIdOptions = beaconAssemblyIds.map((assembly) => (
     <Select.Option key={assembly} value={assembly}>
@@ -14,7 +14,9 @@ const AssemblyIdSelect = ({ field, beaconAssemblyIds }: AssemblyIdSelectProps) =
 
   return (
     <Form.Item name={field.name} label={td(field.name)} rules={field.rules}>
-      <Select style={{ width: '100%' }}>{assemblyIdOptions}</Select>
+      <Select style={{ width: '100%' }} disabled={disabled}>
+        {assemblyIdOptions}
+      </Select>
     </Form.Item>
   );
 };
@@ -22,6 +24,7 @@ const AssemblyIdSelect = ({ field, beaconAssemblyIds }: AssemblyIdSelectProps) =
 export interface AssemblyIdSelectProps {
   field: FormField;
   beaconAssemblyIds: BeaconAssemblyIds;
+  disabled: boolean;
 }
 
 export default AssemblyIdSelect;
