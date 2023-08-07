@@ -188,6 +188,19 @@ func main() {
 		return katsuRequest(path, nil, c, jsonDeserialize)
 	}
 
+	katsuRequestFormattedData := func(path string, c echo.Context) ([]byte, error) {
+		result, err := genericRequestJsonOnly(fmt.Sprintf("%s%s", cfg.KatsuUrl, path), nil, c, jsonDeserialize)
+		if err != nil {
+			return nil, err
+		}
+		// Convert the result data to formatted JSON
+		jsonFormattedData, err := json.MarshalIndent(result, "", "  ")
+		if err != nil {
+			return nil, fmt.Errorf("error formatting JSON: %w", err)
+		}
+		return jsonFormattedData, nil
+	}
+
 	wesRequestWithDetailsAndPublic := func(c echo.Context) error {
 		qs := url.Values{}
 		qs.Add("with_details", "true")
