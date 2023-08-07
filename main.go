@@ -370,8 +370,16 @@ func main() {
 		id := c.Param("id")
 		relativeUrl := fmt.Sprintf("/api/datasets/%s/dats", id)
 
-		// Query Katsu for dats file using dataset id
-		return katsuRequestBasic(relativeUrl, c)
+		data, err := katsuRequestFormattedData(relativeUrl, c)
+		if err != nil {
+			return err
+		}
+
+		// Set the content type and disposition for download
+		c.Response().Header().Set("Content-Disposition", `attachment; filename="DATS.json"`)
+		c.Response().Header().Set("Content-Type", "application/json")
+
+		return c.String(http.StatusOK, string(data))
 	})
 
 	// Run
