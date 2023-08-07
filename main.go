@@ -188,6 +188,19 @@ func main() {
 		return katsuRequest(path, nil, c, jsonDeserialize)
 	}
 
+	katsuRequestFormattedData := func(path string, c echo.Context) ([]byte, error) {
+		result, err := genericRequestJsonOnly(fmt.Sprintf("%s%s", cfg.KatsuUrl, path), nil, c, jsonDeserialize)
+		if err != nil {
+			return nil, err
+		}
+		// Convert the result data to formatted JSON
+		jsonFormattedData, err := json.MarshalIndent(result, "", "  ")
+		if err != nil {
+			return nil, fmt.Errorf("error formatting JSON: %w", err)
+		}
+		return jsonFormattedData, nil
+	}
+
 	wesRequestWithDetailsAndPublic := func(c echo.Context) error {
 		qs := url.Values{}
 		qs.Add("with_details", "true")
@@ -351,6 +364,22 @@ func main() {
 	e.GET("/provenance", func(c echo.Context) error {
 		// Query Katsu for datasets provenance
 		return katsuRequestBasic("/api/public_dataset", c)
+	})
+
+	e.GET("/datasets/:id/dats", func(c echo.Context) error {
+		id := c.Param("id")
+		relativeUrl := fmt.Sprintf("/api/datasets/%s/dats", id)
+
+		data, err := katsuRequestFormattedData(relativeUrl, c)
+		if err != nil {
+			return err
+		}
+
+		// Set the content type and disposition for download
+		c.Response().Header().Set("Content-Disposition", `attachment; filename="DATS.json"`)
+		c.Response().Header().Set("Content-Type", "application/json")
+
+		return c.String(http.StatusOK, string(data))
 	})
 
 	// Run
