@@ -17,12 +17,7 @@ const DownloadDats = ({ metadata }: { metadata: ProvenanceStoreDataset }) => {
 
   return (
     <Space style={{ marginTop: '20px', justifyContent: 'center' }}>
-      <Button
-        type="primary"
-        icon={<DownloadOutlined />}
-        onClick={exportData}
-        disabled={isDatsFileEmpty}
-      >
+      <Button type="primary" icon={<DownloadOutlined />} onClick={exportData} disabled={isDatsFileEmpty}>
         {t('Download DATS File')}
       </Button>
     </Space>
