@@ -17,6 +17,7 @@ export interface FormField {
 export interface FormFilter {
   index: number;
   active: boolean;
+  id?: string;
 }
 
 export interface FormValues {
@@ -30,6 +31,7 @@ export interface FilterOption {
 
 export interface FilterPullDownKey {
   label: string;
+  value: string;
   optionsThisKey: FilterPullDownValue[];
 }
 
