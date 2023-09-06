@@ -39,7 +39,11 @@ const LastIngestionInfo: React.FC = () => {
   return (
     <ConditionalWrapper
       condition={hasData && hasSections}
-      wrapper={children => <Space direction="vertical" size={0}>{children}</Space>}
+      wrapper={(children) => (
+        <Space direction="vertical" size={0}>
+          {children}
+        </Space>
+      )}
     >
       <Typography.Title level={3}>{t('Latest Data Ingestion')}</Typography.Title>
       <Space direction="horizontal">
