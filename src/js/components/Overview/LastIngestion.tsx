@@ -34,7 +34,7 @@ const LastIngestionInfo: React.FC = () => {
   const hasData = Object.keys(lastEndTimesByDataType).length > 0;
 
   return (
-    <Space direction="vertical" size={0}>
+    <>
       <Typography.Title level={3}>{t('Latest Data Ingestion')}</Typography.Title>
       <Space direction="horizontal">
         {hasData ? (
@@ -52,7 +52,7 @@ const LastIngestionInfo: React.FC = () => {
           <Empty description={t('Ingestion History Is Empty')} />
         )}
       </Space>
-    </Space>
+    </>
   );
 };
 
