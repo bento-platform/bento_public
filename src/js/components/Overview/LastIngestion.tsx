@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { useAppSelector } from '@/hooks';
-import ConditionalWrapper from '../Util/ConditionalWrapper';
+import ConditionalWrapper, { VerticalSpaceWrapper } from '../Util/ConditionalWrapper';
 
 const formatDataType = (dataType: string) => {
   return dataType ? dataType.charAt(0).toUpperCase() + dataType.slice(1) + 's' : 'Unknown Data Type';
@@ -37,14 +37,7 @@ const LastIngestionInfo: React.FC = () => {
   const hasSections = sections.length > 0;
 
   return (
-    <ConditionalWrapper
-      condition={hasData && hasSections}
-      wrapper={(children) => (
-        <Space direction="vertical" size={0}>
-          {children}
-        </Space>
-      )}
-    >
+    <ConditionalWrapper condition={hasData && hasSections} WrapperClass={VerticalSpaceWrapper}>
       <Typography.Title level={3}>{t('Latest Data Ingestion')}</Typography.Title>
       <Space direction="horizontal">
         {hasData ? (

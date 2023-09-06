@@ -1,13 +1,30 @@
-import React from 'react';
+import { Space } from 'antd';
+import React, { ComponentType, memo, PropsWithChildren } from 'react';
 
-interface WrapperProps extends React.PropsWithChildren {
+export const VerticalSpaceWrapper = memo(function VerticalSpaceWrapper({ children }: PropsWithChildren) {
+  return (
+    <Space direction="vertical" size={0}>
+      {children}
+    </Space>
+  );
+});
+
+interface ConditionalWrapperProps extends PropsWithChildren {
   condition: boolean;
-  wrapper: (children: React.ReactNode) => React.ReactElement;
+  WrapperClass: ComponentType<PropsWithChildren>;
 }
 
 // If condition is true, children are wrapped using provided wrapper function
-const ConditionalWrapper = ({ condition, wrapper, children }: WrapperProps) => {
-  return condition ? wrapper(children) : <>{children}</>;
-};
+const ConditionalWrapper = memo(function ConditionalWrapper({
+  condition,
+  children,
+  WrapperClass,
+}: ConditionalWrapperProps) {
+  if (!condition) {
+    return <>{children}</>;
+  }
+
+  return <WrapperClass>{children}</WrapperClass>;
+});
 
 export default ConditionalWrapper;
