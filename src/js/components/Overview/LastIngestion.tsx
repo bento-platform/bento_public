@@ -6,10 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { useAppSelector } from '@/hooks';
 import ConditionalWrapper, { VerticalSpaceWrapper } from '../Util/ConditionalWrapper';
-
-const formatDataType = (dataType: string) => {
-  return dataType ? dataType.charAt(0).toUpperCase() + dataType.slice(1) + 's' : 'Unknown Data Type';
-};
+import { getDataTypeLabel } from '@/types/dataTypes';
 
 const LastIngestionInfo: React.FC = () => {
   const { t, i18n } = useTranslation(DEFAULT_TRANSLATION);
@@ -44,7 +41,7 @@ const LastIngestionInfo: React.FC = () => {
           Object.entries(lastEndTimesByDataType).map(([dataType, endTime]) => (
             <Card key={dataType}>
               <Space direction="vertical">
-                <Typography.Text style={{ color: 'rgba(0,0,0,0.45)' }}>{t(formatDataType(dataType))}</Typography.Text>
+                <Typography.Text style={{ color: 'rgba(0,0,0,0.45)' }}>{t(getDataTypeLabel(dataType))}</Typography.Text>
                 <Typography.Text>
                   <CalendarOutlined /> {formatDate(endTime)}
                 </Typography.Text>
