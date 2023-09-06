@@ -21,7 +21,6 @@ import BeaconQueryUi from './Beacon/BeaconQueryUi';
 import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { useAppDispatch, useAppSelector } from '@/hooks';
 import { buildQueryParamsUrl } from '@/utils/search';
-import { makeGetDataTypes } from '@/features/dataTypes/datatypes.store';
 
 const TabbedDashboard = () => {
   const dispatch = useAppDispatch();
@@ -37,7 +36,6 @@ const TabbedDashboard = () => {
     dispatch(makeGetSearchFields());
     dispatch(makeGetProvenanceRequest());
     dispatch(makeGetIngestionDataRequest());
-    dispatch(makeGetDataTypes());
   }, []);
 
   const isFetchingOverviewData = useAppSelector((state) => state.data.isFetchingData);

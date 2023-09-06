@@ -32,7 +32,7 @@ const dataTypes = createSlice({
     });
     builder.addCase(makeGetDataTypes.rejected, (state) => {
         state.isFetching = false;
-    })
+    });
   },
 });
 
