@@ -5,11 +5,13 @@ import { useTranslation } from 'react-i18next';
 
 import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { useAppSelector } from '@/hooks';
+import ConditionalWrapper, { VerticalSpaceWrapper } from '../Util/ConditionalWrapper';
 import { getDataTypeLabel } from '@/types/dataTypes';
 
 const LastIngestionInfo: React.FC = () => {
   const { t, i18n } = useTranslation(DEFAULT_TRANSLATION);
   const lastEndTimesByDataType = useAppSelector((state) => state.ingestionData?.lastEndTimesByDataType) || {};
+  const sections = useAppSelector((state) => state.data?.sections ?? []);
 
   const formatDate = useCallback(
     (dateString: string) => {
@@ -29,9 +31,10 @@ const LastIngestionInfo: React.FC = () => {
   );
 
   const hasData = Object.keys(lastEndTimesByDataType).length > 0;
+  const hasSections = sections.length > 0;
 
   return (
-    <Space direction="vertical" size={0}>
+    <ConditionalWrapper condition={hasData && hasSections} WrapperClass={VerticalSpaceWrapper}>
       <Typography.Title level={3}>{t('Latest Data Ingestion')}</Typography.Title>
       <Space direction="horizontal">
         {hasData ? (
@@ -49,7 +52,7 @@ const LastIngestionInfo: React.FC = () => {
           <Empty description={t('Ingestion History Is Empty')} />
         )}
       </Space>
-    </Space>
+    </ConditionalWrapper>
   );
 };
 
