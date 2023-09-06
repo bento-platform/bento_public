@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { useAppSelector } from '@/hooks';
-import { getDataTypeLabel } from '@/types/datatypes';
+import { getDataTypeLabel } from '@/types/dataTypes';
 
 const LastIngestionInfo: React.FC = () => {
   const { t, i18n } = useTranslation(DEFAULT_TRANSLATION);
