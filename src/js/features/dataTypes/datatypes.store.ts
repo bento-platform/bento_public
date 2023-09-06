@@ -31,7 +31,7 @@ const dataTypes = createSlice({
       state.dataTypes = { ...payload };
     });
     builder.addCase(makeGetDataTypes.rejected, (state) => {
-        state.isFetching = false;
+      state.isFetching = false;
     });
   },
 });
