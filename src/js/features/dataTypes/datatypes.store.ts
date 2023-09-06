@@ -2,7 +2,7 @@ import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 // TODO: find a way to allow this without an auth token
-export const makeGetDataTypes = createAsyncThunk('datatypes/makeGetDataTypes', async () => {
+export const makeGetDataTypes = createAsyncThunk('dataTypes/makeGetDataTypes', async () => {
   const res = await axios.get('/api/service-registry/data-types');
   const data = res.data;
   return data;
