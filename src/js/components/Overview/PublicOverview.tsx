@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Divider, Row, Col, FloatButton, Card, Skeleton } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Row, Col, FloatButton, Card, Skeleton } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
 import { convertSequenceAndDisplayData, saveValue } from '@/utils/localStorage';
@@ -34,10 +34,7 @@ const PublicOverview = () => {
     setAboutContent(activeAbout);
   }, [i18n.language, about]);
 
-  const displayedSections = useMemo(
-    () => sections.filter(({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1),
-    [sections]
-  );
+  const displayedSections = sections.filter(({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1);
 
   return (
     <>
