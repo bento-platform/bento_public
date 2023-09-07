@@ -3,16 +3,16 @@ import axios from 'axios';
 import { partialAboutUrl } from '@/constants/contentConstants';
 import { printAPIError } from '@/utils/error.util';
 
-export const makeGetAboutRequest = createAsyncThunk('content/getAboutHTML', async () => {
+export const makeGetAboutRequest = createAsyncThunk('content/getAboutHTML', async (_, { rejectWithValue }) => {
   const en = await axios
     .get(`${partialAboutUrl}/en_about.html`)
     .then((res) => res.data)
-    .catch(printAPIError);
+    .catch(printAPIError(rejectWithValue));
 
   const fr = await axios
     .get(`${partialAboutUrl}/fr_about.html`)
     .then((res) => res.data)
-    .catch(printAPIError);
+    .catch(printAPIError(rejectWithValue));
 
   return { en, fr };
 });
