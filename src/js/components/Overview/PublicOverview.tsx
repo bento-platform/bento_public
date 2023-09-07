@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Divider, Row, Col, FloatButton, Card, Skeleton } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
@@ -15,8 +15,6 @@ import LastIngestionInfo from './LastIngestion';
 const PublicOverview = () => {
   const { sections } = useAppSelector((state) => state.data);
 
-  saveValue(LOCALSTORAGE_CHARTS_KEY, convertSequenceAndDisplayData(sections));
-
   const [drawerVisible, setDrawerVisible] = useState(false);
 
   const { isFetchingAbout, about } = useAppSelector((state) => state.content);
@@ -26,32 +24,47 @@ const PublicOverview = () => {
   const { i18n } = useTranslation();
 
   useEffect(() => {
+    // Save sections to localStorage when they change
+    saveValue(LOCALSTORAGE_CHARTS_KEY, convertSequenceAndDisplayData(sections));
+  }, [sections]);
+
+  useEffect(() => {
     const activeLanguage = i18n.language;
     const activeAbout = about[activeLanguage];
     setAboutContent(activeAbout);
   }, [i18n.language, about]);
 
+  const displayedSections = useMemo(
+    () => sections.filter(({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1),
+    [sections]
+  );
+
   return (
     <>
       <div className="container">
-        <Row justify="center">
-          <Col>
-            <Card style={{ borderRadius: '11px', maxWidth: '1323px' }}>
+        <Row>
+          <Col flex={1}>
+            <Card style={{ borderRadius: '11px' }}>
               {isFetchingAbout ? (
                 <Skeleton title={false} paragraph={{ rows: 2 }} />
               ) : (
                 <div dangerouslySetInnerHTML={{ __html: aboutContent }} />
               )}
             </Card>
+          </Col>
+        </Row>
+        <Row>
+          <Col flex={1}>
             <Counts />
-            {sections
-              .filter(({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1)
-              .map(({ sectionTitle, charts }, i) => (
-                <div key={i} className="overview">
-                  <OverviewSection title={sectionTitle} chartData={charts} />
-                  <Divider />
-                </div>
-              ))}
+          </Col>
+        </Row>
+        <Row>
+          <Col flex={1}>
+            {displayedSections.map(({ sectionTitle, charts }, i) => (
+              <div key={i} className="overview">
+                <OverviewSection title={sectionTitle} chartData={charts} />
+              </div>
+            ))}
             <LastIngestionInfo />
           </Col>
         </Row>
