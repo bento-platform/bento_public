@@ -1,13 +1,19 @@
 html,
 body {
-    min-height: 100%;
-    background-color: #eff2f5;
-    margin: 0;
+  min-height: 100%;
+  background-color: #eff2f5;
+  margin: 0;
+}
+
+.container {
+  width: 100%;
+  max-width: 1325px;
+  margin: auto;
 }
 
 .floating-search {
-    position:fixed !important;
-    right:5em !important;
-    bottom:3em !important;
-    transform: scale(125%) !important;
+  position: fixed !important;
+  right: 5em !important;
+  bottom: 3em !important;
+  transform: scale(125%) !important;
 }
