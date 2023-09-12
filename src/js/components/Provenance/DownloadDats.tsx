@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Space } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
@@ -8,10 +8,9 @@ import { ProvenanceStoreDataset } from '@/types/provenance';
 const DownloadDats = ({ metadata }: { metadata: ProvenanceStoreDataset }) => {
   const { t } = useTranslation();
 
-  const exportData = () => {
-    const id = metadata.identifier;
-    window.location.href = `/datasets/${id}/dats`;
-  };
+  const exportData = useCallback(() => {
+    window.location.href = `/datasets/${metadata.identifier}/dats`;
+  }, [metadata]);
 
   const isDatsFileEmpty = metadata && metadata.dats_file ? Object.keys(metadata.dats_file).length === 0 : true;
 
