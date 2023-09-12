@@ -11,10 +11,12 @@ const SpatialCoverageTable = ({ spatialCoverage }: SpatialCoverageTableProps) =>
     <Table
       dataSource={spatialCoverage}
       columns={[
-        { title: td('Name'), dataIndex: 'name', key: 'name', render: (text) => t(text) },
-        { title: td('Description'), dataIndex: 'description', key: 'description', render: (text) => t(text) },
+        { title: td('Name'), dataIndex: 'name', render: (text) => t(text) },
+        { title: td('Description'), dataIndex: 'description', render: (text) => t(text) },
       ]}
+      bordered={true}
       pagination={false}
+      size="small"
     />
   );
 };

@@ -16,13 +16,11 @@ const AcknowledgesTable = ({ acknowledges }: AcknowledgesTableProps) => {
         {
           title: td('Name'),
           dataIndex: 'name',
-          key: 'name',
           render: (text) => t(text),
         },
         {
           title: td('Funders'),
           dataIndex: 'funders',
-          key: 'funders',
           render: (_, { funders }) =>
             funders.map((f, i) => (
               <Tag key={i} color="cyan">
@@ -32,7 +30,9 @@ const AcknowledgesTable = ({ acknowledges }: AcknowledgesTableProps) => {
             )),
         },
       ]}
+      bordered={true}
       pagination={false}
+      size="small"
     />
   );
 };

@@ -15,7 +15,7 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
         {
           title: td('Title'),
           dataIndex: 'title',
-          key: 'title',
+
           render: (_, { title, identifier }) =>
             identifier.identifier === '' ? (
               t(title)
@@ -28,13 +28,11 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
         {
           title: td('Publication Venue'),
           dataIndex: 'publicationVenue',
-          key: 'publicationVenue',
           render: (text) => t(text),
         },
         {
           title: td('Authors'),
           dataIndex: 'authors',
-          key: 'authors',
           render: (_, { authors }) =>
             authors.map((author, i) => (
               <Tag key={i} color="cyan">
@@ -45,7 +43,6 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
         {
           title: td('Dates'),
           dataIndex: 'dates',
-          key: 'dates',
           render: (_, { dates }) =>
             dates.map((date, i) => (
               <Tag key={i} color="cyan">
@@ -56,16 +53,15 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
         {
           title: td('Identifier'),
           dataIndex: 'identifier.identifier',
-          key: 'identifier.identifier',
           render: (_, { identifier }) => <LinkIfUrl text={identifier.identifier} />,
         },
         {
           title: td('Identifier Source'),
           dataIndex: 'identifier.identifierSource',
-          key: 'identifier.identifierSource',
           render: (_, { identifier }) => t(identifier.identifierSource),
         },
       ]}
+      bordered={true}
       pagination={false}
       size="small"
     />

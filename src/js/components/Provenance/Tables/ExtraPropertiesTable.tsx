@@ -13,11 +13,10 @@ const ExtraPropertiesTable = ({ extraProperties }: ExtraPropertiesTableProps) =>
     <Table
       dataSource={extraProperties}
       columns={[
-        { title: td('Category'), dataIndex: 'category', key: 'category', render: (text) => t(text) },
+        { title: td('Category'), dataIndex: 'category', render: (text) => t(text) },
         {
           title: td('Values'),
           dataIndex: 'values',
-          key: 'values',
           render: (_, { values }) =>
             values.map((v, i) => (
               <Tag key={i} color="cyan">
@@ -26,7 +25,9 @@ const ExtraPropertiesTable = ({ extraProperties }: ExtraPropertiesTableProps) =>
             )),
         },
       ]}
+      bordered={true}
       pagination={false}
+      size="small"
     />
   );
 };

@@ -36,7 +36,9 @@ const CreatedByTable = ({ creators }: CreatedByTableProps) => {
             )),
         },
       ]}
+      bordered={true}
       pagination={false}
+      size="small"
     />
   );
 };
