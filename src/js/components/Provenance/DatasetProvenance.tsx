@@ -22,7 +22,7 @@ const DatasetProvenance = ({ metadata, loading }: DatasetProvenanceProps) => {
   const { t: td } = useTranslation(DEFAULT_TRANSLATION);
 
   return (
-    <div style={{ paddingBottom: '40px' }}>
+    <div className="container" style={{ paddingBottom: '40px' }}>
       <Card
         title={<Title level={3}>{t(metadata.title)}</Title>}
         extra={[
@@ -37,31 +37,33 @@ const DatasetProvenance = ({ metadata, loading }: DatasetProvenanceProps) => {
         <Meta description={<Text italic>{t(metadata.description)}</Text>} />
 
         {/* --- CREATOR, PRIVACY, LICENSES, KEYWORD ---*/}
-        <Descriptions style={{ paddingTop: '20px' }}>
-          {metadata.privacy && (
-            <Item span={12} label={<DescriptionTitle title={td('Privacy')} />}>
-              {t(metadata.privacy)}
-            </Item>
-          )}
-          {metadata.licenses.length && (
-            <Item span={12} label={<DescriptionTitle title={td('Licenses')} />}>
-              {metadata.licenses.map((l, i) => (
-                <Tag key={i} color="cyan">
-                  {t(l.name)}
-                </Tag>
-              ))}
-            </Item>
-          )}
-          {metadata.keywords.length && (
-            <Item span={24} label={<DescriptionTitle title={td('Keywords')} />}>
-              {metadata.keywords.map((keyword, i) => (
-                <Tag key={i} color="cyan">
-                  {t(keyword.value)}
-                </Tag>
-              ))}
-            </Item>
-          )}
-        </Descriptions>
+        {(metadata.privacy || metadata.licenses.length || metadata.keywords.length) ? (
+          <Descriptions style={{ paddingTop: '20px' }}>
+            {metadata.privacy && (
+              <Item span={12} label={<DescriptionTitle title={td('Privacy')} />}>
+                {t(metadata.privacy)}
+              </Item>
+            )}
+            {metadata.licenses.length && (
+              <Item span={12} label={<DescriptionTitle title={td('Licenses')} />}>
+                {metadata.licenses.map((l, i) => (
+                  <Tag key={i} color="cyan">
+                    {t(l.name)}
+                  </Tag>
+                ))}
+              </Item>
+            )}
+            {metadata.keywords.length && (
+              <Item span={24} label={<DescriptionTitle title={td('Keywords')} />}>
+                {metadata.keywords.map((keyword, i) => (
+                  <Tag key={i} color="cyan">
+                    {t(keyword.value)}
+                  </Tag>
+                ))}
+              </Item>
+            )}
+          </Descriptions>
+        ) : null}
 
         {/* TableTitle has translation in it*/}
         {/* --- CREATED BY ---*/}
