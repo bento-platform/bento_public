@@ -1,5 +1,7 @@
 import React from 'react';
-import { Table, Tag, Typography } from 'antd';
+import { Tag, Typography } from 'antd';
+
+import BaseProvenanceTable from './BaseProvenanceTable';
 import LinkIfUrl from '../../Util/LinkIfUrl';
 import { useTranslationCustom, useTranslationDefault } from '@/hooks';
 import { ProvenanceStoreDataset } from '@/types/provenance';
@@ -9,7 +11,7 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
   const td = useTranslationDefault();
 
   return (
-    <Table
+    <BaseProvenanceTable
       dataSource={publications}
       columns={[
         {
@@ -61,9 +63,6 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
           render: (_, { identifier }) => t(identifier.identifierSource),
         },
       ]}
-      bordered={true}
-      pagination={false}
-      size="small"
     />
   );
 };

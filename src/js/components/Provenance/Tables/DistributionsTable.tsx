@@ -1,6 +1,8 @@
 import React from 'react';
-import { Table, Tag, Typography } from 'antd';
+import { Tag, Typography } from 'antd';
 const { Link } = Typography;
+
+import BaseProvenanceTable from './BaseProvenanceTable';
 import { useTranslationDefault, useTranslationCustom } from '@/hooks';
 import { ProvenanceStoreDataset } from '@/types/provenance';
 
@@ -9,7 +11,7 @@ const DistributionsTable = ({ distributions }: DistributionsTableProps) => {
   const td = useTranslationDefault();
 
   return (
-    <Table
+    <BaseProvenanceTable
       dataSource={distributions}
       columns={[
         {
@@ -52,9 +54,6 @@ const DistributionsTable = ({ distributions }: DistributionsTableProps) => {
           ],
         },
       ]}
-      bordered={true}
-      pagination={false}
-      size="small"
     />
   );
 };

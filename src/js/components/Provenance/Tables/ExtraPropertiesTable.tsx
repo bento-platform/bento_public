@@ -1,6 +1,7 @@
 import React from 'react';
-import { Table, Tag } from 'antd';
+import { Tag } from 'antd';
 
+import BaseProvenanceTable from '@/components/Provenance/Tables/BaseProvenanceTable';
 import LinkIfUrl from '../../Util/LinkIfUrl';
 import { useTranslationCustom, useTranslationDefault } from '@/hooks';
 import { ProvenanceStoreDataset } from '@/types/provenance';
@@ -10,7 +11,7 @@ const ExtraPropertiesTable = ({ extraProperties }: ExtraPropertiesTableProps) =>
   const td = useTranslationDefault();
 
   return (
-    <Table
+    <BaseProvenanceTable
       dataSource={extraProperties}
       columns={[
         { title: td('Category'), dataIndex: 'category', render: (text) => t(text) },
@@ -25,9 +26,6 @@ const ExtraPropertiesTable = ({ extraProperties }: ExtraPropertiesTableProps) =>
             )),
         },
       ]}
-      bordered={true}
-      pagination={false}
-      size="small"
     />
   );
 };

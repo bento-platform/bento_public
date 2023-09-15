@@ -1,6 +1,7 @@
 import React from 'react';
-import { Table, Tag } from 'antd';
+import { Tag } from 'antd';
 
+import BaseProvenanceTable from './BaseProvenanceTable';
 import LinkIfUrl from '../../Util/LinkIfUrl';
 import { useTranslationCustom, useTranslationDefault } from '@/hooks';
 import { ProvenanceStoreDataset } from '@/types/provenance';
@@ -10,7 +11,7 @@ const IsAboutTable = ({ isAbout }: IsAboutTableProps) => {
   const td = useTranslationDefault();
 
   return (
-    <Table
+    <BaseProvenanceTable
       dataSource={isAbout}
       columns={[
         {
@@ -35,9 +36,6 @@ const IsAboutTable = ({ isAbout }: IsAboutTableProps) => {
           render: (_, { identifier }) => <Tag color="cyan">{t(identifier.identifierSource)}</Tag>,
         },
       ]}
-      bordered={true}
-      pagination={false}
-      size="small"
     />
   );
 };

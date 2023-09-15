@@ -1,6 +1,7 @@
 import React from 'react';
-import { Table, Tag } from 'antd';
+import { Tag } from 'antd';
 
+import BaseProvenanceTable from './BaseProvenanceTable';
 import LinkIfUrl from '../../Util/LinkIfUrl';
 import { Acknowledge } from '@/types/provenance';
 import { useTranslationCustom, useTranslationDefault } from '@/hooks';
@@ -10,7 +11,7 @@ const AcknowledgesTable = ({ acknowledges }: AcknowledgesTableProps) => {
   const td = useTranslationDefault();
 
   return (
-    <Table
+    <BaseProvenanceTable
       dataSource={acknowledges}
       columns={[
         {
@@ -30,9 +31,6 @@ const AcknowledgesTable = ({ acknowledges }: AcknowledgesTableProps) => {
             )),
         },
       ]}
-      bordered={true}
-      pagination={false}
-      size="small"
     />
   );
 };
