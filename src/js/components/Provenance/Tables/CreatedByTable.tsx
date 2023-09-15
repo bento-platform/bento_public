@@ -1,5 +1,7 @@
 import React from 'react';
-import { Table, Tag } from 'antd';
+import { Tag } from 'antd';
+
+import BaseProvenanceTable from './BaseProvenanceTable';
 import { ProvenanceStoreDataset } from '@/types/provenance';
 import { useTranslationDefault, useTranslationCustom } from '@/hooks';
 
@@ -8,7 +10,7 @@ const CreatedByTable = ({ creators }: CreatedByTableProps) => {
   const td = useTranslationDefault();
 
   return (
-    <Table
+    <BaseProvenanceTable
       dataSource={creators}
       columns={[
         {
@@ -36,7 +38,6 @@ const CreatedByTable = ({ creators }: CreatedByTableProps) => {
             )),
         },
       ]}
-      pagination={false}
     />
   );
 };

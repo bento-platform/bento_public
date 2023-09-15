@@ -1,6 +1,7 @@
 import React from 'react';
-import { Table, Tag } from 'antd';
+import { Tag } from 'antd';
 
+import BaseProvenanceTable from './BaseProvenanceTable';
 import LinkIfUrl from '../../Util/LinkIfUrl';
 import { useTranslationCustom, useTranslationDefault } from '@/hooks';
 import { ProvenanceStoreDataset } from '@/types/provenance';
@@ -10,25 +11,31 @@ const IsAboutTable = ({ isAbout }: IsAboutTableProps) => {
   const td = useTranslationDefault();
 
   return (
-    <Table
+    <BaseProvenanceTable
       dataSource={isAbout}
       columns={[
-        { title: td('Name'), dataIndex: 'name', key: 'name', render: (text) => t(text) },
+        {
+          title: td('Name'),
+          dataIndex: 'name',
+          render: (text, { identifier }) => {
+            return (identifier.identifierSource ?? '').toLocaleLowerCase().includes('taxonomy') ? (
+              <em>{t(text)}</em>
+            ) : (
+              t(text)
+            );
+          },
+        },
         {
           title: td('Identifier'),
           dataIndex: 'identifier.identifier',
-          key: 'identifier.identifier',
           render: (_, { identifier }) => <LinkIfUrl text={identifier.identifier} />,
         },
         {
           title: td('Identifier Source'),
           dataIndex: 'identifier.identifierSource',
-          key: 'identifier.identifierSource',
           render: (_, { identifier }) => <Tag color="cyan">{t(identifier.identifierSource)}</Tag>,
         },
       ]}
-      pagination={false}
-      size="small"
     />
   );
 };

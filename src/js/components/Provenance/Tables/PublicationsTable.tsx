@@ -1,5 +1,7 @@
 import React from 'react';
-import { Table, Tag, Typography } from 'antd';
+import { Tag, Typography } from 'antd';
+
+import BaseProvenanceTable from './BaseProvenanceTable';
 import LinkIfUrl from '../../Util/LinkIfUrl';
 import { useTranslationCustom, useTranslationDefault } from '@/hooks';
 import { ProvenanceStoreDataset } from '@/types/provenance';
@@ -9,13 +11,13 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
   const td = useTranslationDefault();
 
   return (
-    <Table
+    <BaseProvenanceTable
       dataSource={publications}
       columns={[
         {
           title: td('Title'),
           dataIndex: 'title',
-          key: 'title',
+
           render: (_, { title, identifier }) =>
             identifier.identifier === '' ? (
               t(title)
@@ -28,13 +30,11 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
         {
           title: td('Publication Venue'),
           dataIndex: 'publicationVenue',
-          key: 'publicationVenue',
           render: (text) => t(text),
         },
         {
           title: td('Authors'),
           dataIndex: 'authors',
-          key: 'authors',
           render: (_, { authors }) =>
             authors.map((author, i) => (
               <Tag key={i} color="cyan">
@@ -45,7 +45,6 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
         {
           title: td('Dates'),
           dataIndex: 'dates',
-          key: 'dates',
           render: (_, { dates }) =>
             dates.map((date, i) => (
               <Tag key={i} color="cyan">
@@ -56,18 +55,14 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
         {
           title: td('Identifier'),
           dataIndex: 'identifier.identifier',
-          key: 'identifier.identifier',
           render: (_, { identifier }) => <LinkIfUrl text={identifier.identifier} />,
         },
         {
           title: td('Identifier Source'),
           dataIndex: 'identifier.identifierSource',
-          key: 'identifier.identifierSource',
           render: (_, { identifier }) => t(identifier.identifierSource),
         },
       ]}
-      pagination={false}
-      size="small"
     />
   );
 };

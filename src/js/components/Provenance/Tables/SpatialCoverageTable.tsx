@@ -1,5 +1,6 @@
 import React from 'react';
-import { Table } from 'antd';
+
+import BaseProvenanceTable from './BaseProvenanceTable';
 import { useTranslationCustom, useTranslationDefault } from '@/hooks';
 import { ProvenanceStoreDataset } from '@/types/provenance';
 
@@ -8,13 +9,12 @@ const SpatialCoverageTable = ({ spatialCoverage }: SpatialCoverageTableProps) =>
   const td = useTranslationDefault();
 
   return (
-    <Table
+    <BaseProvenanceTable
       dataSource={spatialCoverage}
       columns={[
-        { title: td('Name'), dataIndex: 'name', key: 'name', render: (text) => t(text) },
-        { title: td('Description'), dataIndex: 'description', key: 'description', render: (text) => t(text) },
+        { title: td('Name'), dataIndex: 'name', render: (text) => t(text) },
+        { title: td('Description'), dataIndex: 'description', render: (text) => t(text) },
       ]}
-      pagination={false}
     />
   );
 };
