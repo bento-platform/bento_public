@@ -13,7 +13,15 @@ const IsAboutTable = ({ isAbout }: IsAboutTableProps) => {
     <Table
       dataSource={isAbout}
       columns={[
-        { title: td('Name'), dataIndex: 'name', render: (text) => t(text) },
+        {
+          title: td('Name'),
+          dataIndex: 'name',
+          render: (text, { identifier }) => {
+            return (identifier.identifierSource ?? "").toLocaleLowerCase().includes("taxonomy")
+              ? <em>{t(text)}</em>
+              : t(text);
+          },
+        },
         {
           title: td('Identifier'),
           dataIndex: 'identifier.identifier',
