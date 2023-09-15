@@ -37,7 +37,7 @@ const DatasetProvenance = ({ metadata, loading }: DatasetProvenanceProps) => {
         <Meta description={<Text italic>{t(metadata.description)}</Text>} />
 
         {/* --- CREATOR, PRIVACY, LICENSES, KEYWORD ---*/}
-        {(metadata.privacy || metadata.licenses.length || metadata.keywords.length) ? (
+        {metadata.privacy || metadata.licenses.length || metadata.keywords.length ? (
           <Descriptions style={{ paddingTop: '20px' }}>
             {metadata.privacy && (
               <Item span={12} label={<DescriptionTitle title={td('Privacy')} />}>

@@ -17,9 +17,11 @@ const IsAboutTable = ({ isAbout }: IsAboutTableProps) => {
           title: td('Name'),
           dataIndex: 'name',
           render: (text, { identifier }) => {
-            return (identifier.identifierSource ?? "").toLocaleLowerCase().includes("taxonomy")
-              ? <em>{t(text)}</em>
-              : t(text);
+            return (identifier.identifierSource ?? '').toLocaleLowerCase().includes('taxonomy') ? (
+              <em>{t(text)}</em>
+            ) : (
+              t(text)
+            );
           },
         },
         {
