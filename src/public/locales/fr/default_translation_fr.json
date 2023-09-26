@@ -49,7 +49,7 @@
   "Search by genomic variants, clinical metadata or both.": "Recherche par variant génomique, métadonnées cliniques ou les deux.",
   "Variants": "Variants",
   "Metadata": "Métadonnées",
-  "Search Beacon": "Recherche sur le Beacon",
+  "Search Beacon": "Rechercher sur le Beacon",
   "Clear Form": "Effacer le formulaire",
   "Variants search requires the fields Chromosome, Variant start, Assembly ID, and at least one of Variant end or Alternate base(s).": "La recherche de variantes nécessite les champs 'Chromosome', 'Début du variant', 'Assemblage génomique', et au moins un des champs 'Fin du variant' ou 'Base(s) alternative(s)'.",
   "Search over clinical or phenotypic properties.": "Recherche sur les propriétés cliniques ou phénotypiques.",
