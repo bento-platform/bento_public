@@ -22,7 +22,7 @@ const MakeChartCard = ({ section, chart, onRemoveChart }: MakeChartCardProps) =>
     },
     {
       icon: <CloseOutlined />,
-      description: 'Remove this chart',
+      description: td('Remove this chart'),
       onClick: () => {
         onRemoveChart({ section, id });
       },
