@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import Chart from './Chart';
 import { Card, Button, Tooltip, Space, Typography, Row } from 'antd';
 import { CloseOutlined, TeamOutlined, QuestionOutlined } from '@ant-design/icons';
@@ -9,11 +9,15 @@ import { ChartDataField } from '@/types/data';
 
 const CARD_STYLE = { width: '430px', height: '415px', margin: '5px 0', borderRadius: '11px' };
 
-const MakeChartCard = ({ section, chart, onRemoveChart }: MakeChartCardProps) => {
+const MakeChartCard = memo(({ section, chart, onRemoveChart }: MakeChartCardProps) => {
   const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
   const { t: td } = useTranslation(DEFAULT_TRANSLATION);
 
-  const { title, data, chartType, config, id, description } = chart;
+  const {
+    data,
+    field: { id, description, title, config },
+    chartConfig,
+  } = chart;
 
   const extraOptionsData = [
     {
@@ -54,7 +58,7 @@ const MakeChartCard = ({ section, chart, onRemoveChart }: MakeChartCardProps) =>
     <div key={id} style={{ height: '100%', width: '430px' }}>
       <Card title={t(title)} style={CARD_STYLE} size="small" extra={<Space size="small">{ed}</Space>}>
         {data.filter((e) => !(e.x === 'missing')).length !== 0 ? (
-          <Chart chartType={chartType} data={data} units={config?.units || ''} id={id} />
+          <Chart chartConfig={chartConfig} data={data} units={config?.units || ''} id={id} />
         ) : (
           <Row style={{ height: '350px ' }} justify="center" align="middle">
             <CustomEmpty text="No Data" />
@@ -63,7 +67,9 @@ const MakeChartCard = ({ section, chart, onRemoveChart }: MakeChartCardProps) =>
       </Card>
     </div>
   );
-};
+});
+
+MakeChartCard.displayName = 'MakeChartCard';
 
 export interface MakeChartCardProps {
   section: string;

@@ -1,3 +1,5 @@
+import { ChartConfig } from '@/types/chartConfig';
+
 export interface OverviewResponse {
   overview: Overview;
 }
@@ -47,11 +49,6 @@ export interface Datum {
 }
 
 interface Layout {
-  charts: Chart[];
+  charts: ChartConfig[];
   section_title: string;
-}
-
-export interface Chart {
-  chart_type: 'bar' | 'pie';
-  field: string;
 }
