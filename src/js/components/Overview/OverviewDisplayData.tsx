@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { List } from 'antd';
 
@@ -14,7 +14,7 @@ const getColumnCount = (width: number): number => {
   } else return 3;
 };
 
-const getframeWidth = (width: number): number => {
+const getFrameWidth = (width: number): number => {
   if (width < 990) {
     return 360;
   } else if (width < 1420) {
@@ -27,22 +27,28 @@ const OverviewDisplayData = ({ section, allCharts }: OverviewDisplayDataProps) =
 
   const { width } = useWindowSize();
 
-  const orderedCharts = allCharts;
-
-  const onRemoveChart = ({ section, id }: { section: string; id: string }) => {
-    dispatch(disableChart({ section, id }));
-  };
-
-  return (
-    <List
-      style={{ width: `${getframeWidth(width)}px` }}
-      grid={{ gutter: 0, column: getColumnCount(width) }}
-      dataSource={orderedCharts.filter((e) => e.isDisplayed)}
-      renderItem={(chart) => (
-        <MakeChartCard key={chart.id} chart={chart} section={section} onRemoveChart={onRemoveChart} />
-      )}
-    />
+  const [listStyle, listGrid] = useMemo(
+    () => [{ width: `${getFrameWidth(width)}px` }, { gutter: 0, column: getColumnCount(width) }],
+    [width]
   );
+
+  const displayedCharts = useMemo(() => allCharts.filter((e) => e.isDisplayed), [allCharts]);
+
+  const onRemoveChart = useCallback(
+    ({ section, id }: { section: string; id: string }) => {
+      dispatch(disableChart({ section, id }));
+    },
+    [dispatch]
+  );
+
+  const renderItem = useCallback(
+    (chart: ChartDataField) => (
+      <MakeChartCard key={chart.id} chart={chart} section={section} onRemoveChart={onRemoveChart} />
+    ),
+    [section, onRemoveChart]
+  );
+
+  return <List style={listStyle} grid={listGrid} dataSource={displayedCharts} renderItem={renderItem} />;
 };
 
 const useWindowSize = () => {
