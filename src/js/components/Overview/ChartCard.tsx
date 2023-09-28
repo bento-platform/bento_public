@@ -7,7 +7,7 @@ import CustomEmpty from '../Util/CustomEmpty';
 import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { ChartDataField } from '@/types/data';
 
-const CARD_STYLE = { width: '430px', height: '415px', margin: '5px 0', borderRadius: '11px' };
+const CARD_STYLE = { width: '100%', height: '415px', margin: '5px 0', borderRadius: '11px' };
 
 const ChartCard = memo(({ section, chart, onRemoveChart }: MakeChartCardProps) => {
   const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
