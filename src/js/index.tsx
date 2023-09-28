@@ -7,6 +7,8 @@ import { Layout } from 'antd';
 import { ChartConfigProvider } from 'bento-charts';
 import { SUPPORTED_LNGS } from './constants/configConstants';
 
+import 'leaflet/dist/leaflet.css';
+import 'bento-charts/src/styles.css';
 import './i18n';
 import '../styles.css';
 
