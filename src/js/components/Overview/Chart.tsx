@@ -22,7 +22,7 @@ const Chart = memo(({ chartConfig, data, units, id }: ChartProps) => {
       return (
         <BarChart
           data={data}
-          height={CHART_HEIGHT + 30}
+          height={CHART_HEIGHT + 50}
           units={units}
           preFilter={removeMissing}
           dataMap={translateMap}
@@ -44,11 +44,12 @@ const Chart = memo(({ chartConfig, data, units, id }: ChartProps) => {
         />
       );
     case CHART_TYPE_CHOROPLETH: {
+      // map charts can be rendered at full height as they do not clip
       const { category_prop: categoryProp, features, center, zoom, color_mode: colorMode } = chartConfig;
       return (
         <ChoroplethMap
           data={data}
-          height={CHART_HEIGHT}
+          height={CHART_HEIGHT + 50}
           preFilter={removeMissing}
           dataMap={translateMap}
           categoryProp={categoryProp}
