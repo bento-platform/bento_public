@@ -20,7 +20,7 @@ export interface ChartDataField {
   isDisplayed: boolean;
   // Field definition without data (we have mapped data in the data prop above instead):
   field: Omit<OverviewResponseDataField, 'data'>;
-  chartTypeConfig: ChartConfig;
+  chartConfig: ChartConfig;
 }
 
 export interface ChartData {

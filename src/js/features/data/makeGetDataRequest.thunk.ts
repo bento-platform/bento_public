@@ -32,7 +32,7 @@ export const makeGetDataRequestThunk = createAsyncThunk<
     const field = overviewResponse.fields[chart.field];
     return {
       id: field.id,
-      chartTypeConfig: chart,
+      chartConfig: chart,
       isDisplayed: i < MAX_CHARTS,
       field,
       data: serializeChartData(field.data),
