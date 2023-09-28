@@ -9,7 +9,7 @@ import { ChartDataField } from '@/types/data';
 
 const CARD_STYLE = { width: '430px', height: '415px', margin: '5px 0', borderRadius: '11px' };
 
-const MakeChartCard = memo(({ section, chart, onRemoveChart }: MakeChartCardProps) => {
+const ChartCard = memo(({ section, chart, onRemoveChart }: MakeChartCardProps) => {
   const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
   const { t: td } = useTranslation(DEFAULT_TRANSLATION);
 
@@ -69,7 +69,7 @@ const MakeChartCard = memo(({ section, chart, onRemoveChart }: MakeChartCardProp
   );
 });
 
-MakeChartCard.displayName = 'MakeChartCard';
+ChartCard.displayName = 'ChartCard';
 
 export interface MakeChartCardProps {
   section: string;
@@ -77,4 +77,4 @@ export interface MakeChartCardProps {
   onRemoveChart: (arg: { section: string; id: string }) => void;
 }
 
-export default MakeChartCard;
+export default ChartCard;

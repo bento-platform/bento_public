@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { List } from 'antd';
 
-import MakeChartCard from './MakeChartCard';
+import ChartCard from './ChartCard';
 import { disableChart } from '@/features/data/data.store';
 import { ChartDataField } from '@/types/data';
 
@@ -43,7 +43,7 @@ const OverviewDisplayData = ({ section, allCharts }: OverviewDisplayDataProps) =
 
   const renderItem = useCallback(
     (chart: ChartDataField) => (
-      <MakeChartCard key={chart.id} chart={chart} section={section} onRemoveChart={onRemoveChart} />
+      <ChartCard key={chart.id} chart={chart} section={section} onRemoveChart={onRemoveChart} />
     ),
     [section, onRemoveChart]
   );
