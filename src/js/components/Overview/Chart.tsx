@@ -62,7 +62,11 @@ const Chart = memo(({ chartConfig, data, units, id }: ChartProps) => {
             if (val === undefined) return;
             navigate(`/${i18n.language}/search?${id}=${val}`);
           }}
-          renderPopupBody={(_f, d) => <>Count: {d} {units}</>}
+          renderPopupBody={(_f, d) => (
+            <>
+              Count: {d} {units}
+            </>
+          )}
         />
       );
     }
