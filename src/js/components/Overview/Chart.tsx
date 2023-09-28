@@ -57,6 +57,12 @@ const Chart = memo(({ chartConfig, data, units, id }: ChartProps) => {
           center={center}
           zoom={zoom}
           colorMode={colorMode}
+          onClick={(d) => {
+            const val = d.properties?.[categoryProp];
+            if (val === undefined) return;
+            navigate(`/${i18n.language}/search?${id}=${val}`);
+          }}
+          renderPopupBody={(_f, d) => <>Count: {d} {units}</>}
         />
       );
     }
