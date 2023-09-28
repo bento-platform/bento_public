@@ -7,9 +7,9 @@ import CustomEmpty from '../Util/CustomEmpty';
 import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { ChartDataField } from '@/types/data';
 
-const CARD_STYLE = { width: '100%', height: '415px', margin: '5px 0', borderRadius: '11px' };
+const CARD_STYLE = { width: '100%', height: '415px', borderRadius: '11px' };
 
-const ChartCard = memo(({ section, chart, onRemoveChart }: ChartCardProps) => {
+const ChartCard = memo(({ section, chart, onRemoveChart, width }: ChartCardProps) => {
   const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
   const { t: td } = useTranslation(DEFAULT_TRANSLATION);
 
@@ -55,7 +55,7 @@ const ChartCard = memo(({ section, chart, onRemoveChart }: ChartCardProps) => {
   });
 
   return (
-    <div key={id} style={{ height: '100%', width: '430px' }}>
+    <div key={id} style={{ height: '100%', width }}>
       <Card title={t(title)} style={CARD_STYLE} size="small" extra={<Space size="small">{ed}</Space>}>
         {data.filter((e) => !(e.x === 'missing')).length !== 0 ? (
           <Chart chartConfig={chartConfig} data={data} units={config?.units || ''} id={id} />
@@ -75,6 +75,7 @@ export interface ChartCardProps {
   section: string;
   chart: ChartDataField;
   onRemoveChart: (arg: { section: string; id: string }) => void;
+  width: number;
 }
 
 export default ChartCard;
