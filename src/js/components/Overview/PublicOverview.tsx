@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Row, Col, FloatButton, Card, Skeleton } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
@@ -11,6 +11,9 @@ import Counts from './Counts';
 import { useAppSelector } from '@/hooks';
 import { useTranslation } from 'react-i18next';
 import LastIngestionInfo from './LastIngestion';
+
+const ABOUT_CARD_STYLE = { borderRadius: '11px' };
+const MANAGE_CHARTS_BUTTON_STYLE = { right: '5em', bottom: '1.5em', transform: 'scale(125%)' };
 
 const PublicOverview = () => {
   const { sections } = useAppSelector((state) => state.data);
@@ -36,12 +39,15 @@ const PublicOverview = () => {
 
   const displayedSections = sections.filter(({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1);
 
+  const onManageChartsOpen = useCallback(() => setDrawerVisible(true), []);
+  const onManageChartsClose = useCallback(() => setDrawerVisible(false), []);
+
   return (
     <>
       <div className="container">
         <Row>
           <Col flex={1}>
-            <Card style={{ borderRadius: '11px' }}>
+            <Card style={ABOUT_CARD_STYLE}>
               {isFetchingAbout ? (
                 <Skeleton title={false} paragraph={{ rows: 2 }} />
               ) : (
@@ -68,13 +74,13 @@ const PublicOverview = () => {
       </div>
 
       {/* Drawer & Button */}
-      <ManageChartsDrawer onManageDrawerClose={() => setDrawerVisible(false)} manageDrawerVisible={drawerVisible} />
+      <ManageChartsDrawer onManageDrawerClose={onManageChartsClose} manageDrawerVisible={drawerVisible} />
       <FloatButton
         type="primary"
         icon={<PlusOutlined />}
         tooltip="Manage Charts"
-        style={{ right: '5em', bottom: '1.5em', transform: 'scale(125%)' }}
-        onClick={() => setDrawerVisible(true)}
+        style={MANAGE_CHARTS_BUTTON_STYLE}
+        onClick={onManageChartsOpen}
       />
     </>
   );

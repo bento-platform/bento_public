@@ -71,8 +71,9 @@ const RoutedSearch: React.FC = () => {
         dispatch(makeGetKatsuPublic());
       }
     } else {
-      console.debug('Redirecting to : ', buildQueryParamsUrl(location.pathname, validQueryParamsObject));
-      navigate(buildQueryParamsUrl(location.pathname, validQueryParamsObject));
+      const url = buildQueryParamsUrl(location.pathname, validQueryParamsObject);
+      console.debug('Redirecting to:', url);
+      navigate(url);
     }
   }, [location.search]);
 
@@ -80,7 +81,9 @@ const RoutedSearch: React.FC = () => {
   useEffect(() => {
     if (!location.pathname.endsWith('/search')) return;
     if (!attemptedFetch) return;
-    navigate(buildQueryParamsUrl(location.pathname, queryParams), { replace: true });
+    const url = buildQueryParamsUrl(location.pathname, queryParams);
+    console.debug('Redirecting to:', url);
+    navigate(url, { replace: true });
   }, [queryParams]);
 
   return <Search />;

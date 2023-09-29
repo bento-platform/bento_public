@@ -7,9 +7,9 @@ import CustomEmpty from '../Util/CustomEmpty';
 import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { ChartDataField } from '@/types/data';
 
-const CARD_STYLE = { width: '430px', height: '415px', margin: '5px 0', borderRadius: '11px' };
+const CARD_STYLE = { width: '100%', height: '415px', margin: '5px 0', borderRadius: '11px' };
 
-const MakeChartCard = memo(({ section, chart, onRemoveChart }: MakeChartCardProps) => {
+const ChartCard = memo(({ section, chart, onRemoveChart }: ChartCardProps) => {
   const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
   const { t: td } = useTranslation(DEFAULT_TRANSLATION);
 
@@ -69,12 +69,12 @@ const MakeChartCard = memo(({ section, chart, onRemoveChart }: MakeChartCardProp
   );
 });
 
-MakeChartCard.displayName = 'MakeChartCard';
+ChartCard.displayName = 'ChartCard';
 
-export interface MakeChartCardProps {
+export interface ChartCardProps {
   section: string;
   chart: ChartDataField;
   onRemoveChart: (arg: { section: string; id: string }) => void;
 }
 
-export default MakeChartCard;
+export default ChartCard;
