@@ -1,14 +1,14 @@
-import React, { useMemo } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
-import { Tree, TreeProps } from 'antd';
+import { InputNumber, Tree, TreeProps } from 'antd';
 import { useTranslation } from 'react-i18next';
 
-import { rearrange, setDisplayedCharts } from '@/features/data/data.store';
+import { rearrange, setDisplayedCharts, setChartWidth } from '@/features/data/data.store';
 import { NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { ChartDataField } from '@/types/data';
 
 interface MappedChartItem {
-  title: string;
+  title: ReactNode;
   key: string;
 }
 
@@ -17,7 +17,28 @@ const ChartTree = ({ charts, section }: ChartTreeProps) => {
   const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
 
   const allCharts: MappedChartItem[] = useMemo(
-    () => charts.map(({ field: { title }, id }) => ({ title: t(title), key: id })),
+    () => charts.map(({ field: { title }, id, width }) => ({
+      title: <div style={{display: "flex"}}>
+        <span style={{flex: 1}}>{t(title)}</span>
+        <span>
+          Width:{" "}
+          <InputNumber
+            size="small"
+            min={1}
+            max={3}
+            value={width}
+            onChange={(v) => {
+              if (v) {
+                dispatch(setChartWidth({ section, chart: id, width: v }));
+              }
+            }}
+            controls={true}
+            style={{ width: 50 }}
+          />
+        </span>
+      </div>,
+      key: id,
+    })),
     [charts]
   );
 
@@ -38,7 +59,7 @@ const ChartTree = ({ charts, section }: ChartTreeProps) => {
 
   const onCheck = useMemo(() => {
     const fn: TreeProps['onCheck'] = (checkedKeysValue) => {
-      dispatch(setDisplayedCharts({ section, charts: checkedKeysValue }));
+      dispatch(setDisplayedCharts({ section, charts: checkedKeysValue as string[] }));
     };
     return fn;
   }, [dispatch, section]);

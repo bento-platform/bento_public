@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import CustomEmpty from '../Util/CustomEmpty';
 import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { ChartDataField } from '@/types/data';
+import { CHART_HEIGHT } from '@/constants/overviewConstants';
 
 const CARD_STYLE = { width: '100%', height: '415px', borderRadius: '11px' };
 
@@ -60,7 +61,7 @@ const ChartCard = memo(({ section, chart, onRemoveChart, width }: ChartCardProps
         {data.filter((e) => !(e.x === 'missing')).length !== 0 ? (
           <Chart chartConfig={chartConfig} data={data} units={config?.units || ''} id={id} />
         ) : (
-          <Row style={{ height: '350px ' }} justify="center" align="middle">
+          <Row style={{ height: `${CHART_HEIGHT}px` }} justify="center" align="middle">
             <CustomEmpty text="No Data" />
           </Row>
         )}

@@ -16,15 +16,15 @@ interface BaseChartConfig {
   width?: number;
 }
 
-interface ChartConfigTypePie extends BaseChartConfig {
+interface ChartConfigPie extends BaseChartConfig {
   chart_type: typeof CHART_TYPE_PIE;
 }
 
-interface ChartConfigTypeBar extends BaseChartConfig {
+interface ChartConfigBar extends BaseChartConfig {
   chart_type: typeof CHART_TYPE_BAR;
 }
 
-interface ChartConfigTypeChoropleth extends BaseChartConfig {
+interface ChartConfigChoropleth extends BaseChartConfig {
   chart_type: typeof CHART_TYPE_CHOROPLETH;
   category_prop: ChoroplethMapProps['categoryProp'];
   color_mode: ChoroplethMapProps['colorMode'];
@@ -33,4 +33,4 @@ interface ChartConfigTypeChoropleth extends BaseChartConfig {
   zoom: ChoroplethMapProps['zoom'];
 }
 
-export type ChartConfig = ChartConfigTypePie | ChartConfigTypeBar | ChartConfigTypeChoropleth;
+export type ChartConfig = ChartConfigPie | ChartConfigBar | ChartConfigChoropleth;

@@ -17,10 +17,12 @@ This represents a chart's "state", since it also has the isDisplayed property - 
 export interface ChartDataField {
   id: string; // taken from field definition
   data: ChartData[];
-  isDisplayed: boolean;
   // Field definition without data (we have mapped data in the data prop above instead):
   field: Omit<OverviewResponseDataField, 'data'>;
   chartConfig: ChartConfig;
+  // display options:
+  isDisplayed: boolean;  // whether the chart is currently displayed (state data)
+  width: number;  // current width (state data); initial data taken from chart config
 }
 
 export interface ChartData {

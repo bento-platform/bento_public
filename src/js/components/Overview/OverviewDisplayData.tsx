@@ -46,7 +46,7 @@ const OverviewDisplayData = ({ section, allCharts }: OverviewDisplayDataProps) =
 
   const renderItem = useCallback(
     (chart: ChartDataField) => {
-      const columnWidth = Math.min(chart.chartConfig.width ?? 1, columnCount);
+      const columnWidth = Math.min(chart.width, columnCount);
       const pixelWidth = (columnWidth / columnCount) * (frameWidth - CHART_GUTTER * (columnCount - columnWidth));
       return (
         <ChartCard key={chart.id} chart={chart} section={section} onRemoveChart={onRemoveChart} width={pixelWidth} />

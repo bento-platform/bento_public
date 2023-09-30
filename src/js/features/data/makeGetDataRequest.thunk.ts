@@ -4,7 +4,7 @@ import { MAX_CHARTS, publicOverviewUrl } from '@/constants/configConstants';
 
 import { verifyData, saveValue, getValue, convertSequenceAndDisplayData } from '@/utils/localStorage';
 
-import { LOCALSTORAGE_CHARTS_KEY } from '@/constants/overviewConstants';
+import { DEFAULT_CHART_WIDTH, LOCALSTORAGE_CHARTS_KEY } from '@/constants/overviewConstants';
 import { serializeChartData } from '@/utils/chart';
 import { ChartConfig } from '@/types/chartConfig';
 import { ChartDataField, LocalStorageData, Sections } from '@/types/data';
@@ -33,9 +33,11 @@ export const makeGetDataRequestThunk = createAsyncThunk<
     return {
       id: field.id,
       chartConfig: chart,
-      isDisplayed: i < MAX_CHARTS,
       field,
       data: serializeChartData(field.data),
+      // Initial display state
+      isDisplayed: i < MAX_CHARTS,
+      width: chart.width ?? DEFAULT_CHART_WIDTH,  // initial configured width; users can change it from here
     };
   };
 

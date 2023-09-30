@@ -34,13 +34,20 @@ const data = createSlice({
       const { section, id } = payload;
       state.sections.find((e) => e.sectionTitle === section)!.charts.find((e) => e.id === id)!.isDisplayed = false;
     },
-    setDisplayedCharts: (state, { payload }) => {
+    setDisplayedCharts: (state, { payload }: PayloadAction<{ section: string, charts: string[] }>) => {
       const { section, charts } = payload;
       state.sections
         .find((e) => e.sectionTitle === section)!
         .charts.forEach((val, ind, arr) => {
           arr[ind].isDisplayed = charts.includes(val.id);
         });
+    },
+    setChartWidth: (state, { payload }: PayloadAction<{ section: string, chart: string, width: number }>) => {
+      const { section, chart, width } = payload;
+      const chartObj = state.sections
+        .find((e) => e.sectionTitle === section)!
+        .charts.find((c) => c.id === chart)!;
+      chartObj.width = width;
     },
   },
   extraReducers: (builder) => {
@@ -59,6 +66,6 @@ const data = createSlice({
   },
 });
 
-export const { rearrange, disableChart, setDisplayedCharts } = data.actions;
+export const { rearrange, disableChart, setDisplayedCharts, setChartWidth } = data.actions;
 export { makeGetDataRequestThunk };
 export default data.reducer;
