@@ -5,7 +5,7 @@ import { BiDna } from 'react-icons/bi';
 import { PieChart } from 'bento-charts';
 import CustomEmpty from '../Util/CustomEmpty';
 import ExpSvg from '../Util/ExpSvg';
-import { CHART_HEIGHT, COUNTS_FILL, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
+import { COUNTS_FILL, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
 import { useTranslationDefault } from '@/hooks';
 import { ChartData } from '@/types/data';
 

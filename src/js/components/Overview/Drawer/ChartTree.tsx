@@ -17,28 +17,31 @@ const ChartTree = ({ charts, section }: ChartTreeProps) => {
   const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
 
   const allCharts: MappedChartItem[] = useMemo(
-    () => charts.map(({ field: { title }, id, width }) => ({
-      title: <div style={{display: "flex"}}>
-        <span style={{flex: 1}}>{t(title)}</span>
-        <span>
-          Width:{" "}
-          <InputNumber
-            size="small"
-            min={1}
-            max={3}
-            value={width}
-            onChange={(v) => {
-              if (v) {
-                dispatch(setChartWidth({ section, chart: id, width: v }));
-              }
-            }}
-            controls={true}
-            style={{ width: 50 }}
-          />
-        </span>
-      </div>,
-      key: id,
-    })),
+    () =>
+      charts.map(({ field: { title }, id, width }) => ({
+        title: (
+          <div style={{ display: 'flex' }}>
+            <span style={{ flex: 1 }}>{t(title)}</span>
+            <span>
+              Width:{' '}
+              <InputNumber
+                size="small"
+                min={1}
+                max={3}
+                value={width}
+                onChange={(v) => {
+                  if (v) {
+                    dispatch(setChartWidth({ section, chart: id, width: v }));
+                  }
+                }}
+                controls={true}
+                style={{ width: 50 }}
+              />
+            </span>
+          </div>
+        ),
+        key: id,
+      })),
     [charts]
   );
 

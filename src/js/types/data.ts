@@ -21,8 +21,8 @@ export interface ChartDataField {
   field: Omit<OverviewResponseDataField, 'data'>;
   chartConfig: ChartConfig;
   // display options:
-  isDisplayed: boolean;  // whether the chart is currently displayed (state data)
-  width: number;  // current width (state data); initial data taken from chart config
+  isDisplayed: boolean; // whether the chart is currently displayed (state data)
+  width: number; // current width (state data); initial data taken from chart config
 }
 
 export interface ChartData {
