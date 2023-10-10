@@ -24,6 +24,7 @@ const ConfigLogTemplate = `Config --
 	Client Name: %s
 	Katsu URL: %v
 	WES URL: %v
+	Gohan URL: %v
 	Bento Portal Url: %s
 	Port: %d
 	Translated: %t
@@ -38,6 +39,7 @@ type BentoConfig struct {
 	ClientName      string `envconfig:"BENTO_PUBLIC_CLIENT_NAME"`
 	KatsuUrl        string `envconfig:"BENTO_PUBLIC_KATSU_URL"`
 	WesUrl          string `envconfig:"BENTO_PUBLIC_WES_URL"`
+	GohanUrl        string `envconfig:"BENTO_PUBLIC_GOHAN_URL"`
 	BentoPortalUrl  string `envconfig:"BENTO_PUBLIC_PORTAL_URL"`
 	Port            int    `envconfig:"INTERNAL_PORT" default:"8090"`
 	Translated      bool   `envconfig:"BENTO_PUBLIC_TRANSLATED" default:"true"`
@@ -115,6 +117,7 @@ func main() {
 		cfg.ClientName,
 		cfg.KatsuUrl,
 		cfg.WesUrl,
+		cfg.GohanUrl,
 		cfg.BentoPortalUrl,
 		cfg.Port,
 		cfg.Translated,
@@ -130,6 +133,8 @@ func main() {
 	genericRequestJsonOnly := func(url string, qs url.Values, c echo.Context, rf responseFormatterFunc) (interface{}, error) {
 		var req *http.Request
 		var err error
+
+		fmt.Println("urlXXXXX: ", url)
 
 		if qs != nil {
 			req, err = http.NewRequest("GET", fmt.Sprintf("%s?%s", url, qs.Encode()), nil)
@@ -184,6 +189,14 @@ func main() {
 		return c.JSON(http.StatusOK, result)
 	}
 
+	gohanRequest := func(path string, qs url.Values, c echo.Context, rf responseFormatterFunc) error {
+		result, err := genericRequestJsonOnly(fmt.Sprintf("%s%s", cfg.GohanUrl, path), qs, c, rf)
+		if err != nil {
+			return err
+		}
+		return c.JSON(http.StatusOK, result)
+	}
+
 	katsuRequestBasic := func(path string, c echo.Context) error {
 		return katsuRequest(path, nil, c, jsonDeserialize)
 	}
@@ -206,6 +219,28 @@ func main() {
 		qs.Add("with_details", "true")
 		qs.Add("public", "true")
 		return wesRequest("/runs", qs, c, jsonDeserialize)
+	}
+
+	gohanRequestPublic := func(c echo.Context) error {
+
+		// Construct the path using the extracted dataset ID.
+		path := fmt.Sprintf("/data-types")
+
+		// Debug print statements to verify the constructed path and the GohanUrl.
+		fmt.Fprintf(os.Stderr, "pathCFCFCFCF: %s\n", path)
+		fmt.Println("DEBUG: cfg.GohanUrl =", cfg.GohanUrl)
+
+		// Make a request to the Gohan service and deserialize the response.
+		err := gohanRequest(path, nil, c, jsonDeserialize)
+		if err != nil {
+			// Return the error if there is one.
+			return err
+		}
+
+		// If everything is successful, return a success status to the caller.
+		return c.JSON(http.StatusOK, map[string]string{
+			"message": "Success",
+		})
 	}
 
 	fetchAndSetKatsuPublic := func(c echo.Context, katsuCache *cache.Cache) (JsonLike, error) {
@@ -361,6 +396,8 @@ func main() {
 
 	e.GET("/wes-runs", wesRequestWithDetailsAndPublic)
 
+	e.GET("/gohan/data-types", gohanRequestPublic)
+
 	e.GET("/provenance", func(c echo.Context) error {
 		// Query Katsu for datasets provenance
 		return katsuRequestBasic("/api/public_dataset", c)
@@ -378,6 +415,52 @@ func main() {
 		// Set the content type and disposition for download
 		c.Response().Header().Set("Content-Disposition", `attachment; filename="DATS.json"`)
 		c.Response().Header().Set("Content-Type", "application/json")
+
+		return c.String(http.StatusOK, string(data))
+	})
+
+	e.GET("/datasets", func(c echo.Context) error {
+		data, err := katsuRequestFormattedData("/api/datasets", c)
+		if err != nil {
+			return err
+		}
+
+		fmt.Println("FFFFF")
+		fmt.Println("data: ", string(data))
+		fmt.Println("FFFFF")
+
+		return c.String(http.StatusOK, string(data))
+
+	})
+
+	e.GET("/datasets/:id/data-types/:data-type/public", func(c echo.Context) error {
+		id := c.Param("id")
+		dataType := c.Param("data-type")
+		relativeUrl := fmt.Sprintf("/datasets/%s/data-types/%s/public", id, dataType)
+
+		data, err := katsuRequestFormattedData(relativeUrl, c)
+		if err != nil {
+			return err
+		}
+
+		fmt.Println("XXXXXXX")
+
+		fmt.Println("data: ", string(data))
+
+		fmt.Println("XXXXXXX")
+
+		return c.String(http.StatusOK, string(data))
+	})
+
+	e.GET("/katsu-data-types", func(c echo.Context) error {
+		data, err := katsuRequestFormattedData("/data-types", c)
+		if err != nil {
+			return err
+		}
+
+		fmt.Println("XXXXXXX")
+		fmt.Println("data: ", string(data))
+		fmt.Println("XXXXXXX")
 
 		return c.String(http.StatusOK, string(data))
 	})

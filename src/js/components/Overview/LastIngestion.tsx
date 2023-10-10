@@ -32,7 +32,7 @@ const LastIngestionInfo: React.FC = () => {
 
   return (
     <Space direction="vertical" size={0}>
-      <Typography.Title level={3}>{t('Latest Data Ingestion')}</Typography.Title>
+      <Typography.Title level={3}>{t('Latest Data IngestionX')}</Typography.Title>
       <Space direction="horizontal">
         {hasData ? (
           Object.entries(lastEndTimesByDataType).map(([dataType, endTime]) => (

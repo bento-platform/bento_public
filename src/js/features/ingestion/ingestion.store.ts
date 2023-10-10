@@ -39,6 +39,8 @@ const IngestionDataStore = createSlice({
         state.ingestionData = payload;
         payload.forEach((ingestion) => {
           const dataType = ingestion.details.request.tags.workflow_metadata.data_type;
+          console.log("losDATATipes",dataType);
+          //// here use dataType 
           const endTime = ingestion.details.run_log.end_time;
           const previousEndTime = state.lastEndTimesByDataType[dataType];
           if (!previousEndTime || new Date(endTime) > new Date(previousEndTime)) {

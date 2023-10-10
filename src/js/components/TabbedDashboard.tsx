@@ -10,8 +10,10 @@ import { makeGetAboutRequest } from '@/features/content/content.store';
 import { makeGetDataRequestThunk } from '@/features/data/data.store';
 import { makeGetSearchFields } from '@/features/search/query.store';
 import { makeGetProvenanceRequest } from '@/features/provenance/provenance.store';
+import {fetchDatasets } from '@/features/datasets/datasets.store';
 import { makeGetIngestionDataRequest } from '@/features/ingestion/ingestion.store';
 import { getBeaconConfig } from '@/features/beacon/beaconConfig.store';
+import {makeGetDataTypes }  from '@/features/dataTypes/dataTypes.store';
 
 import Loader from './Loader';
 import PublicOverview from './Overview/PublicOverview';
@@ -36,6 +38,8 @@ const TabbedDashboard = () => {
     dispatch(makeGetSearchFields());
     dispatch(makeGetProvenanceRequest());
     dispatch(makeGetIngestionDataRequest());
+    dispatch(fetchDatasets());
+    dispatch(makeGetDataTypes());
   }, []);
 
   const isFetchingOverviewData = useAppSelector((state) => state.data.isFetchingData);
