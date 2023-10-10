@@ -134,8 +134,6 @@ func main() {
 		var req *http.Request
 		var err error
 
-		fmt.Println("urlXXXXX: ", url)
-
 		if qs != nil {
 			req, err = http.NewRequest("GET", fmt.Sprintf("%s?%s", url, qs.Encode()), nil)
 			if err != nil {
@@ -224,11 +222,7 @@ func main() {
 	gohanRequestPublic := func(c echo.Context) error {
 
 		// Construct the path using the extracted dataset ID.
-		path := fmt.Sprintf("/data-types")
-
-		// Debug print statements to verify the constructed path and the GohanUrl.
-		fmt.Fprintf(os.Stderr, "pathCFCFCFCF: %s\n", path)
-		fmt.Println("DEBUG: cfg.GohanUrl =", cfg.GohanUrl)
+		path := fmt.Sprintf("/public/data-types")
 
 		// Make a request to the Gohan service and deserialize the response.
 		err := gohanRequest(path, nil, c, jsonDeserialize)
@@ -452,15 +446,11 @@ func main() {
 		return c.String(http.StatusOK, string(data))
 	})
 
-	e.GET("/katsu-data-types", func(c echo.Context) error {
-		data, err := katsuRequestFormattedData("/data-types", c)
+	e.GET("/katsu/data-types", func(c echo.Context) error {
+		data, err := katsuRequestFormattedData("/public/data-types", c)
 		if err != nil {
 			return err
 		}
-
-		fmt.Println("XXXXXXX")
-		fmt.Println("data: ", string(data))
-		fmt.Println("XXXXXXX")
 
 		return c.String(http.StatusOK, string(data))
 	})
