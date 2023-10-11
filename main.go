@@ -405,38 +405,7 @@ func main() {
 		return c.String(http.StatusOK, string(data))
 	})
 
-	e.GET("/datasets", func(c echo.Context) error {
-		data, err := katsuRequestFormattedData("/api/datasets", c)
-		if err != nil {
-			return err
-		}
-
-		fmt.Println("FFFFF")
-		fmt.Println("data: ", string(data))
-		fmt.Println("FFFFF")
-
-		return c.String(http.StatusOK, string(data))
-
-	})
-
-	e.GET("/datasets/:id/data-types/:data-type/public", func(c echo.Context) error {
-		id := c.Param("id")
-		dataType := c.Param("data-type")
-		relativeUrl := fmt.Sprintf("/datasets/%s/data-types/%s/public", id, dataType)
-
-		data, err := katsuRequestFormattedData(relativeUrl, c)
-		if err != nil {
-			return err
-		}
-
-		fmt.Println("XXXXXXX")
-
-		fmt.Println("data: ", string(data))
-
-		fmt.Println("XXXXXXX")
-
-		return c.String(http.StatusOK, string(data))
-	})
+	e.GET("/gohan/data-types", gohanRequestPublic)
 
 	e.GET("/katsu/data-types", func(c echo.Context) error {
 		data, err := katsuRequestFormattedData("/public/data-types", c)
