@@ -14,6 +14,7 @@ import {fetchDatasets } from '@/features/datasets/datasets.store';
 import { makeGetIngestionDataRequest } from '@/features/ingestion/ingestion.store';
 import { getBeaconConfig } from '@/features/beacon/beaconConfig.store';
 import {makeGetDataTypes }  from '@/features/dataTypes/dataTypes.store';
+import { fetchGohanData, fetchKatsuData } from '@/features/ingestion/lastIngestion.store';
 
 import Loader from './Loader';
 import PublicOverview from './Overview/PublicOverview';
@@ -37,8 +38,8 @@ const TabbedDashboard = () => {
     dispatch(makeGetDataRequestThunk());
     dispatch(makeGetSearchFields());
     dispatch(makeGetProvenanceRequest());
-    dispatch(makeGetIngestionDataRequest());
-    dispatch(fetchDatasets());
+    dispatch(fetchKatsuData());
+    dispatch(fetchGohanData());
     dispatch(makeGetDataTypes());
   }, []);
 
