@@ -14,16 +14,18 @@ export interface DataTypeResponse {
 export type DataResponseArray = DataTypeResponse[];
 
 // Async thunks to fetch data from the two endpoints
-export const fetchKatsuData = createAsyncThunk(
-  'dataTypes/fetchKatsuData',
-  (_, { rejectWithValue }) =>
-    axios.get(katsuLastIngestionsUrl).then((res) => res.data).catch(printAPIError(rejectWithValue))
+export const fetchKatsuData = createAsyncThunk('dataTypes/fetchKatsuData', (_, { rejectWithValue }) =>
+  axios
+    .get(katsuLastIngestionsUrl)
+    .then((res) => res.data)
+    .catch(printAPIError(rejectWithValue))
 );
 
-export const fetchGohanData = createAsyncThunk(
-  'dataTypes/fetchGohanData',
-  (_, { rejectWithValue }) =>
-    axios.get(gohanLastIngestionsUrl).then((res) => res.data).catch(printAPIError(rejectWithValue))
+export const fetchGohanData = createAsyncThunk('dataTypes/fetchGohanData', (_, { rejectWithValue }) =>
+  axios
+    .get(gohanLastIngestionsUrl)
+    .then((res) => res.data)
+    .catch(printAPIError(rejectWithValue))
 );
 
 // Define the state structure
@@ -50,23 +52,17 @@ const DataTypeStore = createSlice({
     builder.addCase(fetchGohanData.pending, (state) => {
       state.isFetchingData = true;
     });
-    builder.addCase(
-      fetchKatsuData.fulfilled,
-      (state, { payload }: PayloadAction<DataResponseArray>) => {
-        const uniqueIds = new Set(state.dataTypes.map(data => data.id));
-        const newData = payload.filter(data => !uniqueIds.has(data.id));
-        state.dataTypes = [...state.dataTypes, ...newData];
-      }
-    );
-    builder.addCase(
-      fetchGohanData.fulfilled,
-      (state, { payload }: PayloadAction<DataResponseArray>) => {
-        const uniqueIds = new Set(state.dataTypes.map(data => data.id));
-        const newData = payload.filter(data => !uniqueIds.has(data.id));
-        state.dataTypes = [...state.dataTypes, ...newData];
-        state.isFetchingData = false;
-      }
-    );
+    builder.addCase(fetchKatsuData.fulfilled, (state, { payload }: PayloadAction<DataResponseArray>) => {
+      const uniqueIds = new Set(state.dataTypes.map((data) => data.id));
+      const newData = payload.filter((data) => !uniqueIds.has(data.id));
+      state.dataTypes = [...state.dataTypes, ...newData];
+    });
+    builder.addCase(fetchGohanData.fulfilled, (state, { payload }: PayloadAction<DataResponseArray>) => {
+      const uniqueIds = new Set(state.dataTypes.map((data) => data.id));
+      const newData = payload.filter((data) => !uniqueIds.has(data.id));
+      state.dataTypes = [...state.dataTypes, ...newData];
+      state.isFetchingData = false;
+    });
     builder.addCase(fetchKatsuData.rejected, (state) => {
       state.isFetchingData = false;
     });

@@ -11,7 +11,7 @@ import { makeGetDataRequestThunk } from '@/features/data/data.store';
 import { makeGetSearchFields } from '@/features/search/query.store';
 import { makeGetProvenanceRequest } from '@/features/provenance/provenance.store';
 import { getBeaconConfig } from '@/features/beacon/beaconConfig.store';
-import {makeGetDataTypes }  from '@/features/dataTypes/dataTypes.store';
+import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
 import { fetchGohanData, fetchKatsuData } from '@/features/ingestion/lastIngestion.store';
 
 import Loader from './Loader';
