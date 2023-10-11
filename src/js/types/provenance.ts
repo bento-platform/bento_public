@@ -83,8 +83,8 @@ export interface License {
 }
 
 export interface PrimaryPublication {
-  authors: string[];
-  dates: string[];
+  authors?: string[];
+  dates?: string[];
   identifier: Identifier;
   publicationVenue: string;
   title: string;

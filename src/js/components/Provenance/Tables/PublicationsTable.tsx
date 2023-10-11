@@ -36,7 +36,7 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
           title: td('Authors'),
           dataIndex: 'authors',
           render: (_, { authors }) =>
-            authors.map((author, i) => (
+            (authors ?? []).map((author, i) => (
               <Tag key={i} color="cyan">
                 {author}
               </Tag>
@@ -46,7 +46,7 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
           title: td('Dates'),
           dataIndex: 'dates',
           render: (_, { dates }) =>
-            dates.map((date, i) => (
+            (dates ?? []).map((date, i) => (
               <Tag key={i} color="cyan">
                 {date}
               </Tag>
