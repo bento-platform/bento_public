@@ -8,19 +8,26 @@ import ChartCard from './ChartCard';
 const CHART_GUTTER = 16;
 
 const getColumnCount = (width: number): number => {
-  if (width < 990) {
+  if (width < 880) {
     return 1;
   } else if (width < 1420) {
     return 2;
   } else return 3;
 };
 
+// Keep these quantized rather than a function of width for two reasons:
+//  - makes design more predictable
+//  - we don't need to re-render children for all width changes, just for some
 const getFrameWidth = (width: number): number => {
-  if (width < 440) {
+  if (width < 820) {
     return 440;
+  } else if (width < 1060) {
+    return 780;
   } else if (width < 1420) {
-    return width - 60;
-  } else return 1325;
+    return 960;
+  } else {
+    return 1325;
+  }
 };
 
 const OverviewDisplayData = ({ section, allCharts }: OverviewDisplayDataProps) => {
