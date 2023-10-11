@@ -8,8 +8,7 @@ import LinkIfUrl from '../../Util/LinkIfUrl';
 import { useTranslationCustom, useTranslationDefault } from '@/hooks';
 import { Person, PrimaryPublication, ProvenanceStoreDataset } from '@/types/provenance';
 
-const DOI_REGEX = /^10.\d{4,9}\/[-._;()/:A-Z0-9]+$/i;
-const isDOI = (s: string) => s.match(DOI_REGEX);
+import { stringIsDOI } from '@/utils/strings';
 
 const DOILink = ({ doi, children }: { doi: string; children?: ReactNode }) => (
   <Typography.Link href={`https://dx.doi.org/${doi}`} target="_blank" rel="noopener noreferrer">
@@ -45,7 +44,7 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
             const formattedTitle = `${t(title)}${title.endsWith('.') ? '' : '.'}`;
             return (
               <>
-                {isDOI(identifier) ? <DOILink doi={identifier}>{formattedTitle}</DOILink> : formattedTitle}
+                {stringIsDOI(identifier) ? <DOILink doi={identifier}>{formattedTitle}</DOILink> : formattedTitle}
                 {authors ? (
                   <>
                     <br />
@@ -75,7 +74,7 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
           title: td('Identifier'),
           dataIndex: 'identifier.identifier',
           render: (_, { identifier: { identifier } }) =>
-            isDOI(identifier) ? <DOILink doi={identifier} /> : <LinkIfUrl text={identifier} />,
+            stringIsDOI(identifier) ? <DOILink doi={identifier} /> : <LinkIfUrl text={identifier} />,
         },
         {
           title: td('Identifier Source'),

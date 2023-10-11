@@ -1,5 +1,4 @@
-import React from 'react';
-import { Typography } from 'antd';
+export const DOI_PATTERN = /^10.\d{4,9}\/[-._;()/:A-Z0-9]+$/i;
 
 /*
 ^                               starts with...
@@ -14,18 +13,4 @@ import { Typography } from 'antd';
     +                           repeated at least once
 $                               until the end of the string
 */
-const URL_REGEX = /^(http|https):\/\/[^ "]+$/;
-
-// Renders text as link if the text provided is a valid url.
-const LinkIfUrl = ({ text }) => {
-  if (text.match(URL_REGEX)) {
-    return (
-      <Typography.Link href={text} target="_blank">
-        {text}
-      </Typography.Link>
-    );
-  }
-  return text;
-};
-
-export default LinkIfUrl;
+export const URL_PATTERN = /^(http|https):\/\/[^ "]+$/;
