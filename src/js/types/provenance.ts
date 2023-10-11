@@ -21,7 +21,7 @@ export interface DatsFile {
   distributions: Distribution[];
   extraProperties: ExtraProperty[];
   isAbout: IsAbout[];
-  keywords: Keyword[];
+  keywords: Annotation[];
   licenses: License[];
   primaryPublications: PrimaryPublication[];
   privacy: string;
@@ -43,29 +43,30 @@ export interface Funder {
 
 export interface Creator {
   name: string;
-  roles: Keyword[];
+  roles: Annotation[];
   abbreviation?: string;
 }
 
-export interface Keyword {
-  value: string;
+export interface Annotation {
+  value: string | number;
+  valueIRI?: string;
 }
 
 export interface Distribution {
   access: Access;
   formats: string[];
   size: number;
-  unit: Keyword;
+  unit: Annotation;
 }
 
 export interface Access {
-  authorizations: Keyword[];
+  authorizations: Annotation[];
   landingPage: string;
 }
 
 export interface ExtraProperty {
   category: string;
-  values: Keyword[];
+  values: Annotation[];
 }
 
 export interface IsAbout {
@@ -82,9 +83,18 @@ export interface License {
   name: string;
 }
 
+export interface Person {
+  fullName: string;
+}
+
+export interface DateInfo {
+  date: string;
+  type?: Annotation;
+}
+
 export interface PrimaryPublication {
-  authors?: string[];
-  dates?: string[];
+  authors?: Person[];
+  dates?: DateInfo[];
   identifier: Identifier;
   publicationVenue: string;
   title: string;
@@ -96,5 +106,5 @@ export interface SpatialCoverage {
 }
 
 export interface Type {
-  information: Keyword;
+  information: Annotation;
 }
