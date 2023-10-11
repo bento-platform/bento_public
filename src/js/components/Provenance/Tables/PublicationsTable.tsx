@@ -1,10 +1,19 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Tag, Typography } from 'antd';
 
 import BaseProvenanceTable from './BaseProvenanceTable';
 import LinkIfUrl from '../../Util/LinkIfUrl';
 import { useTranslationCustom, useTranslationDefault } from '@/hooks';
 import { ProvenanceStoreDataset } from '@/types/provenance';
+
+const DOI_REGEX = /^10.\d{4,9}\/[-._;()/:A-Z0-9]+$/i;
+const isDOI = (s: string) => s.match(DOI_REGEX);
+
+const DOILink = ({ doi, children }: { doi: string; children?: ReactNode }) => (
+  <Typography.Link href={`https://dx.doi.org/${doi}`} target="_blank" rel="noopener noreferrer">
+    {children ?? doi}
+  </Typography.Link>
+);
 
 const PublicationsTable = ({ publications }: PublicationsTableProps) => {
   const t = useTranslationCustom();
@@ -18,14 +27,8 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
           title: td('Title'),
           dataIndex: 'title',
 
-          render: (_, { title, identifier }) =>
-            identifier.identifier === '' ? (
-              t(title)
-            ) : (
-              <Typography.Link href={`https://dx.doi.org/${identifier.identifier}`} target="_blank">
-                {t(title)}
-              </Typography.Link>
-            ),
+          render: (_, { title, identifier: { identifier } }) =>
+            isDOI(identifier) ? <DOILink doi={identifier}>{t(title)}</DOILink> : t(title),
         },
         {
           title: td('Publication Venue'),
@@ -55,12 +58,13 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
         {
           title: td('Identifier'),
           dataIndex: 'identifier.identifier',
-          render: (_, { identifier }) => <LinkIfUrl text={identifier.identifier} />,
+          render: (_, { identifier: { identifier } }) =>
+            isDOI(identifier) ? <DOILink doi={identifier} /> : <LinkIfUrl text={identifier} />,
         },
         {
           title: td('Identifier Source'),
           dataIndex: 'identifier.identifierSource',
-          render: (_, { identifier }) => t(identifier.identifierSource),
+          render: (_, { identifier: { identifierSource } }) => t(identifierSource),
         },
       ]}
     />
