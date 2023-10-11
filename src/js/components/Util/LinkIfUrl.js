@@ -14,11 +14,11 @@ import { Typography } from 'antd';
     +                           repeated at least once
 $                               until the end of the string
 */
-const url_regex = /^(http|https):\/\/[^ "]+$/;
+const URL_REGEX = /^(http|https):\/\/[^ "]+$/;
 
 // Renders text as link if the text provided is a valid url.
 const LinkIfUrl = ({ text }) => {
-  if (text.match(url_regex)) {
+  if (text.match(URL_REGEX)) {
     return (
       <Typography.Link href={text} target="_blank">
         {text}
