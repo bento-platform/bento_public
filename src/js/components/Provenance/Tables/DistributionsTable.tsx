@@ -27,7 +27,7 @@ const DistributionsTable = ({ distributions }: DistributionsTableProps) => {
         {
           title: td('Unit'),
           dataIndex: 'unit',
-          render: (_, { unit }) => t(unit.value),
+          render: (_, { unit }) => t(unit.value.toString()),
         },
         {
           title: td('Access'),
