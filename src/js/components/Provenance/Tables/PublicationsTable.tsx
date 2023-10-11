@@ -8,12 +8,16 @@ import LinkIfUrl from '../../Util/LinkIfUrl';
 import { useTranslationCustom, useTranslationDefault } from '@/hooks';
 import { Person, PrimaryPublication, ProvenanceStoreDataset } from '@/types/provenance';
 
-import { stringIsDOI } from '@/utils/strings';
+import { stringIsDOI, stringIsURL } from '@/utils/strings';
+
+const URLLink = ({ url, children }: { url: string; children?: ReactNode }) => (
+  <Typography.Link href={url} target="_blank" rel="noopener noreferrer">
+    {children || url}
+  </Typography.Link>
+);
 
 const DOILink = ({ doi, children }: { doi: string; children?: ReactNode }) => (
-  <Typography.Link href={`https://dx.doi.org/${doi}`} target="_blank" rel="noopener noreferrer">
-    {children ?? doi}
-  </Typography.Link>
+  <URLLink url={`https://dx.doi.org/${doi}`}>{children}</URLLink>
 );
 
 const formatAuthorList = (authors: Person[]): string => {
@@ -44,7 +48,13 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
             const formattedTitle = `${t(title)}${title.endsWith('.') ? '' : '.'}`;
             return (
               <>
-                {stringIsDOI(identifier) ? <DOILink doi={identifier}>{formattedTitle}</DOILink> : formattedTitle}
+                {stringIsDOI(identifier) ? (
+                  <DOILink doi={identifier}>{formattedTitle}</DOILink>
+                ) : stringIsURL(identifier) ? (
+                  <URLLink url={identifier}>{formattedTitle}</URLLink>
+                ) : (
+                  formattedTitle
+                )}
                 {authors ? (
                   <>
                     <br />
