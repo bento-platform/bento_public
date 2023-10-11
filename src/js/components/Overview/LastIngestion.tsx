@@ -6,10 +6,14 @@ import { useTranslation } from 'react-i18next';
 import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { useAppSelector } from '@/hooks';
 import { getDataTypeLabel } from '@/types/dataTypes';
+import { LastIngestionDataTypeResponse, DataResponseArray } from '@/types/lastIngestionDataTypeResponse';
 
 const LastIngestionInfo: React.FC = () => {
   const { t, i18n } = useTranslation(DEFAULT_TRANSLATION);
-  const lastEndTimesByDataType = useAppSelector((state) => state.ingestionData?.lastEndTimesByDataType) || {};
+
+  const lastEndTimesByDataType: DataResponseArray = useAppSelector((state) => state.lastIngestionData?.dataTypes) || [];
+
+  const queryableDataTypes = lastEndTimesByDataType.filter((item: LastIngestionDataTypeResponse) => item.queryable);
 
   const formatDate = useCallback(
     (dateString: string) => {
@@ -28,19 +32,19 @@ const LastIngestionInfo: React.FC = () => {
     [i18n.language]
   );
 
-  const hasData = Object.keys(lastEndTimesByDataType).length > 0;
+  const hasData = queryableDataTypes.length > 0;
 
   return (
     <Space direction="vertical" size={0}>
       <Typography.Title level={3}>{t('Latest Data IngestionX')}</Typography.Title>
       <Space direction="horizontal">
         {hasData ? (
-          Object.entries(lastEndTimesByDataType).map(([dataType, endTime]) => (
-            <Card key={dataType}>
+          queryableDataTypes.map((dataType: LastIngestionDataTypeResponse) => (
+            <Card key={dataType.id}>
               <Space direction="vertical">
-                <Typography.Text style={{ color: 'rgba(0,0,0,0.45)' }}>{t(getDataTypeLabel(dataType))}</Typography.Text>
+                <Typography.Text style={{ color: 'rgba(0,0,0,0.45)' }}>{getDataTypeLabel(dataType.id)}</Typography.Text>
                 <Typography.Text>
-                  <CalendarOutlined /> {formatDate(endTime)}
+                  <CalendarOutlined /> {dataType.last_ingested ? formatDate(dataType.last_ingested) : 'Not Available'}
                 </Typography.Text>
               </Space>
             </Card>
