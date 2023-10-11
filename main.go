@@ -408,7 +408,7 @@ func main() {
 	e.GET("/gohan/data-types", gohanRequestPublic)
 
 	e.GET("/katsu/data-types", func(c echo.Context) error {
-		data, err := katsuRequestFormattedData("/public/data-types", c)
+		data, err := katsuRequestFormattedData("/data-types", c)
 		if err != nil {
 			return err
 		}
