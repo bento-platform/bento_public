@@ -1,10 +1,11 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import { Tag, Typography } from 'antd';
 
 import BaseProvenanceTable from './BaseProvenanceTable';
 import LinkIfUrl from '../../Util/LinkIfUrl';
 import { useTranslationCustom, useTranslationDefault } from '@/hooks';
-import { ProvenanceStoreDataset } from '@/types/provenance';
+import { PrimaryPublication, ProvenanceStoreDataset } from '@/types/provenance';
+import { ColumnsType } from 'antd/es/table';
 
 const DOI_REGEX = /^10.\d{4,9}\/[-._;()/:A-Z0-9]+$/i;
 const isDOI = (s: string) => s.match(DOI_REGEX);
@@ -19,10 +20,9 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
   const t = useTranslationCustom();
   const td = useTranslationDefault();
 
-  return (
-    <BaseProvenanceTable
-      dataSource={publications}
-      columns={[
+  const columns = useMemo(
+    () =>
+      [
         {
           title: td('Title'),
           dataIndex: 'title',
@@ -66,9 +66,11 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
           dataIndex: 'identifier.identifierSource',
           render: (_, { identifier: { identifierSource } }) => t(identifierSource),
         },
-      ]}
-    />
+      ] as ColumnsType<PrimaryPublication>,
+    [td]
   );
+
+  return <BaseProvenanceTable dataSource={publications} columns={columns} />;
 };
 
 export interface PublicationsTableProps {
