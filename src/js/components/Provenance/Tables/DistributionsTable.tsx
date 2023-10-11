@@ -47,7 +47,7 @@ const DistributionsTable = ({ distributions }: DistributionsTableProps) => {
               render: (_, { access }) =>
                 access.authorizations.map((a, i) => (
                   <Tag key={i} color="cyan">
-                    {t(a.value)}
+                    {t(a.value.toString())}
                   </Tag>
                 )),
             },
