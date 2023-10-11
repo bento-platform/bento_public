@@ -49,7 +49,7 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
                 {authors ? (
                   <>
                     <br />
-                    {formatAuthorList(authors)}
+                    <em>{formatAuthorList(authors)}</em>
                   </>
                 ) : null}
               </>
