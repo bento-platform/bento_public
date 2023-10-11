@@ -57,7 +57,7 @@ const DatasetProvenance = ({ metadata, loading }: DatasetProvenanceProps) => {
               <Item span={24} label={<DescriptionTitle title={td('Keywords')} />}>
                 {metadata.keywords.map((keyword, i) => (
                   <Tag key={i} color="cyan">
-                    {t(keyword.value)}
+                    {t(keyword.value.toString())}
                   </Tag>
                 ))}
               </Item>
