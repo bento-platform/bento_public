@@ -76,7 +76,7 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
           render: (_, { dates }) =>
             (dates ?? []).map((date, i) => (
               <Tag key={i} color="cyan">
-                {(new Date(Date.parse(date.date))).toLocaleDateString()}
+                {new Date(Date.parse(date.date)).toLocaleDateString()}
               </Tag>
             )),
         },
