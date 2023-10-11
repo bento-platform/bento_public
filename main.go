@@ -179,22 +179,6 @@ func main() {
 		return c.JSON(http.StatusOK, result)
 	}
 
-	wesRequest := func(path string, qs url.Values, c echo.Context, rf responseFormatterFunc) error {
-		result, err := genericRequestJsonOnly(fmt.Sprintf("%s%s", cfg.WesUrl, path), qs, c, rf)
-		if err != nil {
-			return err
-		}
-		return c.JSON(http.StatusOK, result)
-	}
-
-	gohanRequest := func(path string, qs url.Values, c echo.Context, rf responseFormatterFunc) error {
-		result, err := genericRequestJsonOnly(fmt.Sprintf("%s%s", cfg.GohanUrl, path), qs, c, rf)
-		if err != nil {
-			return err
-		}
-		return c.JSON(http.StatusOK, result)
-	}
-
 	katsuRequestBasic := func(path string, c echo.Context) error {
 		return katsuRequest(path, nil, c, jsonDeserialize)
 	}
@@ -210,13 +194,6 @@ func main() {
 			return nil, fmt.Errorf("error formatting JSON: %w", err)
 		}
 		return jsonFormattedData, nil
-	}
-
-	wesRequestWithDetailsAndPublic := func(c echo.Context) error {
-		qs := url.Values{}
-		qs.Add("with_details", "true")
-		qs.Add("public", "true")
-		return wesRequest("/runs", qs, c, jsonDeserialize)
 	}
 
 	gohanRequestPublic := func(c echo.Context) error {
@@ -379,10 +356,6 @@ func main() {
 		// TODO: formalize response type
 		return katsuRequestBasic("/api/public_search_fields", c)
 	})
-
-	e.GET("/wes-runs", wesRequestWithDetailsAndPublic)
-
-	e.GET("/gohan/data-types", gohanRequestPublic)
 
 	e.GET("/provenance", func(c echo.Context) error {
 		// Query Katsu for datasets provenance
