@@ -220,21 +220,13 @@ func main() {
 	}
 
 	gohanRequestPublic := func(c echo.Context) error {
-
-		// Construct the path using the extracted dataset ID.
-		path := fmt.Sprintf("/public/data-types")
-
-		// Make a request to the Gohan service and deserialize the response.
-		err := gohanRequest(path, nil, c, jsonDeserialize)
+		path := fmt.Sprintf("/data-types")
+		result, err := genericRequestJsonOnly(fmt.Sprintf("%s%s", cfg.GohanUrl, path), nil, c, jsonDeserialize)
 		if err != nil {
-			// Return the error if there is one.
 			return err
 		}
 
-		// If everything is successful, return a success status to the caller.
-		return c.JSON(http.StatusOK, map[string]string{
-			"message": "Success",
-		})
+		return c.JSON(http.StatusOK, result)
 	}
 
 	fetchAndSetKatsuPublic := func(c echo.Context, katsuCache *cache.Cache) (JsonLike, error) {
