@@ -67,31 +67,31 @@ const DatasetProvenance = ({ metadata, loading }: DatasetProvenanceProps) => {
 
         {/* TableTitle has translation in it*/}
         {/* --- CREATED BY ---*/}
-        <TableTitleWitTranslation title="Created By" />
+        <TableTitleWithTranslation title="Created By" />
         <CreatedByTable creators={metadata.creators} />
 
         {/* --- DISTRIBUTIONS ---*/}
-        <TableTitleWitTranslation title="Distributions" />
+        <TableTitleWithTranslation title="Distributions" />
         <DistributionsTable distributions={metadata.distributions} />
 
         {/* --- IS ABOUT ---*/}
-        <TableTitleWitTranslation title="Is About" />
+        <TableTitleWithTranslation title="Is About" />
         <IsAboutTable isAbout={metadata.isAbout} />
 
         {/* --- PUBLICATIONS ---*/}
-        <TableTitleWitTranslation title="Primary Publications" />
+        <TableTitleWithTranslation title="Primary Publications" />
         <PublicationsTable publications={metadata.primaryPublications} />
 
         {/* --- ACKNOWLEDGES ---*/}
-        <TableTitleWitTranslation title="Acknowledges" />
+        <TableTitleWithTranslation title="Acknowledges" />
         <AcknowledgesTable acknowledges={metadata.acknowledges} />
 
         {/* --- SPATIAL COVERAGE ---*/}
-        <TableTitleWitTranslation title="Spatial Coverage" />
+        <TableTitleWithTranslation title="Spatial Coverage" />
         <SpatialCoverageTable spatialCoverage={metadata.spatialCoverage} />
 
         {/* --- EXTRA PROPERTIES ---*/}
-        <TableTitleWitTranslation title="Extra Properties" />
+        <TableTitleWithTranslation title="Extra Properties" />
         <ExtraPropertiesTable extraProperties={metadata.extraProperties} />
 
         {/* --- DOWNLOAD DATS --- */}
@@ -108,7 +108,7 @@ export type DatasetProvenanceProps = {
 
 export default DatasetProvenance;
 
-const TableTitleWitTranslation = ({ title }: { title: string }) => {
+const TableTitleWithTranslation = ({ title }: { title: string }) => {
   const { t } = useTranslation(DEFAULT_TRANSLATION);
 
   return (
