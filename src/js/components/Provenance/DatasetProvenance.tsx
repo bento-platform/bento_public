@@ -101,7 +101,7 @@ const DatasetProvenance = ({ metadata, loading }: DatasetProvenanceProps) => {
         {/* --- ACKNOWLEDGES ---*/}
         {metadata.acknowledges?.length ? (
           <>
-            <TableTitleWithTranslation title="Acknowledges" />
+            <TableTitleWithTranslation title="Acknowledgements" />
             <AcknowledgesTable acknowledges={metadata.acknowledges} />
           </>
         ) : null}
