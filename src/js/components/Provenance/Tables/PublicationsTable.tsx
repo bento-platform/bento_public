@@ -1,6 +1,6 @@
 import React, { ReactNode, useMemo } from 'react';
 
-import { Tag, Typography } from 'antd';
+import { Typography } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 
 import BaseProvenanceTable from './BaseProvenanceTable';
