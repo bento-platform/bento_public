@@ -1,41 +1,48 @@
-FROM --platform=$BUILDPLATFORM node:18-alpine3.17 as nodebuilder
+FROM --platform=$BUILDPLATFORM node:20-bookworm-slim as nodebuilder
 
-RUN mkdir /node
-COPY . /node
 WORKDIR /node
 
-RUN npm install
+# Install using just package-lock.json with npm ci
+COPY package.json .
+COPY package-lock.json .
+RUN npm ci
 
+# Build the web application
+COPY tsconfig.json .
+COPY webpack.config.js .
+COPY src src
 RUN mkdir -p build/www
 RUN npm run build
 
 
-FROM golang:1.19-bullseye as gobuilder
+FROM golang:1.21-bookworm as gobuilder
 
 RUN apt-get update -y && \
     apt-get upgrade -y && \
     apt-get install -y git
 
 WORKDIR /build
-COPY . .
+
+# Only copy the files that are needed!
+COPY go.mod .
+COPY go.sum .
+COPY main.go .
+
 RUN go build -o ./reactapp
 
 
-FROM ghcr.io/bento-platform/bento_base_image:plain-debian-2023.03.22
+FROM ghcr.io/bento-platform/bento_base_image:plain-debian-2023.09.08
 
-RUN mkdir -p /bento-public/www
+ENV BENTO_PUBLIC_PACKAGE_JSON_PATH=/bento-public/package.json
+WORKDIR /bento-public
+COPY entrypoint.bash .
 
+# Copy web app
 COPY --from=nodebuilder /node/build/www /bento-public/www
 COPY --from=nodebuilder /node/package.json /bento-public/package.json
 
-# Server
+# Copy server
 COPY --from=gobuilder /build/reactapp /bento-public/reactapp
-
-ENV BENTO_PUBLIC_PACKAGE_JSON_PATH=/bento-public/package.json
-
-WORKDIR /bento-public
-
-COPY entrypoint.bash .
 
 ENTRYPOINT [ "/bin/bash", "./entrypoint.bash" ]
 CMD [ "./reactapp" ]
