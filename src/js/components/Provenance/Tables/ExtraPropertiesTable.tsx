@@ -21,7 +21,8 @@ const ExtraPropertiesTable = ({ extraProperties }: ExtraPropertiesTableProps) =>
           render: (_, { values }) =>
             values.map((v, i) => (
               <>
-                <LinkIfUrl key={i} text={v.value.toString()} />{' '}
+                <LinkIfUrl key={i} text={v.value.toString()} />
+                {i < values.length - 1 ? '; ' : ''}
               </>
             )),
         },
