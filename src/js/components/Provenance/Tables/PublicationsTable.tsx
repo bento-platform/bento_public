@@ -64,11 +64,14 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
               </>
             );
           },
+
+          sorter: (a, b) => a.title.localeCompare(b.title),
         },
         {
           title: td('Publication Venue'),
           dataIndex: 'publicationVenue',
           render: (text) => t(text),
+          sorter: (a, b) => a.publicationVenue.localeCompare(b.publicationVenue),
         },
         {
           title: td('Date'),
@@ -79,6 +82,16 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
                 {new Date(Date.parse(date.date)).toLocaleDateString()}
               </Tag>
             )),
+          sorter: (a, b) => {
+            if (!a.dates?.length) {
+              if (!b.dates?.length) return 0;
+              return 1; // Sort blank entries after
+            } else if (!b.dates?.length) {
+              return -1;  // Sort blank entries after
+            } else {
+              return Date.parse(a.dates[0].date) - Date.parse(b.dates[0].date);
+            }
+          },
         },
         {
           title: td('Identifier'),
@@ -90,9 +103,12 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
           title: td('Identifier Source'),
           dataIndex: 'identifier.identifierSource',
           render: (_, { identifier: { identifierSource } }) => t(identifierSource),
+          sorter: (a, b) => a.identifier.identifierSource.localeCompare(b.identifier.identifierSource),
+          filters: Array.from(new Set(publications.map(p => p.identifier.identifierSource)))
+            .map((v) => ({ text: v, value: v })),
         },
       ] as ColumnsType<PrimaryPublication>,
-    [td]
+    [td, publications]
   );
 
   return <BaseProvenanceTable dataSource={publications} columns={columns} />;
