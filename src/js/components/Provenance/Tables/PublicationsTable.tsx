@@ -87,7 +87,7 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
               if (!b.dates?.length) return 0;
               return 1; // Sort blank entries after
             } else if (!b.dates?.length) {
-              return -1;  // Sort blank entries after
+              return -1; // Sort blank entries after
             } else {
               return Date.parse(a.dates[0].date) - Date.parse(b.dates[0].date);
             }
@@ -104,8 +104,10 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
           dataIndex: 'identifier.identifierSource',
           render: (_, { identifier: { identifierSource } }) => t(identifierSource),
           sorter: (a, b) => a.identifier.identifierSource.localeCompare(b.identifier.identifierSource),
-          filters: Array.from(new Set(publications.map(p => p.identifier.identifierSource)))
-            .map((v) => ({ text: v, value: v })),
+          filters: Array.from(new Set(publications.map((p) => p.identifier.identifierSource))).map((v) => ({
+            text: v,
+            value: v,
+          })),
         },
       ] as ColumnsType<PrimaryPublication>,
     [td, publications]
