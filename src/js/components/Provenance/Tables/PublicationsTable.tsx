@@ -76,12 +76,15 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
         {
           title: td('Date'),
           dataIndex: 'dates',
-          render: (_, { dates }) =>
-            (dates ?? []).map((date, i) => (
-              <Tag key={i} color="cyan">
+          render: (_, { dates }) => {
+            const _dates = dates ?? [];
+            return _dates.map((date, i) => (
+              <>
                 {new Date(Date.parse(date.date)).toLocaleDateString()}
-              </Tag>
-            )),
+                {i < _dates.length - 1 ? '; ' : ''}
+              </>
+            ));
+          },
           sorter: (a, b) => {
             if (!a.dates?.length) {
               if (!b.dates?.length) return 0;
