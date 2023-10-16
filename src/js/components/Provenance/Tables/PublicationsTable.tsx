@@ -112,6 +112,7 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
             text: v,
             value: v,
           })),
+          onFilter: (filterValue, p) => p.identifier.identifierSource === filterValue,
         },
       ] as ColumnsType<PrimaryPublication>,
     [td, publications]
