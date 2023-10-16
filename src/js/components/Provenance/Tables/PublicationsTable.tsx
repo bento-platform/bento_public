@@ -17,7 +17,7 @@ const URLLink = ({ url, children }: { url: string; children?: ReactNode }) => (
 );
 
 const DOILink = ({ doi, children }: { doi: string; children?: ReactNode }) => (
-  <URLLink url={`https://dx.doi.org/${doi}`}>{children}</URLLink>
+  <URLLink url={`https://dx.doi.org/${doi}`}>{children || doi}</URLLink>
 );
 
 const formatAuthorList = (authors: Person[]): string => {
