@@ -95,6 +95,7 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
               return Date.parse(a.dates[0].date) - Date.parse(b.dates[0].date);
             }
           },
+          defaultSortOrder: 'descend',
         },
         {
           title: td('Identifier'),
