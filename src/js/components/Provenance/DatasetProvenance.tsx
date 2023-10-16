@@ -67,60 +67,60 @@ const DatasetProvenance = ({ metadata, loading }: DatasetProvenanceProps) => {
 
         {/* TableTitle has translation in it*/}
         {/* --- CREATED BY ---*/}
-        {metadata.creators?.length ? (
+        {!!metadata.creators?.length && (
           <>
             <TableTitleWithTranslation title="Created By" />
             <CreatedByTable creators={metadata.creators} />
           </>
-        ) : null}
+        )}
 
         {/* --- DISTRIBUTIONS ---*/}
-        {metadata.distributions?.length ? (
+        {!!metadata.distributions?.length && (
           <>
             <TableTitleWithTranslation title="Distributions" />
             <DistributionsTable distributions={metadata.distributions} />
           </>
-        ) : null}
+        )}
 
         {/* --- IS ABOUT ---*/}
-        {metadata.isAbout?.length ? (
+        {!!metadata.isAbout?.length && (
           <>
             <TableTitleWithTranslation title="Is About" />
             <IsAboutTable isAbout={metadata.isAbout} />
           </>
-        ) : null}
+        )}
 
         {/* --- PUBLICATIONS ---*/}
-        {metadata.primaryPublications?.length ? (
+        {!!metadata.primaryPublications?.length && (
           <>
             <TableTitleWithTranslation title="Primary Publications" />
             <PublicationsTable publications={metadata.primaryPublications} />
           </>
-        ) : null}
+        )}
 
         {/* --- ACKNOWLEDGES ---*/}
-        {metadata.acknowledges?.length ? (
+        {!!metadata.acknowledges?.length && (
           <>
             <TableTitleWithTranslation title="Acknowledgements" />
             <AcknowledgesTable acknowledges={metadata.acknowledges} />
           </>
-        ) : null}
+        )}
 
         {/* --- SPATIAL COVERAGE ---*/}
-        {metadata.spatialCoverage?.length ? (
+        {!!metadata.spatialCoverage?.length && (
           <>
             <TableTitleWithTranslation title="Spatial Coverage" />
             <SpatialCoverageTable spatialCoverage={metadata.spatialCoverage} />
           </>
-        ) : null}
+        )}
 
         {/* --- EXTRA PROPERTIES ---*/}
-        {metadata.extraProperties?.length ? (
+        {!!metadata.extraProperties?.length && (
           <>
             <TableTitleWithTranslation title="Extra Properties" />
             <ExtraPropertiesTable extraProperties={metadata.extraProperties} />
           </>
-        ) : null}
+        )}
 
         {/* --- DOWNLOAD DATS --- */}
         <DownloadDats metadata={metadata} />

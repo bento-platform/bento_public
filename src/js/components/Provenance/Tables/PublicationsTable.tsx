@@ -55,12 +55,12 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
                 ) : (
                   formattedTitle
                 )}
-                {authors ? (
+                {!!authors?.length && (
                   <>
                     <br />
                     <em>{formatAuthorList(authors)}</em>
                   </>
-                ) : null}
+                )}
               </>
             );
           },
