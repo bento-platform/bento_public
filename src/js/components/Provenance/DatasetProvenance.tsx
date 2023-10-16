@@ -44,7 +44,7 @@ const DatasetProvenance = ({ metadata, loading }: DatasetProvenanceProps) => {
                 {t(metadata.privacy)}
               </Item>
             )}
-            {metadata.licenses.length && (
+            {!!metadata.licenses?.length && (
               <Item span={12} label={<DescriptionTitle title={td('Licenses')} />}>
                 {metadata.licenses.map((l, i) => (
                   <Tag key={i} color="cyan">
@@ -53,7 +53,7 @@ const DatasetProvenance = ({ metadata, loading }: DatasetProvenanceProps) => {
                 ))}
               </Item>
             )}
-            {metadata.keywords.length && (
+            {!!metadata.keywords?.length && (
               <Item span={24} label={<DescriptionTitle title={td('Keywords')} />}>
                 {metadata.keywords.map((keyword, i) => (
                   <Tag key={i} color="cyan">
