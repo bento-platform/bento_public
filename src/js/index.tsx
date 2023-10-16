@@ -37,7 +37,7 @@ const App = () => {
   }, [lang, i18n.language, navigate]);
 
   return (
-    <Layout>
+    <Layout style={{ minHeight: '100vh' }}>
       <SiteHeader />
       <Content style={{ padding: '0 30px', marginTop: '10px' }}>
         <Routes>

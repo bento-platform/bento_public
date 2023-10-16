@@ -1,33 +1,36 @@
-import React from 'react';
-import { Tag } from 'antd';
+import React, { useMemo } from 'react';
+
+import { ColumnsType } from 'antd/es/table';
 
 import BaseProvenanceTable from '@/components/Provenance/Tables/BaseProvenanceTable';
 import LinkIfUrl from '../../Util/LinkIfUrl';
 import { useTranslationCustom, useTranslationDefault } from '@/hooks';
-import { ProvenanceStoreDataset } from '@/types/provenance';
+import { ExtraProperty, ProvenanceStoreDataset } from '@/types/provenance';
 
 const ExtraPropertiesTable = ({ extraProperties }: ExtraPropertiesTableProps) => {
   const t = useTranslationCustom();
   const td = useTranslationDefault();
 
-  return (
-    <BaseProvenanceTable
-      dataSource={extraProperties}
-      columns={[
+  const columns = useMemo(
+    () =>
+      [
         { title: td('Category'), dataIndex: 'category', render: (text) => t(text) },
         {
           title: td('Values'),
           dataIndex: 'values',
           render: (_, { values }) =>
             values.map((v, i) => (
-              <Tag key={i} color="cyan">
-                <LinkIfUrl text={v.value} />
-              </Tag>
+              <>
+                <LinkIfUrl key={i} text={v.value.toString()} />
+                {i < values.length - 1 ? '; ' : ''}
+              </>
             )),
         },
-      ]}
-    />
+      ] as ColumnsType<ExtraProperty>,
+    [td]
   );
+
+  return <BaseProvenanceTable dataSource={extraProperties} columns={columns} />;
 };
 
 export interface ExtraPropertiesTableProps {

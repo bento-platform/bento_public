@@ -1,5 +1,4 @@
 import React from 'react';
-import { Tag } from 'antd';
 
 import BaseProvenanceTable from './BaseProvenanceTable';
 import LinkIfUrl from '../../Util/LinkIfUrl';
@@ -24,10 +23,11 @@ const AcknowledgesTable = ({ acknowledges }: AcknowledgesTableProps) => {
           dataIndex: 'funders',
           render: (_, { funders }) =>
             funders.map((f, i) => (
-              <Tag key={i} color="cyan">
+              <React.Fragment key={i}>
                 <LinkIfUrl text={f.name} />
-                {f.abbreviation ? `(${t(f.abbreviation)})` : ''}
-              </Tag>
+                {f.abbreviation ? ` (${t(f.abbreviation)})` : ''}
+                {i < funders.length - 1 ? '; ' : ''}
+              </React.Fragment>
             )),
         },
       ]}
