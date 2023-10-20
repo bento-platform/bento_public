@@ -35,11 +35,12 @@ FROM ghcr.io/bento-platform/bento_base_image:plain-debian-2023.10.20
 
 ENV BENTO_PUBLIC_PACKAGE_JSON_PATH=/bento-public/package.json
 WORKDIR /bento-public
+
 COPY entrypoint.bash .
+COPY package.json .
 
 # Copy web app
 COPY --from=nodebuilder /node/build/www /bento-public/www
-COPY --from=nodebuilder /node/package.json /bento-public/package.json
 
 # Copy server
 COPY --from=gobuilder /build/reactapp /bento-public/reactapp
