@@ -9,6 +9,7 @@ import { ChartDataField } from '@/types/data';
 import { CHART_HEIGHT } from '@/constants/overviewConstants';
 
 const CARD_STYLE = { width: '100%', height: '415px', borderRadius: '11px' };
+const ROW_EMPTY_STYLE = { height: `${CHART_HEIGHT}px` };
 
 const ChartCard = memo(({ section, chart, onRemoveChart, width }: ChartCardProps) => {
   const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
@@ -39,12 +40,13 @@ const ChartCard = memo(({ section, chart, onRemoveChart, width }: ChartCardProps
   // missing count label
   const missingCount = data.find((e) => e.x === 'missing')?.y ?? 0;
 
-  if (missingCount)
+  if (missingCount) {
     ed.push(
       <Typography.Text key={0} type="secondary" italic>
         <TeamOutlined /> {missingCount} {td('missing')}
       </Typography.Text>
     );
+  }
 
   // controls (buttons)
   extraOptionsData.forEach((opt) => {
@@ -55,13 +57,20 @@ const ChartCard = memo(({ section, chart, onRemoveChart, width }: ChartCardProps
     );
   });
 
+  // We add a key to the chart which includes width to force a re-render if width changes.
   return (
     <div key={id} style={{ height: '100%', width }}>
       <Card title={t(title)} style={CARD_STYLE} size="small" extra={<Space size="small">{ed}</Space>}>
         {data.filter((e) => !(e.x === 'missing')).length !== 0 ? (
-          <Chart chartConfig={chartConfig} data={data} units={config?.units || ''} id={id} />
+          <Chart
+            chartConfig={chartConfig}
+            data={data}
+            units={config?.units || ''}
+            id={id}
+            key={`${id}-width-${width}`}
+          />
         ) : (
-          <Row style={{ height: `${CHART_HEIGHT}px` }} justify="center" align="middle">
+          <Row style={ROW_EMPTY_STYLE} justify="center" align="middle">
             <CustomEmpty text="No Data" />
           </Row>
         )}
