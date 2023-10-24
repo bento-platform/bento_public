@@ -3,6 +3,8 @@ import { Row, Col, FloatButton, Card, Skeleton } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
 import { convertSequenceAndDisplayData, saveValue } from '@/utils/localStorage';
+import type { Sections } from '@/types/data';
+
 import { LOCALSTORAGE_CHARTS_KEY } from '@/constants/overviewConstants';
 
 import OverviewSection from './OverviewSection';
@@ -28,7 +30,7 @@ const PublicOverview = () => {
 
   useEffect(() => {
     // Save sections to localStorage when they change
-    saveValue(LOCALSTORAGE_CHARTS_KEY, convertSequenceAndDisplayData(sections));
+    saveToLocalStorage(sections);
   }, [sections]);
 
   useEffect(() => {
@@ -40,7 +42,11 @@ const PublicOverview = () => {
   const displayedSections = sections.filter(({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1);
 
   const onManageChartsOpen = useCallback(() => setDrawerVisible(true), []);
-  const onManageChartsClose = useCallback(() => setDrawerVisible(false), []);
+  const onManageChartsClose = useCallback(() => {
+    setDrawerVisible(false);
+    // When we close the drawer, save any changes to localStorage. This helps ensure width gets saved:
+    saveToLocalStorage(sections);
+  }, [sections]);
 
   return (
     <>
@@ -84,6 +90,10 @@ const PublicOverview = () => {
       />
     </>
   );
+};
+
+const saveToLocalStorage = (sections: Sections) => {
+  saveValue(LOCALSTORAGE_CHARTS_KEY, convertSequenceAndDisplayData(sections));
 };
 
 export default PublicOverview;

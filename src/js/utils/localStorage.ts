@@ -7,8 +7,8 @@ export const verifyData = (nObj: any, oObj: LocalStorageData) => {
     if (nCharts.length !== oCharts.length) return false;
 
     const nChartsMap: { [key in string]: boolean } = {};
-    for (const { id, isDisplayed } of nCharts) {
-      if (id && typeof isDisplayed === 'boolean') nChartsMap[id] = true;
+    for (const { id, isDisplayed, width } of nCharts) {
+      if (id && typeof isDisplayed === 'boolean' && typeof width === 'number') nChartsMap[id] = true;
       else return false;
     }
     return oCharts.every((e) => nChartsMap[e.id]);
@@ -33,12 +33,12 @@ export const getValue = <T>(key: string, defaultVal: T, verifyFunc: (arg: any) =
     if (serializedState === null) {
       return defaultVal;
     }
-    const unserializedState = JSON.parse(serializedState);
-    if (!verifyFunc(unserializedState)) {
+    const deserializedState = JSON.parse(serializedState);
+    if (!verifyFunc(deserializedState)) {
       return defaultVal;
     }
 
-    return unserializedState as T;
+    return deserializedState as T;
   } catch (err) {
     console.log(err);
     console.log('Error retrieving state from localStorage');
@@ -49,7 +49,7 @@ export const getValue = <T>(key: string, defaultVal: T, verifyFunc: (arg: any) =
 export const convertSequenceAndDisplayData = (sections: Sections) => {
   const temp: LocalStorageData = {};
   sections.forEach(({ sectionTitle, charts }) => {
-    temp[sectionTitle] = charts.map(({ id, isDisplayed }) => ({ id, isDisplayed }));
+    temp[sectionTitle] = charts.map(({ id, isDisplayed, width }) => ({ id, isDisplayed, width }));
   });
   return temp;
 };

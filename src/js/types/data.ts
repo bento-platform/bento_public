@@ -31,5 +31,5 @@ export interface ChartData {
 }
 
 export type LocalStorageData = {
-  [key in string]: { id: string; isDisplayed: boolean }[];
+  [key in string]: { id: string; isDisplayed: boolean, width: number }[];
 };

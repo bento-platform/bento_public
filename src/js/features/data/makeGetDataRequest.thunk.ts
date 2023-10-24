@@ -52,9 +52,10 @@ export const makeGetDataRequestThunk = createAsyncThunk<
     verifyData(val, convertedData)
   );
   sectionData.forEach(({ sectionTitle, charts }, i, arr) => {
-    arr[i].charts = localValue[sectionTitle].map(({ id, isDisplayed }) => ({
+    arr[i].charts = localValue[sectionTitle].map(({ id, isDisplayed, width }) => ({
       ...charts.find((c) => c.id === id)!,
       isDisplayed,
+      width,
     }));
   });
 
