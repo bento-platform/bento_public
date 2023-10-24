@@ -33,7 +33,7 @@ const CreatedByTable = ({ creators }: CreatedByTableProps) => {
             roles &&
             roles.map((r, i) => (
               <Tag key={i} color="cyan">
-                {t(r.value)}
+                {t(r.value.toString())}
               </Tag>
             )),
         },

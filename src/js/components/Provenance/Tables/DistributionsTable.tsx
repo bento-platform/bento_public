@@ -1,19 +1,20 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+
 import { Tag, Typography } from 'antd';
+import { ColumnsType } from 'antd/es/table';
 const { Link } = Typography;
 
 import BaseProvenanceTable from './BaseProvenanceTable';
 import { useTranslationDefault, useTranslationCustom } from '@/hooks';
-import { ProvenanceStoreDataset } from '@/types/provenance';
+import { Distribution, ProvenanceStoreDataset } from '@/types/provenance';
 
 const DistributionsTable = ({ distributions }: DistributionsTableProps) => {
   const t = useTranslationCustom();
   const td = useTranslationDefault();
 
-  return (
-    <BaseProvenanceTable
-      dataSource={distributions}
-      columns={[
+  const columns = useMemo(
+    () =>
+      [
         {
           title: td('Formats'),
           dataIndex: 'formats',
@@ -27,7 +28,7 @@ const DistributionsTable = ({ distributions }: DistributionsTableProps) => {
         {
           title: td('Unit'),
           dataIndex: 'unit',
-          render: (_, { unit }) => t(unit.value),
+          render: (_, { unit }) => t(unit.value.toString()),
         },
         {
           title: td('Access'),
@@ -47,15 +48,17 @@ const DistributionsTable = ({ distributions }: DistributionsTableProps) => {
               render: (_, { access }) =>
                 access.authorizations.map((a, i) => (
                   <Tag key={i} color="cyan">
-                    {t(a.value)}
+                    {t(a.value.toString())}
                   </Tag>
                 )),
             },
           ],
         },
-      ]}
-    />
+      ] as ColumnsType<Distribution>,
+    [td]
   );
+
+  return <BaseProvenanceTable dataSource={distributions} columns={columns} />;
 };
 
 export interface DistributionsTableProps {

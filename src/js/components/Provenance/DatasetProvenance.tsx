@@ -30,7 +30,7 @@ const DatasetProvenance = ({ metadata, loading }: DatasetProvenanceProps) => {
             {t(metadata.version)}
           </Title>,
         ]}
-        style={{ borderRadius: '11px', maxWidth: '1400px' }}
+        style={{ borderRadius: '11px' }}
         loading={loading}
       >
         {/* --- DESCRIPTION ---*/}
@@ -44,7 +44,7 @@ const DatasetProvenance = ({ metadata, loading }: DatasetProvenanceProps) => {
                 {t(metadata.privacy)}
               </Item>
             )}
-            {metadata.licenses.length && (
+            {!!metadata.licenses?.length && (
               <Item span={12} label={<DescriptionTitle title={td('Licenses')} />}>
                 {metadata.licenses.map((l, i) => (
                   <Tag key={i} color="cyan">
@@ -53,11 +53,11 @@ const DatasetProvenance = ({ metadata, loading }: DatasetProvenanceProps) => {
                 ))}
               </Item>
             )}
-            {metadata.keywords.length && (
+            {!!metadata.keywords?.length && (
               <Item span={24} label={<DescriptionTitle title={td('Keywords')} />}>
                 {metadata.keywords.map((keyword, i) => (
                   <Tag key={i} color="cyan">
-                    {t(keyword.value)}
+                    {t(keyword.value.toString())}
                   </Tag>
                 ))}
               </Item>
@@ -67,32 +67,60 @@ const DatasetProvenance = ({ metadata, loading }: DatasetProvenanceProps) => {
 
         {/* TableTitle has translation in it*/}
         {/* --- CREATED BY ---*/}
-        <TableTitleWitTranslation title="Created By" />
-        <CreatedByTable creators={metadata.creators} />
+        {!!metadata.creators?.length && (
+          <>
+            <TableTitleWithTranslation title="Created By" />
+            <CreatedByTable creators={metadata.creators} />
+          </>
+        )}
 
         {/* --- DISTRIBUTIONS ---*/}
-        <TableTitleWitTranslation title="Distributions" />
-        <DistributionsTable distributions={metadata.distributions} />
+        {!!metadata.distributions?.length && (
+          <>
+            <TableTitleWithTranslation title="Distributions" />
+            <DistributionsTable distributions={metadata.distributions} />
+          </>
+        )}
 
         {/* --- IS ABOUT ---*/}
-        <TableTitleWitTranslation title="Is About" />
-        <IsAboutTable isAbout={metadata.isAbout} />
+        {!!metadata.isAbout?.length && (
+          <>
+            <TableTitleWithTranslation title="Is About" />
+            <IsAboutTable isAbout={metadata.isAbout} />
+          </>
+        )}
 
         {/* --- PUBLICATIONS ---*/}
-        <TableTitleWitTranslation title="Primary Publications" />
-        <PublicationsTable publications={metadata.primaryPublications} />
+        {!!metadata.primaryPublications?.length && (
+          <>
+            <TableTitleWithTranslation title="Primary Publications" />
+            <PublicationsTable publications={metadata.primaryPublications} />
+          </>
+        )}
 
         {/* --- ACKNOWLEDGES ---*/}
-        <TableTitleWitTranslation title="Acknowledges" />
-        <AcknowledgesTable acknowledges={metadata.acknowledges} />
+        {!!metadata.acknowledges?.length && (
+          <>
+            <TableTitleWithTranslation title="Acknowledgements" />
+            <AcknowledgesTable acknowledges={metadata.acknowledges} />
+          </>
+        )}
 
         {/* --- SPATIAL COVERAGE ---*/}
-        <TableTitleWitTranslation title="Spatial Coverage" />
-        <SpatialCoverageTable spatialCoverage={metadata.spatialCoverage} />
+        {!!metadata.spatialCoverage?.length && (
+          <>
+            <TableTitleWithTranslation title="Spatial Coverage" />
+            <SpatialCoverageTable spatialCoverage={metadata.spatialCoverage} />
+          </>
+        )}
 
         {/* --- EXTRA PROPERTIES ---*/}
-        <TableTitleWitTranslation title="Extra Properties" />
-        <ExtraPropertiesTable extraProperties={metadata.extraProperties} />
+        {!!metadata.extraProperties?.length && (
+          <>
+            <TableTitleWithTranslation title="Extra Properties" />
+            <ExtraPropertiesTable extraProperties={metadata.extraProperties} />
+          </>
+        )}
 
         {/* --- DOWNLOAD DATS --- */}
         <DownloadDats metadata={metadata} />
@@ -108,7 +136,7 @@ export type DatasetProvenanceProps = {
 
 export default DatasetProvenance;
 
-const TableTitleWitTranslation = ({ title }: { title: string }) => {
+const TableTitleWithTranslation = ({ title }: { title: string }) => {
   const { t } = useTranslation(DEFAULT_TRANSLATION);
 
   return (
