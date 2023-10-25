@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { BarChart, PieChart } from 'bento-charts';
 import { ChoroplethMap } from 'bento-charts/dist/maps';
 
-import { CHART_HEIGHT } from '@/constants/overviewConstants';
+import { CHART_HEIGHT, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
 import { ChartData } from '@/types/data';
 import { CHART_TYPE_BAR, CHART_TYPE_CHOROPLETH, CHART_TYPE_PIE, ChartConfig } from '@/types/chartConfig';
 
@@ -18,11 +18,10 @@ const Chart = memo(({ chartConfig, data, units, id }: ChartProps) => {
 
   switch (type) {
     case CHART_TYPE_BAR:
-      // bar charts can be rendered slightly larger as they do not clip
       return (
         <BarChart
           data={data}
-          height={CHART_HEIGHT + 50}
+          height={CHART_HEIGHT}
           units={units}
           preFilter={removeMissing}
           dataMap={translateMap}
@@ -35,7 +34,7 @@ const Chart = memo(({ chartConfig, data, units, id }: ChartProps) => {
       return (
         <PieChart
           data={data}
-          height={CHART_HEIGHT}
+          height={PIE_CHART_HEIGHT}
           preFilter={removeMissing}
           dataMap={translateMap}
           onClick={(d) => {
@@ -44,12 +43,11 @@ const Chart = memo(({ chartConfig, data, units, id }: ChartProps) => {
         />
       );
     case CHART_TYPE_CHOROPLETH: {
-      // map charts can be rendered at full height as they do not clip
       const { category_prop: categoryProp, features, center, zoom, color_mode: colorMode } = chartConfig;
       return (
         <ChoroplethMap
           data={data}
-          height={CHART_HEIGHT + 50}
+          height={CHART_HEIGHT}
           preFilter={removeMissing}
           dataMap={translateMap}
           categoryProp={categoryProp}
