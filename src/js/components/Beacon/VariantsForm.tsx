@@ -34,20 +34,20 @@ const VariantsForm = ({ beaconAssemblyIds }: VariantsFormProps) => {
   const formFields = {
     referenceName: {
       name: 'Chromosome',
-      rules: [{ pattern: CHROMOSOME_REGEX, message: td('Enter a chromosome name, eg: "17" or "X"') }],
+      rules: [{ pattern: CHROMOSOME_REGEX, message: td('Enter a chromosome name, e.g.: "17" or "X"') }],
       placeholder: '1-22, X, Y, M',
       initialValue: '',
     },
     start: {
       name: 'Variant start',
-      rules: [{ pattern: DIGITS_REGEX, message: td('enter a postion number, eg "100"') }],
-      placeholder: `${td('eg')} 100`,
+      rules: [{ pattern: DIGITS_REGEX, message: td('enter a position number, e.g. "100"') }],
+      placeholder: `${td('e.g.')} 100`,
       initialValue: '',
     },
     end: {
       name: 'Variant end',
-      rules: [{ pattern: DIGITS_REGEX, message: td('enter a postion number, eg "200"') }],
-      placeholder: `${td('eg')} 200`,
+      rules: [{ pattern: DIGITS_REGEX, message: td('enter a position number, e.g. "200"') }],
+      placeholder: `${td('e.g.')} 200`,
       initialValue: '',
     },
     referenceBases: {

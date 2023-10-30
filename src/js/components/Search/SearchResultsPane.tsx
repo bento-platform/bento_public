@@ -5,7 +5,7 @@ import { BiDna } from 'react-icons/bi';
 import { PieChart } from 'bento-charts';
 import CustomEmpty from '../Util/CustomEmpty';
 import ExpSvg from '../Util/ExpSvg';
-import { CHART_HEIGHT, COUNTS_FILL } from '@/constants/overviewConstants';
+import { COUNTS_FILL, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
 import { useTranslationDefault } from '@/hooks';
 import { ChartData } from '@/types/data';
 
@@ -53,7 +53,7 @@ const SearchResultsPane = ({
           <Col xs={24} lg={10}>
             <Typography.Title level={5}>{t('Biosamples')}</Typography.Title>
             {!hasInsufficientData && biosampleChartData.length ? (
-              <PieChart data={biosampleChartData} height={CHART_HEIGHT} sort={true} />
+              <PieChart data={biosampleChartData} height={PIE_CHART_HEIGHT} sort={true} />
             ) : (
               <CustomEmpty text="No Results" />
             )}
@@ -61,7 +61,7 @@ const SearchResultsPane = ({
           <Col xs={24} lg={10}>
             <Typography.Title level={5}>{t('Experiments')}</Typography.Title>
             {!hasInsufficientData && experimentChartData.length ? (
-              <PieChart data={experimentChartData} height={CHART_HEIGHT} sort={true} />
+              <PieChart data={experimentChartData} height={PIE_CHART_HEIGHT} sort={true} />
             ) : (
               <CustomEmpty text="No Results" />
             )}

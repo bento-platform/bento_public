@@ -1,4 +1,6 @@
 .github
 build
+dist
 node_modules
 server.env
+www
