@@ -103,6 +103,6 @@ export interface BeaconQueryResponse {
     };
   };
   responseSummary?: {
-    count: number;
+    numTotalResults: number;
   };
 }

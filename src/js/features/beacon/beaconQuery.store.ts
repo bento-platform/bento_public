@@ -54,7 +54,7 @@ const beaconQuery = createSlice({
         state.experimentChartData = serializeChartData(payload.info.bento?.experiments?.experiment_type);
       }
       if (payload.responseSummary) {
-        state.individualCount = payload.responseSummary.count;
+        state.individualCount = payload.responseSummary.numTotalResults;
       }
       state.isFetchingQueryResponse = false;
     });
