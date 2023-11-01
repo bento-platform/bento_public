@@ -23,7 +23,7 @@ const ChartTree = ({ charts, section }: ChartTreeProps) => {
           <div style={{ display: 'flex' }}>
             <span style={{ flex: 1 }}>{t(title)}</span>
             <span>
-              Width:{' '}
+              {t('Width')}:{' '}
               <InputNumber
                 size="small"
                 min={1}
