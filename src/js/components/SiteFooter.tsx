@@ -1,13 +1,13 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { Layout, Row, Typography, Space } from 'antd';
 const { Footer } = Layout;
 const { Title, Text, Link } = Typography;
 
+import { useTranslationDefault } from '@/hooks';
 import bentoLogo from '@public/assets/bento.svg';
 
 const SiteFooter = () => {
-  const { t } = useTranslation();
+  const td = useTranslationDefault();
 
   return (
     <Footer>
@@ -22,7 +22,7 @@ const SiteFooter = () => {
           <div>
             <Text type="secondary">
               Copyright &copy; 2019-2023 the{' '}
-              <Link href="http://computationalgenomics.ca" target="_blank">
+              <Link href="https://computationalgenomics.ca" target="_blank">
                 Canadian Centre for Computational Genomics
               </Link>
               .
@@ -42,7 +42,7 @@ const SiteFooter = () => {
           </div>
           <div>
             <Link href="/public/terms.html" target="_blank">
-              {t('Terms of Use')}
+              {td('Terms of Use')}
             </Link>
           </div>
         </Space>

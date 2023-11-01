@@ -2,17 +2,15 @@ import React from 'react';
 
 import { Drawer, DrawerProps, Typography } from 'antd';
 const { Title } = Typography;
-import { useTranslation } from 'react-i18next';
 
 import ChartTree from './ChartTree';
 
-import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { ChartDataField } from '@/types/data';
-import { useAppSelector } from '@/hooks';
+import { useAppSelector, useTranslationCustom, useTranslationDefault } from '@/hooks';
 
 const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: ManageChartsDrawerProps) => {
-  const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
-  const { t: td } = useTranslation(DEFAULT_TRANSLATION);
+  const t = useTranslationCustom();
+  const td = useTranslationDefault();
 
   const sections = useAppSelector((state) => state.data.sections);
 

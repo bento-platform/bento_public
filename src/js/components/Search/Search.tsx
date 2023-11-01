@@ -1,14 +1,12 @@
 import React, { useEffect, useMemo } from 'react';
 import { Row, Typography, Space, FloatButton } from 'antd';
-import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import SearchFieldsStack from './SearchFieldsStack';
 import SearchResults from './SearchResults';
 
-import { NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { makeGetKatsuPublic, setQueryParams } from '@/features/search/query.store';
-import { useAppDispatch, useAppSelector } from '@/hooks';
+import { useAppDispatch, useAppSelector, useTranslationCustom } from '@/hooks';
 import { buildQueryParamsUrl } from '@/utils/search';
 
 import type { QueryParams } from '@/types/search';
@@ -95,7 +93,7 @@ const SEARCH_SECTION_SPACE_ITEM_STYLE = { item: { display: 'flex', justifyConten
 const SEARCH_SECTION_STYLE = { maxWidth: 1200 };
 
 const Search: React.FC = () => {
-  const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
+  const t = useTranslationCustom();
 
   const searchSections = useAppSelector((state) => state.query.querySections);
 

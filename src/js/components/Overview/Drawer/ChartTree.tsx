@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { rearrange, setDisplayedCharts, setChartWidth } from '@/features/data/data.store';
 import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { ChartDataField } from '@/types/data';
+import { useTranslationCustom, useTranslationDefault } from '@/hooks';
 
 interface MappedChartItem {
   title: ReactNode;
@@ -15,17 +16,17 @@ interface MappedChartItem {
 const ChartTree = ({ charts, section }: ChartTreeProps) => {
   const dispatch = useDispatch();
 
-  const { t } = useTranslation(DEFAULT_TRANSLATION);
-  const { t: td } = useTranslation(NON_DEFAULT_TRANSLATION);
+  const t = useTranslationCustom();
+  const td = useTranslationDefault();
 
   const allCharts: MappedChartItem[] = useMemo(
     () =>
       charts.map(({ field: { title }, id, width }) => ({
         title: (
           <div style={{ display: 'flex' }}>
-            <span style={{ flex: 1 }}>{td(title)}</span>
+            <span style={{ flex: 1 }}>{t(title)}</span>
             <span>
-              {t('Width')}:{' '}
+              {td('Width')}:{' '}
               <InputNumber
                 size="small"
                 min={1}
