@@ -2,11 +2,11 @@ import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Space } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
-import { useTranslation } from 'react-i18next';
+import { useTranslationDefault } from '@/hooks';
 import { ProvenanceStoreDataset } from '@/types/provenance';
 
 const DownloadDats = ({ metadata }: { metadata: ProvenanceStoreDataset }) => {
-  const { t } = useTranslation();
+  const t = useTranslationDefault();
 
   const exportData = useCallback(() => {
     window.location.href = `/datasets/${metadata.identifier}/dats`;
