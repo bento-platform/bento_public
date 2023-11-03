@@ -3,7 +3,7 @@ import axios from 'axios';
 import { RootState } from '@/store';
 import { BeaconQueryPayload, BeaconQueryResponse } from '@/types/beacon';
 import { serializeChartData } from '@/utils/chart';
-import { printAPIError } from '@/utils/error.util';
+import { beaconAPIError } from '@/utils/error.util';
 import { ChartData } from '@/types/data';
 
 export const makeBeaconQuery = createAsyncThunk<
@@ -15,7 +15,7 @@ export const makeBeaconQuery = createAsyncThunk<
   return axios
     .post(beaconIndividualsEndpoint, payload)
     .then((res) => res.data)
-    .catch(printAPIError(rejectWithValue));
+    .catch(beaconAPIError(rejectWithValue));
 });
 
 type BeaconQueryInitialStateType = {
@@ -26,6 +26,7 @@ type BeaconQueryInitialStateType = {
   biosampleChartData: ChartData[];
   experimentCount: number;
   experimentChartData: ChartData[];
+  errorMessage: string
 };
 
 const initialState: BeaconQueryInitialStateType = {
@@ -36,6 +37,7 @@ const initialState: BeaconQueryInitialStateType = {
   biosampleChartData: [],
   experimentCount: 0,
   experimentChartData: [],
+  errorMessage: ""
 };
 
 const beaconQuery = createSlice({
@@ -57,8 +59,11 @@ const beaconQuery = createSlice({
         state.individualCount = payload.responseSummary.numTotalResults;
       }
       state.isFetchingQueryResponse = false;
+      state.errorMessage = ""
     });
-    builder.addCase(makeBeaconQuery.rejected, (state) => {
+    builder.addCase(makeBeaconQuery.rejected, (state, action) => {
+      const errorMess = action.payload  //passed from rejectWithValue
+      state.errorMessage = action.payload as string
       state.isFetchingQueryResponse = false;
     });
   },
