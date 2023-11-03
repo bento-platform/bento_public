@@ -1,6 +1,5 @@
 import React from 'react';
 import { Card, Descriptions, Tag, Typography } from 'antd';
-import { useTranslation } from 'react-i18next';
 
 import DistributionsTable from './Tables/DistributionsTable';
 import IsAboutTable from './Tables/IsAboutTable';
@@ -10,7 +9,7 @@ import ExtraPropertiesTable from './Tables/ExtraPropertiesTable';
 import PublicationsTable from './Tables/PublicationsTable';
 import CreatedByTable from './Tables/CreatedByTable';
 import DownloadDats from './DownloadDats';
-import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
+import { useTranslationCustom, useTranslationDefault } from '@/hooks';
 import { ProvenanceStoreDataset } from '@/types/provenance';
 
 const { Item } = Descriptions;
@@ -18,8 +17,8 @@ const { Text, Title } = Typography;
 const { Meta } = Card;
 
 const DatasetProvenance = ({ metadata, loading }: DatasetProvenanceProps) => {
-  const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
-  const { t: td } = useTranslation(DEFAULT_TRANSLATION);
+  const t = useTranslationCustom();
+  const td = useTranslationDefault();
 
   return (
     <div className="container" style={{ paddingBottom: '40px' }}>
@@ -137,7 +136,7 @@ export type DatasetProvenanceProps = {
 export default DatasetProvenance;
 
 const TableTitleWithTranslation = ({ title }: { title: string }) => {
-  const { t } = useTranslation(DEFAULT_TRANSLATION);
+  const t = useTranslationCustom();
 
   return (
     <Title level={4} style={{ paddingTop: '20px' }}>

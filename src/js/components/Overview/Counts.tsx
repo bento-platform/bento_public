@@ -2,15 +2,13 @@ import React from 'react';
 import { Typography, Card, Space, Statistic } from 'antd';
 import { TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
-import { useTranslation } from 'react-i18next';
 
 import ExpSvg from '../Util/ExpSvg';
 import { COUNTS_FILL } from '@/constants/overviewConstants';
-import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
-import { useAppSelector } from '@/hooks';
+import { useAppSelector, useTranslationDefault } from '@/hooks';
 
 const Counts = () => {
-  const { t } = useTranslation(DEFAULT_TRANSLATION);
+  const td = useTranslationDefault();
 
   const data = [
     {
@@ -32,11 +30,11 @@ const Counts = () => {
 
   return (
     <>
-      <Typography.Title level={3}>{t('Counts')}</Typography.Title>
+      <Typography.Title level={3}>{td('Counts')}</Typography.Title>
       <Space direction="horizontal">
         {data.map(({ title, icon, count }, i) => (
           <Card key={i}>
-            <Statistic title={t(title)} value={count} valueStyle={{ color: COUNTS_FILL }} prefix={icon} />
+            <Statistic title={td(title)} value={count} valueStyle={{ color: COUNTS_FILL }} prefix={icon} />
           </Card>
         ))}
       </Space>

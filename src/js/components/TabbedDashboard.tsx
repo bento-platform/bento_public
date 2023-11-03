@@ -1,5 +1,4 @@
 import React, { useEffect, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { Tabs, Typography } from 'antd';
 
@@ -18,13 +17,12 @@ import PublicOverview from './Overview/PublicOverview';
 import Search from './Search/Search';
 import ProvenanceTab from './Provenance/ProvenanceTab';
 import BeaconQueryUi from './Beacon/BeaconQueryUi';
-import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
-import { useAppDispatch, useAppSelector } from '@/hooks';
+import { useAppDispatch, useAppSelector, useTranslationDefault } from '@/hooks';
 import { buildQueryParamsUrl } from '@/utils/search';
 
 const TabbedDashboard = () => {
   const dispatch = useAppDispatch();
-  const { t } = useTranslation(DEFAULT_TRANSLATION);
+  const td = useTranslationDefault();
   const navigate = useNavigate();
   const location = useLocation();
   const { page } = useParams<{ page?: string }>();
@@ -98,7 +96,7 @@ const TabbedDashboard = () => {
   const mappedTabPanes = tabPanes
     .filter((t) => t.active)
     .map(({ title, content, loading, key }) => ({
-      label: <TabTitle title={t(title)} />,
+      label: <TabTitle title={td(title)} />,
       children: loading ? <Loader /> : content,
       key,
     }));
