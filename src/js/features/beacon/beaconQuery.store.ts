@@ -3,7 +3,7 @@ import axios from 'axios';
 import { RootState } from '@/store';
 import { BeaconQueryPayload, BeaconQueryResponse } from '@/types/beacon';
 import { serializeChartData } from '@/utils/chart';
-import { beaconAPIError } from '@/utils/error.util';
+import { beaconAPIError } from '@/utils/beaconError';
 import { ChartData } from '@/types/data';
 
 export const makeBeaconQuery = createAsyncThunk<
