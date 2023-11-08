@@ -23,7 +23,6 @@ const ConfigLogTemplate = `Config --
 	Static Files: %s
 	Client Name: %s
 	Katsu URL: %v
-	WES URL: %v
 	Gohan URL: %v
 	Bento Portal Url: %s
 	Port: %d
@@ -38,7 +37,6 @@ type BentoConfig struct {
 	StaticFilesPath string `envconfig:"BENTO_PUBLIC_STATIC_FILES_PATH" default:"./www"`
 	ClientName      string `envconfig:"BENTO_PUBLIC_CLIENT_NAME"`
 	KatsuUrl        string `envconfig:"BENTO_PUBLIC_KATSU_URL"`
-	WesUrl          string `envconfig:"BENTO_PUBLIC_WES_URL"`
 	GohanUrl        string `envconfig:"BENTO_PUBLIC_GOHAN_URL"`
 	BentoPortalUrl  string `envconfig:"BENTO_PUBLIC_PORTAL_URL"`
 	Port            int    `envconfig:"INTERNAL_PORT" default:"8090"`
@@ -116,7 +114,6 @@ func main() {
 		cfg.StaticFilesPath,
 		cfg.ClientName,
 		cfg.KatsuUrl,
-		cfg.WesUrl,
 		cfg.GohanUrl,
 		cfg.BentoPortalUrl,
 		cfg.Port,
