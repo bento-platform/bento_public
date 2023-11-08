@@ -41,11 +41,25 @@ const BeaconQueryUi = () => {
   const beaconAssemblyIds = useAppSelector((state) => state.beaconConfig.beaconAssemblyIds);
   const querySections = useAppSelector((state) => state.query.querySections);
   const beaconUrl = useAppSelector((state) => state.config?.beaconUrl);
+  const hasApiError = useAppSelector((state) => state.beaconQuery.hasApiError);
+  const apiErrorMessage = useAppSelector((state) => state.beaconQuery.apiErrorMessage);
 
   const dispatch = useAppDispatch();
   const launchEmptyQuery = () => dispatch(makeBeaconQuery(requestPayload({}, [])));
   const formInitialValues = { 'Assembly ID': beaconAssemblyIds.length === 1 && beaconAssemblyIds[0] };
   const uiInstructions = hasVariants ? 'Search by genomic variants, clinical metadata or both.' : '';
+
+
+  const hasError = hasFormError || hasApiError
+  const showError = hasError && !errorAlertClosed
+
+  // not possible to have both errors simultaneously 
+  const errorMessage = apiErrorMessage || formErrorMessage  
+  
+  const clearFormError = () => {
+    setHasFormError(false)
+    setFormErrorMessage('')
+  }
 
   // complexity of instructions suggests the form isn't intuitive enough
   const variantsInstructions = (
@@ -176,7 +190,8 @@ const BeaconQueryUi = () => {
       return;
     }
 
-    setHasFormError(false);
+    clearFormError()
+    setErrorAlertClosed(false);
     const jsonPayload = packageBeaconJSON(formValues);
     dispatch(makeBeaconQuery(jsonPayload));
   };
@@ -185,7 +200,8 @@ const BeaconQueryUi = () => {
     setFilters([STARTER_FILTER]);
     form.resetFields();
     form.setFieldsValue(formInitialValues);
-    setHasFormError(false);
+    clearFormError();
+    setErrorAlertClosed(false);
     launchEmptyQuery();
   };
 
@@ -194,9 +210,8 @@ const BeaconQueryUi = () => {
 
     // clear any existing errors if form now valid
     if (variantsFormValid(allValues)) {
-      setHasFormError(false);
+      clearFormError()
     }
-
     // can also check filter values here
   };
 
@@ -247,9 +262,9 @@ const BeaconQueryUi = () => {
           </Row>
           <Row>
             <Col span={24}>
-              {hasFormError && !errorAlertClosed && (
+              {showError && (
                 <BeaconErrorMessage
-                  message={`Beacon error: ${formErrorMessage}`}
+                  message={`Beacon error: ${errorMessage}`}
                   setErrorAlertClosed={setErrorAlertClosed}
                 />
               )}
