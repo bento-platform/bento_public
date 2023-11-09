@@ -4,7 +4,7 @@ import { Alert } from 'antd';
 const BeaconErrorMessage = ({ message, setErrorAlertClosed }: BeaconErrorMessageProps) => {
   return (
     <div style={{ paddingTop: '16px' }}>
-      <Alert type={'error'} message={message} onClose={() => setErrorAlertClosed(true)} closable showIcon/>
+      <Alert type={'error'} message={message} onClose={() => setErrorAlertClosed(true)} closable showIcon />
     </div>
   );
 };

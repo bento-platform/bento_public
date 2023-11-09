@@ -49,17 +49,17 @@ const BeaconQueryUi = () => {
   const formInitialValues = { 'Assembly ID': beaconAssemblyIds.length === 1 && beaconAssemblyIds[0] };
   const uiInstructions = hasVariants ? 'Search by genomic variants, clinical metadata or both.' : '';
 
+  const hasError = hasFormError || hasApiError;
+  const showError = hasError && !errorAlertClosed;
 
-  const hasError = hasFormError || hasApiError
-  const showError = hasError && !errorAlertClosed
+  // should not be possible to have both errors simultaneously
+  // and api error is more important
+  const errorMessage = apiErrorMessage || formErrorMessage;
 
-  // not possible to have both errors simultaneously 
-  const errorMessage = apiErrorMessage || formErrorMessage  
-  
   const clearFormError = () => {
-    setHasFormError(false)
-    setFormErrorMessage('')
-  }
+    setHasFormError(false);
+    setFormErrorMessage('');
+  };
 
   // complexity of instructions suggests the form isn't intuitive enough
   const variantsInstructions = (
@@ -172,6 +172,7 @@ const BeaconQueryUi = () => {
     );
     const rangeQuery =
       formValues['Chromosome'] && formValues['Variant start'] && formValues['Variant end'] && formValues['Assembly ID'];
+
     const sequenceQuery =
       formValues['Chromosome'] &&
       formValues['Variant start'] &&
@@ -190,7 +191,7 @@ const BeaconQueryUi = () => {
       return;
     }
 
-    clearFormError()
+    clearFormError();
     setErrorAlertClosed(false);
     const jsonPayload = packageBeaconJSON(formValues);
     dispatch(makeBeaconQuery(jsonPayload));
@@ -210,9 +211,9 @@ const BeaconQueryUi = () => {
 
     // clear any existing errors if form now valid
     if (variantsFormValid(allValues)) {
-      clearFormError()
+      clearFormError();
     }
-    // can also check filter values here
+    // can also check filter values here (to e.g. avoid offerring duplicate options)
   };
 
   const SearchToolTip = ({ content }: { content: ReactNode }) => {

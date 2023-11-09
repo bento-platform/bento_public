@@ -108,8 +108,8 @@ export interface BeaconQueryResponse {
 }
 
 export interface BeaconErrorData {
-    error?: {
-      errorCode: number
-      errorMessage: string;
-    }
+  error?: {
+    errorCode: number;
+    errorMessage: string;
+  };
 }
