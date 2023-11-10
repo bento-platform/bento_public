@@ -40,10 +40,7 @@ const initialDataTypeState: DataTypeState = {
   dataTypes: [],
 };
 
-const reduceServiceDataTypes = (
-  state: DataTypeState, 
-  { payload }: PayloadAction<DataResponseArray>
-) => {
+const reduceServiceDataTypes = (state: DataTypeState, { payload }: PayloadAction<DataResponseArray>) => {
   const uniqueIds = new Set(state.dataTypes.map((data: DataTypeResponse) => data.id));
   const newData = payload.filter((data: DataTypeResponse) => !uniqueIds.has(data.id));
   state.dataTypes = [...state.dataTypes, ...newData];
