@@ -40,6 +40,16 @@ const initialDataTypeState: DataTypeState = {
   dataTypes: [],
 };
 
+const reduceServiceDataTypes = (
+  state: DataTypeState, 
+  { payload }: PayloadAction<DataResponseArray>
+) => {
+  const uniqueIds = new Set(state.dataTypes.map((data: DataTypeResponse) => data.id));
+  const newData = payload.filter((data: DataTypeResponse) => !uniqueIds.has(data.id));
+  state.dataTypes = [...state.dataTypes, ...newData];
+  state.isFetchingData = false;
+};
+
 // Create a slice to manage the state
 const DataTypeStore = createSlice({
   name: 'dataTypes',
@@ -52,17 +62,8 @@ const DataTypeStore = createSlice({
     builder.addCase(fetchGohanData.pending, (state) => {
       state.isFetchingData = true;
     });
-    builder.addCase(fetchKatsuData.fulfilled, (state, { payload }: PayloadAction<DataResponseArray>) => {
-      const uniqueIds = new Set(state.dataTypes.map((data) => data.id));
-      const newData = payload.filter((data) => !uniqueIds.has(data.id));
-      state.dataTypes = [...state.dataTypes, ...newData];
-    });
-    builder.addCase(fetchGohanData.fulfilled, (state, { payload }: PayloadAction<DataResponseArray>) => {
-      const uniqueIds = new Set(state.dataTypes.map((data) => data.id));
-      const newData = payload.filter((data) => !uniqueIds.has(data.id));
-      state.dataTypes = [...state.dataTypes, ...newData];
-      state.isFetchingData = false;
-    });
+    builder.addCase(fetchKatsuData.fulfilled, reduceServiceDataTypes);
+    builder.addCase(fetchGohanData.fulfilled, reduceServiceDataTypes);
     builder.addCase(fetchKatsuData.rejected, (state) => {
       state.isFetchingData = false;
     });
