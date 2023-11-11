@@ -36,7 +36,7 @@ const LastIngestionInfo: React.FC = () => {
 
   return (
     <Space direction="vertical" size={0}>
-      <Typography.Title level={3}>{t('Latest Data IngestionX')}</Typography.Title>
+      <Typography.Title level={3}>{t('Latest Data Ingestion')}</Typography.Title>
       <Space direction="horizontal">
         {hasData ? (
           queryableDataTypes.map((dataType: LastIngestionDataTypeResponse) => (
