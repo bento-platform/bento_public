@@ -63,7 +63,7 @@ const BeaconQueryUi = () => {
 
   // complexity of instructions suggests the form isn't intuitive enough
   const variantsInstructions = (
-    <div style={{minWidth: '510px'}}>
+    <div style={{ minWidth: '510px' }}>
       <h4>{td('Variant search')}</h4>
       <p>
         {td(
@@ -187,7 +187,9 @@ const BeaconQueryUi = () => {
     if (!variantsFormValid(formValues)) {
       setHasFormError(true);
       setErrorAlertClosed(false);
-      setFormErrorMessage((td('variants form should include either an end position or both reference and alternate bases')));
+      setFormErrorMessage(
+        td('variants form should include either an end position or both reference and alternate bases')
+      );
       return;
     }
 
@@ -218,7 +220,7 @@ const BeaconQueryUi = () => {
 
   const SearchToolTip = ({ children }: { children: ReactNode }) => {
     return (
-      <Tooltip title={children} overlayInnerStyle={{display: 'inline-block'}}>
+      <Tooltip title={children} overlayInnerStyle={{ display: 'inline-block' }}>
         <InfoCircleOutlined />
       </Tooltip>
     );
@@ -243,7 +245,7 @@ const BeaconQueryUi = () => {
                   style={CARD_STYLE}
                   headStyle={CARD_HEAD_STYLE}
                   bodyStyle={CARD_BODY_STYLE}
-                  extra={<SearchToolTip >{variantsInstructions}</SearchToolTip>}
+                  extra={<SearchToolTip>{variantsInstructions}</SearchToolTip>}
                 >
                   <VariantsForm beaconAssemblyIds={beaconAssemblyIds} />
                 </Card>
@@ -255,7 +257,7 @@ const BeaconQueryUi = () => {
                 style={CARD_STYLE}
                 headStyle={CARD_HEAD_STYLE}
                 bodyStyle={CARD_BODY_STYLE}
-                extra={<SearchToolTip >{metadataInstructions} </SearchToolTip>}
+                extra={<SearchToolTip>{metadataInstructions} </SearchToolTip>}
               >
                 <Filters filters={filters} setFilters={setFilters} form={form} querySections={querySections} />
               </Card>
