@@ -67,15 +67,15 @@ const BeaconQueryUi = () => {
       <h4>{td('Variant search')}</h4>
       <p>
         {td(
-          'To search for all variants inside a range: fill both "Variant start" and "Variant end", all variants inside the range will be returned. You can optionally filter by reference or alternate bases.'
+          "To search for all variants inside a range: fill both 'Variant start' and 'Variant end', all variants inside the range will be returned. You can optionally filter by reference or alternate bases."
         )}
       </p>
       <p>
         {td(
-          'To search for a variant at a particular position, either set "Variant end" to the same value in "Variant start", or fill in values for both reference and alternate bases.'
+          "To search for a variant at a particular position, either set 'Variant end' to the same value in 'Variant start', or fill in values for both reference and alternate bases."
         )}
       </p>
-      <p>{td('"Chromosome", "Variant start" and "Assembly ID" are always required.')}</p>
+      <p>{td("'Chromosome', 'Variant start' and 'Assembly ID' are always required.")}</p>
       <p>
         {td('Coordinates are one-based.')} {td('Leave this form blank to search by metadata only.')}
       </p>
