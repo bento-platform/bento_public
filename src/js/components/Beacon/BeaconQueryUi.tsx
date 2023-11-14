@@ -187,7 +187,7 @@ const BeaconQueryUi = () => {
     if (!variantsFormValid(formValues)) {
       setHasFormError(true);
       setErrorAlertClosed(false);
-      setFormErrorMessage('variants form should include either an end position or both reference and alternate bases');
+      setFormErrorMessage((td('variants form should include either an end position or both reference and alternate bases')));
       return;
     }
 
@@ -265,7 +265,7 @@ const BeaconQueryUi = () => {
             <Col span={24}>
               {showError && (
                 <BeaconErrorMessage
-                  message={`Beacon error: ${errorMessage}`}
+                  message={`${td('Beacon error')}: ${errorMessage}`}
                   setErrorAlertClosed={setErrorAlertClosed}
                 />
               )}
