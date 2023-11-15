@@ -1,6 +1,5 @@
 import React, { useEffect, useState, ReactNode } from 'react';
-import { useAppSelector, useAppDispatch } from '@/hooks';
-import { useTranslation } from 'react-i18next';
+import { useAppSelector, useAppDispatch, useTranslationDefault } from '@/hooks';
 import { Button, Card, Col, Form, Row, Tooltip } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import Filters from './Filters';
@@ -18,7 +17,6 @@ import {
   BUTTON_AREA_STYLE,
   BUTTON_STYLE,
 } from '@/constants/beaconConstants';
-import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 
 // TODOs
 // example searches, either hardcoded or configurable
@@ -27,7 +25,7 @@ import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 const STARTER_FILTER = { index: 1, active: true };
 
 const BeaconQueryUi = () => {
-  const { t: td } = useTranslation(DEFAULT_TRANSLATION);
+  const td = useTranslationDefault();
   const [form] = Form.useForm();
   const [filters, setFilters] = useState<FormFilter[]>([STARTER_FILTER]);
   const [hasVariants, setHasVariants] = useState<boolean>(false);
