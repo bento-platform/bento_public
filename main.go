@@ -213,8 +213,6 @@ func main() {
 			modifiedResult = append(modifiedResult, item)
 		}
 
-		fmt.Printf("modifiedResult: %v\n", modifiedResult)
-
 		return c.JSON(http.StatusOK, modifiedResult)
 	}
 
