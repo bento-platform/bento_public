@@ -53,7 +53,6 @@
   "Metadata": "Métadonnées",
   "Search Beacon": "Recherche sur le Beacon",
   "Clear Form": "Effacer le formulaire",
-  "Variants search requires the fields Chromosome, Variant start, Assembly ID, and at least one of Variant end or Alternate base(s).": "La recherche de variantes nécessite les champs 'Chromosome', 'Début du variant', 'Assemblage génomique', et au moins un des champs 'Fin du variant' ou 'Base(s) alternative(s)'.",
   "Search over clinical or phenotypic properties.": "Recherche sur les propriétés cliniques ou phénotypiques.",
   "Chromosome": "Chromosome",
   "Variant start": "Début du variant",
@@ -66,7 +65,7 @@
   "search field required": "champ de recherche requis",
   "value required": "valeur requise",
   "maximum of": "maximum de",
-  "filters permitted":  "filtres autorisés",
+  "filters permitted": "filtres autorisés",
   "Enter a chromosome name, e.g.: \"17\" or \"X\"": "Entrer un nom de chromosome, par exemple : \"17\" ou \"X\"",
   "enter a position number, e.g. \"100\"": "entrer un numéro de position, par exemple \"100\"",
   "enter a position number, e.g. \"200\"": "entrer un numéro de position, par exemple \"200\"",
@@ -74,5 +73,13 @@
   "e.g.": "par exemple",
   "or": "ou",
   "Ingestion History Is Empty": "L'historique d'ingestion est vide",
-  "Latest Data Ingestion": "Dernière ingestion de données"
+  "Latest Data Ingestion": "Dernière ingestion de données",
+  "Beacon error": "TODO Beacon error",
+  "variants form should include either an end position or both reference and alternate bases": "TODO variants form should include either an end position or both reference and alternate bases",
+  "Variant search": "TODO Variant search",
+  "To search for all variants inside a range: fill both \"Variant start\" and \"Variant end\", all variants inside the range will be returned. You can optionally filter by reference or alternate bases.": "TODO To search for all variants inside a range: fill both \"Variant start\" and \"Variant end\", all variants inside the range will be returned. You can optionally filter by reference or alternate bases.",
+  "To search for a variant at a particular position, either set \"Variant end\" to the same value in \"Variant start\", or fill in values for both reference and alternate bases.": "TODO To search for a variant at a particular position, either set \"Variant end\" to the same value in \"Variant start\", or fill in values for both reference and alternate bases.",
+  "\"Chromosome\", \"Variant start\" and \"Assembly ID\" are always required.": "TODO \"Chromosome\", \"Variant start\" and \"Assembly ID\" are always required.",
+  "Coordinates are one-based.": "TODO Coordinates are one-based.",
+  "Leave this form blank to search by metadata only.": "TODO Leave this form blank to search by metadata only."
 }
