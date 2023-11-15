@@ -200,7 +200,22 @@ func main() {
 			return err
 		}
 
-		return c.JSON(http.StatusOK, result)
+		resultSlice, ok := result.([]JsonLike)
+		if !ok {
+			return fmt.Errorf("result is not of type []JsonLike")
+		}
+
+		var modifiedResult []JsonLike
+
+		// Remove the "count" key
+		for _, item := range resultSlice {
+			item["count"] = nil
+			modifiedResult = append(modifiedResult, item)
+		}
+
+		fmt.Printf("modifiedResult: %v\n", modifiedResult)
+
+		return c.JSON(http.StatusOK, modifiedResult)
 	}
 
 	fetchAndSetKatsuPublic := func(c echo.Context, katsuCache *cache.Cache) (JsonLike, error) {
