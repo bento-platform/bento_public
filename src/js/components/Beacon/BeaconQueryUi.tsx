@@ -215,7 +215,7 @@ const BeaconQueryUi = () => {
     if (variantsFormValid(allValues)) {
       clearFormError();
     }
-    // can also check filter values here (to e.g. avoid offerring duplicate options)
+    // can also check filter values here (to e.g. avoid offering duplicate options)
   };
 
   const SearchToolTip = ({ children }: { children: ReactNode }) => {
