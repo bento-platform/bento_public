@@ -207,7 +207,7 @@ func main() {
 
 		var modifiedResult []JsonLike
 
-		// Remove the "count" key
+		// Update the "count" value
 		for _, item := range resultSlice {
 			item["count"] = nil
 			modifiedResult = append(modifiedResult, item)
