@@ -193,27 +193,28 @@ func main() {
 		return jsonFormattedData, nil
 	}
 
-	gohanRequestPublic := func(c echo.Context) error {
-		path := fmt.Sprintf("/data-types")
-		result, err := genericRequestJsonOnly(fmt.Sprintf("%s%s", cfg.GohanUrl, path), nil, c, jsonDeserialize)
-		if err != nil {
-			return err
+	dataTypesEndpointHandler := func(baseUrl string) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			fullPath := fmt.Sprintf("%s/data-types", baseUrl)
+			result, err := genericRequestJsonOnly(fullPath, nil, c, jsonDeserialize)
+			if err != nil {
+				return err
+			}
+
+			resultSlice, ok := result.([]JsonLike)
+			if !ok {
+				return fmt.Errorf("result is not of type []JsonLike")
+			}
+
+			var modifiedResult []JsonLike
+			// Update the "count" value
+			for _, item := range resultSlice {
+				item["count"] = nil
+				modifiedResult = append(modifiedResult, item)
+			}
+
+			return c.JSON(http.StatusOK, modifiedResult)
 		}
-
-		resultSlice, ok := result.([]JsonLike)
-		if !ok {
-			return fmt.Errorf("result is not of type []JsonLike")
-		}
-
-		var modifiedResult []JsonLike
-
-		// Update the "count" value
-		for _, item := range resultSlice {
-			item["count"] = nil
-			modifiedResult = append(modifiedResult, item)
-		}
-
-		return c.JSON(http.StatusOK, modifiedResult)
 	}
 
 	fetchAndSetKatsuPublic := func(c echo.Context, katsuCache *cache.Cache) (JsonLike, error) {
@@ -388,16 +389,9 @@ func main() {
 		return c.String(http.StatusOK, string(data))
 	})
 
-	e.GET("/gohan/data-types", gohanRequestPublic)
+	e.GET("/gohan/data-types", dataTypesEndpointHandler(cfg.GohanUrl))
 
-	e.GET("/katsu/data-types", func(c echo.Context) error {
-		data, err := katsuRequestFormattedData("/data-types", c)
-		if err != nil {
-			return err
-		}
-
-		return c.String(http.StatusOK, string(data))
-	})
+	e.GET("/katsu/data-types", dataTypesEndpointHandler(cfg.KatsuUrl))
 
 	// Run
 	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", cfg.Port)))
