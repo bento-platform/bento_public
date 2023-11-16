@@ -1,6 +1,6 @@
 import React, { useEffect, useState, ReactNode } from 'react';
 import { useAppSelector, useAppDispatch, useTranslationDefault } from '@/hooks';
-import { Button, Card, Col, Form, Row, Tooltip } from 'antd';
+import { Button, Card, Col, Form, Row, Space, Tooltip, Typography } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import Filters from './Filters';
 import BeaconSearchResults from './BeaconSearchResults';
@@ -17,12 +17,25 @@ import {
   BUTTON_AREA_STYLE,
   BUTTON_STYLE,
 } from '@/constants/beaconConstants';
-
+const { Text, Title } = Typography;
 // TODOs
 // example searches, either hardcoded or configurable
 // more intuitive variants ui
 
 const STARTER_FILTER = { index: 1, active: true };
+
+// complexity of instructions suggests the form isn't intuitive enough
+const VARIANTS_INSTRUCTIONS_TITLE = 'Variant search';
+const VARIANTS_INSTRUCTIONS_LINE1 =
+  'To search for all variants inside a range: fill both "Variant start" and "Variant end", all variants inside the range will be returned. You can optionally filter by reference or alternate bases.';
+const VARIANTS_INSTRUCTIONS_LINE2 =
+  'To search for a variant at a particular position, either set "Variant end" to the same value in "Variant start", or fill in values for both reference and alternate bases.';
+const VARIANTS_INSTRUCTIONS_LINE3 = '"Chromosome", "Variant start" and "Assembly ID" are always required.';
+const VARIANTS_INSTRUCTIONS_LINE4 = 'Coordinates are one-based.';
+const VARIANTS_INSTRUCTIONS_LINE5 = 'Leave this form blank to search by metadata only.';
+const METADATA_INSTRUCTIONS = 'Search over clinical or phenotypic properties.';
+const VARIANTS_FORM_ERROR_MESSAGE =
+  'variants form should include either an end position or both reference and alternate bases';
 
 const BeaconQueryUi = () => {
   const td = useTranslationDefault();
@@ -58,29 +71,6 @@ const BeaconQueryUi = () => {
     setHasFormError(false);
     setFormErrorMessage('');
   };
-
-  // complexity of instructions suggests the form isn't intuitive enough
-  const variantsInstructions = (
-    <div style={{ minWidth: '510px' }}>
-      <h4>{td('Variant search')}</h4>
-      <p>
-        {td(
-          'To search for all variants inside a range: fill both "Variant start" and "Variant end", all variants inside the range will be returned. You can optionally filter by reference or alternate bases.'
-        )}
-      </p>
-      <p>
-        {td(
-          'To search for a variant at a particular position, either set "Variant end" to the same value in "Variant start", or fill in values for both reference and alternate bases.'
-        )}
-      </p>
-      <p>{td('"Chromosome", "Variant start" and "Assembly ID" are always required.')}</p>
-      <p>
-        {td('Coordinates are one-based.')} {td('Leave this form blank to search by metadata only.')}
-      </p>
-    </div>
-  );
-
-  const metadataInstructions = <p>{td('Search over clinical or phenotypic properties.')}</p>;
 
   useEffect(() => {
     // wait for config
@@ -185,9 +175,7 @@ const BeaconQueryUi = () => {
     if (!variantsFormValid(formValues)) {
       setHasFormError(true);
       setErrorAlertClosed(false);
-      setFormErrorMessage(
-        td('variants form should include either an end position or both reference and alternate bases')
-      );
+      setFormErrorMessage(td(VARIANTS_FORM_ERROR_MESSAGE));
       return;
     }
 
@@ -216,6 +204,10 @@ const BeaconQueryUi = () => {
     // can also check filter values here (to e.g. avoid offering duplicate options)
   };
 
+  // Tooltips
+
+  const ToolTipText = ({ children }: { children: string }) => <Text style={{ color: 'white' }}>{children}</Text>;
+
   const SearchToolTip = ({ children }: { children: ReactNode }) => {
     return (
       <Tooltip title={children} overlayInnerStyle={{ display: 'inline-block' }}>
@@ -223,6 +215,20 @@ const BeaconQueryUi = () => {
       </Tooltip>
     );
   };
+
+  const variantsInstructions = (
+    <Space direction="vertical" style={{ minWidth: '510px' }}>
+      <Title level={4} style={{ color: 'white', marginTop: '10px' }}>
+        {VARIANTS_INSTRUCTIONS_TITLE}
+      </Title>
+      <ToolTipText>{td(VARIANTS_INSTRUCTIONS_LINE1)}</ToolTipText>
+      <ToolTipText>{td(VARIANTS_INSTRUCTIONS_LINE2)}</ToolTipText>
+      <ToolTipText>{td(VARIANTS_INSTRUCTIONS_LINE3)}</ToolTipText>
+      <ToolTipText>{td(VARIANTS_INSTRUCTIONS_LINE4) + ' ' + td(VARIANTS_INSTRUCTIONS_LINE5)}</ToolTipText>
+    </Space>
+  );
+
+  const metadataInstructions = <ToolTipText>{METADATA_INSTRUCTIONS}</ToolTipText>;
 
   return (
     <div style={WRAPPER_STYLE}>
