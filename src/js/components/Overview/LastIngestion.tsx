@@ -13,9 +13,8 @@ const LastIngestionInfo: React.FC = () => {
   const { t, i18n } = useTranslation(DEFAULT_TRANSLATION);
 
   const dataTypesObject = useAppSelector((state) => state.lastIngestionData?.dataTypes) || {};
-  const dataTypesArray = Object.values(dataTypesObject);
 
-  const sortedDataTypes = dataTypesArray.sort((a, b) => a.label.localeCompare(b.label));
+  const sortedDataTypes = Object.values(dataTypesObject).sort((a, b) => a.label.localeCompare(b.label));
 
   // Filter out the queryable data types
   const queryableDataTypes = sortedDataTypes.filter((dataType: LastIngestionDataTypeResponse) => dataType.queryable);
