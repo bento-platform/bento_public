@@ -6,14 +6,19 @@ import { useTranslation } from 'react-i18next';
 import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { useAppSelector } from '@/hooks';
 import { getDataTypeLabel } from '@/types/dataTypes';
-import { LastIngestionDataTypeResponse, DataResponseArray } from '@/types/lastIngestionDataTypeResponse';
+
+import { LastIngestionDataTypeResponse } from '@/types/lastIngestionDataTypeResponse';
 
 const LastIngestionInfo: React.FC = () => {
   const { t, i18n } = useTranslation(DEFAULT_TRANSLATION);
 
-  const lastEndTimesByDataType: DataResponseArray = useAppSelector((state) => state.lastIngestionData?.dataTypes) || [];
+  const dataTypesObject = useAppSelector((state) => state.lastIngestionData?.dataTypes) || {};
+  const dataTypesArray = Object.values(dataTypesObject);
 
-  const queryableDataTypes = lastEndTimesByDataType.filter((item: LastIngestionDataTypeResponse) => item.queryable);
+  const sortedDataTypes = dataTypesArray.sort((a, b) => a.label.localeCompare(b.label));
+
+  // Filter out the queryable data types
+  const queryableDataTypes = sortedDataTypes.filter((dataType: LastIngestionDataTypeResponse) => dataType.queryable);
 
   const formatDate = useCallback(
     (dateString: string) => {
@@ -42,7 +47,7 @@ const LastIngestionInfo: React.FC = () => {
           queryableDataTypes.map((dataType: LastIngestionDataTypeResponse) => (
             <Card key={dataType.id}>
               <Space direction="vertical">
-                <Typography.Text style={{ color: 'rgba(0,0,0,0.45)' }}>{getDataTypeLabel(dataType.id)}</Typography.Text>
+                <Typography.Text style={{ color: 'rgba(0,0,0,0.45)' }}>{t(getDataTypeLabel(dataType.id))}</Typography.Text>
                 <Typography.Text>
                   <CalendarOutlined /> {dataType.last_ingested ? formatDate(dataType.last_ingested) : 'Not Available'}
                 </Typography.Text>
