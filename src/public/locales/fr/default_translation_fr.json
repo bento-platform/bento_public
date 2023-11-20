@@ -74,5 +74,6 @@
   "e.g.": "par exemple",
   "or": "ou",
   "Ingestion History Is Empty": "L'historique d'ingestion est vide",
-  "Latest Data Ingestion": "Dernière ingestion de données"
+  "Latest Data Ingestion": "Dernière ingestion de données",
+  "Clinical Data": "Données cliniques"
 }
