@@ -22,21 +22,25 @@ export const fetchGohanData = createAsyncThunk('dataTypes/fetchGohanData', (_, {
 
 // Define the state structure
 export interface DataTypeState {
-  isFetchingData: boolean;
-  dataTypes: DataResponseArray;
+  isFetchingKatsuData: boolean;
+  isFetchingGohanData: boolean;
+  dataTypes: DataTypeMap;
 }
 
 // Initialize the state
 const initialDataTypeState: DataTypeState = {
-  isFetchingData: false,
-  dataTypes: [],
+  isFetchingKatsuData: false,
+  isFetchingGohanData: false,
+  dataTypes: {},
 };
 
-const reduceServiceDataTypes = (state: DataTypeState, { payload }: PayloadAction<DataResponseArray>) => {
-  const uniqueIds = new Set(state.dataTypes.map((data: DataTypeResponse) => data.id));
-  const newData = payload.filter((data: DataTypeResponse) => !uniqueIds.has(data.id));
-  state.dataTypes = [...state.dataTypes, ...newData];
-  state.isFetchingData = false;
+const reduceServiceDataTypes = (state: DataTypeState, { payload }: PayloadAction<LastIngestionDataTypeResponse[]>) => {
+  state.dataTypes = {
+    ...state.dataTypes,
+    ...Object.fromEntries(payload.map((data) => [data.id, data])),
+  };
+  state.isFetchingKatsuData = false;
+  state.isFetchingGohanData = false;
 };
 
 // Create a slice to manage the state
@@ -46,18 +50,18 @@ const DataTypeStore = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchKatsuData.pending, (state) => {
-      state.isFetchingData = true;
+      state.isFetchingKatsuData = true;
     });
     builder.addCase(fetchGohanData.pending, (state) => {
-      state.isFetchingData = true;
+      state.isFetchingGohanData = true;
     });
     builder.addCase(fetchKatsuData.fulfilled, reduceServiceDataTypes);
     builder.addCase(fetchGohanData.fulfilled, reduceServiceDataTypes);
     builder.addCase(fetchKatsuData.rejected, (state) => {
-      state.isFetchingData = false;
+      state.isFetchingKatsuData = false;
     });
     builder.addCase(fetchGohanData.rejected, (state) => {
-      state.isFetchingData = false;
+      state.isFetchingGohanData = false;
     });
   },
 });
