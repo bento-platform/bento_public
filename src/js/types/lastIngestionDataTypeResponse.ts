@@ -6,4 +6,4 @@ export interface LastIngestionDataTypeResponse {
   queryable: boolean;
 }
 
-export type DataResponseArray = LastIngestionDataTypeResponse[];
+export type DataTypeMap = { [id: string]: LastIngestionDataTypeResponse };
