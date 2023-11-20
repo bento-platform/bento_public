@@ -39,8 +39,6 @@ const reduceServiceDataTypes = (state: DataTypeState, { payload }: PayloadAction
     ...state.dataTypes,
     ...Object.fromEntries(payload.map((data) => [data.id, data])),
   };
-  state.isFetchingKatsuData = false;
-  state.isFetchingGohanData = false;
 };
 
 // Create a slice to manage the state
@@ -55,8 +53,14 @@ const DataTypeStore = createSlice({
     builder.addCase(fetchGohanData.pending, (state) => {
       state.isFetchingGohanData = true;
     });
-    builder.addCase(fetchKatsuData.fulfilled, reduceServiceDataTypes);
-    builder.addCase(fetchGohanData.fulfilled, reduceServiceDataTypes);
+    builder.addCase(fetchKatsuData.fulfilled, (state, action) => {
+      reduceServiceDataTypes(state, action);
+      state.isFetchingKatsuData = false;
+    });
+    builder.addCase(fetchGohanData.fulfilled, (state, action) => {
+      reduceServiceDataTypes(state, action);
+      state.isFetchingGohanData = false;
+    });
     builder.addCase(fetchKatsuData.rejected, (state) => {
       state.isFetchingKatsuData = false;
     });
