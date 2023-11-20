@@ -47,7 +47,9 @@ const LastIngestionInfo: React.FC = () => {
           queryableDataTypes.map((dataType: LastIngestionDataTypeResponse) => (
             <Card key={dataType.id}>
               <Space direction="vertical">
-                <Typography.Text style={{ color: 'rgba(0,0,0,0.45)' }}>{t(getDataTypeLabel(dataType.id))}</Typography.Text>
+                <Typography.Text style={{ color: 'rgba(0,0,0,0.45)' }}>
+                  {t(getDataTypeLabel(dataType.id))}
+                </Typography.Text>
                 <Typography.Text>
                   <CalendarOutlined /> {dataType.last_ingested ? formatDate(dataType.last_ingested) : 'Not Available'}
                 </Typography.Text>
