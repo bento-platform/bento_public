@@ -77,8 +77,10 @@
   "Beacon error": "Beacon error",
   "variants form should include either an end position or both reference and alternate bases": "variants form should include either an end position or both reference and alternate bases",
   "Variant search": "Variant search",
-  "To search for all variants inside a range: fill both \"Variant start\" and \"Variant end\", all variants inside the range will be returned. You can optionally filter by reference or alternate bases.": "To search for all variants inside a range: fill both \"Variant start\" and \"Variant end\", all variants inside the range will be returned. You can optionally filter by reference or alternate bases.",
-  "To search for a variant at a particular position, either set \"Variant end\" to the same value in \"Variant start\", or fill in values for both reference and alternate bases.": "To search for a variant at a particular position, either set \"Variant end\" to the same value in \"Variant start\", or fill in values for both reference and alternate bases.",
+  "To search for all variants inside a range: fill both \"Variant start\" and \"Variant end\",": "To search for all variants inside a range: fill both \"Variant start\" and \"Variant end\",",
+  "all variants inside the range will be returned. You can optionally filter by reference or alternate bases.": "all variants inside the range will be returned. You can optionally filter by reference or alternate bases.",
+  "To search for a variant at a particular position, either set \"Variant end\" to the same value in \"Variant start\",": "To search for a variant at a particular position, either set \"Variant end\" to the same value in \"Variant start\",",
+  "or fill in values for both reference and alternate bases.": "or fill in values for both reference and alternate bases.",
   "\"Chromosome\", \"Variant start\" and \"Assembly ID\" are always required.": "\"Chromosome\", \"Variant start\" and \"Assembly ID\" are always required.",
   "Coordinates are one-based.": "Coordinates are one-based.",
   "Leave this form blank to search by metadata only.": "Leave this form blank to search by metadata only."
