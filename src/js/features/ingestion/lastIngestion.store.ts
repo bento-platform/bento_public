@@ -3,15 +3,7 @@ import axios from 'axios';
 import { katsuLastIngestionsUrl, gohanLastIngestionsUrl } from '@/constants/configConstants';
 import { printAPIError } from '@/utils/error.util';
 
-export interface DataTypeResponse {
-  count: number | null;
-  id: string;
-  label: string;
-  last_ingested: string | null;
-  queryable: boolean;
-}
-
-export type DataResponseArray = DataTypeResponse[];
+import { LastIngestionDataTypeResponse, DataTypeMap } from '@/types/lastIngestionDataTypeResponse';
 
 // Async thunks to fetch data from the two endpoints
 export const fetchKatsuData = createAsyncThunk('dataTypes/fetchKatsuData', (_, { rejectWithValue }) =>
