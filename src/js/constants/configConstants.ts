@@ -5,7 +5,8 @@ export const publicOverviewUrl = '/overview';
 export const searchFieldsUrl = '/fields';
 export const katsuUrl = '/katsu';
 export const provenanceUrl = '/provenance';
-export const lastIngestionsUrl = '/wes-runs';
+export const katsuLastIngestionsUrl = '/katsu/data-types';
+export const gohanLastIngestionsUrl = '/gohan/data-types';
 
 export const DEFAULT_TRANSLATION = 'default_translation';
 export const NON_DEFAULT_TRANSLATION = 'translation';
