@@ -133,6 +133,8 @@ const BeaconQueryUi = () => {
     );
   };
 
+  const isFetchingBeaconQuery = useAppSelector((state) => state.beaconQuery.isFetchingQueryResponse);
+
   return (
     <div style={WRAPPER_STYLE}>
       <BeaconSearchResults />
@@ -173,7 +175,7 @@ const BeaconQueryUi = () => {
           <Row>
             <Col span={24}>
               <div style={BUTTON_AREA_STYLE}>
-                <Button type="primary" htmlType="submit" style={BUTTON_STYLE}>
+                <Button type="primary" htmlType="submit" loading={isFetchingBeaconQuery} style={BUTTON_STYLE}>
                   {td('Search Beacon')}
                 </Button>
                 <Button onClick={handleClearForm} style={BUTTON_STYLE}>
