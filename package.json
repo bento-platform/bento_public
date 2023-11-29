@@ -9,7 +9,8 @@
     "watch": "npx webpack --mode=development --watch",
     "gobuild": "./buildandrun.sh",
     "lint": "npx eslint src/js",
-    "lint-fix": "npx eslint --fix src/js"
+    "lint-fix": "npx eslint --fix src/js",
+    "prettier": "npx prettier --write src/js"
   },
   "keywords": [],
   "author": "",
