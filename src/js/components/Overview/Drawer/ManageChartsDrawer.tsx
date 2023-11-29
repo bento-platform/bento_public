@@ -36,19 +36,19 @@ const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: Manage
     >
       {sections.map(({ sectionTitle, charts }: { sectionTitle: string; charts: ChartDataField[] }, i: number) => (
         <div key={i}>
-          <Flex justify="space-between" align="center" style={{ padding: "10px 0" }}>
+          <Flex justify="space-between" align="center" style={{ padding: '10px 0' }}>
             <Title level={5} style={{ margin: '0' }}>
               {t(sectionTitle)}
             </Title>
             <Space>
-            <Button
-              size="small"
-              onClick={() => {
-                dispatch(setAllDisplayedCharts({ section: sectionTitle }));
-              }}
-            >
-              Show All
-            </Button>
+              <Button
+                size="small"
+                onClick={() => {
+                  dispatch(setAllDisplayedCharts({ section: sectionTitle }));
+                }}
+              >
+                Show All
+              </Button>
               <Button
                 size="small"
                 onClick={() => {
