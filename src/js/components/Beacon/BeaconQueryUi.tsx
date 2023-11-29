@@ -132,7 +132,7 @@ const BeaconQueryUi = () => {
       </Tooltip>
     );
   };
-  
+
   const isFetchingBeaconQuery = useAppSelector((state) => state.beaconQuery.isFetchingQueryResponse);
 
   return (
