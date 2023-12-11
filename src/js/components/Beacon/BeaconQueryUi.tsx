@@ -4,8 +4,8 @@ import { Button, Card, Col, Form, Row, Space, Tooltip, Typography } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import Filters from './Filters';
 import BeaconSearchResults from './BeaconSearchResults';
-import VariantsForm from './VariantsForm';
 import BeaconErrorMessage from './BeaconErrorMessage';
+import VariantsForm from './VariantsForm';
 import { makeBeaconQuery } from '@/features/beacon/beaconQuery.store';
 import { BeaconQueryPayload, FormFilter, FormValues, PayloadFilter, PayloadVariantsQuery } from '@/types/beacon';
 import {
