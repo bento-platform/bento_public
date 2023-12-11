@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 import { Alert } from 'antd';
 
 const BeaconErrorMessage = ({ message, onClose }: BeaconErrorMessageProps) => {
