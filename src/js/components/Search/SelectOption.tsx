@@ -1,14 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { Select } from 'antd';
-import { useTranslation } from 'react-i18next';
 
 import { addQueryParam, makeGetKatsuPublic } from '@/features/search/query.store';
-import { NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
-import { useAppDispatch, useAppSelector } from '@/hooks';
+import { useAppDispatch, useAppSelector, useTranslationCustom } from '@/hooks';
 
 const SelectOption = ({ id, isChecked, options }: SelectOptionProps) => {
-  const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
+  const t = useTranslationCustom();
   const dispatch = useAppDispatch();
 
   const queryParams = useAppSelector((state) => state.query.queryParams);

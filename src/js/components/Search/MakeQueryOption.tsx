@@ -1,18 +1,16 @@
 import React from 'react';
 import { Row, Col, Checkbox } from 'antd';
-import { useTranslation } from 'react-i18next';
 
 import OptionDescription from './OptionDescription';
 import { addQueryParam, makeGetKatsuPublic, removeQueryParam } from '@/features/search/query.store';
 import SelectOption from './SelectOption';
 
-import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
-import { useAppDispatch, useAppSelector } from '@/hooks';
+import { useAppDispatch, useAppSelector, useTranslationCustom, useTranslationDefault } from '@/hooks';
 import { Field } from '@/types/search';
 
 const MakeQueryOption = ({ queryField }: MakeQueryOptionProps) => {
-  const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
-  const { t: td } = useTranslation(DEFAULT_TRANSLATION);
+  const t = useTranslationCustom();
+  const td = useTranslationDefault();
   const dispatch = useAppDispatch();
 
   const { title, id, description, config, options } = queryField;

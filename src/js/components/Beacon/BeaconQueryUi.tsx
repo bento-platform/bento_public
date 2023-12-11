@@ -233,6 +233,7 @@ const BeaconQueryUi = () => {
   );
 
   const metadataInstructions = <ToolTipText>{METADATA_INSTRUCTIONS}</ToolTipText>;
+  const isFetchingBeaconQuery = useAppSelector((state) => state.beaconQuery.isFetchingQueryResponse);
 
   return (
     <div style={WRAPPER_STYLE}>
@@ -280,7 +281,7 @@ const BeaconQueryUi = () => {
                 />
               )}
               <div style={BUTTON_AREA_STYLE}>
-                <Button type="primary" htmlType="submit" style={BUTTON_STYLE}>
+                <Button type="primary" htmlType="submit" loading={isFetchingBeaconQuery} style={BUTTON_STYLE}>
                   {td('Search Beacon')}
                 </Button>
                 <Button onClick={handleClearForm} style={BUTTON_STYLE}>

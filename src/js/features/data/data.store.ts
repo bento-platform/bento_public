@@ -47,6 +47,28 @@ const data = createSlice({
       const chartObj = state.sections.find((e) => e.sectionTitle === section)!.charts.find((c) => c.id === chart)!;
       chartObj.width = width;
     },
+    setAllDisplayedCharts: (state, { payload }: PayloadAction<{ section?: string }>) => {
+      if (payload.section) {
+        state.sections
+          .find((e) => e.sectionTitle === payload.section)!
+          .charts.forEach((_, ind, arr) => {
+            arr[ind].isDisplayed = true;
+          });
+      } else {
+        state.sections.forEach((section) => {
+          section.charts.forEach((val, ind, arr) => {
+            arr[ind].isDisplayed = true;
+          });
+        });
+      }
+    },
+    hideAllSectionCharts: (state, { payload }: PayloadAction<{ section: string }>) => {
+      state.sections
+        .find((e) => e.sectionTitle === payload.section)!
+        .charts.forEach((_, ind, arr) => {
+          arr[ind].isDisplayed = false;
+        });
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -64,6 +86,13 @@ const data = createSlice({
   },
 });
 
-export const { rearrange, disableChart, setDisplayedCharts, setChartWidth } = data.actions;
+export const {
+  rearrange,
+  disableChart,
+  setDisplayedCharts,
+  setChartWidth,
+  setAllDisplayedCharts,
+  hideAllSectionCharts,
+} = data.actions;
 export { makeGetDataRequestThunk };
 export default data.reducer;

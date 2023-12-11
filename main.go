@@ -23,7 +23,7 @@ const ConfigLogTemplate = `Config --
 	Static Files: %s
 	Client Name: %s
 	Katsu URL: %v
-	WES URL: %v
+	Gohan URL: %v
 	Bento Portal Url: %s
 	Port: %d
 	Translated: %t
@@ -37,7 +37,7 @@ type BentoConfig struct {
 	StaticFilesPath string `envconfig:"BENTO_PUBLIC_STATIC_FILES_PATH" default:"./www"`
 	ClientName      string `envconfig:"BENTO_PUBLIC_CLIENT_NAME"`
 	KatsuUrl        string `envconfig:"BENTO_PUBLIC_KATSU_URL"`
-	WesUrl          string `envconfig:"BENTO_PUBLIC_WES_URL"`
+	GohanUrl        string `envconfig:"BENTO_PUBLIC_GOHAN_URL"`
 	BentoPortalUrl  string `envconfig:"BENTO_PUBLIC_PORTAL_URL"`
 	Port            int    `envconfig:"INTERNAL_PORT" default:"8090"`
 	Translated      bool   `envconfig:"BENTO_PUBLIC_TRANSLATED" default:"true"`
@@ -114,7 +114,7 @@ func main() {
 		cfg.StaticFilesPath,
 		cfg.ClientName,
 		cfg.KatsuUrl,
-		cfg.WesUrl,
+		cfg.GohanUrl,
 		cfg.BentoPortalUrl,
 		cfg.Port,
 		cfg.Translated,
@@ -176,14 +176,6 @@ func main() {
 		return c.JSON(http.StatusOK, result)
 	}
 
-	wesRequest := func(path string, qs url.Values, c echo.Context, rf responseFormatterFunc) error {
-		result, err := genericRequestJsonOnly(fmt.Sprintf("%s%s", cfg.WesUrl, path), qs, c, rf)
-		if err != nil {
-			return err
-		}
-		return c.JSON(http.StatusOK, result)
-	}
-
 	katsuRequestBasic := func(path string, c echo.Context) error {
 		return katsuRequest(path, nil, c, jsonDeserialize)
 	}
@@ -201,11 +193,28 @@ func main() {
 		return jsonFormattedData, nil
 	}
 
-	wesRequestWithDetailsAndPublic := func(c echo.Context) error {
-		qs := url.Values{}
-		qs.Add("with_details", "true")
-		qs.Add("public", "true")
-		return wesRequest("/runs", qs, c, jsonDeserialize)
+	dataTypesEndpointHandler := func(baseUrl string) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			fullPath := fmt.Sprintf("%s/data-types", baseUrl)
+			result, err := genericRequestJsonOnly(fullPath, nil, c, jsonDeserialize)
+			if err != nil {
+				return err
+			}
+
+			resultSlice, ok := result.([]JsonLike)
+			if !ok {
+				return fmt.Errorf("result is not of type []JsonLike")
+			}
+
+			var modifiedResult []JsonLike
+			// Update the "count" value
+			for _, item := range resultSlice {
+				item["count"] = nil
+				modifiedResult = append(modifiedResult, item)
+			}
+
+			return c.JSON(http.StatusOK, modifiedResult)
+		}
 	}
 
 	fetchAndSetKatsuPublic := func(c echo.Context, katsuCache *cache.Cache) (JsonLike, error) {
@@ -359,8 +368,6 @@ func main() {
 		return katsuRequestBasic("/api/public_search_fields", c)
 	})
 
-	e.GET("/wes-runs", wesRequestWithDetailsAndPublic)
-
 	e.GET("/provenance", func(c echo.Context) error {
 		// Query Katsu for datasets provenance
 		return katsuRequestBasic("/api/public_dataset", c)
@@ -381,6 +388,10 @@ func main() {
 
 		return c.String(http.StatusOK, string(data))
 	})
+
+	e.GET("/gohan/data-types", dataTypesEndpointHandler(cfg.GohanUrl))
+
+	e.GET("/katsu/data-types", dataTypesEndpointHandler(cfg.KatsuUrl))
 
 	// Run
 	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", cfg.Port)))

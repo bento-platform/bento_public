@@ -1,10 +1,9 @@
 import React, { ReactNode, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { InputNumber, Tree, TreeProps } from 'antd';
-import { useTranslation } from 'react-i18next';
 
 import { rearrange, setDisplayedCharts, setChartWidth } from '@/features/data/data.store';
-import { NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
+import { useTranslationCustom, useTranslationDefault } from '@/hooks';
 import { ChartDataField } from '@/types/data';
 
 interface MappedChartItem {
@@ -14,7 +13,9 @@ interface MappedChartItem {
 
 const ChartTree = ({ charts, section }: ChartTreeProps) => {
   const dispatch = useDispatch();
-  const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
+
+  const t = useTranslationCustom();
+  const td = useTranslationDefault();
 
   const allCharts: MappedChartItem[] = useMemo(
     () =>
@@ -23,7 +24,7 @@ const ChartTree = ({ charts, section }: ChartTreeProps) => {
           <div style={{ display: 'flex' }}>
             <span style={{ flex: 1 }}>{t(title)}</span>
             <span>
-              Width:{' '}
+              {td('Width')}:{' '}
               <InputNumber
                 size="small"
                 min={1}
@@ -42,7 +43,7 @@ const ChartTree = ({ charts, section }: ChartTreeProps) => {
         ),
         key: id,
       })),
-    [charts]
+    [charts, t, td]
   );
 
   const onChartDrop: TreeProps['onDrop'] = useMemo(() => {
