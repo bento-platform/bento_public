@@ -277,7 +277,7 @@ const BeaconQueryUi = () => {
               {showError && (
                 <BeaconErrorMessage
                   message={`${td('Beacon error')}: ${errorMessage}`}
-                  setErrorAlertClosed={setErrorAlertClosed}
+                  onClose={() => setErrorAlertClosed(true)}
                 />
               )}
               <div style={BUTTON_AREA_STYLE}>
