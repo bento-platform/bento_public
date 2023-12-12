@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { RootState } from '@/store';
-import { BeaconQueryPayload, BeaconQueryResponse } from '@/types/beacon';
 import { serializeChartData } from '@/utils/chart';
-import { printAPIError } from '@/utils/error.util';
+import { beaconApiError } from '@/utils/beaconApiError';
+import { BeaconQueryPayload, BeaconQueryResponse } from '@/types/beacon';
 import { ChartData } from '@/types/data';
 
 export const makeBeaconQuery = createAsyncThunk<
@@ -15,7 +15,7 @@ export const makeBeaconQuery = createAsyncThunk<
   return axios
     .post(beaconIndividualsEndpoint, payload)
     .then((res) => res.data)
-    .catch(printAPIError(rejectWithValue));
+    .catch(beaconApiError(rejectWithValue));
 });
 
 type BeaconQueryInitialStateType = {
@@ -26,6 +26,8 @@ type BeaconQueryInitialStateType = {
   biosampleChartData: ChartData[];
   experimentCount: number;
   experimentChartData: ChartData[];
+  hasApiError: boolean;
+  apiErrorMessage: string;
 };
 
 const initialState: BeaconQueryInitialStateType = {
@@ -36,6 +38,8 @@ const initialState: BeaconQueryInitialStateType = {
   biosampleChartData: [],
   experimentCount: 0,
   experimentChartData: [],
+  hasApiError: false,
+  apiErrorMessage: '',
 };
 
 const beaconQuery = createSlice({
@@ -44,6 +48,8 @@ const beaconQuery = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(makeBeaconQuery.pending, (state) => {
+      state.hasApiError = false;
+      state.apiErrorMessage = '';
       state.isFetchingQueryResponse = true;
     });
     builder.addCase(makeBeaconQuery.fulfilled, (state, { payload }) => {
@@ -56,9 +62,13 @@ const beaconQuery = createSlice({
       if (payload.responseSummary) {
         state.individualCount = payload.responseSummary.numTotalResults;
       }
+      state.hasApiError = false;
+      state.apiErrorMessage = '';
       state.isFetchingQueryResponse = false;
     });
-    builder.addCase(makeBeaconQuery.rejected, (state) => {
+    builder.addCase(makeBeaconQuery.rejected, (state, action) => {
+      state.hasApiError = true;
+      state.apiErrorMessage = action.payload as string; //passed from rejectWithValue
       state.isFetchingQueryResponse = false;
     });
   },

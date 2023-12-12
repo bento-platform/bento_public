@@ -106,3 +106,10 @@ export interface BeaconQueryResponse {
     numTotalResults: number;
   };
 }
+
+export interface BeaconErrorData {
+  error?: {
+    errorCode: number;
+    errorMessage: string;
+  };
+}

@@ -6,9 +6,6 @@ import AssemblyIdSelect from './AssemblyIdSelect';
 import { BeaconAssemblyIds } from '@/types/beacon';
 import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 
-// TODOs:
-// show which fields are required without removing the ability to leave the form blank
-
 // form state has to be one of these:
 // empty (except for autofilled assemblyID)
 // chrom, start, assemblyID, end
