@@ -1,12 +1,11 @@
 import React from 'react';
 import { Empty } from 'antd';
-import { useTranslation } from 'react-i18next';
-import { DEFAULT_TRANSLATION } from '../../constants/configConstants';
+import { useTranslationDefault } from '@/hooks';
 
 const CustomEmpty = ({ text }) => {
-  const { t } = useTranslation(DEFAULT_TRANSLATION);
+  const td = useTranslationDefault();
 
-  return <Empty description={t(text)} />;
+  return <Empty description={td(text)} />;
 };
 
 export default CustomEmpty;

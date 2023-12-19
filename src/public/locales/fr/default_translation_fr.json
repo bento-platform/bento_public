@@ -42,8 +42,10 @@
   "Date": "Date",
   "Dates": "Dates",
   "Description": "Description",
+  "Download DATS File": "Télécharcher le fichier DATS",
   "Manage Charts": "Gestion des tableaux",
   "Remove this chart": "Supprimer ce tableau",
+  "Width": "Largeur",
   "Insufficient data available.": "Pas suffisamment de données.",
   "Terms of Use": "Conditions d'utilisation (en anglais)",
   "No Data": "Pas de données",
@@ -67,9 +69,9 @@
   "maximum of": "maximum de",
   "filters permitted": "filtres autorisés",
   "Enter a chromosome name, e.g.: \"17\" or \"X\"": "Entrer un nom de chromosome, par exemple : \"17\" ou \"X\"",
-  "enter a position number, e.g. \"100\"": "entrer un numéro de position, par exemple \"100\"",
-  "enter a position number, e.g. \"200\"": "entrer un numéro de position, par exemple \"200\"",
-  "enter any combination of A, C, G, T, or N": "entrer une combinaison quelconque de A, C, G, T, ou N",
+  "Enter a position number, e.g. \"100\"": "Entrer un numéro de position, par exemple \"100\"",
+  "Enter a position number, e.g. \"200\"": "Entrer un numéro de position, par exemple \"200\"",
+  "Enter any combination of A, C, G, T, or N": "Entrer une combinaison quelconque de A, C, G, T, ou N",
   "e.g.": "par exemple",
   "or": "ou",
   "Ingestion History Is Empty": "L'historique d'ingestion est vide",
@@ -83,5 +85,6 @@
   "or fill in values for both reference and alternate bases.": "ou fournissez les valeurs pour la référence ainsi que les bases alternes.",
   "\"Chromosome\", \"Variant start\" and \"Assembly ID\" are always required.": "\"Chromosome\", \"Début du variant\" and \"Assemblage génomique\" sont toujours requis.",
   "Coordinates are one-based.": "Les coordonnées sont pour une seule base.",
-  "Leave this form blank to search by metadata only.": "Laissez ce formulaire vide pour effectuer une recherche sur les métadonnées seulement."
-  }
+  "Leave this form blank to search by metadata only.": "Laissez ce formulaire vide pour effectuer une recherche sur les métadonnées seulement.",
+  "Clinical Data": "Données cliniques"
+}

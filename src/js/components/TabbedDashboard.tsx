@@ -1,5 +1,4 @@
 import React, { useEffect, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { Tabs, Typography } from 'antd';
 
@@ -10,21 +9,20 @@ import { makeGetAboutRequest } from '@/features/content/content.store';
 import { makeGetDataRequestThunk } from '@/features/data/data.store';
 import { makeGetSearchFields } from '@/features/search/query.store';
 import { makeGetProvenanceRequest } from '@/features/provenance/provenance.store';
-import { makeGetIngestionDataRequest } from '@/features/ingestion/ingestion.store';
 import { getBeaconConfig } from '@/features/beacon/beaconConfig.store';
+import { fetchGohanData, fetchKatsuData } from '@/features/ingestion/lastIngestion.store';
 
 import Loader from './Loader';
 import PublicOverview from './Overview/PublicOverview';
 import Search from './Search/Search';
 import ProvenanceTab from './Provenance/ProvenanceTab';
 import BeaconQueryUi from './Beacon/BeaconQueryUi';
-import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
-import { useAppDispatch, useAppSelector } from '@/hooks';
+import { useAppDispatch, useAppSelector, useTranslationDefault } from '@/hooks';
 import { buildQueryParamsUrl } from '@/utils/search';
 
 const TabbedDashboard = () => {
   const dispatch = useAppDispatch();
-  const { t } = useTranslation(DEFAULT_TRANSLATION);
+  const td = useTranslationDefault();
   const navigate = useNavigate();
   const location = useLocation();
   const { page } = useParams<{ page?: string }>();
@@ -35,7 +33,9 @@ const TabbedDashboard = () => {
     dispatch(makeGetDataRequestThunk());
     dispatch(makeGetSearchFields());
     dispatch(makeGetProvenanceRequest());
-    dispatch(makeGetIngestionDataRequest());
+    dispatch(fetchKatsuData());
+    dispatch(fetchGohanData());
+    //TODO: Dispatch makeGetDataTypes to get the data types from service-registry
   }, []);
 
   const isFetchingOverviewData = useAppSelector((state) => state.data.isFetchingData);
@@ -98,7 +98,7 @@ const TabbedDashboard = () => {
   const mappedTabPanes = tabPanes
     .filter((t) => t.active)
     .map(({ title, content, loading, key }) => ({
-      label: <TabTitle title={t(title)} />,
+      label: <TabTitle title={td(title)} />,
       children: loading ? <Loader /> : content,
       key,
     }));
