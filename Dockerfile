@@ -31,7 +31,7 @@ COPY main.go .
 RUN go build -o ./reactapp
 
 
-FROM ghcr.io/bento-platform/bento_base_image:plain-debian-2023.10.20
+FROM ghcr.io/bento-platform/bento_base_image:plain-debian-2023.12.01
 
 ENV BENTO_PUBLIC_PACKAGE_JSON_PATH=/bento-public/package.json
 WORKDIR /bento-public
