@@ -29,12 +29,12 @@ export const makeGetDataRequestThunk = createAsyncThunk<
   // + field definition (from config.field)
   // + the fields' relevant data.
   const normalizeChart = (chart: ChartConfig, i: number): ChartDataField => {
-    const field = overviewResponse.fields[chart.field];
+    const { data, ...field } = overviewResponse.fields[chart.field];
     return {
       id: field.id,
       chartConfig: chart,
       field,
-      data: serializeChartData(field.data),
+      data: serializeChartData(data),
       // Initial display state
       isDisplayed: i < MAX_CHARTS,
       width: chart.width ?? DEFAULT_CHART_WIDTH, // initial configured width; users can change it from here
