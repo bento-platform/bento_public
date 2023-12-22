@@ -39,7 +39,7 @@ const VARIANTS_INSTRUCTIONS_LINE4a = 'Coordinates are one-based.';
 const VARIANTS_INSTRUCTIONS_LINE4b = 'Leave this form blank to search by metadata only.';
 const METADATA_INSTRUCTIONS = 'Search over clinical or phenotypic properties.';
 const VARIANTS_FORM_ERROR_MESSAGE =
-  'variants form should include either an end position or both reference and alternate bases';
+  'Variants form should include either an end position or both reference and alternate bases';
 
 const BeaconQueryUi = () => {
   const td = useTranslationDefault();

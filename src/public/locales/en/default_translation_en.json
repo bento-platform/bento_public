@@ -77,7 +77,7 @@
   "Ingestion History Is Empty": "Ingestion History Is Empty",
   "Latest Data Ingestion": "Latest Data Ingestion",
   "Beacon error": "Beacon error",
-  "variants form should include either an end position or both reference and alternate bases": "variants form should include either an end position or both reference and alternate bases",
+  "Variants form should include either an end position or both reference and alternate bases": "Variants form should include either an end position or both reference and alternate bases",
   "Variant search": "Variant search",
   "To search for all variants inside a range: fill both \"Variant start\" and \"Variant end\",": "To search for all variants inside a range: fill both \"Variant start\" and \"Variant end\",",
   "all variants inside the range will be returned. You can optionally filter by reference or alternate bases.": "all variants inside the range will be returned. You can optionally filter by reference or alternate bases.",
