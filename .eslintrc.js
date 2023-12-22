@@ -13,7 +13,7 @@ module.exports = {
     node: true,
   },
   plugins: ['react', '@typescript-eslint'],
-  extends: ['eslint:recommended', 'plugin:react/recommended', 'plugin:@typescript-eslint/recommended', 'prettier'],
+  extends: ['eslint:recommended', 'plugin:react/recommended', 'plugin:@typescript-eslint/recommended', 'plugin:prettier/recommended'],
   rules: {
     'react/prop-types': 'off', // disable prop-types since we're using TypeScript
     '@typescript-eslint/explicit-module-boundary-types': 'off', // allow implicit return types
