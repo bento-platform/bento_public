@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -6,6 +6,17 @@ import { HashRouter, Routes, Route, useParams, useNavigate } from 'react-router-
 import { Layout } from 'antd';
 import { ChartConfigProvider } from 'bento-charts';
 import { SUPPORTED_LNGS } from './constants/configConstants';
+
+import {
+  fetchOpenIdConfiguration,
+  createAuthURL,
+  useHandleCallback,
+  getIsAuthenticated,
+  // refreshTokens,
+  tokenHandoff,
+  LS_SIGN_IN_POPUP,
+} from 'bento-auth-js';
+import { AUTH_CALLBACK_URL, BENTO_URL_NO_TRAILING_SLASH, CLIENT_ID, OPENID_CONFIG_URL } from './config';
 
 import 'leaflet/dist/leaflet.css';
 import 'bento-charts/src/styles.css';
@@ -17,6 +28,7 @@ import SiteHeader from './components/SiteHeader';
 import SiteFooter from './components/SiteFooter';
 
 import { store } from './store';
+import { useAppDispatch, useAppSelector } from '@/hooks';
 
 const LNGS_ARRAY = Object.values(SUPPORTED_LNGS);
 const { Content } = Layout;
@@ -36,9 +48,124 @@ const App = () => {
     }
   }, [lang, i18n.language, navigate]);
 
+  const dispatch = useAppDispatch();
+
+  // Popup sign-in window and its message handler refs
+  const signInWindow = useRef<Window | null>(null);
+  const windowMessageHandler = useRef<((event: MessageEvent) => void) | null>(null);
+
+  // Get the OIDC config
+  useEffect(() => {
+    dispatch(fetchOpenIdConfiguration(OPENID_CONFIG_URL));
+  }, [dispatch]);
+
+  const openIdConfig = useAppSelector((state) => state.openIdConfiguration.data);
+
+  // Opens sign-in window
+  const userSignIn = useCallback(() => {
+    // If we already have a sign-in window open, focus on it instead.
+    if (signInWindow.current && !signInWindow.current.closed) {
+      signInWindow.current.focus();
+      return;
+    }
+
+    if (!openIdConfig) return;
+
+    (async () => {
+      // open a window with this url to sign in
+      const authUrl = await createAuthURL(openIdConfig['authorization_endpoint'], CLIENT_ID, AUTH_CALLBACK_URL);
+      signInWindow.current = window.open(authUrl, 'Bento Sign In');
+    })();
+  }, [signInWindow, openIdConfig]);
+
+  // const isInAuthPopup = () => {
+  //   try {
+  //     const didCreateSignInPopup = localStorage.getItem(LS_SIGN_IN_POPUP);
+  //     return window.opener && window.opener.origin === BENTO_URL_NO_TRAILING_SLASH && didCreateSignInPopup === 'true';
+  //   } catch {
+  //     // If we are restricted from accessing the opener, we are not in an auth popup.
+  //     return false;
+  //   }
+  // };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const popupOpenerAuthCallback = async (_dispatch: any, _navigate: any, code: string, verifier: string) => {
+    alert('im finally in it baby');
+    if (!window.opener) return;
+
+    // We're inside a popup window for authentication
+
+    // Send the code and verifier to the main thread/page for authentication
+    // IMPORTANT SECURITY: provide BENTO_URL as the target origin:
+    window.opener.postMessage({ type: 'authResult', code, verifier }, BENTO_URL_NO_TRAILING_SLASH);
+
+    // We're inside a popup window which has successfully re-authenticated the user, meaning we need to
+    // close ourselves to return focus to the original window.
+    window.close();
+  };
+
+  // // Auth code callback handling
+  // useHandleCallback(
+  //   '/callback',
+  //   () => {}, // TODO:: make authenticated beacon call
+  //   CLIENT_ID,
+  //   AUTH_CALLBACK_URL,
+  //   popupOpenerAuthCallback
+  // );
+
+  useEffect(() => {
+    if (!openIdConfig) {
+      // OIDC config not loaded yet, don't proceed
+      return;
+    }
+
+    // Your existing callback logic here
+    useHandleCallback(
+      '/callback',
+      () => {}, // TODO: make authenticated beacon call
+      CLIENT_ID,
+      AUTH_CALLBACK_URL,
+      popupOpenerAuthCallback
+    );
+
+    // ... other useEffect logic ...
+  }, [openIdConfig]);
+
+  // useEffect(() => {
+  //   if (shouldRefresh) {
+  //     dispatch(refreshTokens(CLIENT_ID));
+  //   }
+  // }, [dispatch, shouldRefresh]);
+
+  // Token handoff with Proof Key for Code Exchange (PKCE) from the sing-in window
+  useEffect(() => {
+    if (windowMessageHandler.current) {
+      window.removeEventListener('message', windowMessageHandler.current);
+    }
+    windowMessageHandler.current = (e) => {
+      e.data?.type && console.log('e.data', e.data);
+      if (e.data?.type !== 'authResult') return;
+      alert('im in it baby w');
+      const { code, verifier } = e.data ?? {};
+      if (!code || !verifier) return;
+      localStorage.removeItem(LS_SIGN_IN_POPUP);
+      dispatch(tokenHandoff({ code, verifier, clientId: CLIENT_ID, authCallbackUrl: AUTH_CALLBACK_URL }));
+    };
+    window.addEventListener('message', windowMessageHandler.current);
+  }, [dispatch, windowMessageHandler]);
+
+  const { accessToken, idTokenContents } = useAppSelector((state) => state.auth);
+  // Get user auth status
+  useEffect(() => {
+    const isAuthenticated = getIsAuthenticated(idTokenContents);
+    console.log('isAuthenticated', isAuthenticated);
+    console.log('accessToken', accessToken);
+    console.log('url', window.location);
+  }, [window.location]);
+
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <SiteHeader />
+      <SiteHeader signIn={userSignIn} />
       <Content style={{ padding: '0 30px', marginTop: '10px' }}>
         <Routes>
           <Route path="/:page?/*" element={<TabbedDashboard />} />

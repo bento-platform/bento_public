@@ -6,7 +6,7 @@ import { DEFAULT_TRANSLATION, LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/co
 import { useAppSelector } from '@/hooks';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-const SiteHeader = () => {
+const SiteHeader = ({ signIn }: { signIn: VoidFunction }) => {
   const { t, i18n } = useTranslation(DEFAULT_TRANSLATION);
   const navigate = useNavigate();
   const location = useLocation();
@@ -33,7 +33,9 @@ const SiteHeader = () => {
       <Row align="middle" justify="space-between" style={{ height: '64px' }}>
         <Col style={{ height: '100%' }}>
           <Space align="start" size={20}>
-            <img style={{ marginTop: '15px', height: '32px' }} src="/public/assets/branding.png" alt="logo" />
+            <a href="/">
+              <img style={{ marginTop: '15px', height: '32px' }} src="/public/assets/branding.png" alt="logo" />
+            </a>
             <Typography.Title level={1} style={{ fontSize: '18px', margin: 0, lineHeight: '64px' }} type="secondary">
               {clientName}
             </Typography.Title>
@@ -46,8 +48,11 @@ const SiteHeader = () => {
                 {LNGS_FULL_NAMES[LNG_CHANGE[i18n.language]]}
               </Button>
             )}
-            <Button type="primary" shape="round" onClick={buttonHandler}>
+            <Button shape="round" onClick={buttonHandler}>
               {t('Portal')}
+            </Button>
+            <Button type="primary" shape="round" onClick={signIn}>
+              {t('Sign In')}
             </Button>
           </Space>
         </Col>

@@ -20,7 +20,7 @@
     "@reduxjs/toolkit": "^1.9.7",
     "antd": "^5.11.5",
     "axios": "^1.6.2",
-    "bento-auth-js": "file:../packs/bento-auth-js-1.0.3.tgz",
+    "bento-auth-js": "file:.yalc/bento-auth-js",
     "bento-charts": "^2.5.1",
     "css-loader": "^6.8.1",
     "dotenv": "^16.3.1",
@@ -38,7 +38,8 @@
     "react-router-dom": "^6.20.0",
     "recharts": "^2.10.3",
     "redux": "^4.2.1",
-    "redux-thunk": "^2.4.1"
+    "redux-thunk": "^2.4.1",
+    "yalc": "^1.0.0-pre.53"
   },
   "devDependencies": {
     "@types/react-dom": "^18.2.17",
