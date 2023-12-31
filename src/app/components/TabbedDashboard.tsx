@@ -12,7 +12,7 @@ import { makeGetProvenanceRequest } from '@/features/provenance/provenance.store
 import { getBeaconConfig } from '@/features/beacon/beaconConfig.store';
 import { fetchGohanData, fetchKatsuData } from '@/features/ingestion/lastIngestion.store';
 
-import Loader from './Loader';
+import Loader from './Util/Loader';
 import PublicOverview from './Overview/PublicOverview';
 import Search from './Search/Search';
 import ProvenanceTab from './Provenance/ProvenanceTab';
