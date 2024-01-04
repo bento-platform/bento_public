@@ -59,7 +59,7 @@ const SiteSider: React.FC = () => {
 
   return (
     <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
-      <Row justify="center" align="middle">
+      <Row justify="center" align="middle" style={{height: '64px'}}>
         <Col>
           {collapsed ? (
             <img style={{ marginTop: '15px', height: '32px' }} src="/public/assets/branding_small.png" alt="logo" />
