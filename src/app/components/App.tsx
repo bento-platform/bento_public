@@ -20,6 +20,8 @@ import { makeGetSearchFields } from '@/features/search/makeGetSearchFields.thunk
 import { makeGetProvenanceRequest } from '@/features/provenance/provenance.store';
 import { fetchGohanData, fetchKatsuData } from '@/features/ingestion/lastIngestion.store';
 
+import { CHART_THEME } from '@/constants/overviewConstants';
+
 const LNGS_ARRAY = Object.values(SUPPORTED_LNGS);
 
 const BentoApp = () => {
@@ -71,7 +73,7 @@ const App = () => {
   const { i18n } = useTranslation();
 
   return (
-    <ChartConfigProvider Lng={i18n.language ?? SUPPORTED_LNGS.ENGLISH}>
+    <ChartConfigProvider Lng={i18n.language ?? SUPPORTED_LNGS.ENGLISH} theme={CHART_THEME}>
       <Routes>
         <Route path="/:lang?/*" element={<BentoApp />} />
       </Routes>
