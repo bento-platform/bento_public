@@ -232,7 +232,7 @@ const BeaconQueryUi = () => {
     </Space>
   );
 
-  const metadataInstructions = <ToolTipText>{METADATA_INSTRUCTIONS}</ToolTipText>;
+  const metadataInstructions = <ToolTipText>{td(METADATA_INSTRUCTIONS)}</ToolTipText>;
   const isFetchingBeaconQuery = useAppSelector((state) => state.beaconQuery.isFetchingQueryResponse);
 
   return (
