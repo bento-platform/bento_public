@@ -11,7 +11,7 @@ export const makeBeaconQuery = createAsyncThunk<
   BeaconQueryPayload,
   { state: RootState; rejectValue: string }
 >('beaconQuery/makeBeaconQuery', async (payload, { getState, rejectWithValue }) => {
-  const beaconIndividualsEndpoint = getState()?.config?.beaconUrl + '/individuals';
+  const beaconIndividualsEndpoint = getState().config.beaconUrl + '/individuals';
   return axios
     .post(beaconIndividualsEndpoint, payload)
     .then((res) => res.data)
