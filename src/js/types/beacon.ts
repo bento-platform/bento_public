@@ -9,7 +9,7 @@ export type BeaconAssemblyIds = string[];
 
 export interface FormField {
   name: string;
-  rules: Rule[];
+  rules?: Rule[];
   placeholder: string;
   initialValue: string;
 }
