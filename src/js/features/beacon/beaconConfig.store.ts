@@ -7,7 +7,7 @@ import { printAPIError } from '@/utils/error.util';
 export const getBeaconConfig = createAsyncThunk<BeaconConfigResponse, void, { state: RootState; rejectValue: string }>(
   'beaconConfig/getBeaconConfig',
   (_, { getState, rejectWithValue }) => {
-    const beaconInfoEndpoint = getState()?.config?.beaconUrl + '/info';
+    const beaconInfoEndpoint = getState().config.beaconUrl + '/overview';
     return axios
       .get(beaconInfoEndpoint)
       .then((res) => res.data)
