@@ -3,17 +3,22 @@ import { Button, Layout, Row, Col, Typography, Space } from 'antd';
 const { Header } = Layout;
 import { useTranslation } from 'react-i18next';
 import { DEFAULT_TRANSLATION, LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
-import { useAppSelector } from '@/hooks';
+import { useAppDispatch, useAppSelector } from '@/hooks';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { getIsAuthenticated, signOut } from 'bento-auth-js';
 
 const SiteHeader = ({ signIn }: { signIn: VoidFunction }) => {
   const { t, i18n } = useTranslation(DEFAULT_TRANSLATION);
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useAppDispatch();
 
   const clientName = useAppSelector((state) => state.config.clientName);
   const translated = useAppSelector((state) => state.config.translated);
   const portalUrl = useAppSelector((state) => state.config.portalUrl);
+  const idTokenContents = useAppSelector((state) => state.auth.idTokenContents);
+
+  const isAuthenticated = getIsAuthenticated(idTokenContents);
 
   useEffect(() => {
     document.title = clientName && clientName.trim() ? `Bento: ${clientName}` : 'Bento';
@@ -51,9 +56,15 @@ const SiteHeader = ({ signIn }: { signIn: VoidFunction }) => {
             <Button shape="round" onClick={buttonHandler}>
               {t('Portal')}
             </Button>
-            <Button type="primary" shape="round" onClick={signIn}>
-              {t('Sign In')}
-            </Button>
+            {isAuthenticated ? (
+              <Button shape="round" onClick={() => dispatch(signOut)}>
+                {t('Sign Out')}
+              </Button>
+            ) : (
+              <Button shape="round" type="primary" onClick={signIn}>
+                {t('Sign In')}
+              </Button>
+            )}
           </Space>
         </Col>
       </Row>

@@ -12,8 +12,12 @@ export const makeBeaconQuery = createAsyncThunk<
   { state: RootState; rejectValue: string }
 >('beaconQuery/makeBeaconQuery', async (payload, { getState, rejectWithValue }) => {
   const beaconIndividualsEndpoint = getState()?.config?.beaconUrl + '/individuals';
+  const token = getState().auth.accessToken;
+  const headers =token? {
+    Authorization: `Bearer ${token}`,
+  }: {};
   return axios
-    .post(beaconIndividualsEndpoint, payload)
+    .post(beaconIndividualsEndpoint, payload, { headers })
     .then((res) => res.data)
     .catch(beaconApiError(rejectWithValue));
 });

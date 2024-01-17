@@ -4,7 +4,7 @@ import { Tabs, Typography } from 'antd';
 
 const { Title } = Typography;
 
-import { makeGetConfigRequest } from '@/features/config/config.store';
+import { makeGetConfigRequest, makeGetServiceInfoRequest } from '@/features/config/config.store';
 import { makeGetAboutRequest } from '@/features/content/content.store';
 import { makeGetDataRequestThunk } from '@/features/data/data.store';
 import { makeGetSearchFields } from '@/features/search/query.store';
@@ -35,6 +35,7 @@ const TabbedDashboard = () => {
     dispatch(makeGetProvenanceRequest());
     dispatch(fetchKatsuData());
     dispatch(fetchGohanData());
+    dispatch(makeGetServiceInfoRequest());
     //TODO: Dispatch makeGetDataTypes to get the data types from service-registry
   }, []);
 

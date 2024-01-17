@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -14,7 +14,7 @@ import {
   getIsAuthenticated,
   // refreshTokens,
   tokenHandoff,
-  LS_SIGN_IN_POPUP,
+  LS_SIGN_IN_POPUP, refreshTokens,
 } from 'bento-auth-js';
 import { AUTH_CALLBACK_URL, BENTO_URL_NO_TRAILING_SLASH, CLIENT_ID, OPENID_CONFIG_URL } from './config';
 
@@ -38,7 +38,20 @@ const App = () => {
   const { i18n } = useTranslation();
   const navigate = useNavigate();
 
+  const [shouldRefresh, setShouldRefresh] = useState(false);
+  const sessionExpiry = useAppSelector((state) => state.auth.sessionExpiry);
   useEffect(() => {
+    if (sessionExpiry) {
+      const timeout = setTimeout(() => {
+        setShouldRefresh(true);
+      }, sessionExpiry - Date.now() - 10000);
+      return () => clearTimeout(timeout);
+    }
+  }, [sessionExpiry]);
+
+  useEffect(() => {
+    console.log('lang', lang);
+    if (lang && lang == "callback") return;
     if (lang && LNGS_ARRAY.includes(lang)) {
       i18n.changeLanguage(lang);
     } else if (i18n.language) {
@@ -73,24 +86,25 @@ const App = () => {
 
     (async () => {
       // open a window with this url to sign in
+      localStorage.setItem(LS_SIGN_IN_POPUP, "true");
       const authUrl = await createAuthURL(openIdConfig['authorization_endpoint'], CLIENT_ID, AUTH_CALLBACK_URL);
       signInWindow.current = window.open(authUrl, 'Bento Sign In');
     })();
   }, [signInWindow, openIdConfig]);
 
-  // const isInAuthPopup = () => {
-  //   try {
-  //     const didCreateSignInPopup = localStorage.getItem(LS_SIGN_IN_POPUP);
-  //     return window.opener && window.opener.origin === BENTO_URL_NO_TRAILING_SLASH && didCreateSignInPopup === 'true';
-  //   } catch {
-  //     // If we are restricted from accessing the opener, we are not in an auth popup.
-  //     return false;
-  //   }
-  // };
+  const isInAuthPopup = () => {
+    try {
+      const didCreateSignInPopup = localStorage.getItem(LS_SIGN_IN_POPUP);
+      return window.opener && window.opener.origin === BENTO_URL_NO_TRAILING_SLASH && didCreateSignInPopup === 'true';
+    } catch {
+      // If we are restricted from accessing the opener, we are not in an auth popup.
+      return false;
+    }
+  };
+
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const popupOpenerAuthCallback = async (_dispatch: any, _navigate: any, code: string, verifier: string) => {
-    alert('im finally in it baby');
     if (!window.opener) return;
 
     // We're inside a popup window for authentication
@@ -104,38 +118,21 @@ const App = () => {
     window.close();
   };
 
-  // // Auth code callback handling
-  // useHandleCallback(
-  //   '/callback',
-  //   () => {}, // TODO:: make authenticated beacon call
-  //   CLIENT_ID,
-  //   AUTH_CALLBACK_URL,
-  //   popupOpenerAuthCallback
-  // );
+  // Auth code callback handling
+  useHandleCallback(
+    '/callback',
+    () => {}, // TODO:: make authenticated beacon call
+    CLIENT_ID,
+    AUTH_CALLBACK_URL,
+    isInAuthPopup()? popupOpenerAuthCallback: undefined
+  );
 
   useEffect(() => {
-    if (!openIdConfig) {
-      // OIDC config not loaded yet, don't proceed
-      return;
+    if (shouldRefresh) {
+      dispatch(refreshTokens(CLIENT_ID));
+      setShouldRefresh(false);
     }
-
-    // Your existing callback logic here
-    useHandleCallback(
-      '/callback',
-      () => {}, // TODO: make authenticated beacon call
-      CLIENT_ID,
-      AUTH_CALLBACK_URL,
-      popupOpenerAuthCallback
-    );
-
-    // ... other useEffect logic ...
-  }, [openIdConfig]);
-
-  // useEffect(() => {
-  //   if (shouldRefresh) {
-  //     dispatch(refreshTokens(CLIENT_ID));
-  //   }
-  // }, [dispatch, shouldRefresh]);
+  }, [dispatch, shouldRefresh]);
 
   // Token handoff with Proof Key for Code Exchange (PKCE) from the sing-in window
   useEffect(() => {
@@ -143,9 +140,7 @@ const App = () => {
       window.removeEventListener('message', windowMessageHandler.current);
     }
     windowMessageHandler.current = (e) => {
-      e.data?.type && console.log('e.data', e.data);
       if (e.data?.type !== 'authResult') return;
-      alert('im in it baby w');
       const { code, verifier } = e.data ?? {};
       if (!code || !verifier) return;
       localStorage.removeItem(LS_SIGN_IN_POPUP);

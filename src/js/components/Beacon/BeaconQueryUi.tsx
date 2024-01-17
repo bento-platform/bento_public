@@ -1,5 +1,11 @@
 import React, { useEffect, useState, ReactNode } from 'react';
-import { useAppSelector, useAppDispatch, useTranslationDefault } from '@/hooks';
+import {
+  useAppSelector,
+  useAppDispatch,
+  useTranslationDefault,
+  useHasResourcePermissionWrapper,
+  useResourcePermissionsWrapper,
+} from '@/hooks';
 import { Button, Card, Col, Form, Row, Space, Tooltip, Typography } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import Filters from './Filters';
@@ -17,6 +23,7 @@ import {
   BUTTON_AREA_STYLE,
   BUTTON_STYLE,
 } from '@/constants/beaconConstants';
+import { getIsAuthenticated, RESOURCE_EVERYTHING } from 'bento-auth-js';
 const { Text, Title } = Typography;
 // TODOs
 // example searches, either hardcoded or configurable
@@ -58,6 +65,7 @@ const BeaconQueryUi = () => {
   const beaconUrl = useAppSelector((state) => state.config?.beaconUrl);
   const hasApiError = useAppSelector((state) => state.beaconQuery.hasApiError);
   const apiErrorMessage = useAppSelector((state) => state.beaconQuery.apiErrorMessage);
+  const idTokenContents = useAppSelector((state) => state.auth.idTokenContents);
 
   const dispatch = useAppDispatch();
   const launchEmptyQuery = () => dispatch(makeBeaconQuery(requestPayload({}, [])));
@@ -90,6 +98,10 @@ const BeaconQueryUi = () => {
     // set assembly id options matching what's in gohan
     form.setFieldsValue(formInitialValues);
   }, [isFetchingBeaconConfig]);
+
+  console.log(getIsAuthenticated(idTokenContents));
+  console.log(useHasResourcePermissionWrapper(RESOURCE_EVERYTHING, 'query:data'));
+  console.log(useResourcePermissionsWrapper(RESOURCE_EVERYTHING));
 
   // beacon request handling
 
