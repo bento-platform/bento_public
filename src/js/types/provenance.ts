@@ -54,13 +54,13 @@ export interface Annotation {
 
 export interface Distribution {
   access: Access;
-  formats: string[];
-  size: number;
-  unit: Annotation;
+  formats?: string[];
+  size?: number;
+  unit?: Annotation;
 }
 
 export interface Access {
-  authorizations: Annotation[];
+  authorizations?: Annotation[];
   landingPage: string;
 }
 
