@@ -1,11 +1,11 @@
-FROM ghcr.io/bento-platform/bento_base_image:node-debian-2023.12.01
+FROM ghcr.io/bento-platform/bento_base_image:node-debian-2024.02.01
 
 RUN apt-get update -y && \
     apt-get install -y ca-certificates
 
 # Use bookworm-backports to get go 1.21 instead of 1.19
 # Install lsof to help killing the PID binding the port if needed
-RUN echo "deb https://deb.debian.org/debian bookworm-backports main contrib non-free" >> /etc/apt/sources.list &&\
+RUN echo "deb https://deb.debian.org/debian bookworm-backports main contrib non-free" >> /etc/apt/sources.list && \
     echo "deb-src https://deb.debian.org/debian bookworm-backports main contrib non-free" >> /etc/apt/sources.list && \
     apt-get update -y && \
     apt-get upgrade -y && \
