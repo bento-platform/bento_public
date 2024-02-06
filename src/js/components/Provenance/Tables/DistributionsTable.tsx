@@ -18,7 +18,7 @@ const DistributionsTable = ({ distributions }: DistributionsTableProps) => {
         {
           title: td('Formats'),
           dataIndex: 'formats',
-          render: (_, { formats = '' }) => <Tag color="cyan">{formats}</Tag>,
+          render: (_, { formats = [] }) => formats.map(f => <Tag color="cyan">{f}</Tag>),
         },
         {
           title: td('Size'),
