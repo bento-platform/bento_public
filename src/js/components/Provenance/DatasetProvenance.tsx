@@ -37,31 +37,31 @@ const DatasetProvenance = ({ metadata, loading }: DatasetProvenanceProps) => {
 
         {/* --- CREATOR, PRIVACY, LICENSES, KEYWORD ---*/}
         {metadata.privacy || metadata.licenses.length || metadata.keywords.length ? (
-          <Descriptions style={{ paddingTop: '20px' }}>
-            {metadata.privacy && (
-              <Item span={12} label={<DescriptionTitle title={td('Privacy')} />}>
+          <div style={{ display: "flex", flexDirection: "column", paddingTop: '20px' }}>
+            {metadata.privacy && <Descriptions >
+              <Item label={<DescriptionTitle title={td('Privacy')} />}>
                 {t(metadata.privacy)}
               </Item>
-            )}
-            {!!metadata.licenses?.length && (
-              <Item span={12} label={<DescriptionTitle title={td('Licenses')} />}>
+            </Descriptions>}
+            {!!metadata.licenses?.length && <Descriptions >
+              <Item label={<DescriptionTitle title={td('Licenses')} />}>
                 {metadata.licenses.map((l, i) => (
                   <Tag key={i} color="cyan">
                     {t(l.name)}
                   </Tag>
                 ))}
               </Item>
-            )}
-            {!!metadata.keywords?.length && (
-              <Item span={24} label={<DescriptionTitle title={td('Keywords')} />}>
+            </Descriptions>}
+            {!!metadata.keywords?.length && <Descriptions >
+              <Item label={<DescriptionTitle title={td('Keywords')} />}>
                 {metadata.keywords.map((keyword, i) => (
                   <Tag key={i} color="cyan">
                     {t(keyword.value.toString())}
                   </Tag>
                 ))}
               </Item>
-            )}
-          </Descriptions>
+            </Descriptions>}
+          </div>
         ) : null}
 
         {/* TableTitle has translation in it*/}
