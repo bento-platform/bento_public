@@ -53,7 +53,7 @@ const beaconQuery = createSlice({
       state.isFetchingQueryResponse = true;
     });
     builder.addCase(makeBeaconQuery.fulfilled, (state, { payload }) => {
-      if (payload.info) {
+      if (payload.info?.bento) {
         state.biosampleCount = payload.info.bento?.biosamples?.count;
         state.biosampleChartData = serializeChartData(payload.info.bento?.biosamples?.sampled_tissue);
         state.experimentCount = payload.info.bento?.experiments?.count;
