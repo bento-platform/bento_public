@@ -62,7 +62,7 @@ const Chart = memo(({ chartConfig, data, units, id }: ChartProps) => {
           }}
           renderPopupBody={(_f, d) => (
             <>
-              Count: {d} {units}
+              Count: {(d ?? 0).toString()} {units}
             </>
           )}
         />
