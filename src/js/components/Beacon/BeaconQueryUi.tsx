@@ -1,11 +1,5 @@
 import React, { useEffect, useState, ReactNode } from 'react';
-import {
-  useAppSelector,
-  useAppDispatch,
-  useTranslationDefault,
-  useHasResourcePermissionWrapper,
-  useResourcePermissionsWrapper,
-} from '@/hooks';
+import { useAppSelector, useAppDispatch, useTranslationDefault } from '@/hooks';
 import { Button, Card, Col, Form, Row, Space, Tooltip, Typography } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import Filters from './Filters';
@@ -24,6 +18,8 @@ import {
   BUTTON_STYLE,
 } from '@/constants/beaconConstants';
 import { getIsAuthenticated, RESOURCE_EVERYTHING } from 'bento-auth-js';
+import { setMaxQueryParametersRequired } from '@/features/config/config.store';
+import { useHasResourcePermissionWrapper } from '@/utils/beaconOnAuth';
 const { Text, Title } = Typography;
 // TODOs
 // example searches, either hardcoded or configurable
@@ -97,11 +93,11 @@ const BeaconQueryUi = () => {
 
     // set assembly id options matching what's in gohan
     form.setFieldsValue(formInitialValues);
-  }, [isFetchingBeaconConfig]);
+  }, [isFetchingBeaconConfig, getIsAuthenticated(idTokenContents)]);
 
-  console.log(getIsAuthenticated(idTokenContents));
-  console.log(useHasResourcePermissionWrapper(RESOURCE_EVERYTHING, 'query:data'));
-  console.log(useResourcePermissionsWrapper(RESOURCE_EVERYTHING));
+  dispatch(
+    setMaxQueryParametersRequired(!useHasResourcePermissionWrapper(RESOURCE_EVERYTHING, 'query:data').hasPermission)
+  );
 
   // beacon request handling
 

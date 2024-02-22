@@ -14,7 +14,8 @@ import {
   getIsAuthenticated,
   // refreshTokens,
   tokenHandoff,
-  LS_SIGN_IN_POPUP, refreshTokens,
+  LS_SIGN_IN_POPUP,
+  refreshTokens,
 } from 'bento-auth-js';
 import { AUTH_CALLBACK_URL, BENTO_URL_NO_TRAILING_SLASH, CLIENT_ID, OPENID_CONFIG_URL } from './config';
 
@@ -29,6 +30,7 @@ import SiteFooter from './components/SiteFooter';
 
 import { store } from './store';
 import { useAppDispatch, useAppSelector } from '@/hooks';
+import { beaconOnAuth } from '@/utils/beaconOnAuth';
 
 const LNGS_ARRAY = Object.values(SUPPORTED_LNGS);
 const { Content } = Layout;
@@ -42,16 +44,19 @@ const App = () => {
   const sessionExpiry = useAppSelector((state) => state.auth.sessionExpiry);
   useEffect(() => {
     if (sessionExpiry) {
-      const timeout = setTimeout(() => {
-        setShouldRefresh(true);
-      }, sessionExpiry - Date.now() - 10000);
+      const timeout = setTimeout(
+        () => {
+          setShouldRefresh(true);
+        },
+        sessionExpiry - Date.now() - 10000
+      );
       return () => clearTimeout(timeout);
     }
   }, [sessionExpiry]);
 
   useEffect(() => {
     console.log('lang', lang);
-    if (lang && lang == "callback") return;
+    if (lang && lang == 'callback') return;
     if (lang && LNGS_ARRAY.includes(lang)) {
       i18n.changeLanguage(lang);
     } else if (i18n.language) {
@@ -86,7 +91,7 @@ const App = () => {
 
     (async () => {
       // open a window with this url to sign in
-      localStorage.setItem(LS_SIGN_IN_POPUP, "true");
+      localStorage.setItem(LS_SIGN_IN_POPUP, 'true');
       const authUrl = await createAuthURL(openIdConfig['authorization_endpoint'], CLIENT_ID, AUTH_CALLBACK_URL);
       signInWindow.current = window.open(authUrl, 'Bento Sign In');
     })();
@@ -101,7 +106,6 @@ const App = () => {
       return false;
     }
   };
-
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const popupOpenerAuthCallback = async (_dispatch: any, _navigate: any, code: string, verifier: string) => {
@@ -121,10 +125,13 @@ const App = () => {
   // Auth code callback handling
   useHandleCallback(
     '/callback',
-    () => {}, // TODO:: make authenticated beacon call
+    () => {
+      beaconOnAuth();
+      console.log('authenticated');
+    }, // TODO:: make authenticated beacon call
     CLIENT_ID,
     AUTH_CALLBACK_URL,
-    isInAuthPopup()? popupOpenerAuthCallback: undefined
+    isInAuthPopup() ? popupOpenerAuthCallback : undefined
   );
 
   useEffect(() => {

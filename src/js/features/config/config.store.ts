@@ -28,6 +28,7 @@ export interface ConfigState extends ConfigResponse {
   isFetchingConfig: boolean;
   isFetchingServiceInfo: boolean;
   serviceInfo: ServiceInfoStore;
+  maxQueryParametersRequired: boolean;
 }
 
 const initialState: ConfigState = {
@@ -35,6 +36,7 @@ const initialState: ConfigState = {
   clientName: '',
   portalUrl: '',
   maxQueryParameters: 0,
+  maxQueryParametersRequired: true,
   translated: false,
   beaconUrl: '',
   beaconUiEnabled: false,
@@ -47,7 +49,11 @@ const initialState: ConfigState = {
 const configStore = createSlice({
   name: 'config',
   initialState,
-  reducers: {},
+  reducers: {
+    setMaxQueryParametersRequired: (state, { payload }: PayloadAction<boolean>) => {
+      state.maxQueryParametersRequired = payload;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(makeGetConfigRequest.pending, (state) => {
       state.isFetchingConfig = true;
@@ -78,4 +84,5 @@ const configStore = createSlice({
   },
 });
 
+export const { setMaxQueryParametersRequired } = configStore.actions;
 export default configStore.reducer;

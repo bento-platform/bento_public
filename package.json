@@ -10,7 +10,8 @@
     "gobuild": "./buildandrun.sh",
     "lint": "npx eslint src/js",
     "lint-fix": "npx eslint --fix src/js",
-    "prettier": "npx prettier --write src/js"
+    "prettier": "npx prettier --write src/js",
+    "yalc": "npx yalc update --store-folder /packs/yalc/"
   },
   "keywords": [],
   "author": "",
