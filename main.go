@@ -32,6 +32,7 @@ const ConfigLogTemplate = `Config --
 `
 
 type BentoConfig struct {
+	// App configs
 	ServiceId       string `envconfig:"BENTO_PUBLIC_SERVICE_ID"`
 	PackageJsonPath string `envconfig:"BENTO_PUBLIC_PACKAGE_JSON_PATH" default:"./package.json"`
 	StaticFilesPath string `envconfig:"BENTO_PUBLIC_STATIC_FILES_PATH" default:"./www"`
@@ -43,6 +44,10 @@ type BentoConfig struct {
 	Translated      bool   `envconfig:"BENTO_PUBLIC_TRANSLATED" default:"true"`
 	BeaconUrl       string `envconfig:"BEACON_URL"`
 	BeaconUiEnabled bool   `envconfig:"BENTO_BEACON_UI_ENABLED"`
+	// Auth configs
+	PublicUrl		string `envconfig:"BENTO_PUBLIC_URL"`
+	ClientId		string `envconfig:"CLIENT_ID"`
+	OpenIdConfigUrl string `envconfig:"OPENID_CONFIG_URL"`
 }
 
 type JsonLike map[string]interface{}
@@ -328,6 +333,9 @@ func main() {
 			return internalServerError(err, c)
 		}
 
+		// PublicUrl		string `envconfig:"BENTO_PUBLIC_URL"`
+		// ClientId		string `envconfig:"CLIENT_ID"`
+		// OpenIdConfigUrl string `envconfig:"OPENID_CONFIG_URL"`
 		return c.JSON(http.StatusOK, JsonLike{
 			"clientName":         cfg.ClientName,
 			"maxQueryParameters": publicOverview["max_query_parameters"],
@@ -335,6 +343,9 @@ func main() {
 			"translated":         cfg.Translated,
 			"beaconUrl":          cfg.BeaconUrl,
 			"beaconUiEnabled":    cfg.BeaconUiEnabled,
+			"publicUrl":		  cfg.PublicUrl,
+			"clientId":			  cfg.ClientId,
+			"openIdConfigUrl":	  cfg.OpenIdConfigUrl,
 		})
 	})
 

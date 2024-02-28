@@ -5,4 +5,7 @@ export interface ConfigResponse {
   translated: boolean;
   beaconUrl: string;
   beaconUiEnabled: boolean;
+  publicUrl: string;
+  clientId: string;
+  openIdConfigUrl: string;
 }

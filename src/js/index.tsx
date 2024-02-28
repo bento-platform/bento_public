@@ -17,7 +17,6 @@ import {
   LS_SIGN_IN_POPUP,
   refreshTokens,
 } from 'bento-auth-js';
-import { AUTH_CALLBACK_URL, BENTO_URL_NO_TRAILING_SLASH, CLIENT_ID, OPENID_CONFIG_URL } from './config';
 
 import 'leaflet/dist/leaflet.css';
 import 'bento-charts/src/styles.css';
@@ -72,10 +71,17 @@ const App = () => {
   const signInWindow = useRef<Window | null>(null);
   const windowMessageHandler = useRef<((event: MessageEvent) => void) | null>(null);
 
+  const clientId = useAppSelector(state => state.config.clientId);
+  const openIdConfigUrl = useAppSelector(state => state.config.openIdConfigUrl);
+  const publicUrlNoTraingSlash = useAppSelector(state => state.config.publicUrlNoTrailingSlash);
+  const authCallbackUrl = useAppSelector(state => state.config.authCallbackUrl);
+
   // Get the OIDC config
   useEffect(() => {
-    dispatch(fetchOpenIdConfiguration(OPENID_CONFIG_URL));
-  }, [dispatch]);
+    if (openIdConfigUrl) {
+      dispatch(fetchOpenIdConfiguration(openIdConfigUrl));
+    }
+  }, [dispatch, openIdConfigUrl]);
 
   const openIdConfig = useAppSelector((state) => state.openIdConfiguration.data);
 
@@ -92,15 +98,15 @@ const App = () => {
     (async () => {
       // open a window with this url to sign in
       localStorage.setItem(LS_SIGN_IN_POPUP, 'true');
-      const authUrl = await createAuthURL(openIdConfig['authorization_endpoint'], CLIENT_ID, AUTH_CALLBACK_URL);
+      const authUrl = await createAuthURL(openIdConfig['authorization_endpoint'], clientId, authCallbackUrl);
       signInWindow.current = window.open(authUrl, 'Bento Sign In');
     })();
-  }, [signInWindow, openIdConfig]);
+  }, [signInWindow, openIdConfig, authCallbackUrl]);
 
   const isInAuthPopup = () => {
     try {
       const didCreateSignInPopup = localStorage.getItem(LS_SIGN_IN_POPUP);
-      return window.opener && window.opener.origin === BENTO_URL_NO_TRAILING_SLASH && didCreateSignInPopup === 'true';
+      return window.opener && window.opener.origin === publicUrlNoTraingSlash && didCreateSignInPopup === 'true';
     } catch {
       // If we are restricted from accessing the opener, we are not in an auth popup.
       return false;
@@ -115,7 +121,7 @@ const App = () => {
 
     // Send the code and verifier to the main thread/page for authentication
     // IMPORTANT SECURITY: provide BENTO_URL as the target origin:
-    window.opener.postMessage({ type: 'authResult', code, verifier }, BENTO_URL_NO_TRAILING_SLASH);
+    window.opener.postMessage({ type: 'authResult', code, verifier }, publicUrlNoTraingSlash);
 
     // We're inside a popup window which has successfully re-authenticated the user, meaning we need to
     // close ourselves to return focus to the original window.
@@ -129,17 +135,17 @@ const App = () => {
       beaconOnAuth();
       console.log('authenticated');
     }, // TODO:: make authenticated beacon call
-    CLIENT_ID,
-    AUTH_CALLBACK_URL,
+    clientId,
+    authCallbackUrl,
     isInAuthPopup() ? popupOpenerAuthCallback : undefined
   );
 
   useEffect(() => {
     if (shouldRefresh) {
-      dispatch(refreshTokens(CLIENT_ID));
+      dispatch(refreshTokens(clientId));
       setShouldRefresh(false);
     }
-  }, [dispatch, shouldRefresh]);
+  }, [dispatch, shouldRefresh, clientId]);
 
   // Token handoff with Proof Key for Code Exchange (PKCE) from the sing-in window
   useEffect(() => {
@@ -151,10 +157,10 @@ const App = () => {
       const { code, verifier } = e.data ?? {};
       if (!code || !verifier) return;
       localStorage.removeItem(LS_SIGN_IN_POPUP);
-      dispatch(tokenHandoff({ code, verifier, clientId: CLIENT_ID, authCallbackUrl: AUTH_CALLBACK_URL }));
+      dispatch(tokenHandoff({ code, verifier, clientId, authCallbackUrl }));
     };
     window.addEventListener('message', windowMessageHandler.current);
-  }, [dispatch, windowMessageHandler]);
+  }, [dispatch, windowMessageHandler, clientId, authCallbackUrl]);
 
   const { accessToken, idTokenContents } = useAppSelector((state) => state.auth);
   // Get user auth status

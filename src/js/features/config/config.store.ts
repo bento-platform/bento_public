@@ -3,8 +3,8 @@ import axios from 'axios';
 import { configUrl } from '@/constants/configConstants';
 import { printAPIError } from '@/utils/error.util';
 import { ConfigResponse } from '@/types/configResponse';
-import { BENTO_URL } from '@/config';
 import { ServiceInfoStore, ServicesResponse } from '@/types/services';
+import { RootState } from '@/store';
 
 export const makeGetConfigRequest = createAsyncThunk<ConfigResponse, void, { rejectValue: string }>(
   'config/getConfigData',
@@ -15,16 +15,18 @@ export const makeGetConfigRequest = createAsyncThunk<ConfigResponse, void, { rej
       .catch(printAPIError(rejectWithValue))
 );
 
-export const makeGetServiceInfoRequest = createAsyncThunk<ServicesResponse[], void, { rejectValue: string }>(
+export const makeGetServiceInfoRequest = createAsyncThunk<ServicesResponse[], void, { state: RootState, rejectValue: string }>(
   'config/getServiceInfo',
-  (_, { rejectWithValue }) =>
+  (_, { getState, rejectWithValue }) =>
     axios
-      .get(`${BENTO_URL}/api/service-registry/services`)
+      .get(`${getState()?.config?.publicUrl}/api/service-registry/services`)
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue))
 );
 
 export interface ConfigState extends ConfigResponse {
+  publicUrlNoTrailingSlash: string,
+  authCallbackUrl: string,
   isFetchingConfig: boolean;
   isFetchingServiceInfo: boolean;
   serviceInfo: ServiceInfoStore;
@@ -40,6 +42,11 @@ const initialState: ConfigState = {
   translated: false,
   beaconUrl: '',
   beaconUiEnabled: false,
+  publicUrl: '',
+  publicUrlNoTrailingSlash: '',
+  clientId: '',
+  openIdConfigUrl: '',
+  authCallbackUrl: '',
   isFetchingServiceInfo: false,
   serviceInfo: {
     auth: '',
@@ -66,6 +73,14 @@ const configStore = createSlice({
       state.isFetchingConfig = false;
       state.beaconUrl = payload.beaconUrl;
       state.beaconUiEnabled = payload.beaconUiEnabled;
+
+      const publicUrlNoTrailingSlash = payload.publicUrl.replace(/\/$/g, '');
+      state.publicUrl = payload.publicUrl;
+      state.publicUrlNoTrailingSlash = publicUrlNoTrailingSlash;
+      state.authCallbackUrl = `${publicUrlNoTrailingSlash}/#/callback`;
+      state.clientId = payload.clientId;
+      state.openIdConfigUrl = payload.openIdConfigUrl;
+
       state.isFetchingConfig = false;
     });
     builder.addCase(makeGetConfigRequest.rejected, (state) => {
