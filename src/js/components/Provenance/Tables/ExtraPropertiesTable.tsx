@@ -20,10 +20,10 @@ const ExtraPropertiesTable = ({ extraProperties }: ExtraPropertiesTableProps) =>
           dataIndex: 'values',
           render: (_, { values }) =>
             values.map((v, i) => (
-              <>
-                <LinkIfUrl key={i} text={v.value.toString()} />
+              <div key={i}>
+                <LinkIfUrl text={v.value.toString()} />
                 {i < values.length - 1 ? '; ' : ''}
-              </>
+              </div>
             )),
         },
       ] as ColumnsType<ExtraProperty>,
