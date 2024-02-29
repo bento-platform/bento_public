@@ -64,7 +64,6 @@ const ChartCard = memo(({ section, chart, onRemoveChart, width }: ChartCardProps
   // We add a key to the chart which includes width to force a re-render if width changes.
   return (
     <div key={id} style={{ height: '100%', width }}>
-      {/*<Card title={<Card.Meta title={t(title)} description={t(description)} style={{padding: "10px", fontWeight: "400"}}/>} style={CARD_STYLE} size="small" extra={<Space size="small">{ed}</Space>}>*/}
       <Card title={<TitleComponent />} style={CARD_STYLE} size="small" extra={<Space size="small">{ed}</Space>}>
         {data.filter((e) => !(e.x === 'missing')).length !== 0 ? (
           <Chart
