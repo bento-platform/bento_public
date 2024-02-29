@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import Chart from './Chart';
 import { Card, Button, Tooltip, Space, Typography, Row } from 'antd';
-import { CloseOutlined, TeamOutlined, QuestionOutlined } from '@ant-design/icons';
+import { CloseOutlined, TeamOutlined } from '@ant-design/icons';
 import CustomEmpty from '../Util/CustomEmpty';
 import { CHART_HEIGHT } from '@/constants/overviewConstants';
 import { useTranslationCustom, useTranslationDefault } from '@/hooks';
