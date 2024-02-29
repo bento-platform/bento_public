@@ -33,7 +33,7 @@ const Counts = () => {
       <Typography.Title level={3}>{td('Counts')}</Typography.Title>
       <Space direction="horizontal">
         {data.map(({ title, icon, count }, i) => (
-          <Card key={i}>
+          <Card key={i} style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.1)' }}>
             <Statistic title={td(title)} value={count} valueStyle={{ color: COUNTS_FILL }} prefix={icon} />
           </Card>
         ))}
