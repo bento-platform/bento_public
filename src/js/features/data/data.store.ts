@@ -82,7 +82,7 @@ const data = createSlice({
       })
       .addCase(makeGetDataRequestThunk.fulfilled, (state, { payload }) => {
         state.sections = payload.sectionData;
-        state.defaultLayout = payload.sectionData;
+        state.defaultLayout = payload.defaultData;
         state.counts = payload.counts;
         state.isFetchingData = false;
       })

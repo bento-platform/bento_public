@@ -12,7 +12,7 @@ import { Counts, OverviewResponse } from '@/types/overviewResponse';
 import { printAPIError } from '@/utils/error.util';
 
 export const makeGetDataRequestThunk = createAsyncThunk<
-  { sectionData: Sections; counts: Counts },
+  { sectionData: Sections; counts: Counts; defaultData: Sections },
   void,
   { rejectValue: string }
 >('data/makeGetDataRequest', async (_, { rejectWithValue }) => {
@@ -46,6 +46,8 @@ export const makeGetDataRequestThunk = createAsyncThunk<
     charts: charts.map(normalizeChart),
   }));
 
+  const defaultSectionData = JSON.parse(JSON.stringify(sectionData));
+
   // comparing to the local store and updating itself
   let convertedData = convertSequenceAndDisplayData(sectionData);
   const localValue = getValue(LOCALSTORAGE_CHARTS_KEY, convertedData, (val: LocalStorageData) =>
@@ -63,5 +65,5 @@ export const makeGetDataRequestThunk = createAsyncThunk<
   convertedData = convertSequenceAndDisplayData(sectionData);
   saveValue(LOCALSTORAGE_CHARTS_KEY, convertedData);
 
-  return { sectionData, counts: overviewResponse.counts };
+  return { sectionData, counts: overviewResponse.counts, defaultData: defaultSectionData };
 });
