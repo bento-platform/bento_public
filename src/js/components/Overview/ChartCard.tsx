@@ -10,6 +10,20 @@ import { ChartDataField } from '@/types/data';
 const CARD_STYLE = { width: '100%', height: '415px', borderRadius: '11px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)' };
 const ROW_EMPTY_STYLE = { height: `${CHART_HEIGHT}px` };
 
+const TitleComponent: React.FC<TitleComponentProps> = ({ title, description }) => (
+  <Space.Compact direction="vertical" style={{ fontWeight: 'normal', padding: '5px 5px' }}>
+    <Typography.Text style={{ fontSize: '20px', fontWeight: '600' }}>{title}</Typography.Text>
+    <Typography.Text type="secondary" style={{ width: '375px' }} ellipsis={{ tooltip: description }}>
+      {description}
+    </Typography.Text>
+  </Space.Compact>
+);
+
+interface TitleComponentProps {
+  title: string;
+  description: string;
+}
+
 const ChartCard = memo(({ section, chart, onRemoveChart, width }: ChartCardProps) => {
   const t = useTranslationCustom();
   const td = useTranslationDefault();
@@ -52,19 +66,15 @@ const ChartCard = memo(({ section, chart, onRemoveChart, width }: ChartCardProps
     );
   });
 
-  const TitleComponent = () => (
-    <Space.Compact direction="vertical" style={{ fontWeight: 'normal', padding: '5px 5px' }}>
-      <Typography.Text style={{ fontSize: '20px', fontWeight: '600' }}>{t(title)}</Typography.Text>
-      <Typography.Text type="secondary" style={{ width: '375px' }} ellipsis={{ tooltip: t(description) }}>
-        {t(description)}
-      </Typography.Text>
-    </Space.Compact>
-  );
-
   // We add a key to the chart which includes width to force a re-render if width changes.
   return (
     <div key={id} style={{ height: '100%', width }}>
-      <Card title={<TitleComponent />} style={CARD_STYLE} size="small" extra={<Space size="small">{ed}</Space>}>
+      <Card
+        title={<TitleComponent title={t(title)} description={t(description)} />}
+        style={CARD_STYLE}
+        size="small"
+        extra={<Space size="small">{ed}</Space>}
+      >
         {data.filter((e) => !(e.x === 'missing')).length !== 0 ? (
           <Chart
             chartConfig={chartConfig}
