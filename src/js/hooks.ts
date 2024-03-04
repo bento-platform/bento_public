@@ -10,17 +10,42 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 import { useTranslation } from 'react-i18next';
 import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { NamespaceTranslationFunction } from '@/types/translation';
+import { RESOURCE_EVERYTHING, Resource, queryData, useHasResourcePermission } from 'bento-auth-js';
+import { useEffect } from 'react';
+import { setMaxQueryParametersRequired } from './features/config/config.store';
 
-const useTranslationDefault = (): NamespaceTranslationFunction => {
+export const useTranslationDefault = (): NamespaceTranslationFunction => {
   const { t } = useTranslation(DEFAULT_TRANSLATION);
 
   return t as NamespaceTranslationFunction;
 };
 
-const useTranslationCustom = (): NamespaceTranslationFunction => {
+export const useTranslationCustom = (): NamespaceTranslationFunction => {
   const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
 
   return t as NamespaceTranslationFunction;
 };
 
-export { useTranslationDefault, useTranslationCustom };
+// ################### AUTH/AUTHZ HOOKS ###################
+
+export const useHasResourcePermissionWrapper = (resource: Resource, permission: string) => {
+  const authzUrl = useAppSelector((state) => state.config.serviceInfo.auth);
+
+  const { isFetching: fetchingPermission, hasPermission } = useHasResourcePermission(resource, authzUrl, permission);
+
+  return {
+    fetchingPermission,
+    hasPermission,
+  };
+};
+
+export const useBeaconWithAuthIfAllowed = () => {
+  const dispatch = useAppDispatch();
+  const { hasPermission } = useHasResourcePermissionWrapper(RESOURCE_EVERYTHING, queryData);
+  useEffect(() => {
+    if (hasPermission) {
+      console.log("Beacon: user authorized for no max query parameters.");
+      dispatch(setMaxQueryParametersRequired(false));
+    }
+  }, [dispatch, hasPermission])
+}

@@ -1,21 +1,22 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { Suspense, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { HashRouter, Routes, Route, useParams, useNavigate } from 'react-router-dom';
-import { Layout } from 'antd';
+import { Layout, Modal, message } from 'antd';
 import { ChartConfigProvider } from 'bento-charts';
 import { SUPPORTED_LNGS } from './constants/configConstants';
 
 import {
   fetchOpenIdConfiguration,
-  createAuthURL,
   useHandleCallback,
   getIsAuthenticated,
-  // refreshTokens,
-  tokenHandoff,
-  LS_SIGN_IN_POPUP,
-  refreshTokens,
+  checkIsInAuthPopup,
+  useOpenSignInWindowCallback,
+  usePopupOpenerAuthCallback,
+  useSignInPopupTokenHandoff,
+  useSessionWorkerTokenRefresh,
+  BentoAuthContextProvider,
 } from 'bento-auth-js';
 
 import 'leaflet/dist/leaflet.css';
@@ -26,32 +27,34 @@ import '../styles.css';
 import TabbedDashboard from './components/TabbedDashboard';
 import SiteHeader from './components/SiteHeader';
 import SiteFooter from './components/SiteFooter';
+import SitePageLoading from './components/SitePageLoading';
 
 import { store } from './store';
-import { useAppDispatch, useAppSelector } from '@/hooks';
-import { beaconOnAuth } from '@/utils/beaconOnAuth';
+import { useAppDispatch, useAppSelector, useBeaconWithAuthIfAllowed } from '@/hooks';
+
+import {
+  BENTO_URL_NO_TRAILING_SLASH,
+  CLIENT_ID,
+  OPENID_CONFIG_URL,
+  AUTH_CALLBACK_URL,
+} from "./config";
+
+const SIGN_IN_WINDOW_FEATURES = "scrollbars=no, toolbar=no, menubar=no, width=800, height=600";
+const CALLBACK_PATH = "/callback";
 
 const LNGS_ARRAY = Object.values(SUPPORTED_LNGS);
 const { Content } = Layout;
+
+const createSessionWorker = () => new Worker(new URL("./workers/tokenRefresh.ts", import.meta.url));
 
 const App = () => {
   const { lang } = useParams<{ lang?: string }>();
   const { i18n } = useTranslation();
   const navigate = useNavigate();
 
-  const [shouldRefresh, setShouldRefresh] = useState(false);
-  const sessionExpiry = useAppSelector((state) => state.auth.sessionExpiry);
-  useEffect(() => {
-    if (sessionExpiry) {
-      const timeout = setTimeout(
-        () => {
-          setShouldRefresh(true);
-        },
-        sessionExpiry - Date.now() - 10000
-      );
-      return () => clearTimeout(timeout);
-    }
-  }, [sessionExpiry]);
+  const [signedOutModal, setSignedOutModal] = useState(false);
+  
+  const sessionWorker = useRef(null);
 
   useEffect(() => {
     console.log('lang', lang);
@@ -71,116 +74,80 @@ const App = () => {
   const signInWindow = useRef<Window | null>(null);
   const windowMessageHandler = useRef<((event: MessageEvent) => void) | null>(null);
 
-  const clientId = useAppSelector(state => state.config.clientId);
-  const openIdConfigUrl = useAppSelector(state => state.config.openIdConfigUrl);
-  const publicUrlNoTraingSlash = useAppSelector(state => state.config.publicUrlNoTrailingSlash);
-  const authCallbackUrl = useAppSelector(state => state.config.authCallbackUrl);
-
   // Get the OIDC config
   useEffect(() => {
-    if (openIdConfigUrl) {
-      dispatch(fetchOpenIdConfiguration(openIdConfigUrl));
+    if (OPENID_CONFIG_URL) {
+      dispatch(fetchOpenIdConfiguration(OPENID_CONFIG_URL));
     }
-  }, [dispatch, openIdConfigUrl]);
+  }, [dispatch, OPENID_CONFIG_URL]);
 
-  const openIdConfig = useAppSelector((state) => state.openIdConfiguration.data);
+  // Auth popup hooks/callbacks
+  const isInAuthPopup = checkIsInAuthPopup(BENTO_URL_NO_TRAILING_SLASH);
 
-  // Opens sign-in window
-  const userSignIn = useCallback(() => {
-    // If we already have a sign-in window open, focus on it instead.
-    if (signInWindow.current && !signInWindow.current.closed) {
-      signInWindow.current.focus();
-      return;
-    }
+  const popupOpenerAuthCallback = usePopupOpenerAuthCallback();
 
-    if (!openIdConfig) return;
-
-    (async () => {
-      // open a window with this url to sign in
-      localStorage.setItem(LS_SIGN_IN_POPUP, 'true');
-      const authUrl = await createAuthURL(openIdConfig['authorization_endpoint'], clientId, authCallbackUrl);
-      signInWindow.current = window.open(authUrl, 'Bento Sign In');
-    })();
-  }, [signInWindow, openIdConfig, authCallbackUrl]);
-
-  const isInAuthPopup = () => {
-    try {
-      const didCreateSignInPopup = localStorage.getItem(LS_SIGN_IN_POPUP);
-      return window.opener && window.opener.origin === publicUrlNoTraingSlash && didCreateSignInPopup === 'true';
-    } catch {
-      // If we are restricted from accessing the opener, we are not in an auth popup.
-      return false;
-    }
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const popupOpenerAuthCallback = async (_dispatch: any, _navigate: any, code: string, verifier: string) => {
-    if (!window.opener) return;
-
-    // We're inside a popup window for authentication
-
-    // Send the code and verifier to the main thread/page for authentication
-    // IMPORTANT SECURITY: provide BENTO_URL as the target origin:
-    window.opener.postMessage({ type: 'authResult', code, verifier }, publicUrlNoTraingSlash);
-
-    // We're inside a popup window which has successfully re-authenticated the user, meaning we need to
-    // close ourselves to return focus to the original window.
-    window.close();
-  };
-
-  // Auth code callback handling
   useHandleCallback(
-    '/callback',
+    CALLBACK_PATH,
     () => {
-      beaconOnAuth();
-      console.log('authenticated');
-    }, // TODO:: make authenticated beacon call
-    clientId,
-    authCallbackUrl,
-    isInAuthPopup() ? popupOpenerAuthCallback : undefined
+      console.debug("authenticated");
+    },
+    isInAuthPopup ? popupOpenerAuthCallback : undefined,
+    (msg) => message.error(msg)
   );
 
-  useEffect(() => {
-    if (shouldRefresh) {
-      dispatch(refreshTokens(clientId));
-      setShouldRefresh(false);
-    }
-  }, [dispatch, shouldRefresh, clientId]);
+  // Set up message handling from sign-in popup
+  useSignInPopupTokenHandoff(windowMessageHandler);
 
-  // Token handoff with Proof Key for Code Exchange (PKCE) from the sing-in window
-  useEffect(() => {
-    if (windowMessageHandler.current) {
-      window.removeEventListener('message', windowMessageHandler.current);
-    }
-    windowMessageHandler.current = (e) => {
-      if (e.data?.type !== 'authResult') return;
-      const { code, verifier } = e.data ?? {};
-      if (!code || !verifier) return;
-      localStorage.removeItem(LS_SIGN_IN_POPUP);
-      dispatch(tokenHandoff({ code, verifier, clientId, authCallbackUrl }));
-    };
-    window.addEventListener('message', windowMessageHandler.current);
-  }, [dispatch, windowMessageHandler, clientId, authCallbackUrl]);
+  const openSignInWindow = useOpenSignInWindowCallback(signInWindow, SIGN_IN_WINDOW_FEATURES);
 
-  const { accessToken, idTokenContents } = useAppSelector((state) => state.auth);
+  const { accessToken, idTokenContents } = useAppSelector((state) => state.auth); 
+  const isAuthenticated = getIsAuthenticated(idTokenContents);
+
   // Get user auth status
   useEffect(() => {
-    const isAuthenticated = getIsAuthenticated(idTokenContents);
+    // const isAuthenticated = getIsAuthenticated(idTokenContents);
     console.log('isAuthenticated', isAuthenticated);
     console.log('accessToken', accessToken);
     console.log('url', window.location);
   }, [window.location]);
 
+  const onAuthSuccess = () => {
+    console.log("Authenticated.");
+  };
+  useSessionWorkerTokenRefresh(
+    sessionWorker,
+    createSessionWorker,
+    onAuthSuccess
+  );
+
+  useBeaconWithAuthIfAllowed();
+
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <SiteHeader signIn={userSignIn} />
-      <Content style={{ padding: '0 30px', marginTop: '10px' }}>
-        <Routes>
-          <Route path="/:page?/*" element={<TabbedDashboard />} />
-        </Routes>
-      </Content>
-      <SiteFooter />
-    </Layout>
+    <>
+      <Modal
+        // TODO: translate
+        title={"You have been signed out"}
+        footer={null}
+        onCancel={() => {
+          setSignedOutModal(false);
+        }}
+        open={signedOutModal}
+      >
+        Please <a onClick={openSignInWindow}>sign in</a> to the research portal.
+      </Modal>
+      <Layout style={{ minHeight: '100vh' }}>
+        <SiteHeader />
+        <Content style={{ padding: '0 30px', marginTop: '10px' }}>
+          <Suspense fallback={<SitePageLoading />}>
+            <Routes>
+              <Route path={CALLBACK_PATH} element={<SitePageLoading />} />
+              <Route path="/:page?/*" element={<TabbedDashboard />} />
+            </Routes>
+          </Suspense>
+        </Content>
+        <SiteFooter />
+      </Layout>
+    </>
   );
 };
 
@@ -201,7 +168,16 @@ const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <Provider store={store}>
     <HashRouter>
-      <BentoApp />
+      <BentoAuthContextProvider value={{
+        applicationUrl: BENTO_URL_NO_TRAILING_SLASH,
+        openIdConfigUrl: OPENID_CONFIG_URL,
+        clientId: CLIENT_ID,
+        scope: "openid email",
+        postSignOutUrl: `${BENTO_URL_NO_TRAILING_SLASH}/`,
+        authCallbackUrl: AUTH_CALLBACK_URL,
+      }}>
+        <BentoApp />
+      </BentoAuthContextProvider>
     </HashRouter>
   </Provider>
 );

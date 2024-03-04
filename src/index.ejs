@@ -8,7 +8,9 @@
         <title>Bento</title>
         <%= htmlWebpackPlugin.tags.headTags %>
         <script type="text/javascript">
-            let BENTO_WEB_CONFIG = {};
+            // - define an empty global as a fallback for what ends up in the BENTO_WEB_CONFIG global
+            // - leave it mutable so static/config.js can override it
+            let BENTO_PUBLIC_CONFIG = {};
         </script>
     </head>
 

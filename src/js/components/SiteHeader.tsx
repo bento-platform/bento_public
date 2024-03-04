@@ -3,22 +3,29 @@ import { Button, Layout, Row, Col, Typography, Space } from 'antd';
 const { Header } = Layout;
 import { useTranslation } from 'react-i18next';
 import { DEFAULT_TRANSLATION, LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
-import { useAppDispatch, useAppSelector } from '@/hooks';
+import { useAppSelector } from '@/hooks';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { getIsAuthenticated, signOut } from 'bento-auth-js';
+import { getIsAuthenticated, usePerformAuth, usePerformSignOut } from 'bento-auth-js';
 
-const SiteHeader = ({ signIn }: { signIn: VoidFunction }) => {
+const SiteHeader = () => {
   const { t, i18n } = useTranslation(DEFAULT_TRANSLATION);
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useAppDispatch();
+
+  const { isFetching: openIdConfigFetching } = useAppSelector((state) => state.openIdConfiguration);
 
   const clientName = useAppSelector((state) => state.config.clientName);
   const translated = useAppSelector((state) => state.config.translated);
   const portalUrl = useAppSelector((state) => state.config.portalUrl);
-  const idTokenContents = useAppSelector((state) => state.auth.idTokenContents);
+  const {
+    idTokenContents,
+    isHandingOffCodeForToken,
+} = useAppSelector((state) => state.auth);
 
   const isAuthenticated = getIsAuthenticated(idTokenContents);
+
+  const performSignOut = usePerformSignOut();
+  const performSignIn = usePerformAuth();
 
   useEffect(() => {
     document.title = clientName && clientName.trim() ? `Bento: ${clientName}` : 'Bento';
@@ -57,12 +64,14 @@ const SiteHeader = ({ signIn }: { signIn: VoidFunction }) => {
               {t('Portal')}
             </Button>
             {isAuthenticated ? (
-              <Button shape="round" onClick={() => dispatch(signOut)}>
+              <Button shape="round" onClick={performSignOut}>
                 {t('Sign Out')}
               </Button>
             ) : (
-              <Button shape="round" type="primary" onClick={signIn}>
-                {t('Sign In')}
+              // <Button shape="round" type="primary" onClick={() => performAuth(authzEndpoint, CLIENT_ID, AUTH_CALLBACK_URL)}>
+              <Button shape="round" type="primary" onClick={performSignIn}>
+                {/* {t('Sign In')} */}
+                {openIdConfigFetching || isHandingOffCodeForToken ? t("Loading...") : t("Sign In")}
               </Button>
             )}
           </Space>

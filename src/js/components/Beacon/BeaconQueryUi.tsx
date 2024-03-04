@@ -1,5 +1,5 @@
 import React, { useEffect, useState, ReactNode } from 'react';
-import { useAppSelector, useAppDispatch, useTranslationDefault } from '@/hooks';
+import { useAppSelector, useAppDispatch, useTranslationDefault, useBeaconWithAuthIfAllowed } from '@/hooks';
 import { Button, Card, Col, Form, Row, Space, Tooltip, Typography } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import Filters from './Filters';
@@ -17,9 +17,8 @@ import {
   BUTTON_AREA_STYLE,
   BUTTON_STYLE,
 } from '@/constants/beaconConstants';
-import { getIsAuthenticated, RESOURCE_EVERYTHING } from 'bento-auth-js';
-import { setMaxQueryParametersRequired } from '@/features/config/config.store';
-import { useHasResourcePermissionWrapper } from '@/utils/beaconOnAuth';
+import { getIsAuthenticated } from 'bento-auth-js';
+
 const { Text, Title } = Typography;
 // TODOs
 // example searches, either hardcoded or configurable
@@ -95,9 +94,8 @@ const BeaconQueryUi = () => {
     form.setFieldsValue(formInitialValues);
   }, [isFetchingBeaconConfig, getIsAuthenticated(idTokenContents)]);
 
-  dispatch(
-    setMaxQueryParametersRequired(!useHasResourcePermissionWrapper(RESOURCE_EVERYTHING, 'query:data').hasPermission)
-  );
+  // Disables max query param if user is authenticated and authorized
+  useBeaconWithAuthIfAllowed();
 
   // beacon request handling
 
@@ -249,8 +247,10 @@ const BeaconQueryUi = () => {
       <Card
         title={td('Search')}
         style={{ borderRadius: '10px', maxWidth: '1200px', width: '100%' }}
-        bodyStyle={CARD_BODY_STYLE}
-        headStyle={CARD_HEAD_STYLE}
+        styles={{
+          body:CARD_BODY_STYLE,
+          header: CARD_HEAD_STYLE
+        }}
       >
         <p style={{ margin: '-8px 0 8px 0', padding: '0', color: 'grey' }}>{td(uiInstructions)}</p>
         <Form form={form} onFinish={handleFinish} layout="vertical" onValuesChange={handleValuesChange}>
@@ -260,8 +260,10 @@ const BeaconQueryUi = () => {
                 <Card
                   title={td('Variants')}
                   style={CARD_STYLE}
-                  headStyle={CARD_HEAD_STYLE}
-                  bodyStyle={CARD_BODY_STYLE}
+                  styles={{
+                    body:CARD_BODY_STYLE,
+                    header: CARD_HEAD_STYLE
+                  }}
                   extra={<SearchToolTip>{variantsInstructions}</SearchToolTip>}
                 >
                   <VariantsForm beaconAssemblyIds={beaconAssemblyIds} />

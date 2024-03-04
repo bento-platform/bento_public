@@ -3,6 +3,8 @@ const path = require('path');
 // const webpack = require('webpack'); // only add this if you don't have yet
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const { webcrypto } = require('crypto');
+const { webpack, EnvironmentPlugin } = require('webpack');
 
 const config = {
   mode: 'development',
@@ -46,6 +48,12 @@ const config = {
     new CopyWebpackPlugin({
       patterns: [{ from: 'src/public', to: 'public' }],
     }),
+    new EnvironmentPlugin({
+      // Default environment variables to null if not set
+      BENTO_PUBLIC_URL: null,
+      CLIENT_ID: null,
+      OPENID_CONFIG_URL: null,
+    })
   ],
   optimization: {
     runtimeChunk: 'single',
