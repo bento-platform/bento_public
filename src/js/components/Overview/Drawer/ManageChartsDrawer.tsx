@@ -7,7 +7,7 @@ import ChartTree from './ChartTree';
 
 import { ChartDataField } from '@/types/data';
 import { useAppSelector, useAppDispatch, useTranslationCustom, useTranslationDefault } from '@/hooks';
-import { hideAllSectionCharts, setAllDisplayedCharts } from '@/features/data/data.store';
+import { hideAllSectionCharts, setAllDisplayedCharts, resetLayout } from '@/features/data/data.store';
 
 const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: ManageChartsDrawerProps) => {
   const t = useTranslationCustom();
@@ -24,14 +24,24 @@ const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: Manage
       onClose={onManageDrawerClose}
       open={manageDrawerVisible}
       extra={
-        <Button
-          size="small"
-          onClick={() => {
-            dispatch(setAllDisplayedCharts({}));
-          }}
-        >
-          Show All
-        </Button>
+        <Space>
+          <Button
+            size="small"
+            onClick={() => {
+              dispatch(setAllDisplayedCharts({}));
+            }}
+          >
+            Show All
+          </Button>
+          <Button
+            size="small"
+            onClick={() => {
+              dispatch(resetLayout());
+            }}
+          >
+            Reset
+          </Button>
+        </Space>
       }
     >
       {sections.map(({ sectionTitle, charts }: { sectionTitle: string; charts: ChartDataField[] }, i: number) => (
