@@ -6,12 +6,14 @@ import { Counts } from '@/types/overviewResponse';
 
 interface DataState {
   isFetchingData: boolean;
+  defaultLayout: Sections;
   sections: Sections;
   counts: Counts;
 }
 
 const initialState: DataState = {
   isFetchingData: true,
+  defaultLayout: [],
   sections: [],
   counts: {
     individuals: 0,
@@ -69,6 +71,9 @@ const data = createSlice({
           arr[ind].isDisplayed = false;
         });
     },
+    resetLayout: (state) => {
+      state.sections = state.defaultLayout;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -77,6 +82,7 @@ const data = createSlice({
       })
       .addCase(makeGetDataRequestThunk.fulfilled, (state, { payload }) => {
         state.sections = payload.sectionData;
+        state.defaultLayout = payload.defaultData;
         state.counts = payload.counts;
         state.isFetchingData = false;
       })
@@ -93,6 +99,7 @@ export const {
   setChartWidth,
   setAllDisplayedCharts,
   hideAllSectionCharts,
+  resetLayout,
 } = data.actions;
 export { makeGetDataRequestThunk };
 export default data.reducer;
