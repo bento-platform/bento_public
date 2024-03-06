@@ -17,6 +17,7 @@ import {
   BUTTON_AREA_STYLE,
   BUTTON_STYLE,
 } from '@/constants/beaconConstants';
+import { BOX_SHADOW } from '@/constants/overviewConstants';
 const { Text, Title } = Typography;
 // TODOs
 // example searches, either hardcoded or configurable
@@ -240,7 +241,7 @@ const BeaconQueryUi = () => {
       <BeaconSearchResults />
       <Card
         title={td('Search')}
-        style={{ borderRadius: '10px', maxWidth: '1200px', width: '100%' }}
+        style={{ borderRadius: '10px', maxWidth: '1200px', width: '100%', ...BOX_SHADOW }}
         bodyStyle={CARD_BODY_STYLE}
         headStyle={CARD_HEAD_STYLE}
       >
