@@ -3,11 +3,11 @@ import Chart from './Chart';
 import { Card, Button, Tooltip, Space, Typography, Row } from 'antd';
 import { CloseOutlined, TeamOutlined } from '@ant-design/icons';
 import CustomEmpty from '../Util/CustomEmpty';
-import { CHART_HEIGHT, shadow } from '@/constants/overviewConstants';
+import { CHART_HEIGHT, BOX_SHADOW } from '@/constants/overviewConstants';
 import { useTranslationCustom, useTranslationDefault } from '@/hooks';
 import { ChartDataField } from '@/types/data';
 
-const CARD_STYLE = { width: '100%', height: '415px', borderRadius: '11px', ...shadow };
+const CARD_STYLE = { width: '100%', height: '415px', borderRadius: '11px', ...BOX_SHADOW };
 const ROW_EMPTY_STYLE = { height: `${CHART_HEIGHT}px` };
 
 const TitleComponent: React.FC<TitleComponentProps> = ({ title, description }) => (

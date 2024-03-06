@@ -8,7 +8,7 @@ import { useAppSelector } from '@/hooks';
 import { getDataTypeLabel } from '@/types/dataTypes';
 
 import { LastIngestionDataTypeResponse } from '@/types/lastIngestionDataTypeResponse';
-import { shadow } from '@/constants/overviewConstants';
+import { BOX_SHADOW } from '@/constants/overviewConstants';
 
 const LastIngestionInfo: React.FC = () => {
   const { t, i18n } = useTranslation(DEFAULT_TRANSLATION);
@@ -45,7 +45,7 @@ const LastIngestionInfo: React.FC = () => {
       <Space direction="horizontal">
         {hasData ? (
           queryableDataTypes.map((dataType: LastIngestionDataTypeResponse) => (
-            <Card style={shadow} key={dataType.id}>
+            <Card style={BOX_SHADOW} key={dataType.id}>
               <Space direction="vertical">
                 <Typography.Text style={{ color: 'rgba(0,0,0,0.45)' }}>
                   {t(getDataTypeLabel(dataType.id))}
