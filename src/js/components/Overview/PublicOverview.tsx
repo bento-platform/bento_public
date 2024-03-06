@@ -5,7 +5,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { convertSequenceAndDisplayData, saveValue } from '@/utils/localStorage';
 import type { Sections } from '@/types/data';
 
-import { LOCALSTORAGE_CHARTS_KEY } from '@/constants/overviewConstants';
+import { BOX_SHADOW, LOCALSTORAGE_CHARTS_KEY } from '@/constants/overviewConstants';
 
 import OverviewSection from './OverviewSection';
 import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
@@ -14,7 +14,7 @@ import { useAppSelector } from '@/hooks';
 import { useTranslation } from 'react-i18next';
 import LastIngestionInfo from './LastIngestion';
 
-const ABOUT_CARD_STYLE = { borderRadius: '11px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)' };
+const ABOUT_CARD_STYLE = { borderRadius: '11pX', ...BOX_SHADOW };
 const MANAGE_CHARTS_BUTTON_STYLE = { right: '5em', bottom: '1.5em', transform: 'scale(125%)' };
 
 const PublicOverview = () => {
