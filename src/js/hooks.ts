@@ -47,5 +47,5 @@ export const useBeaconWithAuthIfAllowed = () => {
       console.log("Beacon: user authorized for no max query parameters.");
       dispatch(setMaxQueryParametersRequired(false));
     }
-  }, [dispatch, hasPermission])
-}
+  }, [dispatch, hasPermission]);
+};

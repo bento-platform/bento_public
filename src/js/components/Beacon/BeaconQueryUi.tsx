@@ -249,7 +249,7 @@ const BeaconQueryUi = () => {
         style={{ borderRadius: '10px', maxWidth: '1200px', width: '100%' }}
         styles={{
           body:CARD_BODY_STYLE,
-          header: CARD_HEAD_STYLE
+          header: CARD_HEAD_STYLE,
         }}
       >
         <p style={{ margin: '-8px 0 8px 0', padding: '0', color: 'grey' }}>{td(uiInstructions)}</p>
@@ -262,7 +262,7 @@ const BeaconQueryUi = () => {
                   style={CARD_STYLE}
                   styles={{
                     body:CARD_BODY_STYLE,
-                    header: CARD_HEAD_STYLE
+                    header: CARD_HEAD_STYLE,
                   }}
                   extra={<SearchToolTip>{variantsInstructions}</SearchToolTip>}
                 >

@@ -2,7 +2,7 @@ import React, { Suspense, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { HashRouter, Routes, Route, useParams, useNavigate, useLocation } from 'react-router-dom';
+import { Routes, Route, useParams, useNavigate, BrowserRouter } from 'react-router-dom';
 import { Layout, Modal, message } from 'antd';
 import { ChartConfigProvider } from 'bento-charts';
 import { SUPPORTED_LNGS } from './constants/configConstants';
@@ -15,7 +15,6 @@ import {
   useSignInPopupTokenHandoff,
   useSessionWorkerTokenRefresh,
   BentoAuthContextProvider,
-  useIsAuthenticated,
 } from 'bento-auth-js';
 
 import 'leaflet/dist/leaflet.css';
@@ -49,11 +48,6 @@ const createSessionWorker = () => new Worker(new URL("./workers/tokenRefresh.ts"
 const App = () => {
 
   const navigate = useNavigate();
-  const location = useLocation();
-
-  useEffect(() => {
-    console.log(location);
-  }, [location])
 
   // TRANSLATION
   const { lang } = useParams<{ lang?: string }>();
@@ -103,13 +97,6 @@ const App = () => {
     }
   );
 
-  const isAuthenticated = useIsAuthenticated();
-
-  // Get user auth status
-  useEffect(() => {
-    console.log('isAuthenticated', isAuthenticated);
-  }, [window.location]);
-
   useBeaconWithAuthIfAllowed();
 
   return (
@@ -154,10 +141,11 @@ const BentoApp = () => {
   );
 };
 
+// TODO: replace HashRouter with BrowserRouter when we get rid of the golang server
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <Provider store={store}>
-    <HashRouter>
+    <BrowserRouter>
       <BentoAuthContextProvider value={{
         applicationUrl: BENTO_URL_NO_TRAILING_SLASH,
         openIdConfigUrl: OPENID_CONFIG_URL,
@@ -168,6 +156,6 @@ root.render(
       }}>
         <BentoApp />
       </BentoAuthContextProvider>
-    </HashRouter>
+    </BrowserRouter>
   </Provider>
 );

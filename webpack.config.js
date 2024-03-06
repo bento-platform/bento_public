@@ -11,7 +11,7 @@ const config = {
   entry: './src/js/index.tsx',
   output: {
     path: __dirname + '/build/www',
-    publicPath: '',
+    publicPath: '/',
     // filename: "js/bundle.js",
     filename: 'js/[name][chunkhash].js',
   },

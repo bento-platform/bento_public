@@ -297,7 +297,13 @@ func main() {
 
 	// Begin MVC Routes
 	// -- Root : static files
-	e.Use(middleware.Static(cfg.StaticFilesPath))
+	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
+		Root:	cfg.StaticFilesPath,
+		// Enable HTML5 mode by forwarding all not-found requests to root so that
+  		// SPA (single-page application) can handle the routing.
+  		// Required for react-router BrowserRouter fallback
+		HTML5: true,
+	}))
 
 	// -- GA4GH-compatible service information response
 	e.GET("/service-info", func(c echo.Context) error {
