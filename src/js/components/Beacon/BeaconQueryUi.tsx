@@ -274,8 +274,10 @@ const BeaconQueryUi = () => {
               <Card
                 title={td('Metadata')}
                 style={CARD_STYLE}
-                headStyle={CARD_HEAD_STYLE}
-                bodyStyle={CARD_BODY_STYLE}
+                styles={{
+                  header:CARD_HEAD_STYLE,
+                  body: CARD_BODY_STYLE,
+                }}
                 extra={<SearchToolTip>{metadataInstructions} </SearchToolTip>}
               >
                 <Filters filters={filters} setFilters={setFilters} form={form} querySections={querySections} />

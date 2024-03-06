@@ -2,21 +2,20 @@ import React, { Suspense, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { HashRouter, Routes, Route, useParams, useNavigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Layout, Modal, message } from 'antd';
 import { ChartConfigProvider } from 'bento-charts';
 import { SUPPORTED_LNGS } from './constants/configConstants';
 
 import {
-  fetchOpenIdConfiguration,
   useHandleCallback,
-  getIsAuthenticated,
   checkIsInAuthPopup,
   useOpenSignInWindowCallback,
   usePopupOpenerAuthCallback,
   useSignInPopupTokenHandoff,
   useSessionWorkerTokenRefresh,
   BentoAuthContextProvider,
+  useIsAuthenticated,
 } from 'bento-auth-js';
 
 import 'leaflet/dist/leaflet.css';
@@ -30,7 +29,7 @@ import SiteFooter from './components/SiteFooter';
 import SitePageLoading from './components/SitePageLoading';
 
 import { store } from './store';
-import { useAppDispatch, useAppSelector, useBeaconWithAuthIfAllowed } from '@/hooks';
+import { useBeaconWithAuthIfAllowed } from '@/hooks';
 
 import {
   BENTO_URL_NO_TRAILING_SLASH,
@@ -48,13 +47,17 @@ const { Content } = Layout;
 const createSessionWorker = () => new Worker(new URL("./workers/tokenRefresh.ts", import.meta.url));
 
 const App = () => {
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    console.log(location);
+  }, [location])
+
+  // TRANSLATION
   const { lang } = useParams<{ lang?: string }>();
   const { i18n } = useTranslation();
-  const navigate = useNavigate();
-
-  const [signedOutModal, setSignedOutModal] = useState(false);
-  
-  const sessionWorker = useRef(null);
 
   useEffect(() => {
     console.log('lang', lang);
@@ -62,29 +65,23 @@ const App = () => {
     if (lang && LNGS_ARRAY.includes(lang)) {
       i18n.changeLanguage(lang);
     } else if (i18n.language) {
-      navigate(`/${i18n.language}/`);
+      navigate(`/${i18n.language}/`, {replace: true});
     } else {
-      navigate(`/${SUPPORTED_LNGS.ENGLISH}/`);
+      navigate(`/${SUPPORTED_LNGS.ENGLISH}/`, {replace: true});
     }
   }, [lang, i18n.language, navigate]);
 
-  const dispatch = useAppDispatch();
-
-  // Popup sign-in window and its message handler refs
+  // AUTHENTICATION
+  const [signedOutModal, setSignedOutModal] = useState(false);
+  
+  const sessionWorker = useRef(null);
   const signInWindow = useRef<Window | null>(null);
   const windowMessageHandler = useRef<((event: MessageEvent) => void) | null>(null);
 
-  // Get the OIDC config
-  useEffect(() => {
-    if (OPENID_CONFIG_URL) {
-      dispatch(fetchOpenIdConfiguration(OPENID_CONFIG_URL));
-    }
-  }, [dispatch, OPENID_CONFIG_URL]);
-
-  // Auth popup hooks/callbacks
-  const isInAuthPopup = checkIsInAuthPopup(BENTO_URL_NO_TRAILING_SLASH);
+  const openSignInWindow = useOpenSignInWindowCallback(signInWindow, SIGN_IN_WINDOW_FEATURES);
 
   const popupOpenerAuthCallback = usePopupOpenerAuthCallback();
+  const isInAuthPopup = checkIsInAuthPopup(BENTO_URL_NO_TRAILING_SLASH);
 
   useHandleCallback(
     CALLBACK_PATH,
@@ -98,27 +95,20 @@ const App = () => {
   // Set up message handling from sign-in popup
   useSignInPopupTokenHandoff(windowMessageHandler);
 
-  const openSignInWindow = useOpenSignInWindowCallback(signInWindow, SIGN_IN_WINDOW_FEATURES);
-
-  const { accessToken, idTokenContents } = useAppSelector((state) => state.auth); 
-  const isAuthenticated = getIsAuthenticated(idTokenContents);
-
-  // Get user auth status
-  useEffect(() => {
-    // const isAuthenticated = getIsAuthenticated(idTokenContents);
-    console.log('isAuthenticated', isAuthenticated);
-    console.log('accessToken', accessToken);
-    console.log('url', window.location);
-  }, [window.location]);
-
-  const onAuthSuccess = () => {
-    console.log("Authenticated.");
-  };
   useSessionWorkerTokenRefresh(
     sessionWorker,
     createSessionWorker,
-    onAuthSuccess
+    () => {
+      console.log("Authenticated.");
+    }
   );
+
+  const isAuthenticated = useIsAuthenticated();
+
+  // Get user auth status
+  useEffect(() => {
+    console.log('isAuthenticated', isAuthenticated);
+  }, [window.location]);
 
   useBeaconWithAuthIfAllowed();
 
