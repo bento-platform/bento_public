@@ -17,6 +17,7 @@ import SiteHeader from './components/SiteHeader';
 import SiteFooter from './components/SiteFooter';
 
 import { store } from './store';
+import { CHART_THEME } from '@/constants/overviewConstants';
 
 const LNGS_ARRAY = Object.values(SUPPORTED_LNGS);
 const { Content } = Layout;
@@ -54,7 +55,7 @@ const BentoApp = () => {
   console.log('i18n.language', i18n.language);
 
   return (
-    <ChartConfigProvider Lng={i18n.language ?? SUPPORTED_LNGS.ENGLISH}>
+    <ChartConfigProvider Lng={i18n.language ?? SUPPORTED_LNGS.ENGLISH} theme={CHART_THEME}>
       <Routes>
         <Route path="/:lang?/*" element={<App />} />
       </Routes>
