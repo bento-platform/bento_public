@@ -15,6 +15,7 @@ import {
   useSignInPopupTokenHandoff,
   useSessionWorkerTokenRefresh,
   BentoAuthContextProvider,
+  nop,
 } from 'bento-auth-js';
 
 import 'leaflet/dist/leaflet.css';
@@ -92,9 +93,7 @@ const App = () => {
   useSessionWorkerTokenRefresh(
     sessionWorker,
     createSessionWorker,
-    () => {
-      console.log("Authenticated.");
-    }
+    nop,
   );
 
   useBeaconWithAuthIfAllowed();

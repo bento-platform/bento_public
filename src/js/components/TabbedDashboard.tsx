@@ -19,6 +19,8 @@ import ProvenanceTab from './Provenance/ProvenanceTab';
 import BeaconQueryUi from './Beacon/BeaconQueryUi';
 import { useAppDispatch, useAppSelector, useTranslationDefault } from '@/hooks';
 import { buildQueryParamsUrl } from '@/utils/search';
+import { useAutoAuthenticate, useIsAuthenticated } from 'bento-auth-js';
+import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
 
 const TabbedDashboard = () => {
   const dispatch = useAppDispatch();
@@ -26,6 +28,9 @@ const TabbedDashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { page } = useParams<{ page?: string }>();
+
+  const {isAutoAuthenticating} = useAutoAuthenticate();
+  const isAuthenticated = useIsAuthenticated();
 
   useEffect(() => {
     dispatch(makeGetConfigRequest()).then(() => dispatch(getBeaconConfig()));
@@ -37,7 +42,10 @@ const TabbedDashboard = () => {
     dispatch(fetchGohanData());
     dispatch(makeGetServiceInfoRequest());
     //TODO: Dispatch makeGetDataTypes to get the data types from service-registry
-  }, []);
+    if (isAuthenticated) {
+      dispatch(makeGetDataTypes());
+    }
+  }, [isAuthenticated]);
 
   const isFetchingOverviewData = useAppSelector((state) => state.data.isFetchingData);
   const isFetchingSearchFields = useAppSelector((state) => state.query.isFetchingFields);
@@ -110,6 +118,10 @@ const TabbedDashboard = () => {
     }
     return 'overview';
   };
+
+  if (isAutoAuthenticating) {
+    return <div />;
+  }
 
   return <Tabs activeKey={getTabKey(page)} items={mappedTabPanes} onChange={onChange} centered />;
 };
