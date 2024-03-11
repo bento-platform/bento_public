@@ -18,6 +18,7 @@ import {
   BUTTON_STYLE,
 } from '@/constants/beaconConstants';
 import { getIsAuthenticated } from 'bento-auth-js';
+import { BEACON_URL } from '@/config';
 
 const { Text, Title } = Typography;
 // TODOs
@@ -57,7 +58,6 @@ const BeaconQueryUi = () => {
   const isFetchingBeaconConfig = useAppSelector((state) => state.beaconConfig.isFetchingBeaconConfig);
   const beaconAssemblyIds = useAppSelector((state) => state.beaconConfig.beaconAssemblyIds);
   const querySections = useAppSelector((state) => state.query.querySections);
-  const beaconUrl = useAppSelector((state) => state.config?.beaconUrl);
   const hasApiError = useAppSelector((state) => state.beaconQuery.hasApiError);
   const apiErrorMessage = useAppSelector((state) => state.beaconQuery.apiErrorMessage);
   const idTokenContents = useAppSelector((state) => state.auth.idTokenContents);
@@ -81,7 +81,7 @@ const BeaconQueryUi = () => {
 
   useEffect(() => {
     // wait for config
-    if (!beaconUrl) {
+    if (!BEACON_URL) {
       return;
     }
 

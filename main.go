@@ -45,8 +45,8 @@ type BentoConfig struct {
 	BeaconUrl       string `envconfig:"BEACON_URL"`
 	BeaconUiEnabled bool   `envconfig:"BENTO_BEACON_UI_ENABLED"`
 	// Auth configs
-	PublicUrl		string `envconfig:"BENTO_PUBLIC_URL"`
-	ClientId		string `envconfig:"CLIENT_ID"`
+	PublicUrl       string `envconfig:"BENTO_PUBLIC_URL"`
+	ClientId        string `envconfig:"CLIENT_ID"`
 	OpenIdConfigUrl string `envconfig:"OPENID_CONFIG_URL"`
 }
 
@@ -298,10 +298,10 @@ func main() {
 	// Begin MVC Routes
 	// -- Root : static files
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
-		Root:	cfg.StaticFilesPath,
+		Root: cfg.StaticFilesPath,
 		// Enable HTML5 mode by forwarding all not-found requests to root so that
-  		// SPA (single-page application) can handle the routing.
-  		// Required for react-router BrowserRouter fallback
+		// SPA (single-page application) can handle the routing.
+		// Required for react-router BrowserRouter fallback
 		HTML5: true,
 	}))
 
@@ -349,9 +349,9 @@ func main() {
 			"translated":         cfg.Translated,
 			"beaconUrl":          cfg.BeaconUrl,
 			"beaconUiEnabled":    cfg.BeaconUiEnabled,
-			"publicUrl":		  cfg.PublicUrl,
-			"clientId":			  cfg.ClientId,
-			"openIdConfigUrl":	  cfg.OpenIdConfigUrl,
+			"publicUrl":          cfg.PublicUrl,
+			"clientId":           cfg.ClientId,
+			"openIdConfigUrl":    cfg.OpenIdConfigUrl,
 		})
 	})
 

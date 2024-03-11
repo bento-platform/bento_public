@@ -21,6 +21,7 @@ import { useAppDispatch, useAppSelector, useTranslationDefault } from '@/hooks';
 import { buildQueryParamsUrl } from '@/utils/search';
 import { useAutoAuthenticate, useIsAuthenticated } from 'bento-auth-js';
 import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
+import { BEACON_UI_ENABLED } from '@/config';
 
 const TabbedDashboard = () => {
   const dispatch = useAppDispatch();
@@ -51,7 +52,6 @@ const TabbedDashboard = () => {
   const isFetchingSearchFields = useAppSelector((state) => state.query.isFetchingFields);
   const queryParams = useAppSelector((state) => state.query.queryParams);
   const isFetchingBeaconConfig = useAppSelector((state) => state.beaconConfig?.isFetchingBeaconConfig);
-  const renderBeaconUi = useAppSelector((state) => state.config?.beaconUiEnabled);
 
   const onChange = useCallback(
     (key: string) => {
@@ -92,7 +92,7 @@ const TabbedDashboard = () => {
       title: 'Beacon',
       content: <BeaconQueryUi />,
       loading: isFetchingBeaconConfig,
-      active: renderBeaconUi,
+      active: BEACON_UI_ENABLED,
       key: 'beacon',
     },
     {

@@ -5,13 +5,14 @@ import { serializeChartData } from '@/utils/chart';
 import { beaconApiError } from '@/utils/beaconApiError';
 import { BeaconQueryPayload, BeaconQueryResponse } from '@/types/beacon';
 import { ChartData } from '@/types/data';
+import { BEACON_URL } from '@/config';
 
 export const makeBeaconQuery = createAsyncThunk<
   BeaconQueryResponse,
   BeaconQueryPayload,
   { state: RootState; rejectValue: string }
 >('beaconQuery/makeBeaconQuery', async (payload, { getState, rejectWithValue }) => {
-  const beaconIndividualsEndpoint = getState()?.config?.beaconUrl + '/individuals';
+  const beaconIndividualsEndpoint = BEACON_URL + '/individuals';
   const token = getState().auth.accessToken;
   const headers =token? {
     Authorization: `Bearer ${token}`,

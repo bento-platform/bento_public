@@ -50,6 +50,13 @@ const config = {
     }),
     new EnvironmentPlugin({
       // Default environment variables to null if not set
+      // General
+      BENTO_PUBLIC_CLIENT_NAME: null,
+      BENTO_PUBLIC_PORTAL_URL: null,
+      BENTO_PUBLIC_TRANSLATED: null,
+      BEACON_URL: null,
+      BENTO_BEACON_UI_ENABLED: null,
+      // Authentication
       BENTO_PUBLIC_URL: null,
       CLIENT_ID: null,
       OPENID_CONFIG_URL: null,

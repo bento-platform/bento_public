@@ -5,6 +5,7 @@ import { printAPIError } from '@/utils/error.util';
 import { ConfigResponse } from '@/types/configResponse';
 import { ServiceInfoStore, ServicesResponse } from '@/types/services';
 import { RootState } from '@/store';
+import { PUBLIC_URL } from '@/config';
 
 export const makeGetConfigRequest = createAsyncThunk<ConfigResponse, void, { rejectValue: string }>(
   'config/getConfigData',
@@ -17,16 +18,14 @@ export const makeGetConfigRequest = createAsyncThunk<ConfigResponse, void, { rej
 
 export const makeGetServiceInfoRequest = createAsyncThunk<ServicesResponse[], void, { state: RootState, rejectValue: string }>(
   'config/getServiceInfo',
-  (_, { getState, rejectWithValue }) =>
+  (_, { rejectWithValue }) =>
     axios
-      .get(`${getState()?.config?.publicUrl}/api/service-registry/services`)
+      .get(`${PUBLIC_URL}/api/service-registry/services`)
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue))
 );
 
 export interface ConfigState extends ConfigResponse {
-  publicUrlNoTrailingSlash: string,
-  authCallbackUrl: string,
   isFetchingConfig: boolean;
   isFetchingServiceInfo: boolean;
   serviceInfo: ServiceInfoStore;
@@ -35,18 +34,8 @@ export interface ConfigState extends ConfigResponse {
 
 const initialState: ConfigState = {
   isFetchingConfig: false,
-  clientName: '',
-  portalUrl: '',
   maxQueryParameters: 0,
   maxQueryParametersRequired: true,
-  translated: false,
-  beaconUrl: '',
-  beaconUiEnabled: false,
-  publicUrl: '',
-  publicUrlNoTrailingSlash: '',
-  clientId: '',
-  openIdConfigUrl: '',
-  authCallbackUrl: '',
   isFetchingServiceInfo: false,
   serviceInfo: {
     auth: '',
@@ -66,21 +55,7 @@ const configStore = createSlice({
       state.isFetchingConfig = true;
     });
     builder.addCase(makeGetConfigRequest.fulfilled, (state, { payload }: PayloadAction<ConfigResponse>) => {
-      state.clientName = payload.clientName;
-      state.portalUrl = payload.portalUrl;
       state.maxQueryParameters = payload.maxQueryParameters;
-      state.translated = payload.translated;
-      state.isFetchingConfig = false;
-      state.beaconUrl = payload.beaconUrl;
-      state.beaconUiEnabled = payload.beaconUiEnabled;
-
-      const publicUrlNoTrailingSlash = payload.publicUrl.replace(/\/$/g, '');
-      state.publicUrl = payload.publicUrl;
-      state.publicUrlNoTrailingSlash = publicUrlNoTrailingSlash;
-      state.authCallbackUrl = `${publicUrlNoTrailingSlash}/#/callback`;
-      state.clientId = payload.clientId;
-      state.openIdConfigUrl = payload.openIdConfigUrl;
-
       state.isFetchingConfig = false;
     });
     builder.addCase(makeGetConfigRequest.rejected, (state) => {

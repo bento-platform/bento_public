@@ -6,6 +6,7 @@ import { DEFAULT_TRANSLATION, LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/co
 import { useAppSelector } from '@/hooks';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { getIsAuthenticated, usePerformAuth, usePerformSignOut } from 'bento-auth-js';
+import { CLIENT_NAME, PORTAL_URL, TRANSLATED } from '@/config';
 
 const SiteHeader = () => {
   const { t, i18n } = useTranslation(DEFAULT_TRANSLATION);
@@ -14,9 +15,9 @@ const SiteHeader = () => {
 
   const { isFetching: openIdConfigFetching } = useAppSelector((state) => state.openIdConfiguration);
 
-  const clientName = useAppSelector((state) => state.config.clientName);
-  const translated = useAppSelector((state) => state.config.translated);
-  const portalUrl = useAppSelector((state) => state.config.portalUrl);
+  const clientName = CLIENT_NAME;
+  const translated = TRANSLATED;
+  const portalUrl = PORTAL_URL;
   const {
     idTokenContents,
     isHandingOffCodeForToken,

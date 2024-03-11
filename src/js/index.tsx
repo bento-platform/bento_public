@@ -32,7 +32,7 @@ import { store } from './store';
 import { useBeaconWithAuthIfAllowed } from '@/hooks';
 
 import {
-  BENTO_URL_NO_TRAILING_SLASH,
+  PUBLIC_URL_NO_TRAILING_SLASH,
   CLIENT_ID,
   OPENID_CONFIG_URL,
   AUTH_CALLBACK_URL,
@@ -76,7 +76,7 @@ const App = () => {
   const openSignInWindow = useOpenSignInWindowCallback(signInWindow, SIGN_IN_WINDOW_FEATURES);
 
   const popupOpenerAuthCallback = usePopupOpenerAuthCallback();
-  const isInAuthPopup = checkIsInAuthPopup(BENTO_URL_NO_TRAILING_SLASH);
+  const isInAuthPopup = checkIsInAuthPopup(PUBLIC_URL_NO_TRAILING_SLASH);
 
   useHandleCallback(
     CALLBACK_PATH,
@@ -146,11 +146,11 @@ root.render(
   <Provider store={store}>
     <BrowserRouter>
       <BentoAuthContextProvider value={{
-        applicationUrl: BENTO_URL_NO_TRAILING_SLASH,
+        applicationUrl: PUBLIC_URL_NO_TRAILING_SLASH,
         openIdConfigUrl: OPENID_CONFIG_URL,
         clientId: CLIENT_ID,
         scope: "openid email",
-        postSignOutUrl: `${BENTO_URL_NO_TRAILING_SLASH}/`,
+        postSignOutUrl: `${PUBLIC_URL_NO_TRAILING_SLASH}/`,
         authCallbackUrl: AUTH_CALLBACK_URL,
       }}>
         <BentoApp />
