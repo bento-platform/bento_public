@@ -46,7 +46,7 @@ const Filter = ({ filter, form, querySections, removeFilter, isRequired }: Filte
 
   const searchKeyOptions = (arr: Section[]): FilterOption[] => {
     return arr.map((qs) => ({
-      label: qs.section_title,
+      label: t(qs.section_title),
       options: qs.fields.map((field) => ({
         label: renderLabel(field),
         value: field.id,

@@ -4,7 +4,7 @@ import { TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
 
 import ExpSvg from '../Util/ExpSvg';
-import { COUNTS_FILL } from '@/constants/overviewConstants';
+import { COUNTS_FILL, BOX_SHADOW } from '@/constants/overviewConstants';
 import { useAppSelector, useTranslationDefault } from '@/hooks';
 
 const Counts = () => {
@@ -33,7 +33,7 @@ const Counts = () => {
       <Typography.Title level={3}>{td('Counts')}</Typography.Title>
       <Space direction="horizontal">
         {data.map(({ title, icon, count }, i) => (
-          <Card key={i}>
+          <Card key={i} style={BOX_SHADOW}>
             <Statistic title={td(title)} value={count} valueStyle={{ color: COUNTS_FILL }} prefix={icon} />
           </Card>
         ))}

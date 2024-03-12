@@ -44,7 +44,7 @@ export const useBeaconWithAuthIfAllowed = () => {
   const { hasPermission } = useHasResourcePermissionWrapper(RESOURCE_EVERYTHING, queryData);
   useEffect(() => {
     if (hasPermission) {
-      console.log("Beacon: user authorized for no max query parameters.");
+      console.log('Beacon: user authorized for no max query parameters.');
       dispatch(setMaxQueryParametersRequired(false));
     }
   }, [dispatch, hasPermission]);

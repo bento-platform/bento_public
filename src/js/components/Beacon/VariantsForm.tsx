@@ -59,7 +59,7 @@ const VariantsForm = ({ beaconAssemblyIds }: VariantsFormProps) => {
       placeholder: `A, C, G, T ${td('or')} N`,
       initialValue: '',
     },
-    assemblyId: { name: 'Assembly ID', rules: [{}], placeholder: '', initialValue: '' },
+    assemblyId: { name: 'Assembly ID', placeholder: '', initialValue: '' },
   };
 
   const variantsError = beaconAssemblyIds.includes('error');

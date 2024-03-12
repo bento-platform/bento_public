@@ -11,6 +11,7 @@ import CreatedByTable from './Tables/CreatedByTable';
 import DownloadDats from './DownloadDats';
 import { useTranslationCustom, useTranslationDefault } from '@/hooks';
 import { ProvenanceStoreDataset } from '@/types/provenance';
+import { BOX_SHADOW } from '@/constants/overviewConstants';
 
 const { Item } = Descriptions;
 const { Text, Title } = Typography;
@@ -29,7 +30,7 @@ const DatasetProvenance = ({ metadata, loading }: DatasetProvenanceProps) => {
             {t(metadata.version)}
           </Title>,
         ]}
-        style={{ borderRadius: '11px' }}
+        style={{ borderRadius: '11px', ...BOX_SHADOW }}
         loading={loading}
       >
         {/* --- DESCRIPTION ---*/}

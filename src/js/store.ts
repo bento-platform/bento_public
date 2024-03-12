@@ -1,6 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import {LS_OPENID_CONFIG_KEY, OIDCSliceState, AuthReducer as auth, OIDCReducer as openIdConfiguration} from "bento-auth-js";
+import {
+  LS_OPENID_CONFIG_KEY,
+  OIDCSliceState,
+  AuthReducer as auth,
+  OIDCReducer as openIdConfiguration,
+} from 'bento-auth-js';
 
 import configReducer from '@/features/config/config.store';
 import contentReducer from '@/features/content/content.store';
@@ -15,12 +20,12 @@ import { ToolkitStore } from '@reduxjs/toolkit/dist/configureStore';
 
 interface PersistedState {
   openIdConfiguration?: OIDCSliceState;
-};
+}
 
 const persistedState: PersistedState = {};
-const persistedOpenIDConfig = getValue(LS_OPENID_CONFIG_KEY, undefined, (value) => typeof value === "object");
+const persistedOpenIDConfig = getValue(LS_OPENID_CONFIG_KEY, undefined, (value) => typeof value === 'object');
 if (persistedOpenIDConfig) {
-  console.debug("attempting to load OpenID configuration from localStorage");
+  console.debug('attempting to load OpenID configuration from localStorage');
   persistedState.openIdConfiguration = persistedOpenIDConfig;
 }
 
@@ -58,11 +63,11 @@ const observeStore = <T>(store: ToolkitStore, select: (state: RootState) => T, o
   let currentState: T;
 
   const handleChange = () => {
-      const nextState = select(store.getState());
-      if (nextState !== currentState) {
-          currentState = nextState;
-          onChange(currentState);
-      }
+    const nextState = select(store.getState());
+    if (nextState !== currentState) {
+      currentState = nextState;
+      onChange(currentState);
+    }
   };
 
   const unsubscribe = store.subscribe(handleChange);
@@ -75,9 +80,9 @@ observeStore<OIDCSliceState>(
   store,
   (state) => state.openIdConfiguration,
   (currentState) => {
-      const { data, expiry, isFetching } = currentState;
-      if (data && expiry && !isFetching) {
-          saveValue(LS_OPENID_CONFIG_KEY, { data, expiry, isFetching });
-      }
-  },
+    const { data, expiry, isFetching } = currentState;
+    if (data && expiry && !isFetching) {
+      saveValue(LS_OPENID_CONFIG_KEY, { data, expiry, isFetching });
+    }
+  }
 );

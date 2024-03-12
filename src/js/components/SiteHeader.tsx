@@ -18,10 +18,7 @@ const SiteHeader = () => {
   const clientName = CLIENT_NAME;
   const translated = TRANSLATED;
   const portalUrl = PORTAL_URL;
-  const {
-    idTokenContents,
-    isHandingOffCodeForToken,
-} = useAppSelector((state) => state.auth);
+  const { idTokenContents, isHandingOffCodeForToken } = useAppSelector((state) => state.auth);
 
   const isAuthenticated = getIsAuthenticated(idTokenContents);
 
@@ -72,7 +69,7 @@ const SiteHeader = () => {
               // <Button shape="round" type="primary" onClick={() => performAuth(authzEndpoint, CLIENT_ID, AUTH_CALLBACK_URL)}>
               <Button shape="round" type="primary" onClick={performSignIn}>
                 {/* {t('Sign In')} */}
-                {openIdConfigFetching || isHandingOffCodeForToken ? t("Loading...") : t("Sign In")}
+                {openIdConfigFetching || isHandingOffCodeForToken ? t('Loading...') : t('Sign In')}
               </Button>
             )}
           </Space>

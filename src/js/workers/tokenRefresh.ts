@@ -7,7 +7,7 @@
 // network action to get a new access & refresh token.
 
 setInterval(() => {
-    self.postMessage(true);  // Send a window-inactive-resilient ping
-}, 120000);  // every 2 minutes
+  self.postMessage(true); // Send a window-inactive-resilient ping
+}, 120000); // every 2 minutes
 
 export {};

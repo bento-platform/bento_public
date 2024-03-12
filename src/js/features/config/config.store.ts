@@ -16,13 +16,15 @@ export const makeGetConfigRequest = createAsyncThunk<ConfigResponse, void, { rej
       .catch(printAPIError(rejectWithValue))
 );
 
-export const makeGetServiceInfoRequest = createAsyncThunk<ServicesResponse[], void, { state: RootState, rejectValue: string }>(
-  'config/getServiceInfo',
-  (_, { rejectWithValue }) =>
-    axios
-      .get(`${PUBLIC_URL}/api/service-registry/services`)
-      .then((res) => res.data)
-      .catch(printAPIError(rejectWithValue))
+export const makeGetServiceInfoRequest = createAsyncThunk<
+  ServicesResponse[],
+  void,
+  { state: RootState; rejectValue: string }
+>('config/getServiceInfo', (_, { rejectWithValue }) =>
+  axios
+    .get(`${PUBLIC_URL}/api/service-registry/services`)
+    .then((res) => res.data)
+    .catch(printAPIError(rejectWithValue))
 );
 
 export interface ConfigState extends ConfigResponse {

@@ -1,14 +1,28 @@
 import React, { memo } from 'react';
 import Chart from './Chart';
 import { Card, Button, Tooltip, Space, Typography, Row } from 'antd';
-import { CloseOutlined, TeamOutlined, QuestionOutlined } from '@ant-design/icons';
+import { CloseOutlined, TeamOutlined } from '@ant-design/icons';
 import CustomEmpty from '../Util/CustomEmpty';
-import { CHART_HEIGHT } from '@/constants/overviewConstants';
+import { CHART_HEIGHT, BOX_SHADOW } from '@/constants/overviewConstants';
 import { useTranslationCustom, useTranslationDefault } from '@/hooks';
 import { ChartDataField } from '@/types/data';
 
-const CARD_STYLE = { width: '100%', height: '415px', borderRadius: '11px' };
+const CARD_STYLE = { width: '100%', height: '415px', borderRadius: '11px', ...BOX_SHADOW };
 const ROW_EMPTY_STYLE = { height: `${CHART_HEIGHT}px` };
+
+const TitleComponent: React.FC<TitleComponentProps> = ({ title, description }) => (
+  <Space.Compact direction="vertical" style={{ fontWeight: 'normal', padding: '5px 5px' }}>
+    <Typography.Text style={{ fontSize: '20px', fontWeight: '600' }}>{title}</Typography.Text>
+    <Typography.Text type="secondary" style={{ width: '375px' }} ellipsis={{ tooltip: description }}>
+      {description}
+    </Typography.Text>
+  </Space.Compact>
+);
+
+interface TitleComponentProps {
+  title: string;
+  description: string;
+}
 
 const ChartCard = memo(({ section, chart, onRemoveChart, width }: ChartCardProps) => {
   const t = useTranslationCustom();
@@ -21,10 +35,6 @@ const ChartCard = memo(({ section, chart, onRemoveChart, width }: ChartCardProps
   } = chart;
 
   const extraOptionsData = [
-    {
-      icon: <QuestionOutlined />,
-      description: t(description),
-    },
     {
       icon: <CloseOutlined />,
       description: td('Remove this chart'),
@@ -59,7 +69,12 @@ const ChartCard = memo(({ section, chart, onRemoveChart, width }: ChartCardProps
   // We add a key to the chart which includes width to force a re-render if width changes.
   return (
     <div key={id} style={{ height: '100%', width }}>
-      <Card title={t(title)} style={CARD_STYLE} size="small" extra={<Space size="small">{ed}</Space>}>
+      <Card
+        title={<TitleComponent title={t(title)} description={t(description)} />}
+        style={CARD_STYLE}
+        size="small"
+        extra={<Space size="small">{ed}</Space>}
+      >
         {data.filter((e) => !(e.x === 'missing')).length !== 0 ? (
           <Chart
             chartConfig={chartConfig}

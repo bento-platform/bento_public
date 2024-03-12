@@ -30,7 +30,7 @@ const TabbedDashboard = () => {
   const location = useLocation();
   const { page } = useParams<{ page?: string }>();
 
-  const {isAutoAuthenticating} = useAutoAuthenticate();
+  const { isAutoAuthenticating } = useAutoAuthenticate();
   const isAuthenticated = useIsAuthenticated();
 
   useEffect(() => {

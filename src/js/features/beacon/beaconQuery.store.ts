@@ -14,9 +14,11 @@ export const makeBeaconQuery = createAsyncThunk<
 >('beaconQuery/makeBeaconQuery', async (payload, { getState, rejectWithValue }) => {
   const beaconIndividualsEndpoint = BEACON_URL + '/individuals';
   const token = getState().auth.accessToken;
-  const headers =token? {
-    Authorization: `Bearer ${token}`,
-  }: {};
+  const headers = token
+    ? {
+        Authorization: `Bearer ${token}`,
+      }
+    : {};
   return axios
     .post(beaconIndividualsEndpoint, payload, { headers })
     .then((res) => res.data)
@@ -58,7 +60,7 @@ const beaconQuery = createSlice({
       state.isFetchingQueryResponse = true;
     });
     builder.addCase(makeBeaconQuery.fulfilled, (state, { payload }) => {
-      if (payload.info) {
+      if (payload.info?.bento) {
         state.biosampleCount = payload.info.bento?.biosamples?.count;
         state.biosampleChartData = serializeChartData(payload.info.bento?.biosamples?.sampled_tissue);
         state.experimentCount = payload.info.bento?.experiments?.count;

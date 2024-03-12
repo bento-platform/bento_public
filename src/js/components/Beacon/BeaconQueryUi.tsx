@@ -20,6 +20,7 @@ import {
 import { getIsAuthenticated } from 'bento-auth-js';
 import { BEACON_URL } from '@/config';
 
+import { BOX_SHADOW } from '@/constants/overviewConstants';
 const { Text, Title } = Typography;
 // TODOs
 // example searches, either hardcoded or configurable
@@ -42,7 +43,7 @@ const VARIANTS_INSTRUCTIONS_LINE4a = 'Coordinates are one-based.';
 const VARIANTS_INSTRUCTIONS_LINE4b = 'Leave this form blank to search by metadata only.';
 const METADATA_INSTRUCTIONS = 'Search over clinical or phenotypic properties.';
 const VARIANTS_FORM_ERROR_MESSAGE =
-  'variants form should include either an end position or both reference and alternate bases';
+  'Variants form should include either an end position or both reference and alternate bases';
 
 const BeaconQueryUi = () => {
   const td = useTranslationDefault();
@@ -238,7 +239,7 @@ const BeaconQueryUi = () => {
     </Space>
   );
 
-  const metadataInstructions = <ToolTipText>{METADATA_INSTRUCTIONS}</ToolTipText>;
+  const metadataInstructions = <ToolTipText>{td(METADATA_INSTRUCTIONS)}</ToolTipText>;
   const isFetchingBeaconQuery = useAppSelector((state) => state.beaconQuery.isFetchingQueryResponse);
 
   return (
@@ -246,9 +247,9 @@ const BeaconQueryUi = () => {
       <BeaconSearchResults />
       <Card
         title={td('Search')}
-        style={{ borderRadius: '10px', maxWidth: '1200px', width: '100%' }}
+        style={{ borderRadius: '10px', maxWidth: '1200px', width: '100%', ...BOX_SHADOW }}
         styles={{
-          body:CARD_BODY_STYLE,
+          body: CARD_BODY_STYLE,
           header: CARD_HEAD_STYLE,
         }}
       >
@@ -261,7 +262,7 @@ const BeaconQueryUi = () => {
                   title={td('Variants')}
                   style={CARD_STYLE}
                   styles={{
-                    body:CARD_BODY_STYLE,
+                    body: CARD_BODY_STYLE,
                     header: CARD_HEAD_STYLE,
                   }}
                   extra={<SearchToolTip>{variantsInstructions}</SearchToolTip>}
@@ -275,7 +276,7 @@ const BeaconQueryUi = () => {
                 title={td('Metadata')}
                 style={CARD_STYLE}
                 styles={{
-                  header:CARD_HEAD_STYLE,
+                  header: CARD_HEAD_STYLE,
                   body: CARD_BODY_STYLE,
                 }}
                 extra={<SearchToolTip>{metadataInstructions} </SearchToolTip>}

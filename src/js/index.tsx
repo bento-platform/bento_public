@@ -31,23 +31,17 @@ import SitePageLoading from './components/SitePageLoading';
 import { store } from './store';
 import { useBeaconWithAuthIfAllowed } from '@/hooks';
 
-import {
-  PUBLIC_URL_NO_TRAILING_SLASH,
-  CLIENT_ID,
-  OPENID_CONFIG_URL,
-  AUTH_CALLBACK_URL,
-} from "./config";
+import { PUBLIC_URL_NO_TRAILING_SLASH, CLIENT_ID, OPENID_CONFIG_URL, AUTH_CALLBACK_URL } from './config';
 
-const SIGN_IN_WINDOW_FEATURES = "scrollbars=no, toolbar=no, menubar=no, width=800, height=600";
-const CALLBACK_PATH = "/callback";
+const SIGN_IN_WINDOW_FEATURES = 'scrollbars=no, toolbar=no, menubar=no, width=800, height=600';
+const CALLBACK_PATH = '/callback';
 
 const LNGS_ARRAY = Object.values(SUPPORTED_LNGS);
 const { Content } = Layout;
 
-const createSessionWorker = () => new Worker(new URL("./workers/tokenRefresh.ts", import.meta.url));
+const createSessionWorker = () => new Worker(new URL('./workers/tokenRefresh.ts', import.meta.url));
 
 const App = () => {
-
   const navigate = useNavigate();
 
   // TRANSLATION
@@ -60,15 +54,15 @@ const App = () => {
     if (lang && LNGS_ARRAY.includes(lang)) {
       i18n.changeLanguage(lang);
     } else if (i18n.language) {
-      navigate(`/${i18n.language}/`, {replace: true});
+      navigate(`/${i18n.language}/`, { replace: true });
     } else {
-      navigate(`/${SUPPORTED_LNGS.ENGLISH}/`, {replace: true});
+      navigate(`/${SUPPORTED_LNGS.ENGLISH}/`, { replace: true });
     }
   }, [lang, i18n.language, navigate]);
 
   // AUTHENTICATION
   const [signedOutModal, setSignedOutModal] = useState(false);
-  
+
   const sessionWorker = useRef(null);
   const signInWindow = useRef<Window | null>(null);
   const windowMessageHandler = useRef<((event: MessageEvent) => void) | null>(null);
@@ -81,7 +75,7 @@ const App = () => {
   useHandleCallback(
     CALLBACK_PATH,
     () => {
-      console.debug("authenticated");
+      console.debug('authenticated');
     },
     isInAuthPopup ? popupOpenerAuthCallback : undefined,
     (msg) => message.error(msg)
@@ -90,11 +84,7 @@ const App = () => {
   // Set up message handling from sign-in popup
   useSignInPopupTokenHandoff(windowMessageHandler);
 
-  useSessionWorkerTokenRefresh(
-    sessionWorker,
-    createSessionWorker,
-    nop,
-  );
+  useSessionWorkerTokenRefresh(sessionWorker, createSessionWorker, nop);
 
   useBeaconWithAuthIfAllowed();
 
@@ -102,7 +92,7 @@ const App = () => {
     <>
       <Modal
         // TODO: translate
-        title={"You have been signed out"}
+        title={'You have been signed out'}
         footer={null}
         onCancel={() => {
           setSignedOutModal(false);
@@ -145,14 +135,16 @@ const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <Provider store={store}>
     <BrowserRouter>
-      <BentoAuthContextProvider value={{
-        applicationUrl: PUBLIC_URL_NO_TRAILING_SLASH,
-        openIdConfigUrl: OPENID_CONFIG_URL,
-        clientId: CLIENT_ID,
-        scope: "openid email",
-        postSignOutUrl: `${PUBLIC_URL_NO_TRAILING_SLASH}/`,
-        authCallbackUrl: AUTH_CALLBACK_URL,
-      }}>
+      <BentoAuthContextProvider
+        value={{
+          applicationUrl: PUBLIC_URL_NO_TRAILING_SLASH,
+          openIdConfigUrl: OPENID_CONFIG_URL,
+          clientId: CLIENT_ID,
+          scope: 'openid email',
+          postSignOutUrl: `${PUBLIC_URL_NO_TRAILING_SLASH}/`,
+          authCallbackUrl: AUTH_CALLBACK_URL,
+        }}
+      >
         <BentoApp />
       </BentoAuthContextProvider>
     </BrowserRouter>

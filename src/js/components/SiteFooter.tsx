@@ -21,7 +21,7 @@ const SiteFooter = () => {
           </div>
           <div>
             <Text type="secondary">
-              Copyright &copy; 2019-2023 the{' '}
+              Copyright &copy; 2019-2024 the{' '}
               <Link href="https://computationalgenomics.ca" target="_blank">
                 Canadian Centre for Computational Genomics
               </Link>

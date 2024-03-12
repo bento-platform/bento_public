@@ -8,7 +8,7 @@ import { BEACON_URL } from '@/config';
 export const getBeaconConfig = createAsyncThunk<BeaconConfigResponse, void, { state: RootState; rejectValue: string }>(
   'beaconConfig/getBeaconConfig',
   (_, { rejectWithValue }) => {
-    const beaconInfoEndpoint = BEACON_URL + '/info';
+    const beaconInfoEndpoint = BEACON_URL + '/overview';
     return axios
       .get(beaconInfoEndpoint)
       .then((res) => res.data)

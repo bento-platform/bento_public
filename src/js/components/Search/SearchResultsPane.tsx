@@ -5,7 +5,7 @@ import { BiDna } from 'react-icons/bi';
 import { PieChart } from 'bento-charts';
 import CustomEmpty from '../Util/CustomEmpty';
 import ExpSvg from '../Util/ExpSvg';
-import { COUNTS_FILL, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
+import { BOX_SHADOW, COUNTS_FILL, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
 import { useTranslationDefault } from '@/hooks';
 import { ChartData } from '@/types/data';
 
@@ -24,7 +24,14 @@ const SearchResultsPane = ({
   return (
     <div style={{ paddingBottom: 8, display: 'flex', justifyContent: 'center', width: '100%' }}>
       <Card
-        style={{ borderRadius: '10px', padding: '10px 33px', maxWidth: '1200px', width: '100%', minHeight: '28rem' }}
+        style={{
+          borderRadius: '10px',
+          padding: '10px 33px',
+          maxWidth: '1200px',
+          width: '100%',
+          minHeight: '28rem',
+          ...BOX_SHADOW,
+        }}
         loading={isFetchingData}
       >
         <Row gutter={16}>
