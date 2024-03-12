@@ -21,14 +21,9 @@ const ConfigLogTemplate = `Config --
 	Service ID: %s
 	package.json: %s
 	Static Files: %s
-	Client Name: %s
 	Katsu URL: %v
 	Gohan URL: %v
-	Bento Portal Url: %s
 	Port: %d
-	Translated: %t
-	Beacon URL: %s
-	Beacon UI enabled: %t
 `
 
 type BentoConfig struct {
@@ -41,13 +36,6 @@ type BentoConfig struct {
 	GohanUrl        string `envconfig:"BENTO_PUBLIC_GOHAN_URL"`
 	BentoPortalUrl  string `envconfig:"BENTO_PUBLIC_PORTAL_URL"`
 	Port            int    `envconfig:"INTERNAL_PORT" default:"8090"`
-	Translated      bool   `envconfig:"BENTO_PUBLIC_TRANSLATED" default:"true"`
-	BeaconUrl       string `envconfig:"BEACON_URL"`
-	BeaconUiEnabled bool   `envconfig:"BENTO_BEACON_UI_ENABLED"`
-	// Auth configs
-	PublicUrl       string `envconfig:"BENTO_PUBLIC_URL"`
-	ClientId        string `envconfig:"CLIENT_ID"`
-	OpenIdConfigUrl string `envconfig:"OPENID_CONFIG_URL"`
 }
 
 type JsonLike map[string]interface{}
@@ -117,14 +105,9 @@ func main() {
 		cfg.ServiceId,
 		cfg.PackageJsonPath,
 		cfg.StaticFilesPath,
-		cfg.ClientName,
 		cfg.KatsuUrl,
 		cfg.GohanUrl,
-		cfg.BentoPortalUrl,
 		cfg.Port,
-		cfg.Translated,
-		cfg.BeaconUrl,
-		cfg.BeaconUiEnabled,
 	)
 
 	// Set up HTTP client
@@ -339,19 +322,8 @@ func main() {
 			return internalServerError(err, c)
 		}
 
-		// PublicUrl		string `envconfig:"BENTO_PUBLIC_URL"`
-		// ClientId		string `envconfig:"CLIENT_ID"`
-		// OpenIdConfigUrl string `envconfig:"OPENID_CONFIG_URL"`
 		return c.JSON(http.StatusOK, JsonLike{
-			"clientName":         cfg.ClientName,
 			"maxQueryParameters": publicOverview["max_query_parameters"],
-			"portalUrl":          cfg.BentoPortalUrl,
-			"translated":         cfg.Translated,
-			"beaconUrl":          cfg.BeaconUrl,
-			"beaconUiEnabled":    cfg.BeaconUiEnabled,
-			"publicUrl":          cfg.PublicUrl,
-			"clientId":           cfg.ClientId,
-			"openIdConfigUrl":    cfg.OpenIdConfigUrl,
 		})
 	})
 
