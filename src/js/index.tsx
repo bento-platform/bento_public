@@ -130,7 +130,6 @@ const BentoApp = () => {
   );
 };
 
-// TODO: replace HashRouter with BrowserRouter when we get rid of the golang server
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <Provider store={store}>

@@ -3,7 +3,7 @@ export interface ServicesResponse {
   name: string;
   type: Type;
   organization: Organization;
-  contactUrl?: ContactURL;
+  contactUrl?: string;
   version: string;
   bento: Bento;
   environment?: Environment;
@@ -19,16 +19,12 @@ export interface Bento {
   workflowProvider?: boolean;
 }
 
-export enum ContactURL {
-  MailtoInfoC3GCA = 'mailto:info@c3g.ca',
-}
-
 export enum Environment {
   Dev = 'dev',
 }
 
 export interface Organization {
-  name: Name;
+  name: string;
   url?: string;
   contactUrl?: string;
   id?: string;
@@ -36,21 +32,10 @@ export interface Organization {
   welcomeUrl?: string;
 }
 
-export enum Name {
-  C3G = 'C3G',
-  CanadianCentreForComputationalGenomics = 'Canadian Centre for Computational Genomics',
-}
-
 export interface Type {
-  group: Group;
+  group: string;
   artifact: string;
   version: string;
-}
-
-export enum Group {
-  CAC3GBento = 'ca.c3g.bento',
-  CAC3GChord = 'ca.c3g.chord',
-  OrgGa4Gh = 'org.ga4gh',
 }
 
 export interface ServiceInfoStore {

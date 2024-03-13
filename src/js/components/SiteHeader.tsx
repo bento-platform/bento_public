@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Button, Layout, Row, Col, Typography, Space } from 'antd';
 const { Header } = Layout;
 import { useTranslation } from 'react-i18next';
 import { DEFAULT_TRANSLATION, LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
 import { useAppSelector } from '@/hooks';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { getIsAuthenticated, usePerformAuth, usePerformSignOut } from 'bento-auth-js';
+import { useIsAuthenticated, usePerformAuth, usePerformSignOut } from 'bento-auth-js';
 import { CLIENT_NAME, PORTAL_URL, TRANSLATED } from '@/config';
 
 const SiteHeader = () => {
@@ -15,19 +15,14 @@ const SiteHeader = () => {
 
   const { isFetching: openIdConfigFetching } = useAppSelector((state) => state.openIdConfiguration);
 
-  const clientName = CLIENT_NAME;
-  const translated = TRANSLATED;
-  const portalUrl = PORTAL_URL;
-  const { idTokenContents, isHandingOffCodeForToken } = useAppSelector((state) => state.auth);
+  const { isHandingOffCodeForToken } = useAppSelector((state) => state.auth);
 
-  const isAuthenticated = getIsAuthenticated(idTokenContents);
+  const isAuthenticated = useIsAuthenticated();
 
   const performSignOut = usePerformSignOut();
   const performSignIn = usePerformAuth();
 
-  useEffect(() => {
-    document.title = clientName && clientName.trim() ? `Bento: ${clientName}` : 'Bento';
-  }, [clientName]);
+  document.title = CLIENT_NAME && CLIENT_NAME.trim() ? `Bento: ${CLIENT_NAME}` : 'Bento';
 
   const changeLanguage = () => {
     const newLang = LNG_CHANGE[i18n.language];
@@ -35,7 +30,7 @@ const SiteHeader = () => {
     navigate(path, { replace: true });
   };
 
-  const buttonHandler = () => window.open(portalUrl, '_blank');
+  const buttonHandler = () => window.open(PORTAL_URL, '_blank');
 
   // noinspection HtmlUnknownTarget
   return (
@@ -47,13 +42,13 @@ const SiteHeader = () => {
               <img style={{ marginTop: '15px', height: '32px' }} src="/public/assets/branding.png" alt="logo" />
             </a>
             <Typography.Title level={1} style={{ fontSize: '18px', margin: 0, lineHeight: '64px' }} type="secondary">
-              {clientName}
+              {CLIENT_NAME}
             </Typography.Title>
           </Space>
         </Col>
         <Col style={{ height: '100%' }}>
           <Space>
-            {translated && (
+            {TRANSLATED && (
               <Button shape="round" onClick={changeLanguage}>
                 {LNGS_FULL_NAMES[LNG_CHANGE[i18n.language]]}
               </Button>

@@ -2,6 +2,7 @@ import React, { useEffect, useState, ReactNode } from 'react';
 import { useAppSelector, useAppDispatch, useTranslationDefault, useBeaconWithAuthIfAllowed } from '@/hooks';
 import { Button, Card, Col, Form, Row, Space, Tooltip, Typography } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
+import { getIsAuthenticated } from 'bento-auth-js';
 import Filters from './Filters';
 import BeaconSearchResults from './BeaconSearchResults';
 import BeaconErrorMessage from './BeaconErrorMessage';
@@ -12,12 +13,10 @@ import {
   WRAPPER_STYLE,
   FORM_ROW_GUTTERS,
   CARD_STYLE,
-  CARD_BODY_STYLE,
-  CARD_HEAD_STYLE,
   BUTTON_AREA_STYLE,
   BUTTON_STYLE,
+  CARD_STYLES,
 } from '@/constants/beaconConstants';
-import { getIsAuthenticated } from 'bento-auth-js';
 import { BEACON_URL } from '@/config';
 
 import { BOX_SHADOW } from '@/constants/overviewConstants';
@@ -248,10 +247,7 @@ const BeaconQueryUi = () => {
       <Card
         title={td('Search')}
         style={{ borderRadius: '10px', maxWidth: '1200px', width: '100%', ...BOX_SHADOW }}
-        styles={{
-          body: CARD_BODY_STYLE,
-          header: CARD_HEAD_STYLE,
-        }}
+        styles={CARD_STYLES}
       >
         <p style={{ margin: '-8px 0 8px 0', padding: '0', color: 'grey' }}>{td(uiInstructions)}</p>
         <Form form={form} onFinish={handleFinish} layout="vertical" onValuesChange={handleValuesChange}>
@@ -261,10 +257,7 @@ const BeaconQueryUi = () => {
                 <Card
                   title={td('Variants')}
                   style={CARD_STYLE}
-                  styles={{
-                    body: CARD_BODY_STYLE,
-                    header: CARD_HEAD_STYLE,
-                  }}
+                  styles={CARD_STYLES}
                   extra={<SearchToolTip>{variantsInstructions}</SearchToolTip>}
                 >
                   <VariantsForm beaconAssemblyIds={beaconAssemblyIds} />
@@ -275,10 +268,7 @@ const BeaconQueryUi = () => {
               <Card
                 title={td('Metadata')}
                 style={CARD_STYLE}
-                styles={{
-                  header: CARD_HEAD_STYLE,
-                  body: CARD_BODY_STYLE,
-                }}
+                styles={CARD_STYLES}
                 extra={<SearchToolTip>{metadataInstructions} </SearchToolTip>}
               >
                 <Filters filters={filters} setFilters={setFilters} form={form} querySections={querySections} />
