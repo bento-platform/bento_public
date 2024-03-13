@@ -10,7 +10,7 @@ interface PublicConfig {
 }
 
 // Declaration required for global config
-declare const BENTO_PUBLIC_CONFIG: PublicConfig;
+declare var BENTO_PUBLIC_CONFIG: PublicConfig;
 
 // General
 export const CLIENT_NAME = BENTO_PUBLIC_CONFIG.CLIENT_NAME ?? process.env.BENTO_PUBLIC_CLIENT_NAME;
