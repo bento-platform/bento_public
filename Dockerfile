@@ -39,6 +39,7 @@ WORKDIR /bento-public
 COPY entrypoint.bash .
 COPY package.json .
 COPY create_config_prod.js .
+COPY run.bash .
 
 # Copy web app
 COPY --from=nodebuilder /node/build/www /bento-public/www
