@@ -8,7 +8,7 @@ const siteConfig = {
     BEACON_UI_ENABLED: parseBoolean(process.env.BENTO_BEACON_UI_ENABLED),
 
     // Authentication
-    BENTO_PUBLIC_URL: process.env.BENTO_PUBLIC_URL || null,
+    PUBLIC_URL: process.env.BENTO_PUBLIC_URL || null,
     CLIENT_ID: process.env.CLIENT_ID || null,
     OPENID_CONFIG_URL: process.env.OPENID_CONFIG_URL || null,
 };

@@ -1,6 +1,6 @@
 // Global to include as a config
 
-export default BENTO_PUBLIC_CONFIG = {
+BENTO_PUBLIC_CONFIG = {
     // GENERAL
     CLIENT_NAME: null,
     PORTAL_URL: null,
@@ -8,7 +8,7 @@ export default BENTO_PUBLIC_CONFIG = {
     BEACON_URL: null,
     BEACON_UI_ENABLED: null,
     // Authentication
-    BENTO_PUBLIC_URL: null,
+    PUBLIC_URL: null,
     CLIENT_ID: null,
     OPENID_CONFIG_URL: null,
 }

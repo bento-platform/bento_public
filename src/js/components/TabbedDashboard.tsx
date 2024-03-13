@@ -1,6 +1,7 @@
 import React, { useEffect, useCallback } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { Tabs, Typography } from 'antd';
+import { useAutoAuthenticate, useIsAuthenticated } from 'bento-auth-js';
 
 const { Title } = Typography;
 
@@ -19,9 +20,9 @@ import ProvenanceTab from './Provenance/ProvenanceTab';
 import BeaconQueryUi from './Beacon/BeaconQueryUi';
 import { useAppDispatch, useAppSelector, useTranslationDefault } from '@/hooks';
 import { buildQueryParamsUrl } from '@/utils/search';
-import { useAutoAuthenticate, useIsAuthenticated } from 'bento-auth-js';
 import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
 import { BEACON_UI_ENABLED } from '@/config';
+import SitePageLoading from './SitePageLoading';
 
 const TabbedDashboard = () => {
   const dispatch = useAppDispatch();
@@ -120,7 +121,7 @@ const TabbedDashboard = () => {
   };
 
   if (isAutoAuthenticating) {
-    return <div />;
+    return <SitePageLoading />;
   }
 
   return <Tabs activeKey={getTabKey(page)} items={mappedTabPanes} onChange={onChange} centered />;
