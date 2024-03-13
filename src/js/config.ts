@@ -1,13 +1,13 @@
 interface PublicConfig {
-    CLIENT_NAME: string,
-    PORTAL_URL: string,
-    TRANSLATED: boolean,
-    BEACON_URL: string,
-    BEACON_UI_ENABLED: boolean,
-    PUBLIC_URL: string,
-    CLIENT_ID: string,
-    OPENID_CONFIG_URL: string,
-};
+  CLIENT_NAME: string;
+  PORTAL_URL: string;
+  TRANSLATED: boolean;
+  BEACON_URL: string;
+  BEACON_UI_ENABLED: boolean;
+  PUBLIC_URL: string;
+  CLIENT_ID: string;
+  OPENID_CONFIG_URL: string;
+}
 
 // Declaration required for global config
 declare const BENTO_PUBLIC_CONFIG: PublicConfig;
