@@ -31,8 +31,7 @@ COPY main.go .
 RUN go build -o ./reactapp
 
 
-# FROM ghcr.io/bento-platform/bento_base_image:plain-debian-2024.03.01
-FROM --platform=$BUILDPLATFORM node:20-bookworm-slim
+FROM ghcr.io/bento-platform/bento_base_image:node-debian-2024.03.01
 
 ENV BENTO_PUBLIC_PACKAGE_JSON_PATH=/bento-public/package.json
 WORKDIR /bento-public

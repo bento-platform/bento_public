@@ -315,6 +315,7 @@ func main() {
 	// purges expired items every 10 minutes
 	var katsuCache = cache.New(5*time.Minute, 10*time.Minute)
 
+	// TODO: rm
 	e.GET("/config", func(c echo.Context) error {
 		// restore from cache if present/not expired
 		publicOverview, err := getKatsuPublicOverview(c, katsuCache)
@@ -327,6 +328,7 @@ func main() {
 		})
 	})
 
+	// TODO: rm
 	e.GET("/overview", func(c echo.Context) error {
 		// restore from cache if present/not expired
 		publicOverview, err := getKatsuPublicOverview(c, katsuCache)
@@ -337,6 +339,7 @@ func main() {
 		return c.JSON(http.StatusOK, JsonLike{"overview": publicOverview})
 	})
 
+	// TODO: rm
 	// get request handler for /katsu that relays the request to the Katsu API and returns response
 	e.GET("/katsu", func(c echo.Context) error {
 		// get query parameters
@@ -351,12 +354,14 @@ func main() {
 		return katsuRequest("/api/public", qs, c, jsonDeserialize)
 	})
 
+	// TODO: rm
 	e.GET("/fields", func(c echo.Context) error {
 		// Query Katsu for publicly available search fields
 		// TODO: formalize response type
 		return katsuRequestBasic("/api/public_search_fields", c)
 	})
 
+	// TODO: rm
 	e.GET("/provenance", func(c echo.Context) error {
 		// Query Katsu for datasets provenance
 		return katsuRequestBasic("/api/public_dataset", c)
