@@ -316,19 +316,6 @@ func main() {
 	var katsuCache = cache.New(5*time.Minute, 10*time.Minute)
 
 	// TODO: rm
-	e.GET("/config", func(c echo.Context) error {
-		// restore from cache if present/not expired
-		publicOverview, err := getKatsuPublicOverview(c, katsuCache)
-		if err != nil {
-			return internalServerError(err, c)
-		}
-
-		return c.JSON(http.StatusOK, JsonLike{
-			"maxQueryParameters": publicOverview["max_query_parameters"],
-		})
-	})
-
-	// TODO: rm
 	e.GET("/overview", func(c echo.Context) error {
 		// restore from cache if present/not expired
 		publicOverview, err := getKatsuPublicOverview(c, katsuCache)

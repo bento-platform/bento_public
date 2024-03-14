@@ -1,6 +1,8 @@
+import { PORTAL_URL } from '@/config';
+
 export const MAX_CHARTS = 3;
 
-export const configUrl = '/config';
+export const katsuPublicOverviewUrl = `${PORTAL_URL}/api/metadata/api/public_overview`;
 export const publicOverviewUrl = '/overview';
 export const searchFieldsUrl = '/fields';
 export const katsuUrl = '/katsu';

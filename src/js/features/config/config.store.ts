@@ -1,17 +1,17 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { configUrl } from '@/constants/configConstants';
+import { katsuPublicOverviewUrl } from '@/constants/configConstants';
 import { printAPIError } from '@/utils/error.util';
-import { ConfigResponse } from '@/types/configResponse';
 import { ServiceInfoStore, ServicesResponse } from '@/types/services';
 import { RootState } from '@/store';
 import { PUBLIC_URL } from '@/config';
+import { KatsuPublicOverviewResponse } from '@/types/configResponse';
 
-export const makeGetConfigRequest = createAsyncThunk<ConfigResponse, void, { rejectValue: string }>(
+export const makeGetConfigRequest = createAsyncThunk<KatsuPublicOverviewResponse, void, { rejectValue: string }>(
   'config/getConfigData',
   (_, { rejectWithValue }) =>
     axios
-      .get(configUrl)
+      .get(katsuPublicOverviewUrl)
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue))
 );
@@ -27,7 +27,8 @@ export const makeGetServiceInfoRequest = createAsyncThunk<
     .catch(printAPIError(rejectWithValue))
 );
 
-export interface ConfigState extends ConfigResponse {
+export interface ConfigState {
+  maxQueryParameters: number;
   isFetchingConfig: boolean;
   isFetchingServiceInfo: boolean;
   serviceInfo: ServiceInfoStore;
@@ -56,10 +57,13 @@ const configStore = createSlice({
     builder.addCase(makeGetConfigRequest.pending, (state) => {
       state.isFetchingConfig = true;
     });
-    builder.addCase(makeGetConfigRequest.fulfilled, (state, { payload }: PayloadAction<ConfigResponse>) => {
-      state.maxQueryParameters = payload.maxQueryParameters;
-      state.isFetchingConfig = false;
-    });
+    builder.addCase(
+      makeGetConfigRequest.fulfilled,
+      (state, { payload }: PayloadAction<KatsuPublicOverviewResponse>) => {
+        state.maxQueryParameters = payload.max_query_parameters;
+        state.isFetchingConfig = false;
+      }
+    );
     builder.addCase(makeGetConfigRequest.rejected, (state) => {
       state.isFetchingConfig = false;
     });
