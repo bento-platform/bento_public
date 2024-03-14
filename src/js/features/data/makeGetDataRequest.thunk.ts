@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { MAX_CHARTS, publicOverviewUrl } from '@/constants/configConstants';
+import { MAX_CHARTS, katsuPublicOverviewUrl } from '@/constants/configConstants';
 
 import { verifyData, saveValue, getValue, convertSequenceAndDisplayData } from '@/utils/localStorage';
 
@@ -17,8 +17,8 @@ export const makeGetDataRequestThunk = createAsyncThunk<
   { rejectValue: string }
 >('data/makeGetDataRequest', async (_, { rejectWithValue }) => {
   const overviewResponse = (await axios
-    .get(publicOverviewUrl)
-    .then((res) => res.data.overview)
+    .get(katsuPublicOverviewUrl)
+    .then((res) => res.data)
     .catch(printAPIError(rejectWithValue))) as OverviewResponse['overview'];
 
   const sections = overviewResponse.layout;

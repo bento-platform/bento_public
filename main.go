@@ -8,13 +8,10 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"time"
 
 	"github.com/kelseyhightower/envconfig"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-
-	cache "github.com/patrickmn/go-cache"
 )
 
 const ConfigLogTemplate = `Config --
@@ -205,54 +202,6 @@ func main() {
 		}
 	}
 
-	fetchAndSetKatsuPublic := func(c echo.Context, katsuCache *cache.Cache) (JsonLike, error) {
-		fmt.Println("'publicOverview' not found or expired in 'katsuCache' - fetching")
-		publicOverviewInterface, err := genericRequestJsonOnly(
-			fmt.Sprintf("%s%s", cfg.KatsuUrl, "/api/public_overview"),
-			nil,
-			c,
-			jsonDeserialize,
-		)
-		if err != nil {
-			fmt.Println("something went wrong fetching 'publicOverview' for 'katsuCache': ", err)
-			return nil, err
-		}
-
-		publicOverview, ok := publicOverviewInterface.(JsonLike)
-		if !ok {
-			return nil, fmt.Errorf("failed to assert 'publicOverview' as JsonLike")
-		}
-
-		fmt.Println("storing 'publicOverview' in 'katsuCache'")
-		katsuCache.Set("publicOverview", publicOverview, cache.DefaultExpiration)
-
-		return publicOverview, nil
-	}
-
-	getKatsuPublicOverview := func(c echo.Context, katsuCache *cache.Cache) (JsonLike, error) {
-		// make some server-side configurations available to the front end
-		// - fetch overview from katsu and obtain part of the configuration
-		// - cache so a public-overview call to katsu isn't made every
-		//   time a call is made to config
-		var (
-			publicOverview JsonLike
-			err            error
-		)
-
-		if publicOverviewInterface, didFind := katsuCache.Get("publicOverview"); didFind {
-			fmt.Println("'publicOverview' found in 'katsuCache' - restoring")
-			publicOverview = publicOverviewInterface.(JsonLike)
-		} else {
-			// fetch from katsu and store in cache
-			publicOverview, err = fetchAndSetKatsuPublic(c, katsuCache)
-			if err != nil {
-				return nil, err
-			}
-		}
-
-		return publicOverview, nil
-	}
-
 	// Begin Echo
 
 	// Instantiate Server
@@ -308,22 +257,6 @@ func main() {
 				"serviceKind": "public",
 			},
 		})
-	})
-
-	// -- Data
-	// Create a cache with a default expiration time of 5 minutes, and which
-	// purges expired items every 10 minutes
-	var katsuCache = cache.New(5*time.Minute, 10*time.Minute)
-
-	// TODO: rm
-	e.GET("/overview", func(c echo.Context) error {
-		// restore from cache if present/not expired
-		publicOverview, err := getKatsuPublicOverview(c, katsuCache)
-		if err != nil {
-			return internalServerError(err, c)
-		}
-
-		return c.JSON(http.StatusOK, JsonLike{"overview": publicOverview})
 	})
 
 	// TODO: rm
