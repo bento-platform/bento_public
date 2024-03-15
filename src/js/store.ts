@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { ToolkitStore } from '@reduxjs/toolkit/dist/configureStore';
 
 import {
   LS_OPENID_CONFIG_KEY,
@@ -16,7 +17,6 @@ import provenanceReducer from '@/features/provenance/provenance.store';
 import beaconConfigReducer from './features/beacon/beaconConfig.store';
 import beaconQueryReducer from './features/beacon/beaconQuery.store';
 import { getValue, saveValue } from './utils/localStorage';
-import { ToolkitStore } from '@reduxjs/toolkit/dist/configureStore';
 
 interface PersistedState {
   openIdConfiguration?: OIDCSliceState;

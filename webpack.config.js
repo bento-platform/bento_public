@@ -2,8 +2,7 @@ const path = require('path');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const { webcrypto } = require('crypto');
-const { webpack, EnvironmentPlugin } = require('webpack');
+const { EnvironmentPlugin } = require('webpack');
 
 const config = {
   mode: 'development',

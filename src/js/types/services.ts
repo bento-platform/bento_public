@@ -21,6 +21,7 @@ export interface Bento {
 
 export enum Environment {
   Dev = 'dev',
+  Prod = 'prod',
 }
 
 export interface Organization {

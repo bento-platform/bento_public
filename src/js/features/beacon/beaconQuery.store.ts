@@ -6,6 +6,7 @@ import { beaconApiError } from '@/utils/beaconApiError';
 import { BeaconQueryPayload, BeaconQueryResponse } from '@/types/beacon';
 import { ChartData } from '@/types/data';
 import { BEACON_URL } from '@/config';
+import { makeAuthorizationHeader } from 'bento-auth-js';
 
 export const makeBeaconQuery = createAsyncThunk<
   BeaconQueryResponse,
@@ -14,11 +15,7 @@ export const makeBeaconQuery = createAsyncThunk<
 >('beaconQuery/makeBeaconQuery', async (payload, { getState, rejectWithValue }) => {
   const beaconIndividualsEndpoint = BEACON_URL + '/individuals';
   const token = getState().auth.accessToken;
-  const headers = token
-    ? {
-        Authorization: `Bearer ${token}`,
-      }
-    : {};
+  const headers = makeAuthorizationHeader(token);
   return axios
     .post(beaconIndividualsEndpoint, payload, { headers })
     .then((res) => res.data)

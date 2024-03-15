@@ -48,4 +48,4 @@ COPY --from=nodebuilder /node/build/www /bento-public/www
 COPY --from=gobuilder /build/reactapp /bento-public/reactapp
 
 ENTRYPOINT [ "/bin/bash", "./entrypoint.bash" ]
-CMD ["bash", "./run.bash"]
+CMD [ "/bin/bash", "./run.bash" ]
