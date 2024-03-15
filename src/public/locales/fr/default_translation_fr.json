@@ -86,5 +86,9 @@
   "\"Chromosome\", \"Variant start\" and \"Assembly ID\" are always required.": "\"Chromosome\", \"Début du variant\" et \"Assemblage génomique\" sont toujours requis.",
   "Coordinates are one-based.": "Les coordonnées sont en base un.",
   "Leave this form blank to search by metadata only.": "Laissez ce formulaire vide pour effectuer une recherche sur les métadonnées seulement.",
-  "Clinical Data": "Données cliniques"
+  "Clinical Data": "Données cliniques",
+  "You have been signed out": "Vous avez été déconnecté",
+  "Please sign in to the research portal.": "Veuillez vous connecter au portail de recherche.",
+  "Sign In": "Se Connecter",
+  "Sign Out": "Se déconnecter"
 }

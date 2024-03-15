@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Routes, Route, useParams, useNavigate, BrowserRouter } from 'react-router-dom';
-import { Layout, Modal, message } from 'antd';
+import { Button, Layout, Modal, message } from 'antd';
 import { ChartConfigProvider } from 'bento-charts';
-import { SUPPORTED_LNGS } from './constants/configConstants';
+import { DEFAULT_TRANSLATION, SUPPORTED_LNGS } from './constants/configConstants';
 
 import {
   useHandleCallback,
@@ -46,7 +46,7 @@ const App = () => {
 
   // TRANSLATION
   const { lang } = useParams<{ lang?: string }>();
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation(DEFAULT_TRANSLATION);
 
   useEffect(() => {
     console.log('lang', lang);
@@ -91,15 +91,19 @@ const App = () => {
   return (
     <>
       <Modal
-        // TODO: translate
-        title={'You have been signed out'}
-        footer={null}
+        title={t('You have been signed out')}
         onCancel={() => {
           setSignedOutModal(false);
         }}
         open={signedOutModal}
+        footer={[
+          <Button key="signin" shape="round" type="primary" onClick={openSignInWindow}>
+            {t('Sign In')}
+          </Button>,
+        ]}
       >
-        Please <a onClick={openSignInWindow}>sign in</a> to the research portal.
+        {t('Please sign in to the research portal.')}
+        <br />
       </Modal>
       <Layout style={{ minHeight: '100vh' }}>
         <SiteHeader />
