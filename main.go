@@ -153,18 +153,6 @@ func main() {
 		return result, nil
 	}
 
-	katsuRequest := func(path string, qs url.Values, c echo.Context, rf responseFormatterFunc) error {
-		result, err := genericRequestJsonOnly(fmt.Sprintf("%s%s", cfg.KatsuUrl, path), qs, c, rf)
-		if err != nil {
-			return err
-		}
-		return c.JSON(http.StatusOK, result)
-	}
-
-	katsuRequestBasic := func(path string, c echo.Context) error {
-		return katsuRequest(path, nil, c, jsonDeserialize)
-	}
-
 	katsuRequestFormattedData := func(path string, c echo.Context) ([]byte, error) {
 		result, err := genericRequestJsonOnly(fmt.Sprintf("%s%s", cfg.KatsuUrl, path), nil, c, jsonDeserialize)
 		if err != nil {
@@ -257,34 +245,6 @@ func main() {
 				"serviceKind": "public",
 			},
 		})
-	})
-
-	// TODO: rm
-	// get request handler for /katsu that relays the request to the Katsu API and returns response
-	e.GET("/katsu", func(c echo.Context) error {
-		// get query parameters
-		q := c.QueryParams()
-		// convert query parameters to a string
-		qs := url.Values{}
-		for k, v := range q {
-			qs.Set(k, v[0])
-		}
-
-		// make a get request to the Katsu API
-		return katsuRequest("/api/public", qs, c, jsonDeserialize)
-	})
-
-	// TODO: rm
-	e.GET("/fields", func(c echo.Context) error {
-		// Query Katsu for publicly available search fields
-		// TODO: formalize response type
-		return katsuRequestBasic("/api/public_search_fields", c)
-	})
-
-	// TODO: rm
-	e.GET("/provenance", func(c echo.Context) error {
-		// Query Katsu for datasets provenance
-		return katsuRequestBasic("/api/public_dataset", c)
 	})
 
 	e.GET("/datasets/:id/dats", func(c echo.Context) error {
