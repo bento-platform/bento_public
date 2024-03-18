@@ -18,7 +18,7 @@ const DistributionsTable = ({ distributions }: DistributionsTableProps) => {
         {
           title: td('Formats'),
           dataIndex: 'formats',
-          render: (_, { formats = [] }) => formats.map(f => <Tag color="cyan">{f}</Tag>),
+          render: (_, { formats = [] }) => formats.map(f => <Tag color="cyan" key={f}>{f}</Tag>),
         },
         {
           title: td('Size'),
@@ -58,7 +58,7 @@ const DistributionsTable = ({ distributions }: DistributionsTableProps) => {
     [td]
   );
 
-  return <BaseProvenanceTable dataSource={distributions} columns={columns} />;
+  return <BaseProvenanceTable dataSource={distributions} columns={columns} rowKey={(record) => record.access.landingPage} />;
 };
 
 export interface DistributionsTableProps {

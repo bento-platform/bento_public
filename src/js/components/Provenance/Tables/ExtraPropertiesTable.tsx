@@ -30,7 +30,7 @@ const ExtraPropertiesTable = ({ extraProperties }: ExtraPropertiesTableProps) =>
     [td]
   );
 
-  return <BaseProvenanceTable dataSource={extraProperties} columns={columns} />;
+  return <BaseProvenanceTable dataSource={extraProperties} columns={columns} rowKey="category"/>;
 };
 
 export interface ExtraPropertiesTableProps {

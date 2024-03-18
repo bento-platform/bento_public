@@ -118,7 +118,7 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
     [td, publications]
   );
 
-  return <BaseProvenanceTable dataSource={publications} columns={columns} />;
+  return <BaseProvenanceTable dataSource={publications} columns={columns} rowKey="title"/>;
 };
 
 export interface PublicationsTableProps {

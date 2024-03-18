@@ -36,6 +36,7 @@ const IsAboutTable = ({ isAbout }: IsAboutTableProps) => {
           render: (_, { identifier }) => <Tag color="cyan">{t(identifier.identifierSource)}</Tag>,
         },
       ]}
+      rowKey="name"
     />
   );
 };

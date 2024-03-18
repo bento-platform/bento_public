@@ -31,6 +31,7 @@ const AcknowledgesTable = ({ acknowledges }: AcknowledgesTableProps) => {
             )),
         },
       ]}
+      rowKey="name"
     />
   );
 };

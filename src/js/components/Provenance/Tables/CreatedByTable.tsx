@@ -38,6 +38,7 @@ const CreatedByTable = ({ creators }: CreatedByTableProps) => {
             )),
         },
       ]}
+      rowKey="name"
     />
   );
 };
