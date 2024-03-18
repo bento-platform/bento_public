@@ -3,7 +3,7 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { RESOURCE_EVERYTHING, Resource, queryData, useHasResourcePermission } from 'bento-auth-js';
 
-import type { RootState, AppDispatch } from '@/store'
+import type { RootState, AppDispatch } from '@/store';
 import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { NamespaceTranslationFunction } from '@/types/translation';
 import { setMaxQueryParametersRequired } from '@/features/config//config.store';
