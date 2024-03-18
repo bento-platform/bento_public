@@ -20,7 +20,6 @@ const Filters = ({ filters, setFilters, form, querySections }: FiltersProps) => 
   const maxQueryParametersRequired = useAppSelector((state) => state.config.maxQueryParametersRequired);
   const activeFilters = filters.filter((f) => f.active);
   const hasMaxFilters = maxQueryParametersRequired && activeFilters.length >= maxFilters;
-  console.log('hasMaxFilters', hasMaxFilters);
 
   // UI starts with an optional filter, which can be left blank
   const isRequired = filters.length > 1;

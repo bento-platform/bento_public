@@ -8,6 +8,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useIsAuthenticated, usePerformAuth, usePerformSignOut } from 'bento-auth-js';
 import { CLIENT_NAME, PORTAL_URL, TRANSLATED } from '@/config';
 
+const openPortalWindow = () => window.open(PORTAL_URL, '_blank');
+
 const SiteHeader = () => {
   const { t, i18n } = useTranslation(DEFAULT_TRANSLATION);
   const navigate = useNavigate();
@@ -30,8 +32,6 @@ const SiteHeader = () => {
     navigate(path, { replace: true });
   };
 
-  const buttonHandler = () => window.open(PORTAL_URL, '_blank');
-
   // noinspection HtmlUnknownTarget
   return (
     <Header style={{ backgroundColor: '#fff' }}>
@@ -53,7 +53,7 @@ const SiteHeader = () => {
                 {LNGS_FULL_NAMES[LNG_CHANGE[i18n.language]]}
               </Button>
             )}
-            <Button shape="round" onClick={buttonHandler}>
+            <Button shape="round" onClick={openPortalWindow}>
               {t('Portal')}
             </Button>
             {isAuthenticated ? (

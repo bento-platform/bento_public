@@ -5,10 +5,11 @@ import { RootState } from '@/store';
 import { printAPIError } from '@/utils/error.util';
 import { BEACON_URL } from '@/config';
 
+const beaconInfoEndpoint = BEACON_URL + '/overview';
+
 export const getBeaconConfig = createAsyncThunk<BeaconConfigResponse, void, { state: RootState; rejectValue: string }>(
   'beaconConfig/getBeaconConfig',
   (_, { rejectWithValue }) => {
-    const beaconInfoEndpoint = BEACON_URL + '/overview';
     return axios
       .get(beaconInfoEndpoint)
       .then((res) => res.data)

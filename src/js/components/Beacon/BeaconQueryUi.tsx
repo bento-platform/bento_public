@@ -2,7 +2,7 @@ import React, { useEffect, useState, ReactNode } from 'react';
 import { useAppSelector, useAppDispatch, useTranslationDefault, useBeaconWithAuthIfAllowed } from '@/hooks';
 import { Button, Card, Col, Form, Row, Space, Tooltip, Typography } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
-import { getIsAuthenticated } from 'bento-auth-js';
+import { useIsAuthenticated } from 'bento-auth-js';
 import Filters from './Filters';
 import BeaconSearchResults from './BeaconSearchResults';
 import BeaconErrorMessage from './BeaconErrorMessage';
@@ -17,7 +17,6 @@ import {
   BUTTON_STYLE,
   CARD_STYLES,
 } from '@/constants/beaconConstants';
-import { BEACON_URL } from '@/config';
 
 import { BOX_SHADOW } from '@/constants/overviewConstants';
 const { Text, Title } = Typography;
@@ -60,7 +59,8 @@ const BeaconQueryUi = () => {
   const querySections = useAppSelector((state) => state.query.querySections);
   const hasApiError = useAppSelector((state) => state.beaconQuery.hasApiError);
   const apiErrorMessage = useAppSelector((state) => state.beaconQuery.apiErrorMessage);
-  const idTokenContents = useAppSelector((state) => state.auth.idTokenContents);
+
+  const isAuthenticated = useIsAuthenticated();
 
   const dispatch = useAppDispatch();
   const launchEmptyQuery = () => dispatch(makeBeaconQuery(requestPayload({}, [])));
@@ -80,11 +80,6 @@ const BeaconQueryUi = () => {
   };
 
   useEffect(() => {
-    // wait for config
-    if (!BEACON_URL) {
-      return;
-    }
-
     // retrieve stats
     launchEmptyQuery();
 
@@ -92,7 +87,7 @@ const BeaconQueryUi = () => {
 
     // set assembly id options matching what's in gohan
     form.setFieldsValue(formInitialValues);
-  }, [isFetchingBeaconConfig, getIsAuthenticated(idTokenContents)]);
+  }, [isFetchingBeaconConfig, isAuthenticated]);
 
   // Disables max query param if user is authenticated and authorized
   useBeaconWithAuthIfAllowed();
