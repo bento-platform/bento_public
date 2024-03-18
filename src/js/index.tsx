@@ -49,7 +49,7 @@ const App = () => {
   const { t, i18n } = useTranslation(DEFAULT_TRANSLATION);
 
   useEffect(() => {
-    console.log('lang', lang);
+    console.debug('lang', lang);
     if (lang && lang == 'callback') return;
     if (lang && LNGS_ARRAY.includes(lang)) {
       i18n.changeLanguage(lang);

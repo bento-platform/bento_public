@@ -1,5 +1,12 @@
+import { useEffect } from 'react';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
-import type { RootState, AppDispatch } from './store';
+import { useTranslation } from 'react-i18next';
+import { RESOURCE_EVERYTHING, Resource, queryData, useHasResourcePermission } from 'bento-auth-js';
+
+import type { RootState, AppDispatch } from '@/store'
+import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
+import { NamespaceTranslationFunction } from '@/types/translation';
+import { setMaxQueryParametersRequired } from '@/features/config//config.store';
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 // refer to https://react-redux.js.org/using-react-redux/usage-with-typescript#define-typed-hooks for more info
@@ -7,12 +14,6 @@ export const useAppDispatch: () => AppDispatch = useDispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 // ################### TRANSLATION HOOKS ###################
-import { useTranslation } from 'react-i18next';
-import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
-import { NamespaceTranslationFunction } from '@/types/translation';
-import { RESOURCE_EVERYTHING, Resource, queryData, useHasResourcePermission } from 'bento-auth-js';
-import { useEffect } from 'react';
-import { setMaxQueryParametersRequired } from './features/config/config.store';
 
 export const useTranslationDefault = (): NamespaceTranslationFunction => {
   const { t } = useTranslation(DEFAULT_TRANSLATION);
