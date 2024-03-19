@@ -31,13 +31,15 @@ COPY main.go .
 RUN go build -o ./reactapp
 
 
-FROM ghcr.io/bento-platform/bento_base_image:plain-debian-2024.03.01
+FROM ghcr.io/bento-platform/bento_base_image:node-debian-2024.03.01
 
 ENV BENTO_PUBLIC_PACKAGE_JSON_PATH=/bento-public/package.json
 WORKDIR /bento-public
 
 COPY entrypoint.bash .
 COPY package.json .
+COPY create_config_prod.js .
+COPY run.bash .
 
 # Copy web app
 COPY --from=nodebuilder /node/build/www /bento-public/www
@@ -46,4 +48,4 @@ COPY --from=nodebuilder /node/build/www /bento-public/www
 COPY --from=gobuilder /build/reactapp /bento-public/reactapp
 
 ENTRYPOINT [ "/bin/bash", "./entrypoint.bash" ]
-CMD [ "./reactapp" ]
+CMD [ "/bin/bash", "./run.bash" ]

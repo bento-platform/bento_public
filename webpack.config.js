@@ -1,15 +1,15 @@
 const path = require('path');
 
-// const webpack = require('webpack'); // only add this if you don't have yet
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const { EnvironmentPlugin } = require('webpack');
 
 const config = {
   mode: 'development',
   entry: './src/js/index.tsx',
   output: {
     path: __dirname + '/build/www',
-    publicPath: '',
+    publicPath: '/',
     // filename: "js/bundle.js",
     filename: 'js/[name][chunkhash].js',
   },
@@ -47,6 +47,19 @@ const config = {
     new CopyWebpackPlugin({
       patterns: [{ from: 'src/public', to: 'public' }],
     }),
+    new EnvironmentPlugin({
+      // Default environment variables to null if not set
+      // General
+      BENTO_PUBLIC_CLIENT_NAME: null,
+      BENTO_PUBLIC_PORTAL_URL: null,
+      BENTO_PUBLIC_TRANSLATED: null,
+      BEACON_URL: null,
+      BENTO_BEACON_UI_ENABLED: null,
+      // Authentication
+      BENTO_PUBLIC_URL: null,
+      CLIENT_ID: null,
+      OPENID_CONFIG_URL: null,
+    })
   ],
   optimization: {
     runtimeChunk: 'single',

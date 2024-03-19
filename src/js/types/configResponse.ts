@@ -1,8 +1,7 @@
-export interface ConfigResponse {
-  clientName: string;
-  portalUrl: string;
-  maxQueryParameters: number;
-  translated: boolean;
-  beaconUrl: string;
-  beaconUiEnabled: boolean;
+export interface KatsuPublicOverviewResponse {
+  count_threshold: number;
+  counts: object;
+  fields: object;
+  layout: [];
+  max_query_parameters: number;
 }

@@ -23,6 +23,11 @@ export const CARD_HEAD_STYLE: CSSProperties = {
   border: '0',
 };
 
+export const CARD_STYLES = {
+  body: CARD_BODY_STYLE,
+  header: CARD_HEAD_STYLE,
+};
+
 export const BUTTON_AREA_STYLE: CSSProperties = {
   padding: '16px 0',
 };

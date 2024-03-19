@@ -1,19 +1,24 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { makeAuthorizationHeader } from 'bento-auth-js';
 import { RootState } from '@/store';
 import { serializeChartData } from '@/utils/chart';
 import { beaconApiError } from '@/utils/beaconApiError';
 import { BeaconQueryPayload, BeaconQueryResponse } from '@/types/beacon';
 import { ChartData } from '@/types/data';
+import { BEACON_URL } from '@/config';
+
+const beaconIndividualsEndpoint = BEACON_URL + '/individuals';
 
 export const makeBeaconQuery = createAsyncThunk<
   BeaconQueryResponse,
   BeaconQueryPayload,
   { state: RootState; rejectValue: string }
 >('beaconQuery/makeBeaconQuery', async (payload, { getState, rejectWithValue }) => {
-  const beaconIndividualsEndpoint = getState().config.beaconUrl + '/individuals';
+  const token = getState().auth.accessToken;
+  const headers = makeAuthorizationHeader(token);
   return axios
-    .post(beaconIndividualsEndpoint, payload)
+    .post(beaconIndividualsEndpoint, payload, { headers })
     .then((res) => res.data)
     .catch(beaconApiError(rejectWithValue));
 });

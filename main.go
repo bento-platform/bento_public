@@ -8,30 +8,23 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"time"
 
 	"github.com/kelseyhightower/envconfig"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-
-	cache "github.com/patrickmn/go-cache"
 )
 
 const ConfigLogTemplate = `Config --
 	Service ID: %s
 	package.json: %s
 	Static Files: %s
-	Client Name: %s
 	Katsu URL: %v
 	Gohan URL: %v
-	Bento Portal Url: %s
 	Port: %d
-	Translated: %t
-	Beacon URL: %s
-	Beacon UI enabled: %t
 `
 
 type BentoConfig struct {
+	// App configs
 	ServiceId       string `envconfig:"BENTO_PUBLIC_SERVICE_ID"`
 	PackageJsonPath string `envconfig:"BENTO_PUBLIC_PACKAGE_JSON_PATH" default:"./package.json"`
 	StaticFilesPath string `envconfig:"BENTO_PUBLIC_STATIC_FILES_PATH" default:"./www"`
@@ -40,9 +33,6 @@ type BentoConfig struct {
 	GohanUrl        string `envconfig:"BENTO_PUBLIC_GOHAN_URL"`
 	BentoPortalUrl  string `envconfig:"BENTO_PUBLIC_PORTAL_URL"`
 	Port            int    `envconfig:"INTERNAL_PORT" default:"8090"`
-	Translated      bool   `envconfig:"BENTO_PUBLIC_TRANSLATED" default:"true"`
-	BeaconUrl       string `envconfig:"BEACON_URL"`
-	BeaconUiEnabled bool   `envconfig:"BENTO_BEACON_UI_ENABLED"`
 }
 
 type JsonLike map[string]interface{}
@@ -112,14 +102,9 @@ func main() {
 		cfg.ServiceId,
 		cfg.PackageJsonPath,
 		cfg.StaticFilesPath,
-		cfg.ClientName,
 		cfg.KatsuUrl,
 		cfg.GohanUrl,
-		cfg.BentoPortalUrl,
 		cfg.Port,
-		cfg.Translated,
-		cfg.BeaconUrl,
-		cfg.BeaconUiEnabled,
 	)
 
 	// Set up HTTP client
@@ -168,18 +153,6 @@ func main() {
 		return result, nil
 	}
 
-	katsuRequest := func(path string, qs url.Values, c echo.Context, rf responseFormatterFunc) error {
-		result, err := genericRequestJsonOnly(fmt.Sprintf("%s%s", cfg.KatsuUrl, path), qs, c, rf)
-		if err != nil {
-			return err
-		}
-		return c.JSON(http.StatusOK, result)
-	}
-
-	katsuRequestBasic := func(path string, c echo.Context) error {
-		return katsuRequest(path, nil, c, jsonDeserialize)
-	}
-
 	katsuRequestFormattedData := func(path string, c echo.Context) ([]byte, error) {
 		result, err := genericRequestJsonOnly(fmt.Sprintf("%s%s", cfg.KatsuUrl, path), nil, c, jsonDeserialize)
 		if err != nil {
@@ -217,54 +190,6 @@ func main() {
 		}
 	}
 
-	fetchAndSetKatsuPublic := func(c echo.Context, katsuCache *cache.Cache) (JsonLike, error) {
-		fmt.Println("'publicOverview' not found or expired in 'katsuCache' - fetching")
-		publicOverviewInterface, err := genericRequestJsonOnly(
-			fmt.Sprintf("%s%s", cfg.KatsuUrl, "/api/public_overview"),
-			nil,
-			c,
-			jsonDeserialize,
-		)
-		if err != nil {
-			fmt.Println("something went wrong fetching 'publicOverview' for 'katsuCache': ", err)
-			return nil, err
-		}
-
-		publicOverview, ok := publicOverviewInterface.(JsonLike)
-		if !ok {
-			return nil, fmt.Errorf("failed to assert 'publicOverview' as JsonLike")
-		}
-
-		fmt.Println("storing 'publicOverview' in 'katsuCache'")
-		katsuCache.Set("publicOverview", publicOverview, cache.DefaultExpiration)
-
-		return publicOverview, nil
-	}
-
-	getKatsuPublicOverview := func(c echo.Context, katsuCache *cache.Cache) (JsonLike, error) {
-		// make some server-side configurations available to the front end
-		// - fetch overview from katsu and obtain part of the configuration
-		// - cache so a public-overview call to katsu isn't made every
-		//   time a call is made to config
-		var (
-			publicOverview JsonLike
-			err            error
-		)
-
-		if publicOverviewInterface, didFind := katsuCache.Get("publicOverview"); didFind {
-			fmt.Println("'publicOverview' found in 'katsuCache' - restoring")
-			publicOverview = publicOverviewInterface.(JsonLike)
-		} else {
-			// fetch from katsu and store in cache
-			publicOverview, err = fetchAndSetKatsuPublic(c, katsuCache)
-			if err != nil {
-				return nil, err
-			}
-		}
-
-		return publicOverview, nil
-	}
-
 	// Begin Echo
 
 	// Instantiate Server
@@ -292,7 +217,13 @@ func main() {
 
 	// Begin MVC Routes
 	// -- Root : static files
-	e.Use(middleware.Static(cfg.StaticFilesPath))
+	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
+		Root: cfg.StaticFilesPath,
+		// Enable HTML5 mode by forwarding all not-found requests to root so that
+		// SPA (single-page application) can handle the routing.
+		// Required for react-router BrowserRouter fallback
+		HTML5: true,
+	}))
 
 	// -- GA4GH-compatible service information response
 	e.GET("/service-info", func(c echo.Context) error {
@@ -314,63 +245,6 @@ func main() {
 				"serviceKind": "public",
 			},
 		})
-	})
-
-	// -- Data
-	// Create a cache with a default expiration time of 5 minutes, and which
-	// purges expired items every 10 minutes
-	var katsuCache = cache.New(5*time.Minute, 10*time.Minute)
-
-	e.GET("/config", func(c echo.Context) error {
-		// restore from cache if present/not expired
-		publicOverview, err := getKatsuPublicOverview(c, katsuCache)
-		if err != nil {
-			return internalServerError(err, c)
-		}
-
-		return c.JSON(http.StatusOK, JsonLike{
-			"clientName":         cfg.ClientName,
-			"maxQueryParameters": publicOverview["max_query_parameters"],
-			"portalUrl":          cfg.BentoPortalUrl,
-			"translated":         cfg.Translated,
-			"beaconUrl":          cfg.BeaconUrl,
-			"beaconUiEnabled":    cfg.BeaconUiEnabled,
-		})
-	})
-
-	e.GET("/overview", func(c echo.Context) error {
-		// restore from cache if present/not expired
-		publicOverview, err := getKatsuPublicOverview(c, katsuCache)
-		if err != nil {
-			return internalServerError(err, c)
-		}
-
-		return c.JSON(http.StatusOK, JsonLike{"overview": publicOverview})
-	})
-
-	// get request handler for /katsu that relays the request to the Katsu API and returns response
-	e.GET("/katsu", func(c echo.Context) error {
-		// get query parameters
-		q := c.QueryParams()
-		// convert query parameters to a string
-		qs := url.Values{}
-		for k, v := range q {
-			qs.Set(k, v[0])
-		}
-
-		// make a get request to the Katsu API
-		return katsuRequest("/api/public", qs, c, jsonDeserialize)
-	})
-
-	e.GET("/fields", func(c echo.Context) error {
-		// Query Katsu for publicly available search fields
-		// TODO: formalize response type
-		return katsuRequestBasic("/api/public_search_fields", c)
-	})
-
-	e.GET("/provenance", func(c echo.Context) error {
-		// Query Katsu for datasets provenance
-		return katsuRequestBasic("/api/public_dataset", c)
 	})
 
 	e.GET("/datasets/:id/dats", func(c echo.Context) error {

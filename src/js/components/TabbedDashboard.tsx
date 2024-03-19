@@ -1,10 +1,11 @@
 import React, { useEffect, useCallback } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { Tabs, Typography } from 'antd';
+import { useAutoAuthenticate, useIsAuthenticated } from 'bento-auth-js';
 
 const { Title } = Typography;
 
-import { makeGetConfigRequest } from '@/features/config/config.store';
+import { makeGetConfigRequest, makeGetServiceInfoRequest } from '@/features/config/config.store';
 import { makeGetAboutRequest } from '@/features/content/content.store';
 import { makeGetDataRequestThunk } from '@/features/data/data.store';
 import { makeGetSearchFields } from '@/features/search/query.store';
@@ -19,6 +20,9 @@ import ProvenanceTab from './Provenance/ProvenanceTab';
 import BeaconQueryUi from './Beacon/BeaconQueryUi';
 import { useAppDispatch, useAppSelector, useTranslationDefault } from '@/hooks';
 import { buildQueryParamsUrl } from '@/utils/search';
+import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
+import { BEACON_UI_ENABLED } from '@/config';
+import SitePageLoading from './SitePageLoading';
 
 const TabbedDashboard = () => {
   const dispatch = useAppDispatch();
@@ -26,6 +30,9 @@ const TabbedDashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { page } = useParams<{ page?: string }>();
+
+  const { isAutoAuthenticating } = useAutoAuthenticate();
+  const isAuthenticated = useIsAuthenticated();
 
   useEffect(() => {
     dispatch(makeGetConfigRequest()).then(() => dispatch(getBeaconConfig()));
@@ -35,14 +42,17 @@ const TabbedDashboard = () => {
     dispatch(makeGetProvenanceRequest());
     dispatch(fetchKatsuData());
     dispatch(fetchGohanData());
+    dispatch(makeGetServiceInfoRequest());
     //TODO: Dispatch makeGetDataTypes to get the data types from service-registry
-  }, []);
+    if (isAuthenticated) {
+      dispatch(makeGetDataTypes());
+    }
+  }, [isAuthenticated]);
 
   const isFetchingOverviewData = useAppSelector((state) => state.data.isFetchingData);
   const isFetchingSearchFields = useAppSelector((state) => state.query.isFetchingFields);
   const queryParams = useAppSelector((state) => state.query.queryParams);
   const isFetchingBeaconConfig = useAppSelector((state) => state.beaconConfig?.isFetchingBeaconConfig);
-  const renderBeaconUi = useAppSelector((state) => state.config?.beaconUiEnabled);
 
   const onChange = useCallback(
     (key: string) => {
@@ -83,7 +93,7 @@ const TabbedDashboard = () => {
       title: 'Beacon',
       content: <BeaconQueryUi />,
       loading: isFetchingBeaconConfig,
-      active: renderBeaconUi,
+      active: BEACON_UI_ENABLED,
       key: 'beacon',
     },
     {
@@ -109,6 +119,10 @@ const TabbedDashboard = () => {
     }
     return 'overview';
   };
+
+  if (isAutoAuthenticating) {
+    return <SitePageLoading />;
+  }
 
   return <Tabs activeKey={getTabKey(page)} items={mappedTabPanes} onChange={onChange} centered />;
 };

@@ -3,8 +3,8 @@
     "outDir": "./dist/",
     "sourceMap": true,
     "strictNullChecks": true,
-    "module": "es6",
-    "target": "es5",
+    "module": "ES2022",
+    "target": "es6",
     "downlevelIteration": true,
     "allowJs": true,
     "skipLibCheck": true,
@@ -22,6 +22,7 @@
     "paths": {
       "@/*": ["src/js/*"],
       "@public/*": ["src/public/*"],
+      "*": ["node_modules/*", ".yalc/*"],
     }
   },
   "include": ["./src/", "./src/custom.d.ts"],
