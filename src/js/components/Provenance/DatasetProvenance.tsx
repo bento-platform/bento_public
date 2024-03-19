@@ -37,30 +37,34 @@ const DatasetProvenance = ({ metadata, loading }: DatasetProvenanceProps) => {
 
         {/* --- CREATOR, PRIVACY, LICENSES, KEYWORD ---*/}
         {metadata.privacy || metadata.licenses.length || metadata.keywords.length ? (
-          <div style={{ display: "flex", flexDirection: "column", paddingTop: '20px' }}>
-            {metadata.privacy && <Descriptions >
-              <Item label={<DescriptionTitle title={td('Privacy')} />}>
-                {t(metadata.privacy)}
-              </Item>
-            </Descriptions>}
-            {!!metadata.licenses?.length && <Descriptions >
-              <Item label={<DescriptionTitle title={td('Licenses')} />}>
-                {metadata.licenses.map((l, i) => (
-                  <Tag key={i} color="cyan">
-                    {t(l.name)}
-                  </Tag>
-                ))}
-              </Item>
-            </Descriptions>}
-            {!!metadata.keywords?.length && <Descriptions >
-              <Item label={<DescriptionTitle title={td('Keywords')} />}>
-                {metadata.keywords.map((keyword, i) => (
-                  <Tag key={i} color="cyan">
-                    {t(keyword.value.toString())}
-                  </Tag>
-                ))}
-              </Item>
-            </Descriptions>}
+          <div style={{ display: 'flex', flexDirection: 'column', paddingTop: '20px' }}>
+            {metadata.privacy && (
+              <Descriptions>
+                <Item label={<DescriptionTitle title={td('Privacy')} />}>{t(metadata.privacy)}</Item>
+              </Descriptions>
+            )}
+            {!!metadata.licenses?.length && (
+              <Descriptions>
+                <Item label={<DescriptionTitle title={td('Licenses')} />}>
+                  {metadata.licenses.map((l, i) => (
+                    <Tag key={i} color="cyan">
+                      {t(l.name)}
+                    </Tag>
+                  ))}
+                </Item>
+              </Descriptions>
+            )}
+            {!!metadata.keywords?.length && (
+              <Descriptions>
+                <Item label={<DescriptionTitle title={td('Keywords')} />}>
+                  {metadata.keywords.map((keyword, i) => (
+                    <Tag key={i} color="cyan">
+                      {t(keyword.value.toString())}
+                    </Tag>
+                  ))}
+                </Item>
+              </Descriptions>
+            )}
           </div>
         ) : null}
 
