@@ -3,11 +3,13 @@ import axios from 'axios';
 import { BeaconConfigResponse, BeaconAssemblyIds } from '@/types/beacon';
 import { RootState } from '@/store';
 import { printAPIError } from '@/utils/error.util';
+import { BEACON_URL } from '@/config';
+
+const beaconInfoEndpoint = BEACON_URL + '/overview';
 
 export const getBeaconConfig = createAsyncThunk<BeaconConfigResponse, void, { state: RootState; rejectValue: string }>(
   'beaconConfig/getBeaconConfig',
-  (_, { getState, rejectWithValue }) => {
-    const beaconInfoEndpoint = getState().config.beaconUrl + '/overview';
+  (_, { rejectWithValue }) => {
     return axios
       .get(beaconInfoEndpoint)
       .then((res) => res.data)

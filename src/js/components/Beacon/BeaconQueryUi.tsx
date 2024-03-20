@@ -1,7 +1,8 @@
 import React, { useEffect, useState, ReactNode } from 'react';
-import { useAppSelector, useAppDispatch, useTranslationDefault } from '@/hooks';
+import { useAppSelector, useAppDispatch, useTranslationDefault, useBeaconWithAuthIfAllowed } from '@/hooks';
 import { Button, Card, Col, Form, Row, Space, Tooltip, Typography } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
+import { useIsAuthenticated } from 'bento-auth-js';
 import Filters from './Filters';
 import BeaconSearchResults from './BeaconSearchResults';
 import BeaconErrorMessage from './BeaconErrorMessage';
@@ -12,11 +13,12 @@ import {
   WRAPPER_STYLE,
   FORM_ROW_GUTTERS,
   CARD_STYLE,
-  CARD_BODY_STYLE,
-  CARD_HEAD_STYLE,
   BUTTON_AREA_STYLE,
   BUTTON_STYLE,
+  CARD_STYLES,
 } from '@/constants/beaconConstants';
+
+import { BOX_SHADOW } from '@/constants/overviewConstants';
 const { Text, Title } = Typography;
 // TODOs
 // example searches, either hardcoded or configurable
@@ -55,9 +57,10 @@ const BeaconQueryUi = () => {
   const isFetchingBeaconConfig = useAppSelector((state) => state.beaconConfig.isFetchingBeaconConfig);
   const beaconAssemblyIds = useAppSelector((state) => state.beaconConfig.beaconAssemblyIds);
   const querySections = useAppSelector((state) => state.query.querySections);
-  const beaconUrl = useAppSelector((state) => state.config?.beaconUrl);
   const hasApiError = useAppSelector((state) => state.beaconQuery.hasApiError);
   const apiErrorMessage = useAppSelector((state) => state.beaconQuery.apiErrorMessage);
+
+  const isAuthenticated = useIsAuthenticated();
 
   const dispatch = useAppDispatch();
   const launchEmptyQuery = () => dispatch(makeBeaconQuery(requestPayload({}, [])));
@@ -77,11 +80,6 @@ const BeaconQueryUi = () => {
   };
 
   useEffect(() => {
-    // wait for config
-    if (!beaconUrl) {
-      return;
-    }
-
     // retrieve stats
     launchEmptyQuery();
 
@@ -89,7 +87,10 @@ const BeaconQueryUi = () => {
 
     // set assembly id options matching what's in gohan
     form.setFieldsValue(formInitialValues);
-  }, [isFetchingBeaconConfig]);
+  }, [isFetchingBeaconConfig, isAuthenticated]);
+
+  // Disables max query param if user is authenticated and authorized
+  useBeaconWithAuthIfAllowed();
 
   // beacon request handling
 
@@ -240,9 +241,8 @@ const BeaconQueryUi = () => {
       <BeaconSearchResults />
       <Card
         title={td('Search')}
-        style={{ borderRadius: '10px', maxWidth: '1200px', width: '100%' }}
-        bodyStyle={CARD_BODY_STYLE}
-        headStyle={CARD_HEAD_STYLE}
+        style={{ borderRadius: '10px', maxWidth: '1200px', width: '100%', ...BOX_SHADOW }}
+        styles={CARD_STYLES}
       >
         <p style={{ margin: '-8px 0 8px 0', padding: '0', color: 'grey' }}>{td(uiInstructions)}</p>
         <Form form={form} onFinish={handleFinish} layout="vertical" onValuesChange={handleValuesChange}>
@@ -252,8 +252,7 @@ const BeaconQueryUi = () => {
                 <Card
                   title={td('Variants')}
                   style={CARD_STYLE}
-                  headStyle={CARD_HEAD_STYLE}
-                  bodyStyle={CARD_BODY_STYLE}
+                  styles={CARD_STYLES}
                   extra={<SearchToolTip>{variantsInstructions}</SearchToolTip>}
                 >
                   <VariantsForm beaconAssemblyIds={beaconAssemblyIds} />
@@ -264,8 +263,7 @@ const BeaconQueryUi = () => {
               <Card
                 title={td('Metadata')}
                 style={CARD_STYLE}
-                headStyle={CARD_HEAD_STYLE}
-                bodyStyle={CARD_BODY_STYLE}
+                styles={CARD_STYLES}
                 extra={<SearchToolTip>{metadataInstructions} </SearchToolTip>}
               >
                 <Filters filters={filters} setFilters={setFilters} form={form} querySections={querySections} />

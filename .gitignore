@@ -9,3 +9,6 @@ dist/*
 .idea/
 .vscode/
 www/
+
+.yalc
+yalc.lock

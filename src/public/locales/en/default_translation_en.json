@@ -86,5 +86,9 @@
   "\"Chromosome\", \"Variant start\" and \"Assembly ID\" are always required.": "\"Chromosome\", \"Variant start\" and \"Assembly ID\" are always required.",
   "Coordinates are one-based.": "Coordinates are one-based.",
   "Leave this form blank to search by metadata only.": "Leave this form blank to search by metadata only.",
-  "Clinical Data": "Clinical Data"
+  "Clinical Data": "Clinical Data",
+  "You have been signed out": "You have been signed out",
+  "Please sign in to the research portal.": "Please sign in to the research portal.",
+  "Sign In": "Sign In",
+  "Sign Out": "Sign Out"
 }
