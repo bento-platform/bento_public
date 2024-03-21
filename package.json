@@ -22,7 +22,7 @@
     "antd": "^5.15.0",
     "axios": "^1.6.2",
     "bento-auth-js": "^4.0.0",
-    "bento-charts": "^2.6.4",
+    "bento-charts": "^2.6.8",
     "css-loader": "^6.8.1",
     "dotenv": "^16.3.1",
     "i18next": "^23.7.7",
