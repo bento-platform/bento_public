@@ -1,13 +1,15 @@
 {
+  "MALE": "MALE",
+  "FEMALE": "FEMALE",
   "Age": "Age",
+  "Age at arrival": "Age at arrival",
   "Sex": "Sex",
+  "Sex at birth": "Sex at birth",
   "Verbal consent date": "Verbal Consent Date",
   "Functional status": "Functional Status",
   "Lab Test Result": "Lab Test Results",
   "Experiment Types": "Experiment Types",
   "Demographics": "Demographics",
-  "MALE": "MALE",
-  "FEMALE": "FEMALE",
   "I have no problems in walking about": "I have no problems in walking about",
   "Results": "Results"
 }
