@@ -51,7 +51,8 @@ const LastIngestionInfo: React.FC = () => {
                   {t(getDataTypeLabel(dataType.id))}
                 </Typography.Text>
                 <Typography.Text>
-                  <CalendarOutlined /> {dataType.last_ingested ? formatDate(dataType.last_ingested) : 'Not Available'}
+                  <CalendarOutlined />{' '}
+                  {dataType.last_ingested ? formatDate(dataType.last_ingested) : t('Not Available')}
                 </Typography.Text>
               </Space>
             </Card>
