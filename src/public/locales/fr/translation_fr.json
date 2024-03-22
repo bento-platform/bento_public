@@ -2,12 +2,15 @@
   "MALE": "HOMME",
   "FEMALE": "FEMME",
   "Age": "Âge",
+  "Age at arrival": "Âge à l'arrivée",
   "Sex": "Sexe",
+  "Sex at birth": "Sexe à la naissance",
   "Demographics": "Démographie",
   "Verbal consent date": "Date de consentement verbal",
   "Functional status": "Statut fonctionnel",
   "Lab Test Result": "Résultats des tests de laboratoire",
   "Experiment Types": "Types d'expériences",
+  "Types of experiments performed on a sample": "Types d'expériences réalisées sur un échantillon",
   "I have no problems in walking about": "Je n’ai aucun problème à marcher",
   "Results": "Résultats"
 }
