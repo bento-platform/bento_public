@@ -29,7 +29,13 @@ const SearchResultsPane = ({
           padding: '10px 33px',
           maxWidth: '1200px',
           width: '100%',
-          minHeight: '28rem',
+          //   chart (300)
+          // + heading (24 + 8 [0.5em] bottom margin)
+          // + card body padding (2*24 = 48)
+          // + card wrapper padding (2*10 = 20)
+          // + border (2*1 = 2)
+          // = 402:
+          minHeight: 402,
           ...BOX_SHADOW,
         }}
         loading={isFetchingData}
@@ -58,7 +64,9 @@ const SearchResultsPane = ({
             </Space>
           </Col>
           <Col xs={24} lg={10}>
-            <Typography.Title level={5}>{t('Biosamples')}</Typography.Title>
+            <Typography.Title level={5} style={{ marginTop: 0 }}>
+              {t('Biosamples')}
+            </Typography.Title>
             {!hasInsufficientData && biosampleChartData.length ? (
               <PieChart data={biosampleChartData} height={PIE_CHART_HEIGHT} sort={true} />
             ) : (
@@ -66,7 +74,9 @@ const SearchResultsPane = ({
             )}
           </Col>
           <Col xs={24} lg={10}>
-            <Typography.Title level={5}>{t('Experiments')}</Typography.Title>
+            <Typography.Title level={5} style={{ marginTop: 0 }}>
+              {t('Experiments')}
+            </Typography.Title>
             {!hasInsufficientData && experimentChartData.length ? (
               <PieChart data={experimentChartData} height={PIE_CHART_HEIGHT} sort={true} />
             ) : (
