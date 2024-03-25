@@ -29,6 +29,8 @@ const SearchResultsPane = ({
           padding: '10px 33px',
           maxWidth: '1200px',
           width: '100%',
+          // Set a minimum height (i.e., an expected final height, which can be exceeded) to prevent this component from
+          // suddenly increasing in height after it loads. This is calculated from the sum of the following parts:
           //   chart (300)
           // + heading (24 + 8 [0.5em] bottom margin)
           // + card body padding (2*24 = 48)
