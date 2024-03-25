@@ -35,7 +35,7 @@ const SearchResultsPane = ({
           // + card wrapper padding (2*10 = 20)
           // + border (2*1 = 2)
           // = 402:
-          minHeight: 402,
+          minHeight: '402px',
           ...BOX_SHADOW,
         }}
         loading={isFetchingData}
