@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { Fragment, useMemo } from 'react';
 
 import { ColumnsType } from 'antd/es/table';
 
@@ -20,17 +20,17 @@ const ExtraPropertiesTable = ({ extraProperties }: ExtraPropertiesTableProps) =>
           dataIndex: 'values',
           render: (_, { values }) =>
             values.map((v, i) => (
-              <>
-                <LinkIfUrl key={i} text={v.value.toString()} />
+              <Fragment key={i}>
+                <LinkIfUrl text={v.value.toString()} />
                 {i < values.length - 1 ? '; ' : ''}
-              </>
+              </Fragment>
             )),
         },
       ] as ColumnsType<ExtraProperty>,
     [td]
   );
 
-  return <BaseProvenanceTable dataSource={extraProperties} columns={columns} />;
+  return <BaseProvenanceTable dataSource={extraProperties} columns={columns} rowKey="category" />;
 };
 
 export interface ExtraPropertiesTableProps {

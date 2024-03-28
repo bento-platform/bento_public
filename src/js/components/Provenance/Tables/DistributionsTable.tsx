@@ -18,17 +18,22 @@ const DistributionsTable = ({ distributions }: DistributionsTableProps) => {
         {
           title: td('Formats'),
           dataIndex: 'formats',
-          render: (_, { formats }) => <Tag color="cyan">{formats}</Tag>,
+          render: (_, { formats = [] }) =>
+            formats.map((f) => (
+              <Tag color="cyan" key={f}>
+                {f}
+              </Tag>
+            )),
         },
         {
           title: td('Size'),
           dataIndex: 'size',
-          render: (text) => t(text),
+          render: (text = '') => t(text),
         },
         {
           title: td('Unit'),
           dataIndex: 'unit',
-          render: (_, { unit }) => t(unit.value.toString()),
+          render: (_, { unit = { value: '' } }) => t(unit.value.toString()),
         },
         {
           title: td('Access'),
@@ -46,7 +51,7 @@ const DistributionsTable = ({ distributions }: DistributionsTableProps) => {
               title: td('Authorizations'),
               dataIndex: 'access.authorizations',
               render: (_, { access }) =>
-                access.authorizations.map((a, i) => (
+                access.authorizations?.map((a, i) => (
                   <Tag key={i} color="cyan">
                     {t(a.value.toString())}
                   </Tag>
@@ -58,7 +63,9 @@ const DistributionsTable = ({ distributions }: DistributionsTableProps) => {
     [td]
   );
 
-  return <BaseProvenanceTable dataSource={distributions} columns={columns} />;
+  return (
+    <BaseProvenanceTable dataSource={distributions} columns={columns} rowKey={(record) => record.access.landingPage} />
+  );
 };
 
 export interface DistributionsTableProps {
