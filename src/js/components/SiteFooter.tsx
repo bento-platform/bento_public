@@ -17,7 +17,9 @@ const SiteFooter = () => {
             <Title level={5} type="secondary" style={{ marginBottom: '0' }}>
               Powered by
             </Title>
-            <img style={{ height: '36px' }} src={bentoLogo} alt="Bento" />
+            <Link href="https://bento-platform.github.io" target="_blank">
+              <img style={{ height: '36px' }} src={bentoLogo} alt="Bento" />
+            </Link>
           </div>
           <div>
             <Text type="secondary">
