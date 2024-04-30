@@ -12,6 +12,7 @@ import { makeGetSearchFields } from '@/features/search/query.store';
 import { makeGetProvenanceRequest } from '@/features/provenance/provenance.store';
 import { getBeaconConfig } from '@/features/beacon/beaconConfig.store';
 import { fetchGohanData, fetchKatsuData } from '@/features/ingestion/lastIngestion.store';
+import { getProjects } from '@/features/metadata/metadata.store';
 
 import Loader from './Loader';
 import PublicOverview from './Overview/PublicOverview';
@@ -43,6 +44,7 @@ const TabbedDashboard = () => {
     dispatch(fetchKatsuData());
     dispatch(fetchGohanData());
     dispatch(makeGetServiceInfoRequest());
+    dispatch(getProjects());
     //TODO: Dispatch makeGetDataTypes to get the data types from service-registry
     if (isAuthenticated) {
       dispatch(makeGetDataTypes());
