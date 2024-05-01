@@ -34,17 +34,26 @@ const TabbedDashboard = () => {
 
   const { isAutoAuthenticating } = useAutoAuthenticate();
   const isAuthenticated = useIsAuthenticated();
-
+  const { selectedDatasetId, selectedProjectId } = useAppSelector((state) => state.metadata);
   useEffect(() => {
+    // project-dataset scope dependent dispatches
     dispatch(makeGetConfigRequest()).then(() => dispatch(getBeaconConfig()));
-    dispatch(makeGetAboutRequest());
-    dispatch(makeGetDataRequestThunk());
     dispatch(makeGetSearchFields());
+    dispatch(makeGetDataRequestThunk());
     dispatch(makeGetProvenanceRequest());
     dispatch(fetchKatsuData());
+  }, [selectedDatasetId, selectedProjectId]);
+
+  useEffect(() => {
+    // dispatch(makeGetConfigRequest()).then(() => dispatch(getBeaconConfig()));
+    dispatch(getProjects());
+    // dispatch(makeGetSearchFields());
+    dispatch(makeGetAboutRequest());
+    // dispatch(makeGetDataRequestThunk());
+    // dispatch(makeGetProvenanceRequest());
+    // dispatch(fetchKatsuData());
     dispatch(fetchGohanData());
     dispatch(makeGetServiceInfoRequest());
-    dispatch(getProjects());
     //TODO: Dispatch makeGetDataTypes to get the data types from service-registry
     if (isAuthenticated) {
       dispatch(makeGetDataTypes());

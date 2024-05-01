@@ -7,13 +7,15 @@ import { RootState } from '@/store';
 import { PUBLIC_URL } from '@/config';
 import { KatsuPublicOverviewResponse } from '@/types/configResponse';
 
-export const makeGetConfigRequest = createAsyncThunk<KatsuPublicOverviewResponse, void, { rejectValue: string }>(
-  'config/getConfigData',
-  (_, { rejectWithValue }) =>
-    axios
-      .get(katsuPublicOverviewUrl)
-      .then((res) => res.data)
-      .catch(printAPIError(rejectWithValue))
+export const makeGetConfigRequest = createAsyncThunk<
+  KatsuPublicOverviewResponse,
+  void,
+  { rejectValue: string; state: RootState }
+>('config/getConfigData', (_, { rejectWithValue, getState }) =>
+  axios
+    .get(katsuPublicOverviewUrl, { params: getState().metadata.params })
+    .then((res) => res.data)
+    .catch(printAPIError(rejectWithValue))
 );
 
 export const makeGetServiceInfoRequest = createAsyncThunk<
