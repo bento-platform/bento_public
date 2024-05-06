@@ -26,11 +26,12 @@ import '../styles.css';
 import TabbedDashboard from './components/TabbedDashboard';
 import SiteHeader from './components/SiteHeader';
 import SiteFooter from './components/SiteFooter';
+import SiteSider from '@/components/SiteSider';
 import SitePageLoading from './components/SitePageLoading';
 
 import { store } from './store';
-import { useBeaconWithAuthIfAllowed } from '@/hooks';
 
+import { useBeaconWithAuthIfAllowed } from '@/hooks';
 import { PUBLIC_URL_NO_TRAILING_SLASH, CLIENT_ID, OPENID_CONFIG_URL, AUTH_CALLBACK_URL } from './config';
 
 const SIGN_IN_WINDOW_FEATURES = 'scrollbars=no, toolbar=no, menubar=no, width=800, height=600';
@@ -106,16 +107,19 @@ const App = () => {
         <br />
       </Modal>
       <Layout style={{ minHeight: '100vh' }}>
-        <SiteHeader />
-        <Content style={{ padding: '0 30px', marginTop: '10px' }}>
-          <Suspense fallback={<SitePageLoading />}>
-            <Routes>
-              <Route path={CALLBACK_PATH} element={<SitePageLoading />} />
-              <Route path="/:page?/*" element={<TabbedDashboard />} />
-            </Routes>
-          </Suspense>
-        </Content>
-        <SiteFooter />
+        <SiteSider />
+        <Layout>
+          <SiteHeader />
+          <Content style={{ padding: '0 30px', marginTop: '10px' }}>
+            <Suspense fallback={<SitePageLoading />}>
+              <Routes>
+                <Route path={CALLBACK_PATH} element={<SitePageLoading />} />
+                <Route path="/:page?/*" element={<TabbedDashboard />} />
+              </Routes>
+            </Suspense>
+          </Content>
+          <SiteFooter />
+        </Layout>
       </Layout>
     </>
   );
