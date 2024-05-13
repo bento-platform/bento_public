@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { Col, Flex, Layout, Row } from 'antd';
+import { Flex, Layout, Menu } from 'antd';
+import type { MenuProps } from 'antd';
+import { CompassOutlined, PieChartOutlined, SearchOutlined, SolutionOutlined } from '@ant-design/icons';
 
 const { Sider } = Layout;
 
@@ -10,15 +12,28 @@ const iconBackgroundStyle = {
   margin: '16px',
 };
 
+type MenuItem = Required<MenuProps>['items'][number];
+
+function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode, children?: MenuItem[]): MenuItem {
+  return {
+    key,
+    icon,
+    children,
+    label,
+  } as MenuItem;
+}
+
+const items: MenuItem[] = [
+  getItem('Overview', '1', <PieChartOutlined />),
+  getItem('Search', '2', <SearchOutlined />),
+  getItem('Beacon', '9', <CompassOutlined />),
+  getItem('Provenance', '9', <SolutionOutlined />),
+];
+
 const SiteSider = () => {
   const [collapsed, setCollapsed] = useState(false);
   return (
-    <Sider
-      collapsible
-      collapsed={collapsed}
-      onCollapse={setCollapsed}
-      style={{ display: 'flex', alignItems: 'center', height: '100vh' }}
-    >
+    <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
       <Flex style={{ width: '100%' }} justify="center" align="center">
         <Flex style={iconBackgroundStyle} justify="center" align="center">
           <a href="/">
@@ -26,6 +41,7 @@ const SiteSider = () => {
           </a>
         </Flex>
       </Flex>
+      <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
     </Sider>
   );
 };
