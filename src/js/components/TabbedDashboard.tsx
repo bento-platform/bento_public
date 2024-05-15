@@ -18,10 +18,12 @@ import PublicOverview from './Overview/PublicOverview';
 import Search from './Search/Search';
 import ProvenanceTab from './Provenance/ProvenanceTab';
 import BeaconQueryUi from './Beacon/BeaconQueryUi';
+import NetworkUi from './BeaconNetwork/NetworkUi';
 import { useAppDispatch, useAppSelector, useTranslationDefault } from '@/hooks';
 import { buildQueryParamsUrl } from '@/utils/search';
 import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
 import { BEACON_UI_ENABLED } from '@/config';
+import { BEACON_NETWORK_UI_ENABLED } from '@/config';
 import SitePageLoading from './SitePageLoading';
 
 const TabbedDashboard = () => {
@@ -95,6 +97,13 @@ const TabbedDashboard = () => {
       loading: isFetchingBeaconConfig,
       active: BEACON_UI_ENABLED,
       key: 'beacon',
+    },
+    {
+      title: 'Beacon Network',
+      content: <NetworkUi />,
+      loading: false,
+      active: BEACON_NETWORK_UI_ENABLED,
+      key: 'beacon_network',
     },
     {
       title: 'Provenance',
