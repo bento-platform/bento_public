@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Routes, Route, useParams, useNavigate, BrowserRouter } from 'react-router-dom';
-import { Button, Layout, Modal, message } from 'antd';
+import { Button, Layout, Modal, message, ConfigProvider } from 'antd';
 import { ChartConfigProvider } from 'bento-charts';
 import { DEFAULT_TRANSLATION, SUPPORTED_LNGS } from './constants/configConstants';
 
@@ -23,14 +23,15 @@ import 'bento-charts/src/styles.css';
 import './i18n';
 import '../styles.css';
 
-import TabbedDashboard from './components/TabbedDashboard';
+import BentoAppRouter from './components/BentoAppRouter';
 import SiteHeader from './components/SiteHeader';
 import SiteFooter from './components/SiteFooter';
+import SiteSider from '@/components/SiteSider';
 import SitePageLoading from './components/SitePageLoading';
 
 import { store } from './store';
-import { useBeaconWithAuthIfAllowed } from '@/hooks';
 
+import { useBeaconWithAuthIfAllowed } from '@/hooks';
 import { PUBLIC_URL_NO_TRAILING_SLASH, CLIENT_ID, OPENID_CONFIG_URL, AUTH_CALLBACK_URL } from './config';
 
 const SIGN_IN_WINDOW_FEATURES = 'scrollbars=no, toolbar=no, menubar=no, width=800, height=600';
@@ -89,7 +90,7 @@ const App = () => {
   useBeaconWithAuthIfAllowed();
 
   return (
-    <>
+    <ConfigProvider theme={{ components: { Menu: { iconSize: 20 } } }}>
       <Modal
         title={t('You have been signed out')}
         onCancel={() => {
@@ -106,18 +107,21 @@ const App = () => {
         <br />
       </Modal>
       <Layout style={{ minHeight: '100vh' }}>
-        <SiteHeader />
-        <Content style={{ padding: '0 30px', marginTop: '10px' }}>
-          <Suspense fallback={<SitePageLoading />}>
-            <Routes>
-              <Route path={CALLBACK_PATH} element={<SitePageLoading />} />
-              <Route path="/:page?/*" element={<TabbedDashboard />} />
-            </Routes>
-          </Suspense>
-        </Content>
-        <SiteFooter />
+        <SiteSider />
+        <Layout>
+          <SiteHeader />
+          <Content style={{ padding: '0 30px', marginTop: '10px' }}>
+            <Suspense fallback={<SitePageLoading />}>
+              <Routes>
+                <Route path={CALLBACK_PATH} element={<SitePageLoading />} />
+                <Route path="/*" element={<BentoAppRouter />} />
+              </Routes>
+            </Suspense>
+          </Content>
+          <SiteFooter />
+        </Layout>
       </Layout>
-    </>
+    </ConfigProvider>
   );
 };
 

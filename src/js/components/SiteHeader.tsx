@@ -38,9 +38,6 @@ const SiteHeader = () => {
       <Row align="middle" justify="space-between" style={{ height: '64px' }}>
         <Col style={{ height: '100%' }}>
           <Space align="start" size={20}>
-            <a href="/">
-              <img style={{ marginTop: '15px', height: '32px' }} src="/public/assets/branding.png" alt="logo" />
-            </a>
             <Typography.Title level={1} style={{ fontSize: '18px', margin: 0, lineHeight: '64px' }} type="secondary">
               {CLIENT_NAME}
             </Typography.Title>
