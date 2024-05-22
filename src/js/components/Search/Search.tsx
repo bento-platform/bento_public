@@ -99,6 +99,7 @@ const Search: React.FC = () => {
 
   return (
     <>
+      <Typography.Title level={2}>{t('Search')}</Typography.Title>
       <Row justify="center">
         <Space direction="vertical" align="center" style={WIDTH_100P_STYLE} styles={SEARCH_SPACE_ITEM_STYLE}>
           <SearchResults />
