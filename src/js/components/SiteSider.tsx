@@ -9,6 +9,7 @@ const { Sider } = Layout;
 import BeaconSvg from '@/components/Beacon/BeaconSvg';
 import { useAppSelector, useTranslationDefault } from '@/hooks';
 import { buildQueryParamsUrl } from '@/utils/search';
+import { CUSTOM_LOGO } from '@/config';
 
 const iconBackgroundStyle = {
   backgroundColor: '#FFFFFF25',
@@ -23,17 +24,41 @@ type OnClick = MenuProps['onClick'];
 
 const BeaconLogo: React.FC<Partial<CustomIconComponentProps>> = (props) => <Icon component={BeaconSvg} {...props} />;
 
-const Logo: React.FC<{ collapsed: boolean }> = ({ collapsed }) => (
+const BentoLogo: React.FC<{ collapsed: boolean }> = ({ collapsed }) => (
   <Flex style={{ width: '100%' }} justify="center" align="center">
     <Flex style={iconBackgroundStyle} justify="center" align="center">
       <div className={`logo-container ${collapsed ? 'collapsed' : ''}`}>
         <a href="/">
-          <img className="logo" src="/public/assets/branding.png" alt="logo" />
+          <img className="logo" src="/public/assets/bento_branding.png" alt="logo" />
         </a>
       </div>
     </Flex>
   </Flex>
 );
+
+const Logo: React.FC<{ collapsed: boolean }> = ({ collapsed }) => {
+  const logoSrc = collapsed ? '/public/assets/icon_small.png' : '/public/assets/branding.png';
+
+  return (
+    <Flex style={{ width: '100%' }} justify="center" align="center">
+      <Flex style={iconBackgroundStyle} justify="center" align="center">
+        <div className={collapsed ? 'collapsed' : ''}>
+          <a href="/">
+            <img
+              src={logoSrc}
+              alt="logo"
+              style={{
+                maxWidth: collapsed ? '32px' : '120px',
+                maxHeight: '32px',
+                transition: 'all 0.3s',
+              }}
+            />
+          </a>
+        </div>
+      </Flex>
+    </Flex>
+  );
+};
 
 const SiteSider: React.FC = () => {
   const navigate = useNavigate();
@@ -73,7 +98,7 @@ const SiteSider: React.FC = () => {
 
   return (
     <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
-      <Logo collapsed={collapsed} />
+      {CUSTOM_LOGO ? <Logo collapsed={collapsed} /> : <BentoLogo collapsed={collapsed} />}
       <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={menuItems} onClick={handleMenuClick} />
     </Sider>
   );
