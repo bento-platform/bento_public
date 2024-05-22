@@ -1,15 +1,14 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { Layout, Menu } from 'antd';
-import type { MenuProps } from 'antd';
-import { PieChartOutlined, SearchOutlined, SolutionOutlined } from '@ant-design/icons';
-import { Flex } from 'antd';
-import Icon from '@ant-design/icons';
-import BeaconSvg from './Beacon/BeaconSvg';
-import { buildQueryParamsUrl } from '@/utils/search';
 import { useNavigate } from 'react-router-dom';
-import { useAppSelector, useTranslationDefault } from '@/hooks';
 
+import { Flex, Layout, Menu } from 'antd';
+import type { MenuProps } from 'antd';
+import Icon, { PieChartOutlined, SearchOutlined, SolutionOutlined } from '@ant-design/icons';
 const { Sider } = Layout;
+
+import BeaconSvg from '@/components/Beacon/BeaconSvg';
+import { useAppSelector, useTranslationDefault } from '@/hooks';
+import { buildQueryParamsUrl } from '@/utils/search';
 
 const iconBackgroundStyle = {
   backgroundColor: '#FFFFFF25',
