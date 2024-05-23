@@ -13,7 +13,7 @@ const ROW_EMPTY_STYLE = { height: `${CHART_HEIGHT}px` };
 const TitleComponent: React.FC<TitleComponentProps> = ({ title, description }) => (
   <Space.Compact direction="vertical" style={{ fontWeight: 'normal', padding: '5px 5px' }}>
     <Typography.Text style={{ fontSize: '20px', fontWeight: '600' }}>{title}</Typography.Text>
-    <Typography.Text type="secondary" style={{ width: '375px' }} ellipsis={{ tooltip: description }}>
+    <Typography.Text type="secondary" style={{ width: '300px' }} ellipsis={{ tooltip: description }}>
       {description}
     </Typography.Text>
   </Space.Compact>
