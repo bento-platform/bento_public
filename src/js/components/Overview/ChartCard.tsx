@@ -10,10 +10,14 @@ import { ChartDataField } from '@/types/data';
 const CARD_STYLE = { width: '100%', height: '415px', borderRadius: '11px', ...BOX_SHADOW };
 const ROW_EMPTY_STYLE = { height: `${CHART_HEIGHT}px` };
 
-const TitleComponent: React.FC<TitleComponentProps> = ({ title, description }) => (
+const TitleComponent: React.FC<TitleComponentProps> = ({ title, description, smallEllipses }) => (
   <Space.Compact direction="vertical" style={{ fontWeight: 'normal', padding: '5px 5px' }}>
     <Typography.Text style={{ fontSize: '20px', fontWeight: '600' }}>{title}</Typography.Text>
-    <Typography.Text type="secondary" style={{ width: '300px' }} ellipsis={{ tooltip: description }}>
+    <Typography.Text
+      type="secondary"
+      style={smallEllipses ? { width: '300px' } : { width: '375px' }}
+      ellipsis={{ tooltip: description }}
+    >
       {description}
     </Typography.Text>
   </Space.Compact>
@@ -22,6 +26,7 @@ const TitleComponent: React.FC<TitleComponentProps> = ({ title, description }) =
 interface TitleComponentProps {
   title: string;
   description: string;
+  smallEllipses: boolean;
 }
 
 const ChartCard = memo(({ section, chart, onRemoveChart, width }: ChartCardProps) => {
@@ -70,7 +75,7 @@ const ChartCard = memo(({ section, chart, onRemoveChart, width }: ChartCardProps
   return (
     <div key={id} style={{ height: '100%', width }}>
       <Card
-        title={<TitleComponent title={t(title)} description={t(description)} />}
+        title={<TitleComponent title={t(title)} description={t(description)} smallEllipses={!!missingCount} />}
         style={CARD_STYLE}
         size="small"
         extra={<Space size="small">{ed}</Space>}
