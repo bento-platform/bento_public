@@ -15,7 +15,7 @@ const TitleComponent: React.FC<TitleComponentProps> = ({ title, description, sma
     <Typography.Text style={{ fontSize: '20px', fontWeight: '600' }}>{title}</Typography.Text>
     <Typography.Text
       type="secondary"
-      style={smallEllipses ? { width: '300px' } : { width: '375px' }}
+      style={smallEllipses ? { width: '260px' } : { width: '375px' }}
       ellipsis={{ tooltip: description }}
     >
       {description}
