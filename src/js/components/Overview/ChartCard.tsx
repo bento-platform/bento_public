@@ -10,12 +10,12 @@ import { ChartDataField } from '@/types/data';
 const CARD_STYLE = { width: '100%', height: '415px', borderRadius: '11px', ...BOX_SHADOW };
 const ROW_EMPTY_STYLE = { height: `${CHART_HEIGHT}px` };
 
-const TitleComponent: React.FC<TitleComponentProps> = ({ title, description, smallEllipses }) => (
+const TitleComponent: React.FC<TitleComponentProps> = ({ title, description, smallEllipses: smallEllipsis }) => (
   <Space.Compact direction="vertical" style={{ fontWeight: 'normal', padding: '5px 5px' }}>
     <Typography.Text style={{ fontSize: '20px', fontWeight: '600' }}>{title}</Typography.Text>
     <Typography.Text
       type="secondary"
-      style={smallEllipses ? { width: '260px' } : { width: '375px' }}
+      style={smallEllipsis ? { width: '260px' } : { width: '375px' }}
       ellipsis={{ tooltip: description }}
     >
       {description}
