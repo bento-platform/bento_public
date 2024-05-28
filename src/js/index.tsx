@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Routes, Route, useParams, useNavigate, BrowserRouter } from 'react-router-dom';
-import { Button, Layout, Modal, message } from 'antd';
+import { Button, Layout, Modal, message, ConfigProvider } from 'antd';
 import { ChartConfigProvider } from 'bento-charts';
 import { DEFAULT_TRANSLATION, SUPPORTED_LNGS } from './constants/configConstants';
 
@@ -23,7 +23,7 @@ import 'bento-charts/src/styles.css';
 import './i18n';
 import '../styles.css';
 
-import TabbedDashboard from './components/TabbedDashboard';
+import BentoAppRouter from './components/BentoAppRouter';
 import SiteHeader from './components/SiteHeader';
 import SiteFooter from './components/SiteFooter';
 import SiteSider from '@/components/SiteSider';
@@ -90,7 +90,7 @@ const App = () => {
   useBeaconWithAuthIfAllowed();
 
   return (
-    <>
+    <ConfigProvider theme={{ components: { Menu: { iconSize: 20 } } }}>
       <Modal
         title={t('You have been signed out')}
         onCancel={() => {
@@ -114,14 +114,14 @@ const App = () => {
             <Suspense fallback={<SitePageLoading />}>
               <Routes>
                 <Route path={CALLBACK_PATH} element={<SitePageLoading />} />
-                <Route path="/:page?/*" element={<TabbedDashboard />} />
+                <Route path="/*" element={<BentoAppRouter />} />
               </Routes>
             </Suspense>
           </Content>
           <SiteFooter />
         </Layout>
       </Layout>
-    </>
+    </ConfigProvider>
   );
 };
 

@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import { Flex, Layout, Menu } from 'antd';
 import type { MenuProps } from 'antd';
-import { CompassOutlined, PieChartOutlined, SearchOutlined, SolutionOutlined } from '@ant-design/icons';
-
+import Icon, { PieChartOutlined, SearchOutlined, SolutionOutlined } from '@ant-design/icons';
 const { Sider } = Layout;
+
+import BeaconSvg from '@/components/Beacon/BeaconSvg';
+import { useAppSelector, useTranslationDefault } from '@/hooks';
+import { buildQueryParamsUrl } from '@/utils/search';
+import { CUSTOM_LOGO } from '@/config';
 
 const iconBackgroundStyle = {
   backgroundColor: '#FFFFFF25',
@@ -12,37 +18,90 @@ const iconBackgroundStyle = {
   margin: '16px',
 };
 
+type CustomIconComponentProps = React.ComponentProps<typeof Icon>;
 type MenuItem = Required<MenuProps>['items'][number];
+type OnClick = MenuProps['onClick'];
 
-function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode, children?: MenuItem[]): MenuItem {
-  return {
-    key,
-    icon,
-    children,
-    label,
-  } as MenuItem;
-}
+const BeaconLogo: React.FC<Partial<CustomIconComponentProps>> = (props) => <Icon component={BeaconSvg} {...props} />;
 
-const items: MenuItem[] = [
-  getItem('Overview', '1', <PieChartOutlined />),
-  getItem('Search', '2', <SearchOutlined />),
-  getItem('Beacon', '9', <CompassOutlined />),
-  getItem('Provenance', '9', <SolutionOutlined />),
-];
+const BentoLogo: React.FC<{ collapsed: boolean }> = ({ collapsed }) => (
+  <Flex style={{ width: '100%' }} justify="center" align="center">
+    <Flex style={iconBackgroundStyle} justify="center" align="center">
+      <div className={`logo-container ${collapsed ? 'collapsed' : ''}`}>
+        <a href="/">
+          <img className="logo" src="/public/assets/bento_branding.png" alt="logo" />
+        </a>
+      </div>
+    </Flex>
+  </Flex>
+);
 
-const SiteSider = () => {
+const Logo: React.FC<{ collapsed: boolean }> = ({ collapsed }) => {
+  const logoSrc = collapsed ? '/public/assets/icon_small.png' : '/public/assets/branding.png';
+
+  return (
+    <Flex style={{ width: '100%' }} justify="center" align="center">
+      <Flex style={iconBackgroundStyle} justify="center" align="center">
+        <div className={collapsed ? 'collapsed' : ''}>
+          <a href="/">
+            <img
+              src={logoSrc}
+              alt="logo"
+              style={{
+                maxWidth: collapsed ? '32px' : '120px',
+                maxHeight: '32px',
+                transition: 'all 0.3s',
+              }}
+            />
+          </a>
+        </div>
+      </Flex>
+    </Flex>
+  );
+};
+
+const SiteSider: React.FC = () => {
+  const navigate = useNavigate();
+  const td = useTranslationDefault();
   const [collapsed, setCollapsed] = useState(false);
+  const queryParams = useAppSelector((state) => state.query.queryParams);
+
+  const handleMenuClick: OnClick = useCallback(
+    ({ key }: { key: string }) => {
+      const currentPath = location.pathname.split('/');
+      const currentLang = currentPath[1];
+      const newPath = `/${currentLang}/${key === 'overview' ? '' : key}`;
+      navigate(key === 'search' ? buildQueryParamsUrl(newPath, queryParams) : newPath);
+    },
+    [navigate, queryParams]
+  );
+
+  const createMenuItem = useCallback(
+    (label: string, key: string, icon?: React.ReactNode, children?: MenuItem[]): MenuItem => ({
+      key,
+      icon,
+      children,
+      label: td(label),
+    }),
+    [td]
+  );
+
+  const menuItems: MenuItem[] = useMemo(
+    () => [
+      createMenuItem('Overview', 'overview', <PieChartOutlined />),
+      createMenuItem('Search', 'search', <SearchOutlined />),
+      createMenuItem('Beacon', 'beacon', <BeaconLogo />),
+      createMenuItem('Provenance', 'provenance', <SolutionOutlined />),
+    ],
+    [createMenuItem]
+  );
+
   return (
     <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
-      <Flex style={{ width: '100%' }} justify="center" align="center">
-        <Flex style={iconBackgroundStyle} justify="center" align="center">
-          <a href="/">
-            <img style={{ height: '32px' }} src="/public/assets/branding.png" alt="logo" />
-          </a>
-        </Flex>
-      </Flex>
-      <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
+      {CUSTOM_LOGO ? <Logo collapsed={collapsed} /> : <BentoLogo collapsed={collapsed} />}
+      <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={menuItems} onClick={handleMenuClick} />
     </Sider>
   );
 };
+
 export default SiteSider;
