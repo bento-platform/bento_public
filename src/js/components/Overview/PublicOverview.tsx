@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Row, Col, FloatButton, Card, Skeleton, Typography } from 'antd';
+import { Row, Col, FloatButton, Card, Skeleton } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
 import { convertSequenceAndDisplayData, saveValue } from '@/utils/localStorage';
@@ -10,7 +10,7 @@ import { BOX_SHADOW, LOCALSTORAGE_CHARTS_KEY } from '@/constants/overviewConstan
 import OverviewSection from './OverviewSection';
 import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
 import Counts from './Counts';
-import { useAppSelector, useTranslationDefault } from '@/hooks';
+import { useAppSelector } from '@/hooks';
 import { useTranslation } from 'react-i18next';
 import LastIngestionInfo from './LastIngestion';
 
@@ -19,7 +19,6 @@ const MANAGE_CHARTS_BUTTON_STYLE = { right: '5em', bottom: '1.5em', transform: '
 
 const PublicOverview = () => {
   const { i18n } = useTranslation();
-  const td = useTranslationDefault();
 
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [aboutContent, setAboutContent] = useState('');
@@ -50,7 +49,6 @@ const PublicOverview = () => {
   return (
     <>
       <div className="container">
-        <Typography.Title level={2}>{td('Overview')}</Typography.Title>
         <Row>
           <Col flex={1}>
             <Card style={ABOUT_CARD_STYLE}>

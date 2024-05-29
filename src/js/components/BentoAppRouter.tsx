@@ -44,8 +44,7 @@ const BentoAppRouter = () => {
   }
 
   return (
-    // <div style={{ paddingTop: '10px' }}>
-    <div>
+    <div style={{ paddingTop: '14px' }}>
       <Routes>
         <Route path="/overview" element={<PublicOverview />} />
         <Route path="/search/*" element={<Search />} />

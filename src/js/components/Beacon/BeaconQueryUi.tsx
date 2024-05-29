@@ -238,7 +238,6 @@ const BeaconQueryUi = () => {
 
   return (
     <>
-      <Typography.Title level={2}>{td('Beacon Search')}</Typography.Title>
       <div style={WRAPPER_STYLE}>
         <BeaconSearchResults />
         <Card
