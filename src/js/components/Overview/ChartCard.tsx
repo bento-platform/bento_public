@@ -10,7 +10,7 @@ import { ChartDataField } from '@/types/data';
 const CARD_STYLE = { width: '100%', height: '415px', borderRadius: '11px', ...BOX_SHADOW };
 const ROW_EMPTY_STYLE = { height: `${CHART_HEIGHT}px` };
 
-const TitleComponent: React.FC<TitleComponentProps> = ({ title, description, smallEllipses: smallEllipsis }) => (
+const TitleComponent: React.FC<TitleComponentProps> = ({ title, description, smallEllipsis }) => (
   <Space.Compact direction="vertical" style={{ fontWeight: 'normal', padding: '5px 5px' }}>
     <Typography.Text style={{ fontSize: '20px', fontWeight: '600' }}>{title}</Typography.Text>
     <Typography.Text
@@ -26,7 +26,7 @@ const TitleComponent: React.FC<TitleComponentProps> = ({ title, description, sma
 interface TitleComponentProps {
   title: string;
   description: string;
-  smallEllipses: boolean;
+  smallEllipsis: boolean;
 }
 
 const ChartCard = memo(({ section, chart, onRemoveChart, width }: ChartCardProps) => {
@@ -75,7 +75,7 @@ const ChartCard = memo(({ section, chart, onRemoveChart, width }: ChartCardProps
   return (
     <div key={id} style={{ height: '100%', width }}>
       <Card
-        title={<TitleComponent title={t(title)} description={t(description)} smallEllipses={!!missingCount} />}
+        title={<TitleComponent title={t(title)} description={t(description)} smallEllipsis={!!missingCount} />}
         style={CARD_STYLE}
         size="small"
         extra={<Space size="small">{ed}</Space>}
