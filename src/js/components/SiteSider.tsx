@@ -7,7 +7,7 @@ import Icon, { PieChartOutlined, SearchOutlined, SolutionOutlined } from '@ant-d
 const { Sider } = Layout;
 
 import BeaconSvg from '@/components/Beacon/BeaconSvg';
-import { useAppSelector, useTranslationDefault } from '@/hooks';
+import { getCurrentPage, useAppSelector, useTranslationDefault } from '@/hooks';
 import { buildQueryParamsUrl } from '@/utils/search';
 import { CUSTOM_LOGO } from '@/config';
 
@@ -66,6 +66,9 @@ const SiteSider: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const queryParams = useAppSelector((state) => state.query.queryParams);
 
+  const currentPage = getCurrentPage();
+  console.log({ currentPage });
+
   const handleMenuClick: OnClick = useCallback(
     ({ key }: { key: string }) => {
       const currentPath = location.pathname.split('/');
@@ -99,7 +102,13 @@ const SiteSider: React.FC = () => {
   return (
     <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
       {CUSTOM_LOGO ? <Logo collapsed={collapsed} /> : <BentoLogo collapsed={collapsed} />}
-      <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={menuItems} onClick={handleMenuClick} />
+      <Menu
+        theme="dark"
+        defaultSelectedKeys={[currentPage]}
+        mode="inline"
+        items={menuItems}
+        onClick={handleMenuClick}
+      />
     </Sider>
   );
 };
