@@ -1,11 +1,16 @@
 import { Rule } from 'antd/es/form';
 import { Datum } from '@/types/overviewResponse';
+import { ChartData } from './data';
 
 // ----------------------------
 // form handling
 // ----------------------------
 
 export type BeaconAssemblyIds = string[];
+
+// generic "info" response field
+// only requirement in beacon spec is that it's an object
+type GenericInfoField = Record<string,any> 
 
 export interface FormField {
   name: string;
@@ -105,6 +110,9 @@ export interface BeaconQueryResponse {
   responseSummary?: {
     numTotalResults: number;
   };
+  meta?: {
+    beaconId: string;
+  }
 }
 
 export interface BeaconErrorData {
@@ -113,3 +121,43 @@ export interface BeaconErrorData {
     errorMessage: string;
   };
 }
+
+export interface BeaconOrganization {
+  id: string;
+  name: string;
+  description?: string
+  address?: string;
+  contactUrl?: string;
+  logoUrl?: string;
+  welcomeUrl?: string;
+  info?: GenericInfoField;
+}
+
+export interface BeaconInfo {
+  id: string;
+  name: string;
+  apiVersion: string;
+  environment: string;
+  organization: BeaconOrganization;
+  version?: string;
+  welcomeUrl?: string;
+  alternativeUrl?: string;
+  createDateTime?: string;
+  updateDateTime?: string;
+  info?: GenericInfoField;
+}
+
+// ----------------------------
+// response packaging
+// ----------------------------
+
+export interface FlattenedBeaconState {
+  isFetchingQueryResponse: boolean;
+  hasApiError: boolean;
+  apiErrorMessage: string;
+  individualCount?: number;
+  biosampleCount?: number;
+  biosampleChartData?: ChartData[];
+  experimentCount?: number;
+  experimentChartData?: ChartData[];
+};
