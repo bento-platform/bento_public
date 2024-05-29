@@ -1,18 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { makeAuthorizationHeader } from 'bento-auth-js';
+// import { makeAuthorizationHeader } from 'bento-auth-js';
 import { RootState } from '@/store';
-import { serializeChartData } from '@/utils/chart';
 import { beaconApiError } from '@/utils/beaconApiError';
-import { BeaconQueryPayload } from '@/types/beacon';
-import { BeaconNetworkAggregatedResponse, BeaconNetworkConfig } from '@/types/beaconNetwork';
-import { ChartData } from '@/types/data';
-import { BEACON_URL } from '@/config';
-
-// temp, should be passed in from somewhere else
-const BEACON_NETWORK_ROOT = 'https://bentov2.local/api/beacon/network/';
+import { ConfigForNetworkBeacon, BeaconNetworkConfig } from '@/types/beaconNetwork';
+import { BEACON_NETWORK_ROOT } from '@/constants/beaconConstants';
 
 // network config currently just a list of beacons in the network with info about each one
+// should probably add more details (eg version for whatever beacon is hosting the network)
 
 export const getBeaconNetworkConfig = createAsyncThunk<
   BeaconNetworkConfig,
@@ -28,13 +23,13 @@ export const getBeaconNetworkConfig = createAsyncThunk<
 type beaconNetworkIntitalStateType = {
   isFetchingBeaconNetworkConfig: boolean;
   hasBeaconNetworkError: boolean;
-  networkBeacons: BeaconNetworkConfig;
+  networkBeacons: ConfigForNetworkBeacon[];
 };
 
 const initialState: beaconNetworkIntitalStateType = {
   isFetchingBeaconNetworkConfig: false,
   hasBeaconNetworkError: false,
-  networkBeacons: {},
+  networkBeacons: [],
 };
 
 const beaconNetwork = createSlice({
@@ -42,19 +37,16 @@ const beaconNetwork = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(getBeaconNetworkConfig.pending, (state) => {
-      console.log('getBeaconNetworkConfig.pending');
+    builder.addCase(getBeaconNetworkConfig.pending, (state, action) => {
       state.isFetchingBeaconNetworkConfig = true;
     });
     builder.addCase(getBeaconNetworkConfig.fulfilled, (state, { payload }) => {
-      console.log('getBeaconNetworkConfig.fulfilled');
       state.isFetchingBeaconNetworkConfig = false;
       state.networkBeacons = payload;
     });
     builder.addCase(getBeaconNetworkConfig.rejected, (state, { payload }) => {
       state.isFetchingBeaconNetworkConfig = false;
       state.hasBeaconNetworkError = true;
-      console.log('getBeaconNetworkConfig.rejected');
     });
   },
 });
