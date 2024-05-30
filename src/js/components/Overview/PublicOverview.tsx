@@ -13,6 +13,7 @@ import Counts from './Counts';
 import { useAppSelector } from '@/hooks';
 import { useTranslation } from 'react-i18next';
 import LastIngestionInfo from './LastIngestion';
+import Loader from '@/components/Loader';
 
 const ABOUT_CARD_STYLE = { borderRadius: '11pX', ...BOX_SHADOW };
 const MANAGE_CHARTS_BUTTON_STYLE = { right: '5em', bottom: '1.5em', transform: 'scale(125%)' };
@@ -23,7 +24,7 @@ const PublicOverview = () => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [aboutContent, setAboutContent] = useState('');
 
-  const { sections } = useAppSelector((state) => state.data);
+  const { isFetchingData: isFetchingOverviewData, sections } = useAppSelector((state) => state.data);
   const { isFetchingAbout, about } = useAppSelector((state) => state.content);
 
   useEffect(() => {
@@ -46,7 +47,9 @@ const PublicOverview = () => {
     saveToLocalStorage(sections);
   }, [sections]);
 
-  return (
+  return isFetchingOverviewData ? (
+    <Loader />
+  ) : (
     <>
       <div className="container">
         <Row>
