@@ -11,6 +11,7 @@ import { makeGetDataRequestThunk } from '@/features/data/data.store';
 import { makeGetSearchFields } from '@/features/search/query.store';
 import { makeGetProvenanceRequest } from '@/features/provenance/provenance.store';
 import { getBeaconConfig } from '@/features/beacon/beaconConfig.store';
+import { getBeaconNetworkConfig } from '@/features/beacon/networkConfig.store';
 import { fetchGohanData, fetchKatsuData } from '@/features/ingestion/lastIngestion.store';
 
 import Loader from './Loader';
@@ -19,6 +20,7 @@ import Search from './Search/Search';
 import ProvenanceTab from './Provenance/ProvenanceTab';
 import BeaconQueryUi from './Beacon/BeaconQueryUi';
 import NetworkUi from './BeaconNetwork/NetworkUi';
+import DumbNetworkUi from './BeaconNetwork/DumbNetworkUi';
 import { useAppDispatch, useAppSelector, useTranslationDefault } from '@/hooks';
 import { buildQueryParamsUrl } from '@/utils/search';
 import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
@@ -37,7 +39,10 @@ const TabbedDashboard = () => {
   const isAuthenticated = useIsAuthenticated();
 
   useEffect(() => {
-    dispatch(makeGetConfigRequest()).then(() => dispatch(getBeaconConfig()));
+    dispatch(makeGetConfigRequest()).then(() => {
+      dispatch(getBeaconConfig());
+      dispatch(getBeaconNetworkConfig());
+    });
     dispatch(makeGetAboutRequest());
     dispatch(makeGetDataRequestThunk());
     dispatch(makeGetSearchFields());
@@ -55,6 +60,7 @@ const TabbedDashboard = () => {
   const isFetchingSearchFields = useAppSelector((state) => state.query.isFetchingFields);
   const queryParams = useAppSelector((state) => state.query.queryParams);
   const isFetchingBeaconConfig = useAppSelector((state) => state.beaconConfig?.isFetchingBeaconConfig);
+  const isFetchingNetworkConfig = useAppSelector((state) => state.beaconNetwork.isFetchingBeaconNetworkConfig);
 
   const onChange = useCallback(
     (key: string) => {
@@ -101,7 +107,7 @@ const TabbedDashboard = () => {
     {
       title: 'Beacon Network',
       content: <NetworkUi />,
-      loading: false,
+      loading: isFetchingNetworkConfig,
       active: BEACON_NETWORK_UI_ENABLED,
       key: 'beacon_network',
     },
