@@ -16,6 +16,8 @@ import lastIngestionDataReducer from '@/features/ingestion/lastIngestion.store';
 import provenanceReducer from '@/features/provenance/provenance.store';
 import beaconConfigReducer from './features/beacon/beaconConfig.store';
 import beaconQueryReducer from './features/beacon/beaconQuery.store';
+import beaconNetworkConfigReducer from './features/beacon/networkConfig.store';
+import networkBeaconQueryReducer from './features/beacon/networkBeaconQuery.store';
 import { getValue, saveValue } from './utils/localStorage';
 
 interface PersistedState {
@@ -41,6 +43,8 @@ export const store = configureStore({
     lastIngestionData: lastIngestionDataReducer,
     beaconConfig: beaconConfigReducer,
     beaconQuery: beaconQueryReducer,
+    beaconNetwork: beaconNetworkConfigReducer,
+    beaconNetworkResponse: networkBeaconQueryReducer
   },
   preloadedState: persistedState,
 });
