@@ -10,7 +10,7 @@ export type BeaconAssemblyIds = string[];
 
 // generic "info" response field
 // only requirement in beacon spec is that it's an object
-type GenericInfoField = Record<string,any> 
+type GenericInfoField = Record<string, any>;
 
 export interface FormField {
   name: string;
@@ -112,7 +112,7 @@ export interface BeaconQueryResponse {
   };
   meta?: {
     beaconId: string;
-  }
+  };
 }
 
 export interface BeaconErrorData {
@@ -122,10 +122,10 @@ export interface BeaconErrorData {
   };
 }
 
-export interface BeaconOrganization {
+export interface BeaconOrganizationType {
   id: string;
   name: string;
-  description?: string
+  description?: string;
   address?: string;
   contactUrl?: string;
   logoUrl?: string;
@@ -133,17 +133,16 @@ export interface BeaconOrganization {
   info?: GenericInfoField;
 }
 
-export interface BeaconInfo {
+export interface BeaconServiceInfo {
   id: string;
   name: string;
   apiVersion: string;
   environment: string;
-  organization: BeaconOrganization;
+  organization: BeaconOrganizationType;
+  description?: string;
   version?: string;
   welcomeUrl?: string;
   alternativeUrl?: string;
-  createDateTime?: string;
-  updateDateTime?: string;
   info?: GenericInfoField;
 }
 
@@ -151,7 +150,7 @@ export interface BeaconInfo {
 // response packaging
 // ----------------------------
 
-export interface FlattenedBeaconState {
+export interface FlattenedBeaconResponse {
   isFetchingQueryResponse: boolean;
   hasApiError: boolean;
   apiErrorMessage: string;
@@ -160,4 +159,4 @@ export interface FlattenedBeaconState {
   biosampleChartData?: ChartData[];
   experimentCount?: number;
   experimentChartData?: ChartData[];
-};
+}

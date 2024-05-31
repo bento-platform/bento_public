@@ -1,5 +1,20 @@
-import { BeaconQueryResponse } from "./beacon";
-import { ChartData } from "./data";
+import {
+  BeaconConfigResponse,
+  BeaconServiceInfo,
+  BeaconQueryResponse,
+  BeaconQueryPayload,
+  FlattenedBeaconResponse,
+} from './beacon';
+import { ChartData } from './data';
+
+export interface NetworkBeacon extends BeaconServiceInfo {
+  apiUrl: string;
+  overview?: any; // to update as design settles
+  // queryResponse?: FlattenedBeaconResponse
+}
+
+// more to come
+export type BeaconNetworkConfig = NetworkBeacon[];
 
 export interface BeaconOrgDetails {
   logoUrl: string;
@@ -10,18 +25,25 @@ export interface BeaconOrgDetails {
 }
 
 // TODO, should probably standardize with standard response
-export interface BeaconNetworkResponse {
+export interface BeaconFlattenedAggregateResponse {
   individualCount: number;
   biosampleCount: number;
   experimentCount: number;
-  biosampleChartData: ChartData[],
-  experimentChartData: ChartData[],
+  biosampleChartData: ChartData[];
+  experimentChartData: ChartData[];
 }
 
 export interface RespondingBeacon {
   organization: BeaconOrgDetails;
-  response: BeaconNetworkResponse; //or something else
+  response: FlattenedBeaconResponse; //or something else
   bentoUrl: string;
   description: string;
 }
 
+export type BeaconNetworkAggregatedResponse = RespondingBeacon[];
+
+export interface QueryToNetworkBeacon {
+  beaconId: string;
+  url: string;
+  payload: BeaconQueryPayload;
+}
