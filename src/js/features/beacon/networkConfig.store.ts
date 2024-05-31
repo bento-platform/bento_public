@@ -3,7 +3,7 @@ import axios from 'axios';
 // import { makeAuthorizationHeader } from 'bento-auth-js';
 import { RootState } from '@/store';
 import { beaconApiError } from '@/utils/beaconApiError';
-import { ConfigForNetworkBeacon, BeaconNetworkConfig } from '@/types/beaconNetwork';
+import { NetworkBeacon, BeaconNetworkConfig } from '@/types/beaconNetwork';
 import { BEACON_NETWORK_ROOT } from '@/constants/beaconConstants';
 
 // network config currently just a list of beacons in the network with info about each one
@@ -23,13 +23,13 @@ export const getBeaconNetworkConfig = createAsyncThunk<
 type beaconNetworkIntitalStateType = {
   isFetchingBeaconNetworkConfig: boolean;
   hasBeaconNetworkError: boolean;
-  networkBeacons: ConfigForNetworkBeacon[];
+  beacons: NetworkBeacon[];
 };
 
 const initialState: beaconNetworkIntitalStateType = {
   isFetchingBeaconNetworkConfig: false,
   hasBeaconNetworkError: false,
-  networkBeacons: [],
+  beacons: [],
 };
 
 const beaconNetwork = createSlice({
@@ -42,7 +42,7 @@ const beaconNetwork = createSlice({
     });
     builder.addCase(getBeaconNetworkConfig.fulfilled, (state, { payload }) => {
       state.isFetchingBeaconNetworkConfig = false;
-      state.networkBeacons = payload;
+      state.beacons = payload;
     });
     builder.addCase(getBeaconNetworkConfig.rejected, (state, { payload }) => {
       state.isFetchingBeaconNetworkConfig = false;

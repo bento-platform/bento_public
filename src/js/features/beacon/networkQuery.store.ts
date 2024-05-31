@@ -4,11 +4,11 @@ import { RootState } from '@/store';
 import { beaconApiError } from '@/utils/beaconApiError';
 import { BeaconQueryPayload } from '@/types/beacon';
 import { BeaconNetworkAggregatedResponse } from '@/types/beaconNetwork';
-import { singleBeaconQuery } from './singleBeaconQuery.store';
+import { networkBeaconQuery } from './networkBeaconQuery.store';
 import { BEACON_NETWORK_ROOT } from '@/constants/beaconConstants';
 
 // probably more biolerplate here than needed
-// we only really need to dispatch singleBeaconQuery() once for each beacon in the network
+// we only really need to dispatch networkBeaconQuery() once for each beacon in the network
 
 // can parameterize at some point in the future
 const DEFAULT_QUERY_ENDPOINT = '/individuals';
@@ -26,11 +26,11 @@ export const beaconNetworkQuery = createAsyncThunk<void, BeaconQueryPayload, { s
 
     console.log('beaconNetworkQuery()');
 
-    const beacons = getState().beaconNetworkConfig.networkBeacons;
+    const beacons = getState().beaconNetwork.beacons;
     return await Promise.all(
       beacons.map((b) => {
         const url = queryUrl(b.id, DEFAULT_QUERY_ENDPOINT);
-        return dispatch(singleBeaconQuery({ beaconId: b.id, url: url, payload: payload }));
+        return dispatch(networkBeaconQuery({ beaconId: b.id, url: url, payload: payload }));
       })
     ).catch(beaconApiError(rejectWithValue));
   }
