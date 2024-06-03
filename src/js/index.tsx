@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { Routes, Route, useParams, useNavigate, BrowserRouter } from 'react-router-dom';
 import { Button, Layout, Modal, message } from 'antd';
 import { ChartConfigProvider } from 'bento-charts';
-import { DEFAULT_TRANSLATION, SUPPORTED_LNGS } from './constants/configConstants';
 
 import {
   useHandleCallback,
@@ -32,6 +31,8 @@ import { store } from './store';
 import { useBeaconWithAuthIfAllowed } from '@/hooks';
 
 import { PUBLIC_URL_NO_TRAILING_SLASH, CLIENT_ID, OPENID_CONFIG_URL, AUTH_CALLBACK_URL } from './config';
+import { NEW_BENTO_PUBLIC_THEME } from '@/constants/overviewConstants';
+import { DEFAULT_TRANSLATION, SUPPORTED_LNGS } from './constants/configConstants';
 
 const SIGN_IN_WINDOW_FEATURES = 'scrollbars=no, toolbar=no, menubar=no, width=800, height=600';
 const CALLBACK_PATH = '/callback';
@@ -126,7 +127,7 @@ const BentoApp = () => {
   console.log('i18n.language', i18n.language);
 
   return (
-    <ChartConfigProvider Lng={i18n.language ?? SUPPORTED_LNGS.ENGLISH}>
+    <ChartConfigProvider Lng={i18n.language ?? SUPPORTED_LNGS.ENGLISH} theme={NEW_BENTO_PUBLIC_THEME}>
       <Routes>
         <Route path="/:lang?/*" element={<App />} />
       </Routes>
