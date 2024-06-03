@@ -107,18 +107,20 @@ const App = () => {
         <br />
       </Modal>
       <Layout style={{ minHeight: '100vh' }}>
-        <SiteSider />
+        <SiteHeader />
         <Layout>
-          <SiteHeader />
-          <Content style={{ padding: '0 30px', marginTop: '10px' }}>
-            <Suspense fallback={<SitePageLoading />}>
-              <Routes>
-                <Route path={CALLBACK_PATH} element={<SitePageLoading />} />
-                <Route path="/*" element={<BentoAppRouter />} />
-              </Routes>
-            </Suspense>
-          </Content>
-          <SiteFooter />
+          <SiteSider />
+          <Layout>
+            <Content style={{ padding: '0 30px', marginTop: '10px' }}>
+              <Suspense fallback={<SitePageLoading />}>
+                <Routes>
+                  <Route path={CALLBACK_PATH} element={<SitePageLoading />} />
+                  <Route path="/*" element={<BentoAppRouter />} />
+                </Routes>
+              </Suspense>
+            </Content>
+            <SiteFooter />
+          </Layout>
         </Layout>
       </Layout>
     </ConfigProvider>

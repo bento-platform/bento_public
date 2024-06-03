@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Layout, Row, Col, Typography, Space } from 'antd';
+import { Button, Layout, Typography, Space, Flex } from 'antd';
 const { Header } = Layout;
 import { useTranslation } from 'react-i18next';
 import { DEFAULT_TRANSLATION, LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
@@ -32,41 +32,52 @@ const SiteHeader = () => {
     navigate(path, { replace: true });
   };
 
-  // noinspection HtmlUnknownTarget
   return (
-    <Header style={{ backgroundColor: '#fff' }}>
-      <Row align="middle" justify="space-between" style={{ height: '64px' }}>
-        <Col style={{ height: '100%' }}>
-          <Space align="start" size={20}>
-            <Typography.Title level={1} style={{ fontSize: '18px', margin: 0, lineHeight: '64px' }} type="secondary">
-              {CLIENT_NAME}
-            </Typography.Title>
-          </Space>
-        </Col>
-        <Col style={{ height: '100%' }}>
-          <Space>
-            {TRANSLATED && (
-              <Button shape="round" onClick={changeLanguage}>
-                {LNGS_FULL_NAMES[LNG_CHANGE[i18n.language]]}
-              </Button>
-            )}
-            <Button shape="round" onClick={openPortalWindow}>
-              {t('Portal')}
+    <Header>
+      <Flex align="center" justify="space-between">
+        <Space size="middle">
+          <a href="/">
+            <img
+              src="/public/assets/branding.png"
+              alt="logo"
+              style={{
+                height: '32px',
+                verticalAlign: 'middle',
+                marginLeft: '-15px',
+              }}
+            />
+          </a>
+          <Typography.Title
+            level={1}
+            style={{ fontSize: '18px', margin: 0, lineHeight: '64px', color: 'white' }}
+            type="secondary"
+          >
+            {CLIENT_NAME}
+          </Typography.Title>
+        </Space>
+
+        <Space>
+          {TRANSLATED && (
+            <Button ghost shape="round" onClick={changeLanguage}>
+              {LNGS_FULL_NAMES[LNG_CHANGE[i18n.language]]}
             </Button>
-            {isAuthenticated ? (
-              <Button shape="round" onClick={performSignOut}>
-                {t('Sign Out')}
-              </Button>
-            ) : (
-              // <Button shape="round" type="primary" onClick={() => performAuth(authzEndpoint, CLIENT_ID, AUTH_CALLBACK_URL)}>
-              <Button shape="round" type="primary" onClick={performSignIn}>
-                {/* {t('Sign In')} */}
-                {openIdConfigFetching || isHandingOffCodeForToken ? t('Loading...') : t('Sign In')}
-              </Button>
-            )}
-          </Space>
-        </Col>
-      </Row>
+          )}
+          <Button ghost shape="round" onClick={openPortalWindow}>
+            {t('Portal')}
+          </Button>
+          {isAuthenticated ? (
+            <Button shape="round" onClick={performSignOut}>
+              {t('Sign Out')}
+            </Button>
+          ) : (
+            // <Button shape="round" type="primary" onClick={() => performAuth(authzEndpoint, CLIENT_ID, AUTH_CALLBACK_URL)}>
+            <Button shape="round" type="primary" onClick={performSignIn}>
+              {/* {t('Sign In')} */}
+              {openIdConfigFetching || isHandingOffCodeForToken ? t('Loading...') : t('Sign In')}
+            </Button>
+          )}
+        </Space>
+      </Flex>
     </Header>
   );
 };
