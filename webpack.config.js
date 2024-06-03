@@ -52,7 +52,6 @@ const config = {
       // General
       BENTO_PUBLIC_CLIENT_NAME: null,
       BENTO_PUBLIC_PORTAL_URL: null,
-      BENTO_PUBLIC_CUSTOM_LOGO: null,
       BENTO_PUBLIC_TRANSLATED: null,
       BEACON_URL: null,
       BENTO_BEACON_UI_ENABLED: null,
