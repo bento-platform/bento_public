@@ -1,11 +1,25 @@
+// React and ReactDOM imports
 import React, { Suspense, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom/client';
+
+// Redux and routing imports
 import { Provider } from 'react-redux';
-import { useTranslation } from 'react-i18next';
 import { Routes, Route, useParams, useNavigate, BrowserRouter } from 'react-router-dom';
+
+// i18n and constants imports
+import { useTranslation } from 'react-i18next';
+import { NEW_BENTO_PUBLIC_THEME } from '@/constants/overviewConstants';
+import { DEFAULT_TRANSLATION, SUPPORTED_LNGS } from '@/constants/configConstants';
+
+// Component imports
 import { Button, Layout, Modal, message } from 'antd';
 import { ChartConfigProvider } from 'bento-charts';
+import TabbedDashboard from '@/components/TabbedDashboard';
+import SiteHeader from '@/components/SiteHeader';
+import SiteFooter from '@/components/SiteFooter';
+import SitePageLoading from '@/components/SitePageLoading';
 
+// Hooks and utilities imports
 import {
   useHandleCallback,
   checkIsInAuthPopup,
@@ -16,23 +30,17 @@ import {
   BentoAuthContextProvider,
   nop,
 } from 'bento-auth-js';
+import { useBeaconWithAuthIfAllowed } from '@/hooks';
 
+// Store and configuration imports
+import { store } from './store';
+import { PUBLIC_URL_NO_TRAILING_SLASH, CLIENT_ID, OPENID_CONFIG_URL, AUTH_CALLBACK_URL } from './config';
+
+// Styles imports
 import 'leaflet/dist/leaflet.css';
 import 'bento-charts/src/styles.css';
 import './i18n';
 import '../styles.css';
-
-import TabbedDashboard from './components/TabbedDashboard';
-import SiteHeader from './components/SiteHeader';
-import SiteFooter from './components/SiteFooter';
-import SitePageLoading from './components/SitePageLoading';
-
-import { store } from './store';
-import { useBeaconWithAuthIfAllowed } from '@/hooks';
-
-import { PUBLIC_URL_NO_TRAILING_SLASH, CLIENT_ID, OPENID_CONFIG_URL, AUTH_CALLBACK_URL } from './config';
-import { NEW_BENTO_PUBLIC_THEME } from '@/constants/overviewConstants';
-import { DEFAULT_TRANSLATION, SUPPORTED_LNGS } from './constants/configConstants';
 
 const SIGN_IN_WINDOW_FEATURES = 'scrollbars=no, toolbar=no, menubar=no, width=800, height=600';
 const CALLBACK_PATH = '/callback';
