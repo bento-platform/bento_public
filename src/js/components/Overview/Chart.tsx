@@ -34,9 +34,7 @@ const Chart = memo(({ chartConfig, data, units, id }: ChartProps) => {
           units={units}
           preFilter={removeMissing}
           dataMap={translateMap}
-          onClick={(d) => {
-            navigate(`/${i18n.language}/search?${id}=${d.payload.x}`);
-          }}
+          onClick={barChartOnClickHandler}
         />
       );
     case CHART_TYPE_HISTOGRAM:
@@ -57,7 +55,9 @@ const Chart = memo(({ chartConfig, data, units, id }: ChartProps) => {
           height={PIE_CHART_HEIGHT}
           preFilter={removeMissing}
           dataMap={translateMap}
-          onClick={barChartOnClickHandler}
+          onClick={(d) => {
+            navigate(`/${i18n.language}/search?${id}=${d.name}`);
+          }}
           colorTheme="new"
         />
       );
