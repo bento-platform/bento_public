@@ -7,6 +7,8 @@ import { useAppSelector } from '@/hooks';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useIsAuthenticated, usePerformAuth, usePerformSignOut } from 'bento-auth-js';
 import { CLIENT_NAME, PORTAL_URL, TRANSLATED } from '@/config';
+import { RiTranslate } from 'react-icons/ri';
+import { LinkOutlined, LoginOutlined, LogoutOutlined } from '@ant-design/icons';
 
 const openPortalWindow = () => window.open(PORTAL_URL, '_blank');
 
@@ -56,22 +58,28 @@ const SiteHeader = () => {
           </Typography.Title>
         </Space>
 
-        <Space>
+        <Space size="small">
           {TRANSLATED && (
-            <Button ghost shape="round" onClick={changeLanguage}>
+            <Button
+              ghost
+              type="text"
+              className="headerButton"
+              icon={<RiTranslate style={{ transform: 'translateY(1px)' }} />}
+              onClick={changeLanguage}
+            >
               {LNGS_FULL_NAMES[LNG_CHANGE[i18n.language]]}
             </Button>
           )}
-          <Button ghost shape="round" onClick={openPortalWindow}>
+          <Button ghost type="text" className="headerButton" icon={<LinkOutlined />} onClick={openPortalWindow}>
             {t('Portal')}
           </Button>
           {isAuthenticated ? (
-            <Button shape="round" onClick={performSignOut}>
+            <Button ghost type="text" className="headerButton" icon={<LoginOutlined />} onClick={performSignOut}>
               {t('Sign Out')}
             </Button>
           ) : (
             // <Button shape="round" type="primary" onClick={() => performAuth(authzEndpoint, CLIENT_ID, AUTH_CALLBACK_URL)}>
-            <Button shape="round" type="primary" onClick={performSignIn}>
+            <Button ghost type="text" className="headerButton" icon={<LogoutOutlined />} onClick={performSignIn}>
               {/* {t('Sign In')} */}
               {openIdConfigFetching || isHandingOffCodeForToken ? t('Loading...') : t('Sign In')}
             </Button>
