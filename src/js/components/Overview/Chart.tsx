@@ -19,6 +19,9 @@ const Chart = memo(({ chartConfig, data, units, id }: ChartProps) => {
   const navigate = useNavigate();
   const translateMap = ({ x, y }: { x: string; y: number }) => ({ x: t(x), y });
   const removeMissing = ({ x }: { x: string }) => x !== 'missing';
+  const barChartOnClickHandler = (d: { payload: { x: string } }) => {
+    navigate(`/${i18n.language}/search?${id}=${d.payload.x}`);
+  };
 
   const { chart_type: type } = chartConfig;
 
@@ -44,9 +47,7 @@ const Chart = memo(({ chartConfig, data, units, id }: ChartProps) => {
           data={data}
           preFilter={removeMissing}
           dataMap={translateMap}
-          onClick={(d) => {
-            navigate(`/${i18n.language}/search?${id}=${d.payload.x}`);
-          }}
+          onClick={barChartOnClickHandler}
         />
       );
     case CHART_TYPE_PIE:
@@ -56,9 +57,7 @@ const Chart = memo(({ chartConfig, data, units, id }: ChartProps) => {
           height={PIE_CHART_HEIGHT}
           preFilter={removeMissing}
           dataMap={translateMap}
-          onClick={(d) => {
-            navigate(`/${i18n.language}/search?${id}=${d.name}`);
-          }}
+          onClick={barChartOnClickHandler}
           colorTheme="new"
         />
       );
