@@ -61,7 +61,6 @@ const SiteHeader = () => {
         <Space size="small">
           {TRANSLATED && (
             <Button
-              ghost
               type="text"
               className="headerButton"
               icon={<RiTranslate style={{ transform: 'translateY(1px)' }} />}
@@ -70,22 +69,16 @@ const SiteHeader = () => {
               {LNGS_FULL_NAMES[LNG_CHANGE[i18n.language]]}
             </Button>
           )}
-          <Button ghost type="text" className="headerButton" icon={<LinkOutlined />} onClick={openPortalWindow}>
+          <Button type="text" className="headerButton" icon={<LinkOutlined />} onClick={openPortalWindow}>
             {t('Portal')}
           </Button>
           {isAuthenticated ? (
-            <Button ghost type="text" className="headerButton" icon={<LoginOutlined />} onClick={performSignOut}>
+            <Button type="text" className="headerButton" icon={<LoginOutlined />} onClick={performSignOut}>
               {t('Sign Out')}
             </Button>
           ) : (
             // <Button shape="round" type="primary" onClick={() => performAuth(authzEndpoint, CLIENT_ID, AUTH_CALLBACK_URL)}>
-            <Button
-              type="primary"
-              shape="round"
-              className="headerButton"
-              icon={<LogoutOutlined />}
-              onClick={performSignIn}
-            >
+            <Button type="primary" shape="round" icon={<LogoutOutlined />} onClick={performSignIn}>
               {/* {t('Sign In')} */}
               {openIdConfigFetching || isHandingOffCodeForToken ? t('Loading...') : t('Sign In')}
             </Button>
