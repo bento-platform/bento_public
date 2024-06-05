@@ -111,7 +111,14 @@ const App = () => {
         <SiteHeader />
         <Layout>
           <SiteSider collapsed={collapsed} setCollapsed={setCollapsed} />
-          <Layout style={{ marginLeft: collapsed ? '80px' : '200px', transition: 'margin-left 0.3s' }}>
+          <Layout
+            style={{
+              marginLeft: collapsed ? '80px' : '200px', // Adjust these values according to your sidebar width
+              transition: 'margin-left 0.3s', // Add CSS transition for smooth animation
+              marginTop: '64px',
+              padding: '0 30px',
+            }}
+          >
             <Content style={{ padding: '0 30px', marginTop: '10px' }}>
               <Suspense fallback={<SitePageLoading />}>
                 <Routes>
