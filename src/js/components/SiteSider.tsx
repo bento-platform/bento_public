@@ -1,8 +1,8 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import { Layout, Menu } from 'antd';
-import type { MenuProps } from 'antd';
+import type { MenuProps, SiderProps } from 'antd';
 import Icon, { PieChartOutlined, SearchOutlined, SolutionOutlined } from '@ant-design/icons';
 const { Sider } = Layout;
 
@@ -18,11 +18,13 @@ type OnClick = MenuProps['onClick'];
 
 const BeaconLogo: React.FC<Partial<CustomIconComponentProps>> = (props) => <Icon component={BeaconSvg} {...props} />;
 
-const SiteSider: React.FC = () => {
+const SiteSider: React.FC<{
+  collapsed: boolean;
+  setCollapsed: SiderProps['onCollapse'];
+}> = ({ collapsed, setCollapsed }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const td = useTranslationDefault();
-  const [collapsed, setCollapsed] = useState(false);
   const queryParams = useAppSelector((state) => state.query.queryParams);
   const currentPage = getCurrentPage();
 
@@ -57,7 +59,13 @@ const SiteSider: React.FC = () => {
   );
 
   return (
-    <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed} theme="light">
+    <Sider
+      collapsible
+      collapsed={collapsed}
+      onCollapse={setCollapsed}
+      theme="light"
+      style={{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0 }}
+    >
       <Menu selectedKeys={[currentPage]} mode="inline" items={menuItems} onClick={handleMenuClick} />
     </Sider>
   );

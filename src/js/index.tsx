@@ -44,7 +44,7 @@ const createSessionWorker = () => new Worker(new URL('./workers/tokenRefresh.ts'
 
 const App = () => {
   const navigate = useNavigate();
-
+  const [collapsed, setCollapsed] = useState(false);
   // TRANSLATION
   const { lang } = useParams<{ lang?: string }>();
   const { t, i18n } = useTranslation(DEFAULT_TRANSLATION);
@@ -109,8 +109,8 @@ const App = () => {
       <Layout style={{ minHeight: '100vh' }}>
         <SiteHeader />
         <Layout>
-          <SiteSider />
-          <Layout>
+          <SiteSider collapsed={collapsed} setCollapsed={setCollapsed} />
+          <Layout style={{ marginLeft: collapsed ? '80px' : '200px', transition: 'margin-left 0.3s' }}>
             <Content style={{ padding: '0 30px', marginTop: '10px' }}>
               <Suspense fallback={<SitePageLoading />}>
                 <Routes>

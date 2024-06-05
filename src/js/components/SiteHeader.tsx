@@ -79,7 +79,13 @@ const SiteHeader = () => {
             </Button>
           ) : (
             // <Button shape="round" type="primary" onClick={() => performAuth(authzEndpoint, CLIENT_ID, AUTH_CALLBACK_URL)}>
-            <Button ghost type="text" className="headerButton" icon={<LogoutOutlined />} onClick={performSignIn}>
+            <Button
+              type="primary"
+              shape="round"
+              className="headerButton"
+              icon={<LogoutOutlined />}
+              onClick={performSignIn}
+            >
               {/* {t('Sign In')} */}
               {openIdConfigFetching || isHandingOffCodeForToken ? t('Loading...') : t('Sign In')}
             </Button>
