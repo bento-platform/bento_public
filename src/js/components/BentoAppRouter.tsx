@@ -5,7 +5,7 @@ import { useAutoAuthenticate, useIsAuthenticated } from 'bento-auth-js';
 import { makeGetConfigRequest, makeGetServiceInfoRequest } from '@/features/config/config.store';
 import { makeGetAboutRequest } from '@/features/content/content.store';
 import { makeGetDataRequestThunk } from '@/features/data/data.store';
-import { makeGetSearchFields } from '@/features/search/query.store';
+import { makeGetKatsuPublic, makeGetSearchFields } from '@/features/search/query.store';
 import { makeGetProvenanceRequest } from '@/features/provenance/provenance.store';
 import { getBeaconConfig } from '@/features/beacon/beaconConfig.store';
 import { fetchGohanData, fetchKatsuData } from '@/features/ingestion/lastIngestion.store';
@@ -31,6 +31,7 @@ const BentoAppRouter = () => {
     dispatch(makeGetDataRequestThunk());
     dispatch(makeGetSearchFields());
     dispatch(makeGetProvenanceRequest());
+    dispatch(makeGetKatsuPublic());
     dispatch(fetchKatsuData());
     dispatch(fetchGohanData());
     dispatch(makeGetServiceInfoRequest());
