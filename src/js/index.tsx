@@ -45,6 +45,7 @@ const createSessionWorker = () => new Worker(new URL('./workers/tokenRefresh.ts'
 const App = () => {
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
+
   // TRANSLATION
   const { lang } = useParams<{ lang?: string }>();
   const { t, i18n } = useTranslation(DEFAULT_TRANSLATION);
