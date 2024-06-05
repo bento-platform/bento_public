@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import { Layout, Menu } from 'antd';
 import type { MenuProps } from 'antd';
@@ -19,10 +19,10 @@ const BeaconLogo: React.FC<Partial<CustomIconComponentProps>> = (props) => <Icon
 
 const SiteSider: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const td = useTranslationDefault();
   const [collapsed, setCollapsed] = useState(false);
   const queryParams = useAppSelector((state) => state.query.queryParams);
-
   const currentPage = getCurrentPage();
 
   const handleMenuClick: OnClick = useCallback(
@@ -32,7 +32,7 @@ const SiteSider: React.FC = () => {
       const newPath = `/${currentLang}/${key === 'overview' ? '' : key}`;
       navigate(key === 'search' ? buildQueryParamsUrl(newPath, queryParams) : newPath);
     },
-    [navigate, queryParams]
+    [navigate, queryParams, location.pathname]
   );
 
   const createMenuItem = useCallback(
@@ -57,7 +57,7 @@ const SiteSider: React.FC = () => {
 
   return (
     <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed} theme="light">
-      <Menu defaultSelectedKeys={[currentPage]} mode="inline" items={menuItems} onClick={handleMenuClick} />
+      <Menu selectedKeys={[currentPage]} mode="inline" items={menuItems} onClick={handleMenuClick} />
     </Sider>
   );
 };
