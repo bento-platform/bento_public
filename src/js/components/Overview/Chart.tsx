@@ -58,7 +58,6 @@ const Chart = memo(({ chartConfig, data, units, id }: ChartProps) => {
           onClick={(d) => {
             navigate(`/${i18n.language}/search?${id}=${d.name}`);
           }}
-          colorTheme="new"
         />
       );
     case CHART_TYPE_CHOROPLETH: {
