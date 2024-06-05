@@ -61,9 +61,11 @@ const networkBeaconQuerySlice = createSlice({
       console.log('networkBeaconQuery.fulfilled');
       const beaconId = action.meta.arg.beaconId;
       const { payload } = action;
+      const hasErrorResponse = payload.hasOwnProperty("error")
+
       const beaconState: FlattenedBeaconResponse = {
-        hasApiError: false,
-        apiErrorMessage: '',
+        hasApiError: hasErrorResponse,
+        apiErrorMessage: hasErrorResponse ? payload.error?.errorMessage ?? "error" : "",    
         isFetchingQueryResponse: false,
       };
       if (payload.info?.bento) {
