@@ -23,7 +23,6 @@ const SiteSider: React.FC = () => {
   const queryParams = useAppSelector((state) => state.query.queryParams);
 
   const currentPage = getCurrentPage();
-  console.log({ currentPage });
 
   const handleMenuClick: OnClick = useCallback(
     ({ key }: { key: string }) => {
