@@ -3,6 +3,7 @@ import { ChoroplethMapProps } from 'bento-charts/dist/maps';
 // Use multiple literals here instead of an object for full immutability.
 export const CHART_TYPE_PIE = 'pie';
 export const CHART_TYPE_BAR = 'bar';
+export const CHART_TYPE_HISTOGRAM = 'histogram';
 export const CHART_TYPE_CHOROPLETH = 'choropleth';
 
 /*
@@ -24,6 +25,10 @@ interface ChartConfigBar extends BaseChartConfig {
   chart_type: typeof CHART_TYPE_BAR;
 }
 
+interface ChartConfigHistogram extends BaseChartConfig {
+  chart_type: typeof CHART_TYPE_HISTOGRAM;
+}
+
 interface ChartConfigChoropleth extends BaseChartConfig {
   chart_type: typeof CHART_TYPE_CHOROPLETH;
   category_prop: ChoroplethMapProps['categoryProp'];
@@ -33,4 +38,4 @@ interface ChartConfigChoropleth extends BaseChartConfig {
   zoom: ChoroplethMapProps['zoom'];
 }
 
-export type ChartConfig = ChartConfigPie | ChartConfigBar | ChartConfigChoropleth;
+export type ChartConfig = ChartConfigPie | ChartConfigBar | ChartConfigHistogram | ChartConfigChoropleth;
