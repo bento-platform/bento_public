@@ -11,28 +11,3 @@ body {
   margin: auto;
 }
 
-.floating-search {
-  position: fixed !important;
-  right: 5em !important;
-  bottom: 3em !important;
-  transform: scale(125%) !important;
-}
-
-.logo-container {
-  overflow: hidden;
-  height: 32px;
-  transition: width 0.2s ease;
-}
-
-.logo-container.collapsed {
-  width: 40px;
-}
-
-.logo {
-  height: 32px;
-  transition: transform 0.2s ease;
-}
-
-.logo-container.collapsed .logo {
-  transform: translateX(-70%);
-}
