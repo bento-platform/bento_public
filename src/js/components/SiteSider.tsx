@@ -10,6 +10,7 @@ import BeaconSvg from '@/components/Beacon/BeaconSvg';
 import { useAppSelector, useTranslationDefault } from '@/hooks';
 import { buildQueryParamsUrl } from '@/utils/search';
 import { getCurrentPage } from '@/utils/router';
+import { BentoRoutes } from '@/types/routes';
 
 type CustomIconComponentProps = React.ComponentProps<typeof Icon>;
 type MenuItem = Required<MenuProps>['items'][number];
@@ -29,8 +30,8 @@ const SiteSider: React.FC = () => {
     ({ key }: { key: string }) => {
       const currentPath = location.pathname.split('/');
       const currentLang = currentPath[1];
-      const newPath = `/${currentLang}/${key === 'overview' ? '' : key}`;
-      navigate(key === 'search' ? buildQueryParamsUrl(newPath, queryParams) : newPath);
+      const newPath = `/${currentLang}/${key === BentoRoutes.Overview ? '' : key}`;
+      navigate(key === BentoRoutes.Search ? buildQueryParamsUrl(newPath, queryParams) : newPath);
     },
     [navigate, queryParams, location.pathname]
   );
