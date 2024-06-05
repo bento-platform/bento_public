@@ -7,8 +7,9 @@ import Icon, { PieChartOutlined, SearchOutlined, SolutionOutlined } from '@ant-d
 const { Sider } = Layout;
 
 import BeaconSvg from '@/components/Beacon/BeaconSvg';
-import { getCurrentPage, useAppSelector, useTranslationDefault } from '@/hooks';
+import { useAppSelector, useTranslationDefault } from '@/hooks';
 import { buildQueryParamsUrl } from '@/utils/search';
+import { getCurrentPage } from '@/utils/router';
 
 type CustomIconComponentProps = React.ComponentProps<typeof Icon>;
 type MenuItem = Required<MenuProps>['items'][number];
