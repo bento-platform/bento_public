@@ -4,13 +4,14 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
 import type { MenuProps, SiderProps } from 'antd';
 import Icon, { PieChartOutlined, SearchOutlined, SolutionOutlined } from '@ant-design/icons';
-const { Sider } = Layout;
 
 import BeaconSvg from '@/components/Beacon/BeaconSvg';
 import { useAppSelector, useTranslationDefault } from '@/hooks';
 import { buildQueryParamsUrl } from '@/utils/search';
 import { getCurrentPage } from '@/utils/router';
 import { BentoRoute } from '@/types/routes';
+
+const { Sider } = Layout;
 
 type CustomIconComponentProps = React.ComponentProps<typeof Icon>;
 type MenuItem = Required<MenuProps>['items'][number];
