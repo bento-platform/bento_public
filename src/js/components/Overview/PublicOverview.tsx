@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import LastIngestionInfo from './LastIngestion';
 import Loader from '@/components/Loader';
 
-const ABOUT_CARD_STYLE = { borderRadius: '11pX', ...BOX_SHADOW };
+const ABOUT_CARD_STYLE = { width: '100%', maxWidth: '1390px', borderRadius: '11pX', ...BOX_SHADOW };
 const MANAGE_CHARTS_BUTTON_STYLE = { right: '5em', bottom: '1.5em', transform: 'scale(125%)' };
 
 const PublicOverview = () => {
@@ -51,36 +51,29 @@ const PublicOverview = () => {
     <Loader />
   ) : (
     <>
-      <div className="container">
-        <Row>
-          <Col flex={1}>
-            <Card style={ABOUT_CARD_STYLE}>
-              {isFetchingAbout ? (
-                <Skeleton title={false} paragraph={{ rows: 2 }} />
-              ) : (
-                <div dangerouslySetInnerHTML={{ __html: aboutContent }} />
-              )}
-            </Card>
-          </Col>
-        </Row>
-        <Row>
-          <Col flex={1}>
-            <Counts />
-          </Col>
-        </Row>
-        <Row>
-          <Col flex={1}>
-            {displayedSections.map(({ sectionTitle, charts }, i) => (
-              <div key={i} className="overview">
-                <OverviewSection title={sectionTitle} chartData={charts} />
-              </div>
-            ))}
-            <LastIngestionInfo />
-          </Col>
-        </Row>
-      </div>
+      <Card style={ABOUT_CARD_STYLE}>
+        {isFetchingAbout ? (
+          <Skeleton title={false} paragraph={{ rows: 2 }} />
+        ) : (
+          <div dangerouslySetInnerHTML={{ __html: aboutContent }} />
+        )}
+      </Card>
+      <Row>
+        <Col flex={1}>
+          <Counts />
+        </Col>
+      </Row>
+      <Row>
+        <Col flex={1}>
+          {displayedSections.map(({ sectionTitle, charts }, i) => (
+            <div key={i} className="overview">
+              <OverviewSection title={sectionTitle} chartData={charts} />
+            </div>
+          ))}
+          <LastIngestionInfo />
+        </Col>
+      </Row>
 
-      {/* Drawer & Button */}
       <ManageChartsDrawer onManageDrawerClose={onManageChartsClose} manageDrawerVisible={drawerVisible} />
       <FloatButton
         type="primary"
