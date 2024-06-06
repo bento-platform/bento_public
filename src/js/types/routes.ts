@@ -1,4 +1,4 @@
-export enum BentoRoutes {
+export enum BentoRoute {
   Overview = 'overview',
   Search = 'search',
   Beacon = 'beacon',

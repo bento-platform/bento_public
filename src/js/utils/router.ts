@@ -1,11 +1,11 @@
-import { BentoRoutes } from '@/types/routes';
+import { BentoRoute } from '@/types/routes';
 
-export const getCurrentPage = (): string => {
+export const getCurrentPage = (): BentoRoute => {
   const pathArray = window.location.pathname.split('/');
-  const validPages = Object.values(BentoRoutes);
-  if (pathArray.length > 2 && validPages.includes(pathArray[2] as BentoRoutes)) {
-    return pathArray[2];
+  const validPages = Object.values(BentoRoute);
+  if (pathArray.length > 2 && validPages.includes(pathArray[2] as BentoRoute)) {
+    return pathArray[2] as BentoRoute;
   } else {
-    return 'overview';
+    return BentoRoute.Overview;
   }
 };

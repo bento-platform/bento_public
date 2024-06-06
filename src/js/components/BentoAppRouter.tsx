@@ -16,7 +16,7 @@ import ProvenanceTab from './Provenance/ProvenanceTab';
 import BeaconQueryUi from './Beacon/BeaconQueryUi';
 import { useAppDispatch } from '@/hooks';
 import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
-import { BentoRoutes } from '@/types/routes';
+import { BentoRoute } from '@/types/routes';
 import Loader from '@/components/Loader';
 
 const BentoAppRouter = () => {
@@ -47,10 +47,10 @@ const BentoAppRouter = () => {
 
   return (
     <Routes>
-      <Route path={`/${BentoRoutes.Overview}`} element={<PublicOverview />} />
-      <Route path={`/${BentoRoutes.Search}/*`} element={<Search />} />
-      <Route path={`/${BentoRoutes.Beacon}/*`} element={<BeaconQueryUi />} />
-      <Route path={`/${BentoRoutes.Provenance}/*`} element={<ProvenanceTab />} />
+      <Route path={`/${BentoRoute.Overview}`} element={<PublicOverview />} />
+      <Route path={`/${BentoRoute.Search}/*`} element={<Search />} />
+      <Route path={`/${BentoRoute.Beacon}/*`} element={<BeaconQueryUi />} />
+      <Route path={`/${BentoRoute.Provenance}/*`} element={<ProvenanceTab />} />
       <Route path="/*" element={<PublicOverview />} />
     </Routes>
   );
