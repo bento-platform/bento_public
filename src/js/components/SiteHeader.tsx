@@ -33,7 +33,7 @@ const SiteHeader = () => {
   };
 
   return (
-    <Header style={{ position: 'fixed', width: '100%', zIndex: 1, top: 0 }}>
+    <Header style={{ position: 'fixed', width: '100%', zIndex: 100, top: 0 }}>
       <Flex align="center" justify="space-between">
         <Space size="middle">
           <a href="/">
