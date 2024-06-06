@@ -10,10 +10,11 @@ import { BOX_SHADOW, LOCALSTORAGE_CHARTS_KEY } from '@/constants/overviewConstan
 import OverviewSection from './OverviewSection';
 import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
 import Counts from './Counts';
-import { useAppSelector } from '@/hooks';
-import { useTranslation } from 'react-i18next';
 import LastIngestionInfo from './LastIngestion';
 import Loader from '@/components/Loader';
+
+import { useAppSelector } from '@/hooks';
+import { useTranslation } from 'react-i18next';
 
 const ABOUT_CARD_STYLE = { width: '100%', maxWidth: '1390px', borderRadius: '11pX', ...BOX_SHADOW };
 const MANAGE_CHARTS_BUTTON_STYLE = { right: '5em', bottom: '1.5em', transform: 'scale(125%)' };
