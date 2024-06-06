@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Layout, Typography, Space, Flex } from 'antd';
+import { Button, Flex, Layout, Typography, Space } from 'antd';
 const { Header } = Layout;
 import { useTranslation } from 'react-i18next';
 import { DEFAULT_TRANSLATION, LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
@@ -18,11 +18,9 @@ const SiteHeader = () => {
   const location = useLocation();
 
   const { isFetching: openIdConfigFetching } = useAppSelector((state) => state.openIdConfiguration);
-
   const { isHandingOffCodeForToken } = useAppSelector((state) => state.auth);
 
   const isAuthenticated = useIsAuthenticated();
-
   const performSignOut = usePerformSignOut();
   const performSignIn = usePerformAuth();
 
@@ -65,13 +63,11 @@ const SiteHeader = () => {
             {t('Portal')}
           </Button>
           {isAuthenticated ? (
-            <Button type="text" className="header-button" icon={<LoginOutlined />} onClick={performSignOut}>
+            <Button type="text" className="header-button" icon={<LogoutOutlined />} onClick={performSignOut}>
               {t('Sign Out')}
             </Button>
           ) : (
-            // <Button shape="round" type="primary" onClick={() => performAuth(authzEndpoint, CLIENT_ID, AUTH_CALLBACK_URL)}>
-            <Button type="primary" shape="round" icon={<LogoutOutlined />} onClick={performSignIn}>
-              {/* {t('Sign In')} */}
+            <Button type="primary" shape="round" icon={<LoginOutlined />} onClick={performSignIn}>
               {openIdConfigFetching || isHandingOffCodeForToken ? t('Loading...') : t('Sign In')}
             </Button>
           )}
