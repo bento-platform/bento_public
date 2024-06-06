@@ -11,10 +11,10 @@ body {
   margin: auto;
 }
 
-.headerButton {
+.header-button {
   color: lightgray;
 }
 
-.headerButton:hover {
+.header-button:hover {
   color: white !important;
 }

@@ -62,18 +62,18 @@ const SiteHeader = () => {
           {TRANSLATED && (
             <Button
               type="text"
-              className="headerButton"
+              className="header-button"
               icon={<RiTranslate style={{ transform: 'translateY(1px)' }} />}
               onClick={changeLanguage}
             >
               {LNGS_FULL_NAMES[LNG_CHANGE[i18n.language]]}
             </Button>
           )}
-          <Button type="text" className="headerButton" icon={<LinkOutlined />} onClick={openPortalWindow}>
+          <Button type="text" className="header-button" icon={<LinkOutlined />} onClick={openPortalWindow}>
             {t('Portal')}
           </Button>
           {isAuthenticated ? (
-            <Button type="text" className="headerButton" icon={<LoginOutlined />} onClick={performSignOut}>
+            <Button type="text" className="header-button" icon={<LoginOutlined />} onClick={performSignOut}>
               {t('Sign Out')}
             </Button>
           ) : (
