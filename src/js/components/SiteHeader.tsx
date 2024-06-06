@@ -39,15 +39,7 @@ const SiteHeader = () => {
       <Flex align="center" justify="space-between">
         <Space size="middle">
           <a href="/">
-            <img
-              src="/public/assets/branding.png"
-              alt="logo"
-              style={{
-                height: '32px',
-                verticalAlign: 'middle',
-                marginLeft: '-15px',
-              }}
-            />
+            <img src="/public/assets/branding.png" alt="logo" style={{ height: '32px', verticalAlign: 'middle' }} />
           </a>
           <Typography.Title
             level={1}
