@@ -50,10 +50,10 @@ const SiteSider: React.FC<{
 
   const menuItems: MenuItem[] = useMemo(
     () => [
-      createMenuItem('Overview', 'overview', <PieChartOutlined />),
-      createMenuItem('Search', 'search', <SearchOutlined />),
-      createMenuItem('Beacon', 'beacon', <BeaconLogo />),
-      createMenuItem('Provenance', 'provenance', <SolutionOutlined />),
+      createMenuItem('Overview', BentoRoute.Overview, <PieChartOutlined />),
+      createMenuItem('Search', BentoRoute.Search, <SearchOutlined />),
+      createMenuItem('Beacon', BentoRoute.Beacon, <BeaconLogo />),
+      createMenuItem('Provenance', BentoRoute.Provenance, <SolutionOutlined />),
     ],
     [createMenuItem]
   );
