@@ -16,8 +16,8 @@ import ProvenanceTab from './Provenance/ProvenanceTab';
 import BeaconQueryUi from './Beacon/BeaconQueryUi';
 import { useAppDispatch } from '@/hooks';
 import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
-import SitePageLoading from './SitePageLoading';
 import { BentoRoutes } from '@/types/routes';
+import Loader from '@/components/Loader';
 
 const BentoAppRouter = () => {
   const dispatch = useAppDispatch();
@@ -42,19 +42,17 @@ const BentoAppRouter = () => {
   }, [isAuthenticated]);
 
   if (isAutoAuthenticating) {
-    return <SitePageLoading />;
+    return <Loader />;
   }
 
   return (
-    <div style={{ paddingTop: '14px' }}>
-      <Routes>
-        <Route path={`/${BentoRoutes.Overview}`} element={<PublicOverview />} />
-        <Route path={`/${BentoRoutes.Search}/*`} element={<Search />} />
-        <Route path={`/${BentoRoutes.Beacon}/*`} element={<BeaconQueryUi />} />
-        <Route path={`/${BentoRoutes.Provenance}/*`} element={<ProvenanceTab />} />
-        <Route path="/*" element={<PublicOverview />} />
-      </Routes>
-    </div>
+    <Routes>
+      <Route path={`/${BentoRoutes.Overview}`} element={<PublicOverview />} />
+      <Route path={`/${BentoRoutes.Search}/*`} element={<Search />} />
+      <Route path={`/${BentoRoutes.Beacon}/*`} element={<BeaconQueryUi />} />
+      <Route path={`/${BentoRoutes.Provenance}/*`} element={<ProvenanceTab />} />
+      <Route path="/*" element={<PublicOverview />} />
+    </Routes>
   );
 };
 

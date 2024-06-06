@@ -27,7 +27,7 @@ import BentoAppRouter from './components/BentoAppRouter';
 import SiteHeader from './components/SiteHeader';
 import SiteFooter from './components/SiteFooter';
 import SiteSider from '@/components/SiteSider';
-import SitePageLoading from './components/SitePageLoading';
+import Loader from '@/components/Loader';
 
 import { store } from './store';
 
@@ -116,13 +116,12 @@ const App = () => {
               marginLeft: collapsed ? '80px' : '200px', // Adjust these values according to your sidebar width
               transition: 'margin-left 0.3s', // Add CSS transition for smooth animation
               marginTop: '64px',
-              padding: '0 30px',
             }}
           >
-            <Content style={{ padding: '0 30px', marginTop: '10px' }}>
-              <Suspense fallback={<SitePageLoading />}>
+            <Content style={{ marginTop: '10px', padding: '0 30px' }}>
+              <Suspense fallback={<Loader />}>
                 <Routes>
-                  <Route path={CALLBACK_PATH} element={<SitePageLoading />} />
+                  <Route path={CALLBACK_PATH} element={<Loader />} />
                   <Route path="/*" element={<BentoAppRouter />} />
                 </Routes>
               </Suspense>
