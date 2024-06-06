@@ -65,9 +65,23 @@ const SiteSider: React.FC<{
       collapsed={collapsed}
       onCollapse={setCollapsed}
       theme="light"
-      style={{ overflow: 'auto', height: 'calc(100vh - 64px)', position: 'fixed', left: 0, top: '64px', zIndex: 100 }}
+      style={{
+        overflow: 'auto',
+        height: 'calc(100vh - 64px)',
+        position: 'fixed',
+        left: 0,
+        top: '64px',
+        zIndex: 100,
+        borderRight: '1px solid #f0f0f0',
+      }}
     >
-      <Menu selectedKeys={[currentPage]} mode="inline" items={menuItems} onClick={handleMenuClick} />
+      <Menu
+        selectedKeys={[currentPage]}
+        mode="inline"
+        items={menuItems}
+        onClick={handleMenuClick}
+        style={{ border: 'none' }}
+      />
     </Sider>
   );
 };

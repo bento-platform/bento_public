@@ -18,3 +18,7 @@ body {
 .header-button:hover {
   color: white !important;
 }
+
+.ant-layout-sider-trigger {
+  border-right: 1px solid #f0f0f0;
+}
