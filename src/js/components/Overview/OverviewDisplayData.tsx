@@ -6,13 +6,14 @@ import { ChartDataField } from '@/types/data';
 import ChartCard from './ChartCard';
 
 const CHART_WIDTH = 450;
+const GRID_GAP = 20;
 
 const OverviewDisplayData = ({ section, allCharts }: OverviewDisplayDataProps) => {
   const dispatch = useDispatch();
 
   const containerStyle = {
     display: 'grid',
-    gap: '20px',
+    gap: `${GRID_GAP}px`,
     gridTemplateColumns: `repeat(auto-fit, ${CHART_WIDTH}px)`,
   };
 
@@ -26,7 +27,7 @@ const OverviewDisplayData = ({ section, allCharts }: OverviewDisplayDataProps) =
   );
 
   const renderItem = (chart: ChartDataField) => {
-    return <ChartCard key={chart.id} chart={chart} section={section} onRemoveChart={onRemoveChart} width={450} />;
+    return <ChartCard key={chart.id} chart={chart} section={section} onRemoveChart={onRemoveChart} />;
   };
 
   return <div style={containerStyle}>{displayedCharts.map(renderItem)}</div>;
