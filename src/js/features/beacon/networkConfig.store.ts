@@ -3,6 +3,7 @@ import axios from 'axios';
 // import { makeAuthorizationHeader } from 'bento-auth-js';
 import { RootState } from '@/store';
 import { beaconApiError } from '@/utils/beaconApiError';
+import { BeaconAssemblyIds } from '@/types/beacon';
 import { NetworkBeacon, BeaconNetworkConfig } from '@/types/beaconNetwork';
 import { BEACON_NETWORK_ROOT } from '@/constants/beaconConstants';
 
@@ -23,26 +24,58 @@ export const getBeaconNetworkConfig = createAsyncThunk<
 type beaconNetworkIntitalStateType = {
   isFetchingBeaconNetworkConfig: boolean;
   hasBeaconNetworkError: boolean;
+  assemblyIds: BeaconAssemblyIds;
+  querySectionsUnion: any;
+  querySectionsIntersection: any;
+  isQuerySectionsUnion: boolean; // horrible English
+  currentQuerySections: any;
   beacons: NetworkBeacon[];
 };
 
 const initialState: beaconNetworkIntitalStateType = {
   isFetchingBeaconNetworkConfig: false,
   hasBeaconNetworkError: false,
+  querySectionsUnion: [],
+  querySectionsIntersection: [],
+  isQuerySectionsUnion: true,
+  currentQuerySections: [],
+  assemblyIds: [],
   beacons: [],
+};
+
+const networkAssemblyIds = (beacons: NetworkBeacon[]) => {
+  // reduce to list of assemblies
+  const assemblyIds = beacons.reduce(
+    (assemblies: BeaconAssemblyIds, b: NetworkBeacon) => [...assemblies, ...Object.keys(b.overview?.variants ?? {})],
+    []
+  );
+  // return unique values only
+  return [...new Set(assemblyIds)];
 };
 
 const beaconNetwork = createSlice({
   name: 'beaconNetwork',
   initialState,
-  reducers: {},
+  reducers: {
+    toggleQuerySectionsUnionOrIntersection(state) {
+      // update, then set boolean
+      state.currentQuerySections = state.isQuerySectionsUnion
+        ? state.querySectionsIntersection
+        : state.querySectionsUnion;
+      state.isQuerySectionsUnion = !state.isQuerySectionsUnion;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(getBeaconNetworkConfig.pending, (state, action) => {
       state.isFetchingBeaconNetworkConfig = true;
     });
     builder.addCase(getBeaconNetworkConfig.fulfilled, (state, { payload }) => {
       state.isFetchingBeaconNetworkConfig = false;
-      state.beacons = payload;
+      state.beacons = payload.beacons;
+      state.querySectionsUnion = payload.filtersUnion;
+      state.querySectionsIntersection = payload.filtersIntersection;
+      state.currentQuerySections = payload.filtersUnion;
+      state.assemblyIds = networkAssemblyIds(payload.beacons);
     });
     builder.addCase(getBeaconNetworkConfig.rejected, (state, { payload }) => {
       state.isFetchingBeaconNetworkConfig = false;
@@ -51,4 +84,5 @@ const beaconNetwork = createSlice({
   },
 });
 
+export const { toggleQuerySectionsUnionOrIntersection } = beaconNetwork.actions;
 export default beaconNetwork.reducer;
