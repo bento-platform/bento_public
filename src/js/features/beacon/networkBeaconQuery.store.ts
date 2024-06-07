@@ -4,9 +4,9 @@ import axios from 'axios';
 import { RootState } from '@/store';
 import { serializeChartData } from '@/utils/chart';
 import { beaconApiError } from '@/utils/beaconApiError';
-import { BeaconQueryPayload, BeaconQueryResponse, FlattenedBeaconResponse } from '@/types/beacon';
-import { QueryToNetworkBeacon } from '@/types/beaconNetwork';
 import { ChartData } from '@/types/data';
+import { BeaconQueryPayload, BeaconQueryResponse, FlattenedBeaconResponse } from '@/types/beacon';
+import { BeaconFlattenedAggregateResponse, QueryToNetworkBeacon } from '@/types/beaconNetwork';
 
 // TODO (eventually): deduplicate with beaconQuery.store.ts
 
@@ -20,8 +20,6 @@ export const networkBeaconQuery = createAsyncThunk<
   // const token = getState().auth.accessToken;
   // const headers = makeAuthorizationHeader(token);
 
-  console.log('networkBeaconQuery()');
-
   return axios
     .post(url, payload)
     .then((res) => {
@@ -33,19 +31,66 @@ export const networkBeaconQuery = createAsyncThunk<
 });
 
 interface beaconNetworkStateType {
+  networkOverview: BeaconFlattenedAggregateResponse;
   beacons: {
     [beaconId: string]: FlattenedBeaconResponse;
   };
 }
 
+type TempChartObject = Record<string, number>;
+
 const initialState: beaconNetworkStateType = {
+  networkOverview: {
+    individualCount: 0,
+    biosampleCount: 0,
+    experimentCount: 0,
+    biosampleChartData: [],
+    experimentChartData: [],
+  },
   beacons: {},
+};
+
+const chartArrayToChartObj = (cArr: ChartData[]): TempChartObject => {
+  const obj: TempChartObject = {};
+  cArr.forEach((c) => {
+    obj[c.x] = c.y;
+  });
+  return obj;
+};
+
+const chartObjToChartArr = (cObj: TempChartObject): ChartData[] => {
+  const arr = [];
+  for (const key in cObj) {
+    arr.push({ x: key, y: cObj[key] });
+  }
+  return arr;
+};
+
+const mergeCharts = (c1: ChartData[], c2: ChartData[]): ChartData[] => {
+  const merged = chartArrayToChartObj(c1);
+  c2.forEach((c) => {
+    merged[c.x] = (merged[c.x] ?? 0) + c.y;
+  });
+  return chartObjToChartArr(merged);
 };
 
 const networkBeaconQuerySlice = createSlice({
   name: 'networkBeaconQuery',
   initialState,
-  reducers: {},
+  reducers: {
+    computeNetworkOverview(state) {
+      const overview = initialState.networkOverview;
+      for (const b in state.beacons) {
+        const beacon = state.beacons[b];
+        overview.individualCount += beacon.individualCount ?? 0;
+        overview.biosampleCount += beacon.biosampleCount ?? 0;
+        overview.experimentCount += beacon.experimentCount ?? 0;
+        overview.biosampleChartData = mergeCharts(overview.biosampleChartData, beacon.biosampleChartData ?? []);
+        overview.experimentChartData = mergeCharts(overview.experimentChartData, beacon.experimentChartData ?? []);
+      }
+      state.networkOverview = overview;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(networkBeaconQuery.pending, (state, action) => {
       console.log('networkBeaconQuery.pending');
@@ -61,11 +106,11 @@ const networkBeaconQuerySlice = createSlice({
       console.log('networkBeaconQuery.fulfilled');
       const beaconId = action.meta.arg.beaconId;
       const { payload } = action;
-      const hasErrorResponse = payload.hasOwnProperty("error")
+      const hasErrorResponse = payload.hasOwnProperty('error');
 
       const beaconState: FlattenedBeaconResponse = {
         hasApiError: hasErrorResponse,
-        apiErrorMessage: hasErrorResponse ? payload.error?.errorMessage ?? "error" : "",    
+        apiErrorMessage: hasErrorResponse ? payload.error?.errorMessage ?? 'error' : '',
         isFetchingQueryResponse: false,
       };
       if (payload.info?.bento) {
@@ -92,4 +137,5 @@ const networkBeaconQuerySlice = createSlice({
   },
 });
 
+export const { computeNetworkOverview } = networkBeaconQuerySlice.actions;
 export default networkBeaconQuerySlice.reducer;
