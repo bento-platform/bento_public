@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Row, Col, FloatButton, Card, Skeleton, Typography } from 'antd';
+import { Row, Col, FloatButton, Card, Skeleton } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
 import { convertSequenceAndDisplayData, saveValue } from '@/utils/localStorage';
@@ -10,21 +10,22 @@ import { BOX_SHADOW, LOCALSTORAGE_CHARTS_KEY } from '@/constants/overviewConstan
 import OverviewSection from './OverviewSection';
 import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
 import Counts from './Counts';
-import { useAppSelector, useTranslationDefault } from '@/hooks';
-import { useTranslation } from 'react-i18next';
 import LastIngestionInfo from './LastIngestion';
+import Loader from '@/components/Loader';
 
-const ABOUT_CARD_STYLE = { borderRadius: '11pX', ...BOX_SHADOW };
+import { useAppSelector } from '@/hooks';
+import { useTranslation } from 'react-i18next';
+
+const ABOUT_CARD_STYLE = { width: '100%', maxWidth: '1390px', borderRadius: '11pX', ...BOX_SHADOW };
 const MANAGE_CHARTS_BUTTON_STYLE = { right: '5em', bottom: '1.5em', transform: 'scale(125%)' };
 
 const PublicOverview = () => {
   const { i18n } = useTranslation();
-  const td = useTranslationDefault();
 
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [aboutContent, setAboutContent] = useState('');
 
-  const { sections } = useAppSelector((state) => state.data);
+  const { isFetchingData: isFetchingOverviewData, sections } = useAppSelector((state) => state.data);
   const { isFetchingAbout, about } = useAppSelector((state) => state.content);
 
   useEffect(() => {
@@ -47,39 +48,33 @@ const PublicOverview = () => {
     saveToLocalStorage(sections);
   }, [sections]);
 
-  return (
+  return isFetchingOverviewData ? (
+    <Loader />
+  ) : (
     <>
-      <div className="container">
-        <Typography.Title level={2}>{td('Overview')}</Typography.Title>
-        <Row>
-          <Col flex={1}>
-            <Card style={ABOUT_CARD_STYLE}>
-              {isFetchingAbout ? (
-                <Skeleton title={false} paragraph={{ rows: 2 }} />
-              ) : (
-                <div dangerouslySetInnerHTML={{ __html: aboutContent }} />
-              )}
-            </Card>
-          </Col>
-        </Row>
-        <Row>
-          <Col flex={1}>
-            <Counts />
-          </Col>
-        </Row>
-        <Row>
-          <Col flex={1}>
-            {displayedSections.map(({ sectionTitle, charts }, i) => (
-              <div key={i} className="overview">
-                <OverviewSection title={sectionTitle} chartData={charts} />
-              </div>
-            ))}
-            <LastIngestionInfo />
-          </Col>
-        </Row>
-      </div>
+      <Card style={ABOUT_CARD_STYLE}>
+        {isFetchingAbout ? (
+          <Skeleton title={false} paragraph={{ rows: 2 }} />
+        ) : (
+          <div dangerouslySetInnerHTML={{ __html: aboutContent }} />
+        )}
+      </Card>
+      <Row>
+        <Col flex={1}>
+          <Counts />
+        </Col>
+      </Row>
+      <Row>
+        <Col flex={1}>
+          {displayedSections.map(({ sectionTitle, charts }, i) => (
+            <div key={i} className="overview">
+              <OverviewSection title={sectionTitle} chartData={charts} />
+            </div>
+          ))}
+          <LastIngestionInfo />
+        </Col>
+      </Row>
 
-      {/* Drawer & Button */}
       <ManageChartsDrawer onManageDrawerClose={onManageChartsClose} manageDrawerVisible={drawerVisible} />
       <FloatButton
         type="primary"

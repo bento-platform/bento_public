@@ -4,7 +4,6 @@ BENTO_PUBLIC_CONFIG = {
   // GENERAL
   CLIENT_NAME: null,
   PORTAL_URL: null,
-  CUSTOM_LOGO: null,
   TRANSLATED: null,
   BEACON_URL: null,
   BEACON_UI_ENABLED: null,

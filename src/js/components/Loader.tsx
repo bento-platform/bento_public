@@ -4,7 +4,7 @@ import React from 'react';
 
 const Loader = () => {
   return (
-    <Row justify="center">
+    <Row justify="center" align="middle" style={{ height: '100vh' }}>
       <Col>
         <Spin indicator={<Loading3QuartersOutlined style={{ fontSize: 40 }} spin />} />
       </Col>

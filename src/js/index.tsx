@@ -27,7 +27,7 @@ import BentoAppRouter from './components/BentoAppRouter';
 import SiteHeader from './components/SiteHeader';
 import SiteFooter from './components/SiteFooter';
 import SiteSider from '@/components/SiteSider';
-import SitePageLoading from './components/SitePageLoading';
+import Loader from '@/components/Loader';
 
 import { store } from './store';
 
@@ -44,6 +44,7 @@ const createSessionWorker = () => new Worker(new URL('./workers/tokenRefresh.ts'
 
 const App = () => {
   const navigate = useNavigate();
+  const [collapsed, setCollapsed] = useState(false);
 
   // TRANSLATION
   const { lang } = useParams<{ lang?: string }>();
@@ -107,18 +108,26 @@ const App = () => {
         <br />
       </Modal>
       <Layout style={{ minHeight: '100vh' }}>
-        <SiteSider />
+        <SiteHeader />
         <Layout>
-          <SiteHeader />
-          <Content style={{ padding: '0 30px', marginTop: '10px' }}>
-            <Suspense fallback={<SitePageLoading />}>
-              <Routes>
-                <Route path={CALLBACK_PATH} element={<SitePageLoading />} />
-                <Route path="/*" element={<BentoAppRouter />} />
-              </Routes>
-            </Suspense>
-          </Content>
-          <SiteFooter />
+          <SiteSider collapsed={collapsed} setCollapsed={setCollapsed} />
+          <Layout
+            style={{
+              marginLeft: collapsed ? '80px' : '200px',
+              transition: 'margin-left 0.3s',
+              marginTop: '64px',
+            }}
+          >
+            <Content style={{ padding: '32px 64px' }}>
+              <Suspense fallback={<Loader />}>
+                <Routes>
+                  <Route path={CALLBACK_PATH} element={<Loader />} />
+                  <Route path="/*" element={<BentoAppRouter />} />
+                </Routes>
+              </Suspense>
+            </Content>
+            <SiteFooter />
+          </Layout>
         </Layout>
       </Layout>
     </ConfigProvider>

@@ -1,7 +1,7 @@
 html,
 body {
   min-height: 100%;
-  background-color: #eff2f5;
+  background-color: #f5f5f5;
   margin: 0;
 }
 
@@ -11,28 +11,14 @@ body {
   margin: auto;
 }
 
-.floating-search {
-  position: fixed !important;
-  right: 5em !important;
-  bottom: 3em !important;
-  transform: scale(125%) !important;
+.header-button {
+  color: lightgray;
 }
 
-.logo-container {
-  overflow: hidden;
-  height: 32px;
-  transition: width 0.2s ease;
+.header-button:hover {
+  color: white !important;
 }
 
-.logo-container.collapsed {
-  width: 40px;
-}
-
-.logo {
-  height: 32px;
-  transition: transform 0.2s ease;
-}
-
-.logo-container.collapsed .logo {
-  transform: translateX(-70%);
+.ant-layout-sider-trigger {
+  border-right: 1px solid #f0f0f0;
 }

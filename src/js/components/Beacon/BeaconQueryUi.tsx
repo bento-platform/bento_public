@@ -19,6 +19,7 @@ import {
 } from '@/constants/beaconConstants';
 
 import { BOX_SHADOW } from '@/constants/overviewConstants';
+import Loader from '@/components/Loader';
 const { Text, Title } = Typography;
 // TODOs
 // example searches, either hardcoded or configurable
@@ -236,64 +237,63 @@ const BeaconQueryUi = () => {
   const metadataInstructions = <ToolTipText>{td(METADATA_INSTRUCTIONS)}</ToolTipText>;
   const isFetchingBeaconQuery = useAppSelector((state) => state.beaconQuery.isFetchingQueryResponse);
 
-  return (
-    <>
-      <Typography.Title level={2}>{td('Beacon Search')}</Typography.Title>
-      <div style={WRAPPER_STYLE}>
-        <BeaconSearchResults />
-        <Card
-          title={td('Search')}
-          style={{ borderRadius: '10px', maxWidth: '1200px', width: '100%', ...BOX_SHADOW }}
-          styles={CARD_STYLES}
-        >
-          <p style={{ margin: '-8px 0 8px 0', padding: '0', color: 'grey' }}>{td(uiInstructions)}</p>
-          <Form form={form} onFinish={handleFinish} layout="vertical" onValuesChange={handleValuesChange}>
-            <Row gutter={FORM_ROW_GUTTERS}>
-              {hasVariants && (
-                <Col xs={24} lg={12}>
-                  <Card
-                    title={td('Variants')}
-                    style={CARD_STYLE}
-                    styles={CARD_STYLES}
-                    extra={<SearchToolTip>{variantsInstructions}</SearchToolTip>}
-                  >
-                    <VariantsForm beaconAssemblyIds={beaconAssemblyIds} />
-                  </Card>
-                </Col>
-              )}
-              <Col xs={24} lg={hasVariants ? 12 : 24}>
+  return isFetchingBeaconConfig ? (
+    <Loader />
+  ) : (
+    <div style={WRAPPER_STYLE}>
+      <BeaconSearchResults />
+      <Card
+        title={td('Search')}
+        style={{ borderRadius: '10px', maxWidth: '1200px', width: '100%', ...BOX_SHADOW }}
+        styles={CARD_STYLES}
+      >
+        <p style={{ margin: '-8px 0 8px 0', padding: '0', color: 'grey' }}>{td(uiInstructions)}</p>
+        <Form form={form} onFinish={handleFinish} layout="vertical" onValuesChange={handleValuesChange}>
+          <Row gutter={FORM_ROW_GUTTERS}>
+            {hasVariants && (
+              <Col xs={24} lg={12}>
                 <Card
-                  title={td('Metadata')}
+                  title={td('Variants')}
                   style={CARD_STYLE}
                   styles={CARD_STYLES}
-                  extra={<SearchToolTip>{metadataInstructions} </SearchToolTip>}
+                  extra={<SearchToolTip>{variantsInstructions}</SearchToolTip>}
                 >
-                  <Filters filters={filters} setFilters={setFilters} form={form} querySections={querySections} />
+                  <VariantsForm beaconAssemblyIds={beaconAssemblyIds} />
                 </Card>
               </Col>
-            </Row>
-            <Row>
-              <Col span={24}>
-                {showError && (
-                  <BeaconErrorMessage
-                    message={`${td('Beacon error')}: ${errorMessage}`}
-                    onClose={() => setErrorAlertClosed(true)}
-                  />
-                )}
-                <div style={BUTTON_AREA_STYLE}>
-                  <Button type="primary" htmlType="submit" loading={isFetchingBeaconQuery} style={BUTTON_STYLE}>
-                    {td('Search Beacon')}
-                  </Button>
-                  <Button onClick={handleClearForm} style={BUTTON_STYLE}>
-                    {td('Clear Form')}
-                  </Button>
-                </div>
-              </Col>
-            </Row>
-          </Form>
-        </Card>
-      </div>
-    </>
+            )}
+            <Col xs={24} lg={hasVariants ? 12 : 24}>
+              <Card
+                title={td('Metadata')}
+                style={CARD_STYLE}
+                styles={CARD_STYLES}
+                extra={<SearchToolTip>{metadataInstructions} </SearchToolTip>}
+              >
+                <Filters filters={filters} setFilters={setFilters} form={form} querySections={querySections} />
+              </Card>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={24}>
+              {showError && (
+                <BeaconErrorMessage
+                  message={`${td('Beacon error')}: ${errorMessage}`}
+                  onClose={() => setErrorAlertClosed(true)}
+                />
+              )}
+              <div style={BUTTON_AREA_STYLE}>
+                <Button type="primary" htmlType="submit" loading={isFetchingBeaconQuery} style={BUTTON_STYLE}>
+                  {td('Search Beacon')}
+                </Button>
+                <Button onClick={handleClearForm} style={BUTTON_STYLE}>
+                  {td('Clear Form')}
+                </Button>
+              </div>
+            </Col>
+          </Row>
+        </Form>
+      </Card>
+    </div>
   );
 };
 

@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector, useTranslationCustom } from '@/hooks';
 import { buildQueryParamsUrl } from '@/utils/search';
 
 import type { QueryParams } from '@/types/search';
+import Loader from '@/components/Loader';
 
 const checkQueryParamsEqual = (qp1: QueryParams, qp2: QueryParams): boolean => {
   const qp1Keys = Object.keys(qp1);
@@ -95,11 +96,14 @@ const SEARCH_SECTION_STYLE = { maxWidth: 1200 };
 const Search: React.FC = () => {
   const t = useTranslationCustom();
 
-  const searchSections = useAppSelector((state) => state.query.querySections);
+  const { isFetchingData: isFetchingSearchFields, querySections: searchSections } = useAppSelector(
+    (state) => state.query
+  );
 
-  return (
+  return isFetchingSearchFields ? (
+    <Loader />
+  ) : (
     <>
-      <Typography.Title level={2}>{t('Search')}</Typography.Title>
       <Row justify="center">
         <Space direction="vertical" align="center" style={WIDTH_100P_STYLE} styles={SEARCH_SPACE_ITEM_STYLE}>
           <SearchResults />

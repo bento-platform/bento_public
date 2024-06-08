@@ -7,7 +7,7 @@ import { CHART_HEIGHT, BOX_SHADOW } from '@/constants/overviewConstants';
 import { useTranslationCustom, useTranslationDefault } from '@/hooks';
 import { ChartDataField } from '@/types/data';
 
-const CARD_STYLE = { width: '100%', height: '415px', borderRadius: '11px', ...BOX_SHADOW };
+const CARD_STYLE = { height: '415px', borderRadius: '11px', ...BOX_SHADOW };
 const ROW_EMPTY_STYLE = { height: `${CHART_HEIGHT}px` };
 
 const TitleComponent: React.FC<TitleComponentProps> = ({ title, description }) => (
@@ -24,7 +24,7 @@ interface TitleComponentProps {
   description: string;
 }
 
-const ChartCard = memo(({ section, chart, onRemoveChart, width }: ChartCardProps) => {
+const ChartCard = memo(({ section, chart, onRemoveChart }: ChartCardProps) => {
   const t = useTranslationCustom();
   const td = useTranslationDefault();
 
@@ -68,7 +68,7 @@ const ChartCard = memo(({ section, chart, onRemoveChart, width }: ChartCardProps
 
   // We add a key to the chart which includes width to force a re-render if width changes.
   return (
-    <div key={id} style={{ height: '100%', width }}>
+    <div key={id} style={{ gridColumn: `span ${chart.width}` }}>
       <Card
         title={<TitleComponent title={t(title)} description={t(description)} />}
         style={CARD_STYLE}
@@ -76,13 +76,7 @@ const ChartCard = memo(({ section, chart, onRemoveChart, width }: ChartCardProps
         extra={<Space size="small">{ed}</Space>}
       >
         {data.filter((e) => !(e.x === 'missing')).length !== 0 ? (
-          <Chart
-            chartConfig={chartConfig}
-            data={data}
-            units={config?.units || ''}
-            id={id}
-            key={`${id}-width-${width}`}
-          />
+          <Chart chartConfig={chartConfig} data={data} units={config?.units || ''} id={id} key={id} />
         ) : (
           <Row style={ROW_EMPTY_STYLE} justify="center" align="middle">
             <CustomEmpty text="No Data" />
@@ -99,7 +93,6 @@ export interface ChartCardProps {
   section: string;
   chart: ChartDataField;
   onRemoveChart: (arg: { section: string; id: string }) => void;
-  width: number;
 }
 
 export default ChartCard;
