@@ -74,23 +74,30 @@ const mergeCharts = (c1: ChartData[], c2: ChartData[]): ChartData[] => {
   return chartObjToChartArr(merged);
 };
 
+const computeNetworkOverview = (beacons: beaconNetworkStateType['beacons']) => {
+  const overview: BeaconFlattenedAggregateResponse = {
+    individualCount: 0,
+    biosampleCount: 0,
+    experimentCount: 0,
+    biosampleChartData: [],
+    experimentChartData: [],
+  };
+
+  Object.values(beacons).forEach((b) => {
+    console.log({ thing: b });
+    overview.individualCount += b.individualCount ?? 0;
+    overview.biosampleCount += b.biosampleCount ?? 0;
+    overview.experimentCount += b.experimentCount ?? 0;
+    overview.biosampleChartData = mergeCharts(overview.biosampleChartData, b.biosampleChartData ?? []);
+    overview.experimentChartData = mergeCharts(overview.experimentChartData, b.experimentChartData ?? []);
+  });
+  return overview;
+};
+
 const networkBeaconQuerySlice = createSlice({
   name: 'networkBeaconQuery',
   initialState,
-  reducers: {
-    computeNetworkOverview(state) {
-      const overview = initialState.networkOverview;
-      for (const b in state.beacons) {
-        const beacon = state.beacons[b];
-        overview.individualCount += beacon.individualCount ?? 0;
-        overview.biosampleCount += beacon.biosampleCount ?? 0;
-        overview.experimentCount += beacon.experimentCount ?? 0;
-        overview.biosampleChartData = mergeCharts(overview.biosampleChartData, beacon.biosampleChartData ?? []);
-        overview.experimentChartData = mergeCharts(overview.experimentChartData, beacon.experimentChartData ?? []);
-      }
-      state.networkOverview = overview;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(networkBeaconQuery.pending, (state, action) => {
       console.log('networkBeaconQuery.pending');
@@ -123,6 +130,8 @@ const networkBeaconQuerySlice = createSlice({
         beaconState.individualCount = payload.responseSummary.numTotalResults;
       }
       state.beacons[beaconId] = beaconState;
+
+      state.networkOverview = computeNetworkOverview(state.beacons);
     });
     builder.addCase(networkBeaconQuery.rejected, (state, action) => {
       console.log('networkBeaconQuery.rejected');
@@ -137,5 +146,4 @@ const networkBeaconQuerySlice = createSlice({
   },
 });
 
-export const { computeNetworkOverview } = networkBeaconQuerySlice.actions;
 export default networkBeaconQuerySlice.reducer;
