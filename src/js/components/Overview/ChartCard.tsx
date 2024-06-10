@@ -1,32 +1,54 @@
-import React, { memo } from 'react';
-import Chart from './Chart';
+import React, { memo, useRef, useState, useEffect } from 'react';
 import { Card, Button, Tooltip, Space, Typography, Row } from 'antd';
 import { CloseOutlined, TeamOutlined } from '@ant-design/icons';
+import Chart from './Chart';
 import CustomEmpty from '../Util/CustomEmpty';
 import { CHART_HEIGHT, BOX_SHADOW } from '@/constants/overviewConstants';
-import { useTranslationCustom, useTranslationDefault } from '@/hooks';
+import { useElementOutOfView, useTranslationCustom, useTranslationDefault } from '@/hooks';
 import { ChartDataField } from '@/types/data';
 
-const CARD_STYLE = { height: '415px', borderRadius: '11px', ...BOX_SHADOW };
-const ROW_EMPTY_STYLE = { height: `${CHART_HEIGHT}px` };
-
-const TitleComponent: React.FC<TitleComponentProps> = ({ title, description }) => (
-  <Space.Compact direction="vertical" style={{ fontWeight: 'normal', padding: '5px 5px' }}>
-    <Typography.Text style={{ fontSize: '20px', fontWeight: '600' }}>{title}</Typography.Text>
-    <Typography.Text type="secondary" style={{ width: '375px' }} ellipsis={{ tooltip: description }}>
-      {description}
-    </Typography.Text>
-  </Space.Compact>
-);
+const CARD_STYLE: React.CSSProperties = { height: '415px', borderRadius: '11px', ...BOX_SHADOW };
+const ROW_EMPTY_STYLE: React.CSSProperties = { height: `${CHART_HEIGHT}px` };
 
 interface TitleComponentProps {
   title: string;
   description: string;
 }
 
-const ChartCard = memo(({ section, chart, onRemoveChart, overflow }: ChartCardProps) => {
+const TitleComponent: React.FC<TitleComponentProps> = ({ title, description }) => (
+  <Space direction="vertical" style={{ fontWeight: 'normal', padding: '5px 5px' }}>
+    <Typography.Text style={{ fontSize: '20px', fontWeight: '600' }}>{title}</Typography.Text>
+    <Typography.Text type="secondary" style={{ width: '375px' }} ellipsis={{ tooltip: description }}>
+      {description}
+    </Typography.Text>
+  </Space>
+);
+
+interface ChartCardProps {
+  section: string;
+  chart: ChartDataField;
+  onRemoveChart: (arg: { section: string; id: string }) => void;
+}
+
+const ChartCard: React.FC<ChartCardProps> = memo(({ section, chart, onRemoveChart }) => {
   const t = useTranslationCustom();
   const td = useTranslationDefault();
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const [width, setWidth] = useState(chart.width);
+
+  const isOutOfView = useElementOutOfView(containerRef);
+
+  useEffect(() => {
+    if (isOutOfView) {
+      setWidth((prevWidth) => Math.max(prevWidth - 1, 1));
+    }
+  }, [isOutOfView]);
+
+  useEffect(() => {
+    // Reset the width when chart.width changes
+    setWidth(chart.width);
+  }, [chart.width]);
 
   const {
     data,
@@ -66,9 +88,8 @@ const ChartCard = memo(({ section, chart, onRemoveChart, overflow }: ChartCardPr
     );
   });
 
-  // We add a key to the chart which includes width to force a re-render if width changes.
   return (
-    <div key={id} style={{ gridColumn: `span ${overflow ? 1 : chart.width}` }}>
+    <div ref={containerRef} key={id} style={{ gridColumn: `span ${width}` }}>
       <Card
         title={<TitleComponent title={t(title)} description={t(description)} />}
         style={CARD_STYLE}
@@ -88,12 +109,5 @@ const ChartCard = memo(({ section, chart, onRemoveChart, overflow }: ChartCardPr
 });
 
 ChartCard.displayName = 'ChartCard';
-
-export interface ChartCardProps {
-  section: string;
-  chart: ChartDataField;
-  onRemoveChart: (arg: { section: string; id: string }) => void;
-  overflow: boolean;
-}
 
 export default ChartCard;

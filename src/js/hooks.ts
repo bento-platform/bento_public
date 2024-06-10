@@ -53,36 +53,27 @@ export const useBeaconWithAuthIfAllowed = () => {
 
 // ################### OVERFLOW HOOKS ###################
 
-function debounce<T extends (...args: never[]) => void>(fn: T, delay: number) {
-  let timeoutId: NodeJS.Timeout;
-  return function (...args: Parameters<T>) {
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-    }
-    timeoutId = setTimeout(() => {
-      fn(...args);
-    }, delay);
-  };
+function isElementOutOfView(element: HTMLElement): boolean {
+  const rect = element.getBoundingClientRect();
+  return rect.right > window.innerWidth;
 }
 
-export const useOverflow = (ref: React.RefObject<HTMLDivElement>) => {
-  const [isOverflow, setIsOverflow] = useState(false);
+export const useElementOutOfView = (ref: React.RefObject<HTMLElement>) => {
+  const [isOutOfView, setIsOutOfView] = useState(false);
 
-  const checkOverflow = () => {
-    if (ref.current) {
-      const hasOverflow = ref.current.scrollWidth > ref.current.clientWidth;
-      setIsOverflow(hasOverflow);
+  const checkIfOutOfView = useCallback(() => {
+    if (ref.current && isElementOutOfView(ref.current)) {
+      setIsOutOfView(true);
+    } else {
+      setIsOutOfView(false);
     }
-  };
-
-  // Create a debounced version of the checkOverflow function
-  const debouncedCheckOverflow = useCallback(debounce(checkOverflow, 200), [ref]);
+  }, [ref]);
 
   useEffect(() => {
-    debouncedCheckOverflow();
-    window.addEventListener('resize', debouncedCheckOverflow);
-    return () => window.removeEventListener('resize', debouncedCheckOverflow);
-  }, [debouncedCheckOverflow]);
+    checkIfOutOfView();
+    window.addEventListener('resize', checkIfOutOfView);
+    return () => window.removeEventListener('resize', checkIfOutOfView);
+  }, [checkIfOutOfView]);
 
-  return isOverflow;
+  return isOutOfView;
 };
