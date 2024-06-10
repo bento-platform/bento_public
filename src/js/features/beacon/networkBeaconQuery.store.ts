@@ -31,7 +31,7 @@ export const networkBeaconQuery = createAsyncThunk<
 });
 
 interface beaconNetworkStateType {
-  networkOverview: BeaconFlattenedAggregateResponse;
+  networkResults: BeaconFlattenedAggregateResponse;
   beacons: {
     [beaconId: string]: FlattenedBeaconResponse;
   };
@@ -40,7 +40,7 @@ interface beaconNetworkStateType {
 type TempChartObject = Record<string, number>;
 
 const initialState: beaconNetworkStateType = {
-  networkOverview: {
+  networkResults: {
     individualCount: 0,
     biosampleCount: 0,
     experimentCount: 0,
@@ -74,7 +74,7 @@ const mergeCharts = (c1: ChartData[], c2: ChartData[]): ChartData[] => {
   return chartObjToChartArr(merged);
 };
 
-const computeNetworkOverview = (beacons: beaconNetworkStateType['beacons']) => {
+const computeNetworkResults = (beacons: beaconNetworkStateType['beacons']) => {
   const overview: BeaconFlattenedAggregateResponse = {
     individualCount: 0,
     biosampleCount: 0,
@@ -130,8 +130,7 @@ const networkBeaconQuerySlice = createSlice({
         beaconState.individualCount = payload.responseSummary.numTotalResults;
       }
       state.beacons[beaconId] = beaconState;
-
-      state.networkOverview = computeNetworkOverview(state.beacons);
+      state.networkResults = computeNetworkResults(state.beacons);
     });
     builder.addCase(networkBeaconQuery.rejected, (state, action) => {
       console.log('networkBeaconQuery.rejected');
