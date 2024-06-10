@@ -1,10 +1,10 @@
-import React, { memo, useRef, useState, useEffect } from 'react';
+import React, { memo, useRef } from 'react';
 import { Card, Button, Tooltip, Space, Typography, Row } from 'antd';
 import { CloseOutlined, TeamOutlined } from '@ant-design/icons';
 import Chart from './Chart';
 import CustomEmpty from '../Util/CustomEmpty';
 import { CHART_HEIGHT, BOX_SHADOW } from '@/constants/overviewConstants';
-import { useElementOutOfView, useTranslationCustom, useTranslationDefault } from '@/hooks';
+import { useElementWidth, useTranslationCustom, useTranslationDefault } from '@/hooks';
 import { ChartDataField } from '@/types/data';
 
 const CARD_STYLE: React.CSSProperties = { height: '415px', borderRadius: '11px', ...BOX_SHADOW };
@@ -35,20 +35,7 @@ const ChartCard: React.FC<ChartCardProps> = memo(({ section, chart, onRemoveChar
   const td = useTranslationDefault();
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const [width, setWidth] = useState(chart.width);
-
-  const isOutOfView = useElementOutOfView(containerRef);
-
-  useEffect(() => {
-    if (isOutOfView) {
-      setWidth((prevWidth) => Math.max(prevWidth - 1, 1));
-    }
-  }, [isOutOfView]);
-
-  useEffect(() => {
-    // Reset the width when chart.width changes
-    setWidth(chart.width);
-  }, [chart.width]);
+  const width = useElementWidth(containerRef, chart.width);
 
   const {
     data,

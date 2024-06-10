@@ -58,22 +58,38 @@ function isElementOutOfView(element: HTMLElement): boolean {
   return rect.right > window.innerWidth;
 }
 
-export const useElementOutOfView = (ref: React.RefObject<HTMLElement>) => {
-  const [isOutOfView, setIsOutOfView] = useState(false);
+export const useElementWidth = (ref: React.RefObject<HTMLElement>, initialWidth: number) => {
+  const [width, setWidth] = useState(initialWidth);
 
-  const checkIfOutOfView = useCallback(() => {
-    if (ref.current && isElementOutOfView(ref.current)) {
-      setIsOutOfView(true);
-    } else {
-      setIsOutOfView(false);
+  const adjustWidth = useCallback(() => {
+    if (ref.current) {
+      if (isElementOutOfView(ref.current)) {
+        setWidth((prevWidth) => Math.max(prevWidth - 1, 1));
+      } else if (width < initialWidth) {
+        setWidth((prevWidth) => Math.min(prevWidth + 1, initialWidth));
+      }
     }
-  }, [ref]);
+  }, [ref, width, initialWidth]);
 
   useEffect(() => {
-    checkIfOutOfView();
-    window.addEventListener('resize', checkIfOutOfView);
-    return () => window.removeEventListener('resize', checkIfOutOfView);
-  }, [checkIfOutOfView]);
+    const handleResize = debounceAdjustWidth(adjustWidth, 100); // Adjust debounce delay as needed
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [adjustWidth]);
 
-  return isOutOfView;
+  useEffect(() => {
+    setWidth(initialWidth);
+  }, [initialWidth]);
+
+  return width;
 };
+
+function debounceAdjustWidth(callback: () => void, delay: number) {
+  let timeoutId: NodeJS.Timeout;
+  return () => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      callback();
+    }, delay);
+  };
+}
