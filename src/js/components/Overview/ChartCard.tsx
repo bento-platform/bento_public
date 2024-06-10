@@ -24,7 +24,7 @@ interface TitleComponentProps {
   description: string;
 }
 
-const ChartCard = memo(({ section, chart, onRemoveChart }: ChartCardProps) => {
+const ChartCard = memo(({ section, chart, onRemoveChart, overflow }: ChartCardProps) => {
   const t = useTranslationCustom();
   const td = useTranslationDefault();
 
@@ -68,7 +68,7 @@ const ChartCard = memo(({ section, chart, onRemoveChart }: ChartCardProps) => {
 
   // We add a key to the chart which includes width to force a re-render if width changes.
   return (
-    <div key={id} style={{ gridColumn: `span ${chart.width}` }}>
+    <div key={id} style={{ gridColumn: `span ${overflow ? 1 : chart.width}` }}>
       <Card
         title={<TitleComponent title={t(title)} description={t(description)} />}
         style={CARD_STYLE}
@@ -93,6 +93,7 @@ export interface ChartCardProps {
   section: string;
   chart: ChartDataField;
   onRemoveChart: (arg: { section: string; id: string }) => void;
+  overflow: boolean;
 }
 
 export default ChartCard;

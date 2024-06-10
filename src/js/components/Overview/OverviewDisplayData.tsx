@@ -1,15 +1,26 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { disableChart } from '@/features/data/data.store';
 import { ChartDataField } from '@/types/data';
 import ChartCard from './ChartCard';
+import { useOverflow } from '@/hooks';
 
 const CHART_WIDTH = 450;
 const GRID_GAP = 20;
 
 const OverviewDisplayData = ({ section, allCharts }: OverviewDisplayDataProps) => {
   const dispatch = useDispatch();
+  const container = useRef<HTMLDivElement>(null);
+  const isOverflow = useOverflow(container);
+
+  useEffect(() => {
+    if (isOverflow) {
+      console.log('Container has overflow');
+    } else {
+      console.log('Container does not have overflow');
+    }
+  }, [isOverflow]);
 
   const containerStyle = {
     display: 'grid',
@@ -27,10 +38,16 @@ const OverviewDisplayData = ({ section, allCharts }: OverviewDisplayDataProps) =
   );
 
   const renderItem = (chart: ChartDataField) => {
-    return <ChartCard key={chart.id} chart={chart} section={section} onRemoveChart={onRemoveChart} />;
+    return (
+      <ChartCard key={chart.id} chart={chart} section={section} onRemoveChart={onRemoveChart} overflow={isOverflow} />
+    );
   };
 
-  return <div style={containerStyle}>{displayedCharts.map(renderItem)}</div>;
+  return (
+    <div ref={container} style={containerStyle}>
+      {displayedCharts.map(renderItem)}
+    </div>
+  );
 };
 
 export interface OverviewDisplayDataProps {

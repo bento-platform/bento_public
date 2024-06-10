@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { RESOURCE_EVERYTHING, Resource, queryData, useHasResourcePermission } from 'bento-auth-js';
@@ -49,4 +49,40 @@ export const useBeaconWithAuthIfAllowed = () => {
       dispatch(setMaxQueryParametersRequired(false));
     }
   }, [dispatch, hasPermission]);
+};
+
+// ################### OVERFLOW HOOKS ###################
+
+function debounce<T extends (...args: never[]) => void>(fn: T, delay: number) {
+  let timeoutId: NodeJS.Timeout;
+  return function (...args: Parameters<T>) {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    timeoutId = setTimeout(() => {
+      fn(...args);
+    }, delay);
+  };
+}
+
+export const useOverflow = (ref: React.RefObject<HTMLDivElement>) => {
+  const [isOverflow, setIsOverflow] = useState(false);
+
+  const checkOverflow = () => {
+    if (ref.current) {
+      const hasOverflow = ref.current.scrollWidth > ref.current.clientWidth;
+      setIsOverflow(hasOverflow);
+    }
+  };
+
+  // Create a debounced version of the checkOverflow function
+  const debouncedCheckOverflow = useCallback(debounce(checkOverflow, 200), [ref]);
+
+  useEffect(() => {
+    debouncedCheckOverflow();
+    window.addEventListener('resize', debouncedCheckOverflow);
+    return () => window.removeEventListener('resize', debouncedCheckOverflow);
+  }, [debouncedCheckOverflow]);
+
+  return isOverflow;
 };
