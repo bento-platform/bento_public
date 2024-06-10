@@ -18,6 +18,8 @@ const SearchResultsPane = ({
   biosampleChartData,
   experimentCount,
   experimentChartData,
+  resultsTitle,
+  resultsExtra
 }: SearchResultsPaneProps) => {
   const t = useTranslationDefault();
 
@@ -36,11 +38,13 @@ const SearchResultsPane = ({
           // + card body padding (2*24 = 48)
           // + card wrapper padding (2*10 = 20)
           // + border (2*1 = 2)
-          // = 402:
-          minHeight: '402px',
+          // = 402, or + 56 = 458 if any header content present
+          minHeight: (resultsTitle || resultsExtra) ? '458px' :'402px',
           ...BOX_SHADOW,
         }}
         loading={isFetchingData}
+        title={resultsTitle}
+        extra={resultsExtra}
       >
         <Row gutter={16}>
           <Col xs={24} lg={4}>
@@ -100,6 +104,8 @@ export interface SearchResultsPaneProps {
   biosampleChartData: ChartData[];
   experimentCount: number;
   experimentChartData: ChartData[];
+  resultsTitle?: string;
+  resultsExtra?: string;
 }
 
 export default SearchResultsPane;
