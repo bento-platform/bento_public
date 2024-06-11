@@ -37,4 +37,4 @@ export const BUTTON_STYLE: CSSProperties = {
 };
 
 // temp, will be passed in from somewhere else
-export const BEACON_NETWORK_ROOT = 'https://bentov2.local/api/beacon/network/';
+export const BEACON_NETWORK_ROOT = 'https://bentov2.local/api/beacon/network';
