@@ -10,7 +10,7 @@ import { BEACON_NETWORK_ROOT } from '@/constants/beaconConstants';
 const DEFAULT_QUERY_ENDPOINT = '/individuals';
 
 const queryUrl = (beaconId: string, endpoint: string): string => {
-  return BEACON_NETWORK_ROOT + 'beacons/' + beaconId + endpoint;
+  return BEACON_NETWORK_ROOT + '/beacons/' + beaconId + endpoint;
 };
 
 // probably more biolerplate here than needed
