@@ -14,7 +14,11 @@ export interface NetworkBeacon extends BeaconServiceInfo {
 }
 
 // more to come
-export type BeaconNetworkConfig = NetworkBeacon[];
+export interface BeaconNetworkConfig {
+  filtersUnion: any; // temp
+  filtersIntersection: any; // temp
+  beacons: NetworkBeacon[];
+}
 
 export interface BeaconOrgDetails {
   logoUrl: string;

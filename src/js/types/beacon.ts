@@ -77,6 +77,9 @@ export interface BeaconQueryPayload {
   bento?: { showSummaryStatistics: boolean };
 }
 
+// export type BeaconQueryThunk = AsyncThunk<void | BeaconQueryResponse, BeaconQueryPayload, any>
+export type BeaconQueryThunk = any;
+
 // ----------------------------
 // API response
 // ----------------------------
@@ -112,6 +115,10 @@ export interface BeaconQueryResponse {
   };
   meta?: {
     beaconId: string;
+  };
+  error?: {
+    errorCode: number;
+    errorMessage: string;
   };
 }
 
