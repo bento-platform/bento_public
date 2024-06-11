@@ -5,7 +5,7 @@ import { RootState } from '@/store';
 import { serializeChartData } from '@/utils/chart';
 import { beaconApiError } from '@/utils/beaconApiError';
 import { ChartData } from '@/types/data';
-import { BeaconQueryPayload, BeaconQueryResponse, FlattenedBeaconResponse } from '@/types/beacon';
+import { BeaconQueryResponse, FlattenedBeaconResponse } from '@/types/beacon';
 import { BeaconFlattenedAggregateResponse, QueryToNetworkBeacon } from '@/types/beaconNetwork';
 
 // TODO (eventually): deduplicate with beaconQuery.store.ts
@@ -113,8 +113,7 @@ const networkBeaconQuerySlice = createSlice({
       console.log('networkBeaconQuery.fulfilled');
       const beaconId = action.meta.arg.beaconId;
       const { payload } = action;
-      const hasErrorResponse = payload.hasOwnProperty('error');
-
+      const hasErrorResponse = Object.prototype.hasOwnProperty.call(payload, 'error');
       const beaconState: FlattenedBeaconResponse = {
         hasApiError: hasErrorResponse,
         apiErrorMessage: hasErrorResponse ? payload.error?.errorMessage ?? 'error' : '',

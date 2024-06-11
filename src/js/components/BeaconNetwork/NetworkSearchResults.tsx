@@ -1,6 +1,4 @@
 import React from 'react';
-import { Card } from 'antd';
-import { BOX_SHADOW } from '@/constants/overviewConstants';
 import { useAppSelector } from '@/hooks';
 import SearchResultsPane from '../Search/SearchResultsPane';
 
@@ -13,9 +11,10 @@ const NetworkSearchResults = () => {
 
   // filter() creates arrays we don't need, but arrays are small
   // more readable than equivalent reduce() call
-  const numGoodResponses = responseArray.filter((r) => r.hasOwnProperty('individualCount')).length;
+  const numGoodResponses = responseArray.filter((r) =>
+    Object.prototype.hasOwnProperty.call(r, 'individualCount')
+  ).length;
   const numNonZeroResponses = responseArray.filter((r) => r.individualCount).length;
-  const numErrorResponses = responseArray.filter((r) => r.hasApiError).length;
 
   const extraText =
     numGoodResponses > 0 ? `results from ${numNonZeroResponses} beacon${numNonZeroResponses == 1 ? '' : 's'}` : '';
