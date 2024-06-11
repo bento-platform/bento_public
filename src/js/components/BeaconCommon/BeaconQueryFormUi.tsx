@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch, useTranslationDefault } from '@/hooks';
 
-import { Button, Card, Col, Form, Row, Space, Switch, Tooltip, Typography } from 'antd';
+import { Button, Card, Col, Form, Row } from 'antd';
 import VariantsForm from '../Beacon/VariantsForm';
 import Filters from './Filters';
 import SearchToolTip from './ToolTips/SearchToolTip';
@@ -25,14 +25,13 @@ const VARIANTS_FORM_ERROR_MESSAGE =
 
 import { BOX_SHADOW } from '@/constants/overviewConstants';
 import {
-  WRAPPER_STYLE,
+  // WRAPPER_STYLE,
   FORM_ROW_GUTTERS,
   CARD_STYLE,
   BUTTON_AREA_STYLE,
   BUTTON_STYLE,
   CARD_STYLES,
 } from '@/constants/beaconConstants';
-import { SwitcherTwoTone } from '@ant-design/icons';
 
 const STARTER_FILTER = { index: 1, active: true };
 
@@ -53,9 +52,8 @@ const BeaconQueryFormUi = ({
   const [formErrorMessage, setFormErrorMessage] = useState<string>('');
   // remember if user closed alert, so we can force re-render of a new one later
   const [errorAlertClosed, setErrorAlertClosed] = useState<boolean>(false);
-  const [unionNetworkFilters, setUnionNetworkFilters] = useState<boolean>(false);
 
-  const hasVariants = beaconAssemblyIds.length > 0;
+  const hasVariants = beaconAssemblyIds.length > 0 || isNetworkQuery;
   const formInitialValues = { 'Assembly ID': beaconAssemblyIds.length === 1 && beaconAssemblyIds[0] };
   const uiInstructions = hasVariants ? 'Search by genomic variants, clinical metadata or both.' : '';
 
@@ -72,10 +70,6 @@ const BeaconQueryFormUi = ({
   const clearFormError = () => {
     setHasFormError(false);
     setFormErrorMessage('');
-  };
-
-  const handleNetworkFilterToggle = () => {
-    setUnionNetworkFilters(!unionNetworkFilters);
   };
 
   const dispatch = useAppDispatch();
@@ -207,97 +201,73 @@ const BeaconQueryFormUi = ({
 
   const searchButtonText = isNetworkQuery ? 'Search Network' : 'Search Beacon';
 
-  const NetworkFilterToggle = () => {
-    return (
-      <Tooltip title="Choose all search filters across the network, or only those common to all beacons.">
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <p style={{ margin: '5px' }}>{unionNetworkFilters ? 'all filters' : 'common filters only'}</p>
-          <Switch
-            checkedChildren="∪"
-            unCheckedChildren="∩"
-            onChange={handleNetworkFilterToggle}
-            checked={unionNetworkFilters}
-            style={{ margin: '10px' }}
-          />
-        </div>
-      </Tooltip>
-    );
-  };
-
   return (
-    <Card
-      title={td('Search')}
-      style={{ borderRadius: '10px', maxWidth: '1200px', width: '100%', ...BOX_SHADOW }}
-      styles={CARD_STYLES}
-      loading={isFetchingConfig}
-    >
-      <p style={{ margin: '-8px 0 8px 0', padding: '0', color: 'grey' }}>{td(uiInstructions)}</p>
-      <Form form={form} onFinish={handleFinish} layout="vertical" onValuesChange={handleValuesChange}>
-        <Row gutter={FORM_ROW_GUTTERS}>
-          {hasVariants && (
-            <Col xs={24} lg={12}>
+    <div style={{ paddingBottom: 8, display: 'flex', justifyContent: 'center', width: '100%' }}>
+      <Card
+        title={td('Search')}
+        style={{ borderRadius: '10px', maxWidth: '1200px', width: '100%', ...BOX_SHADOW }}
+        styles={CARD_STYLES}
+        loading={isFetchingConfig}
+      >
+        <p style={{ margin: '-8px 0 8px 0', padding: '0', color: 'grey' }}>{td(uiInstructions)}</p>
+        <Form form={form} onFinish={handleFinish} layout="vertical" onValuesChange={handleValuesChange}>
+          <Row gutter={FORM_ROW_GUTTERS}>
+            {hasVariants && (
+              <Col xs={24} lg={12}>
+                <Card
+                  title={td('Variants')}
+                  style={CARD_STYLE}
+                  styles={CARD_STYLES}
+                  extra={
+                    <SearchToolTip>
+                      <VariantsInstructions />
+                    </SearchToolTip>
+                  }
+                >
+                  <VariantsForm beaconAssemblyIds={beaconAssemblyIds} />
+                </Card>
+              </Col>
+            )}
+            <Col xs={24} lg={hasVariants ? 12 : 24}>
               <Card
-                title={td('Variants')}
+                title={
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <>{td('Metadata')}</>
+                  </div>
+                }
                 style={CARD_STYLE}
                 styles={CARD_STYLES}
                 extra={
                   <SearchToolTip>
-                    <VariantsInstructions />
+                    <MetadataInstructions />
                   </SearchToolTip>
                 }
               >
-                <VariantsForm beaconAssemblyIds={beaconAssemblyIds} />
+                <Filters filters={filters} setFilters={setFilters} form={form} querySections={querySections} />
               </Card>
             </Col>
-          )}
-          <Col xs={24} lg={hasVariants ? 12 : 24}>
-            <Card
-              title={
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <>{td('Metadata')}</>
-                </div>
-              }
-              style={CARD_STYLE}
-              styles={CARD_STYLES}
-              extra={
-                <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-                  {isNetworkQuery ? <NetworkFilterToggle /> : null}
-                  <SearchToolTip>
-                    <MetadataInstructions />
-                  </SearchToolTip>
-                </div>
-              }
-            >
-              <Filters
-                filters={filters}
-                setFilters={setFilters}
-                form={form}
-                querySections={querySections}
-                isNetworkQuery={isNetworkQuery}
-              />
-            </Card>
-          </Col>
-        </Row>
-        <Row>
-          <Col span={24}>
-            {showError && (
-              <BeaconErrorMessage
-                message={`${td('Beacon error')}: ${errorMessage}`}
-                onClose={() => setErrorAlertClosed(true)}
-              />
-            )}
-            <div style={BUTTON_AREA_STYLE}>
-              <Button type="primary" htmlType="submit" loading={isFetchingQueryResponse} style={BUTTON_STYLE}>
-                {td(searchButtonText)}
-              </Button>
-              <Button onClick={handleClearForm} style={BUTTON_STYLE}>
-                {td('Clear Form')}
-              </Button>
-            </div>
-          </Col>
-        </Row>
-      </Form>
-    </Card>
+          </Row>
+          <Row>
+            <Col span={24}>
+              {showError && (
+                <BeaconErrorMessage
+                  message={`${td('Beacon error')}: ${errorMessage}`}
+                  onClose={() => setErrorAlertClosed(true)}
+                />
+              )}
+              <div style={BUTTON_AREA_STYLE}>
+                <Button type="primary" htmlType="submit" loading={isFetchingQueryResponse} style={BUTTON_STYLE}>
+                  {td(searchButtonText)}
+                </Button>
+                <Button onClick={handleClearForm} style={BUTTON_STYLE}>
+                  {td('Clear Form')}
+                </Button>
+              </div>
+            </Col>
+          </Row>
+        </Form>
+      </Card>
+    </div>
   );
 };
 

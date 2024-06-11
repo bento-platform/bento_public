@@ -1,25 +1,21 @@
 import React, { useState } from 'react';
-import { useAppSelector } from '@/hooks';
-import { Button, Card, Col, Row, Skeleton, Space, Spin, Statistic, Tag, Tooltip, Typography } from 'antd';
-import { LoadingOutlined, TeamOutlined } from '@ant-design/icons';
+import { Button, Card, Col, Row, Skeleton, Space, Statistic, Tag, Tooltip, Typography } from 'antd';
+import { TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
 import ExpSvg from '../Util/ExpSvg';
 import { BOX_SHADOW, COUNTS_FILL } from '@/constants/overviewConstants';
 import SearchResultsPane from '../Search/SearchResultsPane';
 import BeaconOrganization from './BeaconOrganization';
-import { NetworkBeacon, BeaconFlattenedAggregateResponse } from '@/types/beaconNetwork';
+import { NetworkBeacon } from '@/types/beaconNetwork';
 
 import { useTranslationDefault } from '@/hooks';
 import { FlattenedBeaconResponse } from '@/types/beacon';
 const { Title } = Typography;
-const { Meta } = Card;
 
 // link for bento_public beacon for an instance is at top-level "welcomeUrl"
 // this ONLY exists for instances with a beacon UI
 // there is no general "bento_public" link for instances
 // note that the top-level "welcomeUrl" is separate from organization.welcomeUrl
-
-const DETAILS_MIN_HEIGHT = { minHeight: '169px' };
 
 const CustomSkeleton = () => {
   return (
@@ -35,7 +31,7 @@ const BeaconDetails = ({ beacon, response }: BeaconDetailsProps) => {
   console.log({ beacon });
 
   const t = useTranslationDefault();
-  const { id, organization, welcomeUrl, description, overview } = beacon;
+  const { organization, welcomeUrl, description, overview } = beacon;
   const { variants } = overview;
   const assemblies = Object.keys(variants);
 

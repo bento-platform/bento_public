@@ -4,7 +4,7 @@ import { useTranslationDefault } from '@/hooks';
 
 const METADATA_INSTRUCTIONS = 'Search over clinical or phenotypic properties.';
 
-export const metadataInstructions = () => {
+export const MetadataInstructions = () => {
   const td = useTranslationDefault();
   return <ToolTipText>{td(METADATA_INSTRUCTIONS)}</ToolTipText>;
 };

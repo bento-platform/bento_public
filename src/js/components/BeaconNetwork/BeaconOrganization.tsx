@@ -1,10 +1,9 @@
 import React from 'react';
 import { Card, Typography } from 'antd';
 import { BeaconOrganizationType } from '@/types/beacon';
-const { Title, Text, Link } = Typography;
+const { Text, Link } = Typography;
 
 const LINK_STYLE = { padding: '10px' };
-const ORG_CARD_STYLE = { background: 'hotpink' };
 const CARD_STYLES = {
   body: { background: '#f5f5f5', width: '100%' },
 };

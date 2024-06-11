@@ -12,16 +12,12 @@ import Filter from './Filter';
 // ideally:
 // - should not permit you to make multiple queries on the same key (Redmine #1688)
 
-
-
 // TODO:
 // for networks, add an "all filters / common filters" toggle
 
-
-
 const BUTTON_STYLE = { margin: '10px 0' };
 
-const Filters = ({ filters, setFilters, form, querySections, isNetworkQuery }: FiltersProps) => {
+const Filters = ({ filters, setFilters, form, querySections }: FiltersProps) => {
   const { t: td } = useTranslation(DEFAULT_TRANSLATION);
   const dispatch = useAppDispatch();
   const maxFilters = useAppSelector((state) => state.config.maxQueryParameters);
@@ -29,8 +25,8 @@ const Filters = ({ filters, setFilters, form, querySections, isNetworkQuery }: F
   const activeFilters = filters.filter((f) => f.active);
   const hasMaxFilters = maxQueryParametersRequired && activeFilters.length >= maxFilters;
 
-  const isQuerySectionsUnion = useAppSelector((state) => state.beaconNetwork.isQuerySectionsUnion)
-  
+  const isQuerySectionsUnion = useAppSelector((state) => state.beaconNetwork.isQuerySectionsUnion);
+
   const NetworkFilterToggle = () => {
     return (
       <Tooltip title="Choose all search filters across the network, or only those common to all beacons.">
@@ -48,12 +44,8 @@ const Filters = ({ filters, setFilters, form, querySections, isNetworkQuery }: F
     );
   };
 
-
-
-
   // don't need to pull filters from state
   // we only need to known *which* state we are in, so it can be shown in the switch
-
 
   // UI starts with an optional filter, which can be left blank
   const isRequired = filters.length > 1;
@@ -79,7 +71,7 @@ const Filters = ({ filters, setFilters, form, querySections, isNetworkQuery }: F
             {td('Add Filter')}
           </Button>
         </Tooltip>
-        <NetworkFilterToggle/>
+        <NetworkFilterToggle />
       </Space>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         {activeFilters.map((f) => (
@@ -102,7 +94,6 @@ export interface FiltersProps {
   setFilters: Dispatch<SetStateAction<FormFilter[]>>;
   form: FormInstance;
   querySections: SearchFieldResponse['sections'];
-  isNetworkQuery: boolean;
 }
 
 export default Filters;

@@ -20,7 +20,6 @@ import Search from './Search/Search';
 import ProvenanceTab from './Provenance/ProvenanceTab';
 import BeaconQueryUi from './Beacon/BeaconQueryUi';
 import NetworkUi from './BeaconNetwork/NetworkUi';
-import DumbNetworkUi from './BeaconNetwork/DumbNetworkUi';
 import { useAppDispatch, useAppSelector, useTranslationDefault } from '@/hooks';
 import { buildQueryParamsUrl } from '@/utils/search';
 import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
@@ -105,7 +104,7 @@ const TabbedDashboard = () => {
       key: 'beacon',
     },
     {
-      title: 'Beacon Network',
+      title: 'Network',
       content: <NetworkUi />,
       loading: isFetchingNetworkConfig,
       active: BEACON_NETWORK_UI_ENABLED,

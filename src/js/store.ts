@@ -44,7 +44,7 @@ export const store = configureStore({
     beaconConfig: beaconConfigReducer,
     beaconQuery: beaconQueryReducer,
     beaconNetwork: beaconNetworkConfigReducer,
-    beaconNetworkResponse: networkBeaconQueryReducer
+    beaconNetworkResponse: networkBeaconQueryReducer,
   },
   preloadedState: persistedState,
 });

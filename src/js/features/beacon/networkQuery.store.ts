@@ -1,14 +1,10 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 // import { makeAuthorizationHeader } from 'bento-auth-js';
 import { RootState } from '@/store';
 import { beaconApiError } from '@/utils/beaconApiError';
 import { BeaconQueryPayload } from '@/types/beacon';
-import { BeaconNetworkAggregatedResponse } from '@/types/beaconNetwork';
 import { networkBeaconQuery } from './networkBeaconQuery.store';
 import { BEACON_NETWORK_ROOT } from '@/constants/beaconConstants';
-
-// probably more biolerplate here than needed
-// we only really need to dispatch networkBeaconQuery() once for each beacon in the network
 
 // can parameterize at some point in the future
 const DEFAULT_QUERY_ENDPOINT = '/individuals';
@@ -16,6 +12,10 @@ const DEFAULT_QUERY_ENDPOINT = '/individuals';
 const queryUrl = (beaconId: string, endpoint: string): string => {
   return BEACON_NETWORK_ROOT + 'beacons/' + beaconId + endpoint;
 };
+
+// probably more biolerplate here than needed
+// we only really need to dispatch networkBeaconQuery() once for each beacon in the network
+// correct implementation is left as an exercise for the reader
 
 export const beaconNetworkQuery = createAsyncThunk<void, BeaconQueryPayload, { state: RootState; rejectValue: string }>(
   'beaconNetwork/beaconNetworkQuery',
@@ -35,4 +35,3 @@ export const beaconNetworkQuery = createAsyncThunk<void, BeaconQueryPayload, { s
     ).catch(beaconApiError(rejectWithValue));
   }
 );
-

@@ -66,7 +66,7 @@ const beaconNetwork = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(getBeaconNetworkConfig.pending, (state, action) => {
+    builder.addCase(getBeaconNetworkConfig.pending, (state) => {
       state.isFetchingBeaconNetworkConfig = true;
     });
     builder.addCase(getBeaconNetworkConfig.fulfilled, (state, { payload }) => {
@@ -77,7 +77,7 @@ const beaconNetwork = createSlice({
       state.currentQuerySections = payload.filtersUnion;
       state.assemblyIds = networkAssemblyIds(payload.beacons);
     });
-    builder.addCase(getBeaconNetworkConfig.rejected, (state, { payload }) => {
+    builder.addCase(getBeaconNetworkConfig.rejected, (state) => {
       state.isFetchingBeaconNetworkConfig = false;
       state.hasBeaconNetworkError = true;
     });

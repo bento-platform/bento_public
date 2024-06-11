@@ -19,7 +19,7 @@ const SearchResultsPane = ({
   experimentCount,
   experimentChartData,
   resultsTitle,
-  resultsExtra
+  resultsExtra,
 }: SearchResultsPaneProps) => {
   const t = useTranslationDefault();
 
@@ -39,9 +39,10 @@ const SearchResultsPane = ({
           // + card wrapper padding (2*10 = 20)
           // + border (2*1 = 2)
           // = 402, or + 56 = 458 if any header content present
-          minHeight: (resultsTitle || resultsExtra) ? '458px' :'402px',
+          minHeight: resultsTitle || resultsExtra ? '458px' : '402px',
           ...BOX_SHADOW,
         }}
+        // styles={{ body: { padding: '-10px' }, header: {} }}
         loading={isFetchingData}
         title={resultsTitle}
         extra={resultsExtra}

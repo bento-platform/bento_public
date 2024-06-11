@@ -1,10 +1,4 @@
-import {
-  BeaconConfigResponse,
-  BeaconServiceInfo,
-  BeaconQueryResponse,
-  BeaconQueryPayload,
-  FlattenedBeaconResponse,
-} from './beacon';
+import { BeaconServiceInfo, BeaconQueryPayload, FlattenedBeaconResponse } from './beacon';
 import { ChartData } from './data';
 
 export interface NetworkBeacon extends BeaconServiceInfo {
