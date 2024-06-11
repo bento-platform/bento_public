@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAppSelector } from '@/hooks';
-import { Button, Card, Col, Row, Space, Statistic, Tag, Typography } from 'antd';
-import { TeamOutlined } from '@ant-design/icons';
+import { Button, Card, Col, Row, Skeleton, Space, Spin, Statistic, Tag, Tooltip, Typography } from 'antd';
+import { LoadingOutlined, TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
 import ExpSvg from '../Util/ExpSvg';
 import { BOX_SHADOW, COUNTS_FILL } from '@/constants/overviewConstants';
@@ -13,16 +13,23 @@ import { useTranslationDefault } from '@/hooks';
 import { FlattenedBeaconResponse } from '@/types/beacon';
 const { Title } = Typography;
 const { Meta } = Card;
-// get name, logo, and overview details from /overview for each instance
-
-//get results for each beacon from redux and pass as props
-
-// add a tag for each assembly
 
 // link for bento_public beacon for an instance is at top-level "welcomeUrl"
 // this ONLY exists for instances with a beacon UI
 // there is no general "bento_public" link for instances
 // note that the top-level "welcomeUrl" is separate from organization.welcomeUrl
+
+const DETAILS_MIN_HEIGHT = { minHeight: '169px' };
+
+const CustomSkeleton = () => {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+      {/* <Skeleton title={false} paragraph={{rows: 2, width: 300}} active /> */}
+      <Skeleton.Input size="small" style={{ width: '350px' }} active />
+      <Skeleton.Input size="small" style={{ marginTop: '10px', width: '350px' }} active />
+    </div>
+  );
+};
 
 const BeaconDetails = ({ beacon, response }: BeaconDetailsProps) => {
   console.log({ beacon });
@@ -32,9 +39,18 @@ const BeaconDetails = ({ beacon, response }: BeaconDetailsProps) => {
   const { variants } = overview;
   const assemblies = Object.keys(variants);
 
-  console.log({ assemblies });
+  console.log({ response });
 
-  const { individualCount, biosampleCount, experimentCount, biosampleChartData, experimentChartData } = response;
+  const {
+    isFetchingQueryResponse,
+    hasApiError,
+    apiErrorMessage,
+    individualCount,
+    biosampleCount,
+    experimentCount,
+    biosampleChartData,
+    experimentChartData,
+  } = response;
   const [showFullCard, setShowFullCard] = useState<boolean>(false);
 
   // some fields may be missing from response, eg when there's an error
@@ -53,7 +69,7 @@ const BeaconDetails = ({ beacon, response }: BeaconDetailsProps) => {
   return (
     <Card
       title={
-        <div style={{ display: 'flex' }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
           <Title level={5} type="secondary">
             {organization.name}
           </Title>
@@ -65,10 +81,20 @@ const BeaconDetails = ({ beacon, response }: BeaconDetailsProps) => {
         padding: '5px',
         maxWidth: showFullCard ? '1200px' : '680px',
         width: '100%',
+        minHeight: '169px', // leave enough room for stats skeleton
         ...BOX_SHADOW,
       }}
-      styles={{body: {paddingBottom: "10px"}}}
-      extra={<Button onClick={toggleFullCard}>more</Button>}
+      styles={{ body: { paddingBottom: '10px' } }}
+      extra={
+        <>
+          {hasApiError && (
+            <Tooltip title={`Error response from beacon: ${apiErrorMessage}`}>
+              <Tag color="red">error</Tag>
+            </Tooltip>
+          )}
+          <Button onClick={toggleFullCard}>more</Button>
+        </>
+      }
     >
       <Row gutter={[8, 8]}>
         <Col span={6}>
@@ -80,29 +106,37 @@ const BeaconDetails = ({ beacon, response }: BeaconDetailsProps) => {
         <Col span={18} style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Space direction="horizontal" size="middle" style={{ display: 'flex', alignItems: 'flex-start' }}>
             {assemblies.map((a) => (
-              <Tag color="blue">{a}</Tag>
+              <Tag color="blue" key={a}>
+                {a}
+              </Tag>
             ))}
-            <Statistic
-              style={{ minWidth: '100px' }}
-              title={t('Individuals')}
-              value={individualCount ? individualCount : '----'}
-              valueStyle={{ color: COUNTS_FILL }}
-              prefix={<TeamOutlined />}
-            />
-            <Statistic
-              style={{ minWidth: '100px' }}
-              title={t('Biosamples')}
-              value={biosampleCount ? biosampleCount : '----'}
-              valueStyle={{ color: COUNTS_FILL }}
-              prefix={<BiDna />}
-            />
-            <Statistic
-              style={{ minWidth: '100px' }}
-              title={t('Experiments')}
-              value={experimentCount ? experimentCount : '----'}
-              valueStyle={{ color: COUNTS_FILL }}
-              prefix={<ExpSvg />}
-            />
+            {isFetchingQueryResponse ? (
+              <CustomSkeleton />
+            ) : (
+              <>
+                <Statistic
+                  style={{ minWidth: '100px' }}
+                  title={t('Individuals')}
+                  value={individualCount ? individualCount : '----'}
+                  valueStyle={{ color: COUNTS_FILL }}
+                  prefix={<TeamOutlined />}
+                />
+                <Statistic
+                  style={{ minWidth: '100px' }}
+                  title={t('Biosamples')}
+                  value={biosampleCount ? biosampleCount : '----'}
+                  valueStyle={{ color: COUNTS_FILL }}
+                  prefix={<BiDna />}
+                />
+                <Statistic
+                  style={{ minWidth: '100px' }}
+                  title={t('Experiments')}
+                  value={experimentCount ? experimentCount : '----'}
+                  valueStyle={{ color: COUNTS_FILL }}
+                  prefix={<ExpSvg />}
+                />
+              </>
+            )}
           </Space>
         </Col>
       </Row>
