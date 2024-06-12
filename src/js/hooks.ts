@@ -66,13 +66,11 @@ function isSpaceAvailable(element: HTMLElement): boolean {
 export const useElementWidth = (ref: React.RefObject<HTMLElement>, initialWidth: number) => {
   const [width, setWidth] = useState(initialWidth);
 
-  if (initialWidth === 3) {
-    console.log('initialWidth is 3');
-  }
-
   const adjustWidth = useCallback(() => {
     if (ref.current) {
-      if (isElementOutOfView(ref.current)) {
+      if (initialWidth < width) {
+        setWidth(initialWidth);
+      } else if (isElementOutOfView(ref.current)) {
         setWidth((prevWidth) => Math.max(prevWidth - 1, 1));
       } else if (width < initialWidth && isSpaceAvailable(ref.current)) {
         setWidth((prevWidth) => Math.min(prevWidth + 1, initialWidth));
@@ -82,10 +80,7 @@ export const useElementWidth = (ref: React.RefObject<HTMLElement>, initialWidth:
 
   useEffect(() => {
     adjustWidth();
-    if (initialWidth === 3) {
-      console.log('initialWidth is 3');
-    }
-  }, [adjustWidth]);
+  }, [adjustWidth, initialWidth]);
 
   useEffect(() => {
     const handleResize = debounceAdjustWidth(adjustWidth, 200);
