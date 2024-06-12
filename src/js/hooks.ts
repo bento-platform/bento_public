@@ -88,7 +88,7 @@ export const useElementWidth = (ref: React.RefObject<HTMLElement>, initialWidth:
   }, [adjustWidth]);
 
   useEffect(() => {
-    const handleResize = debounceAdjustWidth(adjustWidth, 50);
+    const handleResize = debounceAdjustWidth(adjustWidth, 200);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [adjustWidth]);
