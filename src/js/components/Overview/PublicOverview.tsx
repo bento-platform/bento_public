@@ -30,6 +30,7 @@ const PublicOverview = () => {
 
   useEffect(() => {
     // Save sections to localStorage when they change
+    if (isFetchingOverviewData) return;
     saveToLocalStorage(sections);
   }, [sections]);
 
