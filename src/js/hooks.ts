@@ -55,7 +55,7 @@ export const useBeaconWithAuthIfAllowed = () => {
 
 function isElementOutOfView(element: HTMLElement): boolean {
   const rect = element.getBoundingClientRect();
-  return rect.right > window.innerWidth;
+  return rect.right + 20 > window.innerWidth;
 }
 
 export const useElementWidth = (ref: React.RefObject<HTMLElement>, initialWidth: number) => {
