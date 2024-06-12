@@ -96,7 +96,7 @@ const SEARCH_SECTION_STYLE = { maxWidth: 1200 };
 const Search: React.FC = () => {
   const t = useTranslationCustom();
 
-  const { isFetchingData: isFetchingSearchFields, querySections: searchSections } = useAppSelector(
+  const { isFetchingFields: isFetchingSearchFields, querySections: searchSections } = useAppSelector(
     (state) => state.query
   );
 
