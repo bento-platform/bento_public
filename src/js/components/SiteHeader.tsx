@@ -36,13 +36,13 @@ const SiteHeader = () => {
     <Header style={{ position: 'fixed', width: '100%', zIndex: 100, top: 0 }}>
       <Flex align="center" justify="space-between">
         <Space size="middle">
-          <a href="/">
-            <img
-              src="/public/assets/branding_white.png"
-              alt="logo"
-              style={{ height: '32px', verticalAlign: 'middle' }}
-            />
-          </a>
+          <img
+            src="/public/assets/branding_white.png"
+            alt="logo"
+            style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-4px)' }}
+            onClick={() => navigate('/')}
+          />
+
           <Typography.Title
             level={1}
             style={{ fontSize: '18px', margin: 0, lineHeight: '64px', color: 'white' }}
