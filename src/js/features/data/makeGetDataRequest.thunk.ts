@@ -10,14 +10,15 @@ import { ChartConfig } from '@/types/chartConfig';
 import { ChartDataField, LocalStorageData, Sections } from '@/types/data';
 import { Counts, OverviewResponse } from '@/types/overviewResponse';
 import { printAPIError } from '@/utils/error.util';
+import { RootState } from '@/store';
 
 export const makeGetDataRequestThunk = createAsyncThunk<
   { sectionData: Sections; counts: Counts; defaultData: Sections },
   void,
-  { rejectValue: string }
->('data/makeGetDataRequest', async (_, { rejectWithValue }) => {
+  { rejectValue: string; state: RootState }
+>('data/makeGetDataRequest', async (_, { rejectWithValue, getState }) => {
   const overviewResponse = (await axios
-    .get(katsuPublicOverviewUrl)
+    .get(katsuPublicOverviewUrl, { params: getState().metadata.params })
     .then((res) => res.data)
     .catch(printAPIError(rejectWithValue))) as OverviewResponse['overview'];
 
