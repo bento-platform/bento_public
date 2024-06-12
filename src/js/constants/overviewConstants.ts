@@ -7,3 +7,6 @@ export const PIE_CHART_HEIGHT = 300; // rendered slightly smaller since labels c
 export const DEFAULT_CHART_WIDTH = 1;
 
 export const BOX_SHADOW = { boxShadow: '0 2px 10px rgba(0,0,0,0.05)' };
+
+export const CHART_WIDTH = 450;
+export const GRID_GAP = 20;

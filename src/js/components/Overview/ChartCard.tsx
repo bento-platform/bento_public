@@ -34,7 +34,6 @@ const ChartCard: React.FC<ChartCardProps> = memo(({ section, chart, onRemoveChar
   const t = useTranslationCustom();
   const td = useTranslationDefault();
   const containerRef = useRef<HTMLDivElement>(null);
-
   const width = useElementWidth(containerRef, chart.width);
 
   const {

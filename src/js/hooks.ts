@@ -7,6 +7,7 @@ import type { RootState, AppDispatch } from '@/store';
 import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { NamespaceTranslationFunction } from '@/types/translation';
 import { setMaxQueryParametersRequired } from '@/features/config//config.store';
+import { CHART_WIDTH, GRID_GAP } from '@/constants/overviewConstants';
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 // refer to https://react-redux.js.org/using-react-redux/usage-with-typescript#define-typed-hooks for more info
@@ -52,34 +53,45 @@ export const useBeaconWithAuthIfAllowed = () => {
 };
 
 // ################### OVERFLOW HOOKS ###################
-
 function isElementOutOfView(element: HTMLElement): boolean {
   const rect = element.getBoundingClientRect();
-  return rect.right + 20 > window.innerWidth;
+  return rect.right + 64 > window.innerWidth;
+}
+
+function isSpaceAvailable(element: HTMLElement): boolean {
+  const rect = element.getBoundingClientRect();
+  return rect.right + CHART_WIDTH + GRID_GAP + 64 < window.innerWidth;
 }
 
 export const useElementWidth = (ref: React.RefObject<HTMLElement>, initialWidth: number) => {
   const [width, setWidth] = useState(initialWidth);
 
+  if (initialWidth === 3) {
+    console.log('initialWidth is 3');
+  }
+
   const adjustWidth = useCallback(() => {
     if (ref.current) {
       if (isElementOutOfView(ref.current)) {
         setWidth((prevWidth) => Math.max(prevWidth - 1, 1));
-      } else if (width < initialWidth) {
+      } else if (width < initialWidth && isSpaceAvailable(ref.current)) {
         setWidth((prevWidth) => Math.min(prevWidth + 1, initialWidth));
       }
     }
   }, [ref, width, initialWidth]);
 
   useEffect(() => {
-    const handleResize = debounceAdjustWidth(adjustWidth, 100); // Adjust debounce delay as needed
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    adjustWidth();
+    if (initialWidth === 3) {
+      console.log('initialWidth is 3');
+    }
   }, [adjustWidth]);
 
   useEffect(() => {
-    setWidth(initialWidth);
-  }, [initialWidth]);
+    const handleResize = debounceAdjustWidth(adjustWidth, 50);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [adjustWidth]);
 
   return width;
 };

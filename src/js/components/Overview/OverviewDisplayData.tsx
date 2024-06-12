@@ -4,9 +4,7 @@ import { useDispatch } from 'react-redux';
 import { disableChart } from '@/features/data/data.store';
 import { ChartDataField } from '@/types/data';
 import ChartCard from './ChartCard';
-
-const CHART_WIDTH = 450;
-const GRID_GAP = 20;
+import { CHART_WIDTH, GRID_GAP } from '@/constants/overviewConstants';
 
 const OverviewDisplayData = ({ section, allCharts }: OverviewDisplayDataProps) => {
   const dispatch = useDispatch();
