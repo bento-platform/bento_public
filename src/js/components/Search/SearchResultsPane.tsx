@@ -6,7 +6,7 @@ import { PieChart } from 'bento-charts';
 import CustomEmpty from '../Util/CustomEmpty';
 import ExpSvg from '../Util/ExpSvg';
 import { BOX_SHADOW, COUNTS_FILL, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
-import { useTranslationDefault } from '@/hooks';
+import { useTranslationDefault, useTranslationCustom } from '@/hooks';
 import { ChartData } from '@/types/data';
 
 const SearchResultsPane = ({
@@ -19,7 +19,9 @@ const SearchResultsPane = ({
   experimentCount,
   experimentChartData,
 }: SearchResultsPaneProps) => {
-  const t = useTranslationDefault();
+  const td = useTranslationDefault();
+  const t = useTranslationCustom();
+  const translateMap = ({ x, y }: { x: string; y: number }) => ({ x: t(x), y });
 
   return (
     <div style={{ paddingBottom: 8, display: 'flex', justifyContent: 'center', width: '100%' }}>
@@ -46,19 +48,19 @@ const SearchResultsPane = ({
           <Col xs={24} lg={4}>
             <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
               <Statistic
-                title={t('Individuals')}
-                value={hasInsufficientData ? t(message) : individualCount}
+                title={td('Individuals')}
+                value={hasInsufficientData ? td(message) : individualCount}
                 valueStyle={{ color: COUNTS_FILL }}
                 prefix={<TeamOutlined />}
               />
               <Statistic
-                title={t('Biosamples')}
+                title={td('Biosamples')}
                 value={hasInsufficientData ? '----' : biosampleCount}
                 valueStyle={{ color: COUNTS_FILL }}
                 prefix={<BiDna />}
               />
               <Statistic
-                title={t('Experiments')}
+                title={td('Experiments')}
                 value={hasInsufficientData ? '----' : experimentCount}
                 valueStyle={{ color: COUNTS_FILL }}
                 prefix={<ExpSvg />}
@@ -67,20 +69,20 @@ const SearchResultsPane = ({
           </Col>
           <Col xs={24} lg={10}>
             <Typography.Title level={5} style={{ marginTop: 0 }}>
-              {t('Biosamples')}
+              {td('Biosamples')}
             </Typography.Title>
             {!hasInsufficientData && biosampleChartData.length ? (
-              <PieChart data={biosampleChartData} height={PIE_CHART_HEIGHT} sort={true} />
+              <PieChart data={biosampleChartData} height={PIE_CHART_HEIGHT} sort={true} dataMap={translateMap} />
             ) : (
               <CustomEmpty text="No Results" />
             )}
           </Col>
           <Col xs={24} lg={10}>
             <Typography.Title level={5} style={{ marginTop: 0 }}>
-              {t('Experiments')}
+              {td('Experiments')}
             </Typography.Title>
             {!hasInsufficientData && experimentChartData.length ? (
-              <PieChart data={experimentChartData} height={PIE_CHART_HEIGHT} sort={true} />
+              <PieChart data={experimentChartData} height={PIE_CHART_HEIGHT} sort={true} dataMap={translateMap} />
             ) : (
               <CustomEmpty text="No Results" />
             )}
