@@ -32,8 +32,6 @@ const Filters = ({ filters, setFilters, form, querySections }: FiltersProps) => 
       <Tooltip title="Choose all search filters across the network, or only those common to all beacons.">
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <Switch
-            checkedChildren="∪"
-            unCheckedChildren="∩"
             onChange={() => dispatch(toggleQuerySectionsUnionOrIntersection())}
             checked={isQuerySectionsUnion}
             style={{ margin: '5px' }}
