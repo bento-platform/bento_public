@@ -12,12 +12,13 @@ import { NEW_BENTO_PUBLIC_THEME } from '@/constants/overviewConstants';
 import { DEFAULT_TRANSLATION, SUPPORTED_LNGS } from '@/constants/configConstants';
 
 // Component imports
-import { Button, Layout, Modal, message } from 'antd';
+import { Button, ConfigProvider, Layout, Modal, message } from 'antd';
 import { ChartConfigProvider } from 'bento-charts';
-import TabbedDashboard from '@/components/TabbedDashboard';
 import SiteHeader from '@/components/SiteHeader';
 import SiteFooter from '@/components/SiteFooter';
-import SitePageLoading from '@/components/SitePageLoading';
+import SiteSider from '@/components/SiteSider';
+import Loader from '@/components/Loader';
+import BentoAppRouter from '@/components/BentoAppRouter';
 
 // Hooks and utilities imports
 import {
