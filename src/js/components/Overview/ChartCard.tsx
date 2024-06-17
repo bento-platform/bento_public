@@ -13,6 +13,7 @@ const ROW_EMPTY_STYLE: React.CSSProperties = { height: `${CHART_HEIGHT}px` };
 interface TitleComponentProps {
   title: string;
   description: string;
+  smallEllipsis: boolean;
 }
 
 const TitleComponent: React.FC<TitleComponentProps> = ({ title, description, smallEllipsis }) => (
@@ -27,12 +28,6 @@ const TitleComponent: React.FC<TitleComponentProps> = ({ title, description, sma
     </Typography.Text>
   </Space.Compact>
 );
-
-interface TitleComponentProps {
-  title: string;
-  description: string;
-  smallEllipsis: boolean;
-}
 
 const ChartCard: React.FC<ChartCardProps> = memo(({ section, chart, onRemoveChart }) => {
   const t = useTranslationCustom();
@@ -104,7 +99,6 @@ export interface ChartCardProps {
   section: string;
   chart: ChartDataField;
   onRemoveChart: (arg: { section: string; id: string }) => void;
-  width: number;
 }
 
 export default ChartCard;
