@@ -39,7 +39,7 @@ const SiteHeader = () => {
           <img
             src="/public/assets/branding.png"
             alt="logo"
-            style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-4px)' }}
+            style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-3px)' }}
             onClick={() => navigate('/')}
           />
 
