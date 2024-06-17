@@ -37,7 +37,7 @@ const SiteHeader = () => {
       <Flex align="center" justify="space-between">
         <Space size="middle">
           <img
-            src="/public/assets/branding_white.png"
+            src="/public/assets/branding.png"
             alt="logo"
             style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-4px)' }}
             onClick={() => navigate('/')}
