@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Card, Col, Row, Statistic, Typography, Space } from 'antd';
 import { TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
@@ -21,7 +21,7 @@ const SearchResultsPane = ({
 }: SearchResultsPaneProps) => {
   const td = useTranslationDefault();
   const t = useTranslationCustom();
-  const translateMap = ({ x, y }: { x: string; y: number }) => ({ x: t(x), y });
+  const translateMap = useCallback(({ x, y }: { x: string; y: number }) => ({ x: t(x), y }), [t]);
 
   return (
     <div style={{ paddingBottom: 8, display: 'flex', justifyContent: 'center', width: '100%' }}>
