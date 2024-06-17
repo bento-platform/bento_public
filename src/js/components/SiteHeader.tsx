@@ -63,7 +63,13 @@ const SiteHeader = () => {
               {LNGS_FULL_NAMES[LNG_CHANGE[i18n.language]]}
             </Button>
           )}
-          <Button type="text" className="header-button" icon={<ExportOutlined />} onClick={openPortalWindow}>
+          <Button
+            type="text"
+            className="header-button"
+            icon={<ExportOutlined />}
+            iconPosition="end"
+            onClick={openPortalWindow}
+          >
             {t('Portal')}
           </Button>
           {isAuthenticated ? (
