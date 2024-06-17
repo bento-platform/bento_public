@@ -15,19 +15,24 @@ interface TitleComponentProps {
   description: string;
 }
 
-const TitleComponent: React.FC<TitleComponentProps> = ({ title, description }) => (
-  <Space direction="vertical" style={{ fontWeight: 'normal', padding: '5px 5px' }}>
+
+const TitleComponent: React.FC<TitleComponentProps> = ({ title, description, smallEllipsis }) => (
+  <Space.Compact direction="vertical" style={{ fontWeight: 'normal', padding: '5px 5px' }}>
     <Typography.Text style={{ fontSize: '20px', fontWeight: '600' }}>{title}</Typography.Text>
-    <Typography.Text type="secondary" style={{ width: '375px' }} ellipsis={{ tooltip: description }}>
+    <Typography.Text
+      type="secondary"
+      style={smallEllipsis ? { width: '260px' } : { width: '375px' }}
+      ellipsis={{ tooltip: description }}
+    >
       {description}
     </Typography.Text>
   </Space>
 );
 
-interface ChartCardProps {
-  section: string;
-  chart: ChartDataField;
-  onRemoveChart: (arg: { section: string; id: string }) => void;
+interface TitleComponentProps {
+  title: string;
+  description: string;
+  smallEllipsis: boolean;
 }
 
 const ChartCard: React.FC<ChartCardProps> = memo(({ section, chart, onRemoveChart }) => {
@@ -77,7 +82,7 @@ const ChartCard: React.FC<ChartCardProps> = memo(({ section, chart, onRemoveChar
   return (
     <div ref={containerRef} key={id} style={{ gridColumn: `span ${width}` }}>
       <Card
-        title={<TitleComponent title={t(title)} description={t(description)} />}
+        title={<TitleComponent title={t(title)} description={t(description)} smallEllipsis={!!missingCount} />}
         style={CARD_STYLE}
         size="small"
         extra={<Space size="small">{ed}</Space>}
