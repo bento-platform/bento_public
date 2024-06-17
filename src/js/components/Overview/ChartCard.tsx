@@ -15,7 +15,6 @@ interface TitleComponentProps {
   description: string;
 }
 
-
 const TitleComponent: React.FC<TitleComponentProps> = ({ title, description, smallEllipsis }) => (
   <Space.Compact direction="vertical" style={{ fontWeight: 'normal', padding: '5px 5px' }}>
     <Typography.Text style={{ fontSize: '20px', fontWeight: '600' }}>{title}</Typography.Text>
@@ -26,7 +25,7 @@ const TitleComponent: React.FC<TitleComponentProps> = ({ title, description, sma
     >
       {description}
     </Typography.Text>
-  </Space>
+  </Space.Compact>
 );
 
 interface TitleComponentProps {
@@ -100,5 +99,12 @@ const ChartCard: React.FC<ChartCardProps> = memo(({ section, chart, onRemoveChar
 });
 
 ChartCard.displayName = 'ChartCard';
+
+export interface ChartCardProps {
+  section: string;
+  chart: ChartDataField;
+  onRemoveChart: (arg: { section: string; id: string }) => void;
+  width: number;
+}
 
 export default ChartCard;
