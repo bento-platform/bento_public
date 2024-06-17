@@ -8,7 +8,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useIsAuthenticated, usePerformAuth, usePerformSignOut } from 'bento-auth-js';
 import { CLIENT_NAME, PORTAL_URL, TRANSLATED } from '@/config';
 import { RiTranslate } from 'react-icons/ri';
-import { LinkOutlined, LoginOutlined, LogoutOutlined } from '@ant-design/icons';
+import { ExportOutlined, LoginOutlined, LogoutOutlined } from '@ant-design/icons';
 
 const openPortalWindow = () => window.open(PORTAL_URL, '_blank');
 
@@ -63,7 +63,7 @@ const SiteHeader = () => {
               {LNGS_FULL_NAMES[LNG_CHANGE[i18n.language]]}
             </Button>
           )}
-          <Button type="text" className="header-button" icon={<LinkOutlined />} onClick={openPortalWindow}>
+          <Button type="text" className="header-button" icon={<ExportOutlined />} onClick={openPortalWindow}>
             {t('Portal')}
           </Button>
           {isAuthenticated ? (
