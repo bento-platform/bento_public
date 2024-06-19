@@ -10,26 +10,27 @@ import { BOX_SHADOW, LOCALSTORAGE_CHARTS_KEY } from '@/constants/overviewConstan
 import OverviewSection from './OverviewSection';
 import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
 import Counts from './Counts';
+import LastIngestionInfo from './LastIngestion';
+import Loader from '@/components/Loader';
+
 import { useAppSelector } from '@/hooks';
 import { useTranslation } from 'react-i18next';
-import LastIngestionInfo from './LastIngestion';
 
-const ABOUT_CARD_STYLE = { borderRadius: '11pX', ...BOX_SHADOW };
+const ABOUT_CARD_STYLE = { width: '100%', maxWidth: '1390px', borderRadius: '11pX', ...BOX_SHADOW };
 const MANAGE_CHARTS_BUTTON_STYLE = { right: '5em', bottom: '1.5em', transform: 'scale(125%)' };
 
 const PublicOverview = () => {
-  const { sections } = useAppSelector((state) => state.data);
+  const { i18n } = useTranslation();
 
   const [drawerVisible, setDrawerVisible] = useState(false);
-
-  const { isFetchingAbout, about } = useAppSelector((state) => state.content);
-
   const [aboutContent, setAboutContent] = useState('');
 
-  const { i18n } = useTranslation();
+  const { isFetchingData: isFetchingOverviewData, sections } = useAppSelector((state) => state.data);
+  const { isFetchingAbout, about } = useAppSelector((state) => state.content);
 
   useEffect(() => {
     // Save sections to localStorage when they change
+    if (isFetchingOverviewData) return;
     saveToLocalStorage(sections);
   }, [sections]);
 
@@ -48,38 +49,33 @@ const PublicOverview = () => {
     saveToLocalStorage(sections);
   }, [sections]);
 
-  return (
+  return isFetchingOverviewData ? (
+    <Loader />
+  ) : (
     <>
-      <div className="container">
-        <Row>
-          <Col flex={1}>
-            <Card style={ABOUT_CARD_STYLE}>
-              {isFetchingAbout ? (
-                <Skeleton title={false} paragraph={{ rows: 2 }} />
-              ) : (
-                <div dangerouslySetInnerHTML={{ __html: aboutContent }} />
-              )}
-            </Card>
-          </Col>
-        </Row>
-        <Row>
-          <Col flex={1}>
-            <Counts />
-          </Col>
-        </Row>
-        <Row>
-          <Col flex={1}>
-            {displayedSections.map(({ sectionTitle, charts }, i) => (
-              <div key={i} className="overview">
-                <OverviewSection title={sectionTitle} chartData={charts} />
-              </div>
-            ))}
-            <LastIngestionInfo />
-          </Col>
-        </Row>
-      </div>
+      <Card style={ABOUT_CARD_STYLE}>
+        {isFetchingAbout ? (
+          <Skeleton title={false} paragraph={{ rows: 2 }} />
+        ) : (
+          <div dangerouslySetInnerHTML={{ __html: aboutContent }} />
+        )}
+      </Card>
+      <Row>
+        <Col flex={1}>
+          <Counts />
+        </Col>
+      </Row>
+      <Row>
+        <Col flex={1}>
+          {displayedSections.map(({ sectionTitle, charts }, i) => (
+            <div key={i} className="overview">
+              <OverviewSection title={sectionTitle} chartData={charts} />
+            </div>
+          ))}
+          <LastIngestionInfo />
+        </Col>
+      </Row>
 
-      {/* Drawer & Button */}
       <ManageChartsDrawer onManageDrawerClose={onManageChartsClose} manageDrawerVisible={drawerVisible} />
       <FloatButton
         type="primary"

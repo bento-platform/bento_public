@@ -10,6 +10,9 @@ export const DEFAULT_CHART_WIDTH = 1;
 
 export const BOX_SHADOW = { boxShadow: '0 2px 10px rgba(0,0,0,0.05)' };
 
+export const CHART_WIDTH = 450;
+export const GRID_GAP = 20;
+
 const NEW_CHART_COLORS: HexColor[] = ['#90BE6D', '#F8961E', '#F3722C', '#2D9CDB', '#F94144', '#F9C74F'];
 const BAR_CHART_FILL: HexColor = '#2D9CDB';
 const CHART_MISSING_FILL: HexColor = '#bbbbbb';

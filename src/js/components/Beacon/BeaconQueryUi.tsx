@@ -19,6 +19,7 @@ import {
 } from '@/constants/beaconConstants';
 
 import { BOX_SHADOW } from '@/constants/overviewConstants';
+import Loader from '@/components/Loader';
 const { Text, Title } = Typography;
 // TODOs
 // example searches, either hardcoded or configurable
@@ -236,7 +237,9 @@ const BeaconQueryUi = () => {
   const metadataInstructions = <ToolTipText>{td(METADATA_INSTRUCTIONS)}</ToolTipText>;
   const isFetchingBeaconQuery = useAppSelector((state) => state.beaconQuery.isFetchingQueryResponse);
 
-  return (
+  return isFetchingBeaconConfig ? (
+    <Loader />
+  ) : (
     <div style={WRAPPER_STYLE}>
       <BeaconSearchResults />
       <Card

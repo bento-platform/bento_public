@@ -12,12 +12,13 @@ import { NEW_BENTO_PUBLIC_THEME } from '@/constants/overviewConstants';
 import { DEFAULT_TRANSLATION, SUPPORTED_LNGS } from '@/constants/configConstants';
 
 // Component imports
-import { Button, Layout, Modal, message } from 'antd';
+import { Button, ConfigProvider, Layout, Modal, message } from 'antd';
 import { ChartConfigProvider } from 'bento-charts';
-import TabbedDashboard from '@/components/TabbedDashboard';
 import SiteHeader from '@/components/SiteHeader';
 import SiteFooter from '@/components/SiteFooter';
-import SitePageLoading from '@/components/SitePageLoading';
+import SiteSider from '@/components/SiteSider';
+import Loader from '@/components/Loader';
+import BentoAppRouter from '@/components/BentoAppRouter';
 
 // Hooks and utilities imports
 import {
@@ -52,6 +53,7 @@ const createSessionWorker = () => new Worker(new URL('./workers/tokenRefresh.ts'
 
 const App = () => {
   const navigate = useNavigate();
+  const [collapsed, setCollapsed] = useState(false);
 
   // TRANSLATION
   const { lang } = useParams<{ lang?: string }>();
@@ -98,7 +100,7 @@ const App = () => {
   useBeaconWithAuthIfAllowed();
 
   return (
-    <>
+    <ConfigProvider theme={{ components: { Menu: { iconSize: 20 } } }}>
       <Modal
         title={t('You have been signed out')}
         onCancel={() => {
@@ -116,17 +118,28 @@ const App = () => {
       </Modal>
       <Layout style={{ minHeight: '100vh' }}>
         <SiteHeader />
-        <Content style={{ padding: '0 30px', marginTop: '10px' }}>
-          <Suspense fallback={<SitePageLoading />}>
-            <Routes>
-              <Route path={CALLBACK_PATH} element={<SitePageLoading />} />
-              <Route path="/:page?/*" element={<TabbedDashboard />} />
-            </Routes>
-          </Suspense>
-        </Content>
-        <SiteFooter />
+        <Layout>
+          <SiteSider collapsed={collapsed} setCollapsed={setCollapsed} />
+          <Layout
+            style={{
+              marginLeft: collapsed ? '80px' : '200px',
+              transition: 'margin-left 0.3s',
+              marginTop: '64px',
+            }}
+          >
+            <Content style={{ padding: '32px 64px' }}>
+              <Suspense fallback={<Loader />}>
+                <Routes>
+                  <Route path={CALLBACK_PATH} element={<Loader />} />
+                  <Route path="/*" element={<BentoAppRouter />} />
+                </Routes>
+              </Suspense>
+            </Content>
+            <SiteFooter />
+          </Layout>
+        </Layout>
       </Layout>
-    </>
+    </ConfigProvider>
   );
 };
 
