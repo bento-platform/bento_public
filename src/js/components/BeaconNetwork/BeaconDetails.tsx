@@ -12,11 +12,6 @@ import { useTranslationDefault } from '@/hooks';
 import { FlattenedBeaconResponse } from '@/types/beacon';
 const { Title } = Typography;
 
-// link for bento_public beacon for an instance is at top-level "welcomeUrl"
-// this ONLY exists for instances with a beacon UI
-// there is no general "bento_public" link for instances
-// note that the top-level "welcomeUrl" is separate from organization.welcomeUrl
-
 const CustomSkeleton = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -31,11 +26,10 @@ const BeaconDetails = ({ beacon, response }: BeaconDetailsProps) => {
   console.log({ beacon });
 
   const t = useTranslationDefault();
-  const { organization, welcomeUrl, description, overview } = beacon;
+  const { apiUrl, organization, description, overview } = beacon;
   const { variants } = overview;
   const assemblies = Object.keys(variants);
-
-  console.log({ response });
+  const bentoUrl = apiUrl.replace('/api/beacon', '');
 
   const {
     isFetchingQueryResponse,
@@ -138,7 +132,7 @@ const BeaconDetails = ({ beacon, response }: BeaconDetailsProps) => {
       </Row>
       {showFullCard && (
         <Row>
-          <BeaconOrganization organization={organization} bentoUrl={welcomeUrl} description={description} />
+          <BeaconOrganization organization={organization} bentoUrl={bentoUrl} description={description} />
           <SearchResultsPane
             isFetchingData={false}
             hasInsufficientData={false}
