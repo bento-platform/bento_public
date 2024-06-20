@@ -25,7 +25,6 @@ export const makeBeaconQuery = createAsyncThunk<
 
 type BeaconQueryInitialStateType = {
   isFetchingQueryResponse: boolean;
-  response: BeaconQueryResponse;
   individualCount: number;
   biosampleCount: number;
   biosampleChartData: ChartData[];
@@ -37,7 +36,6 @@ type BeaconQueryInitialStateType = {
 
 const initialState: BeaconQueryInitialStateType = {
   isFetchingQueryResponse: false,
-  response: {},
   individualCount: 0,
   biosampleCount: 0,
   biosampleChartData: [],
