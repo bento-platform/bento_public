@@ -9,6 +9,7 @@ import { makeGetDataRequestThunk } from '@/features/data/data.store';
 import { makeGetKatsuPublic, makeGetSearchFields } from '@/features/search/query.store';
 import { makeGetProvenanceRequest } from '@/features/provenance/provenance.store';
 import { getBeaconConfig } from '@/features/beacon/beaconConfig.store';
+import { getBeaconNetworkConfig } from '@/features/beacon/networkConfig.store';
 import { fetchGohanData, fetchKatsuData } from '@/features/ingestion/lastIngestion.store';
 import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
 
@@ -18,6 +19,7 @@ import ProvenanceTab from './Provenance/ProvenanceTab';
 import BeaconQueryUi from './Beacon/BeaconQueryUi';
 import { BentoRoute } from '@/types/routes';
 import Loader from '@/components/Loader';
+import NetworkUi from './BeaconNetwork/NetworkUi';
 
 const BentoAppRouter = () => {
   const dispatch = useAppDispatch();
@@ -26,7 +28,10 @@ const BentoAppRouter = () => {
   const isAuthenticated = useIsAuthenticated();
 
   useEffect(() => {
-    dispatch(makeGetConfigRequest()).then(() => dispatch(getBeaconConfig()));
+    dispatch(makeGetConfigRequest()).then(() => {
+      dispatch(getBeaconConfig());
+      dispatch(getBeaconNetworkConfig());
+    });
     dispatch(makeGetAboutRequest());
     dispatch(makeGetDataRequestThunk());
     dispatch(makeGetSearchFields());
@@ -50,6 +55,7 @@ const BentoAppRouter = () => {
       <Route path={`/${BentoRoute.Overview}`} element={<PublicOverview />} />
       <Route path={`/${BentoRoute.Search}/*`} element={<Search />} />
       <Route path={`/${BentoRoute.Beacon}/*`} element={<BeaconQueryUi />} />
+      <Route path={`/${BentoRoute.BeaconNetwork}/*`} element={<NetworkUi />} />
       <Route path={`/${BentoRoute.Provenance}/*`} element={<ProvenanceTab />} />
       <Route path="/*" element={<PublicOverview />} />
     </Routes>
