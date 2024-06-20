@@ -25,7 +25,11 @@ const PublicOverview = () => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [aboutContent, setAboutContent] = useState('');
 
-  const { isFetchingData: isFetchingOverviewData, sections } = useAppSelector((state) => state.data);
+  const {
+    isFetchingData: isFetchingOverviewData,
+    isContentPopulated,
+    sections,
+  } = useAppSelector((state) => state.data);
   const { isFetchingAbout, about } = useAppSelector((state) => state.content);
 
   useEffect(() => {
@@ -49,7 +53,7 @@ const PublicOverview = () => {
     saveToLocalStorage(sections);
   }, [sections]);
 
-  return isFetchingOverviewData ? (
+  return !isContentPopulated ? (
     <Loader />
   ) : (
     <>

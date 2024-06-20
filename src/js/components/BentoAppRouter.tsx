@@ -5,7 +5,7 @@ import { useAppDispatch } from '@/hooks';
 
 import { makeGetConfigRequest, makeGetServiceInfoRequest } from '@/features/config/config.store';
 import { makeGetAboutRequest } from '@/features/content/content.store';
-import { makeGetDataRequestThunk } from '@/features/data/data.store';
+import { makeGetDataRequestThunk, populateClickable } from '@/features/data/data.store';
 import { makeGetKatsuPublic, makeGetSearchFields } from '@/features/search/query.store';
 import { makeGetProvenanceRequest } from '@/features/provenance/provenance.store';
 import { getBeaconConfig } from '@/features/beacon/beaconConfig.store';
@@ -26,19 +26,31 @@ const BentoAppRouter = () => {
   const isAuthenticated = useIsAuthenticated();
 
   useEffect(() => {
-    dispatch(makeGetConfigRequest()).then(() => dispatch(getBeaconConfig()));
-    dispatch(makeGetAboutRequest());
-    dispatch(makeGetDataRequestThunk());
-    dispatch(makeGetSearchFields());
-    dispatch(makeGetProvenanceRequest());
-    dispatch(makeGetKatsuPublic());
-    dispatch(fetchKatsuData());
-    dispatch(fetchGohanData());
-    dispatch(makeGetServiceInfoRequest());
-    //TODO: Dispatch makeGetDataTypes to get the data types from service-registry
-    if (isAuthenticated) {
-      dispatch(makeGetDataTypes());
-    }
+    const fetchInitialData = async () => {
+      try {
+        await dispatch(makeGetConfigRequest());
+        await dispatch(getBeaconConfig());
+        await dispatch(makeGetAboutRequest());
+
+        await Promise.all([dispatch(makeGetDataRequestThunk()), dispatch(makeGetSearchFields())]);
+
+        dispatch(populateClickable());
+
+        await dispatch(makeGetProvenanceRequest());
+        await dispatch(makeGetKatsuPublic());
+        await dispatch(fetchKatsuData());
+        await dispatch(fetchGohanData());
+        await dispatch(makeGetServiceInfoRequest());
+
+        if (isAuthenticated) {
+          await dispatch(makeGetDataTypes());
+        }
+      } catch (error) {
+        console.error('Error fetching initial data', error);
+      }
+    };
+
+    fetchInitialData();
   }, [isAuthenticated]);
 
   if (isAutoAuthenticating) {

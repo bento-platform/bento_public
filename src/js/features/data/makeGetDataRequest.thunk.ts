@@ -38,6 +38,7 @@ export const makeGetDataRequestThunk = createAsyncThunk<
       // Initial display state
       isDisplayed: i < MAX_CHARTS,
       width: chart.width ?? DEFAULT_CHART_WIDTH, // initial configured width; users can change it from here
+      isSearchable: false,
     };
   };
 
