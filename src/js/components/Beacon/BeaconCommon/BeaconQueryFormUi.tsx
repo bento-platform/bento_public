@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch, useTranslationDefault } from '@/hooks';
 
 import { Button, Card, Col, Form, Row } from 'antd';
-import VariantsForm from '../Beacon/VariantsForm';
+import VariantsForm from '../VariantsForm';
 import Filters from './Filters';
 import SearchToolTip from './ToolTips/SearchToolTip';
 import VariantsInstructions from './ToolTips/VariantsInstructions';
-import BeaconErrorMessage from '../Beacon/BeaconErrorMessage';
+import BeaconErrorMessage from '../BeaconErrorMessage';
 import { MetadataInstructions } from './ToolTips/MetadataInstructions';
 import {
   BeaconAssemblyIds,

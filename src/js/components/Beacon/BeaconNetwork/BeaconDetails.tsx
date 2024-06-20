@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Button, Card, Col, Row, Skeleton, Space, Statistic, Tag, Tooltip, Typography } from 'antd';
 import { TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
-import ExpSvg from '../Util/ExpSvg';
+import ExpSvg from '../../Util/ExpSvg';
 import { BOX_SHADOW, COUNTS_FILL } from '@/constants/overviewConstants';
-import SearchResultsPane from '../Search/SearchResultsPane';
+import SearchResultsPane from '../../Search/SearchResultsPane';
 import BeaconOrganization from './BeaconOrganization';
 import { NetworkBeacon } from '@/types/beaconNetwork';
 

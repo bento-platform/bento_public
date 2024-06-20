@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAppSelector } from '@/hooks';
-import SearchResultsPane from '../Search/SearchResultsPane';
+import SearchResultsPane from '../../Search/SearchResultsPane';
 
 const NetworkSearchResults = () => {
   const responses = useAppSelector((state) => state.beaconNetworkResponse.beacons);

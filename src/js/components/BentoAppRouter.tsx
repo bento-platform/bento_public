@@ -19,7 +19,7 @@ import ProvenanceTab from './Provenance/ProvenanceTab';
 import BeaconQueryUi from './Beacon/BeaconQueryUi';
 import { BentoRoute } from '@/types/routes';
 import Loader from '@/components/Loader';
-import NetworkUi from './BeaconNetwork/NetworkUi';
+import NetworkUi from './Beacon/BeaconNetwork/NetworkUi';
 
 const BentoAppRouter = () => {
   const dispatch = useAppDispatch();
