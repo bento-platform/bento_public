@@ -207,7 +207,6 @@ const BeaconQueryFormUi = ({
         title={td('Search')}
         style={{ borderRadius: '10px', maxWidth: '1200px', width: '100%', ...BOX_SHADOW }}
         styles={CARD_STYLES}
-        loading={isFetchingConfig}
       >
         <p style={{ margin: '-8px 0 8px 0', padding: '0', color: 'grey' }}>{td(uiInstructions)}</p>
         <Form form={form} onFinish={handleFinish} layout="vertical" onValuesChange={handleValuesChange}>
