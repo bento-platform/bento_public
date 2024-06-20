@@ -14,13 +14,16 @@ import {
   ChartConfig,
 } from '@/types/chartConfig';
 
-const Chart = memo(({ chartConfig, data, units, id }: ChartProps) => {
+const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const translateMap = ({ x, y }: { x: string; y: number }) => ({ x: t(x), y });
   const removeMissing = ({ x }: { x: string }) => x !== 'missing';
   const barChartOnClickHandler = (d: { payload: { x: string } }) => {
     navigate(`/${i18n.language}/search?${id}=${d.payload.x}`);
+  };
+  const pieChartOnClickHandler = (d: { name: string }) => {
+    navigate(`/${i18n.language}/search?${id}=${d.name}`);
   };
 
   const { chart_type: type } = chartConfig;
@@ -34,7 +37,7 @@ const Chart = memo(({ chartConfig, data, units, id }: ChartProps) => {
           units={units}
           preFilter={removeMissing}
           dataMap={translateMap}
-          onClick={barChartOnClickHandler}
+          {...(isClickable ? { onClick: barChartOnClickHandler } : {})}
         />
       );
     case CHART_TYPE_HISTOGRAM:
@@ -45,7 +48,7 @@ const Chart = memo(({ chartConfig, data, units, id }: ChartProps) => {
           data={data}
           preFilter={removeMissing}
           dataMap={translateMap}
-          onClick={barChartOnClickHandler}
+          {...(isClickable ? { onClick: barChartOnClickHandler } : {})}
         />
       );
     case CHART_TYPE_PIE:
@@ -55,9 +58,7 @@ const Chart = memo(({ chartConfig, data, units, id }: ChartProps) => {
           height={PIE_CHART_HEIGHT}
           preFilter={removeMissing}
           dataMap={translateMap}
-          onClick={(d) => {
-            navigate(`/${i18n.language}/search?${id}=${d.name}`);
-          }}
+          {...(isClickable ? { onClick: pieChartOnClickHandler } : {})}
         />
       );
     case CHART_TYPE_CHOROPLETH: {
@@ -98,6 +99,7 @@ export interface ChartProps {
   data: ChartData[];
   units: string;
   id: string;
+  isClickable: boolean;
 }
 
 export default Chart;

@@ -5,7 +5,7 @@ import { serializeChartData } from '@/utils/chart';
 import { KatsuSearchResponse, SearchFieldResponse } from '@/types/search';
 import { ChartData } from '@/types/data';
 
-type QueryState = {
+export type QueryState = {
   isFetchingFields: boolean;
   isFetchingData: boolean;
   attemptedFetch: boolean;
