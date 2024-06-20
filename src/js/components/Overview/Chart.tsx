@@ -1,18 +1,27 @@
 import React, { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { BarChart, PieChart } from 'bento-charts';
+import { BarChart, Histogram, PieChart } from 'bento-charts';
 import { ChoroplethMap } from 'bento-charts/dist/maps';
 
 import { CHART_HEIGHT, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
 import { ChartData } from '@/types/data';
-import { CHART_TYPE_BAR, CHART_TYPE_CHOROPLETH, CHART_TYPE_PIE, ChartConfig } from '@/types/chartConfig';
+import {
+  CHART_TYPE_BAR,
+  CHART_TYPE_HISTOGRAM,
+  CHART_TYPE_CHOROPLETH,
+  CHART_TYPE_PIE,
+  ChartConfig,
+} from '@/types/chartConfig';
 
 const Chart = memo(({ chartConfig, data, units, id }: ChartProps) => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const translateMap = ({ x, y }: { x: string; y: number }) => ({ x: t(x), y });
   const removeMissing = ({ x }: { x: string }) => x !== 'missing';
+  const barChartOnClickHandler = (d: { payload: { x: string } }) => {
+    navigate(`/${i18n.language}/search?${id}=${d.payload.x}`);
+  };
 
   const { chart_type: type } = chartConfig;
 
@@ -25,9 +34,18 @@ const Chart = memo(({ chartConfig, data, units, id }: ChartProps) => {
           units={units}
           preFilter={removeMissing}
           dataMap={translateMap}
-          onClick={(d) => {
-            navigate(`/${i18n.language}/search?${id}=${d.payload.x}`);
-          }}
+          onClick={barChartOnClickHandler}
+        />
+      );
+    case CHART_TYPE_HISTOGRAM:
+      return (
+        <Histogram
+          units={units}
+          height={CHART_HEIGHT}
+          data={data}
+          preFilter={removeMissing}
+          dataMap={translateMap}
+          onClick={barChartOnClickHandler}
         />
       );
     case CHART_TYPE_PIE:

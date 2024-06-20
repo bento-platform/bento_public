@@ -59,7 +59,7 @@ const config = {
       BENTO_PUBLIC_URL: null,
       CLIENT_ID: null,
       OPENID_CONFIG_URL: null,
-    })
+    }),
   ],
   optimization: {
     runtimeChunk: 'single',

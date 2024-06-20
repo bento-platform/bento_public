@@ -22,7 +22,7 @@ type QueryState = {
 };
 
 const initialState: QueryState = {
-  isFetchingFields: true,
+  isFetchingFields: false,
   isFetchingData: false,
   attemptedFetch: false,
   message: '',

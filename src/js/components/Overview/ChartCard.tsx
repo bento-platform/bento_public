@@ -1,32 +1,39 @@
-import React, { memo } from 'react';
-import Chart from './Chart';
+import React, { memo, useRef } from 'react';
 import { Card, Button, Tooltip, Space, Typography, Row } from 'antd';
 import { CloseOutlined, TeamOutlined } from '@ant-design/icons';
+import Chart from './Chart';
 import CustomEmpty from '../Util/CustomEmpty';
 import { CHART_HEIGHT, BOX_SHADOW } from '@/constants/overviewConstants';
-import { useTranslationCustom, useTranslationDefault } from '@/hooks';
+import { useElementWidth, useTranslationCustom, useTranslationDefault } from '@/hooks';
 import { ChartDataField } from '@/types/data';
 
-const CARD_STYLE = { width: '100%', height: '415px', borderRadius: '11px', ...BOX_SHADOW };
-const ROW_EMPTY_STYLE = { height: `${CHART_HEIGHT}px` };
+const CARD_STYLE: React.CSSProperties = { height: '415px', borderRadius: '11px', ...BOX_SHADOW };
+const ROW_EMPTY_STYLE: React.CSSProperties = { height: `${CHART_HEIGHT}px` };
 
-const TitleComponent: React.FC<TitleComponentProps> = ({ title, description }) => (
+interface TitleComponentProps {
+  title: string;
+  description: string;
+  smallEllipsis: boolean;
+}
+
+const TitleComponent: React.FC<TitleComponentProps> = ({ title, description, smallEllipsis }) => (
   <Space.Compact direction="vertical" style={{ fontWeight: 'normal', padding: '5px 5px' }}>
     <Typography.Text style={{ fontSize: '20px', fontWeight: '600' }}>{title}</Typography.Text>
-    <Typography.Text type="secondary" style={{ width: '375px' }} ellipsis={{ tooltip: description }}>
+    <Typography.Text
+      type="secondary"
+      style={smallEllipsis ? { width: '260px' } : { width: '375px' }}
+      ellipsis={{ tooltip: description }}
+    >
       {description}
     </Typography.Text>
   </Space.Compact>
 );
 
-interface TitleComponentProps {
-  title: string;
-  description: string;
-}
-
-const ChartCard = memo(({ section, chart, onRemoveChart, width }: ChartCardProps) => {
+const ChartCard: React.FC<ChartCardProps> = memo(({ section, chart, onRemoveChart }) => {
   const t = useTranslationCustom();
   const td = useTranslationDefault();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const width = useElementWidth(containerRef, chart.width);
 
   const {
     data,
@@ -66,23 +73,16 @@ const ChartCard = memo(({ section, chart, onRemoveChart, width }: ChartCardProps
     );
   });
 
-  // We add a key to the chart which includes width to force a re-render if width changes.
   return (
-    <div key={id} style={{ height: '100%', width }}>
+    <div ref={containerRef} key={id} style={{ gridColumn: `span ${width}` }}>
       <Card
-        title={<TitleComponent title={t(title)} description={t(description)} />}
+        title={<TitleComponent title={t(title)} description={t(description)} smallEllipsis={!!missingCount} />}
         style={CARD_STYLE}
         size="small"
         extra={<Space size="small">{ed}</Space>}
       >
         {data.filter((e) => !(e.x === 'missing')).length !== 0 ? (
-          <Chart
-            chartConfig={chartConfig}
-            data={data}
-            units={config?.units || ''}
-            id={id}
-            key={`${id}-width-${width}`}
-          />
+          <Chart chartConfig={chartConfig} data={data} units={config?.units || ''} id={id} key={id} />
         ) : (
           <Row style={ROW_EMPTY_STYLE} justify="center" align="middle">
             <CustomEmpty text="No Data" />
@@ -99,7 +99,6 @@ export interface ChartCardProps {
   section: string;
   chart: ChartDataField;
   onRemoveChart: (arg: { section: string; id: string }) => void;
-  width: number;
 }
 
 export default ChartCard;
