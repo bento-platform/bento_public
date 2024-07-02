@@ -3,7 +3,7 @@ import { useAppSelector, useAppDispatch, useTranslationDefault, useBeaconWithAut
 import { Button, Card, Col, Form, Row, Space, Tooltip, Typography } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { useIsAuthenticated } from 'bento-auth-js';
-import Filters from './Filters';
+import Filters from './BeaconCommon/Filters';
 import BeaconSearchResults from './BeaconSearchResults';
 import BeaconErrorMessage from './BeaconErrorMessage';
 import VariantsForm from './VariantsForm';
@@ -269,7 +269,7 @@ const BeaconQueryUi = () => {
                 styles={CARD_STYLES}
                 extra={<SearchToolTip>{metadataInstructions} </SearchToolTip>}
               >
-                <Filters filters={filters} setFilters={setFilters} form={form} querySections={querySections} />
+                <Filters filters={filters} setFilters={setFilters} form={form} querySections={querySections} isNetworkQuery={false} />
               </Card>
             </Col>
           </Row>

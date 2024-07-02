@@ -242,7 +242,7 @@ const BeaconQueryFormUi = ({
                   </SearchToolTip>
                 }
               >
-                <Filters filters={filters} setFilters={setFilters} form={form} querySections={querySections} />
+                <Filters filters={filters} setFilters={setFilters} form={form} querySections={querySections} isNetworkQuery={isNetworkQuery}/>
               </Card>
             </Col>
           </Row>

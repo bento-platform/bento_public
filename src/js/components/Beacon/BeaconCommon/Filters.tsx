@@ -12,12 +12,10 @@ import Filter from './Filter';
 // ideally:
 // - should not permit you to make multiple queries on the same key (Redmine #1688)
 
-// TODO:
-// for networks, add an "all filters / common filters" toggle
 
 const BUTTON_STYLE = { margin: '10px 0' };
 
-const Filters = ({ filters, setFilters, form, querySections }: FiltersProps) => {
+const Filters = ({ filters, setFilters, form, querySections, isNetworkQuery }: FiltersProps) => {
   const { t: td } = useTranslation(DEFAULT_TRANSLATION);
   const dispatch = useAppDispatch();
   const maxFilters = useAppSelector((state) => state.config.maxQueryParameters);
@@ -69,7 +67,7 @@ const Filters = ({ filters, setFilters, form, querySections }: FiltersProps) => 
             {td('Add Filter')}
           </Button>
         </Tooltip>
-        <NetworkFilterToggle />
+        {isNetworkQuery && <NetworkFilterToggle />}
       </Space>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         {activeFilters.map((f) => (
@@ -92,6 +90,7 @@ export interface FiltersProps {
   setFilters: Dispatch<SetStateAction<FormFilter[]>>;
   form: FormInstance;
   querySections: SearchFieldResponse['sections'];
+  isNetworkQuery: boolean;
 }
 
 export default Filters;
