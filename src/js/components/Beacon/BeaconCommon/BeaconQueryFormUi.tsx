@@ -6,7 +6,7 @@ import VariantsForm from './VariantsForm';
 import Filters from './Filters';
 import SearchToolTip from './ToolTips/SearchToolTip';
 import VariantsInstructions from './ToolTips/VariantsInstructions';
-import BeaconErrorMessage from '../BeaconErrorMessage';
+import BeaconErrorMessage from './BeaconErrorMessage';
 import { MetadataInstructions } from './ToolTips/MetadataInstructions';
 import {
   BeaconAssemblyIds,

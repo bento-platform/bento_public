@@ -5,7 +5,7 @@ import { InfoCircleOutlined } from '@ant-design/icons';
 import { useIsAuthenticated } from 'bento-auth-js';
 import Filters from './BeaconCommon/Filters';
 import BeaconSearchResults from './BeaconSearchResults';
-import BeaconErrorMessage from './BeaconErrorMessage';
+import BeaconErrorMessage from './BeaconCommon/BeaconErrorMessage';
 import VariantsForm from './BeaconCommon/VariantsForm';
 import { makeBeaconQuery } from '@/features/beacon/beaconQuery.store';
 import { BeaconQueryPayload, FormFilter, FormValues, PayloadFilter, PayloadVariantsQuery } from '@/types/beacon';
