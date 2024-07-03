@@ -1,15 +1,12 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { projectsUrl } from '@/constants/configConstants';
-import { Project, Dataset, PaginatedResponse } from '@/types/metadata';
+import { PaginatedResponse, Project } from '@/types/metadata';
 import { RootState } from '@/store';
 import axios from 'axios';
 import { printAPIError } from '@/utils/error.util';
 
 interface MetadataState {
   projects: Project[];
-  datasets: Dataset[];
-  projectsById: Record<string, Project>;
-  datasetsById: Record<string, Dataset>;
   isFetching: boolean;
   selectedProjectId: string;
   selectedDatasetId: string;
@@ -21,9 +18,6 @@ interface MetadataState {
 
 const initialState: MetadataState = {
   projects: [],
-  datasets: [],
-  datasetsById: {},
-  projectsById: {},
   isFetching: true,
   selectedProjectId: '',
   selectedDatasetId: '',
@@ -50,7 +44,7 @@ const metadata = createSlice({
   reducers: {
     selectProject: (state, { payload }: PayloadAction<string>) => {
       // Change project selection if valid
-      if (payload === '' || state.projectsById[payload]) {
+      if (payload === '' || state.projects.find(({ identifier }) => identifier === payload)) {
         // select project
         state.selectedProjectId = payload;
         state.params.project = payload;
@@ -66,7 +60,10 @@ const metadata = createSlice({
       // Change dataset selection if it is included in the selected project
       if (
         payload === '' ||
-        (selectedProject && state.projectsById[selectedProject].datasets.some((d) => d.identifier === payload))
+        (selectedProject &&
+          state.projects
+            .find(({ identifier }) => identifier === selectedProject)!
+            .datasets.some((d) => d.identifier === payload))
       ) {
         state.selectedDatasetId = payload;
         state.params.dataset = payload;
@@ -76,32 +73,12 @@ const metadata = createSlice({
     },
   },
   extraReducers(builder) {
-    // Projects
     builder.addCase(getProjects.pending, (state) => {
       state.isFetching = true;
     });
     builder.addCase(getProjects.fulfilled, (state, { payload }) => {
-      const projects = payload?.results ?? [];
-      const datasets = projects.flatMap((p) => p?.datasets ?? []);
-      state.projects = projects;
-      state.datasets = datasets;
-      state.projectsById = Object.fromEntries(projects.map((p) => [p.identifier, p]));
-      state.datasetsById = Object.fromEntries(datasets.map((d) => [d.identifier, d]));
+      state.projects = payload?.results ?? [];
       state.isFetching = false;
-
-      // let selectedProjectId = state.selectedProjectId;
-      // if (!selectedProjectId) {
-      //   // set default project
-      //   selectedProjectId = state.projects.at(0)?.identifier ?? '';
-      //   state.selectedProjectId = selectedProjectId;
-      //   state.params.project = selectedProjectId
-      // }
-      // if (!state.selectedDatasetId && selectedProjectId) {
-      //   // set default dataset
-      //   const datasetId = state.projectsById[state.selectedProjectId]?.datasets.at(0)?.identifier ?? '';
-      //   state.selectedDatasetId = datasetId;
-      //   state.params.dataset = datasetId;
-      // }
     });
     builder.addCase(getProjects.rejected, (state) => {
       state.isFetching = false;
