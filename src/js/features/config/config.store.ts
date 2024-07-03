@@ -7,12 +7,11 @@ import { RootState } from '@/store';
 import { PUBLIC_URL } from '@/config';
 import { DiscoveryRules } from '@/types/configResponse';
 
-export const makeGetConfigRequest = createAsyncThunk<DiscoveryRules, void, { rejectValue: string }>(
+export const makeGetConfigRequest = createAsyncThunk<DiscoveryRules, void, { rejectValue: string; state: RootState }>(
   'config/getConfigData',
-  (_, { rejectWithValue }) =>
-    // TODO: should be project/dataset scoped with url params
+  (_, { rejectWithValue, getState }) =>
     axios
-      .get(katsuPublicRulesUrl)
+      .get(katsuPublicRulesUrl, { params: getState().metadata.params })
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue))
 );
