@@ -28,23 +28,25 @@ const BentoAppRouter = () => {
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        await dispatch(makeGetConfigRequest());
-        await dispatch(getBeaconConfig());
-        await dispatch(makeGetAboutRequest());
-
         await Promise.all([dispatch(makeGetDataRequestThunk()), dispatch(makeGetSearchFields())]);
 
-        dispatch(populateClickable());
-
-        await dispatch(makeGetProvenanceRequest());
-        await dispatch(makeGetKatsuPublic());
-        await dispatch(fetchKatsuData());
-        await dispatch(fetchGohanData());
-        await dispatch(makeGetServiceInfoRequest());
+        const followUpPromises = [
+          dispatch(makeGetConfigRequest()),
+          dispatch(populateClickable()),
+          dispatch(makeGetAboutRequest()),
+          dispatch(getBeaconConfig()),
+          dispatch(makeGetProvenanceRequest()),
+          dispatch(makeGetKatsuPublic()),
+          dispatch(fetchKatsuData()),
+          dispatch(fetchGohanData()),
+          dispatch(makeGetServiceInfoRequest()),
+        ];
 
         if (isAuthenticated) {
-          await dispatch(makeGetDataTypes());
+          followUpPromises.push(dispatch(makeGetDataTypes()));
         }
+
+        await Promise.all(followUpPromises);
       } catch (error) {
         console.error('Error fetching initial data', error);
       }
