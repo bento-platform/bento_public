@@ -3,9 +3,11 @@ import { PORTAL_URL } from '@/config';
 export const MAX_CHARTS = 3;
 
 export const katsuPublicOverviewUrl = `${PORTAL_URL}/api/metadata/api/public_overview`;
+export const katsuPublicRulesUrl = `${PORTAL_URL}/api/metadata/api/public_rules`;
 export const searchFieldsUrl = `${PORTAL_URL}/api/metadata/api/public_search_fields`;
 export const katsuUrl = `${PORTAL_URL}/api/metadata/api/public`;
 export const provenanceUrl = `${PORTAL_URL}/api/metadata/api/public_dataset`;
+export const projectsUrl = `${PORTAL_URL}/api/metadata/api/projects`;
 export const katsuLastIngestionsUrl = '/katsu/data-types';
 export const gohanLastIngestionsUrl = '/gohan/data-types';
 
