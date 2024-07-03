@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch, useTranslationDefault } from '@/hooks';
 
 import { Button, Card, Col, Form, Row } from 'antd';
-import VariantsForm from '../VariantsForm';
+import VariantsForm from './VariantsForm';
 import Filters from './Filters';
 import SearchToolTip from './ToolTips/SearchToolTip';
 import VariantsInstructions from './ToolTips/VariantsInstructions';
@@ -90,6 +90,9 @@ const BeaconQueryFormUi = ({
   const convertToZeroBased = (start: string) => Number(start) - 1;
 
   const handleFinish = (formValues: FormValues) => {
+
+    console.log({formValues})
+
     // if bad form, block submit and show user error
     if (!variantsFormValid(formValues)) {
       setHasFormError(true);

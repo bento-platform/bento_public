@@ -2,7 +2,7 @@ import React, { CSSProperties } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Col, Row } from 'antd';
 import VariantInput from './VariantInput';
-import AssemblyIdSelect from './AssemblyIdSelect';
+import AssemblyIdSelect from '../AssemblyIdSelect';
 import { BeaconAssemblyIds } from '@/types/beacon';
 import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 
