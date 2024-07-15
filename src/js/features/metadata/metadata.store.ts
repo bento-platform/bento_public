@@ -8,22 +8,18 @@ import { printAPIError } from '@/utils/error.util';
 interface MetadataState {
   projects: Project[];
   isFetching: boolean;
-  selectedProjectId: string;
-  selectedDatasetId: string;
-  params: {
-    project: string;
-    dataset: string;
+  selectedScope: {
+    project: string | undefined;
+    dataset: string | undefined;
   };
 }
 
 const initialState: MetadataState = {
   projects: [],
   isFetching: true,
-  selectedProjectId: '',
-  selectedDatasetId: '',
-  params: {
-    project: '',
-    dataset: '',
+  selectedScope: {
+    project: undefined,
+    dataset: undefined,
   },
 };
 
@@ -42,33 +38,22 @@ const metadata = createSlice({
   name: 'metadata',
   initialState,
   reducers: {
-    selectProject: (state, { payload }: PayloadAction<string>) => {
-      // Change project selection if valid
-      if (payload === '' || state.projects.find(({ identifier }) => identifier === payload)) {
-        // select project
-        state.selectedProjectId = payload;
-        state.params.project = payload;
-        // unselect dataset
-        state.selectedDatasetId = '';
-        state.params.dataset = '';
-      } else {
-        console.error(`Project ID ${payload} does not exist.`);
-      }
-    },
-    selectDataset: (state, { payload }: PayloadAction<string>) => {
-      const selectedProject = state.selectedProjectId;
-      // Change dataset selection if it is included in the selected project
-      if (
-        payload === '' ||
-        (selectedProject &&
+    selectScope: (state, { payload }: PayloadAction<{ project?: string; dataset?: string }>) => {
+      if (payload.project && state.projects.find(({ identifier }) => identifier === payload.project)) {
+        state.selectedScope.project = payload.project;
+        if (
+          payload.dataset &&
           state.projects
-            .find(({ identifier }) => identifier === selectedProject)!
-            .datasets.some((d) => d.identifier === payload))
-      ) {
-        state.selectedDatasetId = payload;
-        state.params.dataset = payload;
+            .find(({ identifier }) => identifier === payload.project)!
+            .datasets.find(({ identifier }) => identifier === payload.dataset)
+        ) {
+          state.selectedScope.dataset = payload.dataset;
+        } else {
+          state.selectedScope.dataset = undefined;
+        }
       } else {
-        console.error(`Dataset ID ${payload} does not exist, or is not a member of the selected project.`);
+        state.selectedScope.project = undefined;
+        state.selectedScope.dataset = undefined;
       }
     },
   },
@@ -86,5 +71,5 @@ const metadata = createSlice({
   },
 });
 
-export const { selectProject, selectDataset } = metadata.actions;
+export const { selectScope } = metadata.actions;
 export default metadata.reducer;

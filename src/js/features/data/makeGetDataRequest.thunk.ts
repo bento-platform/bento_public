@@ -18,7 +18,7 @@ export const makeGetDataRequestThunk = createAsyncThunk<
   { rejectValue: string; state: RootState }
 >('data/makeGetDataRequest', async (_, { rejectWithValue, getState }) => {
   const overviewResponse = (await axios
-    .get(katsuPublicOverviewUrl, { params: getState().metadata.params })
+    .get(katsuPublicOverviewUrl, { params: getState().metadata.selectedScope })
     .then((res) => res.data)
     .catch(printAPIError(rejectWithValue))) as OverviewResponse['overview'];
 
