@@ -18,7 +18,7 @@ export const makeBeaconQuery = createAsyncThunk<
   const token = getState().auth.accessToken;
   const headers = makeAuthorizationHeader(token);
   return axios
-    .post(beaconIndividualsEndpoint, payload, { headers })
+    .post(beaconIndividualsEndpoint, payload, { headers: headers as Record<string, string> })
     .then((res) => res.data)
     .catch(beaconApiError(rejectWithValue));
 });
