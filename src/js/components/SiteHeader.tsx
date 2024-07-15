@@ -9,7 +9,7 @@ import { useIsAuthenticated, usePerformAuth, usePerformSignOut } from 'bento-aut
 import { CLIENT_NAME, PORTAL_URL, TRANSLATED } from '@/config';
 import { RiTranslate } from 'react-icons/ri';
 import { ExportOutlined, LinkOutlined, LoginOutlined, LogoutOutlined } from '@ant-design/icons';
-import { selectDataset, selectProject } from '@/features/metadata/metadata.store';
+import { selectScope } from '@/features/metadata/metadata.store';
 
 const openPortalWindow = () => window.open(PORTAL_URL, '_blank');
 
@@ -34,18 +34,13 @@ const SiteHeader: React.FC = () => {
   }, [projects]);
 
   const onScopeChange = (value: (string | number)[]) => {
-    if (value) {
-      if (value.length > 0) {
-        // first value is project
-        dispatch(selectProject(value[0] as string));
-      }
-      if (value.length === 2) {
-        // second value is dataset
-        dispatch(selectDataset(value[1] as string));
-      }
+    if (value.length === 1) {
+      dispatch(selectScope({ project: value[0] as string }));
+    }
+    if (value.length === 2) {
+      dispatch(selectScope({ project: value[0] as string, dataset: value[1] as string }));
     } else {
-      dispatch(selectProject(''));
-      dispatch(selectDataset(''));
+      dispatch(selectScope({}));
     }
   };
 

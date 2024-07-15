@@ -11,7 +11,7 @@ export const makeGetSearchFields = createAsyncThunk<
   { rejectValue: string; state: RootState }
 >('query/makeGetSearchFields', async (_, { rejectWithValue, getState }) => {
   return await axios
-    .get(searchFieldsUrl, { params: getState().metadata.params })
+    .get(searchFieldsUrl, { params: getState().metadata.selectedScope })
     .then((res) => res.data)
     .catch(printAPIError(rejectWithValue));
 });

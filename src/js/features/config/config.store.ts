@@ -9,11 +9,12 @@ import { DiscoveryRules } from '@/types/configResponse';
 
 export const makeGetConfigRequest = createAsyncThunk<DiscoveryRules, void, { rejectValue: string; state: RootState }>(
   'config/getConfigData',
-  (_, { rejectWithValue, getState }) =>
-    axios
-      .get(katsuPublicRulesUrl, { params: getState().metadata.params })
+  (_, { rejectWithValue, getState }) => {
+    return axios
+      .get(katsuPublicRulesUrl, { params: getState().metadata.selectedScope })
       .then((res) => res.data)
-      .catch(printAPIError(rejectWithValue))
+      .catch(printAPIError(rejectWithValue));
+  }
 );
 
 export const makeGetServiceInfoRequest = createAsyncThunk<
