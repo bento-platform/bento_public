@@ -29,6 +29,11 @@ const MakeQueryOption = ({ queryField }: MakeQueryOptionProps) => {
     dispatch(makeGetKatsuPublic());
   };
 
+  // TODO: allow disabling max query parameters for authenticated and authorized users when Katsu has AuthZ
+  // useQueryWithAuthIfAllowed()
+  // const maxQueryParametersRequired = useAppSelector((state) => state.config.maxQueryParametersRequired);
+  // const hasMaxFilters = maxQueryParametersRequired && queryParamCount >= maxQueryParameters;
+  // const disabled = isChecked ? false : hasMaxFilters;
   const disabled = isChecked ? false : queryParamCount >= maxQueryParameters;
 
   return (
