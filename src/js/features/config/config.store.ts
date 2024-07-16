@@ -5,9 +5,9 @@ import { printAPIError } from '@/utils/error.util';
 import { ServiceInfoStore, ServicesResponse } from '@/types/services';
 import { RootState } from '@/store';
 import { PUBLIC_URL } from '@/config';
-import { DiscoveryRule } from '@/types/configResponse';
+import { DiscoveryRules } from '@/types/configResponse';
 
-export const makeGetConfigRequest = createAsyncThunk<DiscoveryRule, void, { rejectValue: string }>(
+export const makeGetConfigRequest = createAsyncThunk<DiscoveryRules, void, { rejectValue: string }>(
   'config/getConfigData',
   (_, { rejectWithValue }) =>
     // TODO: should be project/dataset scoped with url params
@@ -58,7 +58,7 @@ const configStore = createSlice({
     builder.addCase(makeGetConfigRequest.pending, (state) => {
       state.isFetchingConfig = true;
     });
-    builder.addCase(makeGetConfigRequest.fulfilled, (state, { payload }: PayloadAction<DiscoveryRule>) => {
+    builder.addCase(makeGetConfigRequest.fulfilled, (state, { payload }: PayloadAction<DiscoveryRules>) => {
       state.maxQueryParameters = payload.max_query_parameters;
       state.isFetchingConfig = false;
     });
