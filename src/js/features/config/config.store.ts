@@ -1,17 +1,18 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { katsuPublicOverviewUrl } from '@/constants/configConstants';
+import { katsuPublicRulesUrl } from '@/constants/configConstants';
 import { printAPIError } from '@/utils/error.util';
 import { ServiceInfoStore, ServicesResponse } from '@/types/services';
 import { RootState } from '@/store';
 import { PUBLIC_URL } from '@/config';
-import { KatsuPublicOverviewResponse } from '@/types/configResponse';
+import { DiscoveryRules } from '@/types/configResponse';
 
-export const makeGetConfigRequest = createAsyncThunk<KatsuPublicOverviewResponse, void, { rejectValue: string }>(
+export const makeGetConfigRequest = createAsyncThunk<DiscoveryRules, void, { rejectValue: string }>(
   'config/getConfigData',
   (_, { rejectWithValue }) =>
+    // TODO: should be project/dataset scoped with url params
     axios
-      .get(katsuPublicOverviewUrl)
+      .get(katsuPublicRulesUrl)
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue))
 );
@@ -57,13 +58,10 @@ const configStore = createSlice({
     builder.addCase(makeGetConfigRequest.pending, (state) => {
       state.isFetchingConfig = true;
     });
-    builder.addCase(
-      makeGetConfigRequest.fulfilled,
-      (state, { payload }: PayloadAction<KatsuPublicOverviewResponse>) => {
-        state.maxQueryParameters = payload.max_query_parameters;
-        state.isFetchingConfig = false;
-      }
-    );
+    builder.addCase(makeGetConfigRequest.fulfilled, (state, { payload }: PayloadAction<DiscoveryRules>) => {
+      state.maxQueryParameters = payload.max_query_parameters;
+      state.isFetchingConfig = false;
+    });
     builder.addCase(makeGetConfigRequest.rejected, (state) => {
       state.isFetchingConfig = false;
     });

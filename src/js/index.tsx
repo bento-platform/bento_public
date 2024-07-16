@@ -31,7 +31,7 @@ import {
   BentoAuthContextProvider,
   nop,
 } from 'bento-auth-js';
-import { useBeaconWithAuthIfAllowed } from '@/hooks';
+import { useQueryWithAuthIfAllowed } from '@/hooks';
 
 // Store and configuration imports
 import { store } from './store';
@@ -97,7 +97,7 @@ const App = () => {
 
   useSessionWorkerTokenRefresh(sessionWorker, createSessionWorker, nop);
 
-  useBeaconWithAuthIfAllowed();
+  useQueryWithAuthIfAllowed();
 
   return (
     <ConfigProvider theme={{ components: { Menu: { iconSize: 20 } } }}>

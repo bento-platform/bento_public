@@ -32,6 +32,10 @@ const RoutedSearch: React.FC = () => {
     attemptedFetch,
   } = useAppSelector((state) => state.query);
 
+  // TODO: allow disabling max query parameters for authenticated and authorized users when Katsu has AuthZ
+  // const maxQueryParametersRequired = useAppSelector((state) => state.config.maxQueryParametersRequired);
+  // const allowedQueryParamsCount = maxQueryParametersRequired ? maxQueryParameters : queryParamCount;
+
   const searchFields = useMemo(
     () => searchSections.flatMap(({ fields }) => fields.map((field) => ({ id: field.id, options: field.options }))),
     [searchSections]
@@ -45,6 +49,7 @@ const RoutedSearch: React.FC = () => {
 
     const queryParamArray = Array.from(query.entries()).map(([key, value]) => ({ key, value }));
 
+    // TODO: to disable max query parameters, slice with allowedQueryParamsCount instead
     const validQueryParamArray = queryParamArray
       .filter(({ key, value }) => validateQueryParam(key, value))
       .slice(0, maxQueryParameters);

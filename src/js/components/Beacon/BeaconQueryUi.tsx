@@ -1,5 +1,5 @@
 import React, { useEffect, useState, ReactNode } from 'react';
-import { useAppSelector, useAppDispatch, useTranslationDefault, useBeaconWithAuthIfAllowed } from '@/hooks';
+import { useAppSelector, useAppDispatch, useTranslationDefault, useQueryWithAuthIfAllowed } from '@/hooks';
 import { Button, Card, Col, Form, Row, Space, Tooltip, Typography } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { useIsAuthenticated } from 'bento-auth-js';
@@ -91,7 +91,7 @@ const BeaconQueryUi = () => {
   }, [isFetchingBeaconConfig, isAuthenticated]);
 
   // Disables max query param if user is authenticated and authorized
-  useBeaconWithAuthIfAllowed();
+  useQueryWithAuthIfAllowed();
 
   // beacon request handling
 
