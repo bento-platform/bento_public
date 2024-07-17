@@ -51,17 +51,16 @@ const { Content } = Layout;
 
 const createSessionWorker = () => new Worker(new URL('./workers/tokenRefresh.ts', import.meta.url));
 
-const App = () => {
+const BentoApp = () => {
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
 
   // TRANSLATION
   const { lang } = useParams<{ lang?: string }>();
-  const { t, i18n } = useTranslation(DEFAULT_TRANSLATION);
+  const { i18n } = useTranslation(DEFAULT_TRANSLATION);
 
   useEffect(() => {
     console.debug('lang', lang);
-    if (lang && lang == 'callback') return;
     if (lang && LNGS_ARRAY.includes(lang)) {
       i18n.changeLanguage(lang);
     } else if (i18n.language) {
@@ -70,6 +69,39 @@ const App = () => {
       navigate(`/${SUPPORTED_LNGS.ENGLISH}/`, { replace: true });
     }
   }, [lang, i18n.language, navigate]);
+
+  return (
+    <ConfigProvider theme={{ components: { Menu: { iconSize: 20 } } }}>
+      <Layout style={{ minHeight: '100vh' }}>
+        <SiteHeader />
+        <Layout>
+          <SiteSider collapsed={collapsed} setCollapsed={setCollapsed} />
+          <Layout
+            style={{
+              marginLeft: collapsed ? '80px' : '200px',
+              transition: 'margin-left 0.3s',
+              marginTop: '64px',
+            }}
+          >
+            <Content style={{ padding: '32px 64px' }}>
+              <Suspense fallback={<Loader />}>
+                <Routes>
+                  <Route path="*" element={<BentoAppRouter />} />
+                </Routes>
+              </Suspense>
+            </Content>
+            <SiteFooter />
+          </Layout>
+        </Layout>
+      </Layout>
+    </ConfigProvider>
+  );
+};
+
+const App = () => {
+  const { t, i18n } = useTranslation(DEFAULT_TRANSLATION);
+
+  console.log('i18n.language', i18n.language);
 
   // AUTHENTICATION
   const [signedOutModal, setSignedOutModal] = useState(false);
@@ -100,58 +132,28 @@ const App = () => {
   useQueryWithAuthIfAllowed();
 
   return (
-    <ConfigProvider theme={{ components: { Menu: { iconSize: 20 } } }}>
-      <Modal
-        title={t('You have been signed out')}
-        onCancel={() => {
-          setSignedOutModal(false);
-        }}
-        open={signedOutModal}
-        footer={[
-          <Button key="signin" shape="round" type="primary" onClick={openSignInWindow}>
-            {t('Sign In')}
-          </Button>,
-        ]}
-      >
-        {t('Please sign in to the research portal.')}
-        <br />
-      </Modal>
-      <Layout style={{ minHeight: '100vh' }}>
-        <SiteHeader />
-        <Layout>
-          <SiteSider collapsed={collapsed} setCollapsed={setCollapsed} />
-          <Layout
-            style={{
-              marginLeft: collapsed ? '80px' : '200px',
-              transition: 'margin-left 0.3s',
-              marginTop: '64px',
-            }}
-          >
-            <Content style={{ padding: '32px 64px' }}>
-              <Suspense fallback={<Loader />}>
-                <Routes>
-                  <Route path={CALLBACK_PATH} element={<Loader />} />
-                  <Route path="/*" element={<BentoAppRouter />} />
-                </Routes>
-              </Suspense>
-            </Content>
-            <SiteFooter />
-          </Layout>
-        </Layout>
-      </Layout>
-    </ConfigProvider>
-  );
-};
-
-const BentoApp = () => {
-  const { i18n } = useTranslation();
-  console.log('i18n.language', i18n.language);
-
-  return (
     <ChartConfigProvider Lng={i18n.language ?? SUPPORTED_LNGS.ENGLISH} theme={NEW_BENTO_PUBLIC_THEME}>
-      <Routes>
-        <Route path="/:lang?/*" element={<App />} />
-      </Routes>
+      <>
+        <Modal
+          title={t('You have been signed out')}
+          onCancel={() => {
+            setSignedOutModal(false);
+          }}
+          open={signedOutModal}
+          footer={[
+            <Button key="signin" shape="round" type="primary" onClick={openSignInWindow}>
+              {t('Sign In')}
+            </Button>,
+          ]}
+        >
+          {t('Please sign in to the research portal.')}
+          <br />
+        </Modal>
+        <Routes>
+          <Route path="/callback" element={<Loader />} />
+          <Route path="/:lang?/*" element={<BentoApp />} />
+        </Routes>
+      </>
     </ChartConfigProvider>
   );
 };
@@ -170,7 +172,7 @@ root.render(
           authCallbackUrl: AUTH_CALLBACK_URL,
         }}
       >
-        <BentoApp />
+        <App />
       </BentoAuthContextProvider>
     </BrowserRouter>
   </Provider>
