@@ -13,10 +13,12 @@ import {
   CHART_TYPE_PIE,
   ChartConfig,
 } from '@/types/chartConfig';
+import { useAppSelector } from '@/hooks';
 
 const Chart = memo(({ chartConfig, data, units, id }: ChartProps) => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const { selectedScope } = useAppSelector((state) => state.metadata);
   const translateMap = ({ x, y }: { x: string; y: number }) => ({ x: t(x), y });
   const removeMissing = ({ x }: { x: string }) => x !== 'missing';
   const barChartOnClickHandler = (d: { payload: { x: string } }) => {

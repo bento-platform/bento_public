@@ -84,11 +84,7 @@ const BentoApp = () => {
             }}
           >
             <Content style={{ padding: '32px 64px' }}>
-              <Suspense fallback={<Loader />}>
-                <Routes>
-                  <Route path="*" element={<BentoAppRouter />} />
-                </Routes>
-              </Suspense>
+              <BentoAppRouter />
             </Content>
             <SiteFooter />
           </Layout>

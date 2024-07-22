@@ -4,8 +4,10 @@ import { PaginatedResponse, Project } from '@/types/metadata';
 import { RootState } from '@/store';
 import axios from 'axios';
 import { printAPIError } from '@/utils/error.util';
+import { stat } from 'copy-webpack-plugin/types/utils';
+import { validProjectDataset } from '@/utils/router';
 
-interface MetadataState {
+export interface MetadataState {
   projects: Project[];
   isFetching: boolean;
   selectedScope: {
@@ -39,22 +41,7 @@ const metadata = createSlice({
   initialState,
   reducers: {
     selectScope: (state, { payload }: PayloadAction<{ project?: string; dataset?: string }>) => {
-      if (payload.project && state.projects.find(({ identifier }) => identifier === payload.project)) {
-        state.selectedScope.project = payload.project;
-        if (
-          payload.dataset &&
-          state.projects
-            .find(({ identifier }) => identifier === payload.project)!
-            .datasets.find(({ identifier }) => identifier === payload.dataset)
-        ) {
-          state.selectedScope.dataset = payload.dataset;
-        } else {
-          state.selectedScope.dataset = undefined;
-        }
-      } else {
-        state.selectedScope.project = undefined;
-        state.selectedScope.dataset = undefined;
-      }
+      state.selectedScope = validProjectDataset(state.projects, payload.project, payload.dataset);
     },
   },
   extraReducers(builder) {
