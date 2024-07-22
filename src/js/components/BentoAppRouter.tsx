@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate, useParams, Outlet } from 'react-router-dom';
 import { useAutoAuthenticate, useIsAuthenticated } from 'bento-auth-js';
 import { useAppDispatch, useAppSelector } from '@/hooks';
 
@@ -11,7 +11,7 @@ import { makeGetProvenanceRequest } from '@/features/provenance/provenance.store
 import { getBeaconConfig } from '@/features/beacon/beaconConfig.store';
 import { fetchGohanData, fetchKatsuData } from '@/features/ingestion/lastIngestion.store';
 import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
-import { getProjects } from '@/features/metadata/metadata.store';
+import { getProjects, selectScope } from '@/features/metadata/metadata.store';
 
 import PublicOverview from './Overview/PublicOverview';
 import Search from './Search/Search';
@@ -19,13 +19,47 @@ import ProvenanceTab from './Provenance/ProvenanceTab';
 import BeaconQueryUi from './Beacon/BeaconQueryUi';
 import { BentoRoute } from '@/types/routes';
 import Loader from '@/components/Loader';
+import { validProjectDataset } from '@/utils/router';
+
+const ScopedRoute = () => {
+  const { projectId, datasetId } = useParams();
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { projects } = useAppSelector((state) => state.metadata);
+
+  useEffect(() => {
+    // Update selectedScope based on URL parameters
+    const valid = validProjectDataset(projects, projectId, datasetId);
+    if (datasetId === valid.dataset && projectId === valid.project) {
+      dispatch(selectScope(valid));
+    } else {
+      const oldpath = location.pathname.split('/').filter(Boolean);
+      const newPath = [oldpath[0]];
+
+      if (valid.dataset) {
+        newPath.push('p', valid.project as string, 'd', valid.dataset);
+      } else if (valid.project) {
+        newPath.push('p', valid.project);
+      }
+
+      const oldPathLength = oldpath.length;
+      if (oldpath[oldPathLength - 3] === 'p' || oldpath[oldPathLength - 3] === 'd') {
+        newPath.push(oldpath[oldPathLength - 1]);
+      }
+      const newPathString = '/' + newPath.join('/');
+      navigate(newPathString, { replace: true });
+    }
+  }, [projects, projectId, datasetId, dispatch]);
+
+  return <Outlet />;
+};
 
 const BentoAppRouter = () => {
   const dispatch = useAppDispatch();
 
   const { isAutoAuthenticating } = useAutoAuthenticate();
   const isAuthenticated = useIsAuthenticated();
-  const { selectedDatasetId, selectedProjectId } = useAppSelector((state) => state.metadata);
+  const { selectedScope, isFetching: isFetchingProjects } = useAppSelector((state) => state.metadata);
 
   useEffect(() => {
     dispatch(makeGetConfigRequest()).then(() => dispatch(getBeaconConfig()));
@@ -35,30 +69,47 @@ const BentoAppRouter = () => {
     dispatch(makeGetProvenanceRequest());
     dispatch(makeGetKatsuPublic());
     dispatch(fetchKatsuData());
-  }, [selectedDatasetId, selectedProjectId]);
+  }, [selectedScope]);
 
   useEffect(() => {
     dispatch(getProjects());
     dispatch(makeGetAboutRequest());
     dispatch(fetchGohanData());
     dispatch(makeGetServiceInfoRequest());
-
     if (isAuthenticated) {
       dispatch(makeGetDataTypes());
     }
   }, [isAuthenticated]);
 
-  if (isAutoAuthenticating) {
+  if (isAutoAuthenticating || isFetchingProjects) {
     return <Loader />;
   }
 
   return (
     <Routes>
-      <Route path={`/${BentoRoute.Overview}`} element={<PublicOverview />} />
-      <Route path={`/${BentoRoute.Search}/*`} element={<Search />} />
-      <Route path={`/${BentoRoute.Beacon}/*`} element={<BeaconQueryUi />} />
-      <Route path={`/${BentoRoute.Provenance}/*`} element={<ProvenanceTab />} />
-      <Route path="/*" element={<PublicOverview />} />
+      <Route path="/" element={<ScopedRoute />}>
+        <Route path={BentoRoute.Overview} element={<PublicOverview />} />
+        <Route path={BentoRoute.Search} element={<Search />} />
+        <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />
+        <Route path={BentoRoute.Provenance} element={<ProvenanceTab />} />
+        <Route index element={<PublicOverview />} />
+      </Route>
+
+      <Route path="/p/:projectId" element={<ScopedRoute />}>
+        <Route path={BentoRoute.Overview} element={<PublicOverview />} />
+        <Route path={BentoRoute.Search} element={<Search />} />
+        <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />
+        <Route path={BentoRoute.Provenance} element={<ProvenanceTab />} />
+        <Route index element={<PublicOverview />} />
+      </Route>
+
+      <Route path="/p/:projectId/d/:datasetId" element={<ScopedRoute />}>
+        <Route path={BentoRoute.Overview} element={<PublicOverview />} />
+        <Route path={BentoRoute.Search} element={<Search />} />
+        <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />
+        <Route path={BentoRoute.Provenance} element={<ProvenanceTab />} />
+        <Route index element={<PublicOverview />} />
+      </Route>
     </Routes>
   );
 };

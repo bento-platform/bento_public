@@ -21,7 +21,7 @@ const SiteHeader: React.FC = () => {
 
   const { isFetching: openIdConfigFetching } = useAppSelector((state) => state.openIdConfiguration);
   const { isHandingOffCodeForToken } = useAppSelector((state) => state.auth);
-  const { projects } = useAppSelector((state) => state.metadata);
+  const { projects, selectedScope } = useAppSelector((state) => state.metadata);
   const scopeOptions = useMemo(() => {
     return projects.map((p) => ({
       value: p.identifier,
@@ -34,14 +34,25 @@ const SiteHeader: React.FC = () => {
   }, [projects]);
 
   const onScopeChange = (value: (string | number)[]) => {
+    const oldpath = location.pathname.split('/').filter(Boolean);
+    const newPath = [oldpath[0]];
+    console.log('oldpath', oldpath);
     if (value.length === 1) {
       dispatch(selectScope({ project: value[0] as string }));
-    }
-    if (value.length === 2) {
+      newPath.push('p', value[0] as string);
+    } else if (value.length === 2) {
       dispatch(selectScope({ project: value[0] as string, dataset: value[1] as string }));
+      newPath.push('p', value[0] as string, 'd', value[1] as string);
     } else {
       dispatch(selectScope({}));
     }
+    const oldPathLength = oldpath.length;
+    if (oldpath[oldPathLength - 3] === 'p' || oldpath[oldPathLength - 3] === 'd') {
+      newPath.push(oldpath[oldPathLength - 1]);
+    }
+    const newPathString = '/' + newPath.join('/');
+    console.log('newPathString', newPathString);
+    navigate(newPathString, { replace: true });
   };
 
   const isAuthenticated = useIsAuthenticated();
@@ -74,7 +85,14 @@ const SiteHeader: React.FC = () => {
           >
             {CLIENT_NAME}
           </Typography.Title>
-          <Cascader options={scopeOptions} onChange={onScopeChange} placeholder="Select Scope" changeOnSelect />
+          <Cascader
+            options={scopeOptions}
+            onChange={onScopeChange}
+            value={Object.values(selectedScope).filter((v): v is string => typeof v === 'string')}
+            placeholder="Select Scope"
+            changeOnSelect
+            allowClear
+          />
         </Space>
 
         <Space size="small">

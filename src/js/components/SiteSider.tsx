@@ -31,10 +31,17 @@ const SiteSider: React.FC<{
 
   const handleMenuClick: OnClick = useCallback(
     ({ key }: { key: string }) => {
-      const currentPath = location.pathname.split('/');
-      const currentLang = currentPath[1];
-      const newPath = `/${currentLang}/${key === BentoRoute.Overview ? '' : key}`;
-      navigate(key === BentoRoute.Search ? buildQueryParamsUrl(newPath, queryParams) : newPath);
+      const currentPath = location.pathname.split('/').filter(Boolean);
+      const newPath = [currentPath[0]];
+      if (currentPath[1] == 'p') {
+        newPath.push('p', currentPath[2]);
+      }
+      if (currentPath[3] == 'd') {
+        newPath.push('d', currentPath[4]);
+      }
+      newPath.push(key);
+      const newPathString = '/' + newPath.join('/');
+      navigate(key === BentoRoute.Search ? buildQueryParamsUrl(newPathString, queryParams) : newPathString);
     },
     [navigate, queryParams, location.pathname]
   );
