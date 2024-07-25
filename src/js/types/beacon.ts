@@ -1,11 +1,16 @@
 import { Rule } from 'antd/es/form';
 import { Datum } from '@/types/overviewResponse';
+import { ChartData } from './data';
 
 // ----------------------------
 // form handling
 // ----------------------------
 
 export type BeaconAssemblyIds = string[];
+
+// generic "info" response field
+// only requirement in beacon spec is that it's an object
+type GenericInfoField = Record<string, any>;
 
 export interface FormField {
   name: string;
@@ -72,6 +77,9 @@ export interface BeaconQueryPayload {
   bento?: { showSummaryStatistics: boolean };
 }
 
+// export type BeaconQueryThunk = AsyncThunk<void | BeaconQueryResponse, BeaconQueryPayload, any>
+export type BeaconQueryThunk = any;
+
 // ----------------------------
 // API response
 // ----------------------------
@@ -105,6 +113,13 @@ export interface BeaconQueryResponse {
   responseSummary?: {
     numTotalResults: number;
   };
+  meta?: {
+    beaconId: string;
+  };
+  error?: {
+    errorCode: number;
+    errorMessage: string;
+  };
 }
 
 export interface BeaconErrorData {
@@ -112,4 +127,43 @@ export interface BeaconErrorData {
     errorCode: number;
     errorMessage: string;
   };
+}
+
+export interface BeaconOrganizationType {
+  id: string;
+  name: string;
+  description?: string;
+  address?: string;
+  contactUrl?: string;
+  logoUrl?: string;
+  welcomeUrl?: string;
+  info?: GenericInfoField;
+}
+
+export interface BeaconServiceInfo {
+  id: string;
+  name: string;
+  apiVersion: string;
+  environment: string;
+  organization: BeaconOrganizationType;
+  description?: string;
+  version?: string;
+  welcomeUrl?: string;
+  alternativeUrl?: string;
+  info?: GenericInfoField;
+}
+
+// ----------------------------
+// response packaging
+// ----------------------------
+
+export interface FlattenedBeaconResponse {
+  isFetchingQueryResponse: boolean;
+  hasApiError: boolean;
+  apiErrorMessage: string;
+  individualCount?: number;
+  biosampleCount?: number;
+  biosampleChartData?: ChartData[];
+  experimentCount?: number;
+  experimentChartData?: ChartData[];
 }
