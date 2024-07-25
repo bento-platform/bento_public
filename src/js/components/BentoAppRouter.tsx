@@ -20,6 +20,7 @@ import BeaconQueryUi from './Beacon/BeaconQueryUi';
 import { BentoRoute } from '@/types/routes';
 import Loader from '@/components/Loader';
 import { validProjectDataset } from '@/utils/router';
+import DefaultLayout from '@/components/Util/DefaultLayout';
 
 const ScopedRoute = () => {
   const { projectId, datasetId } = useParams();
@@ -87,28 +88,30 @@ const BentoAppRouter = () => {
 
   return (
     <Routes>
-      <Route path="/" element={<ScopedRoute />}>
-        <Route path={BentoRoute.Overview} element={<PublicOverview />} />
-        <Route path={BentoRoute.Search} element={<Search />} />
-        <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />
-        <Route path={BentoRoute.Provenance} element={<ProvenanceTab />} />
-        <Route index element={<PublicOverview />} />
-      </Route>
+      <Route element={<DefaultLayout />}>
+        <Route path="/" element={<ScopedRoute />}>
+          <Route index element={<PublicOverview />} />
+          <Route path={BentoRoute.Overview} element={<PublicOverview />} />
+          <Route path={BentoRoute.Search} element={<Search />} />
+          <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />
+          <Route path={BentoRoute.Provenance} element={<ProvenanceTab />} />
+        </Route>
 
-      <Route path="/p/:projectId" element={<ScopedRoute />}>
-        <Route path={BentoRoute.Overview} element={<PublicOverview />} />
-        <Route path={BentoRoute.Search} element={<Search />} />
-        <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />
-        <Route path={BentoRoute.Provenance} element={<ProvenanceTab />} />
-        <Route index element={<PublicOverview />} />
-      </Route>
+        <Route path="/p/:projectId" element={<ScopedRoute />}>
+          <Route index element={<PublicOverview />} />
+          <Route path={BentoRoute.Overview} element={<PublicOverview />} />
+          <Route path={BentoRoute.Search} element={<Search />} />
+          <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />
+          <Route path={BentoRoute.Provenance} element={<ProvenanceTab />} />
+        </Route>
 
-      <Route path="/p/:projectId/d/:datasetId" element={<ScopedRoute />}>
-        <Route path={BentoRoute.Overview} element={<PublicOverview />} />
-        <Route path={BentoRoute.Search} element={<Search />} />
-        <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />
-        <Route path={BentoRoute.Provenance} element={<ProvenanceTab />} />
-        <Route index element={<PublicOverview />} />
+        <Route path="/p/:projectId/d/:datasetId" element={<ScopedRoute />}>
+          <Route index element={<PublicOverview />} />
+          <Route path={BentoRoute.Overview} element={<PublicOverview />} />
+          <Route path={BentoRoute.Search} element={<Search />} />
+          <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />
+          <Route path={BentoRoute.Provenance} element={<ProvenanceTab />} />
+        </Route>
       </Route>
     </Routes>
   );
