@@ -33,10 +33,13 @@ const SiteHeader: React.FC = () => {
     }));
   }, [projects]);
 
-  const onScopeChange = (value: (string | number)[]) => {
+  const onScopeChange = (value: (string | number)[] | undefined) => {
+    console.log('value', value);
     const oldpath = location.pathname.split('/').filter(Boolean);
     const newPath = [oldpath[0]];
-    console.log('oldpath', oldpath);
+    if (value === undefined) {
+      value = [];
+    }
     if (value.length === 1) {
       dispatch(selectScope({ project: value[0] as string }));
       newPath.push('p', value[0] as string);
@@ -51,7 +54,6 @@ const SiteHeader: React.FC = () => {
       newPath.push(oldpath[oldPathLength - 1]);
     }
     const newPathString = '/' + newPath.join('/');
-    console.log('newPathString', newPathString);
     navigate(newPathString, { replace: true });
   };
 
