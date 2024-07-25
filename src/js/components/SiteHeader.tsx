@@ -34,7 +34,6 @@ const SiteHeader: React.FC = () => {
   }, [projects]);
 
   const onScopeChange = (value: (string | number)[] | undefined) => {
-    console.log('value', value);
     const oldpath = location.pathname.split('/').filter(Boolean);
     const newPath = [oldpath[0]];
     if (value === undefined) {
