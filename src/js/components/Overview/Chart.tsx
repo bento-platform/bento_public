@@ -14,6 +14,7 @@ import {
   ChartConfig,
 } from '@/types/chartConfig';
 import { useAppSelector } from '@/hooks';
+import { scopeToUrl } from '@/utils/router';
 
 const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) => {
   const { t, i18n } = useTranslation();
@@ -22,10 +23,10 @@ const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) =
   const translateMap = ({ x, y }: { x: string; y: number }) => ({ x: t(x), y });
   const removeMissing = ({ x }: { x: string }) => x !== 'missing';
   const barChartOnClickHandler = (d: { payload: { x: string } }) => {
-    navigate(`/${i18n.language}/search?${id}=${d.payload.x}`);
+    navigate(`/${i18n.language}${scopeToUrl(selectedScope)}/search?${id}=${d.payload.x}`);
   };
   const pieChartOnClickHandler = (d: { name: string }) => {
-    navigate(`/${i18n.language}/search?${id}=${d.name}`);
+    navigate(`/${i18n.language}${scopeToUrl(selectedScope)}/search?${id}=${d.name}`);
   };
 
   const { chart_type: type } = chartConfig;
@@ -60,7 +61,7 @@ const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) =
           height={PIE_CHART_HEIGHT}
           preFilter={removeMissing}
           dataMap={translateMap}
-          {...(isClickable ? { onClick: pieChartOnClickHandler } : {})}
+          onClick={pieChartOnClickHandler}
         />
       );
     case CHART_TYPE_CHOROPLETH: {

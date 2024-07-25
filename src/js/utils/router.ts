@@ -35,3 +35,13 @@ export const validProjectDataset = (
   }
   return valid;
 };
+
+export const scopeToUrl = (scope: MetadataState['selectedScope']): string => {
+  if (scope.project && scope.dataset) {
+    return `/p/${scope.project}/d/${scope.dataset}`;
+  } else if (scope.project) {
+    return `/p/${scope.project}`;
+  } else {
+    return '';
+  }
+};
