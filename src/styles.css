@@ -22,3 +22,12 @@ body {
 .ant-layout-sider-trigger {
   border-right: 1px solid #f0f0f0;
 }
+
+.select-project-title:hover {
+  color: white !important;
+  cursor: pointer;
+}
+
+.select-dataset-hover:hover {
+  background-color: aliceblue !important;
+}

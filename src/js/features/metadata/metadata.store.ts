@@ -4,7 +4,6 @@ import { PaginatedResponse, Project } from '@/types/metadata';
 import { RootState } from '@/store';
 import axios from 'axios';
 import { printAPIError } from '@/utils/error.util';
-import { stat } from 'copy-webpack-plugin/types/utils';
 import { validProjectDataset } from '@/utils/router';
 
 export interface MetadataState {

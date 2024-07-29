@@ -1,15 +1,16 @@
-import React, { useMemo } from 'react';
-import { Button, Cascader, Flex, Layout, Typography, Space } from 'antd';
+import React, { useEffect } from 'react';
+import { Button, Flex, Layout, Typography, Space } from 'antd';
 const { Header } = Layout;
 import { useTranslation } from 'react-i18next';
 import { DEFAULT_TRANSLATION, LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
-import { useAppDispatch, useAppSelector } from '@/hooks';
+import { useAppSelector } from '@/hooks';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useIsAuthenticated, usePerformAuth, usePerformSignOut } from 'bento-auth-js';
 import { CLIENT_NAME, PORTAL_URL, TRANSLATED } from '@/config';
 import { RiTranslate } from 'react-icons/ri';
-import { ExportOutlined, LinkOutlined, LoginOutlined, LogoutOutlined } from '@ant-design/icons';
-import { selectScope } from '@/features/metadata/metadata.store';
+import { ExportOutlined, LinkOutlined, LoginOutlined, LogoutOutlined, ProfileOutlined } from '@ant-design/icons';
+import ChooseProjectModal from '@/components/ChooseProjectModal';
+import { scopeToUrl } from '@/utils/router';
 
 const openPortalWindow = () => window.open(PORTAL_URL, '_blank');
 
@@ -17,44 +18,25 @@ const SiteHeader: React.FC = () => {
   const { t, i18n } = useTranslation(DEFAULT_TRANSLATION);
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useAppDispatch();
 
   const { isFetching: openIdConfigFetching } = useAppSelector((state) => state.openIdConfiguration);
   const { isHandingOffCodeForToken } = useAppSelector((state) => state.auth);
   const { projects, selectedScope } = useAppSelector((state) => state.metadata);
-  const scopeOptions = useMemo(() => {
-    return projects.map((p) => ({
-      value: p.identifier,
-      label: p.title,
-      children: p.datasets.map((d) => ({
-        value: d.identifier,
-        label: d.title,
-      })),
-    }));
-  }, [projects]);
 
-  const onScopeChange = (value: (string | number)[] | undefined) => {
-    const oldpath = location.pathname.split('/').filter(Boolean);
-    const newPath = [oldpath[0]];
-    if (value === undefined) {
-      value = [];
-    }
-    if (value.length === 1) {
-      dispatch(selectScope({ project: value[0] as string }));
-      newPath.push('p', value[0] as string);
-    } else if (value.length === 2) {
-      dispatch(selectScope({ project: value[0] as string, dataset: value[1] as string }));
-      newPath.push('p', value[0] as string, 'd', value[1] as string);
-    } else {
-      dispatch(selectScope({}));
-    }
-    const oldPathLength = oldpath.length;
-    if (oldpath[oldPathLength - 3] === 'p' || oldpath[oldPathLength - 3] === 'd') {
-      newPath.push(oldpath[oldPathLength - 1]);
-    }
-    const newPathString = '/' + newPath.join('/');
-    navigate(newPathString, { replace: true });
+  const scopeProps = {
+    projectTitle: projects.find((project) => project.identifier === selectedScope.project)?.title,
+    datasetTitle: selectedScope.dataset
+      ? projects
+          .find((project) => project.identifier === selectedScope.project)
+          ?.datasets.find((dataset) => dataset.identifier === selectedScope.dataset)?.title
+      : null,
   };
+
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+  useEffect(() => {
+    setIsModalOpen(false);
+  }, [location]);
 
   const isAuthenticated = useIsAuthenticated();
   const performSignOut = usePerformSignOut();
@@ -76,9 +58,8 @@ const SiteHeader: React.FC = () => {
             src="/public/assets/branding.png"
             alt="logo"
             style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-3px)' }}
-            onClick={() => navigate('/')}
+            onClick={() => navigate(`/${i18n.language}${scopeToUrl(selectedScope)}`)}
           />
-
           <Typography.Title
             level={1}
             style={{ fontSize: '18px', margin: 0, lineHeight: '64px', color: 'white' }}
@@ -86,14 +67,19 @@ const SiteHeader: React.FC = () => {
           >
             {CLIENT_NAME}
           </Typography.Title>
-          <Cascader
-            options={scopeOptions}
-            onChange={onScopeChange}
-            value={Object.values(selectedScope).filter((v): v is string => typeof v === 'string')}
-            placeholder="Select Scope"
-            changeOnSelect
-            allowClear
-          />
+          <Typography.Title
+            className="select-project-title"
+            level={5}
+            style={{ fontSize: '14px', margin: 0, lineHeight: '64px', color: 'lightgray' }}
+            onClick={() => setIsModalOpen(true)}
+          >
+            <ProfileOutlined style={{ marginRight: '5px', fontSize: '16px' }} />
+
+            {selectedScope.project && scopeProps.projectTitle}
+            {scopeProps.datasetTitle ? ` / ${scopeProps.datasetTitle}` : ''}
+          </Typography.Title>
+          )
+          <ChooseProjectModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
         </Space>
 
         <Space size="small">
