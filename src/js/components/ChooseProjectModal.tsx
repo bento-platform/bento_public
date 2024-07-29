@@ -46,6 +46,7 @@ const ChooseProjectModal: React.FC<ChooseProjectModalProps> = ({ isModalOpen, se
                   </Link>
                 </Space>
                 <Typography.Text>{description}</Typography.Text>
+                <Typography.Title level={5}>Datasets</Typography.Title>
                 <List
                   dataSource={datasets}
                   bordered
