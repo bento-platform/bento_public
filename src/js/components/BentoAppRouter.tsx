@@ -26,33 +26,19 @@ const BentoAppRouter = () => {
   const isAuthenticated = useIsAuthenticated();
 
   useEffect(() => {
-    const fetchInitialData = async () => {
-      try {
-        await Promise.all([dispatch(makeGetDataRequestThunk()), dispatch(makeGetSearchFields())]);
+    dispatch(makeGetConfigRequest()).then(() => dispatch(getBeaconConfig()));
+    dispatch(makeGetAboutRequest());
+    dispatch(makeGetDataRequestThunk());
+    dispatch(makeGetSearchFields()).then(() => dispatch(populateClickable()));
+    dispatch(makeGetProvenanceRequest());
+    dispatch(makeGetKatsuPublic());
+    dispatch(fetchKatsuData());
+    dispatch(fetchGohanData());
+    dispatch(makeGetServiceInfoRequest());
 
-        const followUpPromises = [
-          dispatch(makeGetConfigRequest()),
-          dispatch(populateClickable()),
-          dispatch(makeGetAboutRequest()),
-          dispatch(getBeaconConfig()),
-          dispatch(makeGetProvenanceRequest()),
-          dispatch(makeGetKatsuPublic()),
-          dispatch(fetchKatsuData()),
-          dispatch(fetchGohanData()),
-          dispatch(makeGetServiceInfoRequest()),
-        ];
-
-        if (isAuthenticated) {
-          followUpPromises.push(dispatch(makeGetDataTypes()));
-        }
-
-        await Promise.all(followUpPromises);
-      } catch (error) {
-        console.error('Error fetching initial data', error);
-      }
-    };
-
-    fetchInitialData();
+    if (isAuthenticated) {
+      dispatch(makeGetDataTypes());
+    }
   }, [isAuthenticated]);
 
   if (isAutoAuthenticating) {
