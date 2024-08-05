@@ -16,7 +16,7 @@ import { Outlet } from 'react-router-dom';
 const SIGN_IN_WINDOW_FEATURES = 'scrollbars=no, toolbar=no, menubar=no, width=800, height=600';
 const CALLBACK_PATH = '/callback';
 
-const createSessionWorker = () => new Worker(new URL('./workers/tokenRefresh.ts', import.meta.url));
+const createSessionWorker = () => new Worker(new URL('../../workers/tokenRefresh.ts', import.meta.url));
 
 const AuthOutlet = () => {
   const t = useTranslationDefault();
