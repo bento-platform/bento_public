@@ -13,26 +13,16 @@ const ChooseProjectModal = ({ isModalOpen, setIsModalOpen }: ChooseProjectModalP
   const closeModal = () => setIsModalOpen(false);
 
   return (
-    <Modal
-      title="Choose View"
-      open={isModalOpen}
-      onCancel={closeModal}
-      width={800}
-      footer={
-        <Space>
-          <Button key="1" onClick={closeModal}>
-            Cancel
-          </Button>
-          <Link to={baseURL} key="2">
-            <Button>Select Default View</Button>
-          </Link>
-        </Space>
-      }
-    >
+    <Modal title="Select Scope" open={isModalOpen} onCancel={closeModal} footer={null} width={800}>
       <Tabs
         tabPosition="left"
         activeKey={selectedProject}
         onChange={(key) => setSelectedProject(key)}
+        tabBarExtraContent={
+          <Link to={baseURL}>
+            <Button>Clear Selection</Button>
+          </Link>
+        }
         items={projects.map(({ identifier, title, datasets, description }) => {
           return {
             key: identifier,
@@ -42,7 +32,7 @@ const ChooseProjectModal = ({ isModalOpen, setIsModalOpen }: ChooseProjectModalP
                 <Space align="baseline" size="large">
                   <Typography.Title level={5}>About {title}</Typography.Title>
                   <Link to={`${baseURL}/p/${selectedProject}`} key="3">
-                    <Typography.Link>Select Project</Typography.Link>
+                    <Typography.Link>Select</Typography.Link>
                   </Link>
                 </Space>
                 <Typography.Text>{description}</Typography.Text>
