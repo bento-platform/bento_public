@@ -3,7 +3,7 @@ import { Tabs, List, Avatar, Modal, Button, Space, Typography } from 'antd';
 import { useAppSelector } from '@/hooks';
 import { Link, useLocation } from 'react-router-dom';
 
-const ChooseProjectModal: React.FC<ChooseProjectModalProps> = ({ isModalOpen, setIsModalOpen }) => {
+const ChooseProjectModal = ({ isModalOpen, setIsModalOpen }: ChooseProjectModalProps) => {
   const location = useLocation();
   const { projects, selectedScope } = useAppSelector((state) => state.metadata);
   const [selectedProject, setSelectedProject] = useState(selectedScope.project ?? projects[0].identifier);
