@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Tabs, List, Avatar, Modal, Button, Space, Typography } from 'antd';
 import { useAppSelector } from '@/hooks';
 import { Link, useLocation } from 'react-router-dom';
+import { FaDatabase } from 'react-icons/fa';
 
 const ChooseProjectModal = ({ isModalOpen, setIsModalOpen }: ChooseProjectModalProps) => {
   const location = useLocation();
@@ -44,7 +45,7 @@ const ChooseProjectModal = ({ isModalOpen, setIsModalOpen }: ChooseProjectModalP
                     <Link to={`${baseURL}/p/${identifier}/d/${item.identifier}`}>
                       <List.Item className="select-dataset-hover" key={item.identifier}>
                         <List.Item.Meta
-                          avatar={<Avatar src="/public/assets/database.png" />}
+                          avatar={<Avatar style={{ backgroundColor: '#33ccff' }} icon={<FaDatabase />} />}
                           title={<Link to={`${baseURL}/p/${identifier}/d/${item.identifier}`}>{item.title}</Link>}
                           description={item.description}
                         />
