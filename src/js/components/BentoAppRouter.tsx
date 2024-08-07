@@ -5,7 +5,7 @@ import { useAppDispatch } from '@/hooks';
 
 import { makeGetConfigRequest, makeGetServiceInfoRequest } from '@/features/config/config.store';
 import { makeGetAboutRequest } from '@/features/content/content.store';
-import { makeGetDataRequestThunk } from '@/features/data/data.store';
+import { makeGetDataRequestThunk, populateClickable } from '@/features/data/data.store';
 import { makeGetKatsuPublic, makeGetSearchFields } from '@/features/search/query.store';
 import { makeGetProvenanceRequest } from '@/features/provenance/provenance.store';
 import { getBeaconConfig } from '@/features/beacon/beaconConfig.store';
@@ -29,13 +29,13 @@ const BentoAppRouter = () => {
     dispatch(makeGetConfigRequest()).then(() => dispatch(getBeaconConfig()));
     dispatch(makeGetAboutRequest());
     dispatch(makeGetDataRequestThunk());
-    dispatch(makeGetSearchFields());
+    dispatch(makeGetSearchFields()).then(() => dispatch(populateClickable()));
     dispatch(makeGetProvenanceRequest());
     dispatch(makeGetKatsuPublic());
     dispatch(fetchKatsuData());
     dispatch(fetchGohanData());
     dispatch(makeGetServiceInfoRequest());
-    //TODO: Dispatch makeGetDataTypes to get the data types from service-registry
+
     if (isAuthenticated) {
       dispatch(makeGetDataTypes());
     }

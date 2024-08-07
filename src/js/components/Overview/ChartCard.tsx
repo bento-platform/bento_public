@@ -34,6 +34,7 @@ const ChartCard: React.FC<ChartCardProps> = memo(({ section, chart, onRemoveChar
     data,
     field: { id, description, title, config },
     chartConfig,
+    isSearchable,
   } = chart;
 
   const extraOptionsData = [
@@ -63,7 +64,14 @@ const ChartCard: React.FC<ChartCardProps> = memo(({ section, chart, onRemoveChar
         }
       >
         {data.filter((e) => !(e.x === 'missing')).length !== 0 ? (
-          <Chart chartConfig={chartConfig} data={data} units={config?.units || ''} id={id} key={id} />
+          <Chart
+            chartConfig={chartConfig}
+            data={data}
+            units={config?.units || ''}
+            id={id}
+            key={id}
+            isClickable={isSearchable}
+          />
         ) : (
           <Row style={ROW_EMPTY_STYLE} justify="center" align="middle">
             <CustomEmpty text="No Data" />

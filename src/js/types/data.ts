@@ -23,6 +23,7 @@ export interface ChartDataField {
   // display options:
   isDisplayed: boolean; // whether the chart is currently displayed (state data)
   width: number; // current width (state data); initial data taken from chart config
+  isSearchable: boolean; // whether the field is searchable
 }
 
 export interface ChartData {
