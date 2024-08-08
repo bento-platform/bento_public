@@ -21,7 +21,7 @@ const ChooseProjectModal = ({ isModalOpen, setIsModalOpen }: ChooseProjectModalP
         onChange={(key) => setSelectedProject(key)}
         tabBarExtraContent={
           <Link to={baseURL}>
-            <Button>Clear Selection</Button>
+            <Button>Clear</Button>
           </Link>
         }
         items={projects.map(({ identifier, title, datasets, description }) => {
@@ -31,13 +31,17 @@ const ChooseProjectModal = ({ isModalOpen, setIsModalOpen }: ChooseProjectModalP
             children: (
               <Space direction="vertical">
                 <Space align="baseline" size="large">
-                  <Typography.Title level={5}>About {title}</Typography.Title>
+                  <Typography.Title level={4} className="no-margin-top">
+                    About {title}
+                  </Typography.Title>
                   <Link to={`${baseURL}/p/${selectedProject}`} key="3">
                     <Typography.Link>Select</Typography.Link>
                   </Link>
                 </Space>
                 <Typography.Text>{description}</Typography.Text>
-                <Typography.Title level={5}>Datasets</Typography.Title>
+                <Typography.Title level={5} className="no-margin-top">
+                  Datasets
+                </Typography.Title>
                 <List
                   dataSource={datasets}
                   bordered

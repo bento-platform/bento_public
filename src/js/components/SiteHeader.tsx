@@ -62,7 +62,7 @@ const SiteHeader: React.FC = () => {
           />
           <Typography.Title
             level={1}
-            style={{ fontSize: '18px', margin: 0, lineHeight: '64px', color: 'white' }}
+            style={{ fontSize: '24px', margin: 0, lineHeight: '64px', color: 'white' }}
             type="secondary"
           >
             {CLIENT_NAME}
@@ -70,7 +70,7 @@ const SiteHeader: React.FC = () => {
           <Typography.Title
             className="select-project-title"
             level={5}
-            style={{ fontSize: '14px', margin: 0, lineHeight: '64px', color: 'lightgray' }}
+            style={{ fontSize: '16px', margin: 0, lineHeight: '64px', color: 'lightgray' }}
             onClick={() => setIsModalOpen(true)}
           >
             <ProfileOutlined style={{ marginRight: '5px', fontSize: '16px' }} />

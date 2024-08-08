@@ -5,6 +5,10 @@ body {
   margin: 0;
 }
 
+.no-margin-top {
+  margin-top: 0 !important;
+}
+
 .container {
   width: 100%;
   max-width: 1325px;
@@ -34,6 +38,7 @@ body {
 
 .select-dataset-hover {
   transition: all 0.2s;
+  border-radius: 7px;
 }
 
 .select-dataset-hover:hover {
