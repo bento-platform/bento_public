@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom/client';
 
 // Redux and routing imports
 import { Provider } from 'react-redux';
-import { Routes, Route, BrowserRouter } from 'react-router-dom';
+import { Routes, Route, BrowserRouter, Navigate } from 'react-router-dom';
 
 // i18n and constants imports
 import { useTranslation } from 'react-i18next';
@@ -39,6 +39,7 @@ const BaseRoutes: React.FC = () => {
         <Route path="/callback" element={<Loader />} />
         <Route element={<LanguageHandler />}>
           <Route path="/:lang/*" element={<BentoAppRouter />} />
+          <Route path="*" element={<Navigate to="/en/" />} />
         </Route>
       </Route>
     </Routes>
