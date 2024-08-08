@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, Flex, Layout, Typography, Space } from 'antd';
 const { Header } = Layout;
 import { useTranslation } from 'react-i18next';
@@ -8,17 +8,35 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useIsAuthenticated, usePerformAuth, usePerformSignOut } from 'bento-auth-js';
 import { CLIENT_NAME, PORTAL_URL, TRANSLATED } from '@/config';
 import { RiTranslate } from 'react-icons/ri';
-import { ExportOutlined, LinkOutlined, LoginOutlined, LogoutOutlined } from '@ant-design/icons';
+import { ExportOutlined, LinkOutlined, LoginOutlined, LogoutOutlined, ProfileOutlined } from '@ant-design/icons';
+import ChooseProjectModal from '@/components/ChooseProjectModal';
+import { scopeToUrl } from '@/utils/router';
 
 const openPortalWindow = () => window.open(PORTAL_URL, '_blank');
 
-const SiteHeader = () => {
+const SiteHeader: React.FC = () => {
   const { t, i18n } = useTranslation(DEFAULT_TRANSLATION);
   const navigate = useNavigate();
   const location = useLocation();
 
   const { isFetching: openIdConfigFetching } = useAppSelector((state) => state.openIdConfiguration);
   const { isHandingOffCodeForToken } = useAppSelector((state) => state.auth);
+  const { projects, selectedScope } = useAppSelector((state) => state.metadata);
+
+  const scopeProps = {
+    projectTitle: projects.find((project) => project.identifier === selectedScope.project)?.title,
+    datasetTitle: selectedScope.dataset
+      ? projects
+          .find((project) => project.identifier === selectedScope.project)
+          ?.datasets.find((dataset) => dataset.identifier === selectedScope.dataset)?.title
+      : null,
+  };
+
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+  useEffect(() => {
+    setIsModalOpen(false);
+  }, [location]);
 
   const isAuthenticated = useIsAuthenticated();
   const performSignOut = usePerformSignOut();
@@ -40,16 +58,28 @@ const SiteHeader = () => {
             src="/public/assets/branding.png"
             alt="logo"
             style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-3px)' }}
-            onClick={() => navigate('/')}
+            onClick={() => navigate(`/${i18n.language}${scopeToUrl(selectedScope)}`)}
           />
-
           <Typography.Title
             level={1}
-            style={{ fontSize: '18px', margin: 0, lineHeight: '64px', color: 'white' }}
+            style={{ fontSize: '24px', margin: 0, lineHeight: '64px', color: 'white' }}
             type="secondary"
           >
             {CLIENT_NAME}
           </Typography.Title>
+          <Typography.Title
+            className="select-project-title"
+            level={5}
+            style={{ fontSize: '16px', margin: 0, lineHeight: '64px', color: 'lightgray' }}
+            onClick={() => setIsModalOpen(true)}
+          >
+            <ProfileOutlined style={{ marginRight: '5px', fontSize: '16px' }} />
+
+            {selectedScope.project && scopeProps.projectTitle}
+            {scopeProps.datasetTitle ? ` / ${scopeProps.datasetTitle}` : ''}
+          </Typography.Title>
+          )
+          <ChooseProjectModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
         </Space>
 
         <Space size="small">
