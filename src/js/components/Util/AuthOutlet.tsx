@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { useBeaconWithAuthIfAllowed, useTranslationDefault } from '@/hooks';
+import { useQueryWithAuthIfAllowed, useTranslationDefault } from '@/hooks';
 import {
   checkIsInAuthPopup,
   nop,
@@ -47,7 +47,7 @@ const AuthOutlet = () => {
 
   useSessionWorkerTokenRefresh(sessionWorker, createSessionWorker, nop);
 
-  useBeaconWithAuthIfAllowed();
+  useQueryWithAuthIfAllowed();
 
   return (
     <>
