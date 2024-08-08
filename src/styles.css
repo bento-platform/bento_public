@@ -23,9 +23,17 @@ body {
   border-right: 1px solid #f0f0f0;
 }
 
+.select-project-title {
+  transition: all 0.2s;
+}
+
 .select-project-title:hover {
   color: white !important;
   cursor: pointer;
+}
+
+.select-dataset-hover {
+  transition: all 0.2s;
 }
 
 .select-dataset-hover:hover {
