@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { katsuUrl } from '@/constants/configConstants';
+import { katsuPublicSearchUrl } from '@/constants/configConstants';
 import type { RootState } from '@/store';
 import type { KatsuSearchResponse } from '@/types/search';
 import { printAPIError } from '@/utils/error.util';
@@ -16,7 +16,7 @@ export const makeGetKatsuPublic = createAsyncThunk<
   const queryParams = { ...scopeParams, ...state.query.queryParams };
 
   return axios
-    .get(katsuUrl, {
+    .get(katsuPublicSearchUrl, {
       ...authorizedRequestConfig(state),
       params: queryParams,
     })
