@@ -70,7 +70,7 @@ const BentoAppRouter = () => {
     dispatch(makeGetProvenanceRequest());
     dispatch(makeGetKatsuPublic());
     dispatch(fetchKatsuData());
-  }, [selectedScope]);
+  }, [isAuthenticated, selectedScope]);
 
   useEffect(() => {
     dispatch(getProjects());
