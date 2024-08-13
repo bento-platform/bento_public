@@ -1,14 +1,22 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { katsuLastIngestionsUrl, gohanLastIngestionsUrl } from '@/constants/configConstants';
-import { printAPIError } from '@/utils/error.util';
-
+import type { RootState } from '@/store';
 import { LastIngestionDataTypeResponse, DataTypeMap } from '@/types/lastIngestionDataTypeResponse';
+import { printAPIError } from '@/utils/error.util';
+import { authorizedRequestConfig } from '@/utils/requests';
 
 // Async thunks to fetch data from the two endpoints
-export const fetchKatsuData = createAsyncThunk('dataTypes/fetchKatsuData', (_, { rejectWithValue }) =>
+export const fetchKatsuData = createAsyncThunk<
+  LastIngestionDataTypeResponse[],
+  void,
+  {
+    rejectValue: string;
+    state: RootState;
+  }
+>('dataTypes/fetchKatsuData', (_, { rejectWithValue, getState }) =>
   axios
-    .get(katsuLastIngestionsUrl)
+    .get(katsuLastIngestionsUrl, authorizedRequestConfig(getState()))
     .then((res) => res.data)
     .catch(printAPIError(rejectWithValue))
 );

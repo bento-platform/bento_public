@@ -8,7 +8,7 @@ export const searchFieldsUrl = `${PORTAL_URL}/api/metadata/api/public_search_fie
 export const katsuUrl = `${PORTAL_URL}/api/metadata/api/public`;
 export const provenanceUrl = `${PORTAL_URL}/api/metadata/api/public_dataset`;
 export const projectsUrl = `${PORTAL_URL}/api/metadata/api/projects`;
-export const katsuLastIngestionsUrl = '/katsu/data-types';
+export const katsuLastIngestionsUrl = `${PORTAL_URL}/api/metadata/data-types`;
 export const gohanLastIngestionsUrl = '/gohan/data-types';
 
 export const DEFAULT_TRANSLATION = 'default_translation';
