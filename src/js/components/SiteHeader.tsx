@@ -78,7 +78,6 @@ const SiteHeader: React.FC = () => {
             {selectedScope.project && scopeProps.projectTitle}
             {scopeProps.datasetTitle ? ` / ${scopeProps.datasetTitle}` : ''}
           </Typography.Title>
-          )
           <ChooseProjectModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
         </Space>
 

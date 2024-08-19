@@ -9,7 +9,9 @@ const ChooseProjectModal = ({ isModalOpen, setIsModalOpen }: ChooseProjectModalP
   const t = useTranslationCustom();
   const location = useLocation();
   const { projects, selectedScope } = useAppSelector((state) => state.metadata);
-  const [selectedProject, setSelectedProject] = useState(selectedScope.project ?? projects[0].identifier);
+  const [selectedProject, setSelectedProject] = useState<string | undefined>(
+    selectedScope.project ?? projects[0]?.identifier ?? undefined
+  );
 
   const baseURL = '/' + location.pathname.split('/')[1];
 
