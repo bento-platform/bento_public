@@ -21,7 +21,7 @@
     "@reduxjs/toolkit": "^1.9.7",
     "antd": "^5.15.0",
     "axios": "^1.7.3",
-    "bento-auth-js": "^5.1.2",
+    "bento-auth-js": "^6.0.1",
     "bento-charts": "^2.6.8",
     "dotenv": "^16.3.1",
     "i18next": "^23.7.7",
