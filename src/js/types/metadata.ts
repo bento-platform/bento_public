@@ -13,7 +13,7 @@ export interface Project {
   identifier: string;
   title: string;
   description: string;
-  discovery: Discovery;
+  discovery: Discovery | null;
   datasets: Dataset[];
 }
 
@@ -21,7 +21,7 @@ export interface Dataset {
   identifier: string;
   title: string;
   description: string;
-  discovery: Discovery;
+  discovery: Discovery | null;
   dats_file: object;
 }
 
