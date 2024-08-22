@@ -32,7 +32,7 @@ const SiteHeader = () => {
       : null,
   };
 
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     setIsModalOpen(false);
