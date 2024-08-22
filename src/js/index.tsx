@@ -32,7 +32,7 @@ import 'bento-charts/src/styles.css';
 import './i18n';
 import '../styles.css';
 
-const BaseRoutes: React.FC = () => {
+const BaseRoutes = () => {
   return (
     <Routes>
       <Route element={<AuthOutlet />}>
@@ -46,7 +46,7 @@ const BaseRoutes: React.FC = () => {
   );
 };
 
-const RootApp: React.FC = () => {
+const RootApp = () => {
   const { i18n } = useTranslation();
 
   return (

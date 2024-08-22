@@ -14,7 +14,7 @@ import { scopeToUrl } from '@/utils/router';
 
 const openPortalWindow = () => window.open(PORTAL_URL, '_blank');
 
-const SiteHeader: React.FC = () => {
+const SiteHeader = () => {
   const { t, i18n } = useTranslation(DEFAULT_TRANSLATION);
   const navigate = useNavigate();
   const location = useLocation();

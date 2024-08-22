@@ -5,7 +5,7 @@ import { DEFAULT_TRANSLATION, SUPPORTED_LNGS } from '@/constants/configConstants
 
 const LNGS_ARRAY = Object.values(SUPPORTED_LNGS);
 
-const LanguageHandler: React.FC = () => {
+const LanguageHandler = () => {
   const { lang } = useParams<{ lang?: string }>();
   const navigate = useNavigate();
   const { i18n } = useTranslation(DEFAULT_TRANSLATION);
