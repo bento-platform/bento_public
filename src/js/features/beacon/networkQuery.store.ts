@@ -4,13 +4,13 @@ import { RootState } from '@/store';
 import { beaconApiError } from '@/utils/beaconApiError';
 import { BeaconQueryPayload } from '@/types/beacon';
 import { networkBeaconQuery } from './networkBeaconQuery.store';
-import { BEACON_NETWORK_ROOT } from '@/constants/beaconConstants';
+import { BEACON_NETWORK_URL } from '@/config';
 
 // can parameterize at some point in the future
 const DEFAULT_QUERY_ENDPOINT = '/individuals';
 
 const queryUrl = (beaconId: string, endpoint: string): string => {
-  return BEACON_NETWORK_ROOT + '/beacons/' + beaconId + endpoint;
+  return BEACON_NETWORK_URL + '/beacons/' + beaconId + endpoint;
 };
 
 // probably more biolerplate below than needed

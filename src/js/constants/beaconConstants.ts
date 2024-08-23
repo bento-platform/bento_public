@@ -35,6 +35,3 @@ export const BUTTON_AREA_STYLE: CSSProperties = {
 export const BUTTON_STYLE: CSSProperties = {
   margin: '0 10px 0 0',
 };
-
-// temp, will be passed in from somewhere else
-export const BEACON_NETWORK_ROOT = 'https://qa.bento.sd4h.ca/api/beacon/network';

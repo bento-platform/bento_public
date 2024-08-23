@@ -5,7 +5,7 @@ import { RootState } from '@/store';
 import { beaconApiError } from '@/utils/beaconApiError';
 import { BeaconAssemblyIds } from '@/types/beacon';
 import { NetworkBeacon, BeaconNetworkConfig } from '@/types/beaconNetwork';
-import { BEACON_NETWORK_ROOT } from '@/constants/beaconConstants';
+import { BEACON_NETWORK_URL } from '@/config';
 
 // network config currently just a list of beacons in the network with info about each one
 // should probably add more details (eg version for whatever beacon is hosting the network)
@@ -16,7 +16,7 @@ export const getBeaconNetworkConfig = createAsyncThunk<
   { state: RootState; rejectValue: string }
 >('beaconConfig/getBeaconNetworkConfig', (_, { rejectWithValue }) => {
   return axios
-    .get(BEACON_NETWORK_ROOT)
+    .get(BEACON_NETWORK_URL)
     .then((res) => res.data)
     .catch(beaconApiError(rejectWithValue));
 });
