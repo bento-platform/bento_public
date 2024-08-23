@@ -10,7 +10,7 @@ export type BeaconAssemblyIds = string[];
 
 // generic "info" response field
 // only requirement in beacon spec is that it's an object
-type GenericInfoField = Record<string, any>;
+type GenericInfoField = Record<string, unknown>;
 
 export interface FormField {
   name: string;
@@ -77,8 +77,8 @@ export interface BeaconQueryPayload {
   bento?: { showSummaryStatistics: boolean };
 }
 
-// export type BeaconQueryThunk = AsyncThunk<void | BeaconQueryResponse, BeaconQueryPayload, any>
-export type BeaconQueryThunk = any;
+// export type BeaconQueryThunk = AsyncThunk<void | BeaconQueryResponse, BeaconQueryPayload, unknown>
+export type BeaconQueryThunk = unknown;
 
 // ----------------------------
 // API response

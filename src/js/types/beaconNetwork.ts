@@ -3,14 +3,14 @@ import { ChartData } from './data';
 
 export interface NetworkBeacon extends BeaconServiceInfo {
   apiUrl: string;
-  overview?: any; // to update as design settles
+  overview?: unknown; // to update as design settles
   // queryResponse?: FlattenedBeaconResponse
 }
 
 // more to come
 export interface BeaconNetworkConfig {
-  filtersUnion: any; // temp
-  filtersIntersection: any; // temp
+  filtersUnion: unknown; // temp
+  filtersIntersection: unknown; // temp
   beacons: NetworkBeacon[];
 }
 
