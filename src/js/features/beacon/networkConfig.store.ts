@@ -21,7 +21,7 @@ export const getBeaconNetworkConfig = createAsyncThunk<
     .catch(beaconApiError(rejectWithValue));
 });
 
-type beaconNetworkIntitalStateType = {
+type beaconNetworkInitialStateType = {
   isFetchingBeaconNetworkConfig: boolean;
   hasBeaconNetworkError: boolean;
   assemblyIds: BeaconAssemblyIds;
@@ -32,7 +32,7 @@ type beaconNetworkIntitalStateType = {
   beacons: NetworkBeacon[];
 };
 
-const initialState: beaconNetworkIntitalStateType = {
+const initialState: beaconNetworkInitialStateType = {
   isFetchingBeaconNetworkConfig: false,
   hasBeaconNetworkError: false,
   querySectionsUnion: [],
@@ -45,6 +45,7 @@ const initialState: beaconNetworkIntitalStateType = {
 
 const networkAssemblyIds = (beacons: NetworkBeacon[]) => {
   // reduce to list of assemblies
+  // could probably do this in backend instead
   const assemblyIds = beacons.reduce(
     (assemblies: BeaconAssemblyIds, b: NetworkBeacon) => [...assemblies, ...Object.keys(b.overview?.variants ?? {})],
     []

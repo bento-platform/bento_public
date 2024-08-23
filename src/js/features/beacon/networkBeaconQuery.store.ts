@@ -84,7 +84,6 @@ const computeNetworkResults = (beacons: beaconNetworkStateType['beacons']) => {
   };
 
   Object.values(beacons).forEach((b) => {
-    console.log({ thing: b });
     overview.individualCount += b.individualCount ?? 0;
     overview.biosampleCount += b.biosampleCount ?? 0;
     overview.experimentCount += b.experimentCount ?? 0;
@@ -100,7 +99,6 @@ const networkBeaconQuerySlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(networkBeaconQuery.pending, (state, action) => {
-      console.log('networkBeaconQuery.pending');
       const beaconId = action.meta.arg.beaconId;
       const beaconState = {
         hasApiError: false,
@@ -110,7 +108,6 @@ const networkBeaconQuerySlice = createSlice({
       state.beacons[beaconId] = beaconState;
     });
     builder.addCase(networkBeaconQuery.fulfilled, (state, action) => {
-      console.log('networkBeaconQuery.fulfilled');
       const beaconId = action.meta.arg.beaconId;
       const { payload } = action;
       const hasErrorResponse = Object.prototype.hasOwnProperty.call(payload, 'error');
@@ -132,7 +129,6 @@ const networkBeaconQuerySlice = createSlice({
       state.networkResults = computeNetworkResults(state.beacons);
     });
     builder.addCase(networkBeaconQuery.rejected, (state, action) => {
-      console.log('networkBeaconQuery.rejected');
       const beaconId = action.meta.arg.beaconId;
       const beaconState: FlattenedBeaconResponse = {
         hasApiError: true,

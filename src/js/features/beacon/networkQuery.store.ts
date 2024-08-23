@@ -13,9 +13,14 @@ const queryUrl = (beaconId: string, endpoint: string): string => {
   return BEACON_NETWORK_ROOT + '/beacons/' + beaconId + endpoint;
 };
 
-// probably more biolerplate here than needed
+// probably more biolerplate below than needed
 // we only really need to dispatch networkBeaconQuery() once for each beacon in the network
 // correct implementation is left as an exercise for the reader
+// These options all appear to have the same behaviour below:
+//    return await Promise.all()
+//    return Promise.all()
+//    Promise.all() (no return statement)
+
 
 export const beaconNetworkQuery = createAsyncThunk<void, BeaconQueryPayload, { state: RootState; rejectValue: string }>(
   'beaconNetwork/beaconNetworkQuery',
@@ -24,7 +29,6 @@ export const beaconNetworkQuery = createAsyncThunk<void, BeaconQueryPayload, { s
     // const token = getState().auth.accessToken;
     // const headers = makeAuthorizationHeader(token);
 
-    console.log('beaconNetworkQuery()');
 
     const beacons = getState().beaconNetwork.beacons;
     return await Promise.all(
