@@ -1,20 +1,26 @@
-import React, { useEffect } from 'react';
-import { Button, Flex, Layout, Typography, Space } from 'antd';
-const { Header } = Layout;
-import { useTranslation } from 'react-i18next';
-import { DEFAULT_TRANSLATION, LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
-import { useAppSelector } from '@/hooks';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+
+import { Button, Flex, Layout, Typography, Space } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { useAuthState, useIsAuthenticated, useOpenIdConfig, usePerformAuth, usePerformSignOut } from 'bento-auth-js';
-import { CLIENT_NAME, PORTAL_URL, TRANSLATED } from '@/config';
+
 import { RiTranslate } from 'react-icons/ri';
 import { ExportOutlined, LinkOutlined, LoginOutlined, LogoutOutlined, ProfileOutlined } from '@ant-design/icons';
-import ChooseProjectModal from '@/components/ChooseProjectModal';
+
+import { useAppSelector } from '@/hooks';
 import { scopeToUrl } from '@/utils/router';
+
+import { DEFAULT_TRANSLATION, LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
+import { CLIENT_NAME, PORTAL_URL, TRANSLATED } from '@/config';
+
+import ChooseProjectModal from '@/components/ChooseProjectModal';
+
+const { Header } = Layout;
 
 const openPortalWindow = () => window.open(PORTAL_URL, '_blank');
 
-const SiteHeader: React.FC = () => {
+const SiteHeader = () => {
   const { t, i18n } = useTranslation(DEFAULT_TRANSLATION);
   const navigate = useNavigate();
   const location = useLocation();
@@ -32,7 +38,7 @@ const SiteHeader: React.FC = () => {
       : null,
   };
 
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     setIsModalOpen(false);

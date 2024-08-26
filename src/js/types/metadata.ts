@@ -1,7 +1,6 @@
-interface DiscoveryOverview {}
-interface DiscoverySearch {}
-interface DiscoveryFields {}
-interface DiscoveryRules {}
+import { Layout as DiscoveryOverview, Fields as DiscoveryFields } from '@/types/overviewResponse';
+import { Section as DiscoverySearch } from '@/types/search';
+import { DiscoveryRules } from '@/types/configResponse';
 
 export interface Discovery {
   overview: DiscoveryOverview[];
@@ -14,7 +13,7 @@ export interface Project {
   identifier: string;
   title: string;
   description: string;
-  discovery: Discovery;
+  discovery: Discovery | null;
   datasets: Dataset[];
 }
 
@@ -22,7 +21,7 @@ export interface Dataset {
   identifier: string;
   title: string;
   description: string;
-  discovery: Discovery;
+  discovery: Discovery | null;
   dats_file: object;
 }
 

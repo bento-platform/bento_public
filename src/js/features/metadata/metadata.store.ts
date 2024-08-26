@@ -1,10 +1,10 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { projectsUrl } from '@/constants/configConstants';
+import axios from 'axios';
 import { PaginatedResponse, Project } from '@/types/metadata';
 import { RootState } from '@/store';
-import axios from 'axios';
 import { printAPIError } from '@/utils/error.util';
 import { validProjectDataset } from '@/utils/router';
+import { projectsUrl } from '@/constants/configConstants';
 
 export interface MetadataState {
   projects: Project[];

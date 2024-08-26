@@ -48,7 +48,7 @@ export interface Datum {
   value: number;
 }
 
-interface Layout {
+export interface Layout {
   charts: ChartConfig[];
   section_title: string;
 }
