@@ -1,11 +1,14 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+import type React from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import type { TypedUseSelectorHook } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { RESOURCE_EVERYTHING, Resource, queryData, useHasResourcePermission } from 'bento-auth-js';
+import type { Resource } from 'bento-auth-js';
+import { RESOURCE_EVERYTHING, queryData, useHasResourcePermission } from 'bento-auth-js';
 
 import type { RootState, AppDispatch } from '@/store';
 import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
-import { NamespaceTranslationFunction } from '@/types/translation';
+import type { NamespaceTranslationFunction } from '@/types/translation';
 import { setMaxQueryParametersRequired } from '@/features/config//config.store';
 import { CHART_WIDTH, GRID_GAP } from '@/constants/overviewConstants';
 

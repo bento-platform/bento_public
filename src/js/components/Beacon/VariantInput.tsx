@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Form, Input } from 'antd';
-import { FormField } from '@/types/beacon';
+import type { FormField } from '@/types/beacon';
 import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 
 const VariantInput = ({ field, disabled }: VariantInputProps) => {

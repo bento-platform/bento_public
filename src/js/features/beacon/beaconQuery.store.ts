@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { makeAuthorizationHeader } from 'bento-auth-js';
-import { RootState } from '@/store';
+import type { RootState } from '@/store';
 import { serializeChartData } from '@/utils/chart';
 import { beaconApiError } from '@/utils/beaconApiError';
-import { BeaconQueryPayload, BeaconQueryResponse } from '@/types/beacon';
-import { ChartData } from '@/types/data';
+import type { BeaconQueryPayload, BeaconQueryResponse } from '@/types/beacon';
+import type { ChartData } from '@/types/data';
 import { BEACON_URL } from '@/config';
 
 const beaconIndividualsEndpoint = BEACON_URL + '/individuals';

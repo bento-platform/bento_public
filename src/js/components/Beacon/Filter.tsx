@@ -2,9 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { useTranslationCustom, useTranslationDefault } from '@/hooks';
 import { Button, Form, Select, Space } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
-import { FormInstance } from 'antd/es/form';
-import { FormFilter, FilterOption, FilterPullDownKey, FilterPullDownValue, GenericOptionType } from '@/types/beacon';
-import { Section, Field } from '@/types/search';
+import type { FormInstance } from 'antd/es/form';
+import type {
+  FormFilter,
+  FilterOption,
+  FilterPullDownKey,
+  FilterPullDownValue,
+  GenericOptionType,
+} from '@/types/beacon';
+import type { Section, Field } from '@/types/search';
 
 // TODOs:
 // any search key (eg "sex") selected in one filter should not available in other

@@ -1,4 +1,4 @@
-import { CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 import { BOX_SHADOW } from '@/constants/overviewConstants';
 
 export const WRAPPER_STYLE: CSSProperties = {

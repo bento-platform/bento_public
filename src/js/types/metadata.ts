@@ -1,6 +1,6 @@
-import { Layout as DiscoveryOverview, Fields as DiscoveryFields } from '@/types/overviewResponse';
-import { Section as DiscoverySearch } from '@/types/search';
-import { DiscoveryRules } from '@/types/configResponse';
+import type { Layout as DiscoveryOverview, Fields as DiscoveryFields } from '@/types/overviewResponse';
+import type { Section as DiscoverySearch } from '@/types/search';
+import type { DiscoveryRules } from '@/types/configResponse';
 
 export interface Discovery {
   overview: DiscoveryOverview[];

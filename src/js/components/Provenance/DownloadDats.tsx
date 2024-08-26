@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Button, Space } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import { useTranslationDefault } from '@/hooks';
-import { ProvenanceStoreDataset } from '@/types/provenance';
+import type { ProvenanceStoreDataset } from '@/types/provenance';
 
 const DownloadDats = ({ metadata }: { metadata: ProvenanceStoreDataset }) => {
   const t = useTranslationDefault();

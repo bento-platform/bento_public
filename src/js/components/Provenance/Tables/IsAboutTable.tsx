@@ -4,7 +4,7 @@ import { Tag } from 'antd';
 import BaseProvenanceTable from './BaseProvenanceTable';
 import LinkIfUrl from '../../Util/LinkIfUrl';
 import { useTranslationCustom, useTranslationDefault } from '@/hooks';
-import { ProvenanceStoreDataset } from '@/types/provenance';
+import type { ProvenanceStoreDataset } from '@/types/provenance';
 
 const IsAboutTable = ({ isAbout }: IsAboutTableProps) => {
   const t = useTranslationCustom();

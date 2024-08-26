@@ -1,4 +1,5 @@
-import React, { useEffect, useState, ReactNode, useCallback, useMemo } from 'react';
+import type { ReactNode } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useAppSelector, useAppDispatch, useTranslationDefault, useQueryWithAuthIfAllowed } from '@/hooks';
 import { Button, Card, Col, Form, Row, Space, Tooltip, Typography } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
@@ -8,7 +9,7 @@ import BeaconSearchResults from './BeaconSearchResults';
 import BeaconErrorMessage from './BeaconErrorMessage';
 import VariantsForm from './VariantsForm';
 import { makeBeaconQuery } from '@/features/beacon/beaconQuery.store';
-import { BeaconQueryPayload, FormFilter, FormValues, PayloadFilter, PayloadVariantsQuery } from '@/types/beacon';
+import type { BeaconQueryPayload, FormFilter, FormValues, PayloadFilter, PayloadVariantsQuery } from '@/types/beacon';
 import {
   WRAPPER_STYLE,
   FORM_ROW_GUTTERS,

@@ -1,4 +1,4 @@
-import { Datum } from '@/types/overviewResponse';
+import type { Datum } from '@/types/overviewResponse';
 
 export type QueryParams = { [key: string]: string };
 

@@ -3,7 +3,7 @@ import { Typography, Space } from 'antd';
 
 import OverviewDisplayData from './OverviewDisplayData';
 import { useTranslationCustom } from '@/hooks';
-import { ChartDataField } from '@/types/data';
+import type { ChartDataField } from '@/types/data';
 
 const OverviewSection = ({ title, chartData }: { title: string; chartData: ChartDataField[] }) => {
   const t = useTranslationCustom();

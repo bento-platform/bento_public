@@ -6,7 +6,7 @@ import { addQueryParam, makeGetKatsuPublic, removeQueryParam } from '@/features/
 import SelectOption from './SelectOption';
 
 import { useAppDispatch, useAppSelector, useTranslationCustom, useTranslationDefault } from '@/hooks';
-import { Field } from '@/types/search';
+import type { Field } from '@/types/search';
 
 const MakeQueryOption = ({ queryField }: MakeQueryOptionProps) => {
   const t = useTranslationCustom();

@@ -2,7 +2,7 @@ import React from 'react';
 
 import BaseProvenanceTable from './BaseProvenanceTable';
 import LinkIfUrl from '../../Util/LinkIfUrl';
-import { Acknowledge } from '@/types/provenance';
+import type { Acknowledge } from '@/types/provenance';
 import { useTranslationCustom, useTranslationDefault } from '@/hooks';
 
 const AcknowledgesTable = ({ acknowledges }: AcknowledgesTableProps) => {

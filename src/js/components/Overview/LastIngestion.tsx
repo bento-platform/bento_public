@@ -7,7 +7,7 @@ import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { useAppSelector } from '@/hooks';
 import { getDataTypeLabel } from '@/types/dataTypes';
 
-import { LastIngestionDataTypeResponse } from '@/types/lastIngestionDataTypeResponse';
+import type { LastIngestionDataTypeResponse } from '@/types/lastIngestionDataTypeResponse';
 import { BOX_SHADOW } from '@/constants/overviewConstants';
 
 const LastIngestionInfo: React.FC = () => {

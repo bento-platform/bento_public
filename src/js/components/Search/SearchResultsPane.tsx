@@ -7,7 +7,7 @@ import CustomEmpty from '../Util/CustomEmpty';
 import ExpSvg from '../Util/ExpSvg';
 import { BOX_SHADOW, COUNTS_FILL, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
 import { useTranslationDefault, useTranslationCustom } from '@/hooks';
-import { ChartData } from '@/types/data';
+import type { ChartData } from '@/types/data';
 
 const SearchResultsPane = ({
   isFetchingData,

@@ -1,5 +1,5 @@
-import { ChartConfig } from '@/types/chartConfig';
-import { OverviewResponseDataField } from '@/types/overviewResponse';
+import type { ChartConfig } from '@/types/chartConfig';
+import type { OverviewResponseDataField } from '@/types/overviewResponse';
 
 export type Sections = Section[];
 

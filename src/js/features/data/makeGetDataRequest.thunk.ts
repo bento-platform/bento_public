@@ -6,11 +6,11 @@ import { verifyData, saveValue, getValue, convertSequenceAndDisplayData } from '
 
 import { DEFAULT_CHART_WIDTH, LOCALSTORAGE_CHARTS_KEY } from '@/constants/overviewConstants';
 import { serializeChartData } from '@/utils/chart';
-import { ChartConfig } from '@/types/chartConfig';
-import { ChartDataField, LocalStorageData, Sections } from '@/types/data';
-import { Counts, OverviewResponse } from '@/types/overviewResponse';
+import type { ChartConfig } from '@/types/chartConfig';
+import type { ChartDataField, LocalStorageData, Sections } from '@/types/data';
+import type { Counts, OverviewResponse } from '@/types/overviewResponse';
 import { printAPIError } from '@/utils/error.util';
-import { RootState } from '@/store';
+import type { RootState } from '@/store';
 
 export const makeGetDataRequestThunk = createAsyncThunk<
   { sectionData: Sections; counts: Counts; defaultData: Sections },
