@@ -3,6 +3,7 @@ import { Tabs, List, Avatar, Modal, Button, Space, Typography } from 'antd';
 import { useAppSelector, useTranslationCustom, useTranslationDefault } from '@/hooks';
 import { Link, useLocation } from 'react-router-dom';
 import { FaDatabase } from 'react-icons/fa';
+import { getCurrentPage } from '@/utils/router';
 
 const ChooseProjectModal = ({ isModalOpen, setIsModalOpen }: ChooseProjectModalProps) => {
   const td = useTranslationDefault();
@@ -14,6 +15,7 @@ const ChooseProjectModal = ({ isModalOpen, setIsModalOpen }: ChooseProjectModalP
   );
 
   const baseURL = '/' + location.pathname.split('/')[1];
+  const page = getCurrentPage();
 
   const closeModal = () => setIsModalOpen(false);
 
@@ -38,7 +40,7 @@ const ChooseProjectModal = ({ isModalOpen, setIsModalOpen }: ChooseProjectModalP
                   <Typography.Title level={4} className="no-margin-top">
                     {td('About')} {t(title)}
                   </Typography.Title>
-                  <Link to={`${baseURL}/p/${selectedProject}`} key="3">
+                  <Link to={`${baseURL}/p/${selectedProject}/${page}`} key="3">
                     <Typography.Link>{td('Select')}</Typography.Link>
                   </Link>
                 </Space>
@@ -50,11 +52,13 @@ const ChooseProjectModal = ({ isModalOpen, setIsModalOpen }: ChooseProjectModalP
                   dataSource={datasets}
                   bordered
                   renderItem={(item) => (
-                    <Link to={`${baseURL}/p/${identifier}/d/${item.identifier}`}>
+                    <Link to={`${baseURL}/p/${identifier}/d/${item.identifier}/${page}`}>
                       <List.Item className="select-dataset-hover" key={item.identifier}>
                         <List.Item.Meta
                           avatar={<Avatar style={{ backgroundColor: '#33ccff' }} icon={<FaDatabase />} />}
-                          title={<Link to={`${baseURL}/p/${identifier}/d/${item.identifier}`}>{t(item.title)}</Link>}
+                          title={
+                            <Link to={`${baseURL}/p/${identifier}/d/${item.identifier}/${page}`}>{t(item.title)}</Link>
+                          }
                           description={t(item.description)}
                         />
                       </List.Item>
