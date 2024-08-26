@@ -50,7 +50,7 @@ const ScopedRoute = () => {
       const newPathString = '/' + newPath.join('/');
       navigate(newPathString, { replace: true });
     }
-  }, [projects, projectId, datasetId, dispatch]);
+  }, [projects, projectId, datasetId, dispatch, navigate]);
 
   return <Outlet />;
 };
@@ -70,7 +70,7 @@ const BentoAppRouter = () => {
     dispatch(makeGetProvenanceRequest());
     dispatch(makeGetKatsuPublic());
     dispatch(fetchKatsuData());
-  }, [selectedScope]);
+  }, [dispatch, selectedScope]);
 
   useEffect(() => {
     dispatch(getProjects());
