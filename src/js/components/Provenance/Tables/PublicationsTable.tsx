@@ -115,7 +115,7 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
           onFilter: (filterValue, p) => p.identifier.identifierSource === filterValue,
         },
       ] as ColumnsType<PrimaryPublication>,
-    [td, publications]
+    [t, td, publications]
   );
 
   return <BaseProvenanceTable dataSource={publications} columns={columns} rowKey="title" />;

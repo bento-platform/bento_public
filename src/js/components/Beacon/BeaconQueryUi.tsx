@@ -1,4 +1,4 @@
-import React, { useEffect, useState, ReactNode } from 'react';
+import React, { useEffect, useState, ReactNode, useCallback, useMemo } from 'react';
 import { useAppSelector, useAppDispatch, useTranslationDefault, useQueryWithAuthIfAllowed } from '@/hooks';
 import { Button, Card, Col, Form, Row, Space, Tooltip, Typography } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
@@ -64,8 +64,13 @@ const BeaconQueryUi = () => {
   const isAuthenticated = useIsAuthenticated();
 
   const dispatch = useAppDispatch();
-  const launchEmptyQuery = () => dispatch(makeBeaconQuery(requestPayload({}, [])));
-  const formInitialValues = { 'Assembly ID': beaconAssemblyIds.length === 1 && beaconAssemblyIds[0] };
+  const launchEmptyQuery = useCallback(() => dispatch(makeBeaconQuery(requestPayload({}, []))), [dispatch]);
+  const formInitialValues = useMemo(
+    () => ({
+      'Assembly ID': beaconAssemblyIds.length === 1 && beaconAssemblyIds[0],
+    }),
+    [beaconAssemblyIds]
+  );
   const uiInstructions = hasVariants ? 'Search by genomic variants, clinical metadata or both.' : '';
 
   const hasError = hasFormError || hasApiError;
@@ -88,7 +93,7 @@ const BeaconQueryUi = () => {
 
     // set assembly id options matching what's in gohan
     form.setFieldsValue(formInitialValues);
-  }, [isFetchingBeaconConfig, isAuthenticated]);
+  }, [beaconAssemblyIds.length, form, formInitialValues, isFetchingBeaconConfig, isAuthenticated, launchEmptyQuery]);
 
   // Disables max query param if user is authenticated and authorized
   useQueryWithAuthIfAllowed();

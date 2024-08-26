@@ -36,7 +36,7 @@ const Filter = ({ filter, form, querySections, removeFilter, isRequired }: Filte
     form.setFieldsValue({
       [`filterValue${filter.index}`]: valueOptions[0].value,
     });
-  }, [valueOptions]);
+  }, [filter.index, form, valueOptions]);
 
   const renderLabel = (searchField: Field) => {
     const units = searchField.config?.units;
