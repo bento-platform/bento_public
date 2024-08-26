@@ -1,4 +1,4 @@
-import { ChartConfig } from '@/types/chartConfig';
+import type { ChartConfig } from '@/types/chartConfig';
 
 export interface OverviewResponse {
   overview: Overview;

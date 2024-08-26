@@ -1,9 +1,10 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import { makeGetDataRequestThunk } from './makeGetDataRequest.thunk';
-import { Sections } from '@/types/data';
-import { Counts } from '@/types/overviewResponse';
-import { QueryState } from '@/features/search/query.store';
+import type { Sections } from '@/types/data';
+import type { Counts } from '@/types/overviewResponse';
+import type { QueryState } from '@/features/search/query.store';
 
 export const populateClickable = createAsyncThunk<string[], void, { state: { query: QueryState } }>(
   'data/populateClickable',

@@ -1,11 +1,12 @@
 import React from 'react';
 
-import { Button, Drawer, DrawerProps, Flex, Space, Typography } from 'antd';
+import type { DrawerProps } from 'antd';
+import { Button, Drawer, Flex, Space, Typography } from 'antd';
 const { Title } = Typography;
 
 import ChartTree from './ChartTree';
 
-import { ChartDataField } from '@/types/data';
+import type { ChartDataField } from '@/types/data';
 import { useAppSelector, useAppDispatch, useTranslationCustom, useTranslationDefault } from '@/hooks';
 import { hideAllSectionCharts, setAllDisplayedCharts, resetLayout } from '@/features/data/data.store';
 

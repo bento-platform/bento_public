@@ -2,7 +2,7 @@ import React from 'react';
 
 import BaseProvenanceTable from './BaseProvenanceTable';
 import { useTranslationCustom, useTranslationDefault } from '@/hooks';
-import { ProvenanceStoreDataset } from '@/types/provenance';
+import type { ProvenanceStoreDataset } from '@/types/provenance';
 
 const SpatialCoverageTable = ({ spatialCoverage }: SpatialCoverageTableProps) => {
   const t = useTranslationCustom();

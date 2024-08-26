@@ -1,10 +1,11 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 import { useAppSelector } from '@/hooks';
 import { useTranslation } from 'react-i18next';
 import { Button, Form, Space, Tooltip } from 'antd';
-import { FormInstance } from 'antd/es/form';
-import { FormFilter } from '@/types/beacon';
-import { SearchFieldResponse } from '@/types/search';
+import type { FormInstance } from 'antd/es/form';
+import type { FormFilter } from '@/types/beacon';
+import type { SearchFieldResponse } from '@/types/search';
 import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import Filter from './Filter';
 

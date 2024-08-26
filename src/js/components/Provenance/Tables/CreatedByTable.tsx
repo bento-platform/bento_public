@@ -2,7 +2,7 @@ import React from 'react';
 import { Tag } from 'antd';
 
 import BaseProvenanceTable from './BaseProvenanceTable';
-import { ProvenanceStoreDataset } from '@/types/provenance';
+import type { ProvenanceStoreDataset } from '@/types/provenance';
 import { useTranslationDefault, useTranslationCustom } from '@/hooks';
 
 const CreatedByTable = ({ creators }: CreatedByTableProps) => {

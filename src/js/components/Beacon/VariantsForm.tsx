@@ -1,9 +1,10 @@
-import React, { CSSProperties } from 'react';
+import React from 'react';
+import type { CSSProperties } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Col, Row } from 'antd';
 import VariantInput from './VariantInput';
 import AssemblyIdSelect from './AssemblyIdSelect';
-import { BeaconAssemblyIds } from '@/types/beacon';
+import type { BeaconAssemblyIds } from '@/types/beacon';
 import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 
 // form state has to be one of these:

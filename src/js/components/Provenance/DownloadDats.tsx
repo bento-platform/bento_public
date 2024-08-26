@@ -5,7 +5,7 @@ import { DownloadOutlined } from '@ant-design/icons';
 
 import { PUBLIC_URL } from '@/config';
 import { useTranslationDefault } from '@/hooks';
-import { ProvenanceStoreDataset } from '@/types/provenance';
+import type { ProvenanceStoreDataset } from '@/types/provenance';
 
 const DownloadDats = ({ metadata }: { metadata: ProvenanceStoreDataset }) => {
   const t = useTranslationDefault();

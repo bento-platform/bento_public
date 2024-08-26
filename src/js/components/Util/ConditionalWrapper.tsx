@@ -1,5 +1,6 @@
 import { Space } from 'antd';
-import React, { ComponentType, memo, PropsWithChildren } from 'react';
+import type { ComponentType, PropsWithChildren } from 'react';
+import React, { memo } from 'react';
 
 export const VerticalSpaceWrapper = memo(function VerticalSpaceWrapper({ children }: PropsWithChildren) {
   return (

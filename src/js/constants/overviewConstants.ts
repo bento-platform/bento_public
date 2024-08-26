@@ -1,4 +1,4 @@
-import { HexColor } from 'bento-charts';
+import type { HexColor } from 'bento-charts';
 
 export const COUNTS_FILL = '#75787a';
 

@@ -3,8 +3,8 @@ import axios from 'axios';
 import { makeAuthorizationHeader } from 'bento-auth-js';
 import { searchFieldsUrl } from '@/constants/configConstants';
 import { printAPIError } from '@/utils/error.util';
-import { SearchFieldResponse } from '@/types/search';
-import { RootState } from '@/store';
+import type { SearchFieldResponse } from '@/types/search';
+import type { RootState } from '@/store';
 
 export const makeGetSearchFields = createAsyncThunk<
   SearchFieldResponse,

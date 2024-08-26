@@ -1,4 +1,4 @@
-import { ChoroplethMapProps } from 'bento-charts/dist/maps';
+import type { ChoroplethMapProps } from 'bento-charts/dist/maps';
 
 // Use multiple literals here instead of an object for full immutability.
 export const CHART_TYPE_PIE = 'pie';

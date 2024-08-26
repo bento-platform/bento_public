@@ -1,10 +1,11 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { PUBLIC_URL } from '@/config';
 import { katsuPublicRulesUrl } from '@/constants/configConstants';
-import { ServiceInfoStore, ServicesResponse } from '@/types/services';
-import { RootState } from '@/store';
-import { DiscoveryRules } from '@/types/configResponse';
+import type { ServiceInfoStore, ServicesResponse } from '@/types/services';
+import type { RootState } from '@/store';
+import type { DiscoveryRules } from '@/types/configResponse';
 import { printAPIError } from '@/utils/error.util';
 import { scopedAuthorizedRequestConfig } from '@/utils/requests';
 
