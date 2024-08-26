@@ -69,7 +69,7 @@ const App = () => {
     } else {
       navigate(`/${SUPPORTED_LNGS.ENGLISH}/`, { replace: true });
     }
-  }, [lang, i18n.language, navigate]);
+  }, [lang, i18n, navigate]);
 
   // AUTHENTICATION
   const [signedOutModal, setSignedOutModal] = useState(false);
