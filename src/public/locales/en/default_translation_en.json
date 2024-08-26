@@ -91,5 +91,10 @@
   "You have been signed out": "You have been signed out",
   "Please sign in to the research portal.": "Please sign in to the research portal.",
   "Sign In": "Sign In",
-  "Sign Out": "Sign Out"
+  "Sign Out": "Sign Out",
+  "Select Scope": "Select Scope",
+  "About": "About",
+  "Datasets": "Datasets",
+  "Clear": "Clear",
+  "Select": "Select"
 }
