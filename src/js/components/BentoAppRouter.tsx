@@ -80,7 +80,7 @@ const BentoAppRouter = () => {
     if (isAuthenticated) {
       dispatch(makeGetDataTypes());
     }
-  }, [isAuthenticated]);
+  }, [dispatch, isAuthenticated]);
 
   if (isAutoAuthenticating || isFetchingProjects) {
     return <Loader />;
