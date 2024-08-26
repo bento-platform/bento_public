@@ -1,5 +1,5 @@
-import { Rule } from 'antd/es/form';
-import { Datum } from '@/types/overviewResponse';
+import type { Rule } from 'antd/es/form';
+import type { Datum } from '@/types/overviewResponse';
 
 // ----------------------------
 // form handling

@@ -1,11 +1,12 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { katsuPublicRulesUrl } from '@/constants/configConstants';
 import { printAPIError } from '@/utils/error.util';
-import { ServiceInfoStore, ServicesResponse } from '@/types/services';
-import { RootState } from '@/store';
+import type { ServiceInfoStore, ServicesResponse } from '@/types/services';
+import type { RootState } from '@/store';
 import { PUBLIC_URL } from '@/config';
-import { DiscoveryRules } from '@/types/configResponse';
+import type { DiscoveryRules } from '@/types/configResponse';
 
 export const makeGetConfigRequest = createAsyncThunk<DiscoveryRules, void, { rejectValue: string; state: RootState }>(
   'config/getConfigData',

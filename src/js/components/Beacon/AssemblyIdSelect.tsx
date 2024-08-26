@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Form, Select } from 'antd';
-import { FormField, BeaconAssemblyIds } from '@/types/beacon';
+import type { FormField, BeaconAssemblyIds } from '@/types/beacon';
 import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 
 const AssemblyIdSelect = ({ field, beaconAssemblyIds, disabled }: AssemblyIdSelectProps) => {

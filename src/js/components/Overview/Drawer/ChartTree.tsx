@@ -1,10 +1,12 @@
-import React, { ReactNode, useMemo } from 'react';
+import type { ReactNode } from 'react';
+import React, { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
-import { InputNumber, Tree, TreeProps } from 'antd';
+import type { TreeProps } from 'antd';
+import { InputNumber, Tree } from 'antd';
 
 import { rearrange, setDisplayedCharts, setChartWidth } from '@/features/data/data.store';
 import { useTranslationCustom, useTranslationDefault } from '@/hooks';
-import { ChartDataField } from '@/types/data';
+import type { ChartDataField } from '@/types/data';
 
 interface MappedChartItem {
   title: ReactNode;

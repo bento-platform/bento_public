@@ -5,14 +5,9 @@ import { BarChart, Histogram, PieChart } from 'bento-charts';
 import { ChoroplethMap } from 'bento-charts/dist/maps';
 
 import { CHART_HEIGHT, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
-import { ChartData } from '@/types/data';
-import {
-  CHART_TYPE_BAR,
-  CHART_TYPE_HISTOGRAM,
-  CHART_TYPE_CHOROPLETH,
-  CHART_TYPE_PIE,
-  ChartConfig,
-} from '@/types/chartConfig';
+import type { ChartData } from '@/types/data';
+import type { ChartConfig } from '@/types/chartConfig';
+import { CHART_TYPE_BAR, CHART_TYPE_HISTOGRAM, CHART_TYPE_CHOROPLETH, CHART_TYPE_PIE } from '@/types/chartConfig';
 import { useAppSelector } from '@/hooks';
 import { scopeToUrl } from '@/utils/router';
 

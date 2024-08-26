@@ -1,5 +1,5 @@
 import { BentoRoute } from '@/types/routes';
-import { MetadataState } from '@/features/metadata/metadata.store';
+import type { MetadataState } from '@/features/metadata/metadata.store';
 
 export const getCurrentPage = (): BentoRoute => {
   const pathArray = window.location.pathname.split('/');

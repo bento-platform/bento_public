@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { disableChart } from '@/features/data/data.store';
-import { ChartDataField } from '@/types/data';
+import type { ChartDataField } from '@/types/data';
 import ChartCard from './ChartCard';
 import { CHART_WIDTH, GRID_GAP } from '@/constants/overviewConstants';
 

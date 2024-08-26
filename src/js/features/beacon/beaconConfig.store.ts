@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { BeaconConfigResponse, BeaconAssemblyIds } from '@/types/beacon';
-import { RootState } from '@/store';
+import type { BeaconConfigResponse, BeaconAssemblyIds } from '@/types/beacon';
+import type { RootState } from '@/store';
 import { printAPIError } from '@/utils/error.util';
 import { BEACON_URL } from '@/config';
 

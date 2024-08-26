@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { AxiosError } from 'axios';
+import type { AxiosError } from 'axios';
 
 export const printAPIError = (rejectWithValue: (value: string) => any) => (error: AxiosError) => {
   if (error.response) {

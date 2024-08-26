@@ -27,6 +27,7 @@ module.exports = {
     'no-unused-vars': 'off', // disable no-unused-vars since @typescript-eslint/no-unused-vars does the same
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }], // enable @typescript-eslint/no-unused-vars
     '@typescript-eslint/no-non-null-assertion': 'off',
+    '@typescript-eslint/consistent-type-imports': 'error',
     'comma-dangle': [
       'error',
       {

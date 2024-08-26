@@ -1,7 +1,7 @@
 import React from 'react';
 import MakeQueryOption from './MakeQueryOption';
 import { Space } from 'antd';
-import { Field } from '@/types/search';
+import type { Field } from '@/types/search';
 
 const SearchFieldsStack = ({ queryFields }: SearchFieldStackProps) => {
   return (

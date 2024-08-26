@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { provenanceUrl } from '@/constants/configConstants';
 import { printAPIError } from '@/utils/error.util';
-import { ProvenanceAPIResponse, ProvenanceStore } from '@/types/provenance';
+import type { ProvenanceAPIResponse, ProvenanceStore } from '@/types/provenance';
 
 export const makeGetProvenanceRequest = createAsyncThunk<ProvenanceAPIResponse, void, { rejectValue: string }>(
   'provenance/getProvenance',

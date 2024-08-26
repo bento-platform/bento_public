@@ -1,12 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { ToolkitStore } from '@reduxjs/toolkit/dist/configureStore';
+import type { ToolkitStore } from '@reduxjs/toolkit/dist/configureStore';
 
-import {
-  LS_OPENID_CONFIG_KEY,
-  OIDCSliceState,
-  AuthReducer as auth,
-  OIDCReducer as openIdConfiguration,
-} from 'bento-auth-js';
+import type { OIDCSliceState } from 'bento-auth-js';
+import { LS_OPENID_CONFIG_KEY, AuthReducer as auth, OIDCReducer as openIdConfiguration } from 'bento-auth-js';
 
 import configReducer from '@/features/config/config.store';
 import contentReducer from '@/features/content/content.store';

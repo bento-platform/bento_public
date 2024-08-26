@@ -1,9 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { katsuUrl } from '@/constants/configConstants';
-import { KatsuSearchResponse } from '@/types/search';
+import type { KatsuSearchResponse } from '@/types/search';
 import { printAPIError } from '@/utils/error.util';
-import { RootState } from '@/store';
+import type { RootState } from '@/store';
 
 export const makeGetKatsuPublic = createAsyncThunk<
   KatsuSearchResponse,

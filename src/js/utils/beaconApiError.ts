@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { AxiosError } from 'axios';
-import { BeaconErrorData } from '@/types/beacon';
+import type { AxiosError } from 'axios';
+import type { BeaconErrorData } from '@/types/beacon';
 
 export const beaconApiError = (rejectWithValue: (value: string) => any) => (error: AxiosError) => {
   if (error.response) {
