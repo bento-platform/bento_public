@@ -1,4 +1,4 @@
-import type React from 'react';
+import type { RefObject } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import type { TypedUseSelectorHook } from 'react-redux';
 import { useDispatch, useSelector } from 'react-redux';
@@ -66,7 +66,7 @@ function isSpaceAvailable(element: HTMLElement): boolean {
   return rect.right + CHART_WIDTH + GRID_GAP + 64 < window.innerWidth;
 }
 
-export const useElementWidth = (ref: React.RefObject<HTMLElement>, initialWidth: number) => {
+export const useElementWidth = (ref: RefObject<HTMLElement>, initialWidth: number) => {
   const [width, setWidth] = useState(initialWidth);
 
   const adjustWidth = useCallback(() => {
