@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { Card, Col, Row, Statistic, Typography, Space } from 'antd';
 import { TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
@@ -106,7 +106,7 @@ export interface SearchResultsPaneProps {
   experimentCount: number;
   experimentChartData: ChartData[];
   resultsTitle?: string;
-  resultsExtra?: string;
+  resultsExtra?: ReactElement;
 }
 
 export default SearchResultsPane;
