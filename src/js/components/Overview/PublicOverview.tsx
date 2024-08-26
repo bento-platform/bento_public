@@ -36,7 +36,7 @@ const PublicOverview = () => {
     // Save sections to localStorage when they change
     if (isFetchingOverviewData) return;
     saveToLocalStorage(sections);
-  }, [sections]);
+  }, [isFetchingOverviewData, sections]);
 
   useEffect(() => {
     const activeLanguage = i18n.language;

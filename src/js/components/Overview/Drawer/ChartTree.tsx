@@ -43,7 +43,7 @@ const ChartTree = ({ charts, section }: ChartTreeProps) => {
         ),
         key: id,
       })),
-    [charts, t, td]
+    [charts, dispatch, section, t, td]
   );
 
   const onChartDrop: TreeProps['onDrop'] = useMemo(() => {
