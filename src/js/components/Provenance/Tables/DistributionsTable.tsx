@@ -60,7 +60,7 @@ const DistributionsTable = ({ distributions }: DistributionsTableProps) => {
           ],
         },
       ] as ColumnsType<Distribution>,
-    [td]
+    [t, td]
   );
 
   return (
