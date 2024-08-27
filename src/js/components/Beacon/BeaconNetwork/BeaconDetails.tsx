@@ -12,6 +12,9 @@ import { useTranslationDefault } from '@/hooks';
 import { FlattenedBeaconResponse } from '@/types/beacon';
 const { Title } = Typography;
 
+const CARD_DEFAULT_WIDTH = '390px';
+const CARD_FULL_DETAILS_WIDTH = '1200px';
+
 const CustomSkeleton = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -69,12 +72,12 @@ const BeaconDetails = ({ beacon, response }: BeaconDetailsProps) => {
         margin: '5px',
         borderRadius: '10px',
         padding: '5px',
-        maxWidth: showFullCard ? '1200px' : '680px',
+        maxWidth: showFullCard ? CARD_FULL_DETAILS_WIDTH : CARD_DEFAULT_WIDTH,
         width: '100%',
-        minHeight: '169px', // leave enough room for stats skeleton
+        minHeight: '328px', // leave enough room for stats skeleton
         ...BOX_SHADOW,
       }}
-      styles={{ body: { paddingBottom: '10px' } }}
+      styles={{ body: {} }}
       extra={
         <>
           {hasApiError && (
@@ -90,16 +93,18 @@ const BeaconDetails = ({ beacon, response }: BeaconDetailsProps) => {
         <Col span={6}>
           <img
             src={organization.logoUrl}
-            style={{ maxWidth: '175px', maxHeight: '100px', width: 'auto', height: 'auto' }}
+            style={{ maxWidth: '175px', maxHeight: '100px', width: 'auto', height: 'auto', paddingBottom: "10px" }}
           />
+          <div>
+          {assemblies.map((a) => (
+            <Tag color="blue" key={a}>
+              {a}
+            </Tag>
+          ))}
+          </div>
         </Col>
         <Col span={18} style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Space direction="horizontal" size="middle" style={{ display: 'flex', alignItems: 'flex-start' }}>
-            {assemblies.map((a) => (
-              <Tag color="blue" key={a}>
-                {a}
-              </Tag>
-            ))}
+          <Space direction="vertical" size="middle" style={{ display: 'flex', alignItems: 'flex-start' }}>
             {isFetchingQueryResponse ? (
               <CustomSkeleton />
             ) : (
