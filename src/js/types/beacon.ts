@@ -78,7 +78,7 @@ export interface BeaconQueryPayload {
 }
 
 // export type BeaconQueryThunk = AsyncThunk<void | BeaconQueryResponse, BeaconQueryPayload, unknown>
-export type BeaconQueryThunk = unknown;
+export type BeaconQueryThunk = any;
 
 // ----------------------------
 // API response

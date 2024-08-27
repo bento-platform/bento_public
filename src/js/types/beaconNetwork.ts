@@ -3,7 +3,7 @@ import { ChartData } from './data';
 
 export interface NetworkBeacon extends BeaconServiceInfo {
   apiUrl: string;
-  overview?: unknown; // to update as design settles
+  overview?: any; // to update as design settles
   // queryResponse?: FlattenedBeaconResponse
 }
 
