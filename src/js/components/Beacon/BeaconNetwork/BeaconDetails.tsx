@@ -14,20 +14,9 @@ const { Title } = Typography;
 
 const CARD_DEFAULT_WIDTH = '390px';
 const CARD_FULL_DETAILS_WIDTH = '1200px';
-
-const CustomSkeleton = () => {
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
-      {/* <Skeleton title={false} paragraph={{rows: 2, width: 300}} active /> */}
-      <Skeleton.Input size="small" style={{ width: '350px' }} active />
-      <Skeleton.Input size="small" style={{ marginTop: '10px', width: '350px' }} active />
-    </div>
-  );
-};
+const CARD_BODY_MIN_HEIGHT = '272px'; //min height to fit stats without jumping
 
 const BeaconDetails = ({ beacon, response }: BeaconDetailsProps) => {
-  console.log({ beacon });
-
   const t = useTranslationDefault();
   const { apiUrl, organization, description, overview } = beacon;
   const { variants } = overview;
@@ -77,7 +66,7 @@ const BeaconDetails = ({ beacon, response }: BeaconDetailsProps) => {
         minHeight: '328px', // leave enough room for stats skeleton
         ...BOX_SHADOW,
       }}
-      styles={{ body: {} }}
+      styles={{ body: { minHeight: CARD_BODY_MIN_HEIGHT } }}
       extra={
         <>
           {hasApiError && (
@@ -93,20 +82,20 @@ const BeaconDetails = ({ beacon, response }: BeaconDetailsProps) => {
         <Col span={6}>
           <img
             src={organization.logoUrl}
-            style={{ maxWidth: '175px', maxHeight: '100px', width: 'auto', height: 'auto', paddingBottom: "10px" }}
+            style={{ maxWidth: '175px', maxHeight: '100px', width: 'auto', height: 'auto', paddingBottom: '10px' }}
           />
           <div>
-          {assemblies.map((a) => (
-            <Tag color="blue" key={a}>
-              {a}
-            </Tag>
-          ))}
+            {assemblies.map((a) => (
+              <Tag color="blue" key={a}>
+                {a}
+              </Tag>
+            ))}
           </div>
         </Col>
         <Col span={18} style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Space direction="vertical" size="middle" style={{ display: 'flex', alignItems: 'flex-start' }}>
             {isFetchingQueryResponse ? (
-              <CustomSkeleton />
+              <Skeleton title={false} paragraph={{ rows: 6, width: 100 }} active />
             ) : (
               <>
                 <Statistic
