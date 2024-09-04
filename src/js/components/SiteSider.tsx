@@ -10,6 +10,7 @@ import { useAppSelector, useTranslationDefault } from '@/hooks';
 import { buildQueryParamsUrl } from '@/utils/search';
 import { getCurrentPage } from '@/utils/router';
 import { BentoRoute } from '@/types/routes';
+import { BEACON_UI_ENABLED } from '@/config';
 
 const { Sider } = Layout;
 
@@ -56,15 +57,19 @@ const SiteSider: React.FC<{
     [td]
   );
 
-  const menuItems: MenuItem[] = useMemo(
-    () => [
+  const menuItems: MenuItem[] = useMemo(() => {
+    const items = [
       createMenuItem('Overview', BentoRoute.Overview, <PieChartOutlined />),
       createMenuItem('Search', BentoRoute.Search, <SearchOutlined />),
-      createMenuItem('Beacon', BentoRoute.Beacon, <BeaconLogo />),
       createMenuItem('Provenance', BentoRoute.Provenance, <SolutionOutlined />),
-    ],
-    [createMenuItem]
-  );
+    ];
+
+    if (BEACON_UI_ENABLED) {
+      items.push(createMenuItem('Beacon', BentoRoute.Beacon, <BeaconLogo />));
+    }
+
+    return items;
+  }, [createMenuItem]);
 
   return (
     <Sider
