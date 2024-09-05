@@ -1,11 +1,11 @@
 import { BentoRoute } from '@/types/routes';
 import type { MetadataState } from '@/features/metadata/metadata.store';
 
-export const getCurrentPage = (): BentoRoute => {
+export const getCurrentPage = (): string => {
   const pathArray = window.location.pathname.split('/');
   const validPages = Object.values(BentoRoute);
-  if (validPages.includes(pathArray[pathArray.length - 1] as BentoRoute)) {
-    return pathArray[pathArray.length - 1] as BentoRoute;
+  if (validPages.includes(pathArray[pathArray.length - 1])) {
+    return pathArray[pathArray.length - 1];
   } else {
     return BentoRoute.Overview;
   }

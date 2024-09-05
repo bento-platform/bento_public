@@ -93,7 +93,7 @@ const BentoAppRouter = () => {
           <Route index element={<PublicOverview />} />
           <Route path={BentoRoute.Overview} element={<PublicOverview />} />
           <Route path={BentoRoute.Search} element={<Search />} />
-          <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />
+          {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
           <Route path={BentoRoute.Provenance} element={<ProvenanceTab />} />
         </Route>
 
@@ -101,7 +101,7 @@ const BentoAppRouter = () => {
           <Route index element={<PublicOverview />} />
           <Route path={BentoRoute.Overview} element={<PublicOverview />} />
           <Route path={BentoRoute.Search} element={<Search />} />
-          <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />
+          {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
           <Route path={BentoRoute.Provenance} element={<ProvenanceTab />} />
         </Route>
 
@@ -109,7 +109,7 @@ const BentoAppRouter = () => {
           <Route index element={<PublicOverview />} />
           <Route path={BentoRoute.Overview} element={<PublicOverview />} />
           <Route path={BentoRoute.Search} element={<Search />} />
-          <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />
+          {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
           <Route path={BentoRoute.Provenance} element={<ProvenanceTab />} />
         </Route>
       </Route>

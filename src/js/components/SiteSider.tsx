@@ -10,7 +10,6 @@ import { useAppSelector, useTranslationDefault } from '@/hooks';
 import { buildQueryParamsUrl } from '@/utils/search';
 import { getCurrentPage } from '@/utils/router';
 import { BentoRoute } from '@/types/routes';
-import { BEACON_UI_ENABLED } from '@/config';
 
 const { Sider } = Layout;
 
@@ -64,7 +63,7 @@ const SiteSider: React.FC<{
       createMenuItem('Provenance', BentoRoute.Provenance, <SolutionOutlined />),
     ];
 
-    if (BEACON_UI_ENABLED) {
+    if (BentoRoute.Beacon) {
       items.push(createMenuItem('Beacon', BentoRoute.Beacon, <BeaconLogo />));
     }
 
