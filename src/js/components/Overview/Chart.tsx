@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import type { BarChartProps } from 'bento-charts';
 import { BarChart, Histogram, PieChart } from 'bento-charts';
 import { ChoroplethMap } from 'bento-charts/dist/maps';
 
@@ -11,13 +12,20 @@ import { CHART_TYPE_BAR, CHART_TYPE_HISTOGRAM, CHART_TYPE_CHOROPLETH, CHART_TYPE
 import { useAppSelector } from '@/hooks';
 import { scopeToUrl } from '@/utils/router';
 
+interface ChartEvent {
+  activePayload: Array<{ payload: { x: string } }>;
+}
+
 const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { selectedScope } = useAppSelector((state) => state.metadata);
   const translateMap = ({ x, y }: { x: string; y: number }) => ({ x: t(x), y });
   const removeMissing = ({ x }: { x: string }) => x !== 'missing';
-  const barChartOnClickHandler = (d: { payload: { x: string } }) => {
+
+  const barChartOnChartClickHandler: BarChartProps['onChartClick'] = (e: ChartEvent) => {
+    if (e.activePayload.length === 0) return;
+    const d = e.activePayload[0];
     navigate(`/${i18n.language}${scopeToUrl(selectedScope)}/search?${id}=${d.payload.x}`);
   };
   const pieChartOnClickHandler = (d: { name: string }) => {
@@ -35,7 +43,7 @@ const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) =
           units={units}
           preFilter={removeMissing}
           dataMap={translateMap}
-          {...(isClickable ? { onClick: barChartOnClickHandler } : {})}
+          {...(isClickable ? { onChartClick: barChartOnChartClickHandler } : {})}
         />
       );
     case CHART_TYPE_HISTOGRAM:
@@ -46,7 +54,7 @@ const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) =
           data={data}
           preFilter={removeMissing}
           dataMap={translateMap}
-          {...(isClickable ? { onClick: barChartOnClickHandler } : {})}
+          {...(isClickable ? { onChartClick: barChartOnChartClickHandler } : {})}
         />
       );
     case CHART_TYPE_PIE:
