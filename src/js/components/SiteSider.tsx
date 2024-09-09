@@ -56,15 +56,19 @@ const SiteSider: React.FC<{
     [td]
   );
 
-  const menuItems: MenuItem[] = useMemo(
-    () => [
+  const menuItems: MenuItem[] = useMemo(() => {
+    const items = [
       createMenuItem('Overview', BentoRoute.Overview, <PieChartOutlined />),
       createMenuItem('Search', BentoRoute.Search, <SearchOutlined />),
-      createMenuItem('Beacon', BentoRoute.Beacon, <BeaconLogo />),
       createMenuItem('Provenance', BentoRoute.Provenance, <SolutionOutlined />),
-    ],
-    [createMenuItem]
-  );
+    ];
+
+    if (BentoRoute.Beacon) {
+      items.push(createMenuItem('Beacon', BentoRoute.Beacon, <BeaconLogo />));
+    }
+
+    return items;
+  }, [createMenuItem]);
 
   return (
     <Sider
