@@ -1,10 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { makeAuthorizationHeader } from 'bento-auth-js';
 import { searchFieldsUrl } from '@/constants/configConstants';
-import { printAPIError } from '@/utils/error.util';
-import type { SearchFieldResponse } from '@/types/search';
 import type { RootState } from '@/store';
+import type { SearchFieldResponse } from '@/types/search';
+import { printAPIError } from '@/utils/error.util';
+import { scopedAuthorizedRequestConfig } from '@/utils/requests';
 
 export const makeGetSearchFields = createAsyncThunk<
   SearchFieldResponse,
@@ -12,10 +12,7 @@ export const makeGetSearchFields = createAsyncThunk<
   { rejectValue: string; state: RootState }
 >('query/makeGetSearchFields', async (_, { rejectWithValue, getState }) => {
   return await axios
-    .get(searchFieldsUrl, {
-      headers: { ...makeAuthorizationHeader(getState().auth.accessToken) },
-      params: getState().metadata.selectedScope,
-    })
+    .get(searchFieldsUrl, scopedAuthorizedRequestConfig(getState()))
     .then((res) => res.data)
     .catch(printAPIError(rejectWithValue));
 });
