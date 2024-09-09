@@ -4,7 +4,7 @@ import { katsuPublicSearchUrl } from '@/constants/configConstants';
 import type { RootState } from '@/store';
 import type { KatsuSearchResponse } from '@/types/search';
 import { printAPIError } from '@/utils/error.util';
-import { authorizedRequestConfig } from '@/utils/requests';
+import { scopedAuthorizedRequestConfig } from '@/utils/requests';
 
 export const makeGetKatsuPublic = createAsyncThunk<
   KatsuSearchResponse,
@@ -12,14 +12,8 @@ export const makeGetKatsuPublic = createAsyncThunk<
   { state: RootState; rejectValue: string }
 >('query/makeGetKatsuPublic', (_, { rejectWithValue, getState }) => {
   const state = getState();
-  const scopeParams = state.metadata.selectedScope;
-  const queryParams = { ...scopeParams, ...state.query.queryParams };
-
   return axios
-    .get(katsuPublicSearchUrl, {
-      ...authorizedRequestConfig(state),
-      params: queryParams,
-    })
+    .get(katsuPublicSearchUrl, scopedAuthorizedRequestConfig(state, state.query.queryParams))
     .then((res) => res.data)
     .catch(printAPIError(rejectWithValue));
 });
