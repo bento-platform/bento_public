@@ -5,7 +5,7 @@ import { katsuLastIngestionsUrl, gohanLastIngestionsUrl } from '@/constants/conf
 import type { RootState } from '@/store';
 import type { LastIngestionDataTypeResponse, DataTypeMap } from '@/types/lastIngestionDataTypeResponse';
 import { printAPIError } from '@/utils/error.util';
-import { authorizedRequestConfig } from '@/utils/requests';
+import { scopedAuthorizedRequestConfig } from '@/utils/requests';
 
 // Async thunks to fetch data from the two endpoints
 export const fetchKatsuData = createAsyncThunk<
@@ -17,11 +17,12 @@ export const fetchKatsuData = createAsyncThunk<
   }
 >('dataTypes/fetchKatsuData', (_, { rejectWithValue, getState }) =>
   axios
-    .get(katsuLastIngestionsUrl, authorizedRequestConfig(getState()))
+    .get(katsuLastIngestionsUrl, scopedAuthorizedRequestConfig(getState()))
     .then((res) => res.data)
     .catch(printAPIError(rejectWithValue))
 );
 
+// TODO: handle scoping, handle authorization
 export const fetchGohanData = createAsyncThunk('dataTypes/fetchGohanData', (_, { rejectWithValue }) =>
   axios
     .get(gohanLastIngestionsUrl)
