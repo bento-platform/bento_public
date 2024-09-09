@@ -14,6 +14,9 @@ export const makeGetDataTypes = createAsyncThunk<
     state: RootState;
   }
 >('dataTypes/makeGetDataTypes', async (_, { getState }) => {
+  // Not scoped currently - this is a way to get all data types in an instance from service registry, but it may make
+  // sense in the future to forward query params to nested calls depending on scope value especially in the case of
+  // count handling. TBD - TODO: figure this out
   const res = await axios.get('/api/service-registry/data-types', authorizedRequestConfig(getState()));
   return res.data;
 });
