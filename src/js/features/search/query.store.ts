@@ -1,11 +1,12 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { makeGetKatsuPublic } from './makeGetKatsuPublic.thunk';
 import { makeGetSearchFields } from './makeGetSearchFields.thunk';
 import { serializeChartData } from '@/utils/chart';
-import { KatsuSearchResponse, SearchFieldResponse } from '@/types/search';
-import { ChartData } from '@/types/data';
+import type { KatsuSearchResponse, SearchFieldResponse } from '@/types/search';
+import type { ChartData } from '@/types/data';
 
-type QueryState = {
+export type QueryState = {
   isFetchingFields: boolean;
   isFetchingData: boolean;
   attemptedFetch: boolean;

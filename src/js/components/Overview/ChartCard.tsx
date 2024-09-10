@@ -1,11 +1,11 @@
 import React, { memo, useRef } from 'react';
 import { Card, Button, Tooltip, Space, Typography, Row } from 'antd';
-import { CloseOutlined, TeamOutlined } from '@ant-design/icons';
+import { CloseOutlined } from '@ant-design/icons';
 import Chart from './Chart';
 import CustomEmpty from '../Util/CustomEmpty';
 import { CHART_HEIGHT, BOX_SHADOW } from '@/constants/overviewConstants';
 import { useElementWidth, useTranslationCustom, useTranslationDefault } from '@/hooks';
-import { ChartDataField } from '@/types/data';
+import type { ChartDataField } from '@/types/data';
 
 const CARD_STYLE: React.CSSProperties = { height: '415px', borderRadius: '11px', ...BOX_SHADOW };
 const ROW_EMPTY_STYLE: React.CSSProperties = { height: `${CHART_HEIGHT}px` };
@@ -13,17 +13,12 @@ const ROW_EMPTY_STYLE: React.CSSProperties = { height: `${CHART_HEIGHT}px` };
 interface TitleComponentProps {
   title: string;
   description: string;
-  smallEllipsis: boolean;
 }
 
-const TitleComponent: React.FC<TitleComponentProps> = ({ title, description, smallEllipsis }) => (
+const TitleComponent: React.FC<TitleComponentProps> = ({ title, description }) => (
   <Space.Compact direction="vertical" style={{ fontWeight: 'normal', padding: '5px 5px' }}>
     <Typography.Text style={{ fontSize: '20px', fontWeight: '600' }}>{title}</Typography.Text>
-    <Typography.Text
-      type="secondary"
-      style={smallEllipsis ? { width: '260px' } : { width: '375px' }}
-      ellipsis={{ tooltip: description }}
-    >
+    <Typography.Text type="secondary" style={{ width: '375px' }} ellipsis={{ tooltip: description }}>
       {description}
     </Typography.Text>
   </Space.Compact>
@@ -39,6 +34,7 @@ const ChartCard: React.FC<ChartCardProps> = memo(({ section, chart, onRemoveChar
     data,
     field: { id, description, title, config },
     chartConfig,
+    isSearchable,
   } = chart;
 
   const extraOptionsData = [
@@ -51,38 +47,31 @@ const ChartCard: React.FC<ChartCardProps> = memo(({ section, chart, onRemoveChar
     },
   ];
 
-  const ed = [];
-
-  // missing count label
-  const missingCount = data.find((e) => e.x === 'missing')?.y ?? 0;
-
-  if (missingCount) {
-    ed.push(
-      <Typography.Text key={0} type="secondary" italic>
-        <TeamOutlined /> {missingCount} {td('missing')}
-      </Typography.Text>
-    );
-  }
-
-  // controls (buttons)
-  extraOptionsData.forEach((opt) => {
-    ed.push(
-      <Tooltip key={ed.length} title={opt.description}>
-        <Button shape="circle" icon={opt.icon} onClick={opt.onClick} />
-      </Tooltip>
-    );
-  });
-
   return (
     <div ref={containerRef} key={id} style={{ gridColumn: `span ${width}` }}>
       <Card
-        title={<TitleComponent title={t(title)} description={t(description)} smallEllipsis={!!missingCount} />}
+        title={<TitleComponent title={t(title)} description={t(description)} />}
         style={CARD_STYLE}
         size="small"
-        extra={<Space size="small">{ed}</Space>}
+        extra={
+          <Space size="small">
+            {extraOptionsData.map((opt, index) => (
+              <Tooltip key={index} title={opt.description}>
+                <Button shape="circle" icon={opt.icon} onClick={opt.onClick} />
+              </Tooltip>
+            ))}
+          </Space>
+        }
       >
         {data.filter((e) => !(e.x === 'missing')).length !== 0 ? (
-          <Chart chartConfig={chartConfig} data={data} units={config?.units || ''} id={id} key={id} />
+          <Chart
+            chartConfig={chartConfig}
+            data={data}
+            units={config?.units || ''}
+            id={id}
+            key={id}
+            isClickable={isSearchable}
+          />
         ) : (
           <Row style={ROW_EMPTY_STYLE} justify="center" align="middle">
             <CustomEmpty text="No Data" />

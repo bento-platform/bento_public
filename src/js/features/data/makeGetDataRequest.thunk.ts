@@ -6,18 +6,19 @@ import { verifyData, saveValue, getValue, convertSequenceAndDisplayData } from '
 
 import { DEFAULT_CHART_WIDTH, LOCALSTORAGE_CHARTS_KEY } from '@/constants/overviewConstants';
 import { serializeChartData } from '@/utils/chart';
-import { ChartConfig } from '@/types/chartConfig';
-import { ChartDataField, LocalStorageData, Sections } from '@/types/data';
-import { Counts, OverviewResponse } from '@/types/overviewResponse';
+import type { ChartConfig } from '@/types/chartConfig';
+import type { ChartDataField, LocalStorageData, Sections } from '@/types/data';
+import type { Counts, OverviewResponse } from '@/types/overviewResponse';
 import { printAPIError } from '@/utils/error.util';
+import type { RootState } from '@/store';
 
 export const makeGetDataRequestThunk = createAsyncThunk<
   { sectionData: Sections; counts: Counts; defaultData: Sections },
   void,
-  { rejectValue: string }
->('data/makeGetDataRequest', async (_, { rejectWithValue }) => {
+  { rejectValue: string; state: RootState }
+>('data/makeGetDataRequest', async (_, { rejectWithValue, getState }) => {
   const overviewResponse = (await axios
-    .get(katsuPublicOverviewUrl)
+    .get(katsuPublicOverviewUrl, { params: getState().metadata.selectedScope })
     .then((res) => res.data)
     .catch(printAPIError(rejectWithValue))) as OverviewResponse['overview'];
 
@@ -38,6 +39,7 @@ export const makeGetDataRequestThunk = createAsyncThunk<
       // Initial display state
       isDisplayed: i < MAX_CHARTS,
       width: chart.width ?? DEFAULT_CHART_WIDTH, // initial configured width; users can change it from here
+      isSearchable: false,
     };
   };
 

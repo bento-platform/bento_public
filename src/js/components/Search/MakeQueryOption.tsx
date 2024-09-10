@@ -6,7 +6,7 @@ import { addQueryParam, makeGetKatsuPublic, removeQueryParam } from '@/features/
 import SelectOption from './SelectOption';
 
 import { useAppDispatch, useAppSelector, useTranslationCustom, useTranslationDefault } from '@/hooks';
-import { Field } from '@/types/search';
+import type { Field } from '@/types/search';
 
 const MakeQueryOption = ({ queryField }: MakeQueryOptionProps) => {
   const t = useTranslationCustom();
@@ -29,6 +29,11 @@ const MakeQueryOption = ({ queryField }: MakeQueryOptionProps) => {
     dispatch(makeGetKatsuPublic());
   };
 
+  // TODO: allow disabling max query parameters for authenticated and authorized users when Katsu has AuthZ
+  // useQueryWithAuthIfAllowed()
+  // const maxQueryParametersRequired = useAppSelector((state) => state.config.maxQueryParametersRequired);
+  // const hasMaxFilters = maxQueryParametersRequired && queryParamCount >= maxQueryParameters;
+  // const disabled = isChecked ? false : hasMaxFilters;
   const disabled = isChecked ? false : queryParamCount >= maxQueryParameters;
 
   return (

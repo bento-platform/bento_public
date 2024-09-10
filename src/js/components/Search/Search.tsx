@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { Row, Typography, Space, FloatButton } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -32,30 +32,41 @@ const RoutedSearch: React.FC = () => {
     attemptedFetch,
   } = useAppSelector((state) => state.query);
 
+  // TODO: allow disabling max query parameters for authenticated and authorized users when Katsu has AuthZ
+  // const maxQueryParametersRequired = useAppSelector((state) => state.config.maxQueryParametersRequired);
+  // const allowedQueryParamsCount = maxQueryParametersRequired ? maxQueryParameters : queryParamCount;
+
   const searchFields = useMemo(
     () => searchSections.flatMap(({ fields }) => fields.map((field) => ({ id: field.id, options: field.options }))),
     [searchSections]
   );
 
-  const validateQuery = (query: URLSearchParams): { valid: boolean; validQueryParamsObject: QueryParams } => {
-    const validateQueryParam = (key: string, value: string): boolean => {
-      const field = searchFields.find((e) => e.id === key);
-      return Boolean(field && field.options.includes(value));
-    };
+  const validateQuery = useCallback(
+    (query: URLSearchParams): { valid: boolean; validQueryParamsObject: QueryParams } => {
+      const validateQueryParam = (key: string, value: string): boolean => {
+        const field = searchFields.find((e) => e.id === key);
+        return Boolean(field && field.options.includes(value));
+      };
 
-    const queryParamArray = Array.from(query.entries()).map(([key, value]) => ({ key, value }));
+      const queryParamArray = Array.from(query.entries()).map(([key, value]) => ({ key, value }));
 
-    const validQueryParamArray = queryParamArray
-      .filter(({ key, value }) => validateQueryParam(key, value))
-      .slice(0, maxQueryParameters);
+      // TODO: to disable max query parameters, slice with allowedQueryParamsCount instead
+      const validQueryParamArray = queryParamArray
+        .filter(({ key, value }) => validateQueryParam(key, value))
+        .slice(0, maxQueryParameters);
 
-    const validQueryParamsObject = validQueryParamArray.reduce<QueryParams>((acc, { key, value }) => {
-      acc[key] = value;
-      return acc;
-    }, {});
+      const validQueryParamsObject = validQueryParamArray.reduce<QueryParams>((acc, { key, value }) => {
+        acc[key] = value;
+        return acc;
+      }, {});
 
-    return { valid: JSON.stringify(validQueryParamArray) === JSON.stringify(queryParamArray), validQueryParamsObject };
-  };
+      return {
+        valid: JSON.stringify(validQueryParamArray) === JSON.stringify(queryParamArray),
+        validQueryParamsObject,
+      };
+    },
+    [maxQueryParameters, searchFields]
+  );
 
   // Synchronize Redux query params state from URL
   useEffect(() => {
@@ -74,7 +85,16 @@ const RoutedSearch: React.FC = () => {
       console.debug('Redirecting to:', url);
       navigate(url);
     }
-  }, [location.search]);
+  }, [
+    attemptedFetch,
+    dispatch,
+    isFetchingSearchFields,
+    location.search,
+    location.pathname,
+    navigate,
+    queryParams,
+    validateQuery,
+  ]);
 
   // Synchronize URL from Redux query params state
   useEffect(() => {
@@ -83,7 +103,7 @@ const RoutedSearch: React.FC = () => {
     const url = buildQueryParamsUrl(location.pathname, queryParams);
     console.debug('Redirecting to:', url);
     navigate(url, { replace: true });
-  }, [queryParams]);
+  }, [attemptedFetch, location.pathname, navigate, queryParams]);
 
   return <Search />;
 };

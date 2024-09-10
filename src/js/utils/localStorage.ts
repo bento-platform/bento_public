@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { LocalStorageData, Sections } from '@/types/data';
-import { ValueOf } from '@/types/util';
+import type { LocalStorageData, Sections } from '@/types/data';
+import type { ValueOf } from '@/types/util';
 
 export const verifyData = (nObj: any, oObj: LocalStorageData) => {
   const verifyCharts = (nCharts: any, oCharts: ValueOf<LocalStorageData>) => {

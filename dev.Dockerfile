@@ -1,4 +1,4 @@
-FROM ghcr.io/bento-platform/bento_base_image:node-debian-2024.03.01
+FROM ghcr.io/bento-platform/bento_base_image:node-debian-2024.07.09
 
 RUN apt-get update -y && \
     apt-get install -y ca-certificates

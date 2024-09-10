@@ -31,10 +31,17 @@ const SiteSider: React.FC<{
 
   const handleMenuClick: OnClick = useCallback(
     ({ key }: { key: string }) => {
-      const currentPath = location.pathname.split('/');
-      const currentLang = currentPath[1];
-      const newPath = `/${currentLang}/${key === BentoRoute.Overview ? '' : key}`;
-      navigate(key === BentoRoute.Search ? buildQueryParamsUrl(newPath, queryParams) : newPath);
+      const currentPath = location.pathname.split('/').filter(Boolean);
+      const newPath = [currentPath[0]];
+      if (currentPath[1] == 'p') {
+        newPath.push('p', currentPath[2]);
+      }
+      if (currentPath[3] == 'd') {
+        newPath.push('d', currentPath[4]);
+      }
+      newPath.push(key);
+      const newPathString = '/' + newPath.join('/');
+      navigate(key === BentoRoute.Search ? buildQueryParamsUrl(newPathString, queryParams) : newPathString);
     },
     [navigate, queryParams, location.pathname]
   );
@@ -49,16 +56,23 @@ const SiteSider: React.FC<{
     [td]
   );
 
-  const menuItems: MenuItem[] = useMemo(
-    () => [
+  const menuItems: MenuItem[] = useMemo(() => {
+    const items = [
       createMenuItem('Overview', BentoRoute.Overview, <PieChartOutlined />),
       createMenuItem('Search', BentoRoute.Search, <SearchOutlined />),
-      createMenuItem('Beacon', BentoRoute.Beacon, <BeaconLogo />),
-      createMenuItem('Beacon Network', BentoRoute.BeaconNetwork, <ShareAltOutlined />),
       createMenuItem('Provenance', BentoRoute.Provenance, <SolutionOutlined />),
-    ],
-    [createMenuItem]
-  );
+    ];
+
+    if (BentoRoute.Beacon) {
+      items.push(createMenuItem('Beacon', BentoRoute.Beacon, <BeaconLogo />));
+    }
+
+    if (BentoRoute.BeaconNetwork) {
+      items.push(createMenuItem('Beacon Network', BentoRoute.BeaconNetwork, <ShareAltOutlined />));
+    }
+
+    return items;
+  }, [createMenuItem]);
 
   return (
     <Sider

@@ -1,12 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { ToolkitStore } from '@reduxjs/toolkit/dist/configureStore';
+import type { ToolkitStore } from '@reduxjs/toolkit/dist/configureStore';
 
-import {
-  LS_OPENID_CONFIG_KEY,
-  OIDCSliceState,
-  AuthReducer as auth,
-  OIDCReducer as openIdConfiguration,
-} from 'bento-auth-js';
+import type { OIDCSliceState } from 'bento-auth-js';
+import { LS_OPENID_CONFIG_KEY, AuthReducer as auth, OIDCReducer as openIdConfiguration } from 'bento-auth-js';
 
 import configReducer from '@/features/config/config.store';
 import contentReducer from '@/features/content/content.store';
@@ -18,6 +14,7 @@ import beaconConfigReducer from './features/beacon/beaconConfig.store';
 import beaconQueryReducer from './features/beacon/beaconQuery.store';
 import beaconNetworkConfigReducer from './features/beacon/networkConfig.store';
 import networkBeaconQueryReducer from './features/beacon/networkBeaconQuery.store';
+import metadataReducer from '@/features/metadata/metadata.store';
 import { getValue, saveValue } from './utils/localStorage';
 
 interface PersistedState {
@@ -45,6 +42,7 @@ export const store = configureStore({
     beaconQuery: beaconQueryReducer,
     beaconNetwork: beaconNetworkConfigReducer,
     beaconNetworkResponse: networkBeaconQueryReducer,
+    metadata: metadataReducer,
   },
   preloadedState: persistedState,
 });

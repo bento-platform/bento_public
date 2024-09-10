@@ -1,5 +1,6 @@
-import React, { useEffect, useState, ReactNode } from 'react';
-import { useAppSelector, useAppDispatch, useTranslationDefault, useBeaconWithAuthIfAllowed } from '@/hooks';
+import type { ReactNode } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import { useAppSelector, useAppDispatch, useTranslationDefault, useQueryWithAuthIfAllowed } from '@/hooks';
 import { Button, Card, Col, Form, Row, Space, Tooltip, Typography } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { useIsAuthenticated } from 'bento-auth-js';
@@ -8,7 +9,7 @@ import BeaconSearchResults from './BeaconSearchResults';
 import BeaconErrorMessage from './BeaconCommon/BeaconErrorMessage';
 import VariantsForm from './BeaconCommon/VariantsForm';
 import { makeBeaconQuery } from '@/features/beacon/beaconQuery.store';
-import { BeaconQueryPayload, FormFilter, FormValues, PayloadFilter, PayloadVariantsQuery } from '@/types/beacon';
+import type { BeaconQueryPayload, FormFilter, FormValues, PayloadFilter, PayloadVariantsQuery } from '@/types/beacon';
 import {
   WRAPPER_STYLE,
   FORM_ROW_GUTTERS,
@@ -64,8 +65,13 @@ const BeaconQueryUi = () => {
   const isAuthenticated = useIsAuthenticated();
 
   const dispatch = useAppDispatch();
-  const launchEmptyQuery = () => dispatch(makeBeaconQuery(requestPayload({}, [])));
-  const formInitialValues = { 'Assembly ID': beaconAssemblyIds.length === 1 && beaconAssemblyIds[0] };
+  const launchEmptyQuery = useCallback(() => dispatch(makeBeaconQuery(requestPayload({}, []))), [dispatch]);
+  const formInitialValues = useMemo(
+    () => ({
+      'Assembly ID': beaconAssemblyIds.length === 1 && beaconAssemblyIds[0],
+    }),
+    [beaconAssemblyIds]
+  );
   const uiInstructions = hasVariants ? 'Search by genomic variants, clinical metadata or both.' : '';
 
   const hasError = hasFormError || hasApiError;
@@ -88,10 +94,10 @@ const BeaconQueryUi = () => {
 
     // set assembly id options matching what's in gohan
     form.setFieldsValue(formInitialValues);
-  }, [isFetchingBeaconConfig, isAuthenticated]);
+  }, [beaconAssemblyIds.length, form, formInitialValues, isFetchingBeaconConfig, isAuthenticated, launchEmptyQuery]);
 
   // Disables max query param if user is authenticated and authorized
-  useBeaconWithAuthIfAllowed();
+  useQueryWithAuthIfAllowed();
 
   // beacon request handling
 

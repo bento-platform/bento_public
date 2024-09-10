@@ -1,11 +1,14 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+import type { RefObject } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import type { TypedUseSelectorHook } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { RESOURCE_EVERYTHING, Resource, queryData, useHasResourcePermission } from 'bento-auth-js';
+import type { Resource } from 'bento-auth-js';
+import { RESOURCE_EVERYTHING, queryData, useHasResourcePermission } from 'bento-auth-js';
 
 import type { RootState, AppDispatch } from '@/store';
 import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
-import { NamespaceTranslationFunction } from '@/types/translation';
+import type { NamespaceTranslationFunction } from '@/types/translation';
 import { setMaxQueryParametersRequired } from '@/features/config//config.store';
 import { CHART_WIDTH, GRID_GAP } from '@/constants/overviewConstants';
 
@@ -41,12 +44,12 @@ export const useHasResourcePermissionWrapper = (resource: Resource, permission: 
   };
 };
 
-export const useBeaconWithAuthIfAllowed = () => {
+export const useQueryWithAuthIfAllowed = () => {
   const dispatch = useAppDispatch();
   const { hasPermission } = useHasResourcePermissionWrapper(RESOURCE_EVERYTHING, queryData);
   useEffect(() => {
     if (hasPermission) {
-      console.log('Beacon: user authorized for no max query parameters.');
+      console.log('Beacon | Search: user authorized for no max query parameters.');
       dispatch(setMaxQueryParametersRequired(false));
     }
   }, [dispatch, hasPermission]);
@@ -63,7 +66,7 @@ function isSpaceAvailable(element: HTMLElement): boolean {
   return rect.right + CHART_WIDTH + GRID_GAP + 64 < window.innerWidth;
 }
 
-export const useElementWidth = (ref: React.RefObject<HTMLElement>, initialWidth: number) => {
+export const useElementWidth = (ref: RefObject<HTMLElement>, initialWidth: number) => {
   const [width, setWidth] = useState(initialWidth);
 
   const adjustWidth = useCallback(() => {

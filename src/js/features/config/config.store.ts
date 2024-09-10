@@ -1,19 +1,21 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { katsuPublicOverviewUrl } from '@/constants/configConstants';
+import { katsuPublicRulesUrl } from '@/constants/configConstants';
 import { printAPIError } from '@/utils/error.util';
-import { ServiceInfoStore, ServicesResponse } from '@/types/services';
-import { RootState } from '@/store';
+import type { ServiceInfoStore, ServicesResponse } from '@/types/services';
+import type { RootState } from '@/store';
 import { PUBLIC_URL } from '@/config';
-import { KatsuPublicOverviewResponse } from '@/types/configResponse';
+import type { DiscoveryRules } from '@/types/configResponse';
 
-export const makeGetConfigRequest = createAsyncThunk<KatsuPublicOverviewResponse, void, { rejectValue: string }>(
+export const makeGetConfigRequest = createAsyncThunk<DiscoveryRules, void, { rejectValue: string; state: RootState }>(
   'config/getConfigData',
-  (_, { rejectWithValue }) =>
-    axios
-      .get(katsuPublicOverviewUrl)
+  (_, { rejectWithValue, getState }) => {
+    return axios
+      .get(katsuPublicRulesUrl, { params: getState().metadata.selectedScope })
       .then((res) => res.data)
-      .catch(printAPIError(rejectWithValue))
+      .catch(printAPIError(rejectWithValue));
+  }
 );
 
 export const makeGetServiceInfoRequest = createAsyncThunk<
@@ -57,13 +59,10 @@ const configStore = createSlice({
     builder.addCase(makeGetConfigRequest.pending, (state) => {
       state.isFetchingConfig = true;
     });
-    builder.addCase(
-      makeGetConfigRequest.fulfilled,
-      (state, { payload }: PayloadAction<KatsuPublicOverviewResponse>) => {
-        state.maxQueryParameters = payload.max_query_parameters;
-        state.isFetchingConfig = false;
-      }
-    );
+    builder.addCase(makeGetConfigRequest.fulfilled, (state, { payload }: PayloadAction<DiscoveryRules>) => {
+      state.maxQueryParameters = payload.max_query_parameters;
+      state.isFetchingConfig = false;
+    });
     builder.addCase(makeGetConfigRequest.rejected, (state) => {
       state.isFetchingConfig = false;
     });

@@ -10,7 +10,7 @@ import PublicationsTable from './Tables/PublicationsTable';
 import CreatedByTable from './Tables/CreatedByTable';
 import DownloadDats from './DownloadDats';
 import { useTranslationCustom, useTranslationDefault } from '@/hooks';
-import { ProvenanceStoreDataset } from '@/types/provenance';
+import type { ProvenanceStoreDataset } from '@/types/provenance';
 import { BOX_SHADOW } from '@/constants/overviewConstants';
 
 const { Item } = Descriptions;

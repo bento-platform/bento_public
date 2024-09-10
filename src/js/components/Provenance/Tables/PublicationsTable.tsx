@@ -1,12 +1,13 @@
-import React, { ReactNode, useMemo } from 'react';
+import type { ReactNode } from 'react';
+import React, { useMemo } from 'react';
 
 import { Typography } from 'antd';
-import { ColumnsType } from 'antd/es/table';
+import type { ColumnsType } from 'antd/es/table';
 
 import BaseProvenanceTable from './BaseProvenanceTable';
 import LinkIfUrl from '../../Util/LinkIfUrl';
 import { useTranslationCustom, useTranslationDefault } from '@/hooks';
-import { Person, PrimaryPublication, ProvenanceStoreDataset } from '@/types/provenance';
+import type { Person, PrimaryPublication, ProvenanceStoreDataset } from '@/types/provenance';
 
 import { stringIsDOI, stringIsURL } from '@/utils/strings';
 
@@ -115,7 +116,7 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
           onFilter: (filterValue, p) => p.identifier.identifierSource === filterValue,
         },
       ] as ColumnsType<PrimaryPublication>,
-    [td, publications]
+    [t, td, publications]
   );
 
   return <BaseProvenanceTable dataSource={publications} columns={columns} rowKey="title" />;

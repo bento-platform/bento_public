@@ -1,26 +1,35 @@
 import React, { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import type { BarChartProps } from 'bento-charts';
 import { BarChart, Histogram, PieChart } from 'bento-charts';
 import { ChoroplethMap } from 'bento-charts/dist/maps';
 
 import { CHART_HEIGHT, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
-import { ChartData } from '@/types/data';
-import {
-  CHART_TYPE_BAR,
-  CHART_TYPE_HISTOGRAM,
-  CHART_TYPE_CHOROPLETH,
-  CHART_TYPE_PIE,
-  ChartConfig,
-} from '@/types/chartConfig';
+import type { ChartData } from '@/types/data';
+import type { ChartConfig } from '@/types/chartConfig';
+import { CHART_TYPE_BAR, CHART_TYPE_HISTOGRAM, CHART_TYPE_CHOROPLETH, CHART_TYPE_PIE } from '@/types/chartConfig';
+import { useAppSelector } from '@/hooks';
+import { scopeToUrl } from '@/utils/router';
 
-const Chart = memo(({ chartConfig, data, units, id }: ChartProps) => {
+interface ChartEvent {
+  activePayload: Array<{ payload: { x: string } }>;
+}
+
+const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const { selectedScope } = useAppSelector((state) => state.metadata);
   const translateMap = ({ x, y }: { x: string; y: number }) => ({ x: t(x), y });
   const removeMissing = ({ x }: { x: string }) => x !== 'missing';
-  const barChartOnClickHandler = (d: { payload: { x: string } }) => {
-    navigate(`/${i18n.language}/search?${id}=${d.payload.x}`);
+
+  const barChartOnChartClickHandler: BarChartProps['onChartClick'] = (e: ChartEvent) => {
+    if (e.activePayload.length === 0) return;
+    const d = e.activePayload[0];
+    navigate(`/${i18n.language}${scopeToUrl(selectedScope)}/search?${id}=${d.payload.x}`);
+  };
+  const pieChartOnClickHandler = (d: { name: string }) => {
+    navigate(`/${i18n.language}${scopeToUrl(selectedScope)}/search?${id}=${d.name}`);
   };
 
   const { chart_type: type } = chartConfig;
@@ -34,7 +43,7 @@ const Chart = memo(({ chartConfig, data, units, id }: ChartProps) => {
           units={units}
           preFilter={removeMissing}
           dataMap={translateMap}
-          onClick={barChartOnClickHandler}
+          {...(isClickable ? { onChartClick: barChartOnChartClickHandler } : {})}
         />
       );
     case CHART_TYPE_HISTOGRAM:
@@ -45,7 +54,7 @@ const Chart = memo(({ chartConfig, data, units, id }: ChartProps) => {
           data={data}
           preFilter={removeMissing}
           dataMap={translateMap}
-          onClick={barChartOnClickHandler}
+          {...(isClickable ? { onChartClick: barChartOnChartClickHandler } : {})}
         />
       );
     case CHART_TYPE_PIE:
@@ -55,9 +64,7 @@ const Chart = memo(({ chartConfig, data, units, id }: ChartProps) => {
           height={PIE_CHART_HEIGHT}
           preFilter={removeMissing}
           dataMap={translateMap}
-          onClick={(d) => {
-            navigate(`/${i18n.language}/search?${id}=${d.name}`);
-          }}
+          onClick={pieChartOnClickHandler}
         />
       );
     case CHART_TYPE_CHOROPLETH: {
@@ -98,6 +105,7 @@ export interface ChartProps {
   data: ChartData[];
   units: string;
   id: string;
+  isClickable: boolean;
 }
 
 export default Chart;
