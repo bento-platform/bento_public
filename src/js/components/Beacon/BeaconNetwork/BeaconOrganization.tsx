@@ -5,20 +5,17 @@ const { Text, Link } = Typography;
 
 const LINK_STYLE = { padding: '10px' };
 const CARD_STYLES = { body: { background: '#f5f5f5', width: '100%' } };
+const DEFAULT_DESCRIPTION = 'Bento beacon';
 
 const BeaconOrganization = ({ organization, bentoUrl, description }: BeaconOrganizationProps) => {
+  const displayDescription = description || DEFAULT_DESCRIPTION;
+
   return (
-    <Card styles={CARD_STYLES}>
-      <Text>{description}</Text>
-      <div style={{ display: 'flex' }}>
-        <Link href={organization.welcomeUrl} target="_blank" style={LINK_STYLE}>
-          Home Page
-        </Link>
-        <Link href={bentoUrl} target="_blank" style={LINK_STYLE}>
-          Bento
-        </Link>
-      </div>
-    </Card>
+    <>
+        <Card styles={CARD_STYLES}>
+          <Text style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>{displayDescription}</Text>
+        </Card>
+    </>
   );
 };
 

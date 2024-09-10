@@ -143,7 +143,7 @@ const BeaconDetails = ({ beacon, response }: BeaconDetailsProps) => {
       {/* <Row gutter={[8, 8]}> */}
         {/* {orgSmall} */}
 
-        <div style={{display: 'flex', justifyContent: "center"}}>
+        {!showFullCard && <div style={{display: 'flex', justifyContent: "center"}}>
           <Space direction="horizontal" size="middle" style={{ display: 'flex', alignItems: 'flex-start' }}>
             {isFetchingQueryResponse ? (
               <div style={{ display: 'flex', flexDirection: 'column', margin: '6px 0' }}>
@@ -176,11 +176,13 @@ const BeaconDetails = ({ beacon, response }: BeaconDetailsProps) => {
               </>
             )}
           </Space>
-        </div>
+        </div>}
       {/* </Row> */}
       {showFullCard && (
         <Row>
-          <BeaconOrganization organization={organization} bentoUrl={bentoUrl} description={description} />
+          <div style={{width: '100%'}}>
+            <BeaconOrganization organization={organization} bentoUrl={bentoUrl} description={description} />
+          </div>
           <SearchResultsPane
             isFetchingData={false}
             hasInsufficientData={false}
