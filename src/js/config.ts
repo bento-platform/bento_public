@@ -19,7 +19,7 @@ export const TRANSLATED = BENTO_PUBLIC_CONFIG.TRANSLATED ?? process.env.BENTO_PU
 export const BEACON_URL = BENTO_PUBLIC_CONFIG.BEACON_URL ?? process.env.BEACON_URL;
 export const BEACON_NETWORK_URL = BEACON_URL + "/network"
 export const BEACON_UI_ENABLED = BENTO_PUBLIC_CONFIG.BEACON_UI_ENABLED ?? process.env.BENTO_BEACON_UI_ENABLED;
-export const BEACON_NETWORK_UI_ENABLED = true; //TODO
+export const BEACON_NETWORK_ENABLED = true; //TODO
 
 // Authentication
 export const PUBLIC_URL = BENTO_PUBLIC_CONFIG.PUBLIC_URL ?? process.env.BENTO_PUBLIC_URL ?? '';
