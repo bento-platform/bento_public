@@ -18,7 +18,6 @@ const ConfigLogTemplate = `Config --
 	Service ID: %s
 	package.json: %s
 	Static Files: %s
-	Katsu URL: %v
 	Gohan URL: %v
 	Port: %d
 `
@@ -29,7 +28,6 @@ type BentoConfig struct {
 	PackageJsonPath string `envconfig:"BENTO_PUBLIC_PACKAGE_JSON_PATH" default:"./package.json"`
 	StaticFilesPath string `envconfig:"BENTO_PUBLIC_STATIC_FILES_PATH" default:"./www"`
 	ClientName      string `envconfig:"BENTO_PUBLIC_CLIENT_NAME"`
-	KatsuUrl        string `envconfig:"BENTO_PUBLIC_KATSU_URL"`
 	GohanUrl        string `envconfig:"BENTO_PUBLIC_GOHAN_URL"`
 	BentoPortalUrl  string `envconfig:"BENTO_PUBLIC_PORTAL_URL"`
 	Port            int    `envconfig:"INTERNAL_PORT" default:"8090"`
@@ -102,7 +100,6 @@ func main() {
 		cfg.ServiceId,
 		cfg.PackageJsonPath,
 		cfg.StaticFilesPath,
-		cfg.KatsuUrl,
 		cfg.GohanUrl,
 		cfg.Port,
 	)
@@ -151,19 +148,6 @@ func main() {
 		}
 
 		return result, nil
-	}
-
-	katsuRequestFormattedData := func(path string, c echo.Context) ([]byte, error) {
-		result, err := genericRequestJsonOnly(fmt.Sprintf("%s%s", cfg.KatsuUrl, path), nil, c, jsonDeserialize)
-		if err != nil {
-			return nil, err
-		}
-		// Convert the result data to formatted JSON
-		jsonFormattedData, err := json.MarshalIndent(result, "", "  ")
-		if err != nil {
-			return nil, fmt.Errorf("error formatting JSON: %w", err)
-		}
-		return jsonFormattedData, nil
 	}
 
 	dataTypesEndpointHandler := func(baseUrl string) echo.HandlerFunc {
@@ -247,25 +231,7 @@ func main() {
 		})
 	})
 
-	e.GET("/datasets/:id/dats", func(c echo.Context) error {
-		id := c.Param("id")
-		relativeUrl := fmt.Sprintf("/api/datasets/%s/dats", id)
-
-		data, err := katsuRequestFormattedData(relativeUrl, c)
-		if err != nil {
-			return err
-		}
-
-		// Set the content type and disposition for download
-		c.Response().Header().Set("Content-Disposition", `attachment; filename="DATS.json"`)
-		c.Response().Header().Set("Content-Type", "application/json")
-
-		return c.String(http.StatusOK, string(data))
-	})
-
 	e.GET("/gohan/data-types", dataTypesEndpointHandler(cfg.GohanUrl))
-
-	e.GET("/katsu/data-types", dataTypesEndpointHandler(cfg.KatsuUrl))
 
 	// Run
 	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", cfg.Port)))

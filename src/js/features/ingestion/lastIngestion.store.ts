@@ -2,18 +2,27 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { katsuLastIngestionsUrl, gohanLastIngestionsUrl } from '@/constants/configConstants';
-import { printAPIError } from '@/utils/error.util';
-
+import type { RootState } from '@/store';
 import type { LastIngestionDataTypeResponse, DataTypeMap } from '@/types/lastIngestionDataTypeResponse';
+import { printAPIError } from '@/utils/error.util';
+import { scopedAuthorizedRequestConfig } from '@/utils/requests';
 
 // Async thunks to fetch data from the two endpoints
-export const fetchKatsuData = createAsyncThunk('dataTypes/fetchKatsuData', (_, { rejectWithValue }) =>
+export const fetchKatsuData = createAsyncThunk<
+  LastIngestionDataTypeResponse[],
+  void,
+  {
+    rejectValue: string;
+    state: RootState;
+  }
+>('dataTypes/fetchKatsuData', (_, { rejectWithValue, getState }) =>
   axios
-    .get(katsuLastIngestionsUrl)
+    .get(katsuLastIngestionsUrl, scopedAuthorizedRequestConfig(getState()))
     .then((res) => res.data)
     .catch(printAPIError(rejectWithValue))
 );
 
+// TODO: handle scoping, handle authorization
 export const fetchGohanData = createAsyncThunk('dataTypes/fetchGohanData', (_, { rejectWithValue }) =>
   axios
     .get(gohanLastIngestionsUrl)

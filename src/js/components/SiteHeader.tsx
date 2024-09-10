@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 
 import { Button, Flex, Layout, Typography, Space } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { useIsAuthenticated, usePerformAuth, usePerformSignOut } from 'bento-auth-js';
+import { useAuthState, useIsAuthenticated, useOpenIdConfig, usePerformAuth, usePerformSignOut } from 'bento-auth-js';
 
 import { RiTranslate } from 'react-icons/ri';
 import { ExportOutlined, LinkOutlined, LoginOutlined, LogoutOutlined, ProfileOutlined } from '@ant-design/icons';
@@ -25,8 +25,8 @@ const SiteHeader = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { isFetching: openIdConfigFetching } = useAppSelector((state) => state.openIdConfiguration);
-  const { isHandingOffCodeForToken } = useAppSelector((state) => state.auth);
+  const { isFetching: openIdConfigFetching } = useOpenIdConfig();
+  const { isHandingOffCodeForToken } = useAuthState();
   const { projects, selectedScope } = useAppSelector((state) => state.metadata);
 
   const scopeProps = {

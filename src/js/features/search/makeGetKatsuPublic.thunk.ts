@@ -1,19 +1,19 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { katsuUrl } from '@/constants/configConstants';
+import { katsuPublicSearchUrl } from '@/constants/configConstants';
+import type { RootState } from '@/store';
 import type { KatsuSearchResponse } from '@/types/search';
 import { printAPIError } from '@/utils/error.util';
-import type { RootState } from '@/store';
+import { scopedAuthorizedRequestConfig } from '@/utils/requests';
 
 export const makeGetKatsuPublic = createAsyncThunk<
   KatsuSearchResponse,
   void,
   { state: RootState; rejectValue: string }
->('query/makeGetKatsuPublic', (_ignore, thunkAPI) => {
-  const queryParams = thunkAPI.getState().query.queryParams;
-
+>('query/makeGetKatsuPublic', (_, { rejectWithValue, getState }) => {
+  const state = getState();
   return axios
-    .get(katsuUrl, { params: queryParams })
+    .get(katsuPublicSearchUrl, scopedAuthorizedRequestConfig(state, state.query.queryParams))
     .then((res) => res.data)
-    .catch(printAPIError(thunkAPI.rejectWithValue));
+    .catch(printAPIError(rejectWithValue));
 });
