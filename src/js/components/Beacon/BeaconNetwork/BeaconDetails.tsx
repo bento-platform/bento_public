@@ -1,20 +1,28 @@
 import React, { useState } from 'react';
-import { Button, Card, Col, Row, Skeleton, Space, Statistic, Tag, Tooltip, Typography } from 'antd';
-import { TeamOutlined } from '@ant-design/icons';
+import { Button, Card, Col, Row, Skeleton, Space, Statistic, Tag, Typography } from 'antd';
+import { TeamOutlined, EllipsisOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
 import ExpSvg from '../../Util/ExpSvg';
+import { LinkOutlined } from '@ant-design/icons';
 import { BOX_SHADOW, COUNTS_FILL } from '@/constants/overviewConstants';
 import SearchResultsPane from '../../Search/SearchResultsPane';
 import BeaconOrganization from './BeaconOrganization';
 import { NetworkBeacon } from '@/types/beaconNetwork';
 
-import { useTranslationDefault } from '@/hooks';
+import { useAppSelector, useTranslationDefault } from '@/hooks';
 import { FlattenedBeaconResponse } from '@/types/beacon';
-const { Title } = Typography;
+const { Title, Link, Text } = Typography;
 
-const CARD_DEFAULT_WIDTH = '390px';
+const LOGO_MAX_HEIGHT = '50px';
+const LOGO_MAX_WIDTH = '175px';
+const CARD_DEFAULT_WIDTH = '480px';
 const CARD_FULL_DETAILS_WIDTH = '1200px';
-const CARD_BODY_MIN_HEIGHT = '272px'; //min height to fit stats without jumping
+const CARD_BODY_MIN_HEIGHT = '100px'; // fit stats without jumping
+const LINK_STYLE = { padding: '10px' };
+
+// try header with logo and name, more "more" and error stuff elsewhere
+// beacon needs to know its id to know which response to retrieve
+// this might not work for reducing renders (may need to use)
 
 const BeaconDetails = ({ beacon, response }: BeaconDetailsProps) => {
   const t = useTranslationDefault();
@@ -22,6 +30,8 @@ const BeaconDetails = ({ beacon, response }: BeaconDetailsProps) => {
   const { variants } = overview;
   const assemblies = Object.keys(variants);
   const bentoUrl = apiUrl.replace('/api/beacon', '');
+
+  console.log('BeaconDetails');
 
   const {
     isFetchingQueryResponse,
@@ -42,60 +52,104 @@ const BeaconDetails = ({ beacon, response }: BeaconDetailsProps) => {
   const experimentCountValue = experimentCount ?? 0;
   const experimentChartDataValue = experimentChartData ?? [];
 
-  console.log('BeaconDetails()');
+  const ORG_PLACEHOLDER_TEXT = 'This is a Bento Beacon instance';
 
   const toggleFullCard = () => {
     setShowFullCard(!showFullCard);
   };
 
+  const logo = (
+    <img src={organization.logoUrl} style={{ maxHeight: LOGO_MAX_HEIGHT, maxWidth: LOGO_MAX_WIDTH, padding: '5px' }} />
+  );
+
+  const orgName = <h4 style={{ paddingLeft: '15px' }}>{organization.name}</h4>;
+
+  const logoAndName = (
+    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+      {logo}
+      {orgName}
+    </div>
+  );
+
+  const orgSmall = (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        background: '#f5f5f5',
+        whiteSpace: 'pre-line',
+        width: '100%',
+        padding: '10px 5px',
+      }}
+    >
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <Text>{description || ORG_PLACEHOLDER_TEXT}</Text>
+      </div>
+      {/* <div style={{ display: 'flex' }}>
+        <Link href={organization.welcomeUrl} target="_blank" style={LINK_STYLE}>
+          Home Page
+        </Link>
+        <Link href={bentoUrl} target="_blank" style={LINK_STYLE}>
+          Bento
+        </Link>
+      </div> */}
+    </div>
+  );
+
+  const assemblyTags = (
+    <>
+      {assemblies.map((a) => (
+        <Tag color="blue" key={a}>
+          {a}
+        </Tag>
+      ))}
+    </>
+  );
+
   return (
     <Card
-      title={
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <Title level={5} type="secondary">
-            {organization.name}
-          </Title>
-        </div>
-      }
+      title={logoAndName}
       style={{
+        display: 'flex',
+        flexDirection: 'column',
         margin: '5px',
         borderRadius: '10px',
         padding: '5px',
         maxWidth: showFullCard ? CARD_FULL_DETAILS_WIDTH : CARD_DEFAULT_WIDTH,
         width: '100%',
-        minHeight: '328px', // leave enough room for stats skeleton
+        // minHeight: '328px', // leave enough room for stats skeleton
         ...BOX_SHADOW,
       }}
-      styles={{ body: { minHeight: CARD_BODY_MIN_HEIGHT } }}
-      extra={
-        <>
-          {hasApiError && (
-            <Tooltip title={`Error response from beacon: ${apiErrorMessage}`}>
-              <Tag color="red">error</Tag>
-            </Tooltip>
-          )}
-          <Button onClick={toggleFullCard}>more</Button>
-        </>
-      }
+      styles={{
+        body: { flexGrow: 1, minHeight: CARD_BODY_MIN_HEIGHT },
+        actions: { display: 'flex', alignItems: 'center' },
+      }}
+      extra={assemblyTags}
+      actions={[
+        <Link href={organization.welcomeUrl} target="_blank" style={LINK_STYLE}>
+          <LinkOutlined style={{ marginRight: '5px' }} />
+          Home Page
+        </Link>,
+        <Link href={bentoUrl} target="_blank" style={LINK_STYLE}>
+          <LinkOutlined style={{ marginRight: '5px' }} />
+          Bento
+        </Link>,
+
+        <Button ghost onClick={toggleFullCard}>
+        {showFullCard? <Text>less</Text> : <Text>more</Text>}
+        </Button>,
+      ]}
     >
-      <Row gutter={[8, 8]}>
-        <Col span={6}>
-          <img
-            src={organization.logoUrl}
-            style={{ maxWidth: '175px', maxHeight: '100px', width: 'auto', height: 'auto', paddingBottom: '10px' }}
-          />
-          <div>
-            {assemblies.map((a) => (
-              <Tag color="blue" key={a}>
-                {a}
-              </Tag>
-            ))}
-          </div>
-        </Col>
-        <Col span={18} style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Space direction="vertical" size="middle" style={{ display: 'flex', alignItems: 'flex-start' }}>
+      {/* <Row gutter={[8, 8]}> */}
+        {/* {orgSmall} */}
+
+        <div style={{display: 'flex', justifyContent: "center"}}>
+          <Space direction="horizontal" size="middle" style={{ display: 'flex', alignItems: 'flex-start' }}>
             {isFetchingQueryResponse ? (
-              <Skeleton title={false} paragraph={{ rows: 6, width: 100 }} active />
+              <div style={{ display: 'flex', flexDirection: 'column', margin: '6px 0' }}>
+                <Skeleton.Input size="small" style={{ width: '330px', height: '20px' }} active />
+                <Skeleton.Input size="small" style={{ marginTop: '10px', width: '330px', height: '20px' }} active />
+              </div>
             ) : (
               <>
                 <Statistic
@@ -122,8 +176,8 @@ const BeaconDetails = ({ beacon, response }: BeaconDetailsProps) => {
               </>
             )}
           </Space>
-        </Col>
-      </Row>
+        </div>
+      {/* </Row> */}
       {showFullCard && (
         <Row>
           <BeaconOrganization organization={organization} bentoUrl={bentoUrl} description={description} />
@@ -148,4 +202,5 @@ export interface BeaconDetailsProps {
   response: FlattenedBeaconResponse;
 }
 
-export default BeaconDetails;
+// memoize so we don't update all beacons each time one of them responds
+export default React.memo(BeaconDetails);
