@@ -31,23 +31,28 @@ const SiteHeader = () => {
 
   const scopeSelectionEnabled = useMemo(() => {
     const projects_count = projects.length;
-    if (projects_count <= 0) {  // no project
+    if (projects_count <= 0) {
+      // no project
       return false;
     }
-    if (projects_count === 1) { // 1 project, check if more than 1 dataset
+    if (projects_count === 1) {
+      // 1 project, check if more than 1 dataset
       return projects[0]?.datasets.length > 1;
     }
     return true;
   }, [projects]);
 
-  const scopeProps = useMemo(() => ({
-    projectTitle: projects.find((project) => project.identifier === selectedScope.project)?.title,
-    datasetTitle: selectedScope.dataset
-      ? projects
-          .find((project) => project.identifier === selectedScope.project)
-          ?.datasets.find((dataset) => dataset.identifier === selectedScope.dataset)?.title
-      : null,
-  }), [projects, selectedScope]);
+  const scopeProps = useMemo(
+    () => ({
+      projectTitle: projects.find((project) => project.identifier === selectedScope.project)?.title,
+      datasetTitle: selectedScope.dataset
+        ? projects
+            .find((project) => project.identifier === selectedScope.project)
+            ?.datasets.find((dataset) => dataset.identifier === selectedScope.dataset)?.title
+        : null,
+    }),
+    [projects, selectedScope]
+  );
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
