@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import { Button, Flex, Layout, Typography, Space } from 'antd';
@@ -29,14 +29,25 @@ const SiteHeader = () => {
   const { isHandingOffCodeForToken } = useAuthState();
   const { projects, selectedScope } = useAppSelector((state) => state.metadata);
 
-  const scopeProps = {
+  const scopeSelectionEnabled = useMemo(() => {
+    const projects_count = projects.length;
+    if (projects_count <= 0) {  // no project
+      return false;
+    }
+    if (projects_count === 1) { // 1 project, check if more than 1 dataset
+      return projects[0]?.datasets.length > 1;
+    }
+    return true;
+  }, [projects]);
+
+  const scopeProps = useMemo(() => ({
     projectTitle: projects.find((project) => project.identifier === selectedScope.project)?.title,
     datasetTitle: selectedScope.dataset
       ? projects
           .find((project) => project.identifier === selectedScope.project)
           ?.datasets.find((dataset) => dataset.identifier === selectedScope.dataset)?.title
       : null,
-  };
+  }), [projects, selectedScope]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -73,17 +84,19 @@ const SiteHeader = () => {
           >
             {CLIENT_NAME}
           </Typography.Title>
-          <Typography.Title
-            className="select-project-title"
-            level={5}
-            style={{ fontSize: '16px', margin: 0, lineHeight: '64px', color: 'lightgray' }}
-            onClick={() => setIsModalOpen(true)}
-          >
-            <ProfileOutlined style={{ marginRight: '5px', fontSize: '16px' }} />
+          {scopeSelectionEnabled && (
+            <Typography.Title
+              className="select-project-title"
+              level={5}
+              style={{ fontSize: '16px', margin: 0, lineHeight: '64px', color: 'lightgray' }}
+              onClick={() => setIsModalOpen(true)}
+            >
+              <ProfileOutlined style={{ marginRight: '5px', fontSize: '16px' }} />
 
-            {selectedScope.project && scopeProps.projectTitle}
-            {scopeProps.datasetTitle ? ` / ${scopeProps.datasetTitle}` : ''}
-          </Typography.Title>
+              {selectedScope.project && scopeProps.projectTitle}
+              {scopeProps.datasetTitle ? ` / ${scopeProps.datasetTitle}` : ''}
+            </Typography.Title>
+          )}
           <ChooseProjectModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
         </Space>
 
