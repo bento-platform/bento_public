@@ -10,21 +10,23 @@ import { useAppSelector, useTranslationDefault } from '@/hooks';
 const Counts = () => {
   const td = useTranslationDefault();
 
+  const { counts, isFetchingData } = useAppSelector((state) => state.data);
+
   const data = [
     {
       title: 'Individuals',
       icon: <TeamOutlined />,
-      count: useAppSelector((state) => state.data.counts.individuals),
+      count: counts.individuals,
     },
     {
       title: 'Biosamples',
       icon: <BiDna />,
-      count: useAppSelector((state) => state.data.counts.biosamples),
+      count: counts.biosamples,
     },
     {
       title: 'Experiments',
       icon: <ExpSvg />,
-      count: useAppSelector((state) => state.data.counts.experiments),
+      count: counts.experiments,
     },
   ];
 
@@ -34,7 +36,13 @@ const Counts = () => {
       <Space direction="horizontal">
         {data.map(({ title, icon, count }, i) => (
           <Card key={i} style={BOX_SHADOW}>
-            <Statistic title={td(title)} value={count} valueStyle={{ color: COUNTS_FILL }} prefix={icon} />
+            <Statistic
+              title={td(title)}
+              value={count}
+              valueStyle={{ color: COUNTS_FILL }}
+              prefix={icon}
+              loading={isFetchingData}
+            />
           </Card>
         ))}
       </Space>
