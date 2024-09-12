@@ -63,7 +63,7 @@ const ChartCard: React.FC<ChartCardProps> = memo(({ section, chart, onRemoveChar
           </Space>
         }
       >
-        {data.filter((e) => !(e.x === 'missing')).length !== 0 ? (
+        {data.filter((e) => !(e.x === 'missing')).reduce((acc, cur) => acc + cur.y, 0) !== 0 ? (
           <Chart
             chartConfig={chartConfig}
             data={data}
