@@ -53,7 +53,7 @@ const PublicOverview = () => {
     saveToLocalStorage(sections);
   }, [sections]);
 
-  return !isContentPopulated || isFetchingAbout ? (
+  return !isContentPopulated || isFetchingOverviewData ? (
     <Loader />
   ) : (
     <>
