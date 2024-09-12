@@ -35,7 +35,7 @@ const ProjectScopePicker = () => {
           items={projects.map((p) => ({
             key: p.identifier,
             label: t(p.title),
-            children: <DatasetScopePicker parentProject={p} isSingleProject={isSingleProject} />,  
+            children: <DatasetScopePicker parentProject={p} isSingleProject={isSingleProject} />,
           }))}
         />
       )}
