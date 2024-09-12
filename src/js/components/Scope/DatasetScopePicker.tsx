@@ -10,7 +10,7 @@ type DatasetScopePickerProps = {
   parentProject: Project;
   isSingleProject?: boolean;
 };
-export const DatasetScopePicker = ({ parentProject, isSingleProject }: DatasetScopePickerProps) => {
+const DatasetScopePicker = ({ parentProject, isSingleProject }: DatasetScopePickerProps) => {
   const td = useTranslationDefault();
   const t = useTranslationCustom();
   const location = useLocation();
@@ -59,3 +59,5 @@ export const DatasetScopePicker = ({ parentProject, isSingleProject }: DatasetSc
     </Space>
   );
 };
+
+export default DatasetScopePicker;

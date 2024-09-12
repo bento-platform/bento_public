@@ -7,7 +7,7 @@ interface ScopePickerModalProps {
   isModalOpen: boolean;
   setIsModalOpen: (isOpen: boolean) => void;
 }
-export const ScopePickerModal = ({ isModalOpen, setIsModalOpen }: ScopePickerModalProps) => {
+const ScopePickerModal = ({ isModalOpen, setIsModalOpen }: ScopePickerModalProps) => {
   const td = useTranslationDefault();
   const closeModal = () => setIsModalOpen(false);
   return (
@@ -16,3 +16,5 @@ export const ScopePickerModal = ({ isModalOpen, setIsModalOpen }: ScopePickerMod
     </Modal>
   );
 };
+
+export default ScopePickerModal;

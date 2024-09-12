@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Tabs, Button } from 'antd';
 import { useAppSelector, useTranslationCustom, useTranslationDefault } from '@/hooks';
 import { Link, useLocation } from 'react-router-dom';
-import { DatasetScopePicker } from './DatasetScopePicker';
+import DatasetScopePicker from './DatasetScopePicker';
 
 const ProjectScopePicker = () => {
   const td = useTranslationDefault();
