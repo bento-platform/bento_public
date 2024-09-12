@@ -32,13 +32,11 @@ const ProjectScopePicker = () => {
               <Button>{td('Clear')}</Button>
             </Link>
           }
-          items={projects.map((p) => {
-            return {
-              key: p.identifier,
-              label: t(p.title),
-              children: <DatasetScopePicker parentProject={p} isSingleProject={isSingleProject} />,
-            };
-          })}
+          items={projects.map((p) => ({
+            key: p.identifier,
+            label: t(p.title),
+            children: <DatasetScopePicker parentProject={p} isSingleProject={isSingleProject} />,  
+          }))}
         />
       )}
     </>
