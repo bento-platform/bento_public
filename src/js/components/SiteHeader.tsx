@@ -14,7 +14,7 @@ import { scopeToUrl } from '@/utils/router';
 import { DEFAULT_TRANSLATION, LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
 import { CLIENT_NAME, PORTAL_URL, TRANSLATED } from '@/config';
 
-import ChooseProjectModal from '@/components/ChooseProjectModal';
+import { ScopePickerModal } from './Scope/ScopePickerModal';
 
 const { Header } = Layout;
 
@@ -95,7 +95,7 @@ const SiteHeader = () => {
               {scopeProps.datasetTitle ? ` / ${scopeProps.datasetTitle}` : ''}
             </Typography.Title>
           )}
-          <ChooseProjectModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
+          <ScopePickerModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
         </Space>
 
         <Space size="small">
