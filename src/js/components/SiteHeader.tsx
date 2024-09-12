@@ -14,7 +14,7 @@ import { scopeToUrl } from '@/utils/router';
 import { DEFAULT_TRANSLATION, LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
 import { CLIENT_NAME, PORTAL_URL, TRANSLATED } from '@/config';
 
-import { ScopePickerModal } from './Scope/ScopePickerModal';
+import ScopePickerModal from './Scope/ScopePickerModal';
 
 const { Header } = Layout;
 
