@@ -30,16 +30,9 @@ const SiteHeader = () => {
   const { projects, selectedScope } = useAppSelector((state) => state.metadata);
 
   const scopeSelectionEnabled = useMemo(() => {
-    const projects_count = projects.length;
-    if (projects_count <= 0) {
-      // no project
-      return false;
-    }
-    if (projects_count === 1) {
-      // 1 project, check if more than 1 dataset
-      return projects[0]?.datasets.length > 1;
-    }
-    return true;
+    // show the scope selection only if necessary
+    const projectsCount = projects.length;
+    return projectsCount > 0 && (projectsCount > 1 || projects[0]?.datasets.length > 1);
   }, [projects]);
 
   const scopeProps = useMemo(
