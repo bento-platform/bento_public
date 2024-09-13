@@ -6,15 +6,15 @@ import { FaDatabase } from 'react-icons/fa';
 import { getCurrentPage } from '@/utils/router';
 import type { Dataset, Project } from '@/types/metadata';
 
-const datasetIconColor = (dataset: Dataset, selectedID: string) => {
-  return dataset.identifier === selectedID ? '#33ffaa' : 'grey';
+const datasetIconColor = (dataset: Dataset, selectedID: string | undefined) => {
+  // light green when selected, otherwise grey
+  return selectedID && dataset.identifier === selectedID ? '#33ffaa' : 'grey';
 };
 
 type DatasetScopePickerProps = {
   parentProject: Project;
-  isSingleProject?: boolean;
 };
-const DatasetScopePicker = ({ parentProject, isSingleProject }: DatasetScopePickerProps) => {
+const DatasetScopePicker = ({ parentProject }: DatasetScopePickerProps) => {
   const td = useTranslationDefault();
   const t = useTranslationCustom();
   const location = useLocation();
@@ -26,6 +26,7 @@ const DatasetScopePicker = ({ parentProject, isSingleProject }: DatasetScopePick
     // only show the clear dataset option if the selected dataset belongs to the parentProject
     return selectedScope.dataset && parentProject.datasets.some((d) => d.identifier == selectedScope.dataset);
   }, [selectedScope, parentProject]);
+  const showSelectProject = !selectedScope.fixedProject && parentProject.identifier != selectedScope?.project;
 
   return (
     <Space direction="vertical" style={{ display: 'flex' }}>
@@ -33,18 +34,10 @@ const DatasetScopePicker = ({ parentProject, isSingleProject }: DatasetScopePick
         <Typography.Title level={4} className="no-margin-top">
           {td('Project')}: {t(parentProject.title)}
         </Typography.Title>
-        {isSingleProject && selectedScope.project ? (
-          // project scope clearing when projects tab is hidden
-          <Link to={baseURL} key="1">
-            <Typography.Link>{td('Clear project selection')}</Typography.Link>
+        {showSelectProject && (
+          <Link to={`${baseURL}/p/${parentProject.identifier}/${page}`} key="2">
+            <Typography.Link>{td('Select')}</Typography.Link>
           </Link>
-        ) : (
-          // project selection if not selected already
-          parentProject.identifier != selectedScope?.project && (
-            <Link to={`${baseURL}/p/${parentProject.identifier}/${page}`} key="2">
-              <Typography.Link>{td('Select')}</Typography.Link>
-            </Link>
-          )
         )}
       </Space>
       <Typography.Text>{t(parentProject.description)}</Typography.Text>
@@ -67,7 +60,7 @@ const DatasetScopePicker = ({ parentProject, isSingleProject }: DatasetScopePick
               <List.Item.Meta
                 avatar={
                   <Avatar
-                    style={{ backgroundColor: datasetIconColor(item, selectedScope.dataset ?? '') }}
+                    style={{ backgroundColor: datasetIconColor(item, selectedScope.dataset) }}
                     icon={<FaDatabase />}
                   />
                 }

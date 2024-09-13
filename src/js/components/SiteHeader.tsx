@@ -29,11 +29,7 @@ const SiteHeader = () => {
   const { isHandingOffCodeForToken } = useAuthState();
   const { projects, selectedScope } = useAppSelector((state) => state.metadata);
 
-  const scopeSelectionEnabled = useMemo(() => {
-    // show the scope selection only if necessary
-    const projectsCount = projects.length;
-    return projectsCount > 0 && (projectsCount > 1 || projects[0]?.datasets.length > 1);
-  }, [projects]);
+  const scopeSelectionEnabled = !(selectedScope.fixedProject && selectedScope.fixedDataset);
 
   const scopeProps = useMemo(
     () => ({

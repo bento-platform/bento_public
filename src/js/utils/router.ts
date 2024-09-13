@@ -19,8 +19,23 @@ export const validProjectDataset = (
   const valid: MetadataState['selectedScope'] = {
     project: undefined,
     dataset: undefined,
+    fixedProject: false,
+    fixedDataset: false,
   };
 
+  if (projects.length === 1) {
+    // automatic project scoping if only 1
+    const defaultProj = projects[0];
+    valid.project = defaultProj.identifier;
+    valid.fixedProject = true;
+    if (defaultProj.datasets.length === 1) {
+      // automatic dataset scoping if only 1
+      valid.dataset = defaultProj.datasets[0].identifier;
+      valid.fixedDataset = true;
+      // early return to ignore redundant projectId and datasetId
+      return valid;
+    }
+  }
   if (projectId && projects.find(({ identifier }) => identifier === projectId)) {
     valid.project = projectId;
     if (datasetId) {
