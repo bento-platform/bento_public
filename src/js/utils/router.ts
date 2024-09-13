@@ -1,5 +1,5 @@
 import { BentoRoute } from '@/types/routes';
-import type { MetadataState } from '@/features/metadata/metadata.store';
+import type { DiscoveryScope, MetadataState } from '@/features/metadata/metadata.store';
 
 export const getCurrentPage = (): string => {
   const pathArray = window.location.pathname.split('/');
@@ -15,8 +15,8 @@ export const validProjectDataset = (
   projects: MetadataState['projects'],
   projectId?: string,
   datasetId?: string
-): MetadataState['selectedScope'] => {
-  const valid: MetadataState['selectedScope'] = {
+): DiscoveryScope => {
+  const valid: DiscoveryScope = {
     project: undefined,
     dataset: undefined,
   };
@@ -36,7 +36,7 @@ export const validProjectDataset = (
   return valid;
 };
 
-export const scopeToUrl = (scope: MetadataState['selectedScope']): string => {
+export const scopeToUrl = (scope: DiscoveryScope): string => {
   if (scope.project && scope.dataset) {
     return `/p/${scope.project}/d/${scope.dataset}`;
   } else if (scope.project) {
@@ -45,3 +45,6 @@ export const scopeToUrl = (scope: MetadataState['selectedScope']): string => {
     return '';
   }
 };
+
+export const scopeEqual = (s1: DiscoveryScope, s2: DiscoveryScope): boolean =>
+  s1.project === s2.project && s1.dataset === s2.dataset;

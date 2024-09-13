@@ -7,13 +7,15 @@ import { printAPIError } from '@/utils/error.util';
 import { validProjectDataset } from '@/utils/router';
 import { projectsUrl } from '@/constants/configConstants';
 
+export interface DiscoveryScope {
+  project: string | undefined;
+  dataset: string | undefined;
+}
+
 export interface MetadataState {
   projects: Project[];
   isFetching: boolean;
-  selectedScope: {
-    project: string | undefined;
-    dataset: string | undefined;
-  };
+  selectedScope: DiscoveryScope;
 }
 
 const initialState: MetadataState = {
