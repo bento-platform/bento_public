@@ -33,18 +33,18 @@ const ScopedRoute = () => {
     const valid = validProjectDataset(projects, projectId, datasetId);
 
     // Don't change the scope object if the scope value is the same, otherwise it'll trigger needless re-renders.
-    if (scopeEqual(selectedScope, valid)) return;
+    if (scopeEqual(selectedScope.scope, valid.scope)) return;
 
-    if (datasetId === valid.dataset && projectId === valid.project) {
-      dispatch(selectScope(valid));
+    if (datasetId === valid.scope.dataset && projectId === valid.scope.project) {
+      dispatch(selectScope(valid.scope));
     } else {
       const oldPath = location.pathname.split('/').filter(Boolean);
       const newPath = [oldPath[0]];
 
-      if (valid.dataset) {
-        newPath.push('p', valid.project as string, 'd', valid.dataset);
-      } else if (valid.project) {
-        newPath.push('p', valid.project);
+      if (valid.scope.dataset) {
+        newPath.push('p', valid.scope.project as string, 'd', valid.scope.dataset);
+      } else if (valid.scope.project) {
+        newPath.push('p', valid.scope.project);
       }
 
       const oldPathLength = oldPath.length;

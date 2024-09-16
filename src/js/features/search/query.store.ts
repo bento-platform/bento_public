@@ -67,7 +67,7 @@ const query = createSlice({
     builder.addCase(makeGetKatsuPublic.fulfilled, (state, { payload }: PayloadAction<KatsuSearchResponse>) => {
       state.isFetchingData = false;
       state.attemptedFetch = true;
-      if ('message' in payload) {
+      if (payload && 'message' in payload) {
         state.message = payload.message;
         return;
       }
