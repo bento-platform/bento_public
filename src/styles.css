@@ -39,6 +39,7 @@ body {
 .select-dataset-item {
   transition: all 0.2s;
   border-radius: 7px;
+  cursor: pointer;
 }
 .select-dataset-item .ant-avatar {
   background-color: #8c8c8c;
