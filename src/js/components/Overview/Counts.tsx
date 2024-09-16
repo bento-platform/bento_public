@@ -11,7 +11,7 @@ const styles: Record<string, CSSProperties> = {
   countCard: {
     ...BOX_SHADOW,
     minWidth: 150,
-    transition: 'height 0.5s ease-in-out',
+    transition: 'height 0.3s ease-in-out',
   },
 };
 
