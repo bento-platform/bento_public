@@ -7,12 +7,19 @@ import { printAPIError } from '@/utils/error.util';
 import { validProjectDataset } from '@/utils/router';
 import { projectsUrl } from '@/constants/configConstants';
 
+export type DiscoveryScope =
+  | { project: undefined; dataset: undefined }
+  | { project: string; dataset: undefined }
+  | {
+      project: string;
+      dataset: string;
+    };
+
 export interface MetadataState {
   projects: Project[];
   isFetching: boolean;
   selectedScope: {
-    project: string | undefined;
-    dataset: string | undefined;
+    scope: DiscoveryScope;
     fixedProject: boolean;
     fixedDataset: boolean;
   };
@@ -22,8 +29,7 @@ const initialState: MetadataState = {
   projects: [],
   isFetching: true,
   selectedScope: {
-    project: undefined,
-    dataset: undefined,
+    scope: { project: undefined, dataset: undefined },
     fixedProject: false,
     fixedDataset: false,
   },

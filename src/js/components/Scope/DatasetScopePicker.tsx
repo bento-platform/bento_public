@@ -4,12 +4,7 @@ import { useAppSelector, useTranslationCustom, useTranslationDefault } from '@/h
 import { Link, useLocation } from 'react-router-dom';
 import { FaDatabase } from 'react-icons/fa';
 import { getCurrentPage } from '@/utils/router';
-import type { Dataset, Project } from '@/types/metadata';
-
-const datasetIconColor = (dataset: Dataset, selectedID: string | undefined) => {
-  // light green when selected, otherwise grey
-  return selectedID && dataset.identifier === selectedID ? '#33ffaa' : 'grey';
-};
+import type { Project } from '@/types/metadata';
 
 type DatasetScopePickerProps = {
   parentProject: Project;
@@ -21,12 +16,16 @@ const DatasetScopePicker = ({ parentProject }: DatasetScopePickerProps) => {
   const baseURL = '/' + location.pathname.split('/')[1];
   const page = getCurrentPage();
 
-  const selectedScope = useAppSelector((state) => state.metadata.selectedScope);
-  const showClearDataset = useMemo(() => {
-    // only show the clear dataset option if the selected dataset belongs to the parentProject
-    return selectedScope.dataset && parentProject.datasets.some((d) => d.identifier == selectedScope.dataset);
-  }, [selectedScope, parentProject]);
-  const showSelectProject = !selectedScope.fixedProject && parentProject.identifier != selectedScope?.project;
+  const { selectedScope } = useAppSelector((state) => state.metadata);
+  const scopeObj = selectedScope.scope;
+
+  const showClearDataset = useMemo(
+    () =>
+      // only show the clear dataset option if the selected dataset belongs to the parentProject
+      scopeObj.dataset && parentProject.datasets.some((d) => d.identifier == scopeObj.dataset),
+    [scopeObj, parentProject]
+  );
+  const showSelectProject = !selectedScope.fixedProject && parentProject.identifier != scopeObj.project;
 
   return (
     <Space direction="vertical" style={{ display: 'flex' }}>
@@ -54,26 +53,24 @@ const DatasetScopePicker = ({ parentProject }: DatasetScopePickerProps) => {
       <List
         dataSource={parentProject.datasets}
         bordered
-        renderItem={(item) => (
-          <Link to={`${baseURL}/p/${parentProject.identifier}/d/${item.identifier}/${page}`}>
-            <List.Item className="select-dataset-hover" key={item.identifier}>
-              <List.Item.Meta
-                avatar={
-                  <Avatar
-                    style={{ backgroundColor: datasetIconColor(item, selectedScope.dataset) }}
-                    icon={<FaDatabase />}
-                  />
-                }
-                title={
-                  <Link to={`${baseURL}/p/${parentProject.identifier}/d/${item.identifier}/${page}`}>
-                    {t(item.title)}
-                  </Link>
-                }
-                description={t(item.description)}
-              />
-            </List.Item>
-          </Link>
-        )}
+        renderItem={(item) => {
+          const selected = scopeObj.dataset && item.identifier === scopeObj.dataset;
+          return (
+            <Link to={`${baseURL}/p/${parentProject.identifier}/d/${item.identifier}/${page}`}>
+              <List.Item className={`select-dataset-item${selected ? ' selected' : ''}`} key={item.identifier}>
+                <List.Item.Meta
+                  avatar={<Avatar icon={<FaDatabase />} />}
+                  title={
+                    <Link to={`${baseURL}/p/${parentProject.identifier}/d/${item.identifier}/${page}`}>
+                      {t(item.title)}
+                    </Link>
+                  }
+                  description={t(item.description)}
+                />
+              </List.Item>
+            </Link>
+          );
+        }}
       />
     </Space>
   );

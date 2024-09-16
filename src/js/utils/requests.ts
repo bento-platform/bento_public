@@ -11,5 +11,5 @@ export const scopedAuthorizedRequestConfig = (
   extraParams: Record<string, string> | undefined = undefined
 ): AxiosRequestConfig => ({
   ...authorizedRequestConfig(state),
-  params: { ...state.metadata.selectedScope, ...extraParams },
+  params: { ...state.metadata.selectedScope.scope, ...extraParams },
 });

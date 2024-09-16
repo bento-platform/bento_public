@@ -31,21 +31,21 @@ const ScopedRoute = () => {
   useEffect(() => {
     // Update selectedScope based on URL parameters
     const valid = validProjectDataset(projects, projectId, datasetId);
-    if (datasetId === valid.dataset && projectId === valid.project) {
-      dispatch(selectScope(valid));
+    if (datasetId === valid.scope.dataset && projectId === valid.scope.project) {
+      dispatch(selectScope(valid.scope));
     } else {
-      const oldpath = location.pathname.split('/').filter(Boolean);
-      const newPath = [oldpath[0]];
+      const oldPath = location.pathname.split('/').filter(Boolean);
+      const newPath = [oldPath[0]];
 
-      if (valid.dataset) {
-        newPath.push('p', valid.project as string, 'd', valid.dataset);
-      } else if (valid.project) {
-        newPath.push('p', valid.project);
+      if (valid.scope.dataset) {
+        newPath.push('p', valid.scope.project as string, 'd', valid.scope.dataset);
+      } else if (valid.scope.project) {
+        newPath.push('p', valid.scope.project);
       }
 
-      const oldPathLength = oldpath.length;
-      if (oldpath[oldPathLength - 3] === 'p' || oldpath[oldPathLength - 3] === 'd') {
-        newPath.push(oldpath[oldPathLength - 1]);
+      const oldPathLength = oldPath.length;
+      if (oldPath[oldPathLength - 3] === 'p' || oldPath[oldPathLength - 3] === 'd') {
+        newPath.push(oldPath[oldPathLength - 1]);
       }
       const newPathString = '/' + newPath.join('/');
       navigate(newPathString, { replace: true });

@@ -1,8 +1,15 @@
-import React, { useState } from 'react';
+import React, { type CSSProperties, useCallback, useMemo, useState } from 'react';
 import { Tabs, Button } from 'antd';
 import { useAppSelector, useTranslationCustom, useTranslationDefault } from '@/hooks';
 import { Link, useLocation } from 'react-router-dom';
 import DatasetScopePicker from './DatasetScopePicker';
+
+const styles: Record<string, CSSProperties> = {
+  tabs: {
+    // Cancel out padding from modal on left side for button and item alignment
+    marginLeft: -24,
+  },
+};
 
 const ProjectScopePicker = () => {
   const td = useTranslationDefault();
@@ -12,31 +19,40 @@ const ProjectScopePicker = () => {
   const baseURL = '/' + location.pathname.split('/')[1];
 
   const { projects, selectedScope } = useAppSelector((state) => state.metadata);
+  const { scope: scopeObj, fixedProject } = selectedScope;
+
   const [selectedProject, setSelectedProject] = useState<string | undefined>(
-    selectedScope.project ?? projects[0]?.identifier ?? undefined
+    scopeObj.project ?? projects[0]?.identifier ?? undefined
   );
-  const isSingleProject = projects.length === 1;
+
+  const onTabChange = useCallback((key: string) => setSelectedProject(key), []);
+  const tabItems = useMemo(
+    () =>
+      projects.map((p) => ({
+        key: p.identifier,
+        label: t(p.title),
+        children: <DatasetScopePicker parentProject={p} />,
+      })),
+    [projects, t]
+  );
 
   return (
     <>
-      {isSingleProject ? (
+      {fixedProject ? (
         <DatasetScopePicker parentProject={projects[0]} />
       ) : (
         // Project tabs if multiple projects
         <Tabs
           tabPosition="left"
           activeKey={selectedProject}
-          onChange={(key) => setSelectedProject(key)}
+          onChange={onTabChange}
           tabBarExtraContent={
             <Link to={baseURL}>
               <Button>{td('Clear')}</Button>
             </Link>
           }
-          items={projects.map((p) => ({
-            key: p.identifier,
-            label: t(p.title),
-            children: <DatasetScopePicker parentProject={p} />,
-          }))}
+          items={tabItems}
+          style={styles.tabs}
         />
       )}
     </>

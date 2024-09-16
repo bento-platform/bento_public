@@ -28,19 +28,20 @@ const SiteHeader = () => {
   const { isFetching: openIdConfigFetching } = useOpenIdConfig();
   const { isHandingOffCodeForToken } = useAuthState();
   const { projects, selectedScope } = useAppSelector((state) => state.metadata);
+  const { scope: scopeObj } = selectedScope;
 
   const scopeSelectionEnabled = !(selectedScope.fixedProject && selectedScope.fixedDataset);
 
   const scopeProps = useMemo(
     () => ({
-      projectTitle: projects.find((project) => project.identifier === selectedScope.project)?.title,
-      datasetTitle: selectedScope.dataset
+      projectTitle: projects.find((project) => project.identifier === scopeObj.project)?.title,
+      datasetTitle: scopeObj.dataset
         ? projects
-            .find((project) => project.identifier === selectedScope.project)
-            ?.datasets.find((dataset) => dataset.identifier === selectedScope.dataset)?.title
+            .find((project) => project.identifier === scopeObj.project)
+            ?.datasets.find((dataset) => dataset.identifier === scopeObj.dataset)?.title
         : null,
     }),
-    [projects, selectedScope]
+    [projects, scopeObj]
   );
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -69,7 +70,7 @@ const SiteHeader = () => {
             src="/public/assets/branding.png"
             alt="logo"
             style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-3px)' }}
-            onClick={() => navigate(`/${i18n.language}${scopeToUrl(selectedScope)}`)}
+            onClick={() => navigate(`/${i18n.language}${scopeToUrl(scopeObj)}`)}
           />
           <Typography.Title
             level={1}
@@ -87,7 +88,7 @@ const SiteHeader = () => {
             >
               <ProfileOutlined style={{ marginRight: '5px', fontSize: '16px' }} />
 
-              {selectedScope.project && scopeProps.projectTitle}
+              {scopeObj.project && scopeProps.projectTitle}
               {scopeProps.datasetTitle ? ` / ${scopeProps.datasetTitle}` : ''}
             </Typography.Title>
           )}

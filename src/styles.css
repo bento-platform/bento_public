@@ -36,11 +36,25 @@ body {
   cursor: pointer;
 }
 
-.select-dataset-hover {
+.select-dataset-item {
   transition: all 0.2s;
   border-radius: 7px;
 }
+.select-dataset-item .ant-avatar {
+  background-color: #8c8c8c;
+}
 
-.select-dataset-hover:hover {
-  background-color: aliceblue !important;
+.select-dataset-item:hover {
+  background-color: #e6f4ff;
+}
+.select-dataset-item:hover .ant-avatar {
+  color: #e6f4ff;
+}
+
+.select-dataset-item.selected, .select-dataset-item.selected:hover {
+  background-color: #91caff;
+}
+.select-dataset-item.selected .ant-avatar {
+  background-color: #0958d9;
+  color: #91caff;
 }
