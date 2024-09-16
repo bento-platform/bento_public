@@ -24,11 +24,13 @@ const RoutedSearch = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const maxQueryParameters = useAppSelector((state) => state.config.maxQueryParameters);
+  const { maxQueryParameters } = useAppSelector((state) => state.config);
   const {
     querySections: searchSections,
     queryParams,
     isFetchingFields: isFetchingSearchFields,
+    isFetchingData: isFetchingSearchData,
+    attemptedFieldsFetch,
     attemptedFetch,
   } = useAppSelector((state) => state.query);
 
@@ -70,40 +72,39 @@ const RoutedSearch = () => {
 
   // Synchronize Redux query params state from URL
   useEffect(() => {
-    if (isFetchingSearchFields) return;
     if (!location.pathname.endsWith('/search')) return;
-    const queryParam = new URLSearchParams(location.search);
-    const { valid, validQueryParamsObject } = validateQuery(queryParam);
+
+    // Wait until we have search fields to try and build a valid query. Otherwise, we will mistakenly remove all URL
+    // query parameters and effectively reset the form.
+    if (!attemptedFieldsFetch || isFetchingSearchFields || isFetchingSearchData) return;
+
+    const { valid, validQueryParamsObject } = validateQuery(new URLSearchParams(location.search));
     if (valid) {
       if (!attemptedFetch || !checkQueryParamsEqual(validQueryParamsObject, queryParams)) {
         // Only update the state & refresh if we have a new set of query params from the URL.
+        // [!!!] This should be the only place setQueryParams(...) gets called. Everywhere else should use URL
+        //       manipulations, so that we have a one-way data flow from URL to state!
         dispatch(setQueryParams(validQueryParamsObject));
         dispatch(makeGetKatsuPublic());
       }
     } else {
       const url = buildQueryParamsUrl(location.pathname, validQueryParamsObject);
-      console.debug('Redirecting to:', url);
+      console.debug('[Search] Redirecting to:', url);
       navigate(url);
+      // Then, the new URL will re-trigger this effect but with only valid query parameters.
     }
   }, [
     attemptedFetch,
+    attemptedFieldsFetch,
     dispatch,
     isFetchingSearchFields,
+    isFetchingSearchData,
     location.search,
     location.pathname,
     navigate,
     queryParams,
     validateQuery,
   ]);
-
-  // Synchronize URL from Redux query params state
-  useEffect(() => {
-    if (!location.pathname.endsWith('/search')) return;
-    if (!attemptedFetch) return;
-    const url = buildQueryParamsUrl(location.pathname, queryParams);
-    console.debug('Redirecting to:', url);
-    navigate(url, { replace: true });
-  }, [attemptedFetch, location.pathname, navigate, queryParams]);
 
   return <Search />;
 };

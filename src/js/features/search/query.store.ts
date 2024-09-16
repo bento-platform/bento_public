@@ -8,6 +8,7 @@ import type { ChartData } from '@/types/data';
 
 export type QueryState = {
   isFetchingFields: boolean;
+  attemptedFieldsFetch: boolean;
   isFetchingData: boolean;
   attemptedFetch: boolean;
   querySections: SearchFieldResponse['sections'];
@@ -23,6 +24,7 @@ export type QueryState = {
 
 const initialState: QueryState = {
   isFetchingFields: false,
+  attemptedFieldsFetch: false,
   isFetchingData: false,
   attemptedFetch: false,
   message: '',
@@ -40,16 +42,6 @@ const query = createSlice({
   name: 'query',
   initialState,
   reducers: {
-    addQueryParam: (state, { payload }) => {
-      if (!(payload.id in state.queryParams)) state.queryParamCount++;
-      state.queryParams[payload.id] = payload.value;
-    },
-    removeQueryParam: (state, { payload: id }) => {
-      if (id in state.queryParams) {
-        delete state.queryParams[id];
-        state.queryParamCount--;
-      }
-    },
     setQueryParams: (state, { payload }) => {
       state.queryParams = payload;
       state.queryParamCount = Object.keys(payload).length;
@@ -83,13 +75,15 @@ const query = createSlice({
     builder.addCase(makeGetSearchFields.fulfilled, (state, { payload }) => {
       state.querySections = payload.sections;
       state.isFetchingFields = false;
+      state.attemptedFieldsFetch = true;
     });
     builder.addCase(makeGetSearchFields.rejected, (state) => {
       state.isFetchingFields = false;
+      state.attemptedFieldsFetch = true;
     });
   },
 });
 
-export const { addQueryParam, removeQueryParam, setQueryParams } = query.actions;
+export const { setQueryParams } = query.actions;
 export { makeGetKatsuPublic, makeGetSearchFields };
 export default query.reducer;

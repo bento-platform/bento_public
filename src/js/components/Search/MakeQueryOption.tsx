@@ -1,33 +1,42 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Row, Col, Checkbox } from 'antd';
 
 import OptionDescription from './OptionDescription';
-import { addQueryParam, makeGetKatsuPublic, removeQueryParam } from '@/features/search/query.store';
 import SelectOption from './SelectOption';
 
-import { useAppDispatch, useAppSelector, useTranslationCustom, useTranslationDefault } from '@/hooks';
+import { useAppSelector, useTranslationCustom, useTranslationDefault } from '@/hooks';
 import type { Field } from '@/types/search';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { buildQueryParamsUrl, queryParamsWithoutKey } from '@/utils/search';
 
 const MakeQueryOption = ({ queryField }: MakeQueryOptionProps) => {
   const t = useTranslationCustom();
   const td = useTranslationDefault();
-  const dispatch = useAppDispatch();
+
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   const { title, id, description, config, options } = queryField;
 
   const maxQueryParameters = useAppSelector((state) => state.config.maxQueryParameters);
   const { queryParamCount, queryParams } = useAppSelector((state) => state.query);
 
-  const isChecked = Object.prototype.hasOwnProperty.call(queryParams, id);
+  const isChecked = id in queryParams;
 
-  const onCheckToggle = () => {
+  const onCheckToggle = useCallback(() => {
+    let url: string;
     if (isChecked) {
-      dispatch(removeQueryParam(id));
+      // If currently checked, uncheck it
+      url = buildQueryParamsUrl(pathname, queryParamsWithoutKey(queryParams, id));
     } else {
-      dispatch(addQueryParam({ id, value: options[0] }));
+      // If currently unchecked, check it
+      url = buildQueryParamsUrl(pathname, { ...queryParams, [id]: options[0] });
     }
-    dispatch(makeGetKatsuPublic());
-  };
+
+    console.debug('[MakeQueryOption] Redirecting to:', url);
+    navigate(url, { replace: true });
+    // Don't need to dispatch - the code handling the URL change will dispatch the fetch for us instead.
+  }, [id, isChecked, navigate, options, pathname, queryParams]);
 
   // TODO: allow disabling max query parameters for authenticated and authorized users when Katsu has AuthZ
   // useQueryWithAuthIfAllowed()
