@@ -30,7 +30,7 @@ const ScopedRoute = () => {
 
   useEffect(() => {
     // Update selectedScope based on URL parameters
-    const valid = validProjectDataset(projects, projectId, datasetId);
+    const valid = validProjectDataset(projects, { project: projectId, dataset: datasetId });
 
     // Don't change the scope object if the scope value is the same, otherwise it'll trigger needless re-renders.
     if (scopeEqual(selectedScope.scope, valid.scope)) return;

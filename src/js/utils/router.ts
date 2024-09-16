@@ -1,5 +1,6 @@
+import type { Project } from '@/types/metadata';
 import { BentoRoute } from '@/types/routes';
-import type { DiscoveryScope, MetadataState } from '@/features/metadata/metadata.store';
+import type { DiscoveryScope, DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
 
 export const getCurrentPage = (): string => {
   const pathArray = window.location.pathname.split('/');
@@ -11,12 +12,10 @@ export const getCurrentPage = (): string => {
   }
 };
 
-export const validProjectDataset = (
-  projects: MetadataState['projects'],
-  projectId?: string,
-  datasetId?: string
-): MetadataState['selectedScope'] => {
-  const valid: MetadataState['selectedScope'] = {
+export const validProjectDataset = (projects: Project[], unvalidatedScope: DiscoveryScope): DiscoveryScopeSelection => {
+  const { project, dataset } = unvalidatedScope;
+
+  const valid: DiscoveryScopeSelection = {
     scope: { project: undefined, dataset: undefined },
     fixedProject: false,
     fixedDataset: false,
@@ -35,28 +34,28 @@ export const validProjectDataset = (
       return valid;
     }
   }
-  if (projectId && projects.find(({ identifier }) => identifier === projectId)) {
-    valid.scope.project = projectId;
-    if (datasetId) {
+  if (project && projects.find(({ identifier }) => identifier === project)) {
+    valid.scope.project = project;
+    if (dataset) {
       if (
         projects
-          .find(({ identifier }) => identifier === projectId)!
-          .datasets.find(({ identifier }) => identifier === datasetId)
+          .find(({ identifier }) => identifier === project)!
+          .datasets.find(({ identifier }) => identifier === dataset)
       ) {
-        valid.scope.dataset = datasetId;
+        valid.scope.dataset = dataset;
       }
     }
   }
   return valid;
 };
 
-export const scopeToUrl = (scope: DiscoveryScope): string => {
+export const scopeToUrl = (scope: DiscoveryScope, prefix: string = '', suffix: string = ''): string => {
   if (scope.project && scope.dataset) {
-    return `/p/${scope.project}/d/${scope.dataset}`;
+    return `${prefix}/p/${scope.project}/d/${scope.dataset}${suffix}`;
   } else if (scope.project) {
-    return `/p/${scope.project}`;
+    return `${prefix}/p/${scope.project}${suffix}`;
   } else {
-    return '';
+    return `${prefix}${suffix}`;
   }
 };
 
