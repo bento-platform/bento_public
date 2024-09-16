@@ -7,12 +7,21 @@ import { printAPIError } from '@/utils/error.util';
 import { validProjectDataset } from '@/utils/router';
 import { projectsUrl } from '@/constants/configConstants';
 
+export type DiscoveryScope =
+  | { project: undefined; dataset: undefined }
+  | { project: string; dataset: undefined }
+  | {
+      project: string;
+      dataset: string;
+    };
+
 export interface MetadataState {
   projects: Project[];
   isFetching: boolean;
   selectedScope: {
-    project: string | undefined;
-    dataset: string | undefined;
+    scope: DiscoveryScope;
+    fixedProject: boolean;
+    fixedDataset: boolean;
   };
 }
 
@@ -20,8 +29,9 @@ const initialState: MetadataState = {
   projects: [],
   isFetching: true,
   selectedScope: {
-    project: undefined,
-    dataset: undefined,
+    scope: { project: undefined, dataset: undefined },
+    fixedProject: false,
+    fixedDataset: false,
   },
 };
 
@@ -41,6 +51,9 @@ const metadata = createSlice({
   initialState,
   reducers: {
     selectScope: (state, { payload }: PayloadAction<{ project?: string; dataset?: string }>) => {
+      // Defaults to the narrowest possible scope if there is only 1 project and only 1 dataset.
+      // This forces Katsu to resolve the Discovery config with fallbacks from the bottom-up:
+      // dataset -> project -> whole node
       state.selectedScope = validProjectDataset(state.projects, payload.project, payload.dataset);
     },
   },
