@@ -1,7 +1,7 @@
 import React, { type CSSProperties, useCallback, useMemo, useState } from 'react';
 import { Tabs, Button } from 'antd';
 import { useAppSelector, useTranslationCustom, useTranslationDefault } from '@/hooks';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import DatasetScopePicker from './DatasetScopePicker';
 
 const styles: Record<string, CSSProperties> = {
@@ -27,7 +27,7 @@ const ProjectScopePicker = () => {
     scopeObj.project ?? projects[0]?.identifier ?? undefined
   );
 
-  const onProjectClear = useCallback(() => navigate(baseURL), [navigate]);
+  const onProjectClear = useCallback(() => navigate(baseURL), [baseURL, navigate]);
   const onTabChange = useCallback((key: string) => setSelectedProject(key), []);
   const tabItems = useMemo(
     () =>
