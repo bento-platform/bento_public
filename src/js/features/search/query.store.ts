@@ -13,7 +13,6 @@ export type QueryState = {
   querySections: SearchFieldResponse['sections'];
   queryParams: { [key: string]: string };
   queryParamCount: number;
-  queryChanged: boolean;
   biosampleCount: number;
   biosampleChartData: ChartData[];
   experimentCount: number;
@@ -30,7 +29,6 @@ const initialState: QueryState = {
   querySections: [],
   queryParams: {},
   queryParamCount: 0,
-  queryChanged: false,
   biosampleCount: 0,
   biosampleChartData: [],
   experimentCount: 0,
@@ -45,19 +43,16 @@ const query = createSlice({
     addQueryParam: (state, { payload }) => {
       if (!(payload.id in state.queryParams)) state.queryParamCount++;
       state.queryParams[payload.id] = payload.value;
-      state.queryChanged = true;
     },
     removeQueryParam: (state, { payload: id }) => {
       if (id in state.queryParams) {
         delete state.queryParams[id];
         state.queryParamCount--;
-        state.queryChanged = true;
       }
     },
     setQueryParams: (state, { payload }) => {
       state.queryParams = payload;
       state.queryParamCount = Object.keys(payload).length;
-      state.queryChanged = false;
     },
   },
   extraReducers: (builder) => {
