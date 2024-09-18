@@ -1,8 +1,8 @@
 import React, { type CSSProperties, useCallback, useMemo } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Select } from 'antd';
 
 import { useAppSelector, useTranslationCustom } from '@/hooks';
-import { useLocation, useNavigate } from 'react-router-dom';
 import { buildQueryParamsUrl } from '@/utils/search';
 
 const SELECT_STYLE: CSSProperties = { width: '100%' };
