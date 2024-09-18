@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo } from 'react';
+import { Fragment, useMemo } from 'react';
 
 import type { ColumnsType } from 'antd/es/table';
 

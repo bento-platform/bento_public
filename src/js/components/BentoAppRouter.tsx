@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Routes, Route, useNavigate, useParams, Outlet } from 'react-router-dom';
 import { useAutoAuthenticate, useIsAuthenticated } from 'bento-auth-js';
 import { useAppDispatch, useAppSelector } from '@/hooks';

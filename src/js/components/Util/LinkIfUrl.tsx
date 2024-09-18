@@ -1,4 +1,3 @@
-import React from 'react';
 import { Typography } from 'antd';
 
 import { stringIsURL } from '@/utils/strings';

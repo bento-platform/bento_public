@@ -1,4 +1,3 @@
-import React from 'react';
 import { Card, Descriptions, Tag, Typography } from 'antd';
 
 import DistributionsTable from './Tables/DistributionsTable';
