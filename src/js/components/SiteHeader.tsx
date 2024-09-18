@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import { Button, Flex, Layout, Typography, Space } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { useIsAuthenticated, usePerformAuth, usePerformSignOut } from 'bento-auth-js';
+import { useAuthState, useIsAuthenticated, useOpenIdConfig, usePerformAuth, usePerformSignOut } from 'bento-auth-js';
 
 import { RiTranslate } from 'react-icons/ri';
 import { ExportOutlined, LinkOutlined, LoginOutlined, LogoutOutlined, ProfileOutlined } from '@ant-design/icons';
@@ -14,7 +14,7 @@ import { scopeToUrl } from '@/utils/router';
 import { DEFAULT_TRANSLATION, LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
 import { CLIENT_NAME, PORTAL_URL, TRANSLATED } from '@/config';
 
-import ChooseProjectModal from '@/components/ChooseProjectModal';
+import ScopePickerModal from './Scope/ScopePickerModal';
 
 const { Header } = Layout;
 
@@ -25,18 +25,24 @@ const SiteHeader = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { isFetching: openIdConfigFetching } = useAppSelector((state) => state.openIdConfiguration);
-  const { isHandingOffCodeForToken } = useAppSelector((state) => state.auth);
+  const { isFetching: openIdConfigFetching } = useOpenIdConfig();
+  const { isHandingOffCodeForToken } = useAuthState();
   const { projects, selectedScope } = useAppSelector((state) => state.metadata);
+  const { scope: scopeObj } = selectedScope;
 
-  const scopeProps = {
-    projectTitle: projects.find((project) => project.identifier === selectedScope.project)?.title,
-    datasetTitle: selectedScope.dataset
-      ? projects
-          .find((project) => project.identifier === selectedScope.project)
-          ?.datasets.find((dataset) => dataset.identifier === selectedScope.dataset)?.title
-      : null,
-  };
+  const scopeSelectionEnabled = !(selectedScope.fixedProject && selectedScope.fixedDataset);
+
+  const scopeProps = useMemo(
+    () => ({
+      projectTitle: projects.find((project) => project.identifier === scopeObj.project)?.title,
+      datasetTitle: scopeObj.dataset
+        ? projects
+            .find((project) => project.identifier === scopeObj.project)
+            ?.datasets.find((dataset) => dataset.identifier === scopeObj.dataset)?.title
+        : null,
+    }),
+    [projects, scopeObj]
+  );
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -64,7 +70,7 @@ const SiteHeader = () => {
             src="/public/assets/branding.png"
             alt="logo"
             style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-3px)' }}
-            onClick={() => navigate(`/${i18n.language}${scopeToUrl(selectedScope)}`)}
+            onClick={() => navigate(`/${i18n.language}${scopeToUrl(scopeObj)}`)}
           />
           <Typography.Title
             level={1}
@@ -73,18 +79,20 @@ const SiteHeader = () => {
           >
             {CLIENT_NAME}
           </Typography.Title>
-          <Typography.Title
-            className="select-project-title"
-            level={5}
-            style={{ fontSize: '16px', margin: 0, lineHeight: '64px', color: 'lightgray' }}
-            onClick={() => setIsModalOpen(true)}
-          >
-            <ProfileOutlined style={{ marginRight: '5px', fontSize: '16px' }} />
+          {scopeSelectionEnabled && (
+            <Typography.Title
+              className="select-project-title"
+              level={5}
+              style={{ fontSize: '16px', margin: 0, lineHeight: '64px', color: 'lightgray' }}
+              onClick={() => setIsModalOpen(true)}
+            >
+              <ProfileOutlined style={{ marginRight: '5px', fontSize: '16px' }} />
 
-            {selectedScope.project && scopeProps.projectTitle}
-            {scopeProps.datasetTitle ? ` / ${scopeProps.datasetTitle}` : ''}
-          </Typography.Title>
-          <ChooseProjectModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
+              {scopeObj.project && scopeProps.projectTitle}
+              {scopeProps.datasetTitle ? ` / ${scopeProps.datasetTitle}` : ''}
+            </Typography.Title>
+          )}
+          <ScopePickerModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
         </Space>
 
         <Space size="small">

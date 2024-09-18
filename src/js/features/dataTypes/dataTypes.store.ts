@@ -1,12 +1,24 @@
+import axios from 'axios';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
+
+import type { RootState } from '@/store';
+import { authorizedRequestConfig } from '@/utils/requests';
 
 // TODO: find a way to allow this without an auth token
-export const makeGetDataTypes = createAsyncThunk('dataTypes/makeGetDataTypes', async () => {
-  const res = await axios.get('/api/service-registry/data-types');
-  const data = res.data;
-  return data;
+export const makeGetDataTypes = createAsyncThunk<
+  object,
+  void,
+  {
+    rejectValue: string;
+    state: RootState;
+  }
+>('dataTypes/makeGetDataTypes', async (_, { getState }) => {
+  // Not scoped currently - this is a way to get all data types in an instance from service registry, but it may make
+  // sense in the future to forward query params to nested calls depending on scope value especially in the case of
+  // count handling. TBD - TODO: figure this out
+  const res = await axios.get('/api/service-registry/data-types', authorizedRequestConfig(getState()));
+  return res.data;
 });
 
 export type DataTypesState = {
@@ -27,7 +39,7 @@ const dataTypes = createSlice({
     builder.addCase(makeGetDataTypes.pending, (state) => {
       state.isFetching = true;
     });
-    builder.addCase(makeGetDataTypes.fulfilled, (state, { payload }: PayloadAction<{ en: string; fr: string }>) => {
+    builder.addCase(makeGetDataTypes.fulfilled, (state, { payload }: PayloadAction<object>) => {
       state.isFetching = false;
       state.dataTypes = { ...payload };
     });

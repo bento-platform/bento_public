@@ -1,16 +1,17 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+
 import { MAX_CHARTS, katsuPublicOverviewUrl } from '@/constants/configConstants';
-
-import { verifyData, saveValue, getValue, convertSequenceAndDisplayData } from '@/utils/localStorage';
-
 import { DEFAULT_CHART_WIDTH, LOCALSTORAGE_CHARTS_KEY } from '@/constants/overviewConstants';
 import { serializeChartData } from '@/utils/chart';
+import { printAPIError } from '@/utils/error.util';
+import { verifyData, saveValue, getValue, convertSequenceAndDisplayData } from '@/utils/localStorage';
+import { scopedAuthorizedRequestConfig } from '@/utils/requests';
+
+import type { RootState } from '@/store';
 import type { ChartConfig } from '@/types/chartConfig';
 import type { ChartDataField, LocalStorageData, Sections } from '@/types/data';
 import type { Counts, OverviewResponse } from '@/types/overviewResponse';
-import { printAPIError } from '@/utils/error.util';
-import type { RootState } from '@/store';
 
 export const makeGetDataRequestThunk = createAsyncThunk<
   { sectionData: Sections; counts: Counts; defaultData: Sections },
@@ -18,7 +19,7 @@ export const makeGetDataRequestThunk = createAsyncThunk<
   { rejectValue: string; state: RootState }
 >('data/makeGetDataRequest', async (_, { rejectWithValue, getState }) => {
   const overviewResponse = (await axios
-    .get(katsuPublicOverviewUrl, { params: getState().metadata.selectedScope })
+    .get(katsuPublicOverviewUrl, scopedAuthorizedRequestConfig(getState()))
     .then((res) => res.data)
     .catch(printAPIError(rejectWithValue))) as OverviewResponse['overview'];
 

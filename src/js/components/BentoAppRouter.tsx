@@ -21,38 +21,42 @@ import BeaconQueryUi from './Beacon/BeaconQueryUi';
 import { BentoRoute } from '@/types/routes';
 import Loader from '@/components/Loader';
 import NetworkUi from './Beacon/BeaconNetwork/NetworkUi';
-import { validProjectDataset } from '@/utils/router';
+import { scopeEqual, validProjectDataset } from '@/utils/router';
 import DefaultLayout from '@/components/Util/DefaultLayout';
 
 const ScopedRoute = () => {
   const { projectId, datasetId } = useParams();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { projects } = useAppSelector((state) => state.metadata);
+  const { selectedScope, projects } = useAppSelector((state) => state.metadata);
 
   useEffect(() => {
     // Update selectedScope based on URL parameters
-    const valid = validProjectDataset(projects, projectId, datasetId);
-    if (datasetId === valid.dataset && projectId === valid.project) {
-      dispatch(selectScope(valid));
-    } else {
-      const oldpath = location.pathname.split('/').filter(Boolean);
-      const newPath = [oldpath[0]];
+    const valid = validProjectDataset(projects, { project: projectId, dataset: datasetId });
 
-      if (valid.dataset) {
-        newPath.push('p', valid.project as string, 'd', valid.dataset);
-      } else if (valid.project) {
-        newPath.push('p', valid.project);
+    // Don't change the scope object if the scope value is the same, otherwise it'll trigger needless re-renders.
+    if (scopeEqual(selectedScope.scope, valid.scope)) return;
+
+    if (datasetId === valid.scope.dataset && projectId === valid.scope.project) {
+      dispatch(selectScope(valid.scope));
+    } else {
+      const oldPath = location.pathname.split('/').filter(Boolean);
+      const newPath = [oldPath[0]];
+
+      if (valid.scope.dataset) {
+        newPath.push('p', valid.scope.project as string, 'd', valid.scope.dataset);
+      } else if (valid.scope.project) {
+        newPath.push('p', valid.scope.project);
       }
 
-      const oldPathLength = oldpath.length;
-      if (oldpath[oldPathLength - 3] === 'p' || oldpath[oldPathLength - 3] === 'd') {
-        newPath.push(oldpath[oldPathLength - 1]);
+      const oldPathLength = oldPath.length;
+      if (oldPath[oldPathLength - 3] === 'p' || oldPath[oldPathLength - 3] === 'd') {
+        newPath.push(oldPath[oldPathLength - 1]);
       }
       const newPathString = '/' + newPath.join('/');
       navigate(newPathString, { replace: true });
     }
-  }, [projects, projectId, datasetId, dispatch, navigate]);
+  }, [projects, projectId, datasetId, dispatch, navigate, selectedScope]);
 
   return <Outlet />;
 };
@@ -75,7 +79,7 @@ const BentoAppRouter = () => {
     dispatch(makeGetProvenanceRequest());
     dispatch(makeGetKatsuPublic());
     dispatch(fetchKatsuData());
-  }, [dispatch, selectedScope]);
+  }, [dispatch, isAuthenticated, selectedScope]);
 
   useEffect(() => {
     dispatch(getProjects());

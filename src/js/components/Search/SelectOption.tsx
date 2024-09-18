@@ -1,32 +1,43 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React from 'react';
+import React, { type CSSProperties, useCallback, useMemo } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Select } from 'antd';
 
-import { addQueryParam, makeGetKatsuPublic } from '@/features/search/query.store';
-import { useAppDispatch, useAppSelector, useTranslationCustom } from '@/hooks';
+import { useAppSelector, useTranslationCustom } from '@/hooks';
+import { buildQueryParamsUrl } from '@/utils/search';
+
+const SELECT_STYLE: CSSProperties = { width: '100%' };
 
 const SelectOption = ({ id, isChecked, options }: SelectOptionProps) => {
   const t = useTranslationCustom();
-  const dispatch = useAppDispatch();
 
-  const queryParams = useAppSelector((state) => state.query.queryParams);
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+
+  const { queryParams } = useAppSelector((state) => state.query);
   const defaultValue = queryParams[id] || options[0];
 
-  const handleValueChange = (newValue: string) => {
-    dispatch(addQueryParam({ id, value: newValue }));
-    dispatch(makeGetKatsuPublic());
-  };
+  const handleValueChange = useCallback(
+    (newValue: string) => {
+      const url = buildQueryParamsUrl(pathname, { ...queryParams, [id]: newValue });
+      console.debug('[SelectOption] Redirecting to:', url);
+      navigate(url, { replace: true });
+      // Don't need to dispatch - the code handling the URL change will dispatch the fetch for us instead.
+    },
+    [id, navigate, pathname, queryParams]
+  );
+
+  const selectOptions = useMemo(() => options.map((item) => ({ value: item, label: t(item) })), [options, t]);
 
   return (
     <Select
       id={id}
       disabled={!isChecked}
       showSearch
-      style={{ width: '100%' }}
+      style={SELECT_STYLE}
       onChange={handleValueChange}
       value={defaultValue}
       defaultValue={defaultValue}
-      options={options.map((item) => ({ value: item, label: t(item) }))}
+      options={selectOptions}
     />
   );
 };
