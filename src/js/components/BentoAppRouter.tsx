@@ -19,18 +19,22 @@ import ProvenanceTab from './Provenance/ProvenanceTab';
 import BeaconQueryUi from './Beacon/BeaconQueryUi';
 import { BentoRoute } from '@/types/routes';
 import Loader from '@/components/Loader';
-import { validProjectDataset } from '@/utils/router';
+import { scopeEqual, validProjectDataset } from '@/utils/router';
 import DefaultLayout from '@/components/Util/DefaultLayout';
 
 const ScopedRoute = () => {
   const { projectId, datasetId } = useParams();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { projects } = useAppSelector((state) => state.metadata);
+  const { selectedScope, projects } = useAppSelector((state) => state.metadata);
 
   useEffect(() => {
     // Update selectedScope based on URL parameters
-    const valid = validProjectDataset(projects, projectId, datasetId);
+    const valid = validProjectDataset(projects, { project: projectId, dataset: datasetId });
+
+    // Don't change the scope object if the scope value is the same, otherwise it'll trigger needless re-renders.
+    if (scopeEqual(selectedScope.scope, valid.scope)) return;
+
     if (datasetId === valid.scope.dataset && projectId === valid.scope.project) {
       dispatch(selectScope(valid.scope));
     } else {
@@ -50,7 +54,7 @@ const ScopedRoute = () => {
       const newPathString = '/' + newPath.join('/');
       navigate(newPathString, { replace: true });
     }
-  }, [projects, projectId, datasetId, dispatch, navigate]);
+  }, [projects, projectId, datasetId, dispatch, navigate, selectedScope]);
 
   return <Outlet />;
 };

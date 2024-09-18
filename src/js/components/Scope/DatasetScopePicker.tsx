@@ -1,10 +1,12 @@
 import React, { useMemo } from 'react';
-import { List, Avatar, Space, Typography } from 'antd';
-import { useAppSelector, useTranslationCustom, useTranslationDefault } from '@/hooks';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { List, Avatar, Space, Typography } from 'antd';
 import { FaDatabase } from 'react-icons/fa';
-import { getCurrentPage } from '@/utils/router';
+
+import type { DiscoveryScope } from '@/features/metadata/metadata.store';
+import { useAppSelector, useTranslationCustom, useTranslationDefault } from '@/hooks';
 import type { Project } from '@/types/metadata';
+import { getCurrentPage, scopeEqual, scopeToUrl } from '@/utils/router';
 
 type DatasetScopePickerProps = {
   parentProject: Project;
@@ -29,7 +31,8 @@ const DatasetScopePicker = ({ parentProject }: DatasetScopePickerProps) => {
   );
   const showSelectProject = !selectedScope.fixedProject && parentProject.identifier != scopeObj.project;
 
-  const projectURL = `${baseURL}/p/${parentProject.identifier}/${page}`;
+  const parentProjectScope: DiscoveryScope = { project: parentProject.identifier };
+  const projectURL = scopeToUrl(parentProjectScope, baseURL, `/${page}`);
 
   return (
     <Space direction="vertical" style={{ display: 'flex' }}>
@@ -49,21 +52,18 @@ const DatasetScopePicker = ({ parentProject }: DatasetScopePickerProps) => {
       <List
         dataSource={parentProject.datasets}
         bordered
-        renderItem={(dataset) => {
-          const datasetURL = `${baseURL}/p/${parentProject.identifier}/d/${dataset.identifier}/${page}`;
-          const selected = scopeObj.dataset && dataset.identifier === scopeObj.dataset;
+        renderItem={({ identifier, title, description }) => {
+          const itemScope = { ...parentProjectScope, dataset: identifier };
+          const selected = scopeEqual(itemScope, scopeObj); // item scope === dataset scope
+          const datasetURL = scopeToUrl(itemScope, baseURL, `/${page}`);
           return (
             <List.Item
               className={`select-dataset-item${selected ? ' selected' : ''}`}
-              key={dataset.identifier}
+              key={identifier}
               onClick={() => navigate(datasetURL)}
               style={{ cursor: 'pointer' }}
             >
-              <List.Item.Meta
-                avatar={<Avatar icon={<FaDatabase />} />}
-                title={t(dataset.title)}
-                description={t(dataset.description)}
-              />
+              <List.Item.Meta avatar={<Avatar icon={<FaDatabase />} />} title={t(title)} description={t(description)} />
             </List.Item>
           );
         }}
