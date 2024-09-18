@@ -19,6 +19,7 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
     'plugin:react-hooks/recommended',
+    'plugin:react/jsx-runtime',
   ],
   rules: {
     'react/prop-types': 'off', // disable prop-types since we're using TypeScript
@@ -38,6 +39,7 @@ module.exports = {
       },
     ],
     semi: ['error', 'always'],
+    'react/react-in-jsx-scope': 'off',
   },
   settings: {
     react: {
