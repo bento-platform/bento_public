@@ -1,7 +1,4 @@
-import { createAction, createAsyncThunk } from '@reduxjs/toolkit';
-// import { makeAuthorizationHeader } from 'bento-auth-js';
 import type { RootState, AppDispatch } from '@/store';
-import { beaconApiError } from '@/utils/beaconApiError';
 import { BeaconQueryPayload } from '@/types/beacon';
 import { networkBeaconQuery } from './networkBeaconQuery.store';
 import { BEACON_NETWORK_URL } from '@/config';
@@ -15,6 +12,7 @@ const queryUrl = (beaconId: string, endpoint: string): string => {
 
 // plain redux thunk, no state updates
 // dispatch a query for each beacon in the network
+// no auth in network prototype
 export const beaconNetworkQuery =
   (payload: BeaconQueryPayload) => (dispatch: AppDispatch, getState: () => RootState) => {
     const beacons = getState().beaconNetwork.beacons;
