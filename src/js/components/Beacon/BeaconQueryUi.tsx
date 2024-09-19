@@ -275,7 +275,13 @@ const BeaconQueryUi = () => {
                 styles={CARD_STYLES}
                 extra={<SearchToolTip>{metadataInstructions} </SearchToolTip>}
               >
-                <Filters filters={filters} setFilters={setFilters} form={form} querySections={querySections} isNetworkQuery={false} />
+                <Filters
+                  filters={filters}
+                  setFilters={setFilters}
+                  form={form}
+                  querySections={querySections}
+                  isNetworkQuery={false}
+                />
               </Card>
             </Col>
           </Row>

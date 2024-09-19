@@ -1,4 +1,3 @@
-import React from 'react';
 import { ToolTipText } from './ToolTipText';
 import { useTranslationDefault } from '@/hooks';
 import { Space, Typography } from 'antd';

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch, useTranslationDefault } from '@/hooks';
 
 import { Button, Card, Col, Form, Row } from 'antd';
@@ -90,8 +90,7 @@ const BeaconQueryFormUi = ({
   const convertToZeroBased = (start: string) => Number(start) - 1;
 
   const handleFinish = (formValues: FormValues) => {
-
-    console.log({formValues})
+    // console.log({ formValues });
 
     // if bad form, block submit and show user error
     if (!variantsFormValid(formValues)) {
@@ -245,7 +244,13 @@ const BeaconQueryFormUi = ({
                   </SearchToolTip>
                 }
               >
-                <Filters filters={filters} setFilters={setFilters} form={form} querySections={querySections} isNetworkQuery={isNetworkQuery}/>
+                <Filters
+                  filters={filters}
+                  setFilters={setFilters}
+                  form={form}
+                  querySections={querySections}
+                  isNetworkQuery={isNetworkQuery}
+                />
               </Card>
             </Col>
           </Row>

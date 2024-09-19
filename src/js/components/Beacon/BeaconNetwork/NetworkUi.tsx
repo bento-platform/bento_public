@@ -1,10 +1,8 @@
-import React from 'react';
 import { useAppSelector } from '@/hooks';
 import NetworkBeacons from './NetworkBeacons';
 import NetworkSearchResults from './NetworkSearchResults';
 import BeaconQueryFormUi from '../BeaconCommon/BeaconQueryFormUi';
 import { beaconNetworkQuery } from '@/features/beacon/networkQuery.store';
-
 import { WRAPPER_STYLE } from '@/constants/beaconConstants';
 
 const NetworkUi = () => {

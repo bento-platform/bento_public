@@ -12,7 +12,6 @@ import Filter from './Filter';
 // ideally:
 // - should not permit you to make multiple queries on the same key (Redmine #1688)
 
-
 const BUTTON_STYLE = { margin: '10px 0' };
 
 const Filters = ({ filters, setFilters, form, querySections, isNetworkQuery }: FiltersProps) => {

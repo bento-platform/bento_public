@@ -1,7 +1,6 @@
-import React from 'react';
 import { Card, Typography } from 'antd';
 import { BeaconOrganizationType } from '@/types/beacon';
-const { Text, Link } = Typography;
+const { Text } = Typography;
 
 const LINK_STYLE = { padding: '10px' };
 const CARD_STYLES = { body: { background: '#f5f5f5', width: '100%' } };
@@ -12,9 +11,9 @@ const BeaconOrganization = ({ organization, bentoUrl, description }: BeaconOrgan
 
   return (
     <>
-        <Card styles={CARD_STYLES}>
-          <Text style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>{displayDescription}</Text>
-        </Card>
+      <Card styles={CARD_STYLES}>
+        <Text style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>{displayDescription}</Text>
+      </Card>
     </>
   );
 };

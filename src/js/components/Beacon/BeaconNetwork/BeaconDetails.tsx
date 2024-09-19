@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Button, Card, Col, Row, Skeleton, Space, Statistic, Tag, Typography } from 'antd';
-import { TeamOutlined, EllipsisOutlined } from '@ant-design/icons';
+import { memo, useState } from 'react';
+import { Button, Card, Row, Skeleton, Space, Statistic, Tag, Typography } from 'antd';
+import { TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
 import ExpSvg from '../../Util/ExpSvg';
 import { LinkOutlined } from '@ant-design/icons';
@@ -9,9 +9,9 @@ import SearchResultsPane from '../../Search/SearchResultsPane';
 import BeaconOrganization from './BeaconOrganization';
 import { NetworkBeacon } from '@/types/beaconNetwork';
 
-import { useAppSelector, useTranslationDefault } from '@/hooks';
+import { useTranslationDefault } from '@/hooks';
 import { FlattenedBeaconResponse } from '@/types/beacon';
-const { Title, Link, Text } = Typography;
+const { Link, Text } = Typography;
 
 const LOGO_MAX_HEIGHT = '50px';
 const LOGO_MAX_WIDTH = '175px';
@@ -30,8 +30,6 @@ const BeaconDetails = ({ beacon, response }: BeaconDetailsProps) => {
   const { variants } = overview;
   const assemblies = Object.keys(variants);
   const bentoUrl = apiUrl.replace('/api/beacon', '');
-
-  console.log('BeaconDetails');
 
   const {
     isFetchingQueryResponse,
@@ -136,14 +134,15 @@ const BeaconDetails = ({ beacon, response }: BeaconDetailsProps) => {
         </Link>,
 
         <Button ghost onClick={toggleFullCard}>
-        {showFullCard? <Text>less</Text> : <Text>more</Text>}
+          {showFullCard ? <Text>less</Text> : <Text>more</Text>}
         </Button>,
       ]}
     >
       {/* <Row gutter={[8, 8]}> */}
-        {/* {orgSmall} */}
+      {/* {orgSmall} */}
 
-        {!showFullCard && <div style={{display: 'flex', justifyContent: "center"}}>
+      {!showFullCard && (
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
           <Space direction="horizontal" size="middle" style={{ display: 'flex', alignItems: 'flex-start' }}>
             {isFetchingQueryResponse ? (
               <div style={{ display: 'flex', flexDirection: 'column', margin: '6px 0' }}>
@@ -176,11 +175,12 @@ const BeaconDetails = ({ beacon, response }: BeaconDetailsProps) => {
               </>
             )}
           </Space>
-        </div>}
+        </div>
+      )}
       {/* </Row> */}
       {showFullCard && (
         <Row>
-          <div style={{width: '100%'}}>
+          <div style={{ width: '100%' }}>
             <BeaconOrganization organization={organization} bentoUrl={bentoUrl} description={description} />
           </div>
           <SearchResultsPane
@@ -205,4 +205,4 @@ export interface BeaconDetailsProps {
 }
 
 // memoize so we don't update all beacons each time one of them responds
-export default React.memo(BeaconDetails);
+export default memo(BeaconDetails);
