@@ -1,4 +1,4 @@
-import type { type CSSProperties } from 'react';
+import { type CSSProperties } from 'react';
 import { useCallback, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Select } from 'antd';
