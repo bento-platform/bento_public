@@ -7,7 +7,7 @@
     "build": "npx webpack --mode=production",
     "build-dev": "rm -rf build/www/* && npx webpack --mode=development",
     "watch": "rm -rf build/www/* && npx webpack --mode=development --watch",
-    "gobuild": "./buildandrun.sh",
+    "start": "webpack serve --mode development --no-web-socket-server",
     "lint": "npx eslint src/js",
     "lint-fix": "npx eslint --fix src/js",
     "prettier": "npx prettier --write src/js",
