@@ -12,19 +12,13 @@ added at a later time.
 
 ## Getting started:
 
-First, run
-```bash
-cp etc/example.server.env server.env
-```
-and modify the contents according to your needs.
-
 If needed, install the relevant Go dependencies:
 
 ```bash
 go mod download
 ```
 
-Finally, install the NPM dependencies and run the build process:
+Install the NPM dependencies and run the build process:
 ```bash
 npm install
 npm run gobuild

@@ -1,11 +1,7 @@
-client.env
-server.env
-
 build/*
 node_modules/*
 dist/*
 .DS_Store
-.prettierrc
 .idea/
 .vscode/
 www/
