@@ -55,6 +55,7 @@ const config = {
       BENTO_PUBLIC_TRANSLATED: null,
       BEACON_URL: null,
       BENTO_BEACON_UI_ENABLED: null,
+      BENTO_BEACON_NETWORK_ENABLED: null,
       // Authentication
       BENTO_PUBLIC_URL: null,
       CLIENT_ID: null,
