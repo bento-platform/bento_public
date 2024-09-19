@@ -12,7 +12,7 @@ const config = {
   mode: 'development',
   entry: './src/js/index.tsx',
   output: {
-    path: __dirname + '/build/www',
+    path: path.join(__dirname, 'dist'),
     publicPath: '/',
     // filename: "js/bundle.js",
     filename: 'js/[name][chunkhash].js',
