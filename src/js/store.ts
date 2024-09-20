@@ -13,7 +13,7 @@ import provenanceReducer from '@/features/provenance/provenance.store';
 import beaconConfigReducer from './features/beacon/beaconConfig.store';
 import beaconQueryReducer from './features/beacon/beaconQuery.store';
 import beaconNetworkConfigReducer from './features/beacon/networkConfig.store';
-import networkBeaconQueryReducer from './features/beacon/networkBeaconQuery.store';
+import beaconNetworkQueryReducer from './features/beacon/networkQuery.store';
 import metadataReducer from '@/features/metadata/metadata.store';
 import { getValue, saveValue } from './utils/localStorage';
 
@@ -41,7 +41,7 @@ export const store = configureStore({
     beaconConfig: beaconConfigReducer,
     beaconQuery: beaconQueryReducer,
     beaconNetwork: beaconNetworkConfigReducer,
-    beaconNetworkResponse: networkBeaconQueryReducer,
+    beaconNetworkResponse: beaconNetworkQueryReducer,
     metadata: metadataReducer,
   },
   preloadedState: persistedState,
