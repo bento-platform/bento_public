@@ -80,7 +80,7 @@ const config = {
     },
 
     host: '0.0.0.0',
-    port: process.env.BENTO_PUBLIC_PORT ?? 9000,
+    port: process.env.BENTO_PUBLIC_PORT ?? 5000,
 
     watchFiles: {
       paths: ['src/**/*.js', 'src/**/*.ejs'],
