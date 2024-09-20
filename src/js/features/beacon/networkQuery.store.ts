@@ -15,7 +15,6 @@ const queryUrl = (beaconId: string, endpoint: string): string => {
   return BEACON_NETWORK_URL + '/beacons/' + beaconId + endpoint;
 };
 
-// plain redux thunk, no state updates
 // dispatch a query for each beacon in the network
 export const beaconNetworkQuery =
   (payload: BeaconQueryPayload) => (dispatch: AppDispatch, getState: () => RootState) => {
@@ -47,6 +46,7 @@ const queryBeaconNetworkNode = createAsyncThunk<
 });
 
 interface beaconNetworkStateType {
+  networkResponseStatus: "idle" | "waiting" | "responding";
   networkResults: BeaconFlattenedAggregateResponse;
   beacons: {
     [beaconId: string]: FlattenedBeaconResponse;
@@ -56,6 +56,7 @@ interface beaconNetworkStateType {
 type TempChartObject = Record<string, number>;
 
 const initialState: beaconNetworkStateType = {
+  networkResponseStatus: "idle", 
   networkResults: {
     individualCount: 0,
     biosampleCount: 0,
@@ -123,6 +124,11 @@ const queryBeaconNetworkNodeSlice = createSlice({
         isFetchingQueryResponse: true,
       };
       state.beacons[beaconId] = beaconState;
+
+      // don't undo "responding" status if another beacon is already responding
+      if (state.networkResponseStatus == "idle") {
+        state.networkResponseStatus = "waiting"
+      }
     });
     builder.addCase(queryBeaconNetworkNode.fulfilled, (state, action) => {
       const beaconId = action.meta.arg.beaconId;
@@ -143,6 +149,7 @@ const queryBeaconNetworkNodeSlice = createSlice({
         beaconState.individualCount = payload.responseSummary.numTotalResults;
       }
       state.beacons[beaconId] = beaconState;
+      state.networkResponseStatus = "responding";
       state.networkResults = computeNetworkResults(state.beacons);
     });
     builder.addCase(queryBeaconNetworkNode.rejected, (state, action) => {
@@ -153,6 +160,7 @@ const queryBeaconNetworkNodeSlice = createSlice({
         isFetchingQueryResponse: false,
       };
       state.beacons[beaconId] = beaconState;
+      state.networkResponseStatus = "responding";
     });
   },
 });

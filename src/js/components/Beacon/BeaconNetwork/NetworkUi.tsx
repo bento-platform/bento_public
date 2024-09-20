@@ -10,12 +10,13 @@ const NetworkUi = () => {
   const isFetchingConfig = useAppSelector((state) => state.beaconNetwork.isFetchingBeaconNetworkConfig);
   const networkAssemblyIds = useAppSelector((state) => state.beaconNetwork.assemblyIds);
   const networkQuerySections = useAppSelector((state) => state.beaconNetwork.currentQuerySections);
+  const isWaitingForNetworkResponse = useAppSelector((state) => state.beaconNetworkResponse.networkResponseStatus == "waiting");
 
   return (
     <div style={WRAPPER_STYLE}>
       <BeaconQueryFormUi
         isFetchingConfig={isFetchingConfig}
-        isFetchingQueryResponse={false} //TODO? this is n/a here
+        isFetchingQueryResponse={isWaitingForNetworkResponse}
         isNetworkQuery={true}
         beaconAssemblyIds={networkAssemblyIds}
         querySections={networkQuerySections}
