@@ -1,11 +1,11 @@
-const parseBoolean = (value) => ['true', '1', 'yes'].includes((value || '').toLocaleLowerCase());
+import { stringToBoolean } from '@/utils/strings';
 
 const siteConfig = {
   CLIENT_NAME: process.env.BENTO_PUBLIC_CLIENT_NAME || null,
   PORTAL_URL: process.env.BENTO_PUBLIC_PORTAL_URL || null,
-  TRANSLATED: parseBoolean(process.env.BENTO_PUBLIC_TRANSLATED),
+  TRANSLATED: stringToBoolean(process.env.BENTO_PUBLIC_TRANSLATED),
   BEACON_URL: process.env.BEACON_URL || null,
-  BEACON_UI_ENABLED: parseBoolean(process.env.BENTO_BEACON_UI_ENABLED),
+  BEACON_UI_ENABLED: stringToBoolean(process.env.BENTO_BEACON_UI_ENABLED),
 
   // Authentication
   PUBLIC_URL: process.env.BENTO_PUBLIC_URL || null,
