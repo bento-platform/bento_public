@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import PropTypes from 'prop-types';
 import { Button, Space } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 
@@ -23,10 +22,6 @@ const DownloadDats = ({ metadata }: { metadata: ProvenanceStoreDataset }) => {
       </Button>
     </Space>
   );
-};
-
-DownloadDats.propTypes = {
-  metadata: PropTypes.object.isRequired,
 };
 
 export default DownloadDats;
