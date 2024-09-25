@@ -1,4 +1,5 @@
-import React, { type CSSProperties, useCallback, useMemo, useState } from 'react';
+import { type CSSProperties } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Tabs, Button } from 'antd';
 import { useAppSelector, useTranslationCustom, useTranslationDefault } from '@/hooks';
 import { useLocation, useNavigate } from 'react-router-dom';
