@@ -27,6 +27,10 @@ body {
   border-right: 1px solid #f0f0f0;
 }
 
+.ant-layout-header {
+  padding: 0 !important;
+}
+
 .select-project-title {
   transition: all 0.2s;
 }
@@ -59,3 +63,10 @@ body {
   background-color: #0958d9;
   color: #91caff;
 }
+
+@media (max-width: 768px) {
+  .ant-layout-content {
+    padding: 10px !important;
+  }
+}
+

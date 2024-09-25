@@ -15,6 +15,7 @@ import { DEFAULT_TRANSLATION, LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/co
 import { CLIENT_NAME, PORTAL_URL, TRANSLATED } from '@/config';
 
 import ScopePickerModal from './Scope/ScopePickerModal';
+import { useResponsive } from '@/components/ResponsiveContext';
 
 const { Header } = Layout;
 
@@ -24,6 +25,7 @@ const SiteHeader = () => {
   const { t, i18n } = useTranslation(DEFAULT_TRANSLATION);
   const navigate = useNavigate();
   const location = useLocation();
+  const { isMobile } = useResponsive();
 
   const { isFetching: openIdConfigFetching } = useOpenIdConfig();
   const { isHandingOffCodeForToken } = useAuthState();
@@ -65,16 +67,25 @@ const SiteHeader = () => {
   return (
     <Header style={{ position: 'fixed', width: '100%', zIndex: 100, top: 0 }}>
       <Flex align="center" justify="space-between">
-        <Space size="middle">
-          <img
-            src="/public/assets/branding.png"
-            alt="logo"
-            style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-3px)' }}
-            onClick={() => navigate(`/${i18n.language}${scopeToUrl(scopeObj)}`)}
-          />
+        <Space size={isMobile ? 'small' : 'middle'}>
+          {isMobile ? (
+            <img
+              src="/public/assets/icon_small.png"
+              alt="logo"
+              style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-3px)', paddingLeft: '23px' }}
+              onClick={() => navigate(`/${i18n.language}${scopeToUrl(scopeObj)}`)}
+            />
+          ) : (
+            <img
+              src="/public/assets/branding.png"
+              alt="logo"
+              style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-3px)', paddingLeft: '50px' }}
+              onClick={() => navigate(`/${i18n.language}${scopeToUrl(scopeObj)}`)}
+            />
+          )}
           <Typography.Title
             level={1}
-            style={{ fontSize: '24px', margin: 0, lineHeight: '64px', color: 'white' }}
+            style={{ fontSize: '1.5em', margin: 0, lineHeight: '64px', color: 'white' }}
             type="secondary"
           >
             {CLIENT_NAME}
@@ -95,7 +106,7 @@ const SiteHeader = () => {
           <ScopePickerModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
         </Space>
 
-        <Space size="small">
+        <Space size={isMobile ? 0 : 'small'}>
           {TRANSLATED && (
             <Button
               type="text"
@@ -103,20 +114,20 @@ const SiteHeader = () => {
               icon={<RiTranslate style={{ transform: 'translateY(1px)' }} />}
               onClick={changeLanguage}
             >
-              {LNGS_FULL_NAMES[LNG_CHANGE[i18n.language]]}
+              {isMobile ? '' : LNGS_FULL_NAMES[LNG_CHANGE[i18n.language]]}
             </Button>
           )}
           <Button type="text" className="header-button" icon={<LinkOutlined />} onClick={openPortalWindow}>
-            {t('Portal')}
-            <ExportOutlined />
+            {isMobile ? '' : t('Portal')}
+            {isMobile || <ExportOutlined />}
           </Button>
           {isAuthenticated ? (
             <Button type="text" className="header-button" icon={<LogoutOutlined />} onClick={performSignOut}>
-              {t('Sign Out')}
+              {isMobile ? '' : t('Sign Out')}
             </Button>
           ) : (
             <Button type="primary" shape="round" icon={<LoginOutlined />} onClick={performSignIn}>
-              {openIdConfigFetching || isHandingOffCodeForToken ? t('Loading...') : t('Sign In')}
+              {openIdConfigFetching || isHandingOffCodeForToken ? t('Loading...') : isMobile ? '' : t('Sign In')}
             </Button>
           )}
         </Space>
