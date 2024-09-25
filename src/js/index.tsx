@@ -30,6 +30,7 @@ import 'leaflet/dist/leaflet.css';
 import 'bento-charts/src/styles.css';
 import './i18n';
 import '../styles.css';
+import { ResponsiveProvider } from '@/components/ResponsiveContext';
 
 const BaseRoutes = () => {
   return (
@@ -51,22 +52,24 @@ const RootApp = () => {
   return (
     <Provider store={store}>
       <BrowserRouter>
-        <BentoAuthContextProvider
-          value={{
-            applicationUrl: PUBLIC_URL_NO_TRAILING_SLASH,
-            openIdConfigUrl: OPENID_CONFIG_URL,
-            clientId: CLIENT_ID,
-            scope: 'openid email',
-            postSignOutUrl: `${PUBLIC_URL_NO_TRAILING_SLASH}/`,
-            authCallbackUrl: AUTH_CALLBACK_URL,
-          }}
-        >
-          <ChartConfigProvider Lng={i18n.language ?? SUPPORTED_LNGS.ENGLISH} theme={NEW_BENTO_PUBLIC_THEME}>
-            <ConfigProvider theme={{ components: { Menu: { iconSize: 20 } } }}>
-              <BaseRoutes />
-            </ConfigProvider>
-          </ChartConfigProvider>
-        </BentoAuthContextProvider>
+        <ResponsiveProvider>
+          <BentoAuthContextProvider
+            value={{
+              applicationUrl: PUBLIC_URL_NO_TRAILING_SLASH,
+              openIdConfigUrl: OPENID_CONFIG_URL,
+              clientId: CLIENT_ID,
+              scope: 'openid email',
+              postSignOutUrl: `${PUBLIC_URL_NO_TRAILING_SLASH}/`,
+              authCallbackUrl: AUTH_CALLBACK_URL,
+            }}
+          >
+            <ChartConfigProvider Lng={i18n.language ?? SUPPORTED_LNGS.ENGLISH} theme={NEW_BENTO_PUBLIC_THEME}>
+              <ConfigProvider theme={{ components: { Menu: { iconSize: 20 } } }}>
+                <BaseRoutes />
+              </ConfigProvider>
+            </ChartConfigProvider>
+          </BentoAuthContextProvider>
+        </ResponsiveProvider>
       </BrowserRouter>
     </Provider>
   );

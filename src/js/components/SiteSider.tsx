@@ -75,6 +75,7 @@ const SiteSider: React.FC<{
   return (
     <Sider
       collapsible
+      breakpoint="md"
       collapsed={collapsed}
       onCollapse={setCollapsed}
       theme="light"
