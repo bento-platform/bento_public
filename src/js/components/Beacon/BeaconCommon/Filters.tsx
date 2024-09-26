@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
 import { useAppSelector, useAppDispatch } from '@/hooks';
 import { useTranslation } from 'react-i18next';
 import { Button, Form, Space, Switch, Tooltip } from 'antd';

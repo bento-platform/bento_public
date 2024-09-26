@@ -1,4 +1,4 @@
-import React from 'react';
+import { Fragment } from 'react';
 
 import BaseProvenanceTable from './BaseProvenanceTable';
 import LinkIfUrl from '../../Util/LinkIfUrl';
@@ -23,11 +23,11 @@ const AcknowledgesTable = ({ acknowledges }: AcknowledgesTableProps) => {
           dataIndex: 'funders',
           render: (_, { funders }) =>
             funders.map((f, i) => (
-              <React.Fragment key={i}>
+              <Fragment key={i}>
                 <LinkIfUrl text={f.name} />
                 {f.abbreviation ? ` (${t(f.abbreviation)})` : ''}
                 {i < funders.length - 1 ? '; ' : ''}
-              </React.Fragment>
+              </Fragment>
             )),
         },
       ]}

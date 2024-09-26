@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { Row, Col, Checkbox } from 'antd';
 
 import OptionDescription from './OptionDescription';

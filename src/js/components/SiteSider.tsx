@@ -1,4 +1,5 @@
-import React, { useMemo, useCallback } from 'react';
+import type React from 'react';
+import { useMemo, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import { Layout, Menu } from 'antd';

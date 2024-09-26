@@ -1,22 +1,18 @@
 #!/usr/bin/env bash
 
-export BENTO_PUBLIC_STATIC_FILES_PATH=/bento-public/build/www
+# Base image handles making bento_user and setting its .gitconfig
 
-cd /bento-public || exit
+# Set default internal port to 80
+: "${BENTO_PUBLIC_PORT:=80}"
+export BENTO_PUBLIC_PORT
 
-# Install/update node dependencies
+# ----- Begin /service-info creation ----------------------------------
+echo "[bento_public] [entrypoint] creating service-info file"
+node ./create_service_info.js > dist/public/service-info.json
+# ----- End -----------------------------------------------------------
+
+echo "[bento_public] [entrypoint] running npm install"
 npm install
 
-# Build dev before starting the go webserver.
-# main.go uses Echo's Static middleware to route static files.
-# The files MUST exist when the middleware is registered.
-npm run build-dev
-
-# Run nodemon as a watcher to recompile Go
-npx nodemon main.go &
-
-# Run webpack watch to recompile JS files
-npm run watch &
-echo "====================== WEBPACK WATCHING ======================"
-
-wait
+echo "[bento_public] [entrypoint] starting"
+npm run start

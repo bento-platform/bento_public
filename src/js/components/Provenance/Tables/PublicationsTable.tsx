@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';

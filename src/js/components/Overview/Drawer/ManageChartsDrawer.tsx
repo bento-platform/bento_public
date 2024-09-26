@@ -1,5 +1,3 @@
-import React from 'react';
-
 import type { DrawerProps } from 'antd';
 import { Button, Drawer, Flex, Space, Typography } from 'antd';
 const { Title } = Typography;

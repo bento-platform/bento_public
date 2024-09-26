@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useQueryWithAuthIfAllowed, useTranslationDefault } from '@/hooks';
 import {
   checkIsInAuthPopup,

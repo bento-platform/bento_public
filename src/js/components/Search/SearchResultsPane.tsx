@@ -1,4 +1,4 @@
-import React, { ReactElement, useCallback } from 'react';
+import {type ReactElement, useCallback } from 'react';
 import { Card, Col, Row, Statistic, Typography, Space } from 'antd';
 import { TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';

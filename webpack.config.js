@@ -1,14 +1,18 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+
 const path = require('path');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { EnvironmentPlugin } = require('webpack');
 
+const createServiceInfo = require('./create_service_info');
+
 const config = {
   mode: 'development',
   entry: './src/js/index.tsx',
   output: {
-    path: __dirname + '/build/www',
+    path: path.join(__dirname, 'dist'),
     publicPath: '/',
     // filename: "js/bundle.js",
     filename: 'js/[name][chunkhash].js',
@@ -29,10 +33,6 @@ const config = {
         loader: 'html-loader',
       },
     ],
-  },
-  devServer: {
-    static: './dist',
-    contentBase: './dist',
   },
   watchOptions: {
     aggregateTimeout: 200,
@@ -72,6 +72,42 @@ const config = {
       '@public': path.resolve(__dirname, 'src/public'),
     },
     extensions: ['.tsx', '.ts', '.js'],
+  },
+  devServer: {
+    compress: true,
+    historyApiFallback: {
+      // Allows url parameters containing dots in the devServer
+      disableDotRule: true,
+    },
+
+    host: '0.0.0.0',
+    port: process.env.BENTO_PUBLIC_PORT ?? 5000,
+
+    watchFiles: {
+      paths: ['src/**/*.js', 'src/**/*.ejs'],
+      options: {
+        usePolling: true,
+      },
+    },
+
+    devMiddleware: {
+      writeToDisk: true,
+    },
+
+    setupMiddlewares(middlewares, devServer) {
+      if (!devServer) {
+        throw new Error('webpack-dev-server is not defined');
+      }
+
+      devServer.app.get('/service-info', (req, res) => {
+        res.header('Content-Type', 'application/json');
+        res.json(createServiceInfo.serviceInfo);
+      });
+
+      return middlewares;
+    },
+
+    allowedHosts: 'all',
   },
 };
 

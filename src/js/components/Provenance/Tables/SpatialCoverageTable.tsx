@@ -1,5 +1,3 @@
-import React from 'react';
-
 import BaseProvenanceTable from './BaseProvenanceTable';
 import { useTranslationCustom, useTranslationDefault } from '@/hooks';
 import type { ProvenanceStoreDataset } from '@/types/provenance';

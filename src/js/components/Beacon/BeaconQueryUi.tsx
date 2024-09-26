@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useAppSelector, useAppDispatch, useTranslationDefault, useQueryWithAuthIfAllowed } from '@/hooks';
 import { Button, Card, Col, Form, Row, Space, Tooltip, Typography } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';

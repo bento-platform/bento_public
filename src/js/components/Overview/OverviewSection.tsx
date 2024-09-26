@@ -1,4 +1,3 @@
-import React from 'react';
 import { Typography, Space } from 'antd';
 
 import OverviewDisplayData from './OverviewDisplayData';
