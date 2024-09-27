@@ -59,3 +59,31 @@ body {
   background-color: #0958d9;
   color: #91caff;
 }
+
+.search-results-pane {
+  padding-bottom: 8px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+/* BEGIN search results pane */
+
+.search-result-statistic {
+  padding: 8px 16px;
+  margin-left: -16px;
+  border-radius: 8px;
+}
+.search-result-statistic.enabled {
+  cursor: pointer;
+  border: 1px solid #d9d9d9;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.02);
+}
+.search-result-statistic.selected {
+  background-color: #fafafa;
+}
+.search-result-statistic.enabled.selected {
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.02), inset 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+/* END search results pane */

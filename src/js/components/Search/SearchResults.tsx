@@ -8,6 +8,7 @@ const SearchResults = () => {
   const experimentCount = useAppSelector((state) => state.query.experimentCount);
   const experimentChartData = useAppSelector((state) => state.query.experimentChartData);
   const individualCount = useAppSelector((state) => state.query.individualCount);
+  const individualMatches = useAppSelector((state) => state.query.individualMatches);
   const message = useAppSelector((state) => state.query.message);
 
   // existing code treats non-empty message as sign of insufficient data
@@ -19,6 +20,7 @@ const SearchResults = () => {
       hasInsufficientData={hasInsufficientData}
       message={message}
       individualCount={individualCount}
+      individualMatches={individualMatches}
       biosampleCount={biosampleCount}
       biosampleChartData={biosampleChartData}
       experimentCount={experimentCount}

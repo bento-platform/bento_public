@@ -36,6 +36,7 @@ export type KatsuSearchResponse =
   | {
       biosamples: Biosamples;
       count: number;
+      matches?: string[];
       experiments: Experiments;
     }
   | { message: string };
