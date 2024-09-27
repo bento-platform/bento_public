@@ -1,5 +1,5 @@
 import { memo, useState } from 'react';
-import { Button, Card, Row, Skeleton, Space, Statistic, Tag, Typography } from 'antd';
+import { Button, Card, Row, Skeleton, Space, Statistic, Tag, Tooltip, Typography } from 'antd';
 import { TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
 import ExpSvg from '../../Util/ExpSvg';
@@ -19,10 +19,6 @@ const CARD_DEFAULT_WIDTH = '480px';
 const CARD_FULL_DETAILS_WIDTH = '1200px';
 const CARD_BODY_MIN_HEIGHT = '100px'; // fit stats without jumping
 const LINK_STYLE = { padding: '10px' };
-
-// try header with logo and name, more "more" and error stuff elsewhere
-// beacon needs to know its id to know which response to retrieve
-// this might not work for reducing renders (may need to use)
 
 const BeaconDetails = ({ beacon, response }: BeaconDetailsProps) => {
   const t = useTranslationDefault();
@@ -104,6 +100,12 @@ const BeaconDetails = ({ beacon, response }: BeaconDetailsProps) => {
     </>
   );
 
+  const ApiErrorTag = ({ errorMessage }: { errorMessage: string }) => (
+    <Tooltip title={`Error response from beacon: ${errorMessage}`}>
+      <Tag color="red">error</Tag>
+    </Tooltip>
+  );
+
   return (
     <Card
       title={logoAndName}
@@ -122,7 +124,12 @@ const BeaconDetails = ({ beacon, response }: BeaconDetailsProps) => {
         body: { flexGrow: 1, minHeight: CARD_BODY_MIN_HEIGHT },
         actions: { display: 'flex', alignItems: 'center' },
       }}
-      extra={assemblyTags}
+      extra={
+        <>
+          {assemblyTags}
+          {hasApiError && <ApiErrorTag errorMessage={apiErrorMessage} />}
+        </>
+      }
       actions={[
         <Link href={organization.welcomeUrl} target="_blank" style={LINK_STYLE}>
           <LinkOutlined style={{ marginRight: '5px' }} />
