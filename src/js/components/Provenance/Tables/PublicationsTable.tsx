@@ -4,12 +4,12 @@ import { useMemo } from 'react';
 import { Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 
-import BaseProvenanceTable from './BaseProvenanceTable';
-import LinkIfUrl from '../../Util/LinkIfUrl';
+import LinkIfUrl from '@/components/Util/LinkIfUrl';
 import { useTranslationCustom, useTranslationDefault } from '@/hooks';
-import type { Person, PrimaryPublication, ProvenanceStoreDataset } from '@/types/provenance';
-
+import type { DatsFile, Person, PrimaryPublication } from '@/types/dats';
 import { stringIsDOI, stringIsURL } from '@/utils/strings';
+
+import BaseProvenanceTable from './BaseProvenanceTable';
 
 const URLLink = ({ url, children }: { url: string; children?: ReactNode }) => (
   <Typography.Link href={url} target="_blank" rel="noopener noreferrer">
@@ -123,7 +123,7 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
 };
 
 export interface PublicationsTableProps {
-  publications: ProvenanceStoreDataset['primaryPublications'];
+  publications: DatsFile['primaryPublications'];
 }
 
 export default PublicationsTable;

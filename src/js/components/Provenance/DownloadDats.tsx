@@ -4,16 +4,16 @@ import { DownloadOutlined } from '@ant-design/icons';
 
 import { PORTAL_URL } from '@/config';
 import { useTranslationDefault } from '@/hooks';
-import type { ProvenanceStoreDataset } from '@/types/provenance';
+import type { Dataset } from '@/types/metadata';
 
-const DownloadDats = ({ metadata }: { metadata: ProvenanceStoreDataset }) => {
+const DownloadDats = ({ dataset }: { dataset: Dataset }) => {
   const t = useTranslationDefault();
 
   const exportData = useCallback(() => {
-    window.location.href = `${PORTAL_URL}/api/metadata/api/datasets/${metadata.identifier}/dats?format=json&attachment=true`;
-  }, [metadata]);
+    window.location.href = `${PORTAL_URL}/api/metadata/api/datasets/${dataset.identifier}/dats?format=json&attachment=true`;
+  }, [dataset]);
 
-  const isDatsFileEmpty = Object.keys(metadata?.dats_file ?? {}).length === 0;
+  const isDatsFileEmpty = Object.keys(dataset?.dats_file ?? {}).length === 0;
 
   return (
     <Space style={{ marginTop: '20px', justifyContent: 'center' }}>

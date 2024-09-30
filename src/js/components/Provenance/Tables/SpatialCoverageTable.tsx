@@ -1,6 +1,7 @@
-import BaseProvenanceTable from './BaseProvenanceTable';
 import { useTranslationCustom, useTranslationDefault } from '@/hooks';
-import type { ProvenanceStoreDataset } from '@/types/provenance';
+import type { DatsFile } from '@/types/dats';
+
+import BaseProvenanceTable from './BaseProvenanceTable';
 
 const SpatialCoverageTable = ({ spatialCoverage }: SpatialCoverageTableProps) => {
   const t = useTranslationCustom();
@@ -19,7 +20,7 @@ const SpatialCoverageTable = ({ spatialCoverage }: SpatialCoverageTableProps) =>
 };
 
 export interface SpatialCoverageTableProps {
-  spatialCoverage: ProvenanceStoreDataset['spatialCoverage'];
+  spatialCoverage: DatsFile['spatialCoverage'];
 }
 
 export default SpatialCoverageTable;
