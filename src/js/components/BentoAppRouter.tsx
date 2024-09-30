@@ -7,7 +7,6 @@ import { makeGetConfigRequest, makeGetServiceInfoRequest } from '@/features/conf
 import { makeGetAboutRequest } from '@/features/content/content.store';
 import { makeGetDataRequestThunk, populateClickable } from '@/features/data/data.store';
 import { makeGetKatsuPublic, makeGetSearchFields } from '@/features/search/query.store';
-import { makeGetProvenanceRequest } from '@/features/provenance/provenance.store';
 import { getBeaconConfig } from '@/features/beacon/beaconConfig.store';
 import { fetchGohanData, fetchKatsuData } from '@/features/ingestion/lastIngestion.store';
 import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
@@ -71,7 +70,6 @@ const BentoAppRouter = () => {
     dispatch(makeGetAboutRequest());
     dispatch(makeGetDataRequestThunk());
     dispatch(makeGetSearchFields()).then(() => dispatch(populateClickable()));
-    dispatch(makeGetProvenanceRequest());
     dispatch(makeGetKatsuPublic());
     dispatch(fetchKatsuData());
   }, [dispatch, isAuthenticated, selectedScope]);

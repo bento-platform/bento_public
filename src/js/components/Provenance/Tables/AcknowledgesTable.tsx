@@ -1,9 +1,10 @@
 import { Fragment } from 'react';
 
-import BaseProvenanceTable from './BaseProvenanceTable';
-import LinkIfUrl from '../../Util/LinkIfUrl';
-import type { Acknowledge } from '@/types/provenance';
+import LinkIfUrl from '@/components/Util/LinkIfUrl';
+import type { Acknowledge } from '@/types/dats';
 import { useTranslationCustom, useTranslationDefault } from '@/hooks';
+
+import BaseProvenanceTable from './BaseProvenanceTable';
 
 const AcknowledgesTable = ({ acknowledges }: AcknowledgesTableProps) => {
   const t = useTranslationCustom();

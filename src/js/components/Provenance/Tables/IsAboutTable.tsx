@@ -3,7 +3,7 @@ import { Tag } from 'antd';
 import BaseProvenanceTable from './BaseProvenanceTable';
 import LinkIfUrl from '../../Util/LinkIfUrl';
 import { useTranslationCustom, useTranslationDefault } from '@/hooks';
-import type { ProvenanceStoreDataset } from '@/types/provenance';
+import type { DatsFile } from '@/types/dats';
 
 const IsAboutTable = ({ isAbout }: IsAboutTableProps) => {
   const t = useTranslationCustom();
@@ -41,7 +41,7 @@ const IsAboutTable = ({ isAbout }: IsAboutTableProps) => {
 };
 
 export interface IsAboutTableProps {
-  isAbout: ProvenanceStoreDataset['isAbout'];
+  isAbout: DatsFile['isAbout'];
 }
 
 export default IsAboutTable;
