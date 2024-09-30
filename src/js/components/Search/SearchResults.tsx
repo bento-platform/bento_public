@@ -1,15 +1,17 @@
-import { useAppSelector } from '@/hooks';
+import { useSearchQuery } from '@/features/search/hooks';
 import SearchResultsPane from './SearchResultsPane';
 
 const SearchResults = () => {
-  const isFetchingData = useAppSelector((state) => state.query.isFetchingData);
-  const biosampleCount = useAppSelector((state) => state.query.biosampleCount);
-  const biosampleChartData = useAppSelector((state) => state.query.biosampleChartData);
-  const experimentCount = useAppSelector((state) => state.query.experimentCount);
-  const experimentChartData = useAppSelector((state) => state.query.experimentChartData);
-  const individualCount = useAppSelector((state) => state.query.individualCount);
-  const individualMatches = useAppSelector((state) => state.query.individualMatches);
-  const message = useAppSelector((state) => state.query.message);
+  const {
+    isFetchingData,
+    biosampleCount,
+    biosampleChartData,
+    experimentCount,
+    experimentChartData,
+    individualCount,
+    individualMatches,
+    message,
+  } = useSearchQuery();
 
   // existing code treats non-empty message as sign of insufficient data
   const hasInsufficientData = message !== '';
