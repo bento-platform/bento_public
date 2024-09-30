@@ -3,7 +3,7 @@
 A publicly accessible portal for clinical datasets, where users are able to see high-level statistics of the data 
 available through predefined variables of interest and search the data using limited variables at a time. This portal 
 allows users to gain a generic understanding of the data available (secure and firewalled) without the need to access 
-it directly
+it directly.
 
 ## Prerequisites:
 - Node Package Manager
