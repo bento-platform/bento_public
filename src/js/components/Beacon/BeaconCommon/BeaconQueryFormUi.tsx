@@ -7,19 +7,17 @@ import Filters from './Filters';
 import SearchToolTip from './ToolTips/SearchToolTip';
 import VariantsInstructions from './ToolTips/VariantsInstructions';
 import { MetadataInstructions } from './ToolTips/MetadataInstructions';
-import { makeBeaconQuery } from '@/features/beacon/beaconQuery.store';
-import { beaconNetworkQuery } from '@/features/beacon/networkQuery.store';
 import BeaconErrorMessage from './BeaconErrorMessage';
-import {
+import type {
   BeaconAssemblyIds,
   BeaconQueryPayload,
-  BeaconQuery,
+  BeaconQueryAction,
   FormFilter,
   FormValues,
   PayloadFilter,
   PayloadVariantsQuery,
 } from '@/types/beacon';
-import { Section } from '@/types/search';
+import type { Section } from '@/types/search';
 import { BOX_SHADOW } from '@/constants/overviewConstants';
 import {
   FORM_ROW_GUTTERS,
@@ -301,7 +299,7 @@ export interface BeaconQueryFormUiProps {
   isNetworkQuery: boolean;
   beaconAssemblyIds: BeaconAssemblyIds;
   querySections: Section[];
-  launchQuery: BeaconQuery;
+  launchQuery: BeaconQueryAction;
 }
 
 export default BeaconQueryFormUi;

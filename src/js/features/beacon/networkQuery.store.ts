@@ -1,12 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import type { RootState, AppDispatch } from '@/store';
-import { useDispatch } from 'react-redux';
 import { serializeChartData } from '@/utils/chart';
 import { beaconApiError } from '@/utils/beaconApiError';
-import { BeaconQueryPayload, BeaconQueryResponse, FlattenedBeaconResponse } from '@/types/beacon';
-import { BeaconFlattenedAggregateResponse, QueryToNetworkBeacon } from '@/types/beaconNetwork';
-import { ChartData } from '@/types/data';
+import type { BeaconQueryPayload, BeaconQueryResponse, FlattenedBeaconResponse } from '@/types/beacon';
+import type { BeaconFlattenedAggregateResponse, QueryToNetworkBeacon } from '@/types/beaconNetwork';
+import type { ChartData } from '@/types/data';
 import { BEACON_NETWORK_URL } from '@/config';
 
 // can parameterize at some point in the future

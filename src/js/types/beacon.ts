@@ -1,5 +1,6 @@
 import type { Rule } from 'antd/es/form';
-import type { ChartData } from './data';
+import type { ActionCreator } from 'redux';
+import type { ChartData } from '@/types/data';
 import type { Datum } from '@/types/overviewResponse';
 import { makeBeaconQuery } from '@/features/beacon/beaconQuery.store';
 import { beaconNetworkQuery } from '@/features/beacon/networkQuery.store';
@@ -75,8 +76,9 @@ export interface BeaconQueryPayload {
   bento?: { showSummaryStatistics: boolean };
 }
 
-// this compiles but VS Code has trouble with type inference around dispatch/appDispatch
-export type BeaconQuery = typeof makeBeaconQuery | typeof beaconNetworkQuery;
+export type BeaconQueryAction = ActionCreator<
+  ReturnType<typeof beaconNetworkQuery> | ReturnType<typeof makeBeaconQuery>
+>;
 
 // ----------------------------
 // API response

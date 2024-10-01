@@ -1,5 +1,6 @@
-import { BeaconServiceInfo, BeaconQueryPayload, FlattenedBeaconResponse } from './beacon';
-import { ChartData } from './data';
+import type { BeaconServiceInfo, BeaconQueryPayload, FlattenedBeaconResponse } from '@/types/beacon';
+import type { ChartData } from '@/types/data';
+import type { Section } from '@/types/search';
 
 export interface NetworkBeacon extends BeaconServiceInfo {
   apiUrl: string;
@@ -19,8 +20,8 @@ export interface NetworkBeacon extends BeaconServiceInfo {
 
 // more to come here
 export interface BeaconNetworkConfig {
-  filtersUnion: unknown; // temp
-  filtersIntersection: unknown; // temp
+  filtersUnion: Section[]
+  filtersIntersection: Section[]
   beacons: NetworkBeacon[];
 }
 

@@ -3,8 +3,9 @@ import axios from 'axios';
 // import { makeAuthorizationHeader } from 'bento-auth-js';
 import { RootState } from '@/store';
 import { beaconApiError } from '@/utils/beaconApiError';
-import { BeaconAssemblyIds } from '@/types/beacon';
-import { NetworkBeacon, BeaconNetworkConfig } from '@/types/beaconNetwork';
+import type { Section } from '@/types/search';
+import type { BeaconAssemblyIds } from '@/types/beacon';
+import type { NetworkBeacon, BeaconNetworkConfig } from '@/types/beaconNetwork';
 import { BEACON_NETWORK_URL } from '@/config';
 
 // network config currently just a list of beacons in the network with info about each one
@@ -25,10 +26,10 @@ type beaconNetworkInitialStateType = {
   isFetchingBeaconNetworkConfig: boolean;
   hasBeaconNetworkError: boolean;
   assemblyIds: BeaconAssemblyIds;
-  querySectionsUnion: any;
-  querySectionsIntersection: any;
+  querySectionsUnion: Section[];
+  querySectionsIntersection: Section[];
   isQuerySectionsUnion: boolean; // horrible English
-  currentQuerySections: any;
+  currentQuerySections: Section[];
   beacons: NetworkBeacon[];
 };
 
