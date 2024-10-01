@@ -109,7 +109,7 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
           dataIndex: 'identifier.identifierSource',
           render: (_, { identifier: { identifierSource } }) => t(identifierSource),
           sorter: (a, b) => a.identifier.identifierSource.localeCompare(b.identifier.identifierSource),
-          filters: Array.from(new Set(publications.map((p) => p.identifier.identifierSource))).map((v) => ({
+          filters: Array.from(new Set((publications ?? []).map((p) => p.identifier.identifierSource))).map((v) => ({
             text: v,
             value: v,
           })),
