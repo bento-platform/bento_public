@@ -1,3 +1,5 @@
+import { stringToBoolean } from '@/utils/strings';
+
 interface PublicConfig {
   CLIENT_NAME: string;
   PORTAL_URL: string;
@@ -15,9 +17,10 @@ declare let BENTO_PUBLIC_CONFIG: PublicConfig;
 // General
 export const CLIENT_NAME = BENTO_PUBLIC_CONFIG.CLIENT_NAME ?? process.env.BENTO_PUBLIC_CLIENT_NAME;
 export const PORTAL_URL = BENTO_PUBLIC_CONFIG.PORTAL_URL ?? process.env.BENTO_PUBLIC_PORTAL_URL;
-export const TRANSLATED = BENTO_PUBLIC_CONFIG.TRANSLATED ?? process.env.BENTO_PUBLIC_TRANSLATED;
+export const TRANSLATED = BENTO_PUBLIC_CONFIG.TRANSLATED ?? stringToBoolean(process.env.BENTO_PUBLIC_TRANSLATED);
 export const BEACON_URL = BENTO_PUBLIC_CONFIG.BEACON_URL ?? process.env.BEACON_URL;
-export const BEACON_UI_ENABLED = BENTO_PUBLIC_CONFIG.BEACON_UI_ENABLED ?? process.env.BENTO_BEACON_UI_ENABLED;
+export const BEACON_UI_ENABLED =
+  BENTO_PUBLIC_CONFIG.BEACON_UI_ENABLED ?? stringToBoolean(process.env.BENTO_BEACON_UI_ENABLED);
 
 // Authentication
 export const PUBLIC_URL = BENTO_PUBLIC_CONFIG.PUBLIC_URL ?? process.env.BENTO_PUBLIC_URL ?? '';
