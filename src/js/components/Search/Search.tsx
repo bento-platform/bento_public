@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { Row, Typography, Space, FloatButton } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -9,8 +9,9 @@ import { makeGetKatsuPublic, setQueryParams } from '@/features/search/query.stor
 import { useAppDispatch, useAppSelector, useTranslationCustom } from '@/hooks';
 import { buildQueryParamsUrl } from '@/utils/search';
 
-import type { QueryParams } from '@/types/search';
 import Loader from '@/components/Loader';
+import { useSearchQuery } from '@/features/search/hooks';
+import type { QueryParams } from '@/types/search';
 
 const checkQueryParamsEqual = (qp1: QueryParams, qp2: QueryParams): boolean => {
   const qp1Keys = Object.keys(qp1);
@@ -19,18 +20,20 @@ const checkQueryParamsEqual = (qp1: QueryParams, qp2: QueryParams): boolean => {
   return params.reduce((acc, v) => acc && qp1[v] === qp2[v], true);
 };
 
-const RoutedSearch: React.FC = () => {
+const RoutedSearch = () => {
   const dispatch = useAppDispatch();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const maxQueryParameters = useAppSelector((state) => state.config.maxQueryParameters);
+  const { maxQueryParameters } = useAppSelector((state) => state.config);
   const {
     querySections: searchSections,
     queryParams,
     isFetchingFields: isFetchingSearchFields,
+    isFetchingData: isFetchingSearchData,
+    attemptedFieldsFetch,
     attemptedFetch,
-  } = useAppSelector((state) => state.query);
+  } = useSearchQuery();
 
   // TODO: allow disabling max query parameters for authenticated and authorized users when Katsu has AuthZ
   // const maxQueryParametersRequired = useAppSelector((state) => state.config.maxQueryParametersRequired);
@@ -70,40 +73,39 @@ const RoutedSearch: React.FC = () => {
 
   // Synchronize Redux query params state from URL
   useEffect(() => {
-    if (isFetchingSearchFields) return;
     if (!location.pathname.endsWith('/search')) return;
-    const queryParam = new URLSearchParams(location.search);
-    const { valid, validQueryParamsObject } = validateQuery(queryParam);
+
+    // Wait until we have search fields to try and build a valid query. Otherwise, we will mistakenly remove all URL
+    // query parameters and effectively reset the form.
+    if (!attemptedFieldsFetch || isFetchingSearchFields || isFetchingSearchData) return;
+
+    const { valid, validQueryParamsObject } = validateQuery(new URLSearchParams(location.search));
     if (valid) {
       if (!attemptedFetch || !checkQueryParamsEqual(validQueryParamsObject, queryParams)) {
         // Only update the state & refresh if we have a new set of query params from the URL.
+        // [!!!] This should be the only place setQueryParams(...) gets called. Everywhere else should use URL
+        //       manipulations, so that we have a one-way data flow from URL to state!
         dispatch(setQueryParams(validQueryParamsObject));
         dispatch(makeGetKatsuPublic());
       }
     } else {
       const url = buildQueryParamsUrl(location.pathname, validQueryParamsObject);
-      console.debug('Redirecting to:', url);
+      console.debug('[Search] Redirecting to:', url);
       navigate(url);
+      // Then, the new URL will re-trigger this effect but with only valid query parameters.
     }
   }, [
     attemptedFetch,
+    attemptedFieldsFetch,
     dispatch,
     isFetchingSearchFields,
+    isFetchingSearchData,
     location.search,
     location.pathname,
     navigate,
     queryParams,
     validateQuery,
   ]);
-
-  // Synchronize URL from Redux query params state
-  useEffect(() => {
-    if (!location.pathname.endsWith('/search')) return;
-    if (!attemptedFetch) return;
-    const url = buildQueryParamsUrl(location.pathname, queryParams);
-    console.debug('Redirecting to:', url);
-    navigate(url, { replace: true });
-  }, [attemptedFetch, location.pathname, navigate, queryParams]);
 
   return <Search />;
 };
@@ -113,12 +115,10 @@ const SEARCH_SPACE_ITEM_STYLE = { item: WIDTH_100P_STYLE };
 const SEARCH_SECTION_SPACE_ITEM_STYLE = { item: { display: 'flex', justifyContent: 'center' } };
 const SEARCH_SECTION_STYLE = { maxWidth: 1200 };
 
-const Search: React.FC = () => {
+const Search = () => {
   const t = useTranslationCustom();
 
-  const { isFetchingFields: isFetchingSearchFields, querySections: searchSections } = useAppSelector(
-    (state) => state.query
-  );
+  const { isFetchingFields: isFetchingSearchFields, querySections: searchSections } = useSearchQuery();
 
   return isFetchingSearchFields ? (
     <Loader />

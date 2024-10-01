@@ -1,4 +1,3 @@
-import React from 'react';
 import MakeQueryOption from './MakeQueryOption';
 import { Space } from 'antd';
 import type { Field } from '@/types/search';

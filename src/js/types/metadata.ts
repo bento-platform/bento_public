@@ -1,6 +1,7 @@
 import type { Layout as DiscoveryOverview, Fields as DiscoveryFields } from '@/types/overviewResponse';
 import type { Section as DiscoverySearch } from '@/types/search';
 import type { DiscoveryRules } from '@/types/configResponse';
+import type { DatsFile } from '@/types/dats';
 
 export interface Discovery {
   overview: DiscoveryOverview[];
@@ -22,7 +23,7 @@ export interface Dataset {
   title: string;
   description: string;
   discovery: Discovery | null;
-  dats_file: object;
+  dats_file: DatsFile;
 }
 
 export interface PaginatedResponse<T> {

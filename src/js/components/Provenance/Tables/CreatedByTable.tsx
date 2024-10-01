@@ -1,9 +1,9 @@
-import React from 'react';
 import { Tag } from 'antd';
 
-import BaseProvenanceTable from './BaseProvenanceTable';
-import type { ProvenanceStoreDataset } from '@/types/provenance';
 import { useTranslationDefault, useTranslationCustom } from '@/hooks';
+import type { DatsFile } from '@/types/dats';
+
+import BaseProvenanceTable from './BaseProvenanceTable';
 
 const CreatedByTable = ({ creators }: CreatedByTableProps) => {
   const t = useTranslationCustom();
@@ -44,7 +44,7 @@ const CreatedByTable = ({ creators }: CreatedByTableProps) => {
 };
 
 export interface CreatedByTableProps {
-  creators: ProvenanceStoreDataset['creators'];
+  creators: DatsFile['creators'];
 }
 
 export default CreatedByTable;

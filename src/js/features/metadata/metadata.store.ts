@@ -7,21 +7,27 @@ import { printAPIError } from '@/utils/error.util';
 import { validProjectDataset } from '@/utils/router';
 import { projectsUrl } from '@/constants/configConstants';
 
+export type DiscoveryScope = { project?: string; dataset?: string };
+
+export type DiscoveryScopeSelection = {
+  scope: DiscoveryScope;
+  fixedProject: boolean;
+  fixedDataset: boolean;
+};
+
 export interface MetadataState {
   projects: Project[];
   isFetching: boolean;
-  selectedScope: {
-    project: string | undefined;
-    dataset: string | undefined;
-  };
+  selectedScope: DiscoveryScopeSelection;
 }
 
 const initialState: MetadataState = {
   projects: [],
-  isFetching: true,
+  isFetching: false,
   selectedScope: {
-    project: undefined,
-    dataset: undefined,
+    scope: { project: undefined, dataset: undefined },
+    fixedProject: false,
+    fixedDataset: false,
   },
 };
 
@@ -29,19 +35,30 @@ export const getProjects = createAsyncThunk<
   PaginatedResponse<Project>,
   void,
   { state: RootState; rejectValue: string }
->('metadata/getProjects', (_, { rejectWithValue }) => {
-  return axios
-    .get(projectsUrl)
-    .then((res) => res.data)
-    .catch(printAPIError(rejectWithValue));
-});
+>(
+  'metadata/getProjects',
+  (_, { rejectWithValue }) => {
+    return axios
+      .get(projectsUrl)
+      .then((res) => res.data)
+      .catch(printAPIError(rejectWithValue));
+  },
+  {
+    condition(_, { getState }) {
+      return !getState().metadata.isFetching;
+    },
+  }
+);
 
 const metadata = createSlice({
   name: 'metadata',
   initialState,
   reducers: {
-    selectScope: (state, { payload }: PayloadAction<{ project?: string; dataset?: string }>) => {
-      state.selectedScope = validProjectDataset(state.projects, payload.project, payload.dataset);
+    selectScope: (state, { payload }: PayloadAction<DiscoveryScope>) => {
+      // Defaults to the narrowest possible scope if there is only 1 project and only 1 dataset.
+      // This forces Katsu to resolve the Discovery config with fallbacks from the bottom-up:
+      // dataset -> project -> whole node
+      state.selectedScope = validProjectDataset(state.projects, payload);
     },
   },
   extraReducers(builder) {

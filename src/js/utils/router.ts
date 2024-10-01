@@ -1,5 +1,6 @@
+import type { Project } from '@/types/metadata';
 import { BentoRoute } from '@/types/routes';
-import type { MetadataState } from '@/features/metadata/metadata.store';
+import type { DiscoveryScope, DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
 
 export const getCurrentPage = (): string => {
   const pathArray = window.location.pathname.split('/');
@@ -11,37 +12,52 @@ export const getCurrentPage = (): string => {
   }
 };
 
-export const validProjectDataset = (
-  projects: MetadataState['projects'],
-  projectId?: string,
-  datasetId?: string
-): MetadataState['selectedScope'] => {
-  const valid: MetadataState['selectedScope'] = {
-    project: undefined,
-    dataset: undefined,
+export const validProjectDataset = (projects: Project[], unvalidatedScope: DiscoveryScope): DiscoveryScopeSelection => {
+  const { project, dataset } = unvalidatedScope;
+
+  const valid: DiscoveryScopeSelection = {
+    scope: { project: undefined, dataset: undefined },
+    fixedProject: false,
+    fixedDataset: false,
   };
 
-  if (projectId && projects.find(({ identifier }) => identifier === projectId)) {
-    valid.project = projectId;
-    if (datasetId) {
+  if (projects.length === 1) {
+    // automatic project scoping if only 1
+    const defaultProj = projects[0];
+    valid.scope.project = defaultProj.identifier;
+    valid.fixedProject = true;
+    if (defaultProj.datasets.length === 1) {
+      // automatic dataset scoping if only 1
+      valid.scope.dataset = defaultProj.datasets[0].identifier;
+      valid.fixedDataset = true;
+      // early return to ignore redundant projectId and datasetId
+      return valid;
+    }
+  }
+  if (project && projects.find(({ identifier }) => identifier === project)) {
+    valid.scope.project = project;
+    if (dataset) {
       if (
         projects
-          .find(({ identifier }) => identifier === projectId)!
-          .datasets.find(({ identifier }) => identifier === datasetId)
+          .find(({ identifier }) => identifier === project)!
+          .datasets.find(({ identifier }) => identifier === dataset)
       ) {
-        valid.dataset = datasetId;
+        valid.scope.dataset = dataset;
       }
     }
   }
   return valid;
 };
 
-export const scopeToUrl = (scope: MetadataState['selectedScope']): string => {
+export const scopeToUrl = (scope: DiscoveryScope, prefix: string = '', suffix: string = ''): string => {
   if (scope.project && scope.dataset) {
-    return `/p/${scope.project}/d/${scope.dataset}`;
+    return `${prefix}/p/${scope.project}/d/${scope.dataset}${suffix}`;
   } else if (scope.project) {
-    return `/p/${scope.project}`;
+    return `${prefix}/p/${scope.project}${suffix}`;
   } else {
-    return '';
+    return `${prefix}${suffix}`;
   }
 };
+
+export const scopeEqual = (s1: DiscoveryScope, s2: DiscoveryScope): boolean =>
+  s1.project === s2.project && s1.dataset === s2.dataset;

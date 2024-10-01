@@ -9,11 +9,22 @@ import { scopedAuthorizedRequestConfig } from '@/utils/requests';
 export const makeGetKatsuPublic = createAsyncThunk<
   KatsuSearchResponse,
   void,
-  { state: RootState; rejectValue: string }
->('query/makeGetKatsuPublic', (_, { rejectWithValue, getState }) => {
-  const state = getState();
-  return axios
-    .get(katsuPublicSearchUrl, scopedAuthorizedRequestConfig(state, state.query.queryParams))
-    .then((res) => res.data)
-    .catch(printAPIError(rejectWithValue));
-});
+  {
+    state: RootState;
+    rejectValue: string;
+  }
+>(
+  'query/makeGetKatsuPublic',
+  (_, { rejectWithValue, getState }) => {
+    const state = getState();
+    return axios
+      .get(katsuPublicSearchUrl, scopedAuthorizedRequestConfig(state, state.query.queryParams))
+      .then((res) => res.data)
+      .catch(printAPIError(rejectWithValue));
+  },
+  {
+    condition(_, { getState }) {
+      return !getState().query.isFetchingData;
+    },
+  }
+);

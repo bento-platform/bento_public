@@ -1,12 +1,14 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { Tag, Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
+
 const { Link } = Typography;
 
-import BaseProvenanceTable from './BaseProvenanceTable';
 import { useTranslationDefault, useTranslationCustom } from '@/hooks';
-import type { Distribution, ProvenanceStoreDataset } from '@/types/provenance';
+import type { DatsFile, Distribution } from '@/types/dats';
+
+import BaseProvenanceTable from './BaseProvenanceTable';
 
 const DistributionsTable = ({ distributions }: DistributionsTableProps) => {
   const t = useTranslationCustom();
@@ -69,6 +71,7 @@ const DistributionsTable = ({ distributions }: DistributionsTableProps) => {
 };
 
 export interface DistributionsTableProps {
-  distributions: ProvenanceStoreDataset['distributions'];
+  distributions: DatsFile['distributions'];
 }
+
 export default DistributionsTable;

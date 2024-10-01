@@ -1,11 +1,12 @@
-import React, { Fragment, useMemo } from 'react';
+import { Fragment, useMemo } from 'react';
 
 import type { ColumnsType } from 'antd/es/table';
 
-import BaseProvenanceTable from '@/components/Provenance/Tables/BaseProvenanceTable';
-import LinkIfUrl from '../../Util/LinkIfUrl';
+import LinkIfUrl from '@/components/Util/LinkIfUrl';
 import { useTranslationCustom, useTranslationDefault } from '@/hooks';
-import type { ExtraProperty, ProvenanceStoreDataset } from '@/types/provenance';
+import type { DatsFile, ExtraProperty } from '@/types/dats';
+
+import BaseProvenanceTable from './BaseProvenanceTable';
 
 const ExtraPropertiesTable = ({ extraProperties }: ExtraPropertiesTableProps) => {
   const t = useTranslationCustom();
@@ -34,7 +35,7 @@ const ExtraPropertiesTable = ({ extraProperties }: ExtraPropertiesTableProps) =>
 };
 
 export interface ExtraPropertiesTableProps {
-  extraProperties: ProvenanceStoreDataset['extraProperties'];
+  extraProperties: DatsFile['extraProperties'];
 }
 
 export default ExtraPropertiesTable;

@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import type { BarChartProps } from 'bento-charts';
@@ -19,17 +19,17 @@ interface ChartEvent {
 const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const { selectedScope } = useAppSelector((state) => state.metadata);
+  const { scope } = useAppSelector((state) => state.metadata.selectedScope);
   const translateMap = ({ x, y }: { x: string; y: number }) => ({ x: t(x), y });
   const removeMissing = ({ x }: { x: string }) => x !== 'missing';
 
   const barChartOnChartClickHandler: BarChartProps['onChartClick'] = (e: ChartEvent) => {
     if (e.activePayload.length === 0) return;
     const d = e.activePayload[0];
-    navigate(`/${i18n.language}${scopeToUrl(selectedScope)}/search?${id}=${d.payload.x}`);
+    navigate(`/${i18n.language}${scopeToUrl(scope)}/search?${id}=${d.payload.x}`);
   };
   const pieChartOnClickHandler = (d: { name: string }) => {
-    navigate(`/${i18n.language}${scopeToUrl(selectedScope)}/search?${id}=${d.name}`);
+    navigate(`/${i18n.language}${scopeToUrl(scope)}/search?${id}=${d.name}`);
   };
 
   const { chart_type: type } = chartConfig;

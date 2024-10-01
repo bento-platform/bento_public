@@ -1,30 +1,22 @@
-FROM ghcr.io/bento-platform/bento_base_image:node-debian-2024.07.09
-
-RUN apt-get update -y && \
-    apt-get install -y ca-certificates
-
-# Use bookworm-backports to get go 1.21 instead of 1.19
-# Install lsof to help killing the PID binding the port if needed
-RUN echo "deb https://deb.debian.org/debian bookworm-backports main contrib non-free" >> /etc/apt/sources.list && \
-    echo "deb-src https://deb.debian.org/debian bookworm-backports main contrib non-free" >> /etc/apt/sources.list && \
-    apt-get update -y && \
-    apt-get upgrade -y && \
-    apt-get -t bookworm-backports install -y golang-go lsof && \
-    rm -rf /var/lib/apt/lists/*
+FROM --platform=$BUILDPLATFORM node:20-bookworm-slim AS install
 
 WORKDIR /bento-public
 
 COPY package.json .
 COPY package-lock.json .
 
-# Install NPM dev/prod dependencies to get Nodemon - we will need to fix the permissions of node_modules after
 RUN npm ci
 
-# Don't copy code in, since we expect it to be mounted via volume
+FROM ghcr.io/bento-platform/bento_base_image:node-debian-2024.10.01
 
-COPY entrypoint.bash .
+LABEL org.opencontainers.image.description="Local development image for Bento Public."
+
+WORKDIR /bento-public
+
 COPY run.dev.bash .
-COPY nodemon.json .
+COPY package.json .
+COPY package-lock.json .
 
-ENTRYPOINT [ "bash", "./entrypoint.bash" ]
+COPY --from=install /bento-public/node_modules ./node_modules
+
 CMD [ "bash", "./run.dev.bash" ]

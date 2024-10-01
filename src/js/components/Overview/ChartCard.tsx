@@ -1,4 +1,5 @@
-import React, { memo, useRef } from 'react';
+import type React from 'react';
+import { memo, useRef } from 'react';
 import { Card, Button, Tooltip, Space, Typography, Row } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import Chart from './Chart';
@@ -63,7 +64,7 @@ const ChartCard: React.FC<ChartCardProps> = memo(({ section, chart, onRemoveChar
           </Space>
         }
       >
-        {data.filter((e) => !(e.x === 'missing')).length !== 0 ? (
+        {data.filter((e) => !(e.x === 'missing')).reduce((acc, cur) => acc + cur.y, 0) !== 0 ? (
           <Chart
             chartConfig={chartConfig}
             data={data}
