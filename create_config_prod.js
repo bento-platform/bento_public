@@ -1,4 +1,4 @@
-const parseBoolean = (value) => ['true', '1', 'yes'].includes((value || '').toLocaleLowerCase());
+const parseBoolean = (value) => ['true', 't', '1', 'yes'].includes((value || '').toLocaleLowerCase());
 
 const siteConfig = {
   CLIENT_NAME: process.env.BENTO_PUBLIC_CLIENT_NAME || null,
