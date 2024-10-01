@@ -1,8 +1,10 @@
-import React, { type CSSProperties, useCallback, useMemo } from 'react';
+import { type CSSProperties } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Select } from 'antd';
 
-import { useAppSelector, useTranslationCustom } from '@/hooks';
+import { useTranslationCustom } from '@/hooks';
+import { useSearchQuery } from '@/features/search/hooks';
 import { buildQueryParamsUrl } from '@/utils/search';
 
 const SELECT_STYLE: CSSProperties = { width: '100%' };
@@ -13,7 +15,7 @@ const SelectOption = ({ id, isChecked, options }: SelectOptionProps) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
-  const { queryParams } = useAppSelector((state) => state.query);
+  const { queryParams } = useSearchQuery();
   const defaultValue = queryParams[id] || options[0];
 
   const handleValueChange = useCallback(

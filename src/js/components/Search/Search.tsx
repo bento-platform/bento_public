@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { Row, Typography, Space, FloatButton } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -9,8 +9,9 @@ import { makeGetKatsuPublic, setQueryParams } from '@/features/search/query.stor
 import { useAppDispatch, useAppSelector, useTranslationCustom } from '@/hooks';
 import { buildQueryParamsUrl } from '@/utils/search';
 
-import type { QueryParams } from '@/types/search';
 import Loader from '@/components/Loader';
+import { useSearchQuery } from '@/features/search/hooks';
+import type { QueryParams } from '@/types/search';
 
 const checkQueryParamsEqual = (qp1: QueryParams, qp2: QueryParams): boolean => {
   const qp1Keys = Object.keys(qp1);
@@ -32,7 +33,7 @@ const RoutedSearch = () => {
     isFetchingData: isFetchingSearchData,
     attemptedFieldsFetch,
     attemptedFetch,
-  } = useAppSelector((state) => state.query);
+  } = useSearchQuery();
 
   // TODO: allow disabling max query parameters for authenticated and authorized users when Katsu has AuthZ
   // const maxQueryParametersRequired = useAppSelector((state) => state.config.maxQueryParametersRequired);
@@ -117,9 +118,7 @@ const SEARCH_SECTION_STYLE = { maxWidth: 1200 };
 const Search = () => {
   const t = useTranslationCustom();
 
-  const { isFetchingFields: isFetchingSearchFields, querySections: searchSections } = useAppSelector(
-    (state) => state.query
-  );
+  const { isFetchingFields: isFetchingSearchFields, querySections: searchSections } = useSearchQuery();
 
   return isFetchingSearchFields ? (
     <Loader />

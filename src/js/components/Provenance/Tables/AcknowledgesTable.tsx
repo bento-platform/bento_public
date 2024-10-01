@@ -1,9 +1,10 @@
-import React from 'react';
+import { Fragment } from 'react';
+
+import LinkIfUrl from '@/components/Util/LinkIfUrl';
+import type { Acknowledge } from '@/types/dats';
+import { useTranslationCustom, useTranslationDefault } from '@/hooks';
 
 import BaseProvenanceTable from './BaseProvenanceTable';
-import LinkIfUrl from '../../Util/LinkIfUrl';
-import type { Acknowledge } from '@/types/provenance';
-import { useTranslationCustom, useTranslationDefault } from '@/hooks';
 
 const AcknowledgesTable = ({ acknowledges }: AcknowledgesTableProps) => {
   const t = useTranslationCustom();
@@ -23,11 +24,11 @@ const AcknowledgesTable = ({ acknowledges }: AcknowledgesTableProps) => {
           dataIndex: 'funders',
           render: (_, { funders }) =>
             funders.map((f, i) => (
-              <React.Fragment key={i}>
+              <Fragment key={i}>
                 <LinkIfUrl text={f.name} />
                 {f.abbreviation ? ` (${t(f.abbreviation)})` : ''}
                 {i < funders.length - 1 ? '; ' : ''}
-              </React.Fragment>
+              </Fragment>
             )),
         },
       ]}

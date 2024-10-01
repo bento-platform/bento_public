@@ -1,15 +1,9 @@
 import type { ReactNode } from 'react';
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { useAppSelector, useAppDispatch, useTranslationDefault, useQueryWithAuthIfAllowed } from '@/hooks';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { Button, Card, Col, Form, Row, Space, Tooltip, Typography } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { useIsAuthenticated } from 'bento-auth-js';
-import Filters from './Filters';
-import BeaconSearchResults from './BeaconSearchResults';
-import BeaconErrorMessage from './BeaconErrorMessage';
-import VariantsForm from './VariantsForm';
-import { makeBeaconQuery } from '@/features/beacon/beaconQuery.store';
-import type { BeaconQueryPayload, FormFilter, FormValues, PayloadFilter, PayloadVariantsQuery } from '@/types/beacon';
+
 import {
   WRAPPER_STYLE,
   FORM_ROW_GUTTERS,
@@ -18,9 +12,18 @@ import {
   BUTTON_STYLE,
   CARD_STYLES,
 } from '@/constants/beaconConstants';
-
 import { BOX_SHADOW } from '@/constants/overviewConstants';
+import { makeBeaconQuery } from '@/features/beacon/beaconQuery.store';
+import { useSearchQuery } from '@/features/search/hooks';
+import { useAppSelector, useAppDispatch, useTranslationDefault, useQueryWithAuthIfAllowed } from '@/hooks';
+import type { BeaconQueryPayload, FormFilter, FormValues, PayloadFilter, PayloadVariantsQuery } from '@/types/beacon';
+
 import Loader from '@/components/Loader';
+import Filters from './Filters';
+import BeaconSearchResults from './BeaconSearchResults';
+import BeaconErrorMessage from './BeaconErrorMessage';
+import VariantsForm from './VariantsForm';
+
 const { Text, Title } = Typography;
 // TODOs
 // example searches, either hardcoded or configurable
@@ -58,7 +61,7 @@ const BeaconQueryUi = () => {
 
   const isFetchingBeaconConfig = useAppSelector((state) => state.beaconConfig.isFetchingBeaconConfig);
   const beaconAssemblyIds = useAppSelector((state) => state.beaconConfig.beaconAssemblyIds);
-  const querySections = useAppSelector((state) => state.query.querySections);
+  const { querySections } = useSearchQuery();
   const hasApiError = useAppSelector((state) => state.beaconQuery.hasApiError);
   const apiErrorMessage = useAppSelector((state) => state.beaconQuery.apiErrorMessage);
 

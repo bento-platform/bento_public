@@ -1,4 +1,5 @@
-import React, { useMemo, useCallback } from 'react';
+import type React from 'react';
+import { useMemo, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import { Layout, Menu } from 'antd';
@@ -6,10 +7,11 @@ import type { MenuProps, SiderProps } from 'antd';
 import Icon, { PieChartOutlined, SearchOutlined, SolutionOutlined } from '@ant-design/icons';
 
 import BeaconSvg from '@/components/Beacon/BeaconSvg';
-import { useAppSelector, useTranslationDefault } from '@/hooks';
+import { useSearchQuery } from '@/features/search/hooks';
+import { useTranslationDefault } from '@/hooks';
+import { BentoRoute } from '@/types/routes';
 import { buildQueryParamsUrl } from '@/utils/search';
 import { getCurrentPage } from '@/utils/router';
-import { BentoRoute } from '@/types/routes';
 
 const { Sider } = Layout;
 
@@ -26,7 +28,7 @@ const SiteSider: React.FC<{
   const navigate = useNavigate();
   const location = useLocation();
   const td = useTranslationDefault();
-  const queryParams = useAppSelector((state) => state.query.queryParams);
+  const { queryParams } = useSearchQuery();
   const currentPage = getCurrentPage();
 
   const handleMenuClick: OnClick = useCallback(

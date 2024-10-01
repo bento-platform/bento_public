@@ -1,4 +1,5 @@
-import React, { memo, useRef } from 'react';
+import type React from 'react';
+import { memo, useRef } from 'react';
 import { Card, Button, Tooltip, Space, Typography, Row } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import Chart from './Chart';

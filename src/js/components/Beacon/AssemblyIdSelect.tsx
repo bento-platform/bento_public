@@ -1,4 +1,3 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Form, Select } from 'antd';
 import type { FormField, BeaconAssemblyIds } from '@/types/beacon';

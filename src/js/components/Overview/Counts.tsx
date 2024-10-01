@@ -1,4 +1,4 @@
-import React, { type CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 import { Typography, Card, Space, Statistic } from 'antd';
 import { TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';

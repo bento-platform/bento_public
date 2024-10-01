@@ -20,6 +20,7 @@ export type QueryState = {
   experimentChartData: ChartData[];
   message: string;
   individualCount: number;
+  individualMatches?: string[];
 };
 
 const initialState: QueryState = {
@@ -36,6 +37,7 @@ const initialState: QueryState = {
   experimentCount: 0,
   experimentChartData: [],
   individualCount: 0,
+  individualMatches: undefined,
 };
 
 const query = createSlice({
@@ -64,6 +66,7 @@ const query = createSlice({
       state.experimentCount = payload.experiments.count;
       state.experimentChartData = serializeChartData(payload.experiments.experiment_type);
       state.individualCount = payload.count;
+      state.individualMatches = payload.matches; // Undefined if no permissions
     });
     builder.addCase(makeGetKatsuPublic.rejected, (state) => {
       state.isFetchingData = false;

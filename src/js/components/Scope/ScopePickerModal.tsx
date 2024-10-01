@@ -1,4 +1,3 @@
-import React from 'react';
 import { Modal } from 'antd';
 import { useTranslationDefault } from '@/hooks';
 import ProjectScopePicker from './ProjectScopePicker';

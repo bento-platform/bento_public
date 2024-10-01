@@ -1,12 +1,13 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Row, Col, Checkbox } from 'antd';
 
 import OptionDescription from './OptionDescription';
 import SelectOption from './SelectOption';
 
+import { useSearchQuery } from '@/features/search/hooks';
 import { useAppSelector, useTranslationCustom, useTranslationDefault } from '@/hooks';
 import type { Field } from '@/types/search';
-import { useLocation, useNavigate } from 'react-router-dom';
 import { buildQueryParamsUrl, queryParamsWithoutKey } from '@/utils/search';
 
 const MakeQueryOption = ({ queryField }: MakeQueryOptionProps) => {
@@ -19,7 +20,7 @@ const MakeQueryOption = ({ queryField }: MakeQueryOptionProps) => {
   const { title, id, description, config, options } = queryField;
 
   const { maxQueryParameters } = useAppSelector((state) => state.config);
-  const { queryParamCount, queryParams } = useAppSelector((state) => state.query);
+  const { queryParamCount, queryParams } = useSearchQuery();
 
   const isChecked = id in queryParams;
 

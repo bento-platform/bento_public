@@ -1,34 +1,18 @@
-export interface ProvenanceAPIResponse {
-  datasets: Dataset[];
-}
-
-export type ProvenanceStore = ProvenanceStoreDataset[];
-export interface ProvenanceStoreDataset extends Dataset, DatsFile {}
-
-export interface Dataset {
-  contact_info: string;
-  dats_file: DatsFile;
-  description: string;
-  title: string;
-  version: string;
-  identifier: string;
-}
-
 export interface DatsFile {
-  acknowledges: Acknowledge[];
-  creators: Creator[];
-  description: string;
-  distributions: Distribution[];
-  extraProperties: ExtraProperty[];
-  isAbout: IsAbout[];
-  keywords: Annotation[];
-  licenses: License[];
-  primaryPublications: PrimaryPublication[];
-  privacy: string;
-  spatialCoverage: SpatialCoverage[];
-  title: string;
+  acknowledges?: Acknowledge[];
+  creators?: Creator[];
+  description?: string;
+  distributions?: Distribution[];
+  extraProperties?: ExtraProperty[];
+  isAbout?: IsAbout[];
+  keywords?: Annotation[];
+  licenses?: License[];
+  primaryPublications?: PrimaryPublication[];
+  privacy?: string;
+  spatialCoverage?: SpatialCoverage[];
+  title?: string;
   types: Type[];
-  version: string;
+  version?: string;
 }
 
 export interface Acknowledge {
