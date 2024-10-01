@@ -3,11 +3,21 @@ import { ChartData } from './data';
 
 export interface NetworkBeacon extends BeaconServiceInfo {
   apiUrl: string;
-  overview?: any; // to update as design settles
-  // queryResponse?: FlattenedBeaconResponse
+  overview: {
+    biosamples: {
+      count: number;
+    };
+    experiments: {
+      count: number;
+    };
+    individuals: {
+      count: number;
+    };
+    variants: Record<string, number>
+  };
 }
 
-// more to come
+// more to come here
 export interface BeaconNetworkConfig {
   filtersUnion: unknown; // temp
   filtersIntersection: unknown; // temp
@@ -22,7 +32,7 @@ export interface BeaconOrgDetails {
   contactUrl: string;
 }
 
-// TODO, should probably standardize with standard response
+// could probably align this with standard beacon response
 export interface BeaconFlattenedAggregateResponse {
   individualCount: number;
   biosampleCount: number;
@@ -33,7 +43,7 @@ export interface BeaconFlattenedAggregateResponse {
 
 export interface RespondingBeacon {
   organization: BeaconOrgDetails;
-  response: FlattenedBeaconResponse; //or something else
+  response: FlattenedBeaconResponse;
   bentoUrl: string;
   description: string;
 }

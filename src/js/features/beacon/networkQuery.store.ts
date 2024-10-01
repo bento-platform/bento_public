@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import type { RootState, AppDispatch } from '@/store';
+import { useDispatch } from 'react-redux';
 import { serializeChartData } from '@/utils/chart';
 import { beaconApiError } from '@/utils/beaconApiError';
 import { BeaconQueryPayload, BeaconQueryResponse, FlattenedBeaconResponse } from '@/types/beacon';
@@ -37,11 +38,7 @@ const queryBeaconNetworkNode = createAsyncThunk<
 
   return axios
     .post(url, payload)
-    .then((res) => {
-      const data = res.data;
-      data.beaconid = beaconId;
-      return data;
-    })
+    .then((res) => res.data)
     .catch(beaconApiError(rejectWithValue));
 });
 
@@ -131,6 +128,11 @@ const queryBeaconNetworkNodeSlice = createSlice({
       }
     });
     builder.addCase(queryBeaconNetworkNode.fulfilled, (state, action) => {
+
+      console.log({action})
+
+
+
       const beaconId = action.meta.arg.beaconId;
       const { payload } = action;
       const hasErrorResponse = Object.prototype.hasOwnProperty.call(payload, 'error');

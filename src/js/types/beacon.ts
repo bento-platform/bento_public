@@ -1,16 +1,14 @@
-import { Rule } from 'antd/es/form';
-import { Datum } from '@/types/overviewResponse';
-import { ChartData } from './data';
+import type { Rule } from 'antd/es/form';
+import type { ChartData } from './data';
+import type { Datum } from '@/types/overviewResponse';
+import { makeBeaconQuery } from '@/features/beacon/beaconQuery.store';
+import { beaconNetworkQuery } from '@/features/beacon/networkQuery.store';
 
 // ----------------------------
 // form handling
 // ----------------------------
 
 export type BeaconAssemblyIds = string[];
-
-// generic "info" response field
-// only requirement in beacon spec is that it's an object
-type GenericInfoField = Record<string, unknown>;
 
 export interface FormField {
   name: string;
@@ -77,12 +75,16 @@ export interface BeaconQueryPayload {
   bento?: { showSummaryStatistics: boolean };
 }
 
-// export type BeaconQueryThunk = AsyncThunk<void | BeaconQueryResponse, BeaconQueryPayload, unknown>
-export type BeaconQueryThunk = any;
+// this compiles but VS Code has trouble with type inference around dispatch/appDispatch
+export type BeaconQuery = typeof makeBeaconQuery | typeof beaconNetworkQuery;
 
 // ----------------------------
 // API response
 // ----------------------------
+
+// generic "info" response field
+// only requirement in beacon spec is that it's an object
+type GenericInfoField = Record<string, unknown>;
 
 export interface BeaconConfigResponse {
   response?: {

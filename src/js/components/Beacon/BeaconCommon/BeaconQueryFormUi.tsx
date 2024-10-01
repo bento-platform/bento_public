@@ -1,31 +1,27 @@
-import { useEffect, useState } from 'react';
-import { useAppSelector, useAppDispatch, useTranslationDefault } from '@/hooks';
-
+import { useEffect, useMemo, useState } from 'react';
 import { Button, Card, Col, Form, Row } from 'antd';
+import { useIsAuthenticated } from 'bento-auth-js';
+import { useAppSelector, useAppDispatch, useTranslationDefault, useQueryWithAuthIfAllowed } from '@/hooks';
 import VariantsForm from './VariantsForm';
 import Filters from './Filters';
 import SearchToolTip from './ToolTips/SearchToolTip';
 import VariantsInstructions from './ToolTips/VariantsInstructions';
-import BeaconErrorMessage from './BeaconErrorMessage';
 import { MetadataInstructions } from './ToolTips/MetadataInstructions';
+import { makeBeaconQuery } from '@/features/beacon/beaconQuery.store';
+import { beaconNetworkQuery } from '@/features/beacon/networkQuery.store';
+import BeaconErrorMessage from './BeaconErrorMessage';
 import {
   BeaconAssemblyIds,
   BeaconQueryPayload,
-  BeaconQueryThunk,
+  BeaconQuery,
   FormFilter,
   FormValues,
   PayloadFilter,
   PayloadVariantsQuery,
 } from '@/types/beacon';
 import { Section } from '@/types/search';
-import { useIsAuthenticated } from 'bento-auth-js';
-
-const VARIANTS_FORM_ERROR_MESSAGE =
-  'Variants form should include either an end position or both reference and alternate bases';
-
 import { BOX_SHADOW } from '@/constants/overviewConstants';
 import {
-  // WRAPPER_STYLE,
   FORM_ROW_GUTTERS,
   CARD_STYLE,
   BUTTON_AREA_STYLE,
@@ -34,10 +30,16 @@ import {
 } from '@/constants/beaconConstants';
 
 const STARTER_FILTER = { index: 1, active: true };
+const VARIANTS_FORM_ERROR_MESSAGE =
+  'Variants form should include either an end position or both reference and alternate bases';
+
+// TODOs
+// example searches, either hardcoded or configurable
+// more intuitive variants ui
 
 const BeaconQueryFormUi = ({
-  isFetchingConfig, //to remove?, don't render this component until config is known (?)
-  isFetchingQueryResponse, //network query is "fire-and-forget" so this doesn't apply here
+  isFetchingConfig,
+  isFetchingQueryResponse,  //used in local beacon only
   isNetworkQuery,
   beaconAssemblyIds,
   querySections,
@@ -45,21 +47,24 @@ const BeaconQueryFormUi = ({
 }: BeaconQueryFormUiProps) => {
   const td = useTranslationDefault();
   const [form] = Form.useForm();
-
   const [filters, setFilters] = useState<FormFilter[]>([STARTER_FILTER]);
-
+  const [hasVariants, setHasVariants] = useState<boolean>(false);
   const [hasFormError, setHasFormError] = useState<boolean>(false);
   const [formErrorMessage, setFormErrorMessage] = useState<string>('');
+
   // remember if user closed alert, so we can force re-render of a new one later
   const [errorAlertClosed, setErrorAlertClosed] = useState<boolean>(false);
 
-  const hasVariants = beaconAssemblyIds.length > 0 || isNetworkQuery;
-  const formInitialValues = { 'Assembly ID': beaconAssemblyIds.length === 1 && beaconAssemblyIds[0] };
+  const formInitialValues = useMemo(
+    () => ({
+      'Assembly ID': beaconAssemblyIds.length === 1 && beaconAssemblyIds[0],
+    }),
+    [beaconAssemblyIds]
+  );  
   const uiInstructions = hasVariants ? 'Search by genomic variants, clinical metadata or both.' : '';
 
   const hasApiError = isNetworkQuery ? false : useAppSelector((state) => state.beaconQuery.hasApiError);
   const apiErrorMessage = isNetworkQuery ? false : useAppSelector((state) => state.beaconQuery.apiErrorMessage);
-
   const hasError = hasFormError || hasApiError;
   const showError = hasError && !errorAlertClosed;
 
@@ -74,15 +79,27 @@ const BeaconQueryFormUi = ({
 
   const dispatch = useAppDispatch();
   const isAuthenticated = useIsAuthenticated();
+  // const launchQuery = isNetworkQuery? beaconNetworkQuery | makeBeaconQuery
+
+
+  // let launchQuery =  makeBeaconQuery;
+
+  // if (isNetworkQuery){
+  //   launchQuery = beaconNetworkQuery
+  // } 
+
   const launchEmptyQuery = () => dispatch(launchQuery(requestPayload({}, [])));
 
   useEffect(() => {
-    // only for local query??
     launchEmptyQuery();
+    setHasVariants(beaconAssemblyIds.length > 0 || isNetworkQuery);
 
-    // set assembly id options matching what's in gohan
+    // set assembly id options matching what's in gohan (for local beacon) or in network
     form.setFieldsValue(formInitialValues);
-  }, [isFetchingConfig, isAuthenticated]);
+  }, [beaconAssemblyIds.length, form, formInitialValues, isFetchingConfig, isAuthenticated]);
+
+  // Disables max query param if user is authenticated and authorized
+  useQueryWithAuthIfAllowed();
 
   // following GA4GH recommendations, UI is one-based, but API is zero-based, "half-open"
   // so to convert to zero-based, we only modify the start value
@@ -284,7 +301,7 @@ export interface BeaconQueryFormUiProps {
   isNetworkQuery: boolean;
   beaconAssemblyIds: BeaconAssemblyIds;
   querySections: Section[];
-  launchQuery: BeaconQueryThunk;
+  launchQuery: BeaconQuery;
 }
 
 export default BeaconQueryFormUi;
