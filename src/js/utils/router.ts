@@ -17,6 +17,7 @@ export const validProjectDataset = (projects: Project[], unvalidatedScope: Disco
 
   const valid: DiscoveryScopeSelection = {
     scope: { project: undefined, dataset: undefined },
+    scopeSet: true,
     fixedProject: false,
     fixedDataset: false,
   };

@@ -66,10 +66,15 @@ const BentoAppRouter = () => {
   const { selectedScope, isFetching: isFetchingProjects } = useAppSelector((state) => state.metadata);
 
   useEffect(() => {
+    if (!selectedScope.scopeSet) return;
     dispatch(makeGetConfigRequest()).then(() => dispatch(getBeaconConfig()));
     dispatch(makeGetAboutRequest());
-    dispatch(makeGetDataRequestThunk());
-    dispatch(makeGetSearchFields()).then(() => dispatch(populateClickable()));
+    // The "Populate clickable" action needs both chart sections and search fields to be available.
+    // TODO: this is not a very good pattern. It would be better to have a memoized way of determining click-ability at
+    //  render time.
+    Promise.all([dispatch(makeGetDataRequestThunk()), dispatch(makeGetSearchFields())]).then(() =>
+      dispatch(populateClickable())
+    );
     dispatch(makeGetKatsuPublic());
     dispatch(fetchKatsuData());
   }, [dispatch, isAuthenticated, selectedScope]);
