@@ -2,6 +2,7 @@ import { useAppSelector } from '@/hooks';
 import NetworkBeacons from './NetworkBeacons';
 import NetworkSearchResults from './NetworkSearchResults';
 import BeaconQueryFormUi from '../BeaconCommon/BeaconQueryFormUi';
+import Loader from '@/components/Loader';
 import { beaconNetworkQuery } from '@/features/beacon/networkQuery.store';
 import { WRAPPER_STYLE } from '@/constants/beaconConstants';
 
@@ -14,10 +15,11 @@ const NetworkUi = () => {
     (state) => state.beaconNetworkResponse.networkResponseStatus == 'waiting'
   );
 
-  return (
+  return isFetchingConfig ? (
+    <Loader />
+  ) : (
     <div style={WRAPPER_STYLE}>
       <BeaconQueryFormUi
-        isFetchingConfig={isFetchingConfig}
         isFetchingQueryResponse={isWaitingForNetworkResponse}
         isNetworkQuery={true}
         beaconAssemblyIds={networkAssemblyIds}

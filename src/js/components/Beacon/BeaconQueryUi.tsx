@@ -1,9 +1,9 @@
 import { useAppSelector } from '@/hooks';
+import Loader from '@/components/Loader';
 import BeaconSearchResults from './BeaconSearchResults';
 import BeaconQueryFormUi from './BeaconCommon/BeaconQueryFormUi';
 import { makeBeaconQuery } from '@/features/beacon/beaconQuery.store';
-import { WRAPPER_STYLE,} from '@/constants/beaconConstants';
-import Loader from '@/components/Loader';
+import { WRAPPER_STYLE } from '@/constants/beaconConstants';
 
 const BeaconQueryUi = () => {
   const isFetchingBeaconConfig = useAppSelector((state) => state.beaconConfig.isFetchingBeaconConfig);
@@ -17,7 +17,6 @@ const BeaconQueryUi = () => {
     <div style={WRAPPER_STYLE}>
       <BeaconSearchResults />
       <BeaconQueryFormUi
-        isFetchingConfig={false}  //already fetched
         isFetchingQueryResponse={isFetchingBeaconQuery}
         isNetworkQuery={false}
         beaconAssemblyIds={beaconAssemblyIds}

@@ -2,10 +2,10 @@ import type { Dispatch, SetStateAction } from 'react';
 import { useAppSelector, useAppDispatch } from '@/hooks';
 import { useTranslation } from 'react-i18next';
 import { Button, Form, Space, Switch, Tooltip } from 'antd';
-import { FormInstance } from 'antd/es/form';
+import type { FormInstance } from 'antd/es/form';
 import { toggleQuerySectionsUnionOrIntersection } from '@/features/beacon/networkConfig.store';
-import { FormFilter } from '@/types/beacon';
-import { SearchFieldResponse } from '@/types/search';
+import type { FormFilter } from '@/types/beacon';
+import type { SearchFieldResponse } from '@/types/search';
 import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import Filter from './Filter';
 
