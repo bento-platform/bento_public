@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Card, Col, Form, Row } from 'antd';
 import { useIsAuthenticated } from 'bento-auth-js';
 import { useAppSelector, useAppDispatch, useTranslationDefault, useQueryWithAuthIfAllowed } from '@/hooks';
@@ -36,8 +36,7 @@ const VARIANTS_FORM_ERROR_MESSAGE =
 // more intuitive variants ui
 
 const BeaconQueryFormUi = ({
-  isFetchingConfig,
-  isFetchingQueryResponse,  //used in local beacon only
+  isFetchingQueryResponse, //used in local beacon only
   isNetworkQuery,
   beaconAssemblyIds,
   querySections,
@@ -53,18 +52,35 @@ const BeaconQueryFormUi = ({
   // remember if user closed alert, so we can force re-render of a new one later
   const [errorAlertClosed, setErrorAlertClosed] = useState<boolean>(false);
 
+  const dispatch = useAppDispatch();
+  const isAuthenticated = useIsAuthenticated();
+
   const formInitialValues = useMemo(
     () => ({
       'Assembly ID': beaconAssemblyIds.length === 1 && beaconAssemblyIds[0],
     }),
     [beaconAssemblyIds]
-  );  
+  );
   const uiInstructions = hasVariants ? 'Search by genomic variants, clinical metadata or both.' : '';
 
   const hasApiError = isNetworkQuery ? false : useAppSelector((state) => state.beaconQuery.hasApiError);
   const apiErrorMessage = isNetworkQuery ? false : useAppSelector((state) => state.beaconQuery.apiErrorMessage);
   const hasError = hasFormError || hasApiError;
   const showError = hasError && !errorAlertClosed;
+
+  const requestPayload = useCallback(
+    (query: PayloadVariantsQuery, payloadFilters: PayloadFilter[]): BeaconQueryPayload => ({
+      meta: { apiVersion: '2.0.0' },
+      query: { requestParameters: { g_variant: query }, filters: payloadFilters },
+      bento: { showSummaryStatistics: true },
+    }),
+    []
+  );
+
+  const launchEmptyQuery = useCallback(
+    () => dispatch(launchQuery(requestPayload({}, []))),
+    [dispatch, launchQuery, requestPayload]
+  );
 
   // should not be possible to have both errors simultaneously
   // and api error is more important
@@ -75,26 +91,13 @@ const BeaconQueryFormUi = ({
     setFormErrorMessage('');
   };
 
-  const dispatch = useAppDispatch();
-  const isAuthenticated = useIsAuthenticated();
-  // const launchQuery = isNetworkQuery? beaconNetworkQuery | makeBeaconQuery
-
-
-  // let launchQuery =  makeBeaconQuery;
-
-  // if (isNetworkQuery){
-  //   launchQuery = beaconNetworkQuery
-  // } 
-
-  const launchEmptyQuery = () => dispatch(launchQuery(requestPayload({}, [])));
-
   useEffect(() => {
     launchEmptyQuery();
     setHasVariants(beaconAssemblyIds.length > 0 || isNetworkQuery);
 
     // set assembly id options matching what's in gohan (for local beacon) or in network
     form.setFieldsValue(formInitialValues);
-  }, [beaconAssemblyIds.length, form, formInitialValues, isFetchingConfig, isAuthenticated]);
+  }, [beaconAssemblyIds.length, form, formInitialValues, isAuthenticated, isNetworkQuery]);
 
   // Disables max query param if user is authenticated and authorized
   useQueryWithAuthIfAllowed();
@@ -165,12 +168,6 @@ const BeaconQueryFormUi = ({
 
     return requestPayload(query, payloadFilters);
   };
-
-  const requestPayload = (query: PayloadVariantsQuery, payloadFilters: PayloadFilter[]): BeaconQueryPayload => ({
-    meta: { apiVersion: '2.0.0' },
-    query: { requestParameters: { g_variant: query }, filters: payloadFilters },
-    bento: { showSummaryStatistics: true },
-  });
 
   const packageFilters = (values: FormValues): PayloadFilter[] => {
     // ignore optional first filter when left blank
@@ -294,7 +291,6 @@ const BeaconQueryFormUi = ({
 };
 
 export interface BeaconQueryFormUiProps {
-  isFetchingConfig: boolean;
   isFetchingQueryResponse: boolean;
   isNetworkQuery: boolean;
   beaconAssemblyIds: BeaconAssemblyIds;
