@@ -21,7 +21,7 @@ export const beaconNetworkQuery =
     const beacons = getState().beaconNetwork.beacons;
     beacons.forEach((b) => {
       const url = queryUrl(b.id, DEFAULT_QUERY_ENDPOINT);
-      dispatch(queryBeaconNetworkNode({ beaconId: b.id, url: url, payload: payload }));
+      dispatch(queryBeaconNetworkNode({ _beaconId: b.id, url: url, payload: payload }));
     });
   };
 
@@ -29,7 +29,7 @@ const queryBeaconNetworkNode = createAsyncThunk<
   BeaconQueryResponse,
   QueryToNetworkBeacon,
   { state: RootState; rejectValue: string }
->('queryBeaconNetworkNode', async ({ beaconId, url, payload }, { rejectWithValue }) => {
+>('queryBeaconNetworkNode', async ({ _beaconId, url, payload }, { rejectWithValue }) => {
   // currently no auth in beacon network
   // these would only make sense if we start creating tokens that apply to more than one bento instance
   // const token = getState().auth.accessToken;
@@ -42,7 +42,7 @@ const queryBeaconNetworkNode = createAsyncThunk<
 });
 
 interface beaconNetworkStateType {
-  networkResponseStatus: "idle" | "waiting" | "responding";
+  networkResponseStatus: 'idle' | 'waiting' | 'responding';
   networkResults: BeaconFlattenedAggregateResponse;
   beacons: {
     [beaconId: string]: FlattenedBeaconResponse;
@@ -52,7 +52,7 @@ interface beaconNetworkStateType {
 type TempChartObject = Record<string, number>;
 
 const initialState: beaconNetworkStateType = {
-  networkResponseStatus: "idle", 
+  networkResponseStatus: 'idle',
   networkResults: {
     individualCount: 0,
     biosampleCount: 0,
@@ -113,7 +113,7 @@ const queryBeaconNetworkNodeSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(queryBeaconNetworkNode.pending, (state, action) => {
-      const beaconId = action.meta.arg.beaconId;
+      const beaconId = action.meta.arg._beaconId;
       const beaconState = {
         hasApiError: false,
         apiErrorMessage: '',
@@ -122,17 +122,12 @@ const queryBeaconNetworkNodeSlice = createSlice({
       state.beacons[beaconId] = beaconState;
 
       // don't undo "responding" status if another beacon is already responding
-      if (state.networkResponseStatus == "idle") {
-        state.networkResponseStatus = "waiting"
+      if (state.networkResponseStatus == 'idle') {
+        state.networkResponseStatus = 'waiting';
       }
     });
     builder.addCase(queryBeaconNetworkNode.fulfilled, (state, action) => {
-
-      console.log({action})
-
-
-
-      const beaconId = action.meta.arg.beaconId;
+      const beaconId = action.meta.arg._beaconId;
       const { payload } = action;
       const hasErrorResponse = Object.prototype.hasOwnProperty.call(payload, 'error');
       const beaconState: FlattenedBeaconResponse = {
@@ -150,18 +145,18 @@ const queryBeaconNetworkNodeSlice = createSlice({
         beaconState.individualCount = payload.responseSummary.numTotalResults;
       }
       state.beacons[beaconId] = beaconState;
-      state.networkResponseStatus = "responding";
+      state.networkResponseStatus = 'responding';
       state.networkResults = computeNetworkResults(state.beacons);
     });
     builder.addCase(queryBeaconNetworkNode.rejected, (state, action) => {
-      const beaconId = action.meta.arg.beaconId;
+      const beaconId = action.meta.arg._beaconId;
       const beaconState: FlattenedBeaconResponse = {
         hasApiError: true,
         apiErrorMessage: action.payload as string, //passed from rejectWithValue
         isFetchingQueryResponse: false,
       };
       state.beacons[beaconId] = beaconState;
-      state.networkResponseStatus = "responding";
+      state.networkResponseStatus = 'responding';
     });
   },
 });

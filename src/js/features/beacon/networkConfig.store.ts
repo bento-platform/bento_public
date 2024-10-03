@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 // import { makeAuthorizationHeader } from 'bento-auth-js';
-import { RootState } from '@/store';
+import type { RootState } from '@/store';
 import { beaconApiError } from '@/utils/beaconApiError';
 import type { Section } from '@/types/search';
 import type { BeaconAssemblyIds } from '@/types/beacon';

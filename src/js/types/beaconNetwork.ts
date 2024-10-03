@@ -14,14 +14,14 @@ export interface NetworkBeacon extends BeaconServiceInfo {
     individuals: {
       count: number;
     };
-    variants: Record<string, number>
+    variants: Record<string, number>;
   };
 }
 
 // more to come here
 export interface BeaconNetworkConfig {
-  filtersUnion: Section[]
-  filtersIntersection: Section[]
+  filtersUnion: Section[];
+  filtersIntersection: Section[];
   beacons: NetworkBeacon[];
 }
 
@@ -52,7 +52,7 @@ export interface RespondingBeacon {
 export type BeaconNetworkAggregatedResponse = RespondingBeacon[];
 
 export interface QueryToNetworkBeacon {
-  beaconId: string;
+  _beaconId: string;
   url: string;
   payload: BeaconQueryPayload;
 }

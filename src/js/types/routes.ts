@@ -23,5 +23,4 @@ if (BEACON_NETWORK_ENABLED) {
   BentoRoute.BeaconNetwork = 'beaconNetwork';
 }
 
-
 export { BentoRoute };
