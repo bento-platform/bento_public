@@ -2,8 +2,8 @@ import type { Rule } from 'antd/es/form';
 import type { ActionCreator } from 'redux';
 import type { ChartData } from '@/types/data';
 import type { Datum } from '@/types/overviewResponse';
-import { makeBeaconQuery } from '@/features/beacon/beaconQuery.store';
-import { beaconNetworkQuery } from '@/features/beacon/networkQuery.store';
+import type { makeBeaconQuery } from '@/features/beacon/beaconQuery.store';
+import type { beaconNetworkQuery } from '@/features/beacon/networkQuery.store';
 
 // ----------------------------
 // form handling

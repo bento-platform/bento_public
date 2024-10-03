@@ -1,4 +1,4 @@
-import {type ReactElement, useCallback, useMemo, useState } from 'react';
+import { type ReactElement, useCallback, useMemo, useState } from 'react';
 import { Card, Col, Row, Statistic, Typography, Space, Table, Button } from 'antd';
 import { LeftOutlined, TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
