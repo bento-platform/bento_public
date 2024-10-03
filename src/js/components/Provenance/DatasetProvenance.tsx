@@ -8,35 +8,42 @@ import ExtraPropertiesTable from './Tables/ExtraPropertiesTable';
 import PublicationsTable from './Tables/PublicationsTable';
 import CreatedByTable from './Tables/CreatedByTable';
 import DownloadDats from './DownloadDats';
-import { useTranslationCustom, useTranslationDefault } from '@/hooks';
-import type { ProvenanceStoreDataset } from '@/types/provenance';
+
 import { BOX_SHADOW } from '@/constants/overviewConstants';
+import { useTranslationCustom, useTranslationDefault } from '@/hooks';
+import type { Dataset } from '@/types/metadata';
 
 const { Item } = Descriptions;
 const { Text, Title } = Typography;
 const { Meta } = Card;
 
-const DatasetProvenance = ({ metadata, loading }: DatasetProvenanceProps) => {
+const DatasetProvenance = ({ dataset, loading }: DatasetProvenanceProps) => {
   const t = useTranslationCustom();
   const td = useTranslationDefault();
+
+  const metadata = dataset.dats_file;
 
   return (
     <div className="container" style={{ paddingBottom: '40px' }}>
       <Card
-        title={<Title level={3}>{t(metadata.title)}</Title>}
-        extra={[
-          <Title key="1" level={4} type="secondary" italic>
-            {t(metadata.version)}
-          </Title>,
-        ]}
+        title={<Title level={3}>{t(metadata.title ?? dataset.title)}</Title>}
+        extra={
+          metadata.version
+            ? [
+                <Title key="1" level={4} type="secondary" italic>
+                  {t(metadata.version)}
+                </Title>,
+              ]
+            : []
+        }
         style={{ borderRadius: '11px', ...BOX_SHADOW }}
         loading={loading}
       >
         {/* --- DESCRIPTION ---*/}
-        <Meta description={<Text italic>{t(metadata.description)}</Text>} />
+        <Meta description={<Text italic>{t(metadata.description ?? dataset.description)}</Text>} />
 
         {/* --- CREATOR, PRIVACY, LICENSES, KEYWORD ---*/}
-        {metadata.privacy || metadata.licenses.length || metadata.keywords.length ? (
+        {metadata.privacy || metadata.licenses?.length || metadata.keywords?.length ? (
           <Descriptions style={{ paddingTop: '20px' }}>
             {metadata.privacy && (
               <Item span={12} label={<DescriptionTitle title={td('Privacy')} />}>
@@ -122,14 +129,14 @@ const DatasetProvenance = ({ metadata, loading }: DatasetProvenanceProps) => {
         )}
 
         {/* --- DOWNLOAD DATS --- */}
-        <DownloadDats metadata={metadata} />
+        <DownloadDats dataset={dataset} />
       </Card>
     </div>
   );
 };
 
 export type DatasetProvenanceProps = {
-  metadata: ProvenanceStoreDataset;
+  dataset: Dataset;
   loading: boolean;
 };
 

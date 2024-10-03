@@ -1,20 +1,19 @@
 import { useCallback } from 'react';
-import PropTypes from 'prop-types';
 import { Button, Space } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 
-import { PUBLIC_URL } from '@/config';
+import { PORTAL_URL } from '@/config';
 import { useTranslationDefault } from '@/hooks';
-import type { ProvenanceStoreDataset } from '@/types/provenance';
+import type { Dataset } from '@/types/metadata';
 
-const DownloadDats = ({ metadata }: { metadata: ProvenanceStoreDataset }) => {
+const DownloadDats = ({ dataset }: { dataset: Dataset }) => {
   const t = useTranslationDefault();
 
   const exportData = useCallback(() => {
-    window.location.href = `${PUBLIC_URL}/api/metadata/api/datasets/${metadata.identifier}/dats`;
-  }, [metadata]);
+    window.location.href = `${PORTAL_URL}/api/metadata/api/datasets/${dataset.identifier}/dats?format=json&attachment=true`;
+  }, [dataset]);
 
-  const isDatsFileEmpty = metadata && metadata.dats_file ? Object.keys(metadata.dats_file).length === 0 : true;
+  const isDatsFileEmpty = Object.keys(dataset?.dats_file ?? {}).length === 0;
 
   return (
     <Space style={{ marginTop: '20px', justifyContent: 'center' }}>
@@ -23,10 +22,6 @@ const DownloadDats = ({ metadata }: { metadata: ProvenanceStoreDataset }) => {
       </Button>
     </Space>
   );
-};
-
-DownloadDats.propTypes = {
-  metadata: PropTypes.object.isRequired,
 };
 
 export default DownloadDats;

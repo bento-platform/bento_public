@@ -9,7 +9,6 @@ import contentReducer from '@/features/content/content.store';
 import dataReducer from '@/features/data/data.store';
 import queryReducer from '@/features/search/query.store';
 import lastIngestionDataReducer from '@/features/ingestion/lastIngestion.store';
-import provenanceReducer from '@/features/provenance/provenance.store';
 import beaconConfigReducer from './features/beacon/beaconConfig.store';
 import beaconQueryReducer from './features/beacon/beaconQuery.store';
 import beaconNetworkConfigReducer from './features/beacon/networkConfig.store';
@@ -36,7 +35,6 @@ export const store = configureStore({
     content: contentReducer,
     data: dataReducer,
     query: queryReducer,
-    provenance: provenanceReducer,
     lastIngestionData: lastIngestionDataReducer,
     beaconConfig: beaconConfigReducer,
     beaconQuery: beaconQueryReducer,

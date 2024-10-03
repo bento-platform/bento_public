@@ -7,7 +7,6 @@ import { makeGetConfigRequest, makeGetServiceInfoRequest } from '@/features/conf
 import { makeGetAboutRequest } from '@/features/content/content.store';
 import { makeGetDataRequestThunk, populateClickable } from '@/features/data/data.store';
 import { makeGetKatsuPublic, makeGetSearchFields } from '@/features/search/query.store';
-import { makeGetProvenanceRequest } from '@/features/provenance/provenance.store';
 import { getBeaconConfig } from '@/features/beacon/beaconConfig.store';
 import { getBeaconNetworkConfig } from '@/features/beacon/networkConfig.store';
 import { fetchGohanData, fetchKatsuData } from '@/features/ingestion/lastIngestion.store';
@@ -23,6 +22,7 @@ import Loader from '@/components/Loader';
 import NetworkUi from './Beacon/BeaconNetwork/NetworkUi';
 import { scopeEqual, validProjectDataset } from '@/utils/router';
 import DefaultLayout from '@/components/Util/DefaultLayout';
+import { BEACON_NETWORK_ENABLED } from '@/config';
 
 const ScopedRoute = () => {
   const { projectId, datasetId } = useParams();
@@ -69,14 +69,20 @@ const BentoAppRouter = () => {
   const { selectedScope, isFetching: isFetchingProjects } = useAppSelector((state) => state.metadata);
 
   useEffect(() => {
-    dispatch(makeGetConfigRequest()).then(() => {
-      dispatch(getBeaconConfig());
+    if (!selectedScope.scopeSet) return;
+    dispatch(makeGetConfigRequest()).then(() => dispatch(getBeaconConfig()));
+
+    if (BEACON_NETWORK_ENABLED) {
       dispatch(getBeaconNetworkConfig());
-    });
+    }
+
     dispatch(makeGetAboutRequest());
-    dispatch(makeGetDataRequestThunk());
-    dispatch(makeGetSearchFields()).then(() => dispatch(populateClickable()));
-    dispatch(makeGetProvenanceRequest());
+    // The "Populate clickable" action needs both chart sections and search fields to be available.
+    // TODO: this is not a very good pattern. It would be better to have a memoized way of determining click-ability at
+    //  render time.
+    Promise.all([dispatch(makeGetDataRequestThunk()), dispatch(makeGetSearchFields())]).then(() =>
+      dispatch(populateClickable())
+    );
     dispatch(makeGetKatsuPublic());
     dispatch(fetchKatsuData());
   }, [dispatch, isAuthenticated, selectedScope]);

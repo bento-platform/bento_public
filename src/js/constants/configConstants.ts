@@ -6,7 +6,6 @@ export const katsuPublicOverviewUrl = `${PORTAL_URL}/api/metadata/api/public_ove
 export const katsuPublicRulesUrl = `${PORTAL_URL}/api/metadata/api/public_rules`;
 export const searchFieldsUrl = `${PORTAL_URL}/api/metadata/api/public_search_fields`;
 export const katsuPublicSearchUrl = `${PORTAL_URL}/api/metadata/api/public`;
-export const provenanceUrl = `${PORTAL_URL}/api/metadata/api/public_dataset`;
 export const projectsUrl = `${PORTAL_URL}/api/metadata/api/projects`;
 export const katsuLastIngestionsUrl = `${PORTAL_URL}/api/metadata/data-types`;
 export const gohanLastIngestionsUrl = `${PORTAL_URL}/api/gohan/data-types`;

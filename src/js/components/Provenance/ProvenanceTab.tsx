@@ -1,14 +1,30 @@
+import { useMemo } from 'react';
 import { Row } from 'antd';
-import DatasetProvenance from './DatasetProvenance';
+
 import { useAppSelector } from '@/hooks';
+import type { Dataset } from '@/types/metadata';
+
+import DatasetProvenance from './DatasetProvenance';
 
 const ProvenanceTab = () => {
-  const { data, isFetching: loading } = useAppSelector((state) => state.provenance);
+  const {
+    projects,
+    isFetching: loading,
+    selectedScope: { scope },
+  } = useAppSelector((state) => state.metadata);
+
+  const datasets = useMemo<Dataset[]>(() => {
+    let filteredProjects = projects;
+    if (scope.project) filteredProjects = filteredProjects.filter((p) => scope.project === p.identifier);
+    let filteredDatasets = filteredProjects.flatMap((p) => p.datasets);
+    if (scope.dataset) filteredDatasets = filteredDatasets.filter((d) => scope.dataset === d.identifier);
+    return filteredDatasets;
+  }, [projects, scope]);
 
   return (
     <Row justify="center">
-      {data.map((dataset, i) => (
-        <DatasetProvenance key={i} metadata={dataset} loading={loading} />
+      {datasets.map((dataset, i) => (
+        <DatasetProvenance key={i} dataset={dataset} loading={loading} />
       ))}
     </Row>
   );

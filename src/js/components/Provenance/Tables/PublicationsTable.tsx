@@ -4,12 +4,12 @@ import { useMemo } from 'react';
 import { Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 
-import BaseProvenanceTable from './BaseProvenanceTable';
-import LinkIfUrl from '../../Util/LinkIfUrl';
+import LinkIfUrl from '@/components/Util/LinkIfUrl';
 import { useTranslationCustom, useTranslationDefault } from '@/hooks';
-import type { Person, PrimaryPublication, ProvenanceStoreDataset } from '@/types/provenance';
-
+import type { DatsFile, Person, PrimaryPublication } from '@/types/dats';
 import { stringIsDOI, stringIsURL } from '@/utils/strings';
+
+import BaseProvenanceTable from './BaseProvenanceTable';
 
 const URLLink = ({ url, children }: { url: string; children?: ReactNode }) => (
   <Typography.Link href={url} target="_blank" rel="noopener noreferrer">
@@ -109,7 +109,7 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
           dataIndex: 'identifier.identifierSource',
           render: (_, { identifier: { identifierSource } }) => t(identifierSource),
           sorter: (a, b) => a.identifier.identifierSource.localeCompare(b.identifier.identifierSource),
-          filters: Array.from(new Set(publications.map((p) => p.identifier.identifierSource))).map((v) => ({
+          filters: Array.from(new Set((publications ?? []).map((p) => p.identifier.identifierSource))).map((v) => ({
             text: v,
             value: v,
           })),
@@ -123,7 +123,7 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
 };
 
 export interface PublicationsTableProps {
-  publications: ProvenanceStoreDataset['primaryPublications'];
+  publications: DatsFile['primaryPublications'];
 }
 
 export default PublicationsTable;
