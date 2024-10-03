@@ -63,6 +63,9 @@ const metadata = createSlice({
       // dataset -> project -> whole node
       state.selectedScope = validProjectDataset(state.projects, payload);
     },
+    markScopeSet: (state) => {
+      state.selectedScope.scopeSet = true;
+    },
   },
   extraReducers(builder) {
     builder.addCase(getProjects.pending, (state) => {
@@ -78,5 +81,5 @@ const metadata = createSlice({
   },
 });
 
-export const { selectScope } = metadata.actions;
+export const { selectScope, markScopeSet } = metadata.actions;
 export default metadata.reducer;
