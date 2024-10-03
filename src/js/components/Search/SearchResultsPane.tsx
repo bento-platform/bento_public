@@ -8,6 +8,7 @@ import ExpSvg from '../Util/ExpSvg';
 import { BOX_SHADOW, COUNTS_FILL, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
 import { useTranslationDefault, useTranslationCustom } from '@/hooks';
 import type { ChartData } from '@/types/data';
+import { NO_RESULTS_DASHES } from '@/constants/searchConstants';
 
 const SearchResultsPane = ({
   isFetchingData,
@@ -60,13 +61,13 @@ const SearchResultsPane = ({
               />
               <Statistic
                 title={td('Biosamples')}
-                value={hasInsufficientData ? '----' : biosampleCount}
+                value={hasInsufficientData ? NO_RESULTS_DASHES : biosampleCount}
                 valueStyle={{ color: COUNTS_FILL }}
                 prefix={<BiDna />}
               />
               <Statistic
                 title={td('Experiments')}
-                value={hasInsufficientData ? '----' : experimentCount}
+                value={hasInsufficientData ? NO_RESULTS_DASHES : experimentCount}
                 valueStyle={{ color: COUNTS_FILL }}
                 prefix={<ExpSvg />}
               />
