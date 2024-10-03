@@ -118,7 +118,7 @@ const BeaconQueryFormUi = ({
     clearFormError();
     setErrorAlertClosed(false);
     const jsonPayload = packageBeaconJSON(formValues);
-    console.log('dispatching beacon query');
+    // console.log('dispatching beacon query');
 
     dispatch(launchQuery(jsonPayload));
   };

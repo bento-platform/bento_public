@@ -1,4 +1,3 @@
-import React from 'react';
 import { Tag } from 'antd';
 import { useAppSelector } from '@/hooks';
 import SearchResultsPane from '../../Search/SearchResultsPane';
@@ -6,9 +5,9 @@ import SearchResultsPane from '../../Search/SearchResultsPane';
 const NetworkSearchResults = () => {
   const hasBeaconNetworkError = useAppSelector((state) => state.beaconNetwork.hasBeaconNetworkError);
   const responses = useAppSelector((state) => state.beaconNetworkResponse.beacons);
-  const networkResults = useAppSelector((state) => state.beaconNetworkResponse.networkResults);
-  // or can destructure above
-  const { individualCount, biosampleCount, experimentCount, biosampleChartData, experimentChartData } = networkResults;
+  const { individualCount, biosampleCount, experimentCount, biosampleChartData, experimentChartData } = useAppSelector(
+    (state) => state.beaconNetworkResponse.networkResults
+  );
   const responseArray = Object.values(responses);
 
   // filter() creates arrays we don't need, but the arrays are small
@@ -27,7 +26,7 @@ const NetworkSearchResults = () => {
   };
 
   // results and optional error tag, for top-right "extra" section of results card
-  // currently not possible to have both error and results, but this may change in the future
+  // currently not possible to have both a network error and results, but this may change in the future
   const resultsExtra = (
     <>
       {hasBeaconNetworkError && <Tag color="red">Network Error</Tag>}

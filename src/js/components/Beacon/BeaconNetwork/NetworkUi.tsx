@@ -10,7 +10,9 @@ const NetworkUi = () => {
   const isFetchingConfig = useAppSelector((state) => state.beaconNetwork.isFetchingBeaconNetworkConfig);
   const networkAssemblyIds = useAppSelector((state) => state.beaconNetwork.assemblyIds);
   const networkQuerySections = useAppSelector((state) => state.beaconNetwork.currentQuerySections);
-  const isWaitingForNetworkResponse = useAppSelector((state) => state.beaconNetworkResponse.networkResponseStatus == "waiting");
+  const isWaitingForNetworkResponse = useAppSelector(
+    (state) => state.beaconNetworkResponse.networkResponseStatus == 'waiting'
+  );
 
   return (
     <div style={WRAPPER_STYLE}>
