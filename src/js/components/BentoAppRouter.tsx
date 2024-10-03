@@ -11,7 +11,7 @@ import { getBeaconConfig } from '@/features/beacon/beaconConfig.store';
 import { getBeaconNetworkConfig } from '@/features/beacon/networkConfig.store';
 import { fetchGohanData, fetchKatsuData } from '@/features/ingestion/lastIngestion.store';
 import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
-import { getProjects, selectScope } from '@/features/metadata/metadata.store';
+import { getProjects, markScopeSet, selectScope } from '@/features/metadata/metadata.store';
 
 import PublicOverview from './Overview/PublicOverview';
 import Search from './Search/Search';
@@ -35,27 +35,36 @@ const ScopedRoute = () => {
     const valid = validProjectDataset(projects, { project: projectId, dataset: datasetId });
 
     // Don't change the scope object if the scope value is the same, otherwise it'll trigger needless re-renders.
-    if (scopeEqual(selectedScope.scope, valid.scope)) return;
-
-    if (datasetId === valid.scope.dataset && projectId === valid.scope.project) {
-      dispatch(selectScope(valid.scope));
-    } else {
-      const oldPath = location.pathname.split('/').filter(Boolean);
-      const newPath = [oldPath[0]];
-
-      if (valid.scope.dataset) {
-        newPath.push('p', valid.scope.project as string, 'd', valid.scope.dataset);
-      } else if (valid.scope.project) {
-        newPath.push('p', valid.scope.project);
-      }
-
-      const oldPathLength = oldPath.length;
-      if (oldPath[oldPathLength - 3] === 'p' || oldPath[oldPathLength - 3] === 'd') {
-        newPath.push(oldPath[oldPathLength - 1]);
-      }
-      const newPathString = '/' + newPath.join('/');
-      navigate(newPathString, { replace: true });
+    if (scopeEqual(selectedScope.scope, valid.scope)) {
+      // Make sure scope is marked as set to trigger the first load.
+      // This can happen when the true URL scope is the whole instance, which is also the initial scope value.
+      dispatch(markScopeSet());
+      return;
     }
+
+    // If the URL scope is valid, store the scope in the Redux store.
+    if (datasetId === valid.scope.dataset && projectId === valid.scope.project) {
+      dispatch(selectScope(valid.scope)); // Also marks scope as set
+      return;
+    }
+
+    // Otherwise: validated scope does not match URL params, so we need to re-locate to a valid path.
+
+    const oldPath = location.pathname.split('/').filter(Boolean);
+    const newPath = [oldPath[0]];
+
+    if (valid.scope.dataset) {
+      newPath.push('p', valid.scope.project as string, 'd', valid.scope.dataset);
+    } else if (valid.scope.project) {
+      newPath.push('p', valid.scope.project);
+    }
+
+    const oldPathLength = oldPath.length;
+    if (oldPath[oldPathLength - 3] === 'p' || oldPath[oldPathLength - 3] === 'd') {
+      newPath.push(oldPath[oldPathLength - 1]);
+    }
+    const newPathString = '/' + newPath.join('/');
+    navigate(newPathString, { replace: true });
   }, [projects, projectId, datasetId, dispatch, navigate, selectedScope]);
 
   return <Outlet />;

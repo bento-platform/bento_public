@@ -9,4 +9,5 @@ it directly.
 - Node Package Manager
 
 ## Translations in dev mode
-Add your English to French translations in `www/public/locales/fr/translation_fr.json` for them to appear on the website.
+Add your English to French translations in `dist/public/locales/fr/translation_fr.json` for them to appear on the
+website.
