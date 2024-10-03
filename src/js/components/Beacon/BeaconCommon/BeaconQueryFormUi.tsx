@@ -63,8 +63,8 @@ const BeaconQueryFormUi = ({
   );
   const uiInstructions = hasVariants ? 'Search by genomic variants, clinical metadata or both.' : '';
 
-  const hasApiError = useAppSelector((state) => isNetworkQuery ? false : state.beaconQuery.hasApiError);
-  const apiErrorMessage = useAppSelector((state) => isNetworkQuery ? false : state.beaconQuery.apiErrorMessage);
+  const hasApiError = useAppSelector((state) => (isNetworkQuery ? false : state.beaconQuery.hasApiError));
+  const apiErrorMessage = useAppSelector((state) => (isNetworkQuery ? false : state.beaconQuery.apiErrorMessage));
   const hasError = hasFormError || hasApiError;
   const showError = hasError && !errorAlertClosed;
 
@@ -97,7 +97,7 @@ const BeaconQueryFormUi = ({
 
     // set assembly id options matching what's in gohan (for local beacon) or in network
     form.setFieldsValue(formInitialValues);
-  }, [beaconAssemblyIds.length, form, formInitialValues, isAuthenticated, isNetworkQuery]);
+  }, [beaconAssemblyIds.length, form, formInitialValues, isAuthenticated, isNetworkQuery, launchEmptyQuery]);
 
   // Disables max query param if user is authenticated and authorized
   useQueryWithAuthIfAllowed();
