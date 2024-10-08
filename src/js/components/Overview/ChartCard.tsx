@@ -7,8 +7,8 @@ import CustomEmpty from '../Util/CustomEmpty';
 import { CHART_HEIGHT, BOX_SHADOW } from '@/constants/overviewConstants';
 import { useElementWidth, useTranslationCustom, useTranslationDefault } from '@/hooks';
 import type { ChartDataField } from '@/types/data';
+import { useResponsive } from '@/components/ResponsiveContext';
 
-const CARD_STYLE: React.CSSProperties = { height: '415px', borderRadius: '11px', ...BOX_SHADOW };
 const ROW_EMPTY_STYLE: React.CSSProperties = { height: `${CHART_HEIGHT}px` };
 
 interface TitleComponentProps {
@@ -30,6 +30,8 @@ const ChartCard: React.FC<ChartCardProps> = memo(({ section, chart, onRemoveChar
   const td = useTranslationDefault();
   const containerRef = useRef<HTMLDivElement>(null);
   const width = useElementWidth(containerRef, chart.width);
+  const { isMobile } = useResponsive();
+  const CARD_STYLE: React.CSSProperties = { height: isMobile ? '350px' : '415px', borderRadius: '11px', ...BOX_SHADOW };
 
   const {
     data,
