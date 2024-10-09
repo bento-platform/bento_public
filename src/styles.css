@@ -60,14 +60,28 @@ body {
   color: #91caff;
 }
 
+
+/* BEGIN about HTML styling */
+
+.about-content h3:first-child {
+  margin-top: 0;
+}
+.about-content img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* END about HTML styling */
+
+
+/* BEGIN search results pane */
+
 .search-results-pane {
   padding-bottom: 8px;
   display: flex;
   justify-content: center;
   width: 100%;
 }
-
-/* BEGIN search results pane */
 
 .search-result-statistic {
   padding: 8px 16px;
