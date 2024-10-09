@@ -19,4 +19,5 @@ COPY package-lock.json .
 
 COPY --from=install /bento-public/node_modules ./node_modules
 
-CMD [ "bash", "./run.dev.bash" ]
+ENTRYPOINT [ "/bin/bash", "./entrypoint.bash" ]
+CMD [ "/bin/bash", "./run.dev.bash" ]
