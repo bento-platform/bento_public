@@ -8,7 +8,7 @@ const NetworkBeacons = ({ beacons }: NetworkBeaconsProps) => {
   // for now, render all beacons from the start and update as they respond (NodeDetails component is memoized)
   // they could be shown optionally if network is very large (ie could just show only beacons with non-zero responses)
   return (
-    <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', maxWidth: '1200px', width: '100%' }}>
+    <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 8, maxWidth: '1200px', width: '100%' }}>
       {beacons.map((b) => (
         <NodeDetails beacon={b} key={b.id} response={beaconResponses[b.id] ?? {}} />
       ))}

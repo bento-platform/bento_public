@@ -12,7 +12,7 @@ const LOGO_MAX_HEIGHT = '50px';
 const LOGO_MAX_WIDTH = '175px';
 const CARD_DEFAULT_WIDTH = '480px';
 const CARD_BODY_MIN_HEIGHT = '100px'; // fit stats without jumping
-const LINK_STYLE = { padding: '10px' };
+const LINK_STYLE = { padding: '4px' };
 
 const NodeDetails = ({ beacon, response }: NodeDetailsProps) => {
   const { apiUrl, organization, overview } = beacon;
@@ -24,7 +24,11 @@ const NodeDetails = ({ beacon, response }: NodeDetailsProps) => {
     response;
 
   const logo = (
-    <img src={organization.logoUrl} style={{ maxHeight: LOGO_MAX_HEIGHT, maxWidth: LOGO_MAX_WIDTH, padding: '5px' }} />
+    <img
+      alt={`Logo for ${organization.name}`}
+      src={organization.logoUrl}
+      style={{ maxHeight: LOGO_MAX_HEIGHT, maxWidth: LOGO_MAX_WIDTH, padding: '5px' }}
+    />
   );
 
   const orgName = <h4 style={{ paddingLeft: '15px' }}>{organization.name}</h4>;
@@ -58,11 +62,13 @@ const NodeDetails = ({ beacon, response }: NodeDetailsProps) => {
       style={{
         display: 'flex',
         flexDirection: 'column',
-        margin: '5px',
-        borderRadius: '10px',
-        padding: '5px',
-        maxWidth: CARD_DEFAULT_WIDTH,
-        width: '100%',
+        // margin: '5px',
+        // flex: 1,
+        // borderRadius: '10px',
+        // padding: '5px',
+        width: 'calc(50% - 4px)',
+        maxWidth: '600px',
+        // width: '100%',
         ...BOX_SHADOW,
       }}
       styles={{
