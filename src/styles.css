@@ -63,9 +63,15 @@ body {
 
 /* BEGIN about HTML styling */
 
-.about-content h3:first-child {
+/*
+Header elements which are the first child of the about content container shouldn't have the default Ant Design top
+margin
+ */
+.about-content h2:first-child, h3:first-child {
   margin-top: 0;
 }
+
+/* Images should scale proportionally with container width */
 .about-content img {
   max-width: 100%;
   height: auto;
