@@ -72,7 +72,6 @@ const SearchResultsPane = ({
           ...BOX_SHADOW,
         }}
         styles={{ body: { padding: '24px 40px' } }}
-        // styles={{ body: { padding: '-10px' }, header: {} }}
         loading={isFetchingData}
         title={resultsTitle}
         extra={resultsExtra}
