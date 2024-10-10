@@ -1,9 +1,12 @@
 import { Tag } from 'antd';
-import { useAppSelector } from '@/hooks';
+import { useAppSelector, useTranslationDefault } from '@/hooks';
 import SearchResultsPane from '../../Search/SearchResultsPane';
+import { useBeaconNetwork } from '@/features/beacon/hooks';
 
 const NetworkSearchResults = () => {
-  const hasBeaconNetworkError = useAppSelector((state) => state.beaconNetwork.hasBeaconNetworkError);
+  const td = useTranslationDefault();
+
+  const { hasBeaconNetworkError } = useBeaconNetwork();
   const responses = useAppSelector((state) => state.beaconNetworkResponse.beacons);
   const { individualCount, biosampleCount, experimentCount, biosampleChartData, experimentChartData } = useAppSelector(
     (state) => state.beaconNetworkResponse.networkResults
@@ -20,7 +23,7 @@ const NetworkSearchResults = () => {
   // show number of non-zero responses
   const numResultsText = (n: number) => {
     if (numNonErrorResponses) {
-      return `results from ${n} beacon${n == 1 ? '' : 's'}`;
+      return `${td('Results from')} ${n} beacon${n == 1 ? '' : 's'}`;
     }
     return '';
   };

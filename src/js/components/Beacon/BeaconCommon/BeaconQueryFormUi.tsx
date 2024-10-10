@@ -104,27 +104,72 @@ const BeaconQueryFormUi = ({
 
   // following GA4GH recommendations, UI is one-based, but API is zero-based, "half-open"
   // so to convert to zero-based, we only modify the start value
-  // see eg https://genome-blog.soe.ucsc.edu/blog/2016/12/12/the-ucsc-genome-browser-coordinate-counting-systems/
+  // see e.g., https://genome-blog.soe.ucsc.edu/blog/2016/12/12/the-ucsc-genome-browser-coordinate-counting-systems/
   const convertToZeroBased = (start: string) => Number(start) - 1;
 
-  const handleFinish = (formValues: FormValues) => {
-    // console.log({ formValues });
+  const packageFilters = useCallback(
+    (values: FormValues): PayloadFilter[] => {
+      // ignore optional first filter when left blank
+      if (filters.length === 1 && !values.filterId1) {
+        return [];
+      }
 
-    // if bad form, block submit and show user error
-    if (!variantsFormValid(formValues)) {
-      setHasFormError(true);
+      return filters
+        .filter((f) => f.active)
+        .map((f) => ({
+          id: values[`filterId${f.index}`],
+          operator: '=',
+          value: values[`filterValue${f.index}`],
+        }));
+    },
+    [filters]
+  );
+
+  const packageBeaconJSON = useCallback(
+    (values: FormValues) => {
+      let query = {} as PayloadVariantsQuery;
+      const payloadFilters = packageFilters(values);
+      const hasVariantsQuery = values?.['Chromosome'] || values?.['Variant start'] || values?.['Reference base(s)'];
+      if (hasVariantsQuery) {
+        query = {
+          referenceName: values['Chromosome'],
+          start: [convertToZeroBased(values['Variant start'])],
+          assemblyId: values['Assembly ID'],
+        };
+        if (values['Variant end']) {
+          query.end = [Number(values['Variant end'])];
+        }
+        if (values['Reference base(s)']) {
+          query.referenceBases = values['Reference base(s)'];
+        }
+        if (values['Alternate base(s)']) {
+          query.alternateBases = values['Alternate base(s)'];
+        }
+      }
+
+      return requestPayload(query, payloadFilters);
+    },
+    [packageFilters, requestPayload]
+  );
+
+  const handleFinish = useCallback(
+    (formValues: FormValues) => {
+      // if bad form, block submit and show user error
+      if (!variantsFormValid(formValues)) {
+        setHasFormError(true);
+        setErrorAlertClosed(false);
+        setFormErrorMessage(td(VARIANTS_FORM_ERROR_MESSAGE));
+        return;
+      }
+
+      clearFormError();
       setErrorAlertClosed(false);
-      setFormErrorMessage(td(VARIANTS_FORM_ERROR_MESSAGE));
-      return;
-    }
+      const jsonPayload = packageBeaconJSON(formValues);
 
-    clearFormError();
-    setErrorAlertClosed(false);
-    const jsonPayload = packageBeaconJSON(formValues);
-    // console.log('dispatching beacon query');
-
-    dispatch(launchQuery(jsonPayload));
-  };
+      dispatch(launchQuery(jsonPayload));
+    },
+    [dispatch, td, launchQuery, packageBeaconJSON]
+  );
 
   const handleClearForm = () => {
     setFilters([STARTER_FILTER]);
@@ -143,45 +188,6 @@ const BeaconQueryFormUi = ({
       clearFormError();
     }
     // can also check filter values here (to e.g. avoid offering duplicate options)
-  };
-
-  const packageBeaconJSON = (values: FormValues) => {
-    let query = {} as PayloadVariantsQuery;
-    const payloadFilters = packageFilters(values);
-    const hasVariantsQuery = values?.['Chromosome'] || values?.['Variant start'] || values?.['Reference base(s)'];
-    if (hasVariantsQuery) {
-      query = {
-        referenceName: values['Chromosome'],
-        start: [convertToZeroBased(values['Variant start'])],
-        assemblyId: values['Assembly ID'],
-      };
-      if (values['Variant end']) {
-        query.end = [Number(values['Variant end'])];
-      }
-      if (values['Reference base(s)']) {
-        query.referenceBases = values['Reference base(s)'];
-      }
-      if (values['Alternate base(s)']) {
-        query.alternateBases = values['Alternate base(s)'];
-      }
-    }
-
-    return requestPayload(query, payloadFilters);
-  };
-
-  const packageFilters = (values: FormValues): PayloadFilter[] => {
-    // ignore optional first filter when left blank
-    if (filters.length === 1 && !values.filterId1) {
-      return [];
-    }
-
-    return filters
-      .filter((f) => f.active)
-      .map((f) => ({
-        id: values[`filterId${f.index}`],
-        operator: '=',
-        value: values[`filterValue${f.index}`],
-      }));
   };
 
   const variantsFormValid = (formValues: FormValues) => {

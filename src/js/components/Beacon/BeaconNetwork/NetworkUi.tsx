@@ -1,29 +1,28 @@
+import Loader from '@/components/Loader';
+import { WRAPPER_STYLE } from '@/constants/beaconConstants';
+import { useBeaconNetwork } from '@/features/beacon/hooks';
+import { beaconNetworkQuery } from '@/features/beacon/networkQuery.store';
 import { useAppSelector } from '@/hooks';
+
+import BeaconQueryFormUi from '../BeaconCommon/BeaconQueryFormUi';
 import NetworkBeacons from './NetworkBeacons';
 import NetworkSearchResults from './NetworkSearchResults';
-import BeaconQueryFormUi from '../BeaconCommon/BeaconQueryFormUi';
-import Loader from '@/components/Loader';
-import { beaconNetworkQuery } from '@/features/beacon/networkQuery.store';
-import { WRAPPER_STYLE } from '@/constants/beaconConstants';
 
 const NetworkUi = () => {
-  const beacons = useAppSelector((state) => state.beaconNetwork.beacons);
-  const isFetchingConfig = useAppSelector((state) => state.beaconNetwork.isFetchingBeaconNetworkConfig);
-  const networkAssemblyIds = useAppSelector((state) => state.beaconNetwork.assemblyIds);
-  const networkQuerySections = useAppSelector((state) => state.beaconNetwork.currentQuerySections);
+  const { beacons, isFetchingBeaconNetworkConfig, assemblyIds, currentQuerySections } = useBeaconNetwork();
   const isWaitingForNetworkResponse = useAppSelector(
     (state) => state.beaconNetworkResponse.networkResponseStatus == 'waiting'
   );
 
-  return isFetchingConfig ? (
+  return isFetchingBeaconNetworkConfig ? (
     <Loader />
   ) : (
     <div style={WRAPPER_STYLE}>
       <BeaconQueryFormUi
         isFetchingQueryResponse={isWaitingForNetworkResponse}
         isNetworkQuery={true}
-        beaconAssemblyIds={networkAssemblyIds}
-        querySections={networkQuerySections}
+        beaconAssemblyIds={assemblyIds}
+        querySections={currentQuerySections}
         launchQuery={beaconNetworkQuery}
       />
       <NetworkSearchResults />

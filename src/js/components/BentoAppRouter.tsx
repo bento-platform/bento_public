@@ -13,16 +13,17 @@ import { fetchGohanData, fetchKatsuData } from '@/features/ingestion/lastIngesti
 import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
 import { getProjects, markScopeSet, selectScope } from '@/features/metadata/metadata.store';
 
+import Loader from '@/components/Loader';
+import DefaultLayout from '@/components/Util/DefaultLayout';
+import { BEACON_NETWORK_ENABLED } from '@/config';
+import { BentoRoute } from '@/types/routes';
+import { scopeEqual, validProjectDataset } from '@/utils/router';
+
 import PublicOverview from './Overview/PublicOverview';
 import Search from './Search/Search';
 import ProvenanceTab from './Provenance/ProvenanceTab';
 import BeaconQueryUi from './Beacon/BeaconQueryUi';
-import { BentoRoute } from '@/types/routes';
-import Loader from '@/components/Loader';
 import NetworkUi from './Beacon/BeaconNetwork/NetworkUi';
-import { scopeEqual, validProjectDataset } from '@/utils/router';
-import DefaultLayout from '@/components/Util/DefaultLayout';
-import { BEACON_NETWORK_ENABLED } from '@/config';
 
 const ScopedRoute = () => {
   const { projectId, datasetId } = useParams();
