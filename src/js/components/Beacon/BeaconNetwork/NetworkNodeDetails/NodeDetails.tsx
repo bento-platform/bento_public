@@ -10,9 +10,14 @@ const { Link } = Typography;
 
 const LOGO_MAX_HEIGHT = '50px';
 const LOGO_MAX_WIDTH = '175px';
-const CARD_DEFAULT_WIDTH = '480px';
 const CARD_BODY_MIN_HEIGHT = '100px'; // fit stats without jumping
 const LINK_STYLE = { padding: '4px' };
+
+const ApiErrorTag = ({ errorMessage }: { errorMessage: string }) => (
+  <Tooltip title={`Error response from beacon: ${errorMessage}`}>
+    <Tag color="red">error</Tag>
+  </Tooltip>
+);
 
 const NodeDetails = ({ beacon, response }: NodeDetailsProps) => {
   const { apiUrl, organization, overview } = beacon;
@@ -40,37 +45,16 @@ const NodeDetails = ({ beacon, response }: NodeDetailsProps) => {
     </div>
   );
 
-  const assemblyTags = (
-    <>
-      {assemblies.map((a) => (
-        <Tag color="blue" key={a}>
-          {a}
-        </Tag>
-      ))}
-    </>
-  );
-
-  const ApiErrorTag = ({ errorMessage }: { errorMessage: string }) => (
-    <Tooltip title={`Error response from beacon: ${errorMessage}`}>
-      <Tag color="red">error</Tag>
-    </Tooltip>
-  );
+  const assemblyTags = assemblies.map((a) => (
+    <Tag color="blue" key={a}>
+      {a}
+    </Tag>
+  ));
 
   return (
     <Card
       title={logoAndName}
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        // margin: '5px',
-        // flex: 1,
-        // borderRadius: '10px',
-        // padding: '5px',
-        width: 'calc(50% - 4px)',
-        maxWidth: '600px',
-        // width: '100%',
-        ...BOX_SHADOW,
-      }}
+      style={BOX_SHADOW}
       styles={{
         body: { flexGrow: 1, minHeight: CARD_BODY_MIN_HEIGHT },
         actions: { display: 'flex', alignItems: 'center' },

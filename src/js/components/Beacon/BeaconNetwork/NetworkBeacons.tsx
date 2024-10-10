@@ -1,3 +1,4 @@
+import { Col, Row } from 'antd';
 import { useAppSelector } from '@/hooks';
 import type { NetworkBeacon } from '@/types/beaconNetwork';
 import NodeDetails from './NetworkNodeDetails/NodeDetails';
@@ -8,11 +9,13 @@ const NetworkBeacons = ({ beacons }: NetworkBeaconsProps) => {
   // for now, render all beacons from the start and update as they respond (NodeDetails component is memoized)
   // they could be shown optionally if network is very large (ie could just show only beacons with non-zero responses)
   return (
-    <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 8, maxWidth: '1200px', width: '100%' }}>
+    <Row gutter={[8, 8]} style={{ maxWidth: 1200 }}>
       {beacons.map((b) => (
-        <NodeDetails beacon={b} key={b.id} response={beaconResponses[b.id] ?? {}} />
+        <Col lg={24} xl={12} key={b.id}>
+          <NodeDetails beacon={b} key={b.id} response={beaconResponses[b.id] ?? {}} />
+        </Col>
       ))}
-    </div>
+    </Row>
   );
 };
 
