@@ -6,7 +6,8 @@ import { useBeaconNetwork } from '@/features/beacon/hooks';
 const NetworkSearchResults = () => {
   const td = useTranslationDefault();
 
-  const { hasBeaconNetworkError, beacons: responses } = useBeaconNetwork();
+  const { hasBeaconNetworkError } = useBeaconNetwork();
+  const responses = useAppSelector((state) => state.beaconNetworkResponse.beacons);
   const { individualCount, biosampleCount, experimentCount, biosampleChartData, experimentChartData } = useAppSelector(
     (state) => state.beaconNetworkResponse.networkResults
   );
@@ -17,7 +18,7 @@ const NetworkSearchResults = () => {
   const numNonErrorResponses = responseArray.filter((r) =>
     Object.prototype.hasOwnProperty.call(r, 'individualCount')
   ).length;
-  const numNonZeroResponses = responseArray.filter((r) => 'individualCount' in r && r.individualCount).length;
+  const numNonZeroResponses = responseArray.filter((r) => r.individualCount).length;
 
   // show number of non-zero responses
   const numResultsText = (n: number) => {
