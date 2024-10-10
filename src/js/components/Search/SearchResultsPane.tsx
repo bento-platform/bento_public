@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { type ReactElement, useCallback, useMemo, useState } from 'react';
 import { Card, Col, Row, Statistic, Typography, Space, Table, Button } from 'antd';
 import { LeftOutlined, TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
@@ -11,6 +11,7 @@ import { PORTAL_URL } from '@/config';
 import { BOX_SHADOW, COUNTS_FILL, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
 import { useTranslationDefault, useTranslationCustom } from '@/hooks';
 import type { ChartData } from '@/types/data';
+import { NO_RESULTS_DASHES } from '@/constants/searchConstants';
 
 type IndividualResultRow = { id: string };
 
@@ -24,6 +25,8 @@ const SearchResultsPane = ({
   biosampleChartData,
   experimentCount,
   experimentChartData,
+  resultsTitle,
+  resultsExtra,
 }: SearchResultsPaneProps) => {
   const td = useTranslationDefault();
   const t = useTranslationCustom();
@@ -55,7 +58,6 @@ const SearchResultsPane = ({
       <Card
         style={{
           borderRadius: '10px',
-          padding: '10px 33px',
           maxWidth: '1200px',
           width: '100%',
           // Set a minimum height (i.e., an expected final height, which can be exceeded) to prevent this component from
@@ -63,13 +65,15 @@ const SearchResultsPane = ({
           //   chart (300)
           // + heading (24 + 8 [0.5em] bottom margin)
           // + card body padding (2*24 = 48)
-          // + card wrapper padding (2*10 = 20)
           // + border (2*1 = 2)
-          // = 402:
-          minHeight: '402px',
+          // = 382, or + 56 = 438 if any header content present
+          minHeight: resultsTitle || resultsExtra ? '438px' : '382px',
           ...BOX_SHADOW,
         }}
+        styles={{ body: { padding: '24px 40px' } }}
         loading={isFetchingData}
+        title={resultsTitle}
+        extra={resultsExtra}
       >
         <Row gutter={16}>
           <Col xs={24} lg={4}>
@@ -91,13 +95,13 @@ const SearchResultsPane = ({
               </div>
               <Statistic
                 title={td('Biosamples')}
-                value={hasInsufficientData ? '----' : biosampleCount}
+                value={hasInsufficientData ? NO_RESULTS_DASHES : biosampleCount}
                 valueStyle={{ color: COUNTS_FILL }}
                 prefix={<BiDna />}
               />
               <Statistic
                 title={td('Experiments')}
-                value={hasInsufficientData ? '----' : experimentCount}
+                value={hasInsufficientData ? NO_RESULTS_DASHES : experimentCount}
                 valueStyle={{ color: COUNTS_FILL }}
                 prefix={<ExpSvg />}
               />
@@ -156,6 +160,8 @@ export interface SearchResultsPaneProps {
   biosampleChartData: ChartData[];
   experimentCount: number;
   experimentChartData: ChartData[];
+  resultsTitle?: string;
+  resultsExtra?: ReactElement;
 }
 
 export default SearchResultsPane;

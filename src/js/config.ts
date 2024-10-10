@@ -6,6 +6,7 @@ interface PublicConfig {
   TRANSLATED: boolean;
   BEACON_URL: string;
   BEACON_UI_ENABLED: boolean;
+  BEACON_NETWORK_ENABLED: boolean;
   PUBLIC_URL: string;
   CLIENT_ID: string;
   OPENID_CONFIG_URL: string;
@@ -19,8 +20,11 @@ export const CLIENT_NAME = BENTO_PUBLIC_CONFIG.CLIENT_NAME ?? process.env.BENTO_
 export const PORTAL_URL = BENTO_PUBLIC_CONFIG.PORTAL_URL ?? process.env.BENTO_PUBLIC_PORTAL_URL;
 export const TRANSLATED = BENTO_PUBLIC_CONFIG.TRANSLATED ?? stringToBoolean(process.env.BENTO_PUBLIC_TRANSLATED);
 export const BEACON_URL = BENTO_PUBLIC_CONFIG.BEACON_URL ?? process.env.BEACON_URL;
+export const BEACON_NETWORK_URL = BEACON_URL + '/network';
 export const BEACON_UI_ENABLED =
   BENTO_PUBLIC_CONFIG.BEACON_UI_ENABLED ?? stringToBoolean(process.env.BENTO_BEACON_UI_ENABLED);
+export const BEACON_NETWORK_ENABLED =
+  BENTO_PUBLIC_CONFIG.BEACON_NETWORK_ENABLED ?? stringToBoolean(process.env.BENTO_BEACON_NETWORK_ENABLED);
 
 // Authentication
 export const PUBLIC_URL = BENTO_PUBLIC_CONFIG.PUBLIC_URL ?? process.env.BENTO_PUBLIC_URL ?? '';
