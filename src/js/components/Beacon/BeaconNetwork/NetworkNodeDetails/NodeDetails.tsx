@@ -27,14 +27,14 @@ const NodeDetails = ({ beacon, response }: NodeDetailsProps) => {
     <img
       alt={`Logo for ${organization.name}`}
       src={organization.logoUrl}
-      style={{ maxHeight: LOGO_MAX_HEIGHT, maxWidth: LOGO_MAX_WIDTH, padding: '5px' }}
+      style={{ maxHeight: LOGO_MAX_HEIGHT, maxWidth: LOGO_MAX_WIDTH, padding: '4px' }}
     />
   );
 
-  const orgName = <h4 style={{ paddingLeft: '15px' }}>{organization.name}</h4>;
+  const orgName = <h4 style={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>{organization.name}</h4>;
 
   const logoAndName = (
-    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 16 }}>
       {logo}
       {orgName}
     </div>
