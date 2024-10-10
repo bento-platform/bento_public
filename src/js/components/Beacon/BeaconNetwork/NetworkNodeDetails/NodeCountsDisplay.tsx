@@ -17,7 +17,11 @@ const NodeCountsDisplay = ({
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center' }}>
-      <Space direction="horizontal" size="middle" style={{ display: 'flex', alignItems: 'flex-start' }}>
+      <Space
+        direction="horizontal"
+        size="middle"
+        style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap' }}
+      >
         {isFetchingQueryResponse ? (
           <div style={{ display: 'flex', flexDirection: 'column', margin: '6px 0' }}>
             <Skeleton.Input size="small" style={{ width: '330px', height: '20px' }} active />

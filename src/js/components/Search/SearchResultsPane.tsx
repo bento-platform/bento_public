@@ -58,7 +58,6 @@ const SearchResultsPane = ({
       <Card
         style={{
           borderRadius: '10px',
-          padding: '10px 33px',
           maxWidth: '1200px',
           width: '100%',
           // Set a minimum height (i.e., an expected final height, which can be exceeded) to prevent this component from
@@ -66,13 +65,12 @@ const SearchResultsPane = ({
           //   chart (300)
           // + heading (24 + 8 [0.5em] bottom margin)
           // + card body padding (2*24 = 48)
-          // + card wrapper padding (2*10 = 20)
           // + border (2*1 = 2)
-          // = 402, or + 56 = 458 if any header content present
-          minHeight: resultsTitle || resultsExtra ? '458px' : '402px',
+          // = 382, or + 56 = 438 if any header content present
+          minHeight: resultsTitle || resultsExtra ? '438px' : '382px',
           ...BOX_SHADOW,
         }}
-        // styles={{ body: { padding: '-10px' }, header: {} }}
+        styles={{ body: { padding: '24px 40px' } }}
         loading={isFetchingData}
         title={resultsTitle}
         extra={resultsExtra}
