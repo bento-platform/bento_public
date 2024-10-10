@@ -58,7 +58,6 @@ const SearchResultsPane = ({
       <Card
         style={{
           borderRadius: '10px',
-          // ...(resultsTitle ? {} : { padding: '10px 33px' }),
           maxWidth: '1200px',
           width: '100%',
           // Set a minimum height (i.e., an expected final height, which can be exceeded) to prevent this component from
