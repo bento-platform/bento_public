@@ -61,7 +61,7 @@ const PublicOverview = () => {
         {isFetchingAbout ? (
           <Skeleton title={false} paragraph={{ rows: 2 }} />
         ) : (
-          <div dangerouslySetInnerHTML={{ __html: aboutContent }} />
+          <div className="about-content" dangerouslySetInnerHTML={{ __html: aboutContent }} />
         )}
       </Card>
       <Row>
