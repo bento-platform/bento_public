@@ -1,6 +1,6 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
-import type { RootState, AppDispatch } from '@/store';
+import type { AppDispatch, RootState } from '@/store';
 import { serializeChartData } from '@/utils/chart';
 import { beaconApiError } from '@/utils/beaconApiError';
 import type { BeaconQueryPayload, BeaconQueryResponse, FlattenedBeaconResponse } from '@/types/beacon';
@@ -18,7 +18,7 @@ const queryUrl = (beaconId: string, endpoint: string): string => {
 // dispatch a query for each beacon in the network
 export const beaconNetworkQuery =
   (payload: BeaconQueryPayload) => (dispatch: AppDispatch, getState: () => RootState) => {
-    const beacons = getState().beaconNetwork.beacons;
+    const { beacons } = getState().beaconNetwork;
     beacons.forEach((b) => {
       const url = queryUrl(b.id, DEFAULT_QUERY_ENDPOINT);
       dispatch(queryBeaconNetworkNode({ _beaconId: b.id, url: url, payload: payload }));
@@ -29,7 +29,7 @@ const queryBeaconNetworkNode = createAsyncThunk<
   BeaconQueryResponse,
   QueryToNetworkBeacon,
   { state: RootState; rejectValue: string }
->('queryBeaconNetworkNode', async ({ _beaconId, url, payload }, { rejectWithValue }) => {
+>('queryBeaconNetworkNode', async ({ url, payload }, { rejectWithValue }) => {
   // currently no auth in beacon network
   // these would only make sense if we start creating tokens that apply to more than one bento instance
   // const token = getState().auth.accessToken;
@@ -114,12 +114,11 @@ const queryBeaconNetworkNodeSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(queryBeaconNetworkNode.pending, (state, action) => {
       const beaconId = action.meta.arg._beaconId;
-      const beaconState = {
+      state.beacons[beaconId] = {
         hasApiError: false,
         apiErrorMessage: '',
         isFetchingQueryResponse: true,
       };
-      state.beacons[beaconId] = beaconState;
 
       // don't undo "responding" status if another beacon is already responding
       if (state.networkResponseStatus == 'idle') {
@@ -150,12 +149,11 @@ const queryBeaconNetworkNodeSlice = createSlice({
     });
     builder.addCase(queryBeaconNetworkNode.rejected, (state, action) => {
       const beaconId = action.meta.arg._beaconId;
-      const beaconState: FlattenedBeaconResponse = {
+      state.beacons[beaconId] = {
         hasApiError: true,
-        apiErrorMessage: action.payload as string, //passed from rejectWithValue
+        apiErrorMessage: action.payload as string, // passed from rejectWithValue
         isFetchingQueryResponse: false,
       };
-      state.beacons[beaconId] = beaconState;
       state.networkResponseStatus = 'responding';
     });
   },
