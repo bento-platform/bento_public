@@ -63,8 +63,8 @@ body {
 
 /* BEGIN about HTML styling */
 
-/* Header elements which are the first child of the about content container shouldn't have the default top margin */
-.about-content h1:first-child, h2:first-child, h3:first-child, h4:first-child, h5:first-child, h6:first-child {
+/* Elements which are the first child of the about content container shouldn't have the default top margin */
+.about-content *:first-child {
   margin-top: 0;
 }
 
