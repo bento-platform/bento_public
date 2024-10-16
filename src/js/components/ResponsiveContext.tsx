@@ -1,11 +1,19 @@
 import type { ReactNode } from 'react';
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+
+import { DeviceBreakpoints } from '@/constants/deviceBreakpoints';
 
 interface ResponsiveContextType {
   isMobile: boolean;
+  isTablet: boolean;
 }
 
-const ResponsiveContext = createContext<ResponsiveContextType | undefined>(undefined);
+const DefaultResponsiveContext: ResponsiveContextType = {
+  isMobile: false,
+  isTablet: false,
+};
+
+const ResponsiveContext = createContext<ResponsiveContextType>(DefaultResponsiveContext);
 
 interface ResponsiveProviderProps {
   children: ReactNode;
@@ -13,23 +21,29 @@ interface ResponsiveProviderProps {
 
 export const ResponsiveProvider = ({ children }: ResponsiveProviderProps) => {
   const [isMobile, setIsMobile] = useState<boolean>(false);
+  const [isTablet, setIsTablet] = useState<boolean>(false);
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768); // Adjust this breakpoint as needed
+      setIsMobile(window.innerWidth <= DeviceBreakpoints.MOBILE);
+      setIsTablet(window.innerWidth > DeviceBreakpoints.MOBILE && window.innerWidth <= DeviceBreakpoints.TABLET);
     };
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  return <ResponsiveContext.Provider value={{ isMobile }}>{children}</ResponsiveContext.Provider>;
+  return <ResponsiveContext.Provider value={{ isMobile, isTablet }}>{children}</ResponsiveContext.Provider>;
 };
 
-export const useResponsive = (): ResponsiveContextType => {
-  const context = useContext(ResponsiveContext);
-  if (context === undefined) {
-    throw new Error('useResponsive must be used within a ResponsiveProvider');
-  }
-  return context;
+export const useResponsiveMobileContext = (): boolean => {
+  return useContext(ResponsiveContext).isMobile;
+};
+
+export const useResponsiveTabletContext = (): boolean => {
+  return useContext(ResponsiveContext).isTablet;
+};
+
+export const useSmallScreen = (): boolean => {
+  return useContext(ResponsiveContext).isMobile || useContext(ResponsiveContext).isTablet;
 };

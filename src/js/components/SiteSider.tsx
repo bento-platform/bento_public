@@ -1,9 +1,9 @@
 import type React from 'react';
-import { useMemo, useCallback } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useCallback, useMemo } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-import { Layout, Menu } from 'antd';
 import type { MenuProps, SiderProps } from 'antd';
+import { Layout, Menu } from 'antd';
 import Icon, { PieChartOutlined, SearchOutlined, SolutionOutlined } from '@ant-design/icons';
 
 import BeaconSvg from '@/components/Beacon/BeaconSvg';

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-import { Button, Flex, Layout, Typography, Space } from 'antd';
+import { Button, Flex, Layout, Space, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useAuthState, useIsAuthenticated, useOpenIdConfig, usePerformAuth, usePerformSignOut } from 'bento-auth-js';
 
@@ -15,7 +15,7 @@ import { DEFAULT_TRANSLATION, LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/co
 import { CLIENT_NAME, PORTAL_URL, TRANSLATED } from '@/config';
 
 import ScopePickerModal from './Scope/ScopePickerModal';
-import { useResponsive } from '@/components/ResponsiveContext';
+import { useSmallScreen } from '@/components/ResponsiveContext';
 
 const { Header } = Layout;
 
@@ -25,7 +25,7 @@ const SiteHeader = () => {
   const { t, i18n } = useTranslation(DEFAULT_TRANSLATION);
   const navigate = useNavigate();
   const location = useLocation();
-  const { isMobile } = useResponsive();
+  const isSmallScreen = useSmallScreen();
 
   const { isFetching: openIdConfigFetching } = useOpenIdConfig();
   const { isHandingOffCodeForToken } = useAuthState();
@@ -67,8 +67,8 @@ const SiteHeader = () => {
   return (
     <Header style={{ position: 'fixed', width: '100%', zIndex: 100, top: 0 }}>
       <Flex align="center" justify="space-between">
-        <Space size={isMobile ? 'small' : 'middle'}>
-          {isMobile ? (
+        <Space size={isSmallScreen ? 'small' : 'middle'}>
+          {isSmallScreen ? (
             <img
               src="/public/assets/icon_small.png"
               alt="logo"
@@ -106,7 +106,7 @@ const SiteHeader = () => {
           <ScopePickerModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
         </Space>
 
-        <Space size={isMobile ? 0 : 'small'}>
+        <Space size={isSmallScreen ? 0 : 'small'}>
           {TRANSLATED && (
             <Button
               type="text"
@@ -114,20 +114,20 @@ const SiteHeader = () => {
               icon={<RiTranslate style={{ transform: 'translateY(1px)' }} />}
               onClick={changeLanguage}
             >
-              {isMobile ? '' : LNGS_FULL_NAMES[LNG_CHANGE[i18n.language]]}
+              {isSmallScreen ? '' : LNGS_FULL_NAMES[LNG_CHANGE[i18n.language]]}
             </Button>
           )}
           <Button type="text" className="header-button" icon={<LinkOutlined />} onClick={openPortalWindow}>
-            {isMobile ? '' : t('Portal')}
-            {isMobile || <ExportOutlined />}
+            {isSmallScreen ? '' : t('Portal')}
+            {isSmallScreen || <ExportOutlined />}
           </Button>
           {isAuthenticated ? (
             <Button type="text" className="header-button" icon={<LogoutOutlined />} onClick={performSignOut}>
-              {isMobile ? '' : t('Sign Out')}
+              {isSmallScreen ? '' : t('Sign Out')}
             </Button>
           ) : (
             <Button type="primary" shape="round" icon={<LoginOutlined />} onClick={performSignIn}>
-              {openIdConfigFetching || isHandingOffCodeForToken ? t('Loading...') : isMobile ? '' : t('Sign In')}
+              {openIdConfigFetching || isHandingOffCodeForToken ? t('Loading...') : isSmallScreen ? '' : t('Sign In')}
             </Button>
           )}
         </Space>
