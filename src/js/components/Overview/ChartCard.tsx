@@ -1,14 +1,13 @@
 import type React from 'react';
 import { memo, useRef } from 'react';
-import { Card, Button, Tooltip, Space, Typography, Row } from 'antd';
+import { Button, Card, Row, Space, Tooltip, Typography } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import Chart from './Chart';
 import CustomEmpty from '../Util/CustomEmpty';
-import { CHART_HEIGHT, BOX_SHADOW } from '@/constants/overviewConstants';
+import { BOX_SHADOW, CHART_HEIGHT } from '@/constants/overviewConstants';
 import { useElementWidth, useTranslationCustom, useTranslationDefault } from '@/hooks';
 import type { ChartDataField } from '@/types/data';
 
-const CARD_STYLE: React.CSSProperties = { height: '415px', borderRadius: '11px', ...BOX_SHADOW };
 const ROW_EMPTY_STYLE: React.CSSProperties = { height: `${CHART_HEIGHT}px` };
 
 interface TitleComponentProps {
@@ -30,6 +29,7 @@ const ChartCard: React.FC<ChartCardProps> = memo(({ section, chart, onRemoveChar
   const td = useTranslationDefault();
   const containerRef = useRef<HTMLDivElement>(null);
   const width = useElementWidth(containerRef, chart.width);
+  const CARD_STYLE: React.CSSProperties = { height: '415px', borderRadius: '11px', ...BOX_SHADOW };
 
   const {
     data,
@@ -82,8 +82,6 @@ const ChartCard: React.FC<ChartCardProps> = memo(({ section, chart, onRemoveChar
     </div>
   );
 });
-
-ChartCard.displayName = 'ChartCard';
 
 export interface ChartCardProps {
   section: string;

@@ -1,10 +1,10 @@
 import type { CSSProperties } from 'react';
-import { Typography, Card, Space, Statistic } from 'antd';
+import { Card, Space, Statistic, Typography } from 'antd';
 import { TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
 
 import ExpSvg from '../Util/ExpSvg';
-import { COUNTS_FILL, BOX_SHADOW } from '@/constants/overviewConstants';
+import { BOX_SHADOW, COUNTS_FILL } from '@/constants/overviewConstants';
 import { useAppSelector, useTranslationDefault } from '@/hooks';
 
 const styles: Record<string, CSSProperties> = {
@@ -41,7 +41,7 @@ const Counts = () => {
   return (
     <>
       <Typography.Title level={3}>{td('Counts')}</Typography.Title>
-      <Space direction="horizontal">
+      <Space wrap>
         {data.map(({ title, icon, count }, i) => (
           <Card key={i} style={{ ...styles.countCard, height: isFetchingData ? 138 : 114 }}>
             <Statistic

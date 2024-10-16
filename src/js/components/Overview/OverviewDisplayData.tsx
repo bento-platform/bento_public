@@ -5,9 +5,12 @@ import { disableChart } from '@/features/data/data.store';
 import type { ChartDataField } from '@/types/data';
 import ChartCard from './ChartCard';
 import { CHART_WIDTH, GRID_GAP } from '@/constants/overviewConstants';
+import { useSmallScreen } from '@/components/ResponsiveContext';
+import { Space } from 'antd';
 
 const OverviewDisplayData = ({ section, allCharts }: OverviewDisplayDataProps) => {
   const dispatch = useDispatch();
+  const isSmallScreen = useSmallScreen();
 
   const containerStyle = {
     display: 'grid',
@@ -27,6 +30,14 @@ const OverviewDisplayData = ({ section, allCharts }: OverviewDisplayDataProps) =
   const renderItem = (chart: ChartDataField) => {
     return <ChartCard key={chart.id} chart={chart} section={section} onRemoveChart={onRemoveChart} />;
   };
+
+  if (isSmallScreen) {
+    return (
+      <Space direction="vertical" style={{ width: '100%' }}>
+        {displayedCharts.map(renderItem)}
+      </Space>
+    );
+  }
 
   return <div style={containerStyle}>{displayedCharts.map(renderItem)}</div>;
 };

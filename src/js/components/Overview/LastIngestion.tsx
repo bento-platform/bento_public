@@ -1,6 +1,6 @@
 import type React from 'react';
 import { useCallback } from 'react';
-import { Typography, Card, Space, Empty } from 'antd';
+import { Card, Empty, Space, Typography } from 'antd';
 import { CalendarOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 
@@ -43,7 +43,7 @@ const LastIngestionInfo: React.FC = () => {
   return (
     <Space direction="vertical" size={0}>
       <Typography.Title level={3}>{t('Latest Data Ingestion')}</Typography.Title>
-      <Space direction="horizontal">
+      <Space wrap>
         {hasData ? (
           queryableDataTypes.map((dataType: LastIngestionDataTypeResponse) => (
             <Card style={BOX_SHADOW} key={dataType.id}>
