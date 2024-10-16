@@ -96,12 +96,12 @@ const computeNetworkResults = (beacons: BeaconNetworkQueryState['beacons']) => {
     experimentChartData: [],
   };
 
-  Object.values(beacons).forEach((b) => {
-    overview.individualCount += b.results.individualCount ?? 0;
-    overview.biosampleCount += b.results.experimentCount ?? 0;
-    overview.experimentCount += b.results.experimentCount ?? 0;
-    overview.biosampleChartData = mergeCharts(overview.biosampleChartData, b.results.biosampleChartData ?? []);
-    overview.experimentChartData = mergeCharts(overview.experimentChartData, b.results.experimentChartData ?? []);
+  Object.values(beacons).forEach(({ results }) => {
+    overview.individualCount += results.individualCount ?? 0;
+    overview.biosampleCount += results.experimentCount ?? 0;
+    overview.experimentCount += results.experimentCount ?? 0;
+    overview.biosampleChartData = mergeCharts(overview.biosampleChartData, results.biosampleChartData ?? []);
+    overview.experimentChartData = mergeCharts(overview.experimentChartData, results.experimentChartData ?? []);
   });
   return overview;
 };
