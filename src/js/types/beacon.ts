@@ -1,9 +1,9 @@
 import type { Rule } from 'antd/es/form';
 import type { ActionCreator } from 'redux';
-import type { ChartData } from '@/types/data';
 import type { Datum } from '@/types/overviewResponse';
 import type { makeBeaconQuery } from '@/features/beacon/beaconQuery.store';
 import type { beaconNetworkQuery } from '@/features/beacon/networkQuery.store';
+import type { OptionalDiscoveryResults } from '@/types/data';
 
 // ----------------------------
 // form handling
@@ -163,11 +163,6 @@ export interface BeaconServiceInfo {
 
 export interface FlattenedBeaconResponse {
   isFetchingQueryResponse: boolean;
-  hasApiError: boolean;
-  apiErrorMessage: string;
-  individualCount?: number;
-  biosampleCount?: number;
-  biosampleChartData?: ChartData[];
-  experimentCount?: number;
-  experimentChartData?: ChartData[];
+  apiErrorMessage: string; // if non-blank, an error has occurred
+  results: OptionalDiscoveryResults;
 }
