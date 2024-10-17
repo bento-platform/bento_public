@@ -20,12 +20,13 @@ const SearchResultsCounts = ({
   setSelectedPane,
   hasInsufficientData,
   message,
-  showZeroIndividualsAsDashes,
 }: SearchResultsCountsProps) => {
   const td = useTranslationDefault();
 
-  const { individualMatches } = results;
+  const { individualCount, individualMatches, biosampleCount, experimentCount } = results;
   const individualsClickable = !!setSelectedPane && individualMatches?.length;
+
+  const isBeaconNetwork = mode === 'beacon-network';
 
   return (
     <Space
@@ -41,7 +42,7 @@ const SearchResultsCounts = ({
           : {}),
       }}
     >
-      {mode === 'beacon-network' && isFetchingQueryResponse ? (
+      {isBeaconNetwork && isFetchingQueryResponse ? (
         <div style={{ display: 'flex', flexDirection: 'column', margin: '6px 0' }}>
           <Skeleton.Input size="small" style={{ width: '330px', height: '20px' }} active />
           <Skeleton.Input size="small" style={{ marginTop: '10px', width: '330px', height: '20px' }} active />
@@ -61,7 +62,9 @@ const SearchResultsCounts = ({
               value={
                 hasInsufficientData
                   ? td(message ?? '')
-                  : results.individualCount || (showZeroIndividualsAsDashes ? NO_RESULTS_DASHES : 0)
+                  : isBeaconNetwork && !individualCount
+                    ? NO_RESULTS_DASHES
+                    : individualCount
               }
               valueStyle={STAT_STYLE}
               prefix={<TeamOutlined />}
@@ -69,13 +72,13 @@ const SearchResultsCounts = ({
           </div>
           <Statistic
             title={td('Biosamples')}
-            value={hasInsufficientData ? NO_RESULTS_DASHES : results.biosampleCount}
+            value={hasInsufficientData || (isBeaconNetwork && !biosampleCount) ? NO_RESULTS_DASHES : biosampleCount}
             valueStyle={STAT_STYLE}
             prefix={<BiDna />}
           />
           <Statistic
             title={td('Experiments')}
-            value={hasInsufficientData ? NO_RESULTS_DASHES : results.experimentCount}
+            value={hasInsufficientData || (isBeaconNetwork && !experimentCount) ? NO_RESULTS_DASHES : experimentCount}
             valueStyle={STAT_STYLE}
             prefix={<ExpSvg />}
           />
@@ -95,7 +98,6 @@ type SearchResultsCountsProps = {
   setSelectedPane?: (pane: SearchResultsUIPane) => void;
   hasInsufficientData?: boolean;
   message?: string;
-  showZeroIndividualsAsDashes?: boolean;
 };
 
 export default SearchResultsCounts;

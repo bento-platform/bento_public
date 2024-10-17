@@ -3,12 +3,7 @@ import type { OptionalDiscoveryResults } from '@/types/data';
 
 const NodeCountsDisplay = ({ isFetchingQueryResponse, results }: NodeCountsDisplayProps) => (
   <div style={{ display: 'flex', justifyContent: 'center' }}>
-    <SearchResultsCounts
-      mode="beacon-network"
-      results={results}
-      isFetchingQueryResponse={isFetchingQueryResponse}
-      showZeroIndividualsAsDashes={true}
-    />
+    <SearchResultsCounts mode="beacon-network" results={results} isFetchingQueryResponse={isFetchingQueryResponse} />
   </div>
 );
 
