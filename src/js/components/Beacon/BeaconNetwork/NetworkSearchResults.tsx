@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Tag } from 'antd';
 import { useAppSelector, useTranslationDefault } from '@/hooks';
 import SearchResultsPane from '../../Search/SearchResultsPane';
@@ -7,18 +8,19 @@ const NetworkSearchResults = () => {
   const td = useTranslationDefault();
 
   const { hasBeaconNetworkError } = useBeaconNetwork();
-  const responses = useAppSelector((state) => state.beaconNetworkResponse.beacons);
-  const { individualCount, biosampleCount, experimentCount, biosampleChartData, experimentChartData } = useAppSelector(
-    (state) => state.beaconNetworkResponse.networkResults
-  );
-  const responseArray = Object.values(responses);
+  const { networkResults, beacons: responses } = useAppSelector((state) => state.beaconNetworkResponse);
+  const responseArray = useMemo(() => Object.values(responses), [responses]);
 
   // filter() creates arrays we don't need, but the arrays are small
   // more readable than equivalent reduce() call
-  const numNonErrorResponses = responseArray.filter((r) =>
-    Object.prototype.hasOwnProperty.call(r, 'individualCount')
-  ).length;
-  const numNonZeroResponses = responseArray.filter((r) => r.individualCount).length;
+  const numNonErrorResponses = useMemo(
+    () => responseArray.filter((r) => 'individualCount' in r.results).length,
+    [responseArray]
+  );
+  const numNonZeroResponses = useMemo(
+    () => responseArray.filter((r) => !!r.results.individualCount).length,
+    [responseArray]
+  );
 
   // show number of non-zero responses
   const numResultsText = (n: number) => {
@@ -38,20 +40,12 @@ const NetworkSearchResults = () => {
   );
 
   return (
-    <>
-      <SearchResultsPane
-        isFetchingData={numNonErrorResponses == 0 && !hasBeaconNetworkError}
-        hasInsufficientData={false}
-        message={''}
-        individualCount={individualCount}
-        biosampleCount={biosampleCount}
-        biosampleChartData={biosampleChartData}
-        experimentCount={experimentCount}
-        experimentChartData={experimentChartData}
-        resultsTitle={'Network Search Results'}
-        resultsExtra={resultsExtra}
-      />
-    </>
+    <SearchResultsPane
+      isFetchingData={numNonErrorResponses == 0 && !hasBeaconNetworkError}
+      results={networkResults}
+      resultsTitle="Network Search Results"
+      resultsExtra={resultsExtra}
+    />
   );
 };
 

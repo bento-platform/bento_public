@@ -1,12 +1,14 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { makeAuthorizationHeader } from 'bento-auth-js';
-import type { RootState } from '@/store';
-import { serializeChartData } from '@/utils/chart';
-import { beaconApiError } from '@/utils/beaconApiError';
-import type { BeaconQueryPayload, BeaconQueryResponse } from '@/types/beacon';
-import type { ChartData } from '@/types/data';
+
 import { BEACON_URL } from '@/config';
+import { EMPTY_DISCOVERY_RESULTS } from '@/constants/searchConstants';
+import type { RootState } from '@/store';
+import type { BeaconQueryPayload, BeaconQueryResponse } from '@/types/beacon';
+import type { DiscoveryResults } from '@/types/data';
+import { beaconApiError, errorMsgOrDefault } from '@/utils/beaconApiError';
+import { serializeChartData } from '@/utils/chart';
 
 const beaconIndividualsEndpoint = BEACON_URL + '/individuals';
 
@@ -23,25 +25,15 @@ export const makeBeaconQuery = createAsyncThunk<
     .catch(beaconApiError(rejectWithValue));
 });
 
-type BeaconQueryInitialStateType = {
+type BeaconQueryState = {
   isFetchingQueryResponse: boolean;
-  individualCount: number;
-  biosampleCount: number;
-  biosampleChartData: ChartData[];
-  experimentCount: number;
-  experimentChartData: ChartData[];
-  hasApiError: boolean;
+  results: DiscoveryResults;
   apiErrorMessage: string;
 };
 
-const initialState: BeaconQueryInitialStateType = {
+const initialState: BeaconQueryState = {
   isFetchingQueryResponse: false,
-  individualCount: 0,
-  biosampleCount: 0,
-  biosampleChartData: [],
-  experimentCount: 0,
-  experimentChartData: [],
-  hasApiError: false,
+  results: EMPTY_DISCOVERY_RESULTS,
   apiErrorMessage: '',
 };
 
@@ -51,27 +43,29 @@ const beaconQuery = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(makeBeaconQuery.pending, (state) => {
-      state.hasApiError = false;
       state.apiErrorMessage = '';
       state.isFetchingQueryResponse = true;
     });
     builder.addCase(makeBeaconQuery.fulfilled, (state, { payload }) => {
       if (payload.info?.bento) {
-        state.biosampleCount = payload.info.bento?.biosamples?.count;
-        state.biosampleChartData = serializeChartData(payload.info.bento?.biosamples?.sampled_tissue);
-        state.experimentCount = payload.info.bento?.experiments?.count;
-        state.experimentChartData = serializeChartData(payload.info.bento?.experiments?.experiment_type);
+        state.results = {
+          ...state.results,
+          biosampleCount: payload.info.bento?.biosamples?.count,
+          biosampleChartData: serializeChartData(payload.info.bento?.biosamples?.sampled_tissue),
+          experimentCount: payload.info.bento?.experiments?.count,
+          experimentChartData: serializeChartData(payload.info.bento?.experiments?.experiment_type),
+        };
       }
       if (payload.responseSummary) {
-        state.individualCount = payload.responseSummary.numTotalResults;
+        state.results.individualCount = payload.responseSummary.numTotalResults;
       }
-      state.hasApiError = false;
       state.apiErrorMessage = '';
       state.isFetchingQueryResponse = false;
     });
     builder.addCase(makeBeaconQuery.rejected, (state, action) => {
-      state.hasApiError = true;
-      state.apiErrorMessage = action.payload as string; //passed from rejectWithValue
+      // apiErrorMessage must be non-blank to be treated as an error -- if no error is received, but one occurred, use a
+      // generic fallback.
+      state.apiErrorMessage = errorMsgOrDefault(action.payload); // passed from rejectWithValue
       state.isFetchingQueryResponse = false;
     });
   },

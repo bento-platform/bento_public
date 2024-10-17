@@ -1,17 +1,16 @@
 import { type ReactElement, useCallback, useMemo, useState } from 'react';
-import { Card, Col, Row, Statistic, Typography, Space, Table, Button } from 'antd';
-import { LeftOutlined, TeamOutlined } from '@ant-design/icons';
-import { BiDna } from 'react-icons/bi';
+import { Card, Col, Row, Typography, Table, Button } from 'antd';
+import { LeftOutlined } from '@ant-design/icons';
 import { PieChart } from 'bento-charts';
 
-import CustomEmpty from '../Util/CustomEmpty';
-import ExpSvg from '../Util/ExpSvg';
-
 import { PORTAL_URL } from '@/config';
-import { BOX_SHADOW, COUNTS_FILL, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
+import { BOX_SHADOW, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
 import { useTranslationDefault, useTranslationCustom } from '@/hooks';
-import type { ChartData } from '@/types/data';
-import { NO_RESULTS_DASHES } from '@/constants/searchConstants';
+import type { DiscoveryResults } from '@/types/data';
+import type { SearchResultsUIPane } from '@/types/search';
+
+import CustomEmpty from '../Util/CustomEmpty';
+import SearchResultsCounts from './SearchResultsCounts';
 
 type IndividualResultRow = { id: string };
 
@@ -19,12 +18,7 @@ const SearchResultsPane = ({
   isFetchingData,
   hasInsufficientData,
   message,
-  individualCount,
-  individualMatches,
-  biosampleCount,
-  biosampleChartData,
-  experimentCount,
-  experimentChartData,
+  results,
   resultsTitle,
   resultsExtra,
 }: SearchResultsPaneProps) => {
@@ -32,7 +26,9 @@ const SearchResultsPane = ({
   const t = useTranslationCustom();
   const translateMap = useCallback(({ x, y }: { x: string; y: number }) => ({ x: t(x), y }), [t]);
 
-  const [panePage, setPanePage] = useState<'charts' | 'individuals'>('charts');
+  const [panePage, setPanePage] = useState<SearchResultsUIPane>('charts');
+
+  const { individualMatches, biosampleChartData, experimentChartData } = results;
 
   const individualTableColumns = useMemo(
     () => [
@@ -77,35 +73,14 @@ const SearchResultsPane = ({
       >
         <Row gutter={16}>
           <Col xs={24} lg={4}>
-            <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-              <div
-                onClick={individualMatches?.length ? () => setPanePage('individuals') : undefined}
-                className={[
-                  'search-result-statistic',
-                  ...(panePage === 'individuals' ? ['selected'] : []),
-                  ...(individualMatches?.length ? ['enabled'] : []),
-                ].join(' ')}
-              >
-                <Statistic
-                  title={td('Individuals')}
-                  value={hasInsufficientData ? td(message) : individualCount}
-                  valueStyle={{ color: COUNTS_FILL }}
-                  prefix={<TeamOutlined />}
-                />
-              </div>
-              <Statistic
-                title={td('Biosamples')}
-                value={hasInsufficientData ? NO_RESULTS_DASHES : biosampleCount}
-                valueStyle={{ color: COUNTS_FILL }}
-                prefix={<BiDna />}
-              />
-              <Statistic
-                title={td('Experiments')}
-                value={hasInsufficientData ? NO_RESULTS_DASHES : experimentCount}
-                valueStyle={{ color: COUNTS_FILL }}
-                prefix={<ExpSvg />}
-              />
-            </Space>
+            <SearchResultsCounts
+              mode="normal"
+              selectedPane={panePage}
+              setSelectedPane={(p) => setPanePage(p)}
+              results={results}
+              hasInsufficientData={hasInsufficientData}
+              message={message}
+            />
           </Col>
           {panePage === 'charts' ? (
             <>
@@ -152,14 +127,9 @@ const SearchResultsPane = ({
 
 export interface SearchResultsPaneProps {
   isFetchingData: boolean;
-  hasInsufficientData: boolean;
-  message: string;
-  individualCount: number;
-  individualMatches?: string[];
-  biosampleCount: number;
-  biosampleChartData: ChartData[];
-  experimentCount: number;
-  experimentChartData: ChartData[];
+  hasInsufficientData?: boolean;
+  message?: string;
+  results: DiscoveryResults;
   resultsTitle?: string;
   resultsExtra?: ReactElement;
 }

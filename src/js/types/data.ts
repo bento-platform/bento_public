@@ -34,3 +34,24 @@ export interface ChartData {
 export type LocalStorageData = {
   [key in string]: { id: string; isDisplayed: boolean; width: number }[];
 };
+
+export type OptionalDiscoveryResults = {
+  // individuals
+  individualCount?: number;
+  individualMatches?: string[];
+  // biosamples
+  biosampleCount?: number;
+  biosampleChartData?: ChartData[];
+  // experiments
+  experimentCount?: number;
+  experimentChartData?: ChartData[];
+};
+
+export type DiscoveryResults = OptionalDiscoveryResults & {
+  individualCount: number;
+  // individualMatches: kept optional from OptionalDiscoveryResults; undefined if no permissions.
+  biosampleCount: number;
+  experimentCount: number;
+  biosampleChartData: ChartData[];
+  experimentChartData: ChartData[];
+};

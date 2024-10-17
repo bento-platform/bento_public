@@ -19,3 +19,7 @@ export const beaconApiError = (rejectWithValue: (value: string) => any) => (erro
     return rejectWithValue(error.message);
   }
 };
+
+// For beacon API errors in Redux state slices, a blank string is treated as "no error" - so we need to fall back to a
+// default non-blank error string if (for some reason) we get an error with no associated message back.
+export const errorMsgOrDefault = (err: unknown): string => (err as string) || 'error';

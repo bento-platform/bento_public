@@ -17,12 +17,12 @@ export const getBeaconConfig = createAsyncThunk<BeaconConfigResponse, void, { st
   }
 );
 
-type BeaconConfigInitialStateType = {
+type BeaconConfigState = {
   isFetchingBeaconConfig: boolean;
   beaconAssemblyIds: BeaconAssemblyIds;
 };
 
-const initialState: BeaconConfigInitialStateType = {
+const initialState: BeaconConfigState = {
   isFetchingBeaconConfig: false,
   beaconAssemblyIds: [],
 };
