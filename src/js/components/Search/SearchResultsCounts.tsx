@@ -86,6 +86,8 @@ const SearchResultsCounts = ({
 };
 
 type SearchResultsCountsProps = {
+  // Not just vertical/horizontal; beacon-network mode has different loading behaviour currently.
+  // Perhaps this styling will be more unified in the future.
   mode: 'normal' | 'beacon-network';
   results: DiscoveryResults | OptionalDiscoveryResults;
   isFetchingQueryResponse?: boolean;
