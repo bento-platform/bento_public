@@ -1,10 +1,13 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
+
+import { EMPTY_DISCOVERY_RESULTS } from '@/constants/searchConstants';
+import type { DiscoveryResults } from '@/types/data';
+import type { KatsuSearchResponse, SearchFieldResponse } from '@/types/search';
+import { serializeChartData } from '@/utils/chart';
+
 import { makeGetKatsuPublic } from './makeGetKatsuPublic.thunk';
 import { makeGetSearchFields } from './makeGetSearchFields.thunk';
-import { serializeChartData } from '@/utils/chart';
-import type { KatsuSearchResponse, SearchFieldResponse } from '@/types/search';
-import type { ChartData } from '@/types/data';
 
 export type QueryState = {
   isFetchingFields: boolean;
@@ -14,13 +17,8 @@ export type QueryState = {
   querySections: SearchFieldResponse['sections'];
   queryParams: { [key: string]: string };
   queryParamCount: number;
-  biosampleCount: number;
-  biosampleChartData: ChartData[];
-  experimentCount: number;
-  experimentChartData: ChartData[];
   message: string;
-  individualCount: number;
-  individualMatches?: string[];
+  results: DiscoveryResults;
 };
 
 const initialState: QueryState = {
@@ -32,12 +30,7 @@ const initialState: QueryState = {
   querySections: [],
   queryParams: {},
   queryParamCount: 0,
-  biosampleCount: 0,
-  biosampleChartData: [],
-  experimentCount: 0,
-  experimentChartData: [],
-  individualCount: 0,
-  individualMatches: undefined,
+  results: EMPTY_DISCOVERY_RESULTS,
 };
 
 const query = createSlice({
@@ -61,12 +54,17 @@ const query = createSlice({
         return;
       }
       state.message = '';
-      state.biosampleCount = payload.biosamples.count;
-      state.biosampleChartData = serializeChartData(payload.biosamples.sampled_tissue);
-      state.experimentCount = payload.experiments.count;
-      state.experimentChartData = serializeChartData(payload.experiments.experiment_type);
-      state.individualCount = payload.count;
-      state.individualMatches = payload.matches; // Undefined if no permissions
+      state.results = {
+        // biosamples
+        biosampleCount: payload.biosamples.count,
+        biosampleChartData: serializeChartData(payload.biosamples.sampled_tissue),
+        // experiments
+        experimentCount: payload.experiments.count,
+        experimentChartData: serializeChartData(payload.experiments.experiment_type),
+        // individuals
+        individualCount: payload.count,
+        individualMatches: payload.matches, // Undefined if no permissions
+      };
     });
     builder.addCase(makeGetKatsuPublic.rejected, (state) => {
       state.isFetchingData = false;

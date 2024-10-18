@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
-import type { AppDispatch, RootState } from '@/store';
-import { serializeChartData } from '@/utils/chart';
-import { beaconApiError } from '@/utils/beaconApiError';
-import type { BeaconQueryPayload, BeaconQueryResponse, FlattenedBeaconResponse } from '@/types/beacon';
-import type { BeaconFlattenedAggregateResponse, QueryToNetworkBeacon } from '@/types/beaconNetwork';
-import type { ChartData } from '@/types/data';
 import { BEACON_NETWORK_URL } from '@/config';
+import type { AppDispatch, RootState } from '@/store';
+import type { BeaconQueryPayload, BeaconQueryResponse, FlattenedBeaconResponse } from '@/types/beacon';
+import type { QueryToNetworkBeacon } from '@/types/beaconNetwork';
+import type { ChartData, DiscoveryResults } from '@/types/data';
+import { beaconApiError, errorMsgOrDefault } from '@/utils/beaconApiError';
+import { serializeChartData } from '@/utils/chart';
 
 // can parameterize at some point in the future
 const DEFAULT_QUERY_ENDPOINT = '/individuals';
@@ -41,9 +41,9 @@ const queryBeaconNetworkNode = createAsyncThunk<
     .catch(beaconApiError(rejectWithValue));
 });
 
-interface beaconNetworkStateType {
+interface BeaconNetworkQueryState {
   networkResponseStatus: 'idle' | 'waiting' | 'responding';
-  networkResults: BeaconFlattenedAggregateResponse;
+  networkResults: DiscoveryResults;
   beacons: {
     [beaconId: string]: FlattenedBeaconResponse;
   };
@@ -51,7 +51,7 @@ interface beaconNetworkStateType {
 
 type TempChartObject = Record<string, number>;
 
-const initialState: beaconNetworkStateType = {
+const initialState: BeaconNetworkQueryState = {
   networkResponseStatus: 'idle',
   networkResults: {
     individualCount: 0,
@@ -87,8 +87,8 @@ const mergeCharts = (c1: ChartData[], c2: ChartData[]): ChartData[] => {
   return chartObjToChartArr(merged);
 };
 
-const computeNetworkResults = (beacons: beaconNetworkStateType['beacons']) => {
-  const overview: BeaconFlattenedAggregateResponse = {
+const computeNetworkResults = (beacons: BeaconNetworkQueryState['beacons']) => {
+  const overview: DiscoveryResults = {
     individualCount: 0,
     biosampleCount: 0,
     experimentCount: 0,
@@ -96,12 +96,12 @@ const computeNetworkResults = (beacons: beaconNetworkStateType['beacons']) => {
     experimentChartData: [],
   };
 
-  Object.values(beacons).forEach((b) => {
-    overview.individualCount += b.individualCount ?? 0;
-    overview.biosampleCount += b.biosampleCount ?? 0;
-    overview.experimentCount += b.experimentCount ?? 0;
-    overview.biosampleChartData = mergeCharts(overview.biosampleChartData, b.biosampleChartData ?? []);
-    overview.experimentChartData = mergeCharts(overview.experimentChartData, b.experimentChartData ?? []);
+  Object.values(beacons).forEach(({ results }) => {
+    overview.individualCount += results.individualCount ?? 0;
+    overview.biosampleCount += results.experimentCount ?? 0;
+    overview.experimentCount += results.experimentCount ?? 0;
+    overview.biosampleChartData = mergeCharts(overview.biosampleChartData, results.biosampleChartData ?? []);
+    overview.experimentChartData = mergeCharts(overview.experimentChartData, results.experimentChartData ?? []);
   });
   return overview;
 };
@@ -115,9 +115,9 @@ const queryBeaconNetworkNodeSlice = createSlice({
     builder.addCase(queryBeaconNetworkNode.pending, (state, action) => {
       const beaconId = action.meta.arg._beaconId;
       state.beacons[beaconId] = {
-        hasApiError: false,
         apiErrorMessage: '',
         isFetchingQueryResponse: true,
+        results: {},
       };
 
       // don't undo "responding" status if another beacon is already responding
@@ -128,31 +128,38 @@ const queryBeaconNetworkNodeSlice = createSlice({
     builder.addCase(queryBeaconNetworkNode.fulfilled, (state, action) => {
       const beaconId = action.meta.arg._beaconId;
       const { payload } = action;
-      const hasErrorResponse = Object.prototype.hasOwnProperty.call(payload, 'error');
-      const beaconState: FlattenedBeaconResponse = {
-        hasApiError: hasErrorResponse,
-        apiErrorMessage: hasErrorResponse ? (payload.error?.errorMessage ?? 'error') : '',
+      const hasErrorResponse = 'error' in payload;
+      state.beacons[beaconId] = {
+        apiErrorMessage: hasErrorResponse ? errorMsgOrDefault(payload.error?.errorMessage) : '',
         isFetchingQueryResponse: false,
+        results: {
+          // Bento-specific counts/chart data
+          ...(payload.info?.bento
+            ? {
+                biosampleCount: payload.info.bento?.biosamples?.count,
+                biosampleChartData: serializeChartData(payload.info.bento?.biosamples?.sampled_tissue),
+                experimentCount: payload.info.bento?.experiments?.count,
+                experimentChartData: serializeChartData(payload.info.bento?.experiments?.experiment_type),
+              }
+            : {}),
+
+          // Beacon-standard individuals count
+          ...(payload.responseSummary
+            ? {
+                individualCount: payload.responseSummary.numTotalResults,
+              }
+            : {}),
+        },
       };
-      if (payload.info?.bento) {
-        beaconState.biosampleCount = payload.info.bento?.biosamples?.count;
-        beaconState.biosampleChartData = serializeChartData(payload.info.bento?.biosamples?.sampled_tissue);
-        beaconState.experimentCount = payload.info.bento?.experiments?.count;
-        beaconState.experimentChartData = serializeChartData(payload.info.bento?.experiments?.experiment_type);
-      }
-      if (payload.responseSummary) {
-        beaconState.individualCount = payload.responseSummary.numTotalResults;
-      }
-      state.beacons[beaconId] = beaconState;
       state.networkResponseStatus = 'responding';
       state.networkResults = computeNetworkResults(state.beacons);
     });
     builder.addCase(queryBeaconNetworkNode.rejected, (state, action) => {
       const beaconId = action.meta.arg._beaconId;
       state.beacons[beaconId] = {
-        hasApiError: true,
-        apiErrorMessage: action.payload as string, // passed from rejectWithValue
+        apiErrorMessage: errorMsgOrDefault(action.payload), // passed from rejectWithValue
         isFetchingQueryResponse: false,
+        results: {},
       };
       state.networkResponseStatus = 'responding';
     });

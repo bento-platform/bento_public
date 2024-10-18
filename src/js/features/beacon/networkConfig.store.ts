@@ -22,7 +22,7 @@ export const getBeaconNetworkConfig = createAsyncThunk<
     .catch(beaconApiError(rejectWithValue));
 });
 
-type beaconNetworkInitialStateType = {
+type BeaconNetworkConfigState = {
   isFetchingBeaconNetworkConfig: boolean;
   hasBeaconNetworkError: boolean;
   assemblyIds: BeaconAssemblyIds;
@@ -33,7 +33,7 @@ type beaconNetworkInitialStateType = {
   beacons: NetworkBeacon[];
 };
 
-const initialState: beaconNetworkInitialStateType = {
+const initialState: BeaconNetworkConfigState = {
   isFetchingBeaconNetworkConfig: false,
   hasBeaconNetworkError: false,
   querySectionsUnion: [],

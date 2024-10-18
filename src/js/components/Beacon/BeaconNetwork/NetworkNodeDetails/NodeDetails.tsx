@@ -25,8 +25,7 @@ const NodeDetails = ({ beacon, response }: NodeDetailsProps) => {
   const assemblies = Object.keys(variants);
   const bentoUrl = apiUrl.replace('/api/beacon', '');
 
-  const { isFetchingQueryResponse, hasApiError, apiErrorMessage, individualCount, biosampleCount, experimentCount } =
-    response;
+  const { isFetchingQueryResponse, apiErrorMessage, results } = response ?? {};
 
   const logo = (
     <img
@@ -62,7 +61,7 @@ const NodeDetails = ({ beacon, response }: NodeDetailsProps) => {
       extra={
         <>
           {assemblyTags}
-          {hasApiError && <ApiErrorTag errorMessage={apiErrorMessage} />}
+          {apiErrorMessage && <ApiErrorTag errorMessage={apiErrorMessage} />}
         </>
       }
       actions={[
@@ -76,19 +75,14 @@ const NodeDetails = ({ beacon, response }: NodeDetailsProps) => {
         </Link>,
       ]}
     >
-      <NodeCountsDisplay
-        isFetchingQueryResponse={isFetchingQueryResponse}
-        individualCount={individualCount}
-        biosampleCount={biosampleCount}
-        experimentCount={experimentCount}
-      />
+      <NodeCountsDisplay isFetchingQueryResponse={isFetchingQueryResponse ?? false} results={results ?? {}} />
     </Card>
   );
 };
 
 export interface NodeDetailsProps {
   beacon: NetworkBeacon;
-  response: FlattenedBeaconResponse;
+  response?: FlattenedBeaconResponse;
 }
 
 // memoize so we don't update all beacons each time one of them responds
