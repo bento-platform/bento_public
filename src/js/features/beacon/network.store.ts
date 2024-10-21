@@ -17,13 +17,7 @@ import type { DiscoveryResults } from '@/types/data';
 import type { Section } from '@/types/search';
 import { beaconApiError, errorMsgOrDefault } from '@/utils/beaconApiError';
 
-import {
-  atLeastOneNetworkResponseIsPending,
-  computeNetworkResults,
-  extractBeaconDiscoveryOverview,
-  networkAssemblyIds,
-  networkQueryUrl,
-} from './utils';
+import { computeNetworkResults, extractBeaconDiscoveryOverview, networkAssemblyIds, networkQueryUrl } from './utils';
 
 // can parameterize at some point in the future
 const DEFAULT_QUERY_ENDPOINT = BEACON_INDIVIDUALS_PATH;
