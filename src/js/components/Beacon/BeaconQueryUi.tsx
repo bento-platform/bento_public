@@ -262,7 +262,7 @@ const BeaconQueryUi = () => {
             {hasVariants && (
               <Col xs={24} lg={12}>
                 <Card
-                  title={td('Variants')}
+                  title={td('entities.Variants')}
                   style={CARD_STYLE}
                   styles={CARD_STYLES}
                   extra={<SearchToolTip>{variantsInstructions}</SearchToolTip>}

@@ -1,6 +1,6 @@
-import type { CSSProperties } from 'react';
-import { Typography, Card, Space, Statistic } from 'antd';
-import { TeamOutlined } from '@ant-design/icons';
+import { type CSSProperties, Fragment } from 'react';
+import { Typography, Card, Space, Statistic, Popover } from 'antd';
+import { InfoCircleOutlined, TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
 
 import ExpSvg from '../Util/ExpSvg';
@@ -20,19 +20,23 @@ const Counts = () => {
 
   const { counts, isFetchingData } = useAppSelector((state) => state.data);
 
+  // Break down help into multiple sentences inside an array to make translation a bit easier.
   const data = [
     {
-      title: 'Individuals',
+      title: 'entities.Individuals',
+      help: ['individual_help_1'],
       icon: <TeamOutlined />,
       count: counts.individuals,
     },
     {
-      title: 'Biosamples',
+      title: 'entities.Biosamples',
+      help: ['biosample_help_1'],
       icon: <BiDna />,
       count: counts.biosamples,
     },
     {
-      title: 'Experiments',
+      title: 'entities.Experiments',
+      help: ['experiment_help_1', 'experiment_help_2'],
       icon: <ExpSvg />,
       count: counts.experiments,
     },
@@ -42,10 +46,28 @@ const Counts = () => {
     <>
       <Typography.Title level={3}>{td('Counts')}</Typography.Title>
       <Space direction="horizontal">
-        {data.map(({ title, icon, count }, i) => (
+        {data.map(({ title, help, icon, count }, i) => (
           <Card key={i} style={{ ...styles.countCard, height: isFetchingData ? 138 : 114 }}>
             <Statistic
-              title={td(title)}
+              title={
+                <Space>
+                  {td(title)}
+                  {help && (
+                    <Popover
+                      title={td(title)}
+                      content={
+                        <div style={{ maxWidth: 360 }}>
+                          {help.map((h, i) => (
+                            <Fragment key={i}>{td(`entities.${h}`)} </Fragment>
+                          ))}
+                        </div>
+                      }
+                    >
+                      <InfoCircleOutlined />
+                    </Popover>
+                  )}
+                </Space>
+              }
               value={count}
               valueStyle={{ color: COUNTS_FILL }}
               prefix={icon}
