@@ -17,7 +17,13 @@ import type { DiscoveryResults } from '@/types/data';
 import type { Section } from '@/types/search';
 import { beaconApiError, errorMsgOrDefault } from '@/utils/beaconApiError';
 
-import { computeNetworkResults, extractBeaconDiscoveryOverview, networkAssemblyIds, networkQueryUrl } from './utils';
+import {
+  atLeastOneNetworkResponseIsPending,
+  computeNetworkResults,
+  extractBeaconDiscoveryOverview,
+  networkAssemblyIds,
+  networkQueryUrl,
+} from './utils';
 
 // can parameterize at some point in the future
 const DEFAULT_QUERY_ENDPOINT = BEACON_INDIVIDUALS_PATH;
@@ -29,12 +35,20 @@ export const getBeaconNetworkConfig = createAsyncThunk<
   BeaconNetworkConfig,
   void,
   { state: RootState; rejectValue: string }
->('beaconNetwork/getBeaconNetworkConfig', (_, { rejectWithValue }) => {
-  return axios
-    .get(BEACON_NETWORK_URL)
-    .then((res) => res.data)
-    .catch(beaconApiError(rejectWithValue));
-});
+>(
+  'beaconNetwork/getBeaconNetworkConfig',
+  (_, { rejectWithValue }) => {
+    return axios
+      .get(BEACON_NETWORK_URL)
+      .then((res) => res.data)
+      .catch(beaconApiError(rejectWithValue));
+  },
+  {
+    condition(_, { getState }) {
+      return !getState().beaconNetwork.isFetchingBeaconNetworkConfig;
+    },
+  }
+);
 
 // dispatch a query for each beacon in the network
 export const beaconNetworkQuery =
@@ -50,17 +64,25 @@ const queryBeaconNetworkNode = createAsyncThunk<
   BeaconQueryResponse,
   QueryToNetworkBeacon,
   { state: RootState; rejectValue: string }
->('beaconNetwork/queryBeaconNetworkNode', async ({ url, payload }, { rejectWithValue }) => {
-  // currently no auth in beacon network
-  // these would only make sense if we start creating tokens that apply to more than one bento instance
-  // const token = getState().auth.accessToken;
-  // const headers = makeAuthorizationHeader(token);
+>(
+  'beaconNetwork/queryBeaconNetworkNode',
+  async ({ url, payload }, { rejectWithValue }) => {
+    // currently no auth in beacon network
+    // these would only make sense if we start creating tokens that apply to more than one bento instance
+    // const token = getState().auth.accessToken;
+    // const headers = makeAuthorizationHeader(token);
 
-  return axios
-    .post(url, payload)
-    .then((res) => res.data)
-    .catch(beaconApiError(rejectWithValue));
-});
+    return axios
+      .post(url, payload)
+      .then((res) => res.data)
+      .catch(beaconApiError(rejectWithValue));
+  },
+  {
+    condition({ _beaconId }, { getState }) {
+      return !(getState().beaconNetwork.beaconResponses[_beaconId]?.isFetchingQueryResponse ?? false);
+    },
+  }
+);
 
 type BeaconNetworkConfigState = {
   // config
@@ -74,7 +96,6 @@ type BeaconNetworkConfigState = {
   beacons: NetworkBeacon[];
 
   // querying
-  networkResponseStatus: 'idle' | 'waiting' | 'responding';
   networkResults: DiscoveryResults;
   beaconResponses: {
     [beaconId: string]: FlattenedBeaconResponse;
@@ -93,7 +114,6 @@ const initialState: BeaconNetworkConfigState = {
   beacons: [],
 
   // querying
-  networkResponseStatus: 'idle',
   networkResults: EMPTY_DISCOVERY_RESULTS,
   beaconResponses: {},
 };
@@ -136,11 +156,6 @@ const beaconNetwork = createSlice({
         isFetchingQueryResponse: true,
         results: {},
       };
-
-      // don't undo "responding" status if another beacon is already responding
-      if (state.networkResponseStatus == 'idle') {
-        state.networkResponseStatus = 'waiting';
-      }
     });
     builder.addCase(queryBeaconNetworkNode.fulfilled, (state, action) => {
       const beaconId = action.meta.arg._beaconId;
@@ -151,7 +166,6 @@ const beaconNetwork = createSlice({
         isFetchingQueryResponse: false,
         results: extractBeaconDiscoveryOverview(payload),
       };
-      state.networkResponseStatus = 'responding';
       state.networkResults = computeNetworkResults(state.beaconResponses);
     });
     builder.addCase(queryBeaconNetworkNode.rejected, (state, action) => {
@@ -161,7 +175,6 @@ const beaconNetwork = createSlice({
         isFetchingQueryResponse: false,
         results: {},
       };
-      state.networkResponseStatus = 'responding';
     });
   },
 });

@@ -81,3 +81,6 @@ export const extractBeaconDiscoveryOverview = (response: BeaconQueryResponse): O
       }
     : {}),
 });
+
+export const atLeastOneNetworkResponseIsPending = (responses: BeaconNetworkResponses) =>
+  Object.values(responses).some((r) => r.isFetchingQueryResponse);

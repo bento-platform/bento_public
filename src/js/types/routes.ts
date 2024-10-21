@@ -20,7 +20,7 @@ if (BEACON_UI_ENABLED) {
 }
 
 if (BEACON_NETWORK_ENABLED) {
-  BentoRoute.BeaconNetwork = 'beaconNetwork';
+  BentoRoute.BeaconNetwork = 'network';
 }
 
 export { BentoRoute };

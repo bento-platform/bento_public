@@ -19,6 +19,11 @@ export const getBeaconConfig = createAsyncThunk<BeaconConfigResponse, void, { st
       .get(BEACON_INFO_ENDPOINT)
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue));
+  },
+  {
+    condition(_, { getState }) {
+      return !getState().beacon.isFetchingBeaconConfig;
+    },
   }
 );
 
