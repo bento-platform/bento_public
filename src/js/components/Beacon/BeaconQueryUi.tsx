@@ -2,14 +2,13 @@ import { useAppSelector } from '@/hooks';
 import Loader from '@/components/Loader';
 import BeaconSearchResults from './BeaconSearchResults';
 import BeaconQueryFormUi from './BeaconCommon/BeaconQueryFormUi';
-import { makeBeaconQuery } from '@/features/beacon/beaconQuery.store';
+import { makeBeaconQuery } from '@/features/beacon/beacon.store';
 import { WRAPPER_STYLE } from '@/constants/beaconConstants';
+import { useBeacon } from '@/features/beacon/hooks';
 
 const BeaconQueryUi = () => {
-  const isFetchingBeaconConfig = useAppSelector((state) => state.beaconConfig.isFetchingBeaconConfig);
-  const beaconAssemblyIds = useAppSelector((state) => state.beaconConfig.beaconAssemblyIds);
+  const { isFetchingBeaconConfig, beaconAssemblyIds, isFetchingQueryResponse } = useBeacon();
   const querySections = useAppSelector((state) => state.query.querySections);
-  const isFetchingBeaconQuery = useAppSelector((state) => state.beaconQuery.isFetchingQueryResponse);
 
   return isFetchingBeaconConfig ? (
     <Loader />
@@ -17,7 +16,7 @@ const BeaconQueryUi = () => {
     <div style={WRAPPER_STYLE}>
       <BeaconSearchResults />
       <BeaconQueryFormUi
-        isFetchingQueryResponse={isFetchingBeaconQuery}
+        isFetchingQueryResponse={isFetchingQueryResponse}
         isNetworkQuery={false}
         beaconAssemblyIds={beaconAssemblyIds}
         querySections={querySections}

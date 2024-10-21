@@ -63,7 +63,7 @@ const BeaconQueryFormUi = ({
   );
   const uiInstructions = hasVariants ? 'Search by genomic variants, clinical metadata or both.' : '';
 
-  const apiErrorMessage = useAppSelector((state) => (isNetworkQuery ? false : state.beaconQuery.apiErrorMessage));
+  const apiErrorMessage = useAppSelector((state) => (isNetworkQuery ? false : state.beacon.apiErrorMessage));
   const hasError = hasFormError || !!apiErrorMessage;
   const showError = hasError && !errorAlertClosed;
 

@@ -7,8 +7,8 @@ import { makeGetConfigRequest, makeGetServiceInfoRequest } from '@/features/conf
 import { makeGetAboutRequest } from '@/features/content/content.store';
 import { makeGetDataRequestThunk, populateClickable } from '@/features/data/data.store';
 import { makeGetKatsuPublic, makeGetSearchFields } from '@/features/search/query.store';
-import { getBeaconConfig } from '@/features/beacon/beaconConfig.store';
-import { getBeaconNetworkConfig } from '@/features/beacon/networkConfig.store';
+import { getBeaconConfig } from '@/features/beacon/beacon.store';
+import { getBeaconNetworkConfig } from '@/features/beacon/network.store';
 import { fetchGohanData, fetchKatsuData } from '@/features/ingestion/lastIngestion.store';
 import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
 import { getProjects, markScopeSet, selectScope } from '@/features/metadata/metadata.store';

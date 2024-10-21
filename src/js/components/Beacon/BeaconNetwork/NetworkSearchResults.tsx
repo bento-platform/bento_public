@@ -1,15 +1,16 @@
 import { useMemo } from 'react';
 import { Tag } from 'antd';
-import { useAppSelector, useTranslationDefault } from '@/hooks';
-import SearchResultsPane from '../../Search/SearchResultsPane';
+
+import SearchResultsPane from '@/components/Search/SearchResultsPane';
 import { useBeaconNetwork } from '@/features/beacon/hooks';
+import { useTranslationDefault } from '@/hooks';
 
 const NetworkSearchResults = () => {
   const td = useTranslationDefault();
 
   const { hasBeaconNetworkError } = useBeaconNetwork();
-  const { networkResults, beacons: responses } = useAppSelector((state) => state.beaconNetworkResponse);
-  const responseArray = useMemo(() => Object.values(responses), [responses]);
+  const { networkResults, beaconResponses } = useBeaconNetwork();
+  const responseArray = useMemo(() => Object.values(beaconResponses), [beaconResponses]);
 
   // filter() creates arrays we don't need, but the arrays are small
   // more readable than equivalent reduce() call

@@ -5,7 +5,7 @@ import type { FormInstance } from 'antd/es/form';
 
 import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { useBeaconNetwork } from '@/features/beacon/hooks';
-import { toggleQuerySectionsUnionOrIntersection } from '@/features/beacon/networkConfig.store';
+import { toggleQuerySectionsUnionOrIntersection } from '@/features/beacon/network.store';
 import { useAppSelector, useAppDispatch } from '@/hooks';
 import type { FormFilter } from '@/types/beacon';
 import type { SearchFieldResponse } from '@/types/search';
