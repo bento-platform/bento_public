@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 import { DeviceBreakpoints } from '@/constants/deviceBreakpoints';
 
@@ -15,18 +15,21 @@ const DefaultResponsiveContext: ResponsiveContextType = {
 
 const ResponsiveContext = createContext<ResponsiveContextType>(DefaultResponsiveContext);
 
+const isMobileLogic = (width: number) => width <= DeviceBreakpoints.MOBILE;
+const isTabletLogic = (width: number) => width > DeviceBreakpoints.MOBILE && width <= DeviceBreakpoints.TABLET;
+
 interface ResponsiveProviderProps {
   children: ReactNode;
 }
 
 export const ResponsiveProvider = ({ children }: ResponsiveProviderProps) => {
-  const [isMobile, setIsMobile] = useState<boolean>(false);
-  const [isTablet, setIsTablet] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useState<boolean>(isMobileLogic(window.innerWidth));
+  const [isTablet, setIsTablet] = useState<boolean>(isTabletLogic(window.innerWidth));
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= DeviceBreakpoints.MOBILE);
-      setIsTablet(window.innerWidth > DeviceBreakpoints.MOBILE && window.innerWidth <= DeviceBreakpoints.TABLET);
+      setIsMobile(isMobileLogic(window.innerWidth));
+      setIsTablet(isTabletLogic(window.innerWidth));
     };
     handleResize();
     window.addEventListener('resize', handleResize);
@@ -45,5 +48,6 @@ export const useResponsiveTabletContext = (): boolean => {
 };
 
 export const useSmallScreen = (): boolean => {
-  return useContext(ResponsiveContext).isMobile || useContext(ResponsiveContext).isTablet;
+  const { isMobile, isTablet } = useContext(ResponsiveContext);
+  return isMobile || isTablet;
 };

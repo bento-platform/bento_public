@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 
 // Redux and routing imports
 import { Provider } from 'react-redux';
-import { Routes, Route, BrowserRouter, Navigate } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 // i18n and constants imports
 import { useTranslation } from 'react-i18next';
@@ -17,20 +17,20 @@ import Loader from '@/components/Loader';
 import BentoAppRouter from '@/components/BentoAppRouter';
 import LanguageHandler from '@/components/Util/LanguageHandler';
 import AuthOutlet from '@/components/Util/AuthOutlet';
+import { ResponsiveProvider } from '@/components/ResponsiveContext';
 
 // Hooks and utilities imports
 import { BentoAuthContextProvider } from 'bento-auth-js';
 
 // Store and configuration imports
 import { store } from './store';
-import { PUBLIC_URL_NO_TRAILING_SLASH, CLIENT_ID, OPENID_CONFIG_URL, AUTH_CALLBACK_URL } from './config';
+import { AUTH_CALLBACK_URL, CLIENT_ID, OPENID_CONFIG_URL, PUBLIC_URL_NO_TRAILING_SLASH } from './config';
 
 // Styles imports
 import 'leaflet/dist/leaflet.css';
 import 'bento-charts/src/styles.css';
 import './i18n';
 import '../styles.css';
-import { ResponsiveProvider } from '@/components/ResponsiveContext';
 
 const BaseRoutes = () => {
   return (
