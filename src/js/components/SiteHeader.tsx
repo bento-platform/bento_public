@@ -15,7 +15,7 @@ import { DEFAULT_TRANSLATION, LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/co
 import { CLIENT_NAME, PORTAL_URL, TRANSLATED } from '@/config';
 
 import ScopePickerModal from './Scope/ScopePickerModal';
-import { useSmallScreen } from '@/components/ResponsiveContext';
+import { useSmallScreen } from '@/components/Util/ResponsiveContext';
 
 const { Header } = Layout;
 

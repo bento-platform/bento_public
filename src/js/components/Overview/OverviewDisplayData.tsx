@@ -5,7 +5,7 @@ import { disableChart } from '@/features/data/data.store';
 import type { ChartDataField } from '@/types/data';
 import ChartCard from './ChartCard';
 import { CHART_WIDTH, GRID_GAP } from '@/constants/overviewConstants';
-import { useSmallScreen } from '@/components/ResponsiveContext';
+import { useSmallScreen } from '@/components/Util/ResponsiveContext';
 import { Space } from 'antd';
 
 const OverviewDisplayData = ({ section, allCharts }: OverviewDisplayDataProps) => {
