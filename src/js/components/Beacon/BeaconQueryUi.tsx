@@ -1,10 +1,11 @@
-import { useAppSelector } from '@/hooks';
 import Loader from '@/components/Loader';
+import { WRAPPER_STYLE } from '@/constants/beaconConstants';
+import { makeBeaconQuery } from '@/features/beacon/beacon.store';
+import { useBeacon } from '@/features/beacon/hooks';
+import { useAppSelector } from '@/hooks';
+
 import BeaconSearchResults from './BeaconSearchResults';
 import BeaconQueryFormUi from './BeaconCommon/BeaconQueryFormUi';
-import { makeBeaconQuery } from '@/features/beacon/beacon.store';
-import { WRAPPER_STYLE } from '@/constants/beaconConstants';
-import { useBeacon } from '@/features/beacon/hooks';
 
 const BeaconQueryUi = () => {
   const { isFetchingBeaconConfig, beaconAssemblyIds, isFetchingQueryResponse, apiErrorMessage } = useBeacon();
