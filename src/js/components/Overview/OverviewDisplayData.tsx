@@ -1,12 +1,15 @@
 import { useCallback, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
+import { Space } from 'antd';
 
 import { disableChart } from '@/features/data/data.store';
-import type { ChartDataField } from '@/types/data';
-import ChartCard from './ChartCard';
+
 import { CHART_WIDTH, GRID_GAP } from '@/constants/overviewConstants';
+
 import { useSmallScreen } from '@/components/Util/ResponsiveContext';
-import { Space } from 'antd';
+import ChartCard from './ChartCard';
+
+import type { ChartDataField } from '@/types/data';
 
 const OverviewDisplayData = ({ section, allCharts }: OverviewDisplayDataProps) => {
   const dispatch = useDispatch();
