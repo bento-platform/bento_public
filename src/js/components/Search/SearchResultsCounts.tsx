@@ -58,7 +58,7 @@ const SearchResultsCounts = ({
             ].join(' ')}
           >
             <Statistic
-              title={td('Individuals')}
+              title={td('entities.Individuals')}
               value={
                 hasInsufficientData
                   ? td(message ?? '')
@@ -71,13 +71,13 @@ const SearchResultsCounts = ({
             />
           </div>
           <Statistic
-            title={td('Biosamples')}
+            title={td('entities.Biosamples')}
             value={hasInsufficientData || (isBeaconNetwork && !biosampleCount) ? NO_RESULTS_DASHES : biosampleCount}
             valueStyle={STAT_STYLE}
             prefix={<BiDna />}
           />
           <Statistic
-            title={td('Experiments')}
+            title={td('entities.Experiments')}
             value={hasInsufficientData || (isBeaconNetwork && !experimentCount) ? NO_RESULTS_DASHES : experimentCount}
             valueStyle={STAT_STYLE}
             prefix={<ExpSvg />}

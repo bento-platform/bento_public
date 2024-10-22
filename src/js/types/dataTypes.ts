@@ -3,15 +3,13 @@ export enum DataTypes {
   experiment = 'experiment',
   experiment_result = 'experiment_result',
   variant = 'variant',
-  readset = 'readset',
 }
 
 export const DataTypesLabels = {
-  [DataTypes.phenopacket]: 'Clinical Data',
-  [DataTypes.experiment]: 'Experiments',
-  [DataTypes.experiment_result]: 'Experiment Results',
-  [DataTypes.variant]: 'Variants',
-  [DataTypes.readset]: 'Readsets',
+  [DataTypes.phenopacket]: 'entities.Phenopackets',
+  [DataTypes.experiment]: 'entities.Experiments',
+  [DataTypes.experiment_result]: 'entities.Experiment Results',
+  [DataTypes.variant]: 'entities.Variants',
 };
 
 export const getDataTypeLabel = (dataTypeString: string): string => {
