@@ -1,4 +1,4 @@
-import { type CSSProperties, Fragment } from 'react';
+import { type CSSProperties, Fragment, type ReactNode } from 'react';
 import { Typography, Card, Space, Statistic, Popover } from 'antd';
 import { InfoCircleOutlined, TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
@@ -15,6 +15,8 @@ const styles: Record<string, CSSProperties> = {
   },
 };
 
+const CountsHelp = ({ children }: { children: ReactNode }) => <div style={{ maxWidth: 360 }}>{children}</div>;
+
 const Counts = () => {
   const td = useTranslationDefault();
 
@@ -23,19 +25,19 @@ const Counts = () => {
   // Break down help into multiple sentences inside an array to make translation a bit easier.
   const data = [
     {
-      title: 'entities.Individuals',
+      title: 'Individuals',
       help: ['individual_help_1'],
       icon: <TeamOutlined />,
       count: counts.individuals,
     },
     {
-      title: 'entities.Biosamples',
+      title: 'Biosamples',
       help: ['biosample_help_1'],
       icon: <BiDna />,
       count: counts.biosamples,
     },
     {
-      title: 'entities.Experiments',
+      title: 'Experiments',
       help: ['experiment_help_1', 'experiment_help_2'],
       icon: <ExpSvg />,
       count: counts.experiments,
@@ -46,35 +48,38 @@ const Counts = () => {
     <>
       <Typography.Title level={3}>{td('Counts')}</Typography.Title>
       <Space direction="horizontal">
-        {data.map(({ title, help, icon, count }, i) => (
-          <Card key={i} style={{ ...styles.countCard, height: isFetchingData ? 138 : 114 }}>
-            <Statistic
-              title={
-                <Space>
-                  {td(title)}
-                  {help && (
-                    <Popover
-                      title={td(title)}
-                      content={
-                        <div style={{ maxWidth: 360 }}>
-                          {help.map((h, i) => (
-                            <Fragment key={i}>{td(`entities.${h}`)} </Fragment>
-                          ))}
-                        </div>
-                      }
-                    >
-                      <InfoCircleOutlined />
-                    </Popover>
-                  )}
-                </Space>
-              }
-              value={count}
-              valueStyle={{ color: COUNTS_FILL }}
-              prefix={icon}
-              loading={isFetchingData}
-            />
-          </Card>
-        ))}
+        {data.map(({ title, help, icon, count }, i) => {
+          const titleTransl = td(`entities.${title}`);
+          return (
+            <Card key={i} style={{ ...styles.countCard, height: isFetchingData ? 138 : 114 }}>
+              <Statistic
+                title={
+                  <Space>
+                    {titleTransl}
+                    {help && (
+                      <Popover
+                        title={titleTransl}
+                        content={
+                          <CountsHelp>
+                            {help.map((h, i) => (
+                              <Fragment key={i}>{td(`entities.${h}`)} </Fragment>
+                            ))}
+                          </CountsHelp>
+                        }
+                      >
+                        <InfoCircleOutlined />
+                      </Popover>
+                    )}
+                  </Space>
+                }
+                value={count}
+                valueStyle={{ color: COUNTS_FILL }}
+                prefix={icon}
+                loading={isFetchingData}
+              />
+            </Card>
+          );
+        })}
       </Space>
     </>
   );
