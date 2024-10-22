@@ -1,5 +1,9 @@
 import type { Rule } from 'antd/es/form';
+import type { ActionCreator } from 'redux';
 import type { Datum } from '@/types/overviewResponse';
+import type { makeBeaconQuery } from '@/features/beacon/beacon.store';
+import type { beaconNetworkQuery } from '@/features/beacon/network.store';
+import type { OptionalDiscoveryResults } from '@/types/data';
 
 // ----------------------------
 // form handling
@@ -72,9 +76,17 @@ export interface BeaconQueryPayload {
   bento?: { showSummaryStatistics: boolean };
 }
 
+export type BeaconQueryAction = ActionCreator<
+  ReturnType<typeof beaconNetworkQuery> | ReturnType<typeof makeBeaconQuery>
+>;
+
 // ----------------------------
 // API response
 // ----------------------------
+
+// generic "info" response field
+// only requirement in beacon spec is that it's an object
+type GenericInfoField = Record<string, unknown>;
 
 export interface BeaconConfigResponse {
   response?: {
@@ -105,6 +117,13 @@ export interface BeaconQueryResponse {
   responseSummary?: {
     numTotalResults: number;
   };
+  meta?: {
+    beaconId: string;
+  };
+  error?: {
+    errorCode: number;
+    errorMessage: string;
+  };
 }
 
 export interface BeaconErrorData {
@@ -113,3 +132,41 @@ export interface BeaconErrorData {
     errorMessage: string;
   };
 }
+
+export interface BeaconOrganizationType {
+  id: string;
+  name: string;
+  description?: string;
+  address?: string;
+  contactUrl?: string;
+  logoUrl?: string;
+  welcomeUrl?: string;
+  info?: GenericInfoField;
+}
+
+export interface BeaconServiceInfo {
+  id: string;
+  name: string;
+  apiVersion: string;
+  environment: string;
+  organization: BeaconOrganizationType;
+  description?: string;
+  version?: string;
+  welcomeUrl?: string;
+  alternativeUrl?: string;
+  info?: GenericInfoField;
+}
+
+// ----------------------------
+// response packaging
+// ----------------------------
+
+export interface FlattenedBeaconResponse {
+  isFetchingQueryResponse: boolean;
+  apiErrorMessage: string; // if non-blank, an error has occurred
+  results: OptionalDiscoveryResults;
+}
+
+export type BeaconNetworkResponses = {
+  [beaconId: string]: FlattenedBeaconResponse;
+};

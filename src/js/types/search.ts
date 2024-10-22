@@ -50,3 +50,5 @@ export interface Experiments {
   count: number;
   experiment_type: Datum[];
 }
+
+export type SearchResultsUIPane = 'individuals' | 'charts';

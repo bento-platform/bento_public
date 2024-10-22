@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 
 import { Layout, Menu } from 'antd';
 import type { MenuProps, SiderProps } from 'antd';
-import Icon, { PieChartOutlined, SearchOutlined, SolutionOutlined } from '@ant-design/icons';
+import Icon, { PieChartOutlined, SearchOutlined, ShareAltOutlined, SolutionOutlined } from '@ant-design/icons';
 
 import BeaconSvg from '@/components/Beacon/BeaconSvg';
 import { useSearchQuery } from '@/features/search/hooks';
@@ -67,6 +67,10 @@ const SiteSider: React.FC<{
 
     if (BentoRoute.Beacon) {
       items.push(createMenuItem('Beacon', BentoRoute.Beacon, <BeaconLogo />));
+    }
+
+    if (BentoRoute.BeaconNetwork) {
+      items.push(createMenuItem('Beacon Network', BentoRoute.BeaconNetwork, <ShareAltOutlined />));
     }
 
     return items;
