@@ -83,6 +83,8 @@ const ChartCard: React.FC<ChartCardProps> = memo(({ section, chart, onRemoveChar
   );
 });
 
+ChartCard.displayName = 'ChartCard';
+
 export interface ChartCardProps {
   section: string;
   chart: ChartDataField;

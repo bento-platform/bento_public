@@ -1,6 +1,5 @@
-
 import { type CSSProperties, Fragment, type ReactNode } from 'react';
-import { Typography, Card, Space, Statistic, Popover } from 'antd';
+import { Card, Popover, Space, Statistic, Typography } from 'antd';
 import { InfoCircleOutlined, TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
 
