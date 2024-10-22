@@ -90,12 +90,11 @@ body {
   width: 100%;
 }
 
-.search-result-statistic {
+.search-result-statistic.enabled {
   padding: 8px 16px;
   margin-left: -16px;
   border-radius: 8px;
-}
-.search-result-statistic.enabled {
+
   cursor: pointer;
   border: 1px solid #d9d9d9;
   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.02);

@@ -13,6 +13,7 @@ import type {
 import type { Section, Field } from '@/types/search';
 
 // TODOs:
+// rewrite to use beacon specification filters instead of bento public "querySections"
 // any search key (eg "sex") selected in one filter should not available in other
 // for clarity they should probably appear, but be greyed out
 // this requires rendering select options as <Option> components

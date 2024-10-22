@@ -7,19 +7,23 @@ import { makeGetConfigRequest, makeGetServiceInfoRequest } from '@/features/conf
 import { makeGetAboutRequest } from '@/features/content/content.store';
 import { makeGetDataRequestThunk, populateClickable } from '@/features/data/data.store';
 import { makeGetKatsuPublic, makeGetSearchFields } from '@/features/search/query.store';
-import { getBeaconConfig } from '@/features/beacon/beaconConfig.store';
+import { getBeaconConfig } from '@/features/beacon/beacon.store';
+import { getBeaconNetworkConfig } from '@/features/beacon/network.store';
 import { fetchGohanData, fetchKatsuData } from '@/features/ingestion/lastIngestion.store';
 import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
 import { getProjects, markScopeSet, selectScope } from '@/features/metadata/metadata.store';
+
+import Loader from '@/components/Loader';
+import DefaultLayout from '@/components/Util/DefaultLayout';
+import { BEACON_NETWORK_ENABLED } from '@/config';
+import { BentoRoute } from '@/types/routes';
+import { scopeEqual, validProjectDataset } from '@/utils/router';
 
 import PublicOverview from './Overview/PublicOverview';
 import Search from './Search/Search';
 import ProvenanceTab from './Provenance/ProvenanceTab';
 import BeaconQueryUi from './Beacon/BeaconQueryUi';
-import { BentoRoute } from '@/types/routes';
-import Loader from '@/components/Loader';
-import { scopeEqual, validProjectDataset } from '@/utils/router';
-import DefaultLayout from '@/components/Util/DefaultLayout';
+import NetworkUi from './Beacon/BeaconNetwork/NetworkUi';
 
 const ScopedRoute = () => {
   const { projectId, datasetId } = useParams();
@@ -77,6 +81,11 @@ const BentoAppRouter = () => {
   useEffect(() => {
     if (!selectedScope.scopeSet) return;
     dispatch(makeGetConfigRequest()).then(() => dispatch(getBeaconConfig()));
+
+    if (BEACON_NETWORK_ENABLED) {
+      dispatch(getBeaconNetworkConfig());
+    }
+
     dispatch(makeGetAboutRequest());
     // The "Populate clickable" action needs both chart sections and search fields to be available.
     // TODO: this is not a very good pattern. It would be better to have a memoized way of determining click-ability at
@@ -110,6 +119,7 @@ const BentoAppRouter = () => {
           <Route path={BentoRoute.Overview} element={<PublicOverview />} />
           <Route path={BentoRoute.Search} element={<Search />} />
           {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
+          {BentoRoute.BeaconNetwork && <Route path={BentoRoute.BeaconNetwork} element={<NetworkUi />} />}
           <Route path={BentoRoute.Provenance} element={<ProvenanceTab />} />
         </Route>
 
@@ -118,6 +128,7 @@ const BentoAppRouter = () => {
           <Route path={BentoRoute.Overview} element={<PublicOverview />} />
           <Route path={BentoRoute.Search} element={<Search />} />
           {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
+          {BentoRoute.BeaconNetwork && <Route path={BentoRoute.BeaconNetwork} element={<NetworkUi />} />}
           <Route path={BentoRoute.Provenance} element={<ProvenanceTab />} />
         </Route>
 
@@ -126,6 +137,7 @@ const BentoAppRouter = () => {
           <Route path={BentoRoute.Overview} element={<PublicOverview />} />
           <Route path={BentoRoute.Search} element={<Search />} />
           {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
+          {BentoRoute.BeaconNetwork && <Route path={BentoRoute.BeaconNetwork} element={<NetworkUi />} />}
           <Route path={BentoRoute.Provenance} element={<ProvenanceTab />} />
         </Route>
       </Route>

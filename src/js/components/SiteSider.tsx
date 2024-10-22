@@ -69,6 +69,10 @@ const SiteSider: React.FC<{
       items.push(createMenuItem('Beacon', BentoRoute.Beacon, <BeaconLogo />));
     }
 
+    if (BentoRoute.BeaconNetwork) {
+      items.push(createMenuItem('Beacon Network', BentoRoute.BeaconNetwork, <ShareAltOutlined />));
+    }
+
     return items;
   }, [createMenuItem]);
 

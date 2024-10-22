@@ -5,12 +5,20 @@
   "Count": "Observations",
   "Portal": "Portail",
   "missing": "manquant(s)",
-  "Individual": "Participant",
-  "Individuals": "Participants",
+  "entities": {
+    "Phenopackets": "Données cliniques",
+    "Individual": "Participant",
+    "Individuals": "Participants",
+    "individual_help_1": "Les participants représentent une personne/un organisme spécifique et peuvent avoir un ou plusieurs échantillons biologiques associés, chacun avec des expériences associées.",
+    "Biosamples": "Échantillons biologiques",
+    "biosample_help_1": "Les échantillons biologiques sont généralement du matériel biologique extrait d’un participant spécifique.",
+    "Experiments": "Expériences",
+    "experiment_help_1": "Les expériences sont un processus effectué sur un échantillon spécifique, par exemple le séquençage du génome entier.",
+    "experiment_help_2": "Une expérience par un laboratoire peut donner lieu à plusieurs enregistrements d'expériences dans le portail, par exemple avec des échantillons multiplexés.",
+    "Variants": "Variants"
+  },
   "in": "en",
   "Get Data": "Obtenir",
-  "Biosamples": "Échantillons biologiques",
-  "Experiments": "Expériences",
   "No Results": "Aucun résultat",
   "Privacy": "Protection",
   "Licenses": "Licences",
@@ -53,7 +61,6 @@
   "No Data": "Pas de données",
   "Counts": "Totaux",
   "Search by genomic variants, clinical metadata or both.": "Recherche par variant génomique, métadonnées cliniques ou les deux.",
-  "Variants": "Variants",
   "Metadata": "Métadonnées",
   "Search Beacon": "Recherche sur le Beacon",
   "Clear Form": "Effacer le formulaire",
@@ -88,7 +95,6 @@
   "\"Chromosome\", \"Variant start\" and \"Assembly ID\" are always required.": "\"Chromosome\", \"Début du variant\" et \"Assemblage génomique\" sont toujours requis.",
   "Coordinates are one-based.": "Les coordonnées sont en base un.",
   "Leave this form blank to search by metadata only.": "Laissez ce formulaire vide pour effectuer une recherche sur les métadonnées seulement.",
-  "Clinical Data": "Données cliniques",
   "Not Available": "Non disponsible",
   "You have been signed out": "Vous avez été déconnecté",
   "Please sign in to the research portal.": "Veuillez vous connecter au portail de recherche.",
@@ -98,5 +104,6 @@
   "About": "À propos",
   "Datasets": "Jeux de données",
   "Clear": "Effacer",
-  "Select": "Sélectionner"
+  "Select": "Sélectionner",
+  "Results from": "Résultats de"
 }
