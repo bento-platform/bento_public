@@ -34,7 +34,7 @@ const SearchResultsPane = ({
     () => [
       {
         dataIndex: 'id',
-        title: td('Individual'),
+        title: td('entities.Individual'),
         render: (id: string) => (
           <a href={`${PORTAL_URL}/data/explorer/individuals/${id}`} target="_blank" rel="noreferrer">
             {id}
@@ -86,7 +86,7 @@ const SearchResultsPane = ({
             <>
               <Col xs={24} lg={10}>
                 <Typography.Title level={5} style={{ marginTop: 0 }}>
-                  {td('Biosamples')}
+                  {td('entities.Biosamples')}
                 </Typography.Title>
                 {!hasInsufficientData && biosampleChartData.length ? (
                   <PieChart data={biosampleChartData} height={PIE_CHART_HEIGHT} sort={true} dataMap={translateMap} />
@@ -96,7 +96,7 @@ const SearchResultsPane = ({
               </Col>
               <Col xs={24} lg={10}>
                 <Typography.Title level={5} style={{ marginTop: 0 }}>
-                  {td('Experiments')}
+                  {td('entities.Experiments')}
                 </Typography.Title>
                 {!hasInsufficientData && experimentChartData.length ? (
                   <PieChart data={experimentChartData} height={PIE_CHART_HEIGHT} sort={true} dataMap={translateMap} />

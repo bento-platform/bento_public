@@ -1,8 +1,8 @@
 import type { Rule } from 'antd/es/form';
 import type { ActionCreator } from 'redux';
 import type { Datum } from '@/types/overviewResponse';
-import type { makeBeaconQuery } from '@/features/beacon/beaconQuery.store';
-import type { beaconNetworkQuery } from '@/features/beacon/networkQuery.store';
+import type { makeBeaconQuery } from '@/features/beacon/beacon.store';
+import type { beaconNetworkQuery } from '@/features/beacon/network.store';
 import type { OptionalDiscoveryResults } from '@/types/data';
 
 // ----------------------------
@@ -166,3 +166,7 @@ export interface FlattenedBeaconResponse {
   apiErrorMessage: string; // if non-blank, an error has occurred
   results: OptionalDiscoveryResults;
 }
+
+export type BeaconNetworkResponses = {
+  [beaconId: string]: FlattenedBeaconResponse;
+};

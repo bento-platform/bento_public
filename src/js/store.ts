@@ -9,10 +9,8 @@ import contentReducer from '@/features/content/content.store';
 import dataReducer from '@/features/data/data.store';
 import queryReducer from '@/features/search/query.store';
 import lastIngestionDataReducer from '@/features/ingestion/lastIngestion.store';
-import beaconConfigReducer from './features/beacon/beaconConfig.store';
-import beaconQueryReducer from './features/beacon/beaconQuery.store';
-import beaconNetworkConfigReducer from './features/beacon/networkConfig.store';
-import beaconNetworkQueryReducer from './features/beacon/networkQuery.store';
+import beaconReducer from './features/beacon/beacon.store';
+import beaconNetworkReducer from './features/beacon/network.store';
 import metadataReducer from '@/features/metadata/metadata.store';
 import { getValue, saveValue } from './utils/localStorage';
 
@@ -36,10 +34,8 @@ export const store = configureStore({
     data: dataReducer,
     query: queryReducer,
     lastIngestionData: lastIngestionDataReducer,
-    beaconConfig: beaconConfigReducer,
-    beaconQuery: beaconQueryReducer,
-    beaconNetwork: beaconNetworkConfigReducer,
-    beaconNetworkResponse: beaconNetworkQueryReducer,
+    beacon: beaconReducer,
+    beaconNetwork: beaconNetworkReducer,
     metadata: metadataReducer,
   },
   preloadedState: persistedState,

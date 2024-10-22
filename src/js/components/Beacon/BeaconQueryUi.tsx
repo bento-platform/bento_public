@@ -1,15 +1,15 @@
-import { useAppSelector } from '@/hooks';
 import Loader from '@/components/Loader';
+import { WRAPPER_STYLE } from '@/constants/beaconConstants';
+import { makeBeaconQuery } from '@/features/beacon/beacon.store';
+import { useBeacon } from '@/features/beacon/hooks';
+import { useAppSelector } from '@/hooks';
+
 import BeaconSearchResults from './BeaconSearchResults';
 import BeaconQueryFormUi from './BeaconCommon/BeaconQueryFormUi';
-import { makeBeaconQuery } from '@/features/beacon/beaconQuery.store';
-import { WRAPPER_STYLE } from '@/constants/beaconConstants';
 
 const BeaconQueryUi = () => {
-  const isFetchingBeaconConfig = useAppSelector((state) => state.beaconConfig.isFetchingBeaconConfig);
-  const beaconAssemblyIds = useAppSelector((state) => state.beaconConfig.beaconAssemblyIds);
-  const querySections = useAppSelector((state) => state.query.querySections);
-  const isFetchingBeaconQuery = useAppSelector((state) => state.beaconQuery.isFetchingQueryResponse);
+  const { isFetchingBeaconConfig, beaconAssemblyIds, isFetchingQueryResponse, apiErrorMessage } = useBeacon();
+  const { querySections } = useAppSelector((state) => state.query);
 
   return isFetchingBeaconConfig ? (
     <Loader />
@@ -17,11 +17,12 @@ const BeaconQueryUi = () => {
     <div style={WRAPPER_STYLE}>
       <BeaconSearchResults />
       <BeaconQueryFormUi
-        isFetchingQueryResponse={isFetchingBeaconQuery}
+        isFetchingQueryResponse={isFetchingQueryResponse}
         isNetworkQuery={false}
         beaconAssemblyIds={beaconAssemblyIds}
         querySections={querySections}
         launchQuery={makeBeaconQuery}
+        apiErrorMessage={apiErrorMessage}
       />
     </div>
   );

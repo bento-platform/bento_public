@@ -1,10 +1,9 @@
 import { Col, Row } from 'antd';
-import { useAppSelector } from '@/hooks';
-import type { NetworkBeacon } from '@/types/beaconNetwork';
+import { useBeaconNetwork } from '@/features/beacon/hooks';
 import NodeDetails from './NetworkNodeDetails/NodeDetails';
 
-const NetworkBeacons = ({ beacons }: NetworkBeaconsProps) => {
-  const beaconResponses = useAppSelector((state) => state.beaconNetworkResponse.beacons);
+const NetworkBeacons = () => {
+  const { beacons, beaconResponses } = useBeaconNetwork();
 
   // For now, render all beacons from the start and update as they respond (NodeDetails component is memoized).
   // They could be shown optionally if network is very large (ie could just show only beacons with non-zero responses).
@@ -19,9 +18,5 @@ const NetworkBeacons = ({ beacons }: NetworkBeaconsProps) => {
     </Row>
   );
 };
-
-export interface NetworkBeaconsProps {
-  beacons: NetworkBeacon[];
-}
 
 export default NetworkBeacons;

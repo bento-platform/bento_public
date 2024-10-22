@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Card, Col, Form, Row } from 'antd';
 import { useIsAuthenticated } from 'bento-auth-js';
-import { useAppSelector, useAppDispatch, useTranslationDefault, useQueryWithAuthIfAllowed } from '@/hooks';
+import { useAppDispatch, useTranslationDefault, useQueryWithAuthIfAllowed } from '@/hooks';
 import VariantsForm from './VariantsForm';
 import Filters from './Filters';
 import SearchToolTip from './ToolTips/SearchToolTip';
@@ -41,6 +41,7 @@ const BeaconQueryFormUi = ({
   beaconAssemblyIds,
   querySections,
   launchQuery,
+  apiErrorMessage,
 }: BeaconQueryFormUiProps) => {
   const td = useTranslationDefault();
   const [form] = Form.useForm();
@@ -63,7 +64,6 @@ const BeaconQueryFormUi = ({
   );
   const uiInstructions = hasVariants ? 'Search by genomic variants, clinical metadata or both.' : '';
 
-  const apiErrorMessage = useAppSelector((state) => (isNetworkQuery ? false : state.beaconQuery.apiErrorMessage));
   const hasError = hasFormError || !!apiErrorMessage;
   const showError = hasError && !errorAlertClosed;
 
@@ -233,7 +233,7 @@ const BeaconQueryFormUi = ({
             {hasVariants && (
               <Col xs={24} lg={12}>
                 <Card
-                  title={td('Variants')}
+                  title={td('entities.Variants')}
                   style={CARD_STYLE}
                   styles={CARD_STYLES}
                   extra={
@@ -301,6 +301,7 @@ export interface BeaconQueryFormUiProps {
   beaconAssemblyIds: BeaconAssemblyIds;
   querySections: Section[];
   launchQuery: BeaconQueryAction;
+  apiErrorMessage?: string;
 }
 
 export default BeaconQueryFormUi;

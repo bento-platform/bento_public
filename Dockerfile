@@ -57,4 +57,5 @@ COPY package.json .
 #    - this way we can cache layers
 COPY --from=build /bento-public/dist ./dist
 
-CMD ["bash", "./run.bash"]
+ENTRYPOINT [ "/bin/bash", "./entrypoint.bash" ]
+CMD [ "/bin/bash", "./run.bash" ]
