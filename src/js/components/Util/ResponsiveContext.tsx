@@ -31,7 +31,6 @@ export const ResponsiveProvider = ({ children }: ResponsiveProviderProps) => {
       setIsMobile(isMobileLogic(window.innerWidth));
       setIsTablet(isTabletLogic(window.innerWidth));
     };
-    handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
