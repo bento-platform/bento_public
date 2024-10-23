@@ -4,6 +4,7 @@ import { Space, Spin, Tag } from 'antd';
 import SearchResultsPane from '@/components/Search/SearchResultsPane';
 import { useBeaconNetwork } from '@/features/beacon/hooks';
 import { useTranslationDefault } from '@/hooks';
+import { Loading3QuartersOutlined } from '@ant-design/icons';
 
 const NetworkSearchResults = () => {
   const td = useTranslationDefault();
@@ -42,7 +43,9 @@ const NetworkSearchResults = () => {
   const resultsExtra = (
     <Space>
       {hasBeaconNetworkError && <Tag color="red">Network Error</Tag>}
-      {!noResponsesYet && isFetchingAtLeastOneResponse && <Spin size="small" />}
+      {!noResponsesYet && isFetchingAtLeastOneResponse && (
+        <Spin size="small" indicator={<Loading3QuartersOutlined spin={true} />} />
+      )}
       {numResultsText(numNonZeroResponses)}
     </Space>
   );
