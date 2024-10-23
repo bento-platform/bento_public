@@ -65,7 +65,7 @@ const SiteHeader = () => {
   };
 
   return (
-    <Header style={{ position: 'fixed', width: '100%', zIndex: 100, top: 0 }}>
+    <Header style={{ position: 'fixed', width: '100%', zIndex: 100, top: 0, padding: '0 24px' }}>
       <Flex align="center" justify="space-between">
         <Space size={isSmallScreen ? 'small' : 'middle'}>
           {isSmallScreen ? (
