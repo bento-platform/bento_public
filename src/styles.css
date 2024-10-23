@@ -54,7 +54,8 @@ body {
     color: #e6f4ff;
 }
 
-.select-dataset-item.selected, .select-dataset-item.selected:hover {
+.select-dataset-item.selected,
+.select-dataset-item.selected:hover {
     background-color: #91caff;
 }
 
@@ -62,7 +63,6 @@ body {
     background-color: #0958d9;
     color: #91caff;
 }
-
 
 /* BEGIN about HTML styling */
 
@@ -78,7 +78,6 @@ body {
 }
 
 /* END about HTML styling */
-
 
 /* BEGIN search results pane */
 
@@ -109,7 +108,8 @@ body {
 }
 
 .search-result-statistic.enabled.selected {
-    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.02), inset 0 2px 5px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.02),
+    inset 0 2px 5px rgba(0, 0, 0, 0.08);
 }
 
 /* END search results pane */
@@ -119,4 +119,3 @@ body {
         padding: 10px !important;
     }
 }
-
