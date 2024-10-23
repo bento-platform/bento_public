@@ -1,8 +1,11 @@
 import { type CSSProperties } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import { Tabs, Button } from 'antd';
-import { useAppSelector, useTranslationCustom, useTranslationDefault } from '@/hooks';
+
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useMetadata } from '@/features/metadata/hooks';
+import { useTranslationCustom, useTranslationDefault } from '@/hooks';
+
 import DatasetScopePicker from './DatasetScopePicker';
 
 const styles: Record<string, CSSProperties> = {
@@ -21,7 +24,7 @@ const ProjectScopePicker = () => {
 
   const navigate = useNavigate();
 
-  const { projects, selectedScope } = useAppSelector((state) => state.metadata);
+  const { projects, selectedScope } = useMetadata();
   const { scope: scopeObj, fixedProject } = selectedScope;
 
   const [selectedProject, setSelectedProject] = useState<string | undefined>(

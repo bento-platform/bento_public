@@ -1,29 +1,16 @@
 import type React from 'react';
 import { memo, useRef } from 'react';
-import { Button, Card, Row, Space, Tooltip, Typography } from 'antd';
+import { Button, Card, Row, Space, Tooltip } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import Chart from './Chart';
 import CustomEmpty from '../Util/CustomEmpty';
 import { BOX_SHADOW, CHART_HEIGHT } from '@/constants/overviewConstants';
 import { useElementWidth, useTranslationCustom, useTranslationDefault } from '@/hooks';
 import type { ChartDataField } from '@/types/data';
+import SmallChartCardTitle from '@/components/Util/SmallChartCardTitle';
 
 const CARD_STYLE: React.CSSProperties = { height: '415px', borderRadius: '11px', ...BOX_SHADOW };
 const ROW_EMPTY_STYLE: React.CSSProperties = { height: `${CHART_HEIGHT}px` };
-
-interface TitleComponentProps {
-  title: string;
-  description: string;
-}
-
-const TitleComponent: React.FC<TitleComponentProps> = ({ title, description }) => (
-  <Space.Compact direction="vertical" style={{ fontWeight: 'normal', padding: '5px 5px' }}>
-    <Typography.Text style={{ fontSize: '20px', fontWeight: '600' }}>{title}</Typography.Text>
-    <Typography.Text type="secondary" style={{ width: '375px' }} ellipsis={{ tooltip: description }}>
-      {description}
-    </Typography.Text>
-  </Space.Compact>
-);
 
 const ChartCard: React.FC<ChartCardProps> = memo(({ section, chart, onRemoveChart }) => {
   const t = useTranslationCustom();
@@ -51,7 +38,9 @@ const ChartCard: React.FC<ChartCardProps> = memo(({ section, chart, onRemoveChar
   return (
     <div ref={containerRef} key={id} style={{ gridColumn: `span ${width}` }}>
       <Card
-        title={<TitleComponent title={t(title)} description={t(description)} />}
+        title={
+          <SmallChartCardTitle title={t(title)} description={t(description)} descriptionStyle={{ width: '375px' }} />
+        }
         style={CARD_STYLE}
         size="small"
         extra={
