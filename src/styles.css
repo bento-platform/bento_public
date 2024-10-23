@@ -64,6 +64,7 @@ body {
   color: #91caff;
 }
 
+
 /* BEGIN about HTML styling */
 
 /* Elements which are the first child of the about content container shouldn't have the default top margin */
@@ -78,6 +79,7 @@ body {
 }
 
 /* END about HTML styling */
+
 
 /* BEGIN search results pane */
 
@@ -108,11 +110,11 @@ body {
 }
 
 .search-result-statistic.enabled.selected {
-  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.02),
-  inset 0 2px 5px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.02), inset 0 2px 5px rgba(0, 0, 0, 0.08);
 }
 
 /* END search results pane */
+
 
 @media (max-width: 768px) {
   .ant-layout-content {
