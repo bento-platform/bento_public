@@ -107,7 +107,12 @@ const SearchResultsPane = ({
             </>
           ) : (
             <Col xs={24} lg={20}>
-              <Button icon={<LeftOutlined />} type="link" onClick={() => setPanePage('charts')}>
+              <Button
+                icon={<LeftOutlined />}
+                type="link"
+                onClick={() => setPanePage('charts')}
+                style={{ paddingLeft: 0 }}
+              >
                 {td('Charts')}
               </Button>
               <Table<IndividualResultRow>
