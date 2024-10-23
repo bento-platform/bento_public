@@ -1,13 +1,19 @@
 import { useCallback, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
+import { Space } from 'antd';
 
 import { disableChart } from '@/features/data/data.store';
-import type { ChartDataField } from '@/types/data';
-import ChartCard from './ChartCard';
+import { useSmallScreen } from '@/hooks/useResponsiveContext';
+
 import { CHART_WIDTH, GRID_GAP } from '@/constants/overviewConstants';
+
+import ChartCard from './ChartCard';
+
+import type { ChartDataField } from '@/types/data';
 
 const OverviewDisplayData = ({ section, allCharts }: OverviewDisplayDataProps) => {
   const dispatch = useDispatch();
+  const isSmallScreen = useSmallScreen();
 
   const containerStyle = {
     display: 'grid',
@@ -27,6 +33,14 @@ const OverviewDisplayData = ({ section, allCharts }: OverviewDisplayDataProps) =
   const renderItem = (chart: ChartDataField) => {
     return <ChartCard key={chart.id} chart={chart} section={section} onRemoveChart={onRemoveChart} />;
   };
+
+  if (isSmallScreen) {
+    return (
+      <Space direction="vertical" style={{ width: '100%' }}>
+        {displayedCharts.map(renderItem)}
+      </Space>
+    );
+  }
 
   return <div style={containerStyle}>{displayedCharts.map(renderItem)}</div>;
 };

@@ -1,10 +1,10 @@
 import { type CSSProperties, Fragment, type ReactNode } from 'react';
-import { Typography, Card, Space, Statistic, Popover } from 'antd';
+import { Card, Popover, Space, Statistic, Typography } from 'antd';
 import { InfoCircleOutlined, TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
 
 import ExpSvg from '../Util/ExpSvg';
-import { COUNTS_FILL, BOX_SHADOW } from '@/constants/overviewConstants';
+import { BOX_SHADOW, COUNTS_FILL } from '@/constants/overviewConstants';
 import { useAppSelector, useTranslationDefault } from '@/hooks';
 
 const styles: Record<string, CSSProperties> = {
@@ -47,7 +47,7 @@ const Counts = () => {
   return (
     <>
       <Typography.Title level={3}>{td('Counts')}</Typography.Title>
-      <Space direction="horizontal">
+      <Space wrap>
         {data.map(({ title, help, icon, count }, i) => {
           const titleTransl = td(`entities.${title}`);
           return (
