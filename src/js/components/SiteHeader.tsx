@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { type CSSProperties, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Button, Flex, Layout, Space, Typography } from 'antd';
@@ -19,9 +19,9 @@ import ScopePickerModal from './Scope/ScopePickerModal';
 
 const { Header } = Layout;
 
-// Header padding is set to 4px on left to align logo with sider icons
-// Header padding is set to 24px on right to provide breathing room for buttons
-const HEADER_PADDING: React.CSSProperties = { padding: '0 24px 0 4px' };
+// Header padding is reduced to 24px to provide more breathing room for buttons at small screen sizes and grid-align
+// logo with sidebar icons.
+const HEADER_PADDING: CSSProperties = { padding: '0 24px' };
 
 const openPortalWindow = () => window.open(PORTAL_URL, '_blank');
 
@@ -77,7 +77,7 @@ const SiteHeader = () => {
               type="image/png"
               data="/public/assets/icon_small.png"
               aria-label="logo"
-              style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-3px)', paddingLeft: '23px' }}
+              style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-3px)', paddingRight: '26px' }}
               onClick={() => navigate(`/${i18n.language}${scopeToUrl(scopeObj)}`)}
             >
               <img
