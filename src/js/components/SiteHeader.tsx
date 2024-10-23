@@ -9,13 +9,13 @@ import { RiTranslate } from 'react-icons/ri';
 import { ExportOutlined, LinkOutlined, LoginOutlined, LogoutOutlined, ProfileOutlined } from '@ant-design/icons';
 
 import { useAppSelector } from '@/hooks';
+import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { scopeToUrl } from '@/utils/router';
 
 import { DEFAULT_TRANSLATION, LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
 import { CLIENT_NAME, PORTAL_URL, TRANSLATED } from '@/config';
 
 import ScopePickerModal from './Scope/ScopePickerModal';
-import { useSmallScreen } from '@/components/Util/ResponsiveContext';
 
 const { Header } = Layout;
 
@@ -69,12 +69,25 @@ const SiteHeader = () => {
       <Flex align="center" justify="space-between">
         <Space size={isSmallScreen ? 'small' : 'middle'}>
           {isSmallScreen ? (
-            <img
-              src="/public/assets/icon_small.png"
-              alt="logo"
+            <object
+              type="image/png"
+              data="/public/assets/icon_small.png"
+              aria-label="logo"
               style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-3px)', paddingLeft: '23px' }}
               onClick={() => navigate(`/${i18n.language}${scopeToUrl(scopeObj)}`)}
-            />
+            >
+              <img
+                src="/public/assets/branding.png"
+                alt="logo"
+                style={{
+                  height: '32px',
+                  verticalAlign: 'middle',
+                  transform: 'translateY(-3px)',
+                  paddingLeft: '23px',
+                }}
+                onClick={() => navigate(`/${i18n.language}${scopeToUrl(scopeObj)}`)}
+              />
+            </object>
           ) : (
             <img
               src="/public/assets/branding.png"

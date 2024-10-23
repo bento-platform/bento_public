@@ -9,6 +9,7 @@ import { useElementWidth, useTranslationCustom, useTranslationDefault } from '@/
 import type { ChartDataField } from '@/types/data';
 
 const ROW_EMPTY_STYLE: React.CSSProperties = { height: `${CHART_HEIGHT}px` };
+const CARD_STYLE: React.CSSProperties = { height: '415px', borderRadius: '11px', ...BOX_SHADOW };
 
 interface TitleComponentProps {
   title: string;
@@ -29,7 +30,6 @@ const ChartCard: React.FC<ChartCardProps> = memo(({ section, chart, onRemoveChar
   const td = useTranslationDefault();
   const containerRef = useRef<HTMLDivElement>(null);
   const width = useElementWidth(containerRef, chart.width);
-  const CARD_STYLE: React.CSSProperties = { height: '415px', borderRadius: '11px', ...BOX_SHADOW };
 
   const {
     data,

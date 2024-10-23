@@ -17,7 +17,7 @@ import Loader from '@/components/Loader';
 import BentoAppRouter from '@/components/BentoAppRouter';
 import LanguageHandler from '@/components/Util/LanguageHandler';
 import AuthOutlet from '@/components/Util/AuthOutlet';
-import { ResponsiveProvider } from '@/components/Util/ResponsiveContext';
+import { ResponsiveProvider } from '@/utils/responsiveUtils';
 
 // Hooks and utilities imports
 import { BentoAuthContextProvider } from 'bento-auth-js';

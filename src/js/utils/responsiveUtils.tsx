@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react';
-import { createContext, useContext, useEffect, useState } from 'react';
-
+import { createContext, useEffect, useState } from 'react';
 import { DeviceBreakpoints } from '@/constants/deviceBreakpoints';
 
 interface ResponsiveContextType {
@@ -13,7 +12,7 @@ const DefaultResponsiveContext: ResponsiveContextType = {
   isTablet: false,
 };
 
-const ResponsiveContext = createContext<ResponsiveContextType>(DefaultResponsiveContext);
+export const ResponsiveContext = createContext<ResponsiveContextType>(DefaultResponsiveContext);
 
 const isMobileLogic = (width: number) => width <= DeviceBreakpoints.MOBILE;
 const isTabletLogic = (width: number) => width > DeviceBreakpoints.MOBILE && width <= DeviceBreakpoints.TABLET;
@@ -36,17 +35,4 @@ export const ResponsiveProvider = ({ children }: ResponsiveProviderProps) => {
   }, []);
 
   return <ResponsiveContext.Provider value={{ isMobile, isTablet }}>{children}</ResponsiveContext.Provider>;
-};
-
-export const useResponsiveMobileContext = (): boolean => {
-  return useContext(ResponsiveContext).isMobile;
-};
-
-export const useResponsiveTabletContext = (): boolean => {
-  return useContext(ResponsiveContext).isTablet;
-};
-
-export const useSmallScreen = (): boolean => {
-  const { isMobile, isTablet } = useContext(ResponsiveContext);
-  return isMobile || isTablet;
 };

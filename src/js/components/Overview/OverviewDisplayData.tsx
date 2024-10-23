@@ -3,10 +3,10 @@ import { useDispatch } from 'react-redux';
 import { Space } from 'antd';
 
 import { disableChart } from '@/features/data/data.store';
+import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
 import { CHART_WIDTH, GRID_GAP } from '@/constants/overviewConstants';
 
-import { useSmallScreen } from '@/components/Util/ResponsiveContext';
 import ChartCard from './ChartCard';
 
 import type { ChartDataField } from '@/types/data';
