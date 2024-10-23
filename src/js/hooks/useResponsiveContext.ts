@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { ResponsiveContext } from '@/utils/responsiveUtils';
+import { ResponsiveContext } from '@/components/Util/responsiveUtils';
 
 export const useResponsiveMobileContext = (): boolean => {
   return useContext(ResponsiveContext).isMobile;

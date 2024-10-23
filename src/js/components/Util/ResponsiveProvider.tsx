@@ -21,7 +21,7 @@ interface ResponsiveProviderProps {
   children: ReactNode;
 }
 
-export const ResponsiveProvider = ({ children }: ResponsiveProviderProps) => {
+const ResponsiveProvider = ({ children }: ResponsiveProviderProps) => {
   const [isMobile, setIsMobile] = useState<boolean>(isMobileLogic(window.innerWidth));
   const [isTablet, setIsTablet] = useState<boolean>(isTabletLogic(window.innerWidth));
 
@@ -36,3 +36,5 @@ export const ResponsiveProvider = ({ children }: ResponsiveProviderProps) => {
 
   return <ResponsiveContext.Provider value={{ isMobile, isTablet }}>{children}</ResponsiveContext.Provider>;
 };
+
+export default ResponsiveProvider;
