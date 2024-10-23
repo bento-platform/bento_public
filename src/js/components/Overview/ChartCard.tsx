@@ -8,8 +8,8 @@ import { BOX_SHADOW, CHART_HEIGHT } from '@/constants/overviewConstants';
 import { useElementWidth, useTranslationCustom, useTranslationDefault } from '@/hooks';
 import type { ChartDataField } from '@/types/data';
 
-const ROW_EMPTY_STYLE: React.CSSProperties = { height: `${CHART_HEIGHT}px` };
 const CARD_STYLE: React.CSSProperties = { height: '415px', borderRadius: '11px', ...BOX_SHADOW };
+const ROW_EMPTY_STYLE: React.CSSProperties = { height: `${CHART_HEIGHT}px` };
 
 interface TitleComponentProps {
   title: string;
