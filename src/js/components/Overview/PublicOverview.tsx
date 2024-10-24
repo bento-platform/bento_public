@@ -12,11 +12,11 @@ import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
 import Counts from './Counts';
 import LastIngestionInfo from './LastIngestion';
 import Loader from '@/components/Loader';
+import Dataset from '@/components/Provenance/Dataset';
 
 import { useAppSelector } from '@/hooks';
 import { useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
 import { useTranslation } from 'react-i18next';
-import Dataset from '@/components/Provenance/Dataset';
 
 const ABOUT_CARD_STYLE = { width: '100%', maxWidth: '1390px', borderRadius: '11pX', ...BOX_SHADOW };
 const MANAGE_CHARTS_BUTTON_STYLE = { right: '5em', bottom: '1.5em', transform: 'scale(125%)' };
