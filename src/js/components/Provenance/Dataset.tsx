@@ -1,7 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Avatar, Button, Card, List } from 'antd';
+import { Avatar, Button, Card, List, Space, Tag, Typography } from 'antd';
 import { FaDatabase } from 'react-icons/fa';
-
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type { Dataset } from '@/types/metadata';
 import { getCurrentPage, scopeToUrl } from '@/utils/router';
@@ -10,6 +9,10 @@ import { BOX_SHADOW } from '@/constants/overviewConstants';
 import { RightOutlined } from '@ant-design/icons';
 import { useCallback } from 'react';
 import SmallChartCardTitle from '@/components/Util/SmallChartCardTitle';
+
+const { Paragraph } = Typography;
+
+const KEYWORDS_LIMIT = 2;
 
 const Dataset = ({
   parentProjectID,
@@ -25,6 +28,9 @@ const Dataset = ({
   const location = useLocation();
   const navigate = useNavigate();
   const page = getCurrentPage();
+  const keywords = dataset.dats_file.keywords;
+  const displayKeywords = keywords?.slice(0, KEYWORDS_LIMIT) ?? [];
+  const remainingKeywords = keywords?.slice(KEYWORDS_LIMIT) ?? [];
 
   const t = useTranslationCustom();
 
@@ -56,7 +62,22 @@ const Dataset = ({
         style={{ ...BOX_SHADOW, height: 200 }}
         extra={<Button shape="circle" icon={<RightOutlined />} onClick={onNavigate} />}
       >
-        {description}
+        <Paragraph
+          ellipsis={{
+            rows: 2,
+            tooltip: { title: description, color: 'white', overlayInnerStyle: { color: 'rgba(0, 0, 0, 0.88)' } },
+          }}
+        >
+          {description}
+        </Paragraph>
+        <Space size={[0, 8]} align="start" wrap>
+          {displayKeywords?.map((keyword, i) => (
+            <Tag key={i} color="cyan">
+              {t(keyword.value.toString())}
+            </Tag>
+          ))}
+          {remainingKeywords?.length > 0 && <Paragraph>+{remainingKeywords.length} more</Paragraph>}
+        </Space>
       </Card>
     );
   } else {
