@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Row } from 'antd';
 
-import { useAppSelector } from '@/hooks';
+import { useMetadata } from '@/features/metadata/hooks';
 import type { Dataset } from '@/types/metadata';
 
 import DatasetProvenance from './DatasetProvenance';
@@ -11,7 +11,7 @@ const ProvenanceTab = () => {
     projects,
     isFetching: loading,
     selectedScope: { scope },
-  } = useAppSelector((state) => state.metadata);
+  } = useMetadata();
 
   const datasets = useMemo<Dataset[]>(() => {
     let filteredProjects = projects;
