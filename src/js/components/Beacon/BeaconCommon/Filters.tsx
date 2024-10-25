@@ -6,13 +6,14 @@ import type { FormInstance } from 'antd/es/form';
 import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { useBeaconNetwork } from '@/features/beacon/hooks';
 import { toggleQuerySectionsUnionOrIntersection } from '@/features/beacon/network.store';
-import { useAppSelector, useAppDispatch } from '@/hooks';
+import { useAppSelector, useAppDispatch, useTranslationFn } from '@/hooks';
 import type { FormFilter } from '@/types/beacon';
 import type { SearchFieldResponse } from '@/types/search';
 
 import Filter from './Filter';
 
 const NetworkFilterToggle = () => {
+  const t = useTranslationFn();
   const dispatch = useAppDispatch();
   const { isQuerySectionsUnion } = useBeaconNetwork();
 
@@ -24,7 +25,9 @@ const NetworkFilterToggle = () => {
           checked={isQuerySectionsUnion}
           style={{ margin: '5px' }}
         />
-        <p style={{ margin: '5px' }}>{isQuerySectionsUnion ? 'show all filters' : 'common filters only'}</p>
+        <p style={{ margin: '5px' }}>
+          {t(`beacon.${isQuerySectionsUnion ? 'show_all_filters' : 'common_filters_only'}`)}
+        </p>
       </div>
     </Tooltip>
   );

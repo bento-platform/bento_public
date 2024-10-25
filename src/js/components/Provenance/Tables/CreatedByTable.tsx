@@ -1,32 +1,31 @@
 import { Tag } from 'antd';
 
-import { useTranslationDefault, useTranslationCustom } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
 import type { DatsFile } from '@/types/dats';
 
 import BaseProvenanceTable from './BaseProvenanceTable';
 
 const CreatedByTable = ({ creators }: CreatedByTableProps) => {
-  const t = useTranslationCustom();
-  const td = useTranslationDefault();
+  const t = useTranslationFn();
 
   return (
     <BaseProvenanceTable
       dataSource={creators}
       columns={[
         {
-          title: td('Name'),
+          title: t('Name'),
           dataIndex: 'name',
           key: 'name',
           render: (text) => t(text),
         },
         {
-          title: td('Abbreviation'),
+          title: t('Abbreviation'),
           dataIndex: 'abbreviation',
           key: 'abbreviation',
           render: (text) => t(text),
         },
         {
-          title: td('Roles'),
+          title: t('Roles'),
           dataIndex: 'roles',
           key: 'roles',
           render: (_, { roles }) =>

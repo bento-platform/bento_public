@@ -4,7 +4,7 @@ import { FaDatabase } from 'react-icons/fa';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type { Dataset } from '@/types/metadata';
 import { getCurrentPage, scopeToUrl } from '@/utils/router';
-import { useTranslationCustom } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
 import { BOX_SHADOW } from '@/constants/overviewConstants';
 import { RightOutlined } from '@ant-design/icons';
 import { useCallback } from 'react';
@@ -32,7 +32,7 @@ const Dataset = ({
   const displayKeywords = keywords?.slice(0, KEYWORDS_LIMIT) ?? [];
   const remainingKeywords = keywords?.slice(KEYWORDS_LIMIT) ?? [];
 
-  const t = useTranslationCustom();
+  const t = useTranslationFn();
 
   const baseURL = '/' + location.pathname.split('/')[1];
 

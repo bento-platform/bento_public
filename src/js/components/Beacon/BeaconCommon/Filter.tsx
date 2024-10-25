@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useTranslationCustom, useTranslationDefault } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
 import { Button, Form, Select, Space } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import type { FormInstance } from 'antd/es/form';
@@ -22,8 +22,7 @@ const FILTER_FORM_ITEM_STYLE = { flex: 1, marginInlineEnd: -1 };
 const FILTER_FORM_ITEM_INNER_STYLE = { width: '100%' };
 
 const Filter = ({ filter, form, querySections, removeFilter, isRequired }: FilterProps) => {
-  const t = useTranslationCustom();
-  const td = useTranslationDefault();
+  const t = useTranslationFn();
 
   const [valueOptions, setValueOptions] = useState([{ label: '', value: '' }]);
 
@@ -68,11 +67,11 @@ const Filter = ({ filter, form, querySections, removeFilter, isRequired }: Filte
     <Space.Compact>
       <Form.Item
         name={`filterId${filter.index}`}
-        rules={[{ required: isRequired, message: td('search field required') }]}
+        rules={[{ required: isRequired, message: t('search field required') }]}
         style={FILTER_FORM_ITEM_STYLE}
       >
         <Select
-          placeholder={td('select a search field')}
+          placeholder={t('select a search field')}
           style={FILTER_FORM_ITEM_INNER_STYLE}
           onSelect={handleSelectKey}
           options={searchKeyOptions(querySections)}
@@ -80,7 +79,7 @@ const Filter = ({ filter, form, querySections, removeFilter, isRequired }: Filte
       </Form.Item>
       <Form.Item
         name={`filterValue${filter.index}`}
-        rules={[{ required: isRequired, message: td('value required') }]}
+        rules={[{ required: isRequired, message: t('value required') }]}
         style={FILTER_FORM_ITEM_STYLE}
       >
         <Select

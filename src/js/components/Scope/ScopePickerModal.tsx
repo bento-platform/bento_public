@@ -1,5 +1,5 @@
 import { Modal } from 'antd';
-import { useTranslationDefault } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
 import ProjectScopePicker from './ProjectScopePicker';
 
 interface ScopePickerModalProps {
@@ -7,10 +7,10 @@ interface ScopePickerModalProps {
   setIsModalOpen: (isOpen: boolean) => void;
 }
 const ScopePickerModal = ({ isModalOpen, setIsModalOpen }: ScopePickerModalProps) => {
-  const td = useTranslationDefault();
+  const t = useTranslationFn();
   const closeModal = () => setIsModalOpen(false);
   return (
-    <Modal title={td('Select Scope')} open={isModalOpen} onCancel={closeModal} footer={null} width={700}>
+    <Modal title={t('Select Scope')} open={isModalOpen} onCancel={closeModal} footer={null} width={700}>
       <ProjectScopePicker />
     </Modal>
   );

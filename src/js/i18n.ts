@@ -16,6 +16,7 @@ const options: InitOptions = {
   // have a common namespace used around the full app
   ns: ['translation', 'default_translation'],
   defaultNS: 'translation',
+  fallbackNS: 'default_translation',
 
   supportedLngs: Object.values(SUPPORTED_LNGS),
   load: 'all',

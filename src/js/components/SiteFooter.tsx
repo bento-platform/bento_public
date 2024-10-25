@@ -2,11 +2,11 @@ import { Layout, Row, Typography, Space } from 'antd';
 const { Footer } = Layout;
 const { Title, Text, Link } = Typography;
 
-import { useTranslationDefault } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
 import bentoLogo from '@public/assets/bento.svg';
 
 const SiteFooter = () => {
-  const td = useTranslationDefault();
+  const t = useTranslationFn();
 
   return (
     <Footer>
@@ -14,7 +14,7 @@ const SiteFooter = () => {
         <Space size={8} direction="vertical" align="center">
           <div>
             <Title level={5} type="secondary" style={{ marginBottom: '0' }}>
-              Powered by
+              {t('Powered by')}
             </Title>
             <Link href="https://bento-platform.github.io" target="_blank">
               <img style={{ height: '36px' }} src={bentoLogo} alt="Bento" />
@@ -43,7 +43,7 @@ const SiteFooter = () => {
           </div>
           <div>
             <Link href="/public/terms.html" target="_blank">
-              {td('Terms of Use')}
+              {t('Terms of Use')}
             </Link>
           </div>
         </Space>

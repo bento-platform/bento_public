@@ -4,7 +4,7 @@ import { Tabs, Button } from 'antd';
 
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useMetadata } from '@/features/metadata/hooks';
-import { useTranslationCustom, useTranslationDefault } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
 
 import DatasetScopePicker from './DatasetScopePicker';
 
@@ -16,8 +16,7 @@ const styles: Record<string, CSSProperties> = {
 };
 
 const ProjectScopePicker = () => {
-  const td = useTranslationDefault();
-  const t = useTranslationCustom();
+  const t = useTranslationFn();
 
   const location = useLocation();
   const baseURL = '/' + location.pathname.split('/')[1];
@@ -53,7 +52,7 @@ const ProjectScopePicker = () => {
           tabPosition="left"
           activeKey={selectedProject}
           onChange={onTabChange}
-          tabBarExtraContent={<Button onClick={onProjectClear}>{td('Clear')}</Button>}
+          tabBarExtraContent={<Button onClick={onProjectClear}>{t('Clear')}</Button>}
           items={tabItems}
           style={styles.tabs}
         />

@@ -6,7 +6,7 @@ import { BiDna } from 'react-icons/bi';
 import { COUNTS_FILL } from '@/constants/overviewConstants';
 import { NO_RESULTS_DASHES } from '@/constants/searchConstants';
 import ExpSvg from '@/components/Util/ExpSvg';
-import { useTranslationDefault } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
 import type { DiscoveryResults, OptionalDiscoveryResults } from '@/types/data';
 import type { SearchResultsUIPane } from '@/types/search';
 
@@ -21,7 +21,7 @@ const SearchResultsCounts = ({
   hasInsufficientData,
   message,
 }: SearchResultsCountsProps) => {
-  const td = useTranslationDefault();
+  const t = useTranslationFn();
 
   const { individualCount, individualMatches, biosampleCount, experimentCount } = results;
   const individualsClickable = !!setSelectedPane && individualMatches?.length;
@@ -58,10 +58,10 @@ const SearchResultsCounts = ({
             ].join(' ')}
           >
             <Statistic
-              title={td('entities.Individuals')}
+              title={t('entities.Individuals')}
               value={
                 hasInsufficientData
-                  ? td(message ?? '')
+                  ? t(message ?? '')
                   : isBeaconNetwork && !individualCount
                     ? NO_RESULTS_DASHES
                     : individualCount
@@ -71,13 +71,13 @@ const SearchResultsCounts = ({
             />
           </div>
           <Statistic
-            title={td('entities.Biosamples')}
+            title={t('entities.Biosamples')}
             value={hasInsufficientData || (isBeaconNetwork && !biosampleCount) ? NO_RESULTS_DASHES : biosampleCount}
             valueStyle={STAT_STYLE}
             prefix={<BiDna />}
           />
           <Statistic
-            title={td('entities.Experiments')}
+            title={t('entities.Experiments')}
             value={hasInsufficientData || (isBeaconNetwork && !experimentCount) ? NO_RESULTS_DASHES : experimentCount}
             valueStyle={STAT_STYLE}
             prefix={<ExpSvg />}

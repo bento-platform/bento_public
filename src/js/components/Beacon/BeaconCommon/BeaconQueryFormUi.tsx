@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Card, Col, Form, Row } from 'antd';
 import { useIsAuthenticated } from 'bento-auth-js';
-import { useAppDispatch, useTranslationDefault, useQueryWithAuthIfAllowed } from '@/hooks';
+import { useAppDispatch, useQueryWithAuthIfAllowed, useTranslationFn } from '@/hooks';
 import VariantsForm from './VariantsForm';
 import Filters from './Filters';
 import SearchToolTip from './ToolTips/SearchToolTip';
@@ -43,7 +43,7 @@ const BeaconQueryFormUi = ({
   launchQuery,
   apiErrorMessage,
 }: BeaconQueryFormUiProps) => {
-  const td = useTranslationDefault();
+  const t = useTranslationFn();
   const [form] = Form.useForm();
   const [filters, setFilters] = useState<FormFilter[]>([STARTER_FILTER]);
   const [hasVariants, setHasVariants] = useState<boolean>(false);
@@ -157,7 +157,7 @@ const BeaconQueryFormUi = ({
       if (!variantsFormValid(formValues)) {
         setHasFormError(true);
         setErrorAlertClosed(false);
-        setFormErrorMessage(td(VARIANTS_FORM_ERROR_MESSAGE));
+        setFormErrorMessage(t(VARIANTS_FORM_ERROR_MESSAGE));
         return;
       }
 
@@ -167,7 +167,7 @@ const BeaconQueryFormUi = ({
 
       dispatch(launchQuery(jsonPayload));
     },
-    [dispatch, td, launchQuery, packageBeaconJSON]
+    [dispatch, t, launchQuery, packageBeaconJSON]
   );
 
   const handleClearForm = () => {
@@ -218,22 +218,22 @@ const BeaconQueryFormUi = ({
     return empty || rangeQuery || sequenceQuery;
   };
 
-  const searchButtonText = isNetworkQuery ? 'Search Network' : 'Search Beacon';
+  const searchButtonText = t(`beacon.${isNetworkQuery ? 'search_network' : 'search_beacon'}`);
 
   return (
     <div style={{ paddingBottom: 8, display: 'flex', justifyContent: 'center', width: '100%' }}>
       <Card
-        title={td('Search')}
+        title={t('Search')}
         style={{ borderRadius: '10px', maxWidth: '1200px', width: '100%', ...BOX_SHADOW }}
         styles={CARD_STYLES}
       >
-        <p style={{ margin: '-8px 0 8px 0', padding: '0', color: 'grey' }}>{td(uiInstructions)}</p>
+        <p style={{ margin: '-8px 0 8px 0', padding: '0', color: 'grey' }}>{t(uiInstructions)}</p>
         <Form form={form} onFinish={handleFinish} layout="vertical" onValuesChange={handleValuesChange}>
           <Row gutter={FORM_ROW_GUTTERS}>
             {hasVariants && (
               <Col xs={24} lg={12}>
                 <Card
-                  title={td('entities.Variants')}
+                  title={t('entities.Variants')}
                   style={CARD_STYLE}
                   styles={CARD_STYLES}
                   extra={
@@ -250,7 +250,7 @@ const BeaconQueryFormUi = ({
               <Card
                 title={
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <>{td('Metadata')}</>
+                    <>{t('Metadata')}</>
                   </div>
                 }
                 style={CARD_STYLE}
@@ -275,16 +275,16 @@ const BeaconQueryFormUi = ({
             <Col span={24}>
               {showError && (
                 <BeaconErrorMessage
-                  message={`${td('Beacon error')}: ${errorMessage}`}
+                  message={`${t('beacon.beacon_error')}: ${errorMessage}`}
                   onClose={() => setErrorAlertClosed(true)}
                 />
               )}
               <div style={BUTTON_AREA_STYLE}>
                 <Button type="primary" htmlType="submit" loading={isFetchingQueryResponse} style={BUTTON_STYLE}>
-                  {td(searchButtonText)}
+                  {searchButtonText}
                 </Button>
                 <Button onClick={handleClearForm} style={BUTTON_STYLE}>
-                  {td('Clear Form')}
+                  {t('Clear Form')}
                 </Button>
               </div>
             </Col>
