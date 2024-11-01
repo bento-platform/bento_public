@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import { Row, Col, FloatButton, Card, Skeleton, Typography } from 'antd';
+import { useCallback, useEffect, useState } from 'react';
+import { Card, Col, FloatButton, Row, Skeleton, Typography } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
 import { convertSequenceAndDisplayData, saveValue } from '@/utils/localStorage';
@@ -79,13 +79,13 @@ const PublicOverview = () => {
         <Row>
           <Col flex={1}>
             <Typography.Title level={3}>Datasets</Typography.Title>
-            <Row gutter={[12, 12]}>
+            <div className="dataset-provenance-card-grid">
               {selectedProject.datasets.map((d) => (
-                <Col key={d.identifier} style={{ width: '100%', maxWidth: 360 }}>
+                <div key={d.identifier}>
                   <Dataset parentProjectID={selectedProject.identifier} dataset={d} format="small-card" />
-                </Col>
+                </div>
               ))}
-            </Row>
+            </div>
           </Col>
         </Row>
       )}

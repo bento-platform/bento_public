@@ -113,6 +113,12 @@ body {
   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.02), inset 0 2px 5px rgba(0, 0, 0, 0.08);
 }
 
+.dataset-provenance-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 600px));
+  gap: 16px;
+}
+
 /* END search results pane */
 
 
