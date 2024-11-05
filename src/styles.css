@@ -116,7 +116,7 @@ body {
 .dataset-provenance-card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 600px));
-  gap: 16px;
+  gap: 20px;
 }
 
 /* END search results pane */
@@ -125,5 +125,9 @@ body {
 @media (max-width: 768px) {
   .ant-layout-content {
     padding: 10px !important;
+  }
+
+  .dataset-provenance-card-grid {
+    gap: 8px;
   }
 }
