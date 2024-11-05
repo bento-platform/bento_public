@@ -82,7 +82,7 @@ const PublicOverview = () => {
             <div className="dataset-provenance-card-grid">
               {selectedProject.datasets.map((d) => (
                 <div key={d.identifier}>
-                  <Dataset parentProjectID={selectedProject.identifier} dataset={d} format="small-card" />
+                  <Dataset parentProjectID={selectedProject.identifier} dataset={d} format="card" />
                 </div>
               ))}
             </div>

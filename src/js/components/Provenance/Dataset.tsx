@@ -22,21 +22,21 @@ const Dataset = ({
 }: {
   parentProjectID: string;
   dataset: Dataset;
-  format: 'list-item' | 'small-card';
+  format: 'list-item' | 'card';
   selected?: boolean;
 }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const page = getCurrentPage();
-  const keywords = dataset.dats_file.keywords;
-  const displayKeywords = keywords?.slice(0, KEYWORDS_LIMIT) ?? [];
-  const remainingKeywords = keywords?.slice(KEYWORDS_LIMIT) ?? [];
 
   const t = useTranslationFn();
 
   const baseURL = '/' + location.pathname.split('/')[1];
 
-  const { identifier, title, description } = dataset;
+  const { identifier, title, description, dats_file: dats } = dataset;
+  const keywords = dats.keywords;
+  const displayKeywords = keywords?.slice(0, KEYWORDS_LIMIT) ?? [{value: "a"}, {value:"b"}, {value:"c"}];
+  const remainingKeywords = keywords?.slice(KEYWORDS_LIMIT) ?? [];
 
   const scope: DiscoveryScope = { project: parentProjectID, dataset: identifier };
   const datasetURL = scopeToUrl(scope, baseURL, `/${page}`);
@@ -54,7 +54,7 @@ const Dataset = ({
         <List.Item.Meta avatar={<Avatar icon={<FaDatabase />} />} title={t(title)} description={t(description)} />
       </List.Item>
     );
-  } else if (format === 'small-card') {
+  } else if (format === 'card') {
     return (
       <Card
         title={<SmallChartCardTitle title={title} />}
