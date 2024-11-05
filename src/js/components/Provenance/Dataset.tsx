@@ -60,6 +60,7 @@ const Dataset = ({
         title={<SmallChartCardTitle title={title} />}
         size="small"
         style={{ ...BOX_SHADOW, height: 200 }}
+        styles={{ body: { padding: '12px 16px' } }}
         extra={<Button shape="circle" icon={<RightOutlined />} onClick={onNavigate} />}
       >
         <Paragraph

@@ -10,7 +10,7 @@ type SmallChartCardTitleProps = {
 const SmallChartCardTitle = ({ title, description, descriptionStyle }: SmallChartCardTitleProps) => (
   <Space.Compact
     direction="vertical"
-    style={{ fontWeight: 'normal', padding: description ? '5px 5px' : '10px 5px', maxWidth: '100%' }}
+    style={{ fontWeight: 'normal', padding: description ? '4px 4px' : '10px 4px', maxWidth: '100%' }}
   >
     <Typography.Text
       ellipsis={true}

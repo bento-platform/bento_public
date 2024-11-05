@@ -122,6 +122,13 @@ body {
 /* END search results pane */
 
 
+@media (min-width: 1050px) and (max-width: 1550px) {
+  .dataset-provenance-card-grid {
+    /* This looks better at an intermediate screen width */
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  }
+}
+
 @media (max-width: 768px) {
   .ant-layout-content {
     padding: 10px !important;
