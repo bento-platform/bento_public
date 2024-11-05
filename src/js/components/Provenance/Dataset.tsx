@@ -35,7 +35,7 @@ const Dataset = ({
 
   const { identifier, title, description, dats_file: dats } = dataset;
   const keywords = dats.keywords;
-  const displayKeywords = keywords?.slice(0, KEYWORDS_LIMIT) ?? [{value: "a"}, {value:"b"}, {value:"c"}];
+  const displayKeywords = keywords?.slice(0, KEYWORDS_LIMIT) ?? [];
   const remainingKeywords = keywords?.slice(KEYWORDS_LIMIT) ?? [];
 
   const scope: DiscoveryScope = { project: parentProjectID, dataset: identifier };
