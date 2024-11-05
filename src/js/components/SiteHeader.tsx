@@ -12,7 +12,7 @@ import { useSelectedProject, useSelectedScope } from '@/features/metadata/hooks'
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { scopeToUrl } from '@/utils/router';
 
-import { DEFAULT_TRANSLATION, LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
+import { LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
 import { CLIENT_NAME, PORTAL_URL, TRANSLATED } from '@/config';
 
 import ScopePickerModal from './Scope/ScopePickerModal';
@@ -26,7 +26,7 @@ const HEADER_PADDING: CSSProperties = { padding: '0 24px' };
 const openPortalWindow = () => window.open(PORTAL_URL, '_blank');
 
 const SiteHeader = () => {
-  const { t, i18n } = useTranslation(DEFAULT_TRANSLATION);
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const isSmallScreen = useSmallScreen();
