@@ -2,25 +2,24 @@ import { Fragment } from 'react';
 
 import LinkIfUrl from '@/components/Util/LinkIfUrl';
 import type { Acknowledge } from '@/types/dats';
-import { useTranslationCustom, useTranslationDefault } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
 
 import BaseProvenanceTable from './BaseProvenanceTable';
 
 const AcknowledgesTable = ({ acknowledges }: AcknowledgesTableProps) => {
-  const t = useTranslationCustom();
-  const td = useTranslationDefault();
+  const t = useTranslationFn();
 
   return (
     <BaseProvenanceTable
       dataSource={acknowledges}
       columns={[
         {
-          title: td('Name'),
+          title: t('Name'),
           dataIndex: 'name',
           render: (text) => t(text),
         },
         {
-          title: td('Funders'),
+          title: t('Funders'),
           dataIndex: 'funders',
           render: (_, { funders }) =>
             funders.map((f, i) => (

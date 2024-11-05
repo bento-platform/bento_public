@@ -57,12 +57,12 @@
   "Remove this chart": "Remove this chart",
   "Width": "Width",
   "Insufficient data available.": "Insufficient data available.",
+  "Powered by": "Powered by",
   "Terms of Use": "Terms of Use",
   "No Data": "No Data",
   "Counts": "Counts",
   "Search by genomic variants, clinical metadata or both.": "Search by genomic variants, clinical metadata or both.",
   "Metadata": "Metadata",
-  "Search Beacon": "Search Beacon",
   "Clear Form": "Clear Form",
   "Search over clinical or phenotypic properties.": "Search over clinical or phenotypic properties.",
   "Chromosome": "Chromosome",
@@ -85,7 +85,6 @@
   "or": "or",
   "Ingestion History Is Empty": "Ingestion History Is Empty",
   "Latest Data Ingestion": "Latest Data Ingestion",
-  "Beacon error": "Beacon error",
   "Variants form should include either an end position or both reference and alternate bases": "Variants form should include either an end position or both reference and alternate bases",
   "Variant search": "Variant search",
   "To search for all variants inside a range: fill both \"Variant start\" and \"Variant end\",": "To search for all variants inside a range: fill both \"Variant start\" and \"Variant end\",",
@@ -105,5 +104,14 @@
   "Datasets": "Datasets",
   "Clear": "Clear",
   "Select": "Select",
-  "Results from": "Results from"
+  "beacon": {
+    "search_beacon": "Search Beacon",
+    "search_network": "Search Network",
+    "beacon_error": "Beacon Error",
+    "results_from": "Results from",
+    "network_search_results": "Network Search Results",
+    "show_all_filters": "show all filters",
+    "common_filters_only": "common filters only",
+    "home_page": "Home Page"
+  }
 }

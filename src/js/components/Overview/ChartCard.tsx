@@ -5,7 +5,7 @@ import { CloseOutlined } from '@ant-design/icons';
 import Chart from './Chart';
 import CustomEmpty from '../Util/CustomEmpty';
 import { BOX_SHADOW, CHART_HEIGHT } from '@/constants/overviewConstants';
-import { useElementWidth, useTranslationCustom, useTranslationDefault } from '@/hooks';
+import { useElementWidth, useTranslationFn } from '@/hooks';
 import type { ChartDataField } from '@/types/data';
 import SmallChartCardTitle from '@/components/Util/SmallChartCardTitle';
 
@@ -13,8 +13,7 @@ const CARD_STYLE: React.CSSProperties = { height: '415px', borderRadius: '11px',
 const ROW_EMPTY_STYLE: React.CSSProperties = { height: `${CHART_HEIGHT}px` };
 
 const ChartCard: React.FC<ChartCardProps> = memo(({ section, chart, onRemoveChart }) => {
-  const t = useTranslationCustom();
-  const td = useTranslationDefault();
+  const t = useTranslationFn();
   const containerRef = useRef<HTMLDivElement>(null);
   const width = useElementWidth(containerRef, chart.width);
 
@@ -28,7 +27,7 @@ const ChartCard: React.FC<ChartCardProps> = memo(({ section, chart, onRemoveChar
   const extraOptionsData = [
     {
       icon: <CloseOutlined />,
-      description: td('Remove this chart'),
+      description: t('Remove this chart'),
       onClick: () => {
         onRemoveChart({ section, id });
       },

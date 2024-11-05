@@ -3,11 +3,11 @@ import { Button, Space } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 
 import { PORTAL_URL } from '@/config';
-import { useTranslationDefault } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
 import type { Dataset } from '@/types/metadata';
 
 const DownloadDats = ({ dataset }: { dataset: Dataset }) => {
-  const t = useTranslationDefault();
+  const t = useTranslationFn();
 
   const exportData = useCallback(() => {
     window.location.href = `${PORTAL_URL}/api/metadata/api/datasets/${dataset.identifier}/dats?format=json&attachment=true`;

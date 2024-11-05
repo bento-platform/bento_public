@@ -3,14 +3,14 @@ import { useCallback, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Select } from 'antd';
 
-import { useTranslationCustom } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
 import { useSearchQuery } from '@/features/search/hooks';
 import { buildQueryParamsUrl } from '@/utils/search';
 
 const SELECT_STYLE: CSSProperties = { width: '100%' };
 
 const SelectOption = ({ id, isChecked, options }: SelectOptionProps) => {
-  const t = useTranslationCustom();
+  const t = useTranslationFn();
 
   const { pathname } = useLocation();
   const navigate = useNavigate();

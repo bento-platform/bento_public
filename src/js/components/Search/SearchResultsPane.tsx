@@ -5,7 +5,7 @@ import { PieChart } from 'bento-charts';
 
 import { PORTAL_URL } from '@/config';
 import { BOX_SHADOW, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
-import { useTranslationDefault, useTranslationCustom } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
 import type { DiscoveryResults } from '@/types/data';
 import type { SearchResultsUIPane } from '@/types/search';
 
@@ -22,8 +22,7 @@ const SearchResultsPane = ({
   resultsTitle,
   resultsExtra,
 }: SearchResultsPaneProps) => {
-  const td = useTranslationDefault();
-  const t = useTranslationCustom();
+  const t = useTranslationFn();
   const translateMap = useCallback(({ x, y }: { x: string; y: number }) => ({ x: t(x), y }), [t]);
 
   const [panePage, setPanePage] = useState<SearchResultsUIPane>('charts');
@@ -34,7 +33,7 @@ const SearchResultsPane = ({
     () => [
       {
         dataIndex: 'id',
-        title: td('entities.Individual'),
+        title: t('entities.Individual'),
         render: (id: string) => (
           <a href={`${PORTAL_URL}/data/explorer/individuals/${id}`} target="_blank" rel="noreferrer">
             {id}
@@ -42,7 +41,7 @@ const SearchResultsPane = ({
         ),
       },
     ],
-    [td]
+    [t]
   );
   const individualTableData = useMemo<IndividualResultRow[]>(
     () => (individualMatches ?? []).map((id) => ({ id })),
@@ -86,7 +85,7 @@ const SearchResultsPane = ({
             <>
               <Col xs={24} lg={10}>
                 <Typography.Title level={5} style={{ marginTop: 0 }}>
-                  {td('entities.Biosamples')}
+                  {t('entities.Biosamples')}
                 </Typography.Title>
                 {!hasInsufficientData && biosampleChartData.length ? (
                   <PieChart data={biosampleChartData} height={PIE_CHART_HEIGHT} sort={true} dataMap={translateMap} />
@@ -96,7 +95,7 @@ const SearchResultsPane = ({
               </Col>
               <Col xs={24} lg={10}>
                 <Typography.Title level={5} style={{ marginTop: 0 }}>
-                  {td('entities.Experiments')}
+                  {t('entities.Experiments')}
                 </Typography.Title>
                 {!hasInsufficientData && experimentChartData.length ? (
                   <PieChart data={experimentChartData} height={PIE_CHART_HEIGHT} sort={true} dataMap={translateMap} />
@@ -113,7 +112,7 @@ const SearchResultsPane = ({
                 onClick={() => setPanePage('charts')}
                 style={{ paddingLeft: 0 }}
               >
-                {td('Charts')}
+                {t('Charts')}
               </Button>
               <Table<IndividualResultRow>
                 columns={individualTableColumns}

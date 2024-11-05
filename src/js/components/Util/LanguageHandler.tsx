@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { DEFAULT_TRANSLATION, SUPPORTED_LNGS } from '@/constants/configConstants';
+import { SUPPORTED_LNGS } from '@/constants/configConstants';
 
 const LNGS_ARRAY = Object.values(SUPPORTED_LNGS);
 
 const LanguageHandler = () => {
   const { lang } = useParams<{ lang?: string }>();
   const navigate = useNavigate();
-  const { i18n } = useTranslation(DEFAULT_TRANSLATION);
+  const { i18n } = useTranslation();
 
   useEffect(() => {
     const setLanguage = (newLang: string) => {

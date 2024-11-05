@@ -57,12 +57,12 @@
   "Remove this chart": "Supprimer ce tableau",
   "Width": "Largeur",
   "Insufficient data available.": "Pas suffisamment de données.",
+  "Powered by": "Propulsé par",
   "Terms of Use": "Conditions d'utilisation (en anglais)",
   "No Data": "Pas de données",
   "Counts": "Totaux",
   "Search by genomic variants, clinical metadata or both.": "Recherche par variant génomique, métadonnées cliniques ou les deux.",
   "Metadata": "Métadonnées",
-  "Search Beacon": "Recherche sur le Beacon",
   "Clear Form": "Effacer le formulaire",
   "Search over clinical or phenotypic properties.": "Recherche sur les propriétés cliniques ou phénotypiques.",
   "Chromosome": "Chromosome",
@@ -85,7 +85,6 @@
   "or": "ou",
   "Ingestion History Is Empty": "L'historique d'ingestion est vide",
   "Latest Data Ingestion": "Dernière ingestion de données",
-  "Beacon error": "Erreur de Beacon",
   "Variants form should include either an end position or both reference and alternate bases": "Le formulaire de recherche de variants doit inclure soit la position de fin, ou les bases de référence et les bases alternatives.",
   "Variant search": "Chercher un variant",
   "To search for all variants inside a range: fill both \"Variant start\" and \"Variant end\",": "Pour chercher tous les variants se trouvant dans une plage donnée: remplissez \"Début du variant\" et \"Fin du variant\",",
@@ -105,5 +104,14 @@
   "Datasets": "Jeux de données",
   "Clear": "Effacer",
   "Select": "Sélectionner",
-  "Results from": "Résultats de"
+  "beacon": {
+    "search_beacon": "Recherche sur le Beacon",
+    "search_network": "Recherche sur le réseau",
+    "beacon_error": "Erreur de Beacon",
+    "results_from": "Résultats de",
+    "network_search_results": "Résultats de la recherche sur le réseau",
+    "show_all_filters": "afficher tous les filtres",
+    "common_filters_only": "filtres communs uniquement",
+    "home_page": "Page d'accueil"
+  }
 }

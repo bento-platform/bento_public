@@ -8,7 +8,7 @@ import Icon, { PieChartOutlined, SearchOutlined, ShareAltOutlined, SolutionOutli
 
 import BeaconSvg from '@/components/Beacon/BeaconSvg';
 import { useSearchQuery } from '@/features/search/hooks';
-import { useTranslationDefault } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
 import { BentoRoute } from '@/types/routes';
 import { buildQueryParamsUrl } from '@/utils/search';
 import { getCurrentPage } from '@/utils/router';
@@ -27,7 +27,7 @@ const SiteSider: React.FC<{
 }> = ({ collapsed, setCollapsed }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const td = useTranslationDefault();
+  const t = useTranslationFn();
   const { queryParams } = useSearchQuery();
   const currentPage = getCurrentPage();
 
@@ -53,9 +53,9 @@ const SiteSider: React.FC<{
       key,
       icon,
       children,
-      label: td(label),
+      label: t(label),
     }),
-    [td]
+    [t]
   );
 
   const menuItems: MenuItem[] = useMemo(() => {
