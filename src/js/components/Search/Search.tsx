@@ -6,7 +6,7 @@ import SearchFieldsStack from './SearchFieldsStack';
 import SearchResults from './SearchResults';
 
 import { makeGetKatsuPublic, setQueryParams } from '@/features/search/query.store';
-import { useAppDispatch, useAppSelector, useTranslationCustom } from '@/hooks';
+import { useAppDispatch, useAppSelector, useTranslationFn } from '@/hooks';
 import { buildQueryParamsUrl } from '@/utils/search';
 
 import Loader from '@/components/Loader';
@@ -116,7 +116,7 @@ const SEARCH_SECTION_SPACE_ITEM_STYLE = { item: { display: 'flex', justifyConten
 const SEARCH_SECTION_STYLE = { maxWidth: 1200 };
 
 const Search = () => {
-  const t = useTranslationCustom();
+  const t = useTranslationFn();
 
   const { isFetchingFields: isFetchingSearchFields, querySections: searchSections } = useSearchQuery();
 

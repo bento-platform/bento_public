@@ -1,10 +1,10 @@
 import { Empty } from 'antd';
-import { useTranslationDefault } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
 
 const CustomEmpty = ({ text }) => {
-  const td = useTranslationDefault();
+  const t = useTranslationFn();
 
-  return <Empty description={td(text)} />;
+  return <Empty description={t(text)} />;
 };
 
 export default CustomEmpty;

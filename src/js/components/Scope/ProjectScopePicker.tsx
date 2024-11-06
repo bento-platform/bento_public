@@ -1,8 +1,11 @@
 import { type CSSProperties } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import { Tabs, Button } from 'antd';
-import { useAppSelector, useTranslationCustom, useTranslationDefault } from '@/hooks';
+
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useMetadata } from '@/features/metadata/hooks';
+import { useTranslationFn } from '@/hooks';
+
 import DatasetScopePicker from './DatasetScopePicker';
 
 const styles: Record<string, CSSProperties> = {
@@ -13,15 +16,14 @@ const styles: Record<string, CSSProperties> = {
 };
 
 const ProjectScopePicker = () => {
-  const td = useTranslationDefault();
-  const t = useTranslationCustom();
+  const t = useTranslationFn();
 
   const location = useLocation();
   const baseURL = '/' + location.pathname.split('/')[1];
 
   const navigate = useNavigate();
 
-  const { projects, selectedScope } = useAppSelector((state) => state.metadata);
+  const { projects, selectedScope } = useMetadata();
   const { scope: scopeObj, fixedProject } = selectedScope;
 
   const [selectedProject, setSelectedProject] = useState<string | undefined>(
@@ -50,7 +52,7 @@ const ProjectScopePicker = () => {
           tabPosition="left"
           activeKey={selectedProject}
           onChange={onTabChange}
-          tabBarExtraContent={<Button onClick={onProjectClear}>{td('Clear')}</Button>}
+          tabBarExtraContent={<Button onClick={onProjectClear}>{t('Clear')}</Button>}
           items={tabItems}
           style={styles.tabs}
         />

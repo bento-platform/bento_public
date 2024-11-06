@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Routes, Route, useNavigate, useParams, Outlet } from 'react-router-dom';
 import { useAutoAuthenticate, useIsAuthenticated } from 'bento-auth-js';
-import { useAppDispatch, useAppSelector } from '@/hooks';
+import { useAppDispatch } from '@/hooks';
 
 import { makeGetConfigRequest, makeGetServiceInfoRequest } from '@/features/config/config.store';
 import { makeGetAboutRequest } from '@/features/content/content.store';
@@ -11,6 +11,7 @@ import { getBeaconConfig } from '@/features/beacon/beacon.store';
 import { getBeaconNetworkConfig } from '@/features/beacon/network.store';
 import { fetchGohanData, fetchKatsuData } from '@/features/ingestion/lastIngestion.store';
 import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
+import { useMetadata } from '@/features/metadata/hooks';
 import { getProjects, markScopeSet, selectScope } from '@/features/metadata/metadata.store';
 
 import Loader from '@/components/Loader';
@@ -29,7 +30,7 @@ const ScopedRoute = () => {
   const { projectId, datasetId } = useParams();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { selectedScope, projects } = useAppSelector((state) => state.metadata);
+  const { selectedScope, projects } = useMetadata();
 
   useEffect(() => {
     // Update selectedScope based on URL parameters
@@ -76,7 +77,7 @@ const BentoAppRouter = () => {
 
   const { isAutoAuthenticating } = useAutoAuthenticate();
   const isAuthenticated = useIsAuthenticated();
-  const { selectedScope, isFetching: isFetchingProjects } = useAppSelector((state) => state.metadata);
+  const { selectedScope, isFetching: isFetchingProjects } = useMetadata();
 
   useEffect(() => {
     if (!selectedScope.scopeSet) return;

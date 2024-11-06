@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { useQueryWithAuthIfAllowed, useTranslationDefault } from '@/hooks';
+import { useQueryWithAuthIfAllowed, useTranslationFn } from '@/hooks';
 import {
   checkIsInAuthPopup,
   nop,
@@ -19,7 +19,7 @@ const CALLBACK_PATH = '/callback';
 const createSessionWorker = () => new Worker(new URL('../../workers/tokenRefresh.ts', import.meta.url));
 
 const AuthOutlet = () => {
-  const t = useTranslationDefault();
+  const t = useTranslationFn();
 
   // AUTHENTICATION
   const [signedOutModal, setSignedOutModal] = useState(false);

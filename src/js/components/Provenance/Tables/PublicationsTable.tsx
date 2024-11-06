@@ -5,7 +5,7 @@ import { Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 
 import LinkIfUrl from '@/components/Util/LinkIfUrl';
-import { useTranslationCustom, useTranslationDefault } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
 import type { DatsFile, Person, PrimaryPublication } from '@/types/dats';
 import { stringIsDOI, stringIsURL } from '@/utils/strings';
 
@@ -35,14 +35,13 @@ const formatAuthorList = (authors: Person[]): string => {
 };
 
 const PublicationsTable = ({ publications }: PublicationsTableProps) => {
-  const t = useTranslationCustom();
-  const td = useTranslationDefault();
+  const t = useTranslationFn();
 
   const columns = useMemo(
     () =>
       [
         {
-          title: td('Publication'),
+          title: t('Publication'),
           key: 'publication',
 
           render: (_, { title, identifier: { identifier }, authors }) => {
@@ -69,13 +68,13 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
           sorter: (a, b) => a.title.localeCompare(b.title),
         },
         {
-          title: td('Publication Venue'),
+          title: t('Publication Venue'),
           dataIndex: 'publicationVenue',
           render: (text) => t(text),
           sorter: (a, b) => a.publicationVenue.localeCompare(b.publicationVenue),
         },
         {
-          title: td('Date'),
+          title: t('Date'),
           dataIndex: 'dates',
           render: (_, { dates }) => {
             const _dates = dates ?? [];
@@ -99,13 +98,13 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
           defaultSortOrder: 'descend',
         },
         {
-          title: td('Identifier'),
+          title: t('Identifier'),
           dataIndex: 'identifier.identifier',
           render: (_, { identifier: { identifier } }) =>
             stringIsDOI(identifier) ? <DOILink doi={identifier} /> : <LinkIfUrl text={identifier} />,
         },
         {
-          title: td('Identifier Source'),
+          title: t('Identifier Source'),
           dataIndex: 'identifier.identifierSource',
           render: (_, { identifier: { identifierSource } }) => t(identifierSource),
           sorter: (a, b) => a.identifier.identifierSource.localeCompare(b.identifier.identifierSource),
@@ -116,7 +115,7 @@ const PublicationsTable = ({ publications }: PublicationsTableProps) => {
           onFilter: (filterValue, p) => p.identifier.identifierSource === filterValue,
         },
       ] as ColumnsType<PrimaryPublication>,
-    [t, td, publications]
+    [t, publications]
   );
 
   return <BaseProvenanceTable dataSource={publications} columns={columns} rowKey="title" />;

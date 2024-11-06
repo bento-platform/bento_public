@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Card, Col, FloatButton, Row, Skeleton } from 'antd';
+import { Card, Col, FloatButton, Row, Skeleton, Typography } from 'antd';
 import { AppstoreAddOutlined } from '@ant-design/icons';
 
 import { convertSequenceAndDisplayData, saveValue } from '@/utils/localStorage';
@@ -12,8 +12,10 @@ import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
 import Counts from './Counts';
 import LastIngestionInfo from './LastIngestion';
 import Loader from '@/components/Loader';
+import Dataset from '@/components/Provenance/Dataset';
 
 import { useAppSelector } from '@/hooks';
+import { useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
 import { useTranslation } from 'react-i18next';
 
 const ABOUT_CARD_STYLE = { width: '100%', maxWidth: '1390px', borderRadius: '11pX', ...BOX_SHADOW };
@@ -31,6 +33,9 @@ const PublicOverview = () => {
     sections,
   } = useAppSelector((state) => state.data);
   const { isFetchingAbout, about } = useAppSelector((state) => state.content);
+
+  const selectedProject = useSelectedProject();
+  const { scope } = useSelectedScope();
 
   useEffect(() => {
     // Save sections to localStorage when they change
@@ -69,6 +74,21 @@ const PublicOverview = () => {
           <Counts />
         </Col>
       </Row>
+      {selectedProject && !scope.dataset && (
+        // If we have a project with more than one dataset, show a dataset selector in the project overview
+        <Row>
+          <Col flex={1}>
+            <Typography.Title level={3}>Datasets</Typography.Title>
+            <div className="dataset-provenance-card-grid">
+              {selectedProject.datasets.map((d) => (
+                <div key={d.identifier}>
+                  <Dataset parentProjectID={selectedProject.identifier} dataset={d} format="card" />
+                </div>
+              ))}
+            </div>
+          </Col>
+        </Row>
+      )}
       <Row>
         <Col flex={1}>
           {displayedSections.map(({ sectionTitle, charts }, i) => (

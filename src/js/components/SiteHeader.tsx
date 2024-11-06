@@ -8,11 +8,11 @@ import { useAuthState, useIsAuthenticated, useOpenIdConfig, usePerformAuth, useP
 import { RiTranslate } from 'react-icons/ri';
 import { ExportOutlined, LinkOutlined, LoginOutlined, LogoutOutlined, ProfileOutlined } from '@ant-design/icons';
 
-import { useAppSelector } from '@/hooks';
+import { useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { scopeToUrl } from '@/utils/router';
 
-import { DEFAULT_TRANSLATION, LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
+import { LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
 import { CLIENT_NAME, PORTAL_URL, TRANSLATED } from '@/config';
 
 import ScopePickerModal from './Scope/ScopePickerModal';
@@ -26,28 +26,26 @@ const HEADER_PADDING: CSSProperties = { padding: '0 24px' };
 const openPortalWindow = () => window.open(PORTAL_URL, '_blank');
 
 const SiteHeader = () => {
-  const { t, i18n } = useTranslation(DEFAULT_TRANSLATION);
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const isSmallScreen = useSmallScreen();
 
   const { isFetching: openIdConfigFetching } = useOpenIdConfig();
   const { isHandingOffCodeForToken } = useAuthState();
-  const { projects, selectedScope } = useAppSelector((state) => state.metadata);
-  const { scope: scopeObj } = selectedScope;
+  const { fixedProject, fixedDataset, scope: scopeObj } = useSelectedScope();
+  const selectedProject = useSelectedProject();
 
-  const scopeSelectionEnabled = !(selectedScope.fixedProject && selectedScope.fixedDataset);
+  const scopeSelectionEnabled = !(fixedProject && fixedDataset);
 
   const scopeProps = useMemo(
     () => ({
-      projectTitle: projects.find((project) => project.identifier === scopeObj.project)?.title,
+      projectTitle: selectedProject?.title,
       datasetTitle: scopeObj.dataset
-        ? projects
-            .find((project) => project.identifier === scopeObj.project)
-            ?.datasets.find((dataset) => dataset.identifier === scopeObj.dataset)?.title
+        ? selectedProject?.datasets.find((dataset) => dataset.identifier === scopeObj.dataset)?.title
         : null,
     }),
-    [projects, scopeObj]
+    [selectedProject, scopeObj]
   );
 
   const [isModalOpen, setIsModalOpen] = useState(false);

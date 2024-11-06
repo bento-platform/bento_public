@@ -7,7 +7,7 @@ import type { Resource } from 'bento-auth-js';
 import { RESOURCE_EVERYTHING, queryData, useHasResourcePermission } from 'bento-auth-js';
 
 import type { RootState, AppDispatch } from '@/store';
-import { DEFAULT_TRANSLATION, NON_DEFAULT_TRANSLATION } from '@/constants/configConstants';
+import { CUSTOMIZABLE_TRANSLATION } from '@/constants/configConstants';
 import type { NamespaceTranslationFunction } from '@/types/translation';
 import { setMaxQueryParametersRequired } from '@/features/config//config.store';
 import { CHART_WIDTH, GRID_GAP } from '@/constants/overviewConstants';
@@ -19,14 +19,8 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 // ################### TRANSLATION HOOKS ###################
 
-export const useTranslationDefault = (): NamespaceTranslationFunction => {
-  const { t } = useTranslation(DEFAULT_TRANSLATION);
-
-  return t as NamespaceTranslationFunction;
-};
-
-export const useTranslationCustom = (): NamespaceTranslationFunction => {
-  const { t } = useTranslation(NON_DEFAULT_TRANSLATION);
+export const useTranslationFn = (): NamespaceTranslationFunction => {
+  const { t } = useTranslation(CUSTOMIZABLE_TRANSLATION);
 
   return t as NamespaceTranslationFunction;
 };

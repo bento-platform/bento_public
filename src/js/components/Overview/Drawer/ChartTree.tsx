@@ -1,11 +1,10 @@
 import type { ReactNode } from 'react';
 import { useMemo } from 'react';
-import { useDispatch } from 'react-redux';
 import type { TreeProps } from 'antd';
 import { InputNumber, Tree } from 'antd';
 
 import { rearrange, setDisplayedCharts, setChartWidth } from '@/features/data/data.store';
-import { useTranslationCustom, useTranslationDefault } from '@/hooks';
+import { useAppDispatch, useTranslationFn } from '@/hooks';
 import type { ChartDataField } from '@/types/data';
 
 interface MappedChartItem {
@@ -14,10 +13,9 @@ interface MappedChartItem {
 }
 
 const ChartTree = ({ charts, section }: ChartTreeProps) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const t = useTranslationCustom();
-  const td = useTranslationDefault();
+  const t = useTranslationFn();
 
   const allCharts: MappedChartItem[] = useMemo(
     () =>
@@ -26,7 +24,7 @@ const ChartTree = ({ charts, section }: ChartTreeProps) => {
           <div style={{ display: 'flex' }}>
             <span style={{ flex: 1 }}>{t(title)}</span>
             <span>
-              {td('Width')}:{' '}
+              {t('Width')}:{' '}
               <InputNumber
                 size="small"
                 min={1}
@@ -45,7 +43,7 @@ const ChartTree = ({ charts, section }: ChartTreeProps) => {
         ),
         key: id,
       })),
-    [charts, dispatch, section, t, td]
+    [charts, dispatch, section, t]
   );
 
   const onChartDrop: TreeProps['onDrop'] = useMemo(() => {

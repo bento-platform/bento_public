@@ -1,10 +1,9 @@
 import type { CSSProperties } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Col, Row } from 'antd';
 import VariantInput from './VariantInput';
 import AssemblyIdSelect from './AssemblyIdSelect';
+import { useTranslationFn } from '@/hooks';
 import type { BeaconAssemblyIds } from '@/types/beacon';
-import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 
 // form state has to be one of these:
 // empty (except for autofilled assemblyID)
@@ -27,36 +26,36 @@ const FORM_STYLE: CSSProperties = {
 const FORM_ROW_GUTTER: [number, number] = [12, 0];
 
 const VariantsForm = ({ beaconAssemblyIds }: VariantsFormProps) => {
-  const { t: td } = useTranslation(DEFAULT_TRANSLATION);
+  const t = useTranslationFn();
   const formFields = {
     referenceName: {
       name: 'Chromosome',
-      rules: [{ pattern: CHROMOSOME_REGEX, message: td('Enter a chromosome name, e.g.: "17" or "X"') }],
+      rules: [{ pattern: CHROMOSOME_REGEX, message: t('Enter a chromosome name, e.g.: "17" or "X"') }],
       placeholder: '1-22, X, Y, M',
       initialValue: '',
     },
     start: {
       name: 'Variant start',
-      rules: [{ pattern: DIGITS_REGEX, message: td('Enter a position number, e.g. "100"') }],
-      placeholder: `${td('e.g.')} 100`,
+      rules: [{ pattern: DIGITS_REGEX, message: t('Enter a position number, e.g. "100"') }],
+      placeholder: `${t('e.g.')} 100`,
       initialValue: '',
     },
     end: {
       name: 'Variant end',
-      rules: [{ pattern: DIGITS_REGEX, message: td('Enter a position number, e.g. "200"') }],
-      placeholder: `${td('e.g.')} 200`,
+      rules: [{ pattern: DIGITS_REGEX, message: t('Enter a position number, e.g. "200"') }],
+      placeholder: `${t('e.g.')} 200`,
       initialValue: '',
     },
     referenceBases: {
       name: 'Reference base(s)',
-      rules: [{ pattern: NUCLEOTIDES_REGEX, message: td('Enter any combination of A, C, G, T, or N') }],
-      placeholder: `A, C, G, T ${td('or')} N`,
+      rules: [{ pattern: NUCLEOTIDES_REGEX, message: t('Enter any combination of A, C, G, T, or N') }],
+      placeholder: `A, C, G, T ${t('or')} N`,
       initialValue: '',
     },
     alternateBases: {
       name: 'Alternate base(s)',
-      rules: [{ pattern: NUCLEOTIDES_REGEX, message: td('Enter any combination of A, C, G, T, or N') }],
-      placeholder: `A, C, G, T ${td('or')} N`,
+      rules: [{ pattern: NUCLEOTIDES_REGEX, message: t('Enter any combination of A, C, G, T, or N') }],
+      placeholder: `A, C, G, T ${t('or')} N`,
       initialValue: '',
     },
     assemblyId: { name: 'Assembly ID', placeholder: '', initialValue: '' },

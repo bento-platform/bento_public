@@ -113,11 +113,28 @@ body {
   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.02), inset 0 2px 5px rgba(0, 0, 0, 0.08);
 }
 
+.dataset-provenance-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 600px));
+  gap: 20px;
+}
+
 /* END search results pane */
 
+
+@media (min-width: 1050px) and (max-width: 1550px) {
+  .dataset-provenance-card-grid {
+    /* This looks better at an intermediate screen width */
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  }
+}
 
 @media (max-width: 768px) {
   .ant-layout-content {
     padding: 10px !important;
+  }
+
+  .dataset-provenance-card-grid {
+    gap: 8px;
   }
 }

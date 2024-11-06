@@ -5,12 +5,11 @@ const { Title } = Typography;
 import ChartTree from './ChartTree';
 
 import type { ChartDataField } from '@/types/data';
-import { useAppSelector, useAppDispatch, useTranslationCustom, useTranslationDefault } from '@/hooks';
+import { useAppSelector, useAppDispatch, useTranslationFn } from '@/hooks';
 import { hideAllSectionCharts, setAllDisplayedCharts, resetLayout } from '@/features/data/data.store';
 
 const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: ManageChartsDrawerProps) => {
-  const t = useTranslationCustom();
-  const td = useTranslationDefault();
+  const t = useTranslationFn();
 
   const dispatch = useAppDispatch();
 
@@ -18,7 +17,7 @@ const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: Manage
 
   return (
     <Drawer
-      title={td('Manage Charts')}
+      title={t('Manage Charts')}
       placement="right"
       onClose={onManageDrawerClose}
       open={manageDrawerVisible}

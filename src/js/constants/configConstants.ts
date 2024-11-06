@@ -11,7 +11,7 @@ export const katsuLastIngestionsUrl = `${PORTAL_URL}/api/metadata/data-types`;
 export const gohanLastIngestionsUrl = `${PORTAL_URL}/api/gohan/data-types`;
 
 export const DEFAULT_TRANSLATION = 'default_translation';
-export const NON_DEFAULT_TRANSLATION = 'translation';
+export const CUSTOMIZABLE_TRANSLATION = 'translation';
 
 export const SUPPORTED_LNGS = {
   ENGLISH: 'en',
