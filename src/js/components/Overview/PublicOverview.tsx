@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Card, Col, FloatButton, Row, Skeleton, Typography } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { AppstoreAddOutlined } from '@ant-design/icons';
 
 import { convertSequenceAndDisplayData, saveValue } from '@/utils/localStorage';
 import type { Sections } from '@/types/data';
@@ -103,7 +103,7 @@ const PublicOverview = () => {
       <ManageChartsDrawer onManageDrawerClose={onManageChartsClose} manageDrawerVisible={drawerVisible} />
       <FloatButton
         type="primary"
-        icon={<PlusOutlined />}
+        icon={<AppstoreAddOutlined rotate={270} />}
         tooltip="Manage Charts"
         style={MANAGE_CHARTS_BUTTON_STYLE}
         onClick={onManageChartsOpen}
