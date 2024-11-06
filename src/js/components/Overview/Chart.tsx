@@ -1,35 +1,35 @@
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import type { BarChartProps } from 'bento-charts';
 import { BarChart, Histogram, PieChart } from 'bento-charts';
 import { ChoroplethMap } from 'bento-charts/dist/maps';
 
 import { CHART_HEIGHT, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
-import { useTranslationFn } from '@/hooks';
+import { useSelectedScope } from '@/features/metadata/hooks';
 import type { ChartData } from '@/types/data';
 import type { ChartConfig } from '@/types/chartConfig';
 import { CHART_TYPE_BAR, CHART_TYPE_HISTOGRAM, CHART_TYPE_CHOROPLETH, CHART_TYPE_PIE } from '@/types/chartConfig';
+import { scopeToUrl } from '@/utils/router';
 
 interface ChartEvent {
   activePayload: Array<{ payload: { x: string } }>;
 }
 
 const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) => {
-  const t = useTranslationFn();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const { scope } = useSelectedScope();
   const translateMap = ({ x, y }: { x: string; y: number }) => ({ x: t(x), y });
   const removeMissing = ({ x }: { x: string }) => x !== 'missing';
 
-  const goToSearch = (id: string, val: string | undefined) => {
-    if (val === undefined) return;
-    navigate(`../search?${id}=${val}`);
-  };
-
   const barChartOnChartClickHandler: BarChartProps['onChartClick'] = (e: ChartEvent) => {
-    goToSearch(id, e.activePayload[0]?.payload.x); // activePayload is [] if no current active bar
+    if (e.activePayload.length === 0) return;
+    const d = e.activePayload[0];
+    navigate(`/${i18n.language}${scopeToUrl(scope)}/search?${id}=${d.payload.x}`);
   };
   const pieChartOnClickHandler = (d: { name: string }) => {
-    goToSearch(id, d.name);
+    navigate(`/${i18n.language}${scopeToUrl(scope)}/search?${id}=${d.name}`);
   };
 
   const { chart_type: type } = chartConfig;
@@ -81,7 +81,9 @@ const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) =
           zoom={zoom}
           colorMode={colorMode}
           onClick={(d) => {
-            goToSearch(id, d.properties?.[categoryProp]);
+            const val = d.properties?.[categoryProp];
+            if (val === undefined) return;
+            navigate(`/${i18n.language}/search?${id}=${val}`);
           }}
           renderPopupBody={(_f, d) => (
             <>
