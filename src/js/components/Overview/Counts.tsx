@@ -5,7 +5,7 @@ import { BiDna } from 'react-icons/bi';
 
 import ExpSvg from '../Util/ExpSvg';
 import { BOX_SHADOW, COUNTS_FILL } from '@/constants/overviewConstants';
-import { useAppSelector, useTranslationDefault } from '@/hooks';
+import { useAppSelector, useTranslationFn } from '@/hooks';
 
 const styles: Record<string, CSSProperties> = {
   countCard: {
@@ -18,7 +18,7 @@ const styles: Record<string, CSSProperties> = {
 const CountsHelp = ({ children }: { children: ReactNode }) => <div style={{ maxWidth: 360 }}>{children}</div>;
 
 const Counts = () => {
-  const td = useTranslationDefault();
+  const t = useTranslationFn();
 
   const { counts, isFetchingData } = useAppSelector((state) => state.data);
 
@@ -46,10 +46,10 @@ const Counts = () => {
 
   return (
     <>
-      <Typography.Title level={3}>{td('Counts')}</Typography.Title>
+      <Typography.Title level={3}>{t('Counts')}</Typography.Title>
       <Space wrap>
         {data.map(({ title, help, icon, count }, i) => {
-          const titleTransl = td(`entities.${title}`);
+          const titleTransl = t(`entities.${title}`);
           return (
             <Card key={i} style={{ ...styles.countCard, height: isFetchingData ? 138 : 114 }}>
               <Statistic
@@ -62,7 +62,7 @@ const Counts = () => {
                         content={
                           <CountsHelp>
                             {help.map((h, i) => (
-                              <Fragment key={i}>{td(`entities.${h}`)} </Fragment>
+                              <Fragment key={i}>{t(`entities.${h}`)} </Fragment>
                             ))}
                           </CountsHelp>
                         }

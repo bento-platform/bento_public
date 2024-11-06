@@ -1,9 +1,9 @@
 import { ToolTipText } from './ToolTipText';
-import { useTranslationDefault } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
 
 const METADATA_INSTRUCTIONS = 'Search over clinical or phenotypic properties.';
 
 export const MetadataInstructions = () => {
-  const td = useTranslationDefault();
-  return <ToolTipText>{td(METADATA_INSTRUCTIONS)}</ToolTipText>;
+  const t = useTranslationFn();
+  return <ToolTipText>{t(METADATA_INSTRUCTIONS)}</ToolTipText>;
 };

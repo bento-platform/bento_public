@@ -1,5 +1,5 @@
 import { ToolTipText } from './ToolTipText';
-import { useTranslationDefault } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
 import { Space, Typography } from 'antd';
 const { Title } = Typography;
 
@@ -18,16 +18,16 @@ const VARIANTS_INSTRUCTIONS_LINE4a = 'Coordinates are one-based.';
 const VARIANTS_INSTRUCTIONS_LINE4b = 'Leave this form blank to search by metadata only.';
 
 const VariantsInstructions = () => {
-  const td = useTranslationDefault();
+  const t = useTranslationFn();
   return (
     <Space direction="vertical" style={{ minWidth: '510px' }}>
       <Title level={4} style={{ color: 'white', marginTop: '10px' }}>
         {VARIANTS_INSTRUCTIONS_TITLE}
       </Title>
-      <ToolTipText>{td(VARIANTS_INSTRUCTIONS_LINE1a) + ' ' + td(VARIANTS_INSTRUCTIONS_LINE1b)}</ToolTipText>
-      <ToolTipText>{td(VARIANTS_INSTRUCTIONS_LINE2a) + ' ' + td(VARIANTS_INSTRUCTIONS_LINE2b)}</ToolTipText>
-      <ToolTipText>{td(VARIANTS_INSTRUCTIONS_LINE3)}</ToolTipText>
-      <ToolTipText>{td(VARIANTS_INSTRUCTIONS_LINE4a) + ' ' + td(VARIANTS_INSTRUCTIONS_LINE4b)}</ToolTipText>
+      <ToolTipText>{t(VARIANTS_INSTRUCTIONS_LINE1a) + ' ' + t(VARIANTS_INSTRUCTIONS_LINE1b)}</ToolTipText>
+      <ToolTipText>{t(VARIANTS_INSTRUCTIONS_LINE2a) + ' ' + t(VARIANTS_INSTRUCTIONS_LINE2b)}</ToolTipText>
+      <ToolTipText>{t(VARIANTS_INSTRUCTIONS_LINE3)}</ToolTipText>
+      <ToolTipText>{t(VARIANTS_INSTRUCTIONS_LINE4a) + ' ' + t(VARIANTS_INSTRUCTIONS_LINE4b)}</ToolTipText>
     </Space>
   );
 };

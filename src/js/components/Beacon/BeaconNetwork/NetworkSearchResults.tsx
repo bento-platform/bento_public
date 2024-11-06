@@ -1,13 +1,14 @@
 import { useMemo } from 'react';
+
 import { Space, Spin, Tag } from 'antd';
+import { Loading3QuartersOutlined } from '@ant-design/icons';
 
 import SearchResultsPane from '@/components/Search/SearchResultsPane';
 import { useBeaconNetwork } from '@/features/beacon/hooks';
-import { useTranslationDefault } from '@/hooks';
-import { Loading3QuartersOutlined } from '@ant-design/icons';
+import { useTranslationFn } from '@/hooks';
 
 const NetworkSearchResults = () => {
-  const td = useTranslationDefault();
+  const t = useTranslationFn();
 
   const { hasBeaconNetworkError } = useBeaconNetwork();
   const { networkResults, beaconResponses } = useBeaconNetwork();
@@ -31,7 +32,7 @@ const NetworkSearchResults = () => {
   // show number of non-zero responses
   const numResultsText = (n: number) => {
     if (numNonErrorResponses) {
-      return `${td('Results from')} ${n} beacon${n == 1 ? '' : 's'}`;
+      return `${t('beacon.results_from')} ${n} beacon${n == 1 ? '' : 's'}`;
     }
     return '';
   };
@@ -54,7 +55,7 @@ const NetworkSearchResults = () => {
     <SearchResultsPane
       isFetchingData={noResponsesYet}
       results={networkResults}
-      resultsTitle="Network Search Results"
+      resultsTitle={t('beacon.network_search_results')}
       resultsExtra={resultsExtra}
     />
   );

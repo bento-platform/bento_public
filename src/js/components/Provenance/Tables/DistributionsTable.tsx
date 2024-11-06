@@ -5,20 +5,19 @@ import type { ColumnsType } from 'antd/es/table';
 
 const { Link } = Typography;
 
-import { useTranslationDefault, useTranslationCustom } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
 import type { DatsFile, Distribution } from '@/types/dats';
 
 import BaseProvenanceTable from './BaseProvenanceTable';
 
 const DistributionsTable = ({ distributions }: DistributionsTableProps) => {
-  const t = useTranslationCustom();
-  const td = useTranslationDefault();
+  const t = useTranslationFn();
 
   const columns = useMemo(
     () =>
       [
         {
-          title: td('Formats'),
+          title: t('Formats'),
           dataIndex: 'formats',
           render: (_, { formats = [] }) =>
             formats.map((f) => (
@@ -28,20 +27,20 @@ const DistributionsTable = ({ distributions }: DistributionsTableProps) => {
             )),
         },
         {
-          title: td('Size'),
+          title: t('Size'),
           dataIndex: 'size',
           render: (text = '') => t(text),
         },
         {
-          title: td('Unit'),
+          title: t('Unit'),
           dataIndex: 'unit',
           render: (_, { unit = { value: '' } }) => t(unit.value.toString()),
         },
         {
-          title: td('Access'),
+          title: t('Access'),
           children: [
             {
-              title: td('Landing Page'),
+              title: t('Landing Page'),
               dataIndex: 'access.landingPage',
               render: (_, { access }) => (
                 <Link href={access.landingPage} target="_blank">
@@ -50,7 +49,7 @@ const DistributionsTable = ({ distributions }: DistributionsTableProps) => {
               ),
             },
             {
-              title: td('Authorizations'),
+              title: t('Authorizations'),
               dataIndex: 'access.authorizations',
               render: (_, { access }) =>
                 access.authorizations?.map((a, i) => (
@@ -62,7 +61,7 @@ const DistributionsTable = ({ distributions }: DistributionsTableProps) => {
           ],
         },
       ] as ColumnsType<Distribution>,
-    [t, td]
+    [t]
   );
 
   return (

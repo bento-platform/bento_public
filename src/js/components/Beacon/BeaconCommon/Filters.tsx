@@ -1,18 +1,17 @@
 import type { Dispatch, SetStateAction } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Button, Form, Space, Switch, Tooltip } from 'antd';
 import type { FormInstance } from 'antd/es/form';
 
-import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { useBeaconNetwork } from '@/features/beacon/hooks';
 import { toggleQuerySectionsUnionOrIntersection } from '@/features/beacon/network.store';
-import { useAppSelector, useAppDispatch } from '@/hooks';
+import { useAppSelector, useAppDispatch, useTranslationFn } from '@/hooks';
 import type { FormFilter } from '@/types/beacon';
 import type { SearchFieldResponse } from '@/types/search';
 
 import Filter from './Filter';
 
 const NetworkFilterToggle = () => {
+  const t = useTranslationFn();
   const dispatch = useAppDispatch();
   const { isQuerySectionsUnion } = useBeaconNetwork();
 
@@ -24,7 +23,9 @@ const NetworkFilterToggle = () => {
           checked={isQuerySectionsUnion}
           style={{ margin: '5px' }}
         />
-        <p style={{ margin: '5px' }}>{isQuerySectionsUnion ? 'show all filters' : 'common filters only'}</p>
+        <p style={{ margin: '5px' }}>
+          {t(`beacon.${isQuerySectionsUnion ? 'show_all_filters' : 'common_filters_only'}`)}
+        </p>
       </div>
     </Tooltip>
   );
@@ -36,7 +37,7 @@ const NetworkFilterToggle = () => {
 const BUTTON_STYLE = { margin: '10px 0' };
 
 const Filters = ({ filters, setFilters, form, querySections, isNetworkQuery }: FiltersProps) => {
-  const { t: td } = useTranslation(DEFAULT_TRANSLATION);
+  const t = useTranslationFn();
 
   const maxFilters = useAppSelector((state) => state.config.maxQueryParameters);
   const maxQueryParametersRequired = useAppSelector((state) => state.config.maxQueryParametersRequired);
@@ -65,9 +66,9 @@ const Filters = ({ filters, setFilters, form, querySections, isNetworkQuery }: F
   return (
     <Form.Item>
       <Space style={{ display: 'flex', padding: 0 }}>
-        <Tooltip title={hasMaxFilters ? `${td('maximum of')} ${maxFilters} ${td('filters permitted')}` : null}>
+        <Tooltip title={hasMaxFilters ? `${t('maximum of')} ${maxFilters} ${t('filters permitted')}` : null}>
           <Button style={BUTTON_STYLE} onClick={handleAddFilter} disabled={hasMaxFilters}>
-            {td('Add Filter')}
+            {t('Add Filter')}
           </Button>
         </Tooltip>
         {isNetworkQuery && <NetworkFilterToggle />}

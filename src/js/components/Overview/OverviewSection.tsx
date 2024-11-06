@@ -1,11 +1,11 @@
 import { Typography, Space } from 'antd';
 
 import OverviewDisplayData from './OverviewDisplayData';
-import { useTranslationCustom } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
 import type { ChartDataField } from '@/types/data';
 
 const OverviewSection = ({ title, chartData }: { title: string; chartData: ChartDataField[] }) => {
-  const t = useTranslationCustom();
+  const t = useTranslationFn();
 
   return (
     <Space direction="vertical" size={0} style={{ width: '100%' }}>

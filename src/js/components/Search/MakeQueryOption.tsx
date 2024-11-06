@@ -6,13 +6,12 @@ import OptionDescription from './OptionDescription';
 import SelectOption from './SelectOption';
 
 import { useSearchQuery } from '@/features/search/hooks';
-import { useAppSelector, useTranslationCustom, useTranslationDefault } from '@/hooks';
+import { useAppSelector, useTranslationFn } from '@/hooks';
 import type { Field } from '@/types/search';
 import { buildQueryParamsUrl, queryParamsWithoutKey } from '@/utils/search';
 
 const MakeQueryOption = ({ queryField }: MakeQueryOptionProps) => {
-  const t = useTranslationCustom();
-  const td = useTranslationDefault();
+  const t = useTranslationFn();
 
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -52,7 +51,7 @@ const MakeQueryOption = ({ queryField }: MakeQueryOptionProps) => {
         <Col span={3} offset={2}>
           <Checkbox id={id} checked={isChecked} onChange={onCheckToggle} disabled={disabled} />
         </Col>
-        <Col span={7}>{`${t(title)} ${config?.units ? '(' + td('in') + ' ' + t(config.units) + ')' : ''}`}</Col>
+        <Col span={7}>{`${t(title)} ${config?.units ? '(' + t('in') + ' ' + t(config.units) + ')' : ''}`}</Col>
         <Col span={2}>
           <OptionDescription description={t(description)} />
         </Col>

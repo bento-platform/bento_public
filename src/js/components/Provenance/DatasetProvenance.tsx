@@ -10,7 +10,7 @@ import CreatedByTable from './Tables/CreatedByTable';
 import DownloadDats from './DownloadDats';
 
 import { BOX_SHADOW } from '@/constants/overviewConstants';
-import { useTranslationCustom, useTranslationDefault } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
 import type { Dataset } from '@/types/metadata';
 
 const { Item } = Descriptions;
@@ -18,8 +18,7 @@ const { Text, Title } = Typography;
 const { Meta } = Card;
 
 const DatasetProvenance = ({ dataset, loading }: DatasetProvenanceProps) => {
-  const t = useTranslationCustom();
-  const td = useTranslationDefault();
+  const t = useTranslationFn();
 
   const metadata = dataset.dats_file;
 
@@ -46,12 +45,12 @@ const DatasetProvenance = ({ dataset, loading }: DatasetProvenanceProps) => {
         {metadata.privacy || metadata.licenses?.length || metadata.keywords?.length ? (
           <Descriptions style={{ paddingTop: '20px' }}>
             {metadata.privacy && (
-              <Item span={12} label={<DescriptionTitle title={td('Privacy')} />}>
+              <Item span={12} label={<DescriptionTitle title={t('Privacy')} />}>
                 {t(metadata.privacy)}
               </Item>
             )}
             {!!metadata.licenses?.length && (
-              <Item span={12} label={<DescriptionTitle title={td('Licenses')} />}>
+              <Item span={12} label={<DescriptionTitle title={t('Licenses')} />}>
                 {metadata.licenses.map((l, i) => (
                   <Tag key={i} color="cyan">
                     {t(l.name)}
@@ -60,7 +59,7 @@ const DatasetProvenance = ({ dataset, loading }: DatasetProvenanceProps) => {
               </Item>
             )}
             {!!metadata.keywords?.length && (
-              <Item span={24} label={<DescriptionTitle title={td('Keywords')} />}>
+              <Item span={24} label={<DescriptionTitle title={t('Keywords')} />}>
                 {metadata.keywords.map((keyword, i) => (
                   <Tag key={i} color="cyan">
                     {t(keyword.value.toString())}
@@ -143,7 +142,7 @@ export type DatasetProvenanceProps = {
 export default DatasetProvenance;
 
 const TableTitleWithTranslation = ({ title }: { title: string }) => {
-  const t = useTranslationCustom();
+  const t = useTranslationFn();
 
   return (
     <Title level={4} style={{ paddingTop: '20px' }}>

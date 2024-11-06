@@ -5,6 +5,7 @@ import type { NetworkBeacon } from '@/types/beaconNetwork';
 import type { FlattenedBeaconResponse } from '@/types/beacon';
 import { BOX_SHADOW } from '@/constants/overviewConstants';
 import NodeCountsDisplay from './NodeCountsDisplay';
+import { useTranslationFn } from '@/hooks';
 
 const { Link } = Typography;
 
@@ -20,6 +21,8 @@ const ApiErrorTag = ({ errorMessage }: { errorMessage: string }) => (
 );
 
 const NodeDetails = ({ beacon, response }: NodeDetailsProps) => {
+  const t = useTranslationFn();
+
   const { apiUrl, organization, overview } = beacon;
   const { variants } = overview;
   const assemblies = Object.keys(variants);
@@ -67,7 +70,7 @@ const NodeDetails = ({ beacon, response }: NodeDetailsProps) => {
       actions={[
         <Link key="homepage" href={organization.welcomeUrl} target="_blank" style={LINK_STYLE}>
           <LinkOutlined style={{ marginRight: '5px' }} />
-          Home Page
+          {t('beacon.home_page')}
         </Link>,
         <Link key="bentolink" href={bentoUrl} target="_blank" style={LINK_STYLE}>
           <LinkOutlined style={{ marginRight: '5px' }} />

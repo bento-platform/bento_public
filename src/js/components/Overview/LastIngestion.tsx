@@ -4,7 +4,6 @@ import { Card, Empty, Space, Typography } from 'antd';
 import { CalendarOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 
-import { DEFAULT_TRANSLATION } from '@/constants/configConstants';
 import { useAppSelector } from '@/hooks';
 import { getDataTypeLabel } from '@/types/dataTypes';
 
@@ -12,7 +11,7 @@ import type { LastIngestionDataTypeResponse } from '@/types/lastIngestionDataTyp
 import { BOX_SHADOW } from '@/constants/overviewConstants';
 
 const LastIngestionInfo: React.FC = () => {
-  const { t, i18n } = useTranslation(DEFAULT_TRANSLATION);
+  const { t, i18n } = useTranslation();
 
   const dataTypesObject = useAppSelector((state) => state.lastIngestionData?.dataTypes) || {};
 
