@@ -1,4 +1,4 @@
-import type React from 'react';
+import type { CSSProperties } from 'react';
 import { memo, useRef } from 'react';
 import { Button, Card, Row, Space, Tooltip } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
@@ -9,10 +9,10 @@ import { useElementWidth, useTranslationFn } from '@/hooks';
 import type { ChartDataField } from '@/types/data';
 import SmallChartCardTitle from '@/components/Util/SmallChartCardTitle';
 
-const CARD_STYLE: React.CSSProperties = { height: '415px', borderRadius: '11px', ...BOX_SHADOW };
-const ROW_EMPTY_STYLE: React.CSSProperties = { height: `${CHART_HEIGHT}px` };
+const CARD_STYLE: CSSProperties = { height: '415px', borderRadius: '11px', ...BOX_SHADOW };
+const ROW_EMPTY_STYLE: CSSProperties = { height: `${CHART_HEIGHT}px` };
 
-const ChartCard: React.FC<ChartCardProps> = memo(({ section, chart, onRemoveChart }) => {
+const ChartCard = memo(({ section, chart, onRemoveChart }: ChartCardProps) => {
   const t = useTranslationFn();
   const containerRef = useRef<HTMLDivElement>(null);
   const width = useElementWidth(containerRef, chart.width);
