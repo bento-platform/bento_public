@@ -10,9 +10,18 @@ export const makeGetSearchFields = createAsyncThunk<
   SearchFieldResponse,
   void,
   { rejectValue: string; state: RootState }
->('query/makeGetSearchFields', async (_, { rejectWithValue, getState }) => {
-  return await axios
-    .get(searchFieldsUrl, scopedAuthorizedRequestConfig(getState()))
-    .then((res) => res.data)
-    .catch(printAPIError(rejectWithValue));
-});
+>(
+  'query/makeGetSearchFields',
+  async (_, { rejectWithValue, getState }) => {
+    return await axios
+      .get(searchFieldsUrl, scopedAuthorizedRequestConfig(getState()))
+      .then((res) => res.data)
+      .catch(printAPIError(rejectWithValue));
+  },
+  {
+    condition(_, { getState }) {
+      const state = getState();
+      return !state.query.isFetchingFields && (!state.query.attemptedFieldsFetch || state.query.querySectionsInvalid);
+    },
+  }
+);

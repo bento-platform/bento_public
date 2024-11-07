@@ -39,7 +39,8 @@ export const getBeaconNetworkConfig = createAsyncThunk<
   },
   {
     condition(_, { getState }) {
-      return !getState().beaconNetwork.isFetchingBeaconNetworkConfig;
+      const state = getState().beaconNetwork;
+      return !state.isFetchingBeaconNetworkConfig && !state.hasAttemptedBeaconNetworkConfig;
     },
   }
 );
@@ -81,6 +82,7 @@ const queryBeaconNetworkNode = createAsyncThunk<
 type BeaconNetworkConfigState = {
   // config
   isFetchingBeaconNetworkConfig: boolean;
+  hasAttemptedBeaconNetworkConfig: boolean;
   hasBeaconNetworkError: boolean;
   assemblyIds: BeaconAssemblyIds;
   querySectionsUnion: Section[];
@@ -99,6 +101,7 @@ type BeaconNetworkConfigState = {
 const initialState: BeaconNetworkConfigState = {
   // config
   isFetchingBeaconNetworkConfig: false,
+  hasAttemptedBeaconNetworkConfig: false,
   hasBeaconNetworkError: false,
   querySectionsUnion: [],
   querySectionsIntersection: [],
@@ -131,6 +134,7 @@ const beaconNetwork = createSlice({
     });
     builder.addCase(getBeaconNetworkConfig.fulfilled, (state, { payload }) => {
       state.isFetchingBeaconNetworkConfig = false;
+      state.hasAttemptedBeaconNetworkConfig = true;
       state.beacons = payload.beacons;
       state.querySectionsUnion = payload.filtersUnion;
       state.querySectionsIntersection = payload.filtersIntersection;
@@ -140,6 +144,7 @@ const beaconNetwork = createSlice({
     builder.addCase(getBeaconNetworkConfig.rejected, (state) => {
       state.isFetchingBeaconNetworkConfig = false;
       state.hasBeaconNetworkError = true;
+      state.hasAttemptedBeaconNetworkConfig = true;
     });
 
     // querying --------------------------------------------------------------------------------------------------------

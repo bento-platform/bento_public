@@ -4,16 +4,15 @@ import { Card, Empty, Space, Typography } from 'antd';
 import { CalendarOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 
-import { useAppSelector } from '@/hooks';
-import { getDataTypeLabel } from '@/types/dataTypes';
-
-import type { LastIngestionDataTypeResponse } from '@/types/lastIngestionDataTypeResponse';
 import { BOX_SHADOW } from '@/constants/overviewConstants';
+import { useLastIngestionData } from '@/features/ingestion/hooks';
+import { getDataTypeLabel } from '@/types/dataTypes';
+import type { LastIngestionDataTypeResponse } from '@/types/lastIngestionDataTypeResponse';
 
 const LastIngestionInfo: React.FC = () => {
   const { t, i18n } = useTranslation();
 
-  const dataTypesObject = useAppSelector((state) => state.lastIngestionData?.dataTypes) || {};
+  const { dataTypes: dataTypesObject } = useLastIngestionData();
 
   const sortedDataTypes = Object.values(dataTypesObject).sort((a, b) => a.label.localeCompare(b.label));
 

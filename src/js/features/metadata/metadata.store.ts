@@ -19,12 +19,14 @@ export type DiscoveryScopeSelection = {
 export interface MetadataState {
   projects: Project[];
   isFetching: boolean;
+  hasAttempted: boolean;
   selectedScope: DiscoveryScopeSelection;
 }
 
 const initialState: MetadataState = {
   projects: [],
   isFetching: false,
+  hasAttempted: false,
   selectedScope: {
     scope: { project: undefined, dataset: undefined },
     // Whether scope has been set from URL/action yet. If it hasn't, we need to wait before fetching scoped data.
@@ -48,7 +50,7 @@ export const getProjects = createAsyncThunk<
   },
   {
     condition(_, { getState }) {
-      return !getState().metadata.isFetching;
+      return !getState().metadata.isFetching && !getState().metadata.hasAttempted;
     },
   }
 );
@@ -74,9 +76,11 @@ const metadata = createSlice({
     builder.addCase(getProjects.fulfilled, (state, { payload }) => {
       state.projects = payload?.results ?? [];
       state.isFetching = false;
+      state.hasAttempted = true;
     });
     builder.addCase(getProjects.rejected, (state) => {
       state.isFetching = false;
+      state.hasAttempted = true;
     });
   },
 });

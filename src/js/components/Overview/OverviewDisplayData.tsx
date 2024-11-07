@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { Space } from 'antd';
 
 import { disableChart } from '@/features/data/data.store';
+import { useClickableCharts } from '@/features/data/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
 import { CHART_WIDTH, GRID_GAP } from '@/constants/overviewConstants';
@@ -30,8 +31,18 @@ const OverviewDisplayData = ({ section, allCharts }: OverviewDisplayDataProps) =
     [dispatch]
   );
 
+  const clickableCharts = useClickableCharts();
+
   const renderItem = (chart: ChartDataField) => {
-    return <ChartCard key={chart.id} chart={chart} section={section} onRemoveChart={onRemoveChart} />;
+    return (
+      <ChartCard
+        key={chart.id}
+        chart={chart}
+        section={section}
+        onRemoveChart={onRemoveChart}
+        searchable={clickableCharts.has(chart.id)}
+      />
+    );
   };
 
   if (isSmallScreen) {

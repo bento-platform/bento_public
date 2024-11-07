@@ -1,22 +1,15 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Routes, Route, useNavigate, useParams, Outlet } from 'react-router-dom';
 import { useAutoAuthenticate, useIsAuthenticated } from 'bento-auth-js';
 import { useAppDispatch } from '@/hooks';
 
-import { makeGetConfigRequest, makeGetServiceInfoRequest } from '@/features/config/config.store';
-import { makeGetAboutRequest } from '@/features/content/content.store';
-import { makeGetDataRequestThunk, populateClickable } from '@/features/data/data.store';
-import { makeGetKatsuPublic, makeGetSearchFields } from '@/features/search/query.store';
-import { getBeaconConfig } from '@/features/beacon/beacon.store';
-import { getBeaconNetworkConfig } from '@/features/beacon/network.store';
-import { fetchGohanData, fetchKatsuData } from '@/features/ingestion/lastIngestion.store';
-import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
-import { useMetadata } from '@/features/metadata/hooks';
-import { getProjects, markScopeSet, selectScope } from '@/features/metadata/metadata.store';
+import { invalidateConfig } from '@/features/config/config.store';
+import { invalidateData } from '@/features/data/data.store';
+import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
+import { type DiscoveryScope, markScopeSet, selectScope } from '@/features/metadata/metadata.store';
 
 import Loader from '@/components/Loader';
 import DefaultLayout from '@/components/Util/DefaultLayout';
-import { BEACON_NETWORK_ENABLED } from '@/config';
 import { BentoRoute } from '@/types/routes';
 import { scopeEqual, validProjectDataset } from '@/utils/router';
 
@@ -25,14 +18,17 @@ import Search from './Search/Search';
 import ProvenanceTab from './Provenance/ProvenanceTab';
 import BeaconQueryUi from './Beacon/BeaconQueryUi';
 import NetworkUi from './Beacon/BeaconNetwork/NetworkUi';
+import { invalidateQuerySections, invalidateResults } from '@/features/search/query.store';
 
 const ScopedRoute = () => {
   const { projectId, datasetId } = useParams();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { selectedScope, projects } = useMetadata();
+  const { selectedScope, projects, hasAttempted: hasAttemptedProjects } = useMetadata();
 
   useEffect(() => {
+    if (!hasAttemptedProjects) return; // Wait for projects to load first
+
     // Update selectedScope based on URL parameters
     const valid = validProjectDataset(projects, { project: projectId, dataset: datasetId });
 
@@ -40,7 +36,7 @@ const ScopedRoute = () => {
     if (scopeEqual(selectedScope.scope, valid.scope)) {
       // Make sure scope is marked as set to trigger the first load.
       // This can happen when the true URL scope is the whole instance, which is also the initial scope value.
-      dispatch(markScopeSet());
+      if (!selectedScope.scopeSet) dispatch(markScopeSet());
       return;
     }
 
@@ -67,46 +63,32 @@ const ScopedRoute = () => {
     }
     const newPathString = '/' + newPath.join('/');
     navigate(newPathString, { replace: true });
-  }, [projects, projectId, datasetId, dispatch, navigate, selectedScope]);
+  }, [hasAttemptedProjects, projects, projectId, datasetId, dispatch, navigate, selectedScope]);
 
   return <Outlet />;
 };
 
 const BentoAppRouter = () => {
   const dispatch = useAppDispatch();
-
   const { isAutoAuthenticating } = useAutoAuthenticate();
   const isAuthenticated = useIsAuthenticated();
-  const { selectedScope, isFetching: isFetchingProjects } = useMetadata();
+  const { isFetching: isFetchingProjects } = useMetadata();
+
+  const { scopeSet, scope } = useSelectedScope();
+  const lastAuthz = useRef<boolean>(!!isAuthenticated);
+  const lastScope = useRef<DiscoveryScope | null>(null);
 
   useEffect(() => {
-    if (!selectedScope.scopeSet) return;
-    dispatch(makeGetConfigRequest()).then(() => dispatch(getBeaconConfig()));
-
-    if (BEACON_NETWORK_ENABLED) {
-      dispatch(getBeaconNetworkConfig());
+    // If the scope or isAuthenticated changes, we need to invalidate current state data
+    if ((scopeSet && !scopeEqual(scope, lastScope.current)) || isAuthenticated !== lastAuthz.current) {
+      dispatch(invalidateConfig());
+      dispatch(invalidateData());
+      dispatch(invalidateQuerySections());
+      dispatch(invalidateResults());
+      lastScope.current = scope;
+      lastAuthz.current = !!isAuthenticated;
     }
-
-    dispatch(makeGetAboutRequest());
-    // The "Populate clickable" action needs both chart sections and search fields to be available.
-    // TODO: this is not a very good pattern. It would be better to have a memoized way of determining click-ability at
-    //  render time.
-    Promise.all([dispatch(makeGetDataRequestThunk()), dispatch(makeGetSearchFields())]).then(() =>
-      dispatch(populateClickable())
-    );
-    dispatch(makeGetKatsuPublic());
-    dispatch(fetchKatsuData());
-  }, [dispatch, isAuthenticated, selectedScope]);
-
-  useEffect(() => {
-    dispatch(getProjects());
-    dispatch(makeGetAboutRequest());
-    dispatch(fetchGohanData());
-    dispatch(makeGetServiceInfoRequest());
-    if (isAuthenticated) {
-      dispatch(makeGetDataTypes());
-    }
-  }, [dispatch, isAuthenticated]);
+  }, [dispatch, isAuthenticated, scopeSet, scope]);
 
   if (isAutoAuthenticating || isFetchingProjects) {
     return <Loader />;

@@ -60,5 +60,8 @@ export const scopeToUrl = (scope: DiscoveryScope, prefix: string = '', suffix: s
   }
 };
 
-export const scopeEqual = (s1: DiscoveryScope, s2: DiscoveryScope): boolean =>
-  s1.project === s2.project && s1.dataset === s2.dataset;
+export const scopeEqual = (s1: DiscoveryScope | null, s2: DiscoveryScope | null): boolean => {
+  if (s1 === null && s2 === null) return true;
+  else if (s1 === null || s2 === null) return false;
+  else return s1.project === s2.project && s1.dataset === s2.dataset;
+};

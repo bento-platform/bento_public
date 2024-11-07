@@ -15,10 +15,12 @@ export type QueryState = {
   isFetchingData: boolean;
   attemptedFetch: boolean;
   querySections: SearchFieldResponse['sections'];
+  querySectionsInvalid: boolean;
   queryParams: { [key: string]: string };
   queryParamCount: number;
   message: string;
   results: DiscoveryResults;
+  resultsInvalid: boolean;
 };
 
 const initialState: QueryState = {
@@ -28,9 +30,11 @@ const initialState: QueryState = {
   attemptedFetch: false,
   message: '',
   querySections: [],
+  querySectionsInvalid: false,
   queryParams: {},
   queryParamCount: 0,
   results: EMPTY_DISCOVERY_RESULTS,
+  resultsInvalid: false,
 };
 
 const query = createSlice({
@@ -41,6 +45,12 @@ const query = createSlice({
       state.queryParams = payload;
       state.queryParamCount = Object.keys(payload).length;
     },
+    invalidateQuerySections: (state) => {
+      state.querySectionsInvalid = true;
+    },
+    invalidateResults: (state) => {
+      state.resultsInvalid = true; // new query params, rendering results invalid - need to reload results
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(makeGetKatsuPublic.pending, (state) => {
@@ -49,6 +59,7 @@ const query = createSlice({
     builder.addCase(makeGetKatsuPublic.fulfilled, (state, { payload }: PayloadAction<KatsuSearchResponse>) => {
       state.isFetchingData = false;
       state.attemptedFetch = true;
+      state.resultsInvalid = false;
       if (payload && 'message' in payload) {
         state.message = payload.message;
         return;
@@ -77,6 +88,7 @@ const query = createSlice({
       state.querySections = payload.sections;
       state.isFetchingFields = false;
       state.attemptedFieldsFetch = true;
+      state.querySectionsInvalid = false;
     });
     builder.addCase(makeGetSearchFields.rejected, (state) => {
       state.isFetchingFields = false;
@@ -85,6 +97,6 @@ const query = createSlice({
   },
 });
 
-export const { setQueryParams } = query.actions;
+export const { setQueryParams, invalidateQuerySections, invalidateResults } = query.actions;
 export { makeGetKatsuPublic, makeGetSearchFields };
 export default query.reducer;

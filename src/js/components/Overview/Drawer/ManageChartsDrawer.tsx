@@ -5,15 +5,16 @@ const { Title } = Typography;
 import ChartTree from './ChartTree';
 
 import type { ChartDataField } from '@/types/data';
-import { useAppSelector, useAppDispatch, useTranslationFn } from '@/hooks';
+import { useAppDispatch, useTranslationFn } from '@/hooks';
 import { hideAllSectionCharts, setAllDisplayedCharts, resetLayout } from '@/features/data/data.store';
+import { useData } from '@/features/data/hooks';
 
 const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: ManageChartsDrawerProps) => {
   const t = useTranslationFn();
 
   const dispatch = useAppDispatch();
 
-  const sections = useAppSelector((state) => state.data.sections);
+  const { sections } = useData();
 
   return (
     <Drawer
