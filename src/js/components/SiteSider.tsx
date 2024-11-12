@@ -7,6 +7,7 @@ import { Layout, Menu } from 'antd';
 import Icon, { PieChartOutlined, SearchOutlined, ShareAltOutlined, SolutionOutlined } from '@ant-design/icons';
 
 import BeaconSvg from '@/components/Beacon/BeaconSvg';
+import { useSelectedScope } from '@/features/metadata/hooks';
 import { useSearchQuery } from '@/features/search/hooks';
 import { useTranslationFn } from '@/hooks';
 import { BentoRoute } from '@/types/routes';
@@ -28,6 +29,8 @@ const SiteSider: React.FC<{
   const navigate = useNavigate();
   const location = useLocation();
   const t = useTranslationFn();
+
+  const { scopeSet, scope } = useSelectedScope();
   const { queryParams } = useSearchQuery();
   const currentPage = getCurrentPage();
 
@@ -62,11 +65,15 @@ const SiteSider: React.FC<{
     const items = [
       createMenuItem('Overview', BentoRoute.Overview, <PieChartOutlined />),
       createMenuItem('Search', BentoRoute.Search, <SearchOutlined />),
-      createMenuItem('Provenance', BentoRoute.Provenance, <SolutionOutlined />),
     ];
 
-    if (BentoRoute.Beacon) {
-      items.push(createMenuItem('Beacon', BentoRoute.Beacon, <BeaconLogo />));
+    if (scopeSet && scope.project) {
+      items.push(createMenuItem('Provenance', BentoRoute.Provenance, <SolutionOutlined />));
+    } else {
+      // TODO: when beacon is scoped, enable for scoped-in too
+      if (BentoRoute.Beacon) {
+        items.push(createMenuItem('Beacon', BentoRoute.Beacon, <BeaconLogo />));
+      }
     }
 
     if (BentoRoute.BeaconNetwork) {
@@ -74,7 +81,7 @@ const SiteSider: React.FC<{
     }
 
     return items;
-  }, [createMenuItem]);
+  }, [createMenuItem, scopeSet, scope.project]);
 
   return (
     <Sider

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Routes, Route, useNavigate, useParams, Outlet } from 'react-router-dom';
+import { Routes, Route, useNavigate, useParams, Outlet, useLocation } from 'react-router-dom';
 import { useAutoAuthenticate, useIsAuthenticated } from 'bento-auth-js';
 import { useAppDispatch } from '@/hooks';
 
@@ -24,6 +24,7 @@ const ScopedRoute = () => {
   const { projectId, datasetId } = useParams();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const { selectedScope, projects, hasAttempted: hasAttemptedProjects } = useMetadata();
 
   useEffect(() => {
@@ -48,7 +49,7 @@ const ScopedRoute = () => {
 
     // Otherwise: validated scope does not match URL params, so we need to re-locate to a valid path.
 
-    const oldPath = location.pathname.split('/').filter(Boolean);
+    const oldPath = window.location.pathname.split('/').filter(Boolean);
     const newPath = [oldPath[0]];
 
     if (valid.scope.dataset) {
@@ -64,6 +65,18 @@ const ScopedRoute = () => {
     const newPathString = '/' + newPath.join('/');
     navigate(newPathString, { replace: true });
   }, [hasAttemptedProjects, projects, projectId, datasetId, dispatch, navigate, selectedScope]);
+
+  useEffect(() => {
+    if (
+      projects.length > 1 &&
+      selectedScope.scopeSet &&
+      !!selectedScope.scope.project &&
+      location.pathname.endsWith('beacon')
+    ) {
+      // TODO: when beacon is scoped, enable for scoped-in too --> remove this effect
+      navigate([...location.pathname.split('/').slice(0, -1), 'overview'].join('/'), { replace: true });
+    }
+  }, [location, navigate, projects, selectedScope]);
 
   return <Outlet />;
 };
