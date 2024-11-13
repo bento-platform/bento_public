@@ -20,8 +20,19 @@ export const makeGetConfigRequest = createAsyncThunk<DiscoveryRules, void, { rej
   },
   {
     condition(_, { getState }) {
-      const state = getState();
-      return state.metadata.selectedScope.scopeSet && state.config.configStatus === RequestStatus.Idle;
+      const {
+        config: { configStatus },
+        metadata: {
+          selectedScope: { scopeSet },
+        },
+      } = getState();
+      const cond = scopeSet && configStatus === RequestStatus.Idle;
+      if (!cond) {
+        console.debug(
+          `makeGetConfigRequest() was attempted, but will not dispatch (scopeSet=${scopeSet}, configStatus=${configStatus})`
+        );
+      }
+      return cond;
     },
   }
 );
