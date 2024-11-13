@@ -50,7 +50,10 @@ export const makeGetServiceInfoRequest = createAsyncThunk<
       .catch(printAPIError(rejectWithValue)),
   {
     condition(_, { getState }) {
-      return getState().config.serviceInfoStatus === RequestStatus.Idle;
+      const { serviceInfoStatus } = getState().config;
+      const cond = serviceInfoStatus === RequestStatus.Idle;
+      if (!cond) console.debug(`makeGetServiceInfoRequest(), but a prior attempt gave status: ${serviceInfoStatus}`);
+      return cond;
     },
   }
 );
