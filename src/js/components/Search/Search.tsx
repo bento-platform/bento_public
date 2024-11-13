@@ -12,6 +12,7 @@ import { buildQueryParamsUrl } from '@/utils/search';
 import Loader from '@/components/Loader';
 import { useConfig } from '@/features/config/hooks';
 import { useSearchQuery } from '@/features/search/hooks';
+import { RequestStatus } from '@/types/requests';
 import type { QueryParams } from '@/types/search';
 
 const checkQueryParamsEqual = (qp1: QueryParams, qp2: QueryParams): boolean => {
@@ -26,7 +27,7 @@ const RoutedSearch = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { maxQueryParameters, hasAttemptedConfig } = useConfig();
+  const { maxQueryParameters, configStatus } = useConfig();
   const {
     querySections: searchSections,
     queryParams,
@@ -75,7 +76,14 @@ const RoutedSearch = () => {
 
     // Wait until we have search fields to try and build a valid query. Otherwise, we will mistakenly remove all URL
     // query parameters and effectively reset the form.
-    if (!hasAttemptedConfig || !attemptedFieldsFetch || isFetchingSearchFields || isFetchingSearchData) return;
+    if (
+      configStatus !== RequestStatus.Fulfilled ||
+      !attemptedFieldsFetch ||
+      isFetchingSearchFields ||
+      isFetchingSearchData
+    ) {
+      return;
+    }
 
     const { valid, validQueryParamsObject } = validateQuery(new URLSearchParams(location.search));
     if (valid) {
@@ -97,7 +105,7 @@ const RoutedSearch = () => {
     resultsInvalid,
     attemptedFieldsFetch,
     dispatch,
-    hasAttemptedConfig,
+    configStatus,
     isFetchingSearchFields,
     isFetchingSearchData,
     location.search,
@@ -118,10 +126,10 @@ const SEARCH_SECTION_STYLE = { maxWidth: 1200 };
 const Search = () => {
   const t = useTranslationFn();
 
-  const { isFetchingConfig } = useConfig();
+  const { configStatus } = useConfig();
   const { isFetchingFields: isFetchingSearchFields, querySections: searchSections } = useSearchQuery();
 
-  return isFetchingConfig || isFetchingSearchFields ? (
+  return configStatus === RequestStatus.Pending || isFetchingSearchFields ? (
     <Loader />
   ) : (
     <>
