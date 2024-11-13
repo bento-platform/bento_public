@@ -31,9 +31,11 @@ const ScopedRoute = () => {
   const { projectId, datasetId } = useParams();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { selectedScope, projects } = useMetadata();
+  const { selectedScope, projects, projectsStatus } = useMetadata();
 
   useEffect(() => {
+    if ([RequestStatus.Idle, RequestStatus.Pending].includes(projectsStatus)) return; // Wait for projects to load first
+
     // Update selectedScope based on URL parameters
     const valid = validProjectDataset(projects, { project: projectId, dataset: datasetId });
 
@@ -41,7 +43,7 @@ const ScopedRoute = () => {
     if (scopeEqual(selectedScope.scope, valid.scope)) {
       // Make sure scope is marked as set to trigger the first load.
       // This can happen when the true URL scope is the whole instance, which is also the initial scope value.
-      dispatch(markScopeSet());
+      if (!selectedScope.scopeSet) dispatch(markScopeSet());
       return;
     }
 
@@ -68,7 +70,7 @@ const ScopedRoute = () => {
     }
     const newPathString = '/' + newPath.join('/');
     navigate(newPathString, { replace: true });
-  }, [projects, projectId, datasetId, dispatch, navigate, selectedScope]);
+  }, [projects, projectsStatus, projectId, datasetId, dispatch, navigate, selectedScope]);
 
   return <Outlet />;
 };
