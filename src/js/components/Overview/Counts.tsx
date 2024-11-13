@@ -25,19 +25,19 @@ const Counts = () => {
   // Break down help into multiple sentences inside an array to make translation a bit easier.
   const data = [
     {
-      title: 'Individuals',
+      entity: 'individual',
       help: ['individual_help_1'],
       icon: <TeamOutlined />,
       count: counts.individuals,
     },
     {
-      title: 'Biosamples',
+      entity: 'biosample',
       help: ['biosample_help_1'],
       icon: <BiDna />,
       count: counts.biosamples,
     },
     {
-      title: 'Experiments',
+      entity: 'experiment',
       help: ['experiment_help_1', 'experiment_help_2'],
       icon: <ExpSvg />,
       count: counts.experiments,
@@ -48,17 +48,19 @@ const Counts = () => {
     <>
       <Typography.Title level={3}>{t('Counts')}</Typography.Title>
       <Space wrap>
-        {data.map(({ title, help, icon, count }, i) => {
-          const titleTransl = t(`entities.${title}`);
+        {data.map(({ entity, help, icon, count }, i) => {
+          // false count – just need the highest form of plural
+          //  - see https://www.i18next.com/translation-function/plurals
+          const title = t(`entities.${entity}`, { count: 100 });
           return (
             <Card key={i} style={{ ...styles.countCard, height: isFetchingData ? 138 : 114 }}>
               <Statistic
                 title={
                   <Space>
-                    {titleTransl}
+                    {title}
                     {help && (
                       <Popover
-                        title={titleTransl}
+                        title={title}
                         content={
                           <CountsHelp>
                             {help.map((h, i) => (

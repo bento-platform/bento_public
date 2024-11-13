@@ -33,7 +33,7 @@ const SearchResultsPane = ({
     () => [
       {
         dataIndex: 'id',
-        title: t('entities.Individual'),
+        title: t('entities.individual', { count: 1 }),
         render: (id: string) => (
           <a href={`${PORTAL_URL}/data/explorer/individuals/${id}`} target="_blank" rel="noreferrer">
             {id}
@@ -85,7 +85,9 @@ const SearchResultsPane = ({
             <>
               <Col xs={24} lg={10}>
                 <Typography.Title level={5} style={{ marginTop: 0 }}>
-                  {t('entities.Biosamples')}
+                  {/* false count – just need the highest form of plural
+                       - see https://www.i18next.com/translation-function/plurals */}
+                  {t('entities.biosample', { count: 100 })}
                 </Typography.Title>
                 {!hasInsufficientData && biosampleChartData.length ? (
                   <PieChart data={biosampleChartData} height={PIE_CHART_HEIGHT} sort={true} dataMap={translateMap} />
@@ -95,7 +97,9 @@ const SearchResultsPane = ({
               </Col>
               <Col xs={24} lg={10}>
                 <Typography.Title level={5} style={{ marginTop: 0 }}>
-                  {t('entities.Experiments')}
+                  {/* false count – just need the highest form of plural
+                       - see https://www.i18next.com/translation-function/plurals */}
+                  {t('entities.experiment', { count: 100 })}
                 </Typography.Title>
                 {!hasInsufficientData && experimentChartData.length ? (
                   <PieChart data={experimentChartData} height={PIE_CHART_HEIGHT} sort={true} dataMap={translateMap} />

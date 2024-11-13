@@ -58,7 +58,7 @@ const SearchResultsCounts = ({
             ].join(' ')}
           >
             <Statistic
-              title={t('entities.Individuals')}
+              title={t('entities.individual', { count: 100 })} // false count – just need the highest form of plural
               value={
                 hasInsufficientData
                   ? t(message ?? '')
@@ -71,13 +71,13 @@ const SearchResultsCounts = ({
             />
           </div>
           <Statistic
-            title={t('entities.Biosamples')}
+            title={t('entities.biosample', { count: 100 })} // false count – just need the highest form of plural
             value={hasInsufficientData || (isBeaconNetwork && !biosampleCount) ? NO_RESULTS_DASHES : biosampleCount}
             valueStyle={STAT_STYLE}
             prefix={<BiDna />}
           />
           <Statistic
-            title={t('entities.Experiments')}
+            title={t('entities.experiment', { count: 100 })} // false count – just need the highest form of plural
             value={hasInsufficientData || (isBeaconNetwork && !experimentCount) ? NO_RESULTS_DASHES : experimentCount}
             valueStyle={STAT_STYLE}
             prefix={<ExpSvg />}

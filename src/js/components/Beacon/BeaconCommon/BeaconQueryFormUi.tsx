@@ -233,7 +233,7 @@ const BeaconQueryFormUi = ({
             {hasVariants && (
               <Col xs={24} lg={12}>
                 <Card
-                  title={t('entities.Variants')}
+                  title={t('entities.variant', { count: 100 })} // false count – just need the highest form of plural
                   style={CARD_STYLE}
                   styles={CARD_STYLES}
                   extra={

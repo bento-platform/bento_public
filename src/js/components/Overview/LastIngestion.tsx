@@ -5,7 +5,6 @@ import { CalendarOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 
 import { useAppSelector } from '@/hooks';
-import { getDataTypeLabel } from '@/types/dataTypes';
 
 import type { LastIngestionDataTypeResponse } from '@/types/lastIngestionDataTypeResponse';
 import { BOX_SHADOW } from '@/constants/overviewConstants';
@@ -48,7 +47,9 @@ const LastIngestionInfo: React.FC = () => {
             <Card style={BOX_SHADOW} key={dataType.id}>
               <Space direction="vertical">
                 <Typography.Text style={{ color: 'rgba(0,0,0,0.45)' }}>
-                  {t(getDataTypeLabel(dataType.id))}
+                  {/* false count – just need the highest form of plural
+                       - see https://www.i18next.com/translation-function/plurals */}
+                  {t(`entities.${dataType.id}`, { count: 100 })}
                 </Typography.Text>
                 <Typography.Text>
                   <CalendarOutlined />{' '}
