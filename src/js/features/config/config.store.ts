@@ -6,9 +6,9 @@ import { katsuPublicRulesUrl } from '@/constants/configConstants';
 import type { ServiceInfoStore, ServicesResponse } from '@/types/services';
 import type { RootState } from '@/store';
 import type { DiscoveryRules } from '@/types/configResponse';
+import { RequestStatus } from '@/types/requests';
 import { printAPIError } from '@/utils/error.util';
 import { scopedAuthorizedRequestConfig } from '@/utils/requests';
-import { RequestStatus } from '@/types/requests';
 
 export const makeGetConfigRequest = createAsyncThunk<DiscoveryRules, void, { rejectValue: string; state: RootState }>(
   'config/getConfigData',
@@ -20,12 +20,21 @@ export const makeGetConfigRequest = createAsyncThunk<DiscoveryRules, void, { rej
   },
   {
     condition(_, { getState }) {
-      const state = getState();
-      return (
-        state.metadata.selectedScope.scopeSet &&
-        state.config.configStatus !== RequestStatus.Pending &&
-        (state.config.configStatus === RequestStatus.Idle || state.config.configIsInvalid)
-      );
+      const {
+        config: { configStatus, configIsInvalid },
+        metadata: {
+          selectedScope: { scopeSet },
+        },
+      } = getState();
+      const cond =
+        scopeSet && configStatus !== RequestStatus.Pending && (configStatus === RequestStatus.Idle || configIsInvalid);
+      if (!cond) {
+        console.debug(
+          `makeGetConfigRequest() was attempted, but will not dispatch:
+            scopeSet=${scopeSet}, configStatus=${configStatus}, configIsInvalid=${configIsInvalid}`
+        );
+      }
+      return cond;
     },
   }
 );
@@ -33,10 +42,7 @@ export const makeGetConfigRequest = createAsyncThunk<DiscoveryRules, void, { rej
 export const makeGetServiceInfoRequest = createAsyncThunk<
   ServicesResponse[],
   void,
-  {
-    state: RootState;
-    rejectValue: string;
-  }
+  { state: RootState; rejectValue: string }
 >(
   'config/getServiceInfo',
   (_, { rejectWithValue }) =>
@@ -46,7 +52,10 @@ export const makeGetServiceInfoRequest = createAsyncThunk<
       .catch(printAPIError(rejectWithValue)),
   {
     condition(_, { getState }) {
-      return getState().config.serviceInfoStatus === RequestStatus.Idle;
+      const { serviceInfoStatus } = getState().config;
+      const cond = serviceInfoStatus === RequestStatus.Idle;
+      if (!cond) console.debug(`makeGetServiceInfoRequest(), but a prior attempt gave status: ${serviceInfoStatus}`);
+      return cond;
     },
   }
 );
