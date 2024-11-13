@@ -17,6 +17,7 @@ import Dataset from '@/components/Provenance/Dataset';
 import { useAppSelector } from '@/hooks';
 import { useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
 import { useTranslation } from 'react-i18next';
+import { RequestStatus } from '@/types/requests';
 
 const ABOUT_CARD_STYLE = { width: '100%', maxWidth: '1390px', borderRadius: '11pX', ...BOX_SHADOW };
 const MANAGE_CHARTS_BUTTON_STYLE = { right: '5em', bottom: '1.5em', transform: 'scale(125%)' };
@@ -32,7 +33,7 @@ const PublicOverview = () => {
     isContentPopulated,
     sections,
   } = useAppSelector((state) => state.data);
-  const { isFetchingAbout, about } = useAppSelector((state) => state.content);
+  const { status: aboutStatus, about } = useAppSelector((state) => state.content);
 
   const selectedProject = useSelectedProject();
   const { scope } = useSelectedScope();
@@ -63,7 +64,7 @@ const PublicOverview = () => {
   ) : (
     <>
       <Card style={ABOUT_CARD_STYLE}>
-        {isFetchingAbout ? (
+        {aboutStatus === RequestStatus.Idle || aboutStatus === RequestStatus.Pending ? (
           <Skeleton title={false} paragraph={{ rows: 2 }} />
         ) : (
           <div className="about-content" dangerouslySetInnerHTML={{ __html: aboutContent }} />

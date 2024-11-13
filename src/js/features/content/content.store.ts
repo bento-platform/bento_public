@@ -1,30 +1,42 @@
-import type { PayloadAction } from '@reduxjs/toolkit';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { partialAboutUrl } from '@/constants/contentConstants';
+import type { RootState } from '@/store';
+import { RequestStatus } from '@/types/requests';
 import { printAPIError } from '@/utils/error.util';
 
-export const makeGetAboutRequest = createAsyncThunk('content/getAboutHTML', async (_, { rejectWithValue }) => {
-  const en = await axios
-    .get(`${partialAboutUrl}/en_about.html`)
-    .then((res) => res.data)
-    .catch(printAPIError(rejectWithValue));
+type AboutContent = { [key: string]: string };
 
-  const fr = await axios
-    .get(`${partialAboutUrl}/fr_about.html`)
-    .then((res) => res.data)
-    .catch(printAPIError(rejectWithValue));
+export const makeGetAboutRequest = createAsyncThunk<AboutContent, void, { state: RootState }>(
+  'content/getAboutHTML',
+  async (_, { rejectWithValue }) => {
+    const [en, fr] = await Promise.all([
+      axios
+        .get(`${partialAboutUrl}/en_about.html`)
+        .then((res) => res.data)
+        .catch(printAPIError(rejectWithValue)),
+      axios
+        .get(`${partialAboutUrl}/fr_about.html`)
+        .then((res) => res.data)
+        .catch(printAPIError(rejectWithValue)),
+    ]);
 
-  return { en, fr };
-});
+    return { en, fr };
+  },
+  {
+    condition(_, { getState }) {
+      return getState().content.status === RequestStatus.Idle;
+    },
+  }
+);
 
 export type ContentState = {
-  isFetchingAbout: boolean;
-  about: { [key: string]: string };
+  status: RequestStatus;
+  about: AboutContent;
 };
 
 const initialState: ContentState = {
-  isFetchingAbout: true,
+  status: RequestStatus.Idle,
   about: {
     en: '',
     fr: '',
@@ -37,14 +49,14 @@ const content = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(makeGetAboutRequest.pending, (state) => {
-      state.isFetchingAbout = true;
+      state.status = RequestStatus.Pending;
     });
-    builder.addCase(makeGetAboutRequest.fulfilled, (state, { payload }: PayloadAction<{ en: string; fr: string }>) => {
+    builder.addCase(makeGetAboutRequest.fulfilled, (state, { payload }) => {
       state.about = { ...payload };
-      state.isFetchingAbout = false;
+      state.status = RequestStatus.Fulfilled;
     });
     builder.addCase(makeGetAboutRequest.rejected, (state) => {
-      state.isFetchingAbout = false;
+      state.status = RequestStatus.Rejected;
     });
   },
 });
