@@ -17,6 +17,7 @@ import { getProjects, markScopeSet, selectScope } from '@/features/metadata/meta
 import Loader from '@/components/Loader';
 import DefaultLayout from '@/components/Util/DefaultLayout';
 import { BEACON_NETWORK_ENABLED } from '@/config';
+import { RequestStatus } from '@/types/requests';
 import { BentoRoute } from '@/types/routes';
 import { scopeEqual, validProjectDataset } from '@/utils/router';
 
@@ -77,7 +78,7 @@ const BentoAppRouter = () => {
 
   const { isAutoAuthenticating } = useAutoAuthenticate();
   const isAuthenticated = useIsAuthenticated();
-  const { selectedScope, isFetching: isFetchingProjects } = useMetadata();
+  const { selectedScope, projectsStatus } = useMetadata();
 
   useEffect(() => {
     if (!selectedScope.scopeSet) return;
@@ -108,7 +109,7 @@ const BentoAppRouter = () => {
     }
   }, [dispatch, isAuthenticated]);
 
-  if (isAutoAuthenticating || isFetchingProjects) {
+  if (isAutoAuthenticating || projectsStatus === RequestStatus.Pending) {
     return <Loader />;
   }
 

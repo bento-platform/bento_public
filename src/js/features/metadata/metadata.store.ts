@@ -2,6 +2,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import type { PaginatedResponse, Project } from '@/types/metadata';
+import { RequestStatus } from '@/types/requests';
 import type { RootState } from '@/store';
 import { printAPIError } from '@/utils/error.util';
 import { validProjectDataset } from '@/utils/router';
@@ -18,13 +19,13 @@ export type DiscoveryScopeSelection = {
 
 export interface MetadataState {
   projects: Project[];
-  isFetching: boolean;
+  projectsStatus: RequestStatus;
   selectedScope: DiscoveryScopeSelection;
 }
 
 const initialState: MetadataState = {
   projects: [],
-  isFetching: false,
+  projectsStatus: RequestStatus.Idle,
   selectedScope: {
     scope: { project: undefined, dataset: undefined },
     // Whether scope has been set from URL/action yet. If it hasn't, we need to wait before fetching scoped data.
@@ -48,7 +49,11 @@ export const getProjects = createAsyncThunk<
   },
   {
     condition(_, { getState }) {
-      return !getState().metadata.isFetching;
+      // Only need to fetch projects once - if the projects are being/have already been fetched, don't re-execute.
+      const { projectsStatus } = getState().metadata;
+      const cond = projectsStatus === RequestStatus.Idle;
+      if (!cond) console.debug(`getProjects() was attempted, but a prior attempt gave status: ${projectsStatus}`);
+      return cond;
     },
   }
 );
@@ -69,14 +74,14 @@ const metadata = createSlice({
   },
   extraReducers(builder) {
     builder.addCase(getProjects.pending, (state) => {
-      state.isFetching = true;
+      state.projectsStatus = RequestStatus.Pending;
     });
     builder.addCase(getProjects.fulfilled, (state, { payload }) => {
       state.projects = payload?.results ?? [];
-      state.isFetching = false;
+      state.projectsStatus = RequestStatus.Fulfilled;
     });
     builder.addCase(getProjects.rejected, (state) => {
-      state.isFetching = false;
+      state.projectsStatus = RequestStatus.Rejected;
     });
   },
 });
