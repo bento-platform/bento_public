@@ -1,34 +1,45 @@
 import axios from 'axios';
-import type { PayloadAction } from '@reduxjs/toolkit';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import type { RootState } from '@/store';
+import type { BentoServiceDataType } from '@/types/dataTypes';
+import { RequestStatus } from '@/types/requests';
 import { authorizedRequestConfig } from '@/utils/requests';
 
-// TODO: find a way to allow this without an auth token
 export const makeGetDataTypes = createAsyncThunk<
-  object,
+  BentoServiceDataType[],
   void,
   {
     rejectValue: string;
     state: RootState;
   }
->('dataTypes/makeGetDataTypes', async (_, { getState }) => {
-  // Not scoped currently - this is a way to get all data types in an instance from service registry, but it may make
-  // sense in the future to forward query params to nested calls depending on scope value especially in the case of
-  // count handling. TBD - TODO: figure this out
-  const res = await axios.get('/api/service-registry/data-types', authorizedRequestConfig(getState()));
-  return res.data;
-});
+>(
+  'dataTypes/makeGetDataTypes',
+  async (_, { getState }) => {
+    // Not scoped currently - this is a way to get all data types in an instance from service registry, but it may make
+    // sense in the future to forward query params to nested calls depending on scope value especially in the case of
+    // count handling. TBD - TODO: figure this out
+    const res = await axios.get('/api/service-registry/data-types', authorizedRequestConfig(getState()));
+    return res.data;
+  },
+  {
+    condition(_, { getState }) {
+      const { status } = getState().dataTypes;
+      const cond = status === RequestStatus.Idle;
+      if (!cond) console.debug(`makeGetDataTypes() was attempted, but a prior attempt gave status: ${status}`);
+      return cond;
+    },
+  }
+);
 
 export type DataTypesState = {
-  isFetching: boolean;
-  dataTypes: object;
+  status: RequestStatus;
+  dataTypesById: Record<string, BentoServiceDataType>;
 };
 
 const initialState: DataTypesState = {
-  isFetching: false,
-  dataTypes: {},
+  status: RequestStatus.Idle,
+  dataTypesById: {},
 };
 
 const dataTypes = createSlice({
@@ -37,14 +48,14 @@ const dataTypes = createSlice({
   reducers: {},
   extraReducers(builder) {
     builder.addCase(makeGetDataTypes.pending, (state) => {
-      state.isFetching = true;
+      state.status = RequestStatus.Pending;
     });
-    builder.addCase(makeGetDataTypes.fulfilled, (state, { payload }: PayloadAction<object>) => {
-      state.isFetching = false;
-      state.dataTypes = { ...payload };
+    builder.addCase(makeGetDataTypes.fulfilled, (state, { payload }) => {
+      state.status = RequestStatus.Fulfilled;
+      state.dataTypesById = Object.fromEntries(payload.map((dt) => [dt.id, dt]));
     });
     builder.addCase(makeGetDataTypes.rejected, (state) => {
-      state.isFetching = false;
+      state.status = RequestStatus.Rejected;
     });
   },
 });

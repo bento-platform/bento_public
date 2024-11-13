@@ -52,7 +52,11 @@ export const makeGetServiceInfoRequest = createAsyncThunk<
     condition(_, { getState }) {
       const { serviceInfoStatus } = getState().config;
       const cond = serviceInfoStatus === RequestStatus.Idle;
-      if (!cond) console.debug(`makeGetServiceInfoRequest(), but a prior attempt gave status: ${serviceInfoStatus}`);
+      if (!cond) {
+        console.debug(
+          `makeGetServiceInfoRequest() was attempted, but a prior attempt gave status: ${serviceInfoStatus}`
+        );
+      }
       return cond;
     },
   }

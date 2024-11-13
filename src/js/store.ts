@@ -7,6 +7,7 @@ import { LS_OPENID_CONFIG_KEY, AuthReducer as auth, OIDCReducer as openIdConfigu
 import configReducer from '@/features/config/config.store';
 import contentReducer from '@/features/content/content.store';
 import dataReducer from '@/features/data/data.store';
+import dataTypesReducer from '@/features/dataTypes/dataTypes.store';
 import queryReducer from '@/features/search/query.store';
 import lastIngestionDataReducer from '@/features/ingestion/lastIngestion.store';
 import beaconReducer from './features/beacon/beacon.store';
@@ -32,6 +33,7 @@ export const store = configureStore({
     config: configReducer,
     content: contentReducer,
     data: dataReducer,
+    dataTypes: dataTypesReducer,
     query: queryReducer,
     lastIngestionData: lastIngestionDataReducer,
     beacon: beaconReducer,

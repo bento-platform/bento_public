@@ -106,10 +106,8 @@ const BentoAppRouter = () => {
     dispatch(makeGetAboutRequest());
     dispatch(fetchGohanData());
     dispatch(makeGetServiceInfoRequest());
-    if (isAuthenticated) {
-      dispatch(makeGetDataTypes());
-    }
-  }, [dispatch, isAuthenticated]);
+    dispatch(makeGetDataTypes());
+  }, [dispatch]);
 
   if (isAutoAuthenticating || projectsStatus === RequestStatus.Pending) {
     return <Loader />;
