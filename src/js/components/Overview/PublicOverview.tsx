@@ -13,11 +13,12 @@ import Counts from './Counts';
 import LastIngestionInfo from './LastIngestion';
 import Loader from '@/components/Loader';
 import Dataset from '@/components/Provenance/Dataset';
+import { RequestStatus } from '@/types/requests';
 
-import { useAppSelector } from '@/hooks';
 import { useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
 import { useTranslation } from 'react-i18next';
-import { RequestStatus } from '@/types/requests';
+import { useContent } from '@/features/content/hooks';
+import { useData } from '@/features/data/hooks';
 
 const ABOUT_CARD_STYLE = { width: '100%', maxWidth: '1390px', borderRadius: '11pX', ...BOX_SHADOW };
 const MANAGE_CHARTS_BUTTON_STYLE = { right: '5em', bottom: '1.5em', transform: 'scale(125%)' };
@@ -28,12 +29,8 @@ const PublicOverview = () => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [aboutContent, setAboutContent] = useState('');
 
-  const {
-    isFetchingData: isFetchingOverviewData,
-    isContentPopulated,
-    sections,
-  } = useAppSelector((state) => state.data);
-  const { status: aboutStatus, about } = useAppSelector((state) => state.content);
+  const { status: aboutStatus, about } = useContent();
+  const { isFetchingData: isFetchingOverviewData, sections } = useData();
 
   const selectedProject = useSelectedProject();
   const { scope } = useSelectedScope();
@@ -59,7 +56,7 @@ const PublicOverview = () => {
     saveToLocalStorage(sections);
   }, [sections]);
 
-  return !isContentPopulated || isFetchingOverviewData ? (
+  return isFetchingOverviewData ? (
     <Loader />
   ) : (
     <>

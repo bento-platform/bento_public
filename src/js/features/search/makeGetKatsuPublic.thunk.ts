@@ -24,7 +24,13 @@ export const makeGetKatsuPublic = createAsyncThunk<
   },
   {
     condition(_, { getState }) {
-      return !getState().query.isFetchingData;
+      const state = getState();
+      return (
+        state.query.attemptedFieldsFetch &&
+        !state.query.querySectionsInvalid &&
+        !state.query.isFetchingData &&
+        (!state.query.attemptedFetch || state.query.resultsInvalid)
+      );
     },
   }
 );

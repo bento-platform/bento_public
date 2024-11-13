@@ -1,5 +1,5 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { partialAboutUrl } from '@/constants/contentConstants';
 import type { RootState } from '@/store';
 import { RequestStatus } from '@/types/requests';

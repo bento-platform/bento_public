@@ -1,5 +1,5 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { PUBLIC_URL } from '@/config';
 import { katsuPublicRulesUrl } from '@/constants/configConstants';
@@ -21,15 +21,17 @@ export const makeGetConfigRequest = createAsyncThunk<DiscoveryRules, void, { rej
   {
     condition(_, { getState }) {
       const {
-        config: { configStatus },
+        config: { configStatus, configIsInvalid },
         metadata: {
           selectedScope: { scopeSet },
         },
       } = getState();
-      const cond = scopeSet && configStatus === RequestStatus.Idle;
+      const cond =
+        scopeSet && configStatus !== RequestStatus.Pending && (configStatus === RequestStatus.Idle || configIsInvalid);
       if (!cond) {
         console.debug(
-          `makeGetConfigRequest() was attempted, but will not dispatch (scopeSet=${scopeSet}, configStatus=${configStatus})`
+          `makeGetConfigRequest() was attempted, but will not dispatch:
+            scopeSet=${scopeSet}, configStatus=${configStatus}, configIsInvalid=${configIsInvalid}`
         );
       }
       return cond;
@@ -60,6 +62,7 @@ export const makeGetServiceInfoRequest = createAsyncThunk<
 
 export interface ConfigState {
   configStatus: RequestStatus;
+  configIsInvalid: boolean;
   maxQueryParameters: number;
   maxQueryParametersRequired: boolean;
   // ----------------------------------------------------
@@ -69,6 +72,7 @@ export interface ConfigState {
 
 const initialState: ConfigState = {
   configStatus: RequestStatus.Idle,
+  configIsInvalid: false,
   maxQueryParameters: 0,
   maxQueryParametersRequired: true,
   // ----------------------------------------------------
@@ -85,6 +89,9 @@ const configStore = createSlice({
     setMaxQueryParametersRequired: (state, { payload }: PayloadAction<boolean>) => {
       state.maxQueryParametersRequired = payload;
     },
+    invalidateConfig: (state) => {
+      state.configIsInvalid = true;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(makeGetConfigRequest.pending, (state) => {
@@ -93,10 +100,12 @@ const configStore = createSlice({
     builder.addCase(makeGetConfigRequest.fulfilled, (state, { payload }: PayloadAction<DiscoveryRules>) => {
       state.maxQueryParameters = payload.max_query_parameters;
       state.configStatus = RequestStatus.Fulfilled;
+      state.configIsInvalid = false;
     });
     builder.addCase(makeGetConfigRequest.rejected, (state) => {
       state.configStatus = RequestStatus.Rejected;
     });
+    // ----------------------------------------------------
     builder.addCase(makeGetServiceInfoRequest.pending, (state) => {
       state.serviceInfoStatus = RequestStatus.Pending;
     });
@@ -110,5 +119,5 @@ const configStore = createSlice({
   },
 });
 
-export const { setMaxQueryParametersRequired } = configStore.actions;
+export const { setMaxQueryParametersRequired, invalidateConfig } = configStore.actions;
 export default configStore.reducer;

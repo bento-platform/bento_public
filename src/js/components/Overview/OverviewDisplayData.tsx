@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { Space } from 'antd';
 
 import { disableChart } from '@/features/data/data.store';
+import { useSearchableFields } from '@/features/data/hooks';
 import { useAppDispatch } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
@@ -30,8 +31,18 @@ const OverviewDisplayData = ({ section, allCharts }: OverviewDisplayDataProps) =
     [dispatch]
   );
 
+  const searchableFields = useSearchableFields();
+
   const renderItem = (chart: ChartDataField) => {
-    return <ChartCard key={chart.id} chart={chart} section={section} onRemoveChart={onRemoveChart} />;
+    return (
+      <ChartCard
+        key={chart.id}
+        chart={chart}
+        section={section}
+        onRemoveChart={onRemoveChart}
+        searchable={searchableFields.has(chart.id)}
+      />
+    );
   };
 
   if (isSmallScreen) {

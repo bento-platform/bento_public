@@ -5,7 +5,8 @@ import { BiDna } from 'react-icons/bi';
 
 import ExpSvg from '../Util/ExpSvg';
 import { BOX_SHADOW, COUNTS_FILL } from '@/constants/overviewConstants';
-import { useAppSelector, useTranslationFn } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
+import { useData } from '@/features/data/hooks';
 
 const styles: Record<string, CSSProperties> = {
   countCard: {
@@ -20,7 +21,7 @@ const CountsHelp = ({ children }: { children: ReactNode }) => <div style={{ maxW
 const Counts = () => {
   const t = useTranslationFn();
 
-  const { counts, isFetchingData } = useAppSelector((state) => state.data);
+  const { counts, isFetchingData } = useData();
 
   // Break down help into multiple sentences inside an array to make translation a bit easier.
   const data = [

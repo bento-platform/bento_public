@@ -5,8 +5,9 @@ import { Row, Col, Checkbox } from 'antd';
 import OptionDescription from './OptionDescription';
 import SelectOption from './SelectOption';
 
+import { useConfig } from '@/features/config/hooks';
 import { useSearchQuery } from '@/features/search/hooks';
-import { useAppSelector, useTranslationFn } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
 import type { Field } from '@/types/search';
 import { buildQueryParamsUrl, queryParamsWithoutKey } from '@/utils/search';
 
@@ -18,7 +19,7 @@ const MakeQueryOption = ({ queryField }: MakeQueryOptionProps) => {
 
   const { title, id, description, config, options } = queryField;
 
-  const { maxQueryParameters } = useAppSelector((state) => state.config);
+  const { maxQueryParameters } = useConfig();
   const { queryParamCount, queryParams } = useSearchQuery();
 
   const isChecked = id in queryParams;
@@ -38,11 +39,6 @@ const MakeQueryOption = ({ queryField }: MakeQueryOptionProps) => {
     // Don't need to dispatch - the code handling the URL change will dispatch the fetch for us instead.
   }, [id, isChecked, navigate, options, pathname, queryParams]);
 
-  // TODO: allow disabling max query parameters for authenticated and authorized users when Katsu has AuthZ
-  // useQueryWithAuthIfAllowed()
-  // const maxQueryParametersRequired = useAppSelector((state) => state.config.maxQueryParametersRequired);
-  // const hasMaxFilters = maxQueryParametersRequired && queryParamCount >= maxQueryParameters;
-  // const disabled = isChecked ? false : hasMaxFilters;
   const disabled = isChecked ? false : queryParamCount >= maxQueryParameters;
 
   return (

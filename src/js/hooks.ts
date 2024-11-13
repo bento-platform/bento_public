@@ -11,6 +11,7 @@ import { CUSTOMIZABLE_TRANSLATION } from '@/constants/configConstants';
 import type { NamespaceTranslationFunction } from '@/types/translation';
 import { setMaxQueryParametersRequired } from '@/features/config//config.store';
 import { CHART_WIDTH, GRID_GAP } from '@/constants/overviewConstants';
+import { useServiceInfo } from '@/features/config/hooks';
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 // refer to https://react-redux.js.org/using-react-redux/usage-with-typescript#define-typed-hooks for more info
@@ -28,7 +29,7 @@ export const useTranslationFn = (): NamespaceTranslationFunction => {
 // ################### AUTH/AUTHZ HOOKS ###################
 
 export const useHasResourcePermissionWrapper = (resource: Resource, permission: string) => {
-  const authzUrl = useAppSelector((state) => state.config.serviceInfo.auth);
+  const authzUrl = useServiceInfo().serviceInfo.auth;
 
   const { isFetching: fetchingPermission, hasPermission } = useHasResourcePermission(resource, authzUrl, permission);
 
