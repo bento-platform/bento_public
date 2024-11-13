@@ -8,16 +8,20 @@ import { CHART_HEIGHT, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
 import { useTranslationFn } from '@/hooks';
 import type { ChartData } from '@/types/data';
 import type { ChartConfig } from '@/types/chartConfig';
-import { CHART_TYPE_BAR, CHART_TYPE_HISTOGRAM, CHART_TYPE_CHOROPLETH, CHART_TYPE_PIE } from '@/types/chartConfig';
+import { CHART_TYPE_BAR, CHART_TYPE_CHOROPLETH, CHART_TYPE_HISTOGRAM, CHART_TYPE_PIE } from '@/types/chartConfig';
 
-interface ChartEvent {
-  activePayload: Array<{ payload: { x: string } }>;
+interface BarChartEvent {
+  activePayload: Array<{ payload: { x: string; id?: string } }>;
+}
+
+interface PieChartEvent {
+  payload: { name: string; id?: string };
 }
 
 const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) => {
   const t = useTranslationFn();
   const navigate = useNavigate();
-  const translateMap = ({ x, y }: { x: string; y: number }) => ({ x: t(x), y });
+  const translateMap = ({ x, y }: { x: string; y: number }) => ({ x: t(x), y, id: x });
   const removeMissing = ({ x }: { x: string }) => x !== 'missing';
 
   const goToSearch = (id: string, val: string | undefined) => {
@@ -25,11 +29,12 @@ const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) =
     navigate(`../search?${id}=${val}`);
   };
 
-  const barChartOnChartClickHandler: BarChartProps['onChartClick'] = (e: ChartEvent) => {
-    goToSearch(id, e.activePayload[0]?.payload.x); // activePayload is [] if no current active bar
+  const barChartOnChartClickHandler: BarChartProps['onChartClick'] = (e: BarChartEvent) => {
+    const payload = e.activePayload[0]?.payload;
+    goToSearch(id, payload?.id ?? payload.x); // activePayload is [] if no current active bar
   };
-  const pieChartOnClickHandler = (d: { name: string }) => {
-    goToSearch(id, d.name);
+  const pieChartOnClickHandler = ({ payload }: PieChartEvent) => {
+    goToSearch(id, payload?.id ?? payload.name);
   };
 
   const { chart_type: type } = chartConfig;
