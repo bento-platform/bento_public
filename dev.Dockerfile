@@ -13,6 +13,7 @@ LABEL org.opencontainers.image.description="Local development image for Bento Pu
 
 WORKDIR /bento-public
 
+COPY entrypoint.bash .
 COPY run.dev.bash .
 COPY package.json .
 COPY package-lock.json .

@@ -48,7 +48,9 @@ COPY LICENSE .
 COPY create_config_prod.js .
 # - Copy in the service info generator
 COPY create_service_info.js .
-# - Copy in the entrypoint, which writes the config file and starts NGINX
+# - Copy the entrypoint.bash, which sets the user and permissions
+COPY entrypoint.bash .
+# - Copy in the run.bash, which writes the config file and starts NGINX
 COPY run.bash .
 # - Copy in package.json to provide version to scripts
 COPY package.json .
