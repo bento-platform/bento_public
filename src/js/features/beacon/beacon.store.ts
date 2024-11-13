@@ -1,12 +1,13 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { makeAuthorizationHeader } from 'bento-auth-js';
 
 import { EMPTY_DISCOVERY_RESULTS } from '@/constants/searchConstants';
 import { BEACON_INDIVIDUALS_ENDPOINT, BEACON_INFO_ENDPOINT } from '@/features/beacon/constants';
 import type { RootState } from '@/store';
-import type { BeaconConfigResponse, BeaconAssemblyIds, BeaconQueryResponse, BeaconQueryPayload } from '@/types/beacon';
+import type { BeaconAssemblyIds, BeaconConfigResponse, BeaconQueryPayload, BeaconQueryResponse } from '@/types/beacon';
 import type { DiscoveryResults } from '@/types/data';
+import { RequestStatus } from '@/types/requests';
 import { beaconApiError, errorMsgOrDefault } from '@/utils/beaconApiError';
 import { printAPIError } from '@/utils/error.util';
 
@@ -23,7 +24,7 @@ export const getBeaconConfig = createAsyncThunk<BeaconConfigResponse, void, { st
   {
     condition(_, { getState }) {
       const state = getState().beacon;
-      return !state.isFetchingBeaconConfig && !state.hasAttemptedBeaconConfig;
+      return state.beaconConfigStatus === RequestStatus.Idle;
     },
   }
 );
@@ -43,12 +44,11 @@ export const makeBeaconQuery = createAsyncThunk<
 
 type BeaconState = {
   // config
-  isFetchingBeaconConfig: boolean;
-  hasAttemptedBeaconConfig: boolean;
+  beaconConfigStatus: RequestStatus;
   beaconAssemblyIds: BeaconAssemblyIds;
 
   // querying
-  isFetchingQueryResponse: boolean;
+  queryResponseStatus: RequestStatus;
   queryResponseIsInvalid: boolean;
   results: DiscoveryResults;
   apiErrorMessage: string;
@@ -56,12 +56,11 @@ type BeaconState = {
 
 const initialState: BeaconState = {
   // config
-  isFetchingBeaconConfig: false,
-  hasAttemptedBeaconConfig: false,
+  beaconConfigStatus: RequestStatus.Idle,
   beaconAssemblyIds: [],
 
   // querying
-  isFetchingQueryResponse: false,
+  queryResponseStatus: RequestStatus.Idle,
   queryResponseIsInvalid: false,
   results: EMPTY_DISCOVERY_RESULTS,
   apiErrorMessage: '',
@@ -78,22 +77,20 @@ const beacon = createSlice({
   extraReducers: (builder) => {
     // config ----------------------------------------------------------------------------------------------------------
     builder.addCase(getBeaconConfig.pending, (state) => {
-      state.isFetchingBeaconConfig = true;
+      state.beaconConfigStatus = RequestStatus.Pending;
     });
     builder.addCase(getBeaconConfig.fulfilled, (state, { payload }) => {
       state.beaconAssemblyIds = Object.keys(payload.response?.overview?.counts?.variants ?? []);
-      state.isFetchingBeaconConfig = false;
-      state.hasAttemptedBeaconConfig = true;
+      state.beaconConfigStatus = RequestStatus.Fulfilled;
     });
     builder.addCase(getBeaconConfig.rejected, (state) => {
-      state.isFetchingBeaconConfig = false;
-      state.hasAttemptedBeaconConfig = true;
+      state.beaconConfigStatus = RequestStatus.Rejected;
     });
 
     // querying --------------------------------------------------------------------------------------------------------
     builder.addCase(makeBeaconQuery.pending, (state) => {
       state.apiErrorMessage = '';
-      state.isFetchingQueryResponse = true;
+      state.queryResponseStatus = RequestStatus.Pending;
     });
     builder.addCase(makeBeaconQuery.fulfilled, (state, { payload }) => {
       state.results = {
@@ -101,14 +98,13 @@ const beacon = createSlice({
         ...extractBeaconDiscoveryOverview(payload),
       };
       state.apiErrorMessage = '';
-      state.isFetchingQueryResponse = false;
-      state.queryResponseIsInvalid = false;
+      state.queryResponseStatus = RequestStatus.Fulfilled;
     });
     builder.addCase(makeBeaconQuery.rejected, (state, action) => {
       // apiErrorMessage must be non-blank to be treated as an error -- if no error is received, but one occurred, use a
       // generic fallback.
       state.apiErrorMessage = errorMsgOrDefault(action.payload); // passed from rejectWithValue
-      state.isFetchingQueryResponse = false;
+      state.queryResponseStatus = RequestStatus.Rejected;
     });
   },
 });

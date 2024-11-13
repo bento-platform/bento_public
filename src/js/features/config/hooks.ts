@@ -10,14 +10,18 @@ export const useConfig = () => {
   const isAuthenticated = useIsAuthenticated();
   const { scope, scopeSet } = useSelectedScope();
 
+  // Conditions where we need to reload "config" (which really is closer to rules for search):
+  //  - authorization status changed
+  //  - scope changed/was loaded from URL (scopeSet)
   useEffect(() => {
     dispatch(makeGetConfigRequest());
   }, [dispatch, isAuthenticated, scope, scopeSet]);
 
-  const { isFetchingConfig, hasAttemptedConfig, configIsInvalid, maxQueryParameters, maxQueryParametersRequired } =
-    useAppSelector((state) => state.config);
+  const { configStatus, configIsInvalid, maxQueryParameters, maxQueryParametersRequired } = useAppSelector(
+    (state) => state.config
+  );
 
-  return { isFetchingConfig, hasAttemptedConfig, configIsInvalid, maxQueryParameters, maxQueryParametersRequired };
+  return { configStatus, configIsInvalid, maxQueryParameters, maxQueryParametersRequired };
 };
 
 export const useServiceInfo = () => {
@@ -27,7 +31,7 @@ export const useServiceInfo = () => {
     dispatch(makeGetServiceInfoRequest());
   }, [dispatch]);
 
-  const { isFetchingServiceInfo, hasAttemptedServiceInfo, serviceInfo } = useAppSelector((state) => state.config);
+  const { serviceInfoStatus, serviceInfo } = useAppSelector((state) => state.config);
 
-  return { isFetchingServiceInfo, hasAttemptedServiceInfo, serviceInfo };
+  return { serviceInfoStatus, serviceInfo };
 };

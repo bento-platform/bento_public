@@ -6,18 +6,19 @@ import { useSearchQuery } from '@/features/search/hooks';
 
 import BeaconSearchResults from './BeaconSearchResults';
 import BeaconQueryFormUi from './BeaconCommon/BeaconQueryFormUi';
+import { RequestStatus } from '@/types/requests';
 
 const BeaconQueryUi = () => {
-  const { isFetchingBeaconConfig, beaconAssemblyIds, isFetchingQueryResponse, apiErrorMessage } = useBeacon();
+  const { beaconConfigStatus, beaconAssemblyIds, queryResponseStatus, apiErrorMessage } = useBeacon();
   const { querySections } = useSearchQuery();
 
-  return isFetchingBeaconConfig ? (
+  return [RequestStatus.Idle, RequestStatus.Pending].includes(beaconConfigStatus) ? (
     <Loader />
   ) : (
     <div style={WRAPPER_STYLE}>
       <BeaconSearchResults />
       <BeaconQueryFormUi
-        isFetchingQueryResponse={isFetchingQueryResponse}
+        isFetchingQueryResponse={queryResponseStatus === RequestStatus.Pending}
         isNetworkQuery={false}
         beaconAssemblyIds={beaconAssemblyIds}
         querySections={querySections}
