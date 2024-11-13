@@ -3,13 +3,14 @@ import { Row } from 'antd';
 
 import { useMetadata } from '@/features/metadata/hooks';
 import type { Dataset } from '@/types/metadata';
+import { RequestStatus } from '@/types/requests';
 
 import DatasetProvenance from './DatasetProvenance';
 
 const ProvenanceTab = () => {
   const {
     projects,
-    isFetching: loading,
+    projectsStatus,
     selectedScope: { scope },
   } = useMetadata();
 
@@ -24,7 +25,7 @@ const ProvenanceTab = () => {
   return (
     <Row justify="center">
       {datasets.map((dataset, i) => (
-        <DatasetProvenance key={i} dataset={dataset} loading={loading} />
+        <DatasetProvenance key={i} dataset={dataset} loading={projectsStatus === RequestStatus.Pending} />
       ))}
     </Row>
   );

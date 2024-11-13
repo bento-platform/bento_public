@@ -10,6 +10,7 @@ import { type DiscoveryScope, markScopeSet, selectScope } from '@/features/metad
 
 import Loader from '@/components/Loader';
 import DefaultLayout from '@/components/Util/DefaultLayout';
+import { RequestStatus } from '@/types/requests';
 import { BentoRoute } from '@/types/routes';
 import { scopeEqual, validProjectDataset } from '@/utils/router';
 
@@ -24,10 +25,10 @@ const ScopedRoute = () => {
   const { projectId, datasetId } = useParams();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { selectedScope, projects, hasAttempted: hasAttemptedProjects } = useMetadata();
+  const { selectedScope, projects, projectsStatus } = useMetadata();
 
   useEffect(() => {
-    if (!hasAttemptedProjects) return; // Wait for projects to load first
+    if ([RequestStatus.Idle, RequestStatus.Pending].includes(projectsStatus)) return; // Wait for projects to load first
 
     // Update selectedScope based on URL parameters
     const valid = validProjectDataset(projects, { project: projectId, dataset: datasetId });
@@ -63,7 +64,7 @@ const ScopedRoute = () => {
     }
     const newPathString = '/' + newPath.join('/');
     navigate(newPathString, { replace: true });
-  }, [hasAttemptedProjects, projects, projectId, datasetId, dispatch, navigate, selectedScope]);
+  }, [projects, projectsStatus, projectId, datasetId, dispatch, navigate, selectedScope]);
 
   return <Outlet />;
 };
@@ -72,8 +73,8 @@ const BentoAppRouter = () => {
   const dispatch = useAppDispatch();
   const { isAutoAuthenticating } = useAutoAuthenticate();
   const isAuthenticated = useIsAuthenticated();
-  const { isFetching: isFetchingProjects } = useMetadata();
 
+  const { projectsStatus } = useMetadata();
   const { scopeSet, scope } = useSelectedScope();
   const lastAuthz = useRef<boolean>(!!isAuthenticated);
   const lastScope = useRef<DiscoveryScope | null>(null);
@@ -90,7 +91,7 @@ const BentoAppRouter = () => {
     }
   }, [dispatch, isAuthenticated, scopeSet, scope]);
 
-  if (isAutoAuthenticating || isFetchingProjects) {
+  if (isAutoAuthenticating || projectsStatus === RequestStatus.Pending) {
     return <Loader />;
   }
 
