@@ -13,6 +13,7 @@ import Counts from './Counts';
 import LastIngestionInfo from './LastIngestion';
 import Loader from '@/components/Loader';
 import Dataset from '@/components/Provenance/Dataset';
+import { RequestStatus } from '@/types/requests';
 
 import { useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
 import { useTranslation } from 'react-i18next';
@@ -28,7 +29,7 @@ const PublicOverview = () => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [aboutContent, setAboutContent] = useState('');
 
-  const { isFetchingAbout, about } = useContent();
+  const { status: aboutStatus, about } = useContent();
   const { isFetchingData: isFetchingOverviewData, sections } = useData();
 
   const selectedProject = useSelectedProject();
@@ -60,7 +61,7 @@ const PublicOverview = () => {
   ) : (
     <>
       <Card style={ABOUT_CARD_STYLE}>
-        {isFetchingAbout ? (
+        {aboutStatus === RequestStatus.Idle || aboutStatus === RequestStatus.Pending ? (
           <Skeleton title={false} paragraph={{ rows: 2 }} />
         ) : (
           <div className="about-content" dangerouslySetInnerHTML={{ __html: aboutContent }} />
