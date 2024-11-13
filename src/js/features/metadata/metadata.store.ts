@@ -53,7 +53,7 @@ export const getProjects = createAsyncThunk<
       const { projectsStatus } = getState().metadata;
       const cond = projectsStatus === RequestStatus.Idle;
       if (!cond) console.debug(`getProjects() was attempted, but a prior attempt gave status: ${projectsStatus}`);
-      return getState().metadata.projectsStatus === RequestStatus.Idle;
+      return cond;
     },
   }
 );
