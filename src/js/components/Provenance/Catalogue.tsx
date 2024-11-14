@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Space } from 'antd';
+import { Space } from 'antd';
 import demoData from '../../../public/data/dataset_catalogue_demo.json';
 import CatalogueCard from '@/components/Provenance/CatalogueCard';
 
@@ -30,15 +30,9 @@ const { projects } = demoData as ProjectsData;
 
 const Catalogue = () => {
   return (
-    <Space direction="vertical">
+    <Space direction="vertical" style={{ width: '100%' }}>
       {projects.map((project) => (
-        <Card title={project.name} key={project.name}>
-          {project.datasets.map((dataset) => (
-            <Card title={dataset.name} key={dataset.name}>
-              {dataset.description}
-            </Card>
-          ))}
-        </Card>
+        <CatalogueCard project={project} key={project.name} />
       ))}
     </Space>
   );
