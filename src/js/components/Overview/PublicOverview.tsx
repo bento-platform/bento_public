@@ -18,6 +18,7 @@ import { useAppSelector } from '@/hooks';
 import { useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
 import { useTranslation } from 'react-i18next';
 import { RequestStatus } from '@/types/requests';
+import Catalogue from '@/components/Provenance/Catalogue';
 
 const ABOUT_CARD_STYLE = { width: '100%', maxWidth: '1390px', borderRadius: '11pX', ...BOX_SHADOW };
 const MANAGE_CHARTS_BUTTON_STYLE = { right: '5em', bottom: '1.5em', transform: 'scale(125%)' };
@@ -58,6 +59,8 @@ const PublicOverview = () => {
     // When we close the drawer, save any changes to localStorage. This helps ensure width gets saved:
     saveToLocalStorage(sections);
   }, [sections]);
+
+  if (!selectedProject) return <Catalogue />;
 
   return !isContentPopulated || isFetchingOverviewData ? (
     <Loader />
