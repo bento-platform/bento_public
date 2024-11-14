@@ -4,6 +4,7 @@ import { LeftOutlined } from '@ant-design/icons';
 import { PieChart } from 'bento-charts';
 
 import { PORTAL_URL } from '@/config';
+import { T_PLURAL_COUNT, T_SINGULAR_COUNT } from '@/constants/i18n';
 import { BOX_SHADOW, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
 import { useTranslationFn } from '@/hooks';
 import type { DiscoveryResults } from '@/types/data';
@@ -33,7 +34,7 @@ const SearchResultsPane = ({
     () => [
       {
         dataIndex: 'id',
-        title: t('entities.individual', { count: 1 }),
+        title: t('entities.individual', T_SINGULAR_COUNT),
         render: (id: string) => (
           <a href={`${PORTAL_URL}/data/explorer/individuals/${id}`} target="_blank" rel="noreferrer">
             {id}
@@ -85,9 +86,7 @@ const SearchResultsPane = ({
             <>
               <Col xs={24} lg={10}>
                 <Typography.Title level={5} style={{ marginTop: 0 }}>
-                  {/* false count – just need the highest form of plural
-                       - see https://www.i18next.com/translation-function/plurals */}
-                  {t('entities.biosample', { count: 100 })}
+                  {t('entities.biosample', T_PLURAL_COUNT)}
                 </Typography.Title>
                 {!hasInsufficientData && biosampleChartData.length ? (
                   <PieChart data={biosampleChartData} height={PIE_CHART_HEIGHT} sort={true} dataMap={translateMap} />
@@ -97,9 +96,7 @@ const SearchResultsPane = ({
               </Col>
               <Col xs={24} lg={10}>
                 <Typography.Title level={5} style={{ marginTop: 0 }}>
-                  {/* false count – just need the highest form of plural
-                       - see https://www.i18next.com/translation-function/plurals */}
-                  {t('entities.experiment', { count: 100 })}
+                  {t('entities.experiment', T_PLURAL_COUNT)}
                 </Typography.Title>
                 {!hasInsufficientData && experimentChartData.length ? (
                   <PieChart data={experimentChartData} height={PIE_CHART_HEIGHT} sort={true} dataMap={translateMap} />

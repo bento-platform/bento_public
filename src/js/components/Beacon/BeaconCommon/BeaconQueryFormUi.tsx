@@ -26,6 +26,7 @@ import {
   BUTTON_STYLE,
   CARD_STYLES,
 } from '@/constants/beaconConstants';
+import { T_PLURAL_COUNT } from '@/constants/i18n';
 
 const STARTER_FILTER = { index: 1, active: true };
 const VARIANTS_FORM_ERROR_MESSAGE =
@@ -233,7 +234,7 @@ const BeaconQueryFormUi = ({
             {hasVariants && (
               <Col xs={24} lg={12}>
                 <Card
-                  title={t('entities.variant', { count: 100 })} // false count – just need the highest form of plural
+                  title={t('entities.variant', T_PLURAL_COUNT)}
                   style={CARD_STYLE}
                   styles={CARD_STYLES}
                   extra={

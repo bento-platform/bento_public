@@ -4,6 +4,7 @@ import { InfoCircleOutlined, TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
 
 import ExpSvg from '../Util/ExpSvg';
+import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { BOX_SHADOW, COUNTS_FILL } from '@/constants/overviewConstants';
 import { useAppSelector, useTranslationFn } from '@/hooks';
 
@@ -49,9 +50,7 @@ const Counts = () => {
       <Typography.Title level={3}>{t('Counts')}</Typography.Title>
       <Space wrap>
         {data.map(({ entity, help, icon, count }, i) => {
-          // false count – just need the highest form of plural
-          //  - see https://www.i18next.com/translation-function/plurals
-          const title = t(`entities.${entity}`, { count: 100 });
+          const title = t(`entities.${entity}`, T_PLURAL_COUNT);
           return (
             <Card key={i} style={{ ...styles.countCard, height: isFetchingData ? 138 : 114 }}>
               <Statistic

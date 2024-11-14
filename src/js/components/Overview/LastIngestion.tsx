@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useAppSelector } from '@/hooks';
 
 import type { LastIngestionDataTypeResponse } from '@/types/lastIngestionDataTypeResponse';
+import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { BOX_SHADOW } from '@/constants/overviewConstants';
 
 const LastIngestionInfo: React.FC = () => {
@@ -47,9 +48,7 @@ const LastIngestionInfo: React.FC = () => {
             <Card style={BOX_SHADOW} key={dataType.id}>
               <Space direction="vertical">
                 <Typography.Text style={{ color: 'rgba(0,0,0,0.45)' }}>
-                  {/* false count – just need the highest form of plural
-                       - see https://www.i18next.com/translation-function/plurals */}
-                  {t(`entities.${dataType.id}`, { count: 100 })}
+                  {t(`entities.${dataType.id}`, T_PLURAL_COUNT)}
                 </Typography.Text>
                 <Typography.Text>
                   <CalendarOutlined />{' '}

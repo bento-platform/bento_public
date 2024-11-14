@@ -3,6 +3,7 @@ import { Skeleton, Space, Statistic } from 'antd';
 import { TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
 
+import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { COUNTS_FILL } from '@/constants/overviewConstants';
 import { NO_RESULTS_DASHES } from '@/constants/searchConstants';
 import ExpSvg from '@/components/Util/ExpSvg';
@@ -58,7 +59,7 @@ const SearchResultsCounts = ({
             ].join(' ')}
           >
             <Statistic
-              title={t('entities.individual', { count: 100 })} // false count – just need the highest form of plural
+              title={t('entities.individual', T_PLURAL_COUNT)}
               value={
                 hasInsufficientData
                   ? t(message ?? '')
@@ -71,13 +72,13 @@ const SearchResultsCounts = ({
             />
           </div>
           <Statistic
-            title={t('entities.biosample', { count: 100 })} // false count – just need the highest form of plural
+            title={t('entities.biosample', T_PLURAL_COUNT)}
             value={hasInsufficientData || (isBeaconNetwork && !biosampleCount) ? NO_RESULTS_DASHES : biosampleCount}
             valueStyle={STAT_STYLE}
             prefix={<BiDna />}
           />
           <Statistic
-            title={t('entities.experiment', { count: 100 })} // false count – just need the highest form of plural
+            title={t('entities.experiment', T_PLURAL_COUNT)}
             value={hasInsufficientData || (isBeaconNetwork && !experimentCount) ? NO_RESULTS_DASHES : experimentCount}
             valueStyle={STAT_STYLE}
             prefix={<ExpSvg />}
