@@ -10,7 +10,6 @@
     "phenopacket_other": "Clinical Data",
     "individual_one": "Individual",
     "individual_other": "Individuals",
-    "Individual": "Individual",
     "individual_help_1": "Individuals represent a specific person / organism, and may have one or multiple associated biosamples, each with associated experiments.",
     "biosample_one": "Biosample",
     "biosample_other": "Biosamples",
