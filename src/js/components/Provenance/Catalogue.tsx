@@ -1,7 +1,9 @@
 import React from 'react';
+import { Space } from 'antd';
+import demoData from '../../../public/data/dataset_catalogue_demo.json';
 
 const Catalogue = () => {
-  return <div>This is the catalogue</div>;
+  return <Space>{JSON.stringify(demoData)}</Space>;
 };
 
 export default Catalogue;
