@@ -5,9 +5,9 @@ import { CalendarOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 
 import { useAppSelector } from '@/hooks';
-import { getDataTypeLabel } from '@/types/dataTypes';
 
 import type { LastIngestionDataTypeResponse } from '@/types/lastIngestionDataTypeResponse';
+import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { BOX_SHADOW } from '@/constants/overviewConstants';
 
 const LastIngestionInfo: React.FC = () => {
@@ -48,7 +48,7 @@ const LastIngestionInfo: React.FC = () => {
             <Card style={BOX_SHADOW} key={dataType.id}>
               <Space direction="vertical">
                 <Typography.Text style={{ color: 'rgba(0,0,0,0.45)' }}>
-                  {t(getDataTypeLabel(dataType.id))}
+                  {t(`entities.${dataType.id}`, T_PLURAL_COUNT)}
                 </Typography.Text>
                 <Typography.Text>
                   <CalendarOutlined />{' '}

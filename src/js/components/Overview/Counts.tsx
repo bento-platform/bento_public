@@ -4,6 +4,7 @@ import { InfoCircleOutlined, TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
 
 import ExpSvg from '../Util/ExpSvg';
+import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { BOX_SHADOW, COUNTS_FILL } from '@/constants/overviewConstants';
 import { useAppSelector, useTranslationFn } from '@/hooks';
 
@@ -25,19 +26,19 @@ const Counts = () => {
   // Break down help into multiple sentences inside an array to make translation a bit easier.
   const data = [
     {
-      title: 'Individuals',
+      entity: 'individual',
       help: ['individual_help_1'],
       icon: <TeamOutlined />,
       count: counts.individuals,
     },
     {
-      title: 'Biosamples',
+      entity: 'biosample',
       help: ['biosample_help_1'],
       icon: <BiDna />,
       count: counts.biosamples,
     },
     {
-      title: 'Experiments',
+      entity: 'experiment',
       help: ['experiment_help_1', 'experiment_help_2'],
       icon: <ExpSvg />,
       count: counts.experiments,
@@ -48,17 +49,17 @@ const Counts = () => {
     <>
       <Typography.Title level={3}>{t('Counts')}</Typography.Title>
       <Space wrap>
-        {data.map(({ title, help, icon, count }, i) => {
-          const titleTransl = t(`entities.${title}`);
+        {data.map(({ entity, help, icon, count }, i) => {
+          const title = t(`entities.${entity}`, T_PLURAL_COUNT);
           return (
             <Card key={i} style={{ ...styles.countCard, height: isFetchingData ? 138 : 114 }}>
               <Statistic
                 title={
                   <Space>
-                    {titleTransl}
+                    {title}
                     {help && (
                       <Popover
-                        title={titleTransl}
+                        title={title}
                         content={
                           <CountsHelp>
                             {help.map((h, i) => (
