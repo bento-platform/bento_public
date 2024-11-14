@@ -3,7 +3,7 @@ import { Space } from 'antd';
 import demoData from '../../../public/data/dataset_catalogue_demo.json';
 import CatalogueCard from '@/components/Provenance/CatalogueCard';
 
-type Dataset = {
+export type Dataset = {
   name: string;
   description: string;
   samples: string;
