@@ -2,7 +2,12 @@ import React from 'react';
 import { Card, Flex, Space, Tag, Typography } from 'antd';
 import { Project } from '@/components/Provenance/Catalogue';
 
+const MAX_KEYWORDS = 3;
+
 const CatalogueCard = ({ project }: { project: Project }) => {
+  const keywords = project.keywords.slice(0, MAX_KEYWORDS);
+  const extraKeywordCount = Math.max(project.keywords.length - MAX_KEYWORDS, 0);
+
   return (
     <Card key={project.name}>
       <Flex justify="space-between">
@@ -11,11 +16,12 @@ const CatalogueCard = ({ project }: { project: Project }) => {
             <Typography.Title level={4}>{project.name}</Typography.Title>
             <Typography.Text>{project.description}</Typography.Text>
             <div>
-              {project.keywords.map((kw) => (
+              {keywords.map((kw) => (
                 <Tag key={kw} color="blue">
                   {kw}
                 </Tag>
               ))}
+              {extraKeywordCount !== 0 && <Typography.Text>+{extraKeywordCount} more</Typography.Text>}
             </div>
           </Space>
         </div>
