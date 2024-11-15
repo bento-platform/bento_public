@@ -16,6 +16,7 @@ const config = {
     publicPath: '/',
     // filename: "js/bundle.js",
     filename: 'js/[name][chunkhash].js',
+    clean: true,
   },
   module: {
     rules: [
