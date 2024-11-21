@@ -1,6 +1,6 @@
 import React from 'react';
 import { Space } from 'antd';
-import CatalogueCard from '@/components/Provenance/CatalogueCard';
+import CatalogueCard from '@/components/Provenance/Catalogue/CatalogueCard';
 import { useMetadata } from '@/features/metadata/hooks';
 
 const Catalogue = () => {
