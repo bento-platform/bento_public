@@ -6,7 +6,7 @@ export const stringToBoolean = (s: string | undefined) =>
 export const stringIsDOI = (s: string) => !!s.match(DOI_PATTERN);
 export const stringIsURL = (s: string) => !!s.match(URL_PATTERN);
 
-export const ISODateToString = (d: string) =>
+export const isoDateToString = (d: string) =>
   new Date(d).toLocaleString('en-US', {
     year: 'numeric',
     month: 'long',

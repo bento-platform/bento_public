@@ -1,7 +1,7 @@
 import { Card, Carousel, Descriptions, Flex, Space, Tag, Typography } from 'antd';
 import CatalogueCarouselDataset from '@/components/Provenance/Catalogue/CatalogueCarouselDataset';
 import type { Project } from '@/types/metadata';
-import { ISODateToString } from '@/utils/strings';
+import { isoDateToString } from '@/utils/strings';
 
 const { Paragraph } = Typography;
 
@@ -34,10 +34,10 @@ const CatalogueCard = ({ project }: { project: Project }) => {
         <Paragraph
           ellipsis={{
             rows: 1,
-            tooltip: { title: ISODateToString(project.created) },
+            tooltip: { title: isoDateToString(project.created) },
           }}
         >
-          {ISODateToString(project.created)}
+          {isoDateToString(project.created)}
         </Paragraph>
       ),
       span: 1.5,
@@ -46,8 +46,8 @@ const CatalogueCard = ({ project }: { project: Project }) => {
       key: '2',
       label: 'Updated',
       children: (
-        <Paragraph ellipsis={{ rows: 1, tooltip: { title: ISODateToString(project.updated) } }}>
-          {ISODateToString(project.updated)}
+        <Paragraph ellipsis={{ rows: 1, tooltip: { title: isoDateToString(project.updated) } }}>
+          {isoDateToString(project.updated)}
         </Paragraph>
       ),
       span: 1.5,
