@@ -91,7 +91,7 @@ const VariantsForm = ({ beaconAssemblyIds }: VariantsFormProps) => {
     referenceName: {
       name: 'Chromosome',
       rules: [{ message: t('Select a chromosome') }],
-      placeholder: '',
+      placeholder: !currentAssemblyID ? t('Select an assembly…') : '',
       initialValue: '',
     },
     start: {
