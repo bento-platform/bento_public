@@ -130,7 +130,7 @@ const VariantsForm = ({ beaconAssemblyIds }: VariantsFormProps) => {
           <VariantInput
             field={formFields.referenceName}
             disabled={variantsError || !currentAssemblyID}
-            mode={currentAssemblyID ? { type: 'select', options: availableContigs } : { type: 'input' }}
+            mode={availableContigs.length ? { type: 'select', options: availableContigs } : { type: 'input' }}
           />
         </Col>
         <Col span={8}>
