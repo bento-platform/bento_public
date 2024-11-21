@@ -85,7 +85,7 @@ const CatalogueCard = ({ project }: { project: Project }) => {
           <Typography.Title level={4} style={{ marginTop: 0 }}>
             Datasets
           </Typography.Title>
-          <Carousel arrows autoplay style={{ border: '1px solid lightgray', borderRadius: '7px' }}>
+          <Carousel arrows style={{ border: '1px solid lightgray', borderRadius: '7px' }}>
             {project.datasets.map((d) => (
               <CatalogueCarouselDataset key={d.identifier} dataset={d} />
             ))}
