@@ -2,16 +2,19 @@ import { Card, Carousel, Descriptions, Flex, Space, Tag, Typography } from 'antd
 import CatalogueCarouselDataset from '@/components/Provenance/Catalogue/CatalogueCarouselDataset';
 import type { Project } from '@/types/metadata';
 import { isoDateToString } from '@/utils/strings';
+import { useTranslationFn } from '@/hooks';
 
 const { Paragraph } = Typography;
 
 const MAX_CHARACTERS = 50;
 
 const CatalogueCard = ({ project }: { project: Project }) => {
+  const t = useTranslationFn();
+
   const keywords = project.datasets
     .map((d) => d.dats_file.keywords ?? [])
     .flat()
-    .map((k) => k.value as string);
+    .map((k) => t(k.value as string));
 
   let totalCharacters = 0;
   const selectedKeywords = [];
@@ -29,7 +32,7 @@ const CatalogueCard = ({ project }: { project: Project }) => {
   const projectInfo = [
     {
       key: '1',
-      label: 'Created',
+      label: t('Created'),
       children: (
         <Paragraph
           ellipsis={{
@@ -44,7 +47,7 @@ const CatalogueCard = ({ project }: { project: Project }) => {
     },
     {
       key: '2',
-      label: 'Updated',
+      label: t('Updated'),
       children: (
         <Paragraph ellipsis={{ rows: 1, tooltip: { title: isoDateToString(project.updated) } }}>
           {isoDateToString(project.updated)}
@@ -60,15 +63,15 @@ const CatalogueCard = ({ project }: { project: Project }) => {
         <div style={{ width: '50%', paddingRight: '10px' }}>
           <Space direction="vertical">
             <Typography.Title level={5} style={{ marginTop: 0 }}>
-              {project.title}
+              {t(project.title)}
             </Typography.Title>
             <Typography.Paragraph
               ellipsis={{
                 rows: 3,
-                tooltip: { title: project.description },
+                tooltip: { title: t(project.description) },
               }}
             >
-              {project.description}
+              {t(project.description)}
             </Typography.Paragraph>
             <div>
               {selectedKeywords.map((kw) => (
@@ -83,7 +86,7 @@ const CatalogueCard = ({ project }: { project: Project }) => {
         </div>
         <div style={{ width: '50%', maxWidth: '600px' }}>
           <Typography.Title level={4} style={{ marginTop: 0 }}>
-            Datasets
+            {t('Datasets')}
           </Typography.Title>
           <Carousel arrows style={{ border: '1px solid lightgray', borderRadius: '7px' }}>
             {project.datasets.map((d) => (
