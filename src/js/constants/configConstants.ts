@@ -1,4 +1,4 @@
-import { PORTAL_URL } from '@/config';
+import { PUBLIC_URL_NO_TRAILING_SLASH, PORTAL_URL } from '@/config';
 
 export const MAX_CHARTS = 3;
 
@@ -9,6 +9,8 @@ export const katsuPublicSearchUrl = `${PORTAL_URL}/api/metadata/api/public`;
 export const projectsUrl = `${PORTAL_URL}/api/metadata/api/projects`;
 export const katsuLastIngestionsUrl = `${PORTAL_URL}/api/metadata/data-types`;
 export const gohanLastIngestionsUrl = `${PORTAL_URL}/api/gohan/data-types`;
+
+export const referenceGenomesUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/reference/genomes`;
 
 export const DEFAULT_TRANSLATION = 'default_translation';
 export const CUSTOMIZABLE_TRANSLATION = 'translation';

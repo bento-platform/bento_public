@@ -13,6 +13,7 @@ import lastIngestionDataReducer from '@/features/ingestion/lastIngestion.store';
 import beaconReducer from './features/beacon/beacon.store';
 import beaconNetworkReducer from './features/beacon/network.store';
 import metadataReducer from '@/features/metadata/metadata.store';
+import reference from '@/features/reference/reference.store';
 import { getValue, saveValue } from './utils/localStorage';
 
 interface PersistedState {
@@ -39,6 +40,7 @@ export const store = configureStore({
     beacon: beaconReducer,
     beaconNetwork: beaconNetworkReducer,
     metadata: metadataReducer,
+    reference,
   },
   preloadedState: persistedState,
 });
