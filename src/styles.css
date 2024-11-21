@@ -119,6 +119,14 @@ body {
   gap: 20px;
 }
 
+.slick-arrow {
+  color: black !important; /* override slick-next/slick-prev color */
+}
+
+.slick-dots li button{
+  background-color: black !important; /* override slick-dots color */
+}
+
 /* END search results pane */
 
 
@@ -138,3 +146,4 @@ body {
     gap: 8px;
   }
 }
+

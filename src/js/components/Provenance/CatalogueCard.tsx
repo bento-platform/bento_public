@@ -1,7 +1,7 @@
 import React from 'react';
-import { Card, Descriptions, Flex, Space, Tag, Typography } from 'antd';
+import { Card, Carousel, Descriptions, Flex, Space, Tag, Typography } from 'antd';
 import { Project } from '@/components/Provenance/Catalogue';
-import CatalogueDatasetCard from '@/components/Provenance/Tables/CatalogueDatasetCard';
+import CatalogueCarouselDataset from '@/components/Provenance/CatalogueCarouselDataset';
 
 const MAX_KEYWORDS = 3;
 
@@ -17,7 +17,7 @@ const CatalogueCard = ({ project }: { project: Project }) => {
   ];
 
   return (
-    <Card key={project.name} style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.05)', height: '275px' }}>
+    <Card key={project.name} style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.05)', height: '260px' }}>
       <Flex justify="space-between">
         <div style={{ width: '50%' }}>
           <Space direction="vertical">
@@ -36,26 +36,15 @@ const CatalogueCard = ({ project }: { project: Project }) => {
             </div>
           </Space>
         </div>
-        <div style={{ width: '50%' }}>
-          <div
-            style={{
-              width: '100%',
-              height: '100%',
-              backgroundColor: 'lightgray',
-              borderRadius: '11px',
-              padding: '0 10px',
-            }}
-          >
-            <Space
-              direction="horizontal"
-              style={{ overflowX: 'scroll', overflowY: 'hidden', width: '100%', height: '100%' }}
-              align="center"
-            >
-              {project.datasets.map((d) => (
-                <CatalogueDatasetCard key={d.name} dataset={d} />
-              ))}
-            </Space>
-          </div>
+        <div style={{ width: '50%', maxWidth: '600px' }}>
+          <Typography.Title level={4} style={{ marginTop: 0 }}>
+            Datasets
+          </Typography.Title>
+          <Carousel arrows autoplay style={{ border: '1px solid lightgray', borderRadius: '7px' }}>
+            {project.datasets.map((d) => (
+              <CatalogueCarouselDataset key={d.name} dataset={d} />
+            ))}
+          </Carousel>
         </div>
       </Flex>
     </Card>
