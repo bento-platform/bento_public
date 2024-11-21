@@ -8,7 +8,9 @@ const CatalogueCarouselDataset = ({ dataset }: { dataset: Dataset }) => {
       <Typography.Title level={5} style={{ marginTop: 0 }}>
         {dataset.title}
       </Typography.Title>
-      <Typography.Paragraph ellipsis={{ rows: 4 }}>{dataset.description}</Typography.Paragraph>
+      <Typography.Paragraph ellipsis={{ rows: 4, tooltip: { title: dataset.description } }}>
+        {dataset.description}
+      </Typography.Paragraph>
     </Card>
   );
 };

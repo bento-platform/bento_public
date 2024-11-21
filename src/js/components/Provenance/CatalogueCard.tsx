@@ -63,7 +63,14 @@ const CatalogueCard = ({ project }: { project: Project }) => {
             <Typography.Title level={5} style={{ marginTop: 0 }}>
               {project.title}
             </Typography.Title>
-            <Typography.Paragraph ellipsis={{ rows: 3 }}>{project.description}</Typography.Paragraph>
+            <Typography.Paragraph
+              ellipsis={{
+                rows: 3,
+                tooltip: { title: project.description },
+              }}
+            >
+              {project.description}
+            </Typography.Paragraph>
             <div>
               {selectedKeywords.map((kw) => (
                 <Tag key={kw} color="blue">
