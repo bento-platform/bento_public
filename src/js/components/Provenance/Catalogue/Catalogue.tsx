@@ -7,7 +7,7 @@ const Catalogue = () => {
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
       {projects.map((project) => (
-        <CatalogueCard project={project} key={project.title} />
+        <CatalogueCard project={project} key={project.identifier} />
       ))}
     </Space>
   );

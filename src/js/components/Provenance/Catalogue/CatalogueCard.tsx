@@ -55,7 +55,7 @@ const CatalogueCard = ({ project }: { project: Project }) => {
   ];
 
   return (
-    <Card key={project.title} style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.05)', height: '260px' }}>
+    <Card key={project.identifier} style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.05)', height: '260px' }}>
       <Flex justify="space-between">
         <div style={{ width: '50%', paddingRight: '10px' }}>
           <Space direction="vertical">
@@ -87,7 +87,7 @@ const CatalogueCard = ({ project }: { project: Project }) => {
           </Typography.Title>
           <Carousel arrows autoplay style={{ border: '1px solid lightgray', borderRadius: '7px' }}>
             {project.datasets.map((d) => (
-              <CatalogueCarouselDataset key={d.title} dataset={d} />
+              <CatalogueCarouselDataset key={d.identifier} dataset={d} />
             ))}
           </Carousel>
         </div>
