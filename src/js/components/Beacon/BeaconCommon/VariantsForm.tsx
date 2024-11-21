@@ -1,22 +1,60 @@
-import type { CSSProperties } from 'react';
-import { Col, Row } from 'antd';
+import { type CSSProperties, useEffect, useMemo } from 'react';
+
+import { Col, Form, Row } from 'antd';
+import type { DefaultOptionType } from 'antd/es/select/index';
+
+import { useTranslationFn } from '@/hooks';
+import { useReference } from '@/features/reference/hooks';
+import type { Contig } from '@/features/reference/types';
+import type { BeaconAssemblyIds } from '@/types/beacon';
+
 import VariantInput from './VariantInput';
 import AssemblyIdSelect from './AssemblyIdSelect';
-import { useTranslationFn } from '@/hooks';
-import type { BeaconAssemblyIds } from '@/types/beacon';
+
+type ContigOptionType = DefaultOptionType & { value: string };
 
 // form state has to be one of these:
 // empty (except for autofilled assemblyID)
 // chrom, start, assemblyID, end
 // chrom, start, assemblyID, ref, alt
 
-// forgiving chromosome regex
-// accepts X, Y, etc. and any one- or two-digit non-zero number
-// note that, eg, polar bears have 37 pairs of chromosomes...
-const CHROMOSOME_REGEX = /^([1-9][0-9]?|X|x|Y|y|M|m|MT|mt)$/;
-
 const NUCLEOTIDES_REGEX = /^([acgtnACGTN])*$/;
-const DIGITS_REGEX = /^[0-9]+$/;
+const DIGITS_REGEX = /^\d+$/;
+
+const HUMAN_LIKE_CONTIG_REGEX = /^(?:chr)?(\d+|X|Y|M)$/;
+const HUMAN_LIKE_EXCLUDE_CONTIG_REGEX = /^(?:chr)?(\d+|X|Y|M|Un)_.+$/;
+
+const contigToOption = (c: Contig): ContigOptionType => ({ value: c.name });
+
+const contigOptionSort = (a: ContigOptionType, b: ContigOptionType) => {
+  const aMatch = a.value.match(HUMAN_LIKE_CONTIG_REGEX);
+  const bMatch = b.value.match(HUMAN_LIKE_CONTIG_REGEX);
+  if (aMatch) {
+    if (bMatch) {
+      const aNoPrefix = aMatch[1];
+      const bNoPrefix = bMatch[1];
+      const aNumeric = !!aNoPrefix.match(DIGITS_REGEX);
+      const bNumeric = !!bNoPrefix.match(DIGITS_REGEX);
+      if (aNumeric) {
+        if (bNumeric) {
+          return parseInt(aNoPrefix, 10) - parseInt(bNoPrefix, 10);
+        } else {
+          return -1;
+        }
+      } else if (bNumeric) {
+        return 1;
+      } else {
+        return aNoPrefix.localeCompare(bNoPrefix);
+      }
+    } else {
+      // chr## type contigs put before other types
+      return -1;
+    }
+  }
+  return a.value.localeCompare(b.value);
+};
+
+const filterOutHumanLikeExtraContigs = (opt: ContigOptionType) => !opt.value.match(HUMAN_LIKE_EXCLUDE_CONTIG_REGEX);
 
 const FORM_STYLE: CSSProperties = {
   display: 'flex',
@@ -26,12 +64,34 @@ const FORM_STYLE: CSSProperties = {
 const FORM_ROW_GUTTER: [number, number] = [12, 0];
 
 const VariantsForm = ({ beaconAssemblyIds }: VariantsFormProps) => {
+  const { genomesByID } = useReference();
+
+  // Pick up form context from outside
+  const form = Form.useFormInstance();
+  const currentAssemblyID = Form.useWatch('Assembly ID', form);
+
+  const availableContigs = useMemo<ContigOptionType[]>(
+    () =>
+      currentAssemblyID && genomesByID[currentAssemblyID]
+        ? genomesByID[currentAssemblyID].contigs
+            .map(contigToOption)
+            .sort(contigOptionSort)
+            .filter(filterOutHumanLikeExtraContigs)
+        : [],
+    [currentAssemblyID, genomesByID]
+  );
+
+  useEffect(() => {
+    // Clear contig value when list of available contigs changes:
+    form.setFieldValue('Chromosome', '');
+  }, [form, availableContigs]);
+
   const t = useTranslationFn();
   const formFields = {
     referenceName: {
       name: 'Chromosome',
-      rules: [{ pattern: CHROMOSOME_REGEX, message: t('Enter a chromosome name, e.g.: "17" or "X"') }],
-      placeholder: '1-22, X, Y, M',
+      rules: [{ message: t('Select a chromosome') }],
+      placeholder: '',
       initialValue: '',
     },
     start: {
@@ -67,7 +127,11 @@ const VariantsForm = ({ beaconAssemblyIds }: VariantsFormProps) => {
     <div style={FORM_STYLE}>
       <Row gutter={FORM_ROW_GUTTER}>
         <Col span={8}>
-          <VariantInput field={formFields.referenceName} disabled={variantsError} />
+          <VariantInput
+            field={formFields.referenceName}
+            disabled={variantsError || !currentAssemblyID}
+            mode={currentAssemblyID ? { type: 'select', options: availableContigs } : { type: 'input' }}
+          />
         </Col>
         <Col span={8}>
           <VariantInput field={formFields.start} disabled={variantsError} />

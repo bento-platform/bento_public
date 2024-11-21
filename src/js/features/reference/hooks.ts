@@ -1,8 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useAuthorizationHeader } from 'bento-auth-js';
 import { referenceGenomesUrl } from '@/constants/configConstants';
+import { useAppSelector } from '@/hooks';
 import { RequestStatus } from '@/types/requests';
 import type { GenomeFeature } from './types';
+
+export const useReference = () => {
+  return useAppSelector((state) => state.reference);
+};
 
 export const useGeneNameSearch = (referenceGenomeID: string | undefined, nameQuery: string | null | undefined) => {
   const authHeader = useAuthorizationHeader();
