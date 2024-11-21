@@ -1,4 +1,3 @@
-import React from 'react';
 import { Card, Carousel, Descriptions, Flex, Space, Tag, Typography } from 'antd';
 import CatalogueCarouselDataset from '@/components/Provenance/Catalogue/CatalogueCarouselDataset';
 import type { Project } from '@/types/metadata';
