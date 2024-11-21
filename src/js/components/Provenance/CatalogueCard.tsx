@@ -24,7 +24,7 @@ const CatalogueCard = ({ project }: { project: Project }) => {
             <Typography.Title level={5} style={{ marginTop: 0 }}>
               {project.name}
             </Typography.Title>
-            <Typography.Text>{project.description}</Typography.Text>
+            <Typography.Paragraph ellipsis={{ rows: 3 }}>{project.description}</Typography.Paragraph>
             <div>
               {keywords.map((kw) => (
                 <Tag key={kw} color="blue">
