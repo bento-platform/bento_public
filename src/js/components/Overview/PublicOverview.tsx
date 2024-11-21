@@ -16,7 +16,7 @@ import Dataset from '@/components/Provenance/Dataset';
 import Catalogue from '@/components/Provenance/Catalogue/Catalogue';
 
 import { useAppSelector } from '@/hooks';
-import { useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
+import { useMetadata, useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
 import { useTranslation } from 'react-i18next';
 import { RequestStatus } from '@/types/requests';
 
@@ -38,6 +38,7 @@ const PublicOverview = () => {
 
   const selectedProject = useSelectedProject();
   const { scope } = useSelectedScope();
+  const { projects } = useMetadata();
 
   useEffect(() => {
     // Save sections to localStorage when they change
@@ -60,7 +61,7 @@ const PublicOverview = () => {
     saveToLocalStorage(sections);
   }, [sections]);
 
-  if (!selectedProject) return <Catalogue />;
+  if (!selectedProject && projects.length > 1) return <Catalogue />;
 
   return !isContentPopulated || isFetchingOverviewData ? (
     <Loader />
