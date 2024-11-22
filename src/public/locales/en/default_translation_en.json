@@ -10,14 +10,20 @@
     "phenopacket_other": "Clinical Data",
     "individual_one": "Individual",
     "individual_other": "Individuals",
-    "individual_help_1": "Individuals represent a specific person / organism, and may have one or multiple associated biosamples, each with associated experiments.",
+    "individual_help": [
+      "Individuals represent a specific person / organism, and may have one or multiple associated biosamples, each with associated experiments."
+    ],
     "biosample_one": "Biosample",
     "biosample_other": "Biosamples",
-    "biosample_help_1": "Biosamples are usually biological material extracted from a specific individual.",
+    "biosample_help": [
+      "Biosamples are usually biological material extracted from a specific individual."
+    ],
     "experiment_one": "Experiment",
     "experiment_other": "Experiments",
-    "experiment_help_1": "Experiments are a process done to a specific sample, e.g., whole-genome sequencing.",
-    "experiment_help_2": "One lab experiment may result in multiple experiment records inside the portal, such as with multiplexed samples.",
+    "experiment_help": [
+      "Experiments are a process done to a specific sample, e.g., whole-genome sequencing.",
+      "One lab experiment may result in multiple experiment records inside the portal, such as with multiplexed samples."
+    ],
     "variant_one": "Variant",
     "variant_other": "Variants"
   },

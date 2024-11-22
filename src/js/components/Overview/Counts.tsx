@@ -1,12 +1,14 @@
-import { type CSSProperties, Fragment, type ReactNode } from 'react';
+import { type CSSProperties, type ReactNode } from 'react';
 import { Card, Popover, Space, Statistic, Typography } from 'antd';
-import { InfoCircleOutlined, TeamOutlined } from '@ant-design/icons';
+import { ExperimentOutlined, InfoCircleOutlined, TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
 
-import ExpSvg from '../Util/ExpSvg';
 import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { BOX_SHADOW, COUNTS_FILL } from '@/constants/overviewConstants';
-import { useAppSelector, useTranslationFn } from '@/hooks';
+import { NO_RESULTS_DASHES } from '@/constants/searchConstants';
+import { useAppSelector, useHasResourcePermissionWrapper, useTranslationFn } from '@/hooks';
+import { useSelectedScopeAsResource } from '@/features/metadata/hooks';
+import { queryData } from 'bento-auth-js';
 
 const styles: Record<string, CSSProperties> = {
   countCard: {
@@ -23,24 +25,24 @@ const Counts = () => {
 
   const { counts, isFetchingData } = useAppSelector((state) => state.data);
 
+  const scopeResource = useSelectedScopeAsResource();
+  const { hasPermission: queryDataPerm } = useHasResourcePermissionWrapper(scopeResource, queryData);
+
   // Break down help into multiple sentences inside an array to make translation a bit easier.
   const data = [
     {
       entity: 'individual',
-      help: ['individual_help_1'],
       icon: <TeamOutlined />,
       count: counts.individuals,
     },
     {
       entity: 'biosample',
-      help: ['biosample_help_1'],
       icon: <BiDna />,
       count: counts.biosamples,
     },
     {
       entity: 'experiment',
-      help: ['experiment_help_1', 'experiment_help_2'],
-      icon: <ExpSvg />,
+      icon: <ExperimentOutlined />,
       count: counts.experiments,
     },
   ];
@@ -49,7 +51,7 @@ const Counts = () => {
     <>
       <Typography.Title level={3}>{t('Counts')}</Typography.Title>
       <Space wrap>
-        {data.map(({ entity, help, icon, count }, i) => {
+        {data.map(({ entity, icon, count }, i) => {
           const title = t(`entities.${entity}`, T_PLURAL_COUNT);
           return (
             <Card key={i} style={{ ...styles.countCard, height: isFetchingData ? 138 : 114 }}>
@@ -57,23 +59,17 @@ const Counts = () => {
                 title={
                   <Space>
                     {title}
-                    {help && (
+                    {
                       <Popover
                         title={title}
-                        content={
-                          <CountsHelp>
-                            {help.map((h, i) => (
-                              <Fragment key={i}>{t(`entities.${h}`)} </Fragment>
-                            ))}
-                          </CountsHelp>
-                        }
+                        content={<CountsHelp>{t(`entities.${entity}_help`, { joinArrays: ' ' })}</CountsHelp>}
                       >
                         <InfoCircleOutlined />
                       </Popover>
-                    )}
+                    }
                   </Space>
                 }
-                value={count}
+                value={count || (queryDataPerm ? count : NO_RESULTS_DASHES)}
                 valueStyle={{ color: COUNTS_FILL }}
                 prefix={icon}
                 loading={isFetchingData}
