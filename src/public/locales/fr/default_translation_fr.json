@@ -109,7 +109,7 @@
     "home_page": "Page d'accueil",
     "enter_chrom": "Entrer un nom de chromosome, par exemple : \"17\" ou \"X\"",
     "select_chrom": "Sélectionner un chromosome",
-    "variants_form_error": "Le formulaire de recherche de variants doit inclure soit la position de fin, ou les bases de référence et les bases alternatives.",
+    "variants_form_error": "Le formulaire de recherche de variants doit inclure un chromosome et soit la position de fin, ou les bases de référence et les bases alternatives.",
     "variants_help_title": "Chercher un variant",
     "variants_help_1": [
       "Pour chercher tous les variants se trouvant dans une plage donnée: remplissez \"Début du variant\" et \"Fin du variant\",",
