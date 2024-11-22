@@ -63,22 +63,23 @@ const FORM_STYLE: CSSProperties = {
 
 const FORM_ROW_GUTTER: [number, number] = [12, 0];
 
-const VariantsForm = ({ beaconAssemblyIds }: VariantsFormProps) => {
+const VariantsForm = ({ isNetworkQuery, beaconAssemblyIds }: VariantsFormProps) => {
   const { genomesByID } = useReference();
 
   // Pick up form context from outside
   const form = Form.useFormInstance();
   const currentAssemblyID = Form.useWatch('Assembly ID', form);
 
+  // Right now, we cannot figure out the contig options for the network, so we fall back to a normal input box.
   const availableContigs = useMemo<ContigOptionType[]>(
     () =>
-      currentAssemblyID && genomesByID[currentAssemblyID]
+      !isNetworkQuery && currentAssemblyID && genomesByID[currentAssemblyID]
         ? genomesByID[currentAssemblyID].contigs
             .map(contigToOption)
             .sort(contigOptionSort)
             .filter(filterOutHumanLikeExtraContigs)
         : [],
-    [currentAssemblyID, genomesByID]
+    [isNetworkQuery, currentAssemblyID, genomesByID]
   );
   const assemblySelect = !!availableContigs.length;
 
@@ -91,8 +92,7 @@ const VariantsForm = ({ beaconAssemblyIds }: VariantsFormProps) => {
   const formFields = {
     referenceName: {
       name: 'Chromosome',
-      rules: [{ pattern: /.+/, message: t(assemblySelect ? 'select_chrom' : 'enter_chrom') }],
-      placeholder: !currentAssemblyID ? t('Select an assembly…') : '',
+      placeholder: !currentAssemblyID ? t('beacon.select_asm') : '',
       initialValue: '',
     },
     start: {
@@ -159,6 +159,7 @@ const VariantsForm = ({ beaconAssemblyIds }: VariantsFormProps) => {
 };
 
 export interface VariantsFormProps {
+  isNetworkQuery?: boolean;
   beaconAssemblyIds: BeaconAssemblyIds;
 }
 

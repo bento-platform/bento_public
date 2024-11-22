@@ -241,7 +241,7 @@ const BeaconQueryFormUi = ({
                     </SearchToolTip>
                   }
                 >
-                  <VariantsForm beaconAssemblyIds={beaconAssemblyIds} />
+                  <VariantsForm isNetworkQuery={isNetworkQuery} beaconAssemblyIds={beaconAssemblyIds} />
                 </Card>
               </Col>
             )}

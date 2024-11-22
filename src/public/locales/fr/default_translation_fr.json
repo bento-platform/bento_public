@@ -107,8 +107,7 @@
     "show_all_filters": "afficher tous les filtres",
     "common_filters_only": "filtres communs uniquement",
     "home_page": "Page d'accueil",
-    "enter_chrom": "Entrer un nom de chromosome, par exemple : \"17\" ou \"X\"",
-    "select_chrom": "Sélectionner un chromosome",
+    "select_asm": "Sélectionner un assemblage génomique",
     "variants_form_error": "Le formulaire de recherche de variants doit inclure un chromosome et soit la position de fin, ou les bases de référence et les bases alternatives.",
     "variants_help_title": "Chercher un variant",
     "variants_help_1": [
