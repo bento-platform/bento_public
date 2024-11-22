@@ -81,7 +81,6 @@
   "value required": "value required",
   "maximum of": "maximum of",
   "filters permitted": "filters permitted",
-  "Enter a chromosome name, e.g.: \"17\" or \"X\"": "Enter a chromosome name, e.g.: \"17\" or \"X\"",
   "Enter a position number, e.g. \"100\"": "Enter a position number, e.g. \"100\"",
   "Enter a position number, e.g. \"200\"": "Enter a position number, e.g. \"200\"",
   "Enter any combination of A, C, G, T, or N": "Enter any combination of A, C, G, T, or N",
@@ -89,15 +88,6 @@
   "or": "or",
   "Ingestion History Is Empty": "Ingestion History Is Empty",
   "Latest Data Ingestion": "Latest Data Ingestion",
-  "Variants form should include either an end position or both reference and alternate bases": "Variants form should include either an end position or both reference and alternate bases",
-  "Variant search": "Variant search",
-  "To search for all variants inside a range: fill both \"Variant start\" and \"Variant end\",": "To search for all variants inside a range: fill both \"Variant start\" and \"Variant end\",",
-  "all variants inside the range will be returned. You can optionally filter by reference or alternate bases.": "all variants inside the range will be returned. You can optionally filter by reference or alternate bases.",
-  "To search for a variant at a particular position, either set \"Variant end\" to the same value in \"Variant start\",": "To search for a variant at a particular position, either set \"Variant end\" to the same value in \"Variant start\",",
-  "or fill in values for both reference and alternate bases.": "or fill in values for both reference and alternate bases.",
-  "\"Chromosome\", \"Variant start\" and \"Assembly ID\" are always required.": "\"Chromosome\", \"Variant start\" and \"Assembly ID\" are always required.",
-  "Coordinates are one-based.": "Coordinates are one-based.",
-  "Leave this form blank to search by metadata only.": "Leave this form blank to search by metadata only.",
   "Not Available": "Not Available",
   "You have been signed out": "You have been signed out",
   "Please sign in to the research portal.": "Please sign in to the research portal.",
@@ -116,6 +106,22 @@
     "network_search_results": "Network Search Results",
     "show_all_filters": "show all filters",
     "common_filters_only": "common filters only",
-    "home_page": "Home Page"
+    "home_page": "Home Page",
+    "select_asm": "Select an assembly",
+    "variants_form_error": "Variants form should include a chromosome and either an end position or both reference and alternate bases",
+    "variants_help_title": "Variant search",
+    "variants_help_1": [
+      "To search for all variants inside a range: fill both \"Variant start\" and \"Variant end\",",
+      "all variants inside the range will be returned. You can optionally filter by reference or alternate bases."
+    ],
+    "variants_help_2": [
+      "To search for a variant at a particular position, either set \"Variant end\" to the same value in \"Variant start\",",
+      "or fill in values for both reference and alternate bases."
+    ],
+    "variants_help_3": "\"Chromosome\", \"Variant start\" and \"Assembly ID\" are always required.",
+    "variants_help_4": [
+      "Coordinates are one-based.",
+      "Leave this form blank to search by metadata only."
+    ]
   }
 }
