@@ -2,7 +2,6 @@ import { useRef, useState } from 'react';
 import { useQueryWithAuthIfAllowed, useTranslationFn } from '@/hooks';
 import {
   checkIsInAuthPopup,
-  nop,
   useHandleCallback,
   useOpenSignInWindowCallback,
   usePopupOpenerAuthCallback,
@@ -45,7 +44,7 @@ const AuthOutlet = () => {
   // Set up message handling from sign-in popup
   useSignInPopupTokenHandoff(windowMessageHandler);
 
-  useSessionWorkerTokenRefresh(sessionWorker, createSessionWorker, nop);
+  useSessionWorkerTokenRefresh(sessionWorker, createSessionWorker);
 
   useQueryWithAuthIfAllowed();
 
