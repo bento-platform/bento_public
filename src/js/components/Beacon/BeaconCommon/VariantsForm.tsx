@@ -80,6 +80,7 @@ const VariantsForm = ({ beaconAssemblyIds }: VariantsFormProps) => {
         : [],
     [currentAssemblyID, genomesByID]
   );
+  const assemblySelect = !!availableContigs.length;
 
   useEffect(() => {
     // Clear contig value when list of available contigs changes:
@@ -90,7 +91,7 @@ const VariantsForm = ({ beaconAssemblyIds }: VariantsFormProps) => {
   const formFields = {
     referenceName: {
       name: 'Chromosome',
-      rules: [{ message: t('Select a chromosome') }],
+      rules: [{ pattern: /.+/, message: t(assemblySelect ? 'select_chrom' : 'enter_chrom') }],
       placeholder: !currentAssemblyID ? t('Select an assembly…') : '',
       initialValue: '',
     },
@@ -130,7 +131,7 @@ const VariantsForm = ({ beaconAssemblyIds }: VariantsFormProps) => {
           <VariantInput
             field={formFields.referenceName}
             disabled={variantsError || !currentAssemblyID}
-            mode={availableContigs.length ? { type: 'select', options: availableContigs } : { type: 'input' }}
+            mode={assemblySelect ? { type: 'select', options: availableContigs } : { type: 'input' }}
           />
         </Col>
         <Col span={8}>
