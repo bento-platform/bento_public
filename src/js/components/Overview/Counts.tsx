@@ -6,9 +6,8 @@ import { BiDna } from 'react-icons/bi';
 import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { BOX_SHADOW, COUNTS_FILL } from '@/constants/overviewConstants';
 import { NO_RESULTS_DASHES } from '@/constants/searchConstants';
-import { useAppSelector, useHasResourcePermissionWrapper, useTranslationFn } from '@/hooks';
-import { useSelectedScopeAsResource } from '@/features/metadata/hooks';
-import { queryData } from 'bento-auth-js';
+import { useAppSelector, useTranslationFn } from '@/hooks';
+import { useCanSeeUncensoredCounts } from '@/hooks/censorship';
 
 const styles: Record<string, CSSProperties> = {
   countCard: {
@@ -25,8 +24,7 @@ const Counts = () => {
 
   const { counts, isFetchingData } = useAppSelector((state) => state.data);
 
-  const scopeResource = useSelectedScopeAsResource();
-  const { hasPermission: queryDataPerm } = useHasResourcePermissionWrapper(scopeResource, queryData);
+  const uncensoredCounts = useCanSeeUncensoredCounts();
 
   // Break down help into multiple sentences inside an array to make translation a bit easier.
   const data = [
@@ -69,7 +67,7 @@ const Counts = () => {
                     }
                   </Space>
                 }
-                value={count || (queryDataPerm ? count : NO_RESULTS_DASHES)}
+                value={count || (uncensoredCounts ? count : NO_RESULTS_DASHES)}
                 valueStyle={{ color: COUNTS_FILL }}
                 prefix={icon}
                 loading={isFetchingData}
