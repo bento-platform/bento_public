@@ -9,6 +9,7 @@ import { useTranslationFn } from '@/hooks';
 import type { ChartData } from '@/types/data';
 import type { ChartConfig } from '@/types/chartConfig';
 import { CHART_TYPE_BAR, CHART_TYPE_CHOROPLETH, CHART_TYPE_HISTOGRAM, CHART_TYPE_PIE } from '@/types/chartConfig';
+import { noop } from '@/utils/chart';
 
 interface BarChartEvent {
   activePayload: Array<{ payload: { x: string; id?: string } }>;
@@ -48,7 +49,12 @@ const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) =
           units={units}
           preFilter={removeMissing}
           dataMap={translateMap}
-          {...(isClickable ? { onChartClick: barChartOnChartClickHandler } : {})}
+          {...(isClickable
+            ? {
+                onChartClick: barChartOnChartClickHandler,
+                onClick: noop,
+              }
+            : {})} // The noop is to provide the cursor: pointer style as onChartClick doesn't provide the behavior
         />
       );
     case CHART_TYPE_HISTOGRAM:
@@ -59,7 +65,12 @@ const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) =
           data={data}
           preFilter={removeMissing}
           dataMap={translateMap}
-          {...(isClickable ? { onChartClick: barChartOnChartClickHandler } : {})}
+          {...(isClickable
+            ? {
+                onChartClick: barChartOnChartClickHandler,
+                onClick: noop,
+              }
+            : {})} // The noop is to provide the cursor: pointer style as onChartClick doesn't provide the behavior
         />
       );
     case CHART_TYPE_PIE:
