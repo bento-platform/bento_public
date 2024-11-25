@@ -1,13 +1,14 @@
-import { type CSSProperties, type ReactNode } from 'react';
-import { Card, Popover, Space, Statistic, Typography } from 'antd';
-import { ExperimentOutlined, InfoCircleOutlined, TeamOutlined } from '@ant-design/icons';
+import type { CSSProperties, ReactNode } from 'react';
+import { Card, Space, Statistic, Typography } from 'antd';
+import { ExperimentOutlined, TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
 
-import { T_PLURAL_COUNT } from '@/constants/i18n';
+import CountsTitleWithHelp from '@/components/Util/CountsTitleWithHelp';
 import { BOX_SHADOW, COUNTS_FILL } from '@/constants/overviewConstants';
 import { NO_RESULTS_DASHES } from '@/constants/searchConstants';
 import { useAppSelector, useTranslationFn } from '@/hooks';
 import { useCanSeeUncensoredCounts } from '@/hooks/censorship';
+import type { BentoEntity } from '@/types/entities';
 
 const styles: Record<string, CSSProperties> = {
   countCard: {
@@ -17,7 +18,7 @@ const styles: Record<string, CSSProperties> = {
   },
 };
 
-const CountsHelp = ({ children }: { children: ReactNode }) => <div style={{ maxWidth: 360 }}>{children}</div>;
+type CountEntry = { entity: BentoEntity; icon: ReactNode; count: number };
 
 const Counts = () => {
   const t = useTranslationFn();
@@ -27,7 +28,7 @@ const Counts = () => {
   const uncensoredCounts = useCanSeeUncensoredCounts();
 
   // Break down help into multiple sentences inside an array to make translation a bit easier.
-  const data = [
+  const data: CountEntry[] = [
     {
       entity: 'individual',
       icon: <TeamOutlined />,
@@ -49,32 +50,17 @@ const Counts = () => {
     <>
       <Typography.Title level={3}>{t('Counts')}</Typography.Title>
       <Space wrap>
-        {data.map(({ entity, icon, count }, i) => {
-          const title = t(`entities.${entity}`, T_PLURAL_COUNT);
-          return (
-            <Card key={i} style={{ ...styles.countCard, height: isFetchingData ? 138 : 114 }}>
-              <Statistic
-                title={
-                  <Space>
-                    {title}
-                    {
-                      <Popover
-                        title={title}
-                        content={<CountsHelp>{t(`entities.${entity}_help`, { joinArrays: ' ' })}</CountsHelp>}
-                      >
-                        <InfoCircleOutlined />
-                      </Popover>
-                    }
-                  </Space>
-                }
-                value={count || (uncensoredCounts ? count : NO_RESULTS_DASHES)}
-                valueStyle={{ color: COUNTS_FILL }}
-                prefix={icon}
-                loading={isFetchingData}
-              />
-            </Card>
-          );
-        })}
+        {data.map(({ entity, icon, count }, i) => (
+          <Card key={i} style={{ ...styles.countCard, height: isFetchingData ? 138 : 114 }}>
+            <Statistic
+              title={<CountsTitleWithHelp entity={entity} />}
+              value={count || (uncensoredCounts ? count : NO_RESULTS_DASHES)}
+              valueStyle={{ color: COUNTS_FILL }}
+              prefix={icon}
+              loading={isFetchingData}
+            />
+          </Card>
+        ))}
       </Space>
     </>
   );
