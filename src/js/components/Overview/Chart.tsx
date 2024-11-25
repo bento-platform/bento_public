@@ -49,7 +49,12 @@ const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) =
           units={units}
           preFilter={removeMissing}
           dataMap={translateMap}
-          {...(isClickable ? { onChartClick: barChartOnChartClickHandler, onClick: noop } : {})}
+          {...(isClickable
+            ? {
+                onChartClick: barChartOnChartClickHandler,
+                onClick: noop,
+              }
+            : {})} // The noop is to provide the cursor: pointer style as onChartClick doesn't provide the behavior
         />
       );
     case CHART_TYPE_HISTOGRAM:
@@ -60,7 +65,12 @@ const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) =
           data={data}
           preFilter={removeMissing}
           dataMap={translateMap}
-          {...(isClickable ? { onChartClick: barChartOnChartClickHandler, onClick: noop } : {})}
+          {...(isClickable
+            ? {
+                onChartClick: barChartOnChartClickHandler,
+                onClick: noop,
+              }
+            : {})} // The noop is to provide the cursor: pointer style as onChartClick doesn't provide the behavior
         />
       );
     case CHART_TYPE_PIE:
