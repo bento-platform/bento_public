@@ -26,7 +26,7 @@ export const makeGetConfigRequest = createAsyncThunk<DiscoveryRules, void, { rej
           selectedScope: { scopeSet },
         },
       } = getState();
-      const cond = scopeSet && configStatus === RequestStatus.Idle;
+      const cond = scopeSet && configStatus !== RequestStatus.Pending;
       if (!cond) {
         console.debug(
           `makeGetConfigRequest() was attempted, but will not dispatch (scopeSet=${scopeSet}, configStatus=${configStatus})`
@@ -52,7 +52,11 @@ export const makeGetServiceInfoRequest = createAsyncThunk<
     condition(_, { getState }) {
       const { serviceInfoStatus } = getState().config;
       const cond = serviceInfoStatus === RequestStatus.Idle;
-      if (!cond) console.debug(`makeGetServiceInfoRequest(), but a prior attempt gave status: ${serviceInfoStatus}`);
+      if (!cond) {
+        console.debug(
+          `makeGetServiceInfoRequest() was attempted, but a prior attempt gave status: ${serviceInfoStatus}`
+        );
+      }
       return cond;
     },
   }
@@ -60,6 +64,7 @@ export const makeGetServiceInfoRequest = createAsyncThunk<
 
 export interface ConfigState {
   configStatus: RequestStatus;
+  countThreshold: number;
   maxQueryParameters: number;
   maxQueryParametersRequired: boolean;
   // ----------------------------------------------------
@@ -69,6 +74,7 @@ export interface ConfigState {
 
 const initialState: ConfigState = {
   configStatus: RequestStatus.Idle,
+  countThreshold: 0,
   maxQueryParameters: 0,
   maxQueryParametersRequired: true,
   // ----------------------------------------------------
@@ -91,6 +97,7 @@ const configStore = createSlice({
       state.configStatus = RequestStatus.Pending;
     });
     builder.addCase(makeGetConfigRequest.fulfilled, (state, { payload }: PayloadAction<DiscoveryRules>) => {
+      state.countThreshold = payload.count_threshold;
       state.maxQueryParameters = payload.max_query_parameters;
       state.configStatus = RequestStatus.Fulfilled;
     });

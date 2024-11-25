@@ -1,22 +1,12 @@
-export enum DataTypes {
-  phenopacket = 'phenopacket',
-  experiment = 'experiment',
-  experiment_result = 'experiment_result',
-  variant = 'variant',
-}
+import type { JSONSchema7 } from 'json-schema';
 
-export const DataTypesLabels = {
-  [DataTypes.phenopacket]: 'entities.Phenopackets',
-  [DataTypes.experiment]: 'entities.Experiments',
-  [DataTypes.experiment_result]: 'entities.Experiment Results',
-  [DataTypes.variant]: 'entities.Variants',
+export type BentoDataType = {
+  id: string;
+  label: string;
+  queryable: boolean;
+  schema: JSONSchema7;
+  metadata_schema: JSONSchema7;
+  count?: number;
 };
 
-export const getDataTypeLabel = (dataTypeString: string): string => {
-  const dataTypesValues = Object.values(DataTypes) as string[];
-  if (dataTypesValues.includes(dataTypeString)) {
-    const dataType: DataTypes = DataTypes[dataTypeString as keyof typeof DataTypes];
-    return DataTypesLabels[dataType];
-  }
-  return 'Unknown Data Type';
-};
+export type BentoServiceDataType = BentoDataType & { service_base_url: string };

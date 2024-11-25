@@ -26,10 +26,9 @@ import {
   BUTTON_STYLE,
   CARD_STYLES,
 } from '@/constants/beaconConstants';
+import { T_PLURAL_COUNT } from '@/constants/i18n';
 
 const STARTER_FILTER = { index: 1, active: true };
-const VARIANTS_FORM_ERROR_MESSAGE =
-  'Variants form should include either an end position or both reference and alternate bases';
 
 // TODOs
 // example searches, either hardcoded or configurable
@@ -157,7 +156,7 @@ const BeaconQueryFormUi = ({
       if (!variantsFormValid(formValues)) {
         setHasFormError(true);
         setErrorAlertClosed(false);
-        setFormErrorMessage(t(VARIANTS_FORM_ERROR_MESSAGE));
+        setFormErrorMessage(t('beacon.variants_form_error'));
         return;
       }
 
@@ -233,7 +232,7 @@ const BeaconQueryFormUi = ({
             {hasVariants && (
               <Col xs={24} lg={12}>
                 <Card
-                  title={t('entities.Variants')}
+                  title={t('entities.variant', T_PLURAL_COUNT)}
                   style={CARD_STYLE}
                   styles={CARD_STYLES}
                   extra={
@@ -242,7 +241,7 @@ const BeaconQueryFormUi = ({
                     </SearchToolTip>
                   }
                 >
-                  <VariantsForm beaconAssemblyIds={beaconAssemblyIds} />
+                  <VariantsForm isNetworkQuery={isNetworkQuery} beaconAssemblyIds={beaconAssemblyIds} />
                 </Card>
               </Col>
             )}

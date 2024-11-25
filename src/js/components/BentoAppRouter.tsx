@@ -13,6 +13,7 @@ import { fetchGohanData, fetchKatsuData } from '@/features/ingestion/lastIngesti
 import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
 import { useMetadata } from '@/features/metadata/hooks';
 import { getProjects, markScopeSet, selectScope } from '@/features/metadata/metadata.store';
+import { getGenomes } from '@/features/reference/reference.store';
 
 import Loader from '@/components/Loader';
 import DefaultLayout from '@/components/Util/DefaultLayout';
@@ -106,10 +107,9 @@ const BentoAppRouter = () => {
     dispatch(makeGetAboutRequest());
     dispatch(fetchGohanData());
     dispatch(makeGetServiceInfoRequest());
-    if (isAuthenticated) {
-      dispatch(makeGetDataTypes());
-    }
-  }, [dispatch, isAuthenticated]);
+    dispatch(makeGetDataTypes());
+    dispatch(getGenomes());
+  }, [dispatch]);
 
   if (isAutoAuthenticating || projectsStatus === RequestStatus.Pending) {
     return <Loader />;

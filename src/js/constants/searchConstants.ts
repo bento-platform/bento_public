@@ -1,6 +1,6 @@
 import type { DiscoveryResults } from '@/types/data';
 
-export const NO_RESULTS_DASHES = '----';
+export const NO_RESULTS_DASHES = '———';
 
 export const EMPTY_DISCOVERY_RESULTS: DiscoveryResults = {
   // individuals

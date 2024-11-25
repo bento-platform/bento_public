@@ -1,11 +1,11 @@
 import type { CSSProperties } from 'react';
 import { Skeleton, Space, Statistic } from 'antd';
-import { TeamOutlined } from '@ant-design/icons';
+import { ExperimentOutlined, TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
 
+import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { COUNTS_FILL } from '@/constants/overviewConstants';
 import { NO_RESULTS_DASHES } from '@/constants/searchConstants';
-import ExpSvg from '@/components/Util/ExpSvg';
 import { useTranslationFn } from '@/hooks';
 import type { DiscoveryResults, OptionalDiscoveryResults } from '@/types/data';
 import type { SearchResultsUIPane } from '@/types/search';
@@ -19,6 +19,7 @@ const SearchResultsCounts = ({
   selectedPane,
   setSelectedPane,
   hasInsufficientData,
+  uncensoredCounts,
   message,
 }: SearchResultsCountsProps) => {
   const t = useTranslationFn();
@@ -58,11 +59,11 @@ const SearchResultsCounts = ({
             ].join(' ')}
           >
             <Statistic
-              title={t('entities.Individuals')}
+              title={t('entities.individual', T_PLURAL_COUNT)}
               value={
                 hasInsufficientData
                   ? t(message ?? '')
-                  : isBeaconNetwork && !individualCount
+                  : !uncensoredCounts && !individualCount
                     ? NO_RESULTS_DASHES
                     : individualCount
               }
@@ -71,16 +72,17 @@ const SearchResultsCounts = ({
             />
           </div>
           <Statistic
-            title={t('entities.Biosamples')}
-            value={hasInsufficientData || (isBeaconNetwork && !biosampleCount) ? NO_RESULTS_DASHES : biosampleCount}
+            title={t('entities.biosample', T_PLURAL_COUNT)}
+            value={hasInsufficientData || (!uncensoredCounts && !biosampleCount) ? NO_RESULTS_DASHES : biosampleCount}
             valueStyle={STAT_STYLE}
-            prefix={<BiDna />}
+            // Slight fixup for alignment of non-Antd icon:
+            prefix={<BiDna style={{ marginTop: 6, verticalAlign: 'top' }} />}
           />
           <Statistic
-            title={t('entities.Experiments')}
-            value={hasInsufficientData || (isBeaconNetwork && !experimentCount) ? NO_RESULTS_DASHES : experimentCount}
+            title={t('entities.experiment', T_PLURAL_COUNT)}
+            value={hasInsufficientData || (!uncensoredCounts && !experimentCount) ? NO_RESULTS_DASHES : experimentCount}
             valueStyle={STAT_STYLE}
-            prefix={<ExpSvg />}
+            prefix={<ExperimentOutlined />}
           />
         </>
       )}
@@ -97,6 +99,7 @@ type SearchResultsCountsProps = {
   selectedPane?: SearchResultsUIPane;
   setSelectedPane?: (pane: SearchResultsUIPane) => void;
   hasInsufficientData?: boolean;
+  uncensoredCounts?: boolean;
   message?: string;
 };
 

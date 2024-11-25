@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM node:20-bookworm-slim AS install
+FROM --platform=$BUILDPLATFORM node:22-bookworm-slim AS install
 
 WORKDIR /bento-public
 
@@ -7,7 +7,7 @@ COPY package-lock.json .
 
 RUN npm ci
 
-FROM ghcr.io/bento-platform/bento_base_image:node-debian-2024.10.01
+FROM ghcr.io/bento-platform/bento_base_image:node-debian-2024.11.01
 
 LABEL org.opencontainers.image.description="Local development image for Bento Public."
 

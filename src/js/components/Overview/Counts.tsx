@@ -1,11 +1,13 @@
-import { type CSSProperties, Fragment, type ReactNode } from 'react';
+import { type CSSProperties, type ReactNode } from 'react';
 import { Card, Popover, Space, Statistic, Typography } from 'antd';
-import { InfoCircleOutlined, TeamOutlined } from '@ant-design/icons';
+import { ExperimentOutlined, InfoCircleOutlined, TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
 
-import ExpSvg from '../Util/ExpSvg';
+import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { BOX_SHADOW, COUNTS_FILL } from '@/constants/overviewConstants';
+import { NO_RESULTS_DASHES } from '@/constants/searchConstants';
 import { useAppSelector, useTranslationFn } from '@/hooks';
+import { useCanSeeUncensoredCounts } from '@/hooks/censorship';
 
 const styles: Record<string, CSSProperties> = {
   countCard: {
@@ -22,24 +24,23 @@ const Counts = () => {
 
   const { counts, isFetchingData } = useAppSelector((state) => state.data);
 
+  const uncensoredCounts = useCanSeeUncensoredCounts();
+
   // Break down help into multiple sentences inside an array to make translation a bit easier.
   const data = [
     {
-      title: 'Individuals',
-      help: ['individual_help_1'],
+      entity: 'individual',
       icon: <TeamOutlined />,
       count: counts.individuals,
     },
     {
-      title: 'Biosamples',
-      help: ['biosample_help_1'],
+      entity: 'biosample',
       icon: <BiDna />,
       count: counts.biosamples,
     },
     {
-      title: 'Experiments',
-      help: ['experiment_help_1', 'experiment_help_2'],
-      icon: <ExpSvg />,
+      entity: 'experiment',
+      icon: <ExperimentOutlined />,
       count: counts.experiments,
     },
   ];
@@ -48,31 +49,25 @@ const Counts = () => {
     <>
       <Typography.Title level={3}>{t('Counts')}</Typography.Title>
       <Space wrap>
-        {data.map(({ title, help, icon, count }, i) => {
-          const titleTransl = t(`entities.${title}`);
+        {data.map(({ entity, icon, count }, i) => {
+          const title = t(`entities.${entity}`, T_PLURAL_COUNT);
           return (
             <Card key={i} style={{ ...styles.countCard, height: isFetchingData ? 138 : 114 }}>
               <Statistic
                 title={
                   <Space>
-                    {titleTransl}
-                    {help && (
+                    {title}
+                    {
                       <Popover
-                        title={titleTransl}
-                        content={
-                          <CountsHelp>
-                            {help.map((h, i) => (
-                              <Fragment key={i}>{t(`entities.${h}`)} </Fragment>
-                            ))}
-                          </CountsHelp>
-                        }
+                        title={title}
+                        content={<CountsHelp>{t(`entities.${entity}_help`, { joinArrays: ' ' })}</CountsHelp>}
                       >
                         <InfoCircleOutlined />
                       </Popover>
-                    )}
+                    }
                   </Space>
                 }
-                value={count}
+                value={count || (uncensoredCounts ? count : NO_RESULTS_DASHES)}
                 valueStyle={{ color: COUNTS_FILL }}
                 prefix={icon}
                 loading={isFetchingData}
