@@ -92,7 +92,7 @@ const VariantsForm = ({ isNetworkQuery, beaconAssemblyIds }: VariantsFormProps) 
   const formFields = {
     referenceName: {
       name: 'Chromosome',
-      placeholder: !currentAssemblyID ? t('beacon.select_asm') : '',
+      placeholder: !isNetworkQuery && !currentAssemblyID ? t('beacon.select_asm') : '',
       initialValue: '',
     },
     start: {
@@ -130,7 +130,7 @@ const VariantsForm = ({ isNetworkQuery, beaconAssemblyIds }: VariantsFormProps) 
         <Col span={8}>
           <VariantInput
             field={formFields.referenceName}
-            disabled={variantsError || !currentAssemblyID}
+            disabled={variantsError || (!isNetworkQuery && !currentAssemblyID)}
             mode={assemblySelect ? { type: 'select', options: availableContigs } : { type: 'input' }}
           />
         </Col>
