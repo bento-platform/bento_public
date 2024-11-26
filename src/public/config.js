@@ -7,6 +7,7 @@ BENTO_PUBLIC_CONFIG = {
   TRANSLATED: null,
   BEACON_URL: null,
   BEACON_UI_ENABLED: null,
+  BEACON_NETWORK_ENABLED: null,
   // Authentication
   PUBLIC_URL: null,
   CLIENT_ID: null,
