@@ -59,7 +59,7 @@ const SearchResultsCounts = ({
             ].join(' ')}
           >
             <Statistic
-              title={<CountsTitleWithHelp entity="individual" />}
+              title={<CountsTitleWithHelp entity="individual" showHelp={!isBeaconNetwork} />}
               value={
                 hasInsufficientData
                   ? t(message ?? '')
@@ -72,14 +72,14 @@ const SearchResultsCounts = ({
             />
           </div>
           <Statistic
-            title={<CountsTitleWithHelp entity="biosample" />}
+            title={<CountsTitleWithHelp entity="biosample" showHelp={!isBeaconNetwork} />}
             value={hasInsufficientData || (!uncensoredCounts && !biosampleCount) ? NO_RESULTS_DASHES : biosampleCount}
             valueStyle={STAT_STYLE}
             // Slight fixup for alignment of non-Antd icon:
             prefix={<BiDna style={{ marginTop: 6, verticalAlign: 'top' }} />}
           />
           <Statistic
-            title={<CountsTitleWithHelp entity="experiment" />}
+            title={<CountsTitleWithHelp entity="experiment" showHelp={!isBeaconNetwork} />}
             value={hasInsufficientData || (!uncensoredCounts && !experimentCount) ? NO_RESULTS_DASHES : experimentCount}
             valueStyle={STAT_STYLE}
             prefix={<ExperimentOutlined />}

@@ -10,26 +10,31 @@ const CountsHelpPopoverText = ({ children }: { children: ReactNode }) => (
   <div style={{ maxWidth: 360 }}>{children}</div>
 );
 
-const CountsTitleWithHelp = ({ entity }: CountsHelpProps) => {
+const CountsTitleWithHelp = ({ entity, showHelp }: CountsHelpProps) => {
   const t = useTranslationFn();
+
+  showHelp = showHelp ?? true; // If undefined, we should show help by default.
 
   const title = t(`entities.${entity}`, T_PLURAL_COUNT);
 
   return (
     <Space>
       {title}
-      <Popover
-        title={title}
-        content={<CountsHelpPopoverText>{t(`entities.${entity}_help`, { joinArrays: ' ' })}</CountsHelpPopoverText>}
-      >
-        <InfoCircleOutlined />
-      </Popover>
+      {showHelp && (
+        <Popover
+          title={title}
+          content={<CountsHelpPopoverText>{t(`entities.${entity}_help`, { joinArrays: ' ' })}</CountsHelpPopoverText>}
+        >
+          <InfoCircleOutlined />
+        </Popover>
+      )}
     </Space>
   );
 };
 
 type CountsHelpProps = {
   entity: BentoEntity;
+  showHelp?: boolean;
 };
 
 export default CountsTitleWithHelp;
