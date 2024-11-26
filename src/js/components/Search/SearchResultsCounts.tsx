@@ -3,7 +3,7 @@ import { Skeleton, Space, Statistic } from 'antd';
 import { ExperimentOutlined, TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
 
-import { T_PLURAL_COUNT } from '@/constants/i18n';
+import CountsTitleWithHelp from '@/components/Util/CountsTitleWithHelp';
 import { COUNTS_FILL } from '@/constants/overviewConstants';
 import { NO_RESULTS_DASHES } from '@/constants/searchConstants';
 import { useTranslationFn } from '@/hooks';
@@ -59,7 +59,7 @@ const SearchResultsCounts = ({
             ].join(' ')}
           >
             <Statistic
-              title={t('entities.individual', T_PLURAL_COUNT)}
+              title={<CountsTitleWithHelp entity="individual" />}
               value={
                 hasInsufficientData
                   ? t(message ?? '')
@@ -72,14 +72,14 @@ const SearchResultsCounts = ({
             />
           </div>
           <Statistic
-            title={t('entities.biosample', T_PLURAL_COUNT)}
+            title={<CountsTitleWithHelp entity="biosample" />}
             value={hasInsufficientData || (!uncensoredCounts && !biosampleCount) ? NO_RESULTS_DASHES : biosampleCount}
             valueStyle={STAT_STYLE}
             // Slight fixup for alignment of non-Antd icon:
             prefix={<BiDna style={{ marginTop: 6, verticalAlign: 'top' }} />}
           />
           <Statistic
-            title={t('entities.experiment', T_PLURAL_COUNT)}
+            title={<CountsTitleWithHelp entity="experiment" />}
             value={hasInsufficientData || (!uncensoredCounts && !experimentCount) ? NO_RESULTS_DASHES : experimentCount}
             valueStyle={STAT_STYLE}
             prefix={<ExperimentOutlined />}
