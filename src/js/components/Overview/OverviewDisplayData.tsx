@@ -11,7 +11,7 @@ import ChartCard from './ChartCard';
 
 import type { ChartDataField } from '@/types/data';
 
-const OverviewDisplayData = ({ section, allCharts }: OverviewDisplayDataProps) => {
+const OverviewDisplayData = ({ section, allCharts, searchableFields }: OverviewDisplayDataProps) => {
   const dispatch = useAppDispatch();
   const isSmallScreen = useSmallScreen();
 
@@ -31,7 +31,15 @@ const OverviewDisplayData = ({ section, allCharts }: OverviewDisplayDataProps) =
   );
 
   const renderItem = (chart: ChartDataField) => {
-    return <ChartCard key={chart.id} chart={chart} section={section} onRemoveChart={onRemoveChart} />;
+    return (
+      <ChartCard
+        key={chart.id}
+        chart={chart}
+        section={section}
+        onRemoveChart={onRemoveChart}
+        searchable={searchableFields.has(chart.id)}
+      />
+    );
   };
 
   if (isSmallScreen) {
@@ -48,6 +56,7 @@ const OverviewDisplayData = ({ section, allCharts }: OverviewDisplayDataProps) =
 export interface OverviewDisplayDataProps {
   section: string;
   allCharts: ChartDataField[];
+  searchableFields: Set<string>;
 }
 
 export default OverviewDisplayData;

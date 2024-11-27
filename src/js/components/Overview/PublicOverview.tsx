@@ -15,6 +15,7 @@ import Loader from '@/components/Loader';
 import Dataset from '@/components/Provenance/Dataset';
 
 import { useAppSelector } from '@/hooks';
+import { useSearchableFields } from '@/features/data/hooks';
 import { useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
 import { useTranslation } from 'react-i18next';
 import { RequestStatus } from '@/types/requests';
@@ -28,11 +29,7 @@ const PublicOverview = () => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [aboutContent, setAboutContent] = useState('');
 
-  const {
-    isFetchingData: isFetchingOverviewData,
-    isContentPopulated,
-    sections,
-  } = useAppSelector((state) => state.data);
+  const { isFetchingData: isFetchingOverviewData, sections } = useAppSelector((state) => state.data);
   const { status: aboutStatus, about } = useAppSelector((state) => state.content);
 
   const selectedProject = useSelectedProject();
@@ -59,7 +56,9 @@ const PublicOverview = () => {
     saveToLocalStorage(sections);
   }, [sections]);
 
-  return !isContentPopulated || isFetchingOverviewData ? (
+  const searchableFields = useSearchableFields();
+
+  return isFetchingOverviewData ? (
     <Loader />
   ) : (
     <>
@@ -94,7 +93,7 @@ const PublicOverview = () => {
         <Col flex={1}>
           {displayedSections.map(({ sectionTitle, charts }, i) => (
             <div key={i} className="overview">
-              <OverviewSection title={sectionTitle} chartData={charts} />
+              <OverviewSection title={sectionTitle} chartData={charts} searchableFields={searchableFields} />
             </div>
           ))}
           <LastIngestionInfo />

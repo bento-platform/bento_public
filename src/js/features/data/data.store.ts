@@ -1,23 +1,12 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 import { makeGetDataRequestThunk } from './makeGetDataRequest.thunk';
 import type { Sections } from '@/types/data';
 import type { Counts } from '@/types/overviewResponse';
-import type { QueryState } from '@/features/search/query.store';
-
-export const populateClickable = createAsyncThunk<string[], void, { state: { query: QueryState } }>(
-  'data/populateClickable',
-  async (_, { getState }) => {
-    return getState()
-      .query.querySections.flatMap((section) => section.fields)
-      .map((field) => field.id);
-  }
-);
 
 interface DataState {
   isFetchingData: boolean;
-  isContentPopulated: boolean;
   defaultLayout: Sections;
   sections: Sections;
   counts: Counts;
@@ -25,7 +14,6 @@ interface DataState {
 
 const initialState: DataState = {
   isFetchingData: true,
-  isContentPopulated: false,
   defaultLayout: [],
   sections: [],
   counts: {
@@ -101,14 +89,6 @@ const data = createSlice({
       })
       .addCase(makeGetDataRequestThunk.rejected, (state) => {
         state.isFetchingData = false;
-      })
-      .addCase(populateClickable.fulfilled, (state, { payload }) => {
-        state.sections.forEach((section) => {
-          section.charts.forEach((chart) => {
-            chart.isSearchable = payload.includes(chart.id);
-          });
-        });
-        state.isContentPopulated = true;
       });
   },
 });
