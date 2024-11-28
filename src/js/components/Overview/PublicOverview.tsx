@@ -12,7 +12,7 @@ import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
 import Counts from './Counts';
 import LastIngestionInfo from './LastIngestion';
 import Loader from '@/components/Loader';
-import Dataset from '@/components/Provenance/Dataset';
+import Dataset from '@/components/Provenance/Catalogue/Dataset';
 import Catalogue from '@/components/Provenance/Catalogue/Catalogue';
 
 import { useAppSelector } from '@/hooks';

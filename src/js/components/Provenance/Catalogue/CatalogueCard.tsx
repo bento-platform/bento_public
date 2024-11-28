@@ -1,33 +1,45 @@
-import { Card, Carousel, Descriptions, Flex, Space, Tag, Typography } from 'antd';
-import CatalogueCarouselDataset from '@/components/Provenance/Catalogue/CatalogueCarouselDataset';
+import { useMemo } from 'react';
+import i18n from '@/i18n';
+import { Card, Carousel, Descriptions, Flex, Space, Tag, Tooltip, Typography } from 'antd';
 import type { Project } from '@/types/metadata';
 import { isoDateToString } from '@/utils/strings';
 import { useTranslationFn } from '@/hooks';
+import { BOX_SHADOW } from '@/constants/overviewConstants';
+import Dataset from '@/components/Provenance/Catalogue/Dataset';
 
-const { Paragraph } = Typography;
+const { Paragraph, Text, Title } = Typography;
 
-const MAX_CHARACTERS = 50;
+const MAX_KEYWORD_CHARACTERS = 50;
 
 const CatalogueCard = ({ project }: { project: Project }) => {
+  const lang = i18n.language;
   const t = useTranslationFn();
 
-  const keywords = project.datasets
-    .map((d) => d.dats_file.keywords ?? [])
-    .flat()
-    .map((k) => t(k.value as string));
+  const { selectedKeywords, extraKeywords, extraKeywordCount } = useMemo(() => {
+    const keywords = project.datasets.flatMap((d) => d.dats_file.keywords ?? []).map((k) => t(k.value as string));
 
-  let totalCharacters = 0;
-  const selectedKeywords = [];
+    let totalCharacters = 0;
+    const selectedKeywords: string[] = [];
+    const extraKeywords: string[] = [];
 
-  for (const keyword of keywords) {
-    if (totalCharacters + keyword.length > MAX_CHARACTERS) {
-      break;
+    for (const keyword of keywords) {
+      if (totalCharacters + keyword.length > MAX_KEYWORD_CHARACTERS) {
+        extraKeywords.push(keyword);
+      } else {
+        selectedKeywords.push(keyword);
+        totalCharacters += keyword.length;
+      }
     }
-    selectedKeywords.push(keyword);
-    totalCharacters += keyword.length;
-  }
 
-  const extraKeywordCount = Math.max(keywords.length - selectedKeywords.length, 0);
+    return {
+      selectedKeywords,
+      extraKeywords,
+      extraKeywordCount: extraKeywords.length,
+    };
+  }, [project.datasets, t]);
+
+  const projectCreated = isoDateToString(project.created, lang);
+  const projectUpdated = isoDateToString(project.updated, lang);
 
   const projectInfo = [
     {
@@ -37,10 +49,10 @@ const CatalogueCard = ({ project }: { project: Project }) => {
         <Paragraph
           ellipsis={{
             rows: 1,
-            tooltip: { title: isoDateToString(project.created) },
+            tooltip: { title: projectCreated },
           }}
         >
-          {isoDateToString(project.created)}
+          {projectCreated}
         </Paragraph>
       ),
       span: 1.5,
@@ -48,49 +60,52 @@ const CatalogueCard = ({ project }: { project: Project }) => {
     {
       key: '2',
       label: t('Updated'),
-      children: (
-        <Paragraph ellipsis={{ rows: 1, tooltip: { title: isoDateToString(project.updated) } }}>
-          {isoDateToString(project.updated)}
-        </Paragraph>
-      ),
+      children: <Paragraph ellipsis={{ rows: 1, tooltip: { title: projectUpdated } }}>{projectUpdated}</Paragraph>,
       span: 1.5,
     },
   ];
 
   return (
-    <Card key={project.identifier} style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.05)', height: '260px' }}>
+    <Card key={project.identifier} style={{ height: '260px', maxWidth: '1300px', ...BOX_SHADOW }}>
       <Flex justify="space-between">
-        <div style={{ width: '50%', paddingRight: '10px' }}>
+        <div style={{ flex: 1, paddingRight: '10px' }}>
           <Space direction="vertical">
-            <Typography.Title level={5} style={{ marginTop: 0 }}>
+            <Title level={4} style={{ marginTop: 0 }}>
               {t(project.title)}
-            </Typography.Title>
-            <Typography.Paragraph
+            </Title>
+            <Paragraph
               ellipsis={{
                 rows: 3,
                 tooltip: { title: t(project.description) },
               }}
             >
               {t(project.description)}
-            </Typography.Paragraph>
+            </Paragraph>
             <div>
               {selectedKeywords.map((kw) => (
                 <Tag key={kw} color="blue">
                   {kw}
                 </Tag>
               ))}
-              {extraKeywordCount !== 0 && <Typography.Text>+{extraKeywordCount} more</Typography.Text>}
+              {extraKeywordCount !== 0 && (
+                <Tooltip title={extraKeywords.join(', ')}>
+                  <Text>+{extraKeywordCount} more</Text>
+                </Tooltip>
+              )}
             </div>
             <Descriptions items={projectInfo} />
           </Space>
         </div>
-        <div style={{ width: '50%', maxWidth: '600px' }}>
-          <Typography.Title level={4} style={{ marginTop: 0 }}>
+        <div style={{ flex: 1, maxWidth: '600px' }}>
+          <Title level={5} style={{ marginTop: 0 }}>
             {t('Datasets')}
-          </Typography.Title>
-          <Carousel arrows={project.datasets.length > 1} style={{ border: '1px solid lightgray', borderRadius: '7px' }}>
+          </Title>
+          <Carousel
+            arrows={project.datasets.length > 1}
+            style={{ border: '1px solid lightgray', borderRadius: '7px', height: '170px', padding: '16px' }}
+          >
             {project.datasets.map((d) => (
-              <CatalogueCarouselDataset key={d.identifier} dataset={d} />
+              <Dataset parentProjectID={project.identifier} key={d.identifier} dataset={d} format="carousel" />
             ))}
           </Carousel>
         </div>

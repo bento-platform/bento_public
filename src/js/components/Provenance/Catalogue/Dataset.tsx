@@ -10,7 +10,7 @@ import { RightOutlined } from '@ant-design/icons';
 import { useCallback } from 'react';
 import SmallChartCardTitle from '@/components/Util/SmallChartCardTitle';
 
-const { Paragraph } = Typography;
+const { Paragraph, Title } = Typography;
 
 const KEYWORDS_LIMIT = 2;
 
@@ -22,7 +22,7 @@ const Dataset = ({
 }: {
   parentProjectID: string;
   dataset: Dataset;
-  format: 'list-item' | 'card';
+  format: 'list-item' | 'card' | 'carousel';
   selected?: boolean;
 }) => {
   const location = useLocation();
@@ -80,6 +80,17 @@ const Dataset = ({
           {remainingKeywords?.length > 0 && <Paragraph>+{remainingKeywords.length} more</Paragraph>}
         </Space>
       </Card>
+    );
+  } else if (format === 'carousel') {
+    return (
+      <>
+        <Title level={5} style={{ marginTop: 0 }}>
+          {t(dataset.title)}
+        </Title>
+        <Paragraph ellipsis={{ rows: 4, tooltip: { title: t(dataset.description) } }}>
+          {t(dataset.description)}
+        </Paragraph>
+      </>
     );
   } else {
     return <span style={{ color: 'red' }}>UNIMPLEMENTED</span>;
