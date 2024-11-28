@@ -85,11 +85,9 @@ const Dataset = ({
     return (
       <>
         <Title level={5} style={{ marginTop: 0 }}>
-          {t(dataset.title)}
+          {t(title)}
         </Title>
-        <Paragraph ellipsis={{ rows: 4, tooltip: { title: t(dataset.description) } }}>
-          {t(dataset.description)}
-        </Paragraph>
+        <Paragraph ellipsis={{ rows: 4, tooltip: { title: t(dataset.description) } }}>{t(description)}</Paragraph>
       </>
     );
   } else {
