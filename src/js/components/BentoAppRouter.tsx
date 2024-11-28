@@ -5,7 +5,7 @@ import { useAppDispatch } from '@/hooks';
 
 import { makeGetConfigRequest, makeGetServiceInfoRequest } from '@/features/config/config.store';
 import { makeGetAboutRequest } from '@/features/content/content.store';
-import { makeGetDataRequestThunk, populateClickable } from '@/features/data/data.store';
+import { makeGetDataRequestThunk } from '@/features/data/data.store';
 import { makeGetKatsuPublic, makeGetSearchFields } from '@/features/search/query.store';
 import { getBeaconConfig } from '@/features/beacon/beacon.store';
 import { getBeaconNetworkConfig } from '@/features/beacon/network.store';
@@ -92,12 +92,8 @@ const BentoAppRouter = () => {
     }
 
     dispatch(makeGetAboutRequest());
-    // The "Populate clickable" action needs both chart sections and search fields to be available.
-    // TODO: this is not a very good pattern. It would be better to have a memoized way of determining click-ability at
-    //  render time.
-    Promise.all([dispatch(makeGetDataRequestThunk()), dispatch(makeGetSearchFields())]).then(() =>
-      dispatch(populateClickable())
-    );
+    dispatch(makeGetDataRequestThunk());
+    dispatch(makeGetSearchFields());
     dispatch(makeGetKatsuPublic());
     dispatch(fetchKatsuData());
   }, [dispatch, isAuthenticated, selectedScope]);
