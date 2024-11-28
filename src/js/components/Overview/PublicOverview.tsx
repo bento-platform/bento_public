@@ -12,10 +12,11 @@ import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
 import Counts from './Counts';
 import LastIngestionInfo from './LastIngestion';
 import Loader from '@/components/Loader';
-import Dataset from '@/components/Provenance/Dataset';
+import Dataset from '@/components/Provenance/Catalogue/Dataset';
+import Catalogue from '@/components/Provenance/Catalogue/Catalogue';
 
 import { useAppSelector } from '@/hooks';
-import { useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
+import { useMetadata, useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
 import { useTranslation } from 'react-i18next';
 import { RequestStatus } from '@/types/requests';
 
@@ -37,6 +38,7 @@ const PublicOverview = () => {
 
   const selectedProject = useSelectedProject();
   const { scope } = useSelectedScope();
+  const { projects } = useMetadata();
 
   useEffect(() => {
     // Save sections to localStorage when they change
@@ -58,6 +60,8 @@ const PublicOverview = () => {
     // When we close the drawer, save any changes to localStorage. This helps ensure width gets saved:
     saveToLocalStorage(sections);
   }, [sections]);
+
+  if (!selectedProject && projects.length > 1) return <Catalogue />;
 
   return !isContentPopulated || isFetchingOverviewData ? (
     <Loader />

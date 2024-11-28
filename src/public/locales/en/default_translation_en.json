@@ -129,5 +129,7 @@
       "Coordinates are one-based.",
       "Leave this form blank to search by metadata only."
     ]
-  }
+  },
+  "Created": "Created",
+  "Updated": "Updated"
 }

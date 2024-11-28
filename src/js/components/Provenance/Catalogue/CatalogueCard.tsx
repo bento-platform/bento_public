@@ -1,0 +1,116 @@
+import { useMemo } from 'react';
+import i18n from '@/i18n';
+import { Card, Carousel, Descriptions, Flex, Space, Tag, Tooltip, Typography } from 'antd';
+import type { Project } from '@/types/metadata';
+import { isoDateToString } from '@/utils/strings';
+import { useTranslationFn } from '@/hooks';
+import { BOX_SHADOW } from '@/constants/overviewConstants';
+import Dataset from '@/components/Provenance/Catalogue/Dataset';
+
+const { Paragraph, Text, Title } = Typography;
+
+const MAX_KEYWORD_CHARACTERS = 50;
+
+const CatalogueCard = ({ project }: { project: Project }) => {
+  const lang = i18n.language;
+  const t = useTranslationFn();
+
+  const { selectedKeywords, extraKeywords, extraKeywordCount } = useMemo(() => {
+    const keywords = project.datasets.flatMap((d) => d.dats_file.keywords ?? []).map((k) => t(k.value as string));
+
+    let totalCharacters = 0;
+    const selectedKeywords: string[] = [];
+    const extraKeywords: string[] = [];
+
+    for (const keyword of keywords) {
+      if (totalCharacters + keyword.length > MAX_KEYWORD_CHARACTERS) {
+        extraKeywords.push(keyword);
+      } else {
+        selectedKeywords.push(keyword);
+        totalCharacters += keyword.length;
+      }
+    }
+
+    return {
+      selectedKeywords,
+      extraKeywords,
+      extraKeywordCount: extraKeywords.length,
+    };
+  }, [project.datasets, t]);
+
+  const projectCreated = isoDateToString(project.created, lang);
+  const projectUpdated = isoDateToString(project.updated, lang);
+
+  const projectInfo = [
+    {
+      key: '1',
+      label: t('Created'),
+      children: (
+        <Paragraph
+          ellipsis={{
+            rows: 1,
+            tooltip: { title: projectCreated },
+          }}
+        >
+          {projectCreated}
+        </Paragraph>
+      ),
+      span: 1.5,
+    },
+    {
+      key: '2',
+      label: t('Updated'),
+      children: <Paragraph ellipsis={{ rows: 1, tooltip: { title: projectUpdated } }}>{projectUpdated}</Paragraph>,
+      span: 1.5,
+    },
+  ];
+
+  return (
+    <Card key={project.identifier} style={{ height: '260px', maxWidth: '1300px', ...BOX_SHADOW }}>
+      <Flex justify="space-between">
+        <div style={{ flex: 1, paddingRight: '10px' }}>
+          <Space direction="vertical">
+            <Title level={4} style={{ marginTop: 0 }}>
+              {t(project.title)}
+            </Title>
+            <Paragraph
+              ellipsis={{
+                rows: 3,
+                tooltip: { title: t(project.description) },
+              }}
+            >
+              {t(project.description)}
+            </Paragraph>
+            <div>
+              {selectedKeywords.map((kw) => (
+                <Tag key={kw} color="blue">
+                  {kw}
+                </Tag>
+              ))}
+              {extraKeywordCount !== 0 && (
+                <Tooltip title={extraKeywords.join(', ')}>
+                  <Text>+{extraKeywordCount} more</Text>
+                </Tooltip>
+              )}
+            </div>
+            <Descriptions items={projectInfo} />
+          </Space>
+        </div>
+        <div style={{ flex: 1, maxWidth: '600px' }}>
+          <Title level={5} style={{ marginTop: 0 }}>
+            {t('Datasets')}
+          </Title>
+          <Carousel
+            arrows={project.datasets.length > 1}
+            style={{ border: '1px solid lightgray', borderRadius: '7px', height: '170px', padding: '16px' }}
+          >
+            {project.datasets.map((d) => (
+              <Dataset parentProjectID={project.identifier} key={d.identifier} dataset={d} format="carousel" />
+            ))}
+          </Carousel>
+        </div>
+      </Flex>
+    </Card>
+  );
+};
+export default CatalogueCard;
