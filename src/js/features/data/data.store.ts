@@ -4,16 +4,17 @@ import { createSlice } from '@reduxjs/toolkit';
 import { makeGetDataRequestThunk } from './makeGetDataRequest.thunk';
 import type { Sections } from '@/types/data';
 import type { Counts } from '@/types/overviewResponse';
+import { RequestStatus } from '@/types/requests';
 
 interface DataState {
-  isFetchingData: boolean;
+  status: RequestStatus;
   defaultLayout: Sections;
   sections: Sections;
   counts: Counts;
 }
 
 const initialState: DataState = {
-  isFetchingData: true,
+  status: RequestStatus.Idle,
   defaultLayout: [],
   sections: [],
   counts: {
@@ -79,16 +80,16 @@ const data = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(makeGetDataRequestThunk.pending, (state) => {
-        state.isFetchingData = true;
+        state.status = RequestStatus.Pending;
       })
       .addCase(makeGetDataRequestThunk.fulfilled, (state, { payload }) => {
         state.sections = payload.sectionData;
         state.defaultLayout = payload.defaultData;
         state.counts = payload.counts;
-        state.isFetchingData = false;
+        state.status = RequestStatus.Fulfilled;
       })
       .addCase(makeGetDataRequestThunk.rejected, (state) => {
-        state.isFetchingData = false;
+        state.status = RequestStatus.Rejected;
       });
   },
 });

@@ -5,6 +5,7 @@ import { BiDna } from 'react-icons/bi';
 
 import CountsTitleWithHelp from '@/components/Util/CountsTitleWithHelp';
 import { BOX_SHADOW, COUNTS_FILL } from '@/constants/overviewConstants';
+import { WAITING_STATES } from '@/constants/requests';
 import { NO_RESULTS_DASHES } from '@/constants/searchConstants';
 import { useAppSelector, useTranslationFn } from '@/hooks';
 import { useCanSeeUncensoredCounts } from '@/hooks/censorship';
@@ -23,7 +24,7 @@ type CountEntry = { entity: BentoEntity; icon: ReactNode; count: number };
 const Counts = () => {
   const t = useTranslationFn();
 
-  const { counts, isFetchingData } = useAppSelector((state) => state.data);
+  const { counts, status } = useAppSelector((state) => state.data);
 
   const uncensoredCounts = useCanSeeUncensoredCounts();
 
@@ -46,18 +47,20 @@ const Counts = () => {
     },
   ];
 
+  const waitingForData = WAITING_STATES.includes(status);
+
   return (
     <>
       <Typography.Title level={3}>{t('Counts')}</Typography.Title>
       <Space wrap>
         {data.map(({ entity, icon, count }, i) => (
-          <Card key={i} style={{ ...styles.countCard, height: isFetchingData ? 138 : 114 }}>
+          <Card key={i} style={{ ...styles.countCard, height: waitingForData ? 138 : 114 }}>
             <Statistic
               title={<CountsTitleWithHelp entity={entity} />}
               value={count || (uncensoredCounts ? count : NO_RESULTS_DASHES)}
               valueStyle={{ color: COUNTS_FILL }}
               prefix={icon}
-              loading={isFetchingData}
+              loading={waitingForData}
             />
           </Card>
         ))}

@@ -18,6 +18,7 @@ import { getGenomes } from '@/features/reference/reference.store';
 import Loader from '@/components/Loader';
 import DefaultLayout from '@/components/Util/DefaultLayout';
 import { BEACON_NETWORK_ENABLED } from '@/config';
+import { WAITING_STATES } from '@/constants/requests';
 import { RequestStatus } from '@/types/requests';
 import { BentoRoute } from '@/types/routes';
 import { scopeEqual, validProjectDataset } from '@/utils/router';
@@ -35,7 +36,7 @@ const ScopedRoute = () => {
   const { selectedScope, projects, projectsStatus } = useMetadata();
 
   useEffect(() => {
-    if ([RequestStatus.Idle, RequestStatus.Pending].includes(projectsStatus)) return; // Wait for projects to load first
+    if (WAITING_STATES.includes(projectsStatus)) return; // Wait for projects to load first
 
     // Update selectedScope based on URL parameters
     const valid = validProjectDataset(projects, { project: projectId, dataset: datasetId });
