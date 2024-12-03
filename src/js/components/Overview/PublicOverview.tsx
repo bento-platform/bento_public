@@ -6,6 +6,7 @@ import { convertSequenceAndDisplayData, saveValue } from '@/utils/localStorage';
 import type { Sections } from '@/types/data';
 
 import { BOX_SHADOW, LOCALSTORAGE_CHARTS_KEY } from '@/constants/overviewConstants';
+import { WAITING_STATES } from '@/constants/requests';
 
 import OverviewSection from './OverviewSection';
 import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
@@ -15,6 +16,7 @@ import Loader from '@/components/Loader';
 import Dataset from '@/components/Provenance/Dataset';
 
 import { useAppSelector } from '@/hooks';
+import { useSearchableFields } from '@/features/data/hooks';
 import { useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
 import { useTranslation } from 'react-i18next';
 import { RequestStatus } from '@/types/requests';
@@ -28,11 +30,7 @@ const PublicOverview = () => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [aboutContent, setAboutContent] = useState('');
 
-  const {
-    isFetchingData: isFetchingOverviewData,
-    isContentPopulated,
-    sections,
-  } = useAppSelector((state) => state.data);
+  const { status: overviewDataStatus, sections } = useAppSelector((state) => state.data);
   const { status: aboutStatus, about } = useAppSelector((state) => state.content);
 
   const selectedProject = useSelectedProject();
@@ -40,9 +38,9 @@ const PublicOverview = () => {
 
   useEffect(() => {
     // Save sections to localStorage when they change
-    if (isFetchingOverviewData) return;
+    if (overviewDataStatus != RequestStatus.Fulfilled) return;
     saveToLocalStorage(sections);
-  }, [isFetchingOverviewData, sections]);
+  }, [overviewDataStatus, sections]);
 
   useEffect(() => {
     const activeLanguage = i18n.language;
@@ -59,7 +57,9 @@ const PublicOverview = () => {
     saveToLocalStorage(sections);
   }, [sections]);
 
-  return !isContentPopulated || isFetchingOverviewData ? (
+  const searchableFields = useSearchableFields();
+
+  return WAITING_STATES.includes(overviewDataStatus) ? (
     <Loader />
   ) : (
     <>
@@ -94,7 +94,7 @@ const PublicOverview = () => {
         <Col flex={1}>
           {displayedSections.map(({ sectionTitle, charts }, i) => (
             <div key={i} className="overview">
-              <OverviewSection title={sectionTitle} chartData={charts} />
+              <OverviewSection title={sectionTitle} chartData={charts} searchableFields={searchableFields} />
             </div>
           ))}
           <LastIngestionInfo />

@@ -13,7 +13,7 @@ const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: Manage
 
   const dispatch = useAppDispatch();
 
-  const sections = useAppSelector((state) => state.data.sections);
+  const { sections } = useAppSelector((state) => state.data);
 
   return (
     <Drawer
