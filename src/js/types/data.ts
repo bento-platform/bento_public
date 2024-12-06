@@ -4,6 +4,7 @@ import type { OverviewResponseDataField } from '@/types/overviewResponse';
 export type Sections = Section[];
 
 export type Section = {
+  index: number;
   sectionTitle: string;
   charts: ChartDataField[];
 };

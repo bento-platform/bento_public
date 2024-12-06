@@ -84,7 +84,7 @@ const ChartTree = ({ charts, section }: ChartTreeProps) => {
 
 export interface ChartTreeProps {
   charts: ChartDataField[];
-  section: string;
+  section: number;
 }
 
 export default ChartTree;

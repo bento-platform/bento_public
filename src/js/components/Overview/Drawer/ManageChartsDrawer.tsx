@@ -4,7 +4,6 @@ const { Title } = Typography;
 
 import ChartTree from './ChartTree';
 
-import type { ChartDataField } from '@/types/data';
 import { useAppSelector, useAppDispatch, useTranslationFn } from '@/hooks';
 import { hideAllSectionCharts, setAllDisplayedCharts, resetLayout } from '@/features/data/data.store';
 
@@ -42,8 +41,8 @@ const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: Manage
         </Space>
       }
     >
-      {sections.map(({ sectionTitle, charts }: { sectionTitle: string; charts: ChartDataField[] }, i: number) => (
-        <div key={i}>
+      {sections.map(({ index, sectionTitle, charts }) => (
+        <div key={index}>
           <Flex justify="space-between" align="center" style={{ padding: '10px 0' }}>
             <Title level={5} style={{ margin: '0' }}>
               {t(sectionTitle)}
@@ -52,7 +51,7 @@ const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: Manage
               <Button
                 size="small"
                 onClick={() => {
-                  dispatch(setAllDisplayedCharts({ section: sectionTitle }));
+                  dispatch(setAllDisplayedCharts({ section: index }));
                 }}
               >
                 Show All
@@ -60,14 +59,14 @@ const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: Manage
               <Button
                 size="small"
                 onClick={() => {
-                  dispatch(hideAllSectionCharts({ section: sectionTitle }));
+                  dispatch(hideAllSectionCharts({ section: index }));
                 }}
               >
                 Hide All
               </Button>
             </Space>
           </Flex>
-          <ChartTree charts={charts} section={sectionTitle} />
+          <ChartTree charts={charts} section={index} />
         </div>
       ))}
     </Drawer>

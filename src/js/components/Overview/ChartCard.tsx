@@ -73,9 +73,9 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable }: ChartCard
 ChartCard.displayName = 'ChartCard';
 
 export interface ChartCardProps {
-  section: string;
+  section: number; // Section index (ID)
   chart: ChartDataField;
-  onRemoveChart: (arg: { section: string; id: string }) => void;
+  onRemoveChart: (arg: { section: number; id: string }) => void;
   searchable?: boolean;
 }
 
