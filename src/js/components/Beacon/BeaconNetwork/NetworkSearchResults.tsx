@@ -43,7 +43,7 @@ const NetworkSearchResults = () => {
   // currently not possible to have both a network error and results, but this may change in the future
   const resultsExtra = (
     <Space>
-      {hasBeaconNetworkError && <Tag color="red">Network Error</Tag>}
+      {hasBeaconNetworkError && <Tag color="red">{t('beacon.network_error')}</Tag>}
       {!noResponsesYet && isFetchingAtLeastOneResponse && (
         <Spin size="small" indicator={<Loading3QuartersOutlined spin={true} />} />
       )}

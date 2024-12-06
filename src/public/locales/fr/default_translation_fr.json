@@ -64,11 +64,12 @@
   "Download DATS File": "Télécharcher le fichier DATS",
   "Charts": "Tableaux",
   "Manage Charts": "Gestion des tableaux",
+  "Show All": "Montrer tous",
+  "Reset": "Réinit.",
+  "Hide All": "Cacher tous",
   "Remove this chart": "Supprimer ce tableau",
   "Width": "Largeur",
   "Insufficient data available.": "Pas suffisamment de données.",
-  "Powered by": "Propulsé par",
-  "Terms of Use": "Conditions d'utilisation (en anglais)",
   "No Data": "Pas de données",
   "Counts": "Totaux",
   "Search by genomic variants, clinical metadata or both.": "Recherche par variant génomique, métadonnées cliniques ou les deux.",
@@ -110,8 +111,10 @@
     "beacon_error": "Erreur de Beacon",
     "results_from": "Résultats de",
     "network_search_results": "Résultats de la recherche sur le réseau",
+    "network_error": "Erreur de réseau",
     "show_all_filters": "afficher tous les filtres",
     "common_filters_only": "filtres communs uniquement",
+    "network_filter_toggle_help": "Choisissez tous les filtres de recherche du réseau ou seulement ceux qui sont communs à tous les Beacons.",
     "home_page": "Page d'accueil",
     "select_asm": "Sélectionner un assemblage génomique",
     "variants_form_error": "Le formulaire de recherche de variants doit inclure un chromosome et soit la position de fin, ou les bases de référence et les bases alternatives.",
@@ -129,5 +132,13 @@
       "Les coordonnées sont en base un.",
       "Laissez ce formulaire vide pour effectuer une recherche sur les métadonnées seulement."
     ]
+  },
+  "footer": {
+    "powered_by": "Propulsé par",
+    "copyright": "©",
+    "c3g": "le Centre canadien de génomique computationnelle",
+    "licensed_under": "Bento est sous licence",
+    "source_available": "Le code source est disponible sur",
+    "terms_of_use": "Conditions d'utilisation (en anglais)"
   }
 }

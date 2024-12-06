@@ -16,7 +16,7 @@ const NetworkFilterToggle = () => {
   const { isQuerySectionsUnion } = useBeaconNetwork();
 
   return (
-    <Tooltip title="Choose all search filters across the network, or only those common to all beacons.">
+    <Tooltip title={t('beacon.network_filter_toggle_help')}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <Switch
           onChange={() => dispatch(toggleQuerySectionsUnionOrIntersection())}

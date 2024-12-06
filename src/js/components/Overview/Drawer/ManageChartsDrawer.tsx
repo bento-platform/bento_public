@@ -6,12 +6,15 @@ import ChartTree from './ChartTree';
 
 import type { ChartDataField } from '@/types/data';
 import { useAppSelector, useAppDispatch, useTranslationFn } from '@/hooks';
+import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { hideAllSectionCharts, setAllDisplayedCharts, resetLayout } from '@/features/data/data.store';
 
 const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: ManageChartsDrawerProps) => {
   const t = useTranslationFn();
 
   const dispatch = useAppDispatch();
+
+  const isSmallScreen = useSmallScreen();
 
   const { sections } = useAppSelector((state) => state.data);
 
@@ -21,6 +24,9 @@ const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: Manage
       placement="right"
       onClose={onManageDrawerClose}
       open={manageDrawerVisible}
+      // If we're on a small device, make the drawer full-screen width instead of a fixed width.
+      // The default value for Ant Design is 372.
+      width={isSmallScreen ? '100vw' : 420}
       extra={
         <Space>
           <Button
@@ -29,7 +35,7 @@ const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: Manage
               dispatch(setAllDisplayedCharts({}));
             }}
           >
-            Show All
+            {t('Show All')}
           </Button>
           <Button
             size="small"
@@ -37,7 +43,7 @@ const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: Manage
               dispatch(resetLayout());
             }}
           >
-            Reset
+            {t('Reset')}
           </Button>
         </Space>
       }
@@ -55,7 +61,7 @@ const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: Manage
                   dispatch(setAllDisplayedCharts({ section: sectionTitle }));
                 }}
               >
-                Show All
+                {t('Show All')}
               </Button>
               <Button
                 size="small"
@@ -63,7 +69,7 @@ const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: Manage
                   dispatch(hideAllSectionCharts({ section: sectionTitle }));
                 }}
               >
-                Hide All
+                {t('Hide All')}
               </Button>
             </Space>
           </Flex>
