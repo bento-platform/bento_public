@@ -25,7 +25,7 @@ const ABOUT_CARD_STYLE = { width: '100%', maxWidth: '1390px', borderRadius: '11p
 const MANAGE_CHARTS_BUTTON_STYLE = { right: '5em', bottom: '1.5em', transform: 'scale(125%)' };
 
 const PublicOverview = () => {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
 
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [aboutContent, setAboutContent] = useState('');
@@ -105,7 +105,7 @@ const PublicOverview = () => {
       <FloatButton
         type="primary"
         icon={<AppstoreAddOutlined rotate={270} />}
-        tooltip="Manage Charts"
+        tooltip={t('Manage Charts')}
         style={MANAGE_CHARTS_BUTTON_STYLE}
         onClick={onManageChartsOpen}
       />
