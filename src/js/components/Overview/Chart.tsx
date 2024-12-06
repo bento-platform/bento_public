@@ -39,6 +39,7 @@ const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) =
   };
 
   const { chart_type: type } = chartConfig;
+  units = t(units); // Units can be a word, like "years". Make sure this word gets translated.
 
   switch (type) {
     case CHART_TYPE_BAR:
@@ -101,7 +102,7 @@ const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) =
           }}
           renderPopupBody={(_f, d) => (
             <>
-              Count: {(d ?? 0).toString()} {units}
+              {t('Count') + ':'} {(d ?? 0).toString()} {units}
             </>
           )}
         />
