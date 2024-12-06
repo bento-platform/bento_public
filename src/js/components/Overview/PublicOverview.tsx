@@ -92,10 +92,8 @@ const PublicOverview = () => {
       )}
       <Row>
         <Col flex={1}>
-          {displayedSections.map(({ sectionTitle, charts }, i) => (
-            <div key={i} className="overview">
-              <OverviewSection title={sectionTitle} chartData={charts} searchableFields={searchableFields} />
-            </div>
+          {displayedSections.map((section) => (
+            <OverviewSection key={section.index} section={section} searchableFields={searchableFields} />
           ))}
           <LastIngestionInfo />
         </Col>

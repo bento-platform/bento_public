@@ -48,8 +48,8 @@ export const getValue = <T>(key: string, defaultVal: T, verifyFunc: (arg: any) =
 
 export const convertSequenceAndDisplayData = (sections: Sections) => {
   const temp: LocalStorageData = {};
-  sections.forEach(({ sectionTitle, charts }) => {
-    temp[sectionTitle] = charts.map(({ id, isDisplayed, width }) => ({ id, isDisplayed, width }));
+  sections.forEach(({ index, charts }) => {
+    temp[index] = charts.map(({ id, isDisplayed, width }) => ({ id, isDisplayed, width }));
   });
   return temp;
 };
