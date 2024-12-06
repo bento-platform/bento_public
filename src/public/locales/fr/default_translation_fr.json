@@ -70,8 +70,6 @@
   "Remove this chart": "Supprimer ce tableau",
   "Width": "Largeur",
   "Insufficient data available.": "Pas suffisamment de données.",
-  "Powered by": "Propulsé par",
-  "Terms of Use": "Conditions d'utilisation (en anglais)",
   "No Data": "Pas de données",
   "Counts": "Totaux",
   "Search by genomic variants, clinical metadata or both.": "Recherche par variant génomique, métadonnées cliniques ou les deux.",
@@ -134,5 +132,13 @@
       "Les coordonnées sont en base un.",
       "Laissez ce formulaire vide pour effectuer une recherche sur les métadonnées seulement."
     ]
+  },
+  "footer": {
+    "powered_by": "Propulsé par",
+    "copyright": "©",
+    "c3g": "le Centre canadien de génomique computationnelle",
+    "licensed_under": "Bento est sous licence",
+    "source_available": "Le code source est disponible sur",
+    "terms_of_use": "Conditions d'utilisation (en anglais)"
   }
 }

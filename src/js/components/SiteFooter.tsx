@@ -14,7 +14,7 @@ const SiteFooter = () => {
         <Space size={8} direction="vertical" align="center">
           <div>
             <Title level={5} type="secondary" style={{ marginBottom: '0' }}>
-              {t('Powered by')}
+              {t('footer.powered_by')}
             </Title>
             <Link href="https://bento-platform.github.io" target="_blank">
               <img style={{ height: '36px' }} src={bentoLogo} alt="Bento" />
@@ -22,19 +22,19 @@ const SiteFooter = () => {
           </div>
           <div>
             <Text type="secondary">
-              Copyright &copy; 2019-2024 the{' '}
+              {t('footer.copyright')} 2019-2024{' '}
               <Link href="https://computationalgenomics.ca" target="_blank">
-                Canadian Centre for Computational Genomics
+                {t('footer.c3g')}
               </Link>
               .
             </Text>
             <br />
             <Text type="secondary">
-              Bento is licensed under the{' '}
+              {t('footer.licensed_under') + ' '}
               <Link href="https://github.com/bento-platform/bento_public/blob/main/LICENSE" target="_blank">
                 LGPLv3
               </Link>
-              . The source code is available on{' '}
+              . {t('footer.source_available') + ' '}
               <Link href="https://github.com/bento-platform" target="_blank">
                 Github
               </Link>
@@ -43,7 +43,7 @@ const SiteFooter = () => {
           </div>
           <div>
             <Link href="/public/terms.html" target="_blank">
-              {t('Terms of Use')}
+              {t('footer.terms_of_use')}
             </Link>
           </div>
         </Space>
