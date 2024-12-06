@@ -24,6 +24,8 @@ const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: Manage
       placement="right"
       onClose={onManageDrawerClose}
       open={manageDrawerVisible}
+      // If we're on a small device, make the drawer full-screen width instead of a fixed width.
+      // The default value for Ant Design is 372.
       width={isSmallScreen ? '100vw' : 400}
       extra={
         <Space>
