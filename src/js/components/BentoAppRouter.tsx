@@ -33,13 +33,13 @@ const ScopedRoute = () => {
   const { projectId, datasetId } = useParams();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { selectedScope, projects, projectsStatus } = useMetadata();
+  const { selectedScope, projectsByID, projectsStatus } = useMetadata();
 
   useEffect(() => {
     if (WAITING_STATES.includes(projectsStatus)) return; // Wait for projects to load first
 
     // Update selectedScope based on URL parameters
-    const valid = validProjectDataset(projects, { project: projectId, dataset: datasetId });
+    const valid = validProjectDataset(projectsByID, { project: projectId, dataset: datasetId });
 
     // Don't change the scope object if the scope value is the same, otherwise it'll trigger needless re-renders.
     if (scopeEqual(selectedScope.scope, valid.scope)) {
@@ -72,7 +72,7 @@ const ScopedRoute = () => {
     }
     const newPathString = '/' + newPath.join('/');
     navigate(newPathString, { replace: true });
-  }, [projects, projectsStatus, projectId, datasetId, dispatch, navigate, selectedScope]);
+  }, [projectsByID, projectsStatus, projectId, datasetId, dispatch, navigate, selectedScope]);
 
   return <Outlet />;
 };

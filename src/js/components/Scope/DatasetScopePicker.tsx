@@ -51,7 +51,14 @@ const DatasetScopePicker = ({ parentProject }: DatasetScopePickerProps) => {
       <List
         dataSource={parentProject.datasets}
         bordered
-        renderItem={(d) => <Dataset parentProjectID={parentProject.identifier} dataset={d} format="list-item" />}
+        renderItem={(d) => (
+          <Dataset
+            parentProjectID={parentProject.identifier}
+            dataset={d}
+            format="list-item"
+            selected={scopeObj.dataset === d.identifier}
+          />
+        )}
       />
     </Space>
   );

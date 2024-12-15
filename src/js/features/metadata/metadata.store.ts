@@ -19,12 +19,14 @@ export type DiscoveryScopeSelection = {
 
 export interface MetadataState {
   projects: Project[];
+  projectsByID: Record<string, Project>;
   projectsStatus: RequestStatus;
   selectedScope: DiscoveryScopeSelection;
 }
 
 const initialState: MetadataState = {
   projects: [],
+  projectsByID: {},
   projectsStatus: RequestStatus.Idle,
   selectedScope: {
     scope: { project: undefined, dataset: undefined },
@@ -66,7 +68,7 @@ const metadata = createSlice({
       // Defaults to the narrowest possible scope if there is only 1 project and only 1 dataset.
       // This forces Katsu to resolve the Discovery config with fallbacks from the bottom-up:
       // dataset -> project -> whole node
-      state.selectedScope = validProjectDataset(state.projects, payload);
+      state.selectedScope = validProjectDataset(state.projectsByID, payload);
     },
     markScopeSet: (state) => {
       state.selectedScope.scopeSet = true;
@@ -77,7 +79,9 @@ const metadata = createSlice({
       state.projectsStatus = RequestStatus.Pending;
     });
     builder.addCase(getProjects.fulfilled, (state, { payload }) => {
-      state.projects = payload?.results ?? [];
+      const projects = payload?.results ?? [];
+      state.projects = projects;
+      state.projectsByID = Object.fromEntries(projects.map((p) => [p.identifier, p]));
       state.projectsStatus = RequestStatus.Fulfilled;
     });
     builder.addCase(getProjects.rejected, (state) => {
