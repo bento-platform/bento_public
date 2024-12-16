@@ -67,9 +67,9 @@ const CatalogueCard = ({ project }: { project: Project }) => {
   ];
 
   return (
-    <Card style={{ height: '260px', maxWidth: '1300px', ...BOX_SHADOW }}>
-      <Flex justify="space-between">
-        <div style={{ flex: 1, paddingRight: '10px' }}>
+    <Card style={{ maxWidth: '1300px', ...BOX_SHADOW }}>
+      <Flex justify="space-between" wrap>
+        <div style={{ flex: 1, paddingRight: '10px', minWidth: '450px' }}>
           <Space direction="vertical">
             <Title level={4} style={{ marginTop: 0 }}>
               {t(title)}
