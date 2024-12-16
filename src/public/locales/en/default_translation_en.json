@@ -64,11 +64,12 @@
   "Download DATS File": "Download DATS File",
   "Charts": "Charts",
   "Manage Charts": "Manage Charts",
+  "Show All": "Show All",
+  "Reset": "Reset",
+  "Hide All": "Hide All",
   "Remove this chart": "Remove this chart",
   "Width": "Width",
   "Insufficient data available.": "Insufficient data available.",
-  "Powered by": "Powered by",
-  "Terms of Use": "Terms of Use",
   "No Data": "No Data",
   "Counts": "Counts",
   "Search by genomic variants, clinical metadata or both.": "Search by genomic variants, clinical metadata or both.",
@@ -104,14 +105,18 @@
   "Datasets": "Datasets",
   "Clear": "Clear",
   "Select": "Select",
+  "Created": "Created",
+  "Updated": "Updated",
   "beacon": {
     "search_beacon": "Search Beacon",
     "search_network": "Search Network",
     "beacon_error": "Beacon Error",
     "results_from": "Results from",
     "network_search_results": "Network Search Results",
+    "network_error": "Network Error",
     "show_all_filters": "show all filters",
     "common_filters_only": "common filters only",
+    "network_filter_toggle_help": "Choose all search filters across the network, or only those common to all beacons.",
     "home_page": "Home Page",
     "select_asm": "Select an assembly",
     "variants_form_error": "Variants form should include a chromosome and either an end position or both reference and alternate bases",
@@ -130,6 +135,12 @@
       "Leave this form blank to search by metadata only."
     ]
   },
-  "Created": "Created",
-  "Updated": "Updated"
+  "footer": {
+    "powered_by": "Powered by",
+    "copyright": "Copyright ©",
+    "c3g": "the Canadian Centre for Computational Genomics",
+    "licensed_under": "Bento is licensed under the",
+    "source_available": "The source code is available on",
+    "terms_of_use": "Terms of Use"
+  }
 }

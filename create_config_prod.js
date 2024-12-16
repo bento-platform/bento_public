@@ -6,6 +6,7 @@ const siteConfig = {
   TRANSLATED: parseBoolean(process.env.BENTO_PUBLIC_TRANSLATED),
   BEACON_URL: process.env.BEACON_URL || null,
   BEACON_UI_ENABLED: parseBoolean(process.env.BENTO_BEACON_UI_ENABLED),
+  BEACON_NETWORK_ENABLED: parseBoolean(process.env.BENTO_BEACON_NETWORK_ENABLED),
 
   // Authentication
   PUBLIC_URL: process.env.BENTO_PUBLIC_URL || null,

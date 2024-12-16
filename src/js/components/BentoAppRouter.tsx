@@ -5,7 +5,7 @@ import { useAppDispatch } from '@/hooks';
 
 import { makeGetConfigRequest, makeGetServiceInfoRequest } from '@/features/config/config.store';
 import { makeGetAboutRequest } from '@/features/content/content.store';
-import { makeGetDataRequestThunk, populateClickable } from '@/features/data/data.store';
+import { makeGetDataRequestThunk } from '@/features/data/data.store';
 import { makeGetKatsuPublic, makeGetSearchFields } from '@/features/search/query.store';
 import { getBeaconConfig } from '@/features/beacon/beacon.store';
 import { getBeaconNetworkConfig } from '@/features/beacon/network.store';
@@ -18,6 +18,7 @@ import { getGenomes } from '@/features/reference/reference.store';
 import Loader from '@/components/Loader';
 import DefaultLayout from '@/components/Util/DefaultLayout';
 import { BEACON_NETWORK_ENABLED } from '@/config';
+import { WAITING_STATES } from '@/constants/requests';
 import { RequestStatus } from '@/types/requests';
 import { BentoRoute } from '@/types/routes';
 import { scopeEqual, validProjectDataset } from '@/utils/router';
@@ -35,7 +36,7 @@ const ScopedRoute = () => {
   const { selectedScope, projects, projectsStatus } = useMetadata();
 
   useEffect(() => {
-    if ([RequestStatus.Idle, RequestStatus.Pending].includes(projectsStatus)) return; // Wait for projects to load first
+    if (WAITING_STATES.includes(projectsStatus)) return; // Wait for projects to load first
 
     // Update selectedScope based on URL parameters
     const valid = validProjectDataset(projects, { project: projectId, dataset: datasetId });
@@ -92,12 +93,8 @@ const BentoAppRouter = () => {
     }
 
     dispatch(makeGetAboutRequest());
-    // The "Populate clickable" action needs both chart sections and search fields to be available.
-    // TODO: this is not a very good pattern. It would be better to have a memoized way of determining click-ability at
-    //  render time.
-    Promise.all([dispatch(makeGetDataRequestThunk()), dispatch(makeGetSearchFields())]).then(() =>
-      dispatch(populateClickable())
-    );
+    dispatch(makeGetDataRequestThunk());
+    dispatch(makeGetSearchFields());
     dispatch(makeGetKatsuPublic());
     dispatch(fetchKatsuData());
   }, [dispatch, isAuthenticated, selectedScope]);

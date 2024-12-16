@@ -1,31 +1,20 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 import { makeGetDataRequestThunk } from './makeGetDataRequest.thunk';
 import type { Sections } from '@/types/data';
 import type { Counts } from '@/types/overviewResponse';
-import type { QueryState } from '@/features/search/query.store';
-
-export const populateClickable = createAsyncThunk<string[], void, { state: { query: QueryState } }>(
-  'data/populateClickable',
-  async (_, { getState }) => {
-    return getState()
-      .query.querySections.flatMap((section) => section.fields)
-      .map((field) => field.id);
-  }
-);
+import { RequestStatus } from '@/types/requests';
 
 interface DataState {
-  isFetchingData: boolean;
-  isContentPopulated: boolean;
+  status: RequestStatus;
   defaultLayout: Sections;
   sections: Sections;
   counts: Counts;
 }
 
 const initialState: DataState = {
-  isFetchingData: true,
-  isContentPopulated: false,
+  status: RequestStatus.Idle,
   defaultLayout: [],
   sections: [],
   counts: {
@@ -91,24 +80,16 @@ const data = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(makeGetDataRequestThunk.pending, (state) => {
-        state.isFetchingData = true;
+        state.status = RequestStatus.Pending;
       })
       .addCase(makeGetDataRequestThunk.fulfilled, (state, { payload }) => {
         state.sections = payload.sectionData;
         state.defaultLayout = payload.defaultData;
         state.counts = payload.counts;
-        state.isFetchingData = false;
+        state.status = RequestStatus.Fulfilled;
       })
       .addCase(makeGetDataRequestThunk.rejected, (state) => {
-        state.isFetchingData = false;
-      })
-      .addCase(populateClickable.fulfilled, (state, { payload }) => {
-        state.sections.forEach((section) => {
-          section.charts.forEach((chart) => {
-            chart.isSearchable = payload.includes(chart.id);
-          });
-        });
-        state.isContentPopulated = true;
+        state.status = RequestStatus.Rejected;
       });
   },
 });

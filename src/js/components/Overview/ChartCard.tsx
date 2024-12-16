@@ -12,7 +12,7 @@ import SmallChartCardTitle from '@/components/Util/SmallChartCardTitle';
 const CARD_STYLE: CSSProperties = { height: '415px', borderRadius: '11px', ...BOX_SHADOW };
 const ROW_EMPTY_STYLE: CSSProperties = { height: `${CHART_HEIGHT}px` };
 
-const ChartCard = memo(({ section, chart, onRemoveChart }: ChartCardProps) => {
+const ChartCard = memo(({ section, chart, onRemoveChart, searchable }: ChartCardProps) => {
   const t = useTranslationFn();
   const containerRef = useRef<HTMLDivElement>(null);
   const width = useElementWidth(containerRef, chart.width);
@@ -21,7 +21,6 @@ const ChartCard = memo(({ section, chart, onRemoveChart }: ChartCardProps) => {
     data,
     field: { id, description, title, config },
     chartConfig,
-    isSearchable,
   } = chart;
 
   const extraOptionsData = [
@@ -59,7 +58,7 @@ const ChartCard = memo(({ section, chart, onRemoveChart }: ChartCardProps) => {
             units={config?.units || ''}
             id={id}
             key={id}
-            isClickable={isSearchable}
+            isClickable={!!searchable}
           />
         ) : (
           <Row style={ROW_EMPTY_STYLE} justify="center" align="middle">
@@ -77,6 +76,7 @@ export interface ChartCardProps {
   section: string;
   chart: ChartDataField;
   onRemoveChart: (arg: { section: string; id: string }) => void;
+  searchable?: boolean;
 }
 
 export default ChartCard;

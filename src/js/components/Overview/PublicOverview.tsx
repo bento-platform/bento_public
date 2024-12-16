@@ -6,6 +6,7 @@ import { convertSequenceAndDisplayData, saveValue } from '@/utils/localStorage';
 import type { Sections } from '@/types/data';
 
 import { BOX_SHADOW, LOCALSTORAGE_CHARTS_KEY } from '@/constants/overviewConstants';
+import { WAITING_STATES } from '@/constants/requests';
 
 import OverviewSection from './OverviewSection';
 import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
@@ -16,6 +17,7 @@ import Dataset from '@/components/Provenance/Catalogue/Dataset';
 import Catalogue from '@/components/Provenance/Catalogue/Catalogue';
 
 import { useAppSelector } from '@/hooks';
+import { useSearchableFields } from '@/features/data/hooks';
 import { useMetadata, useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
 import { useTranslation } from 'react-i18next';
 import { RequestStatus } from '@/types/requests';
@@ -24,16 +26,12 @@ const ABOUT_CARD_STYLE = { width: '100%', maxWidth: '1390px', borderRadius: '11p
 const MANAGE_CHARTS_BUTTON_STYLE = { right: '5em', bottom: '1.5em', transform: 'scale(125%)' };
 
 const PublicOverview = () => {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
 
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [aboutContent, setAboutContent] = useState('');
 
-  const {
-    isFetchingData: isFetchingOverviewData,
-    isContentPopulated,
-    sections,
-  } = useAppSelector((state) => state.data);
+  const { status: overviewDataStatus, sections } = useAppSelector((state) => state.data);
   const { status: aboutStatus, about } = useAppSelector((state) => state.content);
 
   const selectedProject = useSelectedProject();
@@ -42,9 +40,9 @@ const PublicOverview = () => {
 
   useEffect(() => {
     // Save sections to localStorage when they change
-    if (isFetchingOverviewData) return;
+    if (overviewDataStatus != RequestStatus.Fulfilled) return;
     saveToLocalStorage(sections);
-  }, [isFetchingOverviewData, sections]);
+  }, [overviewDataStatus, sections]);
 
   useEffect(() => {
     const activeLanguage = i18n.language;
@@ -61,9 +59,11 @@ const PublicOverview = () => {
     saveToLocalStorage(sections);
   }, [sections]);
 
+  const searchableFields = useSearchableFields();
+
   if (!selectedProject && projects.length > 1) return <Catalogue />;
 
-  return !isContentPopulated || isFetchingOverviewData ? (
+  return WAITING_STATES.includes(overviewDataStatus) ? (
     <Loader />
   ) : (
     <>
@@ -98,7 +98,7 @@ const PublicOverview = () => {
         <Col flex={1}>
           {displayedSections.map(({ sectionTitle, charts }, i) => (
             <div key={i} className="overview">
-              <OverviewSection title={sectionTitle} chartData={charts} />
+              <OverviewSection title={sectionTitle} chartData={charts} searchableFields={searchableFields} />
             </div>
           ))}
           <LastIngestionInfo />
@@ -109,7 +109,7 @@ const PublicOverview = () => {
       <FloatButton
         type="primary"
         icon={<AppstoreAddOutlined rotate={270} />}
-        tooltip="Manage Charts"
+        tooltip={t('Manage Charts')}
         style={MANAGE_CHARTS_BUTTON_STYLE}
         onClick={onManageChartsOpen}
       />
