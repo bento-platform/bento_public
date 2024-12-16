@@ -10,7 +10,7 @@ import { RightOutlined } from '@ant-design/icons';
 import { useCallback } from 'react';
 import SmallChartCardTitle from '@/components/Util/SmallChartCardTitle';
 
-const { Paragraph, Title } = Typography;
+const { Paragraph, Title, Link } = Typography;
 
 const KEYWORDS_LIMIT = 2;
 
@@ -19,11 +19,13 @@ const Dataset = ({
   dataset,
   format,
   selected,
+  navigateLink,
 }: {
   parentProjectID: string;
   dataset: Dataset;
   format: 'list-item' | 'card' | 'carousel';
   selected?: boolean;
+  navigateLink?: string;
 }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -84,9 +86,14 @@ const Dataset = ({
   } else if (format === 'carousel') {
     return (
       <>
-        <Title level={5} style={{ marginTop: 0 }}>
-          {t(title)}
-        </Title>
+        <Space direction="horizontal">
+          <Title level={5} style={{ marginTop: 0 }}>
+            {t(title)}
+          </Title>
+          <div style={{ marginBottom: '8px' }}>
+            <Link href={navigateLink}>{t('Explore Dataset')}</Link>
+          </div>
+        </Space>
         <Paragraph ellipsis={{ rows: 4, tooltip: { title: t(dataset.description) } }}>{t(description)}</Paragraph>
       </>
     );
