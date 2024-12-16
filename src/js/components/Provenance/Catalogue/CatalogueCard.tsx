@@ -14,9 +14,10 @@ const MAX_KEYWORD_CHARACTERS = 50;
 const CatalogueCard = ({ project }: { project: Project }) => {
   const lang = i18n.language;
   const t = useTranslationFn();
+  const { datasets, created, updated, title, description, identifier } = project;
 
   const { selectedKeywords, extraKeywords, extraKeywordCount } = useMemo(() => {
-    const keywords = project.datasets.flatMap((d) => d.dats_file.keywords ?? []).map((k) => t(k.value as string));
+    const keywords = datasets.flatMap((d) => d.dats_file.keywords ?? []).map((k) => t(k.value as string));
 
     let totalCharacters = 0;
     const selectedKeywords: string[] = [];
@@ -36,10 +37,10 @@ const CatalogueCard = ({ project }: { project: Project }) => {
       extraKeywords,
       extraKeywordCount: extraKeywords.length,
     };
-  }, [project.datasets, t]);
+  }, [datasets, t]);
 
-  const projectCreated = isoDateToString(project.created, lang);
-  const projectUpdated = isoDateToString(project.updated, lang);
+  const projectCreated = isoDateToString(created, lang);
+  const projectUpdated = isoDateToString(updated, lang);
 
   const projectInfo = [
     {
@@ -66,21 +67,23 @@ const CatalogueCard = ({ project }: { project: Project }) => {
   ];
 
   return (
-    <Card key={project.identifier} style={{ height: '260px', maxWidth: '1300px', ...BOX_SHADOW }}>
+    <Card style={{ height: '260px', maxWidth: '1300px', ...BOX_SHADOW }}>
       <Flex justify="space-between">
         <div style={{ flex: 1, paddingRight: '10px' }}>
           <Space direction="vertical">
             <Title level={4} style={{ marginTop: 0 }}>
-              {t(project.title)}
+              {t(title)}
             </Title>
-            <Paragraph
-              ellipsis={{
-                rows: 3,
-                tooltip: { title: t(project.description) },
-              }}
-            >
-              {t(project.description)}
-            </Paragraph>
+            {description && (
+              <Paragraph
+                ellipsis={{
+                  rows: 3,
+                  tooltip: { title: t(description) },
+                }}
+              >
+                {t(description)}
+              </Paragraph>
+            )}
             <div>
               {selectedKeywords.map((kw) => (
                 <Tag key={kw} color="blue">
@@ -101,11 +104,11 @@ const CatalogueCard = ({ project }: { project: Project }) => {
             {t('Datasets')}
           </Title>
           <Carousel
-            arrows={project.datasets.length > 1}
+            arrows={datasets.length > 1}
             style={{ border: '1px solid lightgray', borderRadius: '7px', height: '170px', padding: '16px' }}
           >
-            {project.datasets.map((d) => (
-              <Dataset parentProjectID={project.identifier} key={d.identifier} dataset={d} format="carousel" />
+            {datasets.map((d) => (
+              <Dataset parentProjectID={identifier} key={d.identifier} dataset={d} format="carousel" />
             ))}
           </Carousel>
         </div>
