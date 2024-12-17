@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Card, Col, Form, Row } from 'antd';
 import { useIsAuthenticated } from 'bento-auth-js';
 import { useAppDispatch, useQueryWithAuthIfAllowed, useTranslationFn } from '@/hooks';
+import { useSelectedScope } from '@/features/metadata/hooks';
 import VariantsForm from './VariantsForm';
 import Filters from './Filters';
 import SearchToolTip from './ToolTips/SearchToolTip';
@@ -55,6 +56,8 @@ const BeaconQueryFormUi = ({
   const dispatch = useAppDispatch();
   const isAuthenticated = useIsAuthenticated();
 
+  const { scope } = useSelectedScope();
+
   const formInitialValues = useMemo(
     () => ({
       'Assembly ID': beaconAssemblyIds.length === 1 && beaconAssemblyIds[0],
@@ -67,12 +70,18 @@ const BeaconQueryFormUi = ({
   const showError = hasError && !errorAlertClosed;
 
   const requestPayload = useCallback(
-    (query: PayloadVariantsQuery, payloadFilters: PayloadFilter[]): BeaconQueryPayload => ({
-      meta: { apiVersion: '2.0.0' },
-      query: { requestParameters: { g_variant: query }, filters: payloadFilters },
-      bento: { showSummaryStatistics: true },
-    }),
-    []
+    (query: PayloadVariantsQuery, payloadFilters: PayloadFilter[]): BeaconQueryPayload => {
+      const payload: BeaconQueryPayload = {
+        meta: { apiVersion: '2.0.0' },
+        query: { requestParameters: { g_variant: query }, filters: payloadFilters },
+        bento: { showSummaryStatistics: true },
+      };
+      if (scope.dataset) {
+        payload['datasets'] = { datasetIds: [scope.dataset] };
+      }
+      return payload;
+    },
+    [scope]
   );
 
   const launchEmptyQuery = useCallback(
