@@ -52,11 +52,11 @@ export const validProjectDataset = (projects: Project[], unvalidatedScope: Disco
 
 export const scopeToUrl = (scope: DiscoveryScope, prefix: string = '', suffix: string = ''): string => {
   if (scope.project && scope.dataset) {
-    return `${prefix}/p/${scope.project}/d/${scope.dataset}${suffix}`;
+    return `${prefix}/p/${scope.project}/d/${scope.dataset}/${suffix}`;
   } else if (scope.project) {
-    return `${prefix}/p/${scope.project}${suffix}`;
+    return `${prefix}/p/${scope.project}/${suffix}`;
   } else {
-    return `${prefix}${suffix}`;
+    return `${prefix}/${suffix}`;
   }
 };
 

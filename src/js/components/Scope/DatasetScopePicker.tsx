@@ -6,7 +6,7 @@ import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import { useTranslationFn } from '@/hooks';
 import type { Project } from '@/types/metadata';
 import { getCurrentPage, scopeToUrl } from '@/utils/router';
-import Dataset from '@/components/Provenance/Dataset';
+import Dataset from '@/components/Provenance/Catalogue/Dataset';
 import { useSelectedScope } from '@/features/metadata/hooks';
 
 type DatasetScopePickerProps = {
@@ -31,7 +31,7 @@ const DatasetScopePicker = ({ parentProject }: DatasetScopePickerProps) => {
   const showSelectProject = !selectedScope.fixedProject && parentProject.identifier != scopeObj.project;
 
   const parentProjectScope: DiscoveryScope = { project: parentProject.identifier };
-  const projectURL = scopeToUrl(parentProjectScope, baseURL, `/${page}`);
+  const projectURL = scopeToUrl(parentProjectScope, baseURL, page);
 
   return (
     <Space direction="vertical" style={{ display: 'flex' }}>

@@ -105,6 +105,8 @@
   "Datasets": "Jeux de données",
   "Clear": "Effacer",
   "Select": "Sélectionner",
+  "Created": "Créé",
+  "Updated": "Mis à jour",
   "beacon": {
     "search_beacon": "Recherche sur le Beacon",
     "search_network": "Recherche sur le réseau",
