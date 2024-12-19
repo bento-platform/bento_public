@@ -4,7 +4,13 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import type { MenuProps, SiderProps } from 'antd';
 import { Layout, Menu } from 'antd';
-import Icon, { PieChartOutlined, SearchOutlined, ShareAltOutlined, SolutionOutlined } from '@ant-design/icons';
+import Icon, {
+  BookOutlined,
+  PieChartOutlined,
+  SearchOutlined,
+  ShareAltOutlined,
+  SolutionOutlined,
+} from '@ant-design/icons';
 
 import BeaconSvg from '@/components/Beacon/BeaconSvg';
 import { useSearchQuery } from '@/features/search/hooks';
@@ -12,6 +18,7 @@ import { useTranslationFn } from '@/hooks';
 import { BentoRoute } from '@/types/routes';
 import { buildQueryParamsUrl } from '@/utils/search';
 import { getCurrentPage } from '@/utils/router';
+import { useMetadata, useSelectedProject } from '@/features/metadata/hooks';
 
 const { Sider } = Layout;
 
@@ -30,6 +37,10 @@ const SiteSider: React.FC<{
   const t = useTranslationFn();
   const { queryParams } = useSearchQuery();
   const currentPage = getCurrentPage();
+  const selectedProject = useSelectedProject();
+  const { projects } = useMetadata();
+
+  const isCataloguePage = useMemo(() => !selectedProject && projects.length > 1, [projects, selectedProject]);
 
   const handleMenuClick: OnClick = useCallback(
     ({ key }: { key: string }) => {
@@ -60,7 +71,11 @@ const SiteSider: React.FC<{
 
   const menuItems: MenuItem[] = useMemo(() => {
     const items = [
-      createMenuItem('Overview', BentoRoute.Overview, <PieChartOutlined />),
+      createMenuItem(
+        isCataloguePage ? 'Catalogue' : 'Overview',
+        BentoRoute.Overview,
+        isCataloguePage ? <BookOutlined /> : <PieChartOutlined />
+      ),
       createMenuItem('Search', BentoRoute.Search, <SearchOutlined />),
       createMenuItem('Provenance', BentoRoute.Provenance, <SolutionOutlined />),
     ];
