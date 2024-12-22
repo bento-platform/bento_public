@@ -1,10 +1,10 @@
 import { type ReactElement, useCallback, useMemo, useState } from 'react';
-import { Card, Col, Row, Typography, Table, Button } from 'antd';
+import { Button, Card, Col, Collapse, Pagination, Row, Typography } from 'antd';
 import { LeftOutlined } from '@ant-design/icons';
 import { PieChart } from 'bento-charts';
 
 import { PORTAL_URL } from '@/config';
-import { T_PLURAL_COUNT, T_SINGULAR_COUNT } from '@/constants/i18n';
+import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { BOX_SHADOW, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
 import { useTranslationFn } from '@/hooks';
 import type { DiscoveryResults } from '@/types/data';
@@ -13,7 +13,24 @@ import type { SearchResultsUIPane } from '@/types/search';
 import CustomEmpty from '../Util/CustomEmpty';
 import SearchResultsCounts from './SearchResultsCounts';
 
-type IndividualResultRow = { id: string };
+const createIndividualPanel = (id: string) => ({
+  key: id,
+  label: id,
+  children: (
+    <a href={`${PORTAL_URL}/data/explorer/individuals/${id}`} target="_blank" rel="noreferrer">
+      {id}
+    </a>
+  ),
+});
+const INDIVIDUALS_PER_PAGE = 10;
+
+function chunkArray(arr: string[], size: number) {
+  const result = [];
+  for (let i = 0; i < arr.length; i += size) {
+    result.push(arr.slice(i, i + size));
+  }
+  return result;
+}
 
 const SearchResultsPane = ({
   isFetchingData,
@@ -28,26 +45,13 @@ const SearchResultsPane = ({
   const translateMap = useCallback(({ x, y }: { x: string; y: number }) => ({ x: t(x), y }), [t]);
 
   const [panePage, setPanePage] = useState<SearchResultsUIPane>('charts');
+  const [individualPage, setIndividualPage] = useState<number>(1);
+  const [individualSize, setIndividualSize] = useState<number>(INDIVIDUALS_PER_PAGE);
 
   const { individualMatches, biosampleChartData, experimentChartData } = results;
-
-  const individualTableColumns = useMemo(
-    () => [
-      {
-        dataIndex: 'id',
-        title: t('entities.individual', T_SINGULAR_COUNT),
-        render: (id: string) => (
-          <a href={`${PORTAL_URL}/data/explorer/individuals/${id}`} target="_blank" rel="noreferrer">
-            {id}
-          </a>
-        ),
-      },
-    ],
-    [t]
-  );
-  const individualTableData = useMemo<IndividualResultRow[]>(
-    () => (individualMatches ?? []).map((id) => ({ id })),
-    [individualMatches]
+  const chunkedIndividualMatches = useMemo(
+    () => chunkArray(individualMatches ?? [], individualSize),
+    [individualMatches, individualSize]
   );
 
   return (
@@ -117,12 +121,18 @@ const SearchResultsPane = ({
               >
                 {t('Charts')}
               </Button>
-              <Table<IndividualResultRow>
-                columns={individualTableColumns}
-                dataSource={individualTableData}
-                rowKey="id"
-                bordered={true}
-                size="small"
+              <Collapse items={chunkedIndividualMatches[individualPage - 1].map(createIndividualPanel)} />
+              <Pagination
+                current={individualPage}
+                onChange={setIndividualPage}
+                total={individualMatches?.length}
+                pageSize={individualSize}
+                onShowSizeChange={(_, ps) => {
+                  setIndividualSize(ps);
+                }}
+                showSizeChanger
+                align="center"
+                style={{ marginTop: '16px' }}
               />
             </Col>
           )}
