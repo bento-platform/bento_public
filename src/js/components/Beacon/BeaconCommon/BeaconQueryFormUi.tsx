@@ -77,7 +77,7 @@ const BeaconQueryFormUi = ({
         bento: { showSummaryStatistics: true },
       };
       if (scope.dataset) {
-        payload['datasets'] = { datasetIds: [scope.dataset] };
+        payload['query']['datasets'] = { datasetIds: [scope.dataset] };
       }
       return payload;
     },

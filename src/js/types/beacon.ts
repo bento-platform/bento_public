@@ -73,9 +73,12 @@ export type PayloadVariantsQuery =
 
 export interface BeaconQueryPayload {
   meta: { apiVersion: string };
-  query: { requestParameters: { g_variant: PayloadVariantsQuery }; filters: PayloadFilter[] };
+  query: {
+    requestParameters: { g_variant: PayloadVariantsQuery };
+    filters: PayloadFilter[];
+    datasets?: { datasetIds: Dataset['identifier'][] };
+  };
   bento?: { showSummaryStatistics: boolean };
-  datasets?: { datasetIds: Dataset['identifier'][] };
 }
 
 export type BeaconQueryAction = ActionCreator<
