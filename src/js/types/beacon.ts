@@ -76,7 +76,7 @@ export interface BeaconQueryPayload {
   query: {
     requestParameters: { g_variant: PayloadVariantsQuery };
     filters: PayloadFilter[];
-    datasets?: { datasetIds: Dataset['identifier'][] };
+    datasets?: { datasetIds: [Dataset['identifier']] };
   };
   bento?: { showSummaryStatistics: boolean };
 }
