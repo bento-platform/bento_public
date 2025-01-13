@@ -7,9 +7,10 @@ import { Layout, Menu } from 'antd';
 import Icon, { PieChartOutlined, SearchOutlined, ShareAltOutlined, SolutionOutlined } from '@ant-design/icons';
 
 import BeaconSvg from '@/components/Beacon/BeaconSvg';
+import { useSelectedScope } from '@/features/metadata/hooks';
 import { useSearchQuery } from '@/features/search/hooks';
 import { useTranslationFn } from '@/hooks';
-import { BentoRoute } from '@/types/routes';
+import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
 import { buildQueryParamsUrl } from '@/utils/search';
 import { getCurrentPage } from '@/utils/router';
 
@@ -21,25 +22,27 @@ type OnClick = MenuProps['onClick'];
 
 const BeaconLogo: React.FC<Partial<CustomIconComponentProps>> = (props) => <Icon component={BeaconSvg} {...props} />;
 
-const SiteSider: React.FC<{
-  collapsed: boolean;
-  setCollapsed: SiderProps['onCollapse'];
-}> = ({ collapsed, setCollapsed }) => {
+const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollapsed: SiderProps['onCollapse'] }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const t = useTranslationFn();
   const { queryParams } = useSearchQuery();
   const currentPage = getCurrentPage();
 
+  const selectedScope = useSelectedScope();
+
   const handleMenuClick: OnClick = useCallback(
     ({ key }: { key: string }) => {
       const currentPath = location.pathname.split('/').filter(Boolean);
       const newPath = [currentPath[0]];
-      if (currentPath[1] == 'p') {
-        newPath.push('p', currentPath[2]);
-      }
-      if (currentPath[3] == 'd') {
-        newPath.push('d', currentPath[4]);
+      if (!TOP_LEVEL_ONLY_ROUTES.includes(key)) {
+        // Beacon network only works at the top scope level
+        if (currentPath[1] == 'p') {
+          newPath.push('p', currentPath[2]);
+        }
+        if (currentPath[3] == 'd') {
+          newPath.push('d', currentPath[4]);
+        }
       }
       newPath.push(key);
       const newPathString = '/' + newPath.join('/');
@@ -69,12 +72,15 @@ const SiteSider: React.FC<{
       items.push(createMenuItem('Beacon', BentoRoute.Beacon, <BeaconLogo />));
     }
 
-    if (BentoRoute.BeaconNetwork) {
+    if (
+      BentoRoute.BeaconNetwork &&
+      (!selectedScope.scope.project || (selectedScope.scope.project && selectedScope.fixedProject))
+    ) {
       items.push(createMenuItem('Beacon Network', BentoRoute.BeaconNetwork, <ShareAltOutlined />));
     }
 
     return items;
-  }, [createMenuItem]);
+  }, [createMenuItem, selectedScope]);
 
   return (
     <Sider

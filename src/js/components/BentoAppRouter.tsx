@@ -120,6 +120,7 @@ const BentoAppRouter = () => {
           <Route path={BentoRoute.Overview} element={<PublicOverview />} />
           <Route path={BentoRoute.Search} element={<Search />} />
           {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
+          {/* Beacon network is only available at the top level - scoping does not make sense for it. */}
           {BentoRoute.BeaconNetwork && <Route path={BentoRoute.BeaconNetwork} element={<NetworkUi />} />}
           <Route path={BentoRoute.Provenance} element={<ProvenanceTab />} />
         </Route>
@@ -129,7 +130,6 @@ const BentoAppRouter = () => {
           <Route path={BentoRoute.Overview} element={<PublicOverview />} />
           <Route path={BentoRoute.Search} element={<Search />} />
           {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
-          {BentoRoute.BeaconNetwork && <Route path={BentoRoute.BeaconNetwork} element={<NetworkUi />} />}
           <Route path={BentoRoute.Provenance} element={<ProvenanceTab />} />
         </Route>
 
@@ -138,7 +138,6 @@ const BentoAppRouter = () => {
           <Route path={BentoRoute.Overview} element={<PublicOverview />} />
           <Route path={BentoRoute.Search} element={<Search />} />
           {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
-          {BentoRoute.BeaconNetwork && <Route path={BentoRoute.BeaconNetwork} element={<NetworkUi />} />}
           <Route path={BentoRoute.Provenance} element={<ProvenanceTab />} />
         </Route>
       </Route>

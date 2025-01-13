@@ -10,10 +10,11 @@ import { ExportOutlined, LinkOutlined, LoginOutlined, LogoutOutlined, ProfileOut
 
 import { useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
-import { scopeToUrl } from '@/utils/router';
+import { getCurrentPage, scopeToUrl } from '@/utils/router';
 
 import { LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
 import { CLIENT_NAME, PORTAL_URL, TRANSLATED } from '@/config';
+import { TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
 
 import ScopePickerModal from './Scope/ScopePickerModal';
 
@@ -35,8 +36,9 @@ const SiteHeader = () => {
   const { isHandingOffCodeForToken } = useAuthState();
   const { fixedProject, fixedDataset, scope: scopeObj } = useSelectedScope();
   const selectedProject = useSelectedProject();
+  const currentPage = getCurrentPage();
 
-  const scopeSelectionEnabled = !(fixedProject && fixedDataset);
+  const scopeSelectionEnabled = !(fixedProject && fixedDataset) && !TOP_LEVEL_ONLY_ROUTES.includes(currentPage);
 
   const scopeProps = useMemo(
     () => ({
