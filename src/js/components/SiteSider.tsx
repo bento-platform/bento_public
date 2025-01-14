@@ -29,7 +29,7 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
   const { queryParams } = useSearchQuery();
   const currentPage = getCurrentPage();
 
-  const selectedScope = useSelectedScope();
+  const { fixedProject, scope } = useSelectedScope();
 
   const handleMenuClick: OnClick = useCallback(
     ({ key }: { key: string }) => {
@@ -72,15 +72,12 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
       items.push(createMenuItem('Beacon', BentoRoute.Beacon, <BeaconLogo />));
     }
 
-    if (
-      BentoRoute.BeaconNetwork &&
-      (!selectedScope.scope.project || (selectedScope.scope.project && selectedScope.fixedProject))
-    ) {
+    if (BentoRoute.BeaconNetwork && (!scope.project || (scope.project && fixedProject))) {
       items.push(createMenuItem('Beacon Network', BentoRoute.BeaconNetwork, <ShareAltOutlined />));
     }
 
     return items;
-  }, [createMenuItem, selectedScope]);
+  }, [createMenuItem, scope, fixedProject]);
 
   return (
     <Sider
