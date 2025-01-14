@@ -1,4 +1,4 @@
-import { type CSSProperties, useEffect, useMemo, useState } from 'react';
+import { type CSSProperties, useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Button, Flex, Layout, Space, Typography } from 'antd';
@@ -68,6 +68,11 @@ const SiteHeader = () => {
     navigate(path, { replace: true });
   };
 
+  const navigateToOverview = useCallback(
+    () => navigate(`/${i18n.language}${scopeToUrl(scopeObj)}`),
+    [navigate, i18n.language, scopeObj]
+  );
+
   return (
     <Header style={{ position: 'fixed', width: '100%', zIndex: 100, top: 0, ...HEADER_PADDING }}>
       <Flex align="center" justify="space-between">
@@ -78,7 +83,7 @@ const SiteHeader = () => {
               data="/public/assets/icon_small.png"
               aria-label="logo"
               style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-3px)', paddingRight: '26px' }}
-              onClick={() => navigate(`/${i18n.language}${scopeToUrl(scopeObj)}`)}
+              onClick={navigateToOverview}
             >
               <img
                 src="/public/assets/branding.png"
@@ -89,7 +94,7 @@ const SiteHeader = () => {
                   transform: 'translateY(-3px)',
                   paddingLeft: '23px',
                 }}
-                onClick={() => navigate(`/${i18n.language}${scopeToUrl(scopeObj)}`)}
+                onClick={navigateToOverview}
               />
             </object>
           ) : (
@@ -97,7 +102,7 @@ const SiteHeader = () => {
               src="/public/assets/branding.png"
               alt="logo"
               style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-3px)', paddingLeft: '4px' }}
-              onClick={() => navigate(`/${i18n.language}${scopeToUrl(scopeObj)}`)}
+              onClick={navigateToOverview}
             />
           )}
           <Typography.Title
