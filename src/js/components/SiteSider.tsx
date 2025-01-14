@@ -20,7 +20,7 @@ type CustomIconComponentProps = React.ComponentProps<typeof Icon>;
 type MenuItem = Required<MenuProps>['items'][number];
 type OnClick = MenuProps['onClick'];
 
-const BeaconLogo: React.FC<Partial<CustomIconComponentProps>> = (props) => <Icon component={BeaconSvg} {...props} />;
+const BeaconLogo = (props: Partial<CustomIconComponentProps>) => <Icon component={BeaconSvg} {...props} />;
 
 const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollapsed: SiderProps['onCollapse'] }) => {
   const navigate = useNavigate();
