@@ -26,3 +26,18 @@ export const useSelectedProject = (): Project | undefined => {
     [projects, selectedProject]
   );
 };
+
+export const useSelectedScopeTitles = () => {
+  const selectedProject = useSelectedProject();
+  const { scope } = useSelectedScope();
+
+  return useMemo(
+    () => ({
+      projectTitle: selectedProject?.title,
+      datasetTitle: scope.dataset
+        ? selectedProject?.datasets.find((dataset) => dataset.identifier === scope.dataset)?.title
+        : null,
+    }),
+    [selectedProject, scope]
+  );
+};

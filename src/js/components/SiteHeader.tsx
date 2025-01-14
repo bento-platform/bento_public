@@ -8,7 +8,7 @@ import { useAuthState, useIsAuthenticated, useOpenIdConfig, usePerformAuth, useP
 import { RiTranslate } from 'react-icons/ri';
 import { ExportOutlined, LinkOutlined, LoginOutlined, LogoutOutlined, ProfileOutlined } from '@ant-design/icons';
 
-import { useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
+import { useSelectedScope, useSelectedScopeTitles } from '@/features/metadata/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { getCurrentPage, scopeToUrl } from '@/utils/router';
 
@@ -35,20 +35,11 @@ const SiteHeader = () => {
   const { isFetching: openIdConfigFetching } = useOpenIdConfig();
   const { isHandingOffCodeForToken } = useAuthState();
   const { fixedProject, fixedDataset, scope: scopeObj } = useSelectedScope();
-  const selectedProject = useSelectedProject();
   const currentPage = getCurrentPage();
 
   const scopeSelectionEnabled = !(fixedProject && fixedDataset) && !TOP_LEVEL_ONLY_ROUTES.includes(currentPage);
 
-  const scopeProps = useMemo(
-    () => ({
-      projectTitle: selectedProject?.title,
-      datasetTitle: scopeObj.dataset
-        ? selectedProject?.datasets.find((dataset) => dataset.identifier === scopeObj.dataset)?.title
-        : null,
-    }),
-    [selectedProject, scopeObj]
-  );
+  const scopeProps = useSelectedScopeTitles();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -113,12 +104,7 @@ const SiteHeader = () => {
             {CLIENT_NAME}
           </Typography.Title>
           {scopeSelectionEnabled && (
-            <Typography.Title
-              className="select-project-title"
-              level={5}
-              style={{ fontSize: '16px', margin: 0, lineHeight: '64px', color: 'lightgray' }}
-              onClick={() => setIsModalOpen(true)}
-            >
+            <Typography.Title className="select-project-title" level={2} onClick={() => setIsModalOpen(true)}>
               <ProfileOutlined style={{ marginRight: '5px', fontSize: '16px' }} />
 
               {scopeObj.project && scopeProps.projectTitle}
