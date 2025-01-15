@@ -1,27 +1,20 @@
 import { type ReactElement, useCallback, useMemo, useState } from 'react';
 import { Button, Card, Col, Collapse, Pagination, Row, Typography } from 'antd';
-import { LeftOutlined } from '@ant-design/icons';
+import { FullscreenOutlined, LeftOutlined } from '@ant-design/icons';
 import { PieChart } from 'bento-charts';
-
-import { PORTAL_URL } from '@/config';
 import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { BOX_SHADOW, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
-import { useTranslationFn } from '@/hooks';
+import { useAppSelector, useTranslationFn } from '@/hooks';
 import type { DiscoveryResults } from '@/types/data';
 import type { SearchResultsUIPane } from '@/types/search';
 
 import CustomEmpty from '../Util/CustomEmpty';
 import SearchResultsCounts from './SearchResultsCounts';
+import { individualUrl } from '@/constants/configConstants';
+import { authorizedRequestConfigNoState } from '@/utils/requests';
+import axios from 'axios';
+import { PORTAL_URL } from '@/config';
 
-const createIndividualPanel = (id: string) => ({
-  key: id,
-  label: id,
-  children: (
-    <a href={`${PORTAL_URL}/data/explorer/individuals/${id}`} target="_blank" rel="noreferrer">
-      {id}
-    </a>
-  ),
-});
 const INDIVIDUALS_PER_PAGE = 10;
 
 function chunkArray(arr: string[], size: number) {
@@ -53,6 +46,32 @@ const SearchResultsPane = ({
     () => chunkArray(individualMatches ?? [], individualSize),
     [individualMatches, individualSize]
   );
+
+  const accessToken = useAppSelector((state) => state.auth.accessToken);
+
+  const genExtra = (id: string) => {
+    const fetchUrl = `${individualUrl}/${id}`;
+    return (
+      <FullscreenOutlined
+        onClick={async () => {
+          console.log(id);
+          await axios.get(fetchUrl, authorizedRequestConfigNoState(accessToken ?? '')).then((res) => {
+            console.log(res.data);
+          });
+        }}
+      />
+    );
+  };
+  const createIndividualPanel = (id: string) => ({
+    key: id,
+    label: id,
+    children: (
+      <a href={`${PORTAL_URL}/data/explorer/individuals/${id}`} target="_blank" rel="noreferrer">
+        {id}
+      </a>
+    ),
+    extra: genExtra(id),
+  });
 
   return (
     <div className="search-results-pane">
