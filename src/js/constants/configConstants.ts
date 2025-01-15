@@ -9,8 +9,6 @@ export const katsuPublicSearchUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadat
 export const projectsUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/projects`;
 export const katsuLastIngestionsUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/data-types`;
 
-export const gohanLastIngestionsUrl = `${PORTAL_URL}/api/gohan/data-types`;
-
 export const referenceGenomesUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/reference/genomes`;
 export const individualUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/individuals`;
 
