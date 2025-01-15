@@ -105,6 +105,8 @@
   "Datasets": "Datasets",
   "Clear": "Clear",
   "Select": "Select",
+  "back_catalogue": "Back to catalogue",
+  "back_project": "Back to project",
   "beacon": {
     "search_beacon": "Search Beacon",
     "search_network": "Search Network",

@@ -1,15 +1,23 @@
 import type React from 'react';
 import { useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import type { MenuProps, SiderProps } from 'antd';
-import { Layout, Menu } from 'antd';
-import Icon, { PieChartOutlined, SearchOutlined, ShareAltOutlined, SolutionOutlined } from '@ant-design/icons';
+import { Button, Divider, Layout, Menu } from 'antd';
+import Icon, {
+  ArrowLeftOutlined,
+  PieChartOutlined,
+  SearchOutlined,
+  ShareAltOutlined,
+  SolutionOutlined,
+} from '@ant-design/icons';
 
 import BeaconSvg from '@/components/Beacon/BeaconSvg';
-import { useSelectedScope } from '@/features/metadata/hooks';
+import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
 import { useSearchQuery } from '@/features/search/hooks';
 import { useTranslationFn } from '@/hooks';
+import { useNavigateToRoot } from '@/hooks/navigation';
 import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
 import { buildQueryParamsUrl } from '@/utils/search';
 import { getCurrentPage } from '@/utils/router';
@@ -25,10 +33,13 @@ const BeaconLogo = (props: Partial<CustomIconComponentProps>) => <Icon component
 const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollapsed: SiderProps['onCollapse'] }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { i18n } = useTranslation();
   const t = useTranslationFn();
+  const { projects } = useMetadata();
   const { queryParams } = useSearchQuery();
   const currentPage = getCurrentPage();
 
+  const navigateToRoot = useNavigateToRoot();
   const { fixedProject, scope } = useSelectedScope();
 
   const handleMenuClick: OnClick = useCallback(
@@ -96,6 +107,19 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
         borderRight: '1px solid #f0f0f0',
       }}
     >
+      {scope.project && projects.length > 1 && (
+        <>
+          <Button
+            type="text"
+            icon={<ArrowLeftOutlined />}
+            style={{ margin: 4, width: 'calc(100% - 8px)' }}
+            onClick={scope.dataset ? () => navigate(`/${i18n.language}/p/${scope.project}`) : navigateToRoot}
+          >
+            {t(scope.dataset ? 'back_project' : 'back_catalogue')}
+          </Button>
+          <Divider style={{ margin: 0 }} />
+        </>
+      )}
       <Menu
         selectedKeys={[currentPage]}
         mode="inline"
