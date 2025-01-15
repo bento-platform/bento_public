@@ -6,6 +6,10 @@ export const authorizedRequestConfig = (state: RootState): AxiosRequestConfig =>
   headers: { ...makeAuthorizationHeader(state.auth.accessToken) },
 });
 
+export const authorizedRequestConfigNoState = (accessToken: string): AxiosRequestConfig => ({
+  headers: { ...makeAuthorizationHeader(accessToken) },
+});
+
 export const scopedAuthorizedRequestConfig = (
   state: RootState,
   extraParams: Record<string, string> | undefined = undefined
