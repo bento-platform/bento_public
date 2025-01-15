@@ -49,21 +49,34 @@ const ScopedRoute = () => {
       return;
     }
 
+    const isFixedProjectAndDataset = valid.fixedProject && valid.fixedDataset;
+
     // If the URL scope is valid, store the scope in the Redux store.
-    if (datasetId === valid.scope.dataset && projectId === valid.scope.project) {
+    // We have two subcases here:
+    //  - If the validated scope matches the URL parameters, nothing needs to be done
+    //  - No parameters have been supplied and we have a single-dataset node, in which case we want to keep the "clean"
+    //    / blank URL to avoid visual clutter.
+    if (
+      (datasetId === valid.scope.dataset && projectId === valid.scope.project) ||
+      (!projectId && !datasetId && isFixedProjectAndDataset)
+    ) {
       dispatch(selectScope(valid.scope)); // Also marks scope as set
       return;
     }
 
-    // Otherwise: validated scope does not match URL params, so we need to re-locate to a valid path.
+    // Otherwise: validated scope does not match our desired URL params, so we need to re-locate to a valid path.
 
     const oldPath = location.pathname.split('/').filter(Boolean);
     const newPath = [oldPath[0]];
 
-    if (valid.scope.dataset) {
-      newPath.push('p', valid.scope.project as string, 'd', valid.scope.dataset);
-    } else if (valid.scope.project) {
-      newPath.push('p', valid.scope.project);
+    // If we have >1 dataset, we need the URL to match the validated scope, so we create a new path and go there.
+    // Otherwise (with 1 dataset), keep URL as clean as possible - with no IDs present at all.
+    if (!isFixedProjectAndDataset) {
+      if (valid.scope.dataset) {
+        newPath.push('p', valid.scope.project as string, 'd', valid.scope.dataset);
+      } else if (valid.scope.project) {
+        newPath.push('p', valid.scope.project);
+      }
     }
 
     const oldPathLength = oldPath.length;
