@@ -115,7 +115,7 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
             style={{ margin: 4, width: 'calc(100% - 8px)' }}
             onClick={scope.dataset ? () => navigate(`/${i18n.language}/p/${scope.project}`) : navigateToRoot}
           >
-            {t(scope.dataset ? 'back_project' : 'back_catalogue')}
+            {collapsed ? null : t(scope.dataset ? 'back_project' : 'back_catalogue')}
           </Button>
           <Divider style={{ margin: 0 }} />
         </>
