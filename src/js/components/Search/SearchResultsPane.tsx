@@ -13,7 +13,7 @@ import SearchResultsCounts from './SearchResultsCounts';
 import { individualUrl } from '@/constants/configConstants';
 import { authorizedRequestConfigNoState } from '@/utils/requests';
 import axios from 'axios';
-import { PORTAL_URL } from '@/config';
+import IndividualsAccordianPane from '@/components/Search/IndividualsAccordianPane';
 
 const INDIVIDUALS_PER_PAGE = 10;
 
@@ -65,11 +65,7 @@ const SearchResultsPane = ({
   const createIndividualPanel = (id: string) => ({
     key: id,
     label: id,
-    children: (
-      <a href={`${PORTAL_URL}/data/explorer/individuals/${id}`} target="_blank" rel="noreferrer">
-        {id}
-      </a>
-    ),
+    children: <IndividualsAccordianPane id={id} />,
     extra: genExtra(id),
   });
 
