@@ -8,6 +8,7 @@ import { serializeChartData } from '@/utils/chart';
 
 import { makeGetKatsuPublic } from './makeGetKatsuPublic.thunk';
 import { makeGetSearchFields } from './makeGetSearchFields.thunk';
+import { IndividualRootObject } from '@/types/individual';
 
 export type QueryState = {
   isFetchingFields: boolean;
@@ -19,6 +20,7 @@ export type QueryState = {
   queryParamCount: number;
   message: string;
   results: DiscoveryResults;
+  individualDataCache: { [key: string]: IndividualRootObject };
 };
 
 const initialState: QueryState = {
@@ -31,6 +33,7 @@ const initialState: QueryState = {
   queryParams: {},
   queryParamCount: 0,
   results: EMPTY_DISCOVERY_RESULTS,
+  individualDataCache: {},
 };
 
 const query = createSlice({
