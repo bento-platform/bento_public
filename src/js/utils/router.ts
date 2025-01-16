@@ -12,7 +12,10 @@ export const getCurrentPage = (): string => {
   }
 };
 
-export const validProjectDataset = (projects: Project[], unvalidatedScope: DiscoveryScope): DiscoveryScopeSelection => {
+export const validProjectDataset = (
+  projectsByID: Record<string, Project>,
+  unvalidatedScope: DiscoveryScope
+): DiscoveryScopeSelection => {
   const { project, dataset } = unvalidatedScope;
 
   const valid: DiscoveryScopeSelection = {
@@ -22,12 +25,16 @@ export const validProjectDataset = (projects: Project[], unvalidatedScope: Disco
     fixedDataset: false,
   };
 
+  const projects = Object.values(projectsByID);
+
   if (projects.length === 1) {
-    // automatic project scoping if only 1
+    // Automatic project scoping if only 1
+    //  - if there is only one project, it should be auto-selected, since it contains the same set of data as the node.
     const defaultProj = projects[0];
     valid.scope.project = defaultProj.identifier;
     valid.fixedProject = true;
     if (defaultProj.datasets.length === 1) {
+      // TODO: only if the dataset-level permissions equal the project-level ones...
       // automatic dataset scoping if only 1
       valid.scope.dataset = defaultProj.datasets[0].identifier;
       valid.fixedDataset = true;
@@ -35,16 +42,13 @@ export const validProjectDataset = (projects: Project[], unvalidatedScope: Disco
       return valid;
     }
   }
-  if (project && projects.find(({ identifier }) => identifier === project)) {
+
+  const selectedProject: Project | undefined = project ? projectsByID[project] : undefined;
+
+  if (project && selectedProject) {
     valid.scope.project = project;
-    if (dataset) {
-      if (
-        projects
-          .find(({ identifier }) => identifier === project)!
-          .datasets.find(({ identifier }) => identifier === dataset)
-      ) {
-        valid.scope.dataset = dataset;
-      }
+    if (dataset && selectedProject.datasets.find(({ identifier }) => identifier === dataset)) {
+      valid.scope.dataset = dataset;
     }
   }
   return valid;
