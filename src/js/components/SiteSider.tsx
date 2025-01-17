@@ -13,12 +13,12 @@ import Icon, {
 } from '@ant-design/icons';
 
 import BeaconSvg from '@/components/Beacon/BeaconSvg';
+import { useMetadata } from '@/features/metadata/hooks';
 import { useSearchQuery } from '@/features/search/hooks';
 import { useTranslationFn } from '@/hooks';
 import { BentoRoute } from '@/types/routes';
 import { buildQueryParamsUrl } from '@/utils/search';
 import { getCurrentPage } from '@/utils/router';
-import { useMetadata, useSelectedProject } from '@/features/metadata/hooks';
 
 const { Sider } = Layout;
 
@@ -90,7 +90,7 @@ const SiteSider: React.FC<{
     }
 
     return items;
-  }, [createMenuItem]);
+  }, [createMenuItem, overviewIsCatalogue]);
 
   return (
     <Sider
