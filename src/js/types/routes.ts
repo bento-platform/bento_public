@@ -15,12 +15,15 @@ const BentoRoute: BentoRoutes = {
   Provenance: 'provenance',
 };
 
+const TOP_LEVEL_ONLY_ROUTES: string[] = [];
+
 if (BEACON_UI_ENABLED) {
   BentoRoute.Beacon = 'beacon';
 }
 
 if (BEACON_NETWORK_ENABLED) {
   BentoRoute.BeaconNetwork = 'network';
+  TOP_LEVEL_ONLY_ROUTES.push(BentoRoute.BeaconNetwork);
 }
 
-export { BentoRoute };
+export { BentoRoute, TOP_LEVEL_ONLY_ROUTES };
