@@ -1,16 +1,26 @@
+import { useCallback, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Avatar, Button, Card, List, Space, Tag, Typography } from 'antd';
+
+import { Avatar, Button, Card, List, Modal, Space, Tag, Typography } from 'antd';
+import {
+  ExpandAltOutlined,
+  PieChartOutlined,
+  RightOutlined,
+  SearchOutlined,
+  SolutionOutlined,
+} from '@ant-design/icons';
 import { FaDatabase } from 'react-icons/fa';
+
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type { Dataset } from '@/types/metadata';
 import { getCurrentPage, scopeToUrl } from '@/utils/router';
 import { useTranslationFn } from '@/hooks';
 import { BOX_SHADOW } from '@/constants/overviewConstants';
-import { RightOutlined } from '@ant-design/icons';
-import { useCallback } from 'react';
+import { DatasetProvenanceContent } from '@/components/Provenance/DatasetProvenance';
 import SmallChartCardTitle from '@/components/Util/SmallChartCardTitle';
+import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
 
-const { Paragraph, Title, Link } = Typography;
+const { Paragraph, Title } = Typography;
 
 const KEYWORDS_LIMIT = 2;
 
@@ -19,19 +29,19 @@ const Dataset = ({
   dataset,
   format,
   selected,
-  navigateLink,
 }: {
   parentProjectID: string;
   dataset: Dataset;
   format: 'list-item' | 'card' | 'carousel';
   selected?: boolean;
-  navigateLink?: string;
 }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const page = getCurrentPage();
 
   const t = useTranslationFn();
+
+  const [provenanceModalOpen, setProvenanceModalOpen] = useState(false);
 
   const baseURL = '/' + location.pathname.split('/')[1];
 
@@ -41,19 +51,25 @@ const Dataset = ({
   const remainingKeywords = keywords?.slice(KEYWORDS_LIMIT) ?? [];
 
   const scope: DiscoveryScope = { project: parentProjectID, dataset: identifier };
-  const datasetURL = scopeToUrl(scope, baseURL, `/${page}`);
+  const datasetBaseURL = scopeToUrl(scope, baseURL);
 
-  const onNavigate = useCallback(() => navigate(datasetURL), [navigate, datasetURL]);
+  const onNavigateCurrent = useCallback(() => navigate(`${datasetBaseURL}${page}`), [navigate, datasetBaseURL, page]);
+  const onNavigateOverview = useCallback(() => navigate(`${datasetBaseURL}overview`), [navigate, datasetBaseURL]);
+  const onNavigateSearch = useCallback(() => navigate(`${datasetBaseURL}search`), [navigate, datasetBaseURL]);
 
   if (format === 'list-item') {
     return (
       <List.Item
         className={`select-dataset-item${selected ? ' selected' : ''}`}
         key={identifier}
-        onClick={onNavigate}
+        onClick={onNavigateCurrent}
         style={{ cursor: 'pointer' }}
       >
-        <List.Item.Meta avatar={<Avatar icon={<FaDatabase />} />} title={t(title)} description={t(description)} />
+        <List.Item.Meta
+          avatar={<Avatar icon={<FaDatabase />} />}
+          title={t(title)}
+          description={<TruncatedParagraph>{t(description)}</TruncatedParagraph>}
+        />
       </List.Item>
     );
   } else if (format === 'card') {
@@ -63,7 +79,7 @@ const Dataset = ({
         size="small"
         style={{ ...BOX_SHADOW, height: 200 }}
         styles={{ body: { padding: '12px 16px' } }}
-        extra={<Button shape="circle" icon={<RightOutlined />} onClick={onNavigate} />}
+        extra={<Button shape="circle" icon={<RightOutlined />} onClick={onNavigateCurrent} />}
       >
         <Paragraph
           ellipsis={{
@@ -86,15 +102,38 @@ const Dataset = ({
   } else if (format === 'carousel') {
     return (
       <>
-        <Space direction="horizontal">
+        <Modal
+          title={dataset.title}
+          open={provenanceModalOpen}
+          onCancel={() => setProvenanceModalOpen(false)}
+          footer={null}
+          width={960}
+        >
+          <DatasetProvenanceContent dataset={dataset} />
+        </Modal>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Title level={5} style={{ marginTop: 0 }}>
             {t(title)}
           </Title>
-          <div style={{ marginBottom: '8px' }}>
-            <Link href={navigateLink}>{t('Explore Dataset')}</Link>
-          </div>
-        </Space>
-        <Paragraph ellipsis={{ rows: 4, tooltip: { title: t(dataset.description) } }}>{t(description)}</Paragraph>
+          <Button
+            size="small"
+            icon={<SolutionOutlined />}
+            style={{ float: 'right' }}
+            onClick={() => setProvenanceModalOpen(true)}
+          >
+            {t('Provenance')}
+            <ExpandAltOutlined />
+          </Button>
+        </div>
+        <TruncatedParagraph>{t(description)}</TruncatedParagraph>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <Button size="small" icon={<PieChartOutlined />} onClick={onNavigateOverview}>
+            {t('Overview')}
+          </Button>
+          <Button size="small" icon={<SearchOutlined />} onClick={onNavigateSearch}>
+            {t('Search')}
+          </Button>
+        </div>
       </>
     );
   } else {
