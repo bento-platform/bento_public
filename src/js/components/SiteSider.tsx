@@ -85,8 +85,12 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
         overviewIsCatalogue ? <BookOutlined /> : <PieChartOutlined />
       ),
       createMenuItem('Search', BentoRoute.Search, <SearchOutlined />),
-      createMenuItem('Provenance', BentoRoute.Provenance, <SolutionOutlined />),
     ];
+
+    if (scope.project) {
+      // Only show provenance if we're not at the top level, since the giant list of context-less datasets is confusing.
+      items.push(createMenuItem('Provenance', BentoRoute.Provenance, <SolutionOutlined />));
+    }
 
     if (BentoRoute.Beacon) {
       items.push(createMenuItem('Beacon', BentoRoute.Beacon, <BeaconLogo />));
