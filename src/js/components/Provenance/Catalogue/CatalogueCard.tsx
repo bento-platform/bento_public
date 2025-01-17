@@ -9,6 +9,7 @@ import i18n from '@/i18n';
 import type { Project } from '@/types/metadata';
 import { isoDateToString } from '@/utils/strings';
 import { useTranslationFn } from '@/hooks';
+import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { BOX_SHADOW } from '@/constants/overviewConstants';
 import Dataset from '@/components/Provenance/Dataset';
 import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
@@ -24,6 +25,9 @@ const CatalogueCard = ({ project }: { project: Project }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const baseURL = '/' + location.pathname.split('/')[1];
+
+  const isSmallScreen = useSmallScreen();
+
   const { datasets, created, updated, title, description, identifier } = project;
 
   const { selectedKeywords, extraKeywords, extraKeywordCount } = useMemo(() => {
@@ -80,8 +84,8 @@ const CatalogueCard = ({ project }: { project: Project }) => {
 
   return (
     <Card className="container" style={BOX_SHADOW}>
-      <Flex justify="space-between" align="stretch" gap={16} wrap>
-        <div style={{ flex: 1, paddingRight: '10px', minWidth: '450px' }}>
+      <Flex justify="space-between" vertical={isSmallScreen} align="stretch" gap={16} wrap>
+        <div style={{ flex: 1, ...(!isSmallScreen ? { minWidth: 450 } : {}) }}>
           <div style={{ height: '100%', flex: 1, flexDirection: 'column', display: 'flex' }}>
             <Space direction="horizontal">
               <Title level={4} style={{ marginTop: 0 }}>
@@ -106,7 +110,7 @@ const CatalogueCard = ({ project }: { project: Project }) => {
               </div>
             )}
 
-            <Descriptions items={projectInfo} />
+            <Descriptions items={projectInfo} column={isSmallScreen ? 1 : 3} />
 
             <div style={{ flex: 1, display: 'flex', alignItems: 'flex-end', gap: 12 }}>
               <Button
