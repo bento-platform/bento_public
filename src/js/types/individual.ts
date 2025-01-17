@@ -178,4 +178,5 @@ export type IndividualRootObject = {
     date_of_consent: string;
     lab_test_result_value: number;
   };
+  date_of_birth: string;
 };
