@@ -37,10 +37,11 @@ const SiteSider: React.FC<{
   const t = useTranslationFn();
   const { queryParams } = useSearchQuery();
   const currentPage = getCurrentPage();
-  const selectedProject = useSelectedProject();
   const { projects } = useMetadata();
 
-  const isCataloguePage = useMemo(() => !selectedProject && projects.length > 1, [projects, selectedProject]);
+  // Use location for catalogue page detection instead of selectedProject, since it gives us faster UI rendering at the
+  // cost of only being wrong with a redirect edge case (and being slightly more brittle).
+  const overviewIsCatalogue = !location.pathname.includes('/p/') && projects.length > 1;
 
   const handleMenuClick: OnClick = useCallback(
     ({ key }: { key: string }) => {
@@ -72,9 +73,9 @@ const SiteSider: React.FC<{
   const menuItems: MenuItem[] = useMemo(() => {
     const items = [
       createMenuItem(
-        isCataloguePage ? 'Catalogue' : 'Overview',
+        overviewIsCatalogue ? 'Catalogue' : 'Overview',
         BentoRoute.Overview,
-        isCataloguePage ? <BookOutlined /> : <PieChartOutlined />
+        overviewIsCatalogue ? <BookOutlined /> : <PieChartOutlined />
       ),
       createMenuItem('Search', BentoRoute.Search, <SearchOutlined />),
       createMenuItem('Provenance', BentoRoute.Provenance, <SolutionOutlined />),
