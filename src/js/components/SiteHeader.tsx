@@ -62,7 +62,7 @@ const SiteHeader = () => {
 
   const changeLanguage = () => {
     const newLang = LNG_CHANGE[i18n.language];
-    const path = (location.pathname + location.search).replace(`/${i18n.language}/`, `/${newLang}/`);
+    const path = (location.pathname + location.search).replace(new RegExp(`^/${i18n.language}`), `/${newLang}`);
     navigate(path, { replace: true });
   };
 
