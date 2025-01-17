@@ -8,12 +8,14 @@ import { serializeChartData } from '@/utils/chart';
 
 import { makeGetKatsuPublic } from './makeGetKatsuPublic.thunk';
 import { makeGetSearchFields } from './makeGetSearchFields.thunk';
+import { makeGetIndividualData } from './makeGetIndividualData.thunk';
 import { IndividualRootObject } from '@/types/individual';
 
 export type QueryState = {
   isFetchingFields: boolean;
   attemptedFieldsFetch: boolean;
   isFetchingData: boolean;
+  isFetchingIndividualData: { [key: string]: boolean };
   attemptedFetch: boolean;
   querySections: SearchFieldResponse['sections'];
   queryParams: { [key: string]: string };
@@ -27,6 +29,7 @@ const initialState: QueryState = {
   isFetchingFields: false,
   attemptedFieldsFetch: false,
   isFetchingData: false,
+  isFetchingIndividualData: {},
   attemptedFetch: false,
   message: '',
   querySections: [],
@@ -68,6 +71,9 @@ const query = createSlice({
         individualCount: payload.count,
         individualMatches: payload.matches, // Undefined if no permissions
       };
+      state.isFetchingIndividualData = {};
+      state.individualDataCache = {};
+      payload.matches?.forEach((ind) => (state.isFetchingIndividualData[ind] = false));
     });
     builder.addCase(makeGetKatsuPublic.rejected, (state) => {
       state.isFetchingData = false;
@@ -84,6 +90,19 @@ const query = createSlice({
     builder.addCase(makeGetSearchFields.rejected, (state) => {
       state.isFetchingFields = false;
       state.attemptedFieldsFetch = true;
+    });
+    builder.addCase(makeGetIndividualData.pending, (state, { meta }) => {
+      const id = meta.arg;
+      state.isFetchingIndividualData[id] = true;
+    });
+    builder.addCase(makeGetIndividualData.fulfilled, (state, { payload, meta }) => {
+      const id = meta.arg;
+      state.individualDataCache[id] = payload;
+      state.isFetchingIndividualData[id] = true;
+    });
+    builder.addCase(makeGetIndividualData.rejected, (state, { meta }) => {
+      const id = meta.arg;
+      state.isFetchingIndividualData[id] = false;
     });
   },
 });
