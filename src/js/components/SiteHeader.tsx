@@ -62,6 +62,8 @@ const SiteHeader = () => {
 
   const changeLanguage = () => {
     const newLang = LNG_CHANGE[i18n.language];
+    // Can't rely on there being a trailing slash at the base page (.e.g, `/en` and `/en`/ are both valid), and can't
+    // ensure project IDs don't begin with an `en` or `fr`. Thus, we use a RegExp for language changing in the URL.
     const path = (location.pathname + location.search).replace(new RegExp(`^/${i18n.language}`), `/${newLang}`);
     navigate(path, { replace: true });
   };
