@@ -7,7 +7,13 @@ const Catalogue = () => {
   const isSmallScreen = useSmallScreen();
   const { projects } = useMetadata();
   return (
-    <Space align="center" direction="vertical" size={isSmallScreen ? 'small' : 'large'} style={{ width: '100%' }}>
+    <Space
+      align="center"
+      direction="vertical"
+      size={isSmallScreen ? 'small' : 'large'}
+      style={{ width: '100%' }}
+      styles={{ item: { width: '100%' } }}
+    >
       {projects.map((project) => (
         <CatalogueCard project={project} key={project.identifier} />
       ))}
