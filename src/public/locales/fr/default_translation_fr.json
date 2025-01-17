@@ -105,6 +105,8 @@
   "Datasets": "Jeux de données",
   "Clear": "Effacer",
   "Select": "Sélectionner",
+  "back_catalogue": "Retourner au catalogue",
+  "back_project": "Retourner au projet",
   "beacon": {
     "search_beacon": "Recherche sur le Beacon",
     "search_network": "Recherche sur le réseau",

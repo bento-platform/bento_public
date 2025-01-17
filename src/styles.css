@@ -27,12 +27,17 @@ body {
   border-right: 1px solid #f0f0f0;
 }
 
-.select-project-title {
+h2.select-project-title {
+  font-size: 16px;
+  margin: 0;
+  line-height: 64px;
+  color: lightgray;
+
   transition: all 0.2s;
 }
 
-.select-project-title:hover {
-  color: white !important;
+h2.select-project-title:hover {
+  color: white;
   cursor: pointer;
 }
 
