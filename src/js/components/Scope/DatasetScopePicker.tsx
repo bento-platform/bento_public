@@ -6,7 +6,7 @@ import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import { useTranslationFn } from '@/hooks';
 import type { Project } from '@/types/metadata';
 import { getCurrentPage, scopeToUrl } from '@/utils/router';
-import Dataset from '@/components/Provenance/Catalogue/Dataset';
+import Dataset from '@/components/Provenance/Dataset';
 import { useSelectedScope } from '@/features/metadata/hooks';
 
 type DatasetScopePickerProps = {

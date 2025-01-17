@@ -10,7 +10,7 @@ import type { Project } from '@/types/metadata';
 import { isoDateToString } from '@/utils/strings';
 import { useTranslationFn } from '@/hooks';
 import { BOX_SHADOW } from '@/constants/overviewConstants';
-import Dataset from '@/components/Provenance/Catalogue/Dataset';
+import Dataset from '@/components/Provenance/Dataset';
 import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
 import { scopeToUrl } from '@/utils/router';
 
