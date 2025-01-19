@@ -8,12 +8,10 @@ import { EM_DASH } from '@/constants/contentConstants';
 const IndividualsAccordianPane = ({ id }: { id: string }) => {
   const dispatch = useAppDispatch();
   useEffect(() => {
-    console.log('called for individual', id);
     dispatch(makeGetIndividualData(id));
   }, [id]);
 
   const individualData = useAppSelector((state) => state.query.individualDataCache[id]);
-  console.log('individual data', individualData);
 
   const items: DescriptionsProps['items'] = [
     {
