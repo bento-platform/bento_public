@@ -30,6 +30,56 @@ const IndividualModal = ({
       label: 'Overview',
       children: <IndividualOverview individualData={individualData} />,
     },
+    {
+      key: 'biosamples',
+      label: 'Biosamples',
+      children: <div>Biosamples</div>,
+    },
+    {
+      key: 'Measurements',
+      label: 'Measurements',
+      children: <div>Measurements</div>,
+    },
+    {
+      key: 'Phenotypic Features',
+      label: 'Phenotypic Features',
+      children: <div>Phenotypic Features</div>,
+    },
+    {
+      key: 'Diseases',
+      label: 'Diseases',
+      children: <div>Diseases</div>,
+    },
+    {
+      key: 'Interpretations',
+      label: 'Interpretations',
+      children: <div>Interpretations</div>,
+    },
+    {
+      key: 'Medical Actions',
+      label: 'Medical Actions',
+      children: <div>Medical Actions</div>,
+    },
+    {
+      key: 'Experiments',
+      label: 'Experiments',
+      children: <div>Experiments</div>,
+    },
+    {
+      key: 'Tracks',
+      label: 'Tracks',
+      children: <div>Tracks</div>,
+    },
+    {
+      key: 'Ontologies',
+      label: 'Ontologies',
+      children: <div>Ontologies</div>,
+    },
+    {
+      key: 'Phenopackets JSON',
+      label: 'Phenopackets JSON',
+      children: <div>Phenopackets JSON</div>,
+    },
   ];
 
   return (
