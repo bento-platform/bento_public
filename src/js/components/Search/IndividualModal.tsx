@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@/hooks';
 
-import { Modal, Skeleton } from 'antd';
+import { Modal, Skeleton, Tabs, TabsProps } from 'antd';
 import { makeGetIndividualData } from '@/features/search/makeGetIndividualData.thunk';
+import IndividualOverview from '@/components/Search/Individuals/IndividualOverview';
 
 const IndividualModal = ({
   individualID,
@@ -23,6 +24,14 @@ const IndividualModal = ({
   const isFetchingIndividualData = useAppSelector((state) => state.query.isFetchingIndividualData[individualID]);
   const individualData = useAppSelector((state) => state.query.individualDataCache[individualID]);
 
+  const tabItems: TabsProps['items'] = [
+    {
+      key: 'overview',
+      label: 'Overview',
+      children: <IndividualOverview individualData={individualData} />,
+    },
+  ];
+
   return (
     <Modal
       title={`Individual ${individualID}`}
@@ -34,7 +43,7 @@ const IndividualModal = ({
       maskClosable={false}
     >
       <Skeleton loading={isFetchingIndividualData} active={!isFetchingIndividualData}>
-        {individualData && <div>Individual Data for {individualID}</div>}
+        {individualData && <Tabs items={tabItems} />}
       </Skeleton>
     </Modal>
   );
