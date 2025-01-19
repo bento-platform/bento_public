@@ -98,7 +98,7 @@ const query = createSlice({
     builder.addCase(makeGetIndividualData.fulfilled, (state, { payload, meta }) => {
       const id = meta.arg;
       state.individualDataCache[id] = payload;
-      state.isFetchingIndividualData[id] = true;
+      state.isFetchingIndividualData[id] = false;
     });
     builder.addCase(makeGetIndividualData.rejected, (state, { meta }) => {
       const id = meta.arg;
