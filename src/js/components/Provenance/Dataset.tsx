@@ -1,14 +1,8 @@
-import { useCallback, useState } from 'react';
+import { type ReactNode, useCallback, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { Avatar, Button, Card, List, Modal, Space, Tag, Typography } from 'antd';
-import {
-  ExpandAltOutlined,
-  PieChartOutlined,
-  RightOutlined,
-  SearchOutlined,
-  SolutionOutlined,
-} from '@ant-design/icons';
+import { Avatar, Button, Card, Flex, List, Modal, Space, Tag, Typography } from 'antd';
+import { ExpandAltOutlined, PieChartOutlined, SearchOutlined, SolutionOutlined } from '@ant-design/icons';
 import { FaDatabase } from 'react-icons/fa';
 
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
@@ -57,8 +51,13 @@ const Dataset = ({
   const onNavigateOverview = useCallback(() => navigate(`${datasetBaseURL}overview`), [navigate, datasetBaseURL]);
   const onNavigateSearch = useCallback(() => navigate(`${datasetBaseURL}search`), [navigate, datasetBaseURL]);
 
+  const openProvenanceModal = useCallback(() => setProvenanceModalOpen(true), []);
+  const closeProvenanceModal = useCallback(() => setProvenanceModalOpen(false), []);
+
+  let inner: ReactNode;
+
   if (format === 'list-item') {
-    return (
+    inner = (
       <List.Item
         className={`select-dataset-item${selected ? ' selected' : ''}`}
         key={identifier}
@@ -73,54 +72,47 @@ const Dataset = ({
       </List.Item>
     );
   } else if (format === 'card') {
-    return (
+    inner = (
       <Card
         title={<SmallChartCardTitle title={title} />}
         size="small"
         style={{ ...BOX_SHADOW, height: 200 }}
-        styles={{ body: { padding: '12px 16px' } }}
-        extra={<Button shape="circle" icon={<RightOutlined />} onClick={onNavigateCurrent} />}
+        styles={{ body: { padding: '12px 16px', height: 'calc(100% - 53px)' } }}
+        extra={
+          <Button icon={<SolutionOutlined />} onClick={openProvenanceModal}>
+            Provenance
+          </Button>
+        }
       >
-        <Paragraph
-          ellipsis={{
-            rows: 2,
-            tooltip: { title: description, color: 'white', overlayInnerStyle: { color: 'rgba(0, 0, 0, 0.88)' } },
-          }}
-        >
-          {description}
-        </Paragraph>
-        <Space size={[0, 8]} align="start" wrap>
-          {displayKeywords?.map((keyword, i) => (
-            <Tag key={i} color="cyan">
-              {t(keyword.value.toString())}
-            </Tag>
-          ))}
-          {remainingKeywords?.length > 0 && <Paragraph>+{remainingKeywords.length} more</Paragraph>}
-        </Space>
+        <Flex vertical={true} gap={12} style={{ height: '100%' }}>
+          <TruncatedParagraph maxRows={2}>{t(description)}</TruncatedParagraph>
+          <Space size={[0, 8]} align="start" wrap style={{ width: '100%' }}>
+            {displayKeywords?.map((keyword, i) => (
+              <Tag key={i} color="cyan">
+                {t(keyword.value.toString())}
+              </Tag>
+            ))}
+            {remainingKeywords?.length > 0 && <Paragraph>+{remainingKeywords.length} more</Paragraph>}
+          </Space>
+          <Space size={12} style={{ flex: 1, display: 'flex', alignItems: 'flex-end', gap: 12 }}>
+            <Button icon={<PieChartOutlined />} onClick={onNavigateOverview}>
+              {t('Overview')}
+            </Button>
+            <Button icon={<SearchOutlined />} onClick={onNavigateSearch}>
+              {t('Search')}
+            </Button>
+          </Space>
+        </Flex>
       </Card>
     );
   } else if (format === 'carousel') {
-    return (
+    inner = (
       <>
-        <Modal
-          title={dataset.title}
-          open={provenanceModalOpen}
-          onCancel={() => setProvenanceModalOpen(false)}
-          footer={null}
-          width={960}
-        >
-          <DatasetProvenanceContent dataset={dataset} />
-        </Modal>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Title level={5} style={{ marginTop: 0 }}>
             {t(title)}
           </Title>
-          <Button
-            size="small"
-            icon={<SolutionOutlined />}
-            style={{ float: 'right' }}
-            onClick={() => setProvenanceModalOpen(true)}
-          >
+          <Button size="small" icon={<SolutionOutlined />} style={{ float: 'right' }} onClick={openProvenanceModal}>
             {t('Provenance')}
             <ExpandAltOutlined />
           </Button>
@@ -137,8 +129,17 @@ const Dataset = ({
       </>
     );
   } else {
-    return <span style={{ color: 'red' }}>UNIMPLEMENTED</span>;
+    inner = <span style={{ color: 'red' }}>UNIMPLEMENTED</span>;
   }
+
+  return (
+    <>
+      <Modal title={dataset.title} open={provenanceModalOpen} onCancel={closeProvenanceModal} footer={null} width={960}>
+        <DatasetProvenanceContent dataset={dataset} />
+      </Modal>
+      {inner}
+    </>
+  );
 };
 
 export default Dataset;
