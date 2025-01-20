@@ -1,11 +1,12 @@
 import { type ReactNode, useCallback, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { Avatar, Button, Card, Flex, List, Modal, Space, Tag, Typography } from 'antd';
+import { Avatar, Button, Card, Flex, List, Modal, Popover, Space, Tag, Typography } from 'antd';
 import { ExpandAltOutlined, PieChartOutlined, SearchOutlined, SolutionOutlined } from '@ant-design/icons';
 import { FaDatabase } from 'react-icons/fa';
 
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
+import type { Annotation } from '@/types/dats';
 import type { Dataset } from '@/types/metadata';
 import { getCurrentPage, scopeToUrl } from '@/utils/router';
 import { useTranslationFn } from '@/hooks';
@@ -14,9 +15,22 @@ import { DatasetProvenanceContent } from '@/components/Provenance/DatasetProvena
 import SmallChartCardTitle from '@/components/Util/SmallChartCardTitle';
 import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
 
-const { Paragraph, Title } = Typography;
+const { Title } = Typography;
 
 const KEYWORDS_LIMIT = 2;
+
+const TagList = ({ annotations }: { annotations?: Annotation[] }) => {
+  const t = useTranslationFn();
+  return (
+    <Space size={[0, 8]} align="start" wrap style={{ width: '100%' }}>
+      {annotations?.map((keyword, i) => (
+        <Tag key={i} color="cyan" style={i === annotations.length - 1 ? { marginInlineEnd: 0 } : undefined}>
+          {t(keyword.value.toString())}
+        </Tag>
+      ))}
+    </Space>
+  );
+};
 
 const Dataset = ({
   parentProjectID,
@@ -76,24 +90,26 @@ const Dataset = ({
       <Card
         title={<SmallChartCardTitle title={title} />}
         size="small"
-        style={{ ...BOX_SHADOW, height: 200 }}
+        style={{ ...BOX_SHADOW, minHeight: 200 }}
         styles={{ body: { padding: '12px 16px', height: 'calc(100% - 53px)' } }}
         extra={
           <Button icon={<SolutionOutlined />} onClick={openProvenanceModal}>
-            Provenance
+            {t('Provenance')}
             <ExpandAltOutlined />
           </Button>
         }
       >
         <Flex vertical={true} gap={12} style={{ height: '100%' }}>
           <TruncatedParagraph maxRows={2}>{t(description)}</TruncatedParagraph>
-          <Space size={[0, 8]} align="start" wrap style={{ width: '100%' }}>
-            {displayKeywords?.map((keyword, i) => (
-              <Tag key={i} color="cyan">
-                {t(keyword.value.toString())}
-              </Tag>
-            ))}
-            {remainingKeywords?.length > 0 && <Paragraph>+{remainingKeywords.length} more</Paragraph>}
+          <Space size={8} align="start" wrap style={{ width: '100%' }}>
+            <TagList annotations={displayKeywords} />
+            {remainingKeywords?.length > 0 && (
+              <Popover content={<TagList annotations={remainingKeywords} />}>
+                <span style={{ cursor: 'pointer' }}>
+                  + {remainingKeywords.length} {t('more', { count: remainingKeywords.length })}
+                </span>
+              </Popover>
+            )}
           </Space>
           <Space size={12} style={{ flex: 1, display: 'flex', alignItems: 'flex-end', gap: 12 }}>
             <Button icon={<PieChartOutlined />} onClick={onNavigateOverview}>
