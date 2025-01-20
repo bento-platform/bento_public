@@ -45,7 +45,7 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
   const overviewIsCatalogue = !location.pathname.includes('/p/') && projects.length > 1;
 
   const navigateToRoot = useNavigateToRoot();
-  const { fixedProject, scope } = useSelectedScope();
+  const { fixedProject, scope, scopeSet } = useSelectedScope();
 
   const handleMenuClick: OnClick = useCallback(
     ({ key }: { key: string }) => {
@@ -128,7 +128,7 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
             style={{ margin: 4, width: 'calc(100% - 8px)' }}
             onClick={scope.dataset ? () => navigate(`/${i18n.language}/p/${scope.project}`) : navigateToRoot}
           >
-            {collapsed ? null : t(scope.dataset ? 'back_project' : 'back_catalogue')}
+            {collapsed || !scopeSet ? null : t(scope.dataset ? 'Back to project' : 'Back to catalogue')}
           </Button>
           <Divider style={{ margin: 0 }} />
         </>

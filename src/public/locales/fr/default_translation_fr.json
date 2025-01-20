@@ -107,8 +107,8 @@
   "Select": "Sélectionner",
   "Created": "Créé",
   "Updated": "Mis à jour",
-  "back_catalogue": "Retourner au catalogue",
-  "back_project": "Retourner au projet",
+  "Back to catalogue": "Retourner au catalogue",
+  "Back to project": "Retourner au projet",
   "beacon": {
     "search_beacon": "Recherche sur le Beacon",
     "search_network": "Recherche sur le réseau",
