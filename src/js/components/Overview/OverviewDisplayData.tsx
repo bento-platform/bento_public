@@ -9,9 +9,9 @@ import { CHART_WIDTH, GRID_GAP } from '@/constants/overviewConstants';
 
 import ChartCard from './ChartCard';
 
-import type { ChartDataField } from '@/types/data';
+import type { ChartDataField, Section } from '@/types/data';
 
-const OverviewDisplayData = ({ section, allCharts, searchableFields }: OverviewDisplayDataProps) => {
+const OverviewDisplayData = ({ section, searchableFields }: OverviewDisplayDataProps) => {
   const dispatch = useAppDispatch();
   const isSmallScreen = useSmallScreen();
 
@@ -21,10 +21,12 @@ const OverviewDisplayData = ({ section, allCharts, searchableFields }: OverviewD
     gridTemplateColumns: `repeat(auto-fit, ${CHART_WIDTH}px)`,
   };
 
+  const { index: sectionIndex, charts: allCharts } = section;
+
   const displayedCharts = useMemo(() => allCharts.filter((e) => e.isDisplayed), [allCharts]);
 
   const onRemoveChart = useCallback(
-    ({ section, id }: { section: string; id: string }) => {
+    ({ section, id }: { section: number; id: string }) => {
       dispatch(disableChart({ section, id }));
     },
     [dispatch]
@@ -35,7 +37,7 @@ const OverviewDisplayData = ({ section, allCharts, searchableFields }: OverviewD
       <ChartCard
         key={chart.id}
         chart={chart}
-        section={section}
+        section={sectionIndex}
         onRemoveChart={onRemoveChart}
         searchable={searchableFields.has(chart.id)}
       />
@@ -54,8 +56,7 @@ const OverviewDisplayData = ({ section, allCharts, searchableFields }: OverviewD
 };
 
 export interface OverviewDisplayDataProps {
-  section: string;
-  allCharts: ChartDataField[];
+  section: Section;
   searchableFields: Set<string>;
 }
 

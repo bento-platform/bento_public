@@ -43,7 +43,9 @@ export const makeGetDataRequestThunk = createAsyncThunk<
     };
   };
 
-  const sectionData: Sections = sections.map(({ section_title, charts }) => ({
+  const sectionData: Sections = sections.map(({ section_title, charts }, index) => ({
+    // Give every overview section a unique ID by way of using the index, before any filtering occurs.
+    index,
     sectionTitle: section_title,
     charts: charts.map(normalizeChart),
   }));
