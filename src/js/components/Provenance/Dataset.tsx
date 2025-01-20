@@ -81,6 +81,7 @@ const Dataset = ({
         extra={
           <Button icon={<SolutionOutlined />} onClick={openProvenanceModal}>
             Provenance
+            <ExpandAltOutlined />
           </Button>
         }
       >
@@ -118,7 +119,7 @@ const Dataset = ({
           </Button>
         </div>
         <TruncatedParagraph>{t(description)}</TruncatedParagraph>
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
           <Button size="small" icon={<PieChartOutlined />} onClick={onNavigateOverview}>
             {t('Overview')}
           </Button>
