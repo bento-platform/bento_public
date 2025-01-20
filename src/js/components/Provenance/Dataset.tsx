@@ -90,7 +90,7 @@ const Dataset = ({
       <Card
         title={<SmallChartCardTitle title={title} />}
         size="small"
-        style={{ ...BOX_SHADOW, minHeight: 200 }}
+        style={{ ...BOX_SHADOW, minHeight: 200, height: '100%' }}
         styles={{ body: { padding: '12px 16px', height: 'calc(100% - 53px)' } }}
         extra={
           <Button icon={<SolutionOutlined />} onClick={openProvenanceModal}>
