@@ -2,7 +2,7 @@ import { type ReactNode, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Button, Card, Carousel, Descriptions, Flex, Space, Tag, Tooltip, Typography } from 'antd';
-import { PieChartOutlined, SearchOutlined } from '@ant-design/icons';
+import { PieChartOutlined, ProfileOutlined, SearchOutlined } from '@ant-design/icons';
 
 import i18n from '@/i18n';
 
@@ -35,7 +35,7 @@ const CatalogueCardInner = ({ firstContent, secondContent }: { firstContent: Rea
         <div style={{ flex: 1, minWidth: 400 }}>
           <div style={{ height: '100%', flex: 1, flexDirection: 'column', display: 'flex' }}>{firstContent}</div>
         </div>
-        <div style={{ flex: 2, maxWidth: 'min(600px, 100%)' }}>{secondContent}</div>
+        {secondContent && <div style={{ flex: 2, maxWidth: 'min(600px, 100%)' }}>{secondContent}</div>}
       </Flex>
     );
   }
@@ -116,7 +116,7 @@ const CatalogueCard = ({ project }: { project: Project }) => {
               </Title>
             </Space>
 
-            {description && <TruncatedParagraph>{t(description)}</TruncatedParagraph>}
+            {description && <TruncatedParagraph style={{ maxWidth: 660 }}>{t(description)}</TruncatedParagraph>}
 
             {!!selectedKeywords.length && (
               <div>
@@ -133,45 +133,49 @@ const CatalogueCard = ({ project }: { project: Project }) => {
               </div>
             )}
 
-            <Descriptions items={projectInfo} size="small" />
+            <Descriptions items={projectInfo} size="small" style={{ maxWidth: 500 }} />
 
             <div style={{ flex: 1, display: 'flex', alignItems: 'flex-end', gap: 12 }}>
               <Button
-                icon={<PieChartOutlined />}
+                icon={datasets.length ? <PieChartOutlined /> : <ProfileOutlined />}
                 onClick={() => navigate(scopeToUrl({ project: identifier }, baseURL, 'overview'))}
               >
                 {t('Overview')}
               </Button>
-              <Button
-                icon={<SearchOutlined />}
-                onClick={() => navigate(scopeToUrl({ project: identifier }, baseURL, 'search'))}
-              >
-                {t('Search')}
-              </Button>
+              {datasets.length ? (
+                <Button
+                  icon={<SearchOutlined />}
+                  onClick={() => navigate(scopeToUrl({ project: identifier }, baseURL, 'search'))}
+                >
+                  {t('Search')}
+                </Button>
+              ) : null}
             </div>
           </>
         }
         secondContent={
-          <>
-            <Title level={5} style={{ marginTop: 0 }}>
-              {t('Datasets')}
-            </Title>
-            <Carousel
-              arrows={datasets.length > 1}
-              style={{
-                border: '1px solid lightgray',
-                borderRadius: '7px',
-                height: '170px',
-                // If we have more than one dataset, we have some arrows on either side of the carousel
-                //  --> add in extra horizontal padding to nicely clear the arrows.
-                padding: datasets.length > 1 ? '16px 26px' : '16px',
-              }}
-            >
-              {datasets.map((d) => (
-                <Dataset parentProjectID={identifier} key={d.identifier} dataset={d} format="carousel" />
-              ))}
-            </Carousel>
-          </>
+          datasets.length ? (
+            <>
+              <Title level={5} style={{ marginTop: 0 }}>
+                {t('Datasets')}
+              </Title>
+              <Carousel
+                arrows={datasets.length > 1}
+                style={{
+                  border: '1px solid lightgray',
+                  borderRadius: '7px',
+                  height: '170px',
+                  // If we have more than one dataset, we have some arrows on either side of the carousel
+                  //  --> add in extra horizontal padding to nicely clear the arrows.
+                  padding: datasets.length > 1 ? '16px 26px' : '16px',
+                }}
+              >
+                {datasets.map((d) => (
+                  <Dataset parentProjectID={identifier} key={d.identifier} dataset={d} format="carousel" />
+                ))}
+              </Carousel>
+            </>
+          ) : null
         }
       />
     </Card>
