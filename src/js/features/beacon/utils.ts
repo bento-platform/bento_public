@@ -1,7 +1,9 @@
-import { BEACON_NETWORK_URL } from '@/config';
+import { BEACON_URL, BEACON_NETWORK_URL } from '@/config';
+import { BEACON_INDIVIDUALS_PATH } from './constants';
 import type { BeaconAssemblyIds, BeaconNetworkResponses, BeaconQueryResponse } from '@/types/beacon';
 import type { ChartData, DiscoveryResults, OptionalDiscoveryResults } from '@/types/data';
 import type { NetworkBeacon } from '@/types/beaconNetwork';
+import type { Project } from '@/types/metadata';
 import { serializeChartData } from '@/utils/chart';
 
 type TempChartObject = Record<string, number>;
@@ -84,3 +86,8 @@ export const extractBeaconDiscoveryOverview = (response: BeaconQueryResponse): O
 
 export const atLeastOneNetworkResponseIsPending = (responses: BeaconNetworkResponses) =>
   Object.values(responses).some((r) => r.isFetchingQueryResponse);
+
+export const scopedBeaconIndividualsUrl = (projectId: Project['identifier'] | undefined): string => {
+  const projectPath: string = projectId ? '/' + projectId : '';
+  return BEACON_URL + projectPath + BEACON_INDIVIDUALS_PATH;
+};
