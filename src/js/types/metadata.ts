@@ -1,4 +1,4 @@
-import type { Layout as DiscoveryOverview, Fields as DiscoveryFields } from '@/types/overviewResponse';
+import type { Fields as DiscoveryFields, Layout as DiscoveryOverview } from '@/types/overviewResponse';
 import type { Section as DiscoverySearch } from '@/types/search';
 import type { DiscoveryRules } from '@/types/configResponse';
 import type { DatsFile } from '@/types/dats';
@@ -16,6 +16,8 @@ export interface Project {
   description: string;
   discovery: Discovery | null;
   datasets: Dataset[];
+  created: string;
+  updated: string;
 }
 
 export interface Dataset {

@@ -14,10 +14,11 @@ import Counts from './Counts';
 import LastIngestionInfo from './LastIngestion';
 import Loader from '@/components/Loader';
 import Dataset from '@/components/Provenance/Dataset';
+import Catalogue from '@/components/Provenance/Catalogue/Catalogue';
 
 import { useAppSelector } from '@/hooks';
 import { useSearchableFields } from '@/features/data/hooks';
-import { useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
+import { useMetadata, useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
 import { useTranslation } from 'react-i18next';
 import { RequestStatus } from '@/types/requests';
 
@@ -35,6 +36,7 @@ const PublicOverview = () => {
 
   const selectedProject = useSelectedProject();
   const { scope } = useSelectedScope();
+  const { projects } = useMetadata();
 
   useEffect(() => {
     // Save sections to localStorage when they change
@@ -59,6 +61,8 @@ const PublicOverview = () => {
 
   const searchableFields = useSearchableFields();
 
+  if (!selectedProject && projects.length > 1) return <Catalogue />;
+
   return WAITING_STATES.includes(overviewDataStatus) ? (
     <Loader />
   ) : (
@@ -75,7 +79,7 @@ const PublicOverview = () => {
           <Counts />
         </Col>
       </Row>
-      {selectedProject && !scope.dataset && (
+      {selectedProject && !scope.dataset && selectedProject.datasets.length ? (
         // If we have a project with more than one dataset, show a dataset selector in the project overview
         <Row>
           <Col flex={1}>
@@ -89,7 +93,7 @@ const PublicOverview = () => {
             </div>
           </Col>
         </Row>
-      )}
+      ) : null}
       <Row>
         <Col flex={1}>
           {displayedSections.map(({ sectionTitle, charts }, i) => (

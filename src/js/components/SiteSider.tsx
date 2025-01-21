@@ -7,6 +7,7 @@ import type { MenuProps, SiderProps } from 'antd';
 import { Button, Divider, Layout, Menu } from 'antd';
 import Icon, {
   ArrowLeftOutlined,
+  BookOutlined,
   PieChartOutlined,
   SearchOutlined,
   ShareAltOutlined,
@@ -39,8 +40,12 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
   const { queryParams } = useSearchQuery();
   const currentPage = getCurrentPage();
 
+  // Use location for catalogue page detection instead of selectedProject, since it gives us faster UI rendering at the
+  // cost of only being wrong with a redirect edge case (and being slightly more brittle).
+  const overviewIsCatalogue = !location.pathname.includes('/p/') && projects.length > 1;
+
   const navigateToRoot = useNavigateToRoot();
-  const { fixedProject, scope } = useSelectedScope();
+  const { fixedProject, scope, scopeSet } = useSelectedScope();
 
   const handleMenuClick: OnClick = useCallback(
     ({ key }: { key: string }) => {
@@ -74,10 +79,18 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
 
   const menuItems: MenuItem[] = useMemo(() => {
     const items = [
-      createMenuItem('Overview', BentoRoute.Overview, <PieChartOutlined />),
+      createMenuItem(
+        overviewIsCatalogue ? 'Catalogue' : 'Overview',
+        BentoRoute.Overview,
+        overviewIsCatalogue ? <BookOutlined /> : <PieChartOutlined />
+      ),
       createMenuItem('Search', BentoRoute.Search, <SearchOutlined />),
-      createMenuItem('Provenance', BentoRoute.Provenance, <SolutionOutlined />),
     ];
+
+    if (scope.project) {
+      // Only show provenance if we're not at the top level, since the giant list of context-less datasets is confusing.
+      items.push(createMenuItem('Provenance', BentoRoute.Provenance, <SolutionOutlined />));
+    }
 
     if (BentoRoute.Beacon) {
       items.push(createMenuItem('Beacon', BentoRoute.Beacon, <BeaconLogo />));
@@ -88,7 +101,7 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
     }
 
     return items;
-  }, [createMenuItem, scope, fixedProject]);
+  }, [createMenuItem, scope, fixedProject, overviewIsCatalogue]);
 
   return (
     <Sider
@@ -115,7 +128,7 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
             style={{ margin: 4, width: 'calc(100% - 8px)' }}
             onClick={scope.dataset ? () => navigate(`/${i18n.language}/p/${scope.project}`) : navigateToRoot}
           >
-            {collapsed ? null : t(scope.dataset ? 'back_project' : 'back_catalogue')}
+            {collapsed || !scopeSet ? null : t(scope.dataset ? 'Back to project' : 'Back to catalogue')}
           </Button>
           <Divider style={{ margin: 0 }} />
         </>
