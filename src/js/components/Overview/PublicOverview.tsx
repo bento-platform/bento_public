@@ -13,7 +13,7 @@ import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
 import Counts from './Counts';
 import LastIngestionInfo from './LastIngestion';
 import Loader from '@/components/Loader';
-import Dataset from '@/components/Provenance/Catalogue/Dataset';
+import Dataset from '@/components/Provenance/Dataset';
 import Catalogue from '@/components/Provenance/Catalogue/Catalogue';
 
 import { useAppSelector } from '@/hooks';
@@ -79,7 +79,7 @@ const PublicOverview = () => {
           <Counts />
         </Col>
       </Row>
-      {selectedProject && !scope.dataset && (
+      {selectedProject && !scope.dataset && selectedProject.datasets.length ? (
         // If we have a project with more than one dataset, show a dataset selector in the project overview
         <Row>
           <Col flex={1}>
@@ -93,7 +93,7 @@ const PublicOverview = () => {
             </div>
           </Col>
         </Row>
-      )}
+      ) : null}
       <Row>
         <Col flex={1}>
           {displayedSections.map(({ sectionTitle, charts }, i) => (

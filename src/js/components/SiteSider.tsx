@@ -15,7 +15,7 @@ import Icon, {
 } from '@ant-design/icons';
 
 import BeaconSvg from '@/components/Beacon/BeaconSvg';
-import { useMetadata, useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
+import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
 import { useSearchQuery } from '@/features/search/hooks';
 import { useTranslationFn } from '@/hooks';
 import { useNavigateToRoot } from '@/hooks/navigation';
@@ -39,12 +39,13 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
   const { projects } = useMetadata();
   const { queryParams } = useSearchQuery();
   const currentPage = getCurrentPage();
-  const selectedProject = useSelectedProject();
 
-  const isCataloguePage = useMemo(() => !selectedProject && projects.length > 1, [projects, selectedProject]);
+  // Use location for catalogue page detection instead of selectedProject, since it gives us faster UI rendering at the
+  // cost of only being wrong with a redirect edge case (and being slightly more brittle).
+  const overviewIsCatalogue = !location.pathname.includes('/p/') && projects.length > 1;
 
   const navigateToRoot = useNavigateToRoot();
-  const { fixedProject, scope } = useSelectedScope();
+  const { fixedProject, scope, scopeSet } = useSelectedScope();
 
   const handleMenuClick: OnClick = useCallback(
     ({ key }: { key: string }) => {
@@ -79,13 +80,17 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
   const menuItems: MenuItem[] = useMemo(() => {
     const items = [
       createMenuItem(
-        isCataloguePage ? 'Catalogue' : 'Overview',
+        overviewIsCatalogue ? 'Catalogue' : 'Overview',
         BentoRoute.Overview,
-        isCataloguePage ? <BookOutlined /> : <PieChartOutlined />
+        overviewIsCatalogue ? <BookOutlined /> : <PieChartOutlined />
       ),
       createMenuItem('Search', BentoRoute.Search, <SearchOutlined />),
-      createMenuItem('Provenance', BentoRoute.Provenance, <SolutionOutlined />),
     ];
+
+    if (scope.project) {
+      // Only show provenance if we're not at the top level, since the giant list of context-less datasets is confusing.
+      items.push(createMenuItem('Provenance', BentoRoute.Provenance, <SolutionOutlined />));
+    }
 
     if (BentoRoute.Beacon) {
       items.push(createMenuItem('Beacon', BentoRoute.Beacon, <BeaconLogo />));
@@ -96,7 +101,7 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
     }
 
     return items;
-  }, [createMenuItem, scope, fixedProject]);
+  }, [createMenuItem, scope, fixedProject, overviewIsCatalogue]);
 
   return (
     <Sider
@@ -123,7 +128,7 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
             style={{ margin: 4, width: 'calc(100% - 8px)' }}
             onClick={scope.dataset ? () => navigate(`/${i18n.language}/p/${scope.project}`) : navigateToRoot}
           >
-            {collapsed ? null : t(scope.dataset ? 'back_project' : 'back_catalogue')}
+            {collapsed || !scopeSet ? null : t(scope.dataset ? 'Back to project' : 'Back to catalogue')}
           </Button>
           <Divider style={{ margin: 0 }} />
         </>

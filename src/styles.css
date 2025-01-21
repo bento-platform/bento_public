@@ -138,7 +138,7 @@ h2.select-project-title:hover {
 @media (min-width: 1050px) and (max-width: 1550px) {
   .dataset-provenance-card-grid {
     /* This looks better at an intermediate screen width */
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(350px, 0.5fr));
   }
 }
 
