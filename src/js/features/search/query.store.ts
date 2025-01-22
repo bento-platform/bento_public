@@ -9,7 +9,7 @@ import { serializeChartData } from '@/utils/chart';
 import { makeGetKatsuPublic } from './makeGetKatsuPublic.thunk';
 import { makeGetSearchFields } from './makeGetSearchFields.thunk';
 import { makeGetIndividualData } from './makeGetIndividualData.thunk';
-import { IndividualRootObject } from '@/types/individual';
+import type { IndividualRootObject } from '@/types/individual';
 
 export type QueryState = {
   isFetchingFields: boolean;

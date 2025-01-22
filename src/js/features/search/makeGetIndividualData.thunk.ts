@@ -4,7 +4,7 @@ import { individualUrl } from '@/constants/configConstants';
 import type { RootState } from '@/store';
 import { printAPIError } from '@/utils/error.util';
 import { authorizedRequestConfig } from '@/utils/requests';
-import { IndividualRootObject } from '@/types/individual';
+import type { IndividualRootObject } from '@/types/individual';
 
 export const makeGetIndividualData = createAsyncThunk<
   IndividualRootObject,

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { makeGetIndividualData } from '@/features/search/makeGetIndividualData.thunk';
 import { useAppDispatch, useAppSelector } from '@/hooks';
 import type { DescriptionsProps } from 'antd';
@@ -9,7 +9,7 @@ const IndividualsAccordianPane = ({ id }: { id: string }) => {
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(makeGetIndividualData(id));
-  }, [id]);
+  }, [dispatch, id]);
 
   const individualData = useAppSelector((state) => state.query.individualDataCache[id]);
 
