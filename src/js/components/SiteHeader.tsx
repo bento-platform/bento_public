@@ -13,7 +13,7 @@ import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { getCurrentPage, scopeToUrl } from '@/utils/router';
 
 import { LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
-import { CLIENT_NAME, PORTAL_URL, TRANSLATED } from '@/config';
+import { CLIENT_NAME, PORTAL_URL, SHOW_PORTAL_LINK, SHOW_SIGN_IN, TRANSLATED } from '@/config';
 import { TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
 
 import ScopePickerModal from './Scope/ScopePickerModal';
@@ -128,19 +128,22 @@ const SiteHeader = () => {
               {isSmallScreen ? '' : LNGS_FULL_NAMES[LNG_CHANGE[i18n.language]]}
             </Button>
           )}
-          <Button type="text" className="header-button" icon={<LinkOutlined />} onClick={openPortalWindow}>
-            {isSmallScreen ? '' : t('Portal')}
-            {isSmallScreen || <ExportOutlined />}
-          </Button>
-          {isAuthenticated ? (
-            <Button type="text" className="header-button" icon={<LogoutOutlined />} onClick={performSignOut}>
-              {isSmallScreen ? '' : t('Sign Out')}
-            </Button>
-          ) : (
-            <Button type="primary" shape="round" icon={<LoginOutlined />} onClick={performSignIn}>
-              {openIdConfigFetching || isHandingOffCodeForToken ? t('Loading...') : isSmallScreen ? '' : t('Sign In')}
+          {SHOW_PORTAL_LINK && (
+            <Button type="text" className="header-button" icon={<LinkOutlined />} onClick={openPortalWindow}>
+              {isSmallScreen ? '' : t('Portal')}
+              {isSmallScreen || <ExportOutlined />}
             </Button>
           )}
+          {SHOW_SIGN_IN &&
+            (isAuthenticated ? (
+              <Button type="text" className="header-button" icon={<LogoutOutlined />} onClick={performSignOut}>
+                {isSmallScreen ? '' : t('Sign Out')}
+              </Button>
+            ) : (
+              <Button type="primary" shape="round" icon={<LoginOutlined />} onClick={performSignIn}>
+                {openIdConfigFetching || isHandingOffCodeForToken ? t('Loading...') : isSmallScreen ? '' : t('Sign In')}
+              </Button>
+            ))}
         </Space>
       </Flex>
     </Header>
