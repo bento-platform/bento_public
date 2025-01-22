@@ -6,6 +6,7 @@ import { convertSequenceAndDisplayData, saveValue } from '@/utils/localStorage';
 import type { Sections } from '@/types/data';
 import { RequestStatus } from '@/types/requests';
 
+import { FORCE_CATALOGUE } from '@/config';
 import { BOX_SHADOW, LOCALSTORAGE_CHARTS_KEY } from '@/constants/overviewConstants';
 import { WAITING_STATES } from '@/constants/requests';
 
@@ -55,7 +56,7 @@ const PublicOverview = () => {
   const { scope, scopeSet } = useSelectedScope();
   const { projects } = useMetadata();
 
-  const showCatalogue = scopeSet && !selectedProject && projects.length > 1;
+  const showCatalogue = scopeSet && !selectedProject && (projects.length > 1 || FORCE_CATALOGUE);
 
   const { status: overviewDataStatus, sections } = useData({ fetchEnabled: showCatalogue });
 

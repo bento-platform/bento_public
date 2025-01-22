@@ -58,6 +58,7 @@ const config = {
       BENTO_PUBLIC_TRANSLATED: null,
       BENTO_PUBLIC_SHOW_PORTAL_LINK: null,
       BENTO_PUBLIC_SHOW_SIGN_IN: null,
+      BENTO_PUBLIC_FORCE_CATALOGUE: null, // Show data catalogue even with 1 project
       // Beacon configuration and flags
       BEACON_URL: null,
       BENTO_BEACON_UI_ENABLED: null,

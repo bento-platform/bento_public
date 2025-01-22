@@ -9,6 +9,7 @@ interface PublicConfig {
   TRANSLATED: boolean;
   SHOW_PORTAL_LINK: boolean;
   SHOW_SIGN_IN: boolean;
+  FORCE_CATALOGUE: boolean; // Show data catalogue even with 1 project
   // Beacon configuration and flags
   BEACON_URL: string;
   BEACON_UI_ENABLED: boolean;
@@ -32,6 +33,8 @@ export const TRANSLATED = BENTO_PUBLIC_CONFIG.TRANSLATED ?? stringToBoolean(proc
 export const SHOW_PORTAL_LINK =
   BENTO_PUBLIC_CONFIG.SHOW_PORTAL_LINK ?? stringToBoolean(process.env.BENTO_PUBLIC_SHOW_PORTAL_LINK);
 export const SHOW_SIGN_IN = BENTO_PUBLIC_CONFIG.SHOW_SIGN_IN ?? stringToBoolean(process.env.BENTO_PUBLIC_SHOW_SIGN_IN);
+export const FORCE_CATALOGUE =
+  BENTO_PUBLIC_CONFIG.FORCE_CATALOGUE ?? stringToBoolean(process.env.BENTO_PUBLIC_FORCE_CATALOGUE);
 
 // Beacon configuration and flags
 export const BEACON_URL = BENTO_PUBLIC_CONFIG.BEACON_URL ?? process.env.BEACON_URL;
