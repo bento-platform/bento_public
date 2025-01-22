@@ -3,10 +3,8 @@ import { Routes, Route, useNavigate, useParams, Outlet } from 'react-router-dom'
 import { useAutoAuthenticate, useIsAuthenticated } from 'bento-auth-js';
 import { useAppDispatch } from '@/hooks';
 
-import { makeGetConfigRequest, makeGetServiceInfoRequest } from '@/features/config/config.store';
+import { makeGetServiceInfoRequest } from '@/features/config/config.store';
 import { makeGetAboutRequest } from '@/features/content/content.store';
-import { makeGetDataRequestThunk } from '@/features/data/data.store';
-import { makeGetKatsuPublic, makeGetSearchFields } from '@/features/search/query.store';
 import { getBeaconConfig } from '@/features/beacon/beacon.store';
 import { getBeaconNetworkConfig } from '@/features/beacon/network.store';
 import { fetchGohanData, fetchKatsuData } from '@/features/ingestion/lastIngestion.store';
@@ -99,16 +97,13 @@ const BentoAppRouter = () => {
 
   useEffect(() => {
     if (!selectedScope.scopeSet) return;
-    dispatch(makeGetConfigRequest()).then(() => dispatch(getBeaconConfig()));
+    dispatch(getBeaconConfig());
 
     if (BEACON_NETWORK_ENABLED) {
       dispatch(getBeaconNetworkConfig());
     }
 
     dispatch(makeGetAboutRequest());
-    dispatch(makeGetDataRequestThunk());
-    dispatch(makeGetSearchFields());
-    dispatch(makeGetKatsuPublic());
     dispatch(fetchKatsuData());
   }, [dispatch, isAuthenticated, selectedScope]);
 

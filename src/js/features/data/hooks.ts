@@ -6,9 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/hooks';
 
 import { makeGetDataRequestThunk } from './makeGetDataRequest.thunk';
 
-type LazyLoadHookOptions = { fetchEnabled: boolean };
-
-export const useData = ({ fetchEnabled }: LazyLoadHookOptions) => {
+export const useData = () => {
   const dispatch = useAppDispatch();
 
   // Begin data refresh trigger dependencies
@@ -19,12 +17,12 @@ export const useData = ({ fetchEnabled }: LazyLoadHookOptions) => {
   const state = useAppSelector((state) => state.data);
 
   useEffect(() => {
-    if (fetchEnabled && scopeSet) {
+    if (scopeSet) {
       // Parameter to turn off data fetching in some circumstances, e.g., if the data catalogue is being shown.
       // In this way we can avoid making needless fetches up front.
       dispatch(makeGetDataRequestThunk());
     }
-  }, [dispatch, fetchEnabled, isAuthenticated, scope, scopeSet]);
+  }, [dispatch, isAuthenticated, scope, scopeSet]);
 
   return state;
 };
