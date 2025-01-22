@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
-import { Card, Col, FloatButton, Row, Skeleton, Typography } from 'antd';
+import { type CSSProperties, useCallback, useEffect, useState } from 'react';
+import { Card, Col, Divider, FloatButton, Row, Skeleton, Typography } from 'antd';
 import { AppstoreAddOutlined } from '@ant-design/icons';
 
 import { convertSequenceAndDisplayData, saveValue } from '@/utils/localStorage';
 import type { Sections } from '@/types/data';
+import { RequestStatus } from '@/types/requests';
 
 import { BOX_SHADOW, LOCALSTORAGE_CHARTS_KEY } from '@/constants/overviewConstants';
 import { WAITING_STATES } from '@/constants/requests';
@@ -16,39 +17,59 @@ import Loader from '@/components/Loader';
 import Dataset from '@/components/Provenance/Dataset';
 import Catalogue from '@/components/Provenance/Catalogue/Catalogue';
 
-import { useAppSelector } from '@/hooks';
-import { useSearchableFields } from '@/features/data/hooks';
-import { useMetadata, useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
 import { useTranslation } from 'react-i18next';
-import { RequestStatus } from '@/types/requests';
+import { useAppSelector, useTranslationFn } from '@/hooks';
+import { useData, useSearchableFields } from '@/features/data/hooks';
+import { useMetadata, useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
 
-const ABOUT_CARD_STYLE = { width: '100%', maxWidth: '1390px', borderRadius: '11pX', ...BOX_SHADOW };
+const ABOUT_CARD_STYLE = { width: '100%', maxWidth: '1390px', borderRadius: '11px', ...BOX_SHADOW };
 const MANAGE_CHARTS_BUTTON_STYLE = { right: '5em', bottom: '1.5em', transform: 'scale(125%)' };
 
-const PublicOverview = () => {
-  const { i18n, t } = useTranslation();
+const InstanceAboutBox = ({ style, bottomDivider }: { style?: CSSProperties; bottomDivider?: boolean }) => {
+  const { i18n } = useTranslation();
 
-  const [drawerVisible, setDrawerVisible] = useState(false);
   const [aboutContent, setAboutContent] = useState('');
-
-  const { status: overviewDataStatus, sections } = useAppSelector((state) => state.data);
   const { status: aboutStatus, about } = useAppSelector((state) => state.content);
-
-  const selectedProject = useSelectedProject();
-  const { scope } = useSelectedScope();
-  const { projects } = useMetadata();
-
-  useEffect(() => {
-    // Save sections to localStorage when they change
-    if (overviewDataStatus != RequestStatus.Fulfilled) return;
-    saveToLocalStorage(sections);
-  }, [overviewDataStatus, sections]);
 
   useEffect(() => {
     const activeLanguage = i18n.language;
     const activeAbout = about[activeLanguage];
     setAboutContent(activeAbout);
   }, [i18n.language, about]);
+
+  // If about is blank after loading, we don't have anything - so don't render the box.
+  return aboutStatus === RequestStatus.Fulfilled && !about ? null : (
+    <>
+      <Card style={{ ...ABOUT_CARD_STYLE, ...(style ?? {}) }}>
+        {aboutStatus === RequestStatus.Idle || aboutStatus === RequestStatus.Pending ? (
+          <Skeleton title={false} paragraph={{ rows: 2 }} />
+        ) : (
+          <div className="about-content" dangerouslySetInnerHTML={{ __html: aboutContent }} />
+        )}
+      </Card>
+      {bottomDivider && <Divider style={{ maxWidth: 1310, minWidth: 'auto', margin: '32px auto' }} />}
+    </>
+  );
+};
+
+const PublicOverview = () => {
+  const t = useTranslationFn();
+
+  const [drawerVisible, setDrawerVisible] = useState(false);
+
+  const selectedProject = useSelectedProject();
+  const { scope, scopeSet } = useSelectedScope();
+  const { projects } = useMetadata();
+
+  const showCatalogue = scopeSet && !selectedProject && projects.length > 1;
+
+  const { status: overviewDataStatus, sections } = useData({ fetchEnabled: showCatalogue });
+
+  useEffect(() => {
+    // Save sections to localStorage when they change
+    if (overviewDataStatus != RequestStatus.Fulfilled) return;
+    saveToLocalStorage(sections);
+  }, [overviewDataStatus, sections]);
 
   const displayedSections = sections.filter(({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1);
 
@@ -61,19 +82,20 @@ const PublicOverview = () => {
 
   const searchableFields = useSearchableFields();
 
-  if (!selectedProject && projects.length > 1) return <Catalogue />;
+  if (showCatalogue) {
+    return (
+      <>
+        <InstanceAboutBox style={{ maxWidth: 1325, margin: 'auto' }} bottomDivider={true} />
+        <Catalogue />
+      </>
+    );
+  }
 
   return WAITING_STATES.includes(overviewDataStatus) ? (
     <Loader />
   ) : (
     <>
-      <Card style={ABOUT_CARD_STYLE}>
-        {aboutStatus === RequestStatus.Idle || aboutStatus === RequestStatus.Pending ? (
-          <Skeleton title={false} paragraph={{ rows: 2 }} />
-        ) : (
-          <div className="about-content" dangerouslySetInnerHTML={{ __html: aboutContent }} />
-        )}
-      </Card>
+      <InstanceAboutBox />
       <Row>
         <Col flex={1}>
           <Counts />
