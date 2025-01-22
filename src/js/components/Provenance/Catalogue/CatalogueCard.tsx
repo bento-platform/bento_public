@@ -109,9 +109,9 @@ const CatalogueCard = ({ project }: { project: Project }) => {
     <Card className="container" style={BOX_SHADOW} size={isSmallScreen ? 'small' : 'default'}>
       <CatalogueCardInner
         firstContent={
-          <>
+          <Flex vertical={true} gap={8}>
             <Space direction="horizontal">
-              <Title level={4} style={{ marginTop: 0 }}>
+              <Title level={4} style={{ margin: 0 }}>
                 {t(title)}
               </Title>
             </Space>
@@ -151,7 +151,7 @@ const CatalogueCard = ({ project }: { project: Project }) => {
                 </Button>
               ) : null}
             </div>
-          </>
+          </Flex>
         }
         secondContent={
           datasets.length ? (
