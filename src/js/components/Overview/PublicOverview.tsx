@@ -1,4 +1,4 @@
-import { type CSSProperties, useCallback, useEffect, useState } from 'react';
+import { type CSSProperties, useCallback, useEffect, useMemo, useState } from 'react';
 import { Card, Col, Divider, FloatButton, Row, Skeleton, Typography } from 'antd';
 import { AppstoreAddOutlined } from '@ant-design/icons';
 
@@ -22,23 +22,17 @@ import { useAppSelector, useTranslationFn } from '@/hooks';
 import { useData, useSearchableFields } from '@/features/data/hooks';
 import { useMetadata, useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
 
-const ABOUT_CARD_STYLE = { width: '100%', maxWidth: '1390px', borderRadius: '11px', ...BOX_SHADOW };
-const MANAGE_CHARTS_BUTTON_STYLE = { right: '5em', bottom: '1.5em', transform: 'scale(125%)' };
+const ABOUT_CARD_STYLE: CSSProperties = { width: '100%', maxWidth: '1390px', borderRadius: '11px', ...BOX_SHADOW };
+const MANAGE_CHARTS_BUTTON_STYLE: CSSProperties = { right: '5em', bottom: '1.5em', transform: 'scale(125%)' };
 
 const InstanceAboutBox = ({ style, bottomDivider }: { style?: CSSProperties; bottomDivider?: boolean }) => {
   const { i18n } = useTranslation();
 
-  const [aboutContent, setAboutContent] = useState('');
   const { status: aboutStatus, about } = useAppSelector((state) => state.content);
-
-  useEffect(() => {
-    const activeLanguage = i18n.language;
-    const activeAbout = about[activeLanguage];
-    setAboutContent(activeAbout);
-  }, [i18n.language, about]);
+  const aboutContent = useMemo(() => about[i18n.language].trim(), [about, i18n.language]);
 
   // If about is blank after loading, we don't have anything - so don't render the box.
-  return aboutStatus === RequestStatus.Fulfilled && !about ? null : (
+  return aboutStatus === RequestStatus.Fulfilled && !aboutContent ? null : (
     <>
       <Card style={{ ...ABOUT_CARD_STYLE, ...(style ?? {}) }}>
         {aboutStatus === RequestStatus.Idle || aboutStatus === RequestStatus.Pending ? (
