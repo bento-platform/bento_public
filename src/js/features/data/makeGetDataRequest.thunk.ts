@@ -73,8 +73,11 @@ export const makeGetDataRequestThunk = createAsyncThunk<
     return { sectionData, counts: overviewResponse.counts, defaultData: defaultSectionData };
   },
   {
-    condition(_, api) {
-      return api.getState().data.status !== RequestStatus.Pending;
+    condition(_, { getState }) {
+      const {
+        data: { status, isInvalid },
+      } = getState();
+      return status !== RequestStatus.Pending && (status === RequestStatus.Idle || isInvalid);
     },
   }
 );

@@ -3,15 +3,17 @@ import { Routes, Route, useNavigate, useParams, Outlet } from 'react-router-dom'
 import { useAutoAuthenticate, useIsAuthenticated } from 'bento-auth-js';
 import { useAppDispatch } from '@/hooks';
 
-import { makeGetServiceInfoRequest } from '@/features/config/config.store';
+import { invalidateConfig, makeGetServiceInfoRequest } from '@/features/config/config.store';
 import { makeGetAboutRequest } from '@/features/content/content.store';
 import { getBeaconConfig } from '@/features/beacon/beacon.store';
 import { getBeaconNetworkConfig } from '@/features/beacon/network.store';
 import { fetchGohanData, fetchKatsuData } from '@/features/ingestion/lastIngestion.store';
+import { invalidateData } from '@/features/data/data.store';
 import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
 import { useMetadata } from '@/features/metadata/hooks';
 import { getProjects, markScopeSet, selectScope } from '@/features/metadata/metadata.store';
 import { getGenomes } from '@/features/reference/reference.store';
+import { makeGetKatsuPublic, makeGetSearchFields } from '@/features/search/query.store';
 
 import Loader from '@/components/Loader';
 import DefaultLayout from '@/components/Util/DefaultLayout';
@@ -93,21 +95,29 @@ const BentoAppRouter = () => {
 
   const { isAutoAuthenticating } = useAutoAuthenticate();
   const isAuthenticated = useIsAuthenticated();
-  const { selectedScope, projectsStatus } = useMetadata();
+  const {
+    selectedScope: { scope, scopeSet },
+    projectsStatus,
+  } = useMetadata();
 
   useEffect(() => {
-    if (!selectedScope.scopeSet) return;
+    if (!scopeSet) return;
     dispatch(getBeaconConfig());
+    dispatch(makeGetSearchFields());
+    dispatch(makeGetKatsuPublic());
+    dispatch(fetchKatsuData());
 
+    // If scope or authorization status changed, invalidate anything which is scope/authz-contextual and uses a
+    // lazy-loading-style hook for data fetching:
+    dispatch(invalidateConfig());
+    dispatch(invalidateData());
+  }, [dispatch, isAuthenticated, scope, scopeSet]);
+
+  useEffect(() => {
     if (BEACON_NETWORK_ENABLED) {
       dispatch(getBeaconNetworkConfig());
     }
 
-    dispatch(makeGetAboutRequest());
-    dispatch(fetchKatsuData());
-  }, [dispatch, isAuthenticated, selectedScope]);
-
-  useEffect(() => {
     dispatch(getProjects());
     dispatch(makeGetAboutRequest());
     dispatch(fetchGohanData());
