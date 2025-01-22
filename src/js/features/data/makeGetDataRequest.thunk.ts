@@ -12,60 +12,69 @@ import type { RootState } from '@/store';
 import type { ChartConfig } from '@/types/chartConfig';
 import type { ChartDataField, LocalStorageData, Sections } from '@/types/data';
 import type { Counts, OverviewResponse } from '@/types/overviewResponse';
+import { RequestStatus } from '@/types/requests';
 
 export const makeGetDataRequestThunk = createAsyncThunk<
   { sectionData: Sections; counts: Counts; defaultData: Sections },
   void,
   { rejectValue: string; state: RootState }
->('data/makeGetDataRequest', async (_, { rejectWithValue, getState }) => {
-  const overviewResponse = (await axios
-    .get(katsuPublicOverviewUrl, scopedAuthorizedRequestConfig(getState()))
-    .then((res) => res.data)
-    .catch(printAPIError(rejectWithValue))) as OverviewResponse['overview'];
+>(
+  'data/makeGetDataRequest',
+  async (_, { rejectWithValue, getState }) => {
+    const overviewResponse = (await axios
+      .get(katsuPublicOverviewUrl, scopedAuthorizedRequestConfig(getState()))
+      .then((res) => res.data)
+      .catch(printAPIError(rejectWithValue))) as OverviewResponse['overview'];
 
-  const sections = overviewResponse.layout;
+    const sections = overviewResponse.layout;
 
-  // Take chart configuration and create a combined state object with:
-  //   the chart configuration
-  // + displayed boolean - whether this chart is shown
-  // + field definition (from config.field)
-  // + the fields' relevant data.
-  const normalizeChart = (chart: ChartConfig, i: number): ChartDataField => {
-    const { data, ...field } = overviewResponse.fields[chart.field];
-    return {
-      id: field.id,
-      chartConfig: chart,
-      field,
-      data: serializeChartData(data),
-      // Initial display state
-      isDisplayed: i < MAX_CHARTS,
-      width: chart.width ?? DEFAULT_CHART_WIDTH, // initial configured width; users can change it from here
+    // Take chart configuration and create a combined state object with:
+    //   the chart configuration
+    // + displayed boolean - whether this chart is shown
+    // + field definition (from config.field)
+    // + the fields' relevant data.
+    const normalizeChart = (chart: ChartConfig, i: number): ChartDataField => {
+      const { data, ...field } = overviewResponse.fields[chart.field];
+      return {
+        id: field.id,
+        chartConfig: chart,
+        field,
+        data: serializeChartData(data),
+        // Initial display state
+        isDisplayed: i < MAX_CHARTS,
+        width: chart.width ?? DEFAULT_CHART_WIDTH, // initial configured width; users can change it from here
+      };
     };
-  };
 
-  const sectionData: Sections = sections.map(({ section_title, charts }) => ({
-    sectionTitle: section_title,
-    charts: charts.map(normalizeChart),
-  }));
-
-  const defaultSectionData = JSON.parse(JSON.stringify(sectionData));
-
-  // comparing to the local store and updating itself
-  let convertedData = convertSequenceAndDisplayData(sectionData);
-  const localValue = getValue(LOCALSTORAGE_CHARTS_KEY, convertedData, (val: LocalStorageData) =>
-    verifyData(val, convertedData)
-  );
-  sectionData.forEach(({ sectionTitle, charts }, i, arr) => {
-    arr[i].charts = localValue[sectionTitle].map(({ id, isDisplayed, width }) => ({
-      ...charts.find((c) => c.id === id)!,
-      isDisplayed,
-      width,
+    const sectionData: Sections = sections.map(({ section_title, charts }) => ({
+      sectionTitle: section_title,
+      charts: charts.map(normalizeChart),
     }));
-  });
 
-  //saving to local storage
-  convertedData = convertSequenceAndDisplayData(sectionData);
-  saveValue(LOCALSTORAGE_CHARTS_KEY, convertedData);
+    const defaultSectionData = JSON.parse(JSON.stringify(sectionData));
 
-  return { sectionData, counts: overviewResponse.counts, defaultData: defaultSectionData };
-});
+    // comparing to the local store and updating itself
+    let convertedData = convertSequenceAndDisplayData(sectionData);
+    const localValue = getValue(LOCALSTORAGE_CHARTS_KEY, convertedData, (val: LocalStorageData) =>
+      verifyData(val, convertedData)
+    );
+    sectionData.forEach(({ sectionTitle, charts }, i, arr) => {
+      arr[i].charts = localValue[sectionTitle].map(({ id, isDisplayed, width }) => ({
+        ...charts.find((c) => c.id === id)!,
+        isDisplayed,
+        width,
+      }));
+    });
+
+    //saving to local storage
+    convertedData = convertSequenceAndDisplayData(sectionData);
+    saveValue(LOCALSTORAGE_CHARTS_KEY, convertedData);
+
+    return { sectionData, counts: overviewResponse.counts, defaultData: defaultSectionData };
+  },
+  {
+    condition(_, api) {
+      return api.getState().data.status !== RequestStatus.Pending;
+    },
+  }
+);
