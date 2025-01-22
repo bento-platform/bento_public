@@ -161,6 +161,7 @@ const CatalogueCard = ({ project }: { project: Project }) => {
               </Title>
               <Carousel
                 arrows={datasets.length > 1}
+                dots={datasets.length > 1}
                 style={{
                   border: '1px solid lightgray',
                   borderRadius: '7px',
