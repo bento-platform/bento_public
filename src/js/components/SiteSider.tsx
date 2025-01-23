@@ -122,14 +122,16 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
     >
       {scope.project && projects.length > 1 && (
         <>
-          <Button
-            type="text"
-            icon={<ArrowLeftOutlined />}
-            style={{ margin: 4, width: 'calc(100% - 8px)' }}
-            onClick={scope.dataset ? () => navigate(`/${i18n.language}/p/${scope.project}`) : navigateToRoot}
-          >
-            {collapsed || !scopeSet ? null : t(scope.dataset ? 'Back to project' : 'Back to catalogue')}
-          </Button>
+          <div style={{ backgroundColor: '#FAFAFA' }}>
+            <Button
+              type="text"
+              icon={<ArrowLeftOutlined />}
+              style={{ margin: 4, width: 'calc(100% - 8px)' }}
+              onClick={scope.dataset ? () => navigate(`/${i18n.language}/p/${scope.project}`) : navigateToRoot}
+            >
+              {collapsed || !scopeSet ? null : t(scope.dataset ? 'Back to project' : 'Back to catalogue')}
+            </Button>
+          </div>
           <Divider style={{ margin: 0 }} />
         </>
       )}

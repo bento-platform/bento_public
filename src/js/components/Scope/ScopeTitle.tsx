@@ -18,13 +18,7 @@ const BREADCRUMB_STYLE: CSSProperties = {
 
 const breadcrumbRender: BreadcrumbProps['itemRender'] = (route, _params, routes, _paths) => {
   const isLast = route?.path === routes[routes.length - 1]?.path;
-  return isLast || !route.path ? (
-    <span>{route.title}</span>
-  ) : (
-    <Link to={{ pathname: route.path }} style={{ height: '3.3rem' }}>
-      {route.title}
-    </Link>
-  );
+  return isLast || !route.path ? <span>{route.title}</span> : <Link to={{ pathname: route.path }}>{route.title}</Link>;
 };
 
 const ScopeTitle = () => {
@@ -57,7 +51,6 @@ const ScopeTitle = () => {
 
     const observer = new IntersectionObserver(
       ([e]) => {
-        console.log(e);
         return e.target.toggleAttribute('data-stuck', e.intersectionRatio < 1);
       },
       { threshold: [1], root: document.getElementById('content-layout') }

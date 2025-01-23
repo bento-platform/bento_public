@@ -77,14 +77,24 @@ h2.select-project-title:hover {
   right: 0;
   z-index: 20;
 
-  font-size: 2rem;
+  font-size: 1.8rem;
   box-sizing: border-box;
   margin-bottom: 24px;
   padding-top: 3px;
   background-color: rgba(245, 245, 245, 0.80);
+  border-bottom: 1px solid rgba(240, 240, 240, 0); /* invisible border to transition from/to */
   backdrop-filter: blur(10px);
 
-  transition: font-size 0.3s ease-in-out, height 0.5s ease-in-out;
+  transition: font-size 0.3s ease-in-out,
+    border-bottom-color 0.5s ease-in-out,
+    margin 0.5s ease-in-out,
+    padding 0.5s ease-in-out,
+    height 0.5s ease-in-out,
+    box-shadow 0.1s ease-in-out;
+}
+
+.scope-breadcrumb a {
+  height: 3rem;
 }
 
 .scope-breadcrumb[data-stuck] {
@@ -95,8 +105,12 @@ h2.select-project-title:hover {
   padding-left: 64px;
   padding-right: 64px;
   height: 44px;
-  border-bottom: 1px solid #E6E6E6;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(235, 235, 235, 1);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.02);
+}
+
+.scope-breadcrumb[data-stuck] a {
+  height: auto;
 }
 
 
