@@ -81,20 +81,22 @@ h2.select-project-title:hover {
   box-sizing: border-box;
   margin-bottom: 24px;
   padding-top: 3px;
-  background-color: #f5f5f5;
+  background-color: rgba(245, 245, 245, 0.80);
+  backdrop-filter: blur(10px);
 
   transition: font-size 0.3s ease-in-out, height 0.5s ease-in-out;
 }
 
 .scope-breadcrumb[data-stuck] {
   font-size: 1rem;
+  line-height: 40px;
   margin-left: -64px;
   margin-right: -64px;
   padding-left: 64px;
   padding-right: 64px;
-  height: 32px;
-  border-bottom: 1px solid #EEE;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  height: 44px;
+  border-bottom: 1px solid #E6E6E6;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
 }
 
 
