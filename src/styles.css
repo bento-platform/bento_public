@@ -70,6 +70,34 @@ h2.select-project-title:hover {
 }
 
 
+.scope-breadcrumb {
+  position: sticky;
+  top: -3px;
+  left: 0;
+  right: 0;
+  z-index: 20;
+
+  font-size: 2rem;
+  box-sizing: border-box;
+  margin-bottom: 24px;
+  padding-top: 3px;
+  background-color: #f5f5f5;
+
+  transition: font-size 0.3s ease-in-out, height 0.5s ease-in-out;
+}
+
+.scope-breadcrumb[data-stuck] {
+  font-size: 1rem;
+  margin-left: -64px;
+  margin-right: -64px;
+  padding-left: 64px;
+  padding-right: 64px;
+  height: 32px;
+  border-bottom: 1px solid #EEE;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+
 /* BEGIN about HTML styling */
 
 /* Elements which are the first child of the about content container shouldn't have the default top margin */

@@ -106,15 +106,15 @@ const SiteHeader = () => {
           >
             {CLIENT_NAME}
           </Typography.Title>
-          {scopeSelectionEnabled && (
-            <Typography.Title className="select-project-title" level={2} onClick={() => setIsModalOpen(true)}>
-              <ProfileOutlined style={{ marginRight: '5px', fontSize: '16px' }} />
+          {/*{scopeSelectionEnabled && (*/}
+          {/*  <Typography.Title className="select-project-title" level={2} onClick={() => setIsModalOpen(true)}>*/}
+          {/*    <ProfileOutlined style={{ marginRight: '5px', fontSize: '16px' }} />*/}
 
-              {scopeObj.project && scopeProps.projectTitle}
-              {scopeProps.datasetTitle ? ` / ${scopeProps.datasetTitle}` : ''}
-            </Typography.Title>
-          )}
-          <ScopePickerModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
+          {/*    {scopeObj.project && scopeProps.projectTitle}*/}
+          {/*    {scopeProps.datasetTitle ? ` / ${scopeProps.datasetTitle}` : ''}*/}
+          {/*  </Typography.Title>*/}
+          {/*)}*/}
+          {/*<ScopePickerModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />*/}
         </Space>
 
         <Space size={isSmallScreen ? 0 : 'small'}>
