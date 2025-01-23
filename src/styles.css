@@ -124,13 +124,21 @@ h2.select-project-title:hover {
   gap: 20px;
 }
 
+.slick-arrow {
+  color: black !important; /* override slick-next/slick-prev color */
+}
+
+.slick-dots li button {
+  background-color: black !important; /* override slick-dots color */
+}
+
 /* END search results pane */
 
 
 @media (min-width: 1050px) and (max-width: 1550px) {
   .dataset-provenance-card-grid {
     /* This looks better at an intermediate screen width */
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(350px, 0.5fr));
   }
 }
 

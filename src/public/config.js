@@ -10,6 +10,7 @@ BENTO_PUBLIC_CONFIG = {
   TRANSLATED: null,
   SHOW_PORTAL_LINK: null,
   SHOW_SIGN_IN: null,
+  FORCE_CATALOGUE: null, // Show data catalogue even with 1 project
   // Beacon configuration and flags,
   BEACON_URL: null,
   BEACON_UI_ENABLED: null,

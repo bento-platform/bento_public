@@ -10,6 +10,7 @@ const siteConfig = {
   TRANSLATED: parseBoolean(process.env.BENTO_PUBLIC_TRANSLATED),
   SHOW_PORTAL_LINK: parseBoolean(process.env.BENTO_PUBLIC_SHOW_PORTAL_LINK),
   SHOW_SIGN_IN: parseBoolean(process.env.BENTO_PUBLIC_SHOW_SIGN_IN),
+  FORCE_CATALOGUE: parseBoolean(process.env.BENTO_PUBLIC_FORCE_CATALOGUE), // Show data catalogue even with 1 project
 
   // Beacon configuration and flags
   BEACON_URL: process.env.BEACON_URL || null,

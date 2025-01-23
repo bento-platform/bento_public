@@ -15,11 +15,19 @@ export const fetchKatsuData = createAsyncThunk<
     rejectValue: string;
     state: RootState;
   }
->('dataTypes/fetchKatsuData', (_, { rejectWithValue, getState }) =>
-  axios
-    .get(katsuLastIngestionsUrl, scopedAuthorizedRequestConfig(getState()))
-    .then((res) => res.data)
-    .catch(printAPIError(rejectWithValue))
+>(
+  'dataTypes/fetchKatsuData',
+  (_, { rejectWithValue, getState }) =>
+    axios
+      .get(katsuLastIngestionsUrl, scopedAuthorizedRequestConfig(getState()))
+      .then((res) => res.data)
+      .catch(printAPIError(rejectWithValue)),
+  {
+    condition(_, { getState }) {
+      const state = getState();
+      return state.metadata.selectedScope.scopeSet && !state.lastIngestionData.isFetchingKatsuData;
+    },
+  }
 );
 
 // TODO: handle scoping, handle authorization
