@@ -48,7 +48,8 @@ export const makeGetDataRequestThunk = createAsyncThunk<
 
     const sectionData: Sections = sections.map(({ section_title, charts }) => ({
       sectionTitle: section_title,
-      charts: charts.map(normalizeChart),
+      // Filter out charts where field data is missing due to missing counts permissions for the field's data type
+      charts: charts.filter((c) => !!overviewResponse.fields[c.field]).map(normalizeChart),
     }));
 
     const defaultSectionData = JSON.parse(JSON.stringify(sectionData));

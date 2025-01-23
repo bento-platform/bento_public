@@ -10,6 +10,7 @@ import { NO_RESULTS_DASHES } from '@/constants/searchConstants';
 import { useAppSelector, useTranslationFn } from '@/hooks';
 import { useCanSeeUncensoredCounts } from '@/hooks/censorship';
 import type { BentoEntity } from '@/types/entities';
+import { useConfig } from '@/features/config/hooks';
 
 const styles: Record<string, CSSProperties> = {
   countCard: {
@@ -19,31 +20,38 @@ const styles: Record<string, CSSProperties> = {
   },
 };
 
-type CountEntry = { entity: BentoEntity; icon: ReactNode; count: number };
+type CountEntry = { entity: BentoEntity; icon: ReactNode; count: number | string };
 
 const Counts = () => {
   const t = useTranslationFn();
 
-  const { counts, status } = useAppSelector((state) => state.data);
+  const {
+    counts: { individuals, biosamples, experiments },
+    status,
+  } = useAppSelector((state) => state.data);
 
   const uncensoredCounts = useCanSeeUncensoredCounts();
+  const { countThreshold } = useConfig();
+
+  const renderCount = (count: number | boolean): number | string =>
+    typeof count === 'boolean' ? (count ? `\u2265${countThreshold}` : NO_RESULTS_DASHES) : count;
 
   // Break down help into multiple sentences inside an array to make translation a bit easier.
   const data: CountEntry[] = [
     {
       entity: 'individual',
       icon: <TeamOutlined />,
-      count: counts.individuals,
+      count: renderCount(individuals),
     },
     {
       entity: 'biosample',
       icon: <BiDna />,
-      count: counts.biosamples,
+      count: renderCount(biosamples),
     },
     {
       entity: 'experiment',
       icon: <ExperimentOutlined />,
-      count: counts.experiments,
+      count: renderCount(experiments),
     },
   ];
 
