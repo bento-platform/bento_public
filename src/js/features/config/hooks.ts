@@ -14,6 +14,7 @@ export const useConfig = () => {
   //  - config was invalidated (scope or authorization changed)
   useEffect(() => {
     if (scopeSet) {
+      // dispatch action if scope is set and/or the state is invalidated and then this hook is called.
       dispatch(makeGetConfigRequest());
     }
   }, [dispatch, scopeSet, configIsInvalid]);

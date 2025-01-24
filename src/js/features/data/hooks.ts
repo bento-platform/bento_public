@@ -12,8 +12,7 @@ export const useData = () => {
 
   useEffect(() => {
     if (scopeSet) {
-      // Parameter to turn off data fetching in some circumstances, e.g., if the data catalogue is being shown.
-      // In this way we can avoid making needless fetches up front.
+      // dispatch action if scope is set and/or the state is invalidated and then this hook is called.
       dispatch(makeGetDataRequestThunk());
     }
   }, [dispatch, scopeSet, state.isInvalid]);
