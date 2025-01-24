@@ -109,6 +109,7 @@ const BentoAppRouter = () => {
 
     // If scope or authorization status changed, invalidate anything which is scope/authz-contextual and uses a
     // lazy-loading-style hook for data fetching:
+    console.debug('isAuthenticated | scope | scopeSet changed - dispatching config/data invalidate actions');
     dispatch(invalidateConfig());
     dispatch(invalidateData());
   }, [dispatch, isAuthenticated, scope, scopeSet]);
