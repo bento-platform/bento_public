@@ -56,7 +56,7 @@ const BeaconQueryFormUi = ({
   const dispatch = useAppDispatch();
   const isAuthenticated = useIsAuthenticated();
 
-  const { scope } = useSelectedScope();
+  const { scope, scopeSet } = useSelectedScope();
 
   const formInitialValues = useMemo(
     () => ({
@@ -99,6 +99,9 @@ const BeaconQueryFormUi = ({
   };
 
   useEffect(() => {
+    if (!scopeSet) {
+      return;
+    }
     launchEmptyQuery();
     setHasVariants(beaconAssemblyIds.length > 0 || isNetworkQuery);
 
