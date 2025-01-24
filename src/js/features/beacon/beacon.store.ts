@@ -3,15 +3,16 @@ import axios from 'axios';
 import { makeAuthorizationHeader } from 'bento-auth-js';
 
 import { EMPTY_DISCOVERY_RESULTS } from '@/constants/searchConstants';
-import { BEACON_INDIVIDUALS_ENDPOINT, BEACON_INFO_ENDPOINT } from '@/features/beacon/constants';
+import { BEACON_INFO_ENDPOINT } from '@/features/beacon/constants';
 import type { RootState } from '@/store';
 import type { BeaconConfigResponse, BeaconAssemblyIds, BeaconQueryResponse, BeaconQueryPayload } from '@/types/beacon';
 import type { DiscoveryResults } from '@/types/data';
 import { beaconApiError, errorMsgOrDefault } from '@/utils/beaconApiError';
 import { printAPIError } from '@/utils/error.util';
 
-import { extractBeaconDiscoveryOverview } from './utils';
+import { extractBeaconDiscoveryOverview, scopedBeaconIndividualsUrl } from './utils';
 
+// config response is not scoped
 export const getBeaconConfig = createAsyncThunk<BeaconConfigResponse, void, { state: RootState; rejectValue: string }>(
   'beacon/getBeaconConfig',
   (_, { rejectWithValue }) => {
@@ -33,9 +34,10 @@ export const makeBeaconQuery = createAsyncThunk<
   { state: RootState; rejectValue: string }
 >('beacon/makeBeaconQuery', async (payload, { getState, rejectWithValue }) => {
   const token = getState().auth.accessToken;
+  const projectId = getState().metadata.selectedScope.scope.project;
   const headers = makeAuthorizationHeader(token);
   return axios
-    .post(BEACON_INDIVIDUALS_ENDPOINT, payload, { headers: headers as Record<string, string> })
+    .post(scopedBeaconIndividualsUrl(projectId), payload, { headers: headers as Record<string, string> })
     .then((res) => res.data)
     .catch(beaconApiError(rejectWithValue));
 });
