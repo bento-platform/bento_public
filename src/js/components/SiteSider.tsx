@@ -15,7 +15,7 @@ import Icon, {
 } from '@ant-design/icons';
 
 import BeaconSvg from '@/components/Beacon/BeaconSvg';
-import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
+import { useSelectedScope } from '@/features/metadata/hooks';
 import { useSearchQuery } from '@/features/search/hooks';
 import { useTranslationFn } from '@/hooks';
 import { useIsInCatalogueMode, useNavigateToRoot } from '@/hooks/navigation';
@@ -36,7 +36,6 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
   const location = useLocation();
   const { i18n } = useTranslation();
   const t = useTranslationFn();
-  const { projects } = useMetadata();
   const { queryParams } = useSearchQuery();
   const catalogueMode = useIsInCatalogueMode();
   const currentPage = getCurrentPage();
