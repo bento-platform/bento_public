@@ -27,12 +27,17 @@ body {
   border-right: 1px solid #f0f0f0;
 }
 
-.select-project-title {
+h2.select-project-title {
+  font-size: 16px;
+  margin: 0;
+  line-height: 64px;
+  color: lightgray;
+
   transition: all 0.2s;
 }
 
-.select-project-title:hover {
-  color: white !important;
+h2.select-project-title:hover {
+  color: white;
   cursor: pointer;
 }
 
@@ -119,13 +124,21 @@ body {
   gap: 20px;
 }
 
+.slick-arrow {
+  color: black !important; /* override slick-next/slick-prev color */
+}
+
+.slick-dots li button {
+  background-color: black !important; /* override slick-dots color */
+}
+
 /* END search results pane */
 
 
 @media (min-width: 1050px) and (max-width: 1550px) {
   .dataset-provenance-card-grid {
     /* This looks better at an intermediate screen width */
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(350px, 0.5fr));
   }
 }
 

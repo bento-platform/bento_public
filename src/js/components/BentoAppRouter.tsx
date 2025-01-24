@@ -3,17 +3,17 @@ import { Routes, Route, useNavigate, useParams, Outlet } from 'react-router-dom'
 import { useAutoAuthenticate, useIsAuthenticated } from 'bento-auth-js';
 import { useAppDispatch } from '@/hooks';
 
-import { makeGetConfigRequest, makeGetServiceInfoRequest } from '@/features/config/config.store';
+import { invalidateConfig, makeGetServiceInfoRequest } from '@/features/config/config.store';
 import { makeGetAboutRequest } from '@/features/content/content.store';
-import { makeGetDataRequestThunk } from '@/features/data/data.store';
-import { makeGetKatsuPublic, makeGetSearchFields } from '@/features/search/query.store';
 import { getBeaconConfig } from '@/features/beacon/beacon.store';
 import { getBeaconNetworkConfig } from '@/features/beacon/network.store';
 import { fetchGohanData, fetchKatsuData } from '@/features/ingestion/lastIngestion.store';
+import { invalidateData } from '@/features/data/data.store';
 import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
 import { useMetadata } from '@/features/metadata/hooks';
 import { getProjects, markScopeSet, selectScope } from '@/features/metadata/metadata.store';
 import { getGenomes } from '@/features/reference/reference.store';
+import { makeGetKatsuPublic, makeGetSearchFields } from '@/features/search/query.store';
 
 import Loader from '@/components/Loader';
 import DefaultLayout from '@/components/Util/DefaultLayout';
@@ -33,13 +33,13 @@ const ScopedRoute = () => {
   const { projectId, datasetId } = useParams();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { selectedScope, projects, projectsStatus } = useMetadata();
+  const { selectedScope, projectsByID, projectsStatus } = useMetadata();
 
   useEffect(() => {
     if (WAITING_STATES.includes(projectsStatus)) return; // Wait for projects to load first
 
     // Update selectedScope based on URL parameters
-    const valid = validProjectDataset(projects, { project: projectId, dataset: datasetId });
+    const valid = validProjectDataset(projectsByID, { project: projectId, dataset: datasetId });
 
     // Don't change the scope object if the scope value is the same, otherwise it'll trigger needless re-renders.
     if (scopeEqual(selectedScope.scope, valid.scope)) {
@@ -49,21 +49,34 @@ const ScopedRoute = () => {
       return;
     }
 
+    const isFixedProjectAndDataset = valid.fixedProject && valid.fixedDataset;
+
     // If the URL scope is valid, store the scope in the Redux store.
-    if (datasetId === valid.scope.dataset && projectId === valid.scope.project) {
+    // We have two subcases here:
+    //  - If the validated scope matches the URL parameters, nothing needs to be done
+    //  - No parameters have been supplied and we have a single-dataset node, in which case we want to keep the "clean"
+    //    / blank URL to avoid visual clutter.
+    if (
+      (datasetId === valid.scope.dataset && projectId === valid.scope.project) ||
+      (!projectId && !datasetId && isFixedProjectAndDataset)
+    ) {
       dispatch(selectScope(valid.scope)); // Also marks scope as set
       return;
     }
 
-    // Otherwise: validated scope does not match URL params, so we need to re-locate to a valid path.
+    // Otherwise: validated scope does not match our desired URL params, so we need to re-locate to a valid path.
 
     const oldPath = location.pathname.split('/').filter(Boolean);
     const newPath = [oldPath[0]];
 
-    if (valid.scope.dataset) {
-      newPath.push('p', valid.scope.project as string, 'd', valid.scope.dataset);
-    } else if (valid.scope.project) {
-      newPath.push('p', valid.scope.project);
+    // If we have >1 dataset, we need the URL to match the validated scope, so we create a new path and go there.
+    // Otherwise (with 1 dataset), keep URL as clean as possible - with no IDs present at all.
+    if (!isFixedProjectAndDataset) {
+      if (valid.scope.dataset) {
+        newPath.push('p', valid.scope.project as string, 'd', valid.scope.dataset);
+      } else if (valid.scope.project) {
+        newPath.push('p', valid.scope.project);
+      }
     }
 
     const oldPathLength = oldPath.length;
@@ -72,7 +85,7 @@ const ScopedRoute = () => {
     }
     const newPathString = '/' + newPath.join('/');
     navigate(newPathString, { replace: true });
-  }, [projects, projectsStatus, projectId, datasetId, dispatch, navigate, selectedScope]);
+  }, [projectsByID, projectsStatus, projectId, datasetId, dispatch, navigate, selectedScope]);
 
   return <Outlet />;
 };
@@ -82,24 +95,29 @@ const BentoAppRouter = () => {
 
   const { isAutoAuthenticating } = useAutoAuthenticate();
   const isAuthenticated = useIsAuthenticated();
-  const { selectedScope, projectsStatus } = useMetadata();
+  const {
+    selectedScope: { scope, scopeSet },
+    projectsStatus,
+  } = useMetadata();
 
   useEffect(() => {
-    if (!selectedScope.scopeSet) return;
-    dispatch(makeGetConfigRequest()).then(() => dispatch(getBeaconConfig()));
+    if (!scopeSet) return;
+    dispatch(getBeaconConfig());
+    dispatch(makeGetSearchFields());
+    dispatch(makeGetKatsuPublic());
+    dispatch(fetchKatsuData());
 
+    // If scope or authorization status changed, invalidate anything which is scope/authz-contextual and uses a
+    // lazy-loading-style hook for data fetching:
+    dispatch(invalidateConfig());
+    dispatch(invalidateData());
+  }, [dispatch, isAuthenticated, scope, scopeSet]);
+
+  useEffect(() => {
     if (BEACON_NETWORK_ENABLED) {
       dispatch(getBeaconNetworkConfig());
     }
 
-    dispatch(makeGetAboutRequest());
-    dispatch(makeGetDataRequestThunk());
-    dispatch(makeGetSearchFields());
-    dispatch(makeGetKatsuPublic());
-    dispatch(fetchKatsuData());
-  }, [dispatch, isAuthenticated, selectedScope]);
-
-  useEffect(() => {
     dispatch(getProjects());
     dispatch(makeGetAboutRequest());
     dispatch(fetchGohanData());
@@ -120,6 +138,7 @@ const BentoAppRouter = () => {
           <Route path={BentoRoute.Overview} element={<PublicOverview />} />
           <Route path={BentoRoute.Search} element={<Search />} />
           {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
+          {/* Beacon network is only available at the top level - scoping does not make sense for it. */}
           {BentoRoute.BeaconNetwork && <Route path={BentoRoute.BeaconNetwork} element={<NetworkUi />} />}
           <Route path={BentoRoute.Provenance} element={<ProvenanceTab />} />
         </Route>
@@ -129,7 +148,6 @@ const BentoAppRouter = () => {
           <Route path={BentoRoute.Overview} element={<PublicOverview />} />
           <Route path={BentoRoute.Search} element={<Search />} />
           {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
-          {BentoRoute.BeaconNetwork && <Route path={BentoRoute.BeaconNetwork} element={<NetworkUi />} />}
           <Route path={BentoRoute.Provenance} element={<ProvenanceTab />} />
         </Route>
 
@@ -138,7 +156,6 @@ const BentoAppRouter = () => {
           <Route path={BentoRoute.Overview} element={<PublicOverview />} />
           <Route path={BentoRoute.Search} element={<Search />} />
           {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
-          {BentoRoute.BeaconNetwork && <Route path={BentoRoute.BeaconNetwork} element={<NetworkUi />} />}
           <Route path={BentoRoute.Provenance} element={<ProvenanceTab />} />
         </Route>
       </Route>

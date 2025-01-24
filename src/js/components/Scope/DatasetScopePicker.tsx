@@ -31,7 +31,7 @@ const DatasetScopePicker = ({ parentProject }: DatasetScopePickerProps) => {
   const showSelectProject = !selectedScope.fixedProject && parentProject.identifier != scopeObj.project;
 
   const parentProjectScope: DiscoveryScope = { project: parentProject.identifier };
-  const projectURL = scopeToUrl(parentProjectScope, baseURL, `/${page}`);
+  const projectURL = scopeToUrl(parentProjectScope, baseURL, page);
 
   return (
     <Space direction="vertical" style={{ display: 'flex' }}>
@@ -51,7 +51,14 @@ const DatasetScopePicker = ({ parentProject }: DatasetScopePickerProps) => {
       <List
         dataSource={parentProject.datasets}
         bordered
-        renderItem={(d) => <Dataset parentProjectID={parentProject.identifier} dataset={d} format="list-item" />}
+        renderItem={(d) => (
+          <Dataset
+            parentProjectID={parentProject.identifier}
+            dataset={d}
+            format="list-item"
+            selected={scopeObj.dataset === d.identifier}
+          />
+        )}
       />
     </Space>
   );
