@@ -1,3 +1,4 @@
+import { FORCE_CATALOGUE } from '@/config';
 import type { Project } from '@/types/metadata';
 import { BentoRoute } from '@/types/routes';
 import type { DiscoveryScope, DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
@@ -27,7 +28,7 @@ export const validProjectDataset = (
 
   const projects = Object.values(projectsByID);
 
-  if (projects.length === 1) {
+  if (projects.length === 1 && !FORCE_CATALOGUE) {
     // Automatic project scoping if only 1
     //  - if there is only one project, it should be auto-selected, since it contains the same set of data as the node.
     const defaultProj = projects[0];

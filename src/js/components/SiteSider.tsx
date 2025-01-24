@@ -18,7 +18,7 @@ import BeaconSvg from '@/components/Beacon/BeaconSvg';
 import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
 import { useSearchQuery } from '@/features/search/hooks';
 import { useTranslationFn } from '@/hooks';
-import { useNavigateToRoot } from '@/hooks/navigation';
+import { useIsInCatalogueMode, useNavigateToRoot } from '@/hooks/navigation';
 import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
 import { buildQueryParamsUrl } from '@/utils/search';
 import { getCurrentPage } from '@/utils/router';
@@ -38,11 +38,12 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
   const t = useTranslationFn();
   const { projects } = useMetadata();
   const { queryParams } = useSearchQuery();
+  const catalogueMode = useIsInCatalogueMode();
   const currentPage = getCurrentPage();
 
   // Use location for catalogue page detection instead of selectedProject, since it gives us faster UI rendering at the
   // cost of only being wrong with a redirect edge case (and being slightly more brittle).
-  const overviewIsCatalogue = !location.pathname.includes('/p/') && projects.length > 1;
+  const overviewIsCatalogue = !location.pathname.includes('/p/') && catalogueMode;
 
   const navigateToRoot = useNavigateToRoot();
   const { fixedProject, scope, scopeSet } = useSelectedScope();
@@ -120,7 +121,7 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
         borderRight: '1px solid #f0f0f0',
       }}
     >
-      {scope.project && projects.length > 1 && (
+      {scope.project && catalogueMode && (
         <>
           <Button
             type="text"
