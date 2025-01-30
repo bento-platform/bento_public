@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector, useTranslationFn } from '@/hooks';
-import type { DescriptionsProps } from 'antd';
-import { Descriptions } from 'antd';
+import { Descriptions, DescriptionsProps, Skeleton } from 'antd';
 
 import { makeGetIndividualData } from '@/features/search/makeGetIndividualData.thunk';
 import { EM_DASH } from '@/constants/contentConstants';
@@ -15,6 +14,7 @@ const IndividualsAccordionPane = ({ id }: { id: string }) => {
   }, [dispatch, id]);
 
   const individualData = useAppSelector((state) => state.query.individualDataCache[id]);
+  const isFetchingIndividualData = useAppSelector((state) => state.query.isFetchingIndividualData[id]);
 
   const items: DescriptionsProps['items'] = [
     {
@@ -45,7 +45,7 @@ const IndividualsAccordionPane = ({ id }: { id: string }) => {
     },
   ];
 
-  return <Descriptions items={items} />;
+  return isFetchingIndividualData ? <Skeleton active /> : <Descriptions items={items} />;
 };
 
 export default IndividualsAccordionPane;
