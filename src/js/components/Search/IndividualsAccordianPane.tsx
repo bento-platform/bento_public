@@ -1,12 +1,14 @@
 import { useEffect } from 'react';
 import { makeGetIndividualData } from '@/features/search/makeGetIndividualData.thunk';
-import { useAppDispatch, useAppSelector } from '@/hooks';
+import { useAppDispatch, useAppSelector, useTranslationFn } from '@/hooks';
 import type { DescriptionsProps } from 'antd';
 import { Descriptions } from 'antd';
 import { EM_DASH } from '@/constants/contentConstants';
 
 const IndividualsAccordianPane = ({ id }: { id: string }) => {
   const dispatch = useAppDispatch();
+  const t = useTranslationFn();
+
   useEffect(() => {
     dispatch(makeGetIndividualData(id));
   }, [dispatch, id]);
@@ -15,29 +17,29 @@ const IndividualsAccordianPane = ({ id }: { id: string }) => {
 
   const items: DescriptionsProps['items'] = [
     {
-      label: 'Date of Birth',
+      label: t('individual.date_of_birth'),
       children: individualData?.date_of_birth || EM_DASH,
       span: 2,
     },
     {
-      label: 'Sex',
+      label: t('individual.sex'),
       children: individualData?.sex,
     },
     {
-      label: 'Time at last encounter',
+      label: t('individual.time_at_last_encounter'),
       children: individualData?.time_at_last_encounter?.age.iso8601duration, // TODO: handle other time elements if there are any
     },
     {
-      label: 'Karyotypic Sex',
-      children: individualData?.karyotypic_sex || 'UNKNOWN_KARYOTYPE',
+      label: t('individual.karyotypic_sex'),
+      children: individualData?.karyotypic_sex || t('individual.unknown_karyotypic_sex'),
     },
     {
-      label: 'Taxonomy',
-      children: individualData?.taxonomy?.label || 'UNKNOWN_TAXONOMY',
+      label: t('individual.taxonomy'),
+      children: individualData?.taxonomy?.label || t('individual.unknown_taxonomy'),
     },
     {
       span: 3,
-      label: 'Extra Properties',
+      label: t('individual.extra_properties'),
       children: JSON.stringify(individualData?.extra_properties, null, 2),
     },
   ];

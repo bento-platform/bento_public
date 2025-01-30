@@ -140,5 +140,15 @@
     "licensed_under": "Bento is licensed under the",
     "source_available": "The source code is available on",
     "terms_of_use": "Terms of Use"
+  },
+  "individual": {
+    "date_of_birth": "Date of Birth",
+    "sex": "Sex",
+    "time_at_last_encounter": "Time at last encounter",
+    "karyotypic_sex": "Karyotypic Sex",
+    "taxonomy": "Taxonomy",
+    "extra_properties": "Extra Properties",
+    "unknown_karyotypic_sex": "UNKNOWN_KARYOTYPE",
+    "unknown_taxonomy": "UNKNOWN_TAXONOMY"
   }
 }
