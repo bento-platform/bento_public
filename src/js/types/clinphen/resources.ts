@@ -22,11 +22,31 @@ export type Biosample = {
   };
 };
 
+type GenomicInterpretation = {
+  id: string;
+  created: string;
+  updated: string;
+  extra_properties?: Record<string, string | number | boolean>;
+  gene_descriptor?: {
+    created: string;
+    symbol: string;
+    updated: string;
+    value_id: string;
+  };
+  interpretation_status: string;
+  subject_or_biosample_id: string;
+};
+
 export type Diagnosis = {
   id: string;
-  genomic_interpretations: unknown[];
-  disease: unknown | null;
-  extra_properties: unknown | null;
+  created?: string;
+  updated?: string;
+  genomic_interpretations: GenomicInterpretation[];
+  disease: {
+    id: string;
+    label: string;
+  } | null;
+  extra_properties?: Record<string, string | number | boolean>;
 };
 
 export type Interpretation = {
