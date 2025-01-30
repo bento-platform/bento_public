@@ -148,7 +148,6 @@
     "karyotypic_sex": "Karyotypic Sex",
     "taxonomy": "Taxonomy",
     "extra_properties": "Extra Properties",
-    "unknown_karyotypic_sex": "UNKNOWN_KARYOTYPE",
-    "unknown_taxonomy": "UNKNOWN_TAXONOMY"
+    "unknown_karyotypic_sex": "UNKNOWN_KARYOTYPE"
   }
 }

@@ -36,7 +36,7 @@ const IndividualsAccordionPane = ({ id }: { id: string }) => {
     },
     {
       label: t('individual.taxonomy'),
-      children: individualData?.taxonomy?.label || t('individual.unknown_taxonomy'),
+      children: individualData?.taxonomy?.label || EM_DASH,
     },
     {
       span: 3,
