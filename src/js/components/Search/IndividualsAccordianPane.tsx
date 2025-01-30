@@ -26,8 +26,7 @@ const IndividualsAccordianPane = ({ id }: { id: string }) => {
       children: individualData?.sex,
     },
     {
-      key: 3,
-      label: 'time at last encounter',
+      label: 'Time at last encounter',
       children: individualData?.time_at_last_encounter?.age.iso8601duration, // TODO: handle other time elements if there are any
     },
     {
