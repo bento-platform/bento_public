@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector, useTranslationFn } from '@/hooks';
-import { Descriptions, DescriptionsProps, Skeleton } from 'antd';
+import type { DescriptionsProps } from 'antd';
+import { Descriptions, Skeleton } from 'antd';
 
 import { makeGetIndividualData } from '@/features/search/makeGetIndividualData.thunk';
 import { EM_DASH } from '@/constants/contentConstants';
