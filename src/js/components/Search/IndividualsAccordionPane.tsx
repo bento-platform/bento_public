@@ -5,7 +5,7 @@ import type { DescriptionsProps } from 'antd';
 import { Descriptions } from 'antd';
 import { EM_DASH } from '@/constants/contentConstants';
 
-const IndividualsAccordianPane = ({ id }: { id: string }) => {
+const IndividualsAccordionPane = ({ id }: { id: string }) => {
   const dispatch = useAppDispatch();
   const t = useTranslationFn();
 
@@ -47,4 +47,4 @@ const IndividualsAccordianPane = ({ id }: { id: string }) => {
   return <Descriptions items={items} />;
 };
 
-export default IndividualsAccordianPane;
+export default IndividualsAccordionPane;

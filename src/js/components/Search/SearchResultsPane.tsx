@@ -10,7 +10,7 @@ import type { SearchResultsUIPane } from '@/types/search';
 
 import CustomEmpty from '../Util/CustomEmpty';
 import SearchResultsCounts from './SearchResultsCounts';
-import IndividualsAccordianPane from '@/components/Search/IndividualsAccordianPane';
+import IndividualsAccordionPane from '@/components/Search/IndividualsAccordionPane';
 import { PORTAL_URL } from '@/config';
 
 const INDIVIDUALS_PER_PAGE = 10;
@@ -55,7 +55,7 @@ const SearchResultsPane = ({
   const createIndividualPanel = (id: string) => ({
     key: id,
     label: id,
-    children: <IndividualsAccordianPane id={id} />,
+    children: <IndividualsAccordionPane id={id} />,
     extra: genExtra(id),
   });
 
