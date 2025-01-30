@@ -1,4 +1,4 @@
-import type { OntologyTerm } from '@/types/ontology';
+import type { OntologyTerm } from '@/types/clinphen/ontology';
 
 // See also: https://github.com/bento-platform/bento_reference_service/blob/main/bento_reference_service/models.py
 
