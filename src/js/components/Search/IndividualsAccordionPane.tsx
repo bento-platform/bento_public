@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
-import { makeGetIndividualData } from '@/features/search/makeGetIndividualData.thunk';
 import { useAppDispatch, useAppSelector, useTranslationFn } from '@/hooks';
 import type { DescriptionsProps } from 'antd';
 import { Descriptions } from 'antd';
+
+import { makeGetIndividualData } from '@/features/search/makeGetIndividualData.thunk';
 import { EM_DASH } from '@/constants/contentConstants';
 
 const IndividualsAccordionPane = ({ id }: { id: string }) => {
