@@ -1,3 +1,5 @@
+import type { OntologyTerm } from './ontology';
+
 type ExperimentResult = {
   id: number;
   identifier: string;
@@ -19,11 +21,6 @@ type Instrument = {
   updated: string;
 };
 
-type Ontology = {
-  id: string;
-  label: string;
-};
-
 type Experiment = {
   id: string;
   experiment_results?: ExperimentResult[];
@@ -33,9 +30,9 @@ type Experiment = {
   };
   study_type: string;
   experiment_type: string;
-  experiment_ontology: Ontology[];
+  experiment_ontology: OntologyTerm[];
   molecule?: string;
-  molecule_ontology?: Ontology[];
+  molecule_ontology?: OntologyTerm[];
   library_strategy?: string;
   library_source?: string;
   library_selection?: string;
@@ -55,12 +52,12 @@ type Biosample = {
     label: string;
   };
   procedure?: {
-    code: Ontology;
+    code: OntologyTerm;
   };
 };
 
 type PhenotypicFeature = {
-  type: Ontology;
+  type: OntologyTerm;
   created: string;
   updated: string;
   excluded: boolean;
@@ -87,20 +84,20 @@ type Disease = {
   id: number;
   created: string;
   updated: string;
-  term: Ontology;
+  term: OntologyTerm;
   excluded: boolean;
 };
 
 type MeasurementValue = {
   quantity?: {
-    unit: Ontology;
+    unit: OntologyTerm;
     value: number;
   };
   complex_value?: {
     typed_quantities: {
-      type: Ontology;
+      type: OntologyTerm;
       quantity: {
-        unit: Ontology;
+        unit: OntologyTerm;
         value: number;
       };
     }[];
@@ -108,18 +105,18 @@ type MeasurementValue = {
 };
 
 type Measurement = {
-  assay: Ontology;
+  assay: OntologyTerm;
   value?: MeasurementValue;
 };
 
 type Treatment = {
-  agent: Ontology;
+  agent: OntologyTerm;
 };
 
 type MedicalAction = {
   treatment?: Treatment;
-  adverse_events?: Ontology[];
-  treatment_target?: Ontology;
+  adverse_events?: OntologyTerm[];
+  treatment_target?: OntologyTerm;
 };
 
 type MetaDataResource = {
@@ -170,7 +167,7 @@ export type IndividualRootObject = {
   };
   sex: string;
   karyotypic_sex: string;
-  taxonomy: Ontology;
+  taxonomy: OntologyTerm;
   extra_properties: {
     mobility: string;
     covid_severity: string;
