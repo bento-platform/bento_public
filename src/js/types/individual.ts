@@ -18,12 +18,6 @@ export type IndividualRootObject = {
   sex: string;
   karyotypic_sex: string;
   taxonomy: OntologyTerm;
-  extra_properties: {
-    mobility: string;
-    covid_severity: string;
-    smoking_status: string;
-    date_of_consent: string;
-    lab_test_result_value: number;
-  };
+  extra_properties: Record<string, string | number | boolean>;
   date_of_birth: string;
 };
