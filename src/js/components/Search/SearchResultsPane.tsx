@@ -23,13 +23,12 @@ const chunkArray = (arr: string[], size: number) => {
   return result;
 };
 
-const genExtra = (id: string) => {
-  return (
-    <a href={`${PORTAL_URL}/data/explorer/individuals/${id}`} target="_blank" rel="noreferrer">
-      <ExportOutlined />
-    </a>
-  );
-};
+const genExtra = (id: string) => (
+  <a href={`${PORTAL_URL}/data/explorer/individuals/${id}`} target="_blank" rel="noreferrer">
+    <ExportOutlined />
+  </a>
+);
+
 const createIndividualPanel = (id: string) => ({
   key: id,
   label: id,
