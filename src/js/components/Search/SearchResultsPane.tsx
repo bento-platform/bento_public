@@ -15,13 +15,13 @@ import { PORTAL_URL } from '@/config';
 
 const INDIVIDUALS_PER_PAGE = 10;
 
-function chunkArray(arr: string[], size: number) {
+const chunkArray = (arr: string[], size: number) => {
   const result = [];
   for (let i = 0; i < arr.length; i += size) {
     result.push(arr.slice(i, i + size));
   }
   return result;
-}
+};
 
 const genExtra = (id: string) => {
   return (
