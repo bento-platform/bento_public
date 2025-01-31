@@ -23,6 +23,20 @@ function chunkArray(arr: string[], size: number) {
   return result;
 }
 
+const genExtra = (id: string) => {
+  return (
+    <a href={`${PORTAL_URL}/data/explorer/individuals/${id}`} target="_blank" rel="noreferrer">
+      <ExportOutlined />
+    </a>
+  );
+};
+const createIndividualPanel = (id: string) => ({
+  key: id,
+  label: id,
+  children: <IndividualsAccordionPane id={id} />,
+  extra: genExtra(id),
+});
+
 const SearchResultsPane = ({
   isFetchingData,
   hasInsufficientData,
@@ -44,20 +58,6 @@ const SearchResultsPane = ({
     () => chunkArray(individualMatches ?? [], individualSize),
     [individualMatches, individualSize]
   );
-
-  const genExtra = (id: string) => {
-    return (
-      <a href={`${PORTAL_URL}/data/explorer/individuals/${id}`} target="_blank" rel="noreferrer">
-        <ExportOutlined />
-      </a>
-    );
-  };
-  const createIndividualPanel = (id: string) => ({
-    key: id,
-    label: id,
-    children: <IndividualsAccordionPane id={id} />,
-    extra: genExtra(id),
-  });
 
   return (
     <div className="search-results-pane">
