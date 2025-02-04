@@ -4,7 +4,8 @@ import type { FormInstance } from 'antd/es/form';
 
 import { useBeaconNetwork } from '@/features/beacon/hooks';
 import { toggleQuerySectionsUnionOrIntersection } from '@/features/beacon/network.store';
-import { useAppSelector, useAppDispatch, useTranslationFn } from '@/hooks';
+import { useConfig } from '@/features/config/hooks';
+import { useAppDispatch, useTranslationFn } from '@/hooks';
 import type { FormFilter } from '@/types/beacon';
 import type { SearchFieldResponse } from '@/types/search';
 
@@ -39,8 +40,7 @@ const BUTTON_STYLE = { margin: '10px 0' };
 const Filters = ({ filters, setFilters, form, querySections, isNetworkQuery }: FiltersProps) => {
   const t = useTranslationFn();
 
-  const maxFilters = useAppSelector((state) => state.config.maxQueryParameters);
-  const maxQueryParametersRequired = useAppSelector((state) => state.config.maxQueryParametersRequired);
+  const { maxQueryParameters: maxFilters, maxQueryParametersRequired } = useConfig();
   const activeFilters = filters.filter((f) => f.active);
   const hasMaxFilters = maxQueryParametersRequired && activeFilters.length >= maxFilters;
 
