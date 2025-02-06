@@ -4,6 +4,7 @@ import type { Datum } from '@/types/overviewResponse';
 import type { makeBeaconQuery } from '@/features/beacon/beacon.store';
 import type { beaconNetworkQuery } from '@/features/beacon/network.store';
 import type { OptionalDiscoveryResults } from '@/types/data';
+import type { Dataset } from '@/types/metadata';
 
 // ----------------------------
 // form handling
@@ -72,7 +73,11 @@ export type PayloadVariantsQuery =
 
 export interface BeaconQueryPayload {
   meta: { apiVersion: string };
-  query: { requestParameters: { g_variant: PayloadVariantsQuery }; filters: PayloadFilter[] };
+  query: {
+    requestParameters: { g_variant: PayloadVariantsQuery };
+    filters: PayloadFilter[];
+    datasets?: { datasetIds: [Dataset['identifier']] };
+  };
   bento?: { showSummaryStatistics: boolean };
 }
 
