@@ -76,7 +76,7 @@ const BeaconQueryFormUi = ({
         query: { requestParameters: { g_variant: query }, filters: payloadFilters },
         bento: { showSummaryStatistics: true },
       };
-      if (scope.dataset) {
+      if (scope.dataset && !isNetworkQuery) {
         payload['query']['datasets'] = { datasetIds: [scope.dataset] };
       }
       return payload;
