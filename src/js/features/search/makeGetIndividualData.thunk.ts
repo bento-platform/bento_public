@@ -4,10 +4,10 @@ import { individualUrl } from '@/constants/configConstants';
 import type { RootState } from '@/store';
 import { printAPIError } from '@/utils/error.util';
 import { authorizedRequestConfig } from '@/utils/requests';
-import type { IndividualRootObject } from '@/types/individual';
+import type { Individual } from '@/types/clinphen/individual';
 
 export const makeGetIndividualData = createAsyncThunk<
-  IndividualRootObject,
+  Individual,
   string,
   {
     state: RootState;

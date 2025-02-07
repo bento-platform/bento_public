@@ -9,7 +9,7 @@ import { serializeChartData } from '@/utils/chart';
 import { makeGetKatsuPublic } from './makeGetKatsuPublic.thunk';
 import { makeGetSearchFields } from './makeGetSearchFields.thunk';
 import { makeGetIndividualData } from './makeGetIndividualData.thunk';
-import type { IndividualRootObject } from '@/types/individual';
+import type { Individual } from '@/types/clinphen/individual';
 
 export type QueryState = {
   isFetchingFields: boolean;
@@ -22,7 +22,7 @@ export type QueryState = {
   queryParamCount: number;
   message: string;
   results: DiscoveryResults;
-  individualDataCache: { [key: string]: IndividualRootObject };
+  individualDataCache: { [key: string]: Individual };
 };
 
 const initialState: QueryState = {

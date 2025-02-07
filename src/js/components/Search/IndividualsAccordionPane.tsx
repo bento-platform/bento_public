@@ -29,7 +29,7 @@ const IndividualsAccordionPane = ({ id }: { id: string }) => {
     },
     {
       label: t('individual.time_at_last_encounter'),
-      children: individualData?.time_at_last_encounter?.age.iso8601duration, // TODO: handle other time elements if there are any
+      children: JSON.stringify(individualData?.time_at_last_encounter), // TODO: handle other time elements if there are any
     },
     {
       label: t('individual.karyotypic_sex'),
