@@ -2,16 +2,16 @@
  * Aggregates an individual's experimental data.
  */
 
-import { Individual } from './individual';
-import { Biosample } from './biosample';
-import { Interpretation } from './interpretation';
-import { Disease } from './disease';
-import { PhenotypicFeature } from './phenotypic_feature';
-import { Measurement } from './measurement';
-import { MetaData } from './meta_data';
-import { MedicalActionWrapper } from './medical_action';
-import { File } from './file';
-import { TimestampedEntity } from '@/types/util';
+import type { Individual } from './individual';
+import type { Biosample } from './biosample';
+import type { Interpretation } from './interpretation';
+import type { Disease } from './disease';
+import type { PhenotypicFeature } from './phenotypic_feature';
+import type { Measurement } from './measurement';
+import type { MetaData } from './meta_data';
+import type { MedicalActionWrapper } from './medical_action';
+import type { File } from './file';
+import type { TimestampedEntity } from '@/types/util';
 
 export interface Phenopacket extends TimestampedEntity {
   id: string;
@@ -24,5 +24,5 @@ export interface Phenopacket extends TimestampedEntity {
   medical_actions?: MedicalActionWrapper[];
   files?: File[];
   meta_data: MetaData;
-  extra_properties?: Record<string, any>;
+  extra_properties?: Record<string, string, number, bool>;
 }

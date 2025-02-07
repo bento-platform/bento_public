@@ -2,9 +2,9 @@
  * Represents structured definitions of resources and ontologies used in a phenopacket.
  */
 
-import { Resource } from './resource';
-import { ExternalReference } from './shared';
-import { TimestampedEntity } from '@/types/util';
+import type { Resource } from './resource';
+import type { ExternalReference } from './shared';
+import type { TimestampedEntity } from '@/types/util';
 
 export interface Update {
   timestamp: string; // DateTime
@@ -20,5 +20,5 @@ export interface MetaData extends TimestampedEntity {
   updates?: Update[];
   phenopacket_schema_version?: string; // Should be "2.0"
   external_references?: ExternalReference[];
-  extra_properties?: Record<string, any>; // JSONField
+  extra_properties?: Record<string, string, number, bool>; // JSONField
 }

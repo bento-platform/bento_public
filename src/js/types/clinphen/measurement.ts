@@ -1,6 +1,6 @@
-import { OntologyTerm, TimeElement } from './shared';
-import { Procedure } from './procedure';
-import { TimestampedEntity } from '@/types/util';
+import type { OntologyTerm, TimeElement } from './shared';
+import type { Procedure } from './procedure';
+import type { TimestampedEntity } from '@/types/util';
 
 export interface ReferenceRange {
   unit: OntologyTerm;

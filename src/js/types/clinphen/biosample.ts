@@ -1,9 +1,9 @@
-import { OntologyTerm, TimeElement } from './shared';
-import { PhenotypicFeature } from './phenotypic_feature';
-import { Measurement } from './measurement';
-import { Procedure } from './procedure';
-import { File } from './file';
-import { TimestampedEntity } from '@/types/util';
+import type { OntologyTerm, TimeElement } from './shared';
+import type { PhenotypicFeature } from './phenotypic_feature';
+import type { Measurement } from './measurement';
+import type { Procedure } from './procedure';
+import type { File } from './file';
+import type { TimestampedEntity } from '@/types/util';
 
 export interface Biosample extends TimestampedEntity {
   id: string;
@@ -28,5 +28,5 @@ export interface Biosample extends TimestampedEntity {
   sample_processing?: OntologyTerm;
   sample_storage?: OntologyTerm;
   is_control_sample?: boolean;
-  extra_properties?: Record<string, any>;
+  extra_properties?: Record<string, string, number, bool>;
 }

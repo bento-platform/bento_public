@@ -2,8 +2,8 @@
  * Represents a diagnosis and inference about the cause of observed phenotypic abnormalities.
  */
 
-import { OntologyTerm, TimeElement } from './shared';
-import { TimestampedEntity } from '@/types/util';
+import type { OntologyTerm, TimeElement } from './shared';
+import type { TimestampedEntity } from '@/types/util';
 
 export interface Disease extends TimestampedEntity {
   term: OntologyTerm;
@@ -14,5 +14,5 @@ export interface Disease extends TimestampedEntity {
   clinical_tnm_finding?: OntologyTerm[];
   primary_site?: OntologyTerm;
   laterality?: OntologyTerm;
-  extra_properties?: Record<string, any>; // JSONField
+  extra_properties?: Record<string, string, number, bool>; // JSONField
 }

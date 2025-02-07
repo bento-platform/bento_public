@@ -1,7 +1,7 @@
 /**
  * Represents an external resource used for referencing an object.
  */
-import { TimestampedEntity } from '@/types/util';
+import type { TimestampedEntity } from '@/types/util';
 
 export interface Resource extends TimestampedEntity {
   id: string;
@@ -10,5 +10,5 @@ export interface Resource extends TimestampedEntity {
   url: string;
   version: string;
   iri_prefix: string;
-  extra_properties?: Record<string, any>; // JSONField
+  extra_properties?: Record<string, string, number, bool>; // JSONField
 }

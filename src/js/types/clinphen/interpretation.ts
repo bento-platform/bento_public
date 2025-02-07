@@ -2,8 +2,8 @@
  * Represents the interpretation of a genomic analysis.
  */
 
-import { Diagnosis } from './diagnosis';
-import { TimestampedEntity } from '@/types/util';
+import type { Diagnosis } from './diagnosis';
+import type { TimestampedEntity } from '@/types/util';
 
 export enum ProgressStatus {
   UNKNOWN_PROGRESS = 'UNKNOWN_PROGRESS',
@@ -18,5 +18,5 @@ export interface Interpretation extends TimestampedEntity {
   progress_status?: ProgressStatus;
   diagnosis?: Diagnosis;
   summary?: string;
-  extra_properties?: Record<string, any>;
+  extra_properties?: Record<string, string, number, bool>;
 }

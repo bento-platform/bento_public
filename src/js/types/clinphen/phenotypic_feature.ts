@@ -1,8 +1,8 @@
 /**
  * Represents a phenotypic feature of an individual or biosample.
  */
-import { Evidence, OntologyTerm, TimeElement } from './shared';
-import { TimestampedEntity } from '@/types/util';
+import type { Evidence, OntologyTerm, TimeElement } from './shared';
+import type { TimestampedEntity } from '@/types/util';
 
 export interface PhenotypicFeature extends TimestampedEntity {
   description?: string;
@@ -13,5 +13,5 @@ export interface PhenotypicFeature extends TimestampedEntity {
   onset?: TimeElement;
   resolution?: TimeElement;
   evidence?: Evidence[];
-  extra_properties?: Record<string, any>; // JSONField
+  extra_properties?: Record<string, string, number, bool>; // JSONField
 }

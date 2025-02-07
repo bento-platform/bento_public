@@ -2,9 +2,9 @@
  * Represents a statement about the contribution of a genomic element to a phenotype.
  */
 
-import { GeneDescriptor } from './gene_descriptor';
-import { VariantInterpretation } from './variant_interpretation';
-import { TimestampedEntity } from '@/types/util';
+import type { GeneDescriptor } from './gene_descriptor';
+import type { VariantInterpretation } from './variant_interpretation';
+import type { TimestampedEntity } from '@/types/util';
 
 export enum GenomicInterpretationStatus {
   UNKNOWN_STATUS = 'UNKNOWN_STATUS',
@@ -19,5 +19,5 @@ export interface GenomicInterpretation extends TimestampedEntity {
   interpretation_status?: GenomicInterpretationStatus;
   gene_descriptor?: GeneDescriptor;
   variant_interpretation?: VariantInterpretation;
-  extra_properties?: Record<string, any>;
+  extra_properties?: Record<string, string, number, bool>;
 }

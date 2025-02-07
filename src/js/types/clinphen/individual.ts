@@ -2,10 +2,10 @@
  * Represents demographic information about an individual (patient).
  */
 
-import { OntologyTerm, TimeElement } from './shared';
-import { Biosample } from '@/types/clinphen/biosample';
-import { Phenopacket } from '@/types/clinphen/phenopacket';
-import { TimestampedEntity } from '@/types/util';
+import type { OntologyTerm, TimeElement } from './shared';
+import type { Biosample } from '@/types/clinphen/biosample';
+import type { Phenopacket } from '@/types/clinphen/phenopacket';
+import type { TimestampedEntity } from '@/types/util';
 
 export enum Sex {
   UNKNOWN_SEX = 'UNKNOWN_SEX',
@@ -49,5 +49,5 @@ export interface Individual extends TimestampedEntity {
   gender?: OntologyTerm;
   biosamples: Biosample[];
   phenopackets: Phenopacket[];
-  extra_properties?: Record<string, any>;
+  extra_properties?: Record<string, string, number, bool>;
 }

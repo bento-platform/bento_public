@@ -2,8 +2,8 @@
  * Represents the interpretation of a variant.
  */
 
-import { VariationDescriptor } from './variation_descriptor';
-import { TimestampedEntity } from '@/types/util';
+import type { VariationDescriptor } from './variation_descriptor';
+import type { TimestampedEntity } from '@/types/util';
 
 export enum AcmgPathogenicityClassification {
   NOT_PROVIDED = 'NOT_PROVIDED',

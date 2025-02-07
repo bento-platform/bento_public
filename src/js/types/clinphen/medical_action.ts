@@ -1,44 +1,42 @@
-
-import { OntologyTerm, TimeElement } from "./shared";
-import { Procedure } from "./procedure"
+import type { OntologyTerm, TimeElement } from './shared';
+import type { Procedure } from './procedure';
 
 export interface DoseInterval {
-    quantity: Quantity;
-    schedule_frequency: OntologyTerm;
-    interval: TimeInterval;
+  quantity: Quantity;
+  schedule_frequency: OntologyTerm;
+  interval: TimeInterval;
 }
 export interface Treatment {
-    agent: OntologyTerm;
-    route_of_administration?: OntologyTerm;
-    dose_intervals?: DoseInterval[];
-    drug_type?: string;
-    cumulative_dose?: Quantity
+  agent: OntologyTerm;
+  route_of_administration?: OntologyTerm;
+  dose_intervals?: DoseInterval[];
+  drug_type?: string;
+  cumulative_dose?: Quantity;
 }
 export interface RadiationTherapy {
-    modality: OntologyTerm;
-    body_site: OntologyTerm;
-    dosage: number;
-    fractions: number;
+  modality: OntologyTerm;
+  body_site: OntologyTerm;
+  dosage: number;
+  fractions: number;
 }
 export interface TherapeuticRegimen {
-    start_time?: TimeElement;
-    end_time?: TimeElement;
-    status: string;
-    ontology_class?: OntologyTerm;
-    external_reference?: ExternalReference
+  start_time?: TimeElement;
+  end_time?: TimeElement;
+  status: string;
+  ontology_class?: OntologyTerm;
+  external_reference?: ExternalReference;
 }
 export type MedicalAction = Procedure | Treatment | RadiationTherapy | TherapeuticRegimen;
-import { Quantity, TimeInterval } from "./measurement";
-import { ExternalReference } from "./shared";
+import type { Quantity, TimeInterval } from './measurement';
+import type { ExternalReference } from './shared';
 export interface MedicalActionWrapper {
-    treatment_target?: OntologyTerm;
-    treatment_intent?: OntologyTerm;
-    response_to_treatment?: OntologyTerm;
-    adverse_events?: OntologyTerm[];
-    treatment_termination_reason?: OntologyTerm;
-    procedure?: Procedure;
-    treatment?: Treatment;
-    radiation_therapy?: RadiationTherapy;
-    therapeutic_regimen?: TherapeuticRegimen
+  treatment_target?: OntologyTerm;
+  treatment_intent?: OntologyTerm;
+  response_to_treatment?: OntologyTerm;
+  adverse_events?: OntologyTerm[];
+  treatment_termination_reason?: OntologyTerm;
+  procedure?: Procedure;
+  treatment?: Treatment;
+  radiation_therapy?: RadiationTherapy;
+  therapeutic_regimen?: TherapeuticRegimen;
 }
-

@@ -1,10 +1,10 @@
 /**
  * Represents a variation descriptor.
  */
-import { GeneDescriptor } from './gene_descriptor';
-import { Extension, OntologyTerm } from './shared';
-import { AbsoluteCopyNumber, Allele, Expression, VcfRecord } from './vrs';
-import { TimestampedEntity } from '@/types/util';
+import type { GeneDescriptor } from './gene_descriptor';
+import type { Extension, OntologyTerm } from './shared';
+import type { AbsoluteCopyNumber, Allele, Expression, VcfRecord } from './vrs';
+import type { TimestampedEntity } from '@/types/util';
 
 export interface VariationDescriptor extends TimestampedEntity {
   id: string;
