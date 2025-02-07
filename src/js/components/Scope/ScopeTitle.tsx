@@ -5,6 +5,10 @@ import { Breadcrumb, type BreadcrumbProps } from 'antd';
 import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
 
 import { useSelectedScope, useSelectedScopeTitles } from '@/features/metadata/hooks';
+import { getCurrentPage } from '@/utils/router';
+import { useGetRouteTitleAndIcon } from '@/hooks/navigation';
+import { useTranslationFn } from '@/hooks';
+import { BentoRoute } from '@/types/routes';
 
 const breadcrumbRender: BreadcrumbProps['itemRender'] = (route, _params, routes, _paths) => {
   const isLast = route?.path === routes[routes.length - 1]?.path;
@@ -13,10 +17,21 @@ const breadcrumbRender: BreadcrumbProps['itemRender'] = (route, _params, routes,
 
 const ScopeTitle = () => {
   const { i18n } = useTranslation();
+  const t = useTranslationFn();
   const { scope, fixedProject, fixedDataset } = useSelectedScope();
   const { projectTitle, datasetTitle } = useSelectedScopeTitles();
 
+  const getRouteTitleAndIcon = useGetRouteTitleAndIcon();
+  const currentPage = getCurrentPage();
+
   const breadcrumbItems: BreadcrumbItemType[] = useMemo(() => {
+    const currentTitleAndIcon = getRouteTitleAndIcon(currentPage);
+    const currentPageTitle = (
+      <>
+        {currentTitleAndIcon[1]} {t(currentTitleAndIcon[0])}
+      </>
+    );
+
     const items: BreadcrumbItemType[] = [];
 
     if (scope.project && !fixedProject) {
@@ -33,8 +48,22 @@ const ScopeTitle = () => {
       }
     }
 
+    if (currentPage !== BentoRoute.Overview) {
+      items.push({ title: currentPageTitle });
+    }
+
     return items;
-  }, [i18n.language, projectTitle, datasetTitle, scope, fixedProject, fixedDataset]);
+  }, [
+    i18n.language,
+    t,
+    projectTitle,
+    datasetTitle,
+    scope,
+    fixedProject,
+    fixedDataset,
+    currentPage,
+    getRouteTitleAndIcon,
+  ]);
 
   useEffect(() => {
     if (!breadcrumbItems.length) return;

@@ -101,6 +101,10 @@ h2.select-project-title:hover {
   margin-right: auto;
 }
 
+.scope-breadcrumb .anticon {
+  font-size: 0.9em;
+}
+
 .scope-breadcrumb a {
   height: 3rem;
 }
