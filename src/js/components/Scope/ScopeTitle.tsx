@@ -1,20 +1,10 @@
-import { type CSSProperties, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Breadcrumb, type BreadcrumbProps } from 'antd';
 import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
 
 import { useSelectedScope, useSelectedScopeTitles } from '@/features/metadata/hooks';
-
-const BREADCRUMB_STYLE: CSSProperties = {
-  // fontSize: '2rem',
-  // marginBottom: 24,
-  // position: 'sticky',
-  // top: -3,
-  // paddingTop: 3,
-  // zIndex: 20,
-  // backgroundColor: '#f5f5f5',
-};
 
 const breadcrumbRender: BreadcrumbProps['itemRender'] = (route, _params, routes, _paths) => {
   const isLast = route?.path === routes[routes.length - 1]?.path;
@@ -64,14 +54,7 @@ const ScopeTitle = () => {
   }, [breadcrumbItems]);
 
   if (breadcrumbItems.length) {
-    return (
-      <Breadcrumb
-        className="scope-breadcrumb"
-        style={BREADCRUMB_STYLE}
-        items={breadcrumbItems}
-        itemRender={breadcrumbRender}
-      />
-    );
+    return <Breadcrumb className="scope-breadcrumb" items={breadcrumbItems} itemRender={breadcrumbRender} />;
   }
 
   return null;

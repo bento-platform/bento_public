@@ -58,7 +58,7 @@ const OverviewChartDashboard = () => {
   return WAITING_STATES.includes(overviewDataStatus) ? (
     <Loader />
   ) : (
-    <>
+    <div className="container">
       <AboutBox />
 
       <Row>
@@ -102,7 +102,7 @@ const OverviewChartDashboard = () => {
         style={MANAGE_CHARTS_BUTTON_STYLE}
         onClick={onManageChartsOpen}
       />
-    </>
+    </div>
   );
 };
 

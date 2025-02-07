@@ -6,7 +6,7 @@ import { BOX_SHADOW } from '@/constants/overviewConstants';
 import { useAppSelector } from '@/hooks';
 import { RequestStatus } from '@/types/requests';
 
-const ABOUT_CARD_STYLE: CSSProperties = { width: '100%', maxWidth: '1390px', borderRadius: '11px', ...BOX_SHADOW };
+const ABOUT_CARD_STYLE: CSSProperties = { width: '100%', maxWidth: 1320, borderRadius: '11px', ...BOX_SHADOW };
 
 const AboutBox = ({ style, bottomDivider }: { style?: CSSProperties; bottomDivider?: boolean }) => {
   const { i18n } = useTranslation();
@@ -24,7 +24,7 @@ const AboutBox = ({ style, bottomDivider }: { style?: CSSProperties; bottomDivid
           <div className="about-content" dangerouslySetInnerHTML={{ __html: aboutContent }} />
         )}
       </Card>
-      {bottomDivider && <Divider style={{ maxWidth: 1310, minWidth: 'auto', margin: '32px auto' }} />}
+      {bottomDivider && <Divider style={{ maxWidth: 1280, minWidth: 'auto', margin: '32px auto' }} />}
     </>
   );
 };

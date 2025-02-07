@@ -11,7 +11,7 @@ body {
 
 .container {
   width: 100%;
-  max-width: 1325px;
+  max-width: 1320px;
   margin: auto;
 }
 
@@ -93,6 +93,14 @@ h2.select-project-title:hover {
     box-shadow 0.1s ease-in-out;
 }
 
+.scope-breadcrumb > ol {
+  flex: 1;
+  width: 100%;
+  max-width: 1320px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .scope-breadcrumb a {
   height: 3rem;
 }
@@ -164,8 +172,9 @@ h2.select-project-title:hover {
 
 .dataset-provenance-card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 600px));
-  gap: 20px;
+  /* 651 * 2 + 18 (gap) = 1320 */
+  grid-template-columns: repeat(auto-fit, minmax(250px, 651px));
+  gap: 18px;
 }
 
 .slick-arrow {
