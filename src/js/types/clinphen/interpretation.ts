@@ -18,5 +18,5 @@ export interface Interpretation extends TimestampedEntity {
   progress_status?: ProgressStatus;
   diagnosis?: Diagnosis;
   summary?: string;
-  extra_properties?: Record<string, string, number, bool>;
+  extra_properties?: Record<string, string | number | boolean>;
 }

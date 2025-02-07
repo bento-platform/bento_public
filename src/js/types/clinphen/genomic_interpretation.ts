@@ -19,5 +19,5 @@ export interface GenomicInterpretation extends TimestampedEntity {
   interpretation_status?: GenomicInterpretationStatus;
   gene_descriptor?: GeneDescriptor;
   variant_interpretation?: VariantInterpretation;
-  extra_properties?: Record<string, string, number, bool>;
+  extra_properties?: Record<string, string | number | boolean>;
 }

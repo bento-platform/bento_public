@@ -24,5 +24,5 @@ export interface Phenopacket extends TimestampedEntity {
   medical_actions?: MedicalActionWrapper[];
   files?: File[];
   meta_data: MetaData;
-  extra_properties?: Record<string, string, number, bool>;
+  extra_properties?: Record<string, string | number | boolean>;
 }

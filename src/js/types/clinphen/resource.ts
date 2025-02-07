@@ -10,5 +10,5 @@ export interface Resource extends TimestampedEntity {
   url: string;
   version: string;
   iri_prefix: string;
-  extra_properties?: Record<string, string, number, bool>; // JSONField
+  extra_properties?: Record<string, string | number | boolean>;
 }

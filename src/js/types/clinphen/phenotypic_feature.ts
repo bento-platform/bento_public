@@ -13,5 +13,5 @@ export interface PhenotypicFeature extends TimestampedEntity {
   onset?: TimeElement;
   resolution?: TimeElement;
   evidence?: Evidence[];
-  extra_properties?: Record<string, string, number, bool>; // JSONField
+  extra_properties?: Record<string, string | number | boolean>;
 }

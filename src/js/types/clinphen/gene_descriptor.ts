@@ -10,5 +10,5 @@ export interface GeneDescriptor extends TimestampedEntity {
   alternate_ids?: string[];
   xrefs?: string[];
   alternate_symbols?: string[];
-  extra_properties?: Record<string, string, number, bool>;
+  extra_properties?: Record<string, string | number | boolean>;
 }

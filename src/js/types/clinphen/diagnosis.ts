@@ -10,5 +10,5 @@ export interface Diagnosis extends TimestampedEntity {
   id: string;
   disease?: OntologyTerm;
   genomic_interpretations?: GenomicInterpretation[];
-  extra_properties?: Record<string, string, number, bool>;
+  extra_properties?: Record<string, string | number | boolean>;
 }

@@ -20,5 +20,5 @@ export interface MetaData extends TimestampedEntity {
   updates?: Update[];
   phenopacket_schema_version?: string; // Should be "2.0"
   external_references?: ExternalReference[];
-  extra_properties?: Record<string, string, number, bool>; // JSONField
+  extra_properties?: Record<string, string | number | boolean>;
 }

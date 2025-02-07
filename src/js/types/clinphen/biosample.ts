@@ -28,5 +28,5 @@ export interface Biosample extends TimestampedEntity {
   sample_processing?: OntologyTerm;
   sample_storage?: OntologyTerm;
   is_control_sample?: boolean;
-  extra_properties?: Record<string, string, number, bool>;
+  extra_properties?: Record<string, string | number | boolean>;
 }

@@ -49,5 +49,5 @@ export interface Individual extends TimestampedEntity {
   gender?: OntologyTerm;
   biosamples: Biosample[];
   phenopackets: Phenopacket[];
-  extra_properties?: Record<string, string, number, bool>;
+  extra_properties?: Record<string, string | number | boolean>;
 }
