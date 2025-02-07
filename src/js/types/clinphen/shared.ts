@@ -31,7 +31,7 @@ interface AgeRange {
   end: Age;
 }
 
-interface TimeInterval {
+export interface TimeInterval {
   start: DateTime;
   end: DateTime;
 }
