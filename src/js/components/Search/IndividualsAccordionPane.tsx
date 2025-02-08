@@ -5,6 +5,7 @@ import { Descriptions, Skeleton } from 'antd';
 
 import { makeGetIndividualData } from '@/features/search/makeGetIndividualData.thunk';
 import { EM_DASH } from '@/constants/contentConstants';
+import { RequestStatus } from '@/types/requests';
 
 const IndividualsAccordionPane = ({ id }: { id: string }) => {
   const dispatch = useAppDispatch();
@@ -15,7 +16,9 @@ const IndividualsAccordionPane = ({ id }: { id: string }) => {
   }, [dispatch, id]);
 
   const individualData = useAppSelector((state) => state.query.individualDataCache[id]);
-  const isFetchingIndividualData = useAppSelector((state) => state.query.isFetchingIndividualData[id]);
+  const individualDataStatus = useAppSelector((state) => state.query.individualDataStatus[id]);
+
+  const isFetchingIndividualData = individualDataStatus === RequestStatus.Pending;
 
   const items: DescriptionsProps['items'] = [
     {
