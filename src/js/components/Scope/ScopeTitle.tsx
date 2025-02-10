@@ -36,6 +36,11 @@ const ScopeTitle = () => {
   const [scopeSelectModalOpen, setScopeSelectModalOpen] = useState(false);
   const [helpModalOpen, setHelpModalOpen] = useState(false);
 
+  const currentPageHasHelp = useMemo(() => {
+    const k = `page_help.${currentPage}`;
+    return k !== t(k);
+  }, [t, currentPage]);
+
   useEffect(() => {
     // If the selected scope changes (likely from the scope select modal), auto-close the modal.
     setScopeSelectModalOpen(false);
@@ -118,17 +123,19 @@ const ScopeTitle = () => {
                 />
               </Tooltip>
             )}
-            <Tooltip title={t('Help')} placement="bottom" open={isSmallScreen ? undefined : false}>
-              <Button
-                color="default"
-                variant="filled"
-                icon={<QuestionOutlined />}
-                shape={isSmallScreen ? 'circle' : 'round'}
-                onClick={() => setHelpModalOpen(true)}
-              >
-                {isSmallScreen ? undefined : t('Help')}
-              </Button>
-            </Tooltip>
+            {currentPageHasHelp && (
+              <Tooltip title={t('Help')} placement="bottom" open={isSmallScreen ? undefined : false}>
+                <Button
+                  color="default"
+                  variant="filled"
+                  icon={<QuestionOutlined />}
+                  shape={isSmallScreen ? 'circle' : 'round'}
+                  onClick={() => setHelpModalOpen(true)}
+                >
+                  {isSmallScreen ? undefined : t('Help')}
+                </Button>
+              </Tooltip>
+            )}
           </Space>
         </Flex>
       </>
