@@ -147,5 +147,19 @@
     "source_available": "Le code source est disponible sur",
     "terms_of_use": "Conditions d'utilisation (en anglais)"
   },
-  "Help for": "Aide pour"
+  "Help": "Aide",
+  "Help for": "Aide pour",
+  "page_help": {
+    "overview": [
+      "La page « $t(Overview) » d'ensemble affiche des comptes et des tableaux pour les données stockées dans le projet/jeu de données sélectionné (le « périmètre »).",
+      "Les tableaux peuvent être affichés/masqués ou leur largeur modifiée via le bouton « $t(Manage Charts) »."
+    ],
+    "search": [
+      "La page « $t(Search) » vous permet d'interroger des comptes ou des records complets pour les données stockées dans un projet/jeu de données spécifique",
+      "ou l'instance entière (le « périmètre »), en fonction de votre niveau d'autorisation.\n",
+      "Sélectionnez des filtres et spécifiez des valeurs pour restreindre les données d'intérêt dans le périmètre sélectionné.",
+      "Si un petit nombre de records correspond à votre requête, le décompte peut être censuré pour éviter la ré-identification."
+    ],
+    "provenance": ["Données de provenance détaillées pour un jeu de données ou tous les jeux de données d'un projet."]
+  }
 }

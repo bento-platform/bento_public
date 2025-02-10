@@ -147,22 +147,20 @@
     "source_available": "The source code is available on",
     "terms_of_use": "Terms of Use"
   },
+  "Help": "Help",
   "Help for": "Help for",
   "page_help": {
     "overview": [
-      "TODO overview 1",
-      "TODO overview 2"
+      "The $t(Overview) page shows counts and charts for data stored in the selected project/dataset (the 'scope').",
+      "Charts can be shown/hidden or their width altered via the '$t(Manage Charts)' button."
     ],
     "search": [
-      "The Search page lets you query either counts or full records for data stored in a specific project/dataset,",
+      "The $t(Search) page lets you query either counts or full records for data stored in a specific project/dataset",
       "or the entire instance (the 'scope'), depending on your level of authorization.\n",
       "Select filters and specify values to narrow down data of interest within the selected scope.",
       "If a small number of records match your query, the count may be censored to prevent re-identification."
     ],
-    "provenance": [
-      "TODO provenance 1",
-      "TODO provenance 2"
-    ],
+    "provenance": ["Detailed provenance data for a dataset or all datasets in a project."],
     "beacon": [
       "TODO beacon 1",
       "TODO beacon 2"
