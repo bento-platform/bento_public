@@ -10,7 +10,6 @@ import ScopePickerModal from './ScopePickerModal';
 import { useSelectedScope, useSelectedScopeTitles } from '@/features/metadata/hooks';
 import { useTranslationFn } from '@/hooks';
 import { useGetRouteTitleAndIcon } from '@/hooks/navigation';
-import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
 import { getCurrentPage } from '@/utils/router';
 import CurrentPageHelpModal from '@/components/Util/CurrentPageHelpModal';
@@ -27,8 +26,6 @@ const ScopeTitle = () => {
 
   const { scope, fixedProject, fixedDataset } = useSelectedScope();
   const { projectTitle, datasetTitle } = useSelectedScopeTitles();
-
-  const isSmallScreen = useSmallScreen();
 
   const getRouteTitleAndIcon = useGetRouteTitleAndIcon();
   const currentPage = getCurrentPage();
@@ -124,16 +121,14 @@ const ScopeTitle = () => {
               </Tooltip>
             )}
             {currentPageHasHelp && (
-              <Tooltip title={t('Help')} placement="bottom" open={isSmallScreen ? undefined : false}>
+              <Tooltip title={t('Help')} placement="bottom">
                 <Button
                   color="default"
                   variant="filled"
                   icon={<QuestionOutlined />}
-                  shape={isSmallScreen ? 'circle' : 'round'}
+                  shape="circle"
                   onClick={() => setHelpModalOpen(true)}
-                >
-                  {isSmallScreen ? undefined : t('Help')}
-                </Button>
+                />
               </Tooltip>
             )}
           </Space>
