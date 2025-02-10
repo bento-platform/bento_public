@@ -70,59 +70,62 @@ h2.select-project-title:hover {
 }
 
 
-.scope-breadcrumb {
+.scope-title {
   position: sticky;
   top: -3px;
   left: 0;
   right: 0;
   z-index: 20;
 
-  font-size: 1.8rem;
+
   box-sizing: border-box;
   margin-bottom: 24px;
   padding-top: 3px;
+  margin-left: -64px;
+  margin-right: -64px;
+  padding-left: max(calc((100% - 1320px) / 2 + 64px), 64px);
+  padding-right: max(calc((100% - 1320px) / 2 + 64px), 64px);
+
   background-color: rgba(245, 245, 245, 0.80);
   border-bottom: 1px solid rgba(240, 240, 240, 0); /* invisible border to transition from/to */
   backdrop-filter: blur(10px);
 
-  transition: font-size 0.3s ease-in-out,
-    border-bottom-color 0.5s ease-in-out,
+  transition: border-bottom-color 0.5s ease-in-out,
     margin 0.5s ease-in-out,
     padding 0.5s ease-in-out,
     height 0.5s ease-in-out,
     box-shadow 0.1s ease-in-out;
 }
 
-.scope-breadcrumb > ol {
+.scope-title__breadcrumb {
+  font-size: 1.8rem;
+  transition: font-size 0.3s ease-in-out;
   flex: 1;
-  width: 100%;
-  max-width: 1320px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
-.scope-breadcrumb .anticon {
+.scope-title__breadcrumb .anticon {
   font-size: 0.9em;
 }
 
-.scope-breadcrumb a {
+.scope-title__breadcrumb a {
   height: 3rem;
 }
 
-.scope-breadcrumb[data-stuck] {
-  font-size: 1rem;
-  line-height: 40px;
-  margin-left: -64px;
-  margin-right: -64px;
-  padding-left: 64px;
-  padding-right: 64px;
-  height: 44px;
+.scope-title[data-stuck] {
+  height: 50px;
   border-bottom: 1px solid rgba(235, 235, 235, 1);
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.02);
 }
 
-.scope-breadcrumb[data-stuck] a {
-  height: auto;
+.scope-title[data-stuck] .scope-title__breadcrumb {
+  font-size: 1.2rem;
+  line-height: 46px;
+}
+
+.scope-title[data-stuck] .scope-title__breadcrumb a {
+  height: 38px;
+  margin-top: 4px;
+  line-height: 38px;
 }
 
 
