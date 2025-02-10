@@ -207,7 +207,25 @@ h2.select-project-title:hover {
     padding: 10px !important;
   }
 
+  .ant-layout-footer {
+    padding: 24px;
+  }
+
   .dataset-provenance-card-grid {
     gap: 8px;
+  }
+
+  .scope-title {
+    margin-left: -10px;
+    margin-right: -10px;
+    margin-bottom: 8px;
+
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .scope-title__breadcrumb {
+    font-size: 1.2rem;
+    line-height: 46px;
   }
 }
