@@ -160,6 +160,17 @@
       "Sélectionnez des filtres et spécifiez des valeurs pour restreindre les données d'intérêt dans le périmètre sélectionné.",
       "Si un petit nombre de records correspond à votre requête, le décompte peut être censuré pour éviter la ré-identification."
     ],
-    "provenance": ["Données de provenance détaillées pour un jeu de données ou tous les jeux de données d'un projet."]
+    "provenance": ["Données de provenance détaillées pour un jeu de données ou tous les jeux de données d'un projet."],
+    "beacon": [
+      "Beacon vous permet d'interroger les données en fonction de la position des variants génétiques et de filtrer les résultats en fonction de diverses propriétés de métadonnées cliniques",
+      "ou expérimentales. Il est également possible d'effectuer des recherches uniquement à partir des variants ou des métadonnées."
+    ],
+    "network": [
+      "Beacon Network vous permet d'interroger une collection de Beacons génomiques à l'aide d'une seule requête, et de voir les résultats de comptage",
+      "pour chaque Beacon ainsi que les résultats pour l'ensemble du réseau. Les Beacons peuvent être interrogés en fonction de la position du variant,",
+      "des métadonnées cliniques/expérimentales ou des deux.\n",
+      "Les filtres de métadonnées peuvent varier d'un Beacon à l'autre dans le réseau, de sorte que certaines recherches peuvent ne pas s'appliquer à tous les Beacons. Utilisez le",
+      "commutateur « $t(beacon.show_all_filters) » / « $t(beacon.common_filters_only) » pour contrôler les filtres disponibles."
+    ]
   }
 }

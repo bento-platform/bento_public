@@ -162,12 +162,15 @@
     ],
     "provenance": ["Detailed provenance data for a dataset or all datasets in a project."],
     "beacon": [
-      "TODO beacon 1",
-      "TODO beacon 2"
+      "Beacon allows you to query data by the position of genetic variants, and filter the results by various clinical",
+      "or experimental metadata properties. You can also query by variants or metadata alone."
     ],
     "network": [
-      "TODO network 1",
-      "TODO network 2"
+      "Beacon Network allows you to query a collection of genomic beacons with a single query, and see count results",
+      "for each beacon as well as network-wide results. Beacons can be queried by variant position,",
+      "clinical/experimental metadata, or both.\n",
+      "Metadata filters may vary across beacons in the network, so some searches may not apply to all beacons. Use the",
+      "'$t(beacon.show_all_filters)' / '$t(beacon.common_filters_only)' switch to control which filters are available."
     ]
   }
 }
