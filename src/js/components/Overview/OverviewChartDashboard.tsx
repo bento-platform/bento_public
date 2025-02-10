@@ -60,7 +60,7 @@ const OverviewChartDashboard = () => {
   }, [sections]);
 
   return WAITING_STATES.includes(overviewDataStatus) ? (
-    <Loader />
+    <Loader nested={true} />
   ) : (
     <div className="container">
       <AboutBox />
