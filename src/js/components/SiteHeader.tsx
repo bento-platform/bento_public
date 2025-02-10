@@ -1,4 +1,4 @@
-import { type CSSProperties, useCallback, useEffect, useState } from 'react';
+import { type CSSProperties, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Button, Flex, Layout, Space, Typography } from 'antd';
@@ -6,17 +6,14 @@ import { useTranslation } from 'react-i18next';
 import { useAuthState, useIsAuthenticated, useOpenIdConfig, usePerformAuth, usePerformSignOut } from 'bento-auth-js';
 
 import { RiTranslate } from 'react-icons/ri';
-import { ExportOutlined, LinkOutlined, LoginOutlined, LogoutOutlined, ProfileOutlined } from '@ant-design/icons';
+import { ExportOutlined, LinkOutlined, LoginOutlined, LogoutOutlined } from '@ant-design/icons';
 
-import { useSelectedScope, useSelectedScopeTitles } from '@/features/metadata/hooks';
+import { useSelectedScope } from '@/features/metadata/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
-import { getCurrentPage, scopeToUrl } from '@/utils/router';
+import { scopeToUrl } from '@/utils/router';
 
 import { LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
 import { CLIENT_NAME, PORTAL_URL, SHOW_PORTAL_LINK, SHOW_SIGN_IN, TRANSLATED } from '@/config';
-import { TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
-
-import ScopePickerModal from './Scope/ScopePickerModal';
 
 const { Header } = Layout;
 
@@ -34,18 +31,7 @@ const SiteHeader = () => {
 
   const { isFetching: openIdConfigFetching } = useOpenIdConfig();
   const { isHandingOffCodeForToken } = useAuthState();
-  const { fixedProject, fixedDataset, scope: scopeObj } = useSelectedScope();
-  const currentPage = getCurrentPage();
-
-  const scopeSelectionEnabled = !(fixedProject && fixedDataset) && !TOP_LEVEL_ONLY_ROUTES.includes(currentPage);
-
-  const scopeProps = useSelectedScopeTitles();
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  useEffect(() => {
-    setIsModalOpen(false);
-  }, [location]);
+  const { scope: scopeObj } = useSelectedScope();
 
   const isAuthenticated = useIsAuthenticated();
   const performSignOut = usePerformSignOut();
@@ -106,15 +92,6 @@ const SiteHeader = () => {
           >
             {CLIENT_NAME}
           </Typography.Title>
-          {/*{scopeSelectionEnabled && (*/}
-          {/*  <Typography.Title className="select-project-title" level={2} onClick={() => setIsModalOpen(true)}>*/}
-          {/*    <ProfileOutlined style={{ marginRight: '5px', fontSize: '16px' }} />*/}
-
-          {/*    {scopeObj.project && scopeProps.projectTitle}*/}
-          {/*    {scopeProps.datasetTitle ? ` / ${scopeProps.datasetTitle}` : ''}*/}
-          {/*  </Typography.Title>*/}
-          {/*)}*/}
-          {/*<ScopePickerModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />*/}
         </Space>
 
         <Space size={isSmallScreen ? 0 : 'small'}>
