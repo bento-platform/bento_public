@@ -125,7 +125,7 @@ const DatasetProvenance = ({ dataset, loading }: DatasetProvenanceProps) => {
   const metadata = dataset.dats_file;
 
   return (
-    <div className="container" style={{ paddingBottom: '40px' }}>
+    <div className="container">
       <Card
         title={<Title level={3}>{t(metadata.title ?? dataset.title)}</Title>}
         extra={
