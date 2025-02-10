@@ -1,6 +1,5 @@
-import { type ReactNode, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Modal, type ModalProps, Typography } from 'antd';
-import { BentoRoute } from '@/types/routes';
 import { useTranslationFn } from '@/hooks';
 import { useGetRouteTitleAndIcon } from '@/hooks/navigation';
 import { getCurrentPage } from '@/utils/router';
