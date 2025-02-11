@@ -15,7 +15,7 @@ const styles: Record<string, CSSProperties> = {
   },
 };
 
-const ProjectScopePicker = () => {
+const ProjectScopePicker = ({ onCancel }: { onCancel: () => void }) => {
   const t = useTranslationFn();
 
   const { projects, selectedScope } = useMetadata();
@@ -47,7 +47,14 @@ const ProjectScopePicker = () => {
           tabPosition="left"
           activeKey={selectedProject}
           onChange={onTabChange}
-          tabBarExtraContent={<Button onClick={onProjectClear}>{t('Clear')}</Button>}
+          // If no project is selected, don't have "Clear" since we don't have anything to clear.
+          tabBarExtraContent={
+            scopeObj.project ? (
+              <Button onClick={onProjectClear}>{t('Clear')}</Button>
+            ) : (
+              <Button onClick={onCancel}>{t('Cancel')}</Button>
+            )
+          }
           items={tabItems}
           style={styles.tabs}
         />

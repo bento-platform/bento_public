@@ -12,7 +12,7 @@ const BeaconQueryUi = () => {
   const { querySections } = useAppSelector((state) => state.query);
 
   return isFetchingBeaconConfig ? (
-    <Loader />
+    <Loader nested={true} />
   ) : (
     <div style={WRAPPER_STYLE}>
       <BeaconSearchResults />

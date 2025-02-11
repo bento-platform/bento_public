@@ -1,7 +1,7 @@
 import { FORCE_CATALOGUE } from '@/config';
+import type { DiscoveryScope, DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
 import type { Project } from '@/types/metadata';
 import { BentoRoute } from '@/types/routes';
-import type { DiscoveryScope, DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
 
 export const getCurrentPage = (): string => {
   const pathArray = window.location.pathname.split('/');

@@ -13,7 +13,7 @@ const NetworkUi = () => {
   const isFetchingQueryResponse = atLeastOneNetworkResponseIsPending(beaconResponses);
 
   return isFetchingBeaconNetworkConfig ? (
-    <Loader />
+    <Loader nested={true} />
   ) : (
     <div style={WRAPPER_STYLE}>
       <BeaconQueryFormUi

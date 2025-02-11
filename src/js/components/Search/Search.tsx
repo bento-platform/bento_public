@@ -113,7 +113,7 @@ const RoutedSearch = () => {
 const WIDTH_100P_STYLE = { width: '100%' };
 const SEARCH_SPACE_ITEM_STYLE = { item: WIDTH_100P_STYLE };
 const SEARCH_SECTION_SPACE_ITEM_STYLE = { item: { display: 'flex', justifyContent: 'center' } };
-const SEARCH_SECTION_STYLE = { maxWidth: 1200 };
+const SEARCH_SECTION_STYLE = { maxWidth: 1320 };
 
 const Search = () => {
   const t = useTranslationFn();
@@ -121,7 +121,7 @@ const Search = () => {
   const { isFetchingFields: isFetchingSearchFields, querySections: searchSections } = useSearchQuery();
 
   return isFetchingSearchFields ? (
-    <Loader />
+    <Loader nested={true} />
   ) : (
     <>
       <Row justify="center">

@@ -59,11 +59,10 @@ const SearchResultsPane = ({
   );
 
   return (
-    <div className="search-results-pane">
+    <div className="container search-results-pane">
       <Card
         style={{
           borderRadius: '10px',
-          maxWidth: '1200px',
           width: '100%',
           // Set a minimum height (i.e., an expected final height, which can be exceeded) to prevent this component from
           // suddenly increasing in height after it loads. This is calculated from the sum of the following parts:
@@ -95,7 +94,7 @@ const SearchResultsPane = ({
           {panePage === 'charts' ? (
             <>
               <Col xs={24} lg={10}>
-                <Typography.Title level={5} style={{ marginTop: 0 }}>
+                <Typography.Title level={5} style={{ marginTop: 0, textAlign: 'center' }}>
                   {t('entities.biosample', T_PLURAL_COUNT)}
                 </Typography.Title>
                 {!hasInsufficientData && biosampleChartData.length ? (
@@ -105,7 +104,7 @@ const SearchResultsPane = ({
                 )}
               </Col>
               <Col xs={24} lg={10}>
-                <Typography.Title level={5} style={{ marginTop: 0 }}>
+                <Typography.Title level={5} style={{ marginTop: 0, textAlign: 'center' }}>
                   {t('entities.experiment', T_PLURAL_COUNT)}
                 </Typography.Title>
                 {!hasInsufficientData && experimentChartData.length ? (

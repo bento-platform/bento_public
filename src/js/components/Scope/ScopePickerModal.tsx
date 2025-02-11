@@ -11,7 +11,7 @@ const ScopePickerModal = ({ isModalOpen, setIsModalOpen }: ScopePickerModalProps
   const closeModal = () => setIsModalOpen(false);
   return (
     <Modal title={t('Select Scope')} open={isModalOpen} onCancel={closeModal} footer={null} width={700}>
-      <ProjectScopePicker />
+      <ProjectScopePicker onCancel={closeModal} />
     </Modal>
   );
 };
