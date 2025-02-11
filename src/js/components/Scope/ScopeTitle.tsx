@@ -44,12 +44,7 @@ const ScopeTitle = () => {
   }, [location]);
 
   const breadcrumbItems: BreadcrumbItemType[] = useMemo(() => {
-    const currentTitleAndIcon = getRouteTitleAndIcon(currentPage);
-    const currentPageTitle = (
-      <>
-        {currentTitleAndIcon[1]} {t(currentTitleAndIcon[0])}
-      </>
-    );
+    const currentPageTitle = t(getRouteTitleAndIcon(currentPage)[0]);
 
     const items: BreadcrumbItemType[] = [];
 
