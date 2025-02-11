@@ -3,8 +3,10 @@ import { useAppDispatch, useAppSelector, useTranslationFn } from '@/hooks';
 import type { DescriptionsProps } from 'antd';
 import { Descriptions, Skeleton } from 'antd';
 
-import { makeGetIndividualData } from '@/features/search/makeGetIndividualData.thunk';
+import JsonView from '@/components/Util/JsonView';
+
 import { EM_DASH } from '@/constants/contentConstants';
+import { makeGetIndividualData } from '@/features/search/makeGetIndividualData.thunk';
 import { RequestStatus } from '@/types/requests';
 
 const IndividualsAccordionPane = ({ id }: { id: string }) => {
@@ -42,11 +44,16 @@ const IndividualsAccordionPane = ({ id }: { id: string }) => {
       label: t('individual.taxonomy'),
       children: individualData?.taxonomy?.label || EM_DASH,
     },
-    {
-      span: 3,
-      label: t('individual.extra_properties'),
-      children: JSON.stringify(individualData?.extra_properties, null, 2),
-    },
+    // Only show extra properties field if we have any:
+    ...(individualData?.extra_properties
+      ? [
+          {
+            span: 3,
+            label: t('individual.extra_properties'),
+            children: <JsonView src={individualData?.extra_properties} />,
+          },
+        ]
+      : []),
   ];
 
   return isFetchingIndividualData ? <Skeleton active /> : <Descriptions items={items} />;
