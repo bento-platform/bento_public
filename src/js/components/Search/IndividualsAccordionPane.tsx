@@ -1,25 +1,17 @@
-import { useEffect } from 'react';
-import { useAppDispatch, useAppSelector, useTranslationFn } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
 import type { DescriptionsProps } from 'antd';
 import { Descriptions, Skeleton } from 'antd';
 
 import JsonView from '@/components/Util/JsonView';
 
 import { EM_DASH } from '@/constants/contentConstants';
-import { makeGetIndividualData } from '@/features/search/makeGetIndividualData.thunk';
+import { useIndividualData } from '@/features/search/hooks';
 import { RequestStatus } from '@/types/requests';
 
 const IndividualsAccordionPane = ({ id }: { id: string }) => {
-  const dispatch = useAppDispatch();
   const t = useTranslationFn();
 
-  useEffect(() => {
-    dispatch(makeGetIndividualData(id));
-  }, [dispatch, id]);
-
-  const individualData = useAppSelector((state) => state.query.individualDataCache[id]);
-  const individualDataStatus = useAppSelector((state) => state.query.individualDataStatus[id]);
-
+  const { data: individualData, status: individualDataStatus } = useIndividualData(id);
   const isFetchingIndividualData = individualDataStatus === RequestStatus.Pending;
 
   const items: DescriptionsProps['items'] = [
