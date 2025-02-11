@@ -42,7 +42,7 @@ const IndividualsAccordionPane = ({ id }: { id: string }) => {
     },
     {
       label: t('individual.taxonomy'),
-      children: individualData?.taxonomy?.label || EM_DASH,
+      children: <em>{individualData?.taxonomy?.label || EM_DASH}</em>,
     },
     // Only show extra properties field if we have any:
     ...(individualData?.extra_properties
