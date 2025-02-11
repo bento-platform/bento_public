@@ -30,7 +30,7 @@ const IndividualsAccordionPane = ({ id }: { id: string }) => {
     },
     {
       label: t('individual.sex'),
-      children: individualData?.sex,
+      children: t(individualData?.sex ?? 'UNKNOWN_SEX'),
     },
     {
       label: t('individual.time_at_last_encounter'),
