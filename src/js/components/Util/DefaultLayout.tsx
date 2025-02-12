@@ -32,7 +32,7 @@ const DefaultLayout = () => {
             display: 'block',
           }}
         >
-          <Content style={{ padding: '32px 64px' }}>
+          <Content>
             <ScopeTitle />
             <Outlet />
           </Content>

@@ -1,5 +1,7 @@
 :root {
   --header-height: 64px;
+  --content-padding-v: 32px;
+  --content-padding-h: 64px;
   --content-max-width: 1320px;
 }
 
@@ -14,14 +16,6 @@ body {
   margin-top: 0 !important;
 }
 
-.margin-auto {
-  margin: auto;
-}
-
-.container {
-  width: 100%;
-  max-width: var(--content-max-width);
-}
 
 .header-button {
   color: lightgray;
@@ -75,10 +69,10 @@ body {
   box-sizing: border-box;
   margin-bottom: 24px;
   padding-top: 3px;
-  margin-left: -64px;
-  margin-right: -64px;
-  padding-left: max(calc((100% - var(--content-max-width)) / 2 + 64px), 64px);
-  padding-right: max(calc((100% - var(--content-max-width)) / 2 + 64px), 64px);
+  margin-left: calc(-1 * var(--content-padding-h));
+  margin-right: calc(-1 * var(--content-padding-h));
+  padding-left: max(calc((100% - var(--content-max-width)) / 2 + var(--content-padding-h)), var(--content-padding-h));
+  padding-right: max(calc((100% - var(--content-max-width)) / 2 + var(--content-padding-h)), var(--content-padding-h));
 
   background-color: rgba(245, 245, 245, 0.80);
   border-bottom: 1px solid rgba(240, 240, 240, 0); /* invisible border to transition from/to */
@@ -121,6 +115,24 @@ body {
   margin-top: 4px;
   line-height: 38px;
 }
+
+
+/* BEGIN layout HTML styling */
+
+#content-layout > .ant-layout-content {
+  padding: var(--content-padding-v) var(--content-padding-h);
+}
+
+.margin-auto {
+  margin: auto;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--content-max-width);
+}
+
+/* END layout HTML styling */
 
 
 /* BEGIN about HTML styling */
@@ -199,8 +211,9 @@ body {
 }
 
 @media (max-width: 768px) {
-  .ant-layout-content {
-    padding: 10px !important;
+  :root {
+    --content-padding-v: 10px;
+    --content-padding-h: 10px;
   }
 
   .ant-layout-footer {
@@ -212,12 +225,8 @@ body {
   }
 
   .scope-title {
-    margin-left: -10px;
-    margin-right: -10px;
+    /* CSS variables recompute all of the margins etc. for left/right alignment */
     margin-bottom: 8px;
-
-    padding-left: 10px;
-    padding-right: 10px;
   }
 
   .scope-title__breadcrumb {
