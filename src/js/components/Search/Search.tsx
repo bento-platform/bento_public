@@ -121,7 +121,7 @@ const Search = () => {
   const { isFetchingFields: isFetchingSearchFields, querySections: searchSections } = useSearchQuery();
 
   return isFetchingSearchFields ? (
-    <Loader nested={true} />
+    <Loader />
   ) : (
     <>
       <Row justify="center">

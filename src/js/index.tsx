@@ -36,7 +36,7 @@ const BaseRoutes = () => {
   return (
     <Routes>
       <Route element={<AuthOutlet />}>
-        <Route path="/callback" element={<Loader />} />
+        <Route path="/callback" element={<Loader fullHeight={true} />} />
         <Route element={<LanguageHandler />}>
           <Route path="/:lang/*" element={<BentoAppRouter />} />
           <Route path="*" element={<Navigate to="/en/" />} />

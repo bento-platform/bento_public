@@ -128,7 +128,7 @@ const BentoAppRouter = () => {
   }, [dispatch]);
 
   if (isAutoAuthenticating || projectsStatus === RequestStatus.Pending) {
-    return <Loader />;
+    return <Loader fullHeight={true} />;
   }
 
   return (
