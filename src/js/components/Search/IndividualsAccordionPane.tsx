@@ -2,6 +2,7 @@ import { useTranslationFn } from '@/hooks';
 import type { DescriptionsProps } from 'antd';
 import { Descriptions, Skeleton } from 'antd';
 
+import TimeElementDisplay from '@/components/ClinPhen/TimeElementDisplay';
 import JsonView from '@/components/Util/JsonView';
 
 import { EM_DASH } from '@/constants/contentConstants';
@@ -26,7 +27,7 @@ const IndividualsAccordionPane = ({ id }: { id: string }) => {
     },
     {
       label: t('individual.time_at_last_encounter'),
-      children: JSON.stringify(individualData?.time_at_last_encounter), // TODO: handle other time elements if there are any
+      children: <TimeElementDisplay element={individualData?.time_at_last_encounter} />,
     },
     {
       label: t('individual.karyotypic_sex'),
