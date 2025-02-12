@@ -4,10 +4,11 @@ import { individualUrl } from '@/constants/configConstants';
 import type { RootState } from '@/store';
 import { printAPIError } from '@/utils/error.util';
 import { authorizedRequestConfig } from '@/utils/requests';
-import { IndividualRootObject } from '@/types/individual';
+import type { Individual } from '@/types/clinphen/individual';
+import { RequestStatus } from '@/types/requests';
 
 export const makeGetIndividualData = createAsyncThunk<
-  IndividualRootObject,
+  Individual,
   string,
   {
     state: RootState;
@@ -24,7 +25,7 @@ export const makeGetIndividualData = createAsyncThunk<
   {
     condition(id, { getState }) {
       console.log('requesting individual data for id', id);
-      return !getState().query.isFetchingIndividualData[id] && !getState().query.individualDataCache[id];
+      return getState().query.individualDataStatus[id] !== RequestStatus.Pending;
     },
   }
 );
