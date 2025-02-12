@@ -16,6 +16,7 @@ module.exports = {
   extends: [
     'eslint:recommended',
     'plugin:react/recommended',
+    'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
     'plugin:react-hooks/recommended',
@@ -40,6 +41,7 @@ module.exports = {
     ],
     semi: ['error', 'always'],
     'react/react-in-jsx-scope': 'off',
+    'react-hooks/exhaustive-deps': ['error'],
   },
   settings: {
     react: {
