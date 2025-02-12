@@ -88,20 +88,14 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
 
   return (
     <Sider
+      id="site-sider"
+      // Collapsed width can be synced with our stylesheet via CSS variable:
+      collapsedWidth="var(--sidebar-width-collapsed)"
       collapsible
       breakpoint="md"
       collapsed={collapsed}
       onCollapse={setCollapsed}
       theme="light"
-      style={{
-        overflow: 'auto',
-        height: 'calc(100vh - 64px)',
-        position: 'fixed',
-        left: 0,
-        top: '64px',
-        zIndex: 100,
-        borderRight: '1px solid #f0f0f0',
-      }}
     >
       {scope.project && catalogueMode && (
         <>

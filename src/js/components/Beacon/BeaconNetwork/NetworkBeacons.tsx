@@ -9,7 +9,7 @@ const NetworkBeacons = () => {
   // They could be shown optionally if network is very large (ie could just show only beacons with non-zero responses).
   // The response prop may be undefined if the response for the beacon is not yet loaded.
   return (
-    <Row gutter={[8, 8]} style={{ width: '100%', maxWidth: 1320 }}>
+    <Row gutter={[8, 8]} className="container">
       {beacons.map((b) => (
         <Col span={24} xl={12} key={b.id}>
           <NodeDetails beacon={b} key={b.id} response={beaconResponses[b.id]} />
