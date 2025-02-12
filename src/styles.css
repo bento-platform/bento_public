@@ -142,6 +142,13 @@ body {
   padding: 0 24px;
 }
 
+#site-header h1.ant-typography {
+  margin: 0;
+  font-size: 1.5em;
+  line-height: var(--header-height);
+  color: rgba(255, 255, 255, 0.9);
+}
+
 #site-sider {
   position: fixed;
   left: 0;

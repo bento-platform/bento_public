@@ -81,11 +81,7 @@ const SiteHeader = () => {
               onClick={navigateToOverview}
             />
           )}
-          <Typography.Title
-            level={1}
-            style={{ fontSize: '1.5em', margin: 0, lineHeight: 'var(--header-height)', color: 'white' }}
-            type="secondary"
-          >
+          <Typography.Title level={1} type="secondary">
             {CLIENT_NAME}
           </Typography.Title>
         </Space>
