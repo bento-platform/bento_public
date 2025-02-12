@@ -1,12 +1,12 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { Button, Flex, Layout, Space, Typography } from 'antd';
+import { AutoComplete, Button, Flex, Layout, Space, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useAuthState, useIsAuthenticated, useOpenIdConfig, usePerformAuth, usePerformSignOut } from 'bento-auth-js';
 
 import { RiTranslate } from 'react-icons/ri';
-import { ExportOutlined, LinkOutlined, LoginOutlined, LogoutOutlined } from '@ant-design/icons';
+import { ExportOutlined, LinkOutlined, LoginOutlined, LogoutOutlined, SearchOutlined } from '@ant-design/icons';
 
 import { useSelectedScope } from '@/features/metadata/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
@@ -18,6 +18,57 @@ import { CLIENT_NAME, PORTAL_URL, SHOW_PORTAL_LINK, SHOW_SIGN_IN, TRANSLATED } f
 const { Header } = Layout;
 
 const openPortalWindow = () => window.open(PORTAL_URL, '_blank');
+
+const HeaderSearch = () => {
+  const [value, setValue] = useState('');
+
+  return (
+    <div
+      style={{
+        maxWidth: 640,
+        flex: 1,
+        position: 'relative',
+        height: 38,
+      }}
+    >
+      <SearchOutlined
+        style={{
+          fontSize: 22,
+          position: 'absolute',
+          color: 'rgba(255, 255, 255, 0.6)',
+          left: 7,
+          top: 7,
+          zIndex: 102,
+        }}
+      />
+      <AutoComplete
+        style={{
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          top: 0,
+          zIndex: 101,
+        }}
+        options={[{ label: 'Test1' }]}
+      >
+        <input
+          type="text"
+          style={{
+            backgroundColor: 'rgb(20, 66, 90)',
+            fontSize: '1.1rem',
+            borderRadius: 5,
+            border: 'none',
+            color: 'rgba(255, 255, 255, 0.8)',
+            padding: '0.4em 0.8em 0.4em 1.9em',
+          }}
+          placeholder="Search"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+        />
+      </AutoComplete>
+    </div>
+  );
+};
 
 const SiteHeader = () => {
   const { t, i18n } = useTranslation();
@@ -51,7 +102,7 @@ const SiteHeader = () => {
 
   return (
     <Header id="site-header">
-      <Flex align="center" justify="space-between">
+      <Flex align="center" justify="space-between" gap={8}>
         <Space size={isSmallScreen ? 'small' : 'middle'}>
           {isSmallScreen ? (
             <object
@@ -85,6 +136,8 @@ const SiteHeader = () => {
             {CLIENT_NAME}
           </Typography.Title>
         </Space>
+
+        <HeaderSearch />
 
         <Space size={isSmallScreen ? 0 : 'small'}>
           {TRANSLATED && (
