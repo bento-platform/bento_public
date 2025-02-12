@@ -1,4 +1,4 @@
-import { type CSSProperties, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Button, Flex, Layout, Space, Typography } from 'antd';
