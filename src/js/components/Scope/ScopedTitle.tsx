@@ -19,7 +19,7 @@ const breadcrumbRender: BreadcrumbProps['itemRender'] = (route, _params, routes,
   return isLast || !route.path ? <span>{route.title}</span> : <Link to={{ pathname: route.path }}>{route.title}</Link>;
 };
 
-const ScopeTitle = () => {
+const ScopedTitle = () => {
   const location = useLocation();
   const { i18n } = useTranslation();
   const t = useTranslationFn();
@@ -89,7 +89,7 @@ const ScopeTitle = () => {
       { threshold: [1], root: document.getElementById('content-layout') }
     );
 
-    const st = document.querySelector('.scope-title');
+    const st = document.querySelector('.scoped-title');
 
     if (st) {
       observer.observe(st);
@@ -101,8 +101,8 @@ const ScopeTitle = () => {
       <>
         <ScopePickerModal isModalOpen={scopeSelectModalOpen} setIsModalOpen={setScopeSelectModalOpen} />
         <CurrentPageHelpModal open={helpModalOpen} onCancel={() => setHelpModalOpen(false)} />
-        <Flex className="scope-title" align="center">
-          <Breadcrumb className="scope-title__breadcrumb" items={breadcrumbItems} itemRender={breadcrumbRender} />
+        <Flex className="scoped-title" align="center">
+          <Breadcrumb className="scoped-title__breadcrumb" items={breadcrumbItems} itemRender={breadcrumbRender} />
           <Space>
             {scopeSelectionEnabled && (
               <Tooltip title={t('Change Scope')} placement="bottom">
@@ -135,4 +135,4 @@ const ScopeTitle = () => {
   return null;
 };
 
-export default ScopeTitle;
+export default ScopedTitle;

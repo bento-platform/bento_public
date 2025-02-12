@@ -4,7 +4,7 @@ import { Layout } from 'antd';
 import SiteHeader from '@/components/SiteHeader';
 import SiteSider from '@/components/SiteSider';
 import SiteFooter from '@/components/SiteFooter';
-import ScopeTitle from '@/components/Scope/ScopeTitle';
+import ScopedTitle from '@/components/Scope/ScopedTitle';
 
 const { Content } = Layout;
 
@@ -18,7 +18,7 @@ const DefaultLayout = () => {
         <SiteSider collapsed={collapsed} setCollapsed={setCollapsed} />
         <Layout id="content-layout">
           <Content>
-            <ScopeTitle />
+            <ScopedTitle />
             <Outlet />
           </Content>
           <SiteFooter />

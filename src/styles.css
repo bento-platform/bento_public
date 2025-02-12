@@ -7,6 +7,9 @@
   --content-padding-v: 32px;
   --content-padding-h: 64px;
   --content-max-width: 1320px;
+
+  --content-scoped-title-height: 50px;
+  --content-scoped-title-margin-bottom: 24px;
 }
 
 html,
@@ -58,16 +61,16 @@ body {
 }
 
 
-.scope-title {
+.scoped-title {
   position: sticky;
   top: -3px;
   left: 0;
   right: 0;
   z-index: 20;
 
-
   box-sizing: border-box;
-  margin-bottom: 24px;
+  height: var(--content-scoped-title-height);
+  margin-bottom: var(--content-scoped-title-margin-bottom);
   padding-top: 3px;
   margin-left: calc(-1 * var(--content-padding-h));
   margin-right: calc(-1 * var(--content-padding-h));
@@ -85,32 +88,32 @@ body {
     box-shadow 0.1s ease-in-out;
 }
 
-.scope-title__breadcrumb {
+.scoped-title__breadcrumb {
   font-size: 1.8rem;
   transition: font-size 0.3s ease-in-out;
   flex: 1;
 }
 
-.scope-title__breadcrumb .anticon {
+.scoped-title__breadcrumb .anticon {
   font-size: 0.9em;
 }
 
-.scope-title__breadcrumb a {
+.scoped-title__breadcrumb a {
   height: 3rem;
 }
 
-.scope-title[data-stuck] {
+.scoped-title[data-stuck] {
   height: 50px;
   border-bottom: 1px solid rgba(235, 235, 235, 1);
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.02);
 }
 
-.scope-title[data-stuck] .scope-title__breadcrumb {
+.scoped-title[data-stuck] .scoped-title__breadcrumb {
   font-size: 1.2rem;
   line-height: 46px;
 }
 
-.scope-title[data-stuck] .scope-title__breadcrumb a {
+.scoped-title[data-stuck] .scoped-title__breadcrumb a {
   height: 38px;
   margin-top: 4px;
   line-height: 38px;
@@ -263,6 +266,8 @@ body {
   :root {
     --content-padding-v: 10px;
     --content-padding-h: 10px;
+
+    --content-scoped-title-margin-bottom: 10px;
   }
 
   .ant-layout-footer {
@@ -273,12 +278,7 @@ body {
     --dataset-grid-gap: 8px;
   }
 
-  .scope-title {
-    /* CSS variables recompute all of the margins etc. for left/right alignment */
-    margin-bottom: 8px;
-  }
-
-  .scope-title__breadcrumb {
+  .scoped-title__breadcrumb {
     font-size: 1.2rem;
     line-height: 46px;
   }
