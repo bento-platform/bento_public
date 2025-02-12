@@ -1,3 +1,7 @@
+:root {
+  --content-max-width: 1320px;
+}
+
 html,
 body {
   min-height: 100%;
@@ -15,7 +19,7 @@ body {
 
 .container {
   width: 100%;
-  max-width: 1320px;
+  max-width: var(--content-max-width);
 }
 
 .header-button {
@@ -86,8 +90,8 @@ h2.select-project-title:hover {
   padding-top: 3px;
   margin-left: -64px;
   margin-right: -64px;
-  padding-left: max(calc((100% - 1320px) / 2 + 64px), 64px);
-  padding-right: max(calc((100% - 1320px) / 2 + 64px), 64px);
+  padding-left: max(calc((100% - var(--content-max-width)) / 2 + 64px), 64px);
+  padding-right: max(calc((100% - var(--content-max-width)) / 2 + 64px), 64px);
 
   background-color: rgba(245, 245, 245, 0.80);
   border-bottom: 1px solid rgba(240, 240, 240, 0); /* invisible border to transition from/to */
@@ -181,10 +185,12 @@ h2.select-project-title:hover {
 }
 
 .dataset-provenance-card-grid {
+  --dataset-grid-gap: 18px;
+
   display: grid;
   /* 651 * 2 + 18 (gap) = 1320 */
-  grid-template-columns: repeat(auto-fit, minmax(250px, 651px));
-  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, calc((var(--content-max-width) - var(--dataset-grid-gap)) / 2)));
+  gap: var(--dataset-grid-gap);
 }
 
 .slick-arrow {
@@ -215,7 +221,7 @@ h2.select-project-title:hover {
   }
 
   .dataset-provenance-card-grid {
-    gap: 8px;
+    --dataset-grid-gap: 8px;
   }
 
   .scope-title {
