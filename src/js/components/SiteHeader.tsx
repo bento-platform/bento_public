@@ -54,7 +54,16 @@ const SiteHeader = () => {
   );
 
   return (
-    <Header style={{ position: 'fixed', width: '100%', zIndex: 100, top: 0, ...HEADER_PADDING }}>
+    <Header
+      style={{
+        position: 'fixed',
+        height: 'var(--header-height)',
+        width: '100%',
+        zIndex: 100,
+        top: 0,
+        ...HEADER_PADDING,
+      }}
+    >
       <Flex align="center" justify="space-between">
         <Space size={isSmallScreen ? 'small' : 'middle'}>
           {isSmallScreen ? (
@@ -87,7 +96,7 @@ const SiteHeader = () => {
           )}
           <Typography.Title
             level={1}
-            style={{ fontSize: '1.5em', margin: 0, lineHeight: '64px', color: 'white' }}
+            style={{ fontSize: '1.5em', margin: 0, lineHeight: 'var(--header-height)', color: 'white' }}
             type="secondary"
           >
             {CLIENT_NAME}

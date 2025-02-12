@@ -95,10 +95,10 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
       theme="light"
       style={{
         overflow: 'auto',
-        height: 'calc(100vh - 64px)',
+        height: 'calc(100vh - var(--header-height))',
         position: 'fixed',
         left: 0,
-        top: '64px',
+        top: 'var(--header-height)',
         zIndex: 100,
         borderRight: '1px solid #f0f0f0',
       }}

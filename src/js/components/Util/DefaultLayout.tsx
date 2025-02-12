@@ -22,7 +22,7 @@ const DefaultLayout = () => {
           id="content-layout"
           style={{
             position: 'fixed',
-            top: 64,
+            top: 'var(--header-height)',
             right: 0,
             bottom: 0,
             left: sidebarWidth,
