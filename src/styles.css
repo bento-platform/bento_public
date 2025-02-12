@@ -1,5 +1,9 @@
 :root {
   --header-height: 64px;
+
+  --sidebar-width-full: 200px;
+  --sidebar-width-collapsed: 80px;
+
   --content-padding-v: 32px;
   --content-padding-h: 64px;
   --content-max-width: 1320px;
@@ -23,10 +27,6 @@ body {
 
 .header-button:hover {
   color: white !important;
-}
-
-.ant-layout-sider-trigger {
-  border-right: 1px solid #f0f0f0;
 }
 
 .select-dataset-item {
@@ -118,6 +118,55 @@ body {
 
 
 /* BEGIN layout HTML styling */
+
+#default-layout {
+  --sidebar-width: var(--sidebar-width-full);
+  min-height: 100vh;
+}
+#default-layout.sidebar-collapsed {
+  --sidebar-width: var(--sidebar-width-collapsed);
+}
+
+#site-header {
+  position: fixed;
+  height: var(--header-height);
+  width: 100%;
+  z-index: 100;
+  top: 0;
+
+  /* Header padding is reduced to 24px to provide more breathing room for buttons at small screen sizes and grid-align
+     logo with sidebar icons. */
+  padding: 0 24px;
+}
+
+#site-sider {
+  position: fixed;
+  left: 0;
+  top: var(--header-height);
+  z-index: 100;
+  border-right: 1px solid #f0f0f0;
+
+  overflow: auto;
+  height: calc(100vh - var(--header-height));
+}
+
+.ant-layout-sider-trigger {
+  border-right: 1px solid #f0f0f0;
+}
+
+#content-layout {
+  position: fixed;
+  top: var(--header-height);
+  left: var(--sidebar-width);
+  right: 0;
+  bottom: 0;
+
+  display: block;
+  width: calc(100% - var(--sidebar-width));
+  overflow: auto;
+
+  transition: left 0.3s, width 0.3s;
+}
 
 #content-layout > .ant-layout-content {
   padding: var(--content-padding-v) var(--content-padding-h);

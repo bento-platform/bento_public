@@ -17,10 +17,6 @@ import { CLIENT_NAME, PORTAL_URL, SHOW_PORTAL_LINK, SHOW_SIGN_IN, TRANSLATED } f
 
 const { Header } = Layout;
 
-// Header padding is reduced to 24px to provide more breathing room for buttons at small screen sizes and grid-align
-// logo with sidebar icons.
-const HEADER_PADDING: CSSProperties = { padding: '0 24px' };
-
 const openPortalWindow = () => window.open(PORTAL_URL, '_blank');
 
 const SiteHeader = () => {
@@ -54,16 +50,7 @@ const SiteHeader = () => {
   );
 
   return (
-    <Header
-      style={{
-        position: 'fixed',
-        height: 'var(--header-height)',
-        width: '100%',
-        zIndex: 100,
-        top: 0,
-        ...HEADER_PADDING,
-      }}
-    >
+    <Header id="site-header">
       <Flex align="center" justify="space-between">
         <Space size={isSmallScreen ? 'small' : 'middle'}>
           {isSmallScreen ? (
