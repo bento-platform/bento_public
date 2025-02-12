@@ -51,7 +51,7 @@ const SearchResultsPane = ({
   );
 
   return (
-    <div className="container search-results-pane">
+    <div className="container margin-auto search-results-pane">
       <Card
         style={{
           borderRadius: '10px',

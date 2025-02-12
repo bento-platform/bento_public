@@ -7,7 +7,7 @@ import { useAppSelector } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { RequestStatus } from '@/types/requests';
 
-const ABOUT_CARD_STYLE: CSSProperties = { width: '100%', maxWidth: 1320, borderRadius: '11px', ...BOX_SHADOW };
+const ABOUT_CARD_STYLE: CSSProperties = { borderRadius: '11px', ...BOX_SHADOW };
 
 const AboutBox = ({ style, bottomDivider }: { style?: CSSProperties; bottomDivider?: boolean }) => {
   const { i18n } = useTranslation();
@@ -20,7 +20,7 @@ const AboutBox = ({ style, bottomDivider }: { style?: CSSProperties; bottomDivid
   // If about is blank after loading, we don't have anything - so don't render the box.
   return aboutStatus === RequestStatus.Fulfilled && !aboutContent ? null : (
     <>
-      <Card style={{ ...ABOUT_CARD_STYLE, ...(style ?? {}) }}>
+      <Card className="container" style={{ ...ABOUT_CARD_STYLE, ...(style ?? {}) }}>
         {aboutStatus === RequestStatus.Idle || aboutStatus === RequestStatus.Pending ? (
           <Skeleton title={false} paragraph={{ rows: 2 }} />
         ) : (
@@ -31,7 +31,7 @@ const AboutBox = ({ style, bottomDivider }: { style?: CSSProperties; bottomDivid
         <Divider
           style={{
             // Divider looks a bit nicer when it's always a little narrower than the about box / data catalogue:
-            maxWidth: 'min(1280px, 100% - 32px)',
+            maxWidth: 'min(var(--content-max-width) - 32px, 100% - 32px)',
             minWidth: 'auto',
             margin: `${isSmallScreen ? 16 : 32}px auto`,
           }}

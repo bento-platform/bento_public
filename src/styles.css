@@ -9,10 +9,13 @@ body {
   margin-top: 0 !important;
 }
 
+.margin-auto {
+  margin: auto;
+}
+
 .container {
   width: 100%;
   max-width: 1320px;
-  margin: auto;
 }
 
 .header-button {
