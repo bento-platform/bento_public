@@ -22,7 +22,7 @@ import { useData, useSearchableFields } from '@/features/data/hooks';
 import { useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
-// right position set based on small screen status
+// The 'right' position will be set based on small screen status dynamically
 const MANAGE_CHARTS_BUTTON_STYLE: CSSProperties = { bottom: '1.5em', transform: 'scale(125%)' };
 
 const saveToLocalStorage = (sections: Sections) => {
