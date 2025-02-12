@@ -34,20 +34,6 @@ body {
   border-right: 1px solid #f0f0f0;
 }
 
-h2.select-project-title {
-  font-size: 16px;
-  margin: 0;
-  line-height: 64px;
-  color: lightgray;
-
-  transition: all 0.2s;
-}
-
-h2.select-project-title:hover {
-  color: white;
-  cursor: pointer;
-}
-
 .select-dataset-item {
   transition: all 0.2s;
   border-radius: 7px;
