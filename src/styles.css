@@ -135,6 +135,19 @@ body {
 /* END react18-json-view styling */
 
 
+#header-search {
+  background-color: rgb(20, 66, 90);
+  font-size: 1.1rem;
+  border-radius: 5px;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 0.4em 1.9em 0.4em 1.9em;
+}
+#header-search::placeholder {
+  text-align: center;
+}
+
+
 /* BEGIN layout HTML styling */
 
 #default-layout {

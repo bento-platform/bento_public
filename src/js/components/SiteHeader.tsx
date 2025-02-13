@@ -42,6 +42,7 @@ const HeaderSearch = () => {
         }}
       />
       <AutoComplete
+        id="header-search"
         style={{
           position: 'absolute',
           left: 0,
@@ -51,20 +52,7 @@ const HeaderSearch = () => {
         }}
         options={[{ label: 'Test1' }]}
       >
-        <input
-          type="text"
-          style={{
-            backgroundColor: 'rgb(20, 66, 90)',
-            fontSize: '1.1rem',
-            borderRadius: 5,
-            border: 'none',
-            color: 'rgba(255, 255, 255, 0.8)',
-            padding: '0.4em 0.8em 0.4em 1.9em',
-          }}
-          placeholder="Search"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-        />
+        <input type="text" placeholder="Quick Search" value={value} onChange={(e) => setValue(e.target.value)} />
       </AutoComplete>
     </div>
   );
@@ -102,7 +90,7 @@ const SiteHeader = () => {
 
   return (
     <Header id="site-header">
-      <Flex align="center" justify="space-between" gap={8}>
+      <Flex align="center" justify="space-between" gap={12}>
         <Space size={isSmallScreen ? 'small' : 'middle'}>
           {isSmallScreen ? (
             <object
@@ -137,7 +125,7 @@ const SiteHeader = () => {
           </Typography.Title>
         </Space>
 
-        <HeaderSearch />
+        {!isSmallScreen && <HeaderSearch />}
 
         <Space size={isSmallScreen ? 0 : 'small'}>
           {TRANSLATED && (
