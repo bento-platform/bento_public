@@ -81,7 +81,7 @@ const BeaconQueryFormUi = ({
       }
       return payload;
     },
-    [scope]
+    [scope, isNetworkQuery]
   );
 
   const launchEmptyQuery = useCallback(
@@ -107,7 +107,7 @@ const BeaconQueryFormUi = ({
 
     // set assembly id options matching what's in gohan (for local beacon) or in network
     form.setFieldsValue(formInitialValues);
-  }, [beaconAssemblyIds.length, form, formInitialValues, isAuthenticated, isNetworkQuery, launchEmptyQuery]);
+  }, [scopeSet, beaconAssemblyIds.length, form, formInitialValues, isAuthenticated, isNetworkQuery, launchEmptyQuery]);
 
   // Disables max query param if user is authenticated and authorized
   useQueryWithAuthIfAllowed();
