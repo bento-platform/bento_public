@@ -1,7 +1,7 @@
 import { Empty } from 'antd';
 import { useTranslationFn } from '@/hooks';
 
-const CustomEmpty = ({ text }) => {
+const CustomEmpty = ({ text }: { text: string }) => {
   const t = useTranslationFn();
 
   return <Empty description={t(text)} />;

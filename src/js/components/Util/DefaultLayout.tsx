@@ -4,6 +4,7 @@ import { Layout } from 'antd';
 import SiteHeader from '@/components/SiteHeader';
 import SiteSider from '@/components/SiteSider';
 import SiteFooter from '@/components/SiteFooter';
+import ScopedTitle from '@/components/Scope/ScopedTitle';
 
 const { Content } = Layout;
 
@@ -11,18 +12,13 @@ const DefaultLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
+    <Layout id="default-layout" className={collapsed ? 'sidebar-collapsed' : ''}>
       <SiteHeader />
       <Layout>
         <SiteSider collapsed={collapsed} setCollapsed={setCollapsed} />
-        <Layout
-          style={{
-            marginLeft: collapsed ? '80px' : '200px',
-            transition: 'margin-left 0.3s',
-            marginTop: '64px',
-          }}
-        >
-          <Content style={{ padding: '32px 64px' }}>
+        <Layout id="content-layout">
+          <Content>
+            <ScopedTitle />
             <Outlet />
           </Content>
           <SiteFooter />

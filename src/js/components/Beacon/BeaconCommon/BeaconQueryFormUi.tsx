@@ -81,7 +81,7 @@ const BeaconQueryFormUi = ({
       }
       return payload;
     },
-    [scope]
+    [scope, isNetworkQuery]
   );
 
   const launchEmptyQuery = useCallback(
@@ -107,7 +107,7 @@ const BeaconQueryFormUi = ({
 
     // set assembly id options matching what's in gohan (for local beacon) or in network
     form.setFieldsValue(formInitialValues);
-  }, [beaconAssemblyIds.length, form, formInitialValues, isAuthenticated, isNetworkQuery, launchEmptyQuery]);
+  }, [scopeSet, beaconAssemblyIds.length, form, formInitialValues, isAuthenticated, isNetworkQuery, launchEmptyQuery]);
 
   // Disables max query param if user is authenticated and authorized
   useQueryWithAuthIfAllowed();
@@ -232,12 +232,8 @@ const BeaconQueryFormUi = ({
   const searchButtonText = t(`beacon.${isNetworkQuery ? 'search_network' : 'search_beacon'}`);
 
   return (
-    <div style={{ paddingBottom: 8, display: 'flex', justifyContent: 'center', width: '100%' }}>
-      <Card
-        title={t('Search')}
-        style={{ borderRadius: '10px', maxWidth: '1200px', width: '100%', ...BOX_SHADOW }}
-        styles={CARD_STYLES}
-      >
+    <div className="container margin-auto" style={{ paddingBottom: 8 }}>
+      <Card title={t('Search')} style={{ borderRadius: '10px', width: '100%', ...BOX_SHADOW }} styles={CARD_STYLES}>
         <p style={{ margin: '-8px 0 8px 0', padding: '0', color: 'grey' }}>{t(uiInstructions)}</p>
         <Form form={form} onFinish={handleFinish} layout="vertical" onValuesChange={handleValuesChange}>
           <Row gutter={FORM_ROW_GUTTERS}>

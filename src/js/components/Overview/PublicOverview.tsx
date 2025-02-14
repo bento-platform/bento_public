@@ -16,7 +16,7 @@ const PublicOverview = () => {
   //  In which case this can be reverted.
   return showCatalogue ? (
     <>
-      <AboutBox style={{ maxWidth: 1325, margin: 'auto' }} bottomDivider={true} />
+      <AboutBox style={{ margin: 'auto' }} bottomDivider={true} />
       <Catalogue />
     </>
   ) : (

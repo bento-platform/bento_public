@@ -106,7 +106,7 @@ const CatalogueCard = ({ project }: { project: Project }) => {
   ];
 
   return (
-    <Card className="container" style={BOX_SHADOW} size={isSmallScreen ? 'small' : 'default'}>
+    <Card className="container margin-auto" style={BOX_SHADOW} size={isSmallScreen ? 'small' : 'default'}>
       <CatalogueCardInner
         firstContent={
           <Flex vertical={true} gap={8} style={{ height: '100%' }}>
