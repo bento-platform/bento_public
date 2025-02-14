@@ -24,8 +24,15 @@ export const makeGetIndividualData = createAsyncThunk<
   },
   {
     condition(id, { getState }) {
-      console.log('requesting individual data for id', id);
-      return getState().query.individualDataStatus[id] !== RequestStatus.Pending;
+      console.debug('requesting individual data for id', id);
+      const state = getState().query;
+      const cond = !state.individualDataCache[id] && state.individualDataStatus[id] !== RequestStatus.Pending;
+      console.debug(
+        ...(cond
+          ? ['requesting individual data for id', id]
+          : ['not requesting individual data for id', id, '- already fetched or fetching'])
+      );
+      return cond;
     },
   }
 );

@@ -2,14 +2,18 @@ import { useTranslationFn } from '@/hooks';
 import type { DescriptionsProps } from 'antd';
 import { Descriptions, Skeleton } from 'antd';
 
+import TimeElementDisplay from '@/components/ClinPhen/TimeElementDisplay';
+import JsonView from '@/components/Util/JsonView';
+
 import { EM_DASH } from '@/constants/contentConstants';
-import { useIndividualData, useIsFetchingIndividualData } from '@/features/search/hooks';
+import { useIndividualData } from '@/features/search/hooks';
+import { RequestStatus } from '@/types/requests';
 
 const IndividualsAccordionPane = ({ id }: { id: string }) => {
   const t = useTranslationFn();
 
-  const individualData = useIndividualData(id);
-  const isFetchingIndividualData = useIsFetchingIndividualData(id);
+  const { data: individualData, status: individualDataStatus } = useIndividualData(id);
+  const isFetchingIndividualData = individualDataStatus === RequestStatus.Pending;
 
   const items: DescriptionsProps['items'] = [
     {
@@ -19,11 +23,11 @@ const IndividualsAccordionPane = ({ id }: { id: string }) => {
     },
     {
       label: t('individual.sex'),
-      children: individualData?.sex,
+      children: t(individualData?.sex ?? 'UNKNOWN_SEX'),
     },
     {
       label: t('individual.time_at_last_encounter'),
-      children: JSON.stringify(individualData?.time_at_last_encounter), // TODO: handle other time elements if there are any
+      children: <TimeElementDisplay element={individualData?.time_at_last_encounter} />,
     },
     {
       label: t('individual.karyotypic_sex'),
@@ -31,13 +35,18 @@ const IndividualsAccordionPane = ({ id }: { id: string }) => {
     },
     {
       label: t('individual.taxonomy'),
-      children: individualData?.taxonomy?.label || EM_DASH,
+      children: <em>{individualData?.taxonomy?.label || EM_DASH}</em>,
     },
-    {
-      span: 3,
-      label: t('individual.extra_properties'),
-      children: JSON.stringify(individualData?.extra_properties, null, 2),
-    },
+    // Only show extra properties field if we have any:
+    ...(individualData?.extra_properties
+      ? [
+          {
+            span: 3,
+            label: t('individual.extra_properties'),
+            children: <JsonView src={individualData?.extra_properties} />,
+          },
+        ]
+      : []),
   ];
 
   return isFetchingIndividualData ? <Skeleton active /> : <Descriptions items={items} />;

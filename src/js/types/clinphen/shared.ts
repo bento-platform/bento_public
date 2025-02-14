@@ -7,13 +7,20 @@ export interface OntologyTerm {
   label: string;
 }
 
+export type TimeElementGestationalAge = { gestational_age: GestationalAge };
+export type TimeElementAge = { age: Age };
+export type TimeElementAgeRange = { age_range: AgeRange };
+export type TimeElementOntologyClass = { ontology_class: OntologyTerm };
+export type TimeElementTimestamp = { timestamp: DateTime };
+export type TimeElementInterval = { interval: TimeInterval };
+
 export type TimeElement =
-  | { gestational_age: GestationalAge }
-  | { age: Age }
-  | { age_range: AgeRange }
-  | { ontology_class: OntologyTerm }
-  | { timestamp: DateTime }
-  | { interval: TimeInterval };
+  | TimeElementGestationalAge
+  | TimeElementAge
+  | TimeElementAgeRange
+  | TimeElementOntologyClass
+  | TimeElementTimestamp
+  | TimeElementInterval;
 
 export type DateTime = string;
 

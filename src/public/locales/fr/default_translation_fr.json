@@ -139,6 +139,9 @@
       "Laissez ce formulaire vide pour effectuer une recherche sur les métadonnées seulement."
     ]
   },
+  "MALE": "Homme",
+  "FEMALE": "Femme",
+  "UNKNOWN_SEX": "Sexe inconnu",
   "individual": {
     "date_of_birth": "Date de naissance",
     "sex": "Sexe",

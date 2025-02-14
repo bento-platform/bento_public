@@ -23,7 +23,7 @@ const chunkArray = (arr: string[], size: number) => {
   return result;
 };
 
-const genExtra = (id: string) => (
+const IndividualPortalLink = ({ id }: { id: string }) => (
   <a href={`${PORTAL_URL}/data/explorer/individuals/${id}`} target="_blank" rel="noreferrer">
     <ExportOutlined />
   </a>
@@ -33,7 +33,7 @@ const createIndividualPanel = (id: string) => ({
   key: id,
   label: id,
   children: <IndividualsAccordionPane id={id} />,
-  extra: genExtra(id),
+  extra: <IndividualPortalLink id={id} />,
 });
 
 const SearchResultsPane = ({
