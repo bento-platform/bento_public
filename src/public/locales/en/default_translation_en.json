@@ -146,5 +146,31 @@
     "licensed_under": "Bento is licensed under the",
     "source_available": "The source code is available on",
     "terms_of_use": "Terms of Use"
+  },
+  "Help": "Help",
+  "Help for": "Help for",
+  "page_help": {
+    "overview": [
+      "The $t(Overview) page shows counts and charts for data stored in the selected project/dataset (the 'scope').",
+      "Charts can be shown/hidden or their width altered via the '$t(Manage Charts)' button."
+    ],
+    "search": [
+      "The $t(Search) page lets you query either counts or full records for data stored in a specific project/dataset",
+      "or the entire instance (the 'scope'), depending on your level of authorization.\n",
+      "Select filters and specify values to narrow down data of interest within the selected scope.",
+      "If a small number of records match your query, the count may be censored to prevent re-identification."
+    ],
+    "provenance": ["Detailed provenance data for a dataset or all datasets in a project."],
+    "beacon": [
+      "Beacon allows you to query data by the position of genetic variants, and filter the results by various clinical",
+      "or experimental metadata properties. You can also query by variants or metadata alone."
+    ],
+    "network": [
+      "Beacon Network allows you to query a collection of genomic beacons with a single query, and see count results",
+      "for each beacon as well as network-wide results. Beacons can be queried by variant position,",
+      "clinical/experimental metadata, or both.\n",
+      "Metadata filters may vary across beacons in the network, so some searches may not apply to all beacons. Use the",
+      "'$t(beacon.show_all_filters)' / '$t(beacon.common_filters_only)' switch to control which filters are available."
+    ]
   }
 }

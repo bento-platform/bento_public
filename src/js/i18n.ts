@@ -20,6 +20,7 @@ const options: InitOptions = {
 
   supportedLngs: Object.values(SUPPORTED_LNGS),
   load: 'all',
+  preload: [SUPPORTED_LNGS.ENGLISH, SUPPORTED_LNGS.FRENCH],
 
   debug: false,
   backend: {
@@ -27,7 +28,7 @@ const options: InitOptions = {
   },
 
   react: {
-    useSuspense: false,
+    useSuspense: true,
   },
 };
 

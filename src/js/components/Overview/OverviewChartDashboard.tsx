@@ -20,8 +20,10 @@ import Dataset from '@/components/Provenance/Dataset';
 import { useTranslationFn } from '@/hooks';
 import { useData, useSearchableFields } from '@/features/data/hooks';
 import { useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
+import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
-const MANAGE_CHARTS_BUTTON_STYLE: CSSProperties = { right: '5em', bottom: '1.5em', transform: 'scale(125%)' };
+// The 'right' position will be set based on small screen status dynamically
+const MANAGE_CHARTS_BUTTON_STYLE: CSSProperties = { bottom: '1.5em', transform: 'scale(125%)' };
 
 const saveToLocalStorage = (sections: Sections) => {
   saveValue(LOCALSTORAGE_CHARTS_KEY, convertSequenceAndDisplayData(sections));
@@ -34,6 +36,8 @@ const OverviewChartDashboard = () => {
 
   const { scope } = useSelectedScope();
   const selectedProject = useSelectedProject();
+
+  const isSmallScreen = useSmallScreen();
 
   // Lazy-loading hooks means these are called only if OverviewChartDashboard is rendered ---
   const { status: overviewDataStatus, sections } = useData();
@@ -58,7 +62,7 @@ const OverviewChartDashboard = () => {
   return WAITING_STATES.includes(overviewDataStatus) ? (
     <Loader />
   ) : (
-    <>
+    <div className="container margin-auto">
       <AboutBox />
 
       <Row>
@@ -99,10 +103,10 @@ const OverviewChartDashboard = () => {
         type="primary"
         icon={<AppstoreAddOutlined rotate={270} />}
         tooltip={t('Manage Charts')}
-        style={MANAGE_CHARTS_BUTTON_STYLE}
+        style={{ ...MANAGE_CHARTS_BUTTON_STYLE, right: isSmallScreen ? '1em' : '5em' }}
         onClick={onManageChartsOpen}
       />
-    </>
+    </div>
   );
 };
 

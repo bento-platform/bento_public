@@ -2,11 +2,12 @@ import { useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { List, Space, Typography } from 'antd';
 
+import Dataset from '@/components/Provenance/Dataset';
+import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import { useTranslationFn } from '@/hooks';
 import type { Project } from '@/types/metadata';
 import { getCurrentPage, scopeToUrl } from '@/utils/router';
-import Dataset from '@/components/Provenance/Dataset';
 import { useSelectedScope } from '@/features/metadata/hooks';
 
 type DatasetScopePickerProps = {
@@ -41,7 +42,7 @@ const DatasetScopePicker = ({ parentProject }: DatasetScopePickerProps) => {
         </Typography.Title>
         {showSelectProject && <Link to={projectURL}>{t('Select')}</Link>}
       </Space>
-      <Typography.Text>{t(parentProject.description)}</Typography.Text>
+      <TruncatedParagraph>{t(parentProject.description)}</TruncatedParagraph>
       <Space align="baseline" size="large">
         <Typography.Title level={5} className="no-margin-top">
           {t('Datasets')}
