@@ -81,7 +81,7 @@ const BeaconQueryFormUi = ({
       }
       return payload;
     },
-    [scope]
+    [scope, isNetworkQuery]
   );
 
   const launchEmptyQuery = useCallback(
