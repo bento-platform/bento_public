@@ -163,6 +163,38 @@ export interface BeaconServiceInfo {
 }
 
 // ----------------------------
+// filters
+// ----------------------------
+
+// https://docs.genomebeacons.org/filters/
+export interface BeaconFilteringTermsResponse {
+  meta?: {
+    beaconId: string;
+  };
+  response?: {
+    filteringTerms: BeaconFilteringTermFromResponse[];
+  };
+}
+
+export interface BeaconFilteringTermFromResponse {
+  type: 'alphanumeric';
+  id: string; // something more here?
+  name: string;
+  description: string;
+  values: string[];
+  bento: {
+    section: string;
+  };
+}
+
+export type BeaconFilterForQuery = Omit<BeaconFilteringTermFromResponse, 'bento'>;
+
+export interface BeaconFilterSection {
+  section_title: BeaconFilteringTermFromResponse['bento']['section'];
+  fields: BeaconFilterForQuery[];
+}
+
+// ----------------------------
 // response packaging
 // ----------------------------
 

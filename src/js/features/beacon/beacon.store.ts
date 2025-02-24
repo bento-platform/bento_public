@@ -5,12 +5,24 @@ import { makeAuthorizationHeader } from 'bento-auth-js';
 import { EMPTY_DISCOVERY_RESULTS } from '@/constants/searchConstants';
 import { BEACON_INFO_ENDPOINT } from '@/features/beacon/constants';
 import type { RootState } from '@/store';
-import type { BeaconConfigResponse, BeaconAssemblyIds, BeaconQueryResponse, BeaconQueryPayload } from '@/types/beacon';
+import type {
+  BeaconConfigResponse,
+  BeaconAssemblyIds,
+  BeaconQueryResponse,
+  BeaconQueryPayload,
+  BeaconFilterSection,
+  BeaconFilteringTermsResponse,
+} from '@/types/beacon';
 import type { DiscoveryResults } from '@/types/data';
 import { beaconApiError, errorMsgOrDefault } from '@/utils/beaconApiError';
 import { printAPIError } from '@/utils/error.util';
 
-import { extractBeaconDiscoveryOverview, scopedBeaconIndividualsUrl } from './utils';
+import {
+  extractBeaconDiscoveryOverview,
+  scopedBeaconIndividualsUrl,
+  scopedBeaconFilteringTermsUrl,
+  packageBeaconFilteringTerms,
+} from './utils';
 
 // config response is not scoped
 export const getBeaconConfig = createAsyncThunk<BeaconConfigResponse, void, { state: RootState; rejectValue: string }>(
@@ -24,6 +36,30 @@ export const getBeaconConfig = createAsyncThunk<BeaconConfigResponse, void, { st
   {
     condition(_, { getState }) {
       return !getState().beacon.isFetchingBeaconConfig;
+    },
+  }
+);
+
+export const getBeaconFilters = createAsyncThunk<
+  BeaconFilteringTermsResponse,
+  void,
+  { state: RootState; rejectValue: string }
+>(
+  'beacon/getBeaconFilters',
+  (_, { getState, rejectWithValue }) => {
+    const token = getState().auth.accessToken;
+    const projectId = getState().metadata.selectedScope.scope.project;
+    const datasetId = getState().metadata.selectedScope.scope.dataset;
+    const headers = makeAuthorizationHeader(token);
+
+    return axios
+      .get(scopedBeaconFilteringTermsUrl(projectId, datasetId), { headers: headers as Record<string, string> })
+      .then((res) => res.data)
+      .catch(printAPIError(rejectWithValue));
+  },
+  {
+    condition(_, { getState }) {
+      return getState().metadata.selectedScope.scopeSet;
     },
   }
 );
@@ -47,6 +83,10 @@ type BeaconState = {
   isFetchingBeaconConfig: boolean;
   beaconAssemblyIds: BeaconAssemblyIds;
 
+  // filters
+  isFetchingFilters: boolean;
+  beaconFilters: BeaconFilterSection[];
+
   // querying
   isFetchingQueryResponse: boolean;
   results: DiscoveryResults;
@@ -57,6 +97,10 @@ const initialState: BeaconState = {
   // config
   isFetchingBeaconConfig: false,
   beaconAssemblyIds: [],
+
+  // filters
+  isFetchingFilters: false,
+  beaconFilters: [],
 
   // querying
   isFetchingQueryResponse: false,
@@ -79,6 +123,18 @@ const beacon = createSlice({
     });
     builder.addCase(getBeaconConfig.rejected, (state) => {
       state.isFetchingBeaconConfig = false;
+    });
+
+    // filtering terms -------------------------------------------------------------------------------------------------
+    builder.addCase(getBeaconFilters.pending, (state) => {
+      state.isFetchingFilters = true;
+    });
+    builder.addCase(getBeaconFilters.fulfilled, (state, { payload }) => {
+      state.beaconFilters = packageBeaconFilteringTerms(payload?.response?.filteringTerms ?? []);
+      state.isFetchingFilters = false;
+    });
+    builder.addCase(getBeaconFilters.rejected, (state) => {
+      state.isFetchingFilters = false;
     });
 
     // querying --------------------------------------------------------------------------------------------------------
