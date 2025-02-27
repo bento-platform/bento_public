@@ -9,7 +9,7 @@ import NetworkBeacons from './NetworkBeacons';
 import NetworkSearchResults from './NetworkSearchResults';
 
 const NetworkUi = () => {
-  const { isFetchingBeaconNetworkConfig, assemblyIds, currentQuerySections, beaconResponses } = useBeaconNetwork();
+  const { isFetchingBeaconNetworkConfig, assemblyIds, currentFilters, beaconResponses } = useBeaconNetwork();
   const isFetchingQueryResponse = atLeastOneNetworkResponseIsPending(beaconResponses);
 
   return isFetchingBeaconNetworkConfig ? (
@@ -20,8 +20,8 @@ const NetworkUi = () => {
         isFetchingQueryResponse={isFetchingQueryResponse}
         isNetworkQuery={true}
         beaconAssemblyIds={assemblyIds}
-        querySections={currentQuerySections}
         launchQuery={beaconNetworkQuery}
+        beaconFiltersBySection={currentFilters}
       />
       <NetworkSearchResults />
       <NetworkBeacons />
