@@ -23,9 +23,7 @@ const NetworkFilterToggle = () => {
           checked={isFiltersUnion}
           style={{ margin: '5px' }}
         />
-        <p style={{ margin: '5px' }}>
-          {t(`beacon.${isFiltersUnion ? 'show_all_filters' : 'common_filters_only'}`)}
-        </p>
+        <p style={{ margin: '5px' }}>{t(`beacon.${isFiltersUnion ? 'show_all_filters' : 'common_filters_only'}`)}</p>
       </div>
     </Tooltip>
   );
@@ -92,7 +90,7 @@ export interface FiltersProps {
   filters: FormFilter[];
   setFilters: Dispatch<SetStateAction<FormFilter[]>>;
   form: FormInstance;
-  beaconFiltersBySection: BeaconFilterSection[]
+  beaconFiltersBySection: BeaconFilterSection[];
   isNetworkQuery: boolean;
 }
 

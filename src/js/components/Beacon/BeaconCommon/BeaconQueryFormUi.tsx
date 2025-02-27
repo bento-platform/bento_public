@@ -308,7 +308,7 @@ export interface BeaconQueryFormUiProps {
   beaconAssemblyIds: BeaconAssemblyIds;
   launchQuery: BeaconQueryAction;
   apiErrorMessage?: string;
-  beaconFiltersBySection: BeaconFilterSection[]
+  beaconFiltersBySection: BeaconFilterSection[];
 }
 
 export default BeaconQueryFormUi;

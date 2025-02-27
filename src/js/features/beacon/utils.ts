@@ -109,7 +109,6 @@ export const scopedBeaconFilteringTermsUrl = (
 };
 
 export const scopedBeaconIndividualsUrl = (projectId: Project['identifier'] | undefined): string => {
-  const projectPath: string = projectId ? '/' + projectId : '';
   return scopedBeaconBaseUrl(projectId) + BEACON_INDIVIDUALS_PATH;
 };
 
@@ -130,7 +129,7 @@ export const packageBeaconFilteringTerms = (filters: BeaconFilteringTermFromResp
 };
 
 // temp repackaging of network filters from katsu format to beacon filters format
-// can be removed once network stops calling katsu 
+// can be removed once network stops calling katsu
 export const packageBeaconNetworkQuerySections = (qs: Section[]) => {
   return qs.map((q) => ({
     ...q,
