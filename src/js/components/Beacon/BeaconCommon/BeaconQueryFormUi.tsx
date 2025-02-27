@@ -19,7 +19,6 @@ import type {
   PayloadFilter,
   PayloadVariantsQuery,
 } from '@/types/beacon';
-import type { Section } from '@/types/search';
 import { BOX_SHADOW } from '@/constants/overviewConstants';
 import {
   FORM_ROW_GUTTERS,

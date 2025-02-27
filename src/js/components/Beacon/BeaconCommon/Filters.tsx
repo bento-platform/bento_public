@@ -7,7 +7,6 @@ import { toggleQuerySectionsUnionOrIntersection } from '@/features/beacon/networ
 import { useConfig } from '@/features/config/hooks';
 import { useAppDispatch, useTranslationFn } from '@/hooks';
 import type { BeaconFilterSection, FormFilter } from '@/types/beacon';
-import type { SearchFieldResponse } from '@/types/search';
 
 import Filter from './Filter';
 

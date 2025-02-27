@@ -12,7 +12,6 @@ import type {
   BeaconFilterSection,
   BeaconFilterForQuery,
 } from '@/types/beacon';
-import type { Section, Field } from '@/types/search';
 
 // TODOs:
 // any search key (eg "sex") selected in one filter should not available in other
