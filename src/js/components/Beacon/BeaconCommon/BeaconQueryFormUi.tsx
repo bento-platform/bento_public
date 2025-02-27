@@ -13,6 +13,7 @@ import type {
   BeaconAssemblyIds,
   BeaconQueryPayload,
   BeaconQueryAction,
+  BeaconFilterSection,
   FormFilter,
   FormValues,
   PayloadFilter,
@@ -39,9 +40,9 @@ const BeaconQueryFormUi = ({
   isFetchingQueryResponse, //used in local beacon only
   isNetworkQuery,
   beaconAssemblyIds,
-  querySections,
   launchQuery,
   apiErrorMessage,
+  beaconFiltersBySection,
 }: BeaconQueryFormUiProps) => {
   const t = useTranslationFn();
   const [form] = Form.useForm();
@@ -272,7 +273,7 @@ const BeaconQueryFormUi = ({
                   filters={filters}
                   setFilters={setFilters}
                   form={form}
-                  querySections={querySections}
+                  beaconFiltersBySection={beaconFiltersBySection}
                   isNetworkQuery={isNetworkQuery}
                 />
               </Card>
@@ -306,9 +307,9 @@ export interface BeaconQueryFormUiProps {
   isFetchingQueryResponse: boolean;
   isNetworkQuery: boolean;
   beaconAssemblyIds: BeaconAssemblyIds;
-  querySections: Section[];
   launchQuery: BeaconQueryAction;
   apiErrorMessage?: string;
+  beaconFiltersBySection: BeaconFilterSection[]
 }
 
 export default BeaconQueryFormUi;

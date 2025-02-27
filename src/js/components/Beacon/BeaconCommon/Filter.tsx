@@ -9,11 +9,12 @@ import type {
   FilterPullDownKey,
   FilterPullDownValue,
   GenericOptionType,
+  BeaconFilterSection,
+  BeaconFilterForQuery,
 } from '@/types/beacon';
 import type { Section, Field } from '@/types/search';
 
 // TODOs:
-// rewrite to use beacon specification filters instead of bento public "querySections"
 // any search key (eg "sex") selected in one filter should not available in other
 // for clarity they should probably appear, but be greyed out
 // this requires rendering select options as <Option> components
@@ -21,7 +22,7 @@ import type { Section, Field } from '@/types/search';
 const FILTER_FORM_ITEM_STYLE = { flex: 1, marginInlineEnd: -1 };
 const FILTER_FORM_ITEM_INNER_STYLE = { width: '100%' };
 
-const Filter = ({ filter, form, querySections, removeFilter, isRequired }: FilterProps) => {
+const Filter = ({ filter, form, beaconFiltersBySection, removeFilter, isRequired }: FilterProps) => {
   const t = useTranslationFn();
 
   const [valueOptions, setValueOptions] = useState([{ label: '', value: '' }]);
@@ -44,24 +45,25 @@ const Filter = ({ filter, form, querySections, removeFilter, isRequired }: Filte
     });
   }, [filter.index, form, valueOptions]);
 
-  const renderLabel = (searchField: Field) => {
-    const units = searchField.config?.units;
+  const renderLabel = (filter: BeaconFilterForQuery) => {
+    const units = filter.units ?? '';
     const unitsString = units ? ` (${t(units)})` : '';
-    return t(searchField.title) + unitsString;
+    return t(filter.label) + unitsString;
   };
 
-  const searchKeyOptions = (arr: Section[]): FilterOption[] => {
+  const searchKeyOptions = (arr: BeaconFilterSection[]): FilterOption[] => {
     return arr.map((qs) => ({
       label: t(qs.section_title),
       options: qs.fields.map((field) => ({
         label: renderLabel(field),
         value: field.id,
-        optionsThisKey: searchValueOptions(field.options),
+        optionsThisKey: searchValueOptions(field.values),
       })),
     }));
   };
 
-  const searchValueOptions = (arr: Field['options']): FilterPullDownValue[] => arr.map((v) => ({ label: v, value: v }));
+  const searchValueOptions = (arr: BeaconFilterForQuery['values']): FilterPullDownValue[] =>
+    arr.map((v) => ({ label: v, value: v }));
 
   return (
     <Space.Compact>
@@ -74,7 +76,7 @@ const Filter = ({ filter, form, querySections, removeFilter, isRequired }: Filte
           placeholder={t('select a search field')}
           style={FILTER_FORM_ITEM_INNER_STYLE}
           onSelect={handleSelectKey}
-          options={searchKeyOptions(querySections)}
+          options={searchKeyOptions(beaconFiltersBySection)}
         />
       </Form.Item>
       <Form.Item
@@ -97,7 +99,7 @@ const Filter = ({ filter, form, querySections, removeFilter, isRequired }: Filte
 export interface FilterProps {
   filter: FormFilter;
   form: FormInstance;
-  querySections: Section[];
+  beaconFiltersBySection: BeaconFilterSection[];
   removeFilter: (filter: FormFilter) => void;
   isRequired: boolean;
 }

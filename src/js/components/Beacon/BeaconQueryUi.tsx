@@ -8,7 +8,8 @@ import BeaconSearchResults from './BeaconSearchResults';
 import BeaconQueryFormUi from './BeaconCommon/BeaconQueryFormUi';
 
 const BeaconQueryUi = () => {
-  const { isFetchingBeaconConfig, beaconAssemblyIds, isFetchingQueryResponse, apiErrorMessage } = useBeacon();
+  const { isFetchingBeaconConfig, beaconAssemblyIds, beaconFilters, isFetchingQueryResponse, apiErrorMessage } =
+    useBeacon();
   const { querySections } = useAppSelector((state) => state.query);
 
   return isFetchingBeaconConfig ? (
@@ -20,9 +21,9 @@ const BeaconQueryUi = () => {
         isFetchingQueryResponse={isFetchingQueryResponse}
         isNetworkQuery={false}
         beaconAssemblyIds={beaconAssemblyIds}
-        querySections={querySections}
         launchQuery={makeBeaconQuery}
         apiErrorMessage={apiErrorMessage}
+        beaconFiltersBySection={beaconFilters}
       />
     </div>
   );

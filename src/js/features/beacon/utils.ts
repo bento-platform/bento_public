@@ -8,6 +8,7 @@ import type {
   BeaconQueryResponse,
   BeaconFilterSection,
 } from '@/types/beacon';
+import type { Field, Section } from '@/types/search';
 import type { ChartData, DiscoveryResults, OptionalDiscoveryResults } from '@/types/data';
 import type { NetworkBeacon } from '@/types/beaconNetwork';
 import type { Dataset, Project } from '@/types/metadata';
@@ -107,10 +108,9 @@ export const scopedBeaconFilteringTermsUrl = (
   return scopedBeaconBaseUrl(projectId) + BEACON_FILTERING_TERMS_PATH + datasetIdParam;
 };
 
-// rewrite with scopedBeaconBaseUrl
 export const scopedBeaconIndividualsUrl = (projectId: Project['identifier'] | undefined): string => {
   const projectPath: string = projectId ? '/' + projectId : '';
-  return BEACON_URL + projectPath + BEACON_INDIVIDUALS_PATH;
+  return scopedBeaconBaseUrl(projectId) + BEACON_INDIVIDUALS_PATH;
 };
 
 export const scopedBeaconOverviewUrl = (projectId: Project['identifier'] | undefined): string => {
@@ -127,4 +127,26 @@ export const packageBeaconFilteringTerms = (filters: BeaconFilteringTermFromResp
   });
   // then return as an array of categories
   return Object.keys(tempFiltersObj).map((key) => ({ section_title: key, fields: tempFiltersObj[key] }));
+};
+
+// temp repackaging of network filters from katsu format to beacon filters format
+// can be removed once network stops calling katsu 
+export const packageBeaconNetworkQuerySections = (qs: Section[]) => {
+  return qs.map((q) => ({
+    ...q,
+    fields: q.fields.map((f: Field) => {
+      const filter: BeaconFilterForQuery = {
+        type: 'alphanumeric',
+        id: f.id,
+        label: f.title,
+        description: f.description,
+        values: f.options,
+      };
+      const units = f.config?.units;
+      if (units) {
+        filter.units = units;
+      }
+      return filter;
+    }),
+  }));
 };

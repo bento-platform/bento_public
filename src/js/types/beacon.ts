@@ -179,12 +179,13 @@ export interface BeaconFilteringTermsResponse {
 export interface BeaconFilteringTermFromResponse {
   type: 'alphanumeric';
   id: string; // something more here?
-  name: string;
+  label: string;
   description: string;
   values: string[];
   bento: {
     section: string;
   };
+  units?: string;
 }
 
 export type BeaconFilterForQuery = Omit<BeaconFilteringTermFromResponse, 'bento'>;
