@@ -191,7 +191,7 @@ export interface BeaconFilteringTermFromResponse {
 export type BeaconFilterForQuery = Omit<BeaconFilteringTermFromResponse, 'bento'>;
 
 export interface BeaconFilterSection {
-  section_title: BeaconFilteringTermFromResponse['bento']['section'];
+  section_title: string;
   fields: BeaconFilterForQuery[];
 }
 
