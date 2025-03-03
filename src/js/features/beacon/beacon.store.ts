@@ -48,7 +48,6 @@ export const getBeaconFilters = createAsyncThunk<
 >(
   'beacon/getBeaconFilters',
   (_, { getState, rejectWithValue }) => {
-    const token = getState().auth.accessToken;
     const projectId = getState().metadata.selectedScope.scope.project;
     const datasetId = getState().metadata.selectedScope.scope.dataset;
 
@@ -69,9 +68,7 @@ export const makeBeaconQuery = createAsyncThunk<
   BeaconQueryPayload,
   { state: RootState; rejectValue: string }
 >('beacon/makeBeaconQuery', async (payload, { getState, rejectWithValue }) => {
-  const token = getState().auth.accessToken;
   const projectId = getState().metadata.selectedScope.scope.project;
-  const headers = makeAuthorizationHeader(token);
   return axios
     .post(scopedBeaconIndividualsUrl(projectId), payload, authorizedRequestConfig(getState()))
     .then((res) => res.data)
