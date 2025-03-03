@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { makeAuthorizationHeader } from 'bento-auth-js';
 import { authorizedRequestConfig } from '@/utils/requests';
 
 import { EMPTY_DISCOVERY_RESULTS } from '@/constants/searchConstants';
