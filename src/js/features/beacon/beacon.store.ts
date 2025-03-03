@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { makeAuthorizationHeader } from 'bento-auth-js';
+import { authorizedRequestConfig } from '@/utils/requests';
 
 import { EMPTY_DISCOVERY_RESULTS } from '@/constants/searchConstants';
 import { BEACON_INFO_ENDPOINT } from '@/features/beacon/constants';
@@ -50,16 +51,15 @@ export const getBeaconFilters = createAsyncThunk<
     const token = getState().auth.accessToken;
     const projectId = getState().metadata.selectedScope.scope.project;
     const datasetId = getState().metadata.selectedScope.scope.dataset;
-    const headers = makeAuthorizationHeader(token);
 
     return axios
-      .get(scopedBeaconFilteringTermsUrl(projectId, datasetId), { headers: headers as Record<string, string> })
+      .get(scopedBeaconFilteringTermsUrl(projectId, datasetId), authorizedRequestConfig(getState()))
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue));
   },
   {
     condition(_, { getState }) {
-      return getState().metadata.selectedScope.scopeSet;
+      return getState().metadata.selectedScope.scopeSet && !getState().beacon.isFetchingFilters;
     },
   }
 );
@@ -73,7 +73,7 @@ export const makeBeaconQuery = createAsyncThunk<
   const projectId = getState().metadata.selectedScope.scope.project;
   const headers = makeAuthorizationHeader(token);
   return axios
-    .post(scopedBeaconIndividualsUrl(projectId), payload, { headers: headers as Record<string, string> })
+    .post(scopedBeaconIndividualsUrl(projectId), payload, authorizedRequestConfig(getState()))
     .then((res) => res.data)
     .catch(beaconApiError(rejectWithValue));
 });
