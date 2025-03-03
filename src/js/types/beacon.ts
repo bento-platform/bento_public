@@ -178,7 +178,7 @@ export interface BeaconFilteringTermsResponse {
 
 export interface BeaconFilteringTermFromResponse {
   type: 'alphanumeric';
-  id: string; // something more here?
+  id: string;
   label: string;
   description: string;
   values: string[];
