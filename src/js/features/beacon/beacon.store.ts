@@ -14,6 +14,7 @@ import type {
   BeaconFilteringTermsResponse,
 } from '@/types/beacon';
 import type { DiscoveryResults } from '@/types/data';
+import { RequestStatus } from '@/types/requests';
 import { beaconApiError, errorMsgOrDefault } from '@/utils/beaconApiError';
 import { printAPIError } from '@/utils/error.util';
 
@@ -57,7 +58,7 @@ export const getBeaconFilters = createAsyncThunk<
   },
   {
     condition(_, { getState }) {
-      return getState().metadata.selectedScope.scopeSet && !getState().beacon.isFetchingFilters;
+      return getState().metadata.selectedScope.scopeSet && getState().beacon.filtersStatus === RequestStatus.Idle;
     },
   }
 );
@@ -80,7 +81,7 @@ type BeaconState = {
   beaconAssemblyIds: BeaconAssemblyIds;
 
   // filters
-  isFetchingFilters: boolean;
+  filtersStatus: RequestStatus;
   beaconFilters: BeaconFilterSection[];
 
   // querying
@@ -95,7 +96,7 @@ const initialState: BeaconState = {
   beaconAssemblyIds: [],
 
   // filters
-  isFetchingFilters: false,
+  filtersStatus: RequestStatus.Idle,
   beaconFilters: [],
 
   // querying
@@ -123,14 +124,14 @@ const beacon = createSlice({
 
     // filtering terms -------------------------------------------------------------------------------------------------
     builder.addCase(getBeaconFilters.pending, (state) => {
-      state.isFetchingFilters = true;
+      state.filtersStatus = RequestStatus.Pending;
     });
     builder.addCase(getBeaconFilters.fulfilled, (state, { payload }) => {
       state.beaconFilters = packageBeaconFilteringTerms(payload?.response?.filteringTerms ?? []);
-      state.isFetchingFilters = false;
+      state.filtersStatus = RequestStatus.Fulfilled;
     });
     builder.addCase(getBeaconFilters.rejected, (state) => {
-      state.isFetchingFilters = false;
+      state.filtersStatus = RequestStatus.Rejected;
     });
 
     // querying --------------------------------------------------------------------------------------------------------
