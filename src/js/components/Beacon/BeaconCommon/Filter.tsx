@@ -10,7 +10,7 @@ import type {
   FilterPullDownValue,
   GenericOptionType,
   BeaconFilterSection,
-  BeaconFilterForQuery,
+  BeaconFilterUiOptions,
 } from '@/types/beacon';
 
 // TODOs:
@@ -44,7 +44,7 @@ const Filter = ({ filter, form, beaconFiltersBySection, removeFilter, isRequired
     });
   }, [filter.index, form, valueOptions]);
 
-  const renderLabel = (filter: BeaconFilterForQuery) => {
+  const renderLabel = (filter: BeaconFilterUiOptions) => {
     const units = filter.units ?? '';
     const unitsString = units ? ` (${t(units)})` : '';
     return t(filter.label) + unitsString;
@@ -61,7 +61,7 @@ const Filter = ({ filter, form, beaconFiltersBySection, removeFilter, isRequired
     }));
   };
 
-  const searchValueOptions = (arr: BeaconFilterForQuery['values']): FilterPullDownValue[] =>
+  const searchValueOptions = (arr: BeaconFilterUiOptions['values']): FilterPullDownValue[] =>
     arr.map((v) => ({ label: v, value: v }));
 
   return (

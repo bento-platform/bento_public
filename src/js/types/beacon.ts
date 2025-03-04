@@ -49,7 +49,7 @@ export type GenericOptionType = FilterOption | FilterPullDownKey;
 // API request
 // ----------------------------
 
-export interface PayloadFilter {
+export interface BeaconPayloadFilter {
   id: string;
   value: string;
 
@@ -75,7 +75,7 @@ export interface BeaconQueryPayload {
   meta: { apiVersion: string };
   query: {
     requestParameters: { g_variant: PayloadVariantsQuery };
-    filters: PayloadFilter[];
+    filters: BeaconPayloadFilter[];
     datasets?: { datasetIds: [Dataset['identifier']] };
   };
   bento?: { showSummaryStatistics: boolean };
@@ -172,11 +172,11 @@ export interface BeaconFilteringTermsResponse {
     beaconId: string;
   };
   response?: {
-    filteringTerms: BeaconFilteringTermFromResponse[];
+    filteringTerms: BeaconFilteringTermFromEndpoint[];
   };
 }
 
-export interface BeaconFilteringTermFromResponse {
+export interface BeaconFilteringTermFromEndpoint {
   type: 'alphanumeric';
   id: string;
   label: string;
@@ -188,11 +188,11 @@ export interface BeaconFilteringTermFromResponse {
   units?: string;
 }
 
-export type BeaconFilterForQuery = Omit<BeaconFilteringTermFromResponse, 'bento'>;
+export type BeaconFilterUiOptions = Omit<BeaconFilteringTermFromEndpoint, 'bento'>;
 
 export interface BeaconFilterSection {
   section_title: string;
-  fields: BeaconFilterForQuery[];
+  fields: BeaconFilterUiOptions[];
 }
 
 // ----------------------------

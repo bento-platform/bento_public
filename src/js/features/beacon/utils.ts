@@ -2,8 +2,8 @@ import { BEACON_URL, BEACON_NETWORK_URL } from '@/config';
 import { BEACON_INDIVIDUALS_PATH, BEACON_FILTERING_TERMS_PATH, BEACON_OVERVIEW_PATH } from './constants';
 import type {
   BeaconAssemblyIds,
-  BeaconFilteringTermFromResponse,
-  BeaconFilterForQuery,
+  BeaconFilteringTermFromEndpoint,
+  BeaconFilterUiOptions,
   BeaconNetworkResponses,
   BeaconQueryResponse,
   BeaconFilterSection,
@@ -117,9 +117,9 @@ export const scopedBeaconOverviewUrl = (projectId: Project['identifier'] | undef
 };
 
 // package flat beacon filtering terms array into an array of categories (similar to katsu query params)
-export const packageBeaconFilteringTerms = (filters: BeaconFilteringTermFromResponse[]): BeaconFilterSection[] => {
+export const packageBeaconFilteringTerms = (filters: BeaconFilteringTermFromEndpoint[]): BeaconFilterSection[] => {
   // temp object to simplify merging fields by category
-  const tempFiltersObj: Record<string, BeaconFilterForQuery[]> = {};
+  const tempFiltersObj: Record<string, BeaconFilterUiOptions[]> = {};
   filters.forEach((f) => {
     const { bento, ...filter_details } = f;
     tempFiltersObj[bento.section] = (tempFiltersObj[bento.section] ?? []).concat(filter_details);
@@ -134,7 +134,7 @@ export const packageBeaconNetworkQuerySections = (qs: Section[]) => {
   return qs.map((q) => ({
     ...q,
     fields: q.fields.map((f: Field) => {
-      const filter: BeaconFilterForQuery = {
+      const filter: BeaconFilterUiOptions = {
         type: 'alphanumeric',
         id: f.id,
         label: f.title,

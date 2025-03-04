@@ -16,7 +16,7 @@ import type {
   BeaconFilterSection,
   FormFilter,
   FormValues,
-  PayloadFilter,
+  BeaconPayloadFilter,
   PayloadVariantsQuery,
 } from '@/types/beacon';
 import { BOX_SHADOW } from '@/constants/overviewConstants';
@@ -70,7 +70,7 @@ const BeaconQueryFormUi = ({
   const showError = hasError && !errorAlertClosed;
 
   const requestPayload = useCallback(
-    (query: PayloadVariantsQuery, payloadFilters: PayloadFilter[]): BeaconQueryPayload => {
+    (query: PayloadVariantsQuery, payloadFilters: BeaconPayloadFilter[]): BeaconQueryPayload => {
       const payload: BeaconQueryPayload = {
         meta: { apiVersion: '2.0.0' },
         query: { requestParameters: { g_variant: query }, filters: payloadFilters },
@@ -118,7 +118,7 @@ const BeaconQueryFormUi = ({
   const convertToZeroBased = (start: string) => Number(start) - 1;
 
   const packageFilters = useCallback(
-    (values: FormValues): PayloadFilter[] => {
+    (values: FormValues): BeaconPayloadFilter[] => {
       // ignore optional first filter when left blank
       if (filters.length === 1 && !values.filterId1) {
         return [];
