@@ -24,7 +24,6 @@ export const makeGetIndividualData = createAsyncThunk<
   },
   {
     condition(id, { getState }) {
-      console.debug('requesting individual data for id', id);
       const state = getState().query;
       const cond = !state.individualDataCache[id] && state.individualDataStatus[id] !== RequestStatus.Pending;
       console.debug(
