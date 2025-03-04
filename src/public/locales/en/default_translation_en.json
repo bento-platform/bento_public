@@ -151,6 +151,18 @@
     "extra_properties": "Extra Properties",
     "unknown_karyotypic_sex": "UNKNOWN_KARYOTYPE"
   },
+  "time": {
+    "start": "Start",
+    "end": "End",
+    "days": "Days",
+    "weeks": "Weeks",
+    "age": "Age",
+    "gestational_age": "Gestational Age",
+    "age_range": "Age Range",
+    "ontology_class": "Ontology Class",
+    "timestamp": "Timestamp",
+    "interval": "Interval"
+  },
   "footer": {
     "powered_by": "Powered by",
     "copyright": "Copyright ©",

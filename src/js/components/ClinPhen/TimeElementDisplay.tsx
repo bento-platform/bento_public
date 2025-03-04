@@ -11,42 +11,35 @@ import type {
   TimeElementTimestamp,
   TimeInterval,
 } from '@/types/clinphen/shared';
+import { useTranslationFn } from '@/hooks';
 
 type TimeElementType = 'age' | 'gestational_age' | 'age_range' | 'ontology_class' | 'timestamp' | 'interval';
+const TIME_ELEMENT_TYPES = ['age', 'gestational_age', 'age_range', 'ontology_class', 'timestamp', 'interval'];
 
-const TIME_ELEMENT_TYPES_LABELS: Record<TimeElementType, string> = {
-  age: 'Age',
-  gestational_age: 'Gestational Age',
-  age_range: 'Age Range',
-  ontology_class: 'Ontology Class',
-  timestamp: 'Timestamp',
-  interval: 'Interval',
-};
-
-const getTimeElementTypeLabel = (element: TimeElement): [TimeElementType | null, string] => {
+const getTimeElementType = (element: TimeElement): TimeElementType | null => {
   const keys = Object.keys(element);
   if (keys.length === 1) {
     // A Phenopacket TimeElement should only have 1 property
-    const type = keys[0] as TimeElementType;
-    if (type in TIME_ELEMENT_TYPES_LABELS) {
-      const label = TIME_ELEMENT_TYPES_LABELS[type];
-      return [type, label];
+    if (TIME_ELEMENT_TYPES.includes(keys[0])) {
+      return keys[0] as TimeElementType;
     }
   }
-  return [null, 'NOT_SUPPORTED'];
+  return null;
 };
 
 export const TimeIntervalDisplay = ({ timeInterval, br }: { timeInterval: TimeInterval; br?: boolean }) => {
+  const t = useTranslationFn();
   return (
     <span>
-      <strong>Start:</strong> <>{timeInterval.start}</>
+      <strong>{t('time.start')}:</strong> <>{timeInterval.start}</>
       {br ? <br /> : ' '}
-      <strong>End:</strong> <>{timeInterval.end}</>
+      <strong>{t('time.end')}:</strong> <>{timeInterval.end}</>
     </span>
   );
 };
 
 const InnerTimeElement = ({ type, element }: { type: TimeElementType; element: TimeElement }) => {
+  const t = useTranslationFn();
   switch (type) {
     case 'age':
       return <span>{(element as TimeElementAge).age.iso8601duration}</span>;
@@ -54,8 +47,8 @@ const InnerTimeElement = ({ type, element }: { type: TimeElementType; element: T
       const ga = (element as TimeElementGestationalAge).gestational_age;
       return (
         <span>
-          <strong>Weeks:</strong> {ga.weeks}
-          <strong>Days:</strong> {ga.days}
+          <strong>{t('time.weeks')}:</strong> {ga.weeks}
+          <strong>{t('time.days')}:</strong> {ga.days}
         </span>
       );
     }
@@ -63,11 +56,13 @@ const InnerTimeElement = ({ type, element }: { type: TimeElementType; element: T
       const ar = (element as TimeElementAgeRange).age_range;
       return (
         <span>
-          <strong>Start:</strong> <>{ar.start.iso8601duration}</> <strong>End:</strong> <>{ar.end.iso8601duration}</>
+          <strong>{t('time.start')}:</strong> <>{ar.start.iso8601duration}</> <strong>{t('time.end')}:</strong>{' '}
+          <>{ar.end.iso8601duration}</>
         </span>
       );
     }
     case 'ontology_class':
+      // TODO: display with ontology class component
       return (element as TimeElementOntologyClass).ontology_class.label;
     case 'timestamp':
       return <span>{(element as TimeElementTimestamp).timestamp}</span>;
@@ -79,11 +74,13 @@ const InnerTimeElement = ({ type, element }: { type: TimeElementType; element: T
 };
 
 const TimeElementDisplay = memo(({ element }: { element?: TimeElement }) => {
+  const t = useTranslationFn();
+
   if (!element) {
     return EM_DASH;
   }
 
-  const [timeType, label] = getTimeElementTypeLabel(element);
+  const timeType = getTimeElementType(element);
 
   if (!timeType) {
     // Unexpected TimeElement type
@@ -93,7 +90,7 @@ const TimeElementDisplay = memo(({ element }: { element?: TimeElement }) => {
 
   return (
     <span>
-      <strong>{label}: </strong>
+      <strong>{t(`time.${timeType}`)}: </strong>
       <InnerTimeElement type={timeType} element={element} />
     </span>
   );
