@@ -58,7 +58,7 @@ export const getBeaconFilters = createAsyncThunk<
   },
   {
     condition(_, { getState }) {
-      return getState().metadata.selectedScope.scopeSet && getState().beacon.filtersStatus === RequestStatus.Idle;
+      return getState().metadata.selectedScope.scopeSet && getState().beacon.filtersStatus !== RequestStatus.Pending;
     },
   }
 );
