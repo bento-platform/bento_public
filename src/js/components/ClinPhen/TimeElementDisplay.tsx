@@ -31,9 +31,9 @@ export const TimeIntervalDisplay = ({ timeInterval, br }: { timeInterval: TimeIn
   const t = useTranslationFn();
   return (
     <span>
-      <strong>{t('time.start')}:</strong> <>{timeInterval.start}</>
+      <strong>{t('time.start')}:</strong> {timeInterval.start}
       {br ? <br /> : ' '}
-      <strong>{t('time.end')}:</strong> <>{timeInterval.end}</>
+      <strong>{t('time.end')}:</strong> {timeInterval.end}
     </span>
   );
 };
@@ -42,30 +42,30 @@ const InnerTimeElement = ({ type, element }: { type: TimeElementType; element: T
   const t = useTranslationFn();
   switch (type) {
     case 'age':
-      return <span>{(element as TimeElementAge).age.iso8601duration}</span>;
+      return (element as TimeElementAge).age.iso8601duration;
     case 'gestational_age': {
       const ga = (element as TimeElementGestationalAge).gestational_age;
       return (
-        <span>
+        <>
           <strong>{t('time.weeks')}:</strong> {ga.weeks}
           <strong>{t('time.days')}:</strong> {ga.days}
-        </span>
+        </>
       );
     }
     case 'age_range': {
       const ar = (element as TimeElementAgeRange).age_range;
       return (
-        <span>
-          <strong>{t('time.start')}:</strong> <>{ar.start.iso8601duration}</> <strong>{t('time.end')}:</strong>{' '}
-          <>{ar.end.iso8601duration}</>
-        </span>
+        <>
+          <strong>{t('time.start')}:</strong> {ar.start.iso8601duration} <strong>{t('time.end')}:</strong>{' '}
+          {ar.end.iso8601duration}
+        </>
       );
     }
     case 'ontology_class':
       // TODO: display with ontology class component
       return (element as TimeElementOntologyClass).ontology_class.label;
     case 'timestamp':
-      return <span>{(element as TimeElementTimestamp).timestamp}</span>;
+      return (element as TimeElementTimestamp).timestamp;
     case 'interval':
       return <TimeIntervalDisplay timeInterval={(element as TimeElementInterval).interval} />;
     default:
