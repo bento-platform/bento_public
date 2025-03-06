@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@/hooks';
-import { makeGetIndividualData } from '@/features/search/makeGetIndividualData.thunk';
-import { RequestStatus } from '@/types/requests';
+import { makeGetIndividualData } from './makeGetIndividualData.thunk';
 
 export const useSearchQuery = () => useAppSelector((state) => state.query);
 
@@ -12,11 +11,8 @@ export const useIndividualData = (id: string) => {
     dispatch(makeGetIndividualData(id));
   }, [dispatch, id]);
 
-  const individualData = useAppSelector((state) => state.query.individualDataCache[id]);
-  return individualData;
-};
+  const data = useAppSelector((state) => state.query.individualDataCache[id]);
+  const status = useAppSelector((state) => state.query.individualDataStatus[id]);
 
-export const useIsFetchingIndividualData = (id: string) => {
-  const individualDataStatus = useAppSelector((state) => state.query.individualDataStatus[id]);
-  return individualDataStatus === RequestStatus.Pending;
+  return { data, status };
 };
