@@ -1,4 +1,5 @@
-import type { OntologyTerm, TimeElement } from './shared';
+import type { TimeElement } from './shared';
+import type { OntologyTerm } from '../ontology';
 import type { PhenotypicFeature } from './phenotypic_feature';
 import type { Measurement } from './measurement';
 import type { Procedure } from './procedure';

@@ -2,7 +2,8 @@
  * Represents demographic information about an individual (patient).
  */
 
-import type { OntologyTerm, TimeElement } from './shared';
+import type { TimeElement } from './shared';
+import type { OntologyTerm } from '../ontology';
 import type { Biosample } from '@/types/clinphen/biosample';
 import type { Phenopacket } from '@/types/clinphen/phenopacket';
 import type { TimestampedEntity } from '@/types/util';

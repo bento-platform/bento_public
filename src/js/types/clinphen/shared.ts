@@ -1,11 +1,4 @@
-/**
- * Shared types and constants used across multiple models.
- */
-
-export interface OntologyTerm {
-  id: string;
-  label: string;
-}
+import type { OntologyTerm } from '../ontology';
 
 export type TimeElementGestationalAge = { gestational_age: GestationalAge };
 export type TimeElementAge = { age: Age };

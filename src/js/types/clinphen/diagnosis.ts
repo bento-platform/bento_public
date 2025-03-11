@@ -2,7 +2,7 @@
  * Represents a disease diagnosis.
  */
 
-import type { OntologyTerm } from './shared';
+import type { OntologyTerm } from '../ontology';
 import type { GenomicInterpretation } from './genomic_interpretation';
 import type { TimestampedEntity } from '@/types/util';
 

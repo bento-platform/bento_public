@@ -1,4 +1,5 @@
-import type { OntologyTerm, TimeElement } from './shared';
+import type { TimeElement } from './shared';
+import type { OntologyTerm } from '../ontology';
 
 /**
  * Represents a medical procedure performed on a patient or biosample.

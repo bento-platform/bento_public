@@ -2,7 +2,8 @@
  * Represents a variation descriptor.
  */
 import type { GeneDescriptor } from './gene_descriptor';
-import type { Extension, OntologyTerm } from './shared';
+import type { Extension } from './shared';
+import type { OntologyTerm } from '../ontology';
 import type { AbsoluteCopyNumber, Allele, Expression, VcfRecord } from './vrs';
 import type { TimestampedEntity } from '@/types/util';
 

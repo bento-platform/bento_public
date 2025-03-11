@@ -1,4 +1,5 @@
-import type { OntologyTerm, TimeElement } from './shared';
+import type { TimeElement } from './shared';
+import type { OntologyTerm } from '../ontology';
 import type { Procedure } from './procedure';
 import type { TimestampedEntity } from '@/types/util';
 

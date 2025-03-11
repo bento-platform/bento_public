@@ -1,4 +1,5 @@
-import type { ExternalReference, OntologyTerm, TimeElement, TimeInterval } from './shared';
+import type { ExternalReference, TimeElement, TimeInterval } from './shared';
+import type { OntologyTerm } from '../ontology';
 import type { Procedure } from './procedure';
 import type { Quantity } from './measurement';
 

@@ -1,7 +1,8 @@
 /**
  * Represents a phenotypic feature of an individual or biosample.
  */
-import type { Evidence, OntologyTerm, TimeElement } from './shared';
+import type { Evidence, TimeElement } from './shared';
+import type { OntologyTerm } from '../ontology';
 import type { TimestampedEntity } from '@/types/util';
 
 export interface PhenotypicFeature extends TimestampedEntity {

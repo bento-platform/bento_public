@@ -2,7 +2,8 @@
  * Represents a diagnosis and inference about the cause of observed phenotypic abnormalities.
  */
 
-import type { OntologyTerm, TimeElement } from './shared';
+import type { TimeElement } from './shared';
+import type { OntologyTerm } from '../ontology';
 import type { TimestampedEntity } from '@/types/util';
 
 export interface Disease extends TimestampedEntity {
