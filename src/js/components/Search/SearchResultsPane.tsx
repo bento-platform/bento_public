@@ -1,17 +1,18 @@
 import { type ReactElement, useCallback, useMemo, useState } from 'react';
-import { Button, Card, Col, Collapse, Pagination, Row, Typography } from 'antd';
+import { Button, Card, Col, Pagination, Row, Table, type TableColumnsType, Typography } from 'antd';
 import { ExportOutlined, LeftOutlined } from '@ant-design/icons';
 import { PieChart } from 'bento-charts';
+
+import { PORTAL_URL } from '@/config';
 import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { BOX_SHADOW, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
 import { useTranslationFn } from '@/hooks';
 import type { DiscoveryResults } from '@/types/data';
 import type { SearchResultsUIPane } from '@/types/search';
 
-import CustomEmpty from '../Util/CustomEmpty';
 import SearchResultsCounts from './SearchResultsCounts';
-import IndividualsAccordionPane from '@/components/Search/IndividualsAccordionPane';
-import { PORTAL_URL } from '@/config';
+import IndividualRowDetail from '@/components/Search/IndividualRowDetail';
+import CustomEmpty from '@/components/Util/CustomEmpty';
 
 const INDIVIDUALS_PER_PAGE = 10;
 
@@ -23,18 +24,23 @@ const chunkArray = (arr: string[], size: number) => {
   return result;
 };
 
-const IndividualPortalLink = ({ id }: { id: string }) => (
+type IndividualIdObject = { id: string };
+
+const IndividualPortalLink = ({ id }: IndividualIdObject) => (
   <a href={`${PORTAL_URL}/data/explorer/individuals/${id}`} target="_blank" rel="noreferrer">
     <ExportOutlined />
   </a>
 );
 
-const createIndividualPanel = (id: string) => ({
-  key: id,
-  label: id,
-  children: <IndividualsAccordionPane id={id} />,
-  extra: <IndividualPortalLink id={id} />,
-});
+const INDIVIDUAL_COLUMNS: TableColumnsType<IndividualIdObject> = [
+  { dataIndex: 'id', title: 'ID' },
+  {
+    title: '',
+    key: 'actions',
+    width: 32,
+    render: ({ id }) => <IndividualPortalLink id={id} />,
+  },
+];
 
 const SearchResultsPane = ({
   isFetchingData,
@@ -124,7 +130,17 @@ const SearchResultsPane = ({
               >
                 {t('Charts')}
               </Button>
-              <Collapse items={chunkedIndividualMatches[individualPage - 1].map(createIndividualPanel)} />
+              <Table<IndividualIdObject>
+                bordered={true}
+                size="small"
+                pagination={false}
+                columns={INDIVIDUAL_COLUMNS}
+                dataSource={chunkedIndividualMatches[individualPage - 1].map((id) => ({ id }))}
+                rowKey="id"
+                expandable={{
+                  expandedRowRender: (rec) => <IndividualRowDetail id={rec.id} />,
+                }}
+              />
               <Pagination
                 current={individualPage}
                 onChange={setIndividualPage}
@@ -134,7 +150,7 @@ const SearchResultsPane = ({
                   setIndividualSize(ps);
                 }}
                 showSizeChanger
-                align="center"
+                align="end"
                 style={{ marginTop: '16px' }}
               />
             </Col>

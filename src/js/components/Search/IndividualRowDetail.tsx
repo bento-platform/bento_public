@@ -9,7 +9,7 @@ import { EM_DASH } from '@/constants/contentConstants';
 import { useIndividualData } from '@/features/search/hooks';
 import { RequestStatus } from '@/types/requests';
 
-const IndividualsAccordionPane = ({ id }: { id: string }) => {
+const IndividualRowDetail = ({ id }: { id: string }) => {
   const t = useTranslationFn();
 
   const { data: individualData, status: individualDataStatus } = useIndividualData(id);
@@ -52,4 +52,4 @@ const IndividualsAccordionPane = ({ id }: { id: string }) => {
   return isFetchingIndividualData ? <Skeleton active /> : <Descriptions items={items} />;
 };
 
-export default IndividualsAccordionPane;
+export default IndividualRowDetail;
