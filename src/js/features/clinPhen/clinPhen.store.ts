@@ -16,7 +16,12 @@ const initialState: ClinPhenState = {
 const clinPhen = createSlice({
   name: 'clinPhen',
   initialState,
-  reducers: {},
+  reducers: {
+    clearIndividualCache: (state) => {
+      state.individualDataStatus = {};
+      state.individualDataCache = {};
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(makeGetIndividualData.pending, (state, { meta }) => {
       const id = meta.arg;
@@ -34,4 +39,5 @@ const clinPhen = createSlice({
   },
 });
 
+export const { clearIndividualCache } = clinPhen.actions;
 export default clinPhen.reducer;
