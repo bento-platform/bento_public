@@ -148,8 +148,7 @@
     "time_at_last_encounter": "Time at Last Encounter",
     "karyotypic_sex": "Karyotypic Sex",
     "taxonomy": "Taxonomy",
-    "extra_properties": "Extra Properties",
-    "unknown_karyotypic_sex": "UNKNOWN_KARYOTYPE"
+    "extra_properties": "Extra Properties"
   },
   "time": {
     "start": "Start",

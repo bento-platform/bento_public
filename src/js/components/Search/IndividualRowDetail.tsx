@@ -16,22 +16,32 @@ const IndividualRowDetail = ({ id }: { id: string }) => {
   const isFetchingIndividualData = individualDataStatus === RequestStatus.Pending;
 
   const items: DescriptionsProps['items'] = [
-    {
-      label: t('individual.date_of_birth'),
-      children: individualData?.date_of_birth || EM_DASH,
-      span: 2,
-    },
+    // Most individuals in production won't have date of birth, so don't show it if it's blank
+    ...(individualData?.date_of_birth
+      ? [
+          {
+            label: t('individual.date_of_birth'),
+            children: individualData?.date_of_birth || EM_DASH,
+            span: 2,
+          },
+        ]
+      : []),
     {
       label: t('individual.sex'),
       children: t(individualData?.sex ?? 'UNKNOWN_SEX'),
     },
+    // Most individuals in production won't have karyotypic sex, so don't show it if it's blank
+    ...(individualData?.karyotypic_sex
+      ? [
+          {
+            label: t('individual.karyotypic_sex'),
+            children: individualData.karyotypic_sex,
+          },
+        ]
+      : []),
     {
       label: t('individual.time_at_last_encounter'),
       children: <TimeElementDisplay element={individualData?.time_at_last_encounter} />,
-    },
-    {
-      label: t('individual.karyotypic_sex'),
-      children: individualData?.karyotypic_sex || t('individual.unknown_karyotypic_sex'),
     },
     {
       label: t('individual.taxonomy'),

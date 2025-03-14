@@ -148,8 +148,7 @@
     "time_at_last_encounter": "Temps à l'encontre",
     "karyotypic_sex": "Sexe karyotypique",
     "taxonomy": "Taxonomie",
-    "extra_properties": "Propriétés supplémentaires",
-    "unknown_karyotypic_sex": "SEXE_KARYOTYPE_INDIFFERENT"
+    "extra_properties": "Propriétés supplémentaires"
   },
   "time": {
     "start": "Début",
