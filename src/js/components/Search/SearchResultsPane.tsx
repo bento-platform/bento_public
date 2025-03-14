@@ -14,21 +14,21 @@ import SearchResultsCounts from './SearchResultsCounts';
 import IndividualRowDetail from '@/components/Search/IndividualRowDetail';
 import CustomEmpty from '@/components/Util/CustomEmpty';
 
-type IndividualIdObject = { id: string };
+type IndividualResultRow = { id: string };
 
-const IndividualPortalLink = ({ id }: IndividualIdObject) => (
+const IndividualPortalLink = ({ id }: IndividualResultRow) => (
   <a href={`${PORTAL_URL}/data/explorer/individuals/${id}`} target="_blank" rel="noreferrer">
     <ExportOutlined />
   </a>
 );
 
-const INDIVIDUAL_PAGINATION: TableProps<IndividualIdObject>['pagination'] = {
+const INDIVIDUAL_PAGINATION: TableProps<IndividualResultRow>['pagination'] = {
   align: 'end',
   size: 'default',
   showSizeChanger: true,
 };
 
-const INDIVIDUAL_EXPANDABLE: TableProps<IndividualIdObject>['expandable'] = {
+const INDIVIDUAL_EXPANDABLE: TableProps<IndividualResultRow>['expandable'] = {
   expandedRowRender: (rec) => <IndividualRowDetail id={rec.id} />,
 };
 
@@ -46,7 +46,7 @@ const SearchResultsPane = ({
 
   const [panePage, setPanePage] = useState<SearchResultsUIPane>('charts');
 
-  const columns: TableColumnsType<IndividualIdObject> = useMemo(
+  const individualTableColumns = useMemo<TableColumnsType<IndividualResultRow>>(
     () => [
       { dataIndex: 'id', title: 'ID' },
       // TODO: implement these when we have this information in search results:
@@ -134,11 +134,11 @@ const SearchResultsPane = ({
               >
                 {t('Charts')}
               </Button>
-              <Table<IndividualIdObject>
+              <Table<IndividualResultRow>
                 bordered={true}
                 size="small"
                 pagination={INDIVIDUAL_PAGINATION}
-                columns={columns}
+                columns={individualTableColumns}
                 dataSource={individualMatchesDataSource}
                 rowKey="id"
                 expandable={INDIVIDUAL_EXPANDABLE}
