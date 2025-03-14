@@ -63,7 +63,7 @@ const SearchResultsPane = ({
   );
 
   const { individualMatches, biosampleChartData, experimentChartData } = results;
-  const individualMatchesDataSource = useMemo(
+  const individualTableData = useMemo<IndividualResultRow[]>(
     () => (individualMatches ?? []).map((id) => ({ id })),
     [individualMatches]
   );
@@ -135,12 +135,12 @@ const SearchResultsPane = ({
                 {t('Charts')}
               </Button>
               <Table<IndividualResultRow>
+                columns={individualTableColumns}
+                dataSource={individualTableData}
+                rowKey="id"
                 bordered={true}
                 size="small"
                 pagination={INDIVIDUAL_PAGINATION}
-                columns={individualTableColumns}
-                dataSource={individualMatchesDataSource}
-                rowKey="id"
                 expandable={INDIVIDUAL_EXPANDABLE}
               />
             </Col>
