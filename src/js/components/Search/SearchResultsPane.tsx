@@ -1,5 +1,5 @@
 import { type ReactElement, useCallback, useMemo, useState } from 'react';
-import { Button, Card, Col, Pagination, Row, Table, type TableColumnsType, Typography } from 'antd';
+import { Button, Card, Col, Row, Table, type TableColumnsType, type TableProps, Typography } from 'antd';
 import { ExportOutlined, LeftOutlined } from '@ant-design/icons';
 import { PieChart } from 'bento-charts';
 
@@ -14,16 +14,6 @@ import SearchResultsCounts from './SearchResultsCounts';
 import IndividualRowDetail from '@/components/Search/IndividualRowDetail';
 import CustomEmpty from '@/components/Util/CustomEmpty';
 
-const INDIVIDUALS_PER_PAGE = 10;
-
-const chunkArray = (arr: string[], size: number) => {
-  const result = [];
-  for (let i = 0; i < arr.length; i += size) {
-    result.push(arr.slice(i, i + size));
-  }
-  return result;
-};
-
 type IndividualIdObject = { id: string };
 
 const IndividualPortalLink = ({ id }: IndividualIdObject) => (
@@ -32,15 +22,15 @@ const IndividualPortalLink = ({ id }: IndividualIdObject) => (
   </a>
 );
 
-const INDIVIDUAL_COLUMNS: TableColumnsType<IndividualIdObject> = [
-  { dataIndex: 'id', title: 'ID' },
-  {
-    title: '',
-    key: 'actions',
-    width: 32,
-    render: ({ id }) => <IndividualPortalLink id={id} />,
-  },
-];
+const INDIVIDUAL_PAGINATION: TableProps<IndividualIdObject>['pagination'] = {
+  align: 'end',
+  size: 'default',
+  showSizeChanger: true,
+};
+
+const INDIVIDUAL_EXPANDABLE: TableProps<IndividualIdObject>['expandable'] = {
+  expandedRowRender: (rec) => <IndividualRowDetail id={rec.id} />,
+};
 
 const SearchResultsPane = ({
   isFetchingData,
@@ -55,13 +45,27 @@ const SearchResultsPane = ({
   const translateMap = useCallback(({ x, y }: { x: string; y: number }) => ({ x: t(x), y }), [t]);
 
   const [panePage, setPanePage] = useState<SearchResultsUIPane>('charts');
-  const [individualPage, setIndividualPage] = useState<number>(1);
-  const [individualSize, setIndividualSize] = useState<number>(INDIVIDUALS_PER_PAGE);
+
+  const columns: TableColumnsType<IndividualIdObject> = useMemo(
+    () => [
+      { dataIndex: 'id', title: 'ID' },
+      // TODO: implement these when we have this information in search results:
+      // ...(!selectedScope.scope.project ? [{ title: 'Project', key: 'project' }] : []),
+      // ...(!selectedScope.scope.dataset ? [{ title: 'Dataset', key: 'dataset' }] : []),
+      {
+        title: '',
+        key: 'actions',
+        width: 32,
+        render: ({ id }) => <IndividualPortalLink id={id} />,
+      },
+    ],
+    []
+  );
 
   const { individualMatches, biosampleChartData, experimentChartData } = results;
-  const chunkedIndividualMatches = useMemo(
-    () => chunkArray(individualMatches ?? [], individualSize),
-    [individualMatches, individualSize]
+  const individualMatchesDataSource = useMemo(
+    () => (individualMatches ?? []).map((id) => ({ id })),
+    [individualMatches]
   );
 
   return (
@@ -133,25 +137,11 @@ const SearchResultsPane = ({
               <Table<IndividualIdObject>
                 bordered={true}
                 size="small"
-                pagination={false}
-                columns={INDIVIDUAL_COLUMNS}
-                dataSource={chunkedIndividualMatches[individualPage - 1].map((id) => ({ id }))}
+                pagination={INDIVIDUAL_PAGINATION}
+                columns={columns}
+                dataSource={individualMatchesDataSource}
                 rowKey="id"
-                expandable={{
-                  expandedRowRender: (rec) => <IndividualRowDetail id={rec.id} />,
-                }}
-              />
-              <Pagination
-                current={individualPage}
-                onChange={setIndividualPage}
-                total={individualMatches?.length}
-                pageSize={individualSize}
-                onShowSizeChange={(_, ps) => {
-                  setIndividualSize(ps);
-                }}
-                showSizeChanger
-                align="end"
-                style={{ marginTop: '16px' }}
+                expandable={INDIVIDUAL_EXPANDABLE}
               />
             </Col>
           )}
