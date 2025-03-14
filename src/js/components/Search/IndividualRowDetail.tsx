@@ -59,7 +59,11 @@ const IndividualRowDetail = ({ id }: { id: string }) => {
       : []),
   ];
 
-  return isFetchingIndividualData ? <Skeleton active /> : <Descriptions items={items} />;
+  return isFetchingIndividualData ? (
+    <Skeleton active title={false} paragraph={{ rows: 3 }} />
+  ) : (
+    <Descriptions items={items} />
+  );
 };
 
 export default IndividualRowDetail;
