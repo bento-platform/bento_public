@@ -4,8 +4,8 @@
 
 import type { TimeElement } from './shared';
 import type { OntologyTerm } from '../ontology';
-import type { Biosample } from '@/types/clinphen/biosample';
-import type { Phenopacket } from '@/types/clinphen/phenopacket';
+import type { Biosample } from '@/types/clinPhen/biosample';
+import type { Phenopacket } from '@/types/clinPhen/phenopacket';
 import type { TimestampedEntity } from '@/types/util';
 
 export enum Sex {

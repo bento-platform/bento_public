@@ -6,7 +6,7 @@ import TimeElementDisplay from '@/components/ClinPhen/TimeElementDisplay';
 import JsonView from '@/components/Util/JsonView';
 
 import { EM_DASH } from '@/constants/contentConstants';
-import { useIndividualData } from '@/features/search/hooks';
+import { useIndividualData } from '@/features/clinPhen/hooks';
 import { RequestStatus } from '@/types/requests';
 
 const IndividualRowDetail = ({ id }: { id: string }) => {

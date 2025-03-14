@@ -10,7 +10,7 @@ import type {
   TimeElementOntologyClass,
   TimeElementTimestamp,
   TimeInterval,
-} from '@/types/clinphen/shared';
+} from '@/types/clinPhen/shared';
 import { useTranslationFn } from '@/hooks';
 
 type TimeElementType = 'age' | 'gestational_age' | 'age_range' | 'ontology_class' | 'timestamp' | 'interval';

@@ -8,36 +8,29 @@ import { serializeChartData } from '@/utils/chart';
 
 import { makeGetKatsuPublic } from './makeGetKatsuPublic.thunk';
 import { makeGetSearchFields } from './makeGetSearchFields.thunk';
-import { makeGetIndividualData } from './makeGetIndividualData.thunk';
-import type { Individual } from '@/types/clinphen/individual';
-import { RequestStatus } from '@/types/requests';
 
 export type QueryState = {
   isFetchingFields: boolean;
   attemptedFieldsFetch: boolean;
   isFetchingData: boolean;
-  individualDataStatus: { [key: string]: RequestStatus };
   attemptedFetch: boolean;
   querySections: SearchFieldResponse['sections'];
   queryParams: { [key: string]: string };
   queryParamCount: number;
   message: string;
   results: DiscoveryResults;
-  individualDataCache: { [key: string]: Individual };
 };
 
 const initialState: QueryState = {
   isFetchingFields: false,
   attemptedFieldsFetch: false,
   isFetchingData: false,
-  individualDataStatus: {},
   attemptedFetch: false,
   message: '',
   querySections: [],
   queryParams: {},
   queryParamCount: 0,
   results: EMPTY_DISCOVERY_RESULTS,
-  individualDataCache: {},
 };
 
 const query = createSlice({
@@ -72,9 +65,6 @@ const query = createSlice({
         individualCount: payload.count,
         individualMatches: payload.matches, // Undefined if no permissions
       };
-      state.individualDataStatus = {};
-      state.individualDataCache = {};
-      payload.matches?.forEach((ind) => (state.individualDataStatus[ind] = RequestStatus.Idle));
     });
     builder.addCase(makeGetKatsuPublic.rejected, (state) => {
       state.isFetchingData = false;
@@ -91,19 +81,6 @@ const query = createSlice({
     builder.addCase(makeGetSearchFields.rejected, (state) => {
       state.isFetchingFields = false;
       state.attemptedFieldsFetch = true;
-    });
-    builder.addCase(makeGetIndividualData.pending, (state, { meta }) => {
-      const id = meta.arg;
-      state.individualDataStatus[id] = RequestStatus.Pending;
-    });
-    builder.addCase(makeGetIndividualData.fulfilled, (state, { payload, meta }) => {
-      const id = meta.arg;
-      state.individualDataCache[id] = payload;
-      state.individualDataStatus[id] = RequestStatus.Fulfilled;
-    });
-    builder.addCase(makeGetIndividualData.rejected, (state, { meta }) => {
-      const id = meta.arg;
-      state.individualDataStatus[id] = RequestStatus.Rejected;
     });
   },
 });

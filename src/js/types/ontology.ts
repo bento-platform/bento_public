@@ -1,4 +1,4 @@
-export interface OntologyTerm {
+export type OntologyTerm = {
   id: string;
   label: string;
-}
+};
