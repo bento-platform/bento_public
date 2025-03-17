@@ -2,7 +2,7 @@ import type { GeoLocation } from '@/types/geo';
 import type { OntologyTerm } from '@/types/ontology';
 import type { ExtraPropertiesEntity, TimestampedEntity } from '@/types/util';
 import type { TimeElement } from './shared';
-import type { PhenotypicFeature } from './phenotypic_feature';
+import type { PhenotypicFeature } from './phenotypicFeature';
 import type { Measurement } from './measurement';
 import type { Procedure } from './procedure';
 import type { File } from './file';

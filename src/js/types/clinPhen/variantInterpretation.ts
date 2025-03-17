@@ -2,7 +2,7 @@
  * Represents the interpretation of a variant.
  */
 
-import type { VariationDescriptor } from './variation_descriptor';
+import type { VariationDescriptor } from './variationDescriptor';
 import type { TimestampedEntity } from '@/types/util';
 
 export enum AcmgPathogenicityClassification {

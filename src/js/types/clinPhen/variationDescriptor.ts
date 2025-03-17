@@ -1,7 +1,7 @@
 /**
  * Represents a variation descriptor.
  */
-import type { GeneDescriptor } from './gene_descriptor';
+import type { GeneDescriptor } from './geneDescriptor';
 import type { Extension } from './shared';
 import type { OntologyTerm } from '../ontology';
 import type { AbsoluteCopyNumber, Allele, Expression, VcfRecord } from './vrs';

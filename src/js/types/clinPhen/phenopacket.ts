@@ -7,9 +7,9 @@ import type { Individual } from './individual';
 import type { Biosample } from './biosample';
 import type { Interpretation } from './interpretation';
 import type { Disease } from './disease';
-import type { PhenotypicFeature } from './phenotypic_feature';
+import type { PhenotypicFeature } from './phenotypicFeature';
 import type { Measurement } from './measurement';
-import type { MetaData } from './meta_data';
+import type { MetaData } from './metaData';
 import type { MedicalActionWrapper } from './medical_action';
 import type { File } from './file';
 
