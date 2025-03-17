@@ -4,7 +4,7 @@
 
 import type { GeneDescriptor } from './gene_descriptor';
 import type { VariantInterpretation } from './variant_interpretation';
-import type { TimestampedEntity } from '@/types/util';
+import type { ExtraPropertiesEntity, TimestampedEntity } from '@/types/util';
 
 export enum GenomicInterpretationStatus {
   UNKNOWN_STATUS = 'UNKNOWN_STATUS',
@@ -14,10 +14,9 @@ export enum GenomicInterpretationStatus {
   CAUSATIVE = 'CAUSATIVE',
 }
 
-export interface GenomicInterpretation extends TimestampedEntity {
+export interface GenomicInterpretation extends ExtraPropertiesEntity, TimestampedEntity {
   subject_or_biosample_id: string; // Can be Individual.id or Biosample.id
   interpretation_status?: GenomicInterpretationStatus;
   gene_descriptor?: GeneDescriptor;
   variant_interpretation?: VariantInterpretation;
-  extra_properties?: Record<string, string | number | boolean>;
 }

@@ -1,12 +1,13 @@
+import type { GeoLocation } from '@/types/geo';
+import type { OntologyTerm } from '@/types/ontology';
+import type { ExtraPropertiesEntity, TimestampedEntity } from '@/types/util';
 import type { TimeElement } from './shared';
-import type { OntologyTerm } from '../ontology';
 import type { PhenotypicFeature } from './phenotypic_feature';
 import type { Measurement } from './measurement';
 import type { Procedure } from './procedure';
 import type { File } from './file';
-import type { TimestampedEntity } from '@/types/util';
 
-export interface Biosample extends TimestampedEntity {
+export interface Biosample extends ExtraPropertiesEntity, TimestampedEntity {
   id: string;
   individual_id?: string;
   derived_from_id?: string;
@@ -17,6 +18,7 @@ export interface Biosample extends TimestampedEntity {
   measurements?: Measurement[];
   taxonomy?: OntologyTerm;
   time_of_collection?: TimeElement;
+  location_collected?: GeoLocation;
   histological_diagnosis?: OntologyTerm;
   tumor_progression?: OntologyTerm;
   tumor_grade?: OntologyTerm;
@@ -29,5 +31,4 @@ export interface Biosample extends TimestampedEntity {
   sample_processing?: OntologyTerm;
   sample_storage?: OntologyTerm;
   is_control_sample?: boolean;
-  extra_properties?: Record<string, string | number | boolean>;
 }

@@ -3,7 +3,7 @@
  */
 
 import type { Diagnosis } from './diagnosis';
-import type { TimestampedEntity } from '@/types/util';
+import type { ExtraPropertiesEntity, TimestampedEntity } from '@/types/util';
 
 export enum ProgressStatus {
   UNKNOWN_PROGRESS = 'UNKNOWN_PROGRESS',
@@ -13,10 +13,9 @@ export enum ProgressStatus {
   UNSOLVED = 'UNSOLVED',
 }
 
-export interface Interpretation extends TimestampedEntity {
+export interface Interpretation extends ExtraPropertiesEntity, TimestampedEntity {
   id: string;
   progress_status?: ProgressStatus;
   diagnosis?: Diagnosis;
   summary?: string;
-  extra_properties?: Record<string, string | number | boolean>;
 }

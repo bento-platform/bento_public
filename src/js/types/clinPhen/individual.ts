@@ -2,11 +2,11 @@
  * Represents demographic information about an individual (patient).
  */
 
-import type { TimeElement } from './shared';
-import type { OntologyTerm } from '../ontology';
 import type { Biosample } from '@/types/clinPhen/biosample';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
-import type { TimestampedEntity } from '@/types/util';
+import type { OntologyTerm } from '@/types/ontology';
+import type { ExtraPropertiesEntity, TimestampedEntity } from '@/types/util';
+import type { TimeElement } from './shared';
 
 export enum Sex {
   UNKNOWN_SEX = 'UNKNOWN_SEX',
@@ -36,19 +36,22 @@ export interface VitalStatus {
   survival_time_in_days?: number;
 }
 
-export interface Individual extends TimestampedEntity {
+export interface Individual extends ExtraPropertiesEntity, TimestampedEntity {
   id: string;
   alternate_ids?: string[];
   date_of_birth?: string; // Date
-  age_numeric?: number;
-  age_unit?: string;
+  age_numeric?: number; // Non-standard Bento field
+  age_unit?: string; // Non-standard Bento field
   time_at_last_encounter?: TimeElement;
   vital_status?: VitalStatus;
   sex?: Sex;
   karyotypic_sex?: KaryotypicSex;
   taxonomy?: OntologyTerm;
   gender?: OntologyTerm;
-  biosamples: Biosample[];
-  phenopackets: Phenopacket[];
-  extra_properties?: Record<string, string | number | boolean>;
+  // Non-standard: individuals from Katsu can list their corresponding biosamples. Normally should be accessed through
+  // Phenopackets.
+  biosamples?: Biosample[];
+  // Non-standard: individuals from Katsu can have nested biosamples (inverted relationship from the Phenopackets
+  // standard).
+  phenopackets?: Phenopacket[];
 }

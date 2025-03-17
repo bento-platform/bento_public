@@ -1,14 +1,13 @@
 /**
  * Represents a gene descriptor.
  */
-import type { TimestampedEntity } from '@/types/util';
+import type { ExtraPropertiesEntity, TimestampedEntity } from '@/types/util';
 
-export interface GeneDescriptor extends TimestampedEntity {
+export interface GeneDescriptor extends ExtraPropertiesEntity, TimestampedEntity {
   value_id: string;
   symbol: string;
   description?: string;
   alternate_ids?: string[];
   xrefs?: string[];
   alternate_symbols?: string[];
-  extra_properties?: Record<string, string | number | boolean>;
 }
