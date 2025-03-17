@@ -9,7 +9,8 @@ import { RESOURCE_EVERYTHING, queryData, useHasResourcePermission } from 'bento-
 import type { RootState, AppDispatch } from '@/store';
 import { CUSTOMIZABLE_TRANSLATION } from '@/constants/configConstants';
 import type { NamespaceTranslationFunction } from '@/types/translation';
-import { setMaxQueryParametersRequired } from '@/features/config//config.store';
+import { setMaxQueryParametersRequired } from '@/features/config/config.store';
+import { useSelectedScopeAsResource } from '@/features/metadata/hooks';
 import { CHART_WIDTH, GRID_GAP } from '@/constants/overviewConstants';
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
@@ -36,6 +37,11 @@ export const useHasResourcePermissionWrapper = (resource: Resource, permission: 
     fetchingPermission,
     hasPermission,
   };
+};
+
+export const useHasScopePermission = (permission: string) => {
+  const scopeResource = useSelectedScopeAsResource();
+  return useHasResourcePermissionWrapper(scopeResource, permission);
 };
 
 export const useQueryWithAuthIfAllowed = () => {
