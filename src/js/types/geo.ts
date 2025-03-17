@@ -1,3 +1,5 @@
+import type { JSONType } from '@/types/json';
+
 type GeoGeometry = {
   type: 'Point';
   coordinates: [number, number] | [number, number, number];
@@ -14,5 +16,5 @@ export type GeoLocation = {
     country?: string;
     ISO3166alpha3?: string;
     precision?: string;
-  } & Record<string, string>;
+  } & JSONType;
 };
