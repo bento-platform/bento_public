@@ -48,11 +48,9 @@ export const getBeaconFilters = createAsyncThunk<
 >(
   'beacon/getBeaconFilters',
   (_, { getState, rejectWithValue }) => {
-    const projectId = getState().metadata.selectedScope.scope.project;
-    const datasetId = getState().metadata.selectedScope.scope.dataset;
-
+    const { project, dataset } = getState().metadata.selectedScope.scope;
     return axios
-      .get(scopedBeaconFilteringTermsUrl(projectId, datasetId), authorizedRequestConfig(getState()))
+      .get(scopedBeaconFilteringTermsUrl(project, dataset), authorizedRequestConfig(getState()))
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue));
   },
