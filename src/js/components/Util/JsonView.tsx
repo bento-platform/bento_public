@@ -4,7 +4,7 @@ import type { JSONType } from '@/types/json';
 
 /*
  * This component is more-or-less a duplicate of the one found in Bento Web. As we move data exploration code to
- * Bento Public, the code in Bento Web will eventually be removed.
+ * Bento Public, the code in Bento Web will eventually be removed or put in a shared library.
  */
 
 // Styles for this component are set in the Bento Public styles.css right now
