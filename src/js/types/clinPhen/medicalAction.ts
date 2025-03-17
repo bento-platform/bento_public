@@ -32,14 +32,14 @@ export interface TherapeuticRegimen {
   external_reference?: ExternalReference;
 }
 
-export type MedicalAction = Procedure | Treatment | RadiationTherapy | TherapeuticRegimen;
-
-export interface MedicalActionWrapper {
+export interface MedicalAction {
   treatment_target?: OntologyTerm;
   treatment_intent?: OntologyTerm;
   response_to_treatment?: OntologyTerm;
   adverse_events?: OntologyTerm[];
   treatment_termination_reason?: OntologyTerm;
+  // Defined badly in https://phenopacket-schema.readthedocs.io/en/latest/medical-action.html - per Victor, these
+  // oneOf-type fields in their documentation are wrong and should be structured like this:
   procedure?: Procedure;
   treatment?: Treatment;
   radiation_therapy?: RadiationTherapy;

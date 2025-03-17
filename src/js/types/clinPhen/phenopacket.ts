@@ -10,7 +10,7 @@ import type { Disease } from './disease';
 import type { PhenotypicFeature } from './phenotypicFeature';
 import type { Measurement } from './measurement';
 import type { MetaData } from './metaData';
-import type { MedicalActionWrapper } from './medical_action';
+import type { MedicalAction } from './medicalAction';
 import type { File } from './file';
 
 export interface Phenopacket extends ExtraPropertiesEntity, TimestampedEntity {
@@ -21,7 +21,7 @@ export interface Phenopacket extends ExtraPropertiesEntity, TimestampedEntity {
   biosamples?: Biosample[];
   interpretations?: Interpretation[];
   diseases?: Disease[];
-  medical_actions?: MedicalActionWrapper[];
+  medical_actions?: MedicalAction[];
   files?: File[];
   meta_data: MetaData;
 }
