@@ -13,6 +13,12 @@ import type {
 } from '@/types/clinPhen/shared';
 import { useTranslationFn } from '@/hooks';
 
+/*
+ * This component is more-or-less a duplicate of the one found in Bento Web, but with some tweaks and an omission
+ * (ontology term display, for now) for Bento Public. As we move data exploration code to Bento Public, the code in
+ * Bento Web will eventually be removed.
+ */
+
 type TimeElementType = 'age' | 'gestational_age' | 'age_range' | 'ontology_class' | 'timestamp' | 'interval';
 const TIME_ELEMENT_TYPES = ['age', 'gestational_age', 'age_range', 'ontology_class', 'timestamp', 'interval'];
 
