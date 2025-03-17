@@ -7,6 +7,7 @@ import { EMPTY_DISCOVERY_RESULTS } from '@/constants/searchConstants';
 import { BEACON_INDIVIDUALS_PATH } from '@/features/beacon/constants';
 import type {
   BeaconAssemblyIds,
+  BeaconFilterSection,
   BeaconQueryPayload,
   BeaconQueryResponse,
   FlattenedBeaconResponse,
@@ -14,10 +15,15 @@ import type {
 import type { NetworkBeacon, BeaconNetworkConfig, QueryToNetworkBeacon } from '@/types/beaconNetwork';
 import type { AppDispatch, RootState } from '@/store';
 import type { DiscoveryResults } from '@/types/data';
-import type { Section } from '@/types/search';
 import { beaconApiError, errorMsgOrDefault } from '@/utils/beaconApiError';
 
-import { computeNetworkResults, extractBeaconDiscoveryOverview, networkAssemblyIds, networkQueryUrl } from './utils';
+import {
+  computeNetworkResults,
+  extractBeaconDiscoveryOverview,
+  networkAssemblyIds,
+  networkQueryUrl,
+  packageBeaconNetworkQuerySections,
+} from './utils';
 
 // can parameterize at some point in the future
 const DEFAULT_QUERY_ENDPOINT = BEACON_INDIVIDUALS_PATH;
@@ -83,10 +89,10 @@ type BeaconNetworkConfigState = {
   isFetchingBeaconNetworkConfig: boolean;
   hasBeaconNetworkError: boolean;
   assemblyIds: BeaconAssemblyIds;
-  querySectionsUnion: Section[];
-  querySectionsIntersection: Section[];
-  isQuerySectionsUnion: boolean; // horrible English
-  currentQuerySections: Section[];
+  filtersUnion: BeaconFilterSection[];
+  filtersIntersection: BeaconFilterSection[];
+  isFiltersUnion: boolean; // horrible English
+  currentFilters: BeaconFilterSection[];
   beacons: NetworkBeacon[];
 
   // querying
@@ -100,10 +106,10 @@ const initialState: BeaconNetworkConfigState = {
   // config
   isFetchingBeaconNetworkConfig: false,
   hasBeaconNetworkError: false,
-  querySectionsUnion: [],
-  querySectionsIntersection: [],
-  isQuerySectionsUnion: true,
-  currentQuerySections: [],
+  filtersUnion: [],
+  filtersIntersection: [],
+  isFiltersUnion: true,
+  currentFilters: [],
   assemblyIds: [],
   beacons: [],
 
@@ -118,10 +124,8 @@ const beaconNetwork = createSlice({
   reducers: {
     toggleQuerySectionsUnionOrIntersection(state) {
       // update, then set boolean
-      state.currentQuerySections = state.isQuerySectionsUnion
-        ? state.querySectionsIntersection
-        : state.querySectionsUnion;
-      state.isQuerySectionsUnion = !state.isQuerySectionsUnion;
+      state.currentFilters = state.isFiltersUnion ? state.filtersIntersection : state.filtersUnion;
+      state.isFiltersUnion = !state.isFiltersUnion;
     },
   },
   extraReducers: (builder) => {
@@ -130,11 +134,12 @@ const beaconNetwork = createSlice({
       state.isFetchingBeaconNetworkConfig = true;
     });
     builder.addCase(getBeaconNetworkConfig.fulfilled, (state, { payload }) => {
+      const allFilters = packageBeaconNetworkQuerySections(payload.filtersUnion);
       state.isFetchingBeaconNetworkConfig = false;
       state.beacons = payload.beacons;
-      state.querySectionsUnion = payload.filtersUnion;
-      state.querySectionsIntersection = payload.filtersIntersection;
-      state.currentQuerySections = payload.filtersUnion;
+      state.filtersUnion = allFilters;
+      state.filtersIntersection = packageBeaconNetworkQuerySections(payload.filtersIntersection);
+      state.currentFilters = allFilters;
       state.assemblyIds = networkAssemblyIds(payload.beacons);
     });
     builder.addCase(getBeaconNetworkConfig.rejected, (state) => {

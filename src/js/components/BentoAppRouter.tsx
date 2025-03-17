@@ -5,7 +5,7 @@ import { useAppDispatch } from '@/hooks';
 
 import { invalidateConfig, makeGetServiceInfoRequest } from '@/features/config/config.store';
 import { makeGetAboutRequest } from '@/features/content/content.store';
-import { getBeaconConfig } from '@/features/beacon/beacon.store';
+import { getBeaconConfig, getBeaconFilters } from '@/features/beacon/beacon.store';
 import { getBeaconNetworkConfig } from '@/features/beacon/network.store';
 import { fetchGohanData, fetchKatsuData } from '@/features/ingestion/lastIngestion.store';
 import { invalidateData } from '@/features/data/data.store';
@@ -17,7 +17,7 @@ import { makeGetKatsuPublic, makeGetSearchFields } from '@/features/search/query
 
 import Loader from '@/components/Loader';
 import DefaultLayout from '@/components/Util/DefaultLayout';
-import { BEACON_NETWORK_ENABLED } from '@/config';
+import { BEACON_UI_ENABLED, BEACON_NETWORK_ENABLED } from '@/config';
 import { WAITING_STATES } from '@/constants/requests';
 import { RequestStatus } from '@/types/requests';
 import { BentoRoute } from '@/types/routes';
@@ -102,10 +102,14 @@ const BentoAppRouter = () => {
 
   useEffect(() => {
     if (!scopeSet) return;
-    dispatch(getBeaconConfig());
     dispatch(makeGetSearchFields());
     dispatch(makeGetKatsuPublic());
     dispatch(fetchKatsuData());
+
+    if (BEACON_UI_ENABLED) {
+      dispatch(getBeaconConfig());
+      dispatch(getBeaconFilters());
+    }
 
     // If scope or authorization status changed, invalidate anything which is scope/authz-contextual and uses a
     // lazy-loading-style hook for data fetching:

@@ -13,12 +13,12 @@ import type {
   BeaconAssemblyIds,
   BeaconQueryPayload,
   BeaconQueryAction,
+  BeaconFilterSection,
   FormFilter,
   FormValues,
-  PayloadFilter,
+  BeaconPayloadFilter,
   PayloadVariantsQuery,
 } from '@/types/beacon';
-import type { Section } from '@/types/search';
 import { BOX_SHADOW } from '@/constants/overviewConstants';
 import {
   FORM_ROW_GUTTERS,
@@ -39,9 +39,9 @@ const BeaconQueryFormUi = ({
   isFetchingQueryResponse, //used in local beacon only
   isNetworkQuery,
   beaconAssemblyIds,
-  querySections,
   launchQuery,
   apiErrorMessage,
+  beaconFiltersBySection,
 }: BeaconQueryFormUiProps) => {
   const t = useTranslationFn();
   const [form] = Form.useForm();
@@ -70,7 +70,7 @@ const BeaconQueryFormUi = ({
   const showError = hasError && !errorAlertClosed;
 
   const requestPayload = useCallback(
-    (query: PayloadVariantsQuery, payloadFilters: PayloadFilter[]): BeaconQueryPayload => {
+    (query: PayloadVariantsQuery, payloadFilters: BeaconPayloadFilter[]): BeaconQueryPayload => {
       const payload: BeaconQueryPayload = {
         meta: { apiVersion: '2.0.0' },
         query: { requestParameters: { g_variant: query }, filters: payloadFilters },
@@ -118,7 +118,7 @@ const BeaconQueryFormUi = ({
   const convertToZeroBased = (start: string) => Number(start) - 1;
 
   const packageFilters = useCallback(
-    (values: FormValues): PayloadFilter[] => {
+    (values: FormValues): BeaconPayloadFilter[] => {
       // ignore optional first filter when left blank
       if (filters.length === 1 && !values.filterId1) {
         return [];
@@ -272,7 +272,7 @@ const BeaconQueryFormUi = ({
                   filters={filters}
                   setFilters={setFilters}
                   form={form}
-                  querySections={querySections}
+                  beaconFiltersBySection={beaconFiltersBySection}
                   isNetworkQuery={isNetworkQuery}
                 />
               </Card>
@@ -306,9 +306,9 @@ export interface BeaconQueryFormUiProps {
   isFetchingQueryResponse: boolean;
   isNetworkQuery: boolean;
   beaconAssemblyIds: BeaconAssemblyIds;
-  querySections: Section[];
   launchQuery: BeaconQueryAction;
   apiErrorMessage?: string;
+  beaconFiltersBySection: BeaconFilterSection[];
 }
 
 export default BeaconQueryFormUi;
