@@ -25,23 +25,24 @@ export interface RadiationTherapy {
 }
 
 export interface TherapeuticRegimen {
+  status: string;
   start_time?: TimeElement;
   end_time?: TimeElement;
-  status: string;
   ontology_class?: OntologyTerm;
   external_reference?: ExternalReference;
 }
 
-export interface MedicalAction {
+// Defined badly in https://phenopacket-schema.readthedocs.io/en/latest/medical-action.html - per Victor, these
+// oneOf-type fields in their documentation are wrong and should be structured like this:
+export type MedicalAction = {
   treatment_target?: OntologyTerm;
   treatment_intent?: OntologyTerm;
   response_to_treatment?: OntologyTerm;
   adverse_events?: OntologyTerm[];
   treatment_termination_reason?: OntologyTerm;
-  // Defined badly in https://phenopacket-schema.readthedocs.io/en/latest/medical-action.html - per Victor, these
-  // oneOf-type fields in their documentation are wrong and should be structured like this:
-  procedure?: Procedure;
-  treatment?: Treatment;
-  radiation_therapy?: RadiationTherapy;
-  therapeutic_regimen?: TherapeuticRegimen;
-}
+} & (
+  | { procedure: Procedure }
+  | { treatment: Treatment }
+  | { radiation_therapy: RadiationTherapy }
+  | { therapeutic_regimen: TherapeuticRegimen }
+);

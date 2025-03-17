@@ -18,7 +18,6 @@ export interface Biosample extends ExtraPropertiesEntity, TimestampedEntity {
   measurements?: Measurement[];
   taxonomy?: OntologyTerm;
   time_of_collection?: TimeElement;
-  location_collected?: GeoLocation;
   histological_diagnosis?: OntologyTerm;
   tumor_progression?: OntologyTerm;
   tumor_grade?: OntologyTerm;
@@ -30,5 +29,7 @@ export interface Biosample extends ExtraPropertiesEntity, TimestampedEntity {
   material_sample?: OntologyTerm;
   sample_processing?: OntologyTerm;
   sample_storage?: OntologyTerm;
+  // Non-Phenopacket-standard fields:
+  location_collected?: GeoLocation;
   is_control_sample?: boolean;
 }

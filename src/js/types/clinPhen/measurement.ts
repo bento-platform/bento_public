@@ -1,7 +1,6 @@
-import type { TimeElement } from './shared';
-import type { OntologyTerm } from '../ontology';
+import type { OntologyTerm } from '@/types/ontology';
 import type { Procedure } from './procedure';
-import type { TimestampedEntity } from '@/types/util';
+import type { TimeElement } from './shared';
 
 export interface ReferenceRange {
   unit: OntologyTerm;
@@ -29,11 +28,9 @@ export interface ComplexValue {
   typed_quantities: TypedQuantity[];
 }
 
-export interface Measurement extends TimestampedEntity {
-  description?: string;
+export type Measurement = {
   assay: OntologyTerm;
+  description?: string;
   time_observed?: TimeElement;
   procedure?: Procedure;
-  value?: Value;
-  complex_value?: ComplexValue;
-}
+} & ({ value: Value } | { complex_value: ComplexValue });
