@@ -1,5 +1,5 @@
 import { type ReactElement, useCallback, useMemo, useState } from 'react';
-import { Button, Card, Col, Row, Table, type TableColumnsType, type TableProps, Typography } from 'antd';
+import { Button, Card, Col, Flex, Row, Table, type TableColumnsType, type TableProps, Typography } from 'antd';
 import { ExportOutlined, LeftOutlined } from '@ant-design/icons';
 import { PieChart } from 'bento-charts';
 
@@ -13,6 +13,7 @@ import type { SearchResultsUIPane } from '@/types/search';
 import SearchResultsCounts from './SearchResultsCounts';
 import IndividualRowDetail from '@/components/Search/IndividualRowDetail';
 import CustomEmpty from '@/components/Util/CustomEmpty';
+import { useSelectedScope } from '@/features/metadata/hooks';
 
 type IndividualResultRow = { id: string };
 
@@ -32,6 +33,97 @@ const INDIVIDUAL_EXPANDABLE: TableProps<IndividualResultRow>['expandable'] = {
   expandedRowRender: (rec) => <IndividualRowDetail id={rec.id} />,
 };
 
+const SRChartsPage = ({
+  hasInsufficientData,
+  results,
+}: {
+  hasInsufficientData?: boolean;
+  results: DiscoveryResults;
+}) => {
+  const t = useTranslationFn();
+  const translateMap = useCallback(({ x, y }: { x: string; y: number }) => ({ x: t(x), y }), [t]);
+
+  const { biosampleChartData, experimentChartData } = results;
+
+  return (
+    <>
+      <Col xs={24} lg={10}>
+        <Typography.Title level={5} style={{ marginTop: 0, textAlign: 'center' }}>
+          {t('entities.biosample', T_PLURAL_COUNT)}
+        </Typography.Title>
+        {!hasInsufficientData && biosampleChartData.length ? (
+          <PieChart data={biosampleChartData} height={PIE_CHART_HEIGHT} sort={true} dataMap={translateMap} />
+        ) : (
+          <CustomEmpty text="No Results" />
+        )}
+      </Col>
+      <Col xs={24} lg={10}>
+        <Typography.Title level={5} style={{ marginTop: 0, textAlign: 'center' }}>
+          {t('entities.experiment', T_PLURAL_COUNT)}
+        </Typography.Title>
+        {!hasInsufficientData && experimentChartData.length ? (
+          <PieChart data={experimentChartData} height={PIE_CHART_HEIGHT} sort={true} dataMap={translateMap} />
+        ) : (
+          <CustomEmpty text="No Results" />
+        )}
+      </Col>
+    </>
+  );
+};
+
+const SRIndividualsPage = ({ onBack, results }: { onBack: () => void; results: DiscoveryResults }) => {
+  const t = useTranslationFn();
+
+  const selectedScope = useSelectedScope();
+
+  const individualTableColumns = useMemo<TableColumnsType<IndividualResultRow>>(
+    () => [
+      { dataIndex: 'id', title: 'ID' },
+      // TODO: implement these when we have this information in search results:
+      ...(!selectedScope.scope.project ? [{ title: 'Project', key: 'project' }] : []),
+      ...(!selectedScope.scope.dataset ? [{ title: 'Dataset', key: 'dataset' }] : []),
+      {
+        title: '',
+        key: 'actions',
+        width: 32,
+        render: ({ id }) => <IndividualPortalLink id={id} />,
+      },
+    ],
+    [selectedScope]
+  );
+
+  const { individualMatches } = results;
+  const individualTableData = useMemo<IndividualResultRow[]>(
+    () => (individualMatches ?? []).map((id) => ({ id })),
+    [individualMatches]
+  );
+
+  return (
+    <Col xs={24} lg={20}>
+      <Flex justify="space-between" align="center" style={{ marginBottom: 8 }}>
+        <Button icon={<LeftOutlined />} type="link" onClick={onBack} style={{ paddingLeft: 0 }}>
+          {t('Charts')}
+        </Button>
+        {/* TODO: translation */}
+        <span>Showing individuals TODO-TODO of {individualTableData.length}</span>
+        {/* TODO: translation; only if in Bento search not beacon */}
+        <Button icon={<ExportOutlined />} onChange={() => alert('TODO')}>
+          {t('Export as CSV')}
+        </Button>
+      </Flex>
+      <Table<IndividualResultRow>
+        columns={individualTableColumns}
+        dataSource={individualTableData}
+        rowKey="id"
+        bordered={true}
+        size="small"
+        pagination={INDIVIDUAL_PAGINATION}
+        expandable={INDIVIDUAL_EXPANDABLE}
+      />
+    </Col>
+  );
+};
+
 const SearchResultsPane = ({
   isFetchingData,
   hasInsufficientData,
@@ -41,32 +133,14 @@ const SearchResultsPane = ({
   resultsTitle,
   resultsExtra,
 }: SearchResultsPaneProps) => {
-  const t = useTranslationFn();
-  const translateMap = useCallback(({ x, y }: { x: string; y: number }) => ({ x: t(x), y }), [t]);
-
   const [panePage, setPanePage] = useState<SearchResultsUIPane>('charts');
 
-  const individualTableColumns = useMemo<TableColumnsType<IndividualResultRow>>(
-    () => [
-      { dataIndex: 'id', title: 'ID' },
-      // TODO: implement these when we have this information in search results:
-      // ...(!selectedScope.scope.project ? [{ title: 'Project', key: 'project' }] : []),
-      // ...(!selectedScope.scope.dataset ? [{ title: 'Dataset', key: 'dataset' }] : []),
-      {
-        title: '',
-        key: 'actions',
-        width: 32,
-        render: ({ id }) => <IndividualPortalLink id={id} />,
-      },
-    ],
-    []
-  );
-
-  const { individualMatches, biosampleChartData, experimentChartData } = results;
-  const individualTableData = useMemo<IndividualResultRow[]>(
-    () => (individualMatches ?? []).map((id) => ({ id })),
-    [individualMatches]
-  );
+  let pageElement = <div />;
+  if (panePage === 'charts') {
+    pageElement = <SRChartsPage hasInsufficientData={hasInsufficientData} results={results} />;
+  } else if (panePage === 'individuals') {
+    pageElement = <SRIndividualsPage onBack={() => setPanePage('charts')} results={results} />;
+  }
 
   return (
     <div className="container margin-auto search-results-pane">
@@ -101,50 +175,7 @@ const SearchResultsPane = ({
               message={message}
             />
           </Col>
-          {panePage === 'charts' ? (
-            <>
-              <Col xs={24} lg={10}>
-                <Typography.Title level={5} style={{ marginTop: 0, textAlign: 'center' }}>
-                  {t('entities.biosample', T_PLURAL_COUNT)}
-                </Typography.Title>
-                {!hasInsufficientData && biosampleChartData.length ? (
-                  <PieChart data={biosampleChartData} height={PIE_CHART_HEIGHT} sort={true} dataMap={translateMap} />
-                ) : (
-                  <CustomEmpty text="No Results" />
-                )}
-              </Col>
-              <Col xs={24} lg={10}>
-                <Typography.Title level={5} style={{ marginTop: 0, textAlign: 'center' }}>
-                  {t('entities.experiment', T_PLURAL_COUNT)}
-                </Typography.Title>
-                {!hasInsufficientData && experimentChartData.length ? (
-                  <PieChart data={experimentChartData} height={PIE_CHART_HEIGHT} sort={true} dataMap={translateMap} />
-                ) : (
-                  <CustomEmpty text="No Results" />
-                )}
-              </Col>
-            </>
-          ) : (
-            <Col xs={24} lg={20}>
-              <Button
-                icon={<LeftOutlined />}
-                type="link"
-                onClick={() => setPanePage('charts')}
-                style={{ paddingLeft: 0 }}
-              >
-                {t('Charts')}
-              </Button>
-              <Table<IndividualResultRow>
-                columns={individualTableColumns}
-                dataSource={individualTableData}
-                rowKey="id"
-                bordered={true}
-                size="small"
-                pagination={INDIVIDUAL_PAGINATION}
-                expandable={INDIVIDUAL_EXPANDABLE}
-              />
-            </Col>
-          )}
+          {pageElement}
         </Row>
       </Card>
     </div>

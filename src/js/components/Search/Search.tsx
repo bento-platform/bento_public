@@ -1,17 +1,34 @@
-import { useCallback, useEffect, useMemo } from 'react';
-import { Row, Typography, Space, FloatButton } from 'antd';
+import { type CSSProperties, useCallback, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { Button, Card, Flex, FloatButton, Input, Row, Select, Space, Typography } from 'antd';
+import {
+  CheckCircleFilled,
+  CloseCircleFilled,
+  CloseOutlined,
+  FilterOutlined,
+  LoadingOutlined,
+  MinusCircleOutlined,
+  SearchOutlined,
+} from '@ant-design/icons';
 
-import SearchFieldsStack from './SearchFieldsStack';
+import { queryData } from 'bento-auth-js';
+
+import OptionDescription from './OptionDescription';
 import SearchResults from './SearchResults';
 
+import { useConfig } from '@/features/config/hooks';
+import { useSearchQuery } from '@/features/search/hooks';
 import { makeGetKatsuPublic, setQueryParams } from '@/features/search/query.store';
-import { useAppDispatch, useAppSelector, useTranslationFn } from '@/hooks';
-import { buildQueryParamsUrl } from '@/utils/search';
+import { useAppDispatch, useAppSelector, useHasScopePermission, useTranslationFn } from '@/hooks';
+import { buildQueryParamsUrl, queryParamsWithoutKey } from '@/utils/search';
 
 import Loader from '@/components/Loader';
-import { useSearchQuery } from '@/features/search/hooks';
 import type { QueryParams } from '@/types/search';
+import { WIDTH_100P_STYLE } from '@/constants/common';
+import { BOX_SHADOW } from '@/constants/overviewConstants';
+import { CARD_BODY_STYLE, CARD_STYLES } from '@/constants/beaconConstants';
+import { RequestStatus } from '@/types/requests';
+import { WAITING_STATES } from '@/constants/requests';
 
 const checkQueryParamsEqual = (qp1: QueryParams, qp2: QueryParams): boolean => {
   const qp1Keys = Object.keys(qp1);
@@ -29,15 +46,9 @@ const RoutedSearch = () => {
   const {
     querySections: searchSections,
     queryParams,
-    isFetchingFields: isFetchingSearchFields,
-    isFetchingData: isFetchingSearchData,
-    attemptedFieldsFetch,
-    attemptedFetch,
+    fieldsStatus: searchFieldsStatus,
+    dataStatus: searchQueryStatus,
   } = useSearchQuery();
-
-  // TODO: allow disabling max query parameters for authenticated and authorized users when Katsu has AuthZ
-  // const maxQueryParametersRequired = useAppSelector((state) => state.config.maxQueryParametersRequired);
-  // const allowedQueryParamsCount = maxQueryParametersRequired ? maxQueryParameters : queryParamCount;
 
   const searchFields = useMemo(
     () => searchSections.flatMap(({ fields }) => fields.map((field) => ({ id: field.id, options: field.options }))),
@@ -77,11 +88,11 @@ const RoutedSearch = () => {
 
     // Wait until we have search fields to try and build a valid query. Otherwise, we will mistakenly remove all URL
     // query parameters and effectively reset the form.
-    if (!attemptedFieldsFetch || isFetchingSearchFields || isFetchingSearchData) return;
+    if (searchFieldsStatus !== RequestStatus.Fulfilled || searchQueryStatus === RequestStatus.Pending) return;
 
     const { valid, validQueryParamsObject } = validateQuery(new URLSearchParams(location.search));
     if (valid) {
-      if (!attemptedFetch || !checkQueryParamsEqual(validQueryParamsObject, queryParams)) {
+      if (WAITING_STATES.includes(searchQueryStatus) || !checkQueryParamsEqual(validQueryParamsObject, queryParams)) {
         // Only update the state & refresh if we have a new set of query params from the URL.
         // [!!!] This should be the only place setQueryParams(...) gets called. Everywhere else should use URL
         //       manipulations, so that we have a one-way data flow from URL to state!
@@ -95,11 +106,9 @@ const RoutedSearch = () => {
       // Then, the new URL will re-trigger this effect but with only valid query parameters.
     }
   }, [
-    attemptedFetch,
-    attemptedFieldsFetch,
     dispatch,
-    isFetchingSearchFields,
-    isFetchingSearchData,
+    searchFieldsStatus,
+    searchQueryStatus,
     location.search,
     location.pathname,
     navigate,
@@ -110,15 +119,195 @@ const RoutedSearch = () => {
   return <Search />;
 };
 
-const WIDTH_100P_STYLE = { width: '100%' };
 const SEARCH_SPACE_ITEM_STYLE = { item: WIDTH_100P_STYLE };
-const SEARCH_SECTION_SPACE_ITEM_STYLE = { item: { display: 'flex', justifyContent: 'center' } };
-const SEARCH_SECTION_STYLE = { maxWidth: 'var(--content-max-width)' };
 
-const Search = () => {
+type FilterValue = { field: string | null; value: string | null };
+
+const SearchFilterInput = ({
+  field,
+  value,
+  onChange,
+  onRemove,
+  disabledFields,
+}: FilterValue & {
+  onChange: (v: FilterValue) => void;
+  onRemove: () => void;
+  disabledFields: Set<string>;
+}) => {
   const t = useTranslationFn();
 
-  const { isFetchingFields: isFetchingSearchFields, querySections: searchSections } = useSearchQuery();
+  const { querySections } = useSearchQuery();
+
+  const filterOptions = querySections.map(({ section_title: label, fields }) => ({
+    label,
+    title: label,
+    options: fields.map((f) => ({
+      value: f.id,
+      label: (
+        <div style={{ display: 'flex' }}>
+          <div style={{ flex: 1 }}>{f.title}</div>
+          <OptionDescription description={t(f.description)} />
+        </div>
+      ),
+      // Disabled if: field is in disabled set AND it isn't the currently selected field (so we allow re-selection of
+      // the current field.)
+      disabled: disabledFields.has(f.id) && field !== f.id,
+    })),
+  }));
+
+  const fieldFilterOptions = Object.fromEntries(
+    querySections.flatMap(({ fields }) => fields.map((f) => [f.id, f.options.map((o) => ({ value: o, label: o }))]))
+  );
+
+  return (
+    <Space.Compact style={WIDTH_100P_STYLE}>
+      <Select
+        style={{ flex: 1, borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
+        options={filterOptions}
+        onChange={(v) => {
+          onChange({ field: v, value: fieldFilterOptions[v][0].value ?? null });
+        }}
+        value={field}
+      />
+      <Select
+        style={{ flex: 1 }}
+        disabled={!field}
+        options={field ? fieldFilterOptions[field] : []}
+        onChange={(newValue) => {
+          onChange({ field, value: newValue });
+        }}
+        value={value}
+      />
+      <Button icon={<CloseOutlined />} disabled={!field || !value} onClick={onRemove} />
+    </Space.Compact>
+  );
+};
+
+type SearchStatus = 'success' | 'fail' | 'loading' | 'disabled';
+
+const SearchStatusIcon = ({ status }: { status: 'success' | 'fail' | 'loading' | 'disabled' }) => {
+  let icon = <div />;
+
+  const baseStyle: CSSProperties = { fontSize: '1.1rem' };
+
+  if (status === 'success') {
+    icon = <CheckCircleFilled style={{ ...baseStyle, color: '#52c41a' }} />;
+  } else if (status === 'fail') {
+    icon = <CloseCircleFilled style={{ ...baseStyle, color: '#f5222d' }} />;
+  } else if (status === 'loading') {
+    icon = <LoadingOutlined style={{ ...baseStyle, color: '#bfbfbf' }} />;
+  } else if (status === 'disabled') {
+    icon = <MinusCircleOutlined style={{ ...baseStyle, color: '#bfbfbf' }} />;
+  }
+
+  return icon;
+};
+
+const SearchFilters = ({ style }: { style?: CSSProperties }) => {
+  const t = useTranslationFn();
+
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+
+  const { maxQueryParameters } = useConfig();
+  const { querySections, queryParams } = useSearchQuery();
+
+  const [filterInputs, usedFields] = useMemo(() => {
+    const filterInputs_: FilterValue[] = Object.entries(queryParams).map(([k, v]) => ({ field: k, value: v }));
+
+    const fields = querySections.flatMap(({ fields }) => fields.map((f) => f.id));
+    const usedFields_ = new Set(filterInputs_.filter((fi) => fi.field !== null).map((fi) => fi.field as string));
+
+    if (
+      filterInputs_.length < maxQueryParameters &&
+      usedFields_.size < fields.length &&
+      ((filterInputs_.at(-1)?.field && filterInputs_.at(-1)?.value) || filterInputs_.length === 0)
+    ) {
+      filterInputs_.push({ field: null, value: null });
+    }
+    return [filterInputs_, usedFields_];
+  }, [maxQueryParameters, querySections, queryParams]);
+
+  const { dataStatus } = useSearchQuery();
+  // TODO: correct search status
+  let status: SearchStatus = 'disabled';
+  if (dataStatus === RequestStatus.Pending) {
+    status = 'loading';
+  } else if (dataStatus === RequestStatus.Fulfilled) {
+    status = 'success';
+  } else if (dataStatus === RequestStatus.Rejected) {
+    status = 'fail';
+  }
+
+  return (
+    <div style={style}>
+      <Typography.Title level={3} style={{ fontSize: '1.1rem', marginTop: 0 }}>
+        <span style={{ marginRight: '0.5em' }}>
+          <FilterOutlined /> {t('Filters')}
+        </span>
+        <SearchStatusIcon status={status} />
+      </Typography.Title>
+      <Space direction="vertical" size={8} style={WIDTH_100P_STYLE}>
+        {filterInputs.map((fv, i) => (
+          <SearchFilterInput
+            key={i}
+            onChange={({ field, value }) => {
+              if (field === null || value === null) return; // Force field to resolve as string type
+              const url = buildQueryParamsUrl(pathname, {
+                // If we change the field in this filter, we need to remove it so we can switch to the new field
+                ...(fv.field ? queryParamsWithoutKey(queryParams, fv.field) : queryParams),
+                // ... and if the field stays the same, we will put it back with a new value. Otherwise, we'll put the
+                // new field in with the first available value.
+                [field]: value,
+              });
+              console.debug('[SearchFilters] Redirecting to:', url);
+              navigate(url, { replace: true });
+              // Don't need to dispatch - the code handling the URL change will dispatch the fetch for us instead.
+            }}
+            onRemove={() => {
+              if (fv.field === null) return;
+              const url = buildQueryParamsUrl(pathname, queryParamsWithoutKey(queryParams, fv.field));
+              console.debug('[SearchFilters] Redirecting to:', url);
+              navigate(url, { replace: true });
+            }}
+            disabledFields={usedFields}
+            {...fv}
+          />
+        ))}
+      </Space>
+    </div>
+  );
+};
+
+const OrDelimiter = () => {
+  const t = useTranslationFn();
+  return (
+    <Flex vertical={true} gap={8} align="center">
+      <div style={{ width: 1, flex: 1, backgroundColor: '#f0f0f0' }}></div>
+      <div style={{ fontWeight: 'bold', color: '#595959' }}>{t('OR')}</div>
+      <div style={{ width: 1, flex: 1, backgroundColor: '#f0f0f0' }}></div>
+    </Flex>
+  );
+};
+
+const SearchFreeText = ({ style }: { style?: CSSProperties }) => {
+  const t = useTranslationFn();
+  return (
+    <div style={style}>
+      <Typography.Title level={3} style={{ fontSize: '1.1rem', marginTop: 0 }}>
+        {t('Text search')}
+      </Typography.Title>
+      <Space.Compact style={WIDTH_100P_STYLE}>
+        <Input prefix={<SearchOutlined />} />
+        <Button>{t('Search')}</Button>
+      </Space.Compact>
+    </div>
+  );
+};
+
+const Search = () => {
+  const { hasPermission: queryDataPerm } = useHasScopePermission(queryData);
+  const { isFetchingFields: isFetchingSearchFields } = useSearchQuery();
 
   return isFetchingSearchFields ? (
     <Loader />
@@ -126,15 +315,23 @@ const Search = () => {
     <>
       <Row justify="center">
         <Space direction="vertical" align="center" style={WIDTH_100P_STYLE} styles={SEARCH_SPACE_ITEM_STYLE}>
+          <div className="container margin-auto" style={{ paddingBottom: 8 }}>
+            <Card
+              style={{ borderRadius: '10px', ...WIDTH_100P_STYLE, ...BOX_SHADOW }}
+              styles={{ ...CARD_STYLES, body: { ...CARD_BODY_STYLE, padding: '24px' } }}
+            >
+              <Flex justify="space-between" gap={24} style={WIDTH_100P_STYLE}>
+                <SearchFilters style={{ flex: 1, maxWidth: 600 }} />
+                {queryDataPerm && (
+                  <>
+                    <OrDelimiter />
+                    <SearchFreeText style={{ flex: 1 }} />
+                  </>
+                )}
+              </Flex>
+            </Card>
+          </div>
           <SearchResults />
-          <Space direction="vertical" size="large" style={WIDTH_100P_STYLE} styles={SEARCH_SECTION_SPACE_ITEM_STYLE}>
-            {searchSections.map(({ section_title, fields }, i) => (
-              <div key={i} style={SEARCH_SECTION_STYLE}>
-                <Typography.Title level={4}>{t(section_title)}</Typography.Title>
-                <SearchFieldsStack key={i} queryFields={fields} />
-              </div>
-            ))}
-          </Space>
         </Space>
       </Row>
       <FloatButton.BackTop />
