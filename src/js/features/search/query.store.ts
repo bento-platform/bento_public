@@ -11,8 +11,6 @@ import { makeGetKatsuPublic } from './makeGetKatsuPublic.thunk';
 import { makeGetSearchFields } from './makeGetSearchFields.thunk';
 
 export type QueryState = {
-  isFetchingFields: boolean;
-  attemptedFieldsFetch: boolean;
   fieldsStatus: RequestStatus;
   dataStatus: RequestStatus;
   querySections: SearchFieldResponse['sections'];
@@ -23,8 +21,6 @@ export type QueryState = {
 };
 
 const initialState: QueryState = {
-  isFetchingFields: false,
-  attemptedFieldsFetch: false,
   fieldsStatus: RequestStatus.Idle,
   dataStatus: RequestStatus.Idle,
   message: '',

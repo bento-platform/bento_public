@@ -23,11 +23,11 @@ import { useAppDispatch, useAppSelector, useHasScopePermission, useTranslationFn
 import { buildQueryParamsUrl, queryParamsWithoutKey } from '@/utils/search';
 
 import Loader from '@/components/Loader';
-import type { QueryParams } from '@/types/search';
 import { WIDTH_100P_STYLE } from '@/constants/common';
 import { BOX_SHADOW } from '@/constants/overviewConstants';
 import { CARD_BODY_STYLE, CARD_STYLES } from '@/constants/beaconConstants';
 import { RequestStatus } from '@/types/requests';
+import type { QueryParams } from '@/types/search';
 import { WAITING_STATES } from '@/constants/requests';
 
 const checkQueryParamsEqual = (qp1: QueryParams, qp2: QueryParams): boolean => {
@@ -307,9 +307,9 @@ const SearchFreeText = ({ style }: { style?: CSSProperties }) => {
 
 const Search = () => {
   const { hasPermission: queryDataPerm } = useHasScopePermission(queryData);
-  const { isFetchingFields: isFetchingSearchFields } = useSearchQuery();
+  const { fieldsStatus } = useSearchQuery();
 
-  return isFetchingSearchFields ? (
+  return WAITING_STATES.includes(fieldsStatus) ? (
     <Loader />
   ) : (
     <>
