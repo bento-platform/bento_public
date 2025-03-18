@@ -2,6 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { katsuPublicSearchUrl } from '@/constants/configConstants';
 import type { RootState } from '@/store';
+import { RequestStatus } from '@/types/requests';
 import type { KatsuSearchResponse } from '@/types/search';
 import { printAPIError } from '@/utils/error.util';
 import { scopedAuthorizedRequestConfig } from '@/utils/requests';
@@ -24,7 +25,7 @@ export const makeGetKatsuPublic = createAsyncThunk<
   },
   {
     condition(_, { getState }) {
-      return !getState().query.isFetchingData;
+      return getState().query.dataStatus !== RequestStatus.Pending;
     },
   }
 );
