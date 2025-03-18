@@ -1,4 +1,4 @@
-import { type CSSProperties, useCallback, useEffect, useMemo } from 'react';
+import { type CSSProperties, memo, useCallback, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, Card, Flex, FloatButton, Input, Row, Select, Space, Typography } from 'antd';
 import {
@@ -279,7 +279,7 @@ const SearchFilters = ({ style }: { style?: CSSProperties }) => {
   );
 };
 
-const OrDelimiter = () => {
+const OrDelimiter = memo(() => {
   const t = useTranslationFn();
   return (
     <Flex vertical={true} gap={8} align="center">
@@ -288,7 +288,8 @@ const OrDelimiter = () => {
       <div style={{ width: 1, flex: 1, backgroundColor: '#f0f0f0' }}></div>
     </Flex>
   );
-};
+});
+OrDelimiter.displayName = 'OrDelimiter';
 
 const SearchFreeText = ({ style }: { style?: CSSProperties }) => {
   const t = useTranslationFn();
