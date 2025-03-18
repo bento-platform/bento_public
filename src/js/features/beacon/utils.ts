@@ -1,9 +1,17 @@
 import { BEACON_URL, BEACON_NETWORK_URL } from '@/config';
-import { BEACON_INDIVIDUALS_PATH } from './constants';
-import type { BeaconAssemblyIds, BeaconNetworkResponses, BeaconQueryResponse } from '@/types/beacon';
+import { BEACON_INDIVIDUALS_PATH, BEACON_FILTERING_TERMS_PATH, BEACON_OVERVIEW_PATH } from './constants';
+import type {
+  BeaconAssemblyIds,
+  BeaconFilteringTermFromEndpoint,
+  BeaconFilterUiOptions,
+  BeaconNetworkResponses,
+  BeaconQueryResponse,
+  BeaconFilterSection,
+} from '@/types/beacon';
+import type { Field, Section } from '@/types/search';
 import type { ChartData, DiscoveryResults, OptionalDiscoveryResults } from '@/types/data';
 import type { NetworkBeacon } from '@/types/beaconNetwork';
-import type { Project } from '@/types/metadata';
+import type { Dataset, Project } from '@/types/metadata';
 import { serializeChartData } from '@/utils/chart';
 
 type TempChartObject = Record<string, number>;
@@ -87,7 +95,57 @@ export const extractBeaconDiscoveryOverview = (response: BeaconQueryResponse): O
 export const atLeastOneNetworkResponseIsPending = (responses: BeaconNetworkResponses) =>
   Object.values(responses).some((r) => r.isFetchingQueryResponse);
 
+const scopedBeaconBaseUrl = (projectId: Project['identifier'] | undefined): string => {
+  const projectPath = projectId ? '/' + projectId : '';
+  return BEACON_URL + projectPath;
+};
+
+export const scopedBeaconFilteringTermsUrl = (
+  projectId: Project['identifier'] | undefined,
+  datasetId: Dataset['identifier'] | undefined
+): string => {
+  const datasetIdParam = datasetId ? '?' + 'datasetIds=' + datasetId : '';
+  return scopedBeaconBaseUrl(projectId) + BEACON_FILTERING_TERMS_PATH + datasetIdParam;
+};
+
 export const scopedBeaconIndividualsUrl = (projectId: Project['identifier'] | undefined): string => {
-  const projectPath: string = projectId ? '/' + projectId : '';
-  return BEACON_URL + projectPath + BEACON_INDIVIDUALS_PATH;
+  return scopedBeaconBaseUrl(projectId) + BEACON_INDIVIDUALS_PATH;
+};
+
+export const scopedBeaconOverviewUrl = (projectId: Project['identifier'] | undefined): string => {
+  return scopedBeaconBaseUrl(projectId) + BEACON_OVERVIEW_PATH;
+};
+
+// package flat beacon filtering terms array into an array of categories (similar to katsu query params)
+export const packageBeaconFilteringTerms = (filters: BeaconFilteringTermFromEndpoint[]): BeaconFilterSection[] => {
+  // temp object to simplify merging fields by category
+  const tempFiltersObj: Record<string, BeaconFilterUiOptions[]> = {};
+  filters.forEach((f) => {
+    const { bento, ...filter_details } = f;
+    tempFiltersObj[bento.section] = (tempFiltersObj[bento.section] ?? []).concat(filter_details);
+  });
+  // then return as an array of categories
+  return Object.keys(tempFiltersObj).map((key) => ({ section_title: key, fields: tempFiltersObj[key] }));
+};
+
+// temp repackaging of network filters from katsu format to beacon filters format
+// can be removed once network stops calling katsu
+export const packageBeaconNetworkQuerySections = (qs: Section[]) => {
+  return qs.map((q) => ({
+    ...q,
+    fields: q.fields.map((f: Field) => {
+      const filter: BeaconFilterUiOptions = {
+        type: 'alphanumeric',
+        id: f.id,
+        label: f.title,
+        description: f.description,
+        values: f.options,
+      };
+      const units = f.config?.units;
+      if (units) {
+        filter.units = units;
+      }
+      return filter;
+    }),
+  }));
 };

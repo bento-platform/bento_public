@@ -6,27 +6,24 @@ import { useBeaconNetwork } from '@/features/beacon/hooks';
 import { toggleQuerySectionsUnionOrIntersection } from '@/features/beacon/network.store';
 import { useConfig } from '@/features/config/hooks';
 import { useAppDispatch, useTranslationFn } from '@/hooks';
-import type { FormFilter } from '@/types/beacon';
-import type { SearchFieldResponse } from '@/types/search';
+import type { BeaconFilterSection, FormFilter } from '@/types/beacon';
 
 import Filter from './Filter';
 
 const NetworkFilterToggle = () => {
   const t = useTranslationFn();
   const dispatch = useAppDispatch();
-  const { isQuerySectionsUnion } = useBeaconNetwork();
+  const { isFiltersUnion } = useBeaconNetwork();
 
   return (
     <Tooltip title={t('beacon.network_filter_toggle_help')}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <Switch
           onChange={() => dispatch(toggleQuerySectionsUnionOrIntersection())}
-          checked={isQuerySectionsUnion}
+          checked={isFiltersUnion}
           style={{ margin: '5px' }}
         />
-        <p style={{ margin: '5px' }}>
-          {t(`beacon.${isQuerySectionsUnion ? 'show_all_filters' : 'common_filters_only'}`)}
-        </p>
+        <p style={{ margin: '5px' }}>{t(`beacon.${isFiltersUnion ? 'show_all_filters' : 'common_filters_only'}`)}</p>
       </div>
     </Tooltip>
   );
@@ -37,7 +34,7 @@ const NetworkFilterToggle = () => {
 
 const BUTTON_STYLE = { margin: '10px 0' };
 
-const Filters = ({ filters, setFilters, form, querySections, isNetworkQuery }: FiltersProps) => {
+const Filters = ({ filters, setFilters, form, beaconFiltersBySection, isNetworkQuery }: FiltersProps) => {
   const t = useTranslationFn();
 
   const { maxQueryParameters: maxFilters, maxQueryParametersRequired } = useConfig();
@@ -79,7 +76,7 @@ const Filters = ({ filters, setFilters, form, querySections, isNetworkQuery }: F
             key={f.index}
             filter={f}
             form={form}
-            querySections={querySections}
+            beaconFiltersBySection={beaconFiltersBySection}
             removeFilter={removeFilter}
             isRequired={isRequired}
           />
@@ -93,7 +90,7 @@ export interface FiltersProps {
   filters: FormFilter[];
   setFilters: Dispatch<SetStateAction<FormFilter[]>>;
   form: FormInstance;
-  querySections: SearchFieldResponse['sections'];
+  beaconFiltersBySection: BeaconFilterSection[];
   isNetworkQuery: boolean;
 }
 

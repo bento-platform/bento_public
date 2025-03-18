@@ -49,7 +49,7 @@ export type GenericOptionType = FilterOption | FilterPullDownKey;
 // API request
 // ----------------------------
 
-export interface PayloadFilter {
+export interface BeaconPayloadFilter {
   id: string;
   value: string;
 
@@ -75,7 +75,7 @@ export interface BeaconQueryPayload {
   meta: { apiVersion: string };
   query: {
     requestParameters: { g_variant: PayloadVariantsQuery };
-    filters: PayloadFilter[];
+    filters: BeaconPayloadFilter[];
     datasets?: { datasetIds: [Dataset['identifier']] };
   };
   bento?: { showSummaryStatistics: boolean };
@@ -160,6 +160,39 @@ export interface BeaconServiceInfo {
   welcomeUrl?: string;
   alternativeUrl?: string;
   info?: GenericInfoField;
+}
+
+// ----------------------------
+// filters
+// ----------------------------
+
+// https://docs.genomebeacons.org/filters/
+export interface BeaconFilteringTermsResponse {
+  meta?: {
+    beaconId: string;
+  };
+  response?: {
+    filteringTerms: BeaconFilteringTermFromEndpoint[];
+  };
+}
+
+export interface BeaconFilteringTermFromEndpoint {
+  type: 'alphanumeric';
+  id: string;
+  label: string;
+  description: string;
+  values: string[];
+  bento: {
+    section: string;
+  };
+  units?: string;
+}
+
+export type BeaconFilterUiOptions = Omit<BeaconFilteringTermFromEndpoint, 'bento'>;
+
+export interface BeaconFilterSection {
+  section_title: string;
+  fields: BeaconFilterUiOptions[];
 }
 
 // ----------------------------
