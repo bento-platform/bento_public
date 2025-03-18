@@ -5,12 +5,13 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import SearchFieldsStack from './SearchFieldsStack';
 import SearchResults from './SearchResults';
 
+import { useConfig } from '@/features/config/hooks';
+import { useSearchQuery } from '@/features/search/hooks';
 import { makeGetKatsuPublic, setQueryParams } from '@/features/search/query.store';
-import { useAppDispatch, useAppSelector, useTranslationFn } from '@/hooks';
+import { useAppDispatch, useTranslationFn } from '@/hooks';
 import { buildQueryParamsUrl } from '@/utils/search';
 
 import Loader from '@/components/Loader';
-import { useSearchQuery } from '@/features/search/hooks';
 import { RequestStatus } from '@/types/requests';
 import type { QueryParams } from '@/types/search';
 import { WAITING_STATES } from '@/constants/requests';
@@ -27,7 +28,7 @@ const RoutedSearch = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { maxQueryParameters } = useAppSelector((state) => state.config);
+  const { configStatus, maxQueryParameters } = useConfig();
   const {
     querySections: searchSections,
     queryParams,
@@ -75,9 +76,18 @@ const RoutedSearch = () => {
   useEffect(() => {
     if (!location.pathname.endsWith('/search')) return;
 
-    // Wait until we have search fields to try and build a valid query. Otherwise, we will mistakenly remove all URL
-    // query parameters and effectively reset the form.
-    if (searchFieldsStatus !== RequestStatus.Fulfilled || searchQueryStatus === RequestStatus.Pending) return;
+    // Wait until:
+    //  - we have loaded the max. # of query parameters we can query
+    //  - we have search fields to try and build a valid query
+    //  - we are not currently executing a search
+    // Otherwise, we will mistakenly remove all URL query parameters and effectively reset the form.
+    if (
+      configStatus !== RequestStatus.Fulfilled ||
+      searchFieldsStatus !== RequestStatus.Fulfilled ||
+      searchQueryStatus === RequestStatus.Pending
+    ) {
+      return;
+    }
 
     const { valid, validQueryParamsObject } = validateQuery(new URLSearchParams(location.search));
     if (valid) {
