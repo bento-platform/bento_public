@@ -319,7 +319,7 @@ const Search = () => {
           <div className="container margin-auto" style={{ paddingBottom: 8 }}>
             <Card
               style={{ borderRadius: '10px', ...WIDTH_100P_STYLE, ...BOX_SHADOW }}
-              styles={{ ...CARD_STYLES, body: { ...CARD_BODY_STYLE, padding: '24px' } }}
+              styles={{ ...CARD_STYLES, body: { ...CARD_BODY_STYLE, padding: '20px 24px 24px 24px' } }}
             >
               <Flex justify="space-between" gap={24} style={WIDTH_100P_STYLE}>
                 <SearchFilters style={{ flex: 1, maxWidth: 600 }} />
