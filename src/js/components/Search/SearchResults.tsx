@@ -3,7 +3,6 @@ import { useSearchQuery } from '@/features/search/hooks';
 import { useCanSeeUncensoredCounts } from '@/hooks/censorship';
 
 import SearchResultsPane from './SearchResultsPane';
-import { WAITING_STATES } from '@/constants/requests';
 
 const SearchResults = () => {
   const { dataStatus, message, results } = useSearchQuery();
