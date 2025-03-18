@@ -183,6 +183,14 @@ const SearchFilterInput = ({
   );
 };
 
+const SearchFilterInputSkeleton = () => (
+  <Space.Compact style={WIDTH_100P_STYLE}>
+    <Select style={{ flex: 1, borderTopRightRadius: 0, borderBottomRightRadius: 0 }} disabled={true} loading={true} />
+    <Select style={{ flex: 1 }} disabled={true} />
+    <Button icon={<CloseOutlined />} disabled={true} />
+  </Space.Compact>
+);
+
 type SearchStatus = 'success' | 'fail' | 'loading' | 'disabled';
 
 const SearchStatusIcon = ({ status }: { status: 'success' | 'fail' | 'loading' | 'disabled' }) => {
@@ -209,8 +217,8 @@ const SearchFilters = ({ style }: { style?: CSSProperties }) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
-  const { maxQueryParameters } = useConfig();
-  const { querySections, queryParams } = useSearchQuery();
+  const { configStatus, maxQueryParameters } = useConfig();
+  const { fieldsStatus, querySections, queryParams } = useSearchQuery();
 
   const [filterInputs, usedFields] = useMemo(() => {
     const filterInputs_: FilterValue[] = Object.entries(queryParams).map(([k, v]) => ({ field: k, value: v }));
@@ -248,32 +256,36 @@ const SearchFilters = ({ style }: { style?: CSSProperties }) => {
         <SearchStatusIcon status={status} />
       </Typography.Title>
       <Space direction="vertical" size={8} style={WIDTH_100P_STYLE}>
-        {filterInputs.map((fv, i) => (
-          <SearchFilterInput
-            key={i}
-            onChange={({ field, value }) => {
-              if (field === null || value === null) return; // Force field to resolve as string type
-              const url = buildQueryParamsUrl(pathname, {
-                // If we change the field in this filter, we need to remove it so we can switch to the new field
-                ...(fv.field ? queryParamsWithoutKey(queryParams, fv.field) : queryParams),
-                // ... and if the field stays the same, we will put it back with a new value. Otherwise, we'll put the
-                // new field in with the first available value.
-                [field]: value,
-              });
-              console.debug('[SearchFilters] Redirecting to:', url);
-              navigate(url, { replace: true });
-              // Don't need to dispatch - the code handling the URL change will dispatch the fetch for us instead.
-            }}
-            onRemove={() => {
-              if (fv.field === null) return;
-              const url = buildQueryParamsUrl(pathname, queryParamsWithoutKey(queryParams, fv.field));
-              console.debug('[SearchFilters] Redirecting to:', url);
-              navigate(url, { replace: true });
-            }}
-            disabledFields={usedFields}
-            {...fv}
-          />
-        ))}
+        {WAITING_STATES.includes(configStatus) || WAITING_STATES.includes(fieldsStatus) ? (
+          <SearchFilterInputSkeleton />
+        ) : (
+          filterInputs.map((fv, i) => (
+            <SearchFilterInput
+              key={i}
+              onChange={({ field, value }) => {
+                if (field === null || value === null) return; // Force field to resolve as string type
+                const url = buildQueryParamsUrl(pathname, {
+                  // If we change the field in this filter, we need to remove it so we can switch to the new field
+                  ...(fv.field ? queryParamsWithoutKey(queryParams, fv.field) : queryParams),
+                  // ... and if the field stays the same, we will put it back with a new value. Otherwise, we'll put the
+                  // new field in with the first available value.
+                  [field]: value,
+                });
+                console.debug('[SearchFilters] Redirecting to:', url);
+                navigate(url, { replace: true });
+                // Don't need to dispatch - the code handling the URL change will dispatch the fetch for us instead.
+              }}
+              onRemove={() => {
+                if (fv.field === null) return;
+                const url = buildQueryParamsUrl(pathname, queryParamsWithoutKey(queryParams, fv.field));
+                console.debug('[SearchFilters] Redirecting to:', url);
+                navigate(url, { replace: true });
+              }}
+              disabledFields={usedFields}
+              {...fv}
+            />
+          ))
+        )}
       </Space>
     </div>
   );
