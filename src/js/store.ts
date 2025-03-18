@@ -4,6 +4,7 @@ import type { ToolkitStore } from '@reduxjs/toolkit/dist/configureStore';
 import type { OIDCSliceState } from 'bento-auth-js';
 import { LS_OPENID_CONFIG_KEY, AuthReducer as auth, OIDCReducer as openIdConfiguration } from 'bento-auth-js';
 
+import clinPhenReducer from '@/features/clinPhen/clinPhen.store';
 import configReducer from '@/features/config/config.store';
 import contentReducer from '@/features/content/content.store';
 import dataReducer from '@/features/data/data.store';
@@ -31,6 +32,7 @@ export const store = configureStore({
   reducer: {
     auth,
     openIdConfiguration,
+    clinPhen: clinPhenReducer,
     config: configReducer,
     content: contentReducer,
     data: dataReducer,

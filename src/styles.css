@@ -120,6 +120,21 @@ body {
 }
 
 
+/* BEGIN react18-json-view styling */
+
+.json-view {
+  color: #002b36;
+  --json-property: #002b36;
+  --json-index: #6c71c4;
+  --json-number: #268bd2;
+  --json-string: #cb4b16;
+  --json-boolean: #2aa198;
+  --json-null: #dc322f;
+}
+
+/* END react18-json-view styling */
+
+
 /* BEGIN layout HTML styling */
 
 #default-layout {

@@ -1,19 +1,36 @@
 import { type ReactElement, useCallback, useMemo, useState } from 'react';
-import { Card, Col, Row, Typography, Table, Button } from 'antd';
-import { LeftOutlined } from '@ant-design/icons';
+import { Button, Card, Col, Row, Table, type TableColumnsType, type TableProps, Typography } from 'antd';
+import { ExportOutlined, LeftOutlined } from '@ant-design/icons';
 import { PieChart } from 'bento-charts';
 
 import { PORTAL_URL } from '@/config';
-import { T_PLURAL_COUNT, T_SINGULAR_COUNT } from '@/constants/i18n';
+import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { BOX_SHADOW, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
 import { useTranslationFn } from '@/hooks';
 import type { DiscoveryResults } from '@/types/data';
 import type { SearchResultsUIPane } from '@/types/search';
 
-import CustomEmpty from '../Util/CustomEmpty';
 import SearchResultsCounts from './SearchResultsCounts';
+import IndividualRowDetail from '@/components/Search/IndividualRowDetail';
+import CustomEmpty from '@/components/Util/CustomEmpty';
 
 type IndividualResultRow = { id: string };
+
+const IndividualPortalLink = ({ id }: IndividualResultRow) => (
+  <a href={`${PORTAL_URL}/data/explorer/individuals/${id}`} target="_blank" rel="noreferrer">
+    <ExportOutlined />
+  </a>
+);
+
+const INDIVIDUAL_PAGINATION: TableProps<IndividualResultRow>['pagination'] = {
+  align: 'end',
+  size: 'default',
+  showSizeChanger: true,
+};
+
+const INDIVIDUAL_EXPANDABLE: TableProps<IndividualResultRow>['expandable'] = {
+  expandedRowRender: (rec) => <IndividualRowDetail id={rec.id} />,
+};
 
 const SearchResultsPane = ({
   isFetchingData,
@@ -29,22 +46,23 @@ const SearchResultsPane = ({
 
   const [panePage, setPanePage] = useState<SearchResultsUIPane>('charts');
 
-  const { individualMatches, biosampleChartData, experimentChartData } = results;
-
-  const individualTableColumns = useMemo(
+  const individualTableColumns = useMemo<TableColumnsType<IndividualResultRow>>(
     () => [
+      { dataIndex: 'id', title: 'ID' },
+      // TODO: implement these when we have this information in search results:
+      // ...(!selectedScope.scope.project ? [{ title: 'Project', key: 'project' }] : []),
+      // ...(!selectedScope.scope.dataset ? [{ title: 'Dataset', key: 'dataset' }] : []),
       {
-        dataIndex: 'id',
-        title: t('entities.individual', T_SINGULAR_COUNT),
-        render: (id: string) => (
-          <a href={`${PORTAL_URL}/data/explorer/individuals/${id}`} target="_blank" rel="noreferrer">
-            {id}
-          </a>
-        ),
+        title: '',
+        key: 'actions',
+        width: 32,
+        render: ({ id }) => <IndividualPortalLink id={id} />,
       },
     ],
-    [t]
+    []
   );
+
+  const { individualMatches, biosampleChartData, experimentChartData } = results;
   const individualTableData = useMemo<IndividualResultRow[]>(
     () => (individualMatches ?? []).map((id) => ({ id })),
     [individualMatches]
@@ -122,6 +140,8 @@ const SearchResultsPane = ({
                 rowKey="id"
                 bordered={true}
                 size="small"
+                pagination={INDIVIDUAL_PAGINATION}
+                expandable={INDIVIDUAL_EXPANDABLE}
               />
             </Col>
           )}

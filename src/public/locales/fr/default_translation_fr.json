@@ -139,6 +139,29 @@
       "Laissez ce formulaire vide pour effectuer une recherche sur les métadonnées seulement."
     ]
   },
+  "MALE": "Homme",
+  "FEMALE": "Femme",
+  "UNKNOWN_SEX": "Sexe inconnu",
+  "individual": {
+    "date_of_birth": "Date de naissance",
+    "sex": "Sexe",
+    "time_at_last_encounter": "Temps à l'encontre",
+    "karyotypic_sex": "Sexe karyotypique",
+    "taxonomy": "Taxonomie",
+    "extra_properties": "Propriétés supplémentaires"
+  },
+  "time": {
+    "start": "Début",
+    "end": "Fin",
+    "days": "Jours",
+    "weeks": "Semaines",
+    "age": "Âge",
+    "gestational_age": "Âge gestationnel",
+    "age_range": "Tranche d'âge",
+    "ontology_class": "Classe ontologique",
+    "timestamp": "Horodatage",
+    "interval": "Intervalle"
+  },
   "footer": {
     "powered_by": "Propulsé par",
     "copyright": "©",
