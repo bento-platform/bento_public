@@ -36,7 +36,7 @@ export const getBeaconConfig = createAsyncThunk<BeaconConfigResponse, void, { st
   },
   {
     condition(_, { getState }) {
-      return !getState().beacon.isFetchingBeaconConfig;
+      return getState().beacon.configStatus !== RequestStatus.Pending;
     },
   }
 );
@@ -75,7 +75,7 @@ export const makeBeaconQuery = createAsyncThunk<
 
 type BeaconState = {
   // config
-  isFetchingBeaconConfig: boolean;
+  configStatus: RequestStatus;
   beaconAssemblyIds: BeaconAssemblyIds;
 
   // filters
@@ -83,14 +83,14 @@ type BeaconState = {
   beaconFilters: BeaconFilterSection[];
 
   // querying
-  isFetchingQueryResponse: boolean;
+  queryStatus: RequestStatus;
   results: DiscoveryResults;
   apiErrorMessage: string;
 };
 
 const initialState: BeaconState = {
   // config
-  isFetchingBeaconConfig: false,
+  configStatus: RequestStatus.Idle,
   beaconAssemblyIds: [],
 
   // filters
@@ -98,7 +98,7 @@ const initialState: BeaconState = {
   beaconFilters: [],
 
   // querying
-  isFetchingQueryResponse: false,
+  queryStatus: RequestStatus.Idle,
   results: EMPTY_DISCOVERY_RESULTS,
   apiErrorMessage: '',
 };
@@ -110,14 +110,14 @@ const beacon = createSlice({
   extraReducers: (builder) => {
     // config ----------------------------------------------------------------------------------------------------------
     builder.addCase(getBeaconConfig.pending, (state) => {
-      state.isFetchingBeaconConfig = true;
+      state.configStatus = RequestStatus.Pending;
     });
     builder.addCase(getBeaconConfig.fulfilled, (state, { payload }) => {
+      state.configStatus = RequestStatus.Fulfilled;
       state.beaconAssemblyIds = Object.keys(payload.response?.overview?.counts?.variants ?? []);
-      state.isFetchingBeaconConfig = false;
     });
     builder.addCase(getBeaconConfig.rejected, (state) => {
-      state.isFetchingBeaconConfig = false;
+      state.configStatus = RequestStatus.Rejected;
     });
 
     // filtering terms -------------------------------------------------------------------------------------------------
@@ -135,7 +135,7 @@ const beacon = createSlice({
     // querying --------------------------------------------------------------------------------------------------------
     builder.addCase(makeBeaconQuery.pending, (state) => {
       state.apiErrorMessage = '';
-      state.isFetchingQueryResponse = true;
+      state.queryStatus = RequestStatus.Pending;
     });
     builder.addCase(makeBeaconQuery.fulfilled, (state, { payload }) => {
       state.results = {
@@ -143,13 +143,13 @@ const beacon = createSlice({
         ...extractBeaconDiscoveryOverview(payload),
       };
       state.apiErrorMessage = '';
-      state.isFetchingQueryResponse = false;
+      state.queryStatus = RequestStatus.Fulfilled;
     });
     builder.addCase(makeBeaconQuery.rejected, (state, action) => {
       // apiErrorMessage must be non-blank to be treated as an error -- if no error is received, but one occurred, use a
       // generic fallback.
       state.apiErrorMessage = errorMsgOrDefault(action.payload); // passed from rejectWithValue
-      state.isFetchingQueryResponse = false;
+      state.queryStatus = RequestStatus.Rejected;
     });
   },
 });
