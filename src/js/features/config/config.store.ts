@@ -31,7 +31,7 @@ export const makeGetConfigRequest = createAsyncThunk<DiscoveryRules, void, { rej
       if (!cond) {
         console.debug(
           `makeGetConfigRequest() was attempted, but will not dispatch:
-            scopeSet=${scopeSet}, configStatus=${configStatus}, configIsInvalid=${configIsInvalid}`
+            scopeSet=${scopeSet}, configStatus=${RequestStatus[configStatus]}, configIsInvalid=${configIsInvalid}`
         );
       }
       return cond;
@@ -56,7 +56,8 @@ export const makeGetServiceInfoRequest = createAsyncThunk<
       const cond = serviceInfoStatus === RequestStatus.Idle;
       if (!cond) {
         console.debug(
-          `makeGetServiceInfoRequest() was attempted, but a prior attempt gave status: ${serviceInfoStatus}`
+          `makeGetServiceInfoRequest() was attempted, but a prior attempt gave status:` +
+            RequestStatus[serviceInfoStatus]
         );
       }
       return cond;
