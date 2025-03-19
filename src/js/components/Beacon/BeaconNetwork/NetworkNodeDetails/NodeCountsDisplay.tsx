@@ -1,14 +1,15 @@
 import SearchResultsCounts from '@/components/Search/SearchResultsCounts';
 import type { OptionalDiscoveryResults } from '@/types/data';
+import type { RequestStatus } from '@/types/requests';
 
-const NodeCountsDisplay = ({ isFetchingQueryResponse, results }: NodeCountsDisplayProps) => (
+const NodeCountsDisplay = ({ queryStatus, results }: NodeCountsDisplayProps) => (
   <div style={{ display: 'flex', justifyContent: 'center' }}>
-    <SearchResultsCounts mode="beacon-network" results={results} isFetchingQueryResponse={isFetchingQueryResponse} />
+    <SearchResultsCounts mode="beacon-network" results={results} queryStatus={queryStatus} />
   </div>
 );
 
 export interface NodeCountsDisplayProps {
-  isFetchingQueryResponse: boolean;
+  queryStatus?: RequestStatus;
   results: OptionalDiscoveryResults;
 }
 

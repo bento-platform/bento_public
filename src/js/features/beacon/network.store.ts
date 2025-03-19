@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 // import { makeAuthorizationHeader } from 'bento-auth-js';
 
@@ -80,7 +80,8 @@ const queryBeaconNetworkNode = createAsyncThunk<
   },
   {
     condition({ _beaconId }, { getState }) {
-      return !(getState().beaconNetwork.beaconResponses[_beaconId]?.isFetchingQueryResponse ?? false);
+      const beaconResponse: FlattenedBeaconResponse | undefined = getState().beaconNetwork.beaconResponses[_beaconId];
+      return !(beaconResponse && beaconResponse.queryStatus === RequestStatus.Pending);
     },
   }
 );
@@ -153,7 +154,7 @@ const beaconNetwork = createSlice({
       const beaconId = action.meta.arg._beaconId;
       state.beaconResponses[beaconId] = {
         apiErrorMessage: '',
-        isFetchingQueryResponse: true,
+        queryStatus: RequestStatus.Pending,
         results: {},
       };
     });
@@ -163,7 +164,7 @@ const beaconNetwork = createSlice({
       const hasErrorResponse = 'error' in payload;
       state.beaconResponses[beaconId] = {
         apiErrorMessage: hasErrorResponse ? errorMsgOrDefault(payload.error?.errorMessage) : '',
-        isFetchingQueryResponse: false,
+        queryStatus: RequestStatus.Fulfilled,
         results: extractBeaconDiscoveryOverview(payload),
       };
       state.networkResults = computeNetworkResults(state.beaconResponses);
@@ -172,7 +173,7 @@ const beaconNetwork = createSlice({
       const beaconId = action.meta.arg._beaconId;
       state.beaconResponses[beaconId] = {
         apiErrorMessage: errorMsgOrDefault(action.payload), // passed from rejectWithValue
-        isFetchingQueryResponse: false,
+        queryStatus: RequestStatus.Rejected,
         results: {},
       };
     });
