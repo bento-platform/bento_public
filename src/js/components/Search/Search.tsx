@@ -1,13 +1,7 @@
 import { type CSSProperties, memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Card, Flex, FloatButton, Row, Space, Typography } from 'antd';
-import {
-  CheckCircleFilled,
-  CloseCircleFilled,
-  FilterOutlined,
-  LoadingOutlined,
-  MinusCircleOutlined,
-} from '@ant-design/icons';
+import { FilterOutlined } from '@ant-design/icons';
 
 import { queryData } from 'bento-auth-js';
 
@@ -28,6 +22,7 @@ import { BOX_SHADOW } from '@/constants/overviewConstants';
 import { WAITING_STATES } from '@/constants/requests';
 import { RequestStatus } from '@/types/requests';
 import type { QueryParams } from '@/types/search';
+import RequestStatusIcon from '@/components/Search/RequestStatusIcon';
 
 const checkQueryParamsEqual = (qp1: QueryParams, qp2: QueryParams): boolean => {
   const qp1Keys = Object.keys(qp1);
@@ -130,26 +125,6 @@ const RoutedSearch = () => {
 
 const SEARCH_SPACE_ITEM_STYLE = { item: WIDTH_100P_STYLE };
 
-type SearchStatus = 'success' | 'fail' | 'loading' | 'disabled';
-
-const SearchStatusIcon = ({ status }: { status: 'success' | 'fail' | 'loading' | 'disabled' }) => {
-  let icon = <div />;
-
-  const baseStyle: CSSProperties = { fontSize: '1.1rem' };
-
-  if (status === 'success') {
-    icon = <CheckCircleFilled style={{ ...baseStyle, color: '#52c41a' }} />;
-  } else if (status === 'fail') {
-    icon = <CloseCircleFilled style={{ ...baseStyle, color: '#f5222d' }} />;
-  } else if (status === 'loading') {
-    icon = <LoadingOutlined style={{ ...baseStyle, color: '#bfbfbf' }} />;
-  } else if (status === 'disabled') {
-    icon = <MinusCircleOutlined style={{ ...baseStyle, color: '#bfbfbf' }} />;
-  }
-
-  return icon;
-};
-
 const SearchFilters = ({ onFocus, style }: { onFocus: () => void; style?: CSSProperties }) => {
   const t = useTranslationFn();
 
@@ -176,15 +151,6 @@ const SearchFilters = ({ onFocus, style }: { onFocus: () => void; style?: CSSPro
   }, [maxQueryParameters, querySections, queryParams]);
 
   const { dataStatus } = useSearchQuery();
-  // TODO: correct search status
-  let status: SearchStatus = 'disabled';
-  if (dataStatus === RequestStatus.Pending) {
-    status = 'loading';
-  } else if (dataStatus === RequestStatus.Fulfilled) {
-    status = 'success';
-  } else if (dataStatus === RequestStatus.Rejected) {
-    status = 'fail';
-  }
 
   return (
     <div style={style}>
@@ -192,7 +158,7 @@ const SearchFilters = ({ onFocus, style }: { onFocus: () => void; style?: CSSPro
         <span style={{ marginRight: '0.5em' }}>
           <FilterOutlined /> {t('Filters')}
         </span>
-        <SearchStatusIcon status={status} />
+        <RequestStatusIcon status={dataStatus} />
       </Typography.Title>
       <Space direction="vertical" size={8} style={WIDTH_100P_STYLE}>
         {WAITING_STATES.includes(configStatus) || WAITING_STATES.includes(fieldsStatus) ? (
