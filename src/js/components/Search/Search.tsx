@@ -1,6 +1,6 @@
-import { type CSSProperties, memo, useCallback, useEffect, useMemo } from 'react';
+import { type CSSProperties, memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Button, Card, Flex, FloatButton, Input, Row, Select, Space, Typography } from 'antd';
+import { Button, Card, Flex, FloatButton, Form, Input, Row, Select, Space, Typography } from 'antd';
 import {
   CheckCircleFilled,
   CloseCircleFilled,
@@ -137,10 +137,12 @@ const SearchFilterInput = ({
   field,
   value,
   onChange,
+  onFocus,
   onRemove,
   disabledFields,
 }: FilterValue & {
   onChange: (v: FilterValue) => void;
+  onFocus: () => void;
   onRemove: () => void;
   disabledFields: Set<string>;
 }) => {
@@ -174,15 +176,20 @@ const SearchFilterInput = ({
       <Select
         style={{ flex: 1, borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
         options={filterOptions}
+        onClick={() => onFocus()}
+        onFocus={() => onFocus()}
         onChange={(v) => {
           onChange({ field: v, value: fieldFilterOptions[v][0].value ?? null });
         }}
         value={field}
+        placeholder={t('Select a field to filter by\u2026')}
       />
       <Select
         style={{ flex: 1 }}
         disabled={!field}
         options={field ? fieldFilterOptions[field] : []}
+        onClick={() => onFocus()}
+        onFocus={() => onFocus()}
         onChange={(newValue) => {
           onChange({ field, value: newValue });
         }}
@@ -221,7 +228,7 @@ const SearchStatusIcon = ({ status }: { status: 'success' | 'fail' | 'loading' |
   return icon;
 };
 
-const SearchFilters = ({ style }: { style?: CSSProperties }) => {
+const SearchFilters = ({ onFocus, style }: { onFocus: () => void; style?: CSSProperties }) => {
   const t = useTranslationFn();
 
   const { pathname } = useLocation();
@@ -272,6 +279,7 @@ const SearchFilters = ({ style }: { style?: CSSProperties }) => {
           filterInputs.map((fv, i) => (
             <SearchFilterInput
               key={i}
+              onFocus={onFocus}
               onChange={({ field, value }) => {
                 if (field === null || value === null) return; // Force field to resolve as string type
                 const url = buildQueryParamsUrl(pathname, {
@@ -313,17 +321,24 @@ const OrDelimiter = memo(() => {
 });
 OrDelimiter.displayName = 'OrDelimiter';
 
-const SearchFreeText = ({ style }: { style?: CSSProperties }) => {
+const SearchFreeText = ({ onFocus, style }: { onFocus: () => void; style?: CSSProperties }) => {
   const t = useTranslationFn();
+
   return (
     <div style={style}>
       <Typography.Title level={3} style={{ fontSize: '1.1rem', marginTop: 0 }}>
         {t('Text search')}
       </Typography.Title>
-      <Space.Compact style={WIDTH_100P_STYLE}>
-        <Input prefix={<SearchOutlined />} />
-        <Button>{t('Search')}</Button>
-      </Space.Compact>
+      <Form onFocus={() => onFocus()} onFinish={console.log}>
+        <Space.Compact style={WIDTH_100P_STYLE}>
+          <Form.Item name="q" noStyle={true}>
+            <Input prefix={<SearchOutlined />} />
+          </Form.Item>
+          <Button type="primary" htmlType="submit">
+            {t('Search')}
+          </Button>
+        </Space.Compact>
+      </Form>
     </div>
   );
 };
@@ -331,6 +346,8 @@ const SearchFreeText = ({ style }: { style?: CSSProperties }) => {
 const Search = () => {
   const { hasPermission: queryDataPerm } = useHasScopePermission(queryData);
   const { fieldsStatus } = useSearchQuery();
+
+  const [focused, setFocused] = useState<'filters' | 'text'>('filters');
 
   return WAITING_STATES.includes(fieldsStatus) ? (
     <Loader />
@@ -344,11 +361,22 @@ const Search = () => {
               styles={{ ...CARD_STYLES, body: { ...CARD_BODY_STYLE, padding: '20px 24px 24px 24px' } }}
             >
               <Flex justify="space-between" gap={24} style={WIDTH_100P_STYLE}>
-                <SearchFilters style={{ flex: 1, maxWidth: 600 }} />
+                <SearchFilters
+                  onFocus={() => setFocused('filters')}
+                  style={{
+                    flex: 1,
+                    maxWidth: 600,
+                    opacity: focused === 'filters' ? 1 : 0.75,
+                    transition: 'opacity 0.1s',
+                  }}
+                />
                 {queryDataPerm && (
                   <>
                     <OrDelimiter />
-                    <SearchFreeText style={{ flex: 1 }} />
+                    <SearchFreeText
+                      onFocus={() => setFocused('text')}
+                      style={{ flex: 1, opacity: focused === 'text' ? 1 : 0.75, transition: 'opacity 0.1s' }}
+                    />
                   </>
                 )}
               </Flex>
