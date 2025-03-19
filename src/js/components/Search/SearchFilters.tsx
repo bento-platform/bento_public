@@ -61,7 +61,7 @@ const SearchFilters = ({ onFocus, style }: { onFocus: () => void; style?: CSSPro
                 if (field === null || value === null) return; // Force field to resolve as string type
                 const url = buildQueryParamsUrl(pathname, {
                   // If we change the field in this filter, we need to remove it so we can switch to the new field
-                  ...(fv.field ? queryParamsWithoutKey(queryParams, fv.field) : queryParams),
+                  ...(fv.field && fv.field !== field ? queryParamsWithoutKey(queryParams, fv.field) : queryParams),
                   // ... and if the field stays the same, we will put it back with a new value. Otherwise, we'll put the
                   // new field in with the first available value.
                   [field]: value,
