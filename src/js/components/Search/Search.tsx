@@ -1,20 +1,19 @@
 import { type CSSProperties, memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Button, Card, Flex, FloatButton, Form, Input, Row, Select, Space, Typography } from 'antd';
+import { Card, Flex, FloatButton, Row, Space, Typography } from 'antd';
 import {
   CheckCircleFilled,
   CloseCircleFilled,
-  CloseOutlined,
   FilterOutlined,
   LoadingOutlined,
   MinusCircleOutlined,
-  SearchOutlined,
 } from '@ant-design/icons';
 
 import { queryData } from 'bento-auth-js';
 
-import OptionDescription from './OptionDescription';
 import SearchResults from './SearchResults';
+import SearchFilterInput, { SearchFilterInputSkeleton, type FilterValue } from './SearchFilterInput';
+import SearchFreeText from './SearchFreeText';
 
 import { useConfig } from '@/features/config/hooks';
 import { useSearchQuery } from '@/features/search/hooks';
@@ -131,83 +130,6 @@ const RoutedSearch = () => {
 
 const SEARCH_SPACE_ITEM_STYLE = { item: WIDTH_100P_STYLE };
 
-type FilterValue = { field: string | null; value: string | null };
-
-const SearchFilterInput = ({
-  field,
-  value,
-  onChange,
-  onFocus,
-  onRemove,
-  disabledFields,
-}: FilterValue & {
-  onChange: (v: FilterValue) => void;
-  onFocus: () => void;
-  onRemove: () => void;
-  disabledFields: Set<string>;
-}) => {
-  const t = useTranslationFn();
-
-  const { querySections } = useSearchQuery();
-
-  const filterOptions = querySections.map(({ section_title: label, fields }) => ({
-    label,
-    title: label,
-    options: fields.map((f) => ({
-      value: f.id,
-      label: (
-        <div style={{ display: 'flex' }}>
-          <div style={{ flex: 1 }}>{f.title}</div>
-          <OptionDescription description={t(f.description)} />
-        </div>
-      ),
-      // Disabled if: field is in disabled set AND it isn't the currently selected field (so we allow re-selection of
-      // the current field.)
-      disabled: disabledFields.has(f.id) && field !== f.id,
-    })),
-  }));
-
-  const fieldFilterOptions = Object.fromEntries(
-    querySections.flatMap(({ fields }) => fields.map((f) => [f.id, f.options.map((o) => ({ value: o, label: o }))]))
-  );
-
-  return (
-    <Space.Compact style={WIDTH_100P_STYLE}>
-      <Select
-        style={{ flex: 1, borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
-        options={filterOptions}
-        onClick={() => onFocus()}
-        onFocus={() => onFocus()}
-        onChange={(v) => {
-          onChange({ field: v, value: fieldFilterOptions[v][0].value ?? null });
-        }}
-        value={field}
-        placeholder={t('Select a field to filter by\u2026')}
-      />
-      <Select
-        style={{ flex: 1 }}
-        disabled={!field}
-        options={field ? fieldFilterOptions[field] : []}
-        onClick={() => onFocus()}
-        onFocus={() => onFocus()}
-        onChange={(newValue) => {
-          onChange({ field, value: newValue });
-        }}
-        value={value}
-      />
-      <Button icon={<CloseOutlined />} disabled={!field || !value} onClick={onRemove} />
-    </Space.Compact>
-  );
-};
-
-const SearchFilterInputSkeleton = () => (
-  <Space.Compact style={WIDTH_100P_STYLE}>
-    <Select style={{ flex: 1, borderTopRightRadius: 0, borderBottomRightRadius: 0 }} disabled={true} loading={true} />
-    <Select style={{ flex: 1 }} disabled={true} />
-    <Button icon={<CloseOutlined />} disabled={true} />
-  </Space.Compact>
-);
-
 type SearchStatus = 'success' | 'fail' | 'loading' | 'disabled';
 
 const SearchStatusIcon = ({ status }: { status: 'success' | 'fail' | 'loading' | 'disabled' }) => {
@@ -320,28 +242,6 @@ const OrDelimiter = memo(() => {
   );
 });
 OrDelimiter.displayName = 'OrDelimiter';
-
-const SearchFreeText = ({ onFocus, style }: { onFocus: () => void; style?: CSSProperties }) => {
-  const t = useTranslationFn();
-
-  return (
-    <div style={style}>
-      <Typography.Title level={3} style={{ fontSize: '1.1rem', marginTop: 0 }}>
-        {t('Text search')}
-      </Typography.Title>
-      <Form onFocus={() => onFocus()} onFinish={console.log}>
-        <Space.Compact style={WIDTH_100P_STYLE}>
-          <Form.Item name="q" noStyle={true}>
-            <Input prefix={<SearchOutlined />} />
-          </Form.Item>
-          <Button type="primary" htmlType="submit">
-            {t('Search')}
-          </Button>
-        </Space.Compact>
-      </Form>
-    </div>
-  );
-};
 
 const Search = () => {
   const { hasPermission: queryDataPerm } = useHasScopePermission(queryData);
