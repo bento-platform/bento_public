@@ -54,7 +54,9 @@ export const getProjects = createAsyncThunk<
       // Only need to fetch projects once - if the projects are being/have already been fetched, don't re-execute.
       const { projectsStatus } = getState().metadata;
       const cond = projectsStatus === RequestStatus.Idle;
-      if (!cond) console.debug(`getProjects() was attempted, but a prior attempt gave status: ${projectsStatus}`);
+      if (!cond) {
+        console.debug(`getProjects() was attempted, but a prior attempt gave status: ${RequestStatus[projectsStatus]}`);
+      }
       return cond;
     },
   }

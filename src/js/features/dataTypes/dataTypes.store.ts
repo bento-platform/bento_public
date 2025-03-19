@@ -37,7 +37,8 @@ export const makeGetDataTypes = createAsyncThunk<
 
       if (!(status === RequestStatus.Idle || (status !== RequestStatus.Pending && isInvalid))) {
         console.debug(
-          `makeGetDataTypes() was attempted, but a prior attempt gave status: ${status} (isInvalid: ${isInvalid})`
+          `makeGetDataTypes() was attempted, but a prior attempt gave status: ${RequestStatus[status]}` +
+            `(isInvalid: ${isInvalid})`
         );
         return false;
       }
