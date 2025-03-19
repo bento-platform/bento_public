@@ -1,24 +1,21 @@
-import type React from 'react';
 import { useCallback } from 'react';
 import { Card, Empty, Space, Typography } from 'antd';
 import { CalendarOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 
-import { useAppSelector } from '@/hooks';
-
-import type { LastIngestionDataTypeResponse } from '@/types/lastIngestionDataTypeResponse';
 import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { BOX_SHADOW } from '@/constants/overviewConstants';
+import { useDataTypes } from '@/features/dataTypes/hooks';
 
-const LastIngestionInfo: React.FC = () => {
+const LastIngestionInfo = () => {
   const { t, i18n } = useTranslation();
 
-  const dataTypesObject = useAppSelector((state) => state.lastIngestionData?.dataTypes) || {};
+  const { dataTypesById } = useDataTypes();
 
-  const sortedDataTypes = Object.values(dataTypesObject).sort((a, b) => a.label.localeCompare(b.label));
+  const sortedDataTypes = Object.values(dataTypesById).sort((a, b) => a.label.localeCompare(b.label));
 
   // Filter out the queryable data types
-  const queryableDataTypes = sortedDataTypes.filter((dataType: LastIngestionDataTypeResponse) => dataType.queryable);
+  const queryableDataTypes = sortedDataTypes.filter((dataType) => dataType.queryable);
 
   const formatDate = useCallback(
     (dateString: string) => {
@@ -44,7 +41,7 @@ const LastIngestionInfo: React.FC = () => {
       <Typography.Title level={3}>{t('Latest Data Ingestion')}</Typography.Title>
       <Space wrap>
         {hasData ? (
-          queryableDataTypes.map((dataType: LastIngestionDataTypeResponse) => (
+          queryableDataTypes.map((dataType) => (
             <Card style={BOX_SHADOW} key={dataType.id}>
               <Space direction="vertical">
                 <Typography.Text style={{ color: 'rgba(0,0,0,0.45)' }}>

@@ -8,9 +8,8 @@ import { invalidateConfig, makeGetServiceInfoRequest } from '@/features/config/c
 import { makeGetAboutRequest } from '@/features/content/content.store';
 import { getBeaconConfig, getBeaconFilters } from '@/features/beacon/beacon.store';
 import { getBeaconNetworkConfig } from '@/features/beacon/network.store';
-import { fetchGohanData, fetchKatsuData } from '@/features/ingestion/lastIngestion.store';
 import { invalidateData } from '@/features/data/data.store';
-import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
+import { invalidateDataTypes } from '@/features/dataTypes/dataTypes.store';
 import { useMetadata } from '@/features/metadata/hooks';
 import { getProjects, markScopeSet, selectScope } from '@/features/metadata/metadata.store';
 import { getGenomes } from '@/features/reference/reference.store';
@@ -105,7 +104,6 @@ const BentoAppRouter = () => {
     if (!scopeSet) return;
     dispatch(makeGetSearchFields());
     dispatch(makeGetKatsuPublic());
-    dispatch(fetchKatsuData());
 
     if (BEACON_UI_ENABLED) {
       dispatch(getBeaconConfig());
@@ -117,6 +115,7 @@ const BentoAppRouter = () => {
     console.debug('isAuthenticated | scope | scopeSet changed - dispatching config/data invalidate actions');
     dispatch(invalidateConfig());
     dispatch(invalidateData());
+    dispatch(invalidateDataTypes());
   }, [dispatch, isAuthenticated, scope, scopeSet]);
 
   useEffect(() => {
@@ -133,9 +132,7 @@ const BentoAppRouter = () => {
 
     dispatch(getProjects());
     dispatch(makeGetAboutRequest());
-    dispatch(fetchGohanData());
     dispatch(makeGetServiceInfoRequest());
-    dispatch(makeGetDataTypes());
     dispatch(getGenomes());
   }, [dispatch]);
 
