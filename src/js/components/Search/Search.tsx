@@ -106,6 +106,7 @@ const RoutedSearch = () => {
     }
   }, [
     dispatch,
+    configStatus,
     searchFieldsStatus,
     searchQueryStatus,
     location.search,
