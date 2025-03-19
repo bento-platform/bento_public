@@ -5,6 +5,7 @@ import { Loading3QuartersOutlined } from '@ant-design/icons';
 
 import SearchResultsPane from '@/components/Search/SearchResultsPane';
 import { useBeaconNetwork } from '@/features/beacon/hooks';
+import { atLeastOneNetworkResponseIsPending } from '@/features/beacon/utils';
 import { useTranslationFn } from '@/hooks';
 
 const NetworkSearchResults = () => {
@@ -14,8 +15,8 @@ const NetworkSearchResults = () => {
   const { networkResults, beaconResponses } = useBeaconNetwork();
   const responseArray = useMemo(() => Object.values(beaconResponses), [beaconResponses]);
   const isFetchingAtLeastOneResponse = useMemo(
-    () => responseArray.some((r) => r.isFetchingQueryResponse),
-    [responseArray]
+    () => atLeastOneNetworkResponseIsPending(beaconResponses),
+    [beaconResponses]
   );
 
   // filter() creates arrays we don't need, but the arrays are small

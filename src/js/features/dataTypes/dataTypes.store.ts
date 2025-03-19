@@ -4,7 +4,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import type { RootState } from '@/store';
 import type { BentoServiceDataType } from '@/types/dataTypes';
 import { RequestStatus } from '@/types/requests';
-import { authorizedRequestConfig } from '@/utils/requests';
+import { scopedAuthorizedRequestConfig } from '@/utils/requests';
 
 export const makeGetDataTypes = createAsyncThunk<
   BentoServiceDataType[],
@@ -16,42 +16,64 @@ export const makeGetDataTypes = createAsyncThunk<
 >(
   'dataTypes/makeGetDataTypes',
   async (_, { getState }) => {
-    // Not scoped currently - this is a way to get all data types in an instance from service registry, but it may make
-    // sense in the future to forward query params to nested calls depending on scope value especially in the case of
-    // count handling. TBD - TODO: figure this out
-    const res = await axios.get('/api/service-registry/data-types', authorizedRequestConfig(getState()));
+    // Service registry handles scoping here, although having the data types endpoint be the same as the
+    // counts/last-ingested endpoint is odd and should be re-thought in the future.
+    const res = await axios.get('/api/service-registry/data-types', scopedAuthorizedRequestConfig(getState()));
     return res.data;
   },
   {
     condition(_, { getState }) {
-      const { status } = getState().dataTypes;
-      const cond = status === RequestStatus.Idle;
-      if (!cond) console.debug(`makeGetDataTypes() was attempted, but a prior attempt gave status: ${status}`);
-      return cond;
+      const {
+        dataTypes: { status, isInvalid },
+        metadata: {
+          selectedScope: { scopeSet },
+        },
+      } = getState();
+
+      if (!scopeSet) {
+        console.debug(`makeGetDataTypes() waiting for scopeSet`);
+        return false;
+      }
+
+      if (!(status === RequestStatus.Idle || (status !== RequestStatus.Pending && isInvalid))) {
+        console.debug(
+          `makeGetDataTypes() was attempted, but a prior attempt gave status: ${status} (isInvalid: ${isInvalid})`
+        );
+        return false;
+      }
+
+      return true;
     },
   }
 );
 
 export type DataTypesState = {
   status: RequestStatus;
+  isInvalid: boolean;
   dataTypesById: Record<string, BentoServiceDataType>;
 };
 
 const initialState: DataTypesState = {
   status: RequestStatus.Idle,
+  isInvalid: false,
   dataTypesById: {},
 };
 
 const dataTypes = createSlice({
   name: 'dataTypes',
   initialState,
-  reducers: {},
+  reducers: {
+    invalidateDataTypes: (state) => {
+      state.isInvalid = true;
+    },
+  },
   extraReducers(builder) {
     builder.addCase(makeGetDataTypes.pending, (state) => {
       state.status = RequestStatus.Pending;
     });
     builder.addCase(makeGetDataTypes.fulfilled, (state, { payload }) => {
       state.status = RequestStatus.Fulfilled;
+      state.isInvalid = false;
       state.dataTypesById = Object.fromEntries(payload.map((dt) => [dt.id, dt]));
     });
     builder.addCase(makeGetDataTypes.rejected, (state) => {
@@ -60,4 +82,5 @@ const dataTypes = createSlice({
   },
 });
 
+export const { invalidateDataTypes } = dataTypes.actions;
 export default dataTypes.reducer;

@@ -8,6 +8,7 @@ import { COUNTS_FILL } from '@/constants/overviewConstants';
 import { NO_RESULTS_DASHES } from '@/constants/searchConstants';
 import { useTranslationFn } from '@/hooks';
 import type { DiscoveryResults, OptionalDiscoveryResults } from '@/types/data';
+import { RequestStatus } from '@/types/requests';
 import type { SearchResultsUIPane } from '@/types/search';
 
 const STAT_STYLE: CSSProperties = { color: COUNTS_FILL };
@@ -15,7 +16,7 @@ const STAT_STYLE: CSSProperties = { color: COUNTS_FILL };
 const SearchResultsCounts = ({
   mode,
   results,
-  isFetchingQueryResponse,
+  queryStatus,
   selectedPane,
   setSelectedPane,
   hasInsufficientData,
@@ -43,7 +44,7 @@ const SearchResultsCounts = ({
           : {}),
       }}
     >
-      {isBeaconNetwork && isFetchingQueryResponse ? (
+      {isBeaconNetwork && queryStatus === RequestStatus.Pending ? (
         <div style={{ display: 'flex', flexDirection: 'column', margin: '6px 0' }}>
           <Skeleton.Input size="small" style={{ width: '330px', height: '20px' }} active />
           <Skeleton.Input size="small" style={{ marginTop: '10px', width: '330px', height: '20px' }} active />
@@ -95,7 +96,7 @@ type SearchResultsCountsProps = {
   // Perhaps this styling will be more unified in the future.
   mode: 'normal' | 'beacon-network';
   results: DiscoveryResults | OptionalDiscoveryResults;
-  isFetchingQueryResponse?: boolean;
+  queryStatus?: RequestStatus;
   selectedPane?: SearchResultsUIPane;
   setSelectedPane?: (pane: SearchResultsUIPane) => void;
   hasInsufficientData?: boolean;
