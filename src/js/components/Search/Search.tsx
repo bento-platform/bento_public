@@ -39,7 +39,8 @@ const RoutedSearch = () => {
     querySections: searchSections,
     queryParams,
     fieldsStatus: searchFieldsStatus,
-    dataStatus: searchQueryStatus,
+    filterQueryStatus,
+    textQueryStatus,
   } = useSearchQuery();
 
   const searchFields = useMemo(
@@ -85,14 +86,15 @@ const RoutedSearch = () => {
     if (
       configStatus !== RequestStatus.Fulfilled ||
       searchFieldsStatus !== RequestStatus.Fulfilled ||
-      searchQueryStatus === RequestStatus.Pending
+      filterQueryStatus === RequestStatus.Pending ||
+      textQueryStatus === RequestStatus.Pending
     ) {
       return;
     }
 
     const { valid, validQueryParamsObject } = validateQuery(new URLSearchParams(location.search));
     if (valid) {
-      if (WAITING_STATES.includes(searchQueryStatus) || !checkQueryParamsEqual(validQueryParamsObject, queryParams)) {
+      if (filterQueryStatus === RequestStatus.Idle || !checkQueryParamsEqual(validQueryParamsObject, queryParams)) {
         // Only update the state & refresh if we have a new set of query params from the URL.
         // [!!!] This should be the only place setQueryParams(...) gets called. Everywhere else should use URL
         //       manipulations, so that we have a one-way data flow from URL to state!
@@ -109,7 +111,8 @@ const RoutedSearch = () => {
     dispatch,
     configStatus,
     searchFieldsStatus,
-    searchQueryStatus,
+    filterQueryStatus,
+    textQueryStatus,
     location.search,
     location.pathname,
     navigate,

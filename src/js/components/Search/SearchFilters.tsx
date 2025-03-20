@@ -39,7 +39,7 @@ const SearchFilters = ({ onFocus, style }: { onFocus: () => void; style?: CSSPro
     return [filterInputs_, usedFields_];
   }, [maxQueryParameters, querySections, queryParams]);
 
-  const { dataStatus } = useSearchQuery();
+  const { filterQueryStatus } = useSearchQuery();
 
   return (
     <div style={style}>
@@ -47,7 +47,7 @@ const SearchFilters = ({ onFocus, style }: { onFocus: () => void; style?: CSSPro
         <span style={{ marginRight: '0.5em' }}>
           <FilterOutlined /> {t('Filters')}
         </span>
-        <RequestStatusIcon status={dataStatus} />
+        {usedFields.size ? <RequestStatusIcon status={filterQueryStatus} /> : null}
       </Typography.Title>
       <Space direction="vertical" size={8} style={WIDTH_100P_STYLE}>
         {WAITING_STATES.includes(configStatus) || WAITING_STATES.includes(fieldsStatus) ? (
