@@ -29,7 +29,7 @@ import {
 } from '@/constants/beaconConstants';
 import { T_PLURAL_COUNT } from '@/constants/i18n';
 
-const STARTER_FILTER = { index: 1, active: true };
+const STARTER_FILTER = { index: 0, searchFieldId: null };
 
 // TODOs
 // example searches, either hardcoded or configurable
@@ -124,13 +124,11 @@ const BeaconQueryFormUi = ({
         return [];
       }
 
-      return filters
-        .filter((f) => f.active)
-        .map((f) => ({
-          id: values[`filterId${f.index}`],
-          operator: '=',
-          value: values[`filterValue${f.index}`],
-        }));
+      return filters.map((f) => ({
+        id: values[`filterId${f.index}`],
+        operator: '=',
+        value: values[`filterValue${f.index}`],
+      }));
     },
     [filters]
   );

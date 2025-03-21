@@ -12,28 +12,34 @@ import type {
   BeaconFilterSection,
   BeaconFilterUiOptions,
 } from '@/types/beacon';
-
-// TODOs:
-// any search key (eg "sex") selected in one filter should not available in other
-// for clarity they should probably appear, but be greyed out
-// this requires rendering select options as <Option> components
+import OptionDescription from '@/components/Search/OptionDescription';
 
 const FILTER_FORM_ITEM_STYLE = { flex: 1, marginInlineEnd: -1 };
 const FILTER_FORM_ITEM_INNER_STYLE = { width: '100%' };
 
-const Filter = ({ filter, form, beaconFiltersBySection, removeFilter, isRequired }: FilterProps) => {
+const Filter = ({
+  filter,
+  form,
+  beaconFiltersBySection,
+  removeFilter,
+  setFilterSearchFieldId,
+  searchFieldInUse,
+  isRequired,
+}: FilterProps) => {
   const t = useTranslationFn();
 
   const [valueOptions, setValueOptions] = useState([{ label: '', value: '' }]);
 
-  const handleSelectKey = (_: unknown, option: GenericOptionType) => {
-    // set dropdown options for a particular key
-    // ie for key "sex", set options to "MALE", "FEMALE", etc
+  const handleSelectKey = (searchFieldId: string, option: GenericOptionType) => {
+    // update which search field this filter is using ("sex", "age", etc)     //naming confusion here, that "filter" means both the filters you can choose and the current options present in the form
+    setFilterSearchFieldId(filter, searchFieldId);
 
     // narrow type of option
     // ant design has conflicting type inference when options are nested in more than one layer
     const currentOption = option as FilterPullDownKey;
 
+    // set dropdown options for a particular key
+    // ie for key "sex", set options to "MALE", "FEMALE", etc
     setValueOptions(currentOption.optionsThisKey);
   };
 
@@ -47,13 +53,21 @@ const Filter = ({ filter, form, beaconFiltersBySection, removeFilter, isRequired
   const renderLabel = (filter: BeaconFilterUiOptions) => {
     const units = filter.units ?? '';
     const unitsString = units ? ` (${t(units)})` : '';
-    return t(filter.label) + unitsString;
+    const helpText = t(filter.description);
+    const labelText = t(filter.label) + unitsString;
+    return (
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        {labelText}
+        <OptionDescription description={helpText} />
+      </div>
+    );
   };
 
   const searchKeyOptions = (arr: BeaconFilterSection[]): FilterOption[] => {
     return arr.map((qs) => ({
       label: t(qs.section_title),
       options: qs.fields.map((field) => ({
+        disabled: searchFieldInUse(field.id),
         label: renderLabel(field),
         value: field.id,
         optionsThisKey: searchValueOptions(field.values),
@@ -100,6 +114,8 @@ export interface FilterProps {
   form: FormInstance;
   beaconFiltersBySection: BeaconFilterSection[];
   removeFilter: (filter: FormFilter) => void;
+  setFilterSearchFieldId: (filter: FormFilter, searchFieldId: string) => void;
+  searchFieldInUse: (searchFieldId: string) => boolean;
   isRequired: boolean;
 }
 
