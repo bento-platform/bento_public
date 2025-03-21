@@ -15,7 +15,10 @@ const makeConfig = (mode) => ({
   output: {
     path: path.join(__dirname, 'dist'),
     publicPath: '/',
-    // filename: "js/bundle.js",
+    // See https://github.com/webpack/webpack/issues/10796#issuecomment-717966170
+    // This seems to mitigate some memory leak in webpack when constantly rebuilding with new chunk hashes, which
+    // happened occasionally to me with webpack-dev-server
+    //  - David L, 2025-03-21
     filename: mode === 'production' ? 'js/[name][chunkhash].js' : 'js/[name].js',
     clean: true,
   },
