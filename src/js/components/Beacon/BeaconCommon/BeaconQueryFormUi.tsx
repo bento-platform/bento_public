@@ -36,7 +36,7 @@ const STARTER_FILTER = { index: 0, searchFieldId: null };
 // more intuitive variants ui
 
 const BeaconQueryFormUi = ({
-  isFetchingQueryResponse, //used in local beacon only
+  isFetchingQueryResponse,
   isNetworkQuery,
   beaconAssemblyIds,
   launchQuery,

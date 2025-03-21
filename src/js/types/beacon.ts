@@ -6,6 +6,7 @@ import type { makeBeaconQuery } from '@/features/beacon/beacon.store';
 import type { beaconNetworkQuery } from '@/features/beacon/network.store';
 import type { OptionalDiscoveryResults } from '@/types/data';
 import type { Dataset } from '@/types/metadata';
+import type { RequestStatus } from '@/types/requests';
 
 // ----------------------------
 // form handling
@@ -203,7 +204,7 @@ export interface BeaconFilterSection {
 // ----------------------------
 
 export interface FlattenedBeaconResponse {
-  isFetchingQueryResponse: boolean;
+  queryStatus: RequestStatus;
   apiErrorMessage: string; // if non-blank, an error has occurred
   results: OptionalDiscoveryResults;
 }

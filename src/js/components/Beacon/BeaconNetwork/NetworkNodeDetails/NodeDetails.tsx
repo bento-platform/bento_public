@@ -28,7 +28,7 @@ const NodeDetails = ({ beacon, response }: NodeDetailsProps) => {
   const assemblies = Object.keys(variants);
   const bentoUrl = apiUrl.replace('/api/beacon', '');
 
-  const { isFetchingQueryResponse, apiErrorMessage, results } = response ?? {};
+  const { queryStatus, apiErrorMessage, results } = response ?? {};
 
   const logo = (
     <img
@@ -78,7 +78,7 @@ const NodeDetails = ({ beacon, response }: NodeDetailsProps) => {
         </Link>,
       ]}
     >
-      <NodeCountsDisplay isFetchingQueryResponse={isFetchingQueryResponse ?? false} results={results ?? {}} />
+      <NodeCountsDisplay queryStatus={queryStatus} results={results ?? {}} />
     </Card>
   );
 };

@@ -7,6 +7,7 @@ export type BentoDataType = {
   schema: JSONSchema7;
   metadata_schema: JSONSchema7;
   count?: number;
+  last_ingested?: string;
 };
 
 export type BentoServiceDataType = BentoDataType & { service_base_url: string };

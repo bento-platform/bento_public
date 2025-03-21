@@ -12,6 +12,7 @@ import type { Field, Section } from '@/types/search';
 import type { ChartData, DiscoveryResults, OptionalDiscoveryResults } from '@/types/data';
 import type { NetworkBeacon } from '@/types/beaconNetwork';
 import type { Dataset, Project } from '@/types/metadata';
+import { RequestStatus } from '@/types/requests';
 import { serializeChartData } from '@/utils/chart';
 
 type TempChartObject = Record<string, number>;
@@ -93,7 +94,7 @@ export const extractBeaconDiscoveryOverview = (response: BeaconQueryResponse): O
 });
 
 export const atLeastOneNetworkResponseIsPending = (responses: BeaconNetworkResponses) =>
-  Object.values(responses).some((r) => r.isFetchingQueryResponse);
+  Object.values(responses).some((r) => r.queryStatus === RequestStatus.Pending);
 
 const scopedBeaconBaseUrl = (projectId: Project['identifier'] | undefined): string => {
   const projectPath = projectId ? '/' + projectId : '';
