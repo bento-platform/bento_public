@@ -149,7 +149,7 @@ const Search = () => {
     <>
       <Row justify="center">
         <Space direction="vertical" align="center" style={WIDTH_100P_STYLE} styles={SEARCH_SPACE_ITEM_STYLE}>
-          <div className="container margin-auto" style={{ paddingBottom: 8 }}>
+          <div className="container margin-auto">
             <Card
               style={{ borderRadius: '10px', ...WIDTH_100P_STYLE, ...BOX_SHADOW }}
               styles={{ ...CARD_STYLES, body: { ...CARD_BODY_STYLE, padding: '20px 24px 24px 24px' } }}

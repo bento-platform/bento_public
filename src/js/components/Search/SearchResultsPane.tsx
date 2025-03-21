@@ -1,4 +1,4 @@
-import { type ReactElement, useCallback, useMemo, useState } from 'react';
+import { type CSSProperties, type ReactElement, useCallback, useMemo, useState } from 'react';
 import {
   Button,
   Card,
@@ -160,6 +160,7 @@ const SearchResultsPane = ({
   results,
   resultsTitle,
   resultsExtra,
+  style,
 }: SearchResultsPaneProps) => {
   const [panePage, setPanePage] = useState<SearchResultsUIPane>('charts');
 
@@ -171,7 +172,7 @@ const SearchResultsPane = ({
   }
 
   return (
-    <div className="container margin-auto search-results-pane">
+    <div className="container margin-auto search-results-pane" style={style}>
       <Card
         style={{
           borderRadius: '10px',
@@ -218,6 +219,7 @@ export interface SearchResultsPaneProps {
   results: DiscoveryResults;
   resultsTitle?: string;
   resultsExtra?: ReactElement;
+  style?: CSSProperties;
 }
 
 export default SearchResultsPane;
