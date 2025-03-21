@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { type CSSProperties, memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Card, Flex, Row, Space } from 'antd';
 
@@ -127,11 +127,12 @@ const SEARCH_SPACE_ITEM_STYLE = { item: WIDTH_100P_STYLE };
 
 const OrDelimiter = memo(() => {
   const t = useTranslationFn();
+  const lineStyle: CSSProperties = { width: 1, flex: 1, backgroundColor: '#f0f0f0' };
   return (
     <Flex vertical={true} gap={8} align="center">
-      <div style={{ width: 1, flex: 1, backgroundColor: '#f0f0f0' }}></div>
+      <div style={lineStyle}></div>
       <div style={{ fontWeight: 'bold', color: '#595959' }}>{t('OR')}</div>
-      <div style={{ width: 1, flex: 1, backgroundColor: '#f0f0f0' }}></div>
+      <div style={lineStyle}></div>
     </Flex>
   );
 });
