@@ -1,10 +1,21 @@
 import { type ReactElement, useCallback, useMemo, useState } from 'react';
-import { Button, Card, Col, Flex, Row, Table, type TableColumnsType, type TableProps, Typography } from 'antd';
+import {
+  Button,
+  Card,
+  Col,
+  Flex,
+  Row,
+  Table,
+  type TableColumnsType,
+  type TablePaginationConfig,
+  type TableProps,
+  Typography,
+} from 'antd';
 import { ExportOutlined, LeftOutlined } from '@ant-design/icons';
 import { PieChart } from 'bento-charts';
 
 import { PORTAL_URL } from '@/config';
-import { T_PLURAL_COUNT } from '@/constants/i18n';
+import { T_PLURAL_COUNT, T_SINGULAR_COUNT } from '@/constants/i18n';
 import { BOX_SHADOW, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
 import { useTranslationFn } from '@/hooks';
 import type { DiscoveryResults } from '@/types/data';
@@ -22,12 +33,6 @@ const IndividualPortalLink = ({ id }: IndividualResultRow) => (
     <ExportOutlined />
   </a>
 );
-
-const INDIVIDUAL_PAGINATION: TableProps<IndividualResultRow>['pagination'] = {
-  align: 'end',
-  size: 'default',
-  showSizeChanger: true,
-};
 
 const INDIVIDUAL_EXPANDABLE: TableProps<IndividualResultRow>['expandable'] = {
   expandedRowRender: (rec) => <IndividualRowDetail id={rec.id} />,
@@ -80,8 +85,8 @@ const SRIndividualsPage = ({ onBack, results }: { onBack: () => void; results: D
     () => [
       { dataIndex: 'id', title: 'ID' },
       // TODO: implement these when we have this information in search results:
-      ...(!selectedScope.scope.project ? [{ title: 'Project', key: 'project' }] : []),
-      ...(!selectedScope.scope.dataset ? [{ title: 'Dataset', key: 'dataset' }] : []),
+      ...(!selectedScope.scope.project ? [{ title: t('entities.project', T_SINGULAR_COUNT), key: 'project' }] : []),
+      ...(!selectedScope.scope.dataset ? [{ title: t('entities.dataset', T_SINGULAR_COUNT), key: 'dataset' }] : []),
       {
         title: '',
         key: 'actions',
@@ -89,7 +94,7 @@ const SRIndividualsPage = ({ onBack, results }: { onBack: () => void; results: D
         render: ({ id }) => <IndividualPortalLink id={id} />,
       },
     ],
-    [selectedScope]
+    [t, selectedScope]
   );
 
   const { individualMatches } = results;
@@ -98,17 +103,40 @@ const SRIndividualsPage = ({ onBack, results }: { onBack: () => void; results: D
     [individualMatches]
   );
 
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
+  // noinspection JSUnusedGlobalSymbols
+  const individualPagination = useMemo<TablePaginationConfig>(
+    () => ({
+      current: page,
+      pageSize,
+      align: 'end',
+      size: 'default',
+      showSizeChanger: true,
+      onChange(page, pageSize) {
+        setPage(page);
+        setPageSize(pageSize);
+      },
+    }),
+    [page, pageSize]
+  );
+
+  const currentStart = individualTableData.length > 0 ? page * pageSize - pageSize + 1 : 0;
+  const currentEnd = Math.min(page * pageSize, individualTableData.length);
+
   return (
     <Col xs={24} lg={20}>
       <Flex justify="space-between" align="center" style={{ marginBottom: 8 }}>
         <Button icon={<LeftOutlined />} type="link" onClick={onBack} style={{ paddingLeft: 0 }}>
           {t('Charts')}
         </Button>
-        {/* TODO: translation */}
-        <span>Showing individuals TODO-TODO of {individualTableData.length}</span>
-        {/* TODO: translation; only if in Bento search not beacon */}
+        <span>
+          {t('search.showing_individuals', { start: currentStart, end: currentEnd, total: individualTableData.length })}
+        </span>
+        {/* TODO: only if in Bento search not beacon */}
         <Button icon={<ExportOutlined />} onChange={() => alert('TODO')}>
-          {t('Export as CSV')}
+          {t('search.export_csv')}
         </Button>
       </Flex>
       <Table<IndividualResultRow>
@@ -117,7 +145,7 @@ const SRIndividualsPage = ({ onBack, results }: { onBack: () => void; results: D
         rowKey="id"
         bordered={true}
         size="small"
-        pagination={INDIVIDUAL_PAGINATION}
+        pagination={individualPagination}
         expandable={INDIVIDUAL_EXPANDABLE}
       />
     </Col>
