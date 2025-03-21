@@ -8,9 +8,8 @@ import { invalidateConfig, makeGetServiceInfoRequest } from '@/features/config/c
 import { makeGetAboutRequest } from '@/features/content/content.store';
 import { getBeaconConfig, getBeaconFilters } from '@/features/beacon/beacon.store';
 import { getBeaconNetworkConfig } from '@/features/beacon/network.store';
-import { fetchGohanData, fetchKatsuData } from '@/features/ingestion/lastIngestion.store';
 import { invalidateData } from '@/features/data/data.store';
-import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
+import { invalidateDataTypes } from '@/features/dataTypes/dataTypes.store';
 import { useMetadata } from '@/features/metadata/hooks';
 import { getProjects, markScopeSet, selectScope } from '@/features/metadata/metadata.store';
 import { getGenomes } from '@/features/reference/reference.store';
@@ -105,7 +104,6 @@ const BentoAppRouter = () => {
     if (!scopeSet) return;
     dispatch(makeGetSearchFields());
     dispatch(makeGetKatsuPublic());
-    dispatch(fetchKatsuData());
 
     if (BEACON_UI_ENABLED) {
       dispatch(getBeaconConfig());
@@ -114,9 +112,19 @@ const BentoAppRouter = () => {
 
     // If scope or authorization status changed, invalidate anything which is scope/authz-contextual and uses a
     // lazy-loading-style hook for data fetching:
-    console.debug('isAuthenticated | scope | scopeSet changed - dispatching config/data invalidate actions');
+    console.debug('isAuthenticated | scope | scopeSet changed - dispatching config/data/dataTypes invalidate actions', {
+      isAuthenticated,
+      scope,
+      scopeSet,
+    });
+    // For the new scope/auth state, these invalidations will trigger re-fetches of state which is rendered invalid by
+    // the new context.
+    //  - Censorship configs are invalid when auth/scope changes, since censorship rules may be different.
     dispatch(invalidateConfig());
+    //  - Overview data is invalid: there is different data, and the overview itself may be configured differently.
     dispatch(invalidateData());
+    //  - Data types are (partially) invalid: counts and last-ingestion time may be different.
+    dispatch(invalidateDataTypes());
   }, [dispatch, isAuthenticated, scope, scopeSet]);
 
   useEffect(() => {
@@ -133,9 +141,7 @@ const BentoAppRouter = () => {
 
     dispatch(getProjects());
     dispatch(makeGetAboutRequest());
-    dispatch(fetchGohanData());
     dispatch(makeGetServiceInfoRequest());
-    dispatch(makeGetDataTypes());
     dispatch(getGenomes());
   }, [dispatch]);
 

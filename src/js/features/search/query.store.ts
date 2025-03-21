@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 import { EMPTY_DISCOVERY_RESULTS } from '@/constants/searchConstants';
 import type { DiscoveryResults } from '@/types/data';
+import { RequestStatus } from '@/types/requests';
 import type { KatsuSearchResponse, SearchFieldResponse } from '@/types/search';
 import { serializeChartData } from '@/utils/chart';
 
@@ -10,10 +11,8 @@ import { makeGetKatsuPublic } from './makeGetKatsuPublic.thunk';
 import { makeGetSearchFields } from './makeGetSearchFields.thunk';
 
 export type QueryState = {
-  isFetchingFields: boolean;
-  attemptedFieldsFetch: boolean;
-  isFetchingData: boolean;
-  attemptedFetch: boolean;
+  fieldsStatus: RequestStatus;
+  dataStatus: RequestStatus;
   querySections: SearchFieldResponse['sections'];
   queryParams: { [key: string]: string };
   queryParamCount: number;
@@ -22,10 +21,8 @@ export type QueryState = {
 };
 
 const initialState: QueryState = {
-  isFetchingFields: false,
-  attemptedFieldsFetch: false,
-  isFetchingData: false,
-  attemptedFetch: false,
+  fieldsStatus: RequestStatus.Idle,
+  dataStatus: RequestStatus.Idle,
   message: '',
   querySections: [],
   queryParams: {},
@@ -44,11 +41,10 @@ const query = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(makeGetKatsuPublic.pending, (state) => {
-      state.isFetchingData = true;
+      state.dataStatus = RequestStatus.Pending;
     });
     builder.addCase(makeGetKatsuPublic.fulfilled, (state, { payload }: PayloadAction<KatsuSearchResponse>) => {
-      state.isFetchingData = false;
-      state.attemptedFetch = true;
+      state.dataStatus = RequestStatus.Fulfilled;
       if (payload && 'message' in payload) {
         state.message = payload.message;
         return;
@@ -67,20 +63,17 @@ const query = createSlice({
       };
     });
     builder.addCase(makeGetKatsuPublic.rejected, (state) => {
-      state.isFetchingData = false;
-      state.attemptedFetch = true;
+      state.dataStatus = RequestStatus.Rejected;
     });
     builder.addCase(makeGetSearchFields.pending, (state) => {
-      state.isFetchingFields = true;
+      state.fieldsStatus = RequestStatus.Pending;
     });
     builder.addCase(makeGetSearchFields.fulfilled, (state, { payload }) => {
+      state.fieldsStatus = RequestStatus.Fulfilled;
       state.querySections = payload.sections;
-      state.isFetchingFields = false;
-      state.attemptedFieldsFetch = true;
     });
     builder.addCase(makeGetSearchFields.rejected, (state) => {
-      state.isFetchingFields = false;
-      state.attemptedFieldsFetch = true;
+      state.fieldsStatus = RequestStatus.Rejected;
     });
   },
 });

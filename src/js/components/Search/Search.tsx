@@ -5,13 +5,16 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import SearchFieldsStack from './SearchFieldsStack';
 import SearchResults from './SearchResults';
 
+import { useConfig } from '@/features/config/hooks';
+import { useSearchQuery } from '@/features/search/hooks';
 import { makeGetKatsuPublic, setQueryParams } from '@/features/search/query.store';
-import { useAppDispatch, useAppSelector, useTranslationFn } from '@/hooks';
+import { useAppDispatch, useTranslationFn } from '@/hooks';
 import { buildQueryParamsUrl } from '@/utils/search';
 
 import Loader from '@/components/Loader';
-import { useSearchQuery } from '@/features/search/hooks';
+import { RequestStatus } from '@/types/requests';
 import type { QueryParams } from '@/types/search';
+import { WAITING_STATES } from '@/constants/requests';
 
 const checkQueryParamsEqual = (qp1: QueryParams, qp2: QueryParams): boolean => {
   const qp1Keys = Object.keys(qp1);
@@ -25,14 +28,12 @@ const RoutedSearch = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { maxQueryParameters } = useAppSelector((state) => state.config);
+  const { configStatus, maxQueryParameters } = useConfig();
   const {
     querySections: searchSections,
     queryParams,
-    isFetchingFields: isFetchingSearchFields,
-    isFetchingData: isFetchingSearchData,
-    attemptedFieldsFetch,
-    attemptedFetch,
+    fieldsStatus: searchFieldsStatus,
+    dataStatus: searchQueryStatus,
   } = useSearchQuery();
 
   // TODO: allow disabling max query parameters for authenticated and authorized users when Katsu has AuthZ
@@ -75,13 +76,22 @@ const RoutedSearch = () => {
   useEffect(() => {
     if (!location.pathname.endsWith('/search')) return;
 
-    // Wait until we have search fields to try and build a valid query. Otherwise, we will mistakenly remove all URL
-    // query parameters and effectively reset the form.
-    if (!attemptedFieldsFetch || isFetchingSearchFields || isFetchingSearchData) return;
+    // Wait until:
+    //  - we have loaded the max. # of query parameters we can query
+    //  - we have search fields to try and build a valid query
+    //  - we are not currently executing a search
+    // Otherwise, we will mistakenly remove all URL query parameters and effectively reset the form.
+    if (
+      configStatus !== RequestStatus.Fulfilled ||
+      searchFieldsStatus !== RequestStatus.Fulfilled ||
+      searchQueryStatus === RequestStatus.Pending
+    ) {
+      return;
+    }
 
     const { valid, validQueryParamsObject } = validateQuery(new URLSearchParams(location.search));
     if (valid) {
-      if (!attemptedFetch || !checkQueryParamsEqual(validQueryParamsObject, queryParams)) {
+      if (WAITING_STATES.includes(searchQueryStatus) || !checkQueryParamsEqual(validQueryParamsObject, queryParams)) {
         // Only update the state & refresh if we have a new set of query params from the URL.
         // [!!!] This should be the only place setQueryParams(...) gets called. Everywhere else should use URL
         //       manipulations, so that we have a one-way data flow from URL to state!
@@ -95,11 +105,10 @@ const RoutedSearch = () => {
       // Then, the new URL will re-trigger this effect but with only valid query parameters.
     }
   }, [
-    attemptedFetch,
-    attemptedFieldsFetch,
     dispatch,
-    isFetchingSearchFields,
-    isFetchingSearchData,
+    configStatus,
+    searchFieldsStatus,
+    searchQueryStatus,
     location.search,
     location.pathname,
     navigate,
@@ -118,9 +127,9 @@ const SEARCH_SECTION_STYLE = { maxWidth: 'var(--content-max-width)' };
 const Search = () => {
   const t = useTranslationFn();
 
-  const { isFetchingFields: isFetchingSearchFields, querySections: searchSections } = useSearchQuery();
+  const { fieldsStatus, querySections: searchSections } = useSearchQuery();
 
-  return isFetchingSearchFields ? (
+  return WAITING_STATES.includes(fieldsStatus) ? (
     <Loader />
   ) : (
     <>
