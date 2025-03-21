@@ -117,9 +117,14 @@ const BentoAppRouter = () => {
       scope,
       scopeSet,
     });
-    dispatch(invalidateConfig()); // This will trigger censorship config re-fetching for the new scope/auth state
-    dispatch(invalidateData()); // This will trigger overview data re-fetching for "
-    dispatch(invalidateDataTypes()); // This will trigger data types (counts, last ingested time) re-fetching for "
+    // For the new scope/auth state, these invalidations will trigger re-fetches of state which is rendered invalid by
+    // the new context.
+    //  - Censorship configs are invalid when auth/scope changes, since censorship rules may be different.
+    dispatch(invalidateConfig());
+    //  - Overview data is invalid: there is different data, and the overview itself may be configured differently.
+    dispatch(invalidateData());
+    //  - Data types are (partially) invalid: counts and last-ingestion time may be different.
+    dispatch(invalidateDataTypes());
   }, [dispatch, isAuthenticated, scope, scopeSet]);
 
   useEffect(() => {
