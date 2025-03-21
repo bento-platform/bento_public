@@ -8,16 +8,21 @@ const { EnvironmentPlugin } = require('webpack');
 
 const createServiceInfo = require('./create_service_info');
 
-const config = {
+// noinspection JSUnusedGlobalSymbols
+const makeConfig = (mode) => ({
   mode: 'development',
   entry: './src/js/index.tsx',
   output: {
     path: path.join(__dirname, 'dist'),
     publicPath: '/',
-    // filename: "js/bundle.js",
-    filename: 'js/[name][chunkhash].js',
+    // See https://github.com/webpack/webpack/issues/10796#issuecomment-717966170
+    // This seems to mitigate some memory leak in webpack when constantly rebuilding with new chunk hashes, which
+    // happened occasionally to me with webpack-dev-server
+    //  - David L, 2025-03-21
+    filename: mode === 'production' ? 'js/[name][chunkhash].js' : 'js/[name].js',
     clean: true,
   },
+  ...(mode === 'development' ? { devtool: 'inline-source-map' } : {}),
   module: {
     rules: [
       { test: /\.[tj](sx|s)?$/, use: { loader: 'ts-loader' }, exclude: /node_modules/ },
@@ -115,11 +120,6 @@ const config = {
 
     allowedHosts: 'all',
   },
-};
+});
 
-module.exports = (_env, argv) => {
-  if (argv.mode === 'development') {
-    config.devtool = 'inline-source-map';
-  }
-  return config;
-};
+module.exports = (_env, argv) => makeConfig(argv.mode);

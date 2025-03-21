@@ -112,9 +112,18 @@ const BentoAppRouter = () => {
 
     // If scope or authorization status changed, invalidate anything which is scope/authz-contextual and uses a
     // lazy-loading-style hook for data fetching:
-    console.debug('isAuthenticated | scope | scopeSet changed - dispatching config/data invalidate actions');
+    console.debug('isAuthenticated | scope | scopeSet changed - dispatching config/data/dataTypes invalidate actions', {
+      isAuthenticated,
+      scope,
+      scopeSet,
+    });
+    // For the new scope/auth state, these invalidations will trigger re-fetches of state which is rendered invalid by
+    // the new context.
+    //  - Censorship configs are invalid when auth/scope changes, since censorship rules may be different.
     dispatch(invalidateConfig());
+    //  - Overview data is invalid: there is different data, and the overview itself may be configured differently.
     dispatch(invalidateData());
+    //  - Data types are (partially) invalid: counts and last-ingestion time may be different.
     dispatch(invalidateDataTypes());
   }, [dispatch, isAuthenticated, scope, scopeSet]);
 
