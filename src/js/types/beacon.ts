@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { Rule } from 'antd/es/form';
 import type { ActionCreator } from 'redux';
 import type { Datum } from '@/types/overviewResponse';
@@ -21,7 +22,7 @@ export interface FormField {
 
 export interface FormFilter {
   index: number;
-  active: boolean;
+  searchFieldId: string | null;
 }
 
 export interface FormValues {
@@ -34,7 +35,9 @@ export interface FilterOption {
 }
 
 export interface FilterPullDownKey {
-  label: string;
+  disabled: boolean;
+  label: ReactNode;
+  value: string;
   optionsThisKey: FilterPullDownValue[];
 }
 
