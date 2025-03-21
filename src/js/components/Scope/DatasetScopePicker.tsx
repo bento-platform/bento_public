@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { List, Space, Typography } from 'antd';
 
+import { T_SINGULAR_COUNT } from '@/constants/i18n';
 import Dataset from '@/components/Provenance/Dataset';
 import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
@@ -38,14 +39,14 @@ const DatasetScopePicker = ({ parentProject }: DatasetScopePickerProps) => {
     <Space direction="vertical" style={{ display: 'flex' }}>
       <Space align="baseline" size="large">
         <Typography.Title level={4} className="no-margin-top">
-          {t('Project')}: {t(parentProject.title)}
+          {t('entity.project', T_SINGULAR_COUNT)}: {t(parentProject.title)}
         </Typography.Title>
         {showSelectProject && <Link to={projectURL}>{t('Select')}</Link>}
       </Space>
       <TruncatedParagraph>{t(parentProject.description)}</TruncatedParagraph>
       <Space align="baseline" size="large">
         <Typography.Title level={5} className="no-margin-top">
-          {t('Datasets')}
+          {t('entity.dataset', T_SINGULAR_COUNT)}
         </Typography.Title>
         {showClearDataset && <Link to={projectURL}>{t('Clear dataset selection')}</Link>}
       </Space>

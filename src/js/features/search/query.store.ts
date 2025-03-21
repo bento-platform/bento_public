@@ -9,10 +9,13 @@ import { serializeChartData } from '@/utils/chart';
 
 import { makeGetKatsuPublic } from './makeGetKatsuPublic.thunk';
 import { makeGetSearchFields } from './makeGetSearchFields.thunk';
+import { performFreeTextSearch } from '@/features/search/performFreeTextSearch.thunk';
 
 export type QueryState = {
   fieldsStatus: RequestStatus;
-  dataStatus: RequestStatus;
+  filterQueryStatus: RequestStatus;
+  textQueryStatus: RequestStatus;
+  // ----
   querySections: SearchFieldResponse['sections'];
   queryParams: { [key: string]: string };
   queryParamCount: number;
@@ -22,11 +25,13 @@ export type QueryState = {
 
 const initialState: QueryState = {
   fieldsStatus: RequestStatus.Idle,
-  dataStatus: RequestStatus.Idle,
-  message: '',
+  filterQueryStatus: RequestStatus.Idle,
+  textQueryStatus: RequestStatus.Idle,
+  // ----
   querySections: [],
   queryParams: {},
   queryParamCount: 0,
+  message: '',
   results: EMPTY_DISCOVERY_RESULTS,
 };
 
@@ -41,10 +46,10 @@ const query = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(makeGetKatsuPublic.pending, (state) => {
-      state.dataStatus = RequestStatus.Pending;
+      state.filterQueryStatus = RequestStatus.Pending;
     });
     builder.addCase(makeGetKatsuPublic.fulfilled, (state, { payload }: PayloadAction<KatsuSearchResponse>) => {
-      state.dataStatus = RequestStatus.Fulfilled;
+      state.filterQueryStatus = RequestStatus.Fulfilled;
       if (payload && 'message' in payload) {
         state.message = payload.message;
         return;
@@ -63,8 +68,31 @@ const query = createSlice({
       };
     });
     builder.addCase(makeGetKatsuPublic.rejected, (state) => {
-      state.dataStatus = RequestStatus.Rejected;
+      state.filterQueryStatus = RequestStatus.Rejected;
     });
+    // -----
+    builder.addCase(performFreeTextSearch.pending, (state) => {
+      state.textQueryStatus = RequestStatus.Pending;
+    });
+    builder.addCase(performFreeTextSearch.fulfilled, (state, { payload }) => {
+      state.textQueryStatus = RequestStatus.Fulfilled;
+      state.message = '';
+      state.results = {
+        // biosamples
+        biosampleCount: payload.results.reduce((acc, x) => acc + x.biosamples.length, 0),
+        biosampleChartData: [], // TODO
+        // experiments
+        experimentCount: payload.results.reduce((acc, x) => acc + x.num_experiments, 0),
+        experimentChartData: [], // TODO
+        // individuals
+        individualCount: payload.results.length,
+        individualMatches: payload.results.map((r) => r.subject_id),
+      };
+    });
+    builder.addCase(performFreeTextSearch.rejected, (state) => {
+      state.textQueryStatus = RequestStatus.Rejected;
+    });
+    // -----
     builder.addCase(makeGetSearchFields.pending, (state) => {
       state.fieldsStatus = RequestStatus.Pending;
     });

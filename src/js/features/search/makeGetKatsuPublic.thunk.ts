@@ -25,7 +25,8 @@ export const makeGetKatsuPublic = createAsyncThunk<
   },
   {
     condition(_, { getState }) {
-      return getState().query.dataStatus !== RequestStatus.Pending;
+      const { filterQueryStatus, textQueryStatus } = getState().query;
+      return filterQueryStatus !== RequestStatus.Pending && textQueryStatus !== RequestStatus.Pending;
     },
   }
 );

@@ -10,6 +10,7 @@ import type { Project } from '@/types/metadata';
 import { isoDateToString } from '@/utils/strings';
 import { useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
+import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { BOX_SHADOW } from '@/constants/overviewConstants';
 import Dataset from '@/components/Provenance/Dataset';
 import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
@@ -157,7 +158,7 @@ const CatalogueCard = ({ project }: { project: Project }) => {
           datasets.length ? (
             <>
               <Title level={5} style={{ marginTop: 0 }}>
-                {t('Datasets')}
+                {t('entities.dataset', T_PLURAL_COUNT)}
               </Title>
               <Carousel
                 arrows={datasets.length > 1}

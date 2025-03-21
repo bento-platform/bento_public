@@ -6,6 +6,10 @@
   "Portal": "Portal",
   "missing": "missing",
   "entities": {
+    "project_one": "Project",
+    "project_other": "Projects",
+    "dataset_one": "Dataset",
+    "dataset_other": "Datasets",
     "phenopacket_one": "Phenopacket",
     "phenopacket_other": "Clinical Data",
     "individual_one": "Individual",
@@ -26,6 +30,10 @@
     ],
     "variant_one": "Variant",
     "variant_other": "Variants"
+  },
+  "search": {
+    "showing_individuals": "Showing individuals {{start}}-{{end}} of {{total}}",
+    "export_csv": "Export as CSV"
   },
   "in": "in",
   "Get Data": "Get Data",
@@ -104,7 +112,6 @@
   "Sign Out": "Sign Out",
   "Select Scope": "Select Scope",
   "About": "About",
-  "Datasets": "Datasets",
   "Clear": "Clear",
   "Select": "Select",
   "Created": "Created",

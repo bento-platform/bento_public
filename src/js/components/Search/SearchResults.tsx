@@ -1,11 +1,11 @@
-import { WAITING_STATES } from '@/constants/requests';
 import { useSearchQuery } from '@/features/search/hooks';
 import { useCanSeeUncensoredCounts } from '@/hooks/censorship';
+import { RequestStatus } from '@/types/requests';
 
 import SearchResultsPane from './SearchResultsPane';
 
 const SearchResults = () => {
-  const { dataStatus, message, results } = useSearchQuery();
+  const { filterQueryStatus, textQueryStatus, message, results } = useSearchQuery();
 
   // existing code treats non-empty message as sign of insufficient data
   const hasInsufficientData = message !== '';
@@ -14,7 +14,7 @@ const SearchResults = () => {
 
   return (
     <SearchResultsPane
-      isFetchingData={WAITING_STATES.includes(dataStatus)}
+      isFetchingData={filterQueryStatus === RequestStatus.Pending || textQueryStatus === RequestStatus.Pending}
       hasInsufficientData={hasInsufficientData}
       uncensoredCounts={uncensoredCounts}
       message={message}
