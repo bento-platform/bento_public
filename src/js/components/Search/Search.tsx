@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Card, Flex, FloatButton, Row, Space } from 'antd';
+import { Card, Flex, Row, Space } from 'antd';
 
 import { queryData } from 'bento-auth-js';
 
@@ -146,41 +146,38 @@ const Search = () => {
   return WAITING_STATES.includes(fieldsStatus) ? (
     <Loader />
   ) : (
-    <>
-      <Row justify="center">
-        <Space direction="vertical" align="center" style={WIDTH_100P_STYLE} styles={SEARCH_SPACE_ITEM_STYLE}>
-          <div className="container margin-auto">
-            <Card
-              style={{ borderRadius: '10px', ...WIDTH_100P_STYLE, ...BOX_SHADOW }}
-              styles={{ ...CARD_STYLES, body: { ...CARD_BODY_STYLE, padding: '20px 24px 24px 24px' } }}
-            >
-              <Flex justify="space-between" gap={24} style={WIDTH_100P_STYLE}>
-                <SearchFilters
-                  onFocus={() => setFocused('filters')}
-                  style={{
-                    flex: 1,
-                    maxWidth: 600,
-                    opacity: focused === 'filters' ? 1 : 0.75,
-                    transition: 'opacity 0.1s',
-                  }}
-                />
-                {queryDataPerm && (
-                  <>
-                    <OrDelimiter />
-                    <SearchFreeText
-                      onFocus={() => setFocused('text')}
-                      style={{ flex: 1, opacity: focused === 'text' ? 1 : 0.75, transition: 'opacity 0.1s' }}
-                    />
-                  </>
-                )}
-              </Flex>
-            </Card>
-          </div>
-          <SearchResults />
-        </Space>
-      </Row>
-      <FloatButton.BackTop />
-    </>
+    <Row justify="center">
+      <Space direction="vertical" align="center" style={WIDTH_100P_STYLE} styles={SEARCH_SPACE_ITEM_STYLE}>
+        <div className="container margin-auto">
+          <Card
+            style={{ borderRadius: '10px', ...WIDTH_100P_STYLE, ...BOX_SHADOW }}
+            styles={{ ...CARD_STYLES, body: { ...CARD_BODY_STYLE, padding: '20px 24px 24px 24px' } }}
+          >
+            <Flex justify="space-between" gap={24} style={WIDTH_100P_STYLE}>
+              <SearchFilters
+                onFocus={() => setFocused('filters')}
+                style={{
+                  flex: 1,
+                  maxWidth: 600,
+                  opacity: focused === 'filters' ? 1 : 0.75,
+                  transition: 'opacity 0.1s',
+                }}
+              />
+              {queryDataPerm && (
+                <>
+                  <OrDelimiter />
+                  <SearchFreeText
+                    onFocus={() => setFocused('text')}
+                    style={{ flex: 1, opacity: focused === 'text' ? 1 : 0.75, transition: 'opacity 0.1s' }}
+                  />
+                </>
+              )}
+            </Flex>
+          </Card>
+        </div>
+        <SearchResults />
+      </Space>
+    </Row>
   );
 };
 

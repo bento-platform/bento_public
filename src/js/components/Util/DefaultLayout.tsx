@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import { Layout } from 'antd';
+import { FloatButton, Layout } from 'antd';
 import SiteHeader from '@/components/SiteHeader';
 import SiteSider from '@/components/SiteSider';
 import SiteFooter from '@/components/SiteFooter';
@@ -22,6 +22,7 @@ const DefaultLayout = () => {
             <Outlet />
           </Content>
           <SiteFooter />
+          <FloatButton.BackTop target={() => document.getElementById('content-layout')!} />
         </Layout>
       </Layout>
     </Layout>
