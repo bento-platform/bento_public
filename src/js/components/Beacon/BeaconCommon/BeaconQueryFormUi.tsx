@@ -120,12 +120,12 @@ const BeaconQueryFormUi = ({
   const packageFilters = useCallback(
     (values: FormValues): BeaconPayloadFilter[] => {
       // ignore optional first filter when left blank
-      if (filters.length === 1 && !values.filterId1) {
+      if (filters.length === 1 && !values.filterIndex1) {
         return [];
       }
 
       return filters.map((f) => ({
-        id: values[`filterId${f.index}`],
+        id: values[`filterIndex${f.index}`],
         operator: '=',
         value: values[`filterValue${f.index}`],
       }));

@@ -81,7 +81,7 @@ const Filter = ({
   return (
     <Space.Compact>
       <Form.Item
-        name={`filterId${filter.index}`}
+        name={`filterIndex${filter.index}`}
         rules={[{ required: isRequired, message: t('search field required') }]}
         style={FILTER_FORM_ITEM_STYLE}
       >
