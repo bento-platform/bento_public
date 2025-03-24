@@ -62,11 +62,11 @@ const Filters = ({ filters, setFilters, form, beaconFiltersBySection, isNetworkQ
   // update the search field for a particular filter selection in the form
   const setFilterSearchFieldId = (filter: FormFilter, searchFieldId: string) => {
     setFilters((old) =>
-      old.map((f) => (f.index == filter.index ? { index: filter.index, searchFieldId: searchFieldId } : f))
+      old.map((f) => (f.index === filter.index ? { index: filter.index, searchFieldId: searchFieldId } : f))
     );
   };
 
-  const searchFieldInUse = (searchFieldId: string) => filters.some((f) => f.searchFieldId == searchFieldId);
+  const searchFieldInUse = (searchFieldId: string) => filters.some((f) => f.searchFieldId === searchFieldId);
 
   return (
     <Form.Item>
