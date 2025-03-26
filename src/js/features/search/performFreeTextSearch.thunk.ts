@@ -29,21 +29,21 @@ export type BentoOldSearchResponseFormat = {
 
 export const performFreeTextSearch = createAsyncThunk<
   BentoOldSearchResponseFormat,
-  string,
+  void,
   {
     rejectValue: string;
     state: RootState;
   }
 >(
   'query/performFreeTextSearch',
-  async (q, { rejectWithValue, getState }) => {
+  async (_, { rejectWithValue, getState }) => {
     const state = getState();
     // TODO: this is not a good endpoint. need a better free-text search endpoint. ported from Bento Web for now.
     return axios
       .get(
         individualUrl,
         scopedAuthorizedRequestConfig(state, {
-          search: q,
+          search: state.query.textQuery,
           page_size: '10000',
           format: 'bento_search_result',
         })

@@ -1,10 +1,10 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
-import { EMPTY_DISCOVERY_RESULTS } from '@/constants/searchConstants';
 import type { DiscoveryResults } from '@/types/data';
 import { RequestStatus } from '@/types/requests';
-import type { KatsuSearchResponse, SearchFieldResponse } from '@/types/search';
+import { EMPTY_DISCOVERY_RESULTS } from '@/features/search/constants';
+import type { KatsuSearchResponse, SearchFieldResponse } from '@/features/search/types';
 import { serializeChartData } from '@/utils/chart';
 
 import { makeGetKatsuPublic } from './makeGetKatsuPublic.thunk';
@@ -18,6 +18,9 @@ export type QueryState = {
   // ----
   filterSections: SearchFieldResponse['sections'];
   filterQueryParams: { [key: string]: string };
+  // ----
+  textQuery: string;
+  // ----
   message: string;
   results: DiscoveryResults;
 };
@@ -29,6 +32,9 @@ const initialState: QueryState = {
   // ----
   filterSections: [],
   filterQueryParams: {},
+  // ----
+  textQuery: '',
+  // ----
   message: '',
   results: EMPTY_DISCOVERY_RESULTS,
 };
@@ -39,6 +45,9 @@ const query = createSlice({
   reducers: {
     setFilterQueryParams: (state, { payload }) => {
       state.filterQueryParams = payload;
+    },
+    setTextQuery: (state, { payload }) => {
+      state.textQuery = payload;
     },
   },
   extraReducers: (builder) => {
@@ -103,6 +112,6 @@ const query = createSlice({
   },
 });
 
-export const { setFilterQueryParams } = query.actions;
+export const { setFilterQueryParams, setTextQuery } = query.actions;
 export { makeGetKatsuPublic, makeGetSearchFields };
 export default query.reducer;

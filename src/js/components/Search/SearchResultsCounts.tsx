@@ -5,11 +5,11 @@ import { BiDna } from 'react-icons/bi';
 
 import CountsTitleWithHelp from '@/components/Util/CountsTitleWithHelp';
 import { COUNTS_FILL } from '@/constants/overviewConstants';
-import { NO_RESULTS_DASHES } from '@/constants/searchConstants';
+import { NO_RESULTS_DASHES } from '@/features/search/constants';
 import { useTranslationFn } from '@/hooks';
+import type { SearchResultsUIPane } from '@/features/search/types';
 import type { DiscoveryResults, OptionalDiscoveryResults } from '@/types/data';
 import { RequestStatus } from '@/types/requests';
-import type { SearchResultsUIPane } from '@/types/search';
 
 const STAT_STYLE: CSSProperties = { color: COUNTS_FILL };
 

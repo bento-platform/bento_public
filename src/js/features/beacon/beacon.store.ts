@@ -2,8 +2,8 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { authorizedRequestConfig } from '@/utils/requests';
 
-import { EMPTY_DISCOVERY_RESULTS } from '@/constants/searchConstants';
 import { BEACON_INFO_ENDPOINT } from '@/features/beacon/constants';
+import { EMPTY_DISCOVERY_RESULTS } from '@/features/search/constants';
 import type { RootState } from '@/store';
 import type {
   BeaconConfigResponse,

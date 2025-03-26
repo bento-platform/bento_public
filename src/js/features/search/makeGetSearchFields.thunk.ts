@@ -3,7 +3,7 @@ import axios from 'axios';
 import { searchFieldsUrl } from '@/constants/configConstants';
 import type { RootState } from '@/store';
 import { RequestStatus } from '@/types/requests';
-import type { SearchFieldResponse } from '@/types/search';
+import type { SearchFieldResponse } from '@/features/search/types';
 import { printAPIError } from '@/utils/error.util';
 import { scopedAuthorizedRequestConfig } from '@/utils/requests';
 

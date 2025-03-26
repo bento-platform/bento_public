@@ -8,8 +8,8 @@ import { WIDTH_100P_STYLE } from '@/constants/common';
 import { WAITING_STATES } from '@/constants/requests';
 import { useConfig } from '@/features/config/hooks';
 import { useQueryFilterFields, useSearchQuery } from '@/features/search/hooks';
+import { buildQueryParamsUrl, queryParamsWithoutKey } from '@/features/search/utils';
 import { useTranslationFn } from '@/hooks';
-import { buildQueryParamsUrl, queryParamsWithoutKey } from '@/utils/search';
 
 import RequestStatusIcon from './RequestStatusIcon';
 import SearchFilterInput, { type FilterValue, SearchFilterInputSkeleton } from './SearchFilterInput';

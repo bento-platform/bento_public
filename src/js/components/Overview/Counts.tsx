@@ -6,7 +6,7 @@ import { BiDna } from 'react-icons/bi';
 import CountsTitleWithHelp from '@/components/Util/CountsTitleWithHelp';
 import { BOX_SHADOW, COUNTS_FILL } from '@/constants/overviewConstants';
 import { WAITING_STATES } from '@/constants/requests';
-import { NO_RESULTS_DASHES } from '@/constants/searchConstants';
+import { NO_RESULTS_DASHES } from '@/features/search/constants';
 import { useAppSelector, useTranslationFn } from '@/hooks';
 import { useCanSeeUncensoredCounts } from '@/hooks/censorship';
 import type { BentoEntity } from '@/types/entities';

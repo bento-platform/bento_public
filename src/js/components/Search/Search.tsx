@@ -6,9 +6,10 @@ import { queryData } from 'bento-auth-js';
 
 import { useConfig } from '@/features/config/hooks';
 import { useQueryFilterFields, useSearchQuery } from '@/features/search/hooks';
-import { makeGetKatsuPublic, setFilterQueryParams } from '@/features/search/query.store';
+import { performFreeTextSearch } from '@/features/search/performFreeTextSearch.thunk';
+import { makeGetKatsuPublic, setFilterQueryParams, setTextQuery } from '@/features/search/query.store';
 import { useAppDispatch, useHasScopePermission, useTranslationFn } from '@/hooks';
-import { buildQueryParamsUrl } from '@/utils/search';
+import { buildQueryParamsUrl } from '@/features/search/utils';
 
 import Loader from '@/components/Loader';
 import SearchResults from './SearchResults';
@@ -19,8 +20,9 @@ import { CARD_BODY_STYLE, CARD_STYLES } from '@/constants/beaconConstants';
 import { WIDTH_100P_STYLE } from '@/constants/common';
 import { BOX_SHADOW } from '@/constants/overviewConstants';
 import { WAITING_STATES } from '@/constants/requests';
+import { NON_FILTER_QUERY_PARAM_PREFIX, TEXT_QUERY_PARAM } from '@/features/search/constants';
+import type { QueryParamObj, QueryParams } from '@/features/search/types';
 import { RequestStatus } from '@/types/requests';
-import type { QueryParams } from '@/types/search';
 
 const checkQueryParamsEqual = (qp1: QueryParams, qp2: QueryParams): boolean => {
   const qp1Keys = Object.keys(qp1);
@@ -35,30 +37,55 @@ const RoutedSearch = () => {
   const navigate = useNavigate();
 
   const { configStatus, maxQueryParameters } = useConfig();
-  const { filterQueryParams, fieldsStatus: searchFieldsStatus, filterQueryStatus, textQueryStatus } = useSearchQuery();
+  const {
+    filterQueryParams,
+    fieldsStatus: searchFieldsStatus,
+    filterQueryStatus,
+    textQuery,
+    textQueryStatus,
+  } = useSearchQuery();
   const filterFields = useQueryFilterFields();
 
   const validateQuery = useCallback(
-    (query: URLSearchParams): { valid: boolean; validQueryParamsObject: QueryParams } => {
-      const validateQueryParam = (key: string, value: string): boolean => {
+    (
+      query: URLSearchParams
+    ): {
+      valid: boolean;
+      validQueryParamsObject: QueryParams;
+      otherQueryParams: QueryParams;
+    } => {
+      const validateFilterQueryParam = ({ key, value }: QueryParamObj): boolean => {
         const field = filterFields.find((e) => e.id === key);
         return !!field && field.options.includes(value);
       };
 
-      const queryParamArray = Array.from(query.entries()).map(([key, value]) => ({ key, value }));
+      const queryParamArray = Array.from(query.entries()).map(([key, value]): QueryParamObj => ({ key, value }));
+      let validQueryParamArray: QueryParamObj[] = [];
+      const otherQueryParams: QueryParams = {};
 
-      const validQueryParamArray = queryParamArray
-        .filter(({ key, value }) => validateQueryParam(key, value))
-        .slice(0, maxQueryParameters);
+      let valid = true; // Current query params are valid until proven otherwise in the loop below.
 
-      const validQueryParamsObject = validQueryParamArray.reduce<QueryParams>((acc, { key, value }) => {
-        acc[key] = value;
-        return acc;
-      }, {});
+      queryParamArray.forEach((qp) => {
+        if (validateFilterQueryParam(qp)) {
+          validQueryParamArray.push(qp);
+        } else if (qp.key.startsWith(NON_FILTER_QUERY_PARAM_PREFIX)) {
+          otherQueryParams[qp.key] = qp.value;
+        } else {
+          // Invalid query param, skip it and mark current query param set as invalid (needing a URL replacement).
+          valid = false;
+        }
+      });
+
+      validQueryParamArray = validQueryParamArray.slice(0, maxQueryParameters);
+
+      const validQueryParamsObject: QueryParams = Object.fromEntries(
+        validQueryParamArray.map(({ key, value }) => [key, value])
+      );
 
       return {
-        valid: JSON.stringify(validQueryParamArray) === JSON.stringify(queryParamArray),
+        valid,
         validQueryParamsObject,
+        otherQueryParams,
       };
     },
     [maxQueryParameters, filterFields]
@@ -82,20 +109,40 @@ const RoutedSearch = () => {
       return;
     }
 
-    const { valid, validQueryParamsObject } = validateQuery(new URLSearchParams(location.search));
+    const { valid, validQueryParamsObject, otherQueryParams } = validateQuery(new URLSearchParams(location.search));
     if (valid) {
+      // If we have a query parameter for text search in the URL, we prioritize this and execute a text query.
+      // Later on, we still may want to populate the filters (but not execute a filter search right now), so we need to
+      // keep track of whether we've executed a text query.
+
+      let performingTextQuery = false;
+
+      const newTextQuery = otherQueryParams[TEXT_QUERY_PARAM];
+      if (newTextQuery && (textQueryStatus === RequestStatus.Idle || newTextQuery !== textQuery)) {
+        dispatch(setTextQuery(newTextQuery));
+        dispatch(performFreeTextSearch());
+        performingTextQuery = true;
+      }
+
+      // TODO: describe here
       if (
         filterQueryStatus === RequestStatus.Idle ||
         !checkQueryParamsEqual(validQueryParamsObject, filterQueryParams)
       ) {
-        // Only update the state & refresh if we have a new set of query params from the URL.
+        // Only update the state & (maybe) refresh if we have a new set of query params from the URL.
         // [!!!] This should be the only place setQueryParams(...) gets called. Everywhere else should use URL
         //       manipulations, so that we have a one-way data flow from URL to state!
         dispatch(setFilterQueryParams(validQueryParamsObject));
-        dispatch(makeGetKatsuPublic());
+        if (!performingTextQuery) {
+          // TODO: describe why only if not full-text-searching
+          dispatch(makeGetKatsuPublic());
+        }
       }
     } else {
-      const url = buildQueryParamsUrl(location.pathname, validQueryParamsObject);
+      const url = buildQueryParamsUrl(location.pathname, {
+        ...validQueryParamsObject,
+        ...otherQueryParams,
+      } as QueryParams);
       console.debug('[Search] Redirecting to:', url);
       navigate(url);
       // Then, the new URL will re-trigger this effect but with only valid query parameters.
@@ -110,6 +157,7 @@ const RoutedSearch = () => {
     location.pathname,
     navigate,
     filterQueryParams,
+    textQuery,
     validateQuery,
   ]);
 

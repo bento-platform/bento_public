@@ -17,14 +17,14 @@ import { PieChart } from 'bento-charts';
 import { PORTAL_URL } from '@/config';
 import { T_PLURAL_COUNT, T_SINGULAR_COUNT } from '@/constants/i18n';
 import { BOX_SHADOW, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
+import { useSelectedScope } from '@/features/metadata/hooks';
 import { useTranslationFn } from '@/hooks';
 import type { DiscoveryResults } from '@/types/data';
-import type { SearchResultsUIPane } from '@/types/search';
+import type { SearchResultsUIPane } from '@/features/search/types';
 
-import SearchResultsCounts from './SearchResultsCounts';
-import IndividualRowDetail from '@/components/Search/IndividualRowDetail';
 import CustomEmpty from '@/components/Util/CustomEmpty';
-import { useSelectedScope } from '@/features/metadata/hooks';
+import SearchResultsCounts from './SearchResultsCounts';
+import IndividualRowDetail from './IndividualRowDetail';
 
 type IndividualResultRow = { id: string };
 

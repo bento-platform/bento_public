@@ -1,11 +1,13 @@
 import { type CSSProperties, useCallback } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, Form, Input, Space, Typography } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 
 import { WIDTH_100P_STYLE } from '@/constants/common';
+import { TEXT_QUERY_PARAM } from '@/features/search/constants';
 import { useSearchQuery } from '@/features/search/hooks';
-import { performFreeTextSearch } from '@/features/search/performFreeTextSearch.thunk';
-import { useAppDispatch, useTranslationFn } from '@/hooks';
+import { buildQueryParamsUrl } from '@/features/search/utils';
+import { useTranslationFn } from '@/hooks';
 import { RequestStatus } from '@/types/requests';
 
 import RequestStatusIcon from './RequestStatusIcon';
@@ -14,18 +16,19 @@ type FreeTextFormValues = { q: string };
 
 const SearchFreeText = ({ onFocus, style }: { onFocus: () => void; style?: CSSProperties }) => {
   const t = useTranslationFn();
-  const dispatch = useAppDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const { filterQueryParams, textQueryStatus } = useSearchQuery();
 
   const [form] = Form.useForm<FreeTextFormValues>();
 
   const onFinish = useCallback(
     (values: FreeTextFormValues) => {
-      dispatch(performFreeTextSearch(values.q));
+      navigate(buildQueryParamsUrl(location.pathname, { ...filterQueryParams, [TEXT_QUERY_PARAM]: values.q }));
     },
-    [dispatch]
+    [location.pathname, filterQueryParams, navigate]
   );
-
-  const { textQueryStatus } = useSearchQuery();
 
   return (
     <div style={style}>
@@ -33,7 +36,7 @@ const SearchFreeText = ({ onFocus, style }: { onFocus: () => void; style?: CSSPr
         <span style={{ marginRight: '0.5em' }}>{t('Text search')}</span>
         <RequestStatusIcon status={textQueryStatus} />
       </Typography.Title>
-      <Form form={form} onFocus={() => onFocus()} onFinish={onFinish}>
+      <Form form={form} onFocus={onFocus} onFinish={onFinish}>
         <Space.Compact style={WIDTH_100P_STYLE}>
           <Form.Item name="q" noStyle={true}>
             <Input prefix={<SearchOutlined />} />
