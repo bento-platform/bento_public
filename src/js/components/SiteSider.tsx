@@ -25,7 +25,7 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
   const location = useLocation();
   const { i18n } = useTranslation();
   const t = useTranslationFn();
-  const { queryParams } = useSearchQuery();
+  const { filterQueryParams } = useSearchQuery();
   const catalogueMode = useIsInCatalogueMode();
   const currentPage = getCurrentPage();
 
@@ -47,9 +47,9 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
       }
       newPath.push(key);
       const newPathString = '/' + newPath.join('/');
-      navigate(key === BentoRoute.Search ? buildQueryParamsUrl(newPathString, queryParams) : newPathString);
+      navigate(key === BentoRoute.Search ? buildQueryParamsUrl(newPathString, filterQueryParams) : newPathString);
     },
-    [navigate, queryParams, location.pathname]
+    [navigate, filterQueryParams, location.pathname]
   );
 
   const createMenuItem = useCallback(

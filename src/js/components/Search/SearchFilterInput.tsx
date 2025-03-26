@@ -1,11 +1,18 @@
+import { type CSSProperties, memo, useCallback, useMemo } from 'react';
+import { Button, Select, Space } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
+
 import { useTranslationFn } from '@/hooks';
 import { useSearchQuery } from '@/features/search/hooks';
 import OptionDescription from '@/components/Search/OptionDescription';
-import { Button, Select, Space } from 'antd';
 import { WIDTH_100P_STYLE } from '@/constants/common';
-import { CloseOutlined } from '@ant-design/icons';
 
 export type FilterValue = { field: string | null; value: string | null };
+
+const styles = {
+  selectField: { flex: 1, borderTopRightRadius: 0, borderBottomRightRadius: 0 } as CSSProperties,
+  selectValue: { flex: 1 } as CSSProperties,
+};
 
 const SearchFilterInput = ({
   field,
@@ -22,9 +29,9 @@ const SearchFilterInput = ({
 }) => {
   const t = useTranslationFn();
 
-  const { querySections } = useSearchQuery();
+  const { filterSections } = useSearchQuery();
 
-  const filterOptions = querySections.map(({ section_title: label, fields }) => ({
+  const filterOptions = filterSections.map(({ section_title: label, fields }) => ({
     label,
     title: label,
     options: fields.map((f) => ({
@@ -41,32 +48,50 @@ const SearchFilterInput = ({
     })),
   }));
 
-  const fieldFilterOptions = Object.fromEntries(
-    querySections.flatMap(({ fields }) => fields.map((f) => [f.id, f.options.map((o) => ({ value: o, label: o }))]))
+  const fieldFilterOptions = useMemo(
+    () =>
+      Object.fromEntries(
+        filterSections.flatMap(({ fields }) =>
+          fields.map((f) => [f.id, f.options.map((o) => ({ value: o, label: o }))])
+        )
+      ),
+    [filterSections]
+  );
+
+  const onFilterFieldChange = useCallback(
+    (v: string) => {
+      onChange({ field: v, value: fieldFilterOptions[v][0].value ?? null });
+    },
+    [onChange, fieldFilterOptions]
+  );
+
+  const onFilterValueChange = useCallback(
+    (newValue: string) =>
+      onChange({
+        field,
+        value: newValue,
+      }),
+    [field, onChange]
   );
 
   return (
     <Space.Compact style={WIDTH_100P_STYLE}>
       <Select
-        style={{ flex: 1, borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
+        style={styles.selectField}
         options={filterOptions}
-        onClick={() => onFocus()}
-        onFocus={() => onFocus()}
-        onChange={(v) => {
-          onChange({ field: v, value: fieldFilterOptions[v][0].value ?? null });
-        }}
+        onClick={onFocus}
+        onFocus={onFocus}
+        onChange={onFilterFieldChange}
         value={field}
         placeholder={t('Select a field to filter by\u2026')}
       />
       <Select
-        style={{ flex: 1 }}
+        style={styles.selectValue}
         disabled={!field}
         options={field ? fieldFilterOptions[field] : []}
-        onClick={() => onFocus()}
-        onFocus={() => onFocus()}
-        onChange={(newValue) => {
-          onChange({ field, value: newValue });
-        }}
+        onClick={onFocus}
+        onFocus={onFocus}
+        onChange={onFilterValueChange}
         value={value}
       />
       <Button icon={<CloseOutlined />} disabled={!field || !value} onClick={onRemove} />
@@ -74,12 +99,13 @@ const SearchFilterInput = ({
   );
 };
 
-export const SearchFilterInputSkeleton = () => (
+export const SearchFilterInputSkeleton = memo(() => (
   <Space.Compact style={WIDTH_100P_STYLE}>
-    <Select style={{ flex: 1, borderTopRightRadius: 0, borderBottomRightRadius: 0 }} disabled={true} loading={true} />
-    <Select style={{ flex: 1 }} disabled={true} />
+    <Select style={styles.selectField} disabled={true} loading={true} />
+    <Select style={styles.selectValue} disabled={true} />
     <Button icon={<CloseOutlined />} disabled={true} />
   </Space.Compact>
-);
+));
+SearchFilterInputSkeleton.displayName = 'SearchFilterInputSkeleton';
 
 export default SearchFilterInput;

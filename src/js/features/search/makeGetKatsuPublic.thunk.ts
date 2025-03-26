@@ -19,7 +19,7 @@ export const makeGetKatsuPublic = createAsyncThunk<
   (_, { rejectWithValue, getState }) => {
     const state = getState();
     return axios
-      .get(katsuPublicSearchUrl, scopedAuthorizedRequestConfig(state, state.query.queryParams))
+      .get(katsuPublicSearchUrl, scopedAuthorizedRequestConfig(state, state.query.filterQueryParams))
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue));
   },

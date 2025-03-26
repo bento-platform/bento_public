@@ -7,7 +7,7 @@ import { FilterOutlined } from '@ant-design/icons';
 import { WIDTH_100P_STYLE } from '@/constants/common';
 import { WAITING_STATES } from '@/constants/requests';
 import { useConfig } from '@/features/config/hooks';
-import { useSearchQuery } from '@/features/search/hooks';
+import { useQueryFilterFields, useSearchQuery } from '@/features/search/hooks';
 import { useTranslationFn } from '@/hooks';
 import { buildQueryParamsUrl, queryParamsWithoutKey } from '@/utils/search';
 
@@ -21,12 +21,12 @@ const SearchFilters = ({ onFocus, style }: { onFocus: () => void; style?: CSSPro
   const navigate = useNavigate();
 
   const { configStatus, maxQueryParameters } = useConfig();
-  const { fieldsStatus, querySections, queryParams } = useSearchQuery();
+  const { fieldsStatus, filterQueryParams } = useSearchQuery();
+  const fields = useQueryFilterFields();
 
   const [filterInputs, usedFields] = useMemo(() => {
-    const filterInputs_: FilterValue[] = Object.entries(queryParams).map(([k, v]) => ({ field: k, value: v }));
+    const filterInputs_: FilterValue[] = Object.entries(filterQueryParams).map(([k, v]) => ({ field: k, value: v }));
 
-    const fields = querySections.flatMap(({ fields }) => fields.map((f) => f.id));
     const usedFields_ = new Set(filterInputs_.filter((fi) => fi.field !== null).map((fi) => fi.field as string));
 
     if (
@@ -37,7 +37,7 @@ const SearchFilters = ({ onFocus, style }: { onFocus: () => void; style?: CSSPro
       filterInputs_.push({ field: null, value: null });
     }
     return [filterInputs_, usedFields_];
-  }, [maxQueryParameters, querySections, queryParams]);
+  }, [maxQueryParameters, fields, filterQueryParams]);
 
   const { filterQueryStatus } = useSearchQuery();
 
@@ -61,7 +61,9 @@ const SearchFilters = ({ onFocus, style }: { onFocus: () => void; style?: CSSPro
                 if (field === null || value === null) return; // Force field to resolve as string type
                 const url = buildQueryParamsUrl(pathname, {
                   // If we change the field in this filter, we need to remove it so we can switch to the new field
-                  ...(fv.field && fv.field !== field ? queryParamsWithoutKey(queryParams, fv.field) : queryParams),
+                  ...(fv.field && fv.field !== field
+                    ? queryParamsWithoutKey(filterQueryParams, fv.field)
+                    : filterQueryParams),
                   // ... and if the field stays the same, we will put it back with a new value. Otherwise, we'll put the
                   // new field in with the first available value.
                   [field]: value,
@@ -72,7 +74,7 @@ const SearchFilters = ({ onFocus, style }: { onFocus: () => void; style?: CSSPro
               }}
               onRemove={() => {
                 if (fv.field === null) return;
-                const url = buildQueryParamsUrl(pathname, queryParamsWithoutKey(queryParams, fv.field));
+                const url = buildQueryParamsUrl(pathname, queryParamsWithoutKey(filterQueryParams, fv.field));
                 console.debug('[SearchFilters] Redirecting to:', url);
                 navigate(url, { replace: true });
               }}

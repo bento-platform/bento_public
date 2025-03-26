@@ -1,12 +1,12 @@
-import { type CSSProperties, memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { type CSSProperties, memo, useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Card, Flex, Row, Space } from 'antd';
 
 import { queryData } from 'bento-auth-js';
 
 import { useConfig } from '@/features/config/hooks';
-import { useSearchQuery } from '@/features/search/hooks';
-import { makeGetKatsuPublic, setQueryParams } from '@/features/search/query.store';
+import { useQueryFilterFields, useSearchQuery } from '@/features/search/hooks';
+import { makeGetKatsuPublic, setFilterQueryParams } from '@/features/search/query.store';
 import { useAppDispatch, useHasScopePermission, useTranslationFn } from '@/hooks';
 import { buildQueryParamsUrl } from '@/utils/search';
 
@@ -35,24 +35,14 @@ const RoutedSearch = () => {
   const navigate = useNavigate();
 
   const { configStatus, maxQueryParameters } = useConfig();
-  const {
-    querySections: searchSections,
-    queryParams,
-    fieldsStatus: searchFieldsStatus,
-    filterQueryStatus,
-    textQueryStatus,
-  } = useSearchQuery();
-
-  const searchFields = useMemo(
-    () => searchSections.flatMap(({ fields }) => fields.map((field) => ({ id: field.id, options: field.options }))),
-    [searchSections]
-  );
+  const { filterQueryParams, fieldsStatus: searchFieldsStatus, filterQueryStatus, textQueryStatus } = useSearchQuery();
+  const filterFields = useQueryFilterFields();
 
   const validateQuery = useCallback(
     (query: URLSearchParams): { valid: boolean; validQueryParamsObject: QueryParams } => {
       const validateQueryParam = (key: string, value: string): boolean => {
-        const field = searchFields.find((e) => e.id === key);
-        return Boolean(field && field.options.includes(value));
+        const field = filterFields.find((e) => e.id === key);
+        return !!field && field.options.includes(value);
       };
 
       const queryParamArray = Array.from(query.entries()).map(([key, value]) => ({ key, value }));
@@ -71,7 +61,7 @@ const RoutedSearch = () => {
         validQueryParamsObject,
       };
     },
-    [maxQueryParameters, searchFields]
+    [maxQueryParameters, filterFields]
   );
 
   // Synchronize Redux query params state from URL
@@ -94,11 +84,14 @@ const RoutedSearch = () => {
 
     const { valid, validQueryParamsObject } = validateQuery(new URLSearchParams(location.search));
     if (valid) {
-      if (filterQueryStatus === RequestStatus.Idle || !checkQueryParamsEqual(validQueryParamsObject, queryParams)) {
+      if (
+        filterQueryStatus === RequestStatus.Idle ||
+        !checkQueryParamsEqual(validQueryParamsObject, filterQueryParams)
+      ) {
         // Only update the state & refresh if we have a new set of query params from the URL.
         // [!!!] This should be the only place setQueryParams(...) gets called. Everywhere else should use URL
         //       manipulations, so that we have a one-way data flow from URL to state!
-        dispatch(setQueryParams(validQueryParamsObject));
+        dispatch(setFilterQueryParams(validQueryParamsObject));
         dispatch(makeGetKatsuPublic());
       }
     } else {
@@ -116,7 +109,7 @@ const RoutedSearch = () => {
     location.search,
     location.pathname,
     navigate,
-    queryParams,
+    filterQueryParams,
     validateQuery,
   ]);
 

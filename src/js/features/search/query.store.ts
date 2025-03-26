@@ -16,9 +16,8 @@ export type QueryState = {
   filterQueryStatus: RequestStatus;
   textQueryStatus: RequestStatus;
   // ----
-  querySections: SearchFieldResponse['sections'];
-  queryParams: { [key: string]: string };
-  queryParamCount: number;
+  filterSections: SearchFieldResponse['sections'];
+  filterQueryParams: { [key: string]: string };
   message: string;
   results: DiscoveryResults;
 };
@@ -28,9 +27,8 @@ const initialState: QueryState = {
   filterQueryStatus: RequestStatus.Idle,
   textQueryStatus: RequestStatus.Idle,
   // ----
-  querySections: [],
-  queryParams: {},
-  queryParamCount: 0,
+  filterSections: [],
+  filterQueryParams: {},
   message: '',
   results: EMPTY_DISCOVERY_RESULTS,
 };
@@ -39,9 +37,8 @@ const query = createSlice({
   name: 'query',
   initialState,
   reducers: {
-    setQueryParams: (state, { payload }) => {
-      state.queryParams = payload;
-      state.queryParamCount = Object.keys(payload).length;
+    setFilterQueryParams: (state, { payload }) => {
+      state.filterQueryParams = payload;
     },
   },
   extraReducers: (builder) => {
@@ -98,7 +95,7 @@ const query = createSlice({
     });
     builder.addCase(makeGetSearchFields.fulfilled, (state, { payload }) => {
       state.fieldsStatus = RequestStatus.Fulfilled;
-      state.querySections = payload.sections;
+      state.filterSections = payload.sections;
     });
     builder.addCase(makeGetSearchFields.rejected, (state) => {
       state.fieldsStatus = RequestStatus.Rejected;
@@ -106,6 +103,6 @@ const query = createSlice({
   },
 });
 
-export const { setQueryParams } = query.actions;
+export const { setFilterQueryParams } = query.actions;
 export { makeGetKatsuPublic, makeGetSearchFields };
 export default query.reducer;
