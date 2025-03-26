@@ -160,15 +160,18 @@ const SearchResultsPane = ({
   results,
   resultsTitle,
   resultsExtra,
+  pane,
+  onPaneChange,
   style,
 }: SearchResultsPaneProps) => {
-  const [panePage, setPanePage] = useState<SearchResultsUIPane>('charts');
+  pane = pane ?? 'charts';
+  onPaneChange = onPaneChange ?? (() => {});
 
   let pageElement = <div />;
-  if (panePage === 'charts') {
+  if (pane === 'charts') {
     pageElement = <SRChartsPage hasInsufficientData={hasInsufficientData} results={results} />;
-  } else if (panePage === 'individuals') {
-    pageElement = <SRIndividualsPage onBack={() => setPanePage('charts')} results={results} />;
+  } else if (pane === 'individuals') {
+    pageElement = <SRIndividualsPage onBack={() => onPaneChange('charts')} results={results} />;
   }
 
   return (
@@ -196,8 +199,8 @@ const SearchResultsPane = ({
           <Col xs={24} lg={4}>
             <SearchResultsCounts
               mode="normal"
-              selectedPane={panePage}
-              setSelectedPane={(p) => setPanePage(p)}
+              selectedPane={pane}
+              setSelectedPane={onPaneChange}
               results={results}
               hasInsufficientData={hasInsufficientData}
               uncensoredCounts={uncensoredCounts}
@@ -219,6 +222,8 @@ export interface SearchResultsPaneProps {
   results: DiscoveryResults;
   resultsTitle?: string;
   resultsExtra?: ReactElement;
+  pane?: SearchResultsUIPane;
+  onPaneChange?: (pane: SearchResultsUIPane) => void;
   style?: CSSProperties;
 }
 
