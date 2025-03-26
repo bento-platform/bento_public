@@ -1,4 +1,4 @@
-import { type CSSProperties, useCallback } from 'react';
+import { type CSSProperties, useCallback, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, Form, Input, Space, Typography } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
@@ -19,9 +19,16 @@ const SearchFreeText = ({ onFocus, style }: { onFocus: () => void; style?: CSSPr
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { filterQueryParams, textQueryStatus } = useSearchQuery();
+  const { filterQueryParams, textQuery, textQueryStatus } = useSearchQuery();
 
   const [form] = Form.useForm<FreeTextFormValues>();
+
+  useEffect(() => {
+    // If the textQuery state changes (from a URL parameter, presumably), update the form value to sync them.
+    if (textQuery) {
+      form.setFieldValue('q', textQuery);
+    }
+  }, [form, textQuery]);
 
   const onFinish = useCallback(
     (values: FreeTextFormValues) => {
