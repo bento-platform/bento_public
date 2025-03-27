@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslationFn } from '@/hooks';
 import { Button, Form, Select, Space } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
+import FilterLabel from './FilterLabel';
 import type { FormInstance } from 'antd/es/form';
 import type {
   FormFilter,
@@ -13,27 +14,32 @@ import type {
   BeaconFilterUiOptions,
 } from '@/types/beacon';
 
-// TODOs:
-// any search key (eg "sex") selected in one filter should not available in other
-// for clarity they should probably appear, but be greyed out
-// this requires rendering select options as <Option> components
-
 const FILTER_FORM_ITEM_STYLE = { flex: 1, marginInlineEnd: -1 };
 const FILTER_FORM_ITEM_INNER_STYLE = { width: '100%' };
 
-const Filter = ({ filter, form, beaconFiltersBySection, removeFilter, isRequired }: FilterProps) => {
+const Filter = ({
+  filter,
+  form,
+  beaconFiltersBySection,
+  removeFilter,
+  setFilterSearchFieldId,
+  searchFieldInUse,
+  isRequired,
+}: FilterProps) => {
   const t = useTranslationFn();
 
   const [valueOptions, setValueOptions] = useState([{ label: '', value: '' }]);
 
-  const handleSelectKey = (_: unknown, option: GenericOptionType) => {
-    // set dropdown options for a particular key
-    // ie for key "sex", set options to "MALE", "FEMALE", etc
+  const handleSelectKey = (searchFieldId: string, option: GenericOptionType) => {
+    // update which search field this filter is using ("sex", "age", etc)
+    setFilterSearchFieldId(filter, searchFieldId);
 
     // narrow type of option
     // ant design has conflicting type inference when options are nested in more than one layer
     const currentOption = option as FilterPullDownKey;
 
+    // set dropdown options for a particular key
+    // ie for key "sex", set options to "MALE", "FEMALE", etc
     setValueOptions(currentOption.optionsThisKey);
   };
 
@@ -44,17 +50,12 @@ const Filter = ({ filter, form, beaconFiltersBySection, removeFilter, isRequired
     });
   }, [filter.index, form, valueOptions]);
 
-  const renderLabel = (filter: BeaconFilterUiOptions) => {
-    const units = filter.units ?? '';
-    const unitsString = units ? ` (${t(units)})` : '';
-    return t(filter.label) + unitsString;
-  };
-
   const searchKeyOptions = (arr: BeaconFilterSection[]): FilterOption[] => {
     return arr.map((qs) => ({
       label: t(qs.section_title),
       options: qs.fields.map((field) => ({
-        label: renderLabel(field),
+        disabled: searchFieldInUse(field.id),
+        label: <FilterLabel filter={field} />,
         value: field.id,
         optionsThisKey: searchValueOptions(field.values),
       })),
@@ -67,7 +68,7 @@ const Filter = ({ filter, form, beaconFiltersBySection, removeFilter, isRequired
   return (
     <Space.Compact>
       <Form.Item
-        name={`filterId${filter.index}`}
+        name={`filterIndex${filter.index}`}
         rules={[{ required: isRequired, message: t('search field required') }]}
         style={FILTER_FORM_ITEM_STYLE}
       >
@@ -100,6 +101,8 @@ export interface FilterProps {
   form: FormInstance;
   beaconFiltersBySection: BeaconFilterSection[];
   removeFilter: (filter: FormFilter) => void;
+  setFilterSearchFieldId: (filter: FormFilter, searchFieldId: string) => void;
+  searchFieldInUse: (searchFieldId: string) => boolean;
   isRequired: boolean;
 }
 
