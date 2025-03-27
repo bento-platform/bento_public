@@ -70,7 +70,6 @@ export interface ConfigState {
   configIsInvalid: boolean;
   countThreshold: number;
   maxQueryParameters: number;
-  maxQueryParametersRequired: boolean;
   // ----------------------------------------------------
   serviceInfoStatus: RequestStatus;
   serviceInfo: ServiceInfoStore;
@@ -81,7 +80,6 @@ const initialState: ConfigState = {
   configIsInvalid: false,
   countThreshold: 0,
   maxQueryParameters: 0,
-  maxQueryParametersRequired: true,
   // ----------------------------------------------------
   serviceInfoStatus: RequestStatus.Idle,
   serviceInfo: {
@@ -93,9 +91,6 @@ const configStore = createSlice({
   name: 'config',
   initialState,
   reducers: {
-    setMaxQueryParametersRequired: (state, { payload }: PayloadAction<boolean>) => {
-      state.maxQueryParametersRequired = payload;
-    },
     invalidateConfig: (state) => {
       state.configIsInvalid = true;
     },
@@ -126,5 +121,5 @@ const configStore = createSlice({
   },
 });
 
-export const { setMaxQueryParametersRequired, invalidateConfig } = configStore.actions;
+export const { invalidateConfig } = configStore.actions;
 export default configStore.reducer;

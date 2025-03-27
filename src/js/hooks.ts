@@ -9,7 +9,6 @@ import { RESOURCE_EVERYTHING, queryData, useHasResourcePermission } from 'bento-
 import type { RootState, AppDispatch } from '@/store';
 import { CUSTOMIZABLE_TRANSLATION } from '@/constants/configConstants';
 import type { NamespaceTranslationFunction } from '@/types/translation';
-import { setMaxQueryParametersRequired } from '@/features/config/config.store';
 import { useSelectedScopeAsResource } from '@/features/metadata/hooks';
 import { CHART_WIDTH, GRID_GAP } from '@/constants/overviewConstants';
 
@@ -49,8 +48,7 @@ export const useQueryWithAuthIfAllowed = () => {
   const { hasPermission } = useHasResourcePermissionWrapper(RESOURCE_EVERYTHING, queryData);
   useEffect(() => {
     if (hasPermission) {
-      console.log('Beacon | Search: user authorized for no max query parameters.');
-      dispatch(setMaxQueryParametersRequired(false));
+      console.log('Beacon | Search: user authorized for query:data.');
     }
   }, [dispatch, hasPermission]);
 };
