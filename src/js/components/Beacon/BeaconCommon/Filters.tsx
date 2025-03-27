@@ -36,7 +36,7 @@ const Filters = ({ filters, setFilters, form, beaconFiltersBySection, isNetworkQ
   const [filterIndex, setFilterIndex] = useState<number>(1);
 
   const { maxQueryParameters: maxFilters, maxQueryParametersRequired } = useConfig();
-  const hasMaxFilters = maxQueryParametersRequired && filters.length >= maxFilters;
+  const hasMaxFilters = filters.length >= maxFilters;
 
   // don't need to pull filters from state
   // we only need to know *which* state we are in, so it can be shown in the switch
