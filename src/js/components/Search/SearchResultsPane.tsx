@@ -1,4 +1,4 @@
-import { type CSSProperties, type ReactElement, useCallback, useMemo, useState } from 'react';
+import { type CSSProperties, type ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Button,
   Card,
@@ -166,6 +166,12 @@ const SearchResultsPane = ({
 }: SearchResultsPaneProps) => {
   pane = pane ?? 'charts';
   onPaneChange = onPaneChange ?? (() => {});
+
+  useEffect(() => {
+    if (pane === 'individuals' && !results.individualMatches?.length) {
+      onPaneChange('charts');
+    }
+  }, [pane, onPaneChange, results]);
 
   let pageElement = <div />;
   if (pane === 'charts') {

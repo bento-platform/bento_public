@@ -28,6 +28,8 @@ import { WAITING_STATES } from '@/constants/requests';
 import { NON_FILTER_QUERY_PARAM_PREFIX, TEXT_QUERY_PARAM } from '@/features/search/constants';
 import type { QueryParamObj, QueryParams } from '@/features/search/types';
 import { RequestStatus } from '@/types/requests';
+import { BentoRoute } from '@/types/routes';
+import { getCurrentPage } from '@/utils/router';
 
 const checkQueryParamsEqual = (qp1: QueryParams, qp2: QueryParams): boolean => {
   const qp1Keys = Object.keys(qp1);
@@ -98,7 +100,7 @@ const RoutedSearch = () => {
 
   // Synchronize Redux query params state from URL
   useEffect(() => {
-    if (!location.pathname.endsWith('/search')) return;
+    if (getCurrentPage(location) !== BentoRoute.Search) return;
 
     // Wait until:
     //  - we have loaded the max. # of query parameters we can query
@@ -160,8 +162,7 @@ const RoutedSearch = () => {
     searchFieldsStatus,
     filterQueryStatus,
     textQueryStatus,
-    location.search,
-    location.pathname,
+    location,
     navigate,
     filterQueryParams,
     textQuery,

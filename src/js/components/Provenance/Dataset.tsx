@@ -1,5 +1,6 @@
 import { type ReactNode, useCallback, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import { Avatar, Button, Card, Flex, List, Modal, Popover, Space, Tag, Typography } from 'antd';
 import { ExpandAltOutlined, PieChartOutlined, SearchOutlined, SolutionOutlined } from '@ant-design/icons';
@@ -44,7 +45,9 @@ const Dataset = ({
   format: 'list-item' | 'card' | 'carousel';
   selected?: boolean;
 }) => {
-  const location = useLocation();
+  const {
+    i18n: { language },
+  } = useTranslation();
   const navigate = useNavigate();
   const page = getCurrentPage();
 
@@ -52,15 +55,13 @@ const Dataset = ({
 
   const [provenanceModalOpen, setProvenanceModalOpen] = useState(false);
 
-  const baseURL = '/' + location.pathname.split('/')[1];
-
   const { identifier, title, description, dats_file: dats } = dataset;
   const keywords = dats.keywords;
   const displayKeywords = keywords?.slice(0, KEYWORDS_LIMIT) ?? [];
   const remainingKeywords = keywords?.slice(KEYWORDS_LIMIT) ?? [];
 
   const scope: DiscoveryScope = { project: parentProjectID, dataset: identifier };
-  const datasetBaseURL = scopeToUrl(scope, baseURL);
+  const datasetBaseURL = scopeToUrl(scope, language);
 
   const onNavigateCurrent = useCallback(() => navigate(`${datasetBaseURL}${page}`), [navigate, datasetBaseURL, page]);
   const onNavigateOverview = useCallback(() => navigate(`${datasetBaseURL}overview`), [navigate, datasetBaseURL]);

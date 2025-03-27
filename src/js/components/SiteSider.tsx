@@ -27,7 +27,7 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
   const t = useTranslationFn();
   const { filterQueryParams } = useSearchQuery();
   const catalogueMode = useIsInCatalogueMode();
-  const currentPage = getCurrentPage();
+  const currentPage = getCurrentPage(location);
 
   const navigateToRoot = useNavigateToRoot();
   const { fixedProject, scope, scopeSet } = useSelectedScope();
