@@ -111,10 +111,14 @@ const configStore = createSlice({
     builder.addCase(makeGetServiceInfoRequest.pending, (state) => {
       state.serviceInfoStatus = RequestStatus.Pending;
     });
-    builder.addCase(makeGetServiceInfoRequest.fulfilled, (state, { payload }: PayloadAction<ServicesResponse[]>) => {
-      state.serviceInfo.auth = payload.find((service) => service.bento.serviceKind === 'authorization')?.url || '';
-      state.serviceInfoStatus = RequestStatus.Fulfilled;
-    });
+    builder.addCase(
+      makeGetServiceInfoRequest.fulfilled,
+      (state, { payload }: PayloadAction<ServicesResponse[] | undefined>) => {
+        state.serviceInfo.auth =
+          (payload ?? []).find((service) => service.bento.serviceKind === 'authorization')?.url || '';
+        state.serviceInfoStatus = RequestStatus.Fulfilled;
+      }
+    );
     builder.addCase(makeGetServiceInfoRequest.rejected, (state) => {
       state.serviceInfoStatus = RequestStatus.Rejected;
     });
