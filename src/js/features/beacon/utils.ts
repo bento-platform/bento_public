@@ -122,8 +122,8 @@ export const packageBeaconFilteringTerms = (filters: BeaconFilteringTermFromEndp
   // temp object to simplify merging fields by category
   const tempFiltersObj: Record<string, BeaconFilterUiOptions[]> = {};
   filters.forEach((f) => {
-    const { bento, ...filter_details } = f;
-    tempFiltersObj[bento.section] = (tempFiltersObj[bento.section] ?? []).concat(filter_details);
+    const { bento, ...filterDetails } = f;
+    tempFiltersObj[bento.section] = (tempFiltersObj[bento.section] ?? []).concat(filterDetails);
   });
   // then return as an array of categories
   return Object.keys(tempFiltersObj).map((key) => ({ section_title: key, fields: tempFiltersObj[key] }));
