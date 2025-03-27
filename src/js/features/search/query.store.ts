@@ -52,6 +52,9 @@ const query = createSlice({
     setTextQuery: (state, { payload }: PayloadAction<string>) => {
       state.textQuery = payload;
     },
+    resetTextQueryStatus: (state) => {
+      state.textQueryStatus = RequestStatus.Idle;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(makeGetKatsuPublic.pending, (state) => {
@@ -115,6 +118,6 @@ const query = createSlice({
   },
 });
 
-export const { setFilterQueryParams, resetFilterQueryStatus, setTextQuery } = query.actions;
+export const { setFilterQueryParams, resetFilterQueryStatus, setTextQuery, resetTextQueryStatus } = query.actions;
 export { makeGetKatsuPublic, makeGetSearchFields };
 export default query.reducer;
