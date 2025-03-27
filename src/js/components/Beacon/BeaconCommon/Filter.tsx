@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslationFn } from '@/hooks';
 import { Button, Form, Select, Space } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
+import FilterLabel from './FilterLabel';
 import type { FormInstance } from 'antd/es/form';
 import type {
   FormFilter,
@@ -12,7 +13,6 @@ import type {
   BeaconFilterSection,
   BeaconFilterUiOptions,
 } from '@/types/beacon';
-import OptionDescription from '@/components/Search/OptionDescription';
 
 const FILTER_FORM_ITEM_STYLE = { flex: 1, marginInlineEnd: -1 };
 const FILTER_FORM_ITEM_INNER_STYLE = { width: '100%' };
@@ -50,25 +50,12 @@ const Filter = ({
     });
   }, [filter.index, form, valueOptions]);
 
-  const renderLabel = (filter: BeaconFilterUiOptions) => {
-    const units = filter.units ?? '';
-    const unitsString = units ? ` (${t(units)})` : '';
-    const helpText = t(filter.description);
-    const labelText = t(filter.label) + unitsString;
-    return (
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        {labelText}
-        <OptionDescription description={helpText} />
-      </div>
-    );
-  };
-
   const searchKeyOptions = (arr: BeaconFilterSection[]): FilterOption[] => {
     return arr.map((qs) => ({
       label: t(qs.section_title),
       options: qs.fields.map((field) => ({
         disabled: searchFieldInUse(field.id),
-        label: renderLabel(field),
+        label: <FilterLabel filter={field} />,
         value: field.id,
         optionsThisKey: searchValueOptions(field.values),
       })),
