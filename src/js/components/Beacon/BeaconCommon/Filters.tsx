@@ -35,7 +35,7 @@ const Filters = ({ filters, setFilters, form, beaconFiltersBySection, isNetworkQ
   const t = useTranslationFn();
   const [filterIndex, setFilterIndex] = useState<number>(1);
 
-  const { maxQueryParameters: maxFilters, maxQueryParametersRequired } = useConfig();
+  const { maxQueryParameters: maxFilters } = useConfig();
   const hasMaxFilters = filters.length >= maxFilters;
 
   // don't need to pull filters from state
