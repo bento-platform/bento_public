@@ -31,7 +31,7 @@ const Filter = ({
   const [valueOptions, setValueOptions] = useState([{ label: '', value: '' }]);
 
   const handleSelectKey = (searchFieldId: string, option: GenericOptionType) => {
-    // update which search field this filter is using ("sex", "age", etc)     //naming confusion here, that "filter" means both the filters you can choose and the current options present in the form
+    // update which search field this filter is using ("sex", "age", etc)
     setFilterSearchFieldId(filter, searchFieldId);
 
     // narrow type of option
