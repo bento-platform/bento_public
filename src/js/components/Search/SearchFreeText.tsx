@@ -12,9 +12,10 @@ import { RequestStatus } from '@/types/requests';
 
 import RequestStatusIcon from './RequestStatusIcon';
 
+type SearchFreeTextProps = { onFocus: () => void; style?: CSSProperties };
 type FreeTextFormValues = { q: string };
 
-const SearchFreeText = ({ onFocus, style }: { onFocus: () => void; style?: CSSProperties }) => {
+const SearchFreeText = ({ onFocus, style }: SearchFreeTextProps) => {
   const t = useTranslationFn();
   const location = useLocation();
   const navigate = useNavigate();

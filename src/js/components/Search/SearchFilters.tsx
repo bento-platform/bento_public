@@ -14,7 +14,17 @@ import { useTranslationFn } from '@/hooks';
 import RequestStatusIcon from './RequestStatusIcon';
 import SearchFilterInput, { type FilterValue, SearchFilterInputSkeleton } from './SearchFilterInput';
 
-const SearchFilters = ({ onFocus, style }: { onFocus: () => void; style?: CSSProperties }) => {
+const styles = {
+  title: { fontSize: '1.1rem', marginTop: 0 } as CSSProperties,
+  titleInner: { marginRight: '0.5em' } as CSSProperties,
+};
+
+export type SearchFiltersProps = {
+  onFocus: () => void;
+  style?: CSSProperties;
+};
+
+const SearchFilters = ({ onFocus, style }: SearchFiltersProps) => {
   const t = useTranslationFn();
 
   const { pathname } = useLocation();
@@ -43,8 +53,8 @@ const SearchFilters = ({ onFocus, style }: { onFocus: () => void; style?: CSSPro
 
   return (
     <div style={style}>
-      <Typography.Title level={3} style={{ fontSize: '1.1rem', marginTop: 0 }}>
-        <span style={{ marginRight: '0.5em' }}>
+      <Typography.Title level={3} style={styles.title}>
+        <span style={styles.titleInner}>
           <FilterOutlined /> {t('Filters')}
         </span>
         {usedFields.size ? <RequestStatusIcon status={filterQueryStatus} /> : null}

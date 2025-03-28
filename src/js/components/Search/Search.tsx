@@ -14,7 +14,7 @@ import {
   setTextQuery,
   resetTextQueryStatus,
 } from '@/features/search/query.store';
-import { useAppDispatch, useHasScopePermission, useTranslationFn } from '@/hooks';
+import { useAppDispatch, useHasScopePermission } from '@/hooks';
 import { buildQueryParamsUrl } from '@/features/search/utils';
 
 import Loader from '@/components/Loader';
@@ -145,8 +145,6 @@ const RoutedSearch = () => {
       dispatch(resetFilterQueryStatus());
     }
 
-    console.log(focused, performingTextQuery, RequestStatus[filterQueryStatus]);
-
     // If we have new valid filter query parameters (that aren't already in Redux), put them into the state even if
     // we're not going to actually execute a filter search.
     const queryParamsEqual = checkQueryParamsEqual(validQueryParams, filterQueryParams);
@@ -188,10 +186,20 @@ const RoutedSearch = () => {
 
 const SEARCH_SPACE_ITEM_STYLE = { item: WIDTH_100P_STYLE };
 
+const focusedStyle = (focused: boolean) =>
+  ({
+    opacity: focused ? 1 : 0.75,
+    transition: 'opacity 0.1s',
+  }) as CSSProperties;
 
-const Search = ({ focused, setFocused }: { focused: SearchMode; setFocused: (mode: SearchMode) => void }) => {
+type SearchProps = { focused: SearchMode; setFocused: (mode: SearchMode) => void };
+
+const Search = ({ focused, setFocused }: SearchProps) => {
   const { hasPermission: queryDataPerm } = useHasScopePermission(queryData);
   const { fieldsStatus } = useSearchQuery();
+
+  const onFiltersFocus = useCallback(() => setFocused('filters'), [setFocused]);
+  const onTextFocus = useCallback(() => setFocused('text'), [setFocused]);
 
   return WAITING_STATES.includes(fieldsStatus) ? (
     <Loader />
@@ -205,21 +213,19 @@ const Search = ({ focused, setFocused }: { focused: SearchMode; setFocused: (mod
           >
             <Flex justify="space-between" gap={24} style={WIDTH_100P_STYLE}>
               <SearchFilters
-                onFocus={() => setFocused('filters')}
+                onFocus={onFiltersFocus}
                 style={{
                   flex: 1,
                   maxWidth: 600,
-                  opacity: focused === 'filters' ? 1 : 0.75,
-                  transition: 'opacity 0.1s',
+                  ...focusedStyle(focused === 'filters'),
                 }}
               />
               {queryDataPerm && (
+                // If we have the query:data permission on the current scope, we're allowed to run free-text searches on
+                // the data, so show the free-text search form:
                 <>
                   <OrDelimiter />
-                  <SearchFreeText
-                    onFocus={() => setFocused('text')}
-                    style={{ flex: 1, opacity: focused === 'text' ? 1 : 0.75, transition: 'opacity 0.1s' }}
-                  />
+                  <SearchFreeText onFocus={onTextFocus} style={{ flex: 1, ...focusedStyle(focused === 'text') }} />
                 </>
               )}
             </Flex>
