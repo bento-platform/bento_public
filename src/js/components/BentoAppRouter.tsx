@@ -21,7 +21,13 @@ import { BEACON_UI_ENABLED, BEACON_NETWORK_ENABLED } from '@/config';
 import { WAITING_STATES } from '@/constants/requests';
 import { RequestStatus } from '@/types/requests';
 import { BentoRoute } from '@/types/routes';
-import { scopeEqual, validProjectDataset } from '@/utils/router';
+import {
+  getPathPageIndex,
+  langAndScopeSelectionToUrl,
+  pathParts,
+  scopeEqual,
+  validProjectDataset,
+} from '@/utils/router';
 
 import PublicOverview from './Overview/PublicOverview';
 import Search from './Search/Search';
@@ -54,7 +60,7 @@ const ScopedRoute = () => {
     // If the URL scope is valid, store the scope in the Redux store.
     // We have two subcases here:
     //  - If the validated scope matches the URL parameters, nothing needs to be done
-    //  - No parameters have been supplied and we have a single-dataset node, in which case we want to keep the "clean"
+    //  - No parameters have been supplied, and we have a single-dataset node, in which case we want to keep the "clean"
     //    / blank URL to avoid visual clutter.
     if (
       (datasetId === valid.scope.dataset && projectId === valid.scope.project) ||
@@ -66,25 +72,12 @@ const ScopedRoute = () => {
 
     // Otherwise: validated scope does not match our desired URL params, so we need to re-locate to a valid path.
 
-    const oldPath = location.pathname.split('/').filter(Boolean);
-    const newPath = [oldPath[0]];
+    const oldPath = pathParts(location.pathname);
+    const oldPathPageIdx = getPathPageIndex(oldPath);
+    const newPathSuffix = oldPath.slice(oldPathPageIdx).join('/');
+    const newPath = langAndScopeSelectionToUrl(oldPath[0], valid, newPathSuffix);
 
-    // If we have >1 dataset, we need the URL to match the validated scope, so we create a new path and go there.
-    // Otherwise (with 1 dataset), keep URL as clean as possible - with no IDs present at all.
-    if (!isFixedProjectAndDataset) {
-      if (valid.scope.dataset) {
-        newPath.push('p', valid.scope.project as string, 'd', valid.scope.dataset);
-      } else if (valid.scope.project) {
-        newPath.push('p', valid.scope.project);
-      }
-    }
-
-    const oldPathLength = oldPath.length;
-    if (oldPath[oldPathLength - 3] === 'p' || oldPath[oldPathLength - 3] === 'd') {
-      newPath.push(oldPath[oldPathLength - 1]);
-    }
-    const newPathString = '/' + newPath.join('/');
-    navigate(newPathString, { replace: true });
+    navigate(newPath, { replace: true });
   }, [projectsByID, projectsStatus, projectId, datasetId, dispatch, navigate, selectedScope]);
 
   return <Outlet />;
@@ -155,7 +148,7 @@ const BentoAppRouter = () => {
         <Route path="/" element={<ScopedRoute />}>
           <Route index element={<PublicOverview />} />
           <Route path={BentoRoute.Overview} element={<PublicOverview />} />
-          <Route path={BentoRoute.Search} element={<Search />} />
+          <Route path={`${BentoRoute.Search}/:pane?`} element={<Search />} />
           {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
           {/* Beacon network is only available at the top level - scoping does not make sense for it. */}
           {BentoRoute.BeaconNetwork && <Route path={BentoRoute.BeaconNetwork} element={<NetworkUi />} />}
@@ -165,7 +158,7 @@ const BentoAppRouter = () => {
         <Route path="/p/:projectId" element={<ScopedRoute />}>
           <Route index element={<PublicOverview />} />
           <Route path={BentoRoute.Overview} element={<PublicOverview />} />
-          <Route path={BentoRoute.Search} element={<Search />} />
+          <Route path={`${BentoRoute.Search}/:pane?`} element={<Search />} />
           {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
           <Route path={BentoRoute.Provenance} element={<ProvenanceTab />} />
         </Route>
@@ -173,7 +166,7 @@ const BentoAppRouter = () => {
         <Route path="/p/:projectId/d/:datasetId" element={<ScopedRoute />}>
           <Route index element={<PublicOverview />} />
           <Route path={BentoRoute.Overview} element={<PublicOverview />} />
-          <Route path={BentoRoute.Search} element={<Search />} />
+          <Route path={`${BentoRoute.Search}/:pane?`} element={<Search />} />
           {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
           <Route path={BentoRoute.Provenance} element={<ProvenanceTab />} />
         </Route>

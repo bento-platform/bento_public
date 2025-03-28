@@ -1,5 +1,5 @@
+import type { Section as DiscoverySearch } from '@/features/search/types';
 import type { Fields as DiscoveryFields, Layout as DiscoveryOverview } from '@/types/overviewResponse';
-import type { Section as DiscoverySearch } from '@/types/search';
 import type { DiscoveryRules } from '@/types/configResponse';
 import type { DatsFile } from '@/types/dats';
 

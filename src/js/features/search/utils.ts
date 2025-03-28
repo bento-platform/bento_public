@@ -1,4 +1,4 @@
-import type { QueryParams } from '@/types/search';
+import type { QueryParams } from '@/features/search/types';
 
 export const queryParamsWithoutKey = (qp: QueryParams, key: string): QueryParams => {
   const qpc = { ...qp };

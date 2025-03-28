@@ -10,6 +10,7 @@ import { CHART_WIDTH, GRID_GAP } from '@/constants/overviewConstants';
 import ChartCard from './ChartCard';
 
 import type { ChartDataField } from '@/types/data';
+import { WIDTH_100P_STYLE } from '@/constants/common';
 
 const OverviewDisplayData = ({ section, allCharts, searchableFields }: OverviewDisplayDataProps) => {
   const dispatch = useAppDispatch();
@@ -44,7 +45,7 @@ const OverviewDisplayData = ({ section, allCharts, searchableFields }: OverviewD
 
   if (isSmallScreen) {
     return (
-      <Space direction="vertical" style={{ width: '100%' }}>
+      <Space direction="vertical" style={WIDTH_100P_STYLE}>
         {displayedCharts.map(renderItem)}
       </Space>
     );

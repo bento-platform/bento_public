@@ -14,7 +14,6 @@ const BeaconQueryUi = () => {
     <Loader />
   ) : (
     <div style={WRAPPER_STYLE}>
-      <BeaconSearchResults />
       <BeaconQueryFormUi
         isFetchingQueryResponse={WAITING_STATES.includes(queryStatus)}
         isNetworkQuery={false}
@@ -23,6 +22,7 @@ const BeaconQueryUi = () => {
         apiErrorMessage={apiErrorMessage}
         beaconFiltersBySection={beaconFilters}
       />
+      <BeaconSearchResults />
     </div>
   );
 };

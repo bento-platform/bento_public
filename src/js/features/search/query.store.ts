@@ -1,32 +1,41 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
-import { EMPTY_DISCOVERY_RESULTS } from '@/constants/searchConstants';
 import type { DiscoveryResults } from '@/types/data';
 import { RequestStatus } from '@/types/requests';
-import type { KatsuSearchResponse, SearchFieldResponse } from '@/types/search';
+import { EMPTY_DISCOVERY_RESULTS } from '@/features/search/constants';
+import type { KatsuSearchResponse, QueryParams, SearchFieldResponse } from '@/features/search/types';
 import { serializeChartData } from '@/utils/chart';
 
 import { makeGetKatsuPublic } from './makeGetKatsuPublic.thunk';
 import { makeGetSearchFields } from './makeGetSearchFields.thunk';
+import { performFreeTextSearch } from '@/features/search/performFreeTextSearch.thunk';
 
 export type QueryState = {
   fieldsStatus: RequestStatus;
-  dataStatus: RequestStatus;
-  querySections: SearchFieldResponse['sections'];
-  queryParams: { [key: string]: string };
-  queryParamCount: number;
+  filterQueryStatus: RequestStatus;
+  textQueryStatus: RequestStatus;
+  // ----
+  filterSections: SearchFieldResponse['sections'];
+  filterQueryParams: QueryParams;
+  // ----
+  textQuery: string;
+  // ----
   message: string;
   results: DiscoveryResults;
 };
 
 const initialState: QueryState = {
   fieldsStatus: RequestStatus.Idle,
-  dataStatus: RequestStatus.Idle,
+  filterQueryStatus: RequestStatus.Idle,
+  textQueryStatus: RequestStatus.Idle,
+  // ----
+  filterSections: [],
+  filterQueryParams: {},
+  // ----
+  textQuery: '',
+  // ----
   message: '',
-  querySections: [],
-  queryParams: {},
-  queryParamCount: 0,
   results: EMPTY_DISCOVERY_RESULTS,
 };
 
@@ -34,17 +43,25 @@ const query = createSlice({
   name: 'query',
   initialState,
   reducers: {
-    setQueryParams: (state, { payload }) => {
-      state.queryParams = payload;
-      state.queryParamCount = Object.keys(payload).length;
+    setFilterQueryParams: (state, { payload }: PayloadAction<QueryParams>) => {
+      state.filterQueryParams = payload;
+    },
+    resetFilterQueryStatus: (state) => {
+      state.filterQueryStatus = RequestStatus.Idle;
+    },
+    setTextQuery: (state, { payload }: PayloadAction<string>) => {
+      state.textQuery = payload;
+    },
+    resetTextQueryStatus: (state) => {
+      state.textQueryStatus = RequestStatus.Idle;
     },
   },
   extraReducers: (builder) => {
     builder.addCase(makeGetKatsuPublic.pending, (state) => {
-      state.dataStatus = RequestStatus.Pending;
+      state.filterQueryStatus = RequestStatus.Pending;
     });
     builder.addCase(makeGetKatsuPublic.fulfilled, (state, { payload }: PayloadAction<KatsuSearchResponse>) => {
-      state.dataStatus = RequestStatus.Fulfilled;
+      state.filterQueryStatus = RequestStatus.Fulfilled;
       if (payload && 'message' in payload) {
         state.message = payload.message;
         return;
@@ -63,14 +80,37 @@ const query = createSlice({
       };
     });
     builder.addCase(makeGetKatsuPublic.rejected, (state) => {
-      state.dataStatus = RequestStatus.Rejected;
+      state.filterQueryStatus = RequestStatus.Rejected;
     });
+    // -----
+    builder.addCase(performFreeTextSearch.pending, (state) => {
+      state.textQueryStatus = RequestStatus.Pending;
+    });
+    builder.addCase(performFreeTextSearch.fulfilled, (state, { payload }) => {
+      state.textQueryStatus = RequestStatus.Fulfilled;
+      state.message = '';
+      state.results = {
+        // biosamples
+        biosampleCount: payload.results.reduce((acc, x) => acc + x.biosamples.length, 0),
+        biosampleChartData: [], // TODO
+        // experiments
+        experimentCount: payload.results.reduce((acc, x) => acc + x.num_experiments, 0),
+        experimentChartData: [], // TODO
+        // individuals
+        individualCount: payload.results.length,
+        individualMatches: payload.results.map((r) => r.subject_id),
+      };
+    });
+    builder.addCase(performFreeTextSearch.rejected, (state) => {
+      state.textQueryStatus = RequestStatus.Rejected;
+    });
+    // -----
     builder.addCase(makeGetSearchFields.pending, (state) => {
       state.fieldsStatus = RequestStatus.Pending;
     });
     builder.addCase(makeGetSearchFields.fulfilled, (state, { payload }) => {
       state.fieldsStatus = RequestStatus.Fulfilled;
-      state.querySections = payload.sections;
+      state.filterSections = payload.sections;
     });
     builder.addCase(makeGetSearchFields.rejected, (state) => {
       state.fieldsStatus = RequestStatus.Rejected;
@@ -78,6 +118,6 @@ const query = createSlice({
   },
 });
 
-export const { setQueryParams } = query.actions;
+export const { setFilterQueryParams, resetFilterQueryStatus, setTextQuery, resetTextQueryStatus } = query.actions;
 export { makeGetKatsuPublic, makeGetSearchFields };
 export default query.reducer;
