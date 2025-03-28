@@ -138,7 +138,7 @@ const RoutedSearch = () => {
       dispatch(setTextQuery(newTextQuery));
     }
 
-    if (textQueryStatus === RequestStatus.Idle && focused === 'text') {
+    if (textQueryStatus === RequestStatus.Idle && focused === 'text' && (newTextQuery || textQuery)) {
       dispatch(performFreeTextSearch());
       performingTextQuery = true;
       // Indicate to the state that search results don't reflect the filters by resetting the filter request status.
