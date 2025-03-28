@@ -1,4 +1,4 @@
-import { type CSSProperties, memo, useCallback, useEffect, useState } from 'react';
+import { type CSSProperties, useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Card, Flex, Row, Space } from 'antd';
 
@@ -18,6 +18,7 @@ import { useAppDispatch, useHasScopePermission, useTranslationFn } from '@/hooks
 import { buildQueryParamsUrl } from '@/features/search/utils';
 
 import Loader from '@/components/Loader';
+import OrDelimiter from './OrDelimiter';
 import SearchResults from './SearchResults';
 import SearchFilters from './SearchFilters';
 import SearchFreeText from './SearchFreeText';
@@ -187,18 +188,6 @@ const RoutedSearch = () => {
 
 const SEARCH_SPACE_ITEM_STYLE = { item: WIDTH_100P_STYLE };
 
-const OrDelimiter = memo(() => {
-  const t = useTranslationFn();
-  const lineStyle: CSSProperties = { width: 1, flex: 1, backgroundColor: '#f0f0f0' };
-  return (
-    <Flex vertical={true} gap={8} align="center">
-      <div style={lineStyle}></div>
-      <div style={{ fontWeight: 'bold', color: '#595959' }}>{t('OR')}</div>
-      <div style={lineStyle}></div>
-    </Flex>
-  );
-});
-OrDelimiter.displayName = 'OrDelimiter';
 
 const Search = ({ focused, setFocused }: { focused: SearchMode; setFocused: (mode: SearchMode) => void }) => {
   const { hasPermission: queryDataPerm } = useHasScopePermission(queryData);
