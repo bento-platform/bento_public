@@ -1,42 +1,16 @@
-import { type CSSProperties, type ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  Button,
-  Card,
-  Col,
-  Flex,
-  Row,
-  Table,
-  type TableColumnsType,
-  type TablePaginationConfig,
-  type TableProps,
-  Typography,
-} from 'antd';
-import { ExportOutlined, LeftOutlined } from '@ant-design/icons';
+import { type CSSProperties, type ReactElement, useCallback, useEffect } from 'react';
+import { Card, Col, Row, Typography } from 'antd';
 import { PieChart } from 'bento-charts';
 
-import { PORTAL_URL } from '@/config';
-import { T_PLURAL_COUNT, T_SINGULAR_COUNT } from '@/constants/i18n';
+import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { BOX_SHADOW, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
-import { useSelectedScope } from '@/features/metadata/hooks';
 import { useTranslationFn } from '@/hooks';
 import type { DiscoveryResults } from '@/types/data';
 import type { SearchResultsUIPane } from '@/features/search/types';
 
 import CustomEmpty from '@/components/Util/CustomEmpty';
 import SearchResultsCounts from './SearchResultsCounts';
-import IndividualRowDetail from './IndividualRowDetail';
-
-type IndividualResultRow = { id: string };
-
-const IndividualPortalLink = ({ id }: IndividualResultRow) => (
-  <a href={`${PORTAL_URL}/data/explorer/individuals/${id}`} target="_blank" rel="noreferrer">
-    <ExportOutlined />
-  </a>
-);
-
-const INDIVIDUAL_EXPANDABLE: TableProps<IndividualResultRow>['expandable'] = {
-  expandedRowRender: (rec) => <IndividualRowDetail id={rec.id} />,
-};
+import SearchResultsTablePage from '@/components/Search/SearchResultsTablePage';
 
 const SRChartsPage = ({
   hasInsufficientData,
@@ -76,82 +50,6 @@ const SRChartsPage = ({
   );
 };
 
-const SRIndividualsPage = ({ onBack, results }: { onBack: () => void; results: DiscoveryResults }) => {
-  const t = useTranslationFn();
-
-  const selectedScope = useSelectedScope();
-
-  const individualTableColumns = useMemo<TableColumnsType<IndividualResultRow>>(
-    () => [
-      { dataIndex: 'id', title: 'ID' },
-      // TODO: implement these when we have this information in search results:
-      ...(!selectedScope.scope.project ? [{ title: t('entities.project', T_SINGULAR_COUNT), key: 'project' }] : []),
-      ...(!selectedScope.scope.dataset ? [{ title: t('entities.dataset', T_SINGULAR_COUNT), key: 'dataset' }] : []),
-      {
-        title: '',
-        key: 'actions',
-        width: 32,
-        render: ({ id }) => <IndividualPortalLink id={id} />,
-      },
-    ],
-    [t, selectedScope]
-  );
-
-  const { individualMatches } = results;
-  const individualTableData = useMemo<IndividualResultRow[]>(
-    () => (individualMatches ?? []).map((id) => ({ id })),
-    [individualMatches]
-  );
-
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-
-  // noinspection JSUnusedGlobalSymbols
-  const individualPagination = useMemo<TablePaginationConfig>(
-    () => ({
-      current: page,
-      pageSize,
-      align: 'end',
-      size: 'default',
-      showSizeChanger: true,
-      onChange(page, pageSize) {
-        setPage(page);
-        setPageSize(pageSize);
-      },
-    }),
-    [page, pageSize]
-  );
-
-  const currentStart = individualTableData.length > 0 ? page * pageSize - pageSize + 1 : 0;
-  const currentEnd = Math.min(page * pageSize, individualTableData.length);
-
-  return (
-    <Col xs={24} lg={20}>
-      <Flex justify="space-between" align="center" style={{ marginBottom: 8 }}>
-        <Button icon={<LeftOutlined />} type="link" onClick={onBack} style={{ paddingLeft: 0 }}>
-          {t('Charts')}
-        </Button>
-        <span>
-          {t('search.showing_individuals', { start: currentStart, end: currentEnd, total: individualTableData.length })}
-        </span>
-        {/* TODO: only if in Bento search not beacon */}
-        <Button icon={<ExportOutlined />} onChange={() => alert('TODO')}>
-          {t('search.export_csv')}
-        </Button>
-      </Flex>
-      <Table<IndividualResultRow>
-        columns={individualTableColumns}
-        dataSource={individualTableData}
-        rowKey="id"
-        bordered={true}
-        size="small"
-        pagination={individualPagination}
-        expandable={INDIVIDUAL_EXPANDABLE}
-      />
-    </Col>
-  );
-};
-
 const SearchResultsPane = ({
   isFetchingData,
   hasInsufficientData,
@@ -177,7 +75,9 @@ const SearchResultsPane = ({
   if (pane === 'charts') {
     pageElement = <SRChartsPage hasInsufficientData={hasInsufficientData} results={results} />;
   } else if (pane === 'individuals') {
-    pageElement = <SRIndividualsPage onBack={() => onPaneChange('charts')} results={results} />;
+    pageElement = (
+      <SearchResultsTablePage entity="individual" results={results} onBack={() => onPaneChange('charts')} />
+    );
   }
 
   return (

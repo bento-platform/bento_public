@@ -32,7 +32,7 @@
     "variant_other": "Variants"
   },
   "search": {
-    "showing_individuals": "Affichage des participants {{start}}-{{end}} sur {{total}}",
+    "showing_entities": "Affichage des {{entity, lowercase}} {{start}}-{{end}} sur {{total}}",
     "export_csv": "Exporter en CSV"
   },
   "in": "en",
