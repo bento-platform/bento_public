@@ -33,7 +33,7 @@ const SiteHeader = () => {
   const performSignOut = usePerformSignOut();
   const performSignIn = usePerformAuth();
 
-  document.title = CLIENT_NAME && CLIENT_NAME.trim() ? `Bento: ${t(CLIENT_NAME)}` : 'Bento';
+  document.title = CLIENT_NAME && CLIENT_NAME.trim() ? t(CLIENT_NAME) : 'Bento';
 
   const changeLanguage = () => {
     const newLang = LNG_CHANGE[i18n.language];
