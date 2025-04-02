@@ -29,13 +29,13 @@ import {
 export const getBeaconConfig = createAsyncThunk<BeaconConfigResponse, void, { state: RootState; rejectValue: string }>(
   'beacon/getBeaconConfig',
   (_, { getState, rejectWithValue }) => {
-      const token = getState().auth.accessToken;
-      const reqConf: AxiosRequestConfig = {};
-      if (token) {
-        reqConf.headers = {
-          Authorization: `Bearer ${token}`,
-        };
-      }
+    const token = getState().auth.accessToken;
+    const reqConf: AxiosRequestConfig = {};
+    if (token) {
+      reqConf.headers = {
+        Authorization: `Bearer ${token}`,
+      };
+    }
     return axios
       .get(BEACON_INFO_ENDPOINT, reqConf)
       .then((res) => res.data)
