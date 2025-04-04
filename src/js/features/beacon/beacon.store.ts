@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import axios, { type AxiosRequestConfig } from 'axios';
 import { authorizedRequestConfig } from '@/utils/requests';
 
 import { EMPTY_DISCOVERY_RESULTS } from '@/constants/searchConstants';
@@ -28,9 +28,16 @@ import {
 // config response is not scoped
 export const getBeaconConfig = createAsyncThunk<BeaconConfigResponse, void, { state: RootState; rejectValue: string }>(
   'beacon/getBeaconConfig',
-  (_, { rejectWithValue }) => {
+  (_, { getState, rejectWithValue }) => {
+    const token = getState().auth.accessToken;
+    const reqConf: AxiosRequestConfig = {};
+    if (token) {
+      reqConf.headers = {
+        Authorization: `Bearer ${token}`,
+      };
+    }
     return axios
-      .get(BEACON_INFO_ENDPOINT)
+      .get(BEACON_INFO_ENDPOINT, reqConf)
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue));
   },
