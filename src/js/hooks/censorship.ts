@@ -1,6 +1,7 @@
-import { queryData } from 'bento-auth-js';
+import { queryData, queryDatasetLevelBoolean, queryDatasetLevelCounts, queryProjectLevelBoolean, queryProjectLevelCounts } from 'bento-auth-js';
 import { useConfig } from '@/features/config/hooks';
 import { useHasScopePermission } from '@/hooks';
+import { useMemo } from 'react';
 
 export const useCanSeeUncensoredCounts = () => {
   const { hasPermission: queryDataPerm } = useHasScopePermission(queryData);
@@ -11,3 +12,16 @@ export const useCanSeeUncensoredCounts = () => {
   //    then this becomes true.
   return queryDataPerm || countThreshold <= 1;
 };
+
+
+export const useCanSeeCensoredCounts = () => {
+  const { hasPermission: qDsBools } = useHasScopePermission(queryDatasetLevelBoolean);
+  const { hasPermission: qDsCounts } = useHasScopePermission(queryDatasetLevelCounts);
+  const { hasPermission: qProjBools } = useHasScopePermission(queryProjectLevelBoolean);
+  const { hasPermission: qProjCounts } = useHasScopePermission(queryProjectLevelCounts);
+
+  return useMemo(
+    () => (qDsBools || qDsCounts || qProjBools || qProjCounts),
+    [qDsBools, qDsCounts, qProjBools, qProjCounts]
+  )
+}
