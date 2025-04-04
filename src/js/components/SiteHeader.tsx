@@ -49,6 +49,7 @@ const SiteHeader = () => {
     [navigate, i18n.language, scopeObj]
   );
 
+  // TODO: make branding height configurable
   return (
     <Header id="site-header">
       <Flex align="center" justify="space-between">
@@ -77,7 +78,7 @@ const SiteHeader = () => {
             <img
               src="/public/assets/branding.png"
               alt="logo"
-              style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-3px)', paddingLeft: '4px' }}
+              style={{ height: '55px', verticalAlign: 'middle', transform: 'translateY(-3px)', paddingLeft: '4px' }}
               onClick={navigateToOverview}
             />
           )}
