@@ -7,6 +7,7 @@ import type { RootState } from '@/store';
 import { printAPIError } from '@/utils/error.util';
 import { validProjectDataset } from '@/utils/router';
 import { projectsUrl } from '@/constants/configConstants';
+import { authorizedRequestConfig } from '@/utils/requests';
 
 export type DiscoveryScope = { project?: string; dataset?: string };
 
@@ -44,13 +45,8 @@ export const getProjects = createAsyncThunk<
 >(
   'metadata/getProjects',
   (_, { getState, rejectWithValue }) => {
-    const token = getState().auth.accessToken;
-    const reqConf: AxiosRequestConfig = {};
-    if (token) {
-      reqConf.headers = {
-        Authorization: `Bearer ${token}`,
-      };
-    }
+    authorizedRequestConfig(getState())
+    const reqConf: AxiosRequestConfig = authorizedRequestConfig(getState());
     return axios
       .get(projectsUrl, reqConf)
       .then((res) => res.data)
