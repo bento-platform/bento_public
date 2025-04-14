@@ -14,17 +14,13 @@ import { useTranslationFn } from '@/hooks';
 import RequestStatusIcon from './RequestStatusIcon';
 import SearchFilterInput, { type FilterValue, SearchFilterInputSkeleton } from './SearchFilterInput';
 
-const styles = {
-  title: { fontSize: '1.1rem', marginTop: 0 } as CSSProperties,
-  titleInner: { marginRight: '0.5em' } as CSSProperties,
-};
-
 export type SearchFiltersProps = {
+  focused: boolean;
   onFocus: () => void;
   style?: CSSProperties;
 };
 
-const SearchFilters = ({ onFocus, style }: SearchFiltersProps) => {
+const SearchFilters = ({ focused, onFocus, style }: SearchFiltersProps) => {
   const t = useTranslationFn();
 
   const { pathname } = useLocation();
@@ -53,9 +49,9 @@ const SearchFilters = ({ onFocus, style }: SearchFiltersProps) => {
 
   return (
     <div style={style}>
-      <Typography.Title level={3} style={styles.title}>
-        <span style={styles.titleInner}>
-          <FilterOutlined /> {t('Filters')}
+      <Typography.Title level={3} className={'search-form-title' + (focused ? ' focused' : '')}>
+        <span className="search-form-title__inner" onClick={onFocus}>
+          <FilterOutlined /> <span className="should-underline-if-unfocused">{t('Filters')}</span>
         </span>
         {usedFields.size ? <RequestStatusIcon status={filterQueryStatus} /> : null}
       </Typography.Title>

@@ -1,7 +1,7 @@
 import { type CSSProperties, useCallback, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, Form, Input, Space, Typography } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { FormOutlined, SearchOutlined } from '@ant-design/icons';
 
 import { WIDTH_100P_STYLE } from '@/constants/common';
 import { TEXT_QUERY_PARAM } from '@/features/search/constants';
@@ -12,10 +12,10 @@ import { RequestStatus } from '@/types/requests';
 
 import RequestStatusIcon from './RequestStatusIcon';
 
-type SearchFreeTextProps = { onFocus: () => void; style?: CSSProperties };
+type SearchFreeTextProps = { focused: boolean; onFocus: () => void; style?: CSSProperties };
 type FreeTextFormValues = { q: string };
 
-const SearchFreeText = ({ onFocus, style }: SearchFreeTextProps) => {
+const SearchFreeText = ({ focused, onFocus, style }: SearchFreeTextProps) => {
   const t = useTranslationFn();
   const location = useLocation();
   const navigate = useNavigate();
@@ -40,8 +40,11 @@ const SearchFreeText = ({ onFocus, style }: SearchFreeTextProps) => {
 
   return (
     <div style={style}>
-      <Typography.Title level={3} style={{ fontSize: '1.1rem', marginTop: 0 }}>
-        <span style={{ marginRight: '0.5em' }}>{t('Text search')}</span>
+      <Typography.Title level={3} className={'search-form-title' + (focused ? ' focused' : '')}>
+        <span className="search-form-title__inner" onClick={onFocus}>
+          <FormOutlined />{' '}
+          <span className={textQuery !== '' ? 'should-underline-if-unfocused' : ''}>{t('Text search')}</span>
+        </span>
         <RequestStatusIcon status={textQueryStatus} />
       </Typography.Title>
       <Form form={form} onFocus={onFocus} onFinish={onFinish}>

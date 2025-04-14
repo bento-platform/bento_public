@@ -225,7 +225,23 @@ body {
 /* END about HTML styling */
 
 
-/* BEGIN search results pane */
+/* BEGIN search */
+
+h3.search-form-title {
+  font-size: 1.1rem;
+  margin-top: 0;
+}
+
+.search-form-title__inner {
+  margin-right: 0.5em;
+}
+h3.search-form-title:not(.focused) .search-form-title__inner {
+  color: #8c8c8c;
+  cursor: pointer;
+}
+h3.search-form-title:not(.focused) .search-form-title__inner > span.should-underline-if-unfocused {
+  text-decoration: underline; /* text itself, not icon */
+}
 
 .search-results-pane {
   display: flex;

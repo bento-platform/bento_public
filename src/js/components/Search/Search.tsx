@@ -213,6 +213,7 @@ const Search = ({ focused, setFocused }: SearchProps) => {
           >
             <Flex justify="space-between" gap={24} style={WIDTH_100P_STYLE}>
               <SearchFilters
+                focused={focused === 'filters'}
                 onFocus={onFiltersFocus}
                 style={{
                   flex: 1,
@@ -225,7 +226,11 @@ const Search = ({ focused, setFocused }: SearchProps) => {
                 // the data, so show the free-text search form:
                 <>
                   <OrDelimiter />
-                  <SearchFreeText onFocus={onTextFocus} style={{ flex: 1, ...focusedStyle(focused === 'text') }} />
+                  <SearchFreeText
+                    focused={focused === 'text'}
+                    onFocus={onTextFocus}
+                    style={{ flex: 1, ...focusedStyle(focused === 'text') }}
+                  />
                 </>
               )}
             </Flex>
