@@ -52,6 +52,7 @@ const RoutedSearch = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const [doneFirstLoad, setDoneFirstLoad] = useState(false);
   const [focused, setFocused] = useState<SearchMode>('filters');
 
   const { configStatus, maxQueryParameters } = useConfig();
@@ -136,11 +137,17 @@ const RoutedSearch = () => {
     const newTextQuery = otherQueryParams[TEXT_QUERY_PARAM];
     if (newTextQuery && newTextQuery !== textQuery) {
       dispatch(setTextQuery(newTextQuery));
+      dispatch(resetTextQueryStatus());
     }
 
-    if (textQueryStatus === RequestStatus.Idle && focused === 'text' && (newTextQuery || textQuery)) {
+    if (
+      textQueryStatus === RequestStatus.Idle &&
+      (focused === 'text' || !doneFirstLoad) &&
+      (newTextQuery || textQuery)
+    ) {
       dispatch(performFreeTextSearch());
       performingTextQuery = true;
+      setFocused('text');
       // Indicate to the state that search results don't reflect the filters by resetting the filter request status.
       dispatch(resetFilterQueryStatus());
     }
@@ -167,9 +174,12 @@ const RoutedSearch = () => {
         dispatch(resetTextQueryStatus());
       }
     }
+
+    setDoneFirstLoad(true);
   }, [
     dispatch,
     configStatus,
+    doneFirstLoad,
     searchFieldsStatus,
     filterQueryStatus,
     focused,
