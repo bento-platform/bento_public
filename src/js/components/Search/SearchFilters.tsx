@@ -7,7 +7,7 @@ import { FilterOutlined } from '@ant-design/icons';
 import { WIDTH_100P_STYLE } from '@/constants/common';
 import { WAITING_STATES } from '@/constants/requests';
 import { useConfig } from '@/features/config/hooks';
-import { useQueryFilterFields, useSearchQuery } from '@/features/search/hooks';
+import { useNonFilterQueryParams, useQueryFilterFields, useSearchQuery } from '@/features/search/hooks';
 import { buildQueryParamsUrl, queryParamsWithoutKey } from '@/features/search/utils';
 import { useTranslationFn } from '@/hooks';
 
@@ -29,6 +29,7 @@ const SearchFilters = ({ focused, onFocus, style }: SearchFiltersProps) => {
   const { configStatus, maxQueryParameters } = useConfig();
   const { fieldsStatus, filterQueryParams } = useSearchQuery();
   const fields = useQueryFilterFields();
+  const nonFilterQueryParams = useNonFilterQueryParams();
 
   const [filterInputs, usedFields] = useMemo(() => {
     const filterInputs_: FilterValue[] = Object.entries(filterQueryParams).map(([k, v]) => ({ field: k, value: v }));
@@ -73,6 +74,8 @@ const SearchFilters = ({ focused, onFocus, style }: SearchFiltersProps) => {
                   // ... and if the field stays the same, we will put it back with a new value. Otherwise, we'll put the
                   // new field in with the first available value.
                   [field]: value,
+                  // plus we need non-filter-related query parameters:
+                  ...nonFilterQueryParams,
                 });
                 console.debug('[SearchFilters] Redirecting to:', url);
                 navigate(url, { replace: true });
@@ -80,7 +83,10 @@ const SearchFilters = ({ focused, onFocus, style }: SearchFiltersProps) => {
               }}
               onRemove={() => {
                 if (fv.field === null) return;
-                const url = buildQueryParamsUrl(pathname, queryParamsWithoutKey(filterQueryParams, fv.field));
+                const url = buildQueryParamsUrl(pathname, {
+                  ...queryParamsWithoutKey(filterQueryParams, fv.field),
+                  ...nonFilterQueryParams,
+                });
                 console.debug('[SearchFilters] Redirecting to:', url);
                 navigate(url, { replace: true });
               }}
