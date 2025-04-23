@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, Form, Input, Space, Typography } from 'antd';
 import { FormOutlined, SearchOutlined } from '@ant-design/icons';
 
-import { WIDTH_100P_STYLE } from '@/constants/common';
 import { TEXT_QUERY_PARAM } from '@/features/search/constants';
 import { useNonFilterQueryParams, useSearchQuery } from '@/features/search/hooks';
 import { buildQueryParamsUrl } from '@/features/search/utils';
@@ -56,7 +55,7 @@ const SearchFreeText = ({ focused, onFocus, style }: SearchFreeTextProps) => {
         <RequestStatusIcon status={textQueryStatus} />
       </Typography.Title>
       <Form form={form} onFocus={onFocus} onFinish={onFinish}>
-        <Space.Compact style={WIDTH_100P_STYLE}>
+        <Space.Compact className="w-full">
           <Form.Item name="q" initialValue="" noStyle={true}>
             <Input prefix={<SearchOutlined />} />
           </Form.Item>

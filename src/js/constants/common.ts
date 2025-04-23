@@ -1,3 +1,3 @@
 import type { CSSProperties } from 'react';
 
-export const WIDTH_100P_STYLE: CSSProperties = { width: '100%' };
+export const SPACE_ITEM_WIDTH_100P_STYLES = { item: { width: '100%' } as CSSProperties };

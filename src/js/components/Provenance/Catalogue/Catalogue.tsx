@@ -1,5 +1,5 @@
 import { Space } from 'antd';
-import { WIDTH_100P_STYLE } from '@/constants/common';
+import { SPACE_ITEM_WIDTH_100P_STYLES } from '@/constants/common';
 import { useMetadata } from '@/features/metadata/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import CatalogueCard from './CatalogueCard';
@@ -12,8 +12,8 @@ const Catalogue = () => {
       align="center"
       direction="vertical"
       size={isSmallScreen ? 'small' : 'large'}
-      style={WIDTH_100P_STYLE}
-      styles={{ item: WIDTH_100P_STYLE }}
+      className="w-full"
+      styles={SPACE_ITEM_WIDTH_100P_STYLES}
     >
       {projects.map((project) => (
         <CatalogueCard project={project} key={project.identifier} />

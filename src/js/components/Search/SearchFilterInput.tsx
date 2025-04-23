@@ -5,7 +5,6 @@ import { CloseOutlined } from '@ant-design/icons';
 import { useTranslationFn } from '@/hooks';
 import { useSearchQuery } from '@/features/search/hooks';
 import OptionDescription from '@/components/Search/OptionDescription';
-import { WIDTH_100P_STYLE } from '@/constants/common';
 
 export type FilterValue = { field: string | null; value: string | null };
 
@@ -75,7 +74,7 @@ const SearchFilterInput = ({
   );
 
   return (
-    <Space.Compact style={WIDTH_100P_STYLE}>
+    <Space.Compact className="w-full">
       <Select
         style={styles.selectField}
         options={filterOptions}
@@ -100,7 +99,7 @@ const SearchFilterInput = ({
 };
 
 export const SearchFilterInputSkeleton = memo(() => (
-  <Space.Compact style={WIDTH_100P_STYLE}>
+  <Space.Compact className="w-full">
     <Select style={styles.selectField} disabled={true} loading={true} />
     <Select style={styles.selectValue} disabled={true} />
     <Button icon={<CloseOutlined />} disabled={true} />

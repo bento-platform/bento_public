@@ -19,9 +19,18 @@ body {
   margin: 0;
 }
 
+
+/* BEGIN utility classes */
+
 .no-margin-top {
   margin-top: 0 !important;
 }
+
+.w-full { /* Name compatible with tailwind if needed */
+  width: 100%;
+}
+
+/* END utility classes */
 
 
 .header-button {

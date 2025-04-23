@@ -24,7 +24,7 @@ import SearchFilters from './SearchFilters';
 import SearchFreeText from './SearchFreeText';
 
 import { CARD_BODY_STYLE, CARD_STYLES } from '@/constants/beaconConstants';
-import { WIDTH_100P_STYLE } from '@/constants/common';
+import { SPACE_ITEM_WIDTH_100P_STYLES } from '@/constants/common';
 import { BOX_SHADOW } from '@/constants/overviewConstants';
 import { WAITING_STATES } from '@/constants/requests';
 import { NON_FILTER_QUERY_PARAM_PREFIX, TEXT_QUERY_PARAM } from '@/features/search/constants';
@@ -193,8 +193,6 @@ const RoutedSearch = () => {
   return <Search focused={focused} setFocused={setFocused} />;
 };
 
-const SEARCH_SPACE_ITEM_STYLE = { item: WIDTH_100P_STYLE };
-
 const focusedStyle = (focused: boolean) =>
   ({
     opacity: focused ? 1 : 0.75,
@@ -214,13 +212,14 @@ const Search = ({ focused, setFocused }: SearchProps) => {
     <Loader />
   ) : (
     <Row justify="center">
-      <Space direction="vertical" align="center" style={WIDTH_100P_STYLE} styles={SEARCH_SPACE_ITEM_STYLE}>
+      <Space direction="vertical" align="center" className="w-full" styles={SPACE_ITEM_WIDTH_100P_STYLES}>
         <div className="container margin-auto">
           <Card
-            style={{ borderRadius: '10px', ...WIDTH_100P_STYLE, ...BOX_SHADOW }}
+            className="w-full"
+            style={{ borderRadius: '10px', ...BOX_SHADOW }}
             styles={{ ...CARD_STYLES, body: { ...CARD_BODY_STYLE, padding: '20px 24px 24px 24px' } }}
           >
-            <Flex justify="space-between" gap={24} style={WIDTH_100P_STYLE}>
+            <Flex justify="space-between" gap={24} className="w-full">
               <SearchFilters
                 focused={focused === 'filters'}
                 onFocus={onFiltersFocus}

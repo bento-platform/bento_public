@@ -11,7 +11,6 @@ import type { Annotation } from '@/types/dats';
 import type { Dataset } from '@/types/metadata';
 import { getCurrentPage, scopeToUrl } from '@/utils/router';
 import { useTranslationFn } from '@/hooks';
-import { WIDTH_100P_STYLE } from '@/constants/common';
 import { BOX_SHADOW } from '@/constants/overviewConstants';
 import { DatasetProvenanceContent } from '@/components/Provenance/DatasetProvenance';
 import SmallChartCardTitle from '@/components/Util/SmallChartCardTitle';
@@ -24,7 +23,7 @@ const KEYWORDS_LIMIT = 2;
 const TagList = ({ annotations }: { annotations?: Annotation[] }) => {
   const t = useTranslationFn();
   return (
-    <Space size={[0, 8]} align="start" wrap style={WIDTH_100P_STYLE}>
+    <Space size={[0, 8]} align="start" wrap className="w-full">
       {annotations?.map((keyword, i) => (
         <Tag key={i} color="cyan" style={i === annotations.length - 1 ? { marginInlineEnd: 0 } : undefined}>
           {t(keyword.value.toString())}
@@ -103,7 +102,7 @@ const Dataset = ({
       >
         <Flex vertical={true} gap={12} style={{ height: '100%' }}>
           <TruncatedParagraph maxRows={2}>{t(description)}</TruncatedParagraph>
-          <Space size={8} align="start" wrap style={WIDTH_100P_STYLE}>
+          <Space size={8} align="start" wrap className="w-full">
             <TagList annotations={displayKeywords} />
             {remainingKeywords?.length > 0 && (
               <Popover content={<TagList annotations={remainingKeywords} />}>
