@@ -34,6 +34,22 @@ body {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
+.float-btn-pos {
+  /* For normal computer screens */
+  bottom: 3em;
+  right: 5em;
+}
+:not(.ant-float-btn-group).float-btn-pos {
+  scale: 125%;
+}
+.ant-float-btn-group.float-btn-pos {
+  /* For normal screens, increase float button group gap size */
+  gap: 24px;
+}
+.ant-float-btn-group.float-btn-pos .ant-float-btn {
+  scale: 125%;
+}
+
 /* END utility classes */
 
 
@@ -317,6 +333,8 @@ h3.search-form-title:not(.focused) .search-form-title__inner > span.should-under
 }
 
 @media (max-width: 768px) {
+  /* Same breakpoint as constants/deviceBreakpoints DeviceBreakpoints.TABLET */
+
   :root {
     --content-padding-v: 10px;
     --content-padding-h: 10px;
@@ -335,5 +353,21 @@ h3.search-form-title:not(.focused) .search-form-title__inner > span.should-under
   .scoped-title__breadcrumb {
     font-size: 1.2rem;
     line-height: 46px;
+  }
+
+  .float-btn-pos {
+    /* For small screens */
+    bottom: 1.5em;
+    right: 1em;
+  }
+  .ant-float-btn-group.float-btn-pos .ant-float-btn {
+    scale: 100%;
+  }
+  :not(.ant-float-btn-group).float-btn-pos {
+    scale: 100%;
+  }
+  .ant-float-btn-group.float-btn-pos {
+    /* For small screens, reset group gap size */
+    gap: 16px;
   }
 }
