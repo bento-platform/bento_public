@@ -15,6 +15,7 @@ import {
   resetTextQueryStatus,
 } from '@/features/search/query.store';
 import { useAppDispatch, useHasScopePermission } from '@/hooks';
+import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { buildQueryParamsUrl } from '@/features/search/utils';
 
 import Loader from '@/components/Loader';
@@ -201,6 +202,7 @@ const focusedStyle = (focused: boolean) =>
 type SearchProps = { focused: SearchMode; setFocused: (mode: SearchMode) => void };
 
 const Search = ({ focused, setFocused }: SearchProps) => {
+  const isSmallScreen = useSmallScreen();
   const { hasPermission: queryDataPerm } = useHasScopePermission(queryData);
   const { fieldsStatus } = useSearchQuery();
 
@@ -218,7 +220,7 @@ const Search = ({ focused, setFocused }: SearchProps) => {
             style={{ borderRadius: '10px' }}
             styles={{ ...CARD_STYLES, body: { ...CARD_BODY_STYLE, padding: '20px 24px 24px 24px' } }}
           >
-            <Flex justify="space-between" gap={24} className="w-full">
+            <Flex justify="space-between" gap={24} className="w-full" vertical={isSmallScreen}>
               <SearchFilters
                 focused={focused === 'filters'}
                 onFocus={onFiltersFocus}
@@ -232,7 +234,7 @@ const Search = ({ focused, setFocused }: SearchProps) => {
                 // If we have the query:data permission on the current scope, we're allowed to run free-text searches on
                 // the data, so show the free-text search form:
                 <>
-                  <OrDelimiter />
+                  <OrDelimiter vertical={!isSmallScreen} />
                   <SearchFreeText
                     focused={focused === 'text'}
                     onFocus={onTextFocus}

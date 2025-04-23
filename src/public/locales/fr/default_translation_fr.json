@@ -33,7 +33,8 @@
   },
   "search": {
     "showing_entities": "Affichage des {{entity, lowercase}} {{start}}-{{end}} sur {{total}}",
-    "export_csv": "Exporter en CSV"
+    "export_csv": "Exporter en CSV",
+    "csv": "CSV"
   },
   "in": "en",
   "Get Data": "Obtenir",

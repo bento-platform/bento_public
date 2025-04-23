@@ -5,6 +5,7 @@ import { ExportOutlined, LeftOutlined } from '@ant-design/icons';
 import { PORTAL_URL } from '@/config';
 import { T_SINGULAR_COUNT } from '@/constants/i18n';
 import { useTranslationFn } from '@/hooks';
+import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
 import IndividualRowDetail from './IndividualRowDetail';
 import type { DiscoveryResults } from '@/types/data';
@@ -33,6 +34,7 @@ const SearchResultsTablePage = ({
 }) => {
   const t = useTranslationFn();
   const selectedScope = useSelectedScope();
+  const isSmallScreen = useSmallScreen();
 
   const columns = useMemo<TableColumnsType<IndividualResultRow>>(
     () => [
@@ -81,8 +83,13 @@ const SearchResultsTablePage = ({
   return (
     <Col xs={24} lg={20}>
       <Flex justify="space-between" align="center" style={{ marginBottom: 8 }}>
-        <Button icon={<LeftOutlined />} type="link" onClick={onBack} style={{ paddingLeft: 0 }}>
-          {t('Charts')}
+        <Button
+          icon={<LeftOutlined />}
+          type={isSmallScreen ? 'default' : 'link'}
+          onClick={onBack}
+          style={{ paddingLeft: 0 }}
+        >
+          {isSmallScreen ? '' : t('Charts')}
         </Button>
         <span>
           {t('search.showing_entities', {
@@ -94,7 +101,7 @@ const SearchResultsTablePage = ({
         </span>
         {/* TODO: only if in Bento search not beacon */}
         <Button icon={<ExportOutlined />} onChange={() => alert('TODO')}>
-          {t('search.export_csv')}
+          {isSmallScreen ? t('search.csv') : t('search.export_csv')}
         </Button>
       </Flex>
       <Table<IndividualResultRow>

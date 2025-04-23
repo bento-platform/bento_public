@@ -100,7 +100,7 @@ const SearchResultsPane = ({
         title={resultsTitle}
         extra={resultsExtra}
       >
-        <Row gutter={16}>
+        <Row gutter={[16, 16]}>
           <Col xs={24} lg={4}>
             <SearchResultsCounts
               mode="normal"
