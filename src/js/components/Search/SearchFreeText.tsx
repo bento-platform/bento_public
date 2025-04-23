@@ -26,11 +26,13 @@ const SearchFreeText = ({ focused, onFocus, style }: SearchFreeTextProps) => {
   const [form] = Form.useForm<FreeTextFormValues>();
 
   useEffect(() => {
-    // If the textQuery state changes (from a URL parameter, presumably), update the form value to sync them.
+    // If:
+    //  - the textQuery state changes (from a URL parameter, presumably), then update the form value to sync them.
+    //  - the focused state changes, then reset the form value to the current Redux value.
     if (textQuery) {
       form.setFieldValue('q', textQuery);
     }
-  }, [form, textQuery]);
+  }, [form, focused, textQuery]);
 
   const onFinish = useCallback(
     (values: FreeTextFormValues) => {
