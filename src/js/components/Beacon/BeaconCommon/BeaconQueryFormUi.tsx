@@ -19,12 +19,7 @@ import type {
   BeaconPayloadFilter,
   PayloadVariantsQuery,
 } from '@/types/beacon';
-import {
-  FORM_ROW_GUTTERS,
-  BUTTON_AREA_STYLE,
-  BUTTON_STYLE,
-  CARD_STYLES,
-} from '@/constants/beaconConstants';
+import { FORM_ROW_GUTTERS, BUTTON_AREA_STYLE, BUTTON_STYLE, CARD_STYLES } from '@/constants/beaconConstants';
 import { T_PLURAL_COUNT } from '@/constants/i18n';
 
 const STARTER_FILTER = { index: 0, searchFieldId: null };
