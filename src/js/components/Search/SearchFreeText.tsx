@@ -56,7 +56,7 @@ const SearchFreeText = ({ focused, onFocus, style }: SearchFreeTextProps) => {
       </Typography.Title>
       <Form form={form} onFocus={onFocus} onFinish={onFinish}>
         <Space.Compact style={WIDTH_100P_STYLE}>
-          <Form.Item name="q" noStyle={true}>
+          <Form.Item name="q" initialValue="" noStyle={true}>
             <Input prefix={<SearchOutlined />} />
           </Form.Item>
           <Button type="primary" htmlType="submit" loading={textQueryStatus === RequestStatus.Pending}>

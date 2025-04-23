@@ -134,7 +134,7 @@ const RoutedSearch = () => {
 
     let performingTextQuery = false;
 
-    const newTextQuery = otherQueryParams[TEXT_QUERY_PARAM];
+    const newTextQuery = otherQueryParams[TEXT_QUERY_PARAM] ?? '';
     if (newTextQuery && newTextQuery !== textQuery) {
       dispatch(setTextQuery(newTextQuery));
       dispatch(resetTextQueryStatus());
