@@ -8,9 +8,9 @@ const OrDelimiter = memo(() => {
   const t = useTranslationFn();
   return (
     <Flex vertical={true} gap={8} align="center">
-      <div style={lineStyle}></div>
+      <div style={lineStyle} />
       <div style={{ fontWeight: 'bold', color: '#595959' }}>{t('OR')}</div>
-      <div style={lineStyle}></div>
+      <div style={lineStyle} />
     </Flex>
   );
 });
