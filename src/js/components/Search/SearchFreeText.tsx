@@ -51,8 +51,7 @@ const SearchFreeText = ({ focused, onFocus, style }: SearchFreeTextProps) => {
     <div style={style}>
       <Typography.Title level={3} className={'search-form-title' + (focused ? ' focused' : '')}>
         <span className="search-form-title__inner" onClick={onFocus}>
-          <FormOutlined />{' '}
-          <span className={textQuery !== '' ? 'should-underline-if-unfocused' : ''}>{t('Text search')}</span>
+          <FormOutlined /> <span className="should-underline-if-unfocused">{t('Text search')}</span>
         </span>
         <RequestStatusIcon status={textQueryStatus} />
       </Typography.Title>

@@ -238,6 +238,10 @@ h3.search-form-title {
 h3.search-form-title:not(.focused) .search-form-title__inner {
   color: #8c8c8c;
   cursor: pointer;
+  transition: color 0.1s ease-in-out;
+}
+h3.search-form-title:not(.focused) .search-form-title__inner:hover {
+  color: #595959;
 }
 h3.search-form-title:not(.focused) .search-form-title__inner > span.should-underline-if-unfocused {
   text-decoration: underline; /* text itself, not icon */

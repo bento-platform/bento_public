@@ -54,7 +54,7 @@ const SearchFilters = ({ focused, onFocus, style }: SearchFiltersProps) => {
         <span className="search-form-title__inner" onClick={onFocus}>
           <FilterOutlined /> <span className="should-underline-if-unfocused">{t('Filters')}</span>
         </span>
-        {usedFields.size ? <RequestStatusIcon status={filterQueryStatus} /> : null}
+        <RequestStatusIcon status={filterQueryStatus} />
       </Typography.Title>
       <Space direction="vertical" size={8} style={WIDTH_100P_STYLE}>
         {WAITING_STATES.includes(configStatus) || WAITING_STATES.includes(fieldsStatus) ? (
