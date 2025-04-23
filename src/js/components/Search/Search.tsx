@@ -135,15 +135,14 @@ const RoutedSearch = () => {
     let performingTextQuery = false;
 
     const newTextQuery = otherQueryParams[TEXT_QUERY_PARAM] ?? '';
-    if (newTextQuery && newTextQuery !== textQuery) {
+    if (newTextQuery !== textQuery) {
       dispatch(setTextQuery(newTextQuery));
       dispatch(resetTextQueryStatus());
     }
 
     if (
       textQueryStatus === RequestStatus.Idle &&
-      (focused === 'text' || !doneFirstLoad) &&
-      (newTextQuery || textQuery)
+      (focused === 'text' || (!doneFirstLoad && (newTextQuery || textQuery)))
     ) {
       dispatch(performFreeTextSearch());
       performingTextQuery = true;
