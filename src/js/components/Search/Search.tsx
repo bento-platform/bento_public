@@ -25,7 +25,6 @@ import SearchFreeText from './SearchFreeText';
 
 import { CARD_BODY_STYLE, CARD_STYLES } from '@/constants/beaconConstants';
 import { SPACE_ITEM_WIDTH_100P_STYLES } from '@/constants/common';
-import { BOX_SHADOW } from '@/constants/overviewConstants';
 import { WAITING_STATES } from '@/constants/requests';
 import { NON_FILTER_QUERY_PARAM_PREFIX, TEXT_QUERY_PARAM } from '@/features/search/constants';
 import type { QueryParamEntry, QueryParams } from '@/features/search/types';
@@ -215,8 +214,8 @@ const Search = ({ focused, setFocused }: SearchProps) => {
       <Space direction="vertical" align="center" className="w-full" styles={SPACE_ITEM_WIDTH_100P_STYLES}>
         <div className="container margin-auto">
           <Card
-            className="w-full"
-            style={{ borderRadius: '10px', ...BOX_SHADOW }}
+            className="w-full shadow"
+            style={{ borderRadius: '10px' }}
             styles={{ ...CARD_STYLES, body: { ...CARD_BODY_STYLE, padding: '20px 24px 24px 24px' } }}
           >
             <Flex justify="space-between" gap={24} className="w-full">

@@ -26,8 +26,12 @@ body {
   margin-top: 0 !important;
 }
 
-.w-full { /* Name compatible with tailwind if needed */
-  width: 100%;
+/* Name compatible with tailwind if needed */
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+
+.shadow {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 /* END utility classes */

@@ -11,7 +11,6 @@ import { isoDateToString } from '@/utils/strings';
 import { useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { T_PLURAL_COUNT } from '@/constants/i18n';
-import { BOX_SHADOW } from '@/constants/overviewConstants';
 import Dataset from '@/components/Provenance/Dataset';
 import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
 
@@ -33,7 +32,9 @@ const CatalogueCardInner = ({ firstContent, secondContent }: { firstContent: Rea
     return (
       <Flex justify="space-between" align="stretch" gap={16} wrap>
         <div style={{ flex: 1, minWidth: 400 }}>
-          <div style={{ height: '100%', flex: 1, flexDirection: 'column', display: 'flex' }}>{firstContent}</div>
+          <div className="h-full" style={{ flex: 1, flexDirection: 'column', display: 'flex' }}>
+            {firstContent}
+          </div>
         </div>
         {secondContent && <div style={{ flex: 2, maxWidth: 'min(600px, 100%)' }}>{secondContent}</div>}
       </Flex>
@@ -106,10 +107,10 @@ const CatalogueCard = ({ project }: { project: Project }) => {
   ];
 
   return (
-    <Card className="container margin-auto" style={BOX_SHADOW} size={isSmallScreen ? 'small' : 'default'}>
+    <Card className="container margin-auto shadow" size={isSmallScreen ? 'small' : 'default'}>
       <CatalogueCardInner
         firstContent={
-          <Flex vertical={true} gap={8} style={{ height: '100%' }}>
+          <Flex vertical={true} gap={8} className="h-full">
             <Space direction="horizontal">
               <Title level={4} style={{ margin: 0 }}>
                 {t(title)}

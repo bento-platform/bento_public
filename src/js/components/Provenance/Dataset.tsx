@@ -11,7 +11,6 @@ import type { Annotation } from '@/types/dats';
 import type { Dataset } from '@/types/metadata';
 import { getCurrentPage, scopeToUrl } from '@/utils/router';
 import { useTranslationFn } from '@/hooks';
-import { BOX_SHADOW } from '@/constants/overviewConstants';
 import { DatasetProvenanceContent } from '@/components/Provenance/DatasetProvenance';
 import SmallChartCardTitle from '@/components/Util/SmallChartCardTitle';
 import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
@@ -91,7 +90,8 @@ const Dataset = ({
       <Card
         title={<SmallChartCardTitle title={title} />}
         size="small"
-        style={{ ...BOX_SHADOW, minHeight: 200, height: '100%' }}
+        className="shadow h-full"
+        style={{ minHeight: 200 }}
         styles={{ body: { padding: '12px 16px', height: 'calc(100% - 53px)' } }}
         extra={
           <Button icon={<SolutionOutlined />} onClick={openProvenanceModal}>
@@ -100,7 +100,7 @@ const Dataset = ({
           </Button>
         }
       >
-        <Flex vertical={true} gap={12} style={{ height: '100%' }}>
+        <Flex vertical={true} gap={12} className="h-full">
           <TruncatedParagraph maxRows={2}>{t(description)}</TruncatedParagraph>
           <Space size={8} align="start" wrap className="w-full">
             <TagList annotations={displayKeywords} />

@@ -15,7 +15,6 @@ import type {
 } from '@/types/beacon';
 
 const FILTER_FORM_ITEM_STYLE = { flex: 1, marginInlineEnd: -1 };
-const FILTER_FORM_ITEM_INNER_STYLE = { width: '100%' };
 
 const Filter = ({
   filter,
@@ -74,7 +73,7 @@ const Filter = ({
       >
         <Select
           placeholder={t('select a search field')}
-          style={FILTER_FORM_ITEM_INNER_STYLE}
+          className="w-full"
           onSelect={handleSelectKey}
           options={searchKeyOptions(beaconFiltersBySection)}
         />
@@ -84,10 +83,7 @@ const Filter = ({
         rules={[{ required: isRequired, message: t('value required') }]}
         style={FILTER_FORM_ITEM_STYLE}
       >
-        <Select
-          style={FILTER_FORM_ITEM_INNER_STYLE}
-          options={valueOptions.map(({ label, value }) => ({ label: t(label), value }))}
-        />
+        <Select className="w-full" options={valueOptions.map(({ label, value }) => ({ label: t(label), value }))} />
       </Form.Item>
       <Button onClick={() => removeFilter(filter)}>
         <CloseOutlined />

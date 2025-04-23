@@ -3,7 +3,7 @@ import { Card, Col, Row, Typography } from 'antd';
 import { PieChart } from 'bento-charts';
 
 import { T_PLURAL_COUNT } from '@/constants/i18n';
-import { BOX_SHADOW, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
+import { PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
 import { useTranslationFn } from '@/hooks';
 import type { DiscoveryResults } from '@/types/data';
 import type { SearchResultsUIPane } from '@/features/search/types';
@@ -83,9 +83,9 @@ const SearchResultsPane = ({
   return (
     <div className="container margin-auto search-results-pane" style={style}>
       <Card
+        className="w-full shadow"
         style={{
           borderRadius: '10px',
-          width: '100%',
           // Set a minimum height (i.e., an expected final height, which can be exceeded) to prevent this component from
           // suddenly increasing in height after it loads. This is calculated from the sum of the following parts:
           //   chart (300)
@@ -94,7 +94,6 @@ const SearchResultsPane = ({
           // + border (2*1 = 2)
           // = 382, or + 56 = 438 if any header content present
           minHeight: resultsTitle || resultsExtra ? '438px' : '382px',
-          ...BOX_SHADOW,
         }}
         styles={{ body: { padding: '24px 40px' } }}
         loading={isFetchingData}
