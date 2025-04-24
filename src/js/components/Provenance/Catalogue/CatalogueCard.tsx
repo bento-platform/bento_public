@@ -107,7 +107,7 @@ const CatalogueCard = ({ project }: { project: Project }) => {
   ];
 
   return (
-    <Card className="container margin-auto shadow" size={isSmallScreen ? 'small' : 'default'}>
+    <Card className="container margin-auto shadow rounded-xl" size={isSmallScreen ? 'small' : 'default'}>
       <CatalogueCardInner
         firstContent={
           <Flex vertical={true} gap={8} className="h-full">
@@ -165,7 +165,7 @@ const CatalogueCard = ({ project }: { project: Project }) => {
                 dots={datasets.length > 1}
                 style={{
                   border: '1px solid lightgray',
-                  borderRadius: '7px',
+                  borderRadius: '8px', // Consistent with --ant-border-radius-lg
                   height: '170px',
                   // If we have more than one dataset, we have some arrows on either side of the carousel
                   //  --> add in extra horizontal padding to nicely clear the arrows.

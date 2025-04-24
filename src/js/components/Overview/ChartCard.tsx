@@ -9,7 +9,7 @@ import { useElementWidth, useTranslationFn } from '@/hooks';
 import type { ChartDataField } from '@/types/data';
 import SmallChartCardTitle from '@/components/Util/SmallChartCardTitle';
 
-const CARD_STYLE: CSSProperties = { height: '415px', borderRadius: '11px' };
+const CARD_STYLE: CSSProperties = { height: '415px' };
 const ROW_EMPTY_STYLE: CSSProperties = { height: `${CHART_HEIGHT}px` };
 
 const ChartCard = memo(({ section, chart, onRemoveChart, searchable }: ChartCardProps) => {
@@ -39,7 +39,7 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable }: ChartCard
         title={
           <SmallChartCardTitle title={t(title)} description={t(description)} descriptionStyle={{ width: '375px' }} />
         }
-        className="shadow"
+        className="shadow rounded-xl"
         style={CARD_STYLE}
         size="small"
         extra={

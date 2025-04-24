@@ -136,8 +136,7 @@ const DatasetProvenance = ({ dataset, loading }: DatasetProvenanceProps) => {
               ]
             : []
         }
-        className="shadow"
-        style={{ borderRadius: '11px' }}
+        className="shadow rounded-xl"
         loading={loading}
       >
         <DatasetProvenanceContent dataset={dataset} />

@@ -29,6 +29,7 @@ body {
 /* Name compatible with tailwind if needed */
 .w-full { width: 100%; }
 .h-full { height: 100%; }
+.rounded-xl { border-radius: 12px; }
 
 .shadow {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
@@ -63,7 +64,7 @@ body {
 
 .select-dataset-item {
   transition: all 0.2s;
-  border-radius: 7px;
+  border-radius: 8px; /* Consistent with --ant-border-radius-lg */
   cursor: pointer;
 }
 
@@ -285,7 +286,7 @@ h3.search-form-title:not(.focused) .search-form-title__inner > span.should-under
 .search-result-statistic.enabled {
   padding: 8px 16px;
   margin-left: -16px;
-  border-radius: 8px;
+  border-radius: 8px; /* Consistent with --ant-border-radius-lg */
 
   cursor: pointer;
   border: 1px solid #d9d9d9;

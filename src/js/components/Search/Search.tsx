@@ -216,8 +216,7 @@ const Search = ({ focused, setFocused }: SearchProps) => {
       <Space direction="vertical" align="center" className="w-full" styles={SPACE_ITEM_WIDTH_100P_STYLES}>
         <div className="container margin-auto">
           <Card
-            className="w-full shadow"
-            style={{ borderRadius: '10px' }}
+            className="w-full shadow rounded-xl"
             styles={{ ...CARD_STYLES, body: { ...CARD_BODY_STYLE, padding: '20px 24px 24px 24px' } }}
           >
             <Flex justify="space-between" gap={24} className="w-full" vertical={isSmallScreen}>

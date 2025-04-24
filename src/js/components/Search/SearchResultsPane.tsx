@@ -83,9 +83,8 @@ const SearchResultsPane = ({
   return (
     <div className="container margin-auto search-results-pane" style={style}>
       <Card
-        className="w-full shadow"
+        className="w-full shadow rounded-xl"
         style={{
-          borderRadius: '10px',
           // Set a minimum height (i.e., an expected final height, which can be exceeded) to prevent this component from
           // suddenly increasing in height after it loads. This is calculated from the sum of the following parts:
           //   chart (300)

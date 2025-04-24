@@ -6,8 +6,6 @@ import { useAppSelector } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { RequestStatus } from '@/types/requests';
 
-const ABOUT_CARD_STYLE: CSSProperties = { borderRadius: '11px' };
-
 const AboutBox = ({ style, bottomDivider }: { style?: CSSProperties; bottomDivider?: boolean }) => {
   const { i18n } = useTranslation();
 
@@ -19,7 +17,7 @@ const AboutBox = ({ style, bottomDivider }: { style?: CSSProperties; bottomDivid
   // If about is blank after loading, we don't have anything - so don't render the box.
   return aboutStatus === RequestStatus.Fulfilled && !aboutContent ? null : (
     <>
-      <Card className="container shadow" style={{ ...ABOUT_CARD_STYLE, ...(style ?? {}) }}>
+      <Card className="container shadow rounded-xl" style={style}>
         {aboutStatus === RequestStatus.Idle || aboutStatus === RequestStatus.Pending ? (
           <Skeleton title={false} paragraph={{ rows: 2 }} />
         ) : (
