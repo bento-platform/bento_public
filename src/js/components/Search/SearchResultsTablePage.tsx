@@ -60,15 +60,15 @@ const SearchResultsTablePage = ({
     () => ({
       current: page,
       pageSize,
-      align: 'end',
-      size: 'default',
+      position: isSmallScreen ? ['bottomCenter'] : ['bottomRight'],
+      size: isSmallScreen ? 'small' : 'default',
       showSizeChanger: true,
       onChange(page, pageSize) {
         setPage(page);
         setPageSize(pageSize);
       },
     }),
-    [page, pageSize]
+    [page, pageSize, isSmallScreen]
   );
 
   const { individualMatches } = results;
@@ -92,7 +92,7 @@ const SearchResultsTablePage = ({
           {isSmallScreen ? '' : t('Charts')}
         </Button>
         <span>
-          {t('search.showing_entities', {
+          {t('search.showing_entities' + (isSmallScreen ? '_short' : ''), {
             entity: `$t(entities.${entity}_other, lowercase)`,
             start: currentStart,
             end: currentEnd,

@@ -33,6 +33,7 @@
   },
   "search": {
     "showing_entities": "Showing {{entity, lowercase}} {{start}}-{{end}} of {{total}}",
+    "showing_entities_short": "{{start}}-{{end}} / {{total}}",
     "export_csv": "Export as CSV",
     "csv": "CSV"
   },
