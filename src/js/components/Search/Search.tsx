@@ -219,7 +219,7 @@ const Search = ({ focused, setFocused }: SearchProps) => {
             className="w-full shadow rounded-xl"
             styles={{ ...CARD_STYLES, body: { ...CARD_BODY_STYLE, padding: '20px 24px 24px 24px' } }}
           >
-            <Flex justify="space-between" gap={24} className="w-full" vertical={isSmallScreen}>
+            <Flex justify="space-between" gap={isSmallScreen ? 12 : 24} className="w-full" vertical={isSmallScreen}>
               <SearchFilters
                 focused={focused === 'filters'}
                 onFocus={onFiltersFocus}
