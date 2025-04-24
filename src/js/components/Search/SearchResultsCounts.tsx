@@ -2,11 +2,12 @@ import type { CSSProperties } from 'react';
 import { Skeleton, Space, Statistic } from 'antd';
 import { ExperimentOutlined, TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
+import { queryData } from 'bento-auth-js';
 
 import CountsTitleWithHelp from '@/components/Util/CountsTitleWithHelp';
 import { COUNTS_FILL } from '@/constants/overviewConstants';
 import { NO_RESULTS_DASHES } from '@/features/search/constants';
-import { useTranslationFn } from '@/hooks';
+import { useHasScopePermission, useTranslationFn } from '@/hooks';
 import type { SearchResultsUIPane } from '@/features/search/types';
 import type { DiscoveryResults, OptionalDiscoveryResults } from '@/types/data';
 import { RequestStatus } from '@/types/requests';
@@ -25,8 +26,9 @@ const SearchResultsCounts = ({
 }: SearchResultsCountsProps) => {
   const t = useTranslationFn();
 
-  const { individualCount, individualMatches, biosampleCount, experimentCount } = results;
-  const individualsClickable = !!setSelectedPane && individualMatches?.length;
+  const { individualCount, biosampleCount, experimentCount } = results;
+  const { hasPermission: queryDataPerm } = useHasScopePermission(queryData);
+  const individualsClickable = !!setSelectedPane && queryDataPerm;
 
   const isBeaconNetwork = mode === 'beacon-network';
 

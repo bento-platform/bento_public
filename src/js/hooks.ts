@@ -30,10 +30,15 @@ export const useTranslationFn = (): NamespaceTranslationFunction => {
 export const useHasResourcePermissionWrapper = (resource: Resource, permission: string) => {
   const authzUrl = useAppSelector((state) => state.config.serviceInfo.auth);
 
-  const { isFetching: fetchingPermission, hasPermission } = useHasResourcePermission(resource, authzUrl, permission);
+  const {
+    isFetching: fetchingPermission,
+    hasAttempted,
+    hasPermission,
+  } = useHasResourcePermission(resource, authzUrl, permission);
 
   return {
     fetchingPermission,
+    hasAttempted,
     hasPermission,
   };
 };
