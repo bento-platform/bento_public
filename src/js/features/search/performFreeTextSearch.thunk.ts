@@ -10,6 +10,11 @@ import { printAPIError } from '@/utils/error.util';
 
 export type BentoOldSearchResponseFormat = {
   results: {
+    // --- begin new fields for UI hacking together
+    project_id: string;
+    dataset_id: string;
+    phenopacket_id: string;
+    // --- end new fields for UI hacking together
     subject_id: string;
     alternate_ids: string[];
     num_experiments: 1;

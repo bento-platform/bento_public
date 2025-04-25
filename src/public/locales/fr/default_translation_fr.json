@@ -34,6 +34,7 @@
   "search": {
     "showing_entities": "Affichage des {{entity, lowercase}} {{start}}-{{end}} sur {{total}}",
     "showing_entities_short": "{{start}}-{{end}} / {{total}}",
+    "manage_columns": "Gérer les colonnes",
     "export_csv": "Exporter en CSV",
     "csv": "CSV"
   },

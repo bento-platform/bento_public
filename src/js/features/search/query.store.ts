@@ -76,7 +76,7 @@ const query = createSlice({
         experimentChartData: serializeChartData(payload.experiments.experiment_type),
         // individuals
         individualCount: payload.count,
-        individualMatches: payload.matches, // Undefined if no permissions
+        individualMatches: payload.matches_detail, // Undefined if no permissions
       };
     });
     builder.addCase(makeGetKatsuPublic.rejected, (state) => {
@@ -98,7 +98,12 @@ const query = createSlice({
         experimentChartData: [], // TODO
         // individuals
         individualCount: payload.results.length,
-        individualMatches: payload.results.map((r) => r.subject_id),
+        individualMatches: payload.results.map(({ subject_id: id, phenopacket_id, dataset_id, project_id }) => ({
+          id,
+          phenopacket_id,
+          dataset_id,
+          project_id,
+        })),
       };
     });
     builder.addCase(performFreeTextSearch.rejected, (state) => {
