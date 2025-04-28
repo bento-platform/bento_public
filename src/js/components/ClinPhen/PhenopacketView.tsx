@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { Card } from 'antd'; // added antd Card import
+import { Card } from 'antd';
 
 interface RouteParams {
   packetId: string;
