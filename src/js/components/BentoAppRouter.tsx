@@ -34,6 +34,7 @@ import Search from './Search/Search';
 import ProvenanceTab from './Provenance/ProvenanceTab';
 import BeaconQueryUi from './Beacon/BeaconQueryUi';
 import NetworkUi from './Beacon/BeaconNetwork/NetworkUi';
+import PhenopacketView from './ClinPhen/PhenopacketView';
 
 const ScopedRoute = () => {
   const { projectId, datasetId } = useParams();
@@ -154,6 +155,8 @@ const BentoAppRouter = () => {
           {BentoRoute.BeaconNetwork && <Route path={BentoRoute.BeaconNetwork} element={<NetworkUi />} />}
           <Route path={BentoRoute.Provenance} element={<ProvenanceTab />} />
         </Route>
+
+        <Route path={`/${BentoRoute.Phenopackets}/:packetId`} element={<PhenopacketView />} />
 
         <Route path="/p/:projectId" element={<ScopedRoute />}>
           <Route index element={<PublicOverview />} />
