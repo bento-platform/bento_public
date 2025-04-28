@@ -4,11 +4,11 @@ import { phenopacketUrl } from '@/constants/configConstants';
 import type { RootState } from '@/store';
 import { printAPIError } from '@/utils/error.util';
 import { authorizedRequestConfig } from '@/utils/requests';
-import type { Phenopacket } from '@/types/clinPhen/phenopacket';
+import type { PhenopacketListResponse } from '@/types/clinPhen/phenopacket';
 import { RequestStatus } from '@/types/requests';
 
 export const makeGetPhenopacketList = createAsyncThunk<
-  Phenopacket[],
+  PhenopacketListResponse,
   void,
   {
     state: RootState;

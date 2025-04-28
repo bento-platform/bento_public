@@ -1,5 +1,5 @@
 import type { Individual } from '@/types/clinPhen/individual';
-import type { Phenopacket } from '@/types/clinPhen/phenopacket';
+import type { Phenopacket, PhenopacketListResponse } from '@/types/clinPhen/phenopacket';
 import { RequestStatus } from '@/types/requests';
 import { createSlice } from '@reduxjs/toolkit';
 import { makeGetIndividualData } from '@/features/clinPhen/makeGetIndividualData.thunk';
@@ -11,7 +11,7 @@ export type ClinPhenState = {
   individualDataCache: { [key: string]: Individual };
   phenopacketDataStatus: { [key: string]: RequestStatus };
   phenopacketDataCache: { [key: string]: Phenopacket };
-  phenopacketList?: Phenopacket[];
+  phenopacketList?: PhenopacketListResponse | undefined;
   phenopacketListStatus?: RequestStatus;
 };
 
@@ -20,7 +20,7 @@ const initialState: ClinPhenState = {
   individualDataCache: {},
   phenopacketDataStatus: {},
   phenopacketDataCache: {},
-  phenopacketList: [],
+  phenopacketList: undefined,
   phenopacketListStatus: RequestStatus.Idle,
 };
 
