@@ -1,4 +1,5 @@
 import { type ReactNode, useEffect, useMemo, useState } from 'react';
+import { useAuthorizationHeader } from 'bento-auth-js';
 import {
   Button,
   Checkbox,
@@ -25,6 +26,7 @@ import { useSelectedScope } from '@/features/metadata/hooks';
 import type { KatsuIndividualMatch } from '@/features/search/types';
 import ProjectTitle from '@/components/Util/ProjectTitle';
 import DatasetTitle from '@/components/Util/DatasetTitle';
+import { downloadIndividualCSV } from '@/utils/export';
 
 const SEARCH_TABLE_COLUMNS = {
   project: {
@@ -86,6 +88,7 @@ const SearchResultsTablePage = ({
   const t = useTranslationFn();
   const selectedScope = useSelectedScope();
   const isSmallScreen = useSmallScreen();
+  const authHeader = useAuthorizationHeader();
 
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -100,6 +103,8 @@ const SearchResultsTablePage = ({
     if (datasetColumnAllowed) initial.add('dataset');
     return initial;
   });
+
+  const [exporting, setExporting] = useState<boolean>(false);
 
   useEffect(() => {
     // TODO: update shownColumns if allowed changes
@@ -170,7 +175,17 @@ const SearchResultsTablePage = ({
             <Tooltip title={t('search.manage_columns')}>
               <Button icon={<TableOutlined />} onClick={() => setColumnModalOpen(true)} />
             </Tooltip>
-            <Button icon={<ExportOutlined />} onChange={() => alert('TODO')}>
+            <Button
+              icon={<ExportOutlined />}
+              loading={exporting}
+              onClick={() => {
+                setExporting(true);
+                downloadIndividualCSV(
+                  authHeader,
+                  individualMatches.map(({ id }) => id)
+                ).finally(() => setExporting(false));
+              }}
+            >
               {isSmallScreen ? t('search.csv') : t('search.export_csv')}
             </Button>
           </Space>
