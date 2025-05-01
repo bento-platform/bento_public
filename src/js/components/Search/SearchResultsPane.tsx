@@ -7,7 +7,7 @@ import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
 import { useHasScopePermission, useTranslationFn } from '@/hooks';
 import type { DiscoveryResults } from '@/types/data';
-import type { SearchResultsUIPane } from '@/features/search/types';
+import type { SearchResultsUIPage } from '@/features/search/types';
 
 import CustomEmpty from '@/components/Util/CustomEmpty';
 import SearchResultsCounts from './SearchResultsCounts';
@@ -59,26 +59,26 @@ const SearchResultsPane = ({
   results,
   resultsTitle,
   resultsExtra,
-  pane,
-  onPaneChange,
+  page,
+  onPageChange,
   style,
 }: SearchResultsPaneProps) => {
-  pane = pane ?? 'charts';
-  onPaneChange = onPaneChange ?? (() => {});
+  page = page ?? 'charts';
+  onPageChange = onPageChange ?? (() => {});
 
   const { hasAttempted: hasAttemptedQDP, hasPermission: queryDataPerm } = useHasScopePermission(queryData);
   useEffect(() => {
-    if (pane === 'individuals' && hasAttemptedQDP && !queryDataPerm) {
-      onPaneChange('charts');
+    if (page === 'individuals' && hasAttemptedQDP && !queryDataPerm) {
+      onPageChange('charts');
     }
-  }, [pane, onPaneChange, hasAttemptedQDP, queryDataPerm]);
+  }, [page, onPageChange, hasAttemptedQDP, queryDataPerm]);
 
   let pageElement = <div />;
-  if (pane === 'charts') {
+  if (page === 'charts') {
     pageElement = <SRChartsPage hasInsufficientData={hasInsufficientData} results={results} />;
-  } else if (pane === 'individuals') {
+  } else if (page === 'individuals') {
     pageElement = (
-      <SearchResultsTablePage entity="individual" results={results} onBack={() => onPaneChange('charts')} />
+      <SearchResultsTablePage entity="individual" results={results} onBack={() => onPageChange('charts')} />
     );
   }
 
@@ -105,8 +105,8 @@ const SearchResultsPane = ({
           <Col xs={24} lg={4}>
             <SearchResultsCounts
               mode="normal"
-              selectedPane={pane}
-              setSelectedPane={onPaneChange}
+              selectedPage={page}
+              setSelectedPage={onPageChange}
               results={results}
               hasInsufficientData={hasInsufficientData}
               uncensoredCounts={uncensoredCounts}
@@ -128,8 +128,8 @@ export interface SearchResultsPaneProps {
   results: DiscoveryResults;
   resultsTitle?: string;
   resultsExtra?: ReactElement;
-  pane?: SearchResultsUIPane;
-  onPaneChange?: (pane: SearchResultsUIPane) => void;
+  page?: SearchResultsUIPage;
+  onPageChange?: (page: SearchResultsUIPage) => void;
   style?: CSSProperties;
 }
 

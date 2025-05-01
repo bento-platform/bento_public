@@ -61,4 +61,4 @@ export interface Experiments {
   experiment_type: Datum[];
 }
 
-export type SearchResultsUIPane = 'individuals' | 'charts';
+export type SearchResultsUIPage = 'individuals' | 'charts';
