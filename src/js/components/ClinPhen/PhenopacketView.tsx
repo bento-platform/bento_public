@@ -4,10 +4,9 @@ import Loader from '@/components/Loader';
 import { useAppDispatch, useAppSelector } from '@/hooks';
 import { makeGetPhenopacketData } from '@/features/clinPhen/makeGetPhenopacket.thunk';
 import { Card, Tabs, Descriptions } from 'antd';
+import type { TabsProps } from 'antd';
 import { RequestStatus } from '@/types/requests';
 import BiosampleView from './BiosampleView';
-
-const { TabPane } = Tabs;
 
 const getTabContent = (title: string, data: any) => (
   <Descriptions title={title}>
@@ -36,31 +35,55 @@ const PhenopacketView = () => {
     return <Loader fullHeight={true} />;
   }
 
+  const items: TabsProps['items'] = [
+    {
+      key: 'biosamples',
+      label: 'Biosamples',
+      children: <BiosampleView biosamples={phenopacket.biosamples!} />,
+      disabled: !phenopacket.biosamples,
+    },
+    {
+      key: 'measurements',
+      label: 'Measurements',
+      children: getTabContent('Measurements', phenopacket.measurements),
+      disabled: !phenopacket.measurements,
+    },
+    {
+      key: 'phenotypic_features',
+      label: 'Phenotypic Features',
+      children: getTabContent('Phenotypic Features', phenopacket.phenotypic_features),
+      disabled: !phenopacket.phenotypic_features,
+    },
+    {
+      key: 'diseases',
+      label: 'Diseases',
+      children: getTabContent('Diseases', phenopacket.diseases),
+      disabled: !phenopacket.diseases,
+    },
+    {
+      key: 'interpretations',
+      label: 'Interpretations',
+      children: getTabContent('Interpretations', phenopacket.interpretations),
+      disabled: !phenopacket.interpretations,
+    },
+    {
+      key: 'medical_actions',
+      label: 'Medical Actions',
+      children: getTabContent('Medical Actions', phenopacket.medical_actions),
+      disabled: !phenopacket.medical_actions,
+    },
+    // Uncomment if ontologies are needed
+    // {
+    //   key: 'ontologies',
+    //   label: 'Ontologies',
+    //   children: getTabContent('Ontologies', phenopacket.ontologies),
+    //   disabled: !phenopacket.ontologies,
+    // },
+  ];
+
   return (
     <Card title={packetId}>
-      <Tabs defaultActiveKey="biosamples">
-        <TabPane key="biosamples" tab="Biosamples" disabled={!phenopacket.biosamples}>
-          <BiosampleView biosamples={phenopacket.biosamples!} />
-        </TabPane>
-        <TabPane key="measurements" tab="Measurements" disabled={!phenopacket.measurements}>
-          {getTabContent('Measurements', phenopacket.measurements)}
-        </TabPane>
-        <TabPane key="phenotypic_features" tab="Phenotypic Features" disabled={!phenopacket.phenotypic_features}>
-          {getTabContent('Phenotypic Features', phenopacket.phenotypic_features)}
-        </TabPane>
-        <TabPane key="diseases" tab="Diseases" disabled={!phenopacket.diseases}>
-          {getTabContent('Diseases', phenopacket.diseases)}
-        </TabPane>
-        <TabPane key="interpretations" tab="Interpretations" disabled={!phenopacket.interpretations}>
-          {getTabContent('Interpretations', phenopacket.interpretations)}
-        </TabPane>
-        <TabPane key="medical_actions" tab="Medical Actions" disabled={!phenopacket.medical_actions}>
-          {getTabContent('Medical Actions', phenopacket.medical_actions)}
-        </TabPane>
-        {/* <TabPane key="ontologies" tab="Ontologies" disabled={!phenopacket.ontologies}>
-          {getTabContent('Ontologies', phenopacket.ontologies)}
-        </TabPane> */}
-      </Tabs>
+      <Tabs defaultActiveKey="biosamples" items={items} />
     </Card>
   );
 };
