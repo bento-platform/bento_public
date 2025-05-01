@@ -41,10 +41,9 @@ const BiosampleExpandedRow: React.FC<{ biosample: Biosample }> = ({ biosample })
 
 interface BiosampleViewProps {
   biosamples: Biosample[];
-  handleExperimentClick: (experimentId: string) => void;
 }
 
-const BiosampleView: React.FC<BiosampleViewProps> = ({ biosamples, handleExperimentClick }) => {
+const BiosampleView: React.FC<BiosampleViewProps> = ({ biosamples }) => {
   const columns = [
     {
       title: 'Biosample ID',
