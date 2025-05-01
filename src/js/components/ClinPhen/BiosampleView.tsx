@@ -64,6 +64,7 @@ const BiosampleView: React.FC<BiosampleViewProps> = ({ biosamples }) => {
       expandable={{
         expandedRowRender: (record) => <BiosampleExpandedRow biosample={record} />,
       }}
+      rowKey="id"
     />
   );
 };
