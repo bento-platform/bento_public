@@ -7,6 +7,7 @@ import { Card, Tabs, Descriptions } from 'antd';
 import type { TabsProps } from 'antd';
 import { RequestStatus } from '@/types/requests';
 import BiosampleView from './BiosampleView';
+import Ontologies from './Ontologies';
 
 const getTabContent = (title: string, data: any) => (
   <Descriptions title={title}>
@@ -72,13 +73,12 @@ const PhenopacketView = () => {
       children: getTabContent('Medical Actions', phenopacket.medical_actions),
       disabled: !phenopacket.medical_actions,
     },
-    // Uncomment if ontologies are needed
-    // {
-    //   key: 'ontologies',
-    //   label: 'Ontologies',
-    //   children: getTabContent('Ontologies', phenopacket.ontologies),
-    //   disabled: !phenopacket.ontologies,
-    // },
+    {
+      key: 'ontologies',
+      label: 'Ontologies',
+      children: <Ontologies resources={phenopacket.meta_data?.resources!} />,
+      disabled: !phenopacket.meta_data?.resources,
+    },
   ];
 
   return (
