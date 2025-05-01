@@ -113,8 +113,8 @@ const SearchResultsTablePage = ({
   let { individualMatches } = results;
   individualMatches = individualMatches ?? [];
 
-  const currentStart = individualMatches.length > 0 ? page * pageSize - pageSize : 0;
-  const currentEnd = Math.min(page * pageSize, individualMatches.length) - 1;
+  const currentStart = individualMatches.length > 0 ? page * pageSize - pageSize + 1 : 0;
+  const currentEnd = Math.min(page * pageSize, individualMatches.length);
 
   const columns = useMemo<TableColumnsType<KatsuIndividualMatch>>(
     () => [
@@ -165,8 +165,8 @@ const SearchResultsTablePage = ({
           <span>
             {t('search.showing_entities' + (isSmallScreen ? '_short' : ''), {
               entity: `$t(entities.${entity}_other, lowercase)`,
-              start: currentStart + 1,
-              end: currentEnd + 1,
+              start: currentStart,
+              end: currentEnd,
               total: individualMatches.length,
             })}
           </span>
