@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useMemo, useState } from 'react';
+import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { useAuthorizationHeader } from 'bento-auth-js';
 import {
   Button,
@@ -22,22 +22,33 @@ import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
 import IndividualRowDetail from './IndividualRowDetail';
 import type { DiscoveryResults } from '@/types/data';
-import { useSelectedScope } from '@/features/metadata/hooks';
+import type { Dataset } from '@/types/metadata';
+import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
 import type { KatsuIndividualMatch } from '@/features/search/types';
+import DatasetProvenanceModal from '@/components/Provenance/DatasetProvenanceModal';
 import ProjectTitle from '@/components/Util/ProjectTitle';
 import DatasetTitle from '@/components/Util/DatasetTitle';
 import { downloadIndividualCSV } from '@/utils/export';
+
+type SearchColRenderContext = {
+  onProjectClick: (id: string) => void;
+  onDatasetClick: (id: string) => void;
+};
 
 const SEARCH_TABLE_COLUMNS = {
   project: {
     tKey: 'entities.project',
     dataIndex: 'project_id',
-    render: (id: string) => <ProjectTitle projectID={id} onClick={() => alert('TODO')} />,
+    render: (ctx: SearchColRenderContext) => (id: string) => (
+      <ProjectTitle projectID={id} onClick={() => ctx.onProjectClick(id)} />
+    ),
   },
   dataset: {
     tKey: 'entities.dataset',
     dataIndex: 'dataset_id',
-    render: (id: string) => <DatasetTitle datasetID={id} onClick={() => alert('TODO')} />,
+    render: (ctx: SearchColRenderContext) => (id: string) => (
+      <DatasetTitle datasetID={id} onClick={() => ctx.onDatasetClick(id)} />
+    ),
   },
 } as const;
 type SearchTableColumnType = keyof typeof SEARCH_TABLE_COLUMNS;
@@ -89,6 +100,7 @@ const SearchResultsTablePage = ({
   const selectedScope = useSelectedScope();
   const isSmallScreen = useSmallScreen();
   const authHeader = useAuthorizationHeader();
+  const { datasetsByID } = useMetadata();
 
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -116,6 +128,20 @@ const SearchResultsTablePage = ({
   const currentStart = individualMatches.length > 0 ? page * pageSize - pageSize + 1 : 0;
   const currentEnd = Math.min(page * pageSize, individualMatches.length);
 
+  const [selectedDataset, setSelectedDataset] = useState<Dataset | null>(null);
+  const [datasetModalOpen, setDatasetModalOpen] = useState<boolean>(false);
+
+  const searchContext = useMemo<SearchColRenderContext>(
+    () => ({
+      onProjectClick: (id: string) => alert(`TODO: ${id}`),
+      onDatasetClick: (id: string) => {
+        setSelectedDataset(datasetsByID[id] ?? null);
+        setDatasetModalOpen(true);
+      },
+    }),
+    [datasetsByID]
+  );
+
   const columns = useMemo<TableColumnsType<KatsuIndividualMatch>>(
     () => [
       {
@@ -128,10 +154,10 @@ const SearchResultsTablePage = ({
         .map(([_, { tKey, dataIndex, render }]) => ({
           title: t(tKey, T_SINGULAR_COUNT),
           dataIndex,
-          render,
+          render: render(searchContext),
         })),
     ],
-    [t, shownColumns]
+    [t, shownColumns, searchContext]
   );
 
   // noinspection JSUnusedGlobalSymbols
@@ -149,6 +175,15 @@ const SearchResultsTablePage = ({
     }),
     [page, pageSize, isSmallScreen]
   );
+
+  const openColumnModal = useCallback(() => setColumnModalOpen(true), []);
+  const onExport = useCallback(() => {
+    setExporting(true);
+    downloadIndividualCSV(
+      authHeader,
+      individualMatches.map(({ id }) => id)
+    ).finally(() => setExporting(false));
+  }, [authHeader, individualMatches]);
 
   return (
     <>
@@ -173,19 +208,9 @@ const SearchResultsTablePage = ({
           {/* TODO: only if in Bento search not beacon */}
           <Space>
             <Tooltip title={t('search.manage_columns')}>
-              <Button icon={<TableOutlined />} onClick={() => setColumnModalOpen(true)} />
+              <Button icon={<TableOutlined />} onClick={openColumnModal} />
             </Tooltip>
-            <Button
-              icon={<ExportOutlined />}
-              loading={exporting}
-              onClick={() => {
-                setExporting(true);
-                downloadIndividualCSV(
-                  authHeader,
-                  individualMatches.map(({ id }) => id)
-                ).finally(() => setExporting(false));
-              }}
-            >
+            <Button icon={<ExportOutlined />} loading={exporting} onClick={onExport}>
               {isSmallScreen ? t('search.csv') : t('search.export_csv')}
             </Button>
           </Space>
@@ -215,6 +240,12 @@ const SearchResultsTablePage = ({
           )}
         </Space>
       </Modal>
+      <Modal title={`${t('entities.project', T_SINGULAR_COUNT)}: TODO`}></Modal>
+      <DatasetProvenanceModal
+        dataset={selectedDataset}
+        open={datasetModalOpen}
+        onCancel={() => setDatasetModalOpen(false)}
+      />
     </>
   );
 };
