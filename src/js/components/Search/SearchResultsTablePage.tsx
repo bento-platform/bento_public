@@ -22,7 +22,7 @@ import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
 import IndividualRowDetail from './IndividualRowDetail';
 import type { DiscoveryResults } from '@/types/data';
-import type { Dataset } from '@/types/metadata';
+import type { Project, Dataset } from '@/types/metadata';
 import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
 import type { KatsuIndividualMatch } from '@/features/search/types';
 import DatasetProvenanceModal from '@/components/Provenance/DatasetProvenanceModal';
@@ -100,7 +100,7 @@ const SearchResultsTablePage = ({
   const selectedScope = useSelectedScope();
   const isSmallScreen = useSmallScreen();
   const authHeader = useAuthorizationHeader();
-  const { datasetsByID } = useMetadata();
+  const { projectsByID, datasetsByID } = useMetadata();
 
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -128,18 +128,23 @@ const SearchResultsTablePage = ({
   const currentStart = individualMatches.length > 0 ? page * pageSize - pageSize + 1 : 0;
   const currentEnd = Math.min(page * pageSize, individualMatches.length);
 
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [projectModalOpen, setProjectModalOpen] = useState<boolean>(false);
   const [selectedDataset, setSelectedDataset] = useState<Dataset | null>(null);
   const [datasetModalOpen, setDatasetModalOpen] = useState<boolean>(false);
 
   const searchContext = useMemo<SearchColRenderContext>(
     () => ({
-      onProjectClick: (id: string) => alert(`TODO: ${id}`),
+      onProjectClick: (id: string) => {
+        setSelectedProject(projectsByID[id] ?? null);
+        setProjectModalOpen(true);
+      },
       onDatasetClick: (id: string) => {
         setSelectedDataset(datasetsByID[id] ?? null);
         setDatasetModalOpen(true);
       },
     }),
-    [datasetsByID]
+    [projectsByID, datasetsByID]
   );
 
   const columns = useMemo<TableColumnsType<KatsuIndividualMatch>>(
@@ -240,7 +245,15 @@ const SearchResultsTablePage = ({
           )}
         </Space>
       </Modal>
-      <Modal title={`${t('entities.project', T_SINGULAR_COUNT)}: TODO`}></Modal>
+      <Modal
+        title={selectedProject ? `${t('entities.project', T_SINGULAR_COUNT)}: ${t(selectedProject.title)}` : ''}
+        open={projectModalOpen}
+        onCancel={() => setProjectModalOpen(false)}
+        width={800}
+        footer={null}
+      >
+        {selectedProject && t(selectedProject.description)}
+      </Modal>
       <DatasetProvenanceModal
         dataset={selectedDataset}
         open={datasetModalOpen}
