@@ -40,14 +40,14 @@ const DatasetScopePicker = ({ parentProject }: DatasetScopePickerProps) => {
     <Space direction="vertical" style={{ display: 'flex' }}>
       <Space align="baseline" size="large">
         <Typography.Title level={4} className="no-margin-top">
-          {t('entity.project', T_SINGULAR_COUNT)}: {t(parentProject.title)}
+          {t('entities.project', T_SINGULAR_COUNT)}: {t(parentProject.title)}
         </Typography.Title>
         {showSelectProject && <Link to={projectURL}>{t('Select')}</Link>}
       </Space>
       <TruncatedParagraph>{t(parentProject.description)}</TruncatedParagraph>
       <Space align="baseline" size="large">
         <Typography.Title level={5} className="no-margin-top">
-          {t('entity.dataset', T_SINGULAR_COUNT)}
+          {t('entities.dataset', T_SINGULAR_COUNT)}
         </Typography.Title>
         {showClearDataset && <Link to={projectURL}>{t('Clear dataset selection')}</Link>}
       </Space>
