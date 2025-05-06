@@ -32,17 +32,17 @@ const Counts = () => {
     {
       entity: 'individual',
       icon: <TeamOutlined />,
-      count: counts.individuals,
+      count: counts.individual,
     },
     {
       entity: 'biosample',
       icon: <BiDna />,
-      count: counts.biosamples,
+      count: counts.biosample,
     },
     {
       entity: 'experiment',
       icon: <ExperimentOutlined />,
-      count: counts.experiments,
+      count: counts.experiment,
     },
   ];
 
