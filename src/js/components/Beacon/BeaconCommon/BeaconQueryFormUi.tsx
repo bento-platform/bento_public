@@ -132,7 +132,7 @@ const BeaconQueryFormUi = ({
         value: values[`filterValue${f.index}`],
       }));
     },
-    [filters]
+    [filters, filtersDirty]
   );
 
   const packageBeaconJSON = useCallback(
