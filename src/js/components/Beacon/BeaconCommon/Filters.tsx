@@ -65,8 +65,6 @@ const Filters = ({ filters, setFilters, filtersDirty, form, beaconFiltersBySecti
 
   const searchFieldInUse = (searchFieldId: string) => filters.some((f) => f.searchFieldId === searchFieldId);
 
-  console.log({ filters });
-
   return (
     <Form.Item>
       <Space style={{ display: 'flex', padding: 0 }}>
