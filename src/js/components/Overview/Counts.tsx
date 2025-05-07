@@ -10,7 +10,6 @@ import { useConfig } from '@/features/config/hooks';
 import { NO_RESULTS_DASHES } from '@/features/search/constants';
 import { useAppSelector, useTranslationFn } from '@/hooks';
 import { useCanSeeUncensoredCounts } from '@/hooks/censorship';
-import type { BentoEntity } from '@/types/entities';
 
 const styles: Record<string, CSSProperties> = {
   countCard: {
@@ -19,7 +18,7 @@ const styles: Record<string, CSSProperties> = {
   },
 };
 
-const COUNT_ENTRIES: { entity: BentoEntity; icon: ReactNode }[] = [
+const COUNT_ENTRIES: { entity: 'individual' | 'biosample' | 'experiment'; icon: ReactNode }[] = [
   { entity: 'individual', icon: <TeamOutlined /> },
   { entity: 'biosample', icon: <BiDna /> },
   { entity: 'experiment', icon: <ExperimentOutlined /> },

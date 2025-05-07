@@ -1,5 +1,4 @@
 import type { ChartConfig } from '@/types/chartConfig';
-import type { BentoEntity } from '@/types/entities';
 
 export interface OverviewResponse {
   overview: Overview;
@@ -12,7 +11,11 @@ export interface Overview {
 }
 
 // If boolean, it means we have data above the threshold but don't have permissions to view the exact count.
-export type CountsOrBooleans = Record<BentoEntity, number | boolean>;
+export type CountsOrBooleans = {
+  individual: number | boolean;
+  biosample: number | boolean;
+  experiment: number | boolean;
+};
 
 export type Fields = {
   [key in string]: OverviewResponseDataField;
