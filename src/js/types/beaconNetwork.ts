@@ -1,5 +1,5 @@
+import type { Section } from '@/features/search/types';
 import type { BeaconServiceInfo, BeaconQueryPayload } from '@/types/beacon';
-import type { Section } from '@/types/search';
 
 export interface NetworkBeacon extends BeaconServiceInfo {
   apiUrl: string;

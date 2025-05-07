@@ -78,7 +78,14 @@ export const makeGetDataRequestThunk = createAsyncThunk<
       const {
         data: { status, isInvalid },
       } = getState();
-      return status !== RequestStatus.Pending && (status === RequestStatus.Idle || isInvalid);
+      const cond = status !== RequestStatus.Pending && (status === RequestStatus.Idle || isInvalid);
+      if (!cond) {
+        console.debug(
+          `makeGetDataRequestThunk() was attempted, but will not dispatch: status=${RequestStatus[status]}, ` +
+            `isInvalid=${isInvalid}`
+        );
+      }
+      return cond;
     },
   }
 );

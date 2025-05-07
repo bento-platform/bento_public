@@ -11,9 +11,9 @@ export interface Overview {
 }
 
 export interface Counts {
-  biosamples: number | boolean;
-  experiments: number | boolean;
-  individuals: number | boolean;
+  biosample: number | boolean;
+  experiment: number | boolean;
+  individual: number | boolean;
 }
 
 export type Fields = {

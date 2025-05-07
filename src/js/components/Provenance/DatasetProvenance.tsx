@@ -9,7 +9,6 @@ import PublicationsTable from './Tables/PublicationsTable';
 import CreatedByTable from './Tables/CreatedByTable';
 import DownloadDats from './DownloadDats';
 
-import { BOX_SHADOW } from '@/constants/overviewConstants';
 import { useTranslationFn } from '@/hooks';
 import type { Dataset } from '@/types/metadata';
 
@@ -125,7 +124,7 @@ const DatasetProvenance = ({ dataset, loading }: DatasetProvenanceProps) => {
   const metadata = dataset.dats_file;
 
   return (
-    <div className="container" style={{ paddingBottom: '40px' }}>
+    <div className="container margin-auto">
       <Card
         title={<Title level={3}>{t(metadata.title ?? dataset.title)}</Title>}
         extra={
@@ -137,7 +136,7 @@ const DatasetProvenance = ({ dataset, loading }: DatasetProvenanceProps) => {
               ]
             : []
         }
-        style={{ borderRadius: '11px', ...BOX_SHADOW }}
+        className="shadow rounded-xl"
         loading={loading}
       >
         <DatasetProvenanceContent dataset={dataset} />

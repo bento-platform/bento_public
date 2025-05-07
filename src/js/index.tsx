@@ -28,6 +28,7 @@ import { AUTH_CALLBACK_URL, CLIENT_ID, OPENID_CONFIG_URL, PUBLIC_URL_NO_TRAILING
 
 // Styles imports
 import 'leaflet/dist/leaflet.css';
+import 'react18-json-view/src/style.css';
 import 'bento-charts/src/styles.css';
 import './i18n';
 import '../styles.css';
@@ -36,7 +37,7 @@ const BaseRoutes = () => {
   return (
     <Routes>
       <Route element={<AuthOutlet />}>
-        <Route path="/callback" element={<Loader />} />
+        <Route path="/callback" element={<Loader fullHeight={true} />} />
         <Route element={<LanguageHandler />}>
           <Route path="/:lang/*" element={<BentoAppRouter />} />
           <Route path="*" element={<Navigate to="/en/" />} />

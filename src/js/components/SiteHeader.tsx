@@ -1,4 +1,4 @@
-import { type CSSProperties, useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Button, Flex, Layout, Space, Typography } from 'antd';
@@ -6,23 +6,16 @@ import { useTranslation } from 'react-i18next';
 import { useAuthState, useIsAuthenticated, useOpenIdConfig, usePerformAuth, usePerformSignOut } from 'bento-auth-js';
 
 import { RiTranslate } from 'react-icons/ri';
-import { ExportOutlined, LinkOutlined, LoginOutlined, LogoutOutlined, ProfileOutlined } from '@ant-design/icons';
+import { ExportOutlined, LinkOutlined, LoginOutlined, LogoutOutlined } from '@ant-design/icons';
 
-import { useSelectedScope, useSelectedScopeTitles } from '@/features/metadata/hooks';
+import { useSelectedScope } from '@/features/metadata/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
-import { getCurrentPage, scopeToUrl } from '@/utils/router';
+import { langAndScopeSelectionToUrl } from '@/utils/router';
 
 import { LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
 import { CLIENT_NAME, PORTAL_URL, SHOW_PORTAL_LINK, SHOW_SIGN_IN, TRANSLATED } from '@/config';
-import { TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
-
-import ScopePickerModal from './Scope/ScopePickerModal';
 
 const { Header } = Layout;
-
-// Header padding is reduced to 24px to provide more breathing room for buttons at small screen sizes and grid-align
-// logo with sidebar icons.
-const HEADER_PADDING: CSSProperties = { padding: '0 24px' };
 
 const openPortalWindow = () => window.open(PORTAL_URL, '_blank');
 
@@ -34,18 +27,7 @@ const SiteHeader = () => {
 
   const { isFetching: openIdConfigFetching } = useOpenIdConfig();
   const { isHandingOffCodeForToken } = useAuthState();
-  const { fixedProject, fixedDataset, scope: scopeObj } = useSelectedScope();
-  const currentPage = getCurrentPage();
-
-  const scopeSelectionEnabled = !(fixedProject && fixedDataset) && !TOP_LEVEL_ONLY_ROUTES.includes(currentPage);
-
-  const scopeProps = useSelectedScopeTitles();
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  useEffect(() => {
-    setIsModalOpen(false);
-  }, [location]);
+  const selectedScope = useSelectedScope();
 
   const isAuthenticated = useIsAuthenticated();
   const performSignOut = usePerformSignOut();
@@ -63,12 +45,12 @@ const SiteHeader = () => {
   };
 
   const navigateToOverview = useCallback(
-    () => navigate(`/${i18n.language}${scopeToUrl(scopeObj)}`),
-    [navigate, i18n.language, scopeObj]
+    () => navigate(langAndScopeSelectionToUrl(i18n.language, selectedScope, '')),
+    [navigate, i18n.language, selectedScope]
   );
 
   return (
-    <Header style={{ position: 'fixed', width: '100%', zIndex: 100, top: 0, ...HEADER_PADDING }}>
+    <Header id="site-header">
       <Flex align="center" justify="space-between">
         <Space size={isSmallScreen ? 'small' : 'middle'}>
           {isSmallScreen ? (
@@ -99,22 +81,9 @@ const SiteHeader = () => {
               onClick={navigateToOverview}
             />
           )}
-          <Typography.Title
-            level={1}
-            style={{ fontSize: '1.5em', margin: 0, lineHeight: '64px', color: 'white' }}
-            type="secondary"
-          >
+          <Typography.Title level={1} type="secondary">
             {CLIENT_NAME}
           </Typography.Title>
-          {scopeSelectionEnabled && (
-            <Typography.Title className="select-project-title" level={2} onClick={() => setIsModalOpen(true)}>
-              <ProfileOutlined style={{ marginRight: '5px', fontSize: '16px' }} />
-
-              {scopeObj.project && scopeProps.projectTitle}
-              {scopeProps.datasetTitle ? ` / ${scopeProps.datasetTitle}` : ''}
-            </Typography.Title>
-          )}
-          <ScopePickerModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
         </Space>
 
         <Space size={isSmallScreen ? 0 : 'small'}>

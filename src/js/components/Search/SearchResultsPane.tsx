@@ -1,19 +1,55 @@
-import { type ReactElement, useCallback, useMemo, useState } from 'react';
-import { Card, Col, Row, Typography, Table, Button } from 'antd';
-import { LeftOutlined } from '@ant-design/icons';
+import { type CSSProperties, type ReactElement, useCallback, useEffect } from 'react';
+import { Card, Col, Row, Typography } from 'antd';
+import { queryData } from 'bento-auth-js';
 import { PieChart } from 'bento-charts';
 
-import { PORTAL_URL } from '@/config';
-import { T_PLURAL_COUNT, T_SINGULAR_COUNT } from '@/constants/i18n';
-import { BOX_SHADOW, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
-import { useTranslationFn } from '@/hooks';
+import { T_PLURAL_COUNT } from '@/constants/i18n';
+import { PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
+import { useHasScopePermission, useTranslationFn } from '@/hooks';
 import type { DiscoveryResults } from '@/types/data';
-import type { SearchResultsUIPane } from '@/types/search';
+import type { SearchResultsUIPage } from '@/features/search/types';
 
-import CustomEmpty from '../Util/CustomEmpty';
+import CustomEmpty from '@/components/Util/CustomEmpty';
 import SearchResultsCounts from './SearchResultsCounts';
+import SearchResultsTablePage from '@/components/Search/SearchResultsTablePage';
 
-type IndividualResultRow = { id: string };
+const SRChartsPage = ({
+  hasInsufficientData,
+  results,
+}: {
+  hasInsufficientData?: boolean;
+  results: DiscoveryResults;
+}) => {
+  const t = useTranslationFn();
+  const translateMap = useCallback(({ x, y }: { x: string; y: number }) => ({ x: t(x), y }), [t]);
+
+  const { biosampleChartData, experimentChartData } = results;
+
+  return (
+    <>
+      <Col xs={24} lg={10}>
+        <Typography.Title level={5} style={{ marginTop: 0, textAlign: 'center' }}>
+          {t('entities.biosample', T_PLURAL_COUNT)}
+        </Typography.Title>
+        {!hasInsufficientData && biosampleChartData.length ? (
+          <PieChart data={biosampleChartData} height={PIE_CHART_HEIGHT} sort={true} dataMap={translateMap} />
+        ) : (
+          <CustomEmpty text="No Results" />
+        )}
+      </Col>
+      <Col xs={24} lg={10}>
+        <Typography.Title level={5} style={{ marginTop: 0, textAlign: 'center' }}>
+          {t('entities.experiment', T_PLURAL_COUNT)}
+        </Typography.Title>
+        {!hasInsufficientData && experimentChartData.length ? (
+          <PieChart data={experimentChartData} height={PIE_CHART_HEIGHT} sort={true} dataMap={translateMap} />
+        ) : (
+          <CustomEmpty text="No Results" />
+        )}
+      </Col>
+    </>
+  );
+};
 
 const SearchResultsPane = ({
   isFetchingData,
@@ -23,40 +59,34 @@ const SearchResultsPane = ({
   results,
   resultsTitle,
   resultsExtra,
+  page,
+  onPageChange,
+  style,
 }: SearchResultsPaneProps) => {
-  const t = useTranslationFn();
-  const translateMap = useCallback(({ x, y }: { x: string; y: number }) => ({ x: t(x), y }), [t]);
+  page = page ?? 'charts';
+  onPageChange = onPageChange ?? (() => {});
 
-  const [panePage, setPanePage] = useState<SearchResultsUIPane>('charts');
+  const { hasAttempted: hasAttemptedQDP, hasPermission: queryDataPerm } = useHasScopePermission(queryData);
+  useEffect(() => {
+    if (page === 'individuals' && hasAttemptedQDP && !queryDataPerm) {
+      onPageChange('charts');
+    }
+  }, [page, onPageChange, hasAttemptedQDP, queryDataPerm]);
 
-  const { individualMatches, biosampleChartData, experimentChartData } = results;
-
-  const individualTableColumns = useMemo(
-    () => [
-      {
-        dataIndex: 'id',
-        title: t('entities.individual', T_SINGULAR_COUNT),
-        render: (id: string) => (
-          <a href={`${PORTAL_URL}/data/explorer/individuals/${id}`} target="_blank" rel="noreferrer">
-            {id}
-          </a>
-        ),
-      },
-    ],
-    [t]
-  );
-  const individualTableData = useMemo<IndividualResultRow[]>(
-    () => (individualMatches ?? []).map((id) => ({ id })),
-    [individualMatches]
-  );
+  let pageElement = <div />;
+  if (page === 'charts') {
+    pageElement = <SRChartsPage hasInsufficientData={hasInsufficientData} results={results} />;
+  } else if (page === 'individuals') {
+    pageElement = (
+      <SearchResultsTablePage entity="individual" results={results} onBack={() => onPageChange('charts')} />
+    );
+  }
 
   return (
-    <div className="search-results-pane">
+    <div className="container margin-auto search-results-pane" style={style}>
       <Card
+        className="w-full shadow rounded-xl"
         style={{
-          borderRadius: '10px',
-          maxWidth: '1200px',
-          width: '100%',
           // Set a minimum height (i.e., an expected final height, which can be exceeded) to prevent this component from
           // suddenly increasing in height after it loads. This is calculated from the sum of the following parts:
           //   chart (300)
@@ -65,67 +95,25 @@ const SearchResultsPane = ({
           // + border (2*1 = 2)
           // = 382, or + 56 = 438 if any header content present
           minHeight: resultsTitle || resultsExtra ? '438px' : '382px',
-          ...BOX_SHADOW,
         }}
         styles={{ body: { padding: '24px 40px' } }}
         loading={isFetchingData}
         title={resultsTitle}
         extra={resultsExtra}
       >
-        <Row gutter={16}>
+        <Row gutter={[16, 16]}>
           <Col xs={24} lg={4}>
             <SearchResultsCounts
               mode="normal"
-              selectedPane={panePage}
-              setSelectedPane={(p) => setPanePage(p)}
+              selectedPage={page}
+              setSelectedPage={onPageChange}
               results={results}
               hasInsufficientData={hasInsufficientData}
               uncensoredCounts={uncensoredCounts}
               message={message}
             />
           </Col>
-          {panePage === 'charts' ? (
-            <>
-              <Col xs={24} lg={10}>
-                <Typography.Title level={5} style={{ marginTop: 0 }}>
-                  {t('entities.biosample', T_PLURAL_COUNT)}
-                </Typography.Title>
-                {!hasInsufficientData && biosampleChartData.length ? (
-                  <PieChart data={biosampleChartData} height={PIE_CHART_HEIGHT} sort={true} dataMap={translateMap} />
-                ) : (
-                  <CustomEmpty text="No Results" />
-                )}
-              </Col>
-              <Col xs={24} lg={10}>
-                <Typography.Title level={5} style={{ marginTop: 0 }}>
-                  {t('entities.experiment', T_PLURAL_COUNT)}
-                </Typography.Title>
-                {!hasInsufficientData && experimentChartData.length ? (
-                  <PieChart data={experimentChartData} height={PIE_CHART_HEIGHT} sort={true} dataMap={translateMap} />
-                ) : (
-                  <CustomEmpty text="No Results" />
-                )}
-              </Col>
-            </>
-          ) : (
-            <Col xs={24} lg={20}>
-              <Button
-                icon={<LeftOutlined />}
-                type="link"
-                onClick={() => setPanePage('charts')}
-                style={{ paddingLeft: 0 }}
-              >
-                {t('Charts')}
-              </Button>
-              <Table<IndividualResultRow>
-                columns={individualTableColumns}
-                dataSource={individualTableData}
-                rowKey="id"
-                bordered={true}
-                size="small"
-              />
-            </Col>
-          )}
+          {pageElement}
         </Row>
       </Card>
     </div>
@@ -140,6 +128,9 @@ export interface SearchResultsPaneProps {
   results: DiscoveryResults;
   resultsTitle?: string;
   resultsExtra?: ReactElement;
+  page?: SearchResultsUIPage;
+  onPageChange?: (page: SearchResultsUIPage) => void;
+  style?: CSSProperties;
 }
 
 export default SearchResultsPane;

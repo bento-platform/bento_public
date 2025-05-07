@@ -6,6 +6,10 @@
   "Portal": "Portal",
   "missing": "missing",
   "entities": {
+    "project_one": "Project",
+    "project_other": "Projects",
+    "dataset_one": "Dataset",
+    "dataset_other": "Datasets",
     "phenopacket_one": "Phenopacket",
     "phenopacket_other": "Clinical Data",
     "individual_one": "Individual",
@@ -26,6 +30,13 @@
     ],
     "variant_one": "Variant",
     "variant_other": "Variants"
+  },
+  "search": {
+    "showing_entities": "Showing {{entity, lowercase}} {{start}}-{{end}} of {{total}}",
+    "showing_entities_short": "{{start}}-{{end}} / {{total}}",
+    "manage_columns": "Manage Columns",
+    "export_csv": "Export as CSV",
+    "csv": "CSV"
   },
   "in": "in",
   "Get Data": "Get Data",
@@ -104,7 +115,6 @@
   "Sign Out": "Sign Out",
   "Select Scope": "Select Scope",
   "About": "About",
-  "Datasets": "Datasets",
   "Clear": "Clear",
   "Select": "Select",
   "Created": "Created",
@@ -139,6 +149,29 @@
       "Leave this form blank to search by metadata only."
     ]
   },
+  "MALE": "Male",
+  "FEMALE": "Female",
+  "UNKNOWN_SEX": "Unknown Sex",
+  "individual": {
+    "date_of_birth": "Date of Birth",
+    "sex": "Sex",
+    "time_at_last_encounter": "Time at Last Encounter",
+    "karyotypic_sex": "Karyotypic Sex",
+    "taxonomy": "Taxonomy",
+    "extra_properties": "Extra Properties"
+  },
+  "time": {
+    "start": "Start",
+    "end": "End",
+    "days": "Days",
+    "weeks": "Weeks",
+    "age": "Age",
+    "gestational_age": "Gestational Age",
+    "age_range": "Age Range",
+    "ontology_class": "Ontology Class",
+    "timestamp": "Timestamp",
+    "interval": "Interval"
+  },
   "footer": {
     "powered_by": "Powered by",
     "copyright": "Copyright ©",
@@ -146,5 +179,31 @@
     "licensed_under": "Bento is licensed under the",
     "source_available": "The source code is available on",
     "terms_of_use": "Terms of Use"
+  },
+  "Help": "Help",
+  "Help for": "Help for",
+  "page_help": {
+    "overview": [
+      "The $t(Overview) page shows counts and charts for data stored in the selected project/dataset (the 'scope').",
+      "Charts can be shown/hidden or their width altered via the '$t(Manage Charts)' button."
+    ],
+    "search": [
+      "The $t(Search) page lets you query either counts or full records for data stored in a specific project/dataset",
+      "or the entire instance (the 'scope'), depending on your level of authorization.\n",
+      "Select filters and specify values to narrow down data of interest within the selected scope.",
+      "If a small number of records match your query, the count may be censored to prevent re-identification."
+    ],
+    "provenance": ["Detailed provenance data for a dataset or all datasets in a project."],
+    "beacon": [
+      "Beacon allows you to query data by the position of genetic variants, and filter the results by various clinical",
+      "or experimental metadata properties. You can also query by variants or metadata alone."
+    ],
+    "network": [
+      "Beacon Network allows you to query a collection of genomic beacons with a single query, and see count results",
+      "for each beacon as well as network-wide results. Beacons can be queried by variant position,",
+      "clinical/experimental metadata, or both.\n",
+      "Metadata filters may vary across beacons in the network, so some searches may not apply to all beacons. Use the",
+      "'$t(beacon.show_all_filters)' / '$t(beacon.common_filters_only)' switch to control which filters are available."
+    ]
   }
 }

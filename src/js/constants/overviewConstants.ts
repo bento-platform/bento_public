@@ -1,4 +1,3 @@
-import type { CSSProperties } from 'react';
 import type { HexColor } from 'bento-charts';
 
 export const COUNTS_FILL = '#75787a';
@@ -9,10 +8,9 @@ export const CHART_HEIGHT = 350;
 export const PIE_CHART_HEIGHT = 300; // rendered slightly smaller since labels can clip
 export const DEFAULT_CHART_WIDTH = 1;
 
-export const BOX_SHADOW: CSSProperties = { boxShadow: '0 2px 10px rgba(0,0,0,0.05)' };
-
-export const CHART_WIDTH = 450;
-export const GRID_GAP = 20;
+// 1320px max width: 428*3 + 18*2 = 1320
+export const CHART_WIDTH = 428;
+export const GRID_GAP = 18;
 
 const NEW_CHART_COLORS: HexColor[] = ['#90BE6D', '#F8961E', '#F3722C', '#2D9CDB', '#F94144', '#F9C74F'];
 const BAR_CHART_FILL: HexColor = '#2D9CDB';

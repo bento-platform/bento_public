@@ -1,3 +1,17 @@
+:root {
+  --header-height: 64px;
+
+  --sidebar-width-full: 200px;
+  --sidebar-width-collapsed: 80px;
+
+  --content-padding-v: 32px;
+  --content-padding-h: 64px;
+  --content-max-width: 1320px;
+
+  --content-scoped-title-height: 50px;
+  --content-scoped-title-margin-bottom: 24px;
+}
+
 html,
 body {
   min-height: 100%;
@@ -5,15 +19,40 @@ body {
   margin: 0;
 }
 
+
+/* BEGIN utility classes */
+
 .no-margin-top {
   margin-top: 0 !important;
 }
 
-.container {
-  width: 100%;
-  max-width: 1325px;
-  margin: auto;
+/* Name compatible with tailwind if needed */
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+.rounded-xl { border-radius: 12px; }
+
+.shadow {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
+
+.float-btn-pos {
+  /* For normal computer screens */
+  bottom: 3em;
+  right: 5em;
+}
+:not(.ant-float-btn-group).float-btn-pos {
+  scale: 125%;
+}
+.ant-float-btn-group.float-btn-pos {
+  /* For normal screens, increase float button group gap size */
+  gap: 24px;
+}
+.ant-float-btn-group.float-btn-pos .ant-float-btn {
+  scale: 125%;
+}
+
+/* END utility classes */
+
 
 .header-button {
   color: lightgray;
@@ -23,27 +62,9 @@ body {
   color: white !important;
 }
 
-.ant-layout-sider-trigger {
-  border-right: 1px solid #f0f0f0;
-}
-
-h2.select-project-title {
-  font-size: 16px;
-  margin: 0;
-  line-height: 64px;
-  color: lightgray;
-
-  transition: all 0.2s;
-}
-
-h2.select-project-title:hover {
-  color: white;
-  cursor: pointer;
-}
-
 .select-dataset-item {
   transition: all 0.2s;
-  border-radius: 7px;
+  border-radius: 8px; /* Consistent with --ant-border-radius-lg */
   cursor: pointer;
 }
 
@@ -70,6 +91,154 @@ h2.select-project-title:hover {
 }
 
 
+.scoped-title {
+  position: sticky;
+  top: -3px;
+  left: 0;
+  right: 0;
+  z-index: 20;
+
+  box-sizing: border-box;
+  height: var(--content-scoped-title-height);
+  margin-bottom: var(--content-scoped-title-margin-bottom);
+  padding-top: 3px;
+  margin-left: calc(-1 * var(--content-padding-h));
+  margin-right: calc(-1 * var(--content-padding-h));
+  padding-left: max(calc((100% - var(--content-max-width)) / 2 + var(--content-padding-h)), var(--content-padding-h));
+  padding-right: max(calc((100% - var(--content-max-width)) / 2 + var(--content-padding-h)), var(--content-padding-h));
+
+  background-color: rgba(245, 245, 245, 0.80);
+  border-bottom: 1px solid rgba(240, 240, 240, 0); /* invisible border to transition from/to */
+  backdrop-filter: blur(10px);
+
+  transition: border-bottom-color 0.5s ease-in-out,
+    margin 0.5s ease-in-out,
+    padding 0.5s ease-in-out,
+    height 0.5s ease-in-out,
+    box-shadow 0.1s ease-in-out;
+}
+
+.scoped-title__breadcrumb {
+  font-size: 1.8rem;
+  transition: font-size 0.3s ease-in-out;
+  flex: 1;
+}
+
+.scoped-title__breadcrumb .anticon {
+  font-size: 0.9em;
+}
+
+.scoped-title__breadcrumb a {
+  height: 3rem;
+}
+
+.scoped-title[data-stuck] {
+  height: 50px;
+  border-bottom: 1px solid rgba(235, 235, 235, 1);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.02);
+}
+
+.scoped-title[data-stuck] .scoped-title__breadcrumb {
+  font-size: 1.2rem;
+  line-height: 46px;
+}
+
+.scoped-title[data-stuck] .scoped-title__breadcrumb a {
+  height: 38px;
+  margin-top: 4px;
+  line-height: 38px;
+}
+
+
+/* BEGIN react18-json-view styling */
+
+.json-view {
+  color: #002b36;
+  --json-property: #002b36;
+  --json-index: #6c71c4;
+  --json-number: #268bd2;
+  --json-string: #cb4b16;
+  --json-boolean: #2aa198;
+  --json-null: #dc322f;
+}
+
+/* END react18-json-view styling */
+
+
+/* BEGIN layout HTML styling */
+
+#default-layout {
+  --sidebar-width: var(--sidebar-width-full);
+  min-height: 100vh;
+}
+#default-layout.sidebar-collapsed {
+  --sidebar-width: var(--sidebar-width-collapsed);
+}
+
+#site-header {
+  position: fixed;
+  height: var(--header-height);
+  width: 100%;
+  z-index: 100;
+  top: 0;
+
+  /* Header padding is reduced to 24px to provide more breathing room for buttons at small screen sizes and grid-align
+     logo with sidebar icons. */
+  padding: 0 24px;
+}
+
+#site-header h1.ant-typography {
+  margin: 0;
+  font-size: 1.5em;
+  line-height: var(--header-height);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+#site-sider {
+  position: fixed;
+  left: 0;
+  top: var(--header-height);
+  z-index: 100;
+  border-right: 1px solid #f0f0f0;
+
+  overflow: auto;
+  height: calc(100vh - var(--header-height));
+}
+
+.ant-layout-sider-trigger {
+  border-right: 1px solid #f0f0f0;
+}
+
+#content-layout {
+  position: fixed;
+  top: var(--header-height);
+  left: var(--sidebar-width);
+  right: 0;
+  bottom: 0;
+
+  display: block;
+  width: calc(100% - var(--sidebar-width));
+  overflow: auto;
+
+  transition: left 0.3s, width 0.3s;
+}
+
+#content-layout > .ant-layout-content {
+  padding: var(--content-padding-v) var(--content-padding-h);
+}
+
+.margin-auto {
+  margin: auto;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--content-max-width);
+}
+
+/* END layout HTML styling */
+
+
 /* BEGIN about HTML styling */
 
 /* Elements which are the first child of the about content container shouldn't have the default top margin */
@@ -86,10 +255,29 @@ h2.select-project-title:hover {
 /* END about HTML styling */
 
 
-/* BEGIN search results pane */
+/* BEGIN search */
+
+h3.search-form-title {
+  font-size: 1.1rem;
+  margin-top: 0;
+}
+
+.search-form-title__inner {
+  margin-right: 0.5em;
+}
+h3.search-form-title:not(.focused) .search-form-title__inner {
+  color: #8c8c8c;
+  cursor: pointer;
+  transition: color 0.1s ease-in-out;
+}
+h3.search-form-title:not(.focused) .search-form-title__inner:hover {
+  color: #595959;
+}
+h3.search-form-title:not(.focused) .search-form-title__inner > span.should-underline-if-unfocused {
+  text-decoration: underline; /* text itself, not icon */
+}
 
 .search-results-pane {
-  padding-bottom: 8px;
   display: flex;
   justify-content: center;
   width: 100%;
@@ -98,7 +286,7 @@ h2.select-project-title:hover {
 .search-result-statistic.enabled {
   padding: 8px 16px;
   margin-left: -16px;
-  border-radius: 8px;
+  border-radius: 8px; /* Consistent with --ant-border-radius-lg */
 
   cursor: pointer;
   border: 1px solid #d9d9d9;
@@ -119,9 +307,12 @@ h2.select-project-title:hover {
 }
 
 .dataset-provenance-card-grid {
+  --dataset-grid-gap: 18px;
+
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 600px));
-  gap: 20px;
+  /* 651 * 2 + 18 (gap) = 1320 */
+  grid-template-columns: repeat(auto-fit, minmax(250px, calc((var(--content-max-width) - var(--dataset-grid-gap)) / 2)));
+  gap: var(--dataset-grid-gap);
 }
 
 .slick-arrow {
@@ -143,11 +334,41 @@ h2.select-project-title:hover {
 }
 
 @media (max-width: 768px) {
-  .ant-layout-content {
-    padding: 10px !important;
+  /* Same breakpoint as constants/deviceBreakpoints DeviceBreakpoints.TABLET */
+
+  :root {
+    --content-padding-v: 10px;
+    --content-padding-h: 10px;
+
+    --content-scoped-title-margin-bottom: 10px;
+  }
+
+  .ant-layout-footer {
+    padding: 24px;
   }
 
   .dataset-provenance-card-grid {
-    gap: 8px;
+    --dataset-grid-gap: 8px;
+  }
+
+  .scoped-title__breadcrumb {
+    font-size: 1.2rem;
+    line-height: 46px;
+  }
+
+  .float-btn-pos {
+    /* For small screens */
+    bottom: 1.5em;
+    right: 1em;
+  }
+  .ant-float-btn-group.float-btn-pos .ant-float-btn {
+    scale: 100%;
+  }
+  :not(.ant-float-btn-group).float-btn-pos {
+    scale: 100%;
+  }
+  .ant-float-btn-group.float-btn-pos {
+    /* For small screens, reset group gap size */
+    gap: 16px;
   }
 }

@@ -20,9 +20,9 @@ const initialState: DataState = {
   defaultLayout: [],
   sections: [],
   counts: {
-    individuals: 0,
-    biosamples: 0,
-    experiments: 0,
+    individual: 0,
+    biosample: 0,
+    experiment: 0,
   },
 };
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslationFn } from '@/hooks';
 import { Button, Form, Select, Space } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
+import FilterLabel from './FilterLabel';
 import type { FormInstance } from 'antd/es/form';
 import type {
   FormFilter,
@@ -9,31 +10,35 @@ import type {
   FilterPullDownKey,
   FilterPullDownValue,
   GenericOptionType,
+  BeaconFilterSection,
+  BeaconFilterUiOptions,
 } from '@/types/beacon';
-import type { Section, Field } from '@/types/search';
-
-// TODOs:
-// rewrite to use beacon specification filters instead of bento public "querySections"
-// any search key (eg "sex") selected in one filter should not available in other
-// for clarity they should probably appear, but be greyed out
-// this requires rendering select options as <Option> components
 
 const FILTER_FORM_ITEM_STYLE = { flex: 1, marginInlineEnd: -1 };
-const FILTER_FORM_ITEM_INNER_STYLE = { width: '100%' };
 
-const Filter = ({ filter, form, querySections, removeFilter, isRequired }: FilterProps) => {
+const Filter = ({
+  filter,
+  form,
+  beaconFiltersBySection,
+  removeFilter,
+  setFilterSearchFieldId,
+  searchFieldInUse,
+  isRequired,
+}: FilterProps) => {
   const t = useTranslationFn();
 
   const [valueOptions, setValueOptions] = useState([{ label: '', value: '' }]);
 
-  const handleSelectKey = (_: unknown, option: GenericOptionType) => {
-    // set dropdown options for a particular key
-    // ie for key "sex", set options to "MALE", "FEMALE", etc
+  const handleSelectKey = (searchFieldId: string, option: GenericOptionType) => {
+    // update which search field this filter is using ("sex", "age", etc)
+    setFilterSearchFieldId(filter, searchFieldId);
 
     // narrow type of option
     // ant design has conflicting type inference when options are nested in more than one layer
     const currentOption = option as FilterPullDownKey;
 
+    // set dropdown options for a particular key
+    // ie for key "sex", set options to "MALE", "FEMALE", etc
     setValueOptions(currentOption.optionsThisKey);
   };
 
@@ -44,37 +49,33 @@ const Filter = ({ filter, form, querySections, removeFilter, isRequired }: Filte
     });
   }, [filter.index, form, valueOptions]);
 
-  const renderLabel = (searchField: Field) => {
-    const units = searchField.config?.units;
-    const unitsString = units ? ` (${t(units)})` : '';
-    return t(searchField.title) + unitsString;
-  };
-
-  const searchKeyOptions = (arr: Section[]): FilterOption[] => {
+  const searchKeyOptions = (arr: BeaconFilterSection[]): FilterOption[] => {
     return arr.map((qs) => ({
       label: t(qs.section_title),
       options: qs.fields.map((field) => ({
-        label: renderLabel(field),
+        disabled: searchFieldInUse(field.id),
+        label: <FilterLabel filter={field} />,
         value: field.id,
-        optionsThisKey: searchValueOptions(field.options),
+        optionsThisKey: searchValueOptions(field.values),
       })),
     }));
   };
 
-  const searchValueOptions = (arr: Field['options']): FilterPullDownValue[] => arr.map((v) => ({ label: v, value: v }));
+  const searchValueOptions = (arr: BeaconFilterUiOptions['values']): FilterPullDownValue[] =>
+    arr.map((v) => ({ label: v, value: v }));
 
   return (
     <Space.Compact>
       <Form.Item
-        name={`filterId${filter.index}`}
+        name={`filterIndex${filter.index}`}
         rules={[{ required: isRequired, message: t('search field required') }]}
         style={FILTER_FORM_ITEM_STYLE}
       >
         <Select
           placeholder={t('select a search field')}
-          style={FILTER_FORM_ITEM_INNER_STYLE}
+          className="w-full"
           onSelect={handleSelectKey}
-          options={searchKeyOptions(querySections)}
+          options={searchKeyOptions(beaconFiltersBySection)}
         />
       </Form.Item>
       <Form.Item
@@ -82,10 +83,7 @@ const Filter = ({ filter, form, querySections, removeFilter, isRequired }: Filte
         rules={[{ required: isRequired, message: t('value required') }]}
         style={FILTER_FORM_ITEM_STYLE}
       >
-        <Select
-          style={FILTER_FORM_ITEM_INNER_STYLE}
-          options={valueOptions.map(({ label, value }) => ({ label: t(label), value }))}
-        />
+        <Select className="w-full" options={valueOptions.map(({ label, value }) => ({ label: t(label), value }))} />
       </Form.Item>
       <Button onClick={() => removeFilter(filter)}>
         <CloseOutlined />
@@ -97,8 +95,10 @@ const Filter = ({ filter, form, querySections, removeFilter, isRequired }: Filte
 export interface FilterProps {
   filter: FormFilter;
   form: FormInstance;
-  querySections: Section[];
+  beaconFiltersBySection: BeaconFilterSection[];
   removeFilter: (filter: FormFilter) => void;
+  setFilterSearchFieldId: (filter: FormFilter, searchFieldId: string) => void;
+  searchFieldInUse: (searchFieldId: string) => boolean;
   isRequired: boolean;
 }
 

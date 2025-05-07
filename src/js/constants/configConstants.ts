@@ -1,15 +1,17 @@
-import { PUBLIC_URL_NO_TRAILING_SLASH, PORTAL_URL } from '@/config';
+import { PUBLIC_URL_NO_TRAILING_SLASH } from '@/config';
 
 export const MAX_CHARTS = 3;
 
+// Katsu discovery URLs
 export const katsuPublicOverviewUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/public_overview`;
 export const katsuPublicRulesUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/public_rules`;
 export const searchFieldsUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/public_search_fields`;
 export const katsuPublicSearchUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/public`;
-export const projectsUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/projects`;
-export const katsuLastIngestionsUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/data-types`;
 
-export const gohanLastIngestionsUrl = `${PORTAL_URL}/api/gohan/data-types`;
+// Katsu entity API (Django Rest Framework) base URLs
+export const projectsUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/projects`;
+export const individualUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/individuals`;
+export const individualBatchUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/batch/individuals`;
 
 export const referenceGenomesUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/reference/genomes`;
 

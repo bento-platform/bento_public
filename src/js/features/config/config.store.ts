@@ -31,7 +31,7 @@ export const makeGetConfigRequest = createAsyncThunk<DiscoveryRules, void, { rej
       if (!cond) {
         console.debug(
           `makeGetConfigRequest() was attempted, but will not dispatch:
-            scopeSet=${scopeSet}, configStatus=${configStatus}, configIsInvalid=${configIsInvalid}`
+            scopeSet=${scopeSet}, configStatus=${RequestStatus[configStatus]}, configIsInvalid=${configIsInvalid}`
         );
       }
       return cond;
@@ -56,7 +56,8 @@ export const makeGetServiceInfoRequest = createAsyncThunk<
       const cond = serviceInfoStatus === RequestStatus.Idle;
       if (!cond) {
         console.debug(
-          `makeGetServiceInfoRequest() was attempted, but a prior attempt gave status: ${serviceInfoStatus}`
+          `makeGetServiceInfoRequest() was attempted, but a prior attempt gave status:` +
+            RequestStatus[serviceInfoStatus]
         );
       }
       return cond;
@@ -69,7 +70,6 @@ export interface ConfigState {
   configIsInvalid: boolean;
   countThreshold: number;
   maxQueryParameters: number;
-  maxQueryParametersRequired: boolean;
   // ----------------------------------------------------
   serviceInfoStatus: RequestStatus;
   serviceInfo: ServiceInfoStore;
@@ -80,7 +80,6 @@ const initialState: ConfigState = {
   configIsInvalid: false,
   countThreshold: 0,
   maxQueryParameters: 0,
-  maxQueryParametersRequired: true,
   // ----------------------------------------------------
   serviceInfoStatus: RequestStatus.Idle,
   serviceInfo: {
@@ -92,9 +91,6 @@ const configStore = createSlice({
   name: 'config',
   initialState,
   reducers: {
-    setMaxQueryParametersRequired: (state, { payload }: PayloadAction<boolean>) => {
-      state.maxQueryParametersRequired = payload;
-    },
     invalidateConfig: (state) => {
       state.configIsInvalid = true;
     },
@@ -115,15 +111,19 @@ const configStore = createSlice({
     builder.addCase(makeGetServiceInfoRequest.pending, (state) => {
       state.serviceInfoStatus = RequestStatus.Pending;
     });
-    builder.addCase(makeGetServiceInfoRequest.fulfilled, (state, { payload }: PayloadAction<ServicesResponse[]>) => {
-      state.serviceInfo.auth = payload.find((service) => service.bento.serviceKind === 'authorization')?.url || '';
-      state.serviceInfoStatus = RequestStatus.Fulfilled;
-    });
+    builder.addCase(
+      makeGetServiceInfoRequest.fulfilled,
+      (state, { payload }: PayloadAction<ServicesResponse[] | undefined>) => {
+        state.serviceInfo.auth =
+          (payload ?? []).find((service) => service.bento.serviceKind === 'authorization')?.url || '';
+        state.serviceInfoStatus = RequestStatus.Fulfilled;
+      }
+    );
     builder.addCase(makeGetServiceInfoRequest.rejected, (state) => {
       state.serviceInfoStatus = RequestStatus.Rejected;
     });
   },
 });
 
-export const { setMaxQueryParametersRequired, invalidateConfig } = configStore.actions;
+export const { invalidateConfig } = configStore.actions;
 export default configStore.reducer;

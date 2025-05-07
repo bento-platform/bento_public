@@ -6,6 +6,10 @@
   "Portal": "Portail",
   "missing": "manquant(s)",
   "entities": {
+    "project_one": "Projet",
+    "project_other": "Projets",
+    "dataset_one": "Jeu de données",
+    "dataset_other": "Jeux de données",
     "phenopacket_one": "Phenopacket",
     "phenopacket_other": "Données cliniques",
     "individual_one": "Participant",
@@ -26,6 +30,13 @@
     ],
     "variant_one": "Variant",
     "variant_other": "Variants"
+  },
+  "search": {
+    "showing_entities": "Affichage des {{entity, lowercase}} {{start}}-{{end}} sur {{total}}",
+    "showing_entities_short": "{{start}}-{{end}} / {{total}}",
+    "manage_columns": "Gérer les colonnes",
+    "export_csv": "Exporter en CSV",
+    "csv": "CSV"
   },
   "in": "en",
   "Get Data": "Obtenir",
@@ -104,7 +115,6 @@
   "Sign Out": "Se déconnecter",
   "Select Scope": "Sélectionner un périmètre",
   "About": "À propos",
-  "Datasets": "Jeux de données",
   "Clear": "Effacer",
   "Select": "Sélectionner",
   "Created": "Créé",
@@ -139,6 +149,29 @@
       "Laissez ce formulaire vide pour effectuer une recherche sur les métadonnées seulement."
     ]
   },
+  "MALE": "Homme",
+  "FEMALE": "Femme",
+  "UNKNOWN_SEX": "Sexe inconnu",
+  "individual": {
+    "date_of_birth": "Date de naissance",
+    "sex": "Sexe",
+    "time_at_last_encounter": "Temps à l'encontre",
+    "karyotypic_sex": "Sexe karyotypique",
+    "taxonomy": "Taxonomie",
+    "extra_properties": "Propriétés supplémentaires"
+  },
+  "time": {
+    "start": "Début",
+    "end": "Fin",
+    "days": "Jours",
+    "weeks": "Semaines",
+    "age": "Âge",
+    "gestational_age": "Âge gestationnel",
+    "age_range": "Tranche d'âge",
+    "ontology_class": "Classe ontologique",
+    "timestamp": "Horodatage",
+    "interval": "Intervalle"
+  },
   "footer": {
     "powered_by": "Propulsé par",
     "copyright": "©",
@@ -146,5 +179,31 @@
     "licensed_under": "Bento est sous licence",
     "source_available": "Le code source est disponible sur",
     "terms_of_use": "Conditions d'utilisation (en anglais)"
+  },
+  "Help": "Aide",
+  "Help for": "Aide pour",
+  "page_help": {
+    "overview": [
+      "La page « $t(Overview) » d'ensemble affiche des comptes et des tableaux pour les données stockées dans le projet/jeu de données sélectionné (le « périmètre »).",
+      "Les tableaux peuvent être affichés/masqués ou leur largeur modifiée via le bouton « $t(Manage Charts) »."
+    ],
+    "search": [
+      "La page « $t(Search) » vous permet d'interroger des comptes ou des records complets pour les données stockées dans un projet/jeu de données spécifique",
+      "ou l'instance entière (le « périmètre »), en fonction de votre niveau d'autorisation.\n",
+      "Sélectionnez des filtres et spécifiez des valeurs pour restreindre les données d'intérêt dans le périmètre sélectionné.",
+      "Si un petit nombre de records correspond à votre requête, le décompte peut être censuré pour éviter la ré-identification."
+    ],
+    "provenance": ["Données de provenance détaillées pour un jeu de données ou tous les jeux de données d'un projet."],
+    "beacon": [
+      "Beacon vous permet d'interroger les données en fonction de la position des variants génétiques et de filtrer les résultats en fonction de diverses propriétés de métadonnées cliniques",
+      "ou expérimentales. Il est également possible d'effectuer des recherches uniquement à partir des variants ou des métadonnées."
+    ],
+    "network": [
+      "Beacon Network vous permet d'interroger une collection de Beacons génomiques à l'aide d'une seule requête, et de voir les résultats de comptage",
+      "pour chaque Beacon ainsi que les résultats pour l'ensemble du réseau. Les Beacons peuvent être interrogés en fonction de la position du variant,",
+      "des métadonnées cliniques/expérimentales ou des deux.\n",
+      "Les filtres de métadonnées peuvent varier d'un Beacon à l'autre dans le réseau, de sorte que certaines recherches peuvent ne pas s'appliquer à tous les Beacons. Utilisez le",
+      "commutateur « $t(beacon.show_all_filters) » / « $t(beacon.common_filters_only) » pour contrôler les filtres disponibles."
+    ]
   }
 }

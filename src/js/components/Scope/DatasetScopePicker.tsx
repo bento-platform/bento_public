@@ -1,12 +1,14 @@
 import { useMemo } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { List, Space, Typography } from 'antd';
 
+import { T_SINGULAR_COUNT } from '@/constants/i18n';
+import Dataset from '@/components/Provenance/Dataset';
+import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
-import { useTranslationFn } from '@/hooks';
 import type { Project } from '@/types/metadata';
 import { getCurrentPage, scopeToUrl } from '@/utils/router';
-import Dataset from '@/components/Provenance/Dataset';
 import { useSelectedScope } from '@/features/metadata/hooks';
 
 type DatasetScopePickerProps = {
@@ -14,9 +16,10 @@ type DatasetScopePickerProps = {
 };
 
 const DatasetScopePicker = ({ parentProject }: DatasetScopePickerProps) => {
-  const t = useTranslationFn();
-  const location = useLocation();
-  const baseURL = '/' + location.pathname.split('/')[1];
+  const {
+    t,
+    i18n: { language },
+  } = useTranslation();
   const page = getCurrentPage();
 
   const selectedScope = useSelectedScope();
@@ -31,20 +34,20 @@ const DatasetScopePicker = ({ parentProject }: DatasetScopePickerProps) => {
   const showSelectProject = !selectedScope.fixedProject && parentProject.identifier != scopeObj.project;
 
   const parentProjectScope: DiscoveryScope = { project: parentProject.identifier };
-  const projectURL = scopeToUrl(parentProjectScope, baseURL, page);
+  const projectURL = scopeToUrl(parentProjectScope, language, page);
 
   return (
     <Space direction="vertical" style={{ display: 'flex' }}>
       <Space align="baseline" size="large">
         <Typography.Title level={4} className="no-margin-top">
-          {t('Project')}: {t(parentProject.title)}
+          {t('entities.project', T_SINGULAR_COUNT)}: {t(parentProject.title)}
         </Typography.Title>
         {showSelectProject && <Link to={projectURL}>{t('Select')}</Link>}
       </Space>
-      <Typography.Text>{t(parentProject.description)}</Typography.Text>
+      <TruncatedParagraph>{t(parentProject.description)}</TruncatedParagraph>
       <Space align="baseline" size="large">
         <Typography.Title level={5} className="no-margin-top">
-          {t('Datasets')}
+          {t('entities.dataset', T_SINGULAR_COUNT)}
         </Typography.Title>
         {showClearDataset && <Link to={projectURL}>{t('Clear dataset selection')}</Link>}
       </Space>

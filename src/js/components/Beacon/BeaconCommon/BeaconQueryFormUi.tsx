@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Card, Col, Form, Row } from 'antd';
 import { useIsAuthenticated } from 'bento-auth-js';
 import { useAppDispatch, useQueryWithAuthIfAllowed, useTranslationFn } from '@/hooks';
+import { useSelectedScope } from '@/features/metadata/hooks';
 import VariantsForm from './VariantsForm';
 import Filters from './Filters';
 import SearchToolTip from './ToolTips/SearchToolTip';
@@ -12,35 +13,28 @@ import type {
   BeaconAssemblyIds,
   BeaconQueryPayload,
   BeaconQueryAction,
+  BeaconFilterSection,
   FormFilter,
   FormValues,
-  PayloadFilter,
+  BeaconPayloadFilter,
   PayloadVariantsQuery,
 } from '@/types/beacon';
-import type { Section } from '@/types/search';
-import { BOX_SHADOW } from '@/constants/overviewConstants';
-import {
-  FORM_ROW_GUTTERS,
-  CARD_STYLE,
-  BUTTON_AREA_STYLE,
-  BUTTON_STYLE,
-  CARD_STYLES,
-} from '@/constants/beaconConstants';
+import { FORM_ROW_GUTTERS, BUTTON_AREA_STYLE, BUTTON_STYLE, CARD_STYLES } from '@/constants/beaconConstants';
 import { T_PLURAL_COUNT } from '@/constants/i18n';
 
-const STARTER_FILTER = { index: 1, active: true };
+const STARTER_FILTER = { index: 0, searchFieldId: null };
 
 // TODOs
 // example searches, either hardcoded or configurable
 // more intuitive variants ui
 
 const BeaconQueryFormUi = ({
-  isFetchingQueryResponse, //used in local beacon only
+  isFetchingQueryResponse,
   isNetworkQuery,
   beaconAssemblyIds,
-  querySections,
   launchQuery,
   apiErrorMessage,
+  beaconFiltersBySection,
 }: BeaconQueryFormUiProps) => {
   const t = useTranslationFn();
   const [form] = Form.useForm();
@@ -55,6 +49,8 @@ const BeaconQueryFormUi = ({
   const dispatch = useAppDispatch();
   const isAuthenticated = useIsAuthenticated();
 
+  const { scope, scopeSet } = useSelectedScope();
+
   const formInitialValues = useMemo(
     () => ({
       'Assembly ID': beaconAssemblyIds.length === 1 && beaconAssemblyIds[0],
@@ -67,12 +63,18 @@ const BeaconQueryFormUi = ({
   const showError = hasError && !errorAlertClosed;
 
   const requestPayload = useCallback(
-    (query: PayloadVariantsQuery, payloadFilters: PayloadFilter[]): BeaconQueryPayload => ({
-      meta: { apiVersion: '2.0.0' },
-      query: { requestParameters: { g_variant: query }, filters: payloadFilters },
-      bento: { showSummaryStatistics: true },
-    }),
-    []
+    (query: PayloadVariantsQuery, payloadFilters: BeaconPayloadFilter[]): BeaconQueryPayload => {
+      const payload: BeaconQueryPayload = {
+        meta: { apiVersion: '2.0.0' },
+        query: { requestParameters: { g_variant: query }, filters: payloadFilters },
+        bento: { showSummaryStatistics: true },
+      };
+      if (scope.dataset && !isNetworkQuery) {
+        payload['query']['datasets'] = { datasetIds: [scope.dataset] };
+      }
+      return payload;
+    },
+    [scope, isNetworkQuery]
   );
 
   const launchEmptyQuery = useCallback(
@@ -90,12 +92,15 @@ const BeaconQueryFormUi = ({
   };
 
   useEffect(() => {
+    if (!scopeSet) {
+      return;
+    }
     launchEmptyQuery();
     setHasVariants(beaconAssemblyIds.length > 0 || isNetworkQuery);
 
     // set assembly id options matching what's in gohan (for local beacon) or in network
     form.setFieldsValue(formInitialValues);
-  }, [beaconAssemblyIds.length, form, formInitialValues, isAuthenticated, isNetworkQuery, launchEmptyQuery]);
+  }, [scopeSet, beaconAssemblyIds.length, form, formInitialValues, isAuthenticated, isNetworkQuery, launchEmptyQuery]);
 
   // Disables max query param if user is authenticated and authorized
   useQueryWithAuthIfAllowed();
@@ -106,19 +111,17 @@ const BeaconQueryFormUi = ({
   const convertToZeroBased = (start: string) => Number(start) - 1;
 
   const packageFilters = useCallback(
-    (values: FormValues): PayloadFilter[] => {
+    (values: FormValues): BeaconPayloadFilter[] => {
       // ignore optional first filter when left blank
-      if (filters.length === 1 && !values.filterId1) {
+      if (filters.length === 1 && !values.filterIndex1) {
         return [];
       }
 
-      return filters
-        .filter((f) => f.active)
-        .map((f) => ({
-          id: values[`filterId${f.index}`],
-          operator: '=',
-          value: values[`filterValue${f.index}`],
-        }));
+      return filters.map((f) => ({
+        id: values[`filterIndex${f.index}`],
+        operator: '=',
+        value: values[`filterValue${f.index}`],
+      }));
     },
     [filters]
   );
@@ -220,12 +223,8 @@ const BeaconQueryFormUi = ({
   const searchButtonText = t(`beacon.${isNetworkQuery ? 'search_network' : 'search_beacon'}`);
 
   return (
-    <div style={{ paddingBottom: 8, display: 'flex', justifyContent: 'center', width: '100%' }}>
-      <Card
-        title={t('Search')}
-        style={{ borderRadius: '10px', maxWidth: '1200px', width: '100%', ...BOX_SHADOW }}
-        styles={CARD_STYLES}
-      >
+    <div className="container margin-auto" style={{ paddingBottom: 8 }}>
+      <Card title={t('Search')} className="w-full shadow rounded-xl" styles={CARD_STYLES}>
         <p style={{ margin: '-8px 0 8px 0', padding: '0', color: 'grey' }}>{t(uiInstructions)}</p>
         <Form form={form} onFinish={handleFinish} layout="vertical" onValuesChange={handleValuesChange}>
           <Row gutter={FORM_ROW_GUTTERS}>
@@ -233,7 +232,7 @@ const BeaconQueryFormUi = ({
               <Col xs={24} lg={12}>
                 <Card
                   title={t('entities.variant', T_PLURAL_COUNT)}
-                  style={CARD_STYLE}
+                  className="shadow h-full"
                   styles={CARD_STYLES}
                   extra={
                     <SearchToolTip>
@@ -252,7 +251,7 @@ const BeaconQueryFormUi = ({
                     <>{t('Metadata')}</>
                   </div>
                 }
-                style={CARD_STYLE}
+                className="shadow h-full"
                 styles={CARD_STYLES}
                 extra={
                   <SearchToolTip>
@@ -264,7 +263,7 @@ const BeaconQueryFormUi = ({
                   filters={filters}
                   setFilters={setFilters}
                   form={form}
-                  querySections={querySections}
+                  beaconFiltersBySection={beaconFiltersBySection}
                   isNetworkQuery={isNetworkQuery}
                 />
               </Card>
@@ -298,9 +297,9 @@ export interface BeaconQueryFormUiProps {
   isFetchingQueryResponse: boolean;
   isNetworkQuery: boolean;
   beaconAssemblyIds: BeaconAssemblyIds;
-  querySections: Section[];
   launchQuery: BeaconQueryAction;
   apiErrorMessage?: string;
+  beaconFiltersBySection: BeaconFilterSection[];
 }
 
 export default BeaconQueryFormUi;

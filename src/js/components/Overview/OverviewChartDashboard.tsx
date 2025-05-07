@@ -1,4 +1,4 @@
-import { type CSSProperties, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Col, FloatButton, Row, Typography } from 'antd';
 import { AppstoreAddOutlined } from '@ant-design/icons';
 
@@ -20,8 +20,6 @@ import Dataset from '@/components/Provenance/Dataset';
 import { useTranslationFn } from '@/hooks';
 import { useData, useSearchableFields } from '@/features/data/hooks';
 import { useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
-
-const MANAGE_CHARTS_BUTTON_STYLE: CSSProperties = { right: '5em', bottom: '1.5em', transform: 'scale(125%)' };
 
 const saveToLocalStorage = (sections: Sections) => {
   saveValue(LOCALSTORAGE_CHARTS_KEY, convertSequenceAndDisplayData(sections));
@@ -58,7 +56,7 @@ const OverviewChartDashboard = () => {
   return WAITING_STATES.includes(overviewDataStatus) ? (
     <Loader />
   ) : (
-    <>
+    <div className="container margin-auto">
       <AboutBox />
 
       <Row>
@@ -95,14 +93,17 @@ const OverviewChartDashboard = () => {
       </Row>
 
       <ManageChartsDrawer onManageDrawerClose={onManageChartsClose} manageDrawerVisible={drawerVisible} />
-      <FloatButton
-        type="primary"
-        icon={<AppstoreAddOutlined rotate={270} />}
-        tooltip={t('Manage Charts')}
-        style={MANAGE_CHARTS_BUTTON_STYLE}
-        onClick={onManageChartsOpen}
-      />
-    </>
+
+      <FloatButton.Group className="float-btn-pos">
+        <FloatButton.BackTop target={() => document.getElementById('content-layout')!} />
+        <FloatButton
+          type="primary"
+          icon={<AppstoreAddOutlined rotate={270} />}
+          tooltip={t('Manage Charts')}
+          onClick={onManageChartsOpen}
+        />
+      </FloatButton.Group>
+    </div>
   );
 };
 

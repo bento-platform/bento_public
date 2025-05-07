@@ -1,7 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
-import type { PaginatedResponse, Project } from '@/types/metadata';
+import type { PaginatedResponse, Project, Dataset } from '@/types/metadata';
 import { RequestStatus } from '@/types/requests';
 import type { RootState } from '@/store';
 import { printAPIError } from '@/utils/error.util';
@@ -20,6 +20,7 @@ export type DiscoveryScopeSelection = {
 export interface MetadataState {
   projects: Project[];
   projectsByID: Record<string, Project>;
+  datasetsByID: Record<string, Dataset>;
   projectsStatus: RequestStatus;
   selectedScope: DiscoveryScopeSelection;
 }
@@ -27,6 +28,7 @@ export interface MetadataState {
 const initialState: MetadataState = {
   projects: [],
   projectsByID: {},
+  datasetsByID: {},
   projectsStatus: RequestStatus.Idle,
   selectedScope: {
     scope: { project: undefined, dataset: undefined },
@@ -54,7 +56,9 @@ export const getProjects = createAsyncThunk<
       // Only need to fetch projects once - if the projects are being/have already been fetched, don't re-execute.
       const { projectsStatus } = getState().metadata;
       const cond = projectsStatus === RequestStatus.Idle;
-      if (!cond) console.debug(`getProjects() was attempted, but a prior attempt gave status: ${projectsStatus}`);
+      if (!cond) {
+        console.debug(`getProjects() was attempted, but a prior attempt gave status: ${RequestStatus[projectsStatus]}`);
+      }
       return cond;
     },
   }
@@ -82,6 +86,7 @@ const metadata = createSlice({
       const projects = payload?.results ?? [];
       state.projects = projects;
       state.projectsByID = Object.fromEntries(projects.map((p) => [p.identifier, p]));
+      state.datasetsByID = Object.fromEntries(projects.flatMap((p) => p.datasets.map((d) => [d.identifier, d])));
       state.projectsStatus = RequestStatus.Fulfilled;
     });
     builder.addCase(getProjects.rejected, (state) => {

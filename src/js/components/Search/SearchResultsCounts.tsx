@@ -2,30 +2,33 @@ import type { CSSProperties } from 'react';
 import { Skeleton, Space, Statistic } from 'antd';
 import { ExperimentOutlined, TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
+import { queryData } from 'bento-auth-js';
 
 import CountsTitleWithHelp from '@/components/Util/CountsTitleWithHelp';
 import { COUNTS_FILL } from '@/constants/overviewConstants';
-import { NO_RESULTS_DASHES } from '@/constants/searchConstants';
-import { useTranslationFn } from '@/hooks';
+import { NO_RESULTS_DASHES } from '@/features/search/constants';
+import { useHasScopePermission, useTranslationFn } from '@/hooks';
+import type { SearchResultsUIPage } from '@/features/search/types';
 import type { DiscoveryResults, OptionalDiscoveryResults } from '@/types/data';
-import type { SearchResultsUIPane } from '@/types/search';
+import { RequestStatus } from '@/types/requests';
 
 const STAT_STYLE: CSSProperties = { color: COUNTS_FILL };
 
 const SearchResultsCounts = ({
   mode,
   results,
-  isFetchingQueryResponse,
-  selectedPane,
-  setSelectedPane,
+  queryStatus,
+  selectedPage,
+  setSelectedPage,
   hasInsufficientData,
   uncensoredCounts,
   message,
 }: SearchResultsCountsProps) => {
   const t = useTranslationFn();
 
-  const { individualCount, individualMatches, biosampleCount, experimentCount } = results;
-  const individualsClickable = !!setSelectedPane && individualMatches?.length;
+  const { individualCount, biosampleCount, experimentCount } = results;
+  const { hasPermission: queryDataPerm } = useHasScopePermission(queryData);
+  const individualsClickable = !!setSelectedPage && queryDataPerm;
 
   const isBeaconNetwork = mode === 'beacon-network';
 
@@ -43,7 +46,7 @@ const SearchResultsCounts = ({
           : {}),
       }}
     >
-      {isBeaconNetwork && isFetchingQueryResponse ? (
+      {isBeaconNetwork && queryStatus === RequestStatus.Pending ? (
         <div style={{ display: 'flex', flexDirection: 'column', margin: '6px 0' }}>
           <Skeleton.Input size="small" style={{ width: '330px', height: '20px' }} active />
           <Skeleton.Input size="small" style={{ marginTop: '10px', width: '330px', height: '20px' }} active />
@@ -51,10 +54,10 @@ const SearchResultsCounts = ({
       ) : (
         <>
           <div
-            onClick={individualsClickable ? () => setSelectedPane('individuals') : undefined}
+            onClick={individualsClickable ? () => setSelectedPage('individuals') : undefined}
             className={[
               'search-result-statistic',
-              ...(selectedPane === 'individuals' ? ['selected'] : []),
+              ...(selectedPage === 'individuals' ? ['selected'] : []),
               ...(individualsClickable ? ['enabled'] : []),
             ].join(' ')}
           >
@@ -95,9 +98,9 @@ type SearchResultsCountsProps = {
   // Perhaps this styling will be more unified in the future.
   mode: 'normal' | 'beacon-network';
   results: DiscoveryResults | OptionalDiscoveryResults;
-  isFetchingQueryResponse?: boolean;
-  selectedPane?: SearchResultsUIPane;
-  setSelectedPane?: (pane: SearchResultsUIPane) => void;
+  queryStatus?: RequestStatus;
+  selectedPage?: SearchResultsUIPage;
+  setSelectedPage?: (page: SearchResultsUIPage) => void;
   hasInsufficientData?: boolean;
   uncensoredCounts?: boolean;
   message?: string;

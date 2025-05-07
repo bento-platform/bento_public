@@ -1,9 +1,12 @@
+import type { ReactNode } from 'react';
 import type { Rule } from 'antd/es/form';
 import type { ActionCreator } from 'redux';
 import type { Datum } from '@/types/overviewResponse';
 import type { makeBeaconQuery } from '@/features/beacon/beacon.store';
 import type { beaconNetworkQuery } from '@/features/beacon/network.store';
 import type { OptionalDiscoveryResults } from '@/types/data';
+import type { Dataset } from '@/types/metadata';
+import type { RequestStatus } from '@/types/requests';
 
 // ----------------------------
 // form handling
@@ -20,7 +23,7 @@ export interface FormField {
 
 export interface FormFilter {
   index: number;
-  active: boolean;
+  searchFieldId: string | null;
 }
 
 export interface FormValues {
@@ -33,7 +36,9 @@ export interface FilterOption {
 }
 
 export interface FilterPullDownKey {
-  label: string;
+  disabled: boolean;
+  label: ReactNode;
+  value: string;
   optionsThisKey: FilterPullDownValue[];
 }
 
@@ -48,7 +53,7 @@ export type GenericOptionType = FilterOption | FilterPullDownKey;
 // API request
 // ----------------------------
 
-export interface PayloadFilter {
+export interface BeaconPayloadFilter {
   id: string;
   value: string;
 
@@ -72,7 +77,11 @@ export type PayloadVariantsQuery =
 
 export interface BeaconQueryPayload {
   meta: { apiVersion: string };
-  query: { requestParameters: { g_variant: PayloadVariantsQuery }; filters: PayloadFilter[] };
+  query: {
+    requestParameters: { g_variant: PayloadVariantsQuery };
+    filters: BeaconPayloadFilter[];
+    datasets?: { datasetIds: [Dataset['identifier']] };
+  };
   bento?: { showSummaryStatistics: boolean };
 }
 
@@ -158,11 +167,44 @@ export interface BeaconServiceInfo {
 }
 
 // ----------------------------
+// filters
+// ----------------------------
+
+// https://docs.genomebeacons.org/filters/
+export interface BeaconFilteringTermsResponse {
+  meta?: {
+    beaconId: string;
+  };
+  response?: {
+    filteringTerms: BeaconFilteringTermFromEndpoint[];
+  };
+}
+
+export interface BeaconFilteringTermFromEndpoint {
+  type: 'alphanumeric';
+  id: string;
+  label: string;
+  description: string;
+  values: string[];
+  bento: {
+    section: string;
+  };
+  units?: string;
+}
+
+export type BeaconFilterUiOptions = Omit<BeaconFilteringTermFromEndpoint, 'bento'>;
+
+export interface BeaconFilterSection {
+  section_title: string;
+  fields: BeaconFilterUiOptions[];
+}
+
+// ----------------------------
 // response packaging
 // ----------------------------
 
 export interface FlattenedBeaconResponse {
-  isFetchingQueryResponse: boolean;
+  queryStatus: RequestStatus;
   apiErrorMessage: string; // if non-blank, an error has occurred
   results: OptionalDiscoveryResults;
 }

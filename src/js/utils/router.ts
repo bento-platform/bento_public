@@ -1,12 +1,28 @@
+import { type Location as RouterLocation } from 'react-router-dom';
+import { FORCE_CATALOGUE } from '@/config';
+import type { DiscoveryScope, DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
 import type { Project } from '@/types/metadata';
 import { BentoRoute } from '@/types/routes';
-import type { DiscoveryScope, DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
 
-export const getCurrentPage = (): string => {
-  const pathArray = window.location.pathname.split('/');
+export const pathParts = (pathName: string): string[] => pathName.split('/').slice(1);
+
+export const getPathPageIndex = (pathParts: string[]): number => {
+  // We can ascertain from the URL structure which item in the path array represents the current "page"
+  // (overview/search/provenance/etc.)
+  //  /en/about --> ['en', 'about'] --> page is at index 1
+  //  /en/p/<uuid>/about --> ['en', 'p', '<uuid>', 'about'] --> page is at index 3
+  //  /en/p/<uuid>/d/<uuid>/about --> ['en', 'p', '<uuid>', 'd', '<uuid>', 'about'] --> page is at index 5
+  return pathParts[1] === 'p' ? (pathParts[3] === 'd' ? 5 : 3) : 1;
+};
+
+export const getCurrentPage = (location?: RouterLocation | Location): string => {
+  const pathArray = pathParts((location ?? window.location).pathname);
   const validPages = Object.values(BentoRoute);
-  if (validPages.includes(pathArray[pathArray.length - 1])) {
-    return pathArray[pathArray.length - 1];
+
+  const pageIdx = getPathPageIndex(pathArray);
+
+  if (validPages.includes(pathArray[pageIdx])) {
+    return pathArray[pageIdx];
   } else {
     return BentoRoute.Overview;
   }
@@ -27,7 +43,7 @@ export const validProjectDataset = (
 
   const projects = Object.values(projectsByID);
 
-  if (projects.length === 1) {
+  if (projects.length === 1 && !FORCE_CATALOGUE) {
     // Automatic project scoping if only 1
     //  - if there is only one project, it should be auto-selected, since it contains the same set of data as the node.
     const defaultProj = projects[0];
@@ -54,15 +70,30 @@ export const validProjectDataset = (
   return valid;
 };
 
-export const scopeToUrl = (scope: DiscoveryScope, prefix: string = '', suffix: string = ''): string => {
-  if (scope.project && scope.dataset) {
-    return `${prefix}/p/${scope.project}/d/${scope.dataset}/${suffix}`;
-  } else if (scope.project) {
-    return `${prefix}/p/${scope.project}/${suffix}`;
+export const scopeToUrl = (
+  scope: DiscoveryScope,
+  lang: string,
+  suffix: string = '',
+  fixedProjectAndDataset: boolean = false
+): string => {
+  // If we have >1 dataset, we need the URL to match the validated scope, so we create a new path and go there.
+  // Otherwise (with 1 dataset, i.e., fixedProjectAndDataset), keep URL as clean as possible - with no IDs present.
+
+  if (fixedProjectAndDataset || (!scope.project && !scope.dataset)) {
+    return `/${lang}/${suffix}`;
+  } else if (scope.project && scope.dataset) {
+    return `/${lang}/p/${scope.project}/d/${scope.dataset}/${suffix}`;
   } else {
-    return `${prefix}/${suffix}`;
+    // scope.project && !scope.dataset
+    return `/${lang}/p/${scope.project}/${suffix}`;
   }
 };
+
+export const langAndScopeSelectionToUrl = (
+  lang: string,
+  scopeSelection: DiscoveryScopeSelection,
+  suffix: string
+): string => scopeToUrl(scopeSelection.scope, lang, suffix, scopeSelection.fixedProject && scopeSelection.fixedDataset);
 
 export const scopeEqual = (s1: DiscoveryScope, s2: DiscoveryScope): boolean =>
   s1.project === s2.project && s1.dataset === s2.dataset;

@@ -1,25 +1,22 @@
 import { useEffect } from 'react';
-import { useIsAuthenticated } from 'bento-auth-js';
 import { useAppDispatch, useAppSelector } from '@/hooks';
 import { makeGetConfigRequest } from '@/features/config/config.store';
 import { useSelectedScope } from '@/features/metadata/hooks';
 
 export const useConfig = () => {
   const dispatch = useAppDispatch();
-
-  const isAuthenticated = useIsAuthenticated();
-  const { scope, scopeSet } = useSelectedScope();
+  const { scopeSet } = useSelectedScope();
+  const { configStatus, configIsInvalid, countThreshold, maxQueryParameters } = useAppSelector((state) => state.config);
 
   // Conditions where we need to reload "config" (which really is closer to rules for search):
-  //  - authorization status changed
-  //  - scope changed/was loaded from URL (scopeSet)
+  //  - scope was set (need to load for the first time)
+  //  - config was invalidated (scope or authorization changed)
   useEffect(() => {
-    dispatch(makeGetConfigRequest());
-  }, [dispatch, isAuthenticated, scope, scopeSet]);
+    if (scopeSet) {
+      // dispatch action if scope is set and/or the state is invalidated and then this hook is called.
+      dispatch(makeGetConfigRequest());
+    }
+  }, [dispatch, scopeSet, configIsInvalid]);
 
-  const { configStatus, countThreshold, maxQueryParameters, maxQueryParametersRequired } = useAppSelector(
-    (state) => state.config
-  );
-
-  return { configStatus, countThreshold, maxQueryParameters, maxQueryParametersRequired };
+  return { configStatus, configIsInvalid, countThreshold, maxQueryParameters };
 };

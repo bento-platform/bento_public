@@ -1,23 +1,30 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 // import { makeAuthorizationHeader } from 'bento-auth-js';
 
 import { BEACON_NETWORK_URL } from '@/config';
-import { EMPTY_DISCOVERY_RESULTS } from '@/constants/searchConstants';
 import { BEACON_INDIVIDUALS_PATH } from '@/features/beacon/constants';
+import { EMPTY_DISCOVERY_RESULTS } from '@/features/search/constants';
 import type {
   BeaconAssemblyIds,
+  BeaconFilterSection,
   BeaconQueryPayload,
   BeaconQueryResponse,
   FlattenedBeaconResponse,
 } from '@/types/beacon';
-import type { NetworkBeacon, BeaconNetworkConfig, QueryToNetworkBeacon } from '@/types/beaconNetwork';
 import type { AppDispatch, RootState } from '@/store';
+import type { BeaconNetworkConfig, NetworkBeacon, QueryToNetworkBeacon } from '@/types/beaconNetwork';
 import type { DiscoveryResults } from '@/types/data';
-import type { Section } from '@/types/search';
+import { RequestStatus } from '@/types/requests';
 import { beaconApiError, errorMsgOrDefault } from '@/utils/beaconApiError';
 
-import { computeNetworkResults, extractBeaconDiscoveryOverview, networkAssemblyIds, networkQueryUrl } from './utils';
+import {
+  computeNetworkResults,
+  extractBeaconDiscoveryOverview,
+  networkAssemblyIds,
+  networkQueryUrl,
+  packageBeaconNetworkQuerySections,
+} from './utils';
 
 // can parameterize at some point in the future
 const DEFAULT_QUERY_ENDPOINT = BEACON_INDIVIDUALS_PATH;
@@ -39,7 +46,7 @@ export const getBeaconNetworkConfig = createAsyncThunk<
   },
   {
     condition(_, { getState }) {
-      return !getState().beaconNetwork.isFetchingBeaconNetworkConfig;
+      return getState().beaconNetwork.networkConfigStatus !== RequestStatus.Pending;
     },
   }
 );
@@ -73,20 +80,21 @@ const queryBeaconNetworkNode = createAsyncThunk<
   },
   {
     condition({ _beaconId }, { getState }) {
-      return !(getState().beaconNetwork.beaconResponses[_beaconId]?.isFetchingQueryResponse ?? false);
+      const beaconResponse: FlattenedBeaconResponse | undefined = getState().beaconNetwork.beaconResponses[_beaconId];
+      return !(beaconResponse && beaconResponse.queryStatus === RequestStatus.Pending);
     },
   }
 );
 
 type BeaconNetworkConfigState = {
   // config
-  isFetchingBeaconNetworkConfig: boolean;
+  networkConfigStatus: RequestStatus;
   hasBeaconNetworkError: boolean;
   assemblyIds: BeaconAssemblyIds;
-  querySectionsUnion: Section[];
-  querySectionsIntersection: Section[];
-  isQuerySectionsUnion: boolean; // horrible English
-  currentQuerySections: Section[];
+  filtersUnion: BeaconFilterSection[];
+  filtersIntersection: BeaconFilterSection[];
+  isFiltersUnion: boolean; // horrible English
+  currentFilters: BeaconFilterSection[];
   beacons: NetworkBeacon[];
 
   // querying
@@ -98,12 +106,12 @@ type BeaconNetworkConfigState = {
 
 const initialState: BeaconNetworkConfigState = {
   // config
-  isFetchingBeaconNetworkConfig: false,
+  networkConfigStatus: RequestStatus.Idle,
   hasBeaconNetworkError: false,
-  querySectionsUnion: [],
-  querySectionsIntersection: [],
-  isQuerySectionsUnion: true,
-  currentQuerySections: [],
+  filtersUnion: [],
+  filtersIntersection: [],
+  isFiltersUnion: true,
+  currentFilters: [],
   assemblyIds: [],
   beacons: [],
 
@@ -118,27 +126,26 @@ const beaconNetwork = createSlice({
   reducers: {
     toggleQuerySectionsUnionOrIntersection(state) {
       // update, then set boolean
-      state.currentQuerySections = state.isQuerySectionsUnion
-        ? state.querySectionsIntersection
-        : state.querySectionsUnion;
-      state.isQuerySectionsUnion = !state.isQuerySectionsUnion;
+      state.currentFilters = state.isFiltersUnion ? state.filtersIntersection : state.filtersUnion;
+      state.isFiltersUnion = !state.isFiltersUnion;
     },
   },
   extraReducers: (builder) => {
     // config ----------------------------------------------------------------------------------------------------------
     builder.addCase(getBeaconNetworkConfig.pending, (state) => {
-      state.isFetchingBeaconNetworkConfig = true;
+      state.networkConfigStatus = RequestStatus.Pending;
     });
     builder.addCase(getBeaconNetworkConfig.fulfilled, (state, { payload }) => {
-      state.isFetchingBeaconNetworkConfig = false;
+      const allFilters = packageBeaconNetworkQuerySections(payload.filtersUnion);
+      state.networkConfigStatus = RequestStatus.Fulfilled;
       state.beacons = payload.beacons;
-      state.querySectionsUnion = payload.filtersUnion;
-      state.querySectionsIntersection = payload.filtersIntersection;
-      state.currentQuerySections = payload.filtersUnion;
+      state.filtersUnion = allFilters;
+      state.filtersIntersection = packageBeaconNetworkQuerySections(payload.filtersIntersection);
+      state.currentFilters = allFilters;
       state.assemblyIds = networkAssemblyIds(payload.beacons);
     });
     builder.addCase(getBeaconNetworkConfig.rejected, (state) => {
-      state.isFetchingBeaconNetworkConfig = false;
+      state.networkConfigStatus = RequestStatus.Rejected; // A beacon network error occurred
       state.hasBeaconNetworkError = true;
     });
 
@@ -147,7 +154,7 @@ const beaconNetwork = createSlice({
       const beaconId = action.meta.arg._beaconId;
       state.beaconResponses[beaconId] = {
         apiErrorMessage: '',
-        isFetchingQueryResponse: true,
+        queryStatus: RequestStatus.Pending,
         results: {},
       };
     });
@@ -157,7 +164,7 @@ const beaconNetwork = createSlice({
       const hasErrorResponse = 'error' in payload;
       state.beaconResponses[beaconId] = {
         apiErrorMessage: hasErrorResponse ? errorMsgOrDefault(payload.error?.errorMessage) : '',
-        isFetchingQueryResponse: false,
+        queryStatus: RequestStatus.Fulfilled,
         results: extractBeaconDiscoveryOverview(payload),
       };
       state.networkResults = computeNetworkResults(state.beaconResponses);
@@ -166,7 +173,7 @@ const beaconNetwork = createSlice({
       const beaconId = action.meta.arg._beaconId;
       state.beaconResponses[beaconId] = {
         apiErrorMessage: errorMsgOrDefault(action.payload), // passed from rejectWithValue
-        isFetchingQueryResponse: false,
+        queryStatus: RequestStatus.Rejected,
         results: {},
       };
     });

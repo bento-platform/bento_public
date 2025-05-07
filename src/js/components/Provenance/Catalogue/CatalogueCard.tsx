@@ -1,19 +1,18 @@
 import { type ReactNode, useMemo } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import { Button, Card, Carousel, Descriptions, Flex, Space, Tag, Tooltip, Typography } from 'antd';
 import { PieChartOutlined, ProfileOutlined, SearchOutlined } from '@ant-design/icons';
 
-import i18n from '@/i18n';
-
 import type { Project } from '@/types/metadata';
+import { scopeToUrl } from '@/utils/router';
 import { isoDateToString } from '@/utils/strings';
 import { useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
-import { BOX_SHADOW } from '@/constants/overviewConstants';
+import { T_PLURAL_COUNT } from '@/constants/i18n';
 import Dataset from '@/components/Provenance/Dataset';
 import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
-import { scopeToUrl } from '@/utils/router';
 
 const { Paragraph, Text, Title } = Typography;
 
@@ -33,7 +32,9 @@ const CatalogueCardInner = ({ firstContent, secondContent }: { firstContent: Rea
     return (
       <Flex justify="space-between" align="stretch" gap={16} wrap>
         <div style={{ flex: 1, minWidth: 400 }}>
-          <div style={{ height: '100%', flex: 1, flexDirection: 'column', display: 'flex' }}>{firstContent}</div>
+          <div className="h-full" style={{ flex: 1, flexDirection: 'column', display: 'flex' }}>
+            {firstContent}
+          </div>
         </div>
         {secondContent && <div style={{ flex: 2, maxWidth: 'min(600px, 100%)' }}>{secondContent}</div>}
       </Flex>
@@ -42,11 +43,11 @@ const CatalogueCardInner = ({ firstContent, secondContent }: { firstContent: Rea
 };
 
 const CatalogueCard = ({ project }: { project: Project }) => {
-  const lang = i18n.language;
+  const {
+    i18n: { language },
+  } = useTranslation();
   const t = useTranslationFn();
-  const location = useLocation();
   const navigate = useNavigate();
-  const baseURL = '/' + location.pathname.split('/')[1];
 
   const isSmallScreen = useSmallScreen();
 
@@ -75,10 +76,10 @@ const CatalogueCard = ({ project }: { project: Project }) => {
     };
   }, [datasets, t]);
 
-  const projectCreated = isoDateToString(created, lang);
+  const projectCreated = isoDateToString(created, language);
 
   // TODO: this should be newer of project updated + last ingested of any data type
-  const projectUpdated = isoDateToString(updated, lang);
+  const projectUpdated = isoDateToString(updated, language);
 
   const projectInfo = [
     {
@@ -106,10 +107,10 @@ const CatalogueCard = ({ project }: { project: Project }) => {
   ];
 
   return (
-    <Card className="container" style={BOX_SHADOW} size={isSmallScreen ? 'small' : 'default'}>
+    <Card className="container margin-auto shadow rounded-xl" size={isSmallScreen ? 'small' : 'default'}>
       <CatalogueCardInner
         firstContent={
-          <Flex vertical={true} gap={8} style={{ height: '100%' }}>
+          <Flex vertical={true} gap={8} className="h-full">
             <Space direction="horizontal">
               <Title level={4} style={{ margin: 0 }}>
                 {t(title)}
@@ -138,14 +139,14 @@ const CatalogueCard = ({ project }: { project: Project }) => {
             <div style={{ flex: 1, display: 'flex', alignItems: 'flex-end', gap: 12 }}>
               <Button
                 icon={datasets.length ? <PieChartOutlined /> : <ProfileOutlined />}
-                onClick={() => navigate(scopeToUrl({ project: identifier }, baseURL, 'overview'))}
+                onClick={() => navigate(scopeToUrl({ project: identifier }, language, 'overview'))}
               >
                 {t('Overview')}
               </Button>
               {datasets.length ? (
                 <Button
                   icon={<SearchOutlined />}
-                  onClick={() => navigate(scopeToUrl({ project: identifier }, baseURL, 'search'))}
+                  onClick={() => navigate(scopeToUrl({ project: identifier }, language, 'search'))}
                 >
                   {t('Search')}
                 </Button>
@@ -157,14 +158,14 @@ const CatalogueCard = ({ project }: { project: Project }) => {
           datasets.length ? (
             <>
               <Title level={5} style={{ marginTop: 0 }}>
-                {t('Datasets')}
+                {t('entities.dataset', T_PLURAL_COUNT)}
               </Title>
               <Carousel
                 arrows={datasets.length > 1}
                 dots={datasets.length > 1}
                 style={{
                   border: '1px solid lightgray',
-                  borderRadius: '7px',
+                  borderRadius: '8px', // Consistent with --ant-border-radius-lg
                   height: '170px',
                   // If we have more than one dataset, we have some arrows on either side of the carousel
                   //  --> add in extra horizontal padding to nicely clear the arrows.

@@ -1,29 +1,28 @@
 import Loader from '@/components/Loader';
 import { WRAPPER_STYLE } from '@/constants/beaconConstants';
+import { WAITING_STATES } from '@/constants/requests';
 import { makeBeaconQuery } from '@/features/beacon/beacon.store';
 import { useBeacon } from '@/features/beacon/hooks';
-import { useAppSelector } from '@/hooks';
 
 import BeaconSearchResults from './BeaconSearchResults';
 import BeaconQueryFormUi from './BeaconCommon/BeaconQueryFormUi';
 
 const BeaconQueryUi = () => {
-  const { isFetchingBeaconConfig, beaconAssemblyIds, isFetchingQueryResponse, apiErrorMessage } = useBeacon();
-  const { querySections } = useAppSelector((state) => state.query);
+  const { configStatus, beaconAssemblyIds, beaconFilters, queryStatus, apiErrorMessage } = useBeacon();
 
-  return isFetchingBeaconConfig ? (
+  return WAITING_STATES.includes(configStatus) ? (
     <Loader />
   ) : (
     <div style={WRAPPER_STYLE}>
-      <BeaconSearchResults />
       <BeaconQueryFormUi
-        isFetchingQueryResponse={isFetchingQueryResponse}
+        isFetchingQueryResponse={WAITING_STATES.includes(queryStatus)}
         isNetworkQuery={false}
         beaconAssemblyIds={beaconAssemblyIds}
-        querySections={querySections}
         launchQuery={makeBeaconQuery}
         apiErrorMessage={apiErrorMessage}
+        beaconFiltersBySection={beaconFilters}
       />
+      <BeaconSearchResults />
     </div>
   );
 };
