@@ -11,11 +11,11 @@ import { scopedAuthorizedRequestConfig } from '@/utils/requests';
 import type { RootState } from '@/store';
 import type { ChartConfig } from '@/types/chartConfig';
 import type { ChartDataField, LocalStorageData, Sections } from '@/types/data';
-import type { Counts, OverviewResponse } from '@/types/overviewResponse';
+import type { CountsOrBooleans, OverviewResponse } from '@/types/overviewResponse';
 import { RequestStatus } from '@/types/requests';
 
 export const makeGetDataRequestThunk = createAsyncThunk<
-  { sectionData: Sections; counts: Counts; defaultData: Sections },
+  { sectionData: Sections; counts: CountsOrBooleans; defaultData: Sections },
   void,
   { rejectValue: string; state: RootState }
 >(
