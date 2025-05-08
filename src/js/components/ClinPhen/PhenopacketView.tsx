@@ -20,6 +20,16 @@ interface RouteParams {
   [key: string]: string | undefined;
 }
 
+enum TabKeys {
+  BIOSAMPLES = 'biosamples',
+  MEASUREMENTS = 'measurements',
+  PHENOTYPIC_FEATURES = 'phenotypic_features',
+  DISEASES = 'diseases',
+  INTERPRETATIONS = 'interpretations',
+  MEDICAL_ACTIONS = 'medical_actions',
+  ONTOLOGIES = 'ontologies',
+}
+
 const PhenopacketView = () => {
   const { packetId } = useParams<RouteParams>();
   const dispatch = useAppDispatch();
@@ -40,43 +50,43 @@ const PhenopacketView = () => {
 
   const items: TabsProps['items'] = [
     {
-      key: 'biosamples',
+      key: TabKeys.BIOSAMPLES,
       label: 'Biosamples',
       children: <BiosampleView biosamples={phenopacket?.biosamples!} />,
       disabled: !phenopacket?.biosamples,
     },
     {
-      key: 'measurements',
+      key: TabKeys.MEASUREMENTS,
       label: 'Measurements',
       children: getTabContent('Measurements', phenopacket?.measurements),
       disabled: !phenopacket?.measurements,
     },
     {
-      key: 'phenotypic_features',
+      key: TabKeys.PHENOTYPIC_FEATURES,
       label: 'Phenotypic Features',
       children: getTabContent('Phenotypic Features', phenopacket?.phenotypic_features),
       disabled: !phenopacket?.phenotypic_features,
     },
     {
-      key: 'diseases',
+      key: TabKeys.DISEASES,
       label: 'Diseases',
       children: getTabContent('Diseases', phenopacket?.diseases),
       disabled: !phenopacket?.diseases,
     },
     {
-      key: 'interpretations',
+      key: TabKeys.INTERPRETATIONS,
       label: 'Interpretations',
       children: getTabContent('Interpretations', phenopacket?.interpretations),
       disabled: !phenopacket?.interpretations,
     },
     {
-      key: 'medical_actions',
+      key: TabKeys.MEDICAL_ACTIONS,
       label: 'Medical Actions',
       children: getTabContent('Medical Actions', phenopacket?.medical_actions),
       disabled: !phenopacket?.medical_actions,
     },
     {
-      key: 'ontologies',
+      key: TabKeys.ONTOLOGIES,
       label: 'Ontologies',
       children: <Ontologies resources={phenopacket?.meta_data?.resources!} />,
       disabled: !phenopacket?.meta_data?.resources,
