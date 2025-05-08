@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { Card, Space, Statistic, Typography } from 'antd';
 import { ExperimentOutlined, TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
@@ -10,13 +10,6 @@ import { useConfig } from '@/features/config/hooks';
 import { NO_RESULTS_DASHES } from '@/features/search/constants';
 import { useAppSelector, useTranslationFn } from '@/hooks';
 import { useCanSeeUncensoredCounts } from '@/hooks/censorship';
-
-const styles: Record<string, CSSProperties> = {
-  countCard: {
-    minWidth: 150,
-    transition: 'height 0.3s ease-in-out',
-  },
-};
 
 const COUNT_ENTRIES: { entity: 'individual' | 'biosample' | 'experiment'; icon: ReactNode }[] = [
   { entity: 'individual', icon: <TeamOutlined /> },
@@ -50,7 +43,7 @@ const Counts = () => {
         {COUNT_ENTRIES.map(({ entity, icon }, i) => {
           const count = renderCount(counts[entity], countThreshold);
           return (
-            <Card key={i} className="shadow" style={{ ...styles.countCard, height: waitingForData ? 138 : 114 }}>
+            <Card key={i} className="shadow count-card" style={{ height: waitingForData ? 138 : 114 }}>
               <Statistic
                 title={<CountsTitleWithHelp entity={entity} />}
                 value={count || (uncensoredCounts ? count : NO_RESULTS_DASHES)}

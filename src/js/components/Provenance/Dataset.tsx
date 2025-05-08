@@ -73,10 +73,9 @@ const Dataset = ({
   if (format === 'list-item') {
     inner = (
       <List.Item
-        className={`select-dataset-item${selected ? ' selected' : ''}`}
+        className={`cursor-pointer select-dataset-item${selected ? ' selected' : ''}`}
         key={identifier}
         onClick={onNavigateCurrent}
-        style={{ cursor: 'pointer' }}
       >
         <List.Item.Meta
           avatar={<Avatar icon={<FaDatabase />} />}
@@ -106,27 +105,27 @@ const Dataset = ({
             <TagList annotations={displayKeywords} />
             {remainingKeywords?.length > 0 && (
               <Popover content={<TagList annotations={remainingKeywords} />}>
-                <span style={{ cursor: 'pointer' }}>
+                <span className="cursor-pointer">
                   + {remainingKeywords.length} {t('more', { count: remainingKeywords.length })}
                 </span>
               </Popover>
             )}
           </Space>
-          <Space size={12} style={{ flex: 1, display: 'flex', alignItems: 'flex-end', gap: 12 }}>
+          <Flex gap={12} align="flex-end" className="flex-1">
             <Button icon={<PieChartOutlined />} onClick={onNavigateOverview}>
               {t('Overview')}
             </Button>
             <Button icon={<SearchOutlined />} onClick={onNavigateSearch}>
               {t('Search')}
             </Button>
-          </Space>
+          </Flex>
         </Flex>
       </Card>
     );
   } else if (format === 'carousel') {
     inner = (
       <>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Flex justify="space-between">
           <Title level={5} style={{ marginTop: 0 }}>
             {t(title)}
           </Title>
@@ -134,16 +133,16 @@ const Dataset = ({
             {t('Provenance')}
             <ExpandAltOutlined />
           </Button>
-        </div>
+        </Flex>
         <TruncatedParagraph>{t(description)}</TruncatedParagraph>
-        <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+        <Flex gap={8} style={{ marginTop: 8 }}>
           <Button size="small" icon={<PieChartOutlined />} onClick={onNavigateOverview}>
             {t('Overview')}
           </Button>
           <Button size="small" icon={<SearchOutlined />} onClick={onNavigateSearch}>
             {t('Search')}
           </Button>
-        </div>
+        </Flex>
       </>
     );
   } else {
