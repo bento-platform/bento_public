@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Loader from '@/components/Loader';
 import { useAppDispatch, useAppSelector } from '@/hooks';
@@ -25,6 +25,8 @@ const PhenopacketView = () => {
   const dispatch = useAppDispatch();
   const phenopacket = useAppSelector((state) => state.clinPhen.phenopacketDataCache[packetId ?? '']);
   const status = useAppSelector((state) => state.clinPhen.phenopacketDataStatus[packetId ?? '']);
+
+  const [activeKey, setActiveKey] = useState<string>('biosamples');
 
   useEffect(() => {
     if (packetId && !phenopacket && status !== RequestStatus.Pending) {
@@ -83,7 +85,7 @@ const PhenopacketView = () => {
 
   return (
     <Card title={packetId}>
-      <Tabs defaultActiveKey="biosamples" items={items} />
+      <Tabs activeKey={activeKey} items={items} onChange={setActiveKey} />
     </Card>
   );
 };
