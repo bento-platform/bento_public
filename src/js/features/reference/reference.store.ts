@@ -47,6 +47,7 @@ const reference = createSlice({
       state.genomesStatus = RequestStatus.Pending;
     });
     builder.addCase(getGenomes.fulfilled, (state, { payload }) => {
+      payload = payload ?? [];
       state.genomes = payload;
       state.genomesByID = Object.fromEntries(payload.map((g) => [g.id, g]));
       state.genomesStatus = RequestStatus.Fulfilled;

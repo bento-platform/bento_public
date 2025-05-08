@@ -44,7 +44,7 @@ const OverviewDisplayData = ({ section, allCharts, searchableFields }: OverviewD
 
   if (isSmallScreen) {
     return (
-      <Space direction="vertical" style={{ width: '100%' }}>
+      <Space direction="vertical" className="w-full">
         {displayedCharts.map(renderItem)}
       </Space>
     );

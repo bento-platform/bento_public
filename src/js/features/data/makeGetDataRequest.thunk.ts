@@ -11,11 +11,11 @@ import { scopedAuthorizedRequestConfig } from '@/utils/requests';
 import type { RootState } from '@/store';
 import type { ChartConfig } from '@/types/chartConfig';
 import type { ChartDataField, LocalStorageData, Sections } from '@/types/data';
-import type { Counts, OverviewResponse } from '@/types/overviewResponse';
+import type { CountsOrBooleans, OverviewResponse } from '@/types/overviewResponse';
 import { RequestStatus } from '@/types/requests';
 
 export const makeGetDataRequestThunk = createAsyncThunk<
-  { sectionData: Sections; counts: Counts; defaultData: Sections },
+  { sectionData: Sections; counts: CountsOrBooleans; defaultData: Sections },
   void,
   { rejectValue: string; state: RootState }
 >(
@@ -48,7 +48,8 @@ export const makeGetDataRequestThunk = createAsyncThunk<
 
     const sectionData: Sections = sections.map(({ section_title, charts }) => ({
       sectionTitle: section_title,
-      charts: charts.map(normalizeChart),
+      // Filter out charts where field data is missing due to missing counts permissions for the field's data type
+      charts: charts.filter((c) => !!overviewResponse.fields[c.field]).map(normalizeChart),
     }));
 
     const defaultSectionData = JSON.parse(JSON.stringify(sectionData));

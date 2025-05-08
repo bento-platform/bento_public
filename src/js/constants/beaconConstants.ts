@@ -1,5 +1,4 @@
 import type { CSSProperties } from 'react';
-import { BOX_SHADOW } from '@/constants/overviewConstants';
 
 export const WRAPPER_STYLE: CSSProperties = {
   display: 'flex',
@@ -9,11 +8,6 @@ export const WRAPPER_STYLE: CSSProperties = {
 };
 
 export const FORM_ROW_GUTTERS: [number, number] = [16, 16];
-
-export const CARD_STYLE: CSSProperties = {
-  height: '100%',
-  ...BOX_SHADOW,
-};
 
 export const CARD_BODY_STYLE: CSSProperties = {
   padding: '0 24px 5px 24px',

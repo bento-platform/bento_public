@@ -9,7 +9,6 @@ import PublicationsTable from './Tables/PublicationsTable';
 import CreatedByTable from './Tables/CreatedByTable';
 import DownloadDats from './DownloadDats';
 
-import { BOX_SHADOW } from '@/constants/overviewConstants';
 import { useTranslationFn } from '@/hooks';
 import type { Dataset } from '@/types/metadata';
 
@@ -137,7 +136,7 @@ const DatasetProvenance = ({ dataset, loading }: DatasetProvenanceProps) => {
               ]
             : []
         }
-        style={{ borderRadius: '11px', ...BOX_SHADOW }}
+        className="shadow rounded-xl"
         loading={loading}
       >
         <DatasetProvenanceContent dataset={dataset} />
