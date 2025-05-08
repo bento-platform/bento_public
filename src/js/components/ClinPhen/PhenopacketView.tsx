@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import Loader from '@/components/Loader';
 import { useAppDispatch, useAppSelector } from '@/hooks';
 import { makeGetPhenopacketData } from '@/features/clinPhen/makeGetPhenopacket.thunk';
@@ -17,6 +17,7 @@ const getTabContent = (title: string, data: any) => (
 
 interface RouteParams {
   packetId: string;
+  tab: string;
   [key: string]: string | undefined;
 }
 
@@ -31,12 +32,25 @@ enum TabKeys {
 }
 
 const PhenopacketView = () => {
-  const { packetId } = useParams<RouteParams>();
+  const { packetId, tab } = useParams<RouteParams>();
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const phenopacket = useAppSelector((state) => state.clinPhen.phenopacketDataCache[packetId ?? '']);
   const status = useAppSelector((state) => state.clinPhen.phenopacketDataStatus[packetId ?? '']);
 
   const [activeKey, setActiveKey] = useState<string>('biosamples');
+
+  useEffect(() => {
+    if (tab && Object.values(TabKeys).includes(tab as TabKeys)) {
+      setActiveKey(tab);
+    } else {
+      if (tab) {
+        navigate(`../${TabKeys.BIOSAMPLES}`, { relative: 'path' });
+      } else {
+        navigate(`./${TabKeys.BIOSAMPLES}`, { relative: 'path' });
+      }
+    }
+  }, [tab]);
 
   useEffect(() => {
     if (packetId && !phenopacket && status !== RequestStatus.Pending) {
@@ -47,6 +61,10 @@ const PhenopacketView = () => {
   if (status === RequestStatus.Pending || !phenopacket) {
     return <Loader fullHeight={true} />;
   }
+
+  const handleTabChange = (key: string) => {
+    navigate(`../${key}`, { relative: 'path', replace: true });
+  };
 
   const items: TabsProps['items'] = [
     {
@@ -95,7 +113,7 @@ const PhenopacketView = () => {
 
   return (
     <Card title={packetId}>
-      <Tabs activeKey={activeKey} items={items} onChange={setActiveKey} />
+      <Tabs activeKey={activeKey} items={items} onChange={handleTabChange} />
     </Card>
   );
 };

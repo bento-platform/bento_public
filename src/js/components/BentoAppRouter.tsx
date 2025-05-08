@@ -158,7 +158,7 @@ const BentoAppRouter = () => {
         </Route>
 
         <Route path={`/${BentoRoute.Phenopackets}`} element={<PhenopacketList />} />
-        <Route path={`/${BentoRoute.Phenopackets}/:packetId`} element={<PhenopacketView />} />
+        <Route path={`/${BentoRoute.Phenopackets}/:packetId/:tab?`} element={<PhenopacketView />} />
 
         <Route path="/p/:projectId" element={<ScopedRoute />}>
           <Route index element={<PublicOverview />} />
