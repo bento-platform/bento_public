@@ -221,7 +221,6 @@ const SearchResultsTablePage = ({
               total: individualMatches.length,
             })}
           </span>
-          {/* TODO: only if in Bento search not beacon */}
           <Space>
             <Tooltip title={t('search.manage_columns')}>
               <Button icon={<TableOutlined />} onClick={openColumnModal} />
