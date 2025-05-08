@@ -9,11 +9,12 @@ import { ArrowLeftOutlined } from '@ant-design/icons';
 
 import { useSelectedScope } from '@/features/metadata/hooks';
 import { useSearchQuery } from '@/features/search/hooks';
-import { useTranslationFn } from '@/hooks';
+import { useHasScopePermission, useTranslationFn } from '@/hooks';
 import { useGetRouteTitleAndIcon, useIsInCatalogueMode, useNavigateToRoot } from '@/hooks/navigation';
 import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
 import { buildQueryParamsUrl } from '@/utils/search';
 import { getCurrentPage } from '@/utils/router';
+import { useCanSeeCensoredCounts } from '@/hooks/censorship';
 
 const { Sider } = Layout;
 
@@ -28,6 +29,10 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
   const { queryParams } = useSearchQuery();
   const catalogueMode = useIsInCatalogueMode();
   const currentPage = getCurrentPage();
+
+  // quick and dirty for demo, to improve
+  const {hasPermission: hasViewProjectPermission} = useHasScopePermission('view:project');
+  const canSeeCensoredCounts = useCanSeeCensoredCounts()
 
   const navigateToRoot = useNavigateToRoot();
   const { fixedProject, scope, scopeSet } = useSelectedScope();
@@ -67,15 +72,18 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
   const menuItems: MenuItem[] = useMemo(() => {
     const items = [
       createMenuItem(BentoRoute.Overview, ...getRouteTitleAndIcon(BentoRoute.Overview)),
-      createMenuItem(BentoRoute.Search, ...getRouteTitleAndIcon(BentoRoute.Search)),
     ];
+
+    if (canSeeCensoredCounts && hasViewProjectPermission) {
+      items.push(createMenuItem(BentoRoute.Search, ...getRouteTitleAndIcon(BentoRoute.Search)))
+    }
 
     if (scope.project) {
       // Only show provenance if we're not at the top level, since the giant list of context-less datasets is confusing.
       items.push(createMenuItem(BentoRoute.Provenance, ...getRouteTitleAndIcon(BentoRoute.Provenance)));
     }
 
-    if (BentoRoute.Beacon) {
+    if (BentoRoute.Beacon && canSeeCensoredCounts && hasViewProjectPermission) {
       items.push(createMenuItem(BentoRoute.Beacon, ...getRouteTitleAndIcon(BentoRoute.Beacon)));
     }
 
@@ -84,7 +92,7 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
     }
 
     return items;
-  }, [getRouteTitleAndIcon, createMenuItem, scope, fixedProject]);
+  }, [getRouteTitleAndIcon, createMenuItem, scope, fixedProject, canSeeCensoredCounts, hasViewProjectPermission]);
 
   return (
     <Sider

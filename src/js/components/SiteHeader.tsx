@@ -33,7 +33,7 @@ const SiteHeader = () => {
   const performSignOut = usePerformSignOut();
   const performSignIn = usePerformAuth();
 
-  document.title = CLIENT_NAME && CLIENT_NAME.trim() ? `Bento: ${CLIENT_NAME}` : 'Bento';
+  document.title = CLIENT_NAME && CLIENT_NAME.trim() ? t(CLIENT_NAME) : 'Bento';
 
   const changeLanguage = () => {
     const newLang = LNG_CHANGE[i18n.language];
@@ -49,6 +49,7 @@ const SiteHeader = () => {
     [navigate, i18n.language, scopeObj]
   );
 
+  // TODO: make branding height configurable
   return (
     <Header id="site-header">
       <Flex align="center" justify="space-between">
@@ -77,12 +78,12 @@ const SiteHeader = () => {
             <img
               src="/public/assets/branding.png"
               alt="logo"
-              style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-3px)', paddingLeft: '4px' }}
+              style={{ height: '55px', verticalAlign: 'middle', transform: 'translateY(-3px)', paddingLeft: '4px' }}
               onClick={navigateToOverview}
             />
           )}
           <Typography.Title level={1} type="secondary">
-            {CLIENT_NAME}
+            {t(CLIENT_NAME)}
           </Typography.Title>
         </Space>
 

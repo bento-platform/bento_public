@@ -3,7 +3,7 @@ import { Button, Card, Col, Row, Table, type TableColumnsType, type TableProps, 
 import { ExportOutlined, LeftOutlined } from '@ant-design/icons';
 import { PieChart } from 'bento-charts';
 
-import { PORTAL_URL } from '@/config';
+import { PORTAL_URL, SHOW_PORTAL_LINK } from '@/config';
 import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { BOX_SHADOW, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
 import { useTranslationFn } from '@/hooks';
@@ -52,12 +52,16 @@ const SearchResultsPane = ({
       // TODO: implement these when we have this information in search results:
       // ...(!selectedScope.scope.project ? [{ title: 'Project', key: 'project' }] : []),
       // ...(!selectedScope.scope.dataset ? [{ title: 'Dataset', key: 'dataset' }] : []),
-      {
-        title: '',
-        key: 'actions',
-        width: 32,
-        render: ({ id }) => <IndividualPortalLink id={id} />,
-      },
+      ...(SHOW_PORTAL_LINK
+        ? ([
+            {
+              title: '',
+              key: 'actions',
+              width: 32,
+              render: ({ id }) => <IndividualPortalLink id={id} />,
+            },
+          ] as TableColumnsType<IndividualResultRow>)
+        : []),
     ],
     []
   );

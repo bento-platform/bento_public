@@ -1,12 +1,13 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
+import axios, { type AxiosRequestConfig } from 'axios';
 import type { PaginatedResponse, Project } from '@/types/metadata';
 import { RequestStatus } from '@/types/requests';
 import type { RootState } from '@/store';
 import { printAPIError } from '@/utils/error.util';
 import { validProjectDataset } from '@/utils/router';
 import { projectsUrl } from '@/constants/configConstants';
+import { authorizedRequestConfig } from '@/utils/requests';
 
 export type DiscoveryScope = { project?: string; dataset?: string };
 
@@ -43,9 +44,11 @@ export const getProjects = createAsyncThunk<
   { state: RootState; rejectValue: string }
 >(
   'metadata/getProjects',
-  (_, { rejectWithValue }) => {
+  (_, { getState, rejectWithValue }) => {
+    authorizedRequestConfig(getState())
+    const reqConf: AxiosRequestConfig = authorizedRequestConfig(getState());
     return axios
-      .get(projectsUrl)
+      .get(projectsUrl, reqConf)
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue));
   },
