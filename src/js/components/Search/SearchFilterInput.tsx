@@ -1,5 +1,5 @@
 import { type CSSProperties, memo, useCallback, useMemo } from 'react';
-import { Button, Select, Space } from 'antd';
+import { Button, Flex, Select, Space } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 
 import { useTranslationFn } from '@/hooks';
@@ -10,7 +10,6 @@ export type FilterValue = { field: string | null; value: string | null };
 
 const styles = {
   selectField: { flex: 1, borderTopRightRadius: 0, borderBottomRightRadius: 0 } as CSSProperties,
-  selectValue: { flex: 1 } as CSSProperties,
 };
 
 const SearchFilterInput = ({
@@ -36,10 +35,10 @@ const SearchFilterInput = ({
     options: fields.map((f) => ({
       value: f.id,
       label: (
-        <div style={{ display: 'flex' }}>
-          <div style={{ flex: 1 }}>{f.title}</div>
+        <Flex>
+          <div className="flex-1">{f.title}</div>
           <OptionDescription description={t(f.description)} />
-        </div>
+        </Flex>
       ),
       // Disabled if: field is in disabled set AND it isn't the currently selected field (so we allow re-selection of
       // the current field.)
@@ -85,7 +84,7 @@ const SearchFilterInput = ({
         placeholder={t('Select a field to filter by\u2026')}
       />
       <Select
-        style={styles.selectValue}
+        className="flex-1"
         disabled={!field}
         options={field ? fieldFilterOptions[field] : []}
         onClick={onFocus}
@@ -101,7 +100,7 @@ const SearchFilterInput = ({
 export const SearchFilterInputSkeleton = memo(() => (
   <Space.Compact className="w-full">
     <Select style={styles.selectField} disabled={true} loading={true} />
-    <Select style={styles.selectValue} disabled={true} />
+    <Select className="flex-1" disabled={true} />
     <Button icon={<CloseOutlined />} disabled={true} />
   </Space.Compact>
 ));

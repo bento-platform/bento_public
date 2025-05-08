@@ -1,6 +1,6 @@
-import { type CSSProperties, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { Col, Form, Row } from 'antd';
+import { Col, Flex, Form, Row } from 'antd';
 import type { DefaultOptionType } from 'antd/es/select/index';
 
 import { useTranslationFn } from '@/hooks';
@@ -55,11 +55,6 @@ const contigOptionSort = (a: ContigOptionType, b: ContigOptionType) => {
 };
 
 const filterOutHumanLikeExtraContigs = (opt: ContigOptionType) => !opt.value.match(HUMAN_LIKE_EXCLUDE_CONTIG_REGEX);
-
-const FORM_STYLE: CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-};
 
 const FORM_ROW_GUTTER: [number, number] = [12, 0];
 
@@ -132,7 +127,7 @@ const VariantsForm = ({ isNetworkQuery, beaconAssemblyIds }: VariantsFormProps) 
   const variantsError = beaconAssemblyIds.includes('error');
 
   return (
-    <div style={FORM_STYLE}>
+    <Flex vertical={true}>
       <Row gutter={FORM_ROW_GUTTER}>
         <Col span={8}>
           <VariantInput
@@ -161,7 +156,7 @@ const VariantsForm = ({ isNetworkQuery, beaconAssemblyIds }: VariantsFormProps) 
           />
         </Col>
       </Row>
-    </div>
+    </Flex>
   );
 };
 

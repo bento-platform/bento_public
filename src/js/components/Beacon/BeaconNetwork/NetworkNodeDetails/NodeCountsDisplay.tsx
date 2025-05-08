@@ -1,11 +1,12 @@
+import { Flex } from 'antd';
 import SearchResultsCounts from '@/components/Search/SearchResultsCounts';
 import type { OptionalDiscoveryResults } from '@/types/data';
 import type { RequestStatus } from '@/types/requests';
 
 const NodeCountsDisplay = ({ queryStatus, results }: NodeCountsDisplayProps) => (
-  <div style={{ display: 'flex', justifyContent: 'center' }}>
+  <Flex justify="center">
     <SearchResultsCounts mode="beacon-network" results={results} queryStatus={queryStatus} />
-  </div>
+  </Flex>
 );
 
 export interface NodeCountsDisplayProps {

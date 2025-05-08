@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { List, Space, Typography } from 'antd';
+import { Flex, List, Space, Typography } from 'antd';
 
 import { T_SINGULAR_COUNT } from '@/constants/i18n';
 import Dataset from '@/components/Provenance/Dataset';
@@ -37,7 +37,7 @@ const DatasetScopePicker = ({ parentProject }: DatasetScopePickerProps) => {
   const projectURL = scopeToUrl(parentProjectScope, language, page);
 
   return (
-    <Space direction="vertical" style={{ display: 'flex' }}>
+    <Flex vertical={true} gap={8}>
       <Space align="baseline" size="large">
         <Typography.Title level={4} className="no-margin-top">
           {t('entities.project', T_SINGULAR_COUNT)}: {t(parentProject.title)}
@@ -63,7 +63,7 @@ const DatasetScopePicker = ({ parentProject }: DatasetScopePickerProps) => {
           />
         )}
       />
-    </Space>
+    </Flex>
   );
 };
 
