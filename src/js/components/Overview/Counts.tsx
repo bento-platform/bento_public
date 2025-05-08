@@ -29,7 +29,7 @@ const renderCount = (count: number | boolean | undefined, threshold: number): nu
     ? NO_RESULTS_DASHES
     : typeof count === 'boolean'
       ? count
-        ? `\u2265${threshold}`
+        ? `>${threshold}`
         : NO_RESULTS_DASHES
       : count;
 
