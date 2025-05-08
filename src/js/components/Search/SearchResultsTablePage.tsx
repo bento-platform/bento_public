@@ -29,6 +29,7 @@ import DatasetProvenanceModal from '@/components/Provenance/DatasetProvenanceMod
 import ProjectTitle from '@/components/Util/ProjectTitle';
 import DatasetTitle from '@/components/Util/DatasetTitle';
 import { downloadIndividualCSV } from '@/utils/export';
+import { setEquals } from '@/utils/sets';
 
 type SearchColRenderContext = {
   onProjectClick: (id: string) => void;
@@ -119,8 +120,18 @@ const SearchResultsTablePage = ({
   const [exporting, setExporting] = useState<boolean>(false);
 
   useEffect(() => {
-    // TODO: update shownColumns if allowed changes
-  }, [selectedScope]);
+    // If the selected scope changes, some of the currently-shown columns may no longer be valid:
+    setShownColumns((oldSet) => {
+      const newSet = new Set<SearchTableColumnType>(
+        [...oldSet].filter(
+          (v) => !(v === 'project' && !projectColumnAllowed) && !(v === 'dataset' && !datasetColumnAllowed)
+        )
+      );
+
+      // Don't change object if our newly-computed object is equivalent:
+      return setEquals(oldSet, newSet) ? oldSet : newSet;
+    });
+  }, [selectedScope, projectColumnAllowed, datasetColumnAllowed, shownColumns]);
 
   let { individualMatches } = results;
   individualMatches = individualMatches ?? [];
