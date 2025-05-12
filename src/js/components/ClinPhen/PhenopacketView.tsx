@@ -9,6 +9,7 @@ import { RequestStatus } from '@/types/requests';
 import BiosampleView from './BiosampleView';
 import Ontologies from './Ontologies';
 import MeasurementsView from './Measurements';
+import PhenotypicFeaturesView from './PhenotypicFeatures';
 
 const getTabContent = (title: string, data: any) => (
   <Descriptions title={title}>
@@ -86,7 +87,13 @@ const PhenopacketView = () => {
     {
       key: TabKeys.PHENOTYPIC_FEATURES,
       label: 'Phenotypic Features',
-      children: getTabContent('Phenotypic Features', phenopacket?.phenotypic_features),
+      children:
+        phenopacket?.phenotypic_features && phenopacket?.meta_data?.resources ? (
+          <PhenotypicFeaturesView
+            features={phenopacket.phenotypic_features}
+            resources={phenopacket.meta_data.resources}
+          />
+        ) : null,
       disabled: !phenopacket?.phenotypic_features,
     },
     {
