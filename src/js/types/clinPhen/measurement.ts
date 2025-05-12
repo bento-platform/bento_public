@@ -33,4 +33,6 @@ export type Measurement = {
   description?: string;
   time_observed?: TimeElement;
   procedure?: Procedure;
-} & ({ value: Value } | { complex_value: ComplexValue });
+  value?: Value;
+  complex_value?: ComplexValue;
+};

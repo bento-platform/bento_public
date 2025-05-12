@@ -8,6 +8,7 @@ import type { TabsProps } from 'antd';
 import { RequestStatus } from '@/types/requests';
 import BiosampleView from './BiosampleView';
 import Ontologies from './Ontologies';
+import MeasurementsView from './Measurements';
 
 const getTabContent = (title: string, data: any) => (
   <Descriptions title={title}>
@@ -76,7 +77,10 @@ const PhenopacketView = () => {
     {
       key: TabKeys.MEASUREMENTS,
       label: 'Measurements',
-      children: getTabContent('Measurements', phenopacket?.measurements),
+      children:
+        phenopacket?.measurements && phenopacket?.meta_data?.resources ? (
+          <MeasurementsView measurements={phenopacket.measurements} resources={phenopacket.meta_data.resources} />
+        ) : null,
       disabled: !phenopacket?.measurements,
     },
     {
