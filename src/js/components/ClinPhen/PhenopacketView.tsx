@@ -10,6 +10,7 @@ import BiosampleView from './BiosampleView';
 import Ontologies from './Ontologies';
 import MeasurementsView from './Measurements';
 import PhenotypicFeaturesView from './PhenotypicFeatures';
+import DiseasesView from './DiseasesView';
 
 const getTabContent = (title: string, data: any) => (
   <Descriptions title={title}>
@@ -99,7 +100,10 @@ const PhenopacketView = () => {
     {
       key: TabKeys.DISEASES,
       label: 'Diseases',
-      children: getTabContent('Diseases', phenopacket?.diseases),
+      children:
+        phenopacket?.diseases && phenopacket?.meta_data?.resources ? (
+          <DiseasesView diseases={phenopacket.diseases} resources={phenopacket.meta_data.resources} />
+        ) : null,
       disabled: !phenopacket?.diseases,
     },
     {
