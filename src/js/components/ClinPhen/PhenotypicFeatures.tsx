@@ -115,8 +115,7 @@ function PhenotypicFeaturesView({ features, resources }: PhenotypicFeaturesViewP
       title: 'Severity',
       dataIndex: 'severity',
       key: 'severity',
-      render: (severity: OntologyTerm) =>
-        severity ? <OntologyTermComponent term={severity} resources={resources} /> : EM_DASH,
+      render: (severity: OntologyTerm) => <OntologyTermComponent term={severity} resources={resources} />,
     },
     {
       title: 'Onset',

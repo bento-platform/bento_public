@@ -70,8 +70,9 @@ function MeasurementsView({ measurements, resources }: MeasurementsViewProps) {
       title: 'Procedure',
       dataIndex: 'procedure',
       key: 'procedure',
-      render: (procedure: Procedure | undefined) =>
-        procedure ? <OntologyTermComponent term={procedure.code} resources={resources} /> : EM_DASH,
+      render: (procedure: Procedure | undefined) => (
+        <OntologyTermComponent term={procedure?.code} resources={resources} />
+      ),
     },
   ];
   return (
