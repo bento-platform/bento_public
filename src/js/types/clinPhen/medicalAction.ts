@@ -2,6 +2,7 @@ import type { ExternalReference, TimeElement, TimeInterval } from './shared';
 import type { OntologyTerm } from '../ontology';
 import type { Procedure } from './procedure';
 import type { Quantity } from './measurement';
+import { ExactlyOne } from '../util';
 
 export interface DoseInterval {
   quantity: Quantity;
@@ -32,6 +33,13 @@ export interface TherapeuticRegimen {
   external_reference?: ExternalReference;
 }
 
+type SpecificMedicalAction = ExactlyOne<{
+  procedure: Procedure;
+  treatment: Treatment;
+  radiation_therapy: RadiationTherapy;
+  therapeutic_regimen: TherapeuticRegimen;
+}>;
+
 // Defined badly in https://phenopacket-schema.readthedocs.io/en/latest/medical-action.html - per Victor, these
 // oneOf-type fields in their documentation are wrong and should be structured like this:
 export type MedicalAction = {
@@ -40,9 +48,4 @@ export type MedicalAction = {
   response_to_treatment?: OntologyTerm;
   adverse_events?: OntologyTerm[];
   treatment_termination_reason?: OntologyTerm;
-} & (
-  | { procedure: Procedure }
-  | { treatment: Treatment }
-  | { radiation_therapy: RadiationTherapy }
-  | { therapeutic_regimen: TherapeuticRegimen }
-);
+} & SpecificMedicalAction;
