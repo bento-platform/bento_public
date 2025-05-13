@@ -73,7 +73,10 @@ const PhenopacketView = () => {
     {
       key: TabKeys.BIOSAMPLES,
       label: 'Biosamples',
-      children: <BiosampleView biosamples={phenopacket?.biosamples!} />,
+      children:
+        phenopacket?.biosamples && phenopacket?.meta_data?.resources ? (
+          <BiosampleView biosamples={phenopacket?.biosamples!} resources={phenopacket.meta_data.resources} />
+        ) : null,
       disabled: !phenopacket?.biosamples,
     },
     {

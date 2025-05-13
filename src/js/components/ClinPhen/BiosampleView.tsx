@@ -1,38 +1,41 @@
 import { Descriptions, DescriptionsProps, Table } from 'antd';
 import { Biosample } from '@/types/clinPhen/biosample';
 import { OntologyTerm } from '@/types/ontology';
+import { EM_DASH } from '@/constants/common';
+import { Resource } from '@/types/clinPhen/resource';
+import OntologyTermComponent from './OntologyTerm';
 
 const BiosampleExpandedRow: React.FC<{ biosample: Biosample }> = ({ biosample }) => {
   const items: DescriptionsProps['items'] = [
     {
       key: 'description',
       label: 'Description',
-      children: biosample.description || 'N/A',
+      children: biosample.description || EM_DASH,
     },
     {
       key: 'derived_from_id',
       label: 'Derived From',
-      children: biosample.derived_from_id || 'N/A',
+      children: biosample.derived_from_id || EM_DASH,
     },
     {
       key: 'sample_type',
       label: 'Sample Type',
-      children: biosample.sample_type?.label || 'N/A',
+      children: biosample.sample_type?.label || EM_DASH,
     },
     {
       key: 'time_of_collection',
       label: 'Collection Time',
-      children: biosample.time_of_collection ? JSON.stringify(biosample.time_of_collection) : 'N/A',
+      children: biosample.time_of_collection ? JSON.stringify(biosample.time_of_collection) : EM_DASH,
     },
     {
       key: 'histological_diagnosis',
       label: 'Histological Diagnosis',
-      children: biosample.histological_diagnosis?.label || 'N/A',
+      children: biosample.histological_diagnosis?.label || EM_DASH,
     },
     {
       key: 'pathological_stage',
       label: 'Pathological Stage',
-      children: biosample.pathological_stage?.label || 'N/A',
+      children: biosample.pathological_stage?.label || EM_DASH,
     },
   ];
 
@@ -41,9 +44,10 @@ const BiosampleExpandedRow: React.FC<{ biosample: Biosample }> = ({ biosample })
 
 interface BiosampleViewProps {
   biosamples: Biosample[];
+  resources: Resource[];
 }
 
-const BiosampleView: React.FC<BiosampleViewProps> = ({ biosamples }) => {
+const BiosampleView: React.FC<BiosampleViewProps> = ({ biosamples, resources }) => {
   const columns = [
     {
       title: 'Biosample ID',
@@ -54,7 +58,7 @@ const BiosampleView: React.FC<BiosampleViewProps> = ({ biosamples }) => {
       title: 'Sampled Tissue',
       dataIndex: 'sampled_tissue',
       key: 'sampled_tissue',
-      render: (text: OntologyTerm) => text?.label || 'N/A',
+      render: (term: OntologyTerm) => <OntologyTermComponent term={term} resources={resources} />,
     },
   ];
   return (
