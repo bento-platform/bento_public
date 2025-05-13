@@ -1,4 +1,4 @@
-import { Typography } from 'antd';
+import { Space, Typography } from 'antd';
 import { LinkOutlined } from '@ant-design/icons';
 import type { OntologyTerm as OntologyTermType } from '@/types/ontology';
 import type { Resource } from '@/types/clinPhen/resource';
@@ -26,6 +26,23 @@ const OntologyTerm = ({ term, resources }: OntologyTermProps) => {
     </span>
   ) : (
     <span>{term.label}</span>
+  );
+};
+
+interface OntologyTermStackProps {
+  terms: OntologyTermType[];
+  resources: Resource[];
+}
+
+export const OntologyTermStack = ({ terms, resources }: OntologyTermStackProps) => {
+  if (!terms || terms.length === 0) return null;
+
+  return (
+    <Space direction="vertical">
+      {terms.map((term, index) => (
+        <OntologyTerm key={index} term={term} resources={resources} />
+      ))}
+    </Space>
   );
 };
 

@@ -1,6 +1,6 @@
-import { Descriptions, DescriptionsProps, Table, Space } from 'antd';
+import { Descriptions, DescriptionsProps, Table } from 'antd';
 import { Disease } from '@/types/clinPhen/disease';
-import OntologyTermComponent from './OntologyTerm';
+import OntologyTermComponent, { OntologyTermStack } from './OntologyTerm';
 import TimeElementDisplay from './TimeElementDisplay';
 import ExtraProperties from '../Util/ExtraProperties';
 import { TimeElement } from '@/types/clinPhen/shared';
@@ -13,32 +13,28 @@ const DiseaseExpandedRow: React.FC<{ disease: Disease; resources: Resource[] }> 
     {
       key: 'disease_stage',
       label: 'Disease Stage(s)',
-      children: (
-        <Space direction="vertical">
-          {disease.disease_stage?.map((stage) => (
-            <OntologyTermComponent key={stage.id} term={stage} resources={resources} />
-          )) || EM_DASH}
-        </Space>
+      children: disease.disease_stage ? (
+        <OntologyTermStack terms={disease.disease_stage} resources={resources} />
+      ) : (
+        EM_DASH
       ),
     },
     {
       key: 'clinical_tnm_finding',
       label: 'Clinical TNM Finding(s)',
-      children: (
-        <Space direction="vertical">
-          {disease.clinical_tnm_finding?.map((finding) => (
-            <OntologyTermComponent key={finding.id} term={finding} resources={resources} />
-          )) || EM_DASH}
-        </Space>
+      children: disease.clinical_tnm_finding ? (
+        <OntologyTermStack terms={disease.clinical_tnm_finding} resources={resources} />
+      ) : (
+        EM_DASH
       ),
     },
     {
       key: 'primary_site',
       label: 'Primary Site',
-      children: (
-        <Space direction="vertical">
-          {disease.primary_site ? <OntologyTermComponent term={disease.primary_site} resources={resources} /> : EM_DASH}
-        </Space>
+      children: disease.primary_site ? (
+        <OntologyTermComponent term={disease.primary_site} resources={resources} />
+      ) : (
+        EM_DASH
       ),
     },
     {
