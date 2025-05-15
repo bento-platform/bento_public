@@ -14,3 +14,13 @@ export const useIndividualData = (id: string) => {
 
   return { data, status };
 };
+
+export const usePhenopacketResources = (phenopacketId: string | undefined) => {
+  if (!phenopacketId) {
+    return [];
+  }
+
+  const data =
+    useAppSelector((state) => state.clinPhen.phenopacketDataCache[phenopacketId]?.meta_data?.resources) ?? [];
+  return data;
+};

@@ -19,7 +19,7 @@ const getTabContent = (title: string, data: any) => (
   </Descriptions>
 );
 
-interface RouteParams {
+export interface RouteParams {
   packetId: string;
   tab: string;
   [key: string]: string | undefined;
