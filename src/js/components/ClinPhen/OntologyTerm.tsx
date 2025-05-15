@@ -31,12 +31,12 @@ const OntologyTerm = ({ term, resources }: OntologyTermProps) => {
 };
 
 interface OntologyTermStackProps {
-  terms: OntologyTermType[];
+  terms: OntologyTermType[] | undefined;
   resources: Resource[];
 }
 
 export const OntologyTermStack = ({ terms, resources }: OntologyTermStackProps) => {
-  if (!terms || terms.length === 0) return null;
+  if (!terms || terms.length === 0) return EM_DASH;
 
   return (
     <Space direction="vertical">
