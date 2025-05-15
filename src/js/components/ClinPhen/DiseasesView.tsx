@@ -5,37 +5,24 @@ import TimeElementDisplay from './TimeElementDisplay';
 import ExtraProperties from '../Util/ExtraProperties';
 import { TimeElement } from '@/types/clinPhen/shared';
 import { EM_DASH } from '@/constants/common';
-import { Resource } from '@/types/clinPhen/resource';
 import { OntologyTerm } from '@/types/ontology';
 
-const DiseaseExpandedRow: React.FC<{ disease: Disease; resources: Resource[] }> = ({ disease, resources }) => {
+const DiseaseExpandedRow: React.FC<{ disease: Disease }> = ({ disease }) => {
   const items: DescriptionsProps['items'] = [
     {
       key: 'disease_stage',
       label: 'Disease Stage(s)',
-      children: disease.disease_stage ? (
-        <OntologyTermStack terms={disease.disease_stage} resources={resources} />
-      ) : (
-        EM_DASH
-      ),
+      children: disease.disease_stage ? <OntologyTermStack terms={disease.disease_stage} /> : EM_DASH,
     },
     {
       key: 'clinical_tnm_finding',
       label: 'Clinical TNM Finding(s)',
-      children: disease.clinical_tnm_finding ? (
-        <OntologyTermStack terms={disease.clinical_tnm_finding} resources={resources} />
-      ) : (
-        EM_DASH
-      ),
+      children: disease.clinical_tnm_finding ? <OntologyTermStack terms={disease.clinical_tnm_finding} /> : EM_DASH,
     },
     {
       key: 'primary_site',
       label: 'Primary Site',
-      children: disease.primary_site ? (
-        <OntologyTermComponent term={disease.primary_site} resources={resources} />
-      ) : (
-        EM_DASH
-      ),
+      children: disease.primary_site ? <OntologyTermComponent term={disease.primary_site} /> : EM_DASH,
     },
     {
       key: 'extra_properties',
@@ -49,16 +36,15 @@ const DiseaseExpandedRow: React.FC<{ disease: Disease; resources: Resource[] }> 
 
 interface DiseasesViewProps {
   diseases: Disease[];
-  resources: Resource[];
 }
 
-const DiseasesView: React.FC<DiseasesViewProps> = ({ diseases, resources }) => {
+const DiseasesView: React.FC<DiseasesViewProps> = ({ diseases }) => {
   const columns = [
     {
       title: 'Disease',
       dataIndex: 'term',
       key: 'term',
-      render: (term: OntologyTerm) => <OntologyTermComponent term={term} resources={resources} />,
+      render: (term: OntologyTerm) => <OntologyTermComponent term={term} />,
     },
     {
       title: 'Onset Age',
@@ -79,7 +65,7 @@ const DiseasesView: React.FC<DiseasesViewProps> = ({ diseases, resources }) => {
       dataSource={diseases}
       columns={columns}
       expandable={{
-        expandedRowRender: (record) => <DiseaseExpandedRow disease={record} resources={resources} />,
+        expandedRowRender: (record) => <DiseaseExpandedRow disease={record} />,
       }}
       rowKey={(record) => record.term.id}
     />

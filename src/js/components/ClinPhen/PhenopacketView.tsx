@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Loader from '@/components/Loader';
 import { useAppDispatch, useAppSelector } from '@/hooks';
 import { makeGetPhenopacketData } from '@/features/clinPhen/makeGetPhenopacket.thunk';
@@ -74,40 +74,27 @@ const PhenopacketView = () => {
     {
       key: TabKeys.BIOSAMPLES,
       label: 'Biosamples',
-      children:
-        phenopacket?.biosamples && phenopacket?.meta_data?.resources ? (
-          <BiosampleView biosamples={phenopacket?.biosamples!} resources={phenopacket.meta_data.resources} />
-        ) : null,
+      children: phenopacket?.biosamples ? <BiosampleView biosamples={phenopacket?.biosamples!} /> : null,
       disabled: !phenopacket?.biosamples,
     },
     {
       key: TabKeys.MEASUREMENTS,
       label: 'Measurements',
-      children:
-        phenopacket?.measurements && phenopacket?.meta_data?.resources ? (
-          <MeasurementsView measurements={phenopacket.measurements} resources={phenopacket.meta_data.resources} />
-        ) : null,
+      children: phenopacket?.measurements ? <MeasurementsView measurements={phenopacket.measurements} /> : null,
       disabled: !phenopacket?.measurements,
     },
     {
       key: TabKeys.PHENOTYPIC_FEATURES,
       label: 'Phenotypic Features',
-      children:
-        phenopacket?.phenotypic_features && phenopacket?.meta_data?.resources ? (
-          <PhenotypicFeaturesView
-            features={phenopacket.phenotypic_features}
-            resources={phenopacket.meta_data.resources}
-          />
-        ) : null,
+      children: phenopacket?.phenotypic_features ? (
+        <PhenotypicFeaturesView features={phenopacket.phenotypic_features} />
+      ) : null,
       disabled: !phenopacket?.phenotypic_features,
     },
     {
       key: TabKeys.DISEASES,
       label: 'Diseases',
-      children:
-        phenopacket?.diseases && phenopacket?.meta_data?.resources ? (
-          <DiseasesView diseases={phenopacket.diseases} resources={phenopacket.meta_data.resources} />
-        ) : null,
+      children: phenopacket?.diseases ? <DiseasesView diseases={phenopacket.diseases} /> : null,
       disabled: !phenopacket?.diseases,
     },
     {
@@ -119,13 +106,9 @@ const PhenopacketView = () => {
     {
       key: TabKeys.MEDICAL_ACTIONS,
       label: 'Medical Actions',
-      children:
-        phenopacket?.medical_actions && phenopacket?.meta_data?.resources ? (
-          <MedicalActionsView
-            medicalActions={phenopacket.medical_actions}
-            resources={phenopacket.meta_data.resources}
-          />
-        ) : null,
+      children: phenopacket?.medical_actions ? (
+        <MedicalActionsView medicalActions={phenopacket.medical_actions} />
+      ) : null,
       disabled: !phenopacket?.medical_actions,
     },
     {

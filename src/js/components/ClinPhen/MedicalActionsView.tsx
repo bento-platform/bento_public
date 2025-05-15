@@ -8,7 +8,6 @@ import {
 } from '@/types/clinPhen/medicalAction';
 import { OntologyTerm } from '@/types/ontology';
 import OntologyTermComponent, { OntologyTermStack } from './OntologyTerm';
-import { Resource } from '@/types/clinPhen/resource';
 import { Procedure } from '@/types/clinPhen/procedure';
 import TimeElementDisplay, { TimeIntervalDisplay } from './TimeElementDisplay';
 import { EM_DASH } from '@/constants/common';
@@ -16,17 +15,17 @@ import { QuantityComponent } from './Measurements';
 import { Quantity } from '@/types/clinPhen/measurement';
 import { TimeInterval } from '@/types/clinPhen/shared';
 
-const ProcedureComponent = ({ procedure, resources }: { procedure: Procedure; resources: Resource[] }) => {
+const ProcedureComponent = ({ procedure }: { procedure: Procedure }) => {
   const ProcedureItems: DescriptionsProps['items'] = [
     {
       key: 'code',
       label: 'Code',
-      children: <OntologyTermComponent term={procedure.code} resources={resources} />,
+      children: <OntologyTermComponent term={procedure.code} />,
     },
     {
       key: 'bodySite',
       label: 'Body Site',
-      children: <OntologyTermComponent term={procedure.body_site} resources={resources} />,
+      children: <OntologyTermComponent term={procedure.body_site} />,
     },
     {
       key: 'Performed',
@@ -37,19 +36,19 @@ const ProcedureComponent = ({ procedure, resources }: { procedure: Procedure; re
   return <Descriptions bordered column={1} size="small" items={ProcedureItems} />;
 };
 
-const TreatmentComponent = ({ treatment, resources }: { treatment: Treatment; resources: Resource[] }) => {
+const TreatmentComponent = ({ treatment }: { treatment: Treatment }) => {
   const DOSE_INTERVAL_COLUMNS = [
     {
       key: 'quantity',
       title: 'Quantity',
       dataIndex: 'quantity',
-      render: (quantity: Quantity) => <QuantityComponent quantity={quantity} resources={resources} />,
+      render: (quantity: Quantity) => <QuantityComponent quantity={quantity} />,
     },
     {
       key: 'schedule_frequency',
       title: 'Schedule Frequency',
       dataIndex: 'schedule_frequency',
-      render: (term: OntologyTerm) => <OntologyTermComponent term={term} resources={resources} />,
+      render: (term: OntologyTerm) => <OntologyTermComponent term={term} />,
     },
     {
       key: 'interval',
@@ -63,12 +62,12 @@ const TreatmentComponent = ({ treatment, resources }: { treatment: Treatment; re
     {
       key: 'agent',
       label: 'Agent',
-      children: <OntologyTermComponent term={treatment.agent} resources={resources} />,
+      children: <OntologyTermComponent term={treatment.agent} />,
     },
     {
       key: 'routeOfAdministration',
       label: 'Route of Administration',
-      children: <OntologyTermComponent term={treatment.route_of_administration} resources={resources} />,
+      children: <OntologyTermComponent term={treatment.route_of_administration} />,
     },
     {
       key: 'doseIntervals',
@@ -94,7 +93,7 @@ const TreatmentComponent = ({ treatment, resources }: { treatment: Treatment; re
       key: 'cumulativeDose',
       label: 'Cumulative Dose',
       children: treatment?.cumulative_dose ? (
-        <QuantityComponent quantity={treatment.cumulative_dose} title="Cumulative Dose" resources={resources} />
+        <QuantityComponent quantity={treatment.cumulative_dose} title="Cumulative Dose" />
       ) : (
         EM_DASH
       ),
@@ -108,12 +107,12 @@ const RadiationTherapyComponent = ({ radiation_therapy }: { radiation_therapy: R
     {
       key: 'modality',
       label: 'Modality',
-      children: <OntologyTermComponent term={radiation_therapy.modality} resources={[]} />,
+      children: <OntologyTermComponent term={radiation_therapy.modality} />,
     },
     {
       key: 'bodySite',
       label: 'Body Site',
-      children: <OntologyTermComponent term={radiation_therapy.body_site} resources={[]} />,
+      children: <OntologyTermComponent term={radiation_therapy.body_site} />,
     },
     {
       key: 'dosage',
@@ -129,22 +128,14 @@ const RadiationTherapyComponent = ({ radiation_therapy }: { radiation_therapy: R
   return <Descriptions bordered column={1} size="small" items={RadiationTherapyItems} />;
 };
 
-const TherapeuticRegimenComponent = ({
-  therapeutic_regimen,
-  resources,
-}: {
-  therapeutic_regimen: TherapeuticRegimen;
-  resources: Resource[];
-}) => {
+const TherapeuticRegimenComponent = ({ therapeutic_regimen }: { therapeutic_regimen: TherapeuticRegimen }) => {
   const TherapeuticRegimenItems: DescriptionsProps['items'] = [
     {
       key: 'Identifier',
       label: 'Identifier',
       children: (
         <>
-          {therapeutic_regimen.ontology_class ?? (
-            <OntologyTermComponent term={therapeutic_regimen.ontology_class} resources={resources} />
-          )}
+          {therapeutic_regimen.ontology_class ?? <OntologyTermComponent term={therapeutic_regimen.ontology_class} />}
           {therapeutic_regimen.external_reference && (
             <Flex vertical>
               <div>
@@ -183,23 +174,17 @@ const TherapeuticRegimenComponent = ({
   return <Descriptions bordered column={1} size="small" items={TherapeuticRegimenItems} />;
 };
 
-const MedicalActionDetails = ({
-  medicalAction,
-  resources,
-}: {
-  medicalAction: MedicalAction;
-  resources: Resource[];
-}) => {
+const MedicalActionDetails = ({ medicalAction }: { medicalAction: MedicalAction }) => {
   const MedicalActionItems: DescriptionsProps['items'] = [
     medicalAction.procedure && {
       key: 'procedure',
       label: 'Procedure',
-      children: <ProcedureComponent procedure={medicalAction.procedure} resources={resources} />,
+      children: <ProcedureComponent procedure={medicalAction.procedure} />,
     },
     medicalAction.treatment && {
       key: 'treatment',
       label: 'Treatment',
-      children: <TreatmentComponent treatment={medicalAction.treatment} resources={resources} />,
+      children: <TreatmentComponent treatment={medicalAction.treatment} />,
     },
     medicalAction.radiation_therapy && {
       key: 'radiationTherapy',
@@ -209,26 +194,18 @@ const MedicalActionDetails = ({
     medicalAction.therapeutic_regimen && {
       key: 'therapeuticRegimen',
       label: 'Therapeutic Regimen',
-      children: (
-        <TherapeuticRegimenComponent therapeutic_regimen={medicalAction.therapeutic_regimen} resources={resources} />
-      ),
+      children: <TherapeuticRegimenComponent therapeutic_regimen={medicalAction.therapeutic_regimen} />,
     },
     {
       key: 'adverseEvents',
       label: 'Adverse Events',
-      children: <OntologyTermStack terms={medicalAction.adverse_events} resources={resources} />,
+      children: <OntologyTermStack terms={medicalAction.adverse_events} />,
     },
   ].filter((item) => item) as DescriptionsProps['items'];
   return <Descriptions bordered column={1} size="small" items={MedicalActionItems} />;
 };
 
-const MedicalActionsView = ({
-  medicalActions,
-  resources,
-}: {
-  medicalActions: MedicalAction[];
-  resources: Resource[];
-}) => {
+const MedicalActionsView = ({ medicalActions }: { medicalActions: MedicalAction[] }) => {
   const columns = [
     {
       title: 'Action Type',
@@ -245,19 +222,19 @@ const MedicalActionsView = ({
       title: 'Treatment Target',
       dataIndex: 'treatment_target',
       key: 'treatmentTarget',
-      render: (target: OntologyTerm) => <OntologyTermComponent term={target} resources={resources} />,
+      render: (target: OntologyTerm) => <OntologyTermComponent term={target} />,
     },
     {
       title: 'Treatment Intent',
       dataIndex: 'treatment_intent',
       key: 'treatmentIntent',
-      render: (intent: OntologyTerm) => <OntologyTermComponent term={intent} resources={resources} />,
+      render: (intent: OntologyTerm) => <OntologyTermComponent term={intent} />,
     },
     {
       title: 'Response to Treatment',
       dataIndex: 'response_to_treatment',
       key: 'responseToTreatment',
-      render: (response: OntologyTerm) => <OntologyTermComponent term={response} resources={resources} />,
+      render: (response: OntologyTerm) => <OntologyTermComponent term={response} />,
     },
     {
       title: 'Adverse Events',
@@ -269,7 +246,7 @@ const MedicalActionsView = ({
       title: 'Treatment Termination Reason',
       dataIndex: 'treatment_termination_reason',
       key: 'treatmentTerminationReason',
-      render: (reason: OntologyTerm) => <OntologyTermComponent term={reason} resources={resources} />,
+      render: (reason: OntologyTerm) => <OntologyTermComponent term={reason} />,
     },
   ];
 
@@ -278,7 +255,7 @@ const MedicalActionsView = ({
       dataSource={medicalActions}
       columns={columns}
       expandable={{
-        expandedRowRender: (record) => <MedicalActionDetails medicalAction={record} resources={resources} />,
+        expandedRowRender: (record) => <MedicalActionDetails medicalAction={record} />,
       }}
       rowKey={(record) =>
         record.procedure?.code?.id || record.treatment?.agent?.id || record.radiation_therapy?.modality?.id || 'unknown'

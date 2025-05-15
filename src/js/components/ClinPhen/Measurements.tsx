@@ -1,25 +1,16 @@
-import { Descriptions, DescriptionsProps, Flex, Space, Table } from 'antd';
+import { Descriptions, DescriptionsProps, Flex, Table } from 'antd';
 import { Measurement, Quantity } from '@/types/clinPhen/measurement';
 import type { OntologyTerm as OntologyTermType } from '@/types/ontology';
 import OntologyTermComponent from './OntologyTerm';
-import type { Resource } from '@/types/clinPhen/resource';
 import { Procedure } from '@/types/clinPhen/procedure';
 import { EM_DASH } from '@/constants/common';
 
-export const QuantityComponent = ({
-  quantity,
-  title,
-  resources,
-}: {
-  quantity: Quantity;
-  title?: string;
-  resources: Resource[];
-}) => {
+export const QuantityComponent = ({ quantity, title }: { quantity: Quantity; title?: string }) => {
   const items: DescriptionsProps['items'] = [
     {
       key: 'Unit',
       label: 'Unit',
-      children: <OntologyTermComponent term={quantity.unit} resources={resources} />,
+      children: <OntologyTermComponent term={quantity.unit} />,
     },
     {
       key: 'Value',
@@ -32,7 +23,7 @@ export const QuantityComponent = ({
       children: (
         <Flex>
           <div>
-            <strong>Unit:</strong> <OntologyTermComponent term={quantity.reference_range.unit} resources={resources} />
+            <strong>Unit:</strong> <OntologyTermComponent term={quantity.reference_range.unit} />
           </div>
           <div>
             <strong>Low:</strong> {quantity.reference_range.low}
@@ -59,7 +50,7 @@ function MeasurementsExpandedRow({ measurement }: { measurement: Measurement }) 
   return <Descriptions bordered size="small" items={items} />;
 }
 
-function MeasurementValue({ measurement, resources }: { measurement: Measurement; resources: Resource[] }) {
+function MeasurementValue({ measurement }: { measurement: Measurement }) {
   if (measurement?.value) {
     const quantity = measurement.value.quantity;
     return (
@@ -74,13 +65,13 @@ function MeasurementValue({ measurement, resources }: { measurement: Measurement
         title: 'Type',
         key: 'type',
         dataIndex: 'type',
-        render: (type: OntologyTermType) => <OntologyTermComponent term={type} resources={resources} />,
+        render: (type: OntologyTermType) => <OntologyTermComponent term={type} />,
       },
       {
         title: 'Quantity',
         key: 'quantity',
         dataIndex: 'quantity',
-        render: (quantity: Quantity) => <QuantityComponent quantity={quantity} resources={resources} />,
+        render: (quantity: Quantity) => <QuantityComponent quantity={quantity} />,
       },
     ];
 
@@ -97,21 +88,20 @@ function MeasurementValue({ measurement, resources }: { measurement: Measurement
 
 interface MeasurementsViewProps {
   measurements: Measurement[];
-  resources: Resource[];
 }
 
-function MeasurementsView({ measurements, resources }: MeasurementsViewProps) {
+function MeasurementsView({ measurements }: MeasurementsViewProps) {
   const columns = [
     {
       title: 'Assay',
       dataIndex: 'assay',
       key: 'assay',
-      render: (assay: OntologyTermType) => <OntologyTermComponent term={assay} resources={resources} />,
+      render: (assay: OntologyTermType) => <OntologyTermComponent term={assay} />,
     },
     {
       title: 'Measurement Value',
       key: 'value',
-      render: (m: Measurement) => <MeasurementValue measurement={m} resources={resources} />,
+      render: (m: Measurement) => <MeasurementValue measurement={m} />,
     },
     {
       title: 'Description',
@@ -123,9 +113,7 @@ function MeasurementsView({ measurements, resources }: MeasurementsViewProps) {
       title: 'Procedure',
       dataIndex: 'procedure',
       key: 'procedure',
-      render: (procedure: Procedure | undefined) => (
-        <OntologyTermComponent term={procedure?.code} resources={resources} />
-      ),
+      render: (procedure: Procedure | undefined) => <OntologyTermComponent term={procedure?.code} />,
     },
   ];
   return (

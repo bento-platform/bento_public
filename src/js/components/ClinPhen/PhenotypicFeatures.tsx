@@ -1,6 +1,5 @@
 import { Descriptions, DescriptionsProps, Table } from 'antd';
 import { LinkOutlined } from '@ant-design/icons';
-import type { Resource } from '@/types/clinPhen/resource';
 import type { PhenotypicFeature } from '@/types/clinPhen/phenotypicFeature';
 import OntologyTermComponent from './OntologyTerm';
 import { EM_DASH } from '@/constants/common';
@@ -15,10 +14,9 @@ import ExtraProperties from '../Util/ExtraProperties';
 
 interface EvidenceProps {
   evidence?: EvidenceType;
-  resources: Resource[];
 }
 
-const Evidence = ({ evidence, resources }: EvidenceProps) => {
+const Evidence = ({ evidence }: EvidenceProps) => {
   if (!evidence) {
     return EM_DASH;
   }
@@ -30,7 +28,7 @@ const Evidence = ({ evidence, resources }: EvidenceProps) => {
     {
       key: 'evidence_code',
       label: 'Evidence Code',
-      children: <OntologyTermComponent term={evidence.evidence_code} resources={resources} />,
+      children: <OntologyTermComponent term={evidence.evidence_code} />,
     },
     externalReference && {
       key: 'reference',
@@ -62,7 +60,7 @@ const Evidence = ({ evidence, resources }: EvidenceProps) => {
   return <Descriptions bordered={false} column={1} size="small" items={items} />;
 };
 
-function PhenotypicFeatureExpandedRow({ feature, resources }: { feature: PhenotypicFeature; resources: Resource[] }) {
+function PhenotypicFeatureExpandedRow({ feature }: { feature: PhenotypicFeature }) {
   const items: DescriptionsProps['items'] = [
     {
       key: 'description',
@@ -75,7 +73,7 @@ function PhenotypicFeatureExpandedRow({ feature, resources }: { feature: Phenoty
       children: feature.modifiers?.length ? (
         <Space direction="vertical">
           {feature.modifiers.map((m) => (
-            <OntologyTermComponent key={m.id} term={m} resources={resources} />
+            <OntologyTermComponent key={m.id} term={m} />
           ))}
         </Space>
       ) : (
@@ -85,9 +83,7 @@ function PhenotypicFeatureExpandedRow({ feature, resources }: { feature: Phenoty
     {
       key: 'evidence',
       label: 'Evidence',
-      children: feature.evidence?.length
-        ? feature.evidence.map((e, i) => <Evidence key={i} evidence={e} resources={resources} />)
-        : EM_DASH,
+      children: feature.evidence?.length ? feature.evidence.map((e, i) => <Evidence key={i} evidence={e} />) : EM_DASH,
     },
     {
       key: 'extra_properties',
@@ -100,22 +96,21 @@ function PhenotypicFeatureExpandedRow({ feature, resources }: { feature: Phenoty
 
 interface PhenotypicFeaturesViewProps {
   features: PhenotypicFeature[];
-  resources: Resource[];
 }
 
-function PhenotypicFeaturesView({ features, resources }: PhenotypicFeaturesViewProps) {
+function PhenotypicFeaturesView({ features }: PhenotypicFeaturesViewProps) {
   const columns = [
     {
       title: 'Feature',
       dataIndex: 'type',
       key: 'type',
-      render: (type: OntologyTerm) => <OntologyTermComponent term={type} resources={resources} />,
+      render: (type: OntologyTerm) => <OntologyTermComponent term={type} />,
     },
     {
       title: 'Severity',
       dataIndex: 'severity',
       key: 'severity',
-      render: (severity: OntologyTerm) => <OntologyTermComponent term={severity} resources={resources} />,
+      render: (severity: OntologyTerm) => <OntologyTermComponent term={severity} />,
     },
     {
       title: 'Onset',
@@ -135,7 +130,7 @@ function PhenotypicFeaturesView({ features, resources }: PhenotypicFeaturesViewP
       dataSource={features}
       columns={columns}
       expandable={{
-        expandedRowRender: (record) => <PhenotypicFeatureExpandedRow feature={record} resources={resources} />,
+        expandedRowRender: (record) => <PhenotypicFeatureExpandedRow feature={record} />,
       }}
       rowKey={(record) => record.type.id}
     />

@@ -2,7 +2,6 @@ import { Space, Typography } from 'antd';
 import { LinkOutlined } from '@ant-design/icons';
 import { useParams } from 'react-router-dom';
 import type { OntologyTerm as OntologyTermType } from '@/types/ontology';
-import type { Resource } from '@/types/clinPhen/resource';
 import { EM_DASH } from '@/constants/common';
 import { RouteParams } from './PhenopacketView';
 import { usePhenopacketResources } from '@/features/clinPhen/hooks';
@@ -11,7 +10,6 @@ const { Link } = Typography;
 
 interface OntologyTermProps {
   term: OntologyTermType | undefined;
-  resources?: Resource[];
 }
 
 const OntologyTerm = ({ term }: OntologyTermProps) => {
@@ -39,7 +37,6 @@ const OntologyTerm = ({ term }: OntologyTermProps) => {
 
 interface OntologyTermStackProps {
   terms: OntologyTermType[] | undefined;
-  resources?: Resource[];
 }
 
 export const OntologyTermStack = ({ terms }: OntologyTermStackProps) => {

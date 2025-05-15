@@ -2,7 +2,6 @@ import { Descriptions, DescriptionsProps, Table } from 'antd';
 import { Biosample } from '@/types/clinPhen/biosample';
 import { OntologyTerm } from '@/types/ontology';
 import { EM_DASH } from '@/constants/common';
-import { Resource } from '@/types/clinPhen/resource';
 import OntologyTermComponent from './OntologyTerm';
 
 const BiosampleExpandedRow: React.FC<{ biosample: Biosample }> = ({ biosample }) => {
@@ -44,10 +43,9 @@ const BiosampleExpandedRow: React.FC<{ biosample: Biosample }> = ({ biosample })
 
 interface BiosampleViewProps {
   biosamples: Biosample[];
-  resources: Resource[];
 }
 
-const BiosampleView: React.FC<BiosampleViewProps> = ({ biosamples, resources }) => {
+const BiosampleView: React.FC<BiosampleViewProps> = ({ biosamples }) => {
   const columns = [
     {
       title: 'Biosample ID',
@@ -58,7 +56,7 @@ const BiosampleView: React.FC<BiosampleViewProps> = ({ biosamples, resources }) 
       title: 'Sampled Tissue',
       dataIndex: 'sampled_tissue',
       key: 'sampled_tissue',
-      render: (term: OntologyTerm) => <OntologyTermComponent term={term} resources={resources} />,
+      render: (term: OntologyTerm) => <OntologyTermComponent term={term} />,
     },
   ];
   return (
