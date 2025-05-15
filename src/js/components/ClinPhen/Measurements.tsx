@@ -1,10 +1,51 @@
-import { Descriptions, DescriptionsProps, Space, Table } from 'antd';
-import { Measurement } from '@/types/clinPhen/measurement';
+import { Descriptions, DescriptionsProps, Flex, Space, Table } from 'antd';
+import { Measurement, Quantity } from '@/types/clinPhen/measurement';
 import type { OntologyTerm as OntologyTermType } from '@/types/ontology';
 import OntologyTermComponent from './OntologyTerm';
 import type { Resource } from '@/types/clinPhen/resource';
 import { Procedure } from '@/types/clinPhen/procedure';
 import { EM_DASH } from '@/constants/common';
+
+export const QuantityComponent = ({
+  quantity,
+  title,
+  resources,
+}: {
+  quantity: Quantity;
+  title?: string;
+  resources: Resource[];
+}) => {
+  const items: DescriptionsProps['items'] = [
+    {
+      key: 'Unit',
+      label: 'Unit',
+      children: <OntologyTermComponent term={quantity.unit} resources={resources} />,
+    },
+    {
+      key: 'Value',
+      label: 'Value',
+      children: quantity.value,
+    },
+    quantity.reference_range && {
+      key: 'Reference Range',
+      label: 'Reference Range',
+      children: (
+        <Flex>
+          <div>
+            <strong>Unit:</strong> <OntologyTermComponent term={quantity.reference_range.unit} resources={resources} />
+          </div>
+          <div>
+            <strong>Low:</strong> {quantity.reference_range.low}
+          </div>
+          <div>
+            <strong>High:</strong> {quantity.reference_range.high}
+          </div>
+        </Flex>
+      ),
+    },
+  ].filter(Boolean) as DescriptionsProps['items'];
+  return <Descriptions bordered size="small" items={items} title={title} />;
+};
 
 function MeasurementsExpandedRow({ measurement }: { measurement: Measurement }) {
   const items: DescriptionsProps['items'] = [
@@ -18,7 +59,7 @@ function MeasurementsExpandedRow({ measurement }: { measurement: Measurement }) 
   return <Descriptions bordered size="small" items={items} />;
 }
 
-function MeasurementValue({ measurement }: { measurement: Measurement }) {
+function MeasurementValue({ measurement, resources }: { measurement: Measurement; resources: Resource[] }) {
   if (measurement?.value) {
     const quantity = measurement.value.quantity;
     return (
@@ -28,16 +69,28 @@ function MeasurementValue({ measurement }: { measurement: Measurement }) {
     );
   }
   if (measurement?.complex_value) {
-    const { typed_quantities } = measurement.complex_value;
-    return (
-      <Space direction="vertical" size={0}>
-        {typed_quantities.map((typedQuantity, index) => (
-          <span key={index}>
-            {typedQuantity.type.label}: {typedQuantity.quantity.value} {typedQuantity.quantity.unit.label}
-          </span>
-        ))}
-      </Space>
-    );
+    const COMPLEX_VALUE_COLUMNS = [
+      {
+        title: 'Type',
+        key: 'type',
+        dataIndex: 'type',
+        render: (type: OntologyTermType) => <OntologyTermComponent term={type} resources={resources} />,
+      },
+      {
+        title: 'Quantity',
+        key: 'quantity',
+        dataIndex: 'quantity',
+        render: (quantity: Quantity) => <QuantityComponent quantity={quantity} resources={resources} />,
+      },
+    ];
+
+    <Table
+      bordered={true}
+      pagination={false}
+      size="small"
+      columns={COMPLEX_VALUE_COLUMNS}
+      dataSource={measurement.complex_value.typed_quantities}
+    />;
   }
   return null;
 }
@@ -58,7 +111,7 @@ function MeasurementsView({ measurements, resources }: MeasurementsViewProps) {
     {
       title: 'Measurement Value',
       key: 'value',
-      render: (m: Measurement) => <MeasurementValue measurement={m} />,
+      render: (m: Measurement) => <MeasurementValue measurement={m} resources={resources} />,
     },
     {
       title: 'Description',
