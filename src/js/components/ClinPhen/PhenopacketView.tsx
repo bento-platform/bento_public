@@ -11,6 +11,7 @@ import Ontologies from './Ontologies';
 import MeasurementsView from './Measurements';
 import PhenotypicFeaturesView from './PhenotypicFeatures';
 import DiseasesView from './DiseasesView';
+import MedicalActionsView from './MedicalActionsView';
 
 const getTabContent = (title: string, data: any) => (
   <Descriptions title={title}>
@@ -118,7 +119,13 @@ const PhenopacketView = () => {
     {
       key: TabKeys.MEDICAL_ACTIONS,
       label: 'Medical Actions',
-      children: getTabContent('Medical Actions', phenopacket?.medical_actions),
+      children:
+        phenopacket?.medical_actions && phenopacket?.meta_data?.resources ? (
+          <MedicalActionsView
+            medicalActions={phenopacket.medical_actions}
+            resources={phenopacket.meta_data.resources}
+          />
+        ) : null,
       disabled: !phenopacket?.medical_actions,
     },
     {
