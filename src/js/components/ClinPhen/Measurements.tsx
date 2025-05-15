@@ -38,7 +38,7 @@ export const QuantityComponent = ({ quantity, title }: { quantity: Quantity; tit
   return <Descriptions bordered size="small" items={items} title={title} />;
 };
 
-function MeasurementsExpandedRow({ measurement }: { measurement: Measurement }) {
+const MeasurementsExpandedRow = ({ measurement }: { measurement: Measurement }) => {
   const items: DescriptionsProps['items'] = [
     {
       key: 'description',
@@ -48,7 +48,7 @@ function MeasurementsExpandedRow({ measurement }: { measurement: Measurement }) 
   ];
 
   return <Descriptions bordered size="small" items={items} />;
-}
+};
 
 function MeasurementValue({ measurement }: { measurement: Measurement }) {
   if (measurement?.value) {
@@ -90,7 +90,7 @@ interface MeasurementsViewProps {
   measurements: Measurement[];
 }
 
-function MeasurementsView({ measurements }: MeasurementsViewProps) {
+const MeasurementsView = ({ measurements }: MeasurementsViewProps) => {
   const columns = [
     {
       title: 'Assay',
@@ -126,6 +126,6 @@ function MeasurementsView({ measurements }: MeasurementsViewProps) {
       rowKey={(record) => record.assay.id}
     />
   );
-}
+};
 
 export default MeasurementsView;

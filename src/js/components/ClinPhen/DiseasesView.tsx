@@ -7,7 +7,7 @@ import { TimeElement } from '@/types/clinPhen/shared';
 import { EM_DASH } from '@/constants/common';
 import { OntologyTerm } from '@/types/ontology';
 
-const DiseaseExpandedRow: React.FC<{ disease: Disease }> = ({ disease }) => {
+const DiseaseExpandedRow = ({ disease }: { disease: Disease }) => {
   const items: DescriptionsProps['items'] = [
     {
       key: 'disease_stage',
@@ -38,7 +38,7 @@ interface DiseasesViewProps {
   diseases: Disease[];
 }
 
-const DiseasesView: React.FC<DiseasesViewProps> = ({ diseases }) => {
+const DiseasesView = ({ diseases }: DiseasesViewProps) => {
   const columns = [
     {
       title: 'Disease',

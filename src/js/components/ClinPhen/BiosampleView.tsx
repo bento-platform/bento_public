@@ -4,7 +4,7 @@ import { OntologyTerm } from '@/types/ontology';
 import { EM_DASH } from '@/constants/common';
 import OntologyTermComponent from './OntologyTerm';
 
-const BiosampleExpandedRow: React.FC<{ biosample: Biosample }> = ({ biosample }) => {
+const BiosampleExpandedRow = ({ biosample }: { biosample: Biosample }) => {
   const items: DescriptionsProps['items'] = [
     {
       key: 'description',
@@ -45,7 +45,7 @@ interface BiosampleViewProps {
   biosamples: Biosample[];
 }
 
-const BiosampleView: React.FC<BiosampleViewProps> = ({ biosamples }) => {
+const BiosampleView = ({ biosamples }: BiosampleViewProps) => {
   const columns = [
     {
       title: 'Biosample ID',
