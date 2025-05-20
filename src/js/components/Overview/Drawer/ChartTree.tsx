@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { useMemo } from 'react';
 import type { TreeProps } from 'antd';
-import { InputNumber, Tree } from 'antd';
+import { Flex, InputNumber, Tree } from 'antd';
 
 import { rearrange, setDisplayedCharts, setChartWidth } from '@/features/data/data.store';
 import { useAppDispatch, useTranslationFn } from '@/hooks';
@@ -21,8 +21,8 @@ const ChartTree = ({ charts, section }: ChartTreeProps) => {
     () =>
       charts.map(({ field: { title }, id, width }) => ({
         title: (
-          <div style={{ display: 'flex' }}>
-            <span style={{ flex: 1 }}>{t(title)}</span>
+          <Flex>
+            <span className="flex-1">{t(title)}</span>
             <span>
               {t('Width')}:{' '}
               <InputNumber
@@ -39,7 +39,7 @@ const ChartTree = ({ charts, section }: ChartTreeProps) => {
                 style={{ width: 50 }}
               />
             </span>
-          </div>
+          </Flex>
         ),
         key: id,
       })),
