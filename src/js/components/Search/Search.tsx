@@ -13,6 +13,7 @@ import {
   resetFilterQueryStatus,
   setTextQuery,
   resetTextQueryStatus,
+  setDoneFirstLoad,
 } from '@/features/search/query.store';
 import { useAppDispatch, useHasScopePermission } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
@@ -52,7 +53,6 @@ const RoutedSearch = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [doneFirstLoad, setDoneFirstLoad] = useState(false);
   const [focused, setFocused] = useState<SearchMode>('filters');
 
   const { configStatus, maxQueryParameters } = useConfig();
@@ -62,6 +62,7 @@ const RoutedSearch = () => {
     filterQueryStatus,
     textQuery,
     textQueryStatus,
+    doneFirstLoad,
   } = useSearchQuery();
   const filterFields = useQueryFilterFields();
 
@@ -174,7 +175,7 @@ const RoutedSearch = () => {
       }
     }
 
-    setDoneFirstLoad(true);
+    dispatch(setDoneFirstLoad());
   }, [
     dispatch,
     configStatus,

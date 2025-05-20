@@ -21,6 +21,9 @@ export type QueryState = {
   // ----
   textQuery: string;
   // ----
+  // Whether the first search has been executed; can't be reset on 'search mode' (filter/text) change the way
+  // (filter|text)QueryStatus can. This is instead only reset when the complete query state is reset.
+  doneFirstLoad: boolean;
   message: string;
   results: DiscoveryResults;
 };
@@ -35,6 +38,7 @@ const initialState: QueryState = {
   // ----
   textQuery: '',
   // ----
+  doneFirstLoad: false,
   message: '',
   results: EMPTY_DISCOVERY_RESULTS,
 };
@@ -55,6 +59,10 @@ const query = createSlice({
     resetTextQueryStatus: (state) => {
       state.textQueryStatus = RequestStatus.Idle;
     },
+    setDoneFirstLoad: (state) => {
+      state.doneFirstLoad = true;
+    },
+    resetAllQueryState: () => initialState,
   },
   extraReducers: (builder) => {
     builder.addCase(makeGetKatsuPublic.pending, (state) => {
@@ -123,6 +131,13 @@ const query = createSlice({
   },
 });
 
-export const { setFilterQueryParams, resetFilterQueryStatus, setTextQuery, resetTextQueryStatus } = query.actions;
+export const {
+  setFilterQueryParams,
+  resetFilterQueryStatus,
+  setTextQuery,
+  resetTextQueryStatus,
+  setDoneFirstLoad,
+  resetAllQueryState,
+} = query.actions;
 export { makeGetKatsuPublic, makeGetSearchFields };
 export default query.reducer;

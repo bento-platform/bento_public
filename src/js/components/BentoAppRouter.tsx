@@ -13,7 +13,7 @@ import { invalidateDataTypes } from '@/features/dataTypes/dataTypes.store';
 import { useMetadata } from '@/features/metadata/hooks';
 import { getProjects, markScopeSet, selectScope } from '@/features/metadata/metadata.store';
 import { getGenomes } from '@/features/reference/reference.store';
-import { makeGetKatsuPublic, makeGetSearchFields } from '@/features/search/query.store';
+import { makeGetKatsuPublic, makeGetSearchFields, resetAllQueryState } from '@/features/search/query.store';
 
 import Loader from '@/components/Loader';
 import DefaultLayout from '@/components/Util/DefaultLayout';
@@ -95,6 +95,12 @@ const BentoAppRouter = () => {
 
   useEffect(() => {
     if (!scopeSet) return;
+
+    // Reset query state, including currently-applied filters/search; the filters may not be the same between scopes.
+    //  TODO: in the future, perhaps filters could be kept if the scopes overlap and we know there's discovery config
+    //   inheritance, but this would require quite a bit more logic and maybe is unnecessarily complex.
+    dispatch(resetAllQueryState());
+
     dispatch(makeGetSearchFields());
     dispatch(makeGetKatsuPublic());
 
