@@ -45,6 +45,7 @@ interface BiosampleViewProps {
   biosamples: Biosample[];
 }
 
+//TODO: add button that links to experiment (like bento web)
 const BiosampleView = ({ biosamples }: BiosampleViewProps) => {
   const columns = [
     {
