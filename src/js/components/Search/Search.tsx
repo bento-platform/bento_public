@@ -91,7 +91,7 @@ const RoutedSearch = () => {
 
       return {
         valid,
-        validQueryParams: Object.fromEntries(validQueryParamArray.slice(0, maxQueryParameters)),
+        validFilterQueryParams: Object.fromEntries(validQueryParamArray.slice(0, maxQueryParameters)),
         otherQueryParams: Object.fromEntries(otherQueryParamArray),
       };
     },
