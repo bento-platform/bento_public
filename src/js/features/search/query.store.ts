@@ -4,7 +4,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { DiscoveryResults } from '@/types/data';
 import { RequestStatus } from '@/types/requests';
 import { EMPTY_DISCOVERY_RESULTS } from '@/features/search/constants';
-import type { KatsuSearchResponse, QueryParams, SearchFieldResponse } from '@/features/search/types';
+import type { KatsuSearchResponse, QueryParams, SearchFieldResponse, QueryMode } from '@/features/search/types';
 import { serializeChartData } from '@/utils/chart';
 
 import { makeGetKatsuPublic } from './makeGetKatsuPublic.thunk';
@@ -12,6 +12,8 @@ import { makeGetSearchFields } from './makeGetSearchFields.thunk';
 import { performFreeTextSearch } from '@/features/search/performFreeTextSearch.thunk';
 
 export type QueryState = {
+  mode: QueryMode;
+  // ---
   fieldsStatus: RequestStatus;
   filterQueryStatus: RequestStatus;
   textQueryStatus: RequestStatus;
@@ -29,6 +31,8 @@ export type QueryState = {
 };
 
 const initialState: QueryState = {
+  mode: 'filters',
+  // ---
   fieldsStatus: RequestStatus.Idle,
   filterQueryStatus: RequestStatus.Idle,
   textQueryStatus: RequestStatus.Idle,
@@ -47,6 +51,9 @@ const query = createSlice({
   name: 'query',
   initialState,
   reducers: {
+    setQueryMode: (state, { payload }: PayloadAction<QueryMode>) => {
+      state.mode = payload;
+    },
     setFilterQueryParams: (state, { payload }: PayloadAction<QueryParams>) => {
       state.filterQueryParams = payload;
     },
@@ -132,6 +139,7 @@ const query = createSlice({
 });
 
 export const {
+  setQueryMode,
   setFilterQueryParams,
   resetFilterQueryStatus,
   setTextQuery,

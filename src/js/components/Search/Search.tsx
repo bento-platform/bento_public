@@ -1,4 +1,4 @@
-import { type CSSProperties, useCallback, useEffect, useState } from 'react';
+import { type CSSProperties, useCallback, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Card, Flex, Row, Space } from 'antd';
 
@@ -14,6 +14,7 @@ import {
   setTextQuery,
   resetTextQueryStatus,
   setDoneFirstLoad,
+  setQueryMode,
 } from '@/features/search/query.store';
 import { useAppDispatch, useHasScopePermission } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
@@ -41,7 +42,6 @@ const checkQueryParamsEqual = (qp1: QueryParams, qp2: QueryParams): boolean => {
   return params.reduce((acc, v) => acc && qp1[v] === qp2[v], true);
 };
 
-type SearchMode = 'filters' | 'text';
 type QueryValidationResult = {
   valid: boolean;
   validQueryParams: QueryParams;
@@ -53,10 +53,9 @@ const RoutedSearch = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [focused, setFocused] = useState<SearchMode>('filters');
-
   const { configStatus, maxQueryParameters } = useConfig();
   const {
+    mode: queryMode,
     filterQueryParams,
     fieldsStatus: searchFieldsStatus,
     filterQueryStatus,
@@ -143,11 +142,11 @@ const RoutedSearch = () => {
 
     if (
       textQueryStatus === RequestStatus.Idle &&
-      (focused === 'text' || (!doneFirstLoad && (newTextQuery || textQuery)))
+      (queryMode === 'text' || (!doneFirstLoad && (newTextQuery || textQuery)))
     ) {
       dispatch(performFreeTextSearch());
       performingTextQuery = true;
-      setFocused('text');
+      dispatch(setQueryMode('text'));
       // Indicate to the state that search results don't reflect the filters by resetting the filter request status.
       dispatch(resetFilterQueryStatus());
     }
@@ -166,7 +165,7 @@ const RoutedSearch = () => {
         dispatch(setFilterQueryParams(validQueryParams));
       }
 
-      if (!performingTextQuery && focused === 'filters') {
+      if (!performingTextQuery && queryMode === 'filters') {
         // We only want to execute the filters search if we're not already performing a text search even while we're
         // focused on the filters form, which can happen on first load with a text search query parameter specified.
         dispatch(makeGetKatsuPublic());
@@ -182,7 +181,7 @@ const RoutedSearch = () => {
     doneFirstLoad,
     searchFieldsStatus,
     filterQueryStatus,
-    focused,
+    queryMode,
     textQueryStatus,
     location,
     navigate,
@@ -191,7 +190,7 @@ const RoutedSearch = () => {
     validateQuery,
   ]);
 
-  return <Search focused={focused} setFocused={setFocused} />;
+  return <Search />;
 };
 
 const focusedStyle = (focused: boolean) =>
@@ -200,15 +199,14 @@ const focusedStyle = (focused: boolean) =>
     transition: 'opacity 0.1s',
   }) as CSSProperties;
 
-type SearchProps = { focused: SearchMode; setFocused: (mode: SearchMode) => void };
-
-const Search = ({ focused, setFocused }: SearchProps) => {
+const Search = () => {
+  const dispatch = useAppDispatch();
   const isSmallScreen = useSmallScreen();
   const { hasPermission: queryDataPerm } = useHasScopePermission(queryData);
-  const { fieldsStatus } = useSearchQuery();
+  const { mode: queryMode, fieldsStatus } = useSearchQuery();
 
-  const onFiltersFocus = useCallback(() => setFocused('filters'), [setFocused]);
-  const onTextFocus = useCallback(() => setFocused('text'), [setFocused]);
+  const onFiltersFocus = useCallback(() => dispatch(setQueryMode('filters')), [dispatch]);
+  const onTextFocus = useCallback(() => dispatch(setQueryMode('text')), [dispatch]);
 
   return WAITING_STATES.includes(fieldsStatus) ? (
     <Loader />
@@ -222,12 +220,12 @@ const Search = ({ focused, setFocused }: SearchProps) => {
           >
             <Flex justify="space-between" gap={isSmallScreen ? 12 : 24} className="w-full" vertical={isSmallScreen}>
               <SearchFilters
-                focused={focused === 'filters'}
+                focused={queryMode === 'filters'}
                 onFocus={onFiltersFocus}
                 style={{
                   flex: 1,
                   maxWidth: 600,
-                  ...focusedStyle(focused === 'filters'),
+                  ...focusedStyle(queryMode === 'filters'),
                 }}
               />
               {queryDataPerm && (
@@ -236,9 +234,9 @@ const Search = ({ focused, setFocused }: SearchProps) => {
                 <>
                   <OrDelimiter vertical={!isSmallScreen} />
                   <SearchFreeText
-                    focused={focused === 'text'}
+                    focused={queryMode === 'text'}
                     onFocus={onTextFocus}
-                    style={{ flex: 1, ...focusedStyle(focused === 'text') }}
+                    style={{ flex: 1, ...focusedStyle(queryMode === 'text') }}
                   />
                 </>
               )}

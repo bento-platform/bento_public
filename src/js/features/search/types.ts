@@ -3,6 +3,8 @@ import type { Datum } from '@/types/overviewResponse';
 export type QueryParamEntry = [string, string];
 export type QueryParams = { [key: string]: string };
 
+export type QueryMode = 'filters' | 'text';
+
 export interface SearchFieldResponse {
   sections: Section[];
 }
