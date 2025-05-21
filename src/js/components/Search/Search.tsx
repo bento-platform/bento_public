@@ -121,7 +121,7 @@ const RoutedSearch = () => {
     if (!valid) {
       const url = buildQueryParamsUrl(location.pathname, { ...validFilterQueryParams, ...otherQueryParams });
       console.debug('[Search] Redirecting to:', url);
-      navigate(url);
+      navigate(url, { replace: true });
       // Then, the new URL will re-trigger this effect but with only valid query parameters.
       return;
     }
