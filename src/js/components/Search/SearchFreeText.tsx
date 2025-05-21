@@ -4,7 +4,7 @@ import { Button, Form, Input, Space, Typography } from 'antd';
 import { FormOutlined, SearchOutlined } from '@ant-design/icons';
 
 import { TEXT_QUERY_PARAM } from '@/features/search/constants';
-import { useNonFilterQueryParams, useSearchQuery } from '@/features/search/hooks';
+import { useAllSearchQueryParams, useSearchQuery } from '@/features/search/hooks';
 import { buildQueryParamsUrl } from '@/features/search/utils';
 import { useTranslationFn } from '@/hooks';
 import { RequestStatus } from '@/types/requests';
@@ -19,8 +19,8 @@ const SearchFreeText = ({ focused, onFocus, style }: SearchFreeTextProps) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { filterQueryParams, textQuery, textQueryStatus } = useSearchQuery();
-  const nonFilterQueryParams = useNonFilterQueryParams();
+  const { textQuery, textQueryStatus } = useSearchQuery();
+  const allSearchQueryParams = useAllSearchQueryParams();
 
   const [form] = Form.useForm<FreeTextFormValues>();
 
@@ -37,13 +37,12 @@ const SearchFreeText = ({ focused, onFocus, style }: SearchFreeTextProps) => {
     (values: FreeTextFormValues) => {
       navigate(
         buildQueryParamsUrl(location.pathname, {
-          ...filterQueryParams,
-          ...nonFilterQueryParams,
+          ...allSearchQueryParams,
           [TEXT_QUERY_PARAM]: values.q,
         })
       );
     },
-    [location.pathname, filterQueryParams, nonFilterQueryParams, navigate]
+    [location.pathname, allSearchQueryParams, navigate]
   );
 
   return (
