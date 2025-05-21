@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-import { MAX_CHARTS, katsuPublicOverviewUrl } from '@/constants/configConstants';
+import { MAX_CHARTS, katsuDiscoveryUrl } from '@/constants/configConstants';
 import { DEFAULT_CHART_WIDTH, LOCALSTORAGE_CHARTS_KEY } from '@/constants/overviewConstants';
 import { serializeChartData } from '@/utils/chart';
 import { printAPIError } from '@/utils/error.util';
@@ -22,7 +22,7 @@ export const makeGetDataRequestThunk = createAsyncThunk<
   'data/makeGetDataRequest',
   async (_, { rejectWithValue, getState }) => {
     const overviewResponse = (await axios
-      .get(katsuPublicOverviewUrl, scopedAuthorizedRequestConfig(getState()))
+      .get(katsuDiscoveryUrl, scopedAuthorizedRequestConfig(getState()))
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue))) as OverviewResponse['overview'];
 

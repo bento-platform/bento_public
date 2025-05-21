@@ -8,7 +8,7 @@ import { useConfig } from '@/features/config/hooks';
 import { useQueryFilterFields, useSearchQuery } from '@/features/search/hooks';
 import { performFreeTextSearch } from '@/features/search/performFreeTextSearch.thunk';
 import {
-  makeGetKatsuPublic,
+  performKatsuDiscovery,
   setFilterQueryParams,
   resetFilterQueryStatus,
   setTextQuery,
@@ -168,7 +168,7 @@ const RoutedSearch = () => {
       if (!performingTextQuery && queryMode === 'filters') {
         // We only want to execute the filters search if we're not already performing a text search even while we're
         // focused on the filters form, which can happen on first load with a text search query parameter specified.
-        dispatch(makeGetKatsuPublic());
+        dispatch(performKatsuDiscovery());
         // Indicate to the state that search results don't reflect the text query.
         dispatch(resetTextQueryStatus());
       }
