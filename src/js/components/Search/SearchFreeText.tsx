@@ -4,7 +4,7 @@ import { Button, Form, Input, Space, Typography } from 'antd';
 import { FormOutlined, SearchOutlined } from '@ant-design/icons';
 
 import { TEXT_QUERY_PARAM } from '@/features/search/constants';
-import { useAllSearchQueryParams, useSearchQuery } from '@/features/search/hooks';
+import { useSearchQuery, useNonFilterQueryParams } from '@/features/search/hooks';
 import { buildQueryParamsUrl } from '@/features/search/utils';
 import { useTranslationFn } from '@/hooks';
 import { RequestStatus } from '@/types/requests';
@@ -20,7 +20,7 @@ const SearchFreeText = ({ focused, onFocus, style }: SearchFreeTextProps) => {
   const navigate = useNavigate();
 
   const { textQuery, textQueryStatus } = useSearchQuery();
-  const allSearchQueryParams = useAllSearchQueryParams();
+  const nonFilterQueryParams = useNonFilterQueryParams();
 
   const [form] = Form.useForm<FreeTextFormValues>();
 
@@ -37,12 +37,15 @@ const SearchFreeText = ({ focused, onFocus, style }: SearchFreeTextProps) => {
     (values: FreeTextFormValues) => {
       navigate(
         buildQueryParamsUrl(location.pathname, {
-          ...allSearchQueryParams,
+          // Explicitly don't include filter query params to create a purely-text-search "share-able" URL, without any
+          // extraneous populating of the filters form. Include nonFilterQueryParams since they may contain extra
+          // information about how to initially render the search form/display.
+          ...nonFilterQueryParams,
           [TEXT_QUERY_PARAM]: values.q,
         })
       );
     },
-    [location.pathname, allSearchQueryParams, navigate]
+    [location.pathname, nonFilterQueryParams, navigate]
   );
 
   return (

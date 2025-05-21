@@ -5,6 +5,7 @@ import { Space, Typography } from 'antd';
 import { FilterOutlined } from '@ant-design/icons';
 
 import { WAITING_STATES } from '@/constants/requests';
+import { TEXT_QUERY_PARAM } from '@/features/search/constants';
 import { useConfig } from '@/features/config/hooks';
 import { useNonFilterQueryParams, useQueryFilterFields, useSearchQuery } from '@/features/search/hooks';
 import { buildQueryParamsUrl, queryParamsWithoutKey } from '@/features/search/utils';
@@ -73,8 +74,9 @@ const SearchFilters = ({ focused, onFocus, style }: SearchFiltersProps) => {
                   // ... and if the field stays the same, we will put it back with a new value. Otherwise, we'll put the
                   // new field in with the first available value.
                   [field]: value,
-                  // plus we need non-filter-related query parameters:
-                  ...nonFilterQueryParams,
+                  // plus we need non-filter-related query parameters, except for the text query param since we're not
+                  // executing a text query:
+                  ...queryParamsWithoutKey(nonFilterQueryParams, TEXT_QUERY_PARAM),
                 });
                 console.debug('[SearchFilters] Redirecting to:', url);
                 navigate(url, { replace: true });
@@ -84,7 +86,7 @@ const SearchFilters = ({ focused, onFocus, style }: SearchFiltersProps) => {
                 if (fv.field === null) return;
                 const url = buildQueryParamsUrl(pathname, {
                   ...queryParamsWithoutKey(filterQueryParams, fv.field),
-                  ...nonFilterQueryParams,
+                  ...queryParamsWithoutKey(nonFilterQueryParams, TEXT_QUERY_PARAM),
                 });
                 console.debug('[SearchFilters] Redirecting to:', url);
                 navigate(url, { replace: true });
