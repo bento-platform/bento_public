@@ -8,9 +8,7 @@ import OptionDescription from '@/components/Search/OptionDescription';
 
 export type FilterValue = { field: string | null; value: string | null };
 
-const styles = {
-  selectField: { flex: 1, borderTopRightRadius: 0, borderBottomRightRadius: 0 } as CSSProperties,
-};
+const SELECT_FIELD_STYLE: CSSProperties = { borderTopRightRadius: 0, borderBottomRightRadius: 0 };
 
 const SearchFilterInput = ({
   field,
@@ -75,7 +73,8 @@ const SearchFilterInput = ({
   return (
     <Space.Compact className="w-full">
       <Select
-        style={styles.selectField}
+        className="flex-1"
+        style={SELECT_FIELD_STYLE}
         options={filterOptions}
         onClick={onFocus}
         onFocus={onFocus}
@@ -99,7 +98,7 @@ const SearchFilterInput = ({
 
 export const SearchFilterInputSkeleton = memo(() => (
   <Space.Compact className="w-full">
-    <Select style={styles.selectField} disabled={true} loading={true} />
+    <Select className="flex-1" style={SELECT_FIELD_STYLE} disabled={true} loading={true} />
     <Select className="flex-1" disabled={true} />
     <Button icon={<CloseOutlined />} disabled={true} />
   </Space.Compact>

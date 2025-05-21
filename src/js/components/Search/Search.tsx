@@ -279,15 +279,16 @@ const Search = () => {
             className="w-full shadow rounded-xl"
             styles={{ ...CARD_STYLES, body: { ...CARD_BODY_STYLE, padding: '20px 24px 24px 24px' } }}
           >
-            <Flex justify="space-between" gap={isSmallScreen ? 12 : 24} className="w-full" vertical={isSmallScreen}>
+            <Flex
+              justify="space-between flex-1-children"
+              gap={isSmallScreen ? 12 : 24}
+              className="w-full"
+              vertical={isSmallScreen}
+            >
               <SearchFilters
                 focused={queryMode === 'filters'}
                 onFocus={onFiltersFocus}
-                style={{
-                  flex: 1,
-                  maxWidth: 600,
-                  ...focusedStyle(queryMode === 'filters'),
-                }}
+                style={{ maxWidth: 600, ...focusedStyle(queryMode === 'filters') }}
               />
               {queryDataPerm && (
                 // If we have the query:data permission on the current scope, we're allowed to run free-text searches on
@@ -297,7 +298,7 @@ const Search = () => {
                   <SearchFreeText
                     focused={queryMode === 'text'}
                     onFocus={onTextFocus}
-                    style={{ flex: 1, ...focusedStyle(queryMode === 'text') }}
+                    style={focusedStyle(queryMode === 'text')}
                   />
                 </>
               )}
