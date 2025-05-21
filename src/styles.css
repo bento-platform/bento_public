@@ -33,6 +33,7 @@ body {
 .rounded-lg { border-radius: 8px; } /* also consistent with --ant-border-radius-lg */
 .rounded-xl { border-radius: 12px; }
 .cursor-pointer { cursor: pointer; }
+.font-mono { font-family: ui-monospace, monospace; }
 
 .shadow {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);

@@ -2,7 +2,6 @@ import { Button } from 'antd';
 
 import { EM_DASH } from '@/constants/common';
 import ErrorText from './ErrorText';
-import MonospaceText from './MonospaceText';
 
 import { useMetadata } from '@/features/metadata/hooks';
 
@@ -20,8 +19,8 @@ const ProjectTitle = ({ projectID, onClick }: ProjectTitleProps) => {
 
   if (!title)
     return (
-      <span>
-        <MonospaceText>{projectID}</MonospaceText> <ErrorText>(NOT AVAILABLE)</ErrorText>
+      <span aria-errormessage="project not available" aria-invalid="true">
+        <span className="font-mono">{projectID}</span> <ErrorText>(NOT AVAILABLE)</ErrorText>
       </span>
     );
 
