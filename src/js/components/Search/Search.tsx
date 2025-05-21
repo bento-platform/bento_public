@@ -44,7 +44,7 @@ const checkQueryParamsEqual = (qp1: QueryParams, qp2: QueryParams): boolean => {
 
 type QueryValidationResult = {
   valid: boolean;
-  validQueryParams: QueryParams;
+  validFilterQueryParams: QueryParams;
   otherQueryParams: QueryParams;
 };
 
@@ -116,10 +116,10 @@ const RoutedSearch = () => {
       return;
     }
 
-    const { valid, validQueryParams, otherQueryParams } = validateQuery(new URLSearchParams(location.search));
+    const { valid, validFilterQueryParams, otherQueryParams } = validateQuery(new URLSearchParams(location.search));
 
     if (!valid) {
-      const url = buildQueryParamsUrl(location.pathname, { ...validQueryParams, ...otherQueryParams });
+      const url = buildQueryParamsUrl(location.pathname, { ...validFilterQueryParams, ...otherQueryParams });
       console.debug('[Search] Redirecting to:', url);
       navigate(url);
       // Then, the new URL will re-trigger this effect but with only valid query parameters.
@@ -153,7 +153,7 @@ const RoutedSearch = () => {
 
     // If we have new valid filter query parameters (that aren't already in Redux), put them into the state even if
     // we're not going to actually execute a filter search.
-    const queryParamsEqual = checkQueryParamsEqual(validQueryParams, filterQueryParams);
+    const queryParamsEqual = checkQueryParamsEqual(validFilterQueryParams, filterQueryParams);
     if (filterQueryStatus === RequestStatus.Idle || !queryParamsEqual) {
       // Only update the state & (maybe) refresh if we have a new set of query params from the URL, or if we are now
       // focused on the Filters search section and haven't actually executed the filter search yet.
@@ -162,7 +162,7 @@ const RoutedSearch = () => {
 
       if (!queryParamsEqual) {
         // Only update the query params object (& trigger a re-render) if the new object has different contents.
-        dispatch(setFilterQueryParams(validQueryParams));
+        dispatch(setFilterQueryParams(validFilterQueryParams));
       }
 
       if (!performingTextQuery && queryMode === 'filters') {
