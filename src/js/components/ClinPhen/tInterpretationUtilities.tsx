@@ -1,4 +1,4 @@
-import { Descriptions, DescriptionsProps, List, Space, Table } from 'antd';
+import { Descriptions, DescriptionsProps, Space, Table } from 'antd';
 
 import { VariantInterpretation as VariantInterpretationType } from '@/types/clinPhen/variantInterpretation';
 import JsonView from '../Util/JsonView';
@@ -7,10 +7,7 @@ import { Expression } from '@/types/clinPhen/vrs';
 import OntologyTerm from './OntologyTerm';
 import { JSONType } from '@/types/json';
 import { GeneDescriptor as GeneDescriptorType } from '@/types/clinPhen/geneDescriptor';
-
-const StringList = ({ list }: { list: string[] | undefined }) => {
-  return <List bordered dataSource={list} renderItem={(item) => <List.Item>{item}</List.Item>} />;
-};
+import StringList from '../Util/StringList';
 
 // TODO: add link to tracks
 export const GeneDescriptor = ({ geneDescriptor }: { geneDescriptor: GeneDescriptorType }) => {
