@@ -1,8 +1,5 @@
 import { Button } from 'antd';
-
 import { EM_DASH } from '@/constants/common';
-import ErrorText from './ErrorText';
-
 import { useMetadata } from '@/features/metadata/hooks';
 
 export type ProjectTitleProps = {
@@ -20,7 +17,7 @@ const ProjectTitle = ({ projectID, onClick }: ProjectTitleProps) => {
   if (!title)
     return (
       <span aria-errormessage="project not available" aria-invalid="true">
-        <span className="font-mono">{projectID}</span> <ErrorText>(NOT AVAILABLE)</ErrorText>
+        <span className="font-mono">{projectID}</span> <span className="error-text">(NOT AVAILABLE)</span>
       </span>
     );
 
