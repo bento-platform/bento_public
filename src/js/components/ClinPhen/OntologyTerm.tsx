@@ -1,4 +1,4 @@
-import { Space, Typography } from 'antd';
+import { Space, Tooltip, Typography } from 'antd';
 import { LinkOutlined } from '@ant-design/icons';
 import { useParams } from 'react-router-dom';
 import type { OntologyTerm as OntologyTermType } from '@/types/ontology';
@@ -23,15 +23,19 @@ const OntologyTerm = ({ term }: OntologyTermProps) => {
   const resource = resources.find((r) => r.namespace_prefix === prefix);
   const iri = resource ? `${resource.iri_prefix}${term.id}` : undefined;
 
-  return iri ? (
-    <span>
-      {term.label}{' '}
-      <Link href={iri} target="_blank" rel="noopener noreferrer">
-        <LinkOutlined />
-      </Link>
-    </span>
-  ) : (
-    <span>{term.label}</span>
+  return (
+    <Tooltip title={term.id}>
+      {iri ? (
+        <span>
+          {term.label}{' '}
+          <Link href={iri} target="_blank" rel="noopener noreferrer">
+            <LinkOutlined />
+          </Link>
+        </span>
+      ) : (
+        <span>{term.label}</span>
+      )}
+    </Tooltip>
   );
 };
 
