@@ -9,7 +9,7 @@ import { RequestStatus } from '@/types/requests';
 import BiosampleView from './BiosampleView';
 import OntologiesView from './OntologiesView';
 import MeasurementsView from './MeasurementsView';
-import PhenotypicFeaturesView from './PhenotypicFeatures';
+import PhenotypicFeaturesView from './PhenotypicFeaturesView';
 import DiseasesView from './DiseasesView';
 import MedicalActionsView from './MedicalActionsView';
 import InterpretationsView from './Interpretations';
