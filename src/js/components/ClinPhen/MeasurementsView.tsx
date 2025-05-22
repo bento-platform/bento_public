@@ -4,39 +4,7 @@ import type { OntologyTerm as OntologyTermType } from '@/types/ontology';
 import OntologyTermComponent from './OntologyTerm';
 import { Procedure } from '@/types/clinPhen/procedure';
 import { EM_DASH } from '@/constants/common';
-
-export const QuantityComponent = ({ quantity, title }: { quantity: Quantity; title?: string }) => {
-  const items: DescriptionsProps['items'] = [
-    {
-      key: 'Unit',
-      label: 'Unit',
-      children: <OntologyTermComponent term={quantity.unit} />,
-    },
-    {
-      key: 'Value',
-      label: 'Value',
-      children: quantity.value,
-    },
-    quantity.reference_range && {
-      key: 'Reference Range',
-      label: 'Reference Range',
-      children: (
-        <Flex>
-          <div>
-            <strong>Unit:</strong> <OntologyTermComponent term={quantity.reference_range.unit} />
-          </div>
-          <div>
-            <strong>Low:</strong> {quantity.reference_range.low}
-          </div>
-          <div>
-            <strong>High:</strong> {quantity.reference_range.high}
-          </div>
-        </Flex>
-      ),
-    },
-  ].filter(Boolean) as DescriptionsProps['items'];
-  return <Descriptions bordered size="small" items={items} title={title} />;
-};
+import QuantityDisplay from '../Util/QuantityDisplay';
 
 const MeasurementsExpandedRow = ({ measurement }: { measurement: Measurement }) => {
   const items: DescriptionsProps['items'] = [
@@ -71,7 +39,7 @@ function MeasurementValue({ measurement }: { measurement: Measurement }) {
         title: 'Quantity',
         key: 'quantity',
         dataIndex: 'quantity',
-        render: (quantity: Quantity) => <QuantityComponent quantity={quantity} />,
+        render: (quantity: Quantity) => <QuantityDisplay quantity={quantity} />,
       },
     ];
 

@@ -11,9 +11,9 @@ import OntologyTermComponent, { OntologyTermStack } from './OntologyTerm';
 import { Procedure } from '@/types/clinPhen/procedure';
 import TimeElementDisplay, { TimeIntervalDisplay } from './TimeElementDisplay';
 import { EM_DASH } from '@/constants/common';
-import { QuantityComponent } from './MeasurementsView';
 import { Quantity } from '@/types/clinPhen/measurement';
 import { TimeInterval } from '@/types/clinPhen/shared';
+import QuantityDisplay from '../Util/QuantityDisplay';
 
 const ProcedureComponent = ({ procedure }: { procedure: Procedure }) => {
   const ProcedureItems: DescriptionsProps['items'] = [
@@ -42,7 +42,7 @@ const TreatmentComponent = ({ treatment }: { treatment: Treatment }) => {
       key: 'quantity',
       title: 'Quantity',
       dataIndex: 'quantity',
-      render: (quantity: Quantity) => <QuantityComponent quantity={quantity} />,
+      render: (quantity: Quantity) => <QuantityDisplay quantity={quantity} />,
     },
     {
       key: 'schedule_frequency',
@@ -93,7 +93,7 @@ const TreatmentComponent = ({ treatment }: { treatment: Treatment }) => {
       key: 'cumulativeDose',
       label: 'Cumulative Dose',
       children: treatment?.cumulative_dose ? (
-        <QuantityComponent quantity={treatment.cumulative_dose} title="Cumulative Dose" />
+        <QuantityDisplay quantity={treatment.cumulative_dose} title="Cumulative Dose" />
       ) : (
         EM_DASH
       ),
