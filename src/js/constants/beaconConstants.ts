@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react';
+import type { CardProps } from 'antd';
 
 export const WRAPPER_STYLE: CSSProperties = {
   display: 'flex',
@@ -17,7 +18,7 @@ export const CARD_HEAD_STYLE: CSSProperties = {
   border: '0',
 };
 
-export const CARD_STYLES = {
+export const CARD_STYLES: CardProps['styles'] = {
   body: CARD_BODY_STYLE,
   header: CARD_HEAD_STYLE,
 };

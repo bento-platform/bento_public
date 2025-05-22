@@ -32,7 +32,12 @@ body {
 .flex-1 { flex: 1; }
 .rounded-lg { border-radius: 8px; } /* also consistent with --ant-border-radius-lg */
 .rounded-xl { border-radius: 12px; }
+.rounded-e-none { border-start-end-radius: 0; border-end-end-radius: 0; }
 .cursor-pointer { cursor: pointer; }
+.font-mono { font-family: ui-monospace, monospace; }
+
+/* custom, tailwind-esque */
+.max-w-half-cmw { max-width: calc(var(--content-max-width) / 2); }
 
 .shadow {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
@@ -52,6 +57,10 @@ body {
 }
 .ant-float-btn-group.float-btn-pos .ant-float-btn {
   scale: 125%;
+}
+
+.error-text {
+  color: #f5222d;  /* https://ant.design/docs/spec/colors red-6 */
 }
 
 /* END utility classes */
@@ -287,23 +296,34 @@ body {
 
 /* BEGIN search */
 
-h3.search-form-title {
+.search-sub-form {
+  flex: 1;
+  transition: opacity 0.1s;
+}
+.search-sub-form.focused {
+  opacity: 1;
+}
+.search-sub-form.not-focused {
+  opacity: 0.75;
+}
+
+h3.search-sub-form-title {
   font-size: 1.1rem;
   margin-top: 0;
 }
 
-.search-form-title__inner {
+.search-sub-form-title__inner {
   margin-right: 0.5em;
 }
-h3.search-form-title:not(.focused) .search-form-title__inner {
+h3.search-sub-form-title:not(.focused) .search-sub-form-title__inner {
   color: #8c8c8c;
   cursor: pointer;
   transition: color 0.1s ease-in-out;
 }
-h3.search-form-title:not(.focused) .search-form-title__inner:hover {
+h3.search-sub-form-title:not(.focused) .search-sub-form-title__inner:hover {
   color: #595959;
 }
-h3.search-form-title:not(.focused) .search-form-title__inner > span.should-underline-if-unfocused {
+h3.search-sub-form-title:not(.focused) .search-sub-form-title__inner > span.should-underline-if-unfocused {
   text-decoration: underline; /* text itself, not icon */
 }
 

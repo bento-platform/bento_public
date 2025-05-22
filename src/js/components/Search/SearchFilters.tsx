@@ -1,27 +1,19 @@
-import { useMemo, type CSSProperties } from 'react';
+import { useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { Space, Typography } from 'antd';
+import { Space } from 'antd';
 import { FilterOutlined } from '@ant-design/icons';
 
 import { WAITING_STATES } from '@/constants/requests';
+import { TEXT_QUERY_PARAM } from '@/features/search/constants';
 import { useConfig } from '@/features/config/hooks';
 import { useNonFilterQueryParams, useQueryFilterFields, useSearchQuery } from '@/features/search/hooks';
 import { buildQueryParamsUrl, queryParamsWithoutKey } from '@/features/search/utils';
-import { useTranslationFn } from '@/hooks';
 
-import RequestStatusIcon from './RequestStatusIcon';
 import SearchFilterInput, { type FilterValue, SearchFilterInputSkeleton } from './SearchFilterInput';
+import SearchSubForm, { type DefinedSearchSubFormProps } from '@/components/Search/SearchSubForm';
 
-export type SearchFiltersProps = {
-  focused: boolean;
-  onFocus: () => void;
-  style?: CSSProperties;
-};
-
-const SearchFilters = ({ focused, onFocus, style }: SearchFiltersProps) => {
-  const t = useTranslationFn();
-
+const SearchFilters = ({ focused, onFocus, ...props }: DefinedSearchSubFormProps) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
@@ -45,16 +37,8 @@ const SearchFilters = ({ focused, onFocus, style }: SearchFiltersProps) => {
     return [filterInputs_, usedFields_];
   }, [maxQueryParameters, fields, filterQueryParams]);
 
-  const { filterQueryStatus } = useSearchQuery();
-
   return (
-    <div style={style}>
-      <Typography.Title level={3} className={'search-form-title' + (focused ? ' focused' : '')}>
-        <span className="search-form-title__inner" onClick={onFocus}>
-          <FilterOutlined /> <span className="should-underline-if-unfocused">{t('Filters')}</span>
-        </span>
-        <RequestStatusIcon status={filterQueryStatus} />
-      </Typography.Title>
+    <SearchSubForm title="Filters" icon={<FilterOutlined />} focused={focused} onFocus={onFocus} {...props}>
       <Space direction="vertical" size={8} className="w-full">
         {WAITING_STATES.includes(configStatus) || WAITING_STATES.includes(fieldsStatus) ? (
           <SearchFilterInputSkeleton />
@@ -73,8 +57,9 @@ const SearchFilters = ({ focused, onFocus, style }: SearchFiltersProps) => {
                   // ... and if the field stays the same, we will put it back with a new value. Otherwise, we'll put the
                   // new field in with the first available value.
                   [field]: value,
-                  // plus we need non-filter-related query parameters:
-                  ...nonFilterQueryParams,
+                  // plus we need non-filter-related query parameters, except for the text query param since we're not
+                  // executing a text query:
+                  ...queryParamsWithoutKey(nonFilterQueryParams, TEXT_QUERY_PARAM),
                 });
                 console.debug('[SearchFilters] Redirecting to:', url);
                 navigate(url, { replace: true });
@@ -84,7 +69,7 @@ const SearchFilters = ({ focused, onFocus, style }: SearchFiltersProps) => {
                 if (fv.field === null) return;
                 const url = buildQueryParamsUrl(pathname, {
                   ...queryParamsWithoutKey(filterQueryParams, fv.field),
-                  ...nonFilterQueryParams,
+                  ...queryParamsWithoutKey(nonFilterQueryParams, TEXT_QUERY_PARAM),
                 });
                 console.debug('[SearchFilters] Redirecting to:', url);
                 navigate(url, { replace: true });
@@ -95,7 +80,7 @@ const SearchFilters = ({ focused, onFocus, style }: SearchFiltersProps) => {
           ))
         )}
       </Space>
-    </div>
+    </SearchSubForm>
   );
 };
 

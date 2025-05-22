@@ -1,4 +1,4 @@
-import { type CSSProperties, memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { Button, Flex, Select, Space } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 
@@ -7,10 +7,6 @@ import { useSearchQuery } from '@/features/search/hooks';
 import OptionDescription from '@/components/Search/OptionDescription';
 
 export type FilterValue = { field: string | null; value: string | null };
-
-const styles = {
-  selectField: { flex: 1, borderTopRightRadius: 0, borderBottomRightRadius: 0 } as CSSProperties,
-};
 
 const SearchFilterInput = ({
   field,
@@ -75,7 +71,7 @@ const SearchFilterInput = ({
   return (
     <Space.Compact className="w-full">
       <Select
-        style={styles.selectField}
+        className="flex-1 rounded-e-none"
         options={filterOptions}
         onClick={onFocus}
         onFocus={onFocus}
@@ -99,7 +95,7 @@ const SearchFilterInput = ({
 
 export const SearchFilterInputSkeleton = memo(() => (
   <Space.Compact className="w-full">
-    <Select style={styles.selectField} disabled={true} loading={true} />
+    <Select className="flex-1 rounded-e-none" disabled={true} loading={true} />
     <Select className="flex-1" disabled={true} />
     <Button icon={<CloseOutlined />} disabled={true} />
   </Space.Compact>
