@@ -5,6 +5,7 @@ import StringList from '../Util/StringList';
 import TimeElementDisplay from './TimeElementDisplay';
 import { EM_DASH } from '@/constants/common';
 import OntologyTerm from './OntologyTerm';
+import JsonView from '../Util/JsonView';
 
 const SubjectView = ({ subject }: { subject: Individual }) => {
   const vs = subject?.vital_status;
@@ -83,6 +84,17 @@ const SubjectView = ({ subject }: { subject: Individual }) => {
       children: <OntologyTerm term={subject?.gender} />,
     },
   ];
+
+  const extraProperties = Object.entries(subject?.extra_properties ?? {}).map(([key, value]) => ({
+    key,
+    label: key,
+    children: (typeof value === 'string' || typeof value === 'number' ? value : <JsonView src={value} />) ?? EM_DASH,
+  }));
+
+  if (extraProperties.length > 0) {
+    items.push(...extraProperties);
+  }
+
   return <Descriptions items={items} column={1} bordered />;
 };
 
