@@ -8,7 +8,7 @@ import type { TabsProps } from 'antd';
 import { RequestStatus } from '@/types/requests';
 import BiosampleView from './BiosampleView';
 import Ontologies from './Ontologies';
-import MeasurementsView from './Measurements';
+import MeasurementsView from './MeasurementsView';
 import PhenotypicFeaturesView from './PhenotypicFeatures';
 import DiseasesView from './DiseasesView';
 import MedicalActionsView from './MedicalActionsView';

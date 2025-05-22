@@ -11,7 +11,7 @@ import OntologyTermComponent, { OntologyTermStack } from './OntologyTerm';
 import { Procedure } from '@/types/clinPhen/procedure';
 import TimeElementDisplay, { TimeIntervalDisplay } from './TimeElementDisplay';
 import { EM_DASH } from '@/constants/common';
-import { QuantityComponent } from './Measurements';
+import { QuantityComponent } from './MeasurementsView';
 import { Quantity } from '@/types/clinPhen/measurement';
 import { TimeInterval } from '@/types/clinPhen/shared';
 
