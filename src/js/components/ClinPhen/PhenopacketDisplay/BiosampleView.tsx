@@ -2,7 +2,7 @@ import { Descriptions, DescriptionsProps, Table } from 'antd';
 import { Biosample } from '@/types/clinPhen/biosample';
 import { OntologyTerm } from '@/types/ontology';
 import { EM_DASH } from '@/constants/common';
-import OntologyTermComponent from './OntologyTerm';
+import OntologyTermComponent from '../OntologyTerm';
 
 const BiosampleExpandedRow = ({ biosample }: { biosample: Biosample }) => {
   const items: DescriptionsProps['items'] = [

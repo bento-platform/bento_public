@@ -1,8 +1,8 @@
 import { Descriptions, DescriptionsProps, Table } from 'antd';
 import { Disease } from '@/types/clinPhen/disease';
-import OntologyTermComponent, { OntologyTermStack } from './OntologyTerm';
-import TimeElementDisplay from './TimeElementDisplay';
-import ExtraProperties from '../Util/ExtraProperties';
+import OntologyTermComponent, { OntologyTermStack } from '../OntologyTerm';
+import TimeElementDisplay from '../TimeElementDisplay';
+import ExtraProperties from '../../Util/ExtraProperties';
 import { TimeElement } from '@/types/clinPhen/shared';
 import { EM_DASH } from '@/constants/common';
 import { OntologyTerm } from '@/types/ontology';

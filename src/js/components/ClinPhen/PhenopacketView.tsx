@@ -6,14 +6,14 @@ import { makeGetPhenopacketData } from '@/features/clinPhen/makeGetPhenopacket.t
 import { Card, Tabs, Descriptions } from 'antd';
 import type { TabsProps } from 'antd';
 import { RequestStatus } from '@/types/requests';
-import BiosampleView from './BiosampleView';
-import OntologiesView from './OntologiesView';
-import MeasurementsView from './MeasurementsView';
-import PhenotypicFeaturesView from './PhenotypicFeaturesView';
-import DiseasesView from './DiseasesView';
-import MedicalActionsView from './MedicalActionsView';
-import InterpretationsView from './Interpretations';
-import SubjectView from './SubjectView';
+import BiosampleView from './PhenopacketDisplay/BiosampleView';
+import OntologiesView from './PhenopacketDisplay/OntologiesView';
+import MeasurementsView from './PhenopacketDisplay/MeasurementsView';
+import PhenotypicFeaturesView from './PhenopacketDisplay/PhenotypicFeaturesView';
+import DiseasesView from './PhenopacketDisplay/DiseasesView';
+import MedicalActionsView from './PhenopacketDisplay/MedicalActionsView';
+import InterpretationsView from './PhenopacketDisplay/Interpretations';
+import SubjectView from './PhenopacketDisplay/SubjectView';
 
 export interface RouteParams {
   packetId: string;
