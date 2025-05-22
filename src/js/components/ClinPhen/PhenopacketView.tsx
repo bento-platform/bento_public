@@ -15,12 +15,6 @@ import MedicalActionsView from './MedicalActionsView';
 import InterpretationsView from './Interpretations';
 import SubjectView from './SubjectView';
 
-const getTabContent = (title: string, data: any) => (
-  <Descriptions title={title}>
-    <Descriptions.Item label="Data">{JSON.stringify(data, null, 2)}</Descriptions.Item>
-  </Descriptions>
-);
-
 export interface RouteParams {
   packetId: string;
   tab: string;
