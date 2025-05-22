@@ -1,7 +1,7 @@
 import { Descriptions, DescriptionsProps, Flex } from 'antd';
 
 import { Quantity } from '@/types/clinPhen/measurement';
-import OntologyTerm from '../ClinPhen/OntologyTerm';
+import OntologyTerm from './OntologyTerm';
 
 const QuantityDisplay = ({ quantity, title }: { quantity: Quantity; title?: string }) => {
   const items: DescriptionsProps['items'] = [

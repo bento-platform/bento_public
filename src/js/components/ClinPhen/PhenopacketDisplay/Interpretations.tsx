@@ -2,10 +2,10 @@ import { Descriptions, DescriptionsProps, Space, Table, Tooltip, Typography } fr
 import { Interpretation } from '@/types/clinPhen/interpretation';
 import { ExperimentOutlined, MedicineBoxOutlined } from '@ant-design/icons';
 import CustomEmpty from '../../Util/CustomEmpty';
-import OntologyTerm from '../OntologyTerm';
+import OntologyTerm from '../../Util/ClinPhen/OntologyTerm';
 import { GenomicInterpretation } from '@/types/clinPhen/genomicInterpretation';
 import { JSONObject } from '@/types/json';
-import { GeneDescriptor, VariantInterpretation } from '../tInterpretationUtilities';
+import { GeneDescriptor, VariantInterpretation } from '../../Util/ClinPhen/tInterpretationUtilities';
 
 const GenomicInterpretationDetails = ({ genomicInterpretation }: { genomicInterpretation: GenomicInterpretation }) => {
   const relatedType = (genomicInterpretation?.extra_properties as JSONObject)?.__related_type ?? 'unknown';

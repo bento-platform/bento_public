@@ -3,7 +3,7 @@ import { LinkOutlined } from '@ant-design/icons';
 import { useParams } from 'react-router-dom';
 import type { OntologyTerm as OntologyTermType } from '@/types/ontology';
 import { EM_DASH } from '@/constants/common';
-import { RouteParams } from './PhenopacketView';
+import { RouteParams } from '../../ClinPhen/PhenopacketView';
 import { usePhenopacketResources } from '@/features/clinPhen/hooks';
 
 const { Link } = Typography;

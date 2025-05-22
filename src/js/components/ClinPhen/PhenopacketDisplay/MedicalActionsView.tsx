@@ -7,13 +7,13 @@ import {
   Treatment,
 } from '@/types/clinPhen/medicalAction';
 import { OntologyTerm } from '@/types/ontology';
-import OntologyTermComponent, { OntologyTermStack } from '../OntologyTerm';
+import OntologyTermComponent, { OntologyTermStack } from '../../Util/ClinPhen/OntologyTerm';
 import { Procedure } from '@/types/clinPhen/procedure';
-import TimeElementDisplay, { TimeIntervalDisplay } from '../TimeElementDisplay';
+import TimeElementDisplay, { TimeIntervalDisplay } from '../../Util/ClinPhen/TimeElementDisplay';
 import { EM_DASH } from '@/constants/common';
 import { Quantity } from '@/types/clinPhen/measurement';
 import { TimeInterval } from '@/types/clinPhen/shared';
-import QuantityDisplay from '../../Util/QuantityDisplay';
+import QuantityDisplay from '../../Util/ClinPhen/QuantityDisplay';
 
 const ProcedureComponent = ({ procedure }: { procedure: Procedure }) => {
   const ProcedureItems: DescriptionsProps['items'] = [

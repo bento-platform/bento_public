@@ -2,9 +2,9 @@ import { Descriptions, DescriptionsProps } from 'antd';
 
 import { Individual } from '@/types/clinPhen/individual';
 import StringList from '../../Util/StringList';
-import TimeElementDisplay from '../TimeElementDisplay';
+import TimeElementDisplay from '../../Util/ClinPhen/TimeElementDisplay';
 import { EM_DASH } from '@/constants/common';
-import OntologyTerm from '../OntologyTerm';
+import OntologyTerm from '../../Util/ClinPhen/OntologyTerm';
 import JsonView from '../../Util/JsonView';
 
 const SubjectView = ({ subject }: { subject: Individual }) => {

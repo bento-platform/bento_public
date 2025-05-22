@@ -1,13 +1,13 @@
 import { Descriptions, DescriptionsProps, Space, Table } from 'antd';
 
 import { VariantInterpretation as VariantInterpretationType } from '@/types/clinPhen/variantInterpretation';
-import JsonView from '../Util/JsonView';
+import JsonView from '../JsonView';
 import { Extension } from '@/types/clinPhen/shared';
 import { Expression } from '@/types/clinPhen/vrs';
-import OntologyTerm from './OntologyTerm';
+import OntologyTerm from '../ClinPhen/OntologyTerm';
 import { JSONType } from '@/types/json';
 import { GeneDescriptor as GeneDescriptorType } from '@/types/clinPhen/geneDescriptor';
-import StringList from '../Util/StringList';
+import StringList from '../StringList';
 
 // TODO: add link to tracks
 export const GeneDescriptor = ({ geneDescriptor }: { geneDescriptor: GeneDescriptorType }) => {

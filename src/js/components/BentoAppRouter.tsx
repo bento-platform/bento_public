@@ -35,7 +35,7 @@ import ProvenanceTab from './Provenance/ProvenanceTab';
 import BeaconQueryUi from './Beacon/BeaconQueryUi';
 import NetworkUi from './Beacon/BeaconNetwork/NetworkUi';
 import PhenopacketView from './ClinPhen/PhenopacketView';
-import PhenopacketList from './ClinPhen/PhenopacketList';
+import PhenopacketList from './Util/ClinPhen/PhenopacketList';
 
 const ScopedRoute = () => {
   const { projectId, datasetId } = useParams();

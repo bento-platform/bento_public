@@ -1,11 +1,11 @@
 import { Descriptions, DescriptionsProps, Table } from 'antd';
 import { LinkOutlined } from '@ant-design/icons';
 import type { PhenotypicFeature } from '@/types/clinPhen/phenotypicFeature';
-import OntologyTermComponent from '../OntologyTerm';
+import OntologyTermComponent from '../../Util/ClinPhen/OntologyTerm';
 import { EM_DASH } from '@/constants/common';
 import { OntologyTerm } from '@/types/ontology';
 import { TimeElement } from '@/types/clinPhen/shared';
-import TimeElementDisplay from '../TimeElementDisplay';
+import TimeElementDisplay from '../../Util/ClinPhen/TimeElementDisplay';
 import { Space } from 'antd';
 import { isValidUrl } from '@/utils/strings';
 
