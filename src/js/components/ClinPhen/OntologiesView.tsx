@@ -6,7 +6,7 @@ interface OntologiesProps {
   resources: Resource[];
 }
 
-const Ontologies = ({ resources }: OntologiesProps) => {
+const OntologiesView = ({ resources }: OntologiesProps) => {
   const columns = [
     { title: 'Resource ID', dataIndex: 'id', key: 'id' },
     { title: 'Name', dataIndex: 'name', key: 'name' },
@@ -27,4 +27,4 @@ const Ontologies = ({ resources }: OntologiesProps) => {
   return <Table<Resource> dataSource={resources} columns={columns} />;
 };
 
-export default Ontologies;
+export default OntologiesView;

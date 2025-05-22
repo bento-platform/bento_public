@@ -7,7 +7,7 @@ import { Card, Tabs, Descriptions } from 'antd';
 import type { TabsProps } from 'antd';
 import { RequestStatus } from '@/types/requests';
 import BiosampleView from './BiosampleView';
-import Ontologies from './Ontologies';
+import OntologiesView from './OntologiesView';
 import MeasurementsView from './MeasurementsView';
 import PhenotypicFeaturesView from './PhenotypicFeatures';
 import DiseasesView from './DiseasesView';
@@ -120,7 +120,7 @@ const PhenopacketView = () => {
     {
       key: TabKeys.ONTOLOGIES,
       label: 'Ontologies',
-      children: <Ontologies resources={phenopacket?.meta_data?.resources!} />,
+      children: <OntologiesView resources={phenopacket?.meta_data?.resources!} />,
       disabled: !phenopacket?.meta_data?.resources,
     },
   ];
