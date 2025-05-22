@@ -2,7 +2,7 @@
 
 export type JSONType = string | number | boolean | null | JSONObject | JSONArray;
 
-interface JSONObject {
+export interface JSONObject {
   [x: string]: JSONType;
 }
 

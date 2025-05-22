@@ -12,6 +12,7 @@ import MeasurementsView from './Measurements';
 import PhenotypicFeaturesView from './PhenotypicFeatures';
 import DiseasesView from './DiseasesView';
 import MedicalActionsView from './MedicalActionsView';
+import InterpretationsView from './Interpretations';
 
 const getTabContent = (title: string, data: any) => (
   <Descriptions title={title}>
@@ -100,7 +101,9 @@ const PhenopacketView = () => {
     {
       key: TabKeys.INTERPRETATIONS,
       label: 'Interpretations',
-      children: getTabContent('Interpretations', phenopacket?.interpretations),
+      children: phenopacket?.interpretations ? (
+        <InterpretationsView interpretations={phenopacket.interpretations} />
+      ) : null,
       disabled: !phenopacket?.interpretations,
     },
     {
