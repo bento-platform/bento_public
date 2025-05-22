@@ -7,6 +7,30 @@ import { EM_DASH } from '@/constants/common';
 import OntologyTerm from './OntologyTerm';
 
 const SubjectView = ({ subject }: { subject: Individual }) => {
+  const vs = subject?.vital_status;
+  const vitalStatusItems: DescriptionsProps['items'] = [
+    {
+      key: 'status',
+      label: 'Status',
+      children: vs?.status,
+    },
+    {
+      key: 'time_of_death',
+      label: 'Time of Death',
+      children: <TimeElementDisplay element={vs?.time_of_death} />,
+    },
+    {
+      key: 'cause_of_death',
+      label: 'Cause of Death',
+      children: <OntologyTerm term={vs?.cause_of_death} />,
+    },
+    {
+      key: 'survival_time_in_days',
+      label: 'Survival Time in Days',
+      children: vs?.survival_time_in_days,
+    },
+  ];
+
   const items: DescriptionsProps['items'] = [
     {
       key: 'id',
@@ -36,7 +60,7 @@ const SubjectView = ({ subject }: { subject: Individual }) => {
     {
       key: 'vital_status',
       label: 'Vital Status',
-      children: subject?.vital_status ? <Descriptions items={[]} bordered /> : EM_DASH, //todo: complete
+      children: subject?.vital_status ? <Descriptions items={vitalStatusItems} /> : EM_DASH, //todo: complete
     },
     {
       key: 'sex',

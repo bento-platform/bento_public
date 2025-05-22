@@ -52,9 +52,9 @@ const PhenopacketView = () => {
       setActiveKey(tab);
     } else {
       if (tab) {
-        navigate(`../${TabKeys.BIOSAMPLES}`, { relative: 'path' });
+        navigate(`../${TabKeys.SUBJECT}`, { relative: 'path' });
       } else {
-        navigate(`./${TabKeys.BIOSAMPLES}`, { relative: 'path' });
+        navigate(`./${TabKeys.SUBJECT}`, { relative: 'path' });
       }
     }
   }, [tab]);
