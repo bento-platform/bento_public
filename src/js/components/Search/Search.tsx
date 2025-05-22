@@ -155,7 +155,8 @@ const RoutedSearch = () => {
     // keep track of whether we've executed a text query.
 
     let performingTextQuery = false;
-    const qpTextQuery = otherQueryParams[TEXT_QUERY_PARAM] ?? '';
+    const qpTextQuery: string | undefined = otherQueryParams[TEXT_QUERY_PARAM];
+    const qpTextQueryStr = qpTextQuery ?? ''; // undefined --> ''
 
     if (queryMode === 'text' || (!doneFirstLoad && qpTextQuery)) {
       // There are two scenarios where we may want to execute a full-text search (rather than a filter search):
@@ -163,11 +164,13 @@ const RoutedSearch = () => {
       //  2. We're in the initial load phase, and we have a value for the query parameter. We prioritize this over any
       //     filters set (since we need to choose _some_ order), and switch the query UI to be in 'text' mode.
 
-      if (qpTextQuery !== textQuery) {
+      if (qpTextQuery === undefined || qpTextQueryStr !== textQuery) {
         // If there's a mismatch between the query parameter and Redux text queries, we have to reconcile them by
         // choosing one or the other.
 
         if (doneFirstLoad && _previousQueryMode === 'filters') {
+          // Here, we choose to update the URL from Redux. In the case that qpTextQuery is undefined, we're just setting
+          // [TEXT_QUERY_PARAM] to a blank string and replacing any filter query parameters in the URL.
           setSearchUrlWithQueryParams({ ...otherQueryParams, [TEXT_QUERY_PARAM]: textQuery /* From Redux! */ });
           // Then, the new URL will re-trigger this effect but without the filter query parameters, and with the text
           // query parameter from Redux.
@@ -176,7 +179,7 @@ const RoutedSearch = () => {
 
         // Otherwise, we sync Redux from the URL query parameter for free-text search, and reset the text query status
         // so we can perform the search itself below:
-        dispatch(setTextQuery(qpTextQuery)); // [!!!] This should be the only place setTextQuery(...) gets called.
+        dispatch(setTextQuery(qpTextQueryStr)); // [!!!] This should be the only place setTextQuery(...) gets called.
         dispatch(resetTextQueryStatus());
       }
 
