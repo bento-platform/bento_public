@@ -13,6 +13,7 @@ import PhenotypicFeaturesView from './PhenotypicFeatures';
 import DiseasesView from './DiseasesView';
 import MedicalActionsView from './MedicalActionsView';
 import InterpretationsView from './Interpretations';
+import SubjectView from './SubjectView';
 
 const getTabContent = (title: string, data: any) => (
   <Descriptions title={title}>
@@ -27,6 +28,7 @@ export interface RouteParams {
 }
 
 enum TabKeys {
+  SUBJECT = 'subject',
   BIOSAMPLES = 'biosamples',
   MEASUREMENTS = 'measurements',
   PHENOTYPIC_FEATURES = 'phenotypic_features',
@@ -72,6 +74,12 @@ const PhenopacketView = () => {
   };
 
   const items: TabsProps['items'] = [
+    {
+      key: TabKeys.SUBJECT,
+      label: 'Subject',
+      children: <SubjectView subject={phenopacket.subject} />,
+      disabled: !phenopacket?.subject,
+    },
     {
       key: TabKeys.BIOSAMPLES,
       label: 'Biosamples',
