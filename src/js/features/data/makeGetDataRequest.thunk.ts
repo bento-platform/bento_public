@@ -34,11 +34,11 @@ export const makeGetDataRequestThunk = createAsyncThunk<
     // + field definition (from config.field)
     // + the fields' relevant data.
     const normalizeChart = (chart: ChartConfig, i: number): ChartDataField => {
-      const { data, ...field } = overviewResponse.fields[chart.field];
+      const { data, definition } = overviewResponse.fields[chart.field];
       return {
-        id: field.id,
+        id: chart.field,
         chartConfig: chart,
-        field,
+        field: definition,
         data: serializeChartData(data),
         // Initial display state
         isDisplayed: i < MAX_CHARTS,

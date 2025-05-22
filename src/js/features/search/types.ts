@@ -14,15 +14,16 @@ export interface Section {
   section_title: string;
 }
 
+// TODO: fix these types based on pydantic
+
 export interface Field {
   config: Config;
-  datatype: string;
+  datatype: 'number' | 'string' | 'date';
   description: string;
   id: string;
   mapping: string;
-  options: string[];
-  title: string;
   mapping_for_search_filter?: string;
+  title: string;
 }
 
 export interface Config {
@@ -32,7 +33,7 @@ export interface Config {
   taper_left?: number;
   taper_right?: number;
   units?: string;
-  enum?: null;
+  enum?: string[] | null;
 }
 
 export type KatsuIndividualMatch = {
