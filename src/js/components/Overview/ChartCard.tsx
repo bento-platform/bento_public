@@ -18,8 +18,9 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable }: ChartCard
   const width = useElementWidth(containerRef, chart.width);
 
   const {
+    id,
     data,
-    field: { id, description, title, config },
+    field: { datatype, description, title, config },
     chartConfig,
   } = chart;
 
@@ -56,7 +57,7 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable }: ChartCard
           <Chart
             chartConfig={chartConfig}
             data={data}
-            units={config?.units || ''}
+            units={datatype === 'number' ? (config.units ?? '') : ''}
             id={id}
             key={id}
             isClickable={!!searchable}
