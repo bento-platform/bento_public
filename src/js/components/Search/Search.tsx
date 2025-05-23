@@ -191,6 +191,15 @@ const RoutedSearch = () => {
           return;
         }
 
+        if (!doneFirstLoad && qpTextQueryStr && Object.keys(validFilterQueryParams).length) {
+          // If we're in the first-load phase, and we have a text query AND filters, we prioritize the text query and
+          // rewrite the filters away.
+          setSearchUrlWithQueryParams({ ...otherQueryParams, [TEXT_QUERY_PARAM]: qpTextQueryStr });
+          // Then, the new URL will re-trigger this effect but without the filter query parameters, but with the text
+          // query parameter from the URL.
+          return;
+        }
+
         // Otherwise, we sync Redux from the URL query parameter for free-text search, and reset the text query status
         // so we can perform the search itself below:
         dispatch(setTextQuery(qpTextQueryStr)); // [!!!] This should be the only place setTextQuery(...) gets called.
