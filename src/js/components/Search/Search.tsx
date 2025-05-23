@@ -53,6 +53,8 @@ const RoutedSearch = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const { hasAttempted: hasAttemptedQueryDataPerm, hasPermission: queryDataPerm } = useHasScopePermission(queryData);
+
   const { configStatus, maxQueryParameters } = useConfig();
   const {
     mode: queryMode,
@@ -124,12 +126,14 @@ const RoutedSearch = () => {
     //  - we have loaded the max. # of query parameters we can query
     //  - we have search fields to try and build a valid query
     //  - we are not currently executing a search
-    // Otherwise, we will mistakenly remove all URL query parameters and effectively reset the form.
+    //  - we have attempted to check query:data permissions (for text search)
+    // Otherwise, we will mistakenly remove some/all URL query parameters and effectively reset the form.
     if (
       configStatus !== RequestStatus.Fulfilled ||
       searchFieldsStatus !== RequestStatus.Fulfilled ||
       filterQueryStatus === RequestStatus.Pending ||
-      textQueryStatus === RequestStatus.Pending
+      textQueryStatus === RequestStatus.Pending ||
+      !hasAttemptedQueryDataPerm
     ) {
       return;
     }
@@ -159,6 +163,16 @@ const RoutedSearch = () => {
     const qpTextQueryStr = qpTextQuery ?? ''; // undefined --> ''
 
     if (queryMode === 'text' || (!doneFirstLoad && qpTextQuery)) {
+      if (!queryDataPerm) {
+        // Already checked attempted status, so we know this is the true permissions value. If we do not have query:data
+        // permissions, we cannot try to execute a text search, so we go back to filters mode via URL rewrite.
+        setSearchUrlWithQueryParams({
+          ...validFilterQueryParams,
+          ...queryParamsWithoutKey(otherQueryParams, TEXT_QUERY_PARAM),
+        });
+        return;
+      }
+
       // There are two scenarios where we may want to execute a full-text search (rather than a filter search):
       //  1. Our query mode is 'text'
       //  2. We're in the initial load phase, and we have a value for the query parameter. We prioritize this over any
@@ -242,9 +256,11 @@ const RoutedSearch = () => {
   }, [
     dispatch,
     configStatus,
-    doneFirstLoad,
     searchFieldsStatus,
     filterQueryStatus,
+    hasAttemptedQueryDataPerm,
+    queryDataPerm,
+    doneFirstLoad,
     queryMode,
     textQueryStatus,
     currentPage,
