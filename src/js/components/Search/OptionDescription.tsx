@@ -1,13 +1,13 @@
+import { memo } from 'react';
 import { Tooltip } from 'antd';
-import { QuestionCircleOutlined } from '@ant-design/icons';
+import { InfoCircleOutlined } from '@ant-design/icons';
 
-const OptionDescription = ({ description }: OptionDescriptionProps) => {
-  return (
-    <Tooltip placement="top" title={description}>
-      <QuestionCircleOutlined />
-    </Tooltip>
-  );
-};
+const OptionDescription = memo(({ description }: OptionDescriptionProps) => (
+  <Tooltip placement="top" title={description}>
+    <InfoCircleOutlined />
+  </Tooltip>
+));
+OptionDescription.displayName = 'OptionDescription';
 
 interface OptionDescriptionProps {
   description: string;

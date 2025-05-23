@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-import { EM_DASH } from '@/constants/contentConstants';
+import { EM_DASH } from '@/constants/common';
 import type {
   TimeElement,
   TimeElementAge,

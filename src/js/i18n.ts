@@ -27,11 +27,19 @@ const options: InitOptions = {
     loadPath: '/public/locales/{{lng}}/{{ns}}_{{lng}}.json',
   },
 
+  interpolation: {
+    // See https://www.i18next.com/translation-function/nesting#passing-nesting-to-interpolated)
+    skipOnVariables: false,
+  },
+
   react: {
     useSuspense: true,
   },
 };
 
 i18n.use(languageDetector).use(initReactI18next).use(HttpApi).init(options);
+
+// Add lower-case formatter, originally for rendering entity names ("Individual") as lowercase in some situations.
+i18n.services.formatter?.add('lowercase', (value, _lng, _options) => value.toLocaleLowerCase());
 
 export default i18n;

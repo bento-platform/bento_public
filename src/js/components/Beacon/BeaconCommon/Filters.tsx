@@ -1,5 +1,5 @@
 import { type Dispatch, type SetStateAction, useState } from 'react';
-import { Button, Form, Space, Switch, Tooltip } from 'antd';
+import { Button, Flex, Form, Space, Switch, Tooltip } from 'antd';
 import type { FormInstance } from 'antd/es/form';
 
 import { useBeaconNetwork } from '@/features/beacon/hooks';
@@ -75,7 +75,7 @@ const Filters = ({ filters, setFilters, filtersDirty, form, beaconFiltersBySecti
         </Tooltip>
         {isNetworkQuery && <NetworkFilterToggle />}
       </Space>
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <Flex vertical={true}>
         {filters.map((f) => (
           <Filter
             key={f.index}
@@ -88,7 +88,7 @@ const Filters = ({ filters, setFilters, filtersDirty, form, beaconFiltersBySecti
             isRequired={filtersDirty}
           />
         ))}
-      </div>
+      </Flex>
     </Form.Item>
   );
 };

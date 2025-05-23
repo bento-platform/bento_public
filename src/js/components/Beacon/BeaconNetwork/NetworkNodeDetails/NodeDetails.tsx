@@ -3,7 +3,6 @@ import { Card, Tag, Tooltip, Typography } from 'antd';
 import { LinkOutlined } from '@ant-design/icons';
 import type { NetworkBeacon } from '@/types/beaconNetwork';
 import type { FlattenedBeaconResponse } from '@/types/beacon';
-import { BOX_SHADOW } from '@/constants/overviewConstants';
 import NodeCountsDisplay from './NodeCountsDisplay';
 import { useTranslationFn } from '@/hooks';
 
@@ -56,7 +55,7 @@ const NodeDetails = ({ beacon, response }: NodeDetailsProps) => {
   return (
     <Card
       title={logoAndName}
-      style={BOX_SHADOW}
+      className="shadow"
       styles={{
         body: { flexGrow: 1, minHeight: CARD_BODY_MIN_HEIGHT },
         actions: { display: 'flex', alignItems: 'center' },
