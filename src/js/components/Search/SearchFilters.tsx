@@ -8,7 +8,7 @@ import { WAITING_STATES } from '@/constants/requests';
 import { TEXT_QUERY_PARAM } from '@/features/search/constants';
 import { useConfig } from '@/features/config/hooks';
 import { useNonFilterQueryParams, useQueryFilterFields, useSearchQuery } from '@/features/search/hooks';
-import { buildQueryParamsUrl, queryParamsWithoutKey } from '@/features/search/utils';
+import { buildQueryParamsUrl, combineQueryParamsWithoutKey, queryParamsWithoutKey } from '@/features/search/utils';
 
 import SearchFilterInput, { type FilterValue, SearchFilterInputSkeleton } from './SearchFilterInput';
 import SearchSubForm, { type DefinedSearchSubFormProps } from '@/components/Search/SearchSubForm';
@@ -67,10 +67,11 @@ const SearchFilters = ({ focused, onFocus, ...props }: DefinedSearchSubFormProps
               }}
               onRemove={() => {
                 if (fv.field === null) return;
-                const url = buildQueryParamsUrl(pathname, {
-                  ...queryParamsWithoutKey(filterQueryParams, fv.field),
-                  ...queryParamsWithoutKey(nonFilterQueryParams, TEXT_QUERY_PARAM),
-                });
+                const url = buildQueryParamsUrl(
+                  pathname,
+                  // Remove fv.field from query params + ensure no [TEXT_QUERY_PARAM] key:
+                  combineQueryParamsWithoutKey(filterQueryParams, nonFilterQueryParams, [fv.field, TEXT_QUERY_PARAM])
+                );
                 console.debug('[SearchFilters] Redirecting to:', url);
                 navigate(url, { replace: true });
               }}

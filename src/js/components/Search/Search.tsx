@@ -18,7 +18,7 @@ import {
 } from '@/features/search/query.store';
 import { useAppDispatch, useHasScopePermission } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
-import { buildQueryParamsUrl, queryParamsWithoutKey } from '@/features/search/utils';
+import { buildQueryParamsUrl, combineQueryParamsWithoutKey } from '@/features/search/utils';
 
 import Loader from '@/components/Loader';
 import OrDelimiter from './OrDelimiter';
@@ -166,10 +166,9 @@ const RoutedSearch = () => {
       if (!queryDataPerm) {
         // Already checked attempted status, so we know this is the true permissions value. If we do not have query:data
         // permissions, we cannot try to execute a text search, so we go back to filters mode via URL rewrite.
-        setSearchUrlWithQueryParams({
-          ...validFilterQueryParams,
-          ...queryParamsWithoutKey(otherQueryParams, TEXT_QUERY_PARAM),
-        });
+        setSearchUrlWithQueryParams(
+          combineQueryParamsWithoutKey(validFilterQueryParams, otherQueryParams, TEXT_QUERY_PARAM)
+        );
         return;
       }
 
@@ -240,10 +239,10 @@ const RoutedSearch = () => {
           // populate the URL with parameters from Redux, i.e., Redux takes priority over the URL parameters as we're
           // loading what was already filtered before (and is thus in Redux and the UI) back into the URL to create a
           // shareable / refreshable link.
-          setSearchUrlWithQueryParams({
-            ...filterQueryParams, // From Redux!
-            ...queryParamsWithoutKey(otherQueryParams, TEXT_QUERY_PARAM),
-          });
+          setSearchUrlWithQueryParams(
+            // filterQueryParams is from Redux here!
+            combineQueryParamsWithoutKey(filterQueryParams, otherQueryParams, TEXT_QUERY_PARAM)
+          );
           // Then, the new URL will re-trigger this effect but with filter query parameters from Redux.
           return;
         }
