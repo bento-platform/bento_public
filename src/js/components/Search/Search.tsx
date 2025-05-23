@@ -145,10 +145,22 @@ const RoutedSearch = () => {
     previousQueryMode.current = queryMode;
 
     const { valid, validFilterQueryParams, otherQueryParams } = loadAndValidateQuery();
+    const qpTextQuery: string | undefined = otherQueryParams[TEXT_QUERY_PARAM];
 
-    if (!valid) {
-      setSearchUrlWithQueryParams({ ...validFilterQueryParams, ...otherQueryParams });
-      // Then, the new URL will re-trigger this effect but with only valid query parameters.
+    // Whether we should expect to be in text mode (either now, or after a URL rewrite).
+    const isOrWillBeInTextMode = queryMode === 'text' || (!doneFirstLoad && !!qpTextQuery);
+
+    // Rewrite to a new URL which will re-trigger this effect but with only valid filter query parameters,
+    // and no text query (if one was set).
+    const rewriteToValidFiltersUrl = () =>
+      setSearchUrlWithQueryParams(
+        combineQueryParamsWithoutKey(validFilterQueryParams, otherQueryParams, TEXT_QUERY_PARAM)
+      );
+
+    if (!valid && !isOrWillBeInTextMode) {
+      // Our filter query parameters are at least partially invalid, and we are (or will be) performing a filter search.
+      // Thus, we need to rewrite the URL to remove invalid filter query parameters.
+      rewriteToValidFiltersUrl();
       return;
     }
 
@@ -159,16 +171,12 @@ const RoutedSearch = () => {
     // keep track of whether we've executed a text query.
 
     let performingTextQuery = false;
-    const qpTextQuery: string | undefined = otherQueryParams[TEXT_QUERY_PARAM];
-    const qpTextQueryStr = qpTextQuery ?? ''; // undefined --> ''
 
-    if (queryMode === 'text' || (!doneFirstLoad && qpTextQuery)) {
+    if (isOrWillBeInTextMode) {
       if (!queryDataPerm) {
         // Already checked attempted status, so we know this is the true permissions value. If we do not have query:data
         // permissions, we cannot try to execute a text search, so we go back to filters mode via URL rewrite.
-        setSearchUrlWithQueryParams(
-          combineQueryParamsWithoutKey(validFilterQueryParams, otherQueryParams, TEXT_QUERY_PARAM)
-        );
+        rewriteToValidFiltersUrl();
         return;
       }
 
@@ -177,6 +185,7 @@ const RoutedSearch = () => {
       //  2. We're in the initial load phase, and we have a value for the query parameter. We prioritize this over any
       //     filters set (since we need to choose _some_ order), and switch the query UI to be in 'text' mode.
 
+      const qpTextQueryStr = qpTextQuery ?? ''; // undefined --> ''
       if (qpTextQuery === undefined || qpTextQueryStr !== textQuery) {
         // If there's a mismatch between the query parameter and Redux text queries, we have to reconcile them by
         // choosing one or the other.
@@ -240,7 +249,7 @@ const RoutedSearch = () => {
           // loading what was already filtered before (and is thus in Redux and the UI) back into the URL to create a
           // shareable / refreshable link.
           setSearchUrlWithQueryParams(
-            // filterQueryParams is from Redux here!
+            // filterQueryParams is from Redux here! Not the same thing as rewriteToValidFiltersUrl()
             combineQueryParamsWithoutKey(filterQueryParams, otherQueryParams, TEXT_QUERY_PARAM)
           );
           // Then, the new URL will re-trigger this effect but with filter query parameters from Redux.
