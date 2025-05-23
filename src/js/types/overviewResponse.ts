@@ -1,4 +1,5 @@
 import type { ChartConfig } from '@/types/chartConfig';
+import type { Field } from '@/features/search/types';
 
 export interface OverviewResponse {
   overview: Overview;
@@ -23,25 +24,7 @@ export type Fields = {
 
 export interface OverviewResponseDataField {
   data: Datum[];
-  config: Config;
-  datatype: 'number' | 'string' | 'date';
-  description: string;
-  id: string;
-  mapping: string;
-  mapping_for_search_filter?: string;
-  title: string;
-}
-
-export interface Config {
-  bins?: number;
-  bin_size?: number;
-  maximum?: number;
-  minimum?: number;
-  taper_left?: number;
-  taper_right?: number;
-  units?: string;
-  bin_by: string;
-  enum: string[] | null;
+  definition: Field;
 }
 
 export interface Datum {

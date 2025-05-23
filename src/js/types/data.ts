@@ -1,5 +1,5 @@
 import type { ChartConfig } from '@/types/chartConfig';
-import type { OverviewResponseDataField } from '@/types/overviewResponse';
+import type { Field } from '@/features/search/types';
 
 export type Sections = Section[];
 
@@ -17,8 +17,7 @@ This represents a chart's "state", since it also has the isDisplayed property - 
 export interface ChartDataField {
   id: string; // taken from field definition
   data: ChartData[];
-  // Field definition without data (we have mapped data in the data prop above instead):
-  field: Omit<OverviewResponseDataField, 'data'>;
+  field: Field;
   chartConfig: ChartConfig;
   // display options:
   isDisplayed: boolean; // whether the chart is currently displayed (state data)

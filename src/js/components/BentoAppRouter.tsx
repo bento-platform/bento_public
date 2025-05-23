@@ -13,7 +13,7 @@ import { invalidateDataTypes } from '@/features/dataTypes/dataTypes.store';
 import { useMetadata } from '@/features/metadata/hooks';
 import { getProjects, markScopeSet, selectScope } from '@/features/metadata/metadata.store';
 import { getGenomes } from '@/features/reference/reference.store';
-import { makeGetKatsuPublic, makeGetSearchFields, resetAllQueryState } from '@/features/search/query.store';
+import { performKatsuDiscovery, makeGetSearchFields, resetAllQueryState } from '@/features/search/query.store';
 
 import Loader from '@/components/Loader';
 import DefaultLayout from '@/components/Util/DefaultLayout';
@@ -102,7 +102,7 @@ const BentoAppRouter = () => {
     dispatch(resetAllQueryState());
 
     dispatch(makeGetSearchFields());
-    dispatch(makeGetKatsuPublic());
+    dispatch(performKatsuDiscovery());
 
     if (BEACON_UI_ENABLED) {
       dispatch(getBeaconConfig());

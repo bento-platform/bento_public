@@ -32,8 +32,8 @@ const SearchFilterInput = ({
       value: f.id,
       label: (
         <Flex>
-          <div className="flex-1">{f.title}</div>
-          <OptionDescription description={t(f.description)} />
+          <div className="flex-1">{f.definition.title}</div>
+          <OptionDescription description={t(f.definition.description)} />
         </Flex>
       ),
       // Disabled if: field is in disabled set AND it isn't the currently selected field (so we allow re-selection of
