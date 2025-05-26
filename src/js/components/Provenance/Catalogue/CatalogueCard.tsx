@@ -91,7 +91,7 @@ const CatalogueCard = ({ project }: { project: Project }) => {
             rows: 1,
             tooltip: { title: projectCreated },
           }}
-          style={{ margin: 0 }}
+          className="m-0"
         >
           {projectCreated}
         </Paragraph>
@@ -112,7 +112,7 @@ const CatalogueCard = ({ project }: { project: Project }) => {
         firstContent={
           <Flex vertical={true} gap={8} className="h-full">
             <Space direction="horizontal">
-              <Title level={4} style={{ margin: 0 }}>
+              <Title level={4} className="m-0">
                 {t(title)}
               </Title>
             </Space>
@@ -157,9 +157,7 @@ const CatalogueCard = ({ project }: { project: Project }) => {
         secondContent={
           datasets.length ? (
             <>
-              <Title level={5} style={{ marginTop: 0 }}>
-                {t('entities.dataset', T_PLURAL_COUNT)}
-              </Title>
+              <Title level={5}>{t('entities.dataset', T_PLURAL_COUNT)}</Title>
               <Carousel
                 arrows={datasets.length > 1}
                 dots={datasets.length > 1}

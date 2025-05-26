@@ -1,13 +1,6 @@
 import type { CSSProperties } from 'react';
 import type { CardProps } from 'antd';
 
-export const WRAPPER_STYLE: CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-};
-
 export const FORM_ROW_GUTTERS: [number, number] = [16, 16];
 
 export const CARD_BODY_STYLE: CSSProperties = {

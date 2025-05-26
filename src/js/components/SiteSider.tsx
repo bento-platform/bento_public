@@ -120,7 +120,7 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
               {collapsed || !scopeSet ? null : t(scope.dataset ? 'Back to project' : 'Back to catalogue')}
             </Button>
           </div>
-          <Divider style={{ margin: 0 }} />
+          <Divider className="m-0" />
         </>
       )}
       <Menu

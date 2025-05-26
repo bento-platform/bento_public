@@ -27,6 +27,7 @@ import { store } from './store';
 import { AUTH_CALLBACK_URL, CLIENT_ID, OPENID_CONFIG_URL, PUBLIC_URL_NO_TRAILING_SLASH } from './config';
 
 // Styles imports
+import 'antd/dist/reset.css';
 import 'leaflet/dist/leaflet.css';
 import 'react18-json-view/src/style.css';
 import 'bento-charts/src/styles.css';
