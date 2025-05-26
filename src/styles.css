@@ -19,9 +19,51 @@ body {
   margin: 0;
 }
 
+
+/* BEGIN utility classes */
+
 .no-margin-top {
   margin-top: 0 !important;
 }
+
+/* Name compatible with tailwind if needed */
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+.flex-1 { flex: 1; }
+.rounded-lg { border-radius: 8px; } /* also consistent with --ant-border-radius-lg */
+.rounded-xl { border-radius: 12px; }
+.rounded-e-none { border-start-end-radius: 0; border-end-end-radius: 0; }
+.cursor-pointer { cursor: pointer; }
+.font-mono { font-family: ui-monospace, monospace; }
+
+/* custom, tailwind-esque */
+.max-w-half-cmw { max-width: calc(var(--content-max-width) / 2); }
+
+.shadow {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.float-btn-pos {
+  /* For normal computer screens */
+  bottom: 3em;
+  right: 5em;
+}
+:not(.ant-float-btn-group).float-btn-pos {
+  scale: 125%;
+}
+.ant-float-btn-group.float-btn-pos {
+  /* For normal screens, increase float button group gap size */
+  gap: 24px;
+}
+.ant-float-btn-group.float-btn-pos .ant-float-btn {
+  scale: 125%;
+}
+
+.error-text {
+  color: #f5222d;  /* https://ant.design/docs/spec/colors red-6 */
+}
+
+/* END utility classes */
 
 
 .header-button {
@@ -34,7 +76,7 @@ body {
 
 .select-dataset-item {
   transition: all 0.2s;
-  border-radius: 7px;
+  border-radius: 8px; /* Consistent with --ant-border-radius-lg */
   cursor: pointer;
 }
 
@@ -225,36 +267,11 @@ body {
 /* END about HTML styling */
 
 
-/* BEGIN search results pane */
+/* BEGIN overview */
 
-.search-results-pane {
-  padding-bottom: 8px;
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-
-.search-result-statistic.enabled {
-  padding: 8px 16px;
-  margin-left: -16px;
-  border-radius: 8px;
-
-  cursor: pointer;
-  border: 1px solid #d9d9d9;
-  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.02);
-  transition: all 0.2s cubic-bezier(0.645, 0.045, 0.355, 1); /* from antd */
-}
-
-.search-result-statistic.enabled:hover {
-  border-color: #4096ff;
-}
-
-.search-result-statistic.selected {
-  background-color: #fafafa;
-}
-
-.search-result-statistic.enabled.selected {
-  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.02), inset 0 2px 5px rgba(0, 0, 0, 0.08);
+.count-card {
+  min-width: 150px;
+  transition: height 0.3s ease-in-out;
 }
 
 .dataset-provenance-card-grid {
@@ -274,7 +291,72 @@ body {
   background-color: black !important; /* override slick-dots color */
 }
 
-/* END search results pane */
+/* END overview */
+
+
+/* BEGIN search */
+
+.search-sub-form {
+  flex: 1;
+  transition: opacity 0.1s;
+}
+.search-sub-form.focused {
+  opacity: 1;
+}
+.search-sub-form.not-focused {
+  opacity: 0.75;
+}
+
+h3.search-sub-form-title {
+  font-size: 1.1rem;
+  margin-top: 0;
+}
+
+.search-sub-form-title__inner {
+  margin-right: 0.5em;
+}
+h3.search-sub-form-title:not(.focused) .search-sub-form-title__inner {
+  color: #8c8c8c;
+  cursor: pointer;
+  transition: color 0.1s ease-in-out;
+}
+h3.search-sub-form-title:not(.focused) .search-sub-form-title__inner:hover {
+  color: #595959;
+}
+h3.search-sub-form-title:not(.focused) .search-sub-form-title__inner > span.should-underline-if-unfocused {
+  text-decoration: underline; /* text itself, not icon */
+}
+
+.search-results-pane {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.search-result-statistic.enabled {
+  padding: 8px 16px;
+  margin-left: -16px;
+  border-radius: 8px; /* Consistent with --ant-border-radius-lg */
+
+  cursor: pointer;
+  border: 1px solid #d9d9d9;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.02);
+  transition: all 0.2s cubic-bezier(0.645, 0.045, 0.355, 1); /* from antd */
+}
+
+.search-result-statistic.enabled:hover {
+  border-color: #4096ff;
+}
+
+.search-result-statistic.selected {
+  background-color: #fafafa;
+}
+
+.search-result-statistic.enabled.selected {
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.02), inset 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+/* END search */
 
 
 @media (min-width: 1050px) and (max-width: 1550px) {
@@ -285,6 +367,8 @@ body {
 }
 
 @media (max-width: 768px) {
+  /* Same breakpoint as constants/deviceBreakpoints DeviceBreakpoints.TABLET */
+
   :root {
     --content-padding-v: 10px;
     --content-padding-h: 10px;
@@ -303,5 +387,21 @@ body {
   .scoped-title__breadcrumb {
     font-size: 1.2rem;
     line-height: 46px;
+  }
+
+  .float-btn-pos {
+    /* For small screens */
+    bottom: 1.5em;
+    right: 1em;
+  }
+  .ant-float-btn-group.float-btn-pos .ant-float-btn {
+    scale: 100%;
+  }
+  :not(.ant-float-btn-group).float-btn-pos {
+    scale: 100%;
+  }
+  .ant-float-btn-group.float-btn-pos {
+    /* For small screens, reset group gap size */
+    gap: 16px;
   }
 }

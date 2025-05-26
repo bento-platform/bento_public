@@ -8,11 +8,12 @@ import { Button, Divider, Layout, Menu } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 
 import { useSelectedScope } from '@/features/metadata/hooks';
-import { useSearchQuery } from '@/features/search/hooks';
+import { TEXT_QUERY_PARAM } from '@/features/search/constants';
+import { useNonFilterQueryParams, useSearchQuery } from '@/features/search/hooks';
+import { buildQueryParamsUrl, combineQueryParamsWithoutKey } from '@/features/search/utils';
 import { useTranslationFn } from '@/hooks';
 import { useGetRouteTitleAndIcon, useIsInCatalogueMode, useNavigateToRoot } from '@/hooks/navigation';
 import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
-import { buildQueryParamsUrl } from '@/utils/search';
 import { getCurrentPage } from '@/utils/router';
 
 const { Sider } = Layout;
@@ -25,9 +26,10 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
   const location = useLocation();
   const { i18n } = useTranslation();
   const t = useTranslationFn();
-  const { queryParams } = useSearchQuery();
+  const { mode: queryMode, filterQueryParams } = useSearchQuery();
+  const otherQueryParams = useNonFilterQueryParams();
   const catalogueMode = useIsInCatalogueMode();
-  const currentPage = getCurrentPage();
+  const currentPage = getCurrentPage(location);
 
   const navigateToRoot = useNavigateToRoot();
   const { fixedProject, scope, scopeSet } = useSelectedScope();
@@ -47,9 +49,18 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
       }
       newPath.push(key);
       const newPathString = '/' + newPath.join('/');
-      navigate(key === BentoRoute.Search ? buildQueryParamsUrl(newPathString, queryParams) : newPathString);
+      navigate(
+        key === BentoRoute.Search
+          ? buildQueryParamsUrl(
+              newPathString,
+              queryMode === 'filters'
+                ? combineQueryParamsWithoutKey(filterQueryParams, otherQueryParams, TEXT_QUERY_PARAM)
+                : otherQueryParams
+            )
+          : newPathString
+      );
     },
-    [navigate, queryParams, location.pathname]
+    [navigate, queryMode, filterQueryParams, otherQueryParams, location.pathname]
   );
 
   const createMenuItem = useCallback(

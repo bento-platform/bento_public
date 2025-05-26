@@ -5,16 +5,17 @@ export interface OverviewResponse {
 }
 
 export interface Overview {
-  counts: Counts;
+  counts: CountsOrBooleans;
   fields: Fields;
   layout: Layout[];
 }
 
-export interface Counts {
-  biosamples: number;
-  experiments: number;
-  individuals: number;
-}
+// If boolean, it means we have data above the threshold but don't have permissions to view the exact count.
+export type CountsOrBooleans = {
+  individual: number | boolean;
+  biosample: number | boolean;
+  experiment: number | boolean;
+};
 
 export type Fields = {
   [key in string]: OverviewResponseDataField;

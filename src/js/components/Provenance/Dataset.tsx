@@ -1,7 +1,8 @@
 import { type ReactNode, useCallback, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
-import { Avatar, Button, Card, Flex, List, Modal, Popover, Space, Tag, Typography } from 'antd';
+import { Avatar, Button, Card, Flex, List, Popover, Space, Tag, Typography } from 'antd';
 import { ExpandAltOutlined, PieChartOutlined, SearchOutlined, SolutionOutlined } from '@ant-design/icons';
 import { FaDatabase } from 'react-icons/fa';
 
@@ -10,10 +11,9 @@ import type { Annotation } from '@/types/dats';
 import type { Dataset } from '@/types/metadata';
 import { getCurrentPage, scopeToUrl } from '@/utils/router';
 import { useTranslationFn } from '@/hooks';
-import { BOX_SHADOW } from '@/constants/overviewConstants';
-import { DatasetProvenanceContent } from '@/components/Provenance/DatasetProvenance';
 import SmallChartCardTitle from '@/components/Util/SmallChartCardTitle';
 import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
+import DatasetProvenanceModal from './DatasetProvenanceModal';
 
 const { Title } = Typography;
 
@@ -22,7 +22,7 @@ const KEYWORDS_LIMIT = 2;
 const TagList = ({ annotations }: { annotations?: Annotation[] }) => {
   const t = useTranslationFn();
   return (
-    <Space size={[0, 8]} align="start" wrap style={{ width: '100%' }}>
+    <Space size={[0, 8]} align="start" wrap className="w-full">
       {annotations?.map((keyword, i) => (
         <Tag key={i} color="cyan" style={i === annotations.length - 1 ? { marginInlineEnd: 0 } : undefined}>
           {t(keyword.value.toString())}
@@ -43,7 +43,9 @@ const Dataset = ({
   format: 'list-item' | 'card' | 'carousel';
   selected?: boolean;
 }) => {
-  const location = useLocation();
+  const {
+    i18n: { language },
+  } = useTranslation();
   const navigate = useNavigate();
   const page = getCurrentPage();
 
@@ -51,15 +53,13 @@ const Dataset = ({
 
   const [provenanceModalOpen, setProvenanceModalOpen] = useState(false);
 
-  const baseURL = '/' + location.pathname.split('/')[1];
-
   const { identifier, title, description, dats_file: dats } = dataset;
   const keywords = dats.keywords;
   const displayKeywords = keywords?.slice(0, KEYWORDS_LIMIT) ?? [];
   const remainingKeywords = keywords?.slice(KEYWORDS_LIMIT) ?? [];
 
   const scope: DiscoveryScope = { project: parentProjectID, dataset: identifier };
-  const datasetBaseURL = scopeToUrl(scope, baseURL);
+  const datasetBaseURL = scopeToUrl(scope, language);
 
   const onNavigateCurrent = useCallback(() => navigate(`${datasetBaseURL}${page}`), [navigate, datasetBaseURL, page]);
   const onNavigateOverview = useCallback(() => navigate(`${datasetBaseURL}overview`), [navigate, datasetBaseURL]);
@@ -73,10 +73,9 @@ const Dataset = ({
   if (format === 'list-item') {
     inner = (
       <List.Item
-        className={`select-dataset-item${selected ? ' selected' : ''}`}
+        className={`cursor-pointer select-dataset-item${selected ? ' selected' : ''}`}
         key={identifier}
         onClick={onNavigateCurrent}
-        style={{ cursor: 'pointer' }}
       >
         <List.Item.Meta
           avatar={<Avatar icon={<FaDatabase />} />}
@@ -90,7 +89,8 @@ const Dataset = ({
       <Card
         title={<SmallChartCardTitle title={title} />}
         size="small"
-        style={{ ...BOX_SHADOW, minHeight: 200, height: '100%' }}
+        className="shadow h-full"
+        style={{ minHeight: 200 }}
         styles={{ body: { padding: '12px 16px', height: 'calc(100% - 53px)' } }}
         extra={
           <Button icon={<SolutionOutlined />} onClick={openProvenanceModal}>
@@ -99,33 +99,33 @@ const Dataset = ({
           </Button>
         }
       >
-        <Flex vertical={true} gap={12} style={{ height: '100%' }}>
+        <Flex vertical={true} gap={12} className="h-full">
           <TruncatedParagraph maxRows={2}>{t(description)}</TruncatedParagraph>
-          <Space size={8} align="start" wrap style={{ width: '100%' }}>
+          <Space size={8} align="start" wrap className="w-full">
             <TagList annotations={displayKeywords} />
             {remainingKeywords?.length > 0 && (
               <Popover content={<TagList annotations={remainingKeywords} />}>
-                <span style={{ cursor: 'pointer' }}>
+                <span className="cursor-pointer">
                   + {remainingKeywords.length} {t('more', { count: remainingKeywords.length })}
                 </span>
               </Popover>
             )}
           </Space>
-          <Space size={12} style={{ flex: 1, display: 'flex', alignItems: 'flex-end', gap: 12 }}>
+          <Flex gap={12} align="flex-end" className="flex-1">
             <Button icon={<PieChartOutlined />} onClick={onNavigateOverview}>
               {t('Overview')}
             </Button>
             <Button icon={<SearchOutlined />} onClick={onNavigateSearch}>
               {t('Search')}
             </Button>
-          </Space>
+          </Flex>
         </Flex>
       </Card>
     );
   } else if (format === 'carousel') {
     inner = (
       <>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Flex justify="space-between">
           <Title level={5} style={{ marginTop: 0 }}>
             {t(title)}
           </Title>
@@ -133,16 +133,16 @@ const Dataset = ({
             {t('Provenance')}
             <ExpandAltOutlined />
           </Button>
-        </div>
+        </Flex>
         <TruncatedParagraph>{t(description)}</TruncatedParagraph>
-        <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+        <Flex gap={8} style={{ marginTop: 8 }}>
           <Button size="small" icon={<PieChartOutlined />} onClick={onNavigateOverview}>
             {t('Overview')}
           </Button>
           <Button size="small" icon={<SearchOutlined />} onClick={onNavigateSearch}>
             {t('Search')}
           </Button>
-        </div>
+        </Flex>
       </>
     );
   } else {
@@ -151,9 +151,7 @@ const Dataset = ({
 
   return (
     <>
-      <Modal title={dataset.title} open={provenanceModalOpen} onCancel={closeProvenanceModal} footer={null} width={960}>
-        <DatasetProvenanceContent dataset={dataset} />
-      </Modal>
+      <DatasetProvenanceModal dataset={dataset} open={provenanceModalOpen} onCancel={closeProvenanceModal} />
       {inner}
     </>
   );

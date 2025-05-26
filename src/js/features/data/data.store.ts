@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 import { makeGetDataRequestThunk } from './makeGetDataRequest.thunk';
 import type { Sections } from '@/types/data';
-import type { Counts } from '@/types/overviewResponse';
+import type { CountsOrBooleans } from '@/types/overviewResponse';
 import { RequestStatus } from '@/types/requests';
 
 interface DataState {
@@ -11,7 +11,7 @@ interface DataState {
   isInvalid: boolean;
   defaultLayout: Sections;
   sections: Sections;
-  counts: Counts;
+  counts: CountsOrBooleans;
 }
 
 const initialState: DataState = {
@@ -20,9 +20,9 @@ const initialState: DataState = {
   defaultLayout: [],
   sections: [],
   counts: {
-    individuals: 0,
-    biosamples: 0,
-    experiments: 0,
+    individual: 0,
+    biosample: 0,
+    experiment: 0,
   },
 };
 

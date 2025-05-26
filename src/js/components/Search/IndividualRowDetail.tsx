@@ -5,7 +5,7 @@ import { Descriptions, Skeleton } from 'antd';
 import TimeElementDisplay from '@/components/ClinPhen/TimeElementDisplay';
 import JsonView from '@/components/Util/JsonView';
 
-import { EM_DASH } from '@/constants/contentConstants';
+import { EM_DASH } from '@/constants/common';
 import { useIndividualData } from '@/features/clinPhen/hooks';
 import { RequestStatus } from '@/types/requests';
 

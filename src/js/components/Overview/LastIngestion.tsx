@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 
 import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { WAITING_STATES } from '@/constants/requests';
-import { BOX_SHADOW } from '@/constants/overviewConstants';
 import { useDataTypes } from '@/features/dataTypes/hooks';
 import type { BentoServiceDataType } from '@/types/dataTypes';
 import { useTranslationFn } from '@/hooks';
@@ -25,7 +24,7 @@ const formatDate = (dateString: string, language: string) => {
 };
 
 const LastIngestionSkeleton = () => (
-  <Card style={BOX_SHADOW}>
+  <Card className="shadow">
     <Space direction="vertical">
       <Typography.Text style={{ color: 'rgba(0,0,0,0.45)' }}>
         <Skeleton active={true} title={{ width: 100, style: { margin: 0 } }} paragraph={false} />
@@ -46,7 +45,7 @@ const LastIngestionSkeleton = () => (
 const LastIngestionDataType = ({ dataType }: { dataType: BentoServiceDataType }) => {
   const { t, i18n } = useTranslation();
   return (
-    <Card style={BOX_SHADOW} key={dataType.id}>
+    <Card className="shadow" key={dataType.id}>
       <Space direction="vertical">
         <Typography.Text style={{ color: 'rgba(0,0,0,0.45)' }}>
           {t(`entities.${dataType.id}`, T_PLURAL_COUNT)}
