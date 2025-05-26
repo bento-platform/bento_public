@@ -28,7 +28,7 @@ const SRChartsPage = ({
   return (
     <>
       <Col xs={24} lg={10}>
-        <Typography.Title level={5} style={{ marginTop: 0, textAlign: 'center' }}>
+        <Typography.Title level={5} className="text-center">
           {t('entities.biosample', T_PLURAL_COUNT)}
         </Typography.Title>
         {!hasInsufficientData && biosampleChartData.length ? (
@@ -38,7 +38,7 @@ const SRChartsPage = ({
         )}
       </Col>
       <Col xs={24} lg={10}>
-        <Typography.Title level={5} style={{ marginTop: 0, textAlign: 'center' }}>
+        <Typography.Title level={5} className="text-center">
           {t('entities.experiment', T_PLURAL_COUNT)}
         </Typography.Title>
         {!hasInsufficientData && experimentChartData.length ? (

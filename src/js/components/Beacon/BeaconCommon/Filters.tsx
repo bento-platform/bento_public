@@ -31,7 +31,7 @@ const NetworkFilterToggle = () => {
 
 const BUTTON_STYLE = { margin: '10px 0' };
 
-const Filters = ({ filters, setFilters, form, beaconFiltersBySection, isNetworkQuery }: FiltersProps) => {
+const Filters = ({ filters, setFilters, filtersDirty, form, beaconFiltersBySection, isNetworkQuery }: FiltersProps) => {
   const t = useTranslationFn();
   const [filterIndex, setFilterIndex] = useState<number>(1);
 
@@ -40,9 +40,6 @@ const Filters = ({ filters, setFilters, form, beaconFiltersBySection, isNetworkQ
 
   // don't need to pull filters from state
   // we only need to know *which* state we are in, so it can be shown in the switch
-
-  // UI starts with an optional filter, which can be left blank
-  const isRequired = filters.length > 1;
 
   const newFilter = () => {
     const filter = { index: filterIndex, searchFieldId: null };
@@ -88,7 +85,7 @@ const Filters = ({ filters, setFilters, form, beaconFiltersBySection, isNetworkQ
             removeFilter={removeFilter}
             setFilterSearchFieldId={setFilterSearchFieldId}
             searchFieldInUse={searchFieldInUse}
-            isRequired={isRequired}
+            isRequired={filtersDirty}
           />
         ))}
       </Flex>
@@ -99,6 +96,7 @@ const Filters = ({ filters, setFilters, form, beaconFiltersBySection, isNetworkQ
 export interface FiltersProps {
   filters: FormFilter[];
   setFilters: Dispatch<SetStateAction<FormFilter[]>>;
+  filtersDirty: boolean;
   form: FormInstance;
   beaconFiltersBySection: BeaconFilterSection[];
   isNetworkQuery: boolean;

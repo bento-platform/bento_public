@@ -37,7 +37,7 @@ const Counts = () => {
   const waitingForData = WAITING_STATES.includes(status);
 
   return (
-    <>
+    <div>
       <Typography.Title level={3}>{t('Counts')}</Typography.Title>
       <Space wrap>
         {COUNT_ENTRIES.map(({ entity, icon }, i) => {
@@ -55,7 +55,7 @@ const Counts = () => {
           );
         })}
       </Space>
-    </>
+    </div>
   );
 };
 

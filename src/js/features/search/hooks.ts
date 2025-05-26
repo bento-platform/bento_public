@@ -25,9 +25,3 @@ export const useNonFilterQueryParams = (): QueryParams => {
     return qp;
   }, [mode, textQuery, textQueryStatus]);
 };
-
-export const useAllSearchQueryParams = (): QueryParams => {
-  const { filterQueryParams } = useSearchQuery();
-  const otherQueryParams = useNonFilterQueryParams();
-  return useMemo(() => ({ ...filterQueryParams, ...otherQueryParams }), [filterQueryParams, otherQueryParams]);
-};

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Col, FloatButton, Row, Typography } from 'antd';
+import { Flex, FloatButton, Typography } from 'antd';
 import { AppstoreAddOutlined } from '@ant-design/icons';
 
 import { convertSequenceAndDisplayData, saveValue } from '@/utils/localStorage';
@@ -56,19 +56,15 @@ const OverviewChartDashboard = () => {
   return WAITING_STATES.includes(overviewDataStatus) ? (
     <Loader />
   ) : (
-    <div className="container margin-auto">
-      <AboutBox />
+    <>
+      <Flex vertical={true} gap={24} className="container margin-auto">
+        <AboutBox />
 
-      <Row>
-        <Col flex={1}>
-          <Counts />
-        </Col>
-      </Row>
+        <Counts />
 
-      {selectedProject && !scope.dataset && selectedProject.datasets.length ? (
-        // If we have a project with more than one dataset, show a dataset selector in the project overview
-        <Row>
-          <Col flex={1}>
+        {selectedProject && !scope.dataset && selectedProject.datasets.length ? (
+          // If we have a project with more than one dataset, show a dataset selector in the project overview
+          <div>
             <Typography.Title level={3}>Datasets</Typography.Title>
             <div className="dataset-provenance-card-grid">
               {selectedProject.datasets.map((d) => (
@@ -77,20 +73,17 @@ const OverviewChartDashboard = () => {
                 </div>
               ))}
             </div>
-          </Col>
-        </Row>
-      ) : null}
+          </div>
+        ) : null}
 
-      <Row>
-        <Col flex={1}>
-          {displayedSections.map(({ sectionTitle, charts }, i) => (
-            <div key={i} className="overview">
-              <OverviewSection title={sectionTitle} chartData={charts} searchableFields={searchableFields} />
-            </div>
-          ))}
-          <LastIngestionInfo />
-        </Col>
-      </Row>
+        {displayedSections.map(({ sectionTitle, charts }, i) => (
+          <div key={i} className="overview">
+            <OverviewSection title={sectionTitle} chartData={charts} searchableFields={searchableFields} />
+          </div>
+        ))}
+
+        <LastIngestionInfo />
+      </Flex>
 
       <ManageChartsDrawer onManageDrawerClose={onManageChartsClose} manageDrawerVisible={drawerVisible} />
 
@@ -103,7 +96,7 @@ const OverviewChartDashboard = () => {
           onClick={onManageChartsOpen}
         />
       </FloatButton.Group>
-    </div>
+    </>
   );
 };
 

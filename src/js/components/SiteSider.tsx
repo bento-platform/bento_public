@@ -8,8 +8,9 @@ import { Button, Divider, Layout, Menu } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 
 import { useSelectedScope } from '@/features/metadata/hooks';
-import { useAllSearchQueryParams } from '@/features/search/hooks';
-import { buildQueryParamsUrl } from '@/features/search/utils';
+import { TEXT_QUERY_PARAM } from '@/features/search/constants';
+import { useNonFilterQueryParams, useSearchQuery } from '@/features/search/hooks';
+import { buildQueryParamsUrl, combineQueryParamsWithoutKey } from '@/features/search/utils';
 import { useTranslationFn } from '@/hooks';
 import { useGetRouteTitleAndIcon, useIsInCatalogueMode, useNavigateToRoot } from '@/hooks/navigation';
 import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
@@ -25,7 +26,8 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
   const location = useLocation();
   const { i18n } = useTranslation();
   const t = useTranslationFn();
-  const allSearchQueryParams = useAllSearchQueryParams();
+  const { mode: queryMode, filterQueryParams } = useSearchQuery();
+  const otherQueryParams = useNonFilterQueryParams();
   const catalogueMode = useIsInCatalogueMode();
   const currentPage = getCurrentPage(location);
 
@@ -47,9 +49,18 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
       }
       newPath.push(key);
       const newPathString = '/' + newPath.join('/');
-      navigate(key === BentoRoute.Search ? buildQueryParamsUrl(newPathString, allSearchQueryParams) : newPathString);
+      navigate(
+        key === BentoRoute.Search
+          ? buildQueryParamsUrl(
+              newPathString,
+              queryMode === 'filters'
+                ? combineQueryParamsWithoutKey(filterQueryParams, otherQueryParams, TEXT_QUERY_PARAM)
+                : otherQueryParams
+            )
+          : newPathString
+      );
     },
-    [navigate, allSearchQueryParams, location.pathname]
+    [navigate, queryMode, filterQueryParams, otherQueryParams, location.pathname]
   );
 
   const createMenuItem = useCallback(
@@ -109,7 +120,7 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
               {collapsed || !scopeSet ? null : t(scope.dataset ? 'Back to project' : 'Back to catalogue')}
             </Button>
           </div>
-          <Divider style={{ margin: 0 }} />
+          <Divider className="m-0" />
         </>
       )}
       <Menu
