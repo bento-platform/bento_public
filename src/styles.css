@@ -29,12 +29,15 @@ body {
 /* Name compatible with tailwind if needed */
 .w-full { width: 100%; }
 .h-full { height: 100%; }
+.m-0 { margin: 0; }
 .flex-1 { flex: 1; }
+.float-right { float: right; }
 .rounded-lg { border-radius: 8px; } /* also consistent with --ant-border-radius-lg */
 .rounded-xl { border-radius: 12px; }
 .rounded-e-none { border-start-end-radius: 0; border-end-end-radius: 0; }
 .cursor-pointer { cursor: pointer; }
 .font-mono { font-family: ui-monospace, monospace; }
+.text-center { text-align: center; }
 
 /* custom, tailwind-esque */
 .max-w-half-cmw { max-width: calc(var(--content-max-width) / 2); }

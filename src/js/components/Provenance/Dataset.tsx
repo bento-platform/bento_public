@@ -126,10 +126,8 @@ const Dataset = ({
     inner = (
       <>
         <Flex justify="space-between">
-          <Title level={5} style={{ marginTop: 0 }}>
-            {t(title)}
-          </Title>
-          <Button size="small" icon={<SolutionOutlined />} style={{ float: 'right' }} onClick={openProvenanceModal}>
+          <Title level={5}>{t(title)}</Title>
+          <Button size="small" icon={<SolutionOutlined />} className="float-right" onClick={openProvenanceModal}>
             {t('Provenance')}
             <ExpandAltOutlined />
           </Button>
@@ -146,7 +144,7 @@ const Dataset = ({
       </>
     );
   } else {
-    inner = <span style={{ color: 'red' }}>UNIMPLEMENTED</span>;
+    inner = <span className="error-text">UNIMPLEMENTED</span>;
   }
 
   return (
