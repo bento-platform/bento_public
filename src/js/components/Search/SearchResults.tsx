@@ -1,3 +1,4 @@
+import { useCallback, useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -6,10 +7,9 @@ import { useSearchQuery } from '@/features/search/hooks';
 import type { SearchResultsUIPage } from '@/features/search/types';
 import { useCanSeeUncensoredCounts } from '@/hooks/censorship';
 import { RequestStatus } from '@/types/requests';
+import { langAndScopeSelectionToUrl } from '@/utils/router';
 
 import SearchResultsPane from './SearchResultsPane';
-import { langAndScopeSelectionToUrl } from '@/utils/router';
-import { useCallback, useEffect } from 'react';
 
 const SearchResults = () => {
   const {
