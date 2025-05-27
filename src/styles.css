@@ -253,6 +253,19 @@ body {
 
 /* END layout HTML styling */
 
+#dashboard-tabs {
+  margin: 0 12px;
+}
+
+#dashboard-tabs.ant-tabs-card > .ant-tabs-nav .ant-tabs-tab {
+  /* by default, antd card-style tab borders are too subtle. make them "pop" a bit more :-) */
+}
+#dashboard-tabs.ant-tabs-card > .ant-tabs-nav .ant-tabs-tab:not(.ant-tabs-tab-active) {
+  /* by default, antd card-style unselected tabs are too subtle. make them "pop" a bit more :-) */
+  border: 1px solid #e9e9e9;
+  background: rgba(0, 0, 0, 0.03);
+}
+
 
 /* BEGIN about HTML styling */
 

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Flex, FloatButton, Typography } from 'antd';
-import { AppstoreAddOutlined } from '@ant-design/icons';
+import { Flex, FloatButton, Tabs, Typography } from 'antd';
+import { AppstoreAddOutlined, FileTextOutlined, SearchOutlined, SolutionOutlined } from '@ant-design/icons';
 
 import { convertSequenceAndDisplayData, saveValue } from '@/utils/localStorage';
 import type { Sections } from '@/types/data';
@@ -16,6 +16,7 @@ import Counts from './Counts';
 import LastIngestionInfo from './LastIngestion';
 import Loader from '@/components/Loader';
 import Dataset from '@/components/Provenance/Dataset';
+import { SearchForm } from '@/components/Search/Search';
 
 import { useTranslationFn } from '@/hooks';
 import { useData, useSearchableFields } from '@/features/data/hooks';
@@ -53,12 +54,35 @@ const OverviewChartDashboard = () => {
     saveToLocalStorage(sections);
   }, [sections]);
 
+  // ---
+
+  const [pageTab, setPageTab] = useState('about');
+
+  const pageTabItems = [
+    { key: 'about', label: t('About'), icon: <FileTextOutlined /> },
+    { key: 'provenance', label: t('Provenance'), icon: <SolutionOutlined /> },
+    { key: 'search', label: t('Search'), icon: <SearchOutlined /> },
+  ];
+
   return WAITING_STATES.includes(overviewDataStatus) ? (
     <Loader />
   ) : (
     <>
       <Flex vertical={true} gap={24} className="container margin-auto">
-        <AboutBox />
+        <div className="dashboard-tabs">
+          <Tabs
+            type="card"
+            size="large"
+            activeKey={pageTab}
+            onChange={(k) => setPageTab(k)}
+            items={pageTabItems}
+            id="dashboard-tabs"
+            tabBarStyle={{ marginBottom: -1, zIndex: 1 }}
+          />
+          {pageTab === 'about' ? <AboutBox /> : null}
+          {pageTab === 'provenance' ? <AboutBox /> : null}
+          {pageTab === 'search' ? <SearchForm /> : null}
+        </div>
 
         <Counts />
 
