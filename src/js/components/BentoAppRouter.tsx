@@ -13,7 +13,7 @@ import { invalidateDataTypes } from '@/features/dataTypes/dataTypes.store';
 import { useMetadata } from '@/features/metadata/hooks';
 import { getProjects, markScopeSet, selectScope } from '@/features/metadata/metadata.store';
 import { getGenomes } from '@/features/reference/reference.store';
-import { performKatsuDiscovery, makeGetSearchFields, resetAllQueryState } from '@/features/search/query.store';
+import { performKatsuDiscovery, fetchSearchFields, resetAllQueryState } from '@/features/search/query.store';
 
 import Loader from '@/components/Loader';
 import DefaultLayout from '@/components/Util/DefaultLayout';
@@ -101,7 +101,7 @@ const BentoAppRouter = () => {
     //   inheritance, but this would require quite a bit more logic and maybe is unnecessarily complex.
     dispatch(resetAllQueryState());
 
-    dispatch(makeGetSearchFields());
+    dispatch(fetchSearchFields());
     dispatch(performKatsuDiscovery());
 
     if (BEACON_UI_ENABLED) {

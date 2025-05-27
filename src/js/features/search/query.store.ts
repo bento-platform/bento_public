@@ -7,8 +7,8 @@ import { EMPTY_DISCOVERY_RESULTS } from '@/features/search/constants';
 import type { KatsuSearchResponse, QueryParams, SearchFieldResponse, QueryMode } from '@/features/search/types';
 import { serializeChartData } from '@/utils/chart';
 
-import { performKatsuDiscovery } from './makeGetKatsuPublic.thunk';
-import { makeGetSearchFields } from './makeGetSearchFields.thunk';
+import { performKatsuDiscovery } from './performKatsuDiscovery.thunk';
+import { fetchSearchFields } from './fetchSearchFields.thunk';
 import { performFreeTextSearch } from '@/features/search/performFreeTextSearch.thunk';
 
 export type QueryState = {
@@ -125,14 +125,14 @@ const query = createSlice({
       state.textQueryStatus = RequestStatus.Rejected;
     });
     // -----
-    builder.addCase(makeGetSearchFields.pending, (state) => {
+    builder.addCase(fetchSearchFields.pending, (state) => {
       state.fieldsStatus = RequestStatus.Pending;
     });
-    builder.addCase(makeGetSearchFields.fulfilled, (state, { payload }) => {
+    builder.addCase(fetchSearchFields.fulfilled, (state, { payload }) => {
       state.fieldsStatus = RequestStatus.Fulfilled;
       state.filterSections = payload.sections;
     });
-    builder.addCase(makeGetSearchFields.rejected, (state) => {
+    builder.addCase(fetchSearchFields.rejected, (state) => {
       state.fieldsStatus = RequestStatus.Rejected;
     });
   },
@@ -147,5 +147,5 @@ export const {
   setDoneFirstLoad,
   resetAllQueryState,
 } = query.actions;
-export { performKatsuDiscovery, makeGetSearchFields };
+export { performKatsuDiscovery, fetchSearchFields };
 export default query.reducer;
