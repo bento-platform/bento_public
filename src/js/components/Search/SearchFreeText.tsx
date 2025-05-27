@@ -49,7 +49,7 @@ const SearchFreeText = ({ focused, onFocus, requestStatus, ...props }: DefinedSe
 
   return (
     <SearchSubForm
-      title="Text search"
+      titleKey="text_search"
       icon={<FormOutlined />}
       focused={focused}
       onFocus={onFocus}

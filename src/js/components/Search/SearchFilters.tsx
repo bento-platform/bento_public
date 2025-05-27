@@ -38,7 +38,7 @@ const SearchFilters = ({ focused, onFocus, ...props }: DefinedSearchSubFormProps
   }, [maxQueryParameters, fields, filterQueryParams]);
 
   return (
-    <SearchSubForm title="Filters" icon={<FilterOutlined />} focused={focused} onFocus={onFocus} {...props}>
+    <SearchSubForm titleKey="filters" icon={<FilterOutlined />} focused={focused} onFocus={onFocus} {...props}>
       <Space direction="vertical" size={8} className="w-full">
         {WAITING_STATES.includes(configStatus) || WAITING_STATES.includes(fieldsStatus) ? (
           <SearchFilterInputSkeleton />
