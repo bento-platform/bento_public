@@ -22,8 +22,9 @@
     "paths": {
       "@/*": ["src/js/*"],
       "@public/*": ["src/public/*"],
-      "*": ["node_modules/*", ".yalc/*"],
+      "@Util/*": ["src/js/components/Util/*"],
+      "*": ["node_modules/*", ".yalc/*"]
     }
   },
-  "include": ["./src/", "./src/custom.d.ts"],
+  "include": ["./src/", "./src/custom.d.ts"]
 }
