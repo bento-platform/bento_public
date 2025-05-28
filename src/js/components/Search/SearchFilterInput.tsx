@@ -25,31 +25,35 @@ const SearchFilterInput = ({
 
   const { filterSections } = useSearchQuery();
 
-  const filterOptions = filterSections.map(({ section_title: label, fields }) => ({
-    label,
-    title: label,
-    options: fields.map((f) => ({
-      value: f.id,
-      label: (
-        <Flex>
-          <div className="flex-1">{f.title}</div>
-          <OptionDescription description={t(f.description)} />
-        </Flex>
-      ),
-      // Disabled if: field is in disabled set AND it isn't the currently selected field (so we allow re-selection of
-      // the current field.)
-      disabled: disabledFields.has(f.id) && field !== f.id,
-    })),
-  }));
+  const filterOptions = useMemo(
+    () =>
+      filterSections.map(({ section_title: label, fields }) => ({
+        label: t(label),
+        title: t(label),
+        options: fields.map((f) => ({
+          value: f.id,
+          label: (
+            <Flex>
+              <div className="flex-1">{t(f.title)}</div>
+              <OptionDescription description={t(f.description)} />
+            </Flex>
+          ),
+          // Disabled if: field is in disabled set AND it isn't the currently selected field (so we allow re-selection of
+          // the current field.)
+          disabled: disabledFields.has(f.id) && field !== f.id,
+        })),
+      })),
+    [t, filterSections, field, disabledFields]
+  );
 
   const fieldFilterOptions = useMemo(
     () =>
       Object.fromEntries(
         filterSections.flatMap(({ fields }) =>
-          fields.map((f) => [f.id, f.options.map((o) => ({ value: o, label: o }))])
+          fields.map((f) => [f.id, f.options.map((o) => ({ value: o, label: t(o) }))])
         )
       ),
-    [filterSections]
+    [t, filterSections]
   );
 
   const onFilterFieldChange = useCallback(
@@ -77,7 +81,7 @@ const SearchFilterInput = ({
         onFocus={onFocus}
         onChange={onFilterFieldChange}
         value={field}
-        placeholder={t('Select a field to filter by\u2026')}
+        placeholder={t('search.filter_placeholder')}
       />
       <Select
         className="flex-1"

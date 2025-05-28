@@ -32,12 +32,16 @@
     "variant_other": "Variants"
   },
   "search": {
+    "filters": "Filters",
+    "text_search": "Text search",
+    "filter_placeholder": "Select a field to filter by\u2026",
     "showing_entities": "Showing {{entity, lowercase}} {{start}}-{{end}} of {{total}}",
     "showing_entities_short": "{{start}}-{{end}} / {{total}}",
     "manage_columns": "Manage Columns",
     "export_csv": "Export as CSV",
     "csv": "CSV"
   },
+  "OR": "OR",
   "in": "in",
   "Get Data": "Get Data",
   "No Results": "No Results",
