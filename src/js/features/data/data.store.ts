@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 import { makeGetDataRequestThunk } from './makeGetDataRequest.thunk';
 import type { Sections } from '@/types/data';
-import type { CountsOrBooleans } from '@/types/overviewResponse';
+import type { CountsOrBooleans } from '@/types/discovery/response';
 import { RequestStatus } from '@/types/requests';
 
 interface DataState {

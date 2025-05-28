@@ -9,9 +9,9 @@ import { verifyData, saveValue, getValue, convertSequenceAndDisplayData } from '
 import { scopedAuthorizedRequestConfig } from '@/utils/requests';
 
 import type { RootState } from '@/store';
-import type { ChartConfig } from '@/types/chartConfig';
+import type { ChartConfig } from '@/types/discovery/chartConfig';
 import type { ChartDataField, LocalStorageData, Sections } from '@/types/data';
-import type { CountsOrBooleans, Overview } from '@/types/overviewResponse';
+import type { CountsOrBooleans, DiscoveryResponse } from '@/types/discovery/response';
 import { RequestStatus } from '@/types/requests';
 
 export const makeGetDataRequestThunk = createAsyncThunk<
@@ -24,7 +24,7 @@ export const makeGetDataRequestThunk = createAsyncThunk<
     const overviewResponse = (await axios
       .get(katsuDiscoveryUrl, scopedAuthorizedRequestConfig(getState()))
       .then((res) => res.data)
-      .catch(printAPIError(rejectWithValue))) as Overview;
+      .catch(printAPIError(rejectWithValue))) as DiscoveryResponse;
 
     const sections = overviewResponse.layout;
 

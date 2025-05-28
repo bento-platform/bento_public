@@ -7,8 +7,8 @@ import { ChoroplethMap } from 'bento-charts/dist/maps';
 import { CHART_HEIGHT, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
 import { useTranslationFn } from '@/hooks';
 import type { ChartData } from '@/types/data';
-import type { ChartConfig } from '@/types/chartConfig';
-import { CHART_TYPE_BAR, CHART_TYPE_CHOROPLETH, CHART_TYPE_HISTOGRAM, CHART_TYPE_PIE } from '@/types/chartConfig';
+import type { ChartConfig } from '@/types/discovery/chartConfig';
+import { CHART_TYPE_BAR, CHART_TYPE_CHOROPLETH, CHART_TYPE_HISTOGRAM, CHART_TYPE_PIE } from '@/types/discovery/chartConfig';
 import { noop } from '@/utils/chart';
 
 interface BarChartEvent {

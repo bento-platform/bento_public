@@ -1,5 +1,6 @@
-import type { ChartConfig } from '@/types/chartConfig';
-import type { Field } from '@/features/search/types';
+import type { KatsuIndividualMatch } from '@/features/search/types';
+import type { ChartConfig } from '@/types/discovery/chartConfig';
+import type { Field } from '@/types/discovery/fieldDefinition';
 
 export type Sections = Section[];
 
@@ -36,12 +37,7 @@ export type LocalStorageData = {
 export type OptionalDiscoveryResults = {
   // individuals
   individualCount?: number;
-  individualMatches?: {
-    id: string;
-    phenopacket_id: string | null;
-    project_id: string | null;
-    dataset_id: string | null;
-  }[];
+  individualMatches?: KatsuIndividualMatch[];
   // biosamples
   biosampleCount?: number;
   biosampleChartData?: ChartData[];

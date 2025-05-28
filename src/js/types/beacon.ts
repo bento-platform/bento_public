@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import type { Rule } from 'antd/es/form';
 import type { ActionCreator } from 'redux';
-import type { Datum } from '@/types/overviewResponse';
+import type { Datum } from '@/types/discovery';
 import type { makeBeaconQuery } from '@/features/beacon/beacon.store';
 import type { beaconNetworkQuery } from '@/features/beacon/network.store';
 import type { OptionalDiscoveryResults } from '@/types/data';
