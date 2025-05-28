@@ -50,10 +50,10 @@ const SearchFilterInput = ({
     () =>
       Object.fromEntries(
         filterSections.flatMap(({ fields }) =>
-          fields.map((f) => [f.id, f.options.map((o) => ({ value: o, label: o }))])
+          fields.map((f) => [f.id, f.options.map((o) => ({ value: o, label: t(o) }))])
         )
       ),
-    [filterSections]
+    [t, filterSections]
   );
 
   const onFilterFieldChange = useCallback(
