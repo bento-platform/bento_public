@@ -5,7 +5,7 @@ import { useTranslationFn } from '@/hooks';
 import type { RequestStatus } from '@/types/requests';
 
 export type SearchSubFormProps = {
-  title: string;
+  titleKey: string;
   icon: ReactNode;
   requestStatus?: RequestStatus;
   focused: boolean;
@@ -15,10 +15,10 @@ export type SearchSubFormProps = {
 };
 
 // Version of SearchSubFormProps type for specific search sub-forms, which define their own title/icon.
-export type DefinedSearchSubFormProps = Omit<SearchSubFormProps, 'title' | 'icon'>;
+export type DefinedSearchSubFormProps = Omit<SearchSubFormProps, 'titleKey' | 'icon'>;
 
 const SearchSubForm = ({
-  title,
+  titleKey,
   icon,
   requestStatus,
   focused,
@@ -39,7 +39,7 @@ const SearchSubForm = ({
     <div className={classes} style={style}>
       <Typography.Title level={3} className={'search-sub-form-title' + (focused ? ' focused' : '')}>
         <span className="search-sub-form-title__inner" onClick={onFocus}>
-          {icon} <span className="should-underline-if-unfocused">{t(title)}</span>
+          {icon} <span className="should-underline-if-unfocused">{t(`search.${titleKey}`)}</span>
         </span>
         {requestStatus !== undefined ? <RequestStatusIcon status={requestStatus} /> : null}
       </Typography.Title>
