@@ -3,9 +3,11 @@ import type { ChartLayoutSection } from './chartConfig';
 import type { Field } from './fieldDefinition';
 
 export interface DiscoveryResponse {
-  counts: CountsOrBooleans;
-  fields: DiscoveryFieldResponses;
   layout: ChartLayoutSection[];
+  fields: DiscoveryFieldResponses;
+  root_entity: 'phenopacket';
+  counts: CountsOrBooleans;
+  matches: null; // TODO
 }
 
 // If boolean, it means we have data above the threshold but don't have permissions to view the exact count.
