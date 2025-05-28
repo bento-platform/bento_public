@@ -1,11 +1,14 @@
-import { Descriptions, DescriptionsProps, Space, Table, Tooltip, Typography } from 'antd';
-import { Interpretation } from '@/types/clinPhen/interpretation';
-import { ExperimentOutlined, MedicineBoxOutlined } from '@ant-design/icons';
-import CustomEmpty from '../../Util/CustomEmpty';
-import OntologyTerm from '../../Util/ClinPhen/OntologyTerm';
-import { GenomicInterpretation } from '@/types/clinPhen/genomicInterpretation';
-import { JSONObject } from '@/types/json';
-import { GeneDescriptor, VariantInterpretation } from '../../Util/ClinPhen/tInterpretationUtilities';
+import { Descriptions, Space, Table, Tooltip, Typography } from 'antd';
+import { MedicineBoxOutlined, ExperimentOutlined } from '@ant-design/icons';
+
+import CustomEmpty from '@Util/CustomEmpty';
+import OntologyTerm from '@Util/ClinPhen/OntologyTerm';
+import { GeneDescriptor, VariantInterpretation } from '@Util/ClinPhen/tInterpretationUtilities';
+
+import type { DescriptionsProps } from 'antd';
+import type { Interpretation } from '@/types/clinPhen/interpretation';
+import type { JSONObject } from '@/types/json';
+import type { GenomicInterpretation } from '@/types/clinPhen/genomicInterpretation';
 
 const GenomicInterpretationDetails = ({ genomicInterpretation }: { genomicInterpretation: GenomicInterpretation }) => {
   const relatedType = (genomicInterpretation?.extra_properties as JSONObject)?.__related_type ?? 'unknown';

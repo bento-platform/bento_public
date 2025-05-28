@@ -1,8 +1,11 @@
 import { Descriptions, DescriptionsProps, Table } from 'antd';
-import { Biosample } from '@/types/clinPhen/biosample';
-import { OntologyTerm } from '@/types/ontology';
+
+import OntologyTermComponent from '@Util/ClinPhen/OntologyTerm';
+
+import type { Biosample } from '@/types/clinPhen/biosample';
+import type { OntologyTerm } from '@/types/ontology';
+
 import { EM_DASH } from '@/constants/common';
-import OntologyTermComponent from '../../Util/ClinPhen/OntologyTerm';
 
 const BiosampleExpandedRow = ({ biosample }: { biosample: Biosample }) => {
   const items: DescriptionsProps['items'] = [

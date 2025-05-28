@@ -1,11 +1,15 @@
-import { Descriptions, DescriptionsProps, Table } from 'antd';
-import { Disease } from '@/types/clinPhen/disease';
-import OntologyTermComponent, { OntologyTermStack } from '../../Util/ClinPhen/OntologyTerm';
-import TimeElementDisplay from '../../Util/ClinPhen/TimeElementDisplay';
-import ExtraProperties from '../../Util/ExtraProperties';
-import { TimeElement } from '@/types/clinPhen/shared';
+import { Descriptions, Table } from 'antd';
+
+import OntologyTermComponent, { OntologyTermStack } from '@Util/ClinPhen/OntologyTerm';
+import TimeElementDisplay from '@Util/ClinPhen/TimeElementDisplay';
+import ExtraProperties from '@Util/ExtraProperties';
+
+import type { DescriptionsProps } from 'antd';
+import type { Disease } from '@/types/clinPhen/disease';
+import type { TimeElement } from '@/types/clinPhen/shared';
+import type { OntologyTerm } from '@/types/ontology';
+
 import { EM_DASH } from '@/constants/common';
-import { OntologyTerm } from '@/types/ontology';
 
 const DiseaseExpandedRow = ({ disease }: { disease: Disease }) => {
   const items: DescriptionsProps['items'] = [

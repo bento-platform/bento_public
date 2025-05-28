@@ -1,19 +1,23 @@
-import { Descriptions, DescriptionsProps, Flex, Table } from 'antd';
-import {
+import { Descriptions, Flex, Table } from 'antd';
+
+import OntologyTermComponent, { OntologyTermStack } from '@Util/ClinPhen/OntologyTerm';
+import QuantityDisplay from '@Util/ClinPhen/QuantityDisplay';
+import TimeElementDisplay, { TimeIntervalDisplay } from '@Util/ClinPhen/TimeElementDisplay';
+
+import { EM_DASH } from '@/constants/common';
+
+import type { DescriptionsProps } from 'antd';
+import type {
+  Treatment,
   DoseInterval,
-  MedicalAction,
   RadiationTherapy,
   TherapeuticRegimen,
-  Treatment,
+  MedicalAction,
 } from '@/types/clinPhen/medicalAction';
-import { OntologyTerm } from '@/types/ontology';
-import OntologyTermComponent, { OntologyTermStack } from '../../Util/ClinPhen/OntologyTerm';
-import { Procedure } from '@/types/clinPhen/procedure';
-import TimeElementDisplay, { TimeIntervalDisplay } from '../../Util/ClinPhen/TimeElementDisplay';
-import { EM_DASH } from '@/constants/common';
-import { Quantity } from '@/types/clinPhen/measurement';
-import { TimeInterval } from '@/types/clinPhen/shared';
-import QuantityDisplay from '../../Util/ClinPhen/QuantityDisplay';
+import type { Quantity } from '@/types/clinPhen/measurement';
+import type { OntologyTerm } from '@/types/ontology';
+import type { Procedure } from '@/types/clinPhen/procedure';
+import type { TimeInterval } from '@/types/clinPhen/shared';
 
 const ProcedureComponent = ({ procedure }: { procedure: Procedure }) => {
   const ProcedureItems: DescriptionsProps['items'] = [

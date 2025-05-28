@@ -1,5 +1,7 @@
 import { Table, Typography } from 'antd';
-import { Resource } from '@/types/clinPhen/resource';
+
+import type { Resource } from '@/types/clinPhen/resource';
+
 const { Link } = Typography;
 
 interface OntologiesProps {

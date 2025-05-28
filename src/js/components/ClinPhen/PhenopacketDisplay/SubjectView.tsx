@@ -1,11 +1,13 @@
 import { Descriptions, DescriptionsProps } from 'antd';
 
-import { Individual } from '@/types/clinPhen/individual';
-import StringList from '../../Util/StringList';
-import TimeElementDisplay from '../../Util/ClinPhen/TimeElementDisplay';
+import OntologyTerm from '@Util/ClinPhen/OntologyTerm';
+import JsonView from '@Util/JsonView';
+import StringList from '@Util/StringList';
+import TimeElementDisplay from '@Util/ClinPhen/TimeElementDisplay';
+
+import type { Individual } from '@/types/clinPhen/individual';
+
 import { EM_DASH } from '@/constants/common';
-import OntologyTerm from '../../Util/ClinPhen/OntologyTerm';
-import JsonView from '../../Util/JsonView';
 
 const SubjectView = ({ subject }: { subject: Individual }) => {
   const vs = subject?.vital_status;

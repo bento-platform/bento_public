@@ -1,16 +1,17 @@
-import { Descriptions, DescriptionsProps, Table } from 'antd';
+import { Descriptions, DescriptionsProps, Space, Table, Tooltip } from 'antd';
 import { LinkOutlined } from '@ant-design/icons';
+
+import OntologyTermComponent from '@Util/ClinPhen/OntologyTerm';
+import TimeElementDisplay from '@Util/ClinPhen/TimeElementDisplay';
+import ExtraProperties from '@Util/ExtraProperties';
+
 import type { PhenotypicFeature } from '@/types/clinPhen/phenotypicFeature';
-import OntologyTermComponent from '../../Util/ClinPhen/OntologyTerm';
-import { EM_DASH } from '@/constants/common';
-import { OntologyTerm } from '@/types/ontology';
-import { TimeElement } from '@/types/clinPhen/shared';
-import TimeElementDisplay from '../../Util/ClinPhen/TimeElementDisplay';
-import { Space } from 'antd';
+import type { OntologyTerm } from '@/types/ontology';
+import type { Evidence as EvidenceType, TimeElement } from '@/types/clinPhen/shared';
+
 import { isValidUrl } from '@/utils/strings';
 
-import type { Evidence as EvidenceType } from '@/types/clinPhen/shared';
-import ExtraProperties from '../../Util/ExtraProperties';
+import { EM_DASH } from '@/constants/common';
 
 interface EvidenceProps {
   evidence?: EvidenceType;

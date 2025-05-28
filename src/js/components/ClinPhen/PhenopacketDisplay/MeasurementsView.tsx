@@ -1,10 +1,13 @@
-import { Descriptions, DescriptionsProps, Flex, Table } from 'antd';
-import { Measurement, Quantity } from '@/types/clinPhen/measurement';
+import { Descriptions, DescriptionsProps, Table } from 'antd';
+
+import OntologyTermComponent from '@Util/ClinPhen/OntologyTerm';
+import QuantityDisplay from '@Util/ClinPhen/QuantityDisplay';
+
+import type { Measurement, Quantity } from '@/types/clinPhen/measurement';
 import type { OntologyTerm as OntologyTermType } from '@/types/ontology';
-import OntologyTermComponent from '../../Util/ClinPhen/OntologyTerm';
-import { Procedure } from '@/types/clinPhen/procedure';
+import type { Procedure } from '@/types/clinPhen/procedure';
+
 import { EM_DASH } from '@/constants/common';
-import QuantityDisplay from '../../Util/ClinPhen/QuantityDisplay';
 
 const MeasurementsExpandedRow = ({ measurement }: { measurement: Measurement }) => {
   const items: DescriptionsProps['items'] = [
