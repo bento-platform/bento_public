@@ -10,6 +10,7 @@ export interface DiscoveryResponse {
 
 // If boolean, it means we have data above the threshold but don't have permissions to view the exact count.
 export type CountsOrBooleans = {
+  phenopacket: number | boolean;
   individual: number | boolean;
   biosample: number | boolean;
   experiment: number | boolean;

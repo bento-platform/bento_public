@@ -20,6 +20,7 @@ const initialState: DataState = {
   defaultLayout: [],
   sections: [],
   counts: {
+    phenopacket: 0,
     individual: 0,
     biosample: 0,
     experiment: 0,
