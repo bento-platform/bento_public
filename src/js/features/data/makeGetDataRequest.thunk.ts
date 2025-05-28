@@ -11,7 +11,7 @@ import { scopedAuthorizedRequestConfig } from '@/utils/requests';
 import type { RootState } from '@/store';
 import type { ChartConfig } from '@/types/chartConfig';
 import type { ChartDataField, LocalStorageData, Sections } from '@/types/data';
-import type { CountsOrBooleans, OverviewResponse } from '@/types/overviewResponse';
+import type { CountsOrBooleans, Overview } from '@/types/overviewResponse';
 import { RequestStatus } from '@/types/requests';
 
 export const makeGetDataRequestThunk = createAsyncThunk<
@@ -24,7 +24,7 @@ export const makeGetDataRequestThunk = createAsyncThunk<
     const overviewResponse = (await axios
       .get(katsuDiscoveryUrl, scopedAuthorizedRequestConfig(getState()))
       .then((res) => res.data)
-      .catch(printAPIError(rejectWithValue))) as OverviewResponse['overview'];
+      .catch(printAPIError(rejectWithValue))) as Overview;
 
     const sections = overviewResponse.layout;
 

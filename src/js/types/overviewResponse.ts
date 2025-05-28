@@ -1,10 +1,6 @@
 import type { ChartConfig } from '@/types/chartConfig';
 import type { Field } from '@/features/search/types';
 
-export interface OverviewResponse {
-  overview: Overview;
-}
-
 export interface Overview {
   counts: CountsOrBooleans;
   fields: Fields;
