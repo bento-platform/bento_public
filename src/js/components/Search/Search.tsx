@@ -48,7 +48,7 @@ type QueryValidationResult = {
   otherQueryParams: QueryParams;
 };
 
-const RoutedSearch = () => {
+export const useSearchRouterAndHandler = () => {
   const dispatch = useAppDispatch();
   const location = useLocation();
   const navigate = useNavigate();
@@ -286,8 +286,6 @@ const RoutedSearch = () => {
     textQuery,
     loadAndValidateQuery,
   ]);
-
-  return <Search />;
 };
 
 const SEARCH_CARD_STYLES: CardProps['styles'] = {
@@ -324,6 +322,8 @@ export const SearchForm = () => {
 
 const Search = () => {
   const { fieldsStatus } = useSearchQuery();
+  useSearchRouterAndHandler();
+
   return WAITING_STATES.includes(fieldsStatus) ? (
     <Loader />
   ) : (
@@ -338,4 +338,4 @@ const Search = () => {
   );
 };
 
-export default RoutedSearch;
+export default Search;
