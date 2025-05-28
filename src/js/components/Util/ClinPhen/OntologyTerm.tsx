@@ -19,9 +19,9 @@ const OntologyTerm = ({ term }: OntologyTermProps) => {
   if (!term) return EM_DASH;
 
   // Find the resource whose namespace_prefix matches the prefix of the term's id
-  const prefix = term.id.split(':')[0];
+  const [prefix, suffix] = term.id.split(':');
   const resource = resources.find((r) => r.namespace_prefix === prefix);
-  const iri = resource ? `${resource.iri_prefix}${term.id}` : undefined;
+  const iri = resource ? `${resource.iri_prefix}${suffix}` : undefined;
 
   return (
     <Tooltip title={term.id}>
