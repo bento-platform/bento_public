@@ -1,8 +1,10 @@
-import { Descriptions, Table } from 'antd';
+import { Table } from 'antd';
 
+import TDescriptions from '@/components/Util/TDescriptions';
 import OntologyTermComponent, { OntologyTermStack } from '@Util/ClinPhen/OntologyTerm';
 import TimeElementDisplay from '@Util/ClinPhen/TimeElementDisplay';
 import ExtraProperties from '@Util/ExtraProperties';
+import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
 
 import type { DescriptionsProps } from 'antd';
 import type { Disease } from '@/types/clinPhen/disease';
@@ -15,27 +17,27 @@ const DiseaseExpandedRow = ({ disease }: { disease: Disease }) => {
   const items: DescriptionsProps['items'] = [
     {
       key: 'disease_stage',
-      label: 'Disease Stage(s)',
+      label: 'diseases_expanded_row.disease_stage',
       children: disease.disease_stage ? <OntologyTermStack terms={disease.disease_stage} /> : EM_DASH,
     },
     {
       key: 'clinical_tnm_finding',
-      label: 'Clinical TNM Finding(s)',
+      label: 'diseases_expanded_row.clinical_tnm_finding',
       children: disease.clinical_tnm_finding ? <OntologyTermStack terms={disease.clinical_tnm_finding} /> : EM_DASH,
     },
     {
       key: 'primary_site',
-      label: 'Primary Site',
+      label: 'diseases_expanded_row.primary_site',
       children: disease.primary_site ? <OntologyTermComponent term={disease.primary_site} /> : EM_DASH,
     },
     {
       key: 'extra_properties',
-      label: 'Extra Properties',
+      label: 'diseases_expanded_row.extra_properties',
       children: <ExtraProperties extraProperties={disease.extra_properties} />,
     },
   ];
 
-  return <Descriptions bordered size="small" items={items} />;
+  return <TDescriptions bordered size="small" items={items} />;
 };
 
 interface DiseasesViewProps {
@@ -43,26 +45,26 @@ interface DiseasesViewProps {
 }
 
 const DiseasesView = ({ diseases }: DiseasesViewProps) => {
-  const columns = [
+  const columns = useTranslatedTableColumnTitles<Disease>([
     {
-      title: 'Disease',
+      title: 'diseases_table.disease',
       dataIndex: 'term',
       key: 'term',
       render: (term: OntologyTerm) => <OntologyTermComponent term={term} />,
     },
     {
-      title: 'Onset Age',
+      title: 'diseases_table.onset_age',
       dataIndex: 'onset',
       key: 'onset',
       render: (onset: TimeElement) => (onset ? <TimeElementDisplay element={onset} /> : EM_DASH),
     },
     {
-      title: 'Resolution Age',
+      title: 'diseases_table.resolution_age',
       dataIndex: 'resolution',
       key: 'resolution',
       render: (resolution: TimeElement) => (resolution ? <TimeElementDisplay element={resolution} /> : EM_DASH),
     },
-  ];
+  ]);
 
   return (
     <Table<Disease>

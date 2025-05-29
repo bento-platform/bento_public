@@ -217,5 +217,16 @@
   "biosample_table": {
     "biosample_id": "ID de l'échantillon biologique",
     "sampled_tissue": "Tissu échantillonné"
+  },
+  "diseases_expanded_row": {
+    "disease_stage": "Stade(s) de la maladie",
+    "clinical_tnm_finding": "Résultat(s) TNM clinique(s)",
+    "primary_site": "Site principal",
+    "extra_properties": "Propriétés supplémentaires"
+  },
+  "diseases_table": {
+    "disease": "Maladie",
+    "onset_age": "Âge d'apparition",
+    "resolution_age": "Âge de résolution"
   }
 }
