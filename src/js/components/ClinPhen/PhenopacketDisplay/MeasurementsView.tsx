@@ -1,4 +1,4 @@
-import { Descriptions, DescriptionsProps, Space, Table } from 'antd';
+import { DescriptionsProps, Space, Table } from 'antd';
 
 import OntologyTermComponent from '@Util/ClinPhen/OntologyTerm';
 import QuantityDisplay from '@Util/ClinPhen/QuantityDisplay';
@@ -9,22 +9,23 @@ import type { Procedure } from '@/types/clinPhen/procedure';
 
 import { EM_DASH } from '@/constants/common';
 import { ProcedureComponent } from './MedicalActionsView';
+import TDescriptions from '@/components/Util/TDescriptions';
 
 const MeasurementsExpandedRow = ({ measurement }: { measurement: Measurement }) => {
   const items: DescriptionsProps['items'] = [
     {
       key: 'measurement_value',
-      label: 'Measurement Value',
+      label: 'measurements.measurement_value',
       children: <MeasurementDetail measurement={measurement} expanded />,
     },
     {
       key: 'procedure',
-      label: 'Procedure',
+      label: 'measurements.procedure',
       children: measurement?.procedure ? <ProcedureComponent procedure={measurement.procedure} /> : EM_DASH,
     },
   ];
 
-  return <Descriptions bordered size="small" items={items} column={1} />;
+  return <TDescriptions bordered size="small" items={items} column={1} />;
 };
 
 const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement; expanded?: boolean }) => {

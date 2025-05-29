@@ -244,5 +244,9 @@
     "no_diagnosis": "Aucun diagnostic",
     "genomic_interpretations": "Interprétations génomiques",
     "no_genomic_iterpretation": "Aucune interprétation génomique"
+  },
+  "measurements": {
+    "measurement_value": "Valeur de mesure",
+    "procedure": "Procédure"
   }
 }

@@ -239,5 +239,9 @@
     "no_diagnosis": "No diagnosis",
     "genomic_interpretations": "Genomic Interpretations",
     "no_genomic_iterpretation": "No Genomic Interpretation"
+  },
+  "measurements": {
+    "measurement_value": "Measurement Value",
+    "procedure": "Procedure"
   }
 }
