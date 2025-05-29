@@ -213,5 +213,9 @@
     "collection_time": "Heure de collecte",
     "histological_diagnosis": "Diagnostic histologique",
     "pathological_stage": "Stade pathologique"
+  },
+  "biosample_table": {
+    "biosample_id": "ID de l'échantillon biologique",
+    "sampled_tissue": "Tissu échantillonné"
   }
 }

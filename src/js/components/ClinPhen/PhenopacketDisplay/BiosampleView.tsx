@@ -7,6 +7,7 @@ import type { OntologyTerm } from '@/types/ontology';
 import TDescriptions from '@/components/Util/TDescriptions';
 
 import { EM_DASH } from '@/constants/common';
+import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
 
 const BiosampleExpandedRow = ({ biosample }: { biosample: Biosample }) => {
   const items: DescriptionsProps['items'] = [
@@ -51,19 +52,20 @@ interface BiosampleViewProps {
 
 //TODO: add button that links to experiment (like bento web)
 const BiosampleView = ({ biosamples }: BiosampleViewProps) => {
-  const columns = [
+  const columns = useTranslatedTableColumnTitles<Biosample>([
     {
-      title: 'Biosample ID',
+      title: 'biosample_table.biosample_id',
       dataIndex: 'id',
       key: 'id',
     },
     {
-      title: 'Sampled Tissue',
+      title: 'biosample_table.sampled_tissue',
       dataIndex: 'sampled_tissue',
       key: 'sampled_tissue',
       render: (term: OntologyTerm) => <OntologyTermComponent term={term} />,
     },
-  ];
+  ]);
+
   return (
     <Table<Biosample>
       dataSource={biosamples}

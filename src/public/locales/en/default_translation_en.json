@@ -208,5 +208,9 @@
     "collection_time": "Collection Time",
     "histological_diagnosis": "Histological Diagnosis",
     "pathological_stage": "Pathological Stage"
+  },
+  "biosample_table": {
+    "biosample_id": "Biosample ID",
+    "sampled_tissue": "Sampled Tissue"
   }
 }
