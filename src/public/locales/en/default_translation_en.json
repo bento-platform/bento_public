@@ -19,9 +19,7 @@
     ],
     "biosample_one": "Biosample",
     "biosample_other": "Biosamples",
-    "biosample_help": [
-      "Biosamples are usually biological material extracted from a specific individual."
-    ],
+    "biosample_help": ["Biosamples are usually biological material extracted from a specific individual."],
     "experiment_one": "Experiment",
     "experiment_other": "Experiments",
     "experiment_help": [
@@ -144,10 +142,7 @@
       "or fill in values for both reference and alternate bases."
     ],
     "variants_help_3": "\"Chromosome\", \"Variant start\" and \"Assembly ID\" are always required.",
-    "variants_help_4": [
-      "Coordinates are one-based.",
-      "Leave this form blank to search by metadata only."
-    ]
+    "variants_help_4": ["Coordinates are one-based.", "Leave this form blank to search by metadata only."]
   },
   "MALE": "Male",
   "FEMALE": "Female",
@@ -205,5 +200,13 @@
       "Metadata filters may vary across beacons in the network, so some searches may not apply to all beacons. Use the",
       "'$t(beacon.show_all_filters)' / '$t(beacon.common_filters_only)' switch to control which filters are available."
     ]
+  },
+  "biosample_expanded_row": {
+    "description": "Description",
+    "derived_from": "Derived From",
+    "sample_type": "Sample Type",
+    "collection_time": "Collection Time",
+    "histological_diagnosis": "Histological Diagnosis",
+    "pathological_stage": "Pathological Stage"
   }
 }

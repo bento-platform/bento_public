@@ -205,5 +205,13 @@
       "Les filtres de métadonnées peuvent varier d'un Beacon à l'autre dans le réseau, de sorte que certaines recherches peuvent ne pas s'appliquer à tous les Beacons. Utilisez le",
       "commutateur « $t(beacon.show_all_filters) » / « $t(beacon.common_filters_only) » pour contrôler les filtres disponibles."
     ]
+  },
+  "biosample_expanded_row": {
+    "description": "Description",
+    "derived_from": "Dérivé de",
+    "sample_type": "Type d'échantillon",
+    "collection_time": "Heure de collecte",
+    "histological_diagnosis": "Diagnostic histologique",
+    "pathological_stage": "Stade pathologique"
   }
 }
