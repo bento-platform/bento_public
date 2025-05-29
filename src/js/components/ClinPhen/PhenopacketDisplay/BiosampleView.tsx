@@ -74,6 +74,7 @@ const BiosampleView = ({ biosamples }: BiosampleViewProps) => {
         expandedRowRender: (record) => <BiosampleExpandedRow biosample={record} />,
       }}
       rowKey="id"
+      pagination={false}
     />
   );
 };
