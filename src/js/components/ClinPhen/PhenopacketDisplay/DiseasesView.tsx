@@ -74,6 +74,7 @@ const DiseasesView = ({ diseases }: DiseasesViewProps) => {
         expandedRowRender: (record) => <DiseaseExpandedRow disease={record} />,
       }}
       rowKey={(record) => record.term.id}
+      pagination={false}
     />
   );
 };
