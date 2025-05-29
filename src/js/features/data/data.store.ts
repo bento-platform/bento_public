@@ -8,7 +8,6 @@ import { RequestStatus } from '@/types/requests';
 
 interface DataState {
   status: RequestStatus;
-  isInvalid: boolean;
   defaultLayout: Sections;
   sections: Sections;
   counts: CountsOrBooleans;
@@ -16,7 +15,6 @@ interface DataState {
 
 const initialState: DataState = {
   status: RequestStatus.Idle,
-  isInvalid: false,
   defaultLayout: [],
   sections: [],
   counts: {
@@ -79,9 +77,6 @@ const data = createSlice({
     resetLayout: (state) => {
       state.sections = state.defaultLayout;
     },
-    invalidateData: (state) => {
-      state.isInvalid = true;
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -93,7 +88,6 @@ const data = createSlice({
         state.defaultLayout = payload.defaultData;
         state.counts = payload.counts;
         state.status = RequestStatus.Fulfilled;
-        state.isInvalid = false;
       })
       .addCase(makeGetDataRequestThunk.rejected, (state) => {
         state.status = RequestStatus.Rejected;
@@ -109,7 +103,6 @@ export const {
   setAllDisplayedCharts,
   hideAllSectionCharts,
   resetLayout,
-  invalidateData,
 } = data.actions;
 export { makeGetDataRequestThunk };
 export default data.reducer;

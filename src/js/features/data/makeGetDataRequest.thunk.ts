@@ -21,12 +21,14 @@ export const makeGetDataRequestThunk = createAsyncThunk<
 >(
   'data/makeGetDataRequest',
   async (_, { rejectWithValue, getState }) => {
-    const overviewResponse = (await axios
-      .get(katsuDiscoveryUrl, scopedAuthorizedRequestConfig(getState()))
+    const state = getState();
+
+    const discoveryResponse = (await axios
+      .get(katsuDiscoveryUrl, scopedAuthorizedRequestConfig(state, state.query.filterQueryParams))
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue))) as DiscoveryResponse;
 
-    const sections = overviewResponse.layout;
+    const sections = discoveryResponse.layout;
 
     // Take chart configuration and create a combined state object with:
     //   the chart configuration
@@ -34,7 +36,7 @@ export const makeGetDataRequestThunk = createAsyncThunk<
     // + field definition (from config.field)
     // + the fields' relevant data.
     const normalizeChart = (chart: ChartConfig, i: number): ChartDataField => {
-      const { data, definition } = overviewResponse.fields[chart.field];
+      const { data, definition } = discoveryResponse.fields[chart.field];
       return {
         id: chart.field,
         chartConfig: chart,
@@ -49,7 +51,7 @@ export const makeGetDataRequestThunk = createAsyncThunk<
     const sectionData: Sections = sections.map(({ section_title, charts }) => ({
       sectionTitle: section_title,
       // Filter out charts where field data is missing due to missing counts permissions for the field's data type
-      charts: charts.filter((c) => !!overviewResponse.fields[c.field]).map(normalizeChart),
+      charts: charts.filter((c) => !!discoveryResponse.fields[c.field]).map(normalizeChart),
     }));
 
     const defaultSectionData = JSON.parse(JSON.stringify(sectionData));
@@ -71,18 +73,19 @@ export const makeGetDataRequestThunk = createAsyncThunk<
     convertedData = convertSequenceAndDisplayData(sectionData);
     saveValue(LOCALSTORAGE_CHARTS_KEY, convertedData);
 
-    return { sectionData, counts: overviewResponse.counts, defaultData: defaultSectionData };
+    return { sectionData, counts: discoveryResponse.counts, defaultData: defaultSectionData };
   },
   {
     condition(_, { getState }) {
       const {
-        data: { status, isInvalid },
+        data: { status },
+        query: { textQueryStatus },
       } = getState();
-      const cond = status !== RequestStatus.Pending && (status === RequestStatus.Idle || isInvalid);
+      const cond = status !== RequestStatus.Pending && textQueryStatus !== RequestStatus.Pending;
       if (!cond) {
         console.debug(
           `makeGetDataRequestThunk() was attempted, but will not dispatch: status=${RequestStatus[status]}, ` +
-            `isInvalid=${isInvalid}`
+            `textQueryStatus=${RequestStatus[textQueryStatus]}`
         );
       }
       return cond;

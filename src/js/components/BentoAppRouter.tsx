@@ -8,7 +8,6 @@ import { invalidateConfig, makeGetServiceInfoRequest } from '@/features/config/c
 import { makeGetAboutRequest } from '@/features/content/content.store';
 import { getBeaconConfig, getBeaconFilters } from '@/features/beacon/beacon.store';
 import { getBeaconNetworkConfig } from '@/features/beacon/network.store';
-import { invalidateData } from '@/features/data/data.store';
 import { invalidateDataTypes } from '@/features/dataTypes/dataTypes.store';
 import { useMetadata } from '@/features/metadata/hooks';
 import { getProjects, markScopeSet, selectScope } from '@/features/metadata/metadata.store';
@@ -111,7 +110,7 @@ const BentoAppRouter = () => {
 
     // If scope or authorization status changed, invalidate anything which is scope/authz-contextual and uses a
     // lazy-loading-style hook for data fetching:
-    console.debug('isAuthenticated | scope | scopeSet changed - dispatching config/data/dataTypes invalidate actions', {
+    console.debug('isAuthenticated | scope | scopeSet changed - dispatching config/dataTypes invalidate actions', {
       isAuthenticated,
       scope,
       scopeSet,
@@ -120,8 +119,6 @@ const BentoAppRouter = () => {
     // the new context.
     //  - Censorship configs are invalid when auth/scope changes, since censorship rules may be different.
     dispatch(invalidateConfig());
-    //  - Overview data is invalid: there is different data, and the overview itself may be configured differently.
-    dispatch(invalidateData());
     //  - Data types are (partially) invalid: counts and last-ingestion time may be different.
     dispatch(invalidateDataTypes());
   }, [dispatch, isAuthenticated, scope, scopeSet]);

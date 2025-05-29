@@ -10,6 +10,8 @@ export interface DiscoveryResponse {
   matches: null; // TODO
 }
 
+export type DiscoveryResponseOrMessage = DiscoveryResponse | { message: string };
+
 // If boolean, it means we have data above the threshold but don't have permissions to view the exact count.
 export type CountsOrBooleans = {
   phenopacket: number | boolean;

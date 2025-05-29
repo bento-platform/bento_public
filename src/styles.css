@@ -307,6 +307,13 @@ body {
   background-color: black !important; /* override slick-dots color */
 }
 
+.overview {
+  transition: opacity 0.2s ease-in-out;
+}
+.overview.loading {
+  opacity: 0.2;
+}
+
 /* END overview */
 
 

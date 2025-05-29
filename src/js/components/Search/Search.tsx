@@ -5,10 +5,10 @@ import { Card, type CardProps, Flex, Row, Space } from 'antd';
 import { queryData } from 'bento-auth-js';
 
 import { useConfig } from '@/features/config/hooks';
+import { makeGetDataRequestThunk } from '@/features/data/makeGetDataRequest.thunk';
 import { useQueryFilterFields, useSearchQuery } from '@/features/search/hooks';
 import { performFreeTextSearch } from '@/features/search/performFreeTextSearch.thunk';
 import {
-  performKatsuDiscovery,
   setFilterQueryParams,
   resetFilterQueryStatus,
   setTextQuery,
@@ -18,6 +18,7 @@ import {
 } from '@/features/search/query.store';
 import { useAppDispatch, useHasScopePermission } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
+import { useData } from '@/features/data/hooks';
 import { buildQueryParamsUrl, combineQueryParamsWithoutKey } from '@/features/search/utils';
 
 import Loader from '@/components/Loader';
@@ -56,11 +57,12 @@ export const useSearchRouterAndHandler = () => {
   const { hasAttempted: hasAttemptedQueryDataPerm, hasPermission: queryDataPerm } = useHasScopePermission(queryData);
 
   const { configStatus, maxQueryParameters } = useConfig();
+  const { status: filterQueryStatus } = useData();
   const {
     mode: queryMode,
     filterQueryParams,
     fieldsStatus: searchFieldsStatus,
-    filterQueryStatus,
+    // filterQueryStatus,
     textQuery,
     textQueryStatus,
     doneFirstLoad,
@@ -120,7 +122,7 @@ export const useSearchRouterAndHandler = () => {
   // +-------------------------------+
   // Synchronize Redux query params state from URL, or URL from Redux state in some cases.
   useEffect(() => {
-    if (currentPage !== BentoRoute.Search) return;
+    if (![BentoRoute.Overview, BentoRoute.Search].includes(currentPage)) return;
 
     // Wait until:
     //  - we have loaded the max. # of query parameters we can query
@@ -264,7 +266,7 @@ export const useSearchRouterAndHandler = () => {
 
       // We only want to execute the filters search if we're not already performing a text search even while we're
       // focused on the filters form, which can happen on first load with a text search query parameter specified.
-      dispatch(performKatsuDiscovery());
+      dispatch(makeGetDataRequestThunk());
       // Indicate to the state that search results don't reflect the text query.
       dispatch(resetTextQueryStatus());
     }
