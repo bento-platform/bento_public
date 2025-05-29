@@ -114,7 +114,7 @@ const beacon = createSlice({
     });
     builder.addCase(getBeaconConfig.fulfilled, (state, { payload }) => {
       state.configStatus = RequestStatus.Fulfilled;
-      state.beaconAssemblyIds = Object.keys(payload.response?.overview?.counts?.variants ?? []);
+      state.beaconAssemblyIds = Object.keys(payload.response?.overview?.variants ?? []);
     });
     builder.addCase(getBeaconConfig.rejected, (state) => {
       state.configStatus = RequestStatus.Rejected;
