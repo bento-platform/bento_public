@@ -19,7 +19,7 @@ import type { OntologyTerm } from '@/types/ontology';
 import type { Procedure } from '@/types/clinPhen/procedure';
 import type { TimeInterval } from '@/types/clinPhen/shared';
 
-const ProcedureComponent = ({ procedure }: { procedure: Procedure }) => {
+export const ProcedureComponent = ({ procedure }: { procedure: Procedure }) => {
   const ProcedureItems: DescriptionsProps['items'] = [
     {
       key: 'code',

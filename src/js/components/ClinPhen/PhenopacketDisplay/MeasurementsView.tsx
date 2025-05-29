@@ -1,61 +1,92 @@
-import { Descriptions, DescriptionsProps, Table } from 'antd';
+import { Descriptions, DescriptionsProps, Space, Table } from 'antd';
 
 import OntologyTermComponent from '@Util/ClinPhen/OntologyTerm';
 import QuantityDisplay from '@Util/ClinPhen/QuantityDisplay';
 
-import type { Measurement, Quantity } from '@/types/clinPhen/measurement';
+import type { Measurement, Quantity, TypedQuantity } from '@/types/clinPhen/measurement';
 import type { OntologyTerm as OntologyTermType } from '@/types/ontology';
 import type { Procedure } from '@/types/clinPhen/procedure';
 
 import { EM_DASH } from '@/constants/common';
+import { ProcedureComponent } from './MedicalActionsView';
 
 const MeasurementsExpandedRow = ({ measurement }: { measurement: Measurement }) => {
   const items: DescriptionsProps['items'] = [
     {
-      key: 'description',
-      label: 'Description',
-      children: measurement.description || EM_DASH,
+      key: 'measurement_value',
+      label: 'Measurement Value',
+      children: <MeasurementDetail measurement={measurement} expanded />,
+    },
+    {
+      key: 'procedure',
+      label: 'Procedure',
+      children: measurement?.procedure ? <ProcedureComponent procedure={measurement.procedure} /> : EM_DASH,
     },
   ];
 
-  return <Descriptions bordered size="small" items={items} />;
+  return <Descriptions bordered size="small" items={items} column={1} />;
 };
 
-function MeasurementValue({ measurement }: { measurement: Measurement }) {
-  if (measurement?.value) {
-    const quantity = measurement.value.quantity;
-    return (
-      <span>
-        {quantity?.value} {quantity?.unit.label}
-      </span>
-    );
-  }
-  if (measurement?.complex_value) {
-    const COMPLEX_VALUE_COLUMNS = [
-      {
-        title: 'Type',
-        key: 'type',
-        dataIndex: 'type',
-        render: (type: OntologyTermType) => <OntologyTermComponent term={type} />,
-      },
-      {
-        title: 'Quantity',
-        key: 'quantity',
-        dataIndex: 'quantity',
-        render: (quantity: Quantity) => <QuantityDisplay quantity={quantity} />,
-      },
-    ];
+const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement; expanded?: boolean }) => {
+  const value = measurement?.value;
+  const complexValue = measurement?.complex_value;
+  if (!expanded) {
+    if (measurement?.value) {
+      const quantity = measurement.value.quantity;
+      return (
+        <span>
+          {quantity?.value} {quantity?.unit.label}
+        </span>
+      );
+    }
+    if (measurement?.complex_value) {
+      const { typed_quantities } = measurement.complex_value;
 
-    <Table
-      bordered={true}
-      pagination={false}
-      size="small"
-      columns={COMPLEX_VALUE_COLUMNS}
-      dataSource={measurement.complex_value.typed_quantities}
-    />;
+      return (
+        <Space direction="vertical" size={0}>
+          {typed_quantities.map((typedQuantity, index) => (
+            <span key={index}>
+              {typedQuantity.type.label}: {typedQuantity.quantity.value} {typedQuantity.quantity.unit.label}
+            </span>
+          ))}
+        </Space>
+      );
+    }
+  } else {
+    if (value) {
+      return (
+        <>
+          {value?.quantity && <QuantityDisplay quantity={value.quantity} />}
+          {value?.ontology_class && <OntologyTermComponent term={value.ontology_class as OntologyTermType} />}
+        </>
+      );
+    }
+    if (complexValue) {
+      return (
+        <Table<TypedQuantity>
+          dataSource={complexValue.typed_quantities}
+          columns={[
+            {
+              title: 'Type',
+              dataIndex: 'type',
+              key: 'type',
+              render: (type: OntologyTermType) => <OntologyTermComponent term={type} />,
+            },
+            {
+              title: 'Value',
+              dataIndex: 'quantity',
+              key: 'quantity',
+              render: (quantity: Quantity) => <QuantityDisplay quantity={quantity} />,
+            },
+          ]}
+          size="small"
+          pagination={false}
+        />
+      );
+    }
   }
   return null;
-}
+};
 
 interface MeasurementsViewProps {
   measurements: Measurement[];
@@ -72,7 +103,7 @@ const MeasurementsView = ({ measurements }: MeasurementsViewProps) => {
     {
       title: 'Measurement Value',
       key: 'value',
-      render: (m: Measurement) => <MeasurementValue measurement={m} />,
+      render: (m: Measurement) => <MeasurementDetail measurement={m} />,
     },
     {
       title: 'Description',
@@ -95,6 +126,7 @@ const MeasurementsView = ({ measurements }: MeasurementsViewProps) => {
         expandedRowRender: (record) => <MeasurementsExpandedRow measurement={record} />,
       }}
       rowKey={(record) => record.assay.id}
+      pagination={false}
     />
   );
 };
