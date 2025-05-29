@@ -228,5 +228,21 @@
     "disease": "Maladie",
     "onset_age": "Âge d'apparition",
     "resolution_age": "Âge de résolution"
+  },
+  "interpretations": {
+    "id": "ID",
+    "created": "Créé",
+    "updated": "Mis à jour",
+    "progress_status": "Statut de progression",
+    "summary": "Résumé",
+    "disease": "Maladie",
+    "variant_interpretation": "Interprétation du variant",
+    "gene_descriptor": "Descripteur de gène",
+    "subject_or_biosample_id": "ID du sujet ou de l'échantillon biologique",
+    "interpretation_status": "Statut de l'interprétation",
+    "diagnosis": "Diagnostic",
+    "no_diagnosis": "Aucun diagnostic",
+    "genomic_interpretations": "Interprétations génomiques",
+    "no_genomic_iterpretation": "Aucune interprétation génomique"
   }
 }

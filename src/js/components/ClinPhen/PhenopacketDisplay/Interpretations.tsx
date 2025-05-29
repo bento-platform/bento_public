@@ -1,9 +1,13 @@
-import { Descriptions, Space, Table, Tooltip, Typography } from 'antd';
+import { Space, Table, Tooltip, Typography } from 'antd';
 import { MedicineBoxOutlined, ExperimentOutlined } from '@ant-design/icons';
 
 import CustomEmpty from '@Util/CustomEmpty';
 import OntologyTerm from '@Util/ClinPhen/OntologyTerm';
 import { GeneDescriptor, VariantInterpretation } from '@Util/ClinPhen/tInterpretationUtilities';
+import TDescriptions from '@/components/Util/TDescriptions';
+import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
+
+import { useTranslationFn } from '@/hooks';
 
 import type { DescriptionsProps } from 'antd';
 import type { Interpretation } from '@/types/clinPhen/interpretation';
@@ -17,53 +21,63 @@ const GenomicInterpretationDetails = ({ genomicInterpretation }: { genomicInterp
     { key: 'id', label: `${relatedType} id`, children: genomicInterpretation.subject_or_biosample_id }, //TODO: Link to subject or biosample
     genomicInterpretation?.variant_interpretation && {
       key: 'Variant Interpretation',
-      label: `Variant Interpretation`,
+      label: 'interpretations.variant_interpretation',
       children: <VariantInterpretation variantInterpretation={genomicInterpretation.variant_interpretation} />,
     },
     genomicInterpretation?.gene_descriptor && {
       key: 'Gene Descriptor',
-      label: 'Gene Descriptor',
+      label: 'interpretations.gene_descriptor',
       children: <GeneDescriptor geneDescriptor={genomicInterpretation.gene_descriptor} />,
     },
   ].filter(Boolean) as DescriptionsProps['items'];
 
-  return <Descriptions items={items} size="small" column={1} bordered />;
+  return <TDescriptions items={items} size="small" column={1} bordered />;
 };
 
 const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interpretation }) => {
+  const t = useTranslationFn();
+
   const items: DescriptionsProps['items'] = [
-    { key: 'Disease', label: 'Disease', children: <OntologyTerm term={interpretation?.diagnosis?.disease} /> },
+    {
+      key: 'Disease',
+      label: 'interpretations.disease',
+      children: <OntologyTerm term={interpretation?.diagnosis?.disease} />,
+    },
   ];
 
-  const columns = [
+  const columns = useTranslatedTableColumnTitles<GenomicInterpretation>([
     {
-      title: 'ID',
+      title: 'interpretations.id',
       dataIndex: 'id',
       key: 'id',
     },
     {
-      title: 'Subject or Biosample ID',
+      title: 'interpretations.subject_or_biosample_id',
       dataIndex: 'subject_or_biosample_id',
       key: 'subject_or_biosample_id',
     },
-    { title: 'Interpretation Status', dataIndex: 'interpretation_status', key: 'interpretation_status' },
-  ];
+    {
+      title: 'interpretations.interpretation_status',
+      dataIndex: 'interpretation_status',
+      key: 'interpretation_status',
+    },
+  ]);
 
   return (
     <Space direction="vertical" size="large" style={{ width: '100%' }}>
       <div>
         <Typography.Title level={4}>
-          <MedicineBoxOutlined /> Diagnosis
+          <MedicineBoxOutlined /> {t('interpretations.diagnosis')}
         </Typography.Title>
         {interpretation?.diagnosis?.disease ? (
-          <Descriptions items={items} size="small" bordered />
+          <TDescriptions items={items} size="small" bordered />
         ) : (
-          <CustomEmpty text="No diagnosis" />
+          <CustomEmpty text={t('interpretations.no_diagnosis')} />
         )}
       </div>
       <div>
         <Typography.Title level={4}>
-          <ExperimentOutlined /> Genomic Interpretations
+          <ExperimentOutlined /> {t('interpretations.genomic_interpretations')}
         </Typography.Title>
         {interpretation?.diagnosis?.genomic_interpretations?.length ? (
           <Table<GenomicInterpretation>
@@ -76,7 +90,7 @@ const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interp
             pagination={false}
           />
         ) : (
-          <CustomEmpty text="No Genomic Iterpretation" />
+          <CustomEmpty text={t('interpretations.no_genomic_iterpretation')} />
         )}
       </div>
     </Space>
@@ -88,35 +102,35 @@ interface InterpretationsViewProps {
 }
 
 const InterpretationsView = ({ interpretations }: InterpretationsViewProps) => {
-  const columns = [
+  const columns = useTranslatedTableColumnTitles<Interpretation>([
     {
-      title: 'ID',
+      title: 'interpretations.id',
       dataIndex: 'id',
       key: 'id',
     },
     {
-      title: 'Created',
+      title: 'interpretations.created',
       dataIndex: 'created',
       key: 'created',
       render: (text: string) => <Tooltip title={text}>{new Date(text).toLocaleDateString()}</Tooltip>,
     },
     {
-      title: 'Updated',
+      title: 'interpretations.updated',
       dataIndex: 'updated',
       key: 'updated',
       render: (text: string) => <Tooltip title={text}>{new Date(text).toLocaleDateString()}</Tooltip>,
     },
     {
-      title: 'Progress Status',
+      title: 'interpretations.progress_status',
       dataIndex: 'progress_status',
       key: 'progress_status',
     },
     {
-      title: 'Summary',
+      title: 'interpretations.summary',
       dataIndex: 'summary',
       key: 'summary',
     },
-  ];
+  ]);
 
   return (
     <Table<Interpretation>
