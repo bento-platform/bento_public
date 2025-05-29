@@ -5,10 +5,10 @@ import { Card, type CardProps, Flex, Row, Space } from 'antd';
 import { queryData } from 'bento-auth-js';
 
 import { useConfig } from '@/features/config/hooks';
+import { makeGetDataRequestThunk } from '@/features/data/makeGetDataRequest.thunk';
 import { useQueryFilterFields, useSearchQuery } from '@/features/search/hooks';
 import { performFreeTextSearch } from '@/features/search/performFreeTextSearch.thunk';
 import {
-  makeGetKatsuPublic,
   setFilterQueryParams,
   resetFilterQueryStatus,
   setTextQuery,
@@ -18,6 +18,7 @@ import {
 } from '@/features/search/query.store';
 import { useAppDispatch, useHasScopePermission } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
+import { useData } from '@/features/data/hooks';
 import { buildQueryParamsUrl, combineQueryParamsWithoutKey } from '@/features/search/utils';
 
 import Loader from '@/components/Loader';
@@ -48,7 +49,7 @@ type QueryValidationResult = {
   otherQueryParams: QueryParams;
 };
 
-const RoutedSearch = () => {
+export const useSearchRouterAndHandler = () => {
   const dispatch = useAppDispatch();
   const location = useLocation();
   const navigate = useNavigate();
@@ -56,11 +57,12 @@ const RoutedSearch = () => {
   const { hasAttempted: hasAttemptedQueryDataPerm, hasPermission: queryDataPerm } = useHasScopePermission(queryData);
 
   const { configStatus, maxQueryParameters } = useConfig();
+  const { status: filterQueryStatus } = useData();
   const {
     mode: queryMode,
     filterQueryParams,
     fieldsStatus: searchFieldsStatus,
-    filterQueryStatus,
+    // filterQueryStatus,
     textQuery,
     textQueryStatus,
     doneFirstLoad,
@@ -120,7 +122,7 @@ const RoutedSearch = () => {
   // +-------------------------------+
   // Synchronize Redux query params state from URL, or URL from Redux state in some cases.
   useEffect(() => {
-    if (currentPage !== BentoRoute.Search) return;
+    if (![BentoRoute.Overview, BentoRoute.Search].includes(currentPage)) return;
 
     // Wait until:
     //  - we have loaded the max. # of query parameters we can query
@@ -264,7 +266,7 @@ const RoutedSearch = () => {
 
       // We only want to execute the filters search if we're not already performing a text search even while we're
       // focused on the filters form, which can happen on first load with a text search query parameter specified.
-      dispatch(makeGetKatsuPublic());
+      dispatch(makeGetDataRequestThunk());
       // Indicate to the state that search results don't reflect the text query.
       dispatch(resetTextQueryStatus());
     }
@@ -286,8 +288,6 @@ const RoutedSearch = () => {
     textQuery,
     loadAndValidateQuery,
   ]);
-
-  return <Search />;
 };
 
 const SEARCH_CARD_STYLES: CardProps['styles'] = {
@@ -295,14 +295,36 @@ const SEARCH_CARD_STYLES: CardProps['styles'] = {
   body: { ...CARD_BODY_STYLE, padding: '20px 24px 24px 24px' },
 };
 
-const Search = () => {
+export const SearchForm = () => {
   const dispatch = useAppDispatch();
+
   const isSmallScreen = useSmallScreen();
   const { hasPermission: queryDataPerm } = useHasScopePermission(queryData);
-  const { mode: queryMode, fieldsStatus } = useSearchQuery();
+  const { mode: queryMode } = useSearchQuery();
 
   const onFiltersFocus = useCallback(() => dispatch(setQueryMode('filters')), [dispatch]);
   const onTextFocus = useCallback(() => dispatch(setQueryMode('text')), [dispatch]);
+
+  return (
+    <Card className="w-full shadow rounded-xl" styles={SEARCH_CARD_STYLES}>
+      <Flex justify="space-between" gap={isSmallScreen ? 12 : 24} className="w-full" vertical={isSmallScreen}>
+        <SearchFilters focused={queryMode === 'filters'} onFocus={onFiltersFocus} className="max-w-half-cmw" />
+        {queryDataPerm && (
+          // If we have the query:data permission on the current scope, we're allowed to run free-text searches on
+          // the data, so show the free-text search form:
+          <>
+            <OrDelimiter vertical={!isSmallScreen} />
+            <SearchFreeText focused={queryMode === 'text'} onFocus={onTextFocus} />
+          </>
+        )}
+      </Flex>
+    </Card>
+  );
+};
+
+const Search = () => {
+  const { fieldsStatus } = useSearchQuery();
+  useSearchRouterAndHandler();
 
   return WAITING_STATES.includes(fieldsStatus) ? (
     <Loader />
@@ -310,19 +332,7 @@ const Search = () => {
     <Row justify="center">
       <Space direction="vertical" align="center" className="w-full" styles={SPACE_ITEM_WIDTH_100P_STYLES}>
         <div className="container margin-auto">
-          <Card className="w-full shadow rounded-xl" styles={SEARCH_CARD_STYLES}>
-            <Flex justify="space-between" gap={isSmallScreen ? 12 : 24} className="w-full" vertical={isSmallScreen}>
-              <SearchFilters focused={queryMode === 'filters'} onFocus={onFiltersFocus} className="max-w-half-cmw" />
-              {queryDataPerm && (
-                // If we have the query:data permission on the current scope, we're allowed to run free-text searches on
-                // the data, so show the free-text search form:
-                <>
-                  <OrDelimiter vertical={!isSmallScreen} />
-                  <SearchFreeText focused={queryMode === 'text'} onFocus={onTextFocus} />
-                </>
-              )}
-            </Flex>
-          </Card>
+          <SearchForm />
         </div>
         <SearchResults />
       </Space>
@@ -330,4 +340,4 @@ const Search = () => {
   );
 };
 
-export default RoutedSearch;
+export default Search;

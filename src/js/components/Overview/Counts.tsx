@@ -8,8 +8,9 @@ import { COUNTS_FILL } from '@/constants/overviewConstants';
 import { WAITING_STATES } from '@/constants/requests';
 import { useConfig } from '@/features/config/hooks';
 import { NO_RESULTS_DASHES } from '@/features/search/constants';
-import { useAppSelector, useTranslationFn } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
 import { useCanSeeUncensoredCounts } from '@/hooks/censorship';
+import { useData } from '@/features/data/hooks';
 
 const COUNT_ENTRIES: { entity: 'individual' | 'biosample' | 'experiment'; icon: ReactNode }[] = [
   { entity: 'individual', icon: <TeamOutlined /> },
@@ -29,12 +30,15 @@ const renderCount = (count: number | boolean | undefined, threshold: number): nu
 const Counts = () => {
   const t = useTranslationFn();
 
-  const { counts, status } = useAppSelector((state) => state.data);
+  const { counts, status } = useData();
 
   const uncensoredCounts = useCanSeeUncensoredCounts();
   const { countThreshold } = useConfig();
 
   const waitingForData = WAITING_STATES.includes(status);
+
+  // TODO: hide counts if no filters applied and we have no data
+  //  https://redmine.c3g-app.sd4h.ca/issues/2518#change-14170
 
   return (
     <div>

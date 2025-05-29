@@ -3,6 +3,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { useSelectedScope } from '@/features/metadata/hooks';
+import { EMPTY_DISCOVERY_RESULTS } from '@/features/search/constants'; // TODO
 import { useSearchQuery } from '@/features/search/hooks';
 import type { SearchResultsUIPage } from '@/features/search/types';
 import { useCanSeeUncensoredCounts } from '@/hooks/censorship';
@@ -43,7 +44,7 @@ const SearchResults = () => {
     }
   }, [handlePageChange, subPage]);
 
-  const { filterQueryStatus, textQueryStatus, message, results } = useSearchQuery();
+  const { filterQueryStatus, textQueryStatus, message /*, results*/ } = useSearchQuery();
 
   // existing code treats non-empty message as sign of insufficient data
   const hasInsufficientData = message !== '';
@@ -56,7 +57,7 @@ const SearchResults = () => {
       hasInsufficientData={hasInsufficientData}
       uncensoredCounts={uncensoredCounts}
       message={message}
-      results={results}
+      results={EMPTY_DISCOVERY_RESULTS} // TODO
       page={subPage as SearchResultsUIPage}
       onPageChange={handlePageChange}
     />

@@ -1,4 +1,4 @@
-import type { Datum } from '@/types/overviewResponse';
+import type { Datum } from '@/types/discovery';
 import type { ChartData } from '@/types/data';
 
 export const serializeChartData = (chartData: Datum[]): ChartData[] => {

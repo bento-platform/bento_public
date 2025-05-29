@@ -7,12 +7,8 @@ import type { SearchFieldResponse } from '@/features/search/types';
 import { printAPIError } from '@/utils/error.util';
 import { scopedAuthorizedRequestConfig } from '@/utils/requests';
 
-export const makeGetSearchFields = createAsyncThunk<
-  SearchFieldResponse,
-  void,
-  { rejectValue: string; state: RootState }
->(
-  'query/makeGetSearchFields',
+export const fetchSearchFields = createAsyncThunk<SearchFieldResponse, void, { rejectValue: string; state: RootState }>(
+  'query/fetchSearchFields',
   (_, { rejectWithValue, getState }) => {
     return axios
       .get(searchFieldsUrl, scopedAuthorizedRequestConfig(getState()))
