@@ -1,18 +1,24 @@
-import { Descriptions, DescriptionsProps, Flex } from 'antd';
+import { Flex } from 'antd';
 
-import { Quantity } from '@/types/clinPhen/measurement';
 import OntologyTerm from './OntologyTerm';
+import TDescriptions from '../TDescriptions';
+
+import type { DescriptionsProps } from 'antd';
+import { Quantity } from '@/types/clinPhen/measurement';
+import { useTranslationFn } from '@/hooks';
 
 const QuantityDisplay = ({ quantity, title }: { quantity: Quantity; title?: string }) => {
+  const t = useTranslationFn();
+
   const items: DescriptionsProps['items'] = [
     {
       key: 'Unit',
-      label: 'Unit',
+      label: 'quantity.unit',
       children: <OntologyTerm term={quantity.unit} />,
     },
     {
       key: 'Value',
-      label: 'Value',
+      label: 'quantity.value',
       children: quantity.value,
     },
     quantity.reference_range && {
@@ -21,19 +27,19 @@ const QuantityDisplay = ({ quantity, title }: { quantity: Quantity; title?: stri
       children: (
         <Flex>
           <div>
-            <strong>Unit:</strong> <OntologyTerm term={quantity.reference_range.unit} />
+            <strong>{t('quantity.unit')}:</strong> <OntologyTerm term={quantity.reference_range.unit} />
           </div>
           <div>
-            <strong>Low:</strong> {quantity.reference_range.low}
+            <strong>{t('quantity.low')}:</strong> {quantity.reference_range.low}
           </div>
           <div>
-            <strong>High:</strong> {quantity.reference_range.high}
+            <strong>{t('quantity.high')}:</strong> {quantity.reference_range.high}
           </div>
         </Flex>
       ),
     },
   ].filter(Boolean) as DescriptionsProps['items'];
-  return <Descriptions bordered size="small" items={items} title={title} />;
+  return <TDescriptions bordered size="small" items={items} title={title} />;
 };
 
 export default QuantityDisplay;

@@ -250,5 +250,11 @@
     "measurement_value": "Valeur de mesure",
     "description": "Description",
     "procedure": "Procédure"
+  },
+  "quantity": {
+    "value": "Valeur",
+    "unit": "Unité",
+    "low": "Bas",
+    "high": "Haut"
   }
 }

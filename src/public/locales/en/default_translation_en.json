@@ -245,5 +245,11 @@
     "measurement_value": "Measurement Value",
     "description": "Description",
     "procedure": "Procedure"
+  },
+  "quantity": {
+    "value": "Value",
+    "unit": "Unit",
+    "low": "Low",
+    "high": "High"
   }
 }
