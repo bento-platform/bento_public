@@ -246,7 +246,9 @@
     "no_genomic_iterpretation": "Aucune interprétation génomique"
   },
   "measurements": {
+    "assay": "Essai",
     "measurement_value": "Valeur de mesure",
+    "description": "Description",
     "procedure": "Procédure"
   }
 }

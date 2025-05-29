@@ -10,6 +10,7 @@ import type { Procedure } from '@/types/clinPhen/procedure';
 import { EM_DASH } from '@/constants/common';
 import { ProcedureComponent } from './MedicalActionsView';
 import TDescriptions from '@/components/Util/TDescriptions';
+import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
 
 const MeasurementsExpandedRow = ({ measurement }: { measurement: Measurement }) => {
   const items: DescriptionsProps['items'] = [
@@ -94,31 +95,31 @@ interface MeasurementsViewProps {
 }
 
 const MeasurementsView = ({ measurements }: MeasurementsViewProps) => {
-  const columns = [
+  const columns = useTranslatedTableColumnTitles<Measurement>([
     {
-      title: 'Assay',
+      title: 'measurements.assay',
       dataIndex: 'assay',
       key: 'assay',
       render: (assay: OntologyTermType) => <OntologyTermComponent term={assay} />,
     },
     {
-      title: 'Measurement Value',
+      title: 'measurements.measurement_value',
       key: 'value',
       render: (m: Measurement) => <MeasurementDetail measurement={m} />,
     },
     {
-      title: 'Description',
+      title: 'measurements.description',
       dataIndex: 'description',
       key: 'description',
       render: (text: any) => text || EM_DASH,
     },
     {
-      title: 'Procedure',
+      title: 'measurements.procedure',
       dataIndex: 'procedure',
       key: 'procedure',
       render: (procedure: Procedure | undefined) => <OntologyTermComponent term={procedure?.code} />,
     },
-  ];
+  ]);
   return (
     <Table<Measurement>
       dataSource={measurements}
