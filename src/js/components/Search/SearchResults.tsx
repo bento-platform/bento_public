@@ -54,7 +54,6 @@ const SearchResults = () => {
     <SearchResultsPane
       isFetchingData={filterQueryStatus === RequestStatus.Pending || textQueryStatus === RequestStatus.Pending}
       hasInsufficientData={hasInsufficientData}
-      uncensoredCounts={uncensoredCounts}
       message={message}
       results={results}
       page={subPage as SearchResultsUIPage}

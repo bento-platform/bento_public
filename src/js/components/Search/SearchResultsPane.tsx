@@ -54,7 +54,6 @@ const SRChartsPage = ({
 const SearchResultsPane = ({
   isFetchingData,
   hasInsufficientData,
-  uncensoredCounts,
   message,
   results,
   resultsTitle,
@@ -109,7 +108,6 @@ const SearchResultsPane = ({
               setSelectedPage={onPageChange}
               results={results}
               hasInsufficientData={hasInsufficientData}
-              uncensoredCounts={uncensoredCounts}
               message={message}
             />
           </Col>
@@ -123,7 +121,6 @@ const SearchResultsPane = ({
 export interface SearchResultsPaneProps {
   isFetchingData: boolean;
   hasInsufficientData?: boolean;
-  uncensoredCounts?: boolean;
   message?: string;
   results: DiscoveryResults;
   resultsTitle?: string;

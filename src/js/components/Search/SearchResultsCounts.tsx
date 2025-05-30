@@ -8,6 +8,7 @@ import CountsTitleWithHelp from '@/components/Util/CountsTitleWithHelp';
 import { COUNTS_FILL } from '@/constants/overviewConstants';
 import { NO_RESULTS_DASHES } from '@/features/search/constants';
 import { useHasScopePermission, useTranslationFn } from '@/hooks';
+import { useCanSeeUncensoredCounts } from '@/hooks/censorship';
 import type { SearchResultsUIPage } from '@/features/search/types';
 import type { DiscoveryResults, OptionalDiscoveryResults } from '@/types/data';
 import { RequestStatus } from '@/types/requests';
@@ -21,7 +22,6 @@ const SearchResultsCounts = ({
   selectedPage,
   setSelectedPage,
   hasInsufficientData,
-  uncensoredCounts,
   message,
 }: SearchResultsCountsProps) => {
   const t = useTranslationFn();
@@ -29,6 +29,7 @@ const SearchResultsCounts = ({
   const { individualCount, biosampleCount, experimentCount } = results;
   const { hasPermission: queryDataPerm } = useHasScopePermission(queryData);
   const individualsClickable = !!setSelectedPage && queryDataPerm;
+  const uncensoredCounts = useCanSeeUncensoredCounts();
 
   const isBeaconNetwork = mode === 'beacon-network';
 
@@ -102,7 +103,6 @@ type SearchResultsCountsProps = {
   selectedPage?: SearchResultsUIPage;
   setSelectedPage?: (page: SearchResultsUIPage) => void;
   hasInsufficientData?: boolean;
-  uncensoredCounts?: boolean;
   message?: string;
 };
 

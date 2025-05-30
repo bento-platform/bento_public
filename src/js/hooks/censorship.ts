@@ -9,5 +9,5 @@ export const useCanSeeUncensoredCounts = () => {
   // Used mostly for UI - showing dashes vs "0".
   //  - If we have query:data permissions or the low cell count threshold is low enough that we get uncensored counts,
   //    then this becomes true.
-  return queryDataPerm || countThreshold <= 1;
+  return queryDataPerm || countThreshold <= 0;
 };
