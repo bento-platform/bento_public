@@ -362,5 +362,12 @@
     "CANDIDATE": "Candidat",
     "CONTRIBUTORY": "Contributif",
     "CAUSATIVE": "Causal"
+  },
+  "progress_status": {
+    "UNKNOWN_PROGRESS": "Progression inconnue",
+    "IN_PROGRESS": "En cours",
+    "COMPLETED": "Terminé",
+    "SOLVED": "Résolu",
+    "UNSOLVED": "Non résolu"
   }
 }

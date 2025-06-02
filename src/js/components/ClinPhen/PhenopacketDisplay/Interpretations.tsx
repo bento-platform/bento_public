@@ -103,6 +103,8 @@ interface InterpretationsViewProps {
 }
 
 const InterpretationsView = ({ interpretations }: InterpretationsViewProps) => {
+  const t = useTranslationFn();
+
   const columns = useTranslatedTableColumnTitles<Interpretation>([
     {
       title: 'interpretations.id',
@@ -125,11 +127,13 @@ const InterpretationsView = ({ interpretations }: InterpretationsViewProps) => {
       title: 'interpretations.progress_status',
       dataIndex: 'progress_status',
       key: 'progress_status',
+      render: (text: string) => t(`progress_status.${text}`),
     },
     {
       title: 'interpretations.summary',
       dataIndex: 'summary',
       key: 'summary',
+      render: (text: string) => t(text),
     },
   ]);
 

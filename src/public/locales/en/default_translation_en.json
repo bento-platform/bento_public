@@ -357,5 +357,12 @@
     "CANDIDATE": "Candidate",
     "CONTRIBUTORY": "Contributory",
     "CAUSATIVE": "Causative"
+  },
+  "progress_status": {
+    "UNKNOWN_PROGRESS": "Unknown Progress",
+    "IN_PROGRESS": "In Progress",
+    "COMPLETED": "Completed",
+    "SOLVED": "Solved",
+    "UNSOLVED": "Unsolved"
   }
 }
