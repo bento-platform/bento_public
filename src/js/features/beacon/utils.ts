@@ -78,7 +78,7 @@ export const extractBeaconDiscoveryOverview = (response: BeaconQueryResponse): O
   // Bento-specific counts/chart data
   ...(response.info?.bento
     ? {
-        biosampleCount: response?.info.bento.biosamples?.count,
+        biosampleCount: response.info.bento.biosamples?.count,
         biosampleChartData: serializeChartData(response.info.bento.biosamples?.sampled_tissue),
         experimentCount: response.info.bento.experiments?.count,
         experimentChartData: serializeChartData(response.info.bento.experiments?.experiment_type),
