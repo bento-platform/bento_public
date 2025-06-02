@@ -281,5 +281,13 @@
     "treatment_intent": "Treatment Intent",
     "response_to_treatment": "Response to Treatment",
     "treatment_termination_reason": "Treatment Termination Reason"
+  },
+  "ontologies": {
+    "resource_id": "Resource ID",
+    "name": "Name",
+    "namespace_prefix": "Namespace Prefix",
+    "url": "URL",
+    "version": "Version",
+    "iri_prefix": "IRI Prefix"
   }
 }

@@ -286,5 +286,13 @@
     "treatment_intent": "Intention du traitement",
     "response_to_treatment": "Réponse au traitement",
     "treatment_termination_reason": "Raison de l'arrêt du traitement"
+  },
+  "ontologies": {
+    "resource_id": "ID de ressource",
+    "name": "Nom",
+    "namespace_prefix": "Préfixe d’espace de noms",
+    "url": "URL",
+    "version": "Version",
+    "iri_prefix": "Préfixe IRI"
   }
 }
