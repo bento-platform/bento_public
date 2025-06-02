@@ -11,6 +11,7 @@ import { EM_DASH } from '@/constants/common';
 import { ProcedureComponent } from './MedicalActionsView';
 import TDescriptions from '@/components/Util/TDescriptions';
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
+import { useTranslationFn } from '@/hooks';
 
 const MeasurementsExpandedRow = ({ measurement }: { measurement: Measurement }) => {
   const items: DescriptionsProps['items'] = [
@@ -30,6 +31,8 @@ const MeasurementsExpandedRow = ({ measurement }: { measurement: Measurement }) 
 };
 
 const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement; expanded?: boolean }) => {
+  const t = useTranslationFn();
+
   const value = measurement?.value;
   const complexValue = measurement?.complex_value;
   if (!expanded) {
@@ -37,7 +40,7 @@ const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement
       const quantity = measurement.value.quantity;
       return (
         <span>
-          {quantity?.value} {quantity?.unit.label}
+          {quantity?.value} {t(quantity?.unit.label || '')}
         </span>
       );
     }
@@ -48,7 +51,7 @@ const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement
         <Space direction="vertical" size={0}>
           {typed_quantities.map((typedQuantity, index) => (
             <span key={index}>
-              {typedQuantity.type.label}: {typedQuantity.quantity.value} {typedQuantity.quantity.unit.label}
+              {t(typedQuantity.type.label)}: {typedQuantity.quantity.value} {t(typedQuantity.quantity.unit.label)}
             </span>
           ))}
         </Space>
@@ -95,6 +98,8 @@ interface MeasurementsViewProps {
 }
 
 const MeasurementsView = ({ measurements }: MeasurementsViewProps) => {
+  const t = useTranslationFn();
+
   const columns = useTranslatedTableColumnTitles<Measurement>([
     {
       title: 'measurements.assay',
@@ -111,7 +116,7 @@ const MeasurementsView = ({ measurements }: MeasurementsViewProps) => {
       title: 'measurements.description',
       dataIndex: 'description',
       key: 'description',
-      render: (text: any) => text || EM_DASH,
+      render: (text: any) => t(text) || EM_DASH,
     },
     {
       title: 'measurements.procedure',
