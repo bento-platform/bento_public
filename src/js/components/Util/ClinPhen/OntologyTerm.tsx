@@ -5,6 +5,7 @@ import type { OntologyTerm as OntologyTermType } from '@/types/ontology';
 import { EM_DASH } from '@/constants/common';
 import { RouteParams } from '../../ClinPhen/PhenopacketView';
 import { usePhenopacketResources } from '@/features/clinPhen/hooks';
+import { useTranslationFn } from '@/hooks';
 
 const { Link } = Typography;
 
@@ -13,6 +14,7 @@ interface OntologyTermProps {
 }
 
 const OntologyTerm = ({ term }: OntologyTermProps) => {
+  const t = useTranslationFn();
   const { packetId } = useParams<RouteParams>();
   const resources = usePhenopacketResources(packetId);
 

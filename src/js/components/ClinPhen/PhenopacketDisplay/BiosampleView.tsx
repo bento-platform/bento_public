@@ -8,6 +8,7 @@ import TDescriptions from '@/components/Util/TDescriptions';
 
 import { EM_DASH } from '@/constants/common';
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
+import TimeElementDisplay from '@/components/Util/ClinPhen/TimeElementDisplay';
 
 const BiosampleExpandedRow = ({ biosample }: { biosample: Biosample }) => {
   const items: DescriptionsProps['items'] = [
@@ -29,7 +30,7 @@ const BiosampleExpandedRow = ({ biosample }: { biosample: Biosample }) => {
     {
       key: 'time_of_collection',
       label: 'biosample_expanded_row.collection_time',
-      children: biosample.time_of_collection ? JSON.stringify(biosample.time_of_collection) : EM_DASH,
+      children: biosample.time_of_collection ? <TimeElementDisplay element={biosample.time_of_collection} /> : EM_DASH,
     },
     {
       key: 'histological_diagnosis',
