@@ -39,7 +39,7 @@ const QuantityDisplay = ({ quantity, title }: { quantity: Quantity; title?: stri
       ),
     },
   ].filter(Boolean) as DescriptionsProps['items'];
-  return <TDescriptions bordered size="small" items={items} title={title} />;
+  return <TDescriptions bordered size="small" column={1} items={items} title={title} />;
 };
 
 export default QuantityDisplay;
