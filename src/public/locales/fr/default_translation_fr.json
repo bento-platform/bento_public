@@ -355,5 +355,12 @@
     "interpretations": "Interprétations",
     "medical_actions": "Actions médicales",
     "ontologies": "Ontologies"
+  },
+  "genomic_interpretation_status": {
+    "UNKNOWN_STATUS": "Statut inconnu",
+    "REJECTED": "Rejeté",
+    "CANDIDATE": "Candidat",
+    "CONTRIBUTORY": "Contributif",
+    "CAUSATIVE": "Causal"
   }
 }

@@ -60,6 +60,7 @@ const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interp
       title: 'interpretations.interpretation_status',
       dataIndex: 'interpretation_status',
       key: 'interpretation_status',
+      render: (text: string) => t(`genomic_intepretation_status.${text}`),
     },
   ]);
 
