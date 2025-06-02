@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { useSelectedScope } from '@/features/metadata/hooks';
 import { useSearchQuery } from '@/features/search/hooks';
 import type { SearchResultsUIPage } from '@/features/search/types';
-import { useCanSeeUncensoredCounts } from '@/hooks/censorship';
 import { RequestStatus } from '@/types/requests';
 import { langAndScopeSelectionToUrl } from '@/utils/router';
 
@@ -48,13 +47,10 @@ const SearchResults = () => {
   // existing code treats non-empty message as sign of insufficient data
   const hasInsufficientData = message !== '';
 
-  const uncensoredCounts = useCanSeeUncensoredCounts();
-
   return (
     <SearchResultsPane
       isFetchingData={filterQueryStatus === RequestStatus.Pending || textQueryStatus === RequestStatus.Pending}
       hasInsufficientData={hasInsufficientData}
-      uncensoredCounts={uncensoredCounts}
       message={message}
       results={results}
       page={subPage as SearchResultsUIPage}
