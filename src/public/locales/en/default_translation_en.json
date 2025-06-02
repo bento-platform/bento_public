@@ -301,5 +301,21 @@
     "extra_properties": "Extra Properties",
     "evidence_code": "Evidence Code",
     "reference": "Reference"
+  },
+  "subject": {
+    "status": "Status",
+    "time_of_death": "Time of Death",
+    "cause_of_death": "Cause of Death",
+    "survival_time_in_days": "Survival Time in Days",
+    "id": "ID",
+    "alternate_ids": "Alternate IDs",
+    "age": "Age",
+    "date_of_birth": "Date of Birth",
+    "time_at_last_encounter": "Time at Last Encounter",
+    "vital_status": "Vital Status",
+    "sex": "Sex",
+    "karyotypic_sex": "Karyotypic Sex",
+    "taxonomy": "Taxonomy",
+    "gender": "Gender"
   }
 }
