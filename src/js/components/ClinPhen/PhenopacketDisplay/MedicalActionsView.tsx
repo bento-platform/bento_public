@@ -20,6 +20,7 @@ import type { OntologyTerm } from '@/types/ontology';
 import type { Procedure } from '@/types/clinPhen/procedure';
 import type { TimeInterval } from '@/types/clinPhen/shared';
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
+import { useTranslationFn } from '@/hooks';
 export const ProcedureComponent = ({ procedure }: { procedure: Procedure }) => {
   const ProcedureItems: DescriptionsProps['items'] = [
     {
@@ -134,6 +135,8 @@ const RadiationTherapyComponent = ({ radiation_therapy }: { radiation_therapy: R
 };
 
 const TherapeuticRegimenComponent = ({ therapeutic_regimen }: { therapeutic_regimen: TherapeuticRegimen }) => {
+  const t = useTranslationFn();
+
   const TherapeuticRegimenItems: DescriptionsProps['items'] = [
     {
       key: 'Identifier',
@@ -148,12 +151,12 @@ const TherapeuticRegimenComponent = ({ therapeutic_regimen }: { therapeutic_regi
                 {therapeutic_regimen?.external_reference?.id ?? EM_DASH}
               </div>
               <div>
-                <strong>Reference:</strong>
-                {therapeutic_regimen?.external_reference?.reference ?? EM_DASH}
+                <strong>{t('medical_actions.reference')}:</strong>
+                {t(therapeutic_regimen?.external_reference?.reference) ?? EM_DASH}
               </div>
               <div>
                 <strong>Description:</strong>
-                {therapeutic_regimen?.external_reference?.description ?? EM_DASH}
+                {t(therapeutic_regimen?.external_reference?.description) ?? EM_DASH}
               </div>
             </Flex>
           )}
@@ -211,15 +214,16 @@ const MedicalActionDetails = ({ medicalAction }: { medicalAction: MedicalAction 
 };
 
 const MedicalActionsView = ({ medicalActions }: { medicalActions: MedicalAction[] }) => {
+  const t = useTranslationFn();
   const columns = useTranslatedTableColumnTitles<MedicalAction>([
     {
       title: 'medical_actions.action_type',
       key: 'actionType',
       render: (_: any, action: MedicalAction) => {
-        if (action.procedure) return 'Procedure';
-        if (action.treatment) return 'Treatment';
-        if (action.radiation_therapy) return 'Radiation Therapy';
-        if (action.therapeutic_regimen) return 'Therapeutic Regimen';
+        if (action.procedure) return t('medical_actions.procedure');
+        if (action.treatment) return t('medical_actions.treatment');
+        if (action.radiation_therapy) return t('medical_actions.radiation_therapy');
+        if (action.therapeutic_regimen) return t('medical_actions.therapeutic_regimen');
         return 'Unknown';
       },
     },

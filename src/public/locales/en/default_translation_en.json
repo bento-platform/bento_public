@@ -303,7 +303,8 @@
     "treatment_target": "Treatment Target",
     "treatment_intent": "Treatment Intent",
     "response_to_treatment": "Response to Treatment",
-    "treatment_termination_reason": "Treatment Termination Reason"
+    "treatment_termination_reason": "Treatment Termination Reason",
+    "refernce": "Reference"
   },
   "ontologies": {
     "resource_id": "Resource ID",

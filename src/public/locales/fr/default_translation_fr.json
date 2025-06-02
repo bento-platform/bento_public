@@ -308,7 +308,8 @@
     "treatment_target": "Cible du traitement",
     "treatment_intent": "Intention du traitement",
     "response_to_treatment": "Réponse au traitement",
-    "treatment_termination_reason": "Raison de l'arrêt du traitement"
+    "treatment_termination_reason": "Raison de l'arrêt du traitement",
+    "reference": "Référence"
   },
   "ontologies": {
     "resource_id": "ID de ressource",
