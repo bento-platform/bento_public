@@ -4,7 +4,7 @@ import { VariantInterpretation as VariantInterpretationType } from '@/types/clin
 import JsonView from '../JsonView';
 import { Extension } from '@/types/clinPhen/shared';
 import { Expression } from '@/types/clinPhen/vrs';
-import OntologyTerm from '../ClinPhen/OntologyTerm';
+import OntologyTerm from './OntologyTerm';
 import { JSONType } from '@/types/json';
 import { GeneDescriptor as GeneDescriptorType } from '@/types/clinPhen/geneDescriptor';
 import StringList from '../StringList';

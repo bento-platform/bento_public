@@ -3,7 +3,7 @@ import { MedicineBoxOutlined, ExperimentOutlined } from '@ant-design/icons';
 
 import CustomEmpty from '@Util/CustomEmpty';
 import OntologyTerm from '@Util/ClinPhen/OntologyTerm';
-import { GeneDescriptor, VariantInterpretation } from '@Util/ClinPhen/tInterpretationUtilities';
+import { GeneDescriptor, VariantInterpretation } from '@Util/ClinPhen/InterpretationUtilities';
 import TDescriptions from '@/components/Util/TDescriptions';
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
 
