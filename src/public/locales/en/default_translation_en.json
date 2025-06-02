@@ -289,5 +289,17 @@
     "url": "URL",
     "version": "Version",
     "iri_prefix": "IRI Prefix"
+  },
+  "phenotypic_features": {
+    "feature": "Feature",
+    "severity": "Severity",
+    "onset": "Onset",
+    "resolution": "Resolution",
+    "description": "Description",
+    "modifiers": "Modifiers",
+    "evidence": "Evidence",
+    "extra_properties": "Extra Properties",
+    "evidence_code": "Evidence Code",
+    "reference": "Reference"
   }
 }

@@ -1,17 +1,19 @@
-import { Descriptions, DescriptionsProps, Space, Table, Tooltip } from 'antd';
+import { DescriptionsProps, Space, Table } from 'antd';
 import { LinkOutlined } from '@ant-design/icons';
 
 import OntologyTermComponent from '@Util/ClinPhen/OntologyTerm';
 import TimeElementDisplay from '@Util/ClinPhen/TimeElementDisplay';
 import ExtraProperties from '@Util/ExtraProperties';
+import TDescriptions from '@Util/TDescriptions';
 
 import type { PhenotypicFeature } from '@/types/clinPhen/phenotypicFeature';
 import type { OntologyTerm } from '@/types/ontology';
 import type { Evidence as EvidenceType, TimeElement } from '@/types/clinPhen/shared';
 
 import { isValidUrl } from '@/utils/strings';
-
 import { EM_DASH } from '@/constants/common';
+
+import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
 
 interface EvidenceProps {
   evidence?: EvidenceType;
@@ -28,12 +30,12 @@ const Evidence = ({ evidence }: EvidenceProps) => {
   const items: DescriptionsProps['items'] = [
     {
       key: 'evidence_code',
-      label: 'Evidence Code',
+      label: 'phenotypic_features.evidence_code',
       children: <OntologyTermComponent term={evidence.evidence_code} />,
     },
     externalReference && {
       key: 'reference',
-      label: 'Reference',
+      label: 'phenotypic_features.reference',
       children: (
         <>
           {externalReference?.id && (
@@ -58,19 +60,19 @@ const Evidence = ({ evidence }: EvidenceProps) => {
     },
   ].filter(Boolean) as DescriptionsProps['items'];
 
-  return <Descriptions bordered={false} column={1} size="small" items={items} />;
+  return <TDescriptions bordered={false} column={1} size="small" items={items} />;
 };
 
 function PhenotypicFeatureExpandedRow({ feature }: { feature: PhenotypicFeature }) {
   const items: DescriptionsProps['items'] = [
     {
       key: 'description',
-      label: 'Description',
+      label: 'phenotypic_features.description',
       children: feature.description || EM_DASH,
     },
     {
       key: 'modifiers',
-      label: 'Modifiers',
+      label: 'phenotypic_features.modifiers',
       children: feature.modifiers?.length ? (
         <Space direction="vertical">
           {feature.modifiers.map((m) => (
@@ -83,16 +85,16 @@ function PhenotypicFeatureExpandedRow({ feature }: { feature: PhenotypicFeature 
     },
     {
       key: 'evidence',
-      label: 'Evidence',
+      label: 'phenotypic_features.evidence',
       children: feature.evidence?.length ? feature.evidence.map((e, i) => <Evidence key={i} evidence={e} />) : EM_DASH,
     },
     {
       key: 'extra_properties',
-      label: 'Extra Properties',
+      label: 'phenotypic_features.extra_properties',
       children: <ExtraProperties extraProperties={feature?.extra_properties} />,
     },
-  ] as DescriptionsProps['items'];
-  return <Descriptions bordered size="small" items={items} />;
+  ];
+  return <TDescriptions bordered size="small" items={items} />;
 }
 
 interface PhenotypicFeaturesViewProps {
@@ -100,32 +102,32 @@ interface PhenotypicFeaturesViewProps {
 }
 
 function PhenotypicFeaturesView({ features }: PhenotypicFeaturesViewProps) {
-  const columns = [
+  const columns = useTranslatedTableColumnTitles<PhenotypicFeature>([
     {
-      title: 'Feature',
+      title: 'phenotypic_features.feature',
       dataIndex: 'type',
       key: 'type',
       render: (type: OntologyTerm) => <OntologyTermComponent term={type} />,
     },
     {
-      title: 'Severity',
+      title: 'phenotypic_features.severity',
       dataIndex: 'severity',
       key: 'severity',
       render: (severity: OntologyTerm) => <OntologyTermComponent term={severity} />,
     },
     {
-      title: 'Onset',
+      title: 'phenotypic_features.onset',
       dataIndex: 'onset',
       key: 'onset',
       render: (onset: TimeElement) => (onset ? <TimeElementDisplay element={onset} /> : EM_DASH),
     },
     {
-      title: 'Resolution',
+      title: 'phenotypic_features.resolution',
       dataIndex: 'resolution',
       key: 'resolution',
       render: (resolution: TimeElement) => (resolution ? <TimeElementDisplay element={resolution} /> : EM_DASH),
     },
-  ];
+  ]);
   return (
     <Table<PhenotypicFeature>
       dataSource={features}
