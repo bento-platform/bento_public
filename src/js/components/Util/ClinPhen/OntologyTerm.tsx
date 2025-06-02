@@ -29,13 +29,13 @@ const OntologyTerm = ({ term }: OntologyTermProps) => {
     <Tooltip title={term.id}>
       {iri ? (
         <span>
-          {term.label}{' '}
+          {t(term.label)}{' '}
           <Link href={iri} target="_blank" rel="noopener noreferrer">
             <LinkOutlined />
           </Link>
         </span>
       ) : (
-        <span>{term.label}</span>
+        <span>{t(term.label)}</span>
       )}
     </Tooltip>
   );
