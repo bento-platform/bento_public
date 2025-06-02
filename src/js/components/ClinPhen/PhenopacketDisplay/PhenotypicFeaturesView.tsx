@@ -14,12 +14,15 @@ import { isValidUrl } from '@/utils/strings';
 import { EM_DASH } from '@/constants/common';
 
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
+import { useTranslationFn } from '@/hooks';
 
 interface EvidenceProps {
   evidence?: EvidenceType;
 }
 
 const Evidence = ({ evidence }: EvidenceProps) => {
+  const t = useTranslationFn();
+
   if (!evidence) {
     return EM_DASH;
   }
@@ -51,7 +54,7 @@ const Evidence = ({ evidence }: EvidenceProps) => {
           )}
           {externalReference?.description && (
             <>
-              <strong>Description:</strong> {externalReference?.description}
+              <strong>Description:</strong> {t(externalReference?.description)}
               <br />
             </>
           )}
