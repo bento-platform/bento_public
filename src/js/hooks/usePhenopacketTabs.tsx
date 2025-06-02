@@ -13,8 +13,11 @@ import SubjectView from '@/components/ClinPhen/PhenopacketDisplay/SubjectView';
 
 import { TabKeys } from '@/types/PhenopacketView.types';
 import { Phenopacket } from '@/types/clinPhen/phenopacket';
+import { useTranslationFn } from '@/hooks';
 
 export const usePhenopacketTabs = (phenopacket: Phenopacket) => {
+  const t = useTranslationFn();
+  0;
   const navigate = useNavigate();
   const handleTabChange = useCallback(
     (key: string) => {
@@ -28,25 +31,25 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket) => {
     () => [
       {
         key: TabKeys.SUBJECT,
-        label: 'Subject',
+        label: t('tab_keys.subject'),
         children: <SubjectView subject={phenopacket?.subject} />,
         disabled: !phenopacket?.subject,
       },
       {
         key: TabKeys.BIOSAMPLES,
-        label: 'Biosamples',
+        label: t('tab_keys.biosamples'),
         children: phenopacket?.biosamples ? <BiosampleView biosamples={phenopacket?.biosamples!} /> : null,
         disabled: !phenopacket?.biosamples,
       },
       {
         key: TabKeys.MEASUREMENTS,
-        label: 'Measurements',
+        label: t('tab_keys.measurements'),
         children: phenopacket?.measurements ? <MeasurementsView measurements={phenopacket?.measurements} /> : null,
         disabled: !phenopacket?.measurements,
       },
       {
         key: TabKeys.PHENOTYPIC_FEATURES,
-        label: 'Phenotypic Features',
+        label: t('tab_keys.phenotypic_features'),
         children: phenopacket?.phenotypic_features ? (
           <PhenotypicFeaturesView features={phenopacket.phenotypic_features} />
         ) : null,
@@ -54,13 +57,13 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket) => {
       },
       {
         key: TabKeys.DISEASES,
-        label: 'Diseases',
+        label: t('tab_keys.diseases'),
         children: phenopacket?.diseases ? <DiseasesView diseases={phenopacket.diseases} /> : null,
         disabled: !phenopacket?.diseases,
       },
       {
         key: TabKeys.INTERPRETATIONS,
-        label: 'Interpretations',
+        label: t('tab_keys.interpretations'),
         children: phenopacket?.interpretations ? (
           <InterpretationsView interpretations={phenopacket.interpretations} />
         ) : null,
@@ -68,7 +71,7 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket) => {
       },
       {
         key: TabKeys.MEDICAL_ACTIONS,
-        label: 'Medical Actions',
+        label: t('tab_keys.medical_actions'),
         children: phenopacket?.medical_actions ? (
           <MedicalActionsView medicalActions={phenopacket.medical_actions} />
         ) : null,
@@ -76,7 +79,7 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket) => {
       },
       {
         key: TabKeys.ONTOLOGIES,
-        label: 'Ontologies',
+        label: t('tab_keys.ontologies'),
         children: <OntologiesView resources={phenopacket?.meta_data?.resources!} />,
         disabled: !phenopacket?.meta_data?.resources,
       },
