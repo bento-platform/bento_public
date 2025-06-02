@@ -2,6 +2,7 @@ import { Table, Typography } from 'antd';
 
 import type { Resource } from '@/types/clinPhen/resource';
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
+import { useTranslationFn } from '@/hooks';
 
 const { Link } = Typography;
 
@@ -10,9 +11,11 @@ interface OntologiesProps {
 }
 
 const OntologiesView = ({ resources }: OntologiesProps) => {
+  const t = useTranslationFn();
+
   const columns = useTranslatedTableColumnTitles<Resource>([
     { title: 'ontologies.resource_id', dataIndex: 'id', key: 'id' },
-    { title: 'ontologies.name', dataIndex: 'name', key: 'name' },
+    { title: 'ontologies.name', dataIndex: 'name', key: 'name', render: (text: string) => t(text) },
     { title: 'ontologies.namespace_prefix', dataIndex: 'namespace_prefix', key: 'namespace_prefix' },
     {
       title: 'ontologies.url',
