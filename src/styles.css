@@ -37,6 +37,7 @@ body {
 .rounded-xl { border-radius: 12px; }
 .rounded-e-none { border-start-end-radius: 0; border-end-end-radius: 0; }
 .cursor-pointer { cursor: pointer; }
+.select-none { user-select: none; }
 .font-mono { font-family: ui-monospace, monospace; }
 .text-center { text-align: center; }
 

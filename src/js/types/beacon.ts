@@ -100,11 +100,8 @@ type GenericInfoField = Record<string, unknown>;
 export interface BeaconConfigResponse {
   response?: {
     overview?: {
-      counts?: {
-        // individuals: number;
-        variants?: {
-          [key: string]: string;
-        };
+      variants: {
+        [key: string]: string;
       };
     };
   };
