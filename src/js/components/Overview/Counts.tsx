@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react';
-import { Card, Space, Statistic, Typography } from 'antd';
+import { Card, Flex, Space, Statistic, Typography } from 'antd';
 import { ExperimentOutlined, TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
 
+import SearchResultsTablePage from '@/components/Search/SearchResultsTablePage';
 import CountsTitleWithHelp from '@/components/Util/CountsTitleWithHelp';
 import { COUNTS_FILL } from '@/constants/overviewConstants';
 import { WAITING_STATES } from '@/constants/requests';
@@ -41,8 +42,10 @@ const Counts = () => {
   //  https://redmine.c3g-app.sd4h.ca/issues/2518#change-14170
 
   return (
-    <div>
-      <Typography.Title level={3}>{t('Counts')}</Typography.Title>
+    <Flex vertical={true} gap={12}>
+      <Typography.Title level={3} className="mb-0">
+        {t('Counts')}
+      </Typography.Title>
       <Space wrap>
         {COUNT_ENTRIES.map(({ entity, icon }, i) => {
           const count = renderCount(counts[entity], countThreshold);
@@ -59,7 +62,10 @@ const Counts = () => {
           );
         })}
       </Space>
-    </div>
+      <Card className="shadow">
+        <SearchResultsTablePage entity="individual" />
+      </Card>
+    </Flex>
   );
 };
 

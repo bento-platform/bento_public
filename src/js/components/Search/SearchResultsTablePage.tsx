@@ -93,9 +93,9 @@ const SearchResultsTablePage = ({
   entity,
   onBack,
 }: {
-  results: DiscoveryResults;
+  results?: DiscoveryResults;
   entity: 'individual' | 'biosample' | 'experiment';
-  onBack: () => void;
+  onBack?: () => void;
 }) => {
   const t = useTranslationFn();
   const selectedScope = useSelectedScope();
@@ -133,7 +133,7 @@ const SearchResultsTablePage = ({
     });
   }, [selectedScope, projectColumnAllowed, datasetColumnAllowed, shownColumns]);
 
-  let { individualMatches } = results;
+  let { individualMatches } = results ?? {};
   individualMatches = individualMatches ?? [];
 
   const currentStart = individualMatches.length > 0 ? page * pageSize - pageSize + 1 : 0;
@@ -205,14 +205,16 @@ const SearchResultsTablePage = ({
     <>
       <Col xs={24} lg={20}>
         <Flex justify="space-between" align="center" style={{ marginBottom: 8 }}>
-          <Button
-            icon={<LeftOutlined />}
-            type={isSmallScreen ? 'default' : 'link'}
-            onClick={onBack}
-            style={{ paddingLeft: 0 }}
-          >
-            {isSmallScreen ? '' : t('Charts')}
-          </Button>
+          {onBack ? (
+            <Button
+              icon={<LeftOutlined />}
+              type={isSmallScreen ? 'default' : 'link'}
+              onClick={onBack}
+              style={{ paddingLeft: 0 }}
+            >
+              {isSmallScreen ? '' : t('Charts')}
+            </Button>
+          ) : null}
           <span>
             {t('search.showing_entities' + (isSmallScreen ? '_short' : ''), {
               entity: `$t(entities.${entity}_other, lowercase)`,
