@@ -19,7 +19,7 @@ const CurrentPageHelpModal = (props: CurrentPageHelpModalProps) => {
   return (
     <Modal {...props} title={t(`Help for`) + ' ' + `'${t(currentTitle)}'`} footer={null} width={960}>
       {pageHelp.map((para, pk) => (
-        <Paragraph key={pk} style={pk === pageHelp.length - 1 ? { marginBottom: 0 } : {}}>
+        <Paragraph key={pk} className={pk === pageHelp.length - 1 ? 'mb-0' : ''}>
           {para}
         </Paragraph>
       ))}
