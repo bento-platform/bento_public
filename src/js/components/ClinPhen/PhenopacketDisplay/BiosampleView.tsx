@@ -25,7 +25,7 @@ const BiosampleExpandedRow = ({ biosample }: { biosample: Biosample }) => {
     {
       key: 'sample_type',
       label: 'biosample_expanded_row.sample_type',
-      children: biosample.sample_type?.label || EM_DASH,
+      children: <OntologyTermComponent term={biosample.sample_type} />,
     },
     {
       key: 'time_of_collection',
