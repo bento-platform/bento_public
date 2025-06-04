@@ -6,6 +6,7 @@ import { printAPIError } from '@/utils/error.util';
 import { authorizedRequestConfig } from '@/utils/requests';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
 import { RequestStatus } from '@/types/requests';
+import { useIsAuthenticated } from 'bento-auth-js/dist';
 
 export const makeGetPhenopacketData = createAsyncThunk<
   Phenopacket,
@@ -24,8 +25,13 @@ export const makeGetPhenopacketData = createAsyncThunk<
   },
   {
     condition(id, { getState }) {
+      const isAuthenticated = useIsAuthenticated();
       const state = getState().clinPhen;
-      const cond = !state.phenopacketDataCache[id] && state.phenopacketDataStatus[id] !== RequestStatus.Pending;
+      const cond =
+        !!isAuthenticated &&
+        !!id &&
+        !state.phenopacketDataCache[id] &&
+        state.phenopacketDataStatus[id] !== RequestStatus.Pending;
       console.debug(
         ...(cond
           ? ['requesting phenopacket data for id', id]

@@ -39,10 +39,8 @@ export const usePhenopacketData = (phenopacketId: string) => {
   const status = useAppSelector((state) => state.clinPhen.phenopacketDataStatus[phenopacketId]);
 
   useEffect(() => {
-    if (authenticated && !phenopacket && status !== RequestStatus.Pending) {
-      dispatch(makeGetPhenopacketData(phenopacketId));
-    }
-  }, [authenticated, phenopacketId, phenopacket, status, dispatch]);
+    dispatch(makeGetPhenopacketData(phenopacketId));
+  }, [phenopacketId]);
 
   return { phenopacket, status, authenticated };
 };
