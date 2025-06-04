@@ -136,7 +136,7 @@ const TherapeuticRegimenComponent = ({ therapeutic_regimen }: { therapeutic_regi
 
   const TherapeuticRegimenItems: DescriptionsProps['items'] = [
     {
-      key: 'Identifier',
+      key: 'identifier',
       label: 'medical_actions.identifier',
       children: (
         <>
@@ -161,17 +161,17 @@ const TherapeuticRegimenComponent = ({ therapeutic_regimen }: { therapeutic_regi
       ),
     },
     {
-      key: 'Start Time',
+      key: 'start_time',
       label: 'medical_actions.start_time',
       children: <TimeElementDisplay element={therapeutic_regimen.start_time} />,
     },
     {
-      key: 'End Time',
+      key: 'end_time',
       label: 'medical_actions.end_time',
       children: <TimeElementDisplay element={therapeutic_regimen.end_time} />,
     },
     {
-      key: 'Status',
+      key: 'status',
       label: 'medical_actions.status',
       children: therapeutic_regimen.status ?? EM_DASH,
     },
