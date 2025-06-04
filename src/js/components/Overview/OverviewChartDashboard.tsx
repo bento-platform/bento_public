@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Flex, FloatButton, Typography } from 'antd';
+import { Flex, FloatButton } from 'antd';
 import { AppstoreAddOutlined } from '@ant-design/icons';
 
 import { convertSequenceAndDisplayData, saveValue } from '@/utils/localStorage';
@@ -11,11 +11,11 @@ import { WAITING_STATES } from '@/constants/requests';
 
 import AboutBox from './AboutBox';
 import OverviewSection from './OverviewSection';
+import OverviewDatasets from './OverviewDatasets';
 import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
 import Counts from './Counts';
 import LastIngestionInfo from './LastIngestion';
 import Loader from '@/components/Loader';
-import Dataset from '@/components/Provenance/Dataset';
 
 import { useTranslationFn } from '@/hooks';
 import { useData, useSearchableFields } from '@/features/data/hooks';
@@ -63,17 +63,8 @@ const OverviewChartDashboard = () => {
         <Counts />
 
         {selectedProject && !scope.dataset && selectedProject.datasets.length ? (
-          // If we have a project with more than one dataset, show a dataset selector in the project overview
-          <div>
-            <Typography.Title level={3}>Datasets</Typography.Title>
-            <div className="dataset-provenance-card-grid">
-              {selectedProject.datasets.map((d) => (
-                <div key={d.identifier}>
-                  <Dataset parentProjectID={selectedProject.identifier} dataset={d} format="card" />
-                </div>
-              ))}
-            </div>
-          </div>
+          // If we have a project with at least one dataset, show a dataset mini-catalogue in the project overview
+          <OverviewDatasets datasets={selectedProject.datasets} parentProjectID={selectedProject.identifier} />
         ) : null}
 
         {displayedSections.map(({ sectionTitle, charts }, i) => (
