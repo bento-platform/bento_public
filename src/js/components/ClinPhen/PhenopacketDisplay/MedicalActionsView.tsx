@@ -216,7 +216,7 @@ const MedicalActionsView = ({ medicalActions }: { medicalActions: MedicalAction[
     {
       title: 'medical_actions.action_type',
       key: 'actionType',
-      render: (_: any, action: MedicalAction) => {
+      render: (_: undefined, action: MedicalAction) => {
         if (action.procedure) return t('medical_actions.procedure');
         if (action.treatment) return t('medical_actions.treatment');
         if (action.radiation_therapy) return t('medical_actions.radiation_therapy');
