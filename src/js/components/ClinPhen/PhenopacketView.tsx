@@ -2,13 +2,11 @@ import { Card, Tabs } from 'antd';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import { useAppDispatch, useAppSelector } from '@/hooks';
 import { usePhenopacketTabs } from '@/hooks/usePhenopacketTabs';
 
 import Loader from '@/components/Loader';
 
 import { defaultTab } from '@/constants/phenopacketConstants';
-import { makeGetPhenopacketData } from '@/features/clinPhen/makeGetPhenopacket.thunk';
 
 import { TabKeys } from '../../types/PhenopacketView.types';
 import { RequestStatus } from '@/types/requests';
