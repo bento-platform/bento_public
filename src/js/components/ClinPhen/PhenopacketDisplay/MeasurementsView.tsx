@@ -116,7 +116,7 @@ const MeasurementsView = ({ measurements }: MeasurementsViewProps) => {
       title: 'measurements.description',
       dataIndex: 'description',
       key: 'description',
-      render: (text: any) => t(text) || EM_DASH,
+      render: (text: string | undefined) => t(text) || EM_DASH,
     },
     {
       title: 'measurements.procedure',
