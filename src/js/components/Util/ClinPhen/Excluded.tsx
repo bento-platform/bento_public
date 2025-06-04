@@ -10,12 +10,11 @@ export enum ExcludedModel {
 const Excluded = ({ model }: { model: ExcludedModel }) => {
   return (
     <Text type="danger">
-      {' '}
-      (
+      &nbsp; (
       <Text type="danger" strong>
         Excluded:
-      </Text>{' '}
-      Found to be absent{' '}
+      </Text>
+      &nbsp; Found to be absent &nbsp;
       <Link href={`https://phenopacket-schema.readthedocs.io/en/2.0.0/${model}.html#excluded`}>
         <LinkOutlined />
       </Link>

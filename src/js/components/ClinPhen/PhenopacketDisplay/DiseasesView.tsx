@@ -54,7 +54,7 @@ const DiseasesView = ({ diseases }: DiseasesViewProps) => {
       render: (term: OntologyTerm, { excluded }) => (
         <>
           <OntologyTermComponent term={term} />
-          {excluded ?? <Excluded model={ExcludedModel.DISEASE} />}
+          {excluded && <Excluded model={ExcludedModel.DISEASE} />}
         </>
       ),
     },
