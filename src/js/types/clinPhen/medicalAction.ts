@@ -2,7 +2,7 @@ import type { ExternalReference, TimeElement, TimeInterval } from './shared';
 import type { OntologyTerm } from '../ontology';
 import type { Procedure } from './procedure';
 import type { Quantity } from './measurement';
-import { ExactlyOne } from '../util';
+import type { ExactlyOne } from '../util';
 
 export interface DoseInterval {
   quantity: Quantity;

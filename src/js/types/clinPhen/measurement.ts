@@ -1,7 +1,7 @@
 import type { OntologyTerm } from '@/types/ontology';
 import type { Procedure } from './procedure';
 import type { TimeElement } from './shared';
-import { ExactlyOne } from '../util';
+import type { ExactlyOne } from '../util';
 
 export interface ReferenceRange {
   unit: OntologyTerm;

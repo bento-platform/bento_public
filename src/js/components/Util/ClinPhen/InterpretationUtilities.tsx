@@ -1,15 +1,17 @@
 import { type DescriptionsProps, Space, Table } from 'antd';
 
-import { VariantInterpretation as VariantInterpretationType } from '@/types/clinPhen/variantInterpretation';
-import JsonView from '../JsonView';
-import { Extension } from '@/types/clinPhen/shared';
-import { Expression } from '@/types/clinPhen/vrs';
-import OntologyTerm from './OntologyTerm';
-import { JSONType } from '@/types/json';
-import { GeneDescriptor as GeneDescriptorType } from '@/types/clinPhen/geneDescriptor';
 import StringList from '../StringList';
 import TDescriptions from '../TDescriptions';
+import OntologyTerm from './OntologyTerm';
+import JsonView from '../JsonView';
+
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
+
+import type { VariantInterpretation as VariantInterpretationType } from '@/types/clinPhen/variantInterpretation';
+import type { Extension } from '@/types/clinPhen/shared';
+import type { Expression } from '@/types/clinPhen/vrs';
+import type { JSONType } from '@/types/json';
+import type { GeneDescriptor as GeneDescriptorType } from '@/types/clinPhen/geneDescriptor';
 
 export const GeneDescriptor = ({ geneDescriptor }: { geneDescriptor: GeneDescriptorType }) => {
   const items: DescriptionsProps['items'] = [

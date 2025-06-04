@@ -1,4 +1,4 @@
-import { TabsProps } from 'antd';
+import type { TabsProps } from 'antd';
 import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
@@ -12,7 +12,7 @@ import PhenotypicFeaturesView from '@/components/ClinPhen/PhenopacketDisplay/Phe
 import SubjectView from '@/components/ClinPhen/PhenopacketDisplay/SubjectView';
 
 import { TabKeys } from '@/types/PhenopacketView.types';
-import { Phenopacket } from '@/types/clinPhen/phenopacket';
+import type { Phenopacket } from '@/types/clinPhen/phenopacket';
 import { useTranslationFn } from '@/hooks';
 
 export const usePhenopacketTabs = (phenopacket: Phenopacket) => {

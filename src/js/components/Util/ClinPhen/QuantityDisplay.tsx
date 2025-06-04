@@ -1,10 +1,9 @@
-import { Flex } from 'antd';
+import { type DescriptionsProps, Flex } from 'antd';
 
 import OntologyTerm from './OntologyTerm';
 import TDescriptions from '../TDescriptions';
 
-import type { DescriptionsProps } from 'antd';
-import { Quantity } from '@/types/clinPhen/measurement';
+import type { Quantity } from '@/types/clinPhen/measurement';
 import { useTranslationFn } from '@/hooks';
 
 const QuantityDisplay = ({ quantity, title }: { quantity: Quantity; title?: string }) => {
