@@ -201,6 +201,10 @@
       "'$t(beacon.show_all_filters)' / '$t(beacon.common_filters_only)' switch to control which filters are available."
     ]
   },
+  "clinphen_generic": {
+    "excluded": "Excluded",
+    "found_absent": "Found to be absent"
+  },
   "biosample_expanded_row": {
     "description": "Description",
     "derived_from": "Derived From",

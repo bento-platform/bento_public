@@ -206,6 +206,10 @@
       "commutateur « $t(beacon.show_all_filters) » / « $t(beacon.common_filters_only) » pour contrôler les filtres disponibles."
     ]
   },
+  "clinphen_generic": {
+    "excluded": "Exclu",
+    "found_absent": "Trouvé absent"
+  },
   "biosample_expanded_row": {
     "description": "Description",
     "derived_from": "Dérivé de",
