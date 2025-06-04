@@ -13,6 +13,8 @@ import { makeGetPhenopacketData } from '@/features/clinPhen/makeGetPhenopacket.t
 import { TabKeys } from '../../types/PhenopacketView.types';
 import { RequestStatus } from '@/types/requests';
 
+import { usePhenopacketData } from '@/features/clinPhen/hooks';
+
 export interface RouteParams {
   packetId: string;
   tab: string;
@@ -22,9 +24,8 @@ export interface RouteParams {
 const PhenopacketView = () => {
   const { packetId, tab } = useParams<RouteParams>();
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const phenopacket = useAppSelector((state) => state.clinPhen.phenopacketDataCache[packetId ?? '']);
-  const status = useAppSelector((state) => state.clinPhen.phenopacketDataStatus[packetId ?? '']);
+  const { phenopacket, status } = usePhenopacketData(packetId ?? '');
+
   const { handleTabChange, items } = usePhenopacketTabs(phenopacket);
 
   const [activeKey, setActiveKey] = useState<string>('biosamples');
@@ -40,12 +41,6 @@ const PhenopacketView = () => {
       }
     }
   }, [tab]);
-
-  useEffect(() => {
-    if (packetId && !phenopacket && status !== RequestStatus.Pending) {
-      dispatch(makeGetPhenopacketData(packetId));
-    }
-  }, [packetId, phenopacket, status, dispatch]);
 
   if (status === RequestStatus.Pending || !phenopacket) {
     return <Loader fullHeight={true} />;
