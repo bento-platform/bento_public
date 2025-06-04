@@ -14,21 +14,20 @@ const OntologiesView = ({ resources }: OntologiesProps) => {
   const t = useTranslationFn();
 
   const columns = useTranslatedTableColumnTitles<Resource>([
-    { title: 'ontologies.resource_id', dataIndex: 'id', key: 'id' },
-    { title: 'ontologies.name', dataIndex: 'name', key: 'name', render: (text: string) => t(text) },
-    { title: 'ontologies.namespace_prefix', dataIndex: 'namespace_prefix', key: 'namespace_prefix' },
+    { title: 'ontologies.resource_id', dataIndex: 'id' },
+    { title: 'ontologies.name', dataIndex: 'name', render: (text: string) => t(text) },
+    { title: 'ontologies.namespace_prefix', dataIndex: 'namespace_prefix' },
     {
       title: 'ontologies.url',
       dataIndex: 'url',
-      key: 'url',
       render: (text: string) => (
         <Link href={text} target="_blank" rel="noopener noreferrer">
           {text}
         </Link>
       ),
     },
-    { title: 'ontologies.version', dataIndex: 'version', key: 'version' },
-    { title: 'ontologies.iri_prefix', dataIndex: 'iri_prefix', key: 'iri_prefix' },
+    { title: 'ontologies.version', dataIndex: 'version' },
+    { title: 'ontologies.iri_prefix', dataIndex: 'iri_prefix' },
   ]);
   return <Table<Resource> dataSource={resources} columns={columns} />;
 };
