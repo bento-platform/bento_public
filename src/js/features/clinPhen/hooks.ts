@@ -42,7 +42,7 @@ export const usePhenopacketData = (phenopacketId: string) => {
     if (authenticated && !phenopacket && status !== RequestStatus.Pending) {
       dispatch(makeGetPhenopacketData(phenopacketId));
     }
-  }, [phenopacketId, phenopacket, status, dispatch]);
+  }, [authenticated, phenopacketId, phenopacket, status, dispatch]);
 
   return { phenopacket, status, authenticated };
 };

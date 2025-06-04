@@ -38,7 +38,7 @@ const PhenopacketView = () => {
         navigate(`./${defaultTab}`, { relative: 'path' });
       }
     }
-  }, [tab]);
+  }, [navigate, tab]);
 
   if (!authenticated) {
     return <Empty description="Sign in to use" />; // Temporary: removed once phenopacket view is integrated with search
