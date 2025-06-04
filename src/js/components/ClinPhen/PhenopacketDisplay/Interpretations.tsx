@@ -65,7 +65,7 @@ const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interp
   ]);
 
   return (
-    <Space direction="vertical" size="large" style={{ width: '100%' }}>
+    <Space direction="vertical" size="large" className="w-full">
       <div>
         <Typography.Title level={4}>
           <MedicineBoxOutlined /> {t('interpretations.diagnosis')}
