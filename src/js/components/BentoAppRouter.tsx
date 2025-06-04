@@ -13,7 +13,7 @@ import { invalidateDataTypes } from '@/features/dataTypes/dataTypes.store';
 import { useMetadata } from '@/features/metadata/hooks';
 import { getProjects, markScopeSet, selectScope } from '@/features/metadata/metadata.store';
 import { getGenomes } from '@/features/reference/reference.store';
-import { makeGetKatsuPublic, makeGetSearchFields } from '@/features/search/query.store';
+import { makeGetKatsuPublic, makeGetSearchFields, resetAllQueryState } from '@/features/search/query.store';
 
 import Loader from '@/components/Loader';
 import DefaultLayout from '@/components/Util/DefaultLayout';
@@ -96,6 +96,12 @@ const BentoAppRouter = () => {
 
   useEffect(() => {
     if (!scopeSet) return;
+
+    // Reset query state, including currently-applied filters/search; the filters may not be the same between scopes.
+    //  TODO: in the future, perhaps filters could be kept if the scopes overlap and we know there's discovery config
+    //   inheritance, but this would require quite a bit more logic and maybe is unnecessarily complex.
+    dispatch(resetAllQueryState());
+
     dispatch(makeGetSearchFields());
     dispatch(makeGetKatsuPublic());
 
@@ -149,7 +155,7 @@ const BentoAppRouter = () => {
         <Route path="/" element={<ScopedRoute />}>
           <Route index element={<PublicOverview />} />
           <Route path={BentoRoute.Overview} element={<PublicOverview />} />
-          <Route path={`${BentoRoute.Search}/:pane?`} element={<Search />} />
+          <Route path={`${BentoRoute.Search}/:page?`} element={<Search />} />
           {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
           {/* Beacon network is only available at the top level - scoping does not make sense for it. */}
           {BentoRoute.BeaconNetwork && <Route path={BentoRoute.BeaconNetwork} element={<NetworkUi />} />}
@@ -161,7 +167,7 @@ const BentoAppRouter = () => {
         <Route path="/p/:projectId" element={<ScopedRoute />}>
           <Route index element={<PublicOverview />} />
           <Route path={BentoRoute.Overview} element={<PublicOverview />} />
-          <Route path={`${BentoRoute.Search}/:pane?`} element={<Search />} />
+          <Route path={`${BentoRoute.Search}/:page?`} element={<Search />} />
           {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
           <Route path={BentoRoute.Provenance} element={<ProvenanceTab />} />
         </Route>
@@ -169,7 +175,7 @@ const BentoAppRouter = () => {
         <Route path="/p/:projectId/d/:datasetId" element={<ScopedRoute />}>
           <Route index element={<PublicOverview />} />
           <Route path={BentoRoute.Overview} element={<PublicOverview />} />
-          <Route path={`${BentoRoute.Search}/:pane?`} element={<Search />} />
+          <Route path={`${BentoRoute.Search}/:page?`} element={<Search />} />
           {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
           <Route path={BentoRoute.Provenance} element={<ProvenanceTab />} />
         </Route>

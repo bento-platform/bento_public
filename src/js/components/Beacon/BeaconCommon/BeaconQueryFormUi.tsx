@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Card, Col, Form, Row } from 'antd';
+import { Button, Card, Col, Flex, Form, Row } from 'antd';
 import { useIsAuthenticated } from 'bento-auth-js';
 import { useAppDispatch, useQueryWithAuthIfAllowed, useTranslationFn } from '@/hooks';
 import { useSelectedScope } from '@/features/metadata/hooks';
@@ -110,10 +110,12 @@ const BeaconQueryFormUi = ({
   // see e.g., https://genome-blog.soe.ucsc.edu/blog/2016/12/12/the-ucsc-genome-browser-coordinate-counting-systems/
   const convertToZeroBased = (start: string) => Number(start) - 1;
 
+  const filtersDirty = !(filters.length === 1 && filters[0].index == 0 && filters[0].searchFieldId === null);
+
   const packageFilters = useCallback(
     (values: FormValues): BeaconPayloadFilter[] => {
       // ignore optional first filter when left blank
-      if (filters.length === 1 && !values.filterIndex1) {
+      if (!filtersDirty) {
         return [];
       }
 
@@ -123,7 +125,7 @@ const BeaconQueryFormUi = ({
         value: values[`filterValue${f.index}`],
       }));
     },
-    [filters]
+    [filters, filtersDirty]
   );
 
   const packageBeaconJSON = useCallback(
@@ -246,11 +248,7 @@ const BeaconQueryFormUi = ({
             )}
             <Col xs={24} lg={hasVariants ? 12 : 24}>
               <Card
-                title={
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <>{t('Metadata')}</>
-                  </div>
-                }
+                title={<Flex justify="space-between">{t('Metadata')}</Flex>}
                 className="shadow h-full"
                 styles={CARD_STYLES}
                 extra={
@@ -262,6 +260,7 @@ const BeaconQueryFormUi = ({
                 <Filters
                   filters={filters}
                   setFilters={setFilters}
+                  filtersDirty={filtersDirty}
                   form={form}
                   beaconFiltersBySection={beaconFiltersBySection}
                   isNetworkQuery={isNetworkQuery}

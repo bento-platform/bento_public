@@ -1,15 +1,14 @@
+import { useCallback, useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { useSelectedScope } from '@/features/metadata/hooks';
 import { useSearchQuery } from '@/features/search/hooks';
-import type { SearchResultsUIPane } from '@/features/search/types';
-import { useCanSeeUncensoredCounts } from '@/hooks/censorship';
+import type { SearchResultsUIPage } from '@/features/search/types';
 import { RequestStatus } from '@/types/requests';
+import { langAndScopeSelectionToUrl } from '@/utils/router';
 
 import SearchResultsPane from './SearchResultsPane';
-import { langAndScopeSelectionToUrl } from '@/utils/router';
-import { useCallback, useEffect } from 'react';
 
 const SearchResults = () => {
   const {
@@ -17,18 +16,18 @@ const SearchResults = () => {
   } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
-  let { pane } = useParams();
+  let { page: subPage } = useParams();
   const selectedScope = useSelectedScope();
 
-  pane = pane ?? 'charts';
+  subPage = subPage ?? 'charts';
 
-  const handlePaneChange = useCallback(
-    (newPane?: SearchResultsUIPane) => {
+  const handlePageChange = useCallback(
+    (newPage?: SearchResultsUIPage) => {
       navigate(
         langAndScopeSelectionToUrl(
           language,
           selectedScope,
-          `search${newPane ? '/' + newPane : ''}${location.search}${location.hash}`
+          `search${newPage ? '/' + newPage : ''}${location.search}${location.hash}`
         ),
         { replace: true }
       );
@@ -37,28 +36,25 @@ const SearchResults = () => {
   );
 
   useEffect(() => {
-    if (!['charts', 'individuals'].includes(pane)) {
-      // if invalid pane, go to charts (but keep URL clean, so use blank for charts default):
-      handlePaneChange(undefined);
+    if (!['charts', 'individuals'].includes(subPage)) {
+      // if invalid search UI page, go to charts (but keep URL clean, so use blank for charts default):
+      handlePageChange(undefined);
     }
-  }, [handlePaneChange, pane]);
+  }, [handlePageChange, subPage]);
 
   const { filterQueryStatus, textQueryStatus, message, results } = useSearchQuery();
 
   // existing code treats non-empty message as sign of insufficient data
   const hasInsufficientData = message !== '';
 
-  const uncensoredCounts = useCanSeeUncensoredCounts();
-
   return (
     <SearchResultsPane
       isFetchingData={filterQueryStatus === RequestStatus.Pending || textQueryStatus === RequestStatus.Pending}
       hasInsufficientData={hasInsufficientData}
-      uncensoredCounts={uncensoredCounts}
       message={message}
       results={results}
-      pane={pane as SearchResultsUIPane}
-      onPaneChange={handlePaneChange}
+      page={subPage as SearchResultsUIPage}
+      onPageChange={handlePageChange}
     />
   );
 };

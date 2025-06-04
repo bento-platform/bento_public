@@ -2,7 +2,7 @@ import { type ReactNode, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import { Avatar, Button, Card, Flex, List, Modal, Popover, Space, Tag, Typography } from 'antd';
+import { Avatar, Button, Card, Flex, List, Popover, Space, Tag, Typography } from 'antd';
 import { ExpandAltOutlined, PieChartOutlined, SearchOutlined, SolutionOutlined } from '@ant-design/icons';
 import { FaDatabase } from 'react-icons/fa';
 
@@ -11,9 +11,9 @@ import type { Annotation } from '@/types/dats';
 import type { Dataset } from '@/types/metadata';
 import { getCurrentPage, scopeToUrl } from '@/utils/router';
 import { useTranslationFn } from '@/hooks';
-import { DatasetProvenanceContent } from '@/components/Provenance/DatasetProvenance';
 import SmallChartCardTitle from '@/components/Util/SmallChartCardTitle';
 import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
+import DatasetProvenanceModal from './DatasetProvenanceModal';
 
 const { Title } = Typography;
 
@@ -73,10 +73,9 @@ const Dataset = ({
   if (format === 'list-item') {
     inner = (
       <List.Item
-        className={`select-dataset-item${selected ? ' selected' : ''}`}
+        className={`cursor-pointer select-dataset-item${selected ? ' selected' : ''}`}
         key={identifier}
         onClick={onNavigateCurrent}
-        style={{ cursor: 'pointer' }}
       >
         <List.Item.Meta
           avatar={<Avatar icon={<FaDatabase />} />}
@@ -106,55 +105,51 @@ const Dataset = ({
             <TagList annotations={displayKeywords} />
             {remainingKeywords?.length > 0 && (
               <Popover content={<TagList annotations={remainingKeywords} />}>
-                <span style={{ cursor: 'pointer' }}>
+                <span className="cursor-pointer">
                   + {remainingKeywords.length} {t('more', { count: remainingKeywords.length })}
                 </span>
               </Popover>
             )}
           </Space>
-          <Space size={12} style={{ flex: 1, display: 'flex', alignItems: 'flex-end', gap: 12 }}>
+          <Flex gap={12} align="flex-end" className="flex-1">
             <Button icon={<PieChartOutlined />} onClick={onNavigateOverview}>
               {t('Overview')}
             </Button>
             <Button icon={<SearchOutlined />} onClick={onNavigateSearch}>
               {t('Search')}
             </Button>
-          </Space>
+          </Flex>
         </Flex>
       </Card>
     );
   } else if (format === 'carousel') {
     inner = (
       <>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Title level={5} style={{ marginTop: 0 }}>
-            {t(title)}
-          </Title>
-          <Button size="small" icon={<SolutionOutlined />} style={{ float: 'right' }} onClick={openProvenanceModal}>
+        <Flex justify="space-between">
+          <Title level={5}>{t(title)}</Title>
+          <Button size="small" icon={<SolutionOutlined />} className="float-right" onClick={openProvenanceModal}>
             {t('Provenance')}
             <ExpandAltOutlined />
           </Button>
-        </div>
+        </Flex>
         <TruncatedParagraph>{t(description)}</TruncatedParagraph>
-        <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+        <Flex gap={8} style={{ marginTop: 8 }}>
           <Button size="small" icon={<PieChartOutlined />} onClick={onNavigateOverview}>
             {t('Overview')}
           </Button>
           <Button size="small" icon={<SearchOutlined />} onClick={onNavigateSearch}>
             {t('Search')}
           </Button>
-        </div>
+        </Flex>
       </>
     );
   } else {
-    inner = <span style={{ color: 'red' }}>UNIMPLEMENTED</span>;
+    inner = <span className="error-text">UNIMPLEMENTED</span>;
   }
 
   return (
     <>
-      <Modal title={dataset.title} open={provenanceModalOpen} onCancel={closeProvenanceModal} footer={null} width={960}>
-        <DatasetProvenanceContent dataset={dataset} />
-      </Modal>
+      <DatasetProvenanceModal dataset={dataset} open={provenanceModalOpen} onCancel={closeProvenanceModal} />
       {inner}
     </>
   );

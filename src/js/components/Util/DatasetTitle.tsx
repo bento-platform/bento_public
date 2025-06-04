@@ -1,9 +1,5 @@
 import { Button } from 'antd';
-
 import { EM_DASH } from '@/constants/common';
-import ErrorText from './ErrorText';
-import MonospaceText from './MonospaceText';
-
 import { useMetadata } from '@/features/metadata/hooks';
 
 export type DatasetTitleProps = {
@@ -20,8 +16,8 @@ const DatasetTitle = ({ datasetID, onClick }: DatasetTitleProps) => {
 
   if (!dataset)
     return (
-      <span>
-        <MonospaceText>{datasetID}</MonospaceText> <ErrorText>(NOT AVAILABLE)</ErrorText>
+      <span aria-errormessage="dataset not available" aria-invalid="true">
+        <span className="font-mono">{datasetID}</span> <span className="error-text">(NOT AVAILABLE)</span>
       </span>
     );
 

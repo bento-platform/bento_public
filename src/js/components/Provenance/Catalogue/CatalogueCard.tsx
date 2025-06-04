@@ -31,10 +31,10 @@ const CatalogueCardInner = ({ firstContent, secondContent }: { firstContent: Rea
   } else {
     return (
       <Flex justify="space-between" align="stretch" gap={16} wrap>
-        <div style={{ flex: 1, minWidth: 400 }}>
-          <div className="h-full" style={{ flex: 1, flexDirection: 'column', display: 'flex' }}>
+        <div className="flex-1" style={{ minWidth: 400 }}>
+          <Flex className="h-full flex-1" vertical={true}>
             {firstContent}
-          </div>
+          </Flex>
         </div>
         {secondContent && <div style={{ flex: 2, maxWidth: 'min(600px, 100%)' }}>{secondContent}</div>}
       </Flex>
@@ -91,7 +91,7 @@ const CatalogueCard = ({ project }: { project: Project }) => {
             rows: 1,
             tooltip: { title: projectCreated },
           }}
-          style={{ margin: 0 }}
+          className="m-0"
         >
           {projectCreated}
         </Paragraph>
@@ -112,7 +112,7 @@ const CatalogueCard = ({ project }: { project: Project }) => {
         firstContent={
           <Flex vertical={true} gap={8} className="h-full">
             <Space direction="horizontal">
-              <Title level={4} style={{ margin: 0 }}>
+              <Title level={4} className="m-0">
                 {t(title)}
               </Title>
             </Space>
@@ -136,7 +136,7 @@ const CatalogueCard = ({ project }: { project: Project }) => {
 
             <Descriptions items={projectInfo} size="small" style={{ maxWidth: 500 }} />
 
-            <div style={{ flex: 1, display: 'flex', alignItems: 'flex-end', gap: 12 }}>
+            <Flex align="flex-end" gap={12} className="flex-1">
               <Button
                 icon={datasets.length ? <PieChartOutlined /> : <ProfileOutlined />}
                 onClick={() => navigate(scopeToUrl({ project: identifier }, language, 'overview'))}
@@ -151,21 +151,19 @@ const CatalogueCard = ({ project }: { project: Project }) => {
                   {t('Search')}
                 </Button>
               ) : null}
-            </div>
+            </Flex>
           </Flex>
         }
         secondContent={
           datasets.length ? (
             <>
-              <Title level={5} style={{ marginTop: 0 }}>
-                {t('entities.dataset', T_PLURAL_COUNT)}
-              </Title>
+              <Title level={5}>{t('entities.dataset', T_PLURAL_COUNT)}</Title>
               <Carousel
                 arrows={datasets.length > 1}
                 dots={datasets.length > 1}
+                className="rounded-lg"
                 style={{
                   border: '1px solid lightgray',
-                  borderRadius: '8px', // Consistent with --ant-border-radius-lg
                   height: '170px',
                   // If we have more than one dataset, we have some arrows on either side of the carousel
                   //  --> add in extra horizontal padding to nicely clear the arrows.

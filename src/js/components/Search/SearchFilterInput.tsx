@@ -1,5 +1,5 @@
-import { type CSSProperties, memo, useCallback, useMemo } from 'react';
-import { Button, Select, Space } from 'antd';
+import { memo, useCallback, useMemo } from 'react';
+import { Button, Flex, Select, Space } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 
 import { useTranslationFn } from '@/hooks';
@@ -7,11 +7,6 @@ import { useSearchQuery } from '@/features/search/hooks';
 import OptionDescription from '@/components/Search/OptionDescription';
 
 export type FilterValue = { field: string | null; value: string | null };
-
-const styles = {
-  selectField: { flex: 1, borderTopRightRadius: 0, borderBottomRightRadius: 0 } as CSSProperties,
-  selectValue: { flex: 1 } as CSSProperties,
-};
 
 const SearchFilterInput = ({
   field,
@@ -30,31 +25,35 @@ const SearchFilterInput = ({
 
   const { filterSections } = useSearchQuery();
 
-  const filterOptions = filterSections.map(({ section_title: label, fields }) => ({
-    label,
-    title: label,
-    options: fields.map((f) => ({
-      value: f.id,
-      label: (
-        <div style={{ display: 'flex' }}>
-          <div style={{ flex: 1 }}>{f.title}</div>
-          <OptionDescription description={t(f.description)} />
-        </div>
-      ),
-      // Disabled if: field is in disabled set AND it isn't the currently selected field (so we allow re-selection of
-      // the current field.)
-      disabled: disabledFields.has(f.id) && field !== f.id,
-    })),
-  }));
+  const filterOptions = useMemo(
+    () =>
+      filterSections.map(({ section_title: label, fields }) => ({
+        label: t(label),
+        title: t(label),
+        options: fields.map((f) => ({
+          value: f.id,
+          label: (
+            <Flex>
+              <div className="flex-1">{t(f.title)}</div>
+              <OptionDescription description={t(f.description)} />
+            </Flex>
+          ),
+          // Disabled if: field is in disabled set AND it isn't the currently selected field (so we allow re-selection of
+          // the current field.)
+          disabled: disabledFields.has(f.id) && field !== f.id,
+        })),
+      })),
+    [t, filterSections, field, disabledFields]
+  );
 
   const fieldFilterOptions = useMemo(
     () =>
       Object.fromEntries(
         filterSections.flatMap(({ fields }) =>
-          fields.map((f) => [f.id, f.options.map((o) => ({ value: o, label: o }))])
+          fields.map((f) => [f.id, f.options.map((o) => ({ value: o, label: t(o) }))])
         )
       ),
-    [filterSections]
+    [t, filterSections]
   );
 
   const onFilterFieldChange = useCallback(
@@ -76,16 +75,16 @@ const SearchFilterInput = ({
   return (
     <Space.Compact className="w-full">
       <Select
-        style={styles.selectField}
+        className="flex-1 rounded-e-none"
         options={filterOptions}
         onClick={onFocus}
         onFocus={onFocus}
         onChange={onFilterFieldChange}
         value={field}
-        placeholder={t('Select a field to filter by\u2026')}
+        placeholder={t('search.filter_placeholder')}
       />
       <Select
-        style={styles.selectValue}
+        className="flex-1"
         disabled={!field}
         options={field ? fieldFilterOptions[field] : []}
         onClick={onFocus}
@@ -100,8 +99,8 @@ const SearchFilterInput = ({
 
 export const SearchFilterInputSkeleton = memo(() => (
   <Space.Compact className="w-full">
-    <Select style={styles.selectField} disabled={true} loading={true} />
-    <Select style={styles.selectValue} disabled={true} />
+    <Select className="flex-1 rounded-e-none" disabled={true} loading={true} />
+    <Select className="flex-1" disabled={true} />
     <Button icon={<CloseOutlined />} disabled={true} />
   </Space.Compact>
 ));

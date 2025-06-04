@@ -1,11 +1,5 @@
 import type { CSSProperties } from 'react';
-
-export const WRAPPER_STYLE: CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-};
+import type { CardProps } from 'antd';
 
 export const FORM_ROW_GUTTERS: [number, number] = [16, 16];
 
@@ -17,7 +11,7 @@ export const CARD_HEAD_STYLE: CSSProperties = {
   border: '0',
 };
 
-export const CARD_STYLES = {
+export const CARD_STYLES: CardProps['styles'] = {
   body: CARD_BODY_STYLE,
   header: CARD_HEAD_STYLE,
 };

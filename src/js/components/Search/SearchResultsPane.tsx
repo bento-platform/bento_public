@@ -7,7 +7,7 @@ import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
 import { useHasScopePermission, useTranslationFn } from '@/hooks';
 import type { DiscoveryResults } from '@/types/data';
-import type { SearchResultsUIPane } from '@/features/search/types';
+import type { SearchResultsUIPage } from '@/features/search/types';
 
 import CustomEmpty from '@/components/Util/CustomEmpty';
 import SearchResultsCounts from './SearchResultsCounts';
@@ -28,7 +28,7 @@ const SRChartsPage = ({
   return (
     <>
       <Col xs={24} lg={10}>
-        <Typography.Title level={5} style={{ marginTop: 0, textAlign: 'center' }}>
+        <Typography.Title level={5} className="text-center">
           {t('entities.biosample', T_PLURAL_COUNT)}
         </Typography.Title>
         {!hasInsufficientData && biosampleChartData.length ? (
@@ -38,7 +38,7 @@ const SRChartsPage = ({
         )}
       </Col>
       <Col xs={24} lg={10}>
-        <Typography.Title level={5} style={{ marginTop: 0, textAlign: 'center' }}>
+        <Typography.Title level={5} className="text-center">
           {t('entities.experiment', T_PLURAL_COUNT)}
         </Typography.Title>
         {!hasInsufficientData && experimentChartData.length ? (
@@ -54,31 +54,30 @@ const SRChartsPage = ({
 const SearchResultsPane = ({
   isFetchingData,
   hasInsufficientData,
-  uncensoredCounts,
   message,
   results,
   resultsTitle,
   resultsExtra,
-  pane,
-  onPaneChange,
+  page,
+  onPageChange,
   style,
 }: SearchResultsPaneProps) => {
-  pane = pane ?? 'charts';
-  onPaneChange = onPaneChange ?? (() => {});
+  page = page ?? 'charts';
+  onPageChange = onPageChange ?? (() => {});
 
   const { hasAttempted: hasAttemptedQDP, hasPermission: queryDataPerm } = useHasScopePermission(queryData);
   useEffect(() => {
-    if (pane === 'individuals' && hasAttemptedQDP && !queryDataPerm) {
-      onPaneChange('charts');
+    if (page === 'individuals' && hasAttemptedQDP && !queryDataPerm) {
+      onPageChange('charts');
     }
-  }, [pane, onPaneChange, hasAttemptedQDP, queryDataPerm]);
+  }, [page, onPageChange, hasAttemptedQDP, queryDataPerm]);
 
   let pageElement = <div />;
-  if (pane === 'charts') {
+  if (page === 'charts') {
     pageElement = <SRChartsPage hasInsufficientData={hasInsufficientData} results={results} />;
-  } else if (pane === 'individuals') {
+  } else if (page === 'individuals') {
     pageElement = (
-      <SearchResultsTablePage entity="individual" results={results} onBack={() => onPaneChange('charts')} />
+      <SearchResultsTablePage entity="individual" results={results} onBack={() => onPageChange('charts')} />
     );
   }
 
@@ -105,11 +104,10 @@ const SearchResultsPane = ({
           <Col xs={24} lg={4}>
             <SearchResultsCounts
               mode="normal"
-              selectedPane={pane}
-              setSelectedPane={onPaneChange}
+              selectedPage={page}
+              setSelectedPage={onPageChange}
               results={results}
               hasInsufficientData={hasInsufficientData}
-              uncensoredCounts={uncensoredCounts}
               message={message}
             />
           </Col>
@@ -123,13 +121,12 @@ const SearchResultsPane = ({
 export interface SearchResultsPaneProps {
   isFetchingData: boolean;
   hasInsufficientData?: boolean;
-  uncensoredCounts?: boolean;
   message?: string;
   results: DiscoveryResults;
   resultsTitle?: string;
   resultsExtra?: ReactElement;
-  pane?: SearchResultsUIPane;
-  onPaneChange?: (pane: SearchResultsUIPane) => void;
+  page?: SearchResultsUIPage;
+  onPageChange?: (page: SearchResultsUIPage) => void;
   style?: CSSProperties;
 }
 
