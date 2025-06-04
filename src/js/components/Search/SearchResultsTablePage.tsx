@@ -12,16 +12,18 @@ import {
   type TablePaginationConfig,
   type TableProps,
   Tooltip,
+  Typography,
 } from 'antd';
 import { ExportOutlined, LeftOutlined, TableOutlined } from '@ant-design/icons';
 
 import { PORTAL_URL } from '@/config';
-import { T_SINGULAR_COUNT } from '@/constants/i18n';
+import { T_PLURAL_COUNT, T_SINGULAR_COUNT } from '@/constants/i18n';
 import { useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
 import IndividualRowDetail from './IndividualRowDetail';
 import type { DiscoveryResults } from '@/types/data';
+import type { BentoEntity } from '@/types/entities';
 import type { Project, Dataset } from '@/types/metadata';
 import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
 import type { KatsuIndividualMatch } from '@/features/search/types';
@@ -94,7 +96,7 @@ const SearchResultsTablePage = ({
   onBack,
 }: {
   results?: DiscoveryResults;
-  entity: 'individual' | 'biosample' | 'experiment';
+  entity: BentoEntity;
   onBack?: () => void;
 }) => {
   const t = useTranslationFn();
@@ -203,7 +205,7 @@ const SearchResultsTablePage = ({
 
   return (
     <>
-      <Col xs={24} lg={20}>
+      <Col flex={1}>
         <Flex justify="space-between" align="center" style={{ marginBottom: 8 }}>
           {onBack ? (
             <Button
@@ -214,8 +216,12 @@ const SearchResultsTablePage = ({
             >
               {isSmallScreen ? '' : t('Charts')}
             </Button>
-          ) : null}
-          <span>
+          ) : (
+            <Typography.Title level={4} className="mb-0">
+              {t(`entities.${entity}`, T_PLURAL_COUNT)}
+            </Typography.Title>
+          )}
+          <span className="antd-gray-7">
             {t('search.showing_entities' + (isSmallScreen ? '_short' : ''), {
               entity: `$t(entities.${entity}_other, lowercase)`,
               start: currentStart,

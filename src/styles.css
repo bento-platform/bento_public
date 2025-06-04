@@ -64,6 +64,10 @@ body {
   scale: 125%;
 }
 
+.antd-gray-7 {
+  color: #8c8c8c;
+}
+
 .error-text {
   color: #f5222d;  /* https://ant.design/docs/spec/colors red-6 */
 }
@@ -289,7 +293,47 @@ body {
 
 .count-card {
   min-width: 150px;
-  transition: height 0.3s ease-in-out;
+  transition:
+    height 0.3s ease-in-out,
+    margin-bottom 0.3s ease-in-out,
+    box-shadow 0.15s ease-in-out,
+    opacity 0.15s ease-in-out;
+}
+.count-card.shadow {
+  border-color: #e9e9e9; /* a bit darker to contrast against box-shadow */
+}
+.count-card.shadow.count-card-clickable {
+  cursor: pointer;
+  opacity: 0.9;
+}
+.count-card.shadow.count-card-clickable:hover {
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+  opacity: 1;
+}
+.count-card.shadow.count-card-clickable .counts-title {
+  text-decoration: underline;
+  transition: color 0.15s ease-in-out;
+}
+.count-card.shadow.count-card-clickable:hover .counts-title,
+.count-card.shadow.count-card-clickable:hover .count-card__show-hide {
+  color: #1677ff;
+}
+
+.count-card__show-hide {
+  position: absolute;
+  left: 0;
+  z-index: 4;
+
+  height: 32px;
+  width: 100%;
+
+  text-align: center;
+  font-size: 12px;
+
+  transition: bottom 0.3s ease-in-out;
+}
+.count-card__show-hide:hover {
+  color: #1677ff;
 }
 
 .dataset-provenance-card-grid {
