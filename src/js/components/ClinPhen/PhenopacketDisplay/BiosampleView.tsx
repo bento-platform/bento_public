@@ -35,12 +35,12 @@ const BiosampleExpandedRow = ({ biosample }: { biosample: Biosample }) => {
     {
       key: 'histological_diagnosis',
       label: 'biosample_expanded_row.histological_diagnosis',
-      children: biosample.histological_diagnosis?.label || EM_DASH,
+      children: <OntologyTermComponent term={biosample.histological_diagnosis} />,
     },
     {
       key: 'pathological_stage',
       label: 'biosample_expanded_row.pathological_stage',
-      children: biosample.pathological_stage?.label || EM_DASH,
+      children: <OntologyTermComponent term={biosample.pathological_stage} />,
     },
   ];
 
