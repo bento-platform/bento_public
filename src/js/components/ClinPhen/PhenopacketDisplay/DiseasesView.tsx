@@ -5,6 +5,7 @@ import OntologyTermComponent, { OntologyTermStack } from '@Util/ClinPhen/Ontolog
 import TimeElementDisplay from '@Util/ClinPhen/TimeElementDisplay';
 import ExtraProperties from '@Util/ExtraProperties';
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
+import Excluded, { ExcludedModel } from '@/components/Util/ClinPhen/Excluded';
 
 import type { DescriptionsProps } from 'antd';
 import type { Disease } from '@/types/clinPhen/disease';
@@ -50,7 +51,12 @@ const DiseasesView = ({ diseases }: DiseasesViewProps) => {
       title: 'diseases_table.disease',
       dataIndex: 'term',
       key: 'term',
-      render: (term: OntologyTerm) => <OntologyTermComponent term={term} />,
+      render: (term: OntologyTerm, { excluded }) => (
+        <>
+          <OntologyTermComponent term={term} />
+          {excluded ?? <Excluded model={ExcludedModel.DISEASE} />}
+        </>
+      ),
     },
     {
       title: 'diseases_table.onset_age',
