@@ -45,19 +45,16 @@ export const ProcedureComponent = ({ procedure }: { procedure: Procedure }) => {
 const TreatmentComponent = ({ treatment }: { treatment: Treatment }) => {
   const DOSE_INTERVAL_COLUMNS = useTranslatedTableColumnTitles<DoseInterval>([
     {
-      key: 'quantity',
       title: 'medical_actions.quantity',
       dataIndex: 'quantity',
       render: (quantity: Quantity) => <QuantityDisplay quantity={quantity} />,
     },
     {
-      key: 'schedule_frequency',
       title: 'medical_actions.schedule_frequency',
       dataIndex: 'schedule_frequency',
       render: (term: OntologyTerm) => <OntologyTermComponent term={term} />,
     },
     {
-      key: 'interval',
       title: 'medical_actions.interval',
       dataIndex: 'interval',
       render: (interval: TimeInterval) => <TimeIntervalDisplay timeInterval={interval} />,
@@ -230,31 +227,26 @@ const MedicalActionsView = ({ medicalActions }: { medicalActions: MedicalAction[
     {
       title: 'medical_actions.treatment_target',
       dataIndex: 'treatment_target',
-      key: 'treatmentTarget',
       render: (target: OntologyTerm) => <OntologyTermComponent term={target} />,
     },
     {
       title: 'medical_actions.treatment_intent',
       dataIndex: 'treatment_intent',
-      key: 'treatmentIntent',
       render: (intent: OntologyTerm) => <OntologyTermComponent term={intent} />,
     },
     {
       title: 'medical_actions.response_to_treatment',
       dataIndex: 'response_to_treatment',
-      key: 'responseToTreatment',
       render: (response: OntologyTerm) => <OntologyTermComponent term={response} />,
     },
     {
       title: 'medical_actions.adverse_events',
       dataIndex: 'adverse_events',
-      key: 'adverseEvents',
       render: (events: OntologyTerm[]) => events?.length ?? 0,
     },
     {
       title: 'medical_actions.treatment_termination_reason',
       dataIndex: 'treatment_termination_reason',
-      key: 'treatmentTerminationReason',
       render: (reason: OntologyTerm) => <OntologyTermComponent term={reason} />,
     },
   ]);
