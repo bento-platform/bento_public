@@ -32,6 +32,7 @@ import ProjectTitle from '@/components/Util/ProjectTitle';
 import DatasetTitle from '@/components/Util/DatasetTitle';
 import { downloadIndividualCSV } from '@/utils/export';
 import { setEquals } from '@/utils/sets';
+import { useScopeDownloadData } from '@/hooks/censorship';
 
 type SearchColRenderContext = {
   onProjectClick: (id: string) => void;
@@ -104,6 +105,8 @@ const SearchResultsTablePage = ({
   const isSmallScreen = useSmallScreen();
   const authHeader = useAuthorizationHeader();
   const { projectsByID, datasetsByID } = useMetadata();
+
+  const { fetchingPermission: fetchingCanDownload, hasPermission: canDownload } = useScopeDownloadData();
 
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -233,9 +236,16 @@ const SearchResultsTablePage = ({
             <Tooltip title={t('search.manage_columns')}>
               <Button icon={<TableOutlined />} onClick={openColumnModal} />
             </Tooltip>
-            <Button icon={<ExportOutlined />} loading={exporting} onClick={onExport}>
-              {isSmallScreen ? t('search.csv') : t('search.export_csv')}
-            </Button>
+            {fetchingCanDownload || canDownload ? (
+              <Button
+                icon={<ExportOutlined />}
+                loading={fetchingCanDownload || exporting}
+                onClick={onExport}
+                disabled={fetchingCanDownload || !individualMatches.length}
+              >
+                {isSmallScreen ? t('search.csv') : t('search.export_csv')}
+              </Button>
+            ) : null}
           </Space>
         </Flex>
         <Table<KatsuIndividualMatch>
