@@ -12,17 +12,17 @@ const QuantityDisplay = ({ quantity, title }: { quantity: Quantity; title?: stri
 
   const items: DescriptionsProps['items'] = [
     {
-      key: 'Unit',
+      key: 'unit',
       label: 'quantity.unit',
       children: <OntologyTerm term={quantity.unit} />,
     },
     {
-      key: 'Value',
+      key: 'value',
       label: 'quantity.value',
       children: quantity.value,
     },
     quantity.reference_range && {
-      key: 'Reference Range',
+      key: 'reference_range',
       label: 'Reference Range',
       children: (
         <Flex>
