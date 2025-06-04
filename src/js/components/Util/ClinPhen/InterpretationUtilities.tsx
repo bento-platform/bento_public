@@ -62,8 +62,8 @@ export const VariantInterpretation = ({
   const vd = variantInterpretation.variation_descriptor;
 
   const extentionTableColumns = useTranslatedTableColumnTitles<Extension>([
-    { title: 'interpretations.name', dataIndex: 'name', key: 'name' },
-    { title: 'interpretations.value', dataIndex: 'value', key: 'value' },
+    { title: 'interpretations.name', dataIndex: 'name' },
+    { title: 'interpretations.value', dataIndex: 'value' },
   ]);
 
   const variantDescrptorItems: DescriptionsProps['items'] = [
