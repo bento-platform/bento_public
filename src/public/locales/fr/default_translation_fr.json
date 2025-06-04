@@ -343,13 +343,11 @@
     "id": "ID",
     "alternate_ids": "IDs alternatifs",
     "age": "Âge",
-    "date_of_birth": "Date de naissance",
     "time_at_last_encounter": "Date du dernier contact",
     "vital_status": "Statut vital",
     "sex": "Sexe",
     "karyotypic_sex": "Sexe caryotypique",
-    "taxonomy": "Taxonomie",
-    "gender": "Identité de genre"
+    "taxonomy": "Taxonomie"
   },
   "tab_keys": {
     "subject": "Sujet",

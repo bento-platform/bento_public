@@ -51,11 +51,6 @@ const SubjectView = ({ subject }: { subject: Individual }) => {
       children: `${subject?.age_numeric} ${subject?.age_unit}`,
     },
     {
-      key: 'date_of_birth',
-      label: 'subject.date_of_birth',
-      children: subject?.date_of_birth,
-    },
-    {
       key: 'time_at_last_encounter',
       label: 'subject.time_at_last_encounter',
       children: <TimeElementDisplay element={subject?.time_at_last_encounter} />,
@@ -79,11 +74,6 @@ const SubjectView = ({ subject }: { subject: Individual }) => {
       key: 'taxonomy',
       label: 'subject.taxonomy',
       children: <OntologyTerm term={subject?.taxonomy} />,
-    },
-    {
-      key: 'gender',
-      label: 'subject.gender',
-      children: <OntologyTerm term={subject?.gender} />,
     },
   ];
 
