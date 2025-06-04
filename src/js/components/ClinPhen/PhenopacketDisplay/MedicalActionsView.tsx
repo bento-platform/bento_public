@@ -34,7 +34,7 @@ export const ProcedureComponent = ({ procedure }: { procedure: Procedure }) => {
       children: <OntologyTermComponent term={procedure.body_site} />,
     },
     {
-      key: 'Performed',
+      key: 'performed',
       label: 'medical_actions.performed',
       children: <TimeElementDisplay element={procedure.performed} />,
     },
