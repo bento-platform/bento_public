@@ -25,10 +25,3 @@ export interface Phenopacket extends ExtraPropertiesEntity, TimestampedEntity {
   files?: File[];
   meta_data: MetaData;
 }
-
-export interface PhenopacketListResponse {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: Phenopacket[];
-}
