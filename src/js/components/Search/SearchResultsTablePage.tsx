@@ -12,16 +12,18 @@ import {
   type TablePaginationConfig,
   type TableProps,
   Tooltip,
+  Typography,
 } from 'antd';
 import { ExportOutlined, LeftOutlined, TableOutlined } from '@ant-design/icons';
 
 import { PORTAL_URL } from '@/config';
-import { T_SINGULAR_COUNT } from '@/constants/i18n';
+import { T_PLURAL_COUNT, T_SINGULAR_COUNT } from '@/constants/i18n';
 import { useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
 import IndividualRowDetail from './IndividualRowDetail';
 import type { DiscoveryResults } from '@/types/data';
+import type { BentoEntity } from '@/types/entities';
 import type { Project, Dataset } from '@/types/metadata';
 import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
 import type { KatsuIndividualMatch } from '@/features/search/types';
@@ -30,6 +32,7 @@ import ProjectTitle from '@/components/Util/ProjectTitle';
 import DatasetTitle from '@/components/Util/DatasetTitle';
 import { downloadIndividualCSV } from '@/utils/export';
 import { setEquals } from '@/utils/sets';
+import { useScopeDownloadData } from '@/hooks/censorship';
 
 type SearchColRenderContext = {
   onProjectClick: (id: string) => void;
@@ -93,15 +96,17 @@ const SearchResultsTablePage = ({
   entity,
   onBack,
 }: {
-  results: DiscoveryResults;
-  entity: 'individual' | 'biosample' | 'experiment';
-  onBack: () => void;
+  results?: DiscoveryResults;
+  entity: BentoEntity;
+  onBack?: () => void;
 }) => {
   const t = useTranslationFn();
   const selectedScope = useSelectedScope();
   const isSmallScreen = useSmallScreen();
   const authHeader = useAuthorizationHeader();
   const { projectsByID, datasetsByID } = useMetadata();
+
+  const { fetchingPermission: fetchingCanDownload, hasPermission: canDownload } = useScopeDownloadData();
 
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -133,7 +138,7 @@ const SearchResultsTablePage = ({
     });
   }, [selectedScope, projectColumnAllowed, datasetColumnAllowed, shownColumns]);
 
-  let { individualMatches } = results;
+  let { individualMatches } = results ?? {};
   individualMatches = individualMatches ?? [];
 
   const currentStart = individualMatches.length > 0 ? page * pageSize - pageSize + 1 : 0;
@@ -203,17 +208,23 @@ const SearchResultsTablePage = ({
 
   return (
     <>
-      <Col xs={24} lg={20}>
+      <Col flex={1}>
         <Flex justify="space-between" align="center" style={{ marginBottom: 8 }}>
-          <Button
-            icon={<LeftOutlined />}
-            type={isSmallScreen ? 'default' : 'link'}
-            onClick={onBack}
-            style={{ paddingLeft: 0 }}
-          >
-            {isSmallScreen ? '' : t('Charts')}
-          </Button>
-          <span>
+          {onBack ? (
+            <Button
+              icon={<LeftOutlined />}
+              type={isSmallScreen ? 'default' : 'link'}
+              onClick={onBack}
+              style={{ paddingLeft: 0 }}
+            >
+              {isSmallScreen ? '' : t('Charts')}
+            </Button>
+          ) : (
+            <Typography.Title level={4} className="mb-0">
+              {t(`entities.${entity}`, T_PLURAL_COUNT)}
+            </Typography.Title>
+          )}
+          <span className="antd-gray-7">
             {t('search.showing_entities' + (isSmallScreen ? '_short' : ''), {
               entity: `$t(entities.${entity}_other, lowercase)`,
               start: currentStart,
@@ -225,9 +236,16 @@ const SearchResultsTablePage = ({
             <Tooltip title={t('search.manage_columns')}>
               <Button icon={<TableOutlined />} onClick={openColumnModal} />
             </Tooltip>
-            <Button icon={<ExportOutlined />} loading={exporting} onClick={onExport}>
-              {isSmallScreen ? t('search.csv') : t('search.export_csv')}
-            </Button>
+            {fetchingCanDownload || canDownload ? (
+              <Button
+                icon={<ExportOutlined />}
+                loading={fetchingCanDownload || exporting}
+                onClick={onExport}
+                disabled={fetchingCanDownload || !individualMatches.length}
+              >
+                {isSmallScreen ? t('search.csv') : t('search.export_csv')}
+              </Button>
+            ) : null}
           </Space>
         </Flex>
         <Table<KatsuIndividualMatch>

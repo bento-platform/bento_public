@@ -1,24 +1,8 @@
-import { useEffect, useMemo } from 'react';
-import { useSelectedScope } from '@/features/metadata/hooks';
+import { useMemo } from 'react';
 import { useSearchQuery } from '@/features/search/hooks';
-import { useAppDispatch, useAppSelector } from '@/hooks';
+import { useAppSelector } from '@/hooks';
 
-import { makeGetDataRequestThunk } from './makeGetDataRequest.thunk';
-
-export const useData = () => {
-  const dispatch = useAppDispatch();
-  const { scopeSet } = useSelectedScope();
-  const state = useAppSelector((state) => state.data);
-
-  useEffect(() => {
-    if (scopeSet) {
-      // dispatch action if scope is set and/or the state is invalidated and then this hook is called.
-      dispatch(makeGetDataRequestThunk());
-    }
-  }, [dispatch, scopeSet, state.isInvalid]);
-
-  return state;
-};
+export const useData = () => useAppSelector((state) => state.data);
 
 export const useSearchableFields = () => {
   /**

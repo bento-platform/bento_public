@@ -50,7 +50,7 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
       newPath.push(key);
       const newPathString = '/' + newPath.join('/');
       navigate(
-        key === BentoRoute.Search
+        key === BentoRoute.Overview || key === BentoRoute.Search
           ? buildQueryParamsUrl(
               newPathString,
               queryMode === 'filters'

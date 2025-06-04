@@ -39,3 +39,8 @@ interface ChartConfigChoropleth extends BaseChartConfig {
 }
 
 export type ChartConfig = ChartConfigPie | ChartConfigBar | ChartConfigHistogram | ChartConfigChoropleth;
+
+export interface ChartLayoutSection {
+  charts: ChartConfig[];
+  section_title: string;
+}
