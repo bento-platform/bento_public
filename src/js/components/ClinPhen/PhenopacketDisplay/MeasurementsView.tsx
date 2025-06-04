@@ -1,4 +1,4 @@
-import { DescriptionsProps, Space, Table } from 'antd';
+import { type DescriptionsProps, Space, Table } from 'antd';
 
 import OntologyTermComponent from '@Util/ClinPhen/OntologyTerm';
 import QuantityDisplay from '@Util/ClinPhen/QuantityDisplay';

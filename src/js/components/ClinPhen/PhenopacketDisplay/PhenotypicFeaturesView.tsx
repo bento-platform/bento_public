@@ -1,4 +1,4 @@
-import { DescriptionsProps, Space, Table } from 'antd';
+import { type DescriptionsProps, Space, Table } from 'antd';
 import { LinkOutlined } from '@ant-design/icons';
 
 import OntologyTermComponent from '@Util/ClinPhen/OntologyTerm';
