@@ -17,7 +17,6 @@ import { useTranslationFn } from '@/hooks';
 
 export const usePhenopacketTabs = (phenopacket: Phenopacket) => {
   const t = useTranslationFn();
-  0;
   const navigate = useNavigate();
   const handleTabChange = useCallback(
     (key: string) => {
@@ -84,7 +83,7 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket) => {
         disabled: !phenopacket?.meta_data?.resources,
       },
     ],
-    [phenopacket]
+    [phenopacket, t]
   );
 
   return {
