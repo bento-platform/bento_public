@@ -1,7 +1,11 @@
 import { useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '@/hooks';
+import { useIsAuthenticated } from 'bento-auth-js';
+
 import { makeGetIndividualData } from '@/features/clinPhen/makeGetIndividualData.thunk';
 import { makeGetPhenopacketData } from './makeGetPhenopacket.thunk';
+
+import { useAppDispatch, useAppSelector } from '@/hooks';
+
 import { RequestStatus } from '@/types/requests';
 
 export const useIndividualData = (id: string) => {
@@ -30,14 +34,15 @@ export const usePhenopacketResources = (phenopacketId: string | undefined) => {
 export const usePhenopacketData = (phenopacketId: string) => {
   const dispatch = useAppDispatch();
 
+  const authenticated = useIsAuthenticated(); // Temporary: removed once phenopacket view is integrated with search
   const phenopacket = useAppSelector((state) => state.clinPhen.phenopacketDataCache[phenopacketId]);
   const status = useAppSelector((state) => state.clinPhen.phenopacketDataStatus[phenopacketId]);
 
   useEffect(() => {
-    if (!phenopacket && status !== RequestStatus.Pending) {
+    if (authenticated && !phenopacket && status !== RequestStatus.Pending) {
       dispatch(makeGetPhenopacketData(phenopacketId));
     }
   }, [phenopacketId, phenopacket, status, dispatch]);
 
-  return { phenopacket, status };
+  return { phenopacket, status, authenticated };
 };

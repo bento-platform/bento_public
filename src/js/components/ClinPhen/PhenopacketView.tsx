@@ -1,4 +1,4 @@
-import { Card, Tabs } from 'antd';
+import { Card, Empty, Tabs } from 'antd';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
@@ -22,7 +22,7 @@ export interface RouteParams {
 const PhenopacketView = () => {
   const { packetId, tab } = useParams<RouteParams>();
   const navigate = useNavigate();
-  const { phenopacket, status } = usePhenopacketData(packetId ?? '');
+  const { phenopacket, status, authenticated } = usePhenopacketData(packetId ?? '');
 
   const { handleTabChange, items } = usePhenopacketTabs(phenopacket);
 
@@ -39,6 +39,10 @@ const PhenopacketView = () => {
       }
     }
   }, [tab]);
+
+  if (!authenticated) {
+    return <Empty description="Sign in to use" />; // Temporary: removed once phenopacket view is integrated with search
+  }
 
   if (status === RequestStatus.Pending || !phenopacket) {
     return <Loader fullHeight={true} />;
