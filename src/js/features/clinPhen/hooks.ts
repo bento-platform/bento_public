@@ -6,8 +6,6 @@ import { makeGetPhenopacketData } from './makeGetPhenopacket.thunk';
 
 import { useAppDispatch, useAppSelector } from '@/hooks';
 
-import { RequestStatus } from '@/types/requests';
-
 export const useIndividualData = (id: string) => {
   const dispatch = useAppDispatch();
 
@@ -40,7 +38,7 @@ export const usePhenopacketData = (phenopacketId: string) => {
 
   useEffect(() => {
     dispatch(makeGetPhenopacketData(phenopacketId));
-  }, [phenopacketId]);
+  }, [dispatch, phenopacketId]);
 
   return { phenopacket, status, authenticated };
 };
