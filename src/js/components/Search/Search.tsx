@@ -2,8 +2,6 @@ import { useCallback, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Card, type CardProps, Flex, Row, Space } from 'antd';
 
-import { queryData } from 'bento-auth-js';
-
 import { useConfig } from '@/features/config/hooks';
 import { makeGetDataRequestThunk } from '@/features/data/makeGetDataRequest.thunk';
 import { useQueryFilterFields, useSearchQuery } from '@/features/search/hooks';
@@ -16,7 +14,8 @@ import {
   setDoneFirstLoad,
   setQueryMode,
 } from '@/features/search/query.store';
-import { useAppDispatch, useHasScopePermission } from '@/hooks';
+import { useAppDispatch } from '@/hooks';
+import { useScopeQueryData } from '@/hooks/censorship';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { useData } from '@/features/data/hooks';
 import { buildQueryParamsUrl, combineQueryParamsWithoutKey } from '@/features/search/utils';
@@ -54,7 +53,7 @@ export const useSearchRouterAndHandler = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { hasAttempted: hasAttemptedQueryDataPerm, hasPermission: queryDataPerm } = useHasScopePermission(queryData);
+  const { hasAttempted: hasAttemptedQueryDataPerm, hasPermission: queryDataPerm } = useScopeQueryData();
 
   const { configStatus, maxQueryParameters } = useConfig();
   const { status: filterQueryStatus } = useData();
@@ -299,7 +298,7 @@ export const SearchForm = () => {
   const dispatch = useAppDispatch();
 
   const isSmallScreen = useSmallScreen();
-  const { hasPermission: queryDataPerm } = useHasScopePermission(queryData);
+  const { hasPermission: queryDataPerm } = useScopeQueryData();
   const { mode: queryMode } = useSearchQuery();
 
   const onFiltersFocus = useCallback(() => dispatch(setQueryMode('filters')), [dispatch]);

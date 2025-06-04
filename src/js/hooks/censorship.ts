@@ -2,8 +2,10 @@ import { queryData } from 'bento-auth-js';
 import { useConfig } from '@/features/config/hooks';
 import { useHasScopePermission } from '@/hooks';
 
+export const useScopeQueryData = () => useHasScopePermission(queryData);
+
 export const useCanSeeUncensoredCounts = () => {
-  const { hasPermission: queryDataPerm } = useHasScopePermission(queryData);
+  const { hasPermission: queryDataPerm } = useScopeQueryData();
   const { countThreshold } = useConfig();
 
   // Used mostly for UI - showing dashes vs "0".
