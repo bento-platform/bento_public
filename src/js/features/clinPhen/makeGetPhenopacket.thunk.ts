@@ -6,7 +6,7 @@ import { printAPIError } from '@/utils/error.util';
 import { authorizedRequestConfig } from '@/utils/requests';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
 import { RequestStatus } from '@/types/requests';
-import { useIsAuthenticated } from 'bento-auth-js/dist';
+import { getIsAuthenticated } from 'bento-auth-js';
 
 export const makeGetPhenopacketData = createAsyncThunk<
   Phenopacket,
@@ -25,8 +25,9 @@ export const makeGetPhenopacketData = createAsyncThunk<
   },
   {
     condition(id, { getState }) {
-      const isAuthenticated = useIsAuthenticated();
+      const isAuthenticated = getIsAuthenticated(getState().auth.idTokenContents);
       const state = getState().clinPhen;
+
       const cond =
         !!isAuthenticated &&
         !!id &&
