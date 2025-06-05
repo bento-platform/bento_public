@@ -89,6 +89,7 @@ const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interp
             }}
             rowKey={(record) => record.subject_or_biosample_id}
             pagination={false}
+            bordered
           />
         ) : (
           <CustomEmpty text={t('interpretations.no_genomic_iterpretation')} />
@@ -146,6 +147,7 @@ const InterpretationsView = ({ interpretations }: InterpretationsViewProps) => {
       }}
       rowKey={(record) => record.id}
       pagination={false}
+      bordered
     />
   );
 };

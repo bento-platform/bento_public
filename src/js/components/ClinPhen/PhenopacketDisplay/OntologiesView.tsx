@@ -29,7 +29,7 @@ const OntologiesView = ({ resources }: OntologiesProps) => {
     { title: 'ontologies.version', dataIndex: 'version' },
     { title: 'ontologies.iri_prefix', dataIndex: 'iri_prefix' },
   ]);
-  return <Table<Resource> dataSource={resources} columns={columns} />;
+  return <Table<Resource> dataSource={resources} columns={columns} pagination={false} bordered />;
 };
 
 export default OntologiesView;

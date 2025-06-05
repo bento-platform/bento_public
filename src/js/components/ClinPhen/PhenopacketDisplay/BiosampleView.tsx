@@ -76,6 +76,7 @@ const BiosampleView = ({ biosamples }: BiosampleViewProps) => {
       }}
       rowKey="id"
       pagination={false}
+      bordered
     />
   );
 };

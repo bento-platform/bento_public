@@ -81,6 +81,7 @@ const DiseasesView = ({ diseases }: DiseasesViewProps) => {
       }}
       rowKey={(record) => record.term.id}
       pagination={false}
+      bordered
     />
   );
 };

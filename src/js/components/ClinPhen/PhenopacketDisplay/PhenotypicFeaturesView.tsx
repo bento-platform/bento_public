@@ -139,6 +139,8 @@ function PhenotypicFeaturesView({ features }: PhenotypicFeaturesViewProps) {
         expandedRowRender: (record) => <PhenotypicFeatureExpandedRow feature={record} />,
       }}
       rowKey={(record) => record.type.id}
+      pagination={false}
+      bordered
     />
   );
 }

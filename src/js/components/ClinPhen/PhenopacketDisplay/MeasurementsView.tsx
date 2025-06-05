@@ -86,6 +86,7 @@ const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement
           ]}
           size="small"
           pagination={false}
+          bordered
         />
       );
     }
@@ -134,6 +135,7 @@ const MeasurementsView = ({ measurements }: MeasurementsViewProps) => {
       }}
       rowKey={(record) => record.assay.id}
       pagination={false}
+      bordered
     />
   );
 };

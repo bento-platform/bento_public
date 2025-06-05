@@ -77,11 +77,11 @@ const TreatmentComponent = ({ treatment }: { treatment: Treatment }) => {
       label: 'medical_actions.dose_intervals',
       children: treatment?.dose_intervals ? (
         <Table<DoseInterval>
-          bordered={true}
-          pagination={false}
           size="small"
           columns={DOSE_INTERVAL_COLUMNS}
           dataSource={treatment.dose_intervals}
+          pagination={false}
+          bordered
         />
       ) : (
         EM_DASH
@@ -261,6 +261,8 @@ const MedicalActionsView = ({ medicalActions }: { medicalActions: MedicalAction[
       rowKey={(record) =>
         record.procedure?.code?.id || record.treatment?.agent?.id || record.radiation_therapy?.modality?.id || 'unknown'
       }
+      pagination={false}
+      bordered
     />
   );
 };
