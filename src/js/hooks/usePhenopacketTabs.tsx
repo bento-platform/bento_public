@@ -37,7 +37,7 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket) => {
       {
         key: TabKeys.BIOSAMPLES,
         label: t('tab_keys.biosamples'),
-        children: phenopacket?.biosamples ? <BiosampleView biosamples={phenopacket?.biosamples!} /> : null,
+        children: phenopacket?.biosamples ? <BiosampleView biosamples={phenopacket?.biosamples} /> : null,
         disabled: !phenopacket?.biosamples,
       },
       {
@@ -79,7 +79,7 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket) => {
       {
         key: TabKeys.ONTOLOGIES,
         label: t('tab_keys.ontologies'),
-        children: <OntologiesView resources={phenopacket?.meta_data?.resources!} />,
+        children: <OntologiesView resources={phenopacket?.meta_data?.resources} />,
         disabled: !phenopacket?.meta_data?.resources,
       },
     ],

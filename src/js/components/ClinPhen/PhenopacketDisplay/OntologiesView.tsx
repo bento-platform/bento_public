@@ -7,7 +7,7 @@ import { useTranslationFn } from '@/hooks';
 const { Link } = Typography;
 
 interface OntologiesProps {
-  resources: Resource[];
+  resources: Resource[] | undefined;
 }
 
 const OntologiesView = ({ resources }: OntologiesProps) => {
