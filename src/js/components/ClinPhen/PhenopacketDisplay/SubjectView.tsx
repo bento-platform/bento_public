@@ -1,10 +1,10 @@
+import { type DescriptionsProps, Space } from 'antd';
 import OntologyTerm from '@Util/ClinPhen/OntologyTerm';
 import JsonView from '@Util/JsonView';
 import StringList from '@Util/StringList';
 import TimeElementDisplay from '@Util/ClinPhen/TimeElementDisplay';
 import TDescriptions from '@/components/Util/TDescriptions';
 
-import type { DescriptionsProps } from 'antd';
 import type { Individual } from '@/types/clinPhen/individual';
 
 import { EM_DASH } from '@/constants/common';
@@ -83,11 +83,12 @@ const SubjectView = ({ subject }: { subject: Individual }) => {
     children: (typeof value === 'string' || typeof value === 'number' ? value : <JsonView src={value} />) ?? EM_DASH,
   }));
 
-  if (extraProperties.length > 0) {
-    items.push(...extraProperties);
-  }
-
-  return <TDescriptions items={items} column={1} bordered />;
+  return (
+    <Space id="subject-view" direction="vertical" className="w-full" size="large">
+      <TDescriptions items={items} column={1} bordered />
+      {extraProperties.length && <TDescriptions items={extraProperties} column={1} bordered />}
+    </Space>
+  );
 };
 
 export default SubjectView;
