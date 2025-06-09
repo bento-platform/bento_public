@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Flex, FloatButton } from 'antd';
-import { AppstoreAddOutlined } from '@ant-design/icons';
+import { Flex, FloatButton, Tabs, type TabsProps, Tag } from 'antd';
+import { AppstoreAddOutlined, FileTextOutlined, SearchOutlined, SolutionOutlined } from '@ant-design/icons';
 
 import { convertSequenceAndDisplayData, saveValue } from '@/utils/localStorage';
 import type { Sections } from '@/types/data';
@@ -15,11 +15,13 @@ import OverviewDatasets from './OverviewDatasets';
 import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
 import Counts from './Counts';
 import LastIngestionInfo from './LastIngestion';
-import Loader from '@/components/Loader';
+import DatasetProvenance from '@/components/Provenance/DatasetProvenance';
+import { SearchForm, useSearchRouterAndHandler } from '@/components/Search/Search';
 
 import { useTranslationFn } from '@/hooks';
 import { useData, useSearchableFields } from '@/features/data/hooks';
-import { useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
+import { useSelectedDataset, useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
+import { useSearchQuery } from '@/features/search/hooks';
 
 const saveToLocalStorage = (sections: Sections) => {
   saveValue(LOCALSTORAGE_CHARTS_KEY, convertSequenceAndDisplayData(sections));
@@ -32,9 +34,14 @@ const OverviewChartDashboard = () => {
 
   const { scope } = useSelectedScope();
   const selectedProject = useSelectedProject();
+  const selectedDataset = useSelectedDataset();
+
+  // TODO
+  useSearchRouterAndHandler();
 
   // Lazy-loading hooks means these are called only if OverviewChartDashboard is rendered ---
   const { status: overviewDataStatus, sections } = useData();
+  const { filterQueryParams } = useSearchQuery();
   const searchableFields = useSearchableFields();
   // ---
 
@@ -53,12 +60,69 @@ const OverviewChartDashboard = () => {
     saveToLocalStorage(sections);
   }, [sections]);
 
-  return WAITING_STATES.includes(overviewDataStatus) ? (
-    <Loader />
-  ) : (
+  // ---
+
+  const [pageTab, setPageTab] = useState('about');
+
+  const nFilters = Object.keys(filterQueryParams).length;
+  // todo: translate filters applied with pluralization
+  const nFiltersAppliedTag = (
+    <Tag
+      color="green"
+      style={{
+        transition: 'max-width 0.2s, padding 0.2s, border-width 0.2s, opacity 0.2s, margin-left 0.2s',
+        maxWidth: nFilters ? 150 : 0,
+        // width: nFilters ? 150 : 0,
+        padding: nFilters ? '0 7px' : 0,
+        borderWidth: nFilters ? '1px' : 0,
+        marginLeft: nFilters ? '1em' : '1px',
+        verticalAlign: 'top',
+        marginTop: 2,
+        textWrap: 'nowrap',
+        overflow: 'hidden',
+        boxSizing: 'border-box',
+      }}
+    >
+      {nFilters} filter(s) applied
+    </Tag>
+  );
+
+  const pageTabItems: TabsProps['items'] = [
+    { key: 'about', label: t('About'), icon: <FileTextOutlined /> },
+    ...(scope.dataset ? [{ key: 'provenance', label: t('Provenance'), icon: <SolutionOutlined /> }] : []),
+    {
+      key: 'search',
+      label: (
+        <span>
+          {t('Search')}
+          {nFiltersAppliedTag}
+        </span>
+      ),
+      icon: <SearchOutlined />,
+    },
+  ];
+
+  const loadingNewData = WAITING_STATES.includes(overviewDataStatus);
+
+  return (
     <>
       <Flex vertical={true} gap={24} className="container margin-auto">
-        <AboutBox />
+        <div className="dashboard-tabs">
+          <Tabs
+            type="card"
+            size="large"
+            activeKey={pageTab}
+            onChange={(k) => setPageTab(k)}
+            items={pageTabItems}
+            id="dashboard-tabs"
+            tabBarStyle={{ marginBottom: -1, zIndex: 1 }}
+          />
+          {pageTab === 'about' ? <AboutBox /> : null}
+          {pageTab === 'provenance' && selectedDataset ? (
+            <DatasetProvenance dataset={selectedDataset} showTitle={false} />
+          ) : null}
+          {pageTab === 'search' ? <SearchForm /> : null}
+        </div>
 
         <Counts />
 
@@ -68,7 +132,7 @@ const OverviewChartDashboard = () => {
         ) : null}
 
         {displayedSections.map(({ sectionTitle, charts }, i) => (
-          <div key={i} className="overview">
+          <div key={i} className={'overview' + (loadingNewData ? ' loading' : '')}>
             <OverviewSection title={sectionTitle} chartData={charts} searchableFields={searchableFields} />
           </div>
         ))}

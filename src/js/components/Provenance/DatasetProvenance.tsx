@@ -118,27 +118,28 @@ export const DatasetProvenanceContent = ({ dataset }: { dataset: Dataset }) => {
   );
 };
 
-const DatasetProvenance = ({ dataset, loading }: DatasetProvenanceProps) => {
+const DatasetProvenance = ({ dataset, loading, showTitle }: DatasetProvenanceProps) => {
+  showTitle = showTitle ?? true;
+
   const t = useTranslationFn();
 
   const metadata = dataset.dats_file;
 
+  const version = metadata.version ? (
+    <Title key="1" level={4} type="secondary" italic>
+      {t(metadata.version)}
+    </Title>
+  ) : null;
+
   return (
     <div className="container margin-auto">
       <Card
-        title={<Title level={3}>{t(metadata.title ?? dataset.title)}</Title>}
-        extra={
-          metadata.version
-            ? [
-                <Title key="1" level={4} type="secondary" italic>
-                  {t(metadata.version)}
-                </Title>,
-              ]
-            : []
-        }
+        title={showTitle ? <Title level={3}>{t(metadata.title ?? dataset.title)}</Title> : undefined}
+        extra={showTitle && version ? [version] : undefined}
         className="shadow rounded-xl"
         loading={loading}
       >
+        {!showTitle && version ? version : null}
         <DatasetProvenanceContent dataset={dataset} />
       </Card>
     </div>
@@ -147,7 +148,8 @@ const DatasetProvenance = ({ dataset, loading }: DatasetProvenanceProps) => {
 
 export type DatasetProvenanceProps = {
   dataset: Dataset;
-  loading: boolean;
+  loading?: boolean;
+  showTitle?: boolean;
 };
 
 export default DatasetProvenance;

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { makeProjectDatasetResource, makeProjectResource, type Resource, RESOURCE_EVERYTHING } from 'bento-auth-js';
 import { useAppSelector } from '@/hooks';
-import type { Project } from '@/types/metadata';
+import type { Project, Dataset } from '@/types/metadata';
 
 export const useMetadata = () => useAppSelector((state) => state.metadata);
 
@@ -24,6 +24,19 @@ export const useSelectedProject = (): Project | undefined => {
   return useMemo(
     () => (selectedProject ? projects.find((p) => p.identifier === selectedProject) : undefined),
     [projects, selectedProject]
+  );
+};
+
+export const useSelectedDataset = (): Dataset | undefined => {
+  const selectedProject = useSelectedProject();
+  const {
+    selectedScope: {
+      scope: { dataset: selectedDatasetID },
+    },
+  } = useMetadata();
+  return useMemo(
+    () => (selectedProject ? selectedProject.datasets.find((d) => d.identifier === selectedDatasetID) : undefined),
+    [selectedProject, selectedDatasetID]
   );
 };
 

@@ -1,4 +1,5 @@
-import type { Datum } from '@/types/overviewResponse';
+import type { Datum } from '@/types/discovery';
+import type { Field } from '@/types/discovery/fieldDefinition';
 
 export type QueryParamEntry = [string, string];
 export type QueryParams = { [key: string]: string };
@@ -6,34 +7,19 @@ export type QueryParams = { [key: string]: string };
 export type QueryMode = 'filters' | 'text';
 
 export interface SearchFieldResponse {
-  sections: Section[];
+  sections: SearchFieldSection[];
 }
 
-export interface Section {
-  fields: Field[];
+export interface SearchFieldSection {
+  fields: SearchFieldAndOptions[];
   section_title: string;
 }
 
-export interface Field {
-  config: Config;
-  datatype: string;
-  description: string;
+export type SearchFieldAndOptions = {
   id: string;
-  mapping: string;
+  definition: Field;
   options: string[];
-  title: string;
-  mapping_for_search_filter?: string;
-}
-
-export interface Config {
-  bin_size?: number;
-  maximum?: number;
-  minimum?: number;
-  taper_left?: number;
-  taper_right?: number;
-  units?: string;
-  enum?: null;
-}
+};
 
 export type KatsuIndividualMatch = {
   id: string;
@@ -62,5 +48,28 @@ export interface Experiments {
   count: number;
   experiment_type: Datum[];
 }
+
+export type DiscoveryMatchExperimentResult = {
+  id: string;
+  f?: string;
+  url?: string;
+  idx: { url: string; format: 'BAI' | 'BGZF' | 'CRAI' | 'CSI' | 'TABIX' | 'TRIBBLE' }[];
+};
+
+export type DiscoveryMatchExperiment = {
+  id: string;
+  r: DiscoveryMatchExperimentResult[];
+};
+
+export type DiscoveryMatchBiosample = {
+  id: string;
+  e: DiscoveryMatchExperiment[];
+};
+
+export type DiscoveryMatchPhenopacket = {
+  id: string; // Phenopacket ID
+  s?: string; // Subject ID
+  b: DiscoveryMatchBiosample[]; // Biosample records
+};
 
 export type SearchResultsUIPage = 'individuals' | 'charts';

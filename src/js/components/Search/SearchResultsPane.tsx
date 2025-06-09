@@ -1,11 +1,11 @@
 import { type CSSProperties, type ReactElement, useCallback, useEffect } from 'react';
 import { Card, Col, Row, Typography } from 'antd';
-import { queryData } from 'bento-auth-js';
 import { PieChart } from 'bento-charts';
 
 import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
-import { useHasScopePermission, useTranslationFn } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
+import { useScopeQueryData } from '@/hooks/censorship';
 import type { DiscoveryResults } from '@/types/data';
 import type { SearchResultsUIPage } from '@/features/search/types';
 
@@ -65,7 +65,7 @@ const SearchResultsPane = ({
   page = page ?? 'charts';
   onPageChange = onPageChange ?? (() => {});
 
-  const { hasAttempted: hasAttemptedQDP, hasPermission: queryDataPerm } = useHasScopePermission(queryData);
+  const { hasAttempted: hasAttemptedQDP, hasPermission: queryDataPerm } = useScopeQueryData();
   useEffect(() => {
     if (page === 'individuals' && hasAttemptedQDP && !queryDataPerm) {
       onPageChange('charts');
