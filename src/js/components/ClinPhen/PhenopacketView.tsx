@@ -22,7 +22,7 @@ export interface RouteParams {
 const PhenopacketView = () => {
   const { packetId, tab } = useParams<RouteParams>();
   const navigate = useNavigate();
-  const { phenopacket, status, isAuthenticated, isAuthorized } = usePhenopacketData(packetId ?? '');
+  const { phenopacket, status, isAuthorized } = usePhenopacketData(packetId ?? '');
 
   const { handleTabChange, items } = usePhenopacketTabs(phenopacket);
 
@@ -39,10 +39,6 @@ const PhenopacketView = () => {
       }
     }
   }, [navigate, tab]);
-
-  if (!isAuthenticated) {
-    return <Empty description="Sign in to use" />; // Temporary: removed once phenopacket view is integrated with search
-  }
 
   if (!isAuthorized) {
     return <Empty description="You do not have permission to view this resource" />; // Temporary: removed once phenopacket view is integrated with search

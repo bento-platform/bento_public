@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { queryData, useIsAuthenticated } from 'bento-auth-js';
+import { queryData } from 'bento-auth-js';
 
 import { makeGetIndividualData } from '@/features/clinPhen/makeGetIndividualData.thunk';
 import { makeGetPhenopacketData } from './makeGetPhenopacket.thunk';
@@ -28,16 +28,15 @@ export const usePhenopacketResources = (phenopacketId: string | undefined) => {
 export const usePhenopacketData = (phenopacketId: string) => {
   const dispatch = useAppDispatch();
 
-  const isAuthenticated = useIsAuthenticated(); // Temporary: removed once phenopacket view is integrated with search
   const phenopacket = useAppSelector((state) => state.clinPhen.phenopacketDataCache[phenopacketId]);
   const status = useAppSelector((state) => state.clinPhen.phenopacketDataStatus[phenopacketId]);
   const isAuthorized = useHasScopePermission(queryData);
 
   useEffect(() => {
-    if (isAuthenticated && isAuthorized) {
+    if (isAuthorized) {
       dispatch(makeGetPhenopacketData(phenopacketId));
     }
-  }, [dispatch, phenopacketId, isAuthenticated, isAuthorized]);
+  }, [dispatch, phenopacketId, isAuthorized]);
 
-  return { phenopacket, status, isAuthenticated, isAuthorized };
+  return { phenopacket, status, isAuthorized };
 };
