@@ -6,6 +6,7 @@ export const MAX_CHARTS = 3;
 export const katsuPublicRulesUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/public_rules`;
 export const searchFieldsUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/discovery_search_fields`;
 export const katsuDiscoveryUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/discovery`;
+export const katsuDiscoveryMatchesUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/discovery_matches`;
 
 // Katsu entity API (Django Rest Framework) base URLs
 export const projectsUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/projects`;

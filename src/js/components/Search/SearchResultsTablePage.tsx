@@ -18,21 +18,24 @@ import { ExportOutlined, LeftOutlined, TableOutlined } from '@ant-design/icons';
 
 import { PORTAL_URL } from '@/config';
 import { T_PLURAL_COUNT, T_SINGULAR_COUNT } from '@/constants/i18n';
-import { useTranslationFn } from '@/hooks';
+import { WAITING_STATES } from '@/constants/requests';
+import { useAppDispatch, useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
 import IndividualRowDetail from './IndividualRowDetail';
-import type { DiscoveryResults } from '@/types/data';
 import type { BentoEntity } from '@/types/entities';
 import type { Project, Dataset } from '@/types/metadata';
 import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
-import type { KatsuIndividualMatch } from '@/features/search/types';
+import { fetchDiscoveryMatches } from '@/features/search/fetchDiscoveryMatches.thunk';
+import { setMatchesPage, setMatchesPageSize } from '@/features/search/query.store';
+import type { DiscoveryMatchBiosample, DiscoveryMatchPhenopacket } from '@/features/search/types';
 import DatasetProvenanceModal from '@/components/Provenance/DatasetProvenanceModal';
 import ProjectTitle from '@/components/Util/ProjectTitle';
 import DatasetTitle from '@/components/Util/DatasetTitle';
 import { downloadIndividualCSV } from '@/utils/export';
 import { setEquals } from '@/utils/sets';
 import { useScopeDownloadData } from '@/hooks/censorship';
+import { useSearchQuery } from '@/features/search/hooks';
 
 type SearchColRenderContext = {
   onProjectClick: (id: string) => void;
@@ -63,8 +66,8 @@ const IndividualPortalLink = ({ children, id }: { children: ReactNode; id: strin
   </a>
 );
 
-const INDIVIDUAL_EXPANDABLE: TableProps<KatsuIndividualMatch>['expandable'] = {
-  expandedRowRender: (rec) => <IndividualRowDetail id={rec.id} />,
+const INDIVIDUAL_EXPANDABLE: TableProps<DiscoveryMatchPhenopacket>['expandable'] = {
+  expandedRowRender: (rec) => (rec.s ? <IndividualRowDetail id={rec.s} /> : null),
 };
 
 const ManageColumnCheckbox = ({
@@ -91,25 +94,18 @@ const ManageColumnCheckbox = ({
   );
 };
 
-const SearchResultsTablePage = ({
-  results,
-  entity,
-  onBack,
-}: {
-  results?: DiscoveryResults;
-  entity: BentoEntity;
-  onBack?: () => void;
-}) => {
+const SearchResultsTablePage = ({ entity, onBack }: { entity: BentoEntity; onBack?: () => void }) => {
   const t = useTranslationFn();
+
+  const dispatch = useAppDispatch();
+
   const selectedScope = useSelectedScope();
   const isSmallScreen = useSmallScreen();
   const authHeader = useAuthorizationHeader();
   const { projectsByID, datasetsByID } = useMetadata();
 
+  const { page, pageSize, matches, totalMatches, matchesStatus } = useSearchQuery();
   const { fetchingPermission: fetchingCanDownload, hasPermission: canDownload } = useScopeDownloadData();
-
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
 
   const projectColumnAllowed = !selectedScope.scope.project;
   const datasetColumnAllowed = !selectedScope.scope.dataset;
@@ -125,6 +121,11 @@ const SearchResultsTablePage = ({
   const [exporting, setExporting] = useState<boolean>(false);
 
   useEffect(() => {
+    // TODO
+    dispatch(fetchDiscoveryMatches());
+  }, [dispatch, page, pageSize, entity]);
+
+  useEffect(() => {
     // If the selected scope changes, some of the currently-shown columns may no longer be valid:
     setShownColumns((oldSet) => {
       const newSet = new Set<SearchTableColumnType>(
@@ -138,11 +139,8 @@ const SearchResultsTablePage = ({
     });
   }, [selectedScope, projectColumnAllowed, datasetColumnAllowed, shownColumns]);
 
-  let { individualMatches } = results ?? {};
-  individualMatches = individualMatches ?? [];
-
-  const currentStart = individualMatches.length > 0 ? page * pageSize - pageSize + 1 : 0;
-  const currentEnd = Math.min(page * pageSize, individualMatches.length);
+  const currentStart = totalMatches > 0 ? page * pageSize + 1 : 0;
+  const currentEnd = Math.min((page + 1) * pageSize, totalMatches);
 
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [projectModalOpen, setProjectModalOpen] = useState<boolean>(false);
@@ -163,12 +161,18 @@ const SearchResultsTablePage = ({
     [projectsByID, datasetsByID]
   );
 
-  const columns = useMemo<TableColumnsType<KatsuIndividualMatch>>(
+  const columns = useMemo<TableColumnsType<DiscoveryMatchPhenopacket>>(
     () => [
       {
-        dataIndex: 'id',
-        title: 'ID',
-        render: (id: string) => <IndividualPortalLink id={id}>{id}</IndividualPortalLink>,
+        dataIndex: 's',
+        title: 'Subject ID',
+        render: (id: string | undefined) => (id ? <IndividualPortalLink id={id}>{id}</IndividualPortalLink> : null),
+      },
+      {
+        dataIndex: 'b',
+        title: 'Biosamples',
+        // TODO
+        render: (b: DiscoveryMatchBiosample[]) => b.map((bb) => bb.id).join(', '),
       },
       ...Object.entries(SEARCH_TABLE_COLUMNS)
         .filter(([k, _]) => shownColumns.has(k as SearchTableColumnType))
@@ -184,17 +188,18 @@ const SearchResultsTablePage = ({
   // noinspection JSUnusedGlobalSymbols
   const pagination = useMemo<TablePaginationConfig>(
     () => ({
-      current: page,
+      current: page + 1, // AntD page is 1-indexed, discovery match page is 0-indexed
       pageSize,
+      total: totalMatches,
       position: (isSmallScreen ? ['bottomCenter'] : ['bottomRight']) as TablePaginationConfig['position'],
       size: (isSmallScreen ? 'small' : 'default') as TablePaginationConfig['size'],
       showSizeChanger: true,
       onChange(page, pageSize) {
-        setPage(page);
-        setPageSize(pageSize);
+        dispatch(setMatchesPage(page - 1)); // AntD page is 1-indexed, discovery match page is 0-indexed
+        dispatch(setMatchesPageSize(pageSize));
       },
     }),
-    [page, pageSize, isSmallScreen]
+    [dispatch, page, pageSize, totalMatches, isSmallScreen]
   );
 
   const openColumnModal = useCallback(() => setColumnModalOpen(true), []);
@@ -202,9 +207,9 @@ const SearchResultsTablePage = ({
     setExporting(true);
     downloadIndividualCSV(
       authHeader,
-      individualMatches.map(({ id }) => id)
+      (matches ?? []).filter(({ s }) => s !== undefined).map(({ s }) => s as string)
     ).finally(() => setExporting(false));
-  }, [authHeader, individualMatches]);
+  }, [authHeader, matches]);
 
   return (
     <>
@@ -229,7 +234,7 @@ const SearchResultsTablePage = ({
               entity: `$t(entities.${entity}_other, lowercase)`,
               start: currentStart,
               end: currentEnd,
-              total: individualMatches.length,
+              total: totalMatches,
             })}
           </span>
           <Space>
@@ -241,16 +246,17 @@ const SearchResultsTablePage = ({
                 icon={<ExportOutlined />}
                 loading={fetchingCanDownload || exporting}
                 onClick={onExport}
-                disabled={fetchingCanDownload || !individualMatches.length}
+                disabled={fetchingCanDownload || !totalMatches}
               >
                 {isSmallScreen ? t('search.csv') : t('search.export_csv')}
               </Button>
             ) : null}
           </Space>
         </Flex>
-        <Table<KatsuIndividualMatch>
+        <Table<DiscoveryMatchPhenopacket>
           columns={columns}
-          dataSource={individualMatches}
+          dataSource={matches}
+          loading={WAITING_STATES.includes(matchesStatus)}
           rowKey="id"
           bordered={true}
           size="small"

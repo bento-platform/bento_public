@@ -4,12 +4,13 @@ import { createSlice } from '@reduxjs/toolkit';
 import { RequestStatus } from '@/types/requests';
 // import { EMPTY_DISCOVERY_RESULTS } from '@/features/search/constants';
 import type { CountsOrBooleans, DiscoveryResponseOrMessage } from '@/types/discovery/response';
-import type { QueryParams, SearchFieldResponse, QueryMode } from '@/features/search/types';
+import type { QueryParams, SearchFieldResponse, QueryMode, DiscoveryMatchPhenopacket } from '@/features/search/types';
 // import { serializeChartData } from '@/utils/chart';
 
 import { performKatsuDiscovery } from './performKatsuDiscovery.thunk';
 import { fetchSearchFields } from './fetchSearchFields.thunk';
 import { performFreeTextSearch } from '@/features/search/performFreeTextSearch.thunk';
+import { fetchDiscoveryMatches } from '@/features/search/fetchDiscoveryMatches.thunk';
 
 export type QueryState = {
   mode: QueryMode;
@@ -28,8 +29,14 @@ export type QueryState = {
   doneFirstLoad: boolean;
   message: string;
 
+  matchesStatus: RequestStatus;
+
   // results
   resultCountsOrBools: CountsOrBooleans;
+  page: number;
+  pageSize: number;
+  totalMatches: number;
+  matches: DiscoveryMatchPhenopacket[] | undefined; // TODO
 };
 
 const initialState: QueryState = {
@@ -46,7 +53,14 @@ const initialState: QueryState = {
   // ----
   doneFirstLoad: false,
   message: '',
+  // ----
+  matchesStatus: RequestStatus.Idle,
+  // ----
   resultCountsOrBools: { phenopacket: 0, individual: 0, biosample: 0, experiment: 0 },
+  page: 0,
+  pageSize: 10,
+  totalMatches: 0,
+  matches: undefined,
 };
 
 const query = createSlice({
@@ -70,6 +84,12 @@ const query = createSlice({
     },
     setDoneFirstLoad: (state) => {
       state.doneFirstLoad = true;
+    },
+    setMatchesPage: (state, { payload }: PayloadAction<number>) => {
+      state.page = payload;
+    },
+    setMatchesPageSize: (state, { payload }: PayloadAction<number>) => {
+      state.pageSize = payload;
     },
     resetAllQueryState: () => initialState,
   },
@@ -142,6 +162,18 @@ const query = createSlice({
     builder.addCase(fetchSearchFields.rejected, (state) => {
       state.fieldsStatus = RequestStatus.Rejected;
     });
+    // -----
+    builder.addCase(fetchDiscoveryMatches.pending, (state) => {
+      state.matchesStatus = RequestStatus.Pending;
+    });
+    builder.addCase(fetchDiscoveryMatches.fulfilled, (state, { payload }) => {
+      state.matchesStatus = RequestStatus.Fulfilled;
+      state.matches = payload.results;
+      state.totalMatches = payload.pagination.total;
+    });
+    builder.addCase(fetchDiscoveryMatches.rejected, (state) => {
+      state.matchesStatus = RequestStatus.Rejected;
+    });
   },
 });
 
@@ -152,6 +184,8 @@ export const {
   setTextQuery,
   resetTextQueryStatus,
   setDoneFirstLoad,
+  setMatchesPage,
+  setMatchesPageSize,
   resetAllQueryState,
 } = query.actions;
 export { performKatsuDiscovery, fetchSearchFields };

@@ -318,6 +318,13 @@ body {
 .count-card.shadow.count-card-clickable:hover .count-card__show-hide {
   color: #1677ff;
 }
+.count-card.shadow.count-card-selected {
+  border-bottom: none;
+  z-index: 3;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-bottom: -12px;
+}
 
 .count-card__show-hide {
   position: absolute;
