@@ -5,6 +5,7 @@ import OntologyTermComponent from '@Util/ClinPhen/OntologyTerm';
 import TimeElementDisplay from '@Util/ClinPhen/TimeElementDisplay';
 import ExtraProperties from '@Util/ExtraProperties';
 import TDescriptions from '@Util/TDescriptions';
+import Excluded, { ExcludedModel } from '@Util/ClinPhen/Excluded';
 
 import type { PhenotypicFeature } from '@/types/clinPhen/phenotypicFeature';
 import type { OntologyTerm } from '@/types/ontology';
@@ -110,7 +111,12 @@ function PhenotypicFeaturesView({ features }: PhenotypicFeaturesViewProps) {
       title: 'phenotypic_features.feature',
       dataIndex: 'type',
       key: 'type',
-      render: (type: OntologyTerm) => <OntologyTermComponent term={type} />,
+      render: (type: OntologyTerm, { excluded }: PhenotypicFeature) => (
+        <>
+          <OntologyTermComponent term={type} />
+          {excluded && <Excluded model={ExcludedModel.PHENOTYPE} />}
+        </>
+      ),
     },
     {
       title: 'phenotypic_features.severity',
