@@ -15,3 +15,13 @@ export const isoDateToString = (d: string, lang?: string) => {
     day: 'numeric',
   });
 };
+
+export const isValidUrl = (url?: string) => {
+  if (!url) return false;
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+};

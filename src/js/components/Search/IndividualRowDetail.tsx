@@ -2,7 +2,7 @@ import { useTranslationFn } from '@/hooks';
 import type { DescriptionsProps } from 'antd';
 import { Descriptions, Skeleton } from 'antd';
 
-import TimeElementDisplay from '@/components/ClinPhen/TimeElementDisplay';
+import TimeElementDisplay from '@/components/Util/ClinPhen/TimeElementDisplay';
 import JsonView from '@/components/Util/JsonView';
 
 import { EM_DASH } from '@/constants/common';

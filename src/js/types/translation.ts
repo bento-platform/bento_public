@@ -1,2 +1,2 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export type NamespaceTranslationFunction = (key: string, options?: any) => string;
+export type NamespaceTranslationFunction = (key: string | undefined, options?: any) => string;
