@@ -10,7 +10,7 @@ import { scopedAuthorizedRequestConfig } from '@/utils/requests';
 
 import type { RootState } from '@/store';
 import type { ChartConfig } from '@/types/chartConfig';
-import type { ChartDataField, LocalStorageData, Sections } from '@/types/data';
+import type { ChartDataField, LocalStorageChartData, Sections } from '@/types/data';
 import type { Counts, OverviewResponse } from '@/types/overviewResponse';
 import { RequestStatus } from '@/types/requests';
 
@@ -55,7 +55,7 @@ export const makeGetDataRequestThunk = createAsyncThunk<
 
     // comparing to the local store and updating itself
     let convertedData = convertSequenceAndDisplayData(sectionData);
-    const localValue = getValue(LOCALSTORAGE_CHARTS_KEY, convertedData, (val: LocalStorageData) =>
+    const localValue = getValue(LOCALSTORAGE_CHARTS_KEY, convertedData, (val: LocalStorageChartData) =>
       verifyData(val, convertedData)
     );
     sectionData.forEach(({ sectionTitle, charts }, i, arr) => {

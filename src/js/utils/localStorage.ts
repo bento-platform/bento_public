@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { LocalStorageData, Sections } from '@/types/data';
+import type { LocalStorageChartData, Sections } from '@/types/data';
 import type { ValueOf } from '@/types/util';
 
-export const verifyData = (nObj: any, oObj: LocalStorageData) => {
-  const verifyCharts = (nCharts: any, oCharts: ValueOf<LocalStorageData>) => {
+export const verifyData = (nObj: any, oObj: LocalStorageChartData) => {
+  const verifyCharts = (nCharts: any, oCharts: ValueOf<LocalStorageChartData>) => {
     if (nCharts.length !== oCharts.length) return false;
 
     const nChartsMap: { [key in string]: boolean } = {};
@@ -47,7 +47,7 @@ export const getValue = <T>(key: string, defaultVal: T, verifyFunc: (arg: any) =
 };
 
 export const convertSequenceAndDisplayData = (sections: Sections) => {
-  const temp: LocalStorageData = {};
+  const temp: LocalStorageChartData = {};
   sections.forEach(({ sectionTitle, charts }) => {
     temp[sectionTitle] = charts.map(({ id, isDisplayed, width }) => ({ id, isDisplayed, width }));
   });

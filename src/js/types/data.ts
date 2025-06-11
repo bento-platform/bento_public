@@ -30,7 +30,7 @@ export interface ChartData {
   y: number;
 }
 
-export type LocalStorageData = {
+export type LocalStorageChartData = {
   [key in string]: { id: string; isDisplayed: boolean; width: number }[];
 };
 
