@@ -50,7 +50,6 @@ const DiseasesView = ({ diseases }: DiseasesViewProps) => {
     {
       title: 'diseases_table.disease',
       dataIndex: 'term',
-      key: 'term',
       render: (term: OntologyTerm, { excluded }) => (
         <>
           <OntologyTermComponent term={term} />
@@ -61,13 +60,11 @@ const DiseasesView = ({ diseases }: DiseasesViewProps) => {
     {
       title: 'diseases_table.onset_age',
       dataIndex: 'onset',
-      key: 'onset',
       render: (onset: TimeElement) => (onset ? <TimeElementDisplay element={onset} /> : EM_DASH),
     },
     {
       title: 'diseases_table.resolution_age',
       dataIndex: 'resolution',
-      key: 'resolution',
       render: (resolution: TimeElement) => (resolution ? <TimeElementDisplay element={resolution} /> : EM_DASH),
     },
   ]);

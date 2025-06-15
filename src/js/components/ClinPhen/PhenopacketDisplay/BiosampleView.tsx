@@ -57,12 +57,10 @@ const BiosampleView = ({ biosamples }: BiosampleViewProps) => {
     {
       title: 'biosample_table.biosample_id',
       dataIndex: 'id',
-      key: 'id',
     },
     {
       title: 'biosample_table.sampled_tissue',
       dataIndex: 'sampled_tissue',
-      key: 'sampled_tissue',
       render: (term: OntologyTerm) => <OntologyTermComponent term={term} />,
     },
   ]);

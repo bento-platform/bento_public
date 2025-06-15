@@ -74,13 +74,11 @@ const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement
             {
               title: 'Type',
               dataIndex: 'type',
-              key: 'type',
               render: (type: OntologyTermType) => <OntologyTermComponent term={type} />,
             },
             {
               title: 'Value',
               dataIndex: 'quantity',
-              key: 'quantity',
               render: (quantity: Quantity) => <QuantityDisplay quantity={quantity} />,
             },
           ]}
@@ -105,7 +103,6 @@ const MeasurementsView = ({ measurements }: MeasurementsViewProps) => {
     {
       title: 'measurements.assay',
       dataIndex: 'assay',
-      key: 'assay',
       render: (assay: OntologyTermType) => <OntologyTermComponent term={assay} />,
     },
     {
@@ -116,13 +113,11 @@ const MeasurementsView = ({ measurements }: MeasurementsViewProps) => {
     {
       title: 'measurements.description',
       dataIndex: 'description',
-      key: 'description',
       render: (text: string | undefined) => t(text) || EM_DASH,
     },
     {
       title: 'measurements.procedure',
       dataIndex: 'procedure',
-      key: 'procedure',
       render: (procedure: Procedure | undefined) => <OntologyTermComponent term={procedure?.code} />,
     },
   ]);
