@@ -106,7 +106,7 @@ const TreatmentComponent = ({ treatment }: { treatment: Treatment }) => {
 };
 
 const RadiationTherapyComponent = ({ radiation_therapy }: { radiation_therapy: RadiationTherapy }) => {
-  const RadiationTherapyItems: DescriptionsProps['items'] = [
+  const radiationTherapyItems: DescriptionsProps['items'] = [
     {
       key: 'modality',
       label: 'medical_actions.modality',
@@ -128,7 +128,7 @@ const RadiationTherapyComponent = ({ radiation_therapy }: { radiation_therapy: R
       children: radiation_therapy.fractions,
     },
   ];
-  return <TDescriptions bordered column={1} size="small" items={RadiationTherapyItems} />;
+  return <TDescriptions bordered column={1} size="small" items={radiationTherapyItems} />;
 };
 
 const TherapeuticRegimenComponent = ({ therapeutic_regimen }: { therapeutic_regimen: TherapeuticRegimen }) => {
@@ -180,7 +180,7 @@ const TherapeuticRegimenComponent = ({ therapeutic_regimen }: { therapeutic_regi
 };
 
 const MedicalActionDetails = ({ medicalAction }: { medicalAction: MedicalAction }) => {
-  const MedicalActionItems: DescriptionsProps['items'] = [
+  const medicalActionItems: DescriptionsProps['items'] = [
     medicalAction.procedure && {
       key: 'procedure',
       label: 'medical_actions.procedure',
@@ -207,7 +207,7 @@ const MedicalActionDetails = ({ medicalAction }: { medicalAction: MedicalAction 
       children: <OntologyTermStack terms={medicalAction.adverse_events} />,
     },
   ].filter((item) => item) as DescriptionsProps['items'];
-  return <TDescriptions bordered column={1} size="small" items={MedicalActionItems} />;
+  return <TDescriptions bordered column={1} size="small" items={medicalActionItems} />;
 };
 
 const MedicalActionsView = ({ medicalActions }: { medicalActions: MedicalAction[] }) => {
