@@ -55,7 +55,7 @@ const Evidence = ({ evidence }: EvidenceProps) => {
           )}
           {externalReference?.description && (
             <>
-              <strong>Description:</strong> {t(externalReference?.description)}
+              <strong>{t('Description')}:</strong> {t(externalReference?.description)}
               <br />
             </>
           )}
