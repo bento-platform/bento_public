@@ -81,6 +81,7 @@ const makeConfig = (mode) => ({
     alias: {
       '@': path.resolve(__dirname, 'src/js'),
       '@public': path.resolve(__dirname, 'src/public'),
+      '@Util': path.resolve(__dirname, 'src/js/components/Util'),
     },
     extensions: ['.tsx', '.ts', '.js'],
   },
