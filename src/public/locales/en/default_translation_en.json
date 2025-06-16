@@ -312,7 +312,8 @@
     "treatment_intent": "Treatment Intent",
     "response_to_treatment": "Response to Treatment",
     "treatment_termination_reason": "Treatment Termination Reason",
-    "refernce": "Reference"
+    "refernce": "Reference",
+    "unkown": "Unknown"
   },
   "ontologies": {
     "resource_id": "Resource ID",

@@ -1,4 +1,4 @@
-import { Flex, Table, type DescriptionsProps } from 'antd';
+import { Flex, Table, Typography, type DescriptionsProps } from 'antd';
 
 import OntologyTermComponent, { OntologyTermStack } from '@Util/ClinPhen/OntologyTerm';
 import QuantityDisplay from '@Util/ClinPhen/QuantityDisplay';
@@ -20,6 +20,8 @@ import type { Procedure } from '@/types/clinPhen/procedure';
 import type { TimeInterval } from '@/types/clinPhen/shared';
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
 import { useTranslationFn } from '@/hooks';
+
+const { Text } = Typography;
 
 export const ProcedureComponent = ({ procedure }: { procedure: Procedure }) => {
   const ProcedureItems: DescriptionsProps['items'] = [
@@ -221,7 +223,11 @@ const MedicalActionsView = ({ medicalActions }: { medicalActions: MedicalAction[
         if (action.treatment) return t('medical_actions.treatment');
         if (action.radiation_therapy) return t('medical_actions.radiation_therapy');
         if (action.therapeutic_regimen) return t('medical_actions.therapeutic_regimen');
-        return 'Unknown';
+        return (
+          <Text type="secondary" italic>
+            {t('medical_actions.unknown')}
+          </Text>
+        );
       },
     },
     {
