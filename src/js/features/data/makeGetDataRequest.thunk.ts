@@ -2,10 +2,16 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 import { MAX_CHARTS, katsuPublicOverviewUrl } from '@/constants/configConstants';
-import { DEFAULT_CHART_WIDTH, LOCALSTORAGE_CHARTS_KEY } from '@/constants/overviewConstants';
+import { DEFAULT_CHART_WIDTH } from '@/constants/overviewConstants';
 import { serializeChartData } from '@/utils/chart';
 import { printAPIError } from '@/utils/error.util';
-import { verifyData, saveValue, getValue, convertSequenceAndDisplayData } from '@/utils/localStorage';
+import {
+  verifyData,
+  saveValue,
+  getValue,
+  convertSequenceAndDisplayData,
+  generateLSChartDataKey,
+} from '@/utils/localStorage';
 import { scopedAuthorizedRequestConfig } from '@/utils/requests';
 
 import type { RootState } from '@/store';
@@ -55,9 +61,9 @@ export const makeGetDataRequestThunk = createAsyncThunk<
 
     // comparing to the local store and updating itself
     let convertedData = convertSequenceAndDisplayData(sectionData);
-    const localValue = getValue(LOCALSTORAGE_CHARTS_KEY, convertedData, (val: LocalStorageChartData) =>
-      verifyData(val, convertedData)
-    );
+    const scope = getState().metadata.selectedScope.scope;
+    const lsKey = generateLSChartDataKey(scope);
+    const localValue = getValue(lsKey, convertedData, (val: LocalStorageChartData) => verifyData(val, convertedData));
     sectionData.forEach(({ sectionTitle, charts }, i, arr) => {
       arr[i].charts = localValue[sectionTitle].map(({ id, isDisplayed, width }) => ({
         ...charts.find((c) => c.id === id)!,
@@ -68,7 +74,7 @@ export const makeGetDataRequestThunk = createAsyncThunk<
 
     //saving to local storage
     convertedData = convertSequenceAndDisplayData(sectionData);
-    saveValue(LOCALSTORAGE_CHARTS_KEY, convertedData);
+    saveValue(lsKey, convertedData);
 
     return { sectionData, counts: overviewResponse.counts, defaultData: defaultSectionData };
   },

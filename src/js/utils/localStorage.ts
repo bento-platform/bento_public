@@ -1,6 +1,9 @@
+import { LOCALSTORAGE_CHARTS_KEY_PREFIX } from '@/constants/overviewConstants';
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { LocalStorageChartData, Sections } from '@/types/data';
 import type { ValueOf } from '@/types/util';
+import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 
 export const verifyData = (nObj: any, oObj: LocalStorageChartData) => {
   const verifyCharts = (nCharts: any, oCharts: ValueOf<LocalStorageChartData>) => {
@@ -61,4 +64,13 @@ export const convertSequenceAndDisplayData = (sections: Sections) => {
     temp[sectionTitle] = charts.map(({ id, isDisplayed, width }) => ({ id, isDisplayed, width }));
   });
   return temp;
+};
+
+export const generateLSChartDataKey = (scope: DiscoveryScope) => {
+  const { project: p, dataset: d } = scope;
+  const scopeString = p ? (d ?? p) : '';
+
+  // Relies on the fact that project and dataset ids are unique
+  const lsKey = `${LOCALSTORAGE_CHARTS_KEY_PREFIX}${scopeString}`;
+  return lsKey;
 };

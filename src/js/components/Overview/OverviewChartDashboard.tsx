@@ -2,11 +2,11 @@ import { type CSSProperties, useCallback, useEffect, useState } from 'react';
 import { Col, FloatButton, Row, Typography } from 'antd';
 import { AppstoreAddOutlined } from '@ant-design/icons';
 
-import { convertSequenceAndDisplayData, saveValue } from '@/utils/localStorage';
+import { convertSequenceAndDisplayData, generateLSChartDataKey, saveValue } from '@/utils/localStorage';
 import type { Sections } from '@/types/data';
+import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import { RequestStatus } from '@/types/requests';
 
-import { LOCALSTORAGE_CHARTS_KEY } from '@/constants/overviewConstants';
 import { WAITING_STATES } from '@/constants/requests';
 
 import AboutBox from './AboutBox';
@@ -25,8 +25,8 @@ import { useSmallScreen } from '@/hooks/useResponsiveContext';
 // The 'right' position will be set based on small screen status dynamically
 const MANAGE_CHARTS_BUTTON_STYLE: CSSProperties = { bottom: '1.5em', transform: 'scale(125%)' };
 
-const saveToLocalStorage = (sections: Sections) => {
-  saveValue(LOCALSTORAGE_CHARTS_KEY, convertSequenceAndDisplayData(sections));
+const saveToLocalStorage = (scope: DiscoveryScope, sections: Sections) => {
+  saveValue(generateLSChartDataKey(scope), convertSequenceAndDisplayData(sections));
 };
 
 const OverviewChartDashboard = () => {
@@ -47,7 +47,7 @@ const OverviewChartDashboard = () => {
   useEffect(() => {
     // Save sections to localStorage when they change
     if (overviewDataStatus != RequestStatus.Fulfilled) return;
-    saveToLocalStorage(sections);
+    saveToLocalStorage(scope, sections);
   }, [overviewDataStatus, sections]);
 
   const displayedSections = sections.filter(({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1);
@@ -56,7 +56,7 @@ const OverviewChartDashboard = () => {
   const onManageChartsClose = useCallback(() => {
     setDrawerVisible(false);
     // When we close the drawer, save any changes to localStorage. This helps ensure width gets saved:
-    saveToLocalStorage(sections);
+    saveToLocalStorage(scope, sections);
   }, [sections]);
 
   return WAITING_STATES.includes(overviewDataStatus) ? (

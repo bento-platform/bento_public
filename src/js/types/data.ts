@@ -30,9 +30,7 @@ export interface ChartData {
   y: number;
 }
 
-export type LocalStorageChartData = {
-  [key in string]: { id: string; isDisplayed: boolean; width: number }[];
-};
+export type LocalStorageChartData = Record<string, { id: string; isDisplayed: boolean; width: number }[]>;
 
 export type OptionalDiscoveryResults = {
   // individuals
