@@ -38,12 +38,6 @@ const OverviewChartDashboard = () => {
   const searchableFields = useSearchableFields();
   // ---
 
-  useEffect(() => {
-    // Save sections to localStorage when they change
-    if (overviewDataStatus != RequestStatus.Fulfilled) return;
-    saveScopeOverviewToLS(scope, sections);
-  }, [overviewDataStatus, scope, sections]);
-
   const displayedSections = sections.filter(({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1);
 
   const onManageChartsOpen = useCallback(() => setDrawerVisible(true), []);
