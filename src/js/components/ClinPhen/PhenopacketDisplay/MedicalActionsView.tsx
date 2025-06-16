@@ -105,27 +105,27 @@ const TreatmentComponent = ({ treatment }: { treatment: Treatment }) => {
   return <TDescriptions bordered column={1} size="small" items={TreatmentItems} />;
 };
 
-const RadiationTherapyComponent = ({ radiation_therapy }: { radiation_therapy: RadiationTherapy }) => {
+const RadiationTherapyComponent = ({ radiationTherapy }: { radiationTherapy: RadiationTherapy }) => {
   const radiationTherapyItems: DescriptionsProps['items'] = [
     {
       key: 'modality',
       label: 'medical_actions.modality',
-      children: <OntologyTermComponent term={radiation_therapy.modality} />,
+      children: <OntologyTermComponent term={radiationTherapy.modality} />,
     },
     {
       key: 'bodySite',
       label: 'medical_actions.body_site',
-      children: <OntologyTermComponent term={radiation_therapy.body_site} />,
+      children: <OntologyTermComponent term={radiationTherapy.body_site} />,
     },
     {
       key: 'dosage',
       label: 'medical_actions.dosage',
-      children: radiation_therapy.dosage,
+      children: radiationTherapy.dosage,
     },
     {
       key: 'fractions',
       label: 'medical_actions.fractions',
-      children: radiation_therapy.fractions,
+      children: radiationTherapy.fractions,
     },
   ];
   return <TDescriptions bordered column={1} size="small" items={radiationTherapyItems} />;
@@ -194,7 +194,7 @@ const MedicalActionDetails = ({ medicalAction }: { medicalAction: MedicalAction 
     medicalAction.radiation_therapy && {
       key: 'radiationTherapy',
       label: 'medical_actions.radiation_therapy',
-      children: <RadiationTherapyComponent radiation_therapy={medicalAction.radiation_therapy} />,
+      children: <RadiationTherapyComponent radiationTherapy={medicalAction.radiation_therapy} />,
     },
     medicalAction.therapeutic_regimen && {
       key: 'therapeuticRegimen',
