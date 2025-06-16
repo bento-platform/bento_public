@@ -27,6 +27,15 @@ export const saveValue = (key: string, value: any) => {
   }
 };
 
+/**
+ * Safely retrieves and parses a value of type `T` from `localStorage`.
+ *
+ * @template T
+ * @param {string} key - The `localStorage` key under which the value is stored.
+ * @param {T} defaultVal - The value to return if the key does not exist, parsing fails, or validation fails.
+ * @param {(arg: any) => boolean} verifyFunc - A predicate that receives the parsed value and returns `true` if it’s valid.
+ * @returns {T} The parsed and validated value from `localStorage`, or `defaultVal` otherwise.
+ */
 export const getValue = <T>(key: string, defaultVal: T, verifyFunc: (arg: any) => boolean): T => {
   try {
     const serializedState = localStorage.getItem(key);
