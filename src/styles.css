@@ -412,5 +412,5 @@ h3.search-sub-form-title:not(.focused) .search-sub-form-title__inner > span.shou
 
 #subject-view .ant-descriptions-item-label {
   /* Align split line vertically in all descriptions */
-  width: 500px;
+  width: 30vw;
 }
