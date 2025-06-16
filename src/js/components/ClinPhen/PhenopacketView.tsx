@@ -41,7 +41,7 @@ const PhenopacketView = () => {
   }
 
   if (status === RequestStatus.Pending || !phenopacket) {
-    return <Loader fullHeight={true} />;
+    return <Loader fullHeight={false} />;
   }
 
   return (
