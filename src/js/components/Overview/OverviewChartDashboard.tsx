@@ -1,11 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Flex, FloatButton } from 'antd';
 import { AppstoreAddOutlined } from '@ant-design/icons';
 
 import { convertSequenceAndDisplayData, generateLSChartDataKey, saveValue } from '@/utils/localStorage';
 import type { Sections } from '@/types/data';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
-import { RequestStatus } from '@/types/requests';
 
 import { WAITING_STATES } from '@/constants/requests';
 
