@@ -42,7 +42,7 @@ const OverviewChartDashboard = () => {
     // Save sections to localStorage when they change
     if (overviewDataStatus != RequestStatus.Fulfilled) return;
     saveToLocalStorage(scope, sections);
-  }, [overviewDataStatus, sections]);
+  }, [overviewDataStatus, scope, sections]);
 
   const displayedSections = sections.filter(({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1);
 
@@ -51,7 +51,7 @@ const OverviewChartDashboard = () => {
     setDrawerVisible(false);
     // When we close the drawer, save any changes to localStorage. This helps ensure width gets saved:
     saveToLocalStorage(scope, sections);
-  }, [sections]);
+  }, [scope, sections]);
 
   return WAITING_STATES.includes(overviewDataStatus) ? (
     <Loader />
