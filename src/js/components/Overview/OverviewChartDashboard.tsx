@@ -21,7 +21,7 @@ import { useTranslationFn } from '@/hooks';
 import { useData, useSearchableFields } from '@/features/data/hooks';
 import { useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
 
-const saveToLocalStorage = (scope: DiscoveryScope, sections: Sections) => {
+const saveScopeOverviewToLS = (scope: DiscoveryScope, sections: Sections) => {
   saveValue(generateLSChartDataKey(scope), convertSequenceAndDisplayData(sections));
 };
 
@@ -41,7 +41,7 @@ const OverviewChartDashboard = () => {
   useEffect(() => {
     // Save sections to localStorage when they change
     if (overviewDataStatus != RequestStatus.Fulfilled) return;
-    saveToLocalStorage(scope, sections);
+    saveScopeOverviewToLS(scope, sections);
   }, [overviewDataStatus, scope, sections]);
 
   const displayedSections = sections.filter(({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1);
@@ -50,7 +50,7 @@ const OverviewChartDashboard = () => {
   const onManageChartsClose = useCallback(() => {
     setDrawerVisible(false);
     // When we close the drawer, save any changes to localStorage. This helps ensure width gets saved:
-    saveToLocalStorage(scope, sections);
+    saveScopeOverviewToLS(scope, sections);
   }, [scope, sections]);
 
   return WAITING_STATES.includes(overviewDataStatus) ? (
