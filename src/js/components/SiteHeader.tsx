@@ -56,7 +56,7 @@ const SiteHeader = () => {
           {isSmallScreen ? (
             <object
               type="image/png"
-              data="/public/assets/icon_small.png"
+              data="/public/assets/branding.png"
               aria-label="logo"
               style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-3px)', paddingRight: '26px' }}
               onClick={navigateToOverview}
