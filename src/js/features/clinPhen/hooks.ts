@@ -19,11 +19,8 @@ export const useIndividualData = (id: string) => {
   return { data, status };
 };
 
-export const usePhenopacketResources = (phenopacketId: string | undefined) => {
-  const data =
-    useAppSelector((state) => state.clinPhen.phenopacketDataCache[phenopacketId || '']?.meta_data?.resources) ?? [];
-  return data;
-};
+export const usePhenopacketResources = (phenopacketId: string | undefined) =>
+  useAppSelector((state) => state.clinPhen.phenopacketDataCache[phenopacketId || '']?.meta_data?.resources) ?? [];
 
 export const usePhenopacketData = (phenopacketId: string) => {
   const dispatch = useAppDispatch();

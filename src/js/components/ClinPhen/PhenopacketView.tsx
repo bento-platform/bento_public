@@ -6,7 +6,7 @@ import { usePhenopacketTabs } from '@/hooks/usePhenopacketTabs';
 
 import Loader from '@/components/Loader';
 
-import { defaultTab } from '@/constants/phenopacketConstants';
+import { PHENOPACKETS_DEFAULT_TAB } from '@/constants/phenopacketConstants';
 
 import { TabKeys } from '@/types/PhenopacketView.types';
 import { RequestStatus } from '@/types/requests';
@@ -26,17 +26,13 @@ const PhenopacketView = () => {
 
   const { handleTabChange, items } = usePhenopacketTabs(phenopacket);
 
-  const [activeKey, setActiveKey] = useState<string>('biosamples');
+  const [activeKey, setActiveKey] = useState<TabKeys>(TabKeys.BIOSAMPLES);
 
   useEffect(() => {
     if (tab && Object.values(TabKeys).includes(tab as TabKeys)) {
-      setActiveKey(tab);
+      setActiveKey(tab as TabKeys);
     } else {
-      if (tab) {
-        navigate(`../${defaultTab}`, { relative: 'path' });
-      } else {
-        navigate(`./${defaultTab}`, { relative: 'path' });
-      }
+      navigate(`${tab ? '..' : '.'}/${PHENOPACKETS_DEFAULT_TAB}`, { relative: 'path', replace: true });
     }
   }, [navigate, tab]);
 

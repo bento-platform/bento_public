@@ -1,3 +1,3 @@
 import { TabKeys } from '@/types/PhenopacketView.types';
 
-export const defaultTab = TabKeys.SUBJECT;
+export const PHENOPACKETS_DEFAULT_TAB = TabKeys.SUBJECT;
