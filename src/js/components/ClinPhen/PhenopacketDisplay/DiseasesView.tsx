@@ -1,11 +1,12 @@
 import { Table } from 'antd';
 
-import TDescriptions from '@/components/Util/TDescriptions';
+import TDescriptions from '@Util/TDescriptions';
 import OntologyTermComponent, { OntologyTermStack } from '@Util/ClinPhen/OntologyTerm';
 import TimeElementDisplay from '@Util/ClinPhen/TimeElementDisplay';
 import ExtraProperties from '@Util/ExtraProperties';
+import Excluded, { ExcludedModel } from '@Util/ClinPhen/Excluded';
+
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
-import Excluded, { ExcludedModel } from '@/components/Util/ClinPhen/Excluded';
 
 import type { DescriptionsProps } from 'antd';
 import type { Disease } from '@/types/clinPhen/disease';

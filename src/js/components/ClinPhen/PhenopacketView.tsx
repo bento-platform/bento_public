@@ -8,7 +8,7 @@ import Loader from '@/components/Loader';
 
 import { defaultTab } from '@/constants/phenopacketConstants';
 
-import { TabKeys } from '../../types/PhenopacketView.types';
+import { TabKeys } from '@/types/PhenopacketView.types';
 import { RequestStatus } from '@/types/requests';
 
 import { usePhenopacketData } from '@/features/clinPhen/hooks';

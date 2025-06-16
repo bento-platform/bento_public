@@ -9,7 +9,7 @@ import type { Procedure } from '@/types/clinPhen/procedure';
 
 import { EM_DASH } from '@/constants/common';
 import { ProcedureComponent } from './MedicalActionsView';
-import TDescriptions from '@/components/Util/TDescriptions';
+import TDescriptions from '@Util/TDescriptions';
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
 import { useTranslationFn } from '@/hooks';
 

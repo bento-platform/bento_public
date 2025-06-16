@@ -3,7 +3,7 @@ import OntologyTerm from '@Util/ClinPhen/OntologyTerm';
 import JsonView from '@Util/JsonView';
 import StringList from '@Util/StringList';
 import TimeElementDisplay from '@Util/ClinPhen/TimeElementDisplay';
-import TDescriptions from '@/components/Util/TDescriptions';
+import TDescriptions from '@Util/TDescriptions';
 
 import type { Individual } from '@/types/clinPhen/individual';
 

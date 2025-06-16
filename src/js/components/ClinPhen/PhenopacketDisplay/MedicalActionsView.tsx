@@ -1,4 +1,4 @@
-import { Flex, Table } from 'antd';
+import { Flex, Table, type DescriptionsProps } from 'antd';
 
 import OntologyTermComponent, { OntologyTermStack } from '@Util/ClinPhen/OntologyTerm';
 import QuantityDisplay from '@Util/ClinPhen/QuantityDisplay';
@@ -7,7 +7,6 @@ import TDescriptions from '@Util/TDescriptions';
 
 import { EM_DASH } from '@/constants/common';
 
-import type { DescriptionsProps } from 'antd';
 import type {
   Treatment,
   DoseInterval,
@@ -21,6 +20,7 @@ import type { Procedure } from '@/types/clinPhen/procedure';
 import type { TimeInterval } from '@/types/clinPhen/shared';
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
 import { useTranslationFn } from '@/hooks';
+
 export const ProcedureComponent = ({ procedure }: { procedure: Procedure }) => {
   const ProcedureItems: DescriptionsProps['items'] = [
     {

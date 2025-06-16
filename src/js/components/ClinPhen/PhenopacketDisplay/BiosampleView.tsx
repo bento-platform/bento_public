@@ -1,14 +1,14 @@
 import { type DescriptionsProps, Table } from 'antd';
 
 import OntologyTermComponent from '@Util/ClinPhen/OntologyTerm';
+import TimeElementDisplay from '@Util/ClinPhen/TimeElementDisplay';
+import TDescriptions from '@Util/TDescriptions';
 
 import type { Biosample } from '@/types/clinPhen/biosample';
 import type { OntologyTerm } from '@/types/ontology';
-import TDescriptions from '@/components/Util/TDescriptions';
 
 import { EM_DASH } from '@/constants/common';
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
-import TimeElementDisplay from '@/components/Util/ClinPhen/TimeElementDisplay';
 
 const BiosampleExpandedRow = ({ biosample }: { biosample: Biosample }) => {
   const items: DescriptionsProps['items'] = [
