@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Card, Col, Form, Row } from 'antd';
+import { Button, Card, Col, Flex, Form, Row } from 'antd';
 import { useIsAuthenticated } from 'bento-auth-js';
 import { useAppDispatch, useQueryWithAuthIfAllowed, useTranslationFn } from '@/hooks';
 import { useSelectedScope } from '@/features/metadata/hooks';
@@ -19,14 +19,7 @@ import type {
   BeaconPayloadFilter,
   PayloadVariantsQuery,
 } from '@/types/beacon';
-import { BOX_SHADOW } from '@/constants/overviewConstants';
-import {
-  FORM_ROW_GUTTERS,
-  CARD_STYLE,
-  BUTTON_AREA_STYLE,
-  BUTTON_STYLE,
-  CARD_STYLES,
-} from '@/constants/beaconConstants';
+import { FORM_ROW_GUTTERS, BUTTON_AREA_STYLE, BUTTON_STYLE, CARD_STYLES } from '@/constants/beaconConstants';
 import { T_PLURAL_COUNT } from '@/constants/i18n';
 
 const STARTER_FILTER = { index: 0, searchFieldId: null };
@@ -117,10 +110,12 @@ const BeaconQueryFormUi = ({
   // see e.g., https://genome-blog.soe.ucsc.edu/blog/2016/12/12/the-ucsc-genome-browser-coordinate-counting-systems/
   const convertToZeroBased = (start: string) => Number(start) - 1;
 
+  const filtersDirty = !(filters.length === 1 && filters[0].index == 0 && filters[0].searchFieldId === null);
+
   const packageFilters = useCallback(
     (values: FormValues): BeaconPayloadFilter[] => {
       // ignore optional first filter when left blank
-      if (filters.length === 1 && !values.filterIndex1) {
+      if (!filtersDirty) {
         return [];
       }
 
@@ -130,7 +125,7 @@ const BeaconQueryFormUi = ({
         value: values[`filterValue${f.index}`],
       }));
     },
-    [filters]
+    [filters, filtersDirty]
   );
 
   const packageBeaconJSON = useCallback(
@@ -231,7 +226,7 @@ const BeaconQueryFormUi = ({
 
   return (
     <div className="container margin-auto" style={{ paddingBottom: 8 }}>
-      <Card title={t('Search')} style={{ borderRadius: '10px', width: '100%', ...BOX_SHADOW }} styles={CARD_STYLES}>
+      <Card title={t('Search')} className="w-full shadow rounded-xl" styles={CARD_STYLES}>
         <p style={{ margin: '-8px 0 8px 0', padding: '0', color: 'grey' }}>{t(uiInstructions)}</p>
         <Form form={form} onFinish={handleFinish} layout="vertical" onValuesChange={handleValuesChange}>
           <Row gutter={FORM_ROW_GUTTERS}>
@@ -239,7 +234,7 @@ const BeaconQueryFormUi = ({
               <Col xs={24} lg={12}>
                 <Card
                   title={t('entities.variant', T_PLURAL_COUNT)}
-                  style={CARD_STYLE}
+                  className="shadow h-full"
                   styles={CARD_STYLES}
                   extra={
                     <SearchToolTip>
@@ -253,12 +248,8 @@ const BeaconQueryFormUi = ({
             )}
             <Col xs={24} lg={hasVariants ? 12 : 24}>
               <Card
-                title={
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <>{t('Metadata')}</>
-                  </div>
-                }
-                style={CARD_STYLE}
+                title={<Flex justify="space-between">{t('Metadata')}</Flex>}
+                className="shadow h-full"
                 styles={CARD_STYLES}
                 extra={
                   <SearchToolTip>
@@ -269,6 +260,7 @@ const BeaconQueryFormUi = ({
                 <Filters
                   filters={filters}
                   setFilters={setFilters}
+                  filtersDirty={filtersDirty}
                   form={form}
                   beaconFiltersBySection={beaconFiltersBySection}
                   isNetworkQuery={isNetworkQuery}

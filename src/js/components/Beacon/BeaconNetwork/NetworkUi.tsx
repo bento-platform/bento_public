@@ -1,5 +1,6 @@
+import { Flex } from 'antd';
+
 import Loader from '@/components/Loader';
-import { WRAPPER_STYLE } from '@/constants/beaconConstants';
 import { WAITING_STATES } from '@/constants/requests';
 import { useBeaconNetwork } from '@/features/beacon/hooks';
 import { beaconNetworkQuery } from '@/features/beacon/network.store';
@@ -16,7 +17,7 @@ const NetworkUi = () => {
   return WAITING_STATES.includes(networkConfigStatus) ? (
     <Loader />
   ) : (
-    <div style={WRAPPER_STYLE}>
+    <Flex vertical={true} align="center" justify="space-between">
       <BeaconQueryFormUi
         isFetchingQueryResponse={isFetchingQueryResponse}
         isNetworkQuery={true}
@@ -26,7 +27,7 @@ const NetworkUi = () => {
       />
       <NetworkSearchResults />
       <NetworkBeacons />
-    </div>
+    </Flex>
   );
 };
 

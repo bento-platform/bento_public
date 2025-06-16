@@ -13,3 +13,6 @@ export const EMPTY_DISCOVERY_RESULTS: DiscoveryResults = {
   experimentCount: 0,
   experimentChartData: [],
 };
+
+export const NON_FILTER_QUERY_PARAM_PREFIX = '_';
+export const TEXT_QUERY_PARAM = '_q';

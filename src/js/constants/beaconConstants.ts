@@ -1,19 +1,7 @@
 import type { CSSProperties } from 'react';
-import { BOX_SHADOW } from '@/constants/overviewConstants';
-
-export const WRAPPER_STYLE: CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-};
+import type { CardProps } from 'antd';
 
 export const FORM_ROW_GUTTERS: [number, number] = [16, 16];
-
-export const CARD_STYLE: CSSProperties = {
-  height: '100%',
-  ...BOX_SHADOW,
-};
 
 export const CARD_BODY_STYLE: CSSProperties = {
   padding: '0 24px 5px 24px',
@@ -23,7 +11,7 @@ export const CARD_HEAD_STYLE: CSSProperties = {
   border: '0',
 };
 
-export const CARD_STYLES = {
+export const CARD_STYLES: CardProps['styles'] = {
   body: CARD_BODY_STYLE,
   header: CARD_HEAD_STYLE,
 };

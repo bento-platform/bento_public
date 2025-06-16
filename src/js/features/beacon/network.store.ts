@@ -3,8 +3,8 @@ import axios from 'axios';
 // import { makeAuthorizationHeader } from 'bento-auth-js';
 
 import { BEACON_NETWORK_URL } from '@/config';
-import { EMPTY_DISCOVERY_RESULTS } from '@/constants/searchConstants';
 import { BEACON_INDIVIDUALS_PATH } from '@/features/beacon/constants';
+import { EMPTY_DISCOVERY_RESULTS } from '@/features/search/constants';
 import type {
   BeaconAssemblyIds,
   BeaconFilterSection,

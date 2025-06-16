@@ -6,6 +6,10 @@
   "Portal": "Portail",
   "missing": "manquant(s)",
   "entities": {
+    "project_one": "Projet",
+    "project_other": "Projets",
+    "dataset_one": "Jeu de données",
+    "dataset_other": "Jeux de données",
     "phenopacket_one": "Phenopacket",
     "phenopacket_other": "Données cliniques",
     "individual_one": "Participant",
@@ -27,6 +31,17 @@
     "variant_one": "Variant",
     "variant_other": "Variants"
   },
+  "search": {
+    "filters": "Filtres",
+    "text_search": "Recherche de texte",
+    "filter_placeholder": "Sélectionner un champ à filtrer \u2026",
+    "showing_entities": "Affichage des {{entity, lowercase}} {{start}}-{{end}} sur {{total}}",
+    "showing_entities_short": "{{start}}-{{end}} / {{total}}",
+    "manage_columns": "Gérer les colonnes",
+    "export_csv": "Exporter en CSV",
+    "csv": "CSV"
+  },
+  "OR": "OU",
   "in": "en",
   "Get Data": "Obtenir",
   "No Results": "Aucun résultat",
@@ -104,7 +119,6 @@
   "Sign Out": "Se déconnecter",
   "Select Scope": "Sélectionner un périmètre",
   "About": "À propos",
-  "Datasets": "Jeux de données",
   "Clear": "Effacer",
   "Select": "Sélectionner",
   "Created": "Créé",

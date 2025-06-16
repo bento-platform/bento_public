@@ -10,7 +10,7 @@ import { ExportOutlined, LinkOutlined, LoginOutlined, LogoutOutlined } from '@an
 
 import { useSelectedScope } from '@/features/metadata/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
-import { scopeToUrl } from '@/utils/router';
+import { langAndScopeSelectionToUrl } from '@/utils/router';
 
 import { LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
 import { CLIENT_NAME, PORTAL_URL, SHOW_PORTAL_LINK, SHOW_SIGN_IN, TRANSLATED } from '@/config';
@@ -27,7 +27,7 @@ const SiteHeader = () => {
 
   const { isFetching: openIdConfigFetching } = useOpenIdConfig();
   const { isHandingOffCodeForToken } = useAuthState();
-  const { scope: scopeObj } = useSelectedScope();
+  const selectedScope = useSelectedScope();
 
   const isAuthenticated = useIsAuthenticated();
   const performSignOut = usePerformSignOut();
@@ -45,8 +45,8 @@ const SiteHeader = () => {
   };
 
   const navigateToOverview = useCallback(
-    () => navigate(`/${i18n.language}${scopeToUrl(scopeObj)}`),
-    [navigate, i18n.language, scopeObj]
+    () => navigate(langAndScopeSelectionToUrl(i18n.language, selectedScope, '')),
+    [navigate, i18n.language, selectedScope]
   );
 
   return (

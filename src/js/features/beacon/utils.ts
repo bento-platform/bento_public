@@ -8,7 +8,7 @@ import type {
   BeaconQueryResponse,
   BeaconFilterSection,
 } from '@/types/beacon';
-import type { Field, Section } from '@/types/search';
+import type { Field, Section } from '@/features/search/types';
 import type { ChartData, DiscoveryResults, OptionalDiscoveryResults } from '@/types/data';
 import type { NetworkBeacon } from '@/types/beaconNetwork';
 import type { Dataset, Project } from '@/types/metadata';
@@ -83,7 +83,13 @@ export const extractBeaconDiscoveryOverview = (response: BeaconQueryResponse): O
         experimentCount: response.info.bento.experiments?.count,
         experimentChartData: serializeChartData(response.info.bento.experiments?.experiment_type),
       }
-    : {}),
+    : // no overview is given when zero results
+      {
+        biosampleCount: 0,
+        biosampleChartData: [],
+        experimentCount: 0,
+        experimentChartData: [],
+      }),
 
   // Beacon-standard individuals count
   ...(response.responseSummary

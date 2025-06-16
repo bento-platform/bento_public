@@ -35,7 +35,12 @@ export type LocalStorageChartData = Record<string, { id: string; isDisplayed: bo
 export type OptionalDiscoveryResults = {
   // individuals
   individualCount?: number;
-  individualMatches?: string[];
+  individualMatches?: {
+    id: string;
+    phenopacket_id: string | null;
+    project_id: string | null;
+    dataset_id: string | null;
+  }[];
   // biosamples
   biosampleCount?: number;
   biosampleChartData?: ChartData[];

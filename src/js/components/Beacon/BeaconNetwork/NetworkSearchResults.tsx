@@ -58,6 +58,7 @@ const NetworkSearchResults = () => {
       results={networkResults}
       resultsTitle={t('beacon.network_search_results')}
       resultsExtra={resultsExtra}
+      style={{ marginBottom: 8 }}
     />
   );
 };
