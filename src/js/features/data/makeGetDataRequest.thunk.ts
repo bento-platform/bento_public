@@ -16,7 +16,7 @@ import { scopedAuthorizedRequestConfig } from '@/utils/requests';
 
 import type { RootState } from '@/store';
 import type { ChartConfig } from '@/types/chartConfig';
-import type { ChartDataField, LocalStorageData, Sections } from '@/types/data';
+import type { ChartDataField, LocalStorageChartData, Sections } from '@/types/data';
 import type { CountsOrBooleans, OverviewResponse } from '@/types/overviewResponse';
 import { RequestStatus } from '@/types/requests';
 
