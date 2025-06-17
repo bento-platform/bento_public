@@ -30,7 +30,7 @@ export const usePhenopacketData = (phenopacketId: string) => {
   const isAuthorized = useHasScopePermission(queryData);
 
   useEffect(() => {
-    if (isAuthorized) {
+    if (isAuthorized.hasPermission) {
       dispatch(makeGetPhenopacketData(phenopacketId));
     }
   }, [dispatch, phenopacketId, isAuthorized]);

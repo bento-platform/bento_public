@@ -36,7 +36,7 @@ const PhenopacketView = () => {
     }
   }, [navigate, tab]);
 
-  if (!isAuthorized) {
+  if (!isAuthorized.hasPermission) {
     return <Empty description="You do not have permission to view this resource" />; // Temporary: removed once phenopacket view is integrated with search
   }
 
