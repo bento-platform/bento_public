@@ -38,11 +38,11 @@ const PhenopacketView = () => {
     }
   }, [navigate, tab]);
 
-  if (!isAuthorized.hasPermission) {
+  if (isAuthorized.hasAttempted && !isAuthorized.hasPermission) {
     return <Empty description={t('auth.unauthorized_message')} />; // Temporary: removed once phenopacket view is integrated with search
   }
 
-  if (status === RequestStatus.Pending || !phenopacket) {
+  if (status === RequestStatus.Pending || !phenopacket || !isAuthorized.hasAttempted) {
     return <Loader fullHeight={false} />;
   }
 
