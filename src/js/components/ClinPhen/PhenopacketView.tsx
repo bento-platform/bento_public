@@ -1,4 +1,4 @@
-import { Card, Empty, Tabs } from 'antd';
+import { Card, Empty, Flex, Tabs } from 'antd';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
@@ -45,9 +45,11 @@ const PhenopacketView = () => {
   }
 
   return (
-    <Card title={packetId}>
-      <Tabs activeKey={activeKey} items={items} onChange={handleTabChange} />
-    </Card>
+    <Flex justify="center">
+      <Card title={packetId} className="container">
+        <Tabs activeKey={activeKey} items={items} onChange={handleTabChange} />
+      </Card>
+    </Flex>
   );
 };
 
