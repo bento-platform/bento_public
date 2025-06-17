@@ -12,6 +12,7 @@ import { TabKeys } from '@/types/PhenopacketView.types';
 import { RequestStatus } from '@/types/requests';
 
 import { usePhenopacketData } from '@/features/clinPhen/hooks';
+import { useTranslationFn } from '@/hooks';
 
 export interface RouteParams {
   packetId: string;
@@ -22,6 +23,7 @@ export interface RouteParams {
 const PhenopacketView = () => {
   const { packetId, tab } = useParams<RouteParams>();
   const navigate = useNavigate();
+  const t = useTranslationFn();
   const { phenopacket, status, isAuthorized } = usePhenopacketData(packetId ?? '');
 
   const { handleTabChange, items } = usePhenopacketTabs(phenopacket);
@@ -37,7 +39,7 @@ const PhenopacketView = () => {
   }, [navigate, tab]);
 
   if (!isAuthorized.hasPermission) {
-    return <Empty description="You do not have permission to view this resource" />; // Temporary: removed once phenopacket view is integrated with search
+    return <Empty description={t('auth.unauthorized_message')} />; // Temporary: removed once phenopacket view is integrated with search
   }
 
   if (status === RequestStatus.Pending || !phenopacket) {

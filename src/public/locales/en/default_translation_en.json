@@ -372,5 +372,8 @@
     "COMPLETED": "Completed",
     "SOLVED": "Solved",
     "UNSOLVED": "Unsolved"
+  },
+  "auth": {
+    "unauthorized_message": "You are not authorized to access this resource."
   }
 }
