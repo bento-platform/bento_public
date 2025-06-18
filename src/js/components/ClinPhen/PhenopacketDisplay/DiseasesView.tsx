@@ -21,13 +21,13 @@ const DiseaseExpandedRow = ({ disease }: { disease: Disease }) => {
       key: 'disease_stage',
       label: 'diseases_expanded_row.disease_stage',
       children: <OntologyTermStack terms={disease.disease_stage} />,
-      hidden: !disease.disease_stage || disease.disease_stage.length === 0,
+      hidden: !disease.disease_stage?.length,
     },
     {
       key: 'clinical_tnm_finding',
       label: 'diseases_expanded_row.clinical_tnm_finding',
       children: <OntologyTermStack terms={disease.clinical_tnm_finding} />,
-      hidden: !disease.clinical_tnm_finding || disease.clinical_tnm_finding.length === 0,
+      hidden: !disease.clinical_tnm_finding?.length,
     },
     {
       key: 'primary_site',
@@ -49,6 +49,9 @@ const DiseaseExpandedRow = ({ disease }: { disease: Disease }) => {
 interface DiseasesViewProps {
   diseases: Disease[];
 }
+
+const isDiseaseRowVisible = (r: Disease) =>
+  !!(r.disease_stage?.length || r.clinical_tnm_finding?.length || r.primary_site || r.extra_properties);
 
 const DiseasesView = ({ diseases }: DiseasesViewProps) => {
   const columns = useTranslatedTableColumnTitles<Disease>([
@@ -80,6 +83,7 @@ const DiseasesView = ({ diseases }: DiseasesViewProps) => {
       columns={columns}
       expandable={{
         expandedRowRender: (record) => <DiseaseExpandedRow disease={record} />,
+        rowExpandable: (record) => isDiseaseRowVisible(record),
       }}
       rowKey={(record) => record.term.id}
       pagination={false}
