@@ -1,5 +1,8 @@
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuthorizationHeader } from 'bento-auth-js';
+
 import {
   Button,
   Checkbox,
@@ -16,26 +19,26 @@ import {
 } from 'antd';
 import { ExportOutlined, LeftOutlined, TableOutlined } from '@ant-design/icons';
 
-import { PORTAL_URL } from '@/config';
 import { T_PLURAL_COUNT, T_SINGULAR_COUNT } from '@/constants/i18n';
 import { WAITING_STATES } from '@/constants/requests';
 import { useAppDispatch, useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
-import IndividualRowDetail from './IndividualRowDetail';
 import type { BentoEntity } from '@/types/entities';
 import type { Project, Dataset } from '@/types/metadata';
 import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
 import { fetchDiscoveryMatches } from '@/features/search/fetchDiscoveryMatches.thunk';
 import { setMatchesPage, setMatchesPageSize } from '@/features/search/query.store';
 import type { DiscoveryMatchBiosample, DiscoveryMatchPhenopacket } from '@/features/search/types';
-import DatasetProvenanceModal from '@/components/Provenance/DatasetProvenanceModal';
-import ProjectTitle from '@/components/Util/ProjectTitle';
-import DatasetTitle from '@/components/Util/DatasetTitle';
 import { downloadIndividualCSV } from '@/utils/export';
 import { setEquals } from '@/utils/sets';
 import { useScopeDownloadData } from '@/hooks/censorship';
 import { useSearchQuery } from '@/features/search/hooks';
+
+import DatasetProvenanceModal from '@/components/Provenance/DatasetProvenanceModal';
+import ProjectTitle from '@/components/Util/ProjectTitle';
+import DatasetTitle from '@/components/Util/DatasetTitle';
+import IndividualRowDetail from './IndividualRowDetail';
 
 type SearchColRenderContext = {
   onProjectClick: (id: string) => void;
@@ -60,11 +63,12 @@ const SEARCH_TABLE_COLUMNS = {
 } as const;
 type SearchTableColumnType = keyof typeof SEARCH_TABLE_COLUMNS;
 
-const IndividualPortalLink = ({ children, id }: { children: ReactNode; id: string }) => (
-  <a href={`${PORTAL_URL}/data/explorer/individuals/${id}`} target="_blank" rel="noreferrer">
-    {children} <ExportOutlined />
-  </a>
-);
+const PhenopacketSubjectLink = ({ children, packetId }: { children: ReactNode; packetId: string }) => {
+  const {
+    i18n: { language },
+  } = useTranslation();
+  return <Link to={`/${language}/phenopackets/${packetId}/subject`}>{children}</Link>;
+};
 
 const INDIVIDUAL_EXPANDABLE: TableProps<DiscoveryMatchPhenopacket>['expandable'] = {
   expandedRowRender: (rec) => (rec.s ? <IndividualRowDetail id={rec.s} /> : null),
@@ -166,7 +170,8 @@ const SearchResultsTablePage = ({ entity, onBack }: { entity: BentoEntity; onBac
       {
         dataIndex: 's',
         title: 'Subject ID',
-        render: (id: string | undefined) => (id ? <IndividualPortalLink id={id}>{id}</IndividualPortalLink> : null),
+        render: (s: string | undefined, rec) =>
+          s ? <PhenopacketSubjectLink packetId={rec.id}>{s}</PhenopacketSubjectLink> : null,
       },
       {
         dataIndex: 'b',
