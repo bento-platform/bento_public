@@ -8,10 +8,10 @@ import type { Biosample } from '@/types/clinPhen/biosample';
 import type { OntologyTerm } from '@/types/ontology';
 
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
-import { hiddenDescriptions } from '@/utils/descriptions';
+import { HiddenDescriptionsProps } from '@/types/descriptions';
 
 const BiosampleExpandedRow = ({ biosample }: { biosample: Biosample }) => {
-  const items: DescriptionsProps['items'] = hiddenDescriptions([
+  const items: HiddenDescriptionsProps[] = [
     {
       key: 'description',
       label: 'biosample_expanded_row.description',
@@ -46,7 +46,7 @@ const BiosampleExpandedRow = ({ biosample }: { biosample: Biosample }) => {
       children: <OntologyTermComponent term={biosample.pathological_stage} />,
       hidden: !biosample.pathological_stage,
     },
-  ]);
+  ];
 
   return <TDescriptions bordered size="small" items={items} />;
 };

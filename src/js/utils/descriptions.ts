@@ -1,10 +1,7 @@
-import { type DescriptionsItemType } from 'antd/es/descriptions';
+import { type DescriptionsProps } from 'antd';
+import { type HiddenDescriptionsProps } from '@/types/descriptions';
 
-interface HiddenDescriptionsProps extends DescriptionsItemType {
-  hidden?: boolean;
-}
-
-export const hiddenDescriptions = (items: HiddenDescriptionsProps[]): DescriptionsItemType[] => {
+export const hiddenDescriptions = (items: HiddenDescriptionsProps[]): DescriptionsProps['items'] => {
   return items
     .filter(({ hidden, children }) => (hidden === undefined ? children : !hidden))
     .map(({ hidden: _, ...rest }) => rest);
