@@ -1,9 +1,9 @@
 import { Descriptions } from 'antd';
 import type { DescriptionsProps } from 'antd';
+import type { ConditionalDescriptionItem } from '@/types/descriptions';
 
 import { useTranslatedDescriptionItems } from '@/hooks/useTranslatedDescriptionItems';
 import { hiddenDescriptions } from '@/utils/descriptions';
-import { ConditionalDescriptionItem } from '@/types/descriptions';
 
 interface TDescriptionsProps extends Omit<DescriptionsProps, 'items'> {
   items: ConditionalDescriptionItem[];
