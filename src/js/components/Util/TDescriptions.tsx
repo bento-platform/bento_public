@@ -3,10 +3,10 @@ import type { DescriptionsProps } from 'antd';
 
 import { useTranslatedDescriptionItems } from '@/hooks/useTranslatedDescriptionItems';
 import { hiddenDescriptions } from '@/utils/descriptions';
-import { HiddenDescriptionsProps } from '@/types/descriptions';
+import { ConditionalDescriptionItem } from '@/types/descriptions';
 
 interface TDescriptionsProps extends Omit<DescriptionsProps, 'items'> {
-  items: HiddenDescriptionsProps[];
+  items: ConditionalDescriptionItem[];
 }
 
 // T stands for Translated

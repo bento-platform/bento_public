@@ -1,5 +1,5 @@
 import { type DescriptionsItemType } from 'antd/es/descriptions';
 
-export interface HiddenDescriptionsProps extends DescriptionsItemType {
+export interface ConditionalDescriptionItem extends DescriptionsItemType {
   hidden?: boolean;
 }

@@ -8,10 +8,10 @@ import type { Biosample } from '@/types/clinPhen/biosample';
 import type { OntologyTerm } from '@/types/ontology';
 
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
-import { HiddenDescriptionsProps } from '@/types/descriptions';
+import { ConditionalDescriptionItem } from '@/types/descriptions';
 
 const BiosampleExpandedRow = ({ biosample }: { biosample: Biosample }) => {
-  const items: HiddenDescriptionsProps[] = [
+  const items: ConditionalDescriptionItem[] = [
     {
       key: 'description',
       label: 'biosample_expanded_row.description',
