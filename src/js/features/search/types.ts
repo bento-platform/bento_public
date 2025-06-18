@@ -49,25 +49,27 @@ export interface Experiments {
   experiment_type: Datum[];
 }
 
-export type DiscoveryMatchExperimentResult = {
-  id: string;
-  f?: string;
-  url?: string;
+export type DiscoveryMatchObject = {
+  id: string; // Entity ID
+  pr?: string | null;
+  ds?: string | null;
+};
+
+export type DiscoveryMatchExperimentResult = DiscoveryMatchObject & {
+  f?: string; // File name
+  url?: string; // File URL
   idx: { url: string; format: 'BAI' | 'BGZF' | 'CRAI' | 'CSI' | 'TABIX' | 'TRIBBLE' }[];
 };
 
-export type DiscoveryMatchExperiment = {
-  id: string;
+export type DiscoveryMatchExperiment = DiscoveryMatchObject & {
   r: DiscoveryMatchExperimentResult[];
 };
 
-export type DiscoveryMatchBiosample = {
-  id: string;
+export type DiscoveryMatchBiosample = DiscoveryMatchObject & {
   e: DiscoveryMatchExperiment[];
 };
 
-export type DiscoveryMatchPhenopacket = {
-  id: string; // Phenopacket ID
+export type DiscoveryMatchPhenopacket = DiscoveryMatchObject & {
   s?: string; // Subject ID
   b: DiscoveryMatchBiosample[]; // Biosample records
 };

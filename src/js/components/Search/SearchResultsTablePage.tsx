@@ -46,22 +46,30 @@ type SearchColRenderContext = {
 };
 
 const SEARCH_TABLE_COLUMNS = {
+  biosamples: {
+    tKey: 'entities.biosample_other',
+    dataIndex: 'b',
+    // TODO: links
+    render: (_ctx: SearchColRenderContext) => (b: DiscoveryMatchBiosample[]) => b.map((bb) => bb.id).join(', '),
+  },
   project: {
     tKey: 'entities.project',
-    dataIndex: 'project_id',
+    dataIndex: 'pr',
     render: (ctx: SearchColRenderContext) => (id: string) => (
       <ProjectTitle projectID={id} onClick={() => ctx.onProjectClick(id)} />
     ),
   },
   dataset: {
     tKey: 'entities.dataset',
-    dataIndex: 'dataset_id',
+    dataIndex: 'ds',
     render: (ctx: SearchColRenderContext) => (id: string) => (
       <DatasetTitle datasetID={id} onClick={() => ctx.onDatasetClick(id)} />
     ),
   },
 } as const;
 type SearchTableColumnType = keyof typeof SEARCH_TABLE_COLUMNS;
+
+const DEFAULT_COLUMNS: SearchTableColumnType[] = ['biosamples', 'project', 'dataset'];
 
 const PhenopacketSubjectLink = ({ children, packetId }: { children: ReactNode; packetId: string }) => {
   const {
@@ -111,16 +119,19 @@ const SearchResultsTablePage = ({ entity, onBack }: { entity: BentoEntity; onBac
   const { page, pageSize, matches, totalMatches, matchesStatus } = useSearchQuery();
   const { fetchingPermission: fetchingCanDownload, hasPermission: canDownload } = useScopeDownloadData();
 
-  const projectColumnAllowed = !selectedScope.scope.project;
-  const datasetColumnAllowed = !selectedScope.scope.dataset;
-
   const [columnModalOpen, setColumnModalOpen] = useState<boolean>(false);
-  const [shownColumns, setShownColumns] = useState<Set<SearchTableColumnType>>(() => {
-    const initial = new Set<SearchTableColumnType>();
-    if (projectColumnAllowed) initial.add('project');
-    if (datasetColumnAllowed) initial.add('dataset');
-    return initial;
-  });
+
+  const allowedColumns = useMemo<Set<SearchTableColumnType>>(() => {
+    const allowed = new Set<SearchTableColumnType>();
+    if (!selectedScope.scope.project) allowed.add('project');
+    if (!selectedScope.scope.dataset) allowed.add('dataset');
+    if (['individual', 'phenopacket'].includes(entity)) allowed.add('biosamples');
+    return allowed;
+  }, [entity, selectedScope.scope]);
+
+  const [shownColumns, setShownColumns] = useState<Set<SearchTableColumnType>>(
+    () => new Set<SearchTableColumnType>(DEFAULT_COLUMNS.filter((c) => allowedColumns.has(c)))
+  );
 
   const [exporting, setExporting] = useState<boolean>(false);
 
@@ -132,16 +143,12 @@ const SearchResultsTablePage = ({ entity, onBack }: { entity: BentoEntity; onBac
   useEffect(() => {
     // If the selected scope changes, some of the currently-shown columns may no longer be valid:
     setShownColumns((oldSet) => {
-      const newSet = new Set<SearchTableColumnType>(
-        [...oldSet].filter(
-          (v) => !(v === 'project' && !projectColumnAllowed) && !(v === 'dataset' && !datasetColumnAllowed)
-        )
-      );
+      const newSet = new Set<SearchTableColumnType>([...oldSet].filter((v) => allowedColumns.has(v)));
 
       // Don't change object if our newly-computed object is equivalent:
       return setEquals(oldSet, newSet) ? oldSet : newSet;
     });
-  }, [selectedScope, projectColumnAllowed, datasetColumnAllowed, shownColumns]);
+  }, [selectedScope, allowedColumns, shownColumns]);
 
   const currentStart = totalMatches > 0 ? page * pageSize + 1 : 0;
   const currentEnd = Math.min((page + 1) * pageSize, totalMatches);
@@ -172,12 +179,6 @@ const SearchResultsTablePage = ({ entity, onBack }: { entity: BentoEntity; onBac
         title: 'Subject ID',
         render: (s: string | undefined, rec) =>
           s ? <PhenopacketSubjectLink packetId={rec.id}>{s}</PhenopacketSubjectLink> : null,
-      },
-      {
-        dataIndex: 'b',
-        title: 'Biosamples',
-        // TODO
-        render: (b: DiscoveryMatchBiosample[]) => b.map((bb) => bb.id).join(', '),
       },
       ...Object.entries(SEARCH_TABLE_COLUMNS)
         .filter(([k, _]) => shownColumns.has(k as SearchTableColumnType))
@@ -276,11 +277,14 @@ const SearchResultsTablePage = ({ entity, onBack }: { entity: BentoEntity; onBac
         footer={null}
       >
         <Space direction="vertical">
-          {projectColumnAllowed && (
+          {allowedColumns.has('project') && (
             <ManageColumnCheckbox c="project" shownColumns={shownColumns} setShownColumns={setShownColumns} />
           )}
-          {datasetColumnAllowed && (
+          {allowedColumns.has('dataset') && (
             <ManageColumnCheckbox c="dataset" shownColumns={shownColumns} setShownColumns={setShownColumns} />
+          )}
+          {allowedColumns.has('biosamples') && (
+            <ManageColumnCheckbox c="biosamples" shownColumns={shownColumns} setShownColumns={setShownColumns} />
           )}
         </Space>
       </Modal>
