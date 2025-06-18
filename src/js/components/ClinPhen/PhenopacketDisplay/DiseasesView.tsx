@@ -21,25 +21,25 @@ const DiseaseExpandedRow = ({ disease }: { disease: Disease }) => {
       key: 'disease_stage',
       label: 'diseases_expanded_row.disease_stage',
       children: <OntologyTermStack terms={disease.disease_stage} />,
-      hidden: !disease.disease_stage?.length,
+      isVisible: disease.disease_stage?.length,
     },
     {
       key: 'clinical_tnm_finding',
       label: 'diseases_expanded_row.clinical_tnm_finding',
       children: <OntologyTermStack terms={disease.clinical_tnm_finding} />,
-      hidden: !disease.clinical_tnm_finding?.length,
+      isVisible: disease.clinical_tnm_finding?.length,
     },
     {
       key: 'primary_site',
       label: 'diseases_expanded_row.primary_site',
       children: <OntologyTermComponent term={disease.primary_site} />,
-      hidden: !disease.primary_site,
+      isVisible: disease.primary_site,
     },
     {
       key: 'extra_properties',
       label: 'diseases_expanded_row.extra_properties',
       children: <ExtraProperties extraProperties={disease.extra_properties} />,
-      hidden: !disease.extra_properties || Object.keys(disease.extra_properties).length === 0,
+      isVisible: disease.extra_properties && Object.keys(disease.extra_properties).length > 0,
     },
   ];
 
