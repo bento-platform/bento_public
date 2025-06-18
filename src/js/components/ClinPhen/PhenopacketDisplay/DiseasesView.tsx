@@ -8,34 +8,38 @@ import Excluded, { ExcludedModel } from '@Util/ClinPhen/Excluded';
 
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
 
-import type { DescriptionsProps } from 'antd';
 import type { Disease } from '@/types/clinPhen/disease';
 import type { TimeElement } from '@/types/clinPhen/shared';
 import type { OntologyTerm } from '@/types/ontology';
+import type { ConditionalDescriptionItem } from '@/types/descriptions';
 
 import { EM_DASH } from '@/constants/common';
 
 const DiseaseExpandedRow = ({ disease }: { disease: Disease }) => {
-  const items: DescriptionsProps['items'] = [
+  const items: ConditionalDescriptionItem[] = [
     {
       key: 'disease_stage',
       label: 'diseases_expanded_row.disease_stage',
-      children: disease.disease_stage ? <OntologyTermStack terms={disease.disease_stage} /> : EM_DASH,
+      children: <OntologyTermStack terms={disease.disease_stage} />,
+      hidden: !disease.disease_stage || disease.disease_stage.length === 0,
     },
     {
       key: 'clinical_tnm_finding',
       label: 'diseases_expanded_row.clinical_tnm_finding',
-      children: disease.clinical_tnm_finding ? <OntologyTermStack terms={disease.clinical_tnm_finding} /> : EM_DASH,
+      children: <OntologyTermStack terms={disease.clinical_tnm_finding} />,
+      hidden: !disease.clinical_tnm_finding || disease.clinical_tnm_finding.length === 0,
     },
     {
       key: 'primary_site',
       label: 'diseases_expanded_row.primary_site',
-      children: disease.primary_site ? <OntologyTermComponent term={disease.primary_site} /> : EM_DASH,
+      children: <OntologyTermComponent term={disease.primary_site} />,
+      hidden: !disease.primary_site,
     },
     {
       key: 'extra_properties',
       label: 'diseases_expanded_row.extra_properties',
       children: <ExtraProperties extraProperties={disease.extra_properties} />,
+      hidden: !disease.extra_properties || Object.keys(disease.extra_properties).length === 0,
     },
   ];
 
