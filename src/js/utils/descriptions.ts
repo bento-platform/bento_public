@@ -5,5 +5,7 @@ interface HiddenDescriptionsProps extends DescriptionsItemType {
 }
 
 export const hiddenDescriptions = (items: HiddenDescriptionsProps[]): DescriptionsItemType[] => {
-  return items.filter((item) => !item.hidden).map(({ hidden: _, ...rest }) => rest);
+  return items
+    .filter(({ hidden, children }) => (hidden === undefined ? children : !hidden))
+    .map(({ hidden: _, ...rest }) => rest);
 };
