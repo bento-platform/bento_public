@@ -1,9 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import type { LocalStorageData, Sections } from '@/types/data';
-import type { ValueOf } from '@/types/util';
+import { LOCALSTORAGE_CHARTS_KEY_PREFIX } from '@/constants/overviewConstants';
 
-export const verifyData = (nObj: any, oObj: LocalStorageData) => {
-  const verifyCharts = (nCharts: any, oCharts: ValueOf<LocalStorageData>) => {
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { LocalStorageChartData, Sections } from '@/types/data';
+import type { ValueOf } from '@/types/util';
+import type { DiscoveryScope } from '@/features/metadata/metadata.store';
+
+export const verifyData = (nObj: any, oObj: LocalStorageChartData) => {
+  const verifyCharts = (nCharts: any, oCharts: ValueOf<LocalStorageChartData>) => {
     if (nCharts.length !== oCharts.length) return false;
 
     const nChartsMap: { [key in string]: boolean } = {};
@@ -27,6 +30,15 @@ export const saveValue = (key: string, value: any) => {
   }
 };
 
+/**
+ * Safely retrieves and parses a value of type `T` from `localStorage`.
+ *
+ * @template T
+ * @param {string} key - The `localStorage` key under which the value is stored.
+ * @param {T} defaultVal - The value to return if the key does not exist, parsing fails, or validation fails.
+ * @param {(arg: any) => boolean} verifyFunc - A predicate that receives the parsed value and returns `true` if it’s valid.
+ * @returns {T} The parsed and validated value from `localStorage`, or `defaultVal` otherwise.
+ */
 export const getValue = <T>(key: string, defaultVal: T, verifyFunc: (arg: any) => boolean): T => {
   try {
     const serializedState = localStorage.getItem(key);
@@ -47,9 +59,18 @@ export const getValue = <T>(key: string, defaultVal: T, verifyFunc: (arg: any) =
 };
 
 export const convertSequenceAndDisplayData = (sections: Sections) => {
-  const temp: LocalStorageData = {};
+  const temp: LocalStorageChartData = {};
   sections.forEach(({ sectionTitle, charts }) => {
     temp[sectionTitle] = charts.map(({ id, isDisplayed, width }) => ({ id, isDisplayed, width }));
   });
   return temp;
+};
+
+export const generateLSChartDataKey = (scope: DiscoveryScope) => {
+  const { project: p, dataset: d } = scope;
+  const scopeString = p ? (d ?? p) : '';
+
+  // Relies on the fact that project and dataset ids are unique
+  const lsKey = `${LOCALSTORAGE_CHARTS_KEY_PREFIX}${scopeString}`;
+  return lsKey;
 };

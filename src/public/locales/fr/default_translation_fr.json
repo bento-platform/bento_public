@@ -209,5 +209,176 @@
       "Les filtres de métadonnées peuvent varier d'un Beacon à l'autre dans le réseau, de sorte que certaines recherches peuvent ne pas s'appliquer à tous les Beacons. Utilisez le",
       "commutateur « $t(beacon.show_all_filters) » / « $t(beacon.common_filters_only) » pour contrôler les filtres disponibles."
     ]
+  },
+  "clinphen_generic": {
+    "excluded": "Exclu",
+    "found_absent": "Trouvé absent"
+  },
+  "biosample_expanded_row": {
+    "description": "Description",
+    "derived_from": "Dérivé de",
+    "sample_type": "Type d'échantillon",
+    "collection_time": "Heure de collecte",
+    "histological_diagnosis": "Diagnostic histologique",
+    "pathological_stage": "Stade pathologique"
+  },
+  "biosample_table": {
+    "biosample_id": "ID de l'échantillon biologique",
+    "sampled_tissue": "Tissu échantillonné"
+  },
+  "diseases_expanded_row": {
+    "disease_stage": "Stade(s) de la maladie",
+    "clinical_tnm_finding": "Résultat(s) TNM clinique(s)",
+    "primary_site": "Site principal",
+    "extra_properties": "Propriétés supplémentaires"
+  },
+  "diseases_table": {
+    "disease": "Maladie",
+    "onset_age": "Âge d'apparition",
+    "resolution_age": "Âge de résolution"
+  },
+  "interpretations": {
+    "id": "ID",
+    "created": "Créé",
+    "updated": "Mis à jour",
+    "progress_status": "Statut de progression",
+    "summary": "Résumé",
+    "disease": "Maladie",
+    "variant_interpretation": "Interprétation du variant",
+    "gene_descriptor": "Descripteur de gène",
+    "subject_or_biosample_id": "ID du sujet ou de l'échantillon biologique",
+    "interpretation_status": "Statut de l'interprétation",
+    "diagnosis": "Diagnostic",
+    "no_diagnosis": "Aucun diagnostic",
+    "genomic_interpretations": "Interprétations génomiques",
+    "no_genomic_iterpretation": "Aucune interprétation génomique",
+    "accession_number": "Numéro d'accession",
+    "symbol": "Symbole",
+    "description": "Description",
+    "alternate_ids": "IDs alternatifs",
+    "cross_references": "Références croisées",
+    "alternate_symbols": "Symboles alternatifs",
+    "syntax": "Syntaxe",
+    "value": "Valeur",
+    "acmg_pathogenicity_classification": "Classification de pathogénicité ACMG",
+    "therapeutic_actionability": "Action thérapeutique possible",
+    "variation": "Variation",
+    "label": "Étiquette",
+    "gene_context": "Contexte du gène",
+    "expressions": "Expressions",
+    "vcf_record": "Enregistrement VCF",
+    "xrefs": "Xrefs",
+    "alternate_labels": "Étiquettes alternatives",
+    "extensions": "Extensions",
+    "molecule_context": "Contexte moléculaire",
+    "structural_type": "Type structurel",
+    "vrs_ref_allele_seq": "Séquence d’allèle de référence VRS",
+    "allelic_state": "État allélique",
+    "name": "Nom"
+  },
+  "measurements": {
+    "assay": "Essai",
+    "measurement_value": "Valeur de mesure",
+    "description": "Description",
+    "procedure": "Procédure"
+  },
+  "quantity": {
+    "value": "Valeur",
+    "unit": "Unité",
+    "low": "Bas",
+    "high": "Haut"
+  },
+  "medical_actions": {
+    "code": "Code",
+    "body_site": "Partie du corps",
+    "performed": "Réalisé",
+    "quantity": "Quantité",
+    "schedule_frequency": "Fréquence de l'horaire",
+    "interval": "Intervalle",
+    "agent": "Agent",
+    "route_of_administration": "Voie d'administration",
+    "dose_intervals": "Intervalles de dose",
+    "drug_type": "Type de médicament",
+    "cumulative_dose": "Dose cumulative",
+    "modality": "Modalité",
+    "dosage": "Dosage",
+    "fractions": "Fractions",
+    "identifier": "Identifiant",
+    "start_time": "Heure de début",
+    "end_time": "Heure de fin",
+    "status": "Statut",
+    "procedure": "Procédure",
+    "treatment": "Traitement",
+    "radiation_therapy": "Radiothérapie",
+    "therapeutic_regimen": "Régime thérapeutique",
+    "adverse_events": "Effets indésirables",
+    "action_type": "Type d'action",
+    "treatment_target": "Cible du traitement",
+    "treatment_intent": "Intention du traitement",
+    "response_to_treatment": "Réponse au traitement",
+    "treatment_termination_reason": "Raison de l'arrêt du traitement",
+    "reference": "Référence",
+    "unkown": "Inconnu"
+  },
+  "ontologies": {
+    "resource_id": "ID de ressource",
+    "name": "Nom",
+    "namespace_prefix": "Préfixe d’espace de noms",
+    "url": "URL",
+    "version": "Version",
+    "iri_prefix": "Préfixe IRI"
+  },
+  "phenotypic_features": {
+    "feature": "Caractéristique",
+    "severity": "Gravité",
+    "onset": "Début",
+    "resolution": "Résolution",
+    "description": "Description",
+    "modifiers": "Modificateurs",
+    "evidence": "Preuve",
+    "extra_properties": "Propriétés supplémentaires",
+    "evidence_code": "Code de preuve",
+    "reference": "Référence"
+  },
+  "subject": {
+    "status": "Statut",
+    "time_of_death": "Date du décès",
+    "cause_of_death": "Cause du décès",
+    "survival_time_in_days": "Durée de survie (en jours)",
+    "id": "ID",
+    "alternate_ids": "IDs alternatifs",
+    "age": "Âge",
+    "time_at_last_encounter": "Date du dernier contact",
+    "vital_status": "Statut vital",
+    "sex": "Sexe",
+    "karyotypic_sex": "Sexe caryotypique",
+    "taxonomy": "Taxonomie"
+  },
+  "tab_keys": {
+    "subject": "Sujet",
+    "biosamples": "Échantillons biologiques",
+    "measurements": "Mesures",
+    "phenotypic_features": "Caractéristiques phénotypiques",
+    "diseases": "Maladies",
+    "interpretations": "Interprétations",
+    "medical_actions": "Actions médicales",
+    "ontologies": "Ontologies"
+  },
+  "genomic_interpretation_status": {
+    "UNKNOWN_STATUS": "Statut inconnu",
+    "REJECTED": "Rejeté",
+    "CANDIDATE": "Candidat",
+    "CONTRIBUTORY": "Contributif",
+    "CAUSATIVE": "Causal"
+  },
+  "progress_status": {
+    "UNKNOWN_PROGRESS": "Progression inconnue",
+    "IN_PROGRESS": "En cours",
+    "COMPLETED": "Terminé",
+    "SOLVED": "Résolu",
+    "UNSOLVED": "Non résolu"
+  },
+  "auth": {
+    "unauthorized_message": "Vous n'êtes pas autorisé à accéder à cette ressource."
   }
 }

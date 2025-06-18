@@ -1,12 +1,11 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Flex, FloatButton, Tabs, type TabsProps, Tag } from 'antd';
 import { AppstoreAddOutlined, FileTextOutlined, SearchOutlined, SolutionOutlined } from '@ant-design/icons';
 
-import { convertSequenceAndDisplayData, saveValue } from '@/utils/localStorage';
+import { convertSequenceAndDisplayData, generateLSChartDataKey, saveValue } from '@/utils/localStorage';
 import type { Sections } from '@/types/data';
-import { RequestStatus } from '@/types/requests';
+import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 
-import { LOCALSTORAGE_CHARTS_KEY } from '@/constants/overviewConstants';
 import { WAITING_STATES } from '@/constants/requests';
 
 import AboutBox from './AboutBox';
@@ -23,8 +22,8 @@ import { useData, useSearchableFields } from '@/features/data/hooks';
 import { useSelectedDataset, useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
 import { useSearchQuery } from '@/features/search/hooks';
 
-const saveToLocalStorage = (sections: Sections) => {
-  saveValue(LOCALSTORAGE_CHARTS_KEY, convertSequenceAndDisplayData(sections));
+const saveScopeOverviewToLS = (scope: DiscoveryScope, sections: Sections) => {
+  saveValue(generateLSChartDataKey(scope), convertSequenceAndDisplayData(sections));
 };
 
 const OverviewChartDashboard = () => {
@@ -45,20 +44,14 @@ const OverviewChartDashboard = () => {
   const searchableFields = useSearchableFields();
   // ---
 
-  useEffect(() => {
-    // Save sections to localStorage when they change
-    if (overviewDataStatus != RequestStatus.Fulfilled) return;
-    saveToLocalStorage(sections);
-  }, [overviewDataStatus, sections]);
-
   const displayedSections = sections.filter(({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1);
 
   const onManageChartsOpen = useCallback(() => setDrawerVisible(true), []);
   const onManageChartsClose = useCallback(() => {
     setDrawerVisible(false);
     // When we close the drawer, save any changes to localStorage. This helps ensure width gets saved:
-    saveToLocalStorage(sections);
-  }, [sections]);
+    saveScopeOverviewToLS(scope, sections);
+  }, [scope, sections]);
 
   // ---
 

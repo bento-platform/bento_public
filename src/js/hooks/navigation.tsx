@@ -42,6 +42,8 @@ export const useGetRouteTitleAndIcon = () => {
           return ['Beacon', <BeaconLogo />];
         case BentoRoute.BeaconNetwork:
           return ['Beacon Network', <ShareAltOutlined />];
+        case BentoRoute.Phenopackets:
+          return ['Phenopackets', <SolutionOutlined />];
         default:
           console.error('Unknown page', routeId);
           return ['', null];

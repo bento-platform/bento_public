@@ -2,15 +2,21 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 import { MAX_CHARTS, katsuDiscoveryUrl } from '@/constants/configConstants';
-import { DEFAULT_CHART_WIDTH, LOCALSTORAGE_CHARTS_KEY } from '@/constants/overviewConstants';
+import { DEFAULT_CHART_WIDTH } from '@/constants/overviewConstants';
 import { serializeChartData } from '@/utils/chart';
 import { printAPIError } from '@/utils/error.util';
-import { verifyData, saveValue, getValue, convertSequenceAndDisplayData } from '@/utils/localStorage';
+import {
+  verifyData,
+  saveValue,
+  getValue,
+  convertSequenceAndDisplayData,
+  generateLSChartDataKey,
+} from '@/utils/localStorage';
 import { scopedAuthorizedRequestConfig } from '@/utils/requests';
 
 import type { RootState } from '@/store';
 import type { ChartConfig } from '@/types/discovery/chartConfig';
-import type { ChartDataField, LocalStorageData, Sections } from '@/types/data';
+import type { ChartDataField, LocalStorageChartData, Sections } from '@/types/data';
 import type { CountsOrBooleans, DiscoveryResponse } from '@/types/discovery/response';
 import { RequestStatus } from '@/types/requests';
 
@@ -58,9 +64,9 @@ export const makeGetDataRequestThunk = createAsyncThunk<
 
     // comparing to the local store and updating itself
     let convertedData = convertSequenceAndDisplayData(sectionData);
-    const localValue = getValue(LOCALSTORAGE_CHARTS_KEY, convertedData, (val: LocalStorageData) =>
-      verifyData(val, convertedData)
-    );
+    const scope = getState().metadata.selectedScope.scope;
+    const lsKey = generateLSChartDataKey(scope);
+    const localValue = getValue(lsKey, convertedData, (val: LocalStorageChartData) => verifyData(val, convertedData));
     sectionData.forEach(({ sectionTitle, charts }, i, arr) => {
       arr[i].charts = localValue[sectionTitle].map(({ id, isDisplayed, width }) => ({
         ...charts.find((c) => c.id === id)!,
@@ -71,7 +77,7 @@ export const makeGetDataRequestThunk = createAsyncThunk<
 
     //saving to local storage
     convertedData = convertSequenceAndDisplayData(sectionData);
-    saveValue(LOCALSTORAGE_CHARTS_KEY, convertedData);
+    saveValue(lsKey, convertedData);
 
     return { sectionData, counts: discoveryResponse.counts, defaultData: defaultSectionData };
   },
