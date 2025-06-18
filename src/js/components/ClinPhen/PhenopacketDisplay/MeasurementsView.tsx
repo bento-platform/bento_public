@@ -20,13 +20,13 @@ const MeasurementsExpandedRow = ({ measurement }: { measurement: Measurement }) 
       key: 'measurement_value',
       label: 'measurements.measurement_value',
       children: <MeasurementDetail measurement={measurement} expanded />,
-      hidden: !measurement.value && !measurement.complex_value,
+      isVisible: measurement.value && !measurement.complex_value,
     },
     {
       key: 'procedure',
       label: 'measurements.procedure',
       children: <ProcedureComponent procedure={measurement.procedure!} />,
-      hidden: !measurement.procedure,
+      isVisible: measurement.procedure,
     },
   ];
 
