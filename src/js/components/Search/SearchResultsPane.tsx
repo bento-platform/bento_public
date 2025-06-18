@@ -76,9 +76,7 @@ const SearchResultsPane = ({
   if (page === 'charts') {
     pageElement = <SRChartsPage hasInsufficientData={hasInsufficientData} results={results} />;
   } else if (page === 'individuals') {
-    pageElement = (
-      <SearchResultsTablePage entity="individual" results={results} onBack={() => onPageChange('charts')} />
-    );
+    pageElement = <SearchResultsTablePage entity="individual" onBack={() => onPageChange('charts')} />;
   }
 
   return (
