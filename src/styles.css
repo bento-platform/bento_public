@@ -409,3 +409,8 @@ h3.search-sub-form-title:not(.focused) .search-sub-form-title__inner > span.shou
     gap: 16px;
   }
 }
+
+#subject-view .ant-descriptions-item-label {
+  /* Align split line vertically in all descriptions */
+  width: 30vw;
+}

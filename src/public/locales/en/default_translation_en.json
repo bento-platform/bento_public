@@ -19,9 +19,7 @@
     ],
     "biosample_one": "Biosample",
     "biosample_other": "Biosamples",
-    "biosample_help": [
-      "Biosamples are usually biological material extracted from a specific individual."
-    ],
+    "biosample_help": ["Biosamples are usually biological material extracted from a specific individual."],
     "experiment_one": "Experiment",
     "experiment_other": "Experiments",
     "experiment_help": [
@@ -148,10 +146,7 @@
       "or fill in values for both reference and alternate bases."
     ],
     "variants_help_3": "\"Chromosome\", \"Variant start\" and \"Assembly ID\" are always required.",
-    "variants_help_4": [
-      "Coordinates are one-based.",
-      "Leave this form blank to search by metadata only."
-    ]
+    "variants_help_4": ["Coordinates are one-based.", "Leave this form blank to search by metadata only."]
   },
   "MALE": "Male",
   "FEMALE": "Female",
@@ -209,5 +204,176 @@
       "Metadata filters may vary across beacons in the network, so some searches may not apply to all beacons. Use the",
       "'$t(beacon.show_all_filters)' / '$t(beacon.common_filters_only)' switch to control which filters are available."
     ]
+  },
+  "clinphen_generic": {
+    "excluded": "Excluded",
+    "found_absent": "Found to be absent"
+  },
+  "biosample_expanded_row": {
+    "description": "Description",
+    "derived_from": "Derived From",
+    "sample_type": "Sample Type",
+    "collection_time": "Collection Time",
+    "histological_diagnosis": "Histological Diagnosis",
+    "pathological_stage": "Pathological Stage"
+  },
+  "biosample_table": {
+    "biosample_id": "Biosample ID",
+    "sampled_tissue": "Sampled Tissue"
+  },
+  "diseases_expanded_row": {
+    "disease_stage": "Disease Stage(s)",
+    "clinical_tnm_finding": "Clinical TNM Finding(s)",
+    "primary_site": "Primary Site",
+    "extra_properties": "Extra Properties"
+  },
+  "diseases_table": {
+    "disease": "Disease",
+    "onset_age": "Onset Age",
+    "resolution_age": "Resolution Age"
+  },
+  "interpretations": {
+    "id": "ID",
+    "created": "Created",
+    "updated": "Updated",
+    "progress_status": "Progress Status",
+    "summary": "Summary",
+    "disease": "Disease",
+    "variant_interpretation": "Variant Interpretation",
+    "gene_descriptor": "Gene Descriptor",
+    "subject_or_biosample_id": "Subject or Biosample ID",
+    "interpretation_status": "Interpretation Status",
+    "diagnosis": "Diagnosis",
+    "no_diagnosis": "No diagnosis",
+    "genomic_interpretations": "Genomic Interpretations",
+    "no_genomic_iterpretation": "No Genomic Interpretation",
+    "accession_number": "Accession Number",
+    "symbol": "Symbol",
+    "description": "Description",
+    "alternate_ids": "Alternate IDs",
+    "cross_references": "Cross References",
+    "alternate_symbols": "Alternate Symbols",
+    "syntax": "Syntax",
+    "value": "Value",
+    "acmg_pathogenicity_classification": "ACMG Pathogenicity Classification",
+    "therapeutic_actionability": "Therapeutic Actionability",
+    "variation": "Variation",
+    "label": "Label",
+    "gene_context": "Gene Context",
+    "expressions": "Expressions",
+    "vcf_record": "VCF Record",
+    "xrefs": "Xrefs",
+    "alternate_labels": "Alternate Labels",
+    "extensions": "Extensions",
+    "molecule_context": "Molecule Context",
+    "structural_type": "Structural Type",
+    "vrs_ref_allele_seq": "VRS Ref Allele Seq",
+    "allelic_state": "Allelic State",
+    "name": "Name"
+  },
+  "measurements": {
+    "assay": "Assay",
+    "measurement_value": "Measurement Value",
+    "description": "Description",
+    "procedure": "Procedure"
+  },
+  "quantity": {
+    "value": "Value",
+    "unit": "Unit",
+    "low": "Low",
+    "high": "High"
+  },
+  "medical_actions": {
+    "code": "Code",
+    "body_site": "Body Site",
+    "performed": "Performed",
+    "quantity": "Quantity",
+    "schedule_frequency": "Schedule Frequency",
+    "interval": "Interval",
+    "agent": "Agent",
+    "route_of_administration": "Route of Administration",
+    "dose_intervals": "Dose Intervals",
+    "drug_type": "Drug Type",
+    "cumulative_dose": "Cumulative Dose",
+    "modality": "Modality",
+    "dosage": "Dosage",
+    "fractions": "Fractions",
+    "identifier": "Identifier",
+    "start_time": "Start Time",
+    "end_time": "End Time",
+    "status": "Status",
+    "procedure": "Procedure",
+    "treatment": "Treatment",
+    "radiation_therapy": "Radiation Therapy",
+    "therapeutic_regimen": "Therapeutic Regimen",
+    "adverse_events": "Adverse Events",
+    "action_type": "Action Type",
+    "treatment_target": "Treatment Target",
+    "treatment_intent": "Treatment Intent",
+    "response_to_treatment": "Response to Treatment",
+    "treatment_termination_reason": "Treatment Termination Reason",
+    "refernce": "Reference",
+    "unkown": "Unknown"
+  },
+  "ontologies": {
+    "resource_id": "Resource ID",
+    "name": "Name",
+    "namespace_prefix": "Namespace Prefix",
+    "url": "URL",
+    "version": "Version",
+    "iri_prefix": "IRI Prefix"
+  },
+  "phenotypic_features": {
+    "feature": "Feature",
+    "severity": "Severity",
+    "onset": "Onset",
+    "resolution": "Resolution",
+    "description": "Description",
+    "modifiers": "Modifiers",
+    "evidence": "Evidence",
+    "extra_properties": "Extra Properties",
+    "evidence_code": "Evidence Code",
+    "reference": "Reference"
+  },
+  "subject": {
+    "status": "Status",
+    "time_of_death": "Time of Death",
+    "cause_of_death": "Cause of Death",
+    "survival_time_in_days": "Survival Time in Days",
+    "id": "ID",
+    "alternate_ids": "Alternate IDs",
+    "age": "Age",
+    "time_at_last_encounter": "Time at Last Encounter",
+    "vital_status": "Vital Status",
+    "sex": "Sex",
+    "karyotypic_sex": "Karyotypic Sex",
+    "taxonomy": "Taxonomy"
+  },
+  "tab_keys": {
+    "subject": "Subject",
+    "biosamples": "Biosamples",
+    "measurements": "Measurements",
+    "phenotypic_features": "Phenotypic Features",
+    "diseases": "Diseases",
+    "interpretations": "Interpretations",
+    "medical_actions": "Medical Actions",
+    "ontologies": "Ontologies"
+  },
+  "genomic_interpretation_status": {
+    "UNKNOWN_STATUS": "Unknown Status",
+    "REJECTED": "Rejected",
+    "CANDIDATE": "Candidate",
+    "CONTRIBUTORY": "Contributory",
+    "CAUSATIVE": "Causative"
+  },
+  "progress_status": {
+    "UNKNOWN_PROGRESS": "Unknown Progress",
+    "IN_PROGRESS": "In Progress",
+    "COMPLETED": "Completed",
+    "SOLVED": "Solved",
+    "UNSOLVED": "Unsolved"
+  },
+  "auth": {
+    "unauthorized_message": "You are not authorized to access this resource."
   }
 }

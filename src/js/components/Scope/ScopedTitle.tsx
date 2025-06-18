@@ -96,6 +96,8 @@ const ScopedTitle = () => {
     }
   }, [breadcrumbItems]);
 
+  const isPhenopacketView = currentPage === BentoRoute.Phenopackets;
+
   if (breadcrumbItems.length) {
     return (
       <>
@@ -104,7 +106,7 @@ const ScopedTitle = () => {
         <Flex className="scoped-title" align="center">
           <Breadcrumb className="scoped-title__breadcrumb" items={breadcrumbItems} itemRender={breadcrumbRender} />
           <Space>
-            {scopeSelectionEnabled && (
+            {scopeSelectionEnabled && !isPhenopacketView && (
               <Tooltip title={t('Change Scope')} placement="bottom">
                 <Button
                   color="default"
