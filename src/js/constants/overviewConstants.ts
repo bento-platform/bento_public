@@ -3,6 +3,7 @@ import type { HexColor } from 'bento-charts';
 export const COUNTS_FILL = '#75787a';
 
 export const LOCALSTORAGE_CHARTS_KEY_PREFIX = 'charts_scope-';
+export const OLD_LOCALSTORAGE_CHARTS_KEY = 'charts';
 
 export const CHART_HEIGHT = 350;
 export const PIE_CHART_HEIGHT = 300; // rendered slightly smaller since labels can clip

@@ -1,4 +1,5 @@
 // React and ReactDOM imports
+import { useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 
 // Redux and routing imports
@@ -7,7 +8,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 // i18n and constants imports
 import { useTranslation } from 'react-i18next';
-import { NEW_BENTO_PUBLIC_THEME } from '@/constants/overviewConstants';
+import { NEW_BENTO_PUBLIC_THEME, OLD_LOCALSTORAGE_CHARTS_KEY } from '@/constants/overviewConstants';
 import { SUPPORTED_LNGS } from '@/constants/configConstants';
 
 // Component imports
@@ -50,6 +51,11 @@ const BaseRoutes = () => {
 
 const RootApp = () => {
   const { i18n } = useTranslation();
+
+  // TODO: Remove this in the future (v20?), once we are sure no one is using the old localStorage key
+  useEffect(() => {
+    localStorage.removeItem(OLD_LOCALSTORAGE_CHARTS_KEY);
+  }, []);
 
   return (
     <Provider store={store}>
