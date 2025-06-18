@@ -23,13 +23,13 @@ const GenomicInterpretationDetails = ({ genomicInterpretation }: { genomicInterp
       key: 'Variant Interpretation',
       label: 'interpretations.variant_interpretation',
       children: <VariantInterpretation variantInterpretation={genomicInterpretation.variant_interpretation!} />,
-      hidden: !genomicInterpretation.variant_interpretation,
+      isVisible: genomicInterpretation.variant_interpretation,
     },
     {
       key: 'Gene Descriptor',
       label: 'interpretations.gene_descriptor',
       children: <GeneDescriptor geneDescriptor={genomicInterpretation.gene_descriptor!} />,
-      hidden: !genomicInterpretation.gene_descriptor,
+      isVisible: genomicInterpretation.gene_descriptor,
     },
   ];
 
@@ -47,7 +47,7 @@ const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interp
       key: 'Disease',
       label: 'interpretations.disease',
       children: <OntologyTerm term={interpretation?.diagnosis?.disease} />,
-      hidden: !interpretation?.diagnosis?.disease,
+      isVisible: interpretation?.diagnosis?.disease,
     },
   ];
 
