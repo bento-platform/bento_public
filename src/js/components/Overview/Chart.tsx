@@ -1,11 +1,12 @@
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import type { BarChartProps } from 'bento-charts';
 import { BarChart, Histogram, PieChart } from 'bento-charts';
 import { ChoroplethMap } from 'bento-charts/dist/maps';
 
 import { CHART_HEIGHT, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
-import { useTranslationFn } from '@/hooks';
+import { useSelectedScope } from '@/features/metadata/hooks';
 import type { ChartData } from '@/types/data';
 import type { ChartConfig } from '@/types/discovery/chartConfig';
 import {
@@ -15,6 +16,7 @@ import {
   CHART_TYPE_PIE,
 } from '@/types/discovery/chartConfig';
 import { noop } from '@/utils/chart';
+import { langAndScopeSelectionToUrl } from '@/utils/router';
 
 interface BarChartEvent {
   activePayload: Array<{ payload: { x: string; id?: string } }>;
@@ -25,14 +27,19 @@ interface PieChartEvent {
 }
 
 const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) => {
-  const t = useTranslationFn();
   const navigate = useNavigate();
+  const {
+    i18n: { language },
+    t,
+  } = useTranslation();
+  const selectedScope = useSelectedScope();
+
   const translateMap = ({ x, y }: { x: string; y: number }) => ({ x: t(x), y, id: x });
   const removeMissing = ({ x }: { x: string }) => x !== 'missing';
 
   const goToSearch = (id: string, val: string | undefined) => {
     if (val === undefined) return;
-    navigate(`../search?${id}=${val}`);
+    navigate(langAndScopeSelectionToUrl(language, selectedScope, `overview?${id}=${val}`));
   };
 
   const barChartOnChartClickHandler: BarChartProps['onChartClick'] = (e: BarChartEvent) => {
