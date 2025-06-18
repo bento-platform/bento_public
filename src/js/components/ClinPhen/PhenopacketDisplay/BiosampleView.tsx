@@ -1,4 +1,4 @@
-import { type DescriptionsProps, Table } from 'antd';
+import { Table } from 'antd';
 
 import OntologyTermComponent from '@Util/ClinPhen/OntologyTerm';
 import TimeElementDisplay from '@Util/ClinPhen/TimeElementDisplay';
@@ -51,8 +51,8 @@ const BiosampleExpandedRow = ({ biosample }: { biosample: Biosample }) => {
   return <TDescriptions bordered size="small" items={items} />;
 };
 
-const isBiosampleRowVisible = (r: Biosample) => {
-  return !!(
+const isBiosampleRowVisible = (r: Biosample) =>
+  !!(
     r.description ||
     r.derived_from_id ||
     r.sample_type ||
@@ -60,7 +60,6 @@ const isBiosampleRowVisible = (r: Biosample) => {
     r.histological_diagnosis ||
     r.pathological_stage
   );
-};
 
 interface BiosampleViewProps {
   biosamples: Biosample[];
