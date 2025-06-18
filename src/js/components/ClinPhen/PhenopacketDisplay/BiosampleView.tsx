@@ -26,25 +26,25 @@ const BiosampleExpandedRow = ({ biosample }: { biosample: Biosample }) => {
       key: 'sample_type',
       label: 'biosample_expanded_row.sample_type',
       children: <OntologyTermComponent term={biosample.sample_type} />,
-      hidden: !biosample.sample_type,
+      isVisible: biosample.sample_type,
     },
     {
       key: 'time_of_collection',
       label: 'biosample_expanded_row.collection_time',
       children: <TimeElementDisplay element={biosample.time_of_collection} />,
-      hidden: !biosample.time_of_collection,
+      isVisible: biosample.time_of_collection,
     },
     {
       key: 'histological_diagnosis',
       label: 'biosample_expanded_row.histological_diagnosis',
       children: <OntologyTermComponent term={biosample.histological_diagnosis} />,
-      hidden: !biosample.histological_diagnosis,
+      isVisible: biosample.histological_diagnosis,
     },
     {
       key: 'pathological_stage',
       label: 'biosample_expanded_row.pathological_stage',
       children: <OntologyTermComponent term={biosample.pathological_stage} />,
-      hidden: !biosample.pathological_stage,
+      isVisible: biosample.pathological_stage,
     },
   ];
 
