@@ -9,39 +9,45 @@ import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumn
 
 import { useTranslationFn } from '@/hooks';
 
-import type { DescriptionsProps } from 'antd';
 import type { Interpretation } from '@/types/clinPhen/interpretation';
 import type { JSONObject } from '@/types/json';
 import type { GenomicInterpretation } from '@/types/clinPhen/genomicInterpretation';
+import type { ConditionalDescriptionItem } from '@/types/descriptions';
 
 const GenomicInterpretationDetails = ({ genomicInterpretation }: { genomicInterpretation: GenomicInterpretation }) => {
   const relatedType = (genomicInterpretation?.extra_properties as JSONObject)?.__related_type ?? 'unknown';
 
-  const items: DescriptionsProps['items'] = [
-    { key: 'id', label: `${relatedType} id`, children: genomicInterpretation.subject_or_biosample_id }, //TODO: Link to subject or biosample
-    genomicInterpretation?.variant_interpretation && {
+  const items: ConditionalDescriptionItem[] = [
+    { key: 'id', label: `${relatedType} id`, children: genomicInterpretation.subject_or_biosample_id! }, //TODO: Link to subject or biosample
+    {
       key: 'Variant Interpretation',
       label: 'interpretations.variant_interpretation',
-      children: <VariantInterpretation variantInterpretation={genomicInterpretation.variant_interpretation} />,
+      children: <VariantInterpretation variantInterpretation={genomicInterpretation.variant_interpretation!} />,
+      hidden: !genomicInterpretation.variant_interpretation,
     },
-    genomicInterpretation?.gene_descriptor && {
+    {
       key: 'Gene Descriptor',
       label: 'interpretations.gene_descriptor',
-      children: <GeneDescriptor geneDescriptor={genomicInterpretation.gene_descriptor} />,
+      children: <GeneDescriptor geneDescriptor={genomicInterpretation.gene_descriptor!} />,
+      hidden: !genomicInterpretation.gene_descriptor,
     },
-  ].filter(Boolean) as DescriptionsProps['items'];
+  ];
 
   return <TDescriptions items={items} size="small" column={1} bordered />;
 };
 
+const isGenomicInterpretationDetailsVisible = (r: GenomicInterpretation) =>
+  !!(r.variant_interpretation || r.gene_descriptor);
+
 const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interpretation }) => {
   const t = useTranslationFn();
 
-  const items: DescriptionsProps['items'] = [
+  const items: ConditionalDescriptionItem[] = [
     {
       key: 'Disease',
       label: 'interpretations.disease',
       children: <OntologyTerm term={interpretation?.diagnosis?.disease} />,
+      hidden: !interpretation?.diagnosis?.disease,
     },
   ];
 
@@ -83,6 +89,7 @@ const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interp
             dataSource={interpretation.diagnosis.genomic_interpretations}
             expandable={{
               expandedRowRender: (record) => <GenomicInterpretationDetails genomicInterpretation={record} />,
+              rowExpandable: (record) => isGenomicInterpretationDetailsVisible(record),
             }}
             rowKey={(record) => record.subject_or_biosample_id}
             pagination={false}
@@ -95,6 +102,9 @@ const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interp
     </Space>
   );
 };
+
+const isinterpretaionExpandedRowVisible = (r: Interpretation) =>
+  !!(r.diagnosis?.disease || r.diagnosis?.genomic_interpretations?.length);
 
 interface InterpretationsViewProps {
   interpretations: Interpretation[];
@@ -141,6 +151,7 @@ const InterpretationsView = ({ interpretations }: InterpretationsViewProps) => {
       columns={columns}
       expandable={{
         expandedRowRender: (record) => <InterpretationsExpandedRow interpretation={record} />,
+        rowExpandable: (record) => isinterpretaionExpandedRowVisible(record),
       }}
       rowKey={(record) => record.id}
       pagination={false}
