@@ -1,4 +1,4 @@
-import { type DescriptionsProps, Space, Table } from 'antd';
+import { Space, Table } from 'antd';
 
 import OntologyTermComponent from '@Util/ClinPhen/OntologyTerm';
 import QuantityDisplay from '@Util/ClinPhen/QuantityDisplay';
@@ -6,6 +6,7 @@ import QuantityDisplay from '@Util/ClinPhen/QuantityDisplay';
 import type { Measurement, Quantity, TypedQuantity } from '@/types/clinPhen/measurement';
 import type { OntologyTerm as OntologyTermType } from '@/types/ontology';
 import type { Procedure } from '@/types/clinPhen/procedure';
+import type { ConditionalDescriptionItem } from '@/types/descriptions';
 
 import { EM_DASH } from '@/constants/common';
 import { ProcedureComponent } from './MedicalActionsView';
@@ -14,16 +15,18 @@ import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumn
 import { useTranslationFn } from '@/hooks';
 
 const MeasurementsExpandedRow = ({ measurement }: { measurement: Measurement }) => {
-  const items: DescriptionsProps['items'] = [
+  const items: ConditionalDescriptionItem[] = [
     {
       key: 'measurement_value',
       label: 'measurements.measurement_value',
       children: <MeasurementDetail measurement={measurement} expanded />,
+      hidden: !measurement.value && !measurement.complex_value,
     },
     {
       key: 'procedure',
       label: 'measurements.procedure',
-      children: measurement?.procedure ? <ProcedureComponent procedure={measurement.procedure} /> : EM_DASH,
+      children: <ProcedureComponent procedure={measurement.procedure!} />,
+      hidden: !measurement.procedure,
     },
   ];
 
@@ -92,6 +95,10 @@ const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement
   return null;
 };
 
+const isMeasurementExpandedRowVisible = (measurement: Measurement) => {
+  return !!(measurement.procedure || measurement.value || measurement.complex_value);
+};
+
 interface MeasurementsViewProps {
   measurements: Measurement[];
 }
@@ -127,6 +134,7 @@ const MeasurementsView = ({ measurements }: MeasurementsViewProps) => {
       columns={columns}
       expandable={{
         expandedRowRender: (record) => <MeasurementsExpandedRow measurement={record} />,
+        rowExpandable: (record) => isMeasurementExpandedRowVisible(record),
       }}
       rowKey={(record) => record.assay.id}
       pagination={false}
