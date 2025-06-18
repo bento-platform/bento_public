@@ -16,13 +16,11 @@ const BiosampleExpandedRow = ({ biosample }: { biosample: Biosample }) => {
       key: 'description',
       label: 'biosample_expanded_row.description',
       children: biosample.description,
-      hidden: !biosample.description,
     },
     {
       key: 'derived_from_id',
       label: 'biosample_expanded_row.derived_from',
       children: biosample.derived_from_id,
-      hidden: !biosample.derived_from_id,
     },
     {
       key: 'sample_type',
