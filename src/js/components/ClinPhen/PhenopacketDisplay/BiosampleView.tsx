@@ -6,9 +6,9 @@ import TDescriptions from '@Util/TDescriptions';
 
 import type { Biosample } from '@/types/clinPhen/biosample';
 import type { OntologyTerm } from '@/types/ontology';
+import type { ConditionalDescriptionItem } from '@/types/descriptions';
 
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
-import { ConditionalDescriptionItem } from '@/types/descriptions';
 
 const BiosampleExpandedRow = ({ biosample }: { biosample: Biosample }) => {
   const items: ConditionalDescriptionItem[] = [
