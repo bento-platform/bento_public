@@ -14,3 +14,7 @@ export interface TimestampedEntity {
   created?: string;
   updated?: string;
 }
+
+export type WithVisible<T> = T & {
+  isVisible?: boolean;
+};
