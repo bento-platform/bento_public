@@ -5,8 +5,10 @@ import { makeGetIndividualData } from '@/features/clinPhen/makeGetIndividualData
 import { makeGetPhenopacketData } from './makeGetPhenopacket.thunk';
 
 import { useAppDispatch, useAppSelector, useHasScopePermission } from '@/hooks';
+import type { Individual } from '@/types/clinPhen/individual';
+import type { RequestStatus } from '@/types/requests';
 
-export const useIndividualData = (id: string) => {
+export const useIndividualData = (id: string): { data: Individual | undefined; status: RequestStatus } => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {

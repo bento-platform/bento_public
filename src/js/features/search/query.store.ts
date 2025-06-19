@@ -1,15 +1,16 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
-import type { DiscoveryResults } from '@/types/data';
 import { RequestStatus } from '@/types/requests';
-import { EMPTY_DISCOVERY_RESULTS } from '@/features/search/constants';
-import type { KatsuSearchResponse, QueryParams, SearchFieldResponse, QueryMode } from '@/features/search/types';
-import { serializeChartData } from '@/utils/chart';
+// import { EMPTY_DISCOVERY_RESULTS } from '@/features/search/constants';
+import type { CountsOrBooleans, DiscoveryResponseOrMessage } from '@/types/discovery/response';
+import type { QueryParams, SearchFieldResponse, QueryMode, DiscoveryMatchPhenopacket } from '@/features/search/types';
+// import { serializeChartData } from '@/utils/chart';
 
-import { makeGetKatsuPublic } from './makeGetKatsuPublic.thunk';
-import { makeGetSearchFields } from './makeGetSearchFields.thunk';
+import { performKatsuDiscovery } from './performKatsuDiscovery.thunk';
+import { fetchSearchFields } from './fetchSearchFields.thunk';
 import { performFreeTextSearch } from '@/features/search/performFreeTextSearch.thunk';
+import { fetchDiscoveryMatches } from '@/features/search/fetchDiscoveryMatches.thunk';
 
 export type QueryState = {
   mode: QueryMode;
@@ -27,7 +28,15 @@ export type QueryState = {
   // (filter|text)QueryStatus can. This is instead only reset when the complete query state is reset.
   doneFirstLoad: boolean;
   message: string;
-  results: DiscoveryResults;
+
+  matchesStatus: RequestStatus;
+
+  // results
+  resultCountsOrBools: CountsOrBooleans;
+  page: number;
+  pageSize: number;
+  totalMatches: number;
+  matches: DiscoveryMatchPhenopacket[] | undefined; // TODO
 };
 
 const initialState: QueryState = {
@@ -44,7 +53,14 @@ const initialState: QueryState = {
   // ----
   doneFirstLoad: false,
   message: '',
-  results: EMPTY_DISCOVERY_RESULTS,
+  // ----
+  matchesStatus: RequestStatus.Idle,
+  // ----
+  resultCountsOrBools: { phenopacket: 0, individual: 0, biosample: 0, experiment: 0 },
+  page: 0,
+  pageSize: 10,
+  totalMatches: 0,
+  matches: undefined,
 };
 
 const query = createSlice({
@@ -69,32 +85,37 @@ const query = createSlice({
     setDoneFirstLoad: (state) => {
       state.doneFirstLoad = true;
     },
+    setMatchesPage: (state, { payload }: PayloadAction<number>) => {
+      state.page = payload;
+    },
+    setMatchesPageSize: (state, { payload }: PayloadAction<number>) => {
+      state.pageSize = payload;
+    },
     resetAllQueryState: () => initialState,
   },
   extraReducers: (builder) => {
-    builder.addCase(makeGetKatsuPublic.pending, (state) => {
+    builder.addCase(performKatsuDiscovery.pending, (state) => {
       state.filterQueryStatus = RequestStatus.Pending;
     });
-    builder.addCase(makeGetKatsuPublic.fulfilled, (state, { payload }: PayloadAction<KatsuSearchResponse>) => {
-      state.filterQueryStatus = RequestStatus.Fulfilled;
-      if (payload && 'message' in payload) {
-        state.message = payload.message;
-        return;
+    builder.addCase(
+      performKatsuDiscovery.fulfilled,
+      (state, { payload }: PayloadAction<DiscoveryResponseOrMessage>) => {
+        state.filterQueryStatus = RequestStatus.Fulfilled;
+        if (payload && 'message' in payload) {
+          state.message = payload.message;
+          return;
+        }
+        state.message = '';
+        state.resultCountsOrBools = payload.counts;
+        // {
+        //   resultCountsOrBools: payload.counts;
+        //   // biosampleChartData: serializeChartData(payload.biosamples.sampled_tissue),
+        //   // experimentChartData: serializeChartData(payload.experiments.experiment_type),
+        //   // individualMatches: payload.matches_detail, // Undefined if no permissions
+        // };
       }
-      state.message = '';
-      state.results = {
-        // biosamples
-        biosampleCount: payload.biosamples.count,
-        biosampleChartData: serializeChartData(payload.biosamples.sampled_tissue),
-        // experiments
-        experimentCount: payload.experiments.count,
-        experimentChartData: serializeChartData(payload.experiments.experiment_type),
-        // individuals
-        individualCount: payload.count,
-        individualMatches: payload.matches_detail, // Undefined if no permissions
-      };
-    });
-    builder.addCase(makeGetKatsuPublic.rejected, (state) => {
+    );
+    builder.addCase(performKatsuDiscovery.rejected, (state) => {
       state.filterQueryStatus = RequestStatus.Rejected;
     });
     // -----
@@ -104,36 +125,54 @@ const query = createSlice({
     builder.addCase(performFreeTextSearch.fulfilled, (state, { payload }) => {
       state.textQueryStatus = RequestStatus.Fulfilled;
       state.message = '';
-      state.results = {
-        // biosamples
-        biosampleCount: payload.results.reduce((acc, x) => acc + x.biosamples.length, 0),
-        biosampleChartData: [], // TODO
-        // experiments
-        experimentCount: payload.results.reduce((acc, x) => acc + x.num_experiments, 0),
-        experimentChartData: [], // TODO
-        // individuals
-        individualCount: payload.results.length,
-        individualMatches: payload.results.map(({ subject_id: id, phenopacket_id, dataset_id, project_id }) => ({
-          id,
-          phenopacket_id,
-          dataset_id,
-          project_id,
-        })),
+      state.resultCountsOrBools = {
+        phenopacket: payload.results.length,
+        individual: payload.results.length,
+        biosample: payload.results.reduce((acc, x) => acc + x.biosamples.length, 0),
+        experiment: payload.results.reduce((acc, x) => acc + x.num_experiments, 0),
       };
+      // state.results = {
+      //   // biosamples
+      //   biosampleCount: payload.results.reduce((acc, x) => acc + x.biosamples.length, 0),
+      //   biosampleChartData: [], // TODO
+      //   // experiments
+      //   experimentCount: payload.results.reduce((acc, x) => acc + x.num_experiments, 0),
+      //   experimentChartData: [], // TODO
+      //   // individuals
+      //   individualCount: payload.results.length,
+      //   individualMatches: payload.results.map(({ subject_id: id, phenopacket_id, dataset_id, project_id }) => ({
+      //     id,
+      //     phenopacket_id,
+      //     dataset_id,
+      //     project_id,
+      //   })),
+      // };
     });
     builder.addCase(performFreeTextSearch.rejected, (state) => {
       state.textQueryStatus = RequestStatus.Rejected;
     });
     // -----
-    builder.addCase(makeGetSearchFields.pending, (state) => {
+    builder.addCase(fetchSearchFields.pending, (state) => {
       state.fieldsStatus = RequestStatus.Pending;
     });
-    builder.addCase(makeGetSearchFields.fulfilled, (state, { payload }) => {
+    builder.addCase(fetchSearchFields.fulfilled, (state, { payload }) => {
       state.fieldsStatus = RequestStatus.Fulfilled;
       state.filterSections = payload.sections;
     });
-    builder.addCase(makeGetSearchFields.rejected, (state) => {
+    builder.addCase(fetchSearchFields.rejected, (state) => {
       state.fieldsStatus = RequestStatus.Rejected;
+    });
+    // -----
+    builder.addCase(fetchDiscoveryMatches.pending, (state) => {
+      state.matchesStatus = RequestStatus.Pending;
+    });
+    builder.addCase(fetchDiscoveryMatches.fulfilled, (state, { payload }) => {
+      state.matchesStatus = RequestStatus.Fulfilled;
+      state.matches = payload.results;
+      state.totalMatches = payload.pagination.total;
+    });
+    builder.addCase(fetchDiscoveryMatches.rejected, (state) => {
+      state.matchesStatus = RequestStatus.Rejected;
     });
   },
 });
@@ -145,7 +184,9 @@ export const {
   setTextQuery,
   resetTextQueryStatus,
   setDoneFirstLoad,
+  setMatchesPage,
+  setMatchesPageSize,
   resetAllQueryState,
 } = query.actions;
-export { makeGetKatsuPublic, makeGetSearchFields };
+export { performKatsuDiscovery, fetchSearchFields };
 export default query.reducer;

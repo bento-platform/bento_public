@@ -9,7 +9,7 @@ import type { Individual } from '@/types/clinPhen/individual';
 
 import { EM_DASH } from '@/constants/common';
 
-const SubjectView = ({ subject }: { subject: Individual }) => {
+const SubjectView = ({ subject, size }: { subject: Individual; size?: DescriptionsProps['size'] }) => {
   const vs = subject?.vital_status;
   const vitalStatusItems: DescriptionsProps['items'] = [
     {
@@ -84,9 +84,9 @@ const SubjectView = ({ subject }: { subject: Individual }) => {
   }));
 
   return (
-    <Space id="subject-view" direction="vertical" className="w-full" size="large">
-      <TDescriptions items={items} column={1} bordered />
-      {extraProperties.length && <TDescriptions items={extraProperties} column={1} bordered />}
+    <Space id="subject-view" direction="vertical" className="w-full" size={size === 'small' ? size : 'large'}>
+      <TDescriptions items={items} column={1} bordered size={size ?? 'default'} />
+      {extraProperties.length && <TDescriptions items={extraProperties} column={1} bordered size={size ?? 'default'} />}
     </Space>
   );
 };
