@@ -73,13 +73,13 @@ const TreatmentComponent = ({ treatment }: { treatment: Treatment }) => {
       key: 'agent',
       label: 'medical_actions.agent',
       children: <OntologyTermComponent term={treatment.agent} />,
-      isVisible: treatment.agent,
+      isVisible: treatment?.agent,
     },
     {
       key: 'routeOfAdministration',
       label: 'medical_actions.route_of_administration',
       children: <OntologyTermComponent term={treatment.route_of_administration} />,
-      isVisible: treatment.route_of_administration,
+      isVisible: treatment?.route_of_administration,
     },
     {
       key: 'doseIntervals',
@@ -93,18 +93,18 @@ const TreatmentComponent = ({ treatment }: { treatment: Treatment }) => {
           bordered
         />
       ),
-      isVisible: treatment.dose_intervals,
+      isVisible: treatment?.dose_intervals,
     },
     {
       key: 'drugType',
       label: 'medical_actions.drug_type',
-      children: treatment.drug_type,
+      children: treatment?.drug_type,
     },
     {
       key: 'cumulativeDose',
       label: 'medical_actions.cumulative_dose',
       children: <QuantityDisplay quantity={treatment.cumulative_dose!} title="medical_actions.cumulative_dose" />,
-      isVisible: treatment.cumulative_dose,
+      isVisible: treatment?.cumulative_dose,
     },
   ];
   return <TDescriptions bordered column={1} size="small" items={TreatmentItems} />;
