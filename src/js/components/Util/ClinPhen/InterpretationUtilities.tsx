@@ -90,7 +90,7 @@ export const VariantInterpretation = ({
     {
       key: 'gene_context',
       label: 'interpretations.gene_context',
-      children: <GeneDescriptor geneDescriptor={vd.gene_context!!} />,
+      children: <GeneDescriptor geneDescriptor={vd.gene_context!} />,
       isVisible: vd?.gene_context,
     },
     {
