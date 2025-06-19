@@ -7,8 +7,10 @@ import TDescriptions from '@Util/TDescriptions';
 import type { Biosample } from '@/types/clinPhen/biosample';
 import type { OntologyTerm } from '@/types/ontology';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
+import type { WithVisible } from '@/types/util';
 
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
+import { addVisibilityProperty, visibilityReducer, visibilitySelector } from '@/utils/tables';
 
 const BiosampleExpandedRow = ({ biosample }: { biosample: Biosample }) => {
   const items: ConditionalDescriptionItem[] = [
@@ -79,13 +81,16 @@ const BiosampleView = ({ biosamples }: BiosampleViewProps) => {
     },
   ]);
 
+  const biosamplesWithVisibility = addVisibilityProperty(biosamples, isBiosampleRowVisible);
+
   return (
-    <Table<Biosample>
-      dataSource={biosamples}
+    <Table<WithVisible<Biosample>>
+      dataSource={biosamplesWithVisibility}
       columns={columns}
       expandable={{
         expandedRowRender: (record) => <BiosampleExpandedRow biosample={record} />,
-        rowExpandable: isBiosampleRowVisible,
+        rowExpandable: visibilitySelector,
+        showExpandColumn: visibilityReducer(biosamplesWithVisibility),
       }}
       rowKey="id"
       pagination={false}
