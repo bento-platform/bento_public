@@ -7,11 +7,13 @@ import ExtraProperties from '@Util/ExtraProperties';
 import Excluded, { ExcludedModel } from '@Util/ClinPhen/Excluded';
 
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
+import { addVisibilityProperty, visibilityReducer, visibilitySelector } from '@/utils/tables';
 
 import type { Disease } from '@/types/clinPhen/disease';
 import type { TimeElement } from '@/types/clinPhen/shared';
 import type { OntologyTerm } from '@/types/ontology';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
+import type { WithVisible } from '@/types/util';
 
 import { EM_DASH } from '@/constants/common';
 
@@ -77,13 +79,16 @@ const DiseasesView = ({ diseases }: DiseasesViewProps) => {
     },
   ]);
 
+  const diseasesWithVisibility = addVisibilityProperty(diseases, isDiseaseRowVisible);
+
   return (
-    <Table<Disease>
-      dataSource={diseases}
+    <Table<WithVisible<Disease>>
+      dataSource={diseasesWithVisibility}
       columns={columns}
       expandable={{
         expandedRowRender: (record) => <DiseaseExpandedRow disease={record} />,
-        rowExpandable: isDiseaseRowVisible,
+        rowExpandable: visibilitySelector,
+        showExpandColumn: visibilityReducer(diseasesWithVisibility),
       }}
       rowKey={(record) => record.term.id}
       pagination={false}

@@ -6,6 +6,7 @@ import TimeElementDisplay, { TimeIntervalDisplay } from '@Util/ClinPhen/TimeElem
 import TDescriptions from '@Util/TDescriptions';
 
 import { EM_DASH } from '@/constants/common';
+import { addVisibilityProperty, visibilityReducer, visibilitySelector } from '@/utils/tables';
 
 import type {
   Treatment,
@@ -19,6 +20,7 @@ import type { OntologyTerm } from '@/types/ontology';
 import type { Procedure } from '@/types/clinPhen/procedure';
 import type { TimeInterval } from '@/types/clinPhen/shared';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
+import type { WithVisible } from '@/types/util';
 
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
 import { useTranslationFn } from '@/hooks';
@@ -274,13 +276,16 @@ const MedicalActionsView = ({ medicalActions }: { medicalActions: MedicalAction[
     },
   ]);
 
+  const medicalActionsWithVisibility = addVisibilityProperty(medicalActions, isMedicalActionsExpandedRowVisible);
+
   return (
-    <Table<MedicalAction>
-      dataSource={medicalActions}
+    <Table<WithVisible<MedicalAction>>
+      dataSource={medicalActionsWithVisibility}
       columns={columns}
       expandable={{
         expandedRowRender: (record) => <MedicalActionDetails medicalAction={record} />,
-        rowExpandable: isMedicalActionsExpandedRowVisible,
+        rowExpandable: visibilitySelector,
+        showExpandColumn: visibilityReducer(medicalActionsWithVisibility),
       }}
       rowKey={(record) =>
         record.procedure?.code?.id || record.treatment?.agent?.id || record.radiation_therapy?.modality?.id || 'unknown'

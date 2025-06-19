@@ -11,6 +11,8 @@ import type { PhenotypicFeature } from '@/types/clinPhen/phenotypicFeature';
 import type { OntologyTerm } from '@/types/ontology';
 import type { Evidence as EvidenceType, TimeElement } from '@/types/clinPhen/shared';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
+import { addVisibilityProperty, visibilityReducer, visibilitySelector } from '@/utils/tables';
+import type { WithVisible } from '@/types/util';
 
 import { isValidUrl } from '@/utils/strings';
 import { objectToBoolean } from '@/utils/boolean';
@@ -142,13 +144,15 @@ function PhenotypicFeaturesView({ features }: PhenotypicFeaturesViewProps) {
       render: (resolution: TimeElement) => (resolution ? <TimeElementDisplay element={resolution} /> : EM_DASH),
     },
   ]);
+  const featuresWithVisibility = addVisibilityProperty(features, isPhenotypicFeatureExpandedRowVisible);
   return (
-    <Table<PhenotypicFeature>
-      dataSource={features}
+    <Table<WithVisible<PhenotypicFeature>>
+      dataSource={featuresWithVisibility}
       columns={columns}
       expandable={{
         expandedRowRender: (record) => <PhenotypicFeatureExpandedRow feature={record} />,
-        rowExpandable: isPhenotypicFeatureExpandedRowVisible,
+        rowExpandable: visibilitySelector,
+        showExpandColumn: visibilityReducer(featuresWithVisibility),
       }}
       rowKey={(record) => record.type.id}
       pagination={false}

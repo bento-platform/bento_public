@@ -13,6 +13,8 @@ import { ProcedureComponent } from './MedicalActionsView';
 import TDescriptions from '@Util/TDescriptions';
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
 import { useTranslationFn } from '@/hooks';
+import { addVisibilityProperty, visibilityReducer, visibilitySelector } from '@/utils/tables';
+import type { WithVisible } from '@/types/util';
 
 const MeasurementsExpandedRow = ({ measurement }: { measurement: Measurement }) => {
   const items: ConditionalDescriptionItem[] = [
@@ -128,13 +130,17 @@ const MeasurementsView = ({ measurements }: MeasurementsViewProps) => {
       render: (procedure: Procedure | undefined) => <OntologyTermComponent term={procedure?.code} />,
     },
   ]);
+
+  const measurementsWithVisibility = addVisibilityProperty(measurements, isMeasurementExpandedRowVisible);
+
   return (
-    <Table<Measurement>
-      dataSource={measurements}
+    <Table<WithVisible<Measurement>>
+      dataSource={measurementsWithVisibility}
       columns={columns}
       expandable={{
         expandedRowRender: (record) => <MeasurementsExpandedRow measurement={record} />,
-        rowExpandable: isMeasurementExpandedRowVisible,
+        rowExpandable: visibilitySelector,
+        showExpandColumn: visibilityReducer(measurementsWithVisibility),
       }}
       rowKey={(record) => record.assay.id}
       pagination={false}

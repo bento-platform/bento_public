@@ -8,11 +8,13 @@ import TDescriptions from '@Util/TDescriptions';
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
 
 import { useTranslationFn } from '@/hooks';
+import { addVisibilityProperty, visibilityReducer, visibilitySelector } from '@/utils/tables';
 
 import type { Interpretation } from '@/types/clinPhen/interpretation';
 import type { JSONObject } from '@/types/json';
 import type { GenomicInterpretation } from '@/types/clinPhen/genomicInterpretation';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
+import type { WithVisible } from '@/types/util';
 
 const GenomicInterpretationDetails = ({ genomicInterpretation }: { genomicInterpretation: GenomicInterpretation }) => {
   const relatedType = (genomicInterpretation?.extra_properties as JSONObject)?.__related_type ?? 'unknown';
@@ -145,13 +147,16 @@ const InterpretationsView = ({ interpretations }: InterpretationsViewProps) => {
     },
   ]);
 
+  const interpretationsWithVisibility = addVisibilityProperty(interpretations, isinterpretaionExpandedRowVisible);
+
   return (
-    <Table<Interpretation>
-      dataSource={interpretations}
+    <Table<WithVisible<Interpretation>>
+      dataSource={interpretationsWithVisibility}
       columns={columns}
       expandable={{
         expandedRowRender: (record) => <InterpretationsExpandedRow interpretation={record} />,
-        rowExpandable: isinterpretaionExpandedRowVisible,
+        rowExpandable: visibilitySelector,
+        showExpandColumn: visibilityReducer(interpretationsWithVisibility),
       }}
       rowKey={(record) => record.id}
       pagination={false}
