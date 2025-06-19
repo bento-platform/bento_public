@@ -220,6 +220,7 @@ const MedicalActionDetails = ({ medicalAction }: { medicalAction: MedicalAction 
       key: 'adverseEvents',
       label: 'medical_actions.adverse_events',
       children: <OntologyTermStack terms={medicalAction.adverse_events} />,
+      isVisible: medicalAction.adverse_events?.length,
     },
   ];
   return <TDescriptions bordered column={1} size="small" items={medicalActionItems} />;
