@@ -14,11 +14,11 @@ const TDescriptions = (props: TDescriptionsProps) => {
   const { items, ...restProps } = props;
   const filteredItems = hiddenDescriptions(items);
 
+  const descriptionItems = useTranslatedDescriptionItems(filteredItems);
+
   if (filteredItems?.length === 0) {
     return null;
   }
-
-  const descriptionItems = useTranslatedDescriptionItems(filteredItems);
 
   return <Descriptions {...restProps} items={descriptionItems} />;
 };
