@@ -3,6 +3,6 @@ import { type ConditionalDescriptionItem } from '@/types/descriptions';
 
 export const hiddenDescriptions = (items: ConditionalDescriptionItem[]): DescriptionsProps['items'] => {
   return items
-    .filter(({ isVisible, children }) => (isVisible === undefined ? !!children : !!isVisible))
+    .filter((item) => ('isVisible' in item ? !!item.isVisible : !!item.children))
     .map(({ isVisible: _, ...rest }) => rest);
 };
