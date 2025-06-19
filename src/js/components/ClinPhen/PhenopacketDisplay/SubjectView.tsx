@@ -46,11 +46,6 @@ const SubjectView = ({ subject }: { subject: Individual }) => {
       children: <StringList list={subject.alternate_ids} />,
     },
     {
-      key: 'age',
-      label: 'subject.age',
-      children: `${subject?.age_numeric} ${subject?.age_unit}`,
-    },
-    {
       key: 'time_at_last_encounter',
       label: 'subject.time_at_last_encounter',
       children: <TimeElementDisplay element={subject?.time_at_last_encounter} />,

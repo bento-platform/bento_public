@@ -342,7 +342,6 @@
     "survival_time_in_days": "Survival Time in Days",
     "id": "ID",
     "alternate_ids": "Alternate IDs",
-    "age": "Age",
     "time_at_last_encounter": "Time at Last Encounter",
     "vital_status": "Vital Status",
     "sex": "Sex",
