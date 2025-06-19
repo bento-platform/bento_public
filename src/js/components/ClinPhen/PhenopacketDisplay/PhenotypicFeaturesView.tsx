@@ -1,7 +1,7 @@
-import { type DescriptionsProps, Space, Table } from 'antd';
+import { Table } from 'antd';
 import { LinkOutlined } from '@ant-design/icons';
 
-import OntologyTermComponent from '@Util/ClinPhen/OntologyTerm';
+import OntologyTermComponent, { OntologyTermStack } from '@Util/ClinPhen/OntologyTerm';
 import TimeElementDisplay from '@Util/ClinPhen/TimeElementDisplay';
 import ExtraProperties from '@Util/ExtraProperties';
 import TDescriptions from '@Util/TDescriptions';
@@ -10,8 +10,10 @@ import Excluded, { ExcludedModel } from '@Util/ClinPhen/Excluded';
 import type { PhenotypicFeature } from '@/types/clinPhen/phenotypicFeature';
 import type { OntologyTerm } from '@/types/ontology';
 import type { Evidence as EvidenceType, TimeElement } from '@/types/clinPhen/shared';
+import type { ConditionalDescriptionItem } from '@/types/descriptions';
 
 import { isValidUrl } from '@/utils/strings';
+import { objectToBoolean } from '@/utils/boolean';
 import { EM_DASH } from '@/constants/common';
 
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
@@ -31,13 +33,14 @@ const Evidence = ({ evidence }: EvidenceProps) => {
   const externalReference = evidence.reference;
   const hasReferenceUrl = isValidUrl(externalReference?.reference);
 
-  const items: DescriptionsProps['items'] = [
+  const items: ConditionalDescriptionItem[] = [
     {
       key: 'evidence_code',
       label: 'phenotypic_features.evidence_code',
       children: <OntologyTermComponent term={evidence.evidence_code} />,
+      isVisible: evidence.evidence_code,
     },
-    externalReference && {
+    {
       key: 'reference',
       label: 'phenotypic_features.reference',
       children: (
@@ -61,45 +64,47 @@ const Evidence = ({ evidence }: EvidenceProps) => {
           )}
         </>
       ),
+      isVisible: externalReference,
     },
-  ].filter(Boolean) as DescriptionsProps['items'];
+  ];
 
   return <TDescriptions bordered={false} column={1} size="small" items={items} />;
 };
 
 function PhenotypicFeatureExpandedRow({ feature }: { feature: PhenotypicFeature }) {
-  const items: DescriptionsProps['items'] = [
+  const items: ConditionalDescriptionItem[] = [
     {
       key: 'description',
       label: 'phenotypic_features.description',
-      children: feature.description || EM_DASH,
+      children: feature.description,
     },
     {
       key: 'modifiers',
       label: 'phenotypic_features.modifiers',
-      children: feature.modifiers?.length ? (
-        <Space direction="vertical">
-          {feature.modifiers.map((m) => (
-            <OntologyTermComponent key={m.id} term={m} />
-          ))}
-        </Space>
-      ) : (
-        EM_DASH
-      ),
+      children: <OntologyTermStack terms={feature.modifiers} />,
+      isVisible: feature.modifiers?.length,
     },
     {
       key: 'evidence',
       label: 'phenotypic_features.evidence',
       children: feature.evidence?.length ? feature.evidence.map((e, i) => <Evidence key={i} evidence={e} />) : EM_DASH,
+      isVisible: feature.evidence?.length,
     },
     {
       key: 'extra_properties',
       label: 'phenotypic_features.extra_properties',
       children: <ExtraProperties extraProperties={feature?.extra_properties} />,
+      isVisible: objectToBoolean(feature?.extra_properties),
     },
   ];
   return <TDescriptions bordered size="small" items={items} />;
 }
+
+const isPhenotypicFeatureExpandedRowVisible = (record: PhenotypicFeature) =>
+  !!record.description ||
+  !!record.modifiers?.length ||
+  (record.evidence && record.evidence.length > 0) ||
+  objectToBoolean(record.extra_properties);
 
 interface PhenotypicFeaturesViewProps {
   features: PhenotypicFeature[];
@@ -143,6 +148,7 @@ function PhenotypicFeaturesView({ features }: PhenotypicFeaturesViewProps) {
       columns={columns}
       expandable={{
         expandedRowRender: (record) => <PhenotypicFeatureExpandedRow feature={record} />,
+        rowExpandable: isPhenotypicFeatureExpandedRowVisible,
       }}
       rowKey={(record) => record.type.id}
       pagination={false}
