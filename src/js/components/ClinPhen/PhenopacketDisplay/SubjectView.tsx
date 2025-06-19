@@ -1,4 +1,4 @@
-import { type DescriptionsProps, Space } from 'antd';
+import { Space } from 'antd';
 import OntologyTerm from '@Util/ClinPhen/OntologyTerm';
 import JsonView from '@Util/JsonView';
 import StringList from '@Util/StringList';
@@ -6,9 +6,9 @@ import TimeElementDisplay from '@Util/ClinPhen/TimeElementDisplay';
 import TDescriptions from '@Util/TDescriptions';
 
 import type { Individual } from '@/types/clinPhen/individual';
+import type { ConditionalDescriptionItem } from '@/types/descriptions';
 
 import { EM_DASH } from '@/constants/common';
-import { ConditionalDescriptionItem } from '@/types/descriptions';
 
 const SubjectView = ({ subject }: { subject: Individual }) => {
   const vs = subject?.vital_status;
