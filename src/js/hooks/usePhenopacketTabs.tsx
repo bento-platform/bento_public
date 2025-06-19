@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router';
 
 import BiosampleView from '@/components/ClinPhen/PhenopacketDisplay/BiosampleView';
 import DiseasesView from '@/components/ClinPhen/PhenopacketDisplay/DiseasesView';
-import InterpretationsView from '@/components/ClinPhen/PhenopacketDisplay/Interpretations';
+import InterpretationsView from '@/components/ClinPhen/PhenopacketDisplay/InterpretationsView';
 import MeasurementsView from '@/components/ClinPhen/PhenopacketDisplay/MeasurementsView';
 import MedicalActionsView from '@/components/ClinPhen/PhenopacketDisplay/MedicalActionsView';
 import OntologiesView from '@/components/ClinPhen/PhenopacketDisplay/OntologiesView';
