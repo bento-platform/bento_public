@@ -134,7 +134,7 @@ const MeasurementsView = ({ measurements }: MeasurementsViewProps) => {
       columns={columns}
       expandable={{
         expandedRowRender: (record) => <MeasurementsExpandedRow measurement={record} />,
-        rowExpandable: (record) => isMeasurementExpandedRowVisible(record),
+        rowExpandable: isMeasurementExpandedRowVisible,
       }}
       rowKey={(record) => record.assay.id}
       pagination={false}

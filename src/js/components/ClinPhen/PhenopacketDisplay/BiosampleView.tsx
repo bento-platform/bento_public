@@ -85,7 +85,7 @@ const BiosampleView = ({ biosamples }: BiosampleViewProps) => {
       columns={columns}
       expandable={{
         expandedRowRender: (record) => <BiosampleExpandedRow biosample={record} />,
-        rowExpandable: (record) => isBiosampleRowVisible(record),
+        rowExpandable: isBiosampleRowVisible,
       }}
       rowKey="id"
       pagination={false}

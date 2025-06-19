@@ -279,7 +279,7 @@ const MedicalActionsView = ({ medicalActions }: { medicalActions: MedicalAction[
       columns={columns}
       expandable={{
         expandedRowRender: (record) => <MedicalActionDetails medicalAction={record} />,
-        rowExpandable: (record) => isMedicalActionsExpandedRowVisible(record),
+        rowExpandable: isMedicalActionsExpandedRowVisible,
       }}
       rowKey={(record) =>
         record.procedure?.code?.id || record.treatment?.agent?.id || record.radiation_therapy?.modality?.id || 'unknown'

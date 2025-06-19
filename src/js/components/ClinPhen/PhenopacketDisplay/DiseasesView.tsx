@@ -83,7 +83,7 @@ const DiseasesView = ({ diseases }: DiseasesViewProps) => {
       columns={columns}
       expandable={{
         expandedRowRender: (record) => <DiseaseExpandedRow disease={record} />,
-        rowExpandable: (record) => isDiseaseRowVisible(record),
+        rowExpandable: isDiseaseRowVisible,
       }}
       rowKey={(record) => record.term.id}
       pagination={false}

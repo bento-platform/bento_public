@@ -151,7 +151,7 @@ const InterpretationsView = ({ interpretations }: InterpretationsViewProps) => {
       columns={columns}
       expandable={{
         expandedRowRender: (record) => <InterpretationsExpandedRow interpretation={record} />,
-        rowExpandable: (record) => isinterpretaionExpandedRowVisible(record),
+        rowExpandable: isinterpretaionExpandedRowVisible,
       }}
       rowKey={(record) => record.id}
       pagination={false}
