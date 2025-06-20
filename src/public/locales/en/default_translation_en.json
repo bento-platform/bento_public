@@ -275,7 +275,9 @@
     "assay": "Assay",
     "measurement_value": "Measurement Value",
     "description": "Description",
-    "procedure": "Procedure"
+    "procedure": "Procedure",
+    "type": "Type",
+    "value": "Value"
   },
   "quantity": {
     "value": "Value",

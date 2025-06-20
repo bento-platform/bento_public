@@ -41,12 +41,12 @@ const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement
   const complexValueTypedQuantityColumns: TableColumnsType<TypedQuantity> =
     useTranslatedTableColumnTitles<TypedQuantity>([
       {
-        title: 'Type',
+        title: 'measurements.type',
         dataIndex: 'type',
         render: (type: OntologyTermType) => <OntologyTermComponent term={type} />,
       },
       {
-        title: 'Value',
+        title: 'measurements.value',
         dataIndex: 'quantity',
         render: (quantity: Quantity) => <QuantityDisplay quantity={quantity} />,
       },
