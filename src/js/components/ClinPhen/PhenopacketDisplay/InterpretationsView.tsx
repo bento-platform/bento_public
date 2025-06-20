@@ -1,20 +1,19 @@
-import { Space, Table, Tooltip, Typography } from 'antd';
+import { Space, Tooltip, Typography } from 'antd';
 import { MedicineBoxOutlined, ExperimentOutlined } from '@ant-design/icons';
 
 import CustomEmpty from '@Util/CustomEmpty';
 import OntologyTerm from '@Util/ClinPhen/OntologyTerm';
 import { GeneDescriptor, VariantInterpretation } from '@Util/ClinPhen/InterpretationUtilities';
 import TDescriptions from '@Util/TDescriptions';
-import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
+import CustomTable from '@Util/CustomTable';
 
 import { useTranslationFn } from '@/hooks';
-import { addVisibilityProperty, visibilityReducer, visibilitySelector } from '@/utils/tables';
 
 import type { Interpretation } from '@/types/clinPhen/interpretation';
 import type { JSONObject } from '@/types/json';
 import type { GenomicInterpretation } from '@/types/clinPhen/genomicInterpretation';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
-import type { WithVisible } from '@/types/util';
+import type { TableColumnsType } from 'antd';
 
 const GenomicInterpretationDetails = ({ genomicInterpretation }: { genomicInterpretation: GenomicInterpretation }) => {
   const relatedType = (genomicInterpretation?.extra_properties as JSONObject)?.__related_type ?? 'unknown';
@@ -53,7 +52,7 @@ const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interp
     },
   ];
 
-  const columns = useTranslatedTableColumnTitles<GenomicInterpretation>([
+  const columns = [
     {
       title: 'interpretations.id',
       dataIndex: 'id',
@@ -67,7 +66,7 @@ const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interp
       dataIndex: 'interpretation_status',
       render: (text: string) => t(`genomic_intepretation_status.${text}`),
     },
-  ]);
+  ];
 
   return (
     <Space direction="vertical" size="large" className="w-full">
@@ -86,16 +85,14 @@ const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interp
           <ExperimentOutlined /> {t('interpretations.genomic_interpretations')}
         </Typography.Title>
         {interpretation?.diagnosis?.genomic_interpretations?.length ? (
-          <Table<GenomicInterpretation>
+          <CustomTable<GenomicInterpretation>
             columns={columns}
             dataSource={interpretation.diagnosis.genomic_interpretations}
-            expandable={{
-              expandedRowRender: (record) => <GenomicInterpretationDetails genomicInterpretation={record} />,
-              rowExpandable: (record) => isGenomicInterpretationDetailsVisible(record),
-            }}
-            rowKey={(record) => record.subject_or_biosample_id}
-            pagination={false}
-            bordered
+            expandedRowRender={(record: GenomicInterpretation) => (
+              <GenomicInterpretationDetails genomicInterpretation={record} />
+            )}
+            rowKey={(record: GenomicInterpretation) => record.subject_or_biosample_id}
+            isDataKeyVisible={isGenomicInterpretationDetailsVisible}
           />
         ) : (
           <CustomEmpty text={t('interpretations.no_genomic_iterpretation')} />
@@ -115,7 +112,7 @@ interface InterpretationsViewProps {
 const InterpretationsView = ({ interpretations }: InterpretationsViewProps) => {
   const t = useTranslationFn();
 
-  const columns = useTranslatedTableColumnTitles<Interpretation>([
+  const columns: TableColumnsType<Interpretation> = [
     {
       title: 'interpretations.id',
       dataIndex: 'id',
@@ -145,22 +142,15 @@ const InterpretationsView = ({ interpretations }: InterpretationsViewProps) => {
       key: 'summary',
       render: (text: string) => t(text),
     },
-  ]);
-
-  const interpretationsWithVisibility = addVisibilityProperty(interpretations, isinterpretaionExpandedRowVisible);
+  ];
 
   return (
-    <Table<WithVisible<Interpretation>>
-      dataSource={interpretationsWithVisibility}
+    <CustomTable<Interpretation>
+      dataSource={interpretations}
       columns={columns}
-      expandable={{
-        expandedRowRender: (record) => <InterpretationsExpandedRow interpretation={record} />,
-        rowExpandable: visibilitySelector,
-        showExpandColumn: visibilityReducer(interpretationsWithVisibility),
-      }}
+      expandedRowRender={(record) => <InterpretationsExpandedRow interpretation={record} />}
       rowKey={(record) => record.id}
-      pagination={false}
-      bordered
+      isDataKeyVisible={isinterpretaionExpandedRowVisible}
     />
   );
 };

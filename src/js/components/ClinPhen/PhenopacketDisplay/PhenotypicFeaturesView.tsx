@@ -1,4 +1,3 @@
-import { Table } from 'antd';
 import { LinkOutlined } from '@ant-design/icons';
 
 import OntologyTermComponent, { OntologyTermStack } from '@Util/ClinPhen/OntologyTerm';
@@ -6,19 +5,18 @@ import TimeElementDisplay from '@Util/ClinPhen/TimeElementDisplay';
 import ExtraProperties from '@Util/ExtraProperties';
 import TDescriptions from '@Util/TDescriptions';
 import Excluded, { ExcludedModel } from '@Util/ClinPhen/Excluded';
+import CustomTable from '@Util/CustomTable';
 
 import type { PhenotypicFeature } from '@/types/clinPhen/phenotypicFeature';
 import type { OntologyTerm } from '@/types/ontology';
 import type { Evidence as EvidenceType, TimeElement } from '@/types/clinPhen/shared';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
-import { addVisibilityProperty, visibilityReducer, visibilitySelector } from '@/utils/tables';
-import type { WithVisible } from '@/types/util';
+import type { TableColumnsType } from 'antd';
 
-import { isValidUrl } from '@/utils/strings';
 import { objectToBoolean } from '@/utils/boolean';
 import { EM_DASH } from '@/constants/common';
+import { isValidUrl } from '@/utils/strings';
 
-import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
 import { useTranslationFn } from '@/hooks';
 
 interface EvidenceProps {
@@ -113,15 +111,15 @@ interface PhenotypicFeaturesViewProps {
 }
 
 function PhenotypicFeaturesView({ features }: PhenotypicFeaturesViewProps) {
-  const columns = useTranslatedTableColumnTitles<PhenotypicFeature>([
+  const columns: TableColumnsType<PhenotypicFeature> = [
     {
       title: 'phenotypic_features.feature',
       dataIndex: 'type',
       key: 'type',
-      render: (type: OntologyTerm, { excluded }: PhenotypicFeature) => (
+      render: (type: OntologyTerm, record: PhenotypicFeature) => (
         <>
           <OntologyTermComponent term={type} />
-          {excluded && <Excluded model={ExcludedModel.PHENOTYPE} />}
+          {record.excluded && <Excluded model={ExcludedModel.PHENOTYPE} />}
         </>
       ),
     },
@@ -143,20 +141,14 @@ function PhenotypicFeaturesView({ features }: PhenotypicFeaturesViewProps) {
       key: 'resolution',
       render: (resolution: TimeElement) => (resolution ? <TimeElementDisplay element={resolution} /> : EM_DASH),
     },
-  ]);
-  const featuresWithVisibility = addVisibilityProperty(features, isPhenotypicFeatureExpandedRowVisible);
+  ];
   return (
-    <Table<WithVisible<PhenotypicFeature>>
-      dataSource={featuresWithVisibility}
+    <CustomTable<PhenotypicFeature>
+      dataSource={features}
       columns={columns}
-      expandable={{
-        expandedRowRender: (record) => <PhenotypicFeatureExpandedRow feature={record} />,
-        rowExpandable: visibilitySelector,
-        showExpandColumn: visibilityReducer(featuresWithVisibility),
-      }}
+      expandedRowRender={(record) => <PhenotypicFeatureExpandedRow feature={record} />}
       rowKey={(record) => record.type.id}
-      pagination={false}
-      bordered
+      isDataKeyVisible={isPhenotypicFeatureExpandedRowVisible}
     />
   );
 }

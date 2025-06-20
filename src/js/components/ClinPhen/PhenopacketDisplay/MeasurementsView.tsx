@@ -2,6 +2,7 @@ import { Space, Table } from 'antd';
 
 import OntologyTermComponent from '@Util/ClinPhen/OntologyTerm';
 import QuantityDisplay from '@Util/ClinPhen/QuantityDisplay';
+import CustomTable from '@Util/CustomTable';
 
 import type { Measurement, Quantity, TypedQuantity } from '@/types/clinPhen/measurement';
 import type { OntologyTerm as OntologyTermType } from '@/types/ontology';
@@ -13,8 +14,7 @@ import { ProcedureComponent } from './MedicalActionsView';
 import TDescriptions from '@Util/TDescriptions';
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
 import { useTranslationFn } from '@/hooks';
-import { addVisibilityProperty, visibilityReducer, visibilitySelector } from '@/utils/tables';
-import type { WithVisible } from '@/types/util';
+import { TableColumnsType } from 'antd';
 
 const MeasurementsExpandedRow = ({ measurement }: { measurement: Measurement }) => {
   const items: ConditionalDescriptionItem[] = [
@@ -75,7 +75,7 @@ const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement
       return (
         <Table<TypedQuantity>
           dataSource={complexValue.typed_quantities}
-          columns={[
+          columns={useTranslatedTableColumnTitles<TypedQuantity>([
             {
               title: 'Type',
               dataIndex: 'type',
@@ -86,7 +86,7 @@ const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement
               dataIndex: 'quantity',
               render: (quantity: Quantity) => <QuantityDisplay quantity={quantity} />,
             },
-          ]}
+          ])}
           size="small"
           pagination={false}
           bordered
@@ -108,7 +108,7 @@ interface MeasurementsViewProps {
 const MeasurementsView = ({ measurements }: MeasurementsViewProps) => {
   const t = useTranslationFn();
 
-  const columns = useTranslatedTableColumnTitles<Measurement>([
+  const columns: TableColumnsType<Measurement> = [
     {
       title: 'measurements.assay',
       dataIndex: 'assay',
@@ -129,22 +129,15 @@ const MeasurementsView = ({ measurements }: MeasurementsViewProps) => {
       dataIndex: 'procedure',
       render: (procedure: Procedure | undefined) => <OntologyTermComponent term={procedure?.code} />,
     },
-  ]);
-
-  const measurementsWithVisibility = addVisibilityProperty(measurements, isMeasurementExpandedRowVisible);
+  ];
 
   return (
-    <Table<WithVisible<Measurement>>
-      dataSource={measurementsWithVisibility}
+    <CustomTable<Measurement>
+      dataSource={measurements}
       columns={columns}
-      expandable={{
-        expandedRowRender: (record) => <MeasurementsExpandedRow measurement={record} />,
-        rowExpandable: visibilitySelector,
-        showExpandColumn: visibilityReducer(measurementsWithVisibility),
-      }}
+      expandedRowRender={(record) => <MeasurementsExpandedRow measurement={record} />}
       rowKey={(record) => record.assay.id}
-      pagination={false}
-      bordered
+      isDataKeyVisible={isMeasurementExpandedRowVisible}
     />
   );
 };

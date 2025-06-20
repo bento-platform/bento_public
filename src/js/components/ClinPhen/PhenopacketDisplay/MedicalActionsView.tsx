@@ -1,12 +1,12 @@
-import { Flex, Table, Typography } from 'antd';
+import { Flex, Typography } from 'antd';
 
 import OntologyTermComponent, { OntologyTermStack } from '@Util/ClinPhen/OntologyTerm';
 import QuantityDisplay from '@Util/ClinPhen/QuantityDisplay';
 import TimeElementDisplay, { TimeIntervalDisplay } from '@Util/ClinPhen/TimeElementDisplay';
 import TDescriptions from '@Util/TDescriptions';
+import CustomTable from '@Util/CustomTable';
 
 import { EM_DASH } from '@/constants/common';
-import { addVisibilityProperty, visibilityReducer, visibilitySelector } from '@/utils/tables';
 
 import type {
   Treatment,
@@ -20,9 +20,8 @@ import type { OntologyTerm } from '@/types/ontology';
 import type { Procedure } from '@/types/clinPhen/procedure';
 import type { TimeInterval } from '@/types/clinPhen/shared';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
-import type { WithVisible } from '@/types/util';
+import type { TableColumnsType } from 'antd';
 
-import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
 import { useTranslationFn } from '@/hooks';
 
 const { Text } = Typography;
@@ -52,7 +51,7 @@ export const ProcedureComponent = ({ procedure }: { procedure: Procedure }) => {
 };
 
 const TreatmentComponent = ({ treatment }: { treatment: Treatment }) => {
-  const DOSE_INTERVAL_COLUMNS = useTranslatedTableColumnTitles<DoseInterval>([
+  const DOSE_INTERVAL_COLUMNS = [
     {
       title: 'medical_actions.quantity',
       dataIndex: 'quantity',
@@ -68,7 +67,7 @@ const TreatmentComponent = ({ treatment }: { treatment: Treatment }) => {
       dataIndex: 'interval',
       render: (interval: TimeInterval) => <TimeIntervalDisplay timeInterval={interval} />,
     },
-  ]);
+  ];
 
   const TreatmentItems: ConditionalDescriptionItem[] = [
     {
@@ -87,12 +86,11 @@ const TreatmentComponent = ({ treatment }: { treatment: Treatment }) => {
       key: 'doseIntervals',
       label: 'medical_actions.dose_intervals',
       children: (
-        <Table<DoseInterval>
-          size="small"
+        <CustomTable<DoseInterval>
           columns={DOSE_INTERVAL_COLUMNS}
-          dataSource={treatment.dose_intervals}
-          pagination={false}
-          bordered
+          dataSource={treatment.dose_intervals || []}
+          rowKey={(_, idx) => String(idx)}
+          isDataKeyVisible={() => true}
         />
       ),
       isVisible: treatment?.dose_intervals,
@@ -233,7 +231,7 @@ const isMedicalActionsExpandedRowVisible = (r: MedicalAction) =>
 
 const MedicalActionsView = ({ medicalActions }: { medicalActions: MedicalAction[] }) => {
   const t = useTranslationFn();
-  const columns = useTranslatedTableColumnTitles<MedicalAction>([
+  const columns: TableColumnsType<MedicalAction> = [
     {
       title: 'medical_actions.action_type',
       key: 'actionType',
@@ -274,24 +272,17 @@ const MedicalActionsView = ({ medicalActions }: { medicalActions: MedicalAction[
       dataIndex: 'treatment_termination_reason',
       render: (reason: OntologyTerm) => <OntologyTermComponent term={reason} />,
     },
-  ]);
-
-  const medicalActionsWithVisibility = addVisibilityProperty(medicalActions, isMedicalActionsExpandedRowVisible);
+  ];
 
   return (
-    <Table<WithVisible<MedicalAction>>
-      dataSource={medicalActionsWithVisibility}
+    <CustomTable<MedicalAction>
+      dataSource={medicalActions}
       columns={columns}
-      expandable={{
-        expandedRowRender: (record) => <MedicalActionDetails medicalAction={record} />,
-        rowExpandable: visibilitySelector,
-        showExpandColumn: visibilityReducer(medicalActionsWithVisibility),
-      }}
+      expandedRowRender={(record) => <MedicalActionDetails medicalAction={record} />}
       rowKey={(record) =>
         record.procedure?.code?.id || record.treatment?.agent?.id || record.radiation_therapy?.modality?.id || 'unknown'
       }
-      pagination={false}
-      bordered
+      isDataKeyVisible={isMedicalActionsExpandedRowVisible}
     />
   );
 };

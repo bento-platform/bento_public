@@ -1,19 +1,15 @@
-import { Table } from 'antd';
-
+import CustomTable from '@Util/CustomTable';
 import TDescriptions from '@Util/TDescriptions';
 import OntologyTermComponent, { OntologyTermStack } from '@Util/ClinPhen/OntologyTerm';
 import TimeElementDisplay from '@Util/ClinPhen/TimeElementDisplay';
 import ExtraProperties from '@Util/ExtraProperties';
 import Excluded, { ExcludedModel } from '@Util/ClinPhen/Excluded';
 
-import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
-import { addVisibilityProperty, visibilityReducer, visibilitySelector } from '@/utils/tables';
-
 import type { Disease } from '@/types/clinPhen/disease';
 import type { TimeElement } from '@/types/clinPhen/shared';
 import type { OntologyTerm } from '@/types/ontology';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
-import type { WithVisible } from '@/types/util';
+import type { TableColumnsType } from 'antd';
 
 import { EM_DASH } from '@/constants/common';
 
@@ -56,14 +52,14 @@ const isDiseaseRowVisible = (r: Disease) =>
   !!(r.disease_stage?.length || r.clinical_tnm_finding?.length || r.primary_site || r.extra_properties);
 
 const DiseasesView = ({ diseases }: DiseasesViewProps) => {
-  const columns = useTranslatedTableColumnTitles<Disease>([
+  const columns: TableColumnsType<Disease> = [
     {
       title: 'diseases_table.disease',
       dataIndex: 'term',
-      render: (term: OntologyTerm, { excluded }) => (
+      render: (term: OntologyTerm, record: Disease) => (
         <>
           <OntologyTermComponent term={term} />
-          {excluded && <Excluded model={ExcludedModel.DISEASE} />}
+          {record.excluded && <Excluded model={ExcludedModel.DISEASE} />}
         </>
       ),
     },
@@ -77,22 +73,15 @@ const DiseasesView = ({ diseases }: DiseasesViewProps) => {
       dataIndex: 'resolution',
       render: (resolution: TimeElement) => (resolution ? <TimeElementDisplay element={resolution} /> : EM_DASH),
     },
-  ]);
-
-  const diseasesWithVisibility = addVisibilityProperty(diseases, isDiseaseRowVisible);
+  ];
 
   return (
-    <Table<WithVisible<Disease>>
-      dataSource={diseasesWithVisibility}
+    <CustomTable<Disease>
+      dataSource={diseases}
       columns={columns}
-      expandable={{
-        expandedRowRender: (record) => <DiseaseExpandedRow disease={record} />,
-        rowExpandable: visibilitySelector,
-        showExpandColumn: visibilityReducer(diseasesWithVisibility),
-      }}
+      expandedRowRender={(record) => <DiseaseExpandedRow disease={record} />}
       rowKey={(record) => record.term.id}
-      pagination={false}
-      bordered
+      isDataKeyVisible={isDiseaseRowVisible}
     />
   );
 };

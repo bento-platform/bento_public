@@ -6,9 +6,3 @@ export const addVisibilityProperty = <T>(r: T[], visibilityFunc: (r: T) => boole
     isVisible: visibilityFunc(item),
   }));
 };
-
-export const visibilitySelector = ({ isVisible }: WithVisible<unknown>) => !!isVisible;
-
-export const visibilityReducer = <T>(r: WithVisible<T>[]): boolean => {
-  return r.some(visibilitySelector);
-};

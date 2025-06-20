@@ -1,16 +1,12 @@
-import { Table } from 'antd';
-
 import OntologyTermComponent from '@Util/ClinPhen/OntologyTerm';
 import TimeElementDisplay from '@Util/ClinPhen/TimeElementDisplay';
 import TDescriptions from '@Util/TDescriptions';
+import CustomTable from '@Util/CustomTable';
 
 import type { Biosample } from '@/types/clinPhen/biosample';
 import type { OntologyTerm } from '@/types/ontology';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
-import type { WithVisible } from '@/types/util';
-
-import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
-import { addVisibilityProperty, visibilityReducer, visibilitySelector } from '@/utils/tables';
+import type { TableColumnsType } from 'antd';
 
 const BiosampleExpandedRow = ({ biosample }: { biosample: Biosample }) => {
   const items: ConditionalDescriptionItem[] = [
@@ -69,7 +65,7 @@ interface BiosampleViewProps {
 
 //TODO: add button that links to experiment (like bento web)
 const BiosampleView = ({ biosamples }: BiosampleViewProps) => {
-  const columns = useTranslatedTableColumnTitles<Biosample>([
+  const columns: TableColumnsType<Biosample> = [
     {
       title: 'biosample_table.biosample_id',
       dataIndex: 'id',
@@ -79,22 +75,15 @@ const BiosampleView = ({ biosamples }: BiosampleViewProps) => {
       dataIndex: 'sampled_tissue',
       render: (term: OntologyTerm) => <OntologyTermComponent term={term} />,
     },
-  ]);
-
-  const biosamplesWithVisibility = addVisibilityProperty(biosamples, isBiosampleRowVisible);
+  ];
 
   return (
-    <Table<WithVisible<Biosample>>
-      dataSource={biosamplesWithVisibility}
+    <CustomTable<Biosample>
+      dataSource={biosamples}
       columns={columns}
-      expandable={{
-        expandedRowRender: (record) => <BiosampleExpandedRow biosample={record} />,
-        rowExpandable: visibilitySelector,
-        showExpandColumn: visibilityReducer(biosamplesWithVisibility),
-      }}
+      expandedRowRender={(record) => <BiosampleExpandedRow biosample={record} />}
       rowKey="id"
-      pagination={false}
-      bordered
+      isDataKeyVisible={isBiosampleRowVisible}
     />
   );
 };

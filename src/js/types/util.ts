@@ -16,5 +16,5 @@ export interface TimestampedEntity {
 }
 
 export type WithVisible<T> = T & {
-  isVisible?: boolean;
+  isVisible: boolean;
 };
