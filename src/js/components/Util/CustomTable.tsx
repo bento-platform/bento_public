@@ -1,6 +1,6 @@
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
-import { WithVisible } from '@/types/util';
-import { Table, TableProps } from 'antd';
+import type { WithVisible } from '@/types/util';
+import { Table, type TableProps } from 'antd';
 
 type VisibilityFunc<T> = (record: T) => boolean;
 

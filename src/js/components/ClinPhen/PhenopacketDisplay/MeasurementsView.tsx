@@ -8,13 +8,13 @@ import type { Measurement, Quantity, TypedQuantity } from '@/types/clinPhen/meas
 import type { OntologyTerm as OntologyTermType } from '@/types/ontology';
 import type { Procedure } from '@/types/clinPhen/procedure';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
+import type { TableColumnsType } from 'antd';
 
 import { EM_DASH } from '@/constants/common';
 import { ProcedureComponent } from './MedicalActionsView';
 import TDescriptions from '@Util/TDescriptions';
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
 import { useTranslationFn } from '@/hooks';
-import { TableColumnsType } from 'antd';
 
 const MeasurementsExpandedRow = ({ measurement }: { measurement: Measurement }) => {
   const items: ConditionalDescriptionItem[] = [
@@ -37,6 +37,20 @@ const MeasurementsExpandedRow = ({ measurement }: { measurement: Measurement }) 
 
 const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement; expanded?: boolean }) => {
   const t = useTranslationFn();
+
+  const complexValueTypedQuantityColumns: TableColumnsType<TypedQuantity> =
+    useTranslatedTableColumnTitles<TypedQuantity>([
+      {
+        title: 'Type',
+        dataIndex: 'type',
+        render: (type: OntologyTermType) => <OntologyTermComponent term={type} />,
+      },
+      {
+        title: 'Value',
+        dataIndex: 'quantity',
+        render: (quantity: Quantity) => <QuantityDisplay quantity={quantity} />,
+      },
+    ]);
 
   const value = measurement?.value;
   const complexValue = measurement?.complex_value;
@@ -75,18 +89,7 @@ const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement
       return (
         <Table<TypedQuantity>
           dataSource={complexValue.typed_quantities}
-          columns={useTranslatedTableColumnTitles<TypedQuantity>([
-            {
-              title: 'Type',
-              dataIndex: 'type',
-              render: (type: OntologyTermType) => <OntologyTermComponent term={type} />,
-            },
-            {
-              title: 'Value',
-              dataIndex: 'quantity',
-              render: (quantity: Quantity) => <QuantityDisplay quantity={quantity} />,
-            },
-          ])}
+          columns={complexValueTypedQuantityColumns}
           size="small"
           pagination={false}
           bordered
