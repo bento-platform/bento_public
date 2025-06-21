@@ -25,13 +25,7 @@ export const makeGetPhenopacketData = createAsyncThunk<
   {
     condition(id, { getState }) {
       const state = getState().clinPhen;
-
       const cond = !!id && !state.phenopacketDataCache[id] && state.phenopacketDataStatus[id] !== RequestStatus.Pending;
-      console.debug(
-        ...(cond
-          ? ['requesting phenopacket data for id', id]
-          : ['not requesting phenopacket data for id', id, '- already fetched or fetching'])
-      );
       return cond;
     },
   }
