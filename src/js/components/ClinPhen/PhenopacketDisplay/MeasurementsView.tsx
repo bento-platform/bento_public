@@ -2,7 +2,7 @@ import { Space, Table } from 'antd';
 
 import OntologyTermComponent from '@Util/ClinPhen/OntologyTerm';
 import QuantityDisplay from '@Util/ClinPhen/QuantityDisplay';
-import CustomTable from '@Util/CustomTable';
+import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
 
 import type { Measurement, Quantity, TypedQuantity } from '@/types/clinPhen/measurement';
 import type { OntologyTerm as OntologyTermType } from '@/types/ontology';
@@ -111,7 +111,7 @@ interface MeasurementsViewProps {
 const MeasurementsView = ({ measurements }: MeasurementsViewProps) => {
   const t = useTranslationFn();
 
-  const columns: TableColumnsType<Measurement> = [
+  const columns: CustomTableColumns<Measurement> = [
     {
       title: 'measurements.assay',
       dataIndex: 'assay',
@@ -121,16 +121,19 @@ const MeasurementsView = ({ measurements }: MeasurementsViewProps) => {
       title: 'measurements.measurement_value',
       key: 'value',
       render: (m: Measurement) => <MeasurementDetail measurement={m} />,
+      isEmpty: (value: Measurement) => !value.value && !value.complex_value,
     },
     {
       title: 'measurements.description',
       dataIndex: 'description',
       render: (text: string | undefined) => t(text) || EM_DASH,
+      isEmptyDefaultCheck: true,
     },
     {
       title: 'measurements.procedure',
       dataIndex: 'procedure',
       render: (procedure: Procedure | undefined) => <OntologyTermComponent term={procedure?.code} />,
+      isEmptyDefaultCheck: true,
     },
   ];
 
