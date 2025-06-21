@@ -376,5 +376,11 @@
   },
   "auth": {
     "unauthorized_message": "You are not authorized to access this resource."
+  },
+  "phenopacket_view": {
+    "invalid_endpoint_title": "Invalid Endpoint: /{{endpoint}}",
+    "invalid_endpoint_description": "The endpoint you are trying to access is not valid. You are being redirected to {{target}}.",
+    "not_available_title": "/{{endpoint}} Tab Not Available",
+    "not_available_description": "The requested data is not available. You are being redirected to the {{target}}."
   }
 }

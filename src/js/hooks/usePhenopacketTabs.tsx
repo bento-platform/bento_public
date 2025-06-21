@@ -90,10 +90,12 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket) => {
     return items.map((item) => item.key as TabKeys);
   }, [items]);
 
+  const defaultTab = useMemo(() => ({ key: activeTabs[0], label: t('tab_keys.subject') }), [activeTabs, t]);
+
   return {
     handleTabChange,
     items,
     activeTabs,
-    defaultTab: activeTabs[0],
+    defaultTab,
   };
 };

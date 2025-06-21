@@ -381,5 +381,11 @@
   },
   "auth": {
     "unauthorized_message": "Vous n'êtes pas autorisé à accéder à cette ressource."
+  },
+  "phenopacket_view": {
+    "invalid_endpoint_title": "Point de terminaison invalide : /{{endpoint}}",
+    "invalid_endpoint_description": "Le point de terminaison que vous essayez d’accéder n’est pas valide. Vous allez être redirigé vers {{target}}.",
+    "not_available_title": "Onglet /{{endpoint}} non disponible",
+    "not_available_description": "Les données demandées ne sont pas disponibles. Vous allez être redirigé vers {{target}}."
   }
 }
