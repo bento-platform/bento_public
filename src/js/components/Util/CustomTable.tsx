@@ -1,6 +1,6 @@
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
 import type { WithVisible } from '@/types/util';
-import { Table, TableColumnType, type TableProps } from 'antd';
+import { Table, type TableColumnType, type TableProps } from 'antd';
 
 export interface CustomTableColumn<T> extends TableColumnType<T> {
   isEmpty?: (value: any, record?: T) => boolean;

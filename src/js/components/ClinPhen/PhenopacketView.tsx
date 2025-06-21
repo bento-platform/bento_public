@@ -1,4 +1,4 @@
-import { Card, Empty, Flex, Tabs, notification, type NotificationArgsProps } from 'antd';
+import { Card, Empty, Flex, Tabs, notification } from 'antd';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
@@ -61,6 +61,10 @@ const PhenopacketView = () => {
       if (tab && activeTabs.includes(tab as TabKeys)) {
         setActiveKey(tab as TabKeys);
       } else {
+        console.log(
+          `Tab "${tab}" is not available or does not exist. Redirecting to default tab "${defaultTab.label}".`
+        );
+
         if (tab && tab in TabKeys) {
           notAvailableRedirectNotification();
         } else {
@@ -69,7 +73,17 @@ const PhenopacketView = () => {
         navigate(`${tab ? '..' : '.'}/${defaultTab.key}`, { relative: 'path', replace: true });
       }
     }
-  }, [navigate, tab, status, phenopacket, activeTabs, defaultTab]);
+  }, [
+    navigate,
+    tab,
+    status,
+    phenopacket,
+    activeTabs,
+    defaultTab,
+    invalidEndpointRedirectNotification,
+    notAvailableRedirectNotification,
+    api,
+  ]);
 
   if (isAuthorized.hasAttempted && !isAuthorized.hasPermission) {
     return <Empty description={t('auth.unauthorized_message')} />; // Temporary: removed once phenopacket view is integrated with search
