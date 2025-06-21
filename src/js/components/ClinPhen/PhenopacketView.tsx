@@ -60,10 +60,6 @@ const PhenopacketView = () => {
       if (tab && activeTabs.includes(tab as TabKeys)) {
         setActiveKey(tab as TabKeys);
       } else {
-        console.log(
-          `Tab "${tab}" is not available or does not exist. Redirecting to default tab "${defaultTab.label}".`
-        );
-
         if (tab && tab in TabKeys) {
           notAvailableRedirectNotification();
         } else {
