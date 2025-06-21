@@ -4,6 +4,7 @@ import { Table, TableColumnType, type TableProps } from 'antd';
 
 export interface CustomTableColumn<T> extends TableColumnType<T> {
   isEmpty?: (value: any, record?: T) => boolean;
+  isEmptyDefaultCheck?: boolean;
 }
 
 export type CustomTableColumns<T> = CustomTableColumn<T>[];
@@ -33,6 +34,11 @@ const CustomTable = <T,>({ dataSource, columns, rowKey, isDataKeyVisible, expand
       return {
         ...col,
         hidden: !dataSourceWithVisibility.some((record) => !col.isEmpty!(record[col.dataIndex as keyof T], record)),
+      };
+    } else if (col.isEmptyDefaultCheck) {
+      return {
+        ...col,
+        hidden: !dataSourceWithVisibility.some((record) => record[col.dataIndex as keyof T]),
       };
     }
     return col;
