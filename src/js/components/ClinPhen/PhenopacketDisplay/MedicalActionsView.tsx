@@ -4,7 +4,7 @@ import OntologyTermComponent, { OntologyTermStack } from '@Util/ClinPhen/Ontolog
 import QuantityDisplay from '@Util/ClinPhen/QuantityDisplay';
 import TimeElementDisplay, { TimeIntervalDisplay } from '@Util/ClinPhen/TimeElementDisplay';
 import TDescriptions from '@Util/TDescriptions';
-import CustomTable from '@Util/CustomTable';
+import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
 
 import { EM_DASH } from '@/constants/common';
 
@@ -20,7 +20,6 @@ import type { OntologyTerm } from '@/types/ontology';
 import type { Procedure } from '@/types/clinPhen/procedure';
 import type { TimeInterval } from '@/types/clinPhen/shared';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
-import type { TableColumnsType } from 'antd';
 
 import { useTranslationFn } from '@/hooks';
 
@@ -231,7 +230,7 @@ const isMedicalActionsExpandedRowVisible = (r: MedicalAction) =>
 
 const MedicalActionsView = ({ medicalActions }: { medicalActions: MedicalAction[] }) => {
   const t = useTranslationFn();
-  const columns: TableColumnsType<MedicalAction> = [
+  const columns: CustomTableColumns<MedicalAction> = [
     {
       title: 'medical_actions.action_type',
       key: 'actionType',
@@ -251,26 +250,31 @@ const MedicalActionsView = ({ medicalActions }: { medicalActions: MedicalAction[
       title: 'medical_actions.treatment_target',
       dataIndex: 'treatment_target',
       render: (target: OntologyTerm) => <OntologyTermComponent term={target} />,
+      isEmptyDefaultCheck: true,
     },
     {
       title: 'medical_actions.treatment_intent',
       dataIndex: 'treatment_intent',
       render: (intent: OntologyTerm) => <OntologyTermComponent term={intent} />,
+      isEmptyDefaultCheck: true,
     },
     {
       title: 'medical_actions.response_to_treatment',
       dataIndex: 'response_to_treatment',
       render: (response: OntologyTerm) => <OntologyTermComponent term={response} />,
+      isEmptyDefaultCheck: true,
     },
     {
       title: 'medical_actions.adverse_events',
       dataIndex: 'adverse_events',
       render: (events: OntologyTerm[]) => events?.length ?? 0,
+      isEmpty: (events: OntologyTerm[]) => !events?.length,
     },
     {
       title: 'medical_actions.treatment_termination_reason',
       dataIndex: 'treatment_termination_reason',
       render: (reason: OntologyTerm) => <OntologyTermComponent term={reason} />,
+      isEmptyDefaultCheck: true,
     },
   ];
 
