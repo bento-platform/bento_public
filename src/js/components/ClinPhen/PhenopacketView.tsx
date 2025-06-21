@@ -60,7 +60,7 @@ const PhenopacketView = () => {
       if (tab && activeTabs.includes(tab as TabKeys)) {
         setActiveKey(tab as TabKeys);
       } else {
-        if (tab && tab in TabKeys) {
+        if (tab && Object.values(TabKeys).includes(tab as TabKeys)) {
           notAvailableRedirectNotification();
         } else {
           invalidEndpointRedirectNotification();
