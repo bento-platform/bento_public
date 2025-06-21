@@ -5,13 +5,12 @@ import TimeElementDisplay from '@Util/ClinPhen/TimeElementDisplay';
 import ExtraProperties from '@Util/ExtraProperties';
 import TDescriptions from '@Util/TDescriptions';
 import Excluded, { ExcludedModel } from '@Util/ClinPhen/Excluded';
-import CustomTable from '@Util/CustomTable';
+import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
 
 import type { PhenotypicFeature } from '@/types/clinPhen/phenotypicFeature';
 import type { OntologyTerm } from '@/types/ontology';
 import type { Evidence as EvidenceType, TimeElement } from '@/types/clinPhen/shared';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
-import type { TableColumnsType } from 'antd';
 
 import { objectToBoolean } from '@/utils/boolean';
 import { EM_DASH } from '@/constants/common';
@@ -111,7 +110,7 @@ interface PhenotypicFeaturesViewProps {
 }
 
 function PhenotypicFeaturesView({ features }: PhenotypicFeaturesViewProps) {
-  const columns: TableColumnsType<PhenotypicFeature> = [
+  const columns: CustomTableColumns<PhenotypicFeature> = [
     {
       title: 'phenotypic_features.feature',
       dataIndex: 'type',
@@ -128,18 +127,21 @@ function PhenotypicFeaturesView({ features }: PhenotypicFeaturesViewProps) {
       dataIndex: 'severity',
       key: 'severity',
       render: (severity: OntologyTerm) => <OntologyTermComponent term={severity} />,
+      isEmptyDefaultCheck: true,
     },
     {
       title: 'phenotypic_features.onset',
       dataIndex: 'onset',
       key: 'onset',
       render: (onset: TimeElement) => (onset ? <TimeElementDisplay element={onset} /> : EM_DASH),
+      isEmptyDefaultCheck: true,
     },
     {
       title: 'phenotypic_features.resolution',
       dataIndex: 'resolution',
       key: 'resolution',
       render: (resolution: TimeElement) => (resolution ? <TimeElementDisplay element={resolution} /> : EM_DASH),
+      isEmptyDefaultCheck: true,
     },
   ];
   return (
