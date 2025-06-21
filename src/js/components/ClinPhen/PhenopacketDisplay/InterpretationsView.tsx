@@ -5,7 +5,7 @@ import CustomEmpty from '@Util/CustomEmpty';
 import OntologyTerm from '@Util/ClinPhen/OntologyTerm';
 import { GeneDescriptor, VariantInterpretation } from '@Util/ClinPhen/InterpretationUtilities';
 import TDescriptions from '@Util/TDescriptions';
-import CustomTable from '@Util/CustomTable';
+import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
 
 import { useTranslationFn } from '@/hooks';
 
@@ -13,7 +13,6 @@ import type { Interpretation } from '@/types/clinPhen/interpretation';
 import type { JSONObject } from '@/types/json';
 import type { GenomicInterpretation } from '@/types/clinPhen/genomicInterpretation';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
-import type { TableColumnsType } from 'antd';
 
 const GenomicInterpretationDetails = ({ genomicInterpretation }: { genomicInterpretation: GenomicInterpretation }) => {
   const relatedType = (genomicInterpretation?.extra_properties as JSONObject)?.__related_type ?? 'unknown';
@@ -112,7 +111,7 @@ interface InterpretationsViewProps {
 const InterpretationsView = ({ interpretations }: InterpretationsViewProps) => {
   const t = useTranslationFn();
 
-  const columns: TableColumnsType<Interpretation> = [
+  const columns: CustomTableColumns<Interpretation> = [
     {
       title: 'interpretations.id',
       dataIndex: 'id',
@@ -123,24 +122,28 @@ const InterpretationsView = ({ interpretations }: InterpretationsViewProps) => {
       dataIndex: 'created',
       key: 'created',
       render: (text: string) => <Tooltip title={text}>{new Date(text).toLocaleDateString()}</Tooltip>,
+      isEmptyDefaultCheck: true,
     },
     {
       title: 'interpretations.updated',
       dataIndex: 'updated',
       key: 'updated',
       render: (text: string) => <Tooltip title={text}>{new Date(text).toLocaleDateString()}</Tooltip>,
+      isEmptyDefaultCheck: true,
     },
     {
       title: 'interpretations.progress_status',
       dataIndex: 'progress_status',
       key: 'progress_status',
       render: (text: string) => t(`progress_status.${text}`),
+      isEmptyDefaultCheck: true,
     },
     {
       title: 'interpretations.summary',
       dataIndex: 'summary',
       key: 'summary',
       render: (text: string) => t(text),
+      isEmptyDefaultCheck: true,
     },
   ];
 
