@@ -3,7 +3,7 @@ import type { WithVisible } from '@/types/util';
 import { Table, type TableColumnType, type TableProps } from 'antd';
 
 export interface CustomTableColumn<T> extends TableColumnType<T> {
-  isEmpty?: (value: any, record?: T) => boolean;
+  isEmpty?: (value: any, record?: T) => boolean; // eslint-disable-line @typescript-eslint/no-explicit-any
   isEmptyDefaultCheck?: boolean;
 }
 
