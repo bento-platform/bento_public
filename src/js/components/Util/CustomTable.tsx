@@ -1,6 +1,12 @@
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
 import type { WithVisible } from '@/types/util';
-import { Table, type TableProps } from 'antd';
+import { Table, TableColumnType, type TableProps } from 'antd';
+
+export interface CustomTableColumn<T> extends TableColumnType<T> {
+  isEmpty?: (value: any, record?: T) => boolean;
+}
+
+export type CustomTableColumns<T> = CustomTableColumn<T>[];
 
 type VisibilityFunc<T> = (record: T) => boolean;
 
@@ -13,19 +19,28 @@ export const addVisibilityProperty = <T,>(r: T[], visibilityFn: VisibilityFunc<T
 
 interface CustomTableProps<T> {
   dataSource: T[];
-  columns: TableProps<T>['columns'];
+  columns: CustomTableColumns<T>;
   rowKey: TableProps<WithVisible<T>>['rowKey'];
   isDataKeyVisible: VisibilityFunc<T>;
   expandedRowRender?: (record: T) => React.ReactNode;
 }
 
 const CustomTable = <T,>({ dataSource, columns, rowKey, isDataKeyVisible, expandedRowRender }: CustomTableProps<T>) => {
-  const updatedColumns = useTranslatedTableColumnTitles<T>(columns || []) as TableProps<WithVisible<T>>['columns'];
+  const updatedColumns = useTranslatedTableColumnTitles<T>(columns || []) as CustomTableColumns<WithVisible<T>>;
   const dataSourceWithVisibility = addVisibilityProperty<T>(dataSource, isDataKeyVisible);
+  const updatedColumnsWithVisibility = updatedColumns!.map((col) => {
+    if (col.isEmpty) {
+      return {
+        ...col,
+        hidden: !dataSourceWithVisibility.some((record) => !col.isEmpty!(record[col.dataIndex as keyof T], record)),
+      };
+    }
+    return col;
+  });
 
   return (
     <Table<WithVisible<T>>
-      columns={updatedColumns}
+      columns={updatedColumnsWithVisibility}
       dataSource={dataSourceWithVisibility}
       expandable={{
         expandedRowRender,
