@@ -26,8 +26,8 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket) => {
   );
 
   // TODO: Add Experiments
-  const items: TabsProps['items'] = useMemo(
-    () => [
+  const items: TabsProps['items'] = useMemo(() => {
+    const allItems = [
       {
         key: TabKeys.SUBJECT,
         label: t('tab_keys.subject'),
@@ -82,12 +82,18 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket) => {
         children: <OntologiesView resources={phenopacket?.meta_data?.resources} />,
         disabled: !phenopacket?.meta_data?.resources,
       },
-    ],
-    [phenopacket, t]
-  );
+    ];
+    return allItems.filter((item) => !item.disabled);
+  }, [phenopacket, t]);
+
+  const activeTabs = useMemo(() => {
+    return items.map((item) => item.key as TabKeys);
+  }, [items]);
 
   return {
     handleTabChange,
     items,
+    activeTabs,
+    defaultTab: activeTabs[0],
   };
 };

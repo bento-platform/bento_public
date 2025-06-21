@@ -6,9 +6,7 @@ import { usePhenopacketTabs } from '@/hooks/usePhenopacketTabs';
 
 import Loader from '@/components/Loader';
 
-import { PHENOPACKETS_DEFAULT_TAB } from '@/constants/phenopacketConstants';
-
-import { TabKeys } from '@/types/PhenopacketView.types';
+import type { TabKeys } from '@/types/PhenopacketView.types';
 import { RequestStatus } from '@/types/requests';
 
 import { usePhenopacketData } from '@/features/clinPhen/hooks';
@@ -24,19 +22,22 @@ const PhenopacketView = () => {
   const { packetId, tab } = useParams<RouteParams>();
   const navigate = useNavigate();
   const t = useTranslationFn();
+
   const { phenopacket, status, isAuthorized } = usePhenopacketData(packetId ?? '');
 
-  const { handleTabChange, items } = usePhenopacketTabs(phenopacket);
+  const { handleTabChange, items, activeTabs, defaultTab } = usePhenopacketTabs(phenopacket);
 
-  const [activeKey, setActiveKey] = useState<TabKeys>(TabKeys.BIOSAMPLES);
+  const [activeKey, setActiveKey] = useState<TabKeys>(defaultTab);
 
   useEffect(() => {
-    if (tab && Object.values(TabKeys).includes(tab as TabKeys)) {
-      setActiveKey(tab as TabKeys);
-    } else {
-      navigate(`${tab ? '..' : '.'}/${PHENOPACKETS_DEFAULT_TAB}`, { relative: 'path', replace: true });
+    if (status === RequestStatus.Fulfilled && phenopacket) {
+      if (tab && activeTabs.includes(tab as TabKeys)) {
+        setActiveKey(tab as TabKeys);
+      } else {
+        navigate(`${tab ? '..' : '.'}/${defaultTab}`, { relative: 'path', replace: true });
+      }
     }
-  }, [navigate, tab]);
+  }, [navigate, tab, status, phenopacket, activeTabs, defaultTab]);
 
   if (isAuthorized.hasAttempted && !isAuthorized.hasPermission) {
     return <Empty description={t('auth.unauthorized_message')} />; // Temporary: removed once phenopacket view is integrated with search
