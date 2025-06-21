@@ -1,4 +1,4 @@
-import CustomTable from '@Util/CustomTable';
+import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
 import TDescriptions from '@Util/TDescriptions';
 import OntologyTermComponent, { OntologyTermStack } from '@Util/ClinPhen/OntologyTerm';
 import TimeElementDisplay from '@Util/ClinPhen/TimeElementDisplay';
@@ -9,7 +9,6 @@ import type { Disease } from '@/types/clinPhen/disease';
 import type { TimeElement } from '@/types/clinPhen/shared';
 import type { OntologyTerm } from '@/types/ontology';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
-import type { TableColumnsType } from 'antd';
 
 import { EM_DASH } from '@/constants/common';
 
@@ -52,7 +51,7 @@ const isDiseaseRowVisible = (r: Disease) =>
   !!(r.disease_stage?.length || r.clinical_tnm_finding?.length || r.primary_site || r.extra_properties);
 
 const DiseasesView = ({ diseases }: DiseasesViewProps) => {
-  const columns: TableColumnsType<Disease> = [
+  const columns: CustomTableColumns<Disease> = [
     {
       title: 'diseases_table.disease',
       dataIndex: 'term',
@@ -67,11 +66,13 @@ const DiseasesView = ({ diseases }: DiseasesViewProps) => {
       title: 'diseases_table.onset_age',
       dataIndex: 'onset',
       render: (onset: TimeElement) => (onset ? <TimeElementDisplay element={onset} /> : EM_DASH),
+      isEmptyDefaultCheck: true,
     },
     {
       title: 'diseases_table.resolution_age',
       dataIndex: 'resolution',
       render: (resolution: TimeElement) => (resolution ? <TimeElementDisplay element={resolution} /> : EM_DASH),
+      isEmptyDefaultCheck: true,
     },
   ];
 
