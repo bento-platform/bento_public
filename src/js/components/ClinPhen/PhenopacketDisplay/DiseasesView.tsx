@@ -10,6 +10,7 @@ import type { TimeElement } from '@/types/clinPhen/shared';
 import type { OntologyTerm } from '@/types/ontology';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
 
+import { objectToBoolean } from '@/utils/boolean';
 import { EM_DASH } from '@/constants/common';
 
 const DiseaseExpandedRow = ({ disease }: { disease: Disease }) => {
@@ -36,7 +37,7 @@ const DiseaseExpandedRow = ({ disease }: { disease: Disease }) => {
       key: 'extra_properties',
       label: 'diseases_expanded_row.extra_properties',
       children: <ExtraProperties extraProperties={disease.extra_properties} />,
-      isVisible: disease.extra_properties && Object.keys(disease.extra_properties).length > 0,
+      isVisible: objectToBoolean(disease.extra_properties),
     },
   ];
 
