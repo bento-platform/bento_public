@@ -1,3 +1,4 @@
+import { useCallback, useMemo } from 'react';
 import { Card, Empty, Flex, Tabs, notification } from 'antd';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -38,23 +39,21 @@ const PhenopacketView = () => {
 
   const [activeKey, setActiveKey] = useState<TabKeys>(defaultTab.key);
 
-  const notificationFillIns = { endpoint: tab, target: defaultTab.label };
+  const notificationFillIns = useMemo(() => ({ endpoint: tab, target: defaultTab.label }), [tab, defaultTab.label]);
 
-  const invalidEndpointRedirectNotification = () => {
-    console.error(notificationFillIns);
+  const invalidEndpointRedirectNotification = useCallback(() => {
     api.error({
       message: t('phenopacket_view.invalid_endpoint_title', notificationFillIns),
       description: t('phenopacket_view.invalid_endpoint_description', notificationFillIns),
     });
-  };
+  }, [api, t, notificationFillIns]);
 
-  const notAvailableRedirectNotification = () => {
-    console.error(notificationFillIns);
+  const notAvailableRedirectNotification = useCallback(() => {
     api.warning({
       message: t('phenopacket_view.not_available_title', notificationFillIns),
       description: t('phenopacket_view.not_available_description', notificationFillIns),
     });
-  };
+  }, [api, t, notificationFillIns]);
 
   useEffect(() => {
     if (status === RequestStatus.Fulfilled && phenopacket) {
