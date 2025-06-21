@@ -1,12 +1,11 @@
 import OntologyTermComponent from '@Util/ClinPhen/OntologyTerm';
 import TimeElementDisplay from '@Util/ClinPhen/TimeElementDisplay';
 import TDescriptions from '@Util/TDescriptions';
-import CustomTable from '@Util/CustomTable';
+import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
 
 import type { Biosample } from '@/types/clinPhen/biosample';
 import type { OntologyTerm } from '@/types/ontology';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
-import type { TableColumnsType } from 'antd';
 
 const BiosampleExpandedRow = ({ biosample }: { biosample: Biosample }) => {
   const items: ConditionalDescriptionItem[] = [
@@ -65,7 +64,7 @@ interface BiosampleViewProps {
 
 //TODO: add button that links to experiment (like bento web)
 const BiosampleView = ({ biosamples }: BiosampleViewProps) => {
-  const columns: TableColumnsType<Biosample> = [
+  const columns: CustomTableColumns<Biosample> = [
     {
       title: 'biosample_table.biosample_id',
       dataIndex: 'id',
@@ -74,6 +73,7 @@ const BiosampleView = ({ biosamples }: BiosampleViewProps) => {
       title: 'biosample_table.sampled_tissue',
       dataIndex: 'sampled_tissue',
       render: (term: OntologyTerm) => <OntologyTermComponent term={term} />,
+      isEmpty: (value) => !value,
     },
   ];
 
