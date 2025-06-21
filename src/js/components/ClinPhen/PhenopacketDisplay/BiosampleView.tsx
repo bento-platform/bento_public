@@ -73,7 +73,7 @@ const BiosampleView = ({ biosamples }: BiosampleViewProps) => {
       title: 'biosample_table.sampled_tissue',
       dataIndex: 'sampled_tissue',
       render: (term: OntologyTerm) => <OntologyTermComponent term={term} />,
-      isEmpty: (value) => !value,
+      isEmptyDefaultCheck: true,
     },
   ];
 
