@@ -66,7 +66,7 @@ const CustomTable = <T,>({ dataSource, columns, rowKey, isDataKeyVisible, expand
   });
 
   const validKeys = useMemo(() => {
-    const keysSet = new Set(dataSourceWithVisibility.map(getKey));
+    const keysSet = new Set(dataSourceWithVisibility.filter(({ isVisible }) => isVisible).map(getKey));
     return urlExpanded.filter((key) => keysSet.has(key));
   }, [dataSourceWithVisibility, getKey, urlExpanded]);
 
