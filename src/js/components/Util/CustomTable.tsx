@@ -30,18 +30,20 @@ interface CustomTableProps<T> {
 }
 
 const CustomTable = <T,>({ dataSource, columns, rowKey, isDataKeyVisible, expandedRowRender }: CustomTableProps<T>) => {
+  type VT = WithVisible<T>;
+
   const [searchParams, setSearchParams] = useSearchParams();
   const urlExpanded = searchParams.get('expanded')?.split(',').filter(Boolean) || [];
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>(urlExpanded);
 
-  const getKey = useMemo<RowSelectorFunc<WithVisible<T>>>(() => {
+  const getKey = useMemo<RowSelectorFunc<VT>>(() => {
     if (typeof rowKey === 'function') {
-      return rowKey as RowSelectorFunc<WithVisible<T>>;
+      return rowKey as RowSelectorFunc<VT>;
     }
-    return (row: WithVisible<T>) => String(row[rowKey as keyof WithVisible<T>]);
+    return (record: VT) => String(record[rowKey as keyof VT]);
   }, [rowKey]);
 
-  const updatedColumns = useTranslatedTableColumnTitles<T>(columns || []) as CustomTableColumns<WithVisible<T>>;
+  const updatedColumns = useTranslatedTableColumnTitles<T>(columns || []) as CustomTableColumns<VT>;
   const dataSourceWithVisibility = addVisibilityProperty<T>(dataSource, isDataKeyVisible);
   const updatedColumnsWithVisibility = updatedColumns!.map((col) => {
     if (col.isEmpty) {
@@ -65,7 +67,7 @@ const CustomTable = <T,>({ dataSource, columns, rowKey, isDataKeyVisible, expand
   }, [searchParams]);
 
   const onExpand = useCallback(
-    (expanded: boolean, record: WithVisible<T>) => {
+    (expanded: boolean, record: VT) => {
       const key = getKey(record);
       const next = expanded ? Array.from(new Set([...expandedRowKeys, key])) : expandedRowKeys.filter((k) => k !== key);
 
@@ -82,7 +84,7 @@ const CustomTable = <T,>({ dataSource, columns, rowKey, isDataKeyVisible, expand
   );
 
   return (
-    <Table<WithVisible<T>>
+    <Table<VT>
       columns={updatedColumnsWithVisibility}
       dataSource={dataSourceWithVisibility}
       expandable={{
