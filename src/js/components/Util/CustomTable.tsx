@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
 import type { WithVisible } from '@/types/util';
 import { Table, type TableColumnType, type TableProps } from 'antd';
+import { EXPANDED_QUERY_PARAM_KEY } from '@/constants/table';
 
 export interface CustomTableColumn<T> extends TableColumnType<T> {
   isEmpty?: (value: any, record?: T) => boolean; // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -33,7 +34,7 @@ const CustomTable = <T,>({ dataSource, columns, rowKey, isDataKeyVisible, expand
   type VT = WithVisible<T>;
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const urlExpanded = searchParams.get('expanded')?.split(',').filter(Boolean) || [];
+  const urlExpanded = searchParams.get(EXPANDED_QUERY_PARAM_KEY)?.split(',').filter(Boolean) || [];
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>(urlExpanded);
 
   const getKey = useMemo<RowSelectorFunc<VT>>(() => {
@@ -61,7 +62,7 @@ const CustomTable = <T,>({ dataSource, columns, rowKey, isDataKeyVisible, expand
   });
 
   useEffect(() => {
-    const param = searchParams.get('expanded') || '';
+    const param = searchParams.get(EXPANDED_QUERY_PARAM_KEY) || '';
     const keys = param.split(',').filter(Boolean);
     setExpandedRowKeys(keys);
   }, [searchParams]);
