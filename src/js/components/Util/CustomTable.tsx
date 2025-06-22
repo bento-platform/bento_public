@@ -4,6 +4,8 @@ import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumn
 import type { WithVisible } from '@/types/util';
 import { Table, type TableColumnType, type TableProps } from 'antd';
 import { EXPANDED_QUERY_PARAM_KEY } from '@/constants/table';
+import { useNotify } from '@/hooks/NotificationContext';
+import { useTranslationFn } from '@/hooks';
 
 export interface CustomTableColumn<T> extends TableColumnType<T> {
   isEmpty?: (value: any, record?: T) => boolean; // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -36,6 +38,8 @@ const CustomTable = <T,>({ dataSource, columns, rowKey, isDataKeyVisible, expand
   const [searchParams, setSearchParams] = useSearchParams();
   const urlExpanded = searchParams.get(EXPANDED_QUERY_PARAM_KEY)?.split(',').filter(Boolean) || [];
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
+  const api = useNotify();
+  const t = useTranslationFn();
 
   const getKey = useMemo<RowSelectorFunc<VT>>(() => {
     if (typeof rowKey === 'function') {
@@ -64,11 +68,16 @@ const CustomTable = <T,>({ dataSource, columns, rowKey, isDataKeyVisible, expand
   const validKeys = useMemo(() => {
     const keysSet = new Set(dataSourceWithVisibility.map(getKey));
     return urlExpanded.filter((key) => keysSet.has(key));
-  }, [dataSource, getKey, urlExpanded]);
+  }, [dataSourceWithVisibility, getKey, urlExpanded]);
 
   useEffect(() => {
     setExpandedRowKeys(validKeys);
     if (validKeys.length !== urlExpanded.length) {
+      api.warning({
+        message: t('table.invalid_row_keys_title'),
+        description: t('table.invalid_row_keys_description'),
+      });
+
       if (validKeys.length) {
         searchParams.set(EXPANDED_QUERY_PARAM_KEY, validKeys.join(','));
       } else {
@@ -76,7 +85,7 @@ const CustomTable = <T,>({ dataSource, columns, rowKey, isDataKeyVisible, expand
       }
       setSearchParams(searchParams, { replace: true });
     }
-  }, [validKeys, urlExpanded, searchParams, setSearchParams]);
+  }, [validKeys, urlExpanded, searchParams, setSearchParams, api, t]);
 
   const onExpand = useCallback(
     (expanded: boolean, record: VT) => {

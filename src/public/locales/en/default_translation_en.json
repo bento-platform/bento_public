@@ -382,5 +382,9 @@
     "invalid_endpoint_description": "The endpoint you are trying to access is not valid. You are being redirected to {{target}}.",
     "not_available_title": "/{{endpoint}} Tab Not Available",
     "not_available_description": "The requested data is not available. You are being redirected to the {{target}}."
+  },
+  "table": {
+    "invalid_row_keys_title": "Invalid Row Reference",
+    "invalid_row_keys_description": "Some rows referenced in the URL do not exist. Adjusting to valid entries."
   }
 }

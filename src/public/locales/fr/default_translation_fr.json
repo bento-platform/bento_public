@@ -387,5 +387,9 @@
     "invalid_endpoint_description": "Le point de terminaison que vous essayez d’accéder n’est pas valide. Vous allez être redirigé vers {{target}}.",
     "not_available_title": "Onglet /{{endpoint}} non disponible",
     "not_available_description": "Les données demandées ne sont pas disponibles. Vous allez être redirigé vers {{target}}."
+  },
+  "table": {
+    "invalid_row_keys_title": "Référence de ligne invalide",
+    "invalid_row_keys_description": "Certaines lignes référencées dans l'URL n'existent pas. Correction automatique aux entrées valides."
   }
 }
