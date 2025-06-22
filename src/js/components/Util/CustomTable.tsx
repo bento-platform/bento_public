@@ -35,7 +35,7 @@ const CustomTable = <T,>({ dataSource, columns, rowKey, isDataKeyVisible, expand
 
   const [searchParams, setSearchParams] = useSearchParams();
   const urlExpanded = searchParams.get(EXPANDED_QUERY_PARAM_KEY)?.split(',').filter(Boolean) || [];
-  const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>(urlExpanded);
+  const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
 
   const getKey = useMemo<RowSelectorFunc<VT>>(() => {
     if (typeof rowKey === 'function') {
@@ -61,11 +61,22 @@ const CustomTable = <T,>({ dataSource, columns, rowKey, isDataKeyVisible, expand
     return col;
   });
 
+  const validKeys = useMemo(() => {
+    const keysSet = new Set(dataSourceWithVisibility.map(getKey));
+    return urlExpanded.filter((key) => keysSet.has(key));
+  }, [dataSource, getKey, urlExpanded]);
+
   useEffect(() => {
-    const param = searchParams.get(EXPANDED_QUERY_PARAM_KEY) || '';
-    const keys = param.split(',').filter(Boolean);
-    setExpandedRowKeys(keys);
-  }, [searchParams]);
+    setExpandedRowKeys(validKeys);
+    if (validKeys.length !== urlExpanded.length) {
+      if (validKeys.length) {
+        searchParams.set(EXPANDED_QUERY_PARAM_KEY, validKeys.join(','));
+      } else {
+        searchParams.delete(EXPANDED_QUERY_PARAM_KEY);
+      }
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [validKeys, urlExpanded, searchParams, setSearchParams]);
 
   const onExpand = useCallback(
     (expanded: boolean, record: VT) => {
@@ -75,9 +86,9 @@ const CustomTable = <T,>({ dataSource, columns, rowKey, isDataKeyVisible, expand
       setExpandedRowKeys(next);
 
       if (next.length) {
-        searchParams.set('expanded', next.join(','));
+        searchParams.set(EXPANDED_QUERY_PARAM_KEY, next.join(','));
       } else {
-        searchParams.delete('expanded');
+        searchParams.delete(EXPANDED_QUERY_PARAM_KEY);
       }
       setSearchParams(searchParams, { replace: true });
     },
