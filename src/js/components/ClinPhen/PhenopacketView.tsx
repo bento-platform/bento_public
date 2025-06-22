@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { Card, Empty, Flex, Tabs, notification } from 'antd';
+import { Card, Empty, Flex, Tabs } from 'antd';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
@@ -12,9 +12,7 @@ import { RequestStatus } from '@/types/requests';
 
 import { usePhenopacketData } from '@/features/clinPhen/hooks';
 import { useTranslationFn } from '@/hooks';
-import { NAVBAR_HEIGHT } from '@/constants/common';
-
-const NOTIFICATION_DISPLACEMENT = NAVBAR_HEIGHT + 24;
+import { useNotify } from '@/hooks/NotificationContext';
 
 export interface RouteParams {
   packetId: string;
@@ -26,12 +24,8 @@ const PhenopacketView = () => {
   const { packetId, tab } = useParams<RouteParams>();
   const navigate = useNavigate();
   const t = useTranslationFn();
-  const [api, contextHolder] = notification.useNotification({
-    duration: 5,
-    showProgress: true,
-    pauseOnHover: true,
-    top: NOTIFICATION_DISPLACEMENT,
-  });
+
+  const api = useNotify();
 
   const { phenopacket, status, isAuthorized } = usePhenopacketData(packetId ?? '');
 
@@ -87,7 +81,6 @@ const PhenopacketView = () => {
   if (status === RequestStatus.Pending || !phenopacket || !isAuthorized.hasAttempted) {
     return (
       <>
-        {contextHolder}
         <Loader fullHeight={false} />
       </>
     );
@@ -95,7 +88,6 @@ const PhenopacketView = () => {
 
   return (
     <>
-      {contextHolder}
       <Flex justify="center">
         <Card title={packetId} className="container">
           <Tabs activeKey={activeKey} items={items} onChange={handleTabChange} />
