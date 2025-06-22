@@ -36,7 +36,10 @@ const CustomTable = <T,>({ dataSource, columns, rowKey, isDataKeyVisible, expand
   type VT = WithVisible<T>;
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const urlExpanded = searchParams.get(EXPANDED_QUERY_PARAM_KEY)?.split(',').filter(Boolean) || [];
+  const urlExpanded = useMemo(
+    () => searchParams.get(EXPANDED_QUERY_PARAM_KEY)?.split(',').filter(Boolean) || [],
+    [searchParams]
+  );
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
   const api = useNotify();
   const t = useTranslationFn();
