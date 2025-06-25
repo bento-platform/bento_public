@@ -384,9 +384,9 @@
   },
   "phenopacket_view": {
     "invalid_endpoint_title": "Point de terminaison invalide : /{{endpoint}}",
-    "invalid_endpoint_description": "Le point de terminaison que vous essayez d’accéder n’est pas valide. Vous allez être redirigé vers {{target}}.",
+    "invalid_endpoint_description": "Le point de terminaison que vous essayez d’accéder n’est pas valide. Redirigé vers {{target}}.",
     "not_available_title": "Onglet /{{endpoint}} non disponible",
-    "not_available_description": "Les données demandées ne sont pas disponibles. Vous allez être redirigé vers {{target}}."
+    "not_available_description": "Les données demandées ne sont pas disponibles. Redirigé vers {{target}}."
   },
   "table": {
     "invalid_row_keys_title": "Référence de ligne invalide",

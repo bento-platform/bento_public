@@ -379,9 +379,9 @@
   },
   "phenopacket_view": {
     "invalid_endpoint_title": "Invalid Endpoint: /{{endpoint}}",
-    "invalid_endpoint_description": "The endpoint you are trying to access is not valid. You are being redirected to {{target}}.",
+    "invalid_endpoint_description": "The endpoint you are trying to access is not valid. Redirected to {{target}}.",
     "not_available_title": "/{{endpoint}} Tab Not Available",
-    "not_available_description": "The requested data is not available. You are being redirected to the {{target}}."
+    "not_available_description": "The requested data is not available. Redirected to {{target}}."
   },
   "table": {
     "invalid_row_keys_title": "Invalid Row Reference",
