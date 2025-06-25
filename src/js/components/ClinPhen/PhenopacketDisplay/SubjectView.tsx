@@ -89,7 +89,7 @@ const SubjectView = ({ subject }: { subject: Individual }) => {
   return (
     <Space id="subject-view" direction="vertical" className="w-full" size="large">
       <TDescriptions items={items} column={1} bordered />
-      {extraProperties.length && <TDescriptions items={extraProperties} column={1} bordered />}
+      {!!extraProperties.length && <TDescriptions items={extraProperties} column={1} bordered />}
     </Space>
   );
 };
