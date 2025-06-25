@@ -29,7 +29,9 @@ const PhenopacketView = () => {
 
   const { phenopacket, status, isAuthorized } = usePhenopacketData(packetId ?? '');
 
-  const { handleTabChange, items, activeTabs, defaultTab } = usePhenopacketTabs(phenopacket);
+  const { handleTabChange, items, activeTabs } = usePhenopacketTabs(phenopacket);
+
+  const defaultTab = useMemo(() => ({ key: activeTabs[0], label: t('tab_keys.subject') }), [activeTabs, t]);
 
   const [activeKey, setActiveKey] = useState<TabKeys>(defaultTab.key);
 
