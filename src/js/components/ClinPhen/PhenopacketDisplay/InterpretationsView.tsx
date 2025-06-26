@@ -101,7 +101,7 @@ const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interp
   );
 };
 
-const isinterpretaionExpandedRowVisible = (r: Interpretation) =>
+const isInterpretationDetailsVisible = (r: Interpretation) =>
   !!(r.diagnosis?.disease || r.diagnosis?.genomic_interpretations?.length);
 
 interface InterpretationsViewProps {
@@ -153,7 +153,7 @@ const InterpretationsView = ({ interpretations }: InterpretationsViewProps) => {
       columns={columns}
       expandedRowRender={(record) => <InterpretationsExpandedRow interpretation={record} />}
       rowKey={(record) => record.id}
-      isDataKeyVisible={isinterpretaionExpandedRowVisible}
+      isDataKeyVisible={isInterpretationDetailsVisible}
     />
   );
 };
