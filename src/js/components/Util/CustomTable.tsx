@@ -4,7 +4,7 @@ import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumn
 import type { WithVisible } from '@/types/util';
 import { Table, type TableColumnType, type TableProps } from 'antd';
 import { EXPANDED_QUERY_PARAM_KEY } from '@/constants/table';
-import { useNotify } from '@/hooks/NotificationContext';
+import { useNotify } from '@/hooks/notifications';
 import { useTranslationFn } from '@/hooks';
 
 export interface CustomTableColumn<T> extends TableColumnType<T> {

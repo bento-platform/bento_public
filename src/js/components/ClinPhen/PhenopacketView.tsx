@@ -12,7 +12,7 @@ import { RequestStatus } from '@/types/requests';
 
 import { usePhenopacketData } from '@/features/clinPhen/hooks';
 import { useTranslationFn } from '@/hooks';
-import { useNotify } from '@/hooks/NotificationContext';
+import { useNotify } from '@/hooks/notifications';
 
 export interface RouteParams {
   packetId: string;

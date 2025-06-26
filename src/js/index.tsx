@@ -22,7 +22,7 @@ import ResponsiveProvider from '@/components/Util/ResponsiveProvider';
 
 // Hooks and utilities imports
 import { BentoAuthContextProvider } from 'bento-auth-js';
-import { NotificationProvider } from './hooks/NotificationContext';
+import { NotificationProvider } from './hooks/notifications';
 
 // Store and configuration imports
 import { store } from './store';
