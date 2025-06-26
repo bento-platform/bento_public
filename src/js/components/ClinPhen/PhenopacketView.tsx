@@ -81,21 +81,15 @@ const PhenopacketView = () => {
   }
 
   if (status === RequestStatus.Pending || !phenopacket || !isAuthorized.hasAttempted) {
-    return (
-      <>
-        <Loader fullHeight={false} />
-      </>
-    );
+    return <Loader fullHeight={false} />;
   }
 
   return (
-    <>
-      <Flex justify="center">
-        <Card title={packetId} className="container">
-          <Tabs activeKey={activeKey} items={items} onChange={handleTabChange} />
-        </Card>
-      </Flex>
-    </>
+    <Flex justify="center">
+      <Card title={packetId} className="container">
+        <Tabs activeKey={activeKey} items={items} onChange={handleTabChange} />
+      </Card>
+    </Flex>
   );
 };
 
