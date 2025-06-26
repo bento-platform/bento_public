@@ -100,10 +100,8 @@ const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement
   return null;
 };
 
-const isMeasurementExpandedRowVisible = (measurement: Measurement) => {
-  return !!(measurement.procedure || measurement.value || measurement.complex_value);
-};
-
+const isMeasurementExpandedRowVisible = (measurement: Measurement) =>
+  !!(measurement.procedure || measurement.value || measurement.complex_value);
 interface MeasurementsViewProps {
   measurements: Measurement[];
 }
