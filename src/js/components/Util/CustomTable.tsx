@@ -1,11 +1,13 @@
-import { useEffect, useCallback, useMemo, useState } from 'react';
+import { useEffect, useCallback, useMemo } from 'react';
+import { Table } from 'antd';
+import type { TableColumnType } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
-import type { WithVisible } from '@/types/util';
-import { Table, type TableColumnType, type TableProps } from 'antd';
-import { EXPANDED_QUERY_PARAM_KEY } from '@/constants/table';
 import { useNotify } from '@/hooks/notifications';
 import { useTranslationFn } from '@/hooks';
+
+import type { WithVisible } from '@/types/util';
+import { EXPANDED_QUERY_PARAM_KEY } from '@/constants/table';
 
 export interface CustomTableColumn<T> extends TableColumnType<T> {
   isEmpty?: (value: any, record?: T) => boolean; // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -14,109 +16,100 @@ export interface CustomTableColumn<T> extends TableColumnType<T> {
 
 export type CustomTableColumns<T> = CustomTableColumn<T>[];
 
-type VisibilityFunc<T> = (record: T) => boolean;
-type RowSelectorFunc<T> = (record: T) => string;
+type VisibilityFn<T> = (record: T) => boolean;
+type RowKeyFn<T> = (record: T) => string;
 
-export const addVisibilityProperty = <T,>(r: T[], visibilityFn: VisibilityFunc<T>): WithVisible<T>[] => {
-  return r.map((item) => ({
-    ...item,
-    isVisible: visibilityFn(item),
-  }));
-};
+function addVisibility<T>(items: T[], isVisible: VisibilityFn<T>): WithVisible<T>[] {
+  return items.map((item) => ({ ...item, isVisible: isVisible(item) }));
+}
+
+function serializeExpandedKeys(keys: string[]) {
+  const params = new URLSearchParams();
+  if (keys.length) params.set(EXPANDED_QUERY_PARAM_KEY, keys.join(','));
+  return params;
+}
+
+function deserializeExpandedKeys(params: URLSearchParams): string[] {
+  const raw = params.get(EXPANDED_QUERY_PARAM_KEY);
+  return raw ? raw.split(',').filter(Boolean) : [];
+}
 
 interface CustomTableProps<T> {
   dataSource: T[];
   columns: CustomTableColumns<T>;
-  rowKey: TableProps<WithVisible<T>>['rowKey'];
-  isDataKeyVisible: VisibilityFunc<T>;
+  rowKey: string | RowKeyFn<WithVisible<T>>;
+  isDataKeyVisible: VisibilityFn<T>;
   expandedRowRender?: (record: T) => React.ReactNode;
 }
 
-const CustomTable = <T,>({ dataSource, columns, rowKey, isDataKeyVisible, expandedRowRender }: CustomTableProps<T>) => {
-  type VT = WithVisible<T>;
-
+const CustomTable = <T extends object>({
+  dataSource,
+  columns,
+  rowKey,
+  isDataKeyVisible,
+  expandedRowRender,
+}: CustomTableProps<T>) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
-  const api = useNotify();
+  const notify = useNotify();
   const t = useTranslationFn();
 
-  const urlExpanded = useMemo(() => {
-    return searchParams.get(EXPANDED_QUERY_PARAM_KEY)?.split(',').filter(Boolean) || [];
-  }, [searchParams]);
+  const expandedKeys = useMemo(() => deserializeExpandedKeys(searchParams), [searchParams]);
 
-  const getKey = useMemo<RowSelectorFunc<VT>>(() => {
-    return typeof rowKey === 'function'
-      ? (rowKey as RowSelectorFunc<VT>)
-      : (record: VT) => String(record[rowKey as keyof VT]);
+  const rowKeyFn: RowKeyFn<WithVisible<T>> = useMemo(() => {
+    if (typeof rowKey === 'function') return rowKey;
+    return (record: WithVisible<T>) => String(record[rowKey as keyof WithVisible<T>]);
   }, [rowKey]);
 
-  const updatedColumns = useTranslatedTableColumnTitles<T>(columns || []) as CustomTableColumns<VT>;
-  const dataSourceWithVisibility = addVisibilityProperty<T>(dataSource, isDataKeyVisible);
+  const visibleData = useMemo(() => addVisibility(dataSource, isDataKeyVisible), [dataSource, isDataKeyVisible]);
 
-  const updatedColumnsWithVisibility = updatedColumns!.map((col) => {
-    if (col.isEmpty) {
-      return {
-        ...col,
-        hidden: !dataSourceWithVisibility.some((record) => !col.isEmpty!(record[col.dataIndex as keyof T], record)),
-      };
-    } else if (col.isEmptyDefaultCheck) {
-      return {
-        ...col,
-        hidden: !dataSourceWithVisibility.some((record) => record[col.dataIndex as keyof T]),
-      };
-    }
-    return col;
-  });
+  const translatedColumns = useTranslatedTableColumnTitles(columns) as CustomTableColumns<WithVisible<T>>;
+  const processedColumns = useMemo(() => {
+    return translatedColumns.map((col) => {
+      const hasData = visibleData.some((record) =>
+        col.isEmpty
+          ? !col.isEmpty(record[col.dataIndex as keyof T], record)
+          : col.isEmptyDefaultCheck
+            ? Boolean(record[col.dataIndex as keyof T])
+            : true
+      );
+      return { ...col, hidden: !hasData };
+    });
+  }, [translatedColumns, visibleData]);
 
-  const validKeys = useMemo(() => {
-    const keysSet = new Set(dataSourceWithVisibility.filter(({ isVisible }) => isVisible).map(getKey));
-    return urlExpanded.filter((key) => keysSet.has(key));
-  }, [dataSourceWithVisibility, getKey, urlExpanded]);
+  const validExpandedKeys = useMemo(() => {
+    const keySet = new Set(visibleData.filter((r) => r.isVisible).map(rowKeyFn));
+    return expandedKeys.filter((k) => keySet.has(k));
+  }, [visibleData, expandedKeys, rowKeyFn]);
 
   useEffect(() => {
-    setExpandedRowKeys(validKeys);
-    if (validKeys.length !== urlExpanded.length) {
-      api.warning({
+    if (validExpandedKeys.length !== expandedKeys.length) {
+      notify.warning({
         message: t('table.invalid_row_keys_title'),
         description: t('table.invalid_row_keys_description'),
       });
-
-      if (validKeys.length) {
-        searchParams.set(EXPANDED_QUERY_PARAM_KEY, validKeys.join(','));
-      } else {
-        searchParams.delete(EXPANDED_QUERY_PARAM_KEY);
-      }
-      setSearchParams(searchParams, { replace: true });
+      setSearchParams(serializeExpandedKeys(validExpandedKeys), { replace: true });
     }
-  }, [validKeys, urlExpanded, searchParams, setSearchParams, api, t]);
+  }, [validExpandedKeys, expandedKeys, notify, t, setSearchParams]);
 
-  const onExpand = useCallback(
-    (expanded: boolean, record: VT) => {
-      const key = getKey(record);
-      const next = expanded ? Array.from(new Set([...expandedRowKeys, key])) : expandedRowKeys.filter((k) => k !== key);
-
-      setExpandedRowKeys(next);
-
-      if (next.length) {
-        searchParams.set(EXPANDED_QUERY_PARAM_KEY, next.join(','));
-      } else {
-        searchParams.delete(EXPANDED_QUERY_PARAM_KEY);
-      }
-      setSearchParams(searchParams, { replace: true });
+  const handleExpand = useCallback(
+    (expanded: boolean, record: WithVisible<T>) => {
+      const key = rowKeyFn(record);
+      const nextKeys = expanded ? Array.from(new Set([...expandedKeys, key])) : expandedKeys.filter((k) => k !== key);
+      setSearchParams(serializeExpandedKeys(nextKeys), { replace: true });
     },
-    [expandedRowKeys, getKey, searchParams, setSearchParams]
+    [expandedKeys, rowKeyFn, setSearchParams]
   );
 
   return (
-    <Table<VT>
-      columns={updatedColumnsWithVisibility}
-      dataSource={dataSourceWithVisibility}
+    <Table<WithVisible<T>>
+      columns={processedColumns}
+      dataSource={visibleData}
       expandable={{
         expandedRowRender,
         rowExpandable: (record) => record.isVisible,
-        showExpandColumn: dataSourceWithVisibility.some((record) => record.isVisible),
-        expandedRowKeys,
-        onExpand: onExpand,
+        showExpandColumn: visibleData.some((r) => r.isVisible),
+        expandedRowKeys: expandedKeys,
+        onExpand: handleExpand,
       }}
       rowKey={rowKey}
       pagination={false}
