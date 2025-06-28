@@ -17,7 +17,7 @@ export interface CustomTableColumn<T> extends TableColumnType<T> {
 export type CustomTableColumns<T> = CustomTableColumn<T>[];
 
 type VisibilityFn<T> = (record: T) => boolean;
-type RowKeyFn<T> = (record: T) => string;
+type RowKeyFn<T> = (record: T, index?: number) => string;
 
 function addVisibility<T>(items: T[], isVisible: VisibilityFn<T>): WithVisible<T>[] {
   return items.map((item) => ({ ...item, isVisible: isVisible(item) }));
