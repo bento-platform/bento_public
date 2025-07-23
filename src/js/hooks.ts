@@ -1,5 +1,4 @@
-import type { RefObject } from 'react';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import type { TypedUseSelectorHook } from 'react-redux';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -10,7 +9,6 @@ import type { RootState, AppDispatch } from '@/store';
 import { CUSTOMIZABLE_TRANSLATION } from '@/constants/configConstants';
 import type { NamespaceTranslationFunction } from '@/types/translation';
 import { useSelectedScopeAsResource } from '@/features/metadata/hooks';
-import { CHART_WIDTH, GRID_GAP } from '@/constants/overviewConstants';
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 // refer to https://react-redux.js.org/using-react-redux/usage-with-typescript#define-typed-hooks for more info
