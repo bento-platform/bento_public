@@ -5,7 +5,7 @@ import { CloseOutlined } from '@ant-design/icons';
 import Chart from './Chart';
 import CustomEmpty from '../Util/CustomEmpty';
 import { CHART_HEIGHT } from '@/constants/overviewConstants';
-import { useElementWidth, useTranslationFn } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
 import type { ChartDataField } from '@/types/data';
 import SmallChartCardTitle from '@/components/Util/SmallChartCardTitle';
 
@@ -15,7 +15,6 @@ const ROW_EMPTY_STYLE: CSSProperties = { height: `${CHART_HEIGHT}px` };
 const ChartCard = memo(({ section, chart, onRemoveChart, searchable }: ChartCardProps) => {
   const t = useTranslationFn();
   const containerRef = useRef<HTMLDivElement>(null);
-  const width = useElementWidth(containerRef, chart.width);
 
   const {
     data,
@@ -34,7 +33,7 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable }: ChartCard
   ];
 
   return (
-    <div ref={containerRef} key={id} style={{ gridColumn: `span ${width}` }}>
+    <div ref={containerRef} key={id} style={{ gridColumn: `span ${chart.width}` }}>
       <Card
         title={
           <SmallChartCardTitle title={t(title)} description={t(description)} descriptionStyle={{ width: '375px' }} />
