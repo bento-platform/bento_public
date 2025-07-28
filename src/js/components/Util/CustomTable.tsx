@@ -82,7 +82,7 @@ const CustomTable = <T extends object>({
   }, [visibleData, expandedKeys, rowKeyFn]);
 
   useEffect(() => {
-    if (validExpandedKeys.length !== expandedKeys.length) {
+    if (expandedRowRender && validExpandedKeys.length !== expandedKeys.length) {
       notify.warning({
         message: t('table.invalid_row_keys_title'),
         description: t('table.invalid_row_keys_description'),
