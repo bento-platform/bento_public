@@ -119,7 +119,6 @@ const MeasurementsView = ({ measurements }: MeasurementsViewProps) => {
       title: 'measurements.measurement_value',
       key: 'value',
       render: (m: Measurement) => <MeasurementDetail measurement={m} />,
-      isEmpty: (value: Measurement) => !value?.value && !value?.complex_value,
     },
     {
       title: 'measurements.description',
