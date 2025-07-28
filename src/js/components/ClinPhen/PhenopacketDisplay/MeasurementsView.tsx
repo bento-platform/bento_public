@@ -22,7 +22,7 @@ const MeasurementsExpandedRow = ({ measurement }: { measurement: Measurement }) 
       key: 'measurement_value',
       label: 'measurements.measurement_value',
       children: <MeasurementDetail measurement={measurement} expanded />,
-      isVisible: measurement.value && !measurement.complex_value,
+      isVisible: measurement.value || measurement.complex_value,
     },
     {
       key: 'procedure',
