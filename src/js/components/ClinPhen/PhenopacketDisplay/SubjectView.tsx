@@ -75,7 +75,11 @@ const SubjectView = ({ subject }: { subject: Individual }) => {
     {
       key: 'taxonomy',
       label: 'subject.taxonomy',
-      children: <OntologyTerm term={subject?.taxonomy} />,
+      children: (
+        <em>
+          <OntologyTerm term={subject?.taxonomy} />
+        </em>
+      ),
       isVisible: subject?.taxonomy,
     },
   ];
