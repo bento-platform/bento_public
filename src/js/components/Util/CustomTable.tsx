@@ -89,7 +89,7 @@ const CustomTable = <T extends object>({
       });
       setSearchParams(serializeExpandedKeys(validExpandedKeys), { replace: true });
     }
-  }, [validExpandedKeys, expandedKeys, notify, t, setSearchParams]);
+  }, [expandedRowRender, validExpandedKeys, expandedKeys, notify, t, setSearchParams]);
 
   const handleExpand = useCallback(
     (expanded: boolean, record: WithVisible<T>) => {
