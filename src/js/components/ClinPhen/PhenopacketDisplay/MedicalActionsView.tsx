@@ -21,9 +21,12 @@ import type { Procedure } from '@/types/clinPhen/procedure';
 import type { TimeInterval } from '@/types/clinPhen/shared';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
 
+import { addId, type WithId } from '@/utils/arrays';
 import { useTranslationFn } from '@/hooks';
 
 const { Text } = Typography;
+
+type DoseIntervalWithId = WithId<DoseInterval>;
 
 export const ProcedureComponent = ({ procedure }: { procedure: Procedure }) => {
   const ProcedureItems: ConditionalDescriptionItem[] = [
@@ -85,10 +88,10 @@ const TreatmentComponent = ({ treatment }: { treatment: Treatment }) => {
       key: 'doseIntervals',
       label: 'medical_actions.dose_intervals',
       children: (
-        <CustomTable<DoseInterval>
+        <CustomTable<DoseIntervalWithId>
           columns={DOSE_INTERVAL_COLUMNS}
-          dataSource={treatment.dose_intervals || []}
-          rowKey={(_, idx) => String(idx)}
+          dataSource={addId(treatment.dose_intervals || [])}
+          rowKey={(record) => record.id}
           isDataKeyVisible={() => true}
         />
       ),
