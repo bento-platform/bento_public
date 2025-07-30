@@ -38,22 +38,22 @@ const MeasurementsExpandedRow = ({ measurement }: { measurement: Measurement }) 
   return <TDescriptions bordered size="small" items={items} column={1} />;
 };
 
-const COMPLEX_VALUE_COLUMNS: TableColumnsType<TypedQuantityWithId> =
-  useTranslatedTableColumnTitles<TypedQuantityWithId>([
-    {
-      title: 'measurements.type',
-      dataIndex: 'type',
-      render: (type: OntologyTermType) => <OntologyTermComponent term={type} />,
-    },
-    {
-      title: 'measurements.value',
-      dataIndex: 'quantity',
-      render: (quantity: Quantity) => <QuantityDisplay quantity={quantity} />,
-    },
-  ]);
-
 const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement; expanded?: boolean }) => {
   const t = useTranslationFn();
+
+  const complexValueColumns: TableColumnsType<TypedQuantityWithId> =
+    useTranslatedTableColumnTitles<TypedQuantityWithId>([
+      {
+        title: 'measurements.type',
+        dataIndex: 'type',
+        render: (type: OntologyTermType) => <OntologyTermComponent term={type} />,
+      },
+      {
+        title: 'measurements.value',
+        dataIndex: 'quantity',
+        render: (quantity: Quantity) => <QuantityDisplay quantity={quantity} />,
+      },
+    ]);
 
   const value = measurement?.value;
   const complexValueTypedQuantities = addId(measurement?.complex_value?.typed_quantities || []);
@@ -90,7 +90,7 @@ const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement
       return (
         <Table<TypedQuantityWithId>
           dataSource={complexValueTypedQuantities}
-          columns={COMPLEX_VALUE_COLUMNS}
+          columns={complexValueColumns}
           size="small"
           pagination={false}
           rowKey={(record) => record.id}
