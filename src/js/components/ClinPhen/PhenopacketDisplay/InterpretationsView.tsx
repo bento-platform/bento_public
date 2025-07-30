@@ -51,7 +51,7 @@ const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interp
     },
   ];
 
-  const columns = [
+  const columns: CustomTableColumns<GenomicInterpretation> = [
     {
       title: 'interpretations.id',
       dataIndex: 'id',
