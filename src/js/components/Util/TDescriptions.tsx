@@ -10,8 +10,7 @@ interface TDescriptionsProps extends Omit<DescriptionsProps, 'items'> {
 }
 
 // T stands for Translated
-const TDescriptions = (props: TDescriptionsProps) => {
-  const { items, ...restProps } = props;
+const TDescriptions = ({ items, ...restProps }: TDescriptionsProps) => {
   const filteredItems = hiddenDescriptions(items);
 
   const descriptionItems = useTranslatedDescriptionItems(filteredItems);
