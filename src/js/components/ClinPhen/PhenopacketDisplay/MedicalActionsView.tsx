@@ -57,16 +57,19 @@ const DOSE_INTERVAL_COLUMNS: CustomTableColumns<DoseIntervalWithId> = [
     title: 'medical_actions.quantity',
     dataIndex: 'quantity',
     render: (quantity: Quantity) => <QuantityDisplay quantity={quantity} />,
+    alwaysShow: true,
   },
   {
     title: 'medical_actions.schedule_frequency',
     dataIndex: 'schedule_frequency',
     render: (term: OntologyTerm) => <OntologyTermComponent term={term} />,
+    alwaysShow: true,
   },
   {
     title: 'medical_actions.interval',
     dataIndex: 'interval',
     render: (interval: TimeInterval) => <TimeIntervalDisplay timeInterval={interval} />,
+    alwaysShow: true,
   },
 ];
 
@@ -248,24 +251,22 @@ const MedicalActionsView = ({ medicalActions }: { medicalActions: MedicalAction[
           </Text>
         );
       },
+      alwaysShow: true,
     },
     {
       title: 'medical_actions.treatment_target',
       dataIndex: 'treatment_target',
       render: (target: OntologyTerm) => <OntologyTermComponent term={target} />,
-      isEmptyDefaultCheck: true,
     },
     {
       title: 'medical_actions.treatment_intent',
       dataIndex: 'treatment_intent',
       render: (intent: OntologyTerm) => <OntologyTermComponent term={intent} />,
-      isEmptyDefaultCheck: true,
     },
     {
       title: 'medical_actions.response_to_treatment',
       dataIndex: 'response_to_treatment',
       render: (response: OntologyTerm) => <OntologyTermComponent term={response} />,
-      isEmptyDefaultCheck: true,
     },
     {
       title: 'medical_actions.adverse_events',
@@ -277,7 +278,6 @@ const MedicalActionsView = ({ medicalActions }: { medicalActions: MedicalAction[
       title: 'medical_actions.treatment_termination_reason',
       dataIndex: 'treatment_termination_reason',
       render: (reason: OntologyTerm) => <OntologyTermComponent term={reason} />,
-      isEmptyDefaultCheck: true,
     },
   ];
 

@@ -120,27 +120,25 @@ const PHENOTYPIC_FEATURES_COLUMNS: CustomTableColumns<PhenotypicFeature> = [
         {record.excluded && <Excluded model={ExcludedModel.PHENOTYPE} />}
       </>
     ),
+    alwaysShow: true,
   },
   {
     title: 'phenotypic_features.severity',
     dataIndex: 'severity',
     key: 'severity',
     render: (severity: OntologyTerm) => <OntologyTermComponent term={severity} />,
-    isEmptyDefaultCheck: true,
   },
   {
     title: 'phenotypic_features.onset',
     dataIndex: 'onset',
     key: 'onset',
     render: (onset: TimeElement) => <TimeElementDisplay element={onset} />,
-    isEmptyDefaultCheck: true,
   },
   {
     title: 'phenotypic_features.resolution',
     dataIndex: 'resolution',
     key: 'resolution',
     render: (resolution: TimeElement) => <TimeElementDisplay element={resolution} />,
-    isEmptyDefaultCheck: true,
   },
 ];
 

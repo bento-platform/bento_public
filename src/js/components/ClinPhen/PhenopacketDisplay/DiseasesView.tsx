@@ -61,18 +61,17 @@ const DISEASES_VIEW_COLUMNS: CustomTableColumns<Disease> = [
         {record.excluded && <Excluded model={ExcludedModel.DISEASE} />}
       </>
     ),
+    alwaysShow: true,
   },
   {
     title: 'diseases_table.onset_age',
     dataIndex: 'onset',
     render: (onset: TimeElement) => (onset ? <TimeElementDisplay element={onset} /> : EM_DASH),
-    isEmptyDefaultCheck: true,
   },
   {
     title: 'diseases_table.resolution_age',
     dataIndex: 'resolution',
     render: (resolution: TimeElement) => (resolution ? <TimeElementDisplay element={resolution} /> : EM_DASH),
-    isEmptyDefaultCheck: true,
   },
 ];
 

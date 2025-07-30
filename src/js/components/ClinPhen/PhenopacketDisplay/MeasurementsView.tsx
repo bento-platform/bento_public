@@ -116,23 +116,23 @@ const MeasurementsView = ({ measurements }: MeasurementsViewProps) => {
       title: 'measurements.assay',
       dataIndex: 'assay',
       render: (assay: OntologyTermType) => <OntologyTermComponent term={assay} />,
+      alwaysShow: true,
     },
     {
       title: 'measurements.measurement_value',
       key: 'value',
       render: (m: Measurement) => <MeasurementDetail measurement={m} />,
+      alwaysShow: true,
     },
     {
       title: 'measurements.description',
       dataIndex: 'description',
       render: (text: string | undefined) => t(text) || EM_DASH,
-      isEmptyDefaultCheck: true,
     },
     {
       title: 'measurements.procedure',
       dataIndex: 'procedure',
       render: (procedure: Procedure | undefined) => <OntologyTermComponent term={procedure?.code} />,
-      isEmptyDefaultCheck: true,
     },
   ];
 

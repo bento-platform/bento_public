@@ -116,34 +116,31 @@ const InterpretationsView = ({ interpretations }: InterpretationsViewProps) => {
       title: 'interpretations.id',
       dataIndex: 'id',
       key: 'id',
+      alwaysShow: true,
     },
     {
       title: 'interpretations.created',
       dataIndex: 'created',
       key: 'created',
       render: (text: string) => <Tooltip title={text}>{new Date(text).toLocaleDateString()}</Tooltip>,
-      isEmptyDefaultCheck: true,
     },
     {
       title: 'interpretations.updated',
       dataIndex: 'updated',
       key: 'updated',
       render: (text: string) => <Tooltip title={text}>{new Date(text).toLocaleDateString()}</Tooltip>,
-      isEmptyDefaultCheck: true,
     },
     {
       title: 'interpretations.progress_status',
       dataIndex: 'progress_status',
       key: 'progress_status',
       render: (text: string) => t(`progress_status.${text}`),
-      isEmptyDefaultCheck: true,
     },
     {
       title: 'interpretations.summary',
       dataIndex: 'summary',
       key: 'summary',
       render: (text: string) => t(text),
-      isEmptyDefaultCheck: true,
     },
   ];
 

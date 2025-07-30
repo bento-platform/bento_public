@@ -66,12 +66,12 @@ const BIOSAMPLE_VIEW_COLUMNS: CustomTableColumns<Biosample> = [
   {
     title: 'biosample_table.biosample_id',
     dataIndex: 'id',
+    alwaysShow: true,
   },
   {
     title: 'biosample_table.sampled_tissue',
     dataIndex: 'sampled_tissue',
     render: (term: OntologyTerm) => <OntologyTermComponent term={term} />,
-    isEmptyDefaultCheck: true,
   },
 ];
 

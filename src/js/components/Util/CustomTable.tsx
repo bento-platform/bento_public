@@ -11,7 +11,7 @@ import { EXPANDED_QUERY_PARAM_KEY } from '@/constants/table';
 
 export interface CustomTableColumn<T> extends TableColumnType<T> {
   isEmpty?: (value: any, record?: T) => boolean; // eslint-disable-line @typescript-eslint/no-explicit-any
-  isEmptyDefaultCheck?: boolean;
+  alwaysShow?: boolean;
 }
 
 export type CustomTableColumns<T> = CustomTableColumn<T>[];
@@ -63,18 +63,20 @@ const CustomTable = <T extends object>({
   const visibleData = useMemo(() => addVisibility(dataSource, isDataKeyVisible), [dataSource, isDataKeyVisible]);
 
   const translatedColumns = useTranslatedTableColumnTitles(columns) as CustomTableColumns<WithVisible<T>>;
-  const processedColumns = useMemo(() => {
-    return translatedColumns.map((col) => {
-      const hasData = visibleData.some((record) =>
-        col.isEmpty
-          ? !col.isEmpty(record[col.dataIndex as keyof T], record)
-          : col.isEmptyDefaultCheck
-            ? Boolean(record[col.dataIndex as keyof T])
-            : true
-      );
-      return { ...col, hidden: !hasData };
-    });
-  }, [translatedColumns, visibleData]);
+  const processedColumns = useMemo(
+    () =>
+      translatedColumns.map((col) => {
+        const hasData = visibleData.some((record) =>
+          col.alwaysShow
+            ? true
+            : col.isEmpty
+              ? !col.isEmpty(record[col.dataIndex as keyof T], record)
+              : Boolean(record[col.dataIndex as keyof T])
+        );
+        return { ...col, hidden: !hasData };
+      }),
+    [translatedColumns, visibleData]
+  );
 
   const validExpandedKeys = useMemo(() => {
     const keySet = new Set(visibleData.filter((r) => r.isVisible).map(rowKeyFn));
