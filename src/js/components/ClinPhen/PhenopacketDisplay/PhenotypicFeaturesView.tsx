@@ -109,50 +109,51 @@ interface PhenotypicFeaturesViewProps {
   features: PhenotypicFeature[];
 }
 
-function PhenotypicFeaturesView({ features }: PhenotypicFeaturesViewProps) {
-  const columns: CustomTableColumns<PhenotypicFeature> = [
-    {
-      title: 'phenotypic_features.feature',
-      dataIndex: 'type',
-      key: 'type',
-      render: (type: OntologyTerm, record: PhenotypicFeature) => (
-        <>
-          <OntologyTermComponent term={type} />
-          {record.excluded && <Excluded model={ExcludedModel.PHENOTYPE} />}
-        </>
-      ),
-    },
-    {
-      title: 'phenotypic_features.severity',
-      dataIndex: 'severity',
-      key: 'severity',
-      render: (severity: OntologyTerm) => <OntologyTermComponent term={severity} />,
-      isEmptyDefaultCheck: true,
-    },
-    {
-      title: 'phenotypic_features.onset',
-      dataIndex: 'onset',
-      key: 'onset',
-      render: (onset: TimeElement) => (onset ? <TimeElementDisplay element={onset} /> : EM_DASH),
-      isEmptyDefaultCheck: true,
-    },
-    {
-      title: 'phenotypic_features.resolution',
-      dataIndex: 'resolution',
-      key: 'resolution',
-      render: (resolution: TimeElement) => (resolution ? <TimeElementDisplay element={resolution} /> : EM_DASH),
-      isEmptyDefaultCheck: true,
-    },
-  ];
+const PHENOTYPIC_FEATURES_COLUMNS: CustomTableColumns<PhenotypicFeature> = [
+  {
+    title: 'phenotypic_features.feature',
+    dataIndex: 'type',
+    key: 'type',
+    render: (type: OntologyTerm, record: PhenotypicFeature) => (
+      <>
+        <OntologyTermComponent term={type} />
+        {record.excluded && <Excluded model={ExcludedModel.PHENOTYPE} />}
+      </>
+    ),
+  },
+  {
+    title: 'phenotypic_features.severity',
+    dataIndex: 'severity',
+    key: 'severity',
+    render: (severity: OntologyTerm) => <OntologyTermComponent term={severity} />,
+    isEmptyDefaultCheck: true,
+  },
+  {
+    title: 'phenotypic_features.onset',
+    dataIndex: 'onset',
+    key: 'onset',
+    render: (onset: TimeElement) => <TimeElementDisplay element={onset} />,
+    isEmptyDefaultCheck: true,
+  },
+  {
+    title: 'phenotypic_features.resolution',
+    dataIndex: 'resolution',
+    key: 'resolution',
+    render: (resolution: TimeElement) => <TimeElementDisplay element={resolution} />,
+    isEmptyDefaultCheck: true,
+  },
+];
+
+const PhenotypicFeaturesView = ({ features }: PhenotypicFeaturesViewProps) => {
   return (
     <CustomTable<PhenotypicFeature>
       dataSource={features}
-      columns={columns}
+      columns={PHENOTYPIC_FEATURES_COLUMNS}
       expandedRowRender={(record) => <PhenotypicFeatureExpandedRow feature={record} />}
       rowKey={(record) => record.type.id}
       isDataKeyVisible={isPhenotypicFeatureExpandedRowVisible}
     />
   );
-}
+};
 
 export default PhenotypicFeaturesView;

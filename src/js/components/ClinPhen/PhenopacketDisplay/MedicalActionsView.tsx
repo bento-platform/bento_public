@@ -52,25 +52,25 @@ export const ProcedureComponent = ({ procedure }: { procedure: Procedure }) => {
   return <TDescriptions bordered column={1} size="small" items={ProcedureItems} />;
 };
 
-const TreatmentComponent = ({ treatment }: { treatment: Treatment }) => {
-  const DOSE_INTERVAL_COLUMNS = [
-    {
-      title: 'medical_actions.quantity',
-      dataIndex: 'quantity',
-      render: (quantity: Quantity) => <QuantityDisplay quantity={quantity} />,
-    },
-    {
-      title: 'medical_actions.schedule_frequency',
-      dataIndex: 'schedule_frequency',
-      render: (term: OntologyTerm) => <OntologyTermComponent term={term} />,
-    },
-    {
-      title: 'medical_actions.interval',
-      dataIndex: 'interval',
-      render: (interval: TimeInterval) => <TimeIntervalDisplay timeInterval={interval} />,
-    },
-  ];
+const DOSE_INTERVAL_COLUMNS: CustomTableColumns<DoseIntervalWithId> = [
+  {
+    title: 'medical_actions.quantity',
+    dataIndex: 'quantity',
+    render: (quantity: Quantity) => <QuantityDisplay quantity={quantity} />,
+  },
+  {
+    title: 'medical_actions.schedule_frequency',
+    dataIndex: 'schedule_frequency',
+    render: (term: OntologyTerm) => <OntologyTermComponent term={term} />,
+  },
+  {
+    title: 'medical_actions.interval',
+    dataIndex: 'interval',
+    render: (interval: TimeInterval) => <TimeIntervalDisplay timeInterval={interval} />,
+  },
+];
 
+const TreatmentComponent = ({ treatment }: { treatment: Treatment }) => {
   const TreatmentItems: ConditionalDescriptionItem[] = [
     {
       key: 'agent',

@@ -62,25 +62,25 @@ interface BiosampleViewProps {
   biosamples: Biosample[];
 }
 
+const BIOSAMPLE_VIEW_COLUMNS: CustomTableColumns<Biosample> = [
+  {
+    title: 'biosample_table.biosample_id',
+    dataIndex: 'id',
+  },
+  {
+    title: 'biosample_table.sampled_tissue',
+    dataIndex: 'sampled_tissue',
+    render: (term: OntologyTerm) => <OntologyTermComponent term={term} />,
+    isEmptyDefaultCheck: true,
+  },
+];
+
 //TODO: add button that links to experiment (like bento web)
 const BiosampleView = ({ biosamples }: BiosampleViewProps) => {
-  const columns: CustomTableColumns<Biosample> = [
-    {
-      title: 'biosample_table.biosample_id',
-      dataIndex: 'id',
-    },
-    {
-      title: 'biosample_table.sampled_tissue',
-      dataIndex: 'sampled_tissue',
-      render: (term: OntologyTerm) => <OntologyTermComponent term={term} />,
-      isEmptyDefaultCheck: true,
-    },
-  ];
-
   return (
     <CustomTable<Biosample>
       dataSource={biosamples}
-      columns={columns}
+      columns={BIOSAMPLE_VIEW_COLUMNS}
       expandedRowRender={(record) => <BiosampleExpandedRow biosample={record} />}
       rowKey="id"
       isDataKeyVisible={isBiosampleRowVisible}

@@ -51,36 +51,36 @@ interface DiseasesViewProps {
 const isDiseaseRowVisible = (r: Disease) =>
   !!(r.disease_stage?.length || r.clinical_tnm_finding?.length || r.primary_site || r.extra_properties);
 
-const DiseasesView = ({ diseases }: DiseasesViewProps) => {
-  const columns: CustomTableColumns<Disease> = [
-    {
-      title: 'diseases_table.disease',
-      dataIndex: 'term',
-      render: (term: OntologyTerm, record: Disease) => (
-        <>
-          <OntologyTermComponent term={term} />
-          {record.excluded && <Excluded model={ExcludedModel.DISEASE} />}
-        </>
-      ),
-    },
-    {
-      title: 'diseases_table.onset_age',
-      dataIndex: 'onset',
-      render: (onset: TimeElement) => (onset ? <TimeElementDisplay element={onset} /> : EM_DASH),
-      isEmptyDefaultCheck: true,
-    },
-    {
-      title: 'diseases_table.resolution_age',
-      dataIndex: 'resolution',
-      render: (resolution: TimeElement) => (resolution ? <TimeElementDisplay element={resolution} /> : EM_DASH),
-      isEmptyDefaultCheck: true,
-    },
-  ];
+const DISEASES_VIEW_COLUMNS: CustomTableColumns<Disease> = [
+  {
+    title: 'diseases_table.disease',
+    dataIndex: 'term',
+    render: (term: OntologyTerm, record: Disease) => (
+      <>
+        <OntologyTermComponent term={term} />
+        {record.excluded && <Excluded model={ExcludedModel.DISEASE} />}
+      </>
+    ),
+  },
+  {
+    title: 'diseases_table.onset_age',
+    dataIndex: 'onset',
+    render: (onset: TimeElement) => (onset ? <TimeElementDisplay element={onset} /> : EM_DASH),
+    isEmptyDefaultCheck: true,
+  },
+  {
+    title: 'diseases_table.resolution_age',
+    dataIndex: 'resolution',
+    render: (resolution: TimeElement) => (resolution ? <TimeElementDisplay element={resolution} /> : EM_DASH),
+    isEmptyDefaultCheck: true,
+  },
+];
 
+const DiseasesView = ({ diseases }: DiseasesViewProps) => {
   return (
     <CustomTable<Disease>
       dataSource={diseases}
-      columns={columns}
+      columns={DISEASES_VIEW_COLUMNS}
       expandedRowRender={(record) => <DiseaseExpandedRow disease={record} />}
       rowKey={(record) => record.term.id}
       isDataKeyVisible={isDiseaseRowVisible}
