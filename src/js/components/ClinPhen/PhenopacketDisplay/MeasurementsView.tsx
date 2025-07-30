@@ -10,11 +10,14 @@ import type { Procedure } from '@/types/clinPhen/procedure';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
 import type { TableColumnsType } from 'antd';
 
+import { addId, type WithId } from '@/utils/arrays';
 import { EM_DASH } from '@/constants/common';
 import { ProcedureComponent } from './MedicalActionsView';
 import TDescriptions from '@Util/TDescriptions';
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
 import { useTranslationFn } from '@/hooks';
+
+type TypedQuantityWithId = WithId<TypedQuantity>;
 
 const MeasurementsExpandedRow = ({ measurement }: { measurement: Measurement }) => {
   const items: ConditionalDescriptionItem[] = [
@@ -38,8 +41,8 @@ const MeasurementsExpandedRow = ({ measurement }: { measurement: Measurement }) 
 const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement; expanded?: boolean }) => {
   const t = useTranslationFn();
 
-  const complexValueTypedQuantityColumns: TableColumnsType<TypedQuantity> =
-    useTranslatedTableColumnTitles<TypedQuantity>([
+  const complexValueTypedQuantityColumns: TableColumnsType<TypedQuantityWithId> =
+    useTranslatedTableColumnTitles<TypedQuantityWithId>([
       {
         title: 'measurements.type',
         dataIndex: 'type',
@@ -53,7 +56,7 @@ const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement
     ]);
 
   const value = measurement?.value;
-  const complexValue = measurement?.complex_value;
+  const complexValueTypedQuantities = addId(measurement?.complex_value?.typed_quantities || []);
   if (!expanded) {
     if (measurement?.value) {
       const quantity = measurement.value.quantity;
@@ -64,12 +67,10 @@ const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement
       );
     }
     if (measurement?.complex_value) {
-      const { typed_quantities } = measurement.complex_value;
-
       return (
         <Space direction="vertical" size={0}>
-          {typed_quantities.map((typedQuantity, index) => (
-            <span key={index}>
+          {complexValueTypedQuantities.map((typedQuantity) => (
+            <span key={typedQuantity.id}>
               {t(typedQuantity.type.label)}: {typedQuantity.quantity.value} {t(typedQuantity.quantity.unit.label)}
             </span>
           ))}
@@ -85,13 +86,14 @@ const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement
         </>
       );
     }
-    if (complexValue) {
+    if (complexValueTypedQuantities) {
       return (
-        <Table<TypedQuantity>
-          dataSource={complexValue.typed_quantities}
+        <Table<TypedQuantityWithId>
+          dataSource={complexValueTypedQuantities}
           columns={complexValueTypedQuantityColumns}
           size="small"
           pagination={false}
+          rowKey={(record) => record.id}
           bordered
         />
       );
