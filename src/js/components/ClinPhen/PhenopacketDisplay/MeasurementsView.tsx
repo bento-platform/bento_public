@@ -4,11 +4,11 @@ import OntologyTermComponent from '@Util/ClinPhen/OntologyTerm';
 import QuantityDisplay from '@Util/ClinPhen/QuantityDisplay';
 import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
 
+import type { TableColumnsType } from 'antd';
 import type { Measurement, Quantity, TypedQuantity } from '@/types/clinPhen/measurement';
 import type { OntologyTerm as OntologyTermType } from '@/types/ontology';
 import type { Procedure } from '@/types/clinPhen/procedure';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
-import type { TableColumnsType } from 'antd';
 
 import { addId, type WithId } from '@/utils/arrays';
 import { EM_DASH } from '@/constants/common';
