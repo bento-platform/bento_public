@@ -92,6 +92,7 @@ const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interp
             )}
             rowKey={(record: GenomicInterpretation) => record.subject_or_biosample_id}
             isDataKeyVisible={isGenomicInterpretationDetailsVisible}
+            queryKey="gi"
           />
         ) : (
           <CustomEmpty text={t('interpretations.no_genomic_iterpretation')} />

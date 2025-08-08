@@ -23,15 +23,19 @@ function addVisibility<T>(items: T[], isVisible: VisibilityFn<T>): WithVisible<T
   return items.map((item) => ({ ...item, isVisible: isVisible(item) }));
 }
 
-function serializeExpandedKeys(keys: string[]) {
-  const params = new URLSearchParams();
-  if (keys.length) params.set(EXPANDED_QUERY_PARAM_KEY, keys.join(','));
-  return params;
+function serializeExpandedKeys(keys: string[]): string {
+  return keys.join(',');
 }
 
-function deserializeExpandedKeys(params: URLSearchParams): string[] {
-  const raw = params.get(EXPANDED_QUERY_PARAM_KEY);
+function deserializeExpandedKeys(params: URLSearchParams, queryKey: string): string[] {
+  const raw = params.get(queryKey);
   return raw ? raw.split(',').filter(Boolean) : [];
+}
+
+function modifySearchParam(oldParams: URLSearchParams, queryKey: string, value: string[]): URLSearchParams {
+  const out = new URLSearchParams(oldParams);
+  value.length ? out.set(queryKey, serializeExpandedKeys(value)) : out.delete(queryKey);
+  return out;
 }
 
 interface CustomTableProps<T> {
@@ -40,6 +44,7 @@ interface CustomTableProps<T> {
   rowKey: string | RowKeyFn<WithVisible<T>>;
   isDataKeyVisible: VisibilityFn<T>;
   expandedRowRender?: (record: T) => React.ReactNode;
+  queryKey?: string;
 }
 
 const CustomTable = <T extends object>({
@@ -48,12 +53,13 @@ const CustomTable = <T extends object>({
   rowKey,
   isDataKeyVisible,
   expandedRowRender,
+  queryKey = EXPANDED_QUERY_PARAM_KEY,
 }: CustomTableProps<T>) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const notify = useNotify();
   const t = useTranslationFn();
 
-  const expandedKeys = useMemo(() => deserializeExpandedKeys(searchParams), [searchParams]);
+  const expandedKeys = useMemo(() => deserializeExpandedKeys(searchParams, queryKey), [searchParams, queryKey]);
 
   const rowKeyFn: RowKeyFn<WithVisible<T>> = useMemo(() => {
     if (typeof rowKey === 'function') return rowKey;
@@ -89,17 +95,17 @@ const CustomTable = <T extends object>({
         message: t('table.invalid_row_keys_title'),
         description: t('table.invalid_row_keys_description'),
       });
-      setSearchParams(serializeExpandedKeys(validExpandedKeys), { replace: true });
+      setSearchParams((prev) => modifySearchParam(prev, queryKey, validExpandedKeys), { replace: true });
     }
-  }, [expandedRowRender, validExpandedKeys, expandedKeys, notify, t, setSearchParams]);
+  }, [expandedRowRender, validExpandedKeys, expandedKeys, notify, queryKey, t, setSearchParams]);
 
   const handleExpand = useCallback(
     (expanded: boolean, record: WithVisible<T>) => {
       const key = rowKeyFn(record);
       const nextKeys = expanded ? Array.from(new Set([...expandedKeys, key])) : expandedKeys.filter((k) => k !== key);
-      setSearchParams(serializeExpandedKeys(nextKeys), { replace: true });
+      setSearchParams((prev) => modifySearchParam(prev, queryKey, nextKeys), { replace: true });
     },
-    [expandedKeys, rowKeyFn, setSearchParams]
+    [expandedKeys, queryKey, rowKeyFn, setSearchParams]
   );
 
   return (
