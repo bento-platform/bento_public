@@ -10,6 +10,7 @@ export const katsuDiscoveryMatchesUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/met
 
 // Katsu entity API (Django Rest Framework) base URLs
 export const projectsUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/projects`;
+export const datasetsUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/datasets`;
 export const individualUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/individuals`;
 export const phenopacketUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/phenopackets`;
 export const individualBatchUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/batch/individuals`;
