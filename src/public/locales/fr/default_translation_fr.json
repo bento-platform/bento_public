@@ -280,7 +280,9 @@
     "assay": "Essai",
     "measurement_value": "Valeur de mesure",
     "description": "Description",
-    "procedure": "Procédure"
+    "procedure": "Procédure",
+    "type": "Type",
+    "value": "Valeur"
   },
   "quantity": {
     "value": "Valeur",
@@ -347,7 +349,6 @@
     "survival_time_in_days": "Durée de survie (en jours)",
     "id": "ID",
     "alternate_ids": "IDs alternatifs",
-    "age": "Âge",
     "time_at_last_encounter": "Date du dernier contact",
     "vital_status": "Statut vital",
     "sex": "Sexe",
@@ -380,5 +381,15 @@
   },
   "auth": {
     "unauthorized_message": "Vous n'êtes pas autorisé à accéder à cette ressource."
+  },
+  "phenopacket_view": {
+    "invalid_endpoint_title": "Point de terminaison invalide : /{{endpoint}}",
+    "invalid_endpoint_description": "Le point de terminaison que vous essayez d’accéder n’est pas valide. Redirigé vers {{target}}.",
+    "not_available_title": "Onglet /{{endpoint}} non disponible",
+    "not_available_description": "Les onglets demandés ne sont pas disponibles. Redirigé vers {{target}}."
+  },
+  "table": {
+    "invalid_row_keys_title": "Référence de ligne invalide",
+    "invalid_row_keys_description": "Certaines lignes référencées dans l'URL n'existent pas. Correction automatique aux entrées valides."
   }
 }

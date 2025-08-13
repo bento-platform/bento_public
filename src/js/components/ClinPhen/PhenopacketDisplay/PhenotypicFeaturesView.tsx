@@ -1,20 +1,21 @@
-import { type DescriptionsProps, Space, Table } from 'antd';
 import { LinkOutlined } from '@ant-design/icons';
 
-import OntologyTermComponent from '@Util/ClinPhen/OntologyTerm';
+import OntologyTermComponent, { OntologyTermStack } from '@Util/ClinPhen/OntologyTerm';
 import TimeElementDisplay from '@Util/ClinPhen/TimeElementDisplay';
 import ExtraProperties from '@Util/ExtraProperties';
 import TDescriptions from '@Util/TDescriptions';
 import Excluded, { ExcludedModel } from '@Util/ClinPhen/Excluded';
+import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
 
 import type { PhenotypicFeature } from '@/types/clinPhen/phenotypicFeature';
 import type { OntologyTerm } from '@/types/ontology';
 import type { Evidence as EvidenceType, TimeElement } from '@/types/clinPhen/shared';
+import type { ConditionalDescriptionItem } from '@/types/descriptions';
 
-import { isValidUrl } from '@/utils/strings';
+import { objectToBoolean } from '@/utils/boolean';
 import { EM_DASH } from '@/constants/common';
+import { isValidUrl } from '@/utils/strings';
 
-import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
 import { useTranslationFn } from '@/hooks';
 
 interface EvidenceProps {
@@ -31,13 +32,14 @@ const Evidence = ({ evidence }: EvidenceProps) => {
   const externalReference = evidence.reference;
   const hasReferenceUrl = isValidUrl(externalReference?.reference);
 
-  const items: DescriptionsProps['items'] = [
+  const items: ConditionalDescriptionItem[] = [
     {
       key: 'evidence_code',
       label: 'phenotypic_features.evidence_code',
       children: <OntologyTermComponent term={evidence.evidence_code} />,
+      isVisible: evidence.evidence_code,
     },
-    externalReference && {
+    {
       key: 'reference',
       label: 'phenotypic_features.reference',
       children: (
@@ -61,94 +63,95 @@ const Evidence = ({ evidence }: EvidenceProps) => {
           )}
         </>
       ),
+      isVisible: externalReference,
     },
-  ].filter(Boolean) as DescriptionsProps['items'];
+  ];
 
   return <TDescriptions bordered={false} column={1} size="small" items={items} />;
 };
 
 function PhenotypicFeatureExpandedRow({ feature }: { feature: PhenotypicFeature }) {
-  const items: DescriptionsProps['items'] = [
+  const items: ConditionalDescriptionItem[] = [
     {
       key: 'description',
       label: 'phenotypic_features.description',
-      children: feature.description || EM_DASH,
+      children: feature.description,
     },
     {
       key: 'modifiers',
       label: 'phenotypic_features.modifiers',
-      children: feature.modifiers?.length ? (
-        <Space direction="vertical">
-          {feature.modifiers.map((m) => (
-            <OntologyTermComponent key={m.id} term={m} />
-          ))}
-        </Space>
-      ) : (
-        EM_DASH
-      ),
+      children: <OntologyTermStack terms={feature.modifiers} />,
+      isVisible: feature.modifiers?.length,
     },
     {
       key: 'evidence',
       label: 'phenotypic_features.evidence',
       children: feature.evidence?.length ? feature.evidence.map((e, i) => <Evidence key={i} evidence={e} />) : EM_DASH,
+      isVisible: feature.evidence?.length,
     },
     {
       key: 'extra_properties',
       label: 'phenotypic_features.extra_properties',
       children: <ExtraProperties extraProperties={feature?.extra_properties} />,
+      isVisible: objectToBoolean(feature?.extra_properties),
     },
   ];
   return <TDescriptions bordered size="small" items={items} />;
 }
 
+const isPhenotypicFeatureExpandedRowVisible = (record: PhenotypicFeature) =>
+  !!record.description ||
+  !!record.modifiers?.length ||
+  (record.evidence && record.evidence.length > 0) ||
+  objectToBoolean(record.extra_properties);
+
 interface PhenotypicFeaturesViewProps {
   features: PhenotypicFeature[];
 }
 
-function PhenotypicFeaturesView({ features }: PhenotypicFeaturesViewProps) {
-  const columns = useTranslatedTableColumnTitles<PhenotypicFeature>([
-    {
-      title: 'phenotypic_features.feature',
-      dataIndex: 'type',
-      key: 'type',
-      render: (type: OntologyTerm, { excluded }: PhenotypicFeature) => (
-        <>
-          <OntologyTermComponent term={type} />
-          {excluded && <Excluded model={ExcludedModel.PHENOTYPE} />}
-        </>
-      ),
-    },
-    {
-      title: 'phenotypic_features.severity',
-      dataIndex: 'severity',
-      key: 'severity',
-      render: (severity: OntologyTerm) => <OntologyTermComponent term={severity} />,
-    },
-    {
-      title: 'phenotypic_features.onset',
-      dataIndex: 'onset',
-      key: 'onset',
-      render: (onset: TimeElement) => (onset ? <TimeElementDisplay element={onset} /> : EM_DASH),
-    },
-    {
-      title: 'phenotypic_features.resolution',
-      dataIndex: 'resolution',
-      key: 'resolution',
-      render: (resolution: TimeElement) => (resolution ? <TimeElementDisplay element={resolution} /> : EM_DASH),
-    },
-  ]);
+const PHENOTYPIC_FEATURES_COLUMNS: CustomTableColumns<PhenotypicFeature> = [
+  {
+    title: 'phenotypic_features.feature',
+    dataIndex: 'type',
+    key: 'type',
+    render: (type: OntologyTerm, record: PhenotypicFeature) => (
+      <>
+        <OntologyTermComponent term={type} />
+        {record.excluded && <Excluded model={ExcludedModel.PHENOTYPE} />}
+      </>
+    ),
+    alwaysShow: true,
+  },
+  {
+    title: 'phenotypic_features.severity',
+    dataIndex: 'severity',
+    key: 'severity',
+    render: (severity: OntologyTerm) => <OntologyTermComponent term={severity} />,
+  },
+  {
+    title: 'phenotypic_features.onset',
+    dataIndex: 'onset',
+    key: 'onset',
+    render: (onset: TimeElement) => <TimeElementDisplay element={onset} />,
+  },
+  {
+    title: 'phenotypic_features.resolution',
+    dataIndex: 'resolution',
+    key: 'resolution',
+    render: (resolution: TimeElement) => <TimeElementDisplay element={resolution} />,
+  },
+];
+
+const PhenotypicFeaturesView = ({ features }: PhenotypicFeaturesViewProps) => {
   return (
-    <Table<PhenotypicFeature>
+    <CustomTable<PhenotypicFeature>
       dataSource={features}
-      columns={columns}
-      expandable={{
-        expandedRowRender: (record) => <PhenotypicFeatureExpandedRow feature={record} />,
-      }}
+      columns={PHENOTYPIC_FEATURES_COLUMNS}
+      expandedRowRender={(record) => <PhenotypicFeatureExpandedRow feature={record} />}
       rowKey={(record) => record.type.id}
-      pagination={false}
-      bordered
+      isDataKeyVisible={isPhenotypicFeatureExpandedRowVisible}
     />
   );
-}
+};
 
 export default PhenotypicFeaturesView;

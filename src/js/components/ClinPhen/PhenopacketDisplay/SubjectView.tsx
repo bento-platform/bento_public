@@ -6,12 +6,13 @@ import TimeElementDisplay from '@Util/ClinPhen/TimeElementDisplay';
 import TDescriptions from '@Util/TDescriptions';
 
 import type { Individual } from '@/types/clinPhen/individual';
+import type { ConditionalDescriptionItem } from '@/types/descriptions';
 
 import { EM_DASH } from '@/constants/common';
 
 const SubjectView = ({ subject, size }: { subject: Individual; size?: DescriptionsProps['size'] }) => {
   const vs = subject?.vital_status;
-  const vitalStatusItems: DescriptionsProps['items'] = [
+  const vitalStatusItems: ConditionalDescriptionItem[] = [
     {
       key: 'status',
       label: 'subject.status',
@@ -21,20 +22,23 @@ const SubjectView = ({ subject, size }: { subject: Individual; size?: Descriptio
       key: 'time_of_death',
       label: 'subject.time_of_death',
       children: <TimeElementDisplay element={vs?.time_of_death} />,
+      isVisible: vs?.time_of_death,
     },
     {
       key: 'cause_of_death',
       label: 'subject.cause_of_death',
       children: <OntologyTerm term={vs?.cause_of_death} />,
+      isVisible: vs?.cause_of_death,
     },
     {
       key: 'survival_time_in_days',
       label: 'subject.survival_time_in_days',
       children: vs?.survival_time_in_days,
+      isVisible: typeof vs?.survival_time_in_days === 'number',
     },
   ];
 
-  const items: DescriptionsProps['items'] = [
+  const items: ConditionalDescriptionItem[] = [
     {
       key: 'id',
       label: 'subject.id',
@@ -44,21 +48,19 @@ const SubjectView = ({ subject, size }: { subject: Individual; size?: Descriptio
       key: 'alternate_ids',
       label: 'subject.alternate_ids',
       children: <StringList list={subject.alternate_ids} />,
-    },
-    {
-      key: 'age',
-      label: 'subject.age',
-      children: `${subject?.age_numeric} ${subject?.age_unit}`,
+      isVisible: subject.alternate_ids?.length,
     },
     {
       key: 'time_at_last_encounter',
       label: 'subject.time_at_last_encounter',
       children: <TimeElementDisplay element={subject?.time_at_last_encounter} />,
+      isVisible: subject?.time_at_last_encounter,
     },
     {
       key: 'vital_status',
       label: 'subject.vital_status',
-      children: subject?.vital_status ? <TDescriptions items={vitalStatusItems} /> : EM_DASH,
+      children: <TDescriptions items={vitalStatusItems} />,
+      isVisible: subject?.vital_status,
     },
     {
       key: 'sex',
@@ -73,7 +75,12 @@ const SubjectView = ({ subject, size }: { subject: Individual; size?: Descriptio
     {
       key: 'taxonomy',
       label: 'subject.taxonomy',
-      children: <OntologyTerm term={subject?.taxonomy} />,
+      children: (
+        <em>
+          <OntologyTerm term={subject?.taxonomy} />
+        </em>
+      ),
+      isVisible: subject?.taxonomy,
     },
   ];
 
@@ -86,7 +93,9 @@ const SubjectView = ({ subject, size }: { subject: Individual; size?: Descriptio
   return (
     <Space id="subject-view" direction="vertical" className="w-full" size={size === 'small' ? size : 'large'}>
       <TDescriptions items={items} column={1} bordered size={size ?? 'default'} />
-      {extraProperties.length && <TDescriptions items={extraProperties} column={1} bordered size={size ?? 'default'} />}
+      {!!extraProperties.length && (
+        <TDescriptions items={extraProperties} column={1} bordered size={size ?? 'default'} />
+      )}
     </Space>
   );
 };

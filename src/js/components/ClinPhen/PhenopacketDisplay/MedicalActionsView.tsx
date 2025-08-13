@@ -1,9 +1,10 @@
-import { Flex, Table, Typography, type DescriptionsProps } from 'antd';
+import { Flex, Typography } from 'antd';
 
 import OntologyTermComponent, { OntologyTermStack } from '@Util/ClinPhen/OntologyTerm';
 import QuantityDisplay from '@Util/ClinPhen/QuantityDisplay';
 import TimeElementDisplay, { TimeIntervalDisplay } from '@Util/ClinPhen/TimeElementDisplay';
 import TDescriptions from '@Util/TDescriptions';
+import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
 
 import { EM_DASH } from '@/constants/common';
 
@@ -18,106 +19,115 @@ import type { Quantity } from '@/types/clinPhen/measurement';
 import type { OntologyTerm } from '@/types/ontology';
 import type { Procedure } from '@/types/clinPhen/procedure';
 import type { TimeInterval } from '@/types/clinPhen/shared';
-import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
+import type { ConditionalDescriptionItem } from '@/types/descriptions';
+
+import { addId, type WithId } from '@/utils/arrays';
 import { useTranslationFn } from '@/hooks';
 
 const { Text } = Typography;
 
+type DoseIntervalWithId = WithId<DoseInterval>;
+
 export const ProcedureComponent = ({ procedure }: { procedure: Procedure }) => {
-  const ProcedureItems: DescriptionsProps['items'] = [
+  const ProcedureItems: ConditionalDescriptionItem[] = [
     {
       key: 'code',
       label: 'medical_actions.code',
       children: <OntologyTermComponent term={procedure.code} />,
+      isVisible: procedure.code,
     },
     {
       key: 'bodySite',
       label: 'medical_actions.body_site',
       children: <OntologyTermComponent term={procedure.body_site} />,
+      isVisible: procedure.body_site,
     },
     {
       key: 'performed',
       label: 'medical_actions.performed',
       children: <TimeElementDisplay element={procedure.performed} />,
+      isVisible: procedure.performed,
     },
   ];
   return <TDescriptions bordered column={1} size="small" items={ProcedureItems} />;
 };
 
-const TreatmentComponent = ({ treatment }: { treatment: Treatment }) => {
-  const DOSE_INTERVAL_COLUMNS = useTranslatedTableColumnTitles<DoseInterval>([
-    {
-      title: 'medical_actions.quantity',
-      dataIndex: 'quantity',
-      render: (quantity: Quantity) => <QuantityDisplay quantity={quantity} />,
-    },
-    {
-      title: 'medical_actions.schedule_frequency',
-      dataIndex: 'schedule_frequency',
-      render: (term: OntologyTerm) => <OntologyTermComponent term={term} />,
-    },
-    {
-      title: 'medical_actions.interval',
-      dataIndex: 'interval',
-      render: (interval: TimeInterval) => <TimeIntervalDisplay timeInterval={interval} />,
-    },
-  ]);
+const DOSE_INTERVAL_COLUMNS: CustomTableColumns<DoseIntervalWithId> = [
+  {
+    title: 'medical_actions.quantity',
+    dataIndex: 'quantity',
+    render: (quantity: Quantity) => <QuantityDisplay quantity={quantity} />,
+    alwaysShow: true,
+  },
+  {
+    title: 'medical_actions.schedule_frequency',
+    dataIndex: 'schedule_frequency',
+    render: (term: OntologyTerm) => <OntologyTermComponent term={term} />,
+    alwaysShow: true,
+  },
+  {
+    title: 'medical_actions.interval',
+    dataIndex: 'interval',
+    render: (interval: TimeInterval) => <TimeIntervalDisplay timeInterval={interval} />,
+    alwaysShow: true,
+  },
+];
 
-  const TreatmentItems: DescriptionsProps['items'] = [
+const TreatmentComponent = ({ treatment }: { treatment: Treatment }) => {
+  const TreatmentItems: ConditionalDescriptionItem[] = [
     {
       key: 'agent',
       label: 'medical_actions.agent',
       children: <OntologyTermComponent term={treatment.agent} />,
+      isVisible: treatment?.agent,
     },
     {
       key: 'routeOfAdministration',
       label: 'medical_actions.route_of_administration',
       children: <OntologyTermComponent term={treatment.route_of_administration} />,
+      isVisible: treatment?.route_of_administration,
     },
     {
       key: 'doseIntervals',
       label: 'medical_actions.dose_intervals',
-      children: treatment?.dose_intervals ? (
-        <Table<DoseInterval>
-          size="small"
+      children: (
+        <CustomTable<DoseIntervalWithId>
           columns={DOSE_INTERVAL_COLUMNS}
-          dataSource={treatment.dose_intervals}
-          pagination={false}
-          bordered
+          dataSource={addId(treatment.dose_intervals || [])}
+          rowKey={(record) => record.id}
+          isDataKeyVisible={() => true}
         />
-      ) : (
-        EM_DASH
       ),
+      isVisible: treatment?.dose_intervals,
     },
     {
       key: 'drugType',
       label: 'medical_actions.drug_type',
-      children: treatment.drug_type,
+      children: treatment?.drug_type,
     },
     {
       key: 'cumulativeDose',
       label: 'medical_actions.cumulative_dose',
-      children: treatment?.cumulative_dose ? (
-        <QuantityDisplay quantity={treatment.cumulative_dose} title="medical_actions.cumulative_dose" />
-      ) : (
-        EM_DASH
-      ),
+      children: <QuantityDisplay quantity={treatment.cumulative_dose!} title="medical_actions.cumulative_dose" />,
+      isVisible: treatment?.cumulative_dose,
     },
   ];
   return <TDescriptions bordered column={1} size="small" items={TreatmentItems} />;
 };
 
 const RadiationTherapyComponent = ({ radiationTherapy }: { radiationTherapy: RadiationTherapy }) => {
-  const radiationTherapyItems: DescriptionsProps['items'] = [
+  const radiationTherapyItems: ConditionalDescriptionItem[] = [
     {
       key: 'modality',
       label: 'medical_actions.modality',
       children: <OntologyTermComponent term={radiationTherapy.modality} />,
+      isVisible: radiationTherapy.modality,
     },
     {
       key: 'bodySite',
       label: 'medical_actions.body_site',
       children: <OntologyTermComponent term={radiationTherapy.body_site} />,
+      isVisible: radiationTherapy.body_site,
     },
     {
       key: 'dosage',
@@ -136,7 +146,7 @@ const RadiationTherapyComponent = ({ radiationTherapy }: { radiationTherapy: Rad
 const TherapeuticRegimenComponent = ({ therapeutic_regimen }: { therapeutic_regimen: TherapeuticRegimen }) => {
   const t = useTranslationFn();
 
-  const TherapeuticRegimenItems: DescriptionsProps['items'] = [
+  const TherapeuticRegimenItems: ConditionalDescriptionItem[] = [
     {
       key: 'identifier',
       label: 'medical_actions.identifier',
@@ -161,60 +171,72 @@ const TherapeuticRegimenComponent = ({ therapeutic_regimen }: { therapeutic_regi
           )}
         </>
       ),
+      isVisible: therapeutic_regimen.ontology_class || therapeutic_regimen.external_reference,
     },
     {
       key: 'start_time',
       label: 'medical_actions.start_time',
       children: <TimeElementDisplay element={therapeutic_regimen.start_time} />,
+      isVisible: therapeutic_regimen.start_time,
     },
     {
       key: 'end_time',
       label: 'medical_actions.end_time',
       children: <TimeElementDisplay element={therapeutic_regimen.end_time} />,
+      isVisible: therapeutic_regimen.end_time,
     },
     {
       key: 'status',
       label: 'medical_actions.status',
-      children: therapeutic_regimen.status ?? EM_DASH,
+      children: therapeutic_regimen.status,
+      isVisible: therapeutic_regimen.status,
     },
   ];
   return <TDescriptions bordered column={1} size="small" items={TherapeuticRegimenItems} />;
 };
 
 const MedicalActionDetails = ({ medicalAction }: { medicalAction: MedicalAction }) => {
-  const medicalActionItems: DescriptionsProps['items'] = [
-    medicalAction.procedure && {
+  const medicalActionItems: ConditionalDescriptionItem[] = [
+    {
       key: 'procedure',
       label: 'medical_actions.procedure',
-      children: <ProcedureComponent procedure={medicalAction.procedure} />,
+      children: <ProcedureComponent procedure={medicalAction.procedure!} />,
+      isVisible: medicalAction.procedure,
     },
-    medicalAction.treatment && {
+    {
       key: 'treatment',
       label: 'medical_actions.treatment',
-      children: <TreatmentComponent treatment={medicalAction.treatment} />,
+      children: <TreatmentComponent treatment={medicalAction.treatment!} />,
+      isVisible: medicalAction.treatment,
     },
-    medicalAction.radiation_therapy && {
+    {
       key: 'radiationTherapy',
       label: 'medical_actions.radiation_therapy',
-      children: <RadiationTherapyComponent radiationTherapy={medicalAction.radiation_therapy} />,
+      children: <RadiationTherapyComponent radiationTherapy={medicalAction.radiation_therapy!} />,
+      isVisible: medicalAction.radiation_therapy,
     },
-    medicalAction.therapeutic_regimen && {
+    {
       key: 'therapeuticRegimen',
       label: 'medical_actions.therapeutic_regimen',
-      children: <TherapeuticRegimenComponent therapeutic_regimen={medicalAction.therapeutic_regimen} />,
+      children: <TherapeuticRegimenComponent therapeutic_regimen={medicalAction.therapeutic_regimen!} />,
+      isVisible: medicalAction.therapeutic_regimen,
     },
     {
       key: 'adverseEvents',
       label: 'medical_actions.adverse_events',
       children: <OntologyTermStack terms={medicalAction.adverse_events} />,
+      isVisible: medicalAction.adverse_events?.length,
     },
-  ].filter((item) => item) as DescriptionsProps['items'];
+  ];
   return <TDescriptions bordered column={1} size="small" items={medicalActionItems} />;
 };
 
+const isMedicalActionsExpandedRowVisible = (r: MedicalAction) =>
+  !!(r.adverse_events?.length || r.procedure || r.treatment || r.radiation_therapy || r.therapeutic_regimen);
+
 const MedicalActionsView = ({ medicalActions }: { medicalActions: MedicalAction[] }) => {
   const t = useTranslationFn();
-  const columns = useTranslatedTableColumnTitles<MedicalAction>([
+  const columns: CustomTableColumns<MedicalAction> = [
     {
       title: 'medical_actions.action_type',
       key: 'actionType',
@@ -229,6 +251,7 @@ const MedicalActionsView = ({ medicalActions }: { medicalActions: MedicalAction[
           </Text>
         );
       },
+      alwaysShow: true,
     },
     {
       title: 'medical_actions.treatment_target',
@@ -249,26 +272,24 @@ const MedicalActionsView = ({ medicalActions }: { medicalActions: MedicalAction[
       title: 'medical_actions.adverse_events',
       dataIndex: 'adverse_events',
       render: (events: OntologyTerm[]) => events?.length ?? 0,
+      isEmpty: (events: OntologyTerm[]) => !events?.length,
     },
     {
       title: 'medical_actions.treatment_termination_reason',
       dataIndex: 'treatment_termination_reason',
       render: (reason: OntologyTerm) => <OntologyTermComponent term={reason} />,
     },
-  ]);
+  ];
 
   return (
-    <Table<MedicalAction>
+    <CustomTable<MedicalAction>
       dataSource={medicalActions}
       columns={columns}
-      expandable={{
-        expandedRowRender: (record) => <MedicalActionDetails medicalAction={record} />,
-      }}
+      expandedRowRender={(record) => <MedicalActionDetails medicalAction={record} />}
       rowKey={(record) =>
         record.procedure?.code?.id || record.treatment?.agent?.id || record.radiation_therapy?.modality?.id || 'unknown'
       }
-      pagination={false}
-      bordered
+      isDataKeyVisible={isMedicalActionsExpandedRowVisible}
     />
   );
 };

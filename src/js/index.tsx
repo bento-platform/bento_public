@@ -22,6 +22,7 @@ import ResponsiveProvider from '@/components/Util/ResponsiveProvider';
 
 // Hooks and utilities imports
 import { BentoAuthContextProvider } from 'bento-auth-js';
+import { NotificationProvider } from './hooks/notifications';
 
 // Store and configuration imports
 import { store } from './store';
@@ -73,7 +74,9 @@ const RootApp = () => {
           >
             <ChartConfigProvider Lng={i18n.language ?? SUPPORTED_LNGS.ENGLISH} theme={NEW_BENTO_PUBLIC_THEME}>
               <ConfigProvider theme={{ components: { Menu: { iconSize: 20 } } }}>
-                <BaseRoutes />
+                <NotificationProvider>
+                  <BaseRoutes />
+                </NotificationProvider>
               </ConfigProvider>
             </ChartConfigProvider>
           </BentoAuthContextProvider>

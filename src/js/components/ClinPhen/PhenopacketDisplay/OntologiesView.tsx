@@ -21,7 +21,7 @@ const OntologiesView = ({ resources }: OntologiesProps) => {
       title: 'ontologies.url',
       dataIndex: 'url',
       render: (text: string) => (
-        <Link href={text} target="_blank" rel="noopener noreferrer">
+        <Link key={text} href={text} target="_blank" rel="noopener noreferrer">
           {text}
         </Link>
       ),
@@ -29,7 +29,7 @@ const OntologiesView = ({ resources }: OntologiesProps) => {
     { title: 'ontologies.version', dataIndex: 'version' },
     { title: 'ontologies.iri_prefix', dataIndex: 'iri_prefix' },
   ]);
-  return <Table<Resource> dataSource={resources} columns={columns} pagination={false} bordered />;
+  return <Table<Resource> dataSource={resources} columns={columns} rowKey="id" pagination={false} bordered />;
 };
 
 export default OntologiesView;

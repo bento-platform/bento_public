@@ -1,29 +1,37 @@
-import { type DescriptionsProps, Space, Table } from 'antd';
+import { Space, Table } from 'antd';
 
 import OntologyTermComponent from '@Util/ClinPhen/OntologyTerm';
 import QuantityDisplay from '@Util/ClinPhen/QuantityDisplay';
+import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
 
+import type { TableColumnsType } from 'antd';
 import type { Measurement, Quantity, TypedQuantity } from '@/types/clinPhen/measurement';
 import type { OntologyTerm as OntologyTermType } from '@/types/ontology';
 import type { Procedure } from '@/types/clinPhen/procedure';
+import type { ConditionalDescriptionItem } from '@/types/descriptions';
 
+import { addId, type WithId } from '@/utils/arrays';
 import { EM_DASH } from '@/constants/common';
 import { ProcedureComponent } from './MedicalActionsView';
 import TDescriptions from '@Util/TDescriptions';
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
 import { useTranslationFn } from '@/hooks';
 
+type TypedQuantityWithId = WithId<TypedQuantity>;
+
 const MeasurementsExpandedRow = ({ measurement }: { measurement: Measurement }) => {
-  const items: DescriptionsProps['items'] = [
+  const items: ConditionalDescriptionItem[] = [
     {
       key: 'measurement_value',
       label: 'measurements.measurement_value',
       children: <MeasurementDetail measurement={measurement} expanded />,
+      isVisible: measurement.value || measurement.complex_value,
     },
     {
       key: 'procedure',
       label: 'measurements.procedure',
-      children: measurement?.procedure ? <ProcedureComponent procedure={measurement.procedure} /> : EM_DASH,
+      children: <ProcedureComponent procedure={measurement.procedure!} />,
+      isVisible: measurement.procedure,
     },
   ];
 
@@ -33,8 +41,22 @@ const MeasurementsExpandedRow = ({ measurement }: { measurement: Measurement }) 
 const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement; expanded?: boolean }) => {
   const t = useTranslationFn();
 
+  const complexValueColumns: TableColumnsType<TypedQuantityWithId> =
+    useTranslatedTableColumnTitles<TypedQuantityWithId>([
+      {
+        title: 'measurements.type',
+        dataIndex: 'type',
+        render: (type: OntologyTermType) => <OntologyTermComponent term={type} />,
+      },
+      {
+        title: 'measurements.value',
+        dataIndex: 'quantity',
+        render: (quantity: Quantity) => <QuantityDisplay quantity={quantity} />,
+      },
+    ]);
+
   const value = measurement?.value;
-  const complexValue = measurement?.complex_value;
+  const complexValueTypedQuantities = addId(measurement?.complex_value?.typed_quantities || []);
   if (!expanded) {
     if (measurement?.value) {
       const quantity = measurement.value.quantity;
@@ -45,12 +67,10 @@ const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement
       );
     }
     if (measurement?.complex_value) {
-      const { typed_quantities } = measurement.complex_value;
-
       return (
         <Space direction="vertical" size={0}>
-          {typed_quantities.map((typedQuantity, index) => (
-            <span key={index}>
+          {complexValueTypedQuantities.map((typedQuantity) => (
+            <span key={typedQuantity.id}>
               {t(typedQuantity.type.label)}: {typedQuantity.quantity.value} {t(typedQuantity.quantity.unit.label)}
             </span>
           ))}
@@ -66,24 +86,14 @@ const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement
         </>
       );
     }
-    if (complexValue) {
+    if (complexValueTypedQuantities) {
       return (
-        <Table<TypedQuantity>
-          dataSource={complexValue.typed_quantities}
-          columns={[
-            {
-              title: 'Type',
-              dataIndex: 'type',
-              render: (type: OntologyTermType) => <OntologyTermComponent term={type} />,
-            },
-            {
-              title: 'Value',
-              dataIndex: 'quantity',
-              render: (quantity: Quantity) => <QuantityDisplay quantity={quantity} />,
-            },
-          ]}
+        <Table<TypedQuantityWithId>
+          dataSource={complexValueTypedQuantities}
+          columns={complexValueColumns}
           size="small"
           pagination={false}
+          rowKey={(record) => record.id}
           bordered
         />
       );
@@ -92,6 +102,8 @@ const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement
   return null;
 };
 
+const isMeasurementExpandedRowVisible = (measurement: Measurement) =>
+  !!(measurement.procedure || measurement.value || measurement.complex_value);
 interface MeasurementsViewProps {
   measurements: Measurement[];
 }
@@ -99,16 +111,18 @@ interface MeasurementsViewProps {
 const MeasurementsView = ({ measurements }: MeasurementsViewProps) => {
   const t = useTranslationFn();
 
-  const columns = useTranslatedTableColumnTitles<Measurement>([
+  const columns: CustomTableColumns<Measurement> = [
     {
       title: 'measurements.assay',
       dataIndex: 'assay',
       render: (assay: OntologyTermType) => <OntologyTermComponent term={assay} />,
+      alwaysShow: true,
     },
     {
       title: 'measurements.measurement_value',
       key: 'value',
       render: (m: Measurement) => <MeasurementDetail measurement={m} />,
+      alwaysShow: true,
     },
     {
       title: 'measurements.description',
@@ -120,17 +134,15 @@ const MeasurementsView = ({ measurements }: MeasurementsViewProps) => {
       dataIndex: 'procedure',
       render: (procedure: Procedure | undefined) => <OntologyTermComponent term={procedure?.code} />,
     },
-  ]);
+  ];
+
   return (
-    <Table<Measurement>
+    <CustomTable<Measurement>
       dataSource={measurements}
       columns={columns}
-      expandable={{
-        expandedRowRender: (record) => <MeasurementsExpandedRow measurement={record} />,
-      }}
+      expandedRowRender={(record) => <MeasurementsExpandedRow measurement={record} />}
       rowKey={(record) => record.assay.id}
-      pagination={false}
-      bordered
+      isDataKeyVisible={isMeasurementExpandedRowVisible}
     />
   );
 };

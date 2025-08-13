@@ -1,51 +1,57 @@
-import { Space, Table, Tooltip, Typography } from 'antd';
+import { Space, Tooltip, Typography } from 'antd';
 import { MedicineBoxOutlined, ExperimentOutlined } from '@ant-design/icons';
 
 import CustomEmpty from '@Util/CustomEmpty';
 import OntologyTerm from '@Util/ClinPhen/OntologyTerm';
 import { GeneDescriptor, VariantInterpretation } from '@Util/ClinPhen/InterpretationUtilities';
 import TDescriptions from '@Util/TDescriptions';
-import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
+import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
 
 import { useTranslationFn } from '@/hooks';
 
-import type { DescriptionsProps } from 'antd';
 import type { Interpretation } from '@/types/clinPhen/interpretation';
 import type { JSONObject } from '@/types/json';
 import type { GenomicInterpretation } from '@/types/clinPhen/genomicInterpretation';
+import type { ConditionalDescriptionItem } from '@/types/descriptions';
 
 const GenomicInterpretationDetails = ({ genomicInterpretation }: { genomicInterpretation: GenomicInterpretation }) => {
   const relatedType = (genomicInterpretation?.extra_properties as JSONObject)?.__related_type ?? 'unknown';
 
-  const items: DescriptionsProps['items'] = [
-    { key: 'id', label: `${relatedType} id`, children: genomicInterpretation.subject_or_biosample_id }, //TODO: Link to subject or biosample
-    genomicInterpretation?.variant_interpretation && {
+  const items: ConditionalDescriptionItem[] = [
+    { key: 'id', label: `${relatedType} id`, children: genomicInterpretation.subject_or_biosample_id! }, //TODO: Link to subject or biosample
+    {
       key: 'Variant Interpretation',
       label: 'interpretations.variant_interpretation',
-      children: <VariantInterpretation variantInterpretation={genomicInterpretation.variant_interpretation} />,
+      children: <VariantInterpretation variantInterpretation={genomicInterpretation.variant_interpretation!} />,
+      isVisible: genomicInterpretation.variant_interpretation,
     },
-    genomicInterpretation?.gene_descriptor && {
+    {
       key: 'Gene Descriptor',
       label: 'interpretations.gene_descriptor',
-      children: <GeneDescriptor geneDescriptor={genomicInterpretation.gene_descriptor} />,
+      children: <GeneDescriptor geneDescriptor={genomicInterpretation.gene_descriptor!} />,
+      isVisible: genomicInterpretation.gene_descriptor,
     },
-  ].filter(Boolean) as DescriptionsProps['items'];
+  ];
 
   return <TDescriptions items={items} size="small" column={1} bordered />;
 };
 
+const isGenomicInterpretationDetailsVisible = (r: GenomicInterpretation) =>
+  !!(r.variant_interpretation || r.gene_descriptor);
+
 const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interpretation }) => {
   const t = useTranslationFn();
 
-  const items: DescriptionsProps['items'] = [
+  const items: ConditionalDescriptionItem[] = [
     {
       key: 'Disease',
       label: 'interpretations.disease',
       children: <OntologyTerm term={interpretation?.diagnosis?.disease} />,
+      isVisible: interpretation?.diagnosis?.disease,
     },
   ];
 
-  const columns = useTranslatedTableColumnTitles<GenomicInterpretation>([
+  const columns: CustomTableColumns<GenomicInterpretation> = [
     {
       title: 'interpretations.id',
       dataIndex: 'id',
@@ -59,7 +65,7 @@ const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interp
       dataIndex: 'interpretation_status',
       render: (text: string) => t(`genomic_intepretation_status.${text}`),
     },
-  ]);
+  ];
 
   return (
     <Space direction="vertical" size="large" className="w-full">
@@ -78,15 +84,15 @@ const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interp
           <ExperimentOutlined /> {t('interpretations.genomic_interpretations')}
         </Typography.Title>
         {interpretation?.diagnosis?.genomic_interpretations?.length ? (
-          <Table<GenomicInterpretation>
+          <CustomTable<GenomicInterpretation>
             columns={columns}
             dataSource={interpretation.diagnosis.genomic_interpretations}
-            expandable={{
-              expandedRowRender: (record) => <GenomicInterpretationDetails genomicInterpretation={record} />,
-            }}
-            rowKey={(record) => record.subject_or_biosample_id}
-            pagination={false}
-            bordered
+            expandedRowRender={(record: GenomicInterpretation) => (
+              <GenomicInterpretationDetails genomicInterpretation={record} />
+            )}
+            rowKey={(record: GenomicInterpretation) => record.subject_or_biosample_id}
+            isDataKeyVisible={isGenomicInterpretationDetailsVisible}
+            queryKey="gi"
           />
         ) : (
           <CustomEmpty text={t('interpretations.no_genomic_iterpretation')} />
@@ -96,6 +102,9 @@ const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interp
   );
 };
 
+const isInterpretationDetailsVisible = (r: Interpretation) =>
+  !!(r.diagnosis?.disease || r.diagnosis?.genomic_interpretations?.length);
+
 interface InterpretationsViewProps {
   interpretations: Interpretation[];
 }
@@ -103,11 +112,12 @@ interface InterpretationsViewProps {
 const InterpretationsView = ({ interpretations }: InterpretationsViewProps) => {
   const t = useTranslationFn();
 
-  const columns = useTranslatedTableColumnTitles<Interpretation>([
+  const columns: CustomTableColumns<Interpretation> = [
     {
       title: 'interpretations.id',
       dataIndex: 'id',
       key: 'id',
+      alwaysShow: true,
     },
     {
       title: 'interpretations.created',
@@ -133,18 +143,15 @@ const InterpretationsView = ({ interpretations }: InterpretationsViewProps) => {
       key: 'summary',
       render: (text: string) => t(text),
     },
-  ]);
+  ];
 
   return (
-    <Table<Interpretation>
+    <CustomTable<Interpretation>
       dataSource={interpretations}
       columns={columns}
-      expandable={{
-        expandedRowRender: (record) => <InterpretationsExpandedRow interpretation={record} />,
-      }}
+      expandedRowRender={(record) => <InterpretationsExpandedRow interpretation={record} />}
       rowKey={(record) => record.id}
-      pagination={false}
-      bordered
+      isDataKeyVisible={isInterpretationDetailsVisible}
     />
   );
 };

@@ -275,7 +275,9 @@
     "assay": "Assay",
     "measurement_value": "Measurement Value",
     "description": "Description",
-    "procedure": "Procedure"
+    "procedure": "Procedure",
+    "type": "Type",
+    "value": "Value"
   },
   "quantity": {
     "value": "Value",
@@ -342,7 +344,6 @@
     "survival_time_in_days": "Survival Time in Days",
     "id": "ID",
     "alternate_ids": "Alternate IDs",
-    "age": "Age",
     "time_at_last_encounter": "Time at Last Encounter",
     "vital_status": "Vital Status",
     "sex": "Sex",
@@ -375,5 +376,15 @@
   },
   "auth": {
     "unauthorized_message": "You are not authorized to access this resource."
+  },
+  "phenopacket_view": {
+    "invalid_endpoint_title": "Invalid Endpoint: /{{endpoint}}",
+    "invalid_endpoint_description": "The endpoint you are trying to access is not valid. Redirected to {{target}}.",
+    "not_available_title": "/{{endpoint}} Tab Not Available",
+    "not_available_description": "The requested tab is not available. Redirected to {{target}}."
+  },
+  "table": {
+    "invalid_row_keys_title": "Invalid Row Reference",
+    "invalid_row_keys_description": "Some rows referenced in the URL do not exist. Adjusting to valid entries."
   }
 }
