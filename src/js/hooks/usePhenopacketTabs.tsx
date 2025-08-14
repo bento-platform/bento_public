@@ -1,5 +1,5 @@
 import type { TabsProps } from 'antd';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, type ReactNode } from 'react';
 import { useNavigate } from 'react-router';
 
 import BiosampleView from '@/components/ClinPhen/PhenopacketDisplay/BiosampleView';
@@ -90,9 +90,19 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket) => {
     return items.map((item) => item.key as TabKeys);
   }, [items]);
 
+  const tabs = useMemo(() => items.map(({ key, label }) => ({ key, label })), [items]);
+
+  const tabContent = useMemo(() => {
+    return items.reduce<Record<string, ReactNode>>((acc, { key, children }) => {
+      acc[key] = children;
+      return acc;
+    }, {});
+  }, [items]);
+
   return {
     handleTabChange,
-    items,
+    tabs,
+    tabContent,
     activeTabs,
   };
 };
