@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { Card, Empty, Flex, Tabs } from 'antd';
+import { Card, Empty, Flex } from 'antd';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
@@ -86,9 +86,14 @@ const PhenopacketView = () => {
 
   return (
     <Flex justify="center">
-      <Card title={packetId} className="container">
-        <Tabs activeKey={activeKey} items={items} onChange={handleTabChange} destroyInactiveTabPane />
-      </Card>
+      <Card
+        title={packetId}
+        className="container"
+        activeTabKey={activeKey}
+        tabList={items}
+        tabProps={{ destroyInactiveTabPane: true, size: 'small' }}
+        onTabChange={handleTabChange}
+      />
     </Flex>
   );
 };
