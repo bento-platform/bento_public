@@ -15,8 +15,6 @@ const TDescriptions = memo(
     const filteredItems = useMemo(() => hiddenDescriptions(items), [items]);
     const descriptionItems = useTranslatedDescriptionItems(filteredItems);
 
-    console.log('hi');
-
     if (!filteredItems?.length) return null;
     return <Descriptions {...restProps} items={descriptionItems} />;
   },
