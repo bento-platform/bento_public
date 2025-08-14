@@ -338,6 +338,7 @@
     "reference": "Reference"
   },
   "subject": {
+    "age": "Age",
     "status": "Status",
     "time_of_death": "Time of Death",
     "cause_of_death": "Cause of Death",
