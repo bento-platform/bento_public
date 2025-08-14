@@ -21,4 +21,6 @@ const TDescriptions = memo(
   (prev, next) => prev.items.length === next.items.length && prev.items.every((it, i) => it.key === next.items[i].key)
 );
 
+TDescriptions.displayName = 'TDescriptions';
+
 export default TDescriptions;
