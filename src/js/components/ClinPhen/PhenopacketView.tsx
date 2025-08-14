@@ -29,7 +29,7 @@ const PhenopacketView = () => {
 
   const { phenopacket, status, isAuthorized } = usePhenopacketData(packetId ?? '');
 
-  const { handleTabChange, items, activeTabs } = usePhenopacketTabs(phenopacket);
+  const { handleTabChange, activeTabs, tabs, tabContent } = usePhenopacketTabs(phenopacket);
 
   const defaultTab = useMemo(() => ({ key: activeTabs[0], label: t('tab_keys.subject') }), [activeTabs, t]);
 
@@ -90,10 +90,12 @@ const PhenopacketView = () => {
         title={packetId}
         className="container"
         activeTabKey={activeKey}
-        tabList={items}
+        tabList={tabs}
         tabProps={{ destroyInactiveTabPane: true, size: 'small' }}
         onTabChange={handleTabChange}
-      />
+      >
+        {tabContent[activeKey]}
+      </Card>
     </Flex>
   );
 };
