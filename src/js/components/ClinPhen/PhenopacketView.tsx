@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { Card, Empty, Flex, Tabs } from 'antd';
+import { Card, Empty, Flex } from 'antd';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
