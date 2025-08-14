@@ -1,4 +1,4 @@
-import type { JSONObject, JSONType } from './json';
+import type { JSONObject } from './json';
 
 export type ValueOf<T> = T[keyof T];
 
