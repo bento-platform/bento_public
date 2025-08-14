@@ -86,9 +86,14 @@ const PhenopacketView = () => {
 
   return (
     <Flex justify="center">
-      <Card title={packetId} className="container">
-        <Tabs activeKey={activeKey} items={items} onChange={handleTabChange} destroyInactiveTabPane />
-      </Card>
+      <Card
+        title={packetId}
+        className="container"
+        activeTabKey={activeKey}
+        tabList={items}
+        tabProps={{ destroyInactiveTabPane: true, size: 'small' }}
+        onTabChange={handleTabChange}
+      />
     </Flex>
   );
 };
