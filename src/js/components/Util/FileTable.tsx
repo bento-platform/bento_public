@@ -14,7 +14,7 @@ const FileTable = ({ files }: { files: File[] }) => {
       title: 'file.download',
       dataIndex: 'uri',
       render: (uri: string) => (
-        <a href={uri} target="_blank">
+        <a href={uri} target="_blank" rel="noreferrer">
           <Button icon={<DownloadOutlined />} />
         </a>
       ),
@@ -30,7 +30,7 @@ const FileTable = ({ files }: { files: File[] }) => {
       render: (d: File['file_attributes']) => (d ? <ExtraProperties extraProperties={d} /> : EM_DASH),
     },
   ]);
-  return <Table<File> columns={columns} />;
+  return <Table<File> columns={columns} dataSource={files} />;
 };
 
 export default FileTable;
