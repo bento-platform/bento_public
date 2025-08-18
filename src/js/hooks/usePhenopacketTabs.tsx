@@ -38,13 +38,13 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket) => {
         key: TabKeys.BIOSAMPLES,
         label: t('tab_keys.biosamples'),
         children: phenopacket?.biosamples ? <BiosampleView biosamples={phenopacket?.biosamples} /> : null,
-        disabled: !phenopacket?.biosamples,
+        disabled: !phenopacket?.biosamples?.length,
       },
       {
         key: TabKeys.MEASUREMENTS,
         label: t('tab_keys.measurements'),
         children: phenopacket?.measurements ? <MeasurementsView measurements={phenopacket?.measurements} /> : null,
-        disabled: !phenopacket?.measurements,
+        disabled: !phenopacket?.measurements?.length,
       },
       {
         key: TabKeys.PHENOTYPIC_FEATURES,
@@ -52,13 +52,13 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket) => {
         children: phenopacket?.phenotypic_features ? (
           <PhenotypicFeaturesView features={phenopacket.phenotypic_features} />
         ) : null,
-        disabled: !phenopacket?.phenotypic_features,
+        disabled: !phenopacket?.phenotypic_features?.length,
       },
       {
         key: TabKeys.DISEASES,
         label: t('tab_keys.diseases'),
         children: phenopacket?.diseases ? <DiseasesView diseases={phenopacket.diseases} /> : null,
-        disabled: !phenopacket?.diseases,
+        disabled: !phenopacket?.diseases?.length,
       },
       {
         key: TabKeys.INTERPRETATIONS,
@@ -66,7 +66,7 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket) => {
         children: phenopacket?.interpretations ? (
           <InterpretationsView interpretations={phenopacket.interpretations} />
         ) : null,
-        disabled: !phenopacket?.interpretations,
+        disabled: !phenopacket?.interpretations?.length,
       },
       {
         key: TabKeys.MEDICAL_ACTIONS,
@@ -74,13 +74,13 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket) => {
         children: phenopacket?.medical_actions ? (
           <MedicalActionsView medicalActions={phenopacket.medical_actions} />
         ) : null,
-        disabled: !phenopacket?.medical_actions,
+        disabled: !phenopacket?.medical_actions?.length,
       },
       {
         key: TabKeys.ONTOLOGIES,
         label: t('tab_keys.ontologies'),
         children: <OntologiesView resources={phenopacket?.meta_data?.resources} />,
-        disabled: !phenopacket?.meta_data?.resources,
+        disabled: !phenopacket?.meta_data?.resources?.length,
       },
     ];
     return allItems.filter((item) => !item.disabled);
