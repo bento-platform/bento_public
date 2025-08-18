@@ -1,9 +1,11 @@
 import { Button, Table } from 'antd';
+import { DownloadOutlined } from '@ant-design/icons';
+
 import { File } from '@/types/clinPhen/file';
-import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
 import ExtraProperties from './ExtraProperties';
 import { EM_DASH } from '@/constants/common';
-import { DownloadOutlined } from '@ant-design/icons';
+
+import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
 
 const FileTable = ({ files }: { files: File[] }) => {
   const columns = useTranslatedTableColumnTitles<File>([
