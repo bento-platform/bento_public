@@ -224,7 +224,16 @@
     "procedure": "Procédure",
     "code": "Code",
     "body_site": "Site du corps",
-    "performed": "Effectué"
+    "performed": "Effectué",
+    "taxonomy": "Taxonomie",
+    "pathological_tnm_finding": "Résultats TNM pathologiques",
+    "diagnostic_markers": "Marqueurs diagnostiques",
+    "tumor_progression": "Progression tumorale",
+    "tumor_grade": "Grade tumoral",
+    "material_sample": "Nature de l'échantillon",
+    "sample_processing": "Traitement de l'échantillon",
+    "sample_storage": "Stockage de l'échantillon",
+    "files": "Fichiers"
   },
   "biosample_table": {
     "biosample_id": "ID de l'échantillon biologique",
