@@ -1,9 +1,10 @@
 import { Button, Table } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 
-import { File } from '@/types/clinPhen/file';
 import ExtraProperties from './ExtraProperties';
 import { EM_DASH } from '@/constants/common';
+
+import type { File } from '@/types/clinPhen/file';
 
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
 
