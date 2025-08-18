@@ -248,6 +248,7 @@
     "disease_stage": "Stade(s) de la maladie",
     "clinical_tnm_finding": "Résultat(s) TNM clinique(s)",
     "primary_site": "Site principal",
+    "laterality": "Latéralité",
     "extra_properties": "Propriétés supplémentaires"
   },
   "diseases_table": {

@@ -243,6 +243,7 @@
     "disease_stage": "Disease Stage(s)",
     "clinical_tnm_finding": "Clinical TNM Finding(s)",
     "primary_site": "Primary Site",
+    "laterality": "Laterality",
     "extra_properties": "Extra Properties"
   },
   "diseases_table": {
