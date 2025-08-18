@@ -220,7 +220,11 @@
     "sample_type": "Type d'échantillon",
     "collection_time": "Heure de collecte",
     "histological_diagnosis": "Diagnostic histologique",
-    "pathological_stage": "Stade pathologique"
+    "pathological_stage": "Stade pathologique",
+    "procedure": "Procédure",
+    "code": "Code",
+    "body_site": "Site du corps",
+    "performed": "Effectué"
   },
   "biosample_table": {
     "biosample_id": "ID de l'échantillon biologique",

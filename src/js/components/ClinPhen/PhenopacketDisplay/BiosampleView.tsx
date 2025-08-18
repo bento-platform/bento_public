@@ -6,6 +6,31 @@ import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
 import type { Biosample } from '@/types/clinPhen/biosample';
 import type { OntologyTerm } from '@/types/ontology';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
+import type { Procedure as ProcedureType } from '@/types/clinPhen/procedure';
+
+import { objectToBoolean } from '@/utils/boolean';
+
+const Procedure = ({ p }: { p: ProcedureType | undefined }) => {
+  if (!p) return null;
+  const items: ConditionalDescriptionItem[] = [
+    {
+      key: 'code',
+      label: 'biosample_expanded_row.code',
+      children: <OntologyTermComponent term={p.code} />,
+    },
+    {
+      key: 'body_site',
+      label: 'biosample_expanded_row.body_site',
+      children: <OntologyTermComponent term={p?.body_site} />,
+    },
+    {
+      key: 'performed',
+      label: 'biosample_expanded_row.performed',
+      children: <TimeElementDisplay element={p?.performed} />,
+    },
+  ];
+  return <TDescriptions items={items} />;
+};
 
 const BiosampleExpandedRow = ({ biosample }: { biosample: Biosample }) => {
   const items: ConditionalDescriptionItem[] = [
@@ -43,6 +68,12 @@ const BiosampleExpandedRow = ({ biosample }: { biosample: Biosample }) => {
       children: <OntologyTermComponent term={biosample.pathological_stage} />,
       isVisible: biosample.pathological_stage,
     },
+    {
+      key: 'procedure',
+      label: 'biosample_expanded_row.procedure',
+      children: <Procedure p={biosample.procedure} />,
+      isVisible: objectToBoolean(biosample),
+    },
   ];
 
   return <TDescriptions bordered size="small" items={items} />;
@@ -55,7 +86,8 @@ const isBiosampleRowVisible = (r: Biosample) =>
     r.sample_type ||
     r.time_of_collection ||
     r.histological_diagnosis ||
-    r.pathological_stage
+    r.pathological_stage ||
+    r.procedure
   );
 
 interface BiosampleViewProps {

@@ -215,7 +215,11 @@
     "sample_type": "Sample Type",
     "collection_time": "Collection Time",
     "histological_diagnosis": "Histological Diagnosis",
-    "pathological_stage": "Pathological Stage"
+    "pathological_stage": "Pathological Stage",
+    "procedure": "Procedure",
+    "code": "Code",
+    "body_site": "Body Site",
+    "performed": "Performed"
   },
   "biosample_table": {
     "biosample_id": "Biosample ID",
