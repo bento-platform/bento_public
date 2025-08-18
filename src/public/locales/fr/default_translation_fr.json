@@ -230,6 +230,11 @@
     "biosample_id": "ID de l'échantillon biologique",
     "sampled_tissue": "Tissu échantillonné"
   },
+  "file": {
+    "download": "Télécharger",
+    "individual_to_file_identifiers": "Identifiants individu-fichier",
+    "file_attributes": "Attributs du fichier"
+  },
   "diseases_expanded_row": {
     "disease_stage": "Stade(s) de la maladie",
     "clinical_tnm_finding": "Résultat(s) TNM clinique(s)",

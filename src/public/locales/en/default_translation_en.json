@@ -225,6 +225,11 @@
     "biosample_id": "Biosample ID",
     "sampled_tissue": "Sampled Tissue"
   },
+  "file": {
+    "download": "Download",
+    "individual_to_file_identifiers": "Individual to File Identifiers",
+    "file_attributes": "File Attributes"
+  },
   "diseases_expanded_row": {
     "disease_stage": "Disease Stage(s)",
     "clinical_tnm_finding": "Clinical TNM Finding(s)",
