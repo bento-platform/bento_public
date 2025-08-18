@@ -70,12 +70,12 @@ const DISEASES_VIEW_COLUMNS: CustomTableColumns<Disease> = [
     alwaysShow: true,
   },
   {
-    title: 'diseases_table.onset_age',
+    title: 'diseases_table.onset',
     dataIndex: 'onset',
     render: (onset: TimeElement) => (onset ? <TimeElementDisplay element={onset} /> : EM_DASH),
   },
   {
-    title: 'diseases_table.resolution_age',
+    title: 'diseases_table.resolution',
     dataIndex: 'resolution',
     render: (resolution: TimeElement) => (resolution ? <TimeElementDisplay element={resolution} /> : EM_DASH),
   },
