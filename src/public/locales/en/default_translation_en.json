@@ -211,20 +211,39 @@
   },
   "biosample_expanded_row": {
     "description": "Description",
-    "derived_from": "Derived From",
-    "sample_type": "Sample Type",
-    "collection_time": "Collection Time",
-    "histological_diagnosis": "Histological Diagnosis",
-    "pathological_stage": "Pathological Stage"
+    "derived_from": "Derived from",
+    "sample_type": "Sample type",
+    "collection_time": "Collection time",
+    "histological_diagnosis": "Histological diagnosis",
+    "pathological_stage": "Pathological stage",
+    "procedure": "Procedure",
+    "code": "Code",
+    "body_site": "Body site",
+    "performed": "Performed",
+    "taxonomy": "Taxonomy",
+    "pathological_tnm_finding": "Pathological TNM findings",
+    "diagnostic_markers": "Diagnostic markers",
+    "tumor_progression": "Tumor progression",
+    "tumor_grade": "Tumor grade",
+    "material_sample": "Material sample",
+    "sample_processing": "Sample processing",
+    "sample_storage": "Sample storage",
+    "files": "Files"
   },
   "biosample_table": {
     "biosample_id": "Biosample ID",
     "sampled_tissue": "Sampled Tissue"
   },
+  "file": {
+    "download": "Download",
+    "individual_to_file_identifiers": "Individual to File Identifiers",
+    "file_attributes": "File Attributes"
+  },
   "diseases_expanded_row": {
     "disease_stage": "Disease Stage(s)",
     "clinical_tnm_finding": "Clinical TNM Finding(s)",
     "primary_site": "Primary Site",
+    "laterality": "Laterality",
     "extra_properties": "Extra Properties"
   },
   "diseases_table": {

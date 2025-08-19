@@ -43,15 +43,6 @@ export const GeneDescriptor = ({ geneDescriptor }: { geneDescriptor: GeneDescrip
   return <TDescriptions items={items} size="small" column={1} bordered />;
 };
 
-const VariantExpressionDetails = ({ variantExpression }: { variantExpression: Expression }) => {
-  const items: ConditionalDescriptionItem[] = [
-    { key: 'syntax', label: 'interpretations.syntax', children: variantExpression.syntax },
-    { key: 'value', label: 'interpretations.value', children: variantExpression.value },
-  ];
-
-  return <TDescriptions items={items} size="small" />;
-};
-
 export const VariantInterpretation = ({
   variantInterpretation,
 }: {
@@ -77,6 +68,11 @@ export const VariantInterpretation = ({
     { title: 'interpretations.value', dataIndex: 'value' },
   ]);
 
+  const variantExpressionColumns = useTranslatedTableColumnTitles<Expression>([
+    { title: 'interpretations.syntax', dataIndex: 'syntax' },
+    { title: 'interpretations.value', dataIndex: 'value' },
+  ]);
+
   const variantDescrptorItems: ConditionalDescriptionItem[] = [
     { key: 'id', label: 'interpretations.id', children: vd.id },
     {
@@ -97,11 +93,13 @@ export const VariantInterpretation = ({
       key: 'expressions',
       label: 'interpretations.expressions',
       children: (
-        <Space direction="vertical" size="small">
-          {vd.expressions!.map((e, i) => (
-            <VariantExpressionDetails key={i} variantExpression={e} />
-          ))}
-        </Space>
+        <Table<Expression>
+          columns={variantExpressionColumns}
+          dataSource={vd.expressions}
+          size="small"
+          pagination={false}
+          bordered
+        />
       ),
       isVisible: vd?.expressions?.length,
     },
@@ -124,7 +122,15 @@ export const VariantInterpretation = ({
     {
       key: 'extensions',
       label: 'interpretations.extensions',
-      children: <Table<Extension> columns={extentionTableColumns} dataSource={vd.extensions} />,
+      children: (
+        <Table<Extension>
+          columns={extentionTableColumns}
+          dataSource={vd.extensions}
+          size="small"
+          pagination={false}
+          bordered
+        />
+      ),
       isVisible: vd.extensions?.length,
     },
     {
@@ -154,7 +160,7 @@ export const VariantInterpretation = ({
   return (
     <Space direction="vertical">
       <TDescriptions items={items} size="small" bordered />
-      <TDescriptions items={variantDescrptorItems} size="small" bordered />
+      <TDescriptions items={variantDescrptorItems} column={2} size="small" bordered />
     </Space>
   );
 };

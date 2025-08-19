@@ -34,6 +34,12 @@ const DiseaseExpandedRow = ({ disease }: { disease: Disease }) => {
       isVisible: disease.primary_site,
     },
     {
+      key: 'laterality',
+      label: 'diseases_expanded_row.laterality',
+      children: <OntologyTermComponent term={disease.laterality} />,
+      isVisible: disease.laterality,
+    },
+    {
       key: 'extra_properties',
       label: 'diseases_expanded_row.extra_properties',
       children: <ExtraProperties extraProperties={disease.extra_properties} />,
@@ -49,7 +55,7 @@ interface DiseasesViewProps {
 }
 
 const isDiseaseRowVisible = (r: Disease) =>
-  !!(r.disease_stage?.length || r.clinical_tnm_finding?.length || r.primary_site || r.extra_properties);
+  !!(r.disease_stage?.length || r.clinical_tnm_finding?.length || r.primary_site || r.laterality || r.extra_properties);
 
 const DISEASES_VIEW_COLUMNS: CustomTableColumns<Disease> = [
   {

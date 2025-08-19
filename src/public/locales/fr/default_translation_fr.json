@@ -220,16 +220,35 @@
     "sample_type": "Type d'échantillon",
     "collection_time": "Heure de collecte",
     "histological_diagnosis": "Diagnostic histologique",
-    "pathological_stage": "Stade pathologique"
+    "pathological_stage": "Stade pathologique",
+    "procedure": "Procédure",
+    "code": "Code",
+    "body_site": "Site du corps",
+    "performed": "Effectué",
+    "taxonomy": "Taxonomie",
+    "pathological_tnm_finding": "Résultats TNM pathologiques",
+    "diagnostic_markers": "Marqueurs diagnostiques",
+    "tumor_progression": "Progression tumorale",
+    "tumor_grade": "Grade tumoral",
+    "material_sample": "Nature de l'échantillon",
+    "sample_processing": "Traitement de l'échantillon",
+    "sample_storage": "Stockage de l'échantillon",
+    "files": "Fichiers"
   },
   "biosample_table": {
     "biosample_id": "ID de l'échantillon biologique",
     "sampled_tissue": "Tissu échantillonné"
   },
+  "file": {
+    "download": "Télécharger",
+    "individual_to_file_identifiers": "Identifiants individu-fichier",
+    "file_attributes": "Attributs du fichier"
+  },
   "diseases_expanded_row": {
     "disease_stage": "Stade(s) de la maladie",
     "clinical_tnm_finding": "Résultat(s) TNM clinique(s)",
     "primary_site": "Site principal",
+    "laterality": "Latéralité",
     "extra_properties": "Propriétés supplémentaires"
   },
   "diseases_table": {
