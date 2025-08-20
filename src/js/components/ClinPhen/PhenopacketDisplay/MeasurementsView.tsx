@@ -3,6 +3,7 @@ import { Space, Table } from 'antd';
 import OntologyTermComponent from '@Util/ClinPhen/OntologyTerm';
 import QuantityDisplay from '@Util/ClinPhen/QuantityDisplay';
 import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
+import ProcedureComponent from '@/components/Util/ClinPhen/Procedure';
 
 import type { TableColumnsType } from 'antd';
 import type { Measurement, Quantity, TypedQuantity } from '@/types/clinPhen/measurement';
@@ -12,7 +13,6 @@ import type { ConditionalDescriptionItem } from '@/types/descriptions';
 
 import { addId, type WithId } from '@/utils/arrays';
 import { EM_DASH } from '@/constants/common';
-import { ProcedureComponent } from './MedicalActionsView';
 import TDescriptions from '@Util/TDescriptions';
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
 import { useTranslationFn } from '@/hooks';
@@ -30,7 +30,7 @@ const MeasurementsExpandedRow = ({ measurement }: { measurement: Measurement }) 
     {
       key: 'procedure',
       label: 'measurements.procedure',
-      children: <ProcedureComponent procedure={measurement.procedure!} />,
+      children: <ProcedureComponent procedure={measurement.procedure} />,
       isVisible: measurement.procedure,
     },
   ];

@@ -248,8 +248,8 @@
   },
   "diseases_table": {
     "disease": "Disease",
-    "onset_age": "Onset Age",
-    "resolution_age": "Resolution Age"
+    "onset": "Onset",
+    "resolution": "Resolution"
   },
   "interpretations": {
     "id": "ID",

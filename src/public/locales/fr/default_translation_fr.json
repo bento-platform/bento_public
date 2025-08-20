@@ -253,8 +253,8 @@
   },
   "diseases_table": {
     "disease": "Maladie",
-    "onset_age": "Âge d'apparition",
-    "resolution_age": "Âge de résolution"
+    "onset": "Début",
+    "resolution": "Résolution"
   },
   "interpretations": {
     "id": "ID",

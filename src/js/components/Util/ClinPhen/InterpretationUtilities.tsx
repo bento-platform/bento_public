@@ -96,6 +96,7 @@ export const VariantInterpretation = ({
         <Table<Expression>
           columns={variantExpressionColumns}
           dataSource={vd.expressions}
+          rowKey="syntax"
           size="small"
           pagination={false}
           bordered
@@ -126,6 +127,7 @@ export const VariantInterpretation = ({
         <Table<Extension>
           columns={extentionTableColumns}
           dataSource={vd.extensions}
+          rowKey="name"
           size="small"
           pagination={false}
           bordered
