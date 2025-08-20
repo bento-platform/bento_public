@@ -5,6 +5,7 @@ import QuantityDisplay from '@Util/ClinPhen/QuantityDisplay';
 import TimeElementDisplay, { TimeIntervalDisplay } from '@Util/ClinPhen/TimeElementDisplay';
 import TDescriptions from '@Util/TDescriptions';
 import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
+import ProcedureComponent from '@Util/ClinPhen/Procedure';
 
 import { EM_DASH } from '@/constants/common';
 
@@ -17,7 +18,6 @@ import type {
 } from '@/types/clinPhen/medicalAction';
 import type { Quantity } from '@/types/clinPhen/measurement';
 import type { OntologyTerm } from '@/types/ontology';
-import type { Procedure } from '@/types/clinPhen/procedure';
 import type { TimeInterval } from '@/types/clinPhen/shared';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
 
@@ -27,30 +27,6 @@ import { useTranslationFn } from '@/hooks';
 const { Text } = Typography;
 
 type DoseIntervalWithId = WithId<DoseInterval>;
-
-export const ProcedureComponent = ({ procedure }: { procedure: Procedure }) => {
-  const ProcedureItems: ConditionalDescriptionItem[] = [
-    {
-      key: 'code',
-      label: 'medical_actions.code',
-      children: <OntologyTermComponent term={procedure.code} />,
-      isVisible: procedure.code,
-    },
-    {
-      key: 'bodySite',
-      label: 'medical_actions.body_site',
-      children: <OntologyTermComponent term={procedure.body_site} />,
-      isVisible: procedure.body_site,
-    },
-    {
-      key: 'performed',
-      label: 'medical_actions.performed',
-      children: <TimeElementDisplay element={procedure.performed} />,
-      isVisible: procedure.performed,
-    },
-  ];
-  return <TDescriptions bordered column={1} size="small" items={ProcedureItems} />;
-};
 
 const DOSE_INTERVAL_COLUMNS: CustomTableColumns<DoseIntervalWithId> = [
   {
