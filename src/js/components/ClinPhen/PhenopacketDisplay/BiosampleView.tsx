@@ -2,36 +2,14 @@ import OntologyTermComponent, { OntologyTermStack } from '@Util/ClinPhen/Ontolog
 import TimeElementDisplay from '@Util/ClinPhen/TimeElementDisplay';
 import TDescriptions from '@Util/TDescriptions';
 import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
+import Procedure from '@Util/ClinPhen/Procedure';
 
 import type { Biosample } from '@/types/clinPhen/biosample';
 import type { OntologyTerm } from '@/types/ontology';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
-import type { Procedure as ProcedureType } from '@/types/clinPhen/procedure';
 
 import { objectToBoolean } from '@/utils/boolean';
 import FileTable from '@/components/Util/FileTable';
-
-const Procedure = ({ p }: { p: ProcedureType | undefined }) => {
-  if (!p) return null;
-  const items: ConditionalDescriptionItem[] = [
-    {
-      key: 'code',
-      label: 'biosample_expanded_row.code',
-      children: <OntologyTermComponent term={p.code} />,
-    },
-    {
-      key: 'body_site',
-      label: 'biosample_expanded_row.body_site',
-      children: <OntologyTermComponent term={p?.body_site} />,
-    },
-    {
-      key: 'performed',
-      label: 'biosample_expanded_row.performed',
-      children: <TimeElementDisplay element={p?.performed} />,
-    },
-  ];
-  return <TDescriptions items={items} />;
-};
 
 const BiosampleExpandedRow = ({ biosample }: { biosample: Biosample }) => {
   const items: ConditionalDescriptionItem[] = [
@@ -120,7 +98,7 @@ const BiosampleExpandedRow = ({ biosample }: { biosample: Biosample }) => {
     {
       key: 'procedure',
       label: 'biosample_expanded_row.procedure',
-      children: <Procedure p={biosample.procedure} />,
+      children: <Procedure procedure={biosample.procedure} />,
       isVisible: objectToBoolean(biosample.procedure),
     },
     {
