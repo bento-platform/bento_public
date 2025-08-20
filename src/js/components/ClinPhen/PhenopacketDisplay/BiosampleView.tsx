@@ -79,11 +79,13 @@ const BiosampleExpandedRow = ({ biosample }: { biosample: Biosample }) => {
       key: 'pathological_tnm_finding',
       label: 'biosample_expanded_row.pathological_tnm_finding',
       children: <OntologyTermStack terms={biosample.pathological_tnm_finding} />,
+      isVisible: biosample.pathological_tnm_finding?.length,
     },
     {
       key: 'diagnostic_markers',
       label: 'biosample_expanded_row.diagnostic_markers',
       children: <OntologyTermStack terms={biosample.diagnostic_markers} />,
+      isVisible: biosample.diagnostic_markers?.length,
     },
     {
       key: 'tumor_progression',
