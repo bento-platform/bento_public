@@ -211,26 +211,45 @@
   },
   "biosample_expanded_row": {
     "description": "Description",
-    "derived_from": "Derived From",
-    "sample_type": "Sample Type",
-    "collection_time": "Collection Time",
-    "histological_diagnosis": "Histological Diagnosis",
-    "pathological_stage": "Pathological Stage"
+    "derived_from": "Derived from",
+    "sample_type": "Sample type",
+    "collection_time": "Collection time",
+    "histological_diagnosis": "Histological diagnosis",
+    "pathological_stage": "Pathological stage",
+    "procedure": "Procedure",
+    "code": "Code",
+    "body_site": "Body site",
+    "performed": "Performed",
+    "taxonomy": "Taxonomy",
+    "pathological_tnm_finding": "Pathological TNM findings",
+    "diagnostic_markers": "Diagnostic markers",
+    "tumor_progression": "Tumor progression",
+    "tumor_grade": "Tumor grade",
+    "material_sample": "Material sample",
+    "sample_processing": "Sample processing",
+    "sample_storage": "Sample storage",
+    "files": "Files"
   },
   "biosample_table": {
     "biosample_id": "Biosample ID",
     "sampled_tissue": "Sampled Tissue"
   },
+  "file": {
+    "download": "Download",
+    "individual_to_file_identifiers": "Individual to File Identifiers",
+    "file_attributes": "File Attributes"
+  },
   "diseases_expanded_row": {
     "disease_stage": "Disease Stage(s)",
     "clinical_tnm_finding": "Clinical TNM Finding(s)",
     "primary_site": "Primary Site",
+    "laterality": "Laterality",
     "extra_properties": "Extra Properties"
   },
   "diseases_table": {
     "disease": "Disease",
-    "onset_age": "Onset Age",
-    "resolution_age": "Resolution Age"
+    "onset": "Onset",
+    "resolution": "Resolution"
   },
   "interpretations": {
     "id": "ID",
@@ -275,7 +294,9 @@
     "assay": "Assay",
     "measurement_value": "Measurement Value",
     "description": "Description",
-    "procedure": "Procedure"
+    "procedure": "Procedure",
+    "type": "Type",
+    "value": "Value"
   },
   "quantity": {
     "value": "Value",
@@ -336,13 +357,13 @@
     "reference": "Reference"
   },
   "subject": {
+    "age": "Age",
     "status": "Status",
     "time_of_death": "Time of Death",
     "cause_of_death": "Cause of Death",
     "survival_time_in_days": "Survival Time in Days",
     "id": "ID",
     "alternate_ids": "Alternate IDs",
-    "age": "Age",
     "time_at_last_encounter": "Time at Last Encounter",
     "vital_status": "Vital Status",
     "sex": "Sex",
@@ -375,5 +396,15 @@
   },
   "auth": {
     "unauthorized_message": "You are not authorized to access this resource."
+  },
+  "phenopacket_view": {
+    "invalid_endpoint_title": "Invalid Endpoint: /{{endpoint}}",
+    "invalid_endpoint_description": "The endpoint you are trying to access is not valid. Redirected to {{target}}.",
+    "not_available_title": "/{{endpoint}} Tab Not Available",
+    "not_available_description": "The requested tab is not available. Redirected to {{target}}."
+  },
+  "table": {
+    "invalid_row_keys_title": "Invalid Row Reference",
+    "invalid_row_keys_description": "Some rows referenced in the URL do not exist. Adjusting to valid entries."
   }
 }

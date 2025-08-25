@@ -1,4 +1,4 @@
-import type { JSONType } from './json';
+import type { JSONObject } from './json';
 
 export type ValueOf<T> = T[keyof T];
 
@@ -7,10 +7,14 @@ export type ExactlyOne<T> = {
 }[keyof T];
 
 export interface ExtraPropertiesEntity {
-  extra_properties: JSONType;
+  extra_properties: JSONObject;
 }
 
 export interface TimestampedEntity {
   created?: string;
   updated?: string;
 }
+
+export type WithVisible<T> = T & {
+  isVisible: boolean;
+};

@@ -1,15 +1,26 @@
+import { memo, useMemo } from 'react';
 import { Descriptions } from 'antd';
 import type { DescriptionsProps } from 'antd';
+import type { ConditionalDescriptionItem } from '@/types/descriptions';
 
 import { useTranslatedDescriptionItems } from '@/hooks/useTranslatedDescriptionItems';
+import { hiddenDescriptions } from '@/utils/descriptions';
 
-// T stands for Translated
-const TDescriptions = (props: DescriptionsProps) => {
-  const { items, ...restProps } = props;
+interface TDescriptionsProps extends Omit<DescriptionsProps, 'items'> {
+  items: ConditionalDescriptionItem[];
+}
 
-  const descriptionItems = useTranslatedDescriptionItems(items);
+const TDescriptions = memo(
+  ({ items, ...restProps }: TDescriptionsProps) => {
+    const filteredItems = useMemo(() => hiddenDescriptions(items), [items]);
+    const descriptionItems = useTranslatedDescriptionItems(filteredItems);
 
-  return <Descriptions {...restProps} items={descriptionItems} />;
-};
+    if (!filteredItems?.length) return null;
+    return <Descriptions {...restProps} items={descriptionItems} />;
+  },
+  (prev, next) => prev.items.length === next.items.length && prev.items.every((it, i) => it.key === next.items[i].key)
+);
+
+TDescriptions.displayName = 'TDescriptions';
 
 export default TDescriptions;

@@ -220,22 +220,41 @@
     "sample_type": "Type d'échantillon",
     "collection_time": "Heure de collecte",
     "histological_diagnosis": "Diagnostic histologique",
-    "pathological_stage": "Stade pathologique"
+    "pathological_stage": "Stade pathologique",
+    "procedure": "Procédure",
+    "code": "Code",
+    "body_site": "Site du corps",
+    "performed": "Effectué",
+    "taxonomy": "Taxonomie",
+    "pathological_tnm_finding": "Résultats TNM pathologiques",
+    "diagnostic_markers": "Marqueurs diagnostiques",
+    "tumor_progression": "Progression tumorale",
+    "tumor_grade": "Grade tumoral",
+    "material_sample": "Nature de l'échantillon",
+    "sample_processing": "Traitement de l'échantillon",
+    "sample_storage": "Stockage de l'échantillon",
+    "files": "Fichiers"
   },
   "biosample_table": {
     "biosample_id": "ID de l'échantillon biologique",
     "sampled_tissue": "Tissu échantillonné"
   },
+  "file": {
+    "download": "Télécharger",
+    "individual_to_file_identifiers": "Identifiants individu-fichier",
+    "file_attributes": "Attributs du fichier"
+  },
   "diseases_expanded_row": {
     "disease_stage": "Stade(s) de la maladie",
     "clinical_tnm_finding": "Résultat(s) TNM clinique(s)",
     "primary_site": "Site principal",
+    "laterality": "Latéralité",
     "extra_properties": "Propriétés supplémentaires"
   },
   "diseases_table": {
     "disease": "Maladie",
-    "onset_age": "Âge d'apparition",
-    "resolution_age": "Âge de résolution"
+    "onset": "Début",
+    "resolution": "Résolution"
   },
   "interpretations": {
     "id": "ID",
@@ -280,7 +299,9 @@
     "assay": "Essai",
     "measurement_value": "Valeur de mesure",
     "description": "Description",
-    "procedure": "Procédure"
+    "procedure": "Procédure",
+    "type": "Type",
+    "value": "Valeur"
   },
   "quantity": {
     "value": "Valeur",
@@ -341,13 +362,13 @@
     "reference": "Référence"
   },
   "subject": {
+    "age": "Âge",
     "status": "Statut",
     "time_of_death": "Date du décès",
     "cause_of_death": "Cause du décès",
     "survival_time_in_days": "Durée de survie (en jours)",
     "id": "ID",
     "alternate_ids": "IDs alternatifs",
-    "age": "Âge",
     "time_at_last_encounter": "Date du dernier contact",
     "vital_status": "Statut vital",
     "sex": "Sexe",
@@ -380,5 +401,15 @@
   },
   "auth": {
     "unauthorized_message": "Vous n'êtes pas autorisé à accéder à cette ressource."
+  },
+  "phenopacket_view": {
+    "invalid_endpoint_title": "Point de terminaison invalide : /{{endpoint}}",
+    "invalid_endpoint_description": "Le point de terminaison que vous essayez d’accéder n’est pas valide. Redirigé vers {{target}}.",
+    "not_available_title": "Onglet /{{endpoint}} non disponible",
+    "not_available_description": "Les onglets demandés ne sont pas disponibles. Redirigé vers {{target}}."
+  },
+  "table": {
+    "invalid_row_keys_title": "Référence de ligne invalide",
+    "invalid_row_keys_description": "Certaines lignes référencées dans l'URL n'existent pas. Correction automatique aux entrées valides."
   }
 }
