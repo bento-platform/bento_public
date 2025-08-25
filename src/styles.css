@@ -1,4 +1,5 @@
 :root {
+  /* sync with NAVBAR_HEIGHT in common.ts */
   --header-height: 64px;
 
   --sidebar-width-full: 200px;
