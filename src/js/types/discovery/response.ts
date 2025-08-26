@@ -1,4 +1,5 @@
 import type { Datum } from '@/types/discovery';
+import type { BentoCountEntity } from '@/types/entities';
 import type { ChartLayoutSection } from './chartConfig';
 import type { Field } from './fieldDefinition';
 
@@ -13,7 +14,7 @@ export interface DiscoveryResponse {
 export type DiscoveryResponseOrMessage = DiscoveryResponse | { message: string };
 
 // If boolean, it means we have data above the threshold but don't have permissions to view the exact count.
-export type CountsOrBooleans = {
+export type CountsOrBooleans = Record<BentoCountEntity, number | boolean> & {
   phenopacket: number | boolean;
   individual: number | boolean;
   biosample: number | boolean;

@@ -3,7 +3,7 @@ import { Routes, Route, useNavigate, useParams, Outlet } from 'react-router-dom'
 import { useAutoAuthenticate, useIsAuthenticated } from 'bento-auth-js';
 import { useAppDispatch } from '@/hooks';
 
-import { clearIndividualCache } from '@/features/clinPhen/clinPhen.store';
+import { clearBiosampleCache, clearIndividualCache, clearPhenopacketCache } from '@/features/clinPhen/clinPhen.store';
 import { invalidateConfig, makeGetServiceInfoRequest } from '@/features/config/config.store';
 import { makeGetAboutRequest } from '@/features/content/content.store';
 import { getBeaconConfig, getBeaconFilters } from '@/features/beacon/beacon.store';
@@ -126,9 +126,11 @@ const BentoAppRouter = () => {
 
   useEffect(() => {
     // If authorization status changed, invalidate anything which is authorization-dependent.
-    //  - clear the individuals cache, since we shouldn't have any detailed data hanging around
+    //  - clear the clin/phen caches, since we shouldn't have any detailed data hanging around
     //    post-authorization-status change, especially in case of a sign-out.
     dispatch(clearIndividualCache());
+    dispatch(clearPhenopacketCache());
+    dispatch(clearBiosampleCache());
   }, [dispatch, isAuthenticated]);
 
   useEffect(() => {

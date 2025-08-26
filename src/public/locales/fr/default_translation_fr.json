@@ -28,6 +28,9 @@
       "Les expériences sont un processus effectué sur un échantillon spécifique, par exemple le séquençage du génome entier.",
       "Une expérience par un laboratoire peut donner lieu à plusieurs enregistrements d'expériences dans le portail, par exemple avec des échantillons multiplexés."
     ],
+    "experiment_result_one": "Fichier",
+    "experiment_result_other": "Fichiers",
+    "experiment_result_help": "Les fichiers sont générés à la suite d'expériences.",
     "variant_one": "Variant",
     "variant_other": "Variants"
   },

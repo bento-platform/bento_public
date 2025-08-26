@@ -74,4 +74,10 @@ export type DiscoveryMatchPhenopacket = DiscoveryMatchObject & {
   b: DiscoveryMatchBiosample[]; // Biosample records
 };
 
+export type ViewableDiscoveryMatchObject =
+  | DiscoveryMatchBiosample
+  | DiscoveryMatchExperiment
+  | DiscoveryMatchPhenopacket
+  | DiscoveryMatchExperimentResult;
+
 export type SearchResultsUIPage = 'individuals' | 'charts';

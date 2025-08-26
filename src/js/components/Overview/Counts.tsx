@@ -1,6 +1,6 @@
 import { type ReactNode, useState } from 'react';
-import { Card, Flex, Skeleton, Space, Statistic, Typography } from 'antd';
-import { DownOutlined, ExperimentOutlined, TeamOutlined } from '@ant-design/icons';
+import { Card, Flex, Skeleton, Space, Statistic } from 'antd';
+import { DownOutlined, ExperimentOutlined, FileOutlined, TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
 
 import SearchResultsTablePage from '@/components/Search/SearchResultsTablePage';
@@ -14,12 +14,13 @@ import { NO_RESULTS_DASHES } from '@/features/search/constants';
 import { useSearchQuery } from '@/features/search/hooks';
 import { useTranslationFn } from '@/hooks';
 import { useCanSeeUncensoredCounts, useScopeQueryData } from '@/hooks/censorship';
-import type { BentoEntity } from '@/types/entities';
+import type { BentoEntity, BentoCountEntity } from '@/types/entities';
 
-const COUNT_ENTRIES: { entity: 'individual' | 'biosample' | 'experiment'; icon: ReactNode }[] = [
+const COUNT_ENTRIES: { entity: BentoCountEntity; icon: ReactNode }[] = [
   { entity: 'individual', icon: <TeamOutlined /> },
   { entity: 'biosample', icon: <BiDna /> },
   { entity: 'experiment', icon: <ExperimentOutlined /> },
+  { entity: 'experiment_result', icon: <FileOutlined /> },
 ];
 
 const COUNT_CARD_BASE_HEIGHT = 114;
@@ -111,9 +112,6 @@ const Counts = () => {
 
   return (
     <Flex vertical={true} gap={12}>
-      <Typography.Title level={3} className="mb-0">
-        {t('Counts')}
-      </Typography.Title>
       <Space size={12} wrap>
         {!waitingForData && countElements.length ? countElements : <CountCardPlaceholder loading={waitingForData} />}
       </Space>

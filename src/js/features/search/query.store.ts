@@ -1,16 +1,38 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
+import type { BentoEntity, ResultsDataEntity } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
 // import { EMPTY_DISCOVERY_RESULTS } from '@/features/search/constants';
 import type { CountsOrBooleans, DiscoveryResponseOrMessage } from '@/types/discovery/response';
-import type { QueryParams, SearchFieldResponse, QueryMode, DiscoveryMatchPhenopacket } from '@/features/search/types';
+import type {
+  QueryParams,
+  SearchFieldResponse,
+  QueryMode,
+  DiscoveryMatchObject,
+  DiscoveryMatchPhenopacket,
+  DiscoveryMatchBiosample,
+  DiscoveryMatchExperiment,
+  DiscoveryMatchExperimentResult,
+} from '@/features/search/types';
 // import { serializeChartData } from '@/utils/chart';
 
 import { performKatsuDiscovery } from './performKatsuDiscovery.thunk';
 import { fetchSearchFields } from './fetchSearchFields.thunk';
 import { performFreeTextSearch } from '@/features/search/performFreeTextSearch.thunk';
 import { fetchDiscoveryMatches } from '@/features/search/fetchDiscoveryMatches.thunk';
+
+export type QueryResultMatchData<T extends DiscoveryMatchObject> = {
+  status: RequestStatus;
+  page: number;
+  totalMatches: number;
+  matches: T[] | undefined; // TODO
+};
+
+export const bentoEntityToResultsDataEntity = (x: BentoEntity): ResultsDataEntity => {
+  if (x === 'variant') throw new Error('cannot currently handle variant results');
+  return x === 'individual' ? 'phenopacket' : x;
+};
 
 export type QueryState = {
   mode: QueryMode;
@@ -29,14 +51,17 @@ export type QueryState = {
   doneFirstLoad: boolean;
   message: string;
 
-  matchesStatus: RequestStatus;
+  entity: BentoEntity | null;
 
   // results
   resultCountsOrBools: CountsOrBooleans;
-  page: number;
   pageSize: number;
-  totalMatches: number;
-  matches: DiscoveryMatchPhenopacket[] | undefined; // TODO
+  matchData: {
+    phenopacket: QueryResultMatchData<DiscoveryMatchPhenopacket>;
+    biosample: QueryResultMatchData<DiscoveryMatchBiosample>;
+    experiment: QueryResultMatchData<DiscoveryMatchExperiment>;
+    experiment_result: QueryResultMatchData<DiscoveryMatchExperimentResult>;
+  };
 };
 
 const initialState: QueryState = {
@@ -54,13 +79,36 @@ const initialState: QueryState = {
   doneFirstLoad: false,
   message: '',
   // ----
-  matchesStatus: RequestStatus.Idle,
+  entity: null,
   // ----
-  resultCountsOrBools: { phenopacket: 0, individual: 0, biosample: 0, experiment: 0 },
-  page: 0,
+  resultCountsOrBools: { phenopacket: 0, individual: 0, biosample: 0, experiment: 0, experiment_result: 0 },
   pageSize: 10,
-  totalMatches: 0,
-  matches: undefined,
+  matchData: {
+    phenopacket: {
+      status: RequestStatus.Idle,
+      page: 0,
+      totalMatches: 0,
+      matches: undefined,
+    },
+    biosample: {
+      status: RequestStatus.Idle,
+      page: 0,
+      totalMatches: 0,
+      matches: undefined,
+    },
+    experiment: {
+      status: RequestStatus.Idle,
+      page: 0,
+      totalMatches: 0,
+      matches: undefined,
+    },
+    experiment_result: {
+      status: RequestStatus.Idle,
+      page: 0,
+      totalMatches: 0,
+      matches: undefined,
+    },
+  },
 };
 
 const query = createSlice({
@@ -85,8 +133,11 @@ const query = createSlice({
     setDoneFirstLoad: (state) => {
       state.doneFirstLoad = true;
     },
-    setMatchesPage: (state, { payload }: PayloadAction<number>) => {
-      state.page = payload;
+    setEntity: (state, { payload }: PayloadAction<BentoEntity | null>) => {
+      state.entity = payload;
+    },
+    setMatchesPage: (state, { payload }: PayloadAction<[BentoEntity, number]>) => {
+      state.matchData[bentoEntityToResultsDataEntity(payload[0])].page = payload[1];
     },
     setMatchesPageSize: (state, { payload }: PayloadAction<number>) => {
       state.pageSize = payload;
@@ -130,6 +181,7 @@ const query = createSlice({
         individual: payload.results.length,
         biosample: payload.results.reduce((acc, x) => acc + x.biosamples.length, 0),
         experiment: payload.results.reduce((acc, x) => acc + x.num_experiments, 0),
+        experiment_result: 0, // TODO
       };
       // state.results = {
       //   // biosamples
@@ -163,16 +215,17 @@ const query = createSlice({
       state.fieldsStatus = RequestStatus.Rejected;
     });
     // -----
-    builder.addCase(fetchDiscoveryMatches.pending, (state) => {
-      state.matchesStatus = RequestStatus.Pending;
+    builder.addCase(fetchDiscoveryMatches.pending, (state, { meta }) => {
+      state.matchData[bentoEntityToResultsDataEntity(meta.arg)].status = RequestStatus.Pending;
     });
-    builder.addCase(fetchDiscoveryMatches.fulfilled, (state, { payload }) => {
-      state.matchesStatus = RequestStatus.Fulfilled;
-      state.matches = payload.results;
-      state.totalMatches = payload.pagination.total;
+    builder.addCase(fetchDiscoveryMatches.fulfilled, (state, { meta, payload }) => {
+      const entity: ResultsDataEntity = bentoEntityToResultsDataEntity(meta.arg);
+      state.matchData[entity].status = RequestStatus.Fulfilled;
+      state.matchData[entity].matches = payload.results;
+      state.matchData[entity].totalMatches = payload.pagination.total;
     });
-    builder.addCase(fetchDiscoveryMatches.rejected, (state) => {
-      state.matchesStatus = RequestStatus.Rejected;
+    builder.addCase(fetchDiscoveryMatches.rejected, (state, { meta }) => {
+      state.matchData[bentoEntityToResultsDataEntity(meta.arg)].status = RequestStatus.Rejected;
     });
   },
 });

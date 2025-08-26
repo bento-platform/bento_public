@@ -12,6 +12,7 @@ import {
   Space,
   Table,
   type TableColumnsType,
+  type TableColumnType,
   type TablePaginationConfig,
   type TableProps,
   Tooltip,
@@ -28,9 +29,20 @@ import type { BentoEntity } from '@/types/entities';
 import type { Project, Dataset } from '@/types/metadata';
 import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
 import { fetchDiscoveryMatches } from '@/features/search/fetchDiscoveryMatches.thunk';
-import { setMatchesPage, setMatchesPageSize } from '@/features/search/query.store';
-import type { DiscoveryMatchBiosample, DiscoveryMatchPhenopacket } from '@/features/search/types';
-import { downloadIndividualCSV } from '@/utils/export';
+import {
+  bentoEntityToResultsDataEntity,
+  type QueryResultMatchData,
+  setMatchesPage,
+  setMatchesPageSize,
+} from '@/features/search/query.store';
+import type {
+  DiscoveryMatchBiosample,
+  DiscoveryMatchExperiment,
+  DiscoveryMatchExperimentResult,
+  DiscoveryMatchPhenopacket,
+  ViewableDiscoveryMatchObject,
+} from '@/features/search/types';
+import { downloadBiosampleCSV, downloadExperimentCSV, downloadIndividualCSV } from '@/utils/export';
 import { setEquals } from '@/utils/sets';
 import { useScopeDownloadData } from '@/hooks/censorship';
 import { useSearchQuery } from '@/features/search/hooks';
@@ -39,11 +51,43 @@ import DatasetProvenanceModal from '@/components/Provenance/DatasetProvenanceMod
 import ProjectTitle from '@/components/Util/ProjectTitle';
 import DatasetTitle from '@/components/Util/DatasetTitle';
 import IndividualRowDetail from './IndividualRowDetail';
+import BiosampleRowDetail from './BiosampleRowDetail';
 
 type SearchColRenderContext = {
   onProjectClick: (id: string) => void;
   onDatasetClick: (id: string) => void;
 };
+
+type ResultsTableColumn<T extends ViewableDiscoveryMatchObject> = {
+  tKey: string; // column title translation key
+  dataIndex: keyof T;
+  render: (ctx: SearchColRenderContext) => (value: unknown) => ReactNode;
+};
+
+type ResultsTableSpec<T extends ViewableDiscoveryMatchObject> = {
+  fixedColumns?: TableColumnType<T>[];
+  availableColumns: Record<string, ResultsTableColumn<T>>;
+  defaultColumns: string[];
+  expandable?: TableProps<T>['expandable'];
+  download?: (headers: Record<string, string>, matches: T[]) => Promise<void>;
+};
+
+const COMMON_SEARCH_TABLE_COLUMNS = {
+  project: {
+    tKey: 'entities.project',
+    dataIndex: 'pr',
+    render: (ctx: SearchColRenderContext) => (id: string) => (
+      <ProjectTitle projectID={id} onClick={() => ctx.onProjectClick(id)} />
+    ),
+  } as ResultsTableColumn<ViewableDiscoveryMatchObject>,
+  dataset: {
+    tKey: 'entities.dataset',
+    dataIndex: 'ds',
+    render: (ctx: SearchColRenderContext) => (id: string) => (
+      <DatasetTitle datasetID={id} onClick={() => ctx.onDatasetClick(id)} />
+    ),
+  } as ResultsTableColumn<ViewableDiscoveryMatchObject>,
+} as const;
 
 const SEARCH_TABLE_COLUMNS = {
   biosamples: {
@@ -51,25 +95,10 @@ const SEARCH_TABLE_COLUMNS = {
     dataIndex: 'b',
     // TODO: links
     render: (_ctx: SearchColRenderContext) => (b: DiscoveryMatchBiosample[]) => b.map((bb) => bb.id).join(', '),
-  },
-  project: {
-    tKey: 'entities.project',
-    dataIndex: 'pr',
-    render: (ctx: SearchColRenderContext) => (id: string) => (
-      <ProjectTitle projectID={id} onClick={() => ctx.onProjectClick(id)} />
-    ),
-  },
-  dataset: {
-    tKey: 'entities.dataset',
-    dataIndex: 'ds',
-    render: (ctx: SearchColRenderContext) => (id: string) => (
-      <DatasetTitle datasetID={id} onClick={() => ctx.onDatasetClick(id)} />
-    ),
-  },
+  } as ResultsTableColumn<DiscoveryMatchPhenopacket>,
+  ...COMMON_SEARCH_TABLE_COLUMNS,
 } as const;
 type SearchTableColumnType = keyof typeof SEARCH_TABLE_COLUMNS;
-
-const DEFAULT_COLUMNS: SearchTableColumnType[] = ['biosamples', 'project', 'dataset'];
 
 const PhenopacketSubjectLink = ({ children, packetId }: { children: ReactNode; packetId: string }) => {
   const {
@@ -78,8 +107,80 @@ const PhenopacketSubjectLink = ({ children, packetId }: { children: ReactNode; p
   return <Link to={`/${language}/phenopackets/${packetId}/subject`}>{children}</Link>;
 };
 
-const INDIVIDUAL_EXPANDABLE: TableProps<DiscoveryMatchPhenopacket>['expandable'] = {
-  expandedRowRender: (rec) => (rec.s ? <IndividualRowDetail id={rec.s} /> : null),
+const TABLE_SPEC_PHENOPACKET: ResultsTableSpec<DiscoveryMatchPhenopacket> = {
+  fixedColumns: [
+    {
+      dataIndex: 's',
+      title: 'Subject ID',
+      render: (s: string | undefined, rec) =>
+        s ? <PhenopacketSubjectLink packetId={rec.id}>{s}</PhenopacketSubjectLink> : null,
+    } as TableColumnType<DiscoveryMatchPhenopacket>,
+  ],
+  availableColumns: SEARCH_TABLE_COLUMNS,
+  defaultColumns: ['biosamples', 'project', 'dataset'],
+  expandable: {
+    expandedRowRender: (rec) => (rec.s ? <IndividualRowDetail id={rec.s} /> : null),
+  },
+  download: (headers, matches) =>
+    downloadIndividualCSV(
+      headers,
+      matches.filter(({ s }) => s !== undefined).map(({ s }) => s as string)
+    ),
+};
+
+const TABLE_SPEC_BIOSAMPLE: ResultsTableSpec<DiscoveryMatchBiosample> = {
+  fixedColumns: [
+    {
+      dataIndex: 'id',
+      title: 'Biosample ID',
+      render: (id: string) => <div>{id}</div>, // TODO: link
+    } as TableColumnType<DiscoveryMatchBiosample>,
+  ],
+  availableColumns: COMMON_SEARCH_TABLE_COLUMNS,
+  defaultColumns: ['project', 'dataset'],
+  expandable: {
+    expandedRowRender: (rec) => <BiosampleRowDetail id={rec.id} />,
+  },
+  download: (headers, matches) =>
+    downloadBiosampleCSV(
+      headers,
+      matches.map((b) => b.id)
+    ),
+};
+
+const TABLE_SPEC_EXPERIMENT: ResultsTableSpec<DiscoveryMatchExperiment> = {
+  fixedColumns: [
+    {
+      dataIndex: 'id',
+      title: 'Experiment ID',
+      render: (id: string) => <div>{id}</div>, // TODO: link
+    } as TableColumnType<DiscoveryMatchExperiment>,
+  ],
+  availableColumns: COMMON_SEARCH_TABLE_COLUMNS,
+  defaultColumns: ['project', 'dataset'],
+  // expandable: {
+  //   expandedRowRender: (rec) => <div>TODO: {rec.id}</div>,
+  // },
+  download: (headers, matches) =>
+    downloadExperimentCSV(
+      headers,
+      matches.map((e) => e.id)
+    ),
+};
+
+const TABLE_SPEC_EXPERIMENT_RESULT: ResultsTableSpec<DiscoveryMatchExperimentResult> = {
+  fixedColumns: [
+    {
+      dataIndex: 'f',
+      title: 'File Name',
+      render: (f: string | undefined) => <span>{f}</span>,
+    } as TableColumnType<DiscoveryMatchExperimentResult>,
+  ],
+  availableColumns: COMMON_SEARCH_TABLE_COLUMNS,
+  defaultColumns: ['project', 'dataset'],
+  // expandable: {
+  //   expandedRowRender: (rec) => <div>TODO: {rec.id}</div>,
+  // },
 };
 
 const ManageColumnCheckbox = ({
@@ -88,17 +189,15 @@ const ManageColumnCheckbox = ({
   setShownColumns,
 }: {
   c: SearchTableColumnType;
-  shownColumns: Set<SearchTableColumnType>;
-  setShownColumns: (fn: (sc: Set<SearchTableColumnType>) => Set<SearchTableColumnType>) => void;
+  shownColumns: Set<string>;
+  setShownColumns: (fn: (sc: Set<string>) => Set<string>) => void;
 }) => {
   const t = useTranslationFn();
   return (
     <Checkbox
       checked={shownColumns.has(c)}
       onChange={(e) =>
-        setShownColumns(
-          (sc) => new Set<SearchTableColumnType>(e.target.checked ? [...sc, c] : [...sc].filter((v) => v !== c))
-        )
+        setShownColumns((sc) => new Set<string>(e.target.checked ? [...sc, c] : [...sc].filter((v) => v !== c)))
       }
     >
       {t(SEARCH_TABLE_COLUMNS[c].tKey, T_SINGULAR_COUNT)}
@@ -106,90 +205,84 @@ const ManageColumnCheckbox = ({
   );
 };
 
-const SearchResultsTablePage = ({ entity, onBack }: { entity: BentoEntity; onBack?: () => void }) => {
+const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
+  entity,
+  spec,
+  searchContext,
+  onBack,
+}: {
+  entity: BentoEntity;
+  spec: ResultsTableSpec<T>;
+  searchContext: SearchColRenderContext;
+  onBack?: () => void;
+}) => {
   const t = useTranslationFn();
 
   const dispatch = useAppDispatch();
-
+  const { pageSize, matchData } = useSearchQuery();
+  const { fetchingPermission: fetchingCanDownload, hasPermission: canDownload } = useScopeDownloadData();
+  const authHeader = useAuthorizationHeader();
   const selectedScope = useSelectedScope();
   const isSmallScreen = useSmallScreen();
-  const authHeader = useAuthorizationHeader();
-  const { projectsByID, datasetsByID } = useMetadata();
-
-  const { page, pageSize, matches, totalMatches, matchesStatus } = useSearchQuery();
-  const { fetchingPermission: fetchingCanDownload, hasPermission: canDownload } = useScopeDownloadData();
-
-  const [columnModalOpen, setColumnModalOpen] = useState<boolean>(false);
-
-  const allowedColumns = useMemo<Set<SearchTableColumnType>>(() => {
-    const allowed = new Set<SearchTableColumnType>();
-    if (!selectedScope.scope.project) allowed.add('project');
-    if (!selectedScope.scope.dataset) allowed.add('dataset');
-    if (['individual', 'phenopacket'].includes(entity)) allowed.add('biosamples');
-    return allowed;
-  }, [entity, selectedScope.scope]);
-
-  const [shownColumns, setShownColumns] = useState<Set<SearchTableColumnType>>(
-    () => new Set<SearchTableColumnType>(DEFAULT_COLUMNS.filter((c) => allowedColumns.has(c)))
-  );
 
   const [exporting, setExporting] = useState<boolean>(false);
+  const [columnModalOpen, setColumnModalOpen] = useState<boolean>(false);
+
+  // TODO: maybe we can make Katsu good enough that we can just simply return individuals rather than phenopackets
+  const rdEntity = bentoEntityToResultsDataEntity(entity);
+
+  const { matches, status, page, totalMatches } = matchData[rdEntity] as QueryResultMatchData<T>;
+
+  const currentStart = totalMatches > 0 ? page * pageSize + 1 : 0;
+  const currentEnd = Math.min((page + 1) * pageSize, totalMatches);
 
   useEffect(() => {
-    // TODO
-    dispatch(fetchDiscoveryMatches());
-  }, [dispatch, page, pageSize, entity]);
+    dispatch(fetchDiscoveryMatches(rdEntity));
+  }, [dispatch, page, pageSize, rdEntity]);
+
+  // -------------------------------------------------------------------------------------------------------------------
+
+  const allowedColumns = useMemo<Set<string>>(() => {
+    const allowed = new Set<string>();
+    if (!selectedScope.scope.project) allowed.add('project');
+    if (!selectedScope.scope.dataset) allowed.add('dataset');
+    // TODO: replace with adding all allowed columns that aren't project/dataset
+    if (rdEntity === 'phenopacket') allowed.add('biosamples');
+    return allowed;
+  }, [rdEntity, selectedScope.scope]);
+
+  const [shownColumns, setShownColumns] = useState<Set<string>>(
+    () => new Set<string>(spec.defaultColumns.filter((c) => allowedColumns.has(c)))
+  );
 
   useEffect(() => {
     // If the selected scope changes, some of the currently-shown columns may no longer be valid:
     setShownColumns((oldSet) => {
-      const newSet = new Set<SearchTableColumnType>([...oldSet].filter((v) => allowedColumns.has(v)));
+      const newSet = new Set<string>([...oldSet].filter((v) => allowedColumns.has(v)));
 
       // Don't change object if our newly-computed object is equivalent:
       return setEquals(oldSet, newSet) ? oldSet : newSet;
     });
   }, [selectedScope, allowedColumns, shownColumns]);
 
-  const currentStart = totalMatches > 0 ? page * pageSize + 1 : 0;
-  const currentEnd = Math.min((page + 1) * pageSize, totalMatches);
-
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [projectModalOpen, setProjectModalOpen] = useState<boolean>(false);
-  const [selectedDataset, setSelectedDataset] = useState<Dataset | null>(null);
-  const [datasetModalOpen, setDatasetModalOpen] = useState<boolean>(false);
-
-  const searchContext = useMemo<SearchColRenderContext>(
-    () => ({
-      onProjectClick: (id: string) => {
-        setSelectedProject(projectsByID[id] ?? null);
-        setProjectModalOpen(true);
-      },
-      onDatasetClick: (id: string) => {
-        setSelectedDataset(datasetsByID[id] ?? null);
-        setDatasetModalOpen(true);
-      },
-    }),
-    [projectsByID, datasetsByID]
-  );
-
-  const columns = useMemo<TableColumnsType<DiscoveryMatchPhenopacket>>(
+  const columns = useMemo<TableColumnsType<T>>(
     () => [
-      {
-        dataIndex: 's',
-        title: 'Subject ID',
-        render: (s: string | undefined, rec) =>
-          s ? <PhenopacketSubjectLink packetId={rec.id}>{s}</PhenopacketSubjectLink> : null,
-      },
-      ...Object.entries(SEARCH_TABLE_COLUMNS)
-        .filter(([k, _]) => shownColumns.has(k as SearchTableColumnType))
-        .map(([_, { tKey, dataIndex, render }]) => ({
-          title: t(tKey, T_SINGULAR_COUNT),
-          dataIndex,
-          render: render(searchContext),
-        })),
+      ...(spec.fixedColumns ?? []),
+      ...Object.entries(spec.availableColumns)
+        .filter(([k, _]) => shownColumns.has(k))
+        .map(
+          ([_, { tKey, dataIndex, render }]) =>
+            ({
+              title: t(tKey, T_SINGULAR_COUNT),
+              dataIndex,
+              render: render(searchContext),
+            }) as TableColumnType<T>
+        ),
     ],
-    [t, shownColumns, searchContext]
+    [t, spec, shownColumns, searchContext]
   );
+
+  // -------------------------------------------------------------------------------------------------------------------
 
   // noinspection JSUnusedGlobalSymbols
   const pagination = useMemo<TablePaginationConfig>(
@@ -201,21 +294,20 @@ const SearchResultsTablePage = ({ entity, onBack }: { entity: BentoEntity; onBac
       size: (isSmallScreen ? 'small' : 'default') as TablePaginationConfig['size'],
       showSizeChanger: true,
       onChange(page, pageSize) {
-        dispatch(setMatchesPage(page - 1)); // AntD page is 1-indexed, discovery match page is 0-indexed
+        dispatch(setMatchesPage([rdEntity, page - 1])); // AntD page is 1-indexed, discovery match page is 0-indexed
         dispatch(setMatchesPageSize(pageSize));
       },
     }),
-    [dispatch, page, pageSize, totalMatches, isSmallScreen]
+    [dispatch, rdEntity, page, pageSize, totalMatches, isSmallScreen]
   );
 
-  const openColumnModal = useCallback(() => setColumnModalOpen(true), []);
   const onExport = useCallback(() => {
+    if (!spec.download) return;
     setExporting(true);
-    downloadIndividualCSV(
-      authHeader,
-      (matches ?? []).filter(({ s }) => s !== undefined).map(({ s }) => s as string)
-    ).finally(() => setExporting(false));
-  }, [authHeader, matches]);
+    spec.download(authHeader, matches ?? []).finally(() => setExporting(false));
+  }, [spec, authHeader, matches]);
+
+  const openColumnModal = useCallback(() => setColumnModalOpen(true), []);
 
   return (
     <>
@@ -247,7 +339,7 @@ const SearchResultsTablePage = ({ entity, onBack }: { entity: BentoEntity; onBac
             <Tooltip title={t('search.manage_columns')}>
               <Button icon={<TableOutlined />} onClick={openColumnModal} />
             </Tooltip>
-            {fetchingCanDownload || canDownload ? (
+            {!!spec.download && (fetchingCanDownload || canDownload) ? (
               <Button
                 icon={<ExportOutlined />}
                 loading={fetchingCanDownload || exporting}
@@ -259,15 +351,15 @@ const SearchResultsTablePage = ({ entity, onBack }: { entity: BentoEntity; onBac
             ) : null}
           </Space>
         </Flex>
-        <Table<DiscoveryMatchPhenopacket>
+        <Table<T>
           columns={columns}
           dataSource={matches}
-          loading={WAITING_STATES.includes(matchesStatus)}
+          loading={WAITING_STATES.includes(status)}
           rowKey="id"
           bordered={true}
           size="small"
           pagination={pagination}
-          expandable={INDIVIDUAL_EXPANDABLE}
+          expandable={spec.expandable}
         />
       </Col>
       <Modal
@@ -288,6 +380,50 @@ const SearchResultsTablePage = ({ entity, onBack }: { entity: BentoEntity; onBac
           )}
         </Space>
       </Modal>
+    </>
+  );
+};
+
+const SearchResultsTablePage = ({ entity, onBack }: { entity: BentoEntity; onBack?: () => void }) => {
+  const t = useTranslationFn();
+
+  const { projectsByID, datasetsByID } = useMetadata();
+
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [projectModalOpen, setProjectModalOpen] = useState<boolean>(false);
+  const [selectedDataset, setSelectedDataset] = useState<Dataset | null>(null);
+  const [datasetModalOpen, setDatasetModalOpen] = useState<boolean>(false);
+
+  const searchContext = useMemo<SearchColRenderContext>(
+    () => ({
+      onProjectClick: (id: string) => {
+        setSelectedProject(projectsByID[id] ?? null);
+        setProjectModalOpen(true);
+      },
+      onDatasetClick: (id: string) => {
+        setSelectedDataset(datasetsByID[id] ?? null);
+        setDatasetModalOpen(true);
+      },
+    }),
+    [projectsByID, datasetsByID]
+  );
+
+  return (
+    <>
+      {(() => {
+        const common = { entity, searchContext, onBack };
+        if (entity === 'phenopacket' || entity === 'individual') {
+          return <SearchResultsTable<DiscoveryMatchPhenopacket> spec={TABLE_SPEC_PHENOPACKET} {...common} />;
+        } else if (entity === 'biosample') {
+          return <SearchResultsTable<DiscoveryMatchBiosample> spec={TABLE_SPEC_BIOSAMPLE} {...common} />;
+        } else if (entity === 'experiment') {
+          return <SearchResultsTable<DiscoveryMatchExperiment> spec={TABLE_SPEC_EXPERIMENT} {...common} />;
+        } else if (entity === 'experiment_result') {
+          return <SearchResultsTable<DiscoveryMatchExperimentResult> spec={TABLE_SPEC_EXPERIMENT_RESULT} {...common} />;
+        } else {
+          return <span className="error-text">Unhandled entity: {entity}</span>;
+        }
+      })()}
       <Modal
         title={selectedProject ? `${t('entities.project', T_SINGULAR_COUNT)}: ${t(selectedProject.title)}` : ''}
         open={projectModalOpen}
