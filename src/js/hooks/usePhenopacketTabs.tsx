@@ -37,7 +37,7 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
       },
       {
         key: TabKeys.BIOSAMPLES,
-        label: t('entities.biosamples_many'),
+        label: t('entities.biosample_other'),
         children: phenopacket.biosamples ? <BiosampleView biosamples={phenopacket.biosamples} /> : null,
         disabled: !phenopacket.biosamples?.length,
       },
