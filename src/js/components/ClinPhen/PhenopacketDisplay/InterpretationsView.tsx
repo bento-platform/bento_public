@@ -46,8 +46,8 @@ const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interp
     {
       key: 'Disease',
       label: 'interpretations.disease',
-      children: <OntologyTerm term={interpretation?.diagnosis?.disease} />,
-      isVisible: interpretation?.diagnosis?.disease,
+      children: <OntologyTerm term={interpretation.diagnosis?.disease} />,
+      isVisible: interpretation.diagnosis?.disease,
     },
   ];
 
