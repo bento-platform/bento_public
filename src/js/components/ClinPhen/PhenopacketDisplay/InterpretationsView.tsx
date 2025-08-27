@@ -19,7 +19,16 @@ const GenomicInterpretationDetails = ({ genomicInterpretation }: { genomicInterp
   const relatedType = (genomicInterpretation?.extra_properties as JSONObject)?.__related_type ?? 'unknown';
 
   const items: ConditionalDescriptionItem[] = [
-    { key: 'id', label: `${relatedType} id`, children: genomicInterpretation.subject_or_biosample_id! }, //TODO: Link to subject or biosample
+    {
+      key: 'id',
+      label:
+        relatedType === 'subject'
+          ? 'subject.subject'
+          : relatedType === 'biosample'
+            ? 'entities.biosample_one'
+            : 'Unknown',
+      children: genomicInterpretation.subject_or_biosample_id!,
+    }, //TODO: Link to subject or biosample
     {
       key: 'Variant Interpretation',
       label: 'interpretations.variant_interpretation',

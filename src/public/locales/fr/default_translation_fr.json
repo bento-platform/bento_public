@@ -363,6 +363,7 @@
     "reference": "Référence"
   },
   "subject": {
+    "subject": "Sujet",
     "age": "Âge",
     "status": "Statut",
     "time_of_death": "Date du décès",
@@ -377,7 +378,6 @@
     "taxonomy": "Taxonomie"
   },
   "tab_keys": {
-    "subject": "Sujet",
     "measurements": "Mesures",
     "phenotypic_features": "Caractéristiques phénotypiques",
     "diseases": "Maladies",

@@ -31,7 +31,7 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
     const allItems = [
       {
         key: TabKeys.SUBJECT,
-        label: t('tab_keys.subject'),
+        label: t('subject.subject'),
         children: phenopacket.subject ? <SubjectView subject={phenopacket.subject} /> : null,
         disabled: !phenopacket.subject,
       },
