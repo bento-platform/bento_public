@@ -78,6 +78,12 @@ const SubjectView = ({ subject }: { subject: Individual }) => {
       children: subject.karyotypic_sex,
     },
     {
+      key: 'gender',
+      label: 'subject.gender',
+      children: subject.gender ? <OntologyTerm term={subject.gender} /> : null,
+      isVisible: subject.gender,
+    },
+    {
       key: 'taxonomy',
       label: 'subject.taxonomy',
       children: (
