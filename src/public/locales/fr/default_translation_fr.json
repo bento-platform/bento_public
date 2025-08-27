@@ -263,6 +263,7 @@
     "progress_status": "Statut de progression",
     "summary": "Résumé",
     "disease": "Maladie",
+    "disease_diagnosis": "Diagnostic de maladie",
     "variant_interpretation": "Interprétation du variant",
     "gene_descriptor": "Descripteur de gène",
     "subject_or_biosample_id": "ID du sujet ou de l'échantillon biologique",

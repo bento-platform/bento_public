@@ -258,6 +258,7 @@
     "progress_status": "Progress Status",
     "summary": "Summary",
     "disease": "Disease",
+    "disease_diagnosis": "Disease Diagnosis",
     "variant_interpretation": "Variant Interpretation",
     "gene_descriptor": "Gene Descriptor",
     "subject_or_biosample_id": "Subject or Biosample ID",

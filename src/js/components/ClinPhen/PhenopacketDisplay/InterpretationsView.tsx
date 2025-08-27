@@ -13,6 +13,7 @@ import type { Interpretation } from '@/types/clinPhen/interpretation';
 import type { JSONObject } from '@/types/json';
 import type { GenomicInterpretation } from '@/types/clinPhen/genomicInterpretation';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
+import type { Diagnosis } from '@/types/clinPhen/diagnosis';
 
 const GenomicInterpretationDetails = ({ genomicInterpretation }: { genomicInterpretation: GenomicInterpretation }) => {
   const relatedType = (genomicInterpretation?.extra_properties as JSONObject)?.__related_type ?? 'unknown';
@@ -124,6 +125,11 @@ const InterpretationsView = ({ interpretations }: InterpretationsViewProps) => {
       dataIndex: 'progress_status',
       key: 'progress_status',
       render: (text: string) => t(`progress_status.${text}`),
+    },
+    {
+      title: 'interpretations.disease_diagnosis',
+      dataIndex: 'diagnosis',
+      render: (diagnosis: Diagnosis | undefined) => <OntologyTerm term={diagnosis?.disease} />,
     },
     {
       title: 'interpretations.summary',
