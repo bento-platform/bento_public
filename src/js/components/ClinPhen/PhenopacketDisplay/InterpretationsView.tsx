@@ -120,18 +120,6 @@ const InterpretationsView = ({ interpretations }: InterpretationsViewProps) => {
       alwaysShow: true,
     },
     {
-      title: 'interpretations.created',
-      dataIndex: 'created',
-      key: 'created',
-      render: (text: string) => <Tooltip title={text}>{new Date(text).toLocaleDateString()}</Tooltip>,
-    },
-    {
-      title: 'interpretations.updated',
-      dataIndex: 'updated',
-      key: 'updated',
-      render: (text: string) => <Tooltip title={text}>{new Date(text).toLocaleDateString()}</Tooltip>,
-    },
-    {
       title: 'interpretations.progress_status',
       dataIndex: 'progress_status',
       key: 'progress_status',
