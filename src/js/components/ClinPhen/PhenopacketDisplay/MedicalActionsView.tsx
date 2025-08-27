@@ -263,7 +263,12 @@ const MedicalActionsView = ({ medicalActions }: { medicalActions: MedicalAction[
       columns={columns}
       expandedRowRender={(record) => <MedicalActionDetails medicalAction={record} />}
       rowKey={(record) =>
-        record.procedure?.code?.id || record.treatment?.agent?.id || record.radiation_therapy?.modality?.id || 'unknown'
+        record.procedure?.code?.id ??
+        record.treatment?.agent?.id ??
+        record.radiation_therapy?.modality?.id ??
+        record.therapeutic_regimen?.ontology_class?.id ??
+        record.therapeutic_regimen?.external_reference?.id ??
+        'unknown'
       }
       isDataKeyVisible={isMedicalActionsExpandedRowVisible}
     />
