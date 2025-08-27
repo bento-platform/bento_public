@@ -1,4 +1,4 @@
-import { Space, Tooltip, Typography } from 'antd';
+import { Space, Typography } from 'antd';
 import { MedicineBoxOutlined, ExperimentOutlined } from '@ant-design/icons';
 
 import CustomEmpty from '@Util/CustomEmpty';
