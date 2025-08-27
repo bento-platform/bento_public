@@ -39,6 +39,7 @@ body {
 .cursor-pointer { cursor: pointer; }
 .select-none { user-select: none; }
 .font-mono { font-family: ui-monospace, monospace; }
+.font-normal { font-weight: normal; }
 .text-center { text-align: center; }
 
 /* custom, tailwind-esque */

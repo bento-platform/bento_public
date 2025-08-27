@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { Card, Empty, Flex } from 'antd';
+import { Card, Empty, Flex, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
@@ -13,6 +13,8 @@ import { RequestStatus } from '@/types/requests';
 import { usePhenopacketData } from '@/features/clinPhen/hooks';
 import { useTranslationFn } from '@/hooks';
 import { useNotify } from '@/hooks/notifications';
+
+const { Text } = Typography;
 
 export interface RouteParams {
   packetId: string;
@@ -84,10 +86,26 @@ const PhenopacketView = () => {
     return <Loader fullHeight={false} />;
   }
 
+  const biosamples = phenopacket.biosamples ?? [];
+
   return (
     <Flex justify="center">
       <Card
-        title={packetId}
+        title={
+          <span>
+            {phenopacket.subject ? (
+              phenopacket.subject.id
+            ) : (
+              <>
+                {t('entities.biosample', { count: biosamples.length })}
+                {biosamples.map((b) => b.id).join(', ')}
+              </>
+            )}{' '}
+            <Text type="secondary" italic={true} className="font-normal">
+              (Phenopacket ID: <span className="font-mono">{packetId}</span>)
+            </Text>
+          </span>
+        }
         className="container"
         activeTabKey={activeKey}
         tabList={tabs}
