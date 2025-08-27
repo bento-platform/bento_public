@@ -29,7 +29,10 @@ const ScopedTitle = () => {
 
   const getRouteTitleAndIcon = useGetRouteTitleAndIcon();
   const currentPage = getCurrentPage();
-  const scopeSelectionEnabled = !(fixedProject && fixedDataset) && !TOP_LEVEL_ONLY_ROUTES.includes(currentPage);
+  const scopeSelectionEnabled =
+    !(fixedProject && fixedDataset) &&
+    !TOP_LEVEL_ONLY_ROUTES.includes(currentPage) &&
+    currentPage !== BentoRoute.Phenopackets;
   const [scopeSelectModalOpen, setScopeSelectModalOpen] = useState(false);
   const [helpModalOpen, setHelpModalOpen] = useState(false);
 
@@ -96,8 +99,6 @@ const ScopedTitle = () => {
     }
   }, [breadcrumbItems]);
 
-  const isPhenopacketView = currentPage === BentoRoute.Phenopackets;
-
   if (breadcrumbItems.length) {
     return (
       <>
@@ -106,7 +107,7 @@ const ScopedTitle = () => {
         <Flex className="scoped-title" align="center">
           <Breadcrumb className="scoped-title__breadcrumb" items={breadcrumbItems} itemRender={breadcrumbRender} />
           <Space>
-            {scopeSelectionEnabled && !isPhenopacketView && (
+            {scopeSelectionEnabled && (
               <Tooltip title={t('Change Scope')} placement="bottom">
                 <Button
                   color="default"
