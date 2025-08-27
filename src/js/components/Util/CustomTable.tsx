@@ -121,7 +121,8 @@ const CustomTable = <T extends object>({
       }}
       rowKey={rowKey}
       pagination={false}
-      bordered
+      bordered={true}
+      size="small"
     />
   );
 };
