@@ -212,7 +212,8 @@
   },
   "clinphen_generic": {
     "excluded": "Exclu",
-    "found_absent": "Trouvé absent"
+    "found_absent": "Trouvé absent",
+    "code": "Code"
   },
   "biosample_expanded_row": {
     "description": "Description",
@@ -222,7 +223,6 @@
     "histological_diagnosis": "Diagnostic histologique",
     "pathological_stage": "Stade pathologique",
     "procedure": "Procédure",
-    "code": "Code",
     "body_site": "Site du corps",
     "performed": "Effectué",
     "taxonomy": "Taxonomie",

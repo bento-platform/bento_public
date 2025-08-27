@@ -10,7 +10,7 @@ const Procedure = ({ procedure: p }: { procedure: ProcedureType | undefined }) =
   const items: ConditionalDescriptionItem[] = [
     {
       key: 'code',
-      label: 'biosample_expanded_row.code',
+      label: 'clinphen_generic.code',
       children: <OntologyTerm term={p.code} />,
     },
     {
