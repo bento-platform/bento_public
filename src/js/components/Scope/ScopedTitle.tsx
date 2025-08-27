@@ -13,6 +13,7 @@ import { useGetRouteTitleAndIcon } from '@/hooks/navigation';
 import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
 import { getCurrentPage } from '@/utils/router';
 import CurrentPageHelpModal from '@/components/Util/CurrentPageHelpModal';
+import { useExtraBreadcrumb } from '@/features/ui/hooks';
 
 const breadcrumbRender: BreadcrumbProps['itemRender'] = (route, _params, routes, _paths) => {
   const isLast = route?.path === routes[routes.length - 1]?.path;
@@ -40,6 +41,8 @@ const ScopedTitle = () => {
     const k = `page_help.${currentPage}`;
     return k !== t(k);
   }, [t, currentPage]);
+
+  const extraBreadcrumb = useExtraBreadcrumb();
 
   useEffect(() => {
     // If the selected scope changes (likely from the scope select modal), auto-close the modal.
@@ -69,6 +72,10 @@ const ScopedTitle = () => {
       items.push({ title: currentPageTitle });
     }
 
+    if (extraBreadcrumb) {
+      items.push(extraBreadcrumb);
+    }
+
     return items;
   }, [
     i18n.language,
@@ -80,6 +87,7 @@ const ScopedTitle = () => {
     fixedDataset,
     currentPage,
     getRouteTitleAndIcon,
+    extraBreadcrumb,
   ]);
 
   useEffect(() => {

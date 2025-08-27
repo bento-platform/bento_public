@@ -1,6 +1,5 @@
-import { useCallback, useMemo } from 'react';
-import { Card, Empty, Flex, Typography } from 'antd';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Card, Empty, Flex } from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import { usePhenopacketTabs } from '@/hooks/usePhenopacketTabs';
@@ -11,10 +10,9 @@ import { TabKeys } from '@/types/PhenopacketView.types';
 import { RequestStatus } from '@/types/requests';
 
 import { usePhenopacketData } from '@/features/clinPhen/hooks';
+import { useSetExtraBreadcrumb } from '@/features/ui/hooks';
 import { useTranslationFn } from '@/hooks';
 import { useNotify } from '@/hooks/notifications';
-
-const { Text } = Typography;
 
 export interface RouteParams {
   packetId: string;
@@ -60,7 +58,9 @@ const PhenopacketView = () => {
       } else {
         if (tab && Object.values(TabKeys).includes(tab as TabKeys)) {
           notAvailableRedirectNotification();
-        } else {
+        } else if (tab && !['', '/'].includes(tab)) {
+          // Don't show a notification if we have some variation of an empty current tab; just redirect to the default.
+          // Otherwise, show an invalid tab notification:
           invalidEndpointRedirectNotification();
         }
         navigate(`${tab ? '..' : '.'}/${defaultTab.key}`, { relative: 'path', replace: true });
@@ -78,6 +78,16 @@ const PhenopacketView = () => {
     api,
   ]);
 
+  const biosamples = phenopacket?.biosamples ?? [];
+
+  const title = phenopacket
+    ? phenopacket.subject
+      ? t('subject.subject') + ': ' + phenopacket.subject.id
+      : t('entities.biosample', { count: biosamples.length }) + ': ' + biosamples.map((b) => b.id).join(', ')
+    : packetId;
+
+  useSetExtraBreadcrumb(phenopacket ? title : undefined);
+
   if (isAuthorized.hasAttempted && !isAuthorized.hasPermission) {
     return <Empty description={t('auth.unauthorized_message')} />; // Temporary: removed once phenopacket view is integrated with search
   }
@@ -86,30 +96,13 @@ const PhenopacketView = () => {
     return <Loader fullHeight={false} />;
   }
 
-  const biosamples = phenopacket.biosamples ?? [];
-
   return (
     <Flex justify="center">
       <Card
-        title={
-          <span>
-            {phenopacket.subject ? (
-              phenopacket.subject.id
-            ) : (
-              <>
-                {t('entities.biosample', { count: biosamples.length })}
-                {biosamples.map((b) => b.id).join(', ')}
-              </>
-            )}{' '}
-            <Text type="secondary" italic={true} className="font-normal">
-              (Phenopacket ID: <span className="font-mono">{packetId}</span>)
-            </Text>
-          </span>
-        }
         className="container"
         activeTabKey={activeKey}
         tabList={tabs}
-        tabProps={{ destroyInactiveTabPane: true, size: 'small' }}
+        tabProps={{ destroyInactiveTabPane: true, size: 'middle' }}
         onTabChange={handleTabChange}
       >
         {tabContent[activeKey]}
