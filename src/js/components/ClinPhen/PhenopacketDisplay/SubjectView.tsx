@@ -11,7 +11,7 @@ import type { ConditionalDescriptionItem } from '@/types/descriptions';
 import { EM_DASH } from '@/constants/common';
 
 const SubjectView = ({ subject }: { subject: Individual }) => {
-  const vs = subject?.vital_status;
+  const vs = subject.vital_status;
   const vitalStatusItems: ConditionalDescriptionItem[] = [
     {
       key: 'status',
@@ -47,7 +47,7 @@ const SubjectView = ({ subject }: { subject: Individual }) => {
     {
       key: 'Age',
       label: 'subject.age',
-      children: `${subject?.age_numeric} ${subject?.age_unit}`,
+      children: `${subject.age_numeric} ${subject.age_unit}`,
     },
     {
       key: 'alternate_ids',
@@ -58,38 +58,38 @@ const SubjectView = ({ subject }: { subject: Individual }) => {
     {
       key: 'time_at_last_encounter',
       label: 'subject.time_at_last_encounter',
-      children: <TimeElementDisplay element={subject?.time_at_last_encounter} />,
-      isVisible: subject?.time_at_last_encounter,
+      children: <TimeElementDisplay element={subject.time_at_last_encounter} />,
+      isVisible: subject.time_at_last_encounter,
     },
     {
       key: 'vital_status',
       label: 'subject.vital_status',
       children: <TDescriptions items={vitalStatusItems} />,
-      isVisible: subject?.vital_status,
+      isVisible: subject.vital_status,
     },
     {
       key: 'sex',
       label: 'subject.sex',
-      children: subject?.sex,
+      children: subject.sex,
     },
     {
       key: 'karyotypic_sex',
       label: 'subject.karyotypic_sex',
-      children: subject?.karyotypic_sex,
+      children: subject.karyotypic_sex,
     },
     {
       key: 'taxonomy',
       label: 'subject.taxonomy',
       children: (
         <em>
-          <OntologyTerm term={subject?.taxonomy} />
+          <OntologyTerm term={subject.taxonomy} />
         </em>
       ),
-      isVisible: subject?.taxonomy,
+      isVisible: subject.taxonomy,
     },
   ];
 
-  const extraProperties = Object.entries(subject?.extra_properties ?? {}).map(([key, value]) => ({
+  const extraProperties = Object.entries(subject.extra_properties ?? {}).map(([key, value]) => ({
     key,
     label: key,
     children: (typeof value === 'string' || typeof value === 'number' ? value : <JsonView src={value} />) ?? EM_DASH,
