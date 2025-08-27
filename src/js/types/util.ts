@@ -18,3 +18,5 @@ export interface TimestampedEntity {
 export type WithVisible<T> = T & {
   isVisible: boolean;
 };
+
+export type VisibilityFn<T> = (record: T) => boolean;

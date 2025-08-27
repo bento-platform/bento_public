@@ -71,7 +71,7 @@ const TreatmentComponent = ({ treatment }: { treatment: Treatment }) => {
           columns={DOSE_INTERVAL_COLUMNS}
           dataSource={addId(treatment.dose_intervals || [])}
           rowKey={(record) => record.id}
-          isDataKeyVisible={() => true}
+          isRowExpandable={() => true}
         />
       ),
       isVisible: treatment?.dose_intervals,
@@ -210,8 +210,21 @@ const MedicalActionDetails = ({ medicalAction }: { medicalAction: MedicalAction 
   return <TDescriptions bordered column={1} size="small" items={medicalActionItems} />;
 };
 
-const isMedicalActionsExpandedRowVisible = (r: MedicalAction) =>
-  !!(r.adverse_events?.length || r.procedure || r.treatment || r.radiation_therapy || r.therapeutic_regimen);
+// Cases:
+//  - Procedure: we'll automatically show code in the actionType column.
+//    This should only be expandable if we have other procedure data not shown in the main table (body_site/performed)
+//  - Treatment: agent is required. If we have any more keys, the row should be expandable.
+//  - Radiation therapy: all keys are required; if this is present at all, the row should be expandable.
+//  - Therapeutic regimen: ID & status are required, but we only show ID in the table itself, so if present, expandable.
+const isMedicalActionExpandable = (r: MedicalAction) =>
+  !!(
+    r.adverse_events?.length ||
+    r.procedure?.body_site ||
+    r.procedure?.performed ||
+    Object.keys(r.treatment ?? {}).length > 1 ||
+    r.radiation_therapy ||
+    r.therapeutic_regimen
+  );
 
 const MedicalActionsView = ({ medicalActions }: { medicalActions: MedicalAction[] }) => {
   const t = useTranslationFn();
@@ -306,7 +319,7 @@ const MedicalActionsView = ({ medicalActions }: { medicalActions: MedicalAction[
         record.therapeutic_regimen?.external_reference?.id ??
         'unknown'
       }
-      isDataKeyVisible={isMedicalActionsExpandedRowVisible}
+      isRowExpandable={isMedicalActionExpandable}
     />
   );
 };

@@ -46,7 +46,7 @@ const GenomicInterpretationDetails = ({ genomicInterpretation }: { genomicInterp
   return <TDescriptions items={items} size="small" column={1} bordered />;
 };
 
-const isGenomicInterpretationDetailsVisible = (r: GenomicInterpretation) =>
+const isGenomicInterpretationDetailsExpandable = (r: GenomicInterpretation) =>
   !!(r.variant_interpretation || r.gene_descriptor);
 
 const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interpretation }) => {
@@ -101,7 +101,7 @@ const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interp
               <GenomicInterpretationDetails genomicInterpretation={record} />
             )}
             rowKey={(record: GenomicInterpretation) => record.subject_or_biosample_id}
-            isDataKeyVisible={isGenomicInterpretationDetailsVisible}
+            isRowExpandable={isGenomicInterpretationDetailsExpandable}
             queryKey="gi"
           />
         ) : (
@@ -154,7 +154,7 @@ const InterpretationsView = ({ interpretations }: InterpretationsViewProps) => {
       columns={columns}
       expandedRowRender={(record) => <InterpretationsExpandedRow interpretation={record} />}
       rowKey={(record) => record.id}
-      isDataKeyVisible={isInterpretationDetailsVisible}
+      isRowExpandable={isInterpretationDetailsVisible}
     />
   );
 };
