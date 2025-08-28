@@ -102,8 +102,9 @@ const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement
   return null;
 };
 
-const isMeasurementExpandedRowVisible = (measurement: Measurement) =>
+const isMeasurementExpandable = (measurement: Measurement) =>
   !!(measurement.procedure || measurement.value || measurement.complex_value);
+
 interface MeasurementsViewProps {
   measurements: Measurement[];
 }
@@ -142,7 +143,7 @@ const MeasurementsView = ({ measurements }: MeasurementsViewProps) => {
       columns={columns}
       expandedRowRender={(record) => <MeasurementsExpandedRow measurement={record} />}
       rowKey={(record) => record.assay.id}
-      isDataKeyVisible={isMeasurementExpandedRowVisible}
+      isRowExpandable={isMeasurementExpandable}
     />
   );
 };

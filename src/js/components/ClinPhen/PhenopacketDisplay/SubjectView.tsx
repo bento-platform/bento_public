@@ -1,4 +1,4 @@
-import { type DescriptionsProps, Space } from 'antd';
+import { Space, type SpaceProps } from 'antd';
 import OntologyTerm from '@Util/ClinPhen/OntologyTerm';
 import JsonView from '@Util/JsonView';
 import StringList from '@Util/StringList';
@@ -10,7 +10,7 @@ import type { ConditionalDescriptionItem } from '@/types/descriptions';
 
 import { EM_DASH } from '@/constants/common';
 
-const SubjectView = ({ subject, size }: { subject: Individual; size?: DescriptionsProps['size'] }) => {
+const SubjectView = ({ subject, spaceSize }: { subject: Individual; spaceSize?: SpaceProps['size'] }) => {
   const vs = subject?.vital_status;
   const vitalStatusItems: ConditionalDescriptionItem[] = [
     {
@@ -47,7 +47,7 @@ const SubjectView = ({ subject, size }: { subject: Individual; size?: Descriptio
     {
       key: 'Age',
       label: 'subject.age',
-      children: `${subject?.age_numeric} ${subject?.age_unit}`,
+      children: `${subject.age_numeric} ${subject.age_unit}`,
     },
     {
       key: 'alternate_ids',
@@ -58,49 +58,53 @@ const SubjectView = ({ subject, size }: { subject: Individual; size?: Descriptio
     {
       key: 'time_at_last_encounter',
       label: 'subject.time_at_last_encounter',
-      children: <TimeElementDisplay element={subject?.time_at_last_encounter} />,
-      isVisible: subject?.time_at_last_encounter,
+      children: <TimeElementDisplay element={subject.time_at_last_encounter} />,
+      isVisible: subject.time_at_last_encounter,
     },
     {
       key: 'vital_status',
       label: 'subject.vital_status',
       children: <TDescriptions items={vitalStatusItems} />,
-      isVisible: subject?.vital_status,
+      isVisible: subject.vital_status,
     },
     {
       key: 'sex',
       label: 'subject.sex',
-      children: subject?.sex,
+      children: subject.sex,
     },
     {
       key: 'karyotypic_sex',
       label: 'subject.karyotypic_sex',
-      children: subject?.karyotypic_sex,
+      children: subject.karyotypic_sex,
+    },
+    {
+      key: 'gender',
+      label: 'subject.gender',
+      children: subject.gender ? <OntologyTerm term={subject.gender} /> : null,
+      isVisible: subject.gender,
     },
     {
       key: 'taxonomy',
       label: 'subject.taxonomy',
       children: (
         <em>
-          <OntologyTerm term={subject?.taxonomy} />
+          <OntologyTerm term={subject.taxonomy} />
         </em>
       ),
-      isVisible: subject?.taxonomy,
+      isVisible: subject.taxonomy,
     },
   ];
 
-  const extraProperties = Object.entries(subject?.extra_properties ?? {}).map(([key, value]) => ({
+  const extraProperties = Object.entries(subject.extra_properties ?? {}).map(([key, value]) => ({
     key,
     label: key,
     children: (typeof value === 'string' || typeof value === 'number' ? value : <JsonView src={value} />) ?? EM_DASH,
   }));
 
   return (
-    <Space id="subject-view" direction="vertical" className="w-full" size={size === 'small' ? size : 'large'}>
-      <TDescriptions items={items} column={1} bordered size={size ?? 'default'} />
-      {!!extraProperties.length && (
-        <TDescriptions items={extraProperties} column={1} bordered size={size ?? 'default'} />
-      )}
+    <Space id="subject-view" direction="vertical" className="w-full" size={spaceSize ?? 'middle'}>
+      <TDescriptions items={items} column={1} bordered size="small" />
+      {!!extraProperties.length && <TDescriptions items={extraProperties} column={1} bordered size="small" />}
     </Space>
   );
 };

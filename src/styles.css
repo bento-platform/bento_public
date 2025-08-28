@@ -435,6 +435,19 @@ h3.search-sub-form-title:not(.focused) .search-sub-form-title__inner > span.shou
 
 /* END search */
 
+/* BEGIN phenopacket view */
+
+#subject-view .ant-descriptions-item-label {
+  /* Align split line vertically in all descriptions */
+  width: 30vw;
+}
+
+tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .ant-descriptions-view > table {
+  width: auto;
+}
+
+/* END phenopacket view */
+
 
 @media (min-width: 1050px) and (max-width: 1550px) {
   .dataset-provenance-card-grid {
@@ -481,9 +494,4 @@ h3.search-sub-form-title:not(.focused) .search-sub-form-title__inner > span.shou
     /* For small screens, reset group gap size */
     gap: 16px;
   }
-}
-
-#subject-view .ant-descriptions-item-label {
-  /* Align split line vertically in all descriptions */
-  width: 30vw;
 }

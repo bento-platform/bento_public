@@ -210,7 +210,8 @@
   },
   "clinphen_generic": {
     "excluded": "Excluded",
-    "found_absent": "Found to be absent"
+    "found_absent": "Found to be absent",
+    "code": "Code"
   },
   "biosample_expanded_row": {
     "description": "Description",
@@ -220,7 +221,6 @@
     "histological_diagnosis": "Histological diagnosis",
     "pathological_stage": "Pathological stage",
     "procedure": "Procedure",
-    "code": "Code",
     "body_site": "Body site",
     "performed": "Performed",
     "taxonomy": "Taxonomy",
@@ -261,6 +261,7 @@
     "progress_status": "Progress Status",
     "summary": "Summary",
     "disease": "Disease",
+    "disease_diagnosis": "Disease Diagnosis",
     "variant_interpretation": "Variant Interpretation",
     "gene_descriptor": "Gene Descriptor",
     "subject_or_biosample_id": "Subject or Biosample ID",
@@ -360,6 +361,7 @@
     "reference": "Reference"
   },
   "subject": {
+    "subject": "Subject",
     "age": "Age",
     "status": "Status",
     "time_of_death": "Time of Death",
@@ -374,8 +376,6 @@
     "taxonomy": "Taxonomy"
   },
   "tab_keys": {
-    "subject": "Subject",
-    "biosamples": "Biosamples",
     "measurements": "Measurements",
     "phenotypic_features": "Phenotypic Features",
     "diseases": "Diseases",

@@ -13,6 +13,7 @@ import { useGetRouteTitleAndIcon } from '@/hooks/navigation';
 import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
 import { getCurrentPage } from '@/utils/router';
 import CurrentPageHelpModal from '@/components/Util/CurrentPageHelpModal';
+import { useExtraBreadcrumb } from '@/features/ui/hooks';
 
 const breadcrumbRender: BreadcrumbProps['itemRender'] = (route, _params, routes, _paths) => {
   const isLast = route?.path === routes[routes.length - 1]?.path;
@@ -29,7 +30,10 @@ const ScopedTitle = () => {
 
   const getRouteTitleAndIcon = useGetRouteTitleAndIcon();
   const currentPage = getCurrentPage();
-  const scopeSelectionEnabled = !(fixedProject && fixedDataset) && !TOP_LEVEL_ONLY_ROUTES.includes(currentPage);
+  const scopeSelectionEnabled =
+    !(fixedProject && fixedDataset) &&
+    !TOP_LEVEL_ONLY_ROUTES.includes(currentPage) &&
+    currentPage !== BentoRoute.Phenopackets;
   const [scopeSelectModalOpen, setScopeSelectModalOpen] = useState(false);
   const [helpModalOpen, setHelpModalOpen] = useState(false);
 
@@ -37,6 +41,8 @@ const ScopedTitle = () => {
     const k = `page_help.${currentPage}`;
     return k !== t(k);
   }, [t, currentPage]);
+
+  const extraBreadcrumb = useExtraBreadcrumb();
 
   useEffect(() => {
     // If the selected scope changes (likely from the scope select modal), auto-close the modal.
@@ -66,6 +72,10 @@ const ScopedTitle = () => {
       items.push({ title: currentPageTitle });
     }
 
+    if (extraBreadcrumb) {
+      items.push(extraBreadcrumb);
+    }
+
     return items;
   }, [
     i18n.language,
@@ -77,6 +87,7 @@ const ScopedTitle = () => {
     fixedDataset,
     currentPage,
     getRouteTitleAndIcon,
+    extraBreadcrumb,
   ]);
 
   useEffect(() => {
@@ -96,8 +107,6 @@ const ScopedTitle = () => {
     }
   }, [breadcrumbItems]);
 
-  const isPhenopacketView = currentPage === BentoRoute.Phenopackets;
-
   if (breadcrumbItems.length) {
     return (
       <>
@@ -106,7 +115,7 @@ const ScopedTitle = () => {
         <Flex className="scoped-title" align="center">
           <Breadcrumb className="scoped-title__breadcrumb" items={breadcrumbItems} itemRender={breadcrumbRender} />
           <Space>
-            {scopeSelectionEnabled && !isPhenopacketView && (
+            {scopeSelectionEnabled && (
               <Tooltip title={t('Change Scope')} placement="bottom">
                 <Button
                   color="default"

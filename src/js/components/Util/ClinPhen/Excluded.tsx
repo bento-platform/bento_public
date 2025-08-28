@@ -18,7 +18,11 @@ const Excluded = ({ model }: { model: ExcludedModel }) => {
         {t('clinphen_generic.excluded')}:
       </Text>
       &nbsp; {t('clinphen_generic.found_absent')} &nbsp;
-      <Link href={`https://phenopacket-schema.readthedocs.io/en/2.0.0/${model}.html#excluded`}>
+      <Link
+        href={`https://phenopacket-schema.readthedocs.io/en/2.0.0/${model}.html#excluded`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <LinkOutlined />
       </Link>
       )

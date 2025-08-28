@@ -1,4 +1,4 @@
-import { Space, Tooltip, Typography } from 'antd';
+import { Space, Typography } from 'antd';
 import { MedicineBoxOutlined, ExperimentOutlined } from '@ant-design/icons';
 
 import CustomEmpty from '@Util/CustomEmpty';
@@ -13,12 +13,22 @@ import type { Interpretation } from '@/types/clinPhen/interpretation';
 import type { JSONObject } from '@/types/json';
 import type { GenomicInterpretation } from '@/types/clinPhen/genomicInterpretation';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
+import type { Diagnosis } from '@/types/clinPhen/diagnosis';
 
 const GenomicInterpretationDetails = ({ genomicInterpretation }: { genomicInterpretation: GenomicInterpretation }) => {
   const relatedType = (genomicInterpretation?.extra_properties as JSONObject)?.__related_type ?? 'unknown';
 
   const items: ConditionalDescriptionItem[] = [
-    { key: 'id', label: `${relatedType} id`, children: genomicInterpretation.subject_or_biosample_id! }, //TODO: Link to subject or biosample
+    {
+      key: 'id',
+      label:
+        relatedType === 'subject'
+          ? 'subject.subject'
+          : relatedType === 'biosample'
+            ? 'entities.biosample_one'
+            : 'Unknown',
+      children: genomicInterpretation.subject_or_biosample_id!,
+    }, //TODO: Link to subject or biosample
     {
       key: 'Variant Interpretation',
       label: 'interpretations.variant_interpretation',
@@ -36,7 +46,7 @@ const GenomicInterpretationDetails = ({ genomicInterpretation }: { genomicInterp
   return <TDescriptions items={items} size="small" column={1} bordered />;
 };
 
-const isGenomicInterpretationDetailsVisible = (r: GenomicInterpretation) =>
+const isGenomicInterpretationDetailsExpandable = (r: GenomicInterpretation) =>
   !!(r.variant_interpretation || r.gene_descriptor);
 
 const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interpretation }) => {
@@ -46,8 +56,8 @@ const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interp
     {
       key: 'Disease',
       label: 'interpretations.disease',
-      children: <OntologyTerm term={interpretation?.diagnosis?.disease} />,
-      isVisible: interpretation?.diagnosis?.disease,
+      children: <OntologyTerm term={interpretation.diagnosis?.disease} />,
+      isVisible: interpretation.diagnosis?.disease,
     },
   ];
 
@@ -63,7 +73,7 @@ const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interp
     {
       title: 'interpretations.interpretation_status',
       dataIndex: 'interpretation_status',
-      render: (text: string) => t(`genomic_intepretation_status.${text}`),
+      render: (text: string) => t(`genomic_interpretation_status.${text}`),
     },
   ];
 
@@ -91,7 +101,7 @@ const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interp
               <GenomicInterpretationDetails genomicInterpretation={record} />
             )}
             rowKey={(record: GenomicInterpretation) => record.subject_or_biosample_id}
-            isDataKeyVisible={isGenomicInterpretationDetailsVisible}
+            isRowExpandable={isGenomicInterpretationDetailsExpandable}
             queryKey="gi"
           />
         ) : (
@@ -120,22 +130,15 @@ const InterpretationsView = ({ interpretations }: InterpretationsViewProps) => {
       alwaysShow: true,
     },
     {
-      title: 'interpretations.created',
-      dataIndex: 'created',
-      key: 'created',
-      render: (text: string) => <Tooltip title={text}>{new Date(text).toLocaleDateString()}</Tooltip>,
-    },
-    {
-      title: 'interpretations.updated',
-      dataIndex: 'updated',
-      key: 'updated',
-      render: (text: string) => <Tooltip title={text}>{new Date(text).toLocaleDateString()}</Tooltip>,
-    },
-    {
       title: 'interpretations.progress_status',
       dataIndex: 'progress_status',
       key: 'progress_status',
       render: (text: string) => t(`progress_status.${text}`),
+    },
+    {
+      title: 'interpretations.disease_diagnosis',
+      dataIndex: 'diagnosis',
+      render: (diagnosis: Diagnosis | undefined) => <OntologyTerm term={diagnosis?.disease} />,
     },
     {
       title: 'interpretations.summary',
@@ -151,7 +154,7 @@ const InterpretationsView = ({ interpretations }: InterpretationsViewProps) => {
       columns={columns}
       expandedRowRender={(record) => <InterpretationsExpandedRow interpretation={record} />}
       rowKey={(record) => record.id}
-      isDataKeyVisible={isInterpretationDetailsVisible}
+      isRowExpandable={isInterpretationDetailsVisible}
     />
   );
 };

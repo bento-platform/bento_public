@@ -12,7 +12,7 @@ const IndividualRowDetail = ({ id }: { id: string }) => {
     <Skeleton active title={false} paragraph={{ rows: 3 }} style={{ marginTop: 8 }} />
   ) : (
     // TODO: need to inject ontology resources into subject view (for taxonomy) somehow
-    <SubjectView subject={individualData} size="small" />
+    <SubjectView subject={individualData} spaceSize="small" />
   );
 };
 

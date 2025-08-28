@@ -1,7 +1,5 @@
-import type { WithVisible } from '@/types/util';
+import type { VisibilityFn, WithVisible } from '@/types/util';
 
-export const addVisibilityProperty = <T>(r: T[], visibilityFunc: (r: T) => boolean): WithVisible<T>[] =>
-  r.map((item) => ({
-    ...item,
-    isVisible: visibilityFunc(item),
-  }));
+export function addVisibilityProperty<T>(items: T[], visibilityFn: VisibilityFn<T>): WithVisible<T>[] {
+  return items.map((item) => ({ ...item, isVisible: visibilityFn(item) }));
+}
