@@ -99,7 +99,7 @@ function PhenotypicFeatureExpandedRow({ feature }: { feature: PhenotypicFeature 
   return <TDescriptions bordered size="small" items={items} />;
 }
 
-const isPhenotypicFeatureExpandedRowVisible = (record: PhenotypicFeature) =>
+const isPhenotypicFeatureExpandable = (record: PhenotypicFeature) =>
   !!record.description ||
   !!record.modifiers?.length ||
   (record.evidence && record.evidence.length > 0) ||
@@ -149,7 +149,7 @@ const PhenotypicFeaturesView = ({ features }: PhenotypicFeaturesViewProps) => {
       columns={PHENOTYPIC_FEATURES_COLUMNS}
       expandedRowRender={(record) => <PhenotypicFeatureExpandedRow feature={record} />}
       rowKey={(record) => record.type.id}
-      isDataKeyVisible={isPhenotypicFeatureExpandedRowVisible}
+      isRowExpandable={isPhenotypicFeatureExpandable}
     />
   );
 };

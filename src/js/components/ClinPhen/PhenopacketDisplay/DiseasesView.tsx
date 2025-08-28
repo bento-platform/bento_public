@@ -54,7 +54,7 @@ interface DiseasesViewProps {
   diseases: Disease[];
 }
 
-const isDiseaseRowVisible = (r: Disease) =>
+const isDiseaseRowExpandable = (r: Disease) =>
   !!(r.disease_stage?.length || r.clinical_tnm_finding?.length || r.primary_site || r.laterality || r.extra_properties);
 
 const DISEASES_VIEW_COLUMNS: CustomTableColumns<Disease> = [
@@ -88,7 +88,7 @@ const DiseasesView = ({ diseases }: DiseasesViewProps) => {
       columns={DISEASES_VIEW_COLUMNS}
       expandedRowRender={(record) => <DiseaseExpandedRow disease={record} />}
       rowKey={(record) => record.term.id}
-      isDataKeyVisible={isDiseaseRowVisible}
+      isRowExpandable={isDiseaseRowExpandable}
     />
   );
 };

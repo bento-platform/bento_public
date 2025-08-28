@@ -15,7 +15,7 @@ import type { File } from './file';
 
 export interface Phenopacket extends ExtraPropertiesEntity, TimestampedEntity {
   id: string;
-  subject: Individual;
+  subject?: Individual;
   phenotypic_features?: PhenotypicFeature[];
   measurements?: Measurement[];
   biosamples?: Biosample[];

@@ -112,7 +112,7 @@ const BiosampleExpandedRow = ({ biosample }: { biosample: Biosample }) => {
   return <TDescriptions bordered size="small" items={items} />;
 };
 
-const isBiosampleRowVisible = (r: Biosample) =>
+const isBiosampleRowExpandable = (r: Biosample) =>
   !!(
     r.description ||
     r.derived_from_id ||
@@ -157,7 +157,7 @@ const BiosampleView = ({ biosamples }: BiosampleViewProps) => {
       columns={BIOSAMPLE_VIEW_COLUMNS}
       expandedRowRender={(record) => <BiosampleExpandedRow biosample={record} />}
       rowKey="id"
-      isDataKeyVisible={isBiosampleRowVisible}
+      isRowExpandable={isBiosampleRowExpandable}
     />
   );
 };

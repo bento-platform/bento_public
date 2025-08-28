@@ -71,7 +71,7 @@ const TreatmentComponent = ({ treatment }: { treatment: Treatment }) => {
           columns={DOSE_INTERVAL_COLUMNS}
           dataSource={addId(treatment.dose_intervals || [])}
           rowKey={(record) => record.id}
-          isDataKeyVisible={() => true}
+          isRowExpandable={() => true}
         />
       ),
       isVisible: treatment?.dose_intervals,
@@ -119,56 +119,59 @@ const RadiationTherapyComponent = ({ radiationTherapy }: { radiationTherapy: Rad
   return <TDescriptions bordered column={1} size="small" items={radiationTherapyItems} />;
 };
 
-const TherapeuticRegimenComponent = ({ therapeutic_regimen }: { therapeutic_regimen: TherapeuticRegimen }) => {
+const TherapeuticRegimenIdentifier = ({ regimen }: { regimen: TherapeuticRegimen }) => {
   const t = useTranslationFn();
+  return (
+    <>
+      {regimen.ontology_class ?? <OntologyTermComponent term={regimen.ontology_class} />}
+      {regimen.external_reference && (
+        <Flex vertical>
+          <div>
+            <strong>ID:</strong>
+            {regimen?.external_reference?.id ?? EM_DASH}
+          </div>
+          <div>
+            <strong>{t('medical_actions.reference')}:</strong>
+            {t(regimen?.external_reference?.reference) ?? EM_DASH}
+          </div>
+          <div>
+            <strong>{t('Description')}:</strong>
+            {t(regimen?.external_reference?.description) ?? EM_DASH}
+          </div>
+        </Flex>
+      )}
+    </>
+  );
+};
 
-  const TherapeuticRegimenItems: ConditionalDescriptionItem[] = [
+const TherapeuticRegimenComponent = ({ regimen }: { regimen: TherapeuticRegimen }) => {
+  const items: ConditionalDescriptionItem[] = [
     {
       key: 'identifier',
       label: 'medical_actions.identifier',
-      children: (
-        <>
-          {therapeutic_regimen.ontology_class ?? <OntologyTermComponent term={therapeutic_regimen.ontology_class} />}
-          {therapeutic_regimen.external_reference && (
-            <Flex vertical>
-              <div>
-                <strong>ID:</strong>
-                {therapeutic_regimen?.external_reference?.id ?? EM_DASH}
-              </div>
-              <div>
-                <strong>{t('medical_actions.reference')}:</strong>
-                {t(therapeutic_regimen?.external_reference?.reference) ?? EM_DASH}
-              </div>
-              <div>
-                <strong>Description:</strong>
-                {t(therapeutic_regimen?.external_reference?.description) ?? EM_DASH}
-              </div>
-            </Flex>
-          )}
-        </>
-      ),
-      isVisible: therapeutic_regimen.ontology_class || therapeutic_regimen.external_reference,
+      children: <TherapeuticRegimenIdentifier regimen={regimen} />,
+      isVisible: regimen.ontology_class || regimen.external_reference,
     },
     {
       key: 'start_time',
       label: 'medical_actions.start_time',
-      children: <TimeElementDisplay element={therapeutic_regimen.start_time} />,
-      isVisible: therapeutic_regimen.start_time,
+      children: <TimeElementDisplay element={regimen.start_time} />,
+      isVisible: regimen.start_time,
     },
     {
       key: 'end_time',
       label: 'medical_actions.end_time',
-      children: <TimeElementDisplay element={therapeutic_regimen.end_time} />,
-      isVisible: therapeutic_regimen.end_time,
+      children: <TimeElementDisplay element={regimen.end_time} />,
+      isVisible: regimen.end_time,
     },
     {
       key: 'status',
       label: 'medical_actions.status',
-      children: therapeutic_regimen.status,
-      isVisible: therapeutic_regimen.status,
+      children: regimen.status,
+      isVisible: regimen.status,
     },
   ];
-  return <TDescriptions bordered column={1} size="small" items={TherapeuticRegimenItems} />;
+  return <TDescriptions bordered column={1} size="small" items={items} />;
 };
 
 const MedicalActionDetails = ({ medicalAction }: { medicalAction: MedicalAction }) => {
@@ -194,7 +197,7 @@ const MedicalActionDetails = ({ medicalAction }: { medicalAction: MedicalAction 
     {
       key: 'therapeuticRegimen',
       label: 'medical_actions.therapeutic_regimen',
-      children: <TherapeuticRegimenComponent therapeutic_regimen={medicalAction.therapeutic_regimen!} />,
+      children: <TherapeuticRegimenComponent regimen={medicalAction.therapeutic_regimen!} />,
       isVisible: medicalAction.therapeutic_regimen,
     },
     {
@@ -207,8 +210,21 @@ const MedicalActionDetails = ({ medicalAction }: { medicalAction: MedicalAction 
   return <TDescriptions bordered column={1} size="small" items={medicalActionItems} />;
 };
 
-const isMedicalActionsExpandedRowVisible = (r: MedicalAction) =>
-  !!(r.adverse_events?.length || r.procedure || r.treatment || r.radiation_therapy || r.therapeutic_regimen);
+// Cases:
+//  - Procedure: we'll automatically show code in the actionType column.
+//    This should only be expandable if we have other procedure data not shown in the main table (body_site/performed)
+//  - Treatment: agent is required. If we have any more keys, the row should be expandable.
+//  - Radiation therapy: all keys are required; if this is present at all, the row should be expandable.
+//  - Therapeutic regimen: ID & status are required, but we only show ID in the table itself, so if present, expandable.
+const isMedicalActionExpandable = (r: MedicalAction) =>
+  !!(
+    r.adverse_events?.length ||
+    r.procedure?.body_site ||
+    r.procedure?.performed ||
+    Object.keys(r.treatment ?? {}).length > 1 ||
+    r.radiation_therapy ||
+    r.therapeutic_regimen
+  );
 
 const MedicalActionsView = ({ medicalActions }: { medicalActions: MedicalAction[] }) => {
   const t = useTranslationFn();
@@ -217,15 +233,48 @@ const MedicalActionsView = ({ medicalActions }: { medicalActions: MedicalAction[
       title: 'medical_actions.action_type',
       key: 'actionType',
       render: (_: undefined, action: MedicalAction) => {
-        if (action.procedure) return t('medical_actions.procedure');
-        if (action.treatment) return t('medical_actions.treatment');
-        if (action.radiation_therapy) return t('medical_actions.radiation_therapy');
-        if (action.therapeutic_regimen) return t('medical_actions.therapeutic_regimen');
-        return (
-          <Text type="secondary" italic>
-            {t('medical_actions.unknown')}
-          </Text>
-        );
+        // Each of the medical action types has at least one additional required property (often in effect the "ID" of
+        // the medical action) we can show beyond just the type name.
+        // Procedure: procedure code
+        // Treatment: agent
+        // Radiation therapy: modality, body site, dosage, fractions - for now we show the first two in the table
+        // Therapeutic regimen: identifier
+        if (action.procedure) {
+          return (
+            <>
+              {t('medical_actions.procedure')} ({t('clinphen_generic.code')}:{' '}
+              <OntologyTermComponent term={action.procedure.code} />)
+            </>
+          );
+        } else if (action.treatment) {
+          return (
+            <>
+              {t('medical_actions.treatment')} ({t('medical_actions.agent')}:{' '}
+              <OntologyTermComponent term={action.treatment.agent} />)
+            </>
+          );
+        } else if (action.radiation_therapy) {
+          return (
+            <>
+              {t('medical_actions.radiation_therapy')} ({t('medical_actions.modality')}:{' '}
+              <OntologyTermComponent term={action.radiation_therapy.modality} />, {t('medical_actions.body_site')}:{' '}
+              <OntologyTermComponent term={action.radiation_therapy.body_site} />)
+            </>
+          );
+        } else if (action.therapeutic_regimen) {
+          return (
+            <>
+              {t('medical_actions.therapeutic_regimen')} ({t('medical_actions.identifier')}:{' '}
+              <TherapeuticRegimenIdentifier regimen={action.therapeutic_regimen} />)
+            </>
+          );
+        } else {
+          return (
+            <Text type="secondary" italic>
+              {t('medical_actions.unknown')}
+            </Text>
+          );
+        }
       },
       alwaysShow: true,
     },
@@ -263,9 +312,14 @@ const MedicalActionsView = ({ medicalActions }: { medicalActions: MedicalAction[
       columns={columns}
       expandedRowRender={(record) => <MedicalActionDetails medicalAction={record} />}
       rowKey={(record) =>
-        record.procedure?.code?.id || record.treatment?.agent?.id || record.radiation_therapy?.modality?.id || 'unknown'
+        record.procedure?.code?.id ??
+        record.treatment?.agent?.id ??
+        record.radiation_therapy?.modality?.id ??
+        record.therapeutic_regimen?.ontology_class?.id ??
+        record.therapeutic_regimen?.external_reference?.id ??
+        'unknown'
       }
-      isDataKeyVisible={isMedicalActionsExpandedRowVisible}
+      isRowExpandable={isMedicalActionExpandable}
     />
   );
 };

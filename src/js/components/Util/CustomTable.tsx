@@ -6,8 +6,9 @@ import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumn
 import { useNotify } from '@/hooks/notifications';
 import { useTranslationFn } from '@/hooks';
 
-import type { WithVisible } from '@/types/util';
+import type { VisibilityFn, WithVisible } from '@/types/util';
 import { EXPANDED_QUERY_PARAM_KEY } from '@/constants/table';
+import { addVisibilityProperty } from '@/utils/tables';
 
 export interface CustomTableColumn<T> extends TableColumnType<T> {
   isEmpty?: (value: any, record?: T) => boolean; // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -16,12 +17,7 @@ export interface CustomTableColumn<T> extends TableColumnType<T> {
 
 export type CustomTableColumns<T> = CustomTableColumn<T>[];
 
-type VisibilityFn<T> = (record: T) => boolean;
 type RowKeyFn<T> = (record: T, index?: number) => string;
-
-function addVisibility<T>(items: T[], isVisible: VisibilityFn<T>): WithVisible<T>[] {
-  return items.map((item) => ({ ...item, isVisible: isVisible(item) }));
-}
 
 function serializeExpandedKeys(keys: string[]): string {
   return keys.join(',');
@@ -42,7 +38,7 @@ interface CustomTableProps<T> {
   dataSource: T[];
   columns: CustomTableColumns<T>;
   rowKey: string | RowKeyFn<WithVisible<T>>;
-  isDataKeyVisible: VisibilityFn<T>;
+  isRowExpandable: VisibilityFn<T>;
   expandedRowRender?: (record: T) => React.ReactNode;
   queryKey?: string;
 }
@@ -51,7 +47,7 @@ const CustomTable = <T extends object>({
   dataSource,
   columns,
   rowKey,
-  isDataKeyVisible,
+  isRowExpandable,
   expandedRowRender,
   queryKey = EXPANDED_QUERY_PARAM_KEY,
 }: CustomTableProps<T>) => {
@@ -66,7 +62,8 @@ const CustomTable = <T extends object>({
     return (record: WithVisible<T>) => String(record[rowKey as keyof WithVisible<T>]);
   }, [rowKey]);
 
-  const visibleData = useMemo(() => addVisibility(dataSource, isDataKeyVisible), [dataSource, isDataKeyVisible]);
+  // A bit hacky - we use isVisible as a key to represent "expandability" internally in this component:
+  const visibleData = useMemo(() => addVisibilityProperty(dataSource, isRowExpandable), [dataSource, isRowExpandable]);
 
   const translatedColumns = useTranslatedTableColumnTitles(columns) as CustomTableColumns<WithVisible<T>>;
   const processedColumns = useMemo(
@@ -114,6 +111,7 @@ const CustomTable = <T extends object>({
       dataSource={visibleData}
       expandable={{
         expandedRowRender,
+        // Here, isVisible means "is expandable", we're just using the WithVisible type internally:
         rowExpandable: (record) => record.isVisible,
         showExpandColumn: visibleData.some((r) => r.isVisible),
         expandedRowKeys: expandedKeys,
@@ -121,7 +119,8 @@ const CustomTable = <T extends object>({
       }}
       rowKey={rowKey}
       pagination={false}
-      bordered
+      bordered={true}
+      size="small"
     />
   );
 };
