@@ -107,6 +107,13 @@ const PhenopacketSubjectLink = ({ children, packetId }: { children: ReactNode; p
   return <Link to={`/${language}/phenopackets/${packetId}/subject`}>{children}</Link>;
 };
 
+const PhenopacketBiosampleLink = ({ packetId, sampleId }: { packetId: string; sampleId: string }) => {
+  const {
+    i18n: { language },
+  } = useTranslation();
+  return <Link to={`/${language}/phenopackets/${packetId}/biosamples?expanded=${sampleId}`}>{sampleId}</Link>;
+};
+
 const TABLE_SPEC_PHENOPACKET: ResultsTableSpec<DiscoveryMatchPhenopacket> = {
   fixedColumns: [
     {
@@ -133,7 +140,7 @@ const TABLE_SPEC_BIOSAMPLE: ResultsTableSpec<DiscoveryMatchBiosample> = {
     {
       dataIndex: 'id',
       title: 'Biosample ID',
-      render: (id: string) => <div>{id}</div>, // TODO: link
+      render: (id: string, rec) => (rec.p ? <PhenopacketBiosampleLink packetId={rec.p} sampleId={id} /> : id),
     } as TableColumnType<DiscoveryMatchBiosample>,
   ],
   availableColumns: COMMON_SEARCH_TABLE_COLUMNS,
