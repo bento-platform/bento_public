@@ -5,7 +5,7 @@ import { PUBLIC_URL } from '@/config';
 import { katsuPublicRulesUrl } from '@/constants/configConstants';
 import type { ServiceInfoStore, ServicesResponse } from '@/types/services';
 import type { RootState } from '@/store';
-import type { DiscoveryRules } from '@/types/configResponse';
+import type { DiscoveryRules } from '@/types/discovery/rules';
 import { RequestStatus } from '@/types/requests';
 import { printAPIError } from '@/utils/error.util';
 import { scopedAuthorizedRequestConfig } from '@/utils/requests';

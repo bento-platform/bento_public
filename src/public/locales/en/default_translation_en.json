@@ -26,6 +26,9 @@
       "Experiments are a process done to a specific sample, e.g., whole-genome sequencing.",
       "One lab experiment may result in multiple experiment records inside the portal, such as with multiplexed samples."
     ],
+    "experiment_result_one": "File",
+    "experiment_result_other": "Files",
+    "experiment_result_help": "Files are generated as the result of experiments.",
     "variant_one": "Variant",
     "variant_other": "Variants"
   },

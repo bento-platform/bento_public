@@ -3,17 +3,16 @@ import { Routes, Route, useNavigate, useParams, Outlet } from 'react-router-dom'
 import { useAutoAuthenticate, useIsAuthenticated } from 'bento-auth-js';
 import { useAppDispatch } from '@/hooks';
 
-import { clearIndividualCache } from '@/features/clinPhen/clinPhen.store';
+import { clearBiosampleCache, clearIndividualCache, clearPhenopacketCache } from '@/features/clinPhen/clinPhen.store';
 import { invalidateConfig, makeGetServiceInfoRequest } from '@/features/config/config.store';
 import { makeGetAboutRequest } from '@/features/content/content.store';
 import { getBeaconConfig, getBeaconFilters } from '@/features/beacon/beacon.store';
 import { getBeaconNetworkConfig } from '@/features/beacon/network.store';
-import { invalidateData } from '@/features/data/data.store';
 import { invalidateDataTypes } from '@/features/dataTypes/dataTypes.store';
 import { useMetadata } from '@/features/metadata/hooks';
 import { getProjects, markScopeSet, selectScope } from '@/features/metadata/metadata.store';
 import { getGenomes } from '@/features/reference/reference.store';
-import { makeGetKatsuPublic, makeGetSearchFields, resetAllQueryState } from '@/features/search/query.store';
+import { performKatsuDiscovery, fetchSearchFields, resetAllQueryState } from '@/features/search/query.store';
 
 import Loader from '@/components/Loader';
 import DefaultLayout from '@/components/Util/DefaultLayout';
@@ -102,8 +101,8 @@ const BentoAppRouter = () => {
     //   inheritance, but this would require quite a bit more logic and maybe is unnecessarily complex.
     dispatch(resetAllQueryState());
 
-    dispatch(makeGetSearchFields());
-    dispatch(makeGetKatsuPublic());
+    dispatch(fetchSearchFields());
+    dispatch(performKatsuDiscovery());
 
     if (BEACON_UI_ENABLED) {
       dispatch(getBeaconConfig());
@@ -112,7 +111,7 @@ const BentoAppRouter = () => {
 
     // If scope or authorization status changed, invalidate anything which is scope/authz-contextual and uses a
     // lazy-loading-style hook for data fetching:
-    console.debug('isAuthenticated | scope | scopeSet changed - dispatching config/data/dataTypes invalidate actions', {
+    console.debug('isAuthenticated | scope | scopeSet changed - dispatching config/dataTypes invalidate actions', {
       isAuthenticated,
       scope,
       scopeSet,
@@ -121,17 +120,17 @@ const BentoAppRouter = () => {
     // the new context.
     //  - Censorship configs are invalid when auth/scope changes, since censorship rules may be different.
     dispatch(invalidateConfig());
-    //  - Overview data is invalid: there is different data, and the overview itself may be configured differently.
-    dispatch(invalidateData());
     //  - Data types are (partially) invalid: counts and last-ingestion time may be different.
     dispatch(invalidateDataTypes());
   }, [dispatch, isAuthenticated, scope, scopeSet]);
 
   useEffect(() => {
     // If authorization status changed, invalidate anything which is authorization-dependent.
-    //  - clear the individuals cache, since we shouldn't have any detailed data hanging around
+    //  - clear the clin/phen caches, since we shouldn't have any detailed data hanging around
     //    post-authorization-status change, especially in case of a sign-out.
     dispatch(clearIndividualCache());
+    dispatch(clearPhenopacketCache());
+    dispatch(clearBiosampleCache());
   }, [dispatch, isAuthenticated]);
 
   useEffect(() => {

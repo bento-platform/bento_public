@@ -27,7 +27,7 @@ const PhenopacketView = () => {
 
   const api = useNotify();
 
-  const { phenopacket, status, isAuthorized } = usePhenopacketData(packetId ?? '');
+  const { data: phenopacket, status, isAuthorized } = usePhenopacketData(packetId ?? '');
 
   const { handleTabChange, activeTabs, tabs, tabContent } = usePhenopacketTabs(phenopacket);
 

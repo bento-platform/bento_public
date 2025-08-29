@@ -14,7 +14,8 @@ const TruncatedParagraph = ({ maxRows, children, style }: TruncatedParagraphProp
           styles: { root: { maxWidth: 560 }, body: { color: 'rgba(0, 0, 0, 0.88)' } },
         },
       }}
-      style={{ marginBottom: 0, ...(style ?? {}) }}
+      className="mb-0"
+      style={style}
     >
       {children}
     </Typography.Paragraph>

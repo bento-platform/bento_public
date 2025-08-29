@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-import { MAX_CHARTS, katsuPublicOverviewUrl } from '@/constants/configConstants';
+import { MAX_CHARTS, katsuDiscoveryUrl } from '@/constants/configConstants';
 import { DEFAULT_CHART_WIDTH } from '@/constants/overviewConstants';
 import { serializeChartData } from '@/utils/chart';
 import { printAPIError } from '@/utils/error.util';
@@ -15,9 +15,9 @@ import {
 import { scopedAuthorizedRequestConfig } from '@/utils/requests';
 
 import type { RootState } from '@/store';
-import type { ChartConfig } from '@/types/chartConfig';
+import type { ChartConfig } from '@/types/discovery/chartConfig';
 import type { ChartDataField, LocalStorageChartData, Sections } from '@/types/data';
-import type { CountsOrBooleans, OverviewResponse } from '@/types/overviewResponse';
+import type { CountsOrBooleans, DiscoveryResponse } from '@/types/discovery/response';
 import { RequestStatus } from '@/types/requests';
 
 export const makeGetDataRequestThunk = createAsyncThunk<
@@ -27,12 +27,14 @@ export const makeGetDataRequestThunk = createAsyncThunk<
 >(
   'data/makeGetDataRequest',
   async (_, { rejectWithValue, getState }) => {
-    const overviewResponse = (await axios
-      .get(katsuPublicOverviewUrl, scopedAuthorizedRequestConfig(getState()))
-      .then((res) => res.data)
-      .catch(printAPIError(rejectWithValue))) as OverviewResponse['overview'];
+    const state = getState();
 
-    const sections = overviewResponse.layout;
+    const discoveryResponse = (await axios
+      .get(katsuDiscoveryUrl, scopedAuthorizedRequestConfig(state, state.query.filterQueryParams))
+      .then((res) => res.data)
+      .catch(printAPIError(rejectWithValue))) as DiscoveryResponse;
+
+    const sections = discoveryResponse.layout;
 
     // Take chart configuration and create a combined state object with:
     //   the chart configuration
@@ -40,11 +42,11 @@ export const makeGetDataRequestThunk = createAsyncThunk<
     // + field definition (from config.field)
     // + the fields' relevant data.
     const normalizeChart = (chart: ChartConfig, i: number): ChartDataField => {
-      const { data, ...field } = overviewResponse.fields[chart.field];
+      const { data, definition } = discoveryResponse.fields[chart.field];
       return {
-        id: field.id,
+        id: chart.field,
         chartConfig: chart,
-        field,
+        field: definition,
         data: serializeChartData(data),
         // Initial display state
         isDisplayed: i < MAX_CHARTS,
@@ -55,7 +57,7 @@ export const makeGetDataRequestThunk = createAsyncThunk<
     const sectionData: Sections = sections.map(({ section_title, charts }) => ({
       sectionTitle: section_title,
       // Filter out charts where field data is missing due to missing counts permissions for the field's data type
-      charts: charts.filter((c) => !!overviewResponse.fields[c.field]).map(normalizeChart),
+      charts: charts.filter((c) => !!discoveryResponse.fields[c.field]).map(normalizeChart),
     }));
 
     const defaultSectionData = JSON.parse(JSON.stringify(sectionData));
@@ -77,18 +79,19 @@ export const makeGetDataRequestThunk = createAsyncThunk<
     convertedData = convertSequenceAndDisplayData(sectionData);
     saveValue(lsKey, convertedData);
 
-    return { sectionData, counts: overviewResponse.counts, defaultData: defaultSectionData };
+    return { sectionData, counts: discoveryResponse.counts, defaultData: defaultSectionData };
   },
   {
     condition(_, { getState }) {
       const {
-        data: { status, isInvalid },
+        data: { status },
+        query: { textQueryStatus },
       } = getState();
-      const cond = status !== RequestStatus.Pending && (status === RequestStatus.Idle || isInvalid);
+      const cond = status !== RequestStatus.Pending && textQueryStatus !== RequestStatus.Pending;
       if (!cond) {
         console.debug(
           `makeGetDataRequestThunk() was attempted, but will not dispatch: status=${RequestStatus[status]}, ` +
-            `isInvalid=${isInvalid}`
+            `textQueryStatus=${RequestStatus[textQueryStatus]}`
         );
       }
       return cond;
