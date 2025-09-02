@@ -34,6 +34,8 @@
   },
   "search": {
     "filters": "Filters",
+    "filters_applied_one": "{{count}} filter applied",
+    "filters_applied_other": "{{count}} filters applied",
     "text_search": "Text search",
     "filter_placeholder": "Select a field to filter by\u2026",
     "showing_entities": "Showing {{entity, lowercase}} {{start}}-{{end}} of {{total}}",

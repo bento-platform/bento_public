@@ -36,6 +36,8 @@
   },
   "search": {
     "filters": "Filtres",
+    "filters_applied_one": "{{count}} filtre appliqué",
+    "filters_applied_other": "{{count}} filtres appliqués",
     "text_search": "Recherche de texte",
     "filter_placeholder": "Sélectionner un champ à filtrer \u2026",
     "showing_entities": "Affichage des {{entity, lowercase}} {{start}}-{{end}} sur {{total}}",

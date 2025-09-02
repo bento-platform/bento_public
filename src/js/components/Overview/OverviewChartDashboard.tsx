@@ -58,7 +58,6 @@ const OverviewChartDashboard = () => {
   const [pageTab, setPageTab] = useState('about');
 
   const nFilters = Object.keys(filterQueryParams).length;
-  // todo: translate filters applied with pluralization
   const nFiltersAppliedTag = (
     <Tag
       color="green"
@@ -76,7 +75,7 @@ const OverviewChartDashboard = () => {
         boxSizing: 'border-box',
       }}
     >
-      {nFilters} filter(s) applied
+      {t('search.filters_applied', { count: nFilters })}
     </Tag>
   );
 
