@@ -152,12 +152,15 @@ const query = createSlice({
       performKatsuDiscovery.fulfilled,
       (state, { payload }: PayloadAction<DiscoveryResponseOrMessage>) => {
         state.filterQueryStatus = RequestStatus.Fulfilled;
-        if (payload && 'message' in payload) {
+        if (payload && 'message' in payload && payload.message) {
           state.message = payload.message;
           return;
         }
         state.message = '';
-        state.resultCountsOrBools = payload.counts;
+
+        if ('counts' in payload) {
+          state.resultCountsOrBools = payload.counts;
+        }
         // {
         //   resultCountsOrBools: payload.counts;
         //   // biosampleChartData: serializeChartData(payload.biosamples.sampled_tissue),

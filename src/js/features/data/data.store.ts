@@ -22,6 +22,7 @@ const initialState: DataState = {
     individual: 0,
     biosample: 0,
     experiment: 0,
+    experiment_result: 0,
   },
 };
 
