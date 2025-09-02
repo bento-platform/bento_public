@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Flex, FloatButton, Tabs, type TabsProps, Tag } from 'antd';
 import { AppstoreAddOutlined, FileTextOutlined, SearchOutlined, SolutionOutlined } from '@ant-design/icons';
 
@@ -55,7 +55,18 @@ const OverviewChartDashboard = () => {
 
   // ---
 
+  const [hasChangedTabs, setHasChangedTabs] = useState(false);
   const [pageTab, setPageTab] = useState('about');
+
+  useEffect(() => {
+    // If the user has not manually changed tabs / this effect has not already run, and we have at least one search
+    // filter set, auto-switch to the search tab rather than the about tab to make the applied filter(s) more obvious.
+
+    if (!hasChangedTabs && Object.keys(filterQueryParams).length) {
+      setPageTab('search');
+      setHasChangedTabs(true);
+    }
+  }, [hasChangedTabs, filterQueryParams]);
 
   const nFilters = Object.keys(filterQueryParams).length;
   const nFiltersAppliedTag = (
@@ -104,7 +115,10 @@ const OverviewChartDashboard = () => {
             type="card"
             size="large"
             activeKey={pageTab}
-            onChange={(k) => setPageTab(k)}
+            onChange={(k) => {
+              setPageTab(k);
+              setHasChangedTabs(true);
+            }}
             items={pageTabItems}
             id="dashboard-tabs"
             tabBarStyle={{ marginBottom: -1, zIndex: 1 }}
