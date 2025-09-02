@@ -5,7 +5,7 @@ export const MAX_CHARTS = 3;
 const katsuBaseUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata`;
 
 // Katsu discovery URLs
-export const katsuDiscoveryRulesUrl = `${katsuBaseUrl}/api/public_rules`;
+export const katsuDiscoveryRulesUrl = `${katsuBaseUrl}/api/discovery_rules`;
 export const katsuDiscoverySearchFieldsUrl = `${katsuBaseUrl}/api/discovery_search_fields`;
 export const katsuDiscoveryUrl = `${katsuBaseUrl}/api/discovery`;
 export const katsuDiscoveryMatchesUrl = `${katsuBaseUrl}/api/discovery_matches`;
