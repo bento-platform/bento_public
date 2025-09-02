@@ -15,9 +15,10 @@ import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
 import Counts from './Counts';
 import LastIngestionInfo from './LastIngestion';
 import DatasetProvenance from '@/components/Provenance/DatasetProvenance';
-import { SearchForm, useSearchRouterAndHandler } from '@/components/Search/Search';
+import { SearchForm } from '@/components/Search/Search';
 
 import { useTranslationFn } from '@/hooks';
+import { useSearchRouterAndHandler } from '@/hooks/useSearchRouterAndHandler';
 import { useData, useSearchableFields } from '@/features/data/hooks';
 import { useSelectedDataset, useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
 import { useSearchQuery } from '@/features/search/hooks';
