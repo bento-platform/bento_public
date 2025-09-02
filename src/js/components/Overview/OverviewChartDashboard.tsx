@@ -15,7 +15,7 @@ import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
 import Counts from './Counts';
 import LastIngestionInfo from './LastIngestion';
 import DatasetProvenance from '@/components/Provenance/DatasetProvenance';
-import { SearchForm } from '@/components/Search/Search';
+import SearchForm from '@/components/Search/SearchForm';
 
 import { useTranslationFn } from '@/hooks';
 import { useSearchRouterAndHandler } from '@/hooks/useSearchRouterAndHandler';
