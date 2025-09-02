@@ -1,5 +1,5 @@
 import type { Datum } from '@/types/discovery';
-import type { BentoCountEntity } from '@/types/entities';
+import type { BentoCountEntity, BentoKatsuEntity } from '@/types/entities';
 import type { ChartLayoutSection } from './chartConfig';
 import type { Field } from './fieldDefinition';
 
@@ -7,8 +7,9 @@ export interface DiscoveryResponse {
   layout: ChartLayoutSection[];
   fields: DiscoveryFieldResponses;
   root_entity: 'phenopacket';
+  queried_entities: BentoKatsuEntity[];
+  message?: string | null;
   counts: CountsOrBooleans;
-  matches: null; // TODO
 }
 
 export type DiscoveryResponseOrMessage = DiscoveryResponse | { message: string };
@@ -19,6 +20,7 @@ export type CountsOrBooleans = Record<BentoCountEntity, number | boolean> & {
   individual: number | boolean;
   biosample: number | boolean;
   experiment: number | boolean;
+  experiment_result: number | boolean;
 };
 
 export type DiscoveryFieldResponses = {
