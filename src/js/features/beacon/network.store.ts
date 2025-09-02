@@ -23,7 +23,7 @@ import {
   extractBeaconDiscoveryOverview,
   networkAssemblyIds,
   networkQueryUrl,
-  packageBeaconNetworkQuerySections,
+  packageBeaconFilteringTerms,
 } from './utils';
 
 // can parameterize at some point in the future
@@ -136,11 +136,11 @@ const beaconNetwork = createSlice({
       state.networkConfigStatus = RequestStatus.Pending;
     });
     builder.addCase(getBeaconNetworkConfig.fulfilled, (state, { payload }) => {
-      const allFilters = packageBeaconNetworkQuerySections(payload.filtersUnion);
+      const allFilters = packageBeaconFilteringTerms(payload.filtersUnion);
       state.networkConfigStatus = RequestStatus.Fulfilled;
       state.beacons = payload.beacons;
       state.filtersUnion = allFilters;
-      state.filtersIntersection = packageBeaconNetworkQuerySections(payload.filtersIntersection);
+      state.filtersIntersection = packageBeaconFilteringTerms(payload.filtersIntersection);
       state.currentFilters = allFilters;
       state.assemblyIds = networkAssemblyIds(payload.beacons);
     });

@@ -185,6 +185,7 @@ export interface BeaconFilteringTermFromEndpoint {
   values: string[];
   bento: {
     section: string;
+    mapping?: string;
   };
   units?: string;
 }

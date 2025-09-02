@@ -1,5 +1,4 @@
-import type { SearchFieldSection } from '@/features/search/types';
-import type { BeaconServiceInfo, BeaconQueryPayload } from '@/types/beacon';
+import type { BeaconFilteringTermFromEndpoint, BeaconServiceInfo, BeaconQueryPayload } from '@/types/beacon';
 
 export interface NetworkBeacon extends BeaconServiceInfo {
   apiUrl: string;
@@ -19,8 +18,8 @@ export interface NetworkBeacon extends BeaconServiceInfo {
 
 // more to come here
 export interface BeaconNetworkConfig {
-  filtersUnion: SearchFieldSection[];
-  filtersIntersection: SearchFieldSection[];
+  filtersUnion: BeaconFilteringTermFromEndpoint[];
+  filtersIntersection: BeaconFilteringTermFromEndpoint[];
   beacons: NetworkBeacon[];
 }
 
