@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { searchFieldsUrl } from '@/constants/configConstants';
+import { katsuDiscoverySearchFieldsUrl } from '@/constants/configConstants';
 import type { RootState } from '@/store';
 import { RequestStatus } from '@/types/requests';
 import type { SearchFieldResponse } from '@/features/search/types';
@@ -11,7 +11,7 @@ export const fetchSearchFields = createAsyncThunk<SearchFieldResponse, void, { r
   'query/fetchSearchFields',
   (_, { rejectWithValue, getState }) => {
     return axios
-      .get(searchFieldsUrl, scopedAuthorizedRequestConfig(getState()))
+      .get(katsuDiscoverySearchFieldsUrl, scopedAuthorizedRequestConfig(getState()))
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue));
   },

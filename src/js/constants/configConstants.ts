@@ -2,22 +2,24 @@ import { PUBLIC_URL_NO_TRAILING_SLASH } from '@/config';
 
 export const MAX_CHARTS = 3;
 
+const katsuBaseUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata`;
+
 // Katsu discovery URLs
-export const katsuPublicRulesUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/public_rules`;
-export const searchFieldsUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/discovery_search_fields`;
-export const katsuDiscoveryUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/discovery`;
-export const katsuDiscoveryMatchesUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/discovery_matches`;
+export const katsuDiscoveryRulesUrl = `${katsuBaseUrl}/api/public_rules`;
+export const katsuDiscoverySearchFieldsUrl = `${katsuBaseUrl}/api/discovery_search_fields`;
+export const katsuDiscoveryUrl = `${katsuBaseUrl}/api/discovery`;
+export const katsuDiscoveryMatchesUrl = `${katsuBaseUrl}/api/discovery_matches`;
 
 // Katsu entity API (Django Rest Framework) base URLs
-export const projectsUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/projects`;
-export const datasetsUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/datasets`;
-export const individualUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/individuals`;
-export const individualBatchUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/batch/individuals`;
-export const phenopacketUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/phenopackets`;
-export const biosampleUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/biosamples`;
-export const biosampleBatchUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/batch/biosamples`;
-export const experimentUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/experiments`;
-export const experimentBatchUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/batch/experiments`;
+export const projectsUrl = `${katsuBaseUrl}/api/projects`;
+export const datasetsUrl = `${katsuBaseUrl}/api/datasets`;
+export const individualUrl = `${katsuBaseUrl}/api/individuals`;
+export const individualBatchUrl = `${katsuBaseUrl}/api/batch/individuals`;
+export const phenopacketUrl = `${katsuBaseUrl}/api/phenopackets`;
+export const biosampleUrl = `${katsuBaseUrl}/api/biosamples`;
+export const biosampleBatchUrl = `${katsuBaseUrl}/api/batch/biosamples`;
+export const experimentUrl = `${katsuBaseUrl}/api/experiments`;
+export const experimentBatchUrl = `${katsuBaseUrl}/api/batch/experiments`;
 
 export const referenceGenomesUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/reference/genomes`;
 
