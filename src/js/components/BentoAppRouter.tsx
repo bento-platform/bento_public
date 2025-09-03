@@ -68,6 +68,10 @@ const ScopedRoute = () => {
       (!projectId && !datasetId && isFixedProjectAndDataset)
     ) {
       dispatch(selectScope(valid.scope)); // Also marks scope as set
+
+      // Conditions where we need to reload "config" (which really is closer to rules for search):
+      //  - scope was set (need to load for the first time)
+      //  - config was invalidated (scope or authorization changed)
       dispatch(makeGetConfigRequest());
       return;
     }
