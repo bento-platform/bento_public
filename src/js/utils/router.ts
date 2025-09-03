@@ -8,7 +8,7 @@ export const pathParts = (pathName: string): string[] => pathName.split('/').sli
 
 export const getPathPageIndex = (pathParts: string[]): number => {
   // We can ascertain from the URL structure which item in the path array represents the current "page"
-  // (overview/search/provenance/etc.)
+  // (overview/provenance/etc.)
   //  /en/about --> ['en', 'about'] --> page is at index 1
   //  /en/p/<uuid>/about --> ['en', 'p', '<uuid>', 'about'] --> page is at index 3
   //  /en/p/<uuid>/d/<uuid>/about --> ['en', 'p', '<uuid>', 'd', '<uuid>', 'about'] --> page is at index 5

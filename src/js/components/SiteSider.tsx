@@ -50,7 +50,7 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
       newPath.push(key);
       const newPathString = '/' + newPath.join('/');
       navigate(
-        key === BentoRoute.Overview || key === BentoRoute.Search
+        key === BentoRoute.Overview
           ? buildQueryParamsUrl(
               newPathString,
               queryMode === 'filters'
@@ -76,10 +76,7 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
   const getRouteTitleAndIcon = useGetRouteTitleAndIcon();
 
   const menuItems: MenuItem[] = useMemo(() => {
-    const items = [
-      createMenuItem(BentoRoute.Overview, ...getRouteTitleAndIcon(BentoRoute.Overview)),
-      createMenuItem(BentoRoute.Search, ...getRouteTitleAndIcon(BentoRoute.Search)),
-    ];
+    const items = [createMenuItem(BentoRoute.Overview, ...getRouteTitleAndIcon(BentoRoute.Overview))];
 
     if (scope.project) {
       // Only show provenance if we're not at the top level, since the giant list of context-less datasets is confusing.

@@ -1,7 +1,7 @@
 import { type ReactNode, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { BookOutlined, PieChartOutlined, SearchOutlined, ShareAltOutlined, SolutionOutlined } from '@ant-design/icons';
+import { BookOutlined, PieChartOutlined, ShareAltOutlined, SolutionOutlined } from '@ant-design/icons';
 
 import BeaconLogo from '@/components/Beacon/BeaconLogo';
 
@@ -34,8 +34,6 @@ export const useGetRouteTitleAndIcon = () => {
       switch (routeId) {
         case BentoRoute.Overview:
           return overviewIsCatalogue ? ['Catalogue', <BookOutlined />] : ['Overview', <PieChartOutlined />];
-        case BentoRoute.Search:
-          return ['Search', <SearchOutlined />];
         case BentoRoute.Provenance:
           return ['Provenance', <SolutionOutlined />];
         case BentoRoute.Beacon:

@@ -114,7 +114,7 @@ export const useSearchRouterAndHandler = () => {
   // +-------------------------------+
   // Synchronize Redux query params state from URL, or URL from Redux state in some cases.
   useEffect(() => {
-    if (![BentoRoute.Overview, BentoRoute.Search].includes(currentPage)) return;
+    if (currentPage !== BentoRoute.Overview) return;
 
     // Wait until:
     //  - we have loaded the max. # of query parameters we can query
