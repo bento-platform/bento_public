@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { Button, Card, Carousel, Descriptions, Flex, Space, Tag, Tooltip, Typography } from 'antd';
-import { PieChartOutlined, ProfileOutlined, SearchOutlined } from '@ant-design/icons';
+import { PieChartOutlined, ProfileOutlined } from '@ant-design/icons';
 
 import type { Project } from '@/types/metadata';
 import { scopeToUrl } from '@/utils/router';
@@ -141,16 +141,8 @@ const CatalogueCard = ({ project }: { project: Project }) => {
                 icon={datasets.length ? <PieChartOutlined /> : <ProfileOutlined />}
                 onClick={() => navigate(scopeToUrl({ project: identifier }, language, 'overview'))}
               >
-                {t('Overview')}
+                {t('Explore')}
               </Button>
-              {datasets.length ? (
-                <Button
-                  icon={<SearchOutlined />}
-                  onClick={() => navigate(scopeToUrl({ project: identifier }, language, 'search'))}
-                >
-                  {t('Search')}
-                </Button>
-              ) : null}
             </Flex>
           </Flex>
         }

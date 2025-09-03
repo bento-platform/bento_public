@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { Avatar, Button, Card, Flex, List, Popover, Space, Tag, Typography } from 'antd';
-import { ExpandAltOutlined, PieChartOutlined, SearchOutlined, SolutionOutlined } from '@ant-design/icons';
+import { ExpandAltOutlined, PieChartOutlined, SolutionOutlined } from '@ant-design/icons';
 import { FaDatabase } from 'react-icons/fa';
 
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
@@ -63,7 +63,6 @@ const Dataset = ({
 
   const onNavigateCurrent = useCallback(() => navigate(`${datasetBaseURL}${page}`), [navigate, datasetBaseURL, page]);
   const onNavigateOverview = useCallback(() => navigate(`${datasetBaseURL}overview`), [navigate, datasetBaseURL]);
-  const onNavigateSearch = useCallback(() => navigate(`${datasetBaseURL}search`), [navigate, datasetBaseURL]);
 
   const openProvenanceModal = useCallback(() => setProvenanceModalOpen(true), []);
   const closeProvenanceModal = useCallback(() => setProvenanceModalOpen(false), []);
@@ -113,10 +112,7 @@ const Dataset = ({
           </Space>
           <Flex gap={12} align="flex-end" className="flex-1">
             <Button icon={<PieChartOutlined />} onClick={onNavigateOverview}>
-              {t('Overview')}
-            </Button>
-            <Button icon={<SearchOutlined />} onClick={onNavigateSearch}>
-              {t('Search')}
+              {t('Explore')}
             </Button>
           </Flex>
         </Flex>
@@ -135,10 +131,7 @@ const Dataset = ({
         <TruncatedParagraph>{t(description)}</TruncatedParagraph>
         <Flex gap={8} style={{ marginTop: 8 }}>
           <Button size="small" icon={<PieChartOutlined />} onClick={onNavigateOverview}>
-            {t('Overview')}
-          </Button>
-          <Button size="small" icon={<SearchOutlined />} onClick={onNavigateSearch}>
-            {t('Search')}
+            {t('Explore')}
           </Button>
         </Flex>
       </>
