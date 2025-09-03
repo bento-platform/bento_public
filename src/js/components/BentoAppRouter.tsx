@@ -4,7 +4,7 @@ import { useAutoAuthenticate, useIsAuthenticated } from 'bento-auth-js';
 import { useAppDispatch } from '@/hooks';
 
 import { clearIndividualCache } from '@/features/clinPhen/clinPhen.store';
-import { invalidateConfig, makeGetServiceInfoRequest } from '@/features/config/config.store';
+import { invalidateConfig, makeGetServiceInfoRequest, makeGetConfigRequest } from '@/features/config/config.store';
 import { makeGetAboutRequest } from '@/features/content/content.store';
 import { getBeaconConfig, getBeaconFilters } from '@/features/beacon/beacon.store';
 import { getBeaconNetworkConfig } from '@/features/beacon/network.store';
@@ -68,6 +68,7 @@ const ScopedRoute = () => {
       (!projectId && !datasetId && isFixedProjectAndDataset)
     ) {
       dispatch(selectScope(valid.scope)); // Also marks scope as set
+      dispatch(makeGetConfigRequest());
       return;
     }
 
