@@ -4,7 +4,7 @@ import { useAutoAuthenticate, useIsAuthenticated } from 'bento-auth-js';
 import { useAppDispatch } from '@/hooks';
 
 import { clearBiosampleCache, clearIndividualCache, clearPhenopacketCache } from '@/features/clinPhen/clinPhen.store';
-import { invalidateConfig, makeGetServiceInfoRequest } from '@/features/config/config.store';
+import { invalidateConfig, makeGetServiceInfoRequest, makeGetConfigRequest } from '@/features/config/config.store';
 import { makeGetAboutRequest } from '@/features/content/content.store';
 import { getBeaconConfig, getBeaconFilters } from '@/features/beacon/beacon.store';
 import { getBeaconNetworkConfig } from '@/features/beacon/network.store';
@@ -66,6 +66,11 @@ const ScopedRoute = () => {
       (!projectId && !datasetId && isFixedProjectAndDataset)
     ) {
       dispatch(selectScope(valid.scope)); // Also marks scope as set
+
+      // Conditions where we need to reload "config" (which really is closer to rules for search):
+      //  - scope was set (need to load for the first time)
+      //  - config was invalidated (scope or authorization changed)
+      dispatch(makeGetConfigRequest());
       return;
     }
 
