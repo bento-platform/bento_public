@@ -1,4 +1,4 @@
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useState, memo, useCallback } from 'react';
 import { Card, Flex, Skeleton, Space, Statistic } from 'antd';
 import { DownOutlined, ExperimentOutlined, FileOutlined, TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
@@ -36,6 +36,30 @@ const CountCardPlaceholder = ({ loading }: { loading: boolean }) => {
   );
 };
 
+const CountCardShowHide = memo(({ selected, onClear }: { selected: boolean; onClear: () => void }) => {
+  const t = useTranslationFn();
+
+  return (
+    <div
+      className="count-card__show-hide cursor-pointer antd-gray-7"
+      style={{
+        backgroundColor: selected ? 'rgba(255, 255, 255, 1.0)' : 'rgba(255, 255, 255, 0.0)',
+        bottom: selected ? -8 : 0,
+      }}
+      onClick={selected ? onClear : undefined}
+    >
+      <DownOutlined
+        style={{
+          transform: `rotate(${selected ? '180deg' : '0deg'})`,
+          transition: 'transform 0.15s ease-in-out',
+        }}
+      />{' '}
+      {t(selected ? 'HIDE' : 'SHOW')}
+    </div>
+  );
+});
+CountCardShowHide.displayName = 'CountCardShowHide';
+
 const renderCount = (count: number | boolean | undefined, threshold: number): number | string =>
   count === undefined
     ? NO_RESULTS_DASHES
@@ -45,9 +69,7 @@ const renderCount = (count: number | boolean | undefined, threshold: number): nu
         : NO_RESULTS_DASHES
       : count;
 
-const Counts = () => {
-  const t = useTranslationFn();
-
+const CountsAndResults = () => {
   const { resultCountsOrBools: counts, filterQueryStatus: status, filterQueryParams } = useSearchQuery();
 
   const uncensoredCounts = useCanSeeUncensoredCounts();
@@ -58,6 +80,7 @@ const Counts = () => {
   const { hasPermission: hasQueryData } = useScopeQueryData();
 
   const [selectedEntity, setSelectedEntity] = useState<BentoEntity | null>(null);
+  const clearSelectedEntity = useCallback(() => setSelectedEntity(null), []);
 
   const countElements = waitingForData
     ? []
@@ -86,24 +109,7 @@ const Counts = () => {
               valueStyle={{ color: COUNTS_FILL }}
               prefix={icon}
             />
-            {hasQueryData && (
-              <div
-                className="count-card__show-hide cursor-pointer antd-gray-7"
-                style={{
-                  backgroundColor: selected ? 'rgba(255, 255, 255, 1.0)' : 'rgba(255, 255, 255, 0.0)',
-                  bottom: selected ? -8 : 0,
-                }}
-                onClick={selected ? () => setSelectedEntity(null) : undefined}
-              >
-                <DownOutlined
-                  style={{
-                    transform: `rotate(${selected ? '180deg' : '0deg'})`,
-                    transition: 'transform 0.15s ease-in-out',
-                  }}
-                />{' '}
-                {t(selected ? 'HIDE' : 'SHOW')}
-              </div>
-            )}
+            {hasQueryData && <CountCardShowHide selected={selected} onClear={clearSelectedEntity} />}
           </Card>
         );
       });
@@ -122,4 +128,4 @@ const Counts = () => {
   );
 };
 
-export default Counts;
+export default CountsAndResults;

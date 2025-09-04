@@ -12,7 +12,7 @@ import AboutBox from './AboutBox';
 import OverviewSection from './OverviewSection';
 import OverviewDatasets from './OverviewDatasets';
 import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
-import Counts from './Counts';
+import CountsAndResults from './CountsAndResults';
 import LastIngestionInfo from './LastIngestion';
 import DatasetProvenance from '@/components/Provenance/DatasetProvenance';
 import SearchForm from '@/components/Search/SearchForm';
@@ -129,7 +129,7 @@ const OverviewChartDashboard = () => {
           {pageTab === 'search' ? <SearchForm /> : null}
         </div>
 
-        <Counts />
+        <CountsAndResults />
 
         {selectedProject && !scope.dataset && selectedProject.datasets.length ? (
           // If we have a project with at least one dataset, show a dataset mini-catalogue in the project overview
