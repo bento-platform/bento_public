@@ -23,15 +23,8 @@ import {
   setTextQuery,
 } from '@/features/search/query.store';
 
-import { buildQueryParamsUrl, combineQueryParamsWithoutKey } from '@/features/search/utils';
+import { buildQueryParamsUrl, checkQueryParamsEqual, combineQueryParamsWithoutKey } from '@/features/search/utils';
 import { getCurrentPage } from '@/utils/router';
-
-const checkQueryParamsEqual = (qp1: QueryParams, qp2: QueryParams): boolean => {
-  const qp1Keys = Object.keys(qp1);
-  const qp2Keys = Object.keys(qp2);
-  const params = [...new Set([...qp1Keys, ...qp2Keys])];
-  return params.reduce((acc, v) => acc && qp1[v] === qp2[v], true);
-};
 
 // Internal type for useSearchRouterAndHandler hook
 type QueryValidationResult = {
