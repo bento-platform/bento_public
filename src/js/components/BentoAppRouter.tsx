@@ -4,11 +4,11 @@ import { useAutoAuthenticate, useIsAuthenticated } from 'bento-auth-js';
 import { useAppDispatch } from '@/hooks';
 
 import { clearBiosampleCache, clearIndividualCache, clearPhenopacketCache } from '@/features/clinPhen/clinPhen.store';
-import { invalidateConfig, makeGetServiceInfoRequest, makeGetConfigRequest } from '@/features/config/config.store';
+import { makeGetServiceInfoRequest, makeGetConfigRequest } from '@/features/config/config.store';
 import { makeGetAboutRequest } from '@/features/content/content.store';
 import { getBeaconConfig, getBeaconFilters } from '@/features/beacon/beacon.store';
 import { getBeaconNetworkConfig } from '@/features/beacon/network.store';
-import { invalidateDataTypes } from '@/features/dataTypes/dataTypes.store';
+import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
 import { useMetadata } from '@/features/metadata/hooks';
 import { getProjects, markScopeSet, selectScope } from '@/features/metadata/metadata.store';
 import { getGenomes } from '@/features/reference/reference.store';
@@ -66,11 +66,6 @@ const ScopedRoute = () => {
       (!projectId && !datasetId && isFixedProjectAndDataset)
     ) {
       dispatch(selectScope(valid.scope)); // Also marks scope as set
-
-      // Conditions where we need to reload "config" (which really is closer to rules for search):
-      //  - scope was set (need to load for the first time)
-      //  - config was invalidated (scope or authorization changed)
-      dispatch(makeGetConfigRequest());
       return;
     }
 
@@ -100,6 +95,12 @@ const BentoAppRouter = () => {
   useEffect(() => {
     if (!scopeSet) return;
 
+    // Situations where this effect runs:
+    //  - First load
+    //  - Newly authenticated
+    //  - Scope was just set
+    //  - Scope changed
+
     // Reset query state, including currently-applied filters/search; the filters may not be the same between scopes.
     //  TODO: in the future, perhaps filters could be kept if the scopes overlap and we know there's discovery config
     //   inheritance, but this would require quite a bit more logic and maybe is unnecessarily complex.
@@ -115,17 +116,19 @@ const BentoAppRouter = () => {
 
     // If scope or authorization status changed, invalidate anything which is scope/authz-contextual and uses a
     // lazy-loading-style hook for data fetching:
-    console.debug('isAuthenticated | scope | scopeSet changed - dispatching config/dataTypes invalidate actions', {
+    console.debug('isAuthenticated | scope | scopeSet changed - dispatching config/dataTypes re-fetch actions', {
       isAuthenticated,
       scope,
       scopeSet,
     });
     // For the new scope/auth state, these invalidations will trigger re-fetches of state which is rendered invalid by
     // the new context.
-    //  - Censorship configs are invalid when auth/scope changes, since censorship rules may be different.
-    dispatch(invalidateConfig());
-    //  - Data types are (partially) invalid: counts and last-ingestion time may be different.
-    dispatch(invalidateDataTypes());
+    //  - Censorship configs are invalid when auth/scope changes, since censorship rules may be different. We need to
+    //    refresh them:
+    dispatch(makeGetConfigRequest());
+    // dispatch(invalidateConfig());
+    //  - Data types are (partially) invalid: counts and last-ingestion time may be different; refresh them:
+    dispatch(makeGetDataTypes());
   }, [dispatch, isAuthenticated, scope, scopeSet]);
 
   useEffect(() => {

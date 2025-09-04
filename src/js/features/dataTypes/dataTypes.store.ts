@@ -24,7 +24,7 @@ export const makeGetDataTypes = createAsyncThunk<
   {
     condition(_, { getState }) {
       const {
-        dataTypes: { status, isInvalid },
+        dataTypes: { status },
         metadata: {
           selectedScope: { scopeSet },
         },
@@ -35,11 +35,8 @@ export const makeGetDataTypes = createAsyncThunk<
         return false;
       }
 
-      if (!(status === RequestStatus.Idle || (status !== RequestStatus.Pending && isInvalid))) {
-        console.debug(
-          `makeGetDataTypes() was attempted, but a prior attempt gave status: ${RequestStatus[status]}` +
-            `(isInvalid: ${isInvalid})`
-        );
+      if (status === RequestStatus.Pending) {
+        console.debug('makeGetDataTypes() is already pending');
         return false;
       }
 
@@ -50,31 +47,24 @@ export const makeGetDataTypes = createAsyncThunk<
 
 export type DataTypesState = {
   status: RequestStatus;
-  isInvalid: boolean;
   dataTypesById: Record<string, BentoServiceDataType>;
 };
 
 const initialState: DataTypesState = {
   status: RequestStatus.Idle,
-  isInvalid: false,
   dataTypesById: {},
 };
 
 const dataTypes = createSlice({
   name: 'dataTypes',
   initialState,
-  reducers: {
-    invalidateDataTypes: (state) => {
-      state.isInvalid = true;
-    },
-  },
+  reducers: {},
   extraReducers(builder) {
     builder.addCase(makeGetDataTypes.pending, (state) => {
       state.status = RequestStatus.Pending;
     });
     builder.addCase(makeGetDataTypes.fulfilled, (state, { payload }) => {
       state.status = RequestStatus.Fulfilled;
-      state.isInvalid = false;
       state.dataTypesById = Object.fromEntries(payload.map((dt) => [dt.id, dt]));
     });
     builder.addCase(makeGetDataTypes.rejected, (state) => {
@@ -83,5 +73,4 @@ const dataTypes = createSlice({
   },
 });
 
-export const { invalidateDataTypes } = dataTypes.actions;
 export default dataTypes.reducer;
