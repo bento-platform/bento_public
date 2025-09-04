@@ -2,11 +2,11 @@ import { useMemo } from 'react';
 import { useAppSelector } from '@/hooks';
 import { RequestStatus } from '@/types/requests';
 import { TEXT_QUERY_PARAM } from './constants';
-import type { QueryParams } from './types';
+import type { QueryFilterField, QueryParams } from './types';
 
 export const useSearchQuery = () => useAppSelector((state) => state.query);
 
-export const useQueryFilterFields = () => {
+export const useQueryFilterFields = (): QueryFilterField[] => {
   const { filterSections } = useSearchQuery();
   return useMemo(
     () => filterSections.flatMap(({ fields }) => fields.map((field) => ({ id: field.id, options: field.options }))),

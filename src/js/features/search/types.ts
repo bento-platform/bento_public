@@ -1,6 +1,8 @@
 import type { Datum } from '@/types/discovery';
 import type { Field } from '@/types/discovery/fieldDefinition';
 
+export type QueryFilterField = { id: string; options: string[] };
+
 export type QueryParamEntry = [string, string];
 export type QueryParams = { [key: string]: string };
 
@@ -15,11 +17,7 @@ export interface SearchFieldSection {
   section_title: string;
 }
 
-export type SearchFieldAndOptions = {
-  id: string;
-  definition: Field;
-  options: string[];
-};
+export type SearchFieldAndOptions = QueryFilterField & { definition: Field };
 
 export type KatsuIndividualMatch = {
   id: string;
