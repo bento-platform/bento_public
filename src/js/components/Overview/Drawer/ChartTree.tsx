@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import type { TreeProps } from 'antd';
 import { Flex, InputNumber, Tree } from 'antd';
 
-import { rearrange, setDisplayedCharts, setChartWidth } from '@/features/data/data.store';
+import { rearrange, setDisplayedCharts, setChartWidth } from '@/features/search/query.store';
 import { useAppDispatch, useTranslationFn } from '@/hooks';
 import type { ChartDataField } from '@/types/data';
 

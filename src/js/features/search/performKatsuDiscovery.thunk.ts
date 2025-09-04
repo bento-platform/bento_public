@@ -3,12 +3,13 @@ import axios from 'axios';
 import { katsuDiscoveryUrl } from '@/constants/configConstants';
 import type { RootState } from '@/store';
 import type { DiscoveryResponseOrMessage } from '@/types/discovery/response';
+import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import { RequestStatus } from '@/types/requests';
 import { printAPIError } from '@/utils/error.util';
 import { scopedAuthorizedRequestConfig } from '@/utils/requests';
 
 export const performKatsuDiscovery = createAsyncThunk<
-  DiscoveryResponseOrMessage,
+  [DiscoveryScope, DiscoveryResponseOrMessage],
   void,
   {
     state: RootState;
@@ -16,17 +17,27 @@ export const performKatsuDiscovery = createAsyncThunk<
   }
 >(
   'query/performKatsuDiscovery',
-  (_, { rejectWithValue, getState }) => {
+  async (_, { rejectWithValue, getState }) => {
     const state = getState();
-    return axios
+    const res = (await axios
       .get(katsuDiscoveryUrl, scopedAuthorizedRequestConfig(state, state.query.filterQueryParams))
       .then((res) => res.data)
-      .catch(printAPIError(rejectWithValue));
+      .catch(printAPIError(rejectWithValue))) as DiscoveryResponseOrMessage;
+
+    return [state.metadata.selectedScope.scope, res];
   },
   {
     condition(_, { getState }) {
       const { filterQueryStatus, textQueryStatus } = getState().query;
-      return filterQueryStatus !== RequestStatus.Pending && textQueryStatus !== RequestStatus.Pending;
+      const cond = filterQueryStatus !== RequestStatus.Pending && textQueryStatus !== RequestStatus.Pending;
+      if (!cond) {
+        console.debug(
+          'performKatsuDiscovery() was attempted, but will not dispatch: ' +
+            `filterQueryStatus=${RequestStatus[filterQueryStatus]}, ` +
+            `textQueryStatus=${RequestStatus[textQueryStatus]}`
+        );
+      }
+      return cond;
     },
   }
 );

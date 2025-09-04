@@ -9,7 +9,6 @@ import CustomEmpty from '@/components/Util/CustomEmpty';
 import { COUNTS_FILL } from '@/constants/overviewConstants';
 import { WAITING_STATES } from '@/constants/requests';
 import { useConfig } from '@/features/config/hooks';
-import { useData } from '@/features/data/hooks';
 import { NO_RESULTS_DASHES } from '@/features/search/constants';
 import { useSearchQuery } from '@/features/search/hooks';
 import { useTranslationFn } from '@/hooks';
@@ -49,8 +48,7 @@ const renderCount = (count: number | boolean | undefined, threshold: number): nu
 const Counts = () => {
   const t = useTranslationFn();
 
-  const { counts, status } = useData();
-  const { filterQueryParams } = useSearchQuery();
+  const { resultCountsOrBools: counts, filterQueryStatus: status, filterQueryParams } = useSearchQuery();
 
   const uncensoredCounts = useCanSeeUncensoredCounts();
   const { countThreshold } = useConfig();

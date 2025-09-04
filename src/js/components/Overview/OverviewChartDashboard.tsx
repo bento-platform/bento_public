@@ -19,9 +19,8 @@ import SearchForm from '@/components/Search/SearchForm';
 
 import { useTranslationFn } from '@/hooks';
 import { useSearchRouterAndHandler } from '@/hooks/useSearchRouterAndHandler';
-import { useData, useSearchableFields } from '@/features/data/hooks';
 import { useSelectedDataset, useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
-import { useSearchQuery } from '@/features/search/hooks';
+import { useSearchQuery, useSearchableFields } from '@/features/search/hooks';
 
 const saveScopeOverviewToLS = (scope: DiscoveryScope, sections: Sections) => {
   saveValue(generateLSChartDataKey(scope), convertSequenceAndDisplayData(sections));
@@ -40,8 +39,7 @@ const OverviewChartDashboard = () => {
   useSearchRouterAndHandler();
 
   // Lazy-loading hooks means these are called only if OverviewChartDashboard is rendered ---
-  const { status: overviewDataStatus, sections } = useData();
-  const { filterQueryParams } = useSearchQuery();
+  const { filterQueryStatus: overviewDataStatus, sections, filterQueryParams } = useSearchQuery();
   const searchableFields = useSearchableFields();
   // ---
 

@@ -9,12 +9,11 @@ import { NON_FILTER_QUERY_PARAM_PREFIX, TEXT_QUERY_PARAM } from '@/features/sear
 
 import { useAppDispatch } from '@/hooks';
 import { useConfig } from '@/features/config/hooks';
-import { useData } from '@/features/data/hooks';
 import { useScopeQueryData } from './censorship';
 import { useQueryFilterFields, useSearchQuery } from '@/features/search/hooks';
 
-import { makeGetDataRequestThunk } from '@/features/data/data.store';
 import { performFreeTextSearch } from '@/features/search/performFreeTextSearch.thunk';
+import { performKatsuDiscovery } from '@/features/search/performKatsuDiscovery.thunk';
 import {
   resetFilterQueryStatus,
   resetTextQueryStatus,
@@ -49,12 +48,11 @@ export const useSearchRouterAndHandler = () => {
   const { hasAttempted: hasAttemptedQueryDataPerm, hasPermission: queryDataPerm } = useScopeQueryData();
 
   const { configStatus, maxQueryParameters } = useConfig();
-  const { status: filterQueryStatus } = useData();
   const {
     mode: queryMode,
     filterQueryParams,
     fieldsStatus: searchFieldsStatus,
-    // filterQueryStatus,
+    filterQueryStatus,
     textQuery,
     textQueryStatus,
     doneFirstLoad,
@@ -258,7 +256,7 @@ export const useSearchRouterAndHandler = () => {
 
       // We only want to execute the filters search if we're not already performing a text search even while we're
       // focused on the filters form, which can happen on first load with a text search query parameter specified.
-      dispatch(makeGetDataRequestThunk());
+      dispatch(performKatsuDiscovery());
       // Indicate to the state that search results don't reflect the text query.
       dispatch(resetTextQueryStatus());
     }

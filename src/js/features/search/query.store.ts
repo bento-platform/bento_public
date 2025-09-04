@@ -5,6 +5,7 @@ import type { BentoEntity, ResultsDataEntity } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
 // import { EMPTY_DISCOVERY_RESULTS } from '@/features/search/constants';
 import type { CountsOrBooleans, DiscoveryResponseOrMessage } from '@/types/discovery/response';
+import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type {
   QueryParams,
   SearchFieldResponse,
@@ -15,12 +16,14 @@ import type {
   DiscoveryMatchExperiment,
   DiscoveryMatchExperimentResult,
 } from '@/features/search/types';
+import type { Sections } from '@/types/data';
 // import { serializeChartData } from '@/utils/chart';
 
+import { discoveryChartProcessingAndLocalStorage } from './discoveryChartProcessingAndLocalStorage';
 import { performKatsuDiscovery } from './performKatsuDiscovery.thunk';
 import { fetchSearchFields } from './fetchSearchFields.thunk';
-import { performFreeTextSearch } from '@/features/search/performFreeTextSearch.thunk';
-import { fetchDiscoveryMatches } from '@/features/search/fetchDiscoveryMatches.thunk';
+import { performFreeTextSearch } from './performFreeTextSearch.thunk';
+import { fetchDiscoveryMatches } from './fetchDiscoveryMatches.thunk';
 
 export type QueryResultMatchData<T extends DiscoveryMatchObject> = {
   status: RequestStatus;
@@ -35,6 +38,9 @@ export const bentoEntityToResultsDataEntity = (x: BentoEntity): ResultsDataEntit
 };
 
 export type QueryState = {
+  defaultLayout: Sections;
+  sections: Sections;
+  // -------------------------------------
   mode: QueryMode;
   // ---
   fieldsStatus: RequestStatus;
@@ -64,7 +70,17 @@ export type QueryState = {
   };
 };
 
+const INITIAL_MATCH_DATA_STATE = {
+  status: RequestStatus.Idle,
+  page: 0,
+  totalMatches: 0,
+  matches: undefined,
+};
+
 const initialState: QueryState = {
+  defaultLayout: [],
+  sections: [],
+  // -------------------------------------
   mode: 'filters',
   // ---
   fieldsStatus: RequestStatus.Idle,
@@ -81,33 +97,19 @@ const initialState: QueryState = {
   // ----
   entity: null,
   // ----
-  resultCountsOrBools: { phenopacket: 0, individual: 0, biosample: 0, experiment: 0, experiment_result: 0 },
+  resultCountsOrBools: {
+    phenopacket: 0,
+    individual: 0,
+    biosample: 0,
+    experiment: 0,
+    experiment_result: 0,
+  },
   pageSize: 10,
   matchData: {
-    phenopacket: {
-      status: RequestStatus.Idle,
-      page: 0,
-      totalMatches: 0,
-      matches: undefined,
-    },
-    biosample: {
-      status: RequestStatus.Idle,
-      page: 0,
-      totalMatches: 0,
-      matches: undefined,
-    },
-    experiment: {
-      status: RequestStatus.Idle,
-      page: 0,
-      totalMatches: 0,
-      matches: undefined,
-    },
-    experiment_result: {
-      status: RequestStatus.Idle,
-      page: 0,
-      totalMatches: 0,
-      matches: undefined,
-    },
+    phenopacket: INITIAL_MATCH_DATA_STATE,
+    biosample: INITIAL_MATCH_DATA_STATE,
+    experiment: INITIAL_MATCH_DATA_STATE,
+    experiment_result: INITIAL_MATCH_DATA_STATE,
   },
 };
 
@@ -115,6 +117,55 @@ const query = createSlice({
   name: 'query',
   initialState,
   reducers: {
+    rearrange: (state, { payload }: PayloadAction<{ section: string; arrangement: string[] }>) => {
+      const { section, arrangement } = payload;
+      const sectionObj = state.sections.find((e) => e.sectionTitle === section)!;
+      const chartsCopy = [...sectionObj.charts];
+      sectionObj.charts = arrangement.map((e) => chartsCopy.find((i) => e === i.id)!);
+    },
+    disableChart: (state, { payload }: PayloadAction<{ section: string; id: string }>) => {
+      const { section, id } = payload;
+      state.sections.find((e) => e.sectionTitle === section)!.charts.find((e) => e.id === id)!.isDisplayed = false;
+    },
+    setDisplayedCharts: (state, { payload }: PayloadAction<{ section: string; charts: string[] }>) => {
+      const { section, charts } = payload;
+      state.sections
+        .find((e) => e.sectionTitle === section)!
+        .charts.forEach((val, ind, arr) => {
+          arr[ind].isDisplayed = charts.includes(val.id);
+        });
+    },
+    setChartWidth: (state, { payload }: PayloadAction<{ section: string; chart: string; width: number }>) => {
+      const { section, chart, width } = payload;
+      const chartObj = state.sections.find((e) => e.sectionTitle === section)!.charts.find((c) => c.id === chart)!;
+      chartObj.width = width;
+    },
+    setAllDisplayedCharts: (state, { payload }: PayloadAction<{ section?: string }>) => {
+      if (payload.section) {
+        state.sections
+          .find((e) => e.sectionTitle === payload.section)!
+          .charts.forEach((_, ind, arr) => {
+            arr[ind].isDisplayed = true;
+          });
+      } else {
+        state.sections.forEach((section) => {
+          section.charts.forEach((_val, ind, arr) => {
+            arr[ind].isDisplayed = true;
+          });
+        });
+      }
+    },
+    hideAllSectionCharts: (state, { payload }: PayloadAction<{ section: string }>) => {
+      state.sections
+        .find((e) => e.sectionTitle === payload.section)!
+        .charts.forEach((_, ind, arr) => {
+          arr[ind].isDisplayed = false;
+        });
+    },
+    resetLayout: (state) => {
+      state.sections = state.defaultLayout;
+    },
+    // -----------------------------------------------------------------------------------------------------------------
     setQueryMode: (state, { payload }: PayloadAction<QueryMode>) => {
       state.mode = payload;
     },
@@ -150,16 +201,23 @@ const query = createSlice({
     });
     builder.addCase(
       performKatsuDiscovery.fulfilled,
-      (state, { payload }: PayloadAction<DiscoveryResponseOrMessage>) => {
+      (state, { payload: [scope, response] }: PayloadAction<[DiscoveryScope, DiscoveryResponseOrMessage]>) => {
         state.filterQueryStatus = RequestStatus.Fulfilled;
-        if (payload && 'message' in payload && payload.message) {
-          state.message = payload.message;
+        if (response && 'message' in response && response.message) {
+          state.message = response.message;
           return;
         }
         state.message = '';
 
-        if ('counts' in payload) {
-          state.resultCountsOrBools = payload.counts;
+        if (!response) return;
+
+        if ('counts' in response) {
+          state.resultCountsOrBools = response.counts;
+
+          // Side effects: saving/loading layout from local storage
+          const { defaultLayout, sectionData } = discoveryChartProcessingAndLocalStorage(scope, response);
+          state.defaultLayout = defaultLayout;
+          state.sections = sectionData;
         }
         // {
         //   resultCountsOrBools: payload.counts;
@@ -234,6 +292,14 @@ const query = createSlice({
 });
 
 export const {
+  rearrange,
+  disableChart,
+  setDisplayedCharts,
+  setChartWidth,
+  setAllDisplayedCharts,
+  hideAllSectionCharts,
+  resetLayout,
+  // ------------------------------------------------------------------
   setQueryMode,
   setFilterQueryParams,
   resetFilterQueryStatus,

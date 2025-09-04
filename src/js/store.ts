@@ -7,7 +7,6 @@ import { LS_OPENID_CONFIG_KEY, AuthReducer as auth, OIDCReducer as openIdConfigu
 import clinPhenReducer from '@/features/clinPhen/clinPhen.store';
 import configReducer from '@/features/config/config.store';
 import contentReducer from '@/features/content/content.store';
-import dataReducer from '@/features/data/data.store';
 import dataTypesReducer from '@/features/dataTypes/dataTypes.store';
 import queryReducer from '@/features/search/query.store';
 import beaconReducer from './features/beacon/beacon.store';
@@ -35,7 +34,6 @@ export const store = configureStore({
     clinPhen: clinPhenReducer,
     config: configReducer,
     content: contentReducer,
-    data: dataReducer,
     dataTypes: dataTypesReducer,
     query: queryReducer,
     beacon: beaconReducer,

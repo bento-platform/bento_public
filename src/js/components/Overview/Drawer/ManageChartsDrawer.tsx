@@ -7,8 +7,8 @@ import ChartTree from './ChartTree';
 import type { ChartDataField } from '@/types/data';
 import { useAppDispatch, useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
-import { hideAllSectionCharts, setAllDisplayedCharts, resetLayout } from '@/features/data/data.store';
-import { useData } from '@/features/data/hooks';
+import { hideAllSectionCharts, setAllDisplayedCharts, resetLayout } from '@/features/search/query.store';
+import { useSearchQuery } from '@/features/search/hooks';
 
 const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: ManageChartsDrawerProps) => {
   const t = useTranslationFn();
@@ -17,7 +17,7 @@ const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: Manage
 
   const isSmallScreen = useSmallScreen();
 
-  const { sections } = useData();
+  const { sections } = useSearchQuery();
 
   return (
     <Drawer
