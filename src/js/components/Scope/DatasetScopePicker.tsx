@@ -1,26 +1,23 @@
-import { useMemo } from 'react';
-import { Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import { useCallback, useMemo } from 'react';
 import { Flex, List, Space, Typography } from 'antd';
 
 import { T_SINGULAR_COUNT } from '@/constants/i18n';
 import Dataset from '@/components/Provenance/Dataset';
 import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
-import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type { Project } from '@/types/metadata';
-import { getCurrentPage, scopeToUrl } from '@/utils/router';
+import { getCurrentPage } from '@/utils/router';
 import { useSelectedScope } from '@/features/metadata/hooks';
+import { useTranslationFn } from '@/hooks';
+import { useNavigateToScope } from '@/hooks/navigation';
 
 type DatasetScopePickerProps = {
   parentProject: Project;
 };
 
 const DatasetScopePicker = ({ parentProject }: DatasetScopePickerProps) => {
-  const {
-    t,
-    i18n: { language },
-  } = useTranslation();
+  const t = useTranslationFn();
   const page = getCurrentPage();
+  const navigateToScope = useNavigateToScope();
 
   const selectedScope = useSelectedScope();
   const scopeObj = selectedScope.scope;
@@ -33,8 +30,9 @@ const DatasetScopePicker = ({ parentProject }: DatasetScopePickerProps) => {
   );
   const showSelectProject = !selectedScope.fixedProject && parentProject.identifier != scopeObj.project;
 
-  const parentProjectScope: DiscoveryScope = { project: parentProject.identifier };
-  const projectURL = scopeToUrl(parentProjectScope, language, page);
+  const navigateToParentProject = useCallback(() => {
+    navigateToScope({ project: parentProject.identifier }, page);
+  }, [navigateToScope, parentProject.identifier, page]);
 
   return (
     <Flex vertical={true} gap={8}>
@@ -42,14 +40,14 @@ const DatasetScopePicker = ({ parentProject }: DatasetScopePickerProps) => {
         <Typography.Title level={4} className="no-margin-top">
           {t('entities.project', T_SINGULAR_COUNT)}: {t(parentProject.title)}
         </Typography.Title>
-        {showSelectProject && <Link to={projectURL}>{t('Select')}</Link>}
+        {showSelectProject && <a onClick={navigateToParentProject}>{t('Select')}</a>}
       </Space>
       <TruncatedParagraph>{t(parentProject.description)}</TruncatedParagraph>
       <Space align="baseline" size="large">
         <Typography.Title level={5} className="no-margin-top">
           {t('entities.dataset', T_SINGULAR_COUNT)}
         </Typography.Title>
-        {showClearDataset && <Link to={projectURL}>{t('Clear dataset selection')}</Link>}
+        {showClearDataset && <a onClick={navigateToParentProject}>{t('Clear dataset selection')}</a>}
       </Space>
       <List
         dataSource={parentProject.datasets}

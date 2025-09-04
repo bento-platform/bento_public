@@ -1,6 +1,4 @@
-import { type ReactNode, useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import { type ReactNode, useCallback, useMemo, useState } from 'react';
 
 import { Avatar, Button, Card, Flex, List, Popover, Space, Tag, Typography } from 'antd';
 import { ExpandAltOutlined, PieChartOutlined, SolutionOutlined } from '@ant-design/icons';
@@ -9,8 +7,9 @@ import { FaDatabase } from 'react-icons/fa';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type { Annotation } from '@/types/dats';
 import type { Dataset } from '@/types/metadata';
-import { getCurrentPage, scopeToUrl } from '@/utils/router';
+import { getCurrentPage } from '@/utils/router';
 import { useTranslationFn } from '@/hooks';
+import { useNavigateToScope } from '@/hooks/navigation';
 import SmallChartCardTitle from '@/components/Util/SmallChartCardTitle';
 import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
 import DatasetProvenanceModal from './DatasetProvenanceModal';
@@ -43,10 +42,7 @@ const Dataset = ({
   format: 'list-item' | 'card' | 'carousel';
   selected?: boolean;
 }) => {
-  const {
-    i18n: { language },
-  } = useTranslation();
-  const navigate = useNavigate();
+  const navigateToScope = useNavigateToScope();
   const page = getCurrentPage();
 
   const t = useTranslationFn();
@@ -58,11 +54,13 @@ const Dataset = ({
   const displayKeywords = keywords?.slice(0, KEYWORDS_LIMIT) ?? [];
   const remainingKeywords = keywords?.slice(KEYWORDS_LIMIT) ?? [];
 
-  const scope: DiscoveryScope = { project: parentProjectID, dataset: identifier };
-  const datasetBaseURL = scopeToUrl(scope, language);
+  const scope: DiscoveryScope = useMemo(
+    () => ({ project: parentProjectID, dataset: identifier }),
+    [parentProjectID, identifier]
+  );
 
-  const onNavigateCurrent = useCallback(() => navigate(`${datasetBaseURL}${page}`), [navigate, datasetBaseURL, page]);
-  const onNavigateOverview = useCallback(() => navigate(`${datasetBaseURL}overview`), [navigate, datasetBaseURL]);
+  const onNavigateCurrent = useCallback(() => navigateToScope(scope, page), [navigateToScope, scope, page]);
+  const onNavigateOverview = useCallback(() => navigateToScope(scope, 'overview'), [navigateToScope, scope]);
 
   const openProvenanceModal = useCallback(() => setProvenanceModalOpen(true), []);
   const closeProvenanceModal = useCallback(() => setProvenanceModalOpen(false), []);

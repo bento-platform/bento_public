@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import type { QueryMode, QueryParamEntry, QueryParams } from '@/features/search/types';
 import { RequestStatus } from '@/types/requests';
@@ -8,7 +8,9 @@ import { BentoRoute } from '@/types/routes';
 import { NON_FILTER_QUERY_PARAM_PREFIX, TEXT_QUERY_PARAM } from '@/features/search/constants';
 
 import { useAppDispatch } from '@/hooks';
+import { useNavigateToScope } from '@/hooks/navigation';
 import { useConfig } from '@/features/config/hooks';
+import { useSelectedScope } from '@/features/metadata/hooks';
 import { useScopeQueryData } from './censorship';
 import { useQueryFilterFields, useSearchQuery } from '@/features/search/hooks';
 
@@ -36,7 +38,10 @@ type QueryValidationResult = {
 export const useSearchRouterAndHandler = () => {
   const dispatch = useAppDispatch();
   const location = useLocation();
-  const navigate = useNavigate();
+  const navigateToScope = useNavigateToScope();
+
+  const { scope, fixedProject, fixedDataset } = useSelectedScope();
+  const isFixedProjectAndDataset = fixedProject && fixedDataset;
 
   const { hasAttempted: hasAttemptedQueryDataPerm, hasPermission: queryDataPerm } = useScopeQueryData();
 
@@ -89,11 +94,12 @@ export const useSearchRouterAndHandler = () => {
 
   const setSearchUrlWithQueryParams = useCallback(
     (qp: QueryParams) => {
-      const url = buildQueryParamsUrl(location.pathname, qp);
-      console.debug('[Search] Redirecting to:', url);
-      navigate(url, { replace: true });
+      // Don't use react-router location here - the goal is to not recreate this function when the path changes.
+      const urlSuffix = buildQueryParamsUrl('overview', qp);
+      console.debug('[Search] Redirecting to:', urlSuffix, '| new scope:', scope);
+      navigateToScope(scope, urlSuffix, isFixedProjectAndDataset, { replace: true });
     },
-    [location, navigate]
+    [navigateToScope, scope, isFixedProjectAndDataset]
   );
 
   const currentPage = getCurrentPage(location);
@@ -129,6 +135,7 @@ export const useSearchRouterAndHandler = () => {
     const _previousQueryMode = previousQueryMode.current;
     previousQueryMode.current = queryMode;
 
+    // We DO explicitly use the react-router location object here, so that this runs when the search params change
     const { valid, validFilterQueryParams, otherQueryParams } = loadAndValidateQuery();
     const qpTextQuery: string | undefined = otherQueryParams[TEXT_QUERY_PARAM];
 

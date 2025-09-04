@@ -24,7 +24,7 @@ export const performKatsuDiscovery = createAsyncThunk<
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue))) as DiscoveryResponseOrMessage;
 
-    return [state.metadata.selectedScope.scope, res];
+    return [state.metadata.selectedScope.scope, res] as [DiscoveryScope, DiscoveryResponseOrMessage];
   },
   {
     condition(_, { getState }) {

@@ -1,18 +1,49 @@
 import { type ReactNode, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { type NavigateOptions, useLocation, useNavigate } from 'react-router-dom';
 import { BookOutlined, PieChartOutlined, ShareAltOutlined, SolutionOutlined } from '@ant-design/icons';
 
 import BeaconLogo from '@/components/Beacon/BeaconLogo';
 
 import { FORCE_CATALOGUE } from '@/config';
 import { useMetadata } from '@/features/metadata/hooks';
+import { type DiscoveryScope, selectScope } from '@/features/metadata/metadata.store';
 import { BentoRoute } from '@/types/routes';
+import { useAppDispatch } from '@/hooks';
+import { scopeToUrl } from '@/utils/router';
 
 export const useNavigateToRoot = () => {
-  const { i18n } = useTranslation();
+  const {
+    i18n: { language },
+  } = useTranslation();
   const navigate = useNavigate();
-  return useCallback(() => navigate(`/${i18n.language}`), [navigate, i18n.language]);
+  return useCallback(() => navigate(`/${language}`), [navigate, language]);
+};
+
+/**
+ * The purpose of useNavigateToScope is to provide a `navigate(...)`-like hook which goes to a possibly-new scope, and
+ * sets the Redux scope at the same time as setting the URL to prevent weird state-update / URL-update race conditions
+ * with downstream search processing.
+ */
+export const useNavigateToScope = () => {
+  const {
+    i18n: { language },
+  } = useTranslation();
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  return useCallback(
+    (
+      newScope: DiscoveryScope,
+      suffix: string = '',
+      fixedProjectAndDataset: boolean = false,
+      navigateOptions: NavigateOptions | undefined = undefined
+    ) => {
+      dispatch(selectScope(newScope));
+      navigate(scopeToUrl(newScope, language, suffix, fixedProjectAndDataset), navigateOptions);
+    },
+    [dispatch, navigate, language]
+  );
 };
 
 export const useIsInCatalogueMode = () => {
