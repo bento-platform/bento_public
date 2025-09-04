@@ -13,12 +13,12 @@ import { useNonFilterQueryParams, useSearchQuery } from '@/features/search/hooks
 import { buildQueryParamsUrl, combineQueryParamsWithoutKey } from '@/features/search/utils';
 import { useTranslationFn } from '@/hooks';
 import { useGetRouteTitleAndIcon, useIsInCatalogueMode, useNavigateToRoot } from '@/hooks/navigation';
+import type { MenuItem } from '@/types/navigation';
 import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
 import { getCurrentPage } from '@/utils/router';
 
 const { Sider } = Layout;
 
-type MenuItem = Required<MenuProps>['items'][number];
 type OnClick = MenuProps['onClick'];
 
 const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollapsed: SiderProps['onCollapse'] }) => {
