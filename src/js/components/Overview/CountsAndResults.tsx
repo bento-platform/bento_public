@@ -13,7 +13,7 @@ import { NO_RESULTS_DASHES } from '@/features/search/constants';
 import { useSearchQuery } from '@/features/search/hooks';
 import { useTranslationFn } from '@/hooks';
 import { useCanSeeUncensoredCounts, useScopeQueryData } from '@/hooks/censorship';
-import type { BentoEntity, BentoCountEntity } from '@/types/entities';
+import type { BentoCountEntity } from '@/types/entities';
 
 const COUNT_ENTRIES: { entity: BentoCountEntity; icon: ReactNode }[] = [
   { entity: 'individual', icon: <TeamOutlined /> },
@@ -79,7 +79,7 @@ const CountsAndResults = () => {
 
   const { hasPermission: hasQueryData } = useScopeQueryData();
 
-  const [selectedEntity, setSelectedEntity] = useState<BentoEntity | null>(null);
+  const [selectedEntity, setSelectedEntity] = useState<BentoCountEntity | null>(null);
   const clearSelectedEntity = useCallback(() => setSelectedEntity(null), []);
 
   const countElements = waitingForData

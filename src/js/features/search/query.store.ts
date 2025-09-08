@@ -1,15 +1,13 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
-import type { BentoEntity, ResultsDataEntity } from '@/types/entities';
+import type { BentoKatsuEntity, ResultsDataEntity } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
-// import { EMPTY_DISCOVERY_RESULTS } from '@/features/search/constants';
 import type { CountsOrBooleans, DiscoveryResponseOrMessage } from '@/types/discovery/response';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type {
   QueryParams,
   SearchFieldResponse,
-  QueryMode,
   DiscoveryMatchObject,
   DiscoveryMatchPhenopacket,
   DiscoveryMatchBiosample,
@@ -17,35 +15,28 @@ import type {
   DiscoveryMatchExperimentResult,
 } from '@/features/search/types';
 import type { Sections } from '@/types/data';
-// import { serializeChartData } from '@/utils/chart';
 
 import { discoveryChartProcessingAndLocalStorage } from './discoveryChartProcessingAndLocalStorage';
 import { performKatsuDiscovery } from './performKatsuDiscovery.thunk';
 import { fetchSearchFields } from './fetchSearchFields.thunk';
-import { performFreeTextSearch } from './performFreeTextSearch.thunk';
 import { fetchDiscoveryMatches } from './fetchDiscoveryMatches.thunk';
 
 export type QueryResultMatchData<T extends DiscoveryMatchObject> = {
   status: RequestStatus;
   page: number;
   totalMatches: number;
-  matches: T[] | undefined; // TODO
+  matches: T[] | undefined;
 };
 
-export const bentoEntityToResultsDataEntity = (x: BentoEntity): ResultsDataEntity => {
-  if (x === 'variant') throw new Error('cannot currently handle variant results');
-  return x === 'individual' ? 'phenopacket' : x;
-};
+export const bentoKatsuEntityToResultsDataEntity = (x: BentoKatsuEntity): ResultsDataEntity =>
+  x === 'individual' ? 'phenopacket' : x;
 
 export type QueryState = {
   defaultLayout: Sections;
   sections: Sections;
   // -------------------------------------
-  mode: QueryMode;
-  // ---
   fieldsStatus: RequestStatus;
   filterQueryStatus: RequestStatus;
-  textQueryStatus: RequestStatus;
   // ----
   filterSections: SearchFieldResponse['sections'];
   filterQueryParams: QueryParams;
@@ -57,7 +48,7 @@ export type QueryState = {
   doneFirstLoad: boolean;
   message: string;
 
-  entity: BentoEntity | null;
+  entity: BentoKatsuEntity | null;
 
   // results
   resultCountsOrBools: CountsOrBooleans;
@@ -81,11 +72,8 @@ const initialState: QueryState = {
   defaultLayout: [],
   sections: [],
   // -------------------------------------
-  mode: 'filters',
-  // ---
   fieldsStatus: RequestStatus.Idle,
   filterQueryStatus: RequestStatus.Idle,
-  textQueryStatus: RequestStatus.Idle,
   // ----
   filterSections: [],
   filterQueryParams: {},
@@ -166,9 +154,6 @@ const query = createSlice({
       state.sections = state.defaultLayout;
     },
     // -----------------------------------------------------------------------------------------------------------------
-    setQueryMode: (state, { payload }: PayloadAction<QueryMode>) => {
-      state.mode = payload;
-    },
     setFilterQueryParams: (state, { payload }: PayloadAction<QueryParams>) => {
       state.filterQueryParams = payload;
     },
@@ -178,17 +163,14 @@ const query = createSlice({
     setTextQuery: (state, { payload }: PayloadAction<string>) => {
       state.textQuery = payload;
     },
-    resetTextQueryStatus: (state) => {
-      state.textQueryStatus = RequestStatus.Idle;
-    },
     setDoneFirstLoad: (state) => {
       state.doneFirstLoad = true;
     },
-    setEntity: (state, { payload }: PayloadAction<BentoEntity | null>) => {
+    setEntity: (state, { payload }: PayloadAction<BentoKatsuEntity | null>) => {
       state.entity = payload;
     },
-    setMatchesPage: (state, { payload }: PayloadAction<[BentoEntity, number]>) => {
-      state.matchData[bentoEntityToResultsDataEntity(payload[0])].page = payload[1];
+    setMatchesPage: (state, { payload }: PayloadAction<[BentoKatsuEntity, number]>) => {
+      state.matchData[bentoKatsuEntityToResultsDataEntity(payload[0])].page = payload[1];
     },
     setMatchesPageSize: (state, { payload }: PayloadAction<number>) => {
       state.pageSize = payload;
@@ -219,50 +201,10 @@ const query = createSlice({
           state.defaultLayout = defaultLayout;
           state.sections = sectionData;
         }
-        // {
-        //   resultCountsOrBools: payload.counts;
-        //   // biosampleChartData: serializeChartData(payload.biosamples.sampled_tissue),
-        //   // experimentChartData: serializeChartData(payload.experiments.experiment_type),
-        //   // individualMatches: payload.matches_detail, // Undefined if no permissions
-        // };
       }
     );
     builder.addCase(performKatsuDiscovery.rejected, (state) => {
       state.filterQueryStatus = RequestStatus.Rejected;
-    });
-    // -----
-    builder.addCase(performFreeTextSearch.pending, (state) => {
-      state.textQueryStatus = RequestStatus.Pending;
-    });
-    builder.addCase(performFreeTextSearch.fulfilled, (state, { payload }) => {
-      state.textQueryStatus = RequestStatus.Fulfilled;
-      state.message = '';
-      state.resultCountsOrBools = {
-        phenopacket: payload.results.length,
-        individual: payload.results.length,
-        biosample: payload.results.reduce((acc, x) => acc + x.biosamples.length, 0),
-        experiment: payload.results.reduce((acc, x) => acc + x.num_experiments, 0),
-        experiment_result: 0, // TODO
-      };
-      // state.results = {
-      //   // biosamples
-      //   biosampleCount: payload.results.reduce((acc, x) => acc + x.biosamples.length, 0),
-      //   biosampleChartData: [], // TODO
-      //   // experiments
-      //   experimentCount: payload.results.reduce((acc, x) => acc + x.num_experiments, 0),
-      //   experimentChartData: [], // TODO
-      //   // individuals
-      //   individualCount: payload.results.length,
-      //   individualMatches: payload.results.map(({ subject_id: id, phenopacket_id, dataset_id, project_id }) => ({
-      //     id,
-      //     phenopacket_id,
-      //     dataset_id,
-      //     project_id,
-      //   })),
-      // };
-    });
-    builder.addCase(performFreeTextSearch.rejected, (state) => {
-      state.textQueryStatus = RequestStatus.Rejected;
     });
     // -----
     builder.addCase(fetchSearchFields.pending, (state) => {
@@ -277,16 +219,16 @@ const query = createSlice({
     });
     // -----
     builder.addCase(fetchDiscoveryMatches.pending, (state, { meta }) => {
-      state.matchData[bentoEntityToResultsDataEntity(meta.arg)].status = RequestStatus.Pending;
+      state.matchData[bentoKatsuEntityToResultsDataEntity(meta.arg)].status = RequestStatus.Pending;
     });
     builder.addCase(fetchDiscoveryMatches.fulfilled, (state, { meta, payload }) => {
-      const entity: ResultsDataEntity = bentoEntityToResultsDataEntity(meta.arg);
+      const entity: ResultsDataEntity = bentoKatsuEntityToResultsDataEntity(meta.arg);
       state.matchData[entity].status = RequestStatus.Fulfilled;
       state.matchData[entity].matches = payload.results;
       state.matchData[entity].totalMatches = payload.pagination.total;
     });
     builder.addCase(fetchDiscoveryMatches.rejected, (state, { meta }) => {
-      state.matchData[bentoEntityToResultsDataEntity(meta.arg)].status = RequestStatus.Rejected;
+      state.matchData[bentoKatsuEntityToResultsDataEntity(meta.arg)].status = RequestStatus.Rejected;
     });
   },
 });
@@ -300,11 +242,8 @@ export const {
   hideAllSectionCharts,
   resetLayout,
   // ------------------------------------------------------------------
-  setQueryMode,
   setFilterQueryParams,
-  resetFilterQueryStatus,
   setTextQuery,
-  resetTextQueryStatus,
   setDoneFirstLoad,
   setMatchesPage,
   setMatchesPageSize,

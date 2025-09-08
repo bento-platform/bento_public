@@ -12,12 +12,10 @@ const SearchFilterInput = ({
   field,
   value,
   onChange,
-  onFocus,
   onRemove,
   disabledFields,
 }: FilterValue & {
   onChange: (v: FilterValue) => void;
-  onFocus: () => void;
   onRemove: () => void;
   disabledFields: Set<string>;
 }) => {
@@ -77,8 +75,6 @@ const SearchFilterInput = ({
       <Select
         className="flex-1 rounded-e-none"
         options={filterOptions}
-        onClick={onFocus}
-        onFocus={onFocus}
         onChange={onFilterFieldChange}
         value={field}
         placeholder={t('search.filter_placeholder')}
@@ -87,8 +83,6 @@ const SearchFilterInput = ({
         className="flex-1"
         disabled={!field}
         options={field ? fieldFilterOptions[field] : []}
-        onClick={onFocus}
-        onFocus={onFocus}
         onChange={onFilterValueChange}
         value={value}
       />

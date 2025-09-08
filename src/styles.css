@@ -196,6 +196,9 @@ body {
 #default-layout.sidebar-collapsed {
   --sidebar-width: var(--sidebar-width-collapsed);
 }
+#default-layout.sidebar-hidden {
+  --sidebar-width: 0;
+}
 
 #site-header {
   position: fixed;
@@ -375,33 +378,11 @@ body {
 
 .search-sub-form {
   flex: 1;
-  transition: opacity 0.1s;
-}
-.search-sub-form.focused {
-  opacity: 1;
-}
-.search-sub-form.not-focused {
-  opacity: 0.75;
 }
 
 h3.search-sub-form-title {
   font-size: 1.1rem;
   margin-top: 0;
-}
-
-.search-sub-form-title__inner {
-  margin-right: 0.5em;
-}
-h3.search-sub-form-title:not(.focused) .search-sub-form-title__inner {
-  color: #8c8c8c;
-  cursor: pointer;
-  transition: color 0.1s ease-in-out;
-}
-h3.search-sub-form-title:not(.focused) .search-sub-form-title__inner:hover {
-  color: #595959;
-}
-h3.search-sub-form-title:not(.focused) .search-sub-form-title__inner > span.should-underline-if-unfocused {
-  text-decoration: underline; /* text itself, not icon */
 }
 
 .search-results-pane {

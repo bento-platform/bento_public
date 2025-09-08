@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import { useAppSelector } from '@/hooks';
-import { RequestStatus } from '@/types/requests';
 import { TEXT_QUERY_PARAM } from './constants';
 import type { QueryFilterField, QueryParams } from './types';
 
@@ -15,15 +14,15 @@ export const useQueryFilterFields = (): QueryFilterField[] => {
 };
 
 export const useNonFilterQueryParams = (): QueryParams => {
-  const { mode, textQuery, textQueryStatus } = useSearchQuery();
+  const { textQuery } = useSearchQuery();
   return useMemo<QueryParams>(() => {
     const qp: QueryParams = {};
-    if (mode === 'text' || textQuery || textQueryStatus === RequestStatus.Fulfilled) {
-      // Only include text query parameter if textQuery is set OR we've executed a text query.
+    if (textQuery) {
+      // Only include text query parameter if textQuery is set to a non-false value.
       qp[TEXT_QUERY_PARAM] = textQuery;
     }
     return qp;
-  }, [mode, textQuery, textQueryStatus]);
+  }, [textQuery]);
 };
 
 export const useSearchableFields = () => {

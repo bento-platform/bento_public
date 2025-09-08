@@ -3,8 +3,8 @@ import type { RootState } from '@/store';
 import axios from 'axios';
 import { katsuDiscoveryMatchesUrl } from '@/constants/configConstants';
 import type { DiscoveryMatchPhenopacket } from '@/features/search/types';
-import { bentoEntityToResultsDataEntity } from '@/features/search/query.store';
-import type { BentoEntity } from '@/types/entities';
+import { bentoKatsuEntityToResultsDataEntity } from '@/features/search/query.store';
+import type { BentoKatsuEntity } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
 import { scopedAuthorizedRequestConfig } from '@/utils/requests';
 import { printAPIError } from '@/utils/error.util';
@@ -20,7 +20,7 @@ export const fetchDiscoveryMatches = createAsyncThunk<
     results: DiscoveryMatchPhenopacket[];
     pagination: DiscoveryMatchPagination;
   },
-  BentoEntity,
+  BentoKatsuEntity,
   {
     rejectValue: string;
     state: RootState;
@@ -29,12 +29,13 @@ export const fetchDiscoveryMatches = createAsyncThunk<
   'query/fetchDiscoveryMatches',
   async (entity, { rejectWithValue, getState }) => {
     const state = getState();
-    const queryEntity = bentoEntityToResultsDataEntity(entity);
+    const queryEntity = bentoKatsuEntityToResultsDataEntity(entity);
     return axios
       .get(
         katsuDiscoveryMatchesUrl,
         scopedAuthorizedRequestConfig(state, {
           ...state.query.filterQueryParams,
+          _fts: state.query.textQuery || undefined,
           _entity: queryEntity,
           _page: state.query.matchData[queryEntity].page.toString(),
           _page_size: state.query.pageSize.toString(),
@@ -45,7 +46,7 @@ export const fetchDiscoveryMatches = createAsyncThunk<
   },
   {
     condition(entity, { getState }) {
-      return getState().query.matchData[bentoEntityToResultsDataEntity(entity)].status !== RequestStatus.Pending;
+      return getState().query.matchData[bentoKatsuEntityToResultsDataEntity(entity)].status !== RequestStatus.Pending;
     },
   }
 );

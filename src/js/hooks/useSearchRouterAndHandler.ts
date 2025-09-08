@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
-import type { QueryMode, QueryParamEntry, QueryParams } from '@/features/search/types';
+import type { QueryParamEntry, QueryParams } from '@/features/search/types';
 import { RequestStatus } from '@/types/requests';
 import { BentoRoute } from '@/types/routes';
 
@@ -14,16 +14,8 @@ import { useSelectedScope } from '@/features/metadata/hooks';
 import { useScopeQueryData } from './censorship';
 import { useQueryFilterFields, useSearchQuery } from '@/features/search/hooks';
 
-import { performFreeTextSearch } from '@/features/search/performFreeTextSearch.thunk';
 import { performKatsuDiscovery } from '@/features/search/performKatsuDiscovery.thunk';
-import {
-  resetFilterQueryStatus,
-  resetTextQueryStatus,
-  setDoneFirstLoad,
-  setFilterQueryParams,
-  setQueryMode,
-  setTextQuery,
-} from '@/features/search/query.store';
+import { setDoneFirstLoad, setFilterQueryParams, setTextQuery } from '@/features/search/query.store';
 
 import { buildQueryParamsUrl, checkQueryParamsEqual, combineQueryParamsWithoutKey } from '@/features/search/utils';
 import { getCurrentPage } from '@/utils/router';
@@ -47,20 +39,18 @@ export const useSearchRouterAndHandler = () => {
 
   const { configStatus, maxQueryParameters } = useConfig();
   const {
-    mode: queryMode,
     filterQueryParams,
     fieldsStatus: searchFieldsStatus,
     filterQueryStatus,
     textQuery,
-    textQueryStatus,
     doneFirstLoad,
   } = useSearchQuery();
-  // Previous queryMode versus last time the [BIG STATE/URL SYNC EFFECT] below was executed.
-  const previousQueryMode = useRef<QueryMode>(queryMode);
 
   const filterFields = useQueryFilterFields();
 
   const loadAndValidateQuery = useCallback((): QueryValidationResult => {
+    // We DO explicitly use the react-router location object here, so that this dependency changes when the search
+    // params change.
     const query = new URLSearchParams(location.search);
 
     const validateFilterQueryParam = ([key, value]: QueryParamEntry): boolean => {
@@ -123,142 +113,64 @@ export const useSearchRouterAndHandler = () => {
       configStatus !== RequestStatus.Fulfilled ||
       searchFieldsStatus !== RequestStatus.Fulfilled ||
       filterQueryStatus === RequestStatus.Pending ||
-      textQueryStatus === RequestStatus.Pending ||
       !hasAttemptedQueryDataPerm
     ) {
       return;
     }
 
-    // Update previousQueryMode, and use _previousQueryMode to store the value as it was right before this effect was
-    // executed, i.e., storing queryMode as of the _last_ time this effect was executed. In this way, we can detect UI
-    // transitions from filter <-> text mode.
-    const _previousQueryMode = previousQueryMode.current;
-    previousQueryMode.current = queryMode;
-
-    // We DO explicitly use the react-router location object here, so that this runs when the search params change
     const { valid, validFilterQueryParams, otherQueryParams } = loadAndValidateQuery();
-    const qpTextQuery: string | undefined = otherQueryParams[TEXT_QUERY_PARAM];
 
-    // Whether we should expect to be in text mode (either now, or after a URL rewrite).
-    const isOrWillBeInTextMode = queryMode === 'text' || (!doneFirstLoad && !!qpTextQuery);
-
-    // Rewrite to a new URL which will re-trigger this effect but with only valid filter query parameters,
-    // and no text query (if one was set).
-    const rewriteToValidFiltersUrl = () =>
-      setSearchUrlWithQueryParams(
-        combineQueryParamsWithoutKey(validFilterQueryParams, otherQueryParams, TEXT_QUERY_PARAM)
-      );
-
-    if (!valid && !isOrWillBeInTextMode) {
+    if (!valid) {
       // Our filter query parameters are at least partially invalid, and we are (or will be) performing a filter search.
-      // Thus, we need to rewrite the URL to remove invalid filter query parameters.
-      rewriteToValidFiltersUrl();
+      // Thus, we need to rewrite the URL to remove invalid filter query parameters, which will re-trigger this effect.
+      setSearchUrlWithQueryParams({ ...validFilterQueryParams, ...otherQueryParams });
       return;
     }
 
-    // Otherwise, we have a valid (or empty) set of filter query parameters --------------------------------------------
+    // Otherwise, we have a valid (or empty) set of filter query parameters. Now, we need to deal with free-text
+    // filtering: ------------------------------------------------------------------------------------------------------
 
-    // If we have a query parameter for text search in the URL, we prioritize this and execute a text query.
-    // Later on, we still may want to populate the filters (but not execute a filter search right now), so we need to
-    // keep track of whether we've executed a text query.
+    const qpTextQuery: string | undefined = otherQueryParams[TEXT_QUERY_PARAM];
 
-    let performingTextQuery = false;
+    if (qpTextQuery && !queryDataPerm) {
+      // Already checked attempted status, so we know this is the true permissions value. If we do not have query:data
+      // permissions, we cannot try to execute a text search, so we go back to exclusively filters via URL rewrite.
+      // This effect will then be re-triggered without the text query param.
+      setSearchUrlWithQueryParams(
+        combineQueryParamsWithoutKey(validFilterQueryParams, otherQueryParams, TEXT_QUERY_PARAM)
+      );
+      return;
+    }
 
-    if (isOrWillBeInTextMode) {
-      if (!queryDataPerm) {
-        // Already checked attempted status, so we know this is the true permissions value. If we do not have query:data
-        // permissions, we cannot try to execute a text search, so we go back to filters mode via URL rewrite.
-        rewriteToValidFiltersUrl();
-        return;
-      }
-
-      // There are two scenarios where we may want to execute a full-text search (rather than a filter search):
-      //  1. Our query mode is 'text'
-      //  2. We're in the initial load phase, and we have a value for the query parameter. We prioritize this over any
-      //     filters set (since we need to choose _some_ order), and switch the query UI to be in 'text' mode.
-
-      const qpTextQueryStr = qpTextQuery ?? ''; // undefined --> ''
-      if (qpTextQuery === undefined || qpTextQueryStr !== textQuery) {
-        // If there's a mismatch between the query parameter and Redux text queries, we have to reconcile them by
-        // choosing one or the other.
-
-        if (doneFirstLoad && _previousQueryMode === 'filters') {
-          // Here, we choose to update the URL from Redux. In the case that qpTextQuery is undefined, we're just setting
-          // [TEXT_QUERY_PARAM] to a blank string and replacing any filter query parameters in the URL.
-          setSearchUrlWithQueryParams({ ...otherQueryParams, [TEXT_QUERY_PARAM]: textQuery /* From Redux! */ });
-          // Then, the new URL will re-trigger this effect but without the filter query parameters, and with the text
-          // query parameter from Redux.
-          return;
-        }
-
-        if (!doneFirstLoad && qpTextQueryStr && Object.keys(validFilterQueryParams).length) {
-          // If we're in the first-load phase, and we have a text query AND filters, we prioritize the text query and
-          // rewrite the filters away.
-          setSearchUrlWithQueryParams({ ...otherQueryParams, [TEXT_QUERY_PARAM]: qpTextQueryStr });
-          // Then, the new URL will re-trigger this effect but without the filter query parameters, but with the text
-          // query parameter from the URL.
-          return;
-        }
-
-        // Otherwise, we sync Redux from the URL query parameter for free-text search, and reset the text query status
-        // so we can perform the search itself below:
-        dispatch(setTextQuery(qpTextQueryStr)); // [!!!] This should be the only place setTextQuery(...) gets called.
-        dispatch(resetTextQueryStatus());
-      }
-
-      if (textQueryStatus === RequestStatus.Idle) {
-        // If we aren't somehow already executing a text query, we execute one now:
-        dispatch(performFreeTextSearch());
-        performingTextQuery = true;
-        // If we didn't already have the Redux query mode === text due to an initial load, make sure to set it to text:
-        dispatch(setQueryMode('text'));
-        // Indicate to the state that search results don't reflect the filters by resetting the filter request status:
-        dispatch(resetFilterQueryStatus());
-      }
+    const qpTextQueryStr = qpTextQuery ?? ''; // undefined --> ''
+    if ((textQuery && qpTextQuery === undefined) || qpTextQueryStr !== textQuery) {
+      // If there's a mismatch between the query parameter and Redux text queries, we have to reconcile them. We sync
+      // Redux from the URL query parameter for free-text search so we can perform the search itself below:
+      dispatch(setTextQuery(qpTextQueryStr)); // [!!!] This should be the only place setTextQuery(...) gets called.
     }
 
     // If we have new valid filter query parameters (that aren't already in Redux), put them into the state even if
     // we're not going to actually execute a filter search.
     const filterQueryParamsEqual = checkQueryParamsEqual(validFilterQueryParams, filterQueryParams);
-    if (
-      (filterQueryStatus === RequestStatus.Idle || !filterQueryParamsEqual) &&
-      !performingTextQuery &&
-      queryMode === 'filters'
-    ) {
-      // Only update the state & refresh if we have a new set of query params from the URL, or if we are now
-      // focused on the Filters search section and haven't actually executed the filter search yet.
+    if (filterQueryStatus === RequestStatus.Idle || !filterQueryParamsEqual || qpTextQueryStr !== textQuery) {
+      // Only update the state & refresh if we have a new set of query params from the URL, or if we haven't actually
+      // executed a discovery search yet.
       // [!!!] This should be the only place setQueryParams(...) gets called. Everywhere else should use URL
       //       manipulations, so that we have a one-way data flow from URL to state!
 
       if (!filterQueryParamsEqual) {
-        // If there's a mismatch between the query parameter and Redux filters, we have to reconcile them by
-        // choosing one or the other. We also only want to update the query params object (& trigger a re-render) if the
-        // new object has different contents, otherwise we can produce a render loop.
-
-        if (doneFirstLoad && _previousQueryMode === 'text') {
-          // We just switched from text to filters, and we've already executed at least one search before, so we want to
-          // populate the URL with parameters from Redux, i.e., Redux takes priority over the URL parameters as we're
-          // loading what was already filtered before (and is thus in Redux and the UI) back into the URL to create a
-          // shareable / refreshable link.
-          setSearchUrlWithQueryParams(
-            // filterQueryParams is from Redux here! Not the same thing as rewriteToValidFiltersUrl()
-            combineQueryParamsWithoutKey(filterQueryParams, otherQueryParams, TEXT_QUERY_PARAM)
-          );
-          // Then, the new URL will re-trigger this effect but with filter query parameters from Redux.
-          return;
-        }
-
-        // Otherwise, we want to prioritize the URL over Redux, so we sync the Redux state with the URL values. This can
-        // happen on first load or if we change/add/remove a filter value via URL change (which is how these changes
-        // should be executed in the UI). We then get proper one-way traffic from the URL to the Redux state.
+        // If there's a mismatch between the query parameter and Redux filters, we have to reconcile them. We also only
+        // want to update the query params object (& trigger a re-render) if the new object has different contents,
+        // otherwise we can produce a render loop. We want to prioritize the URL over Redux, so we sync the Redux state
+        // with the URL values. This can happen on first load or if we change/add/remove a filter value via URL change
+        // (which is how these changes should be executed in the UI). We then get proper one-way traffic from the URL to
+        // the Redux state.
         dispatch(setFilterQueryParams(validFilterQueryParams));
       }
 
       // We only want to execute the filters search if we're not already performing a text search even while we're
       // focused on the filters form, which can happen on first load with a text search query parameter specified.
       dispatch(performKatsuDiscovery());
-      // Indicate to the state that search results don't reflect the text query.
-      dispatch(resetTextQueryStatus());
     }
 
     dispatch(setDoneFirstLoad());
@@ -270,8 +182,6 @@ export const useSearchRouterAndHandler = () => {
     hasAttemptedQueryDataPerm,
     queryDataPerm,
     doneFirstLoad,
-    queryMode,
-    textQueryStatus,
     currentPage,
     setSearchUrlWithQueryParams,
     filterQueryParams,

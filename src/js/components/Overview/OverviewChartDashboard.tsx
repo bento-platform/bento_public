@@ -39,7 +39,7 @@ const OverviewChartDashboard = () => {
   useSearchRouterAndHandler();
 
   // Lazy-loading hooks means these are called only if OverviewChartDashboard is rendered ---
-  const { filterQueryStatus: overviewDataStatus, sections, filterQueryParams } = useSearchQuery();
+  const { filterQueryStatus: overviewDataStatus, sections, filterQueryParams, textQuery } = useSearchQuery();
   const searchableFields = useSearchableFields();
   // ---
 
@@ -85,7 +85,8 @@ const OverviewChartDashboard = () => {
         boxSizing: 'border-box',
       }}
     >
-      {t('search.filters_applied', { count: nFilters })}
+      {/* add an extra filter to the count if we've done free-text search: */}
+      {t('search.filters_applied', { count: nFilters + +!!textQuery })}
     </Tag>
   );
 

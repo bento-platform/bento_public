@@ -20,7 +20,13 @@ export const performKatsuDiscovery = createAsyncThunk<
   async (_, { rejectWithValue, getState }) => {
     const state = getState();
     const res = (await axios
-      .get(katsuDiscoveryUrl, scopedAuthorizedRequestConfig(state, state.query.filterQueryParams))
+      .get(
+        katsuDiscoveryUrl,
+        scopedAuthorizedRequestConfig(state, {
+          _fts: state.query.textQuery || undefined,
+          ...state.query.filterQueryParams,
+        })
+      )
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue))) as DiscoveryResponseOrMessage;
 
@@ -28,13 +34,12 @@ export const performKatsuDiscovery = createAsyncThunk<
   },
   {
     condition(_, { getState }) {
-      const { filterQueryStatus, textQueryStatus } = getState().query;
-      const cond = filterQueryStatus !== RequestStatus.Pending && textQueryStatus !== RequestStatus.Pending;
+      const { filterQueryStatus } = getState().query;
+      const cond = filterQueryStatus !== RequestStatus.Pending;
       if (!cond) {
         console.debug(
           'performKatsuDiscovery() was attempted, but will not dispatch: ' +
-            `filterQueryStatus=${RequestStatus[filterQueryStatus]}, ` +
-            `textQueryStatus=${RequestStatus[textQueryStatus]}`
+            `filterQueryStatus=${RequestStatus[filterQueryStatus]}`
         );
       }
       return cond;

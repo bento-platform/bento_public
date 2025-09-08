@@ -25,12 +25,12 @@ import { WAITING_STATES } from '@/constants/requests';
 import { useAppDispatch, useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
-import type { BentoEntity } from '@/types/entities';
+import type { BentoKatsuEntity } from '@/types/entities';
 import type { Project, Dataset } from '@/types/metadata';
 import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
 import { fetchDiscoveryMatches } from '@/features/search/fetchDiscoveryMatches.thunk';
 import {
-  bentoEntityToResultsDataEntity,
+  bentoKatsuEntityToResultsDataEntity,
   type QueryResultMatchData,
   setMatchesPage,
   setMatchesPageSize,
@@ -218,7 +218,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   searchContext,
   onBack,
 }: {
-  entity: BentoEntity;
+  entity: BentoKatsuEntity;
   spec: ResultsTableSpec<T>;
   searchContext: SearchColRenderContext;
   onBack?: () => void;
@@ -236,7 +236,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   const [columnModalOpen, setColumnModalOpen] = useState<boolean>(false);
 
   // TODO: maybe we can make Katsu good enough that we can just simply return individuals rather than phenopackets
-  const rdEntity = bentoEntityToResultsDataEntity(entity);
+  const rdEntity = bentoKatsuEntityToResultsDataEntity(entity);
 
   const { matches, status, page, totalMatches } = matchData[rdEntity] as QueryResultMatchData<T>;
 
@@ -391,7 +391,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   );
 };
 
-const SearchResultsTablePage = ({ entity, onBack }: { entity: BentoEntity; onBack?: () => void }) => {
+const SearchResultsTablePage = ({ entity, onBack }: { entity: BentoKatsuEntity; onBack?: () => void }) => {
   const t = useTranslationFn();
 
   const { projectsByID, datasetsByID } = useMetadata();

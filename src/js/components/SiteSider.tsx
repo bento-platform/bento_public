@@ -8,9 +8,8 @@ import { Button, Divider, Layout, Menu } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 
 import { useSelectedScope } from '@/features/metadata/hooks';
-import { TEXT_QUERY_PARAM } from '@/features/search/constants';
 import { useNonFilterQueryParams, useSearchQuery } from '@/features/search/hooks';
-import { buildQueryParamsUrl, combineQueryParamsWithoutKey } from '@/features/search/utils';
+import { buildQueryParamsUrl } from '@/features/search/utils';
 import { useTranslationFn } from '@/hooks';
 import { useGetRouteTitleAndIcon, useIsInCatalogueMode, useNavigateToRoot } from '@/hooks/navigation';
 import type { MenuItem } from '@/types/navigation';
@@ -26,7 +25,7 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
   const location = useLocation();
   const { i18n } = useTranslation();
   const t = useTranslationFn();
-  const { mode: queryMode, filterQueryParams } = useSearchQuery();
+  const { filterQueryParams } = useSearchQuery();
   const otherQueryParams = useNonFilterQueryParams();
   const catalogueMode = useIsInCatalogueMode();
   const currentPage = getCurrentPage(location);
@@ -51,16 +50,11 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
       const newPathString = '/' + newPath.join('/');
       navigate(
         key === BentoRoute.Overview
-          ? buildQueryParamsUrl(
-              newPathString,
-              queryMode === 'filters'
-                ? combineQueryParamsWithoutKey(filterQueryParams, otherQueryParams, TEXT_QUERY_PARAM)
-                : otherQueryParams
-            )
+          ? buildQueryParamsUrl(newPathString, { ...filterQueryParams, ...otherQueryParams })
           : newPathString
       );
     },
-    [navigate, queryMode, filterQueryParams, otherQueryParams, location.pathname]
+    [navigate, filterQueryParams, otherQueryParams, location.pathname]
   );
 
   const createMenuItem = useCallback(
