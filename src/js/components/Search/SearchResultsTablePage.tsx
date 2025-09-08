@@ -226,7 +226,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   const t = useTranslationFn();
 
   const dispatch = useAppDispatch();
-  const { pageSize, matchData } = useSearchQuery();
+  const { resultCountsOrBools, pageSize, matchData } = useSearchQuery();
   const { fetchingPermission: fetchingCanDownload, hasPermission: canDownload } = useScopeDownloadData();
   const authHeader = useAuthorizationHeader();
   const selectedScope = useSelectedScope();
@@ -339,7 +339,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
               entity: `$t(entities.${entity}_other, lowercase)`,
               start: currentStart,
               end: currentEnd,
-              total: totalMatches,
+              total: totalMatches || resultCountsOrBools[entity],
             })}
           </span>
           <Space>
