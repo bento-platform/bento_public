@@ -57,15 +57,19 @@ const OverviewChartDashboard = () => {
   const [hasChangedTabs, setHasChangedTabs] = useState(false);
   const [pageTab, setPageTab] = useState('about');
 
+  const changePage = useCallback((page: string) => {
+    setPageTab(page);
+    setHasChangedTabs(true);
+  }, []);
+
   useEffect(() => {
     // If the user has not manually changed tabs / this effect has not already run, and we have at least one search
     // filter set, auto-switch to the search tab rather than the about tab to make the applied filter(s) more obvious.
 
-    if (!hasChangedTabs && Object.keys(filterQueryParams).length) {
-      setPageTab('search');
-      setHasChangedTabs(true);
+    if (!hasChangedTabs && (Object.keys(filterQueryParams).length || textQuery.length)) {
+      changePage('search');
     }
-  }, [hasChangedTabs, filterQueryParams]);
+  }, [hasChangedTabs, filterQueryParams, textQuery, changePage]);
 
   const nFilters = Object.keys(filterQueryParams).length;
   const nFiltersAppliedTag = (
@@ -114,10 +118,7 @@ const OverviewChartDashboard = () => {
             type="card"
             size="large"
             activeKey={pageTab}
-            onChange={(k) => {
-              setPageTab(k);
-              setHasChangedTabs(true);
-            }}
+            onChange={changePage}
             items={pageTabItems}
             id="dashboard-tabs"
             tabBarStyle={{ marginBottom: -1, zIndex: 1 }}
