@@ -96,7 +96,6 @@ const configStore = createSlice({
       state.countThreshold = payload.count_threshold;
       state.maxQueryParameters = payload.max_query_parameters;
       state.configStatus = RequestStatus.Fulfilled;
-      // state.configIsInvalid = false;
     });
     builder.addCase(makeGetConfigRequest.rejected, (state) => {
       state.configStatus = RequestStatus.Rejected;

@@ -70,12 +70,12 @@ const renderCount = (count: number | boolean | undefined, threshold: number): nu
       : count;
 
 const CountsAndResults = () => {
-  const { resultCountsOrBools: counts, filterQueryStatus: status, filterQueryParams } = useSearchQuery();
+  const { resultCountsOrBools: counts, discoveryStatus, filterQueryParams } = useSearchQuery();
 
   const uncensoredCounts = useCanSeeUncensoredCounts();
   const { countThreshold } = useConfig();
 
-  const waitingForData = WAITING_STATES.includes(status);
+  const waitingForData = WAITING_STATES.includes(discoveryStatus);
 
   const { hasPermission: hasQueryData } = useScopeQueryData();
 

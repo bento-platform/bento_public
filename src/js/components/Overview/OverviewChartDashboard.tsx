@@ -39,7 +39,7 @@ const OverviewChartDashboard = () => {
   useSearchRouterAndHandler();
 
   // Lazy-loading hooks means these are called only if OverviewChartDashboard is rendered ---
-  const { filterQueryStatus: overviewDataStatus, sections, filterQueryParams, textQuery } = useSearchQuery();
+  const { discoveryStatus, sections, filterQueryParams, textQuery } = useSearchQuery();
   const searchableFields = useSearchableFields();
   // ---
 
@@ -74,7 +74,6 @@ const OverviewChartDashboard = () => {
       style={{
         transition: 'max-width 0.2s, padding 0.2s, border-width 0.2s, opacity 0.2s, margin-left 0.2s',
         maxWidth: nFilters ? 150 : 0,
-        // width: nFilters ? 150 : 0,
         padding: nFilters ? '0 7px' : 0,
         borderWidth: nFilters ? '1px' : 0,
         marginLeft: nFilters ? '1em' : '1px',
@@ -105,7 +104,7 @@ const OverviewChartDashboard = () => {
     },
   ];
 
-  const loadingNewData = WAITING_STATES.includes(overviewDataStatus);
+  const loadingNewData = WAITING_STATES.includes(discoveryStatus);
 
   return (
     <>

@@ -41,7 +41,7 @@ export const useSearchRouterAndHandler = () => {
   const {
     filterQueryParams,
     fieldsStatus: searchFieldsStatus,
-    filterQueryStatus,
+    discoveryStatus,
     textQuery,
     doneFirstLoad,
   } = useSearchQuery();
@@ -112,7 +112,7 @@ export const useSearchRouterAndHandler = () => {
     if (
       configStatus !== RequestStatus.Fulfilled ||
       searchFieldsStatus !== RequestStatus.Fulfilled ||
-      filterQueryStatus === RequestStatus.Pending ||
+      discoveryStatus === RequestStatus.Pending ||
       !hasAttemptedQueryDataPerm
     ) {
       return;
@@ -152,7 +152,7 @@ export const useSearchRouterAndHandler = () => {
     // If we have new valid filter query parameters (that aren't already in Redux), put them into the state even if
     // we're not going to actually execute a filter search.
     const filterQueryParamsEqual = checkQueryParamsEqual(validFilterQueryParams, filterQueryParams);
-    if (filterQueryStatus === RequestStatus.Idle || !filterQueryParamsEqual || qpTextQueryStr !== textQuery) {
+    if (discoveryStatus === RequestStatus.Idle || !filterQueryParamsEqual || qpTextQueryStr !== textQuery) {
       // Only update the state & refresh if we have a new set of query params from the URL, or if we haven't actually
       // executed a discovery search yet.
       // [!!!] This should be the only place setQueryParams(...) gets called. Everywhere else should use URL
@@ -178,7 +178,7 @@ export const useSearchRouterAndHandler = () => {
     dispatch,
     configStatus,
     searchFieldsStatus,
-    filterQueryStatus,
+    discoveryStatus,
     hasAttemptedQueryDataPerm,
     queryDataPerm,
     doneFirstLoad,

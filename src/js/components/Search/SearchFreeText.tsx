@@ -18,7 +18,7 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { filterQueryParams, filterQueryStatus, textQuery } = useSearchQuery();
+  const { discoveryStatus, filterQueryParams, textQuery } = useSearchQuery();
   const nonFilterQueryParams = useNonFilterQueryParams();
 
   const [form] = Form.useForm<FreeTextFormValues>();
@@ -52,7 +52,7 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
           <Form.Item name="q" initialValue="" noStyle={true}>
             <Input prefix={<SearchOutlined />} />
           </Form.Item>
-          <Button type="primary" htmlType="submit" loading={filterQueryStatus === RequestStatus.Pending}>
+          <Button type="primary" htmlType="submit" loading={discoveryStatus === RequestStatus.Pending}>
             {t('Search')}
           </Button>
         </Space.Compact>

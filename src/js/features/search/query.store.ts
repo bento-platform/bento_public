@@ -36,7 +36,7 @@ export type QueryState = {
   sections: Sections;
   // -------------------------------------
   fieldsStatus: RequestStatus;
-  filterQueryStatus: RequestStatus;
+  discoveryStatus: RequestStatus;
   // ----
   filterSections: SearchFieldResponse['sections'];
   filterQueryParams: QueryParams;
@@ -73,7 +73,7 @@ const initialState: QueryState = {
   sections: [],
   // -------------------------------------
   fieldsStatus: RequestStatus.Idle,
-  filterQueryStatus: RequestStatus.Idle,
+  discoveryStatus: RequestStatus.Idle,
   // ----
   filterSections: [],
   filterQueryParams: {},
@@ -157,9 +157,6 @@ const query = createSlice({
     setFilterQueryParams: (state, { payload }: PayloadAction<QueryParams>) => {
       state.filterQueryParams = payload;
     },
-    resetFilterQueryStatus: (state) => {
-      state.filterQueryStatus = RequestStatus.Idle;
-    },
     setTextQuery: (state, { payload }: PayloadAction<string>) => {
       state.textQuery = payload;
     },
@@ -179,12 +176,12 @@ const query = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(performKatsuDiscovery.pending, (state) => {
-      state.filterQueryStatus = RequestStatus.Pending;
+      state.discoveryStatus = RequestStatus.Pending;
     });
     builder.addCase(
       performKatsuDiscovery.fulfilled,
       (state, { payload: [scope, response] }: PayloadAction<[DiscoveryScope, DiscoveryResponseOrMessage]>) => {
-        state.filterQueryStatus = RequestStatus.Fulfilled;
+        state.discoveryStatus = RequestStatus.Fulfilled;
         if (response && 'message' in response && response.message) {
           state.message = response.message;
           return;
@@ -204,7 +201,7 @@ const query = createSlice({
       }
     );
     builder.addCase(performKatsuDiscovery.rejected, (state) => {
-      state.filterQueryStatus = RequestStatus.Rejected;
+      state.discoveryStatus = RequestStatus.Rejected;
     });
     // -----
     builder.addCase(fetchSearchFields.pending, (state) => {
