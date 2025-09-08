@@ -34,7 +34,7 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
     (values: FreeTextFormValues) => {
       navigate(
         // Build a query URL with the new text search value and navigate to it. It'll be handled by the search
-        // router/handler effect elsewhere.
+        // router/handler effect (useSearchRouterAndHandler) elsewhere.
         buildQueryParamsUrl(location.pathname, {
           ...filterQueryParams,
           ...nonFilterQueryParams,

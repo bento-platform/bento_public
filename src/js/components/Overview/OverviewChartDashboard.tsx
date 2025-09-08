@@ -35,7 +35,8 @@ const OverviewChartDashboard = () => {
   const selectedProject = useSelectedProject();
   const selectedDataset = useSelectedDataset();
 
-  // TODO
+  // This is essentially a large effect hook with a few dependencies, which processes (and rewrites if needed) the query
+  // URL and dispatches discovery actions for fetching overview/query response data.
   useSearchRouterAndHandler();
 
   // Lazy-loading hooks means these are called only if OverviewChartDashboard is rendered ---

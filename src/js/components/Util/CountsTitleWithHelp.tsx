@@ -19,9 +19,7 @@ const CountsTitleWithHelp = ({ entity, showHelp }: CountsHelpProps) => {
 
   return (
     <Space className="counts-title">
-      <span className="counts-title__text">
-        {title}
-      </span>
+      <span className="counts-title__text">{title}</span>
       {showHelp && (
         <Popover
           title={title}
