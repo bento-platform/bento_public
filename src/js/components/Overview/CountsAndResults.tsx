@@ -1,5 +1,5 @@
 import { type ReactNode, useState, memo, useCallback } from 'react';
-import { Card, Flex, Skeleton, Space, Statistic } from 'antd';
+import { Alert, Card, Flex, Skeleton, Space, Statistic } from 'antd';
 import { DownOutlined, ExperimentOutlined, FileOutlined, TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
 
@@ -70,7 +70,7 @@ const renderCount = (count: number | boolean | undefined, threshold: number): nu
       : count;
 
 const CountsAndResults = () => {
-  const { resultCountsOrBools: counts, discoveryStatus, filterQueryParams, doneFirstLoad } = useSearchQuery();
+  const { message, resultCountsOrBools: counts, discoveryStatus, filterQueryParams, doneFirstLoad } = useSearchQuery();
 
   const uncensoredCounts = useCanSeeUncensoredCounts();
   const { countThreshold } = useConfig();
@@ -119,6 +119,7 @@ const CountsAndResults = () => {
 
   return (
     <Flex vertical={true} gap={12}>
+      {message ? <Alert message={message} type="info" showIcon={true} style={{ fontSize: '1.1rem' }} /> : null}
       <Space size={12} wrap>
         {countElements.length ? countElements : <CountCardPlaceholder loading={doingFirstLoad} />}
       </Space>

@@ -182,13 +182,16 @@ const query = createSlice({
       performKatsuDiscovery.fulfilled,
       (state, { payload: [scope, response] }: PayloadAction<[DiscoveryScope, DiscoveryResponseOrMessage]>) => {
         state.discoveryStatus = RequestStatus.Fulfilled;
-        if (response && 'message' in response && response.message) {
-          state.message = response.message;
+
+        if (!response) {
           return;
         }
-        state.message = '';
 
-        if (!response) return;
+        if ('message' in response && response.message) {
+          state.message = response.message;
+        } else {
+          state.message = '';
+        }
 
         if ('counts' in response) {
           state.resultCountsOrBools = response.counts;
