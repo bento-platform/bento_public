@@ -70,12 +70,13 @@ const renderCount = (count: number | boolean | undefined, threshold: number): nu
       : count;
 
 const CountsAndResults = () => {
-  const { resultCountsOrBools: counts, discoveryStatus, filterQueryParams } = useSearchQuery();
+  const { resultCountsOrBools: counts, discoveryStatus, filterQueryParams, doneFirstLoad } = useSearchQuery();
 
   const uncensoredCounts = useCanSeeUncensoredCounts();
   const { countThreshold } = useConfig();
 
   const waitingForData = WAITING_STATES.includes(discoveryStatus);
+  const doingFirstLoad = waitingForData && !doneFirstLoad;
 
   // TODO: per-data type permissions?
   const { hasPermission: hasQueryData } = useScopeQueryData();
@@ -83,7 +84,7 @@ const CountsAndResults = () => {
   const [selectedEntity, setSelectedEntity] = useState<BentoCountEntity | null>(null);
   const clearSelectedEntity = useCallback(() => setSelectedEntity(null), []);
 
-  const countElements = waitingForData
+  const countElements = doingFirstLoad
     ? []
     : COUNT_ENTRIES.filter(
         // hide counts if no filters applied and we have no data
@@ -109,6 +110,7 @@ const CountsAndResults = () => {
               value={count || (uncensoredCounts ? count : NO_RESULTS_DASHES)}
               valueStyle={{ color: COUNTS_FILL }}
               prefix={icon}
+              loading={waitingForData}
             />
             {hasQueryData && <CountCardShowHide selected={selected} onClear={clearSelectedEntity} />}
           </Card>
@@ -118,7 +120,7 @@ const CountsAndResults = () => {
   return (
     <Flex vertical={true} gap={12}>
       <Space size={12} wrap>
-        {!waitingForData && countElements.length ? countElements : <CountCardPlaceholder loading={waitingForData} />}
+        {countElements.length ? countElements : <CountCardPlaceholder loading={doingFirstLoad} />}
       </Space>
       {countElements.length && selectedEntity ? (
         <Card className="shadow">
