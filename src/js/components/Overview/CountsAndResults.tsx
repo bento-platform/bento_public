@@ -77,6 +77,7 @@ const CountsAndResults = () => {
 
   const waitingForData = WAITING_STATES.includes(discoveryStatus);
 
+  // TODO: per-data type permissions?
   const { hasPermission: hasQueryData } = useScopeQueryData();
 
   const [selectedEntity, setSelectedEntity] = useState<BentoCountEntity | null>(null);

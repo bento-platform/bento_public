@@ -226,7 +226,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   const t = useTranslationFn();
 
   const dispatch = useAppDispatch();
-  const { resultCountsOrBools, pageSize, matchData } = useSearchQuery();
+  const { filterQueryParams, textQuery, resultCountsOrBools, pageSize, matchData } = useSearchQuery();
   const { fetchingPermission: fetchingCanDownload, hasPermission: canDownload } = useScopeDownloadData();
   const authHeader = useAuthorizationHeader();
   const selectedScope = useSelectedScope();
@@ -244,8 +244,11 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   const currentEnd = Math.min((page + 1) * pageSize, totalMatches);
 
   useEffect(() => {
+    // TODO: in the future, move this to the useSearchRouterAndHandler query if we have which page is being shown in the
+    //  URL or in Redux. Then, we can clean up the dispatch logic to have everything dispatched at once.
     dispatch(fetchDiscoveryMatches(rdEntity));
-  }, [dispatch, page, pageSize, rdEntity]);
+    // Extra dependency on filterQueryParams and textQuery to trigger re-fetch when these change.
+  }, [dispatch, page, pageSize, rdEntity, filterQueryParams, textQuery]);
 
   // -------------------------------------------------------------------------------------------------------------------
 
