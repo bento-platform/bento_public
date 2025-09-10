@@ -1,4 +1,3 @@
-import type { Datum } from '@/types/discovery';
 import type { Field } from '@/types/discovery/fieldDefinition';
 
 export type QueryFilterField = { id: string; options: string[] };
@@ -23,27 +22,6 @@ export type KatsuIndividualMatch = {
   project_id: string | null;
   dataset_id: string | null;
 };
-
-export type KatsuSearchResponse =
-  | {
-      biosamples: Biosamples;
-      count: number;
-      matches?: string[];
-      // Below is a temporary detailed match list so we can start building a better search UI.
-      matches_detail?: KatsuIndividualMatch[];
-      experiments: Experiments;
-    }
-  | { message: string };
-
-export interface Biosamples {
-  count: number;
-  sampled_tissue: Datum[];
-}
-
-export interface Experiments {
-  count: number;
-  experiment_type: Datum[];
-}
 
 export type DiscoveryMatchObject = {
   id: string; // Entity ID
