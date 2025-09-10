@@ -46,7 +46,16 @@ export const fetchDiscoveryMatches = createAsyncThunk<
   },
   {
     condition(entity, { getState }) {
-      return getState().query.matchData[bentoKatsuEntityToResultsDataEntity(entity)].status !== RequestStatus.Pending;
+      const rdEntity = bentoKatsuEntityToResultsDataEntity(entity);
+      const entityStatus = getState().query.matchData[rdEntity].status;
+      const cond = entityStatus !== RequestStatus.Pending;
+      if (!cond) {
+        console.debug(
+          'performKatsuDiscovery() was attempted, but will not dispatch: ' +
+            `matchData[${rdEntity}].status=${RequestStatus[entityStatus]}`
+        );
+      }
+      return cond;
     },
   }
 );
