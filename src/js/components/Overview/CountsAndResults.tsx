@@ -70,6 +70,8 @@ const renderCount = (count: number | boolean | undefined, threshold: number): nu
       : count;
 
 const CountsAndResults = () => {
+  const t = useTranslationFn();
+
   const { message, resultCountsOrBools: counts, discoveryStatus, filterQueryParams, doneFirstLoad } = useSearchQuery();
 
   const uncensoredCounts = useCanSeeUncensoredCounts();
@@ -119,7 +121,7 @@ const CountsAndResults = () => {
 
   return (
     <Flex vertical={true} gap={12}>
-      {message ? <Alert message={message} type="info" showIcon={true} style={{ fontSize: '1.1rem' }} /> : null}
+      {message ? <Alert message={t(message)} type="info" showIcon={true} style={{ fontSize: '1.1rem' }} /> : null}
       <Space size={12} wrap>
         {countElements.length ? countElements : <CountCardPlaceholder loading={doingFirstLoad} />}
       </Space>
