@@ -93,7 +93,6 @@ const SEARCH_TABLE_COLUMNS = {
   biosamples: {
     tKey: 'entities.biosample_other',
     dataIndex: 'biosamples',
-    // TODO: links
     render: (_ctx: SearchColRenderContext) => (b: DiscoveryMatchBiosample[], p: DiscoveryMatchPhenopacket) =>
       b.map((bb, bbi) => (
         <>
@@ -104,7 +103,6 @@ const SEARCH_TABLE_COLUMNS = {
   } as ResultsTableColumn<DiscoveryMatchPhenopacket>,
   ...COMMON_SEARCH_TABLE_COLUMNS,
 } as const;
-type SearchTableColumnType = keyof typeof SEARCH_TABLE_COLUMNS;
 
 const PhenopacketSubjectLink = ({ children, packetId }: { children: ReactNode; packetId: string }) => {
   const {
@@ -202,7 +200,7 @@ const ManageColumnCheckbox = ({
   shownColumns,
   setShownColumns,
 }: {
-  c: SearchTableColumnType;
+  c: string;
   shownColumns: Set<string>;
   setShownColumns: (fn: (sc: Set<string>) => Set<string>) => void;
 }) => {
