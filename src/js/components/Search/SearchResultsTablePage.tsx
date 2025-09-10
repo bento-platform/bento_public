@@ -89,7 +89,7 @@ const COMMON_SEARCH_TABLE_COLUMNS = {
   } as ResultsTableColumn<ViewableDiscoveryMatchObject>,
 } as const;
 
-const SEARCH_TABLE_COLUMNS = {
+const PHENOPACKET_SEARCH_TABLE_COLUMNS = {
   biosamples: {
     tKey: 'entities.biosample_other',
     dataIndex: 'biosamples',
@@ -102,7 +102,7 @@ const SEARCH_TABLE_COLUMNS = {
       )),
   } as ResultsTableColumn<DiscoveryMatchPhenopacket>,
   ...COMMON_SEARCH_TABLE_COLUMNS,
-} as const;
+};
 
 const PhenopacketSubjectLink = ({ children, packetId }: { children: ReactNode; packetId: string }) => {
   const {
@@ -127,7 +127,7 @@ const TABLE_SPEC_PHENOPACKET: ResultsTableSpec<DiscoveryMatchPhenopacket> = {
         s ? <PhenopacketSubjectLink packetId={rec.id}>{s}</PhenopacketSubjectLink> : null,
     } as TableColumnType<DiscoveryMatchPhenopacket>,
   ],
-  availableColumns: SEARCH_TABLE_COLUMNS,
+  availableColumns: PHENOPACKET_SEARCH_TABLE_COLUMNS,
   defaultColumns: ['biosamples', 'project', 'dataset'],
   expandable: {
     expandedRowRender: (rec) => (rec.subject ? <IndividualRowDetail id={rec.subject} /> : null),
@@ -195,24 +195,26 @@ const TABLE_SPEC_EXPERIMENT_RESULT: ResultsTableSpec<DiscoveryMatchExperimentRes
   // },
 };
 
-const ManageColumnCheckbox = ({
-  c,
+const ManageColumnCheckbox = <T extends ViewableDiscoveryMatchObject>({
+  key,
+  columnSpec,
   shownColumns,
   setShownColumns,
 }: {
-  c: string;
+  key: string;
+  columnSpec: ResultsTableColumn<T>;
   shownColumns: Set<string>;
   setShownColumns: (fn: (sc: Set<string>) => Set<string>) => void;
 }) => {
   const t = useTranslationFn();
   return (
     <Checkbox
-      checked={shownColumns.has(c)}
+      checked={shownColumns.has(key)}
       onChange={(e) =>
-        setShownColumns((sc) => new Set<string>(e.target.checked ? [...sc, c] : [...sc].filter((v) => v !== c)))
+        setShownColumns((sc) => new Set<string>(e.target.checked ? [...sc, key] : [...sc].filter((v) => v !== key)))
       }
     >
-      {t(SEARCH_TABLE_COLUMNS[c].tKey, T_SINGULAR_COUNT)}
+      {t(columnSpec.tKey, T_SINGULAR_COUNT)}
     </Checkbox>
   );
 };
@@ -222,11 +224,13 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   spec,
   searchContext,
   onBack,
+  shown,
 }: {
   entity: BentoKatsuEntity;
   spec: ResultsTableSpec<T>;
   searchContext: SearchColRenderContext;
   onBack?: () => void;
+  shown: boolean;
 }) => {
   const t = useTranslationFn();
 
@@ -240,6 +244,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   const [exporting, setExporting] = useState<boolean>(false);
   const [columnModalOpen, setColumnModalOpen] = useState<boolean>(false);
 
+  // We translate an "individual" entity to "phenopacket" because TODO.
   // TODO: maybe we can make Katsu good enough that we can just simply return individuals rather than phenopackets
   const rdEntity = bentoKatsuEntityToResultsDataEntity(entity);
 
@@ -248,12 +253,34 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   const currentStart = totalMatches > 0 ? page * pageSize + 1 : 0;
   const currentEnd = Math.min((page + 1) * pageSize, totalMatches);
 
+  // -------------------------------------------------------------------------------------------------------------------
+
+  const [shouldRefetch, setShouldRefetch] = useState<boolean>(true);
+
+  // Order of the below two effects is important - we want to first flag whether we should refetch based on a set of
+  // dependencies, and then (if we've flagged, or on initial load) run the refetch.
+  // Note: These two are decoupled to reduce needless re-fetches based on `shown` changing.
+
   useEffect(() => {
+    console.debug('flagging should-refetch for entity:', rdEntity, {
+      page,
+      pageSize,
+      rdEntity,
+      filterQueryParams,
+      textQuery,
+    });
+    setShouldRefetch(true);
+    // Dependencies on page/page size, filterQueryParams, and textQuery to trigger re-fetch when these change.
+  }, [selectedScope, page, pageSize, rdEntity, filterQueryParams, textQuery]);
+
+  useEffect(() => {
+    if (!shown || !shouldRefetch) return;
     // TODO: in the future, move this to the useSearchRouterAndHandler query if we have which page is being shown in the
     //  URL or in Redux. Then, we can clean up the dispatch logic to have everything dispatched at once.
+    console.debug('fetching discovery match page for entity:', rdEntity);
     dispatch(fetchDiscoveryMatches(rdEntity));
-    // Extra dependency on filterQueryParams and textQuery to trigger re-fetch when these change.
-  }, [dispatch, page, pageSize, rdEntity, filterQueryParams, textQuery]);
+    setShouldRefetch(false);
+  }, [dispatch, rdEntity, shown, shouldRefetch]);
 
   // -------------------------------------------------------------------------------------------------------------------
 
@@ -261,10 +288,13 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
     const allowed = new Set<string>();
     if (!selectedScope.scope.project) allowed.add('project');
     if (!selectedScope.scope.dataset) allowed.add('dataset');
-    // TODO: replace with adding all allowed columns that aren't project/dataset
-    if (rdEntity === 'phenopacket') allowed.add('biosamples');
+    Object.keys(spec.availableColumns)
+      .filter((c) => !['project', 'dataset'].includes(c))
+      .forEach((c) => {
+        allowed.add(c);
+      });
     return allowed;
-  }, [rdEntity, selectedScope.scope]);
+  }, [selectedScope.scope, spec.availableColumns]);
 
   const [shownColumns, setShownColumns] = useState<Set<string>>(
     () => new Set<string>(spec.defaultColumns.filter((c) => allowedColumns.has(c)))
@@ -323,6 +353,8 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   }, [spec, authHeader, matches]);
 
   const openColumnModal = useCallback(() => setColumnModalOpen(true), []);
+
+  if (!shown) return null;
 
   return (
     <>
@@ -384,15 +416,16 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
         footer={null}
       >
         <Space direction="vertical">
-          {allowedColumns.has('project') && (
-            <ManageColumnCheckbox c="project" shownColumns={shownColumns} setShownColumns={setShownColumns} />
-          )}
-          {allowedColumns.has('dataset') && (
-            <ManageColumnCheckbox c="dataset" shownColumns={shownColumns} setShownColumns={setShownColumns} />
-          )}
-          {allowedColumns.has('biosamples') && (
-            <ManageColumnCheckbox c="biosamples" shownColumns={shownColumns} setShownColumns={setShownColumns} />
-          )}
+          {Object.entries(spec.availableColumns)
+            .filter(([key, _]) => allowedColumns.has(key))
+            .map(([key, columnSpec]) => (
+              <ManageColumnCheckbox<T>
+                key={key}
+                columnSpec={columnSpec}
+                shownColumns={shownColumns}
+                setShownColumns={setShownColumns}
+              />
+            ))}
         </Space>
       </Modal>
     </>
@@ -423,22 +456,35 @@ const SearchResultsTablePage = ({ entity, onBack }: { entity: BentoKatsuEntity; 
     [projectsByID, datasetsByID]
   );
 
+  const common = { searchContext, onBack };
+
   return (
+    // We have all tables here to avoid re-rendering, but we only show them if the selected entity matches their entity.
     <>
-      {(() => {
-        const common = { entity, searchContext, onBack };
-        if (entity === 'phenopacket' || entity === 'individual') {
-          return <SearchResultsTable<DiscoveryMatchPhenopacket> spec={TABLE_SPEC_PHENOPACKET} {...common} />;
-        } else if (entity === 'biosample') {
-          return <SearchResultsTable<DiscoveryMatchBiosample> spec={TABLE_SPEC_BIOSAMPLE} {...common} />;
-        } else if (entity === 'experiment') {
-          return <SearchResultsTable<DiscoveryMatchExperiment> spec={TABLE_SPEC_EXPERIMENT} {...common} />;
-        } else if (entity === 'experiment_result') {
-          return <SearchResultsTable<DiscoveryMatchExperimentResult> spec={TABLE_SPEC_EXPERIMENT_RESULT} {...common} />;
-        } else {
-          return <span className="error-text">Unhandled entity: {entity}</span>;
-        }
-      })()}
+      <SearchResultsTable<DiscoveryMatchPhenopacket>
+        spec={TABLE_SPEC_PHENOPACKET}
+        shown={entity === 'phenopacket' || entity === 'individual'}
+        entity="phenopacket"
+        {...common}
+      />
+      <SearchResultsTable<DiscoveryMatchBiosample>
+        spec={TABLE_SPEC_BIOSAMPLE}
+        shown={entity === 'biosample'}
+        entity="biosample"
+        {...common}
+      />
+      <SearchResultsTable<DiscoveryMatchExperiment>
+        spec={TABLE_SPEC_EXPERIMENT}
+        shown={entity === 'experiment'}
+        entity="experiment"
+        {...common}
+      />
+      <SearchResultsTable<DiscoveryMatchExperimentResult>
+        spec={TABLE_SPEC_EXPERIMENT_RESULT}
+        shown={entity === 'experiment_result'}
+        entity="experiment_result"
+        {...common}
+      />
       <Modal
         title={selectedProject ? `${t('entities.project', T_SINGULAR_COUNT)}: ${t(selectedProject.title)}` : ''}
         open={projectModalOpen}
