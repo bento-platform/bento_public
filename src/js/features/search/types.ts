@@ -49,28 +49,30 @@ export interface Experiments {
 
 export type DiscoveryMatchObject = {
   id: string; // Entity ID
-  pr?: string | null;
-  ds?: string | null;
+  project?: string | null;
+  dataset?: string | null;
 };
 
 export type DiscoveryMatchExperimentResult = DiscoveryMatchObject & {
-  f?: string; // File name
+  filename?: string; // File name
   url?: string; // File URL
-  idx: { url: string; format: 'BAI' | 'BGZF' | 'CRAI' | 'CSI' | 'TABIX' | 'TRIBBLE' }[];
+  indices: { url: string; format: 'BAI' | 'BGZF' | 'CRAI' | 'CSI' | 'TABIX' | 'TRIBBLE' }[];
+  file_format?: string;
+  assembly_id?: string;
 };
 
 export type DiscoveryMatchExperiment = DiscoveryMatchObject & {
-  r: DiscoveryMatchExperimentResult[];
+  results: DiscoveryMatchExperimentResult[];
 };
 
 export type DiscoveryMatchBiosample = DiscoveryMatchObject & {
-  p?: string; // Phenopacket ID
-  e: DiscoveryMatchExperiment[];
+  phenopacket?: string; // Phenopacket ID
+  experiments: DiscoveryMatchExperiment[];
 };
 
 export type DiscoveryMatchPhenopacket = DiscoveryMatchObject & {
-  s?: string; // Subject ID
-  b: DiscoveryMatchBiosample[]; // Biosample records
+  subject?: string; // Subject ID
+  biosamples: DiscoveryMatchBiosample[]; // Biosample records
 };
 
 export type ViewableDiscoveryMatchObject =

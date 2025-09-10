@@ -61,7 +61,7 @@ type SearchColRenderContext = {
 type ResultsTableColumn<T extends ViewableDiscoveryMatchObject> = {
   tKey: string; // column title translation key
   dataIndex: keyof T;
-  render: (ctx: SearchColRenderContext) => (value: unknown) => ReactNode;
+  render: (ctx: SearchColRenderContext) => (value: unknown, obj: T) => ReactNode;
 };
 
 type ResultsTableSpec<T extends ViewableDiscoveryMatchObject> = {
@@ -75,14 +75,14 @@ type ResultsTableSpec<T extends ViewableDiscoveryMatchObject> = {
 const COMMON_SEARCH_TABLE_COLUMNS = {
   project: {
     tKey: 'entities.project',
-    dataIndex: 'pr',
+    dataIndex: 'project',
     render: (ctx: SearchColRenderContext) => (id: string) => (
       <ProjectTitle projectID={id} onClick={() => ctx.onProjectClick(id)} />
     ),
   } as ResultsTableColumn<ViewableDiscoveryMatchObject>,
   dataset: {
     tKey: 'entities.dataset',
-    dataIndex: 'ds',
+    dataIndex: 'dataset',
     render: (ctx: SearchColRenderContext) => (id: string) => (
       <DatasetTitle datasetID={id} onClick={() => ctx.onDatasetClick(id)} />
     ),
@@ -92,9 +92,15 @@ const COMMON_SEARCH_TABLE_COLUMNS = {
 const SEARCH_TABLE_COLUMNS = {
   biosamples: {
     tKey: 'entities.biosample_other',
-    dataIndex: 'b',
+    dataIndex: 'biosamples',
     // TODO: links
-    render: (_ctx: SearchColRenderContext) => (b: DiscoveryMatchBiosample[]) => b.map((bb) => bb.id).join(', '),
+    render: (_ctx: SearchColRenderContext) => (b: DiscoveryMatchBiosample[], p: DiscoveryMatchPhenopacket) =>
+      b.map((bb, bbi) => (
+        <>
+          <PhenopacketBiosampleLink packetId={p.id} sampleId={bb.id} />
+          {bbi < b.length - 1 ? ', ' : ''}
+        </>
+      )),
   } as ResultsTableColumn<DiscoveryMatchPhenopacket>,
   ...COMMON_SEARCH_TABLE_COLUMNS,
 } as const;
@@ -117,7 +123,7 @@ const PhenopacketBiosampleLink = ({ packetId, sampleId }: { packetId: string; sa
 const TABLE_SPEC_PHENOPACKET: ResultsTableSpec<DiscoveryMatchPhenopacket> = {
   fixedColumns: [
     {
-      dataIndex: 's',
+      dataIndex: 'subject',
       title: 'Subject ID',
       render: (s: string | undefined, rec) =>
         s ? <PhenopacketSubjectLink packetId={rec.id}>{s}</PhenopacketSubjectLink> : null,
@@ -126,12 +132,12 @@ const TABLE_SPEC_PHENOPACKET: ResultsTableSpec<DiscoveryMatchPhenopacket> = {
   availableColumns: SEARCH_TABLE_COLUMNS,
   defaultColumns: ['biosamples', 'project', 'dataset'],
   expandable: {
-    expandedRowRender: (rec) => (rec.s ? <IndividualRowDetail id={rec.s} /> : null),
+    expandedRowRender: (rec) => (rec.subject ? <IndividualRowDetail id={rec.subject} /> : null),
   },
   download: (headers, matches) =>
     downloadIndividualCSV(
       headers,
-      matches.filter(({ s }) => s !== undefined).map(({ s }) => s as string)
+      matches.filter(({ subject }) => subject !== undefined).map(({ subject }) => subject as string)
     ),
 };
 
@@ -140,7 +146,8 @@ const TABLE_SPEC_BIOSAMPLE: ResultsTableSpec<DiscoveryMatchBiosample> = {
     {
       dataIndex: 'id',
       title: 'Biosample ID',
-      render: (id: string, rec) => (rec.p ? <PhenopacketBiosampleLink packetId={rec.p} sampleId={id} /> : id),
+      render: (id: string, rec) =>
+        rec.phenopacket ? <PhenopacketBiosampleLink packetId={rec.phenopacket} sampleId={id} /> : id,
     } as TableColumnType<DiscoveryMatchBiosample>,
   ],
   availableColumns: COMMON_SEARCH_TABLE_COLUMNS,
@@ -178,7 +185,7 @@ const TABLE_SPEC_EXPERIMENT: ResultsTableSpec<DiscoveryMatchExperiment> = {
 const TABLE_SPEC_EXPERIMENT_RESULT: ResultsTableSpec<DiscoveryMatchExperimentResult> = {
   fixedColumns: [
     {
-      dataIndex: 'f',
+      dataIndex: 'filename',
       title: 'File Name',
       render: (f: string | undefined) => <span>{f}</span>,
     } as TableColumnType<DiscoveryMatchExperimentResult>,
