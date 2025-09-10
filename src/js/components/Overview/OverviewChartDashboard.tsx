@@ -72,7 +72,7 @@ const OverviewChartDashboard = () => {
     }
   }, [hasChangedTabs, filterQueryParams, textQuery, changePage]);
 
-  const nFilters = Object.keys(filterQueryParams).length;
+  const nFilters = Object.keys(filterQueryParams).length + +!!textQuery; // Filters including text query
   const nFiltersAppliedTag = (
     <Tag
       color="green"
@@ -90,7 +90,7 @@ const OverviewChartDashboard = () => {
       }}
     >
       {/* add an extra filter to the count if we've done free-text search: */}
-      {t('search.filters_applied', { count: nFilters + +!!textQuery })}
+      {t('search.filters_applied', { count: nFilters })}
     </Tag>
   );
 
