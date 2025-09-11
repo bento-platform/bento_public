@@ -38,6 +38,7 @@ export type DiscoveryMatchExperimentResult = DiscoveryMatchObject & {
 };
 
 export type DiscoveryMatchExperiment = DiscoveryMatchObject & {
+  study_type?: string;
   results: DiscoveryMatchExperimentResult[];
 };
 
