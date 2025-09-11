@@ -32,13 +32,14 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
 
   const onFinish = useCallback(
     (values: FreeTextFormValues) => {
+      const query = values.q.trim();
       navigate(
         // Build a query URL with the new text search value and navigate to it. It'll be handled by the search
         // router/handler effect (useSearchRouterAndHandler) elsewhere.
         buildQueryParamsUrl(location.pathname, {
           ...filterQueryParams,
           ...nonFilterQueryParams,
-          [TEXT_QUERY_PARAM]: values.q,
+          [TEXT_QUERY_PARAM]: query,
         })
       );
     },

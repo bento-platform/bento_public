@@ -1,4 +1,4 @@
-import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { type ReactNode, Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuthorizationHeader } from 'bento-auth-js';
@@ -95,10 +95,10 @@ const PHENOPACKET_SEARCH_TABLE_COLUMNS = {
     dataIndex: 'biosamples',
     render: (_ctx: SearchColRenderContext) => (b: DiscoveryMatchBiosample[], p: DiscoveryMatchPhenopacket) =>
       b.map((bb, bbi) => (
-        <>
+        <Fragment key={bb.id}>
           <PhenopacketBiosampleLink packetId={p.id} sampleId={bb.id} />
           {bbi < b.length - 1 ? ', ' : ''}
-        </>
+        </Fragment>
       )),
   } as ResultsTableColumn<DiscoveryMatchPhenopacket>,
   ...COMMON_SEARCH_TABLE_COLUMNS,

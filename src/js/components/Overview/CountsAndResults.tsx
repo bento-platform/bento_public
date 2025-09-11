@@ -72,7 +72,14 @@ const renderCount = (count: number | boolean | undefined, threshold: number): nu
 const CountsAndResults = () => {
   const t = useTranslationFn();
 
-  const { message, resultCountsOrBools: counts, discoveryStatus, filterQueryParams, doneFirstLoad } = useSearchQuery();
+  const {
+    message,
+    resultCountsOrBools: counts,
+    discoveryStatus,
+    filterQueryParams,
+    textQuery,
+    doneFirstLoad,
+  } = useSearchQuery();
 
   const uncensoredCounts = useCanSeeUncensoredCounts();
   const { countThreshold } = useConfig();
@@ -86,11 +93,13 @@ const CountsAndResults = () => {
   const [selectedEntity, setSelectedEntity] = useState<BentoCountEntity | null>(null);
   const clearSelectedEntity = useCallback(() => setSelectedEntity(null), []);
 
+  const nFilters = Object.keys(filterQueryParams).length + +!!textQuery;
+
   const countElements = doingFirstLoad
     ? []
     : COUNT_ENTRIES.filter(
         // hide counts if no filters applied and we have no data
-        ({ entity }) => waitingForData || !!(counts[entity] || Object.keys(filterQueryParams).length)
+        ({ entity }) => waitingForData || !!(counts[entity] || nFilters)
       ).map(({ entity, icon }, i) => {
         const count = renderCount(counts[entity], countThreshold);
         const selected = selectedEntity === entity;

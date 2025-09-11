@@ -142,7 +142,7 @@ export const useSearchRouterAndHandler = () => {
       return;
     }
 
-    const qpTextQueryStr = qpTextQuery ?? ''; // undefined --> ''
+    const qpTextQueryStr = (qpTextQuery ?? '').trim(); // undefined --> ''; trim whitespace
     if ((textQuery && qpTextQuery === undefined) || qpTextQueryStr !== textQuery) {
       // If there's a mismatch between the query parameter and Redux text queries, we have to reconcile them. We sync
       // Redux from the URL query parameter for free-text search so we can perform the search itself below:
