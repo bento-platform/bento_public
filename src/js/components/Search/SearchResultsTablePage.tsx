@@ -1,6 +1,5 @@
 import { type ReactNode, Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { useAuthorizationHeader } from 'bento-auth-js';
 
 import {
@@ -22,7 +21,7 @@ import { ExportOutlined, LeftOutlined, TableOutlined } from '@ant-design/icons';
 
 import { T_PLURAL_COUNT, T_SINGULAR_COUNT } from '@/constants/i18n';
 import { WAITING_STATES } from '@/constants/requests';
-import { useAppDispatch, useTranslationFn } from '@/hooks';
+import { useAppDispatch, useLanguage, useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
 import type { BentoKatsuEntity } from '@/types/entities';
@@ -105,16 +104,12 @@ const PHENOPACKET_SEARCH_TABLE_COLUMNS = {
 };
 
 const PhenopacketSubjectLink = ({ children, packetId }: { children: ReactNode; packetId: string }) => {
-  const {
-    i18n: { language },
-  } = useTranslation();
+  const language = useLanguage();
   return <Link to={`/${language}/phenopackets/${packetId}/subject`}>{children}</Link>;
 };
 
 const PhenopacketBiosampleLink = ({ packetId, sampleId }: { packetId: string; sampleId: string }) => {
-  const {
-    i18n: { language },
-  } = useTranslation();
+  const language = useLanguage();
   return <Link to={`/${language}/phenopackets/${packetId}/biosamples?expanded=${sampleId}`}>{sampleId}</Link>;
 };
 

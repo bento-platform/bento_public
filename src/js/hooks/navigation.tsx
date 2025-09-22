@@ -1,5 +1,4 @@
 import { type ReactNode, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
 import { type NavigateOptions, useLocation, useNavigate } from 'react-router-dom';
 import { BookOutlined, PieChartOutlined, ShareAltOutlined, SolutionOutlined } from '@ant-design/icons';
 
@@ -9,13 +8,11 @@ import { FORCE_CATALOGUE } from '@/config';
 import { useMetadata } from '@/features/metadata/hooks';
 import { type DiscoveryScope, selectScope } from '@/features/metadata/metadata.store';
 import { BentoRoute } from '@/types/routes';
-import { useAppDispatch } from '@/hooks';
+import { useAppDispatch, useLanguage } from '@/hooks';
 import { scopeToUrl } from '@/utils/router';
 
 export const useNavigateToRoot = () => {
-  const {
-    i18n: { language },
-  } = useTranslation();
+  const language = useLanguage();
   const navigate = useNavigate();
   return useCallback(() => navigate(`/${language}`), [navigate, language]);
 };
@@ -26,9 +23,7 @@ export const useNavigateToRoot = () => {
  * with downstream search processing.
  */
 export const useNavigateToScope = () => {
-  const {
-    i18n: { language },
-  } = useTranslation();
+  const language = useLanguage();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 

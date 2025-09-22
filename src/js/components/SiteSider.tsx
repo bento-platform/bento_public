@@ -1,6 +1,5 @@
 import type React from 'react';
 import { useCallback, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import type { MenuProps, SiderProps } from 'antd';
@@ -10,7 +9,7 @@ import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useSelectedScope } from '@/features/metadata/hooks';
 import { useNonFilterQueryParams, useSearchQuery } from '@/features/search/hooks';
 import { buildQueryParamsUrl } from '@/features/search/utils';
-import { useTranslationFn } from '@/hooks';
+import { useLanguage, useTranslationFn } from '@/hooks';
 import { useGetRouteTitleAndIcon, useIsInCatalogueMode, useNavigateToRoot } from '@/hooks/navigation';
 import type { MenuItem } from '@/types/navigation';
 import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
@@ -23,7 +22,7 @@ type OnClick = MenuProps['onClick'];
 const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollapsed: SiderProps['onCollapse'] }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { i18n } = useTranslation();
+  const language = useLanguage();
   const t = useTranslationFn();
   const { filterQueryParams } = useSearchQuery();
   const otherQueryParams = useNonFilterQueryParams();
@@ -106,7 +105,7 @@ const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollaps
               type="text"
               icon={<ArrowLeftOutlined />}
               style={{ margin: 4, width: 'calc(100% - 8px)', height: 38 }}
-              onClick={scope.dataset ? () => navigate(`/${i18n.language}/p/${scope.project}`) : navigateToRoot}
+              onClick={scope.dataset ? () => navigate(`/${language}/p/${scope.project}`) : navigateToRoot}
             >
               {collapsed || !scopeSet ? null : t(scope.dataset ? 'Back to project' : 'Back to catalogue')}
             </Button>

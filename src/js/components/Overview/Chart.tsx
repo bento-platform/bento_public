@@ -1,5 +1,4 @@
 import { memo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import type { BarChartProps } from 'bento-charts';
 import { BarChart, Histogram, PieChart } from 'bento-charts';
@@ -7,6 +6,7 @@ import { ChoroplethMap } from 'bento-charts/dist/maps';
 
 import { CHART_HEIGHT, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
 import { useSelectedScope } from '@/features/metadata/hooks';
+import { useLanguage, useTranslationFn } from '@/hooks';
 import type { ChartData } from '@/types/data';
 import type { ChartConfig } from '@/types/discovery/chartConfig';
 import {
@@ -28,10 +28,8 @@ interface PieChartEvent {
 
 const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) => {
   const navigate = useNavigate();
-  const {
-    i18n: { language },
-    t,
-  } = useTranslation();
+  const language = useLanguage();
+  const t = useTranslationFn();
   const selectedScope = useSelectedScope();
 
   const translateMap = ({ x, y }: { x: string; y: number }) => ({ x: t(x), y, id: x });

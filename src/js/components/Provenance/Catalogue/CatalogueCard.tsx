@@ -1,12 +1,11 @@
 import { type ReactNode, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { Button, Card, Carousel, Descriptions, Flex, Space, Tag, Tooltip, Typography } from 'antd';
 import { PieChartOutlined, ProfileOutlined } from '@ant-design/icons';
 
 import type { Project } from '@/types/metadata';
 import { isoDateToString } from '@/utils/strings';
-import { useTranslationFn } from '@/hooks';
+import { useLanguage, useTranslationFn } from '@/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { T_PLURAL_COUNT } from '@/constants/i18n';
@@ -42,9 +41,7 @@ const CatalogueCardInner = ({ firstContent, secondContent }: { firstContent: Rea
 };
 
 const CatalogueCard = ({ project }: { project: Project }) => {
-  const {
-    i18n: { language },
-  } = useTranslation();
+  const language = useLanguage();
   const t = useTranslationFn();
   const navigateToScope = useNavigateToScope();
 
