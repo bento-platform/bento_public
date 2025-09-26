@@ -113,6 +113,29 @@ body {
 }
 
 
+.ant-tag.filters-applied-tag {
+  transition: max-width 0.2s, padding 0.2s, border-width 0.2s, opacity 0.2s, margin-left 0.2s;
+  height: 22px;
+  vertical-align: top;
+  margin-top: 2px;
+  text-wrap: nowrap;
+  overflow: hidden;
+  box-sizing: border-box;
+
+  /* overridden by has-filters class when we have filters applied: */
+  max-width: 0;
+  padding: 0;
+  border-width: 0;
+  margin-left: 1px;
+}
+.ant-tag.filters-applied-tag.has-filters {
+  max-width: 150px;
+  padding: 0 7px;
+  border-width: 1px;
+  margin-left: 1em;
+}
+
+
 .scoped-title {
   position: sticky;
   top: -3px;
@@ -137,13 +160,17 @@ body {
     margin 0.5s ease-in-out,
     padding 0.5s ease-in-out,
     height 0.5s ease-in-out,
-    box-shadow 0.1s ease-in-out;
+    box-shadow 0.1s ease-in-out,
+    opacity 0.5s ease-in-out;
+}
+
+.scoped-title .filters-applied-tag {
+  opacity: 0;
 }
 
 .scoped-title__breadcrumb {
   font-size: 1.8rem;
   transition: font-size 0.3s ease-in-out;
-  flex: 1;
 }
 
 .scoped-title__breadcrumb .anticon {
@@ -158,6 +185,10 @@ body {
   height: 50px;
   border-bottom: 1px solid rgba(235, 235, 235, 1);
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.02);
+}
+
+.scoped-title[data-stuck] .filters-applied-tag {
+  opacity: 1;
 }
 
 .scoped-title[data-stuck] .scoped-title__breadcrumb {

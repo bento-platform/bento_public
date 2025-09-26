@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Flex, FloatButton, Tabs, type TabsProps, Tag } from 'antd';
+import { Flex, FloatButton, Tabs, type TabsProps } from 'antd';
 import { AppstoreAddOutlined, FileTextOutlined, SearchOutlined, SolutionOutlined } from '@ant-design/icons';
 
 import { convertSequenceAndDisplayData, generateLSChartDataKey, saveValue } from '@/utils/localStorage';
@@ -21,6 +21,7 @@ import { useTranslationFn } from '@/hooks';
 import { useSearchRouterAndHandler } from '@/hooks/useSearchRouterAndHandler';
 import { useSelectedDataset, useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
 import { useSearchQuery, useSearchableFields } from '@/features/search/hooks';
+import FiltersAppliedTag from '@/components/Search/FiltersAppliedTag';
 
 const saveScopeOverviewToLS = (scope: DiscoveryScope, sections: Sections) => {
   saveValue(generateLSChartDataKey(scope), convertSequenceAndDisplayData(sections));
@@ -39,10 +40,10 @@ const OverviewChartDashboard = () => {
   // URL and dispatches discovery actions for fetching overview/query response data.
   useSearchRouterAndHandler();
 
-  // Lazy-loading hooks means these are called only if OverviewChartDashboard is rendered ---
   const { discoveryStatus, sections, filterQueryParams, textQuery } = useSearchQuery();
+
+  // Lazy-loading hooks means this is loaded only if OverviewChartDashboard is rendered:
   const searchableFields = useSearchableFields();
-  // ---
 
   const displayedSections = sections.filter(({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1);
 
@@ -72,28 +73,6 @@ const OverviewChartDashboard = () => {
     }
   }, [hasChangedTabs, filterQueryParams, textQuery, changePage]);
 
-  const nFilters = Object.keys(filterQueryParams).length + +!!textQuery; // Filters including text query
-  const nFiltersAppliedTag = (
-    <Tag
-      color="green"
-      style={{
-        transition: 'max-width 0.2s, padding 0.2s, border-width 0.2s, opacity 0.2s, margin-left 0.2s',
-        maxWidth: nFilters ? 150 : 0,
-        padding: nFilters ? '0 7px' : 0,
-        borderWidth: nFilters ? '1px' : 0,
-        marginLeft: nFilters ? '1em' : '1px',
-        verticalAlign: 'top',
-        marginTop: 2,
-        textWrap: 'nowrap',
-        overflow: 'hidden',
-        boxSizing: 'border-box',
-      }}
-    >
-      {/* add an extra filter to the count if we've done free-text search: */}
-      {t('search.filters_applied', { count: nFilters })}
-    </Tag>
-  );
-
   const pageTabItems: TabsProps['items'] = [
     { key: 'about', label: t('About'), icon: <FileTextOutlined /> },
     ...(scope.dataset ? [{ key: 'provenance', label: t('Provenance'), icon: <SolutionOutlined /> }] : []),
@@ -102,7 +81,7 @@ const OverviewChartDashboard = () => {
       label: (
         <span>
           {t('Search')}
-          {nFiltersAppliedTag}
+          <FiltersAppliedTag />
         </span>
       ),
       icon: <SearchOutlined />,
