@@ -29,7 +29,6 @@ import {
 } from '@/utils/router';
 
 import PublicOverview from './Overview/PublicOverview';
-import ProvenanceTab from './Provenance/ProvenanceTab';
 import BeaconQueryUi from './Beacon/BeaconQueryUi';
 import NetworkUi from './Beacon/BeaconNetwork/NetworkUi';
 import PhenopacketView from './ClinPhen/PhenopacketView';
@@ -163,7 +162,6 @@ const BentoAppRouter = () => {
           {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
           {/* Beacon network is only available at the top level - scoping does not make sense for it. */}
           {BentoRoute.BeaconNetwork && <Route path={BentoRoute.BeaconNetwork} element={<NetworkUi />} />}
-          <Route path={BentoRoute.Provenance} element={<ProvenanceTab />} />
         </Route>
 
         <Route path={`/${BentoRoute.Phenopackets}/:packetId/:tab?`} element={<PhenopacketView />} />
@@ -172,14 +170,12 @@ const BentoAppRouter = () => {
           <Route index element={<PublicOverview />} />
           <Route path={BentoRoute.Overview} element={<PublicOverview />} />
           {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
-          <Route path={BentoRoute.Provenance} element={<ProvenanceTab />} />
         </Route>
 
         <Route path="/p/:projectId/d/:datasetId" element={<ScopedRoute />}>
           <Route index element={<PublicOverview />} />
           <Route path={BentoRoute.Overview} element={<PublicOverview />} />
           {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
-          <Route path={BentoRoute.Provenance} element={<ProvenanceTab />} />
         </Route>
       </Route>
     </Routes>

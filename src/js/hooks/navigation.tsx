@@ -1,14 +1,15 @@
-import { type ReactNode, useCallback } from 'react';
+import { type ReactNode, useCallback, useMemo } from 'react';
 import { type NavigateOptions, useLocation, useNavigate } from 'react-router-dom';
 import { BookOutlined, PieChartOutlined, ShareAltOutlined, SolutionOutlined } from '@ant-design/icons';
 
 import BeaconLogo from '@/components/Beacon/BeaconLogo';
 
 import { FORCE_CATALOGUE } from '@/config';
-import { useMetadata } from '@/features/metadata/hooks';
+import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
 import { type DiscoveryScope, selectScope } from '@/features/metadata/metadata.store';
+import type { MenuItem } from '@/types/navigation';
 import { BentoRoute } from '@/types/routes';
-import { useAppDispatch, useLanguage } from '@/hooks';
+import { useAppDispatch, useLanguage, useTranslationFn } from '@/hooks';
 import { scopeToUrl } from '@/utils/router';
 
 export const useNavigateToRoot = () => {
@@ -76,4 +77,35 @@ export const useGetRouteTitleAndIcon = () => {
     },
     [overviewIsCatalogue]
   );
+};
+
+export const useSidebarMenuItems = (): MenuItem[] => {
+  const t = useTranslationFn();
+  const { fixedProject, scope } = useSelectedScope();
+
+  const createMenuItem = useCallback(
+    (key: string, label: string, icon?: ReactNode, children?: MenuItem[]): MenuItem => ({
+      key,
+      icon,
+      children,
+      label: t(label),
+    }),
+    [t]
+  );
+
+  const getRouteTitleAndIcon = useGetRouteTitleAndIcon();
+
+  return useMemo(() => {
+    const items = [createMenuItem(BentoRoute.Overview, ...getRouteTitleAndIcon(BentoRoute.Overview))];
+
+    if (BentoRoute.Beacon) {
+      items.push(createMenuItem(BentoRoute.Beacon, ...getRouteTitleAndIcon(BentoRoute.Beacon)));
+    }
+
+    if (BentoRoute.BeaconNetwork && (!scope.project || (scope.project && fixedProject))) {
+      items.push(createMenuItem(BentoRoute.BeaconNetwork, ...getRouteTitleAndIcon(BentoRoute.BeaconNetwork)));
+    }
+
+    return items;
+  }, [getRouteTitleAndIcon, createMenuItem, scope, fixedProject]);
 };
