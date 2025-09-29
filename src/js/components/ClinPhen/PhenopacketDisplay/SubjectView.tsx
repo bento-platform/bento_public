@@ -45,11 +45,6 @@ const SubjectView = ({ subject, spaceSize }: { subject: Individual; spaceSize?: 
       children: subject.id,
     },
     {
-      key: 'Age',
-      label: 'subject.age',
-      children: `${subject.age_numeric} ${subject.age_unit}`,
-    },
-    {
       key: 'alternate_ids',
       label: 'subject.alternate_ids',
       children: <StringList list={subject.alternate_ids} />,
