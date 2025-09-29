@@ -12,12 +12,10 @@ const SearchFilterInput = ({
   field,
   value,
   onChange,
-  onFocus,
   onRemove,
   disabledFields,
 }: FilterValue & {
   onChange: (v: FilterValue) => void;
-  onFocus: () => void;
   onRemove: () => void;
   disabledFields: Set<string>;
 }) => {
@@ -34,8 +32,8 @@ const SearchFilterInput = ({
           value: f.id,
           label: (
             <Flex>
-              <div className="flex-1">{t(f.title)}</div>
-              <OptionDescription description={t(f.description)} />
+              <div className="flex-1">{t(f.definition.title)}</div>
+              <OptionDescription description={t(f.definition.description)} />
             </Flex>
           ),
           // Disabled if: field is in disabled set AND it isn't the currently selected field (so we allow re-selection of
@@ -77,8 +75,6 @@ const SearchFilterInput = ({
       <Select
         className="flex-1 rounded-e-none"
         options={filterOptions}
-        onClick={onFocus}
-        onFocus={onFocus}
         onChange={onFilterFieldChange}
         value={field}
         placeholder={t('search.filter_placeholder')}
@@ -87,8 +83,6 @@ const SearchFilterInput = ({
         className="flex-1"
         disabled={!field}
         options={field ? fieldFilterOptions[field] : []}
-        onClick={onFocus}
-        onFocus={onFocus}
         onChange={onFilterValueChange}
         value={value}
       />

@@ -8,7 +8,7 @@ export const authorizedRequestConfig = (state: RootState): AxiosRequestConfig =>
 
 export const scopedAuthorizedRequestConfig = (
   state: RootState,
-  extraParams: Record<string, string> | undefined = undefined
+  extraParams: Record<string, string | undefined> | undefined = undefined
 ): AxiosRequestConfig => ({
   ...authorizedRequestConfig(state),
   params: { ...state.metadata.selectedScope.scope, ...extraParams },

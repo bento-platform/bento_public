@@ -3,17 +3,16 @@ import { Routes, Route, useNavigate, useParams, Outlet } from 'react-router-dom'
 import { useAutoAuthenticate, useIsAuthenticated } from 'bento-auth-js';
 import { useAppDispatch } from '@/hooks';
 
-import { clearIndividualCache } from '@/features/clinPhen/clinPhen.store';
-import { invalidateConfig, makeGetServiceInfoRequest, makeGetConfigRequest } from '@/features/config/config.store';
+import { clearBiosampleCache, clearIndividualCache, clearPhenopacketCache } from '@/features/clinPhen/clinPhen.store';
+import { makeGetServiceInfoRequest, makeGetConfigRequest } from '@/features/config/config.store';
 import { makeGetAboutRequest } from '@/features/content/content.store';
 import { getBeaconConfig, getBeaconFilters } from '@/features/beacon/beacon.store';
 import { getBeaconNetworkConfig } from '@/features/beacon/network.store';
-import { invalidateData } from '@/features/data/data.store';
-import { invalidateDataTypes } from '@/features/dataTypes/dataTypes.store';
+import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
 import { useMetadata } from '@/features/metadata/hooks';
 import { getProjects, markScopeSet, selectScope } from '@/features/metadata/metadata.store';
 import { getGenomes } from '@/features/reference/reference.store';
-import { makeGetKatsuPublic, makeGetSearchFields, resetAllQueryState } from '@/features/search/query.store';
+import { fetchSearchFields, resetAllQueryState } from '@/features/search/query.store';
 
 import Loader from '@/components/Loader';
 import DefaultLayout from '@/components/Util/DefaultLayout';
@@ -30,8 +29,6 @@ import {
 } from '@/utils/router';
 
 import PublicOverview from './Overview/PublicOverview';
-import Search from './Search/Search';
-import ProvenanceTab from './Provenance/ProvenanceTab';
 import BeaconQueryUi from './Beacon/BeaconQueryUi';
 import NetworkUi from './Beacon/BeaconNetwork/NetworkUi';
 import PhenopacketView from './ClinPhen/PhenopacketView';
@@ -68,11 +65,6 @@ const ScopedRoute = () => {
       (!projectId && !datasetId && isFixedProjectAndDataset)
     ) {
       dispatch(selectScope(valid.scope)); // Also marks scope as set
-
-      // Conditions where we need to reload "config" (which really is closer to rules for search):
-      //  - scope was set (need to load for the first time)
-      //  - config was invalidated (scope or authorization changed)
-      dispatch(makeGetConfigRequest());
       return;
     }
 
@@ -102,13 +94,18 @@ const BentoAppRouter = () => {
   useEffect(() => {
     if (!scopeSet) return;
 
+    // Situations where this effect runs:
+    //  - First load
+    //  - Newly authenticated
+    //  - Scope was just set
+    //  - Scope changed
+
     // Reset query state, including currently-applied filters/search; the filters may not be the same between scopes.
     //  TODO: in the future, perhaps filters could be kept if the scopes overlap and we know there's discovery config
     //   inheritance, but this would require quite a bit more logic and maybe is unnecessarily complex.
     dispatch(resetAllQueryState());
 
-    dispatch(makeGetSearchFields());
-    dispatch(makeGetKatsuPublic());
+    dispatch(fetchSearchFields());
 
     if (BEACON_UI_ENABLED) {
       dispatch(getBeaconConfig());
@@ -117,26 +114,28 @@ const BentoAppRouter = () => {
 
     // If scope or authorization status changed, invalidate anything which is scope/authz-contextual and uses a
     // lazy-loading-style hook for data fetching:
-    console.debug('isAuthenticated | scope | scopeSet changed - dispatching config/data/dataTypes invalidate actions', {
+    console.debug('isAuthenticated | scope | scopeSet changed - dispatching config/dataTypes re-fetch actions', {
       isAuthenticated,
       scope,
       scopeSet,
     });
     // For the new scope/auth state, these invalidations will trigger re-fetches of state which is rendered invalid by
     // the new context.
-    //  - Censorship configs are invalid when auth/scope changes, since censorship rules may be different.
-    dispatch(invalidateConfig());
-    //  - Overview data is invalid: there is different data, and the overview itself may be configured differently.
-    dispatch(invalidateData());
-    //  - Data types are (partially) invalid: counts and last-ingestion time may be different.
-    dispatch(invalidateDataTypes());
+    //  - Censorship configs are invalid when auth/scope changes, since censorship rules may be different. We need to
+    //    refresh them:
+    dispatch(makeGetConfigRequest());
+    // dispatch(invalidateConfig());
+    //  - Data types are (partially) invalid: counts and last-ingestion time may be different; refresh them:
+    dispatch(makeGetDataTypes());
   }, [dispatch, isAuthenticated, scope, scopeSet]);
 
   useEffect(() => {
     // If authorization status changed, invalidate anything which is authorization-dependent.
-    //  - clear the individuals cache, since we shouldn't have any detailed data hanging around
+    //  - clear the clin/phen caches, since we shouldn't have any detailed data hanging around
     //    post-authorization-status change, especially in case of a sign-out.
     dispatch(clearIndividualCache());
+    dispatch(clearPhenopacketCache());
+    dispatch(clearBiosampleCache());
   }, [dispatch, isAuthenticated]);
 
   useEffect(() => {
@@ -160,11 +159,9 @@ const BentoAppRouter = () => {
         <Route path="/" element={<ScopedRoute />}>
           <Route index element={<PublicOverview />} />
           <Route path={BentoRoute.Overview} element={<PublicOverview />} />
-          <Route path={`${BentoRoute.Search}/:page?`} element={<Search />} />
           {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
           {/* Beacon network is only available at the top level - scoping does not make sense for it. */}
           {BentoRoute.BeaconNetwork && <Route path={BentoRoute.BeaconNetwork} element={<NetworkUi />} />}
-          <Route path={BentoRoute.Provenance} element={<ProvenanceTab />} />
         </Route>
 
         <Route path={`/${BentoRoute.Phenopackets}/:packetId/:tab?`} element={<PhenopacketView />} />
@@ -172,17 +169,13 @@ const BentoAppRouter = () => {
         <Route path="/p/:projectId" element={<ScopedRoute />}>
           <Route index element={<PublicOverview />} />
           <Route path={BentoRoute.Overview} element={<PublicOverview />} />
-          <Route path={`${BentoRoute.Search}/:page?`} element={<Search />} />
           {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
-          <Route path={BentoRoute.Provenance} element={<ProvenanceTab />} />
         </Route>
 
         <Route path="/p/:projectId/d/:datasetId" element={<ScopedRoute />}>
           <Route index element={<PublicOverview />} />
           <Route path={BentoRoute.Overview} element={<PublicOverview />} />
-          <Route path={`${BentoRoute.Search}/:page?`} element={<Search />} />
           {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
-          <Route path={BentoRoute.Provenance} element={<ProvenanceTab />} />
         </Route>
       </Route>
     </Routes>

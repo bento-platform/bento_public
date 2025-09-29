@@ -1,6 +1,7 @@
 {
   "Overview": "Overview",
   "Search": "Search",
+  "Explore": "Explore",
   "Provenance": "Provenance",
   "Count": "Count",
   "Portal": "Portal",
@@ -26,11 +27,16 @@
       "Experiments are a process done to a specific sample, e.g., whole-genome sequencing.",
       "One lab experiment may result in multiple experiment records inside the portal, such as with multiplexed samples."
     ],
+    "experiment_result_one": "File",
+    "experiment_result_other": "Files",
+    "experiment_result_help": "Files are generated as the result of experiments.",
     "variant_one": "Variant",
     "variant_other": "Variants"
   },
   "search": {
     "filters": "Filters",
+    "filters_applied_one": "{{count}} filter applied",
+    "filters_applied_other": "{{count}} filters applied",
     "text_search": "Text search",
     "filter_placeholder": "Select a field to filter by\u2026",
     "showing_entities": "Showing {{entity, lowercase}} {{start}}-{{end}} of {{total}}",
@@ -359,7 +365,6 @@
   },
   "subject": {
     "subject": "Subject",
-    "age": "Age",
     "status": "Status",
     "time_of_death": "Time of Death",
     "cause_of_death": "Cause of Death",

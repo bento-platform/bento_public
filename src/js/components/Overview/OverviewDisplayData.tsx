@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { Space } from 'antd';
 
-import { disableChart } from '@/features/data/data.store';
+import { disableChart } from '@/features/search/query.store';
 import { useAppDispatch } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 

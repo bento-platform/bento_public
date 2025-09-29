@@ -5,7 +5,6 @@ import { Space } from 'antd';
 import { FilterOutlined } from '@ant-design/icons';
 
 import { WAITING_STATES } from '@/constants/requests';
-import { TEXT_QUERY_PARAM } from '@/features/search/constants';
 import { useConfig } from '@/features/config/hooks';
 import { useNonFilterQueryParams, useQueryFilterFields, useSearchQuery } from '@/features/search/hooks';
 import { buildQueryParamsUrl, combineQueryParamsWithoutKey, queryParamsWithoutKey } from '@/features/search/utils';
@@ -13,7 +12,7 @@ import { buildQueryParamsUrl, combineQueryParamsWithoutKey, queryParamsWithoutKe
 import SearchFilterInput, { type FilterValue, SearchFilterInputSkeleton } from './SearchFilterInput';
 import SearchSubForm, { type DefinedSearchSubFormProps } from '@/components/Search/SearchSubForm';
 
-const SearchFilters = ({ focused, onFocus, ...props }: DefinedSearchSubFormProps) => {
+const SearchFilters = (props: DefinedSearchSubFormProps) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
@@ -38,7 +37,7 @@ const SearchFilters = ({ focused, onFocus, ...props }: DefinedSearchSubFormProps
   }, [maxQueryParameters, fields, filterQueryParams]);
 
   return (
-    <SearchSubForm titleKey="filters" icon={<FilterOutlined />} focused={focused} onFocus={onFocus} {...props}>
+    <SearchSubForm titleKey="filters" icon={<FilterOutlined />} {...props}>
       <Space direction="vertical" size={8} className="w-full">
         {WAITING_STATES.includes(configStatus) || WAITING_STATES.includes(fieldsStatus) ? (
           <SearchFilterInputSkeleton />
@@ -46,9 +45,9 @@ const SearchFilters = ({ focused, onFocus, ...props }: DefinedSearchSubFormProps
           filterInputs.map((fv, i) => (
             <SearchFilterInput
               key={i}
-              onFocus={onFocus}
               onChange={({ field, value }) => {
                 if (field === null || value === null) return; // Force field to resolve as string type
+                console.debug('[SearchFilters] SearchFilterInput onChange called; field =', field, 'value =', value);
                 const url = buildQueryParamsUrl(pathname, {
                   // If we change the field in this filter, we need to remove it so we can switch to the new field
                   ...(fv.field && fv.field !== field
@@ -57,9 +56,7 @@ const SearchFilters = ({ focused, onFocus, ...props }: DefinedSearchSubFormProps
                   // ... and if the field stays the same, we will put it back with a new value. Otherwise, we'll put the
                   // new field in with the first available value.
                   [field]: value,
-                  // plus we need non-filter-related query parameters, except for the text query param since we're not
-                  // executing a text query:
-                  ...queryParamsWithoutKey(nonFilterQueryParams, TEXT_QUERY_PARAM),
+                  ...nonFilterQueryParams,
                 });
                 console.debug('[SearchFilters] Redirecting to:', url);
                 navigate(url, { replace: true });
@@ -70,7 +67,7 @@ const SearchFilters = ({ focused, onFocus, ...props }: DefinedSearchSubFormProps
                 const url = buildQueryParamsUrl(
                   pathname,
                   // Remove fv.field from query params + ensure no [TEXT_QUERY_PARAM] key:
-                  combineQueryParamsWithoutKey(filterQueryParams, nonFilterQueryParams, [fv.field, TEXT_QUERY_PARAM])
+                  combineQueryParamsWithoutKey(filterQueryParams, nonFilterQueryParams, [fv.field])
                 );
                 console.debug('[SearchFilters] Redirecting to:', url);
                 navigate(url, { replace: true });

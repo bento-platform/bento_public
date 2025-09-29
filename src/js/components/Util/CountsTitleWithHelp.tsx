@@ -18,8 +18,8 @@ const CountsTitleWithHelp = ({ entity, showHelp }: CountsHelpProps) => {
   const title = t(`entities.${entity}`, T_PLURAL_COUNT);
 
   return (
-    <Space>
-      {title}
+    <Space className="counts-title">
+      <span className="counts-title__text">{title}</span>
       {showHelp && (
         <Popover
           title={title}

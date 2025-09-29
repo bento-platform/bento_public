@@ -72,7 +72,9 @@ const metadata = createSlice({
       // Defaults to the narrowest possible scope if there is only 1 project and only 1 dataset.
       // This forces Katsu to resolve the Discovery config with fallbacks from the bottom-up:
       // dataset -> project -> whole node
-      state.selectedScope = validProjectDataset(state.projectsByID, payload);
+      const newScope = validProjectDataset(state.projectsByID, payload);
+      console.debug('Selecting scope', newScope);
+      state.selectedScope = newScope;
     },
     markScopeSet: (state) => {
       state.selectedScope.scopeSet = true;

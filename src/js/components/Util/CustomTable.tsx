@@ -81,6 +81,20 @@ const CustomTable = <T extends object>({
     [translatedColumns, visibleData]
   );
 
+  // We can show a warning if we are trying to expand a key that doesn't exist. However, this may not be desirable if
+  // we're on first-load and just trying to expand a row clicked on from search, since this is still a valid key (i.e.,
+  // exists in the phenopacket, just doesn't have any additional information to expand.)
+  // To do this, we build two arrays:
+  //  - one with expanded keys that exist in the current data source
+  //  - one with expanded keys both exist in the current data source AND are expandable
+  // If the second one doesn't match the total list of expanded keys, we need to redirect.
+  // If the first one doesn't match, we can show the warning.
+
+  const expandedKeysThatExist = useMemo(() => {
+    const keySet = new Set(visibleData.map(rowKeyFn));
+    return expandedKeys.filter((k) => keySet.has(k));
+  }, [visibleData, expandedKeys, rowKeyFn]);
+
   const validExpandedKeys = useMemo(() => {
     const keySet = new Set(visibleData.filter((r) => r.isVisible).map(rowKeyFn));
     return expandedKeys.filter((k) => keySet.has(k));
@@ -88,13 +102,26 @@ const CustomTable = <T extends object>({
 
   useEffect(() => {
     if (expandedRowRender && validExpandedKeys.length !== expandedKeys.length) {
-      notify.warning({
-        message: t('table.invalid_row_keys_title'),
-        description: t('table.invalid_row_keys_description'),
-      });
+      // Only warn if we are trying to expand a key that doesn't exist *at all* in the data source, NOT if we're just
+      // trying to expand a key that isn't expandable.
+      if (expandedKeysThatExist.length !== expandedKeys.length) {
+        console.warn(
+          t('table.invalid_row_keys_title'),
+          'expanded keys:',
+          expandedKeys,
+          ', expanded keys that exist:',
+          expandedKeysThatExist,
+          'expanded keys that are valid:',
+          validExpandedKeys
+        );
+        notify.warning({
+          message: t('table.invalid_row_keys_title'),
+          description: t('table.invalid_row_keys_description'),
+        });
+      }
       setSearchParams((prev) => modifySearchParam(prev, queryKey, validExpandedKeys), { replace: true });
     }
-  }, [expandedRowRender, validExpandedKeys, expandedKeys, notify, queryKey, t, setSearchParams]);
+  }, [expandedRowRender, validExpandedKeys, expandedKeysThatExist, expandedKeys, notify, queryKey, t, setSearchParams]);
 
   const handleExpand = useCallback(
     (expanded: boolean, record: WithVisible<T>) => {

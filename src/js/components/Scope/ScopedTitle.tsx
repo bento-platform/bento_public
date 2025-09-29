@@ -12,6 +12,7 @@ import { useTranslationFn } from '@/hooks';
 import { useGetRouteTitleAndIcon } from '@/hooks/navigation';
 import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
 import { getCurrentPage } from '@/utils/router';
+import FiltersAppliedTag from '@/components/Search/FiltersAppliedTag';
 import CurrentPageHelpModal from '@/components/Util/CurrentPageHelpModal';
 import { useExtraBreadcrumb } from '@/features/ui/hooks';
 
@@ -113,7 +114,10 @@ const ScopedTitle = () => {
         <ScopePickerModal isModalOpen={scopeSelectModalOpen} setIsModalOpen={setScopeSelectModalOpen} />
         <CurrentPageHelpModal open={helpModalOpen} onCancel={() => setHelpModalOpen(false)} />
         <Flex className="scoped-title" align="center">
-          <Breadcrumb className="scoped-title__breadcrumb" items={breadcrumbItems} itemRender={breadcrumbRender} />
+          <Flex className="flex-1" align="center">
+            <Breadcrumb className="scoped-title__breadcrumb" items={breadcrumbItems} itemRender={breadcrumbRender} />
+            <FiltersAppliedTag />
+          </Flex>
           <Space>
             {scopeSelectionEnabled && (
               <Tooltip title={t('Change Scope')} placement="bottom">

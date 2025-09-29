@@ -11,8 +11,18 @@ import type { ConditionalDescriptionItem } from '@/types/descriptions';
 import { objectToBoolean } from '@/utils/boolean';
 import FileTable from '@/components/Util/FileTable';
 
-const BiosampleExpandedRow = ({ biosample }: { biosample: Biosample }) => {
+export const BiosampleExpandedRow = ({ biosample, searchRow }: { biosample: Biosample; searchRow?: boolean }) => {
   const items: ConditionalDescriptionItem[] = [
+    ...(searchRow
+      ? [
+          {
+            key: 'sampled_tissue',
+            label: 'biosample_table.sampled_tissue',
+            children: <OntologyTermComponent term={biosample.sampled_tissue} />,
+            isVisible: biosample.sampled_tissue,
+          },
+        ]
+      : []),
     {
       key: 'description',
       label: 'biosample_expanded_row.description',
@@ -112,8 +122,9 @@ const BiosampleExpandedRow = ({ biosample }: { biosample: Biosample }) => {
   return <TDescriptions bordered size="small" items={items} />;
 };
 
-const isBiosampleRowExpandable = (r: Biosample) =>
+export const isBiosampleRowExpandable = (r: Biosample, searchRow: boolean = false) =>
   !!(
+    (searchRow && r.sampled_tissue) ||
     r.description ||
     r.derived_from_id ||
     r.individual_id ||

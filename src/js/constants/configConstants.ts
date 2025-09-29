@@ -2,22 +2,27 @@ import { PUBLIC_URL_NO_TRAILING_SLASH } from '@/config';
 
 export const MAX_CHARTS = 3;
 
+const katsuBaseUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata`;
+
 // Katsu discovery URLs
-export const katsuPublicOverviewUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/public_overview`;
-export const katsuPublicRulesUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/public_rules`;
-export const searchFieldsUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/public_search_fields`;
-export const katsuPublicSearchUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/public`;
+export const katsuDiscoveryRulesUrl = `${katsuBaseUrl}/api/discovery_rules`;
+export const katsuDiscoverySearchFieldsUrl = `${katsuBaseUrl}/api/discovery_search_fields`;
+export const katsuDiscoveryUrl = `${katsuBaseUrl}/api/discovery`;
+export const katsuDiscoveryMatchesUrl = `${katsuBaseUrl}/api/discovery_matches`;
 
 // Katsu entity API (Django Rest Framework) base URLs
-export const projectsUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/projects`;
-export const datasetsUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/datasets`;
-export const individualUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/individuals`;
-export const phenopacketUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/phenopackets`;
-export const individualBatchUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata/api/batch/individuals`;
+export const projectsUrl = `${katsuBaseUrl}/api/projects`;
+export const datasetsUrl = `${katsuBaseUrl}/api/datasets`;
+export const individualUrl = `${katsuBaseUrl}/api/individuals`;
+export const individualBatchUrl = `${katsuBaseUrl}/api/batch/individuals`;
+export const phenopacketUrl = `${katsuBaseUrl}/api/phenopackets`;
+export const biosampleUrl = `${katsuBaseUrl}/api/biosamples`;
+export const biosampleBatchUrl = `${katsuBaseUrl}/api/batch/biosamples`;
+export const experimentUrl = `${katsuBaseUrl}/api/experiments`;
+export const experimentBatchUrl = `${katsuBaseUrl}/api/batch/experiments`;
 
 export const referenceGenomesUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/reference/genomes`;
 
-export const DEFAULT_TRANSLATION = 'default_translation';
 export const CUSTOMIZABLE_TRANSLATION = 'translation';
 
 export const SUPPORTED_LNGS = {

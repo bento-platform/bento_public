@@ -2,10 +2,10 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { PUBLIC_URL } from '@/config';
-import { katsuPublicRulesUrl } from '@/constants/configConstants';
+import { katsuDiscoveryRulesUrl } from '@/constants/configConstants';
 import type { ServiceInfoStore, ServicesResponse } from '@/types/services';
 import type { RootState } from '@/store';
-import type { DiscoveryRules } from '@/types/configResponse';
+import type { DiscoveryRules } from '@/types/discovery/rules';
 import { RequestStatus } from '@/types/requests';
 import { printAPIError } from '@/utils/error.util';
 import { scopedAuthorizedRequestConfig } from '@/utils/requests';
@@ -14,24 +14,23 @@ export const makeGetConfigRequest = createAsyncThunk<DiscoveryRules, void, { rej
   'config/getConfigData',
   (_, { rejectWithValue, getState }) => {
     return axios
-      .get(katsuPublicRulesUrl, scopedAuthorizedRequestConfig(getState()))
+      .get(katsuDiscoveryRulesUrl, scopedAuthorizedRequestConfig(getState()))
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue));
   },
   {
     condition(_, { getState }) {
       const {
-        config: { configStatus, configIsInvalid },
+        config: { configStatus },
         metadata: {
           selectedScope: { scopeSet },
         },
       } = getState();
-      const cond =
-        scopeSet && configStatus !== RequestStatus.Pending && (configStatus === RequestStatus.Idle || configIsInvalid);
+      const cond = scopeSet && configStatus !== RequestStatus.Pending;
       if (!cond) {
         console.debug(
           `makeGetConfigRequest() was attempted, but will not dispatch:
-            scopeSet=${scopeSet}, configStatus=${RequestStatus[configStatus]}, configIsInvalid=${configIsInvalid}`
+            scopeSet=${scopeSet}, configStatus=${RequestStatus[configStatus]}`
         );
       }
       return cond;
@@ -67,7 +66,6 @@ export const makeGetServiceInfoRequest = createAsyncThunk<
 
 export interface ConfigState {
   configStatus: RequestStatus;
-  configIsInvalid: boolean;
   countThreshold: number;
   maxQueryParameters: number;
   // ----------------------------------------------------
@@ -77,7 +75,6 @@ export interface ConfigState {
 
 const initialState: ConfigState = {
   configStatus: RequestStatus.Idle,
-  configIsInvalid: false,
   countThreshold: 0,
   maxQueryParameters: 0,
   // ----------------------------------------------------
@@ -90,11 +87,7 @@ const initialState: ConfigState = {
 const configStore = createSlice({
   name: 'config',
   initialState,
-  reducers: {
-    invalidateConfig: (state) => {
-      state.configIsInvalid = true;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(makeGetConfigRequest.pending, (state) => {
       state.configStatus = RequestStatus.Pending;
@@ -103,7 +96,6 @@ const configStore = createSlice({
       state.countThreshold = payload.count_threshold;
       state.maxQueryParameters = payload.max_query_parameters;
       state.configStatus = RequestStatus.Fulfilled;
-      state.configIsInvalid = false;
     });
     builder.addCase(makeGetConfigRequest.rejected, (state) => {
       state.configStatus = RequestStatus.Rejected;
@@ -125,5 +117,4 @@ const configStore = createSlice({
   },
 });
 
-export const { invalidateConfig } = configStore.actions;
 export default configStore.reducer;

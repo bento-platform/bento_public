@@ -1,15 +1,10 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { Typography } from 'antd';
-import RequestStatusIcon from '@/components/Search/RequestStatusIcon';
 import { useTranslationFn } from '@/hooks';
-import type { RequestStatus } from '@/types/requests';
 
 export type SearchSubFormProps = {
   titleKey: string;
   icon: ReactNode;
-  requestStatus?: RequestStatus;
-  focused: boolean;
-  onFocus: () => void;
   className?: string;
   style?: CSSProperties;
 };
@@ -20,28 +15,16 @@ export type DefinedSearchSubFormProps = Omit<SearchSubFormProps, 'titleKey' | 'i
 const SearchSubForm = ({
   titleKey,
   icon,
-  requestStatus,
-  focused,
-  onFocus,
   className,
   style,
   children,
-}: SearchSubFormProps & {
-  children?: ReactNode;
-}) => {
+}: SearchSubFormProps & { children?: ReactNode }) => {
   const t = useTranslationFn();
 
-  const focusedClass = focused === undefined ? '' : focused ? 'focused' : 'not-focused';
-  let classes = 'search-sub-form';
-  if (focusedClass) classes += ` ${focusedClass}`;
-  if (className) classes += ` ${className}`;
   return (
-    <div className={classes} style={style}>
-      <Typography.Title level={3} className={'search-sub-form-title' + (focused ? ' focused' : '')}>
-        <span className="search-sub-form-title__inner" onClick={onFocus}>
-          {icon} <span className="should-underline-if-unfocused">{t(`search.${titleKey}`)}</span>
-        </span>
-        {requestStatus !== undefined ? <RequestStatusIcon status={requestStatus} /> : null}
+    <div className={'search-sub-form' + (className ? ' ' + className : '')} style={style}>
+      <Typography.Title level={3} className="search-sub-form-title">
+        {icon} <span className="should-underline-if-unfocused">{t(`search.${titleKey}`)}</span>
       </Typography.Title>
       {children}
     </div>

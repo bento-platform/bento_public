@@ -1,6 +1,6 @@
-import { useCallback, useState } from 'react';
-import { Flex, FloatButton } from 'antd';
-import { AppstoreAddOutlined } from '@ant-design/icons';
+import { useCallback, useEffect, useState } from 'react';
+import { Flex, FloatButton, Tabs, type TabsProps } from 'antd';
+import { AppstoreAddOutlined, FileTextOutlined, SearchOutlined, SolutionOutlined } from '@ant-design/icons';
 
 import { convertSequenceAndDisplayData, generateLSChartDataKey, saveValue } from '@/utils/localStorage';
 import type { Sections } from '@/types/data';
@@ -12,13 +12,16 @@ import AboutBox from './AboutBox';
 import OverviewSection from './OverviewSection';
 import OverviewDatasets from './OverviewDatasets';
 import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
-import Counts from './Counts';
+import CountsAndResults from './CountsAndResults';
 import LastIngestionInfo from './LastIngestion';
-import Loader from '@/components/Loader';
+import DatasetProvenance from '@/components/Provenance/DatasetProvenance';
+import SearchForm from '@/components/Search/SearchForm';
 
 import { useTranslationFn } from '@/hooks';
-import { useData, useSearchableFields } from '@/features/data/hooks';
-import { useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
+import { useSearchRouterAndHandler } from '@/hooks/useSearchRouterAndHandler';
+import { useSelectedDataset, useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
+import { useSearchQuery, useSearchableFields } from '@/features/search/hooks';
+import FiltersAppliedTag from '@/components/Search/FiltersAppliedTag';
 
 const saveScopeOverviewToLS = (scope: DiscoveryScope, sections: Sections) => {
   saveValue(generateLSChartDataKey(scope), convertSequenceAndDisplayData(sections));
@@ -31,11 +34,16 @@ const OverviewChartDashboard = () => {
 
   const { scope } = useSelectedScope();
   const selectedProject = useSelectedProject();
+  const selectedDataset = useSelectedDataset();
 
-  // Lazy-loading hooks means these are called only if OverviewChartDashboard is rendered ---
-  const { status: overviewDataStatus, sections } = useData();
+  // This is essentially a large effect hook with a few dependencies, which processes (and rewrites if needed) the query
+  // URL and dispatches discovery actions for fetching overview/query response data.
+  useSearchRouterAndHandler();
+
+  const { discoveryStatus, sections, filterQueryParams, textQuery } = useSearchQuery();
+
+  // Lazy-loading hooks means this is loaded only if OverviewChartDashboard is rendered:
   const searchableFields = useSearchableFields();
-  // ---
 
   const displayedSections = sections.filter(({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1);
 
@@ -46,14 +54,63 @@ const OverviewChartDashboard = () => {
     saveScopeOverviewToLS(scope, sections);
   }, [scope, sections]);
 
-  return WAITING_STATES.includes(overviewDataStatus) ? (
-    <Loader />
-  ) : (
+  // ---
+
+  const [hasChangedTabs, setHasChangedTabs] = useState(false);
+  const [pageTab, setPageTab] = useState('about');
+
+  const changePage = useCallback((page: string) => {
+    setPageTab(page);
+    setHasChangedTabs(true);
+  }, []);
+
+  useEffect(() => {
+    // If the user has not manually changed tabs / this effect has not already run, and we have at least one search
+    // filter set, auto-switch to the search tab rather than the about tab to make the applied filter(s) more obvious.
+
+    if (!hasChangedTabs && (Object.keys(filterQueryParams).length || textQuery.length)) {
+      changePage('search');
+    }
+  }, [hasChangedTabs, filterQueryParams, textQuery, changePage]);
+
+  const pageTabItems: TabsProps['items'] = [
+    { key: 'about', label: t('About'), icon: <FileTextOutlined /> },
+    ...(scope.dataset ? [{ key: 'provenance', label: t('Provenance'), icon: <SolutionOutlined /> }] : []),
+    {
+      key: 'search',
+      label: (
+        <span>
+          {t('Search')}
+          <FiltersAppliedTag />
+        </span>
+      ),
+      icon: <SearchOutlined />,
+    },
+  ];
+
+  const loadingNewData = WAITING_STATES.includes(discoveryStatus);
+
+  return (
     <>
       <Flex vertical={true} gap={24} className="container margin-auto">
-        <AboutBox />
+        <div className="dashboard-tabs">
+          <Tabs
+            type="card"
+            size="large"
+            activeKey={pageTab}
+            onChange={changePage}
+            items={pageTabItems}
+            id="dashboard-tabs"
+            tabBarStyle={{ marginBottom: -1, zIndex: 1 }}
+          />
+          {pageTab === 'about' ? <AboutBox /> : null}
+          {pageTab === 'provenance' && selectedDataset ? (
+            <DatasetProvenance dataset={selectedDataset} showTitle={false} />
+          ) : null}
+          {pageTab === 'search' ? <SearchForm /> : null}
+        </div>
 
-        <Counts />
+        <CountsAndResults />
 
         {selectedProject && !scope.dataset && selectedProject.datasets.length ? (
           // If we have a project with at least one dataset, show a dataset mini-catalogue in the project overview
@@ -61,7 +118,7 @@ const OverviewChartDashboard = () => {
         ) : null}
 
         {displayedSections.map(({ sectionTitle, charts }, i) => (
-          <div key={i} className="overview">
+          <div key={i} className={'overview' + (loadingNewData ? ' loading' : '')}>
             <OverviewSection title={sectionTitle} chartData={charts} searchableFields={searchableFields} />
           </div>
         ))}

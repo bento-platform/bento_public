@@ -17,6 +17,13 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 // ################### TRANSLATION HOOKS ###################
 
+export const useLanguage = (): string => {
+  const {
+    i18n: { language },
+  } = useTranslation(CUSTOMIZABLE_TRANSLATION);
+  return language;
+};
+
 export const useTranslationFn = (): NamespaceTranslationFunction => {
   const { t } = useTranslation(CUSTOMIZABLE_TRANSLATION);
 
@@ -45,6 +52,8 @@ export const useHasScopePermission = (permission: string) => {
   const scopeResource = useSelectedScopeAsResource();
   return useHasResourcePermissionWrapper(scopeResource, permission);
 };
+
+export const useHasScopeQueryData = () => useHasScopePermission(queryData);
 
 export const useQueryWithAuthIfAllowed = () => {
   const dispatch = useAppDispatch();

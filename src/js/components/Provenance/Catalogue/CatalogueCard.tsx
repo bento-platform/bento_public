@@ -1,14 +1,12 @@
 import { type ReactNode, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 
 import { Button, Card, Carousel, Descriptions, Flex, Space, Tag, Tooltip, Typography } from 'antd';
-import { PieChartOutlined, ProfileOutlined, SearchOutlined } from '@ant-design/icons';
+import { PieChartOutlined, ProfileOutlined } from '@ant-design/icons';
 
 import type { Project } from '@/types/metadata';
-import { scopeToUrl } from '@/utils/router';
 import { isoDateToString } from '@/utils/strings';
-import { useTranslationFn } from '@/hooks';
+import { useLanguage, useTranslationFn } from '@/hooks';
+import { useNavigateToScope } from '@/hooks/navigation';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { T_PLURAL_COUNT } from '@/constants/i18n';
 import Dataset from '@/components/Provenance/Dataset';
@@ -43,11 +41,9 @@ const CatalogueCardInner = ({ firstContent, secondContent }: { firstContent: Rea
 };
 
 const CatalogueCard = ({ project }: { project: Project }) => {
-  const {
-    i18n: { language },
-  } = useTranslation();
+  const language = useLanguage();
   const t = useTranslationFn();
-  const navigate = useNavigate();
+  const navigateToScope = useNavigateToScope();
 
   const isSmallScreen = useSmallScreen();
 
@@ -139,18 +135,10 @@ const CatalogueCard = ({ project }: { project: Project }) => {
             <Flex align="flex-end" gap={12} className="flex-1">
               <Button
                 icon={datasets.length ? <PieChartOutlined /> : <ProfileOutlined />}
-                onClick={() => navigate(scopeToUrl({ project: identifier }, language, 'overview'))}
+                onClick={() => navigateToScope({ project: identifier }, 'overview')}
               >
-                {t('Overview')}
+                {t('Explore')}
               </Button>
-              {datasets.length ? (
-                <Button
-                  icon={<SearchOutlined />}
-                  onClick={() => navigate(scopeToUrl({ project: identifier }, language, 'search'))}
-                >
-                  {t('Search')}
-                </Button>
-              ) : null}
             </Flex>
           </Flex>
         }

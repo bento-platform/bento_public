@@ -1,5 +1,6 @@
-import type { ChartConfig } from '@/types/chartConfig';
-import type { OverviewResponseDataField } from '@/types/overviewResponse';
+import type { KatsuIndividualMatch } from '@/features/search/types';
+import type { ChartConfig } from '@/types/discovery/chartConfig';
+import type { Field } from '@/types/discovery/fieldDefinition';
 
 export type Sections = Section[];
 
@@ -17,8 +18,7 @@ This represents a chart's "state", since it also has the isDisplayed property - 
 export interface ChartDataField {
   id: string; // taken from field definition
   data: ChartData[];
-  // Field definition without data (we have mapped data in the data prop above instead):
-  field: Omit<OverviewResponseDataField, 'data'>;
+  field: Field;
   chartConfig: ChartConfig;
   // display options:
   isDisplayed: boolean; // whether the chart is currently displayed (state data)
@@ -35,12 +35,7 @@ export type LocalStorageChartData = Record<string, { id: string; isDisplayed: bo
 export type OptionalDiscoveryResults = {
   // individuals
   individualCount?: number;
-  individualMatches?: {
-    id: string;
-    phenopacket_id: string | null;
-    project_id: string | null;
-    dataset_id: string | null;
-  }[];
+  individualMatches?: KatsuIndividualMatch[];
   // biosamples
   biosampleCount?: number;
   biosampleChartData?: ChartData[];

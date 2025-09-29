@@ -5,6 +5,8 @@ import SiteHeader from '@/components/SiteHeader';
 import SiteSider from '@/components/SiteSider';
 import SiteFooter from '@/components/SiteFooter';
 import ScopedTitle from '@/components/Scope/ScopedTitle';
+import { useSelectedScope } from '@/features/metadata/hooks';
+import { useIsInCatalogueMode, useSidebarMenuItems } from '@/hooks/navigation';
 import { BentoRoute } from '@/types/routes';
 import { getCurrentPage } from '@/utils/router';
 
@@ -14,13 +16,19 @@ const DefaultLayout = () => {
   const location = useLocation();
   const page = getCurrentPage(location);
 
+  const catalogueMode = useIsInCatalogueMode();
+  const { scope } = useSelectedScope();
+
+  const menuItems = useSidebarMenuItems();
   const [collapsed, setCollapsed] = useState(false);
 
+  const sidebarHidden = menuItems.length <= 1 && !(scope.project && catalogueMode);
+
   return (
-    <Layout id="default-layout" className={collapsed ? 'sidebar-collapsed' : ''}>
+    <Layout id="default-layout" className={sidebarHidden ? 'sidebar-hidden' : collapsed ? 'sidebar-collapsed' : ''}>
       <SiteHeader />
       <Layout>
-        <SiteSider collapsed={collapsed} setCollapsed={setCollapsed} />
+        {!sidebarHidden && <SiteSider collapsed={collapsed} setCollapsed={setCollapsed} items={menuItems} />}
         <Layout id="content-layout">
           <Content>
             <ScopedTitle />

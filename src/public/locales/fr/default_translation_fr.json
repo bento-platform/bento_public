@@ -1,6 +1,7 @@
 {
   "Overview": "Aperçu",
   "Search": "Chercher",
+  "Explore": "Explorer",
   "Provenance": "Provenance",
   "Count": "Observations",
   "Portal": "Portail",
@@ -28,11 +29,16 @@
       "Les expériences sont un processus effectué sur un échantillon spécifique, par exemple le séquençage du génome entier.",
       "Une expérience par un laboratoire peut donner lieu à plusieurs enregistrements d'expériences dans le portail, par exemple avec des échantillons multiplexés."
     ],
+    "experiment_result_one": "Fichier",
+    "experiment_result_other": "Fichiers",
+    "experiment_result_help": "Les fichiers sont générés à la suite d'expériences.",
     "variant_one": "Variant",
     "variant_other": "Variants"
   },
   "search": {
     "filters": "Filtres",
+    "filters_applied_one": "{{count}} filtre appliqué",
+    "filters_applied_other": "{{count}} filtres appliqués",
     "text_search": "Recherche de texte",
     "filter_placeholder": "Sélectionner un champ à filtrer \u2026",
     "showing_entities": "Affichage des {{entity, lowercase}} {{start}}-{{end}} sur {{total}}",
@@ -364,7 +370,6 @@
   },
   "subject": {
     "subject": "Sujet",
-    "age": "Âge",
     "status": "Statut",
     "time_of_death": "Date du décès",
     "cause_of_death": "Cause du décès",

@@ -2,13 +2,12 @@ import type { CSSProperties } from 'react';
 import { Flex, Skeleton, Space, Statistic } from 'antd';
 import { ExperimentOutlined, TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
-import { queryData } from 'bento-auth-js';
 
 import CountsTitleWithHelp from '@/components/Util/CountsTitleWithHelp';
 import { COUNTS_FILL } from '@/constants/overviewConstants';
 import { NO_RESULTS_DASHES } from '@/features/search/constants';
-import { useHasScopePermission, useTranslationFn } from '@/hooks';
-import { useCanSeeUncensoredCounts } from '@/hooks/censorship';
+import { useTranslationFn } from '@/hooks';
+import { useCanSeeUncensoredCounts, useScopeQueryData } from '@/hooks/censorship';
 import type { SearchResultsUIPage } from '@/features/search/types';
 import type { DiscoveryResults, OptionalDiscoveryResults } from '@/types/data';
 import { RequestStatus } from '@/types/requests';
@@ -27,7 +26,7 @@ const SearchResultsCounts = ({
   const t = useTranslationFn();
 
   const { individualCount, biosampleCount, experimentCount } = results;
-  const { hasPermission: queryDataPerm } = useHasScopePermission(queryData);
+  const { hasPermission: queryDataPerm } = useScopeQueryData();
   const individualsClickable = !!setSelectedPage && queryDataPerm;
   const uncensoredCounts = useCanSeeUncensoredCounts();
 
