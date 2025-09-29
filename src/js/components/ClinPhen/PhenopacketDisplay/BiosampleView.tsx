@@ -122,8 +122,9 @@ export const BiosampleExpandedRow = ({ biosample, searchRow }: { biosample: Bios
   return <TDescriptions bordered size="small" items={items} />;
 };
 
-const isBiosampleRowExpandable = (r: Biosample) =>
+export const isBiosampleRowExpandable = (r: Biosample, searchRow: boolean = false) =>
   !!(
+    (searchRow && r.sampled_tissue) ||
     r.description ||
     r.derived_from_id ||
     r.individual_id ||
