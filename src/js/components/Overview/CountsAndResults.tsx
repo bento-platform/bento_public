@@ -14,6 +14,7 @@ import { useSearchQuery } from '@/features/search/hooks';
 import { useTranslationFn } from '@/hooks';
 import { useCanSeeUncensoredCounts, useScopeQueryData } from '@/hooks/censorship';
 import type { BentoCountEntity } from '@/types/entities';
+import { RequestStatus } from '@/types/requests';
 
 const COUNT_ENTRIES: { entity: BentoCountEntity; icon: ReactNode }[] = [
   { entity: 'individual', icon: <TeamOutlined /> },
@@ -79,6 +80,7 @@ const CountsAndResults = () => {
     filterQueryParams,
     textQuery,
     doneFirstLoad,
+    uiHints,
   } = useSearchQuery();
 
   const uncensoredCounts = useCanSeeUncensoredCounts();
@@ -99,7 +101,14 @@ const CountsAndResults = () => {
     ? []
     : COUNT_ENTRIES.filter(
         // hide counts if no filters applied and we have no data
-        ({ entity }) => waitingForData || !!(counts[entity] || nFilters)
+        ({ entity }) => {
+          if (uiHints.status === RequestStatus.Fulfilled && !uiHints.data.entities_with_data.includes(entity)) {
+            // If we have a UI hint indicating that we have none of this entity in the scope at all, don't bother even
+            // showing a loading card for the count.
+            return false;
+          }
+          return waitingForData || !!(counts[entity] || nFilters);
+        }
       ).map(({ entity, icon }, i) => {
         const count = renderCount(counts[entity], countThreshold);
         const selected = selectedEntity === entity;

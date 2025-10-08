@@ -27,7 +27,7 @@ export const fetchDiscoveryMatches = createAsyncThunk<
   }
 >(
   'query/fetchDiscoveryMatches',
-  async (entity, { rejectWithValue, getState }) => {
+  (entity, { rejectWithValue, getState }) => {
     const state = getState();
     const queryEntity = bentoKatsuEntityToResultsDataEntity(entity);
     return axios

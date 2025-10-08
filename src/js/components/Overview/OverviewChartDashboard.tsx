@@ -1,12 +1,19 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Flex, FloatButton, Tabs, type TabsProps } from 'antd';
-import { AppstoreAddOutlined, FileTextOutlined, SearchOutlined, SolutionOutlined } from '@ant-design/icons';
+import {
+  AppstoreAddOutlined,
+  FileTextOutlined,
+  LoadingOutlined,
+  SearchOutlined,
+  SolutionOutlined,
+} from '@ant-design/icons';
 
 import { convertSequenceAndDisplayData, generateLSChartDataKey, saveValue } from '@/utils/localStorage';
 import type { Sections } from '@/types/data';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 
 import { WAITING_STATES } from '@/constants/requests';
+import { RequestStatus } from '@/types/requests';
 
 import AboutBox from './AboutBox';
 import OverviewSection from './OverviewSection';
@@ -40,12 +47,18 @@ const OverviewChartDashboard = () => {
   // URL and dispatches discovery actions for fetching overview/query response data.
   useSearchRouterAndHandler();
 
-  const { discoveryStatus, sections, filterQueryParams, textQuery } = useSearchQuery();
+  const { discoveryStatus, sections, filterQueryParams, textQuery, uiHints } = useSearchQuery();
 
   // Lazy-loading hooks means this is loaded only if OverviewChartDashboard is rendered:
   const searchableFields = useSearchableFields();
 
-  const displayedSections = sections.filter(({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1);
+  // If we have no entities with data confirmed, don't bother showing charts (or last ingested details)
+  const waitingForHints = WAITING_STATES.includes(uiHints.status);
+  const noDataInScope = uiHints.status === RequestStatus.Fulfilled && uiHints.data.entities_with_data.length === 0;
+
+  const displayedSections = noDataInScope
+    ? []
+    : sections.filter(({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1);
 
   const onManageChartsOpen = useCallback(() => setDrawerVisible(true), []);
   const onManageChartsClose = useCallback(() => {
@@ -59,10 +72,15 @@ const OverviewChartDashboard = () => {
   const [hasChangedTabs, setHasChangedTabs] = useState(false);
   const [pageTab, setPageTab] = useState('about');
 
-  const changePage = useCallback((page: string) => {
-    setPageTab(page);
-    setHasChangedTabs(true);
-  }, []);
+  const changePage = useCallback(
+    (page: string) => {
+      // Cannot go to search page if we don't know if search is available yet:
+      if (waitingForHints && page === 'search') return;
+      setPageTab(page);
+      setHasChangedTabs(true);
+    },
+    [waitingForHints]
+  );
 
   useEffect(() => {
     // If the user has not manually changed tabs / this effect has not already run, and we have at least one search
@@ -73,20 +91,27 @@ const OverviewChartDashboard = () => {
     }
   }, [hasChangedTabs, filterQueryParams, textQuery, changePage]);
 
-  const pageTabItems: TabsProps['items'] = [
-    { key: 'about', label: t('About'), icon: <FileTextOutlined /> },
-    ...(scope.dataset ? [{ key: 'provenance', label: t('Provenance'), icon: <SolutionOutlined /> }] : []),
-    {
-      key: 'search',
-      label: (
-        <span>
-          {t('Search')}
-          <FiltersAppliedTag />
-        </span>
-      ),
-      icon: <SearchOutlined />,
-    },
-  ];
+  const pageTabItems: TabsProps['items'] = useMemo(
+    () => [
+      { key: 'about', label: t('About'), icon: <FileTextOutlined /> },
+      ...(scope.dataset ? [{ key: 'provenance', label: t('Provenance'), icon: <SolutionOutlined /> }] : []),
+      ...(noDataInScope
+        ? []
+        : [
+            {
+              key: 'search',
+              label: !waitingForHints && (
+                <span>
+                  {t('Search')}
+                  <FiltersAppliedTag />
+                </span>
+              ),
+              icon: waitingForHints ? <LoadingOutlined /> : <SearchOutlined />,
+            },
+          ]),
+    ],
+    [t, scope.dataset, waitingForHints, noDataInScope]
+  );
 
   const loadingNewData = WAITING_STATES.includes(discoveryStatus);
 
@@ -123,7 +148,7 @@ const OverviewChartDashboard = () => {
           </div>
         ))}
 
-        <LastIngestionInfo />
+        {!noDataInScope && <LastIngestionInfo />}
       </Flex>
 
       <ManageChartsDrawer onManageDrawerClose={onManageChartsClose} manageDrawerVisible={drawerVisible} />
