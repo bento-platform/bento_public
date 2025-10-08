@@ -221,6 +221,7 @@
     "derived_from": "Derived from",
     "sample_type": "Sample type",
     "collection_time": "Collection time",
+    "location_collected": "Location collected",
     "histological_diagnosis": "Histological diagnosis",
     "pathological_stage": "Pathological stage",
     "procedure": "Procedure",
@@ -239,6 +240,13 @@
   "biosample_table": {
     "biosample_id": "Biosample ID",
     "sampled_tissue": "Sampled Tissue"
+  },
+  "geo_location": {
+    "label": "Label",
+    "city": "City",
+    "country": "Country",
+    "precision": "Precision",
+    "country_code": "Country code"
   },
   "file": {
     "filename": "Filename",

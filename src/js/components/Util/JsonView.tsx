@@ -1,5 +1,6 @@
 import ReactJson from 'react18-json-view';
 import type { Collapsed } from 'react18-json-view/dist/types';
+import type { GeoLocation } from '@/types/geo';
 import type { JSONType } from '@/types/json';
 
 /*
@@ -10,7 +11,7 @@ import type { JSONType } from '@/types/json';
 // Styles for this component are set in the Bento Public styles.css right now
 
 type JsonViewProps = {
-  src: JSONType | JSONType[] | Record<string, JSONType>;
+  src: JSONType | JSONType[] | Record<string, JSONType> | GeoLocation;
   collapsed?: Collapsed;
   collapseObjectsAfterLength?: number;
 };

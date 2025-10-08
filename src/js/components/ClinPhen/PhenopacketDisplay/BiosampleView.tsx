@@ -1,17 +1,107 @@
-import { Space } from 'antd';
+import { useState } from 'react';
+
+import { Radio, Space } from 'antd';
+import { PointMap } from 'bento-charts/dist/maps';
 import OntologyTermComponent, { OntologyTermStack } from '@Util/ClinPhen/OntologyTerm';
 import TimeElementDisplay from '@Util/ClinPhen/TimeElementDisplay';
 import TDescriptions from '@Util/TDescriptions';
 import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
 import Procedure from '@Util/ClinPhen/Procedure';
 import FileTable from '@Util/FileTable';
+import JsonView from '@Util/JsonView';
 import ExtraPropertiesDisplay from './ExtraPropertiesDisplay';
 
 import type { Biosample } from '@/types/clinPhen/biosample';
 import type { OntologyTerm } from '@/types/ontology';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
 
+import { useTranslationFn } from '@/hooks';
 import { objectToBoolean } from '@/utils/boolean';
+
+import { ISO_3166_1_ISO3_TO_ISO2 } from '@/constants/countryCodes';
+
+// See https://www.bqst.fr/country-code-to-flag-emoji/
+const FlagEmoji = ({ countryCode }: { countryCode: string }) =>
+  String.fromCodePoint(
+    ...countryCode
+      .toUpperCase()
+      .split('')
+      .map((char) => 127397 + char.charCodeAt(0))
+  );
+
+const BiosampleLocationCollected = ({ biosample }: { biosample: Biosample }) => {
+  const t = useTranslationFn();
+
+  const [locationView, setLocationView] = useState<'map' | 'json'>('map');
+
+  if (!biosample.location_collected) return null;
+
+  return (
+    <div className="w-full" style={{ minWidth: 500, position: 'relative' }}>
+      <Radio.Group
+        value={locationView}
+        onChange={(e) => {
+          setLocationView(e.target.value);
+        }}
+        options={[
+          { label: t('Map'), value: 'map' },
+          { label: t('JSON'), value: 'json' },
+        ]}
+        optionType="button"
+        style={{ position: 'absolute', top: 8, right: 0, zIndex: 999 }}
+      />
+      <div style={{ width: 500, display: locationView === 'map' ? 'block' : 'none' }}>
+        <PointMap
+          data={[{ ...biosample.location_collected.geometry, title: biosample.id }]}
+          center={[
+            biosample.location_collected.geometry.coordinates[1],
+            biosample.location_collected.geometry.coordinates[0],
+          ]}
+          zoom={13}
+          height={350}
+          renderPopupBody={(p) => {
+            const props = biosample.location_collected?.properties ?? {};
+            console.debug('showing popup body for point:', p, props);
+
+            // @ts-expect-error TODO fix katsu
+            const countryCode: string = props.ISO3166alpha3 ?? props.iso3166alpha3;
+
+            return (
+              <div>
+                <TDescriptions
+                  column={1}
+                  items={[
+                    {
+                      key: 'label',
+                      label: 'geo_location.label',
+                      children: props.label,
+                      isVisible: !!props.label && props.label !== props.city,
+                    },
+                    { key: 'city', label: 'geo_location.city', children: t(props.city) },
+                    { key: 'country', label: 'geo_location.country', children: t(props.country) },
+                    { key: 'precision', label: 'geo_location.precision', children: t(props.precision) },
+                    {
+                      key: 'ISO3166alpha3',
+                      label: 'geo_location.country_code',
+                      children: countryCode ? (
+                        <>
+                          {countryCode} <FlagEmoji countryCode={ISO_3166_1_ISO3_TO_ISO2[countryCode]} />
+                        </>
+                      ) : null,
+                    },
+                  ]}
+                />
+              </div>
+            );
+          }}
+        />
+      </div>
+      <div style={{ display: locationView === 'json' ? 'block' : 'none' }}>
+        <JsonView src={biosample.location_collected} />
+      </div>
+    </div>
+  );
+};
 
 export const BiosampleExpandedRow = ({ biosample, searchRow }: { biosample: Biosample; searchRow?: boolean }) => {
   const items: ConditionalDescriptionItem[] = [
@@ -56,6 +146,12 @@ export const BiosampleExpandedRow = ({ biosample, searchRow }: { biosample: Bios
       label: 'biosample_expanded_row.collection_time',
       children: <TimeElementDisplay element={biosample.time_of_collection} />,
       isVisible: biosample.time_of_collection,
+    },
+    {
+      key: 'location_collected',
+      label: 'biosample_expanded_row.location_collected',
+      children: biosample.location_collected && <BiosampleLocationCollected biosample={biosample} />,
+      isVisible: biosample.location_collected,
     },
     {
       key: 'histological_diagnosis',
@@ -142,6 +238,7 @@ export const isBiosampleRowExpandable = (r: Biosample, searchRow: boolean = fals
     r.sample_type ||
     r.taxonomy ||
     r.time_of_collection ||
+    r.location_collected ||
     r.histological_diagnosis ||
     r.pathological_stage ||
     r.pathological_tnm_finding?.length ||
