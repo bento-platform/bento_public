@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 
 import { Radio, Space } from 'antd';
 import { PointMap } from 'bento-charts/dist/maps';
@@ -14,6 +14,7 @@ import ExtraPropertiesDisplay from './ExtraPropertiesDisplay';
 import type { Biosample } from '@/types/clinPhen/biosample';
 import type { OntologyTerm } from '@/types/ontology';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
+import type { GeoLocation } from '@/types/geo';
 
 import { useTranslationFn } from '@/hooks';
 import { objectToBoolean } from '@/utils/boolean';
@@ -23,13 +24,15 @@ import { ISO_3166_1_ISO3_TO_ISO2 } from '@/constants/countryCodes';
 const MAP_WIDTH = 500;
 
 // See https://www.bqst.fr/country-code-to-flag-emoji/
-const FlagEmoji = ({ countryCode }: { countryCode: string }) =>
+const FlagEmoji = memo(({ countryCode }: { countryCode: string }) =>
   String.fromCodePoint(
     ...countryCode
       .toUpperCase()
       .split('')
       .map((char) => 127397 + char.charCodeAt(0))
-  );
+  )
+);
+FlagEmoji.displayName = 'FlagEmoji';
 
 const BiosampleLocationCollected = ({ biosample }: { biosample: Biosample }) => {
   const t = useTranslationFn();
@@ -232,6 +235,17 @@ export const BiosampleExpandedRow = ({ biosample, searchRow }: { biosample: Bios
   );
 };
 
+export const LatLong = ({ location }: { location: GeoLocation }) => {
+  const t = useTranslationFn();
+  return (
+    <>
+      <strong>{t('geo_location.latitude')}:</strong>&nbsp;{location.geometry.coordinates[1]}
+      <br />
+      <strong>{t('geo_location.longitude')}:</strong>&nbsp;{location.geometry.coordinates[0]}
+    </>
+  );
+};
+
 export const isBiosampleRowExpandable = (r: Biosample, searchRow: boolean = false) =>
   !!(
     (searchRow && r.sampled_tissue) ||
@@ -269,6 +283,12 @@ const BIOSAMPLE_VIEW_COLUMNS: CustomTableColumns<Biosample> = [
     title: 'biosample_table.sampled_tissue',
     dataIndex: 'sampled_tissue',
     render: (term: OntologyTerm) => <OntologyTermComponent term={term} />,
+  },
+  // TODO: instead re-use translation but with a title case transform.
+  {
+    title: 'biosample_table.location_collected',
+    dataIndex: 'location_collected',
+    render: (locationCollected: GeoLocation) => <LatLong location={locationCollected} />,
   },
 ];
 

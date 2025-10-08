@@ -244,14 +244,17 @@
   },
   "biosample_table": {
     "biosample_id": "Identifiant de l'échantillon biologique",
-    "sampled_tissue": "Tissu échantillonné"
+    "sampled_tissue": "Tissu échantillonné",
+    "location_collected": "$t(biosample_expanded_row.location_collected)"
   },
   "geo_location": {
     "label": "Étiquette",
     "city": "Ville",
     "country": "Pays",
     "precision": "Précision",
-    "country_code": "Code pays"
+    "country_code": "Code pays",
+    "latitude": "Latitude",
+    "longitude": "Longitude"
   },
   "file": {
     "filename": "Nom du fichier",
