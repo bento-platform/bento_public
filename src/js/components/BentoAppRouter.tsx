@@ -12,7 +12,7 @@ import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
 import { useMetadata } from '@/features/metadata/hooks';
 import { getProjects, markScopeSet, selectScope } from '@/features/metadata/metadata.store';
 import { getGenomes } from '@/features/reference/reference.store';
-import { fetchSearchFields, resetAllQueryState } from '@/features/search/query.store';
+import { fetchSearchFields, fetchDiscoveryUIHints, resetAllQueryState } from '@/features/search/query.store';
 
 import Loader from '@/components/Loader';
 import DefaultLayout from '@/components/Util/DefaultLayout';
@@ -106,6 +106,7 @@ const BentoAppRouter = () => {
     dispatch(resetAllQueryState());
 
     dispatch(fetchSearchFields());
+    dispatch(fetchDiscoveryUIHints());
 
     if (BEACON_UI_ENABLED) {
       dispatch(getBeaconConfig());

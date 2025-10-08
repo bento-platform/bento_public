@@ -13,6 +13,7 @@ import type {
   DiscoveryMatchBiosample,
   DiscoveryMatchExperiment,
   DiscoveryMatchExperimentResult,
+  DiscoveryUIHints,
 } from '@/features/search/types';
 import type { Sections } from '@/types/data';
 
@@ -20,6 +21,7 @@ import { discoveryChartProcessingAndLocalStorage } from './discoveryChartProcess
 import { performKatsuDiscovery } from './performKatsuDiscovery.thunk';
 import { fetchSearchFields } from './fetchSearchFields.thunk';
 import { fetchDiscoveryMatches } from './fetchDiscoveryMatches.thunk';
+import { fetchDiscoveryUIHints } from './fetchDiscoveryUIHints.thunk';
 
 export type QueryResultMatchData<T extends DiscoveryMatchObject> = {
   status: RequestStatus;
@@ -58,6 +60,12 @@ export type QueryState = {
     biosample: QueryResultMatchData<DiscoveryMatchBiosample>;
     experiment: QueryResultMatchData<DiscoveryMatchExperiment>;
     experiment_result: QueryResultMatchData<DiscoveryMatchExperimentResult>;
+  };
+
+  // UI hints
+  uiHints: {
+    status: RequestStatus;
+    data: DiscoveryUIHints;
   };
 };
 
@@ -98,6 +106,13 @@ const initialState: QueryState = {
     biosample: INITIAL_MATCH_DATA_STATE,
     experiment: INITIAL_MATCH_DATA_STATE,
     experiment_result: INITIAL_MATCH_DATA_STATE,
+  },
+  // ----
+  uiHints: {
+    status: RequestStatus.Idle,
+    data: {
+      entities_with_data: [],
+    },
   },
 };
 
@@ -230,6 +245,17 @@ const query = createSlice({
     builder.addCase(fetchDiscoveryMatches.rejected, (state, { meta }) => {
       state.matchData[bentoKatsuEntityToResultsDataEntity(meta.arg)].status = RequestStatus.Rejected;
     });
+    // -----
+    builder.addCase(fetchDiscoveryUIHints.pending, (state) => {
+      state.uiHints.status = RequestStatus.Pending;
+    });
+    builder.addCase(fetchDiscoveryUIHints.fulfilled, (state, { payload }) => {
+      state.uiHints.status = RequestStatus.Fulfilled;
+      state.uiHints.data = payload;
+    });
+    builder.addCase(fetchDiscoveryUIHints.rejected, (state) => {
+      state.uiHints.status = RequestStatus.Rejected;
+    });
   },
 });
 
@@ -249,5 +275,5 @@ export const {
   setMatchesPageSize,
   resetAllQueryState,
 } = query.actions;
-export { performKatsuDiscovery, fetchSearchFields };
+export { performKatsuDiscovery, fetchSearchFields, fetchDiscoveryUIHints };
 export default query.reducer;

@@ -9,6 +9,7 @@ export const katsuDiscoveryRulesUrl = `${katsuBaseUrl}/api/discovery_rules`;
 export const katsuDiscoverySearchFieldsUrl = `${katsuBaseUrl}/api/discovery_search_fields`;
 export const katsuDiscoveryUrl = `${katsuBaseUrl}/api/discovery`;
 export const katsuDiscoveryMatchesUrl = `${katsuBaseUrl}/api/discovery_matches`;
+export const katsuDiscoveryUIHintsUrl = `${katsuBaseUrl}/api/discovery_ui_hints`;
 
 // Katsu entity API (Django Rest Framework) base URLs
 export const projectsUrl = `${katsuBaseUrl}/api/projects`;

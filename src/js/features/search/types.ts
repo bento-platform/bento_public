@@ -1,4 +1,5 @@
 import type { Field } from '@/types/discovery/fieldDefinition';
+import type { BentoKatsuEntity } from '@/types/entities';
 
 export type QueryFilterField = { id: string; options: string[] };
 
@@ -59,3 +60,7 @@ export type ViewableDiscoveryMatchObject =
   | DiscoveryMatchExperimentResult;
 
 export type SearchResultsUIPage = 'individuals' | 'charts';
+
+export type DiscoveryUIHints = {
+  entities_with_data: BentoKatsuEntity[];
+};
