@@ -26,10 +26,12 @@ const SearchFilters = (props: DefinedSearchSubFormProps) => {
 
     const usedFields_ = new Set(filterInputs_.filter((fi) => fi.field !== null).map((fi) => fi.field as string));
 
+    // TODO: future JS target version: use .at(-1) instead of `[...].length - 1`
     if (
       filterInputs_.length < maxQueryParameters &&
       usedFields_.size < fields.length &&
-      ((filterInputs_.at(-1)?.field && filterInputs_.at(-1)?.value) || filterInputs_.length === 0)
+      ((filterInputs_[filterInputs_.length - 1]?.field && filterInputs_[filterInputs_.length - 1]?.value) ||
+        filterInputs_.length === 0)
     ) {
       filterInputs_.push({ field: null, value: null });
     }
