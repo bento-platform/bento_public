@@ -1,14 +1,12 @@
 import { Space, type SpaceProps } from 'antd';
 import OntologyTerm from '@Util/ClinPhen/OntologyTerm';
-import JsonView from '@Util/JsonView';
 import StringList from '@Util/StringList';
 import TimeElementDisplay from '@Util/ClinPhen/TimeElementDisplay';
 import TDescriptions from '@Util/TDescriptions';
+import ExtraPropertiesDisplay from './ExtraPropertiesDisplay';
 
 import type { Individual } from '@/types/clinPhen/individual';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
-
-import { EM_DASH } from '@/constants/common';
 
 const SubjectView = ({ subject, spaceSize }: { subject: Individual; spaceSize?: SpaceProps['size'] }) => {
   const vs = subject?.vital_status;
@@ -90,16 +88,10 @@ const SubjectView = ({ subject, spaceSize }: { subject: Individual; spaceSize?: 
     },
   ];
 
-  const extraProperties = Object.entries(subject.extra_properties ?? {}).map(([key, value]) => ({
-    key,
-    label: key,
-    children: (typeof value === 'string' || typeof value === 'number' ? value : <JsonView src={value} />) ?? EM_DASH,
-  }));
-
   return (
     <Space id="subject-view" direction="vertical" className="w-full" size={spaceSize ?? 'middle'}>
       <TDescriptions items={items} column={1} bordered size="small" />
-      {!!extraProperties.length && <TDescriptions items={extraProperties} column={1} bordered size="small" />}
+      <ExtraPropertiesDisplay extraProperties={subject.extra_properties} />
     </Space>
   );
 };
