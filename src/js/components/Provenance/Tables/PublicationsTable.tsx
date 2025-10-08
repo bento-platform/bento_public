@@ -30,7 +30,8 @@ const formatAuthorList = (authors: Person[]): string => {
   } else if (fullNames.length === 2) {
     return `${fullNames.join(' and ')}.`;
   } else {
-    return `${fullNames.slice(0, -1).join(', ')}, and ${fullNames.at(-1)}.`;
+    // TODO: future JS target version: use .at(-1) instead of `[...].length - 1`
+    return `${fullNames.slice(0, -1).join(', ')}, and ${fullNames[fullNames.length - 1]}.`;
   }
 };
 
