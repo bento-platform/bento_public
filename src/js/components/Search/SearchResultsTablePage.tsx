@@ -191,12 +191,12 @@ const TABLE_SPEC_EXPERIMENT_RESULT: ResultsTableSpec<DiscoveryMatchExperimentRes
 };
 
 const ManageColumnCheckbox = <T extends ViewableDiscoveryMatchObject>({
-  key,
+  columnKey,
   columnSpec,
   shownColumns,
   setShownColumns,
 }: {
-  key: string;
+  columnKey: string;
   columnSpec: ResultsTableColumn<T>;
   shownColumns: Set<string>;
   setShownColumns: (fn: (sc: Set<string>) => Set<string>) => void;
@@ -204,9 +204,11 @@ const ManageColumnCheckbox = <T extends ViewableDiscoveryMatchObject>({
   const t = useTranslationFn();
   return (
     <Checkbox
-      checked={shownColumns.has(key)}
+      checked={shownColumns.has(columnKey)}
       onChange={(e) =>
-        setShownColumns((sc) => new Set<string>(e.target.checked ? [...sc, key] : [...sc].filter((v) => v !== key)))
+        setShownColumns(
+          (sc) => new Set<string>(e.target.checked ? [...sc, columnKey] : [...sc].filter((v) => v !== columnKey))
+        )
       }
     >
       {t(columnSpec.tKey, T_SINGULAR_COUNT)}
@@ -416,6 +418,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
             .map(([key, columnSpec]) => (
               <ManageColumnCheckbox<T>
                 key={key}
+                columnKey={key}
                 columnSpec={columnSpec}
                 shownColumns={shownColumns}
                 setShownColumns={setShownColumns}
