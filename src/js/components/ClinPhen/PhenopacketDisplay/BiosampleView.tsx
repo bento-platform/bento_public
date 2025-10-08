@@ -20,6 +20,8 @@ import { objectToBoolean } from '@/utils/boolean';
 
 import { ISO_3166_1_ISO3_TO_ISO2 } from '@/constants/countryCodes';
 
+const MAP_WIDTH = 500;
+
 // See https://www.bqst.fr/country-code-to-flag-emoji/
 const FlagEmoji = ({ countryCode }: { countryCode: string }) =>
   String.fromCodePoint(
@@ -37,7 +39,7 @@ const BiosampleLocationCollected = ({ biosample }: { biosample: Biosample }) => 
   if (!biosample.location_collected) return null;
 
   return (
-    <div className="w-full" style={{ minWidth: 500, position: 'relative' }}>
+    <div className="w-full position-relative" style={{ minWidth: MAP_WIDTH }}>
       <Radio.Group
         value={locationView}
         onChange={(e) => {
@@ -48,9 +50,10 @@ const BiosampleLocationCollected = ({ biosample }: { biosample: Biosample }) => 
           { label: t('JSON'), value: 'json' },
         ]}
         optionType="button"
-        style={{ position: 'absolute', top: 8, right: 0, zIndex: 999 }}
+        className="position-absolute"
+        style={{ top: 8, right: 0, zIndex: 999 }}
       />
-      <div style={{ width: 500, display: locationView === 'map' ? 'block' : 'none' }}>
+      <div className={locationView === 'map' ? 'block' : 'none'} style={{ width: MAP_WIDTH }}>
         <PointMap
           data={[{ ...biosample.location_collected.geometry, title: biosample.id }]}
           center={[
@@ -96,7 +99,7 @@ const BiosampleLocationCollected = ({ biosample }: { biosample: Biosample }) => 
           }}
         />
       </div>
-      <div style={{ display: locationView === 'json' ? 'block' : 'none' }}>
+      <div className={locationView === 'json' ? 'block' : 'none'}>
         <JsonView src={biosample.location_collected} />
       </div>
     </div>
