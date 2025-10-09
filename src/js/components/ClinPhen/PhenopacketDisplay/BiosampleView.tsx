@@ -1,15 +1,17 @@
+import { Space } from 'antd';
 import OntologyTermComponent, { OntologyTermStack } from '@Util/ClinPhen/OntologyTerm';
 import TimeElementDisplay from '@Util/ClinPhen/TimeElementDisplay';
 import TDescriptions from '@Util/TDescriptions';
 import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
 import Procedure from '@Util/ClinPhen/Procedure';
+import FileTable from '@Util/FileTable';
+import ExtraPropertiesDisplay from './ExtraPropertiesDisplay';
 
 import type { Biosample } from '@/types/clinPhen/biosample';
 import type { OntologyTerm } from '@/types/ontology';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
 
 import { objectToBoolean } from '@/utils/boolean';
-import FileTable from '@/components/Util/FileTable';
 
 export const BiosampleExpandedRow = ({ biosample, searchRow }: { biosample: Biosample; searchRow?: boolean }) => {
   const items: ConditionalDescriptionItem[] = [
@@ -119,7 +121,12 @@ export const BiosampleExpandedRow = ({ biosample, searchRow }: { biosample: Bios
     },
   ];
 
-  return <TDescriptions bordered size="small" items={items} />;
+  return (
+    <Space direction="vertical" className="w-full">
+      <TDescriptions bordered size="small" items={items} />
+      <ExtraPropertiesDisplay extraProperties={biosample.extra_properties} />
+    </Space>
+  );
 };
 
 export const isBiosampleRowExpandable = (r: Biosample, searchRow: boolean = false) =>
@@ -140,7 +147,8 @@ export const isBiosampleRowExpandable = (r: Biosample, searchRow: boolean = fals
     r.sample_processing ||
     r.sample_storage ||
     r.procedure ||
-    r.files?.length
+    r.files?.length ||
+    Object.keys(r.extra_properties ?? {}).length
   );
 
 interface BiosampleViewProps {
