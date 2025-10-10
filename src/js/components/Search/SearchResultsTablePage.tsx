@@ -73,14 +73,14 @@ type ResultsTableSpec<T extends ViewableDiscoveryMatchObject> = {
 
 const COMMON_SEARCH_TABLE_COLUMNS = {
   project: {
-    tKey: 'entities.project',
+    tKey: 'entities.project_one',
     dataIndex: 'project',
     render: (ctx: SearchColRenderContext) => (id: string) => (
       <ProjectTitle projectID={id} onClick={() => ctx.onProjectClick(id)} />
     ),
   } as ResultsTableColumn<ViewableDiscoveryMatchObject>,
   dataset: {
-    tKey: 'entities.dataset',
+    tKey: 'entities.dataset_one',
     dataIndex: 'dataset',
     render: (ctx: SearchColRenderContext) => (id: string) => (
       <DatasetTitle datasetID={id} onClick={() => ctx.onDatasetClick(id)} />
@@ -117,7 +117,7 @@ const TABLE_SPEC_PHENOPACKET: ResultsTableSpec<DiscoveryMatchPhenopacket> = {
   fixedColumns: [
     {
       dataIndex: 'subject',
-      title: 'Subject ID',
+      title: 'subject.subject_id',
       render: (s: string | undefined, rec) =>
         s ? <PhenopacketSubjectLink packetId={rec.id}>{s}</PhenopacketSubjectLink> : null,
     } as TableColumnType<DiscoveryMatchPhenopacket>,
@@ -138,7 +138,7 @@ const TABLE_SPEC_BIOSAMPLE: ResultsTableSpec<DiscoveryMatchBiosample> = {
   fixedColumns: [
     {
       dataIndex: 'id',
-      title: 'Biosample ID',
+      title: 'biosample_table.biosample_id',
       render: (id: string, rec) =>
         rec.phenopacket ? <PhenopacketBiosampleLink packetId={rec.phenopacket} sampleId={id} /> : id,
     } as TableColumnType<DiscoveryMatchBiosample>,
@@ -159,7 +159,7 @@ const TABLE_SPEC_EXPERIMENT: ResultsTableSpec<DiscoveryMatchExperiment> = {
   fixedColumns: [
     {
       dataIndex: 'id',
-      title: 'Experiment ID',
+      title: 'experiment_table.experiment_id',
       render: (id: string) => <div>{id}</div>, // TODO: link
     } as TableColumnType<DiscoveryMatchExperiment>,
   ],
@@ -179,7 +179,7 @@ const TABLE_SPEC_EXPERIMENT_RESULT: ResultsTableSpec<DiscoveryMatchExperimentRes
   fixedColumns: [
     {
       dataIndex: 'filename',
-      title: 'File Name',
+      title: 'file.filename',
       render: (f: string | undefined) => <span>{f}</span>,
     } as TableColumnType<DiscoveryMatchExperimentResult>,
   ],
@@ -309,7 +309,9 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
 
   const columns = useMemo<TableColumnsType<T>>(
     () => [
-      ...(spec.fixedColumns ?? []),
+      ...(spec.fixedColumns ?? []).map(
+        (c: TableColumnType<T>) => ({ ...c, title: t(c.title as string) }) as TableColumnType<T>
+      ),
       ...Object.entries(spec.availableColumns)
         .filter(([k, _]) => shownColumns.has(k))
         .map(

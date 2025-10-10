@@ -241,9 +241,13 @@
     "sampled_tissue": "Sampled Tissue"
   },
   "file": {
+    "filename": "Filename",
     "download": "Download",
     "individual_to_file_identifiers": "Individual to File Identifiers",
     "file_attributes": "File Attributes"
+  },
+  "experiment_table": {
+    "experiment_id": "Experiment ID"
   },
   "diseases_expanded_row": {
     "disease_stage": "Disease Stage(s)",
@@ -370,6 +374,7 @@
     "cause_of_death": "Cause of Death",
     "survival_time_in_days": "Survival Time in Days",
     "id": "ID",
+    "subject_id": "Subject ID",
     "alternate_ids": "Alternate IDs",
     "time_at_last_encounter": "Time at Last Encounter",
     "vital_status": "Vital Status",

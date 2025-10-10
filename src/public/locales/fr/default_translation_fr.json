@@ -242,13 +242,17 @@
     "files": "Fichiers"
   },
   "biosample_table": {
-    "biosample_id": "ID de l'échantillon biologique",
+    "biosample_id": "Identifiant de l'échantillon biologique",
     "sampled_tissue": "Tissu échantillonné"
   },
   "file": {
+    "filename": "Nom du fichier",
     "download": "Télécharger",
     "individual_to_file_identifiers": "Identifiants individu-fichier",
     "file_attributes": "Attributs du fichier"
+  },
+  "experiment_table": {
+    "experiment_id": "Identifiant de l'expérience"
   },
   "diseases_expanded_row": {
     "disease_stage": "Stade(s) de la maladie",
@@ -263,7 +267,7 @@
     "resolution": "Résolution"
   },
   "interpretations": {
-    "id": "ID",
+    "id": "Identifiant",
     "created": "Créé",
     "updated": "Mis à jour",
     "progress_status": "Statut de progression",
@@ -272,7 +276,7 @@
     "disease_diagnosis": "Diagnostic de maladie",
     "variant_interpretation": "Interprétation du variant",
     "gene_descriptor": "Descripteur de gène",
-    "subject_or_biosample_id": "ID du sujet ou de l'échantillon biologique",
+    "subject_or_biosample_id": "Identifiant du sujet ou de l'échantillon biologique",
     "interpretation_status": "Statut de l'interprétation",
     "diagnosis": "Diagnostic",
     "no_diagnosis": "Aucun diagnostic",
@@ -281,7 +285,7 @@
     "accession_number": "Numéro d'accession",
     "symbol": "Symbole",
     "description": "Description",
-    "alternate_ids": "IDs alternatifs",
+    "alternate_ids": "Identifiants alternatifs",
     "cross_references": "Références croisées",
     "alternate_symbols": "Symboles alternatifs",
     "syntax": "Syntaxe",
@@ -349,7 +353,7 @@
     "unkown": "Inconnu"
   },
   "ontologies": {
-    "resource_id": "ID de ressource",
+    "resource_id": "Identifiant de ressource",
     "name": "Nom",
     "namespace_prefix": "Préfixe d’espace de noms",
     "url": "URL",
@@ -374,8 +378,9 @@
     "time_of_death": "Date du décès",
     "cause_of_death": "Cause du décès",
     "survival_time_in_days": "Durée de survie (en jours)",
-    "id": "ID",
-    "alternate_ids": "IDs alternatifs",
+    "id": "Identifiant",
+    "subject_id": "Identifiant du sujet",
+    "alternate_ids": "Identifiants alternatifs",
     "time_at_last_encounter": "Date du dernier contact",
     "vital_status": "Statut vital",
     "sex": "Sexe",

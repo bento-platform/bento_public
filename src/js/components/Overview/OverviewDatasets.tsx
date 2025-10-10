@@ -3,7 +3,7 @@ import Dataset from '@/components/Provenance/Dataset';
 import OverviewCollapsibleSection from './Util/OverviewCollapsibleSection';
 
 const OverviewDatasets = ({ datasets, parentProjectID }: { datasets: DatasetT[]; parentProjectID: string }) => (
-  <OverviewCollapsibleSection title="Datasets">
+  <OverviewCollapsibleSection title="entities.dataset_other">
     <div className="dataset-provenance-card-grid">
       {datasets.map((d) => (
         <div key={d.identifier}>
