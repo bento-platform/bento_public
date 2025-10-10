@@ -63,11 +63,10 @@ const SearchResultsPane = ({
   style,
 }: SearchResultsPaneProps) => {
   page = page ?? 'charts';
-  onPageChange = onPageChange ?? (() => {});
 
   const { hasAttempted: hasAttemptedQDP, hasPermission: queryDataPerm } = useScopeQueryData();
   useEffect(() => {
-    if (page === 'individuals' && hasAttemptedQDP && !queryDataPerm) {
+    if (page === 'individuals' && hasAttemptedQDP && !queryDataPerm && onPageChange) {
       onPageChange('charts');
     }
   }, [page, onPageChange, hasAttemptedQDP, queryDataPerm]);
@@ -76,7 +75,14 @@ const SearchResultsPane = ({
   if (page === 'charts') {
     pageElement = <SRChartsPage hasInsufficientData={hasInsufficientData} results={results} />;
   } else if (page === 'individuals') {
-    pageElement = <SearchResultsTablePage entity="phenopacket" onBack={() => onPageChange('charts')} />;
+    pageElement = (
+      <SearchResultsTablePage
+        entity="phenopacket"
+        onBack={() => {
+          if (onPageChange) onPageChange('charts');
+        }}
+      />
+    );
   }
 
   return (
