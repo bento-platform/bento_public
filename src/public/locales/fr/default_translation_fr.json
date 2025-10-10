@@ -246,9 +246,13 @@
     "sampled_tissue": "Tissu échantillonné"
   },
   "file": {
+    "filename": "Nom du fichier",
     "download": "Télécharger",
     "individual_to_file_identifiers": "Identifiants individu-fichier",
     "file_attributes": "Attributs du fichier"
+  },
+  "experiment_table": {
+    "experiment_id": "ID de l'expérience"
   },
   "diseases_expanded_row": {
     "disease_stage": "Stade(s) de la maladie",
@@ -375,6 +379,7 @@
     "cause_of_death": "Cause du décès",
     "survival_time_in_days": "Durée de survie (en jours)",
     "id": "ID",
+    "subject_id": "ID du sujet",
     "alternate_ids": "IDs alternatifs",
     "time_at_last_encounter": "Date du dernier contact",
     "vital_status": "Statut vital",
