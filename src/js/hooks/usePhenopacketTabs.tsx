@@ -32,7 +32,7 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
     const allItems = [
       {
         key: TabKeys.COMPACT,
-        label: 'compact',
+        label: 'Compact',
         children: <CompactView phenopacket={phenopacket} />,
         disabled: false,
       },

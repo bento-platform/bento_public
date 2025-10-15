@@ -1,70 +1,39 @@
+import React from 'react';
+import { Row, Col, Divider, Typography } from 'antd';
 import { Phenopacket } from '@/types/clinPhen/phenopacket';
-import { Row, Col, Divider } from 'antd';
-
-// Import all related views
-import SubjectView from './SubjectView';
-import BiosampleView from './BiosampleView';
-import DiseasesView from './DiseasesView';
-import InterpretationsView from './InterpretationsView';
-import MeasurementsView from './MeasurementsView';
-import MedicalActionsView from './MedicalActionsView';
-import PhenotypicFeaturesView from './PhenotypicFeaturesView';
+import { sectionSpecs, SectionKey } from './compactView.registry';
 
 interface CompactViewProps {
   phenopacket: Phenopacket;
 }
 
-const dividerStyle: React.CSSProperties = {
-  fontSize: '12px',
-  fontWeight: 600,
-  margin: '8px 0',
-  color: 'blue',
-};
-
 const CompactView = ({ phenopacket }: CompactViewProps) => {
-  const { id, time_at_last_encounter, karyotypic_sex, extra_properties } = phenopacket.subject!;
-  const subjectSubset = { id, time_at_last_encounter, karyotypic_sex, extra_properties };
+  // split by column and sort by order
+  const left = Object.entries(sectionSpecs)
+    .filter(([, spec]) => spec.column === 0)
+    .sort((a, b) => (a[1].order ?? 0) - (b[1].order ?? 0)) as [SectionKey, (typeof sectionSpecs)[SectionKey]][];
+
+  const right = Object.entries(sectionSpecs)
+    .filter(([, spec]) => spec.column === 1)
+    .sort((a, b) => (a[1].order ?? 0) - (b[1].order ?? 0)) as [SectionKey, (typeof sectionSpecs)[SectionKey]][];
+
+  const renderBlock = ([key, spec]: [SectionKey, (typeof sectionSpecs)[SectionKey]]) => {
+    const enabled = typeof spec.enabled === 'function' ? spec.enabled(phenopacket) : spec.enabled;
+    if (!enabled) return null;
+    return (
+      <React.Fragment key={key}>
+        <Divider orientation="left">
+          <Typography.Title level={5}>{spec.title}</Typography.Title>
+        </Divider>
+        {spec.render(phenopacket)}
+      </React.Fragment>
+    );
+  };
 
   return (
-    <Row gutter={28} style={{ fontSize: '12px !important' }}>
-      <Col>
-        <Divider orientation="left" style={dividerStyle}>
-          Subject
-        </Divider>
-        <SubjectView subject={subjectSubset} tiny />
-
-        <Divider orientation="left" style={dividerStyle}>
-          Biosamples
-        </Divider>
-        <BiosampleView biosamples={phenopacket.biosamples!} />
-
-        <Divider orientation="left" style={dividerStyle}>
-          Diseases
-        </Divider>
-        <DiseasesView diseases={phenopacket.diseases!} />
-      </Col>
-
-      <Col>
-        <Divider orientation="left" style={dividerStyle}>
-          Interpretations
-        </Divider>
-        <InterpretationsView interpretations={phenopacket.interpretations!} />
-
-        <Divider orientation="left" style={dividerStyle}>
-          Measurements
-        </Divider>
-        <MeasurementsView measurements={phenopacket.measurements!} />
-
-        <Divider orientation="left" style={dividerStyle}>
-          Medical Actions
-        </Divider>
-        <MedicalActionsView medicalActions={phenopacket.medical_actions!} />
-
-        <Divider orientation="left" style={dividerStyle}>
-          Phenotypic Features
-        </Divider>
-        <PhenotypicFeaturesView features={phenopacket.phenotypic_features!} />
-      </Col>
+    <Row gutter={28} style={{ fontSize: '12px' }}>
+      <Col>{left.map(renderBlock)}</Col>
+      <Col>{right.map(renderBlock)}</Col>
     </Row>
   );
 };
