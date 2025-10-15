@@ -22,8 +22,8 @@ const CompactView = ({ phenopacket }: CompactViewProps) => {
     if (!enabled) return null;
     return (
       <React.Fragment key={key}>
-        <Divider orientation="left">
-          <Typography.Title level={5}>{spec.title}</Typography.Title>
+        <Divider orientation="left" plain={false}>
+          {spec.title}
         </Divider>
         {spec.render(phenopacket)}
       </React.Fragment>
