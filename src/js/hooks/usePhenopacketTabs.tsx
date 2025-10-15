@@ -10,6 +10,7 @@ import MedicalActionsView from '@/components/ClinPhen/PhenopacketDisplay/Medical
 import OntologiesView from '@/components/ClinPhen/PhenopacketDisplay/OntologiesView';
 import PhenotypicFeaturesView from '@/components/ClinPhen/PhenopacketDisplay/PhenotypicFeaturesView';
 import SubjectView from '@/components/ClinPhen/PhenopacketDisplay/SubjectView';
+import CompactView from '@/components/ClinPhen/PhenopacketDisplay/CompactView';
 
 import { TabKeys } from '@/types/PhenopacketView.types';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
@@ -29,6 +30,12 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
   const items: TabsProps['items'] = useMemo(() => {
     if (!phenopacket) return [];
     const allItems = [
+      {
+        key: TabKeys.COMPACT,
+        label: 'compact',
+        children: <CompactView phenopacket={phenopacket} />,
+        disabled: false,
+      },
       {
         key: TabKeys.SUBJECT,
         label: t('subject.subject'),
