@@ -1,5 +1,4 @@
-import React from 'react';
-import { Row, Col, Divider, Typography } from 'antd';
+import { Collapse } from 'antd';
 import { Phenopacket } from '@/types/clinPhen/phenopacket';
 import { sectionSpecs, SectionKey } from './compactView.registry';
 
@@ -13,20 +12,19 @@ const CompactView = ({ phenopacket }: CompactViewProps) => {
     (typeof sectionSpecs)[SectionKey],
   ][];
 
-  const renderBlock = ([key, spec]: [SectionKey, (typeof sectionSpecs)[SectionKey]]) => {
+  const renderItem = ([key, spec]: [SectionKey, (typeof sectionSpecs)[SectionKey]]) => {
     const enabled = typeof spec.enabled === 'function' ? spec.enabled(phenopacket) : spec.enabled;
     if (!enabled) return null;
-    return (
-      <React.Fragment key={key}>
-        <Divider orientation="left" plain={false}>
-          {spec.title}
-        </Divider>
-        {spec.render(phenopacket)}
-      </React.Fragment>
-    );
+    return {
+      key,
+      label: spec.title,
+      children: spec.render(phenopacket),
+    };
   };
 
-  return <div>{sections.map(renderBlock)}</div>;
+  const items = sections.map(renderItem).filter((block) => !!block);
+
+  return <Collapse items={items} defaultActiveKey={items.map((i) => i.key)} />;
 };
 
 export default CompactView;
