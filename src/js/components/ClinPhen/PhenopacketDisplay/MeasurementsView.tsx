@@ -142,6 +142,7 @@ const MeasurementsView = ({ measurements }: MeasurementsViewProps) => {
       dataSource={measurements}
       columns={columns}
       expandedRowRender={(record) => <MeasurementsExpandedRow measurement={record} />}
+      queryKey="measurement"
       rowKey={(record) => record.assay.id}
       isRowExpandable={isMeasurementExpandable}
     />

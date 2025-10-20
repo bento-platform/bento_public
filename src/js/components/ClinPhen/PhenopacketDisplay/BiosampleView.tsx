@@ -180,6 +180,7 @@ const BiosampleView = ({ biosamples }: BiosampleViewProps) => {
       columns={BIOSAMPLE_VIEW_COLUMNS}
       expandedRowRender={(record) => <BiosampleExpandedRow biosample={record} />}
       rowKey="id"
+      queryKey="biosample"
       isRowExpandable={isBiosampleRowExpandable}
     />
   );

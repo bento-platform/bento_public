@@ -87,6 +87,7 @@ const DiseasesView = ({ diseases }: DiseasesViewProps) => {
       dataSource={diseases}
       columns={DISEASES_VIEW_COLUMNS}
       expandedRowRender={(record) => <DiseaseExpandedRow disease={record} />}
+      queryKey="diseases"
       rowKey={(record) => record.term.id}
       isRowExpandable={isDiseaseRowExpandable}
     />

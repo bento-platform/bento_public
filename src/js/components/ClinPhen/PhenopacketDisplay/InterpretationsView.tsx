@@ -154,6 +154,7 @@ const InterpretationsView = ({ interpretations }: InterpretationsViewProps) => {
       columns={columns}
       expandedRowRender={(record) => <InterpretationsExpandedRow interpretation={record} />}
       rowKey={(record) => record.id}
+      queryKey="interpretation"
       isRowExpandable={isInterpretationDetailsVisible}
     />
   );

@@ -311,6 +311,7 @@ const MedicalActionsView = ({ medicalActions }: { medicalActions: MedicalAction[
       dataSource={medicalActions}
       columns={columns}
       expandedRowRender={(record) => <MedicalActionDetails medicalAction={record} />}
+      queryKey="medical_action"
       rowKey={(record) =>
         record.procedure?.code?.id ??
         record.treatment?.agent?.id ??

@@ -148,6 +148,7 @@ const PhenotypicFeaturesView = ({ features }: PhenotypicFeaturesViewProps) => {
       dataSource={features}
       columns={PHENOTYPIC_FEATURES_COLUMNS}
       expandedRowRender={(record) => <PhenotypicFeatureExpandedRow feature={record} />}
+      queryKey="phenotypic_feature"
       rowKey={(record) => record.type.id}
       isRowExpandable={isPhenotypicFeatureExpandable}
     />
