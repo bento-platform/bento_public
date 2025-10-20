@@ -29,7 +29,6 @@ export type SectionSpec = {
   order?: number;
 };
 
-// default helpers you can reuse in other registries
 const has = <T,>(x?: T[] | null) => Array.isArray(x) && x.length > 0;
 
 export const sectionSpecs: Record<SectionKey, SectionSpec> = {

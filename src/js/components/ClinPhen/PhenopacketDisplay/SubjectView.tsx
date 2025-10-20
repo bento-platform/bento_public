@@ -8,15 +8,7 @@ import ExtraPropertiesDisplay from './ExtraPropertiesDisplay';
 import type { Individual } from '@/types/clinPhen/individual';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
 
-const SubjectView = ({
-  subject,
-  spaceSize,
-  tiny,
-}: {
-  subject: Individual;
-  spaceSize?: SpaceProps['size'];
-  tiny?: boolean;
-}) => {
+const SubjectView = ({ subject, spaceSize }: { subject: Individual; spaceSize?: SpaceProps['size'] }) => {
   const vs = subject?.vital_status;
   const vitalStatusItems: ConditionalDescriptionItem[] = [
     {
@@ -95,15 +87,6 @@ const SubjectView = ({
       isVisible: subject.taxonomy,
     },
   ];
-
-  if (tiny) {
-    return (
-      <Space direction="vertical">
-        <TDescriptions items={items} column={1} bordered size="small" />
-        <ExtraPropertiesDisplay extraProperties={subject.extra_properties} />
-      </Space>
-    );
-  }
 
   return (
     <Space id="subject-view" direction="vertical" className="w-full" size={spaceSize ?? 'middle'}>

@@ -8,7 +8,6 @@ interface CompactViewProps {
 }
 
 const CompactView = ({ phenopacket }: CompactViewProps) => {
-  // split by column and sort by order
   const sections = Object.entries(sectionSpecs).sort((a, b) => (a[1].order ?? 0) - (b[1].order ?? 0)) as [
     SectionKey,
     (typeof sectionSpecs)[SectionKey],
