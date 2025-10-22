@@ -2,6 +2,7 @@ import { Collapse } from 'antd';
 import { Phenopacket } from '@/types/clinPhen/phenopacket';
 import { sectionSpecs, SectionKey } from './compactView.registry';
 import { useSearchParams } from 'react-router-dom';
+import { useTranslationFn } from '@/hooks';
 
 const qk = 'collapse';
 
@@ -25,6 +26,7 @@ interface CompactViewProps {
 
 const CompactView = ({ phenopacket }: CompactViewProps) => {
   const [open, setOpen] = useSearchParams(seriazlizeKeys(['subject']));
+  const t = useTranslationFn();
 
   const handleCollapseChange = (e: string[]) => {
     setOpen(seriazlizeKeys(e as SectionKey[], open));
@@ -40,7 +42,7 @@ const CompactView = ({ phenopacket }: CompactViewProps) => {
     if (!enabled) return null;
     return {
       key,
-      label: <b>{spec.title}</b>,
+      label: <b>{t(spec.titleTranslationKey)}</b>,
       children: spec.render(phenopacket),
     };
   };
