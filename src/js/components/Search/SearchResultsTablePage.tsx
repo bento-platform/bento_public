@@ -105,12 +105,12 @@ const PHENOPACKET_SEARCH_TABLE_COLUMNS = {
 
 const PhenopacketSubjectLink = ({ children, packetId }: { children: ReactNode; packetId: string }) => {
   const language = useLanguage();
-  return <Link to={`/${language}/phenopackets/${packetId}/subject`}>{children}</Link>;
+  return <Link to={`/${language}/phenopackets/${packetId}/overview`}>{children}</Link>;
 };
 
 const PhenopacketBiosampleLink = ({ packetId, sampleId }: { packetId: string; sampleId: string }) => {
   const language = useLanguage();
-  return <Link to={`/${language}/phenopackets/${packetId}/biosamples?expanded=${sampleId}`}>{sampleId}</Link>;
+  return <Link to={`/${language}/phenopackets/${packetId}/overview?biosample=${sampleId}`}>{sampleId}</Link>;
 };
 
 const TABLE_SPEC_PHENOPACKET: ResultsTableSpec<DiscoveryMatchPhenopacket> = {
