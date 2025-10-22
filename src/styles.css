@@ -517,6 +517,6 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   padding: 4px 16px !important;
 }
 
-#compact-view .ant-table-cell {
+.compact .ant-table-cell {
   padding: 2px 8px !important;
 }
