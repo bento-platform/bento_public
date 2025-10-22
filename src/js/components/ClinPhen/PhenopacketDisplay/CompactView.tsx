@@ -1,6 +1,8 @@
-import { Collapse } from 'antd';
+import { Collapse, Typography } from 'antd';
 import { Phenopacket } from '@/types/clinPhen/phenopacket';
 import { sectionSpecs, SectionKey } from './compactView.registry';
+
+const { Title } = Typography;
 
 interface CompactViewProps {
   phenopacket: Phenopacket;
@@ -17,7 +19,7 @@ const CompactView = ({ phenopacket }: CompactViewProps) => {
     if (!enabled) return null;
     return {
       key,
-      label: spec.title,
+      label: <b>{spec.title}</b>,
       children: spec.render(phenopacket),
     };
   };
