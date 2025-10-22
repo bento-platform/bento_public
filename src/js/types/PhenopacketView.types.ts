@@ -1,5 +1,5 @@
 export enum TabKeys {
-  COMPACT = 'compact',
+  Overview = 'overview',
   SUBJECT = 'subject',
   BIOSAMPLES = 'biosamples',
   MEASUREMENTS = 'measurements',

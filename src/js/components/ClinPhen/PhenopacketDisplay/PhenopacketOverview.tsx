@@ -1,6 +1,6 @@
 import { Collapse } from 'antd';
 import { Phenopacket } from '@/types/clinPhen/phenopacket';
-import { sectionSpecs, SectionKey } from './compactView.registry';
+import { sectionSpecs, SectionKey } from './phenopacketOverview.registry';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslationFn } from '@/hooks';
 
@@ -24,7 +24,7 @@ interface CompactViewProps {
   phenopacket: Phenopacket;
 }
 
-const CompactView = ({ phenopacket }: CompactViewProps) => {
+const PhenopacketOverview = ({ phenopacket }: CompactViewProps) => {
   const [open, setOpen] = useSearchParams(seriazlizeKeys(['subject']));
   const t = useTranslationFn();
 
@@ -54,4 +54,4 @@ const CompactView = ({ phenopacket }: CompactViewProps) => {
   );
 };
 
-export default CompactView;
+export default PhenopacketOverview;
