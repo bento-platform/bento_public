@@ -2,14 +2,7 @@ import type { TabsProps } from 'antd';
 import { useCallback, useMemo, type ReactNode } from 'react';
 import { useNavigate } from 'react-router';
 
-import BiosampleView from '@/components/ClinPhen/PhenopacketDisplay/BiosampleView';
-import DiseasesView from '@/components/ClinPhen/PhenopacketDisplay/DiseasesView';
-import InterpretationsView from '@/components/ClinPhen/PhenopacketDisplay/InterpretationsView';
-import MeasurementsView from '@/components/ClinPhen/PhenopacketDisplay/MeasurementsView';
-import MedicalActionsView from '@/components/ClinPhen/PhenopacketDisplay/MedicalActionsView';
 import OntologiesView from '@/components/ClinPhen/PhenopacketDisplay/OntologiesView';
-import PhenotypicFeaturesView from '@/components/ClinPhen/PhenopacketDisplay/PhenotypicFeaturesView';
-import SubjectView from '@/components/ClinPhen/PhenopacketDisplay/SubjectView';
 import Overview from '@/components/ClinPhen/PhenopacketDisplay/PhenopacketOverview';
 
 import { TabKeys } from '@/types/PhenopacketView.types';
