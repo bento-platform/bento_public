@@ -508,8 +508,8 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   }
 }
 
-#compact-view .ant-descriptions-item-content,
-#compact-view .ant-descriptions-item-label {
+.compact .ant-descriptions-item-content,
+.compact .ant-descriptions-item-label {
   padding: 2px 16px !important;
 }
 

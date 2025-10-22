@@ -42,7 +42,7 @@ const QuantityDisplay = ({ quantity, title }: { quantity: Quantity; title?: stri
       isVisible: objectToBoolean(quantity?.reference_range),
     },
   ];
-  return <TDescriptions bordered size="small" column={1} items={items} title={title} />;
+  return <TDescriptions bordered size="compact" column={1} items={items} title={title} />;
 };
 
 export default QuantityDisplay;

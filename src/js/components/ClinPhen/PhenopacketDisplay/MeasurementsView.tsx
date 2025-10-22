@@ -35,7 +35,7 @@ const MeasurementsExpandedRow = ({ measurement }: { measurement: Measurement }) 
     },
   ];
 
-  return <TDescriptions bordered size="small" items={items} column={1} />;
+  return <TDescriptions bordered size="compact" items={items} column={1} />;
 };
 
 const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement; expanded?: boolean }) => {

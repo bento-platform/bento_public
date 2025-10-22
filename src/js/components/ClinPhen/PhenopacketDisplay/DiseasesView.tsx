@@ -47,7 +47,7 @@ const DiseaseExpandedRow = ({ disease }: { disease: Disease }) => {
     },
   ];
 
-  return <TDescriptions bordered size="small" items={items} />;
+  return <TDescriptions bordered size="compact" items={items} />;
 };
 
 interface DiseasesViewProps {
