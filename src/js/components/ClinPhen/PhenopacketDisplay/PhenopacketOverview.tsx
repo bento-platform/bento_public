@@ -1,6 +1,7 @@
 import { Collapse } from 'antd';
-import { Phenopacket } from '@/types/clinPhen/phenopacket';
-import { sectionSpecs, SectionKey } from './phenopacketOverview.registry';
+import type { Phenopacket } from '@/types/clinPhen/phenopacket';
+import type { SectionKey } from './phenopacketOverview.registry';
+import { sectionSpecs } from './phenopacketOverview.registry';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslationFn } from '@/hooks';
 

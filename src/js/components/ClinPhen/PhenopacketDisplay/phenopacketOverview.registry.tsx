@@ -1,5 +1,5 @@
-import React from 'react';
-import { Phenopacket } from '@/types/clinPhen/phenopacket';
+import type React from 'react';
+import type { Phenopacket } from '@/types/clinPhen/phenopacket';
 
 import SubjectView from './SubjectView';
 import BiosampleView from './BiosampleView';
