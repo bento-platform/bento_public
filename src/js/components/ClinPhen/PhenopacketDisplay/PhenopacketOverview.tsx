@@ -4,7 +4,7 @@ import { sectionSpecs, SectionKey } from './phenopacketOverview.registry';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslationFn } from '@/hooks';
 
-const qk = 'collapse';
+export const qk = 'collapse';
 
 const seriazlizeKeys = (keys: SectionKey[], prev: URLSearchParams | null = null): URLSearchParams => {
   const keyString = keys.join(',');
