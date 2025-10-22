@@ -513,7 +513,7 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   padding: 2px 16px !important;
 }
 
-#compact-view .ant-collapse-header {
+.compact .ant-collapse-header {
   padding: 4px 16px !important;
 }
 

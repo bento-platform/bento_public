@@ -50,9 +50,7 @@ const CompactView = ({ phenopacket }: CompactViewProps) => {
   const items = sections.map(renderItem).filter((block) => !!block);
 
   return (
-    <div id="compact-view">
-      <Collapse items={items} activeKey={deseriazlizeKeys(open)} onChange={handleCollapseChange} />
-    </div>
+    <Collapse className="compact" items={items} activeKey={deseriazlizeKeys(open)} onChange={handleCollapseChange} />
   );
 };
 
