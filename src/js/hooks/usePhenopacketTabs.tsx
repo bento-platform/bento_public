@@ -24,7 +24,7 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
     if (!phenopacket) return [];
     const allItems = [
       {
-        key: TabKeys.Overview,
+        key: TabKeys.OVERVIEW,
         label: 'Overview',
         children: <Overview phenopacket={phenopacket} />,
         disabled: false,

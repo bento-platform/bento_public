@@ -1,4 +1,4 @@
 export enum TabKeys {
-  Overview = 'overview',
+  OVERVIEW = 'overview',
   ONTOLOGIES = 'ontologies',
 }
