@@ -29,7 +29,7 @@ const PhenopacketOverview = ({ phenopacket }: CompactViewProps) => {
   const t = useTranslationFn();
 
   const handleCollapseChange = (e: string[]) => {
-    setOpen(seriazlizeKeys(e as SectionKey[], open));
+    setOpen(seriazlizeKeys(e as SectionKey[], open), { replace: true });
   };
 
   const sections = Object.entries(sectionSpecs).sort((a, b) => (a[1].order ?? 0) - (b[1].order ?? 0)) as [
