@@ -44,7 +44,7 @@ const DOSE_INTERVAL_COLUMNS: CustomTableColumns<DoseIntervalWithId> = [
   {
     title: 'medical_actions.interval',
     dataIndex: 'interval',
-    render: (interval: TimeInterval) => <TimeIntervalDisplay timeInterval={interval} />,
+    render: (interval: TimeInterval) => <TimeIntervalDisplay timeInterval={interval} br />,
     alwaysShow: true,
   },
 ];
