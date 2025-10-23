@@ -19,6 +19,7 @@ import type { GeoLocation } from '@/types/geo';
 import { useTranslationFn } from '@/hooks';
 import { objectToBoolean } from '@/utils/boolean';
 
+import { EM_DASH } from '@/constants/common';
 import { ISO_3166_1_ISO3_TO_ISO2 } from '@/constants/countryCodes';
 
 const MAP_WIDTH = 500;
@@ -235,8 +236,9 @@ export const BiosampleExpandedRow = ({ biosample, searchRow }: { biosample: Bios
   );
 };
 
-export const LatLong = ({ location }: { location: GeoLocation }) => {
+export const LatLong = ({ location }: { location?: GeoLocation }) => {
   const t = useTranslationFn();
+  if (!location) return EM_DASH;
   return (
     <>
       <strong>{t('geo_location.latitude')}:</strong>&nbsp;{location.geometry.coordinates[1]}
@@ -288,7 +290,7 @@ const BIOSAMPLE_VIEW_COLUMNS: CustomTableColumns<Biosample> = [
   {
     title: 'biosample_table.location_collected',
     dataIndex: 'location_collected',
-    render: (locationCollected: GeoLocation) => <LatLong location={locationCollected} />,
+    render: (locationCollected: GeoLocation | undefined) => <LatLong location={locationCollected} />,
   },
 ];
 
