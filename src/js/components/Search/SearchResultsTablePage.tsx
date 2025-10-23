@@ -51,7 +51,7 @@ import ProjectTitle from '@/components/Util/ProjectTitle';
 import DatasetTitle from '@/components/Util/DatasetTitle';
 import IndividualRowDetail from './IndividualRowDetail';
 import BiosampleRowDetail from './BiosampleRowDetail';
-import { qk } from '../ClinPhen/PhenopacketDisplay/PhenopacketOverview';
+import { PHENOPACKET_COLLAPSE_URL_QUERY_KEY } from '../ClinPhen/PhenopacketDisplay/PhenopacketOverview';
 
 type SearchColRenderContext = {
   onProjectClick: (id: string) => void;
@@ -106,13 +106,21 @@ const PHENOPACKET_SEARCH_TABLE_COLUMNS = {
 
 const PhenopacketSubjectLink = ({ children, packetId }: { children: ReactNode; packetId: string }) => {
   const language = useLanguage();
-  return <Link to={`/${language}/phenopackets/${packetId}/overview?${qk}=subject`}>{children}</Link>;
+  return (
+    <Link to={`/${language}/phenopackets/${packetId}/overview?${PHENOPACKET_COLLAPSE_URL_QUERY_KEY}=subject`}>
+      {children}
+    </Link>
+  );
 };
 
 const PhenopacketBiosampleLink = ({ packetId, sampleId }: { packetId: string; sampleId: string }) => {
   const language = useLanguage();
   return (
-    <Link to={`/${language}/phenopackets/${packetId}/overview?${qk}=biosamples&biosample=${sampleId}`}>{sampleId}</Link>
+    <Link
+      to={`/${language}/phenopackets/${packetId}/overview?${PHENOPACKET_COLLAPSE_URL_QUERY_KEY}=biosamples&biosample=${sampleId}`}
+    >
+      {sampleId}
+    </Link>
   );
 };
 
