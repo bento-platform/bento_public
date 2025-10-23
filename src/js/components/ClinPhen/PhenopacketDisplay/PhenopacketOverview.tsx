@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { Collapse } from 'antd';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
 import type { SectionKey } from './phenopacketOverview.registry';
@@ -29,9 +30,12 @@ const PhenopacketOverview = ({ phenopacket }: CompactViewProps) => {
   const [open, setOpen] = useSearchParams(serializeKeys(['subject']));
   const t = useTranslationFn();
 
-  const handleCollapseChange = (e: string[]) => {
-    setOpen(serializeKeys(e as SectionKey[], open), { replace: true });
-  };
+  const handleCollapseChange = useCallback(
+    (e: string[]) => {
+      setOpen(serializeKeys(e as SectionKey[], open), { replace: true });
+    },
+    [open, setOpen]
+  );
 
   const sections = Object.entries(sectionSpecs).sort((a, b) => (a[1].order ?? 0) - (b[1].order ?? 0)) as [
     SectionKey,
