@@ -7,7 +7,7 @@ import { useTranslationFn } from '@/hooks';
 
 export const qk = 'collapse';
 
-const seriazlizeKeys = (keys: SectionKey[], prev: URLSearchParams | null = null): URLSearchParams => {
+const serializeKeys = (keys: SectionKey[], prev: URLSearchParams | null = null): URLSearchParams => {
   const keyString = keys.join(',');
   const previous = prev ? prev.toString() : '';
   const returnVal = new URLSearchParams(previous);
@@ -15,7 +15,7 @@ const seriazlizeKeys = (keys: SectionKey[], prev: URLSearchParams | null = null)
   return returnVal;
 };
 
-const deseriazlizeKeys = (params: URLSearchParams): SectionKey[] => {
+const deserializeKeys = (params: URLSearchParams): SectionKey[] => {
   const queryVals = params.get(qk);
   const keyArray = queryVals?.split(',') as SectionKey[];
   return keyArray;
@@ -26,11 +26,11 @@ interface CompactViewProps {
 }
 
 const PhenopacketOverview = ({ phenopacket }: CompactViewProps) => {
-  const [open, setOpen] = useSearchParams(seriazlizeKeys(['subject']));
+  const [open, setOpen] = useSearchParams(serializeKeys(['subject']));
   const t = useTranslationFn();
 
   const handleCollapseChange = (e: string[]) => {
-    setOpen(seriazlizeKeys(e as SectionKey[], open), { replace: true });
+    setOpen(serializeKeys(e as SectionKey[], open), { replace: true });
   };
 
   const sections = Object.entries(sectionSpecs).sort((a, b) => (a[1].order ?? 0) - (b[1].order ?? 0)) as [
@@ -51,7 +51,7 @@ const PhenopacketOverview = ({ phenopacket }: CompactViewProps) => {
   const items = sections.map(renderItem).filter((block) => !!block);
 
   return (
-    <Collapse className="compact" items={items} activeKey={deseriazlizeKeys(open)} onChange={handleCollapseChange} />
+    <Collapse className="compact" items={items} activeKey={deserializeKeys(open)} onChange={handleCollapseChange} />
   );
 };
 
