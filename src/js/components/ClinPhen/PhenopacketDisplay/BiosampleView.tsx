@@ -159,6 +159,7 @@ export const BiosampleExpandedRow = ({ biosample, searchRow }: { biosample: Bios
       label: 'biosample_expanded_row.location_collected',
       children: biosample.location_collected && <BiosampleLocationCollected biosample={biosample} />,
       isVisible: biosample.location_collected,
+      span: 3,
     },
     {
       key: 'histological_diagnosis',
@@ -230,7 +231,7 @@ export const BiosampleExpandedRow = ({ biosample, searchRow }: { biosample: Bios
 
   return (
     <Space direction="vertical" className="w-full">
-      <TDescriptions bordered size="small" items={items} />
+      <TDescriptions bordered size="small" column={{ lg: 1, xl: 3 }} items={items} />
       <ExtraPropertiesDisplay extraProperties={biosample.extra_properties} />
     </Space>
   );
