@@ -107,10 +107,10 @@ const PhenopacketView = () => {
           activeKey == TabKeys.OVERVIEW && (
             <Space>
               <Button onClick={collapseRef.current?.expandAll} size="small">
-                {t('Expand All')}
+                {t('general.expand_all')}
               </Button>
               <Button onClick={collapseRef.current?.collapseAll} size="small">
-                {t('Collapse All')}
+                {t('general.collapse_all')}
               </Button>
             </Space>
           )
