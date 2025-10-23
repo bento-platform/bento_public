@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Card, Empty, Flex } from 'antd';
+import { Card, Empty, Flex, Space, Button } from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
-
-import { usePhenopacketTabs } from '@/hooks/usePhenopacketTabs';
 
 import Loader from '@/components/Loader';
 
@@ -13,6 +11,7 @@ import { usePhenopacketData } from '@/features/clinPhen/hooks';
 import { useSetExtraBreadcrumb } from '@/features/ui/hooks';
 import { useTranslationFn } from '@/hooks';
 import { useNotify } from '@/hooks/notifications';
+import { usePhenopacketTabs } from '@/hooks/usePhenopacketTabs';
 
 export interface RouteParams {
   packetId: string;
@@ -29,7 +28,7 @@ const PhenopacketView = () => {
 
   const { data: phenopacket, status, isAuthorized } = usePhenopacketData(packetId ?? '');
 
-  const { handleTabChange, activeTabs, tabs, tabContent } = usePhenopacketTabs(phenopacket);
+  const { handleTabChange, activeTabs, tabs, tabContent, collapseRef } = usePhenopacketTabs(phenopacket);
 
   const defaultTab = useMemo(() => ({ key: activeTabs[0], label: t('tab_keys.subject') }), [activeTabs, t]);
 
@@ -104,6 +103,18 @@ const PhenopacketView = () => {
         tabList={tabs}
         tabProps={{ destroyInactiveTabPane: true, size: 'middle' }}
         onTabChange={handleTabChange}
+        tabBarExtraContent={
+          activeKey == TabKeys.OVERVIEW && (
+            <Space>
+              <Button onClick={collapseRef.current?.expandAll} size="small">
+                {t('Expand All')}
+              </Button>
+              <Button onClick={collapseRef.current?.collapseAll} size="small">
+                {t('Collapse All')}
+              </Button>
+            </Space>
+          )
+        }
       >
         {tabContent[activeKey]}
       </Card>

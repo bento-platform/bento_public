@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useImperativeHandle, forwardRef } from 'react';
 import { Collapse } from 'antd';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
 import type { SectionKey } from './phenopacketOverview.registry';
@@ -22,11 +22,16 @@ const deserializeKeys = (params: URLSearchParams): SectionKey[] => {
   return keyArray;
 };
 
+export type CollapseHandle = {
+  expandAll: () => void;
+  collapseAll: () => void;
+};
+
 interface CompactViewProps {
   phenopacket: Phenopacket;
 }
 
-const PhenopacketOverview = ({ phenopacket }: CompactViewProps) => {
+const PhenopacketOverview = forwardRef<CollapseHandle, CompactViewProps>(({ phenopacket }, ref) => {
   const [open, setOpen] = useSearchParams(serializeKeys(['subject']));
   const t = useTranslationFn();
 
@@ -54,9 +59,27 @@ const PhenopacketOverview = ({ phenopacket }: CompactViewProps) => {
 
   const items = sections.map(renderItem).filter((block) => !!block);
 
+  const expandAll = useCallback(() => {
+    setOpen(
+      serializeKeys(
+        items.map((i) => i.key),
+        open
+      ),
+      { replace: true }
+    );
+  }, [items, open, setOpen]);
+
+  const collapseAll = useCallback(() => {
+    setOpen(serializeKeys([], open), { replace: true });
+  }, [open, setOpen]);
+
+  useImperativeHandle(ref, () => ({ expandAll, collapseAll }), [expandAll, collapseAll]);
+
   return (
     <Collapse className="compact" items={items} activeKey={deserializeKeys(open)} onChange={handleCollapseChange} />
   );
-};
+});
+
+PhenopacketOverview.displayName = 'PhenopacketOverview';
 
 export default PhenopacketOverview;

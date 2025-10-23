@@ -33,6 +33,10 @@
     "variant_one": "Variant",
     "variant_other": "Variants"
   },
+  "general": {
+    "collapse_all": "Collapse All",
+    "expand_all": "Expand All"
+  },
   "search": {
     "filters": "Filters",
     "filters_applied_one": "{{count}} filter applied",

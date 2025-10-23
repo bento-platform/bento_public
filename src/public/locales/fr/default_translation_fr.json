@@ -35,6 +35,10 @@
     "variant_one": "Variant",
     "variant_other": "Variants"
   },
+  "general": {
+    "collapse_all": "Tout réduire",
+    "exapand_all": "Tout développer"
+  },
   "search": {
     "filters": "Filtres",
     "filters_applied_one": "{{count}} filtre appliqué",

@@ -1,9 +1,9 @@
 import type { TabsProps } from 'antd';
-import { useCallback, useMemo, type ReactNode } from 'react';
+import { useCallback, useMemo, useRef, type ReactNode } from 'react';
 import { useNavigate } from 'react-router';
 
 import OntologiesView from '@/components/ClinPhen/PhenopacketDisplay/OntologiesView';
-import Overview from '@/components/ClinPhen/PhenopacketDisplay/PhenopacketOverview';
+import Overview, { type CollapseHandle } from '@/components/ClinPhen/PhenopacketDisplay/PhenopacketOverview';
 
 import { TabKeys } from '@/types/PhenopacketView.types';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
@@ -12,6 +12,8 @@ import { useTranslationFn } from '@/hooks';
 export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
   const t = useTranslationFn();
   const navigate = useNavigate();
+  const collapseRef = useRef<CollapseHandle>(null);
+
   const handleTabChange = useCallback(
     (key: string) => {
       navigate(`../${key}`, { relative: 'path', replace: true });
@@ -26,7 +28,7 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
       {
         key: TabKeys.OVERVIEW,
         label: 'Overview',
-        children: <Overview phenopacket={phenopacket} />,
+        children: <Overview ref={collapseRef} phenopacket={phenopacket} />,
         disabled: false,
       },
       {
@@ -57,5 +59,6 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
     tabs,
     tabContent,
     activeTabs,
+    collapseRef,
   };
 };
