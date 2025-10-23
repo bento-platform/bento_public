@@ -40,7 +40,7 @@ export const GeneDescriptor = ({ geneDescriptor }: { geneDescriptor: GeneDescrip
     },
   ];
 
-  return <TDescriptions items={items} size="small" column={1} bordered />;
+  return <TDescriptions items={items} size="compact" column={1} bordered />;
 };
 
 export const VariantInterpretation = ({
@@ -161,8 +161,8 @@ export const VariantInterpretation = ({
 
   return (
     <Space direction="vertical">
-      <TDescriptions items={items} size="small" bordered />
-      <TDescriptions items={variantDescrptorItems} column={2} size="small" bordered />
+      <TDescriptions items={items} size="compact" bordered />
+      <TDescriptions items={variantDescrptorItems} column={2} size="compact" bordered />
     </Space>
   );
 };

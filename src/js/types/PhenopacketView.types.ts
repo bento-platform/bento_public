@@ -1,10 +1,4 @@
 export enum TabKeys {
-  SUBJECT = 'subject',
-  BIOSAMPLES = 'biosamples',
-  MEASUREMENTS = 'measurements',
-  PHENOTYPIC_FEATURES = 'phenotypic_features',
-  DISEASES = 'diseases',
-  INTERPRETATIONS = 'interpretations',
-  MEDICAL_ACTIONS = 'medical_actions',
+  OVERVIEW = 'overview',
   ONTOLOGIES = 'ontologies',
 }
