@@ -2,7 +2,7 @@ import type { JSONType } from '@/types/json';
 
 type GeoGeometry = {
   type: 'Point';
-  coordinates: [number, number] | [number, number, number];
+  coordinates: [number, number]; //  | [number, number, number] - right now, we do not support altitude
 };
 
 // See https://schemablocks.org/schema_pages/Progenetix/GeoLocation/

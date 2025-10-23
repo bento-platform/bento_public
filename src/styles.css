@@ -34,6 +34,10 @@ body {
 .mb-0, .ant-typography.mb-0 { margin-bottom: 0; }
 .flex-1 { flex: 1; }
 .float-right { float: right; }
+.position-absolute { position: absolute; }
+.position-relative { position: relative; }
+.block { display: block; }
+.none { display: none; }
 .rounded-lg { border-radius: 8px; } /* also consistent with --ant-border-radius-lg */
 .rounded-xl { border-radius: 12px; }
 .rounded-e-none { border-start-end-radius: 0; border-end-end-radius: 0; }
