@@ -32,7 +32,7 @@ const SearchFilterInput = ({
           value: f.id,
           label: (
             <Flex>
-              <div className="flex-1">{t(f.definition.title)}</div>
+              <div className="flex-1">{`${t(f.definition.title)}${f.definition.datatype === 'number' && f.definition.config?.units ? ` (${t(f.definition.config.units)})` : ''}`}</div>
               <OptionDescription description={t(f.definition.description)} />
             </Flex>
           ),
