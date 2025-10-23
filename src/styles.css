@@ -458,6 +458,19 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   width: auto;
 }
 
+.compact .ant-descriptions-item-content,
+.compact .ant-descriptions-item-label {
+  padding: 2px 16px !important;
+}
+
+.compact .ant-collapse-header {
+  padding: 4px 16px !important;
+}
+
+.compact .ant-table-cell {
+  padding: 2px 8px !important;
+}
+
 /* END phenopacket view */
 
 
@@ -506,17 +519,4 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
     /* For small screens, reset group gap size */
     gap: 16px;
   }
-}
-
-.compact .ant-descriptions-item-content,
-.compact .ant-descriptions-item-label {
-  padding: 2px 16px !important;
-}
-
-.compact .ant-collapse-header {
-  padding: 4px 16px !important;
-}
-
-.compact .ant-table-cell {
-  padding: 2px 8px !important;
 }
