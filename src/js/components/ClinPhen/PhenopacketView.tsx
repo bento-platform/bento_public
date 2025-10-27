@@ -95,7 +95,7 @@ const PhenopacketView = () => {
     return <Loader fullHeight={false} />;
   }
 
-  // TODO: Bug-fix -> Expand all/ Collapse all don't work on first render
+  // TODO: Bug-fix -> Expand all/ Collapse all don't work on first render (if the page is refreshed when nothing has been opened)
   return (
     <Flex justify="center">
       <Card
