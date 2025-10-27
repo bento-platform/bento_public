@@ -52,7 +52,7 @@ const PhenopacketOverview = forwardRef<CollapseHandle, CompactViewProps>(({ phen
     if (!enabled) return null;
     return {
       key,
-      label: <b>{t(spec.titleTranslationKey)}</b>,
+      label: <strong style={{ fontSize: '16px', borderTop: '10px' }}>{t(spec.titleTranslationKey)}</strong>,
       children: spec.render(phenopacket),
     };
   };
@@ -76,7 +76,13 @@ const PhenopacketOverview = forwardRef<CollapseHandle, CompactViewProps>(({ phen
   useImperativeHandle(ref, () => ({ expandAll, collapseAll }), [expandAll, collapseAll]);
 
   return (
-    <Collapse className="compact" items={items} activeKey={deserializeKeys(open)} onChange={handleCollapseChange} />
+    <Collapse
+      className="compact"
+      items={items}
+      activeKey={deserializeKeys(open)}
+      onChange={handleCollapseChange}
+      ghost
+    />
   );
 });
 
