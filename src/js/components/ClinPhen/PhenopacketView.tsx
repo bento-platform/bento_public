@@ -30,7 +30,7 @@ const PhenopacketView = () => {
 
   const { handleTabChange, activeTabs, tabs, tabContent, collapseRef } = usePhenopacketTabs(phenopacket);
 
-  const defaultTab = useMemo(() => ({ key: activeTabs[0], label: t('tab_keys.subject') }), [activeTabs, t]);
+  const defaultTab = useMemo(() => ({ key: activeTabs[0], label: tabs[0].label }), [activeTabs, t]);
 
   const [activeKey, setActiveKey] = useState<TabKeys>(defaultTab.key);
 
