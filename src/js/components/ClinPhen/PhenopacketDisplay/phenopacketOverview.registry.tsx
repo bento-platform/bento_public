@@ -54,7 +54,7 @@ export const sectionSpecs: Record<SectionKey, SectionSpec> = {
     order: 2,
   },
   interpretations: {
-    titleTranslationKey: 'tab_keys.diseases',
+    titleTranslationKey: 'tab_keys.interpretations',
     enabled: (p) => has(p.interpretations),
     render: (p) => <InterpretationsView interpretations={p.interpretations!} />,
     order: 3,
