@@ -318,6 +318,10 @@ body {
 .about-content *:first-child {
   margin-top: 0;
 }
+/* Elements which are the last child of the about content container shouldn't have the default bottom margin */
+.about-content *:first-child {
+  margin-bottom: 0;
+}
 
 /* Images should scale proportionally with container width */
 .about-content img {
