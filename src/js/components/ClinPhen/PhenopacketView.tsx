@@ -102,15 +102,27 @@ const PhenopacketView = () => {
         className="container"
         activeTabKey={activeKey}
         tabList={tabs}
+        // tabProps={{ destroyOnHidden: true, size: 'middle' }}
         tabProps={{ destroyInactiveTabPane: true, size: 'middle' }}
         onTabChange={handleTabChange}
         tabBarExtraContent={
           activeKey == TabKeys.OVERVIEW && (
             <Space>
-              <Button onClick={collapseRef.current?.expandAll} size="small">
+              {/* Arrow function ensures ref is evaluated at click-time, not render-time */}
+              <Button
+                onClick={() => {
+                  collapseRef.current?.expandAll();
+                }}
+                size="small"
+              >
                 {t('general.expand_all')}
               </Button>
-              <Button onClick={collapseRef.current?.collapseAll} size="small">
+              <Button
+                onClick={() => {
+                  collapseRef.current?.collapseAll();
+                }}
+                size="small"
+              >
                 {t('general.collapse_all')}
               </Button>
             </Space>
