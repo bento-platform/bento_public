@@ -102,8 +102,7 @@ const PhenopacketView = () => {
         className="container"
         activeTabKey={activeKey}
         tabList={tabs}
-        // tabProps={{ destroyOnHidden: true, size: 'middle' }}
-        tabProps={{ destroyInactiveTabPane: true, size: 'middle' }}
+        tabProps={{ destroyOnHidden: true, size: 'middle' }}
         onTabChange={handleTabChange}
         tabBarExtraContent={
           activeKey == TabKeys.OVERVIEW && (
