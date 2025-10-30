@@ -134,6 +134,7 @@ const CustomTable = <T extends object>({
 
   return (
     <Table<WithVisible<T>>
+      className="compact"
       columns={processedColumns}
       dataSource={visibleData}
       expandable={{
@@ -147,7 +148,6 @@ const CustomTable = <T extends object>({
       rowKey={rowKey}
       pagination={false}
       bordered={true}
-      size="small"
     />
   );
 };

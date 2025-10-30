@@ -12,7 +12,9 @@ const ExtraPropertiesDisplay = ({ extraProperties }: { extraProperties?: JSONObj
 
   return (
     <>
-      {!!extraPropertiesFinal.length && <TDescriptions items={extraPropertiesFinal} column={1} bordered size="small" />}
+      {!!extraPropertiesFinal.length && (
+        <TDescriptions items={extraPropertiesFinal} column={1} bordered size="compact" />
+      )}
     </>
   );
 };

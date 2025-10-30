@@ -43,7 +43,7 @@ const GenomicInterpretationDetails = ({ genomicInterpretation }: { genomicInterp
     },
   ];
 
-  return <TDescriptions items={items} size="small" column={1} bordered />;
+  return <TDescriptions items={items} size="compact" column={1} bordered />;
 };
 
 const isGenomicInterpretationDetailsExpandable = (r: GenomicInterpretation) =>
@@ -84,7 +84,7 @@ const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interp
           <MedicineBoxOutlined /> {t('interpretations.diagnosis')}
         </Typography.Title>
         {interpretation?.diagnosis?.disease ? (
-          <TDescriptions items={items} size="small" bordered />
+          <TDescriptions items={items} size="compact" bordered />
         ) : (
           <CustomEmpty text={t('interpretations.no_diagnosis')} />
         )}
@@ -154,6 +154,7 @@ const InterpretationsView = ({ interpretations }: InterpretationsViewProps) => {
       columns={columns}
       expandedRowRender={(record) => <InterpretationsExpandedRow interpretation={record} />}
       rowKey={(record) => record.id}
+      queryKey="interpretation"
       isRowExpandable={isInterpretationDetailsVisible}
     />
   );

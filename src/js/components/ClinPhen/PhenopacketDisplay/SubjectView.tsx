@@ -57,7 +57,7 @@ const SubjectView = ({ subject, spaceSize }: { subject: Individual; spaceSize?: 
     {
       key: 'vital_status',
       label: 'subject.vital_status',
-      children: <TDescriptions items={vitalStatusItems} />,
+      children: <TDescriptions items={vitalStatusItems} size="compact" />,
       isVisible: subject.vital_status,
     },
     {
@@ -90,7 +90,7 @@ const SubjectView = ({ subject, spaceSize }: { subject: Individual; spaceSize?: 
 
   return (
     <Space id="subject-view" direction="vertical" className="w-full" size={spaceSize ?? 'middle'}>
-      <TDescriptions items={items} column={1} bordered size="small" />
+      <TDescriptions items={items} column={1} bordered size="compact" />
       <ExtraPropertiesDisplay extraProperties={subject.extra_properties} />
     </Space>
   );

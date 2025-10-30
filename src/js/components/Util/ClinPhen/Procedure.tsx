@@ -24,7 +24,7 @@ const Procedure = ({ procedure: p }: { procedure: ProcedureType | undefined }) =
       children: <TimeElementDisplay element={p?.performed} />,
     },
   ];
-  return <TDescriptions items={items} />;
+  return <TDescriptions items={items} size="compact" />;
 };
 
 export default Procedure;

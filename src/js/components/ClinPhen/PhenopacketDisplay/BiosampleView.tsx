@@ -231,7 +231,7 @@ export const BiosampleExpandedRow = ({ biosample, searchRow }: { biosample: Bios
 
   return (
     <Space direction="vertical" className="w-full">
-      <TDescriptions bordered size="small" column={{ lg: 1, xl: 3 }} items={items} />
+      <TDescriptions bordered size="compact" column={{ lg: 1, xl: 3 }} items={items} />
       <ExtraPropertiesDisplay extraProperties={biosample.extra_properties} />
     </Space>
   );
@@ -303,6 +303,7 @@ const BiosampleView = ({ biosamples }: BiosampleViewProps) => {
       columns={BIOSAMPLE_VIEW_COLUMNS}
       expandedRowRender={(record) => <BiosampleExpandedRow biosample={record} />}
       rowKey="id"
+      queryKey="biosample"
       isRowExpandable={isBiosampleRowExpandable}
     />
   );
