@@ -35,7 +35,7 @@ const FlagEmoji = memo(({ countryCode }: { countryCode: string }) =>
 );
 FlagEmoji.displayName = 'FlagEmoji';
 
-const BiosampleLocationCollected = ({ biosample }: { biosample: Biosample }) => {
+export const BiosampleLocationCollected = ({ biosample }: { biosample: Biosample }) => {
   const t = useTranslationFn();
 
   const [locationView, setLocationView] = useState<'map' | 'json'>('map');
