@@ -14,7 +14,7 @@ import SmallChartCardTitle from '@/components/Util/SmallChartCardTitle';
 import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
 import DatasetProvenanceModal from './DatasetProvenanceModal';
 
-const { Title } = Typography;
+const { Text, Title } = Typography;
 
 const KEYWORDS_LIMIT = 2;
 
@@ -49,10 +49,20 @@ const Dataset = ({
 
   const [provenanceModalOpen, setProvenanceModalOpen] = useState(false);
 
-  const { identifier, title, description, dats_file: dats } = dataset;
+  const { identifier, title, description, dats_file: dats, counts } = dataset;
   const keywords = dats.keywords;
   const displayKeywords = keywords?.slice(0, KEYWORDS_LIMIT) ?? [];
   const remainingKeywords = keywords?.slice(KEYWORDS_LIMIT) ?? [];
+
+  const countsDisplay = useMemo(() => {
+    if (!counts) return null;
+    const items = [
+      { label: t('Individuals'), value: counts.individual },
+      { label: t('Biosamples'), value: counts.biosample },
+      { label: t('Phenopackets'), value: counts.phenopacket },
+    ].filter((item) => item.value > 0);
+    return items.length > 0 ? items : null;
+  }, [counts, t]);
 
   const scope: DiscoveryScope = useMemo(
     () => ({ project: parentProjectID, dataset: identifier }),
@@ -108,6 +118,15 @@ const Dataset = ({
               </Popover>
             )}
           </Space>
+          {countsDisplay && (
+            <Space size={[8, 4]} wrap>
+              {countsDisplay.map(({ label, value }) => (
+                <Text key={label} type="secondary" style={{ fontSize: '0.875rem' }}>
+                  {label}: <strong>{value.toLocaleString()}</strong>
+                </Text>
+              ))}
+            </Space>
+          )}
           <Flex gap={12} align="flex-end" className="flex-1">
             <Button icon={<PieChartOutlined />} onClick={onNavigateOverview}>
               {t('Explore')}
@@ -127,6 +146,15 @@ const Dataset = ({
           </Button>
         </Flex>
         <TruncatedParagraph>{t(description)}</TruncatedParagraph>
+        {countsDisplay && (
+          <Space size={[8, 4]} wrap style={{ marginTop: 8 }}>
+            {countsDisplay.map(({ label, value }) => (
+              <Text key={label} type="secondary" style={{ fontSize: '0.875rem' }}>
+                {label}: <strong>{value.toLocaleString()}</strong>
+              </Text>
+            ))}
+          </Space>
+        )}
         <Flex gap={8} style={{ marginTop: 8 }}>
           <Button size="small" icon={<PieChartOutlined />} onClick={onNavigateOverview}>
             {t('Explore')}

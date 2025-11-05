@@ -47,7 +47,18 @@ const CatalogueCard = ({ project }: { project: Project }) => {
 
   const isSmallScreen = useSmallScreen();
 
-  const { datasets, created, updated, title, description, identifier } = project;
+  const { datasets, created, updated, title, description, identifier, counts } = project;
+
+  const totalCounts = useMemo(() => {
+    if (!counts) return null;
+    return {
+      experiment: counts.experiment,
+      experiment_result: counts.experiment_result,
+      biosample: counts.biosample,
+      phenopacket: counts.phenopacket,
+      individual: counts.individual,
+    };
+  }, [counts]);
 
   const { selectedKeywords, extraKeywords, extraKeywordCount } = useMemo(() => {
     const keywords = datasets.flatMap((d) => d.dats_file.keywords ?? []).map((k) => t(k.value as string));
@@ -100,6 +111,28 @@ const CatalogueCard = ({ project }: { project: Project }) => {
       children: <Paragraph ellipsis={{ rows: 1, tooltip: { title: projectUpdated } }}>{projectUpdated}</Paragraph>,
       span: 1.5,
     },
+    ...(totalCounts
+      ? [
+          {
+            key: '3',
+            label: t('Individuals'),
+            children: <Text>{totalCounts.individual.toLocaleString()}</Text>,
+            span: 1,
+          },
+          {
+            key: '4',
+            label: t('Biosamples'),
+            children: <Text>{totalCounts.biosample.toLocaleString()}</Text>,
+            span: 1,
+          },
+          {
+            key: '5',
+            label: t('Phenopackets'),
+            children: <Text>{totalCounts.phenopacket.toLocaleString()}</Text>,
+            span: 1,
+          },
+        ]
+      : []),
   ];
 
   return (
