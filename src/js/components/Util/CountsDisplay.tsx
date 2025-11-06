@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { Space, Tooltip, Typography } from 'antd';
-import { ExperimentOutlined, UserOutlined } from '@ant-design/icons';
+import { ExperimentOutlined, UserOutlined, FileTextOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
 
 import type { DataCounts } from '@/types/metadata';
@@ -27,6 +27,12 @@ const CountsDisplay = ({ counts, fontSize = '1rem' }: CountsDisplayProps) => {
         label: t('entities.experiment_other'),
         value: counts.experiment,
         icon: <ExperimentOutlined />,
+      },
+      {
+        key: 'experiment_result',
+        label: t('entities.experiment_result_other'),
+        value: counts.experiment_result,
+        icon: <FileTextOutlined />,
       },
     ].filter((item) => item.value > 0);
     return items.length > 0 ? items : null;
