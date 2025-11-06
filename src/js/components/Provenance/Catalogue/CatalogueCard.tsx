@@ -1,13 +1,7 @@
 import { type ReactNode, useMemo } from 'react';
 
-import { Button, Card, Carousel, Descriptions, Flex, Space, Tag, Tooltip, Typography } from 'antd';
-import {
-  PieChartOutlined,
-  ProfileOutlined,
-  ExperimentOutlined,
-  UserOutlined,
-  DotChartOutlined,
-} from '@ant-design/icons';
+import { Button, Card, Carousel, Descriptions, Flex, Tag, Tooltip, Typography } from 'antd';
+import { PieChartOutlined, ProfileOutlined } from '@ant-design/icons';
 
 import type { Project } from '@/types/metadata';
 import { isoDateToString } from '@/utils/strings';
@@ -17,6 +11,7 @@ import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { T_PLURAL_COUNT } from '@/constants/i18n';
 import Dataset from '@/components/Provenance/Dataset';
 import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
+import CountsDisplay from '@/components/Util/CountsDisplay';
 
 const { Paragraph, Text, Title } = Typography;
 
@@ -54,16 +49,6 @@ const CatalogueCard = ({ project }: { project: Project }) => {
   const isSmallScreen = useSmallScreen();
 
   const { datasets, created, updated, title, description, identifier, counts } = project;
-
-  const totalCounts = useMemo(() => {
-    if (!counts) return null;
-    const items = [
-      { key: 'individual', label: t('Individuals'), value: counts.individual, icon: <UserOutlined /> },
-      { key: 'biosample', label: t('Biosamples'), value: counts.biosample, icon: <DotChartOutlined /> },
-      { key: 'experiment', label: t('Experiments'), value: counts.experiment, icon: <ExperimentOutlined /> },
-    ].filter((item) => item.value > 0);
-    return items.length > 0 ? items : null;
-  }, [counts, t]);
 
   const { selectedKeywords, extraKeywords, extraKeywordCount } = useMemo(() => {
     const keywords = datasets.flatMap((d) => d.dats_file.keywords ?? []).map((k) => t(k.value as string));
@@ -127,18 +112,7 @@ const CatalogueCard = ({ project }: { project: Project }) => {
               <Title level={4} className="m-0" style={{ marginBottom: 0 }}>
                 {t(title)}
               </Title>
-              {totalCounts && (
-                <Space size={[16, 8]} wrap style={{ alignItems: 'center' }}>
-                  {totalCounts.map(({ key, label, value, icon }) => (
-                    <Tooltip key={key} title={label}>
-                      <Space size={4} align="center">
-                        {icon}
-                        <Text strong>{value.toLocaleString()}</Text>
-                      </Space>
-                    </Tooltip>
-                  ))}
-                </Space>
-              )}
+              <CountsDisplay counts={counts} />
             </Flex>
 
             {description && <TruncatedParagraph style={{ maxWidth: 660 }}>{t(description)}</TruncatedParagraph>}

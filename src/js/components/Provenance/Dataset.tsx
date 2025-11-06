@@ -1,14 +1,7 @@
 import { type ReactNode, useCallback, useMemo, useState } from 'react';
 
-import { Avatar, Button, Card, Flex, List, Popover, Space, Tag, Tooltip, Typography } from 'antd';
-import {
-  ExpandAltOutlined,
-  PieChartOutlined,
-  SolutionOutlined,
-  ExperimentOutlined,
-  UserOutlined,
-  DotChartOutlined,
-} from '@ant-design/icons';
+import { Avatar, Button, Card, Flex, List, Popover, Space, Tag, Typography } from 'antd';
+import { ExpandAltOutlined, PieChartOutlined, SolutionOutlined } from '@ant-design/icons';
 import { FaDatabase } from 'react-icons/fa';
 
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
@@ -19,9 +12,10 @@ import { useTranslationFn } from '@/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
 import SmallChartCardTitle from '@/components/Util/SmallChartCardTitle';
 import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
+import CountsDisplay from '@/components/Util/CountsDisplay';
 import DatasetProvenanceModal from './DatasetProvenanceModal';
 
-const { Text, Title } = Typography;
+const { Title } = Typography;
 
 const KEYWORDS_LIMIT = 2;
 
@@ -61,16 +55,6 @@ const Dataset = ({
   const displayKeywords = keywords?.slice(0, KEYWORDS_LIMIT) ?? [];
   const remainingKeywords = keywords?.slice(KEYWORDS_LIMIT) ?? [];
 
-  const countsDisplay = useMemo(() => {
-    if (!counts) return null;
-    const items = [
-      { key: 'individual', label: t('Individuals'), value: counts.individual, icon: <UserOutlined /> },
-      { key: 'biosample', label: t('Biosamples'), value: counts.biosample, icon: <DotChartOutlined /> },
-      { key: 'experiment', label: t('Experiments'), value: counts.experiment, icon: <ExperimentOutlined /> },
-    ].filter((item) => item.value > 0);
-    return items.length > 0 ? items : null;
-  }, [counts, t]);
-
   const scope: DiscoveryScope = useMemo(
     () => ({ project: parentProjectID, dataset: identifier }),
     [parentProjectID, identifier]
@@ -104,20 +88,7 @@ const Dataset = ({
         title={
           <Flex gap={12} align="center" wrap style={{ alignItems: 'center' }}>
             <SmallChartCardTitle title={title} />
-            {countsDisplay && (
-              <Space size={[12, 4]} wrap style={{ alignItems: 'center' }}>
-                {countsDisplay.map(({ key, label, value, icon }) => (
-                  <Tooltip key={key} title={label}>
-                    <Space size={4} align="center">
-                      {icon}
-                      <Text style={{ fontSize: '0.875rem' }} strong>
-                        {value.toLocaleString()}
-                      </Text>
-                    </Space>
-                  </Tooltip>
-                ))}
-              </Space>
-            )}
+            <CountsDisplay counts={counts} fontSize="0.875rem" />
           </Flex>
         }
         size="small"
@@ -159,20 +130,7 @@ const Dataset = ({
             <Title level={5} className="m-0" style={{ marginBottom: 0 }}>
               {t(title)}
             </Title>
-            {countsDisplay && (
-              <Space size={[12, 4]} wrap style={{ alignItems: 'center' }}>
-                {countsDisplay.map(({ key, label, value, icon }) => (
-                  <Tooltip key={key} title={label}>
-                    <Space size={4} align="center">
-                      {icon}
-                      <Text style={{ fontSize: '0.875rem' }} strong>
-                        {value.toLocaleString()}
-                      </Text>
-                    </Space>
-                  </Tooltip>
-                ))}
-              </Space>
-            )}
+            <CountsDisplay counts={counts} fontSize="0.875rem" />
           </Flex>
           <Button size="small" icon={<SolutionOutlined />} className="float-right" onClick={openProvenanceModal}>
             {t('Provenance')}
