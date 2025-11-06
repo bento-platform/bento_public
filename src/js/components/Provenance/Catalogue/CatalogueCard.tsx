@@ -123,15 +123,15 @@ const CatalogueCard = ({ project }: { project: Project }) => {
       <CatalogueCardInner
         firstContent={
           <Flex vertical={true} gap={8} className="h-full">
-            <Flex gap={12} align="center" wrap>
-              <Title level={4} className="m-0">
+            <Flex gap={12} align="center" wrap style={{ alignItems: 'center' }}>
+              <Title level={4} className="m-0" style={{ marginBottom: 0 }}>
                 {t(title)}
               </Title>
               {totalCounts && (
-                <Space size={[16, 8]} wrap>
+                <Space size={[16, 8]} wrap style={{ alignItems: 'center' }}>
                   {totalCounts.map(({ key, label, value, icon }) => (
                     <Tooltip key={key} title={label}>
-                      <Space size={4}>
+                      <Space size={4} align="center">
                         {icon}
                         <Text strong>{value.toLocaleString()}</Text>
                       </Space>

@@ -102,13 +102,13 @@ const Dataset = ({
     inner = (
       <Card
         title={
-          <Flex gap={12} align="center" wrap>
+          <Flex gap={12} align="center" wrap style={{ alignItems: 'center' }}>
             <SmallChartCardTitle title={title} />
             {countsDisplay && (
-              <Space size={[12, 4]} wrap>
+              <Space size={[12, 4]} wrap style={{ alignItems: 'center' }}>
                 {countsDisplay.map(({ key, label, value, icon }) => (
                   <Tooltip key={key} title={label}>
-                    <Space size={4}>
+                    <Space size={4} align="center">
                       {icon}
                       <Text style={{ fontSize: '0.875rem' }} strong>
                         {value.toLocaleString()}
@@ -155,15 +155,15 @@ const Dataset = ({
     inner = (
       <>
         <Flex justify="space-between" align="center">
-          <Flex gap={8} align="center" wrap>
-            <Title level={5} className="m-0">
+          <Flex gap={8} align="center" wrap style={{ alignItems: 'center' }}>
+            <Title level={5} className="m-0" style={{ marginBottom: 0 }}>
               {t(title)}
             </Title>
             {countsDisplay && (
-              <Space size={[12, 4]} wrap>
+              <Space size={[12, 4]} wrap style={{ alignItems: 'center' }}>
                 {countsDisplay.map(({ key, label, value, icon }) => (
                   <Tooltip key={key} title={label}>
-                    <Space size={4}>
+                    <Space size={4} align="center">
                       {icon}
                       <Text style={{ fontSize: '0.875rem' }} strong>
                         {value.toLocaleString()}
