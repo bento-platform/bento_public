@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 
 import { Space, Tooltip, Typography } from 'antd';
-import { ExperimentOutlined, UserOutlined, DotChartOutlined } from '@ant-design/icons';
+import { ExperimentOutlined, UserOutlined } from '@ant-design/icons';
+import { BiDna } from 'react-icons/bi';
 
 import type { DataCounts } from '@/types/metadata';
 import { useTranslationFn } from '@/hooks';
@@ -19,9 +20,14 @@ const CountsDisplay = ({ counts, fontSize = '1rem' }: CountsDisplayProps) => {
   const countsDisplay = useMemo(() => {
     if (!counts) return null;
     const items = [
-      { key: 'individual', label: t('Individuals'), value: counts.individual, icon: <UserOutlined /> },
-      { key: 'biosample', label: t('Biosamples'), value: counts.biosample, icon: <DotChartOutlined /> },
-      { key: 'experiment', label: t('Experiments'), value: counts.experiment, icon: <ExperimentOutlined /> },
+      { key: 'individual', label: t('entities.individual_other'), value: counts.individual, icon: <UserOutlined /> },
+      { key: 'biosample', label: t('entities.biosample_other'), value: counts.biosample, icon: <BiDna /> },
+      {
+        key: 'experiment',
+        label: t('entities.experiment_other'),
+        value: counts.experiment,
+        icon: <ExperimentOutlined />,
+      },
     ].filter((item) => item.value > 0);
     return items.length > 0 ? items : null;
   }, [counts, t]);
