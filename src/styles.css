@@ -30,7 +30,7 @@ body {
 /* Name compatible with tailwind if needed */
 .w-full { width: 100%; }
 .h-full { height: 100%; }
-.m-0 { margin: 0; }
+.m-0 { margin: 0 !important; }
 .mb-0, .ant-typography.mb-0 { margin-bottom: 0; }
 .flex-1 { flex: 1; }
 .float-right { float: right; }

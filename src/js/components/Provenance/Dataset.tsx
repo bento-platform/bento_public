@@ -86,10 +86,10 @@ const Dataset = ({
     inner = (
       <Card
         title={
-          <Flex gap={12} align="center" wrap style={{ alignItems: 'center' }}>
+          <Space align="center" wrap>
             <SmallChartCardTitle title={title} />
             <CountsDisplay counts={counts} fontSize="0.875rem" />
-          </Flex>
+          </Space>
         }
         size="small"
         className="shadow h-full"

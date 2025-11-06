@@ -108,8 +108,8 @@ const CatalogueCard = ({ project }: { project: Project }) => {
       <CatalogueCardInner
         firstContent={
           <Flex vertical={true} gap={8} className="h-full">
-            <Space size={12} align="center" wrap style={{ alignItems: 'center' }}>
-              <Title level={4} className="m-0" style={{ marginBottom: 0 }}>
+            <Space size={12} align="center">
+              <Title level={4} className="m-0">
                 {t(title)}
               </Title>
               <CountsDisplay counts={counts} />
