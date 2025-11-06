@@ -1,7 +1,14 @@
 import { type ReactNode, useCallback, useMemo, useState } from 'react';
 
-import { Avatar, Button, Card, Flex, List, Popover, Space, Tag, Typography } from 'antd';
-import { ExpandAltOutlined, PieChartOutlined, SolutionOutlined } from '@ant-design/icons';
+import { Avatar, Button, Card, Flex, List, Popover, Space, Tag, Tooltip, Typography } from 'antd';
+import {
+  ExpandAltOutlined,
+  PieChartOutlined,
+  SolutionOutlined,
+  ExperimentOutlined,
+  UserOutlined,
+  DotChartOutlined,
+} from '@ant-design/icons';
 import { FaDatabase } from 'react-icons/fa';
 
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
@@ -57,9 +64,9 @@ const Dataset = ({
   const countsDisplay = useMemo(() => {
     if (!counts) return null;
     const items = [
-      { label: t('Individuals'), value: counts.individual },
-      { label: t('Biosamples'), value: counts.biosample },
-      { label: t('Phenopackets'), value: counts.phenopacket },
+      { key: 'individual', label: t('Individuals'), value: counts.individual, icon: <UserOutlined /> },
+      { key: 'biosample', label: t('Biosamples'), value: counts.biosample, icon: <DotChartOutlined /> },
+      { key: 'experiment', label: t('Experiments'), value: counts.experiment, icon: <ExperimentOutlined /> },
     ].filter((item) => item.value > 0);
     return items.length > 0 ? items : null;
   }, [counts, t]);
@@ -94,7 +101,25 @@ const Dataset = ({
   } else if (format === 'card') {
     inner = (
       <Card
-        title={<SmallChartCardTitle title={title} />}
+        title={
+          <Flex gap={12} align="center" wrap>
+            <SmallChartCardTitle title={title} />
+            {countsDisplay && (
+              <Space size={[12, 4]} wrap>
+                {countsDisplay.map(({ key, label, value, icon }) => (
+                  <Tooltip key={key} title={label}>
+                    <Space size={4}>
+                      {icon}
+                      <Text style={{ fontSize: '0.875rem' }} strong>
+                        {value.toLocaleString()}
+                      </Text>
+                    </Space>
+                  </Tooltip>
+                ))}
+              </Space>
+            )}
+          </Flex>
+        }
         size="small"
         className="shadow h-full"
         style={{ minHeight: 200 }}
@@ -118,15 +143,6 @@ const Dataset = ({
               </Popover>
             )}
           </Space>
-          {countsDisplay && (
-            <Space size={[8, 4]} wrap>
-              {countsDisplay.map(({ label, value }) => (
-                <Text key={label} type="secondary" style={{ fontSize: '0.875rem' }}>
-                  {label}: <strong>{value.toLocaleString()}</strong>
-                </Text>
-              ))}
-            </Space>
-          )}
           <Flex gap={12} align="flex-end" className="flex-1">
             <Button icon={<PieChartOutlined />} onClick={onNavigateOverview}>
               {t('Explore')}
@@ -138,23 +154,32 @@ const Dataset = ({
   } else if (format === 'carousel') {
     inner = (
       <>
-        <Flex justify="space-between">
-          <Title level={5}>{t(title)}</Title>
+        <Flex justify="space-between" align="center">
+          <Flex gap={8} align="center" wrap>
+            <Title level={5} className="m-0">
+              {t(title)}
+            </Title>
+            {countsDisplay && (
+              <Space size={[12, 4]} wrap>
+                {countsDisplay.map(({ key, label, value, icon }) => (
+                  <Tooltip key={key} title={label}>
+                    <Space size={4}>
+                      {icon}
+                      <Text style={{ fontSize: '0.875rem' }} strong>
+                        {value.toLocaleString()}
+                      </Text>
+                    </Space>
+                  </Tooltip>
+                ))}
+              </Space>
+            )}
+          </Flex>
           <Button size="small" icon={<SolutionOutlined />} className="float-right" onClick={openProvenanceModal}>
             {t('Provenance')}
             <ExpandAltOutlined />
           </Button>
         </Flex>
         <TruncatedParagraph>{t(description)}</TruncatedParagraph>
-        {countsDisplay && (
-          <Space size={[8, 4]} wrap style={{ marginTop: 8 }}>
-            {countsDisplay.map(({ label, value }) => (
-              <Text key={label} type="secondary" style={{ fontSize: '0.875rem' }}>
-                {label}: <strong>{value.toLocaleString()}</strong>
-              </Text>
-            ))}
-          </Space>
-        )}
         <Flex gap={8} style={{ marginTop: 8 }}>
           <Button size="small" icon={<PieChartOutlined />} onClick={onNavigateOverview}>
             {t('Explore')}

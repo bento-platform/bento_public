@@ -1,7 +1,13 @@
 import { type ReactNode, useMemo } from 'react';
 
 import { Button, Card, Carousel, Descriptions, Flex, Space, Tag, Tooltip, Typography } from 'antd';
-import { PieChartOutlined, ProfileOutlined } from '@ant-design/icons';
+import {
+  PieChartOutlined,
+  ProfileOutlined,
+  ExperimentOutlined,
+  UserOutlined,
+  DotChartOutlined,
+} from '@ant-design/icons';
 
 import type { Project } from '@/types/metadata';
 import { isoDateToString } from '@/utils/strings';
@@ -51,14 +57,13 @@ const CatalogueCard = ({ project }: { project: Project }) => {
 
   const totalCounts = useMemo(() => {
     if (!counts) return null;
-    return {
-      experiment: counts.experiment,
-      experiment_result: counts.experiment_result,
-      biosample: counts.biosample,
-      phenopacket: counts.phenopacket,
-      individual: counts.individual,
-    };
-  }, [counts]);
+    const items = [
+      { key: 'individual', label: t('Individuals'), value: counts.individual, icon: <UserOutlined /> },
+      { key: 'biosample', label: t('Biosamples'), value: counts.biosample, icon: <DotChartOutlined /> },
+      { key: 'experiment', label: t('Experiments'), value: counts.experiment, icon: <ExperimentOutlined /> },
+    ].filter((item) => item.value > 0);
+    return items.length > 0 ? items : null;
+  }, [counts, t]);
 
   const { selectedKeywords, extraKeywords, extraKeywordCount } = useMemo(() => {
     const keywords = datasets.flatMap((d) => d.dats_file.keywords ?? []).map((k) => t(k.value as string));
@@ -111,28 +116,6 @@ const CatalogueCard = ({ project }: { project: Project }) => {
       children: <Paragraph ellipsis={{ rows: 1, tooltip: { title: projectUpdated } }}>{projectUpdated}</Paragraph>,
       span: 1.5,
     },
-    ...(totalCounts
-      ? [
-          {
-            key: '3',
-            label: t('Individuals'),
-            children: <Text>{totalCounts.individual.toLocaleString()}</Text>,
-            span: 1,
-          },
-          {
-            key: '4',
-            label: t('Biosamples'),
-            children: <Text>{totalCounts.biosample.toLocaleString()}</Text>,
-            span: 1,
-          },
-          {
-            key: '5',
-            label: t('Phenopackets'),
-            children: <Text>{totalCounts.phenopacket.toLocaleString()}</Text>,
-            span: 1,
-          },
-        ]
-      : []),
   ];
 
   return (
@@ -140,11 +123,23 @@ const CatalogueCard = ({ project }: { project: Project }) => {
       <CatalogueCardInner
         firstContent={
           <Flex vertical={true} gap={8} className="h-full">
-            <Space direction="horizontal">
+            <Flex gap={12} align="center" wrap>
               <Title level={4} className="m-0">
                 {t(title)}
               </Title>
-            </Space>
+              {totalCounts && (
+                <Space size={[16, 8]} wrap>
+                  {totalCounts.map(({ key, label, value, icon }) => (
+                    <Tooltip key={key} title={label}>
+                      <Space size={4}>
+                        {icon}
+                        <Text strong>{value.toLocaleString()}</Text>
+                      </Space>
+                    </Tooltip>
+                  ))}
+                </Space>
+              )}
+            </Flex>
 
             {description && <TruncatedParagraph style={{ maxWidth: 660 }}>{t(description)}</TruncatedParagraph>}
 
