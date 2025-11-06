@@ -1,6 +1,6 @@
 import { type ReactNode, useMemo } from 'react';
 
-import { Button, Card, Carousel, Descriptions, Flex, Space, Tag, Tooltip, Typography } from 'antd';
+import { Button, Card, Carousel, Descriptions, Flex, Tag, Tooltip, Typography } from 'antd';
 import { PieChartOutlined, ProfileOutlined } from '@ant-design/icons';
 
 import type { Project } from '@/types/metadata';
@@ -108,12 +108,9 @@ const CatalogueCard = ({ project }: { project: Project }) => {
       <CatalogueCardInner
         firstContent={
           <Flex vertical={true} gap={8} className="h-full">
-            <Space size={12} align="center">
-              <Title level={4} className="m-0">
-                {t(title)}
-              </Title>
-              <CountsDisplay counts={counts} />
-            </Space>
+            <Title level={4} className="m-0">
+              {t(title)}
+            </Title>
 
             {description && <TruncatedParagraph style={{ maxWidth: 660 }}>{t(description)}</TruncatedParagraph>}
 
@@ -133,6 +130,8 @@ const CatalogueCard = ({ project }: { project: Project }) => {
             )}
 
             <Descriptions items={projectInfo} size="small" style={{ maxWidth: 500 }} />
+
+            <CountsDisplay counts={counts} />
 
             <Flex align="flex-end" gap={12} className="flex-1">
               <Button

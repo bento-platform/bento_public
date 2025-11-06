@@ -85,12 +85,7 @@ const Dataset = ({
   } else if (format === 'card') {
     inner = (
       <Card
-        title={
-          <Space align="center" wrap>
-            <SmallChartCardTitle title={title} />
-            <CountsDisplay counts={counts} fontSize="0.875rem" />
-          </Space>
-        }
+        title={<SmallChartCardTitle title={title} />}
         size="small"
         className="shadow h-full"
         style={{ minHeight: 200 }}
@@ -114,6 +109,7 @@ const Dataset = ({
               </Popover>
             )}
           </Space>
+          <CountsDisplay counts={counts} fontSize="0.875rem" />
           <Flex gap={12} align="flex-end" className="flex-1">
             <Button icon={<PieChartOutlined />} onClick={onNavigateOverview}>
               {t('Explore')}
@@ -126,18 +122,16 @@ const Dataset = ({
     inner = (
       <>
         <Flex justify="space-between" align="center">
-          <Flex gap={8} align="center" wrap style={{ alignItems: 'center' }}>
-            <Title level={5} className="m-0" style={{ marginBottom: 0 }}>
-              {t(title)}
-            </Title>
-            <CountsDisplay counts={counts} fontSize="0.875rem" />
-          </Flex>
+          <Title level={5} className="m-0" style={{ marginBottom: 0 }}>
+            {t(title)}
+          </Title>
           <Button size="small" icon={<SolutionOutlined />} className="float-right" onClick={openProvenanceModal}>
             {t('Provenance')}
             <ExpandAltOutlined />
           </Button>
         </Flex>
         <TruncatedParagraph>{t(description)}</TruncatedParagraph>
+        <CountsDisplay counts={counts} fontSize="0.875rem" />
         <Flex gap={8} style={{ marginTop: 8 }}>
           <Button size="small" icon={<PieChartOutlined />} onClick={onNavigateOverview}>
             {t('Explore')}

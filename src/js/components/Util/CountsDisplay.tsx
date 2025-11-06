@@ -46,9 +46,7 @@ const CountsDisplay = ({ counts, fontSize = '1rem' }: CountsDisplayProps) => {
         <Tooltip key={key} title={label}>
           <Space size={4} align="center">
             {icon}
-            <Text strong style={{ fontSize }}>
-              {value.toLocaleString()}
-            </Text>
+            <Text style={{ fontSize }}>{value.toLocaleString()}</Text>
           </Space>
         </Tooltip>
       ))}
