@@ -1,8 +1,8 @@
 import { useCallback, useImperativeHandle, forwardRef } from 'react';
 import { Collapse } from 'antd';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
-import type { SectionKey } from './phenopacketOverview.registry';
-import { sectionSpecs } from './phenopacketOverview.registry';
+import type { SectionKey, SectionSpec } from './phenopacketOverview.registry';
+import { SECTION_SPECS } from './phenopacketOverview.registry';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslationFn } from '@/hooks';
 
@@ -18,8 +18,7 @@ const serializeKeys = (keys: SectionKey[], prev: URLSearchParams | null = null):
 
 const deserializeKeys = (params: URLSearchParams): SectionKey[] => {
   const queryVals = params.get(PHENOPACKET_COLLAPSE_URL_QUERY_KEY);
-  const keyArray = queryVals?.split(',') as SectionKey[];
-  return keyArray;
+  return queryVals?.split(',') as SectionKey[];
 };
 
 export type CollapseHandle = {
@@ -42,12 +41,12 @@ const PhenopacketOverview = forwardRef<CollapseHandle, CompactViewProps>(({ phen
     [open, setOpen]
   );
 
-  const sections = Object.entries(sectionSpecs).sort((a, b) => (a[1].order ?? 0) - (b[1].order ?? 0)) as [
+  const sections = Object.entries(SECTION_SPECS).sort((a, b) => (a[1].order ?? 0) - (b[1].order ?? 0)) as [
     SectionKey,
-    (typeof sectionSpecs)[SectionKey],
+    SectionSpec,
   ][];
 
-  const renderItem = ([key, spec]: [SectionKey, (typeof sectionSpecs)[SectionKey]]) => {
+  const renderItem = ([key, spec]: [SectionKey, SectionSpec]) => {
     const enabled = typeof spec.enabled === 'function' ? spec.enabled(phenopacket) : spec.enabled;
     if (!enabled) return null;
     return {

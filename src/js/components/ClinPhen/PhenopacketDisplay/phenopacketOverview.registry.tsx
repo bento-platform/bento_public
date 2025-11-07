@@ -31,7 +31,7 @@ export type SectionSpec = {
 
 const has = <T,>(x?: T[] | null) => Array.isArray(x) && x.length > 0;
 
-export const sectionSpecs: Record<SectionKey, SectionSpec> = {
+export const SECTION_SPECS: Record<SectionKey, SectionSpec> = {
   subject: {
     titleTranslationKey: 'subject.subject',
     enabled: (p) => !!p.subject,
