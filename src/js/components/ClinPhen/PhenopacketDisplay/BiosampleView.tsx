@@ -104,7 +104,7 @@ const BiosampleLocationCollected = ({ biosample }: { biosample: Biosample }) => 
         />
       </div>
       <div className={locationView === 'json' ? 'block' : 'none'}>
-        <JsonView src={biosample.location_collected} />
+        <JsonView src={biosample.location_collected} collapsed={3} />
       </div>
     </div>
   );
