@@ -122,7 +122,7 @@ const Dataset = ({
     inner = (
       <>
         <Flex justify="space-between" align="center">
-          <Title level={5} className="m-0" style={{ marginBottom: 0 }}>
+          <Title level={5} className="mb-0">
             {t(title)}
           </Title>
           <Button size="small" icon={<SolutionOutlined />} className="float-right" onClick={openProvenanceModal}>
