@@ -1,11 +1,11 @@
-import { type ReactNode, useState, memo, useCallback } from 'react';
+import { useState, memo, useCallback } from 'react';
 import { Alert, Card, Flex, Skeleton, Space, Statistic } from 'antd';
-import { DownOutlined, ExperimentOutlined, FileOutlined, TeamOutlined } from '@ant-design/icons';
-import { BiDna } from 'react-icons/bi';
+import { DownOutlined } from '@ant-design/icons';
 
 import SearchResultsTablePage from '@/components/Search/SearchResultsTablePage';
 import CountsTitleWithHelp from '@/components/Util/CountsTitleWithHelp';
 import CustomEmpty from '@/components/Util/CustomEmpty';
+import { COUNT_ENTITY_ORDER, COUNT_ENTITY_REGISTRY } from '@/constants/countEntities';
 import { COUNTS_FILL } from '@/constants/overviewConstants';
 import { WAITING_STATES } from '@/constants/requests';
 import { useConfig } from '@/features/config/hooks';
@@ -15,13 +15,6 @@ import { useTranslationFn } from '@/hooks';
 import { useCanSeeUncensoredCounts, useScopeQueryData } from '@/hooks/censorship';
 import type { BentoCountEntity } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
-
-const COUNT_ENTRIES: { entity: BentoCountEntity; icon: ReactNode }[] = [
-  { entity: 'individual', icon: <TeamOutlined /> },
-  { entity: 'biosample', icon: <BiDna /> },
-  { entity: 'experiment', icon: <ExperimentOutlined /> },
-  { entity: 'experiment_result', icon: <FileOutlined /> },
-];
 
 const COUNT_CARD_BASE_HEIGHT = 114;
 
@@ -99,17 +92,16 @@ const CountsAndResults = () => {
 
   const countElements = doingFirstLoad
     ? []
-    : COUNT_ENTRIES.filter(
+    : COUNT_ENTITY_ORDER.filter((entity) => {
         // hide counts if no filters applied and we have no data
-        ({ entity }) => {
-          if (uiHints.status === RequestStatus.Fulfilled && !uiHints.data.entities_with_data.includes(entity)) {
-            // If we have a UI hint indicating that we have none of this entity in the scope at all, don't bother even
-            // showing a loading card for the count.
-            return false;
-          }
-          return waitingForData || !!(counts[entity] || nFilters);
+        if (uiHints.status === RequestStatus.Fulfilled && !uiHints.data.entities_with_data.includes(entity)) {
+          // If we have a UI hint indicating that we have none of this entity in the scope at all, don't bother even
+          // showing a loading card for the count.
+          return false;
         }
-      ).map(({ entity, icon }, i) => {
+        return waitingForData || !!(counts[entity] || nFilters);
+      }).map((entity, i) => {
+        const { icon } = COUNT_ENTITY_REGISTRY[entity];
         const count = renderCount(counts[entity], countThreshold);
         const selected = selectedEntity === entity;
         const canSelect = hasQueryData && !selected;

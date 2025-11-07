@@ -1,13 +1,6 @@
 import type { DatsFile } from '@/types/dats';
 import type { DiscoveryConfig } from '@/types/discovery/config';
-
-export interface DataCounts {
-  experiment: number;
-  experiment_result: number;
-  biosample: number;
-  phenopacket: number;
-  individual: number;
-}
+import type { DataCounts } from '@/types/entities';
 
 export interface Project {
   identifier: string;

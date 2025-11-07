@@ -2,3 +2,5 @@ export type BentoEntity = 'phenopacket' | 'individual' | 'biosample' | 'experime
 export type BentoKatsuEntity = Exclude<BentoEntity, 'variant'>;
 export type BentoCountEntity = Exclude<BentoKatsuEntity, 'phenopacket'>;
 export type ResultsDataEntity = Exclude<BentoKatsuEntity, 'individual'>;
+
+export type DataCounts = Record<BentoCountEntity, number | boolean>;
