@@ -30,14 +30,14 @@ const CountsDisplay = ({ counts, fontSize = '1rem' }: CountsDisplayProps) => {
   if (!countsDisplay) return null;
 
   return (
-    <Space size={[16, 8]} wrap style={{ alignItems: 'center' }}>
+    <Space size={[16, 8]} wrap align="center">
       {countsDisplay.map(({ entity, label, value, icon }) => (
         <Popover
           key={entity}
           title={label}
           content={<div style={{ maxWidth: 360 }}>{t(`entities.${entity}_help`, { joinArrays: ' ' })}</div>}
         >
-          <Space size={4} align="center" style={{ cursor: 'pointer' }}>
+          <Space size={4} align="center" className="cursor-pointer">
             {icon}
             <Text style={{ fontSize }}>{value.toLocaleString()}</Text>
           </Space>
