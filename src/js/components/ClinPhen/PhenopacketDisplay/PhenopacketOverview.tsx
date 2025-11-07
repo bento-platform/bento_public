@@ -26,11 +26,11 @@ export type CollapseHandle = {
   collapseAll: () => void;
 };
 
-interface CompactViewProps {
+interface PhenopacketOverviewProps {
   phenopacket: Phenopacket;
 }
 
-const PhenopacketOverview = forwardRef<CollapseHandle, CompactViewProps>(({ phenopacket }, ref) => {
+const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>(({ phenopacket }, ref) => {
   const [open, setOpen] = useSearchParams(serializeKeys(['subject']));
   const t = useTranslationFn();
 
