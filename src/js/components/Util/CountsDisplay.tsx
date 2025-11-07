@@ -2,14 +2,14 @@ import { useMemo } from 'react';
 
 import { Popover, Space, Typography } from 'antd';
 
-import type { DataCounts } from '@/types/entities';
+import type { BentoCountEntityCounts } from '@/types/entities';
 import { COUNT_ENTITY_ORDER, COUNT_ENTITY_REGISTRY } from '@/constants/countEntities';
 import { useTranslationFn } from '@/hooks';
 
 const { Text } = Typography;
 
 interface CountsDisplayProps {
-  counts?: DataCounts;
+  counts?: BentoCountEntityCounts;
   fontSize?: string;
 }
 

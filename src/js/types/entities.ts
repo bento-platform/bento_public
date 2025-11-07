@@ -3,4 +3,6 @@ export type BentoKatsuEntity = Exclude<BentoEntity, 'variant'>;
 export type BentoCountEntity = Exclude<BentoKatsuEntity, 'phenopacket'>;
 export type ResultsDataEntity = Exclude<BentoKatsuEntity, 'individual'>;
 
-export type DataCounts = Record<BentoCountEntity, number | boolean>;
+// If boolean, it means we have data above the threshold but don't have permissions to view the exact count.
+export type KatsuEntityCounts = Record<BentoKatsuEntity, number | boolean>;
+export type BentoCountEntityCounts = Record<BentoCountEntity, number | boolean>;

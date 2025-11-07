@@ -1,6 +1,6 @@
 import type { DatsFile } from '@/types/dats';
 import type { DiscoveryConfig } from '@/types/discovery/config';
-import type { DataCounts } from '@/types/entities';
+import type { BentoCountEntityCounts } from '@/types/entities';
 
 export interface Project {
   identifier: string;
@@ -10,7 +10,7 @@ export interface Project {
   datasets: Dataset[];
   created: string;
   updated: string;
-  counts?: DataCounts;
+  counts?: BentoCountEntityCounts;
 }
 
 export interface Dataset {
@@ -19,7 +19,7 @@ export interface Dataset {
   description: string;
   discovery: DiscoveryConfig | null;
   dats_file: DatsFile;
-  counts?: DataCounts;
+  counts?: BentoCountEntityCounts;
 }
 
 export interface PaginatedResponse<T> {
