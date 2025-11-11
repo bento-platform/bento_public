@@ -8,13 +8,12 @@ import CustomEmpty from '@/components/Util/CustomEmpty';
 import { COUNT_ENTITY_ORDER, COUNT_ENTITY_REGISTRY } from '@/constants/countEntities';
 import { COUNTS_FILL } from '@/constants/overviewConstants';
 import { WAITING_STATES } from '@/constants/requests';
-import { useConfig } from '@/features/config/hooks';
-import { NO_RESULTS_DASHES } from '@/features/search/constants';
 import { useSearchQuery } from '@/features/search/hooks';
 import { useTranslationFn } from '@/hooks';
-import { useCanSeeUncensoredCounts, useScopeQueryData } from '@/hooks/censorship';
+import { useScopeQueryData } from '@/hooks/censorship';
 import type { BentoCountEntity } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
+import { useRenderCount } from '@/utils/counts';
 
 const COUNT_CARD_BASE_HEIGHT = 114;
 
@@ -54,17 +53,9 @@ const CountCardShowHide = memo(({ selected, onClear }: { selected: boolean; onCl
 });
 CountCardShowHide.displayName = 'CountCardShowHide';
 
-const renderCount = (count: number | boolean | undefined, threshold: number): number | string =>
-  count === undefined
-    ? NO_RESULTS_DASHES
-    : typeof count === 'boolean'
-      ? count
-        ? `>${threshold}`
-        : NO_RESULTS_DASHES
-      : count;
-
 const CountsAndResults = () => {
   const t = useTranslationFn();
+  const renderCount = useRenderCount();
 
   const {
     message,
@@ -75,9 +66,6 @@ const CountsAndResults = () => {
     doneFirstLoad,
     uiHints,
   } = useSearchQuery();
-
-  const uncensoredCounts = useCanSeeUncensoredCounts();
-  const { countThreshold } = useConfig();
 
   const waitingForData = WAITING_STATES.includes(discoveryStatus);
   const doingFirstLoad = waitingForData && !doneFirstLoad;
@@ -102,7 +90,7 @@ const CountsAndResults = () => {
         return waitingForData || !!(counts[entity] || nFilters);
       }).map((entity, i) => {
         const { icon } = COUNT_ENTITY_REGISTRY[entity];
-        const count = renderCount(counts[entity], countThreshold);
+        const count = renderCount(counts[entity]);
         const selected = selectedEntity === entity;
         const canSelect = hasQueryData && !selected;
         return (
@@ -119,7 +107,7 @@ const CountsAndResults = () => {
           >
             <Statistic
               title={<CountsTitleWithHelp entity={entity} />}
-              value={count || (uncensoredCounts ? count : NO_RESULTS_DASHES)}
+              value={count}
               valueStyle={{ color: COUNTS_FILL }}
               prefix={icon}
               loading={waitingForData}

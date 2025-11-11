@@ -5,6 +5,8 @@ import { Popover, Space, Typography } from 'antd';
 import type { BentoCountEntityCounts } from '@/types/entities';
 import { COUNT_ENTITY_ORDER, COUNT_ENTITY_REGISTRY } from '@/constants/countEntities';
 import { useTranslationFn } from '@/hooks';
+import { useRenderCount } from '@/utils/counts';
+import { NO_RESULTS_DASHES } from '@/features/search/constants';
 
 const { Text } = Typography;
 
@@ -15,17 +17,21 @@ interface CountsDisplayProps {
 
 const CountsDisplay = ({ counts, fontSize = '1rem' }: CountsDisplayProps) => {
   const t = useTranslationFn();
+  const renderCount = useRenderCount();
 
   const countsDisplay = useMemo(() => {
     if (!counts) return null;
-    const items = COUNT_ENTITY_ORDER.map((entity) => ({
-      entity,
-      label: t(`entities.${entity}_other`),
-      value: counts[entity],
-      icon: COUNT_ENTITY_REGISTRY[entity].icon,
-    })).filter((item) => typeof item.value === 'number' && item.value > 0);
+    const items = COUNT_ENTITY_ORDER.map((entity) => {
+      const renderedValue = renderCount(counts[entity]);
+      return {
+        entity,
+        label: t(`entities.${entity}_other`),
+        value: renderedValue,
+        icon: COUNT_ENTITY_REGISTRY[entity].icon,
+      };
+    }).filter((item) => item.value !== NO_RESULTS_DASHES && item.value !== 0);
     return items.length > 0 ? items : null;
-  }, [counts, t]);
+  }, [counts, t, renderCount]);
 
   if (!countsDisplay) return null;
 
@@ -39,7 +45,7 @@ const CountsDisplay = ({ counts, fontSize = '1rem' }: CountsDisplayProps) => {
         >
           <Space size={4} align="center" className="cursor-pointer">
             {icon}
-            <Text style={{ fontSize }}>{value.toLocaleString()}</Text>
+            <Text style={{ fontSize }}>{typeof value === 'number' ? value.toLocaleString() : value}</Text>
           </Space>
         </Popover>
       ))}
