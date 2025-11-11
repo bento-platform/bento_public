@@ -6,6 +6,7 @@ import type { PhenotypicFeature } from './phenotypicFeature';
 import type { Measurement } from './measurement';
 import type { Procedure } from './procedure';
 import type { File } from './file';
+import type { Experiment } from './experiments/experiment';
 
 export interface Biosample extends ExtraPropertiesEntity, TimestampedEntity {
   id: string;
@@ -32,4 +33,5 @@ export interface Biosample extends ExtraPropertiesEntity, TimestampedEntity {
   // Non-Phenopacket-standard fields:
   location_collected?: GeoLocation;
   is_control_sample?: boolean;
+  experiments?: Experiment[];
 }
