@@ -67,7 +67,7 @@ const Evidence = ({ evidence }: EvidenceProps) => {
     },
   ];
 
-  return <TDescriptions bordered={false} column={1} size="small" items={items} />;
+  return <TDescriptions bordered={false} column={1} size="compact" items={items} />;
 };
 
 function PhenotypicFeatureExpandedRow({ feature }: { feature: PhenotypicFeature }) {
@@ -96,7 +96,7 @@ function PhenotypicFeatureExpandedRow({ feature }: { feature: PhenotypicFeature 
       isVisible: objectToBoolean(feature?.extra_properties),
     },
   ];
-  return <TDescriptions bordered size="small" items={items} />;
+  return <TDescriptions bordered size="compact" items={items} />;
 }
 
 const isPhenotypicFeatureExpandable = (record: PhenotypicFeature) =>
@@ -148,6 +148,7 @@ const PhenotypicFeaturesView = ({ features }: PhenotypicFeaturesViewProps) => {
       dataSource={features}
       columns={PHENOTYPIC_FEATURES_COLUMNS}
       expandedRowRender={(record) => <PhenotypicFeatureExpandedRow feature={record} />}
+      queryKey="phenotypic_feature"
       rowKey={(record) => record.type.id}
       isRowExpandable={isPhenotypicFeatureExpandable}
     />

@@ -44,7 +44,7 @@ const DOSE_INTERVAL_COLUMNS: CustomTableColumns<DoseIntervalWithId> = [
   {
     title: 'medical_actions.interval',
     dataIndex: 'interval',
-    render: (interval: TimeInterval) => <TimeIntervalDisplay timeInterval={interval} />,
+    render: (interval: TimeInterval) => <TimeIntervalDisplay timeInterval={interval} br />,
     alwaysShow: true,
   },
 ];
@@ -88,7 +88,7 @@ const TreatmentComponent = ({ treatment }: { treatment: Treatment }) => {
       isVisible: treatment?.cumulative_dose,
     },
   ];
-  return <TDescriptions bordered column={1} size="small" items={TreatmentItems} />;
+  return <TDescriptions bordered column={1} size="compact" items={TreatmentItems} />;
 };
 
 const RadiationTherapyComponent = ({ radiationTherapy }: { radiationTherapy: RadiationTherapy }) => {
@@ -116,7 +116,7 @@ const RadiationTherapyComponent = ({ radiationTherapy }: { radiationTherapy: Rad
       children: radiationTherapy.fractions,
     },
   ];
-  return <TDescriptions bordered column={1} size="small" items={radiationTherapyItems} />;
+  return <TDescriptions bordered column={1} size="compact" items={radiationTherapyItems} />;
 };
 
 const TherapeuticRegimenIdentifier = ({ regimen }: { regimen: TherapeuticRegimen }) => {
@@ -171,7 +171,7 @@ const TherapeuticRegimenComponent = ({ regimen }: { regimen: TherapeuticRegimen 
       isVisible: regimen.status,
     },
   ];
-  return <TDescriptions bordered column={1} size="small" items={items} />;
+  return <TDescriptions bordered column={1} size="compact" items={items} />;
 };
 
 const MedicalActionDetails = ({ medicalAction }: { medicalAction: MedicalAction }) => {
@@ -207,7 +207,7 @@ const MedicalActionDetails = ({ medicalAction }: { medicalAction: MedicalAction 
       isVisible: medicalAction.adverse_events?.length,
     },
   ];
-  return <TDescriptions bordered column={1} size="small" items={medicalActionItems} />;
+  return <TDescriptions bordered column={1} size="compact" items={medicalActionItems} />;
 };
 
 // Cases:
@@ -311,6 +311,7 @@ const MedicalActionsView = ({ medicalActions }: { medicalActions: MedicalAction[
       dataSource={medicalActions}
       columns={columns}
       expandedRowRender={(record) => <MedicalActionDetails medicalAction={record} />}
+      queryKey="medical_action"
       rowKey={(record) =>
         record.procedure?.code?.id ??
         record.treatment?.agent?.id ??

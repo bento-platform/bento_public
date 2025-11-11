@@ -47,7 +47,7 @@ const DiseaseExpandedRow = ({ disease }: { disease: Disease }) => {
     },
   ];
 
-  return <TDescriptions bordered size="small" items={items} />;
+  return <TDescriptions bordered size="compact" items={items} />;
 };
 
 interface DiseasesViewProps {
@@ -87,6 +87,7 @@ const DiseasesView = ({ diseases }: DiseasesViewProps) => {
       dataSource={diseases}
       columns={DISEASES_VIEW_COLUMNS}
       expandedRowRender={(record) => <DiseaseExpandedRow disease={record} />}
+      queryKey="diseases"
       rowKey={(record) => record.term.id}
       isRowExpandable={isDiseaseRowExpandable}
     />
