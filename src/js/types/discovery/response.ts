@@ -1,5 +1,5 @@
 import type { Datum } from '@/types/discovery';
-import type { BentoKatsuEntity, KatsuEntityCountsOrBoolean } from '@/types/entities';
+import type { BentoKatsuEntity, KatsuEntityCountsOrBooleans } from '@/types/entities';
 import type { ChartLayoutSection } from './chartConfig';
 import type { Field } from './fieldDefinition';
 
@@ -9,7 +9,7 @@ export interface DiscoveryResponse {
   root_entity: 'phenopacket';
   queried_entities: BentoKatsuEntity[];
   message?: string | null;
-  counts: KatsuEntityCountsOrBoolean;
+  counts: KatsuEntityCountsOrBooleans;
 }
 
 export type DiscoveryResponseOrMessage = DiscoveryResponse | { message: string };

@@ -1,7 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
-import type { BentoKatsuEntity, KatsuEntityCountsOrBoolean, ResultsDataEntity } from '@/types/entities';
+import type { BentoKatsuEntity, KatsuEntityCountsOrBooleans, ResultsDataEntity } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
 import type { DiscoveryResponseOrMessage } from '@/types/discovery/response';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
@@ -53,7 +53,7 @@ export type QueryState = {
   entity: BentoKatsuEntity | null;
 
   // results
-  resultCountsOrBools: KatsuEntityCountsOrBoolean;
+  resultCountsOrBools: KatsuEntityCountsOrBooleans;
   pageSize: number;
   matchData: {
     phenopacket: QueryResultMatchData<DiscoveryMatchPhenopacket>;
