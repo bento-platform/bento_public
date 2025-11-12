@@ -178,10 +178,13 @@ export const ExperimentResultActions = ({
 
 type ExperimentResultViewProps = {
   experimentResults: ExperimentResult[];
+  urlAware?: boolean;
 };
 
-const ExperimentResultView = ({ experimentResults }: ExperimentResultViewProps) => {
+const ExperimentResultView = ({ experimentResults, urlAware }: ExperimentResultViewProps) => {
   const { hasAttempted: attemptedCanDownload, hasPermission: canDownload } = useScopeDownloadData();
+
+  urlAware = urlAware ?? true;
 
   const columns = useMemo<CustomTableColumns<ExperimentResult>>(
     () => [
@@ -221,6 +224,7 @@ const ExperimentResultView = ({ experimentResults }: ExperimentResultViewProps) 
       expandedRowRender={(record) => <ExperimentResultExpandedRow experimentResult={record} />}
       rowKey="identifier"
       queryKey="experimentResult"
+      urlAware={urlAware}
       isRowExpandable={isExperimentResultRowExpandable}
     />
   );

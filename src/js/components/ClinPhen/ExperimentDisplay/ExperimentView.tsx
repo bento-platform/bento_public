@@ -103,7 +103,10 @@ export const ExperimentExpandedRow = ({ experiment, searchRow }: { experiment: E
           <Typography.Title level={4} style={{ fontSize: 14 }}>
             {t('entities.experiment_result', T_PLURAL_COUNT)}
           </Typography.Title>
-          <ExperimentResultView experimentResults={experiment.experiment_results!} />
+          {/*
+            Cannot use query key row expansion in search right now, so we force ExperimentResultView to use local state.
+            */}
+          <ExperimentResultView experimentResults={experiment.experiment_results!} urlAware={!searchRow} />
         </>
       ) : null}
     </Space>

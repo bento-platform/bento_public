@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useMemo } from 'react';
+import { useEffect, useCallback, useMemo, useState } from 'react';
 import { Table } from 'antd';
 import type { TableColumnType } from 'antd';
 import { useSearchParams } from 'react-router-dom';
@@ -41,6 +41,7 @@ interface CustomTableProps<T> {
   isRowExpandable: VisibilityFn<T>;
   expandedRowRender?: (record: T) => React.ReactNode;
   queryKey?: string;
+  urlAware?: boolean;
 }
 
 const CustomTable = <T extends object>({
@@ -50,12 +51,19 @@ const CustomTable = <T extends object>({
   isRowExpandable,
   expandedRowRender,
   queryKey = EXPANDED_QUERY_PARAM_KEY,
+  urlAware = true,
 }: CustomTableProps<T>) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const notify = useNotify();
   const t = useTranslationFn();
 
-  const expandedKeys = useMemo(() => deserializeExpandedKeys(searchParams, queryKey), [searchParams, queryKey]);
+  // Local state for expanded keys. If we're in URL-aware mode, this will remain unused.
+  const [localExpandedKeys, setLocalExpandedKeys] = useState<string[]>([]);
+
+  const expandedKeys = useMemo(
+    () => (urlAware ? deserializeExpandedKeys(searchParams, queryKey) : localExpandedKeys),
+    [urlAware, searchParams, queryKey, localExpandedKeys]
+  );
 
   const rowKeyFn: RowKeyFn<WithVisible<T>> = useMemo(() => {
     if (typeof rowKey === 'function') return rowKey;
@@ -123,17 +131,35 @@ const CustomTable = <T extends object>({
           description: t('table.invalid_row_keys_description'),
         });
       }
-      setSearchParams((prev) => modifySearchParam(prev, queryKey, validExpandedKeys), { replace: true });
+      if (urlAware) {
+        setSearchParams((prev) => modifySearchParam(prev, queryKey, validExpandedKeys), { replace: true });
+      } else {
+        setLocalExpandedKeys(validExpandedKeys);
+      }
     }
-  }, [expandedRowRender, validExpandedKeys, expandedKeysThatExist, expandedKeys, notify, queryKey, t, setSearchParams]);
+  }, [
+    expandedRowRender,
+    urlAware,
+    validExpandedKeys,
+    expandedKeysThatExist,
+    expandedKeys,
+    notify,
+    queryKey,
+    t,
+    setSearchParams,
+  ]);
 
   const handleExpand = useCallback(
     (expanded: boolean, record: WithVisible<T>) => {
       const key = rowKeyFn(record);
       const nextKeys = expanded ? Array.from(new Set([...expandedKeys, key])) : expandedKeys.filter((k) => k !== key);
-      setSearchParams((prev) => modifySearchParam(prev, queryKey, nextKeys), { replace: true });
+      if (urlAware) {
+        setSearchParams((prev) => modifySearchParam(prev, queryKey, nextKeys), { replace: true });
+      } else {
+        setLocalExpandedKeys(nextKeys);
+      }
     },
-    [expandedKeys, queryKey, rowKeyFn, setSearchParams]
+    [expandedKeys, queryKey, urlAware, rowKeyFn, setSearchParams]
   );
 
   return (
