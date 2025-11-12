@@ -7,10 +7,10 @@ import CountsTitleWithHelp from '@/components/Util/CountsTitleWithHelp';
 import { COUNTS_FILL } from '@/constants/overviewConstants';
 import { useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
+import { useRenderCount } from '@/hooks/counts';
 import type { SearchResultsUIPage } from '@/features/search/types';
 import type { DiscoveryResults, OptionalDiscoveryResults } from '@/types/data';
 import { RequestStatus } from '@/types/requests';
-import { useRenderCount } from '@/hooks/counts';
 
 const STAT_STYLE: CSSProperties = { color: COUNTS_FILL };
 

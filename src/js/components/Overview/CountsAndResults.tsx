@@ -11,9 +11,9 @@ import { WAITING_STATES } from '@/constants/requests';
 import { useSearchQuery } from '@/features/search/hooks';
 import { useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
+import { useRenderCount } from '@/hooks/counts';
 import type { BentoCountEntity } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
-import { useRenderCount } from '@/hooks/counts';
 
 const COUNT_CARD_BASE_HEIGHT = 114;
 
