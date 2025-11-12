@@ -1,7 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { PUBLIC_URL, PUBLIC_URL_NO_TRAILING_SLASH } from '@/config';
+import { PUBLIC_URL_NO_TRAILING_SLASH } from '@/config';
 import { katsuDiscoveryRulesUrl } from '@/constants/configConstants';
 import type { ServiceInfoStore, ServicesResponse } from '@/types/services';
 import type { RootState } from '@/store';
