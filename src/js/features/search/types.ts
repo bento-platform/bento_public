@@ -1,3 +1,4 @@
+import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
 import type { Field } from '@/types/discovery/fieldDefinition';
 import type { BentoKatsuEntity } from '@/types/entities';
 
@@ -33,8 +34,8 @@ export type DiscoveryMatchObject = {
 export type DiscoveryMatchExperimentResult = DiscoveryMatchObject & {
   filename?: string; // File name
   url?: string; // File URL
-  indices: { url: string; format: 'BAI' | 'BGZF' | 'CRAI' | 'CSI' | 'TABIX' | 'TRIBBLE' }[];
-  file_format?: string;
+  indices: ExperimentResult['indices'];
+  file_format?: ExperimentResult['file_format'];
   assembly_id?: string;
   phenopacket?: string;
 };
