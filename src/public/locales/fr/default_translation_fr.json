@@ -38,8 +38,10 @@
   "general": {
     "collapse_all": "Tout réduire",
     "expand_all": "Tout développer",
+    "description": "Description",
     "ontology_class": "Classe ontologique",
-    "actions": "Actes"
+    "actions": "Actions",
+    "view": "Afficher"
   },
   "search": {
     "filters": "Filtres",
@@ -266,7 +268,8 @@
     "filename": "Nom du fichier",
     "download": "Télécharger",
     "individual_to_file_identifiers": "Identifiants individu-fichier",
-    "file_attributes": "Attributs du fichier"
+    "file_attributes": "Attributs du fichier",
+    "download_alert": "Cela va télécharger un fichier depuis un site externe. Êtes-vous sûr de vouloir continuer ?"
   },
   "diseases_expanded_row": {
     "disease_stage": "Stade(s) de la maladie",

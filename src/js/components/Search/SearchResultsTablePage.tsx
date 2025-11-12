@@ -53,6 +53,7 @@ import IndividualRowDetail from './IndividualRowDetail';
 import BiosampleRowDetail from './BiosampleRowDetail';
 import ExperimentRowDetail from './ExperimentRowDetail';
 import ExperimentResultRowDetail from './ExperimentResultRowDetail';
+import { ExperimentResultActions } from '@/components/ClinPhen/ExperimentDisplay/ExperimentResultView';
 import { PHENOPACKET_COLLAPSE_URL_QUERY_KEY } from '../ClinPhen/PhenopacketDisplay/PhenopacketOverview';
 
 type SearchColRenderContext = {
@@ -66,8 +67,19 @@ type ResultsTableColumn<T extends ViewableDiscoveryMatchObject> = {
   render: (ctx: SearchColRenderContext) => (value: unknown, obj: T) => ReactNode;
 };
 
+type ResultsTableFixedColumn<T extends ViewableDiscoveryMatchObject> = TableColumnType<T> & { showLast?: boolean };
+
+const fixedColumnToTableColumn = <T extends ViewableDiscoveryMatchObject>(
+  c: ResultsTableFixedColumn<T>,
+  t: (key: string) => string
+): TableColumnType<T> => {
+  const cNew = { ...c, title: t(c.title as string) };
+  if ('showLast' in cNew) delete cNew['showLast'];
+  return cNew as TableColumnType<T>;
+};
+
 type ResultsTableSpec<T extends ViewableDiscoveryMatchObject> = {
-  fixedColumns?: TableColumnType<T>[];
+  fixedColumns?: ResultsTableFixedColumn<T>[];
   availableColumns: Record<string, ResultsTableColumn<T>>;
   defaultColumns: string[];
   expandable?: TableProps<T>['expandable'];
@@ -143,21 +155,24 @@ const PhenopacketExperimentLink = ({ packetId, experimentId }: { packetId?: stri
 const PhenopacketExperimentResultLink = ({
   packetId,
   experimentResultId,
+  children,
 }: {
   packetId?: string;
   experimentResultId: string;
+  children?: ReactNode;
 }) => {
   const language = useLanguage();
+  children = children ?? experimentResultId;
   if (packetId) {
     return (
       <Link
         to={`/${language}/phenopackets/${packetId}/overview?${PHENOPACKET_COLLAPSE_URL_QUERY_KEY}=experimentResults&experimentResult=${experimentResultId}`}
       >
-        {experimentResultId}
+        {children}
       </Link>
     );
   }
-  return experimentResultId;
+  return children;
 };
 
 const TABLE_SPEC_PHENOPACKET: ResultsTableSpec<DiscoveryMatchPhenopacket> = {
@@ -167,7 +182,7 @@ const TABLE_SPEC_PHENOPACKET: ResultsTableSpec<DiscoveryMatchPhenopacket> = {
       title: 'subject.subject_id',
       render: (s: string | undefined, rec) =>
         s ? <PhenopacketSubjectLink packetId={rec.id}>{s}</PhenopacketSubjectLink> : null,
-    } as TableColumnType<DiscoveryMatchPhenopacket>,
+    } as ResultsTableFixedColumn<DiscoveryMatchPhenopacket>,
   ],
   availableColumns: PHENOPACKET_SEARCH_TABLE_COLUMNS,
   defaultColumns: ['biosamples', 'project', 'dataset'],
@@ -188,7 +203,7 @@ const TABLE_SPEC_BIOSAMPLE: ResultsTableSpec<DiscoveryMatchBiosample> = {
       title: 'biosample_table.biosample_id',
       render: (id: string, rec) =>
         rec.phenopacket ? <PhenopacketBiosampleLink packetId={rec.phenopacket} sampleId={id} /> : id,
-    } as TableColumnType<DiscoveryMatchBiosample>,
+    } as ResultsTableFixedColumn<DiscoveryMatchBiosample>,
   ],
   availableColumns: COMMON_SEARCH_TABLE_COLUMNS,
   defaultColumns: ['project', 'dataset'],
@@ -208,13 +223,14 @@ const TABLE_SPEC_EXPERIMENT: ResultsTableSpec<DiscoveryMatchExperiment> = {
       dataIndex: 'id',
       title: 'experiment.experiment_id',
       render: (id: string, exp) => <PhenopacketExperimentLink packetId={exp.phenopacket} experimentId={id} />,
-    } as TableColumnType<DiscoveryMatchExperiment>,
+    } as ResultsTableFixedColumn<DiscoveryMatchExperiment>,
     {
       dataIndex: 'experiment_type',
       title: 'experiment.experiment_type',
       render: (experimentType: string) => <span>{experimentType}</span>,
-    } as TableColumnType<DiscoveryMatchExperiment>,
+    } as ResultsTableFixedColumn<DiscoveryMatchExperiment>,
   ],
+  // TODO: biosample column
   availableColumns: COMMON_SEARCH_TABLE_COLUMNS,
   defaultColumns: ['project', 'dataset'],
   expandable: {
@@ -232,13 +248,18 @@ const TABLE_SPEC_EXPERIMENT_RESULT: ResultsTableSpec<DiscoveryMatchExperimentRes
     {
       dataIndex: 'filename',
       title: 'file.filename',
-      render: (f: string | undefined) => <span>{f}</span>,
-    } as TableColumnType<DiscoveryMatchExperimentResult>,
+      render: (f: string | undefined, er) => (
+        <PhenopacketExperimentResultLink packetId={er.phenopacket} experimentResultId={er.id}>
+          {f}
+        </PhenopacketExperimentResultLink>
+      ),
+    } as ResultsTableFixedColumn<DiscoveryMatchExperimentResult>,
     {
       key: 'actions',
       title: 'general.actions',
-      render: () => 'TODO',
-    } as TableColumnType<DiscoveryMatchExperimentResult>,
+      render: (_, er) => <ExperimentResultActions url={er.url} filename={er.filename} fileFormat={er.file_format} />,
+      showLast: true,
+    } as ResultsTableFixedColumn<DiscoveryMatchExperimentResult>,
   ],
   availableColumns: COMMON_SEARCH_TABLE_COLUMNS,
   defaultColumns: ['project', 'dataset'],
@@ -366,9 +387,9 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
 
   const columns = useMemo<TableColumnsType<T>>(
     () => [
-      ...(spec.fixedColumns ?? []).map(
-        (c: TableColumnType<T>) => ({ ...c, title: t(c.title as string) }) as TableColumnType<T>
-      ),
+      ...(spec.fixedColumns ?? [])
+        .filter((c) => !c.showLast)
+        .map((c: ResultsTableFixedColumn<T>) => fixedColumnToTableColumn(c, t)),
       ...Object.entries(spec.availableColumns)
         .filter(([k, _]) => shownColumns.has(k))
         .map(
@@ -379,6 +400,9 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
               render: render(searchContext),
             }) as TableColumnType<T>
         ),
+      ...(spec.fixedColumns ?? [])
+        .filter((c) => c.showLast)
+        .map((c: ResultsTableFixedColumn<T>) => fixedColumnToTableColumn(c, t)),
     ],
     [t, spec, shownColumns, searchContext]
   );

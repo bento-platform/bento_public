@@ -22,11 +22,15 @@ interface PublicConfig {
 // Declaration required for global config
 declare let BENTO_PUBLIC_CONFIG: PublicConfig;
 
+const stripTrailingSlash = (x: string): string => x.replace(/\/$/g, '');
+
 // General
 export const CLIENT_NAME = BENTO_PUBLIC_CONFIG.CLIENT_NAME ?? process.env.BENTO_PUBLIC_CLIENT_NAME;
-export const PORTAL_URL = BENTO_PUBLIC_CONFIG.PORTAL_URL ?? process.env.BENTO_PUBLIC_PORTAL_URL;
-export const PUBLIC_URL = BENTO_PUBLIC_CONFIG.PUBLIC_URL ?? process.env.BENTO_PUBLIC_URL ?? '';
-export const PUBLIC_URL_NO_TRAILING_SLASH = PUBLIC_URL.replace(/\/$/g, '');
+const _PORTAL_URL = BENTO_PUBLIC_CONFIG.PORTAL_URL ?? process.env.BENTO_PUBLIC_PORTAL_URL;
+export const PORTAL_URL = stripTrailingSlash(_PORTAL_URL) + '/';
+const _PUBLIC_URL = BENTO_PUBLIC_CONFIG.PUBLIC_URL ?? process.env.BENTO_PUBLIC_URL ?? '';
+export const PUBLIC_URL_NO_TRAILING_SLASH = stripTrailingSlash(_PUBLIC_URL);
+export const PUBLIC_URL = PUBLIC_URL_NO_TRAILING_SLASH + '/';
 
 // Bento Public display flags
 export const TRANSLATED = BENTO_PUBLIC_CONFIG.TRANSLATED ?? stringToBoolean(process.env.BENTO_PUBLIC_TRANSLATED);

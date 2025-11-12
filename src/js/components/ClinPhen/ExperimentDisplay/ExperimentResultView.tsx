@@ -8,8 +8,13 @@ import type { ConditionalDescriptionItem } from '@/types/descriptions';
 import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
 import FileModal from '@Util/FileModal';
 import TDescriptions from '@Util/TDescriptions';
+import DownloadButton from '@Util/DownloadButton';
 import ExtraPropertiesDisplay from '@/components/ClinPhen/PhenopacketDisplay/ExtraPropertiesDisplay';
+
 import { useScopeDownloadData } from '@/hooks/censorship';
+
+import { VIEWABLE_FILE_EXTENSIONS, VIEWABLE_FILE_FORMATS } from '@/constants/files';
+import { useTranslationFn } from '@/hooks';
 
 export const ExperimentResultExpandedRow = ({
   experimentResult,
@@ -109,12 +114,13 @@ export const isExperimentResultRowExpandable = (r: ExperimentResult) =>
 export const ExperimentResultActions = ({
   url,
   filename,
-  // fileFormat,
+  fileFormat,
 }: {
   url?: string;
   filename?: string;
   fileFormat?: ExperimentResult['file_format'];
 }) => {
+  const t = useTranslationFn();
   const { hasAttempted: attemptedCanDownload, hasPermission: canDownload } = useScopeDownloadData();
 
   // TODO: resolve DRS URLs
@@ -134,26 +140,25 @@ export const ExperimentResultActions = ({
   }, []);
   const onViewCancel = useCallback(() => setViewModalVisible(false), []);
 
-  const resultViewable = !!url;
-  // TODO:
-  // const resultViewable =
-  //   url &&
-  //   (VIEWABLE_FILE_FORMATS.includes(fileFormat) ||
-  //     !!VIEWABLE_FILE_EXTENSIONS.find((ext) => filename.toLowerCase().endsWith(ext)));
+  const resultViewable =
+    url &&
+    (VIEWABLE_FILE_FORMATS.includes(fileFormat ?? '') ||
+      !!VIEWABLE_FILE_EXTENSIONS.find((ext) => (filename ?? '').toLowerCase().endsWith(ext)));
 
   if (attemptedCanDownload && !canDownload) {
     return null;
   }
 
+  // TODO: handle DRS URIs
+
   return (
     <div className="experiment-result-actions" style={{ whiteSpace: 'nowrap' }}>
       {url ? (
         <>
-          <Tooltip title="Download">
-            TODO
-            {/*<DownloadButton size="small" uri={url} fileName={filename}>*/}
-            {/*  {''}*/}
-            {/*</DownloadButton>*/}
+          <Tooltip title={t('file.download')}>
+            <DownloadButton size="small" url={url} fileName={filename}>
+              {''}
+            </DownloadButton>
           </Tooltip>{' '}
         </>
       ) : null}
@@ -162,7 +167,11 @@ export const ExperimentResultActions = ({
           <FileModal
             open={viewModalVisible}
             onCancel={onViewCancel}
-            title={<span>View: {filename}</span>}
+            title={
+              <span>
+                {t('general.view')}: {filename}
+              </span>
+            }
             url={url}
             fileName={filename}
             hasTriggered={hasTriggeredViewModal}

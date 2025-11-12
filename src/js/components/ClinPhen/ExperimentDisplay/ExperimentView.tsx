@@ -104,9 +104,9 @@ export const ExperimentExpandedRow = ({ experiment, searchRow }: { experiment: E
             {t('entities.experiment_result', T_PLURAL_COUNT)}
           </Typography.Title>
           {/*
-            Cannot use query key row expansion in search right now, so we force ExperimentResultView to use local state.
+            Cannot use query key row expansion in this nested view, so we force ExperimentResultView to use local state.
             */}
-          <ExperimentResultView experimentResults={experiment.experiment_results!} urlAware={!searchRow} />
+          <ExperimentResultView experimentResults={experiment.experiment_results!} urlAware={false} />
         </>
       ) : null}
     </Space>

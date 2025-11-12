@@ -33,6 +33,7 @@ import 'antd/dist/reset.css';
 import 'leaflet/dist/leaflet.css';
 import 'react18-json-view/src/style.css';
 import 'bento-charts/src/styles.css';
+import 'bento-file-display/dist/style.css';
 import './i18n';
 import '../styles.css';
 

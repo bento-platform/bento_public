@@ -36,8 +36,10 @@
   "general": {
     "collapse_all": "Collapse All",
     "expand_all": "Expand All",
+    "description": "Description",
     "actions": "Actions",
-    "ontology_class": "Ontology Class"
+    "ontology_class": "Ontology Class",
+    "view": "View"
   },
   "search": {
     "filters": "Filters",
@@ -261,7 +263,8 @@
     "filename": "Filename",
     "download": "Download",
     "individual_to_file_identifiers": "Individual to File Identifiers",
-    "file_attributes": "File Attributes"
+    "file_attributes": "File Attributes",
+    "download_alert": "This will download a file from an external site. Are you sure you want to do this?"
   },
   "diseases_expanded_row": {
     "disease_stage": "Disease Stage(s)",

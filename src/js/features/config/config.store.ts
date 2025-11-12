@@ -1,7 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { PUBLIC_URL } from '@/config';
+import { PUBLIC_URL, PUBLIC_URL_NO_TRAILING_SLASH } from '@/config';
 import { katsuDiscoveryRulesUrl } from '@/constants/configConstants';
 import type { ServiceInfoStore, ServicesResponse } from '@/types/services';
 import type { RootState } from '@/store';
@@ -46,7 +46,7 @@ export const makeGetServiceInfoRequest = createAsyncThunk<
   'config/getServiceInfo',
   (_, { rejectWithValue }) =>
     axios
-      .get(`${PUBLIC_URL}/api/service-registry/services`)
+      .get(`${PUBLIC_URL_NO_TRAILING_SLASH}/api/service-registry/services`)
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue)),
   {
