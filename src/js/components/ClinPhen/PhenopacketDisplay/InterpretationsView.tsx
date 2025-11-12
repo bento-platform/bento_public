@@ -105,7 +105,7 @@ const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interp
             queryKey="gi"
           />
         ) : (
-          <CustomEmpty text={t('interpretations.no_genomic_iterpretation')} />
+          <CustomEmpty text={t('interpretations.no_genomic_interpretation')} />
         )}
       </div>
     </Space>

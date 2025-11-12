@@ -36,11 +36,14 @@ export type DiscoveryMatchExperimentResult = DiscoveryMatchObject & {
   indices: { url: string; format: 'BAI' | 'BGZF' | 'CRAI' | 'CSI' | 'TABIX' | 'TRIBBLE' }[];
   file_format?: string;
   assembly_id?: string;
+  phenopacket?: string;
 };
 
 export type DiscoveryMatchExperiment = DiscoveryMatchObject & {
+  experiment_type: string;
   study_type?: string;
   results: DiscoveryMatchExperimentResult[];
+  phenopacket?: string;
 };
 
 export type DiscoveryMatchBiosample = DiscoveryMatchObject & {

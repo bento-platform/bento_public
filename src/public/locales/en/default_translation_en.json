@@ -261,9 +261,6 @@
     "individual_to_file_identifiers": "Individual to File Identifiers",
     "file_attributes": "File Attributes"
   },
-  "experiment_table": {
-    "experiment_id": "Experiment ID"
-  },
   "diseases_expanded_row": {
     "disease_stage": "Disease Stage(s)",
     "clinical_tnm_finding": "Clinical TNM Finding(s)",
@@ -291,7 +288,7 @@
     "diagnosis": "Diagnosis",
     "no_diagnosis": "No diagnosis",
     "genomic_interpretations": "Genomic Interpretations",
-    "no_genomic_iterpretation": "No Genomic Interpretation",
+    "no_genomic_interpretation": "No Genomic Interpretation",
     "accession_number": "Accession Number",
     "symbol": "Symbol",
     "description": "Description",
@@ -359,8 +356,8 @@
     "treatment_intent": "Treatment Intent",
     "response_to_treatment": "Response to Treatment",
     "treatment_termination_reason": "Treatment Termination Reason",
-    "refernce": "Reference",
-    "unkown": "Unknown"
+    "reference": "Reference",
+    "unknown": "Unknown"
   },
   "ontologies": {
     "resource_id": "Resource ID",
@@ -418,6 +415,37 @@
     "COMPLETED": "Completed",
     "SOLVED": "Solved",
     "UNSOLVED": "Unsolved"
+  },
+  "experiment": {
+    "experiment_id": "Experiment ID",
+    "experiment_type": "Experiment Type",
+    "experiment_ontology": "Experiment Type (Ontology Class)",
+    "study_type": "Study Type",
+    "molecule": "Molecule",
+    "molecule_ontology": "Molecule (Ontology Class)",
+    "library_strategy": "Library Strategy",
+    "library_source": "Library Source",
+    "library_selection": "Library Selection",
+    "library_layout": "Library Layout",
+    "extraction_protocol": "Extraction Protocol",
+    "reference_registry_id": "Reference Registry ID",
+    "qc_flags": "QC Flags"
+  },
+  "instrument": {
+    "instrument": "Instrument",
+    "device": "Device",
+    "device_ontology": "Device (Ontology Class)"
+  },
+  "experiment_result": {
+    "identifier": "Identifier",
+    "filename": "$t(file.filename)",
+    "indices": "Indices",
+    "genome_assembly_id": "Genome Assembly",
+    "file_format": "File Format",
+    "data_output_type": "Data Output Type",
+    "usage": "Usage",
+    "creation_date": "Creation Date",
+    "created_by": "Created By"
   },
   "auth": {
     "unauthorized_message": "You are not authorized to access this resource."

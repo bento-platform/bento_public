@@ -73,7 +73,9 @@ const RootApp = () => {
             }}
           >
             <ChartConfigProvider Lng={i18n.language ?? SUPPORTED_LNGS.ENGLISH} theme={NEW_BENTO_PUBLIC_THEME}>
-              <ConfigProvider theme={{ components: { Menu: { iconSize: 20 } } }}>
+              <ConfigProvider
+                theme={{ components: { Menu: { iconSize: 20 }, Table: { borderColor: 'rgba(0, 0, 0, 0.08)' } } }}
+              >
                 <NotificationProvider>
                   <BaseRoutes />
                 </NotificationProvider>

@@ -21,7 +21,7 @@ export const biosampleUrl = `${katsuBaseUrl}/api/biosamples`;
 export const biosampleBatchUrl = `${katsuBaseUrl}/api/batch/biosamples`;
 export const experimentUrl = `${katsuBaseUrl}/api/experiments`;
 export const experimentBatchUrl = `${katsuBaseUrl}/api/batch/experiments`;
-export const experimentResultUrl = `${katsuBaseUrl}/api/experimentResults`;
+export const experimentResultUrl = `${katsuBaseUrl}/api/experimentresults`;
 
 export const referenceGenomesUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/reference/genomes`;
 

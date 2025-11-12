@@ -69,13 +69,17 @@ const CustomTable = <T extends object>({
   const processedColumns = useMemo(
     () =>
       translatedColumns.map((col) => {
-        const hasData = visibleData.some((record) =>
-          col.alwaysShow
-            ? true
-            : col.isEmpty
-              ? !col.isEmpty(record[col.dataIndex as keyof T], record)
-              : Boolean(record[col.dataIndex as keyof T])
-        );
+        // If we don't have a dataIndex, this isn't a data column, so we always display it.
+        // Otherwise, evaluate if we have content for at least one row in the column.
+        const hasData =
+          (col.key && !col.dataIndex) ||
+          visibleData.some((record) =>
+            col.alwaysShow
+              ? true
+              : col.isEmpty
+                ? !col.isEmpty(record[col.dataIndex as keyof T], record)
+                : Boolean(record[col.dataIndex as keyof T])
+          );
         return { ...col, hidden: !hasData };
       }),
     [translatedColumns, visibleData]

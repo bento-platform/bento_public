@@ -51,6 +51,8 @@ import ProjectTitle from '@/components/Util/ProjectTitle';
 import DatasetTitle from '@/components/Util/DatasetTitle';
 import IndividualRowDetail from './IndividualRowDetail';
 import BiosampleRowDetail from './BiosampleRowDetail';
+import ExperimentRowDetail from './ExperimentRowDetail';
+import ExperimentResultRowDetail from './ExperimentResultRowDetail';
 import { PHENOPACKET_COLLAPSE_URL_QUERY_KEY } from '../ClinPhen/PhenopacketDisplay/PhenopacketOverview';
 
 type SearchColRenderContext = {
@@ -124,6 +126,40 @@ const PhenopacketBiosampleLink = ({ packetId, sampleId }: { packetId: string; sa
   );
 };
 
+const PhenopacketExperimentLink = ({ packetId, experimentId }: { packetId?: string; experimentId: string }) => {
+  const language = useLanguage();
+  if (packetId) {
+    return (
+      <Link
+        to={`/${language}/phenopackets/${packetId}/overview?${PHENOPACKET_COLLAPSE_URL_QUERY_KEY}=experiments&experiment=${experimentId}`}
+      >
+        {experimentId}
+      </Link>
+    );
+  }
+  return experimentId;
+};
+
+const PhenopacketExperimentResultLink = ({
+  packetId,
+  experimentResultId,
+}: {
+  packetId?: string;
+  experimentResultId: string;
+}) => {
+  const language = useLanguage();
+  if (packetId) {
+    return (
+      <Link
+        to={`/${language}/phenopackets/${packetId}/overview?${PHENOPACKET_COLLAPSE_URL_QUERY_KEY}=experimentResults&experimentResult=${experimentResultId}`}
+      >
+        {experimentResultId}
+      </Link>
+    );
+  }
+  return experimentResultId;
+};
+
 const TABLE_SPEC_PHENOPACKET: ResultsTableSpec<DiscoveryMatchPhenopacket> = {
   fixedColumns: [
     {
@@ -170,15 +206,20 @@ const TABLE_SPEC_EXPERIMENT: ResultsTableSpec<DiscoveryMatchExperiment> = {
   fixedColumns: [
     {
       dataIndex: 'id',
-      title: 'experiment_table.experiment_id',
-      render: (id: string) => <div>{id}</div>, // TODO: link
+      title: 'experiment.experiment_id',
+      render: (id: string, exp) => <PhenopacketExperimentLink packetId={exp.phenopacket} experimentId={id} />,
+    } as TableColumnType<DiscoveryMatchExperiment>,
+    {
+      dataIndex: 'experiment_type',
+      title: 'experiment.experiment_type',
+      render: (experimentType: string) => <span>{experimentType}</span>,
     } as TableColumnType<DiscoveryMatchExperiment>,
   ],
   availableColumns: COMMON_SEARCH_TABLE_COLUMNS,
   defaultColumns: ['project', 'dataset'],
-  // expandable: {
-  //   expandedRowRender: (rec) => <div>TODO: {rec.id}</div>,
-  // },
+  expandable: {
+    expandedRowRender: (rec) => <ExperimentRowDetail id={rec.id} />,
+  },
   download: (headers, matches) =>
     downloadExperimentCSV(
       headers,
@@ -193,12 +234,17 @@ const TABLE_SPEC_EXPERIMENT_RESULT: ResultsTableSpec<DiscoveryMatchExperimentRes
       title: 'file.filename',
       render: (f: string | undefined) => <span>{f}</span>,
     } as TableColumnType<DiscoveryMatchExperimentResult>,
+    {
+      key: 'actions',
+      title: 'general.actions',
+      render: () => 'TODO',
+    } as TableColumnType<DiscoveryMatchExperimentResult>,
   ],
   availableColumns: COMMON_SEARCH_TABLE_COLUMNS,
   defaultColumns: ['project', 'dataset'],
-  // expandable: {
-  //   expandedRowRender: (rec) => <div>TODO: {rec.id}</div>,
-  // },
+  expandable: {
+    expandedRowRender: (rec) => <ExperimentResultRowDetail id={rec.id} />,
+  },
 };
 
 const ManageColumnCheckbox = <T extends ViewableDiscoveryMatchObject>({

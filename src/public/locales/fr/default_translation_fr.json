@@ -266,9 +266,6 @@
     "individual_to_file_identifiers": "Identifiants individu-fichier",
     "file_attributes": "Attributs du fichier"
   },
-  "experiment_table": {
-    "experiment_id": "Identifiant de l'expérience"
-  },
   "diseases_expanded_row": {
     "disease_stage": "Stade(s) de la maladie",
     "clinical_tnm_finding": "Résultat(s) TNM clinique(s)",
@@ -296,7 +293,7 @@
     "diagnosis": "Diagnostic",
     "no_diagnosis": "Aucun diagnostic",
     "genomic_interpretations": "Interprétations génomiques",
-    "no_genomic_iterpretation": "Aucune interprétation génomique",
+    "no_genomic_interpretation": "Aucune interprétation génomique",
     "accession_number": "Numéro d'accession",
     "symbol": "Symbole",
     "description": "Description",
@@ -365,7 +362,7 @@
     "response_to_treatment": "Réponse au traitement",
     "treatment_termination_reason": "Raison de l'arrêt du traitement",
     "reference": "Référence",
-    "unkown": "Inconnu"
+    "unknown": "Inconnu"
   },
   "ontologies": {
     "resource_id": "Identifiant de ressource",
@@ -423,6 +420,37 @@
     "COMPLETED": "Terminé",
     "SOLVED": "Résolu",
     "UNSOLVED": "Non résolu"
+  },
+  "experiment": {
+    "experiment_id": "Identifiant de l'expérience",
+    "experiment_type": "Type d'expérience",
+    "experiment_ontology": "Type d'expérience (classe ontologique)",
+    "study_type": "Type d'étude",
+    "molecule": "Molécule",
+    "molecule_ontology": "Molécule (classe ontologique)",
+    "library_strategy": "Stratégie de génothèque",
+    "library_source": "Source de génothèque",
+    "library_selection": "Sélection de génothèque",
+    "library_layout": "Disposition de génothèque",
+    "extraction_protocol": "Protocole d'extraction",
+    "reference_registry_id": "Identifiant de registre de référence",
+    "qc_flags": "Indicateurs QC"
+  },
+  "instrument": {
+    "instrument": "Instrument",
+    "device": "Appareil",
+    "device_ontology": "Appareil (classe ontologique)"
+  },
+  "experiment_result": {
+    "identifier": "Identifiant",
+    "filename": "$t(file.filename)",
+    "indices": "Indices",
+    "genome_assembly_id": "Assemblage génomique",
+    "file_format": "Format de fichier",
+    "data_output_type": "Type de sortie des données",
+    "usage": "Utilisation",
+    "creation_date": "Date de création",
+    "created_by": "Créé par"
   },
   "auth": {
     "unauthorized_message": "Vous n'êtes pas autorisé à accéder à cette ressource."
