@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { Popover, Space, Typography } from 'antd';
 
-import type { BentoCountEntityCounts } from '@/types/entities';
+import type { BentoCountEntityCountsOrBoolean } from '@/types/entities';
 import { COUNT_ENTITY_ORDER, COUNT_ENTITY_REGISTRY } from '@/constants/countEntities';
 import { useTranslationFn } from '@/hooks';
 import { useRenderCount } from '@/utils/counts';
@@ -11,7 +11,7 @@ import { NO_RESULTS_DASHES } from '@/features/search/constants';
 const { Text } = Typography;
 
 interface CountsDisplayProps {
-  counts?: BentoCountEntityCounts;
+  counts?: BentoCountEntityCountsOrBoolean;
   fontSize?: string;
 }
 

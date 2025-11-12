@@ -1,6 +1,6 @@
 import type { DatsFile } from '@/types/dats';
 import type { DiscoveryConfig } from '@/types/discovery/config';
-import type { KatsuEntityCounts } from '@/types/entities';
+import type { KatsuEntityCountsOrBoolean } from '@/types/entities';
 
 export interface Project {
   identifier: string;
@@ -10,7 +10,7 @@ export interface Project {
   datasets: Dataset[];
   created: string;
   updated: string;
-  counts?: KatsuEntityCounts;
+  counts?: KatsuEntityCountsOrBoolean;
 }
 
 export interface Dataset {
@@ -19,7 +19,7 @@ export interface Dataset {
   description: string;
   discovery: DiscoveryConfig | null;
   dats_file: DatsFile;
-  counts?: KatsuEntityCounts;
+  counts?: KatsuEntityCountsOrBoolean;
 }
 
 export interface PaginatedResponse<T> {
