@@ -10,7 +10,7 @@ import { useScopeQueryData } from '@/hooks/censorship';
 import type { SearchResultsUIPage } from '@/features/search/types';
 import type { DiscoveryResults, OptionalDiscoveryResults } from '@/types/data';
 import { RequestStatus } from '@/types/requests';
-import { useRenderCount } from '@/utils/counts';
+import { useRenderCount } from '@/hooks/counts';
 
 const STAT_STYLE: CSSProperties = { color: COUNTS_FILL };
 

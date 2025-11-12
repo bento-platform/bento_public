@@ -13,7 +13,7 @@ import { useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
 import type { BentoCountEntity } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
-import { useRenderCount } from '@/utils/counts';
+import { useRenderCount } from '@/hooks/counts';
 
 const COUNT_CARD_BASE_HEIGHT = 114;
 
