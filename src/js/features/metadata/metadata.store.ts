@@ -5,6 +5,7 @@ import type { PaginatedResponse, Project, Dataset } from '@/types/metadata';
 import { RequestStatus } from '@/types/requests';
 import type { RootState } from '@/store';
 import { printAPIError } from '@/utils/error.util';
+import { authorizedRequestConfig } from '@/utils/requests';
 import { validProjectDataset } from '@/utils/router';
 import { projectsUrl } from '@/constants/configConstants';
 
@@ -45,9 +46,9 @@ export const getProjects = createAsyncThunk<
   { state: RootState; rejectValue: string }
 >(
   'metadata/getProjects',
-  (_, { rejectWithValue }) => {
+  (_, { rejectWithValue, getState }) => {
     return axios
-      .get(projectsUrl)
+      .get(projectsUrl, authorizedRequestConfig(getState()))
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue));
   },

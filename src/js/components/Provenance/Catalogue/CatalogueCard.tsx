@@ -1,6 +1,6 @@
 import { type ReactNode, useMemo } from 'react';
 
-import { Button, Card, Carousel, Descriptions, Flex, Space, Tag, Tooltip, Typography } from 'antd';
+import { Button, Card, Carousel, Descriptions, Flex, Tag, Tooltip, Typography } from 'antd';
 import { PieChartOutlined, ProfileOutlined } from '@ant-design/icons';
 
 import type { Project } from '@/types/metadata';
@@ -11,6 +11,7 @@ import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { T_PLURAL_COUNT } from '@/constants/i18n';
 import Dataset from '@/components/Provenance/Dataset';
 import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
+import CountsDisplay from '@/components/Util/CountsDisplay';
 
 const { Paragraph, Text, Title } = Typography;
 
@@ -47,7 +48,7 @@ const CatalogueCard = ({ project }: { project: Project }) => {
 
   const isSmallScreen = useSmallScreen();
 
-  const { datasets, created, updated, title, description, identifier } = project;
+  const { datasets, created, updated, title, description, identifier, counts } = project;
 
   const { selectedKeywords, extraKeywords, extraKeywordCount } = useMemo(() => {
     const keywords = datasets.flatMap((d) => d.dats_file.keywords ?? []).map((k) => t(k.value as string));
@@ -107,11 +108,9 @@ const CatalogueCard = ({ project }: { project: Project }) => {
       <CatalogueCardInner
         firstContent={
           <Flex vertical={true} gap={8} className="h-full">
-            <Space direction="horizontal">
-              <Title level={4} className="m-0">
-                {t(title)}
-              </Title>
-            </Space>
+            <Title level={4} className="m-0">
+              {t(title)}
+            </Title>
 
             {description && <TruncatedParagraph style={{ maxWidth: 660 }}>{t(description)}</TruncatedParagraph>}
 
@@ -131,6 +130,8 @@ const CatalogueCard = ({ project }: { project: Project }) => {
             )}
 
             <Descriptions items={projectInfo} size="small" style={{ maxWidth: 500 }} />
+
+            <CountsDisplay counts={counts} />
 
             <Flex align="flex-end" gap={12} className="flex-1">
               <Button
