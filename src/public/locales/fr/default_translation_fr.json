@@ -37,7 +37,9 @@
   },
   "general": {
     "collapse_all": "Tout réduire",
-    "expand_all": "Tout développer"
+    "expand_all": "Tout développer",
+    "ontology_class": "Classe ontologique",
+    "actions": "Actes"
   },
   "search": {
     "filters": "Filtres",
@@ -182,7 +184,7 @@
     "age": "Âge",
     "gestational_age": "Âge gestationnel",
     "age_range": "Tranche d'âge",
-    "ontology_class": "Classe ontologique",
+    "ontology_class": "$t(general.ontology_class)",
     "timestamp": "Horodatage",
     "interval": "Intervalle"
   },
@@ -424,10 +426,10 @@
   "experiment": {
     "experiment_id": "Identifiant de l'expérience",
     "experiment_type": "Type d'expérience",
-    "experiment_ontology": "Type d'expérience (classe ontologique)",
+    "experiment_ontology": "Type d'expérience ($t(general.ontology_class, lowercase))",
     "study_type": "Type d'étude",
     "molecule": "Molécule",
-    "molecule_ontology": "Molécule (classe ontologique)",
+    "molecule_ontology": "Molécule ($t(general.ontology_class, lowercase))",
     "library_strategy": "Stratégie de génothèque",
     "library_source": "Source de génothèque",
     "library_selection": "Sélection de génothèque",
@@ -439,7 +441,7 @@
   "instrument": {
     "instrument": "Instrument",
     "device": "Appareil",
-    "device_ontology": "Appareil (classe ontologique)"
+    "device_ontology": "Appareil ($t(general.ontology_class, lowercase))"
   },
   "experiment_result": {
     "identifier": "Identifiant",

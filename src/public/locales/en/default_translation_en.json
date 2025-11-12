@@ -35,7 +35,9 @@
   },
   "general": {
     "collapse_all": "Collapse All",
-    "expand_all": "Expand All"
+    "expand_all": "Expand All",
+    "actions": "Actions",
+    "ontology_class": "Ontology Class"
   },
   "search": {
     "filters": "Filters",
@@ -177,7 +179,7 @@
     "age": "Age",
     "gestational_age": "Gestational Age",
     "age_range": "Age Range",
-    "ontology_class": "Ontology Class",
+    "ontology_class": "$t(general.ontology_class)",
     "timestamp": "Timestamp",
     "interval": "Interval"
   },
@@ -419,10 +421,10 @@
   "experiment": {
     "experiment_id": "Experiment ID",
     "experiment_type": "Experiment Type",
-    "experiment_ontology": "Experiment Type (Ontology Class)",
+    "experiment_ontology": "Experiment Type ($t(general.ontology_class))",
     "study_type": "Study Type",
     "molecule": "Molecule",
-    "molecule_ontology": "Molecule (Ontology Class)",
+    "molecule_ontology": "Molecule ($t(general.ontology_class))",
     "library_strategy": "Library Strategy",
     "library_source": "Library Source",
     "library_selection": "Library Selection",
@@ -434,7 +436,7 @@
   "instrument": {
     "instrument": "Instrument",
     "device": "Device",
-    "device_ontology": "Device (Ontology Class)"
+    "device_ontology": "Device ($t(general.ontology_class))"
   },
   "experiment_result": {
     "identifier": "Identifier",
