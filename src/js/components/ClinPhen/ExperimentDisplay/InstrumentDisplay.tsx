@@ -9,19 +9,16 @@ import ExtraPropertiesDisplay from '@/components/ClinPhen/PhenopacketDisplay/Ext
 import OntologyTermComponent from '@Util/ClinPhen/OntologyTerm';
 import TDescriptions from '@Util/TDescriptions';
 
-const InstrumentDisplay = ({ instrument }: { instrument: Instrument }) => {
+type InstrumentDisplayProps = { instrument: Instrument };
+
+const InstrumentDisplay = ({ instrument }: InstrumentDisplayProps) => {
   const t = useTranslationFn();
 
   const items: ConditionalDescriptionItem[] = [
-    {
-      key: 'description',
-      label: 'instrument.description',
-      children: instrument.description,
-    },
+    { key: 'description', children: instrument.description },
     {
       // Combined rendering for both device and device ontology
       key: 'device',
-      label: 'instrument.device',
       isVisible: !!(instrument.device || instrument.device_ontology),
       children: instrument.device ? (
         instrument.device_ontology ? (
@@ -43,7 +40,7 @@ const InstrumentDisplay = ({ instrument }: { instrument: Instrument }) => {
       <Typography.Title level={4} style={{ fontSize: 14 }}>
         {t('instrument.instrument')}: {instrument.identifier}
       </Typography.Title>
-      <TDescriptions bordered size="compact" column={{ lg: 1, xl: 3 }} items={items} />
+      <TDescriptions bordered size="compact" column={{ lg: 1, xl: 3 }} items={items} defaultI18nPrefix="instrument." />
       <ExtraPropertiesDisplay extraProperties={instrument.extra_properties} />
     </div>
   );

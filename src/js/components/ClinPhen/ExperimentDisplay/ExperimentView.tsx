@@ -95,15 +95,8 @@ const _countItems = (x: string[]): Record<string, number> => {
 };
 
 const EXPERIMENT_VIEW_COLUMNS: CustomTableColumns<Experiment> = [
-  {
-    title: 'experiment.experiment_id',
-    dataIndex: 'id',
-    alwaysShow: true,
-  },
-  {
-    title: 'experiment.experiment_type',
-    dataIndex: 'experiment_type',
-  },
+  { title: 'experiment.experiment_id', dataIndex: 'id', alwaysShow: true },
+  { title: 'experiment.experiment_type', dataIndex: 'experiment_type' },
   {
     title: 'entities.experiment_result_other',
     dataIndex: 'experiment_results',
