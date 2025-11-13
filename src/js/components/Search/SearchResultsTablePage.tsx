@@ -6,6 +6,7 @@ import { Button, Checkbox, Col, Flex, Modal, Space, type TablePaginationConfig, 
 import { ExportOutlined, LeftOutlined, TableOutlined } from '@ant-design/icons';
 
 import { T_PLURAL_COUNT, T_SINGULAR_COUNT } from '@/constants/i18n';
+import { MIN_PAGE_SIZE, PAGE_SIZE_OPTIONS } from '@/constants/pagination';
 import { WAITING_STATES } from '@/constants/requests';
 import { PHENOPACKET_COLLAPSE_URL_QUERY_KEY } from '../ClinPhen/PhenopacketDisplay/PhenopacketOverview';
 
@@ -422,20 +423,23 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   // -------------------------------------------------------------------------------------------------------------------
 
   // noinspection JSUnusedGlobalSymbols
-  const pagination = useMemo<TablePaginationConfig>(
-    () => ({
-      current: page + 1, // AntD page is 1-indexed, discovery match page is 0-indexed
-      pageSize,
-      pageSizeOptions: [15, 25, 50, 100], // increased a bit from default for better data density
-      total: totalMatches,
-      position: (isSmallScreen ? ['bottomCenter'] : ['bottomRight']) as TablePaginationConfig['position'],
-      size: (isSmallScreen ? 'small' : 'default') as TablePaginationConfig['size'],
-      showSizeChanger: true,
-      onChange(page, pageSize) {
-        dispatch(setMatchesPage([rdEntity, page - 1])); // AntD page is 1-indexed, discovery match page is 0-indexed
-        dispatch(setMatchesPageSize(pageSize));
-      },
-    }),
+  const pagination = useMemo<TablePaginationConfig | undefined>(
+    () =>
+      MIN_PAGE_SIZE < totalMatches
+        ? {
+            current: page + 1, // AntD page is 1-indexed, discovery match page is 0-indexed
+            pageSize,
+            pageSizeOptions: PAGE_SIZE_OPTIONS, // increased a bit from default for better data density
+            total: totalMatches,
+            position: (isSmallScreen ? ['bottomCenter'] : ['bottomRight']) as TablePaginationConfig['position'],
+            size: (isSmallScreen ? 'small' : 'default') as TablePaginationConfig['size'],
+            showSizeChanger: true,
+            onChange(page, pageSize) {
+              dispatch(setMatchesPage([rdEntity, page - 1])); // AntD page is 1-indexed, discovery match page is 0-indexed
+              dispatch(setMatchesPageSize(pageSize));
+            },
+          }
+        : undefined,
     [dispatch, rdEntity, page, pageSize, totalMatches, isSmallScreen]
   );
 

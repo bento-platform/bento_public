@@ -17,6 +17,8 @@ import type {
 } from '@/features/search/types';
 import type { Sections } from '@/types/data';
 
+import { MIN_PAGE_SIZE } from '@/constants/pagination';
+
 import { discoveryChartProcessingAndLocalStorage } from './discoveryChartProcessingAndLocalStorage';
 import { performKatsuDiscovery } from './performKatsuDiscovery.thunk';
 import { fetchSearchFields } from './fetchSearchFields.thunk';
@@ -100,7 +102,7 @@ const initialState: QueryState = {
     experiment: 0,
     experiment_result: 0,
   },
-  pageSize: 15,
+  pageSize: MIN_PAGE_SIZE,
   matchData: {
     phenopacket: INITIAL_MATCH_DATA_STATE,
     biosample: INITIAL_MATCH_DATA_STATE,
