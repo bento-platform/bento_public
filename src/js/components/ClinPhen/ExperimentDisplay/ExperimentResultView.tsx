@@ -30,10 +30,6 @@ export const ExperimentResultExpandedRow = ({
     //   label: 'general.description',
     //   children: experimentResult.description,
     // },
-    // {
-    //   key: 'filename',
-    //   children: experimentResult.filename,
-    // },
     {
       key: 'url',
       label: 'general.url',

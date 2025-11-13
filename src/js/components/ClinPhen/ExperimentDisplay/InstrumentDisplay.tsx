@@ -37,10 +37,17 @@ const InstrumentDisplay = ({ instrument }: InstrumentDisplayProps) => {
 
   return (
     <div className="instrument">
-      <Typography.Title level={4} style={{ fontSize: 14 }}>
+      <Typography.Title level={4} style={{ fontSize: 14 }} className="mb-0">
         {t('instrument.instrument')}: {instrument.identifier}
       </Typography.Title>
-      <TDescriptions bordered size="compact" column={{ lg: 1, xl: 3 }} items={items} defaultI18nPrefix="instrument." />
+      <TDescriptions
+        bordered
+        size="compact"
+        column={{ lg: 1, xl: 3 }}
+        items={items}
+        defaultI18nPrefix="instrument."
+        style={{ marginTop: 8 }}
+      />
       <ExtraPropertiesDisplay extraProperties={instrument.extra_properties} />
     </div>
   );

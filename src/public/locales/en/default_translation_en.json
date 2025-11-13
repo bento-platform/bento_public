@@ -39,7 +39,8 @@
     "description": "Description",
     "actions": "Actions",
     "ontology_class": "Ontology Class",
-    "view": "View"
+    "view": "View",
+    "url": "URL"
   },
   "search": {
     "filters": "Filters",

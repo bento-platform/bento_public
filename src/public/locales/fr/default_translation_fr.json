@@ -41,7 +41,8 @@
     "description": "Description",
     "ontology_class": "Classe ontologique",
     "actions": "Actions",
-    "view": "Afficher"
+    "view": "Afficher",
+    "url": "URL"
   },
   "search": {
     "filters": "Filtres",
