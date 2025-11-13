@@ -9,11 +9,9 @@ import {
   Flex,
   Modal,
   Space,
-  Table,
   type TableColumnsType,
   type TableColumnType,
   type TablePaginationConfig,
-  type TableProps,
   Tooltip,
   Typography,
 } from 'antd';
@@ -51,8 +49,9 @@ import { downloadBiosampleCSV, downloadExperimentCSV, downloadIndividualCSV } fr
 import { setEquals } from '@/utils/sets';
 
 import DatasetProvenanceModal from '@/components/Provenance/DatasetProvenanceModal';
-import ProjectTitle from '@/components/Util/ProjectTitle';
-import DatasetTitle from '@/components/Util/DatasetTitle';
+import ProjectTitle from '@Util/ProjectTitle';
+import DatasetTitle from '@Util/DatasetTitle';
+import CustomTable from '@Util/CustomTable';
 import IndividualRowDetail from './IndividualRowDetail';
 import BiosampleRowDetail from './BiosampleRowDetail';
 import ExperimentRowDetail from './ExperimentRowDetail';
@@ -85,7 +84,7 @@ type ResultsTableSpec<T extends ViewableDiscoveryMatchObject> = {
   fixedColumns?: ResultsTableFixedColumn<T>[];
   availableColumns: Record<string, ResultsTableColumn<T>>;
   defaultColumns: string[];
-  expandable?: TableProps<T>['expandable'];
+  expandedRowRender?: (record: T) => ReactNode;
   download?: (headers: Record<string, string>, matches: T[]) => Promise<void>;
 };
 
@@ -171,9 +170,7 @@ const TABLE_SPEC_PHENOPACKET: ResultsTableSpec<DiscoveryMatchPhenopacket> = {
   ],
   availableColumns: PHENOPACKET_SEARCH_TABLE_COLUMNS,
   defaultColumns: ['biosamples', 'project', 'dataset'],
-  expandable: {
-    expandedRowRender: (rec) => (rec.subject ? <IndividualRowDetail id={rec.subject} /> : null),
-  },
+  expandedRowRender: (rec) => (rec.subject ? <IndividualRowDetail id={rec.subject} /> : null),
   download: (headers, matches) =>
     downloadIndividualCSV(
       headers,
@@ -192,9 +189,7 @@ const TABLE_SPEC_BIOSAMPLE: ResultsTableSpec<DiscoveryMatchBiosample> = {
   ],
   availableColumns: COMMON_SEARCH_TABLE_COLUMNS,
   defaultColumns: ['project', 'dataset'],
-  expandable: {
-    expandedRowRender: (rec) => <BiosampleRowDetail id={rec.id} />,
-  },
+  expandedRowRender: (rec) => <BiosampleRowDetail id={rec.id} />,
   download: (headers, matches) =>
     downloadBiosampleCSV(
       headers,
@@ -218,9 +213,7 @@ const TABLE_SPEC_EXPERIMENT: ResultsTableSpec<DiscoveryMatchExperiment> = {
   // TODO: biosample column
   availableColumns: COMMON_SEARCH_TABLE_COLUMNS,
   defaultColumns: ['project', 'dataset'],
-  expandable: {
-    expandedRowRender: (rec) => <ExperimentRowDetail id={rec.id} />,
-  },
+  expandedRowRender: (rec) => <ExperimentRowDetail id={rec.id} />,
   download: (headers, matches) =>
     downloadExperimentCSV(
       headers,
@@ -248,9 +241,7 @@ const TABLE_SPEC_EXPERIMENT_RESULT: ResultsTableSpec<DiscoveryMatchExperimentRes
   ],
   availableColumns: COMMON_SEARCH_TABLE_COLUMNS,
   defaultColumns: ['project', 'dataset'],
-  expandable: {
-    expandedRowRender: (rec) => <ExperimentResultRowDetail id={rec.id} />,
-  },
+  expandedRowRender: (rec) => <ExperimentResultRowDetail id={rec.id} />,
 };
 
 const ManageColumnCheckbox = <T extends ViewableDiscoveryMatchObject>({
@@ -308,7 +299,10 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   // TODO: maybe we can make Katsu good enough that we can just simply return individuals rather than phenopackets
   const rdEntity = bentoKatsuEntityToResultsDataEntity(entity);
 
-  const { matches, status, page, totalMatches } = matchData[rdEntity] as QueryResultMatchData<T>;
+  const entityMatchData = matchData[rdEntity] as QueryResultMatchData<T>;
+  const { status, page, totalMatches } = entityMatchData;
+  let { matches } = entityMatchData;
+  matches = matches ?? [];
 
   const currentStart = totalMatches > 0 ? page * pageSize + 1 : 0;
   const currentEnd = Math.min((page + 1) * pageSize, totalMatches);
@@ -414,7 +408,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   const onExport = useCallback(() => {
     if (!spec.download) return;
     setExporting(true);
-    spec.download(authHeader, matches ?? []).finally(() => setExporting(false));
+    spec.download(authHeader, matches).finally(() => setExporting(false));
   }, [spec, authHeader, matches]);
 
   const openColumnModal = useCallback(() => setColumnModalOpen(true), []);
@@ -463,15 +457,15 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
             ) : null}
           </Space>
         </Flex>
-        <Table<T>
+        <CustomTable<T>
           columns={columns}
           dataSource={matches}
           loading={WAITING_STATES.includes(status)}
           rowKey="id"
-          bordered={true}
-          size="small"
           pagination={pagination}
-          expandable={spec.expandable}
+          expandedRowRender={spec.expandedRowRender}
+          isRowExpandable={(_) => true} // TODO
+          urlAware={false}
         />
       </Col>
       <Modal

@@ -1,5 +1,5 @@
-import { useEffect, useCallback, useMemo, useState } from 'react';
-import { Table } from 'antd';
+import { useEffect, useCallback, useMemo, useState, type ReactNode } from 'react';
+import { Table, type TablePaginationConfig } from 'antd';
 import type { TableColumnType } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
@@ -39,7 +39,9 @@ interface CustomTableProps<T> {
   columns: CustomTableColumns<T>;
   rowKey: string | RowKeyFn<WithVisible<T>>;
   isRowExpandable: VisibilityFn<T>;
-  expandedRowRender?: (record: T) => React.ReactNode;
+  expandedRowRender?: (record: T) => ReactNode;
+  pagination?: TablePaginationConfig;
+  loading?: boolean;
   queryKey?: string;
   urlAware?: boolean;
 }
@@ -50,6 +52,8 @@ const CustomTable = <T extends object>({
   rowKey,
   isRowExpandable,
   expandedRowRender,
+  pagination,
+  loading,
   queryKey = EXPANDED_QUERY_PARAM_KEY,
   urlAware = true,
 }: CustomTableProps<T>) => {
@@ -116,7 +120,7 @@ const CustomTable = <T extends object>({
     if (expandedRowRender && validExpandedKeys.length !== expandedKeys.length) {
       // Only warn if we are trying to expand a key that doesn't exist *at all* in the data source, NOT if we're just
       // trying to expand a key that isn't expandable.
-      if (expandedKeysThatExist.length !== expandedKeys.length) {
+      if (expandedKeysThatExist.length !== expandedKeys.length && urlAware) {
         console.warn(
           t('table.invalid_row_keys_title'),
           'expanded keys:',
@@ -166,6 +170,7 @@ const CustomTable = <T extends object>({
     <Table<WithVisible<T>>
       className="compact"
       columns={processedColumns}
+      loading={loading}
       dataSource={visibleData}
       expandable={{
         expandedRowRender,
@@ -175,8 +180,8 @@ const CustomTable = <T extends object>({
         expandedRowKeys: expandedKeys,
         onExpand: handleExpand,
       }}
-      rowKey={rowKey}
-      pagination={false}
+      rowKey={rowKeyFn} // Need to pass rowKeyFn here since we are casting to string in the case of int keys.
+      pagination={pagination ?? false}
       bordered={true}
     />
   );
