@@ -13,7 +13,8 @@ import ExtraPropertiesDisplay from '@/components/ClinPhen/PhenopacketDisplay/Ext
 
 import { useScopeDownloadData } from '@/hooks/censorship';
 
-import { VIEWABLE_FILE_EXTENSIONS, VIEWABLE_FILE_FORMATS } from '@/constants/files';
+import { VIEWABLE_FILE_EXTENSIONS } from 'bento-file-display';
+import { VIEWABLE_FILE_FORMATS } from '@/constants/files';
 import { useTranslationFn } from '@/hooks';
 
 export const ExperimentResultExpandedRow = ({
