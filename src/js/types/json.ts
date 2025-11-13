@@ -1,1 +1,1 @@
-export type { JSONType } from 'bento-file-display';
+export type * from 'bento-file-display/dist/types/json';
