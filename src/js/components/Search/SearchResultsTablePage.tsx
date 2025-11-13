@@ -116,6 +116,17 @@ const PHENOPACKET_SEARCH_TABLE_COLUMNS = {
   ...commonSearchTableColumns<DiscoveryMatchPhenopacket>(),
 } as Record<string, ResultsTableColumn<DiscoveryMatchPhenopacket>>;
 
+const BIOSAMPLE_SEARCH_TABLE_COLUMNS = {
+  individual: {
+    title: 'biosample_table.individual_id',
+    dataIndex: 'individual_id',
+    render: (_ctx) => (individualId: string, b) => (
+      <PhenopacketSubjectLink packetId={b.phenopacket}>{individualId}</PhenopacketSubjectLink>
+    ),
+  } as ResultsTableColumn<DiscoveryMatchBiosample>,
+  ...commonSearchTableColumns<DiscoveryMatchBiosample>(),
+};
+
 const EXPERIMENT_RESULT_SEARCH_TABLE_COLUMNS = {
   description: {
     title: 'experiment_result.description',
@@ -142,9 +153,9 @@ const usePhenopacketOverviewLink = (
   return useLangPrefixedUrl(`${baseUrl}?${params.toString()}`);
 };
 
-const PhenopacketSubjectLink = ({ children, packetId }: { children: ReactNode; packetId: string }) => {
+const PhenopacketSubjectLink = ({ children, packetId }: { children: ReactNode; packetId?: string }) => {
   const url = usePhenopacketOverviewLink(packetId, 'subject');
-  return <Link to={url}>{children}</Link>;
+  return packetId ? <Link to={url}>{children}</Link> : children;
 };
 
 const PhenopacketBiosampleLink = ({ packetId, sampleId }: { packetId: string; sampleId: string }) => {
@@ -199,8 +210,8 @@ const TABLE_SPEC_BIOSAMPLE: ResultsTableSpec<DiscoveryMatchBiosample> = {
         rec.phenopacket ? <PhenopacketBiosampleLink packetId={rec.phenopacket} sampleId={id} /> : id,
     } as ResultsTableFixedColumn<DiscoveryMatchBiosample>,
   ],
-  availableColumns: commonSearchTableColumns<DiscoveryMatchBiosample>(),
-  defaultColumns: ['project', 'dataset'],
+  availableColumns: BIOSAMPLE_SEARCH_TABLE_COLUMNS,
+  defaultColumns: ['individual_id', 'project', 'dataset'],
   expandedRowRender: (rec) => <BiosampleRowDetail id={rec.id} />,
   download: (headers, matches) =>
     downloadBiosampleCSV(
@@ -498,6 +509,10 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
         footer={null}
       >
         <Space direction="vertical">
+          {/*
+            TODO: filter by empty on entire result set somehow... i.e., filter out individual_id or something.
+              Maybe we can just have a function based on available entities, although this doesn't cover other cases.
+          */}
           {Object.entries(spec.availableColumns)
             .filter(([key, _]) => allowedColumns.has(key))
             .map(([key, columnSpec]) => (

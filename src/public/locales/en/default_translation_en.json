@@ -248,6 +248,7 @@
   },
   "biosample_table": {
     "biosample_id": "Biosample ID",
+    "individual_id": "Individual ID",
     "sampled_tissue": "Sampled Tissue",
     "location_collected": "Location Collected"
   },

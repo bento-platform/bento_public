@@ -57,6 +57,7 @@ export type DiscoveryMatchExperiment = DiscoveryMatchObject & {
 };
 
 export type DiscoveryMatchBiosample = DiscoveryMatchObject & {
+  individual_id?: string; // Individual ID
   phenopacket?: string; // Phenopacket ID
   experiments: DiscoveryMatchExperiment[];
 };
