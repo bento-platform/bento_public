@@ -2,19 +2,7 @@ import { type ReactNode, Fragment, useCallback, useEffect, useMemo, useState } f
 import { Link } from 'react-router-dom';
 import { useAuthorizationHeader } from 'bento-auth-js';
 
-import {
-  Button,
-  Checkbox,
-  Col,
-  Flex,
-  Modal,
-  Space,
-  type TableColumnsType,
-  type TableColumnType,
-  type TablePaginationConfig,
-  Tooltip,
-  Typography,
-} from 'antd';
+import { Button, Checkbox, Col, Flex, Modal, Space, type TablePaginationConfig, Tooltip, Typography } from 'antd';
 import { ExportOutlined, LeftOutlined, TableOutlined } from '@ant-design/icons';
 
 import { T_PLURAL_COUNT, T_SINGULAR_COUNT } from '@/constants/i18n';
@@ -51,33 +39,40 @@ import { setEquals } from '@/utils/sets';
 import DatasetProvenanceModal from '@/components/Provenance/DatasetProvenanceModal';
 import ProjectTitle from '@Util/ProjectTitle';
 import DatasetTitle from '@Util/DatasetTitle';
-import CustomTable from '@Util/CustomTable';
+import CustomTable, { type CustomTableColumn, type CustomTableColumns } from '@Util/CustomTable';
 import IndividualRowDetail from './IndividualRowDetail';
 import BiosampleRowDetail from './BiosampleRowDetail';
 import ExperimentRowDetail from './ExperimentRowDetail';
 import ExperimentResultRowDetail from './ExperimentResultRowDetail';
-import { ExperimentResultActions } from '@/components/ClinPhen/ExperimentDisplay/ExperimentResultView';
+import {
+  ExperimentResultActions,
+  ExperimentResultActionsProps,
+  experimentResultViewable,
+} from '@/components/ClinPhen/ExperimentDisplay/ExperimentResultView';
 
 type SearchColRenderContext = {
   onProjectClick: (id: string) => void;
   onDatasetClick: (id: string) => void;
 };
 
-type ResultsTableColumn<T extends ViewableDiscoveryMatchObject> = {
-  tKey: string; // column title translation key
+type ResultsTableColumn<T extends ViewableDiscoveryMatchObject> = Omit<
+  CustomTableColumn<T>,
+  'key' | 'title' | 'dataIndex' | 'render'
+> & {
+  title: string; // column title translation key
   dataIndex: keyof T;
-  render: (ctx: SearchColRenderContext) => (value: unknown, obj: T) => ReactNode;
+  render?: (ctx: SearchColRenderContext) => (value: unknown, obj: T) => ReactNode;
 };
 
-type ResultsTableFixedColumn<T extends ViewableDiscoveryMatchObject> = TableColumnType<T> & { showLast?: boolean };
+type ResultsTableFixedColumn<T extends ViewableDiscoveryMatchObject> = CustomTableColumn<T> & { showLast?: boolean };
 
 const fixedColumnToTableColumn = <T extends ViewableDiscoveryMatchObject>(
   c: ResultsTableFixedColumn<T>,
   t: (key: string) => string
-): TableColumnType<T> => {
+): CustomTableColumn<T> => {
   const cNew = { ...c, title: t(c.title as string) };
   if ('showLast' in cNew) delete cNew['showLast'];
-  return cNew as TableColumnType<T>;
+  return cNew as CustomTableColumn<T>;
 };
 
 type ResultsTableSpec<T extends ViewableDiscoveryMatchObject> = {
@@ -88,26 +83,27 @@ type ResultsTableSpec<T extends ViewableDiscoveryMatchObject> = {
   download?: (headers: Record<string, string>, matches: T[]) => Promise<void>;
 };
 
-const COMMON_SEARCH_TABLE_COLUMNS = {
-  project: {
-    tKey: 'entities.project_one',
-    dataIndex: 'project',
-    render: (ctx: SearchColRenderContext) => (id: string) => (
-      <ProjectTitle projectID={id} onClick={() => ctx.onProjectClick(id)} />
-    ),
-  } as ResultsTableColumn<ViewableDiscoveryMatchObject>,
-  dataset: {
-    tKey: 'entities.dataset_one',
-    dataIndex: 'dataset',
-    render: (ctx: SearchColRenderContext) => (id: string) => (
-      <DatasetTitle datasetID={id} onClick={() => ctx.onDatasetClick(id)} />
-    ),
-  } as ResultsTableColumn<ViewableDiscoveryMatchObject>,
-} as const;
+const commonSearchTableColumns = <T extends ViewableDiscoveryMatchObject>() =>
+  ({
+    project: {
+      title: 'entities.project_one',
+      dataIndex: 'project',
+      render: (ctx: SearchColRenderContext) => (id: string) => (
+        <ProjectTitle projectID={id} onClick={() => ctx.onProjectClick(id)} />
+      ),
+    } as ResultsTableColumn<ViewableDiscoveryMatchObject>,
+    dataset: {
+      title: 'entities.dataset_one',
+      dataIndex: 'dataset',
+      render: (ctx: SearchColRenderContext) => (id: string) => (
+        <DatasetTitle datasetID={id} onClick={() => ctx.onDatasetClick(id)} />
+      ),
+    } as ResultsTableColumn<ViewableDiscoveryMatchObject>,
+  }) as Record<string, ResultsTableColumn<T>>;
 
 const PHENOPACKET_SEARCH_TABLE_COLUMNS = {
   biosamples: {
-    tKey: 'entities.biosample_other',
+    title: 'entities.biosample_other',
     dataIndex: 'biosamples',
     render: (_ctx: SearchColRenderContext) => (b: DiscoveryMatchBiosample[], p: DiscoveryMatchPhenopacket) =>
       b.map((bb, bbi) => (
@@ -116,8 +112,16 @@ const PHENOPACKET_SEARCH_TABLE_COLUMNS = {
           {bbi < b.length - 1 ? ', ' : ''}
         </Fragment>
       )),
-  } as ResultsTableColumn<DiscoveryMatchPhenopacket>,
-  ...COMMON_SEARCH_TABLE_COLUMNS,
+  },
+  ...commonSearchTableColumns<DiscoveryMatchPhenopacket>(),
+} as Record<string, ResultsTableColumn<DiscoveryMatchPhenopacket>>;
+
+const EXPERIMENT_RESULT_SEARCH_TABLE_COLUMNS = {
+  file_format: {
+    title: 'experiment_result.file_format',
+    dataIndex: 'file_format',
+  } as ResultsTableColumn<DiscoveryMatchExperimentResult>,
+  ...commonSearchTableColumns<DiscoveryMatchExperimentResult>(),
 };
 
 const usePhenopacketOverviewLink = (
@@ -187,7 +191,7 @@ const TABLE_SPEC_BIOSAMPLE: ResultsTableSpec<DiscoveryMatchBiosample> = {
         rec.phenopacket ? <PhenopacketBiosampleLink packetId={rec.phenopacket} sampleId={id} /> : id,
     } as ResultsTableFixedColumn<DiscoveryMatchBiosample>,
   ],
-  availableColumns: COMMON_SEARCH_TABLE_COLUMNS,
+  availableColumns: commonSearchTableColumns<DiscoveryMatchBiosample>(),
   defaultColumns: ['project', 'dataset'],
   expandedRowRender: (rec) => <BiosampleRowDetail id={rec.id} />,
   download: (headers, matches) =>
@@ -207,11 +211,10 @@ const TABLE_SPEC_EXPERIMENT: ResultsTableSpec<DiscoveryMatchExperiment> = {
     {
       dataIndex: 'experiment_type',
       title: 'experiment.experiment_type',
-      render: (experimentType: string) => <span>{experimentType}</span>,
     } as ResultsTableFixedColumn<DiscoveryMatchExperiment>,
   ],
   // TODO: biosample column
-  availableColumns: COMMON_SEARCH_TABLE_COLUMNS,
+  availableColumns: commonSearchTableColumns<DiscoveryMatchExperiment>(),
   defaultColumns: ['project', 'dataset'],
   expandedRowRender: (rec) => <ExperimentRowDetail id={rec.id} />,
   download: (headers, matches) =>
@@ -220,6 +223,12 @@ const TABLE_SPEC_EXPERIMENT: ResultsTableSpec<DiscoveryMatchExperiment> = {
       matches.map((e) => e.id)
     ),
 };
+
+const _erActionProps = ({
+  url,
+  filename,
+  file_format: fileFormat,
+}: DiscoveryMatchExperimentResult): ExperimentResultActionsProps => ({ url, filename, fileFormat });
 
 const TABLE_SPEC_EXPERIMENT_RESULT: ResultsTableSpec<DiscoveryMatchExperimentResult> = {
   fixedColumns: [
@@ -235,12 +244,16 @@ const TABLE_SPEC_EXPERIMENT_RESULT: ResultsTableSpec<DiscoveryMatchExperimentRes
     {
       key: 'actions',
       title: 'general.actions',
-      render: (_, er) => <ExperimentResultActions url={er.url} filename={er.filename} fileFormat={er.file_format} />,
+      render: (_, er) => <ExperimentResultActions {..._erActionProps(er)} />,
+      isEmpty: (_, er) => {
+        if (er === undefined) return true;
+        return !er.url && !experimentResultViewable(_erActionProps(er));
+      },
       showLast: true,
     } as ResultsTableFixedColumn<DiscoveryMatchExperimentResult>,
   ],
-  availableColumns: COMMON_SEARCH_TABLE_COLUMNS,
-  defaultColumns: ['project', 'dataset'],
+  availableColumns: EXPERIMENT_RESULT_SEARCH_TABLE_COLUMNS,
+  defaultColumns: ['file_format', 'project', 'dataset'],
   expandedRowRender: (rec) => <ExperimentResultRowDetail id={rec.id} />,
 };
 
@@ -265,7 +278,7 @@ const ManageColumnCheckbox = <T extends ViewableDiscoveryMatchObject>({
         )
       }
     >
-      {t(columnSpec.tKey, T_SINGULAR_COUNT)}
+      {t(columnSpec.title, T_SINGULAR_COUNT)}
     </Checkbox>
   );
 };
@@ -364,7 +377,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
     });
   }, [selectedScope, allowedColumns, shownColumns]);
 
-  const columns = useMemo<TableColumnsType<T>>(
+  const columns = useMemo<CustomTableColumns<T>>(
     () => [
       ...(spec.fixedColumns ?? [])
         .filter((c) => !c.showLast)
@@ -372,12 +385,13 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
       ...Object.entries(spec.availableColumns)
         .filter(([k, _]) => shownColumns.has(k))
         .map(
-          ([_, { tKey, dataIndex, render }]) =>
+          ([_, { title, dataIndex, render, ...cProps }]) =>
             ({
-              title: t(tKey, T_SINGULAR_COUNT),
+              title: t(title, T_SINGULAR_COUNT),
               dataIndex,
-              render: render(searchContext),
-            }) as TableColumnType<T>
+              render: render ? render(searchContext) : render,
+              ...cProps,
+            }) as CustomTableColumn<T>
         ),
       ...(spec.fixedColumns ?? [])
         .filter((c) => c.showLast)

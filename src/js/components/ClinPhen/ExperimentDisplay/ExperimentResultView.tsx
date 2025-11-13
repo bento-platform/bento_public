@@ -90,15 +90,18 @@ export const isExperimentResultRowExpandable = (r: ExperimentResult) =>
     Object.keys(r.extra_properties ?? {}).length
   );
 
-export const ExperimentResultActions = ({
-  url,
-  filename,
-  fileFormat,
-}: {
+export type ExperimentResultActionsProps = {
   url?: string;
   filename?: string;
   fileFormat?: ExperimentResult['file_format'];
-}) => {
+};
+
+export const experimentResultViewable = ({ url, fileFormat, filename }: ExperimentResultActionsProps) =>
+  !!url &&
+  (VIEWABLE_FILE_FORMATS.includes(fileFormat ?? '') ||
+    !!VIEWABLE_FILE_EXTENSIONS.find((ext) => (filename ?? '').toLowerCase().endsWith(ext)));
+
+export const ExperimentResultActions = (props: ExperimentResultActionsProps) => {
   const t = useTranslationFn();
   const { hasAttempted: attemptedCanDownload, hasPermission: canDownload } = useScopeDownloadData();
 
@@ -119,14 +122,13 @@ export const ExperimentResultActions = ({
   }, []);
   const onViewCancel = useCallback(() => setViewModalVisible(false), []);
 
-  const resultViewable =
-    url &&
-    (VIEWABLE_FILE_FORMATS.includes(fileFormat ?? '') ||
-      !!VIEWABLE_FILE_EXTENSIONS.find((ext) => (filename ?? '').toLowerCase().endsWith(ext)));
+  const resultViewable = experimentResultViewable(props);
 
   if (attemptedCanDownload && !canDownload) {
     return null;
   }
+
+  const { url, filename } = props;
 
   // TODO: handle DRS URIs
 
