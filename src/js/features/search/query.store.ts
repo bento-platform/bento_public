@@ -100,7 +100,7 @@ const initialState: QueryState = {
     experiment: 0,
     experiment_result: 0,
   },
-  pageSize: 10,
+  pageSize: 15,
   matchData: {
     phenopacket: INITIAL_MATCH_DATA_STATE,
     biosample: INITIAL_MATCH_DATA_STATE,

@@ -393,6 +393,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
     () => ({
       current: page + 1, // AntD page is 1-indexed, discovery match page is 0-indexed
       pageSize,
+      pageSizeOptions: [15, 25, 50, 100], // increased a bit from default for better data density
       total: totalMatches,
       position: (isSmallScreen ? ['bottomCenter'] : ['bottomRight']) as TablePaginationConfig['position'],
       size: (isSmallScreen ? 'small' : 'default') as TablePaginationConfig['size'],
