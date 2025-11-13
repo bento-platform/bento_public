@@ -44,7 +44,7 @@ export type DiscoveryMatchExperimentResult = DiscoveryMatchObject & {
   usage?: string;
   creation_date?: string;
   created_by?: string;
-  extra_properties?: JSONType,
+  extra_properties?: JSONType;
   // ---
   phenopacket?: string;
 };
