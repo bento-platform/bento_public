@@ -18,70 +18,27 @@ export const ExperimentExpandedRow = ({ experiment, searchRow }: { experiment: E
   const t = useTranslationFn();
 
   const items: ConditionalDescriptionItem[] = [
-    ...(searchRow
-      ? [
-          {
-            key: 'experiment_type',
-            label: 'experiment.experiment_type',
-            children: experiment.experiment_type,
-          },
-        ]
-      : []),
+    ...(searchRow ? [{ key: 'experiment_type', children: experiment.experiment_type }] : []),
     {
       key: 'experiment_ontology',
-      label: 'experiment.experiment_ontology',
       children: <OntologyTermStack terms={experiment.experiment_ontology} />,
       isVisible: !!experiment.experiment_ontology?.length,
     },
-    {
-      key: 'study_type',
-      label: 'experiment.study_type',
-      children: experiment.study_type,
-    },
-    {
-      key: 'molecule',
-      label: 'experiment.molecule',
-      children: experiment.molecule,
-    },
+    { key: 'study_type', children: experiment.study_type },
+    { key: 'molecule', children: experiment.molecule },
     {
       key: 'molecule_ontology',
-      label: 'experiment.molecule_ontology',
       children: <OntologyTermStack terms={experiment.molecule_ontology} />,
       isVisible: !!experiment.molecule_ontology?.length,
     },
-    {
-      key: 'library_strategy',
-      label: 'experiment.library_strategy',
-      children: experiment.library_strategy,
-    },
-    {
-      key: 'library_source',
-      label: 'experiment.library_source',
-      children: experiment.library_source,
-    },
-    {
-      key: 'library_selection',
-      label: 'experiment.library_selection',
-      children: experiment.library_selection,
-    },
-    {
-      key: 'library_layout',
-      label: 'experiment.library_layout',
-      children: experiment.library_layout,
-    },
-    {
-      key: 'extraction_protocol',
-      label: 'experiment.extraction_protocol',
-      children: experiment.extraction_protocol,
-    },
-    {
-      key: 'reference_registry_id',
-      label: 'experiment.reference_registry_id',
-      children: experiment.reference_registry_id,
-    },
+    { key: 'library_strategy', children: experiment.library_strategy },
+    { key: 'library_source', children: experiment.library_source },
+    { key: 'library_selection', children: experiment.library_selection },
+    { key: 'library_layout', children: experiment.library_layout },
+    { key: 'extraction_protocol', children: experiment.extraction_protocol },
+    { key: 'reference_registry_id', children: experiment.reference_registry_id },
     {
       key: 'qc_flags',
-      label: 'experiment.qc_flags',
       children: (experiment.qc_flags ?? []).join(', '),
       isVisible: (experiment.qc_flags ?? []).length,
     },
@@ -89,7 +46,7 @@ export const ExperimentExpandedRow = ({ experiment, searchRow }: { experiment: E
 
   return (
     <Space direction="vertical" className="w-full">
-      <TDescriptions bordered size="compact" column={{ lg: 1, xl: 3 }} items={items} />
+      <TDescriptions bordered size="compact" column={{ lg: 1, xl: 3 }} items={items} defaultI18nPrefix="experiment." />
       <ExtraPropertiesDisplay extraProperties={experiment.extra_properties} />
       {experiment.instrument && (
         <>

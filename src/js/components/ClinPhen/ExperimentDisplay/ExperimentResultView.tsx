@@ -24,11 +24,7 @@ export const ExperimentResultExpandedRow = ({
   searchRow?: boolean;
 }) => {
   const items: ConditionalDescriptionItem[] = [
-    {
-      key: 'identifier',
-      label: 'experiment_result.identifier',
-      children: experimentResult.identifier,
-    },
+    { key: 'identifier', children: experimentResult.identifier },
     // {
     //   key: 'description',
     //   label: 'general.description',
@@ -36,7 +32,6 @@ export const ExperimentResultExpandedRow = ({
     // },
     // {
     //   key: 'filename',
-    //   label: 'experiment_result.filename',
     //   children: experimentResult.filename,
     // },
     {
@@ -46,40 +41,21 @@ export const ExperimentResultExpandedRow = ({
     },
     {
       key: 'indices',
-      label: 'experiment_result.indices',
       children: JSON.stringify(experimentResult.indices), // TODO: nice render
       isVisible: !!(experimentResult.indices ?? []).length,
     },
     // {
     //   key: 'genome_assembly_id',
-    //   label: 'experiment_result.genome_assembly_id',
     //   children: experimentResult.genome_assembly_id, // TODO: modal to reference genome details
     // },
     // {
     //   key: 'file_format',
-    //   label: 'experiment_result.file_format',
     //   children: experimentResult.file_format,
     // },
-    {
-      key: 'data_output_type',
-      label: 'experiment_result.data_output_type',
-      children: experimentResult.data_output_type,
-    },
-    {
-      key: 'usage',
-      label: 'experiment_result.usage',
-      children: experimentResult.usage,
-    },
-    {
-      key: 'creation_date',
-      label: 'experiment_result.creation_date',
-      children: experimentResult.creation_date,
-    },
-    {
-      key: 'created_by',
-      label: 'experiment_result.created_by',
-      children: experimentResult.created_by,
-    },
+    { key: 'data_output_type', children: experimentResult.data_output_type },
+    { key: 'usage', children: experimentResult.usage },
+    { key: 'creation_date', children: experimentResult.creation_date },
+    { key: 'created_by', children: experimentResult.created_by },
     // Not in the true Experiment Result schema, but can be added by the front end for linking purposes:
     {
       key: 'experiment_id',
@@ -90,7 +66,13 @@ export const ExperimentResultExpandedRow = ({
 
   return (
     <Space direction="vertical" className="w-full">
-      <TDescriptions bordered size="compact" column={{ lg: 1, xl: 3 }} items={items} />
+      <TDescriptions
+        bordered
+        size="compact"
+        column={{ lg: 1, xl: 3 }}
+        items={items}
+        defaultI18nPrefix="experiment_result."
+      />
       <ExtraPropertiesDisplay extraProperties={experimentResult.extra_properties} />
     </Space>
   );
@@ -199,23 +181,13 @@ const ExperimentResultView = ({ experimentResults, urlAware }: ExperimentResultV
   const columns = useMemo<CustomTableColumns<ExperimentResult>>(
     () => [
       // ID is a meaningless UUID that changes between ingests most of the time, don't bother showing it
-      {
-        title: 'experiment_result.filename',
-        dataIndex: 'filename',
-        alwaysShow: true,
-      },
-      {
-        title: 'general.description',
-        dataIndex: 'description',
-      },
+      { title: 'experiment_result.filename', dataIndex: 'filename', alwaysShow: true },
+      { title: 'general.description', dataIndex: 'description' },
       {
         title: 'experiment_result.genome_assembly_id',
         dataIndex: 'genome_assembly_id', // TODO: nice render with modal to reference genome
       },
-      {
-        title: 'experiment_result.file_format',
-        dataIndex: 'file_format',
-      },
+      { title: 'experiment_result.file_format', dataIndex: 'file_format' },
       {
         title: 'general.actions',
         key: 'actions',
