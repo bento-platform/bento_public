@@ -1,5 +1,6 @@
 import type { DatsFile } from '@/types/dats';
 import type { DiscoveryConfig } from '@/types/discovery/config';
+import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
 
 export interface Project {
   identifier: string;
@@ -9,6 +10,7 @@ export interface Project {
   datasets: Dataset[];
   created: string;
   updated: string;
+  counts?: KatsuEntityCountsOrBooleans;
 }
 
 export interface Dataset {
@@ -17,6 +19,7 @@ export interface Dataset {
   description: string;
   discovery: DiscoveryConfig | null;
   dats_file: DatsFile;
+  counts?: KatsuEntityCountsOrBooleans;
 }
 
 export interface PaginatedResponse<T> {

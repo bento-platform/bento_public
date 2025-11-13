@@ -12,6 +12,7 @@ import { useTranslationFn } from '@/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
 import SmallChartCardTitle from '@/components/Util/SmallChartCardTitle';
 import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
+import CountsDisplay from '@/components/Util/CountsDisplay';
 import DatasetProvenanceModal from './DatasetProvenanceModal';
 
 const { Title } = Typography;
@@ -49,7 +50,7 @@ const Dataset = ({
 
   const [provenanceModalOpen, setProvenanceModalOpen] = useState(false);
 
-  const { identifier, title, description, dats_file: dats } = dataset;
+  const { identifier, title, description, dats_file: dats, counts } = dataset;
   const keywords = dats.keywords;
   const displayKeywords = keywords?.slice(0, KEYWORDS_LIMIT) ?? [];
   const remainingKeywords = keywords?.slice(KEYWORDS_LIMIT) ?? [];
@@ -108,6 +109,7 @@ const Dataset = ({
               </Popover>
             )}
           </Space>
+          <CountsDisplay counts={counts} fontSize="0.875rem" />
           <Flex gap={12} align="flex-end" className="flex-1">
             <Button icon={<PieChartOutlined />} onClick={onNavigateOverview}>
               {t('Explore')}
@@ -119,14 +121,17 @@ const Dataset = ({
   } else if (format === 'carousel') {
     inner = (
       <>
-        <Flex justify="space-between">
-          <Title level={5}>{t(title)}</Title>
+        <Flex justify="space-between" align="center">
+          <Title level={5} className="mb-0">
+            {t(title)}
+          </Title>
           <Button size="small" icon={<SolutionOutlined />} className="float-right" onClick={openProvenanceModal}>
             {t('Provenance')}
             <ExpandAltOutlined />
           </Button>
         </Flex>
         <TruncatedParagraph>{t(description)}</TruncatedParagraph>
+        <CountsDisplay counts={counts} fontSize="0.875rem" />
         <Flex gap={8} style={{ marginTop: 8 }}>
           <Button size="small" icon={<PieChartOutlined />} onClick={onNavigateOverview}>
             {t('Explore')}

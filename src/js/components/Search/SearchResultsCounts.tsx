@@ -5,9 +5,9 @@ import { BiDna } from 'react-icons/bi';
 
 import CountsTitleWithHelp from '@/components/Util/CountsTitleWithHelp';
 import { COUNTS_FILL } from '@/constants/overviewConstants';
-import { NO_RESULTS_DASHES } from '@/features/search/constants';
 import { useTranslationFn } from '@/hooks';
-import { useCanSeeUncensoredCounts, useScopeQueryData } from '@/hooks/censorship';
+import { useScopeQueryData } from '@/hooks/censorship';
+import { useRenderCount } from '@/hooks/counts';
 import type { SearchResultsUIPage } from '@/features/search/types';
 import type { DiscoveryResults, OptionalDiscoveryResults } from '@/types/data';
 import { RequestStatus } from '@/types/requests';
@@ -24,11 +24,11 @@ const SearchResultsCounts = ({
   message,
 }: SearchResultsCountsProps) => {
   const t = useTranslationFn();
+  const renderCount = useRenderCount();
 
   const { individualCount, biosampleCount, experimentCount } = results;
   const { hasPermission: queryDataPerm } = useScopeQueryData();
   const individualsClickable = !!setSelectedPage && queryDataPerm;
-  const uncensoredCounts = useCanSeeUncensoredCounts();
 
   const isBeaconNetwork = mode === 'beacon-network';
 
@@ -63,27 +63,21 @@ const SearchResultsCounts = ({
           >
             <Statistic
               title={<CountsTitleWithHelp entity="individual" showHelp={!isBeaconNetwork} />}
-              value={
-                hasInsufficientData
-                  ? t(message ?? '')
-                  : !uncensoredCounts && !individualCount
-                    ? NO_RESULTS_DASHES
-                    : individualCount
-              }
+              value={hasInsufficientData ? t(message ?? '') : renderCount(individualCount)}
               valueStyle={STAT_STYLE}
               prefix={<TeamOutlined />}
             />
           </div>
           <Statistic
             title={<CountsTitleWithHelp entity="biosample" showHelp={!isBeaconNetwork} />}
-            value={hasInsufficientData || (!uncensoredCounts && !biosampleCount) ? NO_RESULTS_DASHES : biosampleCount}
+            value={hasInsufficientData ? renderCount(undefined) : renderCount(biosampleCount)}
             valueStyle={STAT_STYLE}
             // Slight fixup for alignment of non-Antd icon:
             prefix={<BiDna style={{ marginTop: 6, verticalAlign: 'top' }} />}
           />
           <Statistic
             title={<CountsTitleWithHelp entity="experiment" showHelp={!isBeaconNetwork} />}
-            value={hasInsufficientData || (!uncensoredCounts && !experimentCount) ? NO_RESULTS_DASHES : experimentCount}
+            value={hasInsufficientData ? renderCount(undefined) : renderCount(experimentCount)}
             valueStyle={STAT_STYLE}
             prefix={<ExperimentOutlined />}
           />
