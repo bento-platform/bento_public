@@ -27,6 +27,7 @@ type FileModalProps = {
   loading?: boolean;
 };
 
+// Ported from Bento Web
 const FileModal = ({ title, open, onCancel, hasTriggered, url, fileName, loading }: FileModalProps) => (
   <Modal
     title={title}

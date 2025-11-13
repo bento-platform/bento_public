@@ -14,6 +14,7 @@ interface DownloadButtonProps extends ButtonProps {
   fileName?: string;
 }
 
+// Ported from Bento Web with some modifications (removal of a WES special case, addition of i18n)
 const DownloadButton = ({ url, fileName, children, onClick: propsOnClick, ...props }: DownloadButtonProps) => {
   const accessToken = useAccessToken();
   const t = useTranslationFn();
