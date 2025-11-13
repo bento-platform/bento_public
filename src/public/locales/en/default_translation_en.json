@@ -444,6 +444,7 @@
   },
   "experiment_result": {
     "identifier": "Identifier",
+    "description": "$t(general.description)",
     "filename": "$t(file.filename)",
     "indices": "Indices",
     "genome_assembly_id": "Genome Assembly",

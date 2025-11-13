@@ -1,6 +1,7 @@
 import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
 import type { Field } from '@/types/discovery/fieldDefinition';
 import type { BentoKatsuEntity } from '@/types/entities';
+import type { JSONType } from '@/types/json';
 
 export type QueryFilterField = { id: string; options: string[] };
 
@@ -32,11 +33,19 @@ export type DiscoveryMatchObject = {
 };
 
 export type DiscoveryMatchExperimentResult = DiscoveryMatchObject & {
+  identifier?: string;
+  description?: string;
   filename?: string; // File name
   url?: string; // File URL
   indices: ExperimentResult['indices'];
+  genome_assembly_id?: ExperimentResult['genome_assembly_id'];
   file_format?: ExperimentResult['file_format'];
-  assembly_id?: string;
+  data_output_type?: string;
+  usage?: string;
+  creation_date?: string;
+  created_by?: string;
+  extra_properties?: JSONType,
+  // ---
   phenopacket?: string;
 };
 

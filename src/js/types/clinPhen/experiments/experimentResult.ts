@@ -18,10 +18,10 @@ export interface ExperimentResult extends ExtraPropertiesEntity {
   identifier: string; // specified in JSON - TODO: clean up this mess in Katsu
   description: string;
   filename: string;
-  url: string;
+  url?: string;
   indices: ExperimentResultIndex[];
-  genome_assembly_id: string;
-  file_format:
+  genome_assembly_id?: string;
+  file_format?:
     | 'SAM'
     | 'BAM'
     | 'CRAM'

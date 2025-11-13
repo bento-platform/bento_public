@@ -46,8 +46,8 @@ import ExperimentRowDetail from './ExperimentRowDetail';
 import ExperimentResultRowDetail from './ExperimentResultRowDetail';
 import {
   ExperimentResultActions,
-  ExperimentResultActionsProps,
   experimentResultViewable,
+  type ExperimentResultActionsProps,
 } from '@/components/ClinPhen/ExperimentDisplay/ExperimentResultView';
 
 type SearchColRenderContext = {
@@ -117,6 +117,14 @@ const PHENOPACKET_SEARCH_TABLE_COLUMNS = {
 } as Record<string, ResultsTableColumn<DiscoveryMatchPhenopacket>>;
 
 const EXPERIMENT_RESULT_SEARCH_TABLE_COLUMNS = {
+  description: {
+    title: 'experiment_result.description',
+    dataIndex: 'description',
+  } as ResultsTableColumn<DiscoveryMatchExperimentResult>,
+  genome_assembly_id: {
+    title: 'experiment_result.genome_assembly_id',
+    dataIndex: 'genome_assembly_id',
+  } as ResultsTableColumn<DiscoveryMatchExperimentResult>,
   file_format: {
     title: 'experiment_result.file_format',
     dataIndex: 'file_format',
@@ -253,7 +261,7 @@ const TABLE_SPEC_EXPERIMENT_RESULT: ResultsTableSpec<DiscoveryMatchExperimentRes
     } as ResultsTableFixedColumn<DiscoveryMatchExperimentResult>,
   ],
   availableColumns: EXPERIMENT_RESULT_SEARCH_TABLE_COLUMNS,
-  defaultColumns: ['file_format', 'project', 'dataset'],
+  defaultColumns: ['description', 'genome_assembly_id', 'file_format', 'project', 'dataset'],
   expandedRowRender: (rec) => <ExperimentResultRowDetail id={rec.id} />,
 };
 
