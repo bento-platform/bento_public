@@ -2,6 +2,14 @@ import type { ExtraPropertiesEntity } from '@/types/util';
 
 export interface ExperimentResultIndex {
   url: string;
+  /*
+   * BAI     # BAM index files ( http://samtools.github.io/hts-specs/SAMv1.pdf "BAI" )
+   * BGZF    # BGZip index files (often .gzi)
+   * CRAI    # CRAM index files ( https://samtools.github.io/hts-specs/CRAMv3.pdf "CRAM index" )
+   * CSI     # See http://samtools.github.io/hts-specs/CSIv1.pdf
+   * TABIX   # See https://samtools.github.io/hts-specs/tabix.pdf
+   * TRIBBLE
+   */
   format: 'BAI' | 'BGZF' | 'CRAI' | 'CSI' | 'TABIX' | 'TRIBBLE';
 }
 
