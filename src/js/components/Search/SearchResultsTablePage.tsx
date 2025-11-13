@@ -21,8 +21,13 @@ import { ExportOutlined, LeftOutlined, TableOutlined } from '@ant-design/icons';
 
 import { T_PLURAL_COUNT, T_SINGULAR_COUNT } from '@/constants/i18n';
 import { WAITING_STATES } from '@/constants/requests';
-import { useAppDispatch, useLanguage, useTranslationFn } from '@/hooks';
+import { PHENOPACKET_COLLAPSE_URL_QUERY_KEY } from '../ClinPhen/PhenopacketDisplay/PhenopacketOverview';
+
+import { useAppDispatch, useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
+import { useScopeDownloadData } from '@/hooks/censorship';
+import { useLangPrefixedUrl } from '@/hooks/navigation';
+import { useSearchQuery } from '@/features/search/hooks';
 
 import type { BentoKatsuEntity } from '@/types/entities';
 import type { Project, Dataset } from '@/types/metadata';
@@ -41,10 +46,9 @@ import type {
   DiscoveryMatchPhenopacket,
   ViewableDiscoveryMatchObject,
 } from '@/features/search/types';
+
 import { downloadBiosampleCSV, downloadExperimentCSV, downloadIndividualCSV } from '@/utils/export';
 import { setEquals } from '@/utils/sets';
-import { useScopeDownloadData } from '@/hooks/censorship';
-import { useSearchQuery } from '@/features/search/hooks';
 
 import DatasetProvenanceModal from '@/components/Provenance/DatasetProvenanceModal';
 import ProjectTitle from '@/components/Util/ProjectTitle';
@@ -54,7 +58,6 @@ import BiosampleRowDetail from './BiosampleRowDetail';
 import ExperimentRowDetail from './ExperimentRowDetail';
 import ExperimentResultRowDetail from './ExperimentResultRowDetail';
 import { ExperimentResultActions } from '@/components/ClinPhen/ExperimentDisplay/ExperimentResultView';
-import { PHENOPACKET_COLLAPSE_URL_QUERY_KEY } from '../ClinPhen/PhenopacketDisplay/PhenopacketOverview';
 
 type SearchColRenderContext = {
   onProjectClick: (id: string) => void;
@@ -118,38 +121,29 @@ const PHENOPACKET_SEARCH_TABLE_COLUMNS = {
   ...COMMON_SEARCH_TABLE_COLUMNS,
 };
 
+const usePhenopacketOverviewLink = (
+  packetId: string | undefined,
+  expanded: string,
+  otherArgs: Record<string, string> | undefined = undefined
+) => {
+  const baseUrl = useLangPrefixedUrl(`phenopackets/${packetId}/overview`);
+  const params = new URLSearchParams({ [PHENOPACKET_COLLAPSE_URL_QUERY_KEY]: expanded, ...(otherArgs ?? {}) });
+  return useLangPrefixedUrl(`${baseUrl}?${params.toString()}`);
+};
+
 const PhenopacketSubjectLink = ({ children, packetId }: { children: ReactNode; packetId: string }) => {
-  const language = useLanguage();
-  return (
-    <Link to={`/${language}/phenopackets/${packetId}/overview?${PHENOPACKET_COLLAPSE_URL_QUERY_KEY}=subject`}>
-      {children}
-    </Link>
-  );
+  const url = usePhenopacketOverviewLink(packetId, 'subject');
+  return <Link to={url}>{children}</Link>;
 };
 
 const PhenopacketBiosampleLink = ({ packetId, sampleId }: { packetId: string; sampleId: string }) => {
-  const language = useLanguage();
-  return (
-    <Link
-      to={`/${language}/phenopackets/${packetId}/overview?${PHENOPACKET_COLLAPSE_URL_QUERY_KEY}=biosamples&biosample=${sampleId}`}
-    >
-      {sampleId}
-    </Link>
-  );
+  const url = usePhenopacketOverviewLink(packetId, 'biosample', { biosample: sampleId });
+  return <Link to={url}>{sampleId}</Link>;
 };
 
 const PhenopacketExperimentLink = ({ packetId, experimentId }: { packetId?: string; experimentId: string }) => {
-  const language = useLanguage();
-  if (packetId) {
-    return (
-      <Link
-        to={`/${language}/phenopackets/${packetId}/overview?${PHENOPACKET_COLLAPSE_URL_QUERY_KEY}=experiments&experiment=${experimentId}`}
-      >
-        {experimentId}
-      </Link>
-    );
-  }
-  return experimentId;
+  const url = usePhenopacketOverviewLink(packetId, 'experiments', { experiment: experimentId });
+  return packetId ? <Link to={url}>{experimentId}</Link> : experimentId;
 };
 
 const PhenopacketExperimentResultLink = ({
@@ -161,18 +155,9 @@ const PhenopacketExperimentResultLink = ({
   experimentResultId: string;
   children?: ReactNode;
 }) => {
-  const language = useLanguage();
+  const url = usePhenopacketOverviewLink(packetId, 'experimentResults', { experimentResult: experimentResultId });
   children = children ?? experimentResultId;
-  if (packetId) {
-    return (
-      <Link
-        to={`/${language}/phenopackets/${packetId}/overview?${PHENOPACKET_COLLAPSE_URL_QUERY_KEY}=experimentResults&experimentResult=${experimentResultId}`}
-      >
-        {children}
-      </Link>
-    );
-  }
-  return children;
+  return packetId ? <Link to={url}>{children}</Link> : children;
 };
 
 const TABLE_SPEC_PHENOPACKET: ResultsTableSpec<DiscoveryMatchPhenopacket> = {
