@@ -37,7 +37,12 @@
   },
   "general": {
     "collapse_all": "Tout réduire",
-    "expand_all": "Tout développer"
+    "expand_all": "Tout développer",
+    "description": "Description",
+    "ontology_class": "Classe ontologique",
+    "actions": "Actions",
+    "view": "Afficher",
+    "url": "URL"
   },
   "search": {
     "filters": "Filtres",
@@ -182,7 +187,7 @@
     "age": "Âge",
     "gestational_age": "Âge gestationnel",
     "age_range": "Tranche d'âge",
-    "ontology_class": "Classe ontologique",
+    "ontology_class": "$t(general.ontology_class)",
     "timestamp": "Horodatage",
     "interval": "Intervalle"
   },
@@ -264,10 +269,8 @@
     "filename": "Nom du fichier",
     "download": "Télécharger",
     "individual_to_file_identifiers": "Identifiants individu-fichier",
-    "file_attributes": "Attributs du fichier"
-  },
-  "experiment_table": {
-    "experiment_id": "Identifiant de l'expérience"
+    "file_attributes": "Attributs du fichier",
+    "download_alert": "Cela va télécharger un fichier depuis un site externe. Êtes-vous sûr de vouloir continuer ?"
   },
   "diseases_expanded_row": {
     "disease_stage": "Stade(s) de la maladie",
@@ -296,7 +299,7 @@
     "diagnosis": "Diagnostic",
     "no_diagnosis": "Aucun diagnostic",
     "genomic_interpretations": "Interprétations génomiques",
-    "no_genomic_iterpretation": "Aucune interprétation génomique",
+    "no_genomic_interpretation": "Aucune interprétation génomique",
     "accession_number": "Numéro d'accession",
     "symbol": "Symbole",
     "description": "Description",
@@ -365,7 +368,7 @@
     "response_to_treatment": "Réponse au traitement",
     "treatment_termination_reason": "Raison de l'arrêt du traitement",
     "reference": "Référence",
-    "unkown": "Inconnu"
+    "unknown": "Inconnu"
   },
   "ontologies": {
     "resource_id": "Identifiant de ressource",
@@ -423,6 +426,37 @@
     "COMPLETED": "Terminé",
     "SOLVED": "Résolu",
     "UNSOLVED": "Non résolu"
+  },
+  "experiment": {
+    "experiment_id": "Identifiant de l'expérience",
+    "experiment_type": "Type d'expérience",
+    "experiment_ontology": "Type d'expérience ($t(general.ontology_class, lowercase))",
+    "study_type": "Type d'étude",
+    "molecule": "Molécule",
+    "molecule_ontology": "Molécule ($t(general.ontology_class, lowercase))",
+    "library_strategy": "Stratégie de génothèque",
+    "library_source": "Source de génothèque",
+    "library_selection": "Sélection de génothèque",
+    "library_layout": "Disposition de génothèque",
+    "extraction_protocol": "Protocole d'extraction",
+    "reference_registry_id": "Identifiant de registre de référence",
+    "qc_flags": "Indicateurs QC"
+  },
+  "instrument": {
+    "instrument": "Instrument",
+    "device": "Appareil",
+    "device_ontology": "Appareil ($t(general.ontology_class, lowercase))"
+  },
+  "experiment_result": {
+    "identifier": "Identifiant",
+    "filename": "$t(file.filename)",
+    "indices": "Indices",
+    "genome_assembly_id": "Assemblage génomique",
+    "file_format": "Format de fichier",
+    "data_output_type": "Type de sortie des données",
+    "usage": "Utilisation",
+    "creation_date": "Date de création",
+    "created_by": "Créé par"
   },
   "auth": {
     "unauthorized_message": "Vous n'êtes pas autorisé à accéder à cette ressource."

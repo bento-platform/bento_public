@@ -1,5 +1,8 @@
 import type React from 'react';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
+import type { Biosample } from '@/types/clinPhen/biosample';
+import type { Experiment } from '@/types/clinPhen/experiments/experiment';
+import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
 
 import SubjectView from './SubjectView';
 import BiosampleView from './BiosampleView';
@@ -9,6 +12,9 @@ import MeasurementsView from './MeasurementsView';
 import MedicalActionsView from './MedicalActionsView';
 import PhenotypicFeaturesView from './PhenotypicFeaturesView';
 
+import ExperimentView from '@/components/ClinPhen/ExperimentDisplay/ExperimentView';
+import ExperimentResultView from '@/components/ClinPhen/ExperimentDisplay/ExperimentResultView';
+
 export type SectionKey =
   | 'subject'
   | 'biosamples'
@@ -16,7 +22,9 @@ export type SectionKey =
   | 'interpretations'
   | 'measurements'
   | 'medicalActions'
-  | 'phenotypicFeatures';
+  | 'phenotypicFeatures'
+  | 'experiments'
+  | 'experimentResults';
 
 export type SectionSpec = {
   /** translation title label */
@@ -30,6 +38,14 @@ export type SectionSpec = {
 };
 
 const has = <T,>(x?: T[] | null) => Array.isArray(x) && x.length > 0;
+
+const phenopacketExperiments = (p: Phenopacket): Experiment[] =>
+  (p.biosamples ?? []).flatMap((b: Biosample) => b?.experiments ?? []);
+
+const phenopacketExperimentResults = (p: Phenopacket): ExperimentResult[] =>
+  phenopacketExperiments(p).flatMap((e: Experiment) =>
+    (e.experiment_results ?? []).map((er: ExperimentResult): ExperimentResult => ({ ...er, experiment_id: e.id }))
+  );
 
 export const SECTION_SPECS: Record<SectionKey, SectionSpec> = {
   subject: {
@@ -76,5 +92,17 @@ export const SECTION_SPECS: Record<SectionKey, SectionSpec> = {
     enabled: (p) => has(p.phenotypic_features),
     render: (p) => <PhenotypicFeaturesView features={p.phenotypic_features!} />,
     order: 6,
+  },
+  experiments: {
+    titleTranslationKey: 'entities.experiment_other',
+    enabled: (p) => has(phenopacketExperiments(p)),
+    render: (p) => <ExperimentView experiments={phenopacketExperiments(p)} />,
+    order: 7,
+  },
+  experimentResults: {
+    titleTranslationKey: 'entities.experiment_result_other',
+    enabled: (p) => has(phenopacketExperimentResults(p)),
+    render: (p) => <ExperimentResultView experimentResults={phenopacketExperimentResults(p)} />,
+    order: 8,
   },
 };

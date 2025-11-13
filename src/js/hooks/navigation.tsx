@@ -12,10 +12,19 @@ import { BentoRoute } from '@/types/routes';
 import { useAppDispatch, useLanguage, useTranslationFn } from '@/hooks';
 import { scopeToUrl } from '@/utils/router';
 
-export const useNavigateToRoot = () => {
+/** Prefixes a path with the currently-selected i18n language. */
+export const useLangPrefixedUrl = (path: string): string => {
   const language = useLanguage();
+  if (path.length > 1) {
+    path = path.replace('^/', ''); // strip slash prefix if present
+  }
+  return `/${language}/${path}`;
+};
+
+export const useNavigateToRoot = () => {
   const navigate = useNavigate();
-  return useCallback(() => navigate(`/${language}`), [navigate, language]);
+  const rootUrl = useLangPrefixedUrl('');
+  return useCallback(() => navigate(rootUrl), [navigate, rootUrl]);
 };
 
 /**

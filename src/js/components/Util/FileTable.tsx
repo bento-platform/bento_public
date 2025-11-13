@@ -1,7 +1,8 @@
-import { Button, Table } from 'antd';
-import { DownloadOutlined } from '@ant-design/icons';
+import { Table } from 'antd';
 
 import ExtraProperties from './ExtraProperties';
+import DownloadButton from '@Util/DownloadButton';
+
 import { EM_DASH } from '@/constants/common';
 
 import type { File } from '@/types/clinPhen/file';
@@ -13,11 +14,7 @@ const FileTable = ({ files }: { files: File[] }) => {
     {
       title: 'file.download',
       dataIndex: 'uri',
-      render: (uri: string) => (
-        <a href={uri} target="_blank" rel="noreferrer">
-          <Button icon={<DownloadOutlined />} />
-        </a>
-      ),
+      render: (uri: string) => <DownloadButton url={uri}>{''}</DownloadButton>,
     },
     {
       title: 'file.individual_to_file_identifiers',
