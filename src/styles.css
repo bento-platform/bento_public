@@ -483,8 +483,14 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
 .compact .ant-table-cell {
   padding: 2px 8px !important;
 }
-.compact .ant-table-expanded-row .ant-table-cell {
+.compact .ant-table-expanded-row > .ant-table-cell {
   padding: 8px !important;
+}
+
+.ant-table-wrapper .ant-table-cell * .ant-table-container:first-child {
+  /* undo border 0 set by ant design styling for tables nested directly in a cell if we have anything in between.
+     border colour should be synced to global border colour. */
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 /* END phenopacket view */
