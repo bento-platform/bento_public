@@ -17,6 +17,22 @@ import { VIEWABLE_FILE_EXTENSIONS } from 'bento-file-display';
 import { VIEWABLE_FILE_FORMATS } from '@/constants/files';
 import { useTranslationFn } from '@/hooks';
 
+export const ExperimentResultIndices = ({ indices }: { indices: ExperimentResult['indices'] }) => {
+  return indices.length === 1 ? (
+    <>
+      <strong>{indices[0].format}:</strong> {indices[0].url}
+    </>
+  ) : (
+    <ul className="m-0" style={{ paddingLeft: 8 }}>
+      {indices.map((i, idx) => (
+        <li key={idx}>
+          <strong>{i.format}:</strong> {i.url}
+        </li>
+      ))}
+    </ul>
+  );
+};
+
 export const ExperimentResultExpandedRow = ({
   experimentResult,
 }: {
@@ -33,11 +49,11 @@ export const ExperimentResultExpandedRow = ({
     {
       key: 'url',
       label: 'general.url',
-      children: experimentResult.url, // TODO: render as link with view/download
+      children: <span>{experimentResult.url}</span>, // TODO: render as link with view/download
     },
     {
       key: 'indices',
-      children: JSON.stringify(experimentResult.indices), // TODO: nice render
+      children: <ExperimentResultIndices indices={experimentResult.indices} />,
       isVisible: !!(experimentResult.indices ?? []).length,
     },
     // {
