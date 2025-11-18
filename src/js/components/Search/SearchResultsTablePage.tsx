@@ -151,7 +151,7 @@ const usePhenopacketOverviewLink = (
 ) => {
   const baseUrl = useLangPrefixedUrl(`phenopackets/${packetId}/overview`);
   const params = new URLSearchParams({ [PHENOPACKET_COLLAPSE_URL_QUERY_KEY]: expanded, ...(otherArgs ?? {}) });
-  return useLangPrefixedUrl(`${baseUrl}?${params.toString()}`);
+  return `${baseUrl}?${params.toString()}`;
 };
 
 const PhenopacketSubjectLink = ({ children, packetId }: { children: ReactNode; packetId?: string }) => {
