@@ -34,13 +34,13 @@ export const useDrsObjectOrPassThrough = (uri: string | undefined): DrsRecordSta
   return uri && isDrs ? byUri[uri] : null;
 };
 
-export const useDrsHttpsAccessOrPassThrough = (url: string): string | null => {
+export const useDrsHttpsAccessOrPassThrough = (url: string | undefined): string | null => {
   const drsRec = useDrsObjectOrPassThrough(url);
   if (drsRec) {
     return drsRec.status !== RequestStatus.Fulfilled
       ? null
-      : ((drsRec.record?.access_methods ?? []).find((am) => am.type === 'https')?.access_url?.url ?? url);
+      : ((drsRec.record?.access_methods ?? []).find((am) => am.type === 'https')?.access_url?.url ?? url ?? null);
   } else {
-    return url;
+    return url ?? null;
   }
 };

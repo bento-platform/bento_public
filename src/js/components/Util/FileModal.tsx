@@ -3,6 +3,8 @@ import { Modal, type ModalProps } from 'antd';
 
 import { FileDisplay } from 'bento-file-display';
 
+import { useDrsHttpsAccessOrPassThrough } from '@/features/drs/hooks';
+
 const MODAL_STYLE: CSSProperties = {
   // the flex display allows items which are less wide (e.g., portrait PDFs) to have a narrower modal
   display: 'flex',
@@ -28,20 +30,25 @@ type FileModalProps = {
 };
 
 // Ported from Bento Web
-const FileModal = ({ title, open, onCancel, hasTriggered, url, fileName, loading }: FileModalProps) => (
-  <Modal
-    title={title}
-    open={open}
-    onCancel={onCancel}
-    width="90vw"
-    style={MODAL_STYLE}
-    styles={MODAL_INNER_STYLES}
-    footer={null}
-    // destroyOnHidden in order to stop audio/video from playing & avoid memory leaks at the cost of re-fetching:
-    destroyOnHidden={true}
-  >
-    {(hasTriggered ?? true) && <FileDisplay uri={url} fileName={fileName} loading={loading ?? false} />}
-  </Modal>
-);
+const FileModal = ({ title, open, onCancel, hasTriggered, url, fileName, loading }: FileModalProps) => {
+  const finalUrl = useDrsHttpsAccessOrPassThrough(url);
+  return (
+    <Modal
+      title={title}
+      open={open}
+      onCancel={onCancel}
+      width="90vw"
+      style={MODAL_STYLE}
+      styles={MODAL_INNER_STYLES}
+      footer={null}
+      // destroyOnHidden in order to stop audio/video from playing & avoid memory leaks at the cost of re-fetching:
+      destroyOnHidden={true}
+    >
+      {(hasTriggered ?? true) && (
+        <FileDisplay uri={finalUrl ?? undefined} fileName={fileName} loading={loading ?? false} />
+      )}
+    </Modal>
+  );
+};
 
 export default FileModal;
