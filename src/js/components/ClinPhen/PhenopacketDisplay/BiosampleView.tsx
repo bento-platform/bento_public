@@ -9,7 +9,7 @@ import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
 import Procedure from '@Util/ClinPhen/Procedure';
 import FileTable from '@Util/FileTable';
 import JsonView from '@Util/JsonView';
-import ExtraPropertiesDisplay from './ExtraPropertiesDisplay';
+import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
 
 import type { Biosample } from '@/types/clinPhen/biosample';
 import type { OntologyTerm } from '@/types/ontology';

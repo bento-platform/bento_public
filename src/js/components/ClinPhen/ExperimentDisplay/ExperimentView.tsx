@@ -7,7 +7,7 @@ import type { ConditionalDescriptionItem } from '@/types/descriptions';
 import { OntologyTermStack } from '@Util/ClinPhen/OntologyTerm';
 import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
 import TDescriptions from '@Util/TDescriptions';
-import ExtraPropertiesDisplay from '@/components/ClinPhen/PhenopacketDisplay/ExtraPropertiesDisplay';
+import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
 import InstrumentDisplay from './InstrumentDisplay';
 import ExperimentResultView from '@/components/ClinPhen/ExperimentDisplay/ExperimentResultView';
 

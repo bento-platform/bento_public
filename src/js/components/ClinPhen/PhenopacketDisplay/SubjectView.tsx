@@ -3,7 +3,7 @@ import OntologyTerm from '@Util/ClinPhen/OntologyTerm';
 import StringList from '@Util/StringList';
 import TimeElementDisplay from '@Util/ClinPhen/TimeElementDisplay';
 import TDescriptions from '@Util/TDescriptions';
-import ExtraPropertiesDisplay from './ExtraPropertiesDisplay';
+import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
 
 import type { Individual } from '@/types/clinPhen/individual';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';

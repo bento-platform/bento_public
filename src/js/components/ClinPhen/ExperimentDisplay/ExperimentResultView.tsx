@@ -9,7 +9,7 @@ import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
 import FileModal from '@Util/FileModal';
 import TDescriptions from '@Util/TDescriptions';
 import DownloadButton from '@Util/DownloadButton';
-import ExtraPropertiesDisplay from '@/components/ClinPhen/PhenopacketDisplay/ExtraPropertiesDisplay';
+import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
 
 import { useScopeDownloadData } from '@/hooks/censorship';
 

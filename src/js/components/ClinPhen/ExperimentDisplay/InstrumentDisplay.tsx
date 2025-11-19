@@ -5,7 +5,7 @@ import type { ConditionalDescriptionItem } from '@/types/descriptions';
 
 import { useTranslationFn } from '@/hooks';
 
-import ExtraPropertiesDisplay from '@/components/ClinPhen/PhenopacketDisplay/ExtraPropertiesDisplay';
+import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
 import OntologyTermComponent from '@Util/ClinPhen/OntologyTerm';
 import TDescriptions from '@Util/TDescriptions';
 
