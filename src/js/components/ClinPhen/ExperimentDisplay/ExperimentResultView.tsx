@@ -150,6 +150,7 @@ export const ExperimentResultExpandedRow = ({
       key: 'url',
       label: 'general.url',
       children: <UrlOrDrsUrlWithPopover url={experimentResult.url} />,
+      isVisible: !!experimentResult.url,
     },
     {
       key: 'indices',
