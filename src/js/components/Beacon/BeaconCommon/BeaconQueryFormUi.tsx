@@ -227,7 +227,9 @@ const BeaconQueryFormUi = ({
   return (
     <div className="container margin-auto" style={{ paddingBottom: 8 }}>
       <Card title={t('Search')} className="w-full shadow rounded-xl" styles={CARD_STYLES}>
-        <p style={{ margin: '-8px 0 8px 0', padding: '0', color: 'grey' }}>{t(uiInstructions)}</p>
+        <p className="p-0" style={{ margin: '-8px 0 8px 0', color: 'grey' }}>
+          {t(uiInstructions)}
+        </p>
         <Form form={form} onFinish={handleFinish} layout="vertical" onValuesChange={handleValuesChange}>
           <Row gutter={FORM_ROW_GUTTERS}>
             {hasVariants && (
