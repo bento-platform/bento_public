@@ -34,6 +34,7 @@
     "variant_other": "Variants"
   },
   "general": {
+    "id": "ID",
     "collapse_all": "Collapse All",
     "expand_all": "Expand All",
     "description": "Description",
@@ -467,5 +468,19 @@
   "table": {
     "invalid_row_keys_title": "Invalid Row Reference",
     "invalid_row_keys_description": "Some rows referenced in the URL do not exist. Adjusting to valid entries."
+  },
+  "drs": {
+    "id": "$t(general.id)",
+    "name": "Name",
+    "description": "Description",
+    "self_uri": "URI",
+    "aliases": "Aliases",
+    "size": "Size",
+    "created_time": "Created Time",
+    "updated_time": "Updated Time",
+    "version": "Version",
+    "mime_type": "MIME Type",
+    "checksums": "Checksums",
+    "access_methods": "Access Methods"
   }
 }

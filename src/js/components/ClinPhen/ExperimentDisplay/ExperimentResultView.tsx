@@ -1,7 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
-import { Button, Space, Tooltip } from 'antd';
-import { EyeOutlined } from '@ant-design/icons';
+import { Button, Popover, Space, Tooltip } from 'antd';
+import { EyeOutlined, UnorderedListOutlined } from '@ant-design/icons';
 
+import type { DrsAccessMethod } from '@/features/drs/types';
 import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
 
@@ -12,21 +13,120 @@ import DownloadButton from '@Util/DownloadButton';
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
 
 import { useScopeDownloadData } from '@/hooks/censorship';
+import { useLocaleFileSize, useTranslationFn } from '@/hooks';
+import { useDrsObjectOrPassThrough } from '@/features/drs/hooks';
 
 import { VIEWABLE_FILE_EXTENSIONS } from 'bento-file-display';
 import { VIEWABLE_FILE_FORMATS } from '@/constants/files';
-import { useTranslationFn } from '@/hooks';
+
+const DRS_ACCESS_METHOD_LABELS: Record<DrsAccessMethod['type'], string> = {
+  s3: 'S3',
+  gs: 'GS',
+  ftp: 'FTP',
+  gsiftp: 'GSI-FTP',
+  globus: 'Globus',
+  htsget: 'htsget',
+  https: 'HTTPS',
+  file: 'File',
+};
+
+const UrlOrDrsUrlWithPopover = ({ url }: { url?: string }) => {
+  const fileSize = useLocaleFileSize();
+  const drsRec = useDrsObjectOrPassThrough(url);
+  const { record } = drsRec ?? { record: null };
+
+  return record ? (
+    <Popover
+      trigger="click"
+      content={
+        <TDescriptions
+          defaultI18nPrefix="drs."
+          bordered={true}
+          column={1}
+          size="compact"
+          style={{ maxWidth: 'min(90vw, 800px)' }}
+          items={[
+            { key: 'id', children: <code>{record.id}</code> },
+            { key: 'name', children: <span>{record.name}</span>, isVisible: !!record.name },
+            { key: 'description', children: <span>{record.description}</span>, isVisible: !!record.description },
+            { key: 'self_uri', children: <span>{record.self_uri}</span>, isVisible: !!record.self_uri },
+            {
+              key: 'aliases',
+              children: <span>{(record.aliases ?? []).join(', ')}</span>,
+              isVisible: !!(record.aliases ?? []).length,
+            },
+            {
+              key: 'size',
+              children: <span>{fileSize(record.size)}</span>,
+            },
+            {
+              key: 'created_time',
+              children: <span>{record.created_time}</span>,
+            },
+            {
+              key: 'updated_time',
+              children: <span>{record.updated_time}</span>,
+              isVisible: !!record.updated_time,
+            },
+            {
+              key: 'version',
+              children: <span>{record.version}</span>,
+              isVisible: !!record.version,
+            },
+            {
+              key: 'mime_type',
+              children: <span>{record.mime_type}</span>,
+              isVisible: !!record.mime_type,
+            },
+            {
+              key: 'checksums',
+              children: (
+                <ul className="m-0 p-0 list-none">
+                  {record.checksums.map((chk) => (
+                    <li key={chk.type}>
+                      <strong>{chk.type.toLocaleUpperCase()}:</strong>{' '}
+                      <code style={{ fontSize: 12 }}>{chk.checksum}</code>
+                    </li>
+                  ))}
+                </ul>
+              ),
+              isVisible: !!record.checksums.length,
+            },
+            {
+              key: 'access_methods',
+              children: (
+                <ul className="m-0 p-0 list-none">
+                  {(record.access_methods ?? []).map((am, idx) => (
+                    <li key={idx}>
+                      <strong>{DRS_ACCESS_METHOD_LABELS[am.type] ?? am.type}:</strong>{' '}
+                      <span style={{ fontSize: 12 }}>{am.access_url?.url ?? am.access_id}</span>
+                    </li>
+                  ))}
+                </ul>
+              ),
+              isVisible: !!(record.access_methods ?? []).length,
+            },
+          ]}
+        />
+      }
+    >
+      <span className="cursor-pointer underline">{url}</span> <Button size="small" icon={<UnorderedListOutlined />} />
+    </Popover>
+  ) : (
+    url
+  );
+};
 
 export const ExperimentResultIndices = ({ indices }: { indices: ExperimentResult['indices'] }) => {
   return indices.length === 1 ? (
     <>
-      <strong>{indices[0].format}:</strong> {indices[0].url}
+      <strong>{indices[0].format}:</strong> <UrlOrDrsUrlWithPopover url={indices[0].url} />
     </>
   ) : (
     <ul className="m-0" style={{ paddingLeft: 8 }}>
       {indices.map((i, idx) => (
         <li key={idx}>
-          <strong>{i.format}:</strong> {i.url}
+          <strong>{i.format}:</strong> <UrlOrDrsUrlWithPopover url={i.url} />
         </li>
       ))}
     </ul>
@@ -40,7 +140,7 @@ export const ExperimentResultExpandedRow = ({
   searchRow?: boolean;
 }) => {
   const items: ConditionalDescriptionItem[] = [
-    { key: 'identifier', children: experimentResult.identifier },
+    { key: 'identifier', children: <code>{experimentResult.identifier}</code> },
     // {
     //   key: 'description',
     //   label: 'general.description',
@@ -49,7 +149,7 @@ export const ExperimentResultExpandedRow = ({
     {
       key: 'url',
       label: 'general.url',
-      children: <span>{experimentResult.url}</span>, // TODO: render as link with view/download
+      children: <UrlOrDrsUrlWithPopover url={experimentResult.url} />,
     },
     {
       key: 'indices',
@@ -81,7 +181,7 @@ export const ExperimentResultExpandedRow = ({
       <TDescriptions
         bordered
         size="compact"
-        column={{ lg: 1, xl: 3 }}
+        column={1}
         items={items}
         defaultI18nPrefix="experiment_result."
       />
@@ -121,8 +221,6 @@ export const ExperimentResultActions = (props: ExperimentResultActionsProps) => 
   const t = useTranslationFn();
   const { hasAttempted: attemptedCanDownload, hasPermission: canDownload } = useScopeDownloadData();
 
-  // TODO: resolve DRS URLs
-
   const [viewModalVisible, setViewModalVisible] = useState(false);
 
   // Slightly different from viewModalVisible - this is just set on the first click of the
@@ -145,8 +243,6 @@ export const ExperimentResultActions = (props: ExperimentResultActionsProps) => 
   }
 
   const { url, filename } = props;
-
-  // TODO: handle DRS URIs
 
   return (
     <div className="experiment-result-actions" style={{ whiteSpace: 'nowrap' }}>

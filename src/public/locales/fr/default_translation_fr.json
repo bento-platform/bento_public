@@ -36,6 +36,7 @@
     "variant_other": "Variants"
   },
   "general": {
+    "id": "Identifiant",
     "collapse_all": "Tout réduire",
     "expand_all": "Tout développer",
     "description": "Description",
@@ -470,5 +471,18 @@
   "table": {
     "invalid_row_keys_title": "Référence de ligne invalide",
     "invalid_row_keys_description": "Certaines lignes référencées dans l'URL n'existent pas. Correction automatique aux entrées valides."
+  },
+  "drs": {
+    "name": "Nom",
+    "description": "Description",
+    "self_uri": "URI",
+    "aliases": "Alias",
+    "size": "Taille",
+    "created_time": "Horodatage de création",
+    "updated_time": "Horodatage de mise à jour",
+    "version": "Version",
+    "mime_type": "Type MIME",
+    "checksums": "Sommes de contrôle",
+    "access_methods": "Méthodes d'accès"
   }
 }

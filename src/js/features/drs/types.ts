@@ -10,6 +10,7 @@ export type DrsAccessUrl = {
 
 type DrsAccessMethodBase = {
   type: 's3' | 'gs' | 'ftp' | 'gsiftp' | 'globus' | 'htsget' | 'https' | 'file';
+  cloud?: string;
   region?: string;
   authorizations?: object;
 };
