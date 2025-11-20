@@ -3,6 +3,7 @@ import { Modal, type ModalProps } from 'antd';
 
 import { FileDisplay } from 'bento-file-display';
 
+import { useAuthorizationHeader } from 'bento-auth-js';
 import { useDrsHttpsAccessOrPassThrough } from '@/features/drs/hooks';
 
 const MODAL_STYLE: CSSProperties = {
@@ -31,6 +32,7 @@ type FileModalProps = {
 
 // Ported from Bento Web
 const FileModal = ({ title, open, onCancel, hasTriggered, url, fileName, loading }: FileModalProps) => {
+  const authHeader = useAuthorizationHeader();
   const finalUrl = useDrsHttpsAccessOrPassThrough(url);
   return (
     <Modal
@@ -45,7 +47,12 @@ const FileModal = ({ title, open, onCancel, hasTriggered, url, fileName, loading
       destroyOnHidden={true}
     >
       {(hasTriggered ?? true) && (
-        <FileDisplay uri={finalUrl ?? undefined} fileName={fileName} loading={loading ?? false} />
+        <FileDisplay
+          uri={finalUrl ?? undefined}
+          fileName={fileName}
+          loading={loading ?? false}
+          authHeader={authHeader}
+        />
       )}
     </Modal>
   );
