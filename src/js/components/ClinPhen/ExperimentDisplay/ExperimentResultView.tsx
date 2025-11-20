@@ -117,7 +117,11 @@ export const experimentResultViewable = ({ url, fileFormat, filename }: Experime
 
 export const ExperimentResultActions = (props: ExperimentResultActionsProps) => {
   const t = useTranslationFn();
-  const { hasAttempted: attemptedCanDownload, hasPermission: canDownload } = useScopeDownloadData();
+  const {
+    hasAttempted: attemptedCanDownload,
+    fetchingPermission: fetchingCanDownload,
+    hasPermission: canDownload,
+  } = useScopeDownloadData();
 
   const [viewModalVisible, setViewModalVisible] = useState(false);
 
@@ -147,7 +151,7 @@ export const ExperimentResultActions = (props: ExperimentResultActionsProps) => 
       {url ? (
         <>
           <Tooltip title={t('file.download')}>
-            <DownloadButton size="small" url={url} fileName={filename}>
+            <DownloadButton size="small" url={url} fileName={filename} loading={fetchingCanDownload}>
               {''}
             </DownloadButton>
           </Tooltip>{' '}
@@ -168,7 +172,7 @@ export const ExperimentResultActions = (props: ExperimentResultActionsProps) => 
             hasTriggered={hasTriggeredViewModal}
           />
           <Tooltip title={t('general.view')}>
-            <Button size="small" icon={<EyeOutlined />} onClick={onViewClick} />
+            <Button size="small" icon={<EyeOutlined />} onClick={onViewClick} loading={fetchingCanDownload} />
           </Tooltip>{' '}
         </>
       ) : null}
