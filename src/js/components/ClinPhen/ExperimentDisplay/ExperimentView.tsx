@@ -100,10 +100,10 @@ const EXPERIMENT_VIEW_COLUMNS: CustomTableColumns<Experiment> = [
   {
     title: 'entities.experiment_result_other',
     dataIndex: 'experiment_results',
-    render: (results: ExperimentResult[]) => {
+    render: (results: ExperimentResult[] | undefined) => {
       // Render like "1 x CRAM, 2 x VCF"
       // TODO: popover with list of file names
-      const counts = _countItems(results.map((er) => er.file_format ?? 'Unknown'));
+      const counts = _countItems((results ?? []).map((er) => er.file_format ?? 'Unknown'));
       const countItems = Object.entries(counts).sort((a, b) => a[0].localeCompare(b[0]));
       return countItems.map((i) => `${i[1]} \u00d7 ${i[0]}`).join(', ');
     },
