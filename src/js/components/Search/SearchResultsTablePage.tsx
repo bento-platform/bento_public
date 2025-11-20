@@ -41,7 +41,7 @@ import type {
   DiscoveryMatchPhenopacket,
   ViewableDiscoveryMatchObject,
 } from '@/features/search/types';
-import { downloadBiosampleCSV, downloadExperimentCSV, downloadIndividualCSV } from '@/utils/export';
+import { downloadAllMatchesCSV } from '@/utils/export';
 import { setEquals } from '@/utils/sets';
 import { useScopeDownloadData } from '@/hooks/censorship';
 import { useSearchQuery } from '@/features/search/hooks';
@@ -69,7 +69,7 @@ type ResultsTableSpec<T extends ViewableDiscoveryMatchObject> = {
   availableColumns: Record<string, ResultsTableColumn<T>>;
   defaultColumns: string[];
   expandable?: TableProps<T>['expandable'];
-  download?: (headers: Record<string, string>, matches: T[]) => Promise<void>;
+  canExport?: boolean;
 };
 
 const COMMON_SEARCH_TABLE_COLUMNS = {
@@ -138,11 +138,7 @@ const TABLE_SPEC_PHENOPACKET: ResultsTableSpec<DiscoveryMatchPhenopacket> = {
   expandable: {
     expandedRowRender: (rec) => (rec.subject ? <IndividualRowDetail id={rec.subject} /> : null),
   },
-  download: (headers, matches) =>
-    downloadIndividualCSV(
-      headers,
-      matches.filter(({ subject }) => subject !== undefined).map(({ subject }) => subject as string)
-    ),
+  canExport: true,
 };
 
 const TABLE_SPEC_BIOSAMPLE: ResultsTableSpec<DiscoveryMatchBiosample> = {
@@ -159,11 +155,7 @@ const TABLE_SPEC_BIOSAMPLE: ResultsTableSpec<DiscoveryMatchBiosample> = {
   expandable: {
     expandedRowRender: (rec) => <BiosampleRowDetail id={rec.id} />,
   },
-  download: (headers, matches) =>
-    downloadBiosampleCSV(
-      headers,
-      matches.map((b) => b.id)
-    ),
+  canExport: true,
 };
 
 const TABLE_SPEC_EXPERIMENT: ResultsTableSpec<DiscoveryMatchExperiment> = {
@@ -179,11 +171,7 @@ const TABLE_SPEC_EXPERIMENT: ResultsTableSpec<DiscoveryMatchExperiment> = {
   // expandable: {
   //   expandedRowRender: (rec) => <div>TODO: {rec.id}</div>,
   // },
-  download: (headers, matches) =>
-    downloadExperimentCSV(
-      headers,
-      matches.map((e) => e.id)
-    ),
+  canExport: true,
 };
 
 const TABLE_SPEC_EXPERIMENT_RESULT: ResultsTableSpec<DiscoveryMatchExperimentResult> = {
@@ -357,10 +345,13 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   );
 
   const onExport = useCallback(() => {
-    if (!spec.download) return;
+    if (!spec.canExport) return;
     setExporting(true);
-    spec.download(authHeader, matches ?? []).finally(() => setExporting(false));
-  }, [spec, authHeader, matches]);
+    const filename = `${t(`entities.${entity}_other`)}.csv`;
+    downloadAllMatchesCSV(authHeader, selectedScope, filterQueryParams, textQuery, rdEntity, filename).finally(() =>
+      setExporting(false)
+    );
+  }, [spec.canExport, t, entity, authHeader, selectedScope, filterQueryParams, textQuery, rdEntity]);
 
   const openColumnModal = useCallback(() => setColumnModalOpen(true), []);
 
@@ -396,7 +387,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
             <Tooltip title={t('search.manage_columns')}>
               <Button icon={<TableOutlined />} onClick={openColumnModal} />
             </Tooltip>
-            {!!spec.download && (fetchingCanDownload || canDownload) ? (
+            {!!spec.canExport && (fetchingCanDownload || canDownload) ? (
               <Button
                 icon={<ExportOutlined />}
                 loading={fetchingCanDownload || exporting}

@@ -1,5 +1,12 @@
 import FileSaver from 'file-saver';
-import { biosampleBatchUrl, experimentBatchUrl, individualBatchUrl } from '@/constants/configConstants';
+import {
+  biosampleBatchUrl,
+  experimentBatchUrl,
+  individualBatchUrl,
+  katsuDiscoveryMatchesUrl,
+} from '@/constants/configConstants';
+import type { DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
+import type { ResultsDataEntity } from '@/types/entities';
 
 // Katsu currently has the same CSV download request format for individuals, biosamples, and experiments
 const downloadCSVHelper = async (url: string, headers: Record<string, string>, ids: string[], filename: string) => {
@@ -30,3 +37,28 @@ export const downloadBiosampleCSV: DownloadFunction = (headers, ids) =>
 
 export const downloadExperimentCSV: DownloadFunction = (headers, ids) =>
   downloadCSVHelper(experimentBatchUrl, headers, ids, 'experiments.csv');
+
+export const downloadAllMatchesCSV = async (
+  headers: Record<string, string>,
+  selectedScope: DiscoveryScopeSelection,
+  filterQueryParams: Record<string, string>,
+  textQuery: string,
+  entity: ResultsDataEntity,
+  filename: string
+): Promise<void> => {
+  const params = new URLSearchParams({
+    ...selectedScope.scope,
+    ...filterQueryParams,
+    ...(textQuery ? { _fts: textQuery } : {}),
+    _entity: entity,
+    _format: 'csv',
+  });
+
+  const res = await fetch(`${katsuDiscoveryMatchesUrl}?${params.toString()}`, {
+    method: 'GET',
+    headers,
+  });
+
+  const blob = await res.blob();
+  FileSaver.saveAs(blob, filename);
+};
