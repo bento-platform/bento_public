@@ -42,10 +42,20 @@ const has = <T,>(x?: T[] | null) => Array.isArray(x) && x.length > 0;
 const phenopacketExperiments = (p: Phenopacket): Experiment[] =>
   (p.biosamples ?? []).flatMap((b: Biosample) => b?.experiments ?? []);
 
-const phenopacketExperimentResults = (p: Phenopacket): ExperimentResult[] =>
-  phenopacketExperiments(p).flatMap((e: Experiment) =>
-    (e.experiment_results ?? []).map((er: ExperimentResult): ExperimentResult => ({ ...er, experiment_id: e.id }))
-  );
+const phenopacketExperimentResults = (p: Phenopacket): ExperimentResult[] => {
+  const experimentResults: Record<number, ExperimentResult> = {};
+
+  phenopacketExperiments(p).forEach((e: Experiment) => {
+    (e.experiment_results ?? []).forEach((er: ExperimentResult) => {
+      if (!(er.id in experimentResults)) {
+        experimentResults[er.id] = { ...er, experiment_ids: [] };
+      }
+      experimentResults[er.id].experiment_ids?.push(e.id);
+    });
+  });
+
+  return Object.values(experimentResults);
+};
 
 export const SECTION_SPECS: Record<SectionKey, SectionSpec> = {
   subject: {

@@ -74,9 +74,10 @@ export const ExperimentResultExpandedRow = ({
     { key: 'created_by', children: experimentResult.created_by },
     // Not in the true Experiment Result schema, but can be added by the front end for linking purposes:
     {
-      key: 'experiment_id',
-      label: 'entities.experiment_one',
-      children: experimentResult.experiment_id, // TODO: link to expanded row + scrollTo
+      key: 'experiment_ids',
+      label: 'entities.experiment_other',
+      children: (experimentResult.experiment_ids ?? []).join(', '), // TODO: link to expanded row + scrollTo
+      isVisible: objectToBoolean(experimentResult.experiment_ids),
     },
   ];
 
@@ -196,8 +197,10 @@ const ExperimentResultView = ({ experimentResults, urlAware }: ExperimentResultV
       { title: 'experiment_result.filename', dataIndex: 'filename', alwaysShow: true },
       { title: 'general.description', dataIndex: 'description' },
       {
-        title: 'experiment_result.genome_assembly_id',
-        dataIndex: 'genome_assembly_id', // TODO: nice render with modal to reference genome
+        title: 'experiment_result.experiment_ids',
+        dataIndex: 'experiment_ids',
+        isEmpty: (es: string[] | undefined) => !objectToBoolean(es),
+        render: (es: string[] | undefined) => (es ?? []).join(', '),
       },
       { title: 'experiment_result.file_format', dataIndex: 'file_format' },
       {

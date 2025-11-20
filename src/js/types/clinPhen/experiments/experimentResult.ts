@@ -59,5 +59,5 @@ export interface ExperimentResult extends ExtraPropertiesEntity {
   creation_date?: string;
   created_by?: string;
   // Can be added in front end:
-  experiment_id?: string;
+  experiment_ids?: string[];
 }
