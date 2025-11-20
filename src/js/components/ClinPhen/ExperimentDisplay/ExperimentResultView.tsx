@@ -44,11 +44,11 @@ export const ExperimentResultExpandedRow = ({
 }) => {
   const items: ConditionalDescriptionItem[] = [
     { key: 'identifier', children: <code>{experimentResult.identifier}</code> },
-    // {
-    //   key: 'description',
-    //   label: 'general.description',
-    //   children: experimentResult.description,
-    // },
+    {
+      key: 'description',
+      label: 'general.description',
+      children: experimentResult.description,
+    },
     {
       key: 'url',
       label: 'general.url',
@@ -58,16 +58,16 @@ export const ExperimentResultExpandedRow = ({
     {
       key: 'indices',
       children: <ExperimentResultIndices indices={experimentResult.indices} />,
-      isVisible: !!(experimentResult.indices ?? []).length,
+      isVisible: objectToBoolean(experimentResult.indices),
     },
-    // {
-    //   key: 'genome_assembly_id',
-    //   children: experimentResult.genome_assembly_id, // TODO: modal to reference genome details
-    // },
-    // {
-    //   key: 'file_format',
-    //   children: experimentResult.file_format,
-    // },
+    {
+      key: 'genome_assembly_id',
+      children: experimentResult.genome_assembly_id, // TODO: modal to reference genome details
+    },
+    {
+      key: 'file_format',
+      children: experimentResult.file_format,
+    },
     { key: 'data_output_type', children: experimentResult.data_output_type },
     { key: 'usage', children: experimentResult.usage },
     { key: 'creation_date', children: experimentResult.creation_date },
