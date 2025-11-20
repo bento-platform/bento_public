@@ -13,10 +13,10 @@ interface TDescriptionsProps extends Omit<DescriptionsProps, 'items' | 'size'> {
 }
 
 const TDescriptions = memo(
-  ({ items, size, defaultI18nPrefix, ...restProps }: TDescriptionsProps) => {
+  ({ items, size, defaultI18nPrefix, className, ...restProps }: TDescriptionsProps) => {
     const filteredItems = useMemo(() => hiddenDescriptions(items), [items]);
     const descriptionItems = useTranslatedDescriptionItems(filteredItems, defaultI18nPrefix);
-    const classNames = [];
+    const classNames = [...(className ?? '').split(' ').filter((c) => !!c.length)];
     let derivedSize: DescriptionsProps['size'] = 'default';
 
     if (!filteredItems?.length) return null;
