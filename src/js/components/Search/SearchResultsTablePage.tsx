@@ -1,6 +1,5 @@
 import { type ReactNode, Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuthorizationHeader } from 'bento-auth-js';
 
 import {
   Button,
@@ -41,10 +40,10 @@ import type {
   DiscoveryMatchPhenopacket,
   ViewableDiscoveryMatchObject,
 } from '@/features/search/types';
-import { downloadAllMatchesCSV } from '@/utils/export';
 import { setEquals } from '@/utils/sets';
 import { useScopeDownloadData } from '@/hooks/censorship';
 import { useSearchQuery } from '@/features/search/hooks';
+import { useDownloadAllMatchesCSV } from '@/hooks/useDownloadAllMatchesCSV';
 
 import DatasetProvenanceModal from '@/components/Provenance/DatasetProvenanceModal';
 import ProjectTitle from '@/components/Util/ProjectTitle';
@@ -233,7 +232,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   const dispatch = useAppDispatch();
   const { filterQueryParams, textQuery, resultCountsOrBools, pageSize, matchData } = useSearchQuery();
   const { fetchingPermission: fetchingCanDownload, hasPermission: canDownload } = useScopeDownloadData();
-  const authHeader = useAuthorizationHeader();
+  const downloadAllMatchesCSV = useDownloadAllMatchesCSV();
   const selectedScope = useSelectedScope();
   const isSmallScreen = useSmallScreen();
 
@@ -348,10 +347,8 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
     if (!spec.canExport) return;
     setExporting(true);
     const filename = `${t(`entities.${entity}_other`)}.csv`;
-    downloadAllMatchesCSV(authHeader, selectedScope, filterQueryParams, textQuery, rdEntity, filename).finally(() =>
-      setExporting(false)
-    );
-  }, [spec.canExport, t, entity, authHeader, selectedScope, filterQueryParams, textQuery, rdEntity]);
+    downloadAllMatchesCSV(filterQueryParams, textQuery, rdEntity, filename).finally(() => setExporting(false));
+  }, [spec.canExport, t, entity, downloadAllMatchesCSV, filterQueryParams, textQuery, rdEntity]);
 
   const openColumnModal = useCallback(() => setColumnModalOpen(true), []);
 

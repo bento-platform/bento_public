@@ -1,30 +1,29 @@
+import axios from 'axios';
 import FileSaver from 'file-saver';
 import { katsuDiscoveryMatchesUrl } from '@/constants/configConstants';
-import type { DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
+import type { RootState } from '@/store';
+import { scopedAuthorizedRequestConfig } from '@/utils/requests';
 import type { ResultsDataEntity } from '@/types/entities';
 
 // Download all matches as CSV from the discovery_matches endpoint
 export const downloadAllMatchesCSV = async (
-  headers: Record<string, string>,
-  selectedScope: DiscoveryScopeSelection,
+  state: RootState,
   filterQueryParams: Record<string, string>,
   textQuery: string,
   entity: ResultsDataEntity,
   filename: string
 ): Promise<void> => {
-  const params = new URLSearchParams({
-    ...selectedScope.scope,
+  const config = scopedAuthorizedRequestConfig(state, {
     ...filterQueryParams,
     ...(textQuery ? { _fts: textQuery } : {}),
     _entity: entity,
     _format: 'csv',
   });
 
-  const res = await fetch(`${katsuDiscoveryMatchesUrl}?${params.toString()}`, {
-    method: 'GET',
-    headers,
+  const res = await axios.get(katsuDiscoveryMatchesUrl, {
+    ...config,
+    responseType: 'blob',
   });
 
-  const blob = await res.blob();
-  FileSaver.saveAs(blob, filename);
+  FileSaver.saveAs(res.data, filename);
 };
