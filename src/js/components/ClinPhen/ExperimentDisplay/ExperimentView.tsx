@@ -13,6 +13,7 @@ import ExperimentResultView from '@/components/ClinPhen/ExperimentDisplay/Experi
 
 import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { useTranslationFn } from '@/hooks';
+import { objectToBoolean } from '@/utils/boolean';
 
 export const ExperimentExpandedRow = ({ experiment, searchRow }: { experiment: Experiment; searchRow?: boolean }) => {
   const t = useTranslationFn();
@@ -22,7 +23,7 @@ export const ExperimentExpandedRow = ({ experiment, searchRow }: { experiment: E
     {
       key: 'experiment_ontology',
       children: <OntologyTermStack terms={experiment.experiment_ontology} />,
-      isVisible: !!experiment.experiment_ontology?.length,
+      isVisible: objectToBoolean(experiment.experiment_ontology),
     },
     { key: 'study_type', children: experiment.study_type },
     { key: 'molecule', children: experiment.molecule },
@@ -40,7 +41,7 @@ export const ExperimentExpandedRow = ({ experiment, searchRow }: { experiment: E
     {
       key: 'qc_flags',
       children: (experiment.qc_flags ?? []).join(', '),
-      isVisible: (experiment.qc_flags ?? []).length,
+      isVisible: objectToBoolean(experiment.qc_flags),
     },
   ];
 
@@ -72,10 +73,10 @@ export const ExperimentExpandedRow = ({ experiment, searchRow }: { experiment: E
 
 export const isExperimentRowExpandable = (r: Experiment) =>
   !!(
-    r.experiment_ontology?.length ||
+    objectToBoolean(r.experiment_ontology) ||
     r.study_type ||
     r.molecule ||
-    r.molecule_ontology?.length ||
+    objectToBoolean(r.molecule_ontology) ||
     r.library_strategy ||
     r.library_source ||
     r.library_selection ||
@@ -85,7 +86,7 @@ export const isExperimentRowExpandable = (r: Experiment) =>
     r.qc_flags?.length ||
     r.experiment_results?.length ||
     r.instrument ||
-    Object.keys(r.extra_properties ?? {}).length
+    objectToBoolean(r.extra_properties)
   );
 
 const _countItems = (x: string[]): Record<string, number> => {

@@ -15,6 +15,8 @@ import UrlOrDrsUrlWithPopover from '@Util/UrlOrDrsUrlWithPopover';
 import { useScopeDownloadData } from '@/hooks/censorship';
 import { useTranslationFn } from '@/hooks';
 
+import { objectToBoolean } from '@/utils/boolean';
+
 import { VIEWABLE_FILE_EXTENSIONS } from 'bento-file-display';
 import { VIEWABLE_FILE_FORMATS } from '@/constants/files';
 
@@ -92,14 +94,14 @@ export const isExperimentResultRowExpandable = (r: ExperimentResult) =>
     r.description ||
     r.filename ||
     r.url ||
-    (r.indices ?? []).length ||
+    objectToBoolean(r.indices) ||
     r.genome_assembly_id ||
     r.file_format ||
     r.data_output_type ||
     r.usage ||
     r.creation_date ||
     r.created_by ||
-    Object.keys(r.extra_properties ?? {}).length
+    objectToBoolean(r.extra_properties)
   );
 
 export type ExperimentResultActionsProps = {
