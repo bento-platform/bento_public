@@ -35,9 +35,10 @@
   },
   "general": {
     "id": "ID",
+    "name": "Name",
+    "description": "Description",
     "collapse_all": "Collapse All",
     "expand_all": "Expand All",
-    "description": "Description",
     "actions": "Actions",
     "ontology_class": "Ontology Class",
     "view": "View",
@@ -227,10 +228,10 @@
     "code": "Code"
   },
   "biosample_expanded_row": {
-    "description": "Description",
-    "derived_from": "Derived from",
+    "description": "$t(general.description)",
+    "derived_from_id": "Derived from",
     "sample_type": "Sample type",
-    "collection_time": "Collection time",
+    "time_of_collection": "Collection time",
     "location_collected": "Location collected",
     "histological_diagnosis": "Histological diagnosis",
     "pathological_stage": "Pathological stage",
@@ -471,8 +472,8 @@
   },
   "drs": {
     "id": "$t(general.id)",
-    "name": "Name",
-    "description": "Description",
+    "name": "$t(general.name)",
+    "description": "$t(general.description)",
     "self_uri": "URI",
     "aliases": "Aliases",
     "size": "Size",

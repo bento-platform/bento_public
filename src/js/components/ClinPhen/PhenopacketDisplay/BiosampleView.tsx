@@ -77,16 +77,12 @@ const BiosampleLocationCollected = ({ biosample }: { biosample: Biosample }) => 
               <div>
                 <TDescriptions
                   column={1}
+                  defaultI18nPrefix="geo_location."
                   items={[
-                    {
-                      key: 'label',
-                      label: 'geo_location.label',
-                      children: props.label,
-                      isVisible: !!props.label && props.label !== props.city,
-                    },
-                    { key: 'city', label: 'geo_location.city', children: t(props.city) },
-                    { key: 'country', label: 'geo_location.country', children: t(props.country) },
-                    { key: 'precision', label: 'geo_location.precision', children: t(props.precision) },
+                    { key: 'label', children: props.label, isVisible: !!props.label && props.label !== props.city },
+                    { key: 'city', children: t(props.city) },
+                    { key: 'country', children: t(props.country) },
+                    { key: 'precision', children: t(props.precision) },
                     {
                       key: 'ISO3166alpha3',
                       label: 'geo_location.country_code',
@@ -116,31 +112,20 @@ export const BiosampleExpandedRow = ({ biosample, searchRow }: { biosample: Bios
       ? [
           {
             key: 'sampled_tissue',
-            label: 'biosample_table.sampled_tissue',
             children: <OntologyTermComponent term={biosample.sampled_tissue} />,
             isVisible: biosample.sampled_tissue,
           },
         ]
       : []),
-    {
-      key: 'description',
-      label: 'biosample_expanded_row.description',
-      children: biosample.description,
-    },
-    {
-      key: 'derived_from_id',
-      label: 'biosample_expanded_row.derived_from',
-      children: biosample.derived_from_id,
-    },
+    { key: 'description', children: biosample.description },
+    { key: 'derived_from_id', children: biosample.derived_from_id },
     {
       key: 'sample_type',
-      label: 'biosample_expanded_row.sample_type',
       children: <OntologyTermComponent term={biosample.sample_type} />,
       isVisible: biosample.sample_type,
     },
     {
       key: 'taxonomy',
-      label: 'biosample_expanded_row.taxonomy',
       children: (
         <em>
           <OntologyTermComponent term={biosample.taxonomy} />
@@ -150,80 +135,67 @@ export const BiosampleExpandedRow = ({ biosample, searchRow }: { biosample: Bios
     },
     {
       key: 'time_of_collection',
-      label: 'biosample_expanded_row.collection_time',
       children: <TimeElementDisplay element={biosample.time_of_collection} />,
       isVisible: biosample.time_of_collection,
     },
     {
       key: 'location_collected',
-      label: 'biosample_expanded_row.location_collected',
       children: biosample.location_collected && <BiosampleLocationCollected biosample={biosample} />,
       isVisible: biosample.location_collected,
       span: 3,
     },
     {
       key: 'histological_diagnosis',
-      label: 'biosample_expanded_row.histological_diagnosis',
       children: <OntologyTermComponent term={biosample.histological_diagnosis} />,
       isVisible: biosample.histological_diagnosis,
     },
     {
       key: 'pathological_stage',
-      label: 'biosample_expanded_row.pathological_stage',
       children: <OntologyTermComponent term={biosample.pathological_stage} />,
       isVisible: biosample.pathological_stage,
     },
     {
       key: 'pathological_tnm_finding',
-      label: 'biosample_expanded_row.pathological_tnm_finding',
       children: <OntologyTermStack terms={biosample.pathological_tnm_finding} />,
       isVisible: biosample.pathological_tnm_finding?.length,
     },
     {
       key: 'diagnostic_markers',
-      label: 'biosample_expanded_row.diagnostic_markers',
       children: <OntologyTermStack terms={biosample.diagnostic_markers} />,
       isVisible: biosample.diagnostic_markers?.length,
     },
     {
       key: 'tumor_progression',
-      label: 'biosample_expanded_row.tumor_progression',
       children: <OntologyTermComponent term={biosample.tumor_progression} />,
       isVisible: biosample.tumor_progression,
     },
     {
       key: 'tumor_grade',
-      label: 'biosample_expanded_row.tumor_grade',
       children: <OntologyTermComponent term={biosample.tumor_grade} />,
       isVisible: biosample.tumor_grade,
     },
     {
       key: 'material_sample',
-      label: 'biosample_expanded_row.material_sample',
       children: <OntologyTermComponent term={biosample.material_sample} />,
       isVisible: biosample.material_sample,
     },
     {
       key: 'sample_processing',
-      label: 'biosample_expanded_row.sample_processing',
       children: <OntologyTermComponent term={biosample.sample_processing} />,
       isVisible: biosample.sample_processing,
     },
     {
       key: 'sample_storage',
-      label: 'biosample_expanded_row.sample_storage',
       children: <OntologyTermComponent term={biosample.sample_storage} />,
       isVisible: biosample.sample_storage,
     },
     {
       key: 'procedure',
-      label: 'biosample_expanded_row.procedure',
       children: <Procedure procedure={biosample.procedure} />,
       isVisible: objectToBoolean(biosample.procedure),
     },
     {
       key: 'files',
-      label: 'biosample_expanded_row.files',
       children: <FileTable files={biosample.files ?? []} />,
       isVisible: objectToBoolean(biosample.files),
     },
@@ -231,7 +203,13 @@ export const BiosampleExpandedRow = ({ biosample, searchRow }: { biosample: Bios
 
   return (
     <Space direction="vertical" className="w-full">
-      <TDescriptions bordered size="compact" column={{ lg: 1, xl: 3 }} items={items} />
+      <TDescriptions
+        bordered
+        size="compact"
+        defaultI18nPrefix="biosample_expanded_row."
+        column={{ lg: 1, xl: 3 }}
+        items={items}
+      />
       <ExtraPropertiesDisplay extraProperties={biosample.extra_properties} />
     </Space>
   );

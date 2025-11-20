@@ -37,9 +37,10 @@
   },
   "general": {
     "id": "Identifiant",
+    "name": "Nom",
+    "description": "Description",
     "collapse_all": "Tout réduire",
     "expand_all": "Tout développer",
-    "description": "Description",
     "ontology_class": "Classe ontologique",
     "actions": "Actions",
     "view": "Afficher",
@@ -232,10 +233,9 @@
     "code": "Code"
   },
   "biosample_expanded_row": {
-    "description": "Description",
-    "derived_from": "Dérivé de",
+    "derived_from_id": "Dérivé de",
     "sample_type": "Type d'échantillon",
-    "collection_time": "Heure de collecte",
+    "time_of_collection": "Heure de collecte",
     "location_collected": "Lieu de prélèvement",
     "histological_diagnosis": "Diagnostic histologique",
     "pathological_stage": "Stade pathologique",
@@ -450,7 +450,6 @@
   },
   "experiment_result": {
     "identifier": "Identifiant",
-    "filename": "$t(file.filename)",
     "indices": "Indices",
     "genome_assembly_id": "Assemblage génomique",
     "file_format": "Format de fichier",
@@ -473,8 +472,6 @@
     "invalid_row_keys_description": "Certaines lignes référencées dans l'URL n'existent pas. Correction automatique aux entrées valides."
   },
   "drs": {
-    "name": "Nom",
-    "description": "Description",
     "self_uri": "URI",
     "aliases": "Alias",
     "size": "Taille",
