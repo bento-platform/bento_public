@@ -179,13 +179,7 @@ export const ExperimentResultExpandedRow = ({
 
   return (
     <Space direction="vertical" className="w-full">
-      <TDescriptions
-        bordered
-        size="compact"
-        column={1}
-        items={items}
-        defaultI18nPrefix="experiment_result."
-      />
+      <TDescriptions bordered size="compact" column={1} items={items} defaultI18nPrefix="experiment_result." />
       <ExtraPropertiesDisplay extraProperties={experimentResult.extra_properties} />
     </Space>
   );
