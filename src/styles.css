@@ -459,9 +459,11 @@ h3.search-sub-form-title {
 
 /* END search */
 
-/* BEGIN phenopacket view */
+/* BEGIN phenopackets/other clinical+phenotypic metadata views */
 
-#subject-view .ant-descriptions-item-label {
+.subject-view .ant-descriptions-item-label,
+.experiment-result-expanded-row .ant-descriptions-item-label,
+.extra-properties-display .ant-descriptions-item-label {
   /* Align split line vertically in all descriptions */
   width: min(30vw, 250px);
 }
@@ -497,7 +499,7 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   border-top: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-/* END phenopacket view */
+/* END phenopackets/other clinical+phenotypic metadata views */
 
 
 @media (min-width: 1050px) and (max-width: 1550px) {
