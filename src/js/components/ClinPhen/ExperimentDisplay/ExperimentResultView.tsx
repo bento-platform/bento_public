@@ -167,7 +167,7 @@ export const ExperimentResultActions = (props: ExperimentResultActionsProps) => 
             fileName={filename}
             hasTriggered={hasTriggeredViewModal}
           />
-          <Tooltip title="View">
+          <Tooltip title={t('general.view')}>
             <Button size="small" icon={<EyeOutlined />} onClick={onViewClick} />
           </Tooltip>{' '}
         </>
