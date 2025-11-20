@@ -196,13 +196,16 @@ const ExperimentResultView = ({ experimentResults, urlAware }: ExperimentResultV
       // ID is a meaningless UUID that changes between ingests most of the time, don't bother showing it
       { title: 'experiment_result.filename', dataIndex: 'filename', alwaysShow: true },
       { title: 'general.description', dataIndex: 'description' },
+      // TODO: nice render with modal to reference genome:
+      { title: 'experiment_result.genome_assembly_id', dataIndex: 'genome_assembly_id' },
+      { title: 'experiment_result.file_format', dataIndex: 'file_format' },
+      // TODO: link
       {
         title: 'experiment_result.experiment_ids',
         dataIndex: 'experiment_ids',
         isEmpty: (es: string[] | undefined) => !objectToBoolean(es),
         render: (es: string[] | undefined) => (es ?? []).join(', '),
       },
-      { title: 'experiment_result.file_format', dataIndex: 'file_format' },
       {
         title: 'general.actions',
         key: 'actions',
