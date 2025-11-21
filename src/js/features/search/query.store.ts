@@ -54,6 +54,7 @@ export type QueryState = {
 
   // results
   resultCountsOrBools: KatsuEntityCountsOrBooleans;
+  resultCountsByDataset: Record<string, KatsuEntityCountsOrBooleans>;
   pageSize: number;
   matchData: {
     phenopacket: QueryResultMatchData<DiscoveryMatchPhenopacket>;
@@ -100,6 +101,7 @@ const initialState: QueryState = {
     experiment: 0,
     experiment_result: 0,
   },
+  resultCountsByDataset: {}, 
   pageSize: 10,
   matchData: {
     phenopacket: INITIAL_MATCH_DATA_STATE,
@@ -210,6 +212,8 @@ const query = createSlice({
 
         if ('counts' in response) {
           state.resultCountsOrBools = response.counts;
+
+          state.resultCountsByDataset = response.counts_by_dataset ?? {};
 
           // Side effects: saving/loading layout from local storage
           const { defaultLayout, sectionData } = discoveryChartProcessingAndLocalStorage(scope, response);

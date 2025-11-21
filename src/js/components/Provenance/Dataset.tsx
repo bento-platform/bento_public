@@ -7,6 +7,7 @@ import { FaDatabase } from 'react-icons/fa';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type { Annotation } from '@/types/dats';
 import type { Dataset } from '@/types/metadata';
+import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
 import { getCurrentPage } from '@/utils/router';
 import { useTranslationFn } from '@/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
@@ -37,11 +38,13 @@ const Dataset = ({
   dataset,
   format,
   selected,
+  filteredCounts,
 }: {
   parentProjectID: string;
   dataset: Dataset;
   format: 'list-item' | 'card' | 'carousel';
   selected?: boolean;
+  filteredCounts?: KatsuEntityCountsOrBooleans;
 }) => {
   const navigateToScope = useNavigateToScope();
   const page = getCurrentPage();
@@ -65,6 +68,8 @@ const Dataset = ({
 
   const openProvenanceModal = useCallback(() => setProvenanceModalOpen(true), []);
   const closeProvenanceModal = useCallback(() => setProvenanceModalOpen(false), []);
+
+  const effectiveCounts = filteredCounts ?? counts;
 
   let inner: ReactNode;
 
@@ -109,8 +114,9 @@ const Dataset = ({
               </Popover>
             )}
           </Space>
-          <CountsDisplay counts={counts} fontSize="0.875rem" />
+          <CountsDisplay counts={effectiveCounts} totalCounts={counts} fontSize="0.875rem" />
           <Flex gap={12} align="flex-end" className="flex-1">
+            <>this is the button to manage according the permision</>
             <Button icon={<PieChartOutlined />} onClick={onNavigateOverview}>
               {t('Explore')}
             </Button>
@@ -131,7 +137,7 @@ const Dataset = ({
           </Button>
         </Flex>
         <TruncatedParagraph>{t(description)}</TruncatedParagraph>
-        <CountsDisplay counts={counts} fontSize="0.875rem" />
+        <CountsDisplay counts={effectiveCounts} totalCounts={counts} fontSize="0.875rem" />
         <Flex gap={8} style={{ marginTop: 8 }}>
           <Button size="small" icon={<PieChartOutlined />} onClick={onNavigateOverview}>
             {t('Explore')}
