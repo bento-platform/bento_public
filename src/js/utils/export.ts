@@ -22,6 +22,7 @@ export const downloadAllMatchesCSV = async (
     ...(textQuery ? { _fts: textQuery } : {}),
     _entity: entity,
     _format: 'csv',
+    _page_size: '0', // 0 means export all results
   });
 
   const res = await axios.get(katsuDiscoveryMatchesUrl, {
