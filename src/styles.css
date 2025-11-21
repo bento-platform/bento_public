@@ -7,7 +7,7 @@
 
   --content-padding-v: 32px;
   --content-padding-h: 64px;
-  --content-max-width: 1320px;
+  --content-max-width: 1400px;
 
   --content-scoped-title-height: 50px;
   --content-scoped-title-margin-bottom: 24px;
@@ -391,10 +391,10 @@ body {
 }
 
 .dataset-provenance-card-grid {
-  --dataset-grid-gap: 18px;
+  --dataset-grid-gap: 20px;
 
   display: grid;
-  /* 651 * 2 + 18 (gap) = 1320 */
+  /* 690 * 2 + 20 (gap) = 1400 */
   grid-template-columns: repeat(auto-fit, minmax(250px, calc((var(--content-max-width) - var(--dataset-grid-gap)) / 2)));
   gap: var(--dataset-grid-gap);
 }

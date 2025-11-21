@@ -9,9 +9,9 @@ export const CHART_HEIGHT = 350;
 export const PIE_CHART_HEIGHT = 300; // rendered slightly smaller since labels can clip
 export const DEFAULT_CHART_WIDTH = 1;
 
-// 1320px max width: 428*3 + 18*2 = 1320
-export const CHART_WIDTH = 428;
-export const GRID_GAP = 18;
+// 1400px max width: 454*3 + 19*2 = 1399
+export const CHART_WIDTH = 454;
+export const GRID_GAP = 19;
 
 const NEW_CHART_COLORS: HexColor[] = ['#90BE6D', '#F8961E', '#F3722C', '#2D9CDB', '#F94144', '#F9C74F'];
 const BAR_CHART_FILL: HexColor = '#2D9CDB';
