@@ -15,11 +15,11 @@ import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { useTranslationFn } from '@/hooks';
 import { objectToBoolean } from '@/utils/boolean';
 
-export const ExperimentExpandedRow = ({ experiment, searchRow }: { experiment: Experiment; searchRow?: boolean }) => {
+export const ExperimentExpandedRow = ({ experiment }: { experiment: Experiment; searchRow?: boolean }) => {
   const t = useTranslationFn();
 
   const items: ConditionalDescriptionItem[] = [
-    ...(searchRow ? [{ key: 'experiment_type', children: experiment.experiment_type }] : []),
+    { key: 'experiment_type', children: experiment.experiment_type },
     {
       key: 'experiment_ontology',
       children: <OntologyTermStack terms={experiment.experiment_ontology} />,
@@ -47,7 +47,7 @@ export const ExperimentExpandedRow = ({ experiment, searchRow }: { experiment: E
 
   return (
     <Space direction="vertical" className="w-full">
-      <TDescriptions bordered size="compact" column={{ lg: 1, xl: 3 }} items={items} defaultI18nPrefix="experiment." />
+      <TDescriptions bordered size="compact" column={{ xl: 1, xxl: 3 }} items={items} defaultI18nPrefix="experiment." />
       <ExtraPropertiesDisplay extraProperties={experiment.extra_properties} />
       {experiment.instrument && (
         <>
