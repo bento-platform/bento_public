@@ -68,7 +68,6 @@ type ResultsTableSpec<T extends ViewableDiscoveryMatchObject> = {
   availableColumns: Record<string, ResultsTableColumn<T>>;
   defaultColumns: string[];
   expandable?: TableProps<T>['expandable'];
-  canExport?: boolean;
 };
 
 const COMMON_SEARCH_TABLE_COLUMNS = {
@@ -137,7 +136,6 @@ const TABLE_SPEC_PHENOPACKET: ResultsTableSpec<DiscoveryMatchPhenopacket> = {
   expandable: {
     expandedRowRender: (rec) => (rec.subject ? <IndividualRowDetail id={rec.subject} /> : null),
   },
-  canExport: true,
 };
 
 const TABLE_SPEC_BIOSAMPLE: ResultsTableSpec<DiscoveryMatchBiosample> = {
@@ -154,7 +152,6 @@ const TABLE_SPEC_BIOSAMPLE: ResultsTableSpec<DiscoveryMatchBiosample> = {
   expandable: {
     expandedRowRender: (rec) => <BiosampleRowDetail id={rec.id} />,
   },
-  canExport: true,
 };
 
 const TABLE_SPEC_EXPERIMENT: ResultsTableSpec<DiscoveryMatchExperiment> = {
@@ -170,7 +167,6 @@ const TABLE_SPEC_EXPERIMENT: ResultsTableSpec<DiscoveryMatchExperiment> = {
   // expandable: {
   //   expandedRowRender: (rec) => <div>TODO: {rec.id}</div>,
   // },
-  canExport: true,
 };
 
 const TABLE_SPEC_EXPERIMENT_RESULT: ResultsTableSpec<DiscoveryMatchExperimentResult> = {
@@ -344,11 +340,10 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   );
 
   const onExport = useCallback(() => {
-    if (!spec.canExport) return;
     setExporting(true);
     const filename = `${t(`entities.${entity}_other`)}.csv`;
     downloadAllMatchesCSV(filterQueryParams, textQuery, rdEntity, filename).finally(() => setExporting(false));
-  }, [spec.canExport, t, entity, downloadAllMatchesCSV, filterQueryParams, textQuery, rdEntity]);
+  }, [t, entity, downloadAllMatchesCSV, filterQueryParams, textQuery, rdEntity]);
 
   const openColumnModal = useCallback(() => setColumnModalOpen(true), []);
 
@@ -384,7 +379,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
             <Tooltip title={t('search.manage_columns')}>
               <Button icon={<TableOutlined />} onClick={openColumnModal} />
             </Tooltip>
-            {!!spec.canExport && (fetchingCanDownload || canDownload) ? (
+            {fetchingCanDownload || canDownload ? (
               <Button
                 icon={<ExportOutlined />}
                 loading={fetchingCanDownload || exporting}
