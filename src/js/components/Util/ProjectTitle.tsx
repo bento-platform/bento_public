@@ -23,7 +23,7 @@ const ProjectTitle = ({ projectID, onClick }: ProjectTitleProps) => {
 
   if (!onClick) return title;
   return (
-    <Button type="link" style={{ height: 'auto', padding: 0 }} onClick={onClick}>
+    <Button type="link" className="p-0 h-auto" onClick={onClick}>
       {title}
     </Button>
   );

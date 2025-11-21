@@ -67,7 +67,7 @@ const Filters = ({ filters, setFilters, filtersDirty, form, beaconFiltersBySecti
 
   return (
     <Form.Item>
-      <Space style={{ display: 'flex', padding: 0 }}>
+      <Space className="p-0" style={{ display: 'flex' }}>
         <Tooltip title={hasMaxFilters ? `${t('maximum of')} ${maxFilters} ${t('filters permitted')}` : null}>
           <Button style={BUTTON_STYLE} onClick={handleAddFilter} disabled={hasMaxFilters}>
             {t('Add Filter')}
