@@ -1,6 +1,5 @@
 import { type ReactNode, Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuthorizationHeader } from 'bento-auth-js';
 
 import {
   Button,
@@ -41,10 +40,10 @@ import type {
   DiscoveryMatchPhenopacket,
   ViewableDiscoveryMatchObject,
 } from '@/features/search/types';
-import { downloadBiosampleCSV, downloadExperimentCSV, downloadIndividualCSV } from '@/utils/export';
 import { setEquals } from '@/utils/sets';
 import { useScopeDownloadData } from '@/hooks/censorship';
 import { useSearchQuery } from '@/features/search/hooks';
+import { useDownloadAllMatchesCSV } from '@/hooks/useDownloadAllMatchesCSV';
 
 import DatasetProvenanceModal from '@/components/Provenance/DatasetProvenanceModal';
 import ProjectTitle from '@/components/Util/ProjectTitle';
@@ -69,7 +68,6 @@ type ResultsTableSpec<T extends ViewableDiscoveryMatchObject> = {
   availableColumns: Record<string, ResultsTableColumn<T>>;
   defaultColumns: string[];
   expandable?: TableProps<T>['expandable'];
-  download?: (headers: Record<string, string>, matches: T[]) => Promise<void>;
 };
 
 const COMMON_SEARCH_TABLE_COLUMNS = {
@@ -138,11 +136,6 @@ const TABLE_SPEC_PHENOPACKET: ResultsTableSpec<DiscoveryMatchPhenopacket> = {
   expandable: {
     expandedRowRender: (rec) => (rec.subject ? <IndividualRowDetail id={rec.subject} /> : null),
   },
-  download: (headers, matches) =>
-    downloadIndividualCSV(
-      headers,
-      matches.filter(({ subject }) => subject !== undefined).map(({ subject }) => subject as string)
-    ),
 };
 
 const TABLE_SPEC_BIOSAMPLE: ResultsTableSpec<DiscoveryMatchBiosample> = {
@@ -159,11 +152,6 @@ const TABLE_SPEC_BIOSAMPLE: ResultsTableSpec<DiscoveryMatchBiosample> = {
   expandable: {
     expandedRowRender: (rec) => <BiosampleRowDetail id={rec.id} />,
   },
-  download: (headers, matches) =>
-    downloadBiosampleCSV(
-      headers,
-      matches.map((b) => b.id)
-    ),
 };
 
 const TABLE_SPEC_EXPERIMENT: ResultsTableSpec<DiscoveryMatchExperiment> = {
@@ -179,11 +167,6 @@ const TABLE_SPEC_EXPERIMENT: ResultsTableSpec<DiscoveryMatchExperiment> = {
   // expandable: {
   //   expandedRowRender: (rec) => <div>TODO: {rec.id}</div>,
   // },
-  download: (headers, matches) =>
-    downloadExperimentCSV(
-      headers,
-      matches.map((e) => e.id)
-    ),
 };
 
 const TABLE_SPEC_EXPERIMENT_RESULT: ResultsTableSpec<DiscoveryMatchExperimentResult> = {
@@ -245,7 +228,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   const dispatch = useAppDispatch();
   const { filterQueryParams, textQuery, resultCountsOrBools, pageSize, matchData } = useSearchQuery();
   const { fetchingPermission: fetchingCanDownload, hasPermission: canDownload } = useScopeDownloadData();
-  const authHeader = useAuthorizationHeader();
+  const downloadAllMatchesCSV = useDownloadAllMatchesCSV();
   const selectedScope = useSelectedScope();
   const isSmallScreen = useSmallScreen();
 
@@ -357,10 +340,10 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   );
 
   const onExport = useCallback(() => {
-    if (!spec.download) return;
     setExporting(true);
-    spec.download(authHeader, matches ?? []).finally(() => setExporting(false));
-  }, [spec, authHeader, matches]);
+    const filename = `${t(`entities.${entity}_other`)}.csv`;
+    downloadAllMatchesCSV(filterQueryParams, textQuery, rdEntity, filename).finally(() => setExporting(false));
+  }, [t, entity, downloadAllMatchesCSV, filterQueryParams, textQuery, rdEntity]);
 
   const openColumnModal = useCallback(() => setColumnModalOpen(true), []);
 
@@ -396,7 +379,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
             <Tooltip title={t('search.manage_columns')}>
               <Button icon={<TableOutlined />} onClick={openColumnModal} />
             </Tooltip>
-            {!!spec.download && (fetchingCanDownload || canDownload) ? (
+            {fetchingCanDownload || canDownload ? (
               <Button
                 icon={<ExportOutlined />}
                 loading={fetchingCanDownload || exporting}
