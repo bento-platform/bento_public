@@ -1,6 +1,5 @@
 import { type ReactNode, Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuthorizationHeader } from 'bento-auth-js';
 
 import { Button, Checkbox, Col, Flex, Modal, Space, type TablePaginationConfig, Tooltip, Typography } from 'antd';
 import { ExportOutlined, LeftOutlined, TableOutlined } from '@ant-design/icons';
@@ -14,6 +13,7 @@ import { useAppDispatch, useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { useScopeDownloadData } from '@/hooks/censorship';
 import { useLangPrefixedUrl } from '@/hooks/navigation';
+import { useDownloadAllMatchesCSV } from '@/hooks/useDownloadAllMatchesCSV';
 import { useSearchQuery } from '@/features/search/hooks';
 
 import type { BentoKatsuEntity } from '@/types/entities';
@@ -34,7 +34,6 @@ import type {
   ViewableDiscoveryMatchObject,
 } from '@/features/search/types';
 
-import { downloadBiosampleCSV, downloadExperimentCSV, downloadIndividualCSV } from '@/utils/export';
 import { setEquals } from '@/utils/sets';
 
 import DatasetProvenanceModal from '@/components/Provenance/DatasetProvenanceModal';
@@ -81,7 +80,6 @@ type ResultsTableSpec<T extends ViewableDiscoveryMatchObject> = {
   availableColumns: Record<string, ResultsTableColumn<T>>;
   defaultColumns: string[];
   expandedRowRender?: (record: T) => ReactNode;
-  download?: (headers: Record<string, string>, matches: T[]) => Promise<void>;
 };
 
 const commonSearchTableColumns = <T extends ViewableDiscoveryMatchObject>() =>
@@ -195,11 +193,6 @@ const TABLE_SPEC_PHENOPACKET: ResultsTableSpec<DiscoveryMatchPhenopacket> = {
   availableColumns: PHENOPACKET_SEARCH_TABLE_COLUMNS,
   defaultColumns: ['biosamples', 'project', 'dataset'],
   expandedRowRender: (rec) => (rec.subject ? <IndividualRowDetail id={rec.subject} /> : null),
-  download: (headers, matches) =>
-    downloadIndividualCSV(
-      headers,
-      matches.filter(({ subject }) => subject !== undefined).map(({ subject }) => subject as string)
-    ),
 };
 
 const TABLE_SPEC_BIOSAMPLE: ResultsTableSpec<DiscoveryMatchBiosample> = {
@@ -214,11 +207,6 @@ const TABLE_SPEC_BIOSAMPLE: ResultsTableSpec<DiscoveryMatchBiosample> = {
   availableColumns: BIOSAMPLE_SEARCH_TABLE_COLUMNS,
   defaultColumns: ['individual_id', 'project', 'dataset'],
   expandedRowRender: (rec) => <BiosampleRowDetail id={rec.id} />,
-  download: (headers, matches) =>
-    downloadBiosampleCSV(
-      headers,
-      matches.map((b) => b.id)
-    ),
 };
 
 const TABLE_SPEC_EXPERIMENT: ResultsTableSpec<DiscoveryMatchExperiment> = {
@@ -237,11 +225,6 @@ const TABLE_SPEC_EXPERIMENT: ResultsTableSpec<DiscoveryMatchExperiment> = {
   availableColumns: commonSearchTableColumns<DiscoveryMatchExperiment>(),
   defaultColumns: ['project', 'dataset'],
   expandedRowRender: (rec) => <ExperimentRowDetail id={rec.id} />,
-  download: (headers, matches) =>
-    downloadExperimentCSV(
-      headers,
-      matches.map((e) => e.id)
-    ),
 };
 
 const _erActionProps = ({
@@ -321,7 +304,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   const dispatch = useAppDispatch();
   const { filterQueryParams, textQuery, resultCountsOrBools, pageSize, matchData } = useSearchQuery();
   const { fetchingPermission: fetchingCanDownload, hasPermission: canDownload } = useScopeDownloadData();
-  const authHeader = useAuthorizationHeader();
+  const downloadAllMatchesCSV = useDownloadAllMatchesCSV();
   const selectedScope = useSelectedScope();
   const isSmallScreen = useSmallScreen();
 
@@ -444,10 +427,10 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   );
 
   const onExport = useCallback(() => {
-    if (!spec.download) return;
     setExporting(true);
-    spec.download(authHeader, matches).finally(() => setExporting(false));
-  }, [spec, authHeader, matches]);
+    const filename = `${t(`entities.${entity}_other`)}.csv`;
+    downloadAllMatchesCSV(filterQueryParams, textQuery, rdEntity, filename).finally(() => setExporting(false));
+  }, [t, entity, downloadAllMatchesCSV, filterQueryParams, textQuery, rdEntity]);
 
   const openColumnModal = useCallback(() => setColumnModalOpen(true), []);
 
@@ -483,7 +466,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
             <Tooltip title={t('search.manage_columns')}>
               <Button icon={<TableOutlined />} onClick={openColumnModal} />
             </Tooltip>
-            {!!spec.download && (fetchingCanDownload || canDownload) ? (
+            {fetchingCanDownload || canDownload ? (
               <Button
                 icon={<ExportOutlined />}
                 loading={fetchingCanDownload || exporting}

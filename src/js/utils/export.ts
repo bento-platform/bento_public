@@ -1,32 +1,34 @@
+import axios from 'axios';
 import FileSaver from 'file-saver';
-import { biosampleBatchUrl, experimentBatchUrl, individualBatchUrl } from '@/constants/configConstants';
+import { katsuDiscoveryMatchesUrl } from '@/constants/configConstants';
+import type { RootState } from '@/store';
+import type { DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
+import { scopedAuthorizedRequestConfigFromParts } from '@/utils/requests';
+import type { ResultsDataEntity } from '@/types/entities';
 
-// Katsu currently has the same CSV download request format for individuals, biosamples, and experiments
-const downloadCSVHelper = async (url: string, headers: Record<string, string>, ids: string[], filename: string) => {
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-      ...headers,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      id: ids,
-      format: 'csv',
-    }),
+type AuthState = RootState['auth'];
+
+// Download all matches as CSV from the discovery_matches endpoint
+export const downloadAllMatchesCSV = async (
+  auth: AuthState,
+  selectedScope: DiscoveryScopeSelection,
+  filterQueryParams: Record<string, string>,
+  textQuery: string,
+  entity: ResultsDataEntity,
+  filename: string
+): Promise<void> => {
+  const config = scopedAuthorizedRequestConfigFromParts(auth, selectedScope, {
+    ...filterQueryParams,
+    ...(textQuery ? { _fts: textQuery } : {}),
+    _entity: entity,
+    _format: 'csv',
+    _page_size: '0', // 0 means export all results
   });
 
-  const blob = await res.blob();
+  const res = await axios.get(katsuDiscoveryMatchesUrl, {
+    ...config,
+    responseType: 'blob',
+  });
 
-  FileSaver.saveAs(blob, filename);
+  FileSaver.saveAs(res.data, filename);
 };
-
-type DownloadFunction = (headers: Record<string, string>, ids: string[]) => Promise<void>;
-
-export const downloadIndividualCSV: DownloadFunction = (headers, ids) =>
-  downloadCSVHelper(individualBatchUrl, headers, ids, 'individuals.csv');
-
-export const downloadBiosampleCSV: DownloadFunction = (headers, ids) =>
-  downloadCSVHelper(biosampleBatchUrl, headers, ids, 'biosamples.csv');
-
-export const downloadExperimentCSV: DownloadFunction = (headers, ids) =>
-  downloadCSVHelper(experimentBatchUrl, headers, ids, 'experiments.csv');
