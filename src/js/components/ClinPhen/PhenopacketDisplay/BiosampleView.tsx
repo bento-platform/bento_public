@@ -203,13 +203,7 @@ export const BiosampleExpandedRow = ({ biosample, searchRow }: { biosample: Bios
 
   return (
     <Space direction="vertical" className="w-full">
-      <TDescriptions
-        bordered
-        size="compact"
-        defaultI18nPrefix="biosample."
-        column={{ lg: 1, xl: 3 }}
-        items={items}
-      />
+      <TDescriptions bordered size="compact" defaultI18nPrefix="biosample." column={{ lg: 1, xl: 3 }} items={items} />
       <ExtraPropertiesDisplay extraProperties={biosample.extra_properties} />
     </Space>
   );
