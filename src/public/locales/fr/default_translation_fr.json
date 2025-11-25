@@ -232,7 +232,10 @@
     "found_absent": "Trouvé absent",
     "code": "Code"
   },
-  "biosample_expanded_row": {
+  "biosample": {
+    "biosample_id": "Identifiant de l'échantillon biologique",
+    "individual_id": "Identifiant du participant",
+    "sampled_tissue": "Tissu échantillonné",
     "derived_from_id": "Dérivé de",
     "sample_type": "Type d'échantillon",
     "time_of_collection": "Heure de collecte",
@@ -251,11 +254,6 @@
     "sample_processing": "Traitement de l'échantillon",
     "sample_storage": "Stockage de l'échantillon",
     "files": "Fichiers"
-  },
-  "biosample_table": {
-    "biosample_id": "Identifiant de l'échantillon biologique",
-    "sampled_tissue": "Tissu échantillonné",
-    "location_collected": "$t(biosample_expanded_row.location_collected)"
   },
   "geo_location": {
     "label": "Étiquette",

@@ -117,7 +117,7 @@ const PHENOPACKET_SEARCH_TABLE_COLUMNS = {
 
 const BIOSAMPLE_SEARCH_TABLE_COLUMNS = {
   individual: {
-    title: 'biosample_table.individual_id',
+    title: 'biosample.individual_id',
     dataIndex: 'individual_id',
     render: (_ctx) => (individualId: string, b) => (
       <PhenopacketSubjectLink packetId={b.phenopacket}>{individualId}</PhenopacketSubjectLink>
@@ -199,7 +199,7 @@ const TABLE_SPEC_BIOSAMPLE: ResultsTableSpec<DiscoveryMatchBiosample> = {
   fixedColumns: [
     {
       dataIndex: 'id',
-      title: 'biosample_table.biosample_id',
+      title: 'biosample.biosample_id',
       render: (id: string, rec) =>
         rec.phenopacket ? <PhenopacketBiosampleLink packetId={rec.phenopacket} sampleId={id} /> : id,
     } as ResultsTableFixedColumn<DiscoveryMatchBiosample>,

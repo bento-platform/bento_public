@@ -206,7 +206,7 @@ export const BiosampleExpandedRow = ({ biosample, searchRow }: { biosample: Bios
       <TDescriptions
         bordered
         size="compact"
-        defaultI18nPrefix="biosample_expanded_row."
+        defaultI18nPrefix="biosample."
         column={{ lg: 1, xl: 3 }}
         items={items}
       />
@@ -256,18 +256,18 @@ interface BiosampleViewProps {
 
 const BIOSAMPLE_VIEW_COLUMNS: CustomTableColumns<Biosample> = [
   {
-    title: 'biosample_table.biosample_id',
+    title: 'biosample.biosample_id',
     dataIndex: 'id',
     alwaysShow: true,
   },
   {
-    title: 'biosample_table.sampled_tissue',
+    title: 'biosample.sampled_tissue',
     dataIndex: 'sampled_tissue',
     render: (term: OntologyTerm) => <OntologyTermComponent term={term} />,
   },
   // TODO: instead re-use translation but with a title case transform.
   {
-    title: 'biosample_table.location_collected',
+    title: 'biosample.location_collected',
     dataIndex: 'location_collected',
     render: (locationCollected: GeoLocation | undefined) => <LatLong location={locationCollected} />,
   },
