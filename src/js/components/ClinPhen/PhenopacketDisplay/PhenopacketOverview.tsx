@@ -6,18 +6,18 @@ import { SECTION_SPECS } from './phenopacketOverview.registry';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslationFn } from '@/hooks';
 
-export const PHENOPACKET_COLLAPSE_URL_QUERY_KEY = 'collapse';
+export const PHENOPACKET_EXPANDED_URL_QUERY_KEY = 'expanded';
 
 const serializeKeys = (keys: SectionKey[], prev: URLSearchParams | null = null): URLSearchParams => {
   const keyString = keys.join(',');
   const previous = prev ? prev.toString() : '';
   const returnVal = new URLSearchParams(previous);
-  returnVal.set(PHENOPACKET_COLLAPSE_URL_QUERY_KEY, keyString);
+  returnVal.set(PHENOPACKET_EXPANDED_URL_QUERY_KEY, keyString);
   return returnVal;
 };
 
 const deserializeKeys = (params: URLSearchParams): SectionKey[] => {
-  const queryVals = params.get(PHENOPACKET_COLLAPSE_URL_QUERY_KEY);
+  const queryVals = params.get(PHENOPACKET_EXPANDED_URL_QUERY_KEY);
   return queryVals?.split(',') as SectionKey[];
 };
 

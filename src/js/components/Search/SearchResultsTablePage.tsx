@@ -7,7 +7,7 @@ import { ExportOutlined, LeftOutlined, TableOutlined } from '@ant-design/icons';
 import { T_PLURAL_COUNT, T_SINGULAR_COUNT } from '@/constants/i18n';
 import { MIN_PAGE_SIZE, PAGE_SIZE_OPTIONS } from '@/constants/pagination';
 import { WAITING_STATES } from '@/constants/requests';
-import { PHENOPACKET_COLLAPSE_URL_QUERY_KEY } from '../ClinPhen/PhenopacketDisplay/PhenopacketOverview';
+import { PHENOPACKET_EXPANDED_URL_QUERY_KEY } from '../ClinPhen/PhenopacketDisplay/PhenopacketOverview';
 
 import { useAppDispatch, useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
@@ -148,7 +148,7 @@ const usePhenopacketOverviewLink = (
   otherArgs: Record<string, string> | undefined = undefined
 ) => {
   const baseUrl = useLangPrefixedUrl(`phenopackets/${packetId}/overview`);
-  const params = new URLSearchParams({ [PHENOPACKET_COLLAPSE_URL_QUERY_KEY]: expanded, ...(otherArgs ?? {}) });
+  const params = new URLSearchParams({ [PHENOPACKET_EXPANDED_URL_QUERY_KEY]: expanded, ...(otherArgs ?? {}) });
   return `${baseUrl}?${params.toString()}`;
 };
 
@@ -158,7 +158,7 @@ const PhenopacketSubjectLink = ({ children, packetId }: { children: ReactNode; p
 };
 
 const PhenopacketBiosampleLink = ({ packetId, sampleId }: { packetId: string; sampleId: string }) => {
-  const url = usePhenopacketOverviewLink(packetId, 'biosample', { biosample: sampleId });
+  const url = usePhenopacketOverviewLink(packetId, 'biosamples', { biosample: sampleId });
   return <Link to={url}>{sampleId}</Link>;
 };
 
