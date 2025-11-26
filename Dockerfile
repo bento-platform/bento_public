@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM node:22-bookworm-slim AS build
+FROM --platform=$BUILDPLATFORM node:24-bookworm-slim AS build
 
 # Build bento_public with NodeJS + Webpack
 #  - Use BUILDPLATFORM for running webpack, since it should perform a lot better.
@@ -24,13 +24,13 @@ RUN npm run build
 FROM nginx:1.26
 
 # Install node so that we can run the create_config_prod.js & create_service_info.js scripts
-RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
+RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - && \
     apt-get update -y && \
     apt-get install -y ca-certificates curl gnupg && \
     mkdir -p /etc/apt/keyrings && \
     curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | \
       gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg && \
-    echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main" | \
+    echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_24.x nodistro main" | \
       tee /etc/apt/sources.list.d/nodesource.list && \
     apt-get install -y nodejs && \
     rm -rf /var/lib/apt/lists/*
