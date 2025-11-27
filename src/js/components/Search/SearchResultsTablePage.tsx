@@ -41,12 +41,7 @@ import IndividualRowDetail from './IndividualRowDetail';
 import BiosampleRowDetail from './BiosampleRowDetail';
 import ExperimentRowDetail from './ExperimentRowDetail';
 import ExperimentResultRowDetail from './ExperimentResultRowDetail';
-import {
-  PhenopacketBiosampleLink,
-  PhenopacketExperimentLink,
-  PhenopacketExperimentResultLink,
-  PhenopacketSubjectLink,
-} from '@/components/ClinPhen/links';
+import PhenopacketLink from '@/components/ClinPhen/PhenopacketLink';
 import {
   ExperimentResultActions,
   experimentResultViewable,
@@ -110,7 +105,7 @@ const PHENOPACKET_SEARCH_TABLE_COLUMNS = {
     render: (_ctx: SearchColRenderContext) => (b: DiscoveryMatchBiosample[], p: DiscoveryMatchPhenopacket) =>
       b.map((bb, bbi) => (
         <Fragment key={bb.id}>
-          <PhenopacketBiosampleLink packetId={p.id} sampleId={bb.id} />
+          <PhenopacketLink.Biosample packetId={p.id} sampleId={bb.id} />
           {bbi < b.length - 1 ? ', ' : ''}
         </Fragment>
       )),
@@ -123,7 +118,7 @@ const BIOSAMPLE_SEARCH_TABLE_COLUMNS = {
     title: 'biosample.individual_id',
     dataIndex: 'individual_id',
     render: (_ctx) => (individualId: string, b) => (
-      <PhenopacketSubjectLink packetId={b.phenopacket}>{individualId}</PhenopacketSubjectLink>
+      <PhenopacketLink.Subject packetId={b.phenopacket}>{individualId}</PhenopacketLink.Subject>
     ),
   } as ResultsTableColumn<DiscoveryMatchBiosample>,
   ...commonSearchTableColumns<DiscoveryMatchBiosample>(),
@@ -151,7 +146,7 @@ const TABLE_SPEC_PHENOPACKET: ResultsTableSpec<DiscoveryMatchPhenopacket> = {
       dataIndex: 'subject',
       title: 'subject.subject_id',
       render: (s: string | undefined, rec) =>
-        s ? <PhenopacketSubjectLink packetId={rec.id}>{s}</PhenopacketSubjectLink> : null,
+        s ? <PhenopacketLink.Subject packetId={rec.id}>{s}</PhenopacketLink.Subject> : null,
     } as ResultsTableFixedColumn<DiscoveryMatchPhenopacket>,
   ],
   availableColumns: PHENOPACKET_SEARCH_TABLE_COLUMNS,
@@ -165,7 +160,7 @@ const TABLE_SPEC_BIOSAMPLE: ResultsTableSpec<DiscoveryMatchBiosample> = {
       dataIndex: 'id',
       title: 'biosample.biosample_id',
       render: (id: string, rec) =>
-        rec.phenopacket ? <PhenopacketBiosampleLink packetId={rec.phenopacket} sampleId={id} /> : id,
+        rec.phenopacket ? <PhenopacketLink.Biosample packetId={rec.phenopacket} sampleId={id} /> : id,
     } as ResultsTableFixedColumn<DiscoveryMatchBiosample>,
   ],
   availableColumns: BIOSAMPLE_SEARCH_TABLE_COLUMNS,
@@ -178,7 +173,7 @@ const TABLE_SPEC_EXPERIMENT: ResultsTableSpec<DiscoveryMatchExperiment> = {
     {
       dataIndex: 'id',
       title: 'experiment.experiment_id',
-      render: (id: string, exp) => <PhenopacketExperimentLink packetId={exp.phenopacket} experimentId={id} />,
+      render: (id: string, exp) => <PhenopacketLink.Experiment packetId={exp.phenopacket} experimentId={id} />,
     } as ResultsTableFixedColumn<DiscoveryMatchExperiment>,
     {
       dataIndex: 'experiment_type',
@@ -203,9 +198,9 @@ const TABLE_SPEC_EXPERIMENT_RESULT: ResultsTableSpec<DiscoveryMatchExperimentRes
       dataIndex: 'filename',
       title: 'file.filename',
       render: (f: string | undefined, er) => (
-        <PhenopacketExperimentResultLink packetId={er.phenopacket} experimentResultId={er.id}>
+        <PhenopacketLink.ExperimentResult packetId={er.phenopacket} experimentResultId={er.id}>
           {f}
-        </PhenopacketExperimentResultLink>
+        </PhenopacketLink.ExperimentResult>
       ),
     } as ResultsTableFixedColumn<DiscoveryMatchExperimentResult>,
     {

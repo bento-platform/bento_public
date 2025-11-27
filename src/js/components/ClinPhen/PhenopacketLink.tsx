@@ -41,3 +41,10 @@ export const PhenopacketExperimentResultLink = ({
   children = children ?? experimentResultId;
   return packetId ? <Link to={url}>{children}</Link> : children;
 };
+
+export default {
+  Subject: PhenopacketSubjectLink,
+  Biosample: PhenopacketBiosampleLink,
+  Experiment: PhenopacketExperimentLink,
+  ExperimentResult: PhenopacketExperimentResultLink,
+};
