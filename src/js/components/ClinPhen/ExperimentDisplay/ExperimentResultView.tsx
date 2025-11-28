@@ -45,7 +45,7 @@ export const ExperimentResultExpandedRow = ({
   const items: ConditionalDescriptionItem[] = [
     {
       key: 'identifier',
-      children: <code>{experimentResult.identifier}</code>,
+      children: <span className="font-mono">{experimentResult.identifier}</span>,
       isVisible: !!experimentResult.identifier,
     },
     {
