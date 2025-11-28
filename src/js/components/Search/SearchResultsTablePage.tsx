@@ -1,4 +1,4 @@
-import { type ReactNode, Fragment, useCallback, useEffect, useMemo, useState } from 'react';
+import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Button, Checkbox, Col, Flex, Modal, Space, type TablePaginationConfig, Tooltip, Typography } from 'antd';
 import { ExportOutlined, LeftOutlined, TableOutlined } from '@ant-design/icons';
@@ -102,13 +102,9 @@ const PHENOPACKET_SEARCH_TABLE_COLUMNS = {
   biosamples: {
     title: 'entities.biosample_other',
     dataIndex: 'biosamples',
-    render: (_ctx: SearchColRenderContext) => (b: DiscoveryMatchBiosample[], p: DiscoveryMatchPhenopacket) =>
-      b.map((bb, bbi) => (
-        <Fragment key={bb.id}>
-          <PhenopacketLink.Biosample packetId={p.id} sampleId={bb.id} />
-          {bbi < b.length - 1 ? ', ' : ''}
-        </Fragment>
-      )),
+    render: (_ctx: SearchColRenderContext) => (b: DiscoveryMatchBiosample[], p: DiscoveryMatchPhenopacket) => (
+      <PhenopacketLink.Biosamples packetId={p.id} biosamples={b.map((bb) => bb.id)} />
+    ),
   },
   ...commonSearchTableColumns<DiscoveryMatchPhenopacket>(),
 } as Record<string, ResultsTableColumn<DiscoveryMatchPhenopacket>>;
@@ -136,6 +132,13 @@ const EXPERIMENT_RESULT_SEARCH_TABLE_COLUMNS = {
   file_format: {
     title: 'experiment_result.file_format',
     dataIndex: 'file_format',
+  } as ResultsTableColumn<DiscoveryMatchExperimentResult>,
+  experiments: {
+    title: 'experiment_result.experiments',
+    dataIndex: 'experiments',
+    render: (_ctx) => (experiments: string[], er) => (
+      <PhenopacketLink.Experiments packetId={er?.phenopacket} experiments={experiments} />
+    ),
   } as ResultsTableColumn<DiscoveryMatchExperimentResult>,
   ...commonSearchTableColumns<DiscoveryMatchExperimentResult>(),
 };
@@ -215,7 +218,7 @@ const TABLE_SPEC_EXPERIMENT_RESULT: ResultsTableSpec<DiscoveryMatchExperimentRes
     } as ResultsTableFixedColumn<DiscoveryMatchExperimentResult>,
   ],
   availableColumns: EXPERIMENT_RESULT_SEARCH_TABLE_COLUMNS,
-  defaultColumns: ['description', 'genome_assembly_id', 'file_format', 'project', 'dataset'],
+  defaultColumns: ['genome_assembly_id', 'file_format', 'experiments', 'project', 'dataset'],
   expandedRowRender: (rec) => <ExperimentResultRowDetail id={rec.id} />,
 };
 

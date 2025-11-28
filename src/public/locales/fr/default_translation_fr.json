@@ -455,7 +455,6 @@
     "usage": "Utilisation",
     "creation_date": "Date de création",
     "created_by": "Créé par",
-    "experiment_ids": "Identifiants d'expériences"
   },
   "auth": {
     "unauthorized_message": "Vous n'êtes pas autorisé à accéder à cette ressource."
