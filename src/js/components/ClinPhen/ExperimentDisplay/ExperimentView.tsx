@@ -15,7 +15,13 @@ import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { useTranslationFn } from '@/hooks';
 import { objectToBoolean } from '@/utils/boolean';
 
-export const ExperimentExpandedRow = ({ experiment }: { experiment: Experiment; searchRow?: boolean }) => {
+type ExperimentExpandedRowProps = {
+  packetId?: string;
+  experiment: Experiment;
+  searchRow?: boolean;
+};
+
+export const ExperimentExpandedRow = ({ packetId, experiment }: ExperimentExpandedRowProps) => {
   const t = useTranslationFn();
 
   const items: ConditionalDescriptionItem[] = [
@@ -64,7 +70,12 @@ export const ExperimentExpandedRow = ({ experiment }: { experiment: Experiment; 
           {/*
             Cannot use query key row expansion in this nested view, so we force ExperimentResultView to use local state.
             */}
-          <ExperimentResultView experimentResults={experiment.experiment_results!} urlAware={false} />
+          <ExperimentResultView
+            packetId={packetId}
+            currentExperiment={experiment.id}
+            experimentResults={experiment.experiment_results!}
+            urlAware={false}
+          />
         </>
       ) : null}
     </Space>
@@ -112,6 +123,7 @@ const EXPERIMENT_VIEW_COLUMNS: CustomTableColumns<Experiment> = [
 ];
 
 type ExperimentViewProps = {
+  packetId?: string;
   experiments: Experiment[];
 };
 
