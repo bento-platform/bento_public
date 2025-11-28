@@ -9,7 +9,7 @@ import { RequestStatus } from '@/types/requests';
 
 export const makeGetExperimentResultData = createAsyncThunk<
   ExperimentResult,
-  string,
+  number,
   {
     state: RootState;
     rejectValue: string;
