@@ -26,13 +26,13 @@ export type KatsuIndividualMatch = {
   dataset_id: string | null;
 };
 
-export type DiscoveryMatchObject = {
-  id: string; // Entity ID
+export type DiscoveryMatchObject<I extends string | number = string> = {
+  id: I; // Entity ID
   project?: string | null;
   dataset?: string | null;
 };
 
-export type DiscoveryMatchExperimentResult = DiscoveryMatchObject & {
+export type DiscoveryMatchExperimentResult = DiscoveryMatchObject<number> & {
   identifier?: string;
   description?: string;
   filename?: string; // File name
