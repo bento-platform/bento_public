@@ -34,10 +34,12 @@ export const PhenopacketExperimentResultLink = ({
   children,
 }: {
   packetId?: string;
-  experimentResultId: string;
+  experimentResultId: number;
   children?: ReactNode;
 }) => {
-  const url = usePhenopacketOverviewLink(packetId, 'experimentResults', { experimentResult: experimentResultId });
+  const url = usePhenopacketOverviewLink(packetId, 'experimentResults', {
+    experimentResult: experimentResultId.toString(10),
+  });
   children = children ?? experimentResultId;
   return packetId ? <Link to={url}>{children}</Link> : children;
 };

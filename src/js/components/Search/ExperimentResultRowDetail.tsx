@@ -8,7 +8,7 @@ import CustomEmpty from '@Util/CustomEmpty';
 import { WAITING_STATES } from '@/constants/requests';
 import { useExperimentResultData } from '@/features/clinPhen/hooks';
 
-const ExperimentResultRowDetail = ({ id }: { id: string }) => {
+const ExperimentResultRowDetail = ({ id }: { id: number }) => {
   const { data: experimentResultData, status } = useExperimentResultData(id);
   const isFetchingData = WAITING_STATES.includes(status);
 
