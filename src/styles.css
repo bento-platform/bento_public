@@ -7,7 +7,7 @@
 
   --content-padding-v: 32px;
   --content-padding-h: 64px;
-  --content-max-width: 1320px;
+  --content-max-width: 1400px;
 
   --content-scoped-title-height: 50px;
   --content-scoped-title-margin-bottom: 24px;
@@ -30,8 +30,10 @@ body {
 /* Name compatible with tailwind if needed */
 .w-full { width: 100%; }
 .h-full { height: 100%; }
+.h-auto { height: auto; }
 .m-0 { margin: 0; }
 .mb-0, .ant-typography.mb-0 { margin-bottom: 0; }
+.p-0 { padding: 0; }
 .flex-1 { flex: 1; }
 .float-right { float: right; }
 .position-absolute { position: absolute; }
@@ -41,10 +43,12 @@ body {
 .rounded-lg { border-radius: 8px; } /* also consistent with --ant-border-radius-lg */
 .rounded-xl { border-radius: 12px; }
 .rounded-e-none { border-start-end-radius: 0; border-end-end-radius: 0; }
+.list-none { list-style-type: none; }
 .cursor-pointer { cursor: pointer; }
 .select-none { user-select: none; }
 .font-mono { font-family: ui-monospace, monospace; }
 .text-center { text-align: center; }
+.underline { text-decoration-line: underline; }
 
 /* custom, tailwind-esque */
 .max-w-half-cmw { max-width: calc(var(--content-max-width) / 2); }
@@ -387,10 +391,10 @@ body {
 }
 
 .dataset-provenance-card-grid {
-  --dataset-grid-gap: 18px;
+  --dataset-grid-gap: 20px;
 
   display: grid;
-  /* 651 * 2 + 18 (gap) = 1320 */
+  /* 690 * 2 + 20 (gap) = 1400 */
   grid-template-columns: repeat(auto-fit, minmax(250px, calc((var(--content-max-width) - var(--dataset-grid-gap)) / 2)));
   gap: var(--dataset-grid-gap);
 }
@@ -455,9 +459,11 @@ h3.search-sub-form-title {
 
 /* END search */
 
-/* BEGIN phenopacket view */
+/* BEGIN phenopackets/other clinical+phenotypic metadata views */
 
-#subject-view .ant-descriptions-item-label {
+.subject-view .ant-descriptions-item-label,
+.experiment-result-expanded-row .ant-descriptions-item-label,
+.extra-properties-display .ant-descriptions-item-label {
   /* Align split line vertically in all descriptions */
   width: min(30vw, 250px);
 }
@@ -483,11 +489,17 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
 .compact .ant-table-cell {
   padding: 2px 8px !important;
 }
-.compact .ant-table-expanded-row .ant-table-cell {
+.compact .ant-table-expanded-row > .ant-table-cell {
   padding: 8px !important;
 }
 
-/* END phenopacket view */
+.ant-table-wrapper .ant-table-cell * .ant-table-container:first-child {
+  /* undo border 0 set by ant design styling for tables nested directly in a cell if we have anything in between.
+     border colour should be synced to global border colour. */
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* END phenopackets/other clinical+phenotypic metadata views */
 
 
 @media (min-width: 1050px) and (max-width: 1550px) {

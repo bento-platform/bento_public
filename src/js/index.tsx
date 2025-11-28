@@ -33,6 +33,7 @@ import 'antd/dist/reset.css';
 import 'leaflet/dist/leaflet.css';
 import 'react18-json-view/src/style.css';
 import 'bento-charts/src/styles.css';
+import 'bento-file-display/dist/style.css';
 import './i18n';
 import '../styles.css';
 
@@ -73,7 +74,9 @@ const RootApp = () => {
             }}
           >
             <ChartConfigProvider Lng={i18n.language ?? SUPPORTED_LNGS.ENGLISH} theme={NEW_BENTO_PUBLIC_THEME}>
-              <ConfigProvider theme={{ components: { Menu: { iconSize: 20 } } }}>
+              <ConfigProvider
+                theme={{ components: { Menu: { iconSize: 20 }, Table: { borderColor: 'rgba(0, 0, 0, 0.08)' } } }}
+              >
                 <NotificationProvider>
                   <BaseRoutes />
                 </NotificationProvider>

@@ -9,13 +9,14 @@ import { hiddenDescriptions } from '@/utils/descriptions';
 interface TDescriptionsProps extends Omit<DescriptionsProps, 'items' | 'size'> {
   items: ConditionalDescriptionItem[];
   size?: DescriptionsProps['size'] | 'compact';
+  defaultI18nPrefix?: string;
 }
 
 const TDescriptions = memo(
-  ({ items, size, ...restProps }: TDescriptionsProps) => {
+  ({ items, size, defaultI18nPrefix, className, ...restProps }: TDescriptionsProps) => {
     const filteredItems = useMemo(() => hiddenDescriptions(items), [items]);
-    const descriptionItems = useTranslatedDescriptionItems(filteredItems);
-    const classNames = [];
+    const descriptionItems = useTranslatedDescriptionItems(filteredItems, defaultI18nPrefix);
+    const classNames = [...(className ?? '').split(' ').filter((c) => !!c.length)];
     let derivedSize: DescriptionsProps['size'] = 'default';
 
     if (!filteredItems?.length) return null;

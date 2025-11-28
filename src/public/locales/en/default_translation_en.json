@@ -34,8 +34,15 @@
     "variant_other": "Variants"
   },
   "general": {
+    "id": "ID",
+    "name": "Name",
+    "description": "Description",
     "collapse_all": "Collapse All",
-    "expand_all": "Expand All"
+    "expand_all": "Expand All",
+    "actions": "Actions",
+    "ontology_class": "Ontology Class",
+    "view": "View",
+    "url": "URL"
   },
   "search": {
     "filters": "Filters",
@@ -177,7 +184,7 @@
     "age": "Age",
     "gestational_age": "Gestational Age",
     "age_range": "Age Range",
-    "ontology_class": "Ontology Class",
+    "ontology_class": "$t(general.ontology_class)",
     "timestamp": "Timestamp",
     "interval": "Interval"
   },
@@ -220,31 +227,29 @@
     "found_absent": "Found to be absent",
     "code": "Code"
   },
-  "biosample_expanded_row": {
-    "description": "Description",
-    "derived_from": "Derived from",
-    "sample_type": "Sample type",
-    "collection_time": "Collection time",
-    "location_collected": "Location collected",
-    "histological_diagnosis": "Histological diagnosis",
-    "pathological_stage": "Pathological stage",
+  "biosample": {
+    "biosample_id": "Biosample ID",
+    "individual_id": "Individual ID",
+    "sampled_tissue": "Sampled Tissue",
+    "description": "$t(general.description)",
+    "derived_from_id": "Derived From",
+    "sample_type": "Sample Type",
+    "time_of_collection": "Collection Time",
+    "location_collected": "Location Collected",
+    "histological_diagnosis": "Histological Diagnosis",
+    "pathological_stage": "Pathological Stage",
     "procedure": "Procedure",
-    "body_site": "Body site",
+    "body_site": "Body Site",
     "performed": "Performed",
     "taxonomy": "Taxonomy",
-    "pathological_tnm_finding": "Pathological TNM findings",
-    "diagnostic_markers": "Diagnostic markers",
-    "tumor_progression": "Tumor progression",
-    "tumor_grade": "Tumor grade",
-    "material_sample": "Material sample",
-    "sample_processing": "Sample processing",
-    "sample_storage": "Sample storage",
+    "pathological_tnm_finding": "Pathological TNM Findings",
+    "diagnostic_markers": "Diagnostic Markers",
+    "tumor_progression": "Tumor Progression",
+    "tumor_grade": "Tumor Grade",
+    "material_sample": "Material Sample",
+    "sample_processing": "Sample Processing",
+    "sample_storage": "Sample Storage",
     "files": "Files"
-  },
-  "biosample_table": {
-    "biosample_id": "Biosample ID",
-    "sampled_tissue": "Sampled Tissue",
-    "location_collected": "Location Collected"
   },
   "geo_location": {
     "label": "Label",
@@ -259,10 +264,8 @@
     "filename": "Filename",
     "download": "Download",
     "individual_to_file_identifiers": "Individual to File Identifiers",
-    "file_attributes": "File Attributes"
-  },
-  "experiment_table": {
-    "experiment_id": "Experiment ID"
+    "file_attributes": "File Attributes",
+    "download_alert": "This will download a file from an external site. Are you sure you want to do this?"
   },
   "diseases_expanded_row": {
     "disease_stage": "Disease Stage(s)",
@@ -291,7 +294,7 @@
     "diagnosis": "Diagnosis",
     "no_diagnosis": "No diagnosis",
     "genomic_interpretations": "Genomic Interpretations",
-    "no_genomic_iterpretation": "No Genomic Interpretation",
+    "no_genomic_interpretation": "No Genomic Interpretation",
     "accession_number": "Accession Number",
     "symbol": "Symbol",
     "description": "Description",
@@ -359,8 +362,8 @@
     "treatment_intent": "Treatment Intent",
     "response_to_treatment": "Response to Treatment",
     "treatment_termination_reason": "Treatment Termination Reason",
-    "refernce": "Reference",
-    "unkown": "Unknown"
+    "reference": "Reference",
+    "unknown": "Unknown"
   },
   "ontologies": {
     "resource_id": "Resource ID",
@@ -419,6 +422,39 @@
     "SOLVED": "Solved",
     "UNSOLVED": "Unsolved"
   },
+  "experiment": {
+    "experiment_id": "Experiment ID",
+    "experiment_type": "Experiment Type",
+    "experiment_ontology": "Experiment Type ($t(general.ontology_class))",
+    "study_type": "Study Type",
+    "molecule": "Molecule",
+    "molecule_ontology": "Molecule ($t(general.ontology_class))",
+    "library_strategy": "Library Strategy",
+    "library_source": "Library Source",
+    "library_selection": "Library Selection",
+    "library_layout": "Library Layout",
+    "extraction_protocol": "Extraction Protocol",
+    "reference_registry_id": "Reference Registry ID",
+    "qc_flags": "QC Flags"
+  },
+  "instrument": {
+    "instrument": "Instrument",
+    "device": "Device",
+    "device_ontology": "Device ($t(general.ontology_class))"
+  },
+  "experiment_result": {
+    "identifier": "Identifier",
+    "description": "$t(general.description)",
+    "filename": "$t(file.filename)",
+    "indices": "Indices",
+    "genome_assembly_id": "Genome Assembly",
+    "file_format": "File Format",
+    "data_output_type": "Data Output Type",
+    "usage": "Usage",
+    "creation_date": "Creation Date",
+    "created_by": "Created By",
+    "experiment_ids": "Experiment IDs"
+  },
   "auth": {
     "unauthorized_message": "You are not authorized to access this resource."
   },
@@ -431,5 +467,19 @@
   "table": {
     "invalid_row_keys_title": "Invalid Row Reference",
     "invalid_row_keys_description": "Some rows referenced in the URL do not exist. Adjusting to valid entries."
+  },
+  "drs": {
+    "id": "$t(general.id)",
+    "name": "$t(general.name)",
+    "description": "$t(general.description)",
+    "self_uri": "URI",
+    "aliases": "Aliases",
+    "size": "Size",
+    "created_time": "Created Time",
+    "updated_time": "Updated Time",
+    "version": "Version",
+    "mime_type": "MIME Type",
+    "checksums": "Checksums",
+    "access_methods": "Access Methods"
   }
 }

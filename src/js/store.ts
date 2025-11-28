@@ -8,6 +8,7 @@ import clinPhenReducer from '@/features/clinPhen/clinPhen.store';
 import configReducer from '@/features/config/config.store';
 import contentReducer from '@/features/content/content.store';
 import dataTypesReducer from '@/features/dataTypes/dataTypes.store';
+import drs from '@/features/drs/drs.store';
 import queryReducer from '@/features/search/query.store';
 import beaconReducer from './features/beacon/beacon.store';
 import beaconNetworkReducer from './features/beacon/network.store';
@@ -34,6 +35,7 @@ export const store = configureStore({
     clinPhen: clinPhenReducer,
     config: configReducer,
     content: contentReducer,
+    drs,
     dataTypes: dataTypesReducer,
     query: queryReducer,
     beacon: beaconReducer,

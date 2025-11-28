@@ -27,7 +27,7 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
     const allItems = [
       {
         key: TabKeys.OVERVIEW,
-        label: 'Overview',
+        label: t('Overview'),
         children: <Overview ref={collapseRef} phenopacket={phenopacket} />,
         disabled: false,
       },

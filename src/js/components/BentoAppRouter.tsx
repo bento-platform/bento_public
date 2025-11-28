@@ -3,7 +3,13 @@ import { Routes, Route, useNavigate, useParams, Outlet } from 'react-router-dom'
 import { useAutoAuthenticate, useIsAuthenticated } from 'bento-auth-js';
 import { useAppDispatch } from '@/hooks';
 
-import { clearBiosampleCache, clearIndividualCache, clearPhenopacketCache } from '@/features/clinPhen/clinPhen.store';
+import {
+  clearBiosampleCache,
+  clearIndividualCache,
+  clearPhenopacketCache,
+  clearExperimentCache,
+  clearExperimentResultCache,
+} from '@/features/clinPhen/clinPhen.store';
 import { makeGetServiceInfoRequest, makeGetConfigRequest } from '@/features/config/config.store';
 import { makeGetAboutRequest } from '@/features/content/content.store';
 import { getBeaconConfig, getBeaconFilters } from '@/features/beacon/beacon.store';
@@ -137,6 +143,8 @@ const BentoAppRouter = () => {
     dispatch(clearIndividualCache());
     dispatch(clearPhenopacketCache());
     dispatch(clearBiosampleCache());
+    dispatch(clearExperimentCache());
+    dispatch(clearExperimentResultCache());
   }, [dispatch, isAuthenticated]);
 
   useEffect(() => {

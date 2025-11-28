@@ -1,5 +1,5 @@
-import { useEffect, useCallback, useMemo } from 'react';
-import { Table } from 'antd';
+import { useEffect, useCallback, useMemo, useState, type ReactNode } from 'react';
+import { Table, type TablePaginationConfig } from 'antd';
 import type { TableColumnType } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
@@ -39,8 +39,11 @@ interface CustomTableProps<T> {
   columns: CustomTableColumns<T>;
   rowKey: string | RowKeyFn<WithVisible<T>>;
   isRowExpandable: VisibilityFn<T>;
-  expandedRowRender?: (record: T) => React.ReactNode;
+  expandedRowRender?: (record: T) => ReactNode;
+  pagination?: TablePaginationConfig;
+  loading?: boolean;
   queryKey?: string;
+  urlAware?: boolean;
 }
 
 const CustomTable = <T extends object>({
@@ -49,13 +52,22 @@ const CustomTable = <T extends object>({
   rowKey,
   isRowExpandable,
   expandedRowRender,
+  pagination,
+  loading,
   queryKey = EXPANDED_QUERY_PARAM_KEY,
+  urlAware = true,
 }: CustomTableProps<T>) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const notify = useNotify();
   const t = useTranslationFn();
 
-  const expandedKeys = useMemo(() => deserializeExpandedKeys(searchParams, queryKey), [searchParams, queryKey]);
+  // Local state for expanded keys. If we're in URL-aware mode, this will remain unused.
+  const [localExpandedKeys, setLocalExpandedKeys] = useState<string[]>([]);
+
+  const expandedKeys = useMemo(
+    () => (urlAware ? deserializeExpandedKeys(searchParams, queryKey) : localExpandedKeys),
+    [urlAware, searchParams, queryKey, localExpandedKeys]
+  );
 
   const rowKeyFn: RowKeyFn<WithVisible<T>> = useMemo(() => {
     if (typeof rowKey === 'function') return rowKey;
@@ -69,13 +81,19 @@ const CustomTable = <T extends object>({
   const processedColumns = useMemo(
     () =>
       translatedColumns.map((col) => {
-        const hasData = visibleData.some((record) =>
-          col.alwaysShow
-            ? true
-            : col.isEmpty
-              ? !col.isEmpty(record[col.dataIndex as keyof T], record)
-              : Boolean(record[col.dataIndex as keyof T])
-        );
+        // If we don't have a dataIndex, this isn't a data column, so we pass undefined to the isEmpty function if it
+        // exists (unless alwaysShow is set); otherwise, we always render the non-data column.
+        // If it is a data column, evaluate if we have content for at least one row in the column.
+
+        const hasData =
+          col.alwaysShow ||
+          (col.key && !col.dataIndex
+            ? visibleData.some((record) => (col.isEmpty ? !col.isEmpty(undefined, record) : true))
+            : visibleData.some((record) =>
+                col.isEmpty
+                  ? !col.isEmpty(record[col.dataIndex as keyof T], record)
+                  : Boolean(record[col.dataIndex as keyof T])
+              ));
         return { ...col, hidden: !hasData };
       }),
     [translatedColumns, visibleData]
@@ -104,7 +122,7 @@ const CustomTable = <T extends object>({
     if (expandedRowRender && validExpandedKeys.length !== expandedKeys.length) {
       // Only warn if we are trying to expand a key that doesn't exist *at all* in the data source, NOT if we're just
       // trying to expand a key that isn't expandable.
-      if (expandedKeysThatExist.length !== expandedKeys.length) {
+      if (expandedKeysThatExist.length !== expandedKeys.length && urlAware) {
         console.warn(
           t('table.invalid_row_keys_title'),
           'expanded keys:',
@@ -119,23 +137,42 @@ const CustomTable = <T extends object>({
           description: t('table.invalid_row_keys_description'),
         });
       }
-      setSearchParams((prev) => modifySearchParam(prev, queryKey, validExpandedKeys), { replace: true });
+      if (urlAware) {
+        setSearchParams((prev) => modifySearchParam(prev, queryKey, validExpandedKeys), { replace: true });
+      } else {
+        setLocalExpandedKeys(validExpandedKeys);
+      }
     }
-  }, [expandedRowRender, validExpandedKeys, expandedKeysThatExist, expandedKeys, notify, queryKey, t, setSearchParams]);
+  }, [
+    expandedRowRender,
+    urlAware,
+    validExpandedKeys,
+    expandedKeysThatExist,
+    expandedKeys,
+    notify,
+    queryKey,
+    t,
+    setSearchParams,
+  ]);
 
   const handleExpand = useCallback(
     (expanded: boolean, record: WithVisible<T>) => {
       const key = rowKeyFn(record);
       const nextKeys = expanded ? Array.from(new Set([...expandedKeys, key])) : expandedKeys.filter((k) => k !== key);
-      setSearchParams((prev) => modifySearchParam(prev, queryKey, nextKeys), { replace: true });
+      if (urlAware) {
+        setSearchParams((prev) => modifySearchParam(prev, queryKey, nextKeys), { replace: true });
+      } else {
+        setLocalExpandedKeys(nextKeys);
+      }
     },
-    [expandedKeys, queryKey, rowKeyFn, setSearchParams]
+    [expandedKeys, queryKey, urlAware, rowKeyFn, setSearchParams]
   );
 
   return (
     <Table<WithVisible<T>>
       className="compact"
       columns={processedColumns}
+      loading={loading}
       dataSource={visibleData}
       expandable={{
         expandedRowRender,
@@ -145,8 +182,8 @@ const CustomTable = <T extends object>({
         expandedRowKeys: expandedKeys,
         onExpand: handleExpand,
       }}
-      rowKey={rowKey}
-      pagination={false}
+      rowKey={rowKeyFn} // Need to pass rowKeyFn here since we are casting to string in the case of int keys.
+      pagination={pagination ?? false}
       bordered={true}
     />
   );
