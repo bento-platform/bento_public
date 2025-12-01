@@ -27,12 +27,13 @@ export type KatsuIndividualMatch = {
 };
 
 export type DiscoveryMatchObject = {
-  id: string; // Entity ID
+  id: string | number; // Entity ID
   project?: string | null;
   dataset?: string | null;
 };
 
 export type DiscoveryMatchExperimentResult = DiscoveryMatchObject & {
+  id: number;
   identifier?: string;
   description?: string;
   filename?: string; // File name
@@ -51,6 +52,7 @@ export type DiscoveryMatchExperimentResult = DiscoveryMatchObject & {
 };
 
 export type DiscoveryMatchExperiment = DiscoveryMatchObject & {
+  id: string;
   experiment_type: string;
   study_type?: string;
   results: DiscoveryMatchExperimentResult[];
@@ -58,12 +60,14 @@ export type DiscoveryMatchExperiment = DiscoveryMatchObject & {
 };
 
 export type DiscoveryMatchBiosample = DiscoveryMatchObject & {
+  id: string;
   individual_id?: string; // Individual ID
   phenopacket?: string; // Phenopacket ID
   experiments: DiscoveryMatchExperiment[];
 };
 
 export type DiscoveryMatchPhenopacket = DiscoveryMatchObject & {
+  id: string;
   subject?: string; // Subject ID
   biosamples: DiscoveryMatchBiosample[]; // Biosample records
 };

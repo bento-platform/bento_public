@@ -20,8 +20,8 @@ export type ClinPhenState = {
   biosampleDataCache: { [key: string]: Biosample };
   experimentDataStatus: { [key: string]: RequestStatus };
   experimentDataCache: { [key: string]: Experiment };
-  experimentResultDataStatus: { [key: string]: RequestStatus };
-  experimentResultDataCache: { [key: string]: ExperimentResult };
+  experimentResultDataStatus: { [key: number]: RequestStatus };
+  experimentResultDataCache: { [key: number]: ExperimentResult };
 };
 
 const initialState: ClinPhenState = {

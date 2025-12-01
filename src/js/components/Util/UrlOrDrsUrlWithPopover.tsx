@@ -34,7 +34,7 @@ const UrlOrDrsUrlWithPopover = ({ url }: { url?: string }) => {
           size="compact"
           style={{ maxWidth: 'min(90vw, 800px)' }}
           items={[
-            { key: 'id', children: <code>{record.id}</code> },
+            { key: 'id', children: <span className="font-mono">{record.id}</span> },
             { key: 'name', children: <span>{record.name}</span>, isVisible: !!record.name },
             { key: 'description', children: <span>{record.description}</span>, isVisible: !!record.description },
             { key: 'self_uri', children: <span>{record.self_uri}</span>, isVisible: !!record.self_uri },

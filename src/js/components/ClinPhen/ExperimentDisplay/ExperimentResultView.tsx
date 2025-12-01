@@ -50,7 +50,11 @@ export const ExperimentResultExpandedRow = ({
   experimentResult,
 }: ExperimentResultExpandedRowProps) => {
   const items: ConditionalDescriptionItem[] = [
-    { key: 'identifier', children: <code>{experimentResult.identifier}</code> },
+    {
+      key: 'identifier',
+      children: <span className="font-mono">{experimentResult.identifier}</span>,
+      isVisible: !!experimentResult.identifier,
+    },
     {
       key: 'description',
       label: 'general.description',
@@ -253,7 +257,7 @@ const ExperimentResultView = ({
           experimentResult={record}
         />
       )}
-      rowKey="identifier"
+      rowKey="id"
       queryKey="experimentResult"
       urlAware={urlAware}
       isRowExpandable={isExperimentResultRowExpandable}

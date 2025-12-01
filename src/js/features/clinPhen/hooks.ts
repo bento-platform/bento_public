@@ -91,7 +91,7 @@ export const useExperimentData = (experimentId: string): EntityDataResult<Experi
   return { data, status, isAuthorized };
 };
 
-export const useExperimentResultData = (experimentResultId: string): EntityDataResult<ExperimentResult> => {
+export const useExperimentResultData = (experimentResultId: number): EntityDataResult<ExperimentResult> => {
   const dispatch = useAppDispatch();
 
   const data = useAppSelector((state) => state.clinPhen.experimentResultDataCache[experimentResultId]);

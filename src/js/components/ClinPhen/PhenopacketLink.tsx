@@ -46,9 +46,11 @@ const ExperimentLink = ({ packetId, experimentId }: ExperimentLinkProps) => {
   return packetId ? <Link to={url}>{experimentId}</Link> : experimentId;
 };
 
-type ExperimentResultLinkProps = BaseLinkProps & { experimentResultId: string; children?: ReactNode };
+type ExperimentResultLinkProps = BaseLinkProps & { experimentResultId: number; children?: ReactNode };
 const ExperimentResultLink = ({ packetId, experimentResultId, children }: ExperimentResultLinkProps) => {
-  const url = usePhenopacketOverviewLink(packetId, 'experimentResults', { experimentResult: experimentResultId });
+  const url = usePhenopacketOverviewLink(packetId, 'experimentResults', {
+    experimentResult: experimentResultId.toString(10),
+  });
   children = children ?? experimentResultId;
   return packetId ? <Link to={url}>{children}</Link> : children;
 };
