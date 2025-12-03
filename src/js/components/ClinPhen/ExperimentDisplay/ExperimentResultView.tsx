@@ -48,6 +48,7 @@ export const ExperimentResultExpandedRow = ({
   packetId,
   currentExperiment,
   experimentResult,
+  searchRow,
 }: ExperimentResultExpandedRowProps) => {
   const items: ConditionalDescriptionItem[] = [
     {
@@ -93,6 +94,8 @@ export const ExperimentResultExpandedRow = ({
           packetId={packetId}
           current={currentExperiment}
           experiments={experimentResult.experiments ?? []}
+          // If we're in the detail view context and not search, replace the URL instead of adding to the history:
+          replace={!searchRow}
         />
       ),
       isVisible: objectToBoolean(experimentResult.experiments),
@@ -205,6 +208,7 @@ type ExperimentResultViewProps = {
   currentExperiment?: string;
   experimentResults: ExperimentResult[];
   urlAware?: boolean;
+  searchRow?: boolean;
 };
 
 const ExperimentResultView = ({
@@ -212,6 +216,7 @@ const ExperimentResultView = ({
   currentExperiment,
   experimentResults,
   urlAware,
+  searchRow,
 }: ExperimentResultViewProps) => {
   const { hasAttempted: attemptedCanDownload, hasPermission: canDownload } = useScopeDownloadData();
 
@@ -232,7 +237,12 @@ const ExperimentResultView = ({
         isEmpty: (es: string[] | undefined) =>
           !objectToBoolean(es) || (es?.length === 1 && es[0] === currentExperiment),
         render: (es: string[] | undefined) => (
-          <PhenopacketLink.Experiments packetId={packetId} current={currentExperiment} experiments={es ?? []} />
+          <PhenopacketLink.Experiments
+            packetId={packetId}
+            current={currentExperiment}
+            experiments={es ?? []}
+            replace={!searchRow}
+          />
         ),
       },
       {
@@ -243,7 +253,7 @@ const ExperimentResultView = ({
         render: (_, er) => <ExperimentResultActions url={er.url} filename={er.filename} fileFormat={er.file_format} />,
       },
     ],
-    [attemptedCanDownload, canDownload, packetId, currentExperiment]
+    [attemptedCanDownload, canDownload, packetId, currentExperiment, searchRow]
   );
 
   return (
@@ -255,6 +265,7 @@ const ExperimentResultView = ({
           packetId={packetId}
           currentExperiment={currentExperiment}
           experimentResult={record}
+          searchRow={searchRow}
         />
       )}
       rowKey="id"

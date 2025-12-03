@@ -18,10 +18,10 @@ import { objectToBoolean } from '@/utils/boolean';
 type ExperimentExpandedRowProps = {
   packetId?: string;
   experiment: Experiment;
-  searchRow?: boolean;
+  searchRow?: boolean; // undefined implies false
 };
 
-export const ExperimentExpandedRow = ({ packetId, experiment }: ExperimentExpandedRowProps) => {
+export const ExperimentExpandedRow = ({ packetId, experiment, searchRow }: ExperimentExpandedRowProps) => {
   const t = useTranslationFn();
 
   const items: ConditionalDescriptionItem[] = [
@@ -75,6 +75,7 @@ export const ExperimentExpandedRow = ({ packetId, experiment }: ExperimentExpand
             currentExperiment={experiment.id}
             experimentResults={experiment.experiment_results!}
             urlAware={false}
+            searchRow={searchRow}
           />
         </>
       ) : null}
