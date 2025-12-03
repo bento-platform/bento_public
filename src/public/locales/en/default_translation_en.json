@@ -42,7 +42,8 @@
     "actions": "Actions",
     "ontology_class": "Ontology Class",
     "view": "View",
-    "url": "URL"
+    "url": "URL",
+    "error_occurred": "An error occurred."
   },
   "search": {
     "filters": "Filters",
