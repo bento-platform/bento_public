@@ -15,7 +15,7 @@ import { useScopeQueryData } from './censorship';
 import { useQueryFilterFields, useSearchQuery } from '@/features/search/hooks';
 
 import { performKatsuDiscovery } from '@/features/search/performKatsuDiscovery.thunk';
-import { setDoneFirstLoad, setFilterQueryParams, setTextQuery } from '@/features/search/query.store';
+import { setDoneFirstLoad, setFilterQueryParams, setTextQuery, resetMatchesPage } from '@/features/search/query.store';
 
 import { buildQueryParamsUrl, checkQueryParamsEqual, combineQueryParamsWithoutKey } from '@/features/search/utils';
 import { getCurrentPage } from '@/utils/router';
@@ -28,6 +28,8 @@ type QueryValidationResult = {
 };
 
 export const useSearchRouterAndHandler = () => {
+  // Tags for ctrl-F: execute search, perform search, run search
+
   const dispatch = useAppDispatch();
   const location = useLocation();
   const navigateToScope = useNavigateToScope();
@@ -168,8 +170,8 @@ export const useSearchRouterAndHandler = () => {
         dispatch(setFilterQueryParams(validFilterQueryParams));
       }
 
-      // We only want to execute the filters search if we're not already performing a text search even while we're
-      // focused on the filters form, which can happen on first load with a text search query parameter specified.
+      // Finally, we can go ahead and execute the search:
+      dispatch(resetMatchesPage());
       dispatch(performKatsuDiscovery());
     }
 
