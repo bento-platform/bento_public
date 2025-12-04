@@ -5,6 +5,7 @@ import { EyeOutlined } from '@ant-design/icons';
 import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
 
+import PhenopacketLink from '@/components/ClinPhen/PhenopacketLink';
 import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
 import FileModal from '@Util/FileModal';
 import TDescriptions from '@Util/TDescriptions';
@@ -36,12 +37,19 @@ export const ExperimentResultIndices = ({ indices }: { indices: ExperimentResult
   );
 };
 
-export const ExperimentResultExpandedRow = ({
-  experimentResult,
-}: {
+type ExperimentResultExpandedRowProps = {
+  packetId?: string;
+  currentExperiment?: string;
   experimentResult: ExperimentResult;
   searchRow?: boolean;
-}) => {
+};
+
+export const ExperimentResultExpandedRow = ({
+  packetId,
+  currentExperiment,
+  experimentResult,
+  searchRow,
+}: ExperimentResultExpandedRowProps) => {
   const items: ConditionalDescriptionItem[] = [
     {
       key: 'identifier',
@@ -78,10 +86,19 @@ export const ExperimentResultExpandedRow = ({
     { key: 'created_by', children: experimentResult.created_by },
     // Not in the true Experiment Result schema, but can be added by the front end for linking purposes:
     {
-      key: 'experiment_ids',
+      key: 'experiments',
       label: 'entities.experiment_other',
-      children: (experimentResult.experiment_ids ?? []).join(', '), // TODO: link to expanded row + scrollTo
-      isVisible: objectToBoolean(experimentResult.experiment_ids),
+      // TODO: link to expanded row + scrollTo:
+      children: (
+        <PhenopacketLink.Experiments
+          packetId={packetId}
+          current={currentExperiment}
+          experiments={experimentResult.experiments ?? []}
+          // If we're in the detail view context and not search, replace the URL instead of adding to the history:
+          replace={!searchRow}
+        />
+      ),
+      isVisible: objectToBoolean(experimentResult.experiments),
     },
   ];
 
@@ -186,11 +203,21 @@ export const ExperimentResultActions = (props: ExperimentResultActionsProps) => 
 };
 
 type ExperimentResultViewProps = {
+  packetId?: string;
+  // Optional - if this is in the context of a single experiment, don't link the selected experiment:
+  currentExperiment?: string;
   experimentResults: ExperimentResult[];
   urlAware?: boolean;
+  searchRow?: boolean;
 };
 
-const ExperimentResultView = ({ experimentResults, urlAware }: ExperimentResultViewProps) => {
+const ExperimentResultView = ({
+  packetId,
+  currentExperiment,
+  experimentResults,
+  urlAware,
+  searchRow,
+}: ExperimentResultViewProps) => {
   const { hasAttempted: attemptedCanDownload, hasPermission: canDownload } = useScopeDownloadData();
 
   urlAware = urlAware ?? true;
@@ -203,12 +230,20 @@ const ExperimentResultView = ({ experimentResults, urlAware }: ExperimentResultV
       // TODO: nice render with modal to reference genome:
       { title: 'experiment_result.genome_assembly_id', dataIndex: 'genome_assembly_id' },
       { title: 'experiment_result.file_format', dataIndex: 'file_format' },
-      // TODO: link
       {
-        title: 'experiment_result.experiment_ids',
-        dataIndex: 'experiment_ids',
-        isEmpty: (es: string[] | undefined) => !objectToBoolean(es),
-        render: (es: string[] | undefined) => (es ?? []).join(', '),
+        title: 'experiment_result.experiments',
+        dataIndex: 'experiments',
+        // Don't show experiments if we don't have any OR if the only experiment is the currently-selected one
+        isEmpty: (es: string[] | undefined) =>
+          !objectToBoolean(es) || (es?.length === 1 && es[0] === currentExperiment),
+        render: (es: string[] | undefined) => (
+          <PhenopacketLink.Experiments
+            packetId={packetId}
+            current={currentExperiment}
+            experiments={es ?? []}
+            replace={!searchRow}
+          />
+        ),
       },
       {
         title: 'general.actions',
@@ -218,14 +253,21 @@ const ExperimentResultView = ({ experimentResults, urlAware }: ExperimentResultV
         render: (_, er) => <ExperimentResultActions url={er.url} filename={er.filename} fileFormat={er.file_format} />,
       },
     ],
-    [attemptedCanDownload, canDownload]
+    [attemptedCanDownload, canDownload, packetId, currentExperiment, searchRow]
   );
 
   return (
     <CustomTable<ExperimentResult>
       dataSource={experimentResults}
       columns={columns}
-      expandedRowRender={(record) => <ExperimentResultExpandedRow experimentResult={record} />}
+      expandedRowRender={(record) => (
+        <ExperimentResultExpandedRow
+          packetId={packetId}
+          currentExperiment={currentExperiment}
+          experimentResult={record}
+          searchRow={searchRow}
+        />
+      )}
       rowKey="id"
       queryKey="experimentResult"
       urlAware={urlAware}

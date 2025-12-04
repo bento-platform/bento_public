@@ -1,4 +1,4 @@
-import { type ReactNode, Fragment, useCallback, useEffect, useMemo, useState } from 'react';
+import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Button, Checkbox, Col, Flex, Modal, Space, type TablePaginationConfig, Tooltip, Typography } from 'antd';
 import { ExportOutlined, LeftOutlined, TableOutlined } from '@ant-design/icons';
@@ -42,6 +42,7 @@ import BiosampleRowDetail from './BiosampleRowDetail';
 import ExperimentRowDetail from './ExperimentRowDetail';
 import ExperimentResultRowDetail from './ExperimentResultRowDetail';
 import PhenopacketLink from '@/components/ClinPhen/PhenopacketLink';
+import { ExperimentResultFileTypeCounts } from '@/components/ClinPhen/ExperimentDisplay/ExperimentView';
 import {
   ExperimentResultActions,
   experimentResultViewable,
@@ -102,13 +103,9 @@ const PHENOPACKET_SEARCH_TABLE_COLUMNS = {
   biosamples: {
     title: 'entities.biosample_other',
     dataIndex: 'biosamples',
-    render: (_ctx: SearchColRenderContext) => (b: DiscoveryMatchBiosample[], p: DiscoveryMatchPhenopacket) =>
-      b.map((bb, bbi) => (
-        <Fragment key={bb.id}>
-          <PhenopacketLink.Biosample packetId={p.id} sampleId={bb.id} />
-          {bbi < b.length - 1 ? ', ' : ''}
-        </Fragment>
-      )),
+    render: (_ctx: SearchColRenderContext) => (b: DiscoveryMatchBiosample[], p: DiscoveryMatchPhenopacket) => (
+      <PhenopacketLink.Biosamples packetId={p.id} biosamples={b.map((bb) => bb.id)} />
+    ),
   },
   ...commonSearchTableColumns<DiscoveryMatchPhenopacket>(),
 } as Record<string, ResultsTableColumn<DiscoveryMatchPhenopacket>>;
@@ -121,7 +118,36 @@ const BIOSAMPLE_SEARCH_TABLE_COLUMNS = {
       <PhenopacketLink.Subject packetId={b.phenopacket}>{individualId}</PhenopacketLink.Subject>
     ),
   } as ResultsTableColumn<DiscoveryMatchBiosample>,
+  experiments: {
+    title: 'entities.experiment_other',
+    dataIndex: 'experiments',
+    render: (_ctx) => (experiments: DiscoveryMatchExperiment[] | undefined, b) => (
+      <PhenopacketLink.Experiments packetId={b.phenopacket} experiments={experiments?.map((e) => e.id) ?? []} />
+    ),
+  } as ResultsTableColumn<DiscoveryMatchBiosample>,
   ...commonSearchTableColumns<DiscoveryMatchBiosample>(),
+};
+
+const EXPERIMENT_SEARCH_TABLE_COLUMNS = {
+  study_type: {
+    title: 'experiment.study_type',
+    dataIndex: 'study_type',
+  } as ResultsTableColumn<DiscoveryMatchExperiment>,
+  biosample: {
+    title: 'entities.biosample_one',
+    dataIndex: 'biosample',
+    render: (_ctx) => (biosampleId: string, e) => (
+      <PhenopacketLink.Biosample packetId={e?.phenopacket} sampleId={biosampleId} />
+    ),
+  } as ResultsTableColumn<DiscoveryMatchExperiment>,
+  experiment_results: {
+    title: 'entities.experiment_result_other',
+    dataIndex: 'results',
+    render: (_ctx) => (results: DiscoveryMatchExperimentResult[] | undefined) => (
+      <ExperimentResultFileTypeCounts results={results} />
+    ),
+  } as ResultsTableColumn<DiscoveryMatchExperiment>,
+  ...commonSearchTableColumns<DiscoveryMatchExperiment>(),
 };
 
 const EXPERIMENT_RESULT_SEARCH_TABLE_COLUMNS = {
@@ -136,6 +162,13 @@ const EXPERIMENT_RESULT_SEARCH_TABLE_COLUMNS = {
   file_format: {
     title: 'experiment_result.file_format',
     dataIndex: 'file_format',
+  } as ResultsTableColumn<DiscoveryMatchExperimentResult>,
+  experiments: {
+    title: 'experiment_result.experiments',
+    dataIndex: 'experiments',
+    render: (_ctx) => (experiments: string[], er) => (
+      <PhenopacketLink.Experiments packetId={er?.phenopacket} experiments={experiments} />
+    ),
   } as ResultsTableColumn<DiscoveryMatchExperimentResult>,
   ...commonSearchTableColumns<DiscoveryMatchExperimentResult>(),
 };
@@ -164,7 +197,7 @@ const TABLE_SPEC_BIOSAMPLE: ResultsTableSpec<DiscoveryMatchBiosample> = {
     } as ResultsTableFixedColumn<DiscoveryMatchBiosample>,
   ],
   availableColumns: BIOSAMPLE_SEARCH_TABLE_COLUMNS,
-  defaultColumns: ['individual_id', 'project', 'dataset'],
+  defaultColumns: ['individual', 'experiments', 'project', 'dataset'],
   expandedRowRender: (rec) => <BiosampleRowDetail id={rec.id} />,
 };
 
@@ -180,9 +213,8 @@ const TABLE_SPEC_EXPERIMENT: ResultsTableSpec<DiscoveryMatchExperiment> = {
       title: 'experiment.experiment_type',
     } as ResultsTableFixedColumn<DiscoveryMatchExperiment>,
   ],
-  // TODO: biosample column
-  availableColumns: commonSearchTableColumns<DiscoveryMatchExperiment>(),
-  defaultColumns: ['project', 'dataset'],
+  availableColumns: EXPERIMENT_SEARCH_TABLE_COLUMNS,
+  defaultColumns: ['biosample', 'project', 'dataset'],
   expandedRowRender: (rec) => <ExperimentRowDetail id={rec.id} />,
 };
 
@@ -215,7 +247,7 @@ const TABLE_SPEC_EXPERIMENT_RESULT: ResultsTableSpec<DiscoveryMatchExperimentRes
     } as ResultsTableFixedColumn<DiscoveryMatchExperimentResult>,
   ],
   availableColumns: EXPERIMENT_RESULT_SEARCH_TABLE_COLUMNS,
-  defaultColumns: ['description', 'genome_assembly_id', 'file_format', 'project', 'dataset'],
+  defaultColumns: ['genome_assembly_id', 'file_format', 'experiments', 'project', 'dataset'],
   expandedRowRender: (rec) => <ExperimentResultRowDetail id={rec.id} />,
 };
 

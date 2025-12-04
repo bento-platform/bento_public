@@ -453,7 +453,7 @@
     "usage": "Usage",
     "creation_date": "Creation Date",
     "created_by": "Created By",
-    "experiment_ids": "Experiment IDs"
+    "experiments": "$t(entities.experiment_other)"
   },
   "auth": {
     "unauthorized_message": "You are not authorized to access this resource."
