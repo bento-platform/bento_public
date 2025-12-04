@@ -56,6 +56,7 @@ export type DiscoveryMatchExperiment = DiscoveryMatchObject & {
   experiment_type: string;
   study_type?: string;
   results: DiscoveryMatchExperimentResult[];
+  biosample?: string;
   phenopacket?: string;
 };
 

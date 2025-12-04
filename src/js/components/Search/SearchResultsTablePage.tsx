@@ -42,6 +42,7 @@ import BiosampleRowDetail from './BiosampleRowDetail';
 import ExperimentRowDetail from './ExperimentRowDetail';
 import ExperimentResultRowDetail from './ExperimentResultRowDetail';
 import PhenopacketLink from '@/components/ClinPhen/PhenopacketLink';
+import { ExperimentResultFileTypeCounts } from '@/components/ClinPhen/ExperimentDisplay/ExperimentView';
 import {
   ExperimentResultActions,
   experimentResultViewable,
@@ -127,6 +128,28 @@ const BIOSAMPLE_SEARCH_TABLE_COLUMNS = {
   ...commonSearchTableColumns<DiscoveryMatchBiosample>(),
 };
 
+const EXPERIMENT_SEARCH_TABLE_COLUMNS = {
+  study_type: {
+    title: 'experiment.study_type',
+    dataIndex: 'study_type',
+  } as ResultsTableColumn<DiscoveryMatchExperiment>,
+  biosample: {
+    title: 'entities.biosample_one',
+    dataIndex: 'biosample',
+    render: (_ctx) => (biosampleId: string, e) => (
+      <PhenopacketLink.Biosample packetId={e?.phenopacket} sampleId={biosampleId} />
+    ),
+  } as ResultsTableColumn<DiscoveryMatchExperiment>,
+  experiment_results: {
+    title: 'entities.experiment_result_other',
+    dataIndex: 'results',
+    render: (_ctx) => (results: DiscoveryMatchExperimentResult[] | undefined) => (
+      <ExperimentResultFileTypeCounts results={results} />
+    ),
+  } as ResultsTableColumn<DiscoveryMatchExperiment>,
+  ...commonSearchTableColumns<DiscoveryMatchExperiment>(),
+};
+
 const EXPERIMENT_RESULT_SEARCH_TABLE_COLUMNS = {
   description: {
     title: 'experiment_result.description',
@@ -190,9 +213,8 @@ const TABLE_SPEC_EXPERIMENT: ResultsTableSpec<DiscoveryMatchExperiment> = {
       title: 'experiment.experiment_type',
     } as ResultsTableFixedColumn<DiscoveryMatchExperiment>,
   ],
-  // TODO: biosample column
-  availableColumns: commonSearchTableColumns<DiscoveryMatchExperiment>(),
-  defaultColumns: ['project', 'dataset'],
+  availableColumns: EXPERIMENT_SEARCH_TABLE_COLUMNS,
+  defaultColumns: ['biosample', 'project', 'dataset'],
   expandedRowRender: (rec) => <ExperimentRowDetail id={rec.id} />,
 };
 
