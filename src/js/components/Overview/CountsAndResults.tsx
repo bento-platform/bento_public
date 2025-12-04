@@ -78,50 +78,57 @@ const CountsAndResults = () => {
 
   const nFilters = Object.keys(filterQueryParams).length + +!!textQuery;
 
-  const countElements = doingFirstLoad
-    ? []
-    : COUNT_ENTITY_ORDER.filter((entity) => {
-        // hide counts if no filters applied and we have no data
-        if (uiHints.status === RequestStatus.Fulfilled && !uiHints.data.entities_with_data.includes(entity)) {
-          // If we have a UI hint indicating that we have none of this entity in the scope at all, don't bother even
-          // showing a loading card for the count.
-          return false;
-        }
-        return waitingForData || !!(counts[entity] || nFilters);
-      }).map((entity, i) => {
-        const { icon } = COUNT_ENTITY_REGISTRY[entity];
-        const count = renderCount(counts[entity]);
-        const selected = selectedEntity === entity;
-        const canSelect = hasQueryData && !selected;
-        return (
-          <Card
-            key={i}
-            aria-selected={hasQueryData ? selected : undefined}
-            className={
-              'shadow count-card' +
-              (canSelect ? ' count-card-clickable' : '') +
-              (selected ? ' count-card-selected' : '')
-            }
-            onClick={canSelect ? () => setSelectedEntity(entity) : undefined}
-            style={{ height: COUNT_CARD_BASE_HEIGHT + (hasQueryData ? 12 : 0) + (selected ? 12 : 0) }}
-          >
-            <Statistic
-              title={<CountsTitleWithHelp entity={entity} />}
-              value={count}
-              valueStyle={{ color: COUNTS_FILL }}
-              prefix={icon}
-              loading={waitingForData}
-            />
-            {hasQueryData && <CountCardShowHide selected={selected} onClear={clearSelectedEntity} />}
-          </Card>
-        );
-      });
+  const countElements =
+    doingFirstLoad || discoveryStatus === RequestStatus.Rejected
+      ? []
+      : COUNT_ENTITY_ORDER.filter((entity) => {
+          // hide counts if no filters applied and we have no data
+          if (uiHints.status === RequestStatus.Fulfilled && !uiHints.data.entities_with_data.includes(entity)) {
+            // If we have a UI hint indicating that we have none of this entity in the scope at all, don't bother even
+            // showing a loading card for the count.
+            return false;
+          }
+          return waitingForData || !!(counts[entity] || nFilters);
+        }).map((entity, i) => {
+          const { icon } = COUNT_ENTITY_REGISTRY[entity];
+          const count = renderCount(counts[entity]);
+          const selected = selectedEntity === entity;
+          const canSelect = hasQueryData && !selected;
+          return (
+            <Card
+              key={i}
+              aria-selected={hasQueryData ? selected : undefined}
+              className={
+                'shadow count-card' +
+                (canSelect ? ' count-card-clickable' : '') +
+                (selected ? ' count-card-selected' : '')
+              }
+              onClick={canSelect ? () => setSelectedEntity(entity) : undefined}
+              style={{ height: COUNT_CARD_BASE_HEIGHT + (hasQueryData ? 12 : 0) + (selected ? 12 : 0) }}
+            >
+              <Statistic
+                title={<CountsTitleWithHelp entity={entity} />}
+                value={count}
+                valueStyle={{ color: COUNTS_FILL }}
+                prefix={icon}
+                loading={waitingForData}
+              />
+              {hasQueryData && <CountCardShowHide selected={selected} onClear={clearSelectedEntity} />}
+            </Card>
+          );
+        });
 
   return (
     <Flex vertical={true} gap={12}>
       {message ? <Alert message={t(message)} type="info" showIcon={true} style={{ fontSize: '1.1rem' }} /> : null}
       <Space size={12} wrap>
-        {countElements.length ? countElements : <CountCardPlaceholder loading={doingFirstLoad} />}
+        {countElements.length ? (
+          countElements
+        ) : discoveryStatus === RequestStatus.Rejected ? (
+          <Alert message={t('general.error_occurred')} type="error" showIcon={true} style={{ fontSize: '1.1rem' }} />
+        ) : (
+          <CountCardPlaceholder loading={doingFirstLoad} />
+        )}
       </Space>
       {countElements.length && selectedEntity ? (
         <Card className="shadow">

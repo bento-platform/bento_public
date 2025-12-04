@@ -19,18 +19,22 @@ export const performKatsuDiscovery = createAsyncThunk<
   'query/performKatsuDiscovery',
   async (_, { rejectWithValue, getState }) => {
     const state = getState();
-    const res = (await axios
-      .get(
-        katsuDiscoveryUrl,
-        scopedAuthorizedRequestConfig(state, {
-          _fts: state.query.textQuery || undefined,
-          ...state.query.filterQueryParams,
-        })
-      )
-      .then((res) => res.data)
-      .catch(printAPIError(rejectWithValue))) as DiscoveryResponseOrMessage;
 
-    return [state.metadata.selectedScope.scope, res] as [DiscoveryScope, DiscoveryResponseOrMessage];
+    try {
+      const res = (await axios
+        .get(
+          katsuDiscoveryUrl,
+          scopedAuthorizedRequestConfig(state, {
+            _fts: state.query.textQuery || undefined,
+            ...state.query.filterQueryParams,
+          })
+        )
+        .then((res) => res.data)) as DiscoveryResponseOrMessage;
+
+      return [state.metadata.selectedScope.scope, res] as [DiscoveryScope, DiscoveryResponseOrMessage];
+    } catch (e) {
+      throw printAPIError(rejectWithValue);
+    }
   },
   {
     condition(_, { getState }) {

@@ -44,7 +44,8 @@
     "ontology_class": "Classe ontologique",
     "actions": "Actions",
     "view": "Afficher",
-    "url": "URL"
+    "url": "URL",
+    "error_occurred": "An error occurred."
   },
   "search": {
     "filters": "Filtres",
