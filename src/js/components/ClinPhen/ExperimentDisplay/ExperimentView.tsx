@@ -1,5 +1,6 @@
 import { Divider, Space, Typography } from 'antd';
 
+import type { DiscoveryMatchExperimentResult } from '@/features/search/types';
 import type { Experiment } from '@/types/clinPhen/experiments/experiment';
 import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
@@ -107,6 +108,18 @@ const _countItems = (x: string[]): Record<string, number> => {
   return counts;
 };
 
+export const ExperimentResultFileTypeCounts = ({
+  results,
+}: {
+  results: ExperimentResult[] | DiscoveryMatchExperimentResult[] | undefined;
+}) => {
+  // Render like "1 x CRAM, 2 x VCF"
+  // TODO: popover with list of file names
+  const counts = _countItems((results ?? []).map((er) => er.file_format ?? 'Unknown'));
+  const countItems = Object.entries(counts).sort((a, b) => a[0].localeCompare(b[0]));
+  return countItems.map((i) => `${i[1]} \u00d7 ${i[0]}`).join(', ');
+};
+
 const EXPERIMENT_VIEW_COLUMNS: CustomTableColumns<Experiment> = [
   { title: 'experiment.experiment_id', dataIndex: 'id', alwaysShow: true },
   { title: 'experiment.experiment_type', dataIndex: 'experiment_type' },
@@ -116,9 +129,7 @@ const EXPERIMENT_VIEW_COLUMNS: CustomTableColumns<Experiment> = [
     render: (results: ExperimentResult[] | undefined) => {
       // Render like "1 x CRAM, 2 x VCF"
       // TODO: popover with list of file names
-      const counts = _countItems((results ?? []).map((er) => er.file_format ?? 'Unknown'));
-      const countItems = Object.entries(counts).sort((a, b) => a[0].localeCompare(b[0]));
-      return countItems.map((i) => `${i[1]} \u00d7 ${i[0]}`).join(', ');
+      return <ExperimentResultFileTypeCounts results={results} />;
     },
   },
 ];
