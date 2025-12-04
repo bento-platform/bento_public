@@ -117,6 +117,13 @@ const BIOSAMPLE_SEARCH_TABLE_COLUMNS = {
       <PhenopacketLink.Subject packetId={b.phenopacket}>{individualId}</PhenopacketLink.Subject>
     ),
   } as ResultsTableColumn<DiscoveryMatchBiosample>,
+  experiments: {
+    title: 'entities.experiment_other',
+    dataIndex: 'experiments',
+    render: (_ctx) => (experiments: DiscoveryMatchExperiment[] | undefined, b) => (
+      <PhenopacketLink.Experiments packetId={b.phenopacket} experiments={experiments?.map((e) => e.id) ?? []} />
+    ),
+  } as ResultsTableColumn<DiscoveryMatchBiosample>,
   ...commonSearchTableColumns<DiscoveryMatchBiosample>(),
 };
 
@@ -167,7 +174,7 @@ const TABLE_SPEC_BIOSAMPLE: ResultsTableSpec<DiscoveryMatchBiosample> = {
     } as ResultsTableFixedColumn<DiscoveryMatchBiosample>,
   ],
   availableColumns: BIOSAMPLE_SEARCH_TABLE_COLUMNS,
-  defaultColumns: ['individual_id', 'project', 'dataset'],
+  defaultColumns: ['individual', 'experiments', 'project', 'dataset'],
   expandedRowRender: (rec) => <BiosampleRowDetail id={rec.id} />,
 };
 
