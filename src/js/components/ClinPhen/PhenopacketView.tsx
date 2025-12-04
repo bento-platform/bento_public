@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Card, Empty, Flex, Space, Button } from 'antd';
+import { CompressOutlined, ExpandOutlined } from '@ant-design/icons';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import Loader from '@/components/Loader';
@@ -112,6 +113,7 @@ const PhenopacketView = () => {
                   collapseRef.current?.expandAll();
                 }}
                 size="small"
+                icon={<ExpandOutlined />}
               >
                 {t('general.expand_all')}
               </Button>
@@ -120,6 +122,7 @@ const PhenopacketView = () => {
                   collapseRef.current?.collapseAll();
                 }}
                 size="small"
+                icon={<CompressOutlined />}
               >
                 {t('general.collapse_all')}
               </Button>
