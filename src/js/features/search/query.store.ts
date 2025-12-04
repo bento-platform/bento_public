@@ -186,6 +186,11 @@ const query = createSlice({
     setMatchesPage: (state, { payload }: PayloadAction<[BentoKatsuEntity, number]>) => {
       state.matchData[bentoKatsuEntityToResultsDataEntity(payload[0])].page = payload[1];
     },
+    resetMatchesPage: (state) => {
+      Object.keys(state.matchData).forEach((k) => {
+        state.matchData[k as ResultsDataEntity].page = 0;
+      });
+    },
     setMatchesPageSize: (state, { payload }: PayloadAction<number>) => {
       state.pageSize = payload;
     },
@@ -274,6 +279,7 @@ export const {
   setTextQuery,
   setDoneFirstLoad,
   setMatchesPage,
+  resetMatchesPage,
   setMatchesPageSize,
   resetAllQueryState,
 } = query.actions;
