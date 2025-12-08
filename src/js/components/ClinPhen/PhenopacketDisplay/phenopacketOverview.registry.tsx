@@ -48,9 +48,9 @@ const phenopacketExperimentResults = (p: Phenopacket): ExperimentResult[] => {
   phenopacketExperiments(p).forEach((e: Experiment) => {
     (e.experiment_results ?? []).forEach((er: ExperimentResult) => {
       if (!(er.id in experimentResults)) {
-        experimentResults[er.id] = { ...er, experiment_ids: [] };
+        experimentResults[er.id] = { ...er, experiments: [] };
       }
-      experimentResults[er.id].experiment_ids?.push(e.id);
+      experimentResults[er.id].experiments?.push(e.id);
     });
   });
 
@@ -106,13 +106,13 @@ export const SECTION_SPECS: Record<SectionKey, SectionSpec> = {
   experiments: {
     titleTranslationKey: 'entities.experiment_other',
     enabled: (p) => has(phenopacketExperiments(p)),
-    render: (p) => <ExperimentView experiments={phenopacketExperiments(p)} />,
+    render: (p) => <ExperimentView packetId={p.id} experiments={phenopacketExperiments(p)} />,
     order: 7,
   },
   experimentResults: {
     titleTranslationKey: 'entities.experiment_result_other',
     enabled: (p) => has(phenopacketExperimentResults(p)),
-    render: (p) => <ExperimentResultView experimentResults={phenopacketExperimentResults(p)} />,
+    render: (p) => <ExperimentResultView packetId={p.id} experimentResults={phenopacketExperimentResults(p)} />,
     order: 8,
   },
 };

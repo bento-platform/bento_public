@@ -454,8 +454,7 @@
     "data_output_type": "Type de sortie des données",
     "usage": "Utilisation",
     "creation_date": "Date de création",
-    "created_by": "Créé par",
-    "experiment_ids": "Identifiants d'expériences"
+    "created_by": "Créé par"
   },
   "auth": {
     "unauthorized_message": "Vous n'êtes pas autorisé à accéder à cette ressource."
