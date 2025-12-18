@@ -18,7 +18,7 @@ import type { BentoCountEntity } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
 
 const COUNT_CARD_BASE_HEIGHT = 114;
-const COUNT_CARD_DENOMINATOR_BREAKPOINT = 1080;
+const COUNT_CARD_DENOMINATOR_BREAKPOINT = 1180;
 
 const CountCardPlaceholder = ({ loading }: { loading: boolean }) => {
   return (

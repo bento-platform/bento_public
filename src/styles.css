@@ -376,6 +376,10 @@ body {
   margin-bottom: -12px;
 }
 
+.counts-title__text {
+  white-space: nowrap;
+}
+
 .count-card__show-hide {
   position: absolute;
   left: 0;
