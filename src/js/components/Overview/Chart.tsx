@@ -76,6 +76,7 @@ const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) =
           data={data}
           preFilter={removeMissing}
           dataMap={translateMap}
+          removeEmpty={false} // Preserve the histogram's layout by showing empty bins
           {...(isClickable
             ? {
                 onChartClick: barChartOnChartClickHandler,
