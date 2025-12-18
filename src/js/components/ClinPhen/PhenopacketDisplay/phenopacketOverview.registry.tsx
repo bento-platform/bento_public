@@ -1,4 +1,4 @@
-import type React from 'react';
+import type { ReactNode } from 'react';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
 import type { Biosample } from '@/types/clinPhen/biosample';
 import type { Experiment } from '@/types/clinPhen/experiments/experiment';
@@ -14,6 +14,9 @@ import PhenotypicFeaturesView from './PhenotypicFeaturesView';
 
 import ExperimentView from '@/components/ClinPhen/ExperimentDisplay/ExperimentView';
 import ExperimentResultView from '@/components/ClinPhen/ExperimentDisplay/ExperimentResultView';
+import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
+
+import { objectToBoolean } from '@/utils/boolean';
 
 export type SectionKey =
   | 'subject'
@@ -24,7 +27,8 @@ export type SectionKey =
   | 'medicalActions'
   | 'phenotypicFeatures'
   | 'experiments'
-  | 'experimentResults';
+  | 'experimentResults'
+  | 'otherProperties';
 
 export type SectionSpec = {
   /** translation title label */
@@ -32,7 +36,7 @@ export type SectionSpec = {
   /** should this section render? can be a boolean or predicate fn */
   enabled: boolean | ((p: Phenopacket) => boolean);
   /** content renderer; gets the whole phenopacket so it’s easy to change later */
-  render: (p: Phenopacket) => React.ReactNode;
+  render: (p: Phenopacket) => ReactNode;
   /** order within the column */
   order?: number;
 };
@@ -114,5 +118,11 @@ export const SECTION_SPECS: Record<SectionKey, SectionSpec> = {
     enabled: (p) => has(phenopacketExperimentResults(p)),
     render: (p) => <ExperimentResultView packetId={p.id} experimentResults={phenopacketExperimentResults(p)} />,
     order: 8,
+  },
+  otherProperties: {
+    titleTranslationKey: 'tab_keys.other_properties',
+    enabled: (p) => objectToBoolean(p.extra_properties),
+    render: (p) => <ExtraPropertiesDisplay extraProperties={p.extra_properties} />,
+    order: 9,
   },
 };

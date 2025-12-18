@@ -1,8 +1,10 @@
+import { Space } from 'antd';
+
 import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
 import TDescriptions from '@Util/TDescriptions';
 import OntologyTermComponent, { OntologyTermStack } from '@Util/ClinPhen/OntologyTerm';
 import TimeElementDisplay from '@Util/ClinPhen/TimeElementDisplay';
-import ExtraProperties from '@Util/ExtraProperties';
+import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
 import Excluded, { ExcludedModel } from '@Util/ClinPhen/Excluded';
 
 import type { Disease } from '@/types/clinPhen/disease';
@@ -39,15 +41,14 @@ const DiseaseExpandedRow = ({ disease }: { disease: Disease }) => {
       children: <OntologyTermComponent term={disease.laterality} />,
       isVisible: disease.laterality,
     },
-    {
-      key: 'extra_properties',
-      label: 'diseases_expanded_row.extra_properties',
-      children: <ExtraProperties extraProperties={disease.extra_properties} />,
-      isVisible: objectToBoolean(disease.extra_properties),
-    },
   ];
 
-  return <TDescriptions bordered size="compact" items={items} />;
+  return (
+    <Space direction="vertical" className="w-full">
+      <TDescriptions bordered size="compact" items={items} />
+      <ExtraPropertiesDisplay extraProperties={disease.extra_properties} />
+    </Space>
+  );
 };
 
 interface DiseasesViewProps {
@@ -55,7 +56,13 @@ interface DiseasesViewProps {
 }
 
 const isDiseaseRowExpandable = (r: Disease) =>
-  !!(r.disease_stage?.length || r.clinical_tnm_finding?.length || r.primary_site || r.laterality || r.extra_properties);
+  !!(
+    r.disease_stage?.length ||
+    r.clinical_tnm_finding?.length ||
+    r.primary_site ||
+    r.laterality ||
+    objectToBoolean(r.extra_properties)
+  );
 
 const DISEASES_VIEW_COLUMNS: CustomTableColumns<Disease> = [
   {

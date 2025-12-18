@@ -1,8 +1,9 @@
+import { Space } from 'antd';
 import { LinkOutlined } from '@ant-design/icons';
 
 import OntologyTermComponent, { OntologyTermStack } from '@Util/ClinPhen/OntologyTerm';
 import TimeElementDisplay from '@Util/ClinPhen/TimeElementDisplay';
-import ExtraProperties from '@Util/ExtraProperties';
+import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
 import TDescriptions from '@Util/TDescriptions';
 import Excluded, { ExcludedModel } from '@Util/ClinPhen/Excluded';
 import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
@@ -89,14 +90,13 @@ function PhenotypicFeatureExpandedRow({ feature }: { feature: PhenotypicFeature 
       children: feature.evidence?.length ? feature.evidence.map((e, i) => <Evidence key={i} evidence={e} />) : EM_DASH,
       isVisible: feature.evidence?.length,
     },
-    {
-      key: 'extra_properties',
-      label: 'phenotypic_features.extra_properties',
-      children: <ExtraProperties extraProperties={feature?.extra_properties} />,
-      isVisible: objectToBoolean(feature?.extra_properties),
-    },
   ];
-  return <TDescriptions bordered size="compact" items={items} />;
+  return (
+    <Space direction="vertical" className="w-full">
+      <TDescriptions bordered size="compact" items={items} />
+      <ExtraPropertiesDisplay extraProperties={feature.extra_properties} />
+    </Space>
+  );
 }
 
 const isPhenotypicFeatureExpandable = (record: PhenotypicFeature) =>

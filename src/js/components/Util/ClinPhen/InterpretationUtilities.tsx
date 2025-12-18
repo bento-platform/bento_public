@@ -4,6 +4,7 @@ import StringList from '../StringList';
 import TDescriptions from '../TDescriptions';
 import OntologyTerm from './OntologyTerm';
 import JsonView from '../JsonView';
+import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
 
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
 import { objectToBoolean } from '@/utils/boolean';
@@ -40,7 +41,12 @@ export const GeneDescriptor = ({ geneDescriptor }: { geneDescriptor: GeneDescrip
     },
   ];
 
-  return <TDescriptions items={items} size="compact" column={1} bordered />;
+  return (
+    <Space direction="vertical" className="w-full">
+      <TDescriptions items={items} size="compact" column={1} bordered />
+      <ExtraPropertiesDisplay extraProperties={geneDescriptor.extra_properties} />
+    </Space>
+  );
 };
 
 export const VariantInterpretation = ({
@@ -63,7 +69,7 @@ export const VariantInterpretation = ({
 
   const vd = variantInterpretation.variation_descriptor;
 
-  const extentionTableColumns = useTranslatedTableColumnTitles<Extension>([
+  const extensionTableColumns = useTranslatedTableColumnTitles<Extension>([
     { title: 'interpretations.name', dataIndex: 'name' },
     { title: 'interpretations.value', dataIndex: 'value' },
   ]);
@@ -73,7 +79,7 @@ export const VariantInterpretation = ({
     { title: 'interpretations.value', dataIndex: 'value' },
   ]);
 
-  const variantDescrptorItems: ConditionalDescriptionItem[] = [
+  const variantDescriptorItems: ConditionalDescriptionItem[] = [
     { key: 'id', label: 'interpretations.id', children: vd.id },
     {
       key: 'variation',
@@ -125,7 +131,7 @@ export const VariantInterpretation = ({
       label: 'interpretations.extensions',
       children: (
         <Table<Extension>
-          columns={extentionTableColumns}
+          columns={extensionTableColumns}
           dataSource={vd.extensions}
           rowKey="name"
           size="small"
@@ -162,7 +168,7 @@ export const VariantInterpretation = ({
   return (
     <Space direction="vertical">
       <TDescriptions items={items} size="compact" bordered />
-      <TDescriptions items={variantDescrptorItems} column={2} size="compact" bordered />
+      <TDescriptions items={variantDescriptorItems} column={2} size="compact" bordered />
     </Space>
   );
 };
