@@ -1,9 +1,11 @@
 import type { TabsProps } from 'antd';
 import { useCallback, useMemo, useRef, type ReactNode } from 'react';
 import { useNavigate } from 'react-router';
+import type { JSONType } from 'bento-file-display';
 
 import OntologiesView from '@/components/ClinPhen/PhenopacketDisplay/OntologiesView';
 import Overview, { type CollapseHandle } from '@/components/ClinPhen/PhenopacketDisplay/PhenopacketOverview';
+import JsonView from '@Util/JsonView';
 
 import { TabKeys } from '@/types/PhenopacketView.types';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
@@ -36,6 +38,11 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
         label: t('tab_keys.ontologies'),
         children: <OntologiesView resources={phenopacket.meta_data?.resources} />,
         disabled: !phenopacket.meta_data?.resources?.length,
+      },
+      {
+        key: TabKeys.PHENOPACKET_JSON,
+        label: t('tab_keys.phenopacket_json'),
+        children: <JsonView src={phenopacket as unknown as JSONType} />,
       },
     ];
     return allItems.filter((item) => !item.disabled);

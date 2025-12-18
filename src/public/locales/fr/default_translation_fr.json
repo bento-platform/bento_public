@@ -410,7 +410,8 @@
     "diseases": "Maladies",
     "interpretations": "Interprétations",
     "medical_actions": "Actions médicales",
-    "ontologies": "Ontologies"
+    "ontologies": "Ontologies",
+    "phenopacket_json": "JSON de phenopacket"
   },
   "genomic_interpretation_status": {
     "UNKNOWN_STATUS": "Statut inconnu",

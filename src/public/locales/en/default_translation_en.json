@@ -406,7 +406,8 @@
     "diseases": "Diseases",
     "interpretations": "Interpretations",
     "medical_actions": "Medical Actions",
-    "ontologies": "Ontologies"
+    "ontologies": "Ontologies",
+    "phenopacket_json": "Phenopacket JSON"
   },
   "genomic_interpretation_status": {
     "UNKNOWN_STATUS": "Unknown Status",
