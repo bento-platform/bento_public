@@ -47,6 +47,7 @@ body {
 .cursor-pointer { cursor: pointer; }
 .select-none { user-select: none; }
 .font-mono { font-family: ui-monospace, monospace; }
+.text-base { font-size: 1rem; }
 .text-center { text-align: center; }
 .underline { text-decoration-line: underline; }
 
@@ -73,6 +74,7 @@ body {
   scale: 125%;
 }
 
+/* TODO: antd 6.x: gray-6 */
 .antd-gray-7 {
   color: #8c8c8c;
 }
