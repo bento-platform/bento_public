@@ -50,7 +50,7 @@ const ScopedTitle = () => {
     setScopeSelectModalOpen(false);
   }, [location]);
 
-  const breadcrumbItems: BreadcrumbItemType[] = useMemo(() => {
+  const breadcrumbItems = useMemo<BreadcrumbItemType[]>(() => {
     const currentPageTitle = t(getRouteTitleAndIcon(currentPage)[0]);
 
     const items: BreadcrumbItemType[] = [];

@@ -14,10 +14,12 @@ const SearchFilterInput = ({
   onChange,
   onRemove,
   disabledFields,
+  vertical,
 }: FilterValue & {
   onChange: (v: FilterValue) => void;
   onRemove: () => void;
   disabledFields: Set<string>;
+  vertical?: boolean;
 }) => {
   const t = useTranslationFn();
 
@@ -69,6 +71,39 @@ const SearchFilterInput = ({
       }),
     [field, onChange]
   );
+
+  if (vertical) {
+    return (
+      <Space direction="vertical" size="small" className="w-full">
+        <Flex gap="small" className="w-full">
+          <Select
+            className="flex-1"
+            size="small"
+            variant="borderless"
+            options={filterOptions}
+            onChange={onFilterFieldChange}
+            value={field}
+            placeholder={t('search.filter_placeholder')}
+          />
+          <Button
+            icon={<CloseOutlined />}
+            size="small"
+            shape="circle"
+            variant="filled"
+            disabled={!field || !value}
+            onClick={onRemove}
+          />
+        </Flex>
+        <Select
+          className="w-full"
+          disabled={!field}
+          options={field ? fieldFilterOptions[field] : []}
+          onChange={onFilterValueChange}
+          value={value}
+        />
+      </Space>
+    );
+  }
 
   return (
     <Space.Compact className="w-full">
