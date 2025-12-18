@@ -122,7 +122,6 @@ const CountsAndResults = () => {
               valueStyle={{ color: COUNTS_FILL }}
               suffix={
                 showDenominator ? (
-                  // Ant design gray-8
                   <span className="text-base antd-gray-7">/ {entityCounts[entity].toLocaleString()}</span>
                 ) : undefined
               }
