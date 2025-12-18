@@ -8,6 +8,7 @@ import CustomEmpty from '@/components/Util/CustomEmpty';
 import { COUNT_ENTITY_ORDER, COUNT_ENTITY_REGISTRY } from '@/constants/countEntities';
 import { COUNTS_FILL } from '@/constants/overviewConstants';
 import { WAITING_STATES } from '@/constants/requests';
+import { useSelectedDataset, useSelectedProject } from '@/features/metadata/hooks';
 import { useSearchQuery } from '@/features/search/hooks';
 import { useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
@@ -56,6 +57,11 @@ CountCardShowHide.displayName = 'CountCardShowHide';
 const CountsAndResults = () => {
   const t = useTranslationFn();
   const renderCount = useRenderCount();
+
+  const selectedProject = useSelectedProject();
+  const selectedDataset = useSelectedDataset();
+
+  const entityCounts = selectedDataset?.counts ?? selectedProject?.counts;
 
   const {
     message,
@@ -109,6 +115,11 @@ const CountsAndResults = () => {
               title={<CountsTitleWithHelp entity={entity} />}
               value={count}
               valueStyle={{ color: COUNTS_FILL }}
+              suffix={
+                nFilters && entityCounts ? (
+                  <span style={{ color: '#AFAFAF', fontWeight: 300 }}>/ {entityCounts[entity].toLocaleString()}</span>
+                ) : undefined
+              }
               prefix={icon}
               loading={waitingForData}
             />
@@ -120,7 +131,8 @@ const CountsAndResults = () => {
   return (
     <Flex vertical={true} gap={12}>
       {message ? <Alert message={t(message)} type="info" showIcon={true} style={{ fontSize: '1.1rem' }} /> : null}
-      <Space size={12} wrap>
+      {/* Can only wrap if we don't have the card show/hide button: */}
+      <Space size={12} wrap={!hasQueryData}>
         {countElements.length ? countElements : <CountCardPlaceholder loading={doingFirstLoad} />}
       </Space>
       {countElements.length && selectedEntity ? (
