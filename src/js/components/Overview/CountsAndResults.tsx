@@ -13,10 +13,12 @@ import { useSearchQuery } from '@/features/search/hooks';
 import { useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
 import { useRenderCount } from '@/hooks/counts';
+import { useInnerWidth } from '@/hooks/useResponsiveContext';
 import type { BentoCountEntity } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
 
 const COUNT_CARD_BASE_HEIGHT = 114;
+const COUNT_CARD_DENOMINATOR_BREAKPOINT = 1080;
 
 const CountCardPlaceholder = ({ loading }: { loading: boolean }) => {
   return (
@@ -57,6 +59,8 @@ CountCardShowHide.displayName = 'CountCardShowHide';
 const CountsAndResults = () => {
   const t = useTranslationFn();
   const renderCount = useRenderCount();
+
+  const windowInnerWidth = useInnerWidth();
 
   const selectedProject = useSelectedProject();
   const selectedDataset = useSelectedDataset();
@@ -99,6 +103,7 @@ const CountsAndResults = () => {
         const count = renderCount(counts[entity]);
         const selected = selectedEntity === entity;
         const canSelect = hasQueryData && !selected;
+        const showDenominator = !!nFilters && !!entityCounts && windowInnerWidth >= COUNT_CARD_DENOMINATOR_BREAKPOINT;
         return (
           <Card
             key={i}
@@ -116,8 +121,8 @@ const CountsAndResults = () => {
               value={count}
               valueStyle={{ color: COUNTS_FILL }}
               suffix={
-                nFilters && entityCounts ? (
-                  <span style={{ color: '#AFAFAF', fontWeight: 300 }}>/ {entityCounts[entity].toLocaleString()}</span>
+                showDenominator ? (
+                  <span style={{ color: '#AFAFAF', fontSize: '1rem' }}>/ {entityCounts[entity].toLocaleString()}</span>
                 ) : undefined
               }
               prefix={icon}
