@@ -47,6 +47,7 @@ body {
 .cursor-pointer { cursor: pointer; }
 .select-none { user-select: none; }
 .font-mono { font-family: ui-monospace, monospace; }
+.text-base { font-size: 1rem; }
 .text-center { text-align: center; }
 .underline { text-decoration-line: underline; }
 
@@ -73,6 +74,7 @@ body {
   scale: 125%;
 }
 
+/* TODO: antd 6.x: gray-6 */
 .antd-gray-7 {
   color: #8c8c8c;
 }
@@ -346,6 +348,9 @@ body {
     box-shadow 0.15s ease-in-out,
     opacity 0.15s ease-in-out;
 }
+.count-card .ant-statistic .ant-statistic-content {
+  white-space: nowrap;
+}
 .count-card.shadow {
   border-color: #e9e9e9; /* a bit darker to contrast against box-shadow */
 }
@@ -371,6 +376,10 @@ body {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   margin-bottom: -12px;
+}
+
+.counts-title__text {
+  white-space: nowrap;
 }
 
 .count-card__show-hide {

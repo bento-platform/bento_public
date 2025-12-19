@@ -8,14 +8,17 @@ import CustomEmpty from '@/components/Util/CustomEmpty';
 import { COUNT_ENTITY_ORDER, COUNT_ENTITY_REGISTRY } from '@/constants/countEntities';
 import { COUNTS_FILL } from '@/constants/overviewConstants';
 import { WAITING_STATES } from '@/constants/requests';
+import { useSelectedDataset, useSelectedProject } from '@/features/metadata/hooks';
 import { useSearchQuery } from '@/features/search/hooks';
 import { useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
 import { useRenderCount } from '@/hooks/counts';
+import { useInnerWidth } from '@/hooks/useResponsiveContext';
 import type { BentoCountEntity } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
 
 const COUNT_CARD_BASE_HEIGHT = 114;
+const COUNT_CARD_DENOMINATOR_BREAKPOINT = 1180;
 
 const CountCardPlaceholder = ({ loading }: { loading: boolean }) => {
   return (
@@ -57,6 +60,13 @@ const CountsAndResults = () => {
   const t = useTranslationFn();
   const renderCount = useRenderCount();
 
+  const windowInnerWidth = useInnerWidth();
+
+  const selectedProject = useSelectedProject();
+  const selectedDataset = useSelectedDataset();
+
+  const entityCounts = selectedDataset?.counts ?? selectedProject?.counts;
+
   const {
     message,
     resultCountsOrBools: counts,
@@ -93,6 +103,7 @@ const CountsAndResults = () => {
         const count = renderCount(counts[entity]);
         const selected = selectedEntity === entity;
         const canSelect = hasQueryData && !selected;
+        const showDenominator = !!nFilters && !!entityCounts && windowInnerWidth >= COUNT_CARD_DENOMINATOR_BREAKPOINT;
         return (
           <Card
             key={i}
@@ -109,6 +120,11 @@ const CountsAndResults = () => {
               title={<CountsTitleWithHelp entity={entity} />}
               value={count}
               valueStyle={{ color: COUNTS_FILL }}
+              suffix={
+                showDenominator ? (
+                  <span className="text-base antd-gray-7">/ {entityCounts[entity].toLocaleString()}</span>
+                ) : undefined
+              }
               prefix={icon}
               loading={waitingForData}
             />
@@ -120,7 +136,8 @@ const CountsAndResults = () => {
   return (
     <Flex vertical={true} gap={12}>
       {message ? <Alert message={t(message)} type="info" showIcon={true} style={{ fontSize: '1.1rem' }} /> : null}
-      <Space size={12} wrap>
+      {/* Can only wrap if we don't have the card show/hide button: */}
+      <Space size={12} wrap={!hasQueryData}>
         {countElements.length ? countElements : <CountCardPlaceholder loading={doingFirstLoad} />}
       </Space>
       {countElements.length && selectedEntity ? (
