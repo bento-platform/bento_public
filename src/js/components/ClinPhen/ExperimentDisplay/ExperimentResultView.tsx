@@ -104,8 +104,15 @@ export const ExperimentResultExpandedRow = ({
   ];
 
   return (
-    <Space className="experiment-result-expanded-row w-full" direction="vertical">
-      <TDescriptions bordered size="compact" column={1} items={items} defaultI18nPrefix="experiment_result." />
+    <Space className="w-full" direction="vertical">
+      <TDescriptions
+        className="fixed-item-label-width"
+        bordered
+        size="compact"
+        column={1}
+        items={items}
+        defaultI18nPrefix="experiment_result."
+      />
       <ExtraPropertiesDisplay extraProperties={experimentResult.extra_properties} />
     </Space>
   );

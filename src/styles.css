@@ -461,9 +461,7 @@ h3.search-sub-form-title {
 
 /* BEGIN phenopackets/other clinical+phenotypic metadata views */
 
-.subject-view .ant-descriptions-item-label,
-.experiment-result-expanded-row .ant-descriptions-item-label,
-.extra-properties-display .ant-descriptions-item-label {
+.fixed-item-label-width .ant-descriptions-item-label {
   /* Align split line vertically in all descriptions */
   width: min(30vw, 250px);
 }

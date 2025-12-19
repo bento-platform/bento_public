@@ -402,6 +402,17 @@
     "karyotypic_sex": "Sexe caryotypique",
     "taxonomy": "Taxonomie"
   },
+  "phenopacket": {
+    "id": "Identifiant du Phenopacket",
+    "phenopacket_schema_version": "Version du schéma Phenopacket",
+    "created_by": "Créé par",
+    "submitted_by": "Soumis par",
+    "created": "Horodatage de création",
+    "updates": "Mises à jour",
+    "external_references": "Références externes",
+    "updated_by": "Mis à jour par",
+    "comment": "Commentaire"
+  },
   "tab_keys": {
     "measurements": "Mesures",
     "phenotypic_features": "Caractéristiques phénotypiques",
@@ -409,6 +420,7 @@
     "interpretations": "Interprétations",
     "medical_actions": "Actions médicales",
     "ontologies": "Ontologies",
+    "metadata": "Métadonnées",
     "phenopacket_json": "JSON de phenopacket"
   },
   "genomic_interpretation_status": {

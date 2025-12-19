@@ -398,6 +398,18 @@
     "karyotypic_sex": "Karyotypic Sex",
     "taxonomy": "Taxonomy"
   },
+  "phenopacket": {
+    "id": "Phenopacket ID",
+    "phenopacket_schema_version": "Phenopacket Schema Version",
+    "created_by": "Created By",
+    "submitted_by": "Submitted By",
+    "created": "Created",
+    "updates": "Updates",
+    "external_references": "External References",
+    "timestamp": "$t(time.timestamp)",
+    "updated_by": "Updated By",
+    "comment": "Comment"
+  },
   "tab_keys": {
     "measurements": "Measurements",
     "phenotypic_features": "Phenotypic Features",
@@ -405,6 +417,7 @@
     "interpretations": "Interpretations",
     "medical_actions": "Medical Actions",
     "ontologies": "Ontologies",
+    "metadata": "Metadata",
     "phenopacket_json": "Phenopacket JSON"
   },
   "genomic_interpretation_status": {

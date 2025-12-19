@@ -17,7 +17,7 @@ const ExtraPropertiesDisplay = ({ extraProperties }: { extraProperties?: JSONObj
     <>
       {!!extraPropertiesFinal.length && (
         <TDescriptions
-          className="extra-properties-display"
+          className="fixed-item-label-width"
           items={extraPropertiesFinal}
           column={1}
           bordered
