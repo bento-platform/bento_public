@@ -14,6 +14,7 @@ import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
 import UrlOrDrsUrlWithPopover from '@Util/UrlOrDrsUrlWithPopover';
 
 import { useScopeDownloadData } from '@/hooks/censorship';
+import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { useTranslationFn } from '@/hooks';
 
 import { objectToBoolean } from '@/utils/boolean';
@@ -222,29 +223,44 @@ const ExperimentResultView = ({
 
   urlAware = urlAware ?? true;
 
+  const isSmallScreen = useSmallScreen();
+
   const columns = useMemo<CustomTableColumns<ExperimentResult>>(
     () => [
       // ID is a meaningless UUID that changes between ingests most of the time, don't bother showing it
-      { title: 'experiment_result.filename', dataIndex: 'filename', alwaysShow: true },
-      { title: 'general.description', dataIndex: 'description' },
+      {
+        title: 'experiment_result.filename',
+        dataIndex: 'filename',
+        alwaysShow: true,
+        render: (filename: string) => (
+          <div style={{ textOverflow: 'ellipsis' }}>
+            <span style={{ whiteSpace: 'nowrap' }}>{filename}</span>
+          </div>
+        ),
+      },
+      ...(isSmallScreen ? [] : [{ title: 'general.description', dataIndex: 'description' }]),
       // TODO: nice render with modal to reference genome:
       { title: 'experiment_result.genome_assembly_id', dataIndex: 'genome_assembly_id' },
       { title: 'experiment_result.file_format', dataIndex: 'file_format' },
-      {
-        title: 'experiment_result.experiments',
-        dataIndex: 'experiments',
-        // Don't show experiments if we don't have any OR if the only experiment is the currently-selected one
-        isEmpty: (es: string[] | undefined) =>
-          !objectToBoolean(es) || (es?.length === 1 && es[0] === currentExperiment),
-        render: (es: string[] | undefined) => (
-          <PhenopacketLink.Experiments
-            packetId={packetId}
-            current={currentExperiment}
-            experiments={es ?? []}
-            replace={!searchRow}
-          />
-        ),
-      },
+      ...(isSmallScreen
+        ? []
+        : [
+            {
+              title: 'experiment_result.experiments',
+              dataIndex: 'experiments',
+              // Don't show experiments if we don't have any OR if the only experiment is the currently-selected one
+              isEmpty: (es: string[] | undefined) =>
+                !objectToBoolean(es) || (es?.length === 1 && es[0] === currentExperiment),
+              render: (es: string[] | undefined) => (
+                <PhenopacketLink.Experiments
+                  packetId={packetId}
+                  current={currentExperiment}
+                  experiments={es ?? []}
+                  replace={!searchRow}
+                />
+              ),
+            },
+          ]),
       {
         title: 'general.actions',
         key: 'actions',
@@ -253,7 +269,7 @@ const ExperimentResultView = ({
         render: (_, er) => <ExperimentResultActions url={er.url} filename={er.filename} fileFormat={er.file_format} />,
       },
     ],
-    [attemptedCanDownload, canDownload, packetId, currentExperiment, searchRow]
+    [isSmallScreen, attemptedCanDownload, canDownload, packetId, currentExperiment, searchRow]
   );
 
   return (
