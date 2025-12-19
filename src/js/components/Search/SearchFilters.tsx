@@ -12,7 +12,7 @@ import { buildQueryParamsUrl, combineQueryParamsWithoutKey, queryParamsWithoutKe
 import SearchFilterInput, { type FilterValue, SearchFilterInputSkeleton } from './SearchFilterInput';
 import SearchSubForm, { type DefinedSearchSubFormProps } from '@/components/Search/SearchSubForm';
 
-const SearchFilters = (props: DefinedSearchSubFormProps) => {
+const SearchFilters = ({ vertical, ...props }: DefinedSearchSubFormProps & { vertical: boolean }) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
@@ -75,6 +75,7 @@ const SearchFilters = (props: DefinedSearchSubFormProps) => {
                 navigate(url, { replace: true });
               }}
               disabledFields={usedFields}
+              vertical={vertical}
               {...fv}
             />
           ))

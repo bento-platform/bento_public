@@ -2,8 +2,8 @@
   /* sync with NAVBAR_HEIGHT in common.ts */
   --header-height: 64px;
 
-  --sidebar-width-full: 200px;
-  --sidebar-width-collapsed: 80px;
+  --sidebar-width-full: 280px;
+  --sidebar-width-collapsed: 64px;
 
   --content-padding-v: 32px;
   --content-padding-h: 64px;
@@ -267,8 +267,27 @@ body {
   z-index: 100;
   border-right: 1px solid #f0f0f0;
 
-  overflow: auto;
+  overflow: hidden auto;
   height: calc(100vh - var(--header-height));
+}
+
+/* when the site sider is collapsed, show a nice white linear gradient masking render-clipped content underneath */
+#site-sider::after {
+  display: block;
+  position: absolute;
+  top: 46px;
+  bottom: 48px;
+  right: 0;
+  content: "";
+  width: 100%;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.0), rgba(255, 255, 255, 1.0));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease-in-out;
+}
+#default-layout.sidebar-collapsed #site-sider::after {
+  opacity: 1;
+  pointer-events: auto; /* disable click/hover-through */
 }
 
 .ant-layout-sider-trigger {

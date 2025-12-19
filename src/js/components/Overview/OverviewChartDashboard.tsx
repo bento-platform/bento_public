@@ -1,12 +1,6 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Flex, FloatButton, Tabs, type TabsProps } from 'antd';
-import {
-  AppstoreAddOutlined,
-  FileTextOutlined,
-  LoadingOutlined,
-  SearchOutlined,
-  SolutionOutlined,
-} from '@ant-design/icons';
+import { AppstoreAddOutlined, FileTextOutlined, SolutionOutlined } from '@ant-design/icons';
 
 import { convertSequenceAndDisplayData, generateLSChartDataKey, saveValue } from '@/utils/localStorage';
 import type { Sections } from '@/types/data';
@@ -22,13 +16,11 @@ import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
 import CountsAndResults from './CountsAndResults';
 import LastIngestionInfo from './LastIngestion';
 import DatasetProvenance from '@/components/Provenance/DatasetProvenance';
-import SearchForm from '@/components/Search/SearchForm';
 
 import { useTranslationFn } from '@/hooks';
 import { useSearchRouterAndHandler } from '@/hooks/useSearchRouterAndHandler';
 import { useSelectedDataset, useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
 import { useSearchQuery, useSearchableFields } from '@/features/search/hooks';
-import FiltersAppliedTag from '@/components/Search/FiltersAppliedTag';
 
 const saveScopeOverviewToLS = (scope: DiscoveryScope, sections: Sections) => {
   saveValue(generateLSChartDataKey(scope), convertSequenceAndDisplayData(sections));
@@ -47,13 +39,12 @@ const OverviewChartDashboard = () => {
   // URL and dispatches discovery actions for fetching overview/query response data.
   useSearchRouterAndHandler();
 
-  const { discoveryStatus, sections, filterQueryParams, textQuery, uiHints } = useSearchQuery();
+  const { discoveryStatus, sections, uiHints } = useSearchQuery();
 
   // Lazy-loading hooks means this is loaded only if OverviewChartDashboard is rendered:
   const searchableFields = useSearchableFields();
 
   // If we have no entities with data confirmed, don't bother showing charts (or last ingested details)
-  const waitingForHints = WAITING_STATES.includes(uiHints.status);
   const noDataInScope = uiHints.status === RequestStatus.Fulfilled && uiHints.data.entities_with_data.length === 0;
 
   const displayedSections = noDataInScope
@@ -69,48 +60,14 @@ const OverviewChartDashboard = () => {
 
   // ---
 
-  const [hasChangedTabs, setHasChangedTabs] = useState(false);
   const [pageTab, setPageTab] = useState('about');
-
-  const changePage = useCallback(
-    (page: string) => {
-      // Cannot go to search page if we don't know if search is available yet:
-      if (waitingForHints && page === 'search') return;
-      setPageTab(page);
-      setHasChangedTabs(true);
-    },
-    [waitingForHints]
-  );
-
-  useEffect(() => {
-    // If the user has not manually changed tabs / this effect has not already run, and we have at least one search
-    // filter set, auto-switch to the search tab rather than the about tab to make the applied filter(s) more obvious.
-
-    if (!hasChangedTabs && (Object.keys(filterQueryParams).length || textQuery.length)) {
-      changePage('search');
-    }
-  }, [hasChangedTabs, filterQueryParams, textQuery, changePage]);
 
   const pageTabItems: TabsProps['items'] = useMemo(
     () => [
       { key: 'about', label: t('About'), icon: <FileTextOutlined /> },
       ...(scope.dataset ? [{ key: 'provenance', label: t('Provenance'), icon: <SolutionOutlined /> }] : []),
-      ...(noDataInScope
-        ? []
-        : [
-            {
-              key: 'search',
-              label: !waitingForHints && (
-                <span>
-                  {t('Search')}
-                  <FiltersAppliedTag />
-                </span>
-              ),
-              icon: waitingForHints ? <LoadingOutlined /> : <SearchOutlined />,
-            },
-          ]),
     ],
-    [t, scope.dataset, waitingForHints, noDataInScope]
+    [t, scope.dataset]
   );
 
   const loadingNewData = WAITING_STATES.includes(discoveryStatus);
@@ -123,7 +80,7 @@ const OverviewChartDashboard = () => {
             type="card"
             size="large"
             activeKey={pageTab}
-            onChange={changePage}
+            onChange={setPageTab}
             items={pageTabItems}
             id="dashboard-tabs"
             tabBarStyle={{ marginBottom: -1, zIndex: 1 }}
@@ -132,7 +89,7 @@ const OverviewChartDashboard = () => {
           {pageTab === 'provenance' && selectedDataset ? (
             <DatasetProvenance dataset={selectedDataset} showTitle={false} />
           ) : null}
-          {pageTab === 'search' ? <SearchForm /> : null}
+          {/*{pageTab === 'search' ? <SearchForm /> : null}*/}
         </div>
 
         <CountsAndResults />
