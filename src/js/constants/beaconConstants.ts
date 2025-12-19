@@ -1,6 +1,8 @@
 import type { CSSProperties } from 'react';
 import type { CardProps } from 'antd';
 
+export const BEACON_BAD_FILTER_RESPONSE = 'Query used an unsupported filter';
+
 export const FORM_ROW_GUTTERS: [number, number] = [16, 16];
 
 export const CARD_BODY_STYLE: CSSProperties = {
