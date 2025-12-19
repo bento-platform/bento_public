@@ -33,6 +33,8 @@ export type SectionKey =
 export type SectionSpec = {
   /** translation title label */
   titleTranslationKey: string;
+  /** list item count (optional) */
+  itemCount?: (p: Phenopacket) => number | undefined;
   /** should this section render? can be a boolean or predicate fn */
   enabled: boolean | ((p: Phenopacket) => boolean);
   /** content renderer; gets the whole phenopacket so it’s easy to change later */
@@ -74,17 +76,20 @@ export const SECTION_SPECS: Record<SectionKey, SectionSpec> = {
   biosamples: {
     titleTranslationKey: 'entities.biosample_other',
     enabled: (p) => has(p.biosamples),
+    itemCount: (p) => p.biosamples?.length,
     render: (p) => <BiosampleView biosamples={p.biosamples!} />,
     order: 1,
   },
   diseases: {
     titleTranslationKey: 'tab_keys.diseases',
+    itemCount: (p) => p.diseases?.length,
     enabled: (p) => has(p.diseases),
     render: (p) => <DiseasesView diseases={p.diseases!} />,
     order: 2,
   },
   interpretations: {
     titleTranslationKey: 'tab_keys.interpretations',
+    itemCount: (p) => p.interpretations?.length,
     enabled: (p) => has(p.interpretations),
     render: (p) => <InterpretationsView interpretations={p.interpretations!} />,
     order: 3,
@@ -92,30 +97,35 @@ export const SECTION_SPECS: Record<SectionKey, SectionSpec> = {
   measurements: {
     titleTranslationKey: 'tab_keys.measurements',
     enabled: (p) => has(p.measurements),
+    itemCount: (p) => p.measurements?.length,
     render: (p) => <MeasurementsView measurements={p.measurements!} />,
     order: 4,
   },
   medicalActions: {
     titleTranslationKey: 'tab_keys.medical_actions',
     enabled: (p) => has(p.medical_actions),
+    itemCount: (p) => p.medical_actions?.length,
     render: (p) => <MedicalActionsView medicalActions={p.medical_actions!} />,
     order: 5,
   },
   phenotypicFeatures: {
     titleTranslationKey: 'tab_keys.phenotypic_features',
     enabled: (p) => has(p.phenotypic_features),
+    itemCount: (p) => p.phenotypic_features?.length,
     render: (p) => <PhenotypicFeaturesView features={p.phenotypic_features!} />,
     order: 6,
   },
   experiments: {
     titleTranslationKey: 'entities.experiment_other',
     enabled: (p) => has(phenopacketExperiments(p)),
+    itemCount: (p) => phenopacketExperiments(p).length,
     render: (p) => <ExperimentView packetId={p.id} experiments={phenopacketExperiments(p)} />,
     order: 7,
   },
   experimentResults: {
     titleTranslationKey: 'entities.experiment_result_other',
     enabled: (p) => has(phenopacketExperimentResults(p)),
+    itemCount: (p) => phenopacketExperimentResults(p).length,
     render: (p) => <ExperimentResultView packetId={p.id} experimentResults={phenopacketExperimentResults(p)} />,
     order: 8,
   },
