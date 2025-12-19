@@ -18,26 +18,20 @@ import { EM_DASH } from '@/constants/common';
 const DiseaseExpandedRow = ({ disease }: { disease: Disease }) => {
   const items: ConditionalDescriptionItem[] = [
     {
-      key: 'disease_stage',
-      label: 'diseases_expanded_row.disease_stage',
-      children: <OntologyTermStack terms={disease.disease_stage} />,
-      isVisible: disease.disease_stage?.length,
-    },
-    {
       key: 'clinical_tnm_finding',
-      label: 'diseases_expanded_row.clinical_tnm_finding',
+      label: 'disease.clinical_tnm_finding',
       children: <OntologyTermStack terms={disease.clinical_tnm_finding} />,
       isVisible: disease.clinical_tnm_finding?.length,
     },
     {
       key: 'primary_site',
-      label: 'diseases_expanded_row.primary_site',
+      label: 'disease.primary_site',
       children: <OntologyTermComponent term={disease.primary_site} />,
       isVisible: disease.primary_site,
     },
     {
       key: 'laterality',
-      label: 'diseases_expanded_row.laterality',
+      label: 'disease.laterality',
       children: <OntologyTermComponent term={disease.laterality} />,
       isVisible: disease.laterality,
     },
@@ -56,17 +50,11 @@ interface DiseasesViewProps {
 }
 
 const isDiseaseRowExpandable = (r: Disease) =>
-  !!(
-    r.disease_stage?.length ||
-    r.clinical_tnm_finding?.length ||
-    r.primary_site ||
-    r.laterality ||
-    objectToBoolean(r.extra_properties)
-  );
+  !!(r.clinical_tnm_finding?.length || r.primary_site || r.laterality || objectToBoolean(r.extra_properties));
 
 const DISEASES_VIEW_COLUMNS: CustomTableColumns<Disease> = [
   {
-    title: 'diseases_table.disease',
+    title: 'disease.disease',
     dataIndex: 'term',
     render: (term: OntologyTerm, record: Disease) => (
       <>
@@ -77,12 +65,18 @@ const DISEASES_VIEW_COLUMNS: CustomTableColumns<Disease> = [
     alwaysShow: true,
   },
   {
-    title: 'diseases_table.onset',
+    title: 'disease.disease_stage',
+    dataIndex: 'disease_stage',
+    render: (diseaseStage: OntologyTerm[]) => <OntologyTermStack terms={diseaseStage} />,
+    isEmpty: (diseaseStage?: OntologyTerm[]) => !diseaseStage?.length,
+  },
+  {
+    title: 'disease.onset',
     dataIndex: 'onset',
     render: (onset: TimeElement) => (onset ? <TimeElementDisplay element={onset} /> : EM_DASH),
   },
   {
-    title: 'diseases_table.resolution',
+    title: 'disease.resolution',
     dataIndex: 'resolution',
     render: (resolution: TimeElement) => (resolution ? <TimeElementDisplay element={resolution} /> : EM_DASH),
   },

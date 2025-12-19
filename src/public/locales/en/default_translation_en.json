@@ -267,17 +267,15 @@
     "file_attributes": "File Attributes",
     "download_alert": "This will download a file from an external site. Are you sure you want to do this?"
   },
-  "diseases_expanded_row": {
+  "disease": {
+    "disease": "Disease",
+    "onset": "Onset",
+    "resolution": "Resolution",
     "disease_stage": "Disease Stage(s)",
     "clinical_tnm_finding": "Clinical TNM Finding(s)",
     "primary_site": "Primary Site",
     "laterality": "Laterality",
     "extra_properties": "Extra Properties"
-  },
-  "diseases_table": {
-    "disease": "Disease",
-    "onset": "Onset",
-    "resolution": "Resolution"
   },
   "interpretations": {
     "id": "ID",

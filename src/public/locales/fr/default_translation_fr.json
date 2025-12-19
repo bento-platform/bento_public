@@ -271,17 +271,15 @@
     "file_attributes": "Attributs du fichier",
     "download_alert": "Cela va télécharger un fichier depuis un site externe. Êtes-vous sûr de vouloir continuer ?"
   },
-  "diseases_expanded_row": {
+  "disease": {
+    "disease": "Maladie",
+    "onset": "Début",
+    "resolution": "Résolution",
     "disease_stage": "Stade(s) de la maladie",
     "clinical_tnm_finding": "Résultat(s) TNM clinique(s)",
     "primary_site": "Site principal",
     "laterality": "Latéralité",
     "extra_properties": "Propriétés supplémentaires"
-  },
-  "diseases_table": {
-    "disease": "Maladie",
-    "onset": "Début",
-    "resolution": "Résolution"
   },
   "interpretations": {
     "id": "Identifiant",
