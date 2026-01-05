@@ -53,7 +53,7 @@ const NodeDetails = ({ beacon, response }: NodeDetailsProps) => {
     </Tag>
   ));
 
-  // extra error handling for unknown filters in query
+  // extra error handling for unknown filters in query, works for bento beacons with version >= 0.25.0
   // This can happen when using a filter that exists in one node in the network but not another
   // For now just treat as zero results and ignore error in the UI
   const hasUnknownFilterError = apiErrorMessage?.startsWith(BEACON_BAD_FILTER_RESPONSE);
