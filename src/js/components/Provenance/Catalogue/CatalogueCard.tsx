@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { Button, Card, Descriptions, Flex, Tag, Tooltip, Typography } from 'antd';
+import { Button, Card, Descriptions, Divider, Flex, Tag, Tooltip, Typography } from 'antd';
 import { PieChartOutlined, ProfileOutlined } from '@ant-design/icons';
 
 import type { Project } from '@/types/metadata';
@@ -82,46 +82,53 @@ const CatalogueCard = ({ project }: { project: Project }) => {
   return (
     <Card className="container margin-auto shadow rounded-xl" size={isSmallScreen ? 'small' : 'default'}>
       <Flex vertical={true} gap={16}>
-        {/* Project info */}
-        <Flex vertical={true} gap={8}>
-          <Title level={4} className="m-0">
-            {t(title)}
-          </Title>
+        {/* Project info - two column layout */}
+        <Flex gap={24} wrap>
+          {/* Left: Title, tags, counts */}
+          <Flex vertical={true} gap={8} style={{ flex: 1, minWidth: 250 }}>
+            <Title level={4} className="m-0">
+              {t(title)}
+            </Title>
 
-          {description && <TruncatedParagraph style={{ maxWidth: 660 }}>{t(description)}</TruncatedParagraph>}
+            {!!selectedKeywords.length && (
+              <div>
+                {selectedKeywords.map((kw) => (
+                  <Tag key={kw} color="blue">
+                    {kw}
+                  </Tag>
+                ))}
+                {extraKeywordCount !== 0 && (
+                  <Tooltip title={extraKeywords.join(', ')}>
+                    <Text>+{extraKeywordCount} more</Text>
+                  </Tooltip>
+                )}
+              </div>
+            )}
 
-          {!!selectedKeywords.length && (
-            <div>
-              {selectedKeywords.map((kw) => (
-                <Tag key={kw} color="blue">
-                  {kw}
-                </Tag>
-              ))}
-              {extraKeywordCount !== 0 && (
-                <Tooltip title={extraKeywords.join(', ')}>
-                  <Text>+{extraKeywordCount} more</Text>
-                </Tooltip>
-              )}
-            </div>
-          )}
+            <CountsDisplay counts={counts} />
+          </Flex>
 
-          <Descriptions items={projectInfo} size="small" style={{ maxWidth: 500 }} />
+          {/* Right: Description, dates, Explore - starts at middle, left-justified */}
+          <Flex vertical={true} gap={8} style={{ flex: 1, minWidth: 300 }}>
 
-          <CountsDisplay counts={counts} />
 
-          <Flex gap={12}>
-            <Button
-              icon={datasets.length ? <PieChartOutlined /> : <ProfileOutlined />}
-              onClick={() => navigateToScope({ project: identifier }, 'overview')}
-            >
-              {t('Explore')}
-            </Button>
+            {description && <TruncatedParagraph style={{ maxWidth: 660 }}>{t(description)}</TruncatedParagraph>}
+
+            <Descriptions items={projectInfo} size="small" style={{ maxWidth: 500 }} />
+                        <Flex gap={12}>
+              <Button
+                icon={datasets.length ? <PieChartOutlined /> : <ProfileOutlined />}
+                onClick={() => navigateToScope({ project: identifier }, 'overview')}
+              >
+                {t('Explore')}
+              </Button>
+            </Flex>
           </Flex>
         </Flex>
 
-        {/* Datasets displayed horizontally */}
         {datasets.length > 0 && (
           <>
+            <Divider className="m-0" />
             <Title level={5} className="m-0">
               {t('entities.dataset', T_PLURAL_COUNT)}
             </Title>
