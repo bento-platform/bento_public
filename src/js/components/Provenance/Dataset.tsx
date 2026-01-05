@@ -1,6 +1,6 @@
 import { type ReactNode, useCallback, useMemo, useState } from 'react';
 
-import { Avatar, Button, Card, Flex, List, Popover, Space, Tag, Typography } from 'antd';
+import { Avatar, Button, Card, Flex, List, Popover, Space, Tag } from 'antd';
 import { ExpandAltOutlined, PieChartOutlined, SolutionOutlined } from '@ant-design/icons';
 import { FaDatabase } from 'react-icons/fa';
 
@@ -14,8 +14,6 @@ import SmallChartCardTitle from '@/components/Util/SmallChartCardTitle';
 import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
 import CountsDisplay from '@/components/Util/CountsDisplay';
 import DatasetProvenanceModal from './DatasetProvenanceModal';
-
-const { Title } = Typography;
 
 const KEYWORDS_LIMIT = 2;
 
@@ -40,7 +38,7 @@ const Dataset = ({
 }: {
   parentProjectID: string;
   dataset: Dataset;
-  format: 'list-item' | 'card' | 'carousel';
+  format: 'list-item' | 'card';
   selected?: boolean;
 }) => {
   const navigateToScope = useNavigateToScope();
@@ -117,27 +115,6 @@ const Dataset = ({
           </Flex>
         </Flex>
       </Card>
-    );
-  } else if (format === 'carousel') {
-    inner = (
-      <>
-        <Flex justify="space-between" align="center">
-          <Title level={5} className="mb-0">
-            {t(title)}
-          </Title>
-          <Button size="small" icon={<SolutionOutlined />} className="float-right" onClick={openProvenanceModal}>
-            {t('Provenance')}
-            <ExpandAltOutlined />
-          </Button>
-        </Flex>
-        <TruncatedParagraph>{t(description)}</TruncatedParagraph>
-        <CountsDisplay counts={counts} fontSize="0.875rem" />
-        <Flex gap={8} style={{ marginTop: 8 }}>
-          <Button size="small" icon={<PieChartOutlined />} onClick={onNavigateOverview}>
-            {t('Explore')}
-          </Button>
-        </Flex>
-      </>
     );
   } else {
     inner = <span className="error-text">UNIMPLEMENTED</span>;

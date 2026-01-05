@@ -1,6 +1,6 @@
 import { type ReactNode, useMemo } from 'react';
 
-import { Button, Card, Carousel, Descriptions, Flex, Tag, Tooltip, Typography } from 'antd';
+import { Button, Card, Descriptions, Flex, Tag, Tooltip, Typography } from 'antd';
 import { PieChartOutlined, ProfileOutlined } from '@ant-design/icons';
 
 import type { Project } from '@/types/metadata';
@@ -147,22 +147,13 @@ const CatalogueCard = ({ project }: { project: Project }) => {
           datasets.length ? (
             <>
               <Title level={5}>{t('entities.dataset', T_PLURAL_COUNT)}</Title>
-              <Carousel
-                arrows={datasets.length > 1}
-                dots={datasets.length > 1}
-                className="rounded-lg"
-                style={{
-                  border: '1px solid lightgray',
-                  height: '170px',
-                  // If we have more than one dataset, we have some arrows on either side of the carousel
-                  //  --> add in extra horizontal padding to nicely clear the arrows.
-                  padding: datasets.length > 1 ? '16px 26px' : '16px',
-                }}
-              >
+              <Flex gap={16} wrap>
                 {datasets.map((d) => (
-                  <Dataset parentProjectID={identifier} key={d.identifier} dataset={d} format="carousel" />
+                  <div key={d.identifier} style={{ flex: '1 1 300px', maxWidth: '100%' }}>
+                    <Dataset parentProjectID={identifier} dataset={d} format="card" />
+                  </div>
                 ))}
-              </Carousel>
+              </Flex>
             </>
           ) : null
         }
