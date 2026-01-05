@@ -241,7 +241,7 @@ export const isBiosampleRowExpandable = (r: Biosample, searchRow: boolean = fals
     r.sample_storage ||
     r.procedure ||
     r.files?.length ||
-    Object.keys(r.extra_properties ?? {}).length
+    objectToBoolean(r.extra_properties)
   );
 
 interface BiosampleViewProps {
