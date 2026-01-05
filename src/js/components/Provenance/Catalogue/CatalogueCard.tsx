@@ -110,12 +110,10 @@ const CatalogueCard = ({ project }: { project: Project }) => {
 
           {/* Right: Description, dates, Explore - starts at middle, left-justified */}
           <Flex vertical={true} gap={8} style={{ flex: 1, minWidth: 300 }}>
-
-
             {description && <TruncatedParagraph style={{ maxWidth: 660 }}>{t(description)}</TruncatedParagraph>}
 
             <Descriptions items={projectInfo} size="small" style={{ maxWidth: 500 }} />
-                        <Flex gap={12}>
+            <Flex gap={12}>
               <Button
                 icon={datasets.length ? <PieChartOutlined /> : <ProfileOutlined />}
                 onClick={() => navigateToScope({ project: identifier }, 'overview')}
