@@ -1,4 +1,4 @@
-import { type ReactNode, useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { Button, Card, Descriptions, Flex, Tag, Tooltip, Typography } from 'antd';
 import { PieChartOutlined, ProfileOutlined } from '@ant-design/icons';
@@ -16,30 +16,6 @@ import CountsDisplay from '@/components/Util/CountsDisplay';
 const { Paragraph, Text, Title } = Typography;
 
 const MAX_KEYWORD_CHARACTERS = 50;
-
-const CatalogueCardInner = ({ firstContent, secondContent }: { firstContent: ReactNode; secondContent: ReactNode }) => {
-  const isSmallScreen = useSmallScreen();
-
-  if (isSmallScreen) {
-    return (
-      <Flex vertical={true} gap={12}>
-        <div>{firstContent}</div>
-        <div>{secondContent}</div>
-      </Flex>
-    );
-  } else {
-    return (
-      <Flex justify="space-between" align="stretch" gap={16} wrap>
-        <div className="flex-1" style={{ minWidth: 400 }}>
-          <Flex className="h-full flex-1" vertical={true}>
-            {firstContent}
-          </Flex>
-        </div>
-        {secondContent && <div style={{ flex: 2, maxWidth: 'min(600px, 100%)' }}>{secondContent}</div>}
-      </Flex>
-    );
-  }
-};
 
 const CatalogueCard = ({ project }: { project: Project }) => {
   const language = useLanguage();
@@ -105,59 +81,60 @@ const CatalogueCard = ({ project }: { project: Project }) => {
 
   return (
     <Card className="container margin-auto shadow rounded-xl" size={isSmallScreen ? 'small' : 'default'}>
-      <CatalogueCardInner
-        firstContent={
-          <Flex vertical={true} gap={8} className="h-full">
-            <Title level={4} className="m-0">
-              {t(title)}
-            </Title>
+      <Flex vertical={true} gap={16}>
+        {/* Project info */}
+        <Flex vertical={true} gap={8}>
+          <Title level={4} className="m-0">
+            {t(title)}
+          </Title>
 
-            {description && <TruncatedParagraph style={{ maxWidth: 660 }}>{t(description)}</TruncatedParagraph>}
+          {description && <TruncatedParagraph style={{ maxWidth: 660 }}>{t(description)}</TruncatedParagraph>}
 
-            {!!selectedKeywords.length && (
-              <div>
-                {selectedKeywords.map((kw) => (
-                  <Tag key={kw} color="blue">
-                    {kw}
-                  </Tag>
-                ))}
-                {extraKeywordCount !== 0 && (
-                  <Tooltip title={extraKeywords.join(', ')}>
-                    <Text>+{extraKeywordCount} more</Text>
-                  </Tooltip>
-                )}
-              </div>
-            )}
+          {!!selectedKeywords.length && (
+            <div>
+              {selectedKeywords.map((kw) => (
+                <Tag key={kw} color="blue">
+                  {kw}
+                </Tag>
+              ))}
+              {extraKeywordCount !== 0 && (
+                <Tooltip title={extraKeywords.join(', ')}>
+                  <Text>+{extraKeywordCount} more</Text>
+                </Tooltip>
+              )}
+            </div>
+          )}
 
-            <Descriptions items={projectInfo} size="small" style={{ maxWidth: 500 }} />
+          <Descriptions items={projectInfo} size="small" style={{ maxWidth: 500 }} />
 
-            <CountsDisplay counts={counts} />
+          <CountsDisplay counts={counts} />
 
-            <Flex align="flex-end" gap={12} className="flex-1">
-              <Button
-                icon={datasets.length ? <PieChartOutlined /> : <ProfileOutlined />}
-                onClick={() => navigateToScope({ project: identifier }, 'overview')}
-              >
-                {t('Explore')}
-              </Button>
-            </Flex>
+          <Flex gap={12}>
+            <Button
+              icon={datasets.length ? <PieChartOutlined /> : <ProfileOutlined />}
+              onClick={() => navigateToScope({ project: identifier }, 'overview')}
+            >
+              {t('Explore')}
+            </Button>
           </Flex>
-        }
-        secondContent={
-          datasets.length ? (
-            <>
-              <Title level={5}>{t('entities.dataset', T_PLURAL_COUNT)}</Title>
-              <Flex gap={16} wrap>
-                {datasets.map((d) => (
-                  <div key={d.identifier} style={{ flex: '1 1 300px', maxWidth: '100%' }}>
-                    <Dataset parentProjectID={identifier} dataset={d} format="card" />
-                  </div>
-                ))}
-              </Flex>
-            </>
-          ) : null
-        }
-      />
+        </Flex>
+
+        {/* Datasets displayed horizontally */}
+        {datasets.length > 0 && (
+          <>
+            <Title level={5} className="m-0">
+              {t('entities.dataset', T_PLURAL_COUNT)}
+            </Title>
+            <Flex gap={16} wrap>
+              {datasets.map((d) => (
+                <div key={d.identifier} style={{ flex: '1 1 300px', maxWidth: 500 }}>
+                  <Dataset parentProjectID={identifier} dataset={d} format="card" />
+                </div>
+              ))}
+            </Flex>
+          </>
+        )}
+      </Flex>
     </Card>
   );
 };
