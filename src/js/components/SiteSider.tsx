@@ -1,72 +1,37 @@
-import { useCallback } from 'react';
+import { type CSSProperties } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import type { MenuProps, SiderProps } from 'antd';
-import { Button, Divider, Layout, Menu } from 'antd';
-import { ArrowLeftOutlined } from '@ant-design/icons';
+import { Input, type SiderProps, Typography } from 'antd';
+import { Button, Divider, Layout } from 'antd';
+import { ArrowLeftOutlined, FormOutlined } from '@ant-design/icons';
 
 import { useSelectedScope } from '@/features/metadata/hooks';
-import { useNonFilterQueryParams, useSearchQuery } from '@/features/search/hooks';
-import { buildQueryParamsUrl } from '@/features/search/utils';
 import { useLanguage, useTranslationFn } from '@/hooks';
 import { useIsInCatalogueMode, useNavigateToRoot } from '@/hooks/navigation';
-import type { MenuItem } from '@/types/navigation';
-import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
 import { getCurrentPage } from '@/utils/router';
+import SearchForm from '@/components/Search/SearchForm';
 
 const { Sider } = Layout;
 
-type OnClick = MenuProps['onClick'];
+const filtersStyle = { padding: 16, boxSizing: 'border-box', width: 'var(--sidebar-width-full)' } as CSSProperties;
 
-const SiteSider = ({
-  collapsed,
-  setCollapsed,
-  items,
-}: {
-  collapsed: boolean;
-  setCollapsed: SiderProps['onCollapse'];
-  items: MenuItem[];
-}) => {
+const SiteSider = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollapsed: SiderProps['onCollapse'] }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const language = useLanguage();
   const t = useTranslationFn();
-  const { filterQueryParams } = useSearchQuery();
-  const otherQueryParams = useNonFilterQueryParams();
   const catalogueMode = useIsInCatalogueMode();
-  const currentPage = getCurrentPage(location);
+  const page = getCurrentPage(location);
+  console.log(page);
 
   const navigateToRoot = useNavigateToRoot();
   const { scope, scopeSet } = useSelectedScope();
-
-  const handleMenuClick: OnClick = useCallback(
-    ({ key }: { key: string }) => {
-      const currentPath = location.pathname.split('/').filter(Boolean);
-      const newPath = [currentPath[0]];
-      if (!TOP_LEVEL_ONLY_ROUTES.includes(key)) {
-        // Beacon network only works at the top scope level
-        if (currentPath[1] == 'p') {
-          newPath.push('p', currentPath[2]);
-        }
-        if (currentPath[3] == 'd') {
-          newPath.push('d', currentPath[4]);
-        }
-      }
-      newPath.push(key);
-      const newPathString = '/' + newPath.join('/');
-      navigate(
-        key === BentoRoute.Overview
-          ? buildQueryParamsUrl(newPathString, { ...filterQueryParams, ...otherQueryParams })
-          : newPathString
-      );
-    },
-    [navigate, filterQueryParams, otherQueryParams, location.pathname]
-  );
 
   return (
     <Sider
       id="site-sider"
       // Collapsed width can be synced with our stylesheet via CSS variable:
+      width="var(--sidebar-width-full)"
       collapsedWidth="var(--sidebar-width-collapsed)"
       collapsible
       breakpoint="md"
@@ -74,7 +39,7 @@ const SiteSider = ({
       onCollapse={setCollapsed}
       theme="light"
     >
-      {scope.project && catalogueMode && (
+      {scope.project && catalogueMode ? (
         <>
           <div style={{ backgroundColor: '#FAFAFA' }}>
             <Button
@@ -87,15 +52,26 @@ const SiteSider = ({
             </Button>
           </div>
           <Divider className="m-0" />
+          <div style={filtersStyle}>
+            <SearchForm vertical={true} />
+          </div>
         </>
+      ) : (
+        <div style={filtersStyle}>
+          {/* TODO: Hook up catalogue search */}
+          <Typography.Title level={3} className="search-sub-form-title">
+            <FormOutlined /> {t('search.text_search')}
+          </Typography.Title>
+          <Input.Search />
+        </div>
       )}
-      <Menu
-        selectedKeys={[currentPage]}
-        mode="inline"
-        items={items}
-        onClick={handleMenuClick}
-        style={{ border: 'none' }}
-      />
+      {/*<Menu*/}
+      {/*  selectedKeys={[currentPage]}*/}
+      {/*  mode="inline"*/}
+      {/*  items={items}*/}
+      {/*  onClick={handleMenuClick}*/}
+      {/*  style={{ border: 'none' }}*/}
+      {/*/>*/}
     </Sider>
   );
 };
