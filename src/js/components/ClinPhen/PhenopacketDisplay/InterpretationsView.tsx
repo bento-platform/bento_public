@@ -32,14 +32,12 @@ const GenomicInterpretationDetails = ({ genomicInterpretation }: { genomicInterp
       children: genomicInterpretation.subject_or_biosample_id!,
     }, //TODO: Link to subject or biosample
     {
-      key: 'Variant Interpretation',
-      label: 'interpretations.variant_interpretation',
+      key: 'variant_interpretation',
       children: <VariantInterpretation variantInterpretation={genomicInterpretation.variant_interpretation!} />,
       isVisible: genomicInterpretation.variant_interpretation,
     },
     {
-      key: 'Gene Descriptor',
-      label: 'interpretations.gene_descriptor',
+      key: 'gene_descriptor',
       children: <GeneDescriptor geneDescriptor={genomicInterpretation.gene_descriptor!} />,
       isVisible: genomicInterpretation.gene_descriptor,
     },
@@ -47,7 +45,7 @@ const GenomicInterpretationDetails = ({ genomicInterpretation }: { genomicInterp
 
   return (
     <Space direction="vertical" className="w-full">
-      <TDescriptions items={items} size="compact" column={1} bordered />
+      <TDescriptions items={items} size="compact" column={1} bordered defaultI18nPrefix="interpretations." />
       <ExtraPropertiesDisplay extraProperties={genomicInterpretation.extra_properties} />
     </Space>
   );

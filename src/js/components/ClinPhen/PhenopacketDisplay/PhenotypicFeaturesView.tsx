@@ -30,44 +30,41 @@ const Evidence = ({ evidence }: EvidenceProps) => {
   const items: ConditionalDescriptionItem[] = [
     {
       key: 'evidence_code',
-      label: 'phenotypic_features.evidence_code',
       children: <OntologyTermComponent term={evidence.evidence_code} />,
       isVisible: evidence.evidence_code,
     },
     {
       key: 'reference',
-      label: 'phenotypic_features.reference',
       children: externalReference ? <ExternalReference reference={externalReference} /> : null,
       isVisible: externalReference,
     },
   ];
 
-  return <TDescriptions bordered={false} column={1} size="compact" items={items} />;
+  return (
+    <TDescriptions bordered={false} column={1} size="compact" items={items} defaultI18nPrefix="phenotypic_features." />
+  );
 };
 
 function PhenotypicFeatureExpandedRow({ feature }: { feature: PhenotypicFeature }) {
   const items: ConditionalDescriptionItem[] = [
     {
       key: 'description',
-      label: 'phenotypic_features.description',
       children: feature.description,
     },
     {
       key: 'modifiers',
-      label: 'phenotypic_features.modifiers',
       children: <OntologyTermStack terms={feature.modifiers} />,
       isVisible: feature.modifiers?.length,
     },
     {
       key: 'evidence',
-      label: 'phenotypic_features.evidence',
       children: feature.evidence?.length ? feature.evidence.map((e, i) => <Evidence key={i} evidence={e} />) : EM_DASH,
       isVisible: feature.evidence?.length,
     },
   ];
   return (
     <Space direction="vertical" className="w-full">
-      <TDescriptions bordered size="compact" items={items} />
+      <TDescriptions bordered size="compact" items={items} defaultI18nPrefix="phenotypic_features." />
       <ExtraPropertiesDisplay extraProperties={feature.extra_properties} />
     </Space>
   );

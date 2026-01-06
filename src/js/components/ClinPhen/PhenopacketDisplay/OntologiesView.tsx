@@ -13,22 +13,26 @@ interface OntologiesProps {
 const OntologiesView = ({ resources }: OntologiesProps) => {
   const t = useTranslationFn();
 
-  const columns = useTranslatedTableColumnTitles<Resource>([
-    { title: 'ontologies.resource_id', dataIndex: 'id' },
-    { title: 'ontologies.name', dataIndex: 'name', render: (text: string) => t(text) },
-    { title: 'ontologies.namespace_prefix', dataIndex: 'namespace_prefix' },
-    {
-      title: 'ontologies.url',
-      dataIndex: 'url',
-      render: (text: string) => (
-        <Link key={text} href={text} target="_blank" rel="noopener noreferrer">
-          {text}
-        </Link>
-      ),
-    },
-    { title: 'ontologies.version', dataIndex: 'version' },
-    { title: 'ontologies.iri_prefix', dataIndex: 'iri_prefix' },
-  ]);
+  const columns = useTranslatedTableColumnTitles<Resource>(
+    [
+      { title: 'resource_id', dataIndex: 'id' },
+      { title: 'name', dataIndex: 'name', render: (text: string) => t(text) },
+      { title: 'namespace_prefix', dataIndex: 'namespace_prefix' },
+      {
+        title: 'url',
+        dataIndex: 'url',
+        render: (text: string) => (
+          <Link key={text} href={text} target="_blank" rel="noopener noreferrer">
+            {text}
+          </Link>
+        ),
+      },
+      { title: 'version', dataIndex: 'version' },
+      { title: 'iri_prefix', dataIndex: 'iri_prefix' },
+    ],
+    'ontologies.'
+  );
+
   return (
     <Table<Resource> dataSource={resources} columns={columns} rowKey="id" pagination={false} bordered size="small" />
   );

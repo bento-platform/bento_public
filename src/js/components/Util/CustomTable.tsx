@@ -42,6 +42,7 @@ interface CustomTableProps<T> {
   expandedRowRender?: (record: T) => ReactNode;
   pagination?: TablePaginationConfig;
   loading?: boolean;
+  defaultI18nPrefix?: string;
   queryKey?: string;
   urlAware?: boolean;
 }
@@ -54,6 +55,7 @@ const CustomTable = <T extends object>({
   expandedRowRender,
   pagination,
   loading,
+  defaultI18nPrefix,
   queryKey = EXPANDED_QUERY_PARAM_KEY,
   urlAware = true,
 }: CustomTableProps<T>) => {
@@ -77,7 +79,10 @@ const CustomTable = <T extends object>({
   // A bit hacky - we use isVisible as a key to represent "expandability" internally in this component:
   const visibleData = useMemo(() => addVisibilityProperty(dataSource, isRowExpandable), [dataSource, isRowExpandable]);
 
-  const translatedColumns = useTranslatedTableColumnTitles(columns) as CustomTableColumns<WithVisible<T>>;
+  // TODO: only use prefix on columns with data index or key but no title set:
+  const translatedColumns = useTranslatedTableColumnTitles(columns, defaultI18nPrefix) as CustomTableColumns<
+    WithVisible<T>
+  >;
   const processedColumns = useMemo(
     () =>
       translatedColumns.map((col) => {

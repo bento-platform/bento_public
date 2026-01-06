@@ -19,11 +19,10 @@ import type { ConditionalDescriptionItem } from '@/types/descriptions';
 export const GeneDescriptor = ({ geneDescriptor }: { geneDescriptor: GeneDescriptorType }) => {
   const items: ConditionalDescriptionItem[] = [
     { key: 'id', label: 'interpretations.accession_number', children: geneDescriptor.value_id },
-    { key: 'symbol', label: 'interpretations.symbol', children: geneDescriptor.symbol },
-    { key: 'description', label: 'interpretations.description', children: geneDescriptor.description },
+    { key: 'symbol', children: geneDescriptor.symbol },
+    { key: 'description', children: geneDescriptor.description },
     {
       key: 'alternate_ids',
-      label: 'interpretations.alternate_ids',
       children: <StringList list={geneDescriptor.alternate_ids} />,
       isVisible: geneDescriptor.alternate_ids?.length,
     },
@@ -35,7 +34,6 @@ export const GeneDescriptor = ({ geneDescriptor }: { geneDescriptor: GeneDescrip
     },
     {
       key: 'alternate_symbols',
-      label: 'interpretations.alternate_symbols',
       children: <StringList list={geneDescriptor.alternate_symbols} />,
       isVisible: geneDescriptor.alternate_symbols?.length,
     },
@@ -43,7 +41,7 @@ export const GeneDescriptor = ({ geneDescriptor }: { geneDescriptor: GeneDescrip
 
   return (
     <Space direction="vertical" className="w-full">
-      <TDescriptions items={items} size="compact" column={1} bordered />
+      <TDescriptions items={items} size="compact" column={1} bordered defaultI18nPrefix="interpretations." />
       <ExtraPropertiesDisplay extraProperties={geneDescriptor.extra_properties} />
     </Space>
   );
@@ -55,16 +53,8 @@ export const VariantInterpretation = ({
   variantInterpretation: VariantInterpretationType;
 }) => {
   const items: ConditionalDescriptionItem[] = [
-    {
-      key: 'acmg_pathogenicity_classification',
-      label: 'interpretations.acmg_pathogenicity_classification',
-      children: variantInterpretation?.acmg_pathogenicity_classification,
-    },
-    {
-      key: 'therapeutic_actionability',
-      label: 'interpretations.therapeutic_actionability',
-      children: variantInterpretation?.therapeutic_actionability,
-    },
+    { key: 'acmg_pathogenicity_classification', children: variantInterpretation?.acmg_pathogenicity_classification },
+    { key: 'therapeutic_actionability', children: variantInterpretation?.therapeutic_actionability },
   ];
 
   const vd = variantInterpretation.variation_descriptor;
@@ -80,18 +70,16 @@ export const VariantInterpretation = ({
   ]);
 
   const variantDescriptorItems: ConditionalDescriptionItem[] = [
-    { key: 'id', label: 'interpretations.id', children: vd.id },
+    { key: 'id', children: vd.id },
     {
       key: 'variation',
-      label: 'interpretations.variation',
       children: <JsonView src={vd.variation as unknown as JSONType} />,
       isVisible: objectToBoolean(vd.variation),
     },
-    { key: 'label', label: 'interpretations.label', children: vd.label },
-    { key: 'description', label: 'interpretations.description', children: vd.description },
+    { key: 'label', children: vd.label },
+    { key: 'description', children: vd.description },
     {
       key: 'gene_context',
-      label: 'interpretations.gene_context',
       children: <GeneDescriptor geneDescriptor={vd.gene_context!} />,
       isVisible: vd?.gene_context,
     },
@@ -112,23 +100,13 @@ export const VariantInterpretation = ({
     },
     {
       key: 'vcf_record',
-      label: 'interpretations.vcf_record',
       children: <JsonView src={vd.vcf_record as unknown as JSONType} />,
       isVisible: objectToBoolean(vd.vcf_record),
     },
-    {
-      key: 'xrefs',
-      label: 'interpretations.xrefs',
-      children: vd.xrefs,
-    },
-    {
-      key: 'alternate_labels',
-      label: 'interpretations.alternate_labels',
-      children: vd.alternate_labels,
-    },
+    { key: 'xrefs', children: vd.xrefs },
+    { key: 'alternate_labels', children: vd.alternate_labels },
     {
       key: 'extensions',
-      label: 'interpretations.extensions',
       children: (
         <Table<Extension>
           columns={extensionTableColumns}
@@ -143,23 +121,19 @@ export const VariantInterpretation = ({
     },
     {
       key: 'molecule_context',
-      label: 'interpretations.molecule_context',
       children: vd.molecule_context,
     },
     {
       key: 'structural_type',
-      label: 'interpretations.structural_type',
       children: <OntologyTerm term={vd.structural_type} />,
       isVisible: vd?.structural_type,
     },
     {
       key: 'vrs_ref_allele_seq',
-      label: 'interpretations.vrs_ref_allele_seq',
       children: vd?.vrs_ref_allele_seq,
     },
     {
       key: 'allelic_state',
-      label: 'interpretations.allelic_state',
       children: <OntologyTerm term={vd.allelic_state} />,
       isVisible: vd?.allelic_state,
     },
@@ -167,8 +141,14 @@ export const VariantInterpretation = ({
 
   return (
     <Space direction="vertical">
-      <TDescriptions items={items} size="compact" bordered />
-      <TDescriptions items={variantDescriptorItems} column={2} size="compact" bordered />
+      <TDescriptions items={items} size="compact" bordered defaultI18nPrefix="interpretations." />
+      <TDescriptions
+        items={variantDescriptorItems}
+        column={2}
+        size="compact"
+        bordered
+        defaultI18nPrefix="interpretations."
+      />
     </Space>
   );
 };

@@ -53,19 +53,16 @@ const TreatmentComponent = ({ treatment }: { treatment: Treatment }) => {
   const TreatmentItems: ConditionalDescriptionItem[] = [
     {
       key: 'agent',
-      label: 'medical_actions.agent',
       children: <OntologyTermComponent term={treatment.agent} />,
       isVisible: treatment?.agent,
     },
     {
-      key: 'routeOfAdministration',
-      label: 'medical_actions.route_of_administration',
+      key: 'route_of_administration',
       children: <OntologyTermComponent term={treatment.route_of_administration} />,
       isVisible: treatment?.route_of_administration,
     },
     {
-      key: 'doseIntervals',
-      label: 'medical_actions.dose_intervals',
+      key: 'dose_intervals',
       children: (
         <CustomTable<DoseIntervalWithId>
           columns={DOSE_INTERVAL_COLUMNS}
@@ -76,47 +73,42 @@ const TreatmentComponent = ({ treatment }: { treatment: Treatment }) => {
       ),
       isVisible: treatment?.dose_intervals,
     },
+    { key: 'drug_type', children: treatment?.drug_type },
     {
-      key: 'drugType',
-      label: 'medical_actions.drug_type',
-      children: treatment?.drug_type,
-    },
-    {
-      key: 'cumulativeDose',
-      label: 'medical_actions.cumulative_dose',
+      key: 'cumulative_dose',
       children: <QuantityDisplay quantity={treatment.cumulative_dose!} title="medical_actions.cumulative_dose" />,
       isVisible: treatment?.cumulative_dose,
     },
   ];
-  return <TDescriptions bordered column={1} size="compact" items={TreatmentItems} />;
+  return (
+    <TDescriptions bordered column={1} size="compact" items={TreatmentItems} defaultI18nPrefix="medical_actions." />
+  );
 };
 
 const RadiationTherapyComponent = ({ radiationTherapy }: { radiationTherapy: RadiationTherapy }) => {
   const radiationTherapyItems: ConditionalDescriptionItem[] = [
     {
       key: 'modality',
-      label: 'medical_actions.modality',
       children: <OntologyTermComponent term={radiationTherapy.modality} />,
       isVisible: radiationTherapy.modality,
     },
     {
       key: 'bodySite',
-      label: 'medical_actions.body_site',
       children: <OntologyTermComponent term={radiationTherapy.body_site} />,
       isVisible: radiationTherapy.body_site,
     },
-    {
-      key: 'dosage',
-      label: 'medical_actions.dosage',
-      children: radiationTherapy.dosage,
-    },
-    {
-      key: 'fractions',
-      label: 'medical_actions.fractions',
-      children: radiationTherapy.fractions,
-    },
+    { key: 'dosage', children: radiationTherapy.dosage },
+    { key: 'fractions', children: radiationTherapy.fractions },
   ];
-  return <TDescriptions bordered column={1} size="compact" items={radiationTherapyItems} />;
+  return (
+    <TDescriptions
+      bordered
+      column={1}
+      size="compact"
+      items={radiationTherapyItems}
+      defaultI18nPrefix="medical_actions."
+    />
+  );
 };
 
 const TherapeuticRegimenIdentifier = ({ regimen }: { regimen: TherapeuticRegimen }) => {
@@ -148,66 +140,59 @@ const TherapeuticRegimenComponent = ({ regimen }: { regimen: TherapeuticRegimen 
   const items: ConditionalDescriptionItem[] = [
     {
       key: 'identifier',
-      label: 'medical_actions.identifier',
       children: <TherapeuticRegimenIdentifier regimen={regimen} />,
       isVisible: regimen.ontology_class || regimen.external_reference,
     },
     {
       key: 'start_time',
-      label: 'medical_actions.start_time',
       children: <TimeElementDisplay element={regimen.start_time} />,
       isVisible: regimen.start_time,
     },
     {
       key: 'end_time',
-      label: 'medical_actions.end_time',
       children: <TimeElementDisplay element={regimen.end_time} />,
       isVisible: regimen.end_time,
     },
     {
       key: 'status',
-      label: 'medical_actions.status',
       children: regimen.status,
       isVisible: regimen.status,
     },
   ];
-  return <TDescriptions bordered column={1} size="compact" items={items} />;
+  return <TDescriptions bordered column={1} size="compact" items={items} defaultI18nPrefix="medical_actions." />;
 };
 
 const MedicalActionDetails = ({ medicalAction }: { medicalAction: MedicalAction }) => {
   const medicalActionItems: ConditionalDescriptionItem[] = [
     {
       key: 'procedure',
-      label: 'medical_actions.procedure',
       children: <ProcedureComponent procedure={medicalAction.procedure!} />,
       isVisible: medicalAction.procedure,
     },
     {
       key: 'treatment',
-      label: 'medical_actions.treatment',
       children: <TreatmentComponent treatment={medicalAction.treatment!} />,
       isVisible: medicalAction.treatment,
     },
     {
-      key: 'radiationTherapy',
-      label: 'medical_actions.radiation_therapy',
+      key: 'radiation_therapy',
       children: <RadiationTherapyComponent radiationTherapy={medicalAction.radiation_therapy!} />,
       isVisible: medicalAction.radiation_therapy,
     },
     {
-      key: 'therapeuticRegimen',
-      label: 'medical_actions.therapeutic_regimen',
+      key: 'therapeutic_regimen',
       children: <TherapeuticRegimenComponent regimen={medicalAction.therapeutic_regimen!} />,
       isVisible: medicalAction.therapeutic_regimen,
     },
     {
-      key: 'adverseEvents',
-      label: 'medical_actions.adverse_events',
+      key: 'adverse_events',
       children: <OntologyTermStack terms={medicalAction.adverse_events} />,
       isVisible: medicalAction.adverse_events?.length,
     },
   ];
-  return <TDescriptions bordered column={1} size="compact" items={medicalActionItems} />;
+  return (
+    <TDescriptions bordered column={1} size="compact" items={medicalActionItems} defaultI18nPrefix="medical_actions." />
+  );
 };
 
 // Cases:

@@ -19,19 +19,16 @@ const DiseaseExpandedRow = ({ disease }: { disease: Disease }) => {
   const items: ConditionalDescriptionItem[] = [
     {
       key: 'clinical_tnm_finding',
-      label: 'disease.clinical_tnm_finding',
       children: <OntologyTermStack terms={disease.clinical_tnm_finding} />,
       isVisible: disease.clinical_tnm_finding?.length,
     },
     {
       key: 'primary_site',
-      label: 'disease.primary_site',
       children: <OntologyTermComponent term={disease.primary_site} />,
       isVisible: disease.primary_site,
     },
     {
       key: 'laterality',
-      label: 'disease.laterality',
       children: <OntologyTermComponent term={disease.laterality} />,
       isVisible: disease.laterality,
     },
@@ -39,7 +36,7 @@ const DiseaseExpandedRow = ({ disease }: { disease: Disease }) => {
 
   return (
     <Space direction="vertical" className="w-full">
-      <TDescriptions bordered size="compact" items={items} />
+      <TDescriptions bordered size="compact" items={items} defaultI18nPrefix="disease." />
       <ExtraPropertiesDisplay extraProperties={disease.extra_properties} />
     </Space>
   );
