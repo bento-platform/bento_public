@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { Breadcrumb, type BreadcrumbProps, Button, Flex, Space, Tooltip } from 'antd';
-import { ProfileOutlined, QuestionOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, ProfileOutlined, QuestionOutlined } from '@ant-design/icons';
 import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
 import ScopePickerModal from './ScopePickerModal';
 
@@ -115,8 +115,24 @@ const ScopedTitle = () => {
         <CurrentPageHelpModal open={helpModalOpen} onCancel={() => setHelpModalOpen(false)} />
         <Flex className="scoped-title" align="center">
           <Flex className="flex-1" align="center">
+            {currentPage === BentoRoute.Phenopackets ? (
+              <Button
+                className="scoped-title__back"
+                icon={<ArrowLeftOutlined />}
+                type="text"
+                shape="circle"
+                size="large"
+                onClick={() => {
+                  if (history.length === 1) {
+                    alert('TODO');
+                  } else {
+                    history.back();
+                  }
+                }}
+              />
+            ) : null}
             <Breadcrumb className="scoped-title__breadcrumb" items={breadcrumbItems} itemRender={breadcrumbRender} />
-            <FiltersAppliedTag />
+            {currentPage === BentoRoute.Overview ? <FiltersAppliedTag /> : null}
           </Flex>
           <Space>
             {scopeSelectionEnabled && (
