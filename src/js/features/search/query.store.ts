@@ -1,7 +1,12 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
-import type { BentoKatsuEntity, KatsuEntityCountsOrBooleans, ResultsDataEntity } from '@/types/entities';
+import type {
+  BentoCountEntity,
+  BentoKatsuEntity,
+  KatsuEntityCountsOrBooleans,
+  ResultsDataEntity,
+} from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
 import type { DiscoveryResponseOrMessage } from '@/types/discovery/response';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
@@ -52,7 +57,7 @@ export type QueryState = {
   doneFirstLoad: boolean;
   message: string;
 
-  entity: BentoKatsuEntity | null;
+  selectedEntity: BentoCountEntity | null;
 
   // results
   resultCountsOrBools: KatsuEntityCountsOrBooleans;
@@ -93,7 +98,7 @@ const initialState: QueryState = {
   doneFirstLoad: false,
   message: '',
   // ----
-  entity: null,
+  selectedEntity: null,
   // ----
   resultCountsOrBools: {
     phenopacket: 0,
@@ -180,8 +185,8 @@ const query = createSlice({
     setDoneFirstLoad: (state) => {
       state.doneFirstLoad = true;
     },
-    setEntity: (state, { payload }: PayloadAction<BentoKatsuEntity | null>) => {
-      state.entity = payload;
+    setSelectedEntity: (state, { payload }: PayloadAction<BentoCountEntity | null>) => {
+      state.selectedEntity = payload;
     },
     setMatchesPage: (state, { payload }: PayloadAction<[BentoKatsuEntity, number]>) => {
       state.matchData[bentoKatsuEntityToResultsDataEntity(payload[0])].page = payload[1];
@@ -278,6 +283,7 @@ export const {
   setFilterQueryParams,
   setTextQuery,
   setDoneFirstLoad,
+  setSelectedEntity,
   setMatchesPage,
   resetMatchesPage,
   setMatchesPageSize,
