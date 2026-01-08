@@ -178,6 +178,13 @@ body {
   opacity: 0;
 }
 
+.scoped-title__back {
+  margin-right: 12px;
+
+  font-size: 1.8rem;
+  color: rgba(0, 0, 0, 0.45);
+}
+
 .scoped-title__breadcrumb {
   font-size: 1.8rem;
   transition: font-size 0.3s ease-in-out;
@@ -199,6 +206,14 @@ body {
 
 .scoped-title[data-stuck] .filters-applied-tag {
   opacity: 1;
+}
+
+.scoped-title[data-stuck] .scoped-title__back {
+  width: 32px;
+  min-width: 32px;
+  height: 32px;
+
+  font-size: 1.2rem;
 }
 
 .scoped-title[data-stuck] .scoped-title__breadcrumb {

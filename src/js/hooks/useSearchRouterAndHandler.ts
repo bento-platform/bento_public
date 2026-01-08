@@ -2,10 +2,11 @@ import { useCallback, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import type { QueryParamEntry, QueryParams } from '@/features/search/types';
+import type { BentoCountEntity } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
 import { BentoRoute } from '@/types/routes';
 
-import { NON_FILTER_QUERY_PARAM_PREFIX, TEXT_QUERY_PARAM } from '@/features/search/constants';
+import { ENTITY_QUERY_PARAM, NON_FILTER_QUERY_PARAM_PREFIX, TEXT_QUERY_PARAM } from '@/features/search/constants';
 
 import { useAppDispatch } from '@/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
@@ -15,7 +16,13 @@ import { useScopeQueryData } from './censorship';
 import { useQueryFilterFields, useSearchQuery } from '@/features/search/hooks';
 
 import { performKatsuDiscovery } from '@/features/search/performKatsuDiscovery.thunk';
-import { setDoneFirstLoad, setFilterQueryParams, setTextQuery, resetMatchesPage } from '@/features/search/query.store';
+import {
+  setDoneFirstLoad,
+  setFilterQueryParams,
+  setTextQuery,
+  resetMatchesPage,
+  setSelectedEntity,
+} from '@/features/search/query.store';
 
 import { buildQueryParamsUrl, checkQueryParamsEqual, combineQueryParamsWithoutKey } from '@/features/search/utils';
 import { getCurrentPage } from '@/utils/router';
@@ -45,6 +52,7 @@ export const useSearchRouterAndHandler = () => {
     fieldsStatus: searchFieldsStatus,
     discoveryStatus,
     textQuery,
+    selectedEntity,
     doneFirstLoad,
   } = useSearchQuery();
 
@@ -132,16 +140,29 @@ export const useSearchRouterAndHandler = () => {
     // Otherwise, we have a valid (or empty) set of filter query parameters. Now, we need to deal with free-text
     // filtering: ------------------------------------------------------------------------------------------------------
 
+    const qpRawEntity: string | undefined = otherQueryParams[ENTITY_QUERY_PARAM];
     const qpTextQuery: string | undefined = otherQueryParams[TEXT_QUERY_PARAM];
 
-    if (qpTextQuery && !queryDataPerm) {
+    if ((qpRawEntity || qpTextQuery) && !queryDataPerm) {
       // Already checked attempted status, so we know this is the true permissions value. If we do not have query:data
-      // permissions, we cannot try to execute a text search, so we go back to exclusively filters via URL rewrite.
-      // This effect will then be re-triggered without the text query param.
+      // permissions, we cannot:
+      //  - expand an entity table, or
+      //  - try to execute a text search
+      // So we go back to exclusively filters via URL rewrite.
+      // This effect will then be re-triggered without the entity or text query param.
       setSearchUrlWithQueryParams(
-        combineQueryParamsWithoutKey(validFilterQueryParams, otherQueryParams, TEXT_QUERY_PARAM)
+        combineQueryParamsWithoutKey(validFilterQueryParams, otherQueryParams, [ENTITY_QUERY_PARAM, TEXT_QUERY_PARAM])
       );
       return;
+    }
+
+    // TODO: validate entity
+
+    const qpEntity = qpRawEntity ? (qpRawEntity as BentoCountEntity) : null;
+    if (qpEntity !== selectedEntity) {
+      // If there's a mismatch between the query parameter and the Redux selected entity, we have to reconcile them.
+      // We sync Redux from the URL query parameter:
+      dispatch(setSelectedEntity(qpEntity));
     }
 
     const qpTextQueryStr = (qpTextQuery ?? '').trim(); // undefined --> ''; trim whitespace
@@ -188,6 +209,7 @@ export const useSearchRouterAndHandler = () => {
     setSearchUrlWithQueryParams,
     filterQueryParams,
     textQuery,
+    selectedEntity,
     loadAndValidateQuery,
   ]);
 };

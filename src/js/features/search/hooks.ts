@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useAppSelector } from '@/hooks';
-import { TEXT_QUERY_PARAM } from './constants';
+import { ENTITY_QUERY_PARAM, TEXT_QUERY_PARAM } from './constants';
 import type { QueryFilterField, QueryParams } from './types';
 
 export const useSearchQuery = () => useAppSelector((state) => state.query);
@@ -14,15 +14,18 @@ export const useQueryFilterFields = (): QueryFilterField[] => {
 };
 
 export const useNonFilterQueryParams = (): QueryParams => {
-  const { textQuery } = useSearchQuery();
+  const { selectedEntity, textQuery } = useSearchQuery();
   return useMemo<QueryParams>(() => {
     const qp: QueryParams = {};
+    if (selectedEntity) {
+      qp[ENTITY_QUERY_PARAM] = selectedEntity;
+    }
     if (textQuery) {
       // Only include text query parameter if textQuery is set to a non-false value.
       qp[TEXT_QUERY_PARAM] = textQuery;
     }
     return qp;
-  }, [textQuery]);
+  }, [selectedEntity, textQuery]);
 };
 
 export const useSearchableFields = () => {
