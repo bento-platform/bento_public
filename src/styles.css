@@ -50,6 +50,7 @@ body {
 .text-base { font-size: 1rem; }
 .text-center { text-align: center; }
 .underline { text-decoration-line: underline; }
+.w-450 { width: 450px;}
 
 /* custom, tailwind-esque */
 .max-w-half-cmw { max-width: calc(var(--content-max-width) / 2); }
@@ -556,4 +557,11 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
     /* For small screens, reset group gap size */
     gap: 16px;
   }
+}
+
+.divider {
+  width: 1px;
+  background-color: #ddd;
+  align-self: stretch; /* Fills parent height */
+  margin: 0 15px;
 }

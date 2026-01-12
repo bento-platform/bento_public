@@ -1,6 +1,7 @@
 import { type ReactNode, useMemo } from 'react';
 
 import { Button, Card, Carousel, Descriptions, Flex, Tag, Tooltip, Typography } from 'antd';
+import type { DescriptionsProps } from 'antd';
 import { PieChartOutlined, ProfileOutlined } from '@ant-design/icons';
 
 import type { Project } from '@/types/metadata';
@@ -17,7 +18,7 @@ const { Paragraph, Text, Title } = Typography;
 
 const MAX_KEYWORD_CHARACTERS = 50;
 
-const CatalogueCardInner = ({ firstContent, secondContent }: { firstContent: ReactNode; secondContent: ReactNode }) => {
+const ResponsiveSplitContent = ({ firstContent, secondContent }: { firstContent: ReactNode; secondContent: ReactNode }) => {
   const isSmallScreen = useSmallScreen();
 
   if (isSmallScreen) {
@@ -78,7 +79,7 @@ const CatalogueCard = ({ project }: { project: Project }) => {
   // TODO: this should be newer of project updated + last ingested of any data type
   const projectUpdated = isoDateToString(updated, language);
 
-  const projectInfo = [
+  const projectInfo: DescriptionsProps['items'] = [
     {
       key: '1',
       label: t('Created'),
@@ -105,7 +106,7 @@ const CatalogueCard = ({ project }: { project: Project }) => {
 
   return (
     <Card className="container margin-auto shadow rounded-xl" size={isSmallScreen ? 'small' : 'default'}>
-      <CatalogueCardInner
+      <ResponsiveSplitContent
         firstContent={
           <Flex vertical={true} gap={8} className="h-full">
             <Title level={4} className="m-0">

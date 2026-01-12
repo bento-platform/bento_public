@@ -40,7 +40,7 @@ const Dataset = ({
 }: {
   parentProjectID: string;
   dataset: Dataset;
-  format: 'list-item' | 'card' | 'carousel';
+  format: 'list-item' | 'card' | 'carousel' | 'catalogue-list';
   selected?: boolean;
 }) => {
   const navigateToScope = useNavigateToScope();
@@ -82,6 +82,32 @@ const Dataset = ({
         />
       </List.Item>
     );
+  } else if (format === 'catalogue-list') {
+    inner = (
+      <List.Item
+        className="cursor-pointer"
+        key={identifier}
+        onClick={onNavigateCurrent}
+        actions={[
+          <Button icon={<PieChartOutlined />} onClick={onNavigateOverview}>
+            {t('Explore')}
+          </Button>,
+          <Button size="small" icon={<SolutionOutlined />} onClick={openProvenanceModal}>
+            {t('Provenance')}
+            <ExpandAltOutlined />
+          </Button>,
+        ]}
+      >
+        <List.Item.Meta
+          title={
+            <Title level={5} className="mb-0">
+              {t(title)}
+            </Title>
+          }
+          description={t(description)}
+        />
+      </List.Item>
+    );
   } else if (format === 'card') {
     inner = (
       <Card
@@ -120,7 +146,7 @@ const Dataset = ({
     );
   } else if (format === 'carousel') {
     inner = (
-      <>
+      <div>
         <Flex justify="space-between" align="center">
           <Title level={5} className="mb-0">
             {t(title)}
@@ -137,7 +163,7 @@ const Dataset = ({
             {t('Explore')}
           </Button>
         </Flex>
-      </>
+      </div>
     );
   } else {
     inner = <span className="error-text">UNIMPLEMENTED</span>;
