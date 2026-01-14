@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, Form, Input, Space } from 'antd';
-import { FormOutlined, SearchOutlined } from '@ant-design/icons';
+import { CloseOutlined, FormOutlined, SearchOutlined } from '@ant-design/icons';
 
 import { TEXT_QUERY_PARAM } from '@/features/search/constants';
 import { useSearchQuery, useNonFilterQueryParams } from '@/features/search/hooks';
@@ -30,6 +30,17 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
     }
   }, [form, textQuery]);
 
+  const onReset = useCallback(() => {
+    form.setFieldValue('q', '');
+    navigate(
+      buildQueryParamsUrl(location.pathname, {
+        ...filterQueryParams,
+        ...nonFilterQueryParams,
+        [TEXT_QUERY_PARAM]: '',
+      })
+    );
+  }, [form, navigate, location.pathname, filterQueryParams, nonFilterQueryParams]);
+
   const onFinish = useCallback(
     (values: FreeTextFormValues) => {
       const query = values.q.trim();
@@ -53,6 +64,7 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
           <Form.Item name="q" initialValue="" noStyle={true}>
             <Input prefix={<SearchOutlined />} />
           </Form.Item>
+          {!!textQuery && <Button icon={<CloseOutlined />} onClick={onReset} />}
           <Button type="primary" htmlType="submit" loading={discoveryStatus === RequestStatus.Pending}>
             {t('Search')}
           </Button>
