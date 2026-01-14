@@ -50,9 +50,7 @@ interface OntologyTermStackProps {
 }
 
 export const OntologyTermStack = ({ terms }: OntologyTermStackProps) => {
-  const termsList = Array.isArray(terms) 
-    ? terms 
-    : (terms ? [terms] : []);
+  const termsList = Array.isArray(terms) ? terms : terms ? [terms] : [];
 
   if (termsList.length === 0) return EM_DASH;
 
