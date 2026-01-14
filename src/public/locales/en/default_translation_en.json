@@ -42,7 +42,8 @@
     "actions": "Actions",
     "ontology_class": "Ontology Class",
     "view": "View",
-    "url": "URL"
+    "url": "URL",
+    "extra_properties": "$t(Extra Properties)"
   },
   "search": {
     "filters": "Filters",
@@ -174,7 +175,7 @@
     "time_at_last_encounter": "Time at Last Encounter",
     "karyotypic_sex": "Karyotypic Sex",
     "taxonomy": "Taxonomy",
-    "extra_properties": "Extra Properties"
+    "extra_properties": "$t(general.extra_properties)"
   },
   "time": {
     "start": "Start",
@@ -274,8 +275,7 @@
     "disease_stage": "Disease Stage(s)",
     "clinical_tnm_finding": "Clinical TNM Finding(s)",
     "primary_site": "Primary Site",
-    "laterality": "Laterality",
-    "extra_properties": "Extra Properties"
+    "laterality": "Laterality"
   },
   "interpretations": {
     "id": "ID",
@@ -379,7 +379,6 @@
     "description": "Description",
     "modifiers": "Modifiers",
     "evidence": "Evidence",
-    "extra_properties": "Extra Properties",
     "evidence_code": "Evidence Code",
     "reference": "Reference"
   },
@@ -418,7 +417,8 @@
     "medical_actions": "Medical Actions",
     "ontologies": "Ontologies",
     "metadata": "Metadata",
-    "phenopacket_json": "Phenopacket JSON"
+    "phenopacket_json": "Phenopacket JSON",
+    "extra_properties": "$t(general.extra_properties)"
   },
   "genomic_interpretation_status": {
     "UNKNOWN_STATUS": "Unknown Status",

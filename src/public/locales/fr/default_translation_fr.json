@@ -179,7 +179,6 @@
     "time_at_last_encounter": "Temps à l'encontre",
     "karyotypic_sex": "Sexe karyotypique",
     "taxonomy": "Taxonomie",
-    "extra_properties": "Propriétés supplémentaires"
   },
   "time": {
     "start": "Début",
@@ -279,7 +278,6 @@
     "clinical_tnm_finding": "Résultat(s) TNM clinique(s)",
     "primary_site": "Site principal",
     "laterality": "Latéralité",
-    "extra_properties": "Propriétés supplémentaires"
   },
   "interpretations": {
     "id": "Identifiant",
@@ -383,7 +381,6 @@
     "description": "Description",
     "modifiers": "Modificateurs",
     "evidence": "Preuve",
-    "extra_properties": "Propriétés supplémentaires",
     "evidence_code": "Code de preuve",
     "reference": "Référence"
   },

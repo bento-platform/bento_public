@@ -28,7 +28,7 @@ export type SectionKey =
   | 'phenotypicFeatures'
   | 'experiments'
   | 'experimentResults'
-  | 'otherProperties';
+  | 'extraProperties';
 
 export type SectionSpec = {
   /** translation title label */
@@ -129,8 +129,8 @@ export const SECTION_SPECS: Record<SectionKey, SectionSpec> = {
     render: (p) => <ExperimentResultView packetId={p.id} experimentResults={phenopacketExperimentResults(p)} />,
     order: 8,
   },
-  otherProperties: {
-    titleTranslationKey: 'tab_keys.other_properties',
+  extraProperties: {
+    titleTranslationKey: 'tab_keys.extra_properties',
     enabled: (p) => objectToBoolean(p.extra_properties),
     render: (p) => <ExtraPropertiesDisplay extraProperties={p.extra_properties} />,
     order: 9,
