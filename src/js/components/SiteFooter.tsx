@@ -2,10 +2,11 @@ import { Layout, Row, Typography, Space } from 'antd';
 const { Footer } = Layout;
 const { Title, Text, Link } = Typography;
 
-import { useTranslationFn } from '@/hooks';
+import { useLanguage, useTranslationFn } from '@/hooks';
 import bentoLogo from '@public/assets/bento.svg';
 
 const SiteFooter = () => {
+  const lang = useLanguage();
   const t = useTranslationFn();
 
   return (
@@ -42,7 +43,7 @@ const SiteFooter = () => {
             </Text>
           </div>
           <div>
-            <Link href="/public/terms.html" target="_blank">
+            <Link href={`/public/terms_${lang}.html`} target="_blank">
               {t('footer.terms_of_use')}
             </Link>
           </div>
