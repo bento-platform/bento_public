@@ -46,15 +46,19 @@ const OntologyTerm = ({ term }: OntologyTermProps) => {
 };
 
 interface OntologyTermStackProps {
-  terms: OntologyTermType[] | undefined;
+  terms: OntologyTermType[] | OntologyTermType | undefined;
 }
 
 export const OntologyTermStack = ({ terms }: OntologyTermStackProps) => {
-  if (!terms || terms.length === 0) return EM_DASH;
+  const termsList = Array.isArray(terms) 
+    ? terms 
+    : (terms ? [terms] : []);
+
+  if (termsList.length === 0) return EM_DASH;
 
   return (
     <Space direction="vertical">
-      {terms.map((term, index) => (
+      {termsList.map((term, index) => (
         <OntologyTerm key={index} term={term} />
       ))}
     </Space>
