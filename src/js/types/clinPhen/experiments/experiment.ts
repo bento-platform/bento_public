@@ -19,7 +19,7 @@ export interface Experiment extends ExtraPropertiesEntity {
     | 'Antibody measurement'
     | 'Viral WGS'
     | 'Other';
-  experiment_ontology?: OntologyTerm[];
+  experiment_ontology?: OntologyTerm;
   study_type?:
     | 'Genomics'
     | 'Epigenomics'
@@ -38,7 +38,7 @@ export interface Experiment extends ExtraPropertiesEntity {
     | 'genomic DNA'
     | 'protein'
     | 'Other';
-  molecule_ontology?: OntologyTerm[];
+  molecule_ontology?: OntologyTerm;
   library_strategy?: 'Bisulfite-Seq' | 'RNA-Seq' | 'ChIP-Seq' | 'WES' | 'WGS' | 'RAD-Seq' | 'AMPLICON' | 'Other';
   library_source?:
     | 'Genomic'

@@ -5,7 +5,7 @@ import type { Experiment } from '@/types/clinPhen/experiments/experiment';
 import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
 
-import { OntologyTermStack } from '@Util/ClinPhen/OntologyTerm';
+import OntologyTerm from '@Util/ClinPhen/OntologyTerm';
 import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
 import TDescriptions from '@Util/TDescriptions';
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
@@ -29,15 +29,15 @@ export const ExperimentExpandedRow = ({ packetId, experiment, searchRow }: Exper
     { key: 'experiment_type', children: experiment.experiment_type },
     {
       key: 'experiment_ontology',
-      children: <OntologyTermStack terms={experiment.experiment_ontology} />,
+      children: <OntologyTerm term={experiment.experiment_ontology} />,
       isVisible: objectToBoolean(experiment.experiment_ontology),
     },
     { key: 'study_type', children: experiment.study_type },
     { key: 'molecule', children: experiment.molecule },
     {
       key: 'molecule_ontology',
-      children: <OntologyTermStack terms={experiment.molecule_ontology} />,
-      isVisible: !!experiment.molecule_ontology?.length,
+      children: <OntologyTerm term={experiment.molecule_ontology} />,
+      isVisible: objectToBoolean(experiment.molecule_ontology),
     },
     { key: 'library_strategy', children: experiment.library_strategy },
     { key: 'library_source', children: experiment.library_source },
