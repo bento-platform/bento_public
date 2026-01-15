@@ -178,7 +178,7 @@
     "sex": "Sexe",
     "time_at_last_encounter": "Temps à l'encontre",
     "karyotypic_sex": "Sexe karyotypique",
-    "taxonomy": "Taxonomie",
+    "taxonomy": "Taxonomie"
   },
   "time": {
     "start": "Début",
@@ -277,7 +277,7 @@
     "disease_stage": "Stade(s) de la maladie",
     "clinical_tnm_finding": "Résultat(s) TNM clinique(s)",
     "primary_site": "Site principal",
-    "laterality": "Latéralité",
+    "laterality": "Latéralité"
   },
   "interpretations": {
     "id": "Identifiant",
