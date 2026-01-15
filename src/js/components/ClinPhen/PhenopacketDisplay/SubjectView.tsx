@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import { Space, type SpaceProps } from 'antd';
 import OntologyTerm from '@Util/ClinPhen/OntologyTerm';
 import StringList from '@Util/StringList';
@@ -9,32 +11,34 @@ import type { Individual } from '@/types/clinPhen/individual';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
 
 const SubjectView = ({ subject, spaceSize }: { subject: Individual; spaceSize?: SpaceProps['size'] }) => {
-  const vs = subject?.vital_status;
-  const vitalStatusItems: ConditionalDescriptionItem[] = [
-    {
-      key: 'status',
-      label: 'subject.status',
-      children: vs?.status,
-    },
-    {
-      key: 'time_of_death',
-      label: 'subject.time_of_death',
-      children: <TimeElementDisplay element={vs?.time_of_death} />,
-      isVisible: vs?.time_of_death,
-    },
-    {
-      key: 'cause_of_death',
-      label: 'subject.cause_of_death',
-      children: <OntologyTerm term={vs?.cause_of_death} />,
-      isVisible: vs?.cause_of_death,
-    },
-    {
-      key: 'survival_time_in_days',
-      label: 'subject.survival_time_in_days',
-      children: vs?.survival_time_in_days,
-      isVisible: typeof vs?.survival_time_in_days === 'number',
-    },
-  ];
+  const vitalStatusItems: ConditionalDescriptionItem[] = useMemo(() => {
+    const vs = subject?.vital_status;
+    return [
+      {
+        key: 'status',
+        label: 'subject.status',
+        children: vs?.status,
+      },
+      {
+        key: 'time_of_death',
+        label: 'subject.time_of_death',
+        children: <TimeElementDisplay element={vs?.time_of_death} />,
+        isVisible: vs?.time_of_death,
+      },
+      {
+        key: 'cause_of_death',
+        label: 'subject.cause_of_death',
+        children: <OntologyTerm term={vs?.cause_of_death} />,
+        isVisible: vs?.cause_of_death,
+      },
+      {
+        key: 'survival_time_in_days',
+        label: 'subject.survival_time_in_days',
+        children: vs?.survival_time_in_days,
+        isVisible: typeof vs?.survival_time_in_days === 'number',
+      },
+    ];
+  }, [subject]);
 
   const items: ConditionalDescriptionItem[] = [
     {
@@ -57,7 +61,9 @@ const SubjectView = ({ subject, spaceSize }: { subject: Individual; spaceSize?: 
     {
       key: 'vital_status',
       label: 'subject.vital_status',
-      children: <TDescriptions items={vitalStatusItems} size="compact" />,
+      children: (
+        <TDescriptions items={vitalStatusItems} className="fixed-item-label-width-narrow" column={1} size="compact" />
+      ),
       isVisible: subject.vital_status,
     },
     {
