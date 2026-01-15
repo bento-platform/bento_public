@@ -30,23 +30,9 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
     }
   }, [form, textQuery]);
 
-  const onReset = useCallback(() => {
-    form.setFieldValue('q', '');
-    navigate(
-      buildQueryParamsUrl(location.pathname, {
-        ...filterQueryParams,
-        ...nonFilterQueryParams,
-        [TEXT_QUERY_PARAM]: '',
-      })
-    );
-  }, [form, navigate, location.pathname, filterQueryParams, nonFilterQueryParams]);
-
-  const onFinish = useCallback(
-    (values: FreeTextFormValues) => {
-      const query = values.q.trim();
+  const navigateToTextQuery = useCallback(
+    (query: string) => {
       navigate(
-        // Build a query URL with the new text search value and navigate to it. It'll be handled by the search
-        // router/handler effect (useSearchRouterAndHandler) elsewhere.
         buildQueryParamsUrl(location.pathname, {
           ...filterQueryParams,
           ...nonFilterQueryParams,
@@ -54,7 +40,20 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
         })
       );
     },
-    [location.pathname, filterQueryParams, nonFilterQueryParams, navigate]
+    [navigate, location.pathname, filterQueryParams, nonFilterQueryParams]
+  );
+
+  const onReset = useCallback(() => {
+    form.setFieldValue('q', '');
+    navigateToTextQuery('');
+  }, [form, navigateToTextQuery]);
+
+  const onFinish = useCallback(
+    (values: FreeTextFormValues) => {
+      const query = values.q.trim();
+      navigateToTextQuery(query);
+    },
+    [navigateToTextQuery]
   );
 
   return (
