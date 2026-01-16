@@ -4,10 +4,12 @@ import { MedicineBoxOutlined, ExperimentOutlined } from '@ant-design/icons';
 import CustomEmpty from '@Util/CustomEmpty';
 import OntologyTerm from '@Util/ClinPhen/OntologyTerm';
 import { GeneDescriptor, VariantInterpretation } from '@Util/ClinPhen/InterpretationUtilities';
+import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
 import TDescriptions from '@Util/TDescriptions';
 import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
 
 import { useTranslationFn } from '@/hooks';
+import { objectToBoolean } from '@/utils/boolean';
 
 import type { Interpretation } from '@/types/clinPhen/interpretation';
 import type { JSONObject } from '@/types/json';
@@ -43,16 +45,21 @@ const GenomicInterpretationDetails = ({ genomicInterpretation }: { genomicInterp
     },
   ];
 
-  return <TDescriptions items={items} size="compact" column={1} bordered />;
+  return (
+    <Space direction="vertical" className="w-full">
+      <TDescriptions items={items} size="compact" column={1} bordered />
+      <ExtraPropertiesDisplay extraProperties={genomicInterpretation.extra_properties} />
+    </Space>
+  );
 };
 
 const isGenomicInterpretationDetailsExpandable = (r: GenomicInterpretation) =>
-  !!(r.variant_interpretation || r.gene_descriptor);
+  !!(r.variant_interpretation || r.gene_descriptor || objectToBoolean(r.extra_properties));
 
 const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interpretation }) => {
   const t = useTranslationFn();
 
-  const items: ConditionalDescriptionItem[] = [
+  const diagnosisItems: ConditionalDescriptionItem[] = [
     {
       key: 'Disease',
       label: 'interpretations.disease',
@@ -84,7 +91,10 @@ const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interp
           <MedicineBoxOutlined /> {t('interpretations.diagnosis')}
         </Typography.Title>
         {interpretation?.diagnosis?.disease ? (
-          <TDescriptions items={items} size="compact" bordered />
+          <Space direction="vertical" className="w-full">
+            <TDescriptions items={diagnosisItems} size="compact" bordered />
+            <ExtraPropertiesDisplay extraProperties={interpretation?.diagnosis?.extra_properties} />
+          </Space>
         ) : (
           <CustomEmpty text={t('interpretations.no_diagnosis')} />
         )}

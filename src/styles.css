@@ -470,9 +470,7 @@ h3.search-sub-form-title {
 
 /* BEGIN phenopackets/other clinical+phenotypic metadata views */
 
-.subject-view .ant-descriptions-item-label,
-.experiment-result-expanded-row .ant-descriptions-item-label,
-.extra-properties-display .ant-descriptions-item-label {
+.fixed-item-label-width .ant-descriptions-item-label {
   /* Align split line vertically in all descriptions */
   width: min(30vw, 250px);
 }
@@ -486,6 +484,13 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
 .ant-descriptions.compact .ant-descriptions-item-content,
 .ant-descriptions.compact .ant-descriptions-item-label {
   padding: 2px 12px !important;
+}
+
+.ant-descriptions.compact > .ant-descriptions-header {
+  margin-bottom: 4px;
+}
+.ant-descriptions.compact > .ant-descriptions-header > .ant-descriptions-title {
+  font-size: 14px;
 }
 
 .ant-collapse.compact .ant-collapse-header {

@@ -89,8 +89,8 @@ const SubjectView = ({ subject, spaceSize }: { subject: Individual; spaceSize?: 
   ];
 
   return (
-    <Space className="subject-view w-full" direction="vertical" size={spaceSize ?? 'middle'}>
-      <TDescriptions items={items} column={1} bordered size="compact" />
+    <Space className="w-full" direction="vertical" size={spaceSize ?? 'middle'}>
+      <TDescriptions className="fixed-item-label-width" items={items} column={1} bordered size="compact" />
       <ExtraPropertiesDisplay extraProperties={subject.extra_properties} />
     </Space>
   );
