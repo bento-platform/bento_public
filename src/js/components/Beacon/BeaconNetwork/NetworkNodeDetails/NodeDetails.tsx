@@ -5,6 +5,7 @@ import type { NetworkBeacon } from '@/types/beaconNetwork';
 import type { FlattenedBeaconResponse } from '@/types/beacon';
 import NodeCountsDisplay from './NodeCountsDisplay';
 import { useTranslationFn } from '@/hooks';
+import { BEACON_BAD_FILTER_RESPONSE } from '@/constants/beaconConstants';
 
 const { Link } = Typography;
 
@@ -52,6 +53,12 @@ const NodeDetails = ({ beacon, response }: NodeDetailsProps) => {
     </Tag>
   ));
 
+  // extra error handling for unknown filters in query, works for bento beacons with version >= 0.25.0
+  // This can happen when using a filter that exists in one node in the network but not another
+  // For now just treat as zero results and ignore error in the UI
+  const hasUnknownFilterError = apiErrorMessage?.startsWith(BEACON_BAD_FILTER_RESPONSE);
+  const hasError = !!apiErrorMessage && !hasUnknownFilterError;
+
   return (
     <Card
       title={logoAndName}
@@ -63,7 +70,7 @@ const NodeDetails = ({ beacon, response }: NodeDetailsProps) => {
       extra={
         <>
           {assemblyTags}
-          {apiErrorMessage && <ApiErrorTag errorMessage={apiErrorMessage} />}
+          {hasError && <ApiErrorTag errorMessage={apiErrorMessage} />}
         </>
       }
       actions={[

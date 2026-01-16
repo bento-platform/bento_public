@@ -540,7 +540,7 @@ const SearchResultsTablePage = ({ entity, onBack }: { entity: BentoKatsuEntity; 
       <SearchResultsTable<DiscoveryMatchPhenopacket>
         spec={TABLE_SPEC_PHENOPACKET}
         shown={entity === 'phenopacket' || entity === 'individual'}
-        entity="phenopacket"
+        entity="individual" // Even though we are working with phenopacket matches, present it as individuals
         {...common}
       />
       <SearchResultsTable<DiscoveryMatchBiosample>

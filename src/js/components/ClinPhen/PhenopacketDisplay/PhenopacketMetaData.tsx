@@ -1,10 +1,12 @@
 import { Space } from 'antd';
 
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
+import DateTime from '@Util/DateTime';
 import TDescriptions from '@Util/TDescriptions';
 import ExternalReference from './ExternalReference';
 
 import { useMemo } from 'react';
+import { useTranslationFn } from '@/hooks';
 
 import { objectToBoolean } from '@/utils/boolean';
 
@@ -12,16 +14,28 @@ import type { MetaData, Update } from '@/types/clinPhen/metaData';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
 
-const MetaDataUpdate = ({ update }: { update: Update }) => (
-  <TDescriptions
-    items={[
-      { key: 'timestamp', children: update.timestamp },
-      { key: 'updated_by', children: update.updated_by },
-      { key: 'comment', children: update.comment },
-    ]}
-    defaultI18nPrefix="phenopacket."
-  />
-);
+const MetaDataUpdate = ({ index, update }: { index: number; update: Update }) => {
+  const t = useTranslationFn();
+  return (
+    <TDescriptions
+      bordered
+      size="compact"
+      className="fixed-item-label-width"
+      column={1}
+      title={
+        <span>
+          {t('phenopacket.update')} {index}
+        </span>
+      }
+      items={[
+        { key: 'timestamp', children: <DateTime isoString={update.timestamp} /> },
+        { key: 'updated_by', children: <span>{update.updated_by}</span>, isVisible: !!update.updated_by },
+        { key: 'comment', children: <span>{update.comment}</span>, isVisible: !!update.comment },
+      ]}
+      defaultI18nPrefix="phenopacket."
+    />
+  );
+};
 
 const PhenopacketMetaData = ({ phenopacket }: { phenopacket: Phenopacket }) => {
   const metaData: MetaData = phenopacket.meta_data;
@@ -43,14 +57,16 @@ const PhenopacketMetaData = ({ phenopacket }: { phenopacket: Phenopacket }) => {
       { key: 'phenopacket_schema_version', children: metaData.phenopacket_schema_version },
       { key: 'created_by', children: metaData.created_by },
       { key: 'submitted_by', children: metaData.submitted_by },
-      { key: 'created', children: metaData.created },
+      { key: 'created', children: <DateTime isoString={metaData.created} />, isVisible: !!metaData.created },
       {
         key: 'updates',
         children: metaData.updates ? (
           <Space direction="vertical">
-            {metaData.updates.map((update, uIdx) => (
-              <MetaDataUpdate key={uIdx} update={update} />
-            ))}
+            {[...metaData.updates]
+              .sort(({ timestamp: a }, { timestamp: b }) => -1 * a.localeCompare(b))
+              .map((update, uIdx) => (
+                <MetaDataUpdate key={uIdx} index={(metaData.updates ?? []).length - uIdx} update={update} />
+              ))}
           </Space>
         ) : null,
         isVisible: objectToBoolean(metaData.updates),

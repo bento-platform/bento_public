@@ -13,3 +13,5 @@ export const useSmallScreen = (): boolean => {
   const { isMobile, isTablet } = useContext(ResponsiveContext);
   return isMobile || isTablet;
 };
+
+export const useInnerWidth = (): number => useContext(ResponsiveContext).width;
