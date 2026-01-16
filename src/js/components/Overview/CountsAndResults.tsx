@@ -1,4 +1,5 @@
-import { useState, memo, useCallback } from 'react';
+import { memo, useCallback } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Alert, Card, Flex, Skeleton, Space, Statistic } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 
@@ -8,14 +9,16 @@ import CustomEmpty from '@/components/Util/CustomEmpty';
 import { COUNT_ENTITY_ORDER, COUNT_ENTITY_REGISTRY } from '@/constants/countEntities';
 import { COUNTS_FILL } from '@/constants/overviewConstants';
 import { WAITING_STATES } from '@/constants/requests';
+import { ENTITY_QUERY_PARAM } from '@/features/search/constants';
 import { useSelectedDataset, useSelectedProject } from '@/features/metadata/hooks';
-import { useSearchQuery } from '@/features/search/hooks';
+import { useNonFilterQueryParams, useSearchQuery } from '@/features/search/hooks';
 import { useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
 import { useRenderCount } from '@/hooks/counts';
 import { useInnerWidth } from '@/hooks/useResponsiveContext';
 import type { BentoCountEntity } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
+import { buildQueryParamsUrl, combineQueryParamsWithoutKey } from '@/features/search/utils';
 
 const COUNT_CARD_BASE_HEIGHT = 114;
 const COUNT_CARD_DENOMINATOR_BREAKPOINT = 1180;
@@ -57,6 +60,9 @@ const CountCardShowHide = memo(({ selected, onClear }: { selected: boolean; onCl
 CountCardShowHide.displayName = 'CountCardShowHide';
 
 const CountsAndResults = () => {
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+
   const t = useTranslationFn();
   const renderCount = useRenderCount();
 
@@ -73,9 +79,11 @@ const CountsAndResults = () => {
     discoveryStatus,
     filterQueryParams,
     textQuery,
+    selectedEntity,
     doneFirstLoad,
     uiHints,
   } = useSearchQuery();
+  const nonFilterQueryParams = useNonFilterQueryParams();
 
   const waitingForData = WAITING_STATES.includes(discoveryStatus);
   const doingFirstLoad = waitingForData && !doneFirstLoad;
@@ -83,8 +91,14 @@ const CountsAndResults = () => {
   // TODO: per-data type permissions?
   const { hasPermission: hasQueryData } = useScopeQueryData();
 
-  const [selectedEntity, setSelectedEntity] = useState<BentoCountEntity | null>(null);
-  const clearSelectedEntity = useCallback(() => setSelectedEntity(null), []);
+  const setSelectedEntity = useCallback(
+    (entity: BentoCountEntity | null) => {
+      const cb = combineQueryParamsWithoutKey(filterQueryParams, nonFilterQueryParams, ENTITY_QUERY_PARAM);
+      navigate(buildQueryParamsUrl(pathname, entity ? { ...cb, [ENTITY_QUERY_PARAM]: entity } : cb));
+    },
+    [navigate, pathname, filterQueryParams, nonFilterQueryParams]
+  );
+  const clearSelectedEntity = useCallback(() => setSelectedEntity(null), [setSelectedEntity]);
 
   const nFilters = Object.keys(filterQueryParams).length + +!!textQuery;
 
