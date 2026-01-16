@@ -403,6 +403,7 @@
     "created_by": "Created By",
     "submitted_by": "Submitted By",
     "created": "Created",
+    "update": "Update",
     "updates": "Updates",
     "external_references": "External References",
     "timestamp": "$t(time.timestamp)",
