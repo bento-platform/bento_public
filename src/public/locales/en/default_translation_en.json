@@ -180,7 +180,8 @@
   "time": {
     "start": "Start",
     "end": "End",
-    "days": "Days",
+    "day_one": "Day",
+    "day_other": "Days",
     "weeks": "Weeks",
     "age": "Age",
     "gestational_age": "Gestational Age",
@@ -387,7 +388,7 @@
     "status": "Status",
     "time_of_death": "Time of Death",
     "cause_of_death": "Cause of Death",
-    "survival_time_in_days": "Survival Time in Days",
+    "survival_time": "Survival Time",
     "id": "ID",
     "subject_id": "Subject ID",
     "alternate_ids": "Alternate IDs",
@@ -395,7 +396,10 @@
     "vital_status": "Vital Status",
     "sex": "Sex",
     "karyotypic_sex": "Karyotypic Sex",
-    "taxonomy": "Taxonomy"
+    "taxonomy": "Taxonomy",
+    "ALIVE": "ALIVE",
+    "DECEASED": "DECEASED",
+    "UNKNOWN_STATUS": "UNKNOWN STATUS"
   },
   "phenopacket": {
     "id": "Phenopacket ID",

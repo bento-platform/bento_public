@@ -183,7 +183,8 @@
   "time": {
     "start": "Début",
     "end": "Fin",
-    "days": "Jours",
+    "day_one": "Jour",
+    "day_other": "Jours",
     "weeks": "Semaines",
     "age": "Âge",
     "gestational_age": "Âge gestationnel",
@@ -389,7 +390,7 @@
     "status": "Statut",
     "time_of_death": "Date du décès",
     "cause_of_death": "Cause du décès",
-    "survival_time_in_days": "Durée de survie (en jours)",
+    "survival_time": "Durée de survie",
     "id": "Identifiant",
     "subject_id": "Identifiant du sujet",
     "alternate_ids": "Identifiants alternatifs",
@@ -397,7 +398,10 @@
     "vital_status": "Statut vital",
     "sex": "Sexe",
     "karyotypic_sex": "Sexe caryotypique",
-    "taxonomy": "Taxonomie"
+    "taxonomy": "Taxonomie",
+    "ALIVE": "VIVANT",
+    "DECEASED": "DÉCÉDÉ",
+    "UNKNOWN_STATUS": "STATUT INCONNU"
   },
   "phenopacket": {
     "id": "Identifiant du Phenopacket",
