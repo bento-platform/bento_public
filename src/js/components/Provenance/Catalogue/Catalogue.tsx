@@ -2,8 +2,9 @@ import { Space } from 'antd';
 import { SPACE_ITEM_WIDTH_100P_STYLES } from '@/constants/common';
 import { useMetadata } from '@/features/metadata/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
-import CatalogueCard from './CatalogueCard';
-import CatalogueProjectSection from './CatalogueProjectSection';
+// import CatalogueCard from './CatalogueCard';
+// import CatalogueProjectSection from './CatalogueProjectSection';
+import CatalogueProjectSection from './CatalogueProjectSectionV2';
 
 const Catalogue = () => {
   const isSmallScreen = useSmallScreen();

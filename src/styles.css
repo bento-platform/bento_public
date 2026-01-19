@@ -50,7 +50,9 @@ body {
 .text-base { font-size: 1rem; }
 .text-center { text-align: center; }
 .underline { text-decoration-line: underline; }
-.w-450 { width: 450px;}
+.w-425 { width: 425px;}
+.h-350 { height: 350px;}
+.flex-shrink-0 { flex-shrink: 0;}
 
 /* custom, tailwind-esque */
 .max-w-half-cmw { max-width: calc(var(--content-max-width) / 2); }
@@ -565,3 +567,25 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   align-self: stretch; /* Fills parent height */
   margin: 0 15px;
 }
+
+/* BEGIN scrollable card row */
+
+.scrollable-card-row {
+  scrollbar-width: thin;
+  scrollbar-color: #d9d9d9 transparent;
+}
+.scrollable-card-row::-webkit-scrollbar {
+  height: 6px;
+}
+.scrollable-card-row::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollable-card-row::-webkit-scrollbar-thumb {
+  background-color: #d9d9d9;
+  border-radius: 3px;
+}
+.scrollable-card-row::-webkit-scrollbar-thumb:hover {
+  background-color: #bfbfbf;
+}
+
+/* END scrollable card row */
