@@ -498,5 +498,14 @@
     "mime_type": "MIME Type",
     "checksums": "Checksums",
     "access_methods": "Access Methods"
+  },
+  "settings": {
+    "settings": "Settings",
+    "language": "Language",
+    "dashboard": "Dashboard",
+    "chart_display_mode": "Chart Display Mode",
+    "normal": "Normal",
+    "compact": "Compact",
+    "ultra_compact": "Ultra-Compact"
   }
 }

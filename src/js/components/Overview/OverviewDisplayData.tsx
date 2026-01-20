@@ -4,8 +4,7 @@ import { Space } from 'antd';
 import { disableChart } from '@/features/search/query.store';
 import { useAppDispatch } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
-
-import { CHART_WIDTH, GRID_GAP } from '@/constants/overviewConstants';
+import { useDashboardChartDimensions } from '@/features/ui/hooks';
 
 import ChartCard from './ChartCard';
 
@@ -14,12 +13,16 @@ import type { ChartDataField } from '@/types/data';
 const OverviewDisplayData = ({ section, allCharts, searchableFields }: OverviewDisplayDataProps) => {
   const dispatch = useAppDispatch();
   const isSmallScreen = useSmallScreen();
+  const { chartWidth, gridGap } = useDashboardChartDimensions();
 
-  const containerStyle = {
-    display: 'grid',
-    gap: `${GRID_GAP}px`,
-    gridTemplateColumns: `repeat(auto-fit, ${CHART_WIDTH}px)`,
-  };
+  const containerStyle = useMemo(
+    () => ({
+      display: 'grid',
+      gap: `${gridGap}px`,
+      gridTemplateColumns: `repeat(auto-fit, ${chartWidth}px)`,
+    }),
+    [chartWidth, gridGap]
+  );
 
   const displayedCharts = useMemo(() => allCharts.filter((e) => e.isDisplayed), [allCharts]);
 

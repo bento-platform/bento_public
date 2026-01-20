@@ -1,20 +1,26 @@
-import type { CSSProperties } from 'react';
+import { type CSSProperties, useMemo } from 'react';
 import { memo, useRef } from 'react';
 import { Button, Card, Row, Space, Tooltip } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import Chart from './Chart';
 import CustomEmpty from '../Util/CustomEmpty';
-import { CHART_HEIGHT } from '@/constants/overviewConstants';
 import { useTranslationFn } from '@/hooks';
+import { useDashboardChartDimensions, useUiUserSettings } from '@/features/ui/hooks';
+import type { DashboardChartMode } from '@/features/ui/types';
 import type { ChartDataField } from '@/types/data';
 import SmallChartCardTitle from '@/components/Util/SmallChartCardTitle';
 
-const CARD_STYLE: CSSProperties = { height: '415px' };
-const ROW_EMPTY_STYLE: CSSProperties = { height: `${CHART_HEIGHT}px` };
+const TITLE_FONT_SIZES: Record<DashboardChartMode, number> = { normal: 20, compact: 16, ultraCompact: 14 };
+const DESCRIPTION_FONT_SIZES: Record<DashboardChartMode, number> = { normal: 14, compact: 13, ultraCompact: 12 };
 
 const ChartCard = memo(({ section, chart, onRemoveChart, searchable }: ChartCardProps) => {
   const t = useTranslationFn();
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const { dashboardChartMode } = useUiUserSettings();
+  const isCompact = ['compact', 'ultraCompact'].includes(dashboardChartMode);
+
+  const { chartHeight, chartWidth } = useDashboardChartDimensions();
 
   const {
     id,
@@ -22,6 +28,9 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable }: ChartCard
     field: { datatype, description, title, config },
     chartConfig,
   } = chart;
+
+  const cardStyle = useMemo<CSSProperties>(() => ({ height: `${chartHeight + 65}px` }), [chartHeight]);
+  const rowEmptyStyle = useMemo<CSSProperties>(() => ({ height: `${chartHeight}px` }), [chartHeight]);
 
   const extraOptionsData = [
     {
@@ -37,10 +46,19 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable }: ChartCard
     <div ref={containerRef} key={id} style={{ gridColumn: `span ${chart.width}` }}>
       <Card
         title={
-          <SmallChartCardTitle title={t(title)} description={t(description)} descriptionStyle={{ width: '375px' }} />
+          <SmallChartCardTitle
+            title={t(title)}
+            description={t(description)}
+            titleFontSize={TITLE_FONT_SIZES[dashboardChartMode]}
+            // 56px = close button width + RHS padding (12px) * 2
+            descriptionStyle={{
+              fontSize: DESCRIPTION_FONT_SIZES[dashboardChartMode],
+              width: `${chartWidth * chart.width - 56}px`,
+            }}
+          />
         }
-        className="shadow rounded-xl"
-        style={CARD_STYLE}
+        className={isCompact ? 'rounded-none' : 'shadow rounded-xl'}
+        style={cardStyle}
         size="small"
         extra={
           <Space size="small">
@@ -62,7 +80,7 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable }: ChartCard
             isClickable={!!searchable}
           />
         ) : (
-          <Row style={ROW_EMPTY_STYLE} justify="center" align="middle">
+          <Row style={rowEmptyStyle} justify="center" align="middle">
             <CustomEmpty text="No Data" />
           </Row>
         )}
