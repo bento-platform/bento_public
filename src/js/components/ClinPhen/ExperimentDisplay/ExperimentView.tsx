@@ -1,6 +1,7 @@
-import { Divider, Space, Typography } from 'antd';
+import { Divider, Flex, Radio, Space, Table, Typography } from 'antd';
 
 import type { DiscoveryMatchExperimentResult } from '@/features/search/types';
+import type { Biosample } from '@/types/clinPhen/biosample';
 import type { Experiment } from '@/types/clinPhen/experiments/experiment';
 import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
@@ -15,6 +16,8 @@ import ExperimentResultView from '@/components/ClinPhen/ExperimentDisplay/Experi
 import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { useTranslationFn } from '@/hooks';
 import { objectToBoolean } from '@/utils/boolean';
+import PhenopacketLink from '@/components/ClinPhen/PhenopacketLink';
+import { useId, useState } from 'react';
 
 type ExperimentExpandedRowProps = {
   packetId?: string;
@@ -136,19 +139,85 @@ const EXPERIMENT_VIEW_COLUMNS: CustomTableColumns<Experiment> = [
 
 type ExperimentViewProps = {
   packetId?: string;
+  biosamples: Biosample[];
   experiments: Experiment[];
 };
 
-const ExperimentView = ({ experiments }: ExperimentViewProps) => {
+const MATRIX_EXPERIMENT_TYPE_WIDTH = 170;
+
+const ExperimentView = ({ packetId, biosamples, experiments }: ExperimentViewProps) => {
+  const viewModeRadioId = useId();
+  const [viewMode, setViewMode] = useState<'list' | 'matrix'>('list');
+
+  const experimentsByBiosample = Object.fromEntries(biosamples.map((bb) => [bb.id, bb.experiments ?? []]));
+
+  const experimentTypes = [
+    ...new Set(Object.values(experimentsByBiosample).flatMap((e) => e.map((ee) => ee.experiment_type))),
+  ];
+
   return (
-    <CustomTable<Experiment>
-      dataSource={experiments}
-      columns={EXPERIMENT_VIEW_COLUMNS}
-      expandedRowRender={(record) => <ExperimentExpandedRow experiment={record} />}
-      rowKey="id"
-      queryKey="experiment"
-      isRowExpandable={isExperimentRowExpandable}
-    />
+    <Flex vertical={true} gap={12}>
+      <Flex gap="0.7em" align="center">
+        <label htmlFor={viewModeRadioId}>View as:</label>
+        <Radio.Group
+          id={viewModeRadioId}
+          optionType="button"
+          buttonStyle="solid"
+          size="small"
+          value={viewMode}
+          onChange={(e) => setViewMode(e.target.value)}
+          options={[
+            { label: 'List', value: 'list' },
+            { label: 'Matrix', value: 'matrix', disabled: !biosamples.length },
+          ]}
+        />
+      </Flex>
+      {viewMode === 'matrix' ? (
+        <Table
+          pagination={false}
+          bordered={true}
+          columns={[
+            {
+              dataIndex: 'experimentType',
+              title: 'Experiment Type',
+              width: MATRIX_EXPERIMENT_TYPE_WIDTH,
+              align: 'right',
+            },
+            {
+              title: 'Biosamples',
+              children: Object.keys(experimentsByBiosample).map((bId) => ({
+                dataIndex: `biosample_${bId}`,
+                title: <PhenopacketLink.Biosample packetId={packetId} sampleId={bId} />,
+                width: `calc((100% - ${MATRIX_EXPERIMENT_TYPE_WIDTH}px) / ${biosamples.length})`,
+                align: 'center',
+                // TODO: multiple experiments per experiment type
+                render: (eId: string | undefined) =>
+                  eId ? <PhenopacketLink.Experiment packetId={packetId} experimentId={eId} /> : null,
+              })),
+            },
+          ]}
+          dataSource={experimentTypes.map((et) => ({
+            experimentType: et,
+            // TODO: multiple experiments per experiment type
+            ...Object.fromEntries(
+              Object.entries(experimentsByBiosample).map(([bId, es]) => [
+                `biosample_${bId}`,
+                es.find((ee) => ee.experiment_type === et)?.id,
+              ])
+            ),
+          }))}
+        />
+      ) : (
+        <CustomTable<Experiment>
+          dataSource={experiments}
+          columns={EXPERIMENT_VIEW_COLUMNS}
+          expandedRowRender={(record) => <ExperimentExpandedRow experiment={record} />}
+          rowKey="id"
+          queryKey="experiment"
+          isRowExpandable={isExperimentRowExpandable}
+        />
+      )}
+    </Flex>
   );
 };
 

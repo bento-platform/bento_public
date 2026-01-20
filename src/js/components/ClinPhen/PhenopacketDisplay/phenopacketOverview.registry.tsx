@@ -119,7 +119,9 @@ export const SECTION_SPECS: Record<SectionKey, SectionSpec> = {
     titleTranslationKey: 'entities.experiment_other',
     enabled: (p) => has(phenopacketExperiments(p)),
     itemCount: (p) => phenopacketExperiments(p).length,
-    render: (p) => <ExperimentView packetId={p.id} experiments={phenopacketExperiments(p)} />,
+    render: (p) => (
+      <ExperimentView packetId={p.id} biosamples={p.biosamples ?? []} experiments={phenopacketExperiments(p)} />
+    ),
     order: 7,
   },
   experimentResults: {
