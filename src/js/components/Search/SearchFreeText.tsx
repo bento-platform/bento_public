@@ -4,7 +4,7 @@ import { Button, Form, Input, Space } from 'antd';
 import { FormOutlined, SearchOutlined } from '@ant-design/icons';
 
 import { TEXT_QUERY_PARAM } from '@/features/search/constants';
-import { useSearchQuery, useNonFilterQueryParams } from '@/features/search/hooks';
+import { useSearchQuery, useAllOverviewQueryParams } from '@/features/search/hooks';
 import { buildQueryParamsUrl } from '@/features/search/utils';
 import { useTranslationFn } from '@/hooks';
 import { RequestStatus } from '@/types/requests';
@@ -18,8 +18,8 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { discoveryStatus, filterQueryParams, textQuery } = useSearchQuery();
-  const nonFilterQueryParams = useNonFilterQueryParams();
+  const { discoveryStatus, textQuery } = useSearchQuery();
+  const overviewQueryParams = useAllOverviewQueryParams();
 
   const [form] = Form.useForm<FreeTextFormValues>();
 
@@ -36,14 +36,10 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
       navigate(
         // Build a query URL with the new text search value and navigate to it. It'll be handled by the search
         // router/handler effect (useSearchRouterAndHandler) elsewhere.
-        buildQueryParamsUrl(location.pathname, {
-          ...filterQueryParams,
-          ...nonFilterQueryParams,
-          [TEXT_QUERY_PARAM]: query,
-        })
+        buildQueryParamsUrl(location.pathname, { ...overviewQueryParams, [TEXT_QUERY_PARAM]: query })
       );
     },
-    [location.pathname, filterQueryParams, nonFilterQueryParams, navigate]
+    [location.pathname, overviewQueryParams, navigate]
   );
 
   return (

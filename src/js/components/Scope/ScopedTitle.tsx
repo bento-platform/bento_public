@@ -9,12 +9,14 @@ import ScopePickerModal from './ScopePickerModal';
 
 import { useSelectedScope, useSelectedScopeTitles } from '@/features/metadata/hooks';
 import { useTranslationFn } from '@/hooks';
-import { useGetRouteTitleAndIcon } from '@/hooks/navigation';
+import { useGetRouteTitleAndIcon, useNavigateToSameScopeUrl } from '@/hooks/navigation';
 import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
 import { getCurrentPage } from '@/utils/router';
 import FiltersAppliedTag from '@/components/Search/FiltersAppliedTag';
 import CurrentPageHelpModal from '@/components/Util/CurrentPageHelpModal';
 import { useExtraBreadcrumb } from '@/features/ui/hooks';
+import { useAllOverviewQueryParams } from '@/features/search/hooks';
+import { buildQueryParamsUrl } from '@/features/search/utils';
 
 const breadcrumbRender: BreadcrumbProps['itemRender'] = (route, _params, routes, _paths) => {
   const isLast = route?.path === routes[routes.length - 1]?.path;
@@ -29,12 +31,17 @@ const ScopedTitle = () => {
   const { scope, fixedProject, fixedDataset } = useSelectedScope();
   const { projectTitle, datasetTitle } = useSelectedScopeTitles();
 
+  const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
   const getRouteTitleAndIcon = useGetRouteTitleAndIcon();
+
   const currentPage = getCurrentPage();
   const scopeSelectionEnabled =
     !(fixedProject && fixedDataset) &&
     !TOP_LEVEL_ONLY_ROUTES.includes(currentPage) &&
     currentPage !== BentoRoute.Phenopackets;
+
+  const overviewQueryParams = useAllOverviewQueryParams();
+
   const [scopeSelectModalOpen, setScopeSelectModalOpen] = useState(false);
   const [helpModalOpen, setHelpModalOpen] = useState(false);
 
@@ -116,6 +123,7 @@ const ScopedTitle = () => {
         <Flex className="scoped-title" align="center">
           <Flex className="flex-1" align="center">
             {currentPage === BentoRoute.Phenopackets ? (
+              // For the Phenopackets route, put a back button in the header itself to go back
               <Button
                 className="scoped-title__back"
                 icon={<ArrowLeftOutlined />}
@@ -123,11 +131,7 @@ const ScopedTitle = () => {
                 shape="circle"
                 size="large"
                 onClick={() => {
-                  if (history.length === 1) {
-                    alert('TODO');
-                  } else {
-                    history.back();
-                  }
+                  navigateToSameScopeUrl(buildQueryParamsUrl('overview', overviewQueryParams));
                 }}
               />
             ) : null}

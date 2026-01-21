@@ -15,8 +15,8 @@ export const queryParamsWithoutKey = (qp: QueryParams, key: string | string[]): 
 export const combineQueryParamsWithoutKey = (qp1: QueryParams, qp2: QueryParams, key: string | string[]): QueryParams =>
   queryParamsWithoutKey({ ...qp1, ...qp2 }, key);
 
-export const buildQueryParamsUrl = (pathName: string, qp: QueryParams): string =>
-  `${pathName}?${new URLSearchParams(qp).toString()}`;
+export const buildQueryParamsUrl = (pathName: string, qp: QueryParams | undefined = undefined): string =>
+  qp && Object.keys(qp).length ? `${pathName}?${new URLSearchParams(qp).toString()}` : pathName;
 
 export const checkQueryParamsEqual = (qp1: QueryParams, qp2: QueryParams): boolean => {
   const qp1Keys = Object.keys(qp1);

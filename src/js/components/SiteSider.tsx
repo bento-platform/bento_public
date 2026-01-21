@@ -6,7 +6,7 @@ import { Button, Divider, Layout, Menu } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 
 import { useSelectedScope } from '@/features/metadata/hooks';
-import { useNonFilterQueryParams, useSearchQuery } from '@/features/search/hooks';
+import { useAllOverviewQueryParams } from '@/features/search/hooks';
 import { buildQueryParamsUrl } from '@/features/search/utils';
 import { useLanguage, useTranslationFn } from '@/hooks';
 import { useIsInCatalogueMode, useNavigateToRoot } from '@/hooks/navigation';
@@ -22,17 +22,18 @@ const SiteSider = ({
   collapsed,
   setCollapsed,
   items,
+  hidden,
 }: {
   collapsed: boolean;
   setCollapsed: SiderProps['onCollapse'];
   items: MenuItem[];
+  hidden: boolean;
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const language = useLanguage();
   const t = useTranslationFn();
-  const { filterQueryParams } = useSearchQuery();
-  const otherQueryParams = useNonFilterQueryParams();
+  const overviewQueryParams = useAllOverviewQueryParams();
   const catalogueMode = useIsInCatalogueMode();
   const currentPage = getCurrentPage(location);
 
@@ -54,13 +55,11 @@ const SiteSider = ({
       }
       newPath.push(key);
       const newPathString = '/' + newPath.join('/');
-      navigate(
-        key === BentoRoute.Overview
-          ? buildQueryParamsUrl(newPathString, { ...filterQueryParams, ...otherQueryParams })
-          : newPathString
-      );
+      // Navigate to the menu item url
+      //  - only include filter/search/overview query params if we're navigating to the overview page
+      navigate(buildQueryParamsUrl(newPathString, key === BentoRoute.Overview ? overviewQueryParams : undefined));
     },
-    [navigate, filterQueryParams, otherQueryParams, location.pathname]
+    [navigate, overviewQueryParams, location.pathname]
   );
 
   return (
@@ -73,8 +72,9 @@ const SiteSider = ({
       collapsed={collapsed}
       onCollapse={setCollapsed}
       theme="light"
+      aria-hidden={hidden}
     >
-      {scope.project && catalogueMode && currentPage !== BentoRoute.Phenopackets && (
+      {scope.project && catalogueMode && (
         <>
           <div style={{ backgroundColor: '#FAFAFA' }}>
             <Button

@@ -1,6 +1,6 @@
 import { Fragment, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { useLangPrefixedUrl } from '@/hooks/navigation';
+import { useCurrentScopePrefixedUrl } from '@/hooks/navigation';
 import { PHENOPACKET_EXPANDED_URL_QUERY_KEY } from './PhenopacketDisplay/PhenopacketOverview';
 
 const usePhenopacketOverviewLink = (
@@ -8,7 +8,7 @@ const usePhenopacketOverviewLink = (
   expanded: string,
   otherArgs: Record<string, string> | undefined = undefined
 ) => {
-  const baseUrl = useLangPrefixedUrl(`phenopackets/${packetId}/overview`);
+  const baseUrl = useCurrentScopePrefixedUrl(`phenopackets/${packetId}/overview`);
   const params = new URLSearchParams({ [PHENOPACKET_EXPANDED_URL_QUERY_KEY]: expanded, ...(otherArgs ?? {}) });
   return `${baseUrl}?${params.toString()}`;
 };

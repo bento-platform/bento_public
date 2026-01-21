@@ -186,6 +186,7 @@ const query = createSlice({
       state.doneFirstLoad = true;
     },
     setSelectedEntity: (state, { payload }: PayloadAction<BentoCountEntity | null>) => {
+      console.debug('setting selected entity', payload);
       state.selectedEntity = payload;
     },
     setMatchesPage: (state, { payload }: PayloadAction<[BentoKatsuEntity, number]>) => {

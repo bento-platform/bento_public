@@ -28,6 +28,12 @@ export const useNonFilterQueryParams = (): QueryParams => {
   }, [selectedEntity, textQuery]);
 };
 
+export const useAllOverviewQueryParams = (): QueryParams => {
+  const { filterQueryParams } = useSearchQuery();
+  const otherQueryParams = useNonFilterQueryParams();
+  return useMemo(() => ({ ...filterQueryParams, ...otherQueryParams }), [filterQueryParams, otherQueryParams]);
+};
+
 export const useSearchableFields = () => {
   /**
    * Hook which calculates a set of searchable fields (which share IDs with charts), which can be used, for example, to

@@ -22,13 +22,14 @@ const DefaultLayout = () => {
   const menuItems = useSidebarMenuItems();
   const [collapsed, setCollapsed] = useState(false);
 
-  const sidebarHidden = menuItems.length <= 1 && !(scope.project && catalogueMode);
+  const sidebarHidden =
+    (menuItems.length <= 1 && !(scope.project && catalogueMode)) || page === BentoRoute.Phenopackets;
 
   return (
     <Layout id="default-layout" className={sidebarHidden ? 'sidebar-hidden' : collapsed ? 'sidebar-collapsed' : ''}>
       <SiteHeader />
       <Layout>
-        {!sidebarHidden && <SiteSider collapsed={collapsed} setCollapsed={setCollapsed} items={menuItems} />}
+        <SiteSider collapsed={collapsed} setCollapsed={setCollapsed} items={menuItems} hidden={sidebarHidden} />
         <Layout id="content-layout">
           <Content>
             <ScopedTitle />

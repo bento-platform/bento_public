@@ -252,9 +252,6 @@ body {
 #default-layout.sidebar-collapsed {
   --sidebar-width: var(--sidebar-width-collapsed);
 }
-#default-layout.sidebar-hidden {
-  --sidebar-width: 0;
-}
 
 #site-header {
   position: fixed;
@@ -284,6 +281,12 @@ body {
 
   overflow: auto;
   height: calc(100vh - var(--header-height));
+
+  transition: transform 0.3s;
+}
+#default-layout.sidebar-hidden #site-sider {
+  overflow: hidden;
+  transform: translate(calc(-1 * var(--sidebar-width)), 0);
 }
 
 .ant-layout-sider-trigger {
@@ -302,6 +305,10 @@ body {
   overflow: auto;
 
   transition: left 0.3s, width 0.3s;
+}
+#default-layout.sidebar-hidden #content-layout {
+  left: 0;
+  width: 100%;
 }
 
 #content-layout > .ant-layout-content {

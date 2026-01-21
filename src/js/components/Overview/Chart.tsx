@@ -17,6 +17,7 @@ import {
 } from '@/types/discovery/chartConfig';
 import { noop } from '@/utils/chart';
 import { langAndScopeSelectionToUrl } from '@/utils/router';
+import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
 
 interface BarChartEvent {
   activePayload: Array<{ payload: { x: string; id?: string } }>;
@@ -27,17 +28,15 @@ interface PieChartEvent {
 }
 
 const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) => {
-  const navigate = useNavigate();
-  const language = useLanguage();
   const t = useTranslationFn();
-  const selectedScope = useSelectedScope();
+  const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
 
   const translateMap = ({ x, y }: { x: string; y: number }) => ({ x: t(x), y, id: x });
   const removeMissing = ({ x }: { x: string }) => x !== 'missing';
 
   const goToSearch = (id: string, val: string | undefined) => {
     if (val === undefined) return;
-    navigate(langAndScopeSelectionToUrl(language, selectedScope, `overview?${id}=${val}`));
+    navigateToSameScopeUrl(`overview?${id}=${val}`);
   };
 
   const barChartOnChartClickHandler: BarChartProps['onChartClick'] = (e: BarChartEvent) => {
