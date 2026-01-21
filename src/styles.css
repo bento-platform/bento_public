@@ -194,7 +194,7 @@ body {
   font-size: 0.9em;
 }
 
-.scoped-title__breadcrumb a {
+.scoped-title__breadcrumb .ant-breadcrumb-item a {
   height: 3rem;
 }
 
