@@ -1,12 +1,10 @@
 import { memo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import type { BarChartProps } from 'bento-charts';
 import { BarChart, Histogram, PieChart } from 'bento-charts';
 import { ChoroplethMap } from 'bento-charts/dist/maps';
 
 import { CHART_HEIGHT, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
-import { useSelectedScope } from '@/features/metadata/hooks';
-import { useLanguage, useTranslationFn } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
 import type { ChartData } from '@/types/data';
 import type { ChartConfig } from '@/types/discovery/chartConfig';
 import {
@@ -16,7 +14,6 @@ import {
   CHART_TYPE_PIE,
 } from '@/types/discovery/chartConfig';
 import { noop } from '@/utils/chart';
-import { langAndScopeSelectionToUrl } from '@/utils/router';
 import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
 
 interface BarChartEvent {
