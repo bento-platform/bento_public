@@ -132,6 +132,7 @@ const ExperimentView = ({ packetId, experiments }: ExperimentViewProps) => {
   const columns = useMemo<CustomTableColumns<Experiment>>(
     () => [
       { title: 'experiment.experiment_id', dataIndex: 'id', alwaysShow: true },
+      { title: 'experiment.experiment_type', dataIndex: 'experiment_type' },
       {
         title: 'entities.biosample_one',
         dataIndex: 'biosample',
@@ -139,7 +140,6 @@ const ExperimentView = ({ packetId, experiments }: ExperimentViewProps) => {
           biosampleId ? <PhenopacketLink.Biosample packetId={packetId} sampleId={biosampleId} /> : null,
         isEmpty: (biosampleId: string | undefined) => biosampleId === undefined,
       },
-      { title: 'experiment.experiment_type', dataIndex: 'experiment_type' },
       {
         title: 'entities.experiment_result_other',
         dataIndex: 'experiment_results',
