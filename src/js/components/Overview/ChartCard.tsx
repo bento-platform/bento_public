@@ -9,6 +9,7 @@ import { useDashboardChartDimensions, useUiUserSettings } from '@/features/ui/ho
 import type { DashboardChartMode } from '@/features/ui/types';
 import type { ChartDataField } from '@/types/data';
 import SmallChartCardTitle from '@/components/Util/SmallChartCardTitle';
+import { getChartCssWidth } from '@/utils/chart';
 
 const TITLE_FONT_SIZES: Record<DashboardChartMode, number> = { normal: 20, compact: 16, ultraCompact: 14 };
 const DESCRIPTION_FONT_SIZES: Record<DashboardChartMode, number> = { normal: 14, compact: 13, ultraCompact: 12 };
@@ -20,7 +21,7 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable }: ChartCard
   const { dashboardChartMode } = useUiUserSettings();
   const isCompact = ['compact', 'ultraCompact'].includes(dashboardChartMode);
 
-  const { chartHeight, chartWidth } = useDashboardChartDimensions();
+  const { chartHeight, nColumns, gridGap } = useDashboardChartDimensions();
 
   const {
     id,
@@ -29,7 +30,7 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable }: ChartCard
     chartConfig,
   } = chart;
 
-  const cardStyle = useMemo<CSSProperties>(() => ({ height: `${chartHeight + 65}px` }), [chartHeight]);
+  const cardStyle = useMemo<CSSProperties>(() => ({ height: `calc(${chartHeight}px + 65px)` }), [chartHeight]);
   const rowEmptyStyle = useMemo<CSSProperties>(() => ({ height: `${chartHeight}px` }), [chartHeight]);
 
   const extraOptionsData = [
@@ -53,7 +54,7 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable }: ChartCard
             // 56px = close button width + RHS padding (12px) * 2
             descriptionStyle={{
               fontSize: DESCRIPTION_FONT_SIZES[dashboardChartMode],
-              width: `${chartWidth * chart.width - 56}px`,
+              width: `calc(${getChartCssWidth(nColumns, gridGap)} * ${chart.width} - 56px)`,
             }}
           />
         }

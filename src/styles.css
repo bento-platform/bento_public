@@ -7,7 +7,7 @@
 
   --content-padding-v: 32px;
   --content-padding-h: 64px;
-  --content-max-width: 1400px;
+  --content-max-width: max(min(1400px, 100%), 1200px);
 
   --content-scoped-title-height: 50px;
   --content-scoped-title-margin-bottom: 24px;

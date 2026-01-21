@@ -6,35 +6,34 @@ export const COUNTS_FILL = '#75787a';
 export const LOCALSTORAGE_CHARTS_KEY_PREFIX = 'charts_scope-';
 export const OLD_LOCALSTORAGE_CHARTS_KEY = 'charts';
 
-export const CHART_DIMENSIONS: Record<
-  DashboardChartMode,
-  {
-    chartHeight: number;
-    pieChartHeight: number;
-    chartWidth: number;
-    gridGap: number;
-  }
-> = {
+type ChartDimensions = {
+  chartHeight: number;
+  pieChartHeight: number;
+  gridGap: number;
+  nColumns: number;
+};
+
+export const CHART_DIMENSIONS: Record<DashboardChartMode, ChartDimensions> = {
   normal: {
     chartHeight: 350,
     pieChartHeight: 275, // rendered slightly smaller since labels can clip
     // 1400px max width: 454*3 + 19*2 = 1399
-    chartWidth: 454,
     gridGap: 19,
+    nColumns: 3,
   },
   compact: {
     chartHeight: 275,
     pieChartHeight: 225,
     // 1400px max width: 350*4 with no gap
-    chartWidth: 350,
     gridGap: 0,
+    nColumns: 4,
   },
   ultraCompact: {
     chartHeight: 250,
     pieChartHeight: 200,
     // 1400px max width: 280*5 with no gap
-    chartWidth: 280,
     gridGap: 0,
+    nColumns: 5,
   },
 };
 
