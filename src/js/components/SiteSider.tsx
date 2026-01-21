@@ -74,7 +74,7 @@ const SiteSider = ({
       onCollapse={setCollapsed}
       theme="light"
     >
-      {scope.project && catalogueMode && (
+      {scope.project && catalogueMode && currentPage !== BentoRoute.Phenopackets && (
         <>
           <div style={{ backgroundColor: '#FAFAFA' }}>
             <Button
