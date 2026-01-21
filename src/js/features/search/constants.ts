@@ -16,4 +16,6 @@ export const EMPTY_DISCOVERY_RESULTS: DiscoveryResults = {
 
 export const NON_FILTER_QUERY_PARAM_PREFIX = '_';
 export const ENTITY_QUERY_PARAM = '_e';
+export const TABLE_PAGE_QUERY_PARAM = '_p';
+export const TABLE_PAGE_SIZE_QUERY_PARAM = '_ps';
 export const TEXT_QUERY_PARAM = '_q';

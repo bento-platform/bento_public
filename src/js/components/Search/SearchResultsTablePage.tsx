@@ -6,18 +6,20 @@ import { ExportOutlined, LeftOutlined, TableOutlined } from '@ant-design/icons';
 import { T_PLURAL_COUNT, T_SINGULAR_COUNT } from '@/constants/i18n';
 import { MIN_PAGE_SIZE, PAGE_SIZE_OPTIONS } from '@/constants/pagination';
 import { WAITING_STATES } from '@/constants/requests';
+import { TABLE_PAGE_QUERY_PARAM, TABLE_PAGE_SIZE_QUERY_PARAM } from '@/features/search/constants';
 
 import { useAppDispatch, useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { useScopeDownloadData } from '@/hooks/censorship';
 import { useDownloadAllMatchesCSV } from '@/hooks/useDownloadAllMatchesCSV';
-import { useSearchQuery } from '@/features/search/hooks';
+import { useAllOverviewQueryParams, useSearchQuery } from '@/features/search/hooks';
+import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
+import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
 
 import type { BentoKatsuEntity } from '@/types/entities';
 import type { Project, Dataset } from '@/types/metadata';
-import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
 import { fetchDiscoveryMatches } from '@/features/search/fetchDiscoveryMatches.thunk';
-import { type QueryResultMatchData, setMatchesPage, setMatchesPageSize } from '@/features/search/query.store';
+import type { QueryResultMatchData } from '@/features/search/query.store';
 import type {
   DiscoveryMatchBiosample,
   DiscoveryMatchExperiment,
@@ -26,7 +28,7 @@ import type {
   ViewableDiscoveryMatchObject,
 } from '@/features/search/types';
 
-import { bentoKatsuEntityToResultsDataEntity } from '@/features/search/utils';
+import { bentoKatsuEntityToResultsDataEntity, buildQueryParamsUrl } from '@/features/search/utils';
 import { setEquals } from '@/utils/sets';
 
 import DatasetProvenanceModal from '@/components/Provenance/DatasetProvenanceModal';
@@ -295,6 +297,9 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   const selectedScope = useSelectedScope();
   const isSmallScreen = useSmallScreen();
 
+  const allQueryParams = useAllOverviewQueryParams();
+  const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
+
   const [exporting, setExporting] = useState<boolean>(false);
   const [columnModalOpen, setColumnModalOpen] = useState<boolean>(false);
 
@@ -405,12 +410,19 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
             size: (isSmallScreen ? 'small' : 'default') as TablePaginationConfig['size'],
             showSizeChanger: true,
             onChange(page, pageSize) {
-              dispatch(setMatchesPage([rdEntity, page - 1])); // AntD page is 1-indexed, discovery match page is 0-indexed
-              dispatch(setMatchesPageSize(pageSize));
+              // Update page/pageSize using navigation, since we sync Redux from the URL uni-directionally most times.
+              navigateToSameScopeUrl(
+                buildQueryParamsUrl('overview', {
+                  ...allQueryParams,
+                  // AntD page is 1-indexed, discovery match page is 0-indexed:
+                  [TABLE_PAGE_QUERY_PARAM]: (page - 1).toString(),
+                  [TABLE_PAGE_SIZE_QUERY_PARAM]: pageSize.toString(),
+                })
+              );
             },
           }
         : undefined,
-    [dispatch, rdEntity, page, pageSize, totalMatches, isSmallScreen]
+    [page, pageSize, totalMatches, isSmallScreen, navigateToSameScopeUrl, allQueryParams]
   );
 
   const onExport = useCallback(() => {

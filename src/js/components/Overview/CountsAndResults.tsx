@@ -9,7 +9,7 @@ import CustomEmpty from '@/components/Util/CustomEmpty';
 import { COUNT_ENTITY_ORDER, COUNT_ENTITY_REGISTRY } from '@/constants/countEntities';
 import { COUNTS_FILL } from '@/constants/overviewConstants';
 import { WAITING_STATES } from '@/constants/requests';
-import { ENTITY_QUERY_PARAM } from '@/features/search/constants';
+import { ENTITY_QUERY_PARAM, TABLE_PAGE_QUERY_PARAM, TABLE_PAGE_SIZE_QUERY_PARAM } from '@/features/search/constants';
 import { useSelectedDataset, useSelectedProject } from '@/features/metadata/hooks';
 import { useNonFilterQueryParams, useSearchQuery } from '@/features/search/hooks';
 import { useTranslationFn } from '@/hooks';
@@ -81,6 +81,7 @@ const CountsAndResults = () => {
     textQuery,
     selectedEntity,
     doneFirstLoad,
+    pageSize,
     uiHints,
   } = useSearchQuery();
   const nonFilterQueryParams = useNonFilterQueryParams();
@@ -93,10 +94,27 @@ const CountsAndResults = () => {
 
   const setSelectedEntity = useCallback(
     (entity: BentoCountEntity | null) => {
-      const cb = combineQueryParamsWithoutKey(filterQueryParams, nonFilterQueryParams, ENTITY_QUERY_PARAM);
-      navigate(buildQueryParamsUrl(pathname, entity ? { ...cb, [ENTITY_QUERY_PARAM]: entity } : cb));
+      const cb = combineQueryParamsWithoutKey(filterQueryParams, nonFilterQueryParams, [
+        ENTITY_QUERY_PARAM,
+        TABLE_PAGE_QUERY_PARAM,
+        ...(entity ? [] : [TABLE_PAGE_SIZE_QUERY_PARAM]), // Clear the page size param if closing the table
+      ]);
+      // Set the selected entity and reset the pagination via URL parameters
+      navigate(
+        buildQueryParamsUrl(
+          pathname,
+          entity
+            ? {
+                ...cb,
+                [ENTITY_QUERY_PARAM]: entity,
+                [TABLE_PAGE_QUERY_PARAM]: '0',
+                [TABLE_PAGE_SIZE_QUERY_PARAM]: pageSize.toString(),
+              }
+            : cb
+        )
+      );
     },
-    [navigate, pathname, filterQueryParams, nonFilterQueryParams]
+    [navigate, pathname, filterQueryParams, nonFilterQueryParams, pageSize]
   );
   const clearSelectedEntity = useCallback(() => setSelectedEntity(null), [setSelectedEntity]);
 
