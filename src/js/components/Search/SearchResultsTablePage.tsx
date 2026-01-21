@@ -17,12 +17,7 @@ import type { BentoKatsuEntity } from '@/types/entities';
 import type { Project, Dataset } from '@/types/metadata';
 import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
 import { fetchDiscoveryMatches } from '@/features/search/fetchDiscoveryMatches.thunk';
-import {
-  bentoKatsuEntityToResultsDataEntity,
-  type QueryResultMatchData,
-  setMatchesPage,
-  setMatchesPageSize,
-} from '@/features/search/query.store';
+import { type QueryResultMatchData, setMatchesPage, setMatchesPageSize } from '@/features/search/query.store';
 import type {
   DiscoveryMatchBiosample,
   DiscoveryMatchExperiment,
@@ -31,6 +26,7 @@ import type {
   ViewableDiscoveryMatchObject,
 } from '@/features/search/types';
 
+import { bentoKatsuEntityToResultsDataEntity } from '@/features/search/utils';
 import { setEquals } from '@/utils/sets';
 
 import DatasetProvenanceModal from '@/components/Provenance/DatasetProvenanceModal';

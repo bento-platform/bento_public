@@ -1,4 +1,5 @@
 import type { QueryParams } from '@/features/search/types';
+import type { BentoCountEntity, BentoKatsuEntity, ResultsDataEntity } from '@/types/entities';
 
 export const queryParamsWithoutKey = (qp: QueryParams, key: string | string[]): QueryParams => {
   const qpc = { ...qp };
@@ -24,3 +25,6 @@ export const checkQueryParamsEqual = (qp1: QueryParams, qp2: QueryParams): boole
   const params = [...new Set([...qp1Keys, ...qp2Keys])];
   return params.reduce((acc, v) => acc && qp1[v] === qp2[v], true);
 };
+
+export const bentoKatsuEntityToResultsDataEntity = (x: BentoKatsuEntity | BentoCountEntity): ResultsDataEntity =>
+  x === 'individual' ? 'phenopacket' : x;

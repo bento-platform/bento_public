@@ -3,7 +3,7 @@ import type { RootState } from '@/store';
 import axios from 'axios';
 import { katsuDiscoveryMatchesUrl } from '@/constants/configConstants';
 import type { DiscoveryMatchPhenopacket } from '@/features/search/types';
-import { bentoKatsuEntityToResultsDataEntity } from '@/features/search/query.store';
+import { bentoKatsuEntityToResultsDataEntity } from '@/features/search/utils';
 import type { BentoKatsuEntity } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
 import { scopedAuthorizedRequestConfig } from '@/utils/requests';

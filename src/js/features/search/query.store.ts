@@ -29,6 +29,7 @@ import { performKatsuDiscovery } from './performKatsuDiscovery.thunk';
 import { fetchSearchFields } from './fetchSearchFields.thunk';
 import { fetchDiscoveryMatches } from './fetchDiscoveryMatches.thunk';
 import { fetchDiscoveryUIHints } from './fetchDiscoveryUIHints.thunk';
+import { bentoKatsuEntityToResultsDataEntity } from './utils';
 
 export type QueryResultMatchData<T extends DiscoveryMatchObject> = {
   status: RequestStatus;
@@ -36,9 +37,6 @@ export type QueryResultMatchData<T extends DiscoveryMatchObject> = {
   totalMatches: number;
   matches: T[] | undefined;
 };
-
-export const bentoKatsuEntityToResultsDataEntity = (x: BentoKatsuEntity): ResultsDataEntity =>
-  x === 'individual' ? 'phenopacket' : x;
 
 export type QueryState = {
   defaultLayout: Sections;
@@ -189,7 +187,7 @@ const query = createSlice({
       console.debug('setting selected entity', payload);
       state.selectedEntity = payload;
     },
-    setMatchesPage: (state, { payload }: PayloadAction<[BentoKatsuEntity, number]>) => {
+    setMatchesPage: (state, { payload }: PayloadAction<[BentoKatsuEntity | BentoCountEntity, number]>) => {
       state.matchData[bentoKatsuEntityToResultsDataEntity(payload[0])].page = payload[1];
     },
     resetMatchesPage: (state) => {
