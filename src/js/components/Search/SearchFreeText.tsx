@@ -63,7 +63,9 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
           <Form.Item name="q" initialValue="" noStyle={true}>
             <Input prefix={<SearchOutlined />} />
           </Form.Item>
-          {!!textQuery && <Button icon={<CloseOutlined />} onClick={onReset} />}
+          {!!textQuery && (
+            <Button icon={<CloseOutlined />} onClick={onReset} disabled={discoveryStatus === RequestStatus.Pending} />
+          )}
           <Button type="primary" htmlType="submit" loading={discoveryStatus === RequestStatus.Pending}>
             {t('Search')}
           </Button>
