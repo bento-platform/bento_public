@@ -4,9 +4,9 @@ import type { BarChartProps } from 'bento-charts';
 import { BarChart, Histogram, PieChart } from 'bento-charts';
 import { ChoroplethMap } from 'bento-charts/dist/maps';
 
-import { CHART_HEIGHT, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
 import { useSelectedScope } from '@/features/metadata/hooks';
 import { useLanguage, useTranslationFn } from '@/hooks';
+import { useDashboardChartDimensions } from '@/features/ui/hooks';
 import type { ChartData } from '@/types/data';
 import type { ChartConfig } from '@/types/discovery/chartConfig';
 import {
@@ -32,6 +32,8 @@ const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) =
   const t = useTranslationFn();
   const selectedScope = useSelectedScope();
 
+  const { chartHeight, pieChartHeight } = useDashboardChartDimensions();
+
   const translateMap = ({ x, y }: { x: string; y: number }) => ({ x: t(x), y, id: x });
   const removeMissing = ({ x }: { x: string }) => x !== 'missing';
 
@@ -56,7 +58,7 @@ const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) =
       return (
         <BarChart
           data={data}
-          height={CHART_HEIGHT}
+          height={chartHeight}
           units={units}
           preFilter={removeMissing}
           dataMap={translateMap}
@@ -72,7 +74,7 @@ const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) =
       return (
         <Histogram
           units={units}
-          height={CHART_HEIGHT}
+          height={chartHeight}
           data={data}
           preFilter={removeMissing}
           dataMap={translateMap}
@@ -89,7 +91,7 @@ const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) =
       return (
         <PieChart
           data={data}
-          height={PIE_CHART_HEIGHT}
+          height={pieChartHeight}
           preFilter={removeMissing}
           dataMap={translateMap}
           onClick={pieChartOnClickHandler}
@@ -100,7 +102,7 @@ const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) =
       return (
         <ChoroplethMap
           data={data}
-          height={CHART_HEIGHT}
+          height={chartHeight}
           preFilter={removeMissing}
           dataMap={translateMap}
           categoryProp={categoryProp}

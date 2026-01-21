@@ -6,3 +6,8 @@ export const serializeChartData = (chartData: Datum[]): ChartData[] => {
 };
 
 export const noop = () => {};
+
+export const getChartCssWidth = (nColumns: number, gridGap: number) => {
+  const cssWidthWithoutGaps = `(var(--content-max-width) - (${gridGap}px * ${nColumns - 1}))`;
+  return `(${cssWidthWithoutGaps} / ${nColumns})`;
+};

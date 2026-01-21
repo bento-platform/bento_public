@@ -3,7 +3,7 @@ import { Card, Col, Row, Typography } from 'antd';
 import { PieChart } from 'bento-charts';
 
 import { T_PLURAL_COUNT } from '@/constants/i18n';
-import { PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
+import { CHART_DIMENSIONS } from '@/constants/overviewConstants';
 import { useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
 import type { DiscoveryResults } from '@/types/data';
@@ -12,6 +12,8 @@ import type { SearchResultsUIPage } from '@/features/search/types';
 import CustomEmpty from '@/components/Util/CustomEmpty';
 import SearchResultsCounts from './SearchResultsCounts';
 import SearchResultsTablePage from '@/components/Search/SearchResultsTablePage';
+
+const PIE_CHART_HEIGHT = CHART_DIMENSIONS.normal.pieChartHeight;
 
 const SRChartsPage = ({
   hasInsufficientData,

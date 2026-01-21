@@ -5,9 +5,10 @@ type SmallChartCardTitleProps = {
   title: ReactNode;
   description?: ReactNode;
   descriptionStyle?: CSSProperties;
+  titleFontSize?: number | string;
 };
 
-const SmallChartCardTitle = ({ title, description, descriptionStyle }: SmallChartCardTitleProps) => (
+const SmallChartCardTitle = ({ title, description, descriptionStyle, titleFontSize }: SmallChartCardTitleProps) => (
   <Space.Compact
     direction="vertical"
     style={{ fontWeight: 'normal', padding: description ? '4px 4px' : '10px 4px', maxWidth: '100%' }}
@@ -15,7 +16,7 @@ const SmallChartCardTitle = ({ title, description, descriptionStyle }: SmallChar
     <Typography.Text
       ellipsis={true}
       style={{
-        fontSize: '20px',
+        fontSize: titleFontSize ?? '20px',
         fontWeight: '600',
       }}
     >

@@ -492,5 +492,14 @@
     "mime_type": "Type MIME",
     "checksums": "Sommes de contrôle",
     "access_methods": "Méthodes d'accès"
+  },
+  "settings": {
+    "settings": "Paramètres",
+    "language": "Langue",
+    "dashboard": "Tableau de bord",
+    "chart_display_mode": "Mode d'affichage graphique",
+    "normal": "Normal",
+    "compact": "Compact",
+    "ultra_compact": "Ultra-compact"
   }
 }
