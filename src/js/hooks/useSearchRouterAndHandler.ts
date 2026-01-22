@@ -22,12 +22,12 @@ import { useSelectedScope } from '@/features/metadata/hooks';
 import { useScopeQueryData } from './censorship';
 import { useQueryFilterFields, useSearchQuery } from '@/features/search/hooks';
 
+import { fetchDiscoveryMatches } from '@/features/search/fetchDiscoveryMatches.thunk';
 import { performKatsuDiscovery } from '@/features/search/performKatsuDiscovery.thunk';
 import {
   setDoneFirstLoad,
   setFilterQueryParams,
   setTextQuery,
-  resetMatchesPage,
   setSelectedEntity,
   setMatchesPage,
   setMatchesPageSize,
@@ -179,6 +179,8 @@ export const useSearchRouterAndHandler = () => {
       return;
     }
 
+    let shouldFetchDiscoveryMatchesPage = false;
+
     // TODO: validate entity
 
     const qpEntity = qpRawEntity ? (qpRawEntity as BentoCountEntity) : null;
@@ -186,12 +188,20 @@ export const useSearchRouterAndHandler = () => {
       // If there's a mismatch between the query parameter and the Redux selected entity, we have to reconcile them.
       // We sync Redux from the URL query parameter:
       dispatch(setSelectedEntity(qpEntity));
+
+      if (qpEntity) {
+        // Only trigger a discovery matches page fetch from this particular inequality if the fetch hasn't happened yet.
+        // Otherwise, we already have cached results we can re-use, which are valid for the current page/page-size.
+        const md = matchData[bentoKatsuEntityToResultsDataEntity(qpEntity)];
+        shouldFetchDiscoveryMatchesPage = md.status !== RequestStatus.Fulfilled || md.invalid;
+      }
     }
 
     if (qpEntity && qpRawTablePage) {
       const qpPage = parseInt(qpRawTablePage, 10);
       if (!isNaN(qpPage) && qpPage >= 0 && qpPage !== matchData[bentoKatsuEntityToResultsDataEntity(qpEntity)].page) {
         dispatch(setMatchesPage([qpEntity, qpPage]));
+        shouldFetchDiscoveryMatchesPage = true;
       }
     }
 
@@ -199,6 +209,7 @@ export const useSearchRouterAndHandler = () => {
       const qpPageSize = parseInt(qpRawTablePageSize, 10);
       if (!isNaN(qpPageSize) && PAGE_SIZE_OPTIONS.includes(qpPageSize) && qpPageSize !== pageSize) {
         dispatch(setMatchesPageSize(qpPageSize));
+        shouldFetchDiscoveryMatchesPage = true;
       }
     }
 
@@ -212,7 +223,11 @@ export const useSearchRouterAndHandler = () => {
     // If we have new valid filter query parameters (that aren't already in Redux), put them into the state even if
     // we're not going to actually execute a filter search.
     const filterQueryParamsEqual = checkQueryParamsEqual(validFilterQueryParams, filterQueryParams);
-    if (discoveryStatus === RequestStatus.Idle || !filterQueryParamsEqual || qpTextQueryStr !== textQuery) {
+    const searchParamsNotEqual = !filterQueryParamsEqual || qpTextQueryStr !== textQuery;
+
+    shouldFetchDiscoveryMatchesPage ||= searchParamsNotEqual;
+
+    if (discoveryStatus === RequestStatus.Idle || searchParamsNotEqual) {
       // Only update the state & refresh if we have a new set of query params from the URL, or if we haven't actually
       // executed a discovery search yet.
       // [!!!] This should be the only place setQueryParams(...) gets called. Everywhere else should use URL
@@ -229,8 +244,15 @@ export const useSearchRouterAndHandler = () => {
       }
 
       // Finally, we can go ahead and execute the search:
-      dispatch(resetMatchesPage());
       dispatch(performKatsuDiscovery());
+    }
+
+    if (shouldFetchDiscoveryMatchesPage && qpEntity) {
+      // If we have a search results table open right now (meaning the _e query param is set --> qpEntity is not null),
+      // we can also fetch the relevant discovery match page:
+      const rdEntity = bentoKatsuEntityToResultsDataEntity(qpEntity);
+      console.debug('fetching discovery match page for entity:', rdEntity);
+      dispatch(fetchDiscoveryMatches(rdEntity));
     }
 
     dispatch(setDoneFirstLoad());

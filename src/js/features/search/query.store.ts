@@ -36,6 +36,7 @@ export type QueryResultMatchData<T extends DiscoveryMatchObject> = {
   page: number;
   totalMatches: number;
   matches: T[] | undefined;
+  invalid: boolean;
 };
 
 export type QueryState = {
@@ -79,6 +80,7 @@ const INITIAL_MATCH_DATA_STATE = {
   page: 0,
   totalMatches: 0,
   matches: undefined,
+  invalid: false,
 };
 
 const initialState: QueryState = {
@@ -190,13 +192,15 @@ const query = createSlice({
     setMatchesPage: (state, { payload }: PayloadAction<[BentoKatsuEntity | BentoCountEntity, number]>) => {
       state.matchData[bentoKatsuEntityToResultsDataEntity(payload[0])].page = payload[1];
     },
-    resetMatchesPage: (state) => {
-      Object.keys(state.matchData).forEach((k) => {
-        state.matchData[k as ResultsDataEntity].page = 0;
-      });
-    },
     setMatchesPageSize: (state, { payload }: PayloadAction<number>) => {
+      if (payload === state.pageSize) return state;
       state.pageSize = payload;
+      // Page size is a bit special since it's shared state across all match data, so special care has to be taken to
+      // reset all pages and invalidate entities' match data if page state changes.
+      Object.values(state.matchData).forEach((md) => {
+        md.page = 0;
+        md.invalid = true;
+      });
     },
     resetAllQueryState: () => initialState,
   },
@@ -252,6 +256,7 @@ const query = createSlice({
       state.matchData[entity].status = RequestStatus.Fulfilled;
       state.matchData[entity].matches = payload.results;
       state.matchData[entity].totalMatches = payload.pagination.total;
+      state.matchData[entity].invalid = false;
     });
     builder.addCase(fetchDiscoveryMatches.rejected, (state, { meta }) => {
       state.matchData[bentoKatsuEntityToResultsDataEntity(meta.arg)].status = RequestStatus.Rejected;
@@ -284,7 +289,6 @@ export const {
   setDoneFirstLoad,
   setSelectedEntity,
   setMatchesPage,
-  resetMatchesPage,
   setMatchesPageSize,
   resetAllQueryState,
 } = query.actions;

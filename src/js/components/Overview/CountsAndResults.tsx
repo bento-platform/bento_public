@@ -18,7 +18,7 @@ import { useRenderCount } from '@/hooks/counts';
 import { useInnerWidth } from '@/hooks/useResponsiveContext';
 import type { BentoCountEntity } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
-import { buildQueryParamsUrl, combineQueryParamsWithoutKey } from '@/features/search/utils';
+import { bentoKatsuEntityToResultsDataEntity, buildQueryParamsUrl, combineQueryParamsWithoutKey } from '@/features/search/utils';
 
 const COUNT_CARD_BASE_HEIGHT = 114;
 const COUNT_CARD_DENOMINATOR_BREAKPOINT = 1180;
@@ -81,6 +81,7 @@ const CountsAndResults = () => {
     textQuery,
     selectedEntity,
     doneFirstLoad,
+    matchData,
     pageSize,
     uiHints,
   } = useSearchQuery();
@@ -107,14 +108,14 @@ const CountsAndResults = () => {
             ? {
                 ...cb,
                 [ENTITY_QUERY_PARAM]: entity,
-                [TABLE_PAGE_QUERY_PARAM]: '0',
+                [TABLE_PAGE_QUERY_PARAM]: matchData[bentoKatsuEntityToResultsDataEntity(entity)].page.toString(),
                 [TABLE_PAGE_SIZE_QUERY_PARAM]: pageSize.toString(),
               }
             : cb
         )
       );
     },
-    [navigate, pathname, filterQueryParams, nonFilterQueryParams, pageSize]
+    [navigate, pathname, filterQueryParams, nonFilterQueryParams, matchData, pageSize]
   );
   const clearSelectedEntity = useCallback(() => setSelectedEntity(null), [setSelectedEntity]);
 

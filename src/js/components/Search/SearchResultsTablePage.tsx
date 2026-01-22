@@ -8,7 +8,7 @@ import { MIN_PAGE_SIZE, PAGE_SIZE_OPTIONS } from '@/constants/pagination';
 import { WAITING_STATES } from '@/constants/requests';
 import { TABLE_PAGE_QUERY_PARAM, TABLE_PAGE_SIZE_QUERY_PARAM } from '@/features/search/constants';
 
-import { useAppDispatch, useTranslationFn } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { useScopeDownloadData } from '@/hooks/censorship';
 import { useDownloadAllMatchesCSV } from '@/hooks/useDownloadAllMatchesCSV';
@@ -18,7 +18,6 @@ import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
 
 import type { BentoKatsuEntity } from '@/types/entities';
 import type { Project, Dataset } from '@/types/metadata';
-import { fetchDiscoveryMatches } from '@/features/search/fetchDiscoveryMatches.thunk';
 import type { QueryResultMatchData } from '@/features/search/query.store';
 import type {
   DiscoveryMatchBiosample,
@@ -290,7 +289,6 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
 }) => {
   const t = useTranslationFn();
 
-  const dispatch = useAppDispatch();
   const { filterQueryParams, textQuery, resultCountsOrBools, pageSize, matchData } = useSearchQuery();
   const { fetchingPermission: fetchingCanDownload, hasPermission: canDownload } = useScopeDownloadData();
   const downloadAllMatchesCSV = useDownloadAllMatchesCSV();
@@ -314,35 +312,6 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
 
   const currentStart = totalMatches > 0 ? page * pageSize + 1 : 0;
   const currentEnd = Math.min((page + 1) * pageSize, totalMatches);
-
-  // -------------------------------------------------------------------------------------------------------------------
-
-  const [shouldRefetch, setShouldRefetch] = useState<boolean>(true);
-
-  // Order of the below two effects is important - we want to first flag whether we should refetch based on a set of
-  // dependencies, and then (if we've flagged, or on initial load) run the refetch.
-  // Note: These two are decoupled to reduce needless re-fetches based on `shown` changing.
-
-  useEffect(() => {
-    console.debug('flagging should-refetch for entity:', rdEntity, {
-      page,
-      pageSize,
-      rdEntity,
-      filterQueryParams,
-      textQuery,
-    });
-    setShouldRefetch(true);
-    // Dependencies on page/page size, filterQueryParams, and textQuery to trigger re-fetch when these change.
-  }, [selectedScope, page, pageSize, rdEntity, filterQueryParams, textQuery]);
-
-  useEffect(() => {
-    if (!shown || !shouldRefetch) return;
-    // TODO: in the future, move this to the useSearchRouterAndHandler query if we have which page is being shown in the
-    //  URL or in Redux. Then, we can clean up the dispatch logic to have everything dispatched at once.
-    console.debug('fetching discovery match page for entity:', rdEntity);
-    dispatch(fetchDiscoveryMatches(rdEntity));
-    setShouldRefetch(false);
-  }, [dispatch, rdEntity, shown, shouldRefetch]);
 
   // -------------------------------------------------------------------------------------------------------------------
 
