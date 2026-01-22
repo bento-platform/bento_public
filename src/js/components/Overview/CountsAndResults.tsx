@@ -18,7 +18,11 @@ import { useRenderCount } from '@/hooks/counts';
 import { useInnerWidth } from '@/hooks/useResponsiveContext';
 import type { BentoCountEntity } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
-import { bentoKatsuEntityToResultsDataEntity, buildQueryParamsUrl, combineQueryParamsWithoutKey } from '@/features/search/utils';
+import {
+  bentoKatsuEntityToResultsDataEntity,
+  buildQueryParamsUrl,
+  combineQueryParamsWithoutKey,
+} from '@/features/search/utils';
 
 const COUNT_CARD_BASE_HEIGHT = 114;
 const COUNT_CARD_DENOMINATOR_BREAKPOINT = 1180;
