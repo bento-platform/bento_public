@@ -189,6 +189,7 @@ export const useSearchRouterAndHandler = () => {
       setSearchUrlWithQueryParams(
         combineQueryParamsWithoutKey(validFilterQueryParams, otherQueryParams, resultsTableParams)
       );
+      return;
     }
 
     // Handle updates to discovery matches page parameters
