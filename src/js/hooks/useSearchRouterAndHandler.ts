@@ -6,6 +6,7 @@ import type { BentoCountEntity } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
 import { BentoRoute } from '@/types/routes';
 
+import { COUNT_ENTITY_REGISTRY } from '@/constants/countEntities';
 import { PAGE_SIZE_OPTIONS } from '@/constants/pagination';
 import {
   ENTITY_QUERY_PARAM,
@@ -161,6 +162,8 @@ export const useSearchRouterAndHandler = () => {
     const qpRawTablePageSize: string | undefined = otherQueryParams[TABLE_PAGE_SIZE_QUERY_PARAM];
     const qpTextQuery: string | undefined = otherQueryParams[TEXT_QUERY_PARAM];
 
+    const resultsTableParams = [ENTITY_QUERY_PARAM, TABLE_PAGE_QUERY_PARAM, TABLE_PAGE_SIZE_QUERY_PARAM];
+
     if ((qpRawEntity || qpRawTablePage || qpRawTablePageSize || qpTextQuery) && !queryDataPerm) {
       // Already checked attempted status, so we know this is the true permissions value. If we do not have query:data
       // permissions, we cannot:
@@ -170,9 +173,7 @@ export const useSearchRouterAndHandler = () => {
       // This effect will then be re-triggered without the entity or text query param.
       setSearchUrlWithQueryParams(
         combineQueryParamsWithoutKey(validFilterQueryParams, otherQueryParams, [
-          ENTITY_QUERY_PARAM,
-          TABLE_PAGE_QUERY_PARAM,
-          TABLE_PAGE_SIZE_QUERY_PARAM,
+          ...resultsTableParams,
           TEXT_QUERY_PARAM,
         ])
       );
@@ -181,9 +182,17 @@ export const useSearchRouterAndHandler = () => {
 
     let shouldFetchDiscoveryMatchesPage = false;
 
-    // TODO: validate entity
-
     const qpEntity = qpRawEntity ? (qpRawEntity as BentoCountEntity) : null;
+
+    // First, handle an invalid entity in the URL
+    if (qpEntity && !(qpEntity in COUNT_ENTITY_REGISTRY)) {
+      setSearchUrlWithQueryParams(
+        combineQueryParamsWithoutKey(validFilterQueryParams, otherQueryParams, resultsTableParams)
+      );
+    }
+
+    // Handle updates to discovery matches page parameters
+
     if (qpEntity !== selectedEntity) {
       // If there's a mismatch between the query parameter and the Redux selected entity, we have to reconcile them.
       // We sync Redux from the URL query parameter:
