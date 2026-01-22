@@ -260,9 +260,7 @@ export const useSearchRouterAndHandler = () => {
     if (shouldFetchDiscoveryMatchesPage && qpEntity) {
       // If we have a search results table open right now (meaning the _e query param is set --> qpEntity is not null),
       // we can also fetch the relevant discovery match page:
-      const rdEntity = bentoKatsuEntityToResultsDataEntity(qpEntity);
-      console.debug('fetching discovery match page for entity:', rdEntity);
-      dispatch(fetchDiscoveryMatches(rdEntity));
+      dispatch(fetchDiscoveryMatches(qpEntity));
     }
 
     dispatch(setDoneFirstLoad());

@@ -12,10 +12,13 @@ import { WAITING_STATES } from '@/constants/requests';
 import { ENTITY_QUERY_PARAM, TABLE_PAGE_QUERY_PARAM, TABLE_PAGE_SIZE_QUERY_PARAM } from '@/features/search/constants';
 import { useSelectedDataset, useSelectedProject } from '@/features/metadata/hooks';
 import { useNonFilterQueryParams, useSearchQuery } from '@/features/search/hooks';
-import { useTranslationFn } from '@/hooks';
+import { useAppDispatch, useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
 import { useRenderCount } from '@/hooks/counts';
 import { useInnerWidth } from '@/hooks/useResponsiveContext';
+
+import { fetchDiscoveryMatches } from '@/features/search/fetchDiscoveryMatches.thunk';
+
 import type { BentoCountEntity } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
 import {
@@ -69,6 +72,8 @@ const CountsAndResults = () => {
 
   const t = useTranslationFn();
   const renderCount = useRenderCount();
+
+  const dispatch = useAppDispatch();
 
   const windowInnerWidth = useInnerWidth();
 
@@ -149,6 +154,18 @@ const CountsAndResults = () => {
               'shadow count-card' +
               (canSelect ? ' count-card-clickable' : '') +
               (selected ? ' count-card-selected' : '')
+            }
+            onMouseOver={
+              canSelect
+                ? () => {
+                    // If the user hovers over the count card, start a pre-fetch to improve responsivity from the user's
+                    // perspective if they decide to click on it.
+                    const md = matchData[bentoKatsuEntityToResultsDataEntity(entity)];
+                    if (md.status === RequestStatus.Idle || md.invalid) {
+                      dispatch(fetchDiscoveryMatches(entity));
+                    }
+                  }
+                : undefined
             }
             onClick={canSelect ? () => setSelectedEntity(entity) : undefined}
             style={{ height: COUNT_CARD_BASE_HEIGHT + (hasQueryData ? 12 : 0) + (selected ? 12 : 0) }}

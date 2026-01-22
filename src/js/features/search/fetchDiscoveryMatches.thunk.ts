@@ -30,6 +30,7 @@ export const fetchDiscoveryMatches = createAsyncThunk<
   (entity, { rejectWithValue, getState }) => {
     const state = getState();
     const queryEntity = bentoKatsuEntityToResultsDataEntity(entity);
+    console.debug('fetching discovery match page for entity:', queryEntity);
     return axios
       .get(
         katsuDiscoveryMatchesUrl,
