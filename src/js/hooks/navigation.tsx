@@ -70,8 +70,8 @@ export const useNavigateToSameScopeUrl = () => {
   const selectedScope = useSelectedScope();
 
   return useCallback(
-    (suffix: string) => {
-      navigate(langAndScopeSelectionToUrl(language, selectedScope, suffix));
+    (suffix: string, replace: boolean = true) => {
+      navigate(langAndScopeSelectionToUrl(language, selectedScope, suffix), { replace });
     },
     [language, navigate, selectedScope]
   );

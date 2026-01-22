@@ -131,7 +131,7 @@ const ScopedTitle = () => {
                 shape="circle"
                 size="large"
                 onClick={() => {
-                  navigateToSameScopeUrl(buildQueryParamsUrl('overview', overviewQueryParams));
+                  navigateToSameScopeUrl(buildQueryParamsUrl('overview', overviewQueryParams), false);
                 }}
               />
             ) : null}
