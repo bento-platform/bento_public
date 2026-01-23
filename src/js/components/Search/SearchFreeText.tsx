@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, Form, Input, Space } from 'antd';
-import { FormOutlined, SearchOutlined } from '@ant-design/icons';
+import { CloseOutlined, FormOutlined, SearchOutlined } from '@ant-design/icons';
 
 import { TEXT_QUERY_PARAM } from '@/features/search/constants';
 import { useSearchQuery, useNonFilterQueryParams } from '@/features/search/hooks';
@@ -30,12 +30,9 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
     }
   }, [form, textQuery]);
 
-  const onFinish = useCallback(
-    (values: FreeTextFormValues) => {
-      const query = values.q.trim();
+  const navigateToTextQuery = useCallback(
+    (query: string) => {
       navigate(
-        // Build a query URL with the new text search value and navigate to it. It'll be handled by the search
-        // router/handler effect (useSearchRouterAndHandler) elsewhere.
         buildQueryParamsUrl(location.pathname, {
           ...filterQueryParams,
           ...nonFilterQueryParams,
@@ -43,7 +40,20 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
         })
       );
     },
-    [location.pathname, filterQueryParams, nonFilterQueryParams, navigate]
+    [navigate, location.pathname, filterQueryParams, nonFilterQueryParams]
+  );
+
+  const onReset = useCallback(() => {
+    form.setFieldValue('q', '');
+    navigateToTextQuery('');
+  }, [form, navigateToTextQuery]);
+
+  const onFinish = useCallback(
+    (values: FreeTextFormValues) => {
+      const query = values.q.trim();
+      navigateToTextQuery(query);
+    },
+    [navigateToTextQuery]
   );
 
   return (
@@ -53,6 +63,9 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
           <Form.Item name="q" initialValue="" noStyle={true}>
             <Input prefix={<SearchOutlined />} />
           </Form.Item>
+          {!!textQuery && (
+            <Button icon={<CloseOutlined />} onClick={onReset} disabled={discoveryStatus === RequestStatus.Pending} />
+          )}
           <Button type="primary" htmlType="submit" loading={discoveryStatus === RequestStatus.Pending}>
             {t('Search')}
           </Button>
