@@ -39,8 +39,6 @@ const MeasurementsExpandedRow = ({ measurement }: { measurement: Measurement }) 
 };
 
 const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement; expanded?: boolean }) => {
-  const t = useTranslationFn();
-
   const complexValueColumns: TableColumnsType<TypedQuantityWithId> =
     useTranslatedTableColumnTitles<TypedQuantityWithId>([
       {
