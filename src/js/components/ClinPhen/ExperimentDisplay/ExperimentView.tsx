@@ -196,24 +196,26 @@ const ExperimentView = ({ packetId, biosamples, experiments }: ExperimentViewPro
             },
             {
               title: 'Biosamples',
-              children: Object.keys(experimentsByBiosample).map((bId) => ({
-                dataIndex: `biosample_${bId}`,
-                title: <PhenopacketLink.Biosample packetId={packetId} sampleId={bId} />,
+              children: Object.keys(experimentsByBiosample).map((biosampleId) => ({
+                dataIndex: `biosample_${biosampleId}`,
+                title: <PhenopacketLink.Biosample packetId={packetId} sampleId={biosampleId} />,
                 width: `calc((100% - ${MATRIX_EXPERIMENT_TYPE_WIDTH}px) / ${biosamples.length})`,
                 align: 'center',
-                // TODO: multiple experiments per experiment type
-                render: (eId: string | undefined) =>
-                  eId ? <PhenopacketLink.Experiment packetId={packetId} experimentId={eId} /> : null,
+                render: (experimentIds: string[]) =>
+                  experimentIds.length ? (
+                    <PhenopacketLink.Experiments packetId={packetId} experiments={experimentIds} />
+                  ) : null,
               })),
             },
           ]}
           dataSource={experimentTypes.map((et) => ({
             experimentType: et,
-            // TODO: multiple experiments per experiment type
             ...Object.fromEntries(
-              Object.entries(experimentsByBiosample).map(([bId, es]) => [
-                `biosample_${bId}`,
-                es.find((ee) => ee.experiment_type === et)?.id,
+              Object.entries(experimentsByBiosample).map(([biosampleId, experiments]) => [
+                `biosample_${biosampleId}`,
+                experiments
+                  .filter((experiment) => experiment.experiment_type === et)
+                  .map(({ id: experimentId }) => experimentId),
               ])
             ),
           }))}
