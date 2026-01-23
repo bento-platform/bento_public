@@ -53,15 +53,15 @@ const OntologyTerm = ({ term, suffix, style, tooltipLink = false }: OntologyTerm
       mouseLeaveDelay={0.15} // Slightly higher than default (0.1) to let users better see the ontology class ID
     >
       {iri && !tooltipLink ? (
-        <span style={style}>
+        <div className="ontology-class" style={style}>
           {t(term.label)}
           {suffix} <IriLink iri={iri} />
-        </span>
+        </div>
       ) : (
-        <span style={style}>
+        <div className="ontology-class" style={style}>
           {t(term.label)}
           {suffix}
-        </span>
+        </div>
       )}
     </Tooltip>
   );
