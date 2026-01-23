@@ -22,11 +22,12 @@ const IriLink = ({ iri, children, style }: { iri: string; children?: ReactNode; 
 
 interface OntologyTermProps {
   term: OntologyTermType | undefined;
+  suffix?: ReactNode;
   style?: CSSProperties;
   tooltipLink?: boolean;
 }
 
-const OntologyTerm = ({ term, style, tooltipLink = false }: OntologyTermProps) => {
+const OntologyTerm = ({ term, suffix, style, tooltipLink = false }: OntologyTermProps) => {
   const t = useTranslationFn();
   const { packetId } = useParams<RouteParams>();
   const resources = usePhenopacketResources(packetId);
@@ -34,9 +35,9 @@ const OntologyTerm = ({ term, style, tooltipLink = false }: OntologyTermProps) =
   if (!term) return EM_DASH;
 
   // Find the resource whose namespace_prefix matches the prefix of the term's id
-  const [prefix, suffix] = term.id.split(':');
-  const resource = resources.find((r) => r.namespace_prefix === prefix);
-  const iri = resource ? `${resource.iri_prefix}${suffix}` : undefined;
+  const [idPrefix, idSuffix] = term.id.split(':');
+  const resource = resources.find((r) => r.namespace_prefix === idPrefix);
+  const iri = resource ? `${resource.iri_prefix}${idSuffix}` : undefined;
 
   return (
     <Tooltip
@@ -49,13 +50,18 @@ const OntologyTerm = ({ term, style, tooltipLink = false }: OntologyTermProps) =
           term.id
         )
       }
+      mouseLeaveDelay={0.15} // Slightly higher than default (0.1) to let users better see the ontology class ID
     >
       {iri && !tooltipLink ? (
         <span style={style}>
-          {t(term.label)} <IriLink iri={iri} />
+          {t(term.label)}
+          {suffix} <IriLink iri={iri} />
         </span>
       ) : (
-        <span style={style}>{t(term.label)}</span>
+        <span style={style}>
+          {t(term.label)}
+          {suffix}
+        </span>
       )}
     </Tooltip>
   );
