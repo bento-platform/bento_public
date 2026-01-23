@@ -58,20 +58,32 @@ const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement
   const value = measurement?.value;
   const complexValueTypedQuantities = addId(measurement?.complex_value?.typed_quantities || []);
   if (!expanded) {
-    if (measurement?.value) {
-      const quantity = measurement.value.quantity;
-      return (
-        <span>
-          {quantity?.value} {t(quantity?.unit.label || '')}
-        </span>
-      );
+    if (measurement.value) {
+      // Measurement value (simple) is either { quantity } or { ontology_class }:
+      if ('quantity' in measurement.value) {
+        const quantity = measurement.value.quantity;
+        return (
+          <span>
+            {/* Rather than show a link to the ontology term beside the unit, show the link in the tooltip */}
+            {quantity.value}{' '}
+            <OntologyTermComponent term={quantity.unit} tooltipLink={true} style={{ textDecoration: 'underline' }} />
+          </span>
+        );
+      } else {
+        return <OntologyTermComponent term={measurement.value.ontology_class} />;
+      }
     }
-    if (measurement?.complex_value) {
+    if (measurement.complex_value) {
       return (
         <Space direction="vertical" size={0}>
           {complexValueTypedQuantities.map((typedQuantity) => (
             <span key={typedQuantity.id}>
-              {t(typedQuantity.type.label)}: {typedQuantity.quantity.value} {t(typedQuantity.quantity.unit.label)}
+              {t(typedQuantity.type.label)}: {typedQuantity.quantity.value}{' '}
+              <OntologyTermComponent
+                term={typedQuantity.quantity.unit}
+                tooltipLink={true}
+                style={{ textDecoration: 'underline' }}
+              />
             </span>
           ))}
         </Space>
@@ -81,8 +93,11 @@ const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement
     if (value) {
       return (
         <>
-          {value?.quantity && <QuantityDisplay quantity={value.quantity} />}
-          {value?.ontology_class && <OntologyTermComponent term={value.ontology_class as OntologyTermType} />}
+          {'quantity' in value ? (
+            <QuantityDisplay quantity={value.quantity} />
+          ) : (
+            <OntologyTermComponent term={value.ontology_class} />
+          )}
         </>
       );
     }
