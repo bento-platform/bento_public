@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import type { MenuProps, SiderProps } from 'antd';
@@ -12,7 +12,7 @@ import { useLanguage, useTranslationFn } from '@/hooks';
 import { useIsInCatalogueMode, useNavigateToRoot } from '@/hooks/navigation';
 import type { MenuItem } from '@/types/navigation';
 import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
-import { getCurrentPage } from '@/utils/router';
+import { getCurrentPage, scopeToUrl } from '@/utils/router';
 
 const { Sider } = Layout;
 
@@ -62,6 +62,24 @@ const SiteSider = ({
     [navigate, overviewQueryParams, location.pathname]
   );
 
+  const [backClickText, onBackClick] = useMemo(() => {
+    // If we're in a project and in catalog mode, or we're in a dataset, show a back button.
+    if ((!(scope.project && catalogueMode) && !scope.dataset) || !scopeSet) return [undefined, undefined];
+    if (currentPage === BentoRoute.Phenopackets) {
+      if (scope.dataset) {
+        return ['Back to dataset', () => navigate(scopeToUrl(scope, language, 'overview'))];
+      } else {
+        return ['Back to project', () => navigate(scopeToUrl({ project: scope.project }, language, 'overview'))];
+      }
+    } else {
+      if (scope.dataset) {
+        return ['Back to project', () => navigate(scopeToUrl({ project: scope.project }, language, 'overview'))];
+      } else {
+        return ['Back to catalogue', navigateToRoot];
+      }
+    }
+  }, [catalogueMode, currentPage, language, navigate, navigateToRoot, scope, scopeSet]);
+
   return (
     <Sider
       id="site-sider"
@@ -74,21 +92,21 @@ const SiteSider = ({
       theme="light"
       aria-hidden={hidden}
     >
-      {scope.project && catalogueMode && (
+      {backClickText !== undefined && onBackClick !== undefined ? (
         <>
           <div style={{ backgroundColor: '#FAFAFA' }}>
             <Button
               type="text"
               icon={<ArrowLeftOutlined />}
               style={{ margin: 4, width: 'calc(100% - 8px)', height: 38 }}
-              onClick={scope.dataset ? () => navigate(`/${language}/p/${scope.project}`) : navigateToRoot}
+              onClick={onBackClick}
             >
-              {collapsed || !scopeSet ? null : t(scope.dataset ? 'Back to project' : 'Back to catalogue')}
+              {collapsed ? null : t(backClickText)}
             </Button>
           </div>
           <Divider className="m-0" />
         </>
-      )}
+      ) : null}
       <Menu
         selectedKeys={[currentPage]}
         mode="inline"

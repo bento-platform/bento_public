@@ -22,8 +22,7 @@ const DefaultLayout = () => {
   const menuItems = useSidebarMenuItems();
   const [collapsed, setCollapsed] = useState(false);
 
-  const sidebarHidden =
-    (menuItems.length <= 1 && !(scope.project && catalogueMode)) || page === BentoRoute.Phenopackets;
+  const sidebarHidden = menuItems.length <= 1 && !(scope.project && catalogueMode);
 
   return (
     <Layout id="default-layout" className={sidebarHidden ? 'sidebar-hidden' : collapsed ? 'sidebar-collapsed' : ''}>
