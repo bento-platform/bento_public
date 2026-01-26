@@ -53,6 +53,7 @@ body {
 .w-425 { width: 425px;}
 .h-350 { height: 350px;}
 .flex-shrink-0 { flex-shrink: 0;}
+.bordered { border: solid 1px rgba(0, 0, 0, 0.05);}
 
 /* custom, tailwind-esque */
 .max-w-half-cmw { max-width: calc(var(--content-max-width) / 2); }
@@ -589,3 +590,8 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
 }
 
 /* END scrollable card row */
+
+.catalogue-row {
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
+  background-color: rgba(0, 0, 0, 0.05);
+}

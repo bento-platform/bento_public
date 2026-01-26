@@ -111,17 +111,11 @@ const Dataset = ({
   } else if (format === 'card') {
     inner = (
       <Card
-        title={<SmallChartCardTitle title={title} />}
+        title={t(title)}
         size="small"
         className="shadow h-full"
-        style={{ minHeight: 200 }}
+        style={{ minHeight: 250 }}
         styles={{ body: { padding: '12px 16px', height: 'calc(100% - 53px)' } }}
-        extra={
-          <Button icon={<SolutionOutlined />} onClick={openProvenanceModal}>
-            {t('Provenance')}
-            <ExpandAltOutlined />
-          </Button>
-        }
       >
         <Flex vertical={true} gap={12} className="h-full">
           <TruncatedParagraph maxRows={2}>{t(description)}</TruncatedParagraph>
@@ -137,6 +131,10 @@ const Dataset = ({
           </Space>
           <CountsDisplay counts={counts} fontSize="0.875rem" />
           <Flex gap={12} align="flex-end" className="flex-1">
+            <Button icon={<SolutionOutlined />} onClick={openProvenanceModal}>
+              {t('Provenance')}
+              <ExpandAltOutlined />
+            </Button>
             <Button icon={<PieChartOutlined />} onClick={onNavigateOverview}>
               {t('Explore')}
             </Button>

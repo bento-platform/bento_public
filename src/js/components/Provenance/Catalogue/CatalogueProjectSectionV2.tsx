@@ -122,7 +122,7 @@ const ProjectCard = ({ project }: { project: Project }) => {
 };
 
 // TODO: Remove replication factor after testing scrollable behavior
-const DATASET_REPLICATION_FACTOR = 1;
+const DATASET_REPLICATION_FACTOR = 2;
 
 const DatasetRow = ({ datasets, projectId }: { datasets: DatasetType[]; projectId: string }) => {
   const t = useTranslationFn();
@@ -155,7 +155,7 @@ const CatalogueProjectSection = ({ project }: { project: Project }) => {
   const { datasets, identifier } = project;
 
   return (
-    <div className="container margin-auto">
+    <div className="container margin-auto catalogue-row rounded-xl bordered">
       <Flex gap="small" justify="flex-start" align='center'>
         <ProjectCard project={project} />
         <div className="divider flex-shrink-0" />

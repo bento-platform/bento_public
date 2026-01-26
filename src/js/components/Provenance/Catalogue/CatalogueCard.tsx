@@ -105,7 +105,7 @@ const CatalogueCard = ({ project }: { project: Project }) => {
   ];
 
   return (
-    <Card className="container margin-auto shadow rounded-xl" size={isSmallScreen ? 'small' : 'default'}>
+    <Card className="container margin-auto shadow rounded-xl h-350 bordered" size={isSmallScreen ? 'small' : 'default'}>
       <ResponsiveSplitContent
         firstContent={
           <Flex vertical={true} gap={8} className="h-full">

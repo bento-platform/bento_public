@@ -2,7 +2,7 @@ import { Space } from 'antd';
 import { SPACE_ITEM_WIDTH_100P_STYLES } from '@/constants/common';
 import { useMetadata } from '@/features/metadata/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
-// import CatalogueCard from './CatalogueCard';
+import CatalogueCard from './CatalogueCard';
 // import CatalogueProjectSection from './CatalogueProjectSection';
 import CatalogueProjectSection from './CatalogueProjectSectionV2';
 
@@ -23,6 +23,13 @@ const Catalogue = () => {
       {projects.map((project) => (
         <CatalogueProjectSection project={project} key={project.identifier} />
       ))}
+      {/* {projects.map((project) =>
+        project.datasets.length > 1 ? (
+          <CatalogueProjectSection project={project} key={project.identifier} />
+        ) : (
+          <CatalogueCard project={project} key={project.identifier} />
+        )
+      )} */}
     </Space>
   );
 };
