@@ -6,7 +6,7 @@ import { FilterOutlined } from '@ant-design/icons';
 
 import { WAITING_STATES } from '@/constants/requests';
 import { useConfig } from '@/features/config/hooks';
-import { useNonFilterQueryParams, useQueryFilterFields, useSearchQuery } from '@/features/search/hooks';
+import { useEntityAndTextQueryParams, useQueryFilterFields, useSearchQuery } from '@/features/search/hooks';
 import { buildQueryParamsUrl, combineQueryParamsWithoutKey, queryParamsWithoutKey } from '@/features/search/utils';
 
 import SearchFilterInput, { type FilterValue, SearchFilterInputSkeleton } from './SearchFilterInput';
@@ -19,7 +19,7 @@ const SearchFilters = (props: DefinedSearchSubFormProps) => {
   const { configStatus, maxQueryParameters } = useConfig();
   const { fieldsStatus, filterQueryParams } = useSearchQuery();
   const fields = useQueryFilterFields();
-  const nonFilterQueryParams = useNonFilterQueryParams();
+  const nonFilterQueryParams = useEntityAndTextQueryParams();
 
   const [filterInputs, usedFields] = useMemo(() => {
     const filterInputs_: FilterValue[] = Object.entries(filterQueryParams).map(([k, v]) => ({ field: k, value: v }));

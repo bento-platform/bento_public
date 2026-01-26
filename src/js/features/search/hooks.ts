@@ -14,7 +14,7 @@ export const useQueryFilterFields = (): QueryFilterField[] => {
   );
 };
 
-export const useNonFilterQueryParams = (): QueryParams => {
+export const useEntityAndTextQueryParams = (): QueryParams => {
   const { selectedEntity, matchData, pageSize, textQuery } = useSearchQuery();
   return useMemo<QueryParams>(() => {
     const qp: QueryParams = {};
@@ -40,7 +40,7 @@ export const useNonFilterQueryParams = (): QueryParams => {
  */
 export const useSearchQueryParams = (): QueryParams => {
   const { filterQueryParams } = useSearchQuery();
-  const otherQueryParams = useNonFilterQueryParams();
+  const otherQueryParams = useEntityAndTextQueryParams();
   return useMemo(() => ({ ...filterQueryParams, ...otherQueryParams }), [filterQueryParams, otherQueryParams]);
 };
 
