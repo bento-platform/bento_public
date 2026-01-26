@@ -284,6 +284,7 @@ body {
 
   transition: transform 0.3s;
 }
+
 #default-layout.sidebar-hidden #site-sider {
   overflow: hidden;
   transform: translate(calc(-1 * var(--sidebar-width)), 0);
@@ -306,6 +307,7 @@ body {
 
   transition: left 0.3s, width 0.3s;
 }
+
 #default-layout.sidebar-hidden #content-layout {
   left: 0;
   width: 100%;
