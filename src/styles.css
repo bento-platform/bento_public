@@ -530,6 +530,16 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   border-top: 1px solid rgba(0, 0, 0, 0.08);
 }
 
+.ontology-class {
+  display: inline-block;
+  padding: 0 2px;
+  border-radius: 4px;
+  transition: background-color 0.15s ease-in-out;
+}
+.ontology-class:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
 /* END phenopackets/other clinical+phenotypic metadata views */
 
 
