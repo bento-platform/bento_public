@@ -3,20 +3,18 @@ import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { Breadcrumb, type BreadcrumbProps, Button, Flex, Space, Tooltip } from 'antd';
-import { ArrowLeftOutlined, ProfileOutlined, QuestionOutlined } from '@ant-design/icons';
+import { ProfileOutlined, QuestionOutlined } from '@ant-design/icons';
 import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
+import FiltersAppliedTag from '@/components/Search/FiltersAppliedTag';
+import CurrentPageHelpModal from '@/components/Util/CurrentPageHelpModal';
 import ScopePickerModal from './ScopePickerModal';
 
 import { useSelectedScope, useSelectedScopeTitles } from '@/features/metadata/hooks';
+import { useExtraBreadcrumb } from '@/features/ui/hooks';
 import { useTranslationFn } from '@/hooks';
-import { useGetRouteTitleAndIcon, useNavigateToSameScopeUrl } from '@/hooks/navigation';
+import { useGetRouteTitleAndIcon } from '@/hooks/navigation';
 import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
 import { getCurrentPage } from '@/utils/router';
-import FiltersAppliedTag from '@/components/Search/FiltersAppliedTag';
-import CurrentPageHelpModal from '@/components/Util/CurrentPageHelpModal';
-import { useExtraBreadcrumb } from '@/features/ui/hooks';
-import { useAllOverviewQueryParams } from '@/features/search/hooks';
-import { buildQueryParamsUrl } from '@/features/search/utils';
 
 const breadcrumbRender: BreadcrumbProps['itemRender'] = (route, _params, routes, _paths) => {
   const isLast = route?.path === routes[routes.length - 1]?.path;
@@ -31,7 +29,7 @@ const ScopedTitle = () => {
   const { scope, fixedProject, fixedDataset } = useSelectedScope();
   const { projectTitle, datasetTitle } = useSelectedScopeTitles();
 
-  const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
+  // const navigateToSameScopeUrl = useNavigateToSameScopeUrl();  TODO: re-enable for sidebar
   const getRouteTitleAndIcon = useGetRouteTitleAndIcon();
 
   const currentPage = getCurrentPage();
@@ -40,7 +38,7 @@ const ScopedTitle = () => {
     !TOP_LEVEL_ONLY_ROUTES.includes(currentPage) &&
     currentPage !== BentoRoute.Phenopackets;
 
-  const overviewQueryParams = useAllOverviewQueryParams();
+  // const overviewQueryParams = useAllOverviewQueryParams();  TODO: re-enable for sidebar
 
   const [scopeSelectModalOpen, setScopeSelectModalOpen] = useState(false);
   const [helpModalOpen, setHelpModalOpen] = useState(false);
@@ -122,19 +120,20 @@ const ScopedTitle = () => {
         <CurrentPageHelpModal open={helpModalOpen} onCancel={() => setHelpModalOpen(false)} />
         <Flex className="scoped-title" align="center">
           <Flex className="flex-1" align="center">
-            {currentPage === BentoRoute.Phenopackets ? (
-              // For the Phenopackets route, put a back button in the header itself to go back
-              <Button
-                className="scoped-title__back"
-                icon={<ArrowLeftOutlined />}
-                type="text"
-                shape="circle"
-                size="large"
-                onClick={() => {
-                  navigateToSameScopeUrl(buildQueryParamsUrl('overview', overviewQueryParams), false);
-                }}
-              />
-            ) : null}
+            {/* TODO: re-enable this code when we get rid of the sidebar! */}
+            {/*{currentPage === BentoRoute.Phenopackets ? (*/}
+            {/*  // For the Phenopackets route, put a back button in the header itself to go back*/}
+            {/*  <Button*/}
+            {/*    className="scoped-title__back"*/}
+            {/*    icon={<ArrowLeftOutlined />}*/}
+            {/*    type="text"*/}
+            {/*    shape="circle"*/}
+            {/*    size="large"*/}
+            {/*    onClick={() => {*/}
+            {/*      navigateToSameScopeUrl(buildQueryParamsUrl('overview', overviewQueryParams), false);*/}
+            {/*    }}*/}
+            {/*  />*/}
+            {/*) : null}*/}
             <Breadcrumb className="scoped-title__breadcrumb" items={breadcrumbItems} itemRender={breadcrumbRender} />
             {currentPage === BentoRoute.Overview ? <FiltersAppliedTag /> : null}
           </Flex>
