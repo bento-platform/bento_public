@@ -14,7 +14,7 @@ import type { RouteParams } from '../../ClinPhen/PhenopacketView';
 const { Link } = Typography;
 
 interface OntologyTermProps {
-  term: OntologyTermType | undefined;
+  term: OntologyTermType | null | undefined;
 }
 
 const OntologyTerm = ({ term }: OntologyTermProps) => {

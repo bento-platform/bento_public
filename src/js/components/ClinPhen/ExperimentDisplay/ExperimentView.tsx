@@ -8,7 +8,7 @@ import type { Experiment } from '@/types/clinPhen/experiments/experiment';
 import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
 
-import { OntologyTermStack } from '@Util/ClinPhen/OntologyTerm';
+import OntologyTerm from '@Util/ClinPhen/OntologyTerm';
 import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
 import TDescriptions from '@Util/TDescriptions';
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
@@ -29,25 +29,39 @@ export const ExperimentExpandedRow = ({ packetId, experiment, searchRow }: Exper
   const t = useTranslationFn();
 
   const items: ConditionalDescriptionItem[] = [
+    { key: 'description', children: experiment.description },
+    {
+      key: 'protocol_url',
+      children: experiment.protocol_url ? (
+        <Typography.Link href={experiment.protocol_url} target="_blank" rel="noopener noreferrer">
+          {experiment.protocol_url}
+        </Typography.Link>
+      ) : null,
+      isVisible: !!experiment.protocol_url,
+    },
     { key: 'experiment_type', children: experiment.experiment_type },
     {
       key: 'experiment_ontology',
-      children: <OntologyTermStack terms={experiment.experiment_ontology} />,
+      children: <OntologyTerm term={experiment.experiment_ontology} />,
       isVisible: objectToBoolean(experiment.experiment_ontology),
     },
     { key: 'study_type', children: experiment.study_type },
     { key: 'molecule', children: experiment.molecule },
     {
       key: 'molecule_ontology',
-      children: <OntologyTermStack terms={experiment.molecule_ontology} />,
-      isVisible: !!experiment.molecule_ontology?.length,
+      children: <OntologyTerm term={experiment.molecule_ontology} />,
+      isVisible: objectToBoolean(experiment.molecule_ontology),
     },
+    { key: 'library_id', children: experiment.library_id },
     { key: 'library_strategy', children: experiment.library_strategy },
     { key: 'library_source', children: experiment.library_source },
     { key: 'library_selection', children: experiment.library_selection },
     { key: 'library_layout', children: experiment.library_layout },
     { key: 'extraction_protocol', children: experiment.extraction_protocol },
     { key: 'reference_registry_id', children: experiment.reference_registry_id },
+    { key: 'library_description', children: experiment.library_description },
+    { key: 'library_extract_id', children: experiment.library_extract_id },
+    { key: 'insert_size', children: experiment.insert_size },
     {
       key: 'qc_flags',
       children: (experiment.qc_flags ?? []).join(', '),
@@ -89,6 +103,12 @@ export const ExperimentExpandedRow = ({ packetId, experiment, searchRow }: Exper
 
 export const isExperimentRowExpandable = (r: Experiment) =>
   !!(
+    r.description ||
+    r.protocol_url ||
+    r.library_id ||
+    r.library_description ||
+    r.library_extract_id ||
+    r.insert_size ||
     objectToBoolean(r.experiment_ontology) ||
     r.study_type ||
     r.molecule ||
