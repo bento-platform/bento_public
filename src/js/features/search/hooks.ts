@@ -35,7 +35,10 @@ export const useNonFilterQueryParams = (): QueryParams => {
   }, [selectedEntity, matchData, pageSize, textQuery]);
 };
 
-export const useAllOverviewQueryParams = (): QueryParams => {
+/**
+ * Combines filterQueryParams and other query params that relate to the search slice into a single query param object.
+ */
+export const useSearchQueryParams = (): QueryParams => {
   const { filterQueryParams } = useSearchQuery();
   const otherQueryParams = useNonFilterQueryParams();
   return useMemo(() => ({ ...filterQueryParams, ...otherQueryParams }), [filterQueryParams, otherQueryParams]);

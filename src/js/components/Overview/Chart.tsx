@@ -5,6 +5,7 @@ import { ChoroplethMap } from 'bento-charts/dist/maps';
 
 import { CHART_HEIGHT, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
 import { useTranslationFn } from '@/hooks';
+import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
 import type { ChartData } from '@/types/data';
 import type { ChartConfig } from '@/types/discovery/chartConfig';
 import {
@@ -14,7 +15,6 @@ import {
   CHART_TYPE_PIE,
 } from '@/types/discovery/chartConfig';
 import { noop } from '@/utils/chart';
-import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
 
 interface BarChartEvent {
   activePayload: Array<{ payload: { x: string; id?: string } }>;

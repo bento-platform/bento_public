@@ -6,7 +6,7 @@ import { Button, Divider, Layout, Menu } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 
 import { useSelectedScope } from '@/features/metadata/hooks';
-import { useAllOverviewQueryParams } from '@/features/search/hooks';
+import { useSearchQueryParams } from '@/features/search/hooks';
 import { buildQueryParamsUrl } from '@/features/search/utils';
 import { useLanguage, useTranslationFn } from '@/hooks';
 import { useIsInCatalogueMode, useNavigateToRoot } from '@/hooks/navigation';
@@ -33,7 +33,7 @@ const SiteSider = ({
   const location = useLocation();
   const language = useLanguage();
   const t = useTranslationFn();
-  const overviewQueryParams = useAllOverviewQueryParams();
+  const overviewQueryParams = useSearchQueryParams();
   const catalogueMode = useIsInCatalogueMode();
   const currentPage = getCurrentPage(location);
 

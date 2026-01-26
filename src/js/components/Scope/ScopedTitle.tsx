@@ -38,7 +38,7 @@ const ScopedTitle = () => {
     !TOP_LEVEL_ONLY_ROUTES.includes(currentPage) &&
     currentPage !== BentoRoute.Phenopackets;
 
-  // const overviewQueryParams = useAllOverviewQueryParams();  TODO: re-enable for sidebar
+  // const overviewQueryParams = useSearchQueryParams();  TODO: re-enable for sidebar
 
   const [scopeSelectModalOpen, setScopeSelectModalOpen] = useState(false);
   const [helpModalOpen, setHelpModalOpen] = useState(false);

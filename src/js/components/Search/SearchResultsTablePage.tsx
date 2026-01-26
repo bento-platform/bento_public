@@ -12,7 +12,7 @@ import { useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { useScopeDownloadData } from '@/hooks/censorship';
 import { useDownloadAllMatchesCSV } from '@/hooks/useDownloadAllMatchesCSV';
-import { useAllOverviewQueryParams, useSearchQuery } from '@/features/search/hooks';
+import { useSearchQueryParams, useSearchQuery } from '@/features/search/hooks';
 import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
 import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
 
@@ -295,7 +295,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   const selectedScope = useSelectedScope();
   const isSmallScreen = useSmallScreen();
 
-  const allQueryParams = useAllOverviewQueryParams();
+  const allQueryParams = useSearchQueryParams();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
 
   const [exporting, setExporting] = useState<boolean>(false);

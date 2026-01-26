@@ -4,7 +4,7 @@ import { Button, Form, Input, Space } from 'antd';
 import { CloseOutlined, FormOutlined, SearchOutlined } from '@ant-design/icons';
 
 import { TEXT_QUERY_PARAM } from '@/features/search/constants';
-import { useSearchQuery, useAllOverviewQueryParams } from '@/features/search/hooks';
+import { useSearchQuery, useSearchQueryParams } from '@/features/search/hooks';
 import { buildQueryParamsUrl } from '@/features/search/utils';
 import { useTranslationFn } from '@/hooks';
 import { RequestStatus } from '@/types/requests';
@@ -19,7 +19,7 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
   const navigate = useNavigate();
 
   const { discoveryStatus, textQuery } = useSearchQuery();
-  const overviewQueryParams = useAllOverviewQueryParams();
+  const allQueryParams = useSearchQueryParams();
 
   const [form] = Form.useForm<FreeTextFormValues>();
 
@@ -35,10 +35,10 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
       navigate(
         // Build a query URL with the new text search value and navigate to it. It'll be handled by the search
         // router/handler effect (useSearchRouterAndHandler) elsewhere.
-        buildQueryParamsUrl(location.pathname, { ...overviewQueryParams, [TEXT_QUERY_PARAM]: query })
+        buildQueryParamsUrl(location.pathname, { ...allQueryParams, [TEXT_QUERY_PARAM]: query })
       );
     },
-    [location.pathname, overviewQueryParams, navigate]
+    [location.pathname, allQueryParams, navigate]
   );
 
   const onReset = useCallback(() => {
