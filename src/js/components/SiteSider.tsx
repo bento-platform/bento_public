@@ -9,7 +9,7 @@ import { useSelectedScope } from '@/features/metadata/hooks';
 import { useSearchQueryParams } from '@/features/search/hooks';
 import { buildQueryParamsUrl } from '@/features/search/utils';
 import { useLanguage, useTranslationFn } from '@/hooks';
-import { useIsInCatalogueMode, useNavigateToRoot } from '@/hooks/navigation';
+import { useIsInCatalogueMode, useNavigateToRoot, useNavigateToSameScopeUrl } from '@/hooks/navigation';
 import type { MenuItem } from '@/types/navigation';
 import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
 import { getCurrentPage, scopeToUrl } from '@/utils/router';
@@ -38,6 +38,7 @@ const SiteSider = ({
   const currentPage = getCurrentPage(location);
 
   const navigateToRoot = useNavigateToRoot();
+  const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
   const { scope, scopeSet } = useSelectedScope();
 
   const handleMenuClick: OnClick = useCallback(
@@ -66,19 +67,31 @@ const SiteSider = ({
     // If we're in a project and in catalog mode, or we're in a dataset, show a back button.
     if ((!(scope.project && catalogueMode) && !scope.dataset) || !scopeSet) return [undefined, undefined];
     if (currentPage === BentoRoute.Phenopackets) {
-      if (scope.dataset) {
-        return ['Back to dataset', () => navigate(scopeToUrl(scope, language, 'overview'))];
-      } else {
-        return ['Back to project', () => navigate(scopeToUrl({ project: scope.project }, language, 'overview'))];
-      }
+      return [
+        scope.dataset ? 'Back to dataset' : 'Back to project',
+        () => navigateToSameScopeUrl(buildQueryParamsUrl(BentoRoute.Overview, overviewQueryParams), false),
+      ];
     } else {
       if (scope.dataset) {
-        return ['Back to project', () => navigate(scopeToUrl({ project: scope.project }, language, 'overview'))];
+        return [
+          'Back to project',
+          () => navigate(scopeToUrl({ project: scope.project }, language, BentoRoute.Overview)),
+        ];
       } else {
         return ['Back to catalogue', navigateToRoot];
       }
     }
-  }, [catalogueMode, currentPage, language, navigate, navigateToRoot, scope, scopeSet]);
+  }, [
+    catalogueMode,
+    currentPage,
+    language,
+    navigate,
+    navigateToRoot,
+    navigateToSameScopeUrl,
+    overviewQueryParams,
+    scope,
+    scopeSet,
+  ]);
 
   return (
     <Sider
