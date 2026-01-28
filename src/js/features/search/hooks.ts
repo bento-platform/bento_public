@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { useAppSelector } from '@/hooks';
-import { TEXT_QUERY_PARAM } from './constants';
+import { ENTITY_QUERY_PARAM, TABLE_PAGE_QUERY_PARAM, TABLE_PAGE_SIZE_QUERY_PARAM, TEXT_QUERY_PARAM } from './constants';
 import type { QueryFilterField, QueryParams } from './types';
+import { bentoKatsuEntityToResultsDataEntity } from './utils';
 
 export const useSearchQuery = () => useAppSelector((state) => state.query);
 
@@ -13,16 +14,34 @@ export const useQueryFilterFields = (): QueryFilterField[] => {
   );
 };
 
-export const useNonFilterQueryParams = (): QueryParams => {
-  const { textQuery } = useSearchQuery();
+export const useEntityAndTextQueryParams = (): QueryParams => {
+  const { selectedEntity, matchData, pageSize, textQuery } = useSearchQuery();
   return useMemo<QueryParams>(() => {
     const qp: QueryParams = {};
+
+    if (selectedEntity) {
+      qp[ENTITY_QUERY_PARAM] = selectedEntity;
+      qp[TABLE_PAGE_QUERY_PARAM] = matchData[bentoKatsuEntityToResultsDataEntity(selectedEntity)].page.toString();
+    }
+
+    qp[TABLE_PAGE_SIZE_QUERY_PARAM] = pageSize.toString();
+
     if (textQuery) {
       // Only include text query parameter if textQuery is set to a non-false value.
       qp[TEXT_QUERY_PARAM] = textQuery;
     }
+
     return qp;
-  }, [textQuery]);
+  }, [selectedEntity, matchData, pageSize, textQuery]);
+};
+
+/**
+ * Combines filterQueryParams and other query params that relate to the search slice into a single query param object.
+ */
+export const useSearchQueryParams = (): QueryParams => {
+  const { filterQueryParams } = useSearchQuery();
+  const otherQueryParams = useEntityAndTextQueryParams();
+  return useMemo(() => ({ ...filterQueryParams, ...otherQueryParams }), [filterQueryParams, otherQueryParams]);
 };
 
 export const useSearchableFields = () => {

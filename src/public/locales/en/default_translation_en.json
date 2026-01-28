@@ -140,7 +140,8 @@
   "Created": "Created",
   "Updated": "Updated",
   "Back to catalogue": "Back to catalogue",
-  "Back to project": "Back to project",
+  "Back to project": "Back to $t(entities.project_one, lowercase)",
+  "Back to dataset": "Back to $t(entities.dataset_one, lowercase)",
   "beacon": {
     "search_beacon": "Search Beacon",
     "search_network": "Search Network",

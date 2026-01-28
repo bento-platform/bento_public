@@ -2,10 +2,19 @@ import { useCallback, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import type { QueryParamEntry, QueryParams } from '@/features/search/types';
+import type { BentoCountEntity } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
 import { BentoRoute } from '@/types/routes';
 
-import { NON_FILTER_QUERY_PARAM_PREFIX, TEXT_QUERY_PARAM } from '@/features/search/constants';
+import { COUNT_ENTITY_REGISTRY } from '@/constants/countEntities';
+import { PAGE_SIZE_OPTIONS } from '@/constants/pagination';
+import {
+  ENTITY_QUERY_PARAM,
+  NON_FILTER_QUERY_PARAM_PREFIX,
+  TABLE_PAGE_QUERY_PARAM,
+  TABLE_PAGE_SIZE_QUERY_PARAM,
+  TEXT_QUERY_PARAM,
+} from '@/features/search/constants';
 
 import { useAppDispatch } from '@/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
@@ -14,10 +23,23 @@ import { useSelectedScope } from '@/features/metadata/hooks';
 import { useScopeQueryData } from './censorship';
 import { useQueryFilterFields, useSearchQuery } from '@/features/search/hooks';
 
+import { fetchDiscoveryMatches } from '@/features/search/fetchDiscoveryMatches.thunk';
 import { performKatsuDiscovery } from '@/features/search/performKatsuDiscovery.thunk';
-import { setDoneFirstLoad, setFilterQueryParams, setTextQuery, resetMatchesPage } from '@/features/search/query.store';
+import {
+  setDoneFirstLoad,
+  setFilterQueryParams,
+  setTextQuery,
+  setSelectedEntity,
+  setMatchesPage,
+  setMatchesPageSize,
+} from '@/features/search/query.store';
 
-import { buildQueryParamsUrl, checkQueryParamsEqual, combineQueryParamsWithoutKey } from '@/features/search/utils';
+import {
+  bentoKatsuEntityToResultsDataEntity,
+  buildQueryParamsUrl,
+  checkQueryParamsEqual,
+  combineQueryParamsWithoutKey,
+} from '@/features/search/utils';
 import { getCurrentPage } from '@/utils/router';
 
 // Internal type for useSearchRouterAndHandler hook
@@ -45,7 +67,10 @@ export const useSearchRouterAndHandler = () => {
     fieldsStatus: searchFieldsStatus,
     discoveryStatus,
     textQuery,
+    selectedEntity,
     doneFirstLoad,
+    matchData,
+    pageSize,
   } = useSearchQuery();
 
   const filterFields = useQueryFilterFields();
@@ -87,7 +112,7 @@ export const useSearchRouterAndHandler = () => {
   const setSearchUrlWithQueryParams = useCallback(
     (qp: QueryParams) => {
       // Don't use react-router location here - the goal is to not recreate this function when the path changes.
-      const urlSuffix = buildQueryParamsUrl('overview', qp);
+      const urlSuffix = buildQueryParamsUrl(BentoRoute.Overview, qp);
       console.debug('[Search] Redirecting to:', urlSuffix, '| new scope:', scope);
       navigateToScope(scope, urlSuffix, isFixedProjectAndDataset, { replace: true });
     },
@@ -130,18 +155,72 @@ export const useSearchRouterAndHandler = () => {
     }
 
     // Otherwise, we have a valid (or empty) set of filter query parameters. Now, we need to deal with free-text
-    // filtering: ------------------------------------------------------------------------------------------------------
+    // filtering and other non-field-filter query parameters: ----------------------------------------------------------
 
+    const qpRawEntity: string | undefined = otherQueryParams[ENTITY_QUERY_PARAM];
+    const qpRawTablePage: string | undefined = otherQueryParams[TABLE_PAGE_QUERY_PARAM];
+    const qpRawTablePageSize: string | undefined = otherQueryParams[TABLE_PAGE_SIZE_QUERY_PARAM];
     const qpTextQuery: string | undefined = otherQueryParams[TEXT_QUERY_PARAM];
 
-    if (qpTextQuery && !queryDataPerm) {
+    const resultsTableParams = [ENTITY_QUERY_PARAM, TABLE_PAGE_QUERY_PARAM, TABLE_PAGE_SIZE_QUERY_PARAM];
+
+    if ((qpRawEntity || qpRawTablePage || qpRawTablePageSize || qpTextQuery) && !queryDataPerm) {
       // Already checked attempted status, so we know this is the true permissions value. If we do not have query:data
-      // permissions, we cannot try to execute a text search, so we go back to exclusively filters via URL rewrite.
-      // This effect will then be re-triggered without the text query param.
+      // permissions, we cannot:
+      //  - expand an entity table (with associated pagination query parameters), or
+      //  - try to execute a text search
+      // So we go back to exclusively filters via URL rewrite.
+      // This effect will then be re-triggered without the entity or text query param.
       setSearchUrlWithQueryParams(
-        combineQueryParamsWithoutKey(validFilterQueryParams, otherQueryParams, TEXT_QUERY_PARAM)
+        combineQueryParamsWithoutKey(validFilterQueryParams, otherQueryParams, [
+          ...resultsTableParams,
+          TEXT_QUERY_PARAM,
+        ])
       );
       return;
+    }
+
+    let shouldFetchDiscoveryMatchesPage = false;
+
+    const qpEntity = qpRawEntity ? (qpRawEntity as BentoCountEntity) : null;
+
+    // First, handle an invalid entity in the URL
+    if (qpEntity && !(qpEntity in COUNT_ENTITY_REGISTRY)) {
+      setSearchUrlWithQueryParams(
+        combineQueryParamsWithoutKey(validFilterQueryParams, otherQueryParams, resultsTableParams)
+      );
+      return;
+    }
+
+    // Handle updates to discovery matches page parameters
+
+    if (qpEntity !== selectedEntity) {
+      // If there's a mismatch between the query parameter and the Redux selected entity, we have to reconcile them.
+      // We sync Redux from the URL query parameter:
+      dispatch(setSelectedEntity(qpEntity));
+
+      if (qpEntity) {
+        // Only trigger a discovery matches page fetch from this particular inequality if the fetch hasn't happened yet.
+        // Otherwise, we already have cached results we can re-use, which are valid for the current page/page-size.
+        const md = matchData[bentoKatsuEntityToResultsDataEntity(qpEntity)];
+        shouldFetchDiscoveryMatchesPage = md.status !== RequestStatus.Fulfilled || md.invalid;
+      }
+    }
+
+    if (qpEntity && qpRawTablePage) {
+      const qpPage = parseInt(qpRawTablePage, 10);
+      if (!isNaN(qpPage) && qpPage >= 0 && qpPage !== matchData[bentoKatsuEntityToResultsDataEntity(qpEntity)].page) {
+        dispatch(setMatchesPage([qpEntity, qpPage]));
+        shouldFetchDiscoveryMatchesPage = true;
+      }
+    }
+
+    if (qpRawTablePageSize) {
+      const qpPageSize = parseInt(qpRawTablePageSize, 10);
+      if (!isNaN(qpPageSize) && PAGE_SIZE_OPTIONS.includes(qpPageSize) && qpPageSize !== pageSize) {
+        dispatch(setMatchesPageSize(qpPageSize));
+        shouldFetchDiscoveryMatchesPage = true;
+      }
     }
 
     const qpTextQueryStr = (qpTextQuery ?? '').trim(); // undefined --> ''; trim whitespace
@@ -154,7 +233,11 @@ export const useSearchRouterAndHandler = () => {
     // If we have new valid filter query parameters (that aren't already in Redux), put them into the state even if
     // we're not going to actually execute a filter search.
     const filterQueryParamsEqual = checkQueryParamsEqual(validFilterQueryParams, filterQueryParams);
-    if (discoveryStatus === RequestStatus.Idle || !filterQueryParamsEqual || qpTextQueryStr !== textQuery) {
+    const searchParamsNotEqual = !filterQueryParamsEqual || qpTextQueryStr !== textQuery;
+
+    shouldFetchDiscoveryMatchesPage ||= searchParamsNotEqual;
+
+    if (discoveryStatus === RequestStatus.Idle || searchParamsNotEqual) {
       // Only update the state & refresh if we have a new set of query params from the URL, or if we haven't actually
       // executed a discovery search yet.
       // [!!!] This should be the only place setQueryParams(...) gets called. Everywhere else should use URL
@@ -171,8 +254,13 @@ export const useSearchRouterAndHandler = () => {
       }
 
       // Finally, we can go ahead and execute the search:
-      dispatch(resetMatchesPage());
       dispatch(performKatsuDiscovery());
+    }
+
+    if (shouldFetchDiscoveryMatchesPage && qpEntity) {
+      // If we have a search results table open right now (meaning the _e query param is set --> qpEntity is not null),
+      // we can also fetch the relevant discovery match page:
+      dispatch(fetchDiscoveryMatches(qpEntity));
     }
 
     dispatch(setDoneFirstLoad());
@@ -188,6 +276,9 @@ export const useSearchRouterAndHandler = () => {
     setSearchUrlWithQueryParams,
     filterQueryParams,
     textQuery,
+    selectedEntity,
+    matchData,
+    pageSize,
     loadAndValidateQuery,
   ]);
 };

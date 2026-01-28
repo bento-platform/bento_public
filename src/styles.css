@@ -178,6 +178,13 @@ body {
   opacity: 0;
 }
 
+.scoped-title__back {
+  margin-right: 12px;
+
+  font-size: 1.8rem;
+  color: rgba(0, 0, 0, 0.45);
+}
+
 .scoped-title__breadcrumb {
   font-size: 1.8rem;
   transition: font-size 0.3s ease-in-out;
@@ -187,7 +194,7 @@ body {
   font-size: 0.9em;
 }
 
-.scoped-title__breadcrumb a {
+.scoped-title__breadcrumb .ant-breadcrumb-item a {
   height: 3rem;
 }
 
@@ -199,6 +206,14 @@ body {
 
 .scoped-title[data-stuck] .filters-applied-tag {
   opacity: 1;
+}
+
+.scoped-title[data-stuck] .scoped-title__back {
+  width: 32px;
+  min-width: 32px;
+  height: 32px;
+
+  font-size: 1.2rem;
 }
 
 .scoped-title[data-stuck] .scoped-title__breadcrumb {
@@ -237,9 +252,6 @@ body {
 #default-layout.sidebar-collapsed {
   --sidebar-width: var(--sidebar-width-collapsed);
 }
-#default-layout.sidebar-hidden {
-  --sidebar-width: 0;
-}
 
 #site-header {
   position: fixed;
@@ -269,6 +281,13 @@ body {
 
   overflow: auto;
   height: calc(100vh - var(--header-height));
+
+  transition: transform 0.3s;
+}
+
+#default-layout.sidebar-hidden #site-sider {
+  overflow: hidden;
+  transform: translate(calc(-1 * var(--sidebar-width)), 0);
 }
 
 .ant-layout-sider-trigger {
@@ -287,6 +306,11 @@ body {
   overflow: auto;
 
   transition: left 0.3s, width 0.3s;
+}
+
+#default-layout.sidebar-hidden #content-layout {
+  left: 0;
+  width: 100%;
 }
 
 #content-layout > .ant-layout-content {
