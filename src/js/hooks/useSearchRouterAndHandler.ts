@@ -112,7 +112,7 @@ export const useSearchRouterAndHandler = () => {
   const setSearchUrlWithQueryParams = useCallback(
     (qp: QueryParams) => {
       // Don't use react-router location here - the goal is to not recreate this function when the path changes.
-      const urlSuffix = buildQueryParamsUrl('overview', qp);
+      const urlSuffix = buildQueryParamsUrl(BentoRoute.Overview, qp);
       console.debug('[Search] Redirecting to:', urlSuffix, '| new scope:', scope);
       navigateToScope(scope, urlSuffix, isFixedProjectAndDataset, { replace: true });
     },

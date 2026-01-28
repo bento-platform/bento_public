@@ -26,6 +26,7 @@ import type {
   DiscoveryMatchPhenopacket,
   ViewableDiscoveryMatchObject,
 } from '@/features/search/types';
+import { BentoRoute } from '@/types/routes';
 
 import { bentoKatsuEntityToResultsDataEntity, buildQueryParamsUrl } from '@/features/search/utils';
 import { setEquals } from '@/utils/sets';
@@ -381,7 +382,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
             onChange(page, pageSize) {
               // Update page/pageSize using navigation, since we sync Redux from the URL uni-directionally most times.
               navigateToSameScopeUrl(
-                buildQueryParamsUrl('overview', {
+                buildQueryParamsUrl(BentoRoute.Overview, {
                   ...allQueryParams,
                   // AntD page is 1-indexed, discovery match page is 0-indexed:
                   [TABLE_PAGE_QUERY_PARAM]: (page - 1).toString(),

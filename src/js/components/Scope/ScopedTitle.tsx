@@ -130,7 +130,7 @@ const ScopedTitle = () => {
             {/*    shape="circle"*/}
             {/*    size="large"*/}
             {/*    onClick={() => {*/}
-            {/*      navigateToSameScopeUrl(buildQueryParamsUrl('overview', overviewQueryParams), false);*/}
+            {/*      navigateToSameScopeUrl(buildQueryParamsUrl(BentoRoute.Overview, overviewQueryParams), false);*/}
             {/*    }}*/}
             {/*  />*/}
             {/*) : null}*/}

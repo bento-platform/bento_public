@@ -1,14 +1,19 @@
 import { Fragment, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { useCurrentScopePrefixedUrl } from '@/hooks/navigation';
+
+import { BentoRoute } from '@/types/routes';
+import { TabKeys } from '@/types/PhenopacketView.types';
+import type { SectionKey } from '@/components/ClinPhen/PhenopacketDisplay/phenopacketOverview.registry';
+
 import { PHENOPACKET_EXPANDED_URL_QUERY_KEY } from './PhenopacketDisplay/PhenopacketOverview';
 
 const usePhenopacketOverviewLink = (
   packetId: string | undefined,
-  expanded: string,
+  expanded: SectionKey,
   otherArgs: Record<string, string> | undefined = undefined
 ) => {
-  const baseUrl = useCurrentScopePrefixedUrl(`phenopackets/${packetId}/overview`);
+  const baseUrl = useCurrentScopePrefixedUrl(`${BentoRoute.Phenopackets}/${packetId}/${TabKeys.OVERVIEW}`);
   const params = new URLSearchParams({ [PHENOPACKET_EXPANDED_URL_QUERY_KEY]: expanded, ...(otherArgs ?? {}) });
   return `${baseUrl}?${params.toString()}`;
 };
