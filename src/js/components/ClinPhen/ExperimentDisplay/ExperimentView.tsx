@@ -5,10 +5,10 @@ import type { Experiment } from '@/types/clinPhen/experiments/experiment';
 import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
 
-import OntologyTerm from '@Util/ClinPhen/OntologyTerm';
 import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
 import TDescriptions from '@Util/TDescriptions';
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
+import FreeTextAndOrOntologyClass from '@Util/ClinPhen/FreeTextAndOrOntologyClass';
 import InstrumentDisplay from './InstrumentDisplay';
 import ExperimentResultView from '@/components/ClinPhen/ExperimentDisplay/ExperimentResultView';
 
@@ -36,18 +36,17 @@ export const ExperimentExpandedRow = ({ packetId, experiment, searchRow }: Exper
       ) : null,
       isVisible: !!experiment.protocol_url,
     },
-    { key: 'experiment_type', children: experiment.experiment_type },
     {
-      key: 'experiment_ontology',
-      children: <OntologyTerm term={experiment.experiment_ontology} />,
-      isVisible: objectToBoolean(experiment.experiment_ontology),
+      key: 'experiment_type',
+      children: (
+        <FreeTextAndOrOntologyClass text={experiment.experiment_type} ontologyClass={experiment.experiment_ontology} />
+      ),
     },
     { key: 'study_type', children: experiment.study_type },
-    { key: 'molecule', children: experiment.molecule },
     {
-      key: 'molecule_ontology',
-      children: <OntologyTerm term={experiment.molecule_ontology} />,
-      isVisible: objectToBoolean(experiment.molecule_ontology),
+      key: 'molecule',
+      children: <FreeTextAndOrOntologyClass text={experiment.molecule} ontologyClass={experiment.molecule_ontology} />,
+      isVisible: experiment.molecule || experiment.molecule_ontology,
     },
     { key: 'library_id', children: experiment.library_id },
     { key: 'library_strategy', children: experiment.library_strategy },
