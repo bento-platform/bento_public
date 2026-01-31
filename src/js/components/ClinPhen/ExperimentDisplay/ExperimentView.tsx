@@ -22,11 +22,13 @@ type ExperimentExpandedRowProps = {
   searchRow?: boolean; // undefined implies false
 };
 
+const XXL_THREE_COLUMN = { xl: 1, xxl: 3 };
+
 export const ExperimentExpandedRow = ({ packetId, experiment, searchRow }: ExperimentExpandedRowProps) => {
   const t = useTranslationFn();
 
   const items: ConditionalDescriptionItem[] = [
-    { key: 'description', children: experiment.description },
+    { key: 'description', children: experiment.description, span: XXL_THREE_COLUMN },
     {
       key: 'protocol_url',
       children: experiment.protocol_url ? (
@@ -48,15 +50,26 @@ export const ExperimentExpandedRow = ({ packetId, experiment, searchRow }: Exper
       children: <FreeTextAndOrOntologyClass text={experiment.molecule} ontologyClass={experiment.molecule_ontology} />,
       isVisible: experiment.molecule || experiment.molecule_ontology,
     },
-    { key: 'library_id', children: experiment.library_id },
-    { key: 'library_strategy', children: experiment.library_strategy },
-    { key: 'library_source', children: experiment.library_source },
-    { key: 'library_selection', children: experiment.library_selection },
-    { key: 'library_layout', children: experiment.library_layout },
     { key: 'extraction_protocol', children: experiment.extraction_protocol },
     { key: 'reference_registry_id', children: experiment.reference_registry_id },
-    { key: 'library_description', children: experiment.library_description },
+    // corresponds to 'library id' from https://github.com/ga4gh/experiments-metadata/blob/main/identifiers.md
+    { key: 'library_id', children: experiment.library_id },
+    // corresponds to 'library description' from https://github.com/ga4gh/experiments-metadata/blob/main/core.md
+    { key: 'library_description', children: experiment.library_description, span: XXL_THREE_COLUMN },
+    // library_strategy originally adapted from ENA via IHEC; see:
+    //  https://github.com/IHEC/ihec-ecosystems/blob/master/docs/metadata/2.0/Ihec_metadata_specification.md#experiments
+    //  https://ena-docs.readthedocs.io/en/latest/submit/reads/webin-cli.html#strategy
+    { key: 'library_strategy', children: experiment.library_strategy },
+    // library_source originally adapted from ENA via IHEC; see:
+    //  https://github.com/IHEC/ihec-ecosystems/blob/master/docs/metadata/2.0/Ihec_metadata_specification.md#experiments
+    //  https://ena-docs.readthedocs.io/en/latest/submit/reads/webin-cli.html#source
+    { key: 'library_source', children: experiment.library_source },
+    { key: 'library_selection', children: experiment.library_selection },
+    // corresponds to 'library layout' from https://github.com/ga4gh/experiments-metadata/blob/main/core.md
+    { key: 'library_layout', children: experiment.library_layout },
+    // corresponds to 'library extract id' from https://github.com/ga4gh/experiments-metadata/blob/main/identifiers.md
     { key: 'library_extract_id', children: experiment.library_extract_id },
+    // corresponds to 'insert size' from https://github.com/ga4gh/experiments-metadata/blob/main/core.md
     { key: 'insert_size', children: experiment.insert_size },
     {
       key: 'qc_flags',
@@ -67,7 +80,7 @@ export const ExperimentExpandedRow = ({ packetId, experiment, searchRow }: Exper
 
   return (
     <Space direction="vertical" className="w-full">
-      <TDescriptions bordered size="compact" column={{ xl: 1, xxl: 3 }} items={items} defaultI18nPrefix="experiment." />
+      <TDescriptions bordered size="compact" column={XXL_THREE_COLUMN} items={items} defaultI18nPrefix="experiment." />
       <ExtraPropertiesDisplay extraProperties={experiment.extra_properties} />
       {experiment.instrument && (
         <>
@@ -101,14 +114,14 @@ export const isExperimentRowExpandable = (r: Experiment) =>
   !!(
     r.description ||
     r.protocol_url ||
-    r.library_id ||
-    r.library_description ||
-    r.library_extract_id ||
     r.insert_size ||
     objectToBoolean(r.experiment_ontology) ||
     r.study_type ||
     r.molecule ||
     objectToBoolean(r.molecule_ontology) ||
+    r.library_id ||
+    r.library_description ||
+    r.library_extract_id ||
     r.library_strategy ||
     r.library_source ||
     r.library_selection ||
@@ -117,7 +130,7 @@ export const isExperimentRowExpandable = (r: Experiment) =>
     r.reference_registry_id ||
     r.qc_flags?.length ||
     r.experiment_results?.length ||
-    r.instrument ||
+    objectToBoolean(r.instrument) ||
     objectToBoolean(r.extra_properties)
   );
 
