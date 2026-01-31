@@ -19,7 +19,7 @@ export interface Experiment extends ExtraPropertiesEntity {
     | 'Antibody measurement'
     | 'Viral WGS'
     | 'Other';
-  experiment_ontology?: OntologyTerm | null;
+  experiment_ontology?: OntologyTerm;
   study_type?:
     | 'Genomics'
     | 'Epigenomics'
@@ -38,7 +38,7 @@ export interface Experiment extends ExtraPropertiesEntity {
     | 'genomic DNA'
     | 'protein'
     | 'Other';
-  molecule_ontology?: OntologyTerm | null;
+  molecule_ontology?: OntologyTerm;
   library_strategy?: 'Bisulfite-Seq' | 'RNA-Seq' | 'ChIP-Seq' | 'WES' | 'WGS' | 'RAD-Seq' | 'AMPLICON' | 'Other';
   library_source?:
     | 'Genomic'
@@ -52,12 +52,12 @@ export interface Experiment extends ExtraPropertiesEntity {
     | 'Other';
   library_selection?: 'Random' | 'PCR' | 'Random PCR' | 'RT-PCR' | 'MF' | 'Exome capture' | 'Other';
   library_layout?: 'Single' | 'Paired';
-  library_id?: string | null;
-  library_extract_id?: string | null;
-  insert_size?: number | null;
-  description?: string | null;
-  library_description?: string | null;
-  protocol_url?: string | null;
+  library_id?: string;
+  library_extract_id?: string;
+  insert_size?: number;
+  description?: string;
+  library_description?: string;
+  protocol_url?: string;
   extraction_protocol?: string;
   reference_registry_id?: string;
   qc_flags?: string[];
