@@ -156,16 +156,9 @@ const CountsAndResults = () => {
               (selected ? ' count-card-selected' : '')
             }
             onMouseOver={
-              canSelect
-                ? () => {
-                    // If the user hovers over the count card, start a pre-fetch to improve responsivity from the user's
-                    // perspective if they decide to click on it.
-                    const md = matchData[bentoKatsuEntityToResultsDataEntity(entity)];
-                    if (md.status === RequestStatus.Idle || md.invalid) {
-                      dispatch(fetchDiscoveryMatches(entity));
-                    }
-                  }
-                : undefined
+              // If the user hovers over the count card, start a pre-fetch to improve responsivity from the user's
+              // perspective if they decide to click on it.
+              canSelect ? () => dispatch(fetchDiscoveryMatches(entity)) : undefined
             }
             onClick={canSelect ? () => setSelectedEntity(entity) : undefined}
             style={{ height: COUNT_CARD_BASE_HEIGHT + (hasQueryData ? 12 : 0) + (selected ? 12 : 0) }}
