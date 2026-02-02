@@ -7,7 +7,6 @@ import { RequestStatus } from '@/types/requests';
 import { BentoRoute } from '@/types/routes';
 
 import { COUNT_ENTITY_REGISTRY } from '@/constants/countEntities';
-import { PAGE_SIZE_OPTIONS } from '@/constants/pagination';
 import {
   ENTITY_QUERY_PARAM,
   NON_FILTER_QUERY_PARAM_PREFIX,
@@ -34,12 +33,7 @@ import {
   setMatchesPageSize,
 } from '@/features/search/query.store';
 
-import {
-  bentoKatsuEntityToResultsDataEntity,
-  buildQueryParamsUrl,
-  checkQueryParamsEqual,
-  combineQueryParamsWithoutKey,
-} from '@/features/search/utils';
+import { buildQueryParamsUrl, combineQueryParamsWithoutKey } from '@/features/search/utils';
 import { getCurrentPage } from '@/utils/router';
 
 // Internal type for useSearchRouterAndHandler hook
@@ -48,6 +42,9 @@ type QueryValidationResult = {
   validFilterQueryParams: QueryParams;
   otherQueryParams: QueryParams;
 };
+
+const ENTITY_TABLE_PARAMS = [ENTITY_QUERY_PARAM, TABLE_PAGE_QUERY_PARAM, TABLE_PAGE_SIZE_QUERY_PARAM];
+const ENTITY_AND_TEXT_PARAMS = [...ENTITY_TABLE_PARAMS, TEXT_QUERY_PARAM];
 
 export const useSearchRouterAndHandler = () => {
   // Tags for ctrl-F: execute search, perform search, run search
@@ -164,8 +161,6 @@ export const useSearchRouterAndHandler = () => {
       [TEXT_QUERY_PARAM]: qpTextQuery,
     } = otherQueryParams;
 
-    const resultsTableParams = [ENTITY_QUERY_PARAM, TABLE_PAGE_QUERY_PARAM, TABLE_PAGE_SIZE_QUERY_PARAM];
-
     if ((qpRawEntity || qpRawTablePage || qpRawTablePageSize || qpTextQuery) && !queryDataPerm) {
       // Already checked attempted status, so we know this is the true permissions value. If we do not have query:data
       // permissions, we cannot:
@@ -174,94 +169,68 @@ export const useSearchRouterAndHandler = () => {
       // So we go back to exclusively filters via URL rewrite.
       // This effect will then be re-triggered without the entity or text query param.
       setSearchUrlWithQueryParams(
-        combineQueryParamsWithoutKey(validFilterQueryParams, otherQueryParams, [
-          ...resultsTableParams,
-          TEXT_QUERY_PARAM,
-        ])
+        combineQueryParamsWithoutKey(validFilterQueryParams, otherQueryParams, ENTITY_AND_TEXT_PARAMS)
       );
       return;
     }
-
-    let shouldFetchDiscoveryMatchesPage = false;
 
     const qpEntity = qpRawEntity ? (qpRawEntity as BentoCountEntity) : null;
 
-    // First, handle an invalid entity in the URL
+    // Handle an invalid entity in the URL by rewriting it without any entity results-table-relevant parameters:
     if (qpEntity && !(qpEntity in COUNT_ENTITY_REGISTRY)) {
       setSearchUrlWithQueryParams(
-        combineQueryParamsWithoutKey(validFilterQueryParams, otherQueryParams, resultsTableParams)
+        combineQueryParamsWithoutKey(validFilterQueryParams, otherQueryParams, ENTITY_TABLE_PARAMS)
       );
       return;
     }
 
+    // Here marks the end of any URL rewriting we do to get back to this hook but with a valid set of parameters.
+    // =================================================================================================================
+
+    // Now, we need to (broadly) sync the Redux state from the URL.
+
     // Handle updates to discovery matches page parameters
 
-    if (qpEntity !== selectedEntity) {
-      // If there's a mismatch between the query parameter and the Redux selected entity, we have to reconcile them.
-      // We sync Redux from the URL query parameter:
-      dispatch(setSelectedEntity(qpEntity));
-
-      if (qpEntity) {
-        // Only trigger a discovery matches page fetch from this particular inequality if the fetch hasn't happened yet.
-        // Otherwise, we already have cached results we can re-use, which are valid for the current page/page-size.
-        const md = matchData[bentoKatsuEntityToResultsDataEntity(qpEntity)];
-        shouldFetchDiscoveryMatchesPage = md.status !== RequestStatus.Fulfilled || md.invalid;
-      }
-    }
+    // If there's a mismatch between the query parameter and the Redux selected entity, we have to reconcile them.
+    // We sync Redux from the URL query parameter (and if the value is the same, this won't cause any issues anyway):
+    dispatch(setSelectedEntity(qpEntity));
 
     if (qpEntity && qpRawTablePage) {
-      const qpPage = parseInt(qpRawTablePage, 10);
-      if (!isNaN(qpPage) && qpPage >= 0 && qpPage !== matchData[bentoKatsuEntityToResultsDataEntity(qpEntity)].page) {
-        dispatch(setMatchesPage([qpEntity, qpPage]));
-        shouldFetchDiscoveryMatchesPage = true;
-      }
+      // Sync entity current table page from the URL. The action handles invalid cases/if the page didn't change.
+      // If a valid change occurs, current match data in the Redux state will be invalidated & re-fetched as needed.
+      dispatch(setMatchesPage([qpEntity, parseInt(qpRawTablePage, 10)]));
     }
 
     if (qpRawTablePageSize) {
-      const qpPageSize = parseInt(qpRawTablePageSize, 10);
-      if (!isNaN(qpPageSize) && PAGE_SIZE_OPTIONS.includes(qpPageSize) && qpPageSize !== pageSize) {
-        dispatch(setMatchesPageSize(qpPageSize));
-        shouldFetchDiscoveryMatchesPage = true;
-      }
+      // Sync table page size from the URL. The action handles invalid cases/if the page size didn't change.
+      // If a valid change occurs, current match data in the Redux state will be invalidated & re-fetched as needed.
+      dispatch(setMatchesPageSize(parseInt(qpRawTablePageSize, 10)));
     }
 
     const qpTextQueryStr = (qpTextQuery ?? '').trim(); // undefined --> ''; trim whitespace
     if ((textQuery && qpTextQuery === undefined) || qpTextQueryStr !== textQuery) {
       // If there's a mismatch between the query parameter and Redux text queries, we have to reconcile them. We sync
-      // Redux from the URL query parameter for free-text search so we can perform the search itself below:
+      // Redux from the URL query parameter for free-text search so we can perform the search itself below.
+      // If the text query has truly changed, this will also invalidate any current match pages, to re-fetch results
+      // entity tables.
       dispatch(setTextQuery(qpTextQueryStr)); // [!!!] This should be the only place setTextQuery(...) gets called.
     }
 
-    // If we have new valid filter query parameters (that aren't already in Redux), put them into the state even if
-    // we're not going to actually execute a filter search.
-    const filterQueryParamsEqual = checkQueryParamsEqual(validFilterQueryParams, filterQueryParams);
-    const searchParamsNotEqual = !filterQueryParamsEqual || qpTextQueryStr !== textQuery;
+    // If we have new valid filter query parameters (that aren't already in Redux), put them into the state.
+    // We also only want to update the query params object (& trigger a re-render) if the new object has different
+    // contents otherwise we can produce a render loop (this is handled *inside the action*).
+    // We want to prioritize the URL over Redux, so we sync the Redux state with the URL values. This can happen on
+    // first load or if we change/add/remove a filter value via URL change (which is how these changes should be
+    // executed in the UI). We then get proper one-way traffic from the URL to the Redux state.
+    dispatch(setFilterQueryParams(validFilterQueryParams));
 
-    shouldFetchDiscoveryMatchesPage ||= searchParamsNotEqual;
+    // Finally, we can go ahead and execute the search:
+    dispatch(performKatsuDiscovery());
 
-    if (discoveryStatus === RequestStatus.Idle || searchParamsNotEqual) {
-      // Only update the state & refresh if we have a new set of query params from the URL, or if we haven't actually
-      // executed a discovery search yet.
-      // [!!!] This should be the only place setQueryParams(...) gets called. Everywhere else should use URL
-      //       manipulations, so that we have a one-way data flow from URL to state!
-
-      if (!filterQueryParamsEqual) {
-        // If there's a mismatch between the query parameter and Redux filters, we have to reconcile them. We also only
-        // want to update the query params object (& trigger a re-render) if the new object has different contents,
-        // otherwise we can produce a render loop. We want to prioritize the URL over Redux, so we sync the Redux state
-        // with the URL values. This can happen on first load or if we change/add/remove a filter value via URL change
-        // (which is how these changes should be executed in the UI). We then get proper one-way traffic from the URL to
-        // the Redux state.
-        dispatch(setFilterQueryParams(validFilterQueryParams));
-      }
-
-      // Finally, we can go ahead and execute the search:
-      dispatch(performKatsuDiscovery());
-    }
-
-    if (shouldFetchDiscoveryMatchesPage && qpEntity) {
+    if (qpEntity) {
       // If we have a search results table open right now (meaning the _e query param is set --> qpEntity is not null),
-      // we can also fetch the relevant discovery match page:
+      // we can also fetch the relevant discovery match page (if needed; internal checks will stop this from executing
+      // if already fetching or the data hasn't been invalidated by one of the actions above):
       dispatch(fetchDiscoveryMatches(qpEntity));
     }
 

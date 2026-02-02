@@ -15,11 +15,13 @@ type DiscoveryMatchPagination = {
   total: number;
 };
 
+type DiscoveryMatchResponse = {
+  results: DiscoveryMatchPhenopacket[];
+  pagination: DiscoveryMatchPagination;
+};
+
 export const fetchDiscoveryMatches = createAsyncThunk<
-  {
-    results: DiscoveryMatchPhenopacket[];
-    pagination: DiscoveryMatchPagination;
-  },
+  DiscoveryMatchResponse,
   BentoKatsuEntity,
   {
     rejectValue: string;
@@ -48,15 +50,8 @@ export const fetchDiscoveryMatches = createAsyncThunk<
   {
     condition(entity, { getState }) {
       const rdEntity = bentoKatsuEntityToResultsDataEntity(entity);
-      const entityStatus = getState().query.matchData[rdEntity].status;
-      const cond = entityStatus !== RequestStatus.Pending;
-      if (!cond) {
-        console.debug(
-          'performKatsuDiscovery() was attempted, but will not dispatch: ' +
-            `matchData[${rdEntity}].status=${RequestStatus[entityStatus]}`
-        );
-      }
-      return cond;
+      const { invalid, status: entityStatus } = getState().query.matchData[rdEntity];
+      return entityStatus === RequestStatus.Idle || (entityStatus !== RequestStatus.Pending && invalid);
     },
   }
 );

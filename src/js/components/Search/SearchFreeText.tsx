@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, Form, Input, Space } from 'antd';
 import { CloseOutlined, FormOutlined, SearchOutlined } from '@ant-design/icons';
 
-import { TEXT_QUERY_PARAM } from '@/features/search/constants';
+import { TABLE_PAGE_QUERY_PARAM, TEXT_QUERY_PARAM } from '@/features/search/constants';
 import { useSearchQuery, useSearchQueryParams } from '@/features/search/hooks';
 import { buildQueryParamsUrl } from '@/features/search/utils';
 import { useTranslationFn } from '@/hooks';
@@ -32,13 +32,19 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
 
   const navigateToTextQuery = useCallback(
     (query: string) => {
+      if (query === textQuery) return;
       navigate(
         // Build a query URL with the new text search value and navigate to it. It'll be handled by the search
         // router/handler effect (useSearchRouterAndHandler) elsewhere.
-        buildQueryParamsUrl(location.pathname, { ...allQueryParams, [TEXT_QUERY_PARAM]: query })
+        buildQueryParamsUrl(location.pathname, {
+          ...allQueryParams,
+          [TEXT_QUERY_PARAM]: query,
+          // If we have an entity table page set, we need to reset it to 0 if the search text changes:
+          ...(TABLE_PAGE_QUERY_PARAM in allQueryParams ? { [TABLE_PAGE_QUERY_PARAM]: '0' } : {}),
+        })
       );
     },
-    [location.pathname, allQueryParams, navigate]
+    [location.pathname, allQueryParams, textQuery, navigate]
   );
 
   const onReset = useCallback(() => {

@@ -5,6 +5,7 @@ import { Space } from 'antd';
 import { FilterOutlined } from '@ant-design/icons';
 
 import { WAITING_STATES } from '@/constants/requests';
+import { TABLE_PAGE_QUERY_PARAM } from '@/features/search/constants';
 import { useConfig } from '@/features/config/hooks';
 import { useEntityAndTextQueryParams, useQueryFilterFields, useSearchQuery } from '@/features/search/hooks';
 import { buildQueryParamsUrl, combineQueryParamsWithoutKey, queryParamsWithoutKey } from '@/features/search/utils';
@@ -59,6 +60,8 @@ const SearchFilters = (props: DefinedSearchSubFormProps) => {
                   // new field in with the first available value.
                   [field]: value,
                   ...entityAndTextQueryParams,
+                  // If we have an entity table page set, we need to reset it to 0 if the filter changes:
+                  ...(TABLE_PAGE_QUERY_PARAM in entityAndTextQueryParams ? { [TABLE_PAGE_QUERY_PARAM]: '0' } : {}),
                 });
                 console.debug('[SearchFilters] Redirecting to:', url);
                 navigate(url, { replace: true });
@@ -68,8 +71,16 @@ const SearchFilters = (props: DefinedSearchSubFormProps) => {
                 if (fv.field === null) return;
                 const url = buildQueryParamsUrl(
                   pathname,
-                  // Remove fv.field from query params + ensure no [TEXT_QUERY_PARAM] key:
-                  combineQueryParamsWithoutKey(filterQueryParams, entityAndTextQueryParams, [fv.field])
+                  // Remove fv.field from query params + ensure no [TEXT_QUERY_PARAM] key.
+                  // Also, reset the page if we need to:
+                  combineQueryParamsWithoutKey(
+                    filterQueryParams,
+                    {
+                      ...entityAndTextQueryParams,
+                      ...(TABLE_PAGE_QUERY_PARAM in entityAndTextQueryParams ? { [TABLE_PAGE_QUERY_PARAM]: '0' } : {}),
+                    },
+                    [fv.field]
+                  )
                 );
                 console.debug('[SearchFilters] Redirecting to:', url);
                 navigate(url, { replace: true });

@@ -379,14 +379,17 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
             position: (isSmallScreen ? ['bottomCenter'] : ['bottomRight']) as TablePaginationConfig['position'],
             size: (isSmallScreen ? 'small' : 'default') as TablePaginationConfig['size'],
             showSizeChanger: true,
-            onChange(page, pageSize) {
+            onChange(newPage, newPageSize) {
               // Update page/pageSize using navigation, since we sync Redux from the URL uni-directionally most times.
+              if (newPageSize !== pageSize) {
+                newPage = 1; // Reset page if we change the page size
+              }
               navigateToSameScopeUrl(
                 buildQueryParamsUrl(BentoRoute.Overview, {
                   ...allQueryParams,
                   // AntD page is 1-indexed, discovery match page is 0-indexed:
-                  [TABLE_PAGE_QUERY_PARAM]: (page - 1).toString(),
-                  [TABLE_PAGE_SIZE_QUERY_PARAM]: pageSize.toString(),
+                  [TABLE_PAGE_QUERY_PARAM]: (newPage - 1).toString(),
+                  [TABLE_PAGE_SIZE_QUERY_PARAM]: newPageSize.toString(),
                 })
               );
             },
