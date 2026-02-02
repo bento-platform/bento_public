@@ -94,7 +94,7 @@ const CountsAndResults = () => {
     pageSize,
     uiHints,
   } = useSearchQuery();
-  const nonFilterQueryParams = useEntityAndTextQueryParams();
+  const entityAndTextQueryParams = useEntityAndTextQueryParams();
 
   const waitingForData = WAITING_STATES.includes(discoveryStatus);
   const doingFirstLoad = waitingForData && !doneFirstLoad;
@@ -104,7 +104,7 @@ const CountsAndResults = () => {
 
   const setSelectedEntity = useCallback(
     (entity: BentoCountEntity | null) => {
-      const cb = combineQueryParamsWithoutKey(filterQueryParams, nonFilterQueryParams, [
+      const combinedParams = combineQueryParamsWithoutKey(filterQueryParams, entityAndTextQueryParams, [
         ENTITY_QUERY_PARAM,
         TABLE_PAGE_QUERY_PARAM,
         ...(entity ? [] : [TABLE_PAGE_SIZE_QUERY_PARAM]), // Clear the page size param if closing the table
@@ -115,16 +115,16 @@ const CountsAndResults = () => {
           pathname,
           entity
             ? {
-                ...cb,
+                ...combinedParams,
                 [ENTITY_QUERY_PARAM]: entity,
                 [TABLE_PAGE_QUERY_PARAM]: matchData[bentoKatsuEntityToResultsDataEntity(entity)].page.toString(),
                 [TABLE_PAGE_SIZE_QUERY_PARAM]: pageSize.toString(),
               }
-            : cb
+            : combinedParams
         )
       );
     },
-    [navigate, pathname, filterQueryParams, nonFilterQueryParams, matchData, pageSize]
+    [navigate, pathname, filterQueryParams, entityAndTextQueryParams, matchData, pageSize]
   );
   const clearSelectedEntity = useCallback(() => setSelectedEntity(null), [setSelectedEntity]);
 

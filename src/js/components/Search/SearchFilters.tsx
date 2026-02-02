@@ -19,7 +19,7 @@ const SearchFilters = (props: DefinedSearchSubFormProps) => {
   const { configStatus, maxQueryParameters } = useConfig();
   const { fieldsStatus, filterQueryParams } = useSearchQuery();
   const fields = useQueryFilterFields();
-  const nonFilterQueryParams = useEntityAndTextQueryParams();
+  const entityAndTextQueryParams = useEntityAndTextQueryParams();
 
   const [filterInputs, usedFields] = useMemo(() => {
     const filterInputs_: FilterValue[] = Object.entries(filterQueryParams).map(([k, v]) => ({ field: k, value: v }));
@@ -58,7 +58,7 @@ const SearchFilters = (props: DefinedSearchSubFormProps) => {
                   // ... and if the field stays the same, we will put it back with a new value. Otherwise, we'll put the
                   // new field in with the first available value.
                   [field]: value,
-                  ...nonFilterQueryParams,
+                  ...entityAndTextQueryParams,
                 });
                 console.debug('[SearchFilters] Redirecting to:', url);
                 navigate(url, { replace: true });
@@ -69,7 +69,7 @@ const SearchFilters = (props: DefinedSearchSubFormProps) => {
                 const url = buildQueryParamsUrl(
                   pathname,
                   // Remove fv.field from query params + ensure no [TEXT_QUERY_PARAM] key:
-                  combineQueryParamsWithoutKey(filterQueryParams, nonFilterQueryParams, [fv.field])
+                  combineQueryParamsWithoutKey(filterQueryParams, entityAndTextQueryParams, [fv.field])
                 );
                 console.debug('[SearchFilters] Redirecting to:', url);
                 navigate(url, { replace: true });

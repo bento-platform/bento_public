@@ -157,10 +157,12 @@ export const useSearchRouterAndHandler = () => {
     // Otherwise, we have a valid (or empty) set of filter query parameters. Now, we need to deal with free-text
     // filtering and other non-field-filter query parameters: ----------------------------------------------------------
 
-    const qpRawEntity: string | undefined = otherQueryParams[ENTITY_QUERY_PARAM];
-    const qpRawTablePage: string | undefined = otherQueryParams[TABLE_PAGE_QUERY_PARAM];
-    const qpRawTablePageSize: string | undefined = otherQueryParams[TABLE_PAGE_SIZE_QUERY_PARAM];
-    const qpTextQuery: string | undefined = otherQueryParams[TEXT_QUERY_PARAM];
+    const {
+      [ENTITY_QUERY_PARAM]: qpRawEntity,
+      [TABLE_PAGE_QUERY_PARAM]: qpRawTablePage,
+      [TABLE_PAGE_SIZE_QUERY_PARAM]: qpRawTablePageSize,
+      [TEXT_QUERY_PARAM]: qpTextQuery,
+    } = otherQueryParams;
 
     const resultsTableParams = [ENTITY_QUERY_PARAM, TABLE_PAGE_QUERY_PARAM, TABLE_PAGE_SIZE_QUERY_PARAM];
 

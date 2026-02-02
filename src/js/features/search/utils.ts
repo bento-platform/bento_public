@@ -1,5 +1,6 @@
 import type { QueryParams } from '@/features/search/types';
 import type { BentoCountEntity, BentoKatsuEntity, ResultsDataEntity } from '@/types/entities';
+import { definedQueryParams } from '@/utils/requests';
 
 export const queryParamsWithoutKey = (qp: QueryParams, key: string | string[]): QueryParams => {
   const qpc = { ...qp };
@@ -16,8 +17,10 @@ export const queryParamsWithoutKey = (qp: QueryParams, key: string | string[]): 
 export const combineQueryParamsWithoutKey = (qp1: QueryParams, qp2: QueryParams, key: string | string[]): QueryParams =>
   queryParamsWithoutKey({ ...qp1, ...qp2 }, key);
 
-export const buildQueryParamsUrl = (pathName: string, qp: QueryParams | undefined = undefined): string =>
-  qp && Object.keys(qp).length ? `${pathName}?${new URLSearchParams(qp).toString()}` : pathName;
+export const buildQueryParamsUrl = (pathName: string, queryParams?: QueryParams): string => {
+  if (!queryParams || !Object.keys(queryParams).length) return pathName;
+  return `${pathName}?${new URLSearchParams(definedQueryParams(queryParams)).toString()}`;
+};
 
 export const checkQueryParamsEqual = (qp1: QueryParams, qp2: QueryParams): boolean => {
   const qp1Keys = Object.keys(qp1);

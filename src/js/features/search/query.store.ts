@@ -12,6 +12,7 @@ import type { DiscoveryResponseOrMessage } from '@/types/discovery/response';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type {
   QueryParams,
+  DefinedQueryParams,
   SearchFieldResponse,
   DiscoveryMatchObject,
   DiscoveryMatchPhenopacket,
@@ -30,6 +31,7 @@ import { fetchSearchFields } from './fetchSearchFields.thunk';
 import { fetchDiscoveryMatches } from './fetchDiscoveryMatches.thunk';
 import { fetchDiscoveryUIHints } from './fetchDiscoveryUIHints.thunk';
 import { bentoKatsuEntityToResultsDataEntity } from './utils';
+import { definedQueryParams } from '@/utils/requests';
 
 export type QueryResultMatchData<T extends DiscoveryMatchObject> = {
   status: RequestStatus;
@@ -47,7 +49,7 @@ export type QueryState = {
   discoveryStatus: RequestStatus;
   // ----
   filterSections: SearchFieldResponse['sections'];
-  filterQueryParams: QueryParams;
+  filterQueryParams: DefinedQueryParams;
   // ----
   textQuery: string;
   // ----
@@ -177,7 +179,7 @@ const query = createSlice({
     },
     // -----------------------------------------------------------------------------------------------------------------
     setFilterQueryParams: (state, { payload }: PayloadAction<QueryParams>) => {
-      state.filterQueryParams = payload;
+      state.filterQueryParams = definedQueryParams(payload);
     },
     setTextQuery: (state, { payload }: PayloadAction<string>) => {
       state.textQuery = payload;
