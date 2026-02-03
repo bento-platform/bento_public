@@ -1,25 +1,30 @@
 import { useCallback, useMemo } from 'react';
-import { Space } from 'antd';
 
 import { disableChart } from '@/features/search/query.store';
 import { useAppDispatch } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
+import { useDashboardChartDimensions } from '@/features/ui/hooks';
 
-import { CHART_WIDTH, GRID_GAP } from '@/constants/overviewConstants';
-
+import { Space } from 'antd';
 import ChartCard from './ChartCard';
 
 import type { ChartDataField } from '@/types/data';
 
+import { getChartCssWidth } from '@/utils/chart';
+
 const OverviewDisplayData = ({ section, allCharts, searchableFields }: OverviewDisplayDataProps) => {
   const dispatch = useAppDispatch();
   const isSmallScreen = useSmallScreen();
+  const { nColumns, gridGap } = useDashboardChartDimensions();
 
-  const containerStyle = {
-    display: 'grid',
-    gap: `${GRID_GAP}px`,
-    gridTemplateColumns: `repeat(auto-fit, ${CHART_WIDTH}px)`,
-  };
+  const containerStyle = useMemo(
+    () => ({
+      display: 'grid',
+      gap: `${gridGap}px`,
+      gridTemplateColumns: `repeat(auto-fit, calc${getChartCssWidth(nColumns, gridGap)})`,
+    }),
+    [nColumns, gridGap]
+  );
 
   const displayedCharts = useMemo(() => allCharts.filter((e) => e.isDisplayed), [allCharts]);
 

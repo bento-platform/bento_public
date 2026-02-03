@@ -3,6 +3,7 @@ import type { ToolkitStore } from '@reduxjs/toolkit/dist/configureStore';
 
 import type { OIDCSliceState } from 'bento-auth-js';
 import { LS_OPENID_CONFIG_KEY, AuthReducer as auth, OIDCReducer as openIdConfiguration } from 'bento-auth-js';
+import { LOCALSTORAGE_UI_SETTINGS_KEY } from '@/constants/ui';
 
 import clinPhenReducer from '@/features/clinPhen/clinPhen.store';
 import configReducer from '@/features/config/config.store';
@@ -14,7 +15,7 @@ import beaconReducer from './features/beacon/beacon.store';
 import beaconNetworkReducer from './features/beacon/network.store';
 import metadataReducer from '@/features/metadata/metadata.store';
 import reference from '@/features/reference/reference.store';
-import ui from '@/features/ui/ui.store';
+import ui, { type UIState } from '@/features/ui/ui.store';
 import { getValue, saveValue } from './utils/localStorage';
 
 interface PersistedState {
@@ -86,5 +87,14 @@ observeStore<OIDCSliceState>(
     if (data && expiry && !isFetching) {
       saveValue(LS_OPENID_CONFIG_KEY, { data, expiry, isFetching });
     }
+  }
+);
+
+// Persist UI settings on state changes
+observeStore<UIState>(
+  store,
+  (state) => state.ui,
+  (currentState) => {
+    saveValue(LOCALSTORAGE_UI_SETTINGS_KEY, currentState.settings);
   }
 );

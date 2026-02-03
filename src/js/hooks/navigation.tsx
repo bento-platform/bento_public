@@ -11,6 +11,7 @@ import type { MenuItem } from '@/types/navigation';
 import { BentoRoute } from '@/types/routes';
 import { useAppDispatch, useLanguage, useTranslationFn } from '@/hooks';
 import { scopeToUrl } from '@/utils/router';
+import { LNG_CHANGE } from '@/constants/configConstants';
 
 /** Prefixes a path with the currently-selected i18n language. */
 export const useLangPrefixedUrl = (path: string): string => {
@@ -19,6 +20,22 @@ export const useLangPrefixedUrl = (path: string): string => {
     path = path.replace('^/', ''); // strip slash prefix if present
   }
   return `/${language}/${path}`;
+};
+
+export const useChangeLanguage = () => {
+  const language = useLanguage();
+  const navigate = useNavigate();
+  return useCallback(
+    (lang?: string) => {
+      const newLang = lang ?? LNG_CHANGE[language];
+      // Can't rely on there being a trailing slash at the base page (.e.g, `/en` and `/en`/ are both valid), and can't
+      // ensure project IDs don't begin with an `en` or `fr`. Thus, we use a RegExp with a `^` for language changing in
+      // the URL.
+      const path = (location.pathname + location.search).replace(new RegExp(`^/${language}`), `/${newLang}`);
+      navigate(path, { replace: true });
+    },
+    [language, navigate]
+  );
 };
 
 export const useNavigateToRoot = () => {

@@ -1,17 +1,43 @@
 import type { HexColor } from 'bento-charts';
+import type { DashboardChartMode } from '@/features/ui/types';
 
 export const COUNTS_FILL = '#75787a';
 
 export const LOCALSTORAGE_CHARTS_KEY_PREFIX = 'charts_scope-';
 export const OLD_LOCALSTORAGE_CHARTS_KEY = 'charts';
 
-export const CHART_HEIGHT = 350;
-export const PIE_CHART_HEIGHT = 300; // rendered slightly smaller since labels can clip
-export const DEFAULT_CHART_WIDTH = 1;
+type ChartDimensions = {
+  chartHeight: number;
+  pieChartHeight: number;
+  gridGap: number;
+  nColumns: number;
+};
 
-// 1400px max width: 454*3 + 19*2 = 1399
-export const CHART_WIDTH = 454;
-export const GRID_GAP = 19;
+export const CHART_DIMENSIONS: Record<DashboardChartMode, ChartDimensions> = {
+  normal: {
+    chartHeight: 350,
+    pieChartHeight: 275, // rendered slightly smaller since labels can clip
+    // 1400px max width: 454*3 + 19*2 = 1399
+    gridGap: 19,
+    nColumns: 3,
+  },
+  compact: {
+    chartHeight: 275,
+    pieChartHeight: 225,
+    // 1400px max width: 350*4 with no gap
+    gridGap: 0,
+    nColumns: 4,
+  },
+  ultraCompact: {
+    chartHeight: 250,
+    pieChartHeight: 200,
+    // 1400px max width: 280*5 with no gap
+    gridGap: 0,
+    nColumns: 5,
+  },
+};
+
+export const DEFAULT_CHART_WIDTH = 1; // Units of grid spaces, i.e., <this> * [mode].chartWidth above
 
 const NEW_CHART_COLORS: HexColor[] = ['#90BE6D', '#F8961E', '#F3722C', '#2D9CDB', '#F94144', '#F9C74F'];
 const BAR_CHART_FILL: HexColor = '#2D9CDB';

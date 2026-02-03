@@ -7,7 +7,7 @@
 
   --content-padding-v: 32px;
   --content-padding-h: 64px;
-  --content-max-width: 1400px;
+  --content-max-width: max(min(1400px, 100%), 1200px);
 
   --content-scoped-title-height: 50px;
   --content-scoped-title-margin-bottom: 24px;
@@ -40,6 +40,7 @@ body {
 .position-relative { position: relative; }
 .block { display: block; }
 .none { display: none; }
+.rounded-none { border-radius: 0; }
 .rounded-lg { border-radius: 8px; } /* also consistent with --ant-border-radius-lg */
 .rounded-xl { border-radius: 12px; }
 .rounded-e-none { border-start-end-radius: 0; border-end-end-radius: 0; }
