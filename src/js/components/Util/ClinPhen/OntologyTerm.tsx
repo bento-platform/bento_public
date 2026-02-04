@@ -21,7 +21,7 @@ const IriLink = ({ iri, children, style }: { iri: string; children?: ReactNode; 
 );
 
 interface OntologyTermProps {
-  term: OntologyTermType | undefined;
+  term: OntologyTermType | null | undefined;
   suffix?: ReactNode;
   style?: CSSProperties;
   tooltipLink?: boolean;

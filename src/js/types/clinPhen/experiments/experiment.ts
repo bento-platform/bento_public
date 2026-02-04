@@ -5,6 +5,7 @@ import type { Instrument } from './instrument';
 
 export interface Experiment extends ExtraPropertiesEntity {
   id: string;
+  // conceptually, experiment_type and experiment_ontology refer to the same thing
   experiment_type:
     | 'DNA Methylation'
     | 'mRNA-Seq'
@@ -19,7 +20,8 @@ export interface Experiment extends ExtraPropertiesEntity {
     | 'Antibody measurement'
     | 'Viral WGS'
     | 'Other';
-  experiment_ontology?: OntologyTerm[];
+  experiment_ontology?: OntologyTerm;
+  description?: string;
   study_type?:
     | 'Genomics'
     | 'Epigenomics'
@@ -29,6 +31,7 @@ export interface Experiment extends ExtraPropertiesEntity {
     | 'Metabolomics'
     | 'Proteomics'
     | 'Other';
+  // conceptually, molecule and molecule_ontology refer to the same thing
   molecule?:
     | 'total RNA'
     | 'polyA RNA'
@@ -38,7 +41,9 @@ export interface Experiment extends ExtraPropertiesEntity {
     | 'genomic DNA'
     | 'protein'
     | 'Other';
-  molecule_ontology?: OntologyTerm[];
+  molecule_ontology?: OntologyTerm;
+  library_id?: string;
+  library_description?: string;
   library_strategy?: 'Bisulfite-Seq' | 'RNA-Seq' | 'ChIP-Seq' | 'WES' | 'WGS' | 'RAD-Seq' | 'AMPLICON' | 'Other';
   library_source?:
     | 'Genomic'
@@ -52,6 +57,9 @@ export interface Experiment extends ExtraPropertiesEntity {
     | 'Other';
   library_selection?: 'Random' | 'PCR' | 'Random PCR' | 'RT-PCR' | 'MF' | 'Exome capture' | 'Other';
   library_layout?: 'Single' | 'Paired';
+  library_extract_id?: string;
+  insert_size?: number;
+  protocol_url?: string;
   extraction_protocol?: string;
   reference_registry_id?: string;
   qc_flags?: string[];

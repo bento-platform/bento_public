@@ -1,4 +1,5 @@
-import { useState, memo, useCallback } from 'react';
+import { memo, useCallback } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Alert, Card, Flex, Skeleton, Space, Statistic } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 
@@ -8,14 +9,23 @@ import CustomEmpty from '@/components/Util/CustomEmpty';
 import { COUNT_ENTITY_ORDER, COUNT_ENTITY_REGISTRY } from '@/constants/countEntities';
 import { COUNTS_FILL } from '@/constants/overviewConstants';
 import { WAITING_STATES } from '@/constants/requests';
+import { ENTITY_QUERY_PARAM, TABLE_PAGE_QUERY_PARAM, TABLE_PAGE_SIZE_QUERY_PARAM } from '@/features/search/constants';
 import { useSelectedDataset, useSelectedProject } from '@/features/metadata/hooks';
-import { useSearchQuery } from '@/features/search/hooks';
-import { useTranslationFn } from '@/hooks';
+import { useEntityAndTextQueryParams, useSearchQuery } from '@/features/search/hooks';
+import { useAppDispatch, useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
 import { useRenderCount } from '@/hooks/counts';
 import { useInnerWidth } from '@/hooks/useResponsiveContext';
+
+import { fetchDiscoveryMatches } from '@/features/search/fetchDiscoveryMatches.thunk';
+
 import type { BentoCountEntity } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
+import {
+  bentoKatsuEntityToResultsDataEntity,
+  buildQueryParamsUrl,
+  combineQueryParamsWithoutKey,
+} from '@/features/search/utils';
 
 const COUNT_CARD_BASE_HEIGHT = 114;
 const COUNT_CARD_DENOMINATOR_BREAKPOINT = 1180;
@@ -57,8 +67,13 @@ const CountCardShowHide = memo(({ selected, onClear }: { selected: boolean; onCl
 CountCardShowHide.displayName = 'CountCardShowHide';
 
 const CountsAndResults = () => {
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+
   const t = useTranslationFn();
   const renderCount = useRenderCount();
+
+  const dispatch = useAppDispatch();
 
   const windowInnerWidth = useInnerWidth();
 
@@ -73,9 +88,13 @@ const CountsAndResults = () => {
     discoveryStatus,
     filterQueryParams,
     textQuery,
+    selectedEntity,
     doneFirstLoad,
+    matchData,
+    pageSize,
     uiHints,
   } = useSearchQuery();
+  const entityAndTextQueryParams = useEntityAndTextQueryParams();
 
   const waitingForData = WAITING_STATES.includes(discoveryStatus);
   const doingFirstLoad = waitingForData && !doneFirstLoad;
@@ -83,8 +102,31 @@ const CountsAndResults = () => {
   // TODO: per-data type permissions?
   const { hasPermission: hasQueryData } = useScopeQueryData();
 
-  const [selectedEntity, setSelectedEntity] = useState<BentoCountEntity | null>(null);
-  const clearSelectedEntity = useCallback(() => setSelectedEntity(null), []);
+  const setSelectedEntity = useCallback(
+    (entity: BentoCountEntity | null) => {
+      const combinedParams = combineQueryParamsWithoutKey(filterQueryParams, entityAndTextQueryParams, [
+        ENTITY_QUERY_PARAM,
+        TABLE_PAGE_QUERY_PARAM,
+        ...(entity ? [] : [TABLE_PAGE_SIZE_QUERY_PARAM]), // Clear the page size param if closing the table
+      ]);
+      // Set the selected entity and reset the pagination via URL parameters
+      navigate(
+        buildQueryParamsUrl(
+          pathname,
+          entity
+            ? {
+                ...combinedParams,
+                [ENTITY_QUERY_PARAM]: entity,
+                [TABLE_PAGE_QUERY_PARAM]: matchData[bentoKatsuEntityToResultsDataEntity(entity)].page.toString(),
+                [TABLE_PAGE_SIZE_QUERY_PARAM]: pageSize.toString(),
+              }
+            : combinedParams
+        )
+      );
+    },
+    [navigate, pathname, filterQueryParams, entityAndTextQueryParams, matchData, pageSize]
+  );
+  const clearSelectedEntity = useCallback(() => setSelectedEntity(null), [setSelectedEntity]);
 
   const nFilters = Object.keys(filterQueryParams).length + +!!textQuery;
 
@@ -112,6 +154,11 @@ const CountsAndResults = () => {
               'shadow count-card' +
               (canSelect ? ' count-card-clickable' : '') +
               (selected ? ' count-card-selected' : '')
+            }
+            onMouseOver={
+              // If the user hovers over the count card, start a pre-fetch to improve responsivity from the user's
+              // perspective if they decide to click on it.
+              canSelect ? () => dispatch(fetchDiscoveryMatches(entity)) : undefined
             }
             onClick={canSelect ? () => setSelectedEntity(entity) : undefined}
             style={{ height: COUNT_CARD_BASE_HEIGHT + (hasQueryData ? 12 : 0) + (selected ? 12 : 0) }}

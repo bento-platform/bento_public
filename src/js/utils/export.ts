@@ -1,9 +1,10 @@
 import axios from 'axios';
 import FileSaver from 'file-saver';
 import { katsuDiscoveryMatchesUrl } from '@/constants/configConstants';
+import { scopedAuthorizedRequestConfigFromParts } from '@/utils/requests';
 import type { RootState } from '@/store';
 import type { DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
-import { scopedAuthorizedRequestConfigFromParts } from '@/utils/requests';
+import type { QueryParams } from '@/features/search/types';
 import type { ResultsDataEntity } from '@/types/entities';
 
 type AuthState = RootState['auth'];
@@ -12,7 +13,7 @@ type AuthState = RootState['auth'];
 export const downloadAllMatchesCSV = async (
   auth: AuthState,
   selectedScope: DiscoveryScopeSelection,
-  filterQueryParams: Record<string, string>,
+  filterQueryParams: QueryParams,
   textQuery: string,
   entity: ResultsDataEntity,
   filename: string

@@ -6,7 +6,8 @@ import type { JSONType } from '@/types/json';
 export type QueryFilterField = { id: string; options: string[] };
 
 export type QueryParamEntry = [string, string];
-export type QueryParams = { [key: string]: string };
+export type QueryParams = { [key: string]: string | undefined };
+export type DefinedQueryParams = { [key: string]: string }; // Same as above but with 'undefined' values filtered out.
 
 export interface SearchFieldResponse {
   sections: SearchFieldSection[];
