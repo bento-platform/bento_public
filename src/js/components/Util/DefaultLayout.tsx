@@ -28,7 +28,7 @@ const DefaultLayout = () => {
     <Layout id="default-layout" className={sidebarHidden ? 'sidebar-hidden' : collapsed ? 'sidebar-collapsed' : ''}>
       <SiteHeader />
       <Layout>
-        {!sidebarHidden && <SiteSider collapsed={collapsed} setCollapsed={setCollapsed} items={menuItems} />}
+        <SiteSider collapsed={collapsed} setCollapsed={setCollapsed} items={menuItems} hidden={sidebarHidden} />
         <Layout id="content-layout">
           <Content>
             <ScopedTitle />

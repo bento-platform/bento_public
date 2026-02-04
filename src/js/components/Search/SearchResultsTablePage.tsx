@@ -6,23 +6,19 @@ import { ExportOutlined, LeftOutlined, TableOutlined } from '@ant-design/icons';
 import { T_PLURAL_COUNT, T_SINGULAR_COUNT } from '@/constants/i18n';
 import { MIN_PAGE_SIZE, PAGE_SIZE_OPTIONS } from '@/constants/pagination';
 import { WAITING_STATES } from '@/constants/requests';
+import { TABLE_PAGE_QUERY_PARAM, TABLE_PAGE_SIZE_QUERY_PARAM } from '@/features/search/constants';
 
-import { useAppDispatch, useTranslationFn } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { useScopeDownloadData } from '@/hooks/censorship';
 import { useDownloadAllMatchesCSV } from '@/hooks/useDownloadAllMatchesCSV';
-import { useSearchQuery } from '@/features/search/hooks';
+import { useSearchQueryParams, useSearchQuery } from '@/features/search/hooks';
+import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
+import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
 
 import type { BentoKatsuEntity } from '@/types/entities';
 import type { Project, Dataset } from '@/types/metadata';
-import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
-import { fetchDiscoveryMatches } from '@/features/search/fetchDiscoveryMatches.thunk';
-import {
-  bentoKatsuEntityToResultsDataEntity,
-  type QueryResultMatchData,
-  setMatchesPage,
-  setMatchesPageSize,
-} from '@/features/search/query.store';
+import type { QueryResultMatchData } from '@/features/search/query.store';
 import type {
   DiscoveryMatchBiosample,
   DiscoveryMatchExperiment,
@@ -30,7 +26,9 @@ import type {
   DiscoveryMatchPhenopacket,
   ViewableDiscoveryMatchObject,
 } from '@/features/search/types';
+import { BentoRoute } from '@/types/routes';
 
+import { bentoKatsuEntityToResultsDataEntity, buildQueryParamsUrl } from '@/features/search/utils';
 import { setEquals } from '@/utils/sets';
 
 import DatasetProvenanceModal from '@/components/Provenance/DatasetProvenanceModal';
@@ -292,12 +290,14 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
 }) => {
   const t = useTranslationFn();
 
-  const dispatch = useAppDispatch();
   const { filterQueryParams, textQuery, resultCountsOrBools, pageSize, matchData } = useSearchQuery();
   const { fetchingPermission: fetchingCanDownload, hasPermission: canDownload } = useScopeDownloadData();
   const downloadAllMatchesCSV = useDownloadAllMatchesCSV();
   const selectedScope = useSelectedScope();
   const isSmallScreen = useSmallScreen();
+
+  const allQueryParams = useSearchQueryParams();
+  const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
 
   const [exporting, setExporting] = useState<boolean>(false);
   const [columnModalOpen, setColumnModalOpen] = useState<boolean>(false);
@@ -313,35 +313,6 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
 
   const currentStart = totalMatches > 0 ? page * pageSize + 1 : 0;
   const currentEnd = Math.min((page + 1) * pageSize, totalMatches);
-
-  // -------------------------------------------------------------------------------------------------------------------
-
-  const [shouldRefetch, setShouldRefetch] = useState<boolean>(true);
-
-  // Order of the below two effects is important - we want to first flag whether we should refetch based on a set of
-  // dependencies, and then (if we've flagged, or on initial load) run the refetch.
-  // Note: These two are decoupled to reduce needless re-fetches based on `shown` changing.
-
-  useEffect(() => {
-    console.debug('flagging should-refetch for entity:', rdEntity, {
-      page,
-      pageSize,
-      rdEntity,
-      filterQueryParams,
-      textQuery,
-    });
-    setShouldRefetch(true);
-    // Dependencies on page/page size, filterQueryParams, and textQuery to trigger re-fetch when these change.
-  }, [selectedScope, page, pageSize, rdEntity, filterQueryParams, textQuery]);
-
-  useEffect(() => {
-    if (!shown || !shouldRefetch) return;
-    // TODO: in the future, move this to the useSearchRouterAndHandler query if we have which page is being shown in the
-    //  URL or in Redux. Then, we can clean up the dispatch logic to have everything dispatched at once.
-    console.debug('fetching discovery match page for entity:', rdEntity);
-    dispatch(fetchDiscoveryMatches(rdEntity));
-    setShouldRefetch(false);
-  }, [dispatch, rdEntity, shown, shouldRefetch]);
 
   // -------------------------------------------------------------------------------------------------------------------
 
@@ -408,13 +379,23 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
             position: (isSmallScreen ? ['bottomCenter'] : ['bottomRight']) as TablePaginationConfig['position'],
             size: (isSmallScreen ? 'small' : 'default') as TablePaginationConfig['size'],
             showSizeChanger: true,
-            onChange(page, pageSize) {
-              dispatch(setMatchesPage([rdEntity, page - 1])); // AntD page is 1-indexed, discovery match page is 0-indexed
-              dispatch(setMatchesPageSize(pageSize));
+            onChange(newPage, newPageSize) {
+              // Update page/pageSize using navigation, since we sync Redux from the URL uni-directionally most times.
+              if (newPageSize !== pageSize) {
+                newPage = 1; // Reset page if we change the page size
+              }
+              navigateToSameScopeUrl(
+                buildQueryParamsUrl(BentoRoute.Overview, {
+                  ...allQueryParams,
+                  // AntD page is 1-indexed, discovery match page is 0-indexed:
+                  [TABLE_PAGE_QUERY_PARAM]: (newPage - 1).toString(),
+                  [TABLE_PAGE_SIZE_QUERY_PARAM]: newPageSize.toString(),
+                })
+              );
             },
           }
         : undefined,
-    [dispatch, rdEntity, page, pageSize, totalMatches, isSmallScreen]
+    [page, pageSize, totalMatches, isSmallScreen, navigateToSameScopeUrl, allQueryParams]
   );
 
   const onExport = useCallback(() => {
