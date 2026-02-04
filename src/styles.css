@@ -178,6 +178,13 @@ body {
   opacity: 0;
 }
 
+.scoped-title__back {
+  margin-right: 12px;
+
+  font-size: 1.8rem;
+  color: rgba(0, 0, 0, 0.45);
+}
+
 .scoped-title__breadcrumb {
   font-size: 1.8rem;
   transition: font-size 0.3s ease-in-out;
@@ -187,7 +194,7 @@ body {
   font-size: 0.9em;
 }
 
-.scoped-title__breadcrumb a {
+.scoped-title__breadcrumb .ant-breadcrumb-item a {
   height: 3rem;
 }
 
@@ -199,6 +206,14 @@ body {
 
 .scoped-title[data-stuck] .filters-applied-tag {
   opacity: 1;
+}
+
+.scoped-title[data-stuck] .scoped-title__back {
+  width: 32px;
+  min-width: 32px;
+  height: 32px;
+
+  font-size: 1.2rem;
 }
 
 .scoped-title[data-stuck] .scoped-title__breadcrumb {
@@ -237,9 +252,6 @@ body {
 #default-layout.sidebar-collapsed {
   --sidebar-width: var(--sidebar-width-collapsed);
 }
-#default-layout.sidebar-hidden {
-  --sidebar-width: 0;
-}
 
 #site-header {
   position: fixed;
@@ -269,6 +281,13 @@ body {
 
   overflow: auto;
   height: calc(100vh - var(--header-height));
+
+  transition: transform 0.3s;
+}
+
+#default-layout.sidebar-hidden #site-sider {
+  overflow: hidden;
+  transform: translate(calc(-1 * var(--sidebar-width)), 0);
 }
 
 .ant-layout-sider-trigger {
@@ -287,6 +306,11 @@ body {
   overflow: auto;
 
   transition: left 0.3s, width 0.3s;
+}
+
+#default-layout.sidebar-hidden #content-layout {
+  left: 0;
+  width: 100%;
 }
 
 #content-layout > .ant-layout-content {
@@ -470,11 +494,13 @@ h3.search-sub-form-title {
 
 /* BEGIN phenopackets/other clinical+phenotypic metadata views */
 
-.subject-view .ant-descriptions-item-label,
-.experiment-result-expanded-row .ant-descriptions-item-label,
-.extra-properties-display .ant-descriptions-item-label {
+.fixed-item-label-width .ant-descriptions-item-label {
   /* Align split line vertically in all descriptions */
   width: min(30vw, 250px);
+}
+.fixed-item-label-width-narrow .ant-descriptions-item-label {
+  /* Align split line vertically in all descriptions */
+  width: min(15vw, 125px);
 }
 
 tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .ant-descriptions-view > table {
@@ -483,9 +509,29 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
 
 /*  - compact descriptions and table */
 
+.ant-descriptions.compact .ant-descriptions-row > td {
+  padding-bottom: 2px;
+}
+
 .ant-descriptions.compact .ant-descriptions-item-content,
 .ant-descriptions.compact .ant-descriptions-item-label {
   padding: 2px 12px !important;
+}
+.ant-descriptions-item-content .ant-descriptions.compact:not(.ant-descriptions-bordered) .ant-descriptions-item-label {
+  /* nested non-bordered description items - kill horizontal padding */
+  padding: 2px 0 !important;
+}
+
+.ant-descriptions:not(.ant-descriptions-bordered) .ant-descriptions-item-label {
+  /* The default for non-bordered description labels is too light - darken it a bit for readability */
+  color: rgba(0, 0, 0, 0.65) !important;
+}
+
+.ant-descriptions.compact > .ant-descriptions-header {
+  margin-bottom: 4px;
+}
+.ant-descriptions.compact > .ant-descriptions-header > .ant-descriptions-title {
+  font-size: 14px;
 }
 
 .ant-collapse.compact .ant-collapse-header {

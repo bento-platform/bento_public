@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Card, Empty, Flex, Space, Button } from 'antd';
-import { CompressOutlined, ExpandOutlined } from '@ant-design/icons';
-import { useParams, useNavigate } from 'react-router-dom';
+import { Button, Card, Empty, Flex, Space } from 'antd';
+import { CompressOutlined, DownloadOutlined, ExpandOutlined } from '@ant-design/icons';
+import { useNavigate, useParams } from 'react-router-dom';
+
+import { saveAs } from 'file-saver';
 
 import Loader from '@/components/Loader';
 
@@ -88,6 +90,48 @@ const PhenopacketView = () => {
 
   useSetExtraBreadcrumb(phenopacket ? title : undefined);
 
+  const savePhenopacket = useCallback(() => {
+    if (!phenopacket) return;
+    const jsonString = JSON.stringify(phenopacket, null, 2);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    saveAs(blob, `phenopacket_${phenopacket.id}.json`);
+  }, [phenopacket]);
+
+  // Extra action buttons for the current tab key context:
+  const tabBarExtra = useMemo(() => {
+    if (activeKey === TabKeys.OVERVIEW) {
+      return (
+        <Space>
+          {/* Arrow function ensures ref is evaluated at click-time, not render-time */}
+          <Button
+            onClick={() => {
+              collapseRef.current?.expandAll();
+            }}
+            size="small"
+            icon={<ExpandOutlined />}
+          >
+            {t('general.expand_all')}
+          </Button>
+          <Button
+            onClick={() => {
+              collapseRef.current?.collapseAll();
+            }}
+            size="small"
+            icon={<CompressOutlined />}
+          >
+            {t('general.collapse_all')}
+          </Button>
+        </Space>
+      );
+    } else if (activeKey === TabKeys.PHENOPACKET_JSON) {
+      return (
+        <Button size="small" icon={<DownloadOutlined />} onClick={savePhenopacket}>
+          {t('file.download')}
+        </Button>
+      );
+    }
+  }, [t, collapseRef, activeKey, savePhenopacket]);
+
   if (isAuthorized.hasAttempted && !isAuthorized.hasPermission) {
     return <Empty description={t('auth.unauthorized_message')} />; // Temporary: removed once phenopacket view is integrated with search
   }
@@ -104,31 +148,7 @@ const PhenopacketView = () => {
         tabList={tabs}
         tabProps={{ destroyOnHidden: true, size: 'middle' }}
         onTabChange={handleTabChange}
-        tabBarExtraContent={
-          activeKey == TabKeys.OVERVIEW && (
-            <Space>
-              {/* Arrow function ensures ref is evaluated at click-time, not render-time */}
-              <Button
-                onClick={() => {
-                  collapseRef.current?.expandAll();
-                }}
-                size="small"
-                icon={<ExpandOutlined />}
-              >
-                {t('general.expand_all')}
-              </Button>
-              <Button
-                onClick={() => {
-                  collapseRef.current?.collapseAll();
-                }}
-                size="small"
-                icon={<CompressOutlined />}
-              >
-                {t('general.collapse_all')}
-              </Button>
-            </Space>
-          )
-        }
+        tabBarExtraContent={tabBarExtra}
       >
         {tabContent[activeKey]}
       </Card>

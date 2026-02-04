@@ -34,15 +34,10 @@ export const performKatsuDiscovery = createAsyncThunk<
   },
   {
     condition(_, { getState }) {
-      const { discoveryStatus } = getState().query;
-      const cond = discoveryStatus !== RequestStatus.Pending;
-      if (!cond) {
-        console.debug(
-          'performKatsuDiscovery() was attempted, but will not dispatch: ' +
-            `discoveryStatus=${RequestStatus[discoveryStatus]}`
-        );
-      }
-      return cond;
+      const { discoveryStatus, resultCountsInvalid } = getState().query;
+      return (
+        discoveryStatus === RequestStatus.Idle || (discoveryStatus !== RequestStatus.Pending && resultCountsInvalid)
+      );
     },
   }
 );

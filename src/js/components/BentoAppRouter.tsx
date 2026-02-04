@@ -168,22 +168,23 @@ const BentoAppRouter = () => {
         <Route path="/" element={<ScopedRoute />}>
           <Route index element={<PublicOverview />} />
           <Route path={BentoRoute.Overview} element={<PublicOverview />} />
+          <Route path={`${BentoRoute.Phenopackets}/:packetId/:tab?`} element={<PhenopacketView />} />
           {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
           {/* Beacon network is only available at the top level - scoping does not make sense for it. */}
           {BentoRoute.BeaconNetwork && <Route path={BentoRoute.BeaconNetwork} element={<NetworkUi />} />}
         </Route>
 
-        <Route path={`/${BentoRoute.Phenopackets}/:packetId/:tab?`} element={<PhenopacketView />} />
-
         <Route path="/p/:projectId" element={<ScopedRoute />}>
           <Route index element={<PublicOverview />} />
           <Route path={BentoRoute.Overview} element={<PublicOverview />} />
+          <Route path={`${BentoRoute.Phenopackets}/:packetId/:tab?`} element={<PhenopacketView />} />
           {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
         </Route>
 
         <Route path="/p/:projectId/d/:datasetId" element={<ScopedRoute />}>
           <Route index element={<PublicOverview />} />
           <Route path={BentoRoute.Overview} element={<PublicOverview />} />
+          <Route path={`${BentoRoute.Phenopackets}/:packetId/:tab?`} element={<PhenopacketView />} />
           {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
         </Route>
       </Route>

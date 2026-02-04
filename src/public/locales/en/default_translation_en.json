@@ -42,7 +42,8 @@
     "actions": "Actions",
     "ontology_class": "Ontology Class",
     "view": "View",
-    "url": "URL"
+    "url": "URL",
+    "extra_properties": "$t(Extra Properties)"
   },
   "search": {
     "filters": "Filters",
@@ -139,7 +140,8 @@
   "Created": "Created",
   "Updated": "Updated",
   "Back to catalogue": "Back to catalogue",
-  "Back to project": "Back to project",
+  "Back to project": "Back to $t(entities.project_one, lowercase)",
+  "Back to dataset": "Back to $t(entities.dataset_one, lowercase)",
   "beacon": {
     "search_beacon": "Search Beacon",
     "search_network": "Search Network",
@@ -174,12 +176,13 @@
     "time_at_last_encounter": "Time at Last Encounter",
     "karyotypic_sex": "Karyotypic Sex",
     "taxonomy": "Taxonomy",
-    "extra_properties": "Extra Properties"
+    "extra_properties": "$t(general.extra_properties)"
   },
   "time": {
     "start": "Start",
     "end": "End",
-    "days": "Days",
+    "day_one": "Day",
+    "day_other": "Days",
     "weeks": "Weeks",
     "age": "Age",
     "gestational_age": "Gestational Age",
@@ -267,17 +270,14 @@
     "file_attributes": "File Attributes",
     "download_alert": "This will download a file from an external site. Are you sure you want to do this?"
   },
-  "diseases_expanded_row": {
+  "disease": {
+    "disease": "Disease",
+    "onset": "Onset",
+    "resolution": "Resolution",
     "disease_stage": "Disease Stage(s)",
     "clinical_tnm_finding": "Clinical TNM Finding(s)",
     "primary_site": "Primary Site",
-    "laterality": "Laterality",
-    "extra_properties": "Extra Properties"
-  },
-  "diseases_table": {
-    "disease": "Disease",
-    "onset": "Onset",
-    "resolution": "Resolution"
+    "laterality": "Laterality"
   },
   "interpretations": {
     "id": "ID",
@@ -381,7 +381,6 @@
     "description": "Description",
     "modifiers": "Modifiers",
     "evidence": "Evidence",
-    "extra_properties": "Extra Properties",
     "evidence_code": "Evidence Code",
     "reference": "Reference"
   },
@@ -390,7 +389,7 @@
     "status": "Status",
     "time_of_death": "Time of Death",
     "cause_of_death": "Cause of Death",
-    "survival_time_in_days": "Survival Time in Days",
+    "survival_time": "Survival Time",
     "id": "ID",
     "subject_id": "Subject ID",
     "alternate_ids": "Alternate IDs",
@@ -398,7 +397,23 @@
     "vital_status": "Vital Status",
     "sex": "Sex",
     "karyotypic_sex": "Karyotypic Sex",
-    "taxonomy": "Taxonomy"
+    "taxonomy": "Taxonomy",
+    "ALIVE": "ALIVE",
+    "DECEASED": "DECEASED",
+    "UNKNOWN_STATUS": "UNKNOWN STATUS"
+  },
+  "phenopacket": {
+    "id": "Phenopacket ID",
+    "phenopacket_schema_version": "Phenopacket Schema Version",
+    "created_by": "Created By",
+    "submitted_by": "Submitted By",
+    "created": "Created",
+    "update": "Update",
+    "updates": "Updates",
+    "external_references": "External References",
+    "timestamp": "$t(time.timestamp)",
+    "updated_by": "Updated By",
+    "comment": "Comment"
   },
   "tab_keys": {
     "measurements": "Measurements",
@@ -406,7 +421,10 @@
     "diseases": "Diseases",
     "interpretations": "Interpretations",
     "medical_actions": "Medical Actions",
-    "ontologies": "Ontologies"
+    "ontologies": "Ontologies",
+    "metadata": "Metadata",
+    "phenopacket_json": "Phenopacket JSON",
+    "extra_properties": "$t(general.extra_properties)"
   },
   "genomic_interpretation_status": {
     "UNKNOWN_STATUS": "Unknown Status",

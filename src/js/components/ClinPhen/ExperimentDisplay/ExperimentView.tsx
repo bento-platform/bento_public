@@ -1,3 +1,6 @@
+import { useMemo } from 'react';
+import { useTranslationFn } from '@/hooks';
+
 import { Divider, Space, Typography } from 'antd';
 
 import type { DiscoveryMatchExperimentResult } from '@/features/search/types';
@@ -9,11 +12,11 @@ import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
 import TDescriptions from '@Util/TDescriptions';
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
 import FreeTextAndOrOntologyClass from '@Util/ClinPhen/FreeTextAndOrOntologyClass';
-import InstrumentDisplay from './InstrumentDisplay';
 import ExperimentResultView from '@/components/ClinPhen/ExperimentDisplay/ExperimentResultView';
+import PhenopacketLink from '@/components/ClinPhen/PhenopacketLink';
+import InstrumentDisplay from './InstrumentDisplay';
 
 import { T_PLURAL_COUNT } from '@/constants/i18n';
-import { useTranslationFn } from '@/hooks';
 import { objectToBoolean } from '@/utils/boolean';
 
 type ExperimentExpandedRowProps = {
@@ -152,30 +155,40 @@ export const ExperimentResultFileTypeCounts = ({
   return countItems.map((i) => `${i[1]} \u00d7 ${i[0]}`).join(', ');
 };
 
-const EXPERIMENT_VIEW_COLUMNS: CustomTableColumns<Experiment> = [
-  { title: 'experiment.experiment_id', dataIndex: 'id', alwaysShow: true },
-  { title: 'experiment.experiment_type', dataIndex: 'experiment_type' },
-  {
-    title: 'entities.experiment_result_other',
-    dataIndex: 'experiment_results',
-    render: (results: ExperimentResult[] | undefined) => {
-      // Render like "1 x CRAM, 2 x VCF"
-      // TODO: popover with list of file names
-      return <ExperimentResultFileTypeCounts results={results} />;
-    },
-  },
-];
-
 type ExperimentViewProps = {
   packetId?: string;
   experiments: Experiment[];
 };
 
-const ExperimentView = ({ experiments }: ExperimentViewProps) => {
+const ExperimentView = ({ packetId, experiments }: ExperimentViewProps) => {
+  const columns = useMemo<CustomTableColumns<Experiment>>(
+    () => [
+      { title: 'experiment.experiment_id', dataIndex: 'id', alwaysShow: true },
+      { title: 'experiment.experiment_type', dataIndex: 'experiment_type' },
+      {
+        title: 'entities.biosample_one',
+        dataIndex: 'biosample',
+        render: (biosampleId: string | undefined) =>
+          biosampleId ? <PhenopacketLink.Biosample packetId={packetId} sampleId={biosampleId} /> : null,
+        isEmpty: (biosampleId: string | undefined) => biosampleId === undefined,
+      },
+      {
+        title: 'entities.experiment_result_other',
+        dataIndex: 'experiment_results',
+        render: (results: ExperimentResult[] | undefined) => {
+          // Render like "1 x CRAM, 2 x VCF"
+          // TODO: popover with list of file names
+          return <ExperimentResultFileTypeCounts results={results} />;
+        },
+      },
+    ],
+    [packetId]
+  );
+
   return (
     <CustomTable<Experiment>
       dataSource={experiments}
-      columns={EXPERIMENT_VIEW_COLUMNS}
+      columns={columns}
       expandedRowRender={(record) => <ExperimentExpandedRow experiment={record} />}
       rowKey="id"
       queryKey="experiment"

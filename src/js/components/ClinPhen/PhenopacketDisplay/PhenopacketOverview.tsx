@@ -49,9 +49,15 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
   const renderItem = ([key, spec]: [SectionKey, SectionSpec]) => {
     const enabled = typeof spec.enabled === 'function' ? spec.enabled(phenopacket) : spec.enabled;
     if (!enabled) return null;
+    const itemCount = spec.itemCount?.(phenopacket);
     return {
       key,
-      label: <strong style={{ fontSize: '16px', borderTop: '10px' }}>{t(spec.titleTranslationKey)}</strong>,
+      label: (
+        <strong style={{ fontSize: '16px', borderTop: '10px' }}>
+          {t(spec.titleTranslationKey)}
+          {itemCount ? ` (${itemCount})` : null}
+        </strong>
+      ),
       children: spec.render(phenopacket),
     };
   };

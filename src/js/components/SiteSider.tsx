@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import type { MenuProps, SiderProps } from 'antd';
@@ -6,13 +6,13 @@ import { Button, Divider, Layout, Menu } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 
 import { useSelectedScope } from '@/features/metadata/hooks';
-import { useNonFilterQueryParams, useSearchQuery } from '@/features/search/hooks';
+import { useSearchQueryParams } from '@/features/search/hooks';
 import { buildQueryParamsUrl } from '@/features/search/utils';
 import { useLanguage, useTranslationFn } from '@/hooks';
-import { useIsInCatalogueMode, useNavigateToRoot } from '@/hooks/navigation';
+import { useIsInCatalogueMode, useNavigateToRoot, useNavigateToSameScopeUrl } from '@/hooks/navigation';
 import type { MenuItem } from '@/types/navigation';
 import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
-import { getCurrentPage } from '@/utils/router';
+import { getCurrentPage, scopeToUrl } from '@/utils/router';
 
 const { Sider } = Layout;
 
@@ -22,21 +22,23 @@ const SiteSider = ({
   collapsed,
   setCollapsed,
   items,
+  hidden,
 }: {
   collapsed: boolean;
   setCollapsed: SiderProps['onCollapse'];
   items: MenuItem[];
+  hidden: boolean;
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const language = useLanguage();
   const t = useTranslationFn();
-  const { filterQueryParams } = useSearchQuery();
-  const otherQueryParams = useNonFilterQueryParams();
+  const overviewQueryParams = useSearchQueryParams();
   const catalogueMode = useIsInCatalogueMode();
   const currentPage = getCurrentPage(location);
 
   const navigateToRoot = useNavigateToRoot();
+  const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
   const { scope, scopeSet } = useSelectedScope();
 
   const handleMenuClick: OnClick = useCallback(
@@ -54,14 +56,42 @@ const SiteSider = ({
       }
       newPath.push(key);
       const newPathString = '/' + newPath.join('/');
-      navigate(
-        key === BentoRoute.Overview
-          ? buildQueryParamsUrl(newPathString, { ...filterQueryParams, ...otherQueryParams })
-          : newPathString
-      );
+      // Navigate to the menu item url
+      //  - only include filter/search/overview query params if we're navigating to the overview page
+      navigate(buildQueryParamsUrl(newPathString, key === BentoRoute.Overview ? overviewQueryParams : undefined));
     },
-    [navigate, filterQueryParams, otherQueryParams, location.pathname]
+    [navigate, overviewQueryParams, location.pathname]
   );
+
+  const [backClickText, onBackClick] = useMemo(() => {
+    // If we're in a project and in catalog mode, or we're in a dataset, show a back button.
+    if ((!(scope.project && catalogueMode) && !scope.dataset) || !scopeSet) return [undefined, undefined];
+    if (currentPage === BentoRoute.Phenopackets) {
+      return [
+        scope.dataset ? 'Back to dataset' : 'Back to project',
+        () => navigateToSameScopeUrl(buildQueryParamsUrl(BentoRoute.Overview, overviewQueryParams), false),
+      ];
+    } else {
+      if (scope.dataset) {
+        return [
+          'Back to project',
+          () => navigate(scopeToUrl({ project: scope.project }, language, BentoRoute.Overview)),
+        ];
+      } else {
+        return ['Back to catalogue', navigateToRoot];
+      }
+    }
+  }, [
+    catalogueMode,
+    currentPage,
+    language,
+    navigate,
+    navigateToRoot,
+    navigateToSameScopeUrl,
+    overviewQueryParams,
+    scope,
+    scopeSet,
+  ]);
 
   return (
     <Sider
@@ -73,22 +103,23 @@ const SiteSider = ({
       collapsed={collapsed}
       onCollapse={setCollapsed}
       theme="light"
+      aria-hidden={hidden}
     >
-      {scope.project && catalogueMode && (
+      {backClickText !== undefined && onBackClick !== undefined ? (
         <>
           <div style={{ backgroundColor: '#FAFAFA' }}>
             <Button
               type="text"
               icon={<ArrowLeftOutlined />}
               style={{ margin: 4, width: 'calc(100% - 8px)', height: 38 }}
-              onClick={scope.dataset ? () => navigate(`/${language}/p/${scope.project}`) : navigateToRoot}
+              onClick={onBackClick}
             >
-              {collapsed || !scopeSet ? null : t(scope.dataset ? 'Back to project' : 'Back to catalogue')}
+              {collapsed ? null : t(backClickText)}
             </Button>
           </div>
           <Divider className="m-0" />
         </>
-      )}
+      ) : null}
       <Menu
         selectedKeys={[currentPage]}
         mode="inline"

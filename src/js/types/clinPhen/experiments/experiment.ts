@@ -65,4 +65,7 @@ export interface Experiment extends ExtraPropertiesEntity {
   qc_flags?: string[];
   experiment_results?: ExperimentResult[];
   instrument?: Instrument;
+  // Back-links
+  biosample?: string;
+  dataset?: string;
 }
