@@ -442,7 +442,7 @@
   },
   "experiment": {
     "experiment_id": "Experiment ID",
-    "description": "Description",
+    "description": "$t(general.description)",
     "protocol_url": "Protocol URL",
     "experiment_type": "Experiment Type",
     "experiment_ontology": "Experiment Type ($t(general.ontology_class))",

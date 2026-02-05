@@ -442,7 +442,6 @@
   },
   "experiment": {
     "experiment_id": "Identifiant de l'expérience",
-    "description": "Description",
     "protocol_url": "URL du protocole",
     "experiment_type": "Type d'expérience",
     "experiment_ontology": "Type d'expérience ($t(general.ontology_class, lowercase))",
