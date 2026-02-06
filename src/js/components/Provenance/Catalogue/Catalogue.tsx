@@ -5,6 +5,7 @@ import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import CatalogueCard from './CatalogueCard';
 // import CatalogueProjectSection from './CatalogueProjectSection';
 import CatalogueProjectSection from './CatalogueProjectSectionV2';
+import DatasetGrid from './DatasetGrid';
 
 const Catalogue = () => {
   const isSmallScreen = useSmallScreen();
@@ -20,9 +21,10 @@ const Catalogue = () => {
       {/* {projects.map((project) => (
         <CatalogueCard project={project} key={project.identifier} />
       ))} */}
-      {projects.map((project) => (
+      {/* {projects.map((project) => (
         <CatalogueProjectSection project={project} key={project.identifier} />
-      ))}
+      ))} */}
+      {<DatasetGrid projects={projects} />}
       {/* {projects.map((project) =>
         project.datasets.length > 1 ? (
           <CatalogueProjectSection project={project} key={project.identifier} />

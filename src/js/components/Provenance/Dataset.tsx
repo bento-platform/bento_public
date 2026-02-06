@@ -1,6 +1,6 @@
 import { type ReactNode, useCallback, useMemo, useState } from 'react';
 
-import { Avatar, Button, Card, Flex, List, Popover, Space, Tag, Typography } from 'antd';
+import { Avatar, Button, Card, Flex, List, Popover, Space, Tag, Typography, ButtonProps, Tooltip } from 'antd';
 import { ExpandAltOutlined, PieChartOutlined, SolutionOutlined } from '@ant-design/icons';
 import { FaDatabase } from 'react-icons/fa';
 
@@ -15,7 +15,7 @@ import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
 import CountsDisplay from '@/components/Util/CountsDisplay';
 import DatasetProvenanceModal from './DatasetProvenanceModal';
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 const KEYWORDS_LIMIT = 2;
 
@@ -32,15 +32,29 @@ const TagList = ({ annotations }: { annotations?: Annotation[] }) => {
   );
 };
 
+interface ActionButtonProps extends ButtonProps {
+  tooltipTitle: string;
+}
+
+const ActionButton = ({ tooltipTitle, ...buttonProps }: ActionButtonProps) => {
+  return (
+    <Tooltip title={tooltipTitle}>
+      <Button type="text" {...buttonProps} />
+    </Tooltip>
+  );
+};
+
 const Dataset = ({
   parentProjectID,
+  projectName,
   dataset,
   format,
   selected,
 }: {
   parentProjectID: string;
+  projectName?: string;
   dataset: Dataset;
-  format: 'list-item' | 'card' | 'carousel' | 'catalogue-list';
+  format: 'list-item' | 'card' | 'carousel' | 'catalogue-list' | 'card-v2';
   selected?: boolean;
 }) => {
   const navigateToScope = useNavigateToScope();
@@ -139,6 +153,40 @@ const Dataset = ({
               {t('Explore')}
             </Button>
           </Flex>
+        </Flex>
+      </Card>
+    );
+  } else if (format === 'card-v2') {
+    inner = (
+      <Card
+        title={t(title)}
+        size="small"
+        className="shadow h-full"
+        style={{ width: 400 }}
+        styles={{ body: { padding: '12px 16px', height: '175px' } }}
+        actions={[
+          <ActionButton tooltipTitle={t('Explore')} icon={<PieChartOutlined />} onClick={onNavigateOverview} />,
+          <ActionButton tooltipTitle={t('Provenance')} icon={<ExpandAltOutlined />} onClick={openProvenanceModal} />,
+        ]}
+      >
+        <Flex vertical={true} justify="space-between" className="h-full">
+          <Flex vertical={true} gap={12} className="h-full">
+            <TruncatedParagraph maxRows={2}>{t(description)}</TruncatedParagraph>
+            <Text>
+              <Text strong>{t('Project')}:</Text> {projectName}
+            </Text>
+            <Space size={8} align="start" wrap className="w-full">
+              <TagList annotations={displayKeywords} />
+              {remainingKeywords?.length > 0 && (
+                <Popover content={<TagList annotations={remainingKeywords} />}>
+                  <span className="cursor-pointer">
+                    + {remainingKeywords.length} {t('more', { count: remainingKeywords.length })}
+                  </span>
+                </Popover>
+              )}
+            </Space>
+          </Flex>
+          <CountsDisplay counts={counts} fontSize="0.875rem" />
         </Flex>
       </Card>
     );
