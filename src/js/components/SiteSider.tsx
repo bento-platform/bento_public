@@ -18,6 +18,8 @@ const { Sider } = Layout;
 
 type OnClick = MenuProps['onClick'];
 
+const NO_BACK_BUTTON = [undefined, undefined] as const;
+
 const SiteSider = ({
   collapsed,
   setCollapsed,
@@ -64,11 +66,16 @@ const SiteSider = ({
   );
 
   const [backClickText, onBackClick] = useMemo(() => {
+    if (!scopeSet) return NO_BACK_BUTTON;
     // Cases where we DO show a back button, given the scope is set:
     //  - We're in a project and in catalog mode
     //  - We're in a dataset and don't have a fixed dataset (a fixed dataset implies a fixed project as well)
-    if (!(scope.project && catalogueMode) || !(scope.dataset && !fixedDataset) || !scopeSet) {
-      return [undefined, undefined];
+    //  - Any time we're on the phenopackets page
+    if (
+      currentPage !== BentoRoute.Phenopackets &&
+      (!(scope.project && catalogueMode) || !(scope.dataset && !fixedDataset))
+    ) {
+      return NO_BACK_BUTTON;
     }
     if (currentPage === BentoRoute.Phenopackets) {
       return [
