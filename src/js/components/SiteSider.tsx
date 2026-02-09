@@ -39,7 +39,7 @@ const SiteSider = ({
 
   const navigateToRoot = useNavigateToRoot();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
-  const { scope, scopeSet } = useSelectedScope();
+  const { scope, scopeSet, fixedDataset } = useSelectedScope();
 
   const handleMenuClick: OnClick = useCallback(
     ({ key }: { key: string }) => {
@@ -64,8 +64,12 @@ const SiteSider = ({
   );
 
   const [backClickText, onBackClick] = useMemo(() => {
-    // If we're in a project and in catalog mode, or we're in a dataset, show a back button.
-    if ((!(scope.project && catalogueMode) && !scope.dataset) || !scopeSet) return [undefined, undefined];
+    // Cases where we DO show a back button, given the scope is set:
+    //  - We're in a project and in catalog mode
+    //  - We're in a dataset and don't have a fixed dataset (a fixed dataset implies a fixed project as well)
+    if (!(scope.project && catalogueMode) || !(scope.dataset && !fixedDataset) || !scopeSet) {
+      return [undefined, undefined];
+    }
     if (currentPage === BentoRoute.Phenopackets) {
       return [
         scope.dataset ? 'Back to dataset' : 'Back to project',
