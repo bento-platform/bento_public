@@ -9,7 +9,7 @@ import { useSelectedScope } from '@/features/metadata/hooks';
 import { useSearchQueryParams } from '@/features/search/hooks';
 import { buildQueryParamsUrl } from '@/features/search/utils';
 import { useLanguage, useTranslationFn } from '@/hooks';
-import { useIsInCatalogueMode, useNavigateToRoot, useNavigateToSameScopeUrl } from '@/hooks/navigation';
+import { useNavigateToRoot, useNavigateToSameScopeUrl } from '@/hooks/navigation';
 import type { MenuItem } from '@/types/navigation';
 import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
 import { getCurrentPage, scopeToUrl } from '@/utils/router';
@@ -36,12 +36,11 @@ const SiteSider = ({
   const language = useLanguage();
   const t = useTranslationFn();
   const overviewQueryParams = useSearchQueryParams();
-  const catalogueMode = useIsInCatalogueMode();
   const currentPage = getCurrentPage(location);
 
   const navigateToRoot = useNavigateToRoot();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
-  const { scope, scopeSet, fixedDataset } = useSelectedScope();
+  const { scope, scopeSet, fixedProject, fixedDataset } = useSelectedScope();
 
   const handleMenuClick: OnClick = useCallback(
     ({ key }: { key: string }) => {
@@ -71,29 +70,25 @@ const SiteSider = ({
     //  - We're in a project and in catalog mode
     //  - We're in a dataset and don't have a fixed dataset (a fixed dataset implies a fixed project as well)
     //  - Any time we're on the phenopackets page
-    if (
-      currentPage !== BentoRoute.Phenopackets &&
-      (!(scope.project && catalogueMode) || !(scope.dataset && !fixedDataset))
-    ) {
-      return NO_BACK_BUTTON;
-    }
     if (currentPage === BentoRoute.Phenopackets) {
+      // When going "back" here, we are staying in the same scope, so the logic looks a bit different:
       return [
         scope.dataset ? 'Back to dataset' : 'Back to project',
         () => navigateToSameScopeUrl(buildQueryParamsUrl(BentoRoute.Overview, overviewQueryParams), false),
       ];
     } else {
       if (scope.dataset) {
-        return [
-          'Back to project',
-          () => navigate(scopeToUrl({ project: scope.project }, language, BentoRoute.Overview)),
-        ];
+        return fixedDataset
+          ? NO_BACK_BUTTON
+          : ['Back to project', () => navigate(scopeToUrl({ project: scope.project }, language, BentoRoute.Overview))];
+      } else if (scope.project) {
+        return fixedProject ? NO_BACK_BUTTON : ['Back to catalogue', navigateToRoot];
       } else {
-        return ['Back to catalogue', navigateToRoot];
+        // No project selected, nothing to go "back" to
+        return NO_BACK_BUTTON;
       }
     }
   }, [
-    catalogueMode,
     currentPage,
     language,
     navigate,
@@ -101,6 +96,7 @@ const SiteSider = ({
     navigateToSameScopeUrl,
     overviewQueryParams,
     scope,
+    fixedProject,
     fixedDataset,
     scopeSet,
   ]);
