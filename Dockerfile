@@ -21,7 +21,7 @@ COPY src src
 
 RUN npm run build
 
-FROM nginx:1.26
+FROM nginx:1.28
 
 # Install node so that we can run the create_config_prod.js & create_service_info.js scripts
 RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - && \
