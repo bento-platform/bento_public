@@ -94,6 +94,7 @@ const SiteSider = ({
     navigateToSameScopeUrl,
     overviewQueryParams,
     scope,
+    fixedDataset,
     scopeSet,
   ]);
 
