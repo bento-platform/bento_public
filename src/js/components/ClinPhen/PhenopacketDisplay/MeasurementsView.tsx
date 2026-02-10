@@ -70,8 +70,7 @@ const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement
       } else {
         return <OntologyTermComponent term={measurement.value.ontology_class} />;
       }
-    }
-    if (measurement.complex_value) {
+    } else if (measurement.complex_value) {
       return (
         <Space direction="vertical" size={0}>
           {complexValueTypedQuantities.map((typedQuantity) => (
@@ -92,6 +91,9 @@ const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement
           ))}
         </Space>
       );
+    } else {
+      // Phenopackets schema doesn't allow this branch, so this shouldn't happen - but log it just in case:
+      console.error('neither value nor complex_value is present on measurement', measurement);
     }
   } else {
     if (value) {
