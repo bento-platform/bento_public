@@ -62,7 +62,6 @@ const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement
         const quantity = measurement.value.quantity;
         return (
           <span>
-            {/* Rather than show a link to the ontology term beside the unit, show the link in the tooltip */}
             {quantity.value} <OntologyTermComponent term={quantity.unit} tooltipLink={true} />
           </span>
         );
