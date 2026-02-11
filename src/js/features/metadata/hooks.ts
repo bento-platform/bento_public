@@ -10,7 +10,7 @@ export const useSelectedScope = () => {
 
   return useMemo(
     () => selectedScope,
-    [selectedScope.scope?.project, selectedScope.scope?.dataset, selectedScope.scopeSet]
+    [selectedScope.scope.project, selectedScope.scope.dataset, selectedScope.scopeSet]
   );
 };
 
