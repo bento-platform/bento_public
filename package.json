@@ -1,6 +1,6 @@
 {
   "name": "bento_public",
-  "version": "0.28.0",
+  "version": "0.28.1",
   "description": "A publicly accessible portal for clinical datasets, where users are able to see high-level statistics of the data available through predefined variables of interest and search the data using limited variables at a time. This portal allows users to gain a generic understanding of the data available (secure and firewalled) without the need to access it directly. Initially, this portal facilitates the search in English language only, but the French language will be added at a later time.",
   "main": "index.js",
   "scripts": {
@@ -22,7 +22,7 @@
     "antd": "^5.24.5",
     "axios": "^1.8.4",
     "bento-auth-js": "^7.2.0",
-    "bento-charts": "~2.14.1",
+    "bento-charts": "~3.0.0",
     "bento-file-display": "https://github.com/bento-platform/bento-file-display/releases/download/v0.3.2/bento-file-display-v0.3.2.tgz",
     "dotenv": "^16.3.1",
     "file-saver": "^2.0.5",
@@ -40,7 +40,7 @@
     "react-redux": "^8.1.3",
     "react-router-dom": "^6.30.0",
     "react18-json-view": "^0.2.9",
-    "recharts": "^2.13.3",
+    "recharts": "^3.7.0",
     "redux": "^4.2.1",
     "redux-thunk": "^2.4.1"
   },
