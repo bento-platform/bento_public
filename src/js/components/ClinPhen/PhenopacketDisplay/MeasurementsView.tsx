@@ -63,8 +63,7 @@ const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement
         return (
           <span>
             {/* Rather than show a link to the ontology term beside the unit, show the link in the tooltip */}
-            {quantity.value}{' '}
-            <OntologyTermComponent term={quantity.unit} tooltipLink={true} style={{ textDecoration: 'underline' }} />
+            {quantity.value} <OntologyTermComponent term={quantity.unit} tooltipLink={true} />
           </span>
         );
       } else {
@@ -75,18 +74,9 @@ const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement
         <Space direction="vertical" size={0}>
           {complexValueTypedQuantities.map((typedQuantity) => (
             <span key={typedQuantity.id}>
-              <OntologyTermComponent
-                term={typedQuantity.type}
-                suffix=":"
-                tooltipLink={true}
-                style={{ textDecoration: 'underline' }}
-              />{' '}
+              <OntologyTermComponent term={typedQuantity.type} suffix=":" tooltipLink={true} />{' '}
               {typedQuantity.quantity.value}{' '}
-              <OntologyTermComponent
-                term={typedQuantity.quantity.unit}
-                tooltipLink={true}
-                style={{ textDecoration: 'underline' }}
-              />
+              <OntologyTermComponent term={typedQuantity.quantity.unit} tooltipLink={true} />
             </span>
           ))}
         </Space>

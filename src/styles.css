@@ -11,6 +11,9 @@
 
   --content-scoped-title-height: 50px;
   --content-scoped-title-margin-bottom: 24px;
+
+  /* 90% opacity white */
+  --white-90: rgba(255, 255, 255, 0.9);
 }
 
 html,
@@ -81,6 +84,11 @@ body {
 
 .error-text {
   color: #f5222d;  /* https://ant.design/docs/spec/colors red-6 */
+}
+
+.text-white-90 {
+  /* 90% opacity white */
+  color: var(--white-90);
 }
 
 /* END utility classes */
@@ -269,7 +277,7 @@ body {
   margin: 0;
   font-size: 1.5em;
   line-height: var(--header-height);
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--white-90);
 }
 
 #site-sider {

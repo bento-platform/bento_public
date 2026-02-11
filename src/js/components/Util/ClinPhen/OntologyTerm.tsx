@@ -9,13 +9,22 @@ import { useTranslationFn } from '@/hooks';
 import { EM_DASH } from '@/constants/common';
 
 import type { CSSProperties, ReactNode } from 'react';
+import type { LinkProps } from 'antd/es/typography/Link';
 import type { OntologyTerm as OntologyTermType } from '@/types/ontology';
 import type { RouteParams } from '../../ClinPhen/PhenopacketView';
 
 const { Link } = Typography;
 
-const IriLink = ({ iri, children, style }: { iri: string; children?: ReactNode; style?: CSSProperties }) => (
-  <Link href={iri} target="_blank" rel="noopener noreferrer" style={style}>
+type IriLinkProps = { iri: string } & Omit<LinkProps, 'href' | 'rel' | 'target'>;
+
+const IriLink = ({ iri, className, children, ...props }: IriLinkProps) => (
+  <Link
+    href={iri}
+    target="_blank"
+    rel="noopener noreferrer"
+    className={'iri-link' + (className ? ` ${className}` : '')}
+    {...props}
+  >
     {children ?? <LinkOutlined />}
   </Link>
 );
@@ -43,7 +52,7 @@ const OntologyTerm = ({ term, suffix, style, tooltipLink = false }: OntologyTerm
     <Tooltip
       title={
         iri ? (
-          <IriLink iri={iri} style={{ color: 'rgba(255, 255, 255, 0.9)', textDecoration: 'underline' }}>
+          <IriLink iri={iri} className="underline text-white-90">
             {term.id}
           </IriLink>
         ) : (
@@ -58,7 +67,7 @@ const OntologyTerm = ({ term, suffix, style, tooltipLink = false }: OntologyTerm
           {suffix} <IriLink iri={iri} />
         </div>
       ) : (
-        <div className="ontology-class" style={style}>
+        <div className={'ontology-class' + iri ? ' underline' : ''}>
           {t(term.label)}
           {suffix}
         </div>
