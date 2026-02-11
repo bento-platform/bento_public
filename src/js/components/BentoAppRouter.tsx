@@ -15,7 +15,7 @@ import { makeGetAboutRequest } from '@/features/content/content.store';
 import { getBeaconConfig, getBeaconFilters } from '@/features/beacon/beacon.store';
 import { getBeaconNetworkConfig } from '@/features/beacon/network.store';
 import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
-import { useMetadata } from '@/features/metadata/hooks';
+import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
 import { getProjects, markScopeSet, selectScope } from '@/features/metadata/metadata.store';
 import { getGenomes } from '@/features/reference/reference.store';
 import { fetchSearchFields, fetchDiscoveryUIHints, resetAllQueryState } from '@/features/search/query.store';
@@ -92,10 +92,8 @@ const BentoAppRouter = () => {
 
   const { isAutoAuthenticating } = useAutoAuthenticate();
   const isAuthenticated = useIsAuthenticated();
-  const {
-    selectedScope: { scope, scopeSet },
-    projectsStatus,
-  } = useMetadata();
+  const { projectsStatus } = useMetadata();
+  const { scope, scopeSet } = useSelectedScope();
 
   useEffect(() => {
     if (!scopeSet) return;
