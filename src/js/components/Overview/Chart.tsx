@@ -5,7 +5,7 @@ import { ChoroplethMap } from 'bento-charts/dist/maps';
 import { useTranslationFn } from '@/hooks';
 import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
 
-import type { CartesianChartProps } from 'recharts/types/util/types';
+import type { BarChartProps } from 'bento-charts';
 import type { ChartData } from '@/types/data';
 import type { ChartConfig } from '@/types/discovery/chartConfig';
 
@@ -35,7 +35,7 @@ const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) =
     navigateToSameScopeUrl(`overview?${id}=${val}`);
   };
 
-  const barChartOnChartClickHandler: CartesianChartProps['onClick'] = (e) => {
+  const barChartOnChartClickHandler: BarChartProps['onChartClick'] = (e) => {
     goToSearch(id, e.activeLabel); // activeLabel is the "value" for filtering (for bar charts)
   };
   const pieChartOnClickHandler = ({ payload }: PieChartEvent) => {
