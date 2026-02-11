@@ -5,7 +5,15 @@ import type { Project, Dataset } from '@/types/metadata';
 
 export const useMetadata = () => useAppSelector((state) => state.metadata);
 
-export const useSelectedScope = () => useMetadata().selectedScope;
+export const useSelectedScope = () => {
+  const selectedScope = useMetadata().selectedScope;
+
+  return useMemo(
+    () => selectedScope,
+    [selectedScope.scope?.project, selectedScope.scope?.dataset, selectedScope.scopeSet]
+  );
+};
+
 export const useSelectedScopeAsResource = (): Resource => {
   const { scope } = useSelectedScope();
 
