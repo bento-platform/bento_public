@@ -44,6 +44,7 @@ export const useNavigateToScope = () => {
       fixedProjectAndDataset: boolean = false,
       navigateOptions: NavigateOptions | undefined = undefined
     ) => {
+      // This action will internally handle already-equal scope selections to avoid accidental re-renders:
       dispatch(selectScope(newScope));
       navigate(scopeToUrl(newScope, language, suffix, fixedProjectAndDataset), navigateOptions);
     },

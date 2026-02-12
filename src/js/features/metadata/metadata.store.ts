@@ -6,7 +6,7 @@ import { RequestStatus } from '@/types/requests';
 import type { RootState } from '@/store';
 import { printAPIError } from '@/utils/error.util';
 import { authorizedRequestConfig } from '@/utils/requests';
-import { validProjectDataset } from '@/utils/router';
+import { scopeEqual, validProjectDataset } from '@/utils/router';
 import { projectsUrl } from '@/constants/configConstants';
 
 export type DiscoveryScope = { project?: string; dataset?: string };
@@ -39,6 +39,12 @@ const initialState: MetadataState = {
     fixedDataset: false,
   },
 };
+
+const scopeSelectionEqual = (s1: DiscoveryScopeSelection, s2: DiscoveryScopeSelection) =>
+  scopeEqual(s1.scope, s2.scope) &&
+  s1.scopeSet == s2.scopeSet &&
+  s1.fixedProject == s2.fixedProject &&
+  s1.fixedDataset == s2.fixedDataset;
 
 export const getProjects = createAsyncThunk<
   PaginatedResponse<Project>,
@@ -74,8 +80,10 @@ const metadata = createSlice({
       // This forces Katsu to resolve the Discovery config with fallbacks from the bottom-up:
       // dataset -> project -> whole node
       const newScope = validProjectDataset(state.projectsByID, payload);
-      console.debug('Selecting scope', newScope);
-      state.selectedScope = newScope;
+      if (!scopeSelectionEqual(state.selectedScope, newScope)) {
+        console.debug('Selecting scope', newScope);
+        state.selectedScope = newScope;
+      }
     },
     markScopeSet: (state) => {
       state.selectedScope.scopeSet = true;
