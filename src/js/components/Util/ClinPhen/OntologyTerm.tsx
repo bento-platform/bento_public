@@ -33,10 +33,10 @@ interface OntologyTermProps {
   term: OntologyTermType | null | undefined;
   suffix?: ReactNode;
   style?: CSSProperties;
-  tooltipLink?: boolean;
+  showLinkIcon?: boolean;
 }
 
-const OntologyTerm = ({ term, suffix, style, tooltipLink = false }: OntologyTermProps) => {
+const OntologyTerm = ({ term, suffix, style, showLinkIcon = true }: OntologyTermProps) => {
   const t = useTranslationFn();
   const { packetId } = useParams<RouteParams>();
   const resources = usePhenopacketResources(packetId);
@@ -50,24 +50,16 @@ const OntologyTerm = ({ term, suffix, style, tooltipLink = false }: OntologyTerm
 
   return (
     <Tooltip
-      title={
-        iri ? (
-          <IriLink iri={iri} className="underline text-white-90">
-            {term.id}
-          </IriLink>
-        ) : (
-          term.id
-        )
-      }
+      title={iri ? <IriLink iri={iri}>{term.id}</IriLink> : term.id}
       mouseLeaveDelay={0.15} // Slightly higher than default (0.1) to let users better see the ontology class ID
     >
-      {iri && !tooltipLink ? (
+      {iri && showLinkIcon ? (
         <div className="ontology-class" style={style}>
           {t(term.label)}
           {suffix} <IriLink iri={iri} />
         </div>
       ) : (
-        <div className={'ontology-class' + iri ? ' underline' : ''}>
+        <div className={'ontology-class' + (iri ? ' underline' : '')}>
           {t(term.label)}
           {suffix}
         </div>

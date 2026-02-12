@@ -14,6 +14,10 @@
 
   /* 90% opacity white */
   --white-90: rgba(255, 255, 255, 0.9);
+  /* 80% opacity white */
+  --white-80: rgba(255, 255, 255, 0.8);
+  /* 70% opacity white */
+  --white-70: rgba(255, 255, 255, 0.7);
 }
 
 html,
@@ -52,7 +56,7 @@ body {
 .font-mono { font-family: ui-monospace, monospace; }
 .text-base { font-size: 1rem; }
 .text-center { text-align: center; }
-.underline { text-decoration-line: underline; }
+.underline, a.underline { text-decoration-line: underline; }
 
 /* custom, tailwind-esque */
 .max-w-half-cmw { max-width: calc(var(--content-max-width) / 2); }
@@ -84,11 +88,6 @@ body {
 
 .error-text {
   color: #f5222d;  /* https://ant.design/docs/spec/colors red-6 */
-}
-
-.text-white-90 {
-  /* 90% opacity white */
-  color: var(--white-90);
 }
 
 /* END utility classes */
@@ -570,6 +569,18 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
 }
 .ontology-class:hover {
   background-color: rgba(0, 0, 0, 0.04);
+}
+
+.ant-tooltip-inner a.iri-link {
+  text-decoration: underline;
+  color: var(--white-90);
+}
+.ant-tooltip-inner a.iri-link:hover {
+  text-decoration: none;
+  color: var(--white-80);
+}
+.ant-tooltip-inner a.iri-link:active {
+  color: var(--white-70);
 }
 
 /* END phenopackets/other clinical+phenotypic metadata views */
