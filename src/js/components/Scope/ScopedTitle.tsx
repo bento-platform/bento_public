@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { Breadcrumb, type BreadcrumbProps, Button, Flex, Space, Tooltip } from 'antd';
-import { ProfileOutlined, QuestionOutlined } from '@ant-design/icons';
+import { HomeOutlined, ProfileOutlined, QuestionOutlined } from '@ant-design/icons';
 import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
 import FiltersAppliedTag from '@/components/Search/FiltersAppliedTag';
 import CurrentPageHelpModal from '@/components/Util/CurrentPageHelpModal';
@@ -61,19 +61,32 @@ const ScopedTitle = () => {
     const items: BreadcrumbItemType[] = [];
 
     if (scope.project && !fixedProject) {
+      // If we have more than one project (or we're in catalogue mode), fixedProject will be false, meaning we should
+      // show project context in the navigation:
       items.push({
         title: projectTitle,
         path: `/${i18n.language}/p/${scope.project}`,
       });
-
-      if (scope.dataset && !fixedDataset) {
-        items.push({
-          title: datasetTitle,
-          path: `/${i18n.language}/p/${scope.project}/d/${scope.dataset}`,
-        });
-      }
     }
 
+    if (scope.dataset && !fixedDataset) {
+      // If we have a dataset selected, and we don't have just a single project+dataset, we should show the dataset
+      // context in the navigation.
+      if (scope.project && fixedProject) {
+        // If we additionally have a fixed project, we can "anchor" the dataset visually vs. the root page (which isn't
+        // the catalogue, but rather the project) using a home icon:
+        items.push({
+          title: <HomeOutlined />,
+          path: `/${i18n.language}/`,
+        });
+      }
+      items.push({
+        title: datasetTitle,
+        path: `/${i18n.language}/p/${scope.project}/d/${scope.dataset}`,
+      });
+    }
+
+    // We treat the overview as the "default" page, meaning we won't show the page name in the breadcrumb bar.
     if (currentPage !== BentoRoute.Overview) {
       items.push({ title: currentPageTitle });
     }
