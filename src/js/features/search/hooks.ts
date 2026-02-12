@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useAppSelector } from '@/hooks';
+import { useScopeQueryData } from '@/hooks/censorship';
 import { ENTITY_QUERY_PARAM, TABLE_PAGE_QUERY_PARAM, TABLE_PAGE_SIZE_QUERY_PARAM, TEXT_QUERY_PARAM } from './constants';
 import type { QueryFilterField, QueryParams } from './types';
 import { bentoKatsuEntityToResultsDataEntity } from './utils';
@@ -15,6 +16,7 @@ export const useQueryFilterFields = (): QueryFilterField[] => {
 };
 
 export const useEntityAndTextQueryParams = (): QueryParams => {
+  const { hasPermission: queryDataPerm } = useScopeQueryData();
   const { selectedEntity, matchData, pageSize, textQuery } = useSearchQuery();
   return useMemo<QueryParams>(() => {
     const qp: QueryParams = {};
@@ -24,7 +26,10 @@ export const useEntityAndTextQueryParams = (): QueryParams => {
       qp[TABLE_PAGE_QUERY_PARAM] = matchData[bentoKatsuEntityToResultsDataEntity(selectedEntity)].page.toString();
     }
 
-    qp[TABLE_PAGE_SIZE_QUERY_PARAM] = pageSize.toString();
+    if (queryDataPerm) {
+      // only include the page size query param if we're authorized to view results tables
+      qp[TABLE_PAGE_SIZE_QUERY_PARAM] = pageSize.toString();
+    }
 
     if (textQuery) {
       // Only include text query parameter if textQuery is set to a non-false value.
@@ -32,7 +37,7 @@ export const useEntityAndTextQueryParams = (): QueryParams => {
     }
 
     return qp;
-  }, [selectedEntity, matchData, pageSize, textQuery]);
+  }, [selectedEntity, matchData, pageSize, queryDataPerm, textQuery]);
 };
 
 /**
