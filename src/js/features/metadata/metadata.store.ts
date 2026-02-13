@@ -23,6 +23,7 @@ export interface MetadataState {
   projectsByID: Record<string, Project>;
   datasetsByID: Record<string, Dataset>;
   projectsStatus: RequestStatus;
+  projectsError: string;
   selectedScope: DiscoveryScopeSelection;
 }
 
@@ -31,6 +32,7 @@ const initialState: MetadataState = {
   projectsByID: {},
   datasetsByID: {},
   projectsStatus: RequestStatus.Idle,
+  projectsError: '',
   selectedScope: {
     scope: { project: undefined, dataset: undefined },
     // Whether scope has been set from URL/action yet. If it hasn't, we need to wait before fetching scoped data.
@@ -99,9 +101,13 @@ const metadata = createSlice({
       state.projectsByID = Object.fromEntries(projects.map((p) => [p.identifier, p]));
       state.datasetsByID = Object.fromEntries(projects.flatMap((p) => p.datasets.map((d) => [d.identifier, d])));
       state.projectsStatus = RequestStatus.Fulfilled;
+      state.projectsError = '';
     });
-    builder.addCase(getProjects.rejected, (state) => {
+    builder.addCase(getProjects.rejected, (state, { payload }) => {
       state.projectsStatus = RequestStatus.Rejected;
+      if (typeof payload === 'string') {
+        state.projectsError = payload;
+      }
     });
   },
 });

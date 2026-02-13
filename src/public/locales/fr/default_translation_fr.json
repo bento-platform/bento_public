@@ -46,6 +46,9 @@
     "view": "Afficher",
     "url": "URL"
   },
+  "errors": {
+    "project_fetch": "Erreur lors du chargement des projets"
+  },
   "search": {
     "filters": "Filtres",
     "filters_applied_one": "{{count}} filtre appliqué",
@@ -448,7 +451,7 @@
     "study_type": "Type d'étude",
     "molecule": "Molécule",
     "molecule_ontology": "Molécule ($t(general.ontology_class, lowercase))",
-    "library_id": "Identifiant de génothèque", 
+    "library_id": "Identifiant de génothèque",
     "library_description": "Description de génothèque",
     "library_strategy": "Stratégie de génothèque",
     "library_source": "Source de génothèque",
