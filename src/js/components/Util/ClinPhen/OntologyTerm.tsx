@@ -8,6 +8,8 @@ import { useTranslationFn } from '@/hooks';
 
 import { EM_DASH } from '@/constants/common';
 
+import clsx from 'clsx';
+
 import type { CSSProperties, ReactNode } from 'react';
 import type { LinkProps } from 'antd/es/typography/Link';
 import type { OntologyTerm as OntologyTermType } from '@/types/ontology';
@@ -18,13 +20,7 @@ const { Link } = Typography;
 type IriLinkProps = { iri: string } & Omit<LinkProps, 'href' | 'rel' | 'target'>;
 
 const IriLink = ({ iri, className, children, ...props }: IriLinkProps) => (
-  <Link
-    href={iri}
-    target="_blank"
-    rel="noopener noreferrer"
-    className={'iri-link' + (className ? ` ${className}` : '')}
-    {...props}
-  >
+  <Link href={iri} target="_blank" rel="noopener noreferrer" className={clsx('iri-link', className)} {...props}>
     {children ?? <LinkOutlined />}
   </Link>
 );
@@ -59,7 +55,7 @@ const OntologyTerm = ({ term, suffix, style, showLinkIcon = true }: OntologyTerm
           {suffix} <IriLink iri={iri} />
         </div>
       ) : (
-        <div className={'ontology-class' + (iri ? ' underline' : '')}>
+        <div className={clsx('ontology-class', iri && 'underline')}>
           {t(term.label)}
           {suffix}
         </div>

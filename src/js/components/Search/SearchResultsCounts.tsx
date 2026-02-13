@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react';
 import { Flex, Skeleton, Space, Statistic } from 'antd';
 import { ExperimentOutlined, TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
+import clsx from 'clsx';
 
 import CountsTitleWithHelp from '@/components/Util/CountsTitleWithHelp';
 import { COUNTS_FILL } from '@/constants/overviewConstants';
@@ -55,11 +56,11 @@ const SearchResultsCounts = ({
         <>
           <div
             onClick={individualsClickable ? () => setSelectedPage('individuals') : undefined}
-            className={[
+            className={clsx(
               'search-result-statistic',
-              ...(selectedPage === 'individuals' ? ['selected'] : []),
-              ...(individualsClickable ? ['enabled'] : []),
-            ].join(' ')}
+              selectedPage === 'individuals' && 'selected',
+              individualsClickable && 'enabled'
+            )}
           >
             <Statistic
               title={<CountsTitleWithHelp entity="individual" showHelp={!isBeaconNetwork} />}
