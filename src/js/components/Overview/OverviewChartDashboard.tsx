@@ -8,12 +8,14 @@ import {
   SolutionOutlined,
 } from '@ant-design/icons';
 
+import clsx from 'clsx';
 import { convertSequenceAndDisplayData, generateLSChartDataKey, saveValue } from '@/utils/localStorage';
+
 import type { Sections } from '@/types/data';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
+import { RequestStatus } from '@/types/requests';
 
 import { WAITING_STATES } from '@/constants/requests';
-import { RequestStatus } from '@/types/requests';
 
 import AboutBox from './AboutBox';
 import OverviewSection from './OverviewSection';
@@ -22,13 +24,13 @@ import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
 import CountsAndResults from './CountsAndResults';
 import LastIngestionInfo from './LastIngestion';
 import DatasetProvenance from '@/components/Provenance/DatasetProvenance';
+import FiltersAppliedTag from '@/components/Search/FiltersAppliedTag';
 import SearchForm from '@/components/Search/SearchForm';
 
 import { useTranslationFn } from '@/hooks';
 import { useSearchRouterAndHandler } from '@/hooks/useSearchRouterAndHandler';
 import { useSelectedDataset, useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
 import { useSearchQuery, useSearchableFields } from '@/features/search/hooks';
-import FiltersAppliedTag from '@/components/Search/FiltersAppliedTag';
 
 const saveScopeOverviewToLS = (scope: DiscoveryScope, sections: Sections) => {
   saveValue(generateLSChartDataKey(scope), convertSequenceAndDisplayData(sections));
@@ -143,7 +145,7 @@ const OverviewChartDashboard = () => {
         ) : null}
 
         {displayedSections.map(({ sectionTitle, charts }, i) => (
-          <div key={i} className={'overview' + (loadingNewData ? ' loading' : '')}>
+          <div key={i} className={clsx('overview', loadingNewData && 'loading')}>
             <OverviewSection title={sectionTitle} chartData={charts} searchableFields={searchableFields} />
           </div>
         ))}

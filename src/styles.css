@@ -11,6 +11,13 @@
 
   --content-scoped-title-height: 50px;
   --content-scoped-title-margin-bottom: 24px;
+
+  /* 90% opacity white */
+  --white-90: rgba(255, 255, 255, 0.9);
+  /* 80% opacity white */
+  --white-80: rgba(255, 255, 255, 0.8);
+  /* 70% opacity white */
+  --white-70: rgba(255, 255, 255, 0.7);
 }
 
 html,
@@ -49,7 +56,7 @@ body {
 .font-mono { font-family: ui-monospace, monospace; }
 .text-base { font-size: 1rem; }
 .text-center { text-align: center; }
-.underline { text-decoration-line: underline; }
+.underline, a.underline { text-decoration-line: underline; }
 
 /* custom, tailwind-esque */
 .max-w-half-cmw { max-width: calc(var(--content-max-width) / 2); }
@@ -269,7 +276,7 @@ body {
   margin: 0;
   font-size: 1.5em;
   line-height: var(--header-height);
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--white-90);
 }
 
 #site-sider {
@@ -552,6 +559,28 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   /* undo border 0 set by ant design styling for tables nested directly in a cell if we have anything in between.
      border colour should be synced to global border colour. */
   border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.ontology-class {
+  display: inline-block;
+  padding: 0 2px;
+  border-radius: 4px;
+  transition: background-color 0.15s ease-in-out;
+}
+.ontology-class:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.ant-tooltip-inner a.iri-link {
+  text-decoration: underline;
+  color: var(--white-90);
+}
+.ant-tooltip-inner a.iri-link:hover {
+  text-decoration: none;
+  color: var(--white-80);
+}
+.ant-tooltip-inner a.iri-link:active {
+  color: var(--white-70);
 }
 
 /* END phenopackets/other clinical+phenotypic metadata views */
