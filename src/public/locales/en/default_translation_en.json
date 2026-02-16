@@ -45,6 +45,9 @@
     "url": "URL",
     "extra_properties": "$t(Extra Properties)"
   },
+  "errors": {
+    "project_fetch": "Error fetching projects"
+  },
   "search": {
     "filters": "Filters",
     "filters_applied_one": "{{count}} filter applied",
