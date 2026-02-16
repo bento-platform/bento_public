@@ -73,8 +73,7 @@ const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement
         <Space direction="vertical" size={0}>
           {complexValueTypedQuantities.map((typedQuantity) => (
             <span key={typedQuantity.id}>
-              <OntologyTermComponent term={typedQuantity.type} suffix=":" hideLinkIcon />{' '}
-              {typedQuantity.quantity.value}{' '}
+              <OntologyTermComponent term={typedQuantity.type} suffix=":" hideLinkIcon /> {typedQuantity.quantity.value}{' '}
               <OntologyTermComponent term={typedQuantity.quantity.unit} hideLinkIcon />
             </span>
           ))}
