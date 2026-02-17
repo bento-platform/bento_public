@@ -1,10 +1,9 @@
 import { useCallback, useMemo, useState } from 'react';
-import { Button, Popover, Space, Tooltip, Typography } from 'antd';
+import { Button, Space, Tooltip } from 'antd';
 import { EyeOutlined } from '@ant-design/icons';
 
 import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
-import { RequestStatus } from '@/types/requests';
 
 import PhenopacketLink from '@/components/ClinPhen/PhenopacketLink';
 import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
@@ -13,20 +12,16 @@ import TDescriptions from '@Util/TDescriptions';
 import DownloadButton from '@Util/DownloadButton';
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
 import UrlOrDrsUrlWithPopover from '@Util/UrlOrDrsUrlWithPopover';
-import InteractableText from '@Util/InteractableText';
-import OntologyTerm from '@Util/ClinPhen/OntologyTerm';
+import ReferenceGenomePopoverField from '@Util/ClinPhen/ReferenceGenomePopoverField';
 
 import { useScopeDownloadData } from '@/hooks/censorship';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { useTranslationFn } from '@/hooks';
-import { useReference } from '@/features/reference/hooks';
 
 import { objectToBoolean } from '@/utils/boolean';
 
 import { VIEWABLE_FILE_EXTENSIONS } from 'bento-file-display';
 import { VIEWABLE_FILE_FORMATS } from '@/constants/files';
-
-const { Link } = Typography;
 
 export const ExperimentResultIndices = ({ indices }: { indices: ExperimentResult['indices'] }) => {
   return indices.length === 1 ? (
@@ -214,47 +209,6 @@ export const ExperimentResultActions = (props: ExperimentResultActionsProps) => 
       ) : null}
     </div>
   );
-};
-
-const ReferenceGenomePopoverField = ({ referenceGenomeId }: { referenceGenomeId: string }) => {
-  const { genomesStatus, genomesByID } = useReference();
-
-  if (genomesStatus === RequestStatus.Fulfilled && genomesByID[referenceGenomeId]) {
-    const rgInfo = genomesByID[referenceGenomeId];
-
-    const items: ConditionalDescriptionItem[] = [
-      { key: 'Taxon', children: <OntologyTerm term={rgInfo.taxon} italic /> },
-      { key: 'FASTA', children: <Link href={rgInfo.fasta}>{rgInfo.fasta}</Link> },
-      { key: 'FAI', children: <Link href={rgInfo.fai}>{rgInfo.fai}</Link> },
-      { key: 'GFF3.gz', children: <Link href={rgInfo?.gff3_gz}>{rgInfo?.gff3_gz}</Link>, isVisible: rgInfo?.gff3_gz },
-      {
-        key: 'GFF3.gz TBI',
-        children: <Link href={rgInfo?.gff3_gz_tbi}>{rgInfo?.gff3_gz_tbi}</Link>,
-        isVisible: rgInfo?.gff3_gz_tbi,
-      },
-      {
-        key: 'FASTA Checksums',
-        children: (
-          <Space size={0} direction="vertical">
-            <div>
-              <strong>MD5:</strong> {rgInfo.md5}
-            </div>
-            <div>
-              <strong>GA4GH:</strong> {rgInfo.ga4gh}
-            </div>
-          </Space>
-        ),
-      },
-    ];
-    const content = <TDescriptions column={1} items={items} size="compact" bordered />;
-    return (
-      <Popover content={content}>
-        <InteractableText>{referenceGenomeId}</InteractableText>
-      </Popover>
-    );
-  }
-
-  return referenceGenomeId;
 };
 
 type ExperimentResultViewProps = {
