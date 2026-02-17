@@ -1,5 +1,5 @@
-import { useCallback, useMemo, useState } from 'react';
-import { Button, Space, Tooltip } from 'antd';
+import { Children, useCallback, useMemo, useState } from 'react';
+import { Button, Popover, Space, Tooltip, Typography } from 'antd';
 import { EyeOutlined } from '@ant-design/icons';
 
 import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
@@ -12,6 +12,7 @@ import TDescriptions from '@Util/TDescriptions';
 import DownloadButton from '@Util/DownloadButton';
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
 import UrlOrDrsUrlWithPopover from '@Util/UrlOrDrsUrlWithPopover';
+import InteractableText from '@/components/Util/InteractableText';
 
 import { useScopeDownloadData } from '@/hooks/censorship';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
@@ -21,6 +22,11 @@ import { objectToBoolean } from '@/utils/boolean';
 
 import { VIEWABLE_FILE_EXTENSIONS } from 'bento-file-display';
 import { VIEWABLE_FILE_FORMATS } from '@/constants/files';
+import { useReference } from '@/features/reference/hooks';
+import { RequestStatus } from '@/types/requests';
+import OntologyTerm from '@/components/Util/ClinPhen/OntologyTerm';
+
+const { Link } = Typography;
 
 export const ExperimentResultIndices = ({ indices }: { indices: ExperimentResult['indices'] }) => {
   return indices.length === 1 ? (
@@ -210,6 +216,43 @@ export const ExperimentResultActions = (props: ExperimentResultActionsProps) => 
   );
 };
 
+const ReferenceGenomePopoverField = ({ referenceGenomeId }: { referenceGenomeId: string }) => {
+  const { genomesStatus, genomesByID } = useReference();
+
+  if (genomesStatus === RequestStatus.Fulfilled && genomesByID[referenceGenomeId]) {
+    const rgInfo = genomesByID[referenceGenomeId];
+
+    const items: ConditionalDescriptionItem[] = [
+      { key: 'Taxon', children: <OntologyTerm term={rgInfo.taxon} /> },
+      { key: 'FASTA', children: <Link href={rgInfo.fasta}>{rgInfo.fasta}</Link> },
+      { key: 'FAI', children: <Link>{rgInfo.fai}</Link> },
+      { key: 'GFF3.gz', children: <Link>{rgInfo.gff3_gz}</Link> },
+      { key: 'GFF3.gz TBI', children: <Link>{rgInfo.gff3_gz_tbi}</Link> },
+      {
+        key: 'FASTA ChecksumS',
+        children: (
+          <Space size="small" direction="vertical">
+            <div>
+              <strong>MD5:</strong> {rgInfo.md5}
+            </div>
+            <div>
+              <strong>GA4GH:</strong> {rgInfo.ga4gh}
+            </div>
+          </Space>
+        ),
+      },
+    ];
+    const content = <TDescriptions column={1} items={items} size="compact" bordered />;
+    return (
+      <Popover content={content}>
+        <InteractableText>{referenceGenomeId}</InteractableText>
+      </Popover>
+    );
+  }
+
+  return referenceGenomeId;
+};
+
 type ExperimentResultViewProps = {
   packetId?: string;
   // Optional - if this is in the context of a single experiment, don't link the selected experiment:
@@ -247,7 +290,11 @@ const ExperimentResultView = ({
       },
       ...(isSmallScreen ? [] : [{ title: 'general.description', dataIndex: 'description' }]),
       // TODO: nice render with modal to reference genome:
-      { title: 'experiment_result.genome_assembly_id', dataIndex: 'genome_assembly_id' },
+      {
+        title: 'experiment_result.genome_assembly_id',
+        dataIndex: 'genome_assembly_id',
+        render: (genome_assemby_id: string) => <ReferenceGenomePopoverField referenceGenomeId={genome_assemby_id} />,
+      },
       { title: 'experiment_result.file_format', dataIndex: 'file_format' },
       ...(isSmallScreen
         ? []
