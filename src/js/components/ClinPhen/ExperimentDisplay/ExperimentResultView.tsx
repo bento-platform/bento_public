@@ -229,7 +229,7 @@ const ReferenceGenomePopoverField = ({ referenceGenomeId }: { referenceGenomeId:
       { key: 'GFF3.gz', children: <Link>{rgInfo.gff3_gz}</Link> },
       { key: 'GFF3.gz TBI', children: <Link>{rgInfo.gff3_gz_tbi}</Link> },
       {
-        key: 'FASTA ChecksumS',
+        key: 'FASTA Checksums',
         children: (
           <Space size="small" direction="vertical">
             <div>
@@ -292,7 +292,7 @@ const ExperimentResultView = ({
       {
         title: 'experiment_result.genome_assembly_id',
         dataIndex: 'genome_assembly_id',
-        render: (genome_assemby_id: string) => <ReferenceGenomePopoverField referenceGenomeId={genome_assemby_id} />,
+        render: (genomeAssemblyId: string) => <ReferenceGenomePopoverField referenceGenomeId={genomeAssemblyId} />,
       },
       { title: 'experiment_result.file_format', dataIndex: 'file_format' },
       ...(isSmallScreen
