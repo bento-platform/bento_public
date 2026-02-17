@@ -4,6 +4,7 @@ import { EyeOutlined } from '@ant-design/icons';
 
 import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
+import { RequestStatus } from '@/types/requests';
 
 import PhenopacketLink from '@/components/ClinPhen/PhenopacketLink';
 import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
@@ -12,19 +13,18 @@ import TDescriptions from '@Util/TDescriptions';
 import DownloadButton from '@Util/DownloadButton';
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
 import UrlOrDrsUrlWithPopover from '@Util/UrlOrDrsUrlWithPopover';
-import InteractableText from '@/components/Util/InteractableText';
+import InteractableText from '@Util/InteractableText';
+import OntologyTerm from '@Util/ClinPhen/OntologyTerm';
 
 import { useScopeDownloadData } from '@/hooks/censorship';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { useTranslationFn } from '@/hooks';
+import { useReference } from '@/features/reference/hooks';
 
 import { objectToBoolean } from '@/utils/boolean';
 
 import { VIEWABLE_FILE_EXTENSIONS } from 'bento-file-display';
 import { VIEWABLE_FILE_FORMATS } from '@/constants/files';
-import { useReference } from '@/features/reference/hooks';
-import { RequestStatus } from '@/types/requests';
-import OntologyTerm from '@/components/Util/ClinPhen/OntologyTerm';
 
 const { Link } = Typography;
 
