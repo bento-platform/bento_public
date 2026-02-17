@@ -51,7 +51,7 @@ const OntologyTerm = ({ term, suffix, style, hideLinkIcon = false, italic = fals
       mouseLeaveDelay={0.15} // Slightly higher than default (0.1) to let users better see the ontology class ID
     >
       {iri && !hideLinkIcon ? (
-        <div className={clsx("ontology-class", italic && 'italic')} style={style}>
+        <div className={clsx('ontology-class', italic && 'italic')} style={style}>
           {t(term.label)}
           {suffix} <IriLink iri={iri} />
         </div>

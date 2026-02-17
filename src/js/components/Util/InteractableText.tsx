@@ -6,7 +6,7 @@ const { Text } = Typography;
 
 const InteractableText = ({ children, className, ...props }: TextProps) => {
   return (
-    <Text className={clsx("dotted-underline", className)} {...props}>
+    <Text className={clsx('dotted-underline', className)} {...props}>
       {children}
     </Text>
   );
