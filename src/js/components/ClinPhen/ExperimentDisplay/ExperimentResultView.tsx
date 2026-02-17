@@ -289,7 +289,6 @@ const ExperimentResultView = ({
         ),
       },
       ...(isSmallScreen ? [] : [{ title: 'general.description', dataIndex: 'description' }]),
-      // TODO: nice render with modal to reference genome:
       {
         title: 'experiment_result.genome_assembly_id',
         dataIndex: 'genome_assembly_id',
