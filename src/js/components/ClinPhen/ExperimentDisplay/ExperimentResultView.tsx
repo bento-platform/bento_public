@@ -226,8 +226,8 @@ const ReferenceGenomePopoverField = ({ referenceGenomeId }: { referenceGenomeId:
       { key: 'Taxon', children: <OntologyTerm term={rgInfo.taxon} italic /> },
       { key: 'FASTA', children: <Link href={rgInfo.fasta}>{rgInfo.fasta}</Link> },
       { key: 'FAI', children: <Link href={rgInfo.fai}>{rgInfo.fai}</Link> },
-      { key: 'GFF3.gz', children: <Link href={rgInfo.gff3_gz}>{rgInfo.gff3_gz}</Link> },
-      { key: 'GFF3.gz TBI', children: <Link href={rgInfo.gff3_gz_tbi}>{rgInfo.gff3_gz_tbi}</Link> },
+      { key: 'GFF3.gz', children: <Link href={rgInfo?.gff3_gz}>{rgInfo?.gff3_gz}</Link>, isVisible: rgInfo?.gff3_gz },
+      { key: 'GFF3.gz TBI', children: <Link href={rgInfo?.gff3_gz_tbi}>{rgInfo?.gff3_gz_tbi}</Link>, isVisible: rgInfo?.gff3_gz_tbi },
       {
         key: 'FASTA Checksums',
         children: (
