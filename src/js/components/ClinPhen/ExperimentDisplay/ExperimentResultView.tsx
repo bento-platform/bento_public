@@ -237,10 +237,10 @@ const ReferenceGenomePopoverField = ({ referenceGenomeId }: { referenceGenomeId:
         children: (
           <Space size={0} direction="vertical">
             <div>
-              <strong>md5:</strong> {rgInfo.md5}
+              <strong>MD5:</strong> {rgInfo.md5}
             </div>
             <div>
-              <strong>ga4gh:</strong> {rgInfo.ga4gh}
+              <strong>GA4GH:</strong> {rgInfo.ga4gh}
             </div>
           </Space>
         ),
