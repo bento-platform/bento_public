@@ -76,7 +76,7 @@ export const ExperimentResultExpandedRow = ({
     },
     {
       key: 'genome_assembly_id',
-      children: experimentResult.genome_assembly_id, // TODO: modal to reference genome details
+      children: <ReferenceGenomePopoverField referenceGenomeId={experimentResult.genome_assembly_id} />,
     },
     {
       key: 'file_format',
