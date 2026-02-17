@@ -57,7 +57,7 @@ body {
 .text-base { font-size: 1rem; }
 .text-center { text-align: center; }
 .underline, a.underline { text-decoration-line: underline; }
-.dotted-underline { text-decoration: underline dotted; }
+.decoration-dotted { text-decoration-style: dotted; }
 .italic { font-style: italic;}
 
 /* custom, tailwind-esque */

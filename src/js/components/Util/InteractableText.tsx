@@ -5,7 +5,7 @@ import clsx from 'clsx';
 const { Text } = Typography;
 
 const InteractableText = ({ children, className, ...props }: TextProps) => (
-  <Text className={clsx('dotted-underline', className)} {...props}>
+  <Text className={clsx('underline decoration-dotted', className)} {...props}>
     {children}
   </Text>
 );
