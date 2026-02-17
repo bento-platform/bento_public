@@ -231,12 +231,12 @@ const ReferenceGenomePopoverField = ({ referenceGenomeId }: { referenceGenomeId:
       {
         key: 'FASTA Checksums',
         children: (
-          <Space size="small" direction="vertical">
+          <Space size={0} direction="vertical">
             <div>
-              <strong>MD5:</strong> {rgInfo.md5}
+              <strong>md5:</strong> {rgInfo.md5}
             </div>
             <div>
-              <strong>GA4GH:</strong> {rgInfo.ga4gh}
+              <strong>ga4gh:</strong> {rgInfo.ga4gh}
             </div>
           </Space>
         ),
