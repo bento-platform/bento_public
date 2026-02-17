@@ -1,6 +1,6 @@
 import { Typography } from 'antd';
 import { type TextProps } from 'antd/es/typography/Text';
-import clsx from 'clsx/clsx';
+import clsx from 'clsx';
 
 const { Text } = Typography;
 
