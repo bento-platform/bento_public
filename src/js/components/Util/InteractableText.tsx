@@ -4,12 +4,10 @@ import clsx from 'clsx/clsx';
 
 const { Text } = Typography;
 
-const InteractableText = ({ children, className, ...props }: TextProps) => {
-  return (
-    <Text className={clsx('dotted-underline', className)} {...props}>
-      {children}
-    </Text>
-  );
-};
+const InteractableText = ({ children, className, ...props }: TextProps) => (
+  <Text className={clsx('dotted-underline', className)} {...props}>
+    {children}
+  </Text>
+);
 
 export default InteractableText;
