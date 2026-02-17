@@ -46,6 +46,7 @@ import {
   experimentResultViewable,
   type ExperimentResultActionsProps,
 } from '@/components/ClinPhen/ExperimentDisplay/ExperimentResultView';
+import ReferenceGenomePopoverField from '../Util/ClinPhen/ReferenceGenomePopoverField';
 
 type SearchColRenderContext = {
   onProjectClick: (id: string) => void;
@@ -156,6 +157,7 @@ const EXPERIMENT_RESULT_SEARCH_TABLE_COLUMNS = {
   genome_assembly_id: {
     title: 'experiment_result.genome_assembly_id',
     dataIndex: 'genome_assembly_id',
+    render: (_ctx) => (gaId: string) => <ReferenceGenomePopoverField referenceGenomeId={gaId} />,
   } as ResultsTableColumn<DiscoveryMatchExperimentResult>,
   file_format: {
     title: 'experiment_result.file_format',
