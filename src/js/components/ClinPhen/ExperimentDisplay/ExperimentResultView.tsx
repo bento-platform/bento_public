@@ -240,6 +240,7 @@ const ExperimentResultView = ({
         dataIndex: 'filename',
         alwaysShow: true,
         ellipsis: true,
+        width: '45%',
       },
       ...(isSmallScreen ? [] : [{ title: 'general.description', dataIndex: 'description' }]),
       // TODO: nice render with modal to reference genome:
