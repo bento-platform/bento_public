@@ -240,19 +240,17 @@ const ExperimentResultView = ({
         title: 'experiment_result.filename',
         dataIndex: 'filename',
         alwaysShow: true,
-        render: (filename: string) => (
-          <div style={{ textOverflow: 'ellipsis' }}>
-            <span style={{ whiteSpace: 'nowrap' }}>{filename}</span>
-          </div>
-        ),
+        ellipsis: true,
+        width: '45%',
       },
       ...(isSmallScreen ? [] : [{ title: 'general.description', dataIndex: 'description' }]),
       {
         title: 'experiment_result.genome_assembly_id',
         dataIndex: 'genome_assembly_id',
         render: (genomeAssemblyId: string) => <ReferenceGenomePopoverField referenceGenomeId={genomeAssemblyId} />,
+        width: 190,
       },
-      { title: 'experiment_result.file_format', dataIndex: 'file_format' },
+      { title: 'experiment_result.file_format', dataIndex: 'file_format', width: 160 },
       ...(isSmallScreen
         ? []
         : [
