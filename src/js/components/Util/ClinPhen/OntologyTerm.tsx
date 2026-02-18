@@ -56,7 +56,7 @@ const OntologyTerm = ({ term, suffix, style, hideLinkIcon = false, italic = fals
           {suffix} <IriLink iri={iri} />
         </div>
       ) : (
-        <div className={clsx('ontology-class', iri && 'underline')}>
+        <div className={clsx('ontology-class', italic && 'italic', iri && 'underline')}>
           {t(term.label)}
           {suffix}
         </div>
