@@ -35,6 +35,9 @@ const options: InitOptions = {
   react: {
     useSuspense: true,
   },
+
+  // Suppress log spam; see https://github.com/i18next/i18next/issues/2390
+  showSupportNotice: false,
 };
 
 i18n.use(languageDetector).use(initReactI18next).use(HttpApi).init(options);
