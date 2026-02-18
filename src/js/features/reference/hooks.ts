@@ -22,9 +22,8 @@ export const useGeneNameSearch = (referenceGenomeID: string | undefined, nameQue
     const params = new URLSearchParams({ name: nameQuery, name_fzy: 'true', limit: '10' });
     const searchUrl = `${referenceGenomesUrl}/${referenceGenomeID}/features?${params.toString()}`;
 
-    setError(null);
-
     (async () => {
+      setError(null);
       setStatus(RequestStatus.Pending);
 
       try {

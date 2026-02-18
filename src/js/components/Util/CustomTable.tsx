@@ -30,7 +30,11 @@ function deserializeExpandedKeys(params: URLSearchParams, queryKey: string): str
 
 function modifySearchParam(oldParams: URLSearchParams, queryKey: string, value: string[]): URLSearchParams {
   const out = new URLSearchParams(oldParams);
-  value.length ? out.set(queryKey, serializeExpandedKeys(value)) : out.delete(queryKey);
+  if (value.length) {
+    out.set(queryKey, serializeExpandedKeys(value));
+  } else {
+    out.delete(queryKey);
+  }
   return out;
 }
 
