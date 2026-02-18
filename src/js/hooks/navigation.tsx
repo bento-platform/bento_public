@@ -89,7 +89,7 @@ export const useGetRouteTitleAndIcon = () => {
 
   // Use location for catalogue page detection instead of selectedProject, since it gives us faster UI rendering at the
   // cost of only being wrong with a redirect edge case (and being slightly more brittle).
-  const overviewIsCatalogue = !location.pathname.includes('/p/') && catalogueMode;
+  const overviewIsCatalogue = !location.pathname.includes('/p/') && !location.pathname.includes('/d/') && catalogueMode;
 
   return useCallback(
     (routeId: string): [string, ReactNode] => {
