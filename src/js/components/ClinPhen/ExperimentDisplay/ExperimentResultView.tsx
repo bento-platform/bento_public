@@ -239,11 +239,8 @@ const ExperimentResultView = ({
         title: 'experiment_result.filename',
         dataIndex: 'filename',
         alwaysShow: true,
-        render: (filename: string) => (
-          <div style={{ textOverflow: 'ellipsis' }}>
-            <span style={{ whiteSpace: 'nowrap' }}>{filename}</span>
-          </div>
-        ),
+        ellipsis: true,
+        width: '50%',
       },
       ...(isSmallScreen ? [] : [{ title: 'general.description', dataIndex: 'description' }]),
       // TODO: nice render with modal to reference genome:
