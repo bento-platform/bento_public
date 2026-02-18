@@ -22,6 +22,7 @@ export interface MetadataState {
   projects: Project[];
   projectsByID: Record<string, Project>;
   datasetsByID: Record<string, Dataset>;
+  datasetToProjectMap: Record<string, string>;
   projectsStatus: RequestStatus;
   projectsError: string;
   selectedScope: DiscoveryScopeSelection;
@@ -31,6 +32,7 @@ const initialState: MetadataState = {
   projects: [],
   projectsByID: {},
   datasetsByID: {},
+  datasetToProjectMap: {},
   projectsStatus: RequestStatus.Idle,
   projectsError: '',
   selectedScope: {
@@ -100,6 +102,9 @@ const metadata = createSlice({
       state.projects = projects;
       state.projectsByID = Object.fromEntries(projects.map((p) => [p.identifier, p]));
       state.datasetsByID = Object.fromEntries(projects.flatMap((p) => p.datasets.map((d) => [d.identifier, d])));
+      state.datasetToProjectMap = Object.fromEntries(
+        projects.flatMap((p) => p.datasets.map((d) => [d.identifier, p.identifier]))
+      );
       state.projectsStatus = RequestStatus.Fulfilled;
       state.projectsError = '';
     });
