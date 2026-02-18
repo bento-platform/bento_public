@@ -57,6 +57,8 @@ body {
 .text-base { font-size: 1rem; }
 .text-center { text-align: center; }
 .underline, a.underline { text-decoration-line: underline; }
+.decoration-dotted { text-decoration-style: dotted; }
+.italic { font-style: italic;}
 
 /* custom, tailwind-esque */
 .max-w-half-cmw { max-width: calc(var(--content-max-width) / 2); }
