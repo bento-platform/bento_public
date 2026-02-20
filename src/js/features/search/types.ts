@@ -4,6 +4,7 @@ import type { BentoKatsuEntity } from '@/types/entities';
 import type { JSONType } from '@/types/json';
 
 export type QueryFilterField = { id: string; options: string[] };
+export type FtsQueryType = 'plain' | 'phrase' | 'websearch' | 'trigram';
 
 export type QueryParamEntry = [string, string];
 export type QueryParams = { [key: string]: string | undefined };

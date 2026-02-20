@@ -19,12 +19,14 @@ export const performKatsuDiscovery = createAsyncThunk<
   'query/performKatsuDiscovery',
   async (_, { rejectWithValue, getState }) => {
     const state = getState();
+    const { filterQueryParams, textQuery, textQueryType } = state.query;
     const res = (await axios
       .get(
         katsuDiscoveryUrl,
         scopedAuthorizedRequestConfig(state, {
-          _fts: state.query.textQuery || undefined,
-          ...state.query.filterQueryParams,
+          _fts: textQuery || undefined,
+          _fts_type: textQuery ? textQueryType : undefined,
+          ...filterQueryParams,
         })
       )
       .then((res) => res.data)

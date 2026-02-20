@@ -11,6 +11,7 @@ import { RequestStatus } from '@/types/requests';
 import type { DiscoveryResponseOrMessage } from '@/types/discovery/response';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type {
+  FtsQueryType,
   QueryParams,
   DefinedQueryParams,
   SearchFieldResponse,
@@ -52,6 +53,7 @@ export type QueryState = {
   filterQueryParams: DefinedQueryParams;
   // ----
   textQuery: string;
+  textQueryType: FtsQueryType;
   // ----
   // Whether the first search has been executed; can't be reset on 'search mode' (filter/text) change the way
   // (filter|text)QueryStatus can. This is instead only reset when the complete query state is reset.
@@ -97,6 +99,7 @@ const initialState: QueryState = {
   filterQueryParams: {},
   // ----
   textQuery: '',
+  textQueryType: 'plain',
   // ----
   doneFirstLoad: false,
   message: '',
@@ -211,6 +214,13 @@ const query = createSlice({
       if (state.textQuery === payload) return;
       state.textQuery = payload;
       // text query has changed; invalidate existing counts and match data pages if necessary:
+      state.resultCountsInvalid = true;
+      invalidateMatchData(state);
+    },
+    setTextQueryType: (state, { payload }: PayloadAction<FtsQueryType>) => {
+      if (state.textQueryType === payload) return;
+      state.textQueryType = payload;
+      // text query type has changed; invalidate existing counts and match data pages if necessary:
       state.resultCountsInvalid = true;
       invalidateMatchData(state);
     },
@@ -329,6 +339,7 @@ export const {
   // ------------------------------------------------------------------
   setFilterQueryParams,
   setTextQuery,
+  setTextQueryType,
   setDoneFirstLoad,
   setSelectedEntity,
   setMatchesPage,
