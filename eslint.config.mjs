@@ -31,21 +31,6 @@ export default [
       'react-hooks': reactHooksEsLint,
       prettier,
     },
-    // env: {
-    //   browser: true,
-    //   es2021: true,
-    //   node: true,
-    // },
-    // plugins: ['react', '@typescript-eslint'],
-    // extends: [
-    //   'eslint:recommended',
-    //   'plugin:react/recommended',
-    //   'plugin:@typescript-eslint/eslint-recommended',
-    //   'plugin:@typescript-eslint/recommended',
-    //   'plugin:prettier/recommended',
-    //   'plugin:react-hooks/recommended',
-    //   'plugin:react/jsx-runtime',
-    // ],
     rules: {
       'react/prop-types': 'off', // disable prop-types since we're using TypeScript
       '@typescript-eslint/explicit-module-boundary-types': 'off', // allow implicit return types
