@@ -6,7 +6,8 @@ import { RequestStatus } from '@/types/requests';
 import type { RootState } from '@/store';
 import { printAPIError } from '@/utils/error.util';
 import { authorizedRequestConfig } from '@/utils/requests';
-import { scopeEqual, validProjectDataset } from '@/utils/router';
+import { validProjectDataset } from '@/utils/router';
+import { scopeSelectionEqual } from './utils';
 import { projectsUrl } from '@/constants/configConstants';
 
 export type DiscoveryScope = { project?: string; dataset?: string };
@@ -41,12 +42,6 @@ const initialState: MetadataState = {
     fixedDataset: false,
   },
 };
-
-const scopeSelectionEqual = (s1: DiscoveryScopeSelection, s2: DiscoveryScopeSelection) =>
-  scopeEqual(s1.scope, s2.scope) &&
-  s1.scopeSet == s2.scopeSet &&
-  s1.fixedProject == s2.fixedProject &&
-  s1.fixedDataset == s2.fixedDataset;
 
 export const getProjects = createAsyncThunk<
   PaginatedResponse<Project>,

@@ -42,6 +42,15 @@ const ScopedTitle = () => {
 
   const [scopeSelectModalOpen, setScopeSelectModalOpen] = useState(false);
   const [helpModalOpen, setHelpModalOpen] = useState(false);
+  const [prevLocation, setPrevLocation] = useState(location);
+
+  // See https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes for why this
+  // isn't in an effect
+  if (location !== prevLocation) {
+    setPrevLocation(location);
+    // If the selected scope changes (likely from the scope select modal), auto-close the modal.
+    setScopeSelectModalOpen(false);
+  }
 
   const currentPageHasHelp = useMemo(() => {
     const k = `page_help.${currentPage}`;
@@ -49,11 +58,6 @@ const ScopedTitle = () => {
   }, [t, currentPage]);
 
   const extraBreadcrumb = useExtraBreadcrumb();
-
-  useEffect(() => {
-    // If the selected scope changes (likely from the scope select modal), auto-close the modal.
-    setScopeSelectModalOpen(false);
-  }, [location]);
 
   const breadcrumbItems: BreadcrumbItemType[] = useMemo(() => {
     const currentPageTitle = t(getRouteTitleAndIcon(currentPage)[0]);

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Button, Card, Empty, Flex, Space } from 'antd';
 import { CompressOutlined, DownloadOutlined, ExpandOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -53,33 +53,6 @@ const PhenopacketView = () => {
     });
   }, [api, t, notificationFillIns]);
 
-  useEffect(() => {
-    if (status === RequestStatus.Fulfilled && phenopacket) {
-      if (tab && activeTabs.includes(tab as TabKeys)) {
-        setActiveKey(tab as TabKeys);
-      } else {
-        if (tab && Object.values(TabKeys).includes(tab as TabKeys)) {
-          notAvailableRedirectNotification();
-        } else if (tab && !['', '/'].includes(tab)) {
-          // Don't show a notification if we have some variation of an empty current tab; just redirect to the default.
-          // Otherwise, show an invalid tab notification:
-          invalidEndpointRedirectNotification();
-        }
-        navigate(`${tab ? '..' : '.'}/${defaultTab.key}`, { relative: 'path', replace: true });
-      }
-    }
-  }, [
-    navigate,
-    tab,
-    status,
-    phenopacket,
-    activeTabs,
-    defaultTab,
-    invalidEndpointRedirectNotification,
-    notAvailableRedirectNotification,
-    api,
-  ]);
-
   const biosamples = phenopacket?.biosamples ?? [];
 
   const title = phenopacket
@@ -97,8 +70,41 @@ const PhenopacketView = () => {
     saveAs(blob, `phenopacket_${phenopacket.id}.json`);
   }, [phenopacket]);
 
-  // Extra action buttons for the current tab key context:
-  const tabBarExtra = useMemo(() => {
+  // -------------------------------------------------------------------------------------------------------------------
+  // Early returns for handling loading/errors - must come after ALL hooks have been called
+
+  // tab param --> active key handling
+  // See https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes for why this is
+  // not inside an effect.
+  if (status === RequestStatus.Fulfilled && phenopacket && activeKey !== tab) {
+    if (tab && activeTabs.includes(tab as TabKeys)) {
+      setActiveKey(tab as TabKeys);
+    } else {
+      if (tab && Object.values(TabKeys).includes(tab as TabKeys)) {
+        notAvailableRedirectNotification();
+      } else if (tab && !['', '/'].includes(tab)) {
+        // Don't show a notification if we have some variation of an empty current tab; just redirect to the default.
+        // Otherwise, show an invalid tab notification:
+        invalidEndpointRedirectNotification();
+      }
+      navigate(`${tab ? '..' : '.'}/${defaultTab.key}`, { relative: 'path', replace: true });
+      return <Loader fullHeight={false} />; // Temporary loading render while navigation occurs
+    }
+  }
+
+  if (isAuthorized.hasAttempted && !isAuthorized.hasPermission) {
+    return <Empty description={t('auth.unauthorized_message')} />; // Temporary: removed once phenopacket view is integrated with search
+  }
+
+  if (status === RequestStatus.Pending || !phenopacket || !isAuthorized.hasAttempted) {
+    return <Loader fullHeight={false} />;
+  }
+
+  // -------------------------------------------------------------------------------------------------------------------
+
+  // Extra action buttons for the current tab key context.
+  // Must come after tab param --> active key handling
+  const tabBarExtra = (() => {
     if (activeKey === TabKeys.OVERVIEW) {
       return (
         <Space>
@@ -130,15 +136,7 @@ const PhenopacketView = () => {
         </Button>
       );
     }
-  }, [t, collapseRef, activeKey, savePhenopacket]);
-
-  if (isAuthorized.hasAttempted && !isAuthorized.hasPermission) {
-    return <Empty description={t('auth.unauthorized_message')} />; // Temporary: removed once phenopacket view is integrated with search
-  }
-
-  if (status === RequestStatus.Pending || !phenopacket || !isAuthorized.hasAttempted) {
-    return <Loader fullHeight={false} />;
-  }
+  })();
 
   return (
     <Flex justify="center">
