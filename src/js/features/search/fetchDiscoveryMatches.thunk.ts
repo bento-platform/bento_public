@@ -39,6 +39,7 @@ export const fetchDiscoveryMatches = createAsyncThunk<
         scopedAuthorizedRequestConfig(state, {
           ...state.query.filterQueryParams,
           _fts: state.query.textQuery || undefined,
+          _fts_type: state.query.textQuery ? state.query.textQueryType : undefined,
           _entity: queryEntity,
           _page: state.query.matchData[queryEntity].page.toString(),
           _page_size: state.query.pageSize.toString(),
