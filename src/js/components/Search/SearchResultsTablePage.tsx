@@ -121,7 +121,7 @@ const BIOSAMPLE_SEARCH_TABLE_COLUMNS = {
   experiments: {
     title: 'entities.experiment_other',
     dataIndex: 'experiments',
-    render: (_ctx) => (experiments: DiscoveryMatchExperiment[] , b) => (
+    render: (_ctx) => (experiments: DiscoveryMatchExperiment[], b) => (
       <ExperimentReferences packetId={b.phenopacket} experiments={experiments} />
     ),
   } as ResultsTableColumn<DiscoveryMatchBiosample>,

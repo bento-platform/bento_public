@@ -1,4 +1,4 @@
-import { Experiment } from '@/types/clinPhen/experiments/experiment';
+import type { Experiment } from '@/types/clinPhen/experiments/experiment';
 import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
 import type { Field } from '@/types/discovery/fieldDefinition';
 import type { BentoKatsuEntity } from '@/types/entities';
@@ -55,7 +55,7 @@ export type DiscoveryMatchExperimentResult = DiscoveryMatchObject & {
 
 export type DiscoveryMatchExperiment = DiscoveryMatchObject & {
   id: string;
-  experiment_type: Experiment["experiment_type"];
+  experiment_type: Experiment['experiment_type'];
   study_type?: string;
   results: DiscoveryMatchExperimentResult[];
   biosample?: string;
