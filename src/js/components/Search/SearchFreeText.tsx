@@ -4,6 +4,7 @@ import { Button, Form, Input, Select, Space, Tooltip } from 'antd';
 import { CloseOutlined, FormOutlined, InfoCircleOutlined, SearchOutlined } from '@ant-design/icons';
 
 import {
+  DEFAULT_TEXT_QUERY_TYPE,
   TABLE_PAGE_QUERY_PARAM,
   TEXT_QUERY_PARAM,
   TEXT_QUERY_TYPE_PARAM,
@@ -64,7 +65,7 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
 
   const onReset = useCallback(() => {
     form.setFieldValue('q', '');
-    navigateToTextQuery('', 'plain');
+    navigateToTextQuery('', DEFAULT_TEXT_QUERY_TYPE);
   }, [form, navigateToTextQuery]);
 
   const onFinish = useCallback(

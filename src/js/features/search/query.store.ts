@@ -25,6 +25,7 @@ import type {
 import type { Sections } from '@/types/data';
 
 import { MIN_PAGE_SIZE, PAGE_SIZE_OPTIONS } from '@/constants/pagination';
+import { DEFAULT_TEXT_QUERY_TYPE } from './constants';
 
 import { discoveryChartProcessingAndLocalStorage } from './discoveryChartProcessingAndLocalStorage';
 import { performKatsuDiscovery } from './performKatsuDiscovery.thunk';
@@ -99,7 +100,7 @@ const initialState: QueryState = {
   filterQueryParams: {},
   // ----
   textQuery: '',
-  textQueryType: 'plain',
+  textQueryType: DEFAULT_TEXT_QUERY_TYPE,
   // ----
   doneFirstLoad: false,
   message: '',

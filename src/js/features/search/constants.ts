@@ -24,3 +24,4 @@ export const TEXT_QUERY_TYPE_PARAM = '_qt';
 
 // Supported text query types in the UI at the moment:
 export const VALID_TEXT_QUERY_TYPES: FtsQueryType[] = ['plain', 'trigram'];
+export const DEFAULT_TEXT_QUERY_TYPE: FtsQueryType = 'plain';

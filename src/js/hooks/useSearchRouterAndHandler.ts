@@ -8,6 +8,7 @@ import { BentoRoute } from '@/types/routes';
 
 import { COUNT_ENTITY_REGISTRY } from '@/constants/countEntities';
 import {
+  DEFAULT_TEXT_QUERY_TYPE,
   ENTITY_QUERY_PARAM,
   NON_FILTER_QUERY_PARAM_PREFIX,
   TABLE_PAGE_QUERY_PARAM,
@@ -224,7 +225,7 @@ export const useSearchRouterAndHandler = () => {
     }
 
     const qpTextQueryStr = (qpTextQuery ?? '').trim(); // undefined --> ''; trim whitespace
-    const qpTextQueryTypeFinal = (qpTextQueryType ?? 'plain').trim() as FtsQueryType;
+    const qpTextQueryTypeFinal = (qpTextQueryType ?? DEFAULT_TEXT_QUERY_TYPE).trim() as FtsQueryType;
     if (
       (textQuery && qpTextQuery === undefined) ||
       qpTextQueryStr !== textQuery ||
