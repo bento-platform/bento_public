@@ -1,6 +1,6 @@
-import { memo, useState, Fragment } from 'react';
+import { memo, useState } from 'react';
 
-import { Radio, Space, Tooltip } from 'antd';
+import { Radio, Space } from 'antd';
 import { PointMap } from 'bento-charts/dist/maps';
 import OntologyTermComponent, { OntologyTermStack } from '@Util/ClinPhen/OntologyTerm';
 import TimeElementDisplay from '@Util/ClinPhen/TimeElementDisplay';
@@ -10,6 +10,7 @@ import Procedure from '@Util/ClinPhen/Procedure';
 import FileTable from '@Util/FileTable';
 import JsonView from '@Util/JsonView';
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
+import ExperimentReferences from '@Util/ClinPhen/ExperimentReferences';
 
 import type { Biosample } from '@/types/clinPhen/biosample';
 import type { Experiment } from '@/types/clinPhen/experiments/experiment';
@@ -22,7 +23,6 @@ import { objectToBoolean } from '@/utils/boolean';
 
 import { EM_DASH } from '@/constants/common';
 import { ISO_3166_1_ISO3_TO_ISO2 } from '@/constants/countryCodes';
-import PhenopacketLink from '../PhenopacketLink';
 
 const MAP_WIDTH = 500;
 
@@ -242,36 +242,7 @@ export const isBiosampleRowExpandable = (r: Biosample, searchRow: boolean = fals
     objectToBoolean(r.extra_properties)
   );
 
-export const ExperimentReferences = ({
-  packetId,
-  experiments,
-}: {
-  packetId?: string;
-  experiments: Pick<Experiment, 'experiment_type' | 'id'>[];
-}) => {
-  const typeSafeExperiments = experiments ? [...experiments] : [];
-  const sorted = typeSafeExperiments
-    .sort((a, b) => a.experiment_type.localeCompare(b.experiment_type) || a.id.localeCompare(b.id))
-    .map((e, _, arr) => ({
-      ...e,
-      typeIndex: arr.slice(0, arr.indexOf(e)).filter((x) => x.experiment_type === e.experiment_type).length + 1,
-    }));
-  return (
-    <div>
-      {sorted.map((e, i) => (
-        <Fragment key={e.id}>
-          <PhenopacketLink.Experiment packetId={packetId} experimentId={e.id}>
-            <Tooltip title={e.id} styles={{ body: { wordWrap: 'normal', inlineSize: 'max-content' } }}>
-              {e.experiment_type} ({e.typeIndex})
-            </Tooltip>
-          </PhenopacketLink.Experiment>
 
-          {i < sorted.length - 1 ? ', ' : ''}
-        </Fragment>
-      ))}
-    </div>
-  );
-};
 
 interface BiosampleViewProps {
   biosamples: Biosample[];
