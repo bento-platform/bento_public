@@ -242,7 +242,13 @@ export const isBiosampleRowExpandable = (r: Biosample, searchRow: boolean = fals
     objectToBoolean(r.extra_properties)
   );
 
-const ExperimentReferences = ({ experiments }: { experiments: Experiment[] }) => {
+export const ExperimentReferences = ({
+  packetId,
+  experiments,
+}: {
+  packetId?: string;
+  experiments: Pick<Experiment, 'experiment_type' | 'id'>[];
+}) => {
   const typeSafeExperiments = experiments ? [...experiments] : [];
   const sorted = typeSafeExperiments
     .sort((a, b) => a.experiment_type.localeCompare(b.experiment_type) || a.id.localeCompare(b.id))
@@ -254,7 +260,7 @@ const ExperimentReferences = ({ experiments }: { experiments: Experiment[] }) =>
     <div>
       {sorted.map((e, i) => (
         <Fragment key={e.id}>
-          <PhenopacketLink.Experiment experimentId={e.id}>
+          <PhenopacketLink.Experiment packetId={packetId} experimentId={e.id}>
             <Tooltip title={e.id} styles={{ body: { wordWrap: 'normal', inlineSize: 'max-content' } }}>
               {e.experiment_type} ({e.typeIndex})
             </Tooltip>
