@@ -10,7 +10,13 @@ export const useDownloadAllMatchesCSV = () => {
   const selectedScope = useSelectedScope();
 
   return useCallback(
-    (filterQueryParams: QueryParams, textQuery: string, textQueryType: string, entity: ResultsDataEntity, filename: string) => {
+    (
+      filterQueryParams: QueryParams,
+      textQuery: string,
+      textQueryType: string,
+      entity: ResultsDataEntity,
+      filename: string
+    ) => {
       return downloadAllMatchesCSV(auth, selectedScope, filterQueryParams, textQuery, textQueryType, entity, filename);
     },
     [auth, selectedScope]

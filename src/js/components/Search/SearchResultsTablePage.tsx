@@ -403,7 +403,9 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   const onExport = useCallback(() => {
     setExporting(true);
     const filename = `${t(`entities.${entity}_other`)}.csv`;
-    downloadAllMatchesCSV(filterQueryParams, textQuery, textQueryType, rdEntity, filename).finally(() => setExporting(false));
+    downloadAllMatchesCSV(filterQueryParams, textQuery, textQueryType, rdEntity, filename).finally(() =>
+      setExporting(false)
+    );
   }, [t, entity, downloadAllMatchesCSV, filterQueryParams, textQuery, textQueryType, rdEntity]);
 
   const openColumnModal = useCallback(() => setColumnModalOpen(true), []);
