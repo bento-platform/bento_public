@@ -4,7 +4,6 @@ import { Tooltip } from 'antd';
 import PhenopacketLink from '@/components/ClinPhen/PhenopacketLink';
 
 import type { Experiment } from '@/types/clinPhen/experiments/experiment';
-import OntologyTerm from './OntologyTerm';
 
 const ExperimentReferences = ({
   packetId,
