@@ -1,6 +1,6 @@
-import { memo, useState } from 'react';
+import { memo, useState, Fragment } from 'react';
 
-import { Radio, Space } from 'antd';
+import { Radio, Space, Tooltip } from 'antd';
 import { PointMap } from 'bento-charts/dist/maps';
 import OntologyTermComponent, { OntologyTermStack } from '@Util/ClinPhen/OntologyTerm';
 import TimeElementDisplay from '@Util/ClinPhen/TimeElementDisplay';
@@ -12,6 +12,7 @@ import JsonView from '@Util/JsonView';
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
 
 import type { Biosample } from '@/types/clinPhen/biosample';
+import type { Experiment } from '@/types/clinPhen/experiments/experiment';
 import type { OntologyTerm } from '@/types/ontology';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
 import type { GeoLocation } from '@/types/geo';
@@ -21,6 +22,7 @@ import { objectToBoolean } from '@/utils/boolean';
 
 import { EM_DASH } from '@/constants/common';
 import { ISO_3166_1_ISO3_TO_ISO2 } from '@/constants/countryCodes';
+import PhenopacketLink from '../PhenopacketLink';
 
 const MAP_WIDTH = 500;
 
@@ -240,6 +242,31 @@ export const isBiosampleRowExpandable = (r: Biosample, searchRow: boolean = fals
     objectToBoolean(r.extra_properties)
   );
 
+const ExperimentReferences = ({ experiments }: { experiments: Experiment[] }) => {
+  const typeSafeExperiments = experiments ? [...experiments] : [];
+  const sorted = typeSafeExperiments
+    .sort((a, b) => a.experiment_type.localeCompare(b.experiment_type) || a.id.localeCompare(b.id))
+    .map((e, _, arr) => ({
+      ...e,
+      typeIndex: arr.slice(0, arr.indexOf(e)).filter((x) => x.experiment_type === e.experiment_type).length + 1,
+    }));
+  return (
+    <div>
+      {sorted.map((e, i) => (
+        <Fragment key={e.id}>
+          <PhenopacketLink.Experiment experimentId={e.id}>
+            <Tooltip title={e.id} styles={{ body: { wordWrap: 'normal', inlineSize: 'max-content' } }}>
+              {e.experiment_type} ({e.typeIndex})
+            </Tooltip>
+          </PhenopacketLink.Experiment>
+
+          {i < sorted.length - 1 ? ', ' : ''}
+        </Fragment>
+      ))}
+    </div>
+  );
+};
+
 interface BiosampleViewProps {
   biosamples: Biosample[];
 }
@@ -260,6 +287,11 @@ const BIOSAMPLE_VIEW_COLUMNS: CustomTableColumns<Biosample> = [
     title: 'biosample.location_collected',
     dataIndex: 'location_collected',
     render: (locationCollected: GeoLocation | undefined) => <LatLong location={locationCollected} />,
+  },
+  {
+    title: 'biosample.linked_experiments',
+    dataIndex: 'experiments',
+    render: (experiments: Experiment[]) => <ExperimentReferences experiments={experiments} />,
   },
 ];
 

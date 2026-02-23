@@ -241,6 +241,7 @@
     "derived_from_id": "Derived From",
     "sample_type": "Sample Type",
     "time_of_collection": "Collection Time",
+    "linked_experiments": "Linked Experiments",
     "location_collected": "Location Collected",
     "histological_diagnosis": "Histological Diagnosis",
     "pathological_stage": "Pathological Stage",
