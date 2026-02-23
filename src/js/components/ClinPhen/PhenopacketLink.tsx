@@ -1,5 +1,5 @@
 import { Fragment, type ReactNode } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useCurrentScopePrefixedUrl } from '@/hooks/navigation';
 
 import { BentoRoute } from '@/types/routes';
@@ -13,30 +13,25 @@ const usePhenopacketOverviewLink = (
   expanded: SectionKey,
   otherArgs: Record<string, string> | undefined = undefined
 ) => {
-  const baseUrl = useCurrentScopePrefixedUrl(`${BentoRoute.Phenopackets}/${packetId}/${TabKeys.OVERVIEW}`);
+  const { packetId: urlPId } = useParams();
+  const derivedPacketId = packetId ?? urlPId;
+  const baseUrl = useCurrentScopePrefixedUrl(`${BentoRoute.Phenopackets}/${derivedPacketId}/${TabKeys.OVERVIEW}`);
   const params = new URLSearchParams({ [PHENOPACKET_EXPANDED_URL_QUERY_KEY]: expanded, ...(otherArgs ?? {}) });
   return `${baseUrl}?${params.toString()}`;
 };
 
-// TODO: replace with context?
-type BaseLinkProps = { packetId?: string; replace?: boolean };
+type BaseLinkProps = { packetId?: string; replace?: boolean; children?: ReactNode };
 
-type SubjectLinkProps = BaseLinkProps & { children: ReactNode };
+type SubjectLinkProps = BaseLinkProps;
 const SubjectLink = ({ children, packetId }: SubjectLinkProps) => {
   const url = usePhenopacketOverviewLink(packetId, 'subject');
-  return packetId ? <Link to={url}>{children}</Link> : children;
+  return <Link to={url}>{children}</Link>;
 };
 
 type BiosampleLinkProps = BaseLinkProps & { sampleId: string };
-const BiosampleLink = ({ packetId, sampleId, replace }: BiosampleLinkProps) => {
+const BiosampleLink = ({ packetId, sampleId, replace, children }: BiosampleLinkProps) => {
   const url = usePhenopacketOverviewLink(packetId, 'biosamples', { biosample: sampleId });
-  return packetId ? (
-    <Link to={url} replace={replace}>
-      {sampleId}
-    </Link>
-  ) : (
-    sampleId
-  );
+  return <Link to={url} replace={replace}>{children ?? sampleId}</Link>;
 };
 
 type BiosampleLinkListProps = BaseLinkProps & { biosamples: string[] };
@@ -52,30 +47,17 @@ const BiosampleLinkList = ({ packetId, biosamples, replace }: BiosampleLinkListP
 );
 
 type ExperimentLinkProps = BaseLinkProps & { experimentId: string };
-const ExperimentLink = ({ packetId, experimentId, replace }: ExperimentLinkProps) => {
+const ExperimentLink = ({ packetId, experimentId, replace, children }: ExperimentLinkProps) => {
   const url = usePhenopacketOverviewLink(packetId, 'experiments', { experiment: experimentId });
-  return packetId ? (
-    <Link to={url} replace={replace}>
-      {experimentId}
-    </Link>
-  ) : (
-    experimentId
-  );
+  return <Link to={url} replace={replace}>{children ?? experimentId}</Link>;
 };
 
-type ExperimentResultLinkProps = BaseLinkProps & { experimentResultId: number; children?: ReactNode };
+type ExperimentResultLinkProps = BaseLinkProps & { experimentResultId: number };
 const ExperimentResultLink = ({ packetId, experimentResultId, children, replace }: ExperimentResultLinkProps) => {
   const url = usePhenopacketOverviewLink(packetId, 'experimentResults', {
     experimentResult: experimentResultId.toString(10),
   });
-  children = children ?? experimentResultId;
-  return packetId ? (
-    <Link to={url} replace={replace}>
-      {children}
-    </Link>
-  ) : (
-    children
-  );
+  return <Link to={url} replace={replace}>{children ?? experimentResultId}</Link>;
 };
 
 type ExperimentLinkListProps = BaseLinkProps & { current?: string; experiments: string[] };
