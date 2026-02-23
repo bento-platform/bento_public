@@ -18,6 +18,7 @@ const ExperimentReferences = ({
     .map((e, _, arr) => ({
       ...e,
       typeIndex: arr.slice(0, arr.indexOf(e)).filter((x) => x.experiment_type === e.experiment_type).length + 1,
+      hasDuplicates: arr.filter((x) => x.experiment_type === e.experiment_type).length > 1,
     }));
   return (
     <div>
@@ -25,7 +26,7 @@ const ExperimentReferences = ({
         <Fragment key={e.id}>
           <PhenopacketLink.Experiment packetId={packetId} experimentId={e.id}>
             <Tooltip title={e.id} styles={{ body: { wordWrap: 'normal', inlineSize: 'max-content' } }}>
-              {e.experiment_type} ({e.typeIndex})
+              {e.experiment_type}{e.hasDuplicates ? ` (${e.typeIndex})` : ''}
             </Tooltip>
           </PhenopacketLink.Experiment>
 
