@@ -4,7 +4,6 @@ import { Button, Form, Input, Select, Space, Tooltip } from 'antd';
 import { CloseOutlined, FormOutlined, InfoCircleOutlined, SearchOutlined } from '@ant-design/icons';
 
 import {
-  DEFAULT_TEXT_QUERY_TYPE,
   TABLE_PAGE_QUERY_PARAM,
   TEXT_QUERY_PARAM,
   TEXT_QUERY_TYPE_PARAM,
@@ -46,7 +45,7 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
   }, [form, textQueryType]);
 
   const navigateToTextQuery = useCallback(
-    (query: string, queryType: FtsQueryType) => {
+    (query: string, queryType?: FtsQueryType) => {
       if (query === textQuery && queryType === textQueryType) return;
       navigate(
         // Build a query URL with the new text search value and navigate to it. It'll be handled by the search
@@ -54,7 +53,7 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
         buildQueryParamsUrl(location.pathname, {
           ...allQueryParams,
           [TEXT_QUERY_PARAM]: query,
-          [TEXT_QUERY_TYPE_PARAM]: queryType,
+          [TEXT_QUERY_TYPE_PARAM]: queryType ?? textQueryType, // Preserve text query type if not changed
           // If we have an entity table page set, we need to reset it to 0 if the search text changes:
           ...(TABLE_PAGE_QUERY_PARAM in allQueryParams ? { [TABLE_PAGE_QUERY_PARAM]: '0' } : {}),
         })
@@ -65,7 +64,7 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
 
   const onReset = useCallback(() => {
     form.setFieldValue('q', '');
-    navigateToTextQuery('', DEFAULT_TEXT_QUERY_TYPE);
+    navigateToTextQuery('');
   }, [form, navigateToTextQuery]);
 
   const onFinish = useCallback(
