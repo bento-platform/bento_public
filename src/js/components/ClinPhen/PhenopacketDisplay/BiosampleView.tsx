@@ -270,7 +270,6 @@ const BIOSAMPLE_VIEW_COLUMNS: CustomTableColumns<Biosample> = [
   },
 ];
 
-//TODO: add button that links to experiment (like bento web)
 const BiosampleView = ({ biosamples }: BiosampleViewProps) => {
   return (
     <CustomTable<Biosample>
