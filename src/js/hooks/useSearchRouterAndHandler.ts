@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
-import type { QueryParamEntry, QueryParams } from '@/features/search/types';
+import type { FiltersState, QueryFilterField, QueryParamEntries, QueryParamEntry } from '@/features/search/types';
 import type { BentoCountEntity } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
 import { BentoRoute } from '@/types/routes';
@@ -26,21 +26,21 @@ import { fetchDiscoveryMatches } from '@/features/search/fetchDiscoveryMatches.t
 import { performKatsuDiscovery } from '@/features/search/performKatsuDiscovery.thunk';
 import {
   setDoneFirstLoad,
-  setFilterQueryParams,
+  setFilters,
   setTextQuery,
   setSelectedEntity,
   setMatchesPage,
   setMatchesPageSize,
 } from '@/features/search/query.store';
 
-import { buildQueryParamsUrl, combineQueryParamsWithoutKey } from '@/features/search/utils';
+import { buildQueryParamsUrl, filtersStateToQueryParamEntries, queryParamsWithoutKey } from '@/features/search/utils';
 import { getCurrentPage } from '@/utils/router';
 
 // Internal type for useSearchRouterAndHandler hook
 type QueryValidationResult = {
   valid: boolean;
-  validFilterQueryParams: QueryParams;
-  otherQueryParams: QueryParams;
+  validFiltersState: FiltersState;
+  otherQueryParams: QueryParamEntries;
 };
 
 const ENTITY_TABLE_PARAMS = [ENTITY_QUERY_PARAM, TABLE_PAGE_QUERY_PARAM, TABLE_PAGE_SIZE_QUERY_PARAM];
@@ -60,7 +60,7 @@ export const useSearchRouterAndHandler = () => {
 
   const { configStatus, maxQueryParameters } = useConfig();
   const {
-    filterQueryParams,
+    filters,
     fieldsStatus: searchFieldsStatus,
     discoveryStatus,
     textQuery,
@@ -77,39 +77,60 @@ export const useSearchRouterAndHandler = () => {
     // params change.
     const query = new URLSearchParams(location.search);
 
-    const validateFilterQueryParam = ([key, value]: QueryParamEntry): boolean => {
+    const validateFilterQueryParam = ([key, value]: QueryParamEntry):
+      | [undefined, false]
+      | [QueryFilterField, boolean] => {
       const field = filterFields.find((e) => e.id === key);
-      return !!field && field.options.includes(value);
+      if (!field) return [undefined, false];
+      return [field, field.options.includes(value)];
     };
 
-    const queryParamArray = [...query.entries()];
-    const validQueryParamArray: QueryParamEntry[] = [];
-    const otherQueryParamArray: QueryParamEntry[] = [];
+    const validFiltersState: FiltersState = {};
+    let nFilters = 0;
+    const otherQueryParams: QueryParamEntries = [];
 
     let valid = true; // Current query params are valid until proven otherwise in the loop below.
 
-    queryParamArray.forEach((qp) => {
-      if (validateFilterQueryParam(qp)) {
-        validQueryParamArray.push(qp);
+    console.log('begin', queryDataPerm);
+    [...query.entries()].forEach((qp) => {
+      const [fieldDef, qpValid] = validateFilterQueryParam(qp);
+      if (nFilters < maxQueryParameters && qpValid) {
+        if (qp[0] in validFiltersState && queryDataPerm) {
+          // If we are allowed to have multiple values for a filter (i.e., we have query:data permissions) and we
+          // already have a filter for this key
+          const existingFilter = validFiltersState[qp[0]];
+          if (Array.isArray(existingFilter)) {
+            existingFilter.push(qp[1]);
+          } else if (existingFilter) {
+            validFiltersState[qp[0]] = [existingFilter, qp[1]];
+          }
+          // Sort multi-value filter by order in field options:
+          (validFiltersState[qp[0]] as string[]).sort(
+            (v1, v2) => fieldDef.options.indexOf(v1) - fieldDef.options.indexOf(v2)
+          );
+        } else {
+          validFiltersState[qp[0]] = qp[1];
+        }
+        nFilters += 1;
       } else if (qp[0].startsWith(NON_FILTER_QUERY_PARAM_PREFIX)) {
-        otherQueryParamArray.push(qp);
+        otherQueryParams.push(qp);
       } else {
         // Invalid query param, skip it and mark current query param set as invalid (needing a URL replacement).
         valid = false;
       }
     });
+    console.log('end');
 
-    return {
-      valid,
-      validFilterQueryParams: Object.fromEntries(validQueryParamArray.slice(0, maxQueryParameters)),
-      otherQueryParams: Object.fromEntries(otherQueryParamArray),
-    };
-  }, [maxQueryParameters, filterFields, location.search]);
+    return { valid, validFiltersState, otherQueryParams };
+  }, [maxQueryParameters, filterFields, location.search, queryDataPerm]);
 
-  const setSearchUrlWithQueryParams = useCallback(
-    (qp: QueryParams) => {
+  const setSearchUrl = useCallback(
+    (filtersState: FiltersState, qp: QueryParamEntries) => {
       // Don't use react-router location here - the goal is to not recreate this function when the path changes.
-      const urlSuffix = buildQueryParamsUrl(BentoRoute.Overview, qp);
+      const urlSuffix = buildQueryParamsUrl(BentoRoute.Overview, [
+        ...filtersStateToQueryParamEntries(filtersState),
+        ...qp,
+      ]);
       console.debug('[Search] Redirecting to:', urlSuffix, '| new scope:', scope);
       navigateToScope(scope, urlSuffix, isFixedProjectAndDataset, { replace: true });
     },
@@ -142,24 +163,23 @@ export const useSearchRouterAndHandler = () => {
       return;
     }
 
-    const { valid, validFilterQueryParams, otherQueryParams } = loadAndValidateQuery();
+    const { valid, validFiltersState, otherQueryParams } = loadAndValidateQuery();
 
     if (!valid) {
       // Our filter query parameters are at least partially invalid, and we are (or will be) performing a filter search.
       // Thus, we need to rewrite the URL to remove invalid filter query parameters, which will re-trigger this effect.
-      setSearchUrlWithQueryParams({ ...validFilterQueryParams, ...otherQueryParams });
+      setSearchUrl(validFiltersState, otherQueryParams);
       return;
     }
 
     // Otherwise, we have a valid (or empty) set of filter query parameters. Now, we need to deal with free-text
     // filtering and other non-field-filter query parameters: ----------------------------------------------------------
 
-    const {
-      [ENTITY_QUERY_PARAM]: qpRawEntity,
-      [TABLE_PAGE_QUERY_PARAM]: qpRawTablePage,
-      [TABLE_PAGE_SIZE_QUERY_PARAM]: qpRawTablePageSize,
-      [TEXT_QUERY_PARAM]: qpTextQuery,
-    } = otherQueryParams;
+    const otherQueryParamsRepr = new URLSearchParams(otherQueryParams);
+    const qpRawEntity = otherQueryParamsRepr.get(ENTITY_QUERY_PARAM);
+    const qpRawTablePage = otherQueryParamsRepr.get(TABLE_PAGE_QUERY_PARAM);
+    const qpRawTablePageSize = otherQueryParamsRepr.get(TABLE_PAGE_SIZE_QUERY_PARAM);
+    const qpTextQuery = otherQueryParamsRepr.get(TEXT_QUERY_PARAM);
 
     if ((qpRawEntity || qpRawTablePage || qpRawTablePageSize || qpTextQuery) && !queryDataPerm) {
       // Already checked attempted status, so we know this is the true permissions value. If we do not have query:data
@@ -168,9 +188,7 @@ export const useSearchRouterAndHandler = () => {
       //  - try to execute a text search
       // So we go back to exclusively filters via URL rewrite.
       // This effect will then be re-triggered without the entity or text query param.
-      setSearchUrlWithQueryParams(
-        combineQueryParamsWithoutKey(validFilterQueryParams, otherQueryParams, ENTITY_AND_TEXT_PARAMS)
-      );
+      setSearchUrl(validFiltersState, queryParamsWithoutKey(otherQueryParams, ENTITY_AND_TEXT_PARAMS));
       return;
     }
 
@@ -178,9 +196,7 @@ export const useSearchRouterAndHandler = () => {
 
     // Handle an invalid entity in the URL by rewriting it without any entity results-table-relevant parameters:
     if (qpEntity && !(qpEntity in COUNT_ENTITY_REGISTRY)) {
-      setSearchUrlWithQueryParams(
-        combineQueryParamsWithoutKey(validFilterQueryParams, otherQueryParams, ENTITY_TABLE_PARAMS)
-      );
+      setSearchUrl(validFiltersState, queryParamsWithoutKey(otherQueryParams, ENTITY_TABLE_PARAMS));
       return;
     }
 
@@ -222,7 +238,7 @@ export const useSearchRouterAndHandler = () => {
     // We want to prioritize the URL over Redux, so we sync the Redux state with the URL values. This can happen on
     // first load or if we change/add/remove a filter value via URL change (which is how these changes should be
     // executed in the UI). We then get proper one-way traffic from the URL to the Redux state.
-    dispatch(setFilterQueryParams(validFilterQueryParams));
+    dispatch(setFilters(validFiltersState));
 
     // Finally, we can go ahead and execute the search:
     dispatch(performKatsuDiscovery());
@@ -244,8 +260,8 @@ export const useSearchRouterAndHandler = () => {
     queryDataPerm,
     doneFirstLoad,
     currentPage,
-    setSearchUrlWithQueryParams,
-    filterQueryParams,
+    setSearchUrl,
+    filters,
     textQuery,
     selectedEntity,
     matchData,

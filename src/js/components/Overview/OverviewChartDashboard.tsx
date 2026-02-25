@@ -49,7 +49,7 @@ const OverviewChartDashboard = () => {
   // URL and dispatches discovery actions for fetching overview/query response data.
   useSearchRouterAndHandler();
 
-  const { discoveryStatus, sections, filterQueryParams, textQuery, uiHints } = useSearchQuery();
+  const { discoveryStatus, sections, filters, textQuery, uiHints } = useSearchQuery();
 
   // Lazy-loading hooks means this is loaded only if OverviewChartDashboard is rendered:
   const searchableFields = useSearchableFields();
@@ -88,10 +88,10 @@ const OverviewChartDashboard = () => {
     // If the user has not manually changed tabs / this effect has not already run, and we have at least one search
     // filter set, auto-switch to the search tab rather than the about tab to make the applied filter(s) more obvious.
 
-    if (!hasChangedTabs && (Object.keys(filterQueryParams).length || textQuery.length)) {
+    if (!hasChangedTabs && (Object.keys(filters).length || textQuery.length)) {
       changePage('search');
     }
-  }, [hasChangedTabs, filterQueryParams, textQuery, changePage]);
+  }, [hasChangedTabs, filters, textQuery, changePage]);
 
   const pageTabItems: TabsProps['items'] = useMemo(
     () => [

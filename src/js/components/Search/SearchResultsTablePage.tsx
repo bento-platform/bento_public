@@ -292,7 +292,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
 }) => {
   const t = useTranslationFn();
 
-  const { filterQueryParams, textQuery, resultCountsOrBools, pageSize, matchData } = useSearchQuery();
+  const { filters, textQuery, resultCountsOrBools, pageSize, matchData } = useSearchQuery();
   const { fetchingPermission: fetchingCanDownload, hasPermission: canDownload } = useScopeDownloadData();
   const downloadAllMatchesCSV = useDownloadAllMatchesCSV();
   const selectedScope = useSelectedScope();
@@ -387,12 +387,12 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
                 newPage = 1; // Reset page if we change the page size
               }
               navigateToSameScopeUrl(
-                buildQueryParamsUrl(BentoRoute.Overview, {
+                buildQueryParamsUrl(BentoRoute.Overview, [
                   ...allQueryParams,
                   // AntD page is 1-indexed, discovery match page is 0-indexed:
-                  [TABLE_PAGE_QUERY_PARAM]: (newPage - 1).toString(),
-                  [TABLE_PAGE_SIZE_QUERY_PARAM]: newPageSize.toString(),
-                })
+                  [TABLE_PAGE_QUERY_PARAM, (newPage - 1).toString()],
+                  [TABLE_PAGE_SIZE_QUERY_PARAM, newPageSize.toString()],
+                ])
               );
             },
           }
@@ -403,8 +403,8 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   const onExport = useCallback(() => {
     setExporting(true);
     const filename = `${t(`entities.${entity}_other`)}.csv`;
-    downloadAllMatchesCSV(filterQueryParams, textQuery, rdEntity, filename).finally(() => setExporting(false));
-  }, [t, entity, downloadAllMatchesCSV, filterQueryParams, textQuery, rdEntity]);
+    downloadAllMatchesCSV(filters, textQuery, rdEntity, filename).finally(() => setExporting(false));
+  }, [t, entity, downloadAllMatchesCSV, filters, textQuery, rdEntity]);
 
   const openColumnModal = useCallback(() => setColumnModalOpen(true), []);
 
