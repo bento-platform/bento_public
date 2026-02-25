@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
-import type { FiltersState, QueryParamEntries, QueryParamEntry } from '@/features/search/types';
+import type { FiltersState, QueryFilterField, QueryParamEntries, QueryParamEntry } from '@/features/search/types';
 import type { BentoCountEntity } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
 import { BentoRoute } from '@/types/routes';
@@ -77,9 +77,12 @@ export const useSearchRouterAndHandler = () => {
     // params change.
     const query = new URLSearchParams(location.search);
 
-    const validateFilterQueryParam = ([key, value]: QueryParamEntry): boolean => {
+    const validateFilterQueryParam = ([key, value]: QueryParamEntry):
+      | [undefined, false]
+      | [QueryFilterField, boolean] => {
       const field = filterFields.find((e) => e.id === key);
-      return !!field && field.options.includes(value);
+      if (!field) return [undefined, false];
+      return [field, field.options.includes(value)];
     };
 
     const validFiltersState: FiltersState = {};
@@ -90,7 +93,8 @@ export const useSearchRouterAndHandler = () => {
 
     console.log('begin', queryDataPerm);
     [...query.entries()].forEach((qp) => {
-      if (nFilters < maxQueryParameters && validateFilterQueryParam(qp)) {
+      const [fieldDef, qpValid] = validateFilterQueryParam(qp);
+      if (nFilters < maxQueryParameters && qpValid) {
         if (qp[0] in validFiltersState && queryDataPerm) {
           // If we are allowed to have multiple values for a filter (i.e., we have query:data permissions) and we
           // already have a filter for this key
@@ -100,12 +104,14 @@ export const useSearchRouterAndHandler = () => {
           } else if (existingFilter) {
             validFiltersState[qp[0]] = [existingFilter, qp[1]];
           }
-          console.log(validFiltersState);
-          nFilters += 1;
+          // Sort multi-value filter by order in field options:
+          (validFiltersState[qp[0]] as string[]).sort(
+            (v1, v2) => fieldDef.options.indexOf(v1) - fieldDef.options.indexOf(v2)
+          );
         } else {
           validFiltersState[qp[0]] = qp[1];
-          nFilters += 1;
         }
+        nFilters += 1;
       } else if (qp[0].startsWith(NON_FILTER_QUERY_PARAM_PREFIX)) {
         otherQueryParams.push(qp);
       } else {
