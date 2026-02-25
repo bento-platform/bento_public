@@ -6,7 +6,8 @@ import { makeGetPhenopacketData } from './makeGetPhenopacket.thunk';
 import { makeGetExperimentData } from './makeGetExperimentData.thunk';
 import { makeGetExperimentResultData } from './makeGetExperimentResultData.thunk';
 
-import { useAppDispatch, useAppSelector, useHasScopeQueryData } from '@/hooks';
+import { useAppDispatch, useAppSelector } from '@/hooks';
+import { useScopeQueryData } from '@/hooks/censorship';
 import type { Biosample } from '@/types/clinPhen/biosample';
 import type { Individual } from '@/types/clinPhen/individual';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
@@ -35,7 +36,7 @@ export const useIndividualData = (id: string): EntityDataResult<Individual> => {
 
   const data = useAppSelector((state) => state.clinPhen.individualDataCache[id]);
   const status = useAppSelector((state) => state.clinPhen.individualDataStatus[id]) ?? RequestStatus.Idle;
-  const isAuthorized = useHasScopeQueryData();
+  const isAuthorized = useScopeQueryData();
 
   return { data, status, isAuthorized };
 };
@@ -48,7 +49,7 @@ export const usePhenopacketData = (phenopacketId: string): EntityDataResult<Phen
 
   const data = useAppSelector((state) => state.clinPhen.phenopacketDataCache[phenopacketId]);
   const status = useAppSelector((state) => state.clinPhen.phenopacketDataStatus[phenopacketId]);
-  const isAuthorized = useHasScopeQueryData();
+  const isAuthorized = useScopeQueryData();
 
   useEffect(() => {
     if (isAuthorized.hasPermission) {
@@ -64,7 +65,7 @@ export const useBiosampleData = (biosampleId: string): EntityDataResult<Biosampl
 
   const data = useAppSelector((state) => state.clinPhen.biosampleDataCache[biosampleId]);
   const status = useAppSelector((state) => state.clinPhen.biosampleDataStatus[biosampleId]);
-  const isAuthorized = useHasScopeQueryData();
+  const isAuthorized = useScopeQueryData();
 
   useEffect(() => {
     if (isAuthorized.hasPermission) {
@@ -80,7 +81,7 @@ export const useExperimentData = (experimentId: string): EntityDataResult<Experi
 
   const data = useAppSelector((state) => state.clinPhen.experimentDataCache[experimentId]);
   const status = useAppSelector((state) => state.clinPhen.experimentDataStatus[experimentId]);
-  const isAuthorized = useHasScopeQueryData();
+  const isAuthorized = useScopeQueryData();
 
   useEffect(() => {
     if (isAuthorized.hasPermission) {
@@ -96,7 +97,7 @@ export const useExperimentResultData = (experimentResultId: number): EntityDataR
 
   const data = useAppSelector((state) => state.clinPhen.experimentResultDataCache[experimentResultId]);
   const status = useAppSelector((state) => state.clinPhen.experimentResultDataStatus[experimentResultId]);
-  const isAuthorized = useHasScopeQueryData();
+  const isAuthorized = useScopeQueryData();
 
   useEffect(() => {
     if (isAuthorized.hasPermission) {
