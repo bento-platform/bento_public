@@ -26,8 +26,6 @@
       "@public/*": ["./src/public/*"],
       "@Util/*": ["./src/js/components/Util/*"]
     },
-
-    "types": ["node"],
   },
   "include": ["src", "src/custom.d.ts"]
 }
