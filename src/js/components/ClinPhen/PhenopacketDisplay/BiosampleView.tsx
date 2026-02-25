@@ -264,7 +264,7 @@ const BIOSAMPLE_VIEW_COLUMNS: CustomTableColumns<Biosample> = [
     render: (locationCollected: GeoLocation | undefined) => <LatLong location={locationCollected} />,
   },
   {
-    title: 'biosample.linked_experiments',
+    title: 'entities.experiment_other',
     dataIndex: 'experiments',
     render: (experiments: Experiment[]) => <ExperimentReferences experiments={experiments} />,
   },
