@@ -25,6 +25,7 @@ import {
   bentoKatsuEntityToResultsDataEntity,
   buildQueryParamsUrl,
   combineQueryParamsWithoutKey,
+  filtersStateToQueryParamEntries,
 } from '@/features/search/utils';
 
 const COUNT_CARD_BASE_HEIGHT = 114;
@@ -86,7 +87,7 @@ const CountsAndResults = () => {
     message,
     resultCountsOrBools: counts,
     discoveryStatus,
-    filterQueryParams,
+    filters,
     textQuery,
     selectedEntity,
     doneFirstLoad,
@@ -104,31 +105,35 @@ const CountsAndResults = () => {
 
   const setSelectedEntity = useCallback(
     (entity: BentoCountEntity | null) => {
-      const combinedParams = combineQueryParamsWithoutKey(filterQueryParams, entityAndTextQueryParams, [
-        ENTITY_QUERY_PARAM,
-        TABLE_PAGE_QUERY_PARAM,
-        ...(entity ? [] : [TABLE_PAGE_SIZE_QUERY_PARAM]), // Clear the page size param if closing the table
-      ]);
+      const combinedParams = combineQueryParamsWithoutKey(
+        filtersStateToQueryParamEntries(filters),
+        entityAndTextQueryParams,
+        [
+          ENTITY_QUERY_PARAM,
+          TABLE_PAGE_QUERY_PARAM,
+          ...(entity ? [] : [TABLE_PAGE_SIZE_QUERY_PARAM]), // Clear the page size param if closing the table
+        ]
+      );
       // Set the selected entity and reset the pagination via URL parameters
       navigate(
         buildQueryParamsUrl(
           pathname,
           entity
-            ? {
+            ? [
                 ...combinedParams,
-                [ENTITY_QUERY_PARAM]: entity,
-                [TABLE_PAGE_QUERY_PARAM]: matchData[bentoKatsuEntityToResultsDataEntity(entity)].page.toString(),
-                [TABLE_PAGE_SIZE_QUERY_PARAM]: pageSize.toString(),
-              }
+                [ENTITY_QUERY_PARAM, entity],
+                [TABLE_PAGE_QUERY_PARAM, matchData[bentoKatsuEntityToResultsDataEntity(entity)].page.toString()],
+                [TABLE_PAGE_SIZE_QUERY_PARAM, pageSize.toString()],
+              ]
             : combinedParams
         )
       );
     },
-    [navigate, pathname, filterQueryParams, entityAndTextQueryParams, matchData, pageSize]
+    [navigate, pathname, filters, entityAndTextQueryParams, matchData, pageSize]
   );
   const clearSelectedEntity = useCallback(() => setSelectedEntity(null), [setSelectedEntity]);
 
-  const nFilters = Object.keys(filterQueryParams).length + +!!textQuery;
+  const nFilters = Object.keys(filters).length + +!!textQuery;
 
   const countElements = doingFirstLoad
     ? []

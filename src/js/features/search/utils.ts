@@ -1,32 +1,50 @@
-import type { QueryParams } from '@/features/search/types';
+import type { FiltersState, QueryParamEntries } from '@/features/search/types';
 import type { BentoCountEntity, BentoKatsuEntity, ResultsDataEntity } from '@/types/entities';
-import { definedQueryParams } from '@/utils/requests';
 
-export const queryParamsWithoutKey = (qp: QueryParams, key: string | string[]): QueryParams => {
-  const qpc = { ...qp };
+export const queryParamsWithoutKey = (qp: QueryParamEntries, key: string | string[]): QueryParamEntries => {
   if (typeof key === 'string') {
-    delete qpc[key];
+    return qp.filter(([k, _]) => k !== key);
   } else {
-    key.forEach((k) => {
-      delete qpc[k];
-    });
+    return qp.filter(([k, _]) => key.includes(k));
   }
-  return qpc;
 };
 
-export const combineQueryParamsWithoutKey = (qp1: QueryParams, qp2: QueryParams, key: string | string[]): QueryParams =>
-  queryParamsWithoutKey({ ...qp1, ...qp2 }, key);
+export const combineQueryParamsWithoutKey = (
+  qp1: QueryParamEntries,
+  qp2: QueryParamEntries,
+  key: string | string[]
+): QueryParamEntries => queryParamsWithoutKey([...qp1, ...qp2], key);
 
-export const buildQueryParamsUrl = (pathName: string, queryParams?: QueryParams): string => {
-  if (!queryParams || !Object.keys(queryParams).length) return pathName;
-  return `${pathName}?${new URLSearchParams(definedQueryParams(queryParams)).toString()}`;
+export const buildQueryParamsUrl = (pathName: string, queryParamEntries?: QueryParamEntries): string => {
+  if (!queryParamEntries || !Object.keys(queryParamEntries).length) return pathName;
+  return `${pathName}?${new URLSearchParams(queryParamEntries).toString()}`;
 };
 
-export const checkQueryParamsEqual = (qp1: QueryParams, qp2: QueryParams): boolean => {
-  const qp1Keys = Object.keys(qp1);
-  const qp2Keys = Object.keys(qp2);
+export const checkFiltersStatesEqual = (s1: FiltersState, s2: FiltersState): boolean => {
+  const qp1Keys = Object.keys(s1);
+  const qp2Keys = Object.keys(s2);
   const params = [...new Set([...qp1Keys, ...qp2Keys])];
-  return params.reduce((acc, v) => acc && qp1[v] === qp2[v], true);
+  return params.reduce((acc, v) => {
+    if (Array.isArray(s1[v]) && Array.isArray(s2[v])) {
+      return acc && JSON.stringify([...s1[v]].sort()) === JSON.stringify([...s2[v]].sort());
+    }
+    return acc && s1[v] === s2[v];
+  }, true);
+};
+
+export const filtersStateToQueryParamEntries = (fs: FiltersState): QueryParamEntries => {
+  const entries: QueryParamEntries = [];
+  Object.entries(fs).forEach(([k, v]) => {
+    if (v === null) return;
+    if (Array.isArray(v)) {
+      v.forEach((vv) => {
+        entries.push([k, vv]);
+      });
+    } else {
+      entries.push([k, v]);
+    }
+  });
+  return entries;
 };
 
 export const bentoKatsuEntityToResultsDataEntity = (x: BentoKatsuEntity | BentoCountEntity): ResultsDataEntity =>

@@ -11,8 +11,7 @@ import { RequestStatus } from '@/types/requests';
 import type { DiscoveryResponseOrMessage } from '@/types/discovery/response';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type {
-  QueryParams,
-  DefinedQueryParams,
+  FiltersState,
   SearchFieldResponse,
   DiscoveryMatchObject,
   DiscoveryMatchPhenopacket,
@@ -30,8 +29,7 @@ import { performKatsuDiscovery } from './performKatsuDiscovery.thunk';
 import { fetchSearchFields } from './fetchSearchFields.thunk';
 import { fetchDiscoveryMatches } from './fetchDiscoveryMatches.thunk';
 import { fetchDiscoveryUIHints } from './fetchDiscoveryUIHints.thunk';
-import { bentoKatsuEntityToResultsDataEntity, checkQueryParamsEqual } from './utils';
-import { definedQueryParams } from '@/utils/requests';
+import { bentoKatsuEntityToResultsDataEntity, checkFiltersStatesEqual } from './utils';
 
 export type QueryResultMatchData<T extends DiscoveryMatchObject> = {
   status: RequestStatus;
@@ -49,7 +47,7 @@ export type QueryState = {
   discoveryStatus: RequestStatus;
   // ----
   filterSections: SearchFieldResponse['sections'];
-  filterQueryParams: DefinedQueryParams;
+  filters: FiltersState;
   // ----
   textQuery: string;
   // ----
@@ -94,7 +92,7 @@ const initialState: QueryState = {
   discoveryStatus: RequestStatus.Idle,
   // ----
   filterSections: [],
-  filterQueryParams: {},
+  filters: {},
   // ----
   textQuery: '',
   // ----
@@ -198,11 +196,10 @@ const query = createSlice({
       state.sections = state.defaultLayout;
     },
     // -----------------------------------------------------------------------------------------------------------------
-    setFilterQueryParams: (state, { payload }: PayloadAction<QueryParams>) => {
-      const definedQPs = definedQueryParams(payload);
-      if (checkQueryParamsEqual(state.filterQueryParams, definedQPs)) return; // Don't update unnecessarily
-      console.debug('setting filter query params', definedQPs);
-      state.filterQueryParams = definedQPs;
+    setFilters: (state, { payload }: PayloadAction<FiltersState>) => {
+      if (checkFiltersStatesEqual(state.filters, payload)) return; // Don't update unnecessarily
+      console.debug('setting filters state', payload);
+      state.filters = payload;
       // search filters have changed; invalidate existing counts and match data pages if necessary:
       state.resultCountsInvalid = true;
       invalidateMatchData(state);
@@ -327,7 +324,7 @@ export const {
   hideAllSectionCharts,
   resetLayout,
   // ------------------------------------------------------------------
-  setFilterQueryParams,
+  setFilters,
   setTextQuery,
   setDoneFirstLoad,
   setSelectedEntity,

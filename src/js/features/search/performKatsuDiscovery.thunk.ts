@@ -4,9 +4,11 @@ import { katsuDiscoveryUrl } from '@/constants/configConstants';
 import type { RootState } from '@/store';
 import type { DiscoveryResponseOrMessage } from '@/types/discovery/response';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
+import type { QueryParamEntries } from '@/features/search/types';
 import { RequestStatus } from '@/types/requests';
 import { printAPIError } from '@/utils/error.util';
 import { scopedAuthorizedRequestConfig } from '@/utils/requests';
+import { filtersStateToQueryParamEntries } from '@/features/search/utils';
 
 export const performKatsuDiscovery = createAsyncThunk<
   [DiscoveryScope, DiscoveryResponseOrMessage],
@@ -22,10 +24,10 @@ export const performKatsuDiscovery = createAsyncThunk<
     const res = (await axios
       .get(
         katsuDiscoveryUrl,
-        scopedAuthorizedRequestConfig(state, {
-          _fts: state.query.textQuery || undefined,
-          ...state.query.filterQueryParams,
-        })
+        scopedAuthorizedRequestConfig(state, [
+          ...(state.query.textQuery ? ([['_fts', state.query.textQuery]] as QueryParamEntries) : []),
+          ...filtersStateToQueryParamEntries(state.query.filters),
+        ])
       )
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue))) as DiscoveryResponseOrMessage;

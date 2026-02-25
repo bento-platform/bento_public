@@ -2,8 +2,8 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import type { RootState } from '@/store';
 import axios from 'axios';
 import { katsuDiscoveryMatchesUrl } from '@/constants/configConstants';
-import type { DiscoveryMatchPhenopacket } from '@/features/search/types';
-import { bentoKatsuEntityToResultsDataEntity } from '@/features/search/utils';
+import type { DiscoveryMatchPhenopacket, QueryParamEntries } from '@/features/search/types';
+import { bentoKatsuEntityToResultsDataEntity, filtersStateToQueryParamEntries } from '@/features/search/utils';
 import type { BentoKatsuEntity } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
 import { scopedAuthorizedRequestConfig } from '@/utils/requests';
@@ -36,13 +36,13 @@ export const fetchDiscoveryMatches = createAsyncThunk<
     return axios
       .get(
         katsuDiscoveryMatchesUrl,
-        scopedAuthorizedRequestConfig(state, {
-          ...state.query.filterQueryParams,
-          _fts: state.query.textQuery || undefined,
-          _entity: queryEntity,
-          _page: state.query.matchData[queryEntity].page.toString(),
-          _page_size: state.query.pageSize.toString(),
-        })
+        scopedAuthorizedRequestConfig(state, [
+          ...filtersStateToQueryParamEntries(state.query.filters),
+          ...(state.query.textQuery ? ([['_fts', state.query.textQuery]] as QueryParamEntries) : []),
+          ['_entity', queryEntity],
+          ['_page', state.query.matchData[queryEntity].page.toString()],
+          ['_page_size', state.query.pageSize.toString()],
+        ])
       )
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue));

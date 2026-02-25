@@ -7,7 +7,9 @@ import { TABLE_PAGE_QUERY_PARAM, TEXT_QUERY_PARAM } from '@/features/search/cons
 import { useSearchQuery, useSearchQueryParams } from '@/features/search/hooks';
 import { buildQueryParamsUrl } from '@/features/search/utils';
 import { useTranslationFn } from '@/hooks';
+
 import { RequestStatus } from '@/types/requests';
+import type { QueryParamEntries } from '@/features/search/types';
 
 import SearchSubForm, { type DefinedSearchSubFormProps } from '@/components/Search/SearchSubForm';
 
@@ -36,12 +38,12 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
       navigate(
         // Build a query URL with the new text search value and navigate to it. It'll be handled by the search
         // router/handler effect (useSearchRouterAndHandler) elsewhere.
-        buildQueryParamsUrl(location.pathname, {
+        buildQueryParamsUrl(location.pathname, [
           ...allQueryParams,
-          [TEXT_QUERY_PARAM]: query,
+          [TEXT_QUERY_PARAM, query],
           // If we have an entity table page set, we need to reset it to 0 if the search text changes:
-          ...(TABLE_PAGE_QUERY_PARAM in allQueryParams ? { [TABLE_PAGE_QUERY_PARAM]: '0' } : {}),
-        })
+          ...(TABLE_PAGE_QUERY_PARAM in allQueryParams ? ([[TABLE_PAGE_QUERY_PARAM, '0']] as QueryParamEntries) : []),
+        ])
       );
     },
     [location.pathname, allQueryParams, textQuery, navigate]
