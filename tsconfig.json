@@ -21,16 +21,13 @@
     "isolatedModules": true,
     "noEmit": false,
 
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/js/*"],
-      "@public/*": ["src/public/*"],
-      "@Util/*": ["src/js/components/Util/*"]
+      "@/*": ["./src/js/*"],
+      "@public/*": ["./src/public/*"],
+      "@Util/*": ["./src/js/components/Util/*"]
     },
 
-    "types": ["*"],
-
-    "ignoreDeprecations": "6.0"
+    "types": ["node"],
   },
   "include": ["src", "src/custom.d.ts"]
 }
