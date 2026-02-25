@@ -1,5 +1,5 @@
 import { Fragment, type ReactNode } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { useCurrentScopePrefixedUrl } from '@/hooks/navigation';
 
 import { BentoRoute } from '@/types/routes';
@@ -11,26 +11,47 @@ import { PHENOPACKET_EXPANDED_URL_QUERY_KEY } from './PhenopacketDisplay/Phenopa
 const usePhenopacketOverviewLink = (
   packetId: string | undefined,
   expanded: SectionKey,
-  otherArgs: Record<string, string> | undefined = undefined
+  otherArgs: Record<string, string> | undefined = undefined,
+  preserveQueryParams: boolean = false
 ) => {
   const { packetId: urlPId } = useParams();
+  const [searchParams] = useSearchParams();
   const derivedPacketId = packetId ?? urlPId;
   const baseUrl = useCurrentScopePrefixedUrl(`${BentoRoute.Phenopackets}/${derivedPacketId}/${TabKeys.OVERVIEW}`);
-  const params = new URLSearchParams({ [PHENOPACKET_EXPANDED_URL_QUERY_KEY]: expanded, ...(otherArgs ?? {}) });
+
+  // Build the expanded value, merging with existing expanded sections if preserving
+  const expandedValue = preserveQueryParams
+    ? Array.from(new Set([...(searchParams.get(PHENOPACKET_EXPANDED_URL_QUERY_KEY)?.split(',') ?? []), expanded]))
+        .filter(Boolean)
+        .join(',')
+    : expanded;
+
+  const newParams: Record<string, string> = {
+    [PHENOPACKET_EXPANDED_URL_QUERY_KEY]: expandedValue,
+    ...(otherArgs ?? {}),
+  };
+
+  const params = preserveQueryParams
+    ? new URLSearchParams([
+        ...Array.from(searchParams.entries()).filter(([key]) => !(key in newParams)),
+        ...Object.entries(newParams),
+      ])
+    : new URLSearchParams(newParams);
+
   return `${baseUrl}?${params.toString()}`;
 };
 
-type BaseLinkProps = { packetId?: string; replace?: boolean; children?: ReactNode };
+type BaseLinkProps = { packetId?: string; replace?: boolean; preserveQueryParams?: boolean; children?: ReactNode };
 
 type SubjectLinkProps = BaseLinkProps;
-const SubjectLink = ({ children, packetId }: SubjectLinkProps) => {
-  const url = usePhenopacketOverviewLink(packetId, 'subject');
+const SubjectLink = ({ children, packetId, preserveQueryParams }: SubjectLinkProps) => {
+  const url = usePhenopacketOverviewLink(packetId, 'subject', undefined, preserveQueryParams);
   return <Link to={url}>{children}</Link>;
 };
 
 type BiosampleLinkProps = BaseLinkProps & { sampleId: string };
-const BiosampleLink = ({ packetId, sampleId, replace, children }: BiosampleLinkProps) => {
-  const url = usePhenopacketOverviewLink(packetId, 'biosamples', { biosample: sampleId });
+const BiosampleLink = ({ packetId, sampleId, replace, preserveQueryParams, children }: BiosampleLinkProps) => {
+  const url = usePhenopacketOverviewLink(packetId, 'biosamples', { biosample: sampleId }, preserveQueryParams);
   return (
     <Link to={url} replace={replace}>
       {children ?? sampleId}
@@ -39,11 +60,11 @@ const BiosampleLink = ({ packetId, sampleId, replace, children }: BiosampleLinkP
 };
 
 type BiosampleLinkListProps = BaseLinkProps & { biosamples: string[] };
-const BiosampleLinkList = ({ packetId, biosamples, replace }: BiosampleLinkListProps) => (
+const BiosampleLinkList = ({ packetId, biosamples, replace, preserveQueryParams }: BiosampleLinkListProps) => (
   <>
     {biosamples.map((bb, bbi) => (
       <Fragment key={bb}>
-        <BiosampleLink packetId={packetId} sampleId={bb} replace={replace} />
+        <BiosampleLink packetId={packetId} sampleId={bb} replace={replace} preserveQueryParams={preserveQueryParams} />
         {bbi < biosamples.length - 1 ? ', ' : ''}
       </Fragment>
     ))}
@@ -51,8 +72,8 @@ const BiosampleLinkList = ({ packetId, biosamples, replace }: BiosampleLinkListP
 );
 
 type ExperimentLinkProps = BaseLinkProps & { experimentId: string };
-const ExperimentLink = ({ packetId, experimentId, replace, children }: ExperimentLinkProps) => {
-  const url = usePhenopacketOverviewLink(packetId, 'experiments', { experiment: experimentId });
+const ExperimentLink = ({ packetId, experimentId, replace, preserveQueryParams, children }: ExperimentLinkProps) => {
+  const url = usePhenopacketOverviewLink(packetId, 'experiments', { experiment: experimentId }, preserveQueryParams);
   return (
     <Link to={url} replace={replace}>
       {children ?? experimentId}
@@ -61,10 +82,19 @@ const ExperimentLink = ({ packetId, experimentId, replace, children }: Experimen
 };
 
 type ExperimentResultLinkProps = BaseLinkProps & { experimentResultId: number };
-const ExperimentResultLink = ({ packetId, experimentResultId, children, replace }: ExperimentResultLinkProps) => {
-  const url = usePhenopacketOverviewLink(packetId, 'experimentResults', {
-    experimentResult: experimentResultId.toString(10),
-  });
+const ExperimentResultLink = ({
+  packetId,
+  experimentResultId,
+  children,
+  replace,
+  preserveQueryParams,
+}: ExperimentResultLinkProps) => {
+  const url = usePhenopacketOverviewLink(
+    packetId,
+    'experimentResults',
+    { experimentResult: experimentResultId.toString(10) },
+    preserveQueryParams
+  );
   return (
     <Link to={url} replace={replace}>
       {children ?? experimentResultId}
@@ -73,7 +103,13 @@ const ExperimentResultLink = ({ packetId, experimentResultId, children, replace 
 };
 
 type ExperimentLinkListProps = BaseLinkProps & { current?: string; experiments: string[] };
-export const ExperimentLinkList = ({ packetId, current, experiments, replace }: ExperimentLinkListProps) => (
+export const ExperimentLinkList = ({
+  packetId,
+  current,
+  experiments,
+  replace,
+  preserveQueryParams,
+}: ExperimentLinkListProps) => (
   <>
     {experiments.map((experimentId, i) => (
       <Fragment key={i}>
@@ -81,6 +117,7 @@ export const ExperimentLinkList = ({ packetId, current, experiments, replace }: 
           packetId={current === experimentId ? undefined : packetId}
           experimentId={experimentId}
           replace={replace}
+          preserveQueryParams={preserveQueryParams}
         />
         {i < experiments.length - 1 ? ', ' : ''}
       </Fragment>

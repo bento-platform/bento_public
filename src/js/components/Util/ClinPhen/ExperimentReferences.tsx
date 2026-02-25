@@ -26,7 +26,7 @@ const ExperimentReferences = ({
     <div>
       {sorted.map((e, i) => (
         <Fragment key={e.id}>
-          <PhenopacketLink.Experiment packetId={packetId} experimentId={e.id}>
+          <PhenopacketLink.Experiment packetId={packetId} experimentId={e.id} preserveQueryParams>
             <Tooltip title={e.id} styles={{ body: { wordWrap: 'normal', inlineSize: 'max-content' } }}>
               {e.displayType}
               {e.hasDuplicates ? ` (${e.typeIndex})` : ''}
