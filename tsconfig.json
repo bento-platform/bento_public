@@ -1,30 +1,36 @@
 {
   "compilerOptions": {
-    "outDir": "./dist/",
-    "sourceMap": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+
+    "strict": true,
     "strictNullChecks": true,
-    "module": "ES2022",
-    "target": "es6",
-    "downlevelIteration": true,
+
+    "sourceMap": true,
+    "jsx": "react-jsx",
+
     "allowJs": true,
     "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": false,
-    "jsx": "react-jsx",
-    "baseUrl": "./",
+
+    "baseUrl": ".",
     "paths": {
       "@/*": ["src/js/*"],
       "@public/*": ["src/public/*"],
-      "@Util/*": ["src/js/components/Util/*"],
-      "*": ["node_modules/*", ".yalc/*"]
-    }
+      "@Util/*": ["src/js/components/Util/*"]
+    },
+
+    "types": ["*"],
+
+    "ignoreDeprecations": "6.0"
   },
-  "include": ["./src/", "./src/custom.d.ts"]
+  "include": ["src", "src/custom.d.ts"]
 }
