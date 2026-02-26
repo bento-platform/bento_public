@@ -1,9 +1,10 @@
-import { useMemo } from 'react';
+import { useId, useMemo, useState } from 'react';
 import { useTranslationFn } from '@/hooks';
 
-import { Divider, Space, Typography } from 'antd';
+import { Divider, Flex, Radio, Space, Table, Typography } from 'antd';
 
 import type { DiscoveryMatchExperimentResult } from '@/features/search/types';
+import type { Biosample } from '@/types/clinPhen/biosample';
 import type { Experiment } from '@/types/clinPhen/experiments/experiment';
 import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
@@ -157,10 +158,13 @@ export const ExperimentResultFileTypeCounts = ({
 
 type ExperimentViewProps = {
   packetId?: string;
+  biosamples: Biosample[];
   experiments: Experiment[];
 };
 
-const ExperimentView = ({ packetId, experiments }: ExperimentViewProps) => {
+const MATRIX_EXPERIMENT_TYPE_WIDTH = 170;
+
+const ExperimentView = ({ packetId, biosamples, experiments }: ExperimentViewProps) => {
   const columns = useMemo<CustomTableColumns<Experiment>>(
     () => [
       { title: 'experiment.experiment_id', dataIndex: 'id', alwaysShow: true },
@@ -185,15 +189,80 @@ const ExperimentView = ({ packetId, experiments }: ExperimentViewProps) => {
     [packetId]
   );
 
+  const viewModeRadioId = useId();
+  const [viewMode, setViewMode] = useState<'list' | 'matrix'>('list');
+
+  const experimentsByBiosample = Object.fromEntries(biosamples.map((bb) => [bb.id, bb.experiments ?? []]));
+
+  const experimentTypes = [
+    ...new Set(Object.values(experimentsByBiosample).flatMap((e) => e.map((ee) => ee.experiment_type))),
+  ];
+
   return (
-    <CustomTable<Experiment>
-      dataSource={experiments}
-      columns={columns}
-      expandedRowRender={(record) => <ExperimentExpandedRow experiment={record} />}
-      rowKey="id"
-      queryKey="experiment"
-      isRowExpandable={isExperimentRowExpandable}
-    />
+    <Flex vertical={true} gap={12}>
+      <Flex gap="0.7em" align="center">
+        <label htmlFor={viewModeRadioId}>View as:</label>
+        <Radio.Group
+          id={viewModeRadioId}
+          optionType="button"
+          buttonStyle="solid"
+          size="small"
+          value={viewMode}
+          onChange={(e) => setViewMode(e.target.value)}
+          options={[
+            { label: 'List', value: 'list' },
+            { label: 'Matrix', value: 'matrix', disabled: !biosamples.length },
+          ]}
+        />
+      </Flex>
+      {viewMode === 'matrix' ? (
+        <Table
+          pagination={false}
+          bordered={true}
+          columns={[
+            {
+              dataIndex: 'experimentType',
+              title: 'Experiment Type',
+              width: MATRIX_EXPERIMENT_TYPE_WIDTH,
+              align: 'right',
+            },
+            {
+              title: 'Biosamples',
+              children: Object.keys(experimentsByBiosample).map((biosampleId) => ({
+                dataIndex: `biosample_${biosampleId}`,
+                title: <PhenopacketLink.Biosample packetId={packetId} sampleId={biosampleId} />,
+                width: `calc((100% - ${MATRIX_EXPERIMENT_TYPE_WIDTH}px) / ${biosamples.length})`,
+                align: 'center',
+                render: (experimentIds: string[]) =>
+                  experimentIds.length ? (
+                    <PhenopacketLink.Experiments packetId={packetId} experiments={experimentIds} />
+                  ) : null,
+              })),
+            },
+          ]}
+          dataSource={experimentTypes.map((et) => ({
+            experimentType: et,
+            ...Object.fromEntries(
+              Object.entries(experimentsByBiosample).map(([biosampleId, experiments]) => [
+                `biosample_${biosampleId}`,
+                experiments
+                  .filter((experiment) => experiment.experiment_type === et)
+                  .map(({ id: experimentId }) => experimentId),
+              ])
+            ),
+          }))}
+        />
+      ) : (
+        <CustomTable<Experiment>
+          dataSource={experiments}
+          columns={columns}
+          expandedRowRender={(record) => <ExperimentExpandedRow experiment={record} />}
+          rowKey="id"
+          queryKey="experiment"
+          isRowExpandable={isExperimentRowExpandable}
+        />
+      )}
+    </Flex>
   );
 };
 
