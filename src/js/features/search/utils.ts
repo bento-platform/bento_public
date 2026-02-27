@@ -1,5 +1,6 @@
-import type { QueryParams } from '@/features/search/types';
 import type { BentoCountEntity, BentoKatsuEntity, ResultsDataEntity } from '@/types/entities';
+import type { QueryState } from './query.store';
+import type { QueryParams } from './types';
 import { definedQueryParams } from '@/utils/requests';
 
 export const queryParamsWithoutKey = (qp: QueryParams, key: string | string[]): QueryParams => {
@@ -31,3 +32,12 @@ export const checkQueryParamsEqual = (qp1: QueryParams, qp2: QueryParams): boole
 
 export const bentoKatsuEntityToResultsDataEntity = (x: BentoKatsuEntity | BentoCountEntity): ResultsDataEntity =>
   x === 'individual' ? 'phenopacket' : x;
+
+export const searchQueryParamsFromState = (state: QueryState): QueryParams => {
+  const { filterQueryParams, textQuery, textQueryType } = state;
+  return {
+    _fts: textQuery || undefined,
+    _fts_type: textQuery ? textQueryType : undefined,
+    ...filterQueryParams,
+  };
+};

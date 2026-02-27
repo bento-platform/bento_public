@@ -59,7 +59,13 @@
     "showing_entities_short": "{{start}}-{{end}} / {{total}}",
     "manage_columns": "Gérer les colonnes",
     "export_csv": "Exporter en CSV",
-    "csv": "CSV"
+    "csv": "CSV",
+    "fts": {
+      "plain": "Mot",
+      "plain_help": "Récupère les enregistrements qui correspondent exactement aux mots de la requête (sans distinction de casse).",
+      "trigram": "Fuzzy",
+      "trigram_help": "Récupère les enregistrements dont le texte est similaire (mais pas nécessairement identique) à la requête."
+    }
   },
   "OR": "OU",
   "in": "en",

@@ -58,7 +58,13 @@
     "showing_entities_short": "{{start}}-{{end}} / {{total}}",
     "manage_columns": "Manage Columns",
     "export_csv": "Export as CSV",
-    "csv": "CSV"
+    "csv": "CSV",
+    "fts": {
+      "plain": "Word",
+      "plain_help": "Retrieves records which exactly match words in the query (case-insensitive).",
+      "trigram": "Fuzzy",
+      "trigram_help": "Retrieves records which text that looks similar (but not necessarily identical) to the query."
+    }
   },
   "OR": "OR",
   "in": "in",
