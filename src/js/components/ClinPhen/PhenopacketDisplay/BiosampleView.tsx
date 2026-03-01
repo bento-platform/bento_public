@@ -10,8 +10,10 @@ import Procedure from '@Util/ClinPhen/Procedure';
 import FileTable from '@Util/FileTable';
 import JsonView from '@Util/JsonView';
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
+import ExperimentReferences from '@Util/ClinPhen/ExperimentReferences';
 
 import type { Biosample } from '@/types/clinPhen/biosample';
+import type { Experiment } from '@/types/clinPhen/experiments/experiment';
 import type { OntologyTerm } from '@/types/ontology';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
 import type { GeoLocation } from '@/types/geo';
@@ -261,9 +263,13 @@ const BIOSAMPLE_VIEW_COLUMNS: CustomTableColumns<Biosample> = [
     dataIndex: 'location_collected',
     render: (locationCollected: GeoLocation | undefined) => <LatLong location={locationCollected} />,
   },
+  {
+    title: 'entities.experiment_other',
+    dataIndex: 'experiments',
+    render: (experiments: Experiment[]) => <ExperimentReferences experiments={experiments} />,
+  },
 ];
 
-//TODO: add button that links to experiment (like bento web)
 const BiosampleView = ({ biosamples }: BiosampleViewProps) => {
   return (
     <CustomTable<Biosample>

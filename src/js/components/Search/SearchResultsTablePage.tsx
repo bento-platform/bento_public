@@ -34,6 +34,7 @@ import { setEquals } from '@/utils/sets';
 import DatasetProvenanceModal from '@/components/Provenance/DatasetProvenanceModal';
 import ProjectTitle from '@Util/ProjectTitle';
 import DatasetTitle from '@Util/DatasetTitle';
+import ExperimentReferences from '@Util/ClinPhen/ExperimentReferences';
 import CustomTable, { type CustomTableColumn, type CustomTableColumns } from '@Util/CustomTable';
 import IndividualRowDetail from './IndividualRowDetail';
 import BiosampleRowDetail from './BiosampleRowDetail';
@@ -120,8 +121,8 @@ const BIOSAMPLE_SEARCH_TABLE_COLUMNS = {
   experiments: {
     title: 'entities.experiment_other',
     dataIndex: 'experiments',
-    render: (_ctx) => (experiments: DiscoveryMatchExperiment[] | undefined, b) => (
-      <PhenopacketLink.Experiments packetId={b.phenopacket} experiments={experiments?.map((e) => e.id) ?? []} />
+    render: (_ctx) => (experiments: DiscoveryMatchExperiment[], b) => (
+      <ExperimentReferences packetId={b.phenopacket} experiments={experiments} />
     ),
   } as ResultsTableColumn<DiscoveryMatchBiosample>,
   ...commonSearchTableColumns<DiscoveryMatchBiosample>(),
