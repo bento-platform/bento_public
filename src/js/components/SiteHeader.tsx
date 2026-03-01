@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Button, Flex, Layout, Space, Typography } from 'antd';
@@ -33,7 +33,9 @@ const SiteHeader = () => {
   const performSignOut = usePerformSignOut();
   const performSignIn = usePerformAuth();
 
-  document.title = CLIENT_NAME && CLIENT_NAME.trim() ? `Bento: ${CLIENT_NAME}` : 'Bento';
+  useEffect(() => {
+    document.title = CLIENT_NAME && CLIENT_NAME.trim() ? `Bento: ${CLIENT_NAME}` : 'Bento';
+  }, []);
 
   const changeLanguage = () => {
     const newLang = LNG_CHANGE[i18n.language];

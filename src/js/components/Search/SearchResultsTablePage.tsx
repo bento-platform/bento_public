@@ -1,4 +1,4 @@
-import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { type ReactNode, useCallback, useMemo, useState } from 'react';
 
 import { Button, Checkbox, Col, Flex, Modal, Space, type TablePaginationConfig, Tooltip, Typography } from 'antd';
 import { ExportOutlined, LeftOutlined, TableOutlined } from '@ant-design/icons';
@@ -18,6 +18,7 @@ import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
 
 import type { BentoKatsuEntity } from '@/types/entities';
 import type { Project, Dataset } from '@/types/metadata';
+import type { DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
 import type { QueryResultMatchData } from '@/features/search/query.store';
 import type {
   DiscoveryMatchBiosample,
@@ -28,6 +29,7 @@ import type {
 } from '@/features/search/types';
 import { BentoRoute } from '@/types/routes';
 
+import { scopeSelectionEqual } from '@/features/metadata/utils';
 import { bentoKatsuEntityToResultsDataEntity, buildQueryParamsUrl } from '@/features/search/utils';
 import { setEquals } from '@/utils/sets';
 
@@ -295,11 +297,13 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   const { filterQueryParams, textQuery, textQueryType, resultCountsOrBools, pageSize, matchData } = useSearchQuery();
   const { fetchingPermission: fetchingCanDownload, hasPermission: canDownload } = useScopeDownloadData();
   const downloadAllMatchesCSV = useDownloadAllMatchesCSV();
-  const selectedScope = useSelectedScope();
   const isSmallScreen = useSmallScreen();
 
   const allQueryParams = useSearchQueryParams();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
+
+  const selectedScope = useSelectedScope();
+  const [oldSelectedScope, setOldSelectedScope] = useState<DiscoveryScopeSelection>(selectedScope);
 
   const [exporting, setExporting] = useState<boolean>(false);
   const [columnModalOpen, setColumnModalOpen] = useState<boolean>(false);
@@ -334,7 +338,9 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
     () => new Set<string>(spec.defaultColumns.filter((c) => allowedColumns.has(c)))
   );
 
-  useEffect(() => {
+  // See https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes for why this is
+  // not inside an effect.
+  if (!scopeSelectionEqual(selectedScope, oldSelectedScope)) {
     // If the selected scope changes, some of the currently-shown columns may no longer be valid:
     setShownColumns((oldSet) => {
       const newSet = new Set<string>([...oldSet].filter((v) => allowedColumns.has(v)));
@@ -342,7 +348,8 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
       // Don't change object if our newly-computed object is equivalent:
       return setEquals(oldSet, newSet) ? oldSet : newSet;
     });
-  }, [selectedScope, allowedColumns, shownColumns]);
+    setOldSelectedScope(selectedScope);
+  }
 
   const columns = useMemo<CustomTableColumns<T>>(
     () => [
