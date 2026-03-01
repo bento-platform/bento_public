@@ -82,7 +82,7 @@ const ScopedTitle = () => {
       }
       items.push({
         title: datasetTitle,
-        path: `/${i18n.language}/p/${scope.project}/d/${scope.dataset}`,
+        path: `/${i18n.language}/d/${scope.dataset}`,
       });
     }
 

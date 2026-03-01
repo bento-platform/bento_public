@@ -48,11 +48,10 @@ const SiteSider = ({
       const newPath = [currentPath[0]];
       if (!TOP_LEVEL_ONLY_ROUTES.includes(key)) {
         // Beacon network only works at the top scope level
-        if (currentPath[1] == 'p') {
+        if (currentPath[1] === 'p') {
           newPath.push('p', currentPath[2]);
-        }
-        if (currentPath[3] == 'd') {
-          newPath.push('d', currentPath[4]);
+        } else if (currentPath[1] === 'd') {
+          newPath.push('d', currentPath[2]);
         }
       }
       newPath.push(key);

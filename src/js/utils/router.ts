@@ -11,8 +11,11 @@ export const getPathPageIndex = (pathParts: string[]): number => {
   // (overview/provenance/etc.)
   //  /en/about --> ['en', 'about'] --> page is at index 1
   //  /en/p/<uuid>/about --> ['en', 'p', '<uuid>', 'about'] --> page is at index 3
-  //  /en/p/<uuid>/d/<uuid>/about --> ['en', 'p', '<uuid>', 'd', '<uuid>', 'about'] --> page is at index 5
-  return pathParts[1] === 'p' ? (pathParts[3] === 'd' ? 5 : 3) : 1;
+  //  /en/d/<uuid>/about --> ['en', 'd', '<uuid>', 'about'] --> page is at index 3
+  if (pathParts[1] === 'p' || pathParts[1] === 'd') {
+    return 3;
+  }
+  return 1;
 };
 
 export const getCurrentPage = (location?: RouterLocation | Location): string => {
@@ -81,8 +84,9 @@ export const scopeToUrl = (
 
   if (fixedProjectAndDataset || (!scope.project && !scope.dataset)) {
     return `/${lang}/${suffix}`;
-  } else if (scope.project && scope.dataset) {
-    return `/${lang}/p/${scope.project}/d/${scope.dataset}/${suffix}`;
+  } else if (scope.dataset) {
+    // Dataset URLs no longer include project
+    return `/${lang}/d/${scope.dataset}/${suffix}`;
   } else {
     // scope.project && !scope.dataset
     return `/${lang}/p/${scope.project}/${suffix}`;
