@@ -12,6 +12,7 @@ import type { DiscoveryResponseOrMessage } from '@/types/discovery/response';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type {
   FiltersState,
+  FtsQueryType,
   SearchFieldResponse,
   DiscoveryMatchObject,
   DiscoveryMatchPhenopacket,
@@ -23,6 +24,7 @@ import type {
 import type { Sections } from '@/types/data';
 
 import { MIN_PAGE_SIZE, PAGE_SIZE_OPTIONS } from '@/constants/pagination';
+import { DEFAULT_TEXT_QUERY_TYPE } from './constants';
 
 import { discoveryChartProcessingAndLocalStorage } from './discoveryChartProcessingAndLocalStorage';
 import { performKatsuDiscovery } from './performKatsuDiscovery.thunk';
@@ -50,6 +52,7 @@ export type QueryState = {
   filters: FiltersState;
   // ----
   textQuery: string;
+  textQueryType: FtsQueryType;
   // ----
   // Whether the first search has been executed; can't be reset on 'search mode' (filter/text) change the way
   // (filter|text)QueryStatus can. This is instead only reset when the complete query state is reset.
@@ -95,6 +98,7 @@ const initialState: QueryState = {
   filters: {},
   // ----
   textQuery: '',
+  textQueryType: DEFAULT_TEXT_QUERY_TYPE,
   // ----
   doneFirstLoad: false,
   message: '',
@@ -208,6 +212,13 @@ const query = createSlice({
       if (state.textQuery === payload) return;
       state.textQuery = payload;
       // text query has changed; invalidate existing counts and match data pages if necessary:
+      state.resultCountsInvalid = true;
+      invalidateMatchData(state);
+    },
+    setTextQueryType: (state, { payload }: PayloadAction<FtsQueryType>) => {
+      if (state.textQueryType === payload) return;
+      state.textQueryType = payload;
+      // text query type has changed; invalidate existing counts and match data pages if necessary:
       state.resultCountsInvalid = true;
       invalidateMatchData(state);
     },
@@ -326,6 +337,7 @@ export const {
   // ------------------------------------------------------------------
   setFilters,
   setTextQuery,
+  setTextQueryType,
   setDoneFirstLoad,
   setSelectedEntity,
   setMatchesPage,

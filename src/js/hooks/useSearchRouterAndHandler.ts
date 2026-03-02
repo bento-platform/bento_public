@@ -1,18 +1,27 @@
 import { useCallback, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
-import type { FiltersState, QueryFilterField, QueryParamEntries, QueryParamEntry } from '@/features/search/types';
+import type {
+  FiltersState,
+  FtsQueryType,
+  QueryFilterField,
+  QueryParamEntries,
+  QueryParamEntry,
+} from '@/features/search/types';
 import type { BentoCountEntity } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
 import { BentoRoute } from '@/types/routes';
 
 import { COUNT_ENTITY_REGISTRY } from '@/constants/countEntities';
 import {
+  DEFAULT_TEXT_QUERY_TYPE,
   ENTITY_QUERY_PARAM,
   NON_FILTER_QUERY_PARAM_PREFIX,
   TABLE_PAGE_QUERY_PARAM,
   TABLE_PAGE_SIZE_QUERY_PARAM,
   TEXT_QUERY_PARAM,
+  TEXT_QUERY_TYPE_PARAM,
+  VALID_TEXT_QUERY_TYPES,
 } from '@/features/search/constants';
 
 import { useAppDispatch } from '@/hooks';
@@ -28,6 +37,7 @@ import {
   setDoneFirstLoad,
   setFilters,
   setTextQuery,
+  setTextQueryType,
   setSelectedEntity,
   setMatchesPage,
   setMatchesPageSize,
@@ -44,7 +54,8 @@ type QueryValidationResult = {
 };
 
 const ENTITY_TABLE_PARAMS = [ENTITY_QUERY_PARAM, TABLE_PAGE_QUERY_PARAM, TABLE_PAGE_SIZE_QUERY_PARAM];
-const ENTITY_AND_TEXT_PARAMS = [...ENTITY_TABLE_PARAMS, TEXT_QUERY_PARAM];
+const TEXT_QUERY_PARAMS = [TEXT_QUERY_PARAM, TEXT_QUERY_TYPE_PARAM];
+const ENTITY_AND_TEXT_PARAMS = [...ENTITY_TABLE_PARAMS, ...TEXT_QUERY_PARAMS];
 
 export const useSearchRouterAndHandler = () => {
   // Tags for ctrl-F: execute search, perform search, run search
@@ -64,6 +75,7 @@ export const useSearchRouterAndHandler = () => {
     fieldsStatus: searchFieldsStatus,
     discoveryStatus,
     textQuery,
+    textQueryType,
     selectedEntity,
     doneFirstLoad,
     matchData,
@@ -180,8 +192,9 @@ export const useSearchRouterAndHandler = () => {
     const qpRawTablePage = otherQueryParamsRepr.get(TABLE_PAGE_QUERY_PARAM);
     const qpRawTablePageSize = otherQueryParamsRepr.get(TABLE_PAGE_SIZE_QUERY_PARAM);
     const qpTextQuery = otherQueryParamsRepr.get(TEXT_QUERY_PARAM);
+    const qpTextQueryType = otherQueryParamsRepr.get(TEXT_QUERY_TYPE_PARAM);
 
-    if ((qpRawEntity || qpRawTablePage || qpRawTablePageSize || qpTextQuery) && !queryDataPerm) {
+    if ((qpRawEntity || qpRawTablePage || qpRawTablePageSize || qpTextQuery || qpTextQueryType) && !queryDataPerm) {
       // Already checked attempted status, so we know this is the true permissions value. If we do not have query:data
       // permissions, we cannot:
       //  - expand an entity table (with associated pagination query parameters), or
@@ -196,7 +209,15 @@ export const useSearchRouterAndHandler = () => {
 
     // Handle an invalid entity in the URL by rewriting it without any entity results-table-relevant parameters:
     if (qpEntity && !(qpEntity in COUNT_ENTITY_REGISTRY)) {
+      console.warn('invalid entity', qpEntity);
       setSearchUrl(validFiltersState, queryParamsWithoutKey(otherQueryParams, ENTITY_TABLE_PARAMS));
+      return;
+    }
+
+    // Handle an invalid text query type by clearing all text query parameters and rewriting the URL:
+    if (qpTextQueryType && !(VALID_TEXT_QUERY_TYPES as string[]).includes(qpTextQueryType)) {
+      console.warn('invalid text query type', qpTextQueryType);
+      setSearchUrl(validFiltersState, queryParamsWithoutKey(otherQueryParams, TEXT_QUERY_PARAMS));
       return;
     }
 
@@ -224,12 +245,19 @@ export const useSearchRouterAndHandler = () => {
     }
 
     const qpTextQueryStr = (qpTextQuery ?? '').trim(); // undefined --> ''; trim whitespace
-    if ((textQuery && qpTextQuery === undefined) || qpTextQueryStr !== textQuery) {
+    const qpTextQueryTypeFinal = (qpTextQueryType ?? DEFAULT_TEXT_QUERY_TYPE).trim() as FtsQueryType;
+    if (
+      (textQuery && qpTextQuery === undefined) ||
+      qpTextQueryStr !== textQuery ||
+      qpTextQueryTypeFinal !== textQueryType
+    ) {
       // If there's a mismatch between the query parameter and Redux text queries, we have to reconcile them. We sync
       // Redux from the URL query parameter for free-text search so we can perform the search itself below.
       // If the text query has truly changed, this will also invalidate any current match pages, to re-fetch results
       // entity tables.
-      dispatch(setTextQuery(qpTextQueryStr)); // [!!!] This should be the only place setTextQuery(...) gets called.
+      // [!!!] This should be the only place setTextQuery(...) and setTextQueryType(...) get called.
+      dispatch(setTextQuery(qpTextQueryStr));
+      dispatch(setTextQueryType(qpTextQueryTypeFinal));
     }
 
     // If we have new valid filter query parameters (that aren't already in Redux), put them into the state.
@@ -263,6 +291,7 @@ export const useSearchRouterAndHandler = () => {
     setSearchUrl,
     filters,
     textQuery,
+    textQueryType,
     selectedEntity,
     matchData,
     pageSize,

@@ -4,7 +4,7 @@ import { katsuDiscoveryMatchesUrl } from '@/constants/configConstants';
 import { scopedAuthorizedRequestConfigFromParts } from '@/utils/requests';
 import type { RootState } from '@/store';
 import type { DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
-import type { FiltersState, QueryParamEntries } from '@/features/search/types';
+import type { FiltersState, FtsQueryType, QueryParamEntries } from '@/features/search/types';
 import type { ResultsDataEntity } from '@/types/entities';
 import { filtersStateToQueryParamEntries } from '@/features/search/utils';
 
@@ -16,12 +16,18 @@ export const downloadAllMatchesCSV = async (
   selectedScope: DiscoveryScopeSelection,
   filters: FiltersState,
   textQuery: string,
+  textQueryType: FtsQueryType,
   entity: ResultsDataEntity,
   filename: string
 ): Promise<void> => {
   const config = scopedAuthorizedRequestConfigFromParts(auth, selectedScope, [
     ...filtersStateToQueryParamEntries(filters),
-    ...(textQuery ? ([['_fts', textQuery]] as QueryParamEntries) : []),
+    ...(textQuery
+      ? ([
+          ['_fts', textQuery],
+          ['_fts_type', textQueryType],
+        ] as QueryParamEntries)
+      : []),
     ['_entity', entity],
     ['_format', 'csv'],
     ['_page_size', '0'], // 0 means export all results

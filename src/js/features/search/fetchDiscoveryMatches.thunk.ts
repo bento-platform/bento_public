@@ -2,8 +2,8 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import type { RootState } from '@/store';
 import axios from 'axios';
 import { katsuDiscoveryMatchesUrl } from '@/constants/configConstants';
-import type { DiscoveryMatchPhenopacket, QueryParamEntries } from '@/features/search/types';
-import { bentoKatsuEntityToResultsDataEntity, filtersStateToQueryParamEntries } from '@/features/search/utils';
+import type { DiscoveryMatchPhenopacket } from '@/features/search/types';
+import { bentoKatsuEntityToResultsDataEntity, searchQueryParamsFromState } from '@/features/search/utils';
 import type { BentoKatsuEntity } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
 import { scopedAuthorizedRequestConfig } from '@/utils/requests';
@@ -37,8 +37,7 @@ export const fetchDiscoveryMatches = createAsyncThunk<
       .get(
         katsuDiscoveryMatchesUrl,
         scopedAuthorizedRequestConfig(state, [
-          ...filtersStateToQueryParamEntries(state.query.filters),
-          ...(state.query.textQuery ? ([['_fts', state.query.textQuery]] as QueryParamEntries) : []),
+          ...searchQueryParamsFromState(state.query),
           ['_entity', queryEntity],
           ['_page', state.query.matchData[queryEntity].page.toString()],
           ['_page_size', state.query.pageSize.toString()],

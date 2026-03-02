@@ -1,5 +1,6 @@
-import type { FiltersState, QueryParamEntries } from '@/features/search/types';
 import type { BentoCountEntity, BentoKatsuEntity, ResultsDataEntity } from '@/types/entities';
+import type { QueryState } from './query.store';
+import type { FiltersState, QueryParamEntries } from './types';
 
 export const queryParamsWithoutKey = (qp: QueryParamEntries, key: string | string[]): QueryParamEntries => {
   if (typeof key === 'string') {
@@ -49,3 +50,16 @@ export const filtersStateToQueryParamEntries = (fs: FiltersState): QueryParamEnt
 
 export const bentoKatsuEntityToResultsDataEntity = (x: BentoKatsuEntity | BentoCountEntity): ResultsDataEntity =>
   x === 'individual' ? 'phenopacket' : x;
+
+export const searchQueryParamsFromState = (state: QueryState): QueryParamEntries => {
+  const { filters, textQuery, textQueryType } = state;
+  return [
+    ...filtersStateToQueryParamEntries(filters),
+    ...(textQuery
+      ? ([
+          ['_fts', textQuery],
+          ['_fts_type', textQueryType],
+        ] as QueryParamEntries)
+      : []),
+  ];
+};
