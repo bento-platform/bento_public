@@ -50,6 +50,7 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
     const enabled = typeof spec.enabled === 'function' ? spec.enabled(phenopacket) : spec.enabled;
     if (!enabled) return null;
     const itemCount = spec.itemCount?.(phenopacket);
+
     return {
       key,
       label: (
@@ -58,7 +59,11 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
           {itemCount ? ` (${itemCount})` : null}
         </strong>
       ),
-      children: spec.render(phenopacket),
+      children: (
+        <div id={`pp-section-${key}`} data-pp-section={key}>
+          {spec.render(phenopacket)}
+        </div>
+      ),
     };
   };
 
