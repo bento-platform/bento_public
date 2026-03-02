@@ -47,6 +47,7 @@ export type QueryState = {
   // -------------------------------------
   fieldsStatus: RequestStatus;
   discoveryStatus: RequestStatus;
+  discoveryError: string;
   // ----
   filterSections: SearchFieldResponse['sections'];
   filters: FiltersState;
@@ -93,6 +94,7 @@ const initialState: QueryState = {
   // -------------------------------------
   fieldsStatus: RequestStatus.Idle,
   discoveryStatus: RequestStatus.Idle,
+  discoveryError: '',
   // ----
   filterSections: [],
   filters: {},
@@ -261,6 +263,7 @@ const query = createSlice({
       performKatsuDiscovery.fulfilled,
       (state, { payload: [scope, response] }: PayloadAction<[DiscoveryScope, DiscoveryResponseOrMessage]>) => {
         state.discoveryStatus = RequestStatus.Fulfilled;
+        state.discoveryError = '';
         state.resultCountsInvalid = false;
 
         if (!response) {
@@ -283,8 +286,14 @@ const query = createSlice({
         }
       }
     );
-    builder.addCase(performKatsuDiscovery.rejected, (state) => {
+    builder.addCase(performKatsuDiscovery.rejected, (state, { payload }) => {
       state.discoveryStatus = RequestStatus.Rejected;
+      // maybe a bit counterintuitive, but a rejected status is a "valid" count response insofar as it reflects the
+      // query made, and we don't want to attempt a re-fetch.
+      state.resultCountsInvalid = false;
+      if (typeof payload === 'string') {
+        state.discoveryError = payload;
+      }
     });
     // -----
     builder.addCase(fetchSearchFields.pending, (state) => {
