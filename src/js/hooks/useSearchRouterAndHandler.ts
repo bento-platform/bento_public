@@ -103,7 +103,6 @@ export const useSearchRouterAndHandler = () => {
 
     let valid = true; // Current query params are valid until proven otherwise in the loop below.
 
-    console.log('begin', queryDataPerm);
     [...query.entries()].forEach((qp) => {
       const [fieldDef, qpValid] = validateFilterQueryParam(qp);
       if (nFilters < maxQueryParameters && qpValid) {
@@ -131,7 +130,6 @@ export const useSearchRouterAndHandler = () => {
         valid = false;
       }
     });
-    console.log('end');
 
     return { valid, validFiltersState, otherQueryParams };
   }, [maxQueryParameters, filterFields, location.search, queryDataPerm]);
