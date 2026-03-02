@@ -18,7 +18,7 @@ const serializeKeys = (keys: SectionKey[], prev: URLSearchParams | null = null):
 
 const deserializeKeys = (params: URLSearchParams): SectionKey[] => {
   const queryVals = params.get(PHENOPACKET_EXPANDED_URL_QUERY_KEY);
-  return queryVals?.split(',') as SectionKey[];
+  return (queryVals?.split(',') as SectionKey[]) ?? [];
 };
 
 export type CollapseHandle = {
