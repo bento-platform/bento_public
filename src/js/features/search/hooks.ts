@@ -35,13 +35,15 @@ export const useEntityAndTextQueryParams = (): QueryParamEntries => {
     }
 
     if (queryDataPerm) {
-      // only include the page size query param if we're authorized to view results tables
-      qp.push([TABLE_PAGE_SIZE_QUERY_PARAM, pageSize.toString()]);
+      // only include the page size and text query type parameters if we're authorized to view results tables.
+      // both of these control select dropdowns and so keeping their value even without a selected entity (pageSize)
+      // / text searching (textQueryType) is more intuitive to preserve the UI state.
+      qp.push([TABLE_PAGE_SIZE_QUERY_PARAM, pageSize.toString()], [TEXT_QUERY_TYPE_PARAM, textQueryType]);
     }
 
     if (textQuery) {
-      // Only include text query parameters if textQuery is set to a non-false value.
-      qp.push([TEXT_QUERY_PARAM, textQuery], [TEXT_QUERY_TYPE_PARAM, textQueryType]);
+      // Only include text query parameter if textQuery is set to a non-false value.
+      qp.push([TEXT_QUERY_PARAM, textQuery]);
     }
 
     return qp;

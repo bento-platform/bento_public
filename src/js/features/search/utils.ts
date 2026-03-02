@@ -6,7 +6,7 @@ export const queryParamsWithoutKey = (qp: QueryParamEntries, key: string | strin
   if (typeof key === 'string') {
     return qp.filter(([k, _]) => k !== key);
   } else {
-    return qp.filter(([k, _]) => key.includes(k));
+    return qp.filter(([k, _]) => !key.includes(k));
   }
 };
 
