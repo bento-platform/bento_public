@@ -70,15 +70,16 @@ const SearchFilters = (props: DefinedSearchSubFormProps) => {
 
                 const url = buildQueryParamsUrl(pathname, [
                   // If we change the field in this filter, we need to remove it so we can switch to the new field
-                  ...(fv.field && fv.field !== field
-                    ? queryParamsWithoutKey(filtersStateAsQueryParams, fv.field)
-                    : filtersStateAsQueryParams.filter(([k, _]) => k !== field)),
+                  ...queryParamsWithoutKey(
+                    filtersStateAsQueryParams,
+                    fv.field && fv.field !== field ? fv.field : field
+                  ),
                   // ... and if the field stays the same, we will put it back with a new value. Otherwise, we'll put the
                   // new field in with the first available value.
                   ...newEntries,
                   ...entityAndTextQueryParams,
                   // If we have an entity table page set, we need to reset it to 0 if the filter changes:
-                  ...(TABLE_PAGE_QUERY_PARAM in entityAndTextQueryParams
+                  ...(entityAndTextQueryParams.find(([k, _]) => k === TABLE_PAGE_QUERY_PARAM)
                     ? ([[TABLE_PAGE_QUERY_PARAM, '0']] as QueryParamEntries)
                     : []),
                 ]);
@@ -97,7 +98,7 @@ const SearchFilters = (props: DefinedSearchSubFormProps) => {
                     filtersStateAsQueryParams,
                     [
                       ...entityAndTextQueryParams,
-                      ...(TABLE_PAGE_QUERY_PARAM in entityAndTextQueryParams
+                      ...(entityAndTextQueryParams.find(([k, _]) => k === TABLE_PAGE_QUERY_PARAM)
                         ? ([[TABLE_PAGE_QUERY_PARAM, '0']] as QueryParamEntries)
                         : []),
                     ],
