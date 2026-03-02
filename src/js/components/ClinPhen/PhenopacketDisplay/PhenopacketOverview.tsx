@@ -41,10 +41,14 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
     [open, setOpen]
   );
 
-  const sections = Object.entries(SECTION_SPECS).sort((a, b) => (a[1].order ?? 0) - (b[1].order ?? 0)) as [
+  const sections = useMemo(
+    () =>
+      Object.entries(SECTION_SPECS).sort((a, b) => (a[1].order ?? 0) - (b[1].order ?? 0)) as [
     SectionKey,
     SectionSpec,
-  ][];
+      ][],
+    []
+  );
 
   const renderItem = ([key, spec]: [SectionKey, SectionSpec]) => {
     const enabled = typeof spec.enabled === 'function' ? spec.enabled(phenopacket) : spec.enabled;
@@ -67,7 +71,14 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
     };
   };
 
-  const items = sections.map(renderItem).filter((block) => !!block);
+  const items = useMemo(() => sections.map(renderItem).filter((block) => !!block), [sections, phenopacket, t]);
+
+  const handleCollapseChange = useCallback(
+    (e: string[]) => {
+      setOpen(serializeKeys(e as SectionKey[], open), { replace: true });
+    },
+    [open, setOpen]
+  );
 
   const expandAll = useCallback(() => {
     setOpen(
@@ -97,5 +108,4 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
 });
 
 PhenopacketOverview.displayName = 'PhenopacketOverview';
-
 export default PhenopacketOverview;
