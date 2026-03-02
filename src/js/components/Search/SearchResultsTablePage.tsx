@@ -292,7 +292,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
 }) => {
   const t = useTranslationFn();
 
-  const { filters, textQuery, textQueryType, resultCountsOrBools, pageSize, matchData } = useSearchQuery();
+  const { resultCountsOrBools, pageSize, matchData } = useSearchQuery();
   const { fetchingPermission: fetchingCanDownload, hasPermission: canDownload } = useScopeDownloadData();
   const downloadAllMatchesCSV = useDownloadAllMatchesCSV();
   const selectedScope = useSelectedScope();
@@ -403,8 +403,8 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   const onExport = useCallback(() => {
     setExporting(true);
     const filename = `${t(`entities.${entity}_other`)}.csv`;
-    downloadAllMatchesCSV(filters, textQuery, textQueryType, rdEntity, filename).finally(() => setExporting(false));
-  }, [t, entity, downloadAllMatchesCSV, filters, textQuery, textQueryType, rdEntity]);
+    downloadAllMatchesCSV(rdEntity, filename).finally(() => setExporting(false));
+  }, [t, entity, downloadAllMatchesCSV, rdEntity]);
 
   const openColumnModal = useCallback(() => setColumnModalOpen(true), []);
 
