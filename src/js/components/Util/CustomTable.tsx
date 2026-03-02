@@ -182,6 +182,7 @@ const CustomTable = <T extends object>({
         expandedRowKeys: expandedKeys,
         onExpand: handleExpand,
       }}
+      onRow={(r) => ({ id: rowKeyFn(r) })}
       rowKey={rowKeyFn} // Need to pass rowKeyFn here since we are casting to string in the case of int keys.
       pagination={pagination ?? false}
       bordered={true}

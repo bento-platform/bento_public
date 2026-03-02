@@ -24,14 +24,20 @@ type BaseLinkProps = { packetId?: string; replace?: boolean };
 type SubjectLinkProps = BaseLinkProps & { children: ReactNode };
 const SubjectLink = ({ children, packetId }: SubjectLinkProps) => {
   const url = usePhenopacketOverviewLink(packetId, 'subject');
-  return packetId ? <Link to={url}>{children}</Link> : children;
+  return packetId ? (
+    <Link to={url} state={{ highlight: { sectionKey: 'subject' } }}>
+      {children}
+    </Link>
+  ) : (
+    children
+  );
 };
 
 type BiosampleLinkProps = BaseLinkProps & { sampleId: string };
 const BiosampleLink = ({ packetId, sampleId, replace }: BiosampleLinkProps) => {
   const url = usePhenopacketOverviewLink(packetId, 'biosamples', { biosample: sampleId });
   return packetId ? (
-    <Link to={url} replace={replace}>
+    <Link to={url} replace={replace} state={{ highlight: { sectionKey: 'biosamples', rowId: sampleId } }}>
       {sampleId}
     </Link>
   ) : (
@@ -55,7 +61,7 @@ type ExperimentLinkProps = BaseLinkProps & { experimentId: string };
 const ExperimentLink = ({ packetId, experimentId, replace }: ExperimentLinkProps) => {
   const url = usePhenopacketOverviewLink(packetId, 'experiments', { experiment: experimentId });
   return packetId ? (
-    <Link to={url} replace={replace}>
+    <Link to={url} replace={replace} state={{ highlight: { sectionKey: 'experiments', rowId: experimentId } }}>
       {experimentId}
     </Link>
   ) : (
@@ -70,7 +76,7 @@ const ExperimentResultLink = ({ packetId, experimentResultId, children, replace 
   });
   children = children ?? experimentResultId;
   return packetId ? (
-    <Link to={url} replace={replace}>
+    <Link to={url} replace={replace} state={{ highlight: 'experimentResults' }}>
       {children}
     </Link>
   ) : (

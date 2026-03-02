@@ -1,10 +1,11 @@
-import { useCallback, useImperativeHandle, forwardRef } from 'react';
+import { useCallback, useImperativeHandle, forwardRef, useEffect, useMemo, useRef } from 'react';
 import { Collapse } from 'antd';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
 import type { SectionKey, SectionSpec } from './phenopacketOverview.registry';
 import { SECTION_SPECS } from './phenopacketOverview.registry';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslationFn } from '@/hooks';
+import { useLocationState } from '@/hooks/useLocationState';
 
 export const PHENOPACKET_EXPANDED_URL_QUERY_KEY = 'expanded';
 
@@ -30,22 +31,29 @@ interface PhenopacketOverviewProps {
   phenopacket: Phenopacket;
 }
 
+function scrollToWithOffset(el: HTMLElement, offsetPx: number) {
+  const rect = el.getBoundingClientRect();
+  const top = window.scrollY + rect.top - offsetPx;
+  window.scrollTo({ top, behavior: 'smooth' });
+}
+
+function addTemporaryHighlight(el: HTMLElement, ms = 2500) {
+  el.classList.add('highlight-animation');
+  const timeout = window.setTimeout(() => el.classList.remove('highlight-animation'), ms);
+  return () => window.clearTimeout(timeout);
+}
+
 const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>(({ phenopacket }, ref) => {
   const [open, setOpen] = useSearchParams(serializeKeys(['subject']));
   const t = useTranslationFn();
-
-  const handleCollapseChange = useCallback(
-    (e: string[]) => {
-      setOpen(serializeKeys(e as SectionKey[], open), { replace: true });
-    },
-    [open, setOpen]
-  );
+  const routerState = useLocationState();
+  const cleanupRef = useRef<null | (() => void)>(null);
 
   const sections = useMemo(
     () =>
       Object.entries(SECTION_SPECS).sort((a, b) => (a[1].order ?? 0) - (b[1].order ?? 0)) as [
-    SectionKey,
-    SectionSpec,
+        SectionKey,
+        SectionSpec,
       ][],
     []
   );
@@ -64,7 +72,7 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
         </strong>
       ),
       children: (
-        <div id={`pp-section-${key}`} data-pp-section={key}>
+        <div id={`phenopacket-${key}`} data-pp-section={key}>
           {spec.render(phenopacket)}
         </div>
       ),
@@ -95,6 +103,46 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
   }, [open, setOpen]);
 
   useImperativeHandle(ref, () => ({ expandAll, collapseAll }), [expandAll, collapseAll]);
+
+  useEffect(() => {
+    const { sectionKey, rowId } = (routerState as any)?.highlight ?? {};
+
+    const divId = rowId ?? `phenopacket-${sectionKey}`;
+
+    // After panel opens, scroll + highlight
+    const headerOffsetPx = 96;
+
+    const run = () => {
+
+      const el = document.getElementById(divId);
+      if (!el) return;
+
+      // clean up previous highlight
+      cleanupRef.current?.();
+      cleanupRef.current = null;
+
+      scrollToWithOffset(el, headerOffsetPx);
+
+      // focus for accessibility without re-scrolling
+      el.setAttribute('tabindex', '-1');
+      try {
+        (el as HTMLElement).focus({ preventScroll: true });
+      } catch {
+        (el as HTMLElement).focus();
+      }
+
+      cleanupRef.current = addTemporaryHighlight(el, 2600);
+    };
+
+    // wait for collapse animation/dom expansion
+    const raf1 = requestAnimationFrame(() => {
+      const raf2 = requestAnimationFrame(run);
+      // cleanup rAF 2 if effect re-runs quickly
+      cleanupRef.current = () => cancelAnimationFrame(raf2);
+    });
+
+    return () => cancelAnimationFrame(raf1);
+  }, [routerState, items, open, setOpen]);
 
   return (
     <Collapse
