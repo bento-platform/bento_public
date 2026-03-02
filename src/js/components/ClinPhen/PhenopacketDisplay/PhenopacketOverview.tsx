@@ -58,28 +58,31 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
     []
   );
 
-  const renderItem = ([key, spec]: [SectionKey, SectionSpec]) => {
-    const enabled = typeof spec.enabled === 'function' ? spec.enabled(phenopacket) : spec.enabled;
-    if (!enabled) return null;
-    const itemCount = spec.itemCount?.(phenopacket);
-
-    return {
-      key,
-      label: (
-        <strong style={{ fontSize: '16px', borderTop: '10px' }}>
-          {t(spec.titleTranslationKey)}
-          {itemCount ? ` (${itemCount})` : null}
-        </strong>
-      ),
-      children: (
-        <div id={`phenopacket-${key}`} data-pp-section={key}>
-          {spec.render(phenopacket)}
-        </div>
-      ),
-    };
-  };
-
-  const items = useMemo(() => sections.map(renderItem).filter((block) => !!block), [sections, phenopacket, t]);
+  const items = useMemo(
+    () =>
+      sections
+        .map(([key, spec]) => {
+          const enabled = typeof spec.enabled === 'function' ? spec.enabled(phenopacket) : spec.enabled;
+          if (!enabled) return null;
+          const itemCount = spec.itemCount?.(phenopacket);
+          return {
+            key,
+            label: (
+              <strong style={{ fontSize: '16px', borderTop: '10px' }}>
+                {t(spec.titleTranslationKey)}
+                {itemCount ? ` (${itemCount})` : null}
+              </strong>
+            ),
+            children: (
+              <div id={`phenopacket-${key}`} data-pp-section={key}>
+                {spec.render(phenopacket)}
+              </div>
+            ),
+          };
+        })
+        .filter((block) => !!block),
+    [sections, phenopacket, t]
+  );
 
   const handleCollapseChange = useCallback(
     (e: string[]) => {
@@ -105,7 +108,8 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
   useImperativeHandle(ref, () => ({ expandAll, collapseAll }), [expandAll, collapseAll]);
 
   useEffect(() => {
-    const { sectionKey, rowId } = (routerState as any)?.highlight ?? {};
+    const { sectionKey, rowId } =
+      (routerState as { highlight?: { sectionKey?: string; rowId?: string } })?.highlight ?? {};
 
     const divId = rowId ?? `phenopacket-${sectionKey}`;
 
@@ -113,7 +117,6 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
     const headerOffsetPx = 96;
 
     const run = () => {
-
       const el = document.getElementById(divId);
       if (!el) return;
 
