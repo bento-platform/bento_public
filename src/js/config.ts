@@ -10,6 +10,7 @@ interface PublicConfig {
   SHOW_PORTAL_LINK: boolean;
   SHOW_SIGN_IN: boolean;
   FORCE_CATALOGUE: boolean; // Show data catalogue even with 1 project
+  PCGL_MODE: boolean; // Puts Bento Public in "PCGL mode", turning it into the PCGL research portal
   // Beacon configuration and flags
   BEACON_URL: string;
   BEACON_UI_ENABLED: boolean;
@@ -39,6 +40,7 @@ export const SHOW_PORTAL_LINK =
 export const SHOW_SIGN_IN = BENTO_PUBLIC_CONFIG.SHOW_SIGN_IN ?? stringToBoolean(process.env.BENTO_PUBLIC_SHOW_SIGN_IN);
 export const FORCE_CATALOGUE =
   BENTO_PUBLIC_CONFIG.FORCE_CATALOGUE ?? stringToBoolean(process.env.BENTO_PUBLIC_FORCE_CATALOGUE);
+export const PCGL_MODE = BENTO_PUBLIC_CONFIG.PCGL_MODE ?? stringToBoolean(process.env.BENTO_PUBLIC_PCGL_MODE);
 
 // Beacon configuration and flags
 export const BEACON_URL = BENTO_PUBLIC_CONFIG.BEACON_URL ?? process.env.BEACON_URL;
