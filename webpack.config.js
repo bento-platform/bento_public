@@ -64,6 +64,7 @@ const makeConfig = (mode) => ({
       BENTO_PUBLIC_SHOW_PORTAL_LINK: null,
       BENTO_PUBLIC_SHOW_SIGN_IN: null,
       BENTO_PUBLIC_FORCE_CATALOGUE: null, // Show data catalogue even with 1 project
+      BENTO_PUBLIC_PCGL_MODE: null, // Puts Bento Public in "PCGL mode", turning it into the PCGL research portal
       // Beacon configuration and flags
       BEACON_URL: null,
       BENTO_BEACON_UI_ENABLED: null,
