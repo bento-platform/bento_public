@@ -86,7 +86,12 @@ const ExperimentLinkList = ({ packetId, experiments, replace, preserveQueryParam
   <>
     {experiments.map((e, i) => (
       <Fragment key={e}>
-        <ExperimentLink packetId={packetId} experimentId={e} replace={replace} preserveQueryParams={preserveQueryParams} />
+        <ExperimentLink
+          packetId={packetId}
+          experimentId={e}
+          replace={replace}
+          preserveQueryParams={preserveQueryParams}
+        />
         {i < experiments.length - 1 ? ', ' : ''}
       </Fragment>
     ))}
