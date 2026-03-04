@@ -116,7 +116,7 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
     // After panel opens, scroll + highlight
     const headerOffsetPx = 96;
 
-    const run = () => {
+    const animationRun = () => {
       const el = document.getElementById(divId);
       if (!el) return;
 
@@ -139,7 +139,7 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
 
     // wait for collapse animation/dom expansion
     const raf1 = requestAnimationFrame(() => {
-      const raf2 = requestAnimationFrame(run);
+      const raf2 = requestAnimationFrame(animationRun);
       // cleanup rAF 2 if effect re-runs quickly
       cleanupRef.current = () => cancelAnimationFrame(raf2);
     });
