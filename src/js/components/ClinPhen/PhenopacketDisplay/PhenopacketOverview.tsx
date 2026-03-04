@@ -6,6 +6,7 @@ import { SECTION_SPECS } from './phenopacketOverview.registry';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslationFn } from '@/hooks';
 import { useLocationState } from '@/hooks/useLocationState';
+import { NAVBAR_HEIGHT } from '@/constants/common';
 
 export const PHENOPACKET_EXPANDED_URL_QUERY_KEY = 'expanded';
 
@@ -113,8 +114,6 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
 
     const divId = rowId ?? `phenopacket-${sectionKey}`;
 
-    // After panel opens, scroll + highlight
-    const headerOffsetPx = 96;
 
     const animationRun = () => {
       const el = document.getElementById(divId);
@@ -124,7 +123,8 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
       cleanupRef.current?.();
       cleanupRef.current = null;
 
-      scrollToWithOffset(el, headerOffsetPx);
+      // After panel opens, scroll + highlight
+      scrollToWithOffset(el, NAVBAR_HEIGHT);
 
       // focus for accessibility without re-scrolling
       el.setAttribute('tabindex', '-1');
