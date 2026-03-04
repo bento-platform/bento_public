@@ -11,12 +11,13 @@ const ExperimentReferences = ({
   experiments,
 }: {
   packetId?: string;
-  experiments: Pick<Experiment, 'experiment_type' | 'id' | 'experiment_ontology'>[];
+  experiments?: Pick<Experiment, 'experiment_type' | 'id' | 'experiment_ontology'>[];
 }) => {
   const t = useTranslationFn();
 
-  const typeSafeExperiments = experiments ? [...experiments] : [];
-  const sorted = typeSafeExperiments
+  if (!experiments) return;
+
+  const sorted = [...experiments]
     .sort((a, b) => a.experiment_type.localeCompare(b.experiment_type) || a.id.localeCompare(b.id))
     .map((e, _, arr) => ({
       ...e,

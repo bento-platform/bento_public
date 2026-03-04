@@ -266,7 +266,7 @@ const BIOSAMPLE_VIEW_COLUMNS: CustomTableColumns<Biosample> = [
   {
     title: 'entities.experiment_other',
     dataIndex: 'experiments',
-    render: (experiments: Experiment[]) => <ExperimentReferences experiments={experiments} />,
+    render: (experiments: Experiment[] | undefined) => <ExperimentReferences experiments={experiments} />,
   },
 ];
 
