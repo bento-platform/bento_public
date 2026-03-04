@@ -60,11 +60,11 @@ const BiosampleLink = ({ packetId, sampleId, replace, preserveQueryParams, child
 };
 
 type BiosampleLinkListProps = BaseLinkProps & { biosamples: string[] };
-const BiosampleLinkList = ({ packetId, biosamples, replace, preserveQueryParams }: BiosampleLinkListProps) => (
+const BiosampleLinkList = ({ packetId, biosamples, replace, ...props }: BiosampleLinkListProps) => (
   <>
     {biosamples.map((bb, bbi) => (
       <Fragment key={bb}>
-        <BiosampleLink packetId={packetId} sampleId={bb} replace={replace} preserveQueryParams={preserveQueryParams} />
+        <BiosampleLink packetId={packetId} sampleId={bb} replace={replace} {...props} />
         {bbi < biosamples.length - 1 ? ', ' : ''}
       </Fragment>
     ))}
