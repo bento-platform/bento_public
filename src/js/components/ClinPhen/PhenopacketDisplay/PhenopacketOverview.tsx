@@ -114,7 +114,6 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
 
     const divId = rowId ?? `phenopacket-${sectionKey}`;
 
-
     const animationRun = () => {
       const el = document.getElementById(divId);
       if (!el) return;
