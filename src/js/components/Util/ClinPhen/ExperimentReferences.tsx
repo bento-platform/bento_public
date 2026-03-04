@@ -4,6 +4,7 @@ import { Tooltip } from 'antd';
 import PhenopacketLink from '@/components/ClinPhen/PhenopacketLink';
 
 import type { Experiment } from '@/types/clinPhen/experiments/experiment';
+import { useTranslationFn } from '@/hooks';
 
 const ExperimentReferences = ({
   packetId,
@@ -12,6 +13,8 @@ const ExperimentReferences = ({
   packetId?: string;
   experiments: Pick<Experiment, 'experiment_type' | 'id' | 'experiment_ontology'>[];
 }) => {
+  const t = useTranslationFn();
+
   const typeSafeExperiments = experiments ? [...experiments] : [];
   const sorted = typeSafeExperiments
     .sort((a, b) => a.experiment_type.localeCompare(b.experiment_type) || a.id.localeCompare(b.id))
@@ -28,7 +31,7 @@ const ExperimentReferences = ({
         <Fragment key={e.id}>
           <PhenopacketLink.Experiment packetId={packetId} experimentId={e.id} preserveQueryParams>
             <Tooltip title={e.id} styles={{ body: { wordWrap: 'normal', inlineSize: 'max-content' } }}>
-              {e.displayType}
+              {t(e.displayType)}
               {e.hasDuplicates ? ` (${e.typeIndex})` : ''}
             </Tooltip>
           </PhenopacketLink.Experiment>
