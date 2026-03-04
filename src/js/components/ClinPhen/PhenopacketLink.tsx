@@ -102,34 +102,10 @@ const ExperimentResultLink = ({
   );
 };
 
-type ExperimentLinkListProps = BaseLinkProps & { current?: string; experiments: string[] };
-export const ExperimentLinkList = ({
-  packetId,
-  current,
-  experiments,
-  replace,
-  preserveQueryParams,
-}: ExperimentLinkListProps) => (
-  <>
-    {experiments.map((experimentId, i) => (
-      <Fragment key={i}>
-        <ExperimentLink
-          packetId={current === experimentId ? undefined : packetId}
-          experimentId={experimentId}
-          replace={replace}
-          preserveQueryParams={preserveQueryParams}
-        />
-        {i < experiments.length - 1 ? ', ' : ''}
-      </Fragment>
-    ))}
-  </>
-);
-
 export default {
   Subject: SubjectLink,
   Biosample: BiosampleLink,
   Biosamples: BiosampleLinkList,
   Experiment: ExperimentLink,
-  Experiments: ExperimentLinkList,
   ExperimentResult: ExperimentResultLink,
 };
