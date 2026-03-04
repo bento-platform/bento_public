@@ -77,7 +77,7 @@ export const ExperimentResultExpandedRow = ({
     {
       key: 'genome_assembly_id',
       children: <ReferenceGenomePopoverField referenceGenomeId={experimentResult.genome_assembly_id} />,
-      isVisible: !!experimentResult.genome_assembly_id
+      isVisible: !!experimentResult.genome_assembly_id,
     },
     {
       key: 'file_format',
