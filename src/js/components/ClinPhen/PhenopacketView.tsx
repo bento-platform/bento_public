@@ -93,7 +93,7 @@ const PhenopacketView = () => {
   }
 
   if (isAuthorized.hasAttempted && !isAuthorized.hasPermission) {
-    return <Empty description={t('auth.unauthorized_message')} />; // Temporary: removed once phenopacket view is integrated with search
+    return <Empty description={t('auth.unauthorized_message')} />;
   }
 
   if (status === RequestStatus.Pending || !phenopacket || !isAuthorized.hasAttempted) {
