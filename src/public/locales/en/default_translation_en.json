@@ -46,7 +46,8 @@
     "extra_properties": "$t(Extra Properties)"
   },
   "errors": {
-    "project_fetch": "Error fetching projects"
+    "project_fetch": "Error fetching projects",
+    "search_fetch": "Error fetching search results"
   },
   "search": {
     "filters": "Filters",

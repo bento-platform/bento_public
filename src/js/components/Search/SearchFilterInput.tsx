@@ -2,11 +2,14 @@ import { memo, useCallback, useMemo } from 'react';
 import { Button, Flex, Select, Space } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 
+import type { FilterValue } from '@/features/search/types';
+
 import { useTranslationFn } from '@/hooks';
+import { useScopeQueryData } from '@/hooks/censorship';
 import { useSearchQuery } from '@/features/search/hooks';
 import OptionDescription from '@/components/Search/OptionDescription';
 
-export type FilterValue = { field: string | null; value: string | null };
+export type FilterInputValue = { field: string | null; value: FilterValue };
 
 const SearchFilterInput = ({
   field,
@@ -14,12 +17,13 @@ const SearchFilterInput = ({
   onChange,
   onRemove,
   disabledFields,
-}: FilterValue & {
-  onChange: (v: FilterValue) => void;
+}: FilterInputValue & {
+  onChange: (v: FilterInputValue) => void;
   onRemove: () => void;
   disabledFields: Set<string>;
 }) => {
   const t = useTranslationFn();
+  const { hasPermission: hasQueryData } = useScopeQueryData();
 
   const { filterSections } = useSearchQuery();
 
@@ -62,12 +66,19 @@ const SearchFilterInput = ({
   );
 
   const onFilterValueChange = useCallback(
-    (newValue: string) =>
+    (newValue: string | string[]) =>
       onChange({
         field,
         value: newValue,
       }),
     [field, onChange]
+  );
+
+  const valueOptions = field ? fieldFilterOptions[field] : [];
+  const isMultiple = hasQueryData && valueOptions.length > 2;
+  const finalValue = useMemo(
+    () => (isMultiple && value !== null && !Array.isArray(value) ? [value] : value),
+    [isMultiple, value]
   );
 
   return (
@@ -80,11 +91,12 @@ const SearchFilterInput = ({
         placeholder={t('search.filter_placeholder')}
       />
       <Select
+        mode={isMultiple ? 'multiple' : undefined}
         className="flex-1"
         disabled={!field}
-        options={field ? fieldFilterOptions[field] : []}
+        options={valueOptions}
         onChange={onFilterValueChange}
-        value={value}
+        value={finalValue}
       />
       <Button icon={<CloseOutlined />} disabled={!field || !value} onClick={onRemove} />
     </Space.Compact>

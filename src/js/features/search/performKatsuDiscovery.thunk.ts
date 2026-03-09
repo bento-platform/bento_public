@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import axios, { type AxiosError } from 'axios';
 import { katsuDiscoveryUrl } from '@/constants/configConstants';
 import type { RootState } from '@/store';
 import type { DiscoveryResponseOrMessage } from '@/types/discovery/response';
@@ -20,12 +20,16 @@ export const performKatsuDiscovery = createAsyncThunk<
   'query/performKatsuDiscovery',
   async (_, { rejectWithValue, getState }) => {
     const state = getState();
-    const res = (await axios
-      .get(katsuDiscoveryUrl, scopedAuthorizedRequestConfig(state, searchQueryParamsFromState(state.query)))
-      .then((res) => res.data)
-      .catch(printAPIError(rejectWithValue))) as DiscoveryResponseOrMessage;
 
-    return [state.metadata.selectedScope.scope, res] as [DiscoveryScope, DiscoveryResponseOrMessage];
+    try {
+      const res = await axios
+        .get(katsuDiscoveryUrl, scopedAuthorizedRequestConfig(state, searchQueryParamsFromState(state.query)))
+        .then((res) => res.data);
+
+      return [state.metadata.selectedScope.scope, res] as [DiscoveryScope, DiscoveryResponseOrMessage];
+    } catch (err) {
+      return printAPIError(rejectWithValue)(err as AxiosError);
+    }
   },
   {
     condition(_, { getState }) {

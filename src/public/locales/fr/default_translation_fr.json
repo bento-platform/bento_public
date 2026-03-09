@@ -47,7 +47,8 @@
     "url": "URL"
   },
   "errors": {
-    "project_fetch": "Erreur lors du chargement des projets"
+    "project_fetch": "Erreur lors du chargement des projets",
+    "search_fetch": "Erreur lors du chargement des résultats de recherche"
   },
   "search": {
     "filters": "Filtres",
