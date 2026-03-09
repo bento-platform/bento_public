@@ -51,22 +51,18 @@ const CountsDisplay = ({ counts, totalCounts, fontSize = '1rem' }: CountsDisplay
             <Text style={{ fontSize }}>
               <span
                 style={
-                  totalCounts && counts && counts[entity] !== totalCounts[entity]
-                    ? { fontWeight: 600 }
-                    : undefined
+                  totalCounts && counts && counts[entity] !== totalCounts[entity] ? { fontWeight: 600 } : undefined
                 }
               >
                 {renderCount(counts?.[entity])}
               </span>
 
-              {totalCounts &&
-                counts &&
-                counts[entity] !== totalCounts[entity] && (
-                  <>
-                    {' / '}
-                    <span>{renderCount(totalCounts[entity])}</span>
-                  </>
-                )}
+              {totalCounts && counts && counts[entity] !== totalCounts[entity] && (
+                <>
+                  {' / '}
+                  <span>{renderCount(totalCounts[entity])}</span>
+                </>
+              )}
             </Text>
           </Space>
         </Popover>

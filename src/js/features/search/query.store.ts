@@ -115,7 +115,7 @@ const initialState: QueryState = {
     experiment: 0,
     experiment_result: 0,
   },
-  resultCountsByDataset: {}, 
+  resultCountsByDataset: {},
   resultCountsInvalid: false,
   pageSize: MIN_PAGE_SIZE,
   matchData: {

@@ -3,25 +3,31 @@ import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
 import Dataset from '@/components/Provenance/Dataset';
 import OverviewCollapsibleSection from './Util/OverviewCollapsibleSection';
 
-const OverviewDatasets = ({ datasets, parentProjectID, countsByDataset }: { datasets: DatasetT[]; parentProjectID: string; countsByDataset?: Record<string, KatsuEntityCountsOrBooleans>;}) => {
-
-return (
-  <OverviewCollapsibleSection title="entities.dataset_other">
-    <div className="dataset-provenance-card-grid">
-      {datasets.map((d) => (
-        <div key={d.identifier}>
-          <Dataset
-            parentProjectID={parentProjectID}
-            dataset={d}
-            format="card"
-            filteredCounts={countsByDataset?.[d.identifier]}
+const OverviewDatasets = ({
+  datasets,
+  parentProjectID,
+  countsByDataset,
+}: {
+  datasets: DatasetT[];
+  parentProjectID: string;
+  countsByDataset?: Record<string, KatsuEntityCountsOrBooleans>;
+}) => {
+  return (
+    <OverviewCollapsibleSection title="entities.dataset_other">
+      <div className="dataset-provenance-card-grid">
+        {datasets.map((d) => (
+          <div key={d.identifier}>
+            <Dataset
+              parentProjectID={parentProjectID}
+              dataset={d}
+              format="card"
+              filteredCounts={countsByDataset?.[d.identifier]}
             />
-        </div>
-      ))}
-    </div>
-  </OverviewCollapsibleSection>
-);
+          </div>
+        ))}
+      </div>
+    </OverviewCollapsibleSection>
+  );
+};
 
-}
-  
 export default OverviewDatasets;
