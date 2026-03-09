@@ -40,7 +40,7 @@ const CountsDisplay = ({ counts, totalCounts, fontSize = '1rem' }: CountsDisplay
 
   return (
     <Space size={[16, 8]} wrap align="center">
-      {countsDisplay.map(({ entity, label, value, total, icon }) => (
+      {countsDisplay.map(({ entity, label, icon }) => (
         <Popover
           key={entity}
           title={label}
