@@ -96,11 +96,7 @@ const SubjectView = ({ subject, spaceSize }: { subject: Individual; spaceSize?: 
       {
         key: 'taxonomy',
         label: 'subject.taxonomy',
-        children: (
-          <em>
-            <OntologyTerm term={subject.taxonomy} />
-          </em>
-        ),
+        children: <OntologyTerm term={subject.taxonomy} italic />,
         isVisible: subject.taxonomy,
       },
     ],

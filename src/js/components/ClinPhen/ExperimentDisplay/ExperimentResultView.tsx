@@ -12,6 +12,7 @@ import TDescriptions from '@Util/TDescriptions';
 import DownloadButton from '@Util/DownloadButton';
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
 import UrlOrDrsUrlWithPopover from '@Util/UrlOrDrsUrlWithPopover';
+import ReferenceGenomePopoverField from '@Util/ClinPhen/ReferenceGenomePopoverField';
 
 import { useScopeDownloadData } from '@/hooks/censorship';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
@@ -75,7 +76,8 @@ export const ExperimentResultExpandedRow = ({
     },
     {
       key: 'genome_assembly_id',
-      children: experimentResult.genome_assembly_id, // TODO: modal to reference genome details
+      children: <ReferenceGenomePopoverField referenceGenomeId={experimentResult.genome_assembly_id} />,
+      isVisible: !!experimentResult.genome_assembly_id,
     },
     {
       key: 'file_format',
@@ -239,16 +241,17 @@ const ExperimentResultView = ({
         title: 'experiment_result.filename',
         dataIndex: 'filename',
         alwaysShow: true,
-        render: (filename: string) => (
-          <div style={{ textOverflow: 'ellipsis' }}>
-            <span style={{ whiteSpace: 'nowrap' }}>{filename}</span>
-          </div>
-        ),
+        ellipsis: true,
+        width: '45%',
       },
       ...(isSmallScreen ? [] : [{ title: 'general.description', dataIndex: 'description' }]),
-      // TODO: nice render with modal to reference genome:
-      { title: 'experiment_result.genome_assembly_id', dataIndex: 'genome_assembly_id' },
-      { title: 'experiment_result.file_format', dataIndex: 'file_format' },
+      {
+        title: 'experiment_result.genome_assembly_id',
+        dataIndex: 'genome_assembly_id',
+        render: (genomeAssemblyId: string) => <ReferenceGenomePopoverField referenceGenomeId={genomeAssemblyId} />,
+        width: 190,
+      },
+      { title: 'experiment_result.file_format', dataIndex: 'file_format', width: 160 },
       ...(isSmallScreen
         ? []
         : [

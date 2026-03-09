@@ -30,9 +30,10 @@ interface OntologyTermProps {
   suffix?: ReactNode;
   style?: CSSProperties;
   hideLinkIcon?: boolean;
+  italic?: boolean;
 }
 
-const OntologyTerm = ({ term, suffix, style, hideLinkIcon = false }: OntologyTermProps) => {
+const OntologyTerm = ({ term, suffix, style, hideLinkIcon = false, italic = false }: OntologyTermProps) => {
   const t = useTranslationFn();
   const { packetId } = useParams<RouteParams>();
   const resources = usePhenopacketResources(packetId);
@@ -50,12 +51,12 @@ const OntologyTerm = ({ term, suffix, style, hideLinkIcon = false }: OntologyTer
       mouseLeaveDelay={0.15} // Slightly higher than default (0.1) to let users better see the ontology class ID
     >
       {iri && !hideLinkIcon ? (
-        <div className="ontology-class" style={style}>
+        <div className={clsx('ontology-class', italic && 'italic')} style={style}>
           {t(term.label)}
           {suffix} <IriLink iri={iri} />
         </div>
       ) : (
-        <div className={clsx('ontology-class', iri && 'underline')}>
+        <div className={clsx('ontology-class', italic && 'italic', iri && 'underline')}>
           {t(term.label)}
           {suffix}
         </div>

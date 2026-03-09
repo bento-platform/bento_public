@@ -126,11 +126,7 @@ export const BiosampleExpandedRow = ({ biosample, searchRow }: { biosample: Bios
     },
     {
       key: 'taxonomy',
-      children: (
-        <em>
-          <OntologyTermComponent term={biosample.taxonomy} />
-        </em>
-      ),
+      children: <OntologyTermComponent term={biosample.taxonomy} italic />,
       isVisible: biosample.taxonomy,
     },
     {
