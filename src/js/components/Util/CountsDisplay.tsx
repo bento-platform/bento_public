@@ -25,14 +25,16 @@ const CountsDisplay = ({ counts, totalCounts, fontSize = '1rem' }: CountsDisplay
     const items = COUNT_ENTITY_ORDER.map((entity) => {
       const renderedValue = renderCount(counts[entity]);
       const renderedTotal = totalCounts ? renderCount(totalCounts[entity]) : undefined;
+      const isFiltered = totalCounts ? counts[entity] !== totalCounts[entity] : false;
       return {
         entity,
         label: t(`entities.${entity}_other`),
         value: renderedValue,
         total: renderedTotal,
+        isFiltered,
         icon: COUNT_ENTITY_REGISTRY[entity].icon,
       };
-    }).filter((item) => item.value !== NO_RESULTS_DASHES && item.value !== 0);
+    }).filter((item) => item.isFiltered || (item.value !== NO_RESULTS_DASHES && item.value !== 0));
     return items.length > 0 ? items : null;
   }, [counts, totalCounts, t, renderCount]);
 
@@ -40,7 +42,7 @@ const CountsDisplay = ({ counts, totalCounts, fontSize = '1rem' }: CountsDisplay
 
   return (
     <Space size={[16, 8]} wrap align="center">
-      {countsDisplay.map(({ entity, label, icon }) => (
+      {countsDisplay.map(({ entity, label, icon, value, total, isFiltered }) => (
         <Popover
           key={entity}
           title={label}
@@ -49,18 +51,14 @@ const CountsDisplay = ({ counts, totalCounts, fontSize = '1rem' }: CountsDisplay
           <Space size={4} align="center" className="cursor-pointer">
             {icon}
             <Text style={{ fontSize }}>
-              <span
-                style={
-                  totalCounts && counts && counts[entity] !== totalCounts[entity] ? { fontWeight: 600 } : undefined
-                }
-              >
-                {renderCount(counts?.[entity])}
+              <span style={isFiltered ? { fontWeight: 600 } : undefined}>
+                {value}
               </span>
 
-              {totalCounts && counts && counts[entity] !== totalCounts[entity] && (
+              {isFiltered && (
                 <>
                   {' / '}
-                  <span>{renderCount(totalCounts[entity])}</span>
+                  <span>{total}</span>
                 </>
               )}
             </Text>
