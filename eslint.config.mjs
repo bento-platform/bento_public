@@ -34,7 +34,7 @@ export default [
     rules: {
       'react/prop-types': 'off', // disable prop-types since we're using TypeScript
       '@typescript-eslint/explicit-module-boundary-types': 'off', // allow implicit return types
-      '@typescript-eslint/no-empty-interface': 'off', // allow empty interfaces
+      '@typescript-eslint/no-empty-object-type': 'off', // allow empty object type
       'no-unused-vars': 'off', // disable no-unused-vars since @typescript-eslint/no-unused-vars does the same
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }], // enable @typescript-eslint/no-unused-vars
       '@typescript-eslint/no-non-null-assertion': 'off',
