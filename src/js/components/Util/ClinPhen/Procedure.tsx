@@ -15,12 +15,12 @@ const Procedure = ({ procedure: p }: { procedure: ProcedureType | undefined }) =
     },
     {
       key: 'body_site',
-      label: 'biosample_expanded_row.body_site',
+      label: 'biosample.body_site',
       children: <OntologyTerm term={p?.body_site} />,
     },
     {
       key: 'performed',
-      label: 'biosample_expanded_row.performed',
+      label: 'biosample.performed',
       children: <TimeElementDisplay element={p?.performed} />,
     },
   ];

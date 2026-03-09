@@ -6,18 +6,18 @@ import { SECTION_SPECS } from './phenopacketOverview.registry';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslationFn } from '@/hooks';
 
-export const PHENOPACKET_COLLAPSE_URL_QUERY_KEY = 'collapse';
+export const PHENOPACKET_EXPANDED_URL_QUERY_KEY = 'expanded';
 
 const serializeKeys = (keys: SectionKey[], prev: URLSearchParams | null = null): URLSearchParams => {
   const keyString = keys.join(',');
   const previous = prev ? prev.toString() : '';
   const returnVal = new URLSearchParams(previous);
-  returnVal.set(PHENOPACKET_COLLAPSE_URL_QUERY_KEY, keyString);
+  returnVal.set(PHENOPACKET_EXPANDED_URL_QUERY_KEY, keyString);
   return returnVal;
 };
 
 const deserializeKeys = (params: URLSearchParams): SectionKey[] => {
-  const queryVals = params.get(PHENOPACKET_COLLAPSE_URL_QUERY_KEY);
+  const queryVals = params.get(PHENOPACKET_EXPANDED_URL_QUERY_KEY);
   return queryVals?.split(',') as SectionKey[];
 };
 
@@ -49,9 +49,15 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
   const renderItem = ([key, spec]: [SectionKey, SectionSpec]) => {
     const enabled = typeof spec.enabled === 'function' ? spec.enabled(phenopacket) : spec.enabled;
     if (!enabled) return null;
+    const itemCount = spec.itemCount?.(phenopacket);
     return {
       key,
-      label: <strong style={{ fontSize: '16px', borderTop: '10px' }}>{t(spec.titleTranslationKey)}</strong>,
+      label: (
+        <strong style={{ fontSize: '16px', borderTop: '10px' }}>
+          {t(spec.titleTranslationKey)}
+          {itemCount ? ` (${itemCount})` : null}
+        </strong>
+      ),
       children: spec.render(phenopacket),
     };
   };

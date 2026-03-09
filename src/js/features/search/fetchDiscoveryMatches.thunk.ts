@@ -3,7 +3,7 @@ import type { RootState } from '@/store';
 import axios from 'axios';
 import { katsuDiscoveryMatchesUrl } from '@/constants/configConstants';
 import type { DiscoveryMatchPhenopacket } from '@/features/search/types';
-import { bentoKatsuEntityToResultsDataEntity } from '@/features/search/query.store';
+import { bentoKatsuEntityToResultsDataEntity, searchQueryParamsFromState } from '@/features/search/utils';
 import type { BentoKatsuEntity } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
 import { scopedAuthorizedRequestConfig } from '@/utils/requests';
@@ -15,11 +15,13 @@ type DiscoveryMatchPagination = {
   total: number;
 };
 
+type DiscoveryMatchResponse = {
+  results: DiscoveryMatchPhenopacket[];
+  pagination: DiscoveryMatchPagination;
+};
+
 export const fetchDiscoveryMatches = createAsyncThunk<
-  {
-    results: DiscoveryMatchPhenopacket[];
-    pagination: DiscoveryMatchPagination;
-  },
+  DiscoveryMatchResponse,
   BentoKatsuEntity,
   {
     rejectValue: string;
@@ -30,12 +32,12 @@ export const fetchDiscoveryMatches = createAsyncThunk<
   (entity, { rejectWithValue, getState }) => {
     const state = getState();
     const queryEntity = bentoKatsuEntityToResultsDataEntity(entity);
+    console.debug('fetching discovery match page for entity:', queryEntity);
     return axios
       .get(
         katsuDiscoveryMatchesUrl,
         scopedAuthorizedRequestConfig(state, {
-          ...state.query.filterQueryParams,
-          _fts: state.query.textQuery || undefined,
+          ...searchQueryParamsFromState(state.query),
           _entity: queryEntity,
           _page: state.query.matchData[queryEntity].page.toString(),
           _page_size: state.query.pageSize.toString(),
@@ -47,15 +49,8 @@ export const fetchDiscoveryMatches = createAsyncThunk<
   {
     condition(entity, { getState }) {
       const rdEntity = bentoKatsuEntityToResultsDataEntity(entity);
-      const entityStatus = getState().query.matchData[rdEntity].status;
-      const cond = entityStatus !== RequestStatus.Pending;
-      if (!cond) {
-        console.debug(
-          'performKatsuDiscovery() was attempted, but will not dispatch: ' +
-            `matchData[${rdEntity}].status=${RequestStatus[entityStatus]}`
-        );
-      }
-      return cond;
+      const { invalid, status: entityStatus } = getState().query.matchData[rdEntity];
+      return entityStatus === RequestStatus.Idle || (entityStatus !== RequestStatus.Pending && invalid);
     },
   }
 );

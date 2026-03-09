@@ -7,10 +7,17 @@
 
   --content-padding-v: 32px;
   --content-padding-h: 64px;
-  --content-max-width: 1320px;
+  --content-max-width: 1400px;
 
   --content-scoped-title-height: 50px;
   --content-scoped-title-margin-bottom: 24px;
+
+  /* 90% opacity white */
+  --white-90: rgba(255, 255, 255, 0.9);
+  /* 80% opacity white */
+  --white-80: rgba(255, 255, 255, 0.8);
+  /* 70% opacity white */
+  --white-70: rgba(255, 255, 255, 0.7);
 }
 
 html,
@@ -30,8 +37,10 @@ body {
 /* Name compatible with tailwind if needed */
 .w-full { width: 100%; }
 .h-full { height: 100%; }
+.h-auto { height: auto; }
 .m-0 { margin: 0; }
 .mb-0, .ant-typography.mb-0 { margin-bottom: 0; }
+.p-0 { padding: 0; }
 .flex-1 { flex: 1; }
 .float-right { float: right; }
 .position-absolute { position: absolute; }
@@ -41,10 +50,15 @@ body {
 .rounded-lg { border-radius: 8px; } /* also consistent with --ant-border-radius-lg */
 .rounded-xl { border-radius: 12px; }
 .rounded-e-none { border-start-end-radius: 0; border-end-end-radius: 0; }
+.list-none { list-style-type: none; }
 .cursor-pointer { cursor: pointer; }
 .select-none { user-select: none; }
 .font-mono { font-family: ui-monospace, monospace; }
+.text-base { font-size: 1rem; }
 .text-center { text-align: center; }
+.underline, a.underline { text-decoration-line: underline; }
+.decoration-dotted { text-decoration-style: dotted; }
+.italic { font-style: italic;}
 
 /* custom, tailwind-esque */
 .max-w-half-cmw { max-width: calc(var(--content-max-width) / 2); }
@@ -69,6 +83,7 @@ body {
   scale: 125%;
 }
 
+/* TODO: antd 6.x: gray-6 */
 .antd-gray-7 {
   color: #8c8c8c;
 }
@@ -172,6 +187,13 @@ body {
   opacity: 0;
 }
 
+.scoped-title__back {
+  margin-right: 12px;
+
+  font-size: 1.8rem;
+  color: rgba(0, 0, 0, 0.45);
+}
+
 .scoped-title__breadcrumb {
   font-size: 1.8rem;
   transition: font-size 0.3s ease-in-out;
@@ -181,7 +203,7 @@ body {
   font-size: 0.9em;
 }
 
-.scoped-title__breadcrumb a {
+.scoped-title__breadcrumb .ant-breadcrumb-item a {
   height: 3rem;
 }
 
@@ -193,6 +215,14 @@ body {
 
 .scoped-title[data-stuck] .filters-applied-tag {
   opacity: 1;
+}
+
+.scoped-title[data-stuck] .scoped-title__back {
+  width: 32px;
+  min-width: 32px;
+  height: 32px;
+
+  font-size: 1.2rem;
 }
 
 .scoped-title[data-stuck] .scoped-title__breadcrumb {
@@ -231,9 +261,6 @@ body {
 #default-layout.sidebar-collapsed {
   --sidebar-width: var(--sidebar-width-collapsed);
 }
-#default-layout.sidebar-hidden {
-  --sidebar-width: 0;
-}
 
 #site-header {
   position: fixed;
@@ -251,7 +278,7 @@ body {
   margin: 0;
   font-size: 1.5em;
   line-height: var(--header-height);
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--white-90);
 }
 
 #site-sider {
@@ -263,6 +290,13 @@ body {
 
   overflow: auto;
   height: calc(100vh - var(--header-height));
+
+  transition: transform 0.3s;
+}
+
+#default-layout.sidebar-hidden #site-sider {
+  overflow: hidden;
+  transform: translate(calc(-1 * var(--sidebar-width)), 0);
 }
 
 .ant-layout-sider-trigger {
@@ -281,6 +315,11 @@ body {
   overflow: auto;
 
   transition: left 0.3s, width 0.3s;
+}
+
+#default-layout.sidebar-hidden #content-layout {
+  left: 0;
+  width: 100%;
 }
 
 #content-layout > .ant-layout-content {
@@ -342,6 +381,9 @@ body {
     box-shadow 0.15s ease-in-out,
     opacity 0.15s ease-in-out;
 }
+.count-card .ant-statistic .ant-statistic-content {
+  white-space: nowrap;
+}
 .count-card.shadow {
   border-color: #e9e9e9; /* a bit darker to contrast against box-shadow */
 }
@@ -369,6 +411,10 @@ body {
   margin-bottom: -12px;
 }
 
+.counts-title__text {
+  white-space: nowrap;
+}
+
 .count-card__show-hide {
   position: absolute;
   left: 0;
@@ -387,10 +433,10 @@ body {
 }
 
 .dataset-provenance-card-grid {
-  --dataset-grid-gap: 18px;
+  --dataset-grid-gap: 20px;
 
   display: grid;
-  /* 651 * 2 + 18 (gap) = 1320 */
+  /* 690 * 2 + 20 (gap) = 1400 */
   grid-template-columns: repeat(auto-fit, minmax(250px, calc((var(--content-max-width) - var(--dataset-grid-gap)) / 2)));
   gap: var(--dataset-grid-gap);
 }
@@ -455,11 +501,15 @@ h3.search-sub-form-title {
 
 /* END search */
 
-/* BEGIN phenopacket view */
+/* BEGIN phenopackets/other clinical+phenotypic metadata views */
 
-#subject-view .ant-descriptions-item-label {
+.fixed-item-label-width .ant-descriptions-item-label {
   /* Align split line vertically in all descriptions */
   width: min(30vw, 250px);
+}
+.fixed-item-label-width-narrow .ant-descriptions-item-label {
+  /* Align split line vertically in all descriptions */
+  width: min(15vw, 125px);
 }
 
 tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .ant-descriptions-view > table {
@@ -468,9 +518,29 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
 
 /*  - compact descriptions and table */
 
+.ant-descriptions.compact .ant-descriptions-row > td {
+  padding-bottom: 2px;
+}
+
 .ant-descriptions.compact .ant-descriptions-item-content,
 .ant-descriptions.compact .ant-descriptions-item-label {
   padding: 2px 12px !important;
+}
+.ant-descriptions-item-content .ant-descriptions.compact:not(.ant-descriptions-bordered) .ant-descriptions-item-label {
+  /* nested non-bordered description items - kill horizontal padding */
+  padding: 2px 0 !important;
+}
+
+.ant-descriptions:not(.ant-descriptions-bordered) .ant-descriptions-item-label {
+  /* The default for non-bordered description labels is too light - darken it a bit for readability */
+  color: rgba(0, 0, 0, 0.65) !important;
+}
+
+.ant-descriptions.compact > .ant-descriptions-header {
+  margin-bottom: 4px;
+}
+.ant-descriptions.compact > .ant-descriptions-header > .ant-descriptions-title {
+  font-size: 14px;
 }
 
 .ant-collapse.compact .ant-collapse-header {
@@ -483,11 +553,39 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
 .compact .ant-table-cell {
   padding: 2px 8px !important;
 }
-.compact .ant-table-expanded-row .ant-table-cell {
+.compact .ant-table-expanded-row > .ant-table-cell {
   padding: 8px !important;
 }
 
-/* END phenopacket view */
+.ant-table-wrapper .ant-table-cell * .ant-table-container:first-child {
+  /* undo border 0 set by ant design styling for tables nested directly in a cell if we have anything in between.
+     border colour should be synced to global border colour. */
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.ontology-class {
+  display: inline-block;
+  padding: 0 2px;
+  border-radius: 4px;
+  transition: background-color 0.15s ease-in-out;
+}
+.ontology-class:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.ant-tooltip-inner a.iri-link {
+  text-decoration: underline;
+  color: var(--white-90);
+}
+.ant-tooltip-inner a.iri-link:hover {
+  text-decoration: none;
+  color: var(--white-80);
+}
+.ant-tooltip-inner a.iri-link:active {
+  color: var(--white-70);
+}
+
+/* END phenopackets/other clinical+phenotypic metadata views */
 
 
 @media (min-width: 1050px) and (max-width: 1550px) {

@@ -54,7 +54,7 @@ const InnerTimeElement = ({ type, element }: { type: TimeElementType; element: T
       return (
         <>
           <strong>{t('time.weeks')}:</strong> {ga.weeks}
-          <strong>{t('time.days')}:</strong> {ga.days}
+          <strong>{t('time.day_other')}:</strong> {ga.days}
         </>
       );
     }

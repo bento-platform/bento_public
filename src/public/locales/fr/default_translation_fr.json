@@ -36,8 +36,18 @@
     "variant_other": "Variants"
   },
   "general": {
+    "id": "Identifiant",
+    "name": "Nom",
+    "description": "Description",
     "collapse_all": "Tout réduire",
-    "expand_all": "Tout développer"
+    "expand_all": "Tout développer",
+    "ontology_class": "Classe ontologique",
+    "actions": "Actions",
+    "view": "Afficher",
+    "url": "URL"
+  },
+  "errors": {
+    "project_fetch": "Erreur lors du chargement des projets"
   },
   "search": {
     "filters": "Filtres",
@@ -49,7 +59,13 @@
     "showing_entities_short": "{{start}}-{{end}} / {{total}}",
     "manage_columns": "Gérer les colonnes",
     "export_csv": "Exporter en CSV",
-    "csv": "CSV"
+    "csv": "CSV",
+    "fts": {
+      "plain": "Mot",
+      "plain_help": "Récupère les enregistrements qui correspondent exactement aux mots de la requête (sans distinction de casse).",
+      "trigram": "Fuzzy",
+      "trigram_help": "Récupère les enregistrements dont le texte est similaire (mais pas nécessairement identique) à la requête."
+    }
   },
   "OR": "OU",
   "in": "en",
@@ -134,7 +150,8 @@
   "Created": "Créé",
   "Updated": "Mis à jour",
   "Back to catalogue": "Retourner au catalogue",
-  "Back to project": "Retourner au projet",
+  "Back to project": "Retourner au $t(entities.project_one, lowercase)",
+  "Back to dataset": "Retourner au $t(entities.dataset_one, lowercase)",
   "beacon": {
     "search_beacon": "Recherche sur le Beacon",
     "search_network": "Recherche sur le réseau",
@@ -171,18 +188,18 @@
     "sex": "Sexe",
     "time_at_last_encounter": "Temps à l'encontre",
     "karyotypic_sex": "Sexe karyotypique",
-    "taxonomy": "Taxonomie",
-    "extra_properties": "Propriétés supplémentaires"
+    "taxonomy": "Taxonomie"
   },
   "time": {
     "start": "Début",
     "end": "Fin",
-    "days": "Jours",
+    "day_one": "Jour",
+    "day_other": "Jours",
     "weeks": "Semaines",
     "age": "Âge",
     "gestational_age": "Âge gestationnel",
     "age_range": "Tranche d'âge",
-    "ontology_class": "Classe ontologique",
+    "ontology_class": "$t(general.ontology_class)",
     "timestamp": "Horodatage",
     "interval": "Intervalle"
   },
@@ -225,11 +242,13 @@
     "found_absent": "Trouvé absent",
     "code": "Code"
   },
-  "biosample_expanded_row": {
-    "description": "Description",
-    "derived_from": "Dérivé de",
+  "biosample": {
+    "biosample_id": "Identifiant de l'échantillon biologique",
+    "individual_id": "Identifiant du participant",
+    "sampled_tissue": "Tissu échantillonné",
+    "derived_from_id": "Dérivé de",
     "sample_type": "Type d'échantillon",
-    "collection_time": "Heure de collecte",
+    "time_of_collection": "Heure de collecte",
     "location_collected": "Lieu de prélèvement",
     "histological_diagnosis": "Diagnostic histologique",
     "pathological_stage": "Stade pathologique",
@@ -246,11 +265,6 @@
     "sample_storage": "Stockage de l'échantillon",
     "files": "Fichiers"
   },
-  "biosample_table": {
-    "biosample_id": "Identifiant de l'échantillon biologique",
-    "sampled_tissue": "Tissu échantillonné",
-    "location_collected": "$t(biosample_expanded_row.location_collected)"
-  },
   "geo_location": {
     "label": "Étiquette",
     "city": "Ville",
@@ -264,22 +278,17 @@
     "filename": "Nom du fichier",
     "download": "Télécharger",
     "individual_to_file_identifiers": "Identifiants individu-fichier",
-    "file_attributes": "Attributs du fichier"
+    "file_attributes": "Attributs du fichier",
+    "download_alert": "Cela va télécharger un fichier depuis un site externe. Êtes-vous sûr de vouloir continuer ?"
   },
-  "experiment_table": {
-    "experiment_id": "Identifiant de l'expérience"
-  },
-  "diseases_expanded_row": {
+  "disease": {
+    "disease": "Maladie",
+    "onset": "Début",
+    "resolution": "Résolution",
     "disease_stage": "Stade(s) de la maladie",
     "clinical_tnm_finding": "Résultat(s) TNM clinique(s)",
     "primary_site": "Site principal",
-    "laterality": "Latéralité",
-    "extra_properties": "Propriétés supplémentaires"
-  },
-  "diseases_table": {
-    "disease": "Maladie",
-    "onset": "Début",
-    "resolution": "Résolution"
+    "laterality": "Latéralité"
   },
   "interpretations": {
     "id": "Identifiant",
@@ -296,7 +305,7 @@
     "diagnosis": "Diagnostic",
     "no_diagnosis": "Aucun diagnostic",
     "genomic_interpretations": "Interprétations génomiques",
-    "no_genomic_iterpretation": "Aucune interprétation génomique",
+    "no_genomic_interpretation": "Aucune interprétation génomique",
     "accession_number": "Numéro d'accession",
     "symbol": "Symbole",
     "description": "Description",
@@ -365,7 +374,7 @@
     "response_to_treatment": "Réponse au traitement",
     "treatment_termination_reason": "Raison de l'arrêt du traitement",
     "reference": "Référence",
-    "unkown": "Inconnu"
+    "unknown": "Inconnu"
   },
   "ontologies": {
     "resource_id": "Identifiant de ressource",
@@ -383,7 +392,6 @@
     "description": "Description",
     "modifiers": "Modificateurs",
     "evidence": "Preuve",
-    "extra_properties": "Propriétés supplémentaires",
     "evidence_code": "Code de preuve",
     "reference": "Référence"
   },
@@ -392,7 +400,7 @@
     "status": "Statut",
     "time_of_death": "Date du décès",
     "cause_of_death": "Cause du décès",
-    "survival_time_in_days": "Durée de survie (en jours)",
+    "survival_time": "Durée de survie",
     "id": "Identifiant",
     "subject_id": "Identifiant du sujet",
     "alternate_ids": "Identifiants alternatifs",
@@ -400,7 +408,22 @@
     "vital_status": "Statut vital",
     "sex": "Sexe",
     "karyotypic_sex": "Sexe caryotypique",
-    "taxonomy": "Taxonomie"
+    "taxonomy": "Taxonomie",
+    "ALIVE": "VIVANT",
+    "DECEASED": "DÉCÉDÉ",
+    "UNKNOWN_STATUS": "STATUT INCONNU"
+  },
+  "phenopacket": {
+    "id": "Identifiant du Phenopacket",
+    "phenopacket_schema_version": "Version du schéma Phenopacket",
+    "created_by": "Créé par",
+    "submitted_by": "Soumis par",
+    "created": "Horodatage de création",
+    "update": "Mis à jour",
+    "updates": "Mises à jour",
+    "external_references": "Références externes",
+    "updated_by": "Mis à jour par",
+    "comment": "Commentaire"
   },
   "tab_keys": {
     "measurements": "Mesures",
@@ -408,7 +431,9 @@
     "diseases": "Maladies",
     "interpretations": "Interprétations",
     "medical_actions": "Actions médicales",
-    "ontologies": "Ontologies"
+    "ontologies": "Ontologies",
+    "metadata": "Métadonnées",
+    "phenopacket_json": "JSON de phenopacket"
   },
   "genomic_interpretation_status": {
     "UNKNOWN_STATUS": "Statut inconnu",
@@ -424,6 +449,41 @@
     "SOLVED": "Résolu",
     "UNSOLVED": "Non résolu"
   },
+  "experiment": {
+    "experiment_id": "Identifiant de l'expérience",
+    "protocol_url": "URL du protocole",
+    "experiment_type": "Type d'expérience",
+    "experiment_ontology": "Type d'expérience ($t(general.ontology_class, lowercase))",
+    "study_type": "Type d'étude",
+    "molecule": "Molécule",
+    "molecule_ontology": "Molécule ($t(general.ontology_class, lowercase))",
+    "library_id": "Identifiant de génothèque",
+    "library_description": "Description de génothèque",
+    "library_strategy": "Stratégie de génothèque",
+    "library_source": "Source de génothèque",
+    "library_selection": "Sélection de génothèque",
+    "library_layout": "Disposition de génothèque",
+    "library_extract_id": "Identifiant de l'extrait de génothèque",
+    "insert_size": "Taille de l'insert",
+    "extraction_protocol": "Protocole d'extraction",
+    "reference_registry_id": "Identifiant de registre de référence",
+    "qc_flags": "Indicateurs QC"
+  },
+  "instrument": {
+    "instrument": "Instrument",
+    "device": "Appareil",
+    "device_ontology": "Appareil ($t(general.ontology_class, lowercase))"
+  },
+  "experiment_result": {
+    "identifier": "Identifiant",
+    "indices": "Indices",
+    "genome_assembly_id": "Assemblage génomique",
+    "file_format": "Format de fichier",
+    "data_output_type": "Type de sortie des données",
+    "usage": "Utilisation",
+    "creation_date": "Date de création",
+    "created_by": "Créé par"
+  },
   "auth": {
     "unauthorized_message": "Vous n'êtes pas autorisé à accéder à cette ressource."
   },
@@ -436,5 +496,16 @@
   "table": {
     "invalid_row_keys_title": "Référence de ligne invalide",
     "invalid_row_keys_description": "Certaines lignes référencées dans l'URL n'existent pas. Correction automatique aux entrées valides."
+  },
+  "drs": {
+    "self_uri": "URI",
+    "aliases": "Alias",
+    "size": "Taille",
+    "created_time": "Horodatage de création",
+    "updated_time": "Horodatage de mise à jour",
+    "version": "Version",
+    "mime_type": "Type MIME",
+    "checksums": "Sommes de contrôle",
+    "access_methods": "Méthodes d'accès"
   }
 }

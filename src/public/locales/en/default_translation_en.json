@@ -34,8 +34,19 @@
     "variant_other": "Variants"
   },
   "general": {
+    "id": "ID",
+    "name": "Name",
+    "description": "Description",
     "collapse_all": "Collapse All",
-    "expand_all": "Expand All"
+    "expand_all": "Expand All",
+    "actions": "Actions",
+    "ontology_class": "Ontology Class",
+    "view": "View",
+    "url": "URL",
+    "extra_properties": "$t(Extra Properties)"
+  },
+  "errors": {
+    "project_fetch": "Error fetching projects"
   },
   "search": {
     "filters": "Filters",
@@ -47,7 +58,13 @@
     "showing_entities_short": "{{start}}-{{end}} / {{total}}",
     "manage_columns": "Manage Columns",
     "export_csv": "Export as CSV",
-    "csv": "CSV"
+    "csv": "CSV",
+    "fts": {
+      "plain": "Word",
+      "plain_help": "Retrieves records which exactly match words in the query (case-insensitive).",
+      "trigram": "Fuzzy",
+      "trigram_help": "Retrieves records which text that looks similar (but not necessarily identical) to the query."
+    }
   },
   "OR": "OR",
   "in": "in",
@@ -132,7 +149,8 @@
   "Created": "Created",
   "Updated": "Updated",
   "Back to catalogue": "Back to catalogue",
-  "Back to project": "Back to project",
+  "Back to project": "Back to $t(entities.project_one, lowercase)",
+  "Back to dataset": "Back to $t(entities.dataset_one, lowercase)",
   "beacon": {
     "search_beacon": "Search Beacon",
     "search_network": "Search Network",
@@ -167,17 +185,18 @@
     "time_at_last_encounter": "Time at Last Encounter",
     "karyotypic_sex": "Karyotypic Sex",
     "taxonomy": "Taxonomy",
-    "extra_properties": "Extra Properties"
+    "extra_properties": "$t(general.extra_properties)"
   },
   "time": {
     "start": "Start",
     "end": "End",
-    "days": "Days",
+    "day_one": "Day",
+    "day_other": "Days",
     "weeks": "Weeks",
     "age": "Age",
     "gestational_age": "Gestational Age",
     "age_range": "Age Range",
-    "ontology_class": "Ontology Class",
+    "ontology_class": "$t(general.ontology_class)",
     "timestamp": "Timestamp",
     "interval": "Interval"
   },
@@ -220,31 +239,29 @@
     "found_absent": "Found to be absent",
     "code": "Code"
   },
-  "biosample_expanded_row": {
-    "description": "Description",
-    "derived_from": "Derived from",
-    "sample_type": "Sample type",
-    "collection_time": "Collection time",
-    "location_collected": "Location collected",
-    "histological_diagnosis": "Histological diagnosis",
-    "pathological_stage": "Pathological stage",
+  "biosample": {
+    "biosample_id": "Biosample ID",
+    "individual_id": "Individual ID",
+    "sampled_tissue": "Sampled Tissue",
+    "description": "$t(general.description)",
+    "derived_from_id": "Derived From",
+    "sample_type": "Sample Type",
+    "time_of_collection": "Collection Time",
+    "location_collected": "Location Collected",
+    "histological_diagnosis": "Histological Diagnosis",
+    "pathological_stage": "Pathological Stage",
     "procedure": "Procedure",
-    "body_site": "Body site",
+    "body_site": "Body Site",
     "performed": "Performed",
     "taxonomy": "Taxonomy",
-    "pathological_tnm_finding": "Pathological TNM findings",
-    "diagnostic_markers": "Diagnostic markers",
-    "tumor_progression": "Tumor progression",
-    "tumor_grade": "Tumor grade",
-    "material_sample": "Material sample",
-    "sample_processing": "Sample processing",
-    "sample_storage": "Sample storage",
+    "pathological_tnm_finding": "Pathological TNM Findings",
+    "diagnostic_markers": "Diagnostic Markers",
+    "tumor_progression": "Tumor Progression",
+    "tumor_grade": "Tumor Grade",
+    "material_sample": "Material Sample",
+    "sample_processing": "Sample Processing",
+    "sample_storage": "Sample Storage",
     "files": "Files"
-  },
-  "biosample_table": {
-    "biosample_id": "Biosample ID",
-    "sampled_tissue": "Sampled Tissue",
-    "location_collected": "Location Collected"
   },
   "geo_location": {
     "label": "Label",
@@ -259,22 +276,17 @@
     "filename": "Filename",
     "download": "Download",
     "individual_to_file_identifiers": "Individual to File Identifiers",
-    "file_attributes": "File Attributes"
+    "file_attributes": "File Attributes",
+    "download_alert": "This will download a file from an external site. Are you sure you want to do this?"
   },
-  "experiment_table": {
-    "experiment_id": "Experiment ID"
-  },
-  "diseases_expanded_row": {
+  "disease": {
+    "disease": "Disease",
+    "onset": "Onset",
+    "resolution": "Resolution",
     "disease_stage": "Disease Stage(s)",
     "clinical_tnm_finding": "Clinical TNM Finding(s)",
     "primary_site": "Primary Site",
-    "laterality": "Laterality",
-    "extra_properties": "Extra Properties"
-  },
-  "diseases_table": {
-    "disease": "Disease",
-    "onset": "Onset",
-    "resolution": "Resolution"
+    "laterality": "Laterality"
   },
   "interpretations": {
     "id": "ID",
@@ -291,7 +303,7 @@
     "diagnosis": "Diagnosis",
     "no_diagnosis": "No diagnosis",
     "genomic_interpretations": "Genomic Interpretations",
-    "no_genomic_iterpretation": "No Genomic Interpretation",
+    "no_genomic_interpretation": "No Genomic Interpretation",
     "accession_number": "Accession Number",
     "symbol": "Symbol",
     "description": "Description",
@@ -359,8 +371,8 @@
     "treatment_intent": "Treatment Intent",
     "response_to_treatment": "Response to Treatment",
     "treatment_termination_reason": "Treatment Termination Reason",
-    "refernce": "Reference",
-    "unkown": "Unknown"
+    "reference": "Reference",
+    "unknown": "Unknown"
   },
   "ontologies": {
     "resource_id": "Resource ID",
@@ -378,7 +390,6 @@
     "description": "Description",
     "modifiers": "Modifiers",
     "evidence": "Evidence",
-    "extra_properties": "Extra Properties",
     "evidence_code": "Evidence Code",
     "reference": "Reference"
   },
@@ -387,7 +398,7 @@
     "status": "Status",
     "time_of_death": "Time of Death",
     "cause_of_death": "Cause of Death",
-    "survival_time_in_days": "Survival Time in Days",
+    "survival_time": "Survival Time",
     "id": "ID",
     "subject_id": "Subject ID",
     "alternate_ids": "Alternate IDs",
@@ -395,7 +406,23 @@
     "vital_status": "Vital Status",
     "sex": "Sex",
     "karyotypic_sex": "Karyotypic Sex",
-    "taxonomy": "Taxonomy"
+    "taxonomy": "Taxonomy",
+    "ALIVE": "ALIVE",
+    "DECEASED": "DECEASED",
+    "UNKNOWN_STATUS": "UNKNOWN STATUS"
+  },
+  "phenopacket": {
+    "id": "Phenopacket ID",
+    "phenopacket_schema_version": "Phenopacket Schema Version",
+    "created_by": "Created By",
+    "submitted_by": "Submitted By",
+    "created": "Created",
+    "update": "Update",
+    "updates": "Updates",
+    "external_references": "External References",
+    "timestamp": "$t(time.timestamp)",
+    "updated_by": "Updated By",
+    "comment": "Comment"
   },
   "tab_keys": {
     "measurements": "Measurements",
@@ -403,7 +430,10 @@
     "diseases": "Diseases",
     "interpretations": "Interpretations",
     "medical_actions": "Medical Actions",
-    "ontologies": "Ontologies"
+    "ontologies": "Ontologies",
+    "metadata": "Metadata",
+    "phenopacket_json": "Phenopacket JSON",
+    "extra_properties": "$t(general.extra_properties)"
   },
   "genomic_interpretation_status": {
     "UNKNOWN_STATUS": "Unknown Status",
@@ -419,6 +449,45 @@
     "SOLVED": "Solved",
     "UNSOLVED": "Unsolved"
   },
+  "experiment": {
+    "experiment_id": "Experiment ID",
+    "description": "$t(general.description)",
+    "protocol_url": "Protocol URL",
+    "experiment_type": "Experiment Type",
+    "experiment_ontology": "Experiment Type ($t(general.ontology_class))",
+    "study_type": "Study Type",
+    "molecule": "Molecule",
+    "molecule_ontology": "Molecule ($t(general.ontology_class))",
+    "library_id" : "Library ID",
+    "library_description": "Library Description",
+    "library_strategy": "Library Strategy",
+    "library_source": "Library Source",
+    "library_selection": "Library Selection",
+    "library_layout": "Library Layout",
+    "library_extract_id": "Library Extract ID",
+    "insert_size": "Insert Size",
+    "extraction_protocol": "Extraction Protocol",
+    "reference_registry_id": "Reference Registry ID",
+    "qc_flags": "QC Flags"
+  },
+  "instrument": {
+    "instrument": "Instrument",
+    "device": "Device",
+    "device_ontology": "Device ($t(general.ontology_class))"
+  },
+  "experiment_result": {
+    "identifier": "Identifier",
+    "description": "$t(general.description)",
+    "filename": "$t(file.filename)",
+    "indices": "Indices",
+    "genome_assembly_id": "Genome Assembly",
+    "file_format": "File Format",
+    "data_output_type": "Data Output Type",
+    "usage": "Usage",
+    "creation_date": "Creation Date",
+    "created_by": "Created By",
+    "experiments": "$t(entities.experiment_other)"
+  },
   "auth": {
     "unauthorized_message": "You are not authorized to access this resource."
   },
@@ -431,5 +500,19 @@
   "table": {
     "invalid_row_keys_title": "Invalid Row Reference",
     "invalid_row_keys_description": "Some rows referenced in the URL do not exist. Adjusting to valid entries."
+  },
+  "drs": {
+    "id": "$t(general.id)",
+    "name": "$t(general.name)",
+    "description": "$t(general.description)",
+    "self_uri": "URI",
+    "aliases": "Aliases",
+    "size": "Size",
+    "created_time": "Created Time",
+    "updated_time": "Updated Time",
+    "version": "Version",
+    "mime_type": "MIME Type",
+    "checksums": "Checksums",
+    "access_methods": "Access Methods"
   }
 }

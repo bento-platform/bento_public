@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { Typography } from 'antd';
+import clsx from 'clsx';
 import { useTranslationFn } from '@/hooks';
 
 export type SearchSubFormProps = {
@@ -22,7 +23,7 @@ const SearchSubForm = ({
   const t = useTranslationFn();
 
   return (
-    <div className={'search-sub-form' + (className ? ' ' + className : '')} style={style}>
+    <div className={clsx('search-sub-form', className)} style={style}>
       <Typography.Title level={3} className="search-sub-form-title">
         {icon} <span className="should-underline-if-unfocused">{t(`search.${titleKey}`)}</span>
       </Typography.Title>

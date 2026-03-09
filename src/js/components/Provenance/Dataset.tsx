@@ -7,6 +7,7 @@ import { FaDatabase } from 'react-icons/fa';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type { Annotation } from '@/types/dats';
 import type { Dataset } from '@/types/metadata';
+import { BentoRoute } from '@/types/routes';
 import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
 import { getCurrentPage } from '@/utils/router';
 import { useTranslationFn } from '@/hooks';
@@ -64,7 +65,7 @@ const Dataset = ({
   );
 
   const onNavigateCurrent = useCallback(() => navigateToScope(scope, page), [navigateToScope, scope, page]);
-  const onNavigateOverview = useCallback(() => navigateToScope(scope, 'overview'), [navigateToScope, scope]);
+  const onNavigateOverview = useCallback(() => navigateToScope(scope, BentoRoute.Overview), [navigateToScope, scope]);
 
   const openProvenanceModal = useCallback(() => setProvenanceModalOpen(true), []);
   const closeProvenanceModal = useCallback(() => setProvenanceModalOpen(false), []);

@@ -1,10 +1,14 @@
+import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
 import type { Field } from '@/types/discovery/fieldDefinition';
 import type { BentoKatsuEntity } from '@/types/entities';
+import type { JSONType } from '@/types/json';
 
 export type QueryFilterField = { id: string; options: string[] };
+export type FtsQueryType = 'plain' | 'phrase' | 'websearch' | 'trigram';
 
 export type QueryParamEntry = [string, string];
-export type QueryParams = { [key: string]: string };
+export type QueryParams = { [key: string]: string | undefined };
+export type DefinedQueryParams = { [key: string]: string }; // Same as above but with 'undefined' values filtered out.
 
 export interface SearchFieldResponse {
   sections: SearchFieldSection[];
@@ -25,30 +29,48 @@ export type KatsuIndividualMatch = {
 };
 
 export type DiscoveryMatchObject = {
-  id: string; // Entity ID
+  id: string | number; // Entity ID
   project?: string | null;
   dataset?: string | null;
 };
 
 export type DiscoveryMatchExperimentResult = DiscoveryMatchObject & {
+  id: number;
+  identifier?: string;
+  description?: string;
   filename?: string; // File name
   url?: string; // File URL
-  indices: { url: string; format: 'BAI' | 'BGZF' | 'CRAI' | 'CSI' | 'TABIX' | 'TRIBBLE' }[];
-  file_format?: string;
-  assembly_id?: string;
+  indices: ExperimentResult['indices'];
+  genome_assembly_id?: ExperimentResult['genome_assembly_id'];
+  file_format?: ExperimentResult['file_format'];
+  data_output_type?: string;
+  usage?: string;
+  creation_date?: string;
+  created_by?: string;
+  extra_properties?: JSONType;
+  // ---
+  experiments: string[];
+  phenopacket?: string;
 };
 
 export type DiscoveryMatchExperiment = DiscoveryMatchObject & {
+  id: string;
+  experiment_type: string;
   study_type?: string;
   results: DiscoveryMatchExperimentResult[];
+  biosample?: string;
+  phenopacket?: string;
 };
 
 export type DiscoveryMatchBiosample = DiscoveryMatchObject & {
+  id: string;
+  individual_id?: string; // Individual ID
   phenopacket?: string; // Phenopacket ID
   experiments: DiscoveryMatchExperiment[];
 };
 
 export type DiscoveryMatchPhenopacket = DiscoveryMatchObject & {
+  id: string;
   subject?: string; // Subject ID
   biosamples: DiscoveryMatchBiosample[]; // Biosample records
 };

@@ -4,6 +4,7 @@ import { Button, Card, Carousel, Descriptions, Flex, Tag, Tooltip, Typography } 
 import { PieChartOutlined, ProfileOutlined } from '@ant-design/icons';
 
 import type { Project } from '@/types/metadata';
+import { BentoRoute } from '@/types/routes';
 import { isoDateToString } from '@/utils/strings';
 import { useLanguage, useTranslationFn } from '@/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
@@ -136,7 +137,7 @@ const CatalogueCard = ({ project }: { project: Project }) => {
             <Flex align="flex-end" gap={12} className="flex-1">
               <Button
                 icon={datasets.length ? <PieChartOutlined /> : <ProfileOutlined />}
-                onClick={() => navigateToScope({ project: identifier }, 'overview')}
+                onClick={() => navigateToScope({ project: identifier }, BentoRoute.Overview)}
               >
                 {t('Explore')}
               </Button>
