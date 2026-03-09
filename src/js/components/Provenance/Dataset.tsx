@@ -117,7 +117,6 @@ const Dataset = ({
           </Space>
           <CountsDisplay counts={effectiveCounts} totalCounts={counts} fontSize="0.875rem" />
           <Flex gap={12} align="flex-end" className="flex-1">
-            <>this is the button to manage according the permision</>
             <Button icon={<PieChartOutlined />} onClick={onNavigateOverview}>
               {t('Explore')}
             </Button>
