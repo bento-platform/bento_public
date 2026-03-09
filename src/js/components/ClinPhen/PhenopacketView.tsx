@@ -74,8 +74,6 @@ const PhenopacketView = () => {
   // Early returns for handling loading/errors - must come after ALL hooks have been called
 
   // tab param --> active key handling
-  // See https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes for why this is
-  // not inside an effect.
   if (status === RequestStatus.Fulfilled && phenopacket && activeKey !== tab) {
     if (tab && activeTabs.includes(tab as TabKeys)) {
       setActiveKey(tab as TabKeys);
@@ -88,7 +86,9 @@ const PhenopacketView = () => {
         invalidEndpointRedirectNotification();
       }
       navigate(`${tab ? '..' : '.'}/${defaultTab.key}`, { relative: 'path', replace: true });
-      return <Loader fullHeight={false} />; // Temporary loading render while navigation occurs
+      // Temporary loading render while navigation occurs. This navigation is to a valid key (the default), so we won't
+      // get any more error notifications after this navigation occurs.
+      return <Loader fullHeight={false} />;
     }
   }
 

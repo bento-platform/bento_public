@@ -44,8 +44,6 @@ const ScopedTitle = () => {
   const [helpModalOpen, setHelpModalOpen] = useState(false);
   const [prevLocation, setPrevLocation] = useState(location);
 
-  // See https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes for why this
-  // isn't in an effect
   if (location !== prevLocation) {
     setPrevLocation(location);
     // If the selected scope changes (likely from the scope select modal), auto-close the modal.

@@ -338,14 +338,13 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
     () => new Set<string>(spec.defaultColumns.filter((c) => allowedColumns.has(c)))
   );
 
-  // See https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes for why this is
-  // not inside an effect.
   if (!scopeSelectionEqual(selectedScope, oldSelectedScope)) {
-    // If the selected scope changes, some of the currently-shown columns may no longer be valid:
+    // If the selected scope changes, some of the currently-shown columns may no longer be valid, so we eliminate any
+    // currently-shown columns that are no longer allowed:
     setShownColumns((oldSet) => {
       const newSet = new Set<string>([...oldSet].filter((v) => allowedColumns.has(v)));
 
-      // Don't change object if our newly-computed object is equivalent:
+      // Don't change object identity if our newly-computed object is equivalent:
       return setEquals(oldSet, newSet) ? oldSet : newSet;
     });
     setOldSelectedScope(selectedScope);
