@@ -51,9 +51,7 @@ const CountsDisplay = ({ counts, totalCounts, fontSize = '1rem' }: CountsDisplay
           <Space size={4} align="center" className="cursor-pointer">
             {icon}
             <Text style={{ fontSize }}>
-              <span style={isFiltered ? { fontWeight: 600 } : undefined}>
-                {value}
-              </span>
+              <span style={isFiltered ? { fontWeight: 600 } : undefined}>{value}</span>
 
               {isFiltered && (
                 <>
