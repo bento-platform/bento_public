@@ -50,7 +50,6 @@ const OverviewChartDashboard = () => {
   useSearchRouterAndHandler();
 
   const { discoveryStatus, sections, filterQueryParams, textQuery, resultCountsByDataset, uiHints } = useSearchQuery();
-  console.log(resultCountsByDataset, "resultCountsByDataset")
 
   // Lazy-loading hooks means this is loaded only if OverviewChartDashboard is rendered:
   const searchableFields = useSearchableFields();
