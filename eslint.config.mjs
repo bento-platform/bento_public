@@ -9,7 +9,6 @@ import tsEsLint from 'typescript-eslint';
 import react from 'eslint-plugin-react';
 import reactHooksEsLint from 'eslint-plugin-react-hooks';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
-import prettier from 'eslint-plugin-prettier';
 
 export default [
   js.configs.recommended,
@@ -25,11 +24,6 @@ export default [
       sourceType: 'module',
       globals: { ...globals.browser, ...globals.es2021, ...globals.node },
       parser: tsParser,
-    },
-    plugins: {
-      react,
-      'react-hooks': reactHooksEsLint,
-      prettier,
     },
     rules: {
       'react/prop-types': 'off', // disable prop-types since we're using TypeScript
