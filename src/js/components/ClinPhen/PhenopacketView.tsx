@@ -71,7 +71,7 @@ const PhenopacketView = () => {
   }, [phenopacket]);
 
   // -------------------------------------------------------------------------------------------------------------------
-  // Early returns for handling loading/errors - must come after ALL hooks have been called
+  // Early returns for handling loading/errors
 
   // tab param --> active key handling
   if (status === RequestStatus.Fulfilled && phenopacket && activeKey !== tab) {
