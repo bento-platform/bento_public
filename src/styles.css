@@ -638,7 +638,7 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
 }
 
 
-.highlight-animation {
+/* .highlight-animation {
   position: relative;
   outline: 3px solid color-mix(in srgb, var(--primary) 55%, transparent);;
   border-radius: 10px;
@@ -656,4 +656,11 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   100% {
     box-shadow: 0 0 0 0 color-mix(in srgb, var(--antd-blue-5) 0%, transparent);;
   }
+} */
+
+.highlight-boundary {
+  box-shadow: 0 0 0 3px rgba(22, 119, 255, 0.55);
+  border-radius: 10px;
+  position: relative;
+  z-index: 1;
 }
