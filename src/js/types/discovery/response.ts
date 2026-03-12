@@ -10,6 +10,7 @@ export interface DiscoveryResponse {
   queried_entities: BentoKatsuEntity[];
   message?: string | null;
   counts: KatsuEntityCountsOrBooleans;
+  counts_by_dataset?: Record<string, KatsuEntityCountsOrBooleans>;
 }
 
 export type DiscoveryResponseOrMessage = DiscoveryResponse | { message: string };
