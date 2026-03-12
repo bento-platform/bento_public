@@ -53,14 +53,20 @@ export type DiscoveryMatchExperimentResult = DiscoveryMatchObject & {
   phenopacket?: string;
 };
 
-export type DiscoveryMatchExperiment = DiscoveryMatchObject & {
-  id: string;
-  experiment_type: Experiment['experiment_type'];
-  study_type?: string;
-  results: DiscoveryMatchExperimentResult[];
-  biosample?: string;
-  phenopacket?: string;
-};
+type MatchIncludedFieldsFromExperiments =
+  | 'id'
+  | 'description'
+  | 'experiment_type'
+  | 'experiment_ontology'
+  | 'study_type'
+  | 'molecule'
+  | 'molecule_ontology';
+export type DiscoveryMatchExperiment = DiscoveryMatchObject &
+  Pick<Experiment, MatchIncludedFieldsFromExperiments> & {
+    results: DiscoveryMatchExperimentResult[];
+    biosample?: string;
+    phenopacket?: string;
+  };
 
 export type DiscoveryMatchBiosample = DiscoveryMatchObject & {
   id: string;
