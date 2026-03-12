@@ -53,7 +53,7 @@ export type DiscoveryMatchExperimentResult = DiscoveryMatchObject & {
   phenopacket?: string;
 };
 
-type MatchIncludedFieldsFromExperiments =
+export type MatchIncludedFieldsFromExperiments =
   | 'id'
   | 'description'
   | 'experiment_type'

@@ -4,6 +4,7 @@ import { Tooltip } from 'antd';
 import PhenopacketLink from '@/components/ClinPhen/PhenopacketLink';
 
 import type { Experiment } from '@/types/clinPhen/experiments/experiment';
+import type { MatchIncludedFieldsFromExperiments } from '@/features/search/types';
 import { useTranslationFn } from '@/hooks';
 
 const ExperimentReferences = ({
@@ -11,7 +12,7 @@ const ExperimentReferences = ({
   experiments,
 }: {
   packetId?: string;
-  experiments?: Pick<Experiment, 'experiment_type' | 'id' | 'experiment_ontology'>[];
+  experiments?: Pick<Experiment, MatchIncludedFieldsFromExperiments>[];
 }) => {
   const t = useTranslationFn();
 
