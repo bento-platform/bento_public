@@ -43,11 +43,14 @@ const usePhenopacketOverviewLink = (
 
 type BaseLinkProps = { packetId?: string; replace?: boolean; preserveQueryParams?: boolean; children?: ReactNode };
 
-
 type SubjectLinkProps = BaseLinkProps;
 const SubjectLink = ({ children, packetId, preserveQueryParams }: SubjectLinkProps) => {
   const url = usePhenopacketOverviewLink(packetId, 'subject', undefined, preserveQueryParams);
-  return <Link to={url} state={{ highlight: { sectionKey: 'subject' } }}>{children}</Link>;
+  return (
+    <Link to={url} state={{ highlight: { sectionKey: 'subject' } }}>
+      {children}
+    </Link>
+  );
 };
 
 type BiosampleLinkProps = BaseLinkProps & { sampleId: string };
@@ -114,7 +117,11 @@ const ExperimentResultLink = ({
     preserveQueryParams
   );
   return (
-    <Link to={url} replace={replace} state={{ highlight: { sectionKey: 'experiment_result', rowId: experimentResultId } }}>
+    <Link
+      to={url}
+      replace={replace}
+      state={{ highlight: { sectionKey: 'experiment_result', rowId: experimentResultId } }}
+    >
       {children ?? experimentResultId}
     </Link>
   );

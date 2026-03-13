@@ -144,11 +144,11 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
     });
 
     // Add highlight-boundary
-    el?.classList.add("highlight-boundary")
+    el?.classList.add('highlight-boundary');
 
     return () => {
-      // cancelAnimationFrame(raf1);
-      el?.classList.remove("highlight-boundary")
+      cancelAnimationFrame(raf1);
+      el?.classList.remove('highlight-boundary');
     };
   }, [routerState, items, open, setOpen]);
 
