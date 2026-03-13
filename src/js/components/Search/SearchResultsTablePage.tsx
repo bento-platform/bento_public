@@ -48,6 +48,7 @@ import {
   type ExperimentResultActionsProps,
 } from '@/components/ClinPhen/ExperimentDisplay/ExperimentResultView';
 import ReferenceGenomePopoverField from '../Util/ClinPhen/ReferenceGenomePopoverField';
+import FreeTextAndOrOntologyClass from '../Util/ClinPhen/FreeTextAndOrOntologyClass';
 
 type SearchColRenderContext = {
   onProjectClick: (id: string) => void;
@@ -212,6 +213,9 @@ const TABLE_SPEC_EXPERIMENT: ResultsTableSpec<DiscoveryMatchExperiment> = {
     {
       dataIndex: 'experiment_type',
       title: 'experiment.experiment_type',
+      render: (_: string, e: DiscoveryMatchExperiment) => (
+        <FreeTextAndOrOntologyClass text={e.experiment_type} ontologyClass={e.experiment_ontology} mode='experiment'/>
+      ),
     } as ResultsTableFixedColumn<DiscoveryMatchExperiment>,
   ],
   availableColumns: EXPERIMENT_SEARCH_TABLE_COLUMNS,

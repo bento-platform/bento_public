@@ -2,7 +2,15 @@ import type { OntologyTerm } from '@/types/ontology';
 import { useTranslationFn } from '@/hooks';
 import OntologyTermComponent from '@Util/ClinPhen/OntologyTerm';
 
-const FreeTextAndOrOntologyClass = ({ text, ontologyClass }: { text?: string; ontologyClass?: OntologyTerm }) => {
+const FreeTextAndOrOntologyClass = ({
+  text,
+  ontologyClass,
+  mode = 'default',
+}: {
+  text?: string;
+  ontologyClass?: OntologyTerm;
+  mode?: 'default' | 'experiment';
+}) => {
   const t = useTranslationFn();
   // Cases:
   //  - only text --> render text
@@ -10,6 +18,10 @@ const FreeTextAndOrOntologyClass = ({ text, ontologyClass }: { text?: string; on
   //  - both -->
   //      if text == ontology class label, only render ontology class
   //      otherwise, render both
+
+  if (mode === 'experiment' && !!ontologyClass) {
+    text = undefined;
+  }
   return text && (!ontologyClass || text !== ontologyClass.label) ? (
     ontologyClass ? (
       <>
