@@ -361,7 +361,7 @@ body {
   margin-top: 0;
 }
 /* Elements which are the last child of the about content container shouldn't have the default bottom margin */
-.about-content *:first-child {
+.about-content *:last-child {
   margin-bottom: 0;
 }
 

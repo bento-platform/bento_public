@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useMemo, useState, type ReactNode } from 'react';
+import { useCallback, useMemo, useState, type ReactNode } from 'react';
 import { Table, type TablePaginationConfig } from 'antd';
 import type { TableColumnType } from 'antd';
 import { useSearchParams } from 'react-router-dom';
@@ -30,7 +30,11 @@ function deserializeExpandedKeys(params: URLSearchParams, queryKey: string): str
 
 function modifySearchParam(oldParams: URLSearchParams, queryKey: string, value: string[]): URLSearchParams {
   const out = new URLSearchParams(oldParams);
-  value.length ? out.set(queryKey, serializeExpandedKeys(value)) : out.delete(queryKey);
+  if (value.length) {
+    out.set(queryKey, serializeExpandedKeys(value));
+  } else {
+    out.delete(queryKey);
+  }
   return out;
 }
 
@@ -118,42 +122,30 @@ const CustomTable = <T extends object>({
     return expandedKeys.filter((k) => keySet.has(k));
   }, [visibleData, expandedKeys, rowKeyFn]);
 
-  useEffect(() => {
-    if (expandedRowRender && validExpandedKeys.length !== expandedKeys.length) {
-      // Only warn if we are trying to expand a key that doesn't exist *at all* in the data source, NOT if we're just
-      // trying to expand a key that isn't expandable.
-      if (expandedKeysThatExist.length !== expandedKeys.length && urlAware) {
-        console.warn(
-          t('table.invalid_row_keys_title'),
-          'expanded keys:',
-          expandedKeys,
-          ', expanded keys that exist:',
-          expandedKeysThatExist,
-          'expanded keys that are valid:',
-          validExpandedKeys
-        );
-        notify.warning({
-          message: t('table.invalid_row_keys_title'),
-          description: t('table.invalid_row_keys_description'),
-        });
-      }
-      if (urlAware) {
-        setSearchParams((prev) => modifySearchParam(prev, queryKey, validExpandedKeys), { replace: true });
-      } else {
-        setLocalExpandedKeys(validExpandedKeys);
-      }
+  if (expandedRowRender && validExpandedKeys.length !== expandedKeys.length) {
+    // Only warn if we are trying to expand a key that doesn't exist *at all* in the data source, NOT if we're just
+    // trying to expand a key that isn't expandable.
+    if (expandedKeysThatExist.length !== expandedKeys.length && urlAware) {
+      console.warn(
+        t('table.invalid_row_keys_title'),
+        'expanded keys:',
+        expandedKeys,
+        ', expanded keys that exist:',
+        expandedKeysThatExist,
+        'expanded keys that are valid:',
+        validExpandedKeys
+      );
+      notify.warning({
+        message: t('table.invalid_row_keys_title'),
+        description: t('table.invalid_row_keys_description'),
+      });
     }
-  }, [
-    expandedRowRender,
-    urlAware,
-    validExpandedKeys,
-    expandedKeysThatExist,
-    expandedKeys,
-    notify,
-    queryKey,
-    t,
-    setSearchParams,
-  ]);
+    if (urlAware) {
+      setSearchParams((prev) => modifySearchParam(prev, queryKey, validExpandedKeys), { replace: true });
+    } else {
+      setLocalExpandedKeys(validExpandedKeys);
+    }
+  }
 
   const handleExpand = useCallback(
     (expanded: boolean, record: WithVisible<T>) => {
