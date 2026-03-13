@@ -214,7 +214,7 @@ const TABLE_SPEC_EXPERIMENT: ResultsTableSpec<DiscoveryMatchExperiment> = {
       dataIndex: 'experiment_type',
       title: 'experiment.experiment_type',
       render: (_: string, e: DiscoveryMatchExperiment) => (
-        <FreeTextAndOrOntologyClass text={e.experiment_type} ontologyClass={e.experiment_ontology} mode='experiment'/>
+        <FreeTextAndOrOntologyClass text={e.experiment_type} ontologyClass={e.experiment_ontology} mode="experiment" />
       ),
     } as ResultsTableFixedColumn<DiscoveryMatchExperiment>,
   ],
