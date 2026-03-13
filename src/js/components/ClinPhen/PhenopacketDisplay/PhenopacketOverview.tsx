@@ -115,33 +115,33 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
     const divId = rowId ?? `phenopacket-${sectionKey}`;
 
     const el = document.getElementById(divId);
-    // const animationRun = () => {
-    //   if (!el) return;
+    const animationRun = () => {
+      if (!el) return;
 
-    //   // clean up previous highlight
-    //   cleanupRef.current?.();
-    //   cleanupRef.current = null;
+      // clean up previous highlight
+      cleanupRef.current?.();
+      cleanupRef.current = null;
 
-    //   // After panel opens, scroll + highlight
-    //   scrollToWithOffset(el, NAVBAR_HEIGHT);
+      // After panel opens, scroll + highlight
+      scrollToWithOffset(el, NAVBAR_HEIGHT);
 
-    //   // focus for accessibility without re-scrolling
-    //   el.setAttribute('tabindex', '-1');
-    //   try {
-    //     (el as HTMLElement).focus({ preventScroll: true });
-    //   } catch {
-    //     (el as HTMLElement).focus();
-    //   }
+      // focus for accessibility without re-scrolling
+      el.setAttribute('tabindex', '-1');
+      try {
+        (el as HTMLElement).focus({ preventScroll: true });
+      } catch {
+        (el as HTMLElement).focus();
+      }
 
-    //   cleanupRef.current = addTemporaryHighlight(el, 2600);
-    // };
+      cleanupRef.current = addTemporaryHighlight(el, 2600);
+    };
 
-    // // wait for collapse animation/dom expansion
-    // const raf1 = requestAnimationFrame(() => {
-    //   const raf2 = requestAnimationFrame(animationRun);
-    //   // cleanup rAF 2 if effect re-runs quickly
-    //   cleanupRef.current = () => cancelAnimationFrame(raf2);
-    // });
+    // wait for collapse animation/dom expansion
+    const raf1 = requestAnimationFrame(() => {
+      const raf2 = requestAnimationFrame(animationRun);
+      // cleanup rAF 2 if effect re-runs quickly
+      cleanupRef.current = () => cancelAnimationFrame(raf2);
+    });
 
     // Add highlight-boundary
     el?.classList.add("highlight-boundary")
