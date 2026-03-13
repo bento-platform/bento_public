@@ -3,7 +3,6 @@ import { Popover } from 'antd';
 
 import PhenopacketLink from '@/components/ClinPhen/PhenopacketLink';
 import TDescriptions from '@Util/TDescriptions';
-import OntologyTerm from './OntologyTerm';
 import FreeTextAndOrOntologyClass from './FreeTextAndOrOntologyClass';
 
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
