@@ -76,8 +76,6 @@ export const useHasScopePermission = (permission: string) => {
   return useHasResourcePermissionWrapper(scopeResource, permission);
 };
 
-export const useHasScopeQueryData = () => useHasScopePermission(queryData);
-
 export const useQueryWithAuthIfAllowed = () => {
   const dispatch = useAppDispatch();
   const { hasPermission } = useHasResourcePermissionWrapper(RESOURCE_EVERYTHING, queryData);
