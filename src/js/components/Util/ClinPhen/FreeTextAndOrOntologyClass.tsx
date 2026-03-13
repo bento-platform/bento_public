@@ -13,11 +13,15 @@ const FreeTextAndOrOntologyClass = ({
 }) => {
   const t = useTranslationFn();
   // Cases:
+  //  Mode: Default
   //  - only text --> render text
   //  - only ontology class --> render ontology class
   //  - both -->
   //      if text == ontology class label, only render ontology class
   //      otherwise, render both
+  //  Mode: Experiment
+  //  - Render Ontology if Ontology is present
+  //  - Fallback to text otherwise
 
   if (mode === 'experiment' && !!ontologyClass) {
     text = undefined;
