@@ -114,7 +114,7 @@ const ExperimentResultLink = ({
     preserveQueryParams
   );
   return (
-    <Link to={url} replace={replace}>
+    <Link to={url} replace={replace} state={{ highlight: { sectionKey: 'experiment_result', rowId: experimentResultId } }}>
       {children ?? experimentResultId}
     </Link>
   );
