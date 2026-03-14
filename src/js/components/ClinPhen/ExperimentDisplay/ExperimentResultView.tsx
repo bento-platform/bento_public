@@ -99,6 +99,7 @@ export const ExperimentResultExpandedRow = ({
           experiments={experimentResult.experiments ?? []}
           // If we're in the detail view context and not search, replace the URL instead of adding to the history:
           replace={!searchRow}
+          preserveQueryParams
         />
       ),
       isVisible: objectToBoolean(experimentResult.experiments),
@@ -267,6 +268,7 @@ const ExperimentResultView = ({
                   current={currentExperiment}
                   experiments={es ?? []}
                   replace={!searchRow}
+                  preserveQueryParams
                 />
               ),
             },
