@@ -622,6 +622,7 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   100% {
     box-shadow: 0 0 0 0 color-mix(in srgb, var(--antd-blue-5) 0%, transparent);
   }
+}
 
 /* END phenopackets/other clinical+phenotypic metadata views */
 
