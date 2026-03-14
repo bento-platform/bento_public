@@ -46,14 +46,18 @@ type BaseLinkProps = { packetId?: string; replace?: boolean; preserveQueryParams
 type SubjectLinkProps = BaseLinkProps;
 const SubjectLink = ({ children, packetId, preserveQueryParams }: SubjectLinkProps) => {
   const url = usePhenopacketOverviewLink(packetId, 'subject', undefined, preserveQueryParams);
-  return <Link to={url}>{children}</Link>;
+  return (
+    <Link to={url} state={{ highlight: { sectionKey: 'subject' } }}>
+      {children}
+    </Link>
+  );
 };
 
 type BiosampleLinkProps = BaseLinkProps & { sampleId: string };
 const BiosampleLink = ({ packetId, sampleId, replace, preserveQueryParams, children }: BiosampleLinkProps) => {
   const url = usePhenopacketOverviewLink(packetId, 'biosamples', { biosample: sampleId }, preserveQueryParams);
   return (
-    <Link to={url} replace={replace}>
+    <Link to={url} replace={replace} state={{ highlight: { sectionKey: 'biosamples', rowId: sampleId } }}>
       {children ?? sampleId}
     </Link>
   );
@@ -75,7 +79,7 @@ type ExperimentLinkProps = BaseLinkProps & { experimentId: string };
 const ExperimentLink = ({ packetId, experimentId, replace, preserveQueryParams, children }: ExperimentLinkProps) => {
   const url = usePhenopacketOverviewLink(packetId, 'experiments', { experiment: experimentId }, preserveQueryParams);
   return (
-    <Link to={url} replace={replace}>
+    <Link to={url} replace={replace} state={{ highlight: { sectionKey: 'experiments', rowId: experimentId } }}>
       {children ?? experimentId}
     </Link>
   );
@@ -113,7 +117,11 @@ const ExperimentResultLink = ({
     preserveQueryParams
   );
   return (
-    <Link to={url} replace={replace}>
+    <Link
+      to={url}
+      replace={replace}
+      state={{ highlight: { sectionKey: 'experiment_result', rowId: experimentResultId } }}
+    >
       {children ?? experimentResultId}
     </Link>
   );
