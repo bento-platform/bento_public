@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Flex, FloatButton, Tabs, type TabsProps } from 'antd';
 import {
   AppstoreAddOutlined,
@@ -84,14 +84,13 @@ const OverviewChartDashboard = () => {
     [waitingForHints]
   );
 
-  useEffect(() => {
-    // If the user has not manually changed tabs / this effect has not already run, and we have at least one search
-    // filter set, auto-switch to the search tab rather than the about tab to make the applied filter(s) more obvious.
-
-    if (!hasChangedTabs && (Object.keys(filterQueryParams).length || textQuery.length)) {
-      changePage('search');
-    }
-  }, [hasChangedTabs, filterQueryParams, textQuery, changePage]);
+  // If the user has not manually changed tabs / this effect has not already run, and we have at least one search
+  // filter set, auto-switch to the search tab rather than the about tab to make the applied filter(s) more obvious.
+  // See https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes for why this is
+  // not inside an effect.
+  if (!hasChangedTabs && (Object.keys(filterQueryParams).length || textQuery.length)) {
+    changePage('search');
+  }
 
   const pageTabItems: TabsProps['items'] = useMemo(
     () => [
