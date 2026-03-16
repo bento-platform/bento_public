@@ -108,6 +108,23 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
 
   useImperativeHandle(ref, () => ({ expandAll, collapseAll }), [expandAll, collapseAll]);
 
+  // Separate ref to track if highlight is active
+  const highlightElRef = useRef<HTMLElement | null>(null);
+
+  // Click listener — lives outside the effect lifecycle
+  useEffect(() => {
+    const handleClick = () => {
+      if (highlightElRef.current) {
+        highlightElRef.current.classList.remove('highlight-animation');
+        highlightElRef.current.classList.remove('highlight-boundary');
+        highlightElRef.current = null;
+      }
+    };
+
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
+  }, []); // mounted once, never torn down by deps
+
   useEffect(() => {
     const { sectionKey, rowId } =
       (routerState as { highlight?: { sectionKey?: string; rowId?: string } })?.highlight ?? {};
@@ -115,17 +132,17 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
     const divId = rowId ?? `phenopacket-${sectionKey}`;
 
     const el = document.getElementById(divId);
+
     const animationRun = () => {
       if (!el) return;
 
       // clean up previous highlight
-      cleanupRef.current?.();
-      cleanupRef.current = null;
+      if (highlightElRef.current) {
+        highlightElRef.current.classList.remove('highlight-animation');
+      }
 
-      // After panel opens, scroll + highlight
       scrollToWithOffset(el, NAVBAR_HEIGHT);
 
-      // focus for accessibility without re-scrolling
       el.setAttribute('tabindex', '-1');
       try {
         (el as HTMLElement).focus({ preventScroll: true });
@@ -133,22 +150,24 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
         (el as HTMLElement).focus();
       }
 
-      cleanupRef.current = addTemporaryHighlight(el, 2600);
+      el.classList.add('highlight-animation');
+      highlightElRef.current = el;
     };
 
-    // wait for collapse animation/dom expansion
     const raf1 = requestAnimationFrame(() => {
       const raf2 = requestAnimationFrame(animationRun);
-      // cleanup rAF 2 if effect re-runs quickly
       cleanupRef.current = () => cancelAnimationFrame(raf2);
     });
 
-    // Add highlight-boundary
     el?.classList.add('highlight-boundary');
 
     return () => {
       cancelAnimationFrame(raf1);
+      cleanupRef.current?.();
+      cleanupRef.current = null;
       el?.classList.remove('highlight-boundary');
+      // NOTE: we intentionally do NOT remove highlight-animation here
+      // so the click listener can handle it
     };
   }, [routerState, items, open, setOpen]);
 
