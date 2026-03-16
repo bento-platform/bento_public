@@ -160,6 +160,7 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
       cleanupRef.current?.();
       cleanupRef.current = null;
       el?.classList.remove('highlight-boundary');
+      el?.blur();
       // NOTE: we intentionally do NOT remove highlight-animation here
       // so the click listener can handle it
     };
