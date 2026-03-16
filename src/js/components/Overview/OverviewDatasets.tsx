@@ -1,5 +1,6 @@
 import type { Dataset as DatasetT } from '@/types/metadata';
 import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
+import { EMPTY_KATSU_ENTITY_COUNTS } from '@/features/search/constants';
 import Dataset from '@/components/Provenance/Dataset';
 import OverviewCollapsibleSection from './Util/OverviewCollapsibleSection';
 
@@ -21,7 +22,7 @@ const OverviewDatasets = ({
               parentProjectID={parentProjectID}
               dataset={d}
               format="card"
-              filteredCounts={countsByDataset?.[d.identifier]}
+              filteredCounts={countsByDataset ? (countsByDataset[d.identifier] ?? EMPTY_KATSU_ENTITY_COUNTS) : undefined}
             />
           </div>
         ))}
