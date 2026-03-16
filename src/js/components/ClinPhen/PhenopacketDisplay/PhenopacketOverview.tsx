@@ -38,12 +38,6 @@ function scrollToWithOffset(el: HTMLElement, offsetPx: number) {
   window.scrollTo({ top, behavior: 'smooth' });
 }
 
-function addTemporaryHighlight(el: HTMLElement, ms: number = 2500) {
-  el.classList.add('highlight-animation');
-  const timeout = window.setTimeout(() => el.classList.remove('highlight-animation'), ms);
-  return () => window.clearTimeout(timeout);
-}
-
 const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>(({ phenopacket }, ref) => {
   const [open, setOpen] = useSearchParams(serializeKeys(['subject']));
   const t = useTranslationFn();

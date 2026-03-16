@@ -61,7 +61,7 @@ const CustomTable = <T extends object>({
   queryKey = EXPANDED_QUERY_PARAM_KEY,
   urlAware = true,
 }: CustomTableProps<T>) => {
-  const location = useLocation()
+  const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const notify = useNotify();
   const t = useTranslationFn();
@@ -141,8 +141,11 @@ const CustomTable = <T extends object>({
         description: t('table.invalid_row_keys_description'),
       });
     }
-    if (urlAware) {      
-      setSearchParams((prev) => modifySearchParam(prev, queryKey, validExpandedKeys), { replace: true, state: location.state });
+    if (urlAware) {
+      setSearchParams((prev) => modifySearchParam(prev, queryKey, validExpandedKeys), {
+        replace: true,
+        state: location.state,
+      });
     } else {
       setLocalExpandedKeys(validExpandedKeys);
     }
