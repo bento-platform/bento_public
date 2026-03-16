@@ -7,14 +7,19 @@ import OntologiesView from '@/components/ClinPhen/PhenopacketDisplay/OntologiesV
 import Overview, { type CollapseHandle } from '@/components/ClinPhen/PhenopacketDisplay/PhenopacketOverview';
 import PhenopacketMetaData from '@/components/ClinPhen/PhenopacketDisplay/PhenopacketMetaData';
 import JsonView from '@Util/JsonView';
+import TracksView from '@/components/ClinPhen/TracksDisplay/TracksView';
 
 import { TabKeys } from '@/types/PhenopacketView.types';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
 import { useTranslationFn } from '@/hooks';
+import { useReference } from '@/features/reference/hooks';
+import { useScopeDownloadData } from '@/hooks/censorship';
+import { phenopacketViewableExperimentResults } from '@/utils/experiments';
 
 export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
   const t = useTranslationFn();
   const navigate = useNavigate();
+  const { genomesByID } = useReference();
   const collapseRef = useRef<CollapseHandle>(null);
 
   const handleTabChange = useCallback(
@@ -23,6 +28,14 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
     },
     [navigate]
   );
+
+  const viewableTracks = phenopacketViewableExperimentResults(phenopacket, genomesByID);
+
+  const {
+    hasAttempted: attemptedCanDownload,
+    // fetchingPermission: fetchingCanDownload,  // what's happening here
+    hasPermission: canDownload,
+  } = useScopeDownloadData();
 
   // TODO: Add Experiments
   const items: TabsProps['items'] = useMemo(() => {
@@ -33,6 +46,12 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
         label: t('Overview'),
         children: <Overview ref={collapseRef} phenopacket={phenopacket} />,
         disabled: false,
+      },
+      {
+        key: TabKeys.TRACKS,
+        label: t('Tracks'),
+        children: <TracksView phenopacket={phenopacket} tracks={viewableTracks} />,
+        disabled: !(attemptedCanDownload && canDownload && viewableTracks.length > 0),
       },
       {
         key: TabKeys.ONTOLOGIES,

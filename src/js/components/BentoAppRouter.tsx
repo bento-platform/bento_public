@@ -70,8 +70,8 @@ const ScopedRoute = () => {
     //  - No parameters have been supplied, and we have a single-dataset node, in which case we want to keep the "clean"
     //    / blank URL to avoid visual clutter.
     if (
-      (datasetId === valid.scope.dataset && projectId === valid.scope.project) ||
-      (!projectId && !datasetId && isFixedProjectAndDataset)
+      (datasetId === valid.scope.dataset && effectiveProjectId === valid.scope.project) ||
+      (!effectiveProjectId && !datasetId && isFixedProjectAndDataset)
     ) {
       dispatch(selectScope(valid.scope)); // Also marks scope as set
       return;
