@@ -9,6 +9,7 @@ import type { Annotation } from '@/types/dats';
 import type { Dataset } from '@/types/metadata';
 import { BentoRoute } from '@/types/routes';
 import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
+import clsx from 'clsx';
 import { getCurrentPage } from '@/utils/router';
 import { useTranslationFn } from '@/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
@@ -71,6 +72,11 @@ const Dataset = ({
   const closeProvenanceModal = useCallback(() => setProvenanceModalOpen(false), []);
 
   const effectiveCounts = filteredCounts ?? counts;
+  const faded =
+    filteredCounts &&
+    counts &&
+    Object.values(filteredCounts).every((c) => !c) &&
+    Object.values(counts).some((c) => !!c);
 
   let inner: ReactNode;
 
@@ -93,7 +99,7 @@ const Dataset = ({
       <Card
         title={<SmallChartCardTitle title={title} />}
         size="small"
-        className="shadow h-full"
+        className={clsx('shadow', 'h-full', { 'opacity-50': faded })}
         style={{ minHeight: 200 }}
         styles={{ body: { padding: '12px 16px', height: 'calc(100% - 53px)' } }}
         extra={
