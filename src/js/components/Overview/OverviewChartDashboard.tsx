@@ -49,7 +49,7 @@ const OverviewChartDashboard = () => {
   // URL and dispatches discovery actions for fetching overview/query response data.
   useSearchRouterAndHandler();
 
-  const { discoveryStatus, sections, filterQueryParams, textQuery, uiHints } = useSearchQuery();
+  const { discoveryStatus, sections, filterQueryParams, textQuery, resultCountsByDataset, uiHints } = useSearchQuery();
 
   // Lazy-loading hooks means this is loaded only if OverviewChartDashboard is rendered:
   const searchableFields = useSearchableFields();
@@ -140,7 +140,11 @@ const OverviewChartDashboard = () => {
 
         {selectedProject && !scope.dataset && selectedProject.datasets.length ? (
           // If we have a project with at least one dataset, show a dataset mini-catalogue in the project overview
-          <OverviewDatasets datasets={selectedProject.datasets} parentProjectID={selectedProject.identifier} />
+          <OverviewDatasets
+            datasets={selectedProject.datasets}
+            parentProjectID={selectedProject.identifier}
+            countsByDataset={resultCountsByDataset}
+          />
         ) : null}
 
         {displayedSections.map(({ sectionTitle, charts }, i) => (
