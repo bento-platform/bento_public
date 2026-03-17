@@ -43,6 +43,7 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
   const t = useTranslationFn();
   const routerState = useLocationState();
   const cleanupRef = useRef<null | (() => void)>(null);
+  const pendingHighlightRef = useRef(false);
 
   const sections = useMemo(
     () =>
@@ -105,34 +106,44 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
   // Separate ref to track if highlight is active
   const highlightElRef = useRef<HTMLElement | null>(null);
 
-  // Click listener — lives outside the effect lifecycle
+  // Click listener — clears highlight only if no new highlight is incoming
   useEffect(() => {
     const handleClick = () => {
+      // If a new highlight is being set up, let the effect handle cleanup instead
+      if (pendingHighlightRef.current) return;
+
       if (highlightElRef.current) {
         highlightElRef.current.classList.remove('highlight-animation');
         highlightElRef.current.classList.remove('highlight-boundary');
         highlightElRef.current = null;
       }
     };
-
     document.addEventListener('click', handleClick);
     return () => document.removeEventListener('click', handleClick);
-  }, []); // mounted once, never torn down by deps
+  }, []);
 
   useEffect(() => {
     const { sectionKey, rowId } =
       (routerState as { highlight?: { sectionKey?: string; rowId?: string } })?.highlight ?? {};
 
     const divId = rowId ?? `phenopacket-${sectionKey}`;
-
     const el = document.getElementById(divId);
 
+    // Signal to the click handler that a highlight transition is in flight
+    pendingHighlightRef.current = true;
+
     const animationRun = () => {
+      // Clear the pending flag — click handler may now clean up freely
+      pendingHighlightRef.current = false;
+
       if (!el) return;
 
-      // clean up previous highlight
+      // Clean up previous highlight (same element or different)
       if (highlightElRef.current) {
         highlightElRef.current.classList.remove('highlight-animation');
+        if (highlightElRef.current !== el) {
+          highlightElRef.current.classList.remove('highlight-boundary');
+        }
       }
 
       scrollToWithOffset(el, NAVBAR_HEIGHT);
@@ -159,10 +170,10 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
       cancelAnimationFrame(raf1);
       cleanupRef.current?.();
       cleanupRef.current = null;
+      // Only reset pending flag if it's still ours (effect didn't reach animationRun yet)
+      pendingHighlightRef.current = false;
       el?.classList.remove('highlight-boundary');
       el?.blur();
-      // NOTE: we intentionally do NOT remove highlight-animation here
-      // so the click listener can handle it
     };
   }, [routerState, items, open, setOpen]);
 
