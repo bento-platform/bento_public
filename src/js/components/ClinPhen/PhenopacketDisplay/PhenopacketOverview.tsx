@@ -34,17 +34,6 @@ function scrollToWithOffset(el: HTMLElement, offsetPx: number) {
     const rect = el.getBoundingClientRect();
     const parentRect = scrollParent.getBoundingClientRect();
     const top = scrollParent.scrollTop + rect.top - parentRect.top - offsetPx;
-
-    console.log('[scrollToWithOffset]', {
-      element: el,
-      offsetPx,
-      scrollParent,
-      rectTop: rect.top,
-      parentRectTop: parentRect.top,
-      scrollParentScrollTop: scrollParent.scrollTop,
-      computedTop: top,
-    });
-
     scrollParent.scrollTo({ top, behavior: 'smooth' });
   });
 }
