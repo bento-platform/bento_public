@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState, type ReactNode } from 'react';
 import { Table, type TablePaginationConfig } from 'antd';
 import type { TableColumnType } from 'antd';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useLocation } from 'react-router-dom';
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
 import { useNotify } from '@/hooks/notifications';
 import { useTranslationFn } from '@/hooks';
@@ -63,6 +63,7 @@ const CustomTable = <T extends object>({
   queryKey = EXPANDED_QUERY_PARAM_KEY,
   urlAware = true,
 }: CustomTableProps<T>) => {
+  const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const notify = useNotify();
   const t = useTranslationFn();
@@ -143,7 +144,10 @@ const CustomTable = <T extends object>({
       });
     }
     if (urlAware) {
-      setSearchParams((prev) => modifySearchParam(prev, queryKey, validExpandedKeys), { replace: true });
+      setSearchParams((prev) => modifySearchParam(prev, queryKey, validExpandedKeys), {
+        replace: true,
+        state: location.state,
+      });
     } else {
       setLocalExpandedKeys(validExpandedKeys);
     }
@@ -177,6 +181,7 @@ const CustomTable = <T extends object>({
         expandedRowKeys: expandedKeys,
         onExpand: handleExpand,
       }}
+      onRow={(r) => ({ id: rowKeyFn(r) })}
       rowKey={rowKeyFn} // Need to pass rowKeyFn here since we are casting to string in the case of int keys.
       pagination={pagination ?? false}
       bordered={true}
