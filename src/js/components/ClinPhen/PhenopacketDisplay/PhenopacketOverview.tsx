@@ -88,7 +88,7 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
                 {spec.render(phenopacket)}
               </div>
             ),
-            // forcRender makes accessing elements for highlighting before the section is opened possible
+            // forceRender makes accessing elements for highlighting before the section is opened possible
             forceRender: true,
           };
         })
