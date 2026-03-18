@@ -2,6 +2,8 @@ import { Fragment, type ReactNode } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { useCurrentScopePrefixedUrl } from '@/hooks/navigation';
 
+import { highlightState } from '@/utils/router';
+
 import { BentoRoute } from '@/types/routes';
 import { TabKeys } from '@/types/PhenopacketView.types';
 import type { SectionKey } from '@/components/ClinPhen/PhenopacketDisplay/phenopacketOverview.registry';
@@ -47,7 +49,7 @@ type SubjectLinkProps = BaseLinkProps;
 const SubjectLink = ({ children, packetId, preserveQueryParams }: SubjectLinkProps) => {
   const url = usePhenopacketOverviewLink(packetId, 'subject', undefined, preserveQueryParams);
   return (
-    <Link to={url} state={{ highlight: { sectionKey: 'subject' } }}>
+    <Link to={url} state={highlightState('subject')}>
       {children}
     </Link>
   );
@@ -57,7 +59,7 @@ type BiosampleLinkProps = BaseLinkProps & { sampleId: string };
 const BiosampleLink = ({ packetId, sampleId, replace, preserveQueryParams, children }: BiosampleLinkProps) => {
   const url = usePhenopacketOverviewLink(packetId, 'biosamples', { biosample: sampleId }, preserveQueryParams);
   return (
-    <Link to={url} replace={replace} state={{ highlight: { sectionKey: 'biosamples', rowId: sampleId } }}>
+    <Link to={url} replace={replace} state={highlightState('biosamples', sampleId)}>
       {children ?? sampleId}
     </Link>
   );
@@ -79,7 +81,7 @@ type ExperimentLinkProps = BaseLinkProps & { experimentId: string };
 const ExperimentLink = ({ packetId, experimentId, replace, preserveQueryParams, children }: ExperimentLinkProps) => {
   const url = usePhenopacketOverviewLink(packetId, 'experiments', { experiment: experimentId }, preserveQueryParams);
   return (
-    <Link to={url} replace={replace} state={{ highlight: { sectionKey: 'experiments', rowId: experimentId } }}>
+    <Link to={url} replace={replace} state={highlightState('experiments', experimentId)}>
       {children ?? experimentId}
     </Link>
   );
@@ -117,11 +119,7 @@ const ExperimentResultLink = ({
     preserveQueryParams
   );
   return (
-    <Link
-      to={url}
-      replace={replace}
-      state={{ highlight: { sectionKey: 'experiment_result', rowId: experimentResultId } }}
-    >
+    <Link to={url} replace={replace} state={highlightState('experimentResults', experimentResultId.toString())}>
       {children ?? experimentResultId}
     </Link>
   );
