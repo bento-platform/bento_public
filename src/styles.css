@@ -53,6 +53,7 @@ body {
 .rounded-lg { border-radius: 8px; } /* also consistent with --ant-border-radius-lg */
 .rounded-xl { border-radius: 12px; }
 .rounded-e-none { border-start-end-radius: 0; border-end-end-radius: 0; }
+.opacity-50 { opacity: 0.50; }
 .list-none { list-style-type: none; }
 .cursor-pointer { cursor: pointer; }
 .select-none { user-select: none; }
@@ -500,6 +501,11 @@ h3.search-sub-form-title {
 
 .search-result-statistic.enabled.selected {
   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.02), inset 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+.ant-table-wrapper .ant-table.ant-table-empty .ant-table-tbody > tr.ant-table-placeholder {
+  /* patch for ant background clip issue in empty tables with no headers */
+  background: none;
 }
 
 /* END search */

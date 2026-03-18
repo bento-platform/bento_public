@@ -25,7 +25,7 @@ import type {
 import type { Sections } from '@/types/data';
 
 import { MIN_PAGE_SIZE, PAGE_SIZE_OPTIONS } from '@/constants/pagination';
-import { DEFAULT_TEXT_QUERY_TYPE } from './constants';
+import { DEFAULT_TEXT_QUERY_TYPE, EMPTY_KATSU_ENTITY_COUNTS } from './constants';
 
 import { discoveryChartProcessingAndLocalStorage } from './discoveryChartProcessingAndLocalStorage';
 import { performKatsuDiscovery } from './performKatsuDiscovery.thunk';
@@ -66,6 +66,7 @@ export type QueryState = {
   // results
   resultCountsOrBools: KatsuEntityCountsOrBooleans;
   resultCountsInvalid: boolean;
+  resultCountsByDataset: Record<string, KatsuEntityCountsOrBooleans> | undefined;
   pageSize: number;
   matchData: {
     phenopacket: QueryResultMatchData<DiscoveryMatchPhenopacket>;
@@ -107,13 +108,8 @@ const initialState: QueryState = {
   // ----
   selectedEntity: null,
   // ----
-  resultCountsOrBools: {
-    phenopacket: 0,
-    individual: 0,
-    biosample: 0,
-    experiment: 0,
-    experiment_result: 0,
-  },
+  resultCountsOrBools: EMPTY_KATSU_ENTITY_COUNTS,
+  resultCountsByDataset: undefined,
   resultCountsInvalid: false,
   pageSize: MIN_PAGE_SIZE,
   matchData: {
@@ -278,6 +274,8 @@ const query = createSlice({
 
         if ('counts' in response) {
           state.resultCountsOrBools = response.counts;
+
+          state.resultCountsByDataset = response.counts_by_dataset;
 
           // Side effects: saving/loading layout from local storage
           const { defaultLayout, sectionData } = discoveryChartProcessingAndLocalStorage(scope, response);

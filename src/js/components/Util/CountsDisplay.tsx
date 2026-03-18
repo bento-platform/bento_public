@@ -12,10 +12,11 @@ const { Text } = Typography;
 
 interface CountsDisplayProps {
   counts?: BentoCountEntityCountsOrBooleans;
+  totalCounts?: BentoCountEntityCountsOrBooleans;
   fontSize?: string;
 }
 
-const CountsDisplay = ({ counts, fontSize = '1rem' }: CountsDisplayProps) => {
+const CountsDisplay = ({ counts, totalCounts, fontSize = '1rem' }: CountsDisplayProps) => {
   const t = useTranslationFn();
   const renderCount = useRenderCount();
 
@@ -23,21 +24,25 @@ const CountsDisplay = ({ counts, fontSize = '1rem' }: CountsDisplayProps) => {
     if (!counts) return null;
     const items = COUNT_ENTITY_ORDER.map((entity) => {
       const renderedValue = renderCount(counts[entity]);
+      const renderedTotal = totalCounts ? renderCount(totalCounts[entity]) : undefined;
+      const isFiltered = totalCounts ? counts[entity] !== totalCounts[entity] : false;
       return {
         entity,
         label: t(`entities.${entity}_other`),
         value: renderedValue,
+        total: renderedTotal,
+        isFiltered,
         icon: COUNT_ENTITY_REGISTRY[entity].icon,
       };
-    }).filter((item) => item.value !== NO_RESULTS_DASHES && item.value !== 0);
+    }).filter((item) => item.isFiltered || (item.value !== NO_RESULTS_DASHES && item.value !== 0));
     return items.length > 0 ? items : null;
-  }, [counts, t, renderCount]);
+  }, [counts, totalCounts, t, renderCount]);
 
   if (!countsDisplay) return null;
 
   return (
     <Space size={[16, 8]} wrap align="center">
-      {countsDisplay.map(({ entity, label, value, icon }) => (
+      {countsDisplay.map(({ entity, label, icon, value, total, isFiltered }) => (
         <Popover
           key={entity}
           title={label}
@@ -45,7 +50,16 @@ const CountsDisplay = ({ counts, fontSize = '1rem' }: CountsDisplayProps) => {
         >
           <Space size={4} align="center" className="cursor-pointer">
             {icon}
-            <Text style={{ fontSize }}>{typeof value === 'number' ? value.toLocaleString() : value}</Text>
+            <Text style={{ fontSize }}>
+              <span style={isFiltered ? { fontWeight: 600 } : undefined}>{value}</span>
+
+              {isFiltered && (
+                <>
+                  {' / '}
+                  <span>{total}</span>
+                </>
+              )}
+            </Text>
           </Space>
         </Popover>
       ))}

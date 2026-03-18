@@ -46,6 +46,7 @@ interface CustomTableProps<T> {
   expandedRowRender?: (record: T) => ReactNode;
   pagination?: TablePaginationConfig;
   loading?: boolean;
+  showHeader?: boolean;
   queryKey?: string;
   urlAware?: boolean;
 }
@@ -58,6 +59,7 @@ const CustomTable = <T extends object>({
   expandedRowRender,
   pagination,
   loading,
+  showHeader,
   queryKey = EXPANDED_QUERY_PARAM_KEY,
   urlAware = true,
 }: CustomTableProps<T>) => {
@@ -169,6 +171,7 @@ const CustomTable = <T extends object>({
       className="compact"
       columns={processedColumns}
       loading={loading}
+      showHeader={showHeader}
       dataSource={visibleData}
       expandable={{
         expandedRowRender,

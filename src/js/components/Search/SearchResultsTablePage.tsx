@@ -12,12 +12,12 @@ import { useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { useScopeDownloadData } from '@/hooks/censorship';
 import { useDownloadAllMatchesCSV } from '@/hooks/useDownloadAllMatchesCSV';
-import { useSearchQueryParams, useSearchQuery } from '@/features/search/hooks';
+import { useSearchQuery, useSearchQueryParams } from '@/features/search/hooks';
 import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
 import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
 
 import type { BentoKatsuEntity } from '@/types/entities';
-import type { Project, Dataset } from '@/types/metadata';
+import type { Dataset, Project } from '@/types/metadata';
 import type { DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
 import type { QueryResultMatchData } from '@/features/search/query.store';
 import type {
@@ -46,11 +46,12 @@ import PhenopacketLink from '@/components/ClinPhen/PhenopacketLink';
 import { ExperimentResultFileTypeCounts } from '@/components/ClinPhen/ExperimentDisplay/ExperimentView';
 import {
   ExperimentResultActions,
-  experimentResultViewable,
   type ExperimentResultActionsProps,
+  experimentResultViewable,
 } from '@/components/ClinPhen/ExperimentDisplay/ExperimentResultView';
 import ReferenceGenomePopoverField from '../Util/ClinPhen/ReferenceGenomePopoverField';
 import FreeTextAndOrOntologyClass from '../Util/ClinPhen/FreeTextAndOrOntologyClass';
+import { RequestStatus } from '@/types/requests';
 
 type SearchColRenderContext = {
   onProjectClick: (id: string) => void;
@@ -468,6 +469,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
         <CustomTable<T>
           columns={columns}
           dataSource={matches}
+          showHeader={!(status === RequestStatus.Fulfilled && matches.length === 0)}
           loading={WAITING_STATES.includes(status)}
           rowKey="id"
           pagination={pagination}
