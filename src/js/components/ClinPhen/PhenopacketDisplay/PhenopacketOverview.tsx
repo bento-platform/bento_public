@@ -129,8 +129,7 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
       if (pendingHighlightRef.current) return;
 
       if (highlightElRef.current) {
-        highlightElRef.current.classList.remove('highlight-animation');
-        highlightElRef.current.classList.remove('highlight-boundary');
+        highlightElRef.current.classList.remove('highlight-animation', 'highlight-boundary');
         highlightElRef.current = null;
       }
     };
