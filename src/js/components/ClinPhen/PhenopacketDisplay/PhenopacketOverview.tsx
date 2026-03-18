@@ -6,7 +6,7 @@ import { SECTION_SPECS } from './phenopacketOverview.registry';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslationFn } from '@/hooks';
 import { useLocationState } from '@/hooks/useLocationState';
-import { NAVBAR_HEIGHT, BREAD_CRUMB_HEIGHT } from '@/constants/common';
+import { BREAD_CRUMB_HEIGHT } from '@/constants/common';
 
 export const PHENOPACKET_EXPANDED_URL_QUERY_KEY = 'expanded';
 
@@ -161,7 +161,7 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
         }
       }
 
-      scrollToWithOffset(el, NAVBAR_HEIGHT + BREAD_CRUMB_HEIGHT + 15); // 15 -> Extra padding from top
+      scrollToWithOffset(el, BREAD_CRUMB_HEIGHT + 15); // 15 -> Extra padding from top
 
       el.setAttribute('tabindex', '-1');
       try {
