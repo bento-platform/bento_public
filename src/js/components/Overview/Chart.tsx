@@ -20,7 +20,7 @@ import {
 import { noop } from '@/utils/chart';
 
 interface PieChartEvent {
-  payload: { name: string; id?: string };
+  payload?: { name: string; id?: string };
 }
 
 const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) => {
@@ -39,6 +39,7 @@ const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) =
     goToSearch(id, e.activeLabel); // activeLabel is the "value" for filtering (for bar charts)
   };
   const pieChartOnClickHandler = ({ payload }: PieChartEvent) => {
+    if (!payload) return;
     goToSearch(id, payload?.id ?? payload.name);
   };
 
