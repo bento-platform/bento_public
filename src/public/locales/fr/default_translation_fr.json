@@ -477,8 +477,8 @@
   "experiment_result": {
     "identifier": "Identifiant",
     "indices": "Indices",
-    "genome_assembly_id": "Assemblage génomique",
-    "file_format": "Format de fichier",
+    "genome_assembly_id": "Assemblage",
+    "file_format": "Format",
     "data_output_type": "Type de sortie des données",
     "usage": "Utilisation",
     "creation_date": "Date de création",

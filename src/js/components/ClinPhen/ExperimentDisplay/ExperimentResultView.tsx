@@ -242,16 +242,15 @@ const ExperimentResultView = ({
         dataIndex: 'filename',
         alwaysShow: true,
         ellipsis: true,
-        width: '45%',
       },
       ...(isSmallScreen ? [] : [{ title: 'general.description', dataIndex: 'description' }]),
       {
         title: 'experiment_result.genome_assembly_id',
         dataIndex: 'genome_assembly_id',
         render: (genomeAssemblyId: string) => <ReferenceGenomePopoverField referenceGenomeId={genomeAssemblyId} />,
-        width: 190,
+        width: 100,
       },
-      { title: 'experiment_result.file_format', dataIndex: 'file_format', width: 160 },
+      { title: 'experiment_result.file_format', dataIndex: 'file_format', width: 100 },
       ...(isSmallScreen
         ? []
         : [
@@ -274,6 +273,7 @@ const ExperimentResultView = ({
       {
         title: 'general.actions',
         key: 'actions',
+        width: 70,
         // Actions are present if we have a URL we can link to, and we have permission to download file data
         isEmpty: (_, er) => !er?.url || (attemptedCanDownload && !canDownload),
         render: (_, er) => <ExperimentResultActions url={er.url} filename={er.filename} fileFormat={er.file_format} />,
