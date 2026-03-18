@@ -28,14 +28,39 @@ export type CollapseHandle = {
   collapseAll: () => void;
 };
 
-interface PhenopacketOverviewProps {
-  phenopacket: Phenopacket;
+function scrollToWithOffset(el: HTMLElement, offsetPx: number) {
+  requestAnimationFrame(() => {
+    const scrollParent = getScrollParent(el);
+    const rect = el.getBoundingClientRect();
+    const parentRect = scrollParent.getBoundingClientRect();
+    const top = scrollParent.scrollTop + rect.top - parentRect.top - offsetPx;
+
+    console.log('[scrollToWithOffset]', {
+      element: el,
+      offsetPx,
+      scrollParent,
+      rectTop: rect.top,
+      parentRectTop: parentRect.top,
+      scrollParentScrollTop: scrollParent.scrollTop,
+      computedTop: top,
+    });
+
+    scrollParent.scrollTo({ top, behavior: 'smooth' });
+  });
 }
 
-function scrollToWithOffset(el: HTMLElement, offsetPx: number) {
-  const rect = el.getBoundingClientRect();
-  const top = window.scrollY + rect.top - offsetPx;
-  window.scrollTo({ top, behavior: 'smooth' });
+function getScrollParent(el: HTMLElement): HTMLElement {
+  let node = el.parentElement;
+  while (node) {
+    const { overflowY } = getComputedStyle(node);
+    if (overflowY === 'auto' || overflowY === 'scroll') return node;
+    node = node.parentElement;
+  }
+  return document.documentElement;
+}
+
+interface PhenopacketOverviewProps {
+  phenopacket: Phenopacket;
 }
 
 const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>(({ phenopacket }, ref) => {
