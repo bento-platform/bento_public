@@ -75,7 +75,7 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
               </div>
             ),
             // forcRender makes accessing elements for highlighting before the section is opened possible
-            forceRender: true, 
+            forceRender: true,
           };
         })
         .filter((block) => !!block),
