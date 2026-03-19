@@ -23,7 +23,8 @@
       "@/*": ["src/js/*"],
       "@public/*": ["src/public/*"],
       "@Util/*": ["src/js/components/Util/*"],
-      "*": ["node_modules/*", ".yalc/*"]
+      "*": ["node_modules/*", ".yalc/*"],
+      "igv/dist/igv.esm": ["node_modules/igv/dist/igv.d.ts"]
     }
   },
   "include": ["./src/", "./src/custom.d.ts"]
