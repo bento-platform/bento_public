@@ -57,16 +57,7 @@ const ScopedTitle = () => {
 
   const extraBreadcrumb = useExtraBreadcrumb();
 
-<<<<<<< HEAD
-  useEffect(() => {
-    // If the selected scope changes (likely from the scope select modal), auto-close the modal.
-    setScopeSelectModalOpen(false);
-  }, [location]);
-
-  const breadcrumbItems = useMemo<BreadcrumbItemType[]>(() => {
-=======
   const breadcrumbItems: BreadcrumbItemType[] = useMemo(() => {
->>>>>>> main
     const currentPageTitle = t(getRouteTitleAndIcon(currentPage)[0]);
 
     const items: BreadcrumbItemType[] = [];

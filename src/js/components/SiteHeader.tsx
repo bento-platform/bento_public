@@ -123,7 +123,7 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
             <img
               src="/public/assets/branding.png"
               alt="logo"
-              style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-px)', paddingLeft: '4px' }}
+              style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-3px)', paddingLeft: '4px' }}
               onClick={navigateToOverview}
             />
           )}
