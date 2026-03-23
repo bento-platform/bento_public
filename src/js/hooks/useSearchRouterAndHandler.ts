@@ -94,7 +94,8 @@ export const useSearchRouterAndHandler = () => {
       | [QueryFilterField, boolean] => {
       const field = filterFields.find((e) => e.id === key);
       if (!field) return [undefined, false];
-      return [field, field.options.includes(value)];
+      // special case for blank value, meaning we should show a field filter with a blank value.
+      return [field, field.options.includes(value) || value === ''];
     };
 
     const validFiltersState: FiltersState = {};
@@ -106,9 +107,9 @@ export const useSearchRouterAndHandler = () => {
     [...query.entries()].forEach((qp) => {
       const [fieldDef, qpValid] = validateFilterQueryParam(qp);
       if (nFilters < maxQueryParameters && qpValid) {
-        if (qp[0] in validFiltersState && queryDataPerm) {
+        if (qp[0] in validFiltersState && queryDataPerm && validFiltersState[qp[0]]) {
           // If we are allowed to have multiple values for a filter (i.e., we have query:data permissions) and we
-          // already have a filter for this key
+          // already have a non-null filter for this key
           const existingFilter = validFiltersState[qp[0]];
           if (Array.isArray(existingFilter)) {
             existingFilter.push(qp[1]);
@@ -120,7 +121,7 @@ export const useSearchRouterAndHandler = () => {
             (v1, v2) => fieldDef.options.indexOf(v1) - fieldDef.options.indexOf(v2)
           );
         } else {
-          validFiltersState[qp[0]] = qp[1];
+          validFiltersState[qp[0]] = qp[1] || null;
         }
         nFilters += 1;
       } else if (qp[0].startsWith(NON_FILTER_QUERY_PARAM_PREFIX)) {

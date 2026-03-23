@@ -68,6 +68,10 @@ const SearchFilters = (props: DefinedSearchSubFormProps) => {
                   ? value.map((v) => [field, v])
                   : [[field, value]];
 
+                if (field && !value.length) {
+                  newEntries.push([field, '']);
+                }
+
                 const url = buildQueryParamsUrl(pathname, [
                   // If we change the field in this filter, we need to remove it so we can switch to the new field
                   ...queryParamsWithoutKey(
