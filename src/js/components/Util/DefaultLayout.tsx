@@ -22,13 +22,13 @@ const DefaultLayout = () => {
   const menuItems = useSidebarMenuItems();
   const [collapsed, setCollapsed] = useState(false);
 
-  const sidebarHidden = menuItems.length <= 1 && !(scope.project && catalogueMode);
+  const sidebarHidden = !(scope.project && catalogueMode) || page === 'phenopackets';
 
   return (
     <Layout id="default-layout" className={sidebarHidden ? 'sidebar-hidden' : collapsed ? 'sidebar-collapsed' : ''}>
-      <SiteHeader />
+      <SiteHeader menuItems={menuItems} />
       <Layout>
-        <SiteSider collapsed={collapsed} setCollapsed={setCollapsed} items={menuItems} hidden={sidebarHidden} />
+        <SiteSider collapsed={collapsed} setCollapsed={setCollapsed} hidden={sidebarHidden} />
         <Layout id="content-layout">
           <Content>
             <ScopedTitle />
