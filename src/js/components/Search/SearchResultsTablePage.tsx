@@ -1,4 +1,4 @@
-import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { type ReactNode, useCallback, useMemo, useState } from 'react';
 
 import { Button, Checkbox, Col, Flex, Modal, Space, type TablePaginationConfig, Tooltip, Typography } from 'antd';
 import { ExportOutlined, LeftOutlined, TableOutlined } from '@ant-design/icons';
@@ -12,12 +12,13 @@ import { useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { useScopeDownloadData } from '@/hooks/censorship';
 import { useDownloadAllMatchesCSV } from '@/hooks/useDownloadAllMatchesCSV';
-import { useSearchQueryParams, useSearchQuery } from '@/features/search/hooks';
+import { useSearchQuery, useSearchQueryParams } from '@/features/search/hooks';
 import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
 import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
 
 import type { BentoKatsuEntity } from '@/types/entities';
-import type { Project, Dataset } from '@/types/metadata';
+import type { Dataset, Project } from '@/types/metadata';
+import type { DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
 import type { QueryResultMatchData } from '@/features/search/query.store';
 import type {
   DiscoveryMatchBiosample,
@@ -28,12 +29,14 @@ import type {
 } from '@/features/search/types';
 import { BentoRoute } from '@/types/routes';
 
+import { scopeSelectionEqual } from '@/features/metadata/utils';
 import { bentoKatsuEntityToResultsDataEntity, buildQueryParamsUrl } from '@/features/search/utils';
 import { setEquals } from '@/utils/sets';
 
 import DatasetProvenanceModal from '@/components/Provenance/DatasetProvenanceModal';
 import ProjectTitle from '@Util/ProjectTitle';
 import DatasetTitle from '@Util/DatasetTitle';
+import ExperimentReferences from '@Util/ClinPhen/ExperimentReferences';
 import CustomTable, { type CustomTableColumn, type CustomTableColumns } from '@Util/CustomTable';
 import IndividualRowDetail from './IndividualRowDetail';
 import BiosampleRowDetail from './BiosampleRowDetail';
@@ -43,10 +46,12 @@ import PhenopacketLink from '@/components/ClinPhen/PhenopacketLink';
 import { ExperimentResultFileTypeCounts } from '@/components/ClinPhen/ExperimentDisplay/ExperimentView';
 import {
   ExperimentResultActions,
-  experimentResultViewable,
   type ExperimentResultActionsProps,
+  experimentResultViewable,
 } from '@/components/ClinPhen/ExperimentDisplay/ExperimentResultView';
 import ReferenceGenomePopoverField from '../Util/ClinPhen/ReferenceGenomePopoverField';
+import FreeTextAndOrOntologyClass from '../Util/ClinPhen/FreeTextAndOrOntologyClass';
+import { RequestStatus } from '@/types/requests';
 
 type SearchColRenderContext = {
   onProjectClick: (id: string) => void;
@@ -120,8 +125,8 @@ const BIOSAMPLE_SEARCH_TABLE_COLUMNS = {
   experiments: {
     title: 'entities.experiment_other',
     dataIndex: 'experiments',
-    render: (_ctx) => (experiments: DiscoveryMatchExperiment[] | undefined, b) => (
-      <PhenopacketLink.Experiments packetId={b.phenopacket} experiments={experiments?.map((e) => e.id) ?? []} />
+    render: (_ctx) => (experiments: DiscoveryMatchExperiment[], b) => (
+      <ExperimentReferences packetId={b.phenopacket} experiments={experiments} />
     ),
   } as ResultsTableColumn<DiscoveryMatchBiosample>,
   ...commonSearchTableColumns<DiscoveryMatchBiosample>(),
@@ -211,6 +216,9 @@ const TABLE_SPEC_EXPERIMENT: ResultsTableSpec<DiscoveryMatchExperiment> = {
     {
       dataIndex: 'experiment_type',
       title: 'experiment.experiment_type',
+      render: (_: string, e: DiscoveryMatchExperiment) => (
+        <FreeTextAndOrOntologyClass text={e.experiment_type} ontologyClass={e.experiment_ontology} mode="experiment" />
+      ),
     } as ResultsTableFixedColumn<DiscoveryMatchExperiment>,
   ],
   availableColumns: EXPERIMENT_SEARCH_TABLE_COLUMNS,
@@ -295,11 +303,13 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   const { resultCountsOrBools, pageSize, matchData } = useSearchQuery();
   const { fetchingPermission: fetchingCanDownload, hasPermission: canDownload } = useScopeDownloadData();
   const downloadAllMatchesCSV = useDownloadAllMatchesCSV();
-  const selectedScope = useSelectedScope();
   const isSmallScreen = useSmallScreen();
 
   const allQueryParams = useSearchQueryParams();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
+
+  const selectedScope = useSelectedScope();
+  const [oldSelectedScope, setOldSelectedScope] = useState<DiscoveryScopeSelection>(selectedScope);
 
   const [exporting, setExporting] = useState<boolean>(false);
   const [columnModalOpen, setColumnModalOpen] = useState<boolean>(false);
@@ -334,15 +344,17 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
     () => new Set<string>(spec.defaultColumns.filter((c) => allowedColumns.has(c)))
   );
 
-  useEffect(() => {
-    // If the selected scope changes, some of the currently-shown columns may no longer be valid:
+  if (!scopeSelectionEqual(selectedScope, oldSelectedScope)) {
+    // If the selected scope changes, some of the currently-shown columns may no longer be valid, so we eliminate any
+    // currently-shown columns that are no longer allowed:
     setShownColumns((oldSet) => {
       const newSet = new Set<string>([...oldSet].filter((v) => allowedColumns.has(v)));
 
-      // Don't change object if our newly-computed object is equivalent:
+      // Don't change object identity if our newly-computed object is equivalent:
       return setEquals(oldSet, newSet) ? oldSet : newSet;
     });
-  }, [selectedScope, allowedColumns, shownColumns]);
+    setOldSelectedScope(selectedScope);
+  }
 
   const columns = useMemo<CustomTableColumns<T>>(
     () => [
@@ -455,6 +467,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
         <CustomTable<T>
           columns={columns}
           dataSource={matches}
+          showHeader={!(status === RequestStatus.Fulfilled && matches.length === 0)}
           loading={WAITING_STATES.includes(status)}
           rowKey="id"
           pagination={pagination}

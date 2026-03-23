@@ -10,7 +10,7 @@ const createServiceInfo = require('./create_service_info');
 
 // noinspection JSUnusedGlobalSymbols
 const makeConfig = (mode) => ({
-  mode: 'development',
+  mode,
   entry: './src/js/index.tsx',
   output: {
     path: path.join(__dirname, 'dist'),
@@ -22,7 +22,9 @@ const makeConfig = (mode) => ({
     filename: mode === 'production' ? 'js/[name][chunkhash].js' : 'js/[name].js',
     clean: true,
   },
-  ...(mode === 'development' ? { devtool: 'inline-source-map' } : {}),
+
+  devtool: mode === 'development' ? 'inline-source-map' : 'source-map',
+
   module: {
     rules: [
       { test: /\.[tj](sx|s)?$/, use: { loader: 'ts-loader' }, exclude: /node_modules/ },
@@ -32,7 +34,7 @@ const makeConfig = (mode) => ({
       },
       {
         test: /\.(png|jpe?g|gif|svg)$/i,
-        use: [{ loader: 'file-loader' }],
+        type: 'asset/resource',
       },
       {
         test: /\.html$/i,
@@ -40,11 +42,13 @@ const makeConfig = (mode) => ({
       },
     ],
   },
+
   watchOptions: {
     aggregateTimeout: 200,
     poll: 1000,
     ignored: /node_modules/,
   },
+
   plugins: [
     new HtmlWebpackPlugin({
       title: 'Development',
@@ -73,10 +77,11 @@ const makeConfig = (mode) => ({
       OPENID_CONFIG_URL: null,
     }),
   ],
+
   optimization: {
     runtimeChunk: 'single',
   },
-  devtool: 'source-map',
+
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src/js'),
@@ -85,6 +90,7 @@ const makeConfig = (mode) => ({
     },
     extensions: ['.tsx', '.ts', '.js'],
   },
+
   devServer: {
     compress: true,
     historyApiFallback: {
@@ -123,4 +129,4 @@ const makeConfig = (mode) => ({
   },
 });
 
-module.exports = (_env, argv) => makeConfig(argv.mode);
+module.exports = (_env, argv) => makeConfig(argv.mode ?? 'development');

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Flex, FloatButton, Tabs, type TabsProps } from 'antd';
 import {
   AppstoreAddOutlined,
@@ -49,7 +49,7 @@ const OverviewChartDashboard = () => {
   // URL and dispatches discovery actions for fetching overview/query response data.
   useSearchRouterAndHandler();
 
-  const { discoveryStatus, sections, filters, textQuery, uiHints } = useSearchQuery();
+  const { discoveryStatus, sections, filters, textQuery, resultCountsByDataset, uiHints } = useSearchQuery();
 
   // Lazy-loading hooks means this is loaded only if OverviewChartDashboard is rendered:
   const searchableFields = useSearchableFields();
@@ -84,14 +84,13 @@ const OverviewChartDashboard = () => {
     [waitingForHints]
   );
 
-  useEffect(() => {
-    // If the user has not manually changed tabs / this effect has not already run, and we have at least one search
-    // filter set, auto-switch to the search tab rather than the about tab to make the applied filter(s) more obvious.
-
-    if (!hasChangedTabs && (Object.keys(filters).length || textQuery.length)) {
-      changePage('search');
-    }
-  }, [hasChangedTabs, filters, textQuery, changePage]);
+  // If the user has not manually changed tabs / this effect has not already run, and we have at least one search
+  // filter set, auto-switch to the search tab rather than the about tab to make the applied filter(s) more obvious.
+  // See https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes for why this is
+  // not inside an effect.
+  if (!hasChangedTabs && (Object.keys(filters).length || textQuery.length)) {
+    changePage('search');
+  }
 
   const pageTabItems: TabsProps['items'] = useMemo(
     () => [
@@ -141,7 +140,11 @@ const OverviewChartDashboard = () => {
 
         {selectedProject && !scope.dataset && selectedProject.datasets.length ? (
           // If we have a project with at least one dataset, show a dataset mini-catalogue in the project overview
-          <OverviewDatasets datasets={selectedProject.datasets} parentProjectID={selectedProject.identifier} />
+          <OverviewDatasets
+            datasets={selectedProject.datasets}
+            parentProjectID={selectedProject.identifier}
+            countsByDataset={resultCountsByDataset}
+          />
         ) : null}
 
         {displayedSections.map(({ sectionTitle, charts }, i) => (

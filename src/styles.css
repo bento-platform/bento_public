@@ -1,3 +1,4 @@
+
 :root {
   /* sync with NAVBAR_HEIGHT in common.ts */
   --header-height: 64px;
@@ -18,6 +19,8 @@
   --white-80: rgba(255, 255, 255, 0.8);
   /* 70% opacity white */
   --white-70: rgba(255, 255, 255, 0.7);
+
+  --antd-blue-5: #1677ff;
 }
 
 html,
@@ -50,6 +53,7 @@ body {
 .rounded-lg { border-radius: 8px; } /* also consistent with --ant-border-radius-lg */
 .rounded-xl { border-radius: 12px; }
 .rounded-e-none { border-start-end-radius: 0; border-end-end-radius: 0; }
+.opacity-50 { opacity: 0.50; }
 .list-none { list-style-type: none; }
 .cursor-pointer { cursor: pointer; }
 .select-none { user-select: none; }
@@ -358,7 +362,7 @@ body {
   margin-top: 0;
 }
 /* Elements which are the last child of the about content container shouldn't have the default bottom margin */
-.about-content *:first-child {
+.about-content *:last-child {
   margin-bottom: 0;
 }
 
@@ -499,6 +503,11 @@ h3.search-sub-form-title {
   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.02), inset 0 2px 5px rgba(0, 0, 0, 0.08);
 }
 
+.ant-table-wrapper .ant-table.ant-table-empty .ant-table-tbody > tr.ant-table-placeholder {
+  /* patch for ant background clip issue in empty tables with no headers */
+  background: none;
+}
+
 /* END search */
 
 /* BEGIN phenopackets/other clinical+phenotypic metadata views */
@@ -583,6 +592,42 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
 }
 .ant-tooltip-inner a.iri-link:active {
   color: var(--white-70);
+}
+
+/* Persistent border — stays as long as the element should be highlighted */
+.highlight-boundary {
+  position: relative;
+  border-radius: 10px;
+}
+
+/* The border itself lives on a pseudo-element so it can
+   sit outside the element and respect border-radius */
+.highlight-boundary::after {
+  content: '';
+  position: absolute;
+  inset: -3px; /* expand outward by border width */
+  border-radius: inherit;
+  border: 3px solid rgba(22, 119, 255, 0.55);
+  pointer-events: none;
+}
+
+/* Temporary pulse — added alongside highlight-boundary,
+   removed after ~2.6s. Only adds animation to the
+   already-existing ::after pseudo-element */
+.highlight-animation::after {
+  animation: highlightPulse 1s ease-out 0s 1;
+}
+
+@keyframes highlightPulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--antd-blue-5) 35%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 14px color-mix(in srgb, var(--antd-blue-5) 0%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--antd-blue-5) 0%, transparent);
+  }
 }
 
 /* END phenopackets/other clinical+phenotypic metadata views */

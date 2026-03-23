@@ -1,3 +1,4 @@
+import type { Experiment } from '@/types/clinPhen/experiments/experiment';
 import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
 import type { Field } from '@/types/discovery/fieldDefinition';
 import type { BentoKatsuEntity } from '@/types/entities';
@@ -55,14 +56,20 @@ export type DiscoveryMatchExperimentResult = DiscoveryMatchObject & {
   phenopacket?: string;
 };
 
-export type DiscoveryMatchExperiment = DiscoveryMatchObject & {
-  id: string;
-  experiment_type: string;
-  study_type?: string;
-  results: DiscoveryMatchExperimentResult[];
-  biosample?: string;
-  phenopacket?: string;
-};
+export type MatchIncludedFieldsFromExperiments =
+  | 'id'
+  | 'description'
+  | 'experiment_type'
+  | 'experiment_ontology'
+  | 'study_type'
+  | 'molecule'
+  | 'molecule_ontology';
+export type DiscoveryMatchExperiment = DiscoveryMatchObject &
+  Pick<Experiment, MatchIncludedFieldsFromExperiments> & {
+    results: DiscoveryMatchExperimentResult[];
+    biosample?: string;
+    phenopacket?: string;
+  };
 
 export type DiscoveryMatchBiosample = DiscoveryMatchObject & {
   id: string;
