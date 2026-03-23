@@ -1,4 +1,4 @@
-import type React from 'react';
+import type { ReactNode } from 'react';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
 import type { Biosample } from '@/types/clinPhen/biosample';
 import type { Experiment } from '@/types/clinPhen/experiments/experiment';
@@ -14,6 +14,9 @@ import PhenotypicFeaturesView from './PhenotypicFeaturesView';
 
 import ExperimentView from '@/components/ClinPhen/ExperimentDisplay/ExperimentView';
 import ExperimentResultView from '@/components/ClinPhen/ExperimentDisplay/ExperimentResultView';
+import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
+
+import { objectToBoolean } from '@/utils/boolean';
 
 export type SectionKey =
   | 'subject'
@@ -24,15 +27,18 @@ export type SectionKey =
   | 'medicalActions'
   | 'phenotypicFeatures'
   | 'experiments'
-  | 'experimentResults';
+  | 'experimentResults'
+  | 'extraProperties';
 
 export type SectionSpec = {
   /** translation title label */
   titleTranslationKey: string;
+  /** list item count (optional) */
+  itemCount?: (p: Phenopacket) => number | undefined;
   /** should this section render? can be a boolean or predicate fn */
   enabled: boolean | ((p: Phenopacket) => boolean);
   /** content renderer; gets the whole phenopacket so it’s easy to change later */
-  render: (p: Phenopacket) => React.ReactNode;
+  render: (p: Phenopacket) => ReactNode;
   /** order within the column */
   order?: number;
 };
@@ -70,17 +76,20 @@ export const SECTION_SPECS: Record<SectionKey, SectionSpec> = {
   biosamples: {
     titleTranslationKey: 'entities.biosample_other',
     enabled: (p) => has(p.biosamples),
+    itemCount: (p) => p.biosamples?.length,
     render: (p) => <BiosampleView biosamples={p.biosamples!} />,
     order: 1,
   },
   diseases: {
     titleTranslationKey: 'tab_keys.diseases',
+    itemCount: (p) => p.diseases?.length,
     enabled: (p) => has(p.diseases),
     render: (p) => <DiseasesView diseases={p.diseases!} />,
     order: 2,
   },
   interpretations: {
     titleTranslationKey: 'tab_keys.interpretations',
+    itemCount: (p) => p.interpretations?.length,
     enabled: (p) => has(p.interpretations),
     render: (p) => <InterpretationsView interpretations={p.interpretations!} />,
     order: 3,
@@ -88,31 +97,42 @@ export const SECTION_SPECS: Record<SectionKey, SectionSpec> = {
   measurements: {
     titleTranslationKey: 'tab_keys.measurements',
     enabled: (p) => has(p.measurements),
+    itemCount: (p) => p.measurements?.length,
     render: (p) => <MeasurementsView measurements={p.measurements!} />,
     order: 4,
   },
   medicalActions: {
     titleTranslationKey: 'tab_keys.medical_actions',
     enabled: (p) => has(p.medical_actions),
+    itemCount: (p) => p.medical_actions?.length,
     render: (p) => <MedicalActionsView medicalActions={p.medical_actions!} />,
     order: 5,
   },
   phenotypicFeatures: {
     titleTranslationKey: 'tab_keys.phenotypic_features',
     enabled: (p) => has(p.phenotypic_features),
+    itemCount: (p) => p.phenotypic_features?.length,
     render: (p) => <PhenotypicFeaturesView features={p.phenotypic_features!} />,
     order: 6,
   },
   experiments: {
     titleTranslationKey: 'entities.experiment_other',
     enabled: (p) => has(phenopacketExperiments(p)),
+    itemCount: (p) => phenopacketExperiments(p).length,
     render: (p) => <ExperimentView packetId={p.id} experiments={phenopacketExperiments(p)} />,
     order: 7,
   },
   experimentResults: {
     titleTranslationKey: 'entities.experiment_result_other',
     enabled: (p) => has(phenopacketExperimentResults(p)),
+    itemCount: (p) => phenopacketExperimentResults(p).length,
     render: (p) => <ExperimentResultView packetId={p.id} experimentResults={phenopacketExperimentResults(p)} />,
     order: 8,
+  },
+  extraProperties: {
+    titleTranslationKey: 'tab_keys.extra_properties',
+    enabled: (p) => objectToBoolean(p.extra_properties),
+    render: (p) => <ExtraPropertiesDisplay extraProperties={p.extra_properties} />,
+    order: 9,
   },
 };

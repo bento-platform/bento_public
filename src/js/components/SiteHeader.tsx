@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Button, Flex, Layout, Menu, type MenuProps, Space, Typography } from 'antd';
@@ -18,7 +18,7 @@ import { CLIENT_NAME, PORTAL_URL, SHOW_PORTAL_LINK, SHOW_SIGN_IN, TRANSLATED } f
 import type { MenuItem } from '@/types/navigation';
 import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
 import { buildQueryParamsUrl } from '@/features/search/utils';
-import { useNonFilterQueryParams, useSearchQuery } from '@/features/search/hooks';
+import { useEntityAndTextQueryParams, useSearchQuery } from '@/features/search/hooks';
 
 const { Header } = Layout;
 
@@ -33,7 +33,7 @@ const useHandleMenuClick = (): OnClick => {
   const navigate = useNavigate();
   const location = useLocation();
   const { filterQueryParams } = useSearchQuery();
-  const otherQueryParams = useNonFilterQueryParams();
+  const otherQueryParams = useEntityAndTextQueryParams();
 
   return useCallback(
     ({ key }: { key: string }) => {
@@ -75,7 +75,9 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
   const performSignOut = usePerformSignOut();
   const performSignIn = usePerformAuth();
 
-  document.title = CLIENT_NAME && CLIENT_NAME.trim() ? `Bento: ${CLIENT_NAME}` : 'Bento';
+  useEffect(() => {
+    document.title = CLIENT_NAME && CLIENT_NAME.trim() ? `Bento: ${CLIENT_NAME}` : 'Bento';
+  }, []);
 
   const changeLanguage = () => {
     const newLang = LNG_CHANGE[i18n.language];

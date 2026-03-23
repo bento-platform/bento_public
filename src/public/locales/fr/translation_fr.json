@@ -110,5 +110,7 @@
   "Serology": "Sérologie",
   "Transcriptomics": "Transcriptomique",
   "Results File Types": "Types de fichiers de résultats",
-  "File type of experiment results files": "Type de fichier des résultats d'expériences"
+  "File type of experiment results files": "Type de fichier des résultats d'expériences",
+  "Vital Status": "Statut vital",
+  "Cause of Death": "Cause du décès"
 }

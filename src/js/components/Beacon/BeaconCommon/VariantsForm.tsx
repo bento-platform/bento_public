@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { Col, Flex, Form, Row } from 'antd';
 import type { DefaultOptionType } from 'antd/es/select/index';
@@ -57,6 +57,7 @@ const contigOptionSort = (a: ContigOptionType, b: ContigOptionType) => {
 const filterOutHumanLikeExtraContigs = (opt: ContigOptionType) => !opt.value.match(HUMAN_LIKE_EXCLUDE_CONTIG_REGEX);
 
 const FORM_ROW_GUTTER: [number, number] = [12, 0];
+const EMPTY_CONTIGS: ContigOptionType[] = [];
 
 const VariantsForm = ({ isNetworkQuery, beaconAssemblyIds }: VariantsFormProps) => {
   const { genomesByID } = useReference();
@@ -65,21 +66,18 @@ const VariantsForm = ({ isNetworkQuery, beaconAssemblyIds }: VariantsFormProps) 
   const form = Form.useFormInstance();
   const currentAssemblyID = Form.useWatch('Assembly ID', form);
 
-  const [availableContigs, setAvailableContigs] = useState<ContigOptionType[]>([]);
-
-  useEffect(() => {
+  const availableContigs = useMemo<ContigOptionType[]>(() => {
     // Right now, we cannot figure out the contig options for the network, so we fall back to a normal input box.
     if (!isNetworkQuery && currentAssemblyID && genomesByID[currentAssemblyID]) {
-      setAvailableContigs(
-        genomesByID[currentAssemblyID].contigs
-          .map(contigToOption)
-          .sort(contigOptionSort)
-          .filter(filterOutHumanLikeExtraContigs)
-      );
+      const res = genomesByID[currentAssemblyID].contigs
+        .map(contigToOption)
+        .sort(contigOptionSort)
+        .filter(filterOutHumanLikeExtraContigs);
+      return res.length === 0 ? EMPTY_CONTIGS : res; // Keep consistent memory address for empty array
     } else {
       // Keep existing memory address for existing empty array if availableContigs was already empty, to avoid
       // re-render/clearing effect.
-      setAvailableContigs((ac) => (ac.length ? [] : ac));
+      return EMPTY_CONTIGS;
     }
   }, [isNetworkQuery, currentAssemblyID, genomesByID]);
 

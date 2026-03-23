@@ -1,11 +1,12 @@
-import { LinkOutlined } from '@ant-design/icons';
+import { Space } from 'antd';
 
 import OntologyTermComponent, { OntologyTermStack } from '@Util/ClinPhen/OntologyTerm';
 import TimeElementDisplay from '@Util/ClinPhen/TimeElementDisplay';
-import ExtraProperties from '@Util/ExtraProperties';
+import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
 import TDescriptions from '@Util/TDescriptions';
 import Excluded, { ExcludedModel } from '@Util/ClinPhen/Excluded';
 import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
+import ExternalReference from './ExternalReference';
 
 import type { PhenotypicFeature } from '@/types/clinPhen/phenotypicFeature';
 import type { OntologyTerm } from '@/types/ontology';
@@ -14,23 +15,17 @@ import type { ConditionalDescriptionItem } from '@/types/descriptions';
 
 import { objectToBoolean } from '@/utils/boolean';
 import { EM_DASH } from '@/constants/common';
-import { isValidUrl } from '@/utils/strings';
-
-import { useTranslationFn } from '@/hooks';
 
 interface EvidenceProps {
   evidence?: EvidenceType;
 }
 
 const Evidence = ({ evidence }: EvidenceProps) => {
-  const t = useTranslationFn();
-
   if (!evidence) {
     return EM_DASH;
   }
 
   const externalReference = evidence.reference;
-  const hasReferenceUrl = isValidUrl(externalReference?.reference);
 
   const items: ConditionalDescriptionItem[] = [
     {
@@ -42,27 +37,7 @@ const Evidence = ({ evidence }: EvidenceProps) => {
     {
       key: 'reference',
       label: 'phenotypic_features.reference',
-      children: (
-        <>
-          {externalReference?.id && (
-            <>
-              <strong>ID:</strong> {externalReference.id}{' '}
-              {hasReferenceUrl && (
-                <a href={externalReference.reference} target="_blank" rel="noopener noreferrer">
-                  <LinkOutlined />
-                </a>
-              )}
-              <br />
-            </>
-          )}
-          {externalReference?.description && (
-            <>
-              <strong>{t('Description')}:</strong> {t(externalReference?.description)}
-              <br />
-            </>
-          )}
-        </>
-      ),
+      children: externalReference ? <ExternalReference reference={externalReference} /> : null,
       isVisible: externalReference,
     },
   ];
@@ -89,14 +64,13 @@ function PhenotypicFeatureExpandedRow({ feature }: { feature: PhenotypicFeature 
       children: feature.evidence?.length ? feature.evidence.map((e, i) => <Evidence key={i} evidence={e} />) : EM_DASH,
       isVisible: feature.evidence?.length,
     },
-    {
-      key: 'extra_properties',
-      label: 'phenotypic_features.extra_properties',
-      children: <ExtraProperties extraProperties={feature?.extra_properties} />,
-      isVisible: objectToBoolean(feature?.extra_properties),
-    },
   ];
-  return <TDescriptions bordered size="compact" items={items} />;
+  return (
+    <Space direction="vertical" className="w-full">
+      <TDescriptions bordered size="compact" items={items} />
+      <ExtraPropertiesDisplay extraProperties={feature.extra_properties} />
+    </Space>
+  );
 }
 
 const isPhenotypicFeatureExpandable = (record: PhenotypicFeature) =>

@@ -1,12 +1,15 @@
+import type { Experiment } from '@/types/clinPhen/experiments/experiment';
 import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
 import type { Field } from '@/types/discovery/fieldDefinition';
 import type { BentoKatsuEntity } from '@/types/entities';
 import type { JSONType } from '@/types/json';
 
 export type QueryFilterField = { id: string; options: string[] };
+export type FtsQueryType = 'plain' | 'phrase' | 'websearch' | 'trigram';
 
 export type QueryParamEntry = [string, string];
-export type QueryParams = { [key: string]: string };
+export type QueryParams = { [key: string]: string | undefined };
+export type DefinedQueryParams = { [key: string]: string }; // Same as above but with 'undefined' values filtered out.
 
 export interface SearchFieldResponse {
   sections: SearchFieldSection[];
@@ -51,14 +54,20 @@ export type DiscoveryMatchExperimentResult = DiscoveryMatchObject & {
   phenopacket?: string;
 };
 
-export type DiscoveryMatchExperiment = DiscoveryMatchObject & {
-  id: string;
-  experiment_type: string;
-  study_type?: string;
-  results: DiscoveryMatchExperimentResult[];
-  biosample?: string;
-  phenopacket?: string;
-};
+export type MatchIncludedFieldsFromExperiments =
+  | 'id'
+  | 'description'
+  | 'experiment_type'
+  | 'experiment_ontology'
+  | 'study_type'
+  | 'molecule'
+  | 'molecule_ontology';
+export type DiscoveryMatchExperiment = DiscoveryMatchObject &
+  Pick<Experiment, MatchIncludedFieldsFromExperiments> & {
+    results: DiscoveryMatchExperimentResult[];
+    biosample?: string;
+    phenopacket?: string;
+  };
 
 export type DiscoveryMatchBiosample = DiscoveryMatchObject & {
   id: string;

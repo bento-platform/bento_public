@@ -6,7 +6,7 @@ import type { ConditionalDescriptionItem } from '@/types/descriptions';
 import { useTranslationFn } from '@/hooks';
 
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
-import OntologyTermComponent from '@Util/ClinPhen/OntologyTerm';
+import FreeTextAndOrOntologyClass from '@Util/ClinPhen/FreeTextAndOrOntologyClass';
 import TDescriptions from '@Util/TDescriptions';
 
 type InstrumentDisplayProps = { instrument: Instrument };
@@ -20,18 +20,7 @@ const InstrumentDisplay = ({ instrument }: InstrumentDisplayProps) => {
       // Combined rendering for both device and device ontology
       key: 'device',
       isVisible: !!(instrument.device || instrument.device_ontology),
-      children: instrument.device ? (
-        instrument.device_ontology ? (
-          <>
-            {instrument.device} ({t('general.ontology_class')}:{' '}
-            <OntologyTermComponent term={instrument.device_ontology} />)
-          </>
-        ) : (
-          instrument.device
-        )
-      ) : (
-        <OntologyTermComponent term={instrument.device_ontology} />
-      ),
+      children: <FreeTextAndOrOntologyClass text={instrument.device} ontologyClass={instrument.device_ontology} />,
     },
   ];
 

@@ -10,7 +10,7 @@ import { type DiscoveryScope, selectScope } from '@/features/metadata/metadata.s
 import type { MenuItem } from '@/types/navigation';
 import { BentoRoute } from '@/types/routes';
 import { useAppDispatch, useLanguage, useTranslationFn } from '@/hooks';
-import { scopeToUrl } from '@/utils/router';
+import { langAndScopeSelectionToUrl, scopeToUrl } from '@/utils/router';
 
 /** Prefixes a path with the currently-selected i18n language. */
 export const useLangPrefixedUrl = (path: string): string => {
@@ -44,10 +44,37 @@ export const useNavigateToScope = () => {
       fixedProjectAndDataset: boolean = false,
       navigateOptions: NavigateOptions | undefined = undefined
     ) => {
+      // This action will internally handle already-equal scope selections to avoid accidental re-renders:
       dispatch(selectScope(newScope));
       navigate(scopeToUrl(newScope, language, suffix, fixedProjectAndDataset), navigateOptions);
     },
     [dispatch, navigate, language]
+  );
+};
+
+/**
+ * Hook which returns a URL suffix prefixed by the current language and selected scope.
+ */
+export const useCurrentScopePrefixedUrl = (suffix: string) => {
+  const language = useLanguage();
+  const selectedScope = useSelectedScope();
+  return langAndScopeSelectionToUrl(language, selectedScope, suffix);
+};
+
+/**
+ * The purpose of useNavigateToSameScopeUrl is to provide a `navigate(...)`-like hook which goes to page within the same
+ * scope as the one currently in Redux.
+ */
+export const useNavigateToSameScopeUrl = () => {
+  const language = useLanguage();
+  const navigate = useNavigate();
+  const selectedScope = useSelectedScope();
+
+  return useCallback(
+    (suffix: string, replace: boolean = true) => {
+      navigate(langAndScopeSelectionToUrl(language, selectedScope, suffix), { replace });
+    },
+    [language, navigate, selectedScope]
   );
 };
 
@@ -62,7 +89,7 @@ export const useGetRouteTitleAndIcon = () => {
 
   // Use location for catalogue page detection instead of selectedProject, since it gives us faster UI rendering at the
   // cost of only being wrong with a redirect edge case (and being slightly more brittle).
-  const overviewIsCatalogue = !location.pathname.includes('/p/') && catalogueMode;
+  const overviewIsCatalogue = !location.pathname.includes('/p/') && !location.pathname.includes('/d/') && catalogueMode;
 
   return useCallback(
     (routeId: string): [string, ReactNode] => {

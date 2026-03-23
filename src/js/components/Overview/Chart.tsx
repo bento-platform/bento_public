@@ -1,50 +1,45 @@
 import { memo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import type { BarChartProps } from 'bento-charts';
 import { BarChart, Histogram, PieChart } from 'bento-charts';
 import { ChoroplethMap } from 'bento-charts/dist/maps';
 
-import { CHART_HEIGHT, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
-import { useSelectedScope } from '@/features/metadata/hooks';
-import { useLanguage, useTranslationFn } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
+import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
+
+import type { BarChartProps } from 'bento-charts';
 import type { ChartData } from '@/types/data';
 import type { ChartConfig } from '@/types/discovery/chartConfig';
+
+import { CHART_HEIGHT, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
 import {
   CHART_TYPE_BAR,
   CHART_TYPE_CHOROPLETH,
   CHART_TYPE_HISTOGRAM,
   CHART_TYPE_PIE,
 } from '@/types/discovery/chartConfig';
-import { noop } from '@/utils/chart';
-import { langAndScopeSelectionToUrl } from '@/utils/router';
 
-interface BarChartEvent {
-  activePayload: Array<{ payload: { x: string; id?: string } }>;
-}
+import { noop } from '@/utils/chart';
 
 interface PieChartEvent {
-  payload: { name: string; id?: string };
+  payload?: { name: string; id?: string };
 }
 
 const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) => {
-  const navigate = useNavigate();
-  const language = useLanguage();
   const t = useTranslationFn();
-  const selectedScope = useSelectedScope();
+  const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
 
   const translateMap = ({ x, y }: { x: string; y: number }) => ({ x: t(x), y, id: x });
   const removeMissing = ({ x }: { x: string }) => x !== 'missing';
 
-  const goToSearch = (id: string, val: string | undefined) => {
+  const goToSearch = (id: string, val: string | number | undefined) => {
     if (val === undefined) return;
-    navigate(langAndScopeSelectionToUrl(language, selectedScope, `overview?${id}=${val}`));
+    navigateToSameScopeUrl(`overview?${id}=${val}`);
   };
 
-  const barChartOnChartClickHandler: BarChartProps['onChartClick'] = (e: BarChartEvent) => {
-    const payload = e.activePayload[0]?.payload;
-    goToSearch(id, payload?.id ?? payload.x); // activePayload is [] if no current active bar
+  const barChartOnChartClickHandler: BarChartProps['onChartClick'] = (e) => {
+    goToSearch(id, e.activeLabel); // activeLabel is the "value" for filtering (for bar charts)
   };
   const pieChartOnClickHandler = ({ payload }: PieChartEvent) => {
+    if (!payload) return;
     goToSearch(id, payload?.id ?? payload.name);
   };
 
@@ -76,6 +71,7 @@ const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) =
           data={data}
           preFilter={removeMissing}
           dataMap={translateMap}
+          removeEmpty={false} // Preserve the histogram's layout by showing empty bins
           {...(isClickable
             ? {
                 onChartClick: barChartOnChartClickHandler,

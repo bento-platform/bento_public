@@ -12,8 +12,10 @@ import TDescriptions from '@Util/TDescriptions';
 import DownloadButton from '@Util/DownloadButton';
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
 import UrlOrDrsUrlWithPopover from '@Util/UrlOrDrsUrlWithPopover';
+import ReferenceGenomePopoverField from '@Util/ClinPhen/ReferenceGenomePopoverField';
 
 import { useScopeDownloadData } from '@/hooks/censorship';
+import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { useTranslationFn } from '@/hooks';
 
 import { objectToBoolean } from '@/utils/boolean';
@@ -74,7 +76,8 @@ export const ExperimentResultExpandedRow = ({
     },
     {
       key: 'genome_assembly_id',
-      children: experimentResult.genome_assembly_id, // TODO: modal to reference genome details
+      children: <ReferenceGenomePopoverField referenceGenomeId={experimentResult.genome_assembly_id} />,
+      isVisible: !!experimentResult.genome_assembly_id,
     },
     {
       key: 'file_format',
@@ -96,6 +99,7 @@ export const ExperimentResultExpandedRow = ({
           experiments={experimentResult.experiments ?? []}
           // If we're in the detail view context and not search, replace the URL instead of adding to the history:
           replace={!searchRow}
+          preserveQueryParams
         />
       ),
       isVisible: objectToBoolean(experimentResult.experiments),
@@ -103,8 +107,15 @@ export const ExperimentResultExpandedRow = ({
   ];
 
   return (
-    <Space className="experiment-result-expanded-row w-full" direction="vertical">
-      <TDescriptions bordered size="compact" column={1} items={items} defaultI18nPrefix="experiment_result." />
+    <Space className="w-full" direction="vertical">
+      <TDescriptions
+        className="fixed-item-label-width"
+        bordered
+        size="compact"
+        column={1}
+        items={items}
+        defaultI18nPrefix="experiment_result."
+      />
       <ExtraPropertiesDisplay extraProperties={experimentResult.extra_properties} />
     </Space>
   );
@@ -222,38 +233,55 @@ const ExperimentResultView = ({
 
   urlAware = urlAware ?? true;
 
+  const isSmallScreen = useSmallScreen();
+
   const columns = useMemo<CustomTableColumns<ExperimentResult>>(
     () => [
       // ID is a meaningless UUID that changes between ingests most of the time, don't bother showing it
-      { title: 'experiment_result.filename', dataIndex: 'filename', alwaysShow: true },
-      { title: 'general.description', dataIndex: 'description' },
-      // TODO: nice render with modal to reference genome:
-      { title: 'experiment_result.genome_assembly_id', dataIndex: 'genome_assembly_id' },
-      { title: 'experiment_result.file_format', dataIndex: 'file_format' },
       {
-        title: 'experiment_result.experiments',
-        dataIndex: 'experiments',
-        // Don't show experiments if we don't have any OR if the only experiment is the currently-selected one
-        isEmpty: (es: string[] | undefined) =>
-          !objectToBoolean(es) || (es?.length === 1 && es[0] === currentExperiment),
-        render: (es: string[] | undefined) => (
-          <PhenopacketLink.Experiments
-            packetId={packetId}
-            current={currentExperiment}
-            experiments={es ?? []}
-            replace={!searchRow}
-          />
-        ),
+        title: 'experiment_result.filename',
+        dataIndex: 'filename',
+        alwaysShow: true,
+        ellipsis: true,
       },
+      ...(isSmallScreen ? [] : [{ title: 'general.description', dataIndex: 'description' }]),
+      {
+        title: 'experiment_result.genome_assembly_id',
+        dataIndex: 'genome_assembly_id',
+        render: (genomeAssemblyId: string) => <ReferenceGenomePopoverField referenceGenomeId={genomeAssemblyId} />,
+        width: 100,
+      },
+      { title: 'experiment_result.file_format', dataIndex: 'file_format', width: 100 },
+      ...(isSmallScreen
+        ? []
+        : [
+            {
+              title: 'experiment_result.experiments',
+              dataIndex: 'experiments',
+              // Don't show experiments if we don't have any OR if the only experiment is the currently-selected one
+              isEmpty: (es: string[] | undefined) =>
+                !objectToBoolean(es) || (es?.length === 1 && es[0] === currentExperiment),
+              render: (es: string[] | undefined) => (
+                <PhenopacketLink.Experiments
+                  packetId={packetId}
+                  current={currentExperiment}
+                  experiments={es ?? []}
+                  replace={!searchRow}
+                  preserveQueryParams
+                />
+              ),
+            },
+          ]),
       {
         title: 'general.actions',
         key: 'actions',
+        width: 70,
         // Actions are present if we have a URL we can link to, and we have permission to download file data
         isEmpty: (_, er) => !er?.url || (attemptedCanDownload && !canDownload),
         render: (_, er) => <ExperimentResultActions url={er.url} filename={er.filename} fileFormat={er.file_format} />,
       },
     ],
-    [attemptedCanDownload, canDownload, packetId, currentExperiment, searchRow]
+    [isSmallScreen, attemptedCanDownload, canDownload, packetId, currentExperiment, searchRow]
   );
 
   return (

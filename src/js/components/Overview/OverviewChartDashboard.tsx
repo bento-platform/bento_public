@@ -2,12 +2,14 @@ import { useCallback, useMemo, useState } from 'react';
 import { Flex, FloatButton, Tabs, type TabsProps } from 'antd';
 import { AppstoreAddOutlined, FileTextOutlined, SolutionOutlined } from '@ant-design/icons';
 
+import clsx from 'clsx';
 import { convertSequenceAndDisplayData, generateLSChartDataKey, saveValue } from '@/utils/localStorage';
+
 import type { Sections } from '@/types/data';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
+import { RequestStatus } from '@/types/requests';
 
 import { WAITING_STATES } from '@/constants/requests';
-import { RequestStatus } from '@/types/requests';
 
 import AboutBox from './AboutBox';
 import OverviewSection from './OverviewSection';
@@ -39,7 +41,7 @@ const OverviewChartDashboard = () => {
   // URL and dispatches discovery actions for fetching overview/query response data.
   useSearchRouterAndHandler();
 
-  const { discoveryStatus, sections, uiHints } = useSearchQuery();
+  const { discoveryStatus, sections, resultCountsByDataset, uiHints } = useSearchQuery();
 
   // Lazy-loading hooks means this is loaded only if OverviewChartDashboard is rendered:
   const searchableFields = useSearchableFields();
@@ -96,11 +98,15 @@ const OverviewChartDashboard = () => {
 
         {selectedProject && !scope.dataset && selectedProject.datasets.length ? (
           // If we have a project with at least one dataset, show a dataset mini-catalogue in the project overview
-          <OverviewDatasets datasets={selectedProject.datasets} parentProjectID={selectedProject.identifier} />
+          <OverviewDatasets
+            datasets={selectedProject.datasets}
+            parentProjectID={selectedProject.identifier}
+            countsByDataset={resultCountsByDataset}
+          />
         ) : null}
 
         {displayedSections.map(({ sectionTitle, charts }, i) => (
-          <div key={i} className={'overview' + (loadingNewData ? ' loading' : '')}>
+          <div key={i} className={clsx('overview', loadingNewData && 'loading')}>
             <OverviewSection title={sectionTitle} chartData={charts} searchableFields={searchableFields} />
           </div>
         ))}

@@ -7,6 +7,9 @@ import { FaDatabase } from 'react-icons/fa';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type { Annotation } from '@/types/dats';
 import type { Dataset } from '@/types/metadata';
+import { BentoRoute } from '@/types/routes';
+import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
+import clsx from 'clsx';
 import { getCurrentPage } from '@/utils/router';
 import { useTranslationFn } from '@/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
@@ -37,11 +40,13 @@ const Dataset = ({
   dataset,
   format,
   selected,
+  filteredCounts,
 }: {
   parentProjectID: string;
   dataset: Dataset;
   format: 'list-item' | 'card' | 'carousel';
   selected?: boolean;
+  filteredCounts?: KatsuEntityCountsOrBooleans;
 }) => {
   const navigateToScope = useNavigateToScope();
   const page = getCurrentPage();
@@ -61,10 +66,17 @@ const Dataset = ({
   );
 
   const onNavigateCurrent = useCallback(() => navigateToScope(scope, page), [navigateToScope, scope, page]);
-  const onNavigateOverview = useCallback(() => navigateToScope(scope, 'overview'), [navigateToScope, scope]);
+  const onNavigateOverview = useCallback(() => navigateToScope(scope, BentoRoute.Overview), [navigateToScope, scope]);
 
   const openProvenanceModal = useCallback(() => setProvenanceModalOpen(true), []);
   const closeProvenanceModal = useCallback(() => setProvenanceModalOpen(false), []);
+
+  const effectiveCounts = filteredCounts ?? counts;
+  const faded =
+    filteredCounts &&
+    counts &&
+    Object.values(filteredCounts).every((c) => !c) &&
+    Object.values(counts).some((c) => !!c);
 
   let inner: ReactNode;
 
@@ -87,7 +99,7 @@ const Dataset = ({
       <Card
         title={<SmallChartCardTitle title={title} />}
         size="small"
-        className="shadow h-full"
+        className={clsx('shadow', 'h-full', { 'opacity-50': faded })}
         style={{ minHeight: 200 }}
         styles={{ body: { padding: '12px 16px', height: 'calc(100% - 53px)' } }}
         extra={
@@ -109,7 +121,7 @@ const Dataset = ({
               </Popover>
             )}
           </Space>
-          <CountsDisplay counts={counts} fontSize="0.875rem" />
+          <CountsDisplay counts={effectiveCounts} totalCounts={counts} fontSize="0.875rem" />
           <Flex gap={12} align="flex-end" className="flex-1">
             <Button icon={<PieChartOutlined />} onClick={onNavigateOverview}>
               {t('Explore')}
@@ -131,7 +143,7 @@ const Dataset = ({
           </Button>
         </Flex>
         <TruncatedParagraph>{t(description)}</TruncatedParagraph>
-        <CountsDisplay counts={counts} fontSize="0.875rem" />
+        <CountsDisplay counts={effectiveCounts} totalCounts={counts} fontSize="0.875rem" />
         <Flex gap={8} style={{ marginTop: 8 }}>
           <Button size="small" icon={<PieChartOutlined />} onClick={onNavigateOverview}>
             {t('Explore')}

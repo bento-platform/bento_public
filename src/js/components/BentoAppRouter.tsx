@@ -43,13 +43,16 @@ const ScopedRoute = () => {
   const { projectId, datasetId } = useParams();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { selectedScope, projectsByID, projectsStatus } = useMetadata();
+  const { selectedScope, projectsByID, datasetToProjectMap, projectsStatus } = useMetadata();
 
   useEffect(() => {
     if (WAITING_STATES.includes(projectsStatus)) return; // Wait for projects to load first
 
+    // Derive project from dataset when only datasetId is in URL (new /d/:datasetId routes)
+    const effectiveProjectId = projectId ?? (datasetId ? datasetToProjectMap[datasetId] : undefined);
+
     // Update selectedScope based on URL parameters
-    const valid = validProjectDataset(projectsByID, { project: projectId, dataset: datasetId });
+    const valid = validProjectDataset(projectsByID, { project: effectiveProjectId, dataset: datasetId });
 
     // Don't change the scope object if the scope value is the same, otherwise it'll trigger needless re-renders.
     if (scopeEqual(selectedScope.scope, valid.scope)) {
@@ -67,8 +70,8 @@ const ScopedRoute = () => {
     //  - No parameters have been supplied, and we have a single-dataset node, in which case we want to keep the "clean"
     //    / blank URL to avoid visual clutter.
     if (
-      (datasetId === valid.scope.dataset && projectId === valid.scope.project) ||
-      (!projectId && !datasetId && isFixedProjectAndDataset)
+      (datasetId === valid.scope.dataset && effectiveProjectId === valid.scope.project) ||
+      (!effectiveProjectId && !datasetId && isFixedProjectAndDataset)
     ) {
       dispatch(selectScope(valid.scope)); // Also marks scope as set
       return;
@@ -82,7 +85,7 @@ const ScopedRoute = () => {
     const newPath = langAndScopeSelectionToUrl(oldPath[0], valid, newPathSuffix);
 
     navigate(newPath, { replace: true });
-  }, [projectsByID, projectsStatus, projectId, datasetId, dispatch, navigate, selectedScope]);
+  }, [projectsByID, datasetToProjectMap, projectsStatus, projectId, datasetId, dispatch, navigate, selectedScope]);
 
   return <Outlet />;
 };
@@ -168,22 +171,23 @@ const BentoAppRouter = () => {
         <Route path="/" element={<ScopedRoute />}>
           <Route index element={<PublicOverview />} />
           <Route path={BentoRoute.Overview} element={<PublicOverview />} />
+          <Route path={`${BentoRoute.Phenopackets}/:packetId/:tab?`} element={<PhenopacketView />} />
           {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
           {/* Beacon network is only available at the top level - scoping does not make sense for it. */}
           {BentoRoute.BeaconNetwork && <Route path={BentoRoute.BeaconNetwork} element={<NetworkUi />} />}
         </Route>
 
-        <Route path={`/${BentoRoute.Phenopackets}/:packetId/:tab?`} element={<PhenopacketView />} />
-
         <Route path="/p/:projectId" element={<ScopedRoute />}>
           <Route index element={<PublicOverview />} />
           <Route path={BentoRoute.Overview} element={<PublicOverview />} />
+          <Route path={`${BentoRoute.Phenopackets}/:packetId/:tab?`} element={<PhenopacketView />} />
           {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
         </Route>
 
-        <Route path="/p/:projectId/d/:datasetId" element={<ScopedRoute />}>
+        <Route path="/d/:datasetId" element={<ScopedRoute />}>
           <Route index element={<PublicOverview />} />
           <Route path={BentoRoute.Overview} element={<PublicOverview />} />
+          <Route path={`${BentoRoute.Phenopackets}/:packetId/:tab?`} element={<PhenopacketView />} />
           {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
         </Route>
       </Route>
