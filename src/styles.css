@@ -20,6 +20,9 @@
   /* 70% opacity white */
   --white-70: rgba(255, 255, 255, 0.7);
 
+  /* 90% opacity black */
+  --black-90: rgba(0, 0, 0, 0.9);
+
   --antd-blue-5: #1677ff;
 }
 
@@ -98,14 +101,6 @@ body {
 
 /* END utility classes */
 
-
-.header-button {
-  color: lightgray;
-}
-
-.header-button:hover {
-  color: white !important;
-}
 
 .select-dataset-item {
   transition: all 0.2s;
@@ -282,7 +277,7 @@ body {
   margin: 0;
   font-size: 1.5em;
   line-height: var(--header-height);
-  color: var(--white-90);
+  color: var(--black-90);
 }
 
 #site-sider {

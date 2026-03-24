@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { Button, Flex, Layout, Space, Typography } from 'antd';
+import { Button, Flex, Layout, Space, Typography, theme } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useAuthState, useIsAuthenticated, useOpenIdConfig, usePerformAuth, usePerformSignOut } from 'bento-auth-js';
 
@@ -13,7 +13,7 @@ import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { langAndScopeSelectionToUrl } from '@/utils/router';
 
 import { LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
-import { CLIENT_NAME, PORTAL_URL, SHOW_PORTAL_LINK, SHOW_SIGN_IN, TRANSLATED } from '@/config';
+import { CLIENT_NAME, PORTAL_URL, SHOW_HEADER_TITLE, SHOW_PORTAL_LINK, SHOW_SIGN_IN, TRANSLATED } from '@/config';
 
 const { Header } = Layout;
 
@@ -32,6 +32,10 @@ const SiteHeader = () => {
   const isAuthenticated = useIsAuthenticated();
   const performSignOut = usePerformSignOut();
   const performSignIn = usePerformAuth();
+
+  const {
+    token: { colorBgContainer, colorBorderSecondary },
+  } = theme.useToken();
 
   useEffect(() => {
     document.title = CLIENT_NAME && CLIENT_NAME.trim() ? `Bento: ${CLIENT_NAME}` : 'Bento';
@@ -52,19 +56,22 @@ const SiteHeader = () => {
   );
 
   return (
-    <Header id="site-header">
+    <Header
+      id="site-header"
+      style={{ backgroundColor: colorBgContainer, borderBottom: `1px solid ${colorBorderSecondary}` }}
+    >
       <Flex align="center" justify="space-between">
         <Space size={isSmallScreen ? 'small' : 'middle'}>
           {isSmallScreen ? (
             <object
               type="image/png"
-              data="/public/assets/branding.png"
+              data="/public/assets/branding.lightbg.png"
               aria-label="logo"
               style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-3px)', paddingRight: '26px' }}
               onClick={navigateToOverview}
             >
               <img
-                src="/public/assets/branding.png"
+                src="/public/assets/branding.lightbg.png"
                 alt="logo"
                 style={{
                   height: '32px',
@@ -77,15 +84,17 @@ const SiteHeader = () => {
             </object>
           ) : (
             <img
-              src="/public/assets/branding.png"
+              src="/public/assets/branding.lightbg.png"
               alt="logo"
               style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-3px)', paddingLeft: '4px' }}
               onClick={navigateToOverview}
             />
           )}
-          <Typography.Title level={1} type="secondary">
-            {CLIENT_NAME}
-          </Typography.Title>
+          {SHOW_HEADER_TITLE && (
+            <Typography.Title level={1} type="secondary">
+              {CLIENT_NAME}
+            </Typography.Title>
+          )}
         </Space>
 
         <Space size={isSmallScreen ? 0 : 'small'}>
