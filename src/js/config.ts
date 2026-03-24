@@ -33,8 +33,6 @@ const _PUBLIC_URL = BENTO_PUBLIC_CONFIG.PUBLIC_URL ?? process.env.BENTO_PUBLIC_U
 export const PUBLIC_URL_NO_TRAILING_SLASH = stripTrailingSlash(_PUBLIC_URL);
 export const PUBLIC_URL = PUBLIC_URL_NO_TRAILING_SLASH + '/';
 
-console.log('process.env.BENTO_PUBLIC_SHOW_HEADER_TITLE', process.env.BENTO_PUBLIC_SHOW_HEADER_TITLE);
-
 // Bento Public display flags
 export const TRANSLATED = BENTO_PUBLIC_CONFIG.TRANSLATED ?? stringToBoolean(process.env.BENTO_PUBLIC_TRANSLATED);
 export const SHOW_HEADER_TITLE =
