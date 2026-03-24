@@ -66,13 +66,14 @@ const SiteHeader = () => {
             <object
               type="image/png"
               data="/public/assets/branding.lightbg.png"
-              aria-label="logo"
+              aria-hidden
               style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-3px)', paddingRight: '26px' }}
               onClick={navigateToOverview}
             >
               <img
                 src="/public/assets/branding.lightbg.png"
                 alt="logo"
+                aria-hidden
                 style={{
                   height: '32px',
                   verticalAlign: 'middle',
@@ -86,15 +87,14 @@ const SiteHeader = () => {
             <img
               src="/public/assets/branding.lightbg.png"
               alt="logo"
+              aria-hidden
               style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-3px)', paddingLeft: '4px' }}
               onClick={navigateToOverview}
             />
           )}
-          {SHOW_HEADER_TITLE && (
-            <Typography.Title level={1} type="secondary">
-              {CLIENT_NAME}
-            </Typography.Title>
-          )}
+          <Typography.Title level={1} type="secondary" className={SHOW_HEADER_TITLE ? '' : 'visually-hidden'}>
+            {CLIENT_NAME}
+          </Typography.Title>
         </Space>
 
         <Space size={isSmallScreen ? 0 : 'small'}>
