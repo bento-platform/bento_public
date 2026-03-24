@@ -313,7 +313,12 @@ body {
   margin: 0;
   font-size: 1.5em;
   line-height: var(--header-height);
+}
+#site-header.light h1.ant-typography {
   color: var(--black-90);
+}
+#site-header.dark h1.ant-typography {
+  color: var(--white-90);
 }
 
 #site-sider {

@@ -17,6 +17,9 @@ import { CLIENT_NAME, PORTAL_URL, SHOW_HEADER_TITLE, SHOW_PORTAL_LINK, SHOW_SIGN
 
 const { Header } = Layout;
 
+// dummy theme variable; in the future this could be used to do a 'dark mode' in combination with Ant's support
+const THEME: 'light' | 'dark' = 'light';
+
 const openPortalWindow = () => window.open(PORTAL_URL, '_blank');
 
 const SiteHeader = () => {
@@ -55,9 +58,12 @@ const SiteHeader = () => {
     [navigate, i18n.language, selectedScope]
   );
 
+  const logo = `/public/assets/branding${THEME === 'light' ? '.lightbg' : ''}.png`;
+
   return (
     <Header
       id="site-header"
+      className={THEME}
       style={{ backgroundColor: colorBgContainer, borderBottom: `1px solid ${colorBorderSecondary}` }}
     >
       <Flex align="center" justify="space-between">
@@ -65,13 +71,13 @@ const SiteHeader = () => {
           {isSmallScreen ? (
             <object
               type="image/png"
-              data="/public/assets/branding.lightbg.png"
+              data={logo}
               aria-hidden
               style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-3px)', paddingRight: '26px' }}
               onClick={navigateToOverview}
             >
               <img
-                src="/public/assets/branding.lightbg.png"
+                src={logo}
                 alt="logo"
                 aria-hidden
                 style={{
@@ -85,7 +91,7 @@ const SiteHeader = () => {
             </object>
           ) : (
             <img
-              src="/public/assets/branding.lightbg.png"
+              src={logo}
               alt="logo"
               aria-hidden
               style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-3px)', paddingLeft: '4px' }}
