@@ -31,15 +31,16 @@ export const checkFiltersStatesEqual = (s1: FiltersState, s2: FiltersState): [bo
   const qp1Keys = Object.keys(s1);
   const qp2Keys = Object.keys(s2);
   const params = [...new Set([...qp1Keys, ...qp2Keys])];
-  return params.reduce(
-    (acc: [boolean, boolean], v) => {
+  return params.reduce<[boolean, boolean]>(
+    (acc, v) => {
       if (Array.isArray(s1[v]) && Array.isArray(s2[v])) {
         const r = acc && JSON.stringify([...s1[v]].sort()) === JSON.stringify([...s2[v]].sort());
         return [r, r];
       }
       return [
-        acc && s1[v] === s2[v],
-        acc && (s1[v] === s2[v] || (s1[v] === undefined && s2[v] === null) || (s1[v] === null && s2[v] === undefined)),
+        acc[0] && s1[v] === s2[v],
+        acc[1] &&
+          (s1[v] === s2[v] || (s1[v] === undefined && s2[v] === null) || (s1[v] === null && s2[v] === undefined)),
       ];
     },
     [true, true]
