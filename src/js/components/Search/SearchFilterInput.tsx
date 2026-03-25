@@ -84,7 +84,7 @@ const SearchFilterInput = ({
   return (
     <Space.Compact className="w-full">
       <Select
-        className="flex-1 rounded-e-none"
+        className="flex-1 rounded-e-none h-auto"
         options={filterOptions}
         onChange={onFilterFieldChange}
         value={field}
@@ -98,16 +98,16 @@ const SearchFilterInput = ({
         onChange={onFilterValueChange}
         value={finalValue}
       />
-      <Button icon={<CloseOutlined />} disabled={!field || !value} onClick={onRemove} />
+      <Button className="h-auto" icon={<CloseOutlined />} disabled={!field || !value} onClick={onRemove} />
     </Space.Compact>
   );
 };
 
 export const SearchFilterInputSkeleton = memo(() => (
   <Space.Compact className="w-full">
-    <Select className="flex-1 rounded-e-none" disabled={true} loading={true} />
+    <Select className="flex-1 rounded-e-none h-auto" disabled={true} loading={true} />
     <Select className="flex-1" disabled={true} />
-    <Button icon={<CloseOutlined />} disabled={true} />
+    <Button className="h-auto" icon={<CloseOutlined />} disabled={true} />
   </Space.Compact>
 ));
 SearchFilterInputSkeleton.displayName = 'SearchFilterInputSkeleton';
