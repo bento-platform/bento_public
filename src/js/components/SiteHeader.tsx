@@ -1,21 +1,23 @@
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { Button, Flex, Layout, Space, Typography } from 'antd';
+import { Button, Flex, Layout, Space, Typography, theme } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useAuthState, useIsAuthenticated, useOpenIdConfig, usePerformAuth, usePerformSignOut } from 'bento-auth-js';
 
 import { RiTranslate } from 'react-icons/ri';
 import { ExportOutlined, LinkOutlined, LoginOutlined, LogoutOutlined } from '@ant-design/icons';
 
-import { useSelectedScope } from '@/features/metadata/hooks';
+import { useNavigateToRoot } from '@/hooks/navigation';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
-import { langAndScopeSelectionToUrl } from '@/utils/router';
 
 import { LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
-import { CLIENT_NAME, PORTAL_URL, SHOW_PORTAL_LINK, SHOW_SIGN_IN, TRANSLATED } from '@/config';
+import { CLIENT_NAME, PORTAL_URL, SHOW_HEADER_TITLE, SHOW_PORTAL_LINK, SHOW_SIGN_IN, TRANSLATED } from '@/config';
 
 const { Header } = Layout;
+
+// dummy theme variable; in the future this could be used to do a 'dark mode' in combination with Ant's support
+const THEME: 'light' | 'dark' = 'light';
 
 const openPortalWindow = () => window.open(PORTAL_URL, '_blank');
 
@@ -24,14 +26,18 @@ const SiteHeader = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isSmallScreen = useSmallScreen();
+  const navigateToRoot = useNavigateToRoot();
 
   const { isFetching: openIdConfigFetching } = useOpenIdConfig();
   const { isHandingOffCodeForToken } = useAuthState();
-  const selectedScope = useSelectedScope();
 
   const isAuthenticated = useIsAuthenticated();
   const performSignOut = usePerformSignOut();
   const performSignIn = usePerformAuth();
+
+  const {
+    token: { colorBgContainer, colorBorderSecondary },
+  } = theme.useToken();
 
   useEffect(() => {
     document.title = CLIENT_NAME && CLIENT_NAME.trim() ? `Bento: ${CLIENT_NAME}` : 'Bento';
@@ -46,44 +52,49 @@ const SiteHeader = () => {
     navigate(path, { replace: true });
   };
 
-  const navigateToOverview = useCallback(
-    () => navigate(langAndScopeSelectionToUrl(i18n.language, selectedScope, '')),
-    [navigate, i18n.language, selectedScope]
-  );
+  const logo = `/public/assets/branding${THEME === 'light' ? '.lightbg' : ''}.png`;
 
   return (
-    <Header id="site-header">
+    <Header
+      id="site-header"
+      className={THEME}
+      style={{ backgroundColor: colorBgContainer, borderBottom: `1px solid ${colorBorderSecondary}` }}
+    >
       <Flex align="center" justify="space-between">
         <Space size={isSmallScreen ? 'small' : 'middle'}>
           {isSmallScreen ? (
             <object
               type="image/png"
-              data="/public/assets/branding.png"
-              aria-label="logo"
+              data={logo}
+              aria-hidden
               style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-3px)', paddingRight: '26px' }}
-              onClick={navigateToOverview}
+              onClick={navigateToRoot}
             >
               <img
-                src="/public/assets/branding.png"
+                src={logo}
                 alt="logo"
+                aria-hidden
                 style={{
                   height: '32px',
                   verticalAlign: 'middle',
                   transform: 'translateY(-3px)',
                   paddingLeft: '23px',
                 }}
-                onClick={navigateToOverview}
+                onClick={navigateToRoot}
               />
             </object>
           ) : (
             <img
-              src="/public/assets/branding.png"
+              src={logo}
               alt="logo"
+              aria-hidden
               style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-3px)', paddingLeft: '4px' }}
-              onClick={navigateToOverview}
+              onClick={navigateToRoot}
             />
           )}
-          <Typography.Title level={1} type="secondary">
+          {/* If SHOW_HEADER_TITLE is false, assume we have text in the logo. We should still have some kind of level-1
+              header for accessibility/semantic markup, so render it but visually hidden in this case. */}
+          <Typography.Title level={1} type="secondary" className={SHOW_HEADER_TITLE ? '' : 'visually-hidden'}>
             {CLIENT_NAME}
           </Typography.Title>
         </Space>
