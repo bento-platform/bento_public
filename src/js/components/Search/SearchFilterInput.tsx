@@ -60,7 +60,9 @@ const SearchFilterInput = ({
 
   const onFilterFieldChange = useCallback(
     (v: string) => {
-      onChange({ field: v, value: fieldFilterOptions[v][0].value ?? null });
+      const fieldOptions = fieldFilterOptions[v] ?? [];
+      const initialValue = fieldOptions.length === 0 || fieldOptions.length > 2 ? null : fieldOptions[0].value;
+      onChange({ field: v, value: initialValue });
     },
     [onChange, fieldFilterOptions]
   );

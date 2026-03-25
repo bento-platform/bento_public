@@ -57,18 +57,14 @@ const SearchFilters = (props: DefinedSearchSubFormProps) => {
             <SearchFilterInput
               key={i}
               onChange={({ field, value }) => {
-                if (field === null || value === null) return; // Force field to resolve as string type
+                if (field === null) return; // Force field to resolve as string type
                 console.debug('[SearchFilters] SearchFilterInput onChange called; field =', field, 'value =', value);
 
                 const filtersStateAsQueryParams = filtersStateToQueryParamEntries(filters);
 
                 const newEntries: QueryParamEntries = Array.isArray(value)
                   ? value.map((v) => [field, v])
-                  : [[field, value]];
-
-                if (field && !value.length) {
-                  newEntries.push([field, '']);
-                }
+                  : [[field, value || '']];
 
                 const url = buildQueryParamsUrl(pathname, [
                   // If we change the field in this filter, we need to remove it so we can switch to the new field

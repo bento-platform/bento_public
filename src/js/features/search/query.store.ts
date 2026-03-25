@@ -199,9 +199,14 @@ const query = createSlice({
     },
     // -----------------------------------------------------------------------------------------------------------------
     setFilters: (state, { payload }: PayloadAction<FiltersState>) => {
-      if (checkFiltersStatesEqual(state.filters, payload)) return; // Don't update unnecessarily
+      // Don't update unnecessarily - but there's a difference between a UI state update (possibly with an empty filter,
+      // for instance), and state that invalidates results (a new empty filter does not invalidate results).
+      // eqStateSet implies eqInvalidate.
+      const [eqStateSet, eqInvalidate] = checkFiltersStatesEqual(state.filters, payload);
+      if (eqStateSet) return;
       console.debug('setting filters state', payload);
       state.filters = payload;
+      if (eqInvalidate) return;
       // search filters have changed; invalidate existing counts and match data pages if necessary:
       state.resultCountsInvalid = true;
       invalidateMatchData(state);

@@ -21,16 +21,29 @@ export const buildQueryParamsUrl = (pathName: string, queryParamEntries?: QueryP
   return `${pathName}?${new URLSearchParams(queryParamEntries).toString()}`;
 };
 
-export const checkFiltersStatesEqual = (s1: FiltersState, s2: FiltersState): boolean => {
+/**
+ * Returns whether two filter states are equal for the purpose of state-setting (first boolean) and whether they're
+ * equal for the purpose of invalidation (second boolean).
+ * @param s1 - The first filter state object
+ * @param s2 - The second filter state object
+ */
+export const checkFiltersStatesEqual = (s1: FiltersState, s2: FiltersState): [boolean, boolean] => {
   const qp1Keys = Object.keys(s1);
   const qp2Keys = Object.keys(s2);
   const params = [...new Set([...qp1Keys, ...qp2Keys])];
-  return params.reduce((acc, v) => {
-    if (Array.isArray(s1[v]) && Array.isArray(s2[v])) {
-      return acc && JSON.stringify([...s1[v]].sort()) === JSON.stringify([...s2[v]].sort());
-    }
-    return acc && s1[v] === s2[v];
-  }, true);
+  return params.reduce(
+    (acc: [boolean, boolean], v) => {
+      if (Array.isArray(s1[v]) && Array.isArray(s2[v])) {
+        const r = acc && JSON.stringify([...s1[v]].sort()) === JSON.stringify([...s2[v]].sort());
+        return [r, r];
+      }
+      return [
+        acc && s1[v] === s2[v],
+        acc && (s1[v] === s2[v] || (s1[v] === undefined && s2[v] === null) || (s1[v] === null && s2[v] === undefined)),
+      ];
+    },
+    [true, true]
+  );
 };
 
 export const filtersStateToQueryParamEntries = (fs: FiltersState): QueryParamEntries => {
