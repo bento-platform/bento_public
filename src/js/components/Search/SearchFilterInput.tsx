@@ -97,6 +97,7 @@ const SearchFilterInput = ({
         options={valueOptions}
         onChange={onFilterValueChange}
         value={finalValue}
+        placeholder={t('search.filter_value_placeholder')}
       />
       <Button className="h-auto" icon={<CloseOutlined />} disabled={!field || !value} onClick={onRemove} />
     </Space.Compact>
