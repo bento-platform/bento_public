@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Button, Flex, Layout, Space, Typography, theme } from 'antd';
@@ -8,9 +8,8 @@ import { useAuthState, useIsAuthenticated, useOpenIdConfig, usePerformAuth, useP
 import { RiTranslate } from 'react-icons/ri';
 import { ExportOutlined, LinkOutlined, LoginOutlined, LogoutOutlined } from '@ant-design/icons';
 
-import { useSelectedScope } from '@/features/metadata/hooks';
+import { useNavigateToRoot } from '@/hooks/navigation';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
-import { langAndScopeSelectionToUrl } from '@/utils/router';
 
 import { LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
 import { CLIENT_NAME, PORTAL_URL, SHOW_HEADER_TITLE, SHOW_PORTAL_LINK, SHOW_SIGN_IN, TRANSLATED } from '@/config';
@@ -27,10 +26,10 @@ const SiteHeader = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isSmallScreen = useSmallScreen();
+  const navigateToRoot = useNavigateToRoot();
 
   const { isFetching: openIdConfigFetching } = useOpenIdConfig();
   const { isHandingOffCodeForToken } = useAuthState();
-  const selectedScope = useSelectedScope();
 
   const isAuthenticated = useIsAuthenticated();
   const performSignOut = usePerformSignOut();
@@ -53,11 +52,6 @@ const SiteHeader = () => {
     navigate(path, { replace: true });
   };
 
-  const navigateToOverview = useCallback(
-    () => navigate(langAndScopeSelectionToUrl(i18n.language, selectedScope, '')),
-    [navigate, i18n.language, selectedScope]
-  );
-
   const logo = `/public/assets/branding${THEME === 'light' ? '.lightbg' : ''}.png`;
 
   return (
@@ -74,7 +68,7 @@ const SiteHeader = () => {
               data={logo}
               aria-hidden
               style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-3px)', paddingRight: '26px' }}
-              onClick={navigateToOverview}
+              onClick={navigateToRoot}
             >
               <img
                 src={logo}
@@ -86,7 +80,7 @@ const SiteHeader = () => {
                   transform: 'translateY(-3px)',
                   paddingLeft: '23px',
                 }}
-                onClick={navigateToOverview}
+                onClick={navigateToRoot}
               />
             </object>
           ) : (
@@ -95,7 +89,7 @@ const SiteHeader = () => {
               alt="logo"
               aria-hidden
               style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-3px)', paddingLeft: '4px' }}
-              onClick={navigateToOverview}
+              onClick={navigateToRoot}
             />
           )}
           <Typography.Title level={1} type="secondary" className={SHOW_HEADER_TITLE ? '' : 'visually-hidden'}>
