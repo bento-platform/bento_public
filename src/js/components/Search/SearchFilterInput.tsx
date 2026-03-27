@@ -99,7 +99,7 @@ const SearchFilterInput = ({
         options={valueOptions}
         onChange={onFilterValueChange}
         value={finalValue}
-        placeholder={t('search.filter_value_placeholder', isMultiple ? T_PLURAL_COUNT : T_SINGULAR_COUNT)}
+        placeholder={field ? t('search.filter_value_placeholder', isMultiple ? T_PLURAL_COUNT : T_SINGULAR_COUNT) : ''}
       />
       <Button className="h-auto" icon={<CloseOutlined />} disabled={!field} onClick={onRemove} />
     </Space.Compact>
