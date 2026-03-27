@@ -375,6 +375,21 @@ body {
   max-width: var(--content-max-width);
 }
 
+#pcgl-footer {
+  background-color: #054A74;
+  font-size: 12px;
+}
+#pcgl-footer img {
+  margin-bottom: 12px;
+}
+#pcgl-footer p {
+  color: rgba(255, 255, 255, 0.88);
+}
+#pcgl-footer a {
+  text-decoration: underline;
+  color: white;
+}
+
 /* END layout HTML styling */
 
 #dashboard-tabs {
