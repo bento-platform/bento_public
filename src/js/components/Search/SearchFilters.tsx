@@ -60,22 +60,28 @@ const SearchFilters = (props: DefinedSearchSubFormProps) => {
                 if (field === null) return; // Force field to resolve as string type
                 console.debug('[SearchFilters] SearchFilterInput onChange called; field =', field, 'value =', value);
 
-                let existingFiltersQP = filtersStateToQueryParamEntries(filters);
+                let existingFiltersQP = filtersStateToQueryParamEntries(filters, false);
                 let newEntries: QueryParamEntries = [];
 
                 const oldValue = filters[field];
 
-                if (field in filters && Array.isArray(value) && Array.isArray(oldValue)) {
+                if (field in filters && Array.isArray(value)) {
                   // same field, array length just changed - special case where we don't want to shift the order if
-                  // we're just reducing the size of the set values array.
-                  existingFiltersQP = existingFiltersQP.filter(
-                    ([k, v]) => k !== field || (k === field && value.includes(v))
-                  );
-                  // any new values in the array we still need to add to new entries:
-                  newEntries = value.filter((v) => !oldValue.includes(v)).map((v) => [field, v || '']);
-                } else if (field in filters && Array.isArray(value)) {
-                  // oldValue is not an array - adding a new value to an existing value, making a multiple selection
-                  newEntries = value.filter((v) => oldValue !== v).map((v) => [field, v || '']);
+                  // we're just changing the size of the values array.
+                  if (Array.isArray(oldValue)) {
+                    existingFiltersQP = existingFiltersQP.filter(
+                      ([k, v]) => k !== field || (k === field && value.includes(v))
+                    );
+                    // any new values in the array we still need to add to new entries:
+                    newEntries = value.filter((v) => !oldValue.includes(v)).map((v) => [field, v || '']);
+                  } else if (value.length > 0) {
+                    // oldValue is not an array, so we're either:
+                    //  - adding a new value to an existing value, making a multiple selection ...
+                    newEntries = value.filter((v) => oldValue !== v).map((v) => [field, v || '']);
+                  } else {
+                    //  - ... or removing the only value of the field (handled above)
+                    existingFiltersQP = existingFiltersQP.map(([k, v]) => [k, k === field ? '' : v]);
+                  }
                 } else if (field in filters && !Array.isArray(value)) {
                   // If the field stays the same, we will put it back with a new value.
                   existingFiltersQP = existingFiltersQP.map(([k, v]) => [k, k === field ? value || '' : v]);
