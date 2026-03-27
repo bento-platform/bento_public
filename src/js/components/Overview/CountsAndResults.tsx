@@ -1,15 +1,18 @@
 import { memo, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+
 import { Alert, Card, Flex, Skeleton, Space, Statistic } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
-
 import SearchResultsTablePage from '@/components/Search/SearchResultsTablePage';
-import CountsTitleWithHelp from '@/components/Util/CountsTitleWithHelp';
-import CustomEmpty from '@/components/Util/CustomEmpty';
+import CountsTitleWithHelp from '@Util/CountsTitleWithHelp';
+import CustomEmpty from '@Util/CustomEmpty';
+import Error from '@Util/Error';
+
 import { COUNT_ENTITY_ORDER, COUNT_ENTITY_REGISTRY } from '@/constants/countEntities';
 import { COUNTS_FILL } from '@/constants/overviewConstants';
 import { WAITING_STATES } from '@/constants/requests';
 import { ENTITY_QUERY_PARAM, TABLE_PAGE_QUERY_PARAM, TABLE_PAGE_SIZE_QUERY_PARAM } from '@/features/search/constants';
+
 import { useSelectedDataset, useSelectedProject } from '@/features/metadata/hooks';
 import { useEntityAndTextQueryParams, useSearchQuery } from '@/features/search/hooks';
 import { useAppDispatch, useTranslationFn } from '@/hooks';
@@ -25,6 +28,7 @@ import {
   bentoKatsuEntityToResultsDataEntity,
   buildQueryParamsUrl,
   combineQueryParamsWithoutKey,
+  filtersStateToQueryParamEntries,
 } from '@/features/search/utils';
 
 const COUNT_CARD_BASE_HEIGHT = 114;
@@ -86,7 +90,8 @@ const CountsAndResults = () => {
     message,
     resultCountsOrBools: counts,
     discoveryStatus,
-    filterQueryParams,
+    discoveryError,
+    filters,
     textQuery,
     selectedEntity,
     doneFirstLoad,
@@ -104,31 +109,35 @@ const CountsAndResults = () => {
 
   const setSelectedEntity = useCallback(
     (entity: BentoCountEntity | null) => {
-      const combinedParams = combineQueryParamsWithoutKey(filterQueryParams, entityAndTextQueryParams, [
-        ENTITY_QUERY_PARAM,
-        TABLE_PAGE_QUERY_PARAM,
-        ...(entity ? [] : [TABLE_PAGE_SIZE_QUERY_PARAM]), // Clear the page size param if closing the table
-      ]);
+      const combinedParams = combineQueryParamsWithoutKey(
+        filtersStateToQueryParamEntries(filters),
+        entityAndTextQueryParams,
+        [
+          ENTITY_QUERY_PARAM,
+          TABLE_PAGE_QUERY_PARAM,
+          ...(entity ? [] : [TABLE_PAGE_SIZE_QUERY_PARAM]), // Clear the page size param if closing the table
+        ]
+      );
       // Set the selected entity and reset the pagination via URL parameters
       navigate(
         buildQueryParamsUrl(
           pathname,
           entity
-            ? {
+            ? [
                 ...combinedParams,
-                [ENTITY_QUERY_PARAM]: entity,
-                [TABLE_PAGE_QUERY_PARAM]: matchData[bentoKatsuEntityToResultsDataEntity(entity)].page.toString(),
-                [TABLE_PAGE_SIZE_QUERY_PARAM]: pageSize.toString(),
-              }
+                [ENTITY_QUERY_PARAM, entity],
+                [TABLE_PAGE_QUERY_PARAM, matchData[bentoKatsuEntityToResultsDataEntity(entity)].page.toString()],
+                [TABLE_PAGE_SIZE_QUERY_PARAM, pageSize.toString()],
+              ]
             : combinedParams
         )
       );
     },
-    [navigate, pathname, filterQueryParams, entityAndTextQueryParams, matchData, pageSize]
+    [navigate, pathname, filters, entityAndTextQueryParams, matchData, pageSize]
   );
   const clearSelectedEntity = useCallback(() => setSelectedEntity(null), [setSelectedEntity]);
 
-  const nFilters = Object.keys(filterQueryParams).length + +!!textQuery;
+  const nFilters = Object.keys(filters).length + +!!textQuery;
 
   const countElements = doingFirstLoad
     ? []
@@ -142,7 +151,7 @@ const CountsAndResults = () => {
         return waitingForData || !!(counts[entity] || nFilters);
       }).map((entity, i) => {
         const { icon } = COUNT_ENTITY_REGISTRY[entity];
-        const count = renderCount(counts[entity]);
+        const count = renderCount(discoveryStatus === RequestStatus.Rejected ? undefined : counts[entity]);
         const selected = selectedEntity === entity;
         const canSelect = hasQueryData && !selected;
         const showDenominator = !!nFilters && !!entityCounts && windowInnerWidth >= COUNT_CARD_DENOMINATOR_BREAKPOINT;
@@ -182,6 +191,7 @@ const CountsAndResults = () => {
 
   return (
     <Flex vertical={true} gap={12}>
+      {discoveryError ? <Error message="search_fetch" description={discoveryError} /> : null}
       {message ? <Alert message={t(message)} type="info" showIcon={true} style={{ fontSize: '1.1rem' }} /> : null}
       {/* Can only wrap if we don't have the card show/hide button: */}
       <Space size={12} wrap={!hasQueryData}>

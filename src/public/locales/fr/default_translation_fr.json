@@ -47,7 +47,8 @@
     "url": "URL"
   },
   "errors": {
-    "project_fetch": "Erreur lors du chargement des projets"
+    "project_fetch": "Erreur lors du chargement des projets",
+    "search_fetch": "Erreur lors du chargement des résultats de recherche"
   },
   "search": {
     "filters": "Filtres",
@@ -55,6 +56,8 @@
     "filters_applied_other": "{{count}} filtres appliqués",
     "text_search": "Recherche de texte",
     "filter_placeholder": "Sélectionner un champ à filtrer \u2026",
+    "filter_value_placeholder_one": "Choisir une valeur \u2026",
+    "filter_value_placeholder_other": "Choisir une/des valeur(s) \u2026",
     "showing_entities": "Affichage des {{entity, lowercase}} {{start}}-{{end}} sur {{total}}",
     "showing_entities_short": "{{start}}-{{end}} / {{total}}",
     "manage_columns": "Gérer les colonnes",

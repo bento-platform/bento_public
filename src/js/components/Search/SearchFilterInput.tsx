@@ -2,11 +2,16 @@ import { memo, useCallback, useMemo } from 'react';
 import { Button, Flex, Select, Space } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 
+import { T_PLURAL_COUNT, T_SINGULAR_COUNT } from '@/constants/i18n';
+
+import type { FilterValue } from '@/features/search/types';
+
 import { useTranslationFn } from '@/hooks';
+import { useScopeQueryData } from '@/hooks/censorship';
 import { useSearchQuery } from '@/features/search/hooks';
 import OptionDescription from '@/components/Search/OptionDescription';
 
-export type FilterValue = { field: string | null; value: string | null };
+export type FilterInputValue = { field: string | null; value: FilterValue };
 
 const SearchFilterInput = ({
   field,
@@ -14,12 +19,13 @@ const SearchFilterInput = ({
   onChange,
   onRemove,
   disabledFields,
-}: FilterValue & {
-  onChange: (v: FilterValue) => void;
+}: FilterInputValue & {
+  onChange: (v: FilterInputValue) => void;
   onRemove: () => void;
   disabledFields: Set<string>;
 }) => {
   const t = useTranslationFn();
+  const { hasPermission: hasQueryData } = useScopeQueryData();
 
   const { filterSections } = useSearchQuery();
 
@@ -56,13 +62,13 @@ const SearchFilterInput = ({
 
   const onFilterFieldChange = useCallback(
     (v: string) => {
-      onChange({ field: v, value: fieldFilterOptions[v][0].value ?? null });
+      onChange({ field: v, value: null });
     },
-    [onChange, fieldFilterOptions]
+    [onChange]
   );
 
   const onFilterValueChange = useCallback(
-    (newValue: string) =>
+    (newValue: string | string[]) =>
       onChange({
         field,
         value: newValue,
@@ -70,32 +76,41 @@ const SearchFilterInput = ({
     [field, onChange]
   );
 
+  const valueOptions = field ? fieldFilterOptions[field] : [];
+  const isMultiple = hasQueryData && valueOptions.length > 2;
+  const finalValue = useMemo(
+    () => (isMultiple && value !== null && !Array.isArray(value) ? [value] : value),
+    [isMultiple, value]
+  );
+
   return (
     <Space.Compact className="w-full">
       <Select
-        className="flex-1 rounded-e-none"
+        className="flex-1 rounded-e-none h-auto"
         options={filterOptions}
         onChange={onFilterFieldChange}
         value={field}
         placeholder={t('search.filter_placeholder')}
       />
       <Select
+        mode={isMultiple ? 'multiple' : undefined}
         className="flex-1"
         disabled={!field}
-        options={field ? fieldFilterOptions[field] : []}
+        options={valueOptions}
         onChange={onFilterValueChange}
-        value={value}
+        value={finalValue}
+        placeholder={field ? t('search.filter_value_placeholder', isMultiple ? T_PLURAL_COUNT : T_SINGULAR_COUNT) : ''}
       />
-      <Button icon={<CloseOutlined />} disabled={!field || !value} onClick={onRemove} />
+      <Button className="h-auto" icon={<CloseOutlined />} disabled={!field} onClick={onRemove} />
     </Space.Compact>
   );
 };
 
 export const SearchFilterInputSkeleton = memo(() => (
   <Space.Compact className="w-full">
-    <Select className="flex-1 rounded-e-none" disabled={true} loading={true} />
+    <Select className="flex-1 rounded-e-none h-auto" disabled={true} loading={true} />
     <Select className="flex-1" disabled={true} />
-    <Button icon={<CloseOutlined />} disabled={true} />
+    <Button className="h-auto" icon={<CloseOutlined />} disabled={true} />
   </Space.Compact>
 ));
 SearchFilterInputSkeleton.displayName = 'SearchFilterInputSkeleton';
