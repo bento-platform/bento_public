@@ -34,8 +34,8 @@ export const checkFiltersStatesEqual = (s1: FiltersState, s2: FiltersState): [bo
   return params.reduce<[boolean, boolean]>(
     (acc, v) => {
       if (Array.isArray(s1[v]) && Array.isArray(s2[v])) {
-        const r = acc && JSON.stringify([...s1[v]].sort()) === JSON.stringify([...s2[v]].sort());
-        return [r, r];
+        const r = JSON.stringify([...s1[v]].sort()) === JSON.stringify([...s2[v]].sort());
+        return [acc[0] && r, acc[1] && r];
       }
       return [
         acc[0] && s1[v] === s2[v],
