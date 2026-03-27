@@ -60,20 +60,37 @@ const SearchFilters = (props: DefinedSearchSubFormProps) => {
                 if (field === null) return; // Force field to resolve as string type
                 console.debug('[SearchFilters] SearchFilterInput onChange called; field =', field, 'value =', value);
 
-                const filtersStateAsQueryParams = filtersStateToQueryParamEntries(filters);
+                let existingFiltersQP = filtersStateToQueryParamEntries(filters);
+                let newEntries: QueryParamEntries = [];
 
-                const newEntries: QueryParamEntries = Array.isArray(value)
-                  ? value.map((v) => [field, v])
-                  : [[field, value || '']];
+                const oldValue = filters[field];
+
+                if (field in filters && Array.isArray(value) && Array.isArray(oldValue)) {
+                  // same field, array length just changed - special case where we don't want to shift the order if
+                  // we're just reducing the size of the set values array.
+                  existingFiltersQP = existingFiltersQP.filter(
+                    ([k, v]) => k !== field || (k === field && value.includes(v))
+                  );
+                  // any new values in the array we still need to add to new entries:
+                  newEntries = value.filter((v) => !oldValue.includes(v)).map((v) => [field, v || '']);
+                } else if (field in filters && Array.isArray(value)) {
+                  // oldValue is not an array - adding a new value to an existing value, making a multiple selection
+                  newEntries = value.filter((v) => oldValue !== v).map((v) => [field, v || '']);
+                } else if (field in filters && !Array.isArray(value)) {
+                  // If the field stays the same, we will put it back with a new value.
+                  existingFiltersQP = existingFiltersQP.map(([k, v]) => [k, k === field ? value || '' : v]);
+                } else {
+                  // If we change the field in this filter, we need to remove it ...
+                  existingFiltersQP = queryParamsWithoutKey(
+                    existingFiltersQP,
+                    fv.field && fv.field !== field ? fv.field : field
+                  );
+                  // ... and put the new field in.
+                  newEntries = Array.isArray(value) ? value.map((v) => [field, v]) : [[field, value || '']];
+                }
 
                 const url = buildQueryParamsUrl(pathname, [
-                  // If we change the field in this filter, we need to remove it so we can switch to the new field
-                  ...queryParamsWithoutKey(
-                    filtersStateAsQueryParams,
-                    fv.field && fv.field !== field ? fv.field : field
-                  ),
-                  // ... and if the field stays the same, we will put it back with a new value. Otherwise, we'll put the
-                  // new field in with the first available value.
+                  ...existingFiltersQP,
                   ...newEntries,
                   ...entityAndTextQueryParams,
                   // If we have an entity table page set, we need to reset it to 0 if the filter changes:
