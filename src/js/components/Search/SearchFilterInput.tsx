@@ -2,6 +2,8 @@ import { memo, useCallback, useMemo } from 'react';
 import { Button, Flex, Select, Space } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 
+import { T_PLURAL_COUNT, T_SINGULAR_COUNT } from '@/constants/i18n';
+
 import type { FilterValue } from '@/features/search/types';
 
 import { useTranslationFn } from '@/hooks';
@@ -97,9 +99,9 @@ const SearchFilterInput = ({
         options={valueOptions}
         onChange={onFilterValueChange}
         value={finalValue}
-        placeholder={t('search.filter_value_placeholder')}
+        placeholder={t('search.filter_value_placeholder', isMultiple ? T_PLURAL_COUNT : T_SINGULAR_COUNT)}
       />
-      <Button className="h-auto" icon={<CloseOutlined />} disabled={!field || !value} onClick={onRemove} />
+      <Button className="h-auto" icon={<CloseOutlined />} disabled={!field} onClick={onRemove} />
     </Space.Compact>
   );
 };
