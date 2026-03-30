@@ -3,7 +3,7 @@
 type BaseField = {
   title: string;
   description: string;
-  datatype: 'number' | 'string' | 'date';
+  datatype: 'number' | 'string' | 'ontology-class' | 'date';
   mapping: string;
   mapping_for_search_filter?: string | null;
   group_by?: string | null;
@@ -45,6 +45,15 @@ export type StringField = BaseField & {
   config: StringFieldConfig;
 };
 
+export type OntologyClassFieldConfig = {
+  enum: string[] | null;
+};
+
+export type OntologyClassField = BaseField & {
+  datatype: 'ontology-class';
+  config: OntologyClassFieldConfig;
+};
+
 export type DateFieldConfig = {
   bin_by: 'month';
 };
@@ -54,4 +63,4 @@ export type DateField = BaseField & {
   config: DateFieldConfig;
 };
 
-export type Field = NumberField | StringField | DateField;
+export type Field = NumberField | StringField | OntologyClassField | DateField;

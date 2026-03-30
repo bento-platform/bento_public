@@ -10,6 +10,7 @@ import { useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
 import { useSearchQuery } from '@/features/search/hooks';
 import OptionDescription from '@/components/Search/OptionDescription';
+import OntologyTerm from '@Util/ClinPhen/OntologyTerm';
 
 export type FilterInputValue = { field: string | null; value: FilterValue };
 
@@ -54,7 +55,18 @@ const SearchFilterInput = ({
     () =>
       Object.fromEntries(
         filterSections.flatMap(({ fields }) =>
-          fields.map((f) => [f.id, f.options.map((o) => ({ value: o, label: t(o) }))])
+          fields.map((f) => [
+            f.id,
+            f.options.map((o) => ({
+              value: o,
+              label:
+                f.definition.datatype === 'ontology-class' ? (
+                  <OntologyTerm key={o} term={{ id: o, label: o }} />
+                ) : (
+                  t(o, { nsSeparator: false })
+                ),
+            })),
+          ])
         )
       ),
     [t, filterSections]
