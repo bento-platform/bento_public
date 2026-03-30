@@ -47,10 +47,10 @@ export const checkFiltersStatesEqual = (s1: FiltersState, s2: FiltersState): [bo
   );
 };
 
-export const filtersStateToQueryParamEntries = (fs: FiltersState, filterNulls: boolean = true): QueryParamEntries => {
+export const filtersStateToQueryParamEntries = (fs: FiltersState, includeEmpty: boolean = false): QueryParamEntries => {
   const entries: QueryParamEntries = [];
   Object.entries(fs).forEach(([k, v]) => {
-    if (filterNulls && v === null) return;
+    if (!includeEmpty && v === null) return;
     if (Array.isArray(v)) {
       v.forEach((vv) => {
         entries.push([k, vv]);

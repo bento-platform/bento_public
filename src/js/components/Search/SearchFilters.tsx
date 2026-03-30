@@ -60,7 +60,7 @@ const SearchFilters = (props: DefinedSearchSubFormProps) => {
                 if (field === null) return; // Force field to resolve as string type
                 console.debug('[SearchFilters] SearchFilterInput onChange called; field =', field, 'value =', value);
 
-                let existingFiltersQP = filtersStateToQueryParamEntries(filters, false);
+                let existingFiltersQP = filtersStateToQueryParamEntries(filters, true);
                 let newEntries: QueryParamEntries = [];
 
                 const oldValue = filters[field];
@@ -110,7 +110,7 @@ const SearchFilters = (props: DefinedSearchSubFormProps) => {
               }}
               onRemove={() => {
                 if (fv.field === null) return;
-                const filtersStateAsQueryParams = filtersStateToQueryParamEntries(filters);
+                const filtersStateAsQueryParams = filtersStateToQueryParamEntries(filters, true);
                 const url = buildQueryParamsUrl(
                   pathname,
                   // Remove fv.field from query params + ensure no [TEXT_QUERY_PARAM] key.
