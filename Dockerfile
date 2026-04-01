@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM node:24-bookworm-slim AS build
+FROM --platform=$BUILDPLATFORM node:24-trixie-slim AS build
 
 # Build bento_public with NodeJS + Webpack
 #  - Use BUILDPLATFORM for running webpack, since it should perform a lot better.
