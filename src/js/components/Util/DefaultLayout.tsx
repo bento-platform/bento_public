@@ -5,7 +5,7 @@ import AboutContent from '@/components/AboutContent';
 import SiteHeader from '@/components/SiteHeader';
 import SiteSider from '@/components/SiteSider';
 import SiteFooter from '@/components/SiteFooter';
-import PageHeader from '@/components/Provenance/Catalogue/PageHeader';
+import PageHeader from '@/components/PageHeader';
 import ScopedTitle from '@/components/Scope/ScopedTitle';
 import { useSelectedScope } from '@/features/metadata/hooks';
 import { useIsInCatalogueMode, useSidebarMenuItems } from '@/hooks/navigation';
