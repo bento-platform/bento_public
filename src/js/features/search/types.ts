@@ -8,8 +8,10 @@ export type QueryFilterField = { id: string; options: string[] };
 export type FtsQueryType = 'plain' | 'phrase' | 'websearch' | 'trigram';
 
 export type QueryParamEntry = [string, string];
-export type QueryParams = { [key: string]: string | undefined };
-export type DefinedQueryParams = { [key: string]: string }; // Same as above but with 'undefined' values filtered out.
+export type QueryParamEntries = QueryParamEntry[];
+
+export type FilterValue = string | string[] | null;
+export type FiltersState = Record<string, FilterValue>;
 
 export interface SearchFieldResponse {
   sections: SearchFieldSection[];

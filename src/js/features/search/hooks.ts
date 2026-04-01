@@ -8,8 +8,8 @@ import {
   TEXT_QUERY_PARAM,
   TEXT_QUERY_TYPE_PARAM,
 } from './constants';
-import type { QueryFilterField, QueryParams } from './types';
-import { bentoKatsuEntityToResultsDataEntity } from './utils';
+import type { QueryFilterField, QueryParamEntries } from './types';
+import { bentoKatsuEntityToResultsDataEntity, filtersStateToQueryParamEntries } from './utils';
 
 export const useSearchQuery = () => useAppSelector((state) => state.query);
 
@@ -21,26 +21,29 @@ export const useQueryFilterFields = (): QueryFilterField[] => {
   );
 };
 
-export const useEntityAndTextQueryParams = (): QueryParams => {
+export const useEntityAndTextQueryParams = (): QueryParamEntries => {
   const { hasPermission: queryDataPerm } = useScopeQueryData();
   const { selectedEntity, matchData, pageSize, textQuery, textQueryType } = useSearchQuery();
-  return useMemo<QueryParams>(() => {
-    const qp: QueryParams = {};
+  return useMemo<QueryParamEntries>(() => {
+    const qp: QueryParamEntries = [];
 
     if (selectedEntity) {
-      qp[ENTITY_QUERY_PARAM] = selectedEntity;
-      qp[TABLE_PAGE_QUERY_PARAM] = matchData[bentoKatsuEntityToResultsDataEntity(selectedEntity)].page.toString();
+      qp.push(
+        [ENTITY_QUERY_PARAM, selectedEntity],
+        [TABLE_PAGE_QUERY_PARAM, matchData[bentoKatsuEntityToResultsDataEntity(selectedEntity)].page.toString()]
+      );
     }
 
     if (queryDataPerm) {
-      // only include the page size query param if we're authorized to view results tables
-      qp[TABLE_PAGE_SIZE_QUERY_PARAM] = pageSize.toString();
+      // only include the page size and text query type parameters if we're authorized to view results tables.
+      // both of these control select dropdowns and so keeping their value even without a selected entity (pageSize)
+      // / text searching (textQueryType) is more intuitive to preserve the UI state.
+      qp.push([TABLE_PAGE_SIZE_QUERY_PARAM, pageSize.toString()], [TEXT_QUERY_TYPE_PARAM, textQueryType]);
     }
 
     if (textQuery) {
-      // Only include text query parameters if textQuery is set to a non-false value.
-      qp[TEXT_QUERY_PARAM] = textQuery;
-      qp[TEXT_QUERY_TYPE_PARAM] = textQueryType;
+      // Only include text query parameter if textQuery is set to a non-false value.
+      qp.push([TEXT_QUERY_PARAM, textQuery]);
     }
 
     return qp;
@@ -48,12 +51,12 @@ export const useEntityAndTextQueryParams = (): QueryParams => {
 };
 
 /**
- * Combines filterQueryParams and other query params that relate to the search slice into a single query param object.
+ * Combines filters and other query params that relate to the search slice into a single query param object.
  */
-export const useSearchQueryParams = (): QueryParams => {
-  const { filterQueryParams } = useSearchQuery();
+export const useSearchQueryParams = (): QueryParamEntries => {
+  const { filters } = useSearchQuery();
   const otherQueryParams = useEntityAndTextQueryParams();
-  return useMemo(() => ({ ...filterQueryParams, ...otherQueryParams }), [filterQueryParams, otherQueryParams]);
+  return useMemo(() => [...filtersStateToQueryParamEntries(filters), ...otherQueryParams], [filters, otherQueryParams]);
 };
 
 export const useSearchableFields = () => {

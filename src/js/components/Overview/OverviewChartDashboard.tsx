@@ -49,7 +49,7 @@ const OverviewChartDashboard = () => {
   // URL and dispatches discovery actions for fetching overview/query response data.
   useSearchRouterAndHandler();
 
-  const { discoveryStatus, sections, filterQueryParams, textQuery, resultCountsByDataset, uiHints } = useSearchQuery();
+  const { discoveryStatus, sections, filters, textQuery, resultCountsByDataset, uiHints } = useSearchQuery();
 
   // Lazy-loading hooks means this is loaded only if OverviewChartDashboard is rendered:
   const searchableFields = useSearchableFields();
@@ -88,7 +88,7 @@ const OverviewChartDashboard = () => {
   // filter set, auto-switch to the search tab rather than the about tab to make the applied filter(s) more obvious.
   // See https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes for why this is
   // not inside an effect.
-  if (!hasChangedTabs && (Object.keys(filterQueryParams).length || textQuery.length)) {
+  if (!hasChangedTabs && (Object.keys(filters).length || textQuery.length)) {
     changePage('search');
   }
 
