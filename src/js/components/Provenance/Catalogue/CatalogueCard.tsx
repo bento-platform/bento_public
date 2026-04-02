@@ -49,10 +49,12 @@ const CatalogueCard = ({ project }: { project: Project }) => {
 
   const isSmallScreen = useSmallScreen();
 
-  const { datasets, created, updated, title, description, identifier, counts } = project;
+  const { datasets_v2: datasets, created, updated, title, description, identifier, counts } = project;
 
   const { selectedKeywords, extraKeywords, extraKeywordCount } = useMemo(() => {
-    const keywords = datasets.flatMap((d) => d.dats_file.keywords ?? []).map((k) => t(k.value as string));
+    const keywords = datasets
+      .flatMap((d) => d.keywords ?? [])
+      .map((k) => t(typeof k === 'string' ? k : k.label));
 
     let totalCharacters = 0;
     const selectedKeywords: string[] = [];
