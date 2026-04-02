@@ -11,7 +11,8 @@ import type {
 import type { SearchFieldAndOptions, SearchFieldSection } from '@/features/search/types';
 import type { ChartData, DiscoveryResults, OptionalDiscoveryResults } from '@/types/data';
 import type { NetworkBeacon } from '@/types/beaconNetwork';
-import type { Dataset, Project } from '@/types/metadata';
+import type { Project } from '@/types/metadata';
+import type { DatasetV2 } from '@/types/datasetV2';
 import { RequestStatus } from '@/types/requests';
 import { serializeChartData } from '@/utils/chart';
 
@@ -109,7 +110,7 @@ const scopedBeaconBaseUrl = (projectId: Project['identifier'] | undefined): stri
 
 export const scopedBeaconFilteringTermsUrl = (
   projectId: Project['identifier'] | undefined,
-  datasetId: Dataset['identifier'] | undefined
+  datasetId: DatasetV2['identifier'] | undefined
 ): string => {
   const datasetIdParam = datasetId ? '?' + 'datasetIds=' + datasetId : '';
   return scopedBeaconBaseUrl(projectId) + BEACON_FILTERING_TERMS_PATH + datasetIdParam;
