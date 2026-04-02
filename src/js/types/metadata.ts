@@ -1,24 +1,15 @@
-import type { DatsFile } from '@/types/dats';
 import type { DiscoveryConfig } from '@/types/discovery/config';
 import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
+import type { DatasetV2 } from '@/types/datasetV2';
 
 export interface Project {
   identifier: string;
   title: string;
   description: string;
   discovery: DiscoveryConfig | null;
-  datasets: Dataset[];
+  datasets_v2: DatasetV2[];
   created: string;
   updated: string;
-  counts?: KatsuEntityCountsOrBooleans;
-}
-
-export interface Dataset {
-  identifier: string;
-  title: string;
-  description: string;
-  discovery: DiscoveryConfig | null;
-  dats_file: DatsFile;
   counts?: KatsuEntityCountsOrBooleans;
 }
 
