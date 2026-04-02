@@ -17,7 +17,8 @@ import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
 import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
 
 import type { BentoKatsuEntity } from '@/types/entities';
-import type { Dataset, Project } from '@/types/metadata';
+import type { Project } from '@/types/metadata';
+import type { DatasetV2 } from '@/types/datasetV2';
 import type { DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
 import type { QueryResultMatchData } from '@/features/search/query.store';
 import type {
@@ -517,7 +518,7 @@ const SearchResultsTablePage = ({ entity, onBack }: { entity: BentoKatsuEntity; 
 
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [projectModalOpen, setProjectModalOpen] = useState<boolean>(false);
-  const [selectedDataset, setSelectedDataset] = useState<Dataset | null>(null);
+  const [selectedDataset, setSelectedDataset] = useState<DatasetV2 | null>(null);
   const [datasetModalOpen, setDatasetModalOpen] = useState<boolean>(false);
 
   const searchContext = useMemo<SearchColRenderContext>(
