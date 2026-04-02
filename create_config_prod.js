@@ -13,6 +13,10 @@ const siteConfig = {
   SHOW_SIGN_IN: parseBoolean(process.env.BENTO_PUBLIC_SHOW_SIGN_IN),
   FORCE_CATALOGUE: parseBoolean(process.env.BENTO_PUBLIC_FORCE_CATALOGUE), // Show data catalogue even with 1 project
 
+  // Theme variables
+  CATALOGUE_HEADER_BACKGROUND: process.env.BENTO_PUBLIC_CATALOGUE_HEADER_BACKGROUND,
+  CATALOGUE_HEADER_TEXT_COLOR: process.env.BENTO_PUBLIC_CATALOGUE_HEADER_TEXT_COLOR,
+
   // Beacon configuration and flags
   BEACON_URL: process.env.BEACON_URL || null,
   BEACON_UI_ENABLED: parseBoolean(process.env.BENTO_BEACON_UI_ENABLED),
