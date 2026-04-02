@@ -1,7 +1,8 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
-import type { PaginatedResponse, Project, Dataset } from '@/types/metadata';
+import type { PaginatedResponse, Project } from '@/types/metadata';
+import type { DatasetV2 } from '@/types/datasetV2';
 import { RequestStatus } from '@/types/requests';
 import type { RootState } from '@/store';
 import { printAPIError } from '@/utils/error.util';
@@ -22,7 +23,7 @@ export type DiscoveryScopeSelection = {
 export interface MetadataState {
   projects: Project[];
   projectsByID: Record<string, Project>;
-  datasetsByID: Record<string, Dataset>;
+  datasetsByID: Record<string, DatasetV2>;
   datasetToProjectMap: Record<string, string>;
   projectsStatus: RequestStatus;
   projectsError: string;
@@ -96,9 +97,9 @@ const metadata = createSlice({
       const projects = payload?.results ?? [];
       state.projects = projects;
       state.projectsByID = Object.fromEntries(projects.map((p) => [p.identifier, p]));
-      state.datasetsByID = Object.fromEntries(projects.flatMap((p) => p.datasets.map((d) => [d.identifier, d])));
+      state.datasetsByID = Object.fromEntries(projects.flatMap((p) => p.datasets_v2.map((d) => [d.identifier, d])));
       state.datasetToProjectMap = Object.fromEntries(
-        projects.flatMap((p) => p.datasets.map((d) => [d.identifier, p.identifier]))
+        projects.flatMap((p) => p.datasets_v2.map((d) => [d.identifier, p.identifier]))
       );
       state.projectsStatus = RequestStatus.Fulfilled;
       state.projectsError = '';
