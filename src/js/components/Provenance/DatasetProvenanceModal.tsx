@@ -1,10 +1,10 @@
-import { DatasetProvenanceContent } from './DatasetProvenance';
 import { Modal, type ModalProps } from 'antd';
 import { T_SINGULAR_COUNT } from '@/constants/i18n';
 import { useTranslationFn } from '@/hooks';
-import type { Dataset } from '@/types/metadata';
+import type { DatasetV2 } from '@/types/datasetV2';
+import { DatasetV2ProvenanceContent } from './DatasetV2Provenance';
 
-type DatasetProvenanceModalProps = { dataset: Dataset | null | undefined } & Omit<
+type DatasetProvenanceModalProps = { dataset: DatasetV2 | null | undefined } & Omit<
   ModalProps,
   'footer' | 'title' | 'width'
 >;
@@ -18,7 +18,7 @@ const DatasetProvenanceModal = ({ dataset, ...props }: DatasetProvenanceModalPro
       width={960}
       {...props}
     >
-      {dataset && <DatasetProvenanceContent dataset={dataset} />}
+      {dataset && <DatasetV2ProvenanceContent dataset={dataset} />}
     </Modal>
   );
 };
