@@ -9,6 +9,7 @@ import type {
   QueryParamEntry,
 } from '@/features/search/types';
 import type { BentoCountEntity } from '@/types/entities';
+import type { OntologyTerm } from '@/types/ontology';
 import { RequestStatus } from '@/types/requests';
 import { BentoRoute } from '@/types/routes';
 
@@ -57,6 +58,14 @@ const ENTITY_TABLE_PARAMS = [ENTITY_QUERY_PARAM, TABLE_PAGE_QUERY_PARAM, TABLE_P
 const TEXT_QUERY_PARAMS = [TEXT_QUERY_PARAM, TEXT_QUERY_TYPE_PARAM];
 const ENTITY_AND_TEXT_PARAMS = [...ENTITY_TABLE_PARAMS, ...TEXT_QUERY_PARAMS];
 
+/**
+ * Find an ontology class by its ID in an array.
+ * @param os - Array of ontology classes
+ * @param t - ID to search for
+ * @return - the index of the found class, or -1 if not found.
+ */
+const findOntologyClass = (os: OntologyTerm[], t: string): number => os.findIndex((c) => c.id === t);
+
 export const useSearchRouterAndHandler = () => {
   // Tags for ctrl-F: execute search, perform search, run search
 
@@ -94,8 +103,14 @@ export const useSearchRouterAndHandler = () => {
       | [QueryFilterField, boolean] => {
       const field = filterFields.find((e) => e.id === key);
       if (!field) return [undefined, false];
+      const opts = field.options;
       // special case for blank value, meaning we should show a field filter with a blank value.
-      return [field, field.options.includes(value) || value === ''];
+      return [
+        field,
+        (opts.length > 0 && typeof opts[0] === 'string'
+          ? (opts as string[]).includes(value)
+          : findOntologyClass(opts as OntologyTerm[], value) !== -1) || value === '',
+      ];
     };
 
     const validFiltersState: FiltersState = {};
@@ -117,9 +132,14 @@ export const useSearchRouterAndHandler = () => {
             validFiltersState[qp[0]] = [existingFilter, qp[1]];
           }
           // Sort multi-value filter by order in field options:
-          (validFiltersState[qp[0]] as string[]).sort(
-            (v1, v2) => fieldDef.options.indexOf(v1) - fieldDef.options.indexOf(v2)
-          );
+          (validFiltersState[qp[0]] as string[]).sort((v1, v2) => {
+            const opts = fieldDef.options;
+            if (typeof opts[0] === 'string') {
+              return (opts as string[]).indexOf(v1) - (opts as string[]).indexOf(v2);
+            } else {
+              return findOntologyClass(opts as OntologyTerm[], v1) - findOntologyClass(opts as OntologyTerm[], v2);
+            }
+          });
         } else {
           validFiltersState[qp[0]] = qp[1] || null;
         }

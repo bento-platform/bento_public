@@ -3,8 +3,9 @@ import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentRe
 import type { Field } from '@/types/discovery/fieldDefinition';
 import type { BentoKatsuEntity } from '@/types/entities';
 import type { JSONType } from '@/types/json';
+import type { OntologyTerm } from '@/types/ontology';
 
-export type QueryFilterField = { id: string; options: string[] };
+export type QueryFilterField = { id: string; options: string[] | OntologyTerm[] };
 export type FtsQueryType = 'plain' | 'phrase' | 'websearch' | 'trigram';
 
 export type QueryParamEntry = [string, string];

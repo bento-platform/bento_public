@@ -57,15 +57,14 @@ const SearchFilterInput = ({
         filterSections.flatMap(({ fields }) =>
           fields.map((f) => [
             f.id,
-            f.options.map((o) => ({
-              value: o,
-              label:
-                f.definition.datatype === 'ontology-class' ? (
-                  <OntologyTerm key={o} term={{ id: o, label: o }} />
-                ) : (
-                  t(o, { nsSeparator: false })
-                ),
-            })),
+            f.options.map((o) =>
+              typeof o === 'object'
+                ? {
+                    value: o.id,
+                    label: <OntologyTerm key={o.id} term={o} />,
+                  }
+                : { value: o, label: t(o, { nsSeparator: false }) }
+            ),
           ])
         )
       ),
