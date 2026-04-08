@@ -137,24 +137,24 @@ export const packageBeaconFilteringTerms = (filters: BeaconFilteringTermFromEndp
 
 // temp repackaging of network filters from katsu format to beacon filters format
 // can be removed once network stops calling katsu
-export const packageBeaconNetworkQuerySections = (qs: SearchFieldSection[]) => {
-  return qs.map((q) => ({
-    ...q,
-    fields: q.fields.map((f: SearchFieldAndOptions) => {
-      const filter: BeaconFilterUiOptions = {
-        type: 'alphanumeric',
-        id: f.id,
-        label: f.definition.title,
-        description: f.definition.description,
-        values: f.options,
-      };
-      if (f.definition.datatype === 'number') {
-        const units = f.definition.config.units;
-        if (units) {
-          filter.units = units;
-        }
-      }
-      return filter;
-    }),
-  }));
-};
+// export const packageBeaconNetworkQuerySections = (qs: SearchFieldSection[]) => {
+//   return qs.map((q) => ({
+//     ...q,
+//     fields: q.fields.map((f: SearchFieldAndOptions) => {
+//       const filter: BeaconFilterUiOptions = {
+//         type: 'alphanumeric',
+//         id: f.id,
+//         label: f.definition.title,
+//         description: f.definition.description,
+//         values: f.options,
+//       };
+//       if (f.definition.datatype === 'number') {
+//         const units = f.definition.config.units;
+//         if (units) {
+//           filter.units = units;
+//         }
+//       }
+//       return filter;
+//     }),
+//   }));
+// };
