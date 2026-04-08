@@ -27,7 +27,7 @@ const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) =
   const t = useTranslationFn();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
 
-  const translateMap = ({ x, y }: { x: string; y: number }) => ({ x: t(x), y, id: x });
+  const translateMap = ({ x, y }: { x: string; y: number }) => ({ x: t(x, { nsSeparator: false }), y, id: x });
   const removeMissing = ({ x }: { x: string }) => x !== 'missing';
 
   const goToSearch = (id: string, val: string | number | undefined) => {

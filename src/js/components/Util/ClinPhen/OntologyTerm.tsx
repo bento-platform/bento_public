@@ -44,6 +44,7 @@ const OntologyTerm = ({ term, suffix, style, hideLinkIcon = false, italic = fals
   const [idPrefix, idSuffix] = term.id.split(':');
   const resource = resources.find((r) => r.namespace_prefix === idPrefix);
   const iri = resource ? `${resource.iri_prefix}${idSuffix}` : undefined;
+  const label = t(term.label, { nsSeparator: false });
 
   return (
     <Tooltip
@@ -52,12 +53,12 @@ const OntologyTerm = ({ term, suffix, style, hideLinkIcon = false, italic = fals
     >
       {iri && !hideLinkIcon ? (
         <div className={clsx('ontology-class', italic && 'italic')} style={style}>
-          {t(term.label)}
+          {label}
           {suffix} <IriLink iri={iri} />
         </div>
       ) : (
         <div className={clsx('ontology-class', italic && 'italic', iri && 'underline')}>
-          {t(term.label)}
+          {label}
           {suffix}
         </div>
       )}
