@@ -8,7 +8,7 @@ import type {
   BeaconQueryResponse,
   BeaconFilterSection,
 } from '@/types/beacon';
-import type { SearchFieldAndOptions, SearchFieldSection } from '@/features/search/types';
+// import type { SearchFieldAndOptions, SearchFieldSection } from '@/features/search/types';
 import type { ChartData, DiscoveryResults, OptionalDiscoveryResults } from '@/types/data';
 import type { NetworkBeacon } from '@/types/beaconNetwork';
 import type { Dataset, Project } from '@/types/metadata';
