@@ -4,9 +4,9 @@ import { useLocation } from 'react-router-dom';
 import type {
   FiltersState,
   FtsQueryType,
-  QueryFilterField,
   QueryParamEntries,
   QueryParamEntry,
+  SearchFieldAndOptions,
 } from '@/features/search/types';
 import type { BentoCountEntity } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
@@ -29,7 +29,7 @@ import { useNavigateToScope } from '@/hooks/navigation';
 import { useConfig } from '@/features/config/hooks';
 import { useSelectedScope } from '@/features/metadata/hooks';
 import { useScopeQueryData } from './censorship';
-import { useQueryFilterFields, useSearchQuery } from '@/features/search/hooks';
+import { useSearchFilterFields, useSearchQuery } from '@/features/search/hooks';
 
 import { fetchDiscoveryMatches } from '@/features/search/fetchDiscoveryMatches.thunk';
 import { performKatsuDiscovery } from '@/features/search/performKatsuDiscovery.thunk';
@@ -82,7 +82,7 @@ export const useSearchRouterAndHandler = () => {
     pageSize,
   } = useSearchQuery();
 
-  const filterFields = useQueryFilterFields();
+  const filterFields = useSearchFilterFields();
 
   const loadAndValidateQuery = useCallback((): QueryValidationResult => {
     // We DO explicitly use the react-router location object here, so that this dependency changes when the search
@@ -91,11 +91,16 @@ export const useSearchRouterAndHandler = () => {
 
     const validateFilterQueryParam = ([key, value]: QueryParamEntry):
       | [undefined, false]
-      | [QueryFilterField, boolean] => {
+      | [SearchFieldAndOptions, boolean] => {
       const field = filterFields.find((e) => e.id === key);
       if (!field) return [undefined, false];
       // special case for blank value, meaning we should show a field filter with a blank value.
-      return [field, field.options.includes(value) || value === ''];
+      if (value === '') return [field, true];
+      // Range syntax accepted for number/date fields when authenticated.
+      if (queryDataPerm && (field.definition.datatype === 'number' || field.definition.datatype === 'date')) {
+        return [field, /^[\[(][^,]*,[^,]*[\])]$/.test(value)];
+      }
+      return [field, field.options.includes(value)];
     };
 
     const validFiltersState: FiltersState = {};
@@ -107,9 +112,14 @@ export const useSearchRouterAndHandler = () => {
     [...query.entries()].forEach((qp) => {
       const [fieldDef, qpValid] = validateFilterQueryParam(qp);
       if (nFilters < maxQueryParameters && qpValid) {
-        if (qp[0] in validFiltersState && queryDataPerm && validFiltersState[qp[0]]) {
+        if (
+          qp[0] in validFiltersState &&
+          queryDataPerm &&
+          validFiltersState[qp[0]] &&
+          fieldDef.definition.datatype === 'string'
+        ) {
           // If we are allowed to have multiple values for a filter (i.e., we have query:data permissions) and we
-          // already have a non-null filter for this key
+          // already have a non-null filter for this key (only for string/enum fields — range fields take one value).
           const existingFilter = validFiltersState[qp[0]];
           if (Array.isArray(existingFilter)) {
             existingFilter.push(qp[1]);

@@ -5,11 +5,13 @@ import { CloseOutlined } from '@ant-design/icons';
 import { T_PLURAL_COUNT, T_SINGULAR_COUNT } from '@/constants/i18n';
 
 import type { FilterValue } from '@/features/search/types';
+import type { DateField, NumberField } from '@/types/discovery/fieldDefinition';
 
 import { useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
 import { useSearchQuery } from '@/features/search/hooks';
 import OptionDescription from '@/components/Search/OptionDescription';
+import RangeFilterInput from '@/components/Search/RangeFilterInput';
 
 export type FilterInputValue = { field: string | null; value: FilterValue };
 
@@ -60,6 +62,11 @@ const SearchFilterInput = ({
     [t, filterSections]
   );
 
+  const fieldDefinitionMap = useMemo(
+    () => Object.fromEntries(filterSections.flatMap(({ fields }) => fields.map((f) => [f.id, f.definition]))),
+    [filterSections]
+  );
+
   const onFilterFieldChange = useCallback(
     (v: string) => {
       onChange({ field: v, value: null });
@@ -68,13 +75,13 @@ const SearchFilterInput = ({
   );
 
   const onFilterValueChange = useCallback(
-    (newValue: string | string[]) =>
-      onChange({
-        field,
-        value: newValue,
-      }),
+    (newValue: string | string[] | null) => onChange({ field, value: newValue }),
     [field, onChange]
   );
+
+  const currentFieldDef = field ? fieldDefinitionMap[field] : undefined;
+  const isRangeField =
+    hasQueryData && (currentFieldDef?.datatype === 'number' || currentFieldDef?.datatype === 'date');
 
   const valueOptions = field ? fieldFilterOptions[field] : [];
   const isMultiple = hasQueryData && valueOptions.length > 2;
@@ -92,15 +99,23 @@ const SearchFilterInput = ({
         value={field}
         placeholder={t('search.filter_placeholder')}
       />
-      <Select
-        mode={isMultiple ? 'multiple' : undefined}
-        className="flex-1"
-        disabled={!field}
-        options={valueOptions}
-        onChange={onFilterValueChange}
-        value={finalValue}
-        placeholder={field ? t('search.filter_value_placeholder', isMultiple ? T_PLURAL_COUNT : T_SINGULAR_COUNT) : ''}
-      />
+      {isRangeField && currentFieldDef ? (
+        <RangeFilterInput
+          definition={currentFieldDef as NumberField | DateField}
+          value={Array.isArray(value) ? (value[0] ?? null) : value}
+          onChange={onFilterValueChange}
+        />
+      ) : (
+        <Select
+          mode={isMultiple ? 'multiple' : undefined}
+          className="flex-1"
+          disabled={!field}
+          options={valueOptions}
+          onChange={onFilterValueChange}
+          value={finalValue}
+          placeholder={field ? t('search.filter_value_placeholder', isMultiple ? T_PLURAL_COUNT : T_SINGULAR_COUNT) : ''}
+        />
+      )}
       <Button className="h-auto" icon={<CloseOutlined />} disabled={!field} onClick={onRemove} />
     </Space.Compact>
   );
