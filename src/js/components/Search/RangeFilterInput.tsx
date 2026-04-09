@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Button, DatePicker, InputNumber, Space } from 'antd';
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
@@ -6,22 +6,26 @@ import type { Dayjs } from 'dayjs';
 import type { DateField, NumberField } from '@/types/discovery/fieldDefinition';
 import type { FilterValue } from '@/features/search/types';
 
-const RANGE_RE = /^([\[(])([^,]*),([^,]*)([\])])$/;
+const RANGE_RE = /^([[(])([^,]*),([^,]*)([\])])$/;
 const DATE_FORMAT = 'YYYY-MM-DD';
 
-const parseBrackets = (value: string | null): { lowerStr: string; upperStr: string; lowerOpen: boolean; upperOpen: boolean } => {
-  if (!value) return { lowerStr: '', upperStr: '', lowerOpen: false, upperOpen: false };
+type RangeState = { lowerStr: string; upperStr: string; lowerOpen: boolean; upperOpen: boolean };
+
+const EMPTY_RANGE: RangeState = { lowerStr: '', upperStr: '', lowerOpen: false, upperOpen: false };
+
+const parseBrackets = (value: string | null): RangeState => {
+  if (!value) return EMPTY_RANGE;
   const m = value.match(RANGE_RE);
-  if (!m) return { lowerStr: '', upperStr: '', lowerOpen: false, upperOpen: false };
-  return {
-    lowerOpen: m[1] === '(',
-    lowerStr: m[2],
-    upperStr: m[3],
-    upperOpen: m[4] === ')',
-  };
+  if (!m) return EMPTY_RANGE;
+  return { lowerOpen: m[1] === '(', lowerStr: m[2], upperStr: m[3], upperOpen: m[4] === ')' };
 };
 
-const buildRangeString = (lowerStr: string, upperStr: string, lowerOpen: boolean, upperOpen: boolean): string | null => {
+const buildRangeString = (
+  lowerStr: string,
+  upperStr: string,
+  lowerOpen: boolean,
+  upperOpen: boolean
+): string | null => {
   if (!lowerStr && !upperStr) return null;
   return `${lowerOpen ? '(' : '['}${lowerStr},${upperStr}${upperOpen ? ')' : ']'}`;
 };
@@ -35,43 +39,23 @@ type RangeFilterInputProps = {
 const RangeFilterInput = ({ definition, value, onChange }: RangeFilterInputProps) => {
   const rawValue = Array.isArray(value) ? (value[0] ?? null) : value;
 
-  const [lowerStr, setLowerStr] = useState('');
-  const [upperStr, setUpperStr] = useState('');
-  const [lowerOpen, setLowerOpen] = useState(false);
-  const [upperOpen, setUpperOpen] = useState(false);
-
-  // Track the last value emitted by this component to avoid re-parsing our own emissions
-  const lastEmittedRef = useRef<string | null>(undefined);
-
-  useEffect(() => {
-    if (rawValue === lastEmittedRef.current) return;
-    const parsed = parseBrackets(rawValue);
-    setLowerStr(parsed.lowerStr);
-    setUpperStr(parsed.upperStr);
-    setLowerOpen(parsed.lowerOpen);
-    setUpperOpen(parsed.upperOpen);
-  }, [rawValue]);
+  // All display state is derived from the prop; no local state needed.
+  const { lowerStr, upperStr, lowerOpen, upperOpen } = useMemo(() => parseBrackets(rawValue), [rawValue]);
 
   const emitValue = useCallback(
-    (lStr: string, uStr: string, lo: boolean, uo: boolean) => {
-      const result = buildRangeString(lStr, uStr, lo, uo);
-      lastEmittedRef.current = result;
-      onChange(result);
-    },
+    (lStr: string, uStr: string, lo: boolean, uo: boolean) => onChange(buildRangeString(lStr, uStr, lo, uo)),
     [onChange]
   );
 
-  const onLowerBracketToggle = useCallback(() => {
-    const next = !lowerOpen;
-    setLowerOpen(next);
-    emitValue(lowerStr, upperStr, next, upperOpen);
-  }, [lowerOpen, lowerStr, upperStr, upperOpen, emitValue]);
+  const onLowerBracketToggle = useCallback(
+    () => emitValue(lowerStr, upperStr, !lowerOpen, upperOpen),
+    [lowerStr, upperStr, lowerOpen, upperOpen, emitValue]
+  );
 
-  const onUpperBracketToggle = useCallback(() => {
-    const next = !upperOpen;
-    setUpperOpen(next);
-    emitValue(lowerStr, upperStr, lowerOpen, next);
-  }, [upperOpen, lowerStr, upperStr, lowerOpen, emitValue]);
+  const onUpperBracketToggle = useCallback(
+    () => emitValue(lowerStr, upperStr, lowerOpen, !upperOpen),
+    [lowerStr, upperStr, lowerOpen, upperOpen, emitValue]
+  );
 
   const isNumber = definition.datatype === 'number';
 
@@ -80,38 +64,22 @@ const RangeFilterInput = ({ definition, value, onChange }: RangeFilterInputProps
   const numMax = numberConfig && 'maximum' in numberConfig ? (numberConfig.maximum ?? undefined) : undefined;
 
   const onLowerNumberChange = useCallback(
-    (v: number | null) => {
-      const s = v != null ? String(v) : '';
-      setLowerStr(s);
-      emitValue(s, upperStr, lowerOpen, upperOpen);
-    },
+    (v: number | null) => emitValue(v != null ? String(v) : '', upperStr, lowerOpen, upperOpen),
     [upperStr, lowerOpen, upperOpen, emitValue]
   );
 
   const onUpperNumberChange = useCallback(
-    (v: number | null) => {
-      const s = v != null ? String(v) : '';
-      setUpperStr(s);
-      emitValue(lowerStr, s, lowerOpen, upperOpen);
-    },
+    (v: number | null) => emitValue(lowerStr, v != null ? String(v) : '', lowerOpen, upperOpen),
     [lowerStr, lowerOpen, upperOpen, emitValue]
   );
 
   const onLowerDateChange = useCallback(
-    (v: Dayjs | null) => {
-      const s = v?.format(DATE_FORMAT) ?? '';
-      setLowerStr(s);
-      emitValue(s, upperStr, lowerOpen, upperOpen);
-    },
+    (v: Dayjs | null) => emitValue(v?.format(DATE_FORMAT) ?? '', upperStr, lowerOpen, upperOpen),
     [upperStr, lowerOpen, upperOpen, emitValue]
   );
 
   const onUpperDateChange = useCallback(
-    (v: Dayjs | null) => {
-      const s = v?.format(DATE_FORMAT) ?? '';
-      setUpperStr(s);
-      emitValue(lowerStr, s, lowerOpen, upperOpen);
-    },
+    (v: Dayjs | null) => emitValue(lowerStr, v?.format(DATE_FORMAT) ?? '', lowerOpen, upperOpen),
     [lowerStr, lowerOpen, upperOpen, emitValue]
   );
 

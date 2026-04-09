@@ -80,8 +80,7 @@ const SearchFilterInput = ({
   );
 
   const currentFieldDef = field ? fieldDefinitionMap[field] : undefined;
-  const isRangeField =
-    hasQueryData && (currentFieldDef?.datatype === 'number' || currentFieldDef?.datatype === 'date');
+  const isRangeField = hasQueryData && (currentFieldDef?.datatype === 'number' || currentFieldDef?.datatype === 'date');
 
   const valueOptions = field ? fieldFilterOptions[field] : [];
   const isMultiple = hasQueryData && valueOptions.length > 2;
@@ -113,7 +112,9 @@ const SearchFilterInput = ({
           options={valueOptions}
           onChange={onFilterValueChange}
           value={finalValue}
-          placeholder={field ? t('search.filter_value_placeholder', isMultiple ? T_PLURAL_COUNT : T_SINGULAR_COUNT) : ''}
+          placeholder={
+            field ? t('search.filter_value_placeholder', isMultiple ? T_PLURAL_COUNT : T_SINGULAR_COUNT) : ''
+          }
         />
       )}
       <Button className="h-auto" icon={<CloseOutlined />} disabled={!field} onClick={onRemove} />
