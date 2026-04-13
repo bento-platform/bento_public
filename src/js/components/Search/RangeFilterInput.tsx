@@ -59,13 +59,23 @@ const RangeFilterInput = ({ definition, value, onChange }: RangeFilterInputProps
     }
   }
 
+  const isNumber = definition.datatype === 'number';
+
   const emitValue = useCallback(
     (lStr: string, uStr: string, lo: boolean, uo: boolean) => {
-      const result = buildRangeString(lStr, uStr, lo, uo);
+      let inverted: boolean;
+      if (isNumber) {
+        inverted = !!lStr && !!uStr && parseFloat(uStr) < parseFloat(lStr);
+      } else {
+        const lower = lStr ? dayjs(lStr, DATE_FORMAT) : null;
+        const upper = uStr ? dayjs(uStr, DATE_FORMAT) : null;
+        inverted = !!(lower?.isValid() && upper?.isValid() && upper.isBefore(lower, 'day'));
+      }
+      const result = inverted ? null : buildRangeString(lStr, uStr, lo, uo);
       lastEmittedRef.current = result;
       onChange(result);
     },
-    [onChange]
+    [isNumber, onChange]
   );
 
   const onLowerBracketToggle = useCallback(() => {
@@ -79,8 +89,6 @@ const RangeFilterInput = ({ definition, value, onChange }: RangeFilterInputProps
     setRangeState((prev) => ({ ...prev, upperOpen: next }));
     emitValue(lowerStr, upperStr, lowerOpen, next);
   }, [upperOpen, lowerStr, upperStr, lowerOpen, emitValue]);
-
-  const isNumber = definition.datatype === 'number';
 
   const onLowerNumberChange = useCallback(
     (v: number | null) => {
@@ -121,6 +129,12 @@ const RangeFilterInput = ({ definition, value, onChange }: RangeFilterInputProps
   const lowerDateValue = lowerStr ? dayjs(lowerStr, DATE_FORMAT) : null;
   const upperDateValue = upperStr ? dayjs(upperStr, DATE_FORMAT) : null;
 
+  const lowerNum = isNumber && lowerStr ? parseFloat(lowerStr) : null;
+  const upperNum = isNumber && upperStr ? parseFloat(upperStr) : null;
+  const boundsInverted = isNumber
+    ? lowerNum !== null && upperNum !== null && upperNum < lowerNum
+    : !!(lowerDateValue?.isValid() && upperDateValue?.isValid() && upperDateValue.isBefore(lowerDateValue, 'day'));
+
   return (
     <Space.Compact className="flex-1">
       <Button onClick={onLowerBracketToggle}>{lowerOpen ? '(' : '['}</Button>
@@ -141,6 +155,7 @@ const RangeFilterInput = ({ definition, value, onChange }: RangeFilterInputProps
           value={lowerDateValue?.isValid() ? lowerDateValue : null}
           onChange={onLowerDateChange}
           placeholder="start"
+          disabledDate={(d) => !!(upperDateValue?.isValid() && d.isAfter(upperDateValue, 'day'))}
         />
       )}
       <Button disabled>–</Button>
@@ -149,6 +164,7 @@ const RangeFilterInput = ({ definition, value, onChange }: RangeFilterInputProps
           className="flex-1"
           style={{ width: '100%' }}
           controls={false}
+          status={boundsInverted ? 'error' : undefined}
           value={upperStr ? parseFloat(upperStr) : null}
           onChange={onUpperNumberChange}
           placeholder="max"
@@ -158,9 +174,11 @@ const RangeFilterInput = ({ definition, value, onChange }: RangeFilterInputProps
           className="flex-1"
           style={{ width: '100%' }}
           format={DATE_FORMAT}
+          status={boundsInverted ? 'error' : undefined}
           value={upperDateValue?.isValid() ? upperDateValue : null}
           onChange={onUpperDateChange}
           placeholder="end"
+          disabledDate={(d) => !!(lowerDateValue?.isValid() && d.isBefore(lowerDateValue, 'day'))}
         />
       )}
       <Button onClick={onUpperBracketToggle}>{upperOpen ? ')' : ']'}</Button>
