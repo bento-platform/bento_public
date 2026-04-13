@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { Button, DatePicker, InputNumber, Space } from 'antd';
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
@@ -26,7 +26,7 @@ const buildRangeString = (
   lowerOpen: boolean,
   upperOpen: boolean
 ): string | null => {
-  if (!lowerStr && !upperStr) return null;
+  if (!lowerStr || !upperStr) return null;
   return `${lowerOpen ? '(' : '['}${lowerStr},${upperStr}${upperOpen ? ')' : ']'}`;
 };
 
@@ -39,47 +39,82 @@ type RangeFilterInputProps = {
 const RangeFilterInput = ({ definition, value, onChange }: RangeFilterInputProps) => {
   const rawValue = Array.isArray(value) ? (value[0] ?? null) : value;
 
-  // All display state is derived from the prop; no local state needed.
-  const { lowerStr, upperStr, lowerOpen, upperOpen } = useMemo(() => parseBrackets(rawValue), [rawValue]);
+  // Local state buffers what the user is typing. We can't derive from rawValue directly because
+  // when only one bound is filled, buildRangeString returns null and the prop resets to null —
+  // which would wipe the typed value if we re-derived on every render.
+  const [rangeState, setRangeState] = useState<RangeState>(() => parseBrackets(rawValue));
+  const { lowerStr, upperStr, lowerOpen, upperOpen } = rangeState;
+
+  // Track the last value we emitted and the last rawValue we saw, so we can distinguish
+  // external prop changes (URL navigation, field reset) from prop changes caused by our own emissions.
+  const lastEmittedRef = useRef<string | null | undefined>(undefined);
+  const prevRawValueRef = useRef<string | null | undefined>(undefined);
+
+  // Render-time derived-state sync (React recommended pattern for props → state).
+  // Only sync when rawValue changed AND the change came from outside (not from our own onChange call).
+  if (rawValue !== prevRawValueRef.current) {
+    prevRawValueRef.current = rawValue;
+    if (rawValue !== lastEmittedRef.current) {
+      setRangeState(parseBrackets(rawValue));
+    }
+  }
 
   const emitValue = useCallback(
-    (lStr: string, uStr: string, lo: boolean, uo: boolean) => onChange(buildRangeString(lStr, uStr, lo, uo)),
+    (lStr: string, uStr: string, lo: boolean, uo: boolean) => {
+      const result = buildRangeString(lStr, uStr, lo, uo);
+      lastEmittedRef.current = result;
+      onChange(result);
+    },
     [onChange]
   );
 
-  const onLowerBracketToggle = useCallback(
-    () => emitValue(lowerStr, upperStr, !lowerOpen, upperOpen),
-    [lowerStr, upperStr, lowerOpen, upperOpen, emitValue]
-  );
+  const onLowerBracketToggle = useCallback(() => {
+    const next = !lowerOpen;
+    setRangeState((prev) => ({ ...prev, lowerOpen: next }));
+    emitValue(lowerStr, upperStr, next, upperOpen);
+  }, [lowerOpen, lowerStr, upperStr, upperOpen, emitValue]);
 
-  const onUpperBracketToggle = useCallback(
-    () => emitValue(lowerStr, upperStr, lowerOpen, !upperOpen),
-    [lowerStr, upperStr, lowerOpen, upperOpen, emitValue]
-  );
+  const onUpperBracketToggle = useCallback(() => {
+    const next = !upperOpen;
+    setRangeState((prev) => ({ ...prev, upperOpen: next }));
+    emitValue(lowerStr, upperStr, lowerOpen, next);
+  }, [upperOpen, lowerStr, upperStr, lowerOpen, emitValue]);
 
   const isNumber = definition.datatype === 'number';
 
-  const numberConfig = isNumber ? (definition as NumberField).config : null;
-  const numMin = numberConfig && 'minimum' in numberConfig ? (numberConfig.minimum ?? undefined) : undefined;
-  const numMax = numberConfig && 'maximum' in numberConfig ? (numberConfig.maximum ?? undefined) : undefined;
-
   const onLowerNumberChange = useCallback(
-    (v: number | null) => emitValue(v != null ? String(v) : '', upperStr, lowerOpen, upperOpen),
+    (v: number | null) => {
+      const s = v != null ? String(v) : '';
+      setRangeState((prev) => ({ ...prev, lowerStr: s }));
+      emitValue(s, upperStr, lowerOpen, upperOpen);
+    },
     [upperStr, lowerOpen, upperOpen, emitValue]
   );
 
   const onUpperNumberChange = useCallback(
-    (v: number | null) => emitValue(lowerStr, v != null ? String(v) : '', lowerOpen, upperOpen),
+    (v: number | null) => {
+      const s = v != null ? String(v) : '';
+      setRangeState((prev) => ({ ...prev, upperStr: s }));
+      emitValue(lowerStr, s, lowerOpen, upperOpen);
+    },
     [lowerStr, lowerOpen, upperOpen, emitValue]
   );
 
   const onLowerDateChange = useCallback(
-    (v: Dayjs | null) => emitValue(v?.format(DATE_FORMAT) ?? '', upperStr, lowerOpen, upperOpen),
+    (v: Dayjs | null) => {
+      const s = v?.format(DATE_FORMAT) ?? '';
+      setRangeState((prev) => ({ ...prev, lowerStr: s }));
+      emitValue(s, upperStr, lowerOpen, upperOpen);
+    },
     [upperStr, lowerOpen, upperOpen, emitValue]
   );
 
   const onUpperDateChange = useCallback(
-    (v: Dayjs | null) => emitValue(lowerStr, v?.format(DATE_FORMAT) ?? '', lowerOpen, upperOpen),
+    (v: Dayjs | null) => {
+      const s = v?.format(DATE_FORMAT) ?? '';
+      setRangeState((prev) => ({ ...prev, upperStr: s }));
+      emitValue(lowerStr, s, lowerOpen, upperOpen);
+    },
     [lowerStr, lowerOpen, upperOpen, emitValue]
   );
 
@@ -94,8 +129,6 @@ const RangeFilterInput = ({ definition, value, onChange }: RangeFilterInputProps
           className="flex-1"
           style={{ width: '100%' }}
           controls={false}
-          min={numMin}
-          max={numMax}
           value={lowerStr ? parseFloat(lowerStr) : null}
           onChange={onLowerNumberChange}
           placeholder="min"
@@ -116,8 +149,6 @@ const RangeFilterInput = ({ definition, value, onChange }: RangeFilterInputProps
           className="flex-1"
           style={{ width: '100%' }}
           controls={false}
-          min={numMin}
-          max={numMax}
           value={upperStr ? parseFloat(upperStr) : null}
           onChange={onUpperNumberChange}
           placeholder="max"
