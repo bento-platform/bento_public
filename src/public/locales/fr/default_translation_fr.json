@@ -480,6 +480,9 @@
   "experiment_result": {
     "identifier": "Identifiant",
     "indices": "Indices",
+    "storage": "Stockage",
+    "storage_path": "Chemin d'accès",
+    "storage_server": "Serveur",
     "genome_assembly_id": "Assemblage",
     "file_format": "Format",
     "data_output_type": "Type de sortie des données",
