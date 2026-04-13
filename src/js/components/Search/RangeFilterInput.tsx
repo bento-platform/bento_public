@@ -140,8 +140,7 @@ const RangeFilterInput = ({ definition, value, onChange }: RangeFilterInputProps
       <Button onClick={onLowerBracketToggle}>{lowerOpen ? '(' : '['}</Button>
       {isNumber ? (
         <InputNumber
-          className="flex-1"
-          style={{ width: '100%' }}
+          className="flex-1 w-full"
           controls={false}
           value={lowerStr ? parseFloat(lowerStr) : null}
           onChange={onLowerNumberChange}
@@ -149,8 +148,7 @@ const RangeFilterInput = ({ definition, value, onChange }: RangeFilterInputProps
         />
       ) : (
         <DatePicker
-          className="flex-1"
-          style={{ width: '100%' }}
+          className="flex-1 w-full"
           format={DATE_FORMAT}
           value={lowerDateValue?.isValid() ? lowerDateValue : null}
           onChange={onLowerDateChange}
@@ -161,8 +159,7 @@ const RangeFilterInput = ({ definition, value, onChange }: RangeFilterInputProps
       <Button disabled>–</Button>
       {isNumber ? (
         <InputNumber
-          className="flex-1"
-          style={{ width: '100%' }}
+          className="flex-1 w-full"
           controls={false}
           status={boundsInverted ? 'error' : undefined}
           value={upperStr ? parseFloat(upperStr) : null}
@@ -171,8 +168,7 @@ const RangeFilterInput = ({ definition, value, onChange }: RangeFilterInputProps
         />
       ) : (
         <DatePicker
-          className="flex-1"
-          style={{ width: '100%' }}
+          className="flex-1 w-full"
           format={DATE_FORMAT}
           status={boundsInverted ? 'error' : undefined}
           value={upperDateValue?.isValid() ? upperDateValue : null}
