@@ -98,7 +98,7 @@ export const useSearchRouterAndHandler = () => {
       if (value === '') return [field, true];
       // Range syntax accepted for number/date fields when authenticated.
       if (queryDataPerm && (field.definition.datatype === 'number' || field.definition.datatype === 'date')) {
-        return [field, /^([[(][^,]*,[^,]*[\])])$/.test(value)];
+        return [field, /^([[(][^,]+,[^,]+[\])])$/.test(value)];
       }
       return [field, field.options.includes(value)];
     };
