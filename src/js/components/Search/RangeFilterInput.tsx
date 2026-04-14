@@ -38,11 +38,15 @@ type RangeFilterInputProps = {
 
 const RangeFilterInput = ({ definition, value, onChange }: RangeFilterInputProps) => {
   const rawValue = Array.isArray(value) ? (value[0] ?? null) : value;
+  const isNumber = definition.datatype === 'number';
 
   // Local state buffers what the user is typing. We can't derive from rawValue directly because
   // when only one bound is filled, buildRangeString returns null and the prop resets to null —
   // which would wipe the typed value if we re-derived on every render.
-  const [rangeState, setRangeState] = useState<RangeState>(() => parseBrackets(rawValue));
+  const [rangeState, setRangeState] = useState<RangeState>(() => {
+    const parsed = parseBrackets(rawValue);
+    return isNumber ? parsed : { ...parsed, lowerOpen: false, upperOpen: false };
+  });
   const { lowerStr, upperStr, lowerOpen, upperOpen } = rangeState;
 
   // Track the last value we emitted and the last rawValue we saw, so we can distinguish
@@ -55,11 +59,10 @@ const RangeFilterInput = ({ definition, value, onChange }: RangeFilterInputProps
   if (rawValue !== prevRawValueRef.current) {
     prevRawValueRef.current = rawValue;
     if (rawValue !== lastEmittedRef.current) {
-      setRangeState(parseBrackets(rawValue));
+      const parsed = parseBrackets(rawValue);
+      setRangeState(isNumber ? parsed : { ...parsed, lowerOpen: false, upperOpen: false });
     }
   }
-
-  const isNumber = definition.datatype === 'number';
 
   const emitValue = useCallback(
     (lStr: string, uStr: string, lo: boolean, uo: boolean) => {
@@ -108,75 +111,55 @@ const RangeFilterInput = ({ definition, value, onChange }: RangeFilterInputProps
     [lowerStr, lowerOpen, upperOpen, emitValue]
   );
 
-  const onLowerDateChange = useCallback(
-    (v: Dayjs | null) => {
-      const s = v?.format(DATE_FORMAT) ?? '';
-      setRangeState((prev) => ({ ...prev, lowerStr: s }));
-      emitValue(s, upperStr, lowerOpen, upperOpen);
+  const onDateRangeChange = useCallback(
+    (dates: [Dayjs | null, Dayjs | null] | null) => {
+      const lStr = dates?.[0]?.format(DATE_FORMAT) ?? '';
+      const uStr = dates?.[1]?.format(DATE_FORMAT) ?? '';
+      setRangeState((prev) => ({ ...prev, lowerStr: lStr, upperStr: uStr }));
+      emitValue(lStr, uStr, false, false);
     },
-    [upperStr, lowerOpen, upperOpen, emitValue]
+    [emitValue]
   );
 
-  const onUpperDateChange = useCallback(
-    (v: Dayjs | null) => {
-      const s = v?.format(DATE_FORMAT) ?? '';
-      setRangeState((prev) => ({ ...prev, upperStr: s }));
-      emitValue(lowerStr, s, lowerOpen, upperOpen);
-    },
-    [lowerStr, lowerOpen, upperOpen, emitValue]
-  );
+  if (!isNumber) {
+    const lowerDateValue = lowerStr ? dayjs(lowerStr, DATE_FORMAT) : null;
+    const upperDateValue = upperStr ? dayjs(upperStr, DATE_FORMAT) : null;
+    return (
+      <DatePicker.RangePicker
+        className="flex-1"
+        format={DATE_FORMAT}
+        value={[
+          lowerDateValue?.isValid() ? lowerDateValue : null,
+          upperDateValue?.isValid() ? upperDateValue : null,
+        ]}
+        onChange={onDateRangeChange}
+      />
+    );
+  }
 
-  const lowerDateValue = lowerStr ? dayjs(lowerStr, DATE_FORMAT) : null;
-  const upperDateValue = upperStr ? dayjs(upperStr, DATE_FORMAT) : null;
-
-  const lowerNum = isNumber && lowerStr ? parseFloat(lowerStr) : null;
-  const upperNum = isNumber && upperStr ? parseFloat(upperStr) : null;
-  const boundsInverted = isNumber
-    ? lowerNum !== null && upperNum !== null && upperNum < lowerNum
-    : !!(lowerDateValue?.isValid() && upperDateValue?.isValid() && upperDateValue.isBefore(lowerDateValue, 'day'));
+  const lowerNum = lowerStr ? parseFloat(lowerStr) : null;
+  const upperNum = upperStr ? parseFloat(upperStr) : null;
+  const boundsInverted = lowerNum !== null && upperNum !== null && upperNum < lowerNum;
 
   return (
     <Space.Compact className="flex-1">
       <Button onClick={onLowerBracketToggle}>{lowerOpen ? '(' : '['}</Button>
-      {isNumber ? (
-        <InputNumber
-          className="flex-1 w-full"
-          controls={false}
-          value={lowerStr ? parseFloat(lowerStr) : null}
-          onChange={onLowerNumberChange}
-          placeholder="min"
-        />
-      ) : (
-        <DatePicker
-          className="flex-1 w-full"
-          format={DATE_FORMAT}
-          value={lowerDateValue?.isValid() ? lowerDateValue : null}
-          onChange={onLowerDateChange}
-          placeholder="start"
-          disabledDate={(d) => !!(upperDateValue?.isValid() && d.isAfter(upperDateValue, 'day'))}
-        />
-      )}
+      <InputNumber
+        className="flex-1 w-full"
+        controls={false}
+        value={lowerStr ? parseFloat(lowerStr) : null}
+        onChange={onLowerNumberChange}
+        placeholder="min"
+      />
       <Button disabled>–</Button>
-      {isNumber ? (
-        <InputNumber
-          className="flex-1 w-full"
-          controls={false}
-          status={boundsInverted ? 'error' : undefined}
-          value={upperStr ? parseFloat(upperStr) : null}
-          onChange={onUpperNumberChange}
-          placeholder="max"
-        />
-      ) : (
-        <DatePicker
-          className="flex-1 w-full"
-          format={DATE_FORMAT}
-          status={boundsInverted ? 'error' : undefined}
-          value={upperDateValue?.isValid() ? upperDateValue : null}
-          onChange={onUpperDateChange}
-          placeholder="end"
-          disabledDate={(d) => !!(lowerDateValue?.isValid() && d.isBefore(lowerDateValue, 'day'))}
-        />
-      )}
+      <InputNumber
+        className="flex-1 w-full"
+        controls={false}
+        status={boundsInverted ? 'error' : undefined}
+        value={upperStr ? parseFloat(upperStr) : null}
+        onChange={onUpperNumberChange}
+        placeholder="max"
+      />
       <Button onClick={onUpperBracketToggle}>{upperOpen ? ')' : ']'}</Button>
     </Space.Compact>
   );
