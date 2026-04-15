@@ -1,9 +1,9 @@
 import { type CSSProperties, type ReactNode, useEffect, useMemo } from 'react';
 import clsx from 'clsx';
-import { Flex } from 'antd';
+import { Flex, Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 
 import { CATALOGUE_HEADER_BACKGROUND, CATALOGUE_HEADER_TEXT_COLOR } from '@/config';
-import { EM_DASH } from '@/constants/common';
 
 import type { BentoUICountEntity } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
@@ -54,7 +54,16 @@ const CataloguePageHeaderStats = () => {
         return (
           <li id={k} key={k} className={loading ? 'loading' : ''}>
             {COUNT_ENTITY_REGISTRY[entity].icon}
-            <strong style={{ marginLeft: '0.3em' }}>{loading ? EM_DASH : renderCount(count)}</strong>{' '}
+            <strong style={{ marginLeft: '0.3em' }}>
+              {loading ? (
+                <Spin
+                  indicator={<LoadingOutlined spin />}
+                  style={{ color: 'var(--antd-gray-7)', marginRight: '0.2em' }}
+                />
+              ) : (
+                renderCount(count)
+              )}
+            </strong>{' '}
             {t(`entities.${entity}`, { count }).toLocaleLowerCase()}
           </li>
         );
