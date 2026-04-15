@@ -44,3 +44,16 @@ export const useDrsHttpsAccessOrPassThrough = (url: string | undefined): string 
     return url ?? null;
   }
 };
+
+// as above, but only returns access methods or null
+// but does this distinguish between "not found" and "not found yet"?
+export const useDrsAccessMethods = (url: string | undefined): string | null => {
+  const drsRec = useDrsObjectOrPassThrough(url);
+  if (drsRec) {
+    return drsRec.status !== RequestStatus.Fulfilled
+      ? null
+      : ((drsRec.record?.access_methods ?? []).find((am) => am.type === 'https')?.access_url?.url ?? url ?? null);
+  } else {
+    return null;
+  }
+};
