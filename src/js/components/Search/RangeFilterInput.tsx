@@ -11,7 +11,7 @@ type RangeFilterInputProps = {
 
 const RangeFilterInput = ({ definition, value, onChange }: RangeFilterInputProps) => {
   if (definition.datatype === 'number') {
-    return <NumberRangeFilterInput value={value} onChange={onChange} />;
+    return <NumberRangeFilterInput definition={definition} value={value} onChange={onChange} />;
   }
   return <DateRangeFilterInput value={value} onChange={onChange} />;
 };

@@ -1,12 +1,14 @@
 import { useCallback, useRef, useState } from 'react';
 import { Button, InputNumber, Space } from 'antd';
 
+import type { NumberField } from '@/types/discovery/fieldDefinition';
 import type { FilterValue } from '@/features/search/types';
 import { parseBrackets, buildRangeString, type RangeState } from './rangeFilterUtils';
 
-type Props = { value: FilterValue; onChange: (v: FilterValue) => void };
+type Props = { definition: NumberField; value: FilterValue; onChange: (v: FilterValue) => void };
 
-const NumberRangeFilterInput = ({ value, onChange }: Props) => {
+const NumberRangeFilterInput = ({ definition, value, onChange }: Props) => {
+  const { minimum, maximum } = definition.config;
   const rawValue = Array.isArray(value) ? (value[0] ?? null) : value;
 
   // Local state buffers what the user is typing. We can't derive from rawValue directly because
@@ -81,7 +83,7 @@ const NumberRangeFilterInput = ({ value, onChange }: Props) => {
         controls={false}
         value={lowerStr ? parseFloat(lowerStr) : null}
         onChange={onLowerNumberChange}
-        placeholder="min"
+        placeholder={minimum != null ? String(minimum) : 'min'}
       />
       <Button disabled>–</Button>
       <InputNumber
@@ -90,7 +92,7 @@ const NumberRangeFilterInput = ({ value, onChange }: Props) => {
         status={boundsInverted ? 'error' : undefined}
         value={upperStr ? parseFloat(upperStr) : null}
         onChange={onUpperNumberChange}
-        placeholder="max"
+        placeholder={maximum != null ? String(maximum) : 'max'}
       />
       <Button onClick={onUpperBracketToggle}>{upperOpen ? ')' : ']'}</Button>
     </Space.Compact>
