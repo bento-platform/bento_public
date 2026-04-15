@@ -407,6 +407,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
                 ])
               );
             },
+            style: { marginTop: 12, marginBottom: 0 }, // Already have bottom padding in search results card
           }
         : undefined,
     [page, pageSize, totalMatches, isSmallScreen, navigateToSameScopeUrl, allQueryParams]
@@ -425,7 +426,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   return (
     <>
       <Col flex={1}>
-        <Flex justify="space-between" align="center" style={{ marginBottom: 8 }}>
+        <Flex justify="space-between" align="center" style={{ marginBottom: 12 }}>
           {onBack ? (
             <Button
               icon={<LeftOutlined />}
