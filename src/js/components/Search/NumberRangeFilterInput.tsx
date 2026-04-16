@@ -85,7 +85,7 @@ const NumberRangeFilterInput = ({ definition, value, onChange }: Props) => {
         onChange={onLowerNumberChange}
         placeholder={minimum != null ? String(minimum) : 'min'}
       />
-      <Button disabled>–</Button>
+      <span className="range-separator">–</span>
       <InputNumber
         className="flex-1 w-full"
         controls={false}

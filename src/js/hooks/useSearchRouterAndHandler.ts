@@ -97,8 +97,12 @@ export const useSearchRouterAndHandler = () => {
       // special case for blank value, meaning we should show a field filter with a blank value.
       if (value === '') return [field, true];
       // Range syntax accepted for number/date fields when authenticated.
-      if (queryDataPerm && (field.definition.datatype === 'number' || field.definition.datatype === 'date')) {
+      if (queryDataPerm && field.definition.datatype === 'number') {
         return [field, /^([[(][^,]+,[^,]+[\])])$/.test(value)];
+      }
+      // Date fields accept either a range string or a bin label (e.g. from a chart click).
+      if (queryDataPerm && field.definition.datatype === 'date') {
+        return [field, /^([[(][^,]+,[^,]+[\])])$/.test(value) || field.options.includes(value)];
       }
       return [field, field.options.includes(value)];
     };

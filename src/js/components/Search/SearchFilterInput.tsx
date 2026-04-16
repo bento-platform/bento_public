@@ -12,6 +12,7 @@ import { useScopeQueryData } from '@/hooks/censorship';
 import { useSearchQuery } from '@/features/search/hooks';
 import OptionDescription from '@/components/Search/OptionDescription';
 import RangeFilterInput from '@/components/Search/RangeFilterInput';
+import { RANGE_RE } from '@/components/Search/rangeFilterUtils';
 
 export type FilterInputValue = { field: string | null; value: FilterValue };
 
@@ -80,7 +81,13 @@ const SearchFilterInput = ({
   );
 
   const currentFieldDef = field ? fieldDefinitionMap[field] : undefined;
-  const isRangeField = hasQueryData && (currentFieldDef?.datatype === 'number' || currentFieldDef?.datatype === 'date');
+
+  // When a date field's current value is a bin label (e.g. "Jan 2026" from a chart click), fall back to the Select
+  // component so the bin selection is visible. Range strings and empty values use DateRangeFilterInput.
+  const rawFilterValue = Array.isArray(value) ? (value[0] ?? null) : value;
+  const isDateBinValue = currentFieldDef?.datatype === 'date' && rawFilterValue !== null && !RANGE_RE.test(rawFilterValue);
+
+  const isRangeField = hasQueryData && !isDateBinValue && (currentFieldDef?.datatype === 'number' || currentFieldDef?.datatype === 'date');
 
   const valueOptions = field ? fieldFilterOptions[field] : [];
   const isMultiple = hasQueryData && valueOptions.length > 2;
