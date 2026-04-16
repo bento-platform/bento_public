@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button, InputNumber, Space, Tooltip } from 'antd';
 
 import type { NumberField } from '@/types/discovery/fieldDefinition';
@@ -23,6 +23,11 @@ const NumberRangeFilterInput = ({ definition, value, onChange }: Props) => {
   // external prop changes (URL navigation, field reset) from prop changes caused by our own emissions.
   const lastEmittedRef = useRef<string | null | undefined>(undefined);
   const prevRawValueRef = useRef<string | null | undefined>(undefined);
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => () => {
+    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+  }, []);
 
   // Render-time derived-state sync (React recommended pattern for props → state).
   // Only sync when rawValue changed AND the change came from outside (not from our own onChange call).
@@ -43,6 +48,15 @@ const NumberRangeFilterInput = ({ definition, value, onChange }: Props) => {
     [onChange]
   );
 
+  // Debounced variant for number inputs — bracket toggles use emitValue directly (discrete actions).
+  const emitValueDebounced = useCallback(
+    (lStr: string, uStr: string, lo: boolean, uo: boolean) => {
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+      debounceTimerRef.current = setTimeout(() => emitValue(lStr, uStr, lo, uo), 300);
+    },
+    [emitValue]
+  );
+
   const onLowerBracketToggle = useCallback(() => {
     const next = !lowerOpen;
     setRangeState((prev) => ({ ...prev, lowerOpen: next }));
@@ -59,18 +73,18 @@ const NumberRangeFilterInput = ({ definition, value, onChange }: Props) => {
     (v: number | null) => {
       const s = v != null ? String(v) : '';
       setRangeState((prev) => ({ ...prev, lowerStr: s }));
-      emitValue(s, upperStr, lowerOpen, upperOpen);
+      emitValueDebounced(s, upperStr, lowerOpen, upperOpen);
     },
-    [upperStr, lowerOpen, upperOpen, emitValue]
+    [upperStr, lowerOpen, upperOpen, emitValueDebounced]
   );
 
   const onUpperNumberChange = useCallback(
     (v: number | null) => {
       const s = v != null ? String(v) : '';
       setRangeState((prev) => ({ ...prev, upperStr: s }));
-      emitValue(lowerStr, s, lowerOpen, upperOpen);
+      emitValueDebounced(lowerStr, s, lowerOpen, upperOpen);
     },
-    [lowerStr, lowerOpen, upperOpen, emitValue]
+    [lowerStr, lowerOpen, upperOpen, emitValueDebounced]
   );
 
   const lowerNum = lowerStr ? parseFloat(lowerStr) : null;
