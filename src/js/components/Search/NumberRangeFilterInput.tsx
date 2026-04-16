@@ -83,7 +83,7 @@ const NumberRangeFilterInput = ({ definition, value, onChange }: Props) => {
         controls={false}
         value={lowerStr ? parseFloat(lowerStr) : null}
         onChange={onLowerNumberChange}
-        placeholder={minimum != null ? String(minimum) : 'min'}
+        placeholder={minimum !== null ? String(minimum) : 'min'}
       />
       <span className="range-separator">–</span>
       <InputNumber
@@ -92,7 +92,7 @@ const NumberRangeFilterInput = ({ definition, value, onChange }: Props) => {
         status={boundsInverted ? 'error' : undefined}
         value={upperStr ? parseFloat(upperStr) : null}
         onChange={onUpperNumberChange}
-        placeholder={maximum != null ? String(maximum) : 'max'}
+        placeholder={maximum !== null ? String(maximum) : 'max'}
       />
       <Button onClick={onUpperBracketToggle}>{upperOpen ? ')' : ']'}</Button>
     </Space.Compact>
