@@ -25,9 +25,12 @@ const NumberRangeFilterInput = ({ definition, value, onChange }: Props) => {
   const prevRawValueRef = useRef<string | null | undefined>(undefined);
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  useEffect(() => () => {
-    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
-  }, []);
+  useEffect(
+    () => () => {
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    },
+    []
+  );
 
   // Render-time derived-state sync (React recommended pattern for props → state).
   // Only sync when rawValue changed AND the change came from outside (not from our own onChange call).
