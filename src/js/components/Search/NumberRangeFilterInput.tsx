@@ -3,7 +3,7 @@ import { Button, InputNumber, Space } from 'antd';
 
 import type { NumberField } from '@/types/discovery/fieldDefinition';
 import type { FilterValue } from '@/features/search/types';
-import { parseBrackets, buildRangeString, type RangeState } from './rangeFilterUtils';
+import { parseBrackets, buildRangeString, type RangeState } from '@/utils/rangeFilterUtils';
 
 type Props = { definition: NumberField; value: FilterValue; onChange: (v: FilterValue) => void };
 
