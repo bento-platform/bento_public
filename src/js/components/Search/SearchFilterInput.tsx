@@ -5,13 +5,14 @@ import { CloseOutlined } from '@ant-design/icons';
 import { T_PLURAL_COUNT, T_SINGULAR_COUNT } from '@/constants/i18n';
 
 import type { FilterValue } from '@/features/search/types';
-import type { DateField, NumberField } from '@/types/discovery/fieldDefinition';
+import type { NumberField } from '@/types/discovery/fieldDefinition';
 
 import { useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
 import { useSearchQuery } from '@/features/search/hooks';
 import OptionDescription from '@/components/Search/OptionDescription';
-import RangeFilterInput from '@/components/Search/RangeFilterInput';
+import DateRangeFilterInput from '@/components/Search/DateRangeFilterInput';
+import NumberRangeFilterInput from '@/components/Search/NumberRangeFilterInput';
 
 export type FilterInputValue = { field: string | null; value: FilterValue };
 
@@ -98,9 +99,14 @@ const SearchFilterInput = ({
         value={field}
         placeholder={t('search.filter_placeholder')}
       />
-      {isRangeField && currentFieldDef ? (
-        <RangeFilterInput
-          definition={currentFieldDef as NumberField | DateField}
+      {isRangeField && currentFieldDef?.datatype === 'number' ? (
+        <NumberRangeFilterInput
+          definition={currentFieldDef as NumberField}
+          value={Array.isArray(value) ? (value[0] ?? null) : value}
+          onChange={onFilterValueChange}
+        />
+      ) : isRangeField && currentFieldDef?.datatype === 'date' ? (
+        <DateRangeFilterInput
           value={Array.isArray(value) ? (value[0] ?? null) : value}
           onChange={onFilterValueChange}
         />
