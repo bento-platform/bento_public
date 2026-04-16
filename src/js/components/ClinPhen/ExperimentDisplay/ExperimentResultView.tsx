@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
-import { Button, Space, Tooltip } from 'antd';
+import { Button, Space, Tooltip, Typography } from 'antd';
 import { EyeOutlined } from '@ant-design/icons';
+const { Text } = Typography;
 
 import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
 import type { ConditionalDescriptionItem } from '@/types/descriptions';
@@ -39,6 +40,32 @@ export const ExperimentResultIndices = ({ indices }: { indices: ExperimentResult
   );
 };
 
+export const ExperimentResultStorage = ({ uri, server }: { uri?: string; server?: string }) => {
+  const fileUri = !!uri && uri.startsWith('file://');
+  return (
+    <TDescriptions
+      items={[
+        {
+          key: fileUri ? 'storage_path' : 'storage_uri',
+          children: fileUri ? (
+            <Text title={uri} copyable>
+              {uri.replace(/^file:\/\//, '')}
+            </Text>
+          ) : (
+            <UrlOrDrsUrlWithPopover url={uri} />
+          ),
+          isVisible: !!uri,
+        },
+        { key: 'storage_server', children: server },
+      ]}
+      className="fixed-item-label-width-very-narrow"
+      column={1}
+      size="compact"
+      defaultI18nPrefix="experiment_result."
+    />
+  );
+};
+
 type ExperimentResultExpandedRowProps = {
   packetId?: string;
   currentExperiment?: string;
@@ -73,6 +100,11 @@ export const ExperimentResultExpandedRow = ({
       key: 'indices',
       children: <ExperimentResultIndices indices={experimentResult.indices} />,
       isVisible: objectToBoolean(experimentResult.indices),
+    },
+    {
+      key: 'storage',
+      children: <ExperimentResultStorage uri={experimentResult.storage_uri} server={experimentResult.storage_server} />,
+      isVisible: !!experimentResult.storage_uri || !!experimentResult.storage_server,
     },
     {
       key: 'genome_assembly_id',
@@ -128,6 +160,8 @@ export const isExperimentResultRowExpandable = (r: ExperimentResult) =>
     r.filename ||
     r.url ||
     objectToBoolean(r.indices) ||
+    r.storage_uri ||
+    r.storage_server ||
     r.genome_assembly_id ||
     r.file_format ||
     r.data_output_type ||
