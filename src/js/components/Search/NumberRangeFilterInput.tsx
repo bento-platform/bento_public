@@ -1,13 +1,15 @@
 import { useCallback, useRef, useState } from 'react';
-import { Button, InputNumber, Space } from 'antd';
+import { Button, InputNumber, Space, Tooltip } from 'antd';
 
 import type { NumberField } from '@/types/discovery/fieldDefinition';
 import type { FilterValue } from '@/features/search/types';
+import { useTranslationFn } from '@/hooks';
 import { parseBrackets, buildRangeString, type RangeState } from '@/utils/rangeFilterUtils';
 
 type Props = { definition: NumberField; value: FilterValue; onChange: (v: FilterValue) => void };
 
 const NumberRangeFilterInput = ({ definition, value, onChange }: Props) => {
+  const t = useTranslationFn();
   const { minimum, maximum } = definition.config;
   const rawValue = Array.isArray(value) ? (value[0] ?? null) : value;
 
@@ -77,7 +79,11 @@ const NumberRangeFilterInput = ({ definition, value, onChange }: Props) => {
 
   return (
     <Space.Compact className="flex-1">
-      <Button onClick={onLowerBracketToggle}>{lowerOpen ? '(' : '['}</Button>
+      <Tooltip
+        title={`${t(lowerOpen ? 'search.range.lower_exclusive' : 'search.range.lower_inclusive')} — ${t('search.range.click_to_switch')}`}
+      >
+        <Button onClick={onLowerBracketToggle}>{lowerOpen ? '(' : '['}</Button>
+      </Tooltip>
       <InputNumber
         className="flex-1 w-full"
         controls={false}
@@ -94,7 +100,11 @@ const NumberRangeFilterInput = ({ definition, value, onChange }: Props) => {
         onChange={onUpperNumberChange}
         placeholder={maximum !== null ? String(maximum) : 'max'}
       />
-      <Button onClick={onUpperBracketToggle}>{upperOpen ? ')' : ']'}</Button>
+      <Tooltip
+        title={`${t(upperOpen ? 'search.range.upper_exclusive' : 'search.range.upper_inclusive')} — ${t('search.range.click_to_switch')}`}
+      >
+        <Button onClick={onUpperBracketToggle}>{upperOpen ? ')' : ']'}</Button>
+      </Tooltip>
     </Space.Compact>
   );
 };

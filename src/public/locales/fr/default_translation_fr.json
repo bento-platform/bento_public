@@ -68,6 +68,13 @@
       "plain_help": "Récupère les enregistrements qui correspondent exactement aux mots de la requête (sans distinction de casse).",
       "trigram": "Fuzzy",
       "trigram_help": "Récupère les enregistrements dont le texte est similaire (mais pas nécessairement identique) à la requête."
+    },
+    "range": {
+      "lower_inclusive": "Borne inférieure incluse",
+      "lower_exclusive": "Borne inférieure exclue",
+      "upper_inclusive": "Borne supérieure incluse",
+      "upper_exclusive": "Borne supérieure exclue",
+      "click_to_switch": "Cliquer pour changer"
     }
   },
   "OR": "OU",
