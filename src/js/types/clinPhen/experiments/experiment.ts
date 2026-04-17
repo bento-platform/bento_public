@@ -60,7 +60,20 @@ export interface Experiment extends ExtraPropertiesEntity {
   molecule_ontology?: OntologyTerm;
   library_id?: string;
   library_description?: string;
-  library_strategy?: 'Bisulfite-Seq' | 'RNA-Seq' | 'ChIP-Seq' | 'WES' | 'WGS' | 'RAD-Seq' | 'AMPLICON' | 'ATAC-Seq' | 'Hi-C' | 'ddRAD-Seq' | 'GT-Seq' | 'GBS' | 'Other';
+  library_strategy?:
+    | 'Bisulfite-Seq'
+    | 'RNA-Seq'
+    | 'ChIP-Seq'
+    | 'WES'
+    | 'WGS'
+    | 'RAD-Seq'
+    | 'AMPLICON'
+    | 'ATAC-Seq'
+    | 'Hi-C'
+    | 'ddRAD-Seq'
+    | 'GT-Seq'
+    | 'GBS'
+    | 'Other';
   library_source?:
     | 'Genomic'
     | 'Genomic Single Cell'
@@ -73,7 +86,17 @@ export interface Experiment extends ExtraPropertiesEntity {
     | 'Environmental DNA'
     | 'Environmental RNA'
     | 'Other';
-  library_selection?: 'Random' | 'PCR' | 'Random PCR' | 'RT-PCR' | 'MF' | 'Exome capture' | 'ChIP' | 'PolyA' | 'Restriction Digest' | 'Other';
+  library_selection?:
+    | 'Random'
+    | 'PCR'
+    | 'Random PCR'
+    | 'RT-PCR'
+    | 'MF'
+    | 'Exome capture'
+    | 'ChIP'
+    | 'PolyA'
+    | 'Restriction Digest'
+    | 'Other';
   library_layout?: 'Single' | 'Paired';
   library_extract_id?: string;
   insert_size?: number;
