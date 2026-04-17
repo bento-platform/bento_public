@@ -556,6 +556,10 @@ h3.search-sub-form-title {
   /* Align split line vertically in all descriptions */
   width: min(15vw, 125px);
 }
+.fixed-item-label-width-very-narrow .ant-descriptions-item-label {
+  /* Align split line vertically in all descriptions */
+  width: min(15vw, 80px);
+}
 
 tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .ant-descriptions-view > table {
   width: auto;
