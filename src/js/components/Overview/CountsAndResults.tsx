@@ -198,7 +198,8 @@ const CountsAndResults = () => {
         {countElements.length ? countElements : <CountCardPlaceholder loading={doingFirstLoad} />}
       </Space>
       {countElements.length && selectedEntity ? (
-        <Card className="shadow">
+        // shrink vertical padding slightly for consistent header bar/pagination bar margins + space-saving
+        <Card className="shadow" styles={{ body: { padding: '12px 24px' } }}>
           <SearchResultsTablePage entity={selectedEntity} />
         </Card>
       ) : null}
