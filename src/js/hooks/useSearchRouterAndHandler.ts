@@ -100,7 +100,9 @@ export const useSearchRouterAndHandler = () => {
       if (value === '') return [field, true, value];
       // Range syntax accepted for number/date fields when authenticated.
       if (queryDataPerm && field.definition.datatype === 'number') {
-        return /^([[(][^,]+,[^,]+[\])])$/.test(value) ? [field, true, value] : [field, false];
+        const isRange = /^([[(][^,]+,[^,]+[\])])$/.test(value);
+        const isComparison = /^([<>]|[≥≤])\s*-?\d+(\.\d+)?$/.test(value);
+        return isRange || isComparison ? [field, true, value] : [field, false];
       }
       // Date fields accept a range string, or a bin label (e.g. "Jan 2026" from a chart click) converted to a range.
       if (queryDataPerm && field.definition.datatype === 'date') {

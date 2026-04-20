@@ -4,7 +4,7 @@ import { Button, InputNumber, Space, Tooltip } from 'antd';
 import type { NumberField } from '@/types/discovery/fieldDefinition';
 import type { FilterValue } from '@/features/search/types';
 import { useTranslationFn } from '@/hooks';
-import { parseBrackets, buildRangeString, type RangeState } from '@/utils/rangeFilterUtils';
+import { parseBrackets, buildRangeString, buildComparisonString, type RangeState } from '@/utils/rangeFilterUtils';
 
 type Props = { definition: NumberField; value: FilterValue; onChange: (v: FilterValue) => void };
 
@@ -46,7 +46,9 @@ const NumberRangeFilterInput = ({ definition, value, onChange }: Props) => {
   const emitValue = useCallback(
     (lStr: string, uStr: string, lo: boolean, uo: boolean) => {
       const inverted = !!lStr && !!uStr && parseFloat(uStr) < parseFloat(lStr);
-      const result = inverted ? null : buildRangeString(lStr, uStr, lo, uo);
+      const result = inverted
+        ? null
+        : (buildRangeString(lStr, uStr, lo, uo) ?? buildComparisonString(lStr, uStr, lo, uo));
       lastEmittedRef.current = result;
       onChange(result);
     },
