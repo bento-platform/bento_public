@@ -4,9 +4,9 @@ import { useLocation } from 'react-router-dom';
 import type {
   FiltersState,
   FtsQueryType,
-  QueryFilterField,
   QueryParamEntries,
   QueryParamEntry,
+  SearchFieldAndOptions,
 } from '@/features/search/types';
 import type { BentoCountEntity } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
@@ -29,7 +29,7 @@ import { useNavigateToScope } from '@/hooks/navigation';
 import { useConfig } from '@/features/config/hooks';
 import { useSelectedScope } from '@/features/metadata/hooks';
 import { useScopeQueryData } from './censorship';
-import { useQueryFilterFields, useSearchQuery } from '@/features/search/hooks';
+import { useSearchFilterFields, useSearchQuery } from '@/features/search/hooks';
 
 import { fetchDiscoveryMatches } from '@/features/search/fetchDiscoveryMatches.thunk';
 import { performKatsuDiscovery } from '@/features/search/performKatsuDiscovery.thunk';
@@ -44,6 +44,7 @@ import {
 } from '@/features/search/query.store';
 
 import { buildQueryParamsUrl, filtersStateToQueryParamEntries, queryParamsWithoutKey } from '@/features/search/utils';
+import { parseDateBinAsRange } from '@/utils/rangeFilterUtils';
 import { getCurrentPage } from '@/utils/router';
 
 // Internal type for useSearchRouterAndHandler hook
@@ -82,7 +83,7 @@ export const useSearchRouterAndHandler = () => {
     pageSize,
   } = useSearchQuery();
 
-  const filterFields = useQueryFilterFields();
+  const filterFields = useSearchFilterFields();
 
   const loadAndValidateQuery = useCallback((): QueryValidationResult => {
     // We DO explicitly use the react-router location object here, so that this dependency changes when the search
@@ -91,11 +92,25 @@ export const useSearchRouterAndHandler = () => {
 
     const validateFilterQueryParam = ([key, value]: QueryParamEntry):
       | [undefined, false]
-      | [QueryFilterField, boolean] => {
+      | [SearchFieldAndOptions, false]
+      | [SearchFieldAndOptions, true, string] => {
       const field = filterFields.find((e) => e.id === key);
       if (!field) return [undefined, false];
       // special case for blank value, meaning we should show a field filter with a blank value.
-      return [field, field.options.includes(value) || value === ''];
+      if (value === '') return [field, true, value];
+      // Range syntax accepted for number/date fields when authenticated.
+      if (queryDataPerm && field.definition.datatype === 'number') {
+        const isRange = /^([[(][^,]+,[^,]+[\])])$/.test(value);
+        const isComparison = /^([<>]|[≥≤])\s*-?\d+(\.\d+)?$/.test(value);
+        return isRange || isComparison ? [field, true, value] : [field, false];
+      }
+      // Date fields accept a range string, or a bin label (e.g. "Jan 2026" from a chart click) converted to a range.
+      if (queryDataPerm && field.definition.datatype === 'date') {
+        if (/^([[(][^,]+,[^,]+[\])])$/.test(value)) return [field, true, value];
+        const rangeStr = parseDateBinAsRange(value);
+        return rangeStr ? [field, true, rangeStr] : [field, false];
+      }
+      return field.options.includes(value) ? [field, true, value] : [field, false];
     };
 
     const validFiltersState: FiltersState = {};
@@ -105,11 +120,18 @@ export const useSearchRouterAndHandler = () => {
     let valid = true; // Current query params are valid until proven otherwise in the loop below.
 
     [...query.entries()].forEach((qp) => {
-      const [fieldDef, qpValid] = validateFilterQueryParam(qp);
+      const [fieldDef, qpValid, convertedValue] = validateFilterQueryParam(qp);
+      // If the value was normalized (e.g. date bin label → range string), mark the URL as needing a rewrite.
+      if (qpValid && convertedValue !== qp[1]) valid = false;
       if (nFilters < maxQueryParameters && qpValid) {
-        if (qp[0] in validFiltersState && queryDataPerm && validFiltersState[qp[0]]) {
+        if (
+          qp[0] in validFiltersState &&
+          queryDataPerm &&
+          validFiltersState[qp[0]] &&
+          fieldDef.definition.datatype === 'string'
+        ) {
           // If we are allowed to have multiple values for a filter (i.e., we have query:data permissions) and we
-          // already have a non-null filter for this key
+          // already have a non-null filter for this key (only for string/enum fields — range fields take one value).
           const existingFilter = validFiltersState[qp[0]];
           if (Array.isArray(existingFilter)) {
             existingFilter.push(qp[1]);
@@ -121,7 +143,7 @@ export const useSearchRouterAndHandler = () => {
             (v1, v2) => fieldDef.options.indexOf(v1) - fieldDef.options.indexOf(v2)
           );
         } else {
-          validFiltersState[qp[0]] = qp[1] || null;
+          validFiltersState[qp[0]] = convertedValue || null;
         }
         nFilters += 1;
       } else if (qp[0].startsWith(NON_FILTER_QUERY_PARAM_PREFIX)) {

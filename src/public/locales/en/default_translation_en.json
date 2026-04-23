@@ -67,6 +67,13 @@
       "plain_help": "Retrieves records which exactly match words in the query (case-insensitive).",
       "trigram": "Fuzzy",
       "trigram_help": "Retrieves records which text that looks similar (but not necessarily identical) to the query."
+    },
+    "range": {
+      "lower_inclusive": "Lower bound inclusive",
+      "lower_exclusive": "Lower bound exclusive",
+      "upper_inclusive": "Upper bound inclusive",
+      "upper_exclusive": "Upper bound exclusive",
+      "click_to_switch": "Click to switch"
     }
   },
   "OR": "OR",

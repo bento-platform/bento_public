@@ -8,17 +8,14 @@ import {
   TEXT_QUERY_PARAM,
   TEXT_QUERY_TYPE_PARAM,
 } from './constants';
-import type { QueryFilterField, QueryParamEntries } from './types';
+import type { QueryParamEntries, SearchFieldAndOptions } from './types';
 import { bentoKatsuEntityToResultsDataEntity, filtersStateToQueryParamEntries } from './utils';
 
 export const useSearchQuery = () => useAppSelector((state) => state.query);
 
-export const useQueryFilterFields = (): QueryFilterField[] => {
+export const useSearchFilterFields = (): SearchFieldAndOptions[] => {
   const { filterSections } = useSearchQuery();
-  return useMemo(
-    () => filterSections.flatMap(({ fields }) => fields.map((field) => ({ id: field.id, options: field.options }))),
-    [filterSections]
-  );
+  return useMemo(() => filterSections.flatMap(({ fields }) => fields), [filterSections]);
 };
 
 export const useEntityAndTextQueryParams = (): QueryParamEntries => {

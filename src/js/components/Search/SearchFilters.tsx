@@ -7,7 +7,7 @@ import { FilterOutlined } from '@ant-design/icons';
 import { WAITING_STATES } from '@/constants/requests';
 import { TABLE_PAGE_QUERY_PARAM } from '@/features/search/constants';
 import { useConfig } from '@/features/config/hooks';
-import { useEntityAndTextQueryParams, useQueryFilterFields, useSearchQuery } from '@/features/search/hooks';
+import { useEntityAndTextQueryParams, useSearchFilterFields, useSearchQuery } from '@/features/search/hooks';
 import {
   buildQueryParamsUrl,
   combineQueryParamsWithoutKey,
@@ -29,7 +29,7 @@ const SearchFilters = (props: DefinedSearchSubFormProps) => {
   const { configStatus, maxQueryParameters } = useConfig();
   const { fieldsStatus, filters } = useSearchQuery();
 
-  const fields = useQueryFilterFields();
+  const fields = useSearchFilterFields();
   const entityAndTextQueryParams = useEntityAndTextQueryParams();
 
   const [filterInputs, usedFields] = useMemo(() => {

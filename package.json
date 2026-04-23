@@ -25,6 +25,7 @@
     "bento-charts": "~3.0.0",
     "bento-file-display": "https://github.com/bento-platform/bento-file-display/releases/download/v0.3.3/bento-file-display-v0.3.3.tgz",
     "clsx": "^2.1.1",
+    "dayjs": "^1.11.20",
     "dotenv": "^17.3.1",
     "file-saver": "^2.0.5",
     "filesize": "^11.0.13",

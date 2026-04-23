@@ -26,6 +26,16 @@
   --antd-blue-5: #1677ff;
 }
 
+.range-separator {
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  border-top: 1px solid #d9d9d9;
+  border-bottom: 1px solid #d9d9d9;
+  background: #fafafa;
+  user-select: none;
+}
+
 html,
 body {
   min-height: 100%;
