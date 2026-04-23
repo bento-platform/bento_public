@@ -30,7 +30,11 @@ import type {
 import { BentoRoute } from '@/types/routes';
 
 import { scopeSelectionEqual } from '@/features/metadata/utils';
-import { bentoKatsuEntityToResultsDataEntity, buildQueryParamsUrl } from '@/features/search/utils';
+import {
+  bentoKatsuEntityToResultsDataEntity,
+  buildQueryParamsUrl,
+  queryParamsWithoutKey,
+} from '@/features/search/utils';
 import { setEquals } from '@/utils/sets';
 
 import DatasetProvenanceModal from '@/components/Provenance/DatasetProvenanceModal';
@@ -400,10 +404,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
               }
               navigateToSameScopeUrl(
                 buildQueryParamsUrl(BentoRoute.Overview, [
-                  //remove stale params
-                  ...allQueryParams.filter(
-                    (p) => p.length > 0 && !(p[0] == TABLE_PAGE_QUERY_PARAM || p[0] == TABLE_PAGE_SIZE_QUERY_PARAM)
-                  ),
+                  ...queryParamsWithoutKey(allQueryParams, [TABLE_PAGE_QUERY_PARAM, TABLE_PAGE_SIZE_QUERY_PARAM]),
 
                   // AntD page is 1-indexed, discovery match page is 0-indexed:
                   [TABLE_PAGE_QUERY_PARAM, (newPage - 1).toString()],
