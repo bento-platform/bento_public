@@ -15,7 +15,7 @@ export const EMPTY_RANGE: RangeState = { lowerStr: '', upperStr: '', lowerOpen: 
 export const parseBrackets = (value: string | null): RangeState => {
   if (!value) return EMPTY_RANGE;
   const m = value.match(RANGE_RE);
-  if (m) return { lowerOpen: m[1] === '(', lowerStr: m[2], upperStr: m[3], upperOpen: m[4] === ')' };
+  if (m) return { lowerOpen: m[1] === '(', lowerStr: m[2].trim(), upperStr: m[3].trim(), upperOpen: m[4] === ')' };
   const c = value.match(COMPARISON_RE);
   if (c) {
     const [, op, num] = c;
