@@ -48,19 +48,20 @@ const initialState: MetadataState = {
 
 export const getProjects = createAsyncThunk<
   PaginatedResponse<Project>,
-  void,
+  string,
   { state: RootState; rejectValue: string }
 >(
   'metadata/getProjects',
-  (_, { rejectWithValue, getState }) => {
+  (language, { rejectWithValue, getState }) => {
+    const config = authorizedRequestConfig(getState());
+    config.headers = { ...config.headers, 'Accept-Language': language };
     return axios
-      .get(projectsUrl, authorizedRequestConfig(getState()))
+      .get(projectsUrl, config)
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue));
   },
   {
     condition(_, { getState }) {
-      // Only need to fetch projects once - if the projects are being/have already been fetched, don't re-execute.
       const { projectsStatus } = getState().metadata;
       const cond = projectsStatus === RequestStatus.Idle;
       if (!cond) {
@@ -75,6 +76,9 @@ const metadata = createSlice({
   name: 'metadata',
   initialState,
   reducers: {
+    resetProjects: (state) => {
+      state.projectsStatus = RequestStatus.Idle;
+    },
     selectScope: (state, { payload }: PayloadAction<DiscoveryScope>) => {
       // Defaults to the narrowest possible scope if there is only 1 project and only 1 dataset.
       // This forces Katsu to resolve the Discovery config with fallbacks from the bottom-up:
@@ -113,5 +117,5 @@ const metadata = createSlice({
   },
 });
 
-export const { selectScope, markScopeSet } = metadata.actions;
+export const { resetProjects, selectScope, markScopeSet } = metadata.actions;
 export default metadata.reducer;

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Routes, Route, useNavigate, useParams, Outlet } from 'react-router-dom';
 import { useAutoAuthenticate, useIsAuthenticated } from 'bento-auth-js';
-import { useAppDispatch } from '@/hooks';
+import { useAppDispatch, useLanguage } from '@/hooks';
 
 import {
   clearBiosampleCache,
@@ -16,7 +16,7 @@ import { getBeaconConfig, getBeaconFilters } from '@/features/beacon/beacon.stor
 import { getBeaconNetworkConfig } from '@/features/beacon/network.store';
 import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
 import { useMetadata } from '@/features/metadata/hooks';
-import { getProjects, markScopeSet, selectScope } from '@/features/metadata/metadata.store';
+import { getProjects, markScopeSet, resetProjects, selectScope } from '@/features/metadata/metadata.store';
 import { getGenomes } from '@/features/reference/reference.store';
 import { fetchSearchFields, fetchDiscoveryUIHints, resetAllQueryState } from '@/features/search/query.store';
 
@@ -92,6 +92,7 @@ const ScopedRoute = () => {
 
 const BentoAppRouter = () => {
   const dispatch = useAppDispatch();
+  const language = useLanguage();
 
   const { isAutoAuthenticating } = useAutoAuthenticate();
   const isAuthenticated = useIsAuthenticated();
@@ -157,11 +158,15 @@ const BentoAppRouter = () => {
       dispatch(getBeaconNetworkConfig());
     }
 
-    dispatch(getProjects());
     dispatch(makeGetAboutRequest());
     dispatch(makeGetServiceInfoRequest());
     dispatch(getGenomes());
   }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(resetProjects());
+    dispatch(getProjects(language));
+  }, [dispatch, language]);
 
   if (isAutoAuthenticating || projectsStatus === RequestStatus.Pending) {
     return <Loader fullHeight={true} />;
