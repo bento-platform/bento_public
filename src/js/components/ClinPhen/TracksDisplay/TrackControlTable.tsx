@@ -1,5 +1,5 @@
 import { Switch, Table } from 'antd';
-import type { ExperimentResultWithView } from '@/utils/igv';
+import type { ExperimentResultWithView } from '@/types/clinPhen/igv';
 
 const TrackControlTable = ({
   toggleView,

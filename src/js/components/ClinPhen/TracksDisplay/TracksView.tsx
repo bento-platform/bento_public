@@ -20,7 +20,7 @@ import { PUBLIC_URL } from '@/config';
 import JsonView from '@Util/JsonView'; //temp
 import { JSONType } from 'bento-file-display/dist'; //temp
 
-import { caseInsensitiveIgvFileFormatLookup } from '@/utils/igv';
+import { caseInsensitiveIgvFileInfoLookup } from '@/utils/igv';
 import { useBentoOrIgvReferencesById, useIgvFileAndIndexAccessUrls } from '@/hooks/igv';
 import TrackControlTable from './TrackControlTable';
 import { assemblyIdsForExperiments } from '@/utils/experiments';
@@ -38,16 +38,29 @@ const VISIBILITY_WINDOW = 600000;
 // as a (temporary) courtesy we could ignore case when doing lookup
 // this could be removed later when correct casing is enforced elsewhere
 
+// is there a performance difference between {genome: "hg38"} and {reference: {.......}} for the same igv genome? 
+
+
+
 const TracksView = ({
   phenopacket,
   tracks,
-  genomesByID,
+  // references,
+  genomesByID
 }: {
   phenopacket: Phenopacket;
   tracks: ExperimentResult[];
+  // references: Record<string, CreateOpt>;  //references in IGV format
   genomesByID: Record<string, Genome>;
 }) => {
-  console.log('TracksView()');
+
+  console.log("TracksView()")
+  console.log({tracks})
+  console.log({genomesByID})
+
+
+
+
 
   const igvDivRef = useRef<HTMLDivElement>(null);
   const igvBrowserRef = useRef<Browser | null>(null);
@@ -66,19 +79,25 @@ const TracksView = ({
   );
 
   const assembliesRequested = assemblyIdsForExperiments(tracks);
-  const referencesForIgv = useBentoOrIgvReferencesById(assembliesRequested);
-  const availableAssemblies = referencesForIgv ? Object.keys(referencesForIgv) : [];
+  const availableAssemblies = Object.keys(genomesByID)
+
+  const myReferences = useBentoOrIgvReferencesById(assembliesRequested)
+
+
+  useEffect(() => {
+    if (availableAssemblies.length) {
+      setSelectedAssemblyID(availableAssemblies[0]);
+      console.debug('auto-selected assembly ID:', availableAssemblies[0])
+    }
+  }, [availableAssemblies])
+
+
   // find something better than picking first one
-  if (availableAssemblies.length) {
-    setSelectedAssemblyID(availableAssemblies[0]);
-    console.debug('auto-selected assembly ID:', availableAssemblies[0]);
-  }
+
+
 
   console.log({ assembliesRequested }); //correctly cased
-  console.log({ referencesForIgv }); // correctly cased
-
-  // shouldn't be able to request an assembly with no reference
-  // so look up all references
+  // console.log({ references }); // correctly cased
 
   const accessToken: string | undefined = useAccessToken();
 
@@ -92,19 +111,19 @@ const TracksView = ({
     igv.setOauthToken(accessToken, new URL(PUBLIC_URL).host);
   }, [accessToken]);
 
-  const showDrawer = () => {
-    setDrawerOpen(true);
-  };
+  const showDrawer = useCallback(() => {
+    setDrawerOpen(true)
+  }, [])
 
-  const closeDrawer = () => {
+  const closeDrawer = useCallback(() => {
     setDrawerOpen(false);
-  };
+  }, [])
 
   const buildIgvTrack = useCallback(
     (track: ExperimentResult): IgvTrack | null => {
       if (!(track.url && track.file_format)) return null;
 
-      const igvFileDetails = caseInsensitiveIgvFileFormatLookup(track.file_format);
+      const igvFileDetails = caseInsensitiveIgvFileInfoLookup(track.file_format);
       if (!igvFileDetails) return null;
 
       const { trackType, fileFormat } = igvFileDetails;
@@ -166,15 +185,31 @@ const TracksView = ({
 
   useEffect(() => {
     console.log('igv useEffect()');
+
+
     if (!accessUrls) return;
     if (hasCreatedBrowser) return;
-    if (!referencesForIgv) return;
+    // if (references) return;  //remove
     if (!selectedAssemblyID) return 
+    if (!igvDivRef.current) return
+
+    console.log('igv useEffect() continuing');
+
+
+    console.log({tracksWithView})
+    const tracksWithViewNonNullViewable = tracksWithView.filter((t) => t !== null && t.viewInIgv)  
+    const igvTracks = tracksWithViewNonNullViewable.map((t) => buildIgvTrack(t) as IgvTrack)
+
+
+    console.log({tracksWithViewNonNullViewable})
+    console.log({igvTracks})
+
 
     const initialIgvTracks: IgvTrack[] = tracksWithView
-      .filter((t) => t !== null && t.viewInIgv)
+      .filter((t) => t !== null && t.viewInIgv)   //missing: filter by file actually present 
       .map((t) => buildIgvTrack(t) as IgvTrack);
 
+      
     // add reference
     // add search object in tracks
     // referencesForIgv is an object, you need to pull the record out of the object
@@ -182,14 +217,20 @@ const TracksView = ({
     // "requested assembly" is from experiment data, so should be correct
     // perhaps only return one reference at time
     // can autoselect if only one reference in data
-    // otherwise arbitrarily choose (the first one )
+    // otherwise arbitrarily choose (the first one )  
 
-    const referenceForSelectedAssembly = referencesForIgv[selectedAssemblyID]
+    const referenceForSelectedAssembly = myReferences[selectedAssemblyID]
 
     const igvOptions = {
       ...(referenceForSelectedAssembly as GenomeOpt),
       tracks: initialIgvTracks,
     };
+
+    // const igvOptions = {
+    //   genome: "hg38",
+    //   tracks: initialIgvTracks,
+    // };
+
 
     console.debug('creating igv.js browser with options:', igvOptions, '; tracks:', initialIgvTracks);
     igv
@@ -208,7 +249,7 @@ const TracksView = ({
       .catch((err) => {
         console.error(err);
       });
-  }, [accessUrls, buildIgvTrack, tracksWithView]);
+  }, [accessUrls, buildIgvTrack, tracks, genomesByID]);
 
   return (
     <>
@@ -226,7 +267,9 @@ const TracksView = ({
 
         <TrackControlTable toggleView={toggleView} experimentResults={tracksWithView} />
       </Drawer>
-      {/* <JsonView collapsed={2} src={accessUrls as unknown as JSONType} /> */}
+      <JsonView collapsed={2} src={tracks as unknown as JSONType} />
+      <JsonView collapsed={2} src={accessUrls as unknown as JSONType} />
+
     </>
   );
 };

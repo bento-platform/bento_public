@@ -19,7 +19,7 @@ export interface ExperimentResult extends ExtraPropertiesEntity {
   description: string;
   filename: string;
   url?: string;
-  indices: ExperimentResultIndex[];
+  indices: ExperimentResultIndex[];   // should be optional
   genome_assembly_id?: string;
   file_format?:
     | 'SAM'
