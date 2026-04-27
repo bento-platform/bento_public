@@ -14,6 +14,7 @@ import beaconReducer from './features/beacon/beacon.store';
 import beaconNetworkReducer from './features/beacon/network.store';
 import metadataReducer from '@/features/metadata/metadata.store';
 import reference from '@/features/reference/reference.store';
+import igvReference from './features/igv/igv.store';
 import ui from '@/features/ui/ui.store';
 import { getValue, saveValue } from './utils/localStorage';
 
@@ -42,6 +43,7 @@ export const store = configureStore({
     beaconNetwork: beaconNetworkReducer,
     metadata: metadataReducer,
     reference,
+    igv: igvReference,
     ui,
   },
   preloadedState: persistedState,
