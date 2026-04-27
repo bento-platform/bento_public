@@ -44,23 +44,15 @@ const igvReference = createSlice({
   reducers: {},
   extraReducers(builder) {
     builder.addCase(getIgvGenomes.pending, (state) => {
-      console.log('igv pending');
-
       state.igvGenomesStatus = RequestStatus.Pending;
     });
     builder.addCase(getIgvGenomes.fulfilled, (state, { payload }) => {
-      console.log('igv fulfilled');
-
       payload = payload ?? [];
       state.igvGenomes = payload;
       state.igvGenomesByID = Object.fromEntries(payload.map((g) => [g.id, g]));
-      console.log('igv loaded genomes');
-
       state.igvGenomesStatus = RequestStatus.Fulfilled;
     });
     builder.addCase(getIgvGenomes.rejected, (state) => {
-      console.log('igv failed');
-
       state.igvGenomesStatus = RequestStatus.Rejected;
     });
   },
