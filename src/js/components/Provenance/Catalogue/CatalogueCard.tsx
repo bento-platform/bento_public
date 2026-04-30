@@ -52,9 +52,7 @@ const CatalogueCard = ({ project }: { project: Project }) => {
   const { datasets_v2: datasets, created, updated, title, description, identifier, counts } = project;
 
   const { selectedKeywords, extraKeywords, extraKeywordCount } = useMemo(() => {
-    const keywords = datasets
-      .flatMap((d) => d.keywords ?? [])
-      .map((k) => t(typeof k === 'string' ? k : k.label));
+    const keywords = datasets.flatMap((d) => d.keywords ?? []).map((k) => t(typeof k === 'string' ? k : k.label));
 
     let totalCharacters = 0;
     const selectedKeywords: string[] = [];

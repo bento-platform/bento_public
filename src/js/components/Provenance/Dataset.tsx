@@ -28,7 +28,7 @@ const TagList = ({ keywords }: { keywords?: (string | OntologyClass)[] }) => {
   return (
     <Space size={[0, 8]} align="start" wrap className="w-full">
       {keywords?.map((k, i) => (
-        <Tag key={i} color="cyan" style={i === (keywords.length - 1) ? { marginInlineEnd: 0 } : undefined}>
+        <Tag key={i} color="cyan" style={i === keywords.length - 1 ? { marginInlineEnd: 0 } : undefined}>
           {t(keywordLabel(k))}
         </Tag>
       ))}
