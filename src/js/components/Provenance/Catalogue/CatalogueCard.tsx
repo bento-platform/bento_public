@@ -161,7 +161,13 @@ const CatalogueCard = ({ project }: { project: Project }) => {
                 }}
               >
                 {datasets.map((d) => (
-                  <Dataset parentProjectID={identifier} key={d.identifier} dataset={d} format="carousel" filteredCounts={d._counts} />
+                  <Dataset
+                    parentProjectID={identifier}
+                    key={d.identifier}
+                    dataset={d}
+                    format="carousel"
+                    filteredCounts={d._counts}
+                  />
                 ))}
               </Carousel>
             </>
