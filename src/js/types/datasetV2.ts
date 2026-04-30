@@ -4,85 +4,92 @@ export type LanguageAlpha2 = string;
 // ---- String literal unions (from Python TranslatedLiteral definitions) ----
 
 export type Role =
-  | "Principal Investigator"
-  | "Co-Investigator"
-  | "Sub-Investigator"
-  | "Study Director"
-  | "Project Lead"
-  | "Project Manager"
-  | "Researcher"
-  | "Research Assistant"
-  | "Data Scientist"
-  | "Statistician"
-  | "Study Coordinator"
-  | "Lab Technician"
-  | "Participant"
-  | "Subject"
-  | "Volunteer"
-  | "Sponsoring Organization"
-  | "Collaborating Organization"
-  | "Consortium"
-  | "Institution"
-  | "Site"
-  | "Research Center"
-  | "Publisher"
-  | "IRB"
-  | "Ethics Board"
-  | "Data Monitoring Committee"
-  | "Compliance Officer"
-  | "Sponsor"
-  | "Funder"
-  | "Grant Agency"
-  | "Consultant"
-  | "Advisor"
-  | "Reviewer"
-  | "Data Provider"
-  | "Data Controller"
-  | "Data Processor"
-  | "Data Contributor"
-  | "Data Custodian"
-  | "Data Producer"
-  | "Partner"
-  | "Stakeholder"
-  | "Community Representative"
-  | "Other";
+  | 'Principal Investigator'
+  | 'Co-Investigator'
+  | 'Sub-Investigator'
+  | 'Study Director'
+  | 'Project Lead'
+  | 'Project Manager'
+  | 'Researcher'
+  | 'Research Assistant'
+  | 'Data Scientist'
+  | 'Statistician'
+  | 'Study Coordinator'
+  | 'Lab Technician'
+  | 'Participant'
+  | 'Subject'
+  | 'Volunteer'
+  | 'Sponsoring Organization'
+  | 'Collaborating Organization'
+  | 'Consortium'
+  | 'Institution'
+  | 'Site'
+  | 'Research Center'
+  | 'Publisher'
+  | 'IRB'
+  | 'Ethics Board'
+  | 'Data Monitoring Committee'
+  | 'Compliance Officer'
+  | 'Sponsor'
+  | 'Funder'
+  | 'Grant Agency'
+  | 'Consultant'
+  | 'Advisor'
+  | 'Reviewer'
+  | 'Data Provider'
+  | 'Data Controller'
+  | 'Data Processor'
+  | 'Data Contributor'
+  | 'Data Custodian'
+  | 'Data Producer'
+  | 'Partner'
+  | 'Stakeholder'
+  | 'Community Representative'
+  | 'Other';
 
 export type PublicationType =
-  | "Journal Article"
-  | "Conference Paper"
-  | "Workshop Paper"
-  | "Short Paper"
-  | "Poster"
-  | "Preprint"
-  | "Book"
-  | "Book Chapter"
-  | "Monograph"
-  | "Technical Report"
-  | "White Paper"
-  | "Working Paper"
-  | "Thesis"
+  | 'Journal Article'
+  | 'Conference Paper'
+  | 'Workshop Paper'
+  | 'Short Paper'
+  | 'Poster'
+  | 'Preprint'
+  | 'Book'
+  | 'Book Chapter'
+  | 'Monograph'
+  | 'Technical Report'
+  | 'White Paper'
+  | 'Working Paper'
+  | 'Thesis'
   | "Master's Thesis"
-  | "Doctoral Dissertation"
-  | "Dataset"
-  | "Software"
-  | "Software Paper"
-  | "Survey"
-  | "Review Article"
-  | "Editorial"
-  | "Commentary"
-  | "Patent";
+  | 'Doctoral Dissertation'
+  | 'Dataset'
+  | 'Software'
+  | 'Software Paper'
+  | 'Survey'
+  | 'Review Article'
+  | 'Editorial'
+  | 'Commentary'
+  | 'Patent';
 
-export type PublicationVenueType = "Journal" | "Conference" | "Workshop" | "Repository" | "Publisher" | "University" | "Data Repository";
+export type PublicationVenueType =
+  | 'Journal'
+  | 'Conference'
+  | 'Workshop'
+  | 'Repository'
+  | 'Publisher'
+  | 'University'
+  | 'Data Repository';
 
-export type ParticipantCriterionType = "Inclusion" | "Exclusion" | "Other";
+export type ParticipantCriterionType = 'Inclusion' | 'Exclusion' | 'Other';
 
 export type LinkType =
-  | "Downloadable Artifact"
-  | "Data Management Plan"
-  | "Schema"
-  | "External Reference"
-  | "Data Access"
-  | "Data Request Form";
+  | 'Downloadable Artifact'
+  | 'Data Management Plan'
+  | 'Schema'
+  | 'External Reference'
+  | 'Data Access'
+  | 'Data Request Form';
 
 // ---- Shared primitives ----
 
@@ -108,7 +115,7 @@ export interface Contact {
 // ---- People / organizations ----
 
 export interface Organization {
-  type: "organization";
+  type: 'organization';
   name: string;
   description?: string | null;
   contact?: Contact | null;
@@ -117,7 +124,7 @@ export interface Organization {
 }
 
 export interface Person {
-  type: "person";
+  type: 'person';
   name: string;
   honorific?: string | null;
   /** Alternative names such as maiden names, nicknames, or transliterations. */
@@ -179,7 +186,7 @@ export interface Publication {
 
 export interface Logo {
   url: string;
-  theme: "light" | "dark" | "default";
+  theme: 'light' | 'dark' | 'default';
   description?: string | null;
   /** Whether the logo contains branding text beside the logo image. */
   contains_text: boolean;
@@ -188,13 +195,13 @@ export interface Logo {
 // ---- Spatial coverage (GeoJSON Feature) ----
 
 type GeoJSONGeometry =
-  | { type: "Point"; coordinates: number[] }
-  | { type: "MultiPoint"; coordinates: number[][] }
-  | { type: "LineString"; coordinates: number[][] }
-  | { type: "MultiLineString"; coordinates: number[][][] }
-  | { type: "Polygon"; coordinates: number[][][] }
-  | { type: "MultiPolygon"; coordinates: number[][][][] }
-  | { type: "GeometryCollection"; geometries: GeoJSONGeometry[] };
+  | { type: 'Point'; coordinates: number[] }
+  | { type: 'MultiPoint'; coordinates: number[][] }
+  | { type: 'LineString'; coordinates: number[][] }
+  | { type: 'MultiLineString'; coordinates: number[][][] }
+  | { type: 'Polygon'; coordinates: number[][][] }
+  | { type: 'MultiPolygon'; coordinates: number[][][][] }
+  | { type: 'GeometryCollection'; geometries: GeoJSONGeometry[] };
 
 export interface SpatialCoverageProperties {
   name: string;
@@ -202,7 +209,7 @@ export interface SpatialCoverageProperties {
 }
 
 export interface SpatialCoverageFeature {
-  type: "Feature";
+  type: 'Feature';
   geometry: GeoJSONGeometry | null;
   properties: SpatialCoverageProperties;
   id?: string | number | null;
@@ -231,7 +238,7 @@ export interface FundingSource {
 
 export interface LongDescription {
   content: string;
-  content_type: "text/html" | "text/markdown" | "text/plain";
+  content_type: 'text/html' | 'text/markdown' | 'text/plain';
 }
 
 // ---- Ontology types (from bento_lib.ontologies.models) ----
@@ -258,7 +265,7 @@ export interface VersionedOntologyResource extends OntologyResource {
 // ---- Dataset V2 (ProjectScopedDatasetModel) ----
 
 export interface DatasetV2 {
-  schema_version: "1.0";
+  schema_version: '1.0';
   /** ISO 639-1 two-letter language code. Defaults to "en". */
   language: LanguageAlpha2;
 
@@ -299,8 +306,8 @@ export interface DatasetV2 {
 
   participant_criteria?: ParticipantCriteria[] | null;
 
-  study_status?: "ONGOING" | "COMPLETED" | null;
-  study_context?: "CLINICAL" | "RESEARCH" | null;
+  study_status?: 'ONGOING' | 'COMPLETED' | null;
+  study_context?: 'CLINICAL' | 'RESEARCH' | null;
 
   /** List of specific scientific or clinical domains addressed by the study. */
   domain?: string[] | null;
