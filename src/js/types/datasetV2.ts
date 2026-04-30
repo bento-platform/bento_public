@@ -1,3 +1,5 @@
+import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
+
 /** ISO 639-1 two-letter language code, e.g. "en" or "fr". */
 export type LanguageAlpha2 = string;
 
@@ -316,4 +318,6 @@ export interface DatasetV2 {
 
   /** Additional custom metadata properties not covered by the standard schema. */
   extra_properties?: Record<string, string | number | boolean | null> | null;
+
+  _counts?: KatsuEntityCountsOrBooleans;
 }
