@@ -22,7 +22,7 @@ import { useInnerWidth } from '@/hooks/useResponsiveContext';
 
 import { fetchDiscoveryMatches } from '@/features/search/fetchDiscoveryMatches.thunk';
 
-import type { BentoCountEntity } from '@/types/entities';
+import type { BentoCountEntity, KatsuEntityCountsOrBooleans } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
 import {
   bentoKatsuEntityToResultsDataEntity,
@@ -84,7 +84,10 @@ const CountsAndResults = () => {
   const selectedProject = useSelectedProject();
   const selectedDataset = useSelectedDataset();
 
-  const entityCounts = selectedDataset?.counts ?? selectedProject?.counts;
+  const rawCounts = selectedDataset?.counts ?? selectedProject?.counts;
+  const entityCounts = Array.isArray(rawCounts)
+    ? (Object.fromEntries(rawCounts.map((c) => [c.count_entity, c.value])) as KatsuEntityCountsOrBooleans)
+    : rawCounts;
 
   const {
     message,
