@@ -18,7 +18,7 @@ import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
 import { useMetadata } from '@/features/metadata/hooks';
 import { getProjects, markScopeSet, resetProjects, selectScope } from '@/features/metadata/metadata.store';
 import { getGenomes } from '@/features/reference/reference.store';
-import { fetchSearchFields, fetchDiscoveryUIHints, resetAllQueryState } from '@/features/search/query.store';
+import { fetchSearchFields, fetchDiscoveryUIHints, resetAllQueryState, preSeedCounts } from '@/features/search/query.store';
 
 import Loader from '@/components/Loader';
 import DefaultLayout from '@/components/Util/DefaultLayout';
@@ -98,6 +98,8 @@ const BentoAppRouter = () => {
   const isAuthenticated = useIsAuthenticated();
   const {
     selectedScope: { scope, scopeSet },
+    projectsByID,
+    datasetsByID,
     projectsStatus,
   } = useMetadata();
 
@@ -116,6 +118,13 @@ const BentoAppRouter = () => {
     //  TODO: in the future, perhaps filters could be kept if the scopes overlap and we know there's discovery config
     //   inheritance, but this would require quite a bit more logic and maybe is unnecessarily complex.
     dispatch(resetAllQueryState({ resetNodeCounts: false }));
+
+    const preSeededCounts =
+      (scope.dataset ? datasetsByID[scope.dataset]?._counts : undefined) ??
+      (scope.project ? projectsByID[scope.project]?.counts : undefined);
+    if (preSeededCounts) {
+      dispatch(preSeedCounts(preSeededCounts));
+    }
 
     dispatch(fetchSearchFields());
     dispatch(fetchDiscoveryUIHints());
@@ -140,7 +149,7 @@ const BentoAppRouter = () => {
     // dispatch(invalidateConfig());
     //  - Data types are (partially) invalid: counts and last-ingestion time may be different; refresh them:
     dispatch(makeGetDataTypes());
-  }, [dispatch, isAuthenticated, scope, scopeSet]);
+  }, [dispatch, isAuthenticated, scope, scopeSet, projectsByID, datasetsByID]);
 
   useEffect(() => {
     // If authorization status changed, invalidate anything which is authorization-dependent.
