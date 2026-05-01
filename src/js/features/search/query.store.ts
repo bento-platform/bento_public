@@ -235,6 +235,10 @@ const query = createSlice({
     setDoneFirstLoad: (state) => {
       state.doneFirstLoad = true;
     },
+    preSeedCounts: (state, { payload }: PayloadAction<KatsuEntityCountsOrBooleans>) => {
+      state.resultCountsOrBools = payload;
+      state.doneFirstLoad = true;
+    },
     setSelectedEntity: (state, { payload }: PayloadAction<BentoCountEntity | null>) => {
       state.selectedEntity = payload;
     },
@@ -377,6 +381,7 @@ export const {
   setTextQuery,
   setTextQueryType,
   setDoneFirstLoad,
+  preSeedCounts,
   setSelectedEntity,
   setMatchesPage,
   setMatchesPageSize,

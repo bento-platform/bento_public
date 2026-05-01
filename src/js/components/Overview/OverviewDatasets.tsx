@@ -23,7 +23,7 @@ const OverviewDatasets = ({
               dataset={d}
               format="card"
               filteredCounts={
-                countsByDataset ? (countsByDataset[d.identifier] ?? EMPTY_KATSU_ENTITY_COUNTS) : undefined
+                countsByDataset ? (countsByDataset[d.identifier] ?? EMPTY_KATSU_ENTITY_COUNTS) : d._counts
               }
             />
           </div>
