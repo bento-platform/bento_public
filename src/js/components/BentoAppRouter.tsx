@@ -18,7 +18,12 @@ import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
 import { useMetadata } from '@/features/metadata/hooks';
 import { getProjects, markScopeSet, resetProjects, selectScope } from '@/features/metadata/metadata.store';
 import { getGenomes } from '@/features/reference/reference.store';
-import { fetchSearchFields, fetchDiscoveryUIHints, resetAllQueryState, preSeedCounts } from '@/features/search/query.store';
+import {
+  fetchSearchFields,
+  fetchDiscoveryUIHints,
+  resetAllQueryState,
+  preSeedCounts,
+} from '@/features/search/query.store';
 
 import Loader from '@/components/Loader';
 import DefaultLayout from '@/components/Util/DefaultLayout';
