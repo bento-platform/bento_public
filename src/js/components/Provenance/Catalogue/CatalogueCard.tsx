@@ -166,7 +166,7 @@ const CatalogueCard = ({ project }: { project: Project }) => {
                     key={d.identifier}
                     dataset={d}
                     format="carousel"
-                    filteredCounts={d._counts}
+                    filteredCounts={d.counts_by_entity}
                   />
                 ))}
               </Carousel>

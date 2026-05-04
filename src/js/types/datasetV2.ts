@@ -321,5 +321,5 @@ export interface DatasetV2 {
   /** Additional custom metadata properties not covered by the standard schema. */
   extra_properties?: Record<string, string | number | boolean | null> | null;
 
-  _counts?: KatsuEntityCountsOrBooleans;
+  counts_by_entity?: KatsuEntityCountsOrBooleans;
 }
