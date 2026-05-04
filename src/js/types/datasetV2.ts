@@ -35,6 +35,8 @@ export type Role =
   | 'Sponsor'
   | 'Funder'
   | 'Grant Agency'
+  | 'Author'
+  | 'Corresponding Author'
   | 'Consultant'
   | 'Advisor'
   | 'Reviewer'
