@@ -125,7 +125,7 @@ const BentoAppRouter = () => {
     dispatch(resetAllQueryState({ resetNodeCounts: false }));
 
     const preSeededCounts =
-      (scope.dataset ? datasetsByID[scope.dataset]?._counts : undefined) ??
+      (scope.dataset ? datasetsByID[scope.dataset]?.counts_by_entity : undefined) ??
       (scope.project ? projectsByID[scope.project]?.counts : undefined);
     if (preSeededCounts) {
       dispatch(preSeedCounts(preSeededCounts));
