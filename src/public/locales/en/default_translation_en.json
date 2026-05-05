@@ -528,5 +528,24 @@
     "mime_type": "MIME Type",
     "checksums": "Checksums",
     "access_methods": "Access Methods"
+  },
+  "pcgl": {
+    "links": {
+      "policies": "Policies & Guidelines",
+      "helpGuides": "Help Guides",
+      "controlledDataUsers": "Controlled Data Users",
+      "apply": "Apply For Access",
+      "privacy": "Privacy Policy",
+      "termsConditions": "Terms & Conditions",
+      "publicationPolicy": "Publication Policy",
+      "contact": "Contact Us",
+      "contactHref": "https://genomelibrary.ca/contact-us/",
+      "pcglWebsite": "PCGL Website",
+      "pcglWebsiteHref": "https://genomelibrary.ca/",
+      "dataPlatform": "Data Platform",
+      "myApplications": "My Applications",
+      "manageApplications": "Manage Applications",
+      "admin": "Admin Dashboard"
+    }
   }
 }

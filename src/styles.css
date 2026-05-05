@@ -427,17 +427,34 @@ ul#page-header-stats li.loading {
 
 #pcgl-footer {
   background-color: #054A74;
-  font-size: 12px;
+  border-top: 1px solid #02253B;  /* HSL of above darkened by 6pp */
+  font-size: 13px;
 }
 #pcgl-footer img {
   margin-bottom: 12px;
+  object-fit: contain;
 }
 #pcgl-footer p {
   color: rgba(255, 255, 255, 0.88);
+  line-height: 1.4em;
 }
 #pcgl-footer a {
   text-decoration: underline;
   color: white;
+  transition: color 0.15s ease-in-out;
+}
+#pcgl-footer a:hover {
+  color: rgba(255, 255, 255, 0.84);
+}
+#pcgl-footer a:active {
+  color: rgba(255, 255, 255, 0.76);
+}
+#pcgl-footer__links {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  column-gap: 12px;
+  row-gap: 18px;
+  text-align: center;
 }
 
 /* END layout HTML styling */
@@ -737,6 +754,16 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
 
 /* END phenopackets/other clinical+phenotypic metadata views */
 
+@media (min-width: 1200px) {
+  #pcgl-footer__links {
+    column-gap: 40px;
+    text-align: left;
+  }
+}
+
+@media (min-width: 1400px) {
+  #pcgl-footer__links { column-gap: 70px; }
+}
 
 @media (min-width: 1050px) and (max-width: 1550px) {
   .dataset-provenance-card-grid {
@@ -746,7 +773,7 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
 }
 
 @media (max-width: 768px) {
-  /* Same breakpoint as constants/deviceBreakpoints DeviceBreakpoints.TABLET */
+  /* Same breakpoint as constants/deviceBreakpoints DeviceBreakpoints.TABLET & Ant md */
 
   :root {
     --content-padding-v: 10px;
@@ -790,10 +817,14 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
     /* For small screens, reset group gap size */
     gap: 16px;
   }
+
+  #pcgl-footer__links {
+    grid-template-columns: auto auto;
+  }
 }
 
 @media (max-width: 576px) {
-  /* Same breakpoint as constants/deviceBreakpoints DeviceBreakpoints.MOBILE */
+  /* Same breakpoint as constants/deviceBreakpoints DeviceBreakpoints.MOBILE & Ant sm */
 
   ul#page-header-stats {
     flex-direction: column;
