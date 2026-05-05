@@ -31,21 +31,20 @@ const CataloguePageHeaderStats = () => {
   const t = useTranslationFn();
 
   useEffect(() => {
+    // Execute a discovery query without any scope, filters, or text query in order to cache whole-instance counts.
     if (scopeSet && !nodeCountsOrBoolsFetched) dispatch(performKatsuDiscovery());
   }, [dispatch, scopeSet, nodeCountsOrBoolsFetched]);
 
-  const nDatasets = Object.keys(datasetsByID).length;
-  const otherCountsLoading = !nodeCountsOrBoolsFetched;
-
-  const stats = useMemo<{ count: number | boolean; entity: BentoUICountEntity; loading: boolean }[]>(
-    () => [
+  const stats = useMemo<{ count: number | boolean; entity: BentoUICountEntity; loading: boolean }[]>(() => {
+    const nDatasets = Object.keys(datasetsByID).length;
+    const otherCountsLoading = !nodeCountsOrBoolsFetched;
+    return [
       { count: nDatasets, entity: 'dataset', loading: projectsStatus === RequestStatus.Pending },
       { count: nodeCountsOrBools?.individual, entity: 'individual', loading: otherCountsLoading },
       { count: nodeCountsOrBools?.biosample, entity: 'biosample', loading: otherCountsLoading },
       // { count: nWGS, entity: 'whole_genome_sequence' },  TODO: PCGL need support from backend for this
-    ],
-    [nDatasets, nodeCountsOrBools, projectsStatus, otherCountsLoading]
-  );
+    ];
+  }, [datasetsByID, nodeCountsOrBools, nodeCountsOrBoolsFetched, projectsStatus]);
 
   return (
     <ul id="page-header-stats">
@@ -72,9 +71,7 @@ const CataloguePageHeaderStats = () => {
   );
 };
 
-const PageHeader = ({ children, mode }: { children: ReactNode; mode: 'catalogue' | 'page' }) => {
-  const catalogue = mode === 'catalogue';
-
+const PageHeader = ({ children, catalogue }: { children: ReactNode; catalogue?: boolean }) => {
   const isSmallScreen = useSmallScreen();
 
   // Effect for adding the data-stuck attribute to the page header when we scroll down.
@@ -85,10 +82,10 @@ const PageHeader = ({ children, mode }: { children: ReactNode; mode: 'catalogue'
       { threshold: [1], root: document.getElementById('content-layout') }
     );
 
-    const st = document.getElementById('page-header');
+    const pageHeaderElement = document.getElementById('page-header');
 
-    if (st) {
-      observer.observe(st);
+    if (pageHeaderElement) {
+      observer.observe(pageHeaderElement);
     }
 
     return () => {
@@ -99,7 +96,7 @@ const PageHeader = ({ children, mode }: { children: ReactNode; mode: 'catalogue'
   return (
     <header
       id="page-header"
-      className={clsx(`${mode}-mode`, { sticky: !catalogue })}
+      className={clsx({ 'catalogue-mode': catalogue, sticky: !catalogue })}
       style={catalogue ? PAGE_HEADER_CATALOGUE_STYLE : {}}
     >
       <Flex id="page-header__content" gap="middle" vertical={isSmallScreen}>

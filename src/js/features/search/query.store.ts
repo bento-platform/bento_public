@@ -285,7 +285,12 @@ const query = createSlice({
         }
 
         if ('counts' in response) {
-          if ((!scope.scope.project && !scope.scope.dataset) || (scope.fixedProject && scope.fixedDataset)) {
+          if (
+            ((!scope.scope.project && !scope.scope.dataset) || (scope.fixedProject && scope.fixedDataset)) &&
+            !Object.keys(state.filters).length &&
+            !state.textQuery.length
+          ) {
+            // Cache whole-instance counts when no filters are applied. Used for showing counts in the data catalogue.
             state.nodeCountsOrBools = response.counts;
             state.nodeCountsOrBoolsFetched = true;
           }
