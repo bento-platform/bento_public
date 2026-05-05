@@ -31,6 +31,7 @@ const CataloguePageHeaderStats = () => {
   const t = useTranslationFn();
 
   useEffect(() => {
+    // Execute a discovery query without any scope, filters, or text query in order to cache whole-instance counts.
     if (scopeSet && !nodeCountsOrBoolsFetched) dispatch(performKatsuDiscovery());
   }, [dispatch, scopeSet, nodeCountsOrBoolsFetched]);
 
