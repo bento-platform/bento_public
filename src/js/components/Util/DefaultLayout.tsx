@@ -33,9 +33,7 @@ const DefaultLayout = () => {
       <Layout>
         <SiteSider collapsed={collapsed} setCollapsed={setCollapsed} items={menuItems} hidden={sidebarHidden} />
         <Layout id="content-layout">
-          <PageHeader mode={isCatalogue ? 'catalogue' : 'page'}>
-            {isCatalogue ? <AboutContent /> : <ScopedTitle />}
-          </PageHeader>
+          <PageHeader catalogue={isCatalogue}>{isCatalogue ? <AboutContent /> : <ScopedTitle />}</PageHeader>
           <Content>
             <Outlet />
           </Content>
