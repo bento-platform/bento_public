@@ -46,7 +46,8 @@
     "extra_properties": "$t(Extra Properties)"
   },
   "errors": {
-    "project_fetch": "Error fetching projects"
+    "project_fetch": "Error fetching projects",
+    "search_fetch": "Error fetching search results"
   },
   "search": {
     "filters": "Filters",
@@ -54,6 +55,8 @@
     "filters_applied_other": "{{count}} filters applied",
     "text_search": "Text search",
     "filter_placeholder": "Select a field to filter by\u2026",
+    "filter_value_placeholder_one": "Select a value\u2026",
+    "filter_value_placeholder_other": "Select value(s)\u2026",
     "showing_entities": "Showing {{entity, lowercase}} {{start}}-{{end}} of {{total}}",
     "showing_entities_short": "{{start}}-{{end}} / {{total}}",
     "manage_columns": "Manage Columns",
@@ -64,6 +67,13 @@
       "plain_help": "Retrieves records which exactly match words in the query (case-insensitive).",
       "trigram": "Fuzzy",
       "trigram_help": "Retrieves records which text that looks similar (but not necessarily identical) to the query."
+    },
+    "range": {
+      "lower_inclusive": "Lower bound inclusive",
+      "lower_exclusive": "Lower bound exclusive",
+      "upper_inclusive": "Upper bound inclusive",
+      "upper_exclusive": "Upper bound exclusive",
+      "click_to_switch": "Click to switch"
     }
   },
   "OR": "OR",
@@ -480,8 +490,12 @@
     "description": "$t(general.description)",
     "filename": "$t(file.filename)",
     "indices": "Indices",
-    "genome_assembly_id": "Genome Assembly",
-    "file_format": "File Format",
+    "storage": "Storage",
+    "storage_uri": "URI",
+    "storage_path": "Path",
+    "storage_server": "Server",
+    "genome_assembly_id": "Assembly",
+    "file_format": "Format",
     "data_output_type": "Data Output Type",
     "usage": "Usage",
     "creation_date": "Creation Date",

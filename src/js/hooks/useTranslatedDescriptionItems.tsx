@@ -20,6 +20,8 @@ export const useTranslatedDescriptionItems = (
         : typeof label === 'string'
           ? t(label)
           : label,
-    children: typeof children === 'string' ? t(children) : children,
+    // the default namespace separator interferes with real values we use; disable namespacing since we don't use it
+    // here yet anyway.
+    children: typeof children === 'string' ? t(children, { nsSeparator: false }) : children,
   }));
 };

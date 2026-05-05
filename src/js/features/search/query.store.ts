@@ -11,9 +11,8 @@ import { RequestStatus } from '@/types/requests';
 import type { DiscoveryResponseOrMessage } from '@/types/discovery/response';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type {
+  FiltersState,
   FtsQueryType,
-  QueryParams,
-  DefinedQueryParams,
   SearchFieldResponse,
   DiscoveryMatchObject,
   DiscoveryMatchPhenopacket,
@@ -25,15 +24,14 @@ import type {
 import type { Sections } from '@/types/data';
 
 import { MIN_PAGE_SIZE, PAGE_SIZE_OPTIONS } from '@/constants/pagination';
-import { DEFAULT_TEXT_QUERY_TYPE } from './constants';
+import { DEFAULT_TEXT_QUERY_TYPE, EMPTY_KATSU_ENTITY_COUNTS } from './constants';
 
 import { discoveryChartProcessingAndLocalStorage } from './discoveryChartProcessingAndLocalStorage';
 import { performKatsuDiscovery } from './performKatsuDiscovery.thunk';
 import { fetchSearchFields } from './fetchSearchFields.thunk';
 import { fetchDiscoveryMatches } from './fetchDiscoveryMatches.thunk';
 import { fetchDiscoveryUIHints } from './fetchDiscoveryUIHints.thunk';
-import { bentoKatsuEntityToResultsDataEntity, checkQueryParamsEqual } from './utils';
-import { definedQueryParams } from '@/utils/requests';
+import { bentoKatsuEntityToResultsDataEntity, checkFiltersStatesEqual } from './utils';
 
 export type QueryResultMatchData<T extends DiscoveryMatchObject> = {
   status: RequestStatus;
@@ -49,9 +47,10 @@ export type QueryState = {
   // -------------------------------------
   fieldsStatus: RequestStatus;
   discoveryStatus: RequestStatus;
+  discoveryError: string;
   // ----
   filterSections: SearchFieldResponse['sections'];
-  filterQueryParams: DefinedQueryParams;
+  filters: FiltersState;
   // ----
   textQuery: string;
   textQueryType: FtsQueryType;
@@ -66,6 +65,7 @@ export type QueryState = {
   // results
   resultCountsOrBools: KatsuEntityCountsOrBooleans;
   resultCountsInvalid: boolean;
+  resultCountsByDataset: Record<string, KatsuEntityCountsOrBooleans> | undefined;
   pageSize: number;
   matchData: {
     phenopacket: QueryResultMatchData<DiscoveryMatchPhenopacket>;
@@ -95,9 +95,10 @@ const initialState: QueryState = {
   // -------------------------------------
   fieldsStatus: RequestStatus.Idle,
   discoveryStatus: RequestStatus.Idle,
+  discoveryError: '',
   // ----
   filterSections: [],
-  filterQueryParams: {},
+  filters: {},
   // ----
   textQuery: '',
   textQueryType: DEFAULT_TEXT_QUERY_TYPE,
@@ -107,13 +108,8 @@ const initialState: QueryState = {
   // ----
   selectedEntity: null,
   // ----
-  resultCountsOrBools: {
-    phenopacket: 0,
-    individual: 0,
-    biosample: 0,
-    experiment: 0,
-    experiment_result: 0,
-  },
+  resultCountsOrBools: EMPTY_KATSU_ENTITY_COUNTS,
+  resultCountsByDataset: undefined,
   resultCountsInvalid: false,
   pageSize: MIN_PAGE_SIZE,
   matchData: {
@@ -202,11 +198,15 @@ const query = createSlice({
       state.sections = state.defaultLayout;
     },
     // -----------------------------------------------------------------------------------------------------------------
-    setFilterQueryParams: (state, { payload }: PayloadAction<QueryParams>) => {
-      const definedQPs = definedQueryParams(payload);
-      if (checkQueryParamsEqual(state.filterQueryParams, definedQPs)) return; // Don't update unnecessarily
-      console.debug('setting filter query params', definedQPs);
-      state.filterQueryParams = definedQPs;
+    setFilters: (state, { payload }: PayloadAction<FiltersState>) => {
+      // Don't update unnecessarily - but there's a difference between a UI state update (possibly with an empty filter,
+      // for instance), and state that invalidates results (a new empty filter does not invalidate results).
+      // eqStateSet implies eqInvalidate.
+      const [eqStateSet, eqInvalidate] = checkFiltersStatesEqual(state.filters, payload);
+      if (eqStateSet) return;
+      console.debug('setting filters state', payload);
+      state.filters = payload;
+      if (eqInvalidate) return;
       // search filters have changed; invalidate existing counts and match data pages if necessary:
       state.resultCountsInvalid = true;
       invalidateMatchData(state);
@@ -264,6 +264,7 @@ const query = createSlice({
       performKatsuDiscovery.fulfilled,
       (state, { payload: [scope, response] }: PayloadAction<[DiscoveryScope, DiscoveryResponseOrMessage]>) => {
         state.discoveryStatus = RequestStatus.Fulfilled;
+        state.discoveryError = '';
         state.resultCountsInvalid = false;
 
         if (!response) {
@@ -279,6 +280,8 @@ const query = createSlice({
         if ('counts' in response) {
           state.resultCountsOrBools = response.counts;
 
+          state.resultCountsByDataset = response.counts_by_dataset;
+
           // Side effects: saving/loading layout from local storage
           const { defaultLayout, sectionData } = discoveryChartProcessingAndLocalStorage(scope, response);
           state.defaultLayout = defaultLayout;
@@ -286,8 +289,14 @@ const query = createSlice({
         }
       }
     );
-    builder.addCase(performKatsuDiscovery.rejected, (state) => {
+    builder.addCase(performKatsuDiscovery.rejected, (state, { payload }) => {
       state.discoveryStatus = RequestStatus.Rejected;
+      // maybe a bit counterintuitive, but a rejected status is a "valid" count response insofar as it reflects the
+      // query made, and we don't want to attempt a re-fetch.
+      state.resultCountsInvalid = false;
+      if (typeof payload === 'string') {
+        state.discoveryError = payload;
+      }
     });
     // -----
     builder.addCase(fetchSearchFields.pending, (state) => {
@@ -338,7 +347,7 @@ export const {
   hideAllSectionCharts,
   resetLayout,
   // ------------------------------------------------------------------
-  setFilterQueryParams,
+  setFilters,
   setTextQuery,
   setTextQueryType,
   setDoneFirstLoad,

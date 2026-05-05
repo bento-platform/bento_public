@@ -169,7 +169,9 @@ const ExperimentView = ({ packetId, experiments }: ExperimentViewProps) => {
         title: 'entities.biosample_one',
         dataIndex: 'biosample',
         render: (biosampleId: string | undefined) =>
-          biosampleId ? <PhenopacketLink.Biosample packetId={packetId} sampleId={biosampleId} /> : null,
+          biosampleId ? (
+            <PhenopacketLink.Biosample packetId={packetId} sampleId={biosampleId} preserveQueryParams />
+          ) : null,
         isEmpty: (biosampleId: string | undefined) => biosampleId === undefined,
       },
       {

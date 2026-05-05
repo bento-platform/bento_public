@@ -24,7 +24,6 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
     [navigate]
   );
 
-  // TODO: Add Experiments
   const items: TabsProps['items'] = useMemo(() => {
     if (!phenopacket) return [];
     const allItems = [

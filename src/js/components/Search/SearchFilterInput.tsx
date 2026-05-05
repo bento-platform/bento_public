@@ -2,11 +2,19 @@ import { memo, useCallback, useMemo } from 'react';
 import { Button, Flex, Select, Space } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 
+import { T_PLURAL_COUNT, T_SINGULAR_COUNT } from '@/constants/i18n';
+
+import type { FilterValue } from '@/features/search/types';
+import type { NumberField } from '@/types/discovery/fieldDefinition';
+
 import { useTranslationFn } from '@/hooks';
+import { useScopeQueryData } from '@/hooks/censorship';
 import { useSearchQuery } from '@/features/search/hooks';
 import OptionDescription from '@/components/Search/OptionDescription';
+import DateRangeFilterInput from '@/components/Search/DateRangeFilterInput';
+import NumberRangeFilterInput from '@/components/Search/NumberRangeFilterInput';
 
-export type FilterValue = { field: string | null; value: string | null };
+export type FilterInputValue = { field: string | null; value: FilterValue };
 
 const SearchFilterInput = ({
   field,
@@ -14,12 +22,13 @@ const SearchFilterInput = ({
   onChange,
   onRemove,
   disabledFields,
-}: FilterValue & {
-  onChange: (v: FilterValue) => void;
+}: FilterInputValue & {
+  onChange: (v: FilterInputValue) => void;
   onRemove: () => void;
   disabledFields: Set<string>;
 }) => {
   const t = useTranslationFn();
+  const { hasPermission: hasQueryData } = useScopeQueryData();
 
   const { filterSections } = useSearchQuery();
 
@@ -54,48 +63,76 @@ const SearchFilterInput = ({
     [t, filterSections]
   );
 
+  const fieldDefinitionMap = useMemo(
+    () => Object.fromEntries(filterSections.flatMap(({ fields }) => fields.map((f) => [f.id, f.definition]))),
+    [filterSections]
+  );
+
   const onFilterFieldChange = useCallback(
     (v: string) => {
-      onChange({ field: v, value: fieldFilterOptions[v][0].value ?? null });
+      onChange({ field: v, value: null });
     },
-    [onChange, fieldFilterOptions]
+    [onChange]
   );
 
   const onFilterValueChange = useCallback(
-    (newValue: string) =>
-      onChange({
-        field,
-        value: newValue,
-      }),
+    (newValue: string | string[] | null) => onChange({ field, value: newValue }),
     [field, onChange]
+  );
+
+  const currentFieldDef = field ? fieldDefinitionMap[field] : undefined;
+  const isRangeField = hasQueryData && (currentFieldDef?.datatype === 'number' || currentFieldDef?.datatype === 'date');
+
+  const valueOptions = field ? fieldFilterOptions[field] : [];
+  const isMultiple = hasQueryData && valueOptions.length > 2;
+  const finalValue = useMemo(
+    () => (isMultiple && value !== null && !Array.isArray(value) ? [value] : value),
+    [isMultiple, value]
   );
 
   return (
     <Space.Compact className="w-full">
       <Select
-        className="flex-1 rounded-e-none"
+        className="flex-1 rounded-e-none h-auto"
         options={filterOptions}
         onChange={onFilterFieldChange}
         value={field}
         placeholder={t('search.filter_placeholder')}
       />
-      <Select
-        className="flex-1"
-        disabled={!field}
-        options={field ? fieldFilterOptions[field] : []}
-        onChange={onFilterValueChange}
-        value={value}
-      />
-      <Button icon={<CloseOutlined />} disabled={!field || !value} onClick={onRemove} />
+      {isRangeField && currentFieldDef?.datatype === 'number' ? (
+        <NumberRangeFilterInput
+          definition={currentFieldDef as NumberField}
+          value={Array.isArray(value) ? (value[0] ?? null) : value}
+          onChange={onFilterValueChange}
+        />
+      ) : isRangeField && currentFieldDef?.datatype === 'date' ? (
+        <DateRangeFilterInput
+          value={Array.isArray(value) ? (value[0] ?? null) : value}
+          onChange={onFilterValueChange}
+        />
+      ) : (
+        <Select
+          mode={isMultiple ? 'multiple' : undefined}
+          className="flex-1"
+          disabled={!field}
+          options={valueOptions}
+          onChange={onFilterValueChange}
+          value={finalValue}
+          placeholder={
+            field ? t('search.filter_value_placeholder', isMultiple ? T_PLURAL_COUNT : T_SINGULAR_COUNT) : ''
+          }
+        />
+      )}
+      <Button className="h-auto" icon={<CloseOutlined />} disabled={!field} onClick={onRemove} />
     </Space.Compact>
   );
 };
 
 export const SearchFilterInputSkeleton = memo(() => (
   <Space.Compact className="w-full">
-    <Select className="flex-1 rounded-e-none" disabled={true} loading={true} />
+    <Select className="flex-1 rounded-e-none h-auto" disabled={true} loading={true} />
     <Select className="flex-1" disabled={true} />
-    <Button icon={<CloseOutlined />} disabled={true} />
+    <Button className="h-auto" icon={<CloseOutlined />} disabled={true} />
   </Space.Compact>
 ));
 SearchFilterInputSkeleton.displayName = 'SearchFilterInputSkeleton';

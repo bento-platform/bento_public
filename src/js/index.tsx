@@ -13,6 +13,8 @@ import { SUPPORTED_LNGS } from '@/constants/configConstants';
 
 // Component imports
 import { ConfigProvider } from 'antd';
+import enUS from 'antd/locale/en_US';
+import frCA from 'antd/locale/fr_CA';
 import { ChartConfigProvider } from 'bento-charts';
 import Loader from '@/components/Loader';
 import BentoAppRouter from '@/components/BentoAppRouter';
@@ -53,6 +55,7 @@ const BaseRoutes = () => {
 
 const RootApp = () => {
   const { i18n } = useTranslation();
+  const antdLocale = i18n.language === SUPPORTED_LNGS.FRENCH ? frCA : enUS;
 
   // TODO: Remove this in the future (v20?), once we are sure no one is using the old localStorage key
   useEffect(() => {
@@ -75,6 +78,7 @@ const RootApp = () => {
           >
             <ChartConfigProvider Lng={i18n.language ?? SUPPORTED_LNGS.ENGLISH} theme={NEW_BENTO_PUBLIC_THEME}>
               <ConfigProvider
+                locale={antdLocale}
                 theme={{
                   components: {
                     Button: { algorithm: !PCGL_MODE },
