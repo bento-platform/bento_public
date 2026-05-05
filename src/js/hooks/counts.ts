@@ -30,6 +30,7 @@ export const renderCountValue = (
   return Intl.NumberFormat(locale).format(count);
 };
 
+// TODO: rename this hook and rename instances, as it ends up being a bit confusing. Also rename the inner function.
 /** Hook that wraps renderCountValue with threshold and permissions from Redux state. */
 export const useRenderCount = () => {
   const { countThreshold } = useConfig();
