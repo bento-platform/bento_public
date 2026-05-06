@@ -216,7 +216,7 @@
   "footer": {
     "powered_by": "Propulsé par",
     "copyright": "©",
-    "c3g": "le Centre canadien de génomique computationnelle",
+    "c3g": "le Centre canadien de génomique computationnelle à l'université McGill",
     "licensed_under": "Bento est sous licence",
     "source_available": "Le code source est disponible sur",
     "terms_of_use": "Conditions d'utilisation (en anglais)"
@@ -522,6 +522,11 @@
     "access_methods": "Méthodes d'accès"
   },
   "pcgl": {
+    "footer": {
+      "cihr_support": "La BGP est soutenu par les Instituts de recherche en santé du Canada (IRSC).",
+      "powered_by": "Le portail de recherche BGP est propulsé par",
+      "bento": "la plateform Bento"
+    },
     "links": {
       "policies": "Politiques et directives",
       "helpGuides": "Guides d'aide (en anglais)",

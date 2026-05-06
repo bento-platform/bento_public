@@ -64,10 +64,19 @@ const PcglFooter = () => {
               />
             </a>
           </Flex>
-          <p>
-            PCGL is supported by the Canadian Institutes of Health Research (CIHR).
+          <p style={{ marginBottom: 0 }}>
+            {t('pcgl.footer.cihr_support')}
             <br />
-            &copy; 2019-2026 the Canadian Centre for Computational Genomics, McGill University.
+            {t('pcgl.footer.powered_by')}{' '}
+            <a href="https://github.com/bento-platform/bento" rel="noreferrer" target="_blank">
+              {t('pcgl.footer.bento')}
+            </a>
+            .<br />
+            {t('footer.copyright')} 2019-{new Date().getFullYear()}{' '}
+            <a href="https://computationalgenomics.ca" rel="noreferrer" target="_blank">
+              {t('footer.c3g')}
+            </a>
+            .
           </p>
         </Flex>
         <div id="pcgl-footer__links" className={clsx({ 'w-full': !breakpoints.xl })}>

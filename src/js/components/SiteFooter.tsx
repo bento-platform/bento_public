@@ -22,7 +22,7 @@ const SiteFooter = () => {
           </div>
           <div>
             <Text type="secondary">
-              {t('footer.copyright')} 2019-2026{' '}
+              {t('footer.copyright')} 2019-{new Date().getFullYear()}{' '}
               <Link href="https://computationalgenomics.ca" target="_blank">
                 {t('footer.c3g')}
               </Link>

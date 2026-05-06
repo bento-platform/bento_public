@@ -212,8 +212,8 @@
   },
   "footer": {
     "powered_by": "Powered by",
-    "copyright": "Copyright ©",
-    "c3g": "the Canadian Centre for Computational Genomics",
+    "copyright": "©",
+    "c3g": "the Canadian Centre for Computational Genomics at McGill University",
     "licensed_under": "Bento is licensed under the",
     "source_available": "The source code is available on",
     "terms_of_use": "Terms of Use"
@@ -530,6 +530,11 @@
     "access_methods": "Access Methods"
   },
   "pcgl": {
+    "footer": {
+      "cihr_support": "PCGL is supported by the Canadian Institutes of Health Research (CIHR).",
+      "powered_by": "The PCGL research portal is powered by",
+      "bento": "the Bento platform"
+    },
     "links": {
       "policies": "Policies & Guidelines",
       "helpGuides": "Help Guides",
