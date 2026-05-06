@@ -145,13 +145,11 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
           </Typography.Title>
           {(menuItems?.length ?? 0) > 1 ? (
             <Menu
-              // theme="light"
               mode="horizontal"
               items={menuItems}
               selectedKeys={[currentPage]}
               onClick={handleMenuClick}
               className="flex-1"
-              // style={{ border: 'none' }}
             />
           ) : null}
         </Flex>
