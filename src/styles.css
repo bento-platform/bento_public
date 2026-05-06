@@ -780,7 +780,7 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
 }
 
 @media (max-width: 768px) {
-  /* Same breakpoint as constants/deviceBreakpoints DeviceBreakpoints.TABLET & Ant md */
+  /* Same breakpoint as constants/deviceBreakpoints DeviceBreakpoints.TABLET & Ant md -> sm */
 
   :root {
     --content-padding-v: 10px;
@@ -831,12 +831,18 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
 }
 
 @media (max-width: 576px) {
-  /* Same breakpoint as constants/deviceBreakpoints DeviceBreakpoints.MOBILE & Ant sm */
+  /* Same breakpoint as constants/deviceBreakpoints DeviceBreakpoints.MOBILE & Ant sm -> xs */
 
   ul#page-header-stats {
     flex-direction: column;
   }
   ul#page-header-stats li {
     font-size: 16px;
+  }
+
+  #pcgl-footer__links {
+    grid-template-columns: auto;
+    grid-row-gap: 8px;
+    text-align: left;
   }
 }
