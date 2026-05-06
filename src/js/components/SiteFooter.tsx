@@ -2,7 +2,6 @@ import { Layout, Row, Typography, Space } from 'antd';
 const { Footer } = Layout;
 const { Title, Text, Link } = Typography;
 
-import { PCGL_MODE } from '@/config';
 import { useTranslationFn } from '@/hooks';
 import bentoLogo from '@public/assets/bento.svg';
 
@@ -42,13 +41,11 @@ const SiteFooter = () => {
               .
             </Text>
           </div>
-          {PCGL_MODE ? null : (
-            <div>
-              <Link href="/public/terms.html" target="_blank">
-                {t('footer.terms_of_use')}
-              </Link>
-            </div>
-          )}
+          <div>
+            <Link href="/public/terms.html" target="_blank">
+              {t('footer.terms_of_use')}
+            </Link>
+          </div>
         </Space>
       </Row>
     </Footer>

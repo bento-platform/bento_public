@@ -449,6 +449,11 @@ ul#page-header-stats li.loading {
 #pcgl-footer a:active {
   color: rgba(255, 255, 255, 0.76);
 }
+#pcgl-footer a.disabled {
+  cursor: not-allowed;
+  color: rgba(255, 255, 255, 0.4);
+  text-decoration: none;
+}
 #pcgl-footer__links {
   display: grid;
   grid-template-columns: auto auto auto;

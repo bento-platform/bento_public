@@ -533,10 +533,13 @@
     "links": {
       "policies": "Policies & Guidelines",
       "helpGuides": "Help Guides",
+      "helpGuidesHref": "https://pan-canadian-genome-library.github.io/",
       "controlledDataUsers": "Controlled Data Users",
       "apply": "Apply For Access",
       "privacy": "Privacy Policy",
+      "privacyHref": "/public/terms.html",
       "termsConditions": "Terms & Conditions",
+      "termsHref": "/public/terms.html",
       "publicationPolicy": "Publication Policy",
       "contact": "Contact Us",
       "contactHref": "https://genomelibrary.ca/contact-us/",
@@ -545,7 +548,8 @@
       "dataPlatform": "Data Platform",
       "myApplications": "My Applications",
       "manageApplications": "Manage Applications",
-      "admin": "Admin Dashboard"
+      "admin": "Admin Dashboard",
+      "cihrHref": "https://cihr-irsc.gc.ca/e/193.html"
     }
   }
 }

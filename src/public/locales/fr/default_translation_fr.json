@@ -524,7 +524,7 @@
   "pcgl": {
     "links": {
       "policies": "Politiques et directives",
-      "helpGuides": "Guides d'aide",
+      "helpGuides": "Guides d'aide (en anglais)",
       "controlledDataUsers": "Utilisateurs de données contrôlées",
       "apply": "Demander l'accès",
       "privacy": "Politique de confidentialité",
@@ -533,11 +533,12 @@
       "contact": "Contactez-nous",
       "contactHref": "https://genomelibrary.ca/fr/nous-joindre/",
       "pcglWebsite": "Site web de la BGP",
-      "pcglWebsiteHref": "",
+      "pcglWebsiteHref": "https://genomelibrary.ca/fr/",
       "dataPlatform": "Plateforme de données",
       "myApplications": "Mes demandes",
       "manageApplications": "Gérer les demandes",
-      "admin": "Tableau de bord administrateur"
+      "admin": "Tableau de bord administrateur",
+      "cihrHref": "https://cihr-irsc.gc.ca/f/193.html"
     }
   }
 }
