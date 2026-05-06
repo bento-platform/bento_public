@@ -261,7 +261,14 @@ const query = createSlice({
       // reset all pages and invalidate entities' match data if page state changes.
       invalidateMatchData(state);
     },
-    resetAllQueryState: () => initialState,
+    resetAllQueryState: (state, { payload }: PayloadAction<{ resetNodeCounts: boolean } | undefined>) =>
+      payload?.resetNodeCounts
+        ? initialState
+        : {
+            ...initialState,
+            nodeCountsOrBools: state.nodeCountsOrBools,
+            nodeCountsOrBoolsFetched: state.nodeCountsOrBoolsFetched,
+          },
   },
   extraReducers: (builder) => {
     builder.addCase(performKatsuDiscovery.pending, (state) => {
