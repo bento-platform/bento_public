@@ -30,7 +30,11 @@ import type {
 import { BentoRoute } from '@/types/routes';
 
 import { scopeSelectionEqual } from '@/features/metadata/utils';
-import { bentoKatsuEntityToResultsDataEntity, buildQueryParamsUrl } from '@/features/search/utils';
+import {
+  bentoKatsuEntityToResultsDataEntity,
+  buildQueryParamsUrl,
+  queryParamsWithoutKey,
+} from '@/features/search/utils';
 import { setEquals } from '@/utils/sets';
 
 import DatasetProvenanceModal from '@/components/Provenance/DatasetProvenanceModal';
@@ -300,7 +304,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
 }) => {
   const t = useTranslationFn();
 
-  const { filterQueryParams, textQuery, textQueryType, resultCountsOrBools, pageSize, matchData } = useSearchQuery();
+  const { resultCountsOrBools, pageSize, matchData } = useSearchQuery();
   const { fetchingPermission: fetchingCanDownload, hasPermission: canDownload } = useScopeDownloadData();
   const downloadAllMatchesCSV = useDownloadAllMatchesCSV();
   const isSmallScreen = useSmallScreen();
@@ -399,14 +403,16 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
                 newPage = 1; // Reset page if we change the page size
               }
               navigateToSameScopeUrl(
-                buildQueryParamsUrl(BentoRoute.Overview, {
-                  ...allQueryParams,
+                buildQueryParamsUrl(BentoRoute.Overview, [
+                  ...queryParamsWithoutKey(allQueryParams, [TABLE_PAGE_QUERY_PARAM, TABLE_PAGE_SIZE_QUERY_PARAM]),
+
                   // AntD page is 1-indexed, discovery match page is 0-indexed:
-                  [TABLE_PAGE_QUERY_PARAM]: (newPage - 1).toString(),
-                  [TABLE_PAGE_SIZE_QUERY_PARAM]: newPageSize.toString(),
-                })
+                  [TABLE_PAGE_QUERY_PARAM, (newPage - 1).toString()],
+                  [TABLE_PAGE_SIZE_QUERY_PARAM, newPageSize.toString()],
+                ])
               );
             },
+            style: { marginTop: 12, marginBottom: 0 }, // Already have bottom padding in search results card
           }
         : undefined,
     [page, pageSize, totalMatches, isSmallScreen, navigateToSameScopeUrl, allQueryParams]
@@ -415,10 +421,8 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   const onExport = useCallback(() => {
     setExporting(true);
     const filename = `${t(`entities.${entity}_other`)}.csv`;
-    downloadAllMatchesCSV(filterQueryParams, textQuery, textQueryType, rdEntity, filename).finally(() =>
-      setExporting(false)
-    );
-  }, [t, entity, downloadAllMatchesCSV, filterQueryParams, textQuery, textQueryType, rdEntity]);
+    downloadAllMatchesCSV(rdEntity, filename).finally(() => setExporting(false));
+  }, [t, entity, downloadAllMatchesCSV, rdEntity]);
 
   const openColumnModal = useCallback(() => setColumnModalOpen(true), []);
 
@@ -427,7 +431,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   return (
     <>
       <Col flex={1}>
-        <Flex justify="space-between" align="center" style={{ marginBottom: 8 }}>
+        <Flex justify="space-between" align="center" style={{ marginBottom: 12 }}>
           {onBack ? (
             <Button
               icon={<LeftOutlined />}

@@ -1,12 +1,33 @@
-import { memo, useCallback, useMemo } from 'react';
+import clsx from 'clsx';
+import { type ReactNode, memo, useCallback, useMemo } from 'react';
 import { Button, Flex, Select, Space } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 
+import { T_PLURAL_COUNT, T_SINGULAR_COUNT } from '@/constants/i18n';
+
+import type { FilterValue } from '@/features/search/types';
+import type { NumberField } from '@/types/discovery/fieldDefinition';
+
 import { useTranslationFn } from '@/hooks';
+import { useScopeQueryData } from '@/hooks/censorship';
 import { useSearchQuery } from '@/features/search/hooks';
 import OptionDescription from '@/components/Search/OptionDescription';
+import DateRangeFilterInput from '@/components/Search/DateRangeFilterInput';
+import NumberRangeFilterInput from '@/components/Search/NumberRangeFilterInput';
 
-export type FilterValue = { field: string | null; value: string | null };
+export type FilterInputValue = { field: string | null; value: FilterValue };
+
+const SearchFilterInputWrapper = ({ vertical, children }: { vertical?: boolean; children: ReactNode }) => {
+  if (vertical) {
+    return (
+      <Space direction="vertical" size="small" className="w-full">
+        {children}
+      </Space>
+    );
+  } else {
+    return <Space.Compact className="w-full">{children}</Space.Compact>;
+  }
+};
 
 const SearchFilterInput = ({
   field,
@@ -15,13 +36,14 @@ const SearchFilterInput = ({
   onRemove,
   disabledFields,
   vertical,
-}: FilterValue & {
-  onChange: (v: FilterValue) => void;
+}: FilterInputValue & {
+  onChange: (v: FilterInputValue) => void;
   onRemove: () => void;
   disabledFields: Set<string>;
   vertical?: boolean;
 }) => {
   const t = useTranslationFn();
+  const { hasPermission: hasQueryData } = useScopeQueryData();
 
   const { filterSections } = useSearchQuery();
 
@@ -56,35 +78,48 @@ const SearchFilterInput = ({
     [t, filterSections]
   );
 
+  const fieldDefinitionMap = useMemo(
+    () => Object.fromEntries(filterSections.flatMap(({ fields }) => fields.map((f) => [f.id, f.definition]))),
+    [filterSections]
+  );
+
   const onFilterFieldChange = useCallback(
     (v: string) => {
-      onChange({ field: v, value: fieldFilterOptions[v][0].value ?? null });
+      onChange({ field: v, value: null });
     },
-    [onChange, fieldFilterOptions]
+    [onChange]
   );
 
   const onFilterValueChange = useCallback(
-    (newValue: string) =>
-      onChange({
-        field,
-        value: newValue,
-      }),
+    (newValue: string | string[] | null) => onChange({ field, value: newValue }),
     [field, onChange]
   );
 
-  if (vertical) {
-    return (
-      <Space direction="vertical" size="small" className="w-full">
-        <Flex gap="small" className="w-full">
-          <Select
-            className="flex-1"
-            size="small"
-            variant="borderless"
-            options={filterOptions}
-            onChange={onFilterFieldChange}
-            value={field}
-            placeholder={t('search.filter_placeholder')}
-          />
+  const currentFieldDef = field ? fieldDefinitionMap[field] : undefined;
+  const isRangeField = hasQueryData && (currentFieldDef?.datatype === 'number' || currentFieldDef?.datatype === 'date');
+
+  const valueOptions = field ? fieldFilterOptions[field] : [];
+  const isMultiple = hasQueryData && valueOptions.length > 2;
+  const finalValue = useMemo(
+    () => (isMultiple && value !== null && !Array.isArray(value) ? [value] : value),
+    [isMultiple, value]
+  );
+
+  const inputClass = vertical ? 'w-full' : 'flex-1';
+
+  return (
+    <SearchFilterInputWrapper vertical={vertical}>
+      <Flex gap="small" className={vertical ? 'w-full' : ''}>
+        <Select
+          className={clsx('flex-1', 'h-auto', { 'rounded-e-none': !vertical })}
+          options={filterOptions}
+          size={vertical ? 'small' : 'middle'}
+          variant={vertical ? 'filled' : undefined}
+          onChange={onFilterFieldChange}
+          value={field}
+          placeholder={t('search.filter_placeholder')}
+        />
+        {vertical && (
           <Button
             icon={<CloseOutlined />}
             size="small"
@@ -93,44 +128,44 @@ const SearchFilterInput = ({
             disabled={!field || !value}
             onClick={onRemove}
           />
-        </Flex>
-        <Select
-          className="w-full"
-          disabled={!field}
-          options={field ? fieldFilterOptions[field] : []}
+        )}
+      </Flex>
+      {isRangeField && currentFieldDef?.datatype === 'number' ? (
+        <NumberRangeFilterInput
+          className={inputClass}
+          definition={currentFieldDef as NumberField}
+          value={Array.isArray(value) ? (value[0] ?? null) : value}
           onChange={onFilterValueChange}
-          value={value}
         />
-      </Space>
-    );
-  }
-
-  return (
-    <Space.Compact className="w-full">
-      <Select
-        className="flex-1 rounded-e-none"
-        options={filterOptions}
-        onChange={onFilterFieldChange}
-        value={field}
-        placeholder={t('search.filter_placeholder')}
-      />
-      <Select
-        className="flex-1"
-        disabled={!field}
-        options={field ? fieldFilterOptions[field] : []}
-        onChange={onFilterValueChange}
-        value={value}
-      />
-      <Button icon={<CloseOutlined />} disabled={!field || !value} onClick={onRemove} />
-    </Space.Compact>
+      ) : isRangeField && currentFieldDef?.datatype === 'date' ? (
+        <DateRangeFilterInput
+          className={inputClass}
+          value={Array.isArray(value) ? (value[0] ?? null) : value}
+          onChange={onFilterValueChange}
+        />
+      ) : (
+        <Select
+          mode={isMultiple ? 'multiple' : undefined}
+          className={inputClass}
+          disabled={!field}
+          options={valueOptions}
+          onChange={onFilterValueChange}
+          value={finalValue}
+          placeholder={
+            field ? t('search.filter_value_placeholder', isMultiple ? T_PLURAL_COUNT : T_SINGULAR_COUNT) : ''
+          }
+        />
+      )}
+      {!vertical && <Button className="h-auto" icon={<CloseOutlined />} disabled={!field} onClick={onRemove} />}
+    </SearchFilterInputWrapper>
   );
 };
 
 export const SearchFilterInputSkeleton = memo(() => (
   <Space.Compact className="w-full">
-    <Select className="flex-1 rounded-e-none" disabled={true} loading={true} />
+    <Select className="flex-1 rounded-e-none h-auto" disabled={true} loading={true} />
     <Select className="flex-1" disabled={true} />
-    <Button icon={<CloseOutlined />} disabled={true} />
+    <Button className="h-auto" icon={<CloseOutlined />} disabled={true} />
   </Space.Compact>
 ));
 SearchFilterInputSkeleton.displayName = 'SearchFilterInputSkeleton';

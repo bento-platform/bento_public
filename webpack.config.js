@@ -65,9 +65,13 @@ const makeConfig = (mode) => ({
       BENTO_PUBLIC_URL: null,
       // Display flags
       BENTO_PUBLIC_TRANSLATED: null,
+      BENTO_PUBLIC_SHOW_HEADER_TITLE: null,
       BENTO_PUBLIC_SHOW_PORTAL_LINK: null,
       BENTO_PUBLIC_SHOW_SIGN_IN: null,
       BENTO_PUBLIC_FORCE_CATALOGUE: null, // Show data catalogue even with 1 project
+      // Theme variables
+      BENTO_PUBLIC_CATALOGUE_HEADER_BACKGROUND: null,
+      BENTO_PUBLIC_CATALOGUE_HEADER_TEXT_COLOR: null,
       // Beacon configuration and flags
       BEACON_URL: null,
       BENTO_BEACON_UI_ENABLED: null,

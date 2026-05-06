@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -110,23 +110,6 @@ const ScopedTitle = () => {
     getRouteTitleAndIcon,
     extraBreadcrumb,
   ]);
-
-  useEffect(() => {
-    if (!breadcrumbItems.length) return;
-
-    const observer = new IntersectionObserver(
-      ([e]) => {
-        return e.target.toggleAttribute('data-stuck', e.intersectionRatio < 1);
-      },
-      { threshold: [1], root: document.getElementById('content-layout') }
-    );
-
-    const st = document.querySelector('.scoped-title');
-
-    if (st) {
-      observer.observe(st);
-    }
-  }, [breadcrumbItems]);
 
   if (breadcrumbItems.length) {
     return (

@@ -34,7 +34,7 @@ import {
   validProjectDataset,
 } from '@/utils/router';
 
-import PublicOverview from './Overview/PublicOverview';
+import PublicOverview from './Overview/LandingPage';
 import BeaconQueryUi from './Beacon/BeaconQueryUi';
 import NetworkUi from './Beacon/BeaconNetwork/NetworkUi';
 import PhenopacketView from './ClinPhen/PhenopacketView';

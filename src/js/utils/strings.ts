@@ -1,8 +1,8 @@
 import { DOI_PATTERN, URL_PATTERN } from '@/constants/patterns';
 // import i18n from '@/i18n';
 
-export const stringToBoolean = (s: string | undefined) =>
-  ['true', 't', '1', 'yes'].includes((s || '').toLocaleLowerCase());
+export const stringToBoolean = (s: string | undefined, default_: string = '') =>
+  ['true', 't', '1', 'yes'].includes((s || default_).toLocaleLowerCase());
 
 export const stringIsDOI = (s: string) => !!s.match(DOI_PATTERN);
 export const stringIsURL = (s: string) => !!s.match(URL_PATTERN);

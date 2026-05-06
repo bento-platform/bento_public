@@ -13,7 +13,8 @@ export const printAPIError = (rejectWithValue: (value: string) => any) => (error
     if (contentType === 'text/html') {
       errorMessage = `${error.response.status} ${error.response.statusText}`;
     } else if (contentType === 'application/json') {
-      const data = JSON.parse(error.response.data as string);
+      const data =
+        typeof error.response.data === 'string' ? JSON.parse(error.response.data as string) : error.response.data;
       // handle Bento error format(s)
       // see https://github.com/bento-platform/bento_lib/blob/master/bento_lib/responses/errors.py
       if ('message' in data) {

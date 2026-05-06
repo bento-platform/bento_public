@@ -36,12 +36,12 @@ export const fetchDiscoveryMatches = createAsyncThunk<
     return axios
       .get(
         katsuDiscoveryMatchesUrl,
-        scopedAuthorizedRequestConfig(state, {
+        scopedAuthorizedRequestConfig(state, [
           ...searchQueryParamsFromState(state.query),
-          _entity: queryEntity,
-          _page: state.query.matchData[queryEntity].page.toString(),
-          _page_size: state.query.pageSize.toString(),
-        })
+          ['_entity', queryEntity],
+          ['_page', state.query.matchData[queryEntity].page.toString()],
+          ['_page_size', state.query.pageSize.toString()],
+        ])
       )
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue));

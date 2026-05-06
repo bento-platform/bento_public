@@ -45,7 +45,7 @@ const BiosampleLocationCollected = ({ biosample }: { biosample: Biosample }) => 
   if (!biosample.location_collected) return null;
 
   return (
-    <div className="w-full position-relative" style={{ minWidth: MAP_WIDTH }}>
+    <div className="w-full relative" style={{ minWidth: MAP_WIDTH }}>
       <Radio.Group
         value={locationView}
         onChange={(e) => {
@@ -56,7 +56,7 @@ const BiosampleLocationCollected = ({ biosample }: { biosample: Biosample }) => 
           { label: t('JSON'), value: 'json' },
         ]}
         optionType="button"
-        className="position-absolute"
+        className="absolute"
         style={{ top: 8, right: 0, zIndex: 999 }}
       />
       <div className={locationView === 'map' ? 'block' : 'none'} style={{ width: MAP_WIDTH }}>

@@ -1,16 +1,16 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import axios, { type AxiosError } from 'axios';
 import { katsuDiscoveryUrl } from '@/constants/configConstants';
 import type { RootState } from '@/store';
 import type { DiscoveryResponseOrMessage } from '@/types/discovery/response';
-import type { DiscoveryScope } from '@/features/metadata/metadata.store';
+import type { DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
 import { RequestStatus } from '@/types/requests';
 import { printAPIError } from '@/utils/error.util';
 import { scopedAuthorizedRequestConfig } from '@/utils/requests';
 import { searchQueryParamsFromState } from './utils';
 
 export const performKatsuDiscovery = createAsyncThunk<
-  [DiscoveryScope, DiscoveryResponseOrMessage],
+  [DiscoveryScopeSelection, DiscoveryResponseOrMessage],
   void,
   {
     state: RootState;
@@ -20,12 +20,16 @@ export const performKatsuDiscovery = createAsyncThunk<
   'query/performKatsuDiscovery',
   async (_, { rejectWithValue, getState }) => {
     const state = getState();
-    const res = (await axios
-      .get(katsuDiscoveryUrl, scopedAuthorizedRequestConfig(state, searchQueryParamsFromState(state.query)))
-      .then((res) => res.data)
-      .catch(printAPIError(rejectWithValue))) as DiscoveryResponseOrMessage;
 
-    return [state.metadata.selectedScope.scope, res] as [DiscoveryScope, DiscoveryResponseOrMessage];
+    try {
+      const res = await axios
+        .get(katsuDiscoveryUrl, scopedAuthorizedRequestConfig(state, searchQueryParamsFromState(state.query)))
+        .then((res) => res.data);
+
+      return [state.metadata.selectedScope, res] as [DiscoveryScopeSelection, DiscoveryResponseOrMessage];
+    } catch (err) {
+      return printAPIError(rejectWithValue)(err as AxiosError);
+    }
   },
   {
     condition(_, { getState }) {

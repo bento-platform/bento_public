@@ -47,7 +47,8 @@
     "url": "URL"
   },
   "errors": {
-    "project_fetch": "Erreur lors du chargement des projets"
+    "project_fetch": "Erreur lors du chargement des projets",
+    "search_fetch": "Erreur lors du chargement des résultats de recherche"
   },
   "search": {
     "filters": "Filtres",
@@ -55,6 +56,8 @@
     "filters_applied_other": "{{count}} filtres appliqués",
     "text_search": "Recherche de texte",
     "filter_placeholder": "Sélectionner un champ à filtrer \u2026",
+    "filter_value_placeholder_one": "Choisir une valeur \u2026",
+    "filter_value_placeholder_other": "Choisir une/des valeur(s) \u2026",
     "showing_entities": "Affichage des {{entity, lowercase}} {{start}}-{{end}} sur {{total}}",
     "showing_entities_short": "{{start}}-{{end}} / {{total}}",
     "manage_columns": "Gérer les colonnes",
@@ -65,6 +68,13 @@
       "plain_help": "Récupère les enregistrements qui correspondent exactement aux mots de la requête (sans distinction de casse).",
       "trigram": "Fuzzy",
       "trigram_help": "Récupère les enregistrements dont le texte est similaire (mais pas nécessairement identique) à la requête."
+    },
+    "range": {
+      "lower_inclusive": "Borne inférieure incluse",
+      "lower_exclusive": "Borne inférieure exclue",
+      "upper_inclusive": "Borne supérieure incluse",
+      "upper_exclusive": "Borne supérieure exclue",
+      "click_to_switch": "Cliquer pour changer"
     }
   },
   "OR": "OU",
@@ -477,6 +487,9 @@
   "experiment_result": {
     "identifier": "Identifiant",
     "indices": "Indices",
+    "storage": "Stockage",
+    "storage_path": "Chemin d'accès",
+    "storage_server": "Serveur",
     "genome_assembly_id": "Assemblage",
     "file_format": "Format",
     "data_output_type": "Type de sortie des données",

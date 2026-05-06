@@ -1,26 +1,29 @@
 import { useCallback, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { Button, Flex, Layout, Menu, type MenuProps, Space, Typography } from 'antd';
+import { Button, Flex, Layout, Menu, type MenuProps, Space, Typography, theme } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useAuthState, useIsAuthenticated, useOpenIdConfig, usePerformAuth, usePerformSignOut } from 'bento-auth-js';
 
 import { RiTranslate } from 'react-icons/ri';
 import { ExportOutlined, LinkOutlined, LoginOutlined, LogoutOutlined } from '@ant-design/icons';
 
-import { useSelectedScope } from '@/features/metadata/hooks';
+import { useNavigateToRoot } from '@/hooks/navigation';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
-import { getCurrentPage, langAndScopeSelectionToUrl } from '@/utils/router';
+import { getCurrentPage } from '@/utils/router';
 
 import { LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
-import { CLIENT_NAME, PORTAL_URL, SHOW_PORTAL_LINK, SHOW_SIGN_IN, TRANSLATED } from '@/config';
+import { CLIENT_NAME, PORTAL_URL, SHOW_HEADER_TITLE, SHOW_PORTAL_LINK, SHOW_SIGN_IN, TRANSLATED } from '@/config';
 
 import type { MenuItem } from '@/types/navigation';
 import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
 import { buildQueryParamsUrl } from '@/features/search/utils';
-import { useEntityAndTextQueryParams, useSearchQuery } from '@/features/search/hooks';
+import { useSearchQueryParams } from '@/features/search/hooks';
 
 const { Header } = Layout;
+
+// dummy theme variable; in the future this could be used to do a 'dark mode' in combination with Ant's support
+const THEME: 'light' | 'dark' = 'light';
 
 const openPortalWindow = () => window.open(PORTAL_URL, '_blank');
 
@@ -32,8 +35,7 @@ type SiteHeaderProps = {
 const useHandleMenuClick = (): OnClick => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { filterQueryParams } = useSearchQuery();
-  const otherQueryParams = useEntityAndTextQueryParams();
+  const overviewQueryParams = useSearchQueryParams();
 
   return useCallback(
     ({ key }: { key: string }) => {
@@ -41,22 +43,19 @@ const useHandleMenuClick = (): OnClick => {
       const newPath = [currentPath[0]];
       if (!TOP_LEVEL_ONLY_ROUTES.includes(key)) {
         // Beacon network only works at the top scope level
-        if (currentPath[1] == 'p') {
+        if (currentPath[1] === 'p') {
           newPath.push('p', currentPath[2]);
-        }
-        if (currentPath[3] == 'd') {
-          newPath.push('d', currentPath[4]);
+        } else if (currentPath[1] === 'd') {
+          newPath.push('d', currentPath[2]);
         }
       }
       newPath.push(key);
       const newPathString = '/' + newPath.join('/');
-      navigate(
-        key === BentoRoute.Overview
-          ? buildQueryParamsUrl(newPathString, { ...filterQueryParams, ...otherQueryParams })
-          : newPathString
-      );
+      // Navigate to the menu item url
+      //  - only include filter/search/overview query params if we're navigating to the overview page
+      navigate(buildQueryParamsUrl(newPathString, key === BentoRoute.Overview ? overviewQueryParams : undefined));
     },
-    [navigate, filterQueryParams, otherQueryParams, location.pathname]
+    [navigate, overviewQueryParams, location.pathname]
   );
 };
 
@@ -66,14 +65,18 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
   const location = useLocation();
   const isSmallScreen = useSmallScreen();
   const currentPage = getCurrentPage(location);
+  const navigateToRoot = useNavigateToRoot();
 
   const { isFetching: openIdConfigFetching } = useOpenIdConfig();
   const { isHandingOffCodeForToken } = useAuthState();
-  const selectedScope = useSelectedScope();
 
   const isAuthenticated = useIsAuthenticated();
   const performSignOut = usePerformSignOut();
   const performSignIn = usePerformAuth();
+
+  const {
+    token: { colorBgContainer, colorBorderSecondary },
+  } = theme.useToken();
 
   useEffect(() => {
     document.title = CLIENT_NAME && CLIENT_NAME.trim() ? `Bento: ${CLIENT_NAME}` : 'Bento';
@@ -88,51 +91,61 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
     navigate(path, { replace: true });
   };
 
-  const navigateToOverview = useCallback(
-    () => navigate(langAndScopeSelectionToUrl(i18n.language, selectedScope, '')),
-    [navigate, i18n.language, selectedScope]
-  );
+  const logo = `/public/assets/branding${THEME === 'light' ? '.lightbg' : ''}.png`;
 
   const handleMenuClick = useHandleMenuClick();
 
   return (
-    <Header id="site-header">
+    <Header
+      id="site-header"
+      className={THEME}
+      style={{ backgroundColor: colorBgContainer, borderBottom: `1px solid ${colorBorderSecondary}` }}
+    >
       <Flex align="center" justify="space-between">
         <Flex align="center" gap={isSmallScreen ? 'small' : 'middle'} className="flex-1">
           {isSmallScreen ? (
             <object
               type="image/png"
-              data="/public/assets/branding.png"
-              aria-label="logo"
+              data={logo}
+              aria-hidden
               style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-3px)', paddingRight: '26px' }}
-              onClick={navigateToOverview}
+              onClick={navigateToRoot}
             >
               <img
-                src="/public/assets/branding.png"
+                src={logo}
                 alt="logo"
+                aria-hidden
                 style={{
                   height: '32px',
                   verticalAlign: 'middle',
                   transform: 'translateY(-3px)',
                   paddingLeft: '23px',
                 }}
-                onClick={navigateToOverview}
+                onClick={navigateToRoot}
               />
             </object>
           ) : (
             <img
-              src="/public/assets/branding.png"
+              src={logo}
               alt="logo"
+              aria-hidden
               style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-3px)', paddingLeft: '4px' }}
-              onClick={navigateToOverview}
+              onClick={navigateToRoot}
             />
           )}
-          <Typography.Title level={1} type="secondary" style={{ whiteSpace: 'nowrap' }}>
+          {/* If SHOW_HEADER_TITLE is false, assume we have text in the logo. We should still have some kind of level-1
+              header for accessibility/semantic markup, so render it but visually hidden in this case. */}
+          <Typography.Title
+            level={1}
+            type="secondary"
+            className={SHOW_HEADER_TITLE ? '' : 'visually-hidden'}
+            style={{ whiteSpace: 'nowrap' }}
+          >
             {CLIENT_NAME}
           </Typography.Title>
           {(menuItems?.length ?? 0) > 1 ? (
             <Menu
-              theme="dark"
+              // theme="light"
               mode="horizontal"
               items={menuItems}
               selectedKeys={[currentPage]}

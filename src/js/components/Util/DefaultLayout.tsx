@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { FloatButton, Layout } from 'antd';
+import AboutContent from '@/components/AboutContent';
 import SiteHeader from '@/components/SiteHeader';
 import SiteSider from '@/components/SiteSider';
 import SiteFooter from '@/components/SiteFooter';
+import PageHeader from '@/components/PageHeader';
 import ScopedTitle from '@/components/Scope/ScopedTitle';
 import { useSelectedScope } from '@/features/metadata/hooks';
 import { useIsInCatalogueMode, useSidebarMenuItems } from '@/hooks/navigation';
@@ -17,12 +19,17 @@ const DefaultLayout = () => {
   const page = getCurrentPage(location);
 
   const catalogueMode = useIsInCatalogueMode();
-  const { scope } = useSelectedScope();
+  const { scopeSet, scope } = useSelectedScope();
 
   const menuItems = useSidebarMenuItems();
   const [collapsed, setCollapsed] = useState(false);
 
-  const sidebarHidden = !(scope.project && catalogueMode) || page === 'phenopackets';
+  const isCatalogue = scopeSet && !scope.project && catalogueMode && page === 'overview';
+  const sidebarHidden =
+    isCatalogue ||
+    (page === 'beacon' && !scope.project) ||
+    (page === 'network' && !scope.project) ||
+    (menuItems.length <= 1 && !(scope.project && catalogueMode));
 
   return (
     <Layout id="default-layout" className={sidebarHidden ? 'sidebar-hidden' : collapsed ? 'sidebar-collapsed' : ''}>
@@ -30,8 +37,8 @@ const DefaultLayout = () => {
       <Layout>
         <SiteSider collapsed={collapsed} setCollapsed={setCollapsed} hidden={sidebarHidden} />
         <Layout id="content-layout">
+          <PageHeader catalogue={isCatalogue}>{isCatalogue ? <AboutContent /> : <ScopedTitle />}</PageHeader>
           <Content>
-            <ScopedTitle />
             <Outlet />
           </Content>
           <SiteFooter />
