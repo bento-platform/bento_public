@@ -1,9 +1,7 @@
 import clsx from 'clsx';
-import { type ReactNode, memo, useCallback, useMemo } from 'react';
-import { Button, Flex, Select, Space } from 'antd';
+import { type CSSProperties, type ReactNode, memo, useCallback, useMemo } from 'react';
+import { Button, Flex, Select, Space, Typography } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
-
-import { T_PLURAL_COUNT, T_SINGULAR_COUNT } from '@/constants/i18n';
 
 import type { FilterValue } from '@/features/search/types';
 import type { NumberField } from '@/types/discovery/fieldDefinition';
@@ -14,18 +12,29 @@ import { useSearchQuery } from '@/features/search/hooks';
 import OptionDescription from '@/components/Search/OptionDescription';
 import DateRangeFilterInput from '@/components/Search/DateRangeFilterInput';
 import NumberRangeFilterInput from '@/components/Search/NumberRangeFilterInput';
+import EnumFilterInput from '@/components/Search/EnumFilterInput';
 
 export type FilterInputValue = { field: string | null; value: FilterValue };
+
+const WRAPPER_STYLE: CSSProperties = {
+  padding: 8,
+  borderRadius: 8,
+  border: '1px solid #F0F0F0',
+};
 
 const SearchFilterInputWrapper = ({ vertical, children }: { vertical?: boolean; children: ReactNode }) => {
   if (vertical) {
     return (
-      <Space direction="vertical" size="small" className="w-full">
+      <Space direction="vertical" size="small" className="w-full" style={WRAPPER_STYLE}>
         {children}
       </Space>
     );
   } else {
-    return <Space.Compact className="w-full">{children}</Space.Compact>;
+    return (
+      <Space.Compact className="w-full" style={WRAPPER_STYLE}>
+        {children}
+      </Space.Compact>
+    );
   }
 };
 
@@ -109,26 +118,35 @@ const SearchFilterInput = ({
 
   return (
     <SearchFilterInputWrapper vertical={vertical}>
-      <Flex gap="small" className={vertical ? 'w-full' : ''}>
-        <Select
-          className={clsx('flex-1', 'h-auto', { 'rounded-e-none': !vertical })}
-          options={filterOptions}
-          size={vertical ? 'small' : 'middle'}
-          variant={vertical ? 'filled' : undefined}
-          onChange={onFilterFieldChange}
-          value={field}
-          placeholder={t('search.filter_placeholder')}
-        />
-        {vertical && (
-          <Button
-            icon={<CloseOutlined />}
-            size="small"
-            shape="circle"
-            color="danger"
-            variant="filled"
-            disabled={!field || !value}
-            onClick={onRemove}
+      <Flex gap={4} vertical>
+        <Flex gap="small" className={vertical ? 'w-full' : ''}>
+          <Select
+            className={clsx('flex-1', 'h-auto', { 'rounded-e-none': !vertical })}
+            options={filterOptions}
+            size={vertical ? 'small' : 'middle'}
+            variant={vertical ? 'filled' : undefined}
+            onChange={onFilterFieldChange}
+            value={field}
+            placeholder={t('search.filter_placeholder')}
           />
+          {vertical && (
+            <Button
+              icon={<CloseOutlined />}
+              size="small"
+              shape="circle"
+              color="danger"
+              variant="filled"
+              disabled={!field || !value}
+              onClick={onRemove}
+            />
+          )}
+        </Flex>
+        {field && vertical && (
+          <div style={{ margin: '0 8px' }}>
+            <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+              {fieldDefinitionMap[field].description}
+            </Typography.Text>
+          </div>
         )}
       </Flex>
       {isRangeField && currentFieldDef?.datatype === 'number' ? (
@@ -145,16 +163,13 @@ const SearchFilterInput = ({
           onChange={onFilterValueChange}
         />
       ) : (
-        <Select
-          mode={isMultiple ? 'multiple' : undefined}
+        <EnumFilterInput
+          isMultiple={isMultiple}
           className={inputClass}
           disabled={!field}
           options={valueOptions}
           onChange={onFilterValueChange}
           value={finalValue}
-          placeholder={
-            field ? t('search.filter_value_placeholder', isMultiple ? T_PLURAL_COUNT : T_SINGULAR_COUNT) : ''
-          }
         />
       )}
       {!vertical && <Button className="h-auto" icon={<CloseOutlined />} disabled={!field} onClick={onRemove} />}

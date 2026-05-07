@@ -186,6 +186,8 @@ body {
   text-wrap: nowrap;
   overflow: hidden;
   box-sizing: border-box;
+  font-weight: normal;
+  margin-right: 0;
 
   /* overridden by has-filters class when we have filters applied: */
   max-width: 0;

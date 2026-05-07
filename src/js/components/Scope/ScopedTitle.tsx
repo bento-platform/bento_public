@@ -4,7 +4,6 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Breadcrumb, type BreadcrumbProps, Button, Flex, Space, Tooltip } from 'antd';
 import { ArrowLeftOutlined, HomeOutlined, ProfileOutlined, QuestionOutlined } from '@ant-design/icons';
 import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
-import FiltersAppliedTag from '@/components/Search/FiltersAppliedTag';
 import CurrentPageHelpModal from '@/components/Util/CurrentPageHelpModal';
 import ScopePickerModal from './ScopePickerModal';
 
@@ -182,7 +181,6 @@ const ScopedTitle = () => {
               </Tooltip>
             ) : null}
             <Breadcrumb className="scoped-title__breadcrumb" items={breadcrumbItems} itemRender={breadcrumbRender} />
-            {currentPage === BentoRoute.Overview ? <FiltersAppliedTag /> : null}
           </Flex>
           <Space>
             {scopeSelectionEnabled && (

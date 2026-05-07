@@ -5,10 +5,9 @@ import { useTranslationFn } from '@/hooks';
 
 const FiltersAppliedTag = () => {
   const t = useTranslationFn();
-  const { filters, textQuery } = useSearchQuery();
+  const { filters } = useSearchQuery();
 
-  // # of filters, including text query:
-  const nFilters = Object.entries(filters).filter(([_, v]) => !!v).length + +!!textQuery;
+  const nFilters = Object.entries(filters).filter(([_, v]) => !!v).length;
   return (
     <Tag className={clsx('filters-applied-tag', nFilters && 'has-filters')} color="green">
       {t('search.filters_applied', { count: nFilters })}

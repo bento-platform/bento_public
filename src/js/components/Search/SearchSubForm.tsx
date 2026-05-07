@@ -28,7 +28,7 @@ const SearchSubForm = ({
   return (
     <div className={clsx('search-sub-form', className)} style={style}>
       <Typography.Title level={3} className="search-sub-form-title">
-        <span>
+        <span style={{ flex: 1 }}>
           {icon} <span className="should-underline-if-unfocused">{t(`search.${titleKey}`)}</span>
         </span>
         {extra}

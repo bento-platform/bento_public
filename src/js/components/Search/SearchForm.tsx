@@ -17,20 +17,22 @@ const SearchFormInner = ({ vertical }: { vertical: boolean }) => {
   const isSmallScreen = useSmallScreen();
   const { hasPermission: queryDataPerm } = useScopeQueryData();
 
+  const subFormStyle = vertical ? { padding: isSmallScreen ? 10 : 24 } : undefined;
+
   return (
     <Flex
       justify="space-between"
-      gap={isSmallScreen || vertical ? 12 : 24}
+      gap={vertical ? 0 : isSmallScreen ? 12 : 24}
       className="w-full"
       vertical={vertical || isSmallScreen}
     >
-      <SearchFilters className="max-w-half-cmw" vertical={vertical} />
+      <SearchFilters className="max-w-half-cmw" vertical={vertical} style={subFormStyle} />
       {queryDataPerm && (
         // If we have the query:data permission on the current scope, we're allowed to run free-text searches on
         // the data, so show the free-text search form:
         <>
           {vertical ? <Divider className="m-0" /> : null}
-          <SearchFreeText vertical={vertical} />
+          <SearchFreeText vertical={vertical} style={subFormStyle} />
         </>
       )}
     </Flex>

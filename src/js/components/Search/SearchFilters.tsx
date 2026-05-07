@@ -17,6 +17,7 @@ import {
 import type { QueryParamEntries, QueryParamEntry } from '@/features/search/types';
 import SearchFilterInput, { type FilterInputValue, SearchFilterInputSkeleton } from './SearchFilterInput';
 import SearchSubForm, { type DefinedSearchSubFormProps } from '@/components/Search/SearchSubForm';
+import FiltersAppliedTag from '@/components/Search/FiltersAppliedTag';
 
 const buildValueToEntry =
   (f: string) =>
@@ -51,7 +52,13 @@ const SearchFilters = ({ vertical, ...props }: DefinedSearchSubFormProps) => {
   }, [maxQueryParameters, fields, filters]);
 
   return (
-    <SearchSubForm titleKey="filters" icon={<FilterOutlined />} vertical={vertical} {...props}>
+    <SearchSubForm
+      titleKey="filters"
+      icon={<FilterOutlined />}
+      vertical={vertical}
+      extra={<FiltersAppliedTag />}
+      {...props}
+    >
       <Space direction="vertical" size={8} className="w-full">
         {WAITING_STATES.includes(configStatus) || WAITING_STATES.includes(fieldsStatus) ? (
           <SearchFilterInputSkeleton />
