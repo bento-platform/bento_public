@@ -124,6 +124,7 @@ const SearchFilterInput = ({
             icon={<CloseOutlined />}
             size="small"
             shape="circle"
+            color="danger"
             variant="filled"
             disabled={!field || !value}
             onClick={onRemove}

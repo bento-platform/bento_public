@@ -76,7 +76,7 @@ const OverviewChartDashboard = () => {
 
   return (
     <>
-      <Flex vertical={true} gap={24} className="container margin-auto">
+      <Flex vertical={true} gap={24} className="container">
         <div className="dashboard-tabs">
           <Tabs
             type="card"

@@ -22,7 +22,7 @@ const buildValueToEntry =
   (f: string) =>
   (v: string | null | undefined): QueryParamEntry => [f, v || ''];
 
-const SearchFilters = ({ vertical, ...props }: DefinedSearchSubFormProps & { vertical: boolean }) => {
+const SearchFilters = ({ vertical, ...props }: DefinedSearchSubFormProps) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
@@ -51,7 +51,7 @@ const SearchFilters = ({ vertical, ...props }: DefinedSearchSubFormProps & { ver
   }, [maxQueryParameters, fields, filters]);
 
   return (
-    <SearchSubForm titleKey="filters" icon={<FilterOutlined />} {...props}>
+    <SearchSubForm titleKey="filters" icon={<FilterOutlined />} vertical={vertical} {...props}>
       <Space direction="vertical" size={8} className="w-full">
         {WAITING_STATES.includes(configStatus) || WAITING_STATES.includes(fieldsStatus) ? (
           <SearchFilterInputSkeleton />

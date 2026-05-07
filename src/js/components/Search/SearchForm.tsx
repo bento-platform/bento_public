@@ -30,7 +30,7 @@ const SearchFormInner = ({ vertical }: { vertical: boolean }) => {
         // the data, so show the free-text search form:
         <>
           {vertical ? <Divider className="m-0" /> : null}
-          <SearchFreeText />
+          <SearchFreeText vertical={vertical} />
         </>
       )}
     </Flex>

@@ -1,20 +1,72 @@
 import { useMemo, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { Breadcrumb, type BreadcrumbProps, Button, Flex, Space, Tooltip } from 'antd';
-import { HomeOutlined, ProfileOutlined, QuestionOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, HomeOutlined, ProfileOutlined, QuestionOutlined } from '@ant-design/icons';
 import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
 import FiltersAppliedTag from '@/components/Search/FiltersAppliedTag';
 import CurrentPageHelpModal from '@/components/Util/CurrentPageHelpModal';
 import ScopePickerModal from './ScopePickerModal';
 
 import { useSelectedScope, useSelectedScopeTitles } from '@/features/metadata/hooks';
+import { useSearchQueryParams } from '@/features/search/hooks';
 import { useExtraBreadcrumb } from '@/features/ui/hooks';
-import { useTranslationFn } from '@/hooks';
-import { useGetRouteTitleAndIcon } from '@/hooks/navigation';
+import { useLanguage, useTranslationFn } from '@/hooks';
+import { useGetRouteTitleAndIcon, useNavigateToRoot, useNavigateToSameScopeUrl } from '@/hooks/navigation';
 import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
-import { getCurrentPage } from '@/utils/router';
+import { getCurrentPage, scopeToUrl } from '@/utils/router';
+import { buildQueryParamsUrl } from '@/features/search/utils';
+
+const NO_BACK_BUTTON = [undefined, undefined] as const;
+
+const useBackButtonInfo = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const language = useLanguage();
+  const overviewQueryParams = useSearchQueryParams();
+  const currentPage = getCurrentPage(location);
+
+  const navigateToRoot = useNavigateToRoot();
+  const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
+  const { scope, scopeSet, fixedProject, fixedDataset } = useSelectedScope();
+
+  return useMemo<readonly [undefined, undefined] | [string, () => void]>(() => {
+    if (!scopeSet) return NO_BACK_BUTTON;
+    // Cases where we DO show a back button, given the scope is set:
+    //  - We're in a project and in catalog mode
+    //  - We're in a dataset and don't have a fixed dataset (a fixed dataset implies a fixed project as well)
+    //  - Any time we're on the phenopackets page
+    if (currentPage === BentoRoute.Phenopackets) {
+      // When going "back" here, we are staying in the same scope, so the logic looks a bit different:
+      return [
+        scope.dataset ? 'Back to dataset' : 'Back to project',
+        () => navigateToSameScopeUrl(buildQueryParamsUrl(BentoRoute.Overview, overviewQueryParams), false),
+      ];
+    } else {
+      if (scope.dataset) {
+        return fixedDataset
+          ? NO_BACK_BUTTON
+          : ['Back to project', () => navigate(scopeToUrl({ project: scope.project }, language, BentoRoute.Overview))];
+      } else if (scope.project) {
+        return fixedProject ? NO_BACK_BUTTON : ['Back to catalogue', navigateToRoot];
+      } else {
+        // No project selected, nothing to go "back" to
+        return NO_BACK_BUTTON;
+      }
+    }
+  }, [
+    currentPage,
+    language,
+    navigate,
+    navigateToRoot,
+    navigateToSameScopeUrl,
+    overviewQueryParams,
+    scope,
+    fixedProject,
+    fixedDataset,
+    scopeSet,
+  ]);
+};
 
 const breadcrumbRender: BreadcrumbProps['itemRender'] = (route, _params, routes, _paths) => {
   const isLast = route?.path === routes[routes.length - 1]?.path;
@@ -23,13 +75,12 @@ const breadcrumbRender: BreadcrumbProps['itemRender'] = (route, _params, routes,
 
 const ScopedTitle = () => {
   const location = useLocation();
-  const { i18n } = useTranslation();
   const t = useTranslationFn();
+  const language = useLanguage();
 
   const { scope, fixedProject, fixedDataset } = useSelectedScope();
   const { projectTitle, datasetTitle } = useSelectedScopeTitles();
 
-  // const navigateToSameScopeUrl = useNavigateToSameScopeUrl();  TODO: re-enable for sidebar
   const getRouteTitleAndIcon = useGetRouteTitleAndIcon();
 
   const currentPage = getCurrentPage();
@@ -37,8 +88,6 @@ const ScopedTitle = () => {
     !(fixedProject && fixedDataset) &&
     !TOP_LEVEL_ONLY_ROUTES.includes(currentPage) &&
     currentPage !== BentoRoute.Phenopackets;
-
-  // const overviewQueryParams = useSearchQueryParams();  TODO: re-enable for sidebar
 
   const [scopeSelectModalOpen, setScopeSelectModalOpen] = useState(false);
   const [helpModalOpen, setHelpModalOpen] = useState(false);
@@ -67,7 +116,7 @@ const ScopedTitle = () => {
       // show project context in the navigation:
       items.push({
         title: projectTitle,
-        path: `/${i18n.language}/p/${scope.project}`,
+        path: `/${language}/p/${scope.project}`,
       });
     }
 
@@ -79,12 +128,12 @@ const ScopedTitle = () => {
         // the catalogue, but rather the project) using a home icon:
         items.push({
           title: <HomeOutlined />,
-          path: `/${i18n.language}/`,
+          path: `/${language}/`,
         });
       }
       items.push({
         title: datasetTitle,
-        path: `/${i18n.language}/d/${scope.dataset}`,
+        path: `/${language}/d/${scope.dataset}`,
       });
     }
 
@@ -99,7 +148,7 @@ const ScopedTitle = () => {
 
     return items;
   }, [
-    i18n.language,
+    language,
     t,
     projectTitle,
     datasetTitle,
@@ -111,6 +160,8 @@ const ScopedTitle = () => {
     extraBreadcrumb,
   ]);
 
+  const [backClickText, onBackClick] = useBackButtonInfo();
+
   if (breadcrumbItems.length) {
     return (
       <>
@@ -118,20 +169,18 @@ const ScopedTitle = () => {
         <CurrentPageHelpModal open={helpModalOpen} onCancel={() => setHelpModalOpen(false)} />
         <Flex className="scoped-title" align="center">
           <Flex className="flex-1" align="center">
-            {/* TODO: re-enable this code when we get rid of the sidebar! */}
-            {/*{currentPage === BentoRoute.Phenopackets ? (*/}
-            {/*  // For the Phenopackets route, put a back button in the header itself to go back*/}
-            {/*  <Button*/}
-            {/*    className="scoped-title__back"*/}
-            {/*    icon={<ArrowLeftOutlined />}*/}
-            {/*    type="text"*/}
-            {/*    shape="circle"*/}
-            {/*    size="large"*/}
-            {/*    onClick={() => {*/}
-            {/*      navigateToSameScopeUrl(buildQueryParamsUrl(BentoRoute.Overview, overviewQueryParams), false);*/}
-            {/*    }}*/}
-            {/*  />*/}
-            {/*) : null}*/}
+            {backClickText !== undefined && onBackClick !== undefined ? (
+              <Tooltip title={backClickText}>
+                <Button
+                  className="scoped-title__back"
+                  icon={<ArrowLeftOutlined />}
+                  type="text"
+                  shape="circle"
+                  size="large"
+                  onClick={onBackClick}
+                />
+              </Tooltip>
+            ) : null}
             <Breadcrumb className="scoped-title__breadcrumb" items={breadcrumbItems} itemRender={breadcrumbRender} />
             {currentPage === BentoRoute.Overview ? <FiltersAppliedTag /> : null}
           </Flex>

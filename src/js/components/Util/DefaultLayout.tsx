@@ -1,9 +1,9 @@
-import { useState } from 'react';
+// import { useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { FloatButton, Layout } from 'antd';
 import AboutContent from '@/components/AboutContent';
 import SiteHeader from '@/components/SiteHeader';
-import SiteSider from '@/components/SiteSider';
+// import SiteSider from '@/components/SiteSider';
 import SiteFooter from '@/components/SiteFooter';
 import PageHeader from '@/components/PageHeader';
 import ScopedTitle from '@/components/Scope/ScopedTitle';
@@ -11,6 +11,7 @@ import { useSelectedScope } from '@/features/metadata/hooks';
 import { useIsInCatalogueMode, useSidebarMenuItems } from '@/hooks/navigation';
 import { BentoRoute } from '@/types/routes';
 import { getCurrentPage } from '@/utils/router';
+import SearchSider from '@/components/Search/SearchSider';
 
 const { Content } = Layout;
 
@@ -22,26 +23,29 @@ const DefaultLayout = () => {
   const { scopeSet, scope } = useSelectedScope();
 
   const menuItems = useSidebarMenuItems();
-  const [collapsed, setCollapsed] = useState(false);
+  // const [collapsed, setCollapsed] = useState(false);
 
   const isCatalogue = scopeSet && !scope.project && catalogueMode && page === 'overview';
-  const sidebarHidden =
-    isCatalogue ||
-    (page === 'beacon' && !scope.project) ||
-    (page === 'network' && !scope.project) ||
-    (menuItems.length <= 1 && !(scope.project && catalogueMode));
+  // const sidebarHidden =
+  //   isCatalogue ||
+  //   (page === 'beacon' && !scope.project) ||
+  //   (page === 'network' && !scope.project) ||
+  //   (menuItems.length <= 1 && !(scope.project && catalogueMode));
 
   return (
-    <Layout id="default-layout" className={sidebarHidden ? 'sidebar-hidden' : collapsed ? 'sidebar-collapsed' : ''}>
+    <Layout id="default-layout" className="sidebar-hidden">
       <SiteHeader menuItems={menuItems} />
-      <Layout>
-        <SiteSider collapsed={collapsed} setCollapsed={setCollapsed} hidden={sidebarHidden} />
-        <Layout id="content-layout">
-          <PageHeader catalogue={isCatalogue}>{isCatalogue ? <AboutContent /> : <ScopedTitle />}</PageHeader>
-          <Content>
-            <Outlet />
-          </Content>
-          <SiteFooter />
+      <Layout id="content-layout">
+        <PageHeader catalogue={isCatalogue}>{isCatalogue ? <AboutContent /> : <ScopedTitle />}</PageHeader>
+        {/*<SiteSider collapsed={collapsed} setCollapsed={setCollapsed} hidden={sidebarHidden} />*/}
+        <Layout>
+          <SearchSider />
+          <Layout>
+            <Content>
+              <Outlet />
+            </Content>
+            <SiteFooter />
+          </Layout>
           {/* Overview has its own way of rendering a back-to-top button, so we only render this if we're not on the overview page: */}
           {page !== BentoRoute.Overview ? (
             <FloatButton.BackTop className="float-btn-pos" target={() => document.getElementById('content-layout')!} />

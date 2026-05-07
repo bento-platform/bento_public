@@ -173,7 +173,14 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
           )}
           {SHOW_SIGN_IN &&
             (isAuthenticated ? (
-              <Button type="text" className="header-button" icon={<LogoutOutlined />} onClick={performSignOut}>
+              <Button
+                color="default"
+                className="header-button"
+                icon={<LogoutOutlined />}
+                shape="round"
+                variant="filled"
+                onClick={performSignOut}
+              >
                 {isSmallScreen ? '' : t('Sign Out')}
               </Button>
             ) : (
