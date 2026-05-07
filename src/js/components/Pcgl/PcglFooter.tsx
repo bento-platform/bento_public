@@ -50,16 +50,12 @@ const PcglFooter = () => {
         <Flex vertical={true} gap={16} className="flex-1">
           <Flex gap={breakpoints.md ? 48 : 8} vertical={!breakpoints.md}>
             <a href={t('pcgl.links.pcglWebsiteHref')} rel="noreferrer" target="_blank">
-              <img
-                src="/public/assets/pcgl_logo_footer.png"
-                alt="Pan-Canadian Genome Library logo"
-                style={{ width: 200 }}
-              />
+              <img src="/public/assets/pcgl_logo_footer.png" alt={t('pcgl.footer.logo_alt')} style={{ width: 200 }} />
             </a>
             <a href={t('pcgl.links.cihrHref')} rel="noreferrer" target="_blank">
               <img
                 src="/public/assets/cihr_logo_footer.png"
-                alt="Canadian Institutes of Health Research logo"
+                alt={t('pcgl.footer.cihr_logo_alt')}
                 style={{ width: 260 }}
               />
             </a>

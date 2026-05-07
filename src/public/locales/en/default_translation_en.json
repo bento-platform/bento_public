@@ -531,6 +531,8 @@
   },
   "pcgl": {
     "footer": {
+      "logo_alt": "Pan-Canadian Genome Library logo",
+      "cihr_logo_alt": "Canadian Institutes of Health Research logo",
       "cihr_support": "PCGL is supported by the Canadian Institutes of Health Research (CIHR).",
       "powered_by": "The PCGL research portal is powered by",
       "bento": "the Bento platform"
