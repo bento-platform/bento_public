@@ -28,11 +28,10 @@ const DefaultLayout = () => {
   // const [collapsed, setCollapsed] = useState(false);
 
   const isCatalogue = scopeSet && !scope.project && catalogueMode && page === 'overview';
-  // const sidebarHidden =
-  //   isCatalogue ||
-  //   (page === 'beacon' && !scope.project) ||
-  //   (page === 'network' && !scope.project) ||
-  //   (menuItems.length <= 1 && !(scope.project && catalogueMode));
+  const sidebarHidden =
+    // isCatalogue ||
+    (page === 'beacon' && !scope.project) || (page === 'network' && !scope.project) || page === 'phenopackets';
+  // (menuItems.length <= 1 && !(scope.project && catalogueMode));
 
   return (
     <Layout id="default-layout" className="sidebar-hidden">
@@ -41,7 +40,7 @@ const DefaultLayout = () => {
         <PageHeader catalogue={isCatalogue}>{isCatalogue ? <AboutContent /> : <ScopedTitle />}</PageHeader>
         {/*<SiteSider collapsed={collapsed} setCollapsed={setCollapsed} hidden={sidebarHidden} />*/}
         <Layout>
-          <SearchSider />
+          {!sidebarHidden && <SearchSider />}
           <Layout>
             <Content>
               <Outlet />

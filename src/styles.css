@@ -296,7 +296,7 @@ ul#page-header-stats li.loading {
 }
 
 .scoped-title__breadcrumb .ant-breadcrumb-item a {
-  height: 3rem;
+  height: 40px;
 }
 
 
