@@ -78,15 +78,17 @@ const OverviewChartDashboard = () => {
     <>
       <Flex vertical={true} gap={24} className="container">
         <div className="dashboard-tabs">
-          <Tabs
-            type="card"
-            size="large"
-            activeKey={pageTab}
-            onChange={setPageTab}
-            items={pageTabItems}
-            id="dashboard-tabs"
-            tabBarStyle={{ marginBottom: -1, zIndex: 1 }}
-          />
+          {pageTabItems.length > 1 && (
+            <Tabs
+              type="card"
+              size="large"
+              activeKey={pageTab}
+              onChange={setPageTab}
+              items={pageTabItems}
+              id="dashboard-tabs"
+              tabBarStyle={{ marginBottom: -1, zIndex: 1 }}
+            />
+          )}
           {pageTab === 'about' ? <AboutBox /> : null}
           {pageTab === 'provenance' && selectedDataset ? (
             <DatasetProvenance dataset={selectedDataset} showTitle={false} />
