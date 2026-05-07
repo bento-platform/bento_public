@@ -6,12 +6,14 @@ import SiteHeader from '@/components/SiteHeader';
 // import SiteSider from '@/components/SiteSider';
 import SiteFooter from '@/components/SiteFooter';
 import PageHeader from '@/components/PageHeader';
+import PcglFooter from '@/components/Pcgl/PcglFooter';
+import SearchSider from '@/components/Search/SearchSider';
 import ScopedTitle from '@/components/Scope/ScopedTitle';
 import { useSelectedScope } from '@/features/metadata/hooks';
 import { useIsInCatalogueMode, useSidebarMenuItems } from '@/hooks/navigation';
+import { PCGL_MODE } from '@/config';
 import { BentoRoute } from '@/types/routes';
 import { getCurrentPage } from '@/utils/router';
-import SearchSider from '@/components/Search/SearchSider';
 
 const { Content } = Layout;
 
@@ -44,7 +46,7 @@ const DefaultLayout = () => {
             <Content>
               <Outlet />
             </Content>
-            <SiteFooter />
+            {PCGL_MODE ? <PcglFooter /> : <SiteFooter />}
           </Layout>
           {/* Overview has its own way of rendering a back-to-top button, so we only render this if we're not on the overview page: */}
           {page !== BentoRoute.Overview ? (
