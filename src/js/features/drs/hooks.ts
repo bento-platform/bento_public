@@ -1,10 +1,11 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/hooks';
-
+import { store } from '@/store';
 import type { DrsRecordState } from './drs.store';
 import { RequestStatus } from '@/types/requests';
 
 import { getDrsRecord } from '@/features/drs/getDrsRecord.thunk';
+import { DrsAccessMethod, DrsRecord } from './types';
 
 export const useDrsObjectOrPassThrough = (uri: string | undefined): DrsRecordState | null => {
   /**
@@ -56,4 +57,44 @@ export const useDrsAccessMethods = (url: string | undefined): string | null => {
   } else {
     return null;
   }
+};
+
+
+
+``
+
+
+
+
+// ------------------------------- async versions, not hooks
+
+export const getDrsAccessMethods = async(url: string | undefined): Promise<string | null> => {
+  return getDrsObjectOrPassThrough(url).then((record) => (record?.access_methods ?? []).find((am) => am.type === 'https')?.access_url?.url ?? null);
+};
+
+export const getDrsObjectOrPassThrough = async (uri: string | undefined): Promise<DrsRecord | null> => {
+  /**
+   * If a record is returned, the URI is a DRS URI that has been fetched.
+   * If null is returned, the URI is not recognized as a DRS URI.
+   */
+
+
+  if (!uri) return null;
+
+  // deduplicate
+  const isDrs = (() => {
+    try {
+      const parts = new URL(uri);
+      return parts.protocol === 'drs:';
+    } catch {
+      return false;
+    }
+  })();
+
+  if (!isDrs) return null;
+
+  // add try/catch
+  // direct call to store.dispatch instead of useAppDispatch hook
+  const record = store.dispatch(getDrsRecord(uri)).unwrap()
+  return record;
 };

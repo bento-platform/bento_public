@@ -1,4 +1,4 @@
-import type { Tracks, TrackLoad, TrackType, CreateOpt, GenomeOpt,  } from 'igv';
+import type { Tracks, TrackLoad, TrackType, CreateOpt, GenomeDef, GenomeOpt, ReferenceGenome } from 'igv';
 import { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
 import { Genome } from '@/features/reference/types';
 
@@ -17,5 +17,15 @@ export type IgvTrack = TrackLoad<SupportedTrackType>;
 export type ExperimentResultWithView = ExperimentResult & { viewInIgv: boolean };
 
 // export type IgvReference = Record<string, CreateOptExtras & GenomeOpt >
-export type IgvReference = Record<string, CreateOpt >
 
+export type IgvReferenceById = Record<string, CreateOpt>;
+
+export type IgvReferenceDetails = ReferenceGenome;
+
+export type IgvAccessUrlPromisesById = Record<
+  string,
+  {
+    fileAccessUrl: Promise<string | null>;
+    indexAccessUrl?: Promise<string | null>;
+  }
+>;

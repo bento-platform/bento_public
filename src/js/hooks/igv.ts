@@ -1,15 +1,22 @@
 import { useDrsAccessMethods } from '@/features/drs/hooks';
 import { useReference } from '@/features/reference/hooks';
-import { caseInsensitiveIgvFileInfoLookup } from '@/utils/igv';
+import { caseInsensitiveIgvFileInfoLookup, viewableFormatsLower, hasIndex } from '@/utils/igv';
 import { assemblyIdsForExperiments } from '@/utils/experiments';
 import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
 import { RequestStatus } from '@/types/requests';
+import { useAppDispatch, useAppSelector } from '@/hooks';
 
 import type { CreateOpt } from 'igv';
 
-import type { IgvReference } from '@/types/clinPhen/igv';
+import type { IgvReferenceById } from '@/types/clinPhen/igv';
 import { caseInsensitiveObjectAccess } from '@/utils/objects';
-import { Genome } from '@/features/reference/types';
+import { getIgvGenomes } from '@/features/igv/igv.store';
+
+import { referenceGenomesUrl } from '@/constants/configConstants';
+
+export const useIgvReference = () => {
+  return useAppSelector((state) => state.igv);
+};
 
 // more null checks?
 const useGetIndexAccessUrl = (track: ExperimentResult): string | null => {
@@ -19,18 +26,20 @@ const useGetIndexAccessUrl = (track: ExperimentResult): string | null => {
   const toReturn = useDrsAccessMethods(index?.url);
 
   // remove debug return
-  console.log(`useGetIndexAccessUrl returning url ${toReturn}`);
+  console.log(`useGetIndexAccessUrl returning url ${JSON.stringify(toReturn)}`);
   return toReturn;
 
   // return useDrsAccessMethods(index?.url);
 };
 
-const hasIndex = (track: ExperimentResult) => {
-  return track.indices.length > 0;
-};
+// const hasIndex = (track: ExperimentResult) => {
+
+//   // index is optional, ExperimentResult type needs fixing
+//   return (track.indices ?? '').length > 0;
+// };
 
 export const useIgvFileAndIndexAccessUrls = (tracks: ExperimentResult[]) => {
-  const drsUrls: Record<string, { fileAccessUrl: string; indexAccessUrl: string | null }> = {};
+  const drsUrls: Record<string, { fileAccessUrl: string; indexAccessUrl?: string }> = {};
 
   console.log('useIgvFileAndIndexAccessUrls');
 
@@ -42,18 +51,14 @@ export const useIgvFileAndIndexAccessUrls = (tracks: ExperimentResult[]) => {
     const gotFileAndIndexUrls = trackHasIndex && fileUrl !== null && indexUrl !== null;
     const gotUrlForFileWithNoIndex = !trackHasIndex && fileUrl !== null;
 
-    // remove debug logs
-    if (fileUrl && !indexUrl) {
-      console.log('---------------- indexUrl null when fileUrl exists ---------------');
-      console.log(`offending track: ${JSON.stringify(t)}`);
-    }
-    console.log(`useIgvFileAndIndexAccessUrls(): fileUrl: ${fileUrl}, indexUrl: ${indexUrl}`);
-
     // don't return null for an index when expected to exist
     // could probably improve this by following drs request status better
     // either that or we return Promise<url> to IGV instead of a bare url
     if (gotFileAndIndexUrls || gotUrlForFileWithNoIndex) {
-      drsUrls[t.url] = { fileAccessUrl: fileUrl, indexAccessUrl: indexUrl };
+      drsUrls[t.url] = { fileAccessUrl: fileUrl };
+      if (indexUrl) {
+        drsUrls[t.url].indexAccessUrl = indexUrl;
+      }
     }
   });
 
@@ -72,24 +77,34 @@ const IGV_JS_ANNOTATION_ALIASES = {
   GRCm38: 'mm10',
 };
 
-// type SupportedIgvGenomes = 'hg19' | 'hg38' | 'mm10'
-
 // get references in IGV format, preferring ones from bento when present
-export const useBentoOrIgvReferencesById = (requestedReferenceIds: string[]) => {
-  const { genomesStatus: bentoGenomeStatus, genomesByID: bentoReferenceGenomes } = useReference();
+// how resilient should this be?
+// should work whether or not igv references are present
+// what about if bento references fail? fall back to igv?
 
-  if (bentoGenomeStatus !== RequestStatus.Fulfilled) return {};
+export const useBentoOrIgvReferencesById = (requestedReferenceIds: string[]): IgvReferenceById => {
+  console.log('useBentoOrIgvReferencesById');
+
+  const { genomesStatus: bentoGenomeStatus, genomesByID: bentoReferenceGenomes } = useReference();
+  const { igvGenomesStatus, igvGenomesByID } = useIgvReference();
+
+  // if (bentoGenomeStatus !== RequestStatus.Fulfilled) return {};
 
   const availableReferences: Record<string, CreateOpt> = {};
+
   requestedReferenceIds.forEach((r) => {
     const bentoRef = caseInsensitiveObjectAccess(r, bentoReferenceGenomes);
+
+    const igvRefAlias = caseInsensitiveObjectAccess(r, IGV_JS_ANNOTATION_ALIASES);
+    const igvRef = igvRefAlias ? igvGenomesByID[igvRefAlias] : null;
+
     if (bentoRef) {
       const ref = {
         reference: {
           id: bentoRef.id,
           fastaURL: bentoRef.fasta,
           indexURL: bentoRef.fai,
-          // can pull cytoband url from igv even when using bento reference
+          cytobandURL: igvRef?.cytobandURL,
           tracks: bentoRef.gff3_gz
             ? [
                 {
@@ -106,15 +121,26 @@ export const useBentoOrIgvReferencesById = (requestedReferenceIds: string[]) => 
               ]
             : [],
         },
+        ...(bentoRef?.gff3_gz
+          ? {
+              search: {
+                url: `${referenceGenomesUrl}/$GENOME$/igv-js-features?q=$FEATURE$`,
+
+                // erroneous required fields, igv typescript is incorrect
+                chromosomeField: 'chromosome', // already the default for this value
+                displayName: '', // this value isn't even read anywhere
+              },
+            }
+          : {}),
       };
 
       // assigning directly without naming variable gives ts errors, groan
       availableReferences[r] = ref;
     } else {
-      // else no bento reference genome for this assembly, fall back to IGV reference or null if none
-      const igvRef = caseInsensitiveObjectAccess(r, IGV_JS_ANNOTATION_ALIASES);
+      // else no bento reference genome for this assembly, fall back to IGV reference if any
       if (igvRef) {
-        availableReferences[r] = { genome: igvRef };
+        availableReferences[r] = { genome: igvRef.id as string }; // ... for string-only reference
+        // availableReferences[r] = { reference: igvRef }; // this throws errors, but igv doesn't like its own refseq reference
       }
     }
   });
@@ -128,16 +154,24 @@ export const useBentoOrIgvReferencesById = (requestedReferenceIds: string[]) => 
 // file is viewable if it's a viewable track type and a reference exists for it
 // return references here so we don't have to look them up again later
 export const useGetTracksAndReferencesForIgv = (experimentResults: ExperimentResult[]) => {
-  const { genomesStatus: bentoGenomeStatus, genomesByID: bentoReferenceGenomes } = useReference();
-  const emptyResponse = { tracks: [] as ExperimentResult[], referencesById: {} as Record<string, Genome> }; // avoids multiple null checks elsewhere
-  if (bentoGenomeStatus !== RequestStatus.Fulfilled) return emptyResponse;
+  const dispatch = useAppDispatch()
+  const emptyResponse = { tracks: [] as ExperimentResult[], referencesById: {} as IgvReferenceById }; // avoids multiple null checks elsewhere
 
-  // or check against viewableFormatsLower
-  const tracksWithViewableFileType = experimentResults.filter((e) => caseInsensitiveIgvFileInfoLookup(e.file_format));
+  if (experimentResults.length === 0) return emptyResponse
+
+  // why here?
+  dispatch(getIgvGenomes())
+
+  // const { genomesStatus: bentoGenomeStatus, genomesByID: bentoReferenceGenomes } = useReference();
+  // const { igvGenomesStatus, igvGenomesByID } = useIgvReference();
+
+
+  // if (bentoGenomeStatus !== RequestStatus.Fulfilled ) return emptyResponse;
+
+  const tracksWithViewableFileType = experimentResults.filter((e) =>
+    viewableFormatsLower.includes((e.file_format ?? '').toLowerCase())
+  );
   const viewableTracksIngested = tracksWithViewableFileType.filter((e) => e.url);
-
-  console.log({ viewableTracksIngested });
-
   const requestedAssemblies = assemblyIdsForExperiments(viewableTracksIngested);
   const referencesById = useBentoOrIgvReferencesById(requestedAssemblies);
   return { tracks: viewableTracksIngested, referencesById };
