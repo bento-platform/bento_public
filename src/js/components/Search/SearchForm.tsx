@@ -26,15 +26,15 @@ const SearchFormInner = ({ vertical }: { vertical: boolean }) => {
       className="w-full"
       vertical={vertical || isSmallScreen}
     >
-      <SearchFilters className="max-w-half-cmw" vertical={vertical} style={subFormStyle} />
       {queryDataPerm && (
         // If we have the query:data permission on the current scope, we're allowed to run free-text searches on
         // the data, so show the free-text search form:
         <>
-          {vertical ? <Divider className="m-0" /> : null}
           <SearchFreeText vertical={vertical} style={subFormStyle} />
+          {vertical ? <Divider className="m-0" /> : null}
         </>
       )}
+      <SearchFilters className="max-w-half-cmw" vertical={vertical} style={subFormStyle} />
     </Flex>
   );
 };
