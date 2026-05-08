@@ -11,16 +11,19 @@ const FILTERS_STYLE = {
   maxHeight: 'calc(100vh - var(--header-height) - var(--content-scoped-title-height) - 1px)',
 } as CSSProperties;
 
-const SearchSider = () => {
+const SearchSider = ({ overlay }: { overlay: boolean }) => {
   const t = useTranslationFn();
   const { scope } = useSelectedScope();
   return (
     <Layout.Sider
       width="auto"
       style={{
+        position: overlay ? 'fixed' : 'relative',
+        zIndex: 19,
         backgroundColor: 'white',
         borderRight: '1px solid #eee',
         minHeight: scope.project ? 'calc(100vh - var(--header-height) - var(--content-scoped-title-height))' : 0,
+        boxShadow: overlay ? '3px 0 10px rgba(0, 0, 0, 0.06)' : undefined,
       }}
     >
       {scope.project ? (

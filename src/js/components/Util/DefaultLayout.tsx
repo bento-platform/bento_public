@@ -1,6 +1,6 @@
 // import { useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import { FloatButton, Layout } from 'antd';
+import { FloatButton, Grid, Layout } from 'antd';
 import AboutContent from '@/components/AboutContent';
 import SiteHeader from '@/components/SiteHeader';
 // import SiteSider from '@/components/SiteSider';
@@ -16,6 +16,7 @@ import { BentoRoute } from '@/types/routes';
 import { getCurrentPage } from '@/utils/router';
 
 const { Content } = Layout;
+const { useBreakpoint } = Grid;
 
 const DefaultLayout = () => {
   const location = useLocation();
@@ -26,6 +27,8 @@ const DefaultLayout = () => {
 
   const menuItems = useSidebarMenuItems();
   // const [collapsed, setCollapsed] = useState(false);
+
+  const breakpoints = useBreakpoint();
 
   const isCatalogue = scopeSet && !scope.project && catalogueMode && page === 'overview';
   const sidebarHidden =
@@ -40,9 +43,9 @@ const DefaultLayout = () => {
         <PageHeader catalogue={isCatalogue}>{isCatalogue ? <AboutContent /> : <ScopedTitle />}</PageHeader>
         {/*<SiteSider collapsed={collapsed} setCollapsed={setCollapsed} hidden={sidebarHidden} />*/}
         <Layout>
-          {!sidebarHidden && <SearchSider />}
+          {!sidebarHidden && <SearchSider overlay={!breakpoints.lg} />}
           <Layout>
-            <Content>
+            <Content style={{ filter: !breakpoints.lg ? 'blur(12px)' : undefined }}>
               <Outlet />
             </Content>
             {PCGL_MODE ? <PcglFooter /> : <SiteFooter />}
