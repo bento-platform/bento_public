@@ -170,9 +170,9 @@ const SearchFilters = ({ vertical, ...props }: DefinedSearchSubFormProps) => {
         {maxQueryParameters < nSearchFilters && (
           <Flex gap={12}>
             <Text type="secondary" className="flex-1">
-              {t('search.apply_up_to', { nFilters: maxQueryParameters })}
+              {t('search.filters_apply_up_to', { nFilters: maxQueryParameters })}
             </Text>
-            <Tooltip>
+            <Tooltip title={t('search.filters_max_help')}>
               <QuestionCircleOutlined />
             </Tooltip>
           </Flex>
