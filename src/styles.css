@@ -2,7 +2,7 @@
   /* sync with NAVBAR_HEIGHT in common.ts */
   --header-height: 64px;
 
-  --sidebar-width-full: 340px;
+  --sidebar-width-full: 360px;
   --sidebar-width-collapsed: 64px;
 
   --content-padding-v: 24px;

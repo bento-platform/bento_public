@@ -173,7 +173,9 @@ const SearchFilters = ({ vertical, ...props }: DefinedSearchSubFormProps) => {
               {t('search.filters_apply_up_to', { nFilters: maxQueryParameters })}
             </Text>
             <Tooltip title={t('search.filters_max_help')}>
-              <QuestionCircleOutlined />
+              <Text type="secondary">
+                <QuestionCircleOutlined />
+              </Text>
             </Tooltip>
           </Flex>
         )}
