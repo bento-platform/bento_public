@@ -178,11 +178,13 @@ const SearchFilterInput = ({
 };
 
 export const SearchFilterInputSkeleton = memo(() => (
-  <Space.Compact className="w-full">
-    <Select className="flex-1 rounded-e-none h-auto" disabled={true} loading={true} />
-    <Select className="flex-1" disabled={true} />
-    <Button className="h-auto" icon={<CloseOutlined />} disabled={true} />
-  </Space.Compact>
+  <Space direction="vertical" size="small" className="w-full" style={WRAPPER_STYLE}>
+    <Flex gap="small" className="w-full">
+      <Select className="flex-1" size="small" disabled={true} loading={true} />
+      <Button icon={<CloseOutlined />} size="small" shape="circle" color="danger" variant="filled" disabled />
+    </Flex>
+    <Select className="flex-1 w-full" disabled={true} />
+  </Space>
 ));
 SearchFilterInputSkeleton.displayName = 'SearchFilterInputSkeleton';
 
