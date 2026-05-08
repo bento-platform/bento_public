@@ -25,7 +25,7 @@ const buildValueToEntry =
   (f: string) =>
   (v: string | null | undefined): QueryParamEntry => [f, v || ''];
 
-const SearchFilters = ({ vertical, ...props }: DefinedSearchSubFormProps) => {
+const SearchFilters = (props: DefinedSearchSubFormProps) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const t = useTranslationFn();
@@ -61,7 +61,6 @@ const SearchFilters = ({ vertical, ...props }: DefinedSearchSubFormProps) => {
       titleKey="filters_title"
       titleKeyCount={maxQueryParameters}
       icon={<FilterOutlined />}
-      vertical={vertical}
       extra={<FiltersAppliedTag />}
       {...props}
     >
@@ -156,14 +155,7 @@ const SearchFilters = ({ vertical, ...props }: DefinedSearchSubFormProps) => {
             };
 
             return (
-              <SearchFilterInput
-                key={i}
-                onChange={onChange}
-                onRemove={onRemove}
-                disabledFields={usedFields}
-                vertical={vertical}
-                {...fv}
-              />
+              <SearchFilterInput key={i} onChange={onChange} onRemove={onRemove} disabledFields={usedFields} {...fv} />
             );
           })
         )}

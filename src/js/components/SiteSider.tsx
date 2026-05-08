@@ -131,7 +131,7 @@ const SiteSider = ({
 
       {scope.project ? (
         <div style={filtersStyle}>
-          <SearchForm vertical={true} />
+          <SearchForm />
         </div>
       ) : (
         <div style={filtersStyle}>

@@ -34,7 +34,7 @@ const SearchSider = ({ overlay }: { overlay: boolean }) => {
             top: 'calc(var(--content-scoped-title-height) + 1px)',
           }}
         >
-          <SearchForm vertical={true} />
+          <SearchForm />
           <Divider className="m-0" />
         </div>
       ) : (

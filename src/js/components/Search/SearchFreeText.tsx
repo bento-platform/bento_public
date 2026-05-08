@@ -20,7 +20,7 @@ import SearchSubForm, { type DefinedSearchSubFormProps } from '@/components/Sear
 
 type FreeTextFormValues = { q: string; qt: FtsQueryType };
 
-const SearchFreeText = ({ vertical, ...props }: DefinedSearchSubFormProps) => {
+const SearchFreeText = (props: DefinedSearchSubFormProps) => {
   const t = useTranslationFn();
   const location = useLocation();
   const navigate = useNavigate();
@@ -96,19 +96,16 @@ const SearchFreeText = ({ vertical, ...props }: DefinedSearchSubFormProps) => {
       titleKey="text_search"
       icon={<FormOutlined />}
       extra={
-        vertical ? (
-          <Select<FtsQueryType>
-            disabled={discoveryStatus === RequestStatus.Pending}
-            variant="filled"
-            size="small"
-            className="flex-1"
-            value={qtValue}
-            onChange={(value) => form.setFieldValue('qt', value)}
-            options={ftsQueryTypeOptions}
-          />
-        ) : undefined
+        <Select<FtsQueryType>
+          disabled={discoveryStatus === RequestStatus.Pending}
+          variant="filled"
+          size="small"
+          className="flex-1"
+          value={qtValue}
+          onChange={(value) => form.setFieldValue('qt', value)}
+          options={ftsQueryTypeOptions}
+        />
       }
-      vertical={vertical}
       {...props}
     >
       <Form form={form} onFinish={onFinish}>
@@ -119,14 +116,7 @@ const SearchFreeText = ({ vertical, ...props }: DefinedSearchSubFormProps) => {
           {!!textQuery && (
             <Button icon={<CloseOutlined />} onClick={onReset} disabled={discoveryStatus === RequestStatus.Pending} />
           )}
-          <Form.Item name="qt" initialValue={textQueryType} noStyle={true} hidden={vertical}>
-            {!vertical && (
-              <Select<FtsQueryType>
-                disabled={discoveryStatus === RequestStatus.Pending}
-                options={ftsQueryTypeOptions}
-              />
-            )}
-          </Form.Item>
+          <Form.Item name="qt" initialValue={textQueryType} noStyle={true} hidden />
           <Button type="primary" htmlType="submit" loading={discoveryStatus === RequestStatus.Pending}>
             {t('Search')}
           </Button>

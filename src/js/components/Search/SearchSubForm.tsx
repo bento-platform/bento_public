@@ -10,7 +10,6 @@ export type SearchSubFormProps = {
   extra?: ReactNode;
   className?: string;
   style?: CSSProperties;
-  vertical?: boolean;
 };
 
 // Version of SearchSubFormProps type for specific search sub-forms, which define their own title/icon.

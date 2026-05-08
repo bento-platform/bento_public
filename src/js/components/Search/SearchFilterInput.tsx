@@ -1,4 +1,3 @@
-import clsx from 'clsx';
 import { type CSSProperties, type ReactNode, memo, useCallback, useMemo } from 'react';
 import { Button, Flex, Select, Space, Typography } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
@@ -22,21 +21,11 @@ const WRAPPER_STYLE: CSSProperties = {
   border: '1px solid #F0F0F0',
 };
 
-const SearchFilterInputWrapper = ({ vertical, children }: { vertical?: boolean; children: ReactNode }) => {
-  if (vertical) {
-    return (
-      <Space direction="vertical" size="small" className="w-full" style={WRAPPER_STYLE}>
-        {children}
-      </Space>
-    );
-  } else {
-    return (
-      <Space.Compact className="w-full" style={WRAPPER_STYLE}>
-        {children}
-      </Space.Compact>
-    );
-  }
-};
+const SearchFilterInputWrapper = ({ children }: { children: ReactNode }) => (
+  <Space direction="vertical" size="small" className="w-full" style={WRAPPER_STYLE}>
+    {children}
+  </Space>
+);
 
 const SearchFilterInput = ({
   field,
@@ -44,12 +33,10 @@ const SearchFilterInput = ({
   onChange,
   onRemove,
   disabledFields,
-  vertical,
 }: FilterInputValue & {
   onChange: (v: FilterInputValue) => void;
   onRemove: () => void;
   disabledFields: Set<string>;
-  vertical?: boolean;
 }) => {
   const t = useTranslationFn();
   const { hasPermission: hasQueryData } = useScopeQueryData();
@@ -114,34 +101,32 @@ const SearchFilterInput = ({
     [isMultiple, value]
   );
 
-  const inputClass = vertical ? 'w-full' : 'flex-1';
+  const inputClass = 'w-full';
 
   return (
-    <SearchFilterInputWrapper vertical={vertical}>
+    <SearchFilterInputWrapper>
       <Flex gap={4} vertical>
-        <Flex gap="small" className={vertical ? 'w-full' : ''}>
+        <Flex gap="small" className="w-full">
           <Select
-            className={clsx('flex-1', 'h-auto', { 'rounded-e-none': !vertical })}
+            className="flex-1 h-auto"
             options={filterOptions}
-            size={vertical ? 'small' : 'middle'}
+            size="small"
             // variant={vertical ? 'filled' : undefined}
             onChange={onFilterFieldChange}
             value={field}
             placeholder={t('search.filter_placeholder')}
           />
-          {vertical && (
-            <Button
-              icon={<CloseOutlined />}
-              size="small"
-              shape="circle"
-              color="danger"
-              variant="filled"
-              disabled={!field}
-              onClick={onRemove}
-            />
-          )}
+          <Button
+            icon={<CloseOutlined />}
+            size="small"
+            shape="circle"
+            color="danger"
+            variant="filled"
+            disabled={!field}
+            onClick={onRemove}
+          />
         </Flex>
-        {field && vertical && (
+        {field && (
           <div style={{ margin: '0 8px' }}>
             <Typography.Text type="secondary" style={{ fontSize: 12 }}>
               {fieldDefinitionMap[field].description}
@@ -172,19 +157,18 @@ const SearchFilterInput = ({
           value={finalValue}
         />
       )}
-      {!vertical && <Button className="h-auto" icon={<CloseOutlined />} disabled={!field} onClick={onRemove} />}
     </SearchFilterInputWrapper>
   );
 };
 
 export const SearchFilterInputSkeleton = memo(() => (
-  <Space direction="vertical" size="small" className="w-full" style={WRAPPER_STYLE}>
+  <SearchFilterInputWrapper>
     <Flex gap="small" className="w-full">
       <Select className="flex-1" size="small" disabled={true} loading={true} />
       <Button icon={<CloseOutlined />} size="small" shape="circle" color="danger" variant="filled" disabled />
     </Flex>
     <Select className="flex-1 w-full" disabled={true} />
-  </Space>
+  </SearchFilterInputWrapper>
 ));
 SearchFilterInputSkeleton.displayName = 'SearchFilterInputSkeleton';
 
