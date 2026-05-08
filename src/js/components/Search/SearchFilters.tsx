@@ -1,13 +1,14 @@
 import { useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { Space } from 'antd';
-import { FilterOutlined } from '@ant-design/icons';
+import { Flex, Space, Tooltip, Typography } from 'antd';
+import { FilterOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 
 import { WAITING_STATES } from '@/constants/requests';
 import { TABLE_PAGE_QUERY_PARAM } from '@/features/search/constants';
 import { useConfig } from '@/features/config/hooks';
 import { useEntityAndTextQueryParams, useSearchFilterFields, useSearchQuery } from '@/features/search/hooks';
+import { useTranslationFn } from '@/hooks';
 import {
   buildQueryParamsUrl,
   combineQueryParamsWithoutKey,
@@ -18,6 +19,7 @@ import type { QueryParamEntries, QueryParamEntry } from '@/features/search/types
 import SearchFilterInput, { type FilterInputValue, SearchFilterInputSkeleton } from './SearchFilterInput';
 import SearchSubForm, { type DefinedSearchSubFormProps } from '@/components/Search/SearchSubForm';
 import FiltersAppliedTag from '@/components/Search/FiltersAppliedTag';
+const { Text } = Typography;
 
 const buildValueToEntry =
   (f: string) =>
@@ -26,12 +28,15 @@ const buildValueToEntry =
 const SearchFilters = ({ vertical, ...props }: DefinedSearchSubFormProps) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const t = useTranslationFn();
 
   const { configStatus, maxQueryParameters } = useConfig();
-  const { fieldsStatus, filters } = useSearchQuery();
+  const { filterSections, fieldsStatus, filters } = useSearchQuery();
 
   const fields = useSearchFilterFields();
   const entityAndTextQueryParams = useEntityAndTextQueryParams();
+
+  const nSearchFilters = useMemo(() => filterSections.flatMap((s) => s.fields).length, [filterSections]);
 
   const [filterInputs, usedFields] = useMemo(() => {
     const filterInputs_: FilterInputValue[] = Object.entries(filters).map(([k, v]) => ({
@@ -53,7 +58,8 @@ const SearchFilters = ({ vertical, ...props }: DefinedSearchSubFormProps) => {
 
   return (
     <SearchSubForm
-      titleKey="filters"
+      titleKey="filters_title"
+      titleKeyCount={maxQueryParameters}
       icon={<FilterOutlined />}
       vertical={vertical}
       extra={<FiltersAppliedTag />}
@@ -160,6 +166,16 @@ const SearchFilters = ({ vertical, ...props }: DefinedSearchSubFormProps) => {
               />
             );
           })
+        )}
+        {maxQueryParameters < nSearchFilters && (
+          <Flex gap={12}>
+            <Text type="secondary" className="flex-1">
+              {t('search.apply_up_to', { nFilters: maxQueryParameters })}
+            </Text>
+            <Tooltip>
+              <QuestionCircleOutlined />
+            </Tooltip>
+          </Flex>
         )}
       </Space>
     </SearchSubForm>

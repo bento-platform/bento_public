@@ -5,6 +5,7 @@ import { useTranslationFn } from '@/hooks';
 
 export type SearchSubFormProps = {
   titleKey: string;
+  titleKeyCount?: number;
   icon: ReactNode;
   extra?: ReactNode;
   className?: string;
@@ -17,6 +18,7 @@ export type DefinedSearchSubFormProps = Omit<SearchSubFormProps, 'titleKey' | 'i
 
 const SearchSubForm = ({
   titleKey,
+  titleKeyCount,
   icon,
   extra,
   className,
@@ -29,7 +31,10 @@ const SearchSubForm = ({
     <div className={clsx('search-sub-form', className)} style={style}>
       <Typography.Title level={3} className="search-sub-form-title">
         <span style={{ flex: 1 }}>
-          {icon} <span className="should-underline-if-unfocused">{t(`search.${titleKey}`)}</span>
+          {icon}{' '}
+          <span className="should-underline-if-unfocused">
+            {t(`search.${titleKey}`, titleKeyCount !== undefined ? { count: titleKeyCount } : {})}
+          </span>
         </span>
         {extra}
       </Typography.Title>
