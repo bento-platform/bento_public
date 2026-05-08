@@ -136,7 +136,7 @@ const SearchFilterInput = ({
               shape="circle"
               color="danger"
               variant="filled"
-              disabled={!field || !value}
+              disabled={!field}
               onClick={onRemove}
             />
           )}
