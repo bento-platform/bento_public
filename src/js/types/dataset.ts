@@ -263,9 +263,9 @@ export interface VersionedOntologyResource extends OntologyResource {
   version: string;
 }
 
-// ---- Dataset V2 (ProjectScopedDatasetModel) ----
+// ---- Dataset (ProjectScopedDatasetModel) ----
 
-export interface DatasetV2 {
+export interface Dataset {
   schema_version: '1.0';
   /** ISO 639-1 two-letter language code. Defaults to "en". */
   language: LanguageAlpha2;

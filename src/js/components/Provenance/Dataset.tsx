@@ -5,7 +5,7 @@ import { ExpandAltOutlined, PieChartOutlined, SolutionOutlined } from '@ant-desi
 import { FaDatabase } from 'react-icons/fa';
 
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
-import type { DatasetV2 } from '@/types/datasetV2';
+import type { Dataset } from '@/types/dataset';
 import type { OntologyTerm } from '@/types/ontology';
 import { BentoRoute } from '@/types/routes';
 import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
@@ -45,7 +45,7 @@ const Dataset = ({
   filteredCounts,
 }: {
   parentProjectID: string;
-  dataset: DatasetV2;
+  dataset: Dataset;
   format: 'list-item' | 'card' | 'carousel';
   selected?: boolean;
   filteredCounts?: KatsuEntityCountsOrBooleans;
