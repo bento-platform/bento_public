@@ -154,7 +154,7 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
           ) : null}
         </Flex>
 
-        <Space size={isSmallScreen ? 0 : 'small'}>
+        <Space size={isSmallScreen ? 4 : 'small'}>
           {TRANSLATED && (
             <Button
               type="text"
@@ -167,8 +167,11 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
           )}
           {SHOW_PORTAL_LINK && (
             <Button type="text" className="header-button" icon={<LinkOutlined />} onClick={openPortalWindow}>
-              {isSmallScreen ? '' : t('Portal')}
-              {isSmallScreen || <ExportOutlined />}
+              {isSmallScreen ? null : (
+                <>
+                  {t('Portal')} <ExportOutlined />
+                </>
+              )}
             </Button>
           )}
           {SHOW_SIGN_IN &&

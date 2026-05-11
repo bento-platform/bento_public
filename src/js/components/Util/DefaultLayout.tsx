@@ -1,6 +1,7 @@
-// import { useState } from 'react';
+import { useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import { FloatButton, Grid, Layout } from 'antd';
+import { Button, Flex, FloatButton, Grid, Layout } from 'antd';
+import { FilterOutlined } from '@ant-design/icons';
 import AboutContent from '@/components/AboutContent';
 import SiteHeader from '@/components/SiteHeader';
 // import SiteSider from '@/components/SiteSider';
@@ -26,11 +27,13 @@ const DefaultLayout = () => {
   const { scopeSet, scope } = useSelectedScope();
 
   const menuItems = useSidebarMenuItems();
-  // const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
 
   const breakpoints = useBreakpoint();
 
   const isCatalogue = scopeSet && !scope.project && catalogueMode && page === 'overview';
+  const sidebarOverlay = !breakpoints.lg;
+  const sidebarOverlayShown = sidebarOverlay && !collapsed;
   const sidebarHidden =
     // isCatalogue ||
     (page === 'beacon' && !scope.project) || (page === 'network' && !scope.project) || page === 'phenopackets';
@@ -40,12 +43,47 @@ const DefaultLayout = () => {
     <Layout id="default-layout" className="sidebar-hidden">
       <SiteHeader menuItems={menuItems} />
       <Layout id="content-layout">
-        <PageHeader catalogue={isCatalogue}>{isCatalogue ? <AboutContent /> : <ScopedTitle />}</PageHeader>
+        <PageHeader catalogue={isCatalogue}>
+          {isCatalogue ? (
+            <AboutContent />
+          ) : (
+            <Flex
+              style={{
+                paddingLeft: !sidebarOverlay ? 'var(--content-padding-h)' : undefined,
+                paddingRight: 'var(--content-padding-h)',
+              }}
+            >
+              {sidebarOverlay && (
+                <Button
+                  id="page-header__sidebar-toggle"
+                  className={sidebarOverlayShown ? 'active' : ''}
+                  icon={<FilterOutlined />}
+                  color="default"
+                  variant="filled"
+                  size="large"
+                  onMouseDown={() => setCollapsed((c) => !c)}
+                />
+              )}
+              <ScopedTitle />
+            </Flex>
+          )}
+        </PageHeader>
         {/*<SiteSider collapsed={collapsed} setCollapsed={setCollapsed} hidden={sidebarHidden} />*/}
         <Layout>
-          {!sidebarHidden && <SearchSider overlay={!breakpoints.lg} />}
+          {!sidebarHidden && <SearchSider collapsed={collapsed} overlay={sidebarOverlay} />}
           <Layout>
-            <Content style={{ filter: !breakpoints.lg ? 'blur(12px)' : undefined }}>
+            {sidebarOverlayShown ? (
+              <div
+                style={{ position: 'fixed', inset: 0, zIndex: 18, backdropFilter: 'blur(10px)' }}
+                onClick={(e) => {
+                  setCollapsed(true);
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+                aria-hidden
+              />
+            ) : null}
+            <Content>
               <Outlet />
             </Content>
             {PCGL_MODE ? <PcglFooter /> : <SiteFooter />}

@@ -166,7 +166,7 @@ const ScopedTitle = () => {
       <>
         <ScopePickerModal isModalOpen={scopeSelectModalOpen} setIsModalOpen={setScopeSelectModalOpen} />
         <CurrentPageHelpModal open={helpModalOpen} onCancel={() => setHelpModalOpen(false)} />
-        <Flex className="scoped-title" align="center">
+        <Flex className="scoped-title flex-1" align="center">
           <Flex className="flex-1" align="center">
             {backClickText !== undefined && onBackClick !== undefined ? (
               <Tooltip title={backClickText}>
