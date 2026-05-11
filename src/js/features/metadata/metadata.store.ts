@@ -2,7 +2,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import type { PaginatedResponse, Project } from '@/types/metadata';
-import type { DatasetV2 } from '@/types/datasetV2';
+import type { Dataset } from '@/types/dataset';
 import { RequestStatus } from '@/types/requests';
 import type { RootState } from '@/store';
 import { printAPIError } from '@/utils/error.util';
@@ -23,7 +23,7 @@ export type DiscoveryScopeSelection = {
 export interface MetadataState {
   projects: Project[];
   projectsByID: Record<string, Project>;
-  datasetsByID: Record<string, DatasetV2>;
+  datasetsByID: Record<string, Dataset>;
   datasetToProjectMap: Record<string, string>;
   projectsStatus: RequestStatus;
   projectsError: string;
