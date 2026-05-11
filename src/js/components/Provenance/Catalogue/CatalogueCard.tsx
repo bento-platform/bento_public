@@ -52,6 +52,7 @@ const CatalogueCard = ({ project }: { project: Project }) => {
   const { datasets_v2: datasets, created, updated, title, description, identifier, counts } = project;
 
   const { selectedKeywords, extraKeywords, extraKeywordCount } = useMemo(() => {
+    // TODO: render OntologyTerm keywords with ID + label instead of flattening to string
     const keywords = datasets.flatMap((d) => d.keywords ?? []).map((k) => t(typeof k === 'string' ? k : k.label));
 
     let totalCharacters = 0;
