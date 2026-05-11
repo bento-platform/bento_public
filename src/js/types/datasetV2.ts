@@ -1,4 +1,7 @@
 import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
+import type { StringOrOntologyClass } from '@/types/ontology';
+
+export type { StringOrOntologyClass };
 
 /** ISO 639-1 two-letter language code, e.g. "en" or "fr". */
 export type LanguageAlpha2 = string;
@@ -247,12 +250,6 @@ export interface LongDescription {
 
 // ---- Ontology types (from bento_lib.ontologies.models) ----
 
-export interface OntologyClass {
-  /** CURIE-formatted ontology class ID, e.g. "HP:0001234". */
-  id: string;
-  label: string;
-}
-
 export interface OntologyResource {
   id: string;
   name: string;
@@ -283,8 +280,8 @@ export interface DatasetV2 {
   long_description?: LongDescription | null;
 
   /** Taxonomic scope of the dataset. */
-  taxa?: (OntologyClass | string)[] | null;
-  keywords?: (string | OntologyClass)[] | null;
+  taxa?: StringOrOntologyClass[] | null;
+  keywords?: StringOrOntologyClass[] | null;
   /** Ontology resources needed to resolve CURIEs in keywords and clinical/phenotypic data. */
   resources?: VersionedOntologyResource[] | null;
 

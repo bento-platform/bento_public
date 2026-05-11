@@ -7,19 +7,19 @@ import type {
   DatasetV2,
   FundingSource,
   Link,
-  OntologyClass,
   ParticipantCriteria,
   Person,
   PersonOrOrganization,
   Publication,
 } from '@/types/datasetV2';
+import type { OntologyTerm } from '@/types/ontology';
 
 const { Item } = Descriptions;
 const { Paragraph, Text, Title } = Typography;
 
 // ---- Helpers ----
 
-const keywordLabel = (k: string | OntologyClass): string => (typeof k === 'string' ? k : k.label);
+const keywordLabel = (k: string | OntologyTerm): string => (typeof k === 'string' ? k : k.label);
 
 const SectionTitle = ({ title }: { title: string }) => {
   const t = useTranslationFn();

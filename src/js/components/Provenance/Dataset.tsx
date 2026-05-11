@@ -5,7 +5,8 @@ import { ExpandAltOutlined, PieChartOutlined, SolutionOutlined } from '@ant-desi
 import { FaDatabase } from 'react-icons/fa';
 
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
-import type { DatasetV2, OntologyClass } from '@/types/datasetV2';
+import type { DatasetV2 } from '@/types/datasetV2';
+import type { OntologyTerm } from '@/types/ontology';
 import { BentoRoute } from '@/types/routes';
 import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
 import clsx from 'clsx';
@@ -21,9 +22,9 @@ const { Title } = Typography;
 
 const KEYWORDS_LIMIT = 2;
 
-const keywordLabel = (k: string | OntologyClass): string => (typeof k === 'string' ? k : k.label);
+const keywordLabel = (k: string | OntologyTerm): string => (typeof k === 'string' ? k : k.label);
 
-const TagList = ({ keywords }: { keywords?: (string | OntologyClass)[] }) => {
+const TagList = ({ keywords }: { keywords?: (string | OntologyTerm)[] }) => {
   const t = useTranslationFn();
   return (
     <Space size={[0, 8]} align="start" wrap className="w-full">
