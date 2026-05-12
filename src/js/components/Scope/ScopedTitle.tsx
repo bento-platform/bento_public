@@ -15,6 +15,7 @@ import { useGetRouteTitleAndIcon, useNavigateToRoot, useNavigateToSameScopeUrl }
 import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
 import { getCurrentPage, scopeToUrl } from '@/utils/router';
 import { buildQueryParamsUrl } from '@/features/search/utils';
+import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
 const NO_BACK_BUTTON = [undefined, undefined] as const;
 
@@ -76,6 +77,7 @@ const ScopedTitle = () => {
   const location = useLocation();
   const t = useTranslationFn();
   const language = useLanguage();
+  const isSmallScreen = useSmallScreen();
 
   const { scope, fixedProject, fixedDataset } = useSelectedScope();
   const { projectTitle, datasetTitle } = useSelectedScopeTitles();
@@ -145,7 +147,7 @@ const ScopedTitle = () => {
       items.push(extraBreadcrumb);
     }
 
-    return items;
+    return isSmallScreen && items.length ? [items.at(-1)!] : items;
   }, [
     language,
     t,
@@ -157,6 +159,7 @@ const ScopedTitle = () => {
     currentPage,
     getRouteTitleAndIcon,
     extraBreadcrumb,
+    isSmallScreen,
   ]);
 
   const [backClickText, onBackClick] = useBackButtonInfo();
