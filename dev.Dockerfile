@@ -7,7 +7,7 @@ COPY package-lock.json .
 
 RUN npm ci
 
-FROM ghcr.io/bento-platform/bento_base_image:node-debian-2026.04.01
+FROM ghcr.io/bento-platform/bento_base_image:node-debian-2026.05.01
 
 LABEL org.opencontainers.image.description="Local development image for Bento Public."
 
