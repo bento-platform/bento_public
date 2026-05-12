@@ -112,7 +112,7 @@ const PHENOPACKET_SEARCH_TABLE_COLUMNS = {
     title: 'entities.biosample_other',
     dataIndex: 'biosamples',
     render: (_ctx: SearchColRenderContext) => (b: DiscoveryMatchBiosample[], p: DiscoveryMatchPhenopacket) => (
-      <PhenopacketLink.Biosamples packetId={p.id} biosamples={b.map((bb) => bb.id)} popover={true} />
+      <PhenopacketLink.Biosamples packetId={p.id} biosamples={b.map((bb) => bb.id)} enablePopover />
     ),
   },
   ...commonSearchTableColumns<DiscoveryMatchPhenopacket>(),
@@ -145,7 +145,7 @@ const EXPERIMENT_SEARCH_TABLE_COLUMNS = {
     title: 'entities.biosample_one',
     dataIndex: 'biosample',
     render: (_ctx) => (biosampleId: string, e) => (
-      <PhenopacketLink.Biosample packetId={e?.phenopacket} sampleId={biosampleId} popover={true} />
+      <PhenopacketLink.Biosample packetId={e?.phenopacket} sampleId={biosampleId} enablePopover />
     ),
   } as ResultsTableColumn<DiscoveryMatchExperiment>,
   experiment_results: {

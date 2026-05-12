@@ -171,7 +171,7 @@ const ExperimentView = ({ packetId, experiments }: ExperimentViewProps) => {
         render: (biosampleId: string | undefined) =>
           biosampleId ? (
             // TODO: use already-loaded biosample data in phenopacket context
-            <PhenopacketLink.Biosample packetId={packetId} sampleId={biosampleId} preserveQueryParams popover={true} />
+            <PhenopacketLink.Biosample packetId={packetId} sampleId={biosampleId} preserveQueryParams enablePopover />
           ) : null,
         isEmpty: (biosampleId: string | undefined) => biosampleId === undefined,
       },

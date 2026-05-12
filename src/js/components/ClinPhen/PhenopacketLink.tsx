@@ -58,15 +58,22 @@ const SubjectLink = ({ children, packetId, preserveQueryParams }: SubjectLinkPro
   );
 };
 
-type BiosampleLinkProps = BaseLinkProps & { sampleId: string; popover?: boolean };
-const BiosampleLink = ({ packetId, sampleId, replace, preserveQueryParams, popover, children }: BiosampleLinkProps) => {
+type BiosampleLinkProps = BaseLinkProps & { sampleId: string; enablePopover?: boolean };
+const BiosampleLink = ({
+  packetId,
+  sampleId,
+  replace,
+  preserveQueryParams,
+  enablePopover,
+  children,
+}: BiosampleLinkProps) => {
   const url = usePhenopacketOverviewLink(packetId, 'biosamples', { biosample: sampleId }, preserveQueryParams);
   const link = (
     <Link to={url} replace={replace} state={highlightState('biosamples', sampleId)}>
       {children ?? sampleId}
     </Link>
   );
-  return popover ? (
+  return enablePopover ? (
     <Popover content={<BiosampleRowDetail id={sampleId} mode="popover" style={{ width: 'min(540px, 90vw)' }} />}>
       {link}
     </Popover>
@@ -75,7 +82,7 @@ const BiosampleLink = ({ packetId, sampleId, replace, preserveQueryParams, popov
   );
 };
 
-type BiosampleLinkListProps = BaseLinkProps & { biosamples: string[]; popover?: boolean };
+type BiosampleLinkListProps = BaseLinkProps & { biosamples: string[]; enablePopover?: boolean };
 const BiosampleLinkList = ({ packetId, biosamples, replace, ...props }: BiosampleLinkListProps) => (
   <>
     {biosamples.map((bb, bbi) => (
