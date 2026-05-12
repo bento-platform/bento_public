@@ -14,6 +14,7 @@ import { useSelectedScope } from '@/features/metadata/hooks';
 import { useIsInCatalogueMode, useSidebarMenuItems } from '@/hooks/navigation';
 import { PCGL_MODE } from '@/config';
 import { BentoRoute } from '@/types/routes';
+import clsx from 'clsx';
 import { getCurrentPage } from '@/utils/router';
 
 const { Content } = Layout;
@@ -39,8 +40,10 @@ const DefaultLayout = () => {
     (page === 'beacon' && !scope.project) || (page === 'network' && !scope.project) || page === 'phenopackets';
   // (menuItems.length <= 1 && !(scope.project && catalogueMode));
 
+  const showSidebarToggle = sidebarOverlay && page === 'overview';
+
   return (
-    <Layout id="default-layout" className="sidebar-hidden">
+    <Layout id="default-layout" className={clsx('sidebar-hidden', `page-${page}`)}>
       <SiteHeader menuItems={menuItems} />
       <Layout id="content-layout">
         <PageHeader catalogue={isCatalogue}>
@@ -49,11 +52,11 @@ const DefaultLayout = () => {
           ) : (
             <Flex
               style={{
-                paddingLeft: !sidebarOverlay ? 'var(--content-padding-h)' : undefined,
+                paddingLeft: showSidebarToggle ? undefined : 'var(--content-padding-h)',
                 paddingRight: 'var(--content-padding-h)',
               }}
             >
-              {sidebarOverlay && (
+              {showSidebarToggle && (
                 <Button
                   id="page-header__sidebar-toggle"
                   className={sidebarOverlayShown ? 'active' : ''}
