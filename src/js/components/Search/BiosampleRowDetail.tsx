@@ -18,6 +18,8 @@ const BiosampleRowDetail = ({
   id: string;
   mode?: BiosampleDetailProps['mode'];
 }) => {
+  // TODO: when we have full biosample rows back from discovery matches, this should use the existing fetched data
+  //  instead of re-fetching.
   const { data: biosampleData, status: biosampleDataStatus } = useBiosampleData(id);
   const isFetchingBiosampleData = WAITING_STATES.includes(biosampleDataStatus);
 
