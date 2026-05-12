@@ -129,6 +129,7 @@ export type BiosampleDetailProps = {
 };
 
 export const BiosampleDetail = ({ biosample, mode }: BiosampleDetailProps) => {
+  // TODO: use full-detail record for showing single biosamples with no individual attached in a phenopacket context
   const popoverOrFullDetail = !!mode && ['popover', 'full-detail'].includes(mode);
   const items: ConditionalDescriptionItem[] = [
     ...(popoverOrFullDetail ? [{ key: 'biosample_id', children: biosample.id }] : []),
