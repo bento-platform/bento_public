@@ -30,7 +30,11 @@ import type {
 import { BentoRoute } from '@/types/routes';
 
 import { scopeSelectionEqual } from '@/features/metadata/utils';
-import { bentoKatsuEntityToResultsDataEntity, buildQueryParamsUrl } from '@/features/search/utils';
+import {
+  bentoKatsuEntityToResultsDataEntity,
+  buildQueryParamsUrl,
+  queryParamsWithoutKey,
+} from '@/features/search/utils';
 import { setEquals } from '@/utils/sets';
 
 import DatasetProvenanceModal from '@/components/Provenance/DatasetProvenanceModal';
@@ -400,13 +404,15 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
               }
               navigateToSameScopeUrl(
                 buildQueryParamsUrl(BentoRoute.Overview, [
-                  ...allQueryParams,
+                  ...queryParamsWithoutKey(allQueryParams, [TABLE_PAGE_QUERY_PARAM, TABLE_PAGE_SIZE_QUERY_PARAM]),
+
                   // AntD page is 1-indexed, discovery match page is 0-indexed:
                   [TABLE_PAGE_QUERY_PARAM, (newPage - 1).toString()],
                   [TABLE_PAGE_SIZE_QUERY_PARAM, newPageSize.toString()],
                 ])
               );
             },
+            style: { marginTop: 12, marginBottom: 0 }, // Already have bottom padding in search results card
           }
         : undefined,
     [page, pageSize, totalMatches, isSmallScreen, navigateToSameScopeUrl, allQueryParams]
@@ -425,7 +431,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   return (
     <>
       <Col flex={1}>
-        <Flex justify="space-between" align="center" style={{ marginBottom: 8 }}>
+        <Flex justify="space-between" align="center" style={{ marginBottom: 12 }}>
           {onBack ? (
             <Button
               icon={<LeftOutlined />}

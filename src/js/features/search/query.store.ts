@@ -9,7 +9,7 @@ import type {
 } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
 import type { DiscoveryResponseOrMessage } from '@/types/discovery/response';
-import type { DiscoveryScope } from '@/features/metadata/metadata.store';
+import type { DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
 import type {
   FiltersState,
   FtsQueryType,
@@ -62,6 +62,10 @@ export type QueryState = {
 
   selectedEntity: BentoCountEntity | null;
 
+  // node-level data cache
+  nodeCountsOrBools: KatsuEntityCountsOrBooleans;
+  nodeCountsOrBoolsFetched: boolean;
+
   // results
   resultCountsOrBools: KatsuEntityCountsOrBooleans;
   resultCountsInvalid: boolean;
@@ -107,6 +111,9 @@ const initialState: QueryState = {
   message: '',
   // ----
   selectedEntity: null,
+  // ----
+  nodeCountsOrBools: EMPTY_KATSU_ENTITY_COUNTS,
+  nodeCountsOrBoolsFetched: false,
   // ----
   resultCountsOrBools: EMPTY_KATSU_ENTITY_COUNTS,
   resultCountsByDataset: undefined,
@@ -254,7 +261,14 @@ const query = createSlice({
       // reset all pages and invalidate entities' match data if page state changes.
       invalidateMatchData(state);
     },
-    resetAllQueryState: () => initialState,
+    resetAllQueryState: (state, { payload }: PayloadAction<{ resetNodeCounts: boolean } | undefined>) =>
+      payload?.resetNodeCounts
+        ? initialState
+        : {
+            ...initialState,
+            nodeCountsOrBools: state.nodeCountsOrBools,
+            nodeCountsOrBoolsFetched: state.nodeCountsOrBoolsFetched,
+          },
   },
   extraReducers: (builder) => {
     builder.addCase(performKatsuDiscovery.pending, (state) => {
@@ -262,7 +276,7 @@ const query = createSlice({
     });
     builder.addCase(
       performKatsuDiscovery.fulfilled,
-      (state, { payload: [scope, response] }: PayloadAction<[DiscoveryScope, DiscoveryResponseOrMessage]>) => {
+      (state, { payload: [scope, response] }: PayloadAction<[DiscoveryScopeSelection, DiscoveryResponseOrMessage]>) => {
         state.discoveryStatus = RequestStatus.Fulfilled;
         state.discoveryError = '';
         state.resultCountsInvalid = false;
@@ -278,12 +292,24 @@ const query = createSlice({
         }
 
         if ('counts' in response) {
+          if (
+            ((!scope.scope.project && !scope.scope.dataset) || (scope.fixedProject && scope.fixedDataset)) &&
+            !Object.keys(state.filters).length &&
+            !state.textQuery.length
+          ) {
+            // Cache whole-instance counts when no filters are applied. Used for showing counts in the data catalogue.
+            state.nodeCountsOrBools = response.counts;
+            state.nodeCountsOrBoolsFetched = true;
+          }
+
+          // Populate scope / filter results:
+
           state.resultCountsOrBools = response.counts;
 
           state.resultCountsByDataset = response.counts_by_dataset;
 
           // Side effects: saving/loading layout from local storage
-          const { defaultLayout, sectionData } = discoveryChartProcessingAndLocalStorage(scope, response);
+          const { defaultLayout, sectionData } = discoveryChartProcessingAndLocalStorage(scope.scope, response);
           state.defaultLayout = defaultLayout;
           state.sections = sectionData;
         }

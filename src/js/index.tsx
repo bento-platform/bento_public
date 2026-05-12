@@ -13,6 +13,8 @@ import { SUPPORTED_LNGS } from '@/constants/configConstants';
 
 // Component imports
 import { ConfigProvider } from 'antd';
+import enUS from 'antd/locale/en_US';
+import frCA from 'antd/locale/fr_CA';
 import { ChartConfigProvider } from 'bento-charts';
 import Loader from '@/components/Loader';
 import BentoAppRouter from '@/components/BentoAppRouter';
@@ -26,7 +28,7 @@ import { NotificationProvider } from './hooks/notifications';
 
 // Store and configuration imports
 import { store } from './store';
-import { AUTH_CALLBACK_URL, CLIENT_ID, OPENID_CONFIG_URL, PUBLIC_URL_NO_TRAILING_SLASH } from './config';
+import { AUTH_CALLBACK_URL, CLIENT_ID, OPENID_CONFIG_URL, PCGL_MODE, PUBLIC_URL_NO_TRAILING_SLASH } from './config';
 
 // Styles imports
 import 'antd/dist/reset.css';
@@ -53,6 +55,7 @@ const BaseRoutes = () => {
 
 const RootApp = () => {
   const { i18n } = useTranslation();
+  const antdLocale = i18n.language === SUPPORTED_LNGS.FRENCH ? frCA : enUS;
 
   // TODO: Remove this in the future (v20?), once we are sure no one is using the old localStorage key
   useEffect(() => {
@@ -75,7 +78,15 @@ const RootApp = () => {
           >
             <ChartConfigProvider Lng={i18n.language ?? SUPPORTED_LNGS.ENGLISH} theme={NEW_BENTO_PUBLIC_THEME}>
               <ConfigProvider
-                theme={{ components: { Menu: { iconSize: 20 }, Table: { borderColor: 'rgba(0, 0, 0, 0.08)' } } }}
+                locale={antdLocale}
+                theme={{
+                  components: {
+                    Button: { algorithm: !PCGL_MODE },
+                    Menu: { iconSize: 20 },
+                    Table: { borderColor: 'rgba(0, 0, 0, 0.08)' },
+                  },
+                  token: PCGL_MODE ? { colorPrimary: '#2B7AAD' } : {},
+                }}
               >
                 <NotificationProvider>
                   <BaseRoutes />

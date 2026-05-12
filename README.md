@@ -5,8 +5,10 @@ available through predefined variables of interest and search the data using lim
 allows users to gain a generic understanding of the data available (secure and firewalled) without the need to access 
 it directly.
 
+
 ## Prerequisites:
 - Node Package Manager
+
 
 ## Development
 
@@ -26,3 +28,10 @@ Any new environment / configuration variable must be registered in several place
 ### Translations in dev mode
 Add your English to French translations in `dist/public/locales/fr/translation_fr.json` for them to appear on the
 website.
+
+
+## LICENSE
+
+The code in this repository is licensed under the terms of the [GNU Lesser General Public License v3](./LICENSE) and is 
+&copy; the Canadian Centre for Computational Genomics, McGill University.
+This license does not apply to the assets that are found under the [`src/public/assets`](./src/public/assets) directory.

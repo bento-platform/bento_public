@@ -34,7 +34,7 @@ import {
   validProjectDataset,
 } from '@/utils/router';
 
-import PublicOverview from './Overview/PublicOverview';
+import PublicOverview from './Overview/LandingPage';
 import BeaconQueryUi from './Beacon/BeaconQueryUi';
 import NetworkUi from './Beacon/BeaconNetwork/NetworkUi';
 import PhenopacketView from './ClinPhen/PhenopacketView';
@@ -110,9 +110,11 @@ const BentoAppRouter = () => {
     //  - Scope changed
 
     // Reset query state, including currently-applied filters/search; the filters may not be the same between scopes.
+    // Preserve node-level counts for data catalogue use, since those won't change between refreshes except if authz
+    // changes, in which case the page will hard-refresh (currently) anyway.
     //  TODO: in the future, perhaps filters could be kept if the scopes overlap and we know there's discovery config
     //   inheritance, but this would require quite a bit more logic and maybe is unnecessarily complex.
-    dispatch(resetAllQueryState());
+    dispatch(resetAllQueryState({ resetNodeCounts: false }));
 
     dispatch(fetchSearchFields());
     dispatch(fetchDiscoveryUIHints());

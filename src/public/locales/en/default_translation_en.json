@@ -67,6 +67,13 @@
       "plain_help": "Retrieves records which exactly match words in the query (case-insensitive).",
       "trigram": "Fuzzy",
       "trigram_help": "Retrieves records which text that looks similar (but not necessarily identical) to the query."
+    },
+    "range": {
+      "lower_inclusive": "Lower bound inclusive",
+      "lower_exclusive": "Lower bound exclusive",
+      "upper_inclusive": "Upper bound inclusive",
+      "upper_exclusive": "Upper bound exclusive",
+      "click_to_switch": "Click to switch"
     }
   },
   "OR": "OR",
@@ -205,8 +212,8 @@
   },
   "footer": {
     "powered_by": "Powered by",
-    "copyright": "Copyright ©",
-    "c3g": "the Canadian Centre for Computational Genomics",
+    "copyright": "©",
+    "c3g": "the Canadian Centre for Computational Genomics at McGill University",
     "licensed_under": "Bento is licensed under the",
     "source_available": "The source code is available on",
     "terms_of_use": "Terms of Use"
@@ -483,6 +490,10 @@
     "description": "$t(general.description)",
     "filename": "$t(file.filename)",
     "indices": "Indices",
+    "storage": "Storage",
+    "storage_uri": "URI",
+    "storage_path": "Path",
+    "storage_server": "Server",
     "genome_assembly_id": "Assembly",
     "file_format": "Format",
     "data_output_type": "Data Output Type",
@@ -517,5 +528,35 @@
     "mime_type": "MIME Type",
     "checksums": "Checksums",
     "access_methods": "Access Methods"
+  },
+  "pcgl": {
+    "footer": {
+      "logo_alt": "Pan-Canadian Genome Library logo",
+      "cihr_logo_alt": "Canadian Institutes of Health Research logo",
+      "cihr_support": "PCGL is supported by the Canadian Institutes of Health Research (CIHR).",
+      "powered_by": "The PCGL research portal is powered by",
+      "bento": "the Bento platform"
+    },
+    "links": {
+      "policies": "Policies & Guidelines",
+      "helpGuides": "Help Guides",
+      "helpGuidesHref": "https://pan-canadian-genome-library.github.io/",
+      "controlledDataUsers": "Controlled Data Users",
+      "apply": "Apply For Access",
+      "privacy": "Privacy Policy",
+      "privacyHref": "/public/terms.html",
+      "termsConditions": "Terms & Conditions",
+      "termsHref": "/public/terms.html",
+      "publicationPolicy": "Publication Policy",
+      "contact": "Contact Us",
+      "contactHref": "https://genomelibrary.ca/contact-us/",
+      "pcglWebsite": "PCGL Website",
+      "pcglWebsiteHref": "https://genomelibrary.ca/",
+      "dataPlatform": "Data Platform",
+      "myApplications": "My Applications",
+      "manageApplications": "Manage Applications",
+      "admin": "Admin Dashboard",
+      "cihrHref": "https://cihr-irsc.gc.ca/e/193.html"
+    }
   }
 }

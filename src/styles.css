@@ -1,4 +1,3 @@
-
 :root {
   /* sync with NAVBAR_HEIGHT in common.ts */
   --header-height: 64px;
@@ -10,7 +9,7 @@
   --content-padding-h: 64px;
   --content-max-width: 1400px;
 
-  --content-scoped-title-height: 50px;
+  --content-scoped-title-height: 46px;
   --content-scoped-title-margin-bottom: 24px;
 
   /* 90% opacity white */
@@ -24,6 +23,17 @@
   --black-90: rgba(0, 0, 0, 0.9);
 
   --antd-blue-5: #1677ff;
+  --antd-gray-7: #595959;
+}
+
+.range-separator {
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  border-top: 1px solid #d9d9d9;
+  border-bottom: 1px solid #d9d9d9;
+  background: #fafafa;
+  user-select: none;
 }
 
 html,
@@ -49,8 +59,9 @@ body {
 .p-0 { padding: 0; }
 .flex-1 { flex: 1; }
 .float-right { float: right; }
-.position-absolute { position: absolute; }
-.position-relative { position: relative; }
+.absolute { position: absolute; }
+.relative { position: relative; }
+.sticky { position: sticky; }
 .block { display: block; }
 .none { display: none; }
 .rounded-lg { border-radius: 8px; } /* also consistent with --ant-border-radius-lg */
@@ -190,32 +201,72 @@ body {
 }
 
 
-.scoped-title {
-  position: sticky;
-  top: -3px;
-  left: 0;
-  right: 0;
+#page-header {
   z-index: 20;
 
   box-sizing: border-box;
-  height: var(--content-scoped-title-height);
-  margin-bottom: var(--content-scoped-title-margin-bottom);
-  padding-top: 3px;
-  margin-left: calc(-1 * var(--content-padding-h));
-  margin-right: calc(-1 * var(--content-padding-h));
-  padding-left: max(calc((100% - var(--content-max-width)) / 2 + var(--content-padding-h)), var(--content-padding-h));
-  padding-right: max(calc((100% - var(--content-max-width)) / 2 + var(--content-padding-h)), var(--content-padding-h));
+  padding: calc(var(--content-padding-v) + 1px) var(--content-padding-h) 0 var(--content-padding-h);
 
   background-color: rgba(245, 245, 245, 0.80);
-  border-bottom: 1px solid rgba(240, 240, 240, 0); /* invisible border to transition from/to */
   backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgb(245, 245, 245); /* invisible border to transition from/to */
+
+  color: var(--black-90);
 
   transition: border-bottom-color 0.5s ease-in-out,
-    margin 0.5s ease-in-out,
-    padding 0.5s ease-in-out,
-    height 0.5s ease-in-out,
-    box-shadow 0.1s ease-in-out,
-    opacity 0.5s ease-in-out;
+    box-shadow 0.1s ease-in-out;
+}
+
+#page-header.sticky {
+  top: calc(-1 * var(--content-padding-v) - 1px);
+  left: 0;
+  right: 0;
+}
+
+#page-header.catalogue-mode {
+  position: relative;
+  top: -1px;
+  padding-bottom: var(--content-padding-v);
+  background-color: var(--white-90);
+  border-bottom: 1px solid rgb(235, 235, 235);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.02);
+}
+
+#page-header__content {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  transition: opacity 0.5s ease-in-out;
+}
+
+#page-header__content .about-content {
+  max-width: calc(max(800px, var(--content-max-width) / 2));
+  font-size: 16px;
+  line-height: 1.38rem;
+}
+
+ul#page-header-stats {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+}
+
+ul#page-header-stats li {
+  font-size: 24px;
+  white-space: nowrap;
+  transition: opacity 0.3s ease-in-out;
+}
+ul#page-header-stats li.loading {
+  opacity: 0.4;
+}
+
+.scoped-title {
+  box-sizing: border-box;
+  height: var(--content-scoped-title-height);
 }
 
 .scoped-title .filters-applied-tag {
@@ -242,17 +293,16 @@ body {
   height: 3rem;
 }
 
-.scoped-title[data-stuck] {
-  height: 50px;
+#page-header[data-stuck] {
   border-bottom: 1px solid rgba(235, 235, 235, 1);
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.02);
 }
 
-.scoped-title[data-stuck] .filters-applied-tag {
+#page-header[data-stuck] .scoped-title .filters-applied-tag {
   opacity: 1;
 }
 
-.scoped-title[data-stuck] .scoped-title__back {
+#page-header[data-stuck] .scoped-title .scoped-title__back {
   width: 32px;
   min-width: 32px;
   height: 32px;
@@ -260,12 +310,12 @@ body {
   font-size: 1.2rem;
 }
 
-.scoped-title[data-stuck] .scoped-title__breadcrumb {
+#page-header[data-stuck] .scoped-title .scoped-title__breadcrumb {
   font-size: 1.2rem;
   line-height: 46px;
 }
 
-.scoped-title[data-stuck] .scoped-title__breadcrumb a {
+#page-header[data-stuck] .scoped-title .scoped-title__breadcrumb a {
   height: 38px;
   margin-top: 4px;
   line-height: 38px;
@@ -373,6 +423,47 @@ body {
 .container {
   width: 100%;
   max-width: var(--content-max-width);
+}
+
+#pcgl-footer {
+  background-color: #054A74;
+  /* Hacky box-shadow protection against really short content revealing page background below: */
+  box-shadow: 0 200px 0 #054A74, 0 400px 0 #054A74;
+  border-top: 1px solid #02253B;  /* HSL of above darkened by 6pp */
+  font-size: 13px;
+  /* Double-up on space between content + footer since the solid colour block looks congested otherwise: */
+  margin-top: var(--content-padding-v);
+}
+#pcgl-footer img {
+  margin-bottom: 12px;
+  object-fit: contain;
+}
+#pcgl-footer p {
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.4em;
+}
+#pcgl-footer a {
+  text-decoration: underline;
+  color: white;
+  transition: color 0.15s ease-in-out;
+}
+#pcgl-footer a:hover {
+  color: rgba(255, 255, 255, 0.84);
+}
+#pcgl-footer a:active {
+  color: rgba(255, 255, 255, 0.76);
+}
+#pcgl-footer a.disabled {
+  cursor: not-allowed;
+  color: rgba(255, 255, 255, 0.4);
+  text-decoration: none;
+}
+#pcgl-footer__links {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  column-gap: 12px;
+  row-gap: 18px;
+  text-align: center;
 }
 
 /* END layout HTML styling */
@@ -556,6 +647,10 @@ h3.search-sub-form-title {
   /* Align split line vertically in all descriptions */
   width: min(15vw, 125px);
 }
+.fixed-item-label-width-very-narrow .ant-descriptions-item-label {
+  /* Align split line vertically in all descriptions */
+  width: min(15vw, 80px);
+}
 
 tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .ant-descriptions-view > table {
   width: auto;
@@ -668,6 +763,16 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
 
 /* END phenopackets/other clinical+phenotypic metadata views */
 
+@media (min-width: 1200px) {
+  #pcgl-footer__links {
+    column-gap: 40px;
+    text-align: left;
+  }
+}
+
+@media (min-width: 1400px) {
+  #pcgl-footer__links { column-gap: 70px; }
+}
 
 @media (min-width: 1050px) and (max-width: 1550px) {
   .dataset-provenance-card-grid {
@@ -677,13 +782,20 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
 }
 
 @media (max-width: 768px) {
-  /* Same breakpoint as constants/deviceBreakpoints DeviceBreakpoints.TABLET */
+  /* Same breakpoint as constants/deviceBreakpoints DeviceBreakpoints.TABLET & Ant md -> sm */
 
   :root {
     --content-padding-v: 10px;
     --content-padding-h: 10px;
 
     --content-scoped-title-margin-bottom: 10px;
+  }
+
+  ul#page-header-stats {
+    flex-direction: row;
+  }
+  ul#page-header-stats li {
+    font-size: 18px;
   }
 
   .ant-layout-footer {
@@ -713,5 +825,26 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   .ant-float-btn-group.float-btn-pos {
     /* For small screens, reset group gap size */
     gap: 16px;
+  }
+
+  #pcgl-footer__links {
+    grid-template-columns: auto auto;
+  }
+}
+
+@media (max-width: 576px) {
+  /* Same breakpoint as constants/deviceBreakpoints DeviceBreakpoints.MOBILE & Ant sm -> xs */
+
+  ul#page-header-stats {
+    flex-direction: column;
+  }
+  ul#page-header-stats li {
+    font-size: 16px;
+  }
+
+  #pcgl-footer__links {
+    grid-template-columns: auto;
+    grid-row-gap: 8px;
+    text-align: left;
   }
 }
