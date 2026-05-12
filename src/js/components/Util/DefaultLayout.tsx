@@ -70,8 +70,8 @@ const DefaultLayout = () => {
         </PageHeader>
         {/*<SiteSider collapsed={collapsed} setCollapsed={setCollapsed} hidden={sidebarHidden} />*/}
         <Layout>
-          {!sidebarHidden && <SearchSider collapsed={collapsed} overlay={sidebarOverlay} />}
           <Layout>
+            {!sidebarHidden && <SearchSider collapsed={collapsed} overlay={sidebarOverlay} />}
             {sidebarOverlayShown ? (
               <div
                 style={{ position: 'fixed', inset: 0, zIndex: 18, backdropFilter: 'blur(10px)' }}
@@ -86,8 +86,8 @@ const DefaultLayout = () => {
             <Content>
               <Outlet />
             </Content>
-            {PCGL_MODE ? <PcglFooter /> : <SiteFooter />}
           </Layout>
+          {PCGL_MODE ? <PcglFooter /> : <SiteFooter />}
           {/* Overview has its own way of rendering a back-to-top button, so we only render this if we're not on the overview page: */}
           {page !== BentoRoute.Overview ? (
             <FloatButton.BackTop className="float-btn-pos" target={() => document.getElementById('content-layout')!} />

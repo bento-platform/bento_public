@@ -15,6 +15,7 @@ const Catalogue = () => {
       direction="vertical"
       size={isSmallScreen ? 'small' : 'large'}
       className="w-full"
+      style={{ paddingBottom: 'var(--content-padding-v)' }}
       styles={SPACE_ITEM_WIDTH_100P_STYLES}
     >
       {projectsStatus === RequestStatus.Rejected ? (

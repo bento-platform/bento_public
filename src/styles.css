@@ -405,18 +405,26 @@ ul#page-header-stats li.loading {
   position: relative;
   z-index: 19;
   background-color: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(10px);
   border-right: 1px solid #f0f0f0;
   width: var(--sidebar-width-full);
   left: 0;
+  margin-top: -1px;
 }
 #search-sider.overlay {
+  backdrop-filter: blur(10px);
   position: fixed;
   box-shadow: 3px 0 10px rgba(0, 0, 0, 0.06);
 }
 #search-sider.overlay.collapsed {
   left: calc(-1 * var(--sidebar-width-full) - 1px);
   box-shadow: none;
+}
+
+#search-sider__inner {
+  position: sticky;
+  width: var(--sidebar-width-full);
+  overflow-y: auto;
+  max-height: calc(100vh - var(--header-height) - var(--content-scoped-title-height) - 1px);
 }
 
 #content-layout {
@@ -459,7 +467,7 @@ ul#page-header-stats li.loading {
   border-top: 1px solid #02253B;  /* HSL of above darkened by 6pp */
   font-size: 13px;
   /* Double-up on space between content + footer since the solid colour block looks congested otherwise: */
-  margin-top: var(--content-padding-v);
+  /*margin-top: var(--content-padding-v);*/
 }
 #pcgl-footer img {
   margin-bottom: 12px;
