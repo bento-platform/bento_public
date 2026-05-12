@@ -10,7 +10,7 @@ const SearchForm = () => {
   const isSmallScreen = useSmallScreen();
   const { hasPermission: queryDataPerm } = useScopeQueryData();
 
-  const subFormStyle = { padding: isSmallScreen ? 10 : 24 };
+  const subFormStyle = { padding: isSmallScreen ? 10 : 12 };
 
   return (
     <Flex justify="space-between" className="w-full" vertical>

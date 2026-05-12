@@ -16,7 +16,7 @@ const SearchSider = ({ collapsed, overlay }: { collapsed: boolean; overlay: bool
     >
       {
         scope.project ? (
-          <div id="search-sider__inner" style={{ top: 'calc(var(--content-scoped-title-height) + 1px)' }}>
+          <div id="search-sider__inner">
             <SearchForm />
             <Divider className="m-0" />
           </div>
