@@ -129,7 +129,7 @@ export type BiosampleDetailProps = {
 };
 
 export const BiosampleDetail = ({ biosample, mode }: BiosampleDetailProps) => {
-  const popoverOrFullDetail = mode && ['popover', 'full-detail'].includes(mode);
+  const popoverOrFullDetail = !!mode && ['popover', 'full-detail'].includes(mode);
   const items: ConditionalDescriptionItem[] = [
     ...(popoverOrFullDetail ? [{ key: 'biosample_id', children: biosample.id }] : []),
     ...(mode !== undefined
