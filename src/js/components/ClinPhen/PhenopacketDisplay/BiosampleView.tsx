@@ -11,6 +11,8 @@ import FileTable from '@Util/FileTable';
 import JsonView from '@Util/JsonView';
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
 import ExperimentReferences from '@Util/ClinPhen/ExperimentReferences';
+import PhenotypicFeaturesView from './PhenotypicFeaturesView';
+import MeasurementsView from './MeasurementsView';
 
 import type { Biosample } from '@/types/clinPhen/biosample';
 import type { Experiment } from '@/types/clinPhen/experiments/experiment';
@@ -37,12 +39,48 @@ const FlagEmoji = memo(({ countryCode }: { countryCode: string }) =>
 );
 FlagEmoji.displayName = 'FlagEmoji';
 
-const BiosampleLocationCollected = ({ biosample }: { biosample: Biosample }) => {
+const GeoLocationDescriptions = ({ location }: { location?: GeoLocation }) => {
+  const t = useTranslationFn();
+
+  const props = location?.properties ?? {};
+
+  // @ts-expect-error TODO fix katsu
+  const countryCode: string = props.ISO3166alpha3 ?? props.iso3166alpha3;
+
+  if (!location) return null;
+  return (
+    <TDescriptions
+      column={1}
+      defaultI18nPrefix="geo_location."
+      items={[
+        { key: 'label', children: props.label, isVisible: !!props.label && props.label !== props.city },
+        { key: 'city', children: t(props.city) },
+        { key: 'country', children: t(props.country) },
+        { key: 'precision', children: t(props.precision) },
+        {
+          key: 'ISO3166alpha3',
+          label: 'geo_location.country_code',
+          children: countryCode ? (
+            <>
+              {countryCode} <FlagEmoji countryCode={ISO_3166_1_ISO3_TO_ISO2[countryCode]} />
+            </>
+          ) : null,
+        },
+      ]}
+    />
+  );
+};
+
+const BiosampleLocationCollected = ({ biosample, simpleView }: { biosample: Biosample; simpleView?: boolean }) => {
   const t = useTranslationFn();
 
   const [locationView, setLocationView] = useState<'map' | 'json'>('map');
 
   if (!biosample.location_collected) return null;
+
+  if (simpleView) {
+    return <GeoLocationDescriptions location={biosample.location_collected} />;
+  }
 
   return (
     <div className="w-full relative" style={{ minWidth: MAP_WIDTH }}>
@@ -69,33 +107,10 @@ const BiosampleLocationCollected = ({ biosample }: { biosample: Biosample }) => 
           zoom={13}
           height={350}
           renderPopupBody={(p) => {
-            const props = biosample.location_collected?.properties ?? {};
-            console.debug('showing popup body for point:', p, props);
-
-            // @ts-expect-error TODO fix katsu
-            const countryCode: string = props.ISO3166alpha3 ?? props.iso3166alpha3;
-
+            console.debug('showing popup body for point:', p, biosample.location_collected);
             return (
               <div>
-                <TDescriptions
-                  column={1}
-                  defaultI18nPrefix="geo_location."
-                  items={[
-                    { key: 'label', children: props.label, isVisible: !!props.label && props.label !== props.city },
-                    { key: 'city', children: t(props.city) },
-                    { key: 'country', children: t(props.country) },
-                    { key: 'precision', children: t(props.precision) },
-                    {
-                      key: 'ISO3166alpha3',
-                      label: 'geo_location.country_code',
-                      children: countryCode ? (
-                        <>
-                          {countryCode} <FlagEmoji countryCode={ISO_3166_1_ISO3_TO_ISO2[countryCode]} />
-                        </>
-                      ) : null,
-                    },
-                  ]}
-                />
+                <GeoLocationDescriptions location={biosample.location_collected} />
               </div>
             );
           }}
@@ -108,9 +123,17 @@ const BiosampleLocationCollected = ({ biosample }: { biosample: Biosample }) => 
   );
 };
 
-export const BiosampleExpandedRow = ({ biosample, searchRow }: { biosample: Biosample; searchRow?: boolean }) => {
+export type BiosampleDetailProps = {
+  biosample: Biosample;
+  mode?: 'search-row' | 'popover' | 'full-detail';
+};
+
+export const BiosampleDetail = ({ biosample, mode }: BiosampleDetailProps) => {
+  // TODO: use full-detail record for showing single biosamples with no individual attached in a phenopacket context
+  const popoverOrFullDetail = !!mode && ['popover', 'full-detail'].includes(mode);
   const items: ConditionalDescriptionItem[] = [
-    ...(searchRow
+    ...(popoverOrFullDetail ? [{ key: 'biosample_id', children: biosample.id }] : []),
+    ...(mode !== undefined
       ? [
           {
             key: 'sampled_tissue',
@@ -138,10 +161,30 @@ export const BiosampleExpandedRow = ({ biosample, searchRow }: { biosample: Bios
     },
     {
       key: 'location_collected',
-      children: biosample.location_collected && <BiosampleLocationCollected biosample={biosample} />,
+      children: biosample.location_collected && (
+        <BiosampleLocationCollected biosample={biosample} simpleView={mode === 'popover'} />
+      ),
       isVisible: biosample.location_collected,
       span: 3,
     },
+    ...(mode !== 'popover'
+      ? [
+          {
+            key: 'phenotypic_features',
+            children: biosample.phenotypic_features && (
+              <PhenotypicFeaturesView features={biosample.phenotypic_features} />
+            ),
+            isVisible: biosample.phenotypic_features,
+            span: 3,
+          },
+          {
+            key: 'measurements',
+            children: biosample.measurements && <MeasurementsView measurements={biosample.measurements} />,
+            isVisible: biosample.measurements,
+            span: 3,
+          },
+        ]
+      : []),
     {
       key: 'histological_diagnosis',
       children: <OntologyTermComponent term={biosample.histological_diagnosis} />,
@@ -192,16 +235,27 @@ export const BiosampleExpandedRow = ({ biosample, searchRow }: { biosample: Bios
       children: <Procedure procedure={biosample.procedure} />,
       isVisible: objectToBoolean(biosample.procedure),
     },
-    {
-      key: 'files',
-      children: <FileTable files={biosample.files ?? []} />,
-      isVisible: objectToBoolean(biosample.files),
-    },
+    ...(mode !== 'popover'
+      ? [
+          {
+            key: 'files',
+            children: <FileTable files={biosample.files ?? []} />,
+            isVisible: objectToBoolean(biosample.files),
+          },
+        ]
+      : []),
   ];
 
   return (
     <Space direction="vertical" className="w-full">
-      <TDescriptions bordered size="compact" defaultI18nPrefix="biosample." column={{ lg: 1, xl: 3 }} items={items} />
+      <TDescriptions
+        bordered
+        size="compact"
+        className={popoverOrFullDetail ? 'fixed-item-label-width' : undefined}
+        defaultI18nPrefix="biosample."
+        column={popoverOrFullDetail ? 1 : { lg: 1, xl: 3 }}
+        items={items}
+      />
       <ExtraPropertiesDisplay extraProperties={biosample.extra_properties} />
     </Space>
   );
@@ -275,7 +329,7 @@ const BiosampleView = ({ biosamples }: BiosampleViewProps) => {
     <CustomTable<Biosample>
       dataSource={biosamples}
       columns={BIOSAMPLE_VIEW_COLUMNS}
-      expandedRowRender={(record) => <BiosampleExpandedRow biosample={record} />}
+      expandedRowRender={(record) => <BiosampleDetail biosample={record} />}
       rowKey="id"
       queryKey="biosample"
       isRowExpandable={isBiosampleRowExpandable}

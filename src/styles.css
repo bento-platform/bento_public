@@ -639,11 +639,11 @@ h3.search-sub-form-title {
 
 /* BEGIN phenopackets/other clinical+phenotypic metadata views */
 
-.fixed-item-label-width .ant-descriptions-item-label {
+.fixed-item-label-width > .ant-descriptions-view > table > tbody > .ant-descriptions-row > .ant-descriptions-item-label {
   /* Align split line vertically in all descriptions */
   width: min(30vw, 250px);
 }
-.fixed-item-label-width-narrow .ant-descriptions-item-label {
+.fixed-item-label-width-narrow > .ant-descriptions-view > table > tbody > .ant-descriptions-row > .ant-descriptions-item-label {
   /* Align split line vertically in all descriptions */
   width: min(15vw, 125px);
 }

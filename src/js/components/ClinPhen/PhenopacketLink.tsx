@@ -2,6 +2,9 @@ import { Fragment, type ReactNode } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { useCurrentScopePrefixedUrl } from '@/hooks/navigation';
 
+import { Popover } from 'antd';
+import BiosampleDetailView from '../Search/BiosampleDetailView';
+
 import { highlightState } from '@/utils/router';
 
 import { BentoRoute } from '@/types/routes';
@@ -55,17 +58,31 @@ const SubjectLink = ({ children, packetId, preserveQueryParams }: SubjectLinkPro
   );
 };
 
-type BiosampleLinkProps = BaseLinkProps & { sampleId: string };
-const BiosampleLink = ({ packetId, sampleId, replace, preserveQueryParams, children }: BiosampleLinkProps) => {
+type BiosampleLinkProps = BaseLinkProps & { sampleId: string; enablePopover?: boolean };
+const BiosampleLink = ({
+  packetId,
+  sampleId,
+  replace,
+  preserveQueryParams,
+  enablePopover,
+  children,
+}: BiosampleLinkProps) => {
   const url = usePhenopacketOverviewLink(packetId, 'biosamples', { biosample: sampleId }, preserveQueryParams);
-  return (
+  const link = (
     <Link to={url} replace={replace} state={highlightState('biosamples', sampleId)}>
       {children ?? sampleId}
     </Link>
   );
+  return enablePopover ? (
+    <Popover content={<BiosampleDetailView id={sampleId} mode="popover" style={{ width: 'min(540px, 90vw)' }} />}>
+      {link}
+    </Popover>
+  ) : (
+    link
+  );
 };
 
-type BiosampleLinkListProps = BaseLinkProps & { biosamples: string[] };
+type BiosampleLinkListProps = BaseLinkProps & { biosamples: string[]; enablePopover?: boolean };
 const BiosampleLinkList = ({ packetId, biosamples, replace, ...props }: BiosampleLinkListProps) => (
   <>
     {biosamples.map((bb, bbi) => (
