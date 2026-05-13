@@ -1,4 +1,5 @@
 import { Card, Descriptions, Flex, Tag, Typography } from 'antd';
+import { PointMap } from 'bento-charts/dist/maps';
 
 import BaseProvenanceTable from './Tables/BaseProvenanceTable';
 import { useTranslationFn } from '@/hooks';
@@ -231,6 +232,44 @@ const CountsTable = ({ counts }: { counts: Count[] }) => {
   );
 };
 
+// ---- Spatial coverage ----
+
+const SpatialCoverageSection = ({ spatialCoverage }: { spatialCoverage: NonNullable<Dataset['spatial_coverage']> }) => {
+  const t = useTranslationFn();
+
+  if (typeof spatialCoverage === 'string') {
+    return (
+      <Descriptions style={{ paddingTop: '8px' }}>
+        <Item span={24} label={<DescLabel title={t('Spatial Coverage')} />}>
+          {spatialCoverage}
+        </Item>
+      </Descriptions>
+    );
+  }
+
+  const name = spatialCoverage.properties.name;
+  const geometry = spatialCoverage.geometry;
+  const isPoint = geometry?.type === 'Point';
+
+  return (
+    <>
+      <Descriptions style={{ paddingTop: '8px' }}>
+        <Item span={24} label={<DescLabel title={t('Spatial Coverage')} />}>
+          {name}
+        </Item>
+      </Descriptions>
+      {isPoint && (
+        <PointMap
+          data={[{ coordinates: geometry.coordinates as [number, number], title: name }]}
+          center={[geometry.coordinates[1], geometry.coordinates[0]]}
+          zoom={5}
+          height={300}
+        />
+      )}
+    </>
+  );
+};
+
 // ---- Extra properties ----
 
 const ExtraPropertiesTableV2 = ({ extra }: { extra: Dataset['extra_properties'] }) => {
@@ -360,15 +399,7 @@ export const DatasetProvenanceContent = ({ dataset }: { dataset: Dataset }) => {
       )}
 
       {/* Spatial coverage */}
-      {dataset.spatial_coverage && (
-        <Descriptions style={{ paddingTop: '8px' }}>
-          <Item span={24} label={<DescLabel title={t('Spatial Coverage')} />}>
-            {typeof dataset.spatial_coverage === 'string'
-              ? dataset.spatial_coverage
-              : dataset.spatial_coverage.properties.name}
-          </Item>
-        </Descriptions>
-      )}
+      {dataset.spatial_coverage && <SpatialCoverageSection spatialCoverage={dataset.spatial_coverage} />}
 
       {/* Primary contact */}
       {dataset.primary_contact && (
