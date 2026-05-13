@@ -25,7 +25,7 @@ export const makeGetBiosampleData = createAsyncThunk<
   {
     condition(id, { getState }) {
       const state = getState().clinPhen;
-      return !!id && !state.biosampleDataCache[id] && state.biosampleDataCache[id] !== RequestStatus.Pending;
+      return !!id && !state.biosampleDataCache[id] && state.biosampleDataStatus[id] !== RequestStatus.Pending;
     },
   }
 );

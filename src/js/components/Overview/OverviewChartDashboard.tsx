@@ -23,6 +23,7 @@ import { useTranslationFn } from '@/hooks';
 import { useSearchRouterAndHandler } from '@/hooks/useSearchRouterAndHandler';
 import { useSelectedDataset, useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
 import { useSearchQuery, useSearchableFields } from '@/features/search/hooks';
+import { useIsInCatalogueMode } from '@/hooks/navigation';
 
 const saveScopeOverviewToLS = (scope: DiscoveryScope, sections: Sections) => {
   saveValue(generateLSChartDataKey(scope), convertSequenceAndDisplayData(sections));
@@ -36,6 +37,7 @@ const OverviewChartDashboard = () => {
   const { scope } = useSelectedScope();
   const selectedProject = useSelectedProject();
   const selectedDataset = useSelectedDataset();
+  const catalogueMode = useIsInCatalogueMode();
 
   // This is essentially a large effect hook with a few dependencies, which processes (and rewrites if needed) the query
   // URL and dispatches discovery actions for fetching overview/query response data.
@@ -113,7 +115,7 @@ const OverviewChartDashboard = () => {
           </div>
         ))}
 
-        {!noDataInScope && <LastIngestionInfo />}
+        {!noDataInScope && !catalogueMode && <LastIngestionInfo />}
       </Flex>
 
       <ManageChartsDrawer onManageDrawerClose={onManageChartsClose} manageDrawerVisible={drawerVisible} />
