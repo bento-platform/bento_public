@@ -73,6 +73,13 @@ const Dataset = ({
   const openProvenanceModal = useCallback(() => setProvenanceModalOpen(true), []);
   const closeProvenanceModal = useCallback(() => setProvenanceModalOpen(false), []);
 
+  const counts = dataset.counts_by_entity;
+  const faded =
+    filteredCounts &&
+    counts &&
+    Object.values(filteredCounts).every((c) => !c) &&
+    Object.values(counts).some((c) => !!c);
+
   let inner: ReactNode;
 
   if (format === 'list-item') {
@@ -94,7 +101,7 @@ const Dataset = ({
       <Card
         title={<SmallChartCardTitle title={title} />}
         size="small"
-        className={clsx('shadow', 'h-full')}
+        className={clsx('shadow', 'h-full', { 'opacity-50': faded })}
         style={{ minHeight: 200 }}
         styles={{ body: { padding: '12px 16px', height: 'calc(100% - 53px)' } }}
         extra={
