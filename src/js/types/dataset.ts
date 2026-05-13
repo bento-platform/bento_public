@@ -1,3 +1,4 @@
+import type { Feature, Geometry } from 'geojson';
 import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
 import type { StringOrOntologyClass } from '@/types/ontology';
 
@@ -201,27 +202,12 @@ export interface Logo {
 
 // ---- Spatial coverage (GeoJSON Feature) ----
 
-type GeoJSONGeometry =
-  | { type: 'Point'; coordinates: number[] }
-  | { type: 'MultiPoint'; coordinates: number[][] }
-  | { type: 'LineString'; coordinates: number[][] }
-  | { type: 'MultiLineString'; coordinates: number[][][] }
-  | { type: 'Polygon'; coordinates: number[][][] }
-  | { type: 'MultiPolygon'; coordinates: number[][][][] }
-  | { type: 'GeometryCollection'; geometries: GeoJSONGeometry[] };
-
 export interface SpatialCoverageProperties {
   name: string;
   [key: string]: unknown;
 }
 
-export interface SpatialCoverageFeature {
-  type: 'Feature';
-  geometry: GeoJSONGeometry | null;
-  properties: SpatialCoverageProperties;
-  id?: string | number | null;
-  bbox?: number[] | null;
-}
+export type SpatialCoverageFeature = Feature<Geometry | null, SpatialCoverageProperties>;
 
 // ---- Links ----
 
