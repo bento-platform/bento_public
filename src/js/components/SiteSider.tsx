@@ -8,11 +8,11 @@ import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useSelectedScope } from '@/features/metadata/hooks';
 import { useSearchQueryParams } from '@/features/search/hooks';
 import { buildQueryParamsUrl } from '@/features/search/utils';
-import { useLanguage, useTranslationFn } from '@/hooks';
-import { useNavigateToRoot, useNavigateToSameScopeUrl } from '@/hooks/navigation';
+import { useTranslationFn } from '@/hooks';
+import { useNavigateToRoot, useNavigateToSameScopeUrl, useNavigateToScope } from '@/hooks/navigation';
 import type { MenuItem } from '@/types/navigation';
 import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
-import { getCurrentPage, scopeToUrl } from '@/utils/router';
+import { getCurrentPage } from '@/utils/router';
 
 const { Sider } = Layout;
 
@@ -33,12 +33,12 @@ const SiteSider = ({
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const language = useLanguage();
   const t = useTranslationFn();
   const overviewQueryParams = useSearchQueryParams();
   const currentPage = getCurrentPage(location);
 
   const navigateToRoot = useNavigateToRoot();
+  const navigateToScope = useNavigateToScope();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
   const { scope, scopeSet, fixedProject, fixedDataset } = useSelectedScope();
 
@@ -79,7 +79,7 @@ const SiteSider = ({
       if (scope.dataset) {
         return fixedDataset
           ? NO_BACK_BUTTON
-          : ['Back to project', () => navigate(scopeToUrl({ project: scope.project }, language, BentoRoute.Overview))];
+          : ['Back to project', () => navigateToScope({ project: scope.project }, BentoRoute.Overview)];
       } else if (scope.project) {
         return fixedProject ? NO_BACK_BUTTON : ['Back to catalogue', navigateToRoot];
       } else {
@@ -89,9 +89,8 @@ const SiteSider = ({
     }
   }, [
     currentPage,
-    language,
-    navigate,
     navigateToRoot,
+    navigateToScope,
     navigateToSameScopeUrl,
     overviewQueryParams,
     scope,
