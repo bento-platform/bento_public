@@ -27,7 +27,7 @@ import { MIN_PAGE_SIZE, PAGE_SIZE_OPTIONS } from '@/constants/pagination';
 import { DEFAULT_TEXT_QUERY_TYPE, EMPTY_KATSU_ENTITY_COUNTS } from './constants';
 
 import { discoveryChartProcessingAndLocalStorage } from './discoveryChartProcessingAndLocalStorage';
-import { performKatsuDiscovery } from './performKatsuDiscovery.thunk';
+import { performKatsuDiscovery, STALE_DISCOVERY_REJECTION } from './performKatsuDiscovery.thunk';
 import { fetchSearchFields } from './fetchSearchFields.thunk';
 import { fetchDiscoveryMatches } from './fetchDiscoveryMatches.thunk';
 import { fetchDiscoveryUIHints } from './fetchDiscoveryUIHints.thunk';
@@ -320,6 +320,12 @@ const query = createSlice({
       }
     );
     builder.addCase(performKatsuDiscovery.rejected, (state, { payload }) => {
+      if (payload === STALE_DISCOVERY_REJECTION) {
+        // Scope changed while the request was in flight. Reset to Idle so a new search
+        // for the correct scope will be triggered rather than storing stale results.
+        state.discoveryStatus = RequestStatus.Idle;
+        return;
+      }
       state.discoveryStatus = RequestStatus.Rejected;
       // maybe a bit counterintuitive, but a rejected status is a "valid" count response insofar as it reflects the
       // query made, and we don't want to attempt a re-fetch.
