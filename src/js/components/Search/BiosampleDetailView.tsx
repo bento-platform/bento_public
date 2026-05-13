@@ -10,7 +10,10 @@ import CustomEmpty from '@Util/CustomEmpty';
 import { WAITING_STATES } from '@/constants/requests';
 import { useBiosampleData } from '@/features/clinPhen/hooks';
 
-const BiosampleRowDetail = ({
+/**
+ * Wrapped version of BiosampleDetail which controls data fetching, rendering loading states, and missing data.
+ */
+const BiosampleDetailView = ({
   id,
   mode,
   ...props
@@ -37,4 +40,4 @@ const BiosampleRowDetail = ({
   );
 };
 
-export default BiosampleRowDetail;
+export default BiosampleDetailView;

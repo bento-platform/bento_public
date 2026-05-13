@@ -43,7 +43,7 @@ import DatasetTitle from '@Util/DatasetTitle';
 import ExperimentReferences from '@Util/ClinPhen/ExperimentReferences';
 import CustomTable, { type CustomTableColumn, type CustomTableColumns } from '@Util/CustomTable';
 import IndividualRowDetail from './IndividualRowDetail';
-import BiosampleRowDetail from './BiosampleRowDetail';
+import BiosampleDetailView from './BiosampleDetailView';
 import ExperimentRowDetail from './ExperimentRowDetail';
 import ExperimentResultRowDetail from './ExperimentResultRowDetail';
 import PhenopacketLink from '@/components/ClinPhen/PhenopacketLink';
@@ -207,7 +207,7 @@ const TABLE_SPEC_BIOSAMPLE: ResultsTableSpec<DiscoveryMatchBiosample> = {
   ],
   availableColumns: BIOSAMPLE_SEARCH_TABLE_COLUMNS,
   defaultColumns: ['individual', 'experiments', 'project', 'dataset'],
-  expandedRowRender: (rec) => <BiosampleRowDetail id={rec.id} mode="search-row" />,
+  expandedRowRender: (rec) => <BiosampleDetailView id={rec.id} mode="search-row" />,
 };
 
 const TABLE_SPEC_EXPERIMENT: ResultsTableSpec<DiscoveryMatchExperiment> = {

@@ -3,7 +3,7 @@ import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { useCurrentScopePrefixedUrl } from '@/hooks/navigation';
 
 import { Popover } from 'antd';
-import BiosampleRowDetail from '@/components/Search/BiosampleRowDetail';
+import BiosampleDetailView from '../Search/BiosampleDetailView';
 
 import { highlightState } from '@/utils/router';
 
@@ -74,7 +74,7 @@ const BiosampleLink = ({
     </Link>
   );
   return enablePopover ? (
-    <Popover content={<BiosampleRowDetail id={sampleId} mode="popover" style={{ width: 'min(540px, 90vw)' }} />}>
+    <Popover content={<BiosampleDetailView id={sampleId} mode="popover" style={{ width: 'min(540px, 90vw)' }} />}>
       {link}
     </Popover>
   ) : (
