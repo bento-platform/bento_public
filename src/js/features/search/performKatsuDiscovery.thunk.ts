@@ -23,7 +23,7 @@ export const performKatsuDiscovery = createAsyncThunk<
   'query/performKatsuDiscovery',
   async (_, { rejectWithValue, getState }) => {
     const state = getState();
-    const scopeAtDispatch = state.metadata.selectedScope.scope;
+    const scopeSelectionAtDispatch = state.metadata.selectedScope;
 
     try {
       const res = await axios
@@ -31,11 +31,11 @@ export const performKatsuDiscovery = createAsyncThunk<
         .then((res) => res.data);
 
       // Scope changed while the request was in flight — discard stale results
-      if (!scopeEqual(scopeAtDispatch, getState().metadata.selectedScope.scope)) {
+      if (!scopeEqual(scopeSelectionAtDispatch.scope, getState().metadata.selectedScope.scope)) {
         return rejectWithValue(STALE_DISCOVERY_REJECTION);
       }
 
-      return [scopeAtDispatch, res] as [DiscoveryScopeSelection, DiscoveryResponseOrMessage];
+      return [scopeSelectionAtDispatch, res] as [DiscoveryScopeSelection, DiscoveryResponseOrMessage];
     } catch (err) {
       return printAPIError(rejectWithValue)(err as AxiosError);
     }
