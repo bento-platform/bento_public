@@ -129,7 +129,7 @@ const SearchFilterInput = ({
         {field && (
           <div style={{ margin: '0 8px' }}>
             <Typography.Text type="secondary" style={{ fontSize: 12 }}>
-              {fieldDefinitionMap[field].description}
+              {t(fieldDefinitionMap[field].description)}
             </Typography.Text>
           </div>
         )}
