@@ -34,10 +34,7 @@ const DefaultLayout = () => {
   const isCatalogue = scopeSet && !scope.project && catalogueMode && page === 'overview';
   const sidebarOverlay = !breakpoints.lg;
   const sidebarOverlayShown = sidebarOverlay && !collapsed;
-  const sidebarHidden =
-    // isCatalogue ||
-    (page === 'beacon' && !scope.project) || (page === 'network' && !scope.project) || page === 'phenopackets';
-  // (menuItems.length <= 1 && !(scope.project && catalogueMode));
+  const sidebarHidden = page !== 'overview';
 
   const showSidebarToggle = sidebarOverlay && page === 'overview';
 
@@ -70,7 +67,6 @@ const DefaultLayout = () => {
             </Flex>
           )}
         </PageHeader>
-        {/*<SiteSider collapsed={collapsed} setCollapsed={setCollapsed} hidden={sidebarHidden} />*/}
         <Layout>
           <Layout>
             {!sidebarHidden && <SiteSider collapsed={collapsed} overlay={sidebarOverlay} />}

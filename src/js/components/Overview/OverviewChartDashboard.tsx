@@ -95,7 +95,6 @@ const OverviewChartDashboard = () => {
           {pageTab === 'provenance' && selectedDataset ? (
             <DatasetProvenance dataset={selectedDataset} showTitle={false} />
           ) : null}
-          {/*{pageTab === 'search' ? <SearchForm /> : null}*/}
         </div>
 
         <CountsAndResults />
