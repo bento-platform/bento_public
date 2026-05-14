@@ -487,8 +487,6 @@ ul#page-header-stats li.loading {
   box-shadow: 0 200px 0 #054A74, 0 400px 0 #054A74, 0 600px 0 #054A74;
   border-top: 1px solid #02253B;  /* HSL of above darkened by 6pp */
   font-size: 13px;
-  /* Double-up on space between content + footer since the solid colour block looks congested otherwise: */
-  /*margin-top: var(--content-padding-v);*/
 }
 #pcgl-footer img {
   margin-bottom: 12px;
