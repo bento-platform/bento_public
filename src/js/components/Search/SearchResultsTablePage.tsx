@@ -17,7 +17,8 @@ import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
 import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
 
 import type { BentoKatsuEntity } from '@/types/entities';
-import type { Dataset, Project } from '@/types/metadata';
+import type { Project } from '@/types/metadata';
+import type { Dataset } from '@/types/dataset';
 import type { DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
 import type { QueryResultMatchData } from '@/features/search/query.store';
 import type {

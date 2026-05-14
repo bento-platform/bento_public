@@ -49,10 +49,11 @@ const CatalogueCard = ({ project }: { project: Project }) => {
 
   const isSmallScreen = useSmallScreen();
 
-  const { datasets, created, updated, title, description, identifier, counts } = project;
+  const { datasets_v2: datasets, created, updated, title, description, identifier, counts } = project;
 
   const { selectedKeywords, extraKeywords, extraKeywordCount } = useMemo(() => {
-    const keywords = datasets.flatMap((d) => d.dats_file.keywords ?? []).map((k) => t(k.value as string));
+    // TODO: render OntologyTerm keywords with ID + label instead of flattening to string
+    const keywords = datasets.flatMap((d) => d.keywords ?? []).map((k) => t(typeof k === 'string' ? k : k.label));
 
     let totalCharacters = 0;
     const selectedKeywords: string[] = [];
@@ -161,7 +162,13 @@ const CatalogueCard = ({ project }: { project: Project }) => {
                 }}
               >
                 {datasets.map((d) => (
-                  <Dataset parentProjectID={identifier} key={d.identifier} dataset={d} format="carousel" />
+                  <Dataset
+                    parentProjectID={identifier}
+                    key={d.identifier}
+                    dataset={d}
+                    format="carousel"
+                    filteredCounts={d.counts_by_entity}
+                  />
                 ))}
               </Carousel>
             </>

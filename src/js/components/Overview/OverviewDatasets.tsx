@@ -1,4 +1,4 @@
-import type { Dataset as DatasetT } from '@/types/metadata';
+import type { Dataset as DatasetType } from '@/types/dataset';
 import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
 import { EMPTY_KATSU_ENTITY_COUNTS } from '@/features/search/constants';
 import Dataset from '@/components/Provenance/Dataset';
@@ -9,7 +9,7 @@ const OverviewDatasets = ({
   parentProjectID,
   countsByDataset,
 }: {
-  datasets: DatasetT[];
+  datasets: DatasetType[];
   parentProjectID: string;
   countsByDataset?: Record<string, KatsuEntityCountsOrBooleans>;
 }) => {
@@ -23,7 +23,7 @@ const OverviewDatasets = ({
               dataset={d}
               format="card"
               filteredCounts={
-                countsByDataset ? (countsByDataset[d.identifier] ?? EMPTY_KATSU_ENTITY_COUNTS) : undefined
+                countsByDataset ? (countsByDataset[d.identifier] ?? EMPTY_KATSU_ENTITY_COUNTS) : d.counts_by_entity
               }
             />
           </div>

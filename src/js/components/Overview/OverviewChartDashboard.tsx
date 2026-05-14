@@ -140,10 +140,10 @@ const OverviewChartDashboard = () => {
 
         <CountsAndResults />
 
-        {selectedProject && !scope.dataset && selectedProject.datasets.length ? (
+        {selectedProject && !scope.dataset && selectedProject.datasets_v2.length ? (
           // If we have a project with at least one dataset, show a dataset mini-catalogue in the project overview
           <OverviewDatasets
-            datasets={selectedProject.datasets}
+            datasets={selectedProject.datasets_v2}
             parentProjectID={selectedProject.identifier}
             countsByDataset={resultCountsByDataset}
           />
