@@ -1,9 +1,9 @@
 import { type CSSProperties, type ReactNode, memo, useCallback, useMemo } from 'react';
-import { Button, Flex, Select, Space, Typography } from 'antd';
+import { Button, Flex, Select, type SelectProps, Space, Typography } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 
 import type { FilterValue } from '@/features/search/types';
-import type { NumberField } from '@/types/discovery/fieldDefinition';
+import type { Field, NumberField } from '@/types/discovery/fieldDefinition';
 
 import { useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
@@ -50,12 +50,6 @@ const SearchFilterInput = ({
         title: t(label),
         options: fields.map((f) => ({
           value: f.id,
-          label: (
-            <Flex>
-              <div className="flex-1">{`${t(f.definition.title)}${f.definition.datatype === 'number' && f.definition.config?.units ? ` (${t(f.definition.config.units)})` : ''}`}</div>
-              <OptionDescription description={t(f.definition.description)} />
-            </Flex>
-          ),
           // Disabled if: field is in disabled set AND it isn't the currently selected field (so we allow re-selection of
           // the current field.)
           disabled: disabledFields.has(f.id) && field !== f.id,
@@ -77,6 +71,35 @@ const SearchFilterInput = ({
   const fieldDefinitionMap = useMemo(
     () => Object.fromEntries(filterSections.flatMap(({ fields }) => fields.map((f) => [f.id, f.definition]))),
     [filterSections]
+  );
+
+  /**
+   * Renders just the string label for an option
+   * @param f - Field definition
+   */
+  const renderFilterOptionLabelString = useCallback(
+    (f: Field) => `${t(f.title)}${f.datatype === 'number' && f.config?.units ? ` (${t(f.config.units)})` : ''}`,
+    [t]
+  );
+
+  /** Renders the label (without a tooltip) for chosen Select options */
+  const renderFilterLabel = useCallback<Exclude<SelectProps['labelRender'], undefined>>(
+    ({ value: fId }) => renderFilterOptionLabelString(fieldDefinitionMap[fId as string]),
+    [renderFilterOptionLabelString, fieldDefinitionMap]
+  );
+
+  /** Renders the string label + an option description tooltip for a non-chosen Select option */
+  const renderFilterOption = useCallback<Exclude<SelectProps['optionRender'], undefined>>(
+    ({ value: fId }) => {
+      const f = fieldDefinitionMap[fId as string];
+      return (
+        <Flex>
+          <div className="flex-1">{renderFilterOptionLabelString(f)}</div>
+          <OptionDescription description={t(f.description)} />
+        </Flex>
+      );
+    },
+    [t, renderFilterOptionLabelString, fieldDefinitionMap]
   );
 
   const onFilterFieldChange = useCallback(
@@ -111,7 +134,8 @@ const SearchFilterInput = ({
             className="flex-1 h-auto"
             options={filterOptions}
             size="small"
-            // variant={vertical ? 'filled' : undefined}
+            optionRender={renderFilterOption}
+            labelRender={renderFilterLabel}
             onChange={onFilterFieldChange}
             value={field}
             placeholder={t('search.filter_placeholder')}
