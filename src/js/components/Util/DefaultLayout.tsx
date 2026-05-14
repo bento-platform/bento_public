@@ -34,12 +34,13 @@ const DefaultLayout = () => {
   const isCatalogue = scopeSet && !scope.project && catalogueMode && page === 'overview';
   const sidebarOverlay = !breakpoints.lg;
   const sidebarOverlayShown = sidebarOverlay && !collapsed;
-  const sidebarHidden = page !== 'overview';
+  // TODO: enable sidebar with catalogue when catalogue filtering/search is hooked up
+  const sidebarHidden = page !== 'overview' || isCatalogue;
 
   const showSidebarToggle = sidebarOverlay && page === 'overview';
 
   return (
-    <Layout id="default-layout" className={clsx('sidebar-hidden', `page-${page}`)}>
+    <Layout id="default-layout" className={clsx('sidebar-hidden', `page-${isCatalogue ? 'catalogue' : page}`)}>
       <SiteHeader menuItems={menuItems} />
       <Layout id="content-layout">
         <PageHeader catalogue={isCatalogue}>
