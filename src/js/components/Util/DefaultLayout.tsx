@@ -4,11 +4,10 @@ import { Button, Flex, FloatButton, Grid, Layout } from 'antd';
 import { FilterOutlined } from '@ant-design/icons';
 import AboutContent from '@/components/AboutContent';
 import SiteHeader from '@/components/SiteHeader';
-// import SiteSider from '@/components/SiteSider';
+import SiteSider from '@/components/SiteSider';
 import SiteFooter from '@/components/SiteFooter';
 import PageHeader from '@/components/PageHeader';
 import PcglFooter from '@/components/Pcgl/PcglFooter';
-import SearchSider from '@/components/Search/SearchSider';
 import ScopedTitle from '@/components/Scope/ScopedTitle';
 import { useSelectedScope } from '@/features/metadata/hooks';
 import { useIsInCatalogueMode, useSidebarMenuItems } from '@/hooks/navigation';
@@ -74,7 +73,7 @@ const DefaultLayout = () => {
         {/*<SiteSider collapsed={collapsed} setCollapsed={setCollapsed} hidden={sidebarHidden} />*/}
         <Layout>
           <Layout>
-            {!sidebarHidden && <SearchSider collapsed={collapsed} overlay={sidebarOverlay} />}
+            {!sidebarHidden && <SiteSider collapsed={collapsed} overlay={sidebarOverlay} />}
             {sidebarOverlayShown ? (
               <div
                 style={{ position: 'fixed', inset: 0, zIndex: 18, backdropFilter: 'blur(10px)' }}

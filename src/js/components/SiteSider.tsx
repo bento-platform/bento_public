@@ -1,155 +1,35 @@
-import { useMemo, type CSSProperties } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-
-import { Input, type SiderProps, Typography } from 'antd';
-import { Button, Divider, Layout } from 'antd';
-import { ArrowLeftOutlined, FormOutlined } from '@ant-design/icons';
-
+import clsx from 'clsx';
+import { Divider, Layout } from 'antd';
 import SearchForm from '@/components/Search/SearchForm';
 import { useSelectedScope } from '@/features/metadata/hooks';
-import { useLanguage, useTranslationFn } from '@/hooks';
-import { useNavigateToRoot, useNavigateToSameScopeUrl } from '@/hooks/navigation';
-import { useSearchQueryParams } from '@/features/search/hooks';
-import { buildQueryParamsUrl } from '@/features/search/utils';
-import { getCurrentPage, scopeToUrl } from '@/utils/router';
-import { BentoRoute } from '@/types/routes';
 
-const { Sider } = Layout;
-
-const filtersStyle = { padding: 16, boxSizing: 'border-box', width: 'var(--sidebar-width-full)' } as CSSProperties;
-
-const NO_BACK_BUTTON = [undefined, undefined] as const;
-
-const SiteSider = ({
-  collapsed,
-  setCollapsed,
-  hidden,
-}: {
-  collapsed: boolean;
-  setCollapsed: SiderProps['onCollapse'];
-  hidden: boolean;
-}) => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const language = useLanguage();
-  const t = useTranslationFn();
-  const page = getCurrentPage(location);
-  console.log(page);
-  const overviewQueryParams = useSearchQueryParams();
-  const currentPage = getCurrentPage(location);
-
-  const navigateToRoot = useNavigateToRoot();
-  const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
-  const { scope, scopeSet, fixedProject, fixedDataset } = useSelectedScope();
-
-  // const handleMenuClick: OnClick = useCallback(
-  //   ({ key }: { key: string }) => {
-  //     const currentPath = location.pathname.split('/').filter(Boolean);
-  //     const newPath = [currentPath[0]];
-  //     if (!TOP_LEVEL_ONLY_ROUTES.includes(key)) {
-  //       // Beacon network only works at the top scope level
-  //       if (currentPath[1] === 'p') {
-  //         newPath.push('p', currentPath[2]);
-  //       } else if (currentPath[1] === 'd') {
-  //         newPath.push('d', currentPath[2]);
-  //       }
-  //     }
-  //     newPath.push(key);
-  //     const newPathString = '/' + newPath.join('/');
-  //     // Navigate to the menu item url
-  //     //  - only include filter/search/overview query params if we're navigating to the overview page
-  //     navigate(buildQueryParamsUrl(newPathString, key === BentoRoute.Overview ? overviewQueryParams : undefined));
-  //   },
-  //   [navigate, overviewQueryParams, location.pathname]
-  // );
-
-  const [backClickText, onBackClick] = useMemo(() => {
-    if (!scopeSet) return NO_BACK_BUTTON;
-    // Cases where we DO show a back button, given the scope is set:
-    //  - We're in a project and in catalog mode
-    //  - We're in a dataset and don't have a fixed dataset (a fixed dataset implies a fixed project as well)
-    //  - Any time we're on the phenopackets page
-    if (currentPage === BentoRoute.Phenopackets) {
-      // When going "back" here, we are staying in the same scope, so the logic looks a bit different:
-      return [
-        scope.dataset ? 'Back to dataset' : 'Back to project',
-        () => navigateToSameScopeUrl(buildQueryParamsUrl(BentoRoute.Overview, overviewQueryParams), false),
-      ];
-    } else {
-      if (scope.dataset) {
-        return fixedDataset
-          ? NO_BACK_BUTTON
-          : ['Back to project', () => navigate(scopeToUrl({ project: scope.project }, language, BentoRoute.Overview))];
-      } else if (scope.project) {
-        return fixedProject ? NO_BACK_BUTTON : ['Back to catalogue', navigateToRoot];
-      } else {
-        // No project selected, nothing to go "back" to
-        return NO_BACK_BUTTON;
-      }
-    }
-  }, [
-    currentPage,
-    language,
-    navigate,
-    navigateToRoot,
-    navigateToSameScopeUrl,
-    overviewQueryParams,
-    scope,
-    fixedProject,
-    fixedDataset,
-    scopeSet,
-  ]);
-
+const SiteSider = ({ collapsed, overlay }: { collapsed: boolean; overlay: boolean }) => {
+  const { scope } = useSelectedScope();
   return (
-    <Sider
-      id="site-sider"
-      // Collapsed width can be synced with our stylesheet via CSS variable:
-      width="var(--sidebar-width-full)"
-      collapsedWidth="var(--sidebar-width-collapsed)"
-      collapsible
-      breakpoint="md"
-      collapsed={collapsed}
-      onCollapse={setCollapsed}
-      theme="light"
-      aria-hidden={hidden}
+    <Layout.Sider
+      width="auto"
+      id="search-sider"
+      className={clsx({ overlay: overlay, collapsed: overlay && collapsed })}
+      style={{
+        minHeight: scope.project ? 'calc(100vh - var(--header-height) - var(--content-scoped-title-height))' : 0,
+      }}
     >
-      {backClickText !== undefined && onBackClick !== undefined ? (
-        <>
-          <div style={{ backgroundColor: '#FAFAFA' }}>
-            <Button
-              type="text"
-              icon={<ArrowLeftOutlined />}
-              style={{ margin: 4, width: 'calc(100% - 8px)', height: 38 }}
-              onClick={onBackClick}
-            >
-              {collapsed ? null : t(backClickText)}
-            </Button>
+      {
+        scope.project ? (
+          <div id="search-sider__inner">
+            <SearchForm />
+            <Divider className="m-0" />
           </div>
-          <Divider className="m-0" />
-        </>
-      ) : null}
-
-      {scope.project ? (
-        <div style={filtersStyle}>
-          <SearchForm />
-        </div>
-      ) : (
-        <div style={filtersStyle}>
-          {/* TODO: Hook up catalogue search */}
-          <Typography.Title level={3} className="search-sub-form-title">
-            <FormOutlined /> {t('search.text_search')}
-          </Typography.Title>
-          <Input.Search />
-        </div>
-      )}
-      {/*<Menu*/}
-      {/*  selectedKeys={[currentPage]}*/}
-      {/*  mode="inline"*/}
-      {/*  items={items}*/}
-      {/*  onClick={handleMenuClick}*/}
-      {/*  style={{ border: 'none' }}*/}
-      {/*/>*/}
-    </Sider>
+        ) : null
+        // TODO: hook up catalogue search
+        // <div id="search-sider__inner" style={{ top: 0, padding: 24, boxSizing: 'border-box' }}>
+        //   <Typography.Title level={3} className="search-sub-form-title">
+        //     <FormOutlined /> {t('search.text_search')}
+        //   </Typography.Title>
+        //   <Input.Search />
+        // </div>
+      }
+    </Layout.Sider>
   );
 };
 
