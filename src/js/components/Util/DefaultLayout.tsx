@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
+import clsx from 'clsx';
 import { Button, Flex, FloatButton, Grid, Layout } from 'antd';
 import { FilterOutlined } from '@ant-design/icons';
 import AboutContent from '@/components/AboutContent';
@@ -13,7 +14,6 @@ import { useSelectedScope } from '@/features/metadata/hooks';
 import { useIsInCatalogueMode, useSidebarMenuItems } from '@/hooks/navigation';
 import { PCGL_MODE } from '@/config';
 import { BentoRoute } from '@/types/routes';
-import clsx from 'clsx';
 import { getCurrentPage } from '@/utils/router';
 
 const { Content } = Layout;
