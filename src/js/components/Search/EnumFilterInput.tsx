@@ -5,14 +5,12 @@ import { useTranslationFn } from '@/hooks';
 type Option = { label: string; value: string };
 
 const EnumFilterInput = ({
-  className,
   disabled,
   isMultiple,
   options,
   value,
   onChange,
 }: {
-  className?: string;
   disabled?: boolean;
   isMultiple?: boolean;
   options?: Option[];
@@ -24,7 +22,7 @@ const EnumFilterInput = ({
   if (isMultiple && options && options.length <= 10) {
     return (
       <Checkbox.Group<string>
-        className={className}
+        className="w-full"
         disabled={disabled}
         options={options}
         onChange={(values) => onChange?.(values.length === 0 ? null : values)}
@@ -37,7 +35,7 @@ const EnumFilterInput = ({
   return (
     <Select
       mode={isMultiple ? 'multiple' : undefined}
-      className={className}
+      className="w-full"
       disabled={disabled}
       options={options}
       onChange={onChange}

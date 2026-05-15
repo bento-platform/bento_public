@@ -6,9 +6,9 @@ import type { FilterValue } from '@/features/search/types';
 import { useTranslationFn } from '@/hooks';
 import { parseBrackets, buildRangeString, buildComparisonString, type RangeState } from '@/utils/rangeFilterUtils';
 
-type Props = { definition: NumberField; value: FilterValue; onChange: (v: FilterValue) => void; className?: string };
+type Props = { definition: NumberField; value: FilterValue; onChange: (v: FilterValue) => void };
 
-const NumberRangeFilterInput = ({ definition, value, onChange, className }: Props) => {
+const NumberRangeFilterInput = ({ definition, value, onChange }: Props) => {
   const t = useTranslationFn();
   const { minimum, maximum } = definition.config;
   const enforcedMin =
@@ -99,7 +99,7 @@ const NumberRangeFilterInput = ({ definition, value, onChange, className }: Prop
   const boundsInverted = lowerNum !== null && upperNum !== null && upperNum < lowerNum;
 
   return (
-    <Space.Compact className={className ?? 'flex-1'}>
+    <Space.Compact className="w-full">
       <Tooltip
         title={`${t(lowerOpen ? 'search.range.lower_exclusive' : 'search.range.lower_inclusive')} — ${t('search.range.click_to_switch')}`}
       >

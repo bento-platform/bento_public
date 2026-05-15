@@ -124,8 +124,6 @@ const SearchFilterInput = ({
     [isMultiple, value]
   );
 
-  const inputClass = 'w-full';
-
   return (
     <SearchFilterInputWrapper>
       <Flex gap={4} vertical>
@@ -160,21 +158,18 @@ const SearchFilterInput = ({
       </Flex>
       {isRangeField && currentFieldDef?.datatype === 'number' ? (
         <NumberRangeFilterInput
-          className={inputClass}
           definition={currentFieldDef as NumberField}
           value={Array.isArray(value) ? (value[0] ?? null) : value}
           onChange={onFilterValueChange}
         />
       ) : isRangeField && currentFieldDef?.datatype === 'date' ? (
         <DateRangeFilterInput
-          className={inputClass}
           value={Array.isArray(value) ? (value[0] ?? null) : value}
           onChange={onFilterValueChange}
         />
       ) : (
         <EnumFilterInput
           isMultiple={isMultiple}
-          className={inputClass}
           disabled={!field}
           options={valueOptions}
           onChange={onFilterValueChange}

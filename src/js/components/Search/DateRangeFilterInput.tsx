@@ -6,9 +6,9 @@ import type { Dayjs } from 'dayjs';
 import type { FilterValue } from '@/features/search/types';
 import { parseBrackets, buildRangeString, DATE_FORMAT, type RangeState } from '@/utils/rangeFilterUtils';
 
-type Props = { value: FilterValue; onChange: (v: FilterValue) => void; className?: string };
+type Props = { value: FilterValue; onChange: (v: FilterValue) => void };
 
-const DateRangeFilterInput = ({ value, onChange, className }: Props) => {
+const DateRangeFilterInput = ({ value, onChange }: Props) => {
   const rawValue = Array.isArray(value) ? (value[0] ?? null) : value;
 
   // Local state buffers what the user is typing. We can't derive from rawValue directly because
@@ -62,7 +62,7 @@ const DateRangeFilterInput = ({ value, onChange, className }: Props) => {
 
   return (
     <DatePicker.RangePicker
-      className={className ?? 'flex-1'}
+      className="w-full"
       format={DATE_FORMAT}
       value={[lowerDateValue?.isValid() ? lowerDateValue : null, upperDateValue?.isValid() ? upperDateValue : null]}
       onChange={onDateRangeChange}
