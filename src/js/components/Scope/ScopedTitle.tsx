@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import { Breadcrumb, type BreadcrumbProps, Button, Flex, Space, Tooltip } from 'antd';
 import { ArrowLeftOutlined, HomeOutlined, ProfileOutlined, QuestionOutlined } from '@ant-design/icons';
@@ -11,22 +11,26 @@ import { useSelectedScope, useSelectedScopeTitles } from '@/features/metadata/ho
 import { useSearchQueryParams } from '@/features/search/hooks';
 import { useExtraBreadcrumb } from '@/features/ui/hooks';
 import { useLanguage, useTranslationFn } from '@/hooks';
-import { useGetRouteTitleAndIcon, useNavigateToRoot, useNavigateToSameScopeUrl } from '@/hooks/navigation';
+import {
+  useGetRouteTitleAndIcon,
+  useNavigateToRoot,
+  useNavigateToSameScopeUrl,
+  useNavigateToScope,
+} from '@/hooks/navigation';
 import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
-import { getCurrentPage, scopeToUrl } from '@/utils/router';
+import { getCurrentPage } from '@/utils/router';
 import { buildQueryParamsUrl } from '@/features/search/utils';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
 const NO_BACK_BUTTON = [undefined, undefined] as const;
 
 const useBackButtonInfo = () => {
-  const navigate = useNavigate();
   const location = useLocation();
-  const language = useLanguage();
   const overviewQueryParams = useSearchQueryParams();
   const currentPage = getCurrentPage(location);
 
   const navigateToRoot = useNavigateToRoot();
+  const navigateToScope = useNavigateToScope();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
   const { scope, scopeSet, fixedProject, fixedDataset } = useSelectedScope();
 
@@ -46,7 +50,7 @@ const useBackButtonInfo = () => {
       if (scope.dataset) {
         return fixedDataset
           ? NO_BACK_BUTTON
-          : ['Back to project', () => navigate(scopeToUrl({ project: scope.project }, language, BentoRoute.Overview))];
+          : ['Back to project', () => navigateToScope({ project: scope.project }, BentoRoute.Overview)];
       } else if (scope.project) {
         return fixedProject ? NO_BACK_BUTTON : ['Back to catalogue', navigateToRoot];
       } else {
@@ -56,9 +60,8 @@ const useBackButtonInfo = () => {
     }
   }, [
     currentPage,
-    language,
-    navigate,
     navigateToRoot,
+    navigateToScope,
     navigateToSameScopeUrl,
     overviewQueryParams,
     scope,
