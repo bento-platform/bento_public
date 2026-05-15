@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { Button, Flex, Layout, Space, Typography, theme } from 'antd';
+import { Button, Flex, Layout, Menu, type MenuProps, Space, Typography, theme } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useAuthState, useIsAuthenticated, useOpenIdConfig, usePerformAuth, usePerformSignOut } from 'bento-auth-js';
 
@@ -10,9 +10,15 @@ import { ExportOutlined, LinkOutlined, LoginOutlined, LogoutOutlined } from '@an
 
 import { useNavigateToRoot } from '@/hooks/navigation';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
+import { getCurrentPage } from '@/utils/router';
 
 import { LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
 import { CLIENT_NAME, PORTAL_URL, SHOW_HEADER_TITLE, SHOW_PORTAL_LINK, SHOW_SIGN_IN, TRANSLATED } from '@/config';
+
+import type { MenuItem } from '@/types/navigation';
+import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
+import { buildQueryParamsUrl } from '@/features/search/utils';
+import { useSearchQueryParams } from '@/features/search/hooks';
 
 const { Header } = Layout;
 
@@ -21,11 +27,44 @@ const THEME: 'light' | 'dark' = 'light';
 
 const openPortalWindow = () => window.open(PORTAL_URL, '_blank');
 
-const SiteHeader = () => {
+type OnClick = MenuProps['onClick'];
+type SiteHeaderProps = {
+  menuItems?: MenuItem[];
+};
+
+const useHandleMenuClick = (): OnClick => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const overviewQueryParams = useSearchQueryParams();
+
+  return useCallback(
+    ({ key }: { key: string }) => {
+      const currentPath = location.pathname.split('/').filter(Boolean);
+      const newPath = [currentPath[0]];
+      if (!TOP_LEVEL_ONLY_ROUTES.includes(key)) {
+        // Beacon network only works at the top scope level
+        if (currentPath[1] === 'p') {
+          newPath.push('p', currentPath[2]);
+        } else if (currentPath[1] === 'd') {
+          newPath.push('d', currentPath[2]);
+        }
+      }
+      newPath.push(key);
+      const newPathString = '/' + newPath.join('/');
+      // Navigate to the menu item url
+      //  - only include filter/search/overview query params if we're navigating to the overview page
+      navigate(buildQueryParamsUrl(newPathString, key === BentoRoute.Overview ? overviewQueryParams : undefined));
+    },
+    [navigate, overviewQueryParams, location.pathname]
+  );
+};
+
+const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const isSmallScreen = useSmallScreen();
+  const currentPage = getCurrentPage(location);
   const navigateToRoot = useNavigateToRoot();
 
   const { isFetching: openIdConfigFetching } = useOpenIdConfig();
@@ -54,6 +93,8 @@ const SiteHeader = () => {
 
   const logo = `/public/assets/branding${THEME === 'light' ? '.lightbg' : ''}.png`;
 
+  const handleMenuClick = useHandleMenuClick();
+
   return (
     <Header
       id="site-header"
@@ -61,7 +102,7 @@ const SiteHeader = () => {
       style={{ backgroundColor: colorBgContainer, borderBottom: `1px solid ${colorBorderSecondary}` }}
     >
       <Flex align="center" justify="space-between">
-        <Space size={isSmallScreen ? 'small' : 'middle'}>
+        <Flex align="center" gap={isSmallScreen ? 'small' : 'middle'} className="flex-1">
           {isSmallScreen ? (
             <object
               type="image/png"
@@ -94,12 +135,26 @@ const SiteHeader = () => {
           )}
           {/* If SHOW_HEADER_TITLE is false, assume we have text in the logo. We should still have some kind of level-1
               header for accessibility/semantic markup, so render it but visually hidden in this case. */}
-          <Typography.Title level={1} type="secondary" className={SHOW_HEADER_TITLE ? '' : 'visually-hidden'}>
+          <Typography.Title
+            level={1}
+            type="secondary"
+            className={SHOW_HEADER_TITLE ? '' : 'visually-hidden'}
+            style={{ whiteSpace: 'nowrap' }}
+          >
             {CLIENT_NAME}
           </Typography.Title>
-        </Space>
+          {(menuItems?.length ?? 0) > 1 ? (
+            <Menu
+              mode="horizontal"
+              items={menuItems}
+              selectedKeys={[currentPage]}
+              onClick={handleMenuClick}
+              className="flex-1"
+            />
+          ) : null}
+        </Flex>
 
-        <Space size={isSmallScreen ? 0 : 'small'}>
+        <Space size={isSmallScreen ? 4 : 'small'}>
           {TRANSLATED && (
             <Button
               type="text"
@@ -112,13 +167,23 @@ const SiteHeader = () => {
           )}
           {SHOW_PORTAL_LINK && (
             <Button type="text" className="header-button" icon={<LinkOutlined />} onClick={openPortalWindow}>
-              {isSmallScreen ? '' : t('Portal')}
-              {isSmallScreen || <ExportOutlined />}
+              {isSmallScreen ? null : (
+                <>
+                  {t('Portal')} <ExportOutlined />
+                </>
+              )}
             </Button>
           )}
           {SHOW_SIGN_IN &&
             (isAuthenticated ? (
-              <Button type="text" className="header-button" icon={<LogoutOutlined />} onClick={performSignOut}>
+              <Button
+                color="default"
+                className="header-button"
+                icon={<LogoutOutlined />}
+                shape="round"
+                variant="filled"
+                onClick={performSignOut}
+              >
                 {isSmallScreen ? '' : t('Sign Out')}
               </Button>
             ) : (

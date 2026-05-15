@@ -15,6 +15,9 @@ const Catalogue = () => {
       direction="vertical"
       size={isSmallScreen ? 'small' : 'large'}
       className="w-full"
+      /* Double-up on space between content + footer since the solid colour block (with PCGL footer) looks congested
+         otherwise: */
+      style={{ paddingBottom: 'var(--content-padding-v)' }}
       styles={SPACE_ITEM_WIDTH_100P_STYLES}
     >
       {projectsStatus === RequestStatus.Rejected ? (

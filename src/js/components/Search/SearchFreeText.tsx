@@ -77,8 +77,37 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
     [navigateToTextQuery]
   );
 
+  const ftsQueryTypeOptions = VALID_TEXT_QUERY_TYPES.map((value) => ({
+    value,
+    label: (
+      <span>
+        {t(`search.fts.${value}`)}
+        <Tooltip title={t(`search.fts.${value}_help`)}>
+          <InfoCircleOutlined style={{ marginLeft: '0.7em' }} />
+        </Tooltip>
+      </span>
+    ),
+  }));
+
+  const qtValue = Form.useWatch('qt', form);
+
   return (
-    <SearchSubForm titleKey="text_search" icon={<FormOutlined />} {...props}>
+    <SearchSubForm
+      titleKey="text_search"
+      icon={<FormOutlined />}
+      extra={
+        <Select<FtsQueryType>
+          disabled={discoveryStatus === RequestStatus.Pending}
+          variant="filled"
+          size="small"
+          className="flex-1"
+          value={qtValue}
+          onChange={(value) => form.setFieldValue('qt', value)}
+          options={ftsQueryTypeOptions}
+        />
+      }
+      {...props}
+    >
       <Form form={form} onFinish={onFinish}>
         <Space.Compact className="w-full">
           <Form.Item name="q" initialValue={textQuery} noStyle={true}>
@@ -87,22 +116,7 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
           {!!textQuery && (
             <Button icon={<CloseOutlined />} onClick={onReset} disabled={discoveryStatus === RequestStatus.Pending} />
           )}
-          <Form.Item name="qt" initialValue={textQueryType} noStyle={true}>
-            <Select<FtsQueryType>
-              disabled={discoveryStatus === RequestStatus.Pending}
-              options={VALID_TEXT_QUERY_TYPES.map((value) => ({
-                value,
-                label: (
-                  <span>
-                    {t(`search.fts.${value}`)}
-                    <Tooltip title={t(`search.fts.${value}_help`)}>
-                      <InfoCircleOutlined style={{ marginLeft: '0.7em' }} />
-                    </Tooltip>
-                  </span>
-                ),
-              }))}
-            />
-          </Form.Item>
+          <Form.Item name="qt" initialValue={textQueryType} noStyle={true} hidden />
           <Button type="primary" htmlType="submit" loading={discoveryStatus === RequestStatus.Pending}>
             {t('Search')}
           </Button>

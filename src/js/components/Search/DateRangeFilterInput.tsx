@@ -62,7 +62,7 @@ const DateRangeFilterInput = ({ value, onChange }: Props) => {
 
   return (
     <DatePicker.RangePicker
-      className="flex-1"
+      className="w-full"
       format={DATE_FORMAT}
       value={[lowerDateValue?.isValid() ? lowerDateValue : null, upperDateValue?.isValid() ? upperDateValue : null]}
       onChange={onDateRangeChange}

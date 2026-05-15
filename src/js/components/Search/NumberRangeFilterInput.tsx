@@ -99,7 +99,7 @@ const NumberRangeFilterInput = ({ definition, value, onChange }: Props) => {
   const boundsInverted = lowerNum !== null && upperNum !== null && upperNum < lowerNum;
 
   return (
-    <Space.Compact className="flex-1">
+    <Space.Compact className="w-full">
       <Tooltip
         title={`${t(lowerOpen ? 'search.range.lower_exclusive' : 'search.range.lower_inclusive')} — ${t('search.range.click_to_switch')}`}
       >
