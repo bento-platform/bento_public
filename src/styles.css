@@ -409,6 +409,7 @@ ul#page-header-stats li.loading {
 
 #default-layout.title-hidden #site-sider__inner {
   top: var(--content-padding-v);
+  max-height: calc(100vh - var(--header-height) - (2 * var(--content-padding-v)));
 }
 
 #content-layout {
