@@ -30,7 +30,7 @@ const BiosampleDetailView = ({
   return (
     <div {...props}>
       {!biosampleData || isFetchingBiosampleData ? (
-        <Skeleton active title={false} paragraph={{ rows: 3 }} style={{ marginTop: 8 }} />
+        <Skeleton active title={false} paragraph={{ rows: mode === 'popover' ? 2 : 3 }} style={{ marginTop: 8 }} />
       ) : isBiosampleRowExpandable(biosampleData, mode) ? (
         <BiosampleDetail biosample={biosampleData} mode={mode} />
       ) : (
