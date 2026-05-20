@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { Button, Card, Empty, Flex, Space } from 'antd';
+import { Button, Empty, Space, Tabs } from 'antd';
 import { CompressOutlined, DownloadOutlined, ExpandOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -15,6 +15,7 @@ import { useSetExtraBreadcrumb } from '@/features/ui/hooks';
 import { useTranslationFn } from '@/hooks';
 import { useNotify } from '@/hooks/notifications';
 import { usePhenopacketTabs } from '@/hooks/usePhenopacketTabs';
+import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
 export interface RouteParams {
   packetId: string;
@@ -26,6 +27,7 @@ const PhenopacketView = () => {
   const { packetId, tab } = useParams<RouteParams>();
   const navigate = useNavigate();
   const t = useTranslationFn();
+  const isSmallScreen = useSmallScreen();
 
   const api = useNotify();
 
@@ -116,7 +118,7 @@ const PhenopacketView = () => {
             size="small"
             icon={<ExpandOutlined />}
           >
-            {t('general.expand_all')}
+            {!isSmallScreen && t('general.expand_all')}
           </Button>
           <Button
             onClick={() => {
@@ -125,7 +127,7 @@ const PhenopacketView = () => {
             size="small"
             icon={<CompressOutlined />}
           >
-            {t('general.collapse_all')}
+            {!isSmallScreen && t('general.collapse_all')}
           </Button>
         </Space>
       );
@@ -139,18 +141,17 @@ const PhenopacketView = () => {
   })();
 
   return (
-    <Flex justify="center">
-      <Card
-        className="container"
-        activeTabKey={activeKey}
-        tabList={tabs}
-        tabProps={{ destroyOnHidden: true, size: 'middle' }}
-        onTabChange={handleTabChange}
+    <div className="container margin-auto">
+      <Tabs
+        activeKey={activeKey}
+        items={tabs}
+        destroyOnHidden={true}
+        size="middle"
+        onChange={handleTabChange}
         tabBarExtraContent={tabBarExtra}
-      >
-        {tabContent[activeKey]}
-      </Card>
-    </Flex>
+      />
+      {tabContent[activeKey]}
+    </div>
   );
 };
 
