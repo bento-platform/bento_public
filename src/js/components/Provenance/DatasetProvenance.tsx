@@ -259,12 +259,14 @@ const SpatialCoverageSection = ({ spatialCoverage }: { spatialCoverage: NonNulla
         </Item>
       </Descriptions>
       {isPoint && (
-        <PointMap
-          data={[{ coordinates: geometry.coordinates as [number, number], title: name }]}
-          center={[geometry.coordinates[1], geometry.coordinates[0]]}
-          zoom={5}
-          height={300}
-        />
+        <div style={{ position: 'relative', zIndex: 0 }}>
+          <PointMap
+            data={[{ coordinates: geometry.coordinates as [number, number], title: name }]}
+            center={[geometry.coordinates[1], geometry.coordinates[0]]}
+            zoom={5}
+            height={300}
+          />
+        </div>
       )}
     </>
   );
