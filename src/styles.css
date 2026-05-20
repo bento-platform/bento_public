@@ -402,9 +402,13 @@ ul#page-header-stats li.loading {
   border: none;
 }
 
-.page-catalogue #site-sider__inner {
+#default-layout.page-catalogue #site-sider__inner {
   top: 0;
   padding: var(--content-padding-v) var(--content-padding-h);
+}
+
+#default-layout.title-hidden #site-sider__inner {
+  top: var(--content-padding-v);
 }
 
 #content-layout {
@@ -431,9 +435,6 @@ ul#page-header-stats li.loading {
   padding: var(--content-padding-v) var(--content-padding-h);
 }
 
-.page-phenopackets #content-layout {
-  background-color: white;
-}
 .page-phenopackets #content-layout main.ant-layout-content {
   padding: 0 var(--content-padding-h) var(--content-padding-v) var(--content-padding-h);
   background-color: white;
