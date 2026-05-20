@@ -41,7 +41,7 @@ const DefaultLayout = () => {
   const showSidebarToggle = sidebarOverlay && page === 'overview';
 
   const breadcrumbItems = useTitleBreadcrumbItems();
-  const titleHidden = isCatalogue && !breadcrumbItems.length && !showSidebarToggle;
+  const titleHidden = !isCatalogue && !breadcrumbItems.length && !showSidebarToggle; // ScopedTitle not shown
 
   return (
     <Layout
