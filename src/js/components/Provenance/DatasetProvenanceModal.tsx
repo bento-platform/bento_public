@@ -21,6 +21,7 @@ const DatasetProvenanceModal = ({ dataset, ...props }: DatasetProvenanceModalPro
       afterOpenChange={(open) => setFullyOpen(open)}
       {...props}
     >
+      {/* fullyOpen required: pointchart needs container dimensions, only available after modal animation completes */}
       {dataset && fullyOpen && <DatasetProvenanceContent dataset={dataset} />}
     </Modal>
   );
