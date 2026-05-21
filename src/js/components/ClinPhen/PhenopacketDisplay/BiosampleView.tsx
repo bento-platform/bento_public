@@ -273,9 +273,10 @@ export const LatLong = ({ location }: { location?: GeoLocation }) => {
   );
 };
 
-export const isBiosampleRowExpandable = (r: Biosample, searchRow: boolean = false) =>
+export const isBiosampleRowExpandable = (r: Biosample, mode: BiosampleDetailProps['mode'] = undefined) =>
   !!(
-    (searchRow && r.sampled_tissue) ||
+    (mode === 'popover' && r.id) ||
+    ((mode === 'search-row' || mode === 'full-detail') && r.sampled_tissue) ||
     r.description ||
     r.derived_from_id ||
     r.individual_id ||

@@ -12,6 +12,7 @@ import PcglFooter from '@/components/Pcgl/PcglFooter';
 import ScopedTitle from '@/components/Scope/ScopedTitle';
 import { useSelectedScope } from '@/features/metadata/hooks';
 import { useIsInCatalogueMode, useSidebarMenuItems } from '@/hooks/navigation';
+import { useTitleBreadcrumbItems } from '@/hooks/useTitleBreadcrumbItems';
 import { PCGL_MODE } from '@/config';
 import { BentoRoute } from '@/types/routes';
 import { getCurrentPage } from '@/utils/router';
@@ -39,8 +40,16 @@ const DefaultLayout = () => {
 
   const showSidebarToggle = sidebarOverlay && page === 'overview';
 
+  const breadcrumbItems = useTitleBreadcrumbItems();
+  const titleHidden = !isCatalogue && !breadcrumbItems.length && !showSidebarToggle; // ScopedTitle not shown
+
   return (
-    <Layout id="default-layout" className={clsx('sidebar-hidden', `page-${isCatalogue ? 'catalogue' : page}`)}>
+    <Layout
+      id="default-layout"
+      className={clsx('sidebar-hidden', `page-${isCatalogue ? 'catalogue' : page}`, {
+        'title-hidden': titleHidden,
+      })}
+    >
       <SiteHeader menuItems={menuItems} />
       <Layout id="content-layout">
         <PageHeader catalogue={isCatalogue}>
@@ -64,7 +73,7 @@ const DefaultLayout = () => {
                   onMouseDown={() => setCollapsed((c) => !c)}
                 />
               )}
-              <ScopedTitle />
+              <ScopedTitle breadcrumbItems={breadcrumbItems} />
             </Flex>
           )}
         </PageHeader>

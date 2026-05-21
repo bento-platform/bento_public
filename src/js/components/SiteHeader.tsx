@@ -115,6 +115,7 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
                 src={logo}
                 alt="logo"
                 aria-hidden
+                className="cursor-pointer"
                 style={{
                   height: '32px',
                   verticalAlign: 'middle',
@@ -129,6 +130,7 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
               src={logo}
               alt="logo"
               aria-hidden
+              className="cursor-pointer"
               style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-3px)', paddingLeft: '4px' }}
               onClick={navigateToRoot}
             />
