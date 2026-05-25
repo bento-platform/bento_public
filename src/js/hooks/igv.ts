@@ -1,9 +1,9 @@
+import { useEffect } from 'react';
 import { useDrsAccessMethods } from '@/features/drs/hooks';
 import { useReference } from '@/features/reference/hooks';
 import { caseInsensitiveIgvFileInfoLookup, viewableFormatsLower, hasIndex } from '@/utils/igv';
 import { assemblyIdsForExperiments } from '@/utils/experiments';
 import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
-import { RequestStatus } from '@/types/requests';
 import { useAppDispatch, useAppSelector } from '@/hooks';
 
 import type { CreateOpt } from 'igv';
@@ -154,17 +154,18 @@ export const useBentoOrIgvReferencesById = (requestedReferenceIds: string[]): Ig
 // file is viewable if it's a viewable track type and a reference exists for it
 // return references here so we don't have to look them up again later
 export const useGetTracksAndReferencesForIgv = (experimentResults: ExperimentResult[]) => {
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
   const emptyResponse = { tracks: [] as ExperimentResult[], referencesById: {} as IgvReferenceById }; // avoids multiple null checks elsewhere
 
-  if (experimentResults.length === 0) return emptyResponse
-
-  // why here?
-  dispatch(getIgvGenomes())
+  // could be done elsewhere, e.g. higher up
+  useEffect(() => {
+    if (experimentResults.length > 0) {
+      dispatch(getIgvGenomes());
+    }
+  }, [dispatch, experimentResults.length]);
 
   // const { genomesStatus: bentoGenomeStatus, genomesByID: bentoReferenceGenomes } = useReference();
   // const { igvGenomesStatus, igvGenomesByID } = useIgvReference();
-
 
   // if (bentoGenomeStatus !== RequestStatus.Fulfilled ) return emptyResponse;
 
