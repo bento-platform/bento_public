@@ -28,7 +28,14 @@ import { NotificationProvider } from './hooks/notifications';
 
 // Store and configuration imports
 import { store } from './store';
-import { AUTH_CALLBACK_URL, CLIENT_ID, OPENID_CONFIG_URL, PCGL_MODE, PUBLIC_URL_NO_TRAILING_SLASH } from './config';
+import {
+  AUTH_CALLBACK_URL,
+  CLIENT_ID,
+  FONT_FAMILY,
+  OPENID_CONFIG_URL,
+  PCGL_MODE,
+  PUBLIC_URL_NO_TRAILING_SLASH,
+} from './config';
 
 // Styles imports
 import 'antd/dist/reset.css';
@@ -85,7 +92,10 @@ const RootApp = () => {
                     Menu: { iconSize: 20 },
                     Table: { borderColor: 'rgba(0, 0, 0, 0.08)' },
                   },
-                  token: PCGL_MODE ? { colorPrimary: '#2B7AAD' } : {},
+                  token: {
+                    ...(FONT_FAMILY ? { fontFamily: FONT_FAMILY } : {}),
+                    ...(PCGL_MODE ? { colorPrimary: '#2B7AAD' } : {}),
+                  },
                 }}
               >
                 <NotificationProvider>

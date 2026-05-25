@@ -15,6 +15,7 @@ interface PublicConfig {
   // Theme variables
   CATALOGUE_HEADER_BACKGROUND: string; // defaults to var(--white-90)
   CATALOGUE_HEADER_TEXT_COLOR: string; // defaults to var(--black-90)
+  FONT_FAMILY: string; // defaults to blank (which in turn uses Ant default)
   // Beacon configuration and flags
   BEACON_URL: string;
   BEACON_UI_ENABLED: boolean;
@@ -53,6 +54,7 @@ export const CATALOGUE_HEADER_BACKGROUND =
 export const CATALOGUE_HEADER_TEXT_COLOR =
   (BENTO_PUBLIC_CONFIG.CATALOGUE_HEADER_TEXT_COLOR ?? process.env.BENTO_PUBLIC_CATALOGUE_HEADER_TEXT_COLOR) ||
   'var(--black-90)';
+export const FONT_FAMILY = (BENTO_PUBLIC_CONFIG.FONT_FAMILY ?? process.env.BENTO_PUBLIC_FONT_FAMILY) || '';
 
 // Beacon configuration and flags
 export const BEACON_URL = BENTO_PUBLIC_CONFIG.BEACON_URL ?? process.env.BEACON_URL;

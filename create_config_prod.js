@@ -16,6 +16,7 @@ const siteConfig = {
   // Theme variables
   CATALOGUE_HEADER_BACKGROUND: process.env.BENTO_PUBLIC_CATALOGUE_HEADER_BACKGROUND,
   CATALOGUE_HEADER_TEXT_COLOR: process.env.BENTO_PUBLIC_CATALOGUE_HEADER_TEXT_COLOR,
+  FONT_FAMILY: process.env.BENTO_PUBLIC_FONT_FAMILY,
 
   // Beacon configuration and flags
   BEACON_URL: process.env.BEACON_URL || null,
