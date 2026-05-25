@@ -13,6 +13,10 @@
             let BENTO_PUBLIC_CONFIG = {};
         </script>
         <script src="<%= webpackConfig.output.publicPath %>public/config.js"></script>
+        <!--
+          Overridable instance CSS file for instances to specify their own custom styles, e.g., web fonts loaded into
+          the assets folder, or style overrides that aren't handled by environment variables.
+        -->
         <link rel="stylesheet" href="/public/styles/instance.css" />
     </head>
 
