@@ -33,6 +33,8 @@ export type SectionKey =
 export type SectionSpec = {
   /** translation title label */
   titleTranslationKey: string;
+  /** translation title count - whether to use itemCount for pluralization */
+  titleTranslationUseItemCount?: boolean;
   /** list item count (optional) */
   itemCount?: (p: Phenopacket) => number | undefined;
   /** should this section render? can be a boolean or predicate fn */
@@ -74,7 +76,8 @@ export const SECTION_SPECS: Record<SectionKey, SectionSpec> = {
     order: 0,
   },
   biosamples: {
-    titleTranslationKey: 'entities.biosample_other',
+    titleTranslationKey: 'entities.biosample',
+    titleTranslationUseItemCount: true,
     enabled: (p) => has(p.biosamples),
     itemCount: (p) => p.biosamples?.length,
     render: (p) => <BiosampleView biosamples={p.biosamples!} />,

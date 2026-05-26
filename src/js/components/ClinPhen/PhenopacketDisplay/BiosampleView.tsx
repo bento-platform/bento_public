@@ -83,7 +83,7 @@ const BiosampleLocationCollected = ({ biosample, simpleView }: { biosample: Bios
   }
 
   return (
-    <div className="w-full relative" style={{ minWidth: MAP_WIDTH }}>
+    <div className="w-full relative" style={{ minWidth: MAP_WIDTH, minHeight: 48 }}>
       <Radio.Group
         value={locationView}
         onChange={(e) => {
@@ -302,6 +302,7 @@ export const isBiosampleRowExpandable = (r: Biosample, mode: BiosampleDetailProp
 
 interface BiosampleViewProps {
   biosamples: Biosample[];
+  hasSubject: boolean;
 }
 
 const BIOSAMPLE_VIEW_COLUMNS: CustomTableColumns<Biosample> = [
@@ -329,6 +330,12 @@ const BIOSAMPLE_VIEW_COLUMNS: CustomTableColumns<Biosample> = [
 ];
 
 const BiosampleView = ({ biosamples }: BiosampleViewProps) => {
+  if (biosamples.length === 1) {
+    // If we only have one biosample, show full detail of the sole biosample for the view, rather than forcing a
+    // double-interaction with the collapse item --> the table.
+    return <BiosampleDetail biosample={biosamples[0]} mode="full-detail" />;
+  }
+
   return (
     <CustomTable<Biosample>
       dataSource={biosamples}

@@ -75,12 +75,15 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
           const enabled = typeof spec.enabled === 'function' ? spec.enabled(phenopacket) : spec.enabled;
           if (!enabled) return null;
           const itemCount = spec.itemCount?.(phenopacket);
+          const titleTranslationOptions =
+            spec.titleTranslationUseItemCount && itemCount !== undefined ? { count: itemCount } : undefined;
+          const showItemCount = itemCount !== undefined && !(spec.titleTranslationUseItemCount && itemCount === 1);
           return {
             key,
             label: (
               <strong style={{ fontSize: '16px', borderTop: '10px' }}>
-                {t(spec.titleTranslationKey)}
-                {itemCount ? ` (${itemCount})` : null}
+                {t(spec.titleTranslationKey, titleTranslationOptions)}
+                {showItemCount ? ` (${itemCount})` : null}
               </strong>
             ),
             children: (
