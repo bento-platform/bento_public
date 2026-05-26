@@ -53,7 +53,7 @@ interface PhenopacketOverviewProps {
 }
 
 const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>(({ phenopacket }, ref) => {
-  const [open, setOpen] = useSearchParams(serializeKeys(['subject']));
+  const [open, setOpen] = useSearchParams(serializeKeys(phenopacket.subject ? ['subject'] : ['biosamples']));
   const t = useTranslationFn();
   const routerState = useLocationState();
   const cleanupRef = useRef<null | (() => void)>(null);
