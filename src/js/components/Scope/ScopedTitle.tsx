@@ -69,17 +69,11 @@ const breadcrumbRender: BreadcrumbProps['itemRender'] = (route, _params, routes,
 };
 
 const ScopedTitle = ({ breadcrumbItems }: { breadcrumbItems: BreadcrumbItemType[] }) => {
-  const location = useLocation();
   const t = useTranslationFn();
 
   const currentPage = getCurrentPage();
 
   const [helpModalOpen, setHelpModalOpen] = useState(false);
-  const [prevLocation, setPrevLocation] = useState(location);
-
-  if (location !== prevLocation) {
-    setPrevLocation(location);
-  }
 
   const currentPageHasHelp = useMemo(() => {
     const k = `page_help.${currentPage}`;
