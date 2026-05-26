@@ -1,17 +1,16 @@
 import { useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-import { Breadcrumb, type BreadcrumbProps, Button, Flex, Space, Tooltip } from 'antd';
-import { ArrowLeftOutlined, ProfileOutlined, QuestionOutlined } from '@ant-design/icons';
+import { Breadcrumb, type BreadcrumbProps, Button, Flex, Tooltip } from 'antd';
+import { ArrowLeftOutlined, QuestionOutlined } from '@ant-design/icons';
 import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
 import CurrentPageHelpModal from '@/components/Util/CurrentPageHelpModal';
-import ScopePickerModal from './ScopePickerModal';
 
 import { useSelectedScope } from '@/features/metadata/hooks';
 import { useSearchQueryParams } from '@/features/search/hooks';
 import { useTranslationFn } from '@/hooks';
 import { useNavigateToRoot, useNavigateToSameScopeUrl, useNavigateToScope } from '@/hooks/navigation';
-import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
+import { BentoRoute } from '@/types/routes';
 import { getCurrentPage } from '@/utils/router';
 import { buildQueryParamsUrl } from '@/features/search/utils';
 
@@ -30,7 +29,7 @@ const useBackButtonInfo = () => {
   return useMemo<readonly [undefined, undefined] | [string, () => void]>(() => {
     if (!scopeSet) return NO_BACK_BUTTON;
     // Cases where we DO show a back button, given the scope is set:
-    //  - We're in a project and in catalog mode
+    //  - We're in a project and in catalogue mode
     //  - We're in a dataset and don't have a fixed dataset (a fixed dataset implies a fixed project as well)
     //  - Any time we're on the phenopackets page
     if (currentPage === BentoRoute.Phenopackets) {
@@ -73,22 +72,13 @@ const ScopedTitle = ({ breadcrumbItems }: { breadcrumbItems: BreadcrumbItemType[
   const location = useLocation();
   const t = useTranslationFn();
 
-  const { fixedProject, fixedDataset } = useSelectedScope();
-
   const currentPage = getCurrentPage();
-  const scopeSelectionEnabled =
-    !(fixedProject && fixedDataset) &&
-    !TOP_LEVEL_ONLY_ROUTES.includes(currentPage) &&
-    currentPage !== BentoRoute.Phenopackets;
 
-  const [scopeSelectModalOpen, setScopeSelectModalOpen] = useState(false);
   const [helpModalOpen, setHelpModalOpen] = useState(false);
   const [prevLocation, setPrevLocation] = useState(location);
 
   if (location !== prevLocation) {
     setPrevLocation(location);
-    // If the selected scope changes (likely from the scope select modal), auto-close the modal.
-    setScopeSelectModalOpen(false);
   }
 
   const currentPageHasHelp = useMemo(() => {
@@ -101,7 +91,6 @@ const ScopedTitle = ({ breadcrumbItems }: { breadcrumbItems: BreadcrumbItemType[
   if (breadcrumbItems.length) {
     return (
       <>
-        <ScopePickerModal isModalOpen={scopeSelectModalOpen} setIsModalOpen={setScopeSelectModalOpen} />
         <CurrentPageHelpModal open={helpModalOpen} onCancel={() => setHelpModalOpen(false)} />
         <Flex className="scoped-title flex-1" align="center">
           <Flex className="flex-1" align="center">
@@ -119,30 +108,17 @@ const ScopedTitle = ({ breadcrumbItems }: { breadcrumbItems: BreadcrumbItemType[
             ) : null}
             <Breadcrumb className="scoped-title__breadcrumb" items={breadcrumbItems} itemRender={breadcrumbRender} />
           </Flex>
-          <Space>
-            {scopeSelectionEnabled && (
-              <Tooltip title={t('Change Scope')} placement="bottom">
-                <Button
-                  color="default"
-                  variant="filled"
-                  icon={<ProfileOutlined />}
-                  shape="circle"
-                  onClick={() => setScopeSelectModalOpen(true)}
-                />
-              </Tooltip>
-            )}
-            {currentPageHasHelp && (
-              <Tooltip title={t('Help')} placement="bottom">
-                <Button
-                  color="default"
-                  variant="filled"
-                  icon={<QuestionOutlined />}
-                  shape="circle"
-                  onClick={() => setHelpModalOpen(true)}
-                />
-              </Tooltip>
-            )}
-          </Space>
+          {currentPageHasHelp && (
+            <Tooltip title={t('Help')} placement="bottom">
+              <Button
+                color="default"
+                variant="filled"
+                icon={<QuestionOutlined />}
+                shape="circle"
+                onClick={() => setHelpModalOpen(true)}
+              />
+            </Tooltip>
+          )}
         </Flex>
       </>
     );
