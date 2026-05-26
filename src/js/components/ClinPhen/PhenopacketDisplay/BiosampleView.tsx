@@ -302,7 +302,6 @@ export const isBiosampleRowExpandable = (r: Biosample, mode: BiosampleDetailProp
 
 interface BiosampleViewProps {
   biosamples: Biosample[];
-  hasSubject: boolean;
 }
 
 const BIOSAMPLE_VIEW_COLUMNS: CustomTableColumns<Biosample> = [
