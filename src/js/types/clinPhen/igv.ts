@@ -1,6 +1,5 @@
-import type { Tracks, TrackLoad, TrackType, CreateOpt, GenomeDef, GenomeOpt, ReferenceGenome } from 'igv';
+import type { Tracks, TrackLoad, CreateOpt, ReferenceGenome } from 'igv';
 import { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
-import { Genome } from '@/features/reference/types';
 
 export type TrackFormats =
   | Tracks.AlignmentFormat
@@ -15,8 +14,6 @@ export type SupportedTrackType = 'alignment' | 'annotation' | 'wig' | 'variant' 
 export type IgvTrack = TrackLoad<SupportedTrackType>;
 
 export type ExperimentResultWithView = ExperimentResult & { viewInIgv: boolean };
-
-// export type IgvReference = Record<string, CreateOptExtras & GenomeOpt >
 
 export type IgvReferenceById = Record<string, CreateOpt>;
 
