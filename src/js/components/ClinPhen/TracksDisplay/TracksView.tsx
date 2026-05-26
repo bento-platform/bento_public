@@ -41,8 +41,9 @@ const TracksView = ({
 }) => {
   const igvDivRef = useRef<HTMLDivElement>(null);
   const igvBrowserRef = useRef<Browser | null>(null);
+  const igvCreatingRef = useRef<boolean>(false);
   const [selectedAssemblyID, setSelectedAssemblyID] = useState<string | null>(null);
-  const [hasCreatedBrowser, setHasCreatedBrowser] = useState(false);
+  // const [hasCreatedBrowser, setHasCreatedBrowser] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [accessUrlsPromises, setAccessUrlsPromises] = useState<IgvAccessUrlPromisesById>({});
   const [tracksWithView, setTracksWithView] = useState<ExperimentResultWithView[]>(
@@ -157,10 +158,12 @@ const TracksView = ({
     if (!igvDivRef.current) return;
     if (!selectedAssemblyID) return;
     if (Object.keys(accessUrlsPromises).length === 0) return;
-    if (hasCreatedBrowser) {
-      console.log('browser created already');
+    if (igvBrowserRef.current !== null) {
+      console.log('igv browser already created');
       return;
     }
+    
+    if (igvCreatingRef.current) return 
 
     const initialIgvTracks: IgvTrack[] = tracksWithView
       .map((t) => buildIgvTrack(t) as IgvTrack)
@@ -175,6 +178,8 @@ const TracksView = ({
 
     console.debug('creating igv.js browser with options:', igvOptions, '; tracks:', initialIgvTracks);
 
+    igvCreatingRef.current = true;
+
     igv
       .createBrowser(igvDivRef.current as HTMLElement, igvOptions as CreateOpt)
       .then((browser: Browser) => {
@@ -185,14 +190,14 @@ const TracksView = ({
         //   }, DEBOUNCE_WAIT),
         // );
         igvBrowserRef.current = browser;
-        setHasCreatedBrowser(true);
+        // setHasCreatedBrowser(true);
+        igvCreatingRef.current = false;
         console.debug('created igv.js browser instance:', browser);
       })
       .catch((err) => {
-        // setHasCreatedBrowser(true);
-
         console.error(err);
-        setHasCreatedBrowser(true);
+        igvBrowserRef.current = null
+        igvCreatingRef.current = false;
         cleanup();
       });
   }, [accessUrlsPromises, buildIgvTrack, tracks, references]);
