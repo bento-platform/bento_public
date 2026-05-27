@@ -33,11 +33,13 @@ const PhenopacketView = () => {
 
   const { handleTabChange, activeTabs, tabs, tabContent, collapseRef } = usePhenopacketTabs(phenopacket);
 
-  const defaultTab = useMemo(() => ({ key: activeTabs[0], label: tabs[0]?.label }), [activeTabs, tabs]);
+  // derive primitives instead of an object to avoid recreating defaultTab each render
+  const defaultTabKey = useMemo(() => activeTabs[0], [activeTabs]);
+  const defaultTabLabel = useMemo(() => tabs[0]?.label, [tabs]);
 
-  const [activeKey, setActiveKey] = useState<TabKeys>(defaultTab.key);
+  const [activeKey, setActiveKey] = useState<TabKeys>(defaultTabKey);
 
-  const notificationFillIns = useMemo(() => ({ endpoint: tab, target: defaultTab.label }), [tab, defaultTab.label]);
+  const notificationFillIns = useMemo(() => ({ endpoint: tab, target: defaultTabLabel }), [tab, defaultTabLabel]);
 
   const invalidEndpointRedirectNotification = useCallback(() => {
     api.error({
@@ -65,7 +67,7 @@ const PhenopacketView = () => {
           // Otherwise, show an invalid tab notification:
           invalidEndpointRedirectNotification();
         }
-        navigate(`${tab ? '..' : '.'}/${defaultTab.key}`, { relative: 'path', replace: true });
+        navigate(`${tab ? '..' : '.'}/${defaultTabKey}`, { relative: 'path', replace: true });
       }
     }
   }, [
@@ -74,7 +76,7 @@ const PhenopacketView = () => {
     status,
     phenopacket,
     activeTabs,
-    defaultTab,
+    defaultTabKey,
     invalidEndpointRedirectNotification,
     notAvailableRedirectNotification,
     api,
