@@ -18,6 +18,7 @@ import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
 import { useMetadata } from '@/features/metadata/hooks';
 import { getProjects, markScopeSet, selectScope } from '@/features/metadata/metadata.store';
 import { getGenomes } from '@/features/reference/reference.store';
+import { getIgvGenomes } from '@/features/igv/igv.store';
 import { fetchSearchFields, fetchDiscoveryUIHints, resetAllQueryState } from '@/features/search/query.store';
 
 import Loader from '@/components/Loader';
@@ -159,6 +160,7 @@ const BentoAppRouter = () => {
     dispatch(makeGetAboutRequest());
     dispatch(makeGetServiceInfoRequest());
     dispatch(getGenomes());
+    dispatch(getIgvGenomes()) // or could do this conditionally elsewhere
   }, [dispatch]);
 
   if (isAutoAuthenticating || projectsStatus === RequestStatus.Pending) {
