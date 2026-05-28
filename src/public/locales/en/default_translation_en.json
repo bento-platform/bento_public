@@ -25,7 +25,7 @@
     "experiment_other": "Experiments",
     "experiment_help": [
       "$t(entities.experiment_other) are a process done to a specific sample, e.g., whole-genome sequencing.",
-      "One lab $t(entities.experiment_one) may result in multiple $t(entities.experiment_one) records inside the portal, such as with multiplexed samples."
+      "One lab experiment may result in multiple $t(entities.experiment_one) records inside the portal, such as with multiplexed samples."
     ],
     "experiment_result_one": "File",
     "experiment_result_other": "Files",
@@ -275,7 +275,7 @@
     "material_sample": "Material Sample",
     "sample_processing": "Sample Processing",
     "sample_storage": "Sample Storage",
-    "files": "Files"
+    "files": "$t(entities.experiment_result_other)"
   },
   "geo_location": {
     "label": "Label",
