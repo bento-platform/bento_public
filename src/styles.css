@@ -207,6 +207,7 @@ body {
   z-index: 20;
 
   box-sizing: border-box;
+  min-height: 48px;
 
   background-color: rgba(250, 250, 250, 0.80);
   backdrop-filter: blur(10px);
