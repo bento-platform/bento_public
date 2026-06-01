@@ -5,7 +5,7 @@ import type { Datum } from '@/types/discovery';
 import type { makeBeaconQuery } from '@/features/beacon/beacon.store';
 import type { beaconNetworkQuery } from '@/features/beacon/network.store';
 import type { OptionalDiscoveryResults } from '@/types/data';
-import type { Dataset } from '@/types/metadata';
+import type { Dataset } from '@/types/dataset';
 import type { RequestStatus } from '@/types/requests';
 
 // ----------------------------

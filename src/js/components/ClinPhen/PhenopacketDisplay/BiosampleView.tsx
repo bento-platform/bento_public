@@ -97,7 +97,10 @@ const BiosampleLocationCollected = ({ biosample, simpleView }: { biosample: Bios
         className="absolute"
         style={{ top: 8, right: 0, zIndex: 999 }}
       />
-      <div className={locationView === 'map' ? 'block' : 'none'} style={{ width: MAP_WIDTH }}>
+      <div
+        className={locationView === 'map' ? 'block' : 'none'}
+        style={{ width: MAP_WIDTH, position: 'relative', zIndex: 0 }}
+      >
         <PointMap
           data={[{ ...biosample.location_collected.geometry, title: biosample.id }]}
           center={[

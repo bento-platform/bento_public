@@ -11,7 +11,8 @@ import type {
 import type { SearchFieldAndOptions, SearchFieldSection } from '@/features/search/types';
 import type { ChartData, DiscoveryResults, OptionalDiscoveryResults } from '@/types/data';
 import type { NetworkBeacon } from '@/types/beaconNetwork';
-import type { Dataset, Project } from '@/types/metadata';
+import type { Project } from '@/types/metadata';
+import type { Dataset } from '@/types/dataset';
 import { RequestStatus } from '@/types/requests';
 import { serializeChartData } from '@/utils/chart';
 

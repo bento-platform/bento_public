@@ -84,7 +84,7 @@ const CountsAndResults = () => {
   const selectedProject = useSelectedProject();
   const selectedDataset = useSelectedDataset();
 
-  const entityCounts = selectedDataset?.counts ?? selectedProject?.counts;
+  const entityCounts = selectedDataset?.counts_by_entity ?? selectedProject?.counts;
 
   const {
     message,
