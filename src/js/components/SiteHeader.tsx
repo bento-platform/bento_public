@@ -2,7 +2,6 @@ import { useCallback, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Button, Flex, Layout, Menu, type MenuProps, Space, Typography, theme } from 'antd';
-import { useTranslation } from 'react-i18next';
 import { useAuthState, useIsAuthenticated, useOpenIdConfig, usePerformAuth, usePerformSignOut } from 'bento-auth-js';
 
 import { RiTranslate } from 'react-icons/ri';
@@ -13,12 +12,21 @@ import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { getCurrentPage } from '@/utils/router';
 
 import { LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
-import { CLIENT_NAME, PORTAL_URL, SHOW_HEADER_TITLE, SHOW_PORTAL_LINK, SHOW_SIGN_IN, TRANSLATED } from '@/config';
+import {
+  CLIENT_NAME,
+  PORTAL_URL,
+  SHOW_HEADER_TITLE,
+  SHOW_PORTAL_LINK,
+  SHOW_SIGN_IN,
+  TRANSLATED,
+  TRANSLATED_LOGO,
+} from '@/config';
 
 import type { MenuItem } from '@/types/navigation';
 import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
 import { buildQueryParamsUrl } from '@/features/search/utils';
 import { useSearchQueryParams } from '@/features/search/hooks';
+import { useLanguage, useTranslationFn } from '@/hooks';
 
 const { Header } = Layout;
 
@@ -60,7 +68,8 @@ const useHandleMenuClick = (): OnClick => {
 };
 
 const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
-  const { t, i18n } = useTranslation();
+  const t = useTranslationFn();
+  const language = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
   const isSmallScreen = useSmallScreen();
@@ -83,15 +92,16 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
   }, []);
 
   const changeLanguage = () => {
-    const newLang = LNG_CHANGE[i18n.language];
+    const newLang = LNG_CHANGE[language];
     // Can't rely on there being a trailing slash at the base page (.e.g, `/en` and `/en`/ are both valid), and can't
     // ensure project IDs don't begin with an `en` or `fr`. Thus, we use a RegExp with a `^` for language changing in
     // the URL.
-    const path = (location.pathname + location.search).replace(new RegExp(`^/${i18n.language}`), `/${newLang}`);
+    const path = (location.pathname + location.search).replace(new RegExp(`^/${language}`), `/${newLang}`);
     navigate(path, { replace: true });
   };
 
-  const logo = `/public/assets/branding${THEME === 'light' ? '.lightbg' : ''}.png`;
+  const logoLangPart = TRANSLATED_LOGO && language !== 'en' ? '.' + language : '';
+  const logo = `/public/assets/branding${THEME === 'light' ? '.lightbg' : ''}${logoLangPart}.png`;
 
   const handleMenuClick = useHandleMenuClick();
 
@@ -164,7 +174,7 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
               icon={<RiTranslate style={{ transform: 'translateY(1px)' }} />}
               onClick={changeLanguage}
             >
-              {isSmallScreen ? '' : LNGS_FULL_NAMES[LNG_CHANGE[i18n.language]]}
+              {isSmallScreen ? '' : LNGS_FULL_NAMES[LNG_CHANGE[language]]}
             </Button>
           )}
           {SHOW_PORTAL_LINK && (
