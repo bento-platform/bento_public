@@ -30,7 +30,7 @@ const keywordLabel = (k: string | OntologyTerm): string => (typeof k === 'string
 const SectionTitle = ({ title }: { title: string }) => {
   const t = useTranslationFn();
   return (
-    <Title level={4} style={{ paddingTop: '20px' }}>
+    <Title level={4} style={{ marginTop: '20px' }}>
       {t(title)}
     </Title>
   );
