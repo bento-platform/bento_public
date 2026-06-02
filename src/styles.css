@@ -526,6 +526,33 @@ ul#page-header-stats li.loading {
 /* END about HTML styling */
 
 
+/* BEGIN dataset provenance */
+
+.dataset-provenance .attributes {
+  margin: 0 0 16px 0;
+  padding: 0;
+  list-style: none;
+}
+.dataset-provenance .attributes li {
+  list-style: none;
+  display: inline-block;
+}
+.dataset-provenance .attributes li strong {
+  color: #555;
+}
+.dataset-provenance .attributes li:not(:last-child)::after {
+  content: "\2022";
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
+
+.provenance-person, .provenance-organization {
+  display: inline-block;
+}
+
+/* END dataset provenance */
+
+
 /* BEGIN overview */
 
 .count-card {

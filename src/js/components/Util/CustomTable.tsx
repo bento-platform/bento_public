@@ -38,7 +38,7 @@ function modifySearchParam(oldParams: URLSearchParams, queryKey: string, value: 
   return out;
 }
 
-interface CustomTableProps<T> {
+export interface CustomTableProps<T> {
   dataSource: T[];
   columns: CustomTableColumns<T>;
   rowKey: string | RowKeyFn<WithVisible<T>>;
