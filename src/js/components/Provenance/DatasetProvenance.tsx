@@ -1,4 +1,5 @@
-import { Card, Descriptions, Flex, Tag, Typography } from 'antd';
+import { Button, Card, Descriptions, Flex, Tag, Typography } from 'antd';
+import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { PointMap } from 'bento-charts/dist/maps';
 
 import BaseProvenanceTable from './Tables/BaseProvenanceTable';
@@ -313,7 +314,15 @@ const SpatialCoverageSection = ({ spatialCoverage }: { spatialCoverage: NonNulla
 
 // ---- Main content ----
 
-export const DatasetProvenanceContent = ({ dataset }: { dataset: Dataset }) => {
+export const DatasetProvenanceContent = ({
+  dataset,
+  collapsed,
+  onToggleCollapsed,
+}: {
+  dataset: Dataset;
+  collapsed?: boolean;
+  onToggleCollapsed?: () => void;
+}) => {
   const t = useTranslationFn();
 
   const keywords = dataset.keywords ?? [];
@@ -427,85 +436,102 @@ export const DatasetProvenanceContent = ({ dataset }: { dataset: Dataset }) => {
         </Descriptions>
       )}
 
-      {/* Spatial coverage */}
-      {dataset.spatial_coverage && <SpatialCoverageSection spatialCoverage={dataset.spatial_coverage} />}
-
-      {/* Primary contact */}
-      {dataset.primary_contact && (
+      {!collapsed ? (
         <>
-          <SectionTitle title="Primary Contact" />
-          <PersonOrOrganizationCard entity={dataset.primary_contact} />
-        </>
-      )}
+          {/* Spatial coverage */}
+          {dataset.spatial_coverage && <SpatialCoverageSection spatialCoverage={dataset.spatial_coverage} />}
 
-      {/* Stakeholders */}
-      {stakeholders.length > 0 && (
-        <>
-          <SectionTitle title="Stakeholders" />
-          <StakeholdersTable stakeholders={stakeholders} />
-        </>
-      )}
+          {/* Primary contact */}
+          {dataset.primary_contact && (
+            <>
+              <SectionTitle title="Primary Contact" />
+              <PersonOrOrganizationCard entity={dataset.primary_contact} />
+            </>
+          )}
 
-      {/* Publications */}
-      {publications.length > 0 && (
-        <>
-          <SectionTitle title="Publications" />
-          <PublicationsTable publications={publications} />
-        </>
-      )}
+          {/* Stakeholders */}
+          {stakeholders.length > 0 && (
+            <>
+              <SectionTitle title="Stakeholders" />
+              <StakeholdersTable stakeholders={stakeholders} />
+            </>
+          )}
 
-      {/* Funding */}
-      {fundingSources.length > 0 && (
-        <>
-          <SectionTitle title="Funding" />
-          <FundingTable funding={fundingSources} />
-        </>
-      )}
+          {/* Publications */}
+          {publications.length > 0 && (
+            <>
+              <SectionTitle title="Publications" />
+              <PublicationsTable publications={publications} />
+            </>
+          )}
 
-      {typeof dataset.funding_sources === 'string' && dataset.funding_sources && (
-        <>
-          <SectionTitle title="Funding" />
-          <Paragraph>{dataset.funding_sources}</Paragraph>
-        </>
-      )}
+          {/* Funding */}
+          {fundingSources.length > 0 && (
+            <>
+              <SectionTitle title="Funding" />
+              <FundingTable funding={fundingSources} />
+            </>
+          )}
 
-      {/* Participant criteria */}
-      {criteria.length > 0 && (
-        <>
-          <SectionTitle title="Participant Criteria" />
-          <CriteriaTable criteria={criteria} />
-        </>
-      )}
+          {typeof dataset.funding_sources === 'string' && dataset.funding_sources && (
+            <>
+              <SectionTitle title="Funding" />
+              <Paragraph>{dataset.funding_sources}</Paragraph>
+            </>
+          )}
 
-      {/* Counts */}
-      {counts.length > 0 && (
-        <>
-          <SectionTitle title="Counts" />
-          <CountsTable counts={counts} />
-        </>
-      )}
+          {/* Participant criteria */}
+          {criteria.length > 0 && (
+            <>
+              <SectionTitle title="Participant Criteria" />
+              <CriteriaTable criteria={criteria} />
+            </>
+          )}
 
-      {/* Links */}
-      {links.length > 0 && (
-        <>
-          <SectionTitle title="Links" />
-          <Flex wrap gap={8} style={{ paddingTop: 8 }}>
-            {links.map((l, i) => (
-              <a key={i} href={l.url} target="_blank" rel="noreferrer">
-                {l.label}
-              </a>
-            ))}
-          </Flex>
-        </>
-      )}
+          {/* Counts */}
+          {counts.length > 0 && (
+            <>
+              <SectionTitle title="Counts" />
+              <CountsTable counts={counts} />
+            </>
+          )}
 
-      {/* Extra properties */}
-      {dataset.extra_properties && Object.keys(dataset.extra_properties).length > 0 && (
-        <>
-          <SectionTitle title="Extra Properties" />
-          <ExtraPropertiesDisplay extraProperties={dataset.extra_properties} />
+          {/* Links */}
+          {links.length > 0 && (
+            <>
+              <SectionTitle title="Links" />
+              <Flex wrap gap={8} style={{ paddingTop: 8 }}>
+                {links.map((l, i) => (
+                  <a key={i} href={l.url} target="_blank" rel="noreferrer">
+                    {l.label}
+                  </a>
+                ))}
+              </Flex>
+            </>
+          )}
+
+          {/* Extra properties */}
+          {dataset.extra_properties && Object.keys(dataset.extra_properties).length > 0 && (
+            <>
+              <SectionTitle title="Extra Properties" />
+              <ExtraPropertiesDisplay extraProperties={dataset.extra_properties} />
+            </>
+          )}
+          {onToggleCollapsed ? (
+            <Flex style={{ marginTop: 16 }}>
+              <Button onClick={onToggleCollapsed} icon={<UpOutlined />}>
+                Collapse
+              </Button>
+            </Flex>
+          ) : null}
         </>
-      )}
+      ) : onToggleCollapsed ? (
+        <Flex style={{ marginTop: 16 }}>
+          <Button onClick={onToggleCollapsed} icon={<DownOutlined />}>
+            Expand
+          </Button>
+        </Flex>
+      ) : null}
     </div>
   );
 };
@@ -515,13 +541,15 @@ export const DatasetProvenanceContent = ({ dataset }: { dataset: Dataset }) => {
 export type DatasetProvenanceProps = {
   dataset: Dataset;
   loading?: boolean;
+  collapsed?: boolean;
+  onToggleCollapse?: () => void;
 };
 
-const DatasetProvenance = ({ dataset, loading }: DatasetProvenanceProps) => {
+const DatasetProvenance = ({ dataset, loading, collapsed, onToggleCollapse }: DatasetProvenanceProps) => {
   return (
     <div className="container margin-auto">
       <Card className="shadow rounded-xl" loading={loading}>
-        <DatasetProvenanceContent dataset={dataset} />
+        <DatasetProvenanceContent dataset={dataset} collapsed={collapsed} onToggleCollapsed={onToggleCollapse} />
       </Card>
     </div>
   );
