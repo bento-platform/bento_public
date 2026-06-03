@@ -70,7 +70,7 @@ export const useScopeHasData = () => {
   return useMemo(
     () =>
       (!!selectedDataset && _nonEmptyCounts(selectedDataset.counts_by_entity)) ||
-      (!!selectedProject && _nonEmptyCounts(selectedProject.counts)),
+      (!!selectedProject && !selectedDataset && _nonEmptyCounts(selectedProject.counts)),
     [selectedProject, selectedDataset]
   );
 };
