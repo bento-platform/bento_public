@@ -538,7 +538,7 @@ ul#page-header-stats li.loading {
   display: inline-block;
 }
 .dataset-provenance .attributes li strong {
-  color: #555;
+  color: rgba(0, 0, 0, 0.65);
 }
 .dataset-provenance .attributes li:not(:last-child)::after {
   content: "\2022";
@@ -547,7 +547,7 @@ ul#page-header-stats li.loading {
 }
 
 .provenance-person, .provenance-organization {
-  display: inline-block;
+  display: inline-flex;
 }
 
 /* END dataset provenance */

@@ -87,10 +87,9 @@ const PersonOrOrganizationDisplay = ({ entity }: { entity: PersonOrOrganization 
           <PersonOrOrganizationName entity={entity} />
         </Title>
         {!!contact && <Contact contact={contact} />}
-        <div aria-hidden className="flex-1" />
-        <Flex>
+        <Flex className="flex-1">
           {roles.map((r, i) => (
-            <Tag key={i} color="green">
+            <Tag key={i} color="green" style={{ alignSelf: 'flex-end' }}>
               {t(r)}
             </Tag>
           ))}

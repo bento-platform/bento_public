@@ -339,16 +339,22 @@ export const DatasetProvenanceContent = ({
       </ul>
 
       {keywords.length > 0 && (
-        <Flex gap="middle" style={{ marginTop: 8 }}>
-          <strong>{t('dataset.keywords')}:</strong>
-          <Flex wrap>
-            {keywords.map((k, i) => (
-              <Tag key={i} color="cyan" style={{ marginBottom: 2 }}>
-                {t(keywordLabel(k))}
-              </Tag>
-            ))}
-          </Flex>
-        </Flex>
+        <Descriptions
+          items={[
+            {
+              label: <DescLabel title={t('dataset.keywords')} />,
+              children: (
+                <Flex wrap>
+                  {keywords.map((k, i) => (
+                    <Tag key={i} color="cyan" style={{ marginBottom: 2 }}>
+                      {t(keywordLabel(k))}
+                    </Tag>
+                  ))}
+                </Flex>
+              ),
+            },
+          ]}
+        />
       )}
 
       {taxa.length > 0 && (
