@@ -620,11 +620,9 @@ export type DatasetProvenanceProps = {
 
 const DatasetProvenance = ({ dataset, loading, collapsed, onToggleCollapse }: DatasetProvenanceProps) => {
   return (
-    <div className="container margin-auto">
-      <Card className="shadow rounded-xl" loading={loading}>
-        <DatasetProvenanceContent dataset={dataset} collapsed={collapsed} onToggleCollapsed={onToggleCollapse} />
-      </Card>
-    </div>
+    <Card className="shadow rounded-xl dataset-provenance-card" loading={loading}>
+      <DatasetProvenanceContent dataset={dataset} collapsed={collapsed} onToggleCollapsed={onToggleCollapse} />
+    </Card>
   );
 };
 
