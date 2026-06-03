@@ -10,7 +10,7 @@ import SiteFooter from '@/components/SiteFooter';
 import PageHeader from '@/components/PageHeader';
 import PcglFooter from '@/components/Pcgl/PcglFooter';
 import ScopedTitle from '@/components/Scope/ScopedTitle';
-import { useSelectedScope } from '@/features/metadata/hooks';
+import { useSelectedScope, useScopeHasData } from '@/features/metadata/hooks';
 import { useIsInCatalogueMode, useSidebarMenuItems } from '@/hooks/navigation';
 import { useTitleBreadcrumbItems } from '@/hooks/useTitleBreadcrumbItems';
 import { PCGL_MODE } from '@/config';
@@ -26,6 +26,7 @@ const DefaultLayout = () => {
 
   const catalogueMode = useIsInCatalogueMode();
   const { scopeSet, scope } = useSelectedScope();
+  const scopeHasData = useScopeHasData();
 
   const menuItems = useSidebarMenuItems();
   const [collapsed, setCollapsed] = useState(true);
@@ -36,7 +37,7 @@ const DefaultLayout = () => {
   const sidebarOverlay = !breakpoints.lg;
   const sidebarOverlayShown = sidebarOverlay && !collapsed;
   // TODO: enable sidebar with catalogue when catalogue filtering/search is hooked up
-  const sidebarHidden = page !== 'overview' || isCatalogue;
+  const sidebarHidden = page !== 'overview' || isCatalogue || (!isCatalogue && !scopeHasData);
 
   const showSidebarToggle = sidebarOverlay && page === 'overview';
 
@@ -91,7 +92,7 @@ const DefaultLayout = () => {
                 aria-hidden
               />
             ) : null}
-            <Content>
+            <Content style={{ minHeight: 500 }}>
               <Outlet />
             </Content>
           </Layout>
