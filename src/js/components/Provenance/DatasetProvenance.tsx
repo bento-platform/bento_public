@@ -21,6 +21,7 @@ import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
 import LinksDisplay from './LinksDisplay';
 import PublicationsDisplay from './PublicationsDisplay';
 import PersonOrOrganizationDisplay, { PersonOrOrganizationName } from './PersonOrOrganizationDisplay';
+import FundingDisplay from '@/components/Provenance/FundingDisplay';
 
 const { Item } = Descriptions;
 const { Paragraph, Text, Title } = Typography;
@@ -299,7 +300,7 @@ export const DatasetProvenanceContent = ({
   const taxa = dataset.taxa ?? [];
   const stakeholders = dataset.stakeholders ?? [];
   const publications = dataset.publications ?? [];
-  const fundingSources = Array.isArray(dataset.funding_sources) ? dataset.funding_sources : [];
+  const funding = dataset.funding_sources;
   const criteria = dataset.participant_criteria ?? [];
   const counts = dataset.counts ?? [];
   const links = dataset.links ?? [];
@@ -457,17 +458,11 @@ export const DatasetProvenanceContent = ({
           )}
 
           {/* Funding */}
-          {fundingSources.length > 0 && (
+          {!!funding && (
             <>
               <SectionTitle title="Funding" />
-              <FundingTable funding={fundingSources} />
-            </>
-          )}
-
-          {typeof dataset.funding_sources === 'string' && dataset.funding_sources && (
-            <>
-              <SectionTitle title="Funding" />
-              <Paragraph>{dataset.funding_sources}</Paragraph>
+              <FundingDisplay funding={funding} />
+              {/*<FundingTable funding={fundingSources} />*/}
             </>
           )}
 

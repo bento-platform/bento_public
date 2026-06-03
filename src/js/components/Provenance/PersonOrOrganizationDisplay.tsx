@@ -1,10 +1,11 @@
-import { Card, Flex, Tag, Typography } from 'antd';
+import type { ReactNode } from 'react';
+import { Flex, Tag } from 'antd';
 import { GlobalOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
 import { LuMailbox } from 'react-icons/lu';
+
 import type { Contact, PersonOrOrganization, Phone } from '@/types/dataset';
 import { useTranslationFn } from '@/hooks';
-
-const { Title } = Typography;
+import EntityCard from './EntityCard';
 
 const PhoneNumber = ({ phone: { country_code: countryCode, number, extension } }: { phone: Phone }) => (
   <span>
@@ -76,26 +77,25 @@ export const PersonOrOrganizationName = ({ entity }: { entity: PersonOrOrganizat
   );
 };
 
-const PersonOrOrganizationDisplay = ({ entity }: { entity: PersonOrOrganization }) => {
+const PersonOrOrganizationDisplay = ({ entity, extra }: { entity: PersonOrOrganization; extra?: ReactNode }) => {
   const t = useTranslationFn();
   const { contact, roles, type } = entity;
   return (
-    <Card size="small" className={`provenance-${type}`} styles={{ body: { display: 'flex', flexDirection: 'column' } }}>
-      <span style={{ textTransform: 'uppercase', color: '#999', fontSize: 12, fontWeight: 'bold' }}>{type}</span>
-      <Flex vertical gap={8} className="flex-1">
-        <Title level={5} style={{ marginBottom: 0, fontWeight: 'normal' }}>
-          <PersonOrOrganizationName entity={entity} />
-        </Title>
-        {!!contact && <Contact contact={contact} />}
-        <Flex className="flex-1">
-          {roles.map((r, i) => (
-            <Tag key={i} color="green" style={{ alignSelf: 'flex-end' }}>
-              {t(r)}
-            </Tag>
-          ))}
-        </Flex>
+    <EntityCard
+      supertitle={type}
+      title={<PersonOrOrganizationName entity={entity} />}
+      className={`provenance-${type}`}
+      extra={extra}
+    >
+      {!!contact && <Contact contact={contact} />}
+      <Flex className="flex-1">
+        {roles.map((r, i) => (
+          <Tag key={i} color="green" style={{ alignSelf: 'flex-end' }}>
+            {t(r)}
+          </Tag>
+        ))}
       </Flex>
-    </Card>
+    </EntityCard>
   );
 };
 
