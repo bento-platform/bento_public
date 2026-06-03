@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { type Publication, type PublicationType } from '@/types/dataset';
 
 const ARTICLE_TYPES = [
@@ -22,6 +23,24 @@ const _doiUrl = (doi: string) => {
   }
 };
 
+const EtAl = ({ text }: { text: string }) => {
+  const [shown, setShown] = useState(false);
+  return shown ? (
+    <span>
+      {text}
+      {text.endsWith('.') ? '' : '.'}
+    </span>
+  ) : (
+    <em
+      title={text}
+      style={{ textDecoration: 'underline', textDecorationStyle: 'dotted', cursor: 'pointer' }}
+      onClick={() => setShown(true)}
+    >
+      et al.
+    </em>
+  );
+};
+
 const PublicationString = ({ publication }: { publication: Publication }) => {
   const authors = (publication.authors ?? []).map((a) => a.name);
   const { doi, publication_date: date, publication_type: type, publication_venue: venue } = publication;
@@ -35,13 +54,7 @@ const PublicationString = ({ publication }: { publication: Publication }) => {
         authorsNode = (
           <>
             <span>
-              {authors.slice(0, 6).join(', ')},{' '}
-              <em
-                title={authors.slice(6).join(', ')}
-                style={{ textDecoration: 'underline', textDecorationStyle: 'dotted' }}
-              >
-                et al.
-              </em>
+              {authors.slice(0, 6).join(', ')}, <EtAl text={authors.slice(6).join(', ')} />
             </span>{' '}
           </>
         );
