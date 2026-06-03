@@ -55,7 +55,10 @@
     "version": "Version",
     "keywords": "Keywords",
     "taxon_one": "Taxon",
-    "taxon_other": "Taxa"
+    "taxon_other": "Taxa",
+    "privacy": "Privacy",
+    "ONGOING": "ONGOING",
+    "COMPLETED": "COMPLETED"
   },
   "search": {
     "filters_one": "filter",

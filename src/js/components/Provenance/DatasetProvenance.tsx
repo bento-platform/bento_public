@@ -21,6 +21,7 @@ import type {
 import type { ReactNode } from 'react';
 import type { OntologyTerm } from '@/types/ontology';
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
+import PublicationsDisplay from '@/components/Provenance/PublicationsDisplay';
 
 const { Item } = Descriptions;
 const { Paragraph, Text, Title } = Typography;
@@ -58,47 +59,51 @@ const PhoneNumber = ({ phone: { country_code: countryCode, number, extension } }
 );
 
 const Contact = ({ contact }: { contact: Contact }) => {
+  const { website, email, address, phone } = contact;
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '24px auto' }}>
-      {!!contact.website && (
+      {!!website && (
         <>
           <div aria-hidden="true">
             <GlobalOutlined />
           </div>
           <div>
-            <a href={contact.website} target="_blank" rel="noopener noreferrer">
-              {contact.website}
+            <a href={website} target="_blank" rel="noopener noreferrer">
+              {website}
             </a>
           </div>
         </>
       )}
-      {!!contact.email && (
+      {!!email && (
         <>
           <div aria-hidden="true">
             <MailOutlined />
           </div>
           <div>
-            <a href={`mailto:${contact.website}`}>{contact.email}</a>
+            {email.map((e, ei) => (
+              <>
+                <a href={`mailto:${e}`}>{e}</a>
+                {ei < email.length - 1 ? ', ' : ''}
+              </>
+            ))}
           </div>
         </>
       )}
-      {!!contact.address && (
+      {!!address && (
         <>
           <div aria-hidden="true">
             <LuMailbox />
           </div>
-          <div>
-            <a href={`mailto:${contact.website}`}>{contact.email}</a>
-          </div>
+          <div>{address}</div>
         </>
       )}
-      {!!contact.phone && (
+      {!!phone && (
         <>
           <div aria-hidden="true">
             <PhoneOutlined />
           </div>
           <div>
-            <PhoneNumber phone={contact.phone} />
+            <PhoneNumber phone={phone} />
           </div>
         </>
       )}
@@ -392,24 +397,37 @@ export const DatasetProvenanceContent = ({
   const criteria = dataset.participant_criteria ?? [];
   const counts = dataset.counts ?? [];
   const links = dataset.links ?? [];
+  const studyStatus = dataset.study_status?.toLocaleUpperCase();
 
   const subtitleItems: { key: keyof Dataset }[] = [
     { key: 'release_date' },
     { key: 'last_modified' },
     { key: 'version' },
+    { key: 'privacy' },
   ];
 
   return (
     <div className="dataset-provenance">
-      <Title level={2} style={{ fontWeight: 500, fontSize: '1.5rem' }}>
-        {dataset.title}
-      </Title>
+      <Flex gap="middle">
+        <Title level={2} className="mb-0" style={{ fontWeight: 500, fontSize: '1.5rem' }}>
+          {dataset.title}
+        </Title>
+        {!!dataset.study_status && (
+          <Tag
+            color="orange"
+            style={{ alignSelf: 'center' }}
+            title={`${t('dataset.study_status')}: ${t('dataset.' + studyStatus)}`}
+          >
+            {dataset.study_status}
+          </Tag>
+        )}
+      </Flex>
       <ul className="attributes">
         {subtitleItems
           .filter(({ key }) => !!dataset[key])
           .map(({ key }) => (
             <li key={key}>
-              <strong>{t(`dataset.${key}`)}:</strong> {dataset[key] as unknown as ReactNode}
+              <strong>{t(`dataset.${key}`)}:</strong> {t(dataset[key] as unknown as string, { nsSeparator: false })}
             </li>
           ))}
       </ul>
@@ -417,9 +435,9 @@ export const DatasetProvenanceContent = ({
       {keywords.length > 0 && (
         <Flex gap="middle" style={{ marginTop: 8 }}>
           <strong>{t('dataset.keywords')}:</strong>
-          <Flex>
+          <Flex wrap>
             {keywords.map((k, i) => (
-              <Tag key={i} color="cyan">
+              <Tag key={i} color="cyan" style={{ marginBottom: 2 }}>
                 {t(keywordLabel(k))}
               </Tag>
             ))}
@@ -430,7 +448,7 @@ export const DatasetProvenanceContent = ({
       {taxa.length > 0 && (
         <Flex gap="middle" style={{ marginTop: 8 }}>
           <strong>{t('dataset.taxon', { count: taxa.length })}:</strong>
-          <Flex>
+          <Flex wrap>
             {taxa.map((k, i) => {
               const taxonLabel = t(keywordLabel(k));
               // Make taxon label italic only if it looks like a species/species+subspecies name (X y or X y z)
@@ -454,13 +472,8 @@ export const DatasetProvenanceContent = ({
       </div>
 
       {/* Quick-facts descriptions block */}
-      {(dataset.privacy || dataset.license || dataset.study_status || dataset.study_context) && (
+      {(dataset.license || dataset.study_context) && (
         <Descriptions>
-          {dataset.privacy && (
-            <Item span={12} label={<DescLabel title={t('Privacy')} />}>
-              {t(dataset.privacy)}
-            </Item>
-          )}
           {dataset.license && (
             <Item span={12} label={<DescLabel title={t('License')} />}>
               {dataset.license.url ? (
@@ -470,11 +483,6 @@ export const DatasetProvenanceContent = ({
               ) : (
                 dataset.license.label
               )}
-            </Item>
-          )}
-          {dataset.study_status && (
-            <Item span={12} label={<DescLabel title={t('Study Status')} />}>
-              {t(dataset.study_status)}
             </Item>
           )}
           {dataset.study_context && (
@@ -512,15 +520,21 @@ export const DatasetProvenanceContent = ({
           {stakeholders.length > 0 && (
             <>
               <SectionTitle title="Stakeholders" />
-              <StakeholdersTable stakeholders={stakeholders} />
+              <Flex gap={16} wrap>
+                {stakeholders.map((s) => (
+                  <PersonOrOrganizationCard key={s.name} entity={s} />
+                ))}
+              </Flex>
+              {/*<StakeholdersTable stakeholders={stakeholders} />*/}
             </>
           )}
 
           {/* Publications */}
           {publications.length > 0 && (
             <>
-              <SectionTitle title="Publications" />
-              <PublicationsTable publications={publications} />
+              <SectionTitle title={publications.length === 1 ? 'Publication' : 'Publications'} />
+              <PublicationsDisplay publications={publications} />
+              {/*<PublicationsTable publications={publications} />*/}
             </>
           )}
 
