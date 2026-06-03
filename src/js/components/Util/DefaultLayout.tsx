@@ -10,13 +10,12 @@ import SiteFooter from '@/components/SiteFooter';
 import PageHeader from '@/components/PageHeader';
 import PcglFooter from '@/components/Pcgl/PcglFooter';
 import ScopedTitle from '@/components/Scope/ScopedTitle';
-import { useSelectedDataset, useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
+import { useSelectedScope, useScopeHasData } from '@/features/metadata/hooks';
 import { useIsInCatalogueMode, useSidebarMenuItems } from '@/hooks/navigation';
 import { useTitleBreadcrumbItems } from '@/hooks/useTitleBreadcrumbItems';
 import { PCGL_MODE } from '@/config';
 import { BentoRoute } from '@/types/routes';
 import { getCurrentPage } from '@/utils/router';
-import { emptyCounts } from '@/utils/counts';
 
 const { Content } = Layout;
 const { useBreakpoint } = Grid;
@@ -27,8 +26,7 @@ const DefaultLayout = () => {
 
   const catalogueMode = useIsInCatalogueMode();
   const { scopeSet, scope } = useSelectedScope();
-  const selectedProject = useSelectedProject();
-  const selectedDataset = useSelectedDataset();
+  const scopeHasData = useScopeHasData();
 
   const menuItems = useSidebarMenuItems();
   const [collapsed, setCollapsed] = useState(true);
@@ -39,11 +37,7 @@ const DefaultLayout = () => {
   const sidebarOverlay = !breakpoints.lg;
   const sidebarOverlayShown = sidebarOverlay && !collapsed;
   // TODO: enable sidebar with catalogue when catalogue filtering/search is hooked up
-  const sidebarHidden =
-    page !== 'overview' ||
-    isCatalogue ||
-    (!!selectedProject && emptyCounts(selectedProject.counts)) ||
-    (!!selectedDataset && emptyCounts(selectedDataset.counts_by_entity));
+  const sidebarHidden = page !== 'overview' || isCatalogue || (!isCatalogue && !scopeHasData);
 
   const showSidebarToggle = sidebarOverlay && page === 'overview';
 
