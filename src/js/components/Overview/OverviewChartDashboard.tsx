@@ -7,7 +7,6 @@ import { convertSequenceAndDisplayData, generateLSChartDataKey, saveValue } from
 
 import type { Sections } from '@/types/data';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
-import { RequestStatus } from '@/types/requests';
 
 import { WAITING_STATES } from '@/constants/requests';
 
@@ -24,6 +23,7 @@ import { useSearchRouterAndHandler } from '@/hooks/useSearchRouterAndHandler';
 import { useSelectedDataset, useSelectedProject, useSelectedScope } from '@/features/metadata/hooks';
 import { useSearchQuery, useSearchableFields } from '@/features/search/hooks';
 import { useIsInCatalogueMode } from '@/hooks/navigation';
+import { emptyCounts } from '@/utils/counts';
 
 const saveScopeOverviewToLS = (scope: DiscoveryScope, sections: Sections) => {
   saveValue(generateLSChartDataKey(scope), convertSequenceAndDisplayData(sections));
@@ -43,13 +43,15 @@ const OverviewChartDashboard = () => {
   // URL and dispatches discovery actions for fetching overview/query response data.
   useSearchRouterAndHandler();
 
-  const { discoveryStatus, sections, resultCountsByDataset, uiHints } = useSearchQuery();
+  const { discoveryStatus, sections, resultCountsByDataset } = useSearchQuery();
 
   // Lazy-loading hooks means this is loaded only if OverviewChartDashboard is rendered:
   const searchableFields = useSearchableFields();
 
   // If we have no entities with data confirmed, don't bother showing charts (or last ingested details)
-  const noDataInScope = uiHints.status === RequestStatus.Fulfilled && uiHints.data.entities_with_data.length === 0;
+  const noDataInDataset = !!selectedDataset && emptyCounts(selectedDataset.counts_by_entity);
+  const noDataInProject = !!selectedProject && emptyCounts(selectedProject.counts);
+  const noDataInScope = noDataInDataset || noDataInProject;
 
   const displayedSections = noDataInScope
     ? []
@@ -78,7 +80,7 @@ const OverviewChartDashboard = () => {
 
   return (
     <>
-      <Flex vertical={true} gap={24} className="container">
+      <Flex vertical={true} gap={24} className={clsx('container', { 'margin-auto': noDataInScope || noDataInDataset })}>
         <div className="dashboard-tabs">
           {pageTabItems.length > 1 && (
             <Tabs
@@ -97,7 +99,12 @@ const OverviewChartDashboard = () => {
           ) : null}
         </div>
 
-        <CountsAndResults />
+        {/*
+            If we're in a scope with no data at all, don't bother rendering the
+            "NOT ENOUGH DATA" message / "NO DATA" empty component. This way, we get a sort of "catalogue detail" view,
+            allowing provenance-only datasets to be rendered nicely.
+        */}
+        {!noDataInScope && <CountsAndResults />}
 
         {selectedProject && !scope.dataset && selectedProject.datasets_v2.length ? (
           // If we have a project with at least one dataset, show a dataset mini-catalogue in the project overview
@@ -121,12 +128,14 @@ const OverviewChartDashboard = () => {
 
       <FloatButton.Group className="float-btn-pos">
         <FloatButton.BackTop target={() => document.getElementById('content-layout')!} />
-        <FloatButton
-          type="primary"
-          icon={<AppstoreAddOutlined rotate={270} />}
-          tooltip={t('Manage Charts')}
-          onClick={onManageChartsOpen}
-        />
+        {!noDataInScope && (
+          <FloatButton
+            type="primary"
+            icon={<AppstoreAddOutlined rotate={270} />}
+            tooltip={t('Manage Charts')}
+            onClick={onManageChartsOpen}
+          />
+        )}
       </FloatButton.Group>
     </>
   );
