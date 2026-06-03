@@ -49,7 +49,7 @@ const CatalogueCard = ({ project }: { project: Project }) => {
 
   const isSmallScreen = useSmallScreen();
 
-  const { datasets_v2: datasets, created, updated, title, description, identifier, counts } = project;
+  const { datasets, created, updated, title, description, identifier, counts } = project;
 
   const { selectedKeywords, extraKeywords, extraKeywordCount } = useMemo(() => {
     // TODO: render OntologyTerm keywords with ID + label instead of flattening to string
