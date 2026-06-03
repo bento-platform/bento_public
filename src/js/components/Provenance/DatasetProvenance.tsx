@@ -1,5 +1,6 @@
 import { Button, Card, Descriptions, Flex, Tag, Typography } from 'antd';
-import { DownOutlined, UpOutlined } from '@ant-design/icons';
+import { DownOutlined, GlobalOutlined, MailOutlined, PhoneOutlined, UpOutlined } from '@ant-design/icons';
+import { LuMailbox } from 'react-icons/lu';
 import { PointMap } from 'bento-charts/dist/maps';
 
 import BaseProvenanceTable from './Tables/BaseProvenanceTable';
@@ -13,6 +14,7 @@ import type {
   ParticipantCriteria,
   Person,
   PersonOrOrganization,
+  Phone,
   Publication,
 } from '@/types/dataset';
 
@@ -49,13 +51,70 @@ const LongDescriptionBlock = ({ content, content_type }: Dataset['long_descripti
 
 // ---- PersonOrOrganization display ----
 
+const PhoneNumber = ({ phone: { country_code: countryCode, number, extension } }: { phone: Phone }) => (
+  <span>
+    +{countryCode} {number} {extension !== null && extension !== undefined ? `x${extension}` : null}
+  </span>
+);
+
 const Contact = ({ contact }: { contact: Contact }) => {
-  return JSON.stringify(contact);
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: '24px auto' }}>
+      {!!contact.website && (
+        <>
+          <div aria-hidden="true">
+            <GlobalOutlined />
+          </div>
+          <div>
+            <a href={contact.website} target="_blank" rel="noopener noreferrer">
+              {contact.website}
+            </a>
+          </div>
+        </>
+      )}
+      {!!contact.email && (
+        <>
+          <div aria-hidden="true">
+            <MailOutlined />
+          </div>
+          <div>
+            <a href={`mailto:${contact.website}`}>{contact.email}</a>
+          </div>
+        </>
+      )}
+      {!!contact.address && (
+        <>
+          <div aria-hidden="true">
+            <LuMailbox />
+          </div>
+          <div>
+            <a href={`mailto:${contact.website}`}>{contact.email}</a>
+          </div>
+        </>
+      )}
+      {!!contact.phone && (
+        <>
+          <div aria-hidden="true">
+            <PhoneOutlined />
+          </div>
+          <div>
+            <PhoneNumber phone={contact.phone} />
+          </div>
+        </>
+      )}
+    </div>
+  );
 };
 
 const PersonOrOrganizationName = ({ entity }: { entity: PersonOrOrganization }) => {
   const { name, contact } = entity;
-  return contact?.website ? <a href={contact?.website}>{name}</a> : name;
+  return contact?.website ? (
+    <a href={contact?.website} target="_blank" rel="noopener noreferrer">
+      {name}
+    </a>
+  ) : (
+    name
+  );
 };
 
 const PersonOrOrganizationCard = ({ entity }: { entity: PersonOrOrganization }) => {
