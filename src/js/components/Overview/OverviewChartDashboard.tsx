@@ -73,8 +73,9 @@ const OverviewChartDashboard = () => {
         {selectedDataset ? (
           <DatasetProvenance
             dataset={selectedDataset}
-            collapsed={provenanceCollapsed}
-            onToggleCollapse={() => setProvenanceCollapsed(!provenanceCollapsed)}
+            collapsed={scopeHasData ? provenanceCollapsed : false}
+            // If we don't have any data, render the full provenance by default without collapse-ability
+            onToggleCollapse={scopeHasData ? () => setProvenanceCollapsed(!provenanceCollapsed) : undefined}
           />
         ) : (
           <AboutBox />
