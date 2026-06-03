@@ -1,12 +1,10 @@
 import { Button, Card, Descriptions, Flex, Tag, Typography } from 'antd';
-import { DownOutlined, GlobalOutlined, MailOutlined, PhoneOutlined, UpOutlined } from '@ant-design/icons';
-import { LuMailbox } from 'react-icons/lu';
+import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { PointMap } from 'bento-charts/dist/maps';
 
 import BaseProvenanceTable from './Tables/BaseProvenanceTable';
 import { useTranslationFn } from '@/hooks';
 import type {
-  Contact,
   Count,
   Dataset,
   FundingSource,
@@ -14,14 +12,14 @@ import type {
   ParticipantCriteria,
   Person,
   PersonOrOrganization,
-  Phone,
   Publication,
 } from '@/types/dataset';
 
 import type { ReactNode } from 'react';
 import type { OntologyTerm } from '@/types/ontology';
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
-import PublicationsDisplay from '@/components/Provenance/PublicationsDisplay';
+import PublicationsDisplay from './PublicationsDisplay';
+import PersonOrOrganizationDisplay, { PersonOrOrganizationName } from './PersonOrOrganizationDisplay';
 
 const { Item } = Descriptions;
 const { Paragraph, Text, Title } = Typography;
@@ -51,99 +49,6 @@ const LongDescriptionBlock = ({ content, content_type }: Dataset['long_descripti
 };
 
 // ---- PersonOrOrganization display ----
-
-const PhoneNumber = ({ phone: { country_code: countryCode, number, extension } }: { phone: Phone }) => (
-  <span>
-    +{countryCode} {number} {extension !== null && extension !== undefined ? `x${extension}` : null}
-  </span>
-);
-
-const Contact = ({ contact }: { contact: Contact }) => {
-  const { website, email, address, phone } = contact;
-  return (
-    <div style={{ display: 'grid', gridTemplateColumns: '24px auto' }}>
-      {!!website && (
-        <>
-          <div aria-hidden="true">
-            <GlobalOutlined />
-          </div>
-          <div>
-            <a href={website} target="_blank" rel="noopener noreferrer">
-              {website}
-            </a>
-          </div>
-        </>
-      )}
-      {!!email && (
-        <>
-          <div aria-hidden="true">
-            <MailOutlined />
-          </div>
-          <div>
-            {email.map((e, ei) => (
-              <>
-                <a href={`mailto:${e}`}>{e}</a>
-                {ei < email.length - 1 ? ', ' : ''}
-              </>
-            ))}
-          </div>
-        </>
-      )}
-      {!!address && (
-        <>
-          <div aria-hidden="true">
-            <LuMailbox />
-          </div>
-          <div>{address}</div>
-        </>
-      )}
-      {!!phone && (
-        <>
-          <div aria-hidden="true">
-            <PhoneOutlined />
-          </div>
-          <div>
-            <PhoneNumber phone={phone} />
-          </div>
-        </>
-      )}
-    </div>
-  );
-};
-
-const PersonOrOrganizationName = ({ entity }: { entity: PersonOrOrganization }) => {
-  const { name, contact } = entity;
-  return contact?.website ? (
-    <a href={contact?.website} target="_blank" rel="noopener noreferrer">
-      {name}
-    </a>
-  ) : (
-    name
-  );
-};
-
-const PersonOrOrganizationCard = ({ entity }: { entity: PersonOrOrganization }) => {
-  const t = useTranslationFn();
-  const { contact, roles, type } = entity;
-  return (
-    <Card size="small" className={`provenance-${type}`}>
-      <span style={{ textTransform: 'uppercase', color: '#999', fontSize: 12, fontWeight: 'bold' }}>{type}</span>
-      <Flex vertical gap={8}>
-        <Title level={5} style={{ marginBottom: 0, fontWeight: 'normal' }}>
-          <PersonOrOrganizationName entity={entity} />
-        </Title>
-        {!!contact && <Contact contact={contact} />}
-        <Flex>
-          {roles.map((r, i) => (
-            <Tag key={i} color="green">
-              {t(r)}
-            </Tag>
-          ))}
-        </Flex>
-      </Flex>
-    </Card>
-  );
-};
 
 const personName = (p: PersonOrOrganization): ReactNode =>
   p.contact?.website ? <a href={p.contact?.website}>{p.name}</a> : p.name;
@@ -408,7 +313,7 @@ export const DatasetProvenanceContent = ({
 
   return (
     <div className="dataset-provenance">
-      <Flex gap="middle">
+      <Flex gap="middle" style={{ marginBottom: 8 }}>
         <Title level={2} className="mb-0" style={{ fontWeight: 500, fontSize: '1.5rem' }}>
           {dataset.title}
         </Title>
@@ -512,7 +417,7 @@ export const DatasetProvenanceContent = ({
           {dataset.primary_contact && (
             <>
               <SectionTitle title="Primary Contact" />
-              <PersonOrOrganizationCard entity={dataset.primary_contact} />
+              <PersonOrOrganizationDisplay entity={dataset.primary_contact} />
             </>
           )}
 
@@ -522,7 +427,7 @@ export const DatasetProvenanceContent = ({
               <SectionTitle title="Stakeholders" />
               <Flex gap={16} wrap>
                 {stakeholders.map((s) => (
-                  <PersonOrOrganizationCard key={s.name} entity={s} />
+                  <PersonOrOrganizationDisplay key={s.name} entity={s} />
                 ))}
               </Flex>
               {/*<StakeholdersTable stakeholders={stakeholders} />*/}
