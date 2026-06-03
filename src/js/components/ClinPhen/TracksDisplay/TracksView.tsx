@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Drawer, FloatButton } from 'antd';
 import { BarsOutlined } from '@ant-design/icons';
 
-import type { Phenopacket } from '@/types/clinPhen/phenopacket';
 import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
 
 import { useTranslationFn } from '@/hooks';
@@ -242,3 +241,4 @@ export default TracksView;
 // - testing with crams, bigwigs, multiple vcfs...
 // - put back "selected assembly" pulldown... this is easy once the reference stuff is written
 // - translations
+// - what if no reference for track

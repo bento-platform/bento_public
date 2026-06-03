@@ -1,5 +1,4 @@
-import { ExperimentResult, ExperimentResultIndex } from '@/types/clinPhen/experiments/experimentResult';
-import { caseInsensitiveObjectAccess } from './objects';
+import type { ExperimentResult, ExperimentResultIndex } from '@/types/clinPhen/experiments/experimentResult';
 import type { TrackType } from 'igv';
 import type { IgvAccessUrlPromisesById, TrackFormats } from '@/types/clinPhen/igv';
 import { getDrsAccessMethods } from '@/features/drs/hooks';
@@ -21,10 +20,7 @@ export const IGV_FILE_TYPE_INFO: Partial<
 };
 
 const viewableFormats: TrackFormats[] = Object.keys(IGV_FILE_TYPE_INFO) as TrackFormats[];
-
-// temp?
-// may not need case insensitive stuff below if we use this
-export const viewableFormatsLower = viewableFormats.map((f) => f.toLocaleLowerCase());
+export const viewableFormatsLower = viewableFormats.map((f) => f.toLowerCase());
 
 const getFormattedName = (input: ExperimentResult['file_format']): TrackFormats | null => {
   if (!input) return null; //courtesy typescript guard

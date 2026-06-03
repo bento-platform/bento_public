@@ -13,8 +13,8 @@ import { TabKeys } from '@/types/PhenopacketView.types';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
 import { useTranslationFn } from '@/hooks';
 import { useScopeDownloadData } from '@/hooks/censorship';
-import { phenopacketExperimentResults } from '@/utils/experiments';
-import { useGetTracksAndReferencesForIgv } from './igv';
+import { assemblyIdsForExperiments, phenopacketExperimentResults } from '@/utils/experiments';
+import { useBentoOrIgvReferencesById, viewableTracks } from './igv';
 
 export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
   const t = useTranslationFn();
@@ -29,8 +29,9 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
   );
 
   const experimentResults = phenopacket ? phenopacketExperimentResults(phenopacket) : [];
-
-  const { tracks, referencesById } = useGetTracksAndReferencesForIgv(experimentResults);
+  const tracks = viewableTracks(experimentResults)
+  const requestedAssemblies = assemblyIdsForExperiments(tracks);
+  const referencesById = useBentoOrIgvReferencesById(requestedAssemblies);
 
   const { hasAttempted: attemptedCanDownload, hasPermission: canDownload } = useScopeDownloadData();
 
@@ -48,7 +49,7 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
         key: TabKeys.TRACKS,
         label: t('Tracks'),
         children: <TracksView tracks={tracks} references={referencesById} />,
-        disabled: attemptedCanDownload && !(canDownload && tracks.length > 0 && Object.keys(referencesById).length > 0),
+        disabled: !(attemptedCanDownload && canDownload && tracks.length > 0 && Object.keys(referencesById).length > 0),
       },
       {
         key: TabKeys.ONTOLOGIES,
