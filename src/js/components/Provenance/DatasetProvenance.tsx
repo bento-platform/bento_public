@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { Button, Card, Descriptions, Flex, Tag, Typography } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { PointMap } from 'bento-charts/dist/maps';
@@ -15,9 +16,9 @@ import type {
   Publication,
 } from '@/types/dataset';
 
-import type { ReactNode } from 'react';
 import type { OntologyTerm } from '@/types/ontology';
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
+import LinksDisplay from './LinksDisplay';
 import PublicationsDisplay from './PublicationsDisplay';
 import PersonOrOrganizationDisplay, { PersonOrOrganizationName } from './PersonOrOrganizationDisplay';
 
@@ -37,7 +38,7 @@ const SectionTitle = ({ title }: { title: string }) => {
   );
 };
 
-const DescLabel = ({ title }: { title: string }) => <b>{title}</b>;
+const DescLabel = ({ title }: { title: string }) => <strong>{title}</strong>;
 
 // ---- Long description ----
 
@@ -376,6 +377,12 @@ export const DatasetProvenanceContent = ({
         )}
       </div>
 
+      {!!links.length && (
+        <Descriptions
+          items={[{ label: <DescLabel title={t('dataset.links')} />, children: <LinksDisplay links={links} /> }]}
+        />
+      )}
+
       {/* Quick-facts descriptions block */}
       {(dataset.license || dataset.study_context) && (
         <Descriptions>
@@ -471,20 +478,6 @@ export const DatasetProvenanceContent = ({
             <>
               <SectionTitle title="Counts" />
               <CountsTable counts={counts} />
-            </>
-          )}
-
-          {/* Links */}
-          {links.length > 0 && (
-            <>
-              <SectionTitle title="Links" />
-              <Flex wrap gap={8} style={{ paddingTop: 8 }}>
-                {links.map((l, i) => (
-                  <a key={i} href={l.url} target="_blank" rel="noreferrer">
-                    {l.label}
-                  </a>
-                ))}
-              </Flex>
             </>
           )}
 
