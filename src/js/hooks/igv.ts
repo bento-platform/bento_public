@@ -53,6 +53,7 @@ export const useBentoOrIgvReferencesById = (requestedReferenceIds: string[]): Ig
                     filterTypes: ['chromosome', 'region', 'gene', '3_utr', '5_utr', 'CDS'],
                     url: bentoRef.gff3_gz,
                     indexURL: bentoRef.gff3_gz_tbi,
+                    nameField: "transcript_name",
                     order: 1000000,
                     visibilityWindow: 5000000,
                     height: 200,
