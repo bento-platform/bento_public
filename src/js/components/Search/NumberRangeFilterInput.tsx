@@ -116,6 +116,9 @@ const NumberRangeFilterInput = ({ definition, value, onChange }: Props) => {
           className="flex-1 w-full"
           controls={false}
           status={lowerBelowMin ? 'error' : undefined}
+          // Compact items default to z-index 2; the bracket button (later in DOM) paints on top at the same level.
+          // z-index 3 matches Ant Design's hover/focus elevation and keeps the error border fully visible.
+          style={lowerBelowMin ? { position: 'relative', zIndex: 3 } : undefined}
           value={lowerStr ? parseFloat(lowerStr) : null}
           onChange={onLowerNumberChange}
           placeholder={minimum !== null ? String(minimum) : 'min'}
@@ -125,6 +128,9 @@ const NumberRangeFilterInput = ({ definition, value, onChange }: Props) => {
           className="flex-1 w-full"
           controls={false}
           status={boundsInverted || upperAboveMax ? 'error' : undefined}
+          // Compact items default to z-index 2; the bracket button (later in DOM) paints on top at the same level.
+          // z-index 3 matches Ant Design's hover/focus elevation and keeps the error border fully visible.
+          style={boundsInverted || upperAboveMax ? { position: 'relative', zIndex: 3 } : undefined}
           value={upperStr ? parseFloat(upperStr) : null}
           onChange={onUpperNumberChange}
           placeholder={maximum !== null ? String(maximum) : 'max'}
