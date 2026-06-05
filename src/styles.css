@@ -528,6 +528,12 @@ ul#page-header-stats li.loading {
 
 /* BEGIN dataset provenance */
 
+.dataset-provenance-card:last-child {
+  /* If nothing else (counts, etc) is displayed, add a larger margin to the bottom of dataset provenance cards on their
+     own page */
+  margin-bottom: calc(2 * var(--content-padding-v));
+}
+
 .dataset-provenance .attributes {
   margin: 0 0 16px 0;
   padding: 0;
