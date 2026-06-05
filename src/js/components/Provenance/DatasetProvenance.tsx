@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import type { DescriptionsItemType } from 'antd/es/descriptions';
 import { Button, Card, Descriptions, Flex, Tag, Typography } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { PointMap } from 'bento-charts/dist/maps';
@@ -296,6 +297,7 @@ export const DatasetProvenanceContent = ({
 }) => {
   const t = useTranslationFn();
 
+  const domains = dataset.domain ?? [];
   const keywords = dataset.keywords ?? [];
   const taxa = dataset.taxa ?? [];
   const stakeholders = dataset.stakeholders ?? [];
@@ -312,6 +314,60 @@ export const DatasetProvenanceContent = ({
     { key: 'version' },
     { key: 'privacy' },
   ];
+
+  const keywordLikeItems: DescriptionsItemType[] = [];
+
+  if (domains.length > 0) {
+    keywordLikeItems.push({
+      span: 'filled',
+      label: <DescLabel title={t('dataset.domain', { count: domains.length })} />,
+      children: (
+        <Flex wrap>
+          {domains.map((k, i) => (
+            <Tag key={i} color="purple" style={{ marginBottom: 2 }}>
+              {k}
+            </Tag>
+          ))}
+        </Flex>
+      ),
+    } as DescriptionsItemType);
+  }
+
+  if (keywords.length > 0) {
+    keywordLikeItems.push({
+      span: 'filled',
+      label: <DescLabel title={t('dataset.keywords')} />,
+      children: (
+        <Flex wrap>
+          {keywords.map((k, i) => (
+            <Tag key={i} color="cyan" style={{ marginBottom: 2 }}>
+              {t(keywordLabel(k))}
+            </Tag>
+          ))}
+        </Flex>
+      ),
+    } as DescriptionsItemType);
+  }
+
+  if (taxa.length > 0) {
+    keywordLikeItems.push({
+      span: 'filled',
+      label: <DescLabel title={t('dataset.taxon', { count: taxa.length })} />,
+      children: (
+        <Flex wrap>
+          {taxa.map((k, i) => {
+            const taxonLabel = t(keywordLabel(k));
+            // Make taxon label italic only if it looks like a species/species+subspecies name (X y or X y z)
+            return (
+              <Tag key={i} color="blue" className={taxonLabel.split(' ').length >= 2 ? 'italic' : ''}>
+                {taxonLabel}
+              </Tag>
+            );
+          })}
+        </Flex>
+      ),
+    } as DescriptionsItemType);
+  }
 
   return (
     <div className="dataset-provenance">
@@ -339,41 +395,8 @@ export const DatasetProvenanceContent = ({
           ))}
       </ul>
 
-      {keywords.length > 0 && (
-        <Descriptions
-          items={[
-            {
-              label: <DescLabel title={t('dataset.keywords')} />,
-              children: (
-                <Flex wrap>
-                  {keywords.map((k, i) => (
-                    <Tag key={i} color="cyan" style={{ marginBottom: 2 }}>
-                      {t(keywordLabel(k))}
-                    </Tag>
-                  ))}
-                </Flex>
-              ),
-            },
-          ]}
-        />
-      )}
-
-      {taxa.length > 0 && (
-        <Flex gap="middle" style={{ marginTop: 8 }}>
-          <strong>{t('dataset.taxon', { count: taxa.length })}:</strong>
-          <Flex wrap>
-            {taxa.map((k, i) => {
-              const taxonLabel = t(keywordLabel(k));
-              // Make taxon label italic only if it looks like a species/species+subspecies name (X y or X y z)
-              return (
-                <Tag key={i} color="blue" className={taxonLabel.split(' ').length >= 2 ? 'italic' : ''}>
-                  {taxonLabel}
-                </Tag>
-              );
-            })}
-          </Flex>
-        </Flex>
-      )}
+      {/* Domains/keywords/taxa ('keyword-like' concepts) descriptions block */}
+      {!!keywordLikeItems.length && <Descriptions items={keywordLikeItems} size="small" />}
 
       {/* Description */}
       <div style={{ maxWidth: 1100, marginTop: keywords.length || taxa.length ? 16 : 0 }}>

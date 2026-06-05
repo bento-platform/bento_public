@@ -79,16 +79,11 @@ export const PersonOrOrganizationName = ({ entity }: { entity: PersonOrOrganizat
 
 const PersonOrOrganizationDisplay = ({ entity, extra }: { entity: PersonOrOrganization; extra?: ReactNode }) => {
   const t = useTranslationFn();
-  const { contact, roles, type } = entity;
+  const { name, contact, roles, type } = entity;
   return (
-    <EntityCard
-      supertitle={type}
-      title={<PersonOrOrganizationName entity={entity} />}
-      className={`provenance-${type}`}
-      extra={extra}
-    >
+    <EntityCard supertitle={type} title={name} className={`provenance-${type}`} extra={extra}>
       {!!contact && <Contact contact={contact} />}
-      <Flex className="flex-1">
+      <Flex className="flex-1" style={{ marginTop: 8 }}>
         {roles.map((r, i) => (
           <Tag key={i} color="green" style={{ alignSelf: 'flex-end' }}>
             {t(r)}

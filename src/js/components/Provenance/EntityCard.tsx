@@ -17,7 +17,7 @@ const EntityCard = ({
     {!!supertitle && (
       <span style={{ textTransform: 'uppercase', color: '#999', fontSize: 12, fontWeight: 'bold' }}>{supertitle}</span>
     )}
-    <Flex vertical gap={8} className="flex-1">
+    <Flex vertical className="flex-1">
       <Title level={5} style={{ marginBottom: 0, fontWeight: 'normal' }}>
         {title}
       </Title>
