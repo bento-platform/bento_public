@@ -4,17 +4,16 @@ import { Button, Card, Descriptions, Flex, Tag, Typography } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { PointMap } from 'bento-charts/dist/maps';
 
-import BaseProvenanceTable from './Tables/BaseProvenanceTable';
 import { useTranslationFn } from '@/hooks';
 import type { Count, Dataset, ParticipantCriteria, Person, PersonOrOrganization, Publication } from '@/types/dataset';
 
-import type { OntologyTerm } from '@/types/ontology';
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
+import BaseProvenanceTable from './Tables/BaseProvenanceTable';
 import LinksDisplay from './LinksDisplay';
 import PublicationsDisplay from './PublicationsDisplay';
 import PersonOrOrganizationDisplay, { PersonOrOrganizationName } from './PersonOrOrganizationDisplay';
-import FundingDisplay from '@/components/Provenance/FundingDisplay';
-import TagDisplay from '@/components/Provenance/TagDisplay';
+import FundingDisplay from './FundingDisplay';
+import TagDisplay from './TagDisplay';
 
 const { Item } = Descriptions;
 const { Paragraph, Text, Title } = Typography;
