@@ -110,7 +110,6 @@ const NumberRangeFilterInput = ({ definition, value, onChange }: Props) => {
       <InputNumber
         className="flex-1 w-full"
         controls={false}
-        min={enforcedMin}
         status={lowerBelowMin ? 'warning' : undefined}
         value={lowerStr ? parseFloat(lowerStr) : null}
         onChange={onLowerNumberChange}
@@ -120,7 +119,6 @@ const NumberRangeFilterInput = ({ definition, value, onChange }: Props) => {
       <InputNumber
         className="flex-1 w-full"
         controls={false}
-        max={enforcedMax}
         status={boundsInverted ? 'error' : upperAboveMax ? 'warning' : undefined}
         value={upperStr ? parseFloat(upperStr) : null}
         onChange={onUpperNumberChange}
