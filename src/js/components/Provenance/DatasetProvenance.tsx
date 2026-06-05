@@ -14,13 +14,12 @@ import LinksDisplay from './LinksDisplay';
 import PublicationsDisplay from './PublicationsDisplay';
 import PersonOrOrganizationDisplay, { PersonOrOrganizationName } from './PersonOrOrganizationDisplay';
 import FundingDisplay from '@/components/Provenance/FundingDisplay';
+import TagDisplay from '@/components/Provenance/TagDisplay';
 
 const { Item } = Descriptions;
 const { Paragraph, Text, Title } = Typography;
 
 // ---- Helpers ----
-
-const keywordLabel = (k: string | OntologyTerm): string => (typeof k === 'string' ? k : k.label);
 
 const SectionTitle = ({ title }: { title: string }) => {
   const t = useTranslationFn();
@@ -269,15 +268,7 @@ export const DatasetProvenanceContent = ({
     keywordLikeItems.push({
       span: 'filled',
       label: <DescLabel title={t('dataset.domain', { count: domains.length })} />,
-      children: (
-        <Flex wrap>
-          {domains.map((k, i) => (
-            <Tag key={i} color="purple" style={{ marginBottom: 2 }}>
-              {k}
-            </Tag>
-          ))}
-        </Flex>
-      ),
+      children: <TagDisplay tags={domains} color="purple" />,
     } as DescriptionsItemType);
   }
 
@@ -285,15 +276,7 @@ export const DatasetProvenanceContent = ({
     keywordLikeItems.push({
       span: 'filled',
       label: <DescLabel title={t('dataset.keywords')} />,
-      children: (
-        <Flex wrap>
-          {keywords.map((k, i) => (
-            <Tag key={i} color="cyan" style={{ marginBottom: 2 }}>
-              {t(keywordLabel(k))}
-            </Tag>
-          ))}
-        </Flex>
-      ),
+      children: <TagDisplay tags={keywords} color="cyan" />,
     } as DescriptionsItemType);
   }
 
@@ -302,17 +285,15 @@ export const DatasetProvenanceContent = ({
       span: 'filled',
       label: <DescLabel title={t('dataset.taxon', { count: taxa.length })} />,
       children: (
-        <Flex wrap>
-          {taxa.map((k, i) => {
-            const taxonLabel = t(keywordLabel(k));
+        <TagDisplay
+          tags={taxa}
+          color="blue"
+          tagClass={(k) => {
+            const label = typeof k === 'string' ? k : k.label;
             // Make taxon label italic only if it looks like a species/species+subspecies name (X y or X y z)
-            return (
-              <Tag key={i} color="blue" className={taxonLabel.split(' ').length >= 2 ? 'italic' : ''}>
-                {taxonLabel}
-              </Tag>
-            );
-          })}
-        </Flex>
+            return label.split(' ').length >= 2 ? 'italic' : '';
+          }}
+        />
       ),
     } as DescriptionsItemType);
   }
