@@ -2,17 +2,17 @@ import type { ReactNode } from 'react';
 import type { DescriptionsItemType } from 'antd/es/descriptions';
 import { Button, Card, Descriptions, Flex, Tag, Typography } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
-import { PointMap } from 'bento-charts/dist/maps';
 
 import { useTranslationFn } from '@/hooks';
 import type { Count, Dataset, ParticipantCriteria, Person, PersonOrOrganization, Publication } from '@/types/dataset';
 
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
 import BaseProvenanceTable from './Tables/BaseProvenanceTable';
-import LinksDisplay from './LinksDisplay';
-import PublicationsDisplay from './PublicationsDisplay';
-import PersonOrOrganizationDisplay, { PersonOrOrganizationName } from './PersonOrOrganizationDisplay';
 import FundingDisplay from './FundingDisplay';
+import LinksDisplay from './LinksDisplay';
+import PersonOrOrganizationDisplay, { PersonOrOrganizationName } from './PersonOrOrganizationDisplay';
+import PublicationsDisplay from './PublicationsDisplay';
+import SpatialCoverageDisplay from './SpatialCoverageDisplay';
 import TagDisplay from './TagDisplay';
 
 const { Item } = Descriptions;
@@ -190,46 +190,6 @@ const CountsTable = ({ counts }: { counts: Count[] }) => {
   );
 };
 
-// ---- Spatial coverage ----
-
-const SpatialCoverageSection = ({ spatialCoverage }: { spatialCoverage: NonNullable<Dataset['spatial_coverage']> }) => {
-  const t = useTranslationFn();
-
-  if (typeof spatialCoverage === 'string') {
-    return (
-      <Descriptions style={{ paddingTop: '8px' }}>
-        <Item span={24} label={<DescLabel title={t('Spatial Coverage')} />}>
-          {spatialCoverage}
-        </Item>
-      </Descriptions>
-    );
-  }
-
-  const name = spatialCoverage.properties.name;
-  const geometry = spatialCoverage.geometry;
-  const isPoint = geometry?.type === 'Point';
-
-  return (
-    <>
-      <Descriptions style={{ paddingTop: '8px' }}>
-        <Item span={24} label={<DescLabel title={t('Spatial Coverage')} />}>
-          {name}
-        </Item>
-      </Descriptions>
-      {isPoint && (
-        <div style={{ position: 'relative', zIndex: 0 }}>
-          <PointMap
-            data={[{ coordinates: geometry.coordinates as [number, number], title: name }]}
-            center={[geometry.coordinates[1], geometry.coordinates[0]]}
-            zoom={5}
-            height={300}
-          />
-        </div>
-      )}
-    </>
-  );
-};
-
 // ---- Main content ----
 
 export const DatasetProvenanceContent = ({
@@ -375,9 +335,6 @@ export const DatasetProvenanceContent = ({
 
       {!collapsed ? (
         <>
-          {/* Spatial coverage */}
-          {dataset.spatial_coverage && <SpatialCoverageSection spatialCoverage={dataset.spatial_coverage} />}
-
           {/* Primary contact */}
           {dataset.primary_contact && (
             <>
@@ -414,6 +371,14 @@ export const DatasetProvenanceContent = ({
               <SectionTitle title="Funding" />
               <FundingDisplay funding={funding} />
               {/*<FundingTable funding={fundingSources} />*/}
+            </>
+          )}
+
+          {/* Spatial coverage */}
+          {dataset.spatial_coverage && (
+            <>
+              <SectionTitle title="Spatial Coverage" />
+              <SpatialCoverageDisplay spatialCoverage={dataset.spatial_coverage} />
             </>
           )}
 
