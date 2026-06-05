@@ -77,7 +77,9 @@
       "lower_exclusive": "Lower bound exclusive",
       "upper_inclusive": "Upper bound inclusive",
       "upper_exclusive": "Upper bound exclusive",
-      "click_to_switch": "Click to switch"
+      "click_to_switch": "Click to switch",
+      "below_minimum": "Lower value must be ≥ {{min}}",
+      "above_maximum": "Upper value must be ≤ {{max}}"
     }
   },
   "OR": "OR",
