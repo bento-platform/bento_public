@@ -6,16 +6,7 @@ import { PointMap } from 'bento-charts/dist/maps';
 
 import BaseProvenanceTable from './Tables/BaseProvenanceTable';
 import { useTranslationFn } from '@/hooks';
-import type {
-  Count,
-  Dataset,
-  FundingSource,
-  Link,
-  ParticipantCriteria,
-  Person,
-  PersonOrOrganization,
-  Publication,
-} from '@/types/dataset';
+import type { Count, Dataset, ParticipantCriteria, Person, PersonOrOrganization, Publication } from '@/types/dataset';
 
 import type { OntologyTerm } from '@/types/ontology';
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
@@ -141,49 +132,6 @@ const PublicationsTable = ({ publications }: { publications: Publication[] }) =>
           title: t('Authors'),
           key: 'authors',
           render: (_, pub) => pub.authors?.map(personName).join(', ') ?? null,
-        },
-      ]}
-    />
-  );
-};
-
-// ---- Funding sources ----
-
-const FundingTable = ({ funding }: { funding: (FundingSource | Link)[] }) => {
-  const t = useTranslationFn();
-  return JSON.stringify(funding);
-  return (
-    <BaseProvenanceTable
-      dataSource={funding}
-      rowKey={(_, i) => (i ?? 0).toString()}
-      columns={[
-        {
-          title: t('Funder / Link'),
-          key: 'funder',
-          render: (_, row) => {
-            if ('url' in row && 'label' in row) {
-              // Link
-              return (
-                <a href={(row as Link).url} target="_blank" rel="noreferrer">
-                  {(row as Link).label}
-                </a>
-              );
-            }
-            const fs = row as FundingSource;
-            if (!fs.funder) return null;
-            return typeof fs.funder === 'string' ? fs.funder : personName(fs.funder);
-          },
-        },
-        {
-          title: t('Grant Numbers'),
-          key: 'grant_numbers',
-          isEmpty: (_, row) => (row && 'grant_numbers' in row ? !!row.grant_numbers?.length : true),
-          render: (_, row) => {
-            if ('grant_numbers' in row) {
-              return (row as FundingSource).grant_numbers?.join(', ') ?? null;
-            }
-            return null;
-          },
         },
       ]}
     />
