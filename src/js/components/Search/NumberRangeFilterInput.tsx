@@ -115,7 +115,7 @@ const NumberRangeFilterInput = ({ definition, value, onChange }: Props) => {
         <InputNumber
           className="flex-1 w-full"
           controls={false}
-          status={lowerBelowMin ? 'warning' : undefined}
+          status={lowerBelowMin ? 'error' : undefined}
           value={lowerStr ? parseFloat(lowerStr) : null}
           onChange={onLowerNumberChange}
           placeholder={minimum !== null ? String(minimum) : 'min'}
@@ -124,7 +124,7 @@ const NumberRangeFilterInput = ({ definition, value, onChange }: Props) => {
         <InputNumber
           className="flex-1 w-full"
           controls={false}
-          status={boundsInverted ? 'error' : upperAboveMax ? 'warning' : undefined}
+          status={boundsInverted || upperAboveMax ? 'error' : undefined}
           value={upperStr ? parseFloat(upperStr) : null}
           onChange={onUpperNumberChange}
           placeholder={maximum !== null ? String(maximum) : 'max'}
@@ -136,12 +136,12 @@ const NumberRangeFilterInput = ({ definition, value, onChange }: Props) => {
         </Tooltip>
       </Space.Compact>
       {lowerBelowMin && (
-        <Typography.Text type="warning" className="text-xs">
+        <Typography.Text type="danger" className="text-xs">
           {t('search.range.below_minimum', { min: enforcedMin })}
         </Typography.Text>
       )}
       {upperAboveMax && (
-        <Typography.Text type="warning" className="text-xs">
+        <Typography.Text type="danger" className="text-xs">
           {t('search.range.above_maximum', { max: enforcedMax })}
         </Typography.Text>
       )}
