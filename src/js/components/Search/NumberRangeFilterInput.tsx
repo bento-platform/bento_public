@@ -97,6 +97,8 @@ const NumberRangeFilterInput = ({ definition, value, onChange }: Props) => {
   const lowerNum = lowerStr ? parseFloat(lowerStr) : null;
   const upperNum = upperStr ? parseFloat(upperStr) : null;
   const boundsInverted = lowerNum !== null && upperNum !== null && upperNum < lowerNum;
+  const lowerBelowMin = enforcedMin !== undefined && lowerNum !== null && lowerNum < enforcedMin;
+  const upperAboveMax = enforcedMax !== undefined && upperNum !== null && upperNum > enforcedMax;
 
   return (
     <Space.Compact className="w-full">
@@ -109,6 +111,7 @@ const NumberRangeFilterInput = ({ definition, value, onChange }: Props) => {
         className="flex-1 w-full"
         controls={false}
         min={enforcedMin}
+        status={lowerBelowMin ? 'warning' : undefined}
         value={lowerStr ? parseFloat(lowerStr) : null}
         onChange={onLowerNumberChange}
         placeholder={minimum !== null ? String(minimum) : 'min'}
@@ -118,7 +121,7 @@ const NumberRangeFilterInput = ({ definition, value, onChange }: Props) => {
         className="flex-1 w-full"
         controls={false}
         max={enforcedMax}
-        status={boundsInverted ? 'error' : undefined}
+        status={boundsInverted ? 'error' : upperAboveMax ? 'warning' : undefined}
         value={upperStr ? parseFloat(upperStr) : null}
         onChange={onUpperNumberChange}
         placeholder={maximum !== null ? String(maximum) : 'max'}
