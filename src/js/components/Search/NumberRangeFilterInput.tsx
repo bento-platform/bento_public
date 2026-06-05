@@ -52,7 +52,9 @@ const NumberRangeFilterInput = ({ definition, value, onChange }: Props) => {
         (enforcedMin !== undefined && lNum !== null && lNum < enforcedMin) ||
         (enforcedMax !== undefined && uNum !== null && uNum > enforcedMax);
       const result =
-        inverted || outOfRange ? null : (buildRangeString(lStr, uStr, lo, uo) ?? buildComparisonString(lStr, uStr, lo, uo));
+        inverted || outOfRange
+          ? null
+          : (buildRangeString(lStr, uStr, lo, uo) ?? buildComparisonString(lStr, uStr, lo, uo));
       lastEmittedRef.current = result;
       onChange(result);
     },
