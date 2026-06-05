@@ -79,7 +79,9 @@
       "lower_exclusive": "Borne inférieure exclue",
       "upper_inclusive": "Borne supérieure incluse",
       "upper_exclusive": "Borne supérieure exclue",
-      "click_to_switch": "Cliquer pour changer"
+      "click_to_switch": "Cliquer pour changer",
+      "below_minimum": "La valeur doit être ≥ {{min}}",
+      "above_maximum": "La valeur doit être ≤ {{max}}"
     }
   },
   "OR": "OU",

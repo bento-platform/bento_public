@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Button, InputNumber, Space, Tooltip } from 'antd';
+import { Button, InputNumber, Space, Tooltip, Typography } from 'antd';
 
 import type { NumberField } from '@/types/discovery/fieldDefinition';
 import type { FilterValue } from '@/features/search/types';
@@ -45,14 +45,18 @@ const NumberRangeFilterInput = ({ definition, value, onChange }: Props) => {
 
   const emitValue = useCallback(
     (lStr: string, uStr: string, lo: boolean, uo: boolean) => {
-      const inverted = !!lStr && !!uStr && parseFloat(uStr) < parseFloat(lStr);
-      const result = inverted
-        ? null
-        : (buildRangeString(lStr, uStr, lo, uo) ?? buildComparisonString(lStr, uStr, lo, uo));
+      const lNum = lStr ? parseFloat(lStr) : null;
+      const uNum = uStr ? parseFloat(uStr) : null;
+      const inverted = lNum !== null && uNum !== null && uNum < lNum;
+      const outOfRange =
+        (enforcedMin !== undefined && lNum !== null && lNum < enforcedMin) ||
+        (enforcedMax !== undefined && uNum !== null && uNum > enforcedMax);
+      const result =
+        inverted || outOfRange ? null : (buildRangeString(lStr, uStr, lo, uo) ?? buildComparisonString(lStr, uStr, lo, uo));
       lastEmittedRef.current = result;
       onChange(result);
     },
-    [onChange]
+    [onChange, enforcedMin, enforcedMax]
   );
 
   // Debounced variant for number inputs — bracket toggles use emitValue directly (discrete actions).
@@ -101,35 +105,47 @@ const NumberRangeFilterInput = ({ definition, value, onChange }: Props) => {
   const upperAboveMax = enforcedMax !== undefined && upperNum !== null && upperNum > enforcedMax;
 
   return (
-    <Space.Compact className="w-full">
-      <Tooltip
-        title={`${t(lowerOpen ? 'search.range.lower_exclusive' : 'search.range.lower_inclusive')} — ${t('search.range.click_to_switch')}`}
-      >
-        <Button onClick={onLowerBracketToggle}>{lowerOpen ? '(' : '['}</Button>
-      </Tooltip>
-      <InputNumber
-        className="flex-1 w-full"
-        controls={false}
-        status={lowerBelowMin ? 'warning' : undefined}
-        value={lowerStr ? parseFloat(lowerStr) : null}
-        onChange={onLowerNumberChange}
-        placeholder={minimum !== null ? String(minimum) : 'min'}
-      />
-      <span className="range-separator">–</span>
-      <InputNumber
-        className="flex-1 w-full"
-        controls={false}
-        status={boundsInverted ? 'error' : upperAboveMax ? 'warning' : undefined}
-        value={upperStr ? parseFloat(upperStr) : null}
-        onChange={onUpperNumberChange}
-        placeholder={maximum !== null ? String(maximum) : 'max'}
-      />
-      <Tooltip
-        title={`${t(upperOpen ? 'search.range.upper_exclusive' : 'search.range.upper_inclusive')} — ${t('search.range.click_to_switch')}`}
-      >
-        <Button onClick={onUpperBracketToggle}>{upperOpen ? ')' : ']'}</Button>
-      </Tooltip>
-    </Space.Compact>
+    <div className="w-full">
+      <Space.Compact className="w-full">
+        <Tooltip
+          title={`${t(lowerOpen ? 'search.range.lower_exclusive' : 'search.range.lower_inclusive')} — ${t('search.range.click_to_switch')}`}
+        >
+          <Button onClick={onLowerBracketToggle}>{lowerOpen ? '(' : '['}</Button>
+        </Tooltip>
+        <InputNumber
+          className="flex-1 w-full"
+          controls={false}
+          status={lowerBelowMin ? 'warning' : undefined}
+          value={lowerStr ? parseFloat(lowerStr) : null}
+          onChange={onLowerNumberChange}
+          placeholder={minimum !== null ? String(minimum) : 'min'}
+        />
+        <span className="range-separator">–</span>
+        <InputNumber
+          className="flex-1 w-full"
+          controls={false}
+          status={boundsInverted ? 'error' : upperAboveMax ? 'warning' : undefined}
+          value={upperStr ? parseFloat(upperStr) : null}
+          onChange={onUpperNumberChange}
+          placeholder={maximum !== null ? String(maximum) : 'max'}
+        />
+        <Tooltip
+          title={`${t(upperOpen ? 'search.range.upper_exclusive' : 'search.range.upper_inclusive')} — ${t('search.range.click_to_switch')}`}
+        >
+          <Button onClick={onUpperBracketToggle}>{upperOpen ? ')' : ']'}</Button>
+        </Tooltip>
+      </Space.Compact>
+      {lowerBelowMin && (
+        <Typography.Text type="warning" className="text-xs">
+          {t('search.range.below_minimum', { min: enforcedMin })}
+        </Typography.Text>
+      )}
+      {upperAboveMax && (
+        <Typography.Text type="warning" className="text-xs">
+          {t('search.range.above_maximum', { max: enforcedMax })}
+        </Typography.Text>
+      )}
+    </div>
   );
 };
 
