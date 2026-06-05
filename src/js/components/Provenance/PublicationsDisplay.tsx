@@ -1,18 +1,7 @@
 import { Fragment, useState } from 'react';
-import type { PersonOrOrganization, Publication, PublicationType } from '@/types/dataset';
+import type { PersonOrOrganization, Publication } from '@/types/dataset';
 import { FaOrcid } from 'react-icons/fa';
-
-const ARTICLE_TYPES = [
-  'Journal Article',
-  'Conference Paper',
-  'Workshop Paper',
-  'Short Paper',
-  'Preprint',
-  'Software Paper',
-  'Review Article',
-  'Editorial',
-  'Commentary',
-] as PublicationType[];
+import { useTranslationFn } from '@/hooks';
 
 const _doiUrl = (doi: string) => {
   if (doi.startsWith('https')) {
@@ -82,72 +71,89 @@ const EtAl = ({ authors }: { authors: PersonOrOrganization[] }) => {
 };
 
 const PublicationString = ({ publication }: { publication: Publication }) => {
+  const t = useTranslationFn();
+
   const authors = publication.authors ?? [];
-  const { doi, publication_date: date, publication_type: type, publication_venue: venue } = publication;
+  const { doi, publication_date: date, publication_venue: venue, url } = publication;
 
-  if (typeof type === 'object') {
-    return <span />; // TODO
-  } else if (ARTICLE_TYPES.includes(type)) {
-    let authorsNode = null;
-    if (authors.length) {
-      if (authors.length > 6) {
-        authorsNode = (
-          <>
-            <span>
-              <AuthorList authors={authors.slice(0, 6)} />, <EtAl authors={authors.slice(6)} />
-            </span>{' '}
-          </>
-        );
-      } else {
-        authorsNode = <AuthorList authors={authors} />;
-      }
-      // TODO
-    }
+  // --- Title ---
+  let title = publication.title;
+  if (title.endsWith('.')) {
+    title += ' ';
+  } else {
+    title += '. ';
+  }
+  // ---
 
-    let title = publication.title;
-    if (title.endsWith('.')) {
-      title += ' ';
-    } else {
-      title += '. ';
-    }
-
-    let venueNode = null;
-    if (venue) {
-      venueNode = (
+  // --- Author list ---
+  let authorsNode = null;
+  if (authors.length) {
+    if (authors.length > 6) {
+      authorsNode = (
         <>
           <span>
-            {venue.url ? (
-              <a href={venue.url} target="_blank" rel="noopener noreferrer">
-                {venue.name}
-              </a>
-            ) : (
-              venue.name
-            )}
-            .
+            <AuthorList authors={authors.slice(0, 6)} />, <EtAl authors={authors.slice(6)} />
           </span>{' '}
         </>
       );
+    } else {
+      authorsNode = <AuthorList authors={authors} />;
     }
+  }
+  // ---
 
-    return (
-      <span>
-        {authorsNode}
-        {title}
-        {venueNode}
-        {date ? `${date}. ` : ''}
-        {doi ? (
-          <span>
-            DOI:{' '}
-            <a href={_doiUrl(doi)} target="_blank" rel="noopener noreferrer">
-              {doi}
+  // --- Publication venue ---
+  let venueNode = null;
+  if (venue) {
+    venueNode = (
+      <>
+        <span>
+          {venue.url ? (
+            <a href={venue.url} target="_blank" rel="noopener noreferrer">
+              {venue.name}
             </a>
-          </span>
-        ) : null}
+          ) : (
+            venue.name
+          )}
+          .
+        </span>{' '}
+      </>
+    );
+  }
+  // ---
+
+  // --- Web availability ---
+  let webAvailabilityNode = null;
+  if (doi) {
+    webAvailabilityNode = (
+      <span>
+        DOI:{' '}
+        <a href={_doiUrl(doi)} target="_blank" rel="noopener noreferrer">
+          {doi}
+        </a>
       </span>
     );
-  } else {
-    return <span />; // TODO
+  } else if (url) {
+    webAvailabilityNode = (
+      <span>
+        {t('dataset.publication.available_from')}:{' '}
+        <a href={url} target="_blank" rel="noopener noreferrer">
+          {url}
+        </a>
+      </span>
+    );
   }
+  // ---
+
+  return (
+    <span>
+      {authorsNode}
+      {title}
+      {venueNode}
+      {date ? `${date}. ` : ''}
+      {webAvailabilityNode}
+    </span>
+  );
 };
 
 const PublicationsDisplay = ({ publications }: { publications: Publication[] }) => {
