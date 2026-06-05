@@ -78,8 +78,8 @@
       "upper_inclusive": "Upper bound inclusive",
       "upper_exclusive": "Upper bound exclusive",
       "click_to_switch": "Click to switch",
-      "below_minimum": "Value must be ≥ {{min}}",
-      "above_maximum": "Value must be ≤ {{max}}"
+      "below_minimum": "Lower value must be ≥ {{min}}",
+      "above_maximum": "Upper value must be ≤ {{max}}"
     }
   },
   "OR": "OR",

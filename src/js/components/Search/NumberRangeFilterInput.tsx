@@ -136,14 +136,18 @@ const NumberRangeFilterInput = ({ definition, value, onChange }: Props) => {
         </Tooltip>
       </Space.Compact>
       {lowerBelowMin && (
-        <Typography.Text type="danger" className="text-xs">
-          {t('search.range.below_minimum', { min: enforcedMin })}
-        </Typography.Text>
+        <div>
+          <Typography.Text type="danger" className="text-xs">
+            {t('search.range.below_minimum', { min: enforcedMin })}
+          </Typography.Text>
+        </div>
       )}
       {upperAboveMax && (
-        <Typography.Text type="danger" className="text-xs">
-          {t('search.range.above_maximum', { max: enforcedMax })}
-        </Typography.Text>
+        <div>
+          <Typography.Text type="danger" className="text-xs">
+            {t('search.range.above_maximum', { max: enforcedMax })}
+          </Typography.Text>
+        </div>
       )}
     </div>
   );
