@@ -3,7 +3,6 @@ import { Outlet, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 import { Button, Flex, FloatButton, Grid, Layout } from 'antd';
 import { FilterOutlined } from '@ant-design/icons';
-import AboutContent from '@/components/AboutContent';
 import SiteHeader from '@/components/SiteHeader';
 import SiteSider from '@/components/SiteSider';
 import SiteFooter from '@/components/SiteFooter';
@@ -53,10 +52,8 @@ const DefaultLayout = () => {
     >
       <SiteHeader menuItems={menuItems} />
       <Layout id="content-layout">
-        <PageHeader catalogue={isCatalogue}>
-          {isCatalogue ? (
-            <AboutContent />
-          ) : (
+        {!isCatalogue && (
+          <PageHeader>
             <Flex
               style={{
                 paddingLeft: showSidebarToggle ? undefined : 'var(--content-padding-h)',
@@ -76,8 +73,8 @@ const DefaultLayout = () => {
               )}
               <ScopedTitle breadcrumbItems={breadcrumbItems} />
             </Flex>
-          )}
-        </PageHeader>
+          </PageHeader>
+        )}
         <Layout>
           <Layout>
             {!sidebarHidden && <SiteSider collapsed={collapsed} overlay={sidebarOverlay} />}

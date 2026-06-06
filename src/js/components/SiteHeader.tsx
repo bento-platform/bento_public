@@ -5,7 +5,7 @@ import { Button, Flex, Layout, Menu, type MenuProps, Space, Typography, theme } 
 import { useAuthState, useIsAuthenticated, useOpenIdConfig, usePerformAuth, usePerformSignOut } from 'bento-auth-js';
 
 import { RiTranslate } from 'react-icons/ri';
-import { ExportOutlined, LinkOutlined, LoginOutlined, LogoutOutlined } from '@ant-design/icons';
+import { LoginOutlined, LogoutOutlined } from '@ant-design/icons';
 
 import { useNavigateToRoot } from '@/hooks/navigation';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
@@ -14,9 +14,7 @@ import { getCurrentPage } from '@/utils/router';
 import { LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
 import {
   CLIENT_NAME,
-  PORTAL_URL,
   SHOW_HEADER_TITLE,
-  SHOW_PORTAL_LINK,
   SHOW_SIGN_IN,
   TRANSLATED,
   TRANSLATED_LOGO,
@@ -32,8 +30,6 @@ const { Header } = Layout;
 
 // dummy theme variable; in the future this could be used to do a 'dark mode' in combination with Ant's support
 const THEME: 'light' | 'dark' = 'light';
-
-const openPortalWindow = () => window.open(PORTAL_URL, '_blank');
 
 type OnClick = MenuProps['onClick'];
 type SiteHeaderProps = {
@@ -175,15 +171,6 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
               onClick={changeLanguage}
             >
               {isSmallScreen ? '' : LNGS_FULL_NAMES[LNG_CHANGE[language]]}
-            </Button>
-          )}
-          {SHOW_PORTAL_LINK && (
-            <Button type="text" className="header-button" icon={<LinkOutlined />} onClick={openPortalWindow}>
-              {isSmallScreen ? null : (
-                <>
-                  {t('Portal')} <ExportOutlined />
-                </>
-              )}
             </Button>
           )}
           {SHOW_SIGN_IN &&

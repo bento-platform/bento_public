@@ -1,67 +1,96 @@
 import { useMemo } from 'react';
-import { Col, Row, Space } from 'antd';
-import { SPACE_ITEM_WIDTH_100P_STYLES } from '@/constants/common';
+import { Divider, Empty, Button, Flex, Typography } from 'antd';
 import { useMetadata } from '@/features/metadata/hooks';
-import { useSmallScreen } from '@/hooks/useResponsiveContext';
-import Error from '@Util/Error';
-import CatalogueCard from './CatalogueCard';
+import { useCatalogueFilter, useCatalogueState } from '@/features/catalogue/hooks';
+import { useAppDispatch } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
+import { clearAll } from '@/features/catalogue/catalogue.store';
 import { RequestStatus } from '@/types/requests';
+import Error from '@Util/Error';
+import CatalogueBanner from './CatalogueBanner';
+import CatalogueRail from './CatalogueRail';
+import CatalogueToolbar from './CatalogueToolbar';
+import CatalogueInsights from './CatalogueInsights';
+import CatalogueCard from './CatalogueCard';
 
-const GRID_THRESHOLD = 3;
+const { Text } = Typography;
 
 const Catalogue = () => {
-  const isSmallScreen = useSmallScreen();
+  const t = useTranslationFn();
+  const dispatch = useAppDispatch();
   const { projects, projectsStatus, projectsError } = useMetadata();
+  const { view, insightsOpen } = useCatalogueState();
 
-  const flatDatasets = useMemo(() => {
-    const real = projects.flatMap((p) => (p.datasets ?? []).map((d) => ({ dataset: d, project: p })));
-    // TESTING ONLY: set true to double datasets and force grid mode with a small catalogue
-    const DUPLICATE_DATASETS_FOR_GRID_TESTING = true;
-    if (DUPLICATE_DATASETS_FOR_GRID_TESTING) {
-      return [
-        ...real,
-        ...real.map(({ dataset, project }) => ({ dataset: { ...dataset, identifier: dataset.identifier + '-dup' }, project })),
-      ];
-    }
-    return real;
-  }, [projects]);
+  const allDatasets = useMemo(
+    () => projects.flatMap((p) => (p.datasets ?? []).map((d) => ({ dataset: d, project: p }))),
+    [projects]
+  );
 
-  const isGridMode = flatDatasets.length > GRID_THRESHOLD;
+  const { filtered, facetOptions } = useCatalogueFilter(allDatasets);
 
-  const errorNode =
-    projectsStatus === RequestStatus.Rejected ? (
-      <Error message="project_fetch" description={projectsError || undefined} />
-    ) : null;
+  const gridStyle: React.CSSProperties =
+    view === 'grid'
+      ? { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(290px, 1fr))', gap: 14 }
+      : { display: 'flex', flexDirection: 'column', gap: 14 };
 
   return (
-    <div
-      className="w-full"
-      /* Double-up on space between content + footer since the solid colour block (with PCGL footer) looks congested
-         otherwise: */
-      style={{ paddingBottom: 'var(--content-padding-v)' }}
-    >
-      {errorNode}
-      {isGridMode ? (
-        <Row gutter={[16, 16]} style={{ maxWidth: 1200, margin: '0 auto' }}>
-          {flatDatasets.map(({ dataset, project }) => (
-            <Col key={dataset.identifier} xs={24} md={12}>
-              <CatalogueCard dataset={dataset} project={project} compact />
-            </Col>
-          ))}
-        </Row>
-      ) : (
-        <Space
-          align="center"
-          direction="vertical"
-          size={isSmallScreen ? 'small' : 'large'}
-          className="w-full"
-          styles={SPACE_ITEM_WIDTH_100P_STYLES}
-        >
-          {flatDatasets.map(({ dataset, project }) => (
-            <CatalogueCard dataset={dataset} project={project} key={dataset.identifier} />
-          ))}
-        </Space>
+    <div style={{ paddingBottom: 'var(--content-padding-v)', maxWidth: 1240, margin: '0 auto', width: '100%' }}>
+      {projectsStatus === RequestStatus.Rejected && (
+        <Error message="project_fetch" description={projectsError || undefined} />
       )}
+
+      {/* Banner */}
+      <div style={{ marginBottom: 16 }}>
+        <CatalogueBanner filteredDatasets={filtered} />
+      </div>
+
+      {/* Body: rail + main */}
+      <Flex gap={20} align="flex-start">
+        {/* Left: facet rail */}
+        <CatalogueRail totalCount={filtered.length} facetOptions={facetOptions} />
+
+        {/* Right: toolbar + insights + grid */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <CatalogueToolbar filteredCount={filtered.length} />
+
+          {insightsOpen && (
+            <div style={{ marginTop: 14 }}>
+              <CatalogueInsights filteredDatasets={filtered} />
+            </div>
+          )}
+
+          {/* DATASETS separator */}
+          <Flex align="center" gap={8} style={{ marginTop: 18, marginBottom: 14 }}>
+            <Text
+              style={{
+                fontSize: 13,
+                fontWeight: 700,
+                textTransform: 'uppercase',
+                letterSpacing: '0.06em',
+                color: 'rgba(0,0,0,0.65)',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {t('Datasets')}
+            </Text>
+            <Divider style={{ margin: 0, flex: 1 }} />
+          </Flex>
+
+          {filtered.length === 0 ? (
+            <Empty description={t('No datasets match your filters')}>
+              <Button type="primary" onClick={() => dispatch(clearAll())}>
+                {t('Clear all filters')}
+              </Button>
+            </Empty>
+          ) : (
+            <div style={gridStyle}>
+              {filtered.map(({ dataset, project }) => (
+                <CatalogueCard key={dataset.identifier} dataset={dataset} project={project} />
+              ))}
+            </div>
+          )}
+        </div>
+      </Flex>
     </div>
   );
 };
