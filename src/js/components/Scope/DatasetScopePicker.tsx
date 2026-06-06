@@ -25,7 +25,7 @@ const DatasetScopePicker = ({ parentProject }: DatasetScopePickerProps) => {
   const showClearDataset = useMemo(
     () =>
       // only show the clear dataset option if the selected dataset belongs to the parentProject
-      scopeObj.dataset && parentProject.datasets_v2.some((d) => d.identifier == scopeObj.dataset),
+      scopeObj.dataset && parentProject.datasets.some((d) => d.identifier == scopeObj.dataset),
     [scopeObj, parentProject]
   );
   const showSelectProject = !selectedScope.fixedProject && parentProject.identifier != scopeObj.project;
@@ -50,7 +50,7 @@ const DatasetScopePicker = ({ parentProject }: DatasetScopePickerProps) => {
         {showClearDataset && <a onClick={navigateToParentProject}>{t('Clear dataset selection')}</a>}
       </Space>
       <List
-        dataSource={parentProject.datasets_v2}
+        dataSource={parentProject.datasets}
         bordered
         renderItem={(d) => (
           <Dataset

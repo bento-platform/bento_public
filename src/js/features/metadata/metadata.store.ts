@@ -101,9 +101,9 @@ const metadata = createSlice({
       const projects = payload?.results ?? [];
       state.projects = projects;
       state.projectsByID = Object.fromEntries(projects.map((p) => [p.identifier, p]));
-      state.datasetsByID = Object.fromEntries(projects.flatMap((p) => p.datasets_v2.map((d) => [d.identifier, d])));
+      state.datasetsByID = Object.fromEntries(projects.flatMap((p) => p.datasets.map((d) => [d.identifier, d])));
       state.datasetToProjectMap = Object.fromEntries(
-        projects.flatMap((p) => p.datasets_v2.map((d) => [d.identifier, p.identifier]))
+        projects.flatMap((p) => p.datasets.map((d) => [d.identifier, p.identifier]))
       );
       state.projectsStatus = RequestStatus.Fulfilled;
       state.projectsError = '';

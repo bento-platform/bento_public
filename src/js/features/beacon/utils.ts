@@ -53,7 +53,7 @@ export const computeNetworkResults = (responses: BeaconNetworkResponses) => {
 
   Object.values(responses).forEach(({ results }) => {
     overview.individualCount += results.individualCount ?? 0;
-    overview.biosampleCount += results.experimentCount ?? 0;
+    overview.biosampleCount += results.biosampleCount ?? 0;
     overview.experimentCount += results.experimentCount ?? 0;
     overview.biosampleChartData = mergeCharts(overview.biosampleChartData, results.biosampleChartData ?? []);
     overview.experimentChartData = mergeCharts(overview.experimentChartData, results.experimentChartData ?? []);
