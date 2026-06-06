@@ -14,7 +14,7 @@ const Catalogue = () => {
   const { projects, projectsStatus, projectsError } = useMetadata();
 
   const flatDatasets = useMemo(() => {
-    const real = projects.flatMap((p) => p.datasets_v2.map((d) => ({ dataset: d, project: p })));
+    const real = projects.flatMap((p) => (p.datasets ?? []).map((d) => ({ dataset: d, project: p })));
     // TESTING ONLY: set true to double datasets and force grid mode with a small catalogue
     const DUPLICATE_DATASETS_FOR_GRID_TESTING = true;
     if (DUPLICATE_DATASETS_FOR_GRID_TESTING) {
