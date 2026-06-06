@@ -6,7 +6,6 @@ import { FilterOutlined } from '@ant-design/icons';
 import SiteHeader from '@/components/SiteHeader';
 import SiteSider from '@/components/SiteSider';
 import SiteFooter from '@/components/SiteFooter';
-import PageHeader from '@/components/PageHeader';
 import PcglFooter from '@/components/Pcgl/PcglFooter';
 import ScopedTitle from '@/components/Scope/ScopedTitle';
 import { useSelectedScope, useScopeHasData } from '@/features/metadata/hooks';
@@ -52,28 +51,29 @@ const DefaultLayout = () => {
     >
       <SiteHeader menuItems={menuItems} />
       <Layout id="content-layout">
-        {!isCatalogue && (
-          <PageHeader>
-            <Flex
-              style={{
-                paddingLeft: showSidebarToggle ? undefined : 'var(--content-padding-h)',
-                paddingRight: 'var(--content-padding-h)',
-              }}
-            >
-              {showSidebarToggle && (
-                <Button
-                  id="page-header__sidebar-toggle"
-                  className={sidebarOverlayShown ? 'active' : ''}
-                  icon={<FilterOutlined />}
-                  color="default"
-                  variant="filled"
-                  size="large"
-                  onMouseDown={() => setCollapsed((c) => !c)}
-                />
-              )}
-              <ScopedTitle breadcrumbItems={breadcrumbItems} />
-            </Flex>
-          </PageHeader>
+        {!isCatalogue && !titleHidden && (
+          <Flex
+            id="page-header"
+            style={{
+              paddingLeft: showSidebarToggle ? undefined : 'var(--content-padding-h)',
+              paddingRight: 'var(--content-padding-h)',
+              paddingTop: 'var(--content-padding-v)',
+              paddingBottom: 'var(--content-padding-v)',
+            }}
+          >
+            {showSidebarToggle && (
+              <Button
+                id="page-header__sidebar-toggle"
+                className={sidebarOverlayShown ? 'active' : ''}
+                icon={<FilterOutlined />}
+                color="default"
+                variant="filled"
+                size="large"
+                onMouseDown={() => setCollapsed((c) => !c)}
+              />
+            )}
+            <ScopedTitle breadcrumbItems={breadcrumbItems} />
+          </Flex>
         )}
         <Layout>
           <Layout>
