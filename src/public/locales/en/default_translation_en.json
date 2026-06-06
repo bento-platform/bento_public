@@ -534,6 +534,11 @@
     "access_methods": "Access Methods"
   },
   "pcgl": {
+    "banner": {
+      "eyebrow": "PAN-CANADIAN GENOME LIBRARY",
+      "title": "Data Catalogue",
+      "subtitle": "Explore datasets from the Pan-Canadian Genome Library"
+    },
     "footer": {
       "logo_alt": "Pan-Canadian Genome Library logo",
       "cihr_logo_alt": "Canadian Institutes of Health Research logo",

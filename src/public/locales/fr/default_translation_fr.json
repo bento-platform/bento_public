@@ -527,6 +527,11 @@
     "access_methods": "Méthodes d'accès"
   },
   "pcgl": {
+    "banner": {
+      "eyebrow": "BIBLIOTHÈQUE GÉNOMIQUE PANCANADIENNE",
+      "title": "Catalogue de données",
+      "subtitle": "Explorez les ensembles de données de la Bibliothèque génomique pancanadienne"
+    },
     "footer": {
       "logo_alt": "Logo de la Bibliothèque génomique pancanadienne",
       "cihr_logo_alt": "Logo des Instituts de recherche en santé du Canada",

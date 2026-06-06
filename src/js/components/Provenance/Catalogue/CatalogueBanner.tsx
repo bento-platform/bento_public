@@ -60,11 +60,11 @@ const CatalogueBanner = ({ filteredDatasets }: CatalogueBannerProps) => {
                 fontWeight: 600,
               }}
             >
-              {t('PAN-CANADIAN GENOME LIBRARY')}
+              {t('pcgl.banner.eyebrow')}
             </Text>
-            <Text style={{ color: '#fff', fontSize: 23, fontWeight: 600, lineHeight: 1.2 }}>{t('Data Catalogue')}</Text>
+            <Text style={{ color: '#fff', fontSize: 23, fontWeight: 600, lineHeight: 1.2 }}>{t('pcgl.banner.title')}</Text>
             <Text style={{ color: 'rgba(255,255,255,0.78)', fontSize: 13.5 }}>
-              {t('Explore datasets from the Pan-Canadian Genome Library')}
+              {t('pcgl.banner.subtitle')}
             </Text>
           </Flex>
         ) : (
@@ -73,9 +73,9 @@ const CatalogueBanner = ({ filteredDatasets }: CatalogueBannerProps) => {
           </div>
         )}
         <Space size={28} wrap>
-          <StatItem icon={<DatabaseOutlined />} value={fmt(datasetCount)} label={t(datasetCount === 1 ? 'dataset' : 'datasets')} />
-          <StatItem icon={<TeamOutlined />} value={fmt(individualCount)} label={t('individuals')} />
-          <StatItem icon={<ExperimentOutlined />} value={fmt(biosampleCount)} label={t('biosamples')} />
+          <StatItem icon={<DatabaseOutlined />} value={fmt(datasetCount)} label={t('entities.dataset', { count: datasetCount }).toLowerCase()} />
+          <StatItem icon={<TeamOutlined />} value={fmt(individualCount)} label={t('entities.individual', { count: individualCount }).toLowerCase()} />
+          <StatItem icon={<ExperimentOutlined />} value={fmt(biosampleCount)} label={t('entities.biosample', { count: biosampleCount }).toLowerCase()} />
         </Space>
       </Flex>
     </div>
