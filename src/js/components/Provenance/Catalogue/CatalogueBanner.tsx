@@ -43,6 +43,8 @@ const CatalogueBanner = ({ filteredDatasets }: CatalogueBannerProps) => {
       if (counts) {
         individualCount += typeof counts.individual === 'number' ? counts.individual : 0;
         biosampleCount += typeof counts.biosample === 'number' ? counts.biosample : 0;
+        // TODO: PCGL need support from backend for this
+        // { count: nWGS, entity: 'whole_genome_sequence' }
       }
     }
     return { datasetCount: filteredDatasets.length, individualCount, biosampleCount };
