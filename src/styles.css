@@ -441,6 +441,48 @@ body {
 }
 
 
+/* BEGIN catalogue banner */
+
+.catalogue-banner {
+  border-radius: 10px;
+  overflow: hidden;
+  min-height: 104px;
+  padding: 18px 26px;
+}
+
+.catalogue-banner.pcgl {
+  background-size: cover;
+  background-position: center;
+}
+
+.catalogue-banner.default {
+  background: #fff;
+  border: 1px solid #f0f0f0;
+}
+
+.catalogue-banner__stat-icon {
+  font-size: 20px;
+}
+
+.catalogue-banner.pcgl .catalogue-banner__stat-icon { color: rgba(255,255,255,0.85); }
+.catalogue-banner.default .catalogue-banner__stat-icon { color: #000; }
+
+.catalogue-banner__stat-value {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.catalogue-banner.pcgl .catalogue-banner__stat-value { color: #fff; }
+
+.catalogue-banner__stat-label {
+  font-size: 12px;
+}
+
+.catalogue-banner.pcgl .catalogue-banner__stat-label { color: rgba(255,255,255,0.70); }
+
+/* END catalogue banner */
+
 /* BEGIN about HTML styling */
 
 /* Elements which are the first child of the about content container shouldn't have the default top margin */

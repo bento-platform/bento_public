@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Card, Flex, Tag, Typography } from 'antd';
+import { Button, Card, Flex, Tag, Typography, theme } from 'antd';
 import { ExperimentOutlined, PieChartOutlined, SolutionOutlined, TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
 
@@ -46,6 +46,8 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
   const t = useTranslationFn();
   const navigateToScope = useNavigateToScope();
   const [provenanceModalOpen, setProvenanceModalOpen] = useState(false);
+
+  const { token } = theme.useToken();
 
   const { identifier, title, description } = dataset;
   const keywords = (dataset.keywords ?? []).map(keywordLabel).slice(0, MAX_KEYWORDS);
@@ -166,8 +168,8 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
                 style={{
                   fontSize: 11,
                   borderRadius: 4,
-                  background: 'rgba(5,74,116,0.10)',
-                  color: '#054A74',
+                  background: token.colorPrimaryBg,
+                  color: token.colorPrimary,
                   border: 'none',
                   margin: 0,
                 }}
@@ -203,7 +205,7 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
           <Button
             type="primary"
             icon={<PieChartOutlined />}
-            style={{ flex: 1, background: '#054A74', borderColor: '#054A74' }}
+            style={{ flex: 1 }}
             onClick={() => navigateToScope({ project: project.identifier, dataset: identifier }, BentoRoute.Overview)}
           >
             {t('Explore')}
