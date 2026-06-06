@@ -48,7 +48,7 @@ const CatalogueBanner = ({ filteredDatasets }: CatalogueBannerProps) => {
       className={clsx('catalogue-banner', PCGL_MODE ? 'pcgl' : 'default')}
       style={PCGL_MODE ? { backgroundImage: `linear-gradient(90deg, rgba(4,30,48,0.80), rgba(4,30,48,0.34)), url('/public/assets/banner-bg.png')` } : undefined}
     >
-      <Flex justify="space-between" align="center" style={{ height: '100%' }} wrap gap={PCGL_MODE ? 16 : 24}>
+      <Flex justify="space-between" align="center" style={{ width: '100%' }} wrap gap={PCGL_MODE ? 16 : 24}>
         {PCGL_MODE ? (
           <Flex vertical gap={4}>
             <Text
