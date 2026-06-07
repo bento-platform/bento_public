@@ -1,4 +1,4 @@
-import { Card, Descriptions, Flex, Tag, Typography } from 'antd';
+import { Card, Descriptions, Flex, Tag, Typography, theme } from 'antd';
 import { PointMap } from 'bento-charts/dist/maps';
 
 import BaseProvenanceTable from './Tables/BaseProvenanceTable';
@@ -21,6 +21,24 @@ const { Paragraph, Text, Title } = Typography;
 // ---- Helpers ----
 
 const keywordLabel = (k: string | OntologyTerm): string => (typeof k === 'string' ? k : k.label);
+
+const ProvenanceTag = ({ children }: { children: React.ReactNode }) => {
+  const { token } = theme.useToken();
+  return (
+    <Tag
+      style={{
+        fontSize: 11,
+        borderRadius: 4,
+        background: token.colorPrimaryBg,
+        color: token.colorPrimary,
+        border: `1px solid ${token.colorPrimaryBorder}`,
+        margin: 0,
+      }}
+    >
+      {children}
+    </Tag>
+  );
+};
 
 const SectionTitle = ({ title }: { title: string }) => {
   const t = useTranslationFn();
@@ -76,11 +94,7 @@ const StakeholdersTable = ({ stakeholders }: { stakeholders: PersonOrOrganizatio
           title: t('Roles'),
           key: 'roles',
           render: (_, row) =>
-            row.roles.map((r, i) => (
-              <Tag key={i} color="cyan">
-                {t(r)}
-              </Tag>
-            )),
+            row.roles.map((r, i) => <ProvenanceTag key={i}>{t(r)}</ProvenanceTag>),
         },
       ]}
     />
@@ -365,20 +379,12 @@ export const DatasetProvenanceContent = ({ dataset }: { dataset: Dataset }) => {
           ) : null}
           {taxa.length > 0 && (
             <Item span={24} label={<DescLabel title={t('Taxa')} />}>
-              {taxa.map((k, i) => (
-                <Tag key={i} color="geekblue">
-                  {t(keywordLabel(k))}
-                </Tag>
-              ))}
+              {taxa.map((k, i) => <ProvenanceTag key={i}>{t(keywordLabel(k))}</ProvenanceTag>)}
             </Item>
           )}
           {keywords.length > 0 && (
             <Item span={24} label={<DescLabel title={t('Keywords')} />}>
-              {keywords.map((k, i) => (
-                <Tag key={i} color="cyan">
-                  {t(keywordLabel(k))}
-                </Tag>
-              ))}
+              {keywords.map((k, i) => <ProvenanceTag key={i}>{t(keywordLabel(k))}</ProvenanceTag>)}
             </Item>
           )}
         </Descriptions>

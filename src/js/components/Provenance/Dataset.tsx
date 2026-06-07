@@ -1,6 +1,6 @@
 import { type ReactNode, useCallback, useMemo, useState } from 'react';
 
-import { Avatar, Button, Card, Flex, List, Popover, Space, Tag, Typography } from 'antd';
+import { Avatar, Button, Card, Flex, List, Popover, Space, Tag, Typography, theme } from 'antd';
 import { ExpandAltOutlined, PieChartOutlined, SolutionOutlined } from '@ant-design/icons';
 import { FaDatabase } from 'react-icons/fa';
 
@@ -26,10 +26,21 @@ const keywordLabel = (k: string | OntologyTerm): string => (typeof k === 'string
 
 const TagList = ({ keywords }: { keywords?: (string | OntologyTerm)[] }) => {
   const t = useTranslationFn();
+  const { token } = theme.useToken();
   return (
     <Space size={[0, 8]} align="start" wrap className="w-full">
       {keywords?.map((k, i) => (
-        <Tag key={i} color="cyan" style={i === keywords.length - 1 ? { marginInlineEnd: 0 } : undefined}>
+        <Tag
+          key={i}
+          style={{
+            fontSize: 11,
+            borderRadius: 4,
+            background: token.colorPrimaryBg,
+            color: token.colorPrimary,
+            border: `1px solid ${token.colorPrimaryBorder}`,
+            margin: 0,
+          }}
+        >
           {t(keywordLabel(k))}
         </Tag>
       ))}
