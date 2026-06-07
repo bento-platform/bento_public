@@ -10,12 +10,9 @@ import AboutContent from '@/components/AboutContent';
 const { Text } = Typography;
 
 const StatItem = ({ icon, value, label }: { icon: React.ReactNode; value: string; label: string }) => (
-  <Space size={6} align="center">
+  <Space size={8} align="center" style={{ whiteSpace: 'nowrap' }}>
     <span className="catalogue-banner__stat-icon">{icon}</span>
-    <Flex vertical gap={0}>
-      <Text className="catalogue-banner__stat-value">{value}</Text>
-      <Text className="catalogue-banner__stat-label" type="secondary">{label}</Text>
-    </Flex>
+    <Text className="catalogue-banner__stat-value">{value} {label}</Text>
   </Space>
 );
 

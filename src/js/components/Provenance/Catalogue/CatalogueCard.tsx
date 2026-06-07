@@ -93,10 +93,10 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
             <span
               style={{
                 flexShrink: 0,
-                fontSize: 12,
+                fontSize: 11,
                 fontWeight: 600,
-                padding: '2px 10px',
-                borderRadius: 20,
+                padding: '1px 8px',
+                borderRadius: 10,
                 color: statusStyle.color,
                 background: statusStyle.bg,
                 border: `1px solid ${statusStyle.border}`,

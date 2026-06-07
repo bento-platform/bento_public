@@ -472,16 +472,11 @@ body {
 .catalogue-banner__stat-value {
   font-size: 20px;
   font-weight: 600;
-  line-height: 1.2;
+  white-space: nowrap;
 }
 
 .catalogue-banner.pcgl .catalogue-banner__stat-value { color: #fff; }
-
-.catalogue-banner__stat-label {
-  font-size: 12px;
-}
-
-.catalogue-banner.pcgl .catalogue-banner__stat-label { color: rgba(255,255,255,0.70); }
+.catalogue-banner.default .catalogue-banner__stat-value { color: rgba(0,0,0,0.88); }
 
 /* END catalogue banner */
 
