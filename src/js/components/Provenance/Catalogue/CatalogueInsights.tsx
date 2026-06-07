@@ -91,6 +91,14 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
           selectedValues={sets.dataTypes}
           onSegmentClick={handleClick}
         />
+        <BarChart
+          title="By keyword"
+          data={keywordData.slice(0, 5)}
+          colors={keywordColors}
+          facetId="keywords"
+          selectedValues={sets.keywords}
+          onSegmentClick={handleClick}
+        />
         <DonutChart
           title="By project"
           data={programData}
@@ -99,14 +107,6 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
           centerLabel="datasets"
           facetId="programs"
           selectedValues={sets.programs}
-          onSegmentClick={handleClick}
-        />
-        <BarChart
-          title="By keyword"
-          data={keywordData.slice(0, 5)}
-          colors={keywordColors}
-          facetId="keywords"
-          selectedValues={sets.keywords}
           onSegmentClick={handleClick}
         />
       </Flex>
