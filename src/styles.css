@@ -513,6 +513,140 @@ body {
 
 /* END catalogue charts */
 
+/* BEGIN catalogue rail */
+
+.catalogue-rail {
+  width: 236px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 80px;
+  align-self: flex-start;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #F0F0F0;
+  padding: 12px 14px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.catalogue-rail__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.catalogue-rail__title {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.catalogue-rail__count {
+  font-size: 12px;
+  color: rgba(0,0,0,0.45);
+}
+
+.facet-section {
+  border-bottom: 1px solid #F0F0F0;
+}
+
+.facet-section--expanded {
+  padding-bottom: 8px;
+}
+
+.facet-head {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.facet-head__label {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(0,0,0,0.65);
+}
+
+.facet-head__icon {
+  font-size: 10px;
+  color: rgba(0,0,0,0.45);
+}
+
+.facet-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-bottom: 4px;
+}
+
+.facet-chips--scroll {
+  max-height: 128px;
+  overflow-y: auto;
+}
+
+.fchip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 13px;
+  font-size: 12.5px;
+  font-family: inherit;
+  line-height: 1.4;
+  padding: 3px 8px 3px 10px;
+  border: 1px solid #D9D9D9;
+  background: #fff;
+  color: rgba(0,0,0,0.65);
+  cursor: pointer;
+  margin: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.fchip:hover:not(:disabled) {
+  border-color: #054A74;
+  color: #054A74;
+}
+
+.fchip--on {
+  background: #054A74;
+  border-color: #054A74;
+  color: #fff;
+  font-weight: 500;
+}
+
+.fchip:disabled {
+  opacity: 0.38;
+  cursor: default;
+}
+
+.fchip__label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fchip__count {
+  margin-left: 5px;
+  font-size: 11px;
+  color: rgba(0,0,0,0.45);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.fchip--on .fchip__count {
+  color: rgba(255,255,255,0.80);
+}
+
+/* END catalogue rail */
+
 /* BEGIN about HTML styling */
 
 /* Elements which are the first child of the about content container shouldn't have the default top margin */
