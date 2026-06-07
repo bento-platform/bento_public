@@ -8,6 +8,7 @@ import type { DatasetWithProject } from '@/features/catalogue/hooks';
 import { getLabel, normaliseStatus } from '@/features/catalogue/hooks';
 import DonutChart from './Charts/DonutChart';
 import BarChart from './Charts/BarChart';
+import { PCGL_MODE } from '@/config';
 import {
   STATUS_CHART_COLORS,
   COLOR_PRIMARY,
@@ -81,22 +82,25 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
           selectedValues={sets.statuses}
           onSegmentClick={handleClick}
         />
-        <BarChart
-          title="By data type"
-          data={typeData.slice(0, 5)}
-          colors={typeColors}
-          facetId="dataTypes"
-          selectedValues={sets.dataTypes}
-          onSegmentClick={handleClick}
-        />
-        <BarChart
-          title="By keyword"
-          data={keywordData.slice(0, 5)}
-          colors={keywordColors}
-          facetId="keywords"
-          selectedValues={sets.keywords}
-          onSegmentClick={handleClick}
-        />
+        {PCGL_MODE ? (
+          <BarChart
+            title="By data type"
+            data={typeData.slice(0, 5)}
+            colors={typeColors}
+            facetId="dataTypes"
+            selectedValues={sets.dataTypes}
+            onSegmentClick={handleClick}
+          />
+        ) : (
+          <BarChart
+            title="By keyword"
+            data={keywordData.slice(0, 5)}
+            colors={keywordColors}
+            facetId="keywords"
+            selectedValues={sets.keywords}
+            onSegmentClick={handleClick}
+          />
+        )}
         <DonutChart
           title="By project"
           data={programData}
