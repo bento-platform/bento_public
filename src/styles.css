@@ -485,6 +485,38 @@ body {
 
 /* END catalogue banner */
 
+/* BEGIN catalogue charts */
+
+.chart-card__title {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: rgba(0,0,0,0.65);
+  margin-bottom: 12px;
+}
+.donut-wrap { display: flex; align-items: center; gap: 12px; }
+.donut { flex: none; }
+.donut-num { font-size: 18px; font-weight: 700; fill: rgba(0,0,0,0.88); text-anchor: middle; }
+.donut-lbl { font-size: 8px; fill: rgba(0,0,0,0.45); text-anchor: middle; text-transform: uppercase; letter-spacing: 0.05em; }
+.chart-legend { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0; }
+.legend-row { display: flex; align-items: center; gap: 7px; font-size: 12px; }
+.legend-lbl { flex: 1; color: rgba(0,0,0,0.65); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.legend-val { font-weight: 600; font-variant-numeric: tabular-nums; }
+.bars { display: flex; flex-direction: column; gap: 8px; }
+.bar-row { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+.bar-label { width: 84px; color: rgba(0,0,0,0.65); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: none; }
+.bar-track { flex: 1; height: 7px; background: #F0F0F0; border-radius: 5px; overflow: hidden; }
+.bar-fill { display: block; height: 100%; border-radius: 5px; min-width: 2px; transition: width 0.35s ease; }
+.bar-value { width: 42px; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; flex: none; }
+.legend-row.clk, .bar-row.clk { cursor: pointer; border-radius: 6px; padding: 3px 6px; margin: -3px -6px; transition: background 0.12s; }
+.legend-row.clk:hover, .bar-row.clk:hover { background: rgba(5,74,116,0.07); }
+.legend-row.sel, .bar-row.sel { background: rgba(5,74,116,0.10); font-weight: 600; }
+.legend-row.sel .legend-lbl, .bar-row.sel .bar-label { color: #054A74; }
+
+/* END catalogue charts */
+
 /* BEGIN about HTML styling */
 
 /* Elements which are the first child of the about content container shouldn't have the default top margin */

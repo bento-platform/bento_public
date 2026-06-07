@@ -9,7 +9,7 @@ export interface DatasetWithProject {
   project: Project;
 }
 
-const getLabel = (v: string | { label: string }) => (typeof v === 'string' ? v : v.label);
+export const getLabel = (v: string | { label: string }) => (typeof v === 'string' ? v : v.label);
 
 export function getDatasetFacetValues({ dataset, project }: DatasetWithProject): Record<FacetId, string[]> {
   return {
