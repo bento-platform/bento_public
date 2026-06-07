@@ -165,7 +165,7 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
 
   const statusData = buildCounts(filteredDatasets, ({ dataset }) => (dataset.study_status ? [dataset.study_status] : []));
   const typeData = buildCounts(filteredDatasets, ({ dataset }) => dataset.domain ?? []);
-  const programData = buildCounts(filteredDatasets, ({ dataset }) => (dataset.program_name ? [dataset.program_name] : []));
+  const programData = buildCounts(filteredDatasets, ({ project }) => [project.title]);
 
   const handleClick = (facetId: FacetId, value: string) => {
     dispatch(toggleFacetValue({ facet: facetId, value }));
@@ -205,7 +205,7 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
           onSegmentClick={handleClick}
         />
         <DonutChart
-          title="By program"
+          title={t('By project')}
           data={programData}
           colors={PROGRAM_COLORS}
           facetId="programs"

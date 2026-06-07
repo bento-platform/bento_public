@@ -14,7 +14,7 @@ interface FacetConfig {
 }
 
 const FACETS: FacetConfig[] = [
-  { id: 'programs', title: 'Program' },
+  { id: 'programs', title: 'Project' },
   { id: 'dataTypes', title: 'Data type' },
   { id: 'assays', title: 'Assay' },
   { id: 'organisms', title: 'Organism' },
@@ -77,10 +77,14 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
                 opacity: count === 0 && !selected ? 0.4 : 1,
                 pointerEvents: count === 0 && !selected ? 'none' : 'auto',
                 margin: 0,
+                maxWidth: '100%',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
               }}
             >
               {value}
-              <span style={{ marginLeft: 4, fontSize: 11, opacity: 0.7 }}>{count}</span>
+              <span style={{ marginLeft: 4, fontSize: 11, opacity: 0.7, flexShrink: 0 }}>{count}</span>
             </Tag.CheckableTag>
           ))}
         </div>
@@ -113,6 +117,7 @@ const CatalogueRail = ({ totalCount, facetOptions }: CatalogueRailProps) => {
         padding: '12px 14px',
         maxHeight: 'calc(100vh - 100px)',
         overflowY: 'auto',
+        overflowX: 'hidden',
       }}
     >
       <Flex justify="space-between" align="center" style={{ marginBottom: 10 }}>

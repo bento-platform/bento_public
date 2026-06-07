@@ -11,9 +11,9 @@ export interface DatasetWithProject {
 
 const getLabel = (v: string | { label: string }) => (typeof v === 'string' ? v : v.label);
 
-export function getDatasetFacetValues(dataset: Dataset): Record<FacetId, string[]> {
+export function getDatasetFacetValues({ dataset, project }: DatasetWithProject): Record<FacetId, string[]> {
   return {
-    programs: dataset.program_name ? [dataset.program_name] : [],
+    programs: [project.title],
     dataTypes: dataset.domain ?? [],
     assays: (() => {
       const raw = dataset.extra_properties?.['assays'];
@@ -30,7 +30,6 @@ export function getDatasetFacetValues(dataset: Dataset): Record<FacetId, string[
 const FACET_ORDER: Partial<Record<FacetId, string[]>> = {
   statuses: ['ONGOING', 'COMPLETED'],
   access: ['Open', 'Registered', 'Controlled'],
-  programs: ['MOHCCN', 'CPHI'],
 };
 
 export function useCatalogueState() {
@@ -59,7 +58,7 @@ export function useCatalogueFilter(items: DatasetWithProject[]): {
         if (fid === skipFacet) continue;
         const selected = sets[fid];
         if (selected.length === 0) continue;
-        const vals = getDatasetFacetValues(dataset)[fid];
+        const vals = getDatasetFacetValues(item)[fid];
         if (!vals.some((v) => selected.includes(v))) return false;
       }
       return true;
@@ -90,7 +89,7 @@ export function useCatalogueFilter(items: DatasetWithProject[]): {
       const base = items.filter((item) => matchesItem(item, facetId));
       const countMap = new Map<string, number>();
       for (const item of base) {
-        for (const v of getDatasetFacetValues(item.dataset)[facetId]) {
+        for (const v of getDatasetFacetValues(item)[facetId]) {
           countMap.set(v, (countMap.get(v) ?? 0) + 1);
         }
       }
