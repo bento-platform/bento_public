@@ -1,6 +1,6 @@
 // Primary brand colour (PCGL dark blue)
-export const COLOR_PRIMARY = '#054A74';
-export const COLOR_PRIMARY_BG = 'rgba(5,74,116,0.10)';
+export const COLOR_PRIMARY = 'var(--cat-primary)';
+export const COLOR_PRIMARY_BG = 'var(--cat-primary-bg)';
 
 // Status badge styles (card pill)
 export const STATUS_STYLE: Record<string, { color: string; bg: string; border: string }> = {
@@ -22,14 +22,14 @@ export const COLOR_BAR_DEFAULT = '#1677FF';
 export const COLOR_DONUT_TRACK = '#EEE';
 
 // Neutral text
-export const COLOR_TEXT_SECONDARY = 'rgba(0,0,0,0.65)';
-export const COLOR_TEXT_MUTED = 'rgba(0,0,0,0.45)';
+export const COLOR_TEXT_SECONDARY = 'var(--cat-text-secondary)';
+export const COLOR_TEXT_MUTED = 'var(--cat-text-muted)';
 
 // Borders and surfaces
 export const COLOR_WHITE = '#fff';
-export const COLOR_BORDER = '#F0F0F0';
+export const COLOR_BORDER = 'var(--cat-border)';
 export const COLOR_BORDER_HOVER = '#E2E8EE';
-export const COLOR_BORDER_BASE = '#D9D9D9';
+export const COLOR_BORDER_BASE = 'var(--cat-border-base)';
 export const COLOR_SURFACE_SUBTLE = '#F5F5F5';
 
 // Card shadows (embed colour values)
