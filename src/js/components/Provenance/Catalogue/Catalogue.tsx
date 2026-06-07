@@ -5,6 +5,7 @@ import { useCatalogueFilter, useCatalogueState } from '@/features/catalogue/hook
 import { useAppDispatch } from '@/hooks';
 import { useTranslationFn } from '@/hooks';
 import { clearAll, setProjectColors } from '@/features/catalogue/catalogue.store';
+import { useCatalogueUrlSync } from '@/features/catalogue/useCatalogueUrlSync';
 import { assignColors } from '@/features/catalogue/hooks';
 import { RequestStatus } from '@/types/requests';
 import Error from '@Util/Error';
@@ -17,6 +18,8 @@ import CatalogueCard from './CatalogueCard';
 const { Text } = Typography;
 
 const Catalogue = () => {
+  useCatalogueUrlSync();
+
   const t = useTranslationFn();
   const dispatch = useAppDispatch();
   const { projects, projectsStatus, projectsError } = useMetadata();

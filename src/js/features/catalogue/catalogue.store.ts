@@ -78,6 +78,15 @@ const catalogueSlice = createSlice({
         ? state.collapsedFacets.filter((f) => f !== facet)
         : [...state.collapsedFacets, facet];
     },
+    hydrateFromUrl(
+      state,
+      action: PayloadAction<{ q: string; sort: SortKey; view: ViewMode; sets: CatalogueFilterSets }>
+    ) {
+      state.q = action.payload.q;
+      state.sort = action.payload.sort;
+      state.view = action.payload.view;
+      state.sets = action.payload.sets;
+    },
     setProjectColors(state, action: PayloadAction<Record<string, string>>) {
       state.projectColors = action.payload;
     },
@@ -95,6 +104,7 @@ export const {
   setView,
   toggleInsights,
   toggleFacetCollapse,
+  hydrateFromUrl,
   setProjectColors,
   clearAll,
 } = catalogueSlice.actions;
