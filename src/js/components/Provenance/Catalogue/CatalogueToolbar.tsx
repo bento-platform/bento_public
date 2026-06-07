@@ -13,6 +13,7 @@ import {
   type FacetId,
 } from '@/features/catalogue/catalogue.store';
 import { useTranslationFn } from '@/hooks';
+import { COLOR_PRIMARY, COLOR_TEXT_MUTED } from './constants';
 
 const { Text } = Typography;
 
@@ -82,7 +83,7 @@ const CatalogueToolbar = ({ filteredCount }: CatalogueToolbarProps) => {
       {/* Row 2: result count + insights toggle */}
       <Flex justify="space-between" align="center">
         <Text>
-          <span style={{ color: '#054A74', fontWeight: 600 }}>{filteredCount}</span>{' '}
+          <span style={{ color: COLOR_PRIMARY, fontWeight: 600 }}>{filteredCount}</span>{' '}
           {t(filteredCount === 1 ? 'dataset found' : 'datasets found')}
         </Text>
         <Button
@@ -112,7 +113,7 @@ const CatalogueToolbar = ({ filteredCount }: CatalogueToolbarProps) => {
               }}
               style={{ borderRadius: 13, margin: 0 }}
             >
-              <span style={{ color: 'rgba(0,0,0,0.45)', fontSize: 11, marginRight: 3 }}>{t(FACET_LABELS[facet])}:</span>
+              <span style={{ color: COLOR_TEXT_MUTED, fontSize: 11, marginRight: 3 }}>{t(FACET_LABELS[facet])}:</span>
               {label}
             </Tag>
           ))}

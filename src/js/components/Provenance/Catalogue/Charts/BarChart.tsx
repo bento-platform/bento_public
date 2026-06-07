@@ -1,10 +1,11 @@
 import { Card, Typography } from 'antd';
 import { useTranslationFn } from '@/hooks';
 import type { FacetId } from '@/features/catalogue/catalogue.store';
+import { COLOR_BAR_DEFAULT } from '../constants';
 
 const { Text } = Typography;
 
-const DEFAULT_COLOR = '#1677FF';
+const DEFAULT_COLOR = COLOR_BAR_DEFAULT;
 const fmt = (n: number) => n.toLocaleString('en-US');
 
 interface BarChartProps {

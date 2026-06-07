@@ -11,6 +11,17 @@ import { useLanguage, useTranslationFn } from '@/hooks';
 import { useCatalogueState, normaliseStatus } from '@/features/catalogue/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
 import DatasetProvenanceModal from '../DatasetProvenanceModal';
+import {
+  STATUS_STYLE,
+  COLOR_CHART_FALLBACK,
+  COLOR_TEXT_SECONDARY,
+  COLOR_TEXT_MUTED,
+  COLOR_BORDER,
+  COLOR_BORDER_HOVER,
+  COLOR_BORDER_BASE,
+  SHADOW_CARD,
+  SHADOW_CARD_HOVER,
+} from './constants';
 
 const { Text, Title } = Typography;
 
@@ -18,15 +29,9 @@ const MAX_KEYWORDS = 4;
 
 const keywordLabel = (k: StringOrOntologyClass): string => (typeof k === 'string' ? k : k.label);
 
-const STATUS_STYLE: Record<string, { color: string; bg: string; border: string }> = {
-  Ongoing: { color: '#389E0D', bg: '#F6FFED', border: '#B7EB8F' },
-  Completed: { color: '#054A74', bg: 'rgba(5,74,116,0.10)', border: '#91CAFF' },
-  Unassigned: { color: 'rgba(0,0,0,0.45)', bg: '#F5F5F5', border: '#D9D9D9' },
-};
-
 const CountItem = ({ icon, value }: { icon: React.ReactNode; value: number }) => (
   <Flex align="center" gap={4}>
-    <span style={{ color: 'rgba(0,0,0,0.45)', fontSize: 13 }}>{icon}</span>
+    <span style={{ color: COLOR_TEXT_MUTED, fontSize: 13 }}>{icon}</span>
     <Text style={{ fontSize: 13 }}>{value.toLocaleString()}</Text>
   </Flex>
 );
@@ -63,8 +68,8 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
       <Card
         style={{
           borderRadius: 10,
-          border: '1px solid #F0F0F0',
-          boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
+          border: `1px solid ${COLOR_BORDER}`,
+          boxShadow: SHADOW_CARD,
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
@@ -72,12 +77,12 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
         }}
         styles={{ body: { display: 'flex', flexDirection: 'column', height: '100%', padding: 16, gap: 0 } }}
         onMouseEnter={(e) => {
-          (e.currentTarget as HTMLElement).style.borderColor = '#E2E8EE';
-          (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 14px rgba(5,74,116,0.10)';
+          (e.currentTarget as HTMLElement).style.borderColor = COLOR_BORDER_HOVER;
+          (e.currentTarget as HTMLElement).style.boxShadow = SHADOW_CARD_HOVER;
         }}
         onMouseLeave={(e) => {
-          (e.currentTarget as HTMLElement).style.borderColor = '#F0F0F0';
-          (e.currentTarget as HTMLElement).style.boxShadow = '0 2px 10px rgba(0,0,0,0.05)';
+          (e.currentTarget as HTMLElement).style.borderColor = COLOR_BORDER;
+          (e.currentTarget as HTMLElement).style.boxShadow = SHADOW_CARD;
         }}
       >
         {/* Header row: title + status pill */}
@@ -105,7 +110,7 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
         </Flex>
 
         {/* Sub line: updated date · access */}
-        <Text style={{ fontSize: 11.5, color: 'rgba(0,0,0,0.45)', marginTop: 4 }}>
+        <Text style={{ fontSize: 11.5, color: COLOR_TEXT_MUTED, marginTop: 4 }}>
           {t('Updated')} {updatedStr}
           {dataset.privacy && ` · ${dataset.privacy}`}
         </Text>
@@ -120,8 +125,8 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
                 gap: 6,
                 fontSize: 11.5,
                 fontWeight: 600,
-                color: 'rgba(0,0,0,0.65)',
-                border: '1px solid #D9D9D9',
+                color: COLOR_TEXT_SECONDARY,
+                border: `1px solid ${COLOR_BORDER_BASE}`,
                 borderRadius: 20,
                 padding: '2px 9px 2px 7px',
               }}
@@ -131,7 +136,7 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
                   width: 7,
                   height: 7,
                   borderRadius: '50%',
-                  background: projectColors[projectTitle] ?? '#8C8C8C',
+                  background: projectColors[projectTitle] ?? COLOR_CHART_FALLBACK,
                   flexShrink: 0,
                 }}
               />
@@ -145,7 +150,7 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
           <Text
             style={{
               fontSize: 13,
-              color: 'rgba(0,0,0,0.65)',
+              color: COLOR_TEXT_SECONDARY,
               marginTop: 10,
               display: '-webkit-box',
               WebkitLineClamp: 2,
@@ -187,7 +192,7 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
             gap={12}
             wrap
             style={{
-              borderTop: '1px solid #F0F0F0',
+              borderTop: `1px solid ${COLOR_BORDER}`,
               marginTop: 12,
               paddingTop: 10,
             }}

@@ -8,16 +8,17 @@ import type { DatasetWithProject } from '@/features/catalogue/hooks';
 import { getLabel, normaliseStatus } from '@/features/catalogue/hooks';
 import DonutChart from './Charts/DonutChart';
 import BarChart from './Charts/BarChart';
+import {
+  STATUS_CHART_COLORS,
+  COLOR_PRIMARY,
+  COLOR_TEXT_MUTED,
+  COLOR_INSIGHTS_BG,
+  COLOR_INSIGHTS_BORDER,
+} from './constants';
 
 const { Text } = Typography;
 
 import { assignColors } from '@/features/catalogue/hooks';
-
-const STATUS_COLORS: Record<string, string> = {
-  Ongoing: '#52C41A',
-  Completed: '#1677FF',
-  Unassigned: '#8C8C8C',
-};
 
 function buildCounts(
   datasets: DatasetWithProject[],
@@ -56,24 +57,24 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
   return (
     <div
       style={{
-        background: '#EEF3F7',
-        border: '1px solid #E0E9F0',
+        background: COLOR_INSIGHTS_BG,
+        border: `1px solid ${COLOR_INSIGHTS_BORDER}`,
         borderRadius: 12,
         padding: '14px 16px',
       }}
     >
       <Flex justify="space-between" align="center" style={{ marginBottom: 12 }}>
         <Flex align="center" gap={6}>
-          <BarChartOutlined style={{ color: '#054A74' }} />
-          <Text style={{ color: '#054A74', fontWeight: 600, fontSize: 14 }}>{t('Dataset insights')}</Text>
+          <BarChartOutlined style={{ color: COLOR_PRIMARY }} />
+          <Text style={{ color: COLOR_PRIMARY, fontWeight: 600, fontSize: 14 }}>{t('Dataset insights')}</Text>
         </Flex>
-        <Text style={{ fontSize: 12, color: 'rgba(0,0,0,0.45)' }}>{t('Select a segment to filter')}</Text>
+        <Text style={{ fontSize: 12, color: COLOR_TEXT_MUTED }}>{t('Select a segment to filter')}</Text>
       </Flex>
       <Flex gap={12} wrap style={{ alignItems: 'stretch' }}>
         <DonutChart
           title="By status"
           data={statusData}
-          colors={STATUS_COLORS}
+          colors={STATUS_CHART_COLORS}
           total={filteredDatasets.length}
           centerLabel="datasets"
           facetId="statuses"

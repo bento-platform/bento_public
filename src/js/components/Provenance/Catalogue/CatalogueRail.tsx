@@ -4,6 +4,7 @@ import { useCatalogueState } from '@/features/catalogue/hooks';
 import { toggleFacetValue, toggleFacetCollapse, type FacetId } from '@/features/catalogue/catalogue.store';
 import { useTranslationFn } from '@/hooks';
 import { CaretDownOutlined, CaretRightOutlined } from '@ant-design/icons';
+import { COLOR_TEXT_SECONDARY, COLOR_TEXT_MUTED, COLOR_BORDER, COLOR_WHITE } from './constants';
 
 const { Text } = Typography;
 
@@ -36,7 +37,7 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
   if (options.length === 0) return null;
 
   return (
-    <div style={{ borderBottom: '1px solid #F0F0F0', paddingBottom: collapsed ? 0 : 8 }}>
+    <div style={{ borderBottom: `1px solid ${COLOR_BORDER}`, paddingBottom: collapsed ? 0 : 8 }}>
       <button
         onClick={onToggleCollapse}
         style={{
@@ -56,15 +57,15 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
             fontWeight: 700,
             textTransform: 'uppercase',
             letterSpacing: '0.06em',
-            color: 'rgba(0,0,0,0.65)',
+            color: COLOR_TEXT_SECONDARY,
           }}
         >
           {t(facet.title)}
         </Text>
         {collapsed ? (
-          <CaretRightOutlined style={{ fontSize: 10, color: 'rgba(0,0,0,0.45)' }} />
+          <CaretRightOutlined style={{ fontSize: 10, color: COLOR_TEXT_MUTED }} />
         ) : (
-          <CaretDownOutlined style={{ fontSize: 10, color: 'rgba(0,0,0,0.45)' }} />
+          <CaretDownOutlined style={{ fontSize: 10, color: COLOR_TEXT_MUTED }} />
         )}
       </button>
       {!collapsed && (
@@ -122,9 +123,9 @@ const CatalogueRail = ({ totalCount, facetOptions }: CatalogueRailProps) => {
         position: 'sticky',
         top: 80,
         alignSelf: 'flex-start',
-        background: '#fff',
+        background: COLOR_WHITE,
         borderRadius: 10,
-        border: '1px solid #F0F0F0',
+        border: `1px solid ${COLOR_BORDER}`,
         padding: '12px 14px',
         maxHeight: 'calc(100vh - 100px)',
         overflowY: 'auto',
@@ -133,7 +134,7 @@ const CatalogueRail = ({ totalCount, facetOptions }: CatalogueRailProps) => {
     >
       <Flex justify="space-between" align="center" style={{ marginBottom: 10 }}>
         <Text style={{ fontSize: 13, fontWeight: 600 }}>{t('Filters')}</Text>
-        <Text style={{ fontSize: 12, color: 'rgba(0,0,0,0.45)' }}>
+        <Text style={{ fontSize: 12, color: COLOR_TEXT_MUTED }}>
           {totalCount} {t(totalCount === 1 ? 'dataset' : 'datasets')}
         </Text>
       </Flex>

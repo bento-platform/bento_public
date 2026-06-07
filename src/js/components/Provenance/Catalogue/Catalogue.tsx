@@ -14,6 +14,7 @@ import CatalogueRail from './CatalogueRail';
 import CatalogueToolbar from './CatalogueToolbar';
 import CatalogueInsights from './CatalogueInsights';
 import CatalogueCard from './CatalogueCard';
+import { COLOR_TEXT_SECONDARY } from './constants';
 
 const { Text } = Typography;
 
@@ -76,7 +77,7 @@ const Catalogue = () => {
                 fontWeight: 700,
                 textTransform: 'uppercase',
                 letterSpacing: '0.06em',
-                color: 'rgba(0,0,0,0.65)',
+                color: COLOR_TEXT_SECONDARY,
                 whiteSpace: 'nowrap',
               }}
             >

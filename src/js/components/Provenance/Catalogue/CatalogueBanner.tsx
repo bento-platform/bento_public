@@ -6,6 +6,12 @@ import type { DatasetWithProject } from '@/features/catalogue/hooks';
 import { useTranslationFn } from '@/hooks';
 import { PCGL_MODE } from '@/config';
 import AboutContent from '@/components/AboutContent';
+import {
+  BANNER_GRADIENT,
+  COLOR_BANNER_EYEBROW,
+  COLOR_BANNER_TITLE,
+  COLOR_BANNER_SUBTITLE,
+} from './constants';
 
 const { Text } = Typography;
 
@@ -48,7 +54,7 @@ const CatalogueBanner = ({ filteredDatasets }: CatalogueBannerProps) => {
       style={
         PCGL_MODE
           ? {
-              backgroundImage: `linear-gradient(90deg, rgba(4,30,48,0.80), rgba(4,30,48,0.34)), url('/public/assets/banner-bg.png')`,
+              backgroundImage: `${BANNER_GRADIENT}, url('/public/assets/banner-bg.png')`,
             }
           : undefined
       }
@@ -58,7 +64,7 @@ const CatalogueBanner = ({ filteredDatasets }: CatalogueBannerProps) => {
           <Flex vertical gap={4}>
             <Text
               style={{
-                color: 'rgba(255,255,255,0.65)',
+                color: COLOR_BANNER_EYEBROW,
                 fontSize: 11,
                 letterSpacing: '0.16em',
                 textTransform: 'uppercase',
@@ -67,10 +73,10 @@ const CatalogueBanner = ({ filteredDatasets }: CatalogueBannerProps) => {
             >
               {t('pcgl.banner.eyebrow')}
             </Text>
-            <Text style={{ color: '#fff', fontSize: 23, fontWeight: 600, lineHeight: 1.2 }}>
+            <Text style={{ color: COLOR_BANNER_TITLE, fontSize: 23, fontWeight: 600, lineHeight: 1.2 }}>
               {t('pcgl.banner.title')}
             </Text>
-            <Text style={{ color: 'rgba(255,255,255,0.78)', fontSize: 13.5 }}>{t('pcgl.banner.subtitle')}</Text>
+            <Text style={{ color: COLOR_BANNER_SUBTITLE, fontSize: 13.5 }}>{t('pcgl.banner.subtitle')}</Text>
           </Flex>
         ) : (
           <div style={{ flex: 1, minWidth: 0 }}>
