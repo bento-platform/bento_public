@@ -57,7 +57,7 @@ const LongDescriptionBlock = ({ content, content_type }: Dataset['long_descripti
   if (content_type === 'text/html') {
     return <div dangerouslySetInnerHTML={{ __html: content }} />;
   }
-  return <Paragraph>{content}</Paragraph>;
+  return <Paragraph ellipsis={{ rows: 5, expandable: true }}>{content}</Paragraph>;
 };
 
 // ---- PersonOrOrganization display ----
@@ -323,7 +323,9 @@ export const DatasetProvenanceContent = ({ dataset }: { dataset: Dataset }) => {
       {dataset.long_description ? (
         <LongDescriptionBlock {...dataset.long_description} />
       ) : (
-        <Text italic>{t(dataset.description)}</Text>
+        <Paragraph ellipsis={{ rows: 5, expandable: true }} style={{ fontStyle: 'italic', margin: 0 }}>
+          {t(dataset.description)}
+        </Paragraph>
       )}
 
       {/* Quick-facts descriptions block */}
@@ -337,7 +339,9 @@ export const DatasetProvenanceContent = ({ dataset }: { dataset: Dataset }) => {
         <Descriptions style={{ paddingTop: '20px' }}>
           {dataset.privacy && (
             <Item span={12} label={<DescLabel title={t('Privacy')} />}>
-              {t(dataset.privacy)}
+              <Paragraph ellipsis={{ rows: 2, expandable: true }} style={{ margin: 0 }}>
+                {t(dataset.privacy)}
+              </Paragraph>
             </Item>
           )}
           {dataset.version && (
