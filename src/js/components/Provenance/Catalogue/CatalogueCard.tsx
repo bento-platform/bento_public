@@ -111,7 +111,11 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
 
         {/* Sub line: updated date · access */}
         <Paragraph
-          ellipsis={{ rows: 2, expandable: true, symbol: <span style={{ color: COLOR_TEXT_MUTED, fontSize: 11.5 }}>more</span> }}
+          ellipsis={{
+            rows: 2,
+            expandable: true,
+            symbol: <span style={{ color: COLOR_TEXT_MUTED, fontSize: 11.5 }}>more</span>,
+          }}
           style={{ fontSize: 11.5, color: COLOR_TEXT_MUTED, marginTop: 4, marginBottom: 0 }}
         >
           {t('Updated')} {updatedStr}
@@ -160,7 +164,11 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
         {/* Description */}
         {description && (
           <Paragraph
-            ellipsis={{ rows: 5, expandable: true, symbol: <span style={{ color: COLOR_TEXT_SECONDARY, fontSize: 13 }}>more</span> }}
+            ellipsis={{
+              rows: 5,
+              expandable: true,
+              symbol: <span style={{ color: COLOR_TEXT_SECONDARY, fontSize: 13 }}>more</span>,
+            }}
             style={{ fontSize: 13, color: COLOR_TEXT_SECONDARY, marginTop: 10, marginBottom: 0 }}
           >
             {t(description)}
