@@ -40,6 +40,9 @@ export const SHADOW_CARD_HOVER = '0 4px 14px rgba(5,74,116,0.10)';
 export const COLOR_INSIGHTS_BG = '#EEF3F7';
 export const COLOR_INSIGHTS_BORDER = '#E0E9F0';
 
+// Facet chip
+export const COLOR_CHIP_COUNT_SELECTED = 'rgba(255,255,255,0.80)';
+
 // PCGL banner overlay
 export const BANNER_GRADIENT = 'linear-gradient(90deg, rgba(4,30,48,0.80), rgba(4,30,48,0.34))';
 export const COLOR_BANNER_EYEBROW = 'rgba(255,255,255,0.65)';

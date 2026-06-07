@@ -4,7 +4,15 @@ import { useCatalogueState } from '@/features/catalogue/hooks';
 import { toggleFacetValue, toggleFacetCollapse, type FacetId } from '@/features/catalogue/catalogue.store';
 import { useTranslationFn } from '@/hooks';
 import { CaretDownOutlined, CaretRightOutlined } from '@ant-design/icons';
-import { COLOR_TEXT_SECONDARY, COLOR_TEXT_MUTED, COLOR_BORDER, COLOR_WHITE } from './constants';
+import {
+  COLOR_TEXT_SECONDARY,
+  COLOR_TEXT_MUTED,
+  COLOR_BORDER,
+  COLOR_BORDER_BASE,
+  COLOR_WHITE,
+  COLOR_PRIMARY,
+  COLOR_CHIP_COUNT_SELECTED,
+} from './constants';
 
 const { Text } = Typography;
 
@@ -72,8 +80,8 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
         <div
           style={
             facet.scroll
-              ? { maxHeight: 128, overflowY: 'auto', display: 'flex', flexWrap: 'wrap', gap: 4, paddingBottom: 4 }
-              : { display: 'flex', flexWrap: 'wrap', gap: 4, paddingBottom: 4 }
+              ? { maxHeight: 128, overflowY: 'auto', display: 'flex', flexWrap: 'wrap', gap: 6, paddingBottom: 4 }
+              : { display: 'flex', flexWrap: 'wrap', gap: 6, paddingBottom: 4 }
           }
         >
           {options.map(({ value, count, selected }) => (
@@ -82,21 +90,34 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
               checked={selected}
               onChange={() => onToggleValue(value)}
               style={{
-                borderRadius: 20,
+                borderRadius: 13,
                 fontSize: 12.5,
-                padding: '1px 8px',
+                padding: '3px 8px 3px 10px',
+                border: `1px solid ${selected ? COLOR_PRIMARY : COLOR_BORDER_BASE}`,
+                color: selected ? undefined : COLOR_TEXT_SECONDARY,
                 cursor: count === 0 && !selected ? 'not-allowed' : 'pointer',
-                opacity: count === 0 && !selected ? 0.4 : 1,
+                opacity: count === 0 && !selected ? 0.38 : 1,
                 pointerEvents: count === 0 && !selected ? 'none' : 'auto',
                 margin: 0,
                 maxWidth: '100%',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
+                fontWeight: selected ? 500 : undefined,
               }}
             >
               {value}
-              <span style={{ marginLeft: 4, fontSize: 11, opacity: 0.7, flexShrink: 0 }}>{count}</span>
+              <span
+                style={{
+                  marginLeft: 5,
+                  fontSize: 11,
+                  color: selected ? COLOR_CHIP_COUNT_SELECTED : COLOR_TEXT_MUTED,
+                  fontVariantNumeric: 'tabular-nums',
+                  flexShrink: 0,
+                }}
+              >
+                {count}
+              </span>
             </Tag.CheckableTag>
           ))}
         </div>
