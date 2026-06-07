@@ -2,14 +2,7 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
 export type SortKey = 'updated_desc' | 'created_desc' | 'title_az' | 'individuals_desc' | 'biosamples_desc';
 export type ViewMode = 'grid' | 'list';
-export type FacetId =
-  | 'projects'
-  | 'dataTypes'
-  | 'taxa'
-  | 'access'
-  | 'licenses'
-  | 'statuses'
-  | 'keywords';
+export type FacetId = 'projects' | 'dataTypes' | 'taxa' | 'access' | 'licenses' | 'statuses' | 'keywords';
 
 export interface CatalogueFilterSets {
   projects: string[];

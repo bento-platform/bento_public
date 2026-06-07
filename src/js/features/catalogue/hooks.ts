@@ -62,15 +62,7 @@ export function useCatalogueFilter(items: DatasetWithProject[]): {
         const hay = [dataset.title, dataset.description, dom, kw].join(' ').toLowerCase();
         if (!hay.includes(lowerQ)) return false;
       }
-      const facetIds: FacetId[] = [
-        'projects',
-        'dataTypes',
-        'taxa',
-        'access',
-        'licenses',
-        'statuses',
-        'keywords',
-      ];
+      const facetIds: FacetId[] = ['projects', 'dataTypes', 'taxa', 'access', 'licenses', 'statuses', 'keywords'];
       for (const fid of facetIds) {
         if (fid === skipFacet) continue;
         const selected = sets[fid];
