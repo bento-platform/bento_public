@@ -117,9 +117,12 @@ const CatalogueToolbar = ({ filteredCount }: CatalogueToolbarProps) => {
               {label}
             </Tag>
           ))}
-          <Button size="small" type="dashed" onClick={() => dispatch(clearAll())}>
+          <Tag
+            style={{ borderRadius: 13, margin: 0, cursor: 'pointer', borderStyle: 'dashed' }}
+            onClick={() => dispatch(clearAll())}
+          >
             {t('Clear all')}
-          </Button>
+          </Tag>
         </Flex>
       )}
     </Flex>
