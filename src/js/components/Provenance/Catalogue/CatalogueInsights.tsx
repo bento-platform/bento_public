@@ -17,18 +17,12 @@ const STATUS_COLORS: Record<string, string> = {
   DRAFT: '#FAAD14',
 };
 
-const TYPE_COLORS: Record<string, string> = {
-  Clinical: '#1677FF',
-  Genomic: '#13C2C2',
-  Biosample: '#722ED1',
-  Questionnaire: '#FA8C16',
-  Imaging: '#52C41A',
-};
+const PALETTE = ['#1677FF', '#13C2C2', '#722ED1', '#FA8C16', '#52C41A'];
 
-const PROGRAM_COLORS: Record<string, string> = {
-  MOHCCN: '#1677FF',
-  CPHI: '#13C2C2',
-};
+function assignColors(names: string[]): Record<string, string> {
+  const sorted = [...names].sort((a, b) => a.localeCompare(b));
+  return Object.fromEntries(sorted.map((name, i) => [name, PALETTE[i % PALETTE.length]]));
+}
 
 function buildCounts(datasets: DatasetWithProject[], getValue: (d: DatasetWithProject) => string[]): { name: string; value: number }[] {
   const map = new Map<string, number>();
@@ -53,6 +47,10 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
   const typeData = buildCounts(filteredDatasets, ({ dataset }) => dataset.domain ?? []);
   const programData = buildCounts(filteredDatasets, ({ project }) => [project.title]);
   const keywordData = buildCounts(filteredDatasets, ({ dataset }) => (dataset.keywords ?? []).map(getLabel));
+
+  const typeColors = assignColors(typeData.map((d) => d.name));
+  const programColors = assignColors(programData.map((d) => d.name));
+  const keywordColors = assignColors(keywordData.slice(0, 5).map((d) => d.name));
 
   const handleClick = (facetId: FacetId, value: string) => {
     dispatch(toggleFacetValue({ facet: facetId, value }));
@@ -88,7 +86,7 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
         <BarChart
           title="By data type"
           data={typeData}
-          colors={TYPE_COLORS}
+          colors={typeColors}
           facetId="dataTypes"
           selectedValues={sets.dataTypes}
           onSegmentClick={handleClick}
@@ -96,7 +94,7 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
         <DonutChart
           title="By project"
           data={programData}
-          colors={PROGRAM_COLORS}
+          colors={programColors}
           total={filteredDatasets.length}
           centerLabel="datasets"
           facetId="programs"
@@ -105,8 +103,8 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
         />
         <BarChart
           title="By keyword"
-          data={keywordData.slice(0, 10)}
-          colors={{}}
+          data={keywordData.slice(0, 5)}
+          colors={keywordColors}
           facetId="keywords"
           selectedValues={sets.keywords}
           onSegmentClick={handleClick}
