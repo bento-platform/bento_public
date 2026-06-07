@@ -26,13 +26,9 @@ export function assignColors(names: string[]): Record<string, string> {
 
 export function getDatasetFacetValues({ dataset, project }: DatasetWithProject): Record<FacetId, string[]> {
   return {
-    programs: [project.title],
+    projects: [project.title],
     dataTypes: dataset.domain ?? [],
-    assays: (() => {
-      const raw = dataset.extra_properties?.['assays'];
-      return typeof raw === 'string' ? [raw] : [];
-    })(),
-    organisms: (dataset.taxa ?? []).map(getLabel),
+    taxa: (dataset.taxa ?? []).map(getLabel),
     access: dataset.privacy ? [dataset.privacy] : [],
     licenses: dataset.license?.type ? [dataset.license.type] : [],
     statuses: [normaliseStatus(dataset.study_status)],
@@ -67,10 +63,9 @@ export function useCatalogueFilter(items: DatasetWithProject[]): {
         if (!hay.includes(lowerQ)) return false;
       }
       const facetIds: FacetId[] = [
-        'programs',
+        'projects',
         'dataTypes',
-        'assays',
-        'organisms',
+        'taxa',
         'access',
         'licenses',
         'statuses',

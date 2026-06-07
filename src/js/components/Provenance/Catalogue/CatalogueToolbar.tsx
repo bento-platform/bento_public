@@ -25,10 +25,9 @@ const SORT_OPTIONS: { value: SortKey; label: string }[] = [
 ];
 
 const FACET_LABELS: Record<FacetId, string> = {
-  programs: 'Program',
+  projects: 'Project',
   dataTypes: 'Data type',
-  assays: 'Assay',
-  organisms: 'Organism',
+  taxa: 'Taxa',
   access: 'Access',
   licenses: 'Data use',
   statuses: 'Status',

@@ -3,20 +3,18 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 export type SortKey = 'updated_desc' | 'created_desc' | 'title_az' | 'individuals_desc' | 'biosamples_desc';
 export type ViewMode = 'grid' | 'list';
 export type FacetId =
-  | 'programs'
+  | 'projects'
   | 'dataTypes'
-  | 'assays'
-  | 'organisms'
+  | 'taxa'
   | 'access'
   | 'licenses'
   | 'statuses'
   | 'keywords';
 
 export interface CatalogueFilterSets {
-  programs: string[];
+  projects: string[];
   dataTypes: string[];
-  assays: string[];
-  organisms: string[];
+  taxa: string[];
   access: string[];
   licenses: string[];
   statuses: string[];
@@ -34,10 +32,9 @@ export interface CatalogueState {
 }
 
 const EMPTY_SETS: CatalogueFilterSets = {
-  programs: [],
+  projects: [],
   dataTypes: [],
-  assays: [],
-  organisms: [],
+  taxa: [],
   access: [],
   licenses: [],
   statuses: [],

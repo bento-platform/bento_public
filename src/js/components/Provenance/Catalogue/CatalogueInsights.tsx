@@ -102,8 +102,8 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
           colors={projectColors}
           total={filteredDatasets.length}
           centerLabel="datasets"
-          facetId="programs"
-          selectedValues={sets.programs}
+          facetId="projects"
+          selectedValues={sets.projects}
           onSegmentClick={handleClick}
         />
       </Flex>
