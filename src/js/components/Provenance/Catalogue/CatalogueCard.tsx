@@ -23,7 +23,7 @@ import {
   SHADOW_CARD_HOVER,
 } from './constants';
 
-const { Text, Title } = Typography;
+const { Paragraph, Text, Title } = Typography;
 
 const MAX_KEYWORDS = 4;
 
@@ -110,10 +110,13 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
         </Flex>
 
         {/* Sub line: updated date · access */}
-        <Text style={{ fontSize: 11.5, color: COLOR_TEXT_MUTED, marginTop: 4 }}>
+        <Paragraph
+          ellipsis={{ rows: 2, expandable: true, symbol: <span style={{ color: COLOR_TEXT_MUTED, fontSize: 11.5 }}>more</span> }}
+          style={{ fontSize: 11.5, color: COLOR_TEXT_MUTED, marginTop: 4, marginBottom: 0 }}
+        >
           {t('Updated')} {updatedStr}
           {dataset.privacy && ` · ${dataset.privacy}`}
-        </Text>
+        </Paragraph>
 
         {/* Project pill */}
         {projectTitle && (
@@ -156,19 +159,12 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
 
         {/* Description */}
         {description && (
-          <Text
-            style={{
-              fontSize: 13,
-              color: COLOR_TEXT_SECONDARY,
-              marginTop: 10,
-              display: '-webkit-box',
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
-            }}
+          <Paragraph
+            ellipsis={{ rows: 5, expandable: true, symbol: <span style={{ color: COLOR_TEXT_SECONDARY, fontSize: 13 }}>more</span> }}
+            style={{ fontSize: 13, color: COLOR_TEXT_SECONDARY, marginTop: 10, marginBottom: 0 }}
           >
             {t(description)}
-          </Text>
+          </Paragraph>
         )}
 
         {/* Keywords */}
