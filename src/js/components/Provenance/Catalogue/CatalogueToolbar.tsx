@@ -55,7 +55,7 @@ const CatalogueToolbar = ({ filteredCount }: CatalogueToolbarProps) => {
   return (
     <Flex vertical gap={8}>
       {/* Row 1: search + sort + view */}
-      <Flex gap={8} align="center" wrap>
+      <Flex gap={8} align="center">
         <Input
           prefix={<SearchOutlined />}
           placeholder={t('Search datasets, keywords, assays…')}
