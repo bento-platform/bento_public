@@ -13,7 +13,7 @@ interface FacetConfig {
 
 const FACETS: FacetConfig[] = [
   { id: 'projects', title: 'Project' },
-  { id: 'dataTypes', title: 'Data type' },
+  { id: 'dataTypes', title: 'Data type', scroll: true },
   { id: 'taxa', title: 'Taxa' },
   { id: 'access', title: 'Access' },
   { id: 'licenses', title: 'Data use' },
