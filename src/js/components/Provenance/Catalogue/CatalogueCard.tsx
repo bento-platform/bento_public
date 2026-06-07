@@ -170,7 +170,7 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
                   borderRadius: 4,
                   background: token.colorPrimaryBg,
                   color: token.colorPrimary,
-                  border: 'none',
+                  border: `1px solid ${token.colorPrimaryBorder}`,
                   margin: 0,
                 }}
               >
