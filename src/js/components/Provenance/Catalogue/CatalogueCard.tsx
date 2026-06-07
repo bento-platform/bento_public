@@ -118,7 +118,13 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
         {/* Project pill */}
         {projectTitle && (
           <div style={{ marginTop: 8, alignSelf: 'flex-start' }}>
-            <span
+            <button
+              type="button"
+              className="project-pill"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigateToScope({ project: project.identifier }, BentoRoute.Overview);
+              }}
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -129,6 +135,9 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
                 border: `1px solid ${COLOR_BORDER_BASE}`,
                 borderRadius: 20,
                 padding: '2px 9px 2px 7px',
+                background: 'none',
+                cursor: 'pointer',
+                fontFamily: 'inherit',
               }}
             >
               <span
@@ -141,7 +150,7 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
                 }}
               />
               {projectTitle}
-            </span>
+            </button>
           </div>
         )}
 

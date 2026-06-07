@@ -647,6 +647,11 @@ body {
 
 /* END catalogue rail */
 
+/* BEGIN catalogue card */
+.project-pill { transition: border-color 0.15s, color 0.15s; }
+.project-pill:hover { border-color: #054A74 !important; color: #054A74 !important; }
+/* END catalogue card */
+
 /* BEGIN about HTML styling */
 
 /* Elements which are the first child of the about content container shouldn't have the default top margin */
