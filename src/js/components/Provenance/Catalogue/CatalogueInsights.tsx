@@ -83,7 +83,7 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
         />
         <BarChart
           title="By data type"
-          data={typeData}
+          data={typeData.slice(0, 5)}
           colors={typeColors}
           facetId="dataTypes"
           selectedValues={sets.dataTypes}
