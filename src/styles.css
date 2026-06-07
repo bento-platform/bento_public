@@ -527,13 +527,13 @@ body {
   width: 236px;
   flex-shrink: 0;
   position: sticky;
-  top: 80px;
+  top: var(--content-padding-v);
   align-self: flex-start;
   background: #fff;
   border-radius: 10px;
   border: 1px solid var(--cat-border);
   padding: 12px 14px;
-  max-height: calc(100vh - 100px);
+  max-height: calc(100vh - var(--header-height) - var(--content-padding-v) * 2);
   overflow-y: auto;
   overflow-x: hidden;
 }
