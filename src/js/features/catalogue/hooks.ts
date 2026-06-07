@@ -11,6 +11,13 @@ export interface DatasetWithProject {
 
 export const getLabel = (v: string | { label: string }) => (typeof v === 'string' ? v : v.label);
 
+export const PALETTE = ['#1677FF', '#13C2C2', '#722ED1', '#FA8C16', '#52C41A'];
+
+export function assignColors(names: string[]): Record<string, string> {
+  const sorted = [...names].sort((a, b) => a.localeCompare(b));
+  return Object.fromEntries(sorted.map((name, i) => [name, PALETTE[i % PALETTE.length]]));
+}
+
 export function getDatasetFacetValues({ dataset, project }: DatasetWithProject): Record<FacetId, string[]> {
   return {
     programs: [project.title],

@@ -11,18 +11,13 @@ import BarChart from './Charts/BarChart';
 
 const { Text } = Typography;
 
+import { assignColors } from '@/features/catalogue/hooks';
+
 const STATUS_COLORS: Record<string, string> = {
   ONGOING: '#52C41A',
   COMPLETED: '#1677FF',
   DRAFT: '#FAAD14',
 };
-
-const PALETTE = ['#1677FF', '#13C2C2', '#722ED1', '#FA8C16', '#52C41A'];
-
-function assignColors(names: string[]): Record<string, string> {
-  const sorted = [...names].sort((a, b) => a.localeCompare(b));
-  return Object.fromEntries(sorted.map((name, i) => [name, PALETTE[i % PALETTE.length]]));
-}
 
 function buildCounts(datasets: DatasetWithProject[], getValue: (d: DatasetWithProject) => string[]): { name: string; value: number }[] {
   const map = new Map<string, number>();
@@ -41,7 +36,7 @@ interface CatalogueInsightsProps {
 const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
   const t = useTranslationFn();
   const dispatch = useAppDispatch();
-  const { sets } = useCatalogueState();
+  const { sets, projectColors } = useCatalogueState();
 
   const statusData = buildCounts(filteredDatasets, ({ dataset }) => (dataset.study_status ? [dataset.study_status] : []));
   const typeData = buildCounts(filteredDatasets, ({ dataset }) => dataset.domain ?? []);
@@ -49,7 +44,6 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
   const keywordData = buildCounts(filteredDatasets, ({ dataset }) => (dataset.keywords ?? []).map(getLabel));
 
   const typeColors = assignColors(typeData.map((d) => d.name));
-  const programColors = assignColors(programData.map((d) => d.name));
   const keywordColors = assignColors(keywordData.slice(0, 5).map((d) => d.name));
 
   const handleClick = (facetId: FacetId, value: string) => {
@@ -102,7 +96,7 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
         <DonutChart
           title="By project"
           data={programData}
-          colors={programColors}
+          colors={projectColors}
           total={filteredDatasets.length}
           centerLabel="datasets"
           facetId="programs"

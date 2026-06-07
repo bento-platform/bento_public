@@ -1,10 +1,11 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Divider, Empty, Button, Flex, Typography } from 'antd';
 import { useMetadata } from '@/features/metadata/hooks';
 import { useCatalogueFilter, useCatalogueState } from '@/features/catalogue/hooks';
 import { useAppDispatch } from '@/hooks';
 import { useTranslationFn } from '@/hooks';
-import { clearAll } from '@/features/catalogue/catalogue.store';
+import { clearAll, setProjectColors } from '@/features/catalogue/catalogue.store';
+import { assignColors } from '@/features/catalogue/hooks';
 import { RequestStatus } from '@/types/requests';
 import Error from '@Util/Error';
 import CatalogueBanner from './CatalogueBanner';
@@ -27,6 +28,11 @@ const Catalogue = () => {
   );
 
   const { filtered, facetOptions } = useCatalogueFilter(allDatasets);
+
+  useEffect(() => {
+    const names = [...new Set(allDatasets.map(({ project }) => project.title))];
+    dispatch(setProjectColors(assignColors(names)));
+  }, [allDatasets, dispatch]);
 
   const gridStyle: React.CSSProperties =
     view === 'grid'

@@ -22,6 +22,7 @@ export interface CatalogueState {
   view: ViewMode;
   insightsOpen: boolean;
   collapsedFacets: string[];
+  projectColors: Record<string, string>;
 }
 
 const EMPTY_SETS: CatalogueFilterSets = {
@@ -42,6 +43,7 @@ const initialState: CatalogueState = {
   view: 'grid',
   insightsOpen: true,
   collapsedFacets: [],
+  projectColors: {},
 };
 
 const catalogueSlice = createSlice({
@@ -71,6 +73,9 @@ const catalogueSlice = createSlice({
         ? state.collapsedFacets.filter((f) => f !== facet)
         : [...state.collapsedFacets, facet];
     },
+    setProjectColors(state, action: PayloadAction<Record<string, string>>) {
+      state.projectColors = action.payload;
+    },
     clearAll(state) {
       state.q = '';
       state.sets = { ...EMPTY_SETS };
@@ -78,6 +83,6 @@ const catalogueSlice = createSlice({
   },
 });
 
-export const { toggleFacetValue, setSearch, setSort, setView, toggleInsights, toggleFacetCollapse, clearAll } =
+export const { toggleFacetValue, setSearch, setSort, setView, toggleInsights, toggleFacetCollapse, setProjectColors, clearAll } =
   catalogueSlice.actions;
 export default catalogueSlice.reducer;

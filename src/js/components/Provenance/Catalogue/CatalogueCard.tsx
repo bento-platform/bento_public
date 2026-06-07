@@ -8,6 +8,7 @@ import type { Dataset, StringOrOntologyClass } from '@/types/dataset';
 import { BentoRoute } from '@/types/routes';
 import { isoDateToString } from '@/utils/strings';
 import { useLanguage, useTranslationFn } from '@/hooks';
+import { useCatalogueState } from '@/features/catalogue/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
 import DatasetProvenanceModal from '../DatasetProvenanceModal';
 
@@ -29,10 +30,6 @@ const STATUS_LABEL: Record<string, string> = {
   DRAFT: 'Draft',
 };
 
-const PROGRAM_DOT_COLOR: Record<string, string> = {
-  MOHCCN: '#1677FF',
-  CPHI: '#13C2C2',
-};
 
 const CountItem = ({ icon, value }: { icon: React.ReactNode; value: number }) => (
   <Flex align="center" gap={4}>
@@ -48,13 +45,14 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
   const [provenanceModalOpen, setProvenanceModalOpen] = useState(false);
 
   const { token } = theme.useToken();
+  const { projectColors } = useCatalogueState();
 
   const { identifier, title, description } = dataset;
   const keywords = (dataset.keywords ?? []).map(keywordLabel).slice(0, MAX_KEYWORDS);
   const updatedStr = isoDateToString(dataset.last_modified ?? project.updated, language);
   const statusStyle = dataset.study_status ? STATUS_STYLE[dataset.study_status] : null;
   const statusLabel = dataset.study_status ? STATUS_LABEL[dataset.study_status] : null;
-  const programName = dataset.program_name;
+  const projectTitle = project.title;
 
   const counts = dataset.counts_by_entity;
   const individuals = typeof counts?.individual === 'number' ? counts.individual : 0;
@@ -114,30 +112,32 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
           {dataset.privacy && ` · ${dataset.privacy}`}
         </Text>
 
-        {/* Program pill */}
-        {programName && (
+        {/* Project pill */}
+        {projectTitle && (
           <div style={{ marginTop: 8, alignSelf: 'flex-start' }}>
             <span
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: 5,
-                fontSize: 12,
+                gap: 6,
+                fontSize: 11.5,
+                fontWeight: 600,
+                color: 'rgba(0,0,0,0.65)',
                 border: '1px solid #D9D9D9',
                 borderRadius: 20,
-                padding: '1px 8px',
+                padding: '2px 9px 2px 7px',
               }}
             >
               <span
                 style={{
-                  width: 6,
-                  height: 6,
+                  width: 7,
+                  height: 7,
                   borderRadius: '50%',
-                  background: PROGRAM_DOT_COLOR[programName] ?? '#8C8C8C',
+                  background: projectColors[projectTitle] ?? '#8C8C8C',
                   flexShrink: 0,
                 }}
               />
-              {programName}
+              {projectTitle}
             </span>
           </div>
         )}
