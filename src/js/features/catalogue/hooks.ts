@@ -66,7 +66,16 @@ export function useCatalogueFilter(items: DatasetWithProject[]): {
         const hay = [dataset.title, dataset.description, dom, kw].join(' ').toLowerCase();
         if (!hay.includes(lowerQ)) return false;
       }
-      const facetIds: FacetId[] = ['programs', 'dataTypes', 'assays', 'organisms', 'access', 'licenses', 'statuses', 'keywords'];
+      const facetIds: FacetId[] = [
+        'programs',
+        'dataTypes',
+        'assays',
+        'organisms',
+        'access',
+        'licenses',
+        'statuses',
+        'keywords',
+      ];
       for (const fid of facetIds) {
         if (fid === skipFacet) continue;
         const selected = sets[fid];
@@ -109,7 +118,7 @@ export function useCatalogueFilter(items: DatasetWithProject[]): {
       const selected = sets[facetId];
       // include already-selected values even if count 0
       const allValues = new Set([...countMap.keys(), ...selected]);
-      let values = [...allValues];
+      const values = [...allValues];
       const order = FACET_ORDER[facetId];
       if (order) {
         values.sort((a, b) => {

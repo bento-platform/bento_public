@@ -6,7 +6,9 @@ const { Text } = Typography;
 
 const DEFAULT_COLOR = '#8C8C8C';
 const fmt = (n: number) => n.toLocaleString('en-US');
-const SIZE = 116, R = 46, CIRC = 2 * Math.PI * R;
+const SIZE = 116,
+  R = 46,
+  CIRC = 2 * Math.PI * R;
 
 interface DonutChartProps {
   title: string;
@@ -19,17 +21,27 @@ interface DonutChartProps {
   onSegmentClick: (facetId: FacetId, value: string) => void;
 }
 
-const DonutChart = ({ title, data, colors, total, centerLabel, facetId, selectedValues, onSegmentClick }: DonutChartProps) => {
+const DonutChart = ({
+  title,
+  data,
+  colors,
+  total,
+  centerLabel,
+  facetId,
+  selectedValues,
+  onSegmentClick,
+}: DonutChartProps) => {
   const t = useTranslationFn();
   if (data.length === 0) return null;
 
-  let offset = 0;
-  const segments = data.map((entry) => {
-    const len = total ? (entry.value / total) * CIRC : 0;
-    const dashOffset = -offset;
-    offset += len;
-    return { entry, len, dashOffset };
-  });
+  const segments = data.reduce<{ entry: { name: string; value: number }; len: number; dashOffset: number }[]>(
+    (acc, entry) => {
+      const len = total ? (entry.value / total) * CIRC : 0;
+      const dashOffset = -(acc.length > 0 ? acc[acc.length - 1].dashOffset * -1 + acc[acc.length - 1].len : 0);
+      return [...acc, { entry, len, dashOffset }];
+    },
+    []
+  );
 
   const c = SIZE / 2;
 
@@ -42,7 +54,9 @@ const DonutChart = ({ title, data, colors, total, centerLabel, facetId, selected
           {segments.map(({ entry, len, dashOffset }) => (
             <circle
               key={entry.name}
-              cx={c} cy={c} r={R}
+              cx={c}
+              cy={c}
+              r={R}
               fill="none"
               stroke={colors[entry.name] ?? DEFAULT_COLOR}
               strokeWidth="16"
@@ -52,11 +66,17 @@ const DonutChart = ({ title, data, colors, total, centerLabel, facetId, selected
               style={{ cursor: 'pointer' }}
               onClick={() => onSegmentClick(facetId, entry.name)}
             >
-              <title>{entry.name}: {fmt(entry.value)}</title>
+              <title>
+                {entry.name}: {fmt(entry.value)}
+              </title>
             </circle>
           ))}
-          <text x={c} y={c - 3} className="donut-num">{fmt(total)}</text>
-          <text x={c} y={c + 13} className="donut-lbl">{centerLabel}</text>
+          <text x={c} y={c - 3} className="donut-num">
+            {fmt(total)}
+          </text>
+          <text x={c} y={c + 13} className="donut-lbl">
+            {centerLabel}
+          </text>
         </svg>
         <div className="chart-legend">
           {data.map((entry) => {

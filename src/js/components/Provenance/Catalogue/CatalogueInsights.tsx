@@ -19,7 +19,10 @@ const STATUS_COLORS: Record<string, string> = {
   Unassigned: '#8C8C8C',
 };
 
-function buildCounts(datasets: DatasetWithProject[], getValue: (d: DatasetWithProject) => string[]): { name: string; value: number }[] {
+function buildCounts(
+  datasets: DatasetWithProject[],
+  getValue: (d: DatasetWithProject) => string[]
+): { name: string; value: number }[] {
   const map = new Map<string, number>();
   for (const d of datasets) {
     for (const v of getValue(d)) {

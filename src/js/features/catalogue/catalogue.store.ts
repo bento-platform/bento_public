@@ -2,7 +2,15 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
 export type SortKey = 'updated_desc' | 'created_desc' | 'title_az' | 'individuals_desc' | 'biosamples_desc';
 export type ViewMode = 'grid' | 'list';
-export type FacetId = 'programs' | 'dataTypes' | 'assays' | 'organisms' | 'access' | 'licenses' | 'statuses' | 'keywords';
+export type FacetId =
+  | 'programs'
+  | 'dataTypes'
+  | 'assays'
+  | 'organisms'
+  | 'access'
+  | 'licenses'
+  | 'statuses'
+  | 'keywords';
 
 export interface CatalogueFilterSets {
   programs: string[];
@@ -83,6 +91,14 @@ const catalogueSlice = createSlice({
   },
 });
 
-export const { toggleFacetValue, setSearch, setSort, setView, toggleInsights, toggleFacetCollapse, setProjectColors, clearAll } =
-  catalogueSlice.actions;
+export const {
+  toggleFacetValue,
+  setSearch,
+  setSort,
+  setView,
+  toggleInsights,
+  toggleFacetCollapse,
+  setProjectColors,
+  clearAll,
+} = catalogueSlice.actions;
 export default catalogueSlice.reducer;

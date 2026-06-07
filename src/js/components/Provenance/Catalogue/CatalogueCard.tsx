@@ -24,7 +24,6 @@ const STATUS_STYLE: Record<string, { color: string; bg: string; border: string }
   Unassigned: { color: 'rgba(0,0,0,0.45)', bg: '#F5F5F5', border: '#D9D9D9' },
 };
 
-
 const CountItem = ({ icon, value }: { icon: React.ReactNode; value: number }) => (
   <Flex align="center" gap={4}>
     <span style={{ color: 'rgba(0,0,0,0.45)', fontSize: 13 }}>{icon}</span>
@@ -56,7 +55,11 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
 
   return (
     <>
-      <DatasetProvenanceModal dataset={dataset} open={provenanceModalOpen} onCancel={() => setProvenanceModalOpen(false)} />
+      <DatasetProvenanceModal
+        dataset={dataset}
+        open={provenanceModalOpen}
+        onCancel={() => setProvenanceModalOpen(false)}
+      />
       <Card
         style={{
           borderRadius: 10,
