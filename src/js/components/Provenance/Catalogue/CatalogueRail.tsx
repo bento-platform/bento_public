@@ -51,10 +51,22 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
           alignItems: 'center',
         }}
       >
-        <Text style={{ fontSize: 11.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'rgba(0,0,0,0.65)' }}>
+        <Text
+          style={{
+            fontSize: 11.5,
+            fontWeight: 700,
+            textTransform: 'uppercase',
+            letterSpacing: '0.06em',
+            color: 'rgba(0,0,0,0.65)',
+          }}
+        >
           {t(facet.title)}
         </Text>
-        {collapsed ? <CaretRightOutlined style={{ fontSize: 10, color: 'rgba(0,0,0,0.45)' }} /> : <CaretDownOutlined style={{ fontSize: 10, color: 'rgba(0,0,0,0.45)' }} />}
+        {collapsed ? (
+          <CaretRightOutlined style={{ fontSize: 10, color: 'rgba(0,0,0,0.45)' }} />
+        ) : (
+          <CaretDownOutlined style={{ fontSize: 10, color: 'rgba(0,0,0,0.45)' }} />
+        )}
       </button>
       {!collapsed && (
         <div

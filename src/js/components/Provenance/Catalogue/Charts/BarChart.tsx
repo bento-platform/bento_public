@@ -17,7 +17,15 @@ interface BarChartProps {
   onSegmentClick: (facetId: FacetId, value: string) => void;
 }
 
-const BarChart = ({ title, data, colors, defaultColor = DEFAULT_COLOR, facetId, selectedValues, onSegmentClick }: BarChartProps) => {
+const BarChart = ({
+  title,
+  data,
+  colors,
+  defaultColor = DEFAULT_COLOR,
+  facetId,
+  selectedValues,
+  onSegmentClick,
+}: BarChartProps) => {
   const t = useTranslationFn();
   if (data.length === 0) return null;
 
@@ -35,7 +43,9 @@ const BarChart = ({ title, data, colors, defaultColor = DEFAULT_COLOR, facetId, 
               className={`bar-row clk${sel ? ' sel' : ''}`}
               onClick={() => onSegmentClick(facetId, entry.name)}
             >
-              <span className="bar-label" title={entry.name}>{t(entry.name)}</span>
+              <span className="bar-label" title={entry.name}>
+                {t(entry.name)}
+              </span>
               <span className="bar-track">
                 <span
                   className="bar-fill"

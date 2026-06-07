@@ -12,7 +12,9 @@ const { Text } = Typography;
 const StatItem = ({ icon, value, label }: { icon: React.ReactNode; value: string; label: string }) => (
   <Space size={8} align="center" style={{ whiteSpace: 'nowrap' }}>
     <span className="catalogue-banner__stat-icon">{icon}</span>
-    <Text className="catalogue-banner__stat-value">{value} {label}</Text>
+    <Text className="catalogue-banner__stat-value">
+      {value} {label}
+    </Text>
   </Space>
 );
 
@@ -43,7 +45,13 @@ const CatalogueBanner = ({ filteredDatasets }: CatalogueBannerProps) => {
   return (
     <div
       className={clsx('catalogue-banner', PCGL_MODE ? 'pcgl' : 'default')}
-      style={PCGL_MODE ? { backgroundImage: `linear-gradient(90deg, rgba(4,30,48,0.80), rgba(4,30,48,0.34)), url('/public/assets/banner-bg.png')` } : undefined}
+      style={
+        PCGL_MODE
+          ? {
+              backgroundImage: `linear-gradient(90deg, rgba(4,30,48,0.80), rgba(4,30,48,0.34)), url('/public/assets/banner-bg.png')`,
+            }
+          : undefined
+      }
     >
       <Flex justify="space-between" align="center" style={{ width: '100%' }} wrap gap={PCGL_MODE ? 16 : 24}>
         {PCGL_MODE ? (
@@ -59,10 +67,10 @@ const CatalogueBanner = ({ filteredDatasets }: CatalogueBannerProps) => {
             >
               {t('pcgl.banner.eyebrow')}
             </Text>
-            <Text style={{ color: '#fff', fontSize: 23, fontWeight: 600, lineHeight: 1.2 }}>{t('pcgl.banner.title')}</Text>
-            <Text style={{ color: 'rgba(255,255,255,0.78)', fontSize: 13.5 }}>
-              {t('pcgl.banner.subtitle')}
+            <Text style={{ color: '#fff', fontSize: 23, fontWeight: 600, lineHeight: 1.2 }}>
+              {t('pcgl.banner.title')}
             </Text>
+            <Text style={{ color: 'rgba(255,255,255,0.78)', fontSize: 13.5 }}>{t('pcgl.banner.subtitle')}</Text>
           </Flex>
         ) : (
           <div style={{ flex: 1, minWidth: 0 }}>
@@ -70,9 +78,21 @@ const CatalogueBanner = ({ filteredDatasets }: CatalogueBannerProps) => {
           </div>
         )}
         <Space size={28} wrap>
-          <StatItem icon={<DatabaseOutlined />} value={fmt(datasetCount)} label={t('entities.dataset', { count: datasetCount }).toLowerCase()} />
-          <StatItem icon={<TeamOutlined />} value={fmt(individualCount)} label={t('entities.individual', { count: individualCount }).toLowerCase()} />
-          <StatItem icon={<ExperimentOutlined />} value={fmt(biosampleCount)} label={t('entities.biosample', { count: biosampleCount }).toLowerCase()} />
+          <StatItem
+            icon={<DatabaseOutlined />}
+            value={fmt(datasetCount)}
+            label={t('entities.dataset', { count: datasetCount }).toLowerCase()}
+          />
+          <StatItem
+            icon={<TeamOutlined />}
+            value={fmt(individualCount)}
+            label={t('entities.individual', { count: individualCount }).toLowerCase()}
+          />
+          <StatItem
+            icon={<ExperimentOutlined />}
+            value={fmt(biosampleCount)}
+            label={t('entities.biosample', { count: biosampleCount }).toLowerCase()}
+          />
         </Space>
       </Flex>
     </div>

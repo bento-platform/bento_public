@@ -167,7 +167,12 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
 
         <Space size={isSmallScreen ? 4 : 'small'}>
           {!PCGL_MODE && SHOW_PORTAL_LINK && (
-            <Button type="text" className="header-button" icon={<LinkOutlined />} onClick={() => window.open(PORTAL_URL, '_blank')}>
+            <Button
+              type="text"
+              className="header-button"
+              icon={<LinkOutlined />}
+              onClick={() => window.open(PORTAL_URL, '_blank')}
+            >
               {isSmallScreen ? null : (
                 <>
                   {t('Portal')} <ExportOutlined />
