@@ -29,13 +29,13 @@ export function getDatasetFacetValues({ dataset, project }: DatasetWithProject):
     organisms: (dataset.taxa ?? []).map(getLabel),
     access: dataset.privacy ? [dataset.privacy] : [],
     licenses: dataset.license?.type ? [dataset.license.type] : [],
-    statuses: dataset.study_status ? [dataset.study_status] : [],
+    statuses: dataset.study_status ? [dataset.study_status.charAt(0) + dataset.study_status.slice(1).toLowerCase()] : [],
     keywords: (dataset.keywords ?? []).map(getLabel),
   };
 }
 
 const FACET_ORDER: Partial<Record<FacetId, string[]>> = {
-  statuses: ['ONGOING', 'COMPLETED'],
+  statuses: ['Ongoing', 'Completed'],
   access: ['Open', 'Registered', 'Controlled'],
 };
 

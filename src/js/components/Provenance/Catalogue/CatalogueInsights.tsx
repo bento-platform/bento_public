@@ -14,9 +14,9 @@ const { Text } = Typography;
 import { assignColors } from '@/features/catalogue/hooks';
 
 const STATUS_COLORS: Record<string, string> = {
-  ONGOING: '#52C41A',
-  COMPLETED: '#1677FF',
-  DRAFT: '#FAAD14',
+  Ongoing: '#52C41A',
+  Completed: '#1677FF',
+  Draft: '#FAAD14',
 };
 
 function buildCounts(datasets: DatasetWithProject[], getValue: (d: DatasetWithProject) => string[]): { name: string; value: number }[] {
@@ -38,7 +38,9 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
   const dispatch = useAppDispatch();
   const { sets, projectColors } = useCatalogueState();
 
-  const statusData = buildCounts(filteredDatasets, ({ dataset }) => (dataset.study_status ? [dataset.study_status] : []));
+  const statusData = buildCounts(filteredDatasets, ({ dataset }) =>
+    dataset.study_status ? [dataset.study_status.charAt(0) + dataset.study_status.slice(1).toLowerCase()] : []
+  );
   const typeData = buildCounts(filteredDatasets, ({ dataset }) => dataset.domain ?? []);
   const programData = buildCounts(filteredDatasets, ({ project }) => [project.title]);
   const keywordData = buildCounts(filteredDatasets, ({ dataset }) => (dataset.keywords ?? []).map(getLabel));
