@@ -5,7 +5,7 @@ import { toggleFacetValue, type FacetId } from '@/features/catalogue/catalogue.s
 import { useTranslationFn } from '@/hooks';
 import { BarChartOutlined } from '@ant-design/icons';
 import type { DatasetWithProject } from '@/features/catalogue/hooks';
-import { getLabel } from '@/features/catalogue/hooks';
+import { getLabel, normaliseStatus } from '@/features/catalogue/hooks';
 import DonutChart from './Charts/DonutChart';
 import BarChart from './Charts/BarChart';
 
@@ -16,7 +16,7 @@ import { assignColors } from '@/features/catalogue/hooks';
 const STATUS_COLORS: Record<string, string> = {
   Ongoing: '#52C41A',
   Completed: '#1677FF',
-  Draft: '#FAAD14',
+  Unassigned: '#8C8C8C',
 };
 
 function buildCounts(datasets: DatasetWithProject[], getValue: (d: DatasetWithProject) => string[]): { name: string; value: number }[] {
@@ -38,9 +38,7 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
   const dispatch = useAppDispatch();
   const { sets, projectColors } = useCatalogueState();
 
-  const statusData = buildCounts(filteredDatasets, ({ dataset }) =>
-    dataset.study_status ? [dataset.study_status.charAt(0) + dataset.study_status.slice(1).toLowerCase()] : []
-  );
+  const statusData = buildCounts(filteredDatasets, ({ dataset }) => [normaliseStatus(dataset.study_status)]);
   const typeData = buildCounts(filteredDatasets, ({ dataset }) => dataset.domain ?? []);
   const programData = buildCounts(filteredDatasets, ({ project }) => [project.title]);
   const keywordData = buildCounts(filteredDatasets, ({ dataset }) => (dataset.keywords ?? []).map(getLabel));

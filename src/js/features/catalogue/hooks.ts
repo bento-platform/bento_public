@@ -11,6 +11,12 @@ export interface DatasetWithProject {
 
 export const getLabel = (v: string | { label: string }) => (typeof v === 'string' ? v : v.label);
 
+export function normaliseStatus(raw: string | undefined | null): string {
+  if (raw === 'ONGOING') return 'Ongoing';
+  if (raw === 'COMPLETED') return 'Completed';
+  return 'Unassigned';
+}
+
 export const PALETTE = ['#1677FF', '#13C2C2', '#722ED1', '#FA8C16', '#52C41A'];
 
 export function assignColors(names: string[]): Record<string, string> {
@@ -29,13 +35,13 @@ export function getDatasetFacetValues({ dataset, project }: DatasetWithProject):
     organisms: (dataset.taxa ?? []).map(getLabel),
     access: dataset.privacy ? [dataset.privacy] : [],
     licenses: dataset.license?.type ? [dataset.license.type] : [],
-    statuses: dataset.study_status ? [dataset.study_status.charAt(0) + dataset.study_status.slice(1).toLowerCase()] : [],
+    statuses: [normaliseStatus(dataset.study_status)],
     keywords: (dataset.keywords ?? []).map(getLabel),
   };
 }
 
 const FACET_ORDER: Partial<Record<FacetId, string[]>> = {
-  statuses: ['Ongoing', 'Completed'],
+  statuses: ['Ongoing', 'Completed', 'Unassigned'],
   access: ['Open', 'Registered', 'Controlled'],
 };
 

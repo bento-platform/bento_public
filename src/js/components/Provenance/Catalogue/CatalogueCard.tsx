@@ -8,7 +8,7 @@ import type { Dataset, StringOrOntologyClass } from '@/types/dataset';
 import { BentoRoute } from '@/types/routes';
 import { isoDateToString } from '@/utils/strings';
 import { useLanguage, useTranslationFn } from '@/hooks';
-import { useCatalogueState } from '@/features/catalogue/hooks';
+import { useCatalogueState, normaliseStatus } from '@/features/catalogue/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
 import DatasetProvenanceModal from '../DatasetProvenanceModal';
 
@@ -19,15 +19,9 @@ const MAX_KEYWORDS = 4;
 const keywordLabel = (k: StringOrOntologyClass): string => (typeof k === 'string' ? k : k.label);
 
 const STATUS_STYLE: Record<string, { color: string; bg: string; border: string }> = {
-  ONGOING: { color: '#389E0D', bg: '#F6FFED', border: '#B7EB8F' },
-  COMPLETED: { color: '#054A74', bg: 'rgba(5,74,116,0.10)', border: '#91CAFF' },
-  DRAFT: { color: '#A5640E', bg: '#FFF7E6', border: '#FFD591' },
-};
-
-const STATUS_LABEL: Record<string, string> = {
-  ONGOING: 'Ongoing',
-  COMPLETED: 'Completed',
-  DRAFT: 'Draft',
+  Ongoing: { color: '#389E0D', bg: '#F6FFED', border: '#B7EB8F' },
+  Completed: { color: '#054A74', bg: 'rgba(5,74,116,0.10)', border: '#91CAFF' },
+  Unassigned: { color: 'rgba(0,0,0,0.45)', bg: '#F5F5F5', border: '#D9D9D9' },
 };
 
 
@@ -50,8 +44,9 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
   const { identifier, title, description } = dataset;
   const keywords = (dataset.keywords ?? []).map(keywordLabel).slice(0, MAX_KEYWORDS);
   const updatedStr = isoDateToString(dataset.last_modified ?? project.updated, language);
-  const statusStyle = dataset.study_status ? STATUS_STYLE[dataset.study_status] : null;
-  const statusLabel = dataset.study_status ? STATUS_LABEL[dataset.study_status] : null;
+  const normStatus = normaliseStatus(dataset.study_status);
+  const statusStyle = STATUS_STYLE[normStatus];
+  const statusLabel = normStatus;
   const projectTitle = project.title;
 
   const counts = dataset.counts_by_entity;
