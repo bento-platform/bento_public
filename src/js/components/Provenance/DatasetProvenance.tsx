@@ -93,8 +93,7 @@ const StakeholdersTable = ({ stakeholders }: { stakeholders: PersonOrOrganizatio
         {
           title: t('Roles'),
           key: 'roles',
-          render: (_, row) =>
-            row.roles.map((r, i) => <ProvenanceTag key={i}>{t(r)}</ProvenanceTag>),
+          render: (_, row) => row.roles.map((r, i) => <ProvenanceTag key={i}>{t(r)}</ProvenanceTag>),
         },
       ]}
     />
@@ -379,12 +378,16 @@ export const DatasetProvenanceContent = ({ dataset }: { dataset: Dataset }) => {
           ) : null}
           {taxa.length > 0 && (
             <Item span={24} label={<DescLabel title={t('Taxa')} />}>
-              {taxa.map((k, i) => <ProvenanceTag key={i}>{t(keywordLabel(k))}</ProvenanceTag>)}
+              {taxa.map((k, i) => (
+                <ProvenanceTag key={i}>{t(keywordLabel(k))}</ProvenanceTag>
+              ))}
             </Item>
           )}
           {keywords.length > 0 && (
             <Item span={24} label={<DescLabel title={t('Keywords')} />}>
-              {keywords.map((k, i) => <ProvenanceTag key={i}>{t(keywordLabel(k))}</ProvenanceTag>)}
+              {keywords.map((k, i) => (
+                <ProvenanceTag key={i}>{t(keywordLabel(k))}</ProvenanceTag>
+              ))}
             </Item>
           )}
         </Descriptions>

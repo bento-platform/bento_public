@@ -6,12 +6,7 @@ import type { DatasetWithProject } from '@/features/catalogue/hooks';
 import { useTranslationFn } from '@/hooks';
 import { PCGL_MODE } from '@/config';
 import AboutContent from '@/components/AboutContent';
-import {
-  BANNER_GRADIENT,
-  COLOR_BANNER_EYEBROW,
-  COLOR_BANNER_TITLE,
-  COLOR_BANNER_SUBTITLE,
-} from './constants';
+import { BANNER_GRADIENT, COLOR_BANNER_EYEBROW, COLOR_BANNER_TITLE, COLOR_BANNER_SUBTITLE } from './constants';
 
 const { Text } = Typography;
 

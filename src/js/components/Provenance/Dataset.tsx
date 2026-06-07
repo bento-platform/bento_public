@@ -1,7 +1,13 @@
 import { type ReactNode, useCallback, useMemo, useState } from 'react';
 
 import { Avatar, Button, Card, Flex, List, Tag, Typography, theme } from 'antd';
-import { ExperimentOutlined, ExpandAltOutlined, PieChartOutlined, SolutionOutlined, TeamOutlined } from '@ant-design/icons';
+import {
+  ExperimentOutlined,
+  ExpandAltOutlined,
+  PieChartOutlined,
+  SolutionOutlined,
+  TeamOutlined,
+} from '@ant-design/icons';
 import { FaDatabase } from 'react-icons/fa';
 import { BiDna } from 'react-icons/bi';
 
@@ -199,11 +205,7 @@ const Dataset = ({
         <div style={{ flex: 1 }} />
 
         {(individuals > 0 || biosamples > 0 || experiments > 0) && (
-          <Flex
-            gap={12}
-            wrap
-            style={{ borderTop: `1px solid ${COLOR_BORDER}`, marginTop: 12, paddingTop: 10 }}
-          >
+          <Flex gap={12} wrap style={{ borderTop: `1px solid ${COLOR_BORDER}`, marginTop: 12, paddingTop: 10 }}>
             {individuals > 0 && <CountItem icon={<TeamOutlined />} value={individuals} />}
             {biosamples > 0 && <CountItem icon={<BiDna />} value={biosamples} />}
             {experiments > 0 && <CountItem icon={<ExperimentOutlined />} value={experiments} />}
