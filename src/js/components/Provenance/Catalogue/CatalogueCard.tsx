@@ -64,7 +64,11 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
           {statusStyle && statusLabel && (
             <span
               className="catalogue-card__status-badge"
-              style={{ color: statusStyle.color, background: statusStyle.bg, border: `1px solid ${statusStyle.border}` }}
+              style={{
+                color: statusStyle.color,
+                background: statusStyle.bg,
+                border: `1px solid ${statusStyle.border}`,
+              }}
             >
               {t(statusLabel)}
             </span>
