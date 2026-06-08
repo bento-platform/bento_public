@@ -16,20 +16,20 @@
     "individual_one": "Individual",
     "individual_other": "Individuals",
     "individual_help": [
-      "Individuals represent a specific person / organism, and may have one or multiple associated biosamples, each with associated experiments."
+      "$t(entities.individual_other) represent a specific person / organism, and may have one or multiple associated $t(entities.biosample_other, lowercase), each with associated $t(entities.experiment_other)."
     ],
     "biosample_one": "Biosample",
     "biosample_other": "Biosamples",
-    "biosample_help": ["Biosamples are usually biological material extracted from a specific individual."],
+    "biosample_help": ["$t(entities.biosample_other) are usually biological material extracted from a specific $t(entities.individual_one, lowercase)."],
     "experiment_one": "Experiment",
     "experiment_other": "Experiments",
     "experiment_help": [
-      "Experiments are a process done to a specific sample, e.g., whole-genome sequencing.",
-      "One lab experiment may result in multiple experiment records inside the portal, such as with multiplexed samples."
+      "$t(entities.experiment_other) are a process done to a specific sample, e.g., whole-genome sequencing.",
+      "One lab experiment may result in multiple $t(entities.experiment_one) records inside the portal, such as with multiplexed samples."
     ],
     "experiment_result_one": "File",
     "experiment_result_other": "Files",
-    "experiment_result_help": "Files are generated as the result of experiments.",
+    "experiment_result_help": "$t(entities.experiment_result_other) are generated as the result of $t(entities.experiment_other).",
     "variant_one": "Variant",
     "variant_other": "Variants"
   },
@@ -226,16 +226,16 @@
   "Help for": "Help for",
   "page_help": {
     "overview": [
-      "The $t(Overview) page shows counts and charts for data stored in the selected project/dataset (the 'scope').",
+      "The $t(Overview) page shows counts and charts for data stored in the selected project/$t(entities.dataset_one, lowercase) (the 'scope').",
       "Charts can be shown/hidden or their width altered via the '$t(Manage Charts)' button."
     ],
     "search": [
-      "The $t(Search) page lets you query either counts or full records for data stored in a specific project/dataset",
+      "The $t(Search) page lets you query either counts or full records for data stored in a specific project/$t(entities.dataset_one, lowercase)",
       "or the entire instance (the 'scope'), depending on your level of authorization.\n",
       "Select filters and specify values to narrow down data of interest within the selected scope.",
       "If a small number of records match your query, the count may be censored to prevent re-identification."
     ],
-    "provenance": ["Detailed provenance data for a dataset or all datasets in a project."],
+    "provenance": ["Detailed provenance data for a $t(entities.dataset_one, lowercase) or all $t(entities.dataset_other, lowercase) in a project."],
     "beacon": [
       "Beacon allows you to query data by the position of genetic variants, and filter the results by various clinical",
       "or experimental metadata properties. You can also query by variants or metadata alone."
@@ -254,8 +254,8 @@
     "code": "Code"
   },
   "biosample": {
-    "biosample_id": "Biosample ID",
-    "individual_id": "Individual ID",
+    "biosample_id": "$t(entities.biosample_one) ID",
+    "individual_id": "$t(entities.individual_one) ID",
     "sampled_tissue": "Sampled Tissue",
     "description": "$t(general.description)",
     "derived_from_id": "Derived From",
@@ -275,7 +275,7 @@
     "material_sample": "Material Sample",
     "sample_processing": "Sample Processing",
     "sample_storage": "Sample Storage",
-    "files": "Files"
+    "files": "$t(entities.experiment_result_other)"
   },
   "geo_location": {
     "label": "Label",
@@ -289,7 +289,7 @@
   "file": {
     "filename": "Filename",
     "download": "Download",
-    "individual_to_file_identifiers": "Individual to File Identifiers",
+    "individual_to_file_identifiers": "$t(entities.individual_one) to File Identifiers",
     "file_attributes": "File Attributes",
     "download_alert": "This will download a file from an external site. Are you sure you want to do this?"
   },
@@ -464,7 +464,7 @@
     "UNSOLVED": "Unsolved"
   },
   "experiment": {
-    "experiment_id": "Experiment ID",
+    "experiment_id": "$t(entities.experiment_one) ID",
     "description": "$t(general.description)",
     "protocol_url": "Protocol URL",
     "experiment_type": "Experiment Type",

@@ -15,23 +15,27 @@
     "phenopacket_other": "Données cliniques",
     "individual_one": "Participant",
     "individual_other": "Participants",
+    "individual_specific": "Un participant",
     "individual_help": [
-      "Les participants représentent une personne/un organisme spécifique et peuvent avoir un ou plusieurs échantillons biologiques associés, chacun avec des expériences associées."
+      "Les $t(entities.individual_other) représentent une personne/un organisme spécifique et peuvent avoir un ou plusieurs $t(entities.biosample_other, lowercase) associés, chacun avec des $t(entities.experiment_other, lowercase) associées."
     ],
     "biosample_one": "Échantillon biologique",
     "biosample_other": "Échantillons biologiques",
     "biosample_help": [
-      "Les échantillons biologiques sont généralement du matériel biologique extrait d’un participant spécifique."
+      "Les $t(entities.biosample_other, lowercase) sont généralement du matériel biologique extrait d’$t(entities.individual_specific, lowercase) spécifique."
     ],
     "experiment_one": "Expérience",
     "experiment_other": "Expériences",
+    "experiment_specific": "Une éxperience",
+    "experiment_of_one": "d'expérience",
+    "experiment_of_other": "d'expériences",
     "experiment_help": [
-      "Les expériences sont un processus effectué sur un échantillon spécifique, par exemple le séquençage du génome entier.",
-      "Une expérience par un laboratoire peut donner lieu à plusieurs enregistrements d'expériences dans le portail, par exemple avec des échantillons multiplexés."
+      "Les $t(entities.experiment_other, lowercase) sont un processus effectué sur $t(entities.experiment_specific, lowercase) spécifique, par exemple le séquençage du génome entier.",
+      "Une expérience par un laboratoire peut donner lieu à plusieurs enregistrements $t(entities.experiment_of_one) dans le portail, par exemple avec des échantillons multiplexés."
     ],
     "experiment_result_one": "Fichier",
     "experiment_result_other": "Fichiers",
-    "experiment_result_help": "Les fichiers sont générés à la suite d'expériences.",
+    "experiment_result_help": "Les $t(entities.experiment_result_other, lowercase) sont générés à la suite $t(entities.experiment_of_other).",
     "variant_one": "Variant",
     "variant_other": "Variants"
   },
@@ -277,8 +281,7 @@
     "tumor_grade": "Grade tumoral",
     "material_sample": "Nature de l'échantillon",
     "sample_processing": "Traitement de l'échantillon",
-    "sample_storage": "Stockage de l'échantillon",
-    "files": "Fichiers"
+    "sample_storage": "Stockage de l'échantillon"
   },
   "geo_location": {
     "label": "Étiquette",
@@ -292,7 +295,7 @@
   "file": {
     "filename": "Nom du fichier",
     "download": "Télécharger",
-    "individual_to_file_identifiers": "Identifiants individu-fichier",
+    "individual_to_file_identifiers": "Identifiants $t(entities.individual_one, lowercase)-fichier",
     "file_attributes": "Attributs du fichier",
     "download_alert": "Cela va télécharger un fichier depuis un site externe. Êtes-vous sûr de vouloir continuer ?"
   },
