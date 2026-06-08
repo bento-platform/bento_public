@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Card, Flex, Tag, Typography, theme } from 'antd';
+import { Button, Card, Flex, Tag, Typography } from 'antd';
 import { ExperimentOutlined, PieChartOutlined, SolutionOutlined, TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
 
@@ -11,7 +11,7 @@ import { useLanguage, useTranslationFn } from '@/hooks';
 import { useCatalogueState, normaliseStatus } from '@/features/catalogue/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
 import DatasetProvenanceModal from '../DatasetProvenanceModal';
-import { STATUS_STYLE, COLOR_CHART_FALLBACK } from './constants';
+import { COLOR_CHART_FALLBACK } from './constants';
 
 const { Paragraph, Text, Title } = Typography;
 
@@ -32,15 +32,12 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
   const navigateToScope = useNavigateToScope();
   const [provenanceModalOpen, setProvenanceModalOpen] = useState(false);
 
-  const { token } = theme.useToken();
   const { projectColors } = useCatalogueState();
 
   const { identifier, title, description } = dataset;
   const keywords = (dataset.keywords ?? []).map(keywordLabel).slice(0, MAX_KEYWORDS);
   const updatedStr = isoDateToString(dataset.last_modified ?? project.updated, language);
   const normStatus = normaliseStatus(dataset.study_status);
-  const statusStyle = STATUS_STYLE[normStatus];
-  const statusLabel = normStatus;
   const projectTitle = project.title;
 
   const counts = dataset.counts_by_entity;
@@ -61,16 +58,9 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
           <Title level={5} className="catalogue-card__title">
             {t(title)}
           </Title>
-          {statusStyle && statusLabel && (
-            <span
-              className="catalogue-card__status-badge"
-              style={{
-                color: statusStyle.color,
-                background: statusStyle.bg,
-                border: `1px solid ${statusStyle.border}`,
-              }}
-            >
-              {t(statusLabel)}
+          {normStatus && (
+            <span className={`catalogue-card__status-badge catalogue-card__status-badge--${normStatus.toLowerCase()}`}>
+              {t(normStatus)}
             </span>
           )}
         </Flex>
@@ -126,15 +116,7 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
         {keywords.length > 0 && (
           <Flex wrap gap={4} className="mt-2">
             {keywords.map((kw) => (
-              <Tag
-                key={kw}
-                className="catalogue-card__keyword-tag"
-                style={{
-                  background: token.colorPrimaryBg,
-                  color: token.colorPrimary,
-                  border: `1px solid ${token.colorPrimaryBorder}`,
-                }}
-              >
+              <Tag key={kw} className="catalogue-card__keyword-tag">
                 {kw}
               </Tag>
             ))}
