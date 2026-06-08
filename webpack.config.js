@@ -74,7 +74,6 @@ const makeConfig = (mode) => ({
       // Theme variables
       BENTO_PUBLIC_CATALOGUE_HEADER_BACKGROUND: null,
       BENTO_PUBLIC_CATALOGUE_HEADER_TEXT_COLOR: null,
-      BENTO_PUBLIC_FONT_FAMILY: null,
       // Beacon configuration and flags
       BEACON_URL: null,
       BENTO_BEACON_UI_ENABLED: null,
