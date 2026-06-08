@@ -14,7 +14,6 @@ import { getCurrentPage } from '@/utils/router';
 import { LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
 import {
   CLIENT_NAME,
-  PCGL_MODE,
   PORTAL_URL,
   SHOW_HEADER_TITLE,
   SHOW_PORTAL_LINK,
@@ -166,7 +165,7 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
         </Flex>
 
         <Space size={isSmallScreen ? 4 : 'small'}>
-          {!PCGL_MODE && SHOW_PORTAL_LINK && (
+          {SHOW_PORTAL_LINK && (
             <Button
               type="text"
               className="header-button"
