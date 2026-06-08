@@ -11,17 +11,7 @@ import { useLanguage, useTranslationFn } from '@/hooks';
 import { useCatalogueState, normaliseStatus } from '@/features/catalogue/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
 import DatasetProvenanceModal from '../DatasetProvenanceModal';
-import {
-  STATUS_STYLE,
-  COLOR_CHART_FALLBACK,
-  COLOR_TEXT_SECONDARY,
-  COLOR_TEXT_MUTED,
-  COLOR_BORDER,
-  COLOR_BORDER_HOVER,
-  COLOR_BORDER_BASE,
-  SHADOW_CARD,
-  SHADOW_CARD_HOVER,
-} from './constants';
+import { STATUS_STYLE, COLOR_CHART_FALLBACK } from './constants';
 
 const { Paragraph, Text, Title } = Typography;
 
@@ -31,8 +21,8 @@ const keywordLabel = (k: StringOrOntologyClass): string => (typeof k === 'string
 
 const CountItem = ({ icon, value }: { icon: React.ReactNode; value: number }) => (
   <Flex align="center" gap={4}>
-    <span style={{ color: COLOR_TEXT_MUTED, fontSize: 13 }}>{icon}</span>
-    <Text style={{ fontSize: 13 }}>{value.toLocaleString()}</Text>
+    <span className="catalogue-card__count-icon">{icon}</span>
+    <Text className="catalogue-card__count-text">{value.toLocaleString()}</Text>
   </Flex>
 );
 
@@ -65,44 +55,16 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
         open={provenanceModalOpen}
         onCancel={() => setProvenanceModalOpen(false)}
       />
-      <Card
-        style={{
-          borderRadius: 10,
-          border: `1px solid ${COLOR_BORDER}`,
-          boxShadow: SHADOW_CARD,
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          transition: 'box-shadow 0.2s, border-color 0.2s',
-        }}
-        styles={{ body: { display: 'flex', flexDirection: 'column', height: '100%', padding: 16, gap: 0 } }}
-        onMouseEnter={(e) => {
-          (e.currentTarget as HTMLElement).style.borderColor = COLOR_BORDER_HOVER;
-          (e.currentTarget as HTMLElement).style.boxShadow = SHADOW_CARD_HOVER;
-        }}
-        onMouseLeave={(e) => {
-          (e.currentTarget as HTMLElement).style.borderColor = COLOR_BORDER;
-          (e.currentTarget as HTMLElement).style.boxShadow = SHADOW_CARD;
-        }}
-      >
+      <Card className="catalogue-card">
         {/* Header row: title + status pill */}
         <Flex justify="space-between" align="flex-start" gap={8}>
-          <Title level={5} style={{ margin: 0, fontSize: 16, fontWeight: 600, flex: 1 }}>
+          <Title level={5} className="catalogue-card__title">
             {t(title)}
           </Title>
           {statusStyle && statusLabel && (
             <span
-              style={{
-                flexShrink: 0,
-                fontSize: 11,
-                fontWeight: 600,
-                padding: '1px 8px',
-                borderRadius: 10,
-                color: statusStyle.color,
-                background: statusStyle.bg,
-                border: `1px solid ${statusStyle.border}`,
-                whiteSpace: 'nowrap',
-              }}
+              className="catalogue-card__status-badge"
+              style={{ color: statusStyle.color, background: statusStyle.bg, border: `1px solid ${statusStyle.border}` }}
             >
               {t(statusLabel)}
             </span>
@@ -114,9 +76,9 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
           ellipsis={{
             rows: 2,
             expandable: true,
-            symbol: <span style={{ color: COLOR_TEXT_MUTED, fontSize: 11.5 }}>more</span>,
+            symbol: <span className="catalogue-card__expand-symbol">more</span>,
           }}
-          style={{ fontSize: 11.5, color: COLOR_TEXT_MUTED, marginTop: 4, marginBottom: 0 }}
+          className="catalogue-card__meta"
         >
           {t('Updated')} {updatedStr}
           {dataset.privacy && ` · ${dataset.privacy}`}
@@ -124,7 +86,7 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
 
         {/* Project pill */}
         {projectTitle && (
-          <div style={{ marginTop: 8, alignSelf: 'flex-start' }}>
+          <div className="mt-2 self-start">
             <button
               type="button"
               className="project-pill"
@@ -132,29 +94,10 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
                 e.stopPropagation();
                 navigateToScope({ project: project.identifier }, BentoRoute.Overview);
               }}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 6,
-                fontSize: 11.5,
-                fontWeight: 600,
-                color: COLOR_TEXT_SECONDARY,
-                border: `1px solid ${COLOR_BORDER_BASE}`,
-                borderRadius: 20,
-                padding: '2px 9px 2px 7px',
-                background: 'none',
-                cursor: 'pointer',
-                fontFamily: 'inherit',
-              }}
             >
               <span
-                style={{
-                  width: 7,
-                  height: 7,
-                  borderRadius: '50%',
-                  background: projectColors[projectTitle] ?? COLOR_CHART_FALLBACK,
-                  flexShrink: 0,
-                }}
+                className="project-pill__dot"
+                style={{ background: projectColors[projectTitle] ?? COLOR_CHART_FALLBACK }}
               />
               {projectTitle}
             </button>
@@ -167,9 +110,9 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
             ellipsis={{
               rows: 5,
               expandable: true,
-              symbol: <span style={{ color: COLOR_TEXT_SECONDARY, fontSize: 13 }}>more</span>,
+              symbol: <span className="catalogue-card__description">more</span>,
             }}
-            style={{ fontSize: 13, color: COLOR_TEXT_SECONDARY, marginTop: 10, marginBottom: 0 }}
+            className="catalogue-card__description"
           >
             {t(description)}
           </Paragraph>
@@ -177,39 +120,29 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
 
         {/* Keywords */}
         {keywords.length > 0 && (
-          <div style={{ marginTop: 8, display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+          <Flex wrap gap={4} className="mt-2">
             {keywords.map((kw) => (
               <Tag
                 key={kw}
+                className="catalogue-card__keyword-tag"
                 style={{
-                  fontSize: 11,
-                  borderRadius: 4,
                   background: token.colorPrimaryBg,
                   color: token.colorPrimary,
                   border: `1px solid ${token.colorPrimaryBorder}`,
-                  margin: 0,
                 }}
               >
                 {kw}
               </Tag>
             ))}
-          </div>
+          </Flex>
         )}
 
         {/* Spacer pushes counts + actions to bottom */}
-        <div style={{ flex: 1 }} />
+        <div className="flex-1" />
 
         {/* Counts row */}
         {(individuals > 0 || biosamples > 0 || experiments > 0) && (
-          <Flex
-            gap={12}
-            wrap
-            style={{
-              borderTop: `1px solid ${COLOR_BORDER}`,
-              marginTop: 12,
-              paddingTop: 10,
-            }}
-          >
+          <Flex gap={12} wrap className="catalogue-card__counts-row">
             {individuals > 0 && <CountItem icon={<TeamOutlined />} value={individuals} />}
             {biosamples > 0 && <CountItem icon={<BiDna />} value={biosamples} />}
             {experiments > 0 && <CountItem icon={<ExperimentOutlined />} value={experiments} />}
@@ -217,16 +150,16 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
         )}
 
         {/* Actions row */}
-        <Flex gap={8} style={{ marginTop: 12 }}>
+        <Flex gap={8} className="mt-3">
           <Button
             type="primary"
             icon={<PieChartOutlined />}
-            style={{ flex: 1 }}
+            className="flex-1"
             onClick={() => navigateToScope({ project: project.identifier, dataset: identifier }, BentoRoute.Overview)}
           >
             {t('Explore')}
           </Button>
-          <Button icon={<SolutionOutlined />} style={{ flex: 1 }} onClick={() => setProvenanceModalOpen(true)}>
+          <Button icon={<SolutionOutlined />} className="flex-1" onClick={() => setProvenanceModalOpen(true)}>
             {t('Provenance')}
           </Button>
         </Flex>

@@ -14,7 +14,6 @@ import CatalogueRail from './CatalogueRail';
 import CatalogueToolbar from './CatalogueToolbar';
 import CatalogueInsights from './CatalogueInsights';
 import CatalogueCard from './CatalogueCard';
-import { COLOR_TEXT_SECONDARY } from './constants';
 
 const { Text } = Typography;
 
@@ -44,13 +43,13 @@ const Catalogue = () => {
       : { display: 'flex', flexDirection: 'column', gap: 14 };
 
   return (
-    <div style={{ paddingBottom: 'var(--content-padding-v)', maxWidth: 1240, margin: '0 auto', width: '100%' }}>
+    <div className="pb-content max-w-catalogue mx-auto w-full">
       {projectsStatus === RequestStatus.Rejected && (
         <Error message="project_fetch" description={projectsError || undefined} />
       )}
 
       {/* Banner */}
-      <div style={{ marginBottom: 16 }}>
+      <div className="mb-4">
         <CatalogueBanner filteredDatasets={filtered} />
       </div>
 
@@ -60,30 +59,21 @@ const Catalogue = () => {
         <CatalogueRail totalCount={filtered.length} facetOptions={facetOptions} />
 
         {/* Right: toolbar + insights + grid */}
-        <div style={{ flex: 1, minWidth: 0 }}>
+        <div className="flex-1 min-w-0">
           <CatalogueToolbar filteredCount={filtered.length} />
 
           {insightsOpen && (
-            <div style={{ marginTop: 14 }}>
+            <div className="catalogue-insights-container">
               <CatalogueInsights filteredDatasets={filtered} />
             </div>
           )}
 
           {/* DATASETS separator */}
-          <Flex align="center" gap={8} style={{ marginTop: 18, marginBottom: 14 }}>
-            <Text
-              style={{
-                fontSize: 13,
-                fontWeight: 700,
-                textTransform: 'uppercase',
-                letterSpacing: '0.06em',
-                color: COLOR_TEXT_SECONDARY,
-                whiteSpace: 'nowrap',
-              }}
-            >
+          <Flex align="center" gap={8} className="catalogue-datasets-separator">
+            <Text className="catalogue-section-label">
               {t('Datasets')}
             </Text>
-            <Divider style={{ margin: 0, flex: 1 }} />
+            <Divider className="m-0 flex-1" />
           </Flex>
 
           {filtered.length === 0 ? (

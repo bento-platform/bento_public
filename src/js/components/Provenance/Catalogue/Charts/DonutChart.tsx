@@ -47,7 +47,7 @@ const DonutChart = ({
   const c = SIZE / 2;
 
   return (
-    <Card size="small" style={{ flex: 1, minWidth: 180 }}>
+    <Card size="small" className="chart-card">
       <Text className="chart-card__title">{t(title)}</Text>
       <div className="donut-wrap">
         <svg viewBox={`0 0 ${SIZE} ${SIZE}`} className="donut" width={SIZE} height={SIZE}>
@@ -64,7 +64,7 @@ const DonutChart = ({
               strokeDasharray={`${len} ${CIRC - len}`}
               strokeDashoffset={dashOffset}
               transform={`rotate(-90 ${c} ${c})`}
-              style={{ cursor: 'pointer' }}
+              className="cursor-pointer"
               onClick={() => onSegmentClick(facetId, entry.name)}
             >
               <title>

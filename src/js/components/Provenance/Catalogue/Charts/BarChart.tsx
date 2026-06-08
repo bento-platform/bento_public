@@ -33,7 +33,7 @@ const BarChart = ({
   const max = Math.max(1, ...data.map((d) => d.value));
 
   return (
-    <Card size="small" style={{ flex: 1, minWidth: 180 }}>
+    <Card size="small" className="chart-card">
       <Text className="chart-card__title">{t(title)}</Text>
       <div className="bars">
         {data.map((entry) => {

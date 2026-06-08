@@ -9,13 +9,7 @@ import { getLabel, normaliseStatus } from '@/features/catalogue/hooks';
 import DonutChart from './Charts/DonutChart';
 import BarChart from './Charts/BarChart';
 import { PCGL_MODE } from '@/config';
-import {
-  STATUS_CHART_COLORS,
-  COLOR_PRIMARY,
-  COLOR_TEXT_MUTED,
-  COLOR_INSIGHTS_BG,
-  COLOR_INSIGHTS_BORDER,
-} from './constants';
+import { STATUS_CHART_COLORS } from './constants';
 
 const { Text } = Typography;
 
@@ -56,22 +50,15 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
   };
 
   return (
-    <div
-      style={{
-        background: COLOR_INSIGHTS_BG,
-        border: `1px solid ${COLOR_INSIGHTS_BORDER}`,
-        borderRadius: 12,
-        padding: '14px 16px',
-      }}
-    >
-      <Flex justify="space-between" align="center" style={{ marginBottom: 12 }}>
+    <div className="catalogue-insights">
+      <Flex justify="space-between" align="center" className="mb-3">
         <Flex align="center" gap={6}>
-          <BarChartOutlined style={{ color: COLOR_PRIMARY }} />
-          <Text style={{ color: COLOR_PRIMARY, fontWeight: 600, fontSize: 14 }}>{t('Dataset insights')}</Text>
+          <BarChartOutlined className="text-cat-primary" />
+          <Text className="catalogue-insights__header-title">{t('Dataset insights')}</Text>
         </Flex>
-        <Text style={{ fontSize: 12, color: COLOR_TEXT_MUTED }}>{t('Select a segment to filter')}</Text>
+        <Text className="catalogue-insights__hint">{t('Select a segment to filter')}</Text>
       </Flex>
-      <Flex gap={12} wrap style={{ alignItems: 'stretch' }}>
+      <Flex gap={12} wrap className="items-stretch">
         <DonutChart
           title="By status"
           data={statusData}

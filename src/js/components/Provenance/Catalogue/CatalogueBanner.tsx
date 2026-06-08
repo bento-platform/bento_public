@@ -6,12 +6,12 @@ import type { DatasetWithProject } from '@/features/catalogue/hooks';
 import { useTranslationFn } from '@/hooks';
 import { PCGL_MODE } from '@/config';
 import AboutContent from '@/components/AboutContent';
-import { BANNER_GRADIENT, COLOR_BANNER_EYEBROW, COLOR_BANNER_TITLE, COLOR_BANNER_SUBTITLE } from './constants';
+import { BANNER_GRADIENT } from './constants';
 
 const { Text } = Typography;
 
 const StatItem = ({ icon, value, label }: { icon: React.ReactNode; value: string; label: string }) => (
-  <Space size={8} align="center" style={{ whiteSpace: 'nowrap' }}>
+  <Space size={8} align="center" className="whitespace-nowrap">
     <span className="catalogue-banner__stat-icon">{icon}</span>
     <Text className="catalogue-banner__stat-value">
       {value} {label}
@@ -54,27 +54,15 @@ const CatalogueBanner = ({ filteredDatasets }: CatalogueBannerProps) => {
           : undefined
       }
     >
-      <Flex justify="space-between" align="center" style={{ width: '100%' }} wrap gap={PCGL_MODE ? 16 : 24}>
+      <Flex justify="space-between" align="center" className="w-full" wrap gap={PCGL_MODE ? 16 : 24}>
         {PCGL_MODE ? (
           <Flex vertical gap={4}>
-            <Text
-              style={{
-                color: COLOR_BANNER_EYEBROW,
-                fontSize: 11,
-                letterSpacing: '0.16em',
-                textTransform: 'uppercase',
-                fontWeight: 600,
-              }}
-            >
-              {t('pcgl.banner.eyebrow')}
-            </Text>
-            <Text style={{ color: COLOR_BANNER_TITLE, fontSize: 23, fontWeight: 600, lineHeight: 1.2 }}>
-              {t('pcgl.banner.title')}
-            </Text>
-            <Text style={{ color: COLOR_BANNER_SUBTITLE, fontSize: 13.5 }}>{t('pcgl.banner.subtitle')}</Text>
+            <Text className="catalogue-banner__eyebrow">{t('pcgl.banner.eyebrow')}</Text>
+            <Text className="catalogue-banner__title">{t('pcgl.banner.title')}</Text>
+            <Text className="catalogue-banner__subtitle">{t('pcgl.banner.subtitle')}</Text>
           </Flex>
         ) : (
-          <div style={{ flex: 1, minWidth: 0 }}>
+          <div className="flex-1 min-w-0">
             <AboutContent />
           </div>
         )}

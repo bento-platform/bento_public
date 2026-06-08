@@ -13,7 +13,6 @@ import {
   type FacetId,
 } from '@/features/catalogue/catalogue.store';
 import { useTranslationFn } from '@/hooks';
-import { COLOR_PRIMARY, COLOR_TEXT_MUTED } from './constants';
 
 const { Text } = Typography;
 
@@ -61,13 +60,13 @@ const CatalogueToolbar = ({ filteredCount }: CatalogueToolbarProps) => {
           placeholder={t('Search datasets, keywords, assays…')}
           value={q}
           onChange={(e) => dispatch(setSearch(e.target.value))}
-          style={{ flexGrow: 1, minWidth: 200, borderRadius: 6 }}
+          className="catalogue-search-input"
           allowClear
         />
         <Select<SortKey>
           value={sort}
           onChange={(v) => dispatch(setSort(v))}
-          style={{ width: 180 }}
+          className="catalogue-sort-select"
           options={SORT_OPTIONS.map((o) => ({ value: o.value, label: t(o.label) }))}
         />
         <Segmented
@@ -83,7 +82,7 @@ const CatalogueToolbar = ({ filteredCount }: CatalogueToolbarProps) => {
       {/* Row 2: result count + insights toggle */}
       <Flex justify="space-between" align="center">
         <Text>
-          <span style={{ color: COLOR_PRIMARY, fontWeight: 600 }}>{filteredCount}</span>{' '}
+          <span className="catalogue-count-highlight">{filteredCount}</span>{' '}
           {t(filteredCount === 1 ? 'dataset found' : 'datasets found')}
         </Text>
         <Button
@@ -111,16 +110,13 @@ const CatalogueToolbar = ({ filteredCount }: CatalogueToolbarProps) => {
                   dispatch(toggleFacetValue({ facet, value }));
                 }
               }}
-              style={{ borderRadius: 13, margin: 0 }}
+              className="catalogue-filter-tag"
             >
-              <span style={{ color: COLOR_TEXT_MUTED, fontSize: 11, marginRight: 3 }}>{t(FACET_LABELS[facet])}:</span>
+              <span className="catalogue-filter-tag__facet-label">{t(FACET_LABELS[facet])}:</span>
               {label}
             </Tag>
           ))}
-          <Tag
-            style={{ borderRadius: 13, margin: 0, cursor: 'pointer', borderStyle: 'dashed' }}
-            onClick={() => dispatch(clearAll())}
-          >
+          <Tag className="catalogue-clear-tag" onClick={() => dispatch(clearAll())}>
             {t('Clear all')}
           </Tag>
         </Flex>
