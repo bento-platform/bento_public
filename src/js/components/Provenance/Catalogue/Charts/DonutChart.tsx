@@ -48,7 +48,7 @@ const DonutChart = ({
 
   return (
     <Card size="small" className="chart-card">
-      <Text className="chart-card__title">{t(title)}</Text>
+      <Text className="chart-card__title">{title}</Text>
       <div className="donut-wrap">
         <svg viewBox={`0 0 ${SIZE} ${SIZE}`} className="donut" width={SIZE} height={SIZE}>
           <circle cx={c} cy={c} r={R} fill="none" stroke={COLOR_DONUT_TRACK} strokeWidth="16" />

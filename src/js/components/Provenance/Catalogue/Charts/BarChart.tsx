@@ -34,7 +34,7 @@ const BarChart = ({
 
   return (
     <Card size="small" className="chart-card">
-      <Text className="chart-card__title">{t(title)}</Text>
+      <Text className="chart-card__title">{title}</Text>
       <div className="bars">
         {data.map((entry) => {
           const sel = selectedValues.includes(entry.name);

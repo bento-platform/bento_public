@@ -79,7 +79,7 @@ const CatalogueRail = ({ totalCount, facetOptions }: CatalogueRailProps) => {
       <div className="catalogue-rail__header">
         <span className="catalogue-rail__title">{t('Filters')}</span>
         <span className="catalogue-rail__count">
-          {totalCount} {t(totalCount === 1 ? 'dataset' : 'datasets')}
+          {totalCount} {t('entities.dataset', { count: totalCount }).toLowerCase()}
         </span>
       </div>
       <div>

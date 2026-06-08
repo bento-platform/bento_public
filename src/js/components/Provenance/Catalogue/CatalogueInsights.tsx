@@ -60,18 +60,18 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
       </Flex>
       <Flex gap={12} wrap className="items-stretch">
         <DonutChart
-          title="By status"
+          title={t('By status')}
           data={statusData}
           colors={STATUS_CHART_COLORS}
           total={filteredDatasets.length}
-          centerLabel="datasets"
+          centerLabel={t('entities.dataset', { count: filteredDatasets.length }).toLowerCase()}
           facetId="statuses"
           selectedValues={sets.statuses}
           onSegmentClick={handleClick}
         />
         {PCGL_MODE ? (
           <BarChart
-            title="By data type"
+            title={t('By data type')}
             data={typeData.slice(0, 5)}
             colors={typeColors}
             facetId="dataTypes"
@@ -80,7 +80,7 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
           />
         ) : (
           <BarChart
-            title="By keyword"
+            title={t('By keyword')}
             data={keywordData.slice(0, 5)}
             colors={keywordColors}
             facetId="keywords"
@@ -89,11 +89,11 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
           />
         )}
         <DonutChart
-          title="By project"
+          title={t('By project')}
           data={programData}
           colors={projectColors}
           total={filteredDatasets.length}
-          centerLabel="datasets"
+          centerLabel={t('entities.dataset', { count: filteredDatasets.length }).toLowerCase()}
           facetId="projects"
           selectedValues={sets.projects}
           onSegmentClick={handleClick}
