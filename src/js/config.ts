@@ -6,8 +6,9 @@ interface PublicConfig {
   PORTAL_URL: string;
   PUBLIC_URL: string;
   // Display flags
-  TRANSLATED: boolean;
-  SHOW_HEADER_TITLE: boolean;
+  TRANSLATED: boolean; // Whether to show a language toggle
+  TRANSLATED_LOGO: boolean; // Whether a translated version of the header logo is available/relevant
+  SHOW_HEADER_TITLE: boolean; // Whether to show the CLIENT_NAME title text
   SHOW_PORTAL_LINK: boolean;
   SHOW_SIGN_IN: boolean;
   FORCE_CATALOGUE: boolean; // Show data catalogue even with 1 project
@@ -40,6 +41,8 @@ export const PUBLIC_URL = PUBLIC_URL_NO_TRAILING_SLASH + '/';
 
 // Bento Public display flags
 export const TRANSLATED = BENTO_PUBLIC_CONFIG.TRANSLATED ?? stringToBoolean(process.env.BENTO_PUBLIC_TRANSLATED);
+export const TRANSLATED_LOGO =
+  BENTO_PUBLIC_CONFIG.TRANSLATED_LOGO ?? stringToBoolean(process.env.BENTO_PUBLIC_TRANSLATED_LOGO);
 export const SHOW_HEADER_TITLE =
   BENTO_PUBLIC_CONFIG.SHOW_HEADER_TITLE ?? stringToBoolean(process.env.BENTO_PUBLIC_SHOW_HEADER_TITLE, 'true');
 export const SHOW_PORTAL_LINK =
