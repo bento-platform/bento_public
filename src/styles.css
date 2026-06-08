@@ -665,6 +665,11 @@ body {
   color: var(--cat-primary);
 }
 
+.fchip--on:hover:not(:disabled) {
+  background: var(--cat-primary-dark, color-mix(in srgb, var(--cat-primary) 85%, #000));
+  color: #fff;
+}
+
 .fchip--on {
   background: var(--cat-primary);
   border-color: var(--cat-primary);
