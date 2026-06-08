@@ -1,5 +1,6 @@
 import { Descriptions, Typography } from 'antd';
-import { PointMap } from 'bento-charts/dist/maps';
+import BentoMapContainer from 'bento-charts/dist/Components/Maps/BentoMapContainer';
+import { GeoJSON } from 'react-leaflet';
 import { useTranslationFn } from '@/hooks';
 import type { Dataset } from '@/types/dataset';
 
@@ -11,8 +12,6 @@ const SpatialCoverageDisplay = ({ spatialCoverage }: { spatialCoverage: NonNulla
   }
 
   const name = spatialCoverage.properties.name;
-  const geometry = spatialCoverage.geometry;
-  const isPoint = geometry?.type === 'Point';
 
   // TODO: better map display for generic geometries
   return (
@@ -22,16 +21,11 @@ const SpatialCoverageDisplay = ({ spatialCoverage }: { spatialCoverage: NonNulla
           {name}
         </Descriptions.Item>
       </Descriptions>
-      {isPoint && (
-        <div style={{ position: 'relative', zIndex: 0 }}>
-          <PointMap
-            data={[{ coordinates: geometry.coordinates as [number, number], title: name }]}
-            center={[geometry.coordinates[1], geometry.coordinates[0]]}
-            zoom={5}
-            height={300}
-          />
-        </div>
-      )}
+      <div style={{ maxWidth: 1100 }}>
+        <BentoMapContainer center={[45.5345883, -73.5869592]} zoom={4} height={400}>
+          <GeoJSON data={spatialCoverage} />
+        </BentoMapContainer>
+      </div>
     </>
   );
 };
