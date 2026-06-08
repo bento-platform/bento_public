@@ -76,8 +76,8 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
           if (!enabled) return null;
           const itemCount = spec.itemCount?.(phenopacket);
           const titleTranslationOptions =
-            spec.titleTranslationUseItemCount && itemCount !== undefined ? { count: itemCount } : undefined;
-          const showItemCount = itemCount !== undefined && !(spec.titleTranslationUseItemCount && itemCount === 1);
+            spec.renderSingleItemDetail && itemCount !== undefined ? { count: itemCount } : undefined;
+          const showItemCount = itemCount !== undefined && !(spec.renderSingleItemDetail && itemCount === 1);
           return {
             key,
             label: (
@@ -144,7 +144,12 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
     const { sectionKey, rowId } =
       (routerState as { highlight?: { sectionKey?: string; rowId?: string } })?.highlight ?? {};
 
-    const divId = rowId ?? `phenopacket-${sectionKey}`;
+    if (!sectionKey) return;
+
+    const { renderSingleItemDetail, itemCount } = SECTION_SPECS[sectionKey as SectionKey];
+    const sectionCount = itemCount?.(phenopacket);
+
+    const divId = rowId && !(renderSingleItemDetail && sectionCount === 1) ? rowId : `phenopacket-${sectionKey}`;
     const el = document.getElementById(divId);
 
     // Signal to the click handler that a highlight transition is in flight
@@ -193,7 +198,7 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
       el?.classList.remove('highlight-boundary');
       el?.blur();
     };
-  }, [routerState, items, open, setOpen]);
+  }, [routerState, items, open, phenopacket, setOpen]);
 
   return (
     <Collapse
