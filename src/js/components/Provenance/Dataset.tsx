@@ -123,7 +123,7 @@ const Dataset = ({
               </Popover>
             )}
           </Space>
-          <CountsDisplay counts={filteredCounts} fontSize="0.875rem" />
+          <CountsDisplay counts={filteredCounts} totalCounts={dataset?.counts_by_entity} fontSize="0.875rem" />
           <Flex gap={12} align="flex-end" className="flex-1">
             <Button icon={<PieChartOutlined />} onClick={onNavigateOverview}>
               {t('Explore')}
