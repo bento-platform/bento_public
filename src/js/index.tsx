@@ -85,7 +85,7 @@ const RootApp = () => {
                     Menu: { iconSize: 20 },
                     Table: { borderColor: 'rgba(0, 0, 0, 0.08)' },
                   },
-                  token: PCGL_MODE ? { colorPrimary: '#2B7AAD' } : {},
+                  cssVar: { key: 'default-theme' },
                 }}
               >
                 <NotificationProvider>
