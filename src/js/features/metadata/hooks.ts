@@ -37,7 +37,7 @@ export const useSelectedDataset = (): Dataset | undefined => {
     },
   } = useMetadata();
   return useMemo(
-    () => (selectedProject ? selectedProject.datasets_v2.find((d) => d.identifier === selectedDatasetID) : undefined),
+    () => (selectedProject ? selectedProject.datasets.find((d) => d.identifier === selectedDatasetID) : undefined),
     [selectedProject, selectedDatasetID]
   );
 };
@@ -50,7 +50,7 @@ export const useSelectedScopeTitles = () => {
     () => ({
       projectTitle: selectedProject?.title,
       datasetTitle: scope.dataset
-        ? selectedProject?.datasets_v2.find((dataset) => dataset.identifier === scope.dataset)?.title
+        ? selectedProject?.datasets.find((dataset) => dataset.identifier === scope.dataset)?.title
         : null,
     }),
     [selectedProject, scope]
