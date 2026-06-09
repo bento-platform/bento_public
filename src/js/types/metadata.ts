@@ -7,7 +7,7 @@ export interface Project {
   title: string;
   description: string;
   discovery: DiscoveryConfig | null;
-  datasets_v2: Dataset[];
+  datasets: Dataset[];
   created: string;
   updated: string;
   counts?: KatsuEntityCountsOrBooleans;

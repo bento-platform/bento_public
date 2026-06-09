@@ -89,7 +89,7 @@ const StakeholdersTable = ({ stakeholders }: { stakeholders: PersonOrOrganizatio
 
 // ---- Publications ----
 
-const PublicationsTableV2 = ({ publications }: { publications: Publication[] }) => {
+const PublicationsTable = ({ publications }: { publications: Publication[] }) => {
   const t = useTranslationFn();
   return (
     <BaseProvenanceTable
@@ -274,7 +274,7 @@ const SpatialCoverageSection = ({ spatialCoverage }: { spatialCoverage: NonNulla
 
 // ---- Extra properties ----
 
-const ExtraPropertiesTableV2 = ({ extra }: { extra: Dataset['extra_properties'] }) => {
+const ExtraPropertiesTable = ({ extra }: { extra: Dataset['extra_properties'] }) => {
   const t = useTranslationFn();
   if (!extra) return null;
   const rows = Object.entries(extra).map(([k, v]) => ({ key: k, value: String(v ?? '') }));
@@ -423,7 +423,7 @@ export const DatasetProvenanceContent = ({ dataset }: { dataset: Dataset }) => {
       {publications.length > 0 && (
         <>
           <SectionTitle title="Publications" />
-          <PublicationsTableV2 publications={publications} />
+          <PublicationsTable publications={publications} />
         </>
       )}
 
@@ -476,7 +476,7 @@ export const DatasetProvenanceContent = ({ dataset }: { dataset: Dataset }) => {
       {dataset.extra_properties && Object.keys(dataset.extra_properties).length > 0 && (
         <>
           <SectionTitle title="Extra Properties" />
-          <ExtraPropertiesTableV2 extra={dataset.extra_properties} />
+          <ExtraPropertiesTable extra={dataset.extra_properties} />
         </>
       )}
     </>

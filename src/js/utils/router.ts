@@ -52,10 +52,10 @@ export const validProjectDataset = (
     const defaultProj = projects[0];
     valid.scope.project = defaultProj.identifier;
     valid.fixedProject = true;
-    if (defaultProj.datasets_v2.length === 1) {
+    if (defaultProj.datasets.length === 1) {
       // TODO: only if the dataset-level permissions equal the project-level ones...
       // automatic dataset scoping if only 1
-      valid.scope.dataset = defaultProj.datasets_v2[0].identifier;
+      valid.scope.dataset = defaultProj.datasets[0].identifier;
       valid.fixedDataset = true;
       // early return to ignore redundant projectId and datasetId
       return valid;
@@ -66,7 +66,7 @@ export const validProjectDataset = (
 
   if (project && selectedProject) {
     valid.scope.project = project;
-    if (dataset && selectedProject.datasets_v2.find(({ identifier }) => identifier === dataset)) {
+    if (dataset && selectedProject.datasets.find(({ identifier }) => identifier === dataset)) {
       valid.scope.dataset = dataset;
     }
   }
