@@ -4,7 +4,11 @@ export const COLOR_PRIMARY_BG = 'var(--cat-primary-bg)';
 
 // Status badge styles (card pill)
 export const STATUS_STYLE: Record<string, { color: string; bg: string; border: string }> = {
-  Ongoing: { color: 'var(--cat-status-ongoing-color)', bg: 'var(--cat-status-ongoing-bg)', border: 'var(--cat-status-ongoing-border)' },
+  Ongoing: {
+    color: 'var(--cat-status-ongoing-color)',
+    bg: 'var(--cat-status-ongoing-bg)',
+    border: 'var(--cat-status-ongoing-border)',
+  },
   Completed: { color: COLOR_PRIMARY, bg: COLOR_PRIMARY_BG, border: 'var(--cat-status-completed-border)' },
   Unassigned: { color: 'var(--cat-text-muted)', bg: 'var(--cat-surface-subtle)', border: 'var(--cat-border-base)' },
 };
