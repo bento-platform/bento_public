@@ -1,13 +1,12 @@
 import { useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
-import { Button, Flex, FloatButton, Grid, Layout } from 'antd';
-import { FilterOutlined } from '@ant-design/icons';
+import { FloatButton, Grid, Layout } from 'antd';
 import SiteHeader from '@/components/SiteHeader';
 import SiteSider from '@/components/SiteSider';
 import SiteFooter from '@/components/SiteFooter';
 import PcglFooter from '@/components/Pcgl/PcglFooter';
-import ScopedTitle from '@/components/Scope/ScopedTitle';
+import ScopeBreadcrumb from '@/components/Scope/ScopeBreadcrumb';
 import { useSelectedScope, useScopeHasData } from '@/features/metadata/hooks';
 import { useIsInCatalogueMode, useSidebarMenuItems } from '@/hooks/navigation';
 import { useTitleBreadcrumbItems } from '@/hooks/useTitleBreadcrumbItems';
@@ -86,28 +85,12 @@ const DefaultLayout = () => {
       <SiteHeader menuItems={menuItems} />
       <Layout id="content-layout">
         {!isCatalogue && !titleHidden && (
-          <Flex
-            id="page-header"
-            style={{
-              paddingLeft: showSidebarToggle ? undefined : 'var(--content-padding-h)',
-              paddingRight: 'var(--content-padding-h)',
-              paddingTop: 'var(--content-padding-v)',
-              paddingBottom: 'var(--content-padding-v)',
-            }}
-          >
-            {showSidebarToggle && (
-              <Button
-                id="page-header__sidebar-toggle"
-                className={sidebarOverlayShown ? 'active' : ''}
-                icon={<FilterOutlined />}
-                color="default"
-                variant="filled"
-                size="large"
-                onMouseDown={() => setCollapsed((c) => !c)}
-              />
-            )}
-            <ScopedTitle breadcrumbItems={breadcrumbItems} />
-          </Flex>
+          <ScopeBreadcrumb
+            showSidebarToggle={showSidebarToggle}
+            sidebarOverlayShown={sidebarOverlayShown}
+            onToggleSidebar={() => setCollapsed((c) => !c)}
+            breadcrumbItems={breadcrumbItems}
+          />
         )}
         <Layout>
           <Layout>

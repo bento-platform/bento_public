@@ -241,13 +241,30 @@ body {
 }
 
 
-#page-header__sidebar-toggle {
+#scope-breadcrumb {
+  z-index: 20;
+  box-sizing: border-box;
+  min-height: 48px;
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding-right: var(--content-padding-h);
+  padding-top: 8px;
+  padding-bottom: 8px;
+  background-color: rgba(250, 250, 250, 0.80);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgb(235, 235, 235);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.02);
+}
+
+#scope-breadcrumb__sidebar-toggle {
   margin-top: 4px;
   margin-left: 4px;
   margin-right: 12px;
   color: rgba(0, 0, 0, 0.64);
 }
-#page-header__sidebar-toggle.active {
+#scope-breadcrumb__sidebar-toggle.active {
   background-color: rgba(0, 0, 0, 0.20);
   color: rgba(0, 0, 0, 0.74);
 }
