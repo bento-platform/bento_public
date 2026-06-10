@@ -10,6 +10,7 @@ This component takes the following props:
 - Title
 - Subtitle
 - API URL to fetch data from for display
+  - A mock API response can be obtained at: <https://raw.githubusercontent.com/bento-platform/bento_public/refs/heads/demo/hiring-exercise/demo/mock-demo-payload.json>
 
 ## Exercise
 
