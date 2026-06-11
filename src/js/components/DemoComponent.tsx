@@ -14,6 +14,8 @@ interface DemoItemData {
 
 const DemoComponent = ({title, subtitle, itemsListURL}: DemoComponentProps)  => {
 
+    const t = useTranslationFn();
+
     let upperCaseTitle = title.toUpperCase();
 
     const [itemsData, setItemsData] = useState([]);
@@ -36,5 +38,5 @@ const DemoComponent = ({title, subtitle, itemsListURL}: DemoComponentProps)  => 
                 {listItems}
             </ul>
         </>
-    )
+    );
 }
