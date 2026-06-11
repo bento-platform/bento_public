@@ -5,7 +5,12 @@ interface DemoComponentProps {
     title: String,
     subtitle: String,
     itemsListURL: URL
-}
+};
+
+interface DemoItemData {
+    id: string,
+    message: string
+};
 
 const DemoComponent = ({title, subtitle, itemsListURL}: DemoComponentProps)  => {
 
@@ -20,7 +25,7 @@ const DemoComponent = ({title, subtitle, itemsListURL}: DemoComponentProps)  => 
             .then(data => setItemsData(data))
     }, []);
 
-    const listItems = itemsData.map(item => <li>{item}</li>);
+    const listItems = itemsData.map(item => <li>{item.message}</li>);
 
     return (
         <>
