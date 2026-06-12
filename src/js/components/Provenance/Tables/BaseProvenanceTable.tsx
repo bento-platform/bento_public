@@ -1,9 +1,7 @@
-import type { TableProps } from 'antd';
-import { Table } from 'antd';
-import type { AnyObject } from 'antd/es/_util/type';
+import CustomTable, { type CustomTableProps } from '@Util/CustomTable';
 
-const BaseProvenanceTable = <T extends AnyObject>(props: TableProps<T>) => (
-  <Table bordered={true} pagination={false} size="small" {...props} />
+const BaseProvenanceTable = <T extends object>(props: Omit<CustomTableProps<T>, 'isRowExpandable' | 'pagination'>) => (
+  <CustomTable isRowExpandable={() => false} {...props} />
 );
 
 export default BaseProvenanceTable;

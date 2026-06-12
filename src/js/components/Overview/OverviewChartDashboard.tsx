@@ -1,6 +1,6 @@
-import { useCallback, useMemo, useState } from 'react';
-import { Flex, FloatButton, Tabs, type TabsProps } from 'antd';
-import { AppstoreAddOutlined, FileTextOutlined, SolutionOutlined } from '@ant-design/icons';
+import { useCallback, useState } from 'react';
+import { Flex, FloatButton } from 'antd';
+import { AppstoreAddOutlined } from '@ant-design/icons';
 
 import clsx from 'clsx';
 import { convertSequenceAndDisplayData, generateLSChartDataKey, saveValue } from '@/utils/localStorage';
@@ -63,38 +63,23 @@ const OverviewChartDashboard = () => {
 
   // ---
 
-  const [pageTab, setPageTab] = useState('about');
-
-  const pageTabItems: TabsProps['items'] = useMemo(
-    () => [
-      { key: 'about', label: t('About'), icon: <FileTextOutlined /> },
-      ...(scope.dataset ? [{ key: 'provenance', label: t('Provenance'), icon: <SolutionOutlined /> }] : []),
-    ],
-    [t, scope.dataset]
-  );
+  const [provenanceCollapsed, setProvenanceCollapsed] = useState(true);
 
   const loadingNewData = WAITING_STATES.includes(discoveryStatus);
 
   return (
     <>
       <Flex vertical={true} gap={24} className={clsx('container', { 'margin-auto': !scopeHasData })}>
-        <div className="dashboard-tabs">
-          {pageTabItems.length > 1 && (
-            <Tabs
-              type="card"
-              size="large"
-              activeKey={pageTab}
-              onChange={setPageTab}
-              items={pageTabItems}
-              id="dashboard-tabs"
-              tabBarStyle={{ marginBottom: -1, zIndex: 1 }}
-            />
-          )}
-          {pageTab === 'about' ? <AboutBox /> : null}
-          {pageTab === 'provenance' && selectedDataset ? (
-            <DatasetProvenance dataset={selectedDataset} showTitle={false} />
-          ) : null}
-        </div>
+        {selectedDataset ? (
+          <DatasetProvenance
+            dataset={selectedDataset}
+            collapsed={scopeHasData ? provenanceCollapsed : false}
+            // If we don't have any data, render the full provenance by default without collapse-ability
+            onToggleCollapse={scopeHasData ? () => setProvenanceCollapsed(!provenanceCollapsed) : undefined}
+          />
+        ) : (
+          <AboutBox />
+        )}
 
         {/*
             If we're in a scope with no data at all, don't bother rendering the

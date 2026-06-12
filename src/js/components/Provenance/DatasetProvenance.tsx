@@ -1,37 +1,35 @@
-import { Card, Descriptions, Flex, Tag, Typography } from 'antd';
-import { PointMap } from 'bento-charts/dist/maps';
+import type { ReactNode } from 'react';
+import type { DescriptionsItemType } from 'antd/es/descriptions';
+import { Button, Card, Descriptions, Flex, Tag, Typography } from 'antd';
+import { DownOutlined, UpOutlined } from '@ant-design/icons';
 
-import BaseProvenanceTable from './Tables/BaseProvenanceTable';
 import { useTranslationFn } from '@/hooks';
-import type {
-  Count,
-  Dataset,
-  FundingSource,
-  Link,
-  ParticipantCriteria,
-  Person,
-  PersonOrOrganization,
-  Publication,
-} from '@/types/dataset';
-import type { OntologyTerm } from '@/types/ontology';
+import type { Count, Dataset, ParticipantCriteria, Person, PersonOrOrganization, Publication } from '@/types/dataset';
+
+import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
+import BaseProvenanceTable from './Tables/BaseProvenanceTable';
+import FundingDisplay from './FundingDisplay';
+import LinksDisplay from './LinksDisplay';
+import PersonOrOrganizationDisplay, { PersonOrOrganizationName } from './PersonOrOrganizationDisplay';
+import PublicationsDisplay from './PublicationsDisplay';
+import SpatialCoverageDisplay from './SpatialCoverageDisplay';
+import TagDisplay from './TagDisplay';
 
 const { Item } = Descriptions;
 const { Paragraph, Text, Title } = Typography;
 
 // ---- Helpers ----
 
-const keywordLabel = (k: string | OntologyTerm): string => (typeof k === 'string' ? k : k.label);
-
 const SectionTitle = ({ title }: { title: string }) => {
   const t = useTranslationFn();
   return (
-    <Title level={4} style={{ paddingTop: '20px' }}>
+    <Title level={4} style={{ marginTop: '20px' }}>
       {t(title)}
     </Title>
   );
 };
 
-const DescLabel = ({ title }: { title: string }) => <b>{title}</b>;
+const DescLabel = ({ title }: { title: string }) => <strong>{title}</strong>;
 
 // ---- Long description ----
 
@@ -44,7 +42,8 @@ const LongDescriptionBlock = ({ content, content_type }: Dataset['long_descripti
 
 // ---- PersonOrOrganization display ----
 
-const personName = (p: PersonOrOrganization): string => p.name;
+const personName = (p: PersonOrOrganization): ReactNode =>
+  p.contact?.website ? <a href={p.contact?.website}>{p.name}</a> : p.name;
 
 const StakeholdersTable = ({ stakeholders }: { stakeholders: PersonOrOrganization[] }) => {
   const t = useTranslationFn();
@@ -58,7 +57,7 @@ const StakeholdersTable = ({ stakeholders }: { stakeholders: PersonOrOrganizatio
           key: 'name',
           render: (_, row) => (
             <>
-              {personName(row)}
+              <PersonOrOrganizationName entity={row} />
               {row.type === 'person' && (row as Person).orcid && (
                 <Text type="secondary" style={{ marginLeft: 8, fontSize: '0.85em' }}>
                   ORCID: {(row as Person).orcid}
@@ -137,47 +136,6 @@ const PublicationsTable = ({ publications }: { publications: Publication[] }) =>
   );
 };
 
-// ---- Funding sources ----
-
-const FundingTable = ({ funding }: { funding: (FundingSource | Link)[] }) => {
-  const t = useTranslationFn();
-  return (
-    <BaseProvenanceTable
-      dataSource={funding}
-      rowKey={(row, i) => i ?? 0}
-      columns={[
-        {
-          title: t('Funder / Link'),
-          key: 'funder',
-          render: (_, row) => {
-            if ('url' in row && 'label' in row) {
-              // Link
-              return (
-                <a href={(row as Link).url} target="_blank" rel="noreferrer">
-                  {(row as Link).label}
-                </a>
-              );
-            }
-            const fs = row as FundingSource;
-            if (!fs.funder) return null;
-            return typeof fs.funder === 'string' ? fs.funder : personName(fs.funder);
-          },
-        },
-        {
-          title: t('Grant Numbers'),
-          key: 'grant_numbers',
-          render: (_, row) => {
-            if ('grant_numbers' in row) {
-              return (row as FundingSource).grant_numbers?.join(', ') ?? null;
-            }
-            return null;
-          },
-        },
-      ]}
-    />
-  );
-};
-
 // ---- Participant criteria ----
 
 const CriteriaTable = ({ criteria }: { criteria: ParticipantCriteria[] }) => {
@@ -232,106 +190,120 @@ const CountsTable = ({ counts }: { counts: Count[] }) => {
   );
 };
 
-// ---- Spatial coverage ----
-
-const SpatialCoverageSection = ({ spatialCoverage }: { spatialCoverage: NonNullable<Dataset['spatial_coverage']> }) => {
-  const t = useTranslationFn();
-
-  if (typeof spatialCoverage === 'string') {
-    return (
-      <Descriptions style={{ paddingTop: '8px' }}>
-        <Item span={24} label={<DescLabel title={t('Spatial Coverage')} />}>
-          {spatialCoverage}
-        </Item>
-      </Descriptions>
-    );
-  }
-
-  const name = spatialCoverage.properties.name;
-  const geometry = spatialCoverage.geometry;
-  const isPoint = geometry?.type === 'Point';
-
-  return (
-    <>
-      <Descriptions style={{ paddingTop: '8px' }}>
-        <Item span={24} label={<DescLabel title={t('Spatial Coverage')} />}>
-          {name}
-        </Item>
-      </Descriptions>
-      {isPoint && (
-        <div style={{ position: 'relative', zIndex: 0 }}>
-          <PointMap
-            data={[{ coordinates: geometry.coordinates as [number, number], title: name }]}
-            center={[geometry.coordinates[1], geometry.coordinates[0]]}
-            zoom={5}
-            height={300}
-          />
-        </div>
-      )}
-    </>
-  );
-};
-
-// ---- Extra properties ----
-
-const ExtraPropertiesTable = ({ extra }: { extra: Dataset['extra_properties'] }) => {
-  const t = useTranslationFn();
-  if (!extra) return null;
-  const rows = Object.entries(extra).map(([k, v]) => ({ key: k, value: String(v ?? '') }));
-  return (
-    <BaseProvenanceTable
-      dataSource={rows}
-      rowKey="key"
-      columns={[
-        { title: t('Key'), dataIndex: 'key', key: 'key' },
-        { title: t('Value'), dataIndex: 'value', key: 'value' },
-      ]}
-    />
-  );
-};
-
 // ---- Main content ----
 
-export const DatasetProvenanceContent = ({ dataset }: { dataset: Dataset }) => {
+export const DatasetProvenanceContent = ({
+  dataset,
+  collapsed,
+  onToggleCollapsed,
+}: {
+  dataset: Dataset;
+  collapsed?: boolean;
+  onToggleCollapsed?: () => void;
+}) => {
   const t = useTranslationFn();
 
+  const domains = dataset.domain ?? [];
   const keywords = dataset.keywords ?? [];
   const taxa = dataset.taxa ?? [];
   const stakeholders = dataset.stakeholders ?? [];
   const publications = dataset.publications ?? [];
-  const fundingSources = Array.isArray(dataset.funding_sources) ? dataset.funding_sources : [];
+  const funding = dataset.funding_sources;
   const criteria = dataset.participant_criteria ?? [];
   const counts = dataset.counts ?? [];
   const links = dataset.links ?? [];
+  const studyStatus = dataset.study_status?.toLocaleUpperCase();
+
+  const subtitleItems: { key: keyof Dataset }[] = [
+    { key: 'release_date' },
+    { key: 'last_modified' },
+    { key: 'version' },
+    { key: 'privacy' },
+  ];
+
+  const keywordLikeItems: DescriptionsItemType[] = [];
+
+  if (domains.length > 0) {
+    keywordLikeItems.push({
+      span: 'filled',
+      label: <DescLabel title={t('dataset.domain', { count: domains.length })} />,
+      children: <TagDisplay tags={domains} color="purple" />,
+    } as DescriptionsItemType);
+  }
+
+  if (keywords.length > 0) {
+    keywordLikeItems.push({
+      span: 'filled',
+      label: <DescLabel title={t('dataset.keywords')} />,
+      children: <TagDisplay tags={keywords} color="cyan" />,
+    } as DescriptionsItemType);
+  }
+
+  if (taxa.length > 0) {
+    keywordLikeItems.push({
+      span: 'filled',
+      label: <DescLabel title={t('dataset.taxon', { count: taxa.length })} />,
+      children: (
+        <TagDisplay
+          tags={taxa}
+          color="blue"
+          tagClass={(k) => {
+            const label = typeof k === 'string' ? k : k.label;
+            // Make taxon label italic only if it looks like a species/species+subspecies name (X y or X y z)
+            return label.split(' ').length >= 2 ? 'italic' : '';
+          }}
+        />
+      ),
+    } as DescriptionsItemType);
+  }
 
   return (
-    <>
+    <div className="dataset-provenance">
+      <Flex gap="middle" style={{ marginBottom: 8 }}>
+        <Title level={2} className="mb-0" style={{ fontWeight: 500, fontSize: '1.5rem' }}>
+          {dataset.title}
+        </Title>
+        {!!dataset.study_status && (
+          <Tag
+            color="orange"
+            style={{ alignSelf: 'center' }}
+            title={`${t('dataset.study_status')}: ${t('dataset.' + studyStatus)}`}
+          >
+            {dataset.study_status}
+          </Tag>
+        )}
+      </Flex>
+      <ul className="attributes">
+        {subtitleItems
+          .filter(({ key }) => !!dataset[key])
+          .map(({ key }) => (
+            <li key={key}>
+              <strong>{t(`dataset.${key}`)}:</strong> {t(dataset[key] as unknown as string, { nsSeparator: false })}
+            </li>
+          ))}
+      </ul>
+
+      {/* Domains/keywords/taxa ('keyword-like' concepts) descriptions block */}
+      {!!keywordLikeItems.length && <Descriptions items={keywordLikeItems} size="small" />}
+
       {/* Description */}
-      {dataset.long_description ? (
-        <LongDescriptionBlock {...dataset.long_description} />
-      ) : (
-        <Text italic>{t(dataset.description)}</Text>
+      <div style={{ maxWidth: 1100, marginTop: keywords.length || taxa.length ? 16 : 0 }}>
+        {dataset.long_description ? (
+          <LongDescriptionBlock {...dataset.long_description} />
+        ) : (
+          <Paragraph>{t(dataset.description)}</Paragraph>
+        )}
+      </div>
+
+      {!!links.length && (
+        <Descriptions
+          items={[{ label: <DescLabel title={t('dataset.links')} />, children: <LinksDisplay links={links} /> }]}
+        />
       )}
 
       {/* Quick-facts descriptions block */}
-      {(dataset.privacy ||
-        dataset.license ||
-        dataset.version ||
-        dataset.study_status ||
-        dataset.study_context ||
-        keywords.length > 0 ||
-        taxa.length > 0) && (
-        <Descriptions style={{ paddingTop: '20px' }}>
-          {dataset.privacy && (
-            <Item span={12} label={<DescLabel title={t('Privacy')} />}>
-              {t(dataset.privacy)}
-            </Item>
-          )}
-          {dataset.version && (
-            <Item span={12} label={<DescLabel title={t('Version')} />}>
-              {dataset.version}
-            </Item>
-          )}
+      {(dataset.license || dataset.study_context) && (
+        <Descriptions>
           {dataset.license && (
             <Item span={12} label={<DescLabel title={t('License')} />}>
               {dataset.license.url ? (
@@ -341,11 +313,6 @@ export const DatasetProvenanceContent = ({ dataset }: { dataset: Dataset }) => {
               ) : (
                 dataset.license.label
               )}
-            </Item>
-          )}
-          {dataset.study_status && (
-            <Item span={12} label={<DescLabel title={t('Study Status')} />}>
-              {t(dataset.study_status)}
             </Item>
           )}
           {dataset.study_context && (
@@ -363,123 +330,97 @@ export const DatasetProvenanceContent = ({ dataset }: { dataset: Dataset }) => {
               {dataset.domain.join(', ')}
             </Item>
           ) : null}
-          {taxa.length > 0 && (
-            <Item span={24} label={<DescLabel title={t('Taxa')} />}>
-              {taxa.map((k, i) => (
-                <Tag key={i} color="geekblue">
-                  {t(keywordLabel(k))}
-                </Tag>
-              ))}
-            </Item>
-          )}
-          {keywords.length > 0 && (
-            <Item span={24} label={<DescLabel title={t('Keywords')} />}>
-              {keywords.map((k, i) => (
-                <Tag key={i} color="cyan">
-                  {t(keywordLabel(k))}
-                </Tag>
-              ))}
-            </Item>
-          )}
         </Descriptions>
       )}
 
-      {/* Release / modified dates */}
-      {(dataset.release_date || dataset.last_modified) && (
-        <Descriptions style={{ paddingTop: '8px' }}>
-          {dataset.release_date && (
-            <Item span={12} label={<DescLabel title={t('Release Date')} />}>
-              {dataset.release_date}
-            </Item>
+      {!collapsed ? (
+        <>
+          {/* Primary contact */}
+          {dataset.primary_contact && (
+            <>
+              <SectionTitle title="Primary Contact" />
+              <PersonOrOrganizationDisplay entity={dataset.primary_contact} />
+            </>
           )}
-          {dataset.last_modified && (
-            <Item span={12} label={<DescLabel title={t('Last Modified')} />}>
-              {dataset.last_modified}
-            </Item>
+
+          {/* Stakeholders */}
+          {stakeholders.length > 0 && (
+            <>
+              <SectionTitle title="Stakeholders" />
+              <Flex gap={16} wrap>
+                {stakeholders.map((s) => (
+                  <PersonOrOrganizationDisplay key={s.name} entity={s} />
+                ))}
+              </Flex>
+              {/*<StakeholdersTable stakeholders={stakeholders} />*/}
+            </>
           )}
-        </Descriptions>
-      )}
 
-      {/* Spatial coverage */}
-      {dataset.spatial_coverage && <SpatialCoverageSection spatialCoverage={dataset.spatial_coverage} />}
+          {/* Publications */}
+          {publications.length > 0 && (
+            <>
+              <SectionTitle title={publications.length === 1 ? 'Publication' : 'Publications'} />
+              <PublicationsDisplay publications={publications} />
+              {/*<PublicationsTable publications={publications} />*/}
+            </>
+          )}
 
-      {/* Primary contact */}
-      {dataset.primary_contact && (
-        <>
-          <SectionTitle title="Primary Contact" />
-          <StakeholdersTable stakeholders={[dataset.primary_contact]} />
+          {/* Funding */}
+          {!!funding && (
+            <>
+              <SectionTitle title="Funding" />
+              <FundingDisplay funding={funding} />
+              {/*<FundingTable funding={fundingSources} />*/}
+            </>
+          )}
+
+          {/* Spatial coverage */}
+          {dataset.spatial_coverage && (
+            <>
+              <SectionTitle title="Spatial Coverage" />
+              <SpatialCoverageDisplay spatialCoverage={dataset.spatial_coverage} />
+            </>
+          )}
+
+          {/* Participant criteria */}
+          {criteria.length > 0 && (
+            <>
+              <SectionTitle title="Participant Criteria" />
+              <CriteriaTable criteria={criteria} />
+            </>
+          )}
+
+          {/* Counts */}
+          {counts.length > 0 && (
+            <>
+              <SectionTitle title="Counts" />
+              <CountsTable counts={counts} />
+            </>
+          )}
+
+          {/* Extra properties */}
+          {dataset.extra_properties && Object.keys(dataset.extra_properties).length > 0 && (
+            <>
+              <SectionTitle title="Extra Properties" />
+              <ExtraPropertiesDisplay extraProperties={dataset.extra_properties} />
+            </>
+          )}
+          {onToggleCollapsed ? (
+            <Flex style={{ marginTop: 16 }}>
+              <Button onClick={onToggleCollapsed} icon={<UpOutlined />}>
+                Collapse
+              </Button>
+            </Flex>
+          ) : null}
         </>
-      )}
-
-      {/* Stakeholders */}
-      {stakeholders.length > 0 && (
-        <>
-          <SectionTitle title="Stakeholders" />
-          <StakeholdersTable stakeholders={stakeholders} />
-        </>
-      )}
-
-      {/* Publications */}
-      {publications.length > 0 && (
-        <>
-          <SectionTitle title="Publications" />
-          <PublicationsTable publications={publications} />
-        </>
-      )}
-
-      {/* Funding */}
-      {fundingSources.length > 0 && (
-        <>
-          <SectionTitle title="Funding" />
-          <FundingTable funding={fundingSources} />
-        </>
-      )}
-
-      {typeof dataset.funding_sources === 'string' && dataset.funding_sources && (
-        <>
-          <SectionTitle title="Funding" />
-          <Paragraph>{dataset.funding_sources}</Paragraph>
-        </>
-      )}
-
-      {/* Participant criteria */}
-      {criteria.length > 0 && (
-        <>
-          <SectionTitle title="Participant Criteria" />
-          <CriteriaTable criteria={criteria} />
-        </>
-      )}
-
-      {/* Counts */}
-      {counts.length > 0 && (
-        <>
-          <SectionTitle title="Counts" />
-          <CountsTable counts={counts} />
-        </>
-      )}
-
-      {/* Links */}
-      {links.length > 0 && (
-        <>
-          <SectionTitle title="Links" />
-          <Flex wrap gap={8} style={{ paddingTop: 8 }}>
-            {links.map((l, i) => (
-              <a key={i} href={l.url} target="_blank" rel="noreferrer">
-                {l.label}
-              </a>
-            ))}
-          </Flex>
-        </>
-      )}
-
-      {/* Extra properties */}
-      {dataset.extra_properties && Object.keys(dataset.extra_properties).length > 0 && (
-        <>
-          <SectionTitle title="Extra Properties" />
-          <ExtraPropertiesTable extra={dataset.extra_properties} />
-        </>
-      )}
-    </>
+      ) : onToggleCollapsed ? (
+        <Flex style={{ marginTop: 16 }}>
+          <Button onClick={onToggleCollapsed} icon={<DownOutlined />}>
+            Expand
+          </Button>
+        </Flex>
+      ) : null}
+    </div>
   );
 };
 
@@ -488,30 +429,15 @@ export const DatasetProvenanceContent = ({ dataset }: { dataset: Dataset }) => {
 export type DatasetProvenanceProps = {
   dataset: Dataset;
   loading?: boolean;
-  showTitle?: boolean;
+  collapsed?: boolean;
+  onToggleCollapse?: () => void;
 };
 
-const DatasetProvenance = ({ dataset, loading, showTitle = true }: DatasetProvenanceProps) => {
-  const t = useTranslationFn();
-
-  const version = dataset.version ? (
-    <Title key="version" level={4} type="secondary" italic>
-      {dataset.version}
-    </Title>
-  ) : null;
-
+const DatasetProvenance = ({ dataset, loading, collapsed, onToggleCollapse }: DatasetProvenanceProps) => {
   return (
-    <div className="container margin-auto">
-      <Card
-        title={showTitle ? <Title level={3}>{t(dataset.title)}</Title> : undefined}
-        extra={showTitle && version ? [version] : undefined}
-        className="shadow rounded-xl"
-        loading={loading}
-      >
-        {!showTitle && version ? version : null}
-        <DatasetProvenanceContent dataset={dataset} />
-      </Card>
-    </div>
+    <Card className="shadow rounded-xl dataset-provenance-card" loading={loading}>
+      <DatasetProvenanceContent dataset={dataset} collapsed={collapsed} onToggleCollapsed={onToggleCollapse} />
+    </Card>
   );
 };
 

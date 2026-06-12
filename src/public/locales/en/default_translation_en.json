@@ -49,6 +49,23 @@
     "project_fetch": "Error fetching projects",
     "search_fetch": "Error fetching search results"
   },
+  "dataset": {
+    "release_date": "Release Date",
+    "last_modified": "Last Modified",
+    "version": "Version",
+    "domain_one": "Domain",
+    "domain_other": "Domains",
+    "keywords": "Keywords",
+    "taxon_one": "Taxon",
+    "taxon_other": "Taxa",
+    "privacy": "Privacy",
+    "links": "Links",
+    "ONGOING": "ONGOING",
+    "COMPLETED": "COMPLETED",
+    "publication": {
+      "available_from": "Available from"
+    }
+  },
   "search": {
     "filters_one": "filter",
     "filters_other": "filters",
