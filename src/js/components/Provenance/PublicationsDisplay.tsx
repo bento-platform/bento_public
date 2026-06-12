@@ -74,16 +74,7 @@ const PublicationString = ({ publication }: { publication: Publication }) => {
   const t = useTranslationFn();
 
   const authors = publication.authors ?? [];
-  const { doi, publication_date: date, publication_venue: venue, url } = publication;
-
-  // --- Title ---
-  let title = publication.title;
-  if (title.endsWith('.')) {
-    title += ' ';
-  } else {
-    title += '. ';
-  }
-  // ---
+  const { doi, publication_date: date, publication_type: type, publication_venue: venue, url } = publication;
 
   // --- Author list ---
   let authorsNode = null;
@@ -99,6 +90,17 @@ const PublicationString = ({ publication }: { publication: Publication }) => {
     } else {
       authorsNode = <AuthorList authors={authors} />;
     }
+  }
+  // --- Publication type (if not journal articles) ---
+  const publicationType = type === 'Journal Article' ? '' : `${type}. `;
+  // ---
+
+  // --- Title ---
+  let title = publication.title;
+  if (title.endsWith('.')) {
+    title += ' ';
+  } else {
+    title += '. ';
   }
   // ---
 
@@ -149,6 +151,7 @@ const PublicationString = ({ publication }: { publication: Publication }) => {
     <span>
       {authorsNode}
       {title}
+      {publicationType}
       {venueNode}
       {date ? `${date}. ` : ''}
       {webAvailabilityNode}
