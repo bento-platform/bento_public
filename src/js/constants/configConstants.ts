@@ -13,7 +13,6 @@ export const katsuDiscoveryUIHintsUrl = `${katsuBaseUrl}/api/discovery_ui_hints`
 
 // Katsu entity API (Django Rest Framework) base URLs
 export const projectsUrl = `${katsuBaseUrl}/api/projects`;
-export const datasetsUrl = `${katsuBaseUrl}/api/datasets`;
 export const individualUrl = `${katsuBaseUrl}/api/individuals`;
 export const individualBatchUrl = `${katsuBaseUrl}/api/batch/individuals`;
 export const phenopacketUrl = `${katsuBaseUrl}/api/phenopackets`;

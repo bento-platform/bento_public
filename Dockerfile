@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM node:24-bookworm-slim AS build
+FROM --platform=$BUILDPLATFORM node:24-trixie-slim AS build
 
 # Build bento_public with NodeJS + Webpack
 #  - Use BUILDPLATFORM for running webpack, since it should perform a lot better.
@@ -21,7 +21,7 @@ COPY src src
 
 RUN npm run build
 
-FROM nginx:1.28
+FROM nginx:1.30
 
 # Install node so that we can run the create_config_prod.js & create_service_info.js scripts
 RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - && \

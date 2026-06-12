@@ -8,6 +8,7 @@ BENTO_PUBLIC_CONFIG = {
   PORTAL_URL: null,
   // Display flags
   TRANSLATED: null,
+  SHOW_HEADER_TITLE: null,
   SHOW_PORTAL_LINK: null,
   SHOW_SIGN_IN: null,
   FORCE_CATALOGUE: null, // Show data catalogue even with 1 project

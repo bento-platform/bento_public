@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Routes, Route, useNavigate, useParams, Outlet } from 'react-router-dom';
 import { useAutoAuthenticate, useIsAuthenticated } from 'bento-auth-js';
-import { useAppDispatch } from '@/hooks';
+import { useAppDispatch, useLanguage } from '@/hooks';
 
 import {
   clearBiosampleCache,
@@ -16,10 +16,15 @@ import { getBeaconConfig, getBeaconFilters } from '@/features/beacon/beacon.stor
 import { getBeaconNetworkConfig } from '@/features/beacon/network.store';
 import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
 import { useMetadata } from '@/features/metadata/hooks';
-import { getProjects, markScopeSet, selectScope } from '@/features/metadata/metadata.store';
+import { getProjects, markScopeSet, resetProjects, selectScope } from '@/features/metadata/metadata.store';
 import { getGenomes } from '@/features/reference/reference.store';
 import { getIgvGenomes } from '@/features/igv/igv.store';
-import { fetchSearchFields, fetchDiscoveryUIHints, resetAllQueryState } from '@/features/search/query.store';
+import {
+  fetchSearchFields,
+  fetchDiscoveryUIHints,
+  resetAllQueryState,
+  preSeedCounts,
+} from '@/features/search/query.store';
 
 import Loader from '@/components/Loader';
 import DefaultLayout from '@/components/Util/DefaultLayout';
@@ -35,7 +40,7 @@ import {
   validProjectDataset,
 } from '@/utils/router';
 
-import PublicOverview from './Overview/PublicOverview';
+import PublicOverview from './Overview/LandingPage';
 import BeaconQueryUi from './Beacon/BeaconQueryUi';
 import NetworkUi from './Beacon/BeaconNetwork/NetworkUi';
 import PhenopacketView from './ClinPhen/PhenopacketView';
@@ -93,11 +98,14 @@ const ScopedRoute = () => {
 
 const BentoAppRouter = () => {
   const dispatch = useAppDispatch();
+  const language = useLanguage();
 
   const { isAutoAuthenticating } = useAutoAuthenticate();
   const isAuthenticated = useIsAuthenticated();
   const {
     selectedScope: { scope, scopeSet },
+    projectsByID,
+    datasetsByID,
     projectsStatus,
   } = useMetadata();
 
@@ -111,9 +119,18 @@ const BentoAppRouter = () => {
     //  - Scope changed
 
     // Reset query state, including currently-applied filters/search; the filters may not be the same between scopes.
+    // Preserve node-level counts for data catalogue use, since those won't change between refreshes except if authz
+    // changes, in which case the page will hard-refresh (currently) anyway.
     //  TODO: in the future, perhaps filters could be kept if the scopes overlap and we know there's discovery config
     //   inheritance, but this would require quite a bit more logic and maybe is unnecessarily complex.
-    dispatch(resetAllQueryState());
+    dispatch(resetAllQueryState({ resetNodeCounts: false }));
+
+    const preSeededCounts =
+      (scope.dataset ? datasetsByID[scope.dataset]?.counts_by_entity : undefined) ??
+      (scope.project ? projectsByID[scope.project]?.counts : undefined);
+    if (preSeededCounts) {
+      dispatch(preSeedCounts(preSeededCounts));
+    }
 
     dispatch(fetchSearchFields());
     dispatch(fetchDiscoveryUIHints());
@@ -138,7 +155,7 @@ const BentoAppRouter = () => {
     // dispatch(invalidateConfig());
     //  - Data types are (partially) invalid: counts and last-ingestion time may be different; refresh them:
     dispatch(makeGetDataTypes());
-  }, [dispatch, isAuthenticated, scope, scopeSet]);
+  }, [dispatch, isAuthenticated, scope, scopeSet, projectsByID, datasetsByID]);
 
   useEffect(() => {
     // If authorization status changed, invalidate anything which is authorization-dependent.
@@ -156,12 +173,16 @@ const BentoAppRouter = () => {
       dispatch(getBeaconNetworkConfig());
     }
 
-    dispatch(getProjects());
     dispatch(makeGetAboutRequest());
     dispatch(makeGetServiceInfoRequest());
     dispatch(getGenomes());
     dispatch(getIgvGenomes()) // or could do this conditionally elsewhere
   }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(resetProjects());
+    dispatch(getProjects(language));
+  }, [dispatch, language]);
 
   if (isAutoAuthenticating || projectsStatus === RequestStatus.Pending) {
     return <Loader fullHeight={true} />;

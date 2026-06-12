@@ -1,12 +1,14 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
-import type { PaginatedResponse, Project, Dataset } from '@/types/metadata';
+import type { PaginatedResponse, Project } from '@/types/metadata';
+import type { Dataset } from '@/types/dataset';
 import { RequestStatus } from '@/types/requests';
 import type { RootState } from '@/store';
 import { printAPIError } from '@/utils/error.util';
 import { authorizedRequestConfig } from '@/utils/requests';
-import { scopeEqual, validProjectDataset } from '@/utils/router';
+import { validProjectDataset } from '@/utils/router';
+import { scopeSelectionEqual } from './utils';
 import { projectsUrl } from '@/constants/configConstants';
 
 export type DiscoveryScope = { project?: string; dataset?: string };
@@ -44,27 +46,22 @@ const initialState: MetadataState = {
   },
 };
 
-const scopeSelectionEqual = (s1: DiscoveryScopeSelection, s2: DiscoveryScopeSelection) =>
-  scopeEqual(s1.scope, s2.scope) &&
-  s1.scopeSet == s2.scopeSet &&
-  s1.fixedProject == s2.fixedProject &&
-  s1.fixedDataset == s2.fixedDataset;
-
 export const getProjects = createAsyncThunk<
   PaginatedResponse<Project>,
-  void,
+  string,
   { state: RootState; rejectValue: string }
 >(
   'metadata/getProjects',
-  (_, { rejectWithValue, getState }) => {
+  (language, { rejectWithValue, getState }) => {
+    const config = authorizedRequestConfig(getState());
+    config.headers = { ...config.headers, 'Accept-Language': language };
     return axios
-      .get(projectsUrl, authorizedRequestConfig(getState()))
+      .get(projectsUrl, config)
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue));
   },
   {
     condition(_, { getState }) {
-      // Only need to fetch projects once - if the projects are being/have already been fetched, don't re-execute.
       const { projectsStatus } = getState().metadata;
       const cond = projectsStatus === RequestStatus.Idle;
       if (!cond) {
@@ -79,6 +76,9 @@ const metadata = createSlice({
   name: 'metadata',
   initialState,
   reducers: {
+    resetProjects: (state) => {
+      state.projectsStatus = RequestStatus.Idle;
+    },
     selectScope: (state, { payload }: PayloadAction<DiscoveryScope>) => {
       // Defaults to the narrowest possible scope if there is only 1 project and only 1 dataset.
       // This forces Katsu to resolve the Discovery config with fallbacks from the bottom-up:
@@ -117,5 +117,5 @@ const metadata = createSlice({
   },
 });
 
-export const { selectScope, markScopeSet } = metadata.actions;
+export const { resetProjects, selectScope, markScopeSet } = metadata.actions;
 export default metadata.reducer;

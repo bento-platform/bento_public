@@ -2,14 +2,14 @@
   /* sync with NAVBAR_HEIGHT in common.ts */
   --header-height: 64px;
 
-  --sidebar-width-full: 200px;
-  --sidebar-width-collapsed: 80px;
+  --sidebar-width-full: 360px;
+  --sidebar-width-collapsed: 64px;
 
-  --content-padding-v: 32px;
-  --content-padding-h: 64px;
+  --content-padding-v: 24px;
+  --content-padding-h: 24px;
   --content-max-width: 1400px;
 
-  --content-scoped-title-height: 50px;
+  --content-scoped-title-height: 48px;
   --content-scoped-title-margin-bottom: 24px;
 
   /* 90% opacity white */
@@ -18,6 +18,22 @@
   --white-80: rgba(255, 255, 255, 0.8);
   /* 70% opacity white */
   --white-70: rgba(255, 255, 255, 0.7);
+
+  /* 90% opacity black */
+  --black-90: rgba(0, 0, 0, 0.9);
+
+  --antd-blue-5: #1677ff;
+  --antd-gray-7: #595959;
+}
+
+.range-separator {
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  border-top: 1px solid #d9d9d9;
+  border-bottom: 1px solid #d9d9d9;
+  background: #fafafa;
+  user-select: none;
 }
 
 html,
@@ -43,13 +59,15 @@ body {
 .p-0 { padding: 0; }
 .flex-1 { flex: 1; }
 .float-right { float: right; }
-.position-absolute { position: absolute; }
-.position-relative { position: relative; }
+.absolute { position: absolute; }
+.relative { position: relative; }
+.sticky { position: sticky; }
 .block { display: block; }
 .none { display: none; }
 .rounded-lg { border-radius: 8px; } /* also consistent with --ant-border-radius-lg */
 .rounded-xl { border-radius: 12px; }
 .rounded-e-none { border-start-end-radius: 0; border-end-end-radius: 0; }
+.opacity-50 { opacity: 0.50; }
 .list-none { list-style-type: none; }
 .cursor-pointer { cursor: pointer; }
 .select-none { user-select: none; }
@@ -92,16 +110,44 @@ body {
   color: #f5222d;  /* https://ant.design/docs/spec/colors red-6 */
 }
 
+.visually-hidden {
+  /*
+  For accessibility; visually hidden but available to screen readers. Taken from Bootstrap.
+
+  The MIT License (MIT)
+
+  Copyright (c) 2011-2026 The Bootstrap Authors
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  THE SOFTWARE.
+  */
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
 /* END utility classes */
 
-
-.header-button {
-  color: lightgray;
-}
-
-.header-button:hover {
-  color: white !important;
-}
 
 .select-dataset-item {
   transition: all 0.2s;
@@ -140,6 +186,8 @@ body {
   text-wrap: nowrap;
   overflow: hidden;
   box-sizing: border-box;
+  font-weight: normal;
+  margin-right: 0;
 
   /* overridden by has-filters class when we have filters applied: */
   max-width: 0;
@@ -155,48 +203,103 @@ body {
 }
 
 
-.scoped-title {
-  position: sticky;
-  top: -3px;
-  left: 0;
-  right: 0;
+#page-header {
   z-index: 20;
 
   box-sizing: border-box;
-  height: var(--content-scoped-title-height);
-  margin-bottom: var(--content-scoped-title-margin-bottom);
-  padding-top: 3px;
-  margin-left: calc(-1 * var(--content-padding-h));
-  margin-right: calc(-1 * var(--content-padding-h));
-  padding-left: max(calc((100% - var(--content-max-width)) / 2 + var(--content-padding-h)), var(--content-padding-h));
-  padding-right: max(calc((100% - var(--content-max-width)) / 2 + var(--content-padding-h)), var(--content-padding-h));
+  min-height: 48px;
 
-  background-color: rgba(245, 245, 245, 0.80);
-  border-bottom: 1px solid rgba(240, 240, 240, 0); /* invisible border to transition from/to */
+  background-color: rgba(250, 250, 250, 0.80);
   backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgb(235, 235, 235);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.02);
+
+  color: var(--black-90);
 
   transition: border-bottom-color 0.5s ease-in-out,
-    margin 0.5s ease-in-out,
-    padding 0.5s ease-in-out,
-    height 0.5s ease-in-out,
-    box-shadow 0.1s ease-in-out,
-    opacity 0.5s ease-in-out;
+    box-shadow 0.1s ease-in-out;
 }
 
-.scoped-title .filters-applied-tag {
-  opacity: 0;
+#page-header.sticky {
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+#page-header.catalogue-mode {
+  position: relative;
+  top: -1px;
+  padding: calc(var(--content-padding-v) + 1px) var(--content-padding-h) var(--content-padding-v) var(--content-padding-h);
+  background-color: var(--white-90);
+}
+
+#page-header__content {
+  margin: 0 auto;
+  transition: opacity 0.5s ease-in-out;
+}
+
+#page-header.catalogue-mode #page-header__content {
+  max-width: var(--content-max-width);
+}
+
+#page-header__content .about-content {
+  max-width: calc(max(800px, var(--content-max-width) / 2));
+  font-size: 16px;
+  line-height: 1.38rem;
+}
+
+ul#page-header-stats {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+}
+
+ul#page-header-stats li {
+  font-size: 24px;
+  white-space: nowrap;
+  transition: opacity 0.3s ease-in-out;
+}
+ul#page-header-stats li.loading {
+  opacity: 0.4;
+}
+
+#page-header__sidebar-toggle {
+  margin-top: 4px;
+  margin-left: 4px;
+  margin-right: 12px;
+  color: rgba(0, 0, 0, 0.64);
+}
+#page-header__sidebar-toggle.active {
+  background-color: rgba(0, 0, 0, 0.20);
+  color: rgba(0, 0, 0, 0.74);
+}
+
+.scoped-title {
+  box-sizing: border-box;
+  height: var(--content-scoped-title-height);
 }
 
 .scoped-title__back {
   margin-right: 12px;
 
-  font-size: 1.8rem;
+  font-size: 1.2rem;
   color: rgba(0, 0, 0, 0.45);
 }
 
 .scoped-title__breadcrumb {
-  font-size: 1.8rem;
-  transition: font-size 0.3s ease-in-out;
+  font-size: 1.2rem;
+  line-height: var(--content-scoped-title-height);
+}
+
+.scoped-title__breadcrumb a {
+  height: calc(var(--content-scoped-title-height) - 8px);
+  margin-top: 4px;
+  line-height: calc(var(--content-scoped-title-height) - 8px);
 }
 
 .scoped-title__breadcrumb .anticon {
@@ -204,36 +307,7 @@ body {
 }
 
 .scoped-title__breadcrumb .ant-breadcrumb-item a {
-  height: 3rem;
-}
-
-.scoped-title[data-stuck] {
-  height: 50px;
-  border-bottom: 1px solid rgba(235, 235, 235, 1);
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.02);
-}
-
-.scoped-title[data-stuck] .filters-applied-tag {
-  opacity: 1;
-}
-
-.scoped-title[data-stuck] .scoped-title__back {
-  width: 32px;
-  min-width: 32px;
-  height: 32px;
-
-  font-size: 1.2rem;
-}
-
-.scoped-title[data-stuck] .scoped-title__breadcrumb {
-  font-size: 1.2rem;
-  line-height: 46px;
-}
-
-.scoped-title[data-stuck] .scoped-title__breadcrumb a {
-  height: 38px;
-  margin-top: 4px;
-  line-height: 38px;
+  height: 40px;
 }
 
 
@@ -278,29 +352,65 @@ body {
   margin: 0;
   font-size: 1.5em;
   line-height: var(--header-height);
+}
+#site-header.light h1.ant-typography {
+  color: var(--black-90);
+}
+#site-header.dark h1.ant-typography {
   color: var(--white-90);
 }
 
 #site-sider {
-  position: fixed;
+  position: relative;
   left: 0;
-  top: var(--header-height);
-  z-index: 100;
+  z-index: 19;
+
+  box-sizing: border-box;
+  width: var(--sidebar-width-full);
+  margin-top: -1px;
+  padding: var(--content-padding-v) 0 var(--content-padding-v) var(--content-padding-h);
+
+  background: none;
+}
+#site-sider.overlay {
+  background-color: rgba(255, 255, 255, 0.88);
   border-right: 1px solid #f0f0f0;
-
-  overflow: auto;
-  height: calc(100vh - var(--header-height));
-
-  transition: transform 0.3s;
+  backdrop-filter: blur(10px);
+  position: fixed;
+  box-shadow: 3px 0 10px rgba(0, 0, 0, 0.06);
+  padding: 0;
+}
+#site-sider.overlay.collapsed {
+  left: calc(-1 * var(--sidebar-width-full) - 1px);
+  box-shadow: none;
 }
 
-#default-layout.sidebar-hidden #site-sider {
-  overflow: hidden;
-  transform: translate(calc(-1 * var(--sidebar-width)), 0);
+#site-sider__inner {
+  position: sticky;
+  top: calc(var(--content-scoped-title-height) + var(--content-padding-v));
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  background-color: rgba(255, 255, 255, 0.88);
+  box-sizing: border-box;
+  border: 1px solid #f0f0f0;
+  border-radius: 12px;
+  width: calc(var(--sidebar-width-full) - var(--content-padding-h));
+  overflow-y: auto;
+  height: 100%;
+  max-height: calc(100vh - var(--header-height) - var(--content-scoped-title-height) - (2 * var(--content-padding-v)));
+}
+#site-sider.overlay #site-sider__inner {
+  background: none;
+  border: none;
 }
 
-.ant-layout-sider-trigger {
-  border-right: 1px solid #f0f0f0;
+#default-layout.page-catalogue #site-sider__inner {
+  top: 0;
+  padding: var(--content-padding-v) var(--content-padding-h);
+}
+
+#default-layout.title-hidden #site-sider__inner {
+  top: var(--content-padding-v);
+  max-height: calc(100vh - var(--header-height) - (2 * var(--content-padding-v)));
 }
 
 #content-layout {
@@ -313,6 +423,7 @@ body {
   display: block;
   width: calc(100% - var(--sidebar-width));
   overflow: auto;
+  overscroll-behavior-y: none;
 
   transition: left 0.3s, width 0.3s;
 }
@@ -322,8 +433,13 @@ body {
   width: 100%;
 }
 
-#content-layout > .ant-layout-content {
+#content-layout > .ant-layout .ant-layout-content {
   padding: var(--content-padding-v) var(--content-padding-h);
+}
+
+.page-phenopackets #content-layout main.ant-layout-content {
+  padding: 0 var(--content-padding-h) var(--content-padding-v) var(--content-padding-h);
+  background-color: white;
 }
 
 .margin-auto {
@@ -333,6 +449,45 @@ body {
 .container {
   width: 100%;
   max-width: var(--content-max-width);
+}
+
+#pcgl-footer {
+  background-color: #054A74;
+  /* Hacky box-shadow protection against really short content revealing page background below: */
+  box-shadow: 0 200px 0 #054A74, 0 400px 0 #054A74, 0 600px 0 #054A74;
+  border-top: 1px solid #02253B;  /* HSL of above darkened by 6pp */
+  font-size: 13px;
+}
+#pcgl-footer img {
+  margin-bottom: 12px;
+  object-fit: contain;
+}
+#pcgl-footer p {
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.4em;
+}
+#pcgl-footer a {
+  text-decoration: underline;
+  color: white;
+  transition: color 0.15s ease-in-out;
+}
+#pcgl-footer a:hover {
+  color: rgba(255, 255, 255, 0.84);
+}
+#pcgl-footer a:active {
+  color: rgba(255, 255, 255, 0.76);
+}
+#pcgl-footer a.disabled {
+  cursor: not-allowed;
+  color: rgba(255, 255, 255, 0.4);
+  text-decoration: none;
+}
+#pcgl-footer__links {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  column-gap: 12px;
+  row-gap: 18px;
+  text-align: center;
 }
 
 /* END layout HTML styling */
@@ -358,7 +513,7 @@ body {
   margin-top: 0;
 }
 /* Elements which are the last child of the about content container shouldn't have the default bottom margin */
-.about-content *:first-child {
+.about-content *:last-child {
   margin-bottom: 0;
 }
 
@@ -468,6 +623,8 @@ body {
 h3.search-sub-form-title {
   font-size: 1.1rem;
   margin-top: 0;
+  display: flex;
+  gap: 1rem;
 }
 
 .search-results-pane {
@@ -499,17 +656,26 @@ h3.search-sub-form-title {
   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.02), inset 0 2px 5px rgba(0, 0, 0, 0.08);
 }
 
+.ant-table-wrapper .ant-table.ant-table-empty .ant-table-tbody > tr.ant-table-placeholder {
+  /* patch for ant background clip issue in empty tables with no headers */
+  background: none;
+}
+
 /* END search */
 
 /* BEGIN phenopackets/other clinical+phenotypic metadata views */
 
-.fixed-item-label-width .ant-descriptions-item-label {
+.fixed-item-label-width > .ant-descriptions-view > table > tbody > .ant-descriptions-row > .ant-descriptions-item-label {
   /* Align split line vertically in all descriptions */
   width: min(30vw, 250px);
 }
-.fixed-item-label-width-narrow .ant-descriptions-item-label {
+.fixed-item-label-width-narrow > .ant-descriptions-view > table > tbody > .ant-descriptions-row > .ant-descriptions-item-label {
   /* Align split line vertically in all descriptions */
   width: min(15vw, 125px);
+}
+.fixed-item-label-width-very-narrow .ant-descriptions-item-label {
+  /* Align split line vertically in all descriptions */
+  width: min(15vw, 80px);
 }
 
 tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .ant-descriptions-view > table {
@@ -585,8 +751,54 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   color: var(--white-70);
 }
 
+/* Persistent border — stays as long as the element should be highlighted */
+.highlight-boundary {
+  position: relative;
+  border-radius: 10px;
+}
+
+/* The border itself lives on a pseudo-element so it can
+   sit outside the element and respect border-radius */
+.highlight-boundary::after {
+  content: '';
+  position: absolute;
+  inset: -3px; /* expand outward by border width */
+  border-radius: inherit;
+  border: 3px solid rgba(22, 119, 255, 0.55);
+  pointer-events: none;
+}
+
+/* Temporary pulse — added alongside highlight-boundary,
+   removed after ~2.6s. Only adds animation to the
+   already-existing ::after pseudo-element */
+.highlight-animation::after {
+  animation: highlightPulse 1s ease-out 0s 1;
+}
+
+@keyframes highlightPulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--antd-blue-5) 35%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 14px color-mix(in srgb, var(--antd-blue-5) 0%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--antd-blue-5) 0%, transparent);
+  }
+}
+
 /* END phenopackets/other clinical+phenotypic metadata views */
 
+@media (min-width: 1200px) {
+  #pcgl-footer__links {
+    column-gap: 40px;
+    text-align: left;
+  }
+}
+
+@media (min-width: 1400px) {
+  #pcgl-footer__links { column-gap: 70px; }
+}
 
 @media (min-width: 1050px) and (max-width: 1550px) {
   .dataset-provenance-card-grid {
@@ -596,13 +808,20 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
 }
 
 @media (max-width: 768px) {
-  /* Same breakpoint as constants/deviceBreakpoints DeviceBreakpoints.TABLET */
+  /* Same breakpoint as constants/deviceBreakpoints DeviceBreakpoints.TABLET & Ant md -> sm */
 
   :root {
     --content-padding-v: 10px;
     --content-padding-h: 10px;
 
     --content-scoped-title-margin-bottom: 10px;
+  }
+
+  ul#page-header-stats {
+    flex-direction: row;
+  }
+  ul#page-header-stats li {
+    font-size: 18px;
   }
 
   .ant-layout-footer {
@@ -632,5 +851,26 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   .ant-float-btn-group.float-btn-pos {
     /* For small screens, reset group gap size */
     gap: 16px;
+  }
+
+  #pcgl-footer__links {
+    grid-template-columns: auto auto;
+  }
+}
+
+@media (max-width: 576px) {
+  /* Same breakpoint as constants/deviceBreakpoints DeviceBreakpoints.MOBILE & Ant sm -> xs */
+
+  ul#page-header-stats {
+    flex-direction: column;
+  }
+  ul#page-header-stats li {
+    font-size: 16px;
+  }
+
+  #pcgl-footer__links {
+    grid-template-columns: auto;
+    grid-row-gap: 8px;
+    text-align: left;
   }
 }

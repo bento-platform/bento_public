@@ -1,7 +1,16 @@
 import type { DiscoveryResults } from '@/types/data';
+import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
 import type { FtsQueryType } from '@/features/search/types';
 
 export const NO_RESULTS_DASHES = '———';
+
+export const EMPTY_KATSU_ENTITY_COUNTS: KatsuEntityCountsOrBooleans = {
+  phenopacket: 0,
+  individual: 0,
+  biosample: 0,
+  experiment: 0,
+  experiment_result: 0,
+};
 
 export const EMPTY_DISCOVERY_RESULTS: DiscoveryResults = {
   // individuals
