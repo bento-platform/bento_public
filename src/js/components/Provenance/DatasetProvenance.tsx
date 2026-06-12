@@ -1,4 +1,4 @@
-import { Card, Descriptions, Flex, Tag, Typography } from 'antd';
+import { Card, Descriptions, Flex, Tag, Typography, theme } from 'antd';
 import { PointMap } from 'bento-charts/dist/maps';
 
 import BaseProvenanceTable from './Tables/BaseProvenanceTable';
@@ -22,6 +22,24 @@ const { Paragraph, Text, Title } = Typography;
 
 const keywordLabel = (k: string | OntologyTerm): string => (typeof k === 'string' ? k : k.label);
 
+const ProvenanceTag = ({ children }: { children: React.ReactNode }) => {
+  const { token } = theme.useToken();
+  return (
+    <Tag
+      style={{
+        fontSize: 11,
+        borderRadius: 4,
+        background: token.colorPrimaryBg,
+        color: token.colorPrimary,
+        border: `1px solid ${token.colorPrimaryBorder}`,
+        margin: 0,
+      }}
+    >
+      {children}
+    </Tag>
+  );
+};
+
 const SectionTitle = ({ title }: { title: string }) => {
   const t = useTranslationFn();
   return (
@@ -39,7 +57,7 @@ const LongDescriptionBlock = ({ content, content_type }: Dataset['long_descripti
   if (content_type === 'text/html') {
     return <div dangerouslySetInnerHTML={{ __html: content }} />;
   }
-  return <Paragraph>{content}</Paragraph>;
+  return <Paragraph ellipsis={{ rows: 5, expandable: true, symbol: 'more' }}>{content}</Paragraph>;
 };
 
 // ---- PersonOrOrganization display ----
@@ -75,12 +93,7 @@ const StakeholdersTable = ({ stakeholders }: { stakeholders: PersonOrOrganizatio
         {
           title: t('Roles'),
           key: 'roles',
-          render: (_, row) =>
-            row.roles.map((r, i) => (
-              <Tag key={i} color="cyan">
-                {t(r)}
-              </Tag>
-            )),
+          render: (_, row) => row.roles.map((r, i) => <ProvenanceTag key={i}>{t(r)}</ProvenanceTag>),
         },
       ]}
     />
@@ -310,7 +323,9 @@ export const DatasetProvenanceContent = ({ dataset }: { dataset: Dataset }) => {
       {dataset.long_description ? (
         <LongDescriptionBlock {...dataset.long_description} />
       ) : (
-        <Text italic>{t(dataset.description)}</Text>
+        <Paragraph ellipsis={{ rows: 5, expandable: true, symbol: 'more' }} style={{ fontStyle: 'italic', margin: 0 }}>
+          {t(dataset.description)}
+        </Paragraph>
       )}
 
       {/* Quick-facts descriptions block */}
@@ -324,7 +339,9 @@ export const DatasetProvenanceContent = ({ dataset }: { dataset: Dataset }) => {
         <Descriptions style={{ paddingTop: '20px' }}>
           {dataset.privacy && (
             <Item span={12} label={<DescLabel title={t('Privacy')} />}>
-              {t(dataset.privacy)}
+              <Paragraph ellipsis={{ rows: 2, expandable: true, symbol: 'more' }} style={{ margin: 0 }}>
+                {t(dataset.privacy)}
+              </Paragraph>
             </Item>
           )}
           {dataset.version && (
@@ -365,20 +382,20 @@ export const DatasetProvenanceContent = ({ dataset }: { dataset: Dataset }) => {
           ) : null}
           {taxa.length > 0 && (
             <Item span={24} label={<DescLabel title={t('Taxa')} />}>
-              {taxa.map((k, i) => (
-                <Tag key={i} color="geekblue">
-                  {t(keywordLabel(k))}
-                </Tag>
-              ))}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                {taxa.map((k, i) => (
+                  <ProvenanceTag key={i}>{t(keywordLabel(k))}</ProvenanceTag>
+                ))}
+              </div>
             </Item>
           )}
           {keywords.length > 0 && (
             <Item span={24} label={<DescLabel title={t('Keywords')} />}>
-              {keywords.map((k, i) => (
-                <Tag key={i} color="cyan">
-                  {t(keywordLabel(k))}
-                </Tag>
-              ))}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                {keywords.map((k, i) => (
+                  <ProvenanceTag key={i}>{t(keywordLabel(k))}</ProvenanceTag>
+                ))}
+              </div>
             </Item>
           )}
         </Descriptions>
