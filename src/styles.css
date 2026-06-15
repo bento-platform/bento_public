@@ -829,7 +829,7 @@ body {
   white-space: nowrap;
 }
 
-.max-w-catalogue { max-width: 1240px; }
+.max-w-catalogue { max-width: var(--content-max-width); }
 .catalogue-insights-container { margin-top: 14px; }
 .catalogue-datasets-separator { margin-top: 18px; margin-bottom: 14px; }
 
