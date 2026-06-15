@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Card, Flex, Tag, Typography } from 'antd';
+import { Button, Card, Flex, Typography } from 'antd';
 import { ExperimentOutlined, PieChartOutlined, SolutionOutlined, TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
 
@@ -8,23 +8,19 @@ import type { Dataset, StringOrOntologyClass } from '@/types/dataset';
 import { BentoRoute } from '@/types/routes';
 import { isoDateToString } from '@/utils/strings';
 import { useLanguage, useTranslationFn } from '@/hooks';
-import { useCatalogueState, normaliseStatus } from '@/features/catalogue/hooks';
+import { useCatalogueState } from '@/features/catalogue/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
+import CountItem from '@/components/Util/CountItem';
+import ProvenanceTag from '@/components/Util/ProvenanceTag';
+import StatusBadge from '@/components/Util/StatusBadge';
 import DatasetProvenanceModal from '../DatasetProvenanceModal';
 import { COLOR_CHART_FALLBACK } from './constants';
 
-const { Paragraph, Text, Title } = Typography;
+const { Paragraph, Title } = Typography;
 
 const MAX_KEYWORDS = 4;
 
 const keywordLabel = (k: StringOrOntologyClass): string => (typeof k === 'string' ? k : k.label);
-
-const CountItem = ({ icon, value }: { icon: React.ReactNode; value: number }) => (
-  <Flex align="center" gap={4}>
-    <span className="catalogue-card__count-icon">{icon}</span>
-    <Text className="catalogue-card__count-text">{value.toLocaleString()}</Text>
-  </Flex>
-);
 
 const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Project }) => {
   const language = useLanguage();
@@ -37,7 +33,6 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
   const { identifier, title, description } = dataset;
   const keywords = (dataset.keywords ?? []).map(keywordLabel).slice(0, MAX_KEYWORDS);
   const updatedStr = isoDateToString(dataset.last_modified ?? project.updated, language);
-  const normStatus = normaliseStatus(dataset.study_status);
   const projectTitle = project.title;
 
   const counts = dataset.counts_by_entity;
@@ -58,11 +53,7 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
           <Title level={5} className="catalogue-card__title">
             {t(title)}
           </Title>
-          {normStatus && (
-            <span className={`catalogue-card__status-badge catalogue-card__status-badge--${normStatus.toLowerCase()}`}>
-              {t(normStatus)}
-            </span>
-          )}
+          <StatusBadge status={dataset.study_status} />
         </Flex>
 
         {/* Sub line: updated date · access */}
@@ -116,9 +107,7 @@ const CatalogueCard = ({ dataset, project }: { dataset: Dataset; project: Projec
         {keywords.length > 0 && (
           <Flex wrap gap={4} className="mt-2">
             {keywords.map((kw) => (
-              <Tag key={kw} className="catalogue-card__keyword-tag">
-                {kw}
-              </Tag>
+              <ProvenanceTag key={kw}>{kw}</ProvenanceTag>
             ))}
           </Flex>
         )}

@@ -4,6 +4,7 @@ import { useCatalogueState } from '@/features/catalogue/hooks';
 import { toggleFacetValue, toggleFacetCollapse, type FacetId } from '@/features/catalogue/catalogue.store';
 import { useTranslationFn } from '@/hooks';
 import { CaretDownOutlined, CaretRightOutlined } from '@ant-design/icons';
+import FilterChip from '@/components/Util/FilterChip';
 
 interface FacetConfig {
   id: FacetId;
@@ -46,17 +47,13 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
       {!collapsed && (
         <div className={clsx('facet-chips', facet.scroll && 'facet-chips--scroll')}>
           {options.map(({ value, count, selected }) => (
-            <button
+            <FilterChip
               key={value}
-              type="button"
-              aria-pressed={selected}
-              disabled={count === 0 && !selected}
+              label={value}
+              count={count}
+              selected={selected}
               onClick={() => onToggleValue(value)}
-              className={clsx('fchip', selected && 'fchip--on')}
-            >
-              <span className="fchip__label">{value}</span>
-              <span className="fchip__count">{count}</span>
-            </button>
+            />
           ))}
         </div>
       )}

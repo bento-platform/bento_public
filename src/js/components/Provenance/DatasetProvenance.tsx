@@ -1,7 +1,8 @@
-import { Card, Descriptions, Flex, Tag, Typography, theme } from 'antd';
+import { Card, Descriptions, Flex, Typography } from 'antd';
 import { PointMap } from 'bento-charts/dist/maps';
 
 import BaseProvenanceTable from './Tables/BaseProvenanceTable';
+import ProvenanceTag from '@/components/Util/ProvenanceTag';
 import { useTranslationFn } from '@/hooks';
 import type {
   Count,
@@ -22,23 +23,6 @@ const { Paragraph, Text, Title } = Typography;
 
 const keywordLabel = (k: string | OntologyTerm): string => (typeof k === 'string' ? k : k.label);
 
-const ProvenanceTag = ({ children }: { children: React.ReactNode }) => {
-  const { token } = theme.useToken();
-  return (
-    <Tag
-      style={{
-        fontSize: 11,
-        borderRadius: 4,
-        background: token.colorPrimaryBg,
-        color: token.colorPrimary,
-        border: `1px solid ${token.colorPrimaryBorder}`,
-        margin: 0,
-      }}
-    >
-      {children}
-    </Tag>
-  );
-};
 
 const SectionTitle = ({ title }: { title: string }) => {
   const t = useTranslationFn();

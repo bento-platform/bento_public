@@ -1,6 +1,6 @@
 import { type ReactNode, useCallback, useMemo, useState } from 'react';
 
-import { Avatar, Button, Card, Flex, List, Tag, Typography, theme } from 'antd';
+import { Avatar, Button, Card, Flex, List, Typography } from 'antd';
 import {
   ExperimentOutlined,
   ExpandAltOutlined,
@@ -19,13 +19,14 @@ import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
 import { getCurrentPage } from '@/utils/router';
 import { useLanguage, useTranslationFn } from '@/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
-import { normaliseStatus } from '@/features/catalogue/hooks';
 import { isoDateToString } from '@/utils/strings';
+import CountItem from '@/components/Util/CountItem';
+import ProvenanceTag from '@/components/Util/ProvenanceTag';
+import StatusBadge from '@/components/Util/StatusBadge';
 import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
 import CountsDisplay from '@/components/Util/CountsDisplay';
 import DatasetProvenanceModal from './DatasetProvenanceModal';
 import {
-  STATUS_STYLE,
   COLOR_TEXT_MUTED,
   COLOR_TEXT_SECONDARY,
   COLOR_BORDER,
@@ -39,13 +40,6 @@ const { Title, Text } = Typography;
 const MAX_KEYWORDS = 4;
 
 const keywordLabel = (k: string | OntologyTerm): string => (typeof k === 'string' ? k : k.label);
-
-const CountItem = ({ icon, value }: { icon: React.ReactNode; value: number }) => (
-  <Flex align="center" gap={4}>
-    <span style={{ color: COLOR_TEXT_MUTED, fontSize: 13 }}>{icon}</span>
-    <Text style={{ fontSize: 13 }}>{value.toLocaleString()}</Text>
-  </Flex>
-);
 
 const Dataset = ({
   parentProjectID,
@@ -64,7 +58,6 @@ const Dataset = ({
   const navigateToScope = useNavigateToScope();
   const page = getCurrentPage();
   const t = useTranslationFn();
-  const { token } = theme.useToken();
 
   const [provenanceModalOpen, setProvenanceModalOpen] = useState(false);
 
@@ -110,8 +103,6 @@ const Dataset = ({
       </List.Item>
     );
   } else if (format === 'card') {
-    const normStatus = normaliseStatus(dataset.study_status);
-    const statusStyle = STATUS_STYLE[normStatus];
     const updatedStr = dataset.last_modified ? isoDateToString(dataset.last_modified, language) : undefined;
 
     inner = (
@@ -140,23 +131,7 @@ const Dataset = ({
           <Title level={5} style={{ margin: 0, fontSize: 16, fontWeight: 600, flex: 1 }}>
             {t(title)}
           </Title>
-          {statusStyle && (
-            <span
-              style={{
-                flexShrink: 0,
-                fontSize: 11,
-                fontWeight: 600,
-                padding: '1px 8px',
-                borderRadius: 10,
-                color: statusStyle.color,
-                background: statusStyle.bg,
-                border: `1px solid ${statusStyle.border}`,
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {t(normStatus)}
-            </span>
-          )}
+          <StatusBadge status={dataset.study_status} />
         </Flex>
 
         {updatedStr && (
@@ -185,19 +160,7 @@ const Dataset = ({
         {keywords.length > 0 && (
           <div style={{ marginTop: 8, display: 'flex', flexWrap: 'wrap', gap: 4 }}>
             {keywords.map((kw) => (
-              <Tag
-                key={kw}
-                style={{
-                  fontSize: 11,
-                  borderRadius: 4,
-                  background: token.colorPrimaryBg,
-                  color: token.colorPrimary,
-                  border: `1px solid ${token.colorPrimaryBorder}`,
-                  margin: 0,
-                }}
-              >
-                {kw}
-              </Tag>
+              <ProvenanceTag key={kw}>{kw}</ProvenanceTag>
             ))}
           </div>
         )}

@@ -1,5 +1,5 @@
 import { useAppDispatch } from '@/hooks';
-import { Button, Flex, Input, Select, Segmented, Tag, Typography } from 'antd';
+import { Button, Flex, Input, Select, Segmented, Typography } from 'antd';
 import { AppstoreOutlined, BarsOutlined, BarChartOutlined, SearchOutlined } from '@ant-design/icons';
 import { useCatalogueState } from '@/features/catalogue/hooks';
 import {
@@ -13,6 +13,7 @@ import {
   type FacetId,
 } from '@/features/catalogue/catalogue.store';
 import { useTranslationFn } from '@/hooks';
+import ActiveFilterTags from '@/components/Util/ActiveFilterTags';
 
 const { Text } = Typography;
 
@@ -43,13 +44,24 @@ const CatalogueToolbar = ({ filteredCount }: CatalogueToolbarProps) => {
   const dispatch = useAppDispatch();
   const { q, sets, sort, view, insightsOpen } = useCatalogueState();
 
-  const activePills: { facet: FacetId; value: string; label: string }[] = [];
+  const pills: { key: string; facetLabel: string; label: string; onClose: () => void }[] = [];
   (Object.entries(sets) as [FacetId, string[]][]).forEach(([facet, values]) => {
-    values.forEach((v) => activePills.push({ facet, value: v, label: v }));
+    values.forEach((v) =>
+      pills.push({
+        key: `${facet}-${v}`,
+        facetLabel: FACET_LABELS[facet],
+        label: v,
+        onClose: () => dispatch(toggleFacetValue({ facet, value: v })),
+      })
+    );
   });
-  if (q) activePills.push({ facet: 'keywords' as FacetId, value: '__q__', label: `"${q}"` });
-
-  const hasActive = activePills.length > 0;
+  if (q)
+    pills.push({
+      key: 'keywords-__q__',
+      facetLabel: FACET_LABELS['keywords'],
+      label: `"${q}"`,
+      onClose: () => dispatch(setSearch('')),
+    });
 
   return (
     <Flex vertical gap={8}>
@@ -97,30 +109,7 @@ const CatalogueToolbar = ({ filteredCount }: CatalogueToolbarProps) => {
       </Flex>
 
       {/* Row 3: active filter pills */}
-      {hasActive && (
-        <Flex wrap gap={4} align="center">
-          {activePills.map(({ facet, value, label }) => (
-            <Tag
-              key={`${facet}-${value}`}
-              closable
-              onClose={() => {
-                if (value === '__q__') {
-                  dispatch(setSearch(''));
-                } else {
-                  dispatch(toggleFacetValue({ facet, value }));
-                }
-              }}
-              className="catalogue-filter-tag"
-            >
-              <span className="catalogue-filter-tag__facet-label">{t(FACET_LABELS[facet])}:</span>
-              {label}
-            </Tag>
-          ))}
-          <Tag className="catalogue-clear-tag" onClick={() => dispatch(clearAll())}>
-            {t('Clear all')}
-          </Tag>
-        </Flex>
-      )}
+      <ActiveFilterTags pills={pills} onClearAll={() => dispatch(clearAll())} />
     </Flex>
   );
 };
