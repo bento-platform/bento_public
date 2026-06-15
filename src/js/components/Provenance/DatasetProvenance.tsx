@@ -189,7 +189,7 @@ export const DatasetProvenanceContent = ({
       {/* Domains/keywords/taxa ('keyword-like' concepts) descriptions block */}
       {!!keywordLikeItems.length && <Descriptions items={keywordLikeItems} size="small" />}
 
-      {/* Description */}
+      {/* Description - impose a maximum width to keep it readable (without very long lines) */}
       <div style={{ maxWidth: 1100, marginTop: keywords.length || taxa.length ? 16 : 0 }}>
         {dataset.long_description ? (
           <LongDescriptionBlock {...dataset.long_description} />
@@ -264,7 +264,6 @@ export const DatasetProvenanceContent = ({
             <>
               <SectionTitle title={publications.length === 1 ? 'Publication' : 'Publications'} />
               <PublicationsDisplay publications={publications} />
-              {/*<PublicationsTable publications={publications} />*/}
             </>
           )}
 
@@ -273,7 +272,6 @@ export const DatasetProvenanceContent = ({
             <>
               <SectionTitle title="Funding" />
               <FundingDisplay funding={funding} />
-              {/*<FundingTable funding={fundingSources} />*/}
             </>
           )}
 
