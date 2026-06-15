@@ -66,17 +66,6 @@ const Contact = ({ contact }: { contact: Contact }) => {
   );
 };
 
-export const PersonOrOrganizationName = ({ entity }: { entity: PersonOrOrganization }) => {
-  const { name, contact } = entity;
-  return contact?.website ? (
-    <a href={contact?.website} target="_blank" rel="noopener noreferrer">
-      {name}
-    </a>
-  ) : (
-    name
-  );
-};
-
 const PersonOrOrganizationDisplay = ({ entity, extra }: { entity: PersonOrOrganization; extra?: ReactNode }) => {
   const t = useTranslationFn();
   const { name, contact, roles, type } = entity;
