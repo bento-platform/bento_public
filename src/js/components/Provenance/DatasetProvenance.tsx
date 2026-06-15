@@ -3,10 +3,11 @@ import { Button, Card, Descriptions, Flex, Tag, Typography } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 
 import { useTranslationFn } from '@/hooks';
-import type { Count, Dataset, ParticipantCriteria } from '@/types/dataset';
+import type { Dataset, ParticipantCriteria } from '@/types/dataset';
 
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
 import BaseProvenanceTable from './Tables/BaseProvenanceTable';
+import CountsDisplay from './CountsDisplay';
 import FundingDisplay from './FundingDisplay';
 import LinksDisplay from './LinksDisplay';
 import PersonOrOrganizationDisplay from './PersonOrOrganizationDisplay';
@@ -71,23 +72,6 @@ const CriteriaTable = ({ criteria }: { criteria: ParticipantCriteria[] }) => {
               </a>
             ) : null,
         },
-      ]}
-    />
-  );
-};
-
-// ---- Descriptive counts ----
-
-const CountsTable = ({ counts }: { counts: Count[] }) => {
-  const t = useTranslationFn();
-  return (
-    <BaseProvenanceTable
-      dataSource={counts}
-      rowKey="count_entity"
-      columns={[
-        { title: t('Entity'), dataIndex: 'count_entity', key: 'count_entity' },
-        { title: t('Value'), dataIndex: 'value', key: 'value' },
-        { title: t('Description'), dataIndex: 'description', key: 'description' },
       ]}
     />
   );
@@ -295,7 +279,7 @@ export const DatasetProvenanceContent = ({
           {counts.length > 0 && (
             <>
               <SectionTitle title="Counts" />
-              <CountsTable counts={counts} />
+              <CountsDisplay counts={counts} />
             </>
           )}
 
