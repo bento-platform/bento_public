@@ -23,7 +23,6 @@ const { Paragraph, Text, Title } = Typography;
 
 const keywordLabel = (k: string | OntologyTerm): string => (typeof k === 'string' ? k : k.label);
 
-
 const SectionTitle = ({ title }: { title: string }) => {
   const t = useTranslationFn();
   return (

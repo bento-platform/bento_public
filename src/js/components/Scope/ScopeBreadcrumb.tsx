@@ -12,11 +12,16 @@ type ScopeBreadcrumbProps = {
   breadcrumbItems: BreadcrumbItemType[];
 };
 
-const ScopeBreadcrumb = ({ showSidebarToggle, sidebarOverlayShown, onToggleSidebar, breadcrumbItems }: ScopeBreadcrumbProps) => {
+const ScopeBreadcrumb = ({
+  showSidebarToggle,
+  sidebarOverlayShown,
+  onToggleSidebar,
+  breadcrumbItems,
+}: ScopeBreadcrumbProps) => {
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([e]) => e.target.toggleAttribute('data-stuck', e.intersectionRatio < 1),
-      { threshold: [1], root: document.getElementById('content-layout') },
+      { threshold: [1], root: document.getElementById('content-layout') }
     );
     const el = document.getElementById('scope-breadcrumb');
     if (el) observer.observe(el);
@@ -24,10 +29,7 @@ const ScopeBreadcrumb = ({ showSidebarToggle, sidebarOverlayShown, onToggleSideb
   }, []);
 
   return (
-    <header
-      id="scope-breadcrumb"
-      style={{ paddingLeft: showSidebarToggle ? undefined : 'var(--content-padding-h)' }}
-    >
+    <header id="scope-breadcrumb" style={{ paddingLeft: showSidebarToggle ? undefined : 'var(--content-padding-h)' }}>
       <Flex>
         {showSidebarToggle && (
           <Button
