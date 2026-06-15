@@ -79,6 +79,7 @@ const RootApp = () => {
             <ChartConfigProvider Lng={i18n.language ?? SUPPORTED_LNGS.ENGLISH} theme={NEW_BENTO_PUBLIC_THEME}>
               <ConfigProvider
                 locale={antdLocale}
+                cssVar
                 theme={{
                   components: {
                     Button: { algorithm: !PCGL_MODE },

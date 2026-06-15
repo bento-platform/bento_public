@@ -1,22 +1,8 @@
 import type { ReactNode } from 'react';
-import { Tag, theme } from 'antd';
+import { Tag } from 'antd';
 
-const ProvenanceTag = ({ children }: { children: ReactNode }) => {
-  const { token } = theme.useToken();
-  return (
-    <Tag
-      style={{
-        fontSize: 11,
-        borderRadius: 4,
-        margin: 0,
-        background: token.colorPrimaryBg,
-        color: token.colorPrimary,
-        border: `1px solid ${token.colorPrimaryBorder}`,
-      }}
-    >
-      {children}
-    </Tag>
-  );
-};
+const ProvenanceTag = ({ children }: { children: ReactNode }) => (
+  <Tag className="provenance-tag">{children}</Tag>
+);
 
 export default ProvenanceTag;
