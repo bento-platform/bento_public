@@ -570,9 +570,8 @@
       "by_project": "By project"
     },
     "datasets": {
-      "heading": "Datasets",
-      "no_results": "No datasets match your filters",
-      "clear_filters": "Clear all filters"
+      "empty": "No datasets match your filters",
+      "reset_filters": "Clear all filters"
     },
     "status": {
       "ongoing": "Ongoing",
