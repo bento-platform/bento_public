@@ -365,20 +365,20 @@ export const DatasetProvenanceContent = ({ dataset }: { dataset: Dataset }) => {
           ) : null}
           {taxa.length > 0 && (
             <Item span={24} label={<DescLabel title={t('Taxa')} />}>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+              <Flex wrap gap={4}>
                 {taxa.map((k, i) => (
                   <ProvenanceTag key={i}>{t(keywordLabel(k))}</ProvenanceTag>
                 ))}
-              </div>
+              </Flex>
             </Item>
           )}
           {keywords.length > 0 && (
             <Item span={24} label={<DescLabel title={t('Keywords')} />}>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+              <Flex wrap gap={4}>
                 {keywords.map((k, i) => (
                   <ProvenanceTag key={i}>{t(keywordLabel(k))}</ProvenanceTag>
                 ))}
-              </div>
+              </Flex>
             </Item>
           )}
         </Descriptions>
