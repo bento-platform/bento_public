@@ -4,13 +4,13 @@ import { Button, Card, Descriptions, Flex, Tag, Typography } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 
 import { useTranslationFn } from '@/hooks';
-import type { Dataset, ParticipantCriteria } from '@/types/dataset';
+import type { Dataset } from '@/types/dataset';
 
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
-import BaseProvenanceTable from './Tables/BaseProvenanceTable';
 import CountsDisplay from './CountsDisplay';
 import FundingDisplay from './FundingDisplay';
 import LinksDisplay from './LinksDisplay';
+import ParticipantCriteriaDisplay from './ParticipantCriteriaDisplay';
 import PersonOrOrganizationDisplay from './PersonOrOrganizationDisplay';
 import PublicationsDisplay from './PublicationsDisplay';
 import SpatialCoverageDisplay from './SpatialCoverageDisplay';
@@ -37,43 +37,6 @@ const LongDescriptionBlock = ({ content, content_type }: Dataset['long_descripti
     return <div dangerouslySetInnerHTML={{ __html: content }} />;
   }
   return <Paragraph>{content}</Paragraph>;
-};
-
-// ---- Participant criteria ----
-
-const CriteriaTable = ({ criteria }: { criteria: ParticipantCriteria[] }) => {
-  const t = useTranslationFn();
-  return (
-    <BaseProvenanceTable
-      dataSource={criteria}
-      rowKey="description"
-      columns={[
-        {
-          title: t('Type'),
-          dataIndex: 'type',
-          key: 'type',
-          width: 120,
-          render: (type) => t(type),
-        },
-        {
-          title: t('Description'),
-          dataIndex: 'description',
-          key: 'description',
-        },
-        {
-          title: t('Link'),
-          dataIndex: 'link',
-          key: 'link',
-          render: (link) =>
-            link ? (
-              <a href={link} target="_blank" rel="noreferrer">
-                {link}
-              </a>
-            ) : null,
-        },
-      ]}
-    />
-  );
 };
 
 // ---- Main content ----
@@ -199,7 +162,7 @@ export const DatasetProvenanceContent = ({
     if (dataset.participant_criteria) {
       res.push({
         title: 'Participant Criteria',
-        children: <CriteriaTable criteria={criteria} />,
+        children: <ParticipantCriteriaDisplay criteria={criteria} />,
       });
     }
 
