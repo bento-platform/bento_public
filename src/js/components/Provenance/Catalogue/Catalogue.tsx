@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, type CSSProperties } from 'react';
 import { Divider, Empty, Button, Flex, Typography } from 'antd';
 import { useMetadata } from '@/features/metadata/hooks';
 import { useCatalogueFilter, useCatalogueState } from '@/features/catalogue/hooks';
@@ -37,7 +37,7 @@ const Catalogue = () => {
     dispatch(setProjectColors(assignColors(names)));
   }, [allDatasets, dispatch]);
 
-  const gridStyle: React.CSSProperties =
+  const gridStyle: CSSProperties =
     view === 'grid'
       ? { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(290px, 1fr))', gap: 14 }
       : { display: 'flex', flexDirection: 'column', gap: 14 };

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, type ReactNode } from 'react';
 import { Flex, Space, Typography } from 'antd';
 import { DatabaseOutlined, ExperimentOutlined, TeamOutlined } from '@ant-design/icons';
 import clsx from 'clsx';
@@ -10,7 +10,7 @@ import { BANNER_GRADIENT } from './constants';
 
 const { Text } = Typography;
 
-const StatItem = ({ icon, value, label }: { icon: React.ReactNode; value: string; label: string }) => (
+const StatItem = ({ icon, value, label }: { icon: ReactNode; value: string; label: string }) => (
   <Space size={8} align="center" className="whitespace-nowrap">
     <span className="catalogue-banner__stat-icon">{icon}</span>
     <Text className="catalogue-banner__stat-value">

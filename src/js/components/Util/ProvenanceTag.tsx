@@ -1,6 +1,7 @@
+import type { ReactNode } from 'react';
 import { Tag, theme } from 'antd';
 
-const ProvenanceTag = ({ children }: { children: React.ReactNode }) => {
+const ProvenanceTag = ({ children }: { children: ReactNode }) => {
   const { token } = theme.useToken();
   return (
     <Tag
