@@ -364,7 +364,7 @@ export const DatasetProvenanceContent = ({ dataset }: { dataset: Dataset }) => {
             </Item>
           ) : null}
           {taxa.length > 0 && (
-            <Item span={24} label={<DescLabel title={t('Taxa')} />}>
+            <Item span={24} label={<DescLabel title={t('catalogue.facets.taxa')} />}>
               <Flex wrap gap={4}>
                 {taxa.map((k, i) => (
                   <ProvenanceTag key={i}>{t(keywordLabel(k))}</ProvenanceTag>

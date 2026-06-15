@@ -163,36 +163,6 @@
   "Created": "Created",
   "Updated": "Updated",
   "Back to catalogue": "Back to catalogue",
-  "Filters": "Filters",
-  "Project": "Project",
-  "Data type": "Data type",
-  "Taxa": "Taxa",
-  "Data use": "Data use",
-  "Status": "Status",
-  "Keyword": "Keyword",
-  "Datasets": "Datasets",
-  "Dataset insights": "Dataset insights",
-  "Select a segment to filter": "Select a segment to filter",
-  "By status": "By status",
-  "By data type": "By data type",
-  "By keyword": "By keyword",
-  "By project": "By project",
-  "No datasets match your filters": "No datasets match your filters",
-  "Clear all filters": "Clear all filters",
-  "Show insights": "Show insights",
-  "Hide insights": "Hide insights",
-  "Clear all": "Clear all",
-  "dataset found": "dataset found",
-  "datasets found": "datasets found",
-  "Search datasets, keywords, assays…": "Search datasets, keywords, assays…",
-  "Recently updated": "Recently updated",
-  "Newest created": "Newest created",
-  "Title A–Z": "Title A–Z",
-  "Most individuals": "Most individuals",
-  "Most biosamples": "Most biosamples",
-  "Ongoing": "Ongoing",
-  "Completed": "Completed",
-  "Unassigned": "Unassigned",
   "Back to project": "Back to $t(entities.project_one, lowercase)",
   "Back to dataset": "Back to $t(entities.dataset_one, lowercase)",
   "beacon": {
@@ -562,6 +532,53 @@
     "mime_type": "MIME Type",
     "checksums": "Checksums",
     "access_methods": "Access Methods"
+  },
+  "catalogue": {
+    "rail": {
+      "title": "Filters"
+    },
+    "facets": {
+      "projects": "Project",
+      "dataTypes": "Data type",
+      "taxa": "Taxa",
+      "access": "Access",
+      "licenses": "Data use",
+      "statuses": "Status",
+      "keywords": "Keyword"
+    },
+    "toolbar": {
+      "search_placeholder": "Search datasets, keywords, assays…",
+      "sort": {
+        "recently_updated": "Recently updated",
+        "newest_created": "Newest created",
+        "title_az": "Title A–Z",
+        "most_individuals": "Most individuals",
+        "most_biosamples": "Most biosamples"
+      },
+      "dataset_found_one": "dataset found",
+      "dataset_found_other": "datasets found",
+      "show_insights": "Show insights",
+      "hide_insights": "Hide insights",
+      "clear_all": "Clear all"
+    },
+    "insights": {
+      "title": "Dataset insights",
+      "hint": "Select a segment to filter",
+      "by_status": "By status",
+      "by_data_type": "By data type",
+      "by_keyword": "By keyword",
+      "by_project": "By project"
+    },
+    "datasets": {
+      "heading": "Datasets",
+      "no_results": "No datasets match your filters",
+      "clear_filters": "Clear all filters"
+    },
+    "status": {
+      "ongoing": "Ongoing",
+      "completed": "Completed",
+      "unassigned": "Unassigned"
+    }
   },
   "pcgl": {
     "banner": {

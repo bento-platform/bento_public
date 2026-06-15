@@ -8,18 +8,17 @@ import FilterChip from '@/components/Util/FilterChip';
 
 interface FacetConfig {
   id: FacetId;
-  title: string;
   scroll?: boolean;
 }
 
 const FACETS: FacetConfig[] = [
-  { id: 'projects', title: 'Project' },
-  { id: 'dataTypes', title: 'Data type', scroll: true },
-  { id: 'taxa', title: 'Taxa' },
-  { id: 'access', title: 'Access' },
-  { id: 'licenses', title: 'Data use' },
-  { id: 'statuses', title: 'Status' },
-  { id: 'keywords', title: 'Keywords', scroll: true },
+  { id: 'projects' },
+  { id: 'dataTypes', scroll: true },
+  { id: 'taxa' },
+  { id: 'access' },
+  { id: 'licenses' },
+  { id: 'statuses' },
+  { id: 'keywords', scroll: true },
 ];
 
 interface FacetSectionProps {
@@ -37,7 +36,7 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
   return (
     <div className={clsx('facet-section', !collapsed && 'facet-section--expanded')}>
       <button className="facet-head" onClick={onToggleCollapse}>
-        <span className="facet-head__label">{t(facet.title)}</span>
+        <span className="facet-head__label">{t(`catalogue.facets.${facet.id}`)}</span>
         {collapsed ? (
           <CaretRightOutlined className="facet-head__icon" />
         ) : (
@@ -74,7 +73,7 @@ const CatalogueRail = ({ totalCount, facetOptions }: CatalogueRailProps) => {
   return (
     <div className="catalogue-rail">
       <div className="catalogue-rail__header">
-        <span className="catalogue-rail__title">{t('Filters')}</span>
+        <span className="catalogue-rail__title">{t('catalogue.rail.title')}</span>
         <span className="catalogue-rail__count">
           {totalCount} {t('entities.dataset', { count: totalCount }).toLowerCase()}
         </span>

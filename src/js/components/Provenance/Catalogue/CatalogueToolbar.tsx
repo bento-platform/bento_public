@@ -18,21 +18,21 @@ import ActiveFilterTags from '@/components/Util/ActiveFilterTags';
 const { Text } = Typography;
 
 const SORT_OPTIONS: { value: SortKey; label: string }[] = [
-  { value: 'updated_desc', label: 'Recently updated' },
-  { value: 'created_desc', label: 'Newest created' },
-  { value: 'title_az', label: 'Title A–Z' },
-  { value: 'individuals_desc', label: 'Most individuals' },
-  { value: 'biosamples_desc', label: 'Most biosamples' },
+  { value: 'updated_desc', label: 'catalogue.toolbar.sort.recently_updated' },
+  { value: 'created_desc', label: 'catalogue.toolbar.sort.newest_created' },
+  { value: 'title_az', label: 'catalogue.toolbar.sort.title_az' },
+  { value: 'individuals_desc', label: 'catalogue.toolbar.sort.most_individuals' },
+  { value: 'biosamples_desc', label: 'catalogue.toolbar.sort.most_biosamples' },
 ];
 
 const FACET_LABELS: Record<FacetId, string> = {
-  projects: 'Project',
-  dataTypes: 'Data type',
-  taxa: 'Taxa',
-  access: 'Access',
-  licenses: 'Data use',
-  statuses: 'Status',
-  keywords: 'Keyword',
+  projects: 'catalogue.facets.projects',
+  dataTypes: 'catalogue.facets.dataTypes',
+  taxa: 'catalogue.facets.taxa',
+  access: 'catalogue.facets.access',
+  licenses: 'catalogue.facets.licenses',
+  statuses: 'catalogue.facets.statuses',
+  keywords: 'catalogue.facets.keywords',
 };
 
 interface CatalogueToolbarProps {
@@ -69,7 +69,7 @@ const CatalogueToolbar = ({ filteredCount }: CatalogueToolbarProps) => {
       <Flex gap={8} align="center">
         <Input
           prefix={<SearchOutlined />}
-          placeholder={t('Search datasets, keywords, assays…')}
+          placeholder={t('catalogue.toolbar.search_placeholder')}
           value={q}
           onChange={(e) => dispatch(setSearch(e.target.value))}
           className="catalogue-search-input"
@@ -95,7 +95,7 @@ const CatalogueToolbar = ({ filteredCount }: CatalogueToolbarProps) => {
       <Flex justify="space-between" align="center">
         <Text>
           <span className="catalogue-count-highlight">{filteredCount}</span>{' '}
-          {t(filteredCount === 1 ? 'dataset found' : 'datasets found')}
+          {t('catalogue.toolbar.dataset_found', { count: filteredCount })}
         </Text>
         <Button
           size="small"
@@ -104,7 +104,7 @@ const CatalogueToolbar = ({ filteredCount }: CatalogueToolbarProps) => {
           type={insightsOpen ? 'primary' : 'default'}
           ghost={insightsOpen}
         >
-          {insightsOpen ? t('Hide insights') : t('Show insights')}
+          {insightsOpen ? t('catalogue.toolbar.hide_insights') : t('catalogue.toolbar.show_insights')}
         </Button>
       </Flex>
 

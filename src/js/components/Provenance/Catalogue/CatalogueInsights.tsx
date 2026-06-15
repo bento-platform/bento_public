@@ -54,13 +54,13 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
       <Flex justify="space-between" align="center" className="mb-3">
         <Flex align="center" gap={6}>
           <BarChartOutlined className="text-cat-primary" />
-          <Text className="catalogue-insights__header-title">{t('Dataset insights')}</Text>
+          <Text className="catalogue-insights__header-title">{t('catalogue.insights.title')}</Text>
         </Flex>
-        <Text className="catalogue-insights__hint">{t('Select a segment to filter')}</Text>
+        <Text className="catalogue-insights__hint">{t('catalogue.insights.hint')}</Text>
       </Flex>
       <Flex gap={12} wrap className="items-stretch">
         <DonutChart
-          title={t('By status')}
+          title={t('catalogue.insights.by_status')}
           data={statusData}
           colors={STATUS_CHART_COLORS}
           total={filteredDatasets.length}
@@ -71,7 +71,7 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
         />
         {PCGL_MODE ? (
           <BarChart
-            title={t('By data type')}
+            title={t('catalogue.insights.by_data_type')}
             data={typeData.slice(0, 5)}
             colors={typeColors}
             facetId="dataTypes"
@@ -80,7 +80,7 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
           />
         ) : (
           <BarChart
-            title={t('By keyword')}
+            title={t('catalogue.insights.by_keyword')}
             data={keywordData.slice(0, 5)}
             colors={keywordColors}
             facetId="keywords"
@@ -89,7 +89,7 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
           />
         )}
         <DonutChart
-          title={t('By project')}
+          title={t('catalogue.insights.by_project')}
           data={programData}
           colors={projectColors}
           total={filteredDatasets.length}

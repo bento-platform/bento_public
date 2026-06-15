@@ -165,36 +165,53 @@
   "Created": "Créé",
   "Updated": "Mis à jour",
   "Back to catalogue": "Retourner au catalogue",
-  "Filters": "Filtres",
-  "Project": "Projet",
-  "Data type": "Type de données",
-  "Taxa": "Taxons",
-  "Data use": "Utilisation des données",
-  "Status": "Statut",
-  "Keyword": "Mot-clé",
-  "Datasets": "Jeux de données",
-  "Dataset insights": "Aperçu des jeux de données",
-  "Select a segment to filter": "Sélectionner un segment pour filtrer",
-  "By status": "Par statut",
-  "By data type": "Par type de données",
-  "By keyword": "Par mot-clé",
-  "By project": "Par projet",
-  "No datasets match your filters": "Aucun jeu de données ne correspond à vos filtres",
-  "Clear all filters": "Effacer tous les filtres",
-  "Show insights": "Afficher les aperçus",
-  "Hide insights": "Masquer les aperçus",
-  "Clear all": "Tout effacer",
-  "dataset found": "jeu de données trouvé",
-  "datasets found": "jeux de données trouvés",
-  "Search datasets, keywords, assays…": "Rechercher des jeux de données, mots-clés, dosages …",
-  "Recently updated": "Récemment mis à jour",
-  "Newest created": "Tout récemment créé",
-  "Title A–Z": "Titre A–Z",
-  "Most individuals": "Le plus de participants",
-  "Most biosamples": "Le plus d'échantillons biologiques",
-  "Ongoing": "En cours",
-  "Completed": "Complété",
-  "Unassigned": "Non assigné",
+  "catalogue": {
+    "rail": {
+      "title": "Filtres"
+    },
+    "facets": {
+      "projects": "Projet",
+      "dataTypes": "Type de données",
+      "taxa": "Taxons",
+      "access": "Accès",
+      "licenses": "Utilisation des données",
+      "statuses": "Statut",
+      "keywords": "Mot-clé"
+    },
+    "toolbar": {
+      "search_placeholder": "Rechercher des jeux de données, mots-clés, dosages …",
+      "sort": {
+        "recently_updated": "Récemment mis à jour",
+        "newest_created": "Tout récemment créé",
+        "title_az": "Titre A–Z",
+        "most_individuals": "Le plus de participants",
+        "most_biosamples": "Le plus d'échantillons biologiques"
+      },
+      "dataset_found_one": "jeu de données trouvé",
+      "dataset_found_other": "jeux de données trouvés",
+      "show_insights": "Afficher les aperçus",
+      "hide_insights": "Masquer les aperçus",
+      "clear_all": "Tout effacer"
+    },
+    "insights": {
+      "title": "Aperçu des jeux de données",
+      "hint": "Sélectionner un segment pour filtrer",
+      "by_status": "Par statut",
+      "by_data_type": "Par type de données",
+      "by_keyword": "Par mot-clé",
+      "by_project": "Par projet"
+    },
+    "datasets": {
+      "heading": "Jeux de données",
+      "no_results": "Aucun jeu de données ne correspond à vos filtres",
+      "clear_filters": "Effacer tous les filtres"
+    },
+    "status": {
+      "ongoing": "En cours",
+      "completed": "Complété",
+      "unassigned": "Non assigné"
+    }
+  },
   "Back to project": "Retourner au $t(entities.project_one, lowercase)",
   "Back to dataset": "Retourner au $t(entities.dataset_one, lowercase)",
   "beacon": {

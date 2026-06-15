@@ -70,14 +70,14 @@ const Catalogue = () => {
 
           {/* DATASETS separator */}
           <Flex align="center" gap={8} className="catalogue-datasets-separator">
-            <Text className="catalogue-section-label">{t('Datasets')}</Text>
+            <Text className="catalogue-section-label">{t('catalogue.datasets.heading')}</Text>
             <Divider className="m-0 flex-1 min-w-0" />
           </Flex>
 
           {filtered.length === 0 ? (
-            <Empty description={t('No datasets match your filters')}>
+            <Empty description={t('catalogue.datasets.no_results')}>
               <Button type="primary" onClick={() => dispatch(clearAll())}>
-                {t('Clear all filters')}
+                {t('catalogue.datasets.clear_filters')}
               </Button>
             </Empty>
           ) : (

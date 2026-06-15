@@ -25,7 +25,7 @@ const ActiveFilterTags = ({ pills, onClearAll }: ActiveFilterTagsProps) => {
         </Tag>
       ))}
       <Tag className="catalogue-clear-tag" onClick={onClearAll}>
-        {t('Clear all')}
+        {t('catalogue.toolbar.clear_all')}
       </Tag>
     </Flex>
   );
