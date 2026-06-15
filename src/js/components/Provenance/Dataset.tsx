@@ -6,7 +6,6 @@ import { FaDatabase } from 'react-icons/fa';
 
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type { Dataset } from '@/types/dataset';
-import type { OntologyTerm } from '@/types/ontology';
 import type { Project } from '@/types/metadata';
 import { BentoRoute } from '@/types/routes';
 import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
@@ -14,18 +13,16 @@ import { getCurrentPage } from '@/utils/router';
 import { useLanguage, useTranslationFn } from '@/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
 import { isoDateToString } from '@/utils/strings';
-import ProvenanceTag from '@/components/Util/ProvenanceTag';
 import StatusBadge from '@/components/Util/StatusBadge';
 import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
 import CountsDisplay from '@/components/Util/CountsDisplay';
 import DatasetProvenanceModal from './DatasetProvenanceModal';
+import KeywordList from './KeywordList';
 import ProjectPill from './Catalogue/ProjectPill';
 
 const { Title, Text, Paragraph } = Typography;
 
 const MAX_KEYWORDS = 4;
-
-const keywordLabel = (k: string | OntologyTerm): string => (typeof k === 'string' ? k : k.label);
 
 const Dataset = ({
   parentProjectID,
@@ -50,7 +47,7 @@ const Dataset = ({
   const [provenanceModalOpen, setProvenanceModalOpen] = useState(false);
 
   const { identifier, title, description } = dataset;
-  const keywords = (dataset.keywords ?? []).map(keywordLabel).slice(0, MAX_KEYWORDS);
+  const keywords = dataset.keywords ?? [];
 
   const scope: DiscoveryScope = useMemo(
     () => ({ project: parentProjectID, dataset: identifier }),
@@ -121,13 +118,7 @@ const Dataset = ({
           </Paragraph>
         )}
 
-        {keywords.length > 0 && (
-          <Flex wrap gap={4} className="mt-2">
-            {keywords.map((kw) => (
-              <ProvenanceTag key={kw}>{kw}</ProvenanceTag>
-            ))}
-          </Flex>
-        )}
+        <KeywordList keywords={keywords} max={MAX_KEYWORDS} className="mt-2" />
 
         <div className="flex-1" />
 

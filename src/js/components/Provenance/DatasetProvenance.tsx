@@ -14,14 +14,10 @@ import type {
   PersonOrOrganization,
   Publication,
 } from '@/types/dataset';
-import type { OntologyTerm } from '@/types/ontology';
+import KeywordList from './KeywordList';
 
 const { Item } = Descriptions;
 const { Paragraph, Text, Title } = Typography;
-
-// ---- Helpers ----
-
-const keywordLabel = (k: string | OntologyTerm): string => (typeof k === 'string' ? k : k.label);
 
 const SectionTitle = ({ title }: { title: string }) => {
   const t = useTranslationFn();
@@ -365,20 +361,12 @@ export const DatasetProvenanceContent = ({ dataset }: { dataset: Dataset }) => {
           ) : null}
           {taxa.length > 0 && (
             <Item span={24} label={<DescLabel title={t('catalogue.facets.taxa')} />}>
-              <Flex wrap gap={4}>
-                {taxa.map((k, i) => (
-                  <ProvenanceTag key={i}>{t(keywordLabel(k))}</ProvenanceTag>
-                ))}
-              </Flex>
+              <KeywordList keywords={taxa} />
             </Item>
           )}
           {keywords.length > 0 && (
             <Item span={24} label={<DescLabel title={t('Keywords')} />}>
-              <Flex wrap gap={4}>
-                {keywords.map((k, i) => (
-                  <ProvenanceTag key={i}>{t(keywordLabel(k))}</ProvenanceTag>
-                ))}
-              </Flex>
+              <KeywordList keywords={keywords} />
             </Item>
           )}
         </Descriptions>
