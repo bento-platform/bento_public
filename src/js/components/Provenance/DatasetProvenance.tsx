@@ -1,3 +1,4 @@
+import { type ReactNode, useMemo } from 'react';
 import type { DescriptionsItemType } from 'antd/es/descriptions';
 import { Button, Card, Descriptions, Flex, Tag, Typography } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
@@ -18,15 +19,13 @@ import TagDisplay from './TagDisplay';
 const { Item } = Descriptions;
 const { Paragraph, Title } = Typography;
 
+type Section = { title: string; children: ReactNode };
+
 // ---- Helpers ----
 
 const SectionTitle = ({ title }: { title: string }) => {
   const t = useTranslationFn();
-  return (
-    <Title level={4} style={{ marginTop: '20px' }}>
-      {t(title)}
-    </Title>
-  );
+  return <Title level={4}>{t(title)}</Title>;
 };
 
 const DescLabel = ({ title }: { title: string }) => <strong>{title}</strong>;
@@ -93,11 +92,6 @@ export const DatasetProvenanceContent = ({
   const domains = dataset.domain ?? [];
   const keywords = dataset.keywords ?? [];
   const taxa = dataset.taxa ?? [];
-  const stakeholders = dataset.stakeholders ?? [];
-  const publications = dataset.publications ?? [];
-  const funding = dataset.funding_sources;
-  const criteria = dataset.participant_criteria ?? [];
-  const counts = dataset.counts ?? [];
   const links = dataset.links ?? [];
   const studyStatus = dataset.study_status?.toLocaleUpperCase();
 
@@ -143,6 +137,90 @@ export const DatasetProvenanceContent = ({
       ),
     } as DescriptionsItemType);
   }
+
+  // Assemble sections that are only shown in a fully-expanded provenance view:
+
+  const fullViewSections: Section[] = useMemo(() => {
+    const stakeholders = dataset.stakeholders ?? [];
+    const publications = dataset.publications ?? [];
+    const funding = dataset.funding_sources;
+    const criteria = dataset.participant_criteria ?? [];
+    const counts = dataset.counts ?? [];
+
+    const res: Section[] = [];
+
+    //  - Primary contact
+    if (dataset.primary_contact) {
+      res.push({
+        title: 'Primary Contact',
+        children: <PersonOrOrganizationDisplay entity={dataset.primary_contact} />,
+      });
+    }
+
+    //  - Stakeholders
+    if (stakeholders.length > 0) {
+      res.push({
+        title: 'Stakeholders',
+        children: (
+          <Flex gap={16} wrap>
+            {stakeholders.map((s) => (
+              <PersonOrOrganizationDisplay key={s.name} entity={s} />
+            ))}
+          </Flex>
+        ),
+      });
+    }
+
+    //  - Publications
+    if (publications.length > 0) {
+      res.push({
+        title: 'Publications',
+        children: <PublicationsDisplay publications={publications} />,
+      });
+    }
+
+    //  - Funding
+    if (funding) {
+      res.push({
+        title: 'Funding',
+        children: <FundingDisplay funding={funding} />,
+      });
+    }
+
+    //  - Spatial coverage
+    if (dataset.spatial_coverage) {
+      res.push({
+        title: 'Spatial Coverage',
+        children: <SpatialCoverageDisplay spatialCoverage={dataset.spatial_coverage} />,
+      });
+    }
+
+    //  - Participant criteria
+    if (dataset.participant_criteria) {
+      res.push({
+        title: 'Participant Criteria',
+        children: <CriteriaTable criteria={criteria} />,
+      });
+    }
+
+    //  - Counts
+    if (counts.length > 0) {
+      res.push({
+        title: 'Counts',
+        children: <CountsDisplay counts={counts} />,
+      });
+    }
+
+    //  - Extra properties
+    if (dataset.extra_properties && Object.keys(dataset.extra_properties).length > 0) {
+      res.push({
+        title: 'Extra Properties',
+        children: <ExtraPropertiesDisplay extraProperties={dataset.extra_properties} />,
+      });
+    }
+
+    return res;
+  }, [dataset]);
 
   return (
     <div className="dataset-provenance">
@@ -220,91 +298,31 @@ export const DatasetProvenanceContent = ({
         </Descriptions>
       )}
 
-      {!collapsed ? (
-        <>
-          {/* Primary contact */}
-          {dataset.primary_contact && (
-            <>
-              <SectionTitle title="Primary Contact" />
-              <PersonOrOrganizationDisplay entity={dataset.primary_contact} />
-            </>
-          )}
+      {fullViewSections.length > 0 &&
+        (!collapsed ? (
+          <Flex vertical gap={20} style={{ marginTop: 20 }}>
+            {fullViewSections.map(({ title, children }) => (
+              <div key={title}>
+                <SectionTitle title={title} />
+                {children}
+              </div>
+            ))}
 
-          {/* Stakeholders */}
-          {stakeholders.length > 0 && (
-            <>
-              <SectionTitle title="Stakeholders" />
-              <Flex gap={16} wrap>
-                {stakeholders.map((s) => (
-                  <PersonOrOrganizationDisplay key={s.name} entity={s} />
-                ))}
+            {onToggleCollapsed ? (
+              <Flex style={{ marginTop: 16 }}>
+                <Button onClick={onToggleCollapsed} icon={<UpOutlined />}>
+                  Collapse
+                </Button>
               </Flex>
-              {/*<StakeholdersTable stakeholders={stakeholders} />*/}
-            </>
-          )}
-
-          {/* Publications */}
-          {publications.length > 0 && (
-            <>
-              <SectionTitle title={publications.length === 1 ? 'Publication' : 'Publications'} />
-              <PublicationsDisplay publications={publications} />
-            </>
-          )}
-
-          {/* Funding */}
-          {!!funding && (
-            <>
-              <SectionTitle title="Funding" />
-              <FundingDisplay funding={funding} />
-            </>
-          )}
-
-          {/* Spatial coverage */}
-          {dataset.spatial_coverage && (
-            <>
-              <SectionTitle title="Spatial Coverage" />
-              <SpatialCoverageDisplay spatialCoverage={dataset.spatial_coverage} />
-            </>
-          )}
-
-          {/* Participant criteria */}
-          {criteria.length > 0 && (
-            <>
-              <SectionTitle title="Participant Criteria" />
-              <CriteriaTable criteria={criteria} />
-            </>
-          )}
-
-          {/* Counts */}
-          {counts.length > 0 && (
-            <>
-              <SectionTitle title="Counts" />
-              <CountsDisplay counts={counts} />
-            </>
-          )}
-
-          {/* Extra properties */}
-          {dataset.extra_properties && Object.keys(dataset.extra_properties).length > 0 && (
-            <>
-              <SectionTitle title="Extra Properties" />
-              <ExtraPropertiesDisplay extraProperties={dataset.extra_properties} />
-            </>
-          )}
-          {onToggleCollapsed ? (
-            <Flex style={{ marginTop: 16 }}>
-              <Button onClick={onToggleCollapsed} icon={<UpOutlined />}>
-                Collapse
-              </Button>
-            </Flex>
-          ) : null}
-        </>
-      ) : onToggleCollapsed ? (
-        <Flex style={{ marginTop: 16 }}>
-          <Button onClick={onToggleCollapsed} icon={<DownOutlined />}>
-            Expand
-          </Button>
-        </Flex>
-      ) : null}
+            ) : null}
+          </Flex>
+        ) : onToggleCollapsed ? (
+          <Flex style={{ marginTop: 16 }}>
+            <Button onClick={onToggleCollapsed} icon={<DownOutlined />}>
+              Expand
+            </Button>
+          </Flex>
+        ) : null)}
     </div>
   );
 };
