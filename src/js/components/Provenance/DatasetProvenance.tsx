@@ -1,22 +1,21 @@
-import type { ReactNode } from 'react';
 import type { DescriptionsItemType } from 'antd/es/descriptions';
 import { Button, Card, Descriptions, Flex, Tag, Typography } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 
 import { useTranslationFn } from '@/hooks';
-import type { Count, Dataset, ParticipantCriteria, Person, PersonOrOrganization, Publication } from '@/types/dataset';
+import type { Count, Dataset, ParticipantCriteria } from '@/types/dataset';
 
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
 import BaseProvenanceTable from './Tables/BaseProvenanceTable';
 import FundingDisplay from './FundingDisplay';
 import LinksDisplay from './LinksDisplay';
-import PersonOrOrganizationDisplay, { PersonOrOrganizationName } from './PersonOrOrganizationDisplay';
+import PersonOrOrganizationDisplay from './PersonOrOrganizationDisplay';
 import PublicationsDisplay from './PublicationsDisplay';
 import SpatialCoverageDisplay from './SpatialCoverageDisplay';
 import TagDisplay from './TagDisplay';
 
 const { Item } = Descriptions;
-const { Paragraph, Text, Title } = Typography;
+const { Paragraph, Title } = Typography;
 
 // ---- Helpers ----
 
@@ -38,102 +37,6 @@ const LongDescriptionBlock = ({ content, content_type }: Dataset['long_descripti
     return <div dangerouslySetInnerHTML={{ __html: content }} />;
   }
   return <Paragraph>{content}</Paragraph>;
-};
-
-// ---- PersonOrOrganization display ----
-
-const personName = (p: PersonOrOrganization): ReactNode =>
-  p.contact?.website ? <a href={p.contact?.website}>{p.name}</a> : p.name;
-
-const StakeholdersTable = ({ stakeholders }: { stakeholders: PersonOrOrganization[] }) => {
-  const t = useTranslationFn();
-  return (
-    <BaseProvenanceTable
-      dataSource={stakeholders}
-      rowKey="name"
-      columns={[
-        {
-          title: t('Name'),
-          key: 'name',
-          render: (_, row) => (
-            <>
-              <PersonOrOrganizationName entity={row} />
-              {row.type === 'person' && (row as Person).orcid && (
-                <Text type="secondary" style={{ marginLeft: 8, fontSize: '0.85em' }}>
-                  ORCID: {(row as Person).orcid}
-                </Text>
-              )}
-            </>
-          ),
-        },
-        {
-          title: t('Type'),
-          key: 'type',
-          render: (_, row) => t(row.type === 'person' ? 'Person' : 'Organization'),
-        },
-        {
-          title: t('Roles'),
-          key: 'roles',
-          render: (_, row) =>
-            row.roles.map((r, i) => (
-              <Tag key={i} color="cyan">
-                {t(r)}
-              </Tag>
-            )),
-        },
-      ]}
-    />
-  );
-};
-
-// ---- Publications ----
-
-const PublicationsTable = ({ publications }: { publications: Publication[] }) => {
-  const t = useTranslationFn();
-  return (
-    <BaseProvenanceTable
-      dataSource={publications}
-      rowKey="title"
-      columns={[
-        {
-          title: t('Title'),
-          key: 'title',
-          render: (_, pub) => (
-            <a href={pub.url} target="_blank" rel="noreferrer">
-              {pub.title}
-            </a>
-          ),
-        },
-        {
-          title: t('Type'),
-          dataIndex: 'publication_type',
-          key: 'publication_type',
-          render: (pt) => t(typeof pt === 'string' ? pt : pt.other),
-        },
-        {
-          title: t('DOI'),
-          dataIndex: 'doi',
-          key: 'doi',
-          render: (doi) =>
-            doi ? (
-              <a href={`https://doi.org/${doi}`} target="_blank" rel="noreferrer">
-                {doi}
-              </a>
-            ) : null,
-        },
-        {
-          title: t('Date'),
-          dataIndex: 'publication_date',
-          key: 'publication_date',
-        },
-        {
-          title: t('Authors'),
-          key: 'authors',
-          render: (_, pub) => pub.authors?.map(personName).join(', ') ?? null,
-        },
-      ]}
-    />
-  );
 };
 
 // ---- Participant criteria ----
