@@ -83,7 +83,13 @@ const Catalogue = () => {
           ) : (
             <div style={gridStyle}>
               {filtered.map(({ dataset, project }) => (
-                <Dataset key={dataset.identifier} format="card" parentProjectID={project.identifier} dataset={dataset} project={project} />
+                <Dataset
+                  key={dataset.identifier}
+                  format="card"
+                  parentProjectID={project.identifier}
+                  dataset={dataset}
+                  project={project}
+                />
               ))}
             </div>
           )}

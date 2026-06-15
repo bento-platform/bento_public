@@ -110,7 +110,11 @@ const Dataset = ({
 
         {description && (
           <Paragraph
-            ellipsis={{ rows: 3, expandable: true, symbol: <span className="catalogue-card__expand-symbol">more</span> }}
+            ellipsis={{
+              rows: 3,
+              expandable: true,
+              symbol: <span className="catalogue-card__expand-symbol">more</span>,
+            }}
             className="catalogue-card__description"
           >
             {t(description)}
