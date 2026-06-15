@@ -1,22 +1,20 @@
 import { useMemo } from 'react';
 
-import { Popover, Space, Typography } from 'antd';
+import { Popover, Space } from 'antd';
 
 import type { BentoCountEntityCountsOrBooleans } from '@/types/entities';
 import { COUNT_ENTITY_ORDER, COUNT_ENTITY_REGISTRY } from '@/constants/countEntities';
 import { useTranslationFn } from '@/hooks';
 import { useRenderCount } from '@/hooks/counts';
 import { NO_RESULTS_DASHES } from '@/features/search/constants';
-
-const { Text } = Typography;
+import CountItem from './CountItem';
 
 interface CountsDisplayProps {
   counts?: BentoCountEntityCountsOrBooleans;
   totalCounts?: BentoCountEntityCountsOrBooleans;
-  fontSize?: string;
 }
 
-const CountsDisplay = ({ counts, totalCounts, fontSize = '1rem' }: CountsDisplayProps) => {
+const CountsDisplay = ({ counts, totalCounts }: CountsDisplayProps) => {
   const t = useTranslationFn();
   const renderCount = useRenderCount();
 
@@ -48,19 +46,21 @@ const CountsDisplay = ({ counts, totalCounts, fontSize = '1rem' }: CountsDisplay
           title={label}
           content={<div style={{ maxWidth: 360 }}>{t(`entities.${entity}_help`, { joinArrays: ' ' })}</div>}
         >
-          <Space size={4} align="center" className="cursor-pointer">
-            {icon}
-            <Text style={{ fontSize }}>
-              <span style={isFiltered ? { fontWeight: 600 } : undefined}>{value}</span>
-
-              {isFiltered && (
+          <CountItem
+            className="cursor-pointer"
+            icon={icon}
+            value={
+              isFiltered ? (
                 <>
+                  <span style={{ fontWeight: 600 }}>{value}</span>
                   {' / '}
                   <span>{total}</span>
                 </>
-              )}
-            </Text>
-          </Space>
+              ) : (
+                value
+              )
+            }
+          />
         </Popover>
       ))}
     </Space>

@@ -13,7 +13,7 @@ import CatalogueBanner from './CatalogueBanner';
 import CatalogueRail from './CatalogueRail';
 import CatalogueToolbar from './CatalogueToolbar';
 import CatalogueInsights from './CatalogueInsights';
-import CatalogueCard from './CatalogueCard';
+import Dataset from '@/components/Provenance/Dataset';
 
 const { Text } = Typography;
 
@@ -83,7 +83,7 @@ const Catalogue = () => {
           ) : (
             <div style={gridStyle}>
               {filtered.map(({ dataset, project }) => (
-                <CatalogueCard key={dataset.identifier} dataset={dataset} project={project} />
+                <Dataset key={dataset.identifier} format="card" parentProjectID={project.identifier} dataset={dataset} project={project} />
               ))}
             </div>
           )}

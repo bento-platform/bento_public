@@ -1,41 +1,27 @@
 import { type ReactNode, useCallback, useMemo, useState } from 'react';
 
 import { Avatar, Button, Card, Flex, List, Typography } from 'antd';
-import {
-  ExperimentOutlined,
-  ExpandAltOutlined,
-  PieChartOutlined,
-  SolutionOutlined,
-  TeamOutlined,
-} from '@ant-design/icons';
+import { PieChartOutlined, SolutionOutlined } from '@ant-design/icons';
 import { FaDatabase } from 'react-icons/fa';
-import { BiDna } from 'react-icons/bi';
 
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type { Dataset } from '@/types/dataset';
 import type { OntologyTerm } from '@/types/ontology';
+import type { Project } from '@/types/metadata';
 import { BentoRoute } from '@/types/routes';
 import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
 import { getCurrentPage } from '@/utils/router';
 import { useLanguage, useTranslationFn } from '@/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
 import { isoDateToString } from '@/utils/strings';
-import CountItem from '@/components/Util/CountItem';
 import ProvenanceTag from '@/components/Util/ProvenanceTag';
 import StatusBadge from '@/components/Util/StatusBadge';
 import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
 import CountsDisplay from '@/components/Util/CountsDisplay';
 import DatasetProvenanceModal from './DatasetProvenanceModal';
-import {
-  COLOR_TEXT_MUTED,
-  COLOR_TEXT_SECONDARY,
-  COLOR_BORDER,
-  COLOR_BORDER_HOVER,
-  SHADOW_CARD,
-  SHADOW_CARD_HOVER,
-} from './Catalogue/constants';
+import ProjectPill from './Catalogue/ProjectPill';
 
-const { Title, Text } = Typography;
+const { Title, Text, Paragraph } = Typography;
 
 const MAX_KEYWORDS = 4;
 
@@ -45,12 +31,14 @@ const Dataset = ({
   parentProjectID,
   dataset,
   format,
+  project,
   selected,
   filteredCounts,
 }: {
   parentProjectID: string;
   dataset: Dataset;
-  format: 'list-item' | 'card' | 'carousel';
+  format: 'list-item' | 'card';
+  project?: Project;
   selected?: boolean;
   filteredCounts?: KatsuEntityCountsOrBooleans;
 }) => {
@@ -82,10 +70,6 @@ const Dataset = ({
     Object.values(filteredCounts).every((c) => !c) &&
     Object.values(dataset.counts_by_entity).some((c) => !!c);
 
-  const individuals = typeof counts?.individual === 'number' ? counts.individual : 0;
-  const biosamples = typeof counts?.biosample === 'number' ? counts.biosample : 0;
-  const experiments = typeof counts?.experiment === 'number' ? counts.experiment : 0;
-
   let inner: ReactNode;
 
   if (format === 'list-item') {
@@ -103,108 +87,61 @@ const Dataset = ({
       </List.Item>
     );
   } else if (format === 'card') {
-    const updatedStr = dataset.last_modified ? isoDateToString(dataset.last_modified, language) : undefined;
+    const updatedDate = dataset.last_modified ?? project?.updated;
+    const updatedStr = updatedDate ? isoDateToString(updatedDate, language) : undefined;
 
     inner = (
-      <Card
-        style={{
-          borderRadius: 10,
-          border: `1px solid ${COLOR_BORDER}`,
-          boxShadow: SHADOW_CARD,
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          transition: 'box-shadow 0.2s, border-color 0.2s',
-          opacity: faded ? 0.5 : undefined,
-        }}
-        styles={{ body: { display: 'flex', flexDirection: 'column', height: '100%', padding: 16, gap: 0 } }}
-        onMouseEnter={(e) => {
-          (e.currentTarget as HTMLElement).style.borderColor = COLOR_BORDER_HOVER;
-          (e.currentTarget as HTMLElement).style.boxShadow = SHADOW_CARD_HOVER;
-        }}
-        onMouseLeave={(e) => {
-          (e.currentTarget as HTMLElement).style.borderColor = COLOR_BORDER;
-          (e.currentTarget as HTMLElement).style.boxShadow = SHADOW_CARD;
-        }}
-      >
+      <Card className="catalogue-card" style={{ opacity: faded ? 0.5 : undefined }}>
         <Flex justify="space-between" align="flex-start" gap={8}>
-          <Title level={5} style={{ margin: 0, fontSize: 16, fontWeight: 600, flex: 1 }}>
+          <Title level={5} className="catalogue-card__title">
             {t(title)}
           </Title>
           <StatusBadge status={dataset.study_status} />
         </Flex>
 
         {updatedStr && (
-          <Text style={{ fontSize: 11.5, color: COLOR_TEXT_MUTED, marginTop: 4 }}>
+          <Text className="catalogue-card__meta">
             {t('Updated')} {updatedStr}
             {dataset.privacy && ` · ${dataset.privacy}`}
           </Text>
         )}
 
+        {project && <ProjectPill project={project} />}
+
         {description && (
-          <Text
-            style={{
-              fontSize: 13,
-              color: COLOR_TEXT_SECONDARY,
-              marginTop: 10,
-              display: '-webkit-box',
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
-            }}
+          <Paragraph
+            ellipsis={{ rows: 3, expandable: true, symbol: <span className="catalogue-card__expand-symbol">more</span> }}
+            className="catalogue-card__description"
           >
             {t(description)}
-          </Text>
+          </Paragraph>
         )}
 
         {keywords.length > 0 && (
-          <div style={{ marginTop: 8, display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+          <Flex wrap gap={4} className="mt-2">
             {keywords.map((kw) => (
               <ProvenanceTag key={kw}>{kw}</ProvenanceTag>
             ))}
-          </div>
-        )}
-
-        <div style={{ flex: 1 }} />
-
-        {(individuals > 0 || biosamples > 0 || experiments > 0) && (
-          <Flex gap={12} wrap style={{ borderTop: `1px solid ${COLOR_BORDER}`, marginTop: 12, paddingTop: 10 }}>
-            {individuals > 0 && <CountItem icon={<TeamOutlined />} value={individuals} />}
-            {biosamples > 0 && <CountItem icon={<BiDna />} value={biosamples} />}
-            {experiments > 0 && <CountItem icon={<ExperimentOutlined />} value={experiments} />}
           </Flex>
         )}
 
-        <Flex gap={8} style={{ marginTop: 12 }}>
-          <Button type="primary" icon={<PieChartOutlined />} style={{ flex: 1 }} onClick={onNavigateOverview}>
+        <div className="flex-1" />
+
+        {counts && (
+          <div className="catalogue-card__counts-row">
+            <CountsDisplay counts={counts} totalCounts={filteredCounts ? dataset.counts_by_entity : undefined} />
+          </div>
+        )}
+
+        <Flex gap={8} className="mt-3">
+          <Button type="primary" icon={<PieChartOutlined />} className="flex-1" onClick={onNavigateOverview}>
             {t('Explore')}
           </Button>
-          <Button icon={<SolutionOutlined />} style={{ flex: 1 }} onClick={openProvenanceModal}>
+          <Button icon={<SolutionOutlined />} className="flex-1" onClick={openProvenanceModal}>
             {t('Provenance')}
           </Button>
         </Flex>
       </Card>
-    );
-  } else if (format === 'carousel') {
-    inner = (
-      <>
-        <Flex justify="space-between" align="center">
-          <Title level={5} className="mb-0">
-            {t(title)}
-          </Title>
-          <Button size="small" icon={<SolutionOutlined />} className="float-right" onClick={openProvenanceModal}>
-            {t('Provenance')}
-            <ExpandAltOutlined />
-          </Button>
-        </Flex>
-        <TruncatedParagraph>{t(description)}</TruncatedParagraph>
-        <CountsDisplay counts={filteredCounts} fontSize="0.875rem" />
-        <Flex gap={8} style={{ marginTop: 8 }}>
-          <Button size="small" icon={<PieChartOutlined />} onClick={onNavigateOverview}>
-            {t('Explore')}
-          </Button>
-        </Flex>
-      </>
     );
   } else {
     inner = <span className="error-text">UNIMPLEMENTED</span>;
