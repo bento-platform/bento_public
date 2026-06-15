@@ -49,7 +49,7 @@ const CatalogueBanner = ({ filteredDatasets }: CatalogueBannerProps) => {
       style={
         PCGL_MODE
           ? {
-              backgroundImage: `${BANNER_GRADIENT}, url('/public/assets/banner-bg.png')`,
+              backgroundImage: `${BANNER_GRADIENT}, url('/public/assets/pcgl_banner.png')`,
             }
           : undefined
       }
