@@ -20,6 +20,7 @@ interface DonutChartProps {
   facetId: FacetId;
   selectedValues: string[];
   onSegmentClick: (facetId: FacetId, value: string) => void;
+  maxWidth?: number;
 }
 
 const DonutChart = ({
@@ -31,6 +32,7 @@ const DonutChart = ({
   facetId,
   selectedValues,
   onSegmentClick,
+  maxWidth = SIZE,
 }: DonutChartProps) => {
   const t = useTranslationFn();
   if (data.length === 0) return null;
@@ -50,7 +52,7 @@ const DonutChart = ({
     <Card size="small" className="chart-card">
       <Text className="chart-card__title">{title}</Text>
       <div className="donut-wrap">
-        <svg viewBox={`0 0 ${SIZE} ${SIZE}`} className="donut" width={SIZE} height={SIZE}>
+        <svg viewBox={`0 0 ${SIZE} ${SIZE}`} className="donut w-full h-auto" style={{ maxWidth }}>
           <circle cx={c} cy={c} r={R} fill="none" stroke={COLOR_DONUT_TRACK} strokeWidth="16" />
           {segments.map(({ entry, len, dashOffset }) => (
             <circle
