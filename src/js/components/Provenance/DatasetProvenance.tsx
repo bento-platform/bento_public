@@ -116,7 +116,7 @@ export const DatasetProvenanceContent = ({
     if (dataset.primary_contact) {
       res.push({
         title: 'Primary Contact',
-        children: <PersonOrOrganizationDisplay entity={dataset.primary_contact} />,
+        children: <PersonOrOrganizationDisplay entity={dataset.primary_contact} primary />,
       });
     }
 
