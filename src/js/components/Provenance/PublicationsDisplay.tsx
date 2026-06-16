@@ -1,7 +1,7 @@
 import { Fragment, useState } from 'react';
 import type { PersonOrOrganization, Publication } from '@/types/dataset';
-import { FaOrcid } from 'react-icons/fa';
 import { useTranslationFn } from '@/hooks';
+import Orcid from './Orcid';
 
 const _doiUrl = (doi: string) => {
   if (doi.startsWith('https')) {
@@ -28,17 +28,7 @@ const AuthorList = ({ authors }: { authors: PersonOrOrganization[] }) =>
             ) : (
               name
             )}
-            {!!orcid && (
-              <a
-                href={`https://orcid.org/${orcid}`}
-                title={`ORCiD: ${orcid}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ marginLeft: 4, color: 'rgb(166, 206, 57)' }}
-              >
-                <FaOrcid />
-              </a>
-            )}
+            {!!orcid && <Orcid orcid={orcid} />}
           </span>
           {sep}
         </Fragment>
