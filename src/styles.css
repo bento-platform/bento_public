@@ -548,8 +548,8 @@ ul#page-header-stats li.loading {
 }
 .dataset-provenance .attributes li:not(:last-child)::after {
   content: "\2022";
-  margin-left: 0.5em;
-  margin-right: 0.5em;
+  margin-left: 0.7em;
+  margin-right: 0.7em;
 }
 
 .provenance-person, .provenance-organization {

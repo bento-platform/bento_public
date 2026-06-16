@@ -1,7 +1,7 @@
 import { type ReactNode, useMemo } from 'react';
 import type { DescriptionsItemType } from 'antd/es/descriptions';
 import { Button, Card, Descriptions, Flex, Tag, Typography } from 'antd';
-import { DownOutlined, UpOutlined } from '@ant-design/icons';
+import { CalendarOutlined, DownOutlined, FileProtectOutlined, TagOutlined, UpOutlined } from '@ant-design/icons';
 
 import { useTranslationFn } from '@/hooks';
 import type { Dataset } from '@/types/dataset';
@@ -58,11 +58,11 @@ export const DatasetProvenanceContent = ({
   const links = dataset.links ?? [];
   const studyStatus = dataset.study_status?.toLocaleUpperCase();
 
-  const subtitleItems: { key: keyof Dataset }[] = [
-    { key: 'release_date' },
-    { key: 'last_modified' },
-    { key: 'version' },
-    { key: 'privacy' },
+  const subtitleItems: { icon: ReactNode; key: keyof Dataset }[] = [
+    { icon: <TagOutlined />, key: 'version' },
+    { icon: <CalendarOutlined />, key: 'release_date' },
+    { icon: <CalendarOutlined />, key: 'last_modified' },
+    { icon: <FileProtectOutlined />, key: 'privacy' },
   ];
 
   const keywordLikeItems: DescriptionsItemType[] = [];
@@ -204,9 +204,12 @@ export const DatasetProvenanceContent = ({
       <ul className="attributes">
         {subtitleItems
           .filter(({ key }) => !!dataset[key])
-          .map(({ key }) => (
+          .map(({ icon, key }) => (
             <li key={key}>
-              <strong>{t(`dataset.${key}`)}:</strong> {t(dataset[key] as unknown as string, { nsSeparator: false })}
+              <strong>
+                {icon} {t(`dataset.${key}`)}:
+              </strong>{' '}
+              {t(dataset[key] as unknown as string, { nsSeparator: false })}
             </li>
           ))}
       </ul>
