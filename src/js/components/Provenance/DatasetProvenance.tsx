@@ -264,6 +264,13 @@ export const DatasetProvenanceContent = ({
         </Descriptions>
       )}
 
+      {!!links.length && (
+        <div style={{ marginTop: 20 }}>
+          <SectionTitle title="Links" />
+          <LinksDisplay links={links} />
+        </div>
+      )}
+
       {fullViewSections.length > 0 &&
         (!collapsed ? (
           <Flex vertical gap={20} style={{ marginTop: 20 }}>
