@@ -58,6 +58,7 @@ body {
 .mb-0, .ant-typography.mb-0 { margin-bottom: 0; }
 .p-0 { padding: 0; }
 .flex-1 { flex: 1; }
+.self-start { align-self: start; }
 .float-right { float: right; }
 .absolute { position: absolute; }
 .relative { position: relative; }

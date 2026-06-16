@@ -282,19 +282,15 @@ export const DatasetProvenanceContent = ({
             ))}
 
             {onToggleCollapsed ? (
-              <Flex style={{ marginTop: 16 }}>
-                <Button onClick={onToggleCollapsed} icon={<UpOutlined />}>
-                  Collapse
-                </Button>
-              </Flex>
+              <Button onClick={onToggleCollapsed} icon={<UpOutlined />} className="self-start">
+                {t('general.collapse')}
+              </Button>
             ) : null}
           </Flex>
         ) : onToggleCollapsed ? (
-          <Flex style={{ marginTop: 16 }}>
-            <Button onClick={onToggleCollapsed} icon={<DownOutlined />}>
-              Expand
-            </Button>
-          </Flex>
+          <Button onClick={onToggleCollapsed} icon={<DownOutlined />} style={{ marginTop: 20 }}>
+            {t('general.expand')}
+          </Button>
         ) : null)}
     </div>
   );
