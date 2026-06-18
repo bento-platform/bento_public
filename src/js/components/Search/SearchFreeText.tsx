@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Button, Form, Input, Select, Space, Tooltip } from 'antd';
-import { CloseOutlined, FormOutlined, InfoCircleOutlined, SearchOutlined } from '@ant-design/icons';
+import { Button, Flex, Form, Input, Select, Tooltip } from 'antd';
+import { CheckCircleFilled, CloseOutlined, FormOutlined, InfoCircleOutlined, SearchOutlined } from '@ant-design/icons';
 
 import {
   TABLE_PAGE_QUERY_PARAM,
@@ -9,9 +9,10 @@ import {
   TEXT_QUERY_TYPE_PARAM,
   VALID_TEXT_QUERY_TYPES,
 } from '@/features/search/constants';
+import { useDebounce } from '@/hooks/useDebounce';
 import { useSearchQuery, useSearchQueryParams } from '@/features/search/hooks';
-import { buildQueryParamsUrl, queryParamsWithoutKey } from '@/features/search/utils';
 import { useTranslationFn } from '@/hooks';
+import { buildQueryParamsUrl, queryParamsWithoutKey } from '@/features/search/utils';
 
 import { RequestStatus } from '@/types/requests';
 import type { FtsQueryType, QueryParamEntries } from '@/features/search/types';
@@ -90,6 +91,16 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
   }));
 
   const qtValue = Form.useWatch('qt', form);
+  const qValue = Form.useWatch('q', form);
+
+  const formSubmit = useCallback(() => form.submit(), [form]);
+  const debouncedSubmit = useDebounce(formSubmit, 300);
+
+  useEffect(() => {
+    // Every time the text search box gets updated, submit the form. We add debounce to avoid lag / spamming the server
+    // with text search requests as the user is typing.
+    debouncedSubmit();
+  }, [debouncedSubmit, qValue]);
 
   return (
     <SearchSubForm
@@ -102,25 +113,41 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
           size="small"
           className="flex-1"
           value={qtValue}
-          onChange={(value) => form.setFieldValue('qt', value)}
+          onChange={(value) => {
+            form.setFieldValue('qt', value);
+            if (form.getFieldValue('q')) {
+              formSubmit(); // Non-debounced version if we change the search type dropdown
+            }
+          }}
           options={ftsQueryTypeOptions}
         />
       }
       {...props}
     >
       <Form form={form} onFinish={onFinish}>
-        <Space.Compact className="w-full">
+        <Flex>
           <Form.Item name="q" initialValue={textQuery} noStyle={true}>
-            <Input prefix={<SearchOutlined />} />
+            <Input
+              prefix={<SearchOutlined />}
+              suffix={
+                discoveryStatus === RequestStatus.Fulfilled &&
+                !!textQuery && <CheckCircleFilled style={{ color: 'var(--antd-green-6)' }} />
+              }
+            />
           </Form.Item>
-          {!!textQuery && (
-            <Button icon={<CloseOutlined />} onClick={onReset} disabled={discoveryStatus === RequestStatus.Pending} />
-          )}
           <Form.Item name="qt" initialValue={textQueryType} noStyle={true} hidden />
-          <Button type="primary" htmlType="submit" loading={discoveryStatus === RequestStatus.Pending}>
-            {t('Search')}
-          </Button>
-        </Space.Compact>
+          {!!textQuery && (
+            <Button
+              icon={<CloseOutlined />}
+              shape="circle"
+              color="danger"
+              variant="filled"
+              onClick={onReset}
+              disabled={discoveryStatus === RequestStatus.Pending}
+              style={{ marginLeft: 8 }}
+            />
+          )}
+        </Flex>
       </Form>
     </SearchSubForm>
   );

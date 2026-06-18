@@ -3,6 +3,7 @@ import { Button, InputNumber, Space, Tooltip } from 'antd';
 
 import type { NumberField } from '@/types/discovery/fieldDefinition';
 import type { FilterValue } from '@/features/search/types';
+import { useDebounce } from '@/hooks/useDebounce';
 import { useTranslationFn } from '@/hooks';
 import { parseBrackets, buildRangeString, buildComparisonString, type RangeState } from '@/utils/rangeFilterUtils';
 
@@ -56,13 +57,7 @@ const NumberRangeFilterInput = ({ definition, value, onChange }: Props) => {
   );
 
   // Debounced variant for number inputs — bracket toggles use emitValue directly (discrete actions).
-  const emitValueDebounced = useCallback(
-    (lStr: string, uStr: string, lo: boolean, uo: boolean) => {
-      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
-      debounceTimerRef.current = setTimeout(() => emitValue(lStr, uStr, lo, uo), 300);
-    },
-    [emitValue]
-  );
+  const emitValueDebounced = useDebounce<typeof emitValue>(emitValue, 300);
 
   const onLowerBracketToggle = useCallback(() => {
     const next = !lowerOpen;
