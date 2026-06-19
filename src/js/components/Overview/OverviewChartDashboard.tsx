@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { Flex, FloatButton } from 'antd';
+import { Card, Flex, FloatButton, Typography } from 'antd';
 import { AppstoreAddOutlined } from '@ant-design/icons';
 
 import clsx from 'clsx';
@@ -9,6 +9,8 @@ import type { Sections } from '@/types/data';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 
 import { WAITING_STATES } from '@/constants/requests';
+
+const { Paragraph } = Typography;
 
 import AboutBox from './AboutBox';
 import OverviewSection from './OverviewSection';
@@ -77,6 +79,12 @@ const OverviewChartDashboard = () => {
             // If we don't have any data, render the full provenance by default without collapse-ability
             onToggleCollapse={scopeHasData ? () => setProvenanceCollapsed(!provenanceCollapsed) : undefined}
           />
+        ) : selectedProject ? (
+          selectedProject.description ? (
+            <Card className="container shadow rounded-xl">
+              <Paragraph className="mb-0">{t(selectedProject.description)}</Paragraph>
+            </Card>
+          ) : null
         ) : (
           <AboutBox />
         )}
