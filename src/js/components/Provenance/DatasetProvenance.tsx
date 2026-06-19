@@ -214,9 +214,6 @@ export const DatasetProvenanceContent = ({
           ))}
       </ul>
 
-      {/* Domains/keywords/taxa ('keyword-like' concepts) descriptions block */}
-      {!!keywordLikeItems.length && <Descriptions items={keywordLikeItems} size="small" />}
-
       {/* Description - impose a maximum width to keep it readable (without very long lines) */}
       <div style={{ maxWidth: 1100, marginTop: keywords.length || taxa.length ? 16 : 0 }}>
         {dataset.long_description ? (
@@ -226,11 +223,8 @@ export const DatasetProvenanceContent = ({
         )}
       </div>
 
-      {!!links.length && (
-        <Descriptions
-          items={[{ label: <DescLabel title={t('dataset.links')} />, children: <LinksDisplay links={links} /> }]}
-        />
-      )}
+      {/* Domains/keywords/taxa ('keyword-like' concepts) descriptions block */}
+      {!!keywordLikeItems.length && <Descriptions items={keywordLikeItems} size="small" />}
 
       {/* Quick-facts descriptions block */}
       {(dataset.license || dataset.study_context) && (
