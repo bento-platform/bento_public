@@ -1,30 +1,21 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Drawer, FloatButton } from 'antd';
 import { BarsOutlined } from '@ant-design/icons';
-
-import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
-
 import { useTranslationFn } from '@/hooks';
-
 import { useAccessToken } from 'bento-auth-js';
-
 import igv from 'igv/dist/igv.esm';
 import type { Browser, CreateOpt } from 'igv';
+import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
 import type {
   IgvTrack,
   ExperimentResultWithView,
   IgvReferenceById,
   IgvAccessUrlPromisesById,
 } from '@/types/clinPhen/igv';
-
 import { PUBLIC_URL } from '@/config';
-
-import JsonView from '@Util/JsonView'; //temp
-import { JSONType } from 'bento-file-display/dist'; //temp
-
 import { caseInsensitiveIgvFileInfoLookup, getIgvFileAndIndexAccessUrls } from '@/utils/igv';
-import TrackControlTable from './TrackControlTable';
 import { assemblyIdsForExperiments } from '@/utils/experiments';
+import TrackControlTable from './TrackControlTable';
 
 const SQUISHED_CALL_HEIGHT = 10;
 const EXPANDED_CALL_HEIGHT = 100;
@@ -42,7 +33,6 @@ const TracksView = ({
   const igvBrowserRef = useRef<Browser | null>(null);
   const igvCreatingRef = useRef<boolean>(false);
   const [selectedAssemblyID, setSelectedAssemblyID] = useState<string | null>(null);
-  // const [hasCreatedBrowser, setHasCreatedBrowser] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [accessUrlsPromises, setAccessUrlsPromises] = useState<IgvAccessUrlPromisesById>({});
   const [tracksWithView, setTracksWithView] = useState<ExperimentResultWithView[]>(
@@ -86,8 +76,6 @@ const TracksView = ({
     setDrawerOpen(false);
   }, []);
 
-  // why doesn't this take accessUrlsPromises as a param?
-  // TODO: try this
   const buildIgvTrack = useCallback(
     (track: ExperimentResult): IgvTrack | null => {
       if (!(track.url && track.file_format)) return null;
@@ -161,8 +149,8 @@ const TracksView = ({
       console.log('igv browser already created');
       return;
     }
-    
-    if (igvCreatingRef.current) return 
+
+    if (igvCreatingRef.current) return;
 
     const initialIgvTracks: IgvTrack[] = tracksWithView
       .map((t) => buildIgvTrack(t) as IgvTrack)
@@ -195,7 +183,7 @@ const TracksView = ({
       })
       .catch((err) => {
         console.error(err);
-        igvBrowserRef.current = null
+        igvBrowserRef.current = null;
         igvCreatingRef.current = false;
         cleanup();
       });
@@ -219,8 +207,6 @@ const TracksView = ({
 
         <TrackControlTable toggleView={toggleView} experimentResults={tracksWithView} />
       </Drawer>
-      <JsonView collapsed={2} src={tracks as unknown as JSONType} />
-      <JsonView collapsed={3} src={accessUrlsPromises as unknown as JSONType} />
     </>
   );
 };
@@ -229,12 +215,6 @@ export default TracksView;
 
 // Notes:
 // - permissions checks done elsewhere (component is not rendered if permissions missing)
-// - can move some hooks out of parent component if parent is rendering too slow (could retrieve references her instead of parent)
-
-// currently does global bento auth only
-// per-track auth is possible, but igv implementation is lacking:
-// - it's possible to provide a function returning a token instead of a bare token, but the token is resolved only when
-//   the track is loaded, so can go stale on a short-lived token
 
 // short-term todos
 // - store igv position
