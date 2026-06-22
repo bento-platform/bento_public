@@ -53,7 +53,7 @@ export const useBentoOrIgvReferencesById = (requestedReferenceIds: string[]): Ig
                     filterTypes: ['chromosome', 'region', 'gene', '3_utr', '5_utr', 'CDS'],
                     url: bentoRef.gff3_gz,
                     indexURL: bentoRef.gff3_gz_tbi,
-                    nameField: "transcript_name",
+                    nameField: 'transcript_name',
                     order: 1000000,
                     visibilityWindow: 5000000,
                     height: 200,
@@ -85,29 +85,8 @@ export const useBentoOrIgvReferencesById = (requestedReferenceIds: string[]): Ig
       }
     });
 
-    console.log({ requestedReferenceIds });
-    console.log({ bentoReferenceGenomes });
-
     return availableReferences;
   }, [requestedReferenceIds, bentoGenomeStatus, bentoReferenceGenomes, igvGenomesStatus, igvGenomesByID]);
-};
-
-// file is viewable if it's a viewable track type and a reference exists for it
-// return references here so we don't have to look them up again later
-export const useGetTracksAndReferencesForIgv = (experimentResults: ExperimentResult[]) => {
-  const tracksWithViewableFileType = experimentResults.filter((e) =>
-    viewableFormatsLower.includes((e.file_format ?? '').toLowerCase())
-  );
-  const viewableTracksIngested = tracksWithViewableFileType.filter((e) => e.url);
-  const requestedAssemblies = assemblyIdsForExperiments(viewableTracksIngested);
-  const referencesById = useBentoOrIgvReferencesById(requestedAssemblies);
-
-  // could filter tracks again by available assemblies?
-  // or just do this in igv?
-  // effectively they won't appear in igv since anm igv instance is always associated with a given assembly
-  // so any tracks without assemblies should be ignored
-
-  return { tracks: viewableTracksIngested, referencesById };
 };
 
 // file is viewable if it's ingested and a viewable track type

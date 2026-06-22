@@ -1,8 +1,7 @@
 import type { ExperimentResult, ExperimentResultIndex } from '@/types/clinPhen/experiments/experimentResult';
 import type { TrackType } from 'igv';
 import type { IgvAccessUrlPromisesById, TrackFormats } from '@/types/clinPhen/igv';
-import { getDrsAccessMethods } from '@/features/drs/hooks';
-
+import { getDrsAccessMethods } from '@/features/drs/utils';
 
 // can add gff3, gtf, etc
 export const IGV_FILE_TYPE_INFO: Partial<
@@ -40,46 +39,29 @@ export const hasIndex = (track: ExperimentResult) => {
   return (track.indices ?? '').length > 0;
 };
 
-
-
-
-
-
 //  ---------------------------------------------
 // async equivalents of igv hooks
-
 
 const getIndexAccessUrl = async (track: ExperimentResult): Promise<string | null> => {
   const igVTrackTypeInfo = caseInsensitiveIgvFileInfoLookup(track.file_format);
   const acceptedIndicesThisType = igVTrackTypeInfo?.indexFormats;
   const index = track.indices.find((i) => acceptedIndicesThisType?.includes(i.format));
-  const toReturn = getDrsAccessMethods(index?.url || "");
-
-  // remove debug return
-  console.log(`getIndexAccessUrl returning url ${JSON.stringify(toReturn)}`);
-  return toReturn;
-
-  // return getIndexAccessUrl(index?.url);
+  return getDrsAccessMethods(index?.url || '');
 };
 
-export const getIgvFileAndIndexAccessUrls = (tracks: ExperimentResult[]): IgvAccessUrlPromisesById  => {
-  const drsUrls: Record<string, { fileAccessUrl: Promise<string | null>; indexAccessUrl?: Promise<string | null> }> = {};
+export const getIgvFileAndIndexAccessUrls = (tracks: ExperimentResult[]): IgvAccessUrlPromisesById => {
+  const drsUrls: Record<string, { fileAccessUrl: Promise<string | null>; indexAccessUrl?: Promise<string | null> }> =
+    {};
 
   tracks.forEach((t) => {
     if (!t.url) return;
     const fileUrl = getDrsAccessMethods(t.url);
-    // if (!fileUrl) return;
     const trackHasIndex = hasIndex(t);
     const indexUrl = trackHasIndex ? getIndexAccessUrl(t) : null;
-    const gotFileAndIndexUrls = trackHasIndex && indexUrl !== null;
-    const gotUrlForFileWithNoIndex = !trackHasIndex;
 
-    // all this bool fiddling probably no longer needed 
-    if (gotFileAndIndexUrls || gotUrlForFileWithNoIndex) {
-      drsUrls[t.url] = { fileAccessUrl: fileUrl};
-      if (indexUrl) {
-        drsUrls[t.url].indexAccessUrl = indexUrl;
-      }
+    drsUrls[t.url] = { fileAccessUrl: fileUrl };
+    if (indexUrl) {
+      drsUrls[t.url].indexAccessUrl = indexUrl;
     }
   });
 
