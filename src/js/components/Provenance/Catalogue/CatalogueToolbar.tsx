@@ -55,13 +55,15 @@ const CatalogueToolbar = ({ filteredCount }: CatalogueToolbarProps) => {
       })
     );
   });
-  if (q)
+  
+  if (q) {
     pills.push({
       key: 'keywords-__q__',
       facetLabel: FACET_LABELS['keywords'],
       label: `"${q}"`,
       onClose: () => dispatch(setSearch('')),
     });
+  }
 
   return (
     <Flex vertical gap={8}>
