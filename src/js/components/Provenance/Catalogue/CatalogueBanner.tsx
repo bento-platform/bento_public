@@ -3,7 +3,7 @@ import { Flex, Space, Typography } from 'antd';
 import { DatabaseOutlined, ExperimentOutlined, TeamOutlined } from '@ant-design/icons';
 import clsx from 'clsx';
 import type { DatasetWithProject } from '@/features/catalogue/hooks';
-import { useTranslationFn } from '@/hooks';
+import { useFormatNumber, useTranslationFn } from '@/hooks';
 import { PCGL_MODE } from '@/config';
 import AboutContent from '@/components/AboutContent';
 import { BANNER_GRADIENT } from './constants';
@@ -23,10 +23,9 @@ interface CatalogueBannerProps {
   filteredDatasets: DatasetWithProject[];
 }
 
-const fmt = (n: number) => n.toLocaleString('en-US');
-
 const CatalogueBanner = ({ filteredDatasets }: CatalogueBannerProps) => {
   const t = useTranslationFn();
+  const fmt = useFormatNumber();
 
   const { datasetCount, individualCount, biosampleCount } = useMemo(() => {
     let individualCount = 0;
