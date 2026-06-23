@@ -55,7 +55,7 @@ const CatalogueToolbar = ({ filteredCount }: CatalogueToolbarProps) => {
       })
     );
   });
-  
+
   if (q) {
     pills.push({
       key: 'keywords-__q__',
