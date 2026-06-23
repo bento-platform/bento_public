@@ -845,6 +845,8 @@ body {
 .max-w-catalogue { max-width: var(--content-max-width); }
 .catalogue-insights-container { margin-top: 14px; }
 .catalogue-datasets-separator { margin-top: 18px; margin-bottom: 14px; }
+.catalogue-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px; }
+.catalogue-grid--single-col { grid-template-columns: 1fr; }
 
 /* BEGIN about HTML styling */
 
