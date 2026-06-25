@@ -4,13 +4,16 @@ import type { Dataset } from '@/types/dataset';
 import type { Project } from '@/types/metadata';
 import { FACET_IDS, FACET_ORDER, type FacetId } from './constants';
 
+/** A dataset paired with its parent project. */
 export interface DatasetWithProject {
   dataset: Dataset;
   project: Project;
 }
 
+/** Extracts a display string from a plain string or labelled object. */
 export const getLabel = (v: string | { label: string }) => (typeof v === 'string' ? v : v.label);
 
+/** Normalises raw study_status values to display strings. */
 export function normaliseStatus(raw: string | undefined | null): string {
   if (raw === 'ONGOING') return 'Ongoing';
   if (raw === 'COMPLETED') return 'Completed';
@@ -19,11 +22,16 @@ export function normaliseStatus(raw: string | undefined | null): string {
 
 export const PALETTE = ['#1677FF', '#13C2C2', '#722ED1', '#FA8C16', '#52C41A'];
 
+/**
+ * Assigns a deterministic colour from {@link PALETTE} to each project name.
+ * Names are sorted alphabetically before assignment so order is stable across renders.
+ */
 export function assignColors(names: string[]): Record<string, string> {
   const sorted = [...names].sort((a, b) => a.localeCompare(b));
   return Object.fromEntries(sorted.map((name, i) => [name, PALETTE[i % PALETTE.length]]));
 }
 
+/** Returns the filterable string values for each facet dimension of a dataset. */
 export function getDatasetFacetValues({ dataset, project }: DatasetWithProject): Record<FacetId, string[]> {
   return {
     projects: [project.title],
@@ -36,10 +44,21 @@ export function getDatasetFacetValues({ dataset, project }: DatasetWithProject):
   };
 }
 
+/** Selects the full catalogue slice from the Redux store. */
 export function useCatalogueState() {
   return useAppSelector((state) => state.catalogue);
 }
 
+/**
+ * Filters, sorts, and computes facet option counts for a list of datasets.
+ *
+ * Returns:
+ * - `filtered` — datasets matching the current search query and all active facet selections, sorted by `sort`.
+ * - `facetOptions(facetId)` — for each facet, the available values with their counts and selected state.
+ *   Counts reflect items matching every *other* active filter (excluding the queried facet), so options
+ *   stay live as the user drills down. Already-selected values are always included even if their count
+ *   drops to zero so they can be deselected.
+ */
 export function useCatalogueFilter(items: DatasetWithProject[]): {
   filtered: DatasetWithProject[];
   facetOptions: (facetId: FacetId) => { value: string; count: number; selected: boolean }[];
@@ -49,7 +68,12 @@ export function useCatalogueFilter(items: DatasetWithProject[]): {
   return useMemo(() => {
     const lowerQ = q.toLowerCase();
 
-    function matchesItem(item: DatasetWithProject, skipFacet: FacetId | null): boolean {
+    /**
+     * Returns true if `item` passes the current text query and all facet filters.
+     * Pass `skipFacet` to exclude one facet from the check — used when computing
+     * that facet's own option counts.
+     */
+    function matchesQuery(item: DatasetWithProject, skipFacet: FacetId | null): boolean {
       const { dataset } = item;
       if (lowerQ) {
         const kw = (dataset.keywords ?? []).map(getLabel).join(' ');
@@ -67,7 +91,7 @@ export function useCatalogueFilter(items: DatasetWithProject[]): {
       return true;
     }
 
-    const filtered = items.filter((item) => matchesItem(item, null));
+    const filtered = items.filter((item) => matchesQuery(item, null));
 
     const sortedFiltered = [...filtered].sort((a, b) => {
       const da = a.dataset;
@@ -88,8 +112,9 @@ export function useCatalogueFilter(items: DatasetWithProject[]): {
       return 0;
     });
 
+    /** Computes display options for a single facet, respecting all other active filters. */
     function facetOptions(facetId: FacetId) {
-      const base = items.filter((item) => matchesItem(item, facetId));
+      const base = items.filter((item) => matchesQuery(item, facetId));
       const countMap = new Map<string, number>();
       for (const item of base) {
         for (const v of getDatasetFacetValues(item)[facetId]) {
