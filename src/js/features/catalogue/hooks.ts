@@ -36,7 +36,6 @@ export function getDatasetFacetValues({ dataset, project }: DatasetWithProject):
   };
 }
 
-
 export function useCatalogueState() {
   return useAppSelector((state) => state.catalogue);
 }

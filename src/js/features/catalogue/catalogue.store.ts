@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import { FACET_IDS, type FacetId } from './constants';
+import { type FacetId } from './constants';
 export { FACET_IDS } from './constants';
 export type { FacetId } from './constants';
 
