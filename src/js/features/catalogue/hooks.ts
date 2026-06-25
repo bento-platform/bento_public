@@ -1,14 +1,8 @@
 import { useMemo } from 'react';
 import { useAppSelector } from '@/hooks';
-import type { Dataset } from '@/types/dataset';
-import type { Project } from '@/types/metadata';
-import { FACET_IDS, FACET_ORDER, type FacetId } from './constants';
+import { FACET_IDS, FACET_ORDER, SORT_FNS, type DatasetWithProject, type FacetId } from './constants';
 
-/** A dataset paired with its parent project. */
-export interface DatasetWithProject {
-  dataset: Dataset;
-  project: Project;
-}
+export type { DatasetWithProject } from './constants';
 
 /** Extracts a display string from a plain string or labelled object. */
 export const getLabel = (v: string | { label: string }) => (typeof v === 'string' ? v : v.label);
@@ -20,6 +14,7 @@ export function normaliseStatus(raw: string | undefined | null): string {
   return 'Unassigned';
 }
 
+/** Ordered colour palette used to assign a stable colour per project name. */
 export const PALETTE = ['#1677FF', '#13C2C2', '#722ED1', '#FA8C16', '#52C41A'];
 
 /**
@@ -92,25 +87,7 @@ export function useCatalogueFilter(items: DatasetWithProject[]): {
     }
 
     const filtered = items.filter((item) => matchesQuery(item, null));
-
-    const sortedFiltered = [...filtered].sort((a, b) => {
-      const da = a.dataset;
-      const db = b.dataset;
-      if (sort === 'updated_desc') return (db.last_modified ?? '').localeCompare(da.last_modified ?? '');
-      if (sort === 'created_desc') return (db.release_date ?? '').localeCompare(da.release_date ?? '');
-      if (sort === 'title_az') return da.title.localeCompare(db.title);
-      if (sort === 'individuals_desc') {
-        const ai = typeof da.counts_by_entity?.individual === 'number' ? da.counts_by_entity.individual : 0;
-        const bi = typeof db.counts_by_entity?.individual === 'number' ? db.counts_by_entity.individual : 0;
-        return bi - ai;
-      }
-      if (sort === 'biosamples_desc') {
-        const ab = typeof da.counts_by_entity?.biosample === 'number' ? da.counts_by_entity.biosample : 0;
-        const bb = typeof db.counts_by_entity?.biosample === 'number' ? db.counts_by_entity.biosample : 0;
-        return bb - ab;
-      }
-      return 0;
-    });
+    const sortedFiltered = [...filtered].sort(SORT_FNS[sort]);
 
     /** Computes display options for a single facet, respecting all other active filters. */
     function facetOptions(facetId: FacetId) {
