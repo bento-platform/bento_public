@@ -5,7 +5,11 @@ export const STATUS_STYLE: Record<string, { color: string; bg: string; border: s
     bg: 'var(--cat-status-ongoing-bg)',
     border: 'var(--cat-status-ongoing-border)',
   },
-  Completed: { color: 'var(--ant-color-primary, #054A74)', bg: 'var(--ant-color-primary-bg, rgba(5, 74, 116, 0.10))', border: 'var(--cat-status-completed-border)' },
+  Completed: {
+    color: 'var(--ant-color-primary, #054A74)',
+    bg: 'var(--ant-color-primary-bg, rgba(5, 74, 116, 0.10))',
+    border: 'var(--cat-status-completed-border)',
+  },
   Unassigned: { color: 'var(--text-muted)', bg: 'var(--cat-surface-subtle)', border: 'var(--border-base)' },
 };
 
