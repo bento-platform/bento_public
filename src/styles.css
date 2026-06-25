@@ -26,8 +26,9 @@
   --antd-gray-7: #595959;
 
   /* shared design tokens */
-  --color-primary: #054A74;
-  --color-primary-bg: rgba(5, 74, 116, 0.10);
+  /* Note: --ant-color-primary is intentionally NOT proxied here. antd injects its CSS vars scoped to
+     a hash class, not :root, so a :root definition like `--foo: var(--ant-color-primary)` always
+     hits the fallback. Use var(--ant-color-primary, <fallback>) directly at the usage site instead. */
   --border-subtle: #F0F0F0;
   --border-base: #D9D9D9;
   --text-secondary: rgba(0, 0, 0, 0.65);
@@ -119,7 +120,7 @@ body {
 .pt-5 { padding-top: 20px; }
 .z-0 { z-index: 0; }
 .self-start { align-self: flex-start; }
-.text-cat-primary { color: var(--color-primary); }
+.text-cat-primary { color: var(--ant-color-primary, #054A74); }
 
 /* custom, tailwind-esque */
 .max-w-half-cmw { max-width: calc(var(--content-max-width) / 2); }
@@ -447,9 +448,9 @@ body {
 }
 
 #pcgl-footer {
-  background-color: var(--color-primary);
+  background-color: var(--ant-color-primary, #054A74);
   /* Hacky box-shadow protection against really short content revealing page background below: */
-  box-shadow: 0 200px 0 var(--color-primary), 0 400px 0 var(--color-primary), 0 600px 0 var(--color-primary);
+  box-shadow: 0 200px 0 var(--ant-color-primary, #054A74), 0 400px 0 var(--ant-color-primary, #054A74), 0 600px 0 var(--ant-color-primary, #054A74);
   border-top: 1px solid #02253B;  /* HSL of above darkened by 6pp */
   font-size: 13px;
 }
@@ -588,15 +589,15 @@ body {
 .bar-value { width: 42px; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; flex: none; }
 .legend-row.clk, .bar-row.clk { cursor: pointer; border-radius: 6px; padding: 3px 6px; margin: -3px -6px; transition: background 0.12s; }
 .legend-row.clk:hover, .bar-row.clk:hover { background: rgba(5,74,116,0.07); }
-.legend-row.sel, .bar-row.sel { background: var(--color-primary-bg); font-weight: 600; }
-.legend-row.sel .legend-lbl, .bar-row.sel .bar-label { color: var(--color-primary); }
+.legend-row.sel, .bar-row.sel { background: var(--ant-color-primary-bg, rgba(5, 74, 116, 0.10)); font-weight: 600; }
+.legend-row.sel .legend-lbl, .bar-row.sel .bar-label { color: var(--ant-color-primary, #054A74); }
 
 /* END catalogue charts */
 
 /* BEGIN catalogue toolbar */
 .catalogue-search-input { flex-grow: 1; min-width: 200px; border-radius: 6px; }
 .catalogue-sort-select { width: 180px; }
-.catalogue-count-highlight { color: var(--color-primary); font-weight: 600; }
+.catalogue-count-highlight { color: var(--ant-color-primary, #054A74); font-weight: 600; }
 .catalogue-filter-tag { border-radius: 13px !important; margin: 0 !important; }
 .catalogue-filter-tag__facet-label { color: var(--text-muted); font-size: 11px; margin-right: 3px; }
 .catalogue-clear-tag { border-radius: 13px !important; margin: 0 !important; cursor: pointer; border-style: dashed; }
@@ -609,7 +610,7 @@ body {
   border-radius: 12px;
   padding: 14px 16px;
 }
-.catalogue-insights__header-title { color: var(--color-primary); font-weight: 600; font-size: 14px; }
+.catalogue-insights__header-title { color: var(--ant-color-primary, #054A74); font-weight: 600; font-size: 14px; }
 .catalogue-insights__hint { font-size: 12px; color: var(--text-muted); }
 /* END catalogue insights */
 
@@ -709,18 +710,18 @@ body {
 }
 
 .fchip:hover:not(:disabled) {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+  border-color: var(--ant-color-primary, #054A74);
+  color: var(--ant-color-primary, #054A74);
 }
 
 .fchip--on:hover:not(:disabled) {
-  background: var(--color-primary-dark, color-mix(in srgb, var(--color-primary) 85%, #000));
+  background: var(--color-primary-dark, color-mix(in srgb, var(--ant-color-primary, #054A74) 85%, #000));
   color: #fff;
 }
 
 .fchip--on {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
+  background: var(--ant-color-primary, #054A74);
+  border-color: var(--ant-color-primary, #054A74);
   color: #fff;
   font-weight: 500;
 }
@@ -789,8 +790,8 @@ body {
   border-color: var(--cat-status-ongoing-border);
 }
 .status-badge--completed {
-  color: var(--color-primary);
-  background: var(--color-primary-bg);
+  color: var(--ant-color-primary, #054A74);
+  background: var(--ant-color-primary-bg, rgba(5, 74, 116, 0.10));
   border-color: var(--cat-status-completed-border);
 }
 .status-badge--unassigned {
@@ -826,7 +827,7 @@ body {
   font-family: inherit;
   transition: border-color 0.15s, color 0.15s;
 }
-.project-pill:hover { border-color: var(--color-primary) !important; color: var(--color-primary) !important; }
+.project-pill:hover { border-color: var(--ant-color-primary, #054A74) !important; color: var(--ant-color-primary, #054A74) !important; }
 .project-pill__dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
 .catalogue-card__counts-row { border-top: 1px solid var(--border-subtle); margin-top: 12px; padding-top: 10px; }
 .count-item__icon { color: var(--text-muted); font-size: 13px; }
