@@ -24,8 +24,14 @@ export const SORT_FNS: Record<SortKey, DatasetSortFn> = {
   updated_desc: (a, b) => (b.dataset.last_modified ?? '').localeCompare(a.dataset.last_modified ?? ''),
   created_desc: (a, b) => (b.dataset.release_date ?? '').localeCompare(a.dataset.release_date ?? ''),
   title_az: (a, b) => a.dataset.title.localeCompare(b.dataset.title),
-  individuals_desc: (a, b) =>
-    (b.dataset.counts_by_entity?.individual ?? 0) - (a.dataset.counts_by_entity?.individual ?? 0),
-  biosamples_desc: (a, b) =>
-    (b.dataset.counts_by_entity?.biosample ?? 0) - (a.dataset.counts_by_entity?.biosample ?? 0),
+  individuals_desc: (a, b) => {
+    const ai = typeof a.dataset.counts_by_entity?.individual === 'number' ? a.dataset.counts_by_entity.individual : 0;
+    const bi = typeof b.dataset.counts_by_entity?.individual === 'number' ? b.dataset.counts_by_entity.individual : 0;
+    return bi - ai;
+  },
+  biosamples_desc: (a, b) => {
+    const ab = typeof a.dataset.counts_by_entity?.biosample === 'number' ? a.dataset.counts_by_entity.biosample : 0;
+    const bb = typeof b.dataset.counts_by_entity?.biosample === 'number' ? b.dataset.counts_by_entity.biosample : 0;
+    return bb - ab;
+  },
 };
