@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useAppSelector } from '@/hooks';
 import type { Dataset } from '@/types/dataset';
 import type { Project } from '@/types/metadata';
-import type { FacetId } from './catalogue.store';
+import { FACET_IDS, FACET_ORDER, type FacetId } from './constants';
 
 export interface DatasetWithProject {
   dataset: Dataset;
@@ -36,10 +36,6 @@ export function getDatasetFacetValues({ dataset, project }: DatasetWithProject):
   };
 }
 
-const FACET_ORDER: Partial<Record<FacetId, string[]>> = {
-  statuses: ['Ongoing', 'Completed', 'Unassigned'],
-  access: ['Open', 'Registered', 'Controlled'],
-};
 
 export function useCatalogueState() {
   return useAppSelector((state) => state.catalogue);
@@ -62,8 +58,7 @@ export function useCatalogueFilter(items: DatasetWithProject[]): {
         const hay = [dataset.title, dataset.description, dom, kw].join(' ').toLowerCase();
         if (!hay.includes(lowerQ)) return false;
       }
-      const facetIds: FacetId[] = ['projects', 'dataTypes', 'taxa', 'access', 'licenses', 'statuses', 'keywords'];
-      for (const fid of facetIds) {
+      for (const fid of FACET_IDS) {
         if (fid === skipFacet) continue;
         const selected = sets[fid];
         if (selected.length === 0) continue;

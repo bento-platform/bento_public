@@ -1,8 +1,10 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { FACET_IDS, type FacetId } from './constants';
+export { FACET_IDS } from './constants';
+export type { FacetId } from './constants';
 
 export type SortKey = 'updated_desc' | 'created_desc' | 'title_az' | 'individuals_desc' | 'biosamples_desc';
 export type ViewMode = 'grid' | 'list';
-export type FacetId = 'projects' | 'dataTypes' | 'taxa' | 'access' | 'licenses' | 'statuses' | 'keywords';
 
 export interface CatalogueFilterSets {
   projects: string[];
