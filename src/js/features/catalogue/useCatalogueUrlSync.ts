@@ -21,15 +21,9 @@ export function useCatalogueUrlSync() {
   useEffect(() => {
     const rawSort = searchParams.get('sort');
     const rawView = searchParams.get('view');
-    const sets: CatalogueFilterSets = {
-      projects: splitParam(searchParams.get('projects')),
-      dataTypes: splitParam(searchParams.get('dataTypes')),
-      taxa: splitParam(searchParams.get('taxa')),
-      access: splitParam(searchParams.get('access')),
-      licenses: splitParam(searchParams.get('licenses')),
-      statuses: splitParam(searchParams.get('statuses')),
-      keywords: splitParam(searchParams.get('keywords')),
-    };
+    const sets = Object.fromEntries(
+      FACET_IDS.map((facet) => [facet, splitParam(searchParams.get(facet))])
+    ) as unknown as CatalogueFilterSets;
     dispatch(
       hydrateFromUrl({
         q: searchParams.get('q') ?? '',

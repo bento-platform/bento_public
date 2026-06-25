@@ -1,19 +1,11 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import { type FacetId, type SortKey } from './constants';
+import { FACET_IDS, type FacetId, type SortKey } from './constants';
 export { FACET_IDS } from './constants';
 export type { FacetId, SortKey } from './constants';
 
 export type ViewMode = 'grid' | 'list';
 
-export interface CatalogueFilterSets {
-  projects: string[];
-  dataTypes: string[];
-  taxa: string[];
-  access: string[];
-  licenses: string[];
-  statuses: string[];
-  keywords: string[];
-}
+export type CatalogueFilterSets = Record<FacetId, string[]>;
 
 export interface CatalogueState {
   q: string;
