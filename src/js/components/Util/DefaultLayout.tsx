@@ -6,7 +6,7 @@ import SiteHeader from '@/components/SiteHeader';
 import SiteSider from '@/components/SiteSider';
 import SiteFooter from '@/components/SiteFooter';
 import PcglFooter from '@/components/Pcgl/PcglFooter';
-import ScopeBreadcrumb from '@/components/Scope/ScopeBreadcrumb';
+import ScopeHeader from '@/components/Scope/ScopeHeader';
 import { useSelectedScope, useScopeHasData } from '@/features/metadata/hooks';
 import { useIsInCatalogueMode, useSidebarMenuItems } from '@/hooks/navigation';
 import { useTitleBreadcrumbItems } from '@/hooks/useTitleBreadcrumbItems';
@@ -73,7 +73,7 @@ const DefaultLayout = () => {
   const showSidebarToggle = sidebarOverlay && page === 'overview';
 
   const breadcrumbItems = useTitleBreadcrumbItems();
-  const titleHidden = !isCatalogue && !breadcrumbItems.length && !showSidebarToggle; // ScopedTitle not shown
+  const titleHidden = !isCatalogue && !breadcrumbItems.length && !showSidebarToggle;
 
   return (
     <Layout
@@ -85,7 +85,7 @@ const DefaultLayout = () => {
       <SiteHeader menuItems={menuItems} />
       <Layout id="content-layout">
         {!isCatalogue && !titleHidden && (
-          <ScopeBreadcrumb
+          <ScopeHeader
             showSidebarToggle={showSidebarToggle}
             sidebarOverlayShown={sidebarOverlayShown}
             onToggleSidebar={() => setCollapsed((c) => !c)}

@@ -245,7 +245,7 @@ body {
 }
 
 
-#scope-breadcrumb {
+#scope-header {
   z-index: 20;
   box-sizing: border-box;
   min-height: 48px;
@@ -262,13 +262,13 @@ body {
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.02);
 }
 
-#scope-breadcrumb__sidebar-toggle {
+#scope-header__sidebar-toggle {
   margin-top: 4px;
   margin-left: 4px;
   margin-right: 12px;
   color: rgba(0, 0, 0, 0.64);
 }
-#scope-breadcrumb__sidebar-toggle.active {
+#scope-header__sidebar-toggle.active {
   background-color: rgba(0, 0, 0, 0.20);
   color: rgba(0, 0, 0, 0.74);
 }
