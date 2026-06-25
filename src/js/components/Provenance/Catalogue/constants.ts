@@ -5,8 +5,8 @@ export const STATUS_STYLE: Record<string, { color: string; bg: string; border: s
     bg: 'var(--cat-status-ongoing-bg)',
     border: 'var(--cat-status-ongoing-border)',
   },
-  Completed: { color: 'var(--cat-primary)', bg: 'var(--cat-primary-bg)', border: 'var(--cat-status-completed-border)' },
-  Unassigned: { color: 'var(--cat-text-muted)', bg: 'var(--cat-surface-subtle)', border: 'var(--cat-border-base)' },
+  Completed: { color: 'var(--color-primary)', bg: 'var(--color-primary-bg)', border: 'var(--cat-status-completed-border)' },
+  Unassigned: { color: 'var(--text-muted)', bg: 'var(--cat-surface-subtle)', border: 'var(--border-base)' },
 };
 
 // Status chart colours (insights donut) — kept as hex: used as SVG stroke attributes
