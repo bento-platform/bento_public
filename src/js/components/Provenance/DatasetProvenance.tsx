@@ -36,7 +36,7 @@ const LongDescriptionBlock = ({ content, content_type }: Dataset['long_descripti
   if (content_type === 'text/html') {
     return <div dangerouslySetInnerHTML={{ __html: content }} />;
   }
-  return <Paragraph>{content}</Paragraph>;
+  return <Paragraph ellipsis={{ rows: 5, expandable: true, symbol: 'more' }}>{content}</Paragraph>;
 };
 
 // ---- Main content ----

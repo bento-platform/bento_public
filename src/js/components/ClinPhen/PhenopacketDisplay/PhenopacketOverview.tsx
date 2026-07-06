@@ -53,7 +53,7 @@ interface PhenopacketOverviewProps {
 }
 
 const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>(({ phenopacket }, ref) => {
-  const [open, setOpen] = useSearchParams(serializeKeys(['subject']));
+  const [open, setOpen] = useSearchParams(serializeKeys(phenopacket.subject ? ['subject'] : ['biosamples']));
   const t = useTranslationFn();
   const routerState = useLocationState();
   const cleanupRef = useRef<null | (() => void)>(null);
@@ -75,12 +75,15 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
           const enabled = typeof spec.enabled === 'function' ? spec.enabled(phenopacket) : spec.enabled;
           if (!enabled) return null;
           const itemCount = spec.itemCount?.(phenopacket);
+          const titleTranslationOptions =
+            spec.renderSingleItemDetail && itemCount !== undefined ? { count: itemCount } : undefined;
+          const showItemCount = itemCount !== undefined && !(spec.renderSingleItemDetail && itemCount === 1);
           return {
             key,
             label: (
               <strong style={{ fontSize: '16px', borderTop: '10px' }}>
-                {t(spec.titleTranslationKey)}
-                {itemCount ? ` (${itemCount})` : null}
+                {t(spec.titleTranslationKey, titleTranslationOptions)}
+                {showItemCount ? ` (${itemCount})` : null}
               </strong>
             ),
             children: (
@@ -141,7 +144,12 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
     const { sectionKey, rowId } =
       (routerState as { highlight?: { sectionKey?: string; rowId?: string } })?.highlight ?? {};
 
-    const divId = rowId ?? `phenopacket-${sectionKey}`;
+    if (!sectionKey) return;
+
+    const { renderSingleItemDetail, itemCount } = SECTION_SPECS[sectionKey as SectionKey];
+    const sectionCount = itemCount?.(phenopacket);
+
+    const divId = rowId && !(renderSingleItemDetail && sectionCount === 1) ? rowId : `phenopacket-${sectionKey}`;
     const el = document.getElementById(divId);
 
     // Signal to the click handler that a highlight transition is in flight
@@ -190,7 +198,7 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
       el?.classList.remove('highlight-boundary');
       el?.blur();
     };
-  }, [routerState, items, open, setOpen]);
+  }, [routerState, items, open, phenopacket, setOpen]);
 
   return (
     <Collapse

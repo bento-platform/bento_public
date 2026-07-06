@@ -1,66 +1,53 @@
 import { type ReactNode, useCallback, useMemo, useState } from 'react';
 
-import { Avatar, Button, Card, Flex, List, Popover, Space, Tag, Typography } from 'antd';
-import { ExpandAltOutlined, PieChartOutlined, SolutionOutlined } from '@ant-design/icons';
+import { Avatar, Button, Card, Flex, List, Typography } from 'antd';
+import { PieChartOutlined, SolutionOutlined } from '@ant-design/icons';
 import { FaDatabase } from 'react-icons/fa';
 
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type { Dataset } from '@/types/dataset';
-import type { OntologyTerm } from '@/types/ontology';
+import type { Project } from '@/types/metadata';
 import { BentoRoute } from '@/types/routes';
 import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
-import clsx from 'clsx';
 import { getCurrentPage } from '@/utils/router';
-import { useTranslationFn } from '@/hooks';
+import { useLanguage, useTranslationFn } from '@/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
-import SmallChartCardTitle from '@/components/Util/SmallChartCardTitle';
+import { isoDateToString } from '@/utils/strings';
+import StatusBadge from '@/components/Util/StatusBadge';
 import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
 import CountsDisplay from '@/components/Util/CountsDisplay';
 import DatasetProvenanceModal from './DatasetProvenanceModal';
+import KeywordList from './KeywordList';
+import ProjectPill from './Catalogue/ProjectPill';
 
-const { Title } = Typography;
+const { Title, Text, Paragraph } = Typography;
 
-const KEYWORDS_LIMIT = 2;
-
-const keywordLabel = (k: string | OntologyTerm): string => (typeof k === 'string' ? k : k.label);
-
-const TagList = ({ keywords }: { keywords?: (string | OntologyTerm)[] }) => {
-  const t = useTranslationFn();
-  return (
-    <Space size={[0, 8]} align="start" wrap className="w-full">
-      {keywords?.map((k, i) => (
-        <Tag key={i} color="cyan" style={i === keywords.length - 1 ? { marginInlineEnd: 0 } : undefined}>
-          {t(keywordLabel(k))}
-        </Tag>
-      ))}
-    </Space>
-  );
-};
+const MAX_KEYWORDS = 4;
 
 const Dataset = ({
   parentProjectID,
   dataset,
   format,
+  project,
   selected,
   filteredCounts,
 }: {
   parentProjectID: string;
   dataset: Dataset;
-  format: 'list-item' | 'card' | 'carousel';
+  format: 'list-item' | 'card';
+  project?: Project;
   selected?: boolean;
   filteredCounts?: KatsuEntityCountsOrBooleans;
 }) => {
+  const language = useLanguage();
   const navigateToScope = useNavigateToScope();
   const page = getCurrentPage();
-
   const t = useTranslationFn();
 
   const [provenanceModalOpen, setProvenanceModalOpen] = useState(false);
 
   const { identifier, title, description } = dataset;
   const keywords = dataset.keywords ?? [];
-  const displayKeywords = keywords.slice(0, KEYWORDS_LIMIT);
-  const remainingKeywords = keywords.slice(KEYWORDS_LIMIT);
 
   const scope: DiscoveryScope = useMemo(
     () => ({ project: parentProjectID, dataset: identifier }),
@@ -73,12 +60,12 @@ const Dataset = ({
   const openProvenanceModal = useCallback(() => setProvenanceModalOpen(true), []);
   const closeProvenanceModal = useCallback(() => setProvenanceModalOpen(false), []);
 
-  const counts = dataset.counts_by_entity;
+  const counts = filteredCounts ?? dataset.counts_by_entity;
   const faded =
     filteredCounts &&
-    counts &&
+    dataset.counts_by_entity &&
     Object.values(filteredCounts).every((c) => !c) &&
-    Object.values(counts).some((c) => !!c);
+    Object.values(dataset.counts_by_entity).some((c) => !!c);
 
   let inner: ReactNode;
 
@@ -97,61 +84,59 @@ const Dataset = ({
       </List.Item>
     );
   } else if (format === 'card') {
+    const updatedDate = dataset.last_modified ?? project?.updated;
+    const updatedStr = updatedDate ? isoDateToString(updatedDate, language) : undefined;
+
     inner = (
-      <Card
-        title={<SmallChartCardTitle title={title} />}
-        size="small"
-        className={clsx('shadow', 'h-full', { 'opacity-50': faded })}
-        style={{ minHeight: 200 }}
-        styles={{ body: { padding: '12px 16px', height: 'calc(100% - 53px)' } }}
-        extra={
-          <Button icon={<SolutionOutlined />} onClick={openProvenanceModal}>
-            {t('Provenance')}
-            <ExpandAltOutlined />
-          </Button>
-        }
-      >
-        <Flex vertical={true} gap={12} className="h-full">
-          <TruncatedParagraph maxRows={2}>{t(description)}</TruncatedParagraph>
-          <Space size={8} align="start" wrap className="w-full">
-            <TagList keywords={displayKeywords} />
-            {remainingKeywords.length > 0 && (
-              <Popover content={<TagList keywords={remainingKeywords} />}>
-                <span className="cursor-pointer">
-                  + {remainingKeywords.length} {t('more', { count: remainingKeywords.length })}
-                </span>
-              </Popover>
-            )}
-          </Space>
-          <CountsDisplay counts={filteredCounts} totalCounts={dataset?.counts_by_entity} fontSize="0.875rem" />
-          <Flex gap={12} align="flex-end" className="flex-1">
-            <Button icon={<PieChartOutlined />} onClick={onNavigateOverview}>
-              {t('Explore')}
-            </Button>
-          </Flex>
-        </Flex>
-      </Card>
-    );
-  } else if (format === 'carousel') {
-    inner = (
-      <>
-        <Flex justify="space-between" align="center">
-          <Title level={5} className="mb-0">
+      <Card className="catalogue-card" style={{ opacity: faded ? 0.5 : undefined }}>
+        <Flex justify="space-between" align="flex-start" gap={8}>
+          <Title level={5} className="catalogue-card__title">
             {t(title)}
           </Title>
-          <Button size="small" icon={<SolutionOutlined />} className="float-right" onClick={openProvenanceModal}>
-            {t('Provenance')}
-            <ExpandAltOutlined />
-          </Button>
+          <StatusBadge status={dataset.study_status} />
         </Flex>
-        <TruncatedParagraph>{t(description)}</TruncatedParagraph>
-        <CountsDisplay counts={filteredCounts} fontSize="0.875rem" />
-        <Flex gap={8} style={{ marginTop: 8 }}>
-          <Button size="small" icon={<PieChartOutlined />} onClick={onNavigateOverview}>
+
+        {updatedStr && (
+          <Text className="catalogue-card__meta">
+            {t('Updated')} {updatedStr}
+            {dataset.privacy && ` · ${dataset.privacy}`}
+          </Text>
+        )}
+
+        {project && <ProjectPill project={project} />}
+
+        {description && (
+          <Paragraph
+            ellipsis={{
+              rows: 3,
+              expandable: true,
+              symbol: <span className="catalogue-card__expand-symbol">more</span>,
+            }}
+            className="catalogue-card__description"
+          >
+            {t(description)}
+          </Paragraph>
+        )}
+
+        <KeywordList keywords={keywords} max={MAX_KEYWORDS} className="mt-2" />
+
+        <div className="flex-1" />
+
+        {counts && (
+          <div className="catalogue-card__counts-row">
+            <CountsDisplay counts={counts} totalCounts={filteredCounts ? dataset.counts_by_entity : undefined} />
+          </div>
+        )}
+
+        <Flex gap={8} className="mt-3">
+          <Button type="primary" icon={<PieChartOutlined />} className="flex-1" onClick={onNavigateOverview}>
             {t('Explore')}
           </Button>
+          <Button icon={<SolutionOutlined />} className="flex-1" onClick={openProvenanceModal}>
+            {t('Provenance')}
+          </Button>
         </Flex>
-      </>
+      </Card>
     );
   } else {
     inner = <span className="error-text">UNIMPLEMENTED</span>;
