@@ -52,7 +52,9 @@ const IdentifiersSection = ({ dataset, collapsed, onToggle }: IdentifiersSection
               <div className="pm-kv-k">Extra properties</div>
               <div className="pm-kv-v" style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 4 }}>
                 {Object.entries(dataset.extra_properties).map(([k, v]) => (
-                  <span key={k} className="pm-grant">{k} · {String(v ?? '')}</span>
+                  <span key={k} className="pm-grant">
+                    {k} · {String(v ?? '')}
+                  </span>
                 ))}
               </div>
             </div>

@@ -42,13 +42,20 @@ const SummarySection = ({ dataset, collapsed, onToggle }: SummarySectionProps) =
             </button>
           </>
         )}
-        {(keywords.length > 0 || taxa.length > 0 || dataset.domain?.length || dataset.program_name || dataset.study_status || dataset.study_context) && (
+        {(keywords.length > 0 ||
+          taxa.length > 0 ||
+          dataset.domain?.length ||
+          dataset.program_name ||
+          dataset.study_status ||
+          dataset.study_context) && (
           <div className="pm-meta-grid">
             {keywords.length > 0 && (
               <div className="pm-field">
                 <span className="pm-field-k">Keywords</span>
                 <div className="pm-chips">
-                  {keywords.map((k, i) => <OntologyChip key={i} item={k} variant="kw" />)}
+                  {keywords.map((k, i) => (
+                    <OntologyChip key={i} item={k} variant="kw" />
+                  ))}
                 </div>
               </div>
             )}
@@ -56,7 +63,9 @@ const SummarySection = ({ dataset, collapsed, onToggle }: SummarySectionProps) =
               <div className="pm-field">
                 <span className="pm-field-k">Taxa</span>
                 <div className="pm-chips">
-                  {taxa.map((k, i) => <OntologyChip key={i} item={k} variant="taxa" />)}
+                  {taxa.map((k, i) => (
+                    <OntologyChip key={i} item={k} variant="taxa" />
+                  ))}
                 </div>
               </div>
             )}
@@ -65,7 +74,9 @@ const SummarySection = ({ dataset, collapsed, onToggle }: SummarySectionProps) =
                 <span className="pm-field-k">Domain</span>
                 <div className="pm-chips">
                   {dataset.domain.map((d, i) => (
-                    <span key={i} className="pm-chip pm-chip-dom">{d}</span>
+                    <span key={i} className="pm-chip pm-chip-dom">
+                      {d}
+                    </span>
                   ))}
                 </div>
               </div>

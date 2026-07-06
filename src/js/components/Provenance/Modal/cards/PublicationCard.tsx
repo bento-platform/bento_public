@@ -32,16 +32,12 @@ export const PublicationCard = ({
         {expanded ? (
           <div className="pm-pub-full">
             <div className="pm-pub-title-full">{pub.title}</div>
-            {hasAuthors && (
-              <div className="pm-pub-authors-full">{pub.authors!.map(personName).join(', ')}</div>
-            )}
+            {hasAuthors && <div className="pm-pub-authors-full">{pub.authors!.map(personName).join(', ')}</div>}
           </div>
         ) : (
           <>
             <span className="pm-pub-title-inline">{pub.title}</span>
-            {hasAuthors && (
-              <span className="pm-pub-authors-inline">{pub.authors!.map(personName).join(', ')}</span>
-            )}
+            {hasAuthors && <span className="pm-pub-authors-inline">{pub.authors!.map(personName).join(', ')}</span>}
           </>
         )}
         <span className="pm-pub-type-mini">{pubTypeLabel(pub.publication_type)}</span>

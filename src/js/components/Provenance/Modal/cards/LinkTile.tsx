@@ -20,7 +20,8 @@ const LINK_TYPE_ICONS: Record<string, React.ReactNode> = {
 
 export const LinkTile = ({ link }: { link: Link }) => {
   const typed = link as Partial<TypedLink>;
-  const typeStr = typeof typed.type === 'string' ? typed.type : typeof typed.type === 'object' ? typed.type?.other : undefined;
+  const typeStr =
+    typeof typed.type === 'string' ? typed.type : typeof typed.type === 'object' ? typed.type?.other : undefined;
   const icon = (typeStr && LINK_TYPE_ICONS[typeStr]) ?? <LinkOutlined />;
   return (
     <a className="pm-link-tile" href={link.url} target="_blank" rel="noreferrer">

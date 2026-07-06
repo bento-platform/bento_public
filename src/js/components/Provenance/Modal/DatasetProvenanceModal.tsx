@@ -37,12 +37,22 @@ const DatasetProvenanceModal = ({ dataset, open, onCancel }: DatasetProvenanceMo
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [toast, setToast] = useState<{ text: string; show: boolean }>({ text: '', show: false });
 
+  // Reset state when dataset changes (React "adjust state during render" pattern, avoids an effect)
+  const [lastDatasetId, setLastDatasetId] = useState(dataset?.identifier);
+  if (dataset?.identifier !== lastDatasetId) {
+    setLastDatasetId(dataset?.identifier);
+    setCollapsed(new Set());
+    setActiveSection('summary');
+  }
+
   const bodyRef = useRef<HTMLDivElement>(null);
 
   // Esc to close
   useEffect(() => {
     if (!open) return;
-    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onCancel(); };
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onCancel();
+    };
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
   }, [open, onCancel]);
@@ -54,14 +64,10 @@ const DatasetProvenanceModal = ({ dataset, open, onCancel }: DatasetProvenanceMo
     } else {
       document.body.style.overflow = '';
     }
-    return () => { document.body.style.overflow = ''; };
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [open]);
-
-  // Reset state when dataset changes
-  useEffect(() => {
-    setCollapsed(new Set());
-    setActiveSection('summary');
-  }, [dataset?.identifier]);
 
   // Scrollspy
   useEffect(() => {
@@ -75,7 +81,7 @@ const DatasetProvenanceModal = ({ dataset, open, onCancel }: DatasetProvenanceMo
           }
         }
       },
-      { root: body, rootMargin: '-8% 0px -72% 0px' },
+      { root: body, rootMargin: '-8% 0px -72% 0px' }
     );
     const secs = body.querySelectorAll<HTMLElement>('.pm-sec[id]');
     secs.forEach((el) => observer.observe(el));
@@ -85,7 +91,11 @@ const DatasetProvenanceModal = ({ dataset, open, onCancel }: DatasetProvenanceMo
   const toggleCollapse = useCallback((id: SectionId) => {
     setCollapsed((prev) => {
       const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
       return next;
     });
   }, []);
@@ -136,15 +146,32 @@ const DatasetProvenanceModal = ({ dataset, open, onCancel }: DatasetProvenanceMo
 
   const navEntries: NavEntry[] = [
     { id: 'summary', label: 'Summary', icon: <UnorderedListOutlined /> },
-    ...(hasLinks ? [{ id: 'links' as SectionId, label: 'Links & Resources', icon: <LinkOutlined />, count: links.length }] : []),
+    ...(hasLinks
+      ? [{ id: 'links' as SectionId, label: 'Links & Resources', icon: <LinkOutlined />, count: links.length }]
+      : []),
     ...(hasContact ? [{ id: 'contact' as SectionId, label: 'Primary Contact', icon: <UserOutlined /> }] : []),
-    ...(hasStakeholders ? [{ id: 'stakeholders' as SectionId, label: 'Stakeholders', icon: <TeamOutlined />, count: stakeholders.length }] : []),
-    ...(hasPubs ? [{ id: 'publications' as SectionId, label: 'Publications', icon: <BookOutlined />, count: publications.length }] : []),
+    ...(hasStakeholders
+      ? [{ id: 'stakeholders' as SectionId, label: 'Stakeholders', icon: <TeamOutlined />, count: stakeholders.length }]
+      : []),
+    ...(hasPubs
+      ? [{ id: 'publications' as SectionId, label: 'Publications', icon: <BookOutlined />, count: publications.length }]
+      : []),
     ...(hasFunding ? [{ id: 'funding' as SectionId, label: 'Funding', icon: <DollarOutlined /> }] : []),
     ...(hasAccess ? [{ id: 'access' as SectionId, label: 'Access & License', icon: <AuditOutlined /> }] : []),
     ...(hasSpatial ? [{ id: 'spatial' as SectionId, label: 'Spatial Coverage', icon: <EnvironmentOutlined /> }] : []),
-    ...(hasCriteria ? [{ id: 'criteria' as SectionId, label: 'Participant Criteria', icon: <InfoCircleOutlined />, count: criteria.length }] : []),
-    ...(hasCounts ? [{ id: 'counts' as SectionId, label: 'Counts', icon: <NumberOutlined />, count: counts.length }] : []),
+    ...(hasCriteria
+      ? [
+          {
+            id: 'criteria' as SectionId,
+            label: 'Participant Criteria',
+            icon: <InfoCircleOutlined />,
+            count: criteria.length,
+          },
+        ]
+      : []),
+    ...(hasCounts
+      ? [{ id: 'counts' as SectionId, label: 'Counts', icon: <NumberOutlined />, count: counts.length }]
+      : []),
     { id: 'identifiers', label: 'Identifiers', icon: <TagOutlined /> },
   ];
 
@@ -152,18 +179,8 @@ const DatasetProvenanceModal = ({ dataset, open, onCancel }: DatasetProvenanceMo
 
   const modal = (
     <div className="pm-scrim" onClick={onCancel}>
-      <div
-        className="pm-modal"
-        role="dialog"
-        aria-label="Dataset provenance"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <ModalHeader
-          dataset={dataset}
-          copiedKey={copiedKey}
-          onCopy={handleCopy}
-          onClose={onCancel}
-        />
+      <div className="pm-modal" role="dialog" aria-label="Dataset provenance" onClick={(e) => e.stopPropagation()}>
+        <ModalHeader dataset={dataset} copiedKey={copiedKey} onCopy={handleCopy} onClose={onCancel} />
 
         <div className="pm-body" ref={bodyRef}>
           <SideNav navEntries={navEntries} activeSection={activeSection} onJump={jumpToSection} />
@@ -185,7 +202,9 @@ const DatasetProvenanceModal = ({ dataset, open, onCancel }: DatasetProvenanceMo
                 />
                 <div className="pm-sec-body">
                   <div className="pm-links-grid">
-                    {links.map((link, i) => <LinkTile key={i} link={link} />)}
+                    {links.map((link, i) => (
+                      <LinkTile key={i} link={link} />
+                    ))}
                   </div>
                 </div>
               </section>
@@ -260,7 +279,9 @@ const DatasetProvenanceModal = ({ dataset, open, onCancel }: DatasetProvenanceMo
                     <p>{dataset.funding_sources}</p>
                   ) : (
                     <div className="pm-fgrid">
-                      {fundingSources.map((fs, i) => <FundingCard key={i} source={fs} idx={i} />)}
+                      {fundingSources.map((fs, i) => (
+                        <FundingCard key={i} source={fs} />
+                      ))}
                     </div>
                   )}
                 </div>

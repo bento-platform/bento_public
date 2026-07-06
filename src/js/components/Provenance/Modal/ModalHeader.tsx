@@ -39,9 +39,7 @@ const ModalHeader = ({ dataset, copiedKey, onCopy, onClose }: ModalHeaderProps) 
               </span>
             )}
             {dataset.study_context && (
-              <span className="pm-ctx-chip">
-                {dataset.study_context === 'CLINICAL' ? 'Clinical' : 'Research'}
-              </span>
+              <span className="pm-ctx-chip">{dataset.study_context === 'CLINICAL' ? 'Clinical' : 'Research'}</span>
             )}
           </div>
         </div>

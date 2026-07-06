@@ -20,9 +20,12 @@ export const PersonCard = ({
   const p = person as Person;
   const org = person as Organization;
 
-  const affiliationLine = isPerson && p.affiliations?.length
-    ? (typeof p.affiliations[0] === 'string' ? p.affiliations[0] : (p.affiliations[0] as Organization).name)
-    : null;
+  const affiliationLine =
+    isPerson && p.affiliations?.length
+      ? typeof p.affiliations[0] === 'string'
+        ? p.affiliations[0]
+        : (p.affiliations[0] as Organization).name
+      : null;
 
   const contact = person.contact;
   const hasContact = contact && (contact.email?.length || contact.website || contact.address || contact.phone);
@@ -56,7 +59,9 @@ export const PersonCard = ({
       {person.roles.length > 0 && (
         <div className="pm-pc-roles">
           {person.roles.map((r, i) => (
-            <span key={i} className="pm-role">{r}</span>
+            <span key={i} className="pm-role">
+              {r}
+            </span>
           ))}
         </div>
       )}
@@ -76,7 +81,9 @@ export const PersonCard = ({
             <div className="pm-cline">
               <GlobalOutlined />
               <span className="pm-cline-text">
-                <a href={contact.website} target="_blank" rel="noreferrer">{contact.website}</a>
+                <a href={contact.website} target="_blank" rel="noreferrer">
+                  {contact.website}
+                </a>
               </span>
             </div>
           )}

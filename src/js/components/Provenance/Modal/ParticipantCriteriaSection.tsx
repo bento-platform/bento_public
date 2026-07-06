@@ -39,7 +39,9 @@ const ParticipantCriteriaSection = ({ criteria, collapsed, onToggle }: Participa
                   <a href={c.link} target="_blank" rel="noreferrer" style={{ color: 'var(--pm-accent)' }}>
                     Protocol <ExportOutlined style={{ fontSize: 11 }} />
                   </a>
-                ) : '—'}
+                ) : (
+                  '—'
+                )}
               </td>
             </tr>
           ))}
