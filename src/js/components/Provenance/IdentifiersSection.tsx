@@ -9,7 +9,6 @@ type IdentifiersSectionProps = {
 
 const IdentifiersSection = ({ dataset, collapsed, onToggle }: IdentifiersSectionProps) => {
   const resources = dataset.resources ?? [];
-  const logos = dataset.logos ?? [];
 
   return (
     <section id="identifiers" className={`pm-sec${collapsed ? ' collapsed' : ''}`}>
@@ -59,21 +58,6 @@ const IdentifiersSection = ({ dataset, collapsed, onToggle }: IdentifiersSection
             </div>
           )}
         </div>
-
-        {logos.length > 0 && (
-          <div className="pm-meta-grid" style={{ marginTop: 16 }}>
-            <div className="pm-field">
-              <span className="pm-field-k">Logos</span>
-              <div className="pm-logorow">
-                {logos.map((logo, i) => (
-                  <div key={i} className={`pm-logobox${logo.theme === 'dark' ? ' dark' : ''}`}>
-                    <img src={logo.url} alt={logo.description ?? ''} />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </section>
   );

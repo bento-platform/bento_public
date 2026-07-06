@@ -32,7 +32,6 @@ type DatasetProvenanceModalProps = {
 };
 
 const DatasetProvenanceModal = ({ dataset, open, onCancel }: DatasetProvenanceModalProps) => {
-  const [fullscreen, setFullscreen] = useState(false);
   const [collapsed, setCollapsed] = useState<Set<SectionId>>(new Set());
   const [activeSection, setActiveSection] = useState<SectionId>('summary');
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
@@ -60,7 +59,6 @@ const DatasetProvenanceModal = ({ dataset, open, onCancel }: DatasetProvenanceMo
 
   // Reset state when dataset changes
   useEffect(() => {
-    setFullscreen(false);
     setCollapsed(new Set());
     setActiveSection('summary');
   }, [dataset?.identifier]);
@@ -153,20 +151,18 @@ const DatasetProvenanceModal = ({ dataset, open, onCancel }: DatasetProvenanceMo
   const isCollapsed = (id: SectionId) => collapsed.has(id);
 
   const modal = (
-    <div className={`pm-scrim${fullscreen ? ' fullscreen' : ''}`} onClick={onCancel}>
+    <div className="pm-scrim" onClick={onCancel}>
       <div
-        className={`pm-modal${fullscreen ? ' fullscreen' : ''}`}
+        className="pm-modal"
         role="dialog"
         aria-label="Dataset provenance"
         onClick={(e) => e.stopPropagation()}
       >
         <ModalHeader
           dataset={dataset}
-          fullscreen={fullscreen}
           copiedKey={copiedKey}
           onCopy={handleCopy}
           onClose={onCancel}
-          onToggleFullscreen={() => setFullscreen((f) => !f)}
         />
 
         <div className="pm-body" ref={bodyRef}>

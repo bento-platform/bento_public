@@ -3,8 +3,6 @@ import {
   CalendarOutlined,
   CloseOutlined,
   FileDoneOutlined,
-  FullscreenExitOutlined,
-  FullscreenOutlined,
   TagOutlined,
   UnorderedListOutlined,
 } from '@ant-design/icons';
@@ -15,14 +13,12 @@ import { CopyButton } from './cards';
 
 type ModalHeaderProps = {
   dataset: Dataset;
-  fullscreen: boolean;
   copiedKey: string | null;
   onCopy: (value: string, id: string) => void;
   onClose: () => void;
-  onToggleFullscreen: () => void;
 };
 
-const ModalHeader = ({ dataset, fullscreen, copiedKey, onCopy, onClose, onToggleFullscreen }: ModalHeaderProps) => {
+const ModalHeader = ({ dataset, copiedKey, onCopy, onClose }: ModalHeaderProps) => {
   const t = useTranslationFn();
   return (
     <div className="pm-head">
@@ -51,14 +47,6 @@ const ModalHeader = ({ dataset, fullscreen, copiedKey, onCopy, onClose, onToggle
           </div>
         </div>
         <div className="pm-head-tools">
-          <button
-            type="button"
-            className="pm-icon-btn"
-            title={fullscreen ? 'Exit full screen' : 'Full screen'}
-            onClick={onToggleFullscreen}
-          >
-            {fullscreen ? <FullscreenExitOutlined /> : <FullscreenOutlined />}
-          </button>
           <button type="button" className="pm-icon-btn bare" title="Close" onClick={onClose}>
             <CloseOutlined />
           </button>

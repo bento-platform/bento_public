@@ -33,8 +33,6 @@ import type { OntologyTerm } from '@/types/ontology';
 
 // ── Constants ──────────────────────────────────────────────────────────────
 
-const AVATAR_COLORS = ['#054A74', '#08979C', '#FA8C16', '#722ED1', '#C41D7F', '#096DD9'];
-
 const LINK_TYPE_ICONS: Record<string, React.ReactNode> = {
   'Downloadable Artifact': <DownloadOutlined />,
   'Data Management Plan': <FileDoneOutlined />,
@@ -45,14 +43,6 @@ const LINK_TYPE_ICONS: Record<string, React.ReactNode> = {
 };
 
 // ── Helpers ────────────────────────────────────────────────────────────────
-
-const avatarColor = (idx: number) => AVATAR_COLORS[idx % AVATAR_COLORS.length];
-
-const initials = (name: string) => {
-  const parts = name.trim().split(/\s+/);
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-};
 
 const isOntologyTerm = (k: StringOrOntologyClass): k is OntologyTerm =>
   typeof k === 'object' && k !== null && 'id' in k;
@@ -173,15 +163,6 @@ export const PersonCard = ({
   return (
     <div className={`pm-pcard${lead ? ' lead' : ''}`}>
       <div className="pm-pc-top">
-        {isPerson ? (
-          <div className="pm-avatar" style={{ background: avatarColor(idx) }}>
-            {initials(person.name)}
-          </div>
-        ) : (
-          <div className="pm-avatar-org">
-            <BankOutlined />
-          </div>
-        )}
         <div className="pm-pc-id">
           <div className="pm-pc-type">{isPerson ? 'Person' : 'Organization'}</div>
           <div className="pm-pc-name">
