@@ -12,7 +12,9 @@ const NumberRangeFilterInput = ({ definition, value, onChange }: Props) => {
   const t = useTranslationFn();
   const { minimum, maximum } = definition.config;
   const enforcedMin =
-    'taper_left' in definition.config && minimum !== definition.config?.taper_left ? (minimum ?? undefined) : undefined;
+    'taper_left' in definition.config && minimum === definition.config.taper_left ? undefined : (minimum ?? undefined);
+  const enforcedMax =
+    'taper_right' in definition.config && maximum === definition.config.taper_right ? undefined : (maximum ?? undefined);
   const rawValue = Array.isArray(value) ? (value[0] ?? null) : value;
 
   // Local state buffers what the user is typing. We can't derive from rawValue directly because
@@ -118,6 +120,7 @@ const NumberRangeFilterInput = ({ definition, value, onChange }: Props) => {
         className="flex-1 w-full"
         controls={false}
         status={boundsInverted ? 'error' : undefined}
+        max={enforcedMax}
         value={upperStr ? parseFloat(upperStr) : null}
         onChange={onUpperNumberChange}
         placeholder={maximum !== null ? String(maximum) : 'max'}

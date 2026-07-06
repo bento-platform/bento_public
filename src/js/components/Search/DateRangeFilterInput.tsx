@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 
 import type { FilterValue } from '@/features/search/types';
-import { parseBrackets, buildRangeString, DATE_FORMAT, type RangeState } from '@/utils/rangeFilterUtils';
+import { parseBrackets, buildRangeString, buildComparisonString, DATE_FORMAT, type RangeState } from '@/utils/rangeFilterUtils';
 
 type Props = { value: FilterValue; onChange: (v: FilterValue) => void };
 
@@ -40,7 +40,9 @@ const DateRangeFilterInput = ({ value, onChange }: Props) => {
       const lower = lStr ? dayjs(lStr, DATE_FORMAT) : null;
       const upper = uStr ? dayjs(uStr, DATE_FORMAT) : null;
       const inverted = !!(lower?.isValid() && upper?.isValid() && upper.isBefore(lower, 'day'));
-      const result = inverted ? null : buildRangeString(lStr, uStr, false, false);
+      const result = inverted
+        ? null
+        : (buildRangeString(lStr, uStr, false, false) ?? buildComparisonString(lStr, uStr, false, false));
       lastEmittedRef.current = result;
       onChange(result);
     },
