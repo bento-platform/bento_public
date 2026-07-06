@@ -14,7 +14,9 @@ const NumberRangeFilterInput = ({ definition, value, onChange }: Props) => {
   const enforcedMin =
     'taper_left' in definition.config && minimum === definition.config.taper_left ? undefined : (minimum ?? undefined);
   const enforcedMax =
-    'taper_right' in definition.config && maximum === definition.config.taper_right ? undefined : (maximum ?? undefined);
+    'taper_right' in definition.config && maximum === definition.config.taper_right
+      ? undefined
+      : (maximum ?? undefined);
   const rawValue = Array.isArray(value) ? (value[0] ?? null) : value;
 
   // Local state buffers what the user is typing. We can't derive from rawValue directly because

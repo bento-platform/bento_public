@@ -4,7 +4,13 @@ import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 
 import type { FilterValue } from '@/features/search/types';
-import { parseBrackets, buildRangeString, buildComparisonString, DATE_FORMAT, type RangeState } from '@/utils/rangeFilterUtils';
+import {
+  parseBrackets,
+  buildRangeString,
+  buildComparisonString,
+  DATE_FORMAT,
+  type RangeState,
+} from '@/utils/rangeFilterUtils';
 
 type Props = { value: FilterValue; onChange: (v: FilterValue) => void };
 
