@@ -251,20 +251,20 @@ export const DatasetProvenanceContent = ({
       )}
 
       {!!links.length && (
-        <div style={{ marginTop: 20 }}>
+        <section style={{ marginTop: 20 }}>
           <SectionTitle title="Links" />
           <LinksDisplay links={links} />
-        </div>
+        </section>
       )}
 
       {fullViewSections.length > 0 &&
         (!collapsed ? (
           <Flex vertical gap={20} style={{ marginTop: 20 }}>
             {fullViewSections.map(({ title, children }) => (
-              <div key={title}>
+              <section key={title}>
                 <SectionTitle title={title} />
                 {children}
-              </div>
+              </section>
             ))}
 
             {onToggleCollapsed ? (
