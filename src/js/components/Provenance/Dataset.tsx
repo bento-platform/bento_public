@@ -16,7 +16,7 @@ import { isoDateToString } from '@/utils/strings';
 import StatusBadge from '@/components/Util/StatusBadge';
 import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
 import CountsDisplay from '@/components/Util/CountsDisplay';
-import DatasetProvenanceModal from './DatasetProvenanceModal';
+import DatasetProvenanceModal from './Modal/DatasetProvenanceModal';
 import KeywordList from './KeywordList';
 import ProjectPill from './Catalogue/ProjectPill';
 
