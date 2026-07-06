@@ -123,10 +123,11 @@ body {
 .pt-5 { padding-top: 20px; }
 .z-0 { z-index: 0; }
 .self-start { align-self: flex-start; }
-.text-cat-primary { color: var(--ant-color-primary, #054A74); }
 
 /* custom, tailwind-esque */
 .max-w-half-cmw { max-width: calc(var(--content-max-width) / 2); }
+.text-cat-primary { color: var(--ant-color-primary, #054A74); }
+.text-secondary { color: var(--text-secondary); }
 
 .shadow {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
@@ -259,8 +260,6 @@ body {
   left: 0;
   right: 0;
   padding-right: var(--content-padding-h);
-  padding-top: 8px;
-  padding-bottom: 8px;
   background-color: rgba(250, 250, 250, 0.80);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgb(235, 235, 235);
@@ -451,10 +450,11 @@ body {
 }
 
 #pcgl-footer {
-  background-color: var(--ant-color-primary, #054A74);
+  --pcgl-footer-bg: color-mix(in srgb, var(--ant-color-primary, #054A74) 60%, black);
+  background-color: var(--pcgl-footer-bg);
   /* Hacky box-shadow protection against really short content revealing page background below: */
-  box-shadow: 0 200px 0 var(--ant-color-primary, #054A74), 0 400px 0 var(--ant-color-primary, #054A74), 0 600px 0 var(--ant-color-primary, #054A74);
-  border-top: 1px solid #02253B;  /* HSL of above darkened by 6pp */
+  box-shadow: 0 200px 0 var(--pcgl-footer-bg), 0 400px 0 var(--pcgl-footer-bg), 0 600px 0 var(--pcgl-footer-bg);
+  border-top: 1px solid color-mix(in srgb, var(--ant-color-primary, #054A74) 60%, black);
   font-size: 13px;
 }
 #pcgl-footer img {
@@ -570,7 +570,14 @@ body {
 .donut-wrap { display: flex; align-items: center; gap: 12px; }
 .donut { flex: none; }
 .donut-num { font-size: 18px; font-weight: 700; fill: rgba(0,0,0,0.88); text-anchor: middle; }
-.donut-lbl { font-size: 8px; fill: var(--text-muted); text-anchor: middle; text-transform: uppercase; letter-spacing: 0.05em; }
+.donut-lbl {
+  font-size: 8px;
+  color: var(--text-muted);
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1.2;
+}
 .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 .provenance-tag {
   font-size: 11px;
@@ -600,7 +607,7 @@ body {
 /* BEGIN catalogue toolbar */
 .catalogue-search-input { flex-grow: 1; min-width: 200px; border-radius: 6px; }
 .catalogue-sort-select { width: 180px; }
-.catalogue-count-highlight { color: var(--ant-color-primary, #054A74); font-weight: 600; }
+.catalogue-count-highlight { color: rgba(0, 0, 0, 0.88); font-weight: 600; }
 .catalogue-filter-tag { border-radius: 13px !important; margin: 0 !important; }
 .catalogue-filter-tag__facet-label { color: var(--text-muted); font-size: 11px; margin-right: 3px; }
 .catalogue-clear-tag { border-radius: 13px !important; margin: 0 !important; cursor: pointer; border-style: dashed; }
@@ -613,7 +620,7 @@ body {
   border-radius: 12px;
   padding: 14px 16px;
 }
-.catalogue-insights__header-title { color: var(--ant-color-primary, #054A74); font-weight: 600; font-size: 14px; }
+.catalogue-insights__header-title { color: var(--text-secondary); font-weight: 600; font-size: 14px; }
 .catalogue-insights__hint { font-size: 12px; color: var(--text-muted); }
 /* END catalogue insights */
 
