@@ -53,7 +53,7 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
     <div className="catalogue-insights">
       <Flex justify="space-between" align="center" className="mb-3">
         <Flex align="center" gap={6}>
-          <BarChartOutlined className="text-cat-primary" />
+          <BarChartOutlined className="text-secondary" />
           <Text className="catalogue-insights__header-title">{t('catalogue.insights.title')}</Text>
         </Flex>
         <Text className="catalogue-insights__hint">{t('catalogue.insights.hint')}</Text>

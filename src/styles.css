@@ -124,6 +124,7 @@ body {
 .z-0 { z-index: 0; }
 .self-start { align-self: flex-start; }
 .text-cat-primary { color: var(--ant-color-primary, #054A74); }
+.text-secondary { color: var(--text-secondary); }
 
 /* custom, tailwind-esque */
 .max-w-half-cmw { max-width: calc(var(--content-max-width) / 2); }
@@ -614,7 +615,7 @@ body {
   border-radius: 12px;
   padding: 14px 16px;
 }
-.catalogue-insights__header-title { color: var(--ant-color-primary, #054A74); font-weight: 600; font-size: 14px; }
+.catalogue-insights__header-title { color: var(--text-secondary); font-weight: 600; font-size: 14px; }
 .catalogue-insights__hint { font-size: 12px; color: var(--text-muted); }
 /* END catalogue insights */
 
