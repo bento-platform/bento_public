@@ -1,6 +1,7 @@
 import { Card, Typography } from 'antd';
 import { useFormatNumber, useTranslationFn } from '@/hooks';
 import type { FacetId } from '@/features/catalogue/catalogue.store';
+import { statusTranslationKey } from '@/features/catalogue/hooks';
 import { COLOR_CHART_FALLBACK, COLOR_DONUT_TRACK } from '../constants';
 
 const { Text } = Typography;
@@ -94,7 +95,9 @@ const DonutChart = ({
                 onClick={() => onSegmentClick(facetId, entry.name)}
               >
                 <span className="dot" style={{ background: colors[entry.name] ?? DEFAULT_COLOR }} />
-                <span className="legend-lbl">{t(entry.name)}</span>
+                <span className="legend-lbl">
+                  {facetId === 'statuses' ? t(statusTranslationKey(entry.name)) : t(entry.name)}
+                </span>
                 <span className="legend-val">{fmt(entry.value)}</span>
               </div>
             );
