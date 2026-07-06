@@ -259,6 +259,7 @@ body {
   top: 0;
   left: 0;
   right: 0;
+  padding-right: var(--content-padding-h);
   background-color: rgba(250, 250, 250, 0.80);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgb(235, 235, 235);
@@ -449,7 +450,7 @@ body {
 }
 
 #pcgl-footer {
-  --pcgl-footer-bg: color-mix(in srgb, var(--ant-color-primary, #054A74) 80%, black);
+  --pcgl-footer-bg: color-mix(in srgb, var(--ant-color-primary, #054A74) 60%, black);
   background-color: var(--pcgl-footer-bg);
   /* Hacky box-shadow protection against really short content revealing page background below: */
   box-shadow: 0 200px 0 var(--pcgl-footer-bg), 0 400px 0 var(--pcgl-footer-bg), 0 600px 0 var(--pcgl-footer-bg);
