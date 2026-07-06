@@ -22,6 +22,7 @@ const OverviewDatasets = ({
               parentProjectID={parentProjectID}
               dataset={d}
               format="card"
+              fromProject
               filteredCounts={
                 countsByDataset ? (countsByDataset[d.identifier] ?? EMPTY_KATSU_ENTITY_COUNTS) : d.counts_by_entity
               }
