@@ -123,11 +123,11 @@ body {
 .pt-5 { padding-top: 20px; }
 .z-0 { z-index: 0; }
 .self-start { align-self: flex-start; }
-.text-cat-primary { color: var(--ant-color-primary, #054A74); }
-.text-secondary { color: var(--text-secondary); }
 
 /* custom, tailwind-esque */
 .max-w-half-cmw { max-width: calc(var(--content-max-width) / 2); }
+.text-cat-primary { color: var(--ant-color-primary, #054A74); }
+.text-secondary { color: var(--text-secondary); }
 
 .shadow {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
@@ -570,7 +570,14 @@ body {
 .donut-wrap { display: flex; align-items: center; gap: 12px; }
 .donut { flex: none; }
 .donut-num { font-size: 18px; font-weight: 700; fill: rgba(0,0,0,0.88); text-anchor: middle; }
-.donut-lbl { font-size: 7px; fill: var(--text-muted); text-anchor: middle; text-transform: uppercase; letter-spacing: 0.04em; }
+.donut-lbl {
+  font-size: 8px;
+  color: var(--text-muted);
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1.2;
+}
 .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 .provenance-tag {
   font-size: 11px;

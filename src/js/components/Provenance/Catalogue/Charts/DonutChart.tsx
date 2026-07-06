@@ -10,22 +10,8 @@ const SIZE = 116,
   R = 46,
   CIRC = 2 * Math.PI * R;
 
-const wrapCenterLabel = (label: string, maxLineLen = 10): string[] => {
-  const words = label.split(' ');
-  const lines: string[] = [];
-  let current = '';
-  for (const word of words) {
-    const candidate = current ? `${current} ${word}` : word;
-    if (candidate.length > maxLineLen && current) {
-      lines.push(current);
-      current = word;
-    } else {
-      current = candidate;
-    }
-  }
-  if (current) lines.push(current);
-  return lines;
-};
+const LABEL_WIDTH = 74;
+const LABEL_HEIGHT = 30;
 
 interface DonutChartProps {
   title: string;
@@ -64,7 +50,6 @@ const DonutChart = ({
   );
 
   const c = SIZE / 2;
-  const centerLabelLines = wrapCenterLabel(centerLabel);
 
   return (
     <Card size="small" className="chart-card">
@@ -95,11 +80,9 @@ const DonutChart = ({
           <text x={c} y={c - 6} className="donut-num">
             {fmt(total)}
           </text>
-          {centerLabelLines.map((line, i) => (
-            <text key={i} x={c} y={c + 9 + i * 9} className="donut-lbl">
-              {line}
-            </text>
-          ))}
+          <foreignObject x={c - LABEL_WIDTH / 2} y={c + 2} width={LABEL_WIDTH} height={LABEL_HEIGHT}>
+            <div className="donut-lbl">{centerLabel}</div>
+          </foreignObject>
         </svg>
         <div className="chart-legend">
           {data.map((entry) => {
