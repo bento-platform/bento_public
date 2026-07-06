@@ -1,6 +1,6 @@
 import { type ReactNode, useMemo } from 'react';
 import type { DescriptionsItemType } from 'antd/es/descriptions';
-import { Button, Card, Descriptions, Flex, Tag, Typography } from 'antd';
+import { Button, Card, Descriptions, Flex, Typography } from 'antd';
 import { CalendarOutlined, DownOutlined, FileProtectOutlined, TagOutlined, UpOutlined } from '@ant-design/icons';
 
 import { useTranslationFn } from '@/hooks';
@@ -15,6 +15,7 @@ import PersonOrOrganizationDisplay from './PersonOrOrganizationDisplay';
 import PublicationsDisplay from './PublicationsDisplay';
 import SpatialCoverageDisplay from './SpatialCoverageDisplay';
 import TagDisplay from './TagDisplay';
+import StatusBadge from '@Util/StatusBadge';
 
 const { Item } = Descriptions;
 const { Paragraph, Title } = Typography;
@@ -56,7 +57,6 @@ export const DatasetProvenanceContent = ({
   const keywords = dataset.keywords ?? [];
   const taxa = dataset.taxa ?? [];
   const links = dataset.links ?? [];
-  const studyStatus = dataset.study_status?.toLocaleUpperCase();
 
   const subtitleItems: { icon: ReactNode; key: keyof Dataset }[] = [
     { icon: <TagOutlined />, key: 'version' },
@@ -191,15 +191,7 @@ export const DatasetProvenanceContent = ({
         <Title level={2} className="mb-0" style={{ fontWeight: 500, fontSize: '1.5rem' }}>
           {dataset.title}
         </Title>
-        {!!dataset.study_status && (
-          <Tag
-            color="orange"
-            style={{ alignSelf: 'center' }}
-            title={`${t('dataset.study_status')}: ${t('dataset.' + studyStatus)}`}
-          >
-            {dataset.study_status}
-          </Tag>
-        )}
+        {!!dataset.study_status && <StatusBadge status={dataset.study_status} />}
       </Flex>
       <ul className="attributes">
         {subtitleItems
