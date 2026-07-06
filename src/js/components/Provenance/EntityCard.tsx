@@ -20,12 +20,20 @@ const EntityCard = ({
   return (
     <Card
       size="small"
-      style={primary ? { borderColor: token.colorPrimaryBorder } : undefined}
+      style={
+        primary
+          ? {
+              borderColor: token.colorPrimaryBorder,
+              background: `linear-gradient(
+                180deg, color-mix(in srgb, ${token.colorPrimaryBg}, white 60%), rgba(255, 255, 255, 0.0))`,
+            }
+          : undefined
+      }
       styles={{ body: { display: 'flex', flexDirection: 'column' } }}
       {...props}
     >
       {!!supertitle && (
-        <span style={{ textTransform: 'uppercase', color: '#999', fontSize: 12, fontWeight: 'bold' }}>
+        <span style={{ textTransform: 'uppercase', color: 'rgba(0, 0, 0, 0.55)', fontSize: 12, fontWeight: 'bold' }}>
           {supertitle}
         </span>
       )}
