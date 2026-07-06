@@ -1,8 +1,8 @@
+import { useState } from 'react';
 import {
   AuditOutlined,
   BankOutlined,
   BookOutlined,
-  CalendarOutlined,
   CheckOutlined,
   CopyOutlined,
   DollarOutlined,
@@ -160,14 +160,17 @@ export const PersonCard = ({
   const contact = person.contact;
   const hasContact = contact && (contact.email?.length || contact.website || contact.address || contact.phone);
 
+  const displayName =
+    isPerson && p.honorific && !person.name.toLowerCase().startsWith(p.honorific.toLowerCase())
+      ? `${p.honorific} ${person.name}`
+      : person.name;
+
   return (
     <div className={`pm-pcard${lead ? ' lead' : ''}`}>
       <div className="pm-pc-top">
         <div className="pm-pc-id">
           <div className="pm-pc-type">{isPerson ? 'Person' : 'Organization'}</div>
-          <div className="pm-pc-name">
-            {isPerson && p.honorific ? `${p.honorific} ${person.name}` : person.name}
-          </div>
+          <div className="pm-pc-name">{displayName}</div>
           {affiliationLine && (
             <div className="pm-pc-affil">
               <BankOutlined />
@@ -253,45 +256,67 @@ export const PublicationCard = ({
   idx: number;
   copiedKey: string | null;
   onCopy: (value: string, id: string) => void;
-}) => (
-  <div className="pm-pub">
-    <div className="pm-pub-top">
-      <span className="pm-pub-type">{pubTypeLabel(pub.publication_type)}</span>
-      {pub.publication_date && (
-        <span className="pm-pub-date">
-          <CalendarOutlined />
-          {pub.publication_date}
-        </span>
+}) => {
+  const [expanded, setExpanded] = useState(false);
+  const hasAuthors = !!pub.authors?.length;
+  const hasDetail = !!(pub.publication_venue || pub.doi || pub.url);
+
+  return (
+    <div className="pm-pub">
+      <button
+        type="button"
+        className={`pm-pub-row${expanded ? ' expanded' : ''}`}
+        onClick={() => setExpanded((e) => !e)}
+      >
+        <DownOutlined className="pm-pub-chevron" style={!expanded ? { transform: 'rotate(-90deg)' } : undefined} />
+        {pub.publication_date && <span className="pm-pub-year">{pub.publication_date.slice(0, 4)}</span>}
+        {expanded ? (
+          <div className="pm-pub-full">
+            <div className="pm-pub-title-full">{pub.title}</div>
+            {hasAuthors && (
+              <div className="pm-pub-authors-full">{pub.authors!.map(personName).join(', ')}</div>
+            )}
+          </div>
+        ) : (
+          <>
+            <span className="pm-pub-title-inline">{pub.title}</span>
+            {hasAuthors && (
+              <span className="pm-pub-authors-inline">{pub.authors!.map(personName).join(', ')}</span>
+            )}
+          </>
+        )}
+        <span className="pm-pub-type-mini">{pubTypeLabel(pub.publication_type)}</span>
+      </button>
+
+      {expanded && hasDetail && (
+        <div className="pm-pub-detail">
+          {pub.publication_venue && (
+            <div className="pm-pub-venue">
+              <BookOutlined />
+              {pub.publication_venue.name}
+              {pub.publication_venue.publisher && ` · ${pub.publication_venue.publisher}`}
+            </div>
+          )}
+          {(pub.doi || pub.url) && (
+            <div className="pm-pub-foot">
+              {pub.doi && (
+                <span className="pm-doi">
+                  {pub.doi}
+                  <CopyButton value={pub.doi} id={`doi-${idx}`} copiedKey={copiedKey} onCopy={onCopy} />
+                </span>
+              )}
+              {pub.url && (
+                <a className="pm-pub-view" href={pub.url} target="_blank" rel="noreferrer">
+                  View publication <ExportOutlined />
+                </a>
+              )}
+            </div>
+          )}
+        </div>
       )}
     </div>
-    <div className="pm-pub-title">{pub.title}</div>
-    {pub.authors && pub.authors.length > 0 && (
-      <div className="pm-pub-authors">{pub.authors.map(personName).join(', ')}</div>
-    )}
-    {pub.publication_venue && (
-      <div className="pm-pub-venue">
-        <BookOutlined />
-        {pub.publication_venue.name}
-        {pub.publication_venue.publisher && ` · ${pub.publication_venue.publisher}`}
-      </div>
-    )}
-    {(pub.doi || pub.url) && (
-      <div className="pm-pub-foot">
-        {pub.doi && (
-          <span className="pm-doi">
-            {pub.doi}
-            <CopyButton value={pub.doi} id={`doi-${idx}`} copiedKey={copiedKey} onCopy={onCopy} />
-          </span>
-        )}
-        {pub.url && (
-          <a className="pm-pub-view" href={pub.url} target="_blank" rel="noreferrer">
-            View publication <ExportOutlined />
-          </a>
-        )}
-      </div>
-    )}
-  </div>
-);
+  );
+};
 
 // ── FundingCard ────────────────────────────────────────────────────────────
 

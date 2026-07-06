@@ -1,5 +1,4 @@
 import {
-  AuditOutlined,
   CalendarOutlined,
   CloseOutlined,
   FileDoneOutlined,
@@ -77,13 +76,6 @@ const ModalHeader = ({ dataset, copiedKey, onCopy, onClose }: ModalHeaderProps) 
             <CalendarOutlined />
             <span className="pm-meta-lbl">Modified</span>
             {dataset.last_modified}
-          </span>
-        )}
-        {dataset.privacy && (
-          <span className="pm-meta-item">
-            <AuditOutlined />
-            <span className="pm-meta-lbl">Privacy</span>
-            {dataset.privacy}
           </span>
         )}
       </div>
