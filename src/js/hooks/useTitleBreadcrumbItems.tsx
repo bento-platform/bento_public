@@ -9,6 +9,7 @@ import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { useGetRouteTitleAndIcon } from '@/hooks/navigation';
 import { useExtraBreadcrumb } from '@/features/ui/hooks';
 import { getCurrentPage } from '@/utils/router';
+import { PCGL_MODE } from '@/config';
 
 export const useTitleBreadcrumbItems = (): BreadcrumbItemType[] => {
   const t = useTranslationFn();
@@ -29,7 +30,7 @@ export const useTitleBreadcrumbItems = (): BreadcrumbItemType[] => {
 
     const items: BreadcrumbItemType[] = [];
 
-    if (scope.project && !fixedProject) {
+    if (scope.project && !fixedProject && !(PCGL_MODE && scope.dataset)) {
       // If we have more than one project (or we're in catalogue mode), fixedProject will be false, meaning we should
       // show project context in the navigation:
       items.push({
