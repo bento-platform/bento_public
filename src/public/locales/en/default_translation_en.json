@@ -590,7 +590,8 @@
     },
     "datasets": {
       "empty": "No datasets match your filters",
-      "reset_filters": "Clear all filters"
+      "reset_filters": "Clear all filters",
+      "expand": "more"
     },
     "status": {
       "ongoing": "Ongoing",

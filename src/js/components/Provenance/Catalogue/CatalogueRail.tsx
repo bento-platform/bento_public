@@ -3,6 +3,7 @@ import { useAppDispatch } from '@/hooks';
 import { useCatalogueState } from '@/features/catalogue/hooks';
 import { toggleFacetValue, toggleFacetCollapse, type FacetId } from '@/features/catalogue/catalogue.store';
 import { useTranslationFn } from '@/hooks';
+import { statusTranslationKey } from '@/features/catalogue/hooks';
 import { CaretDownOutlined, CaretRightOutlined } from '@ant-design/icons';
 import FilterChip from '@/components/Util/FilterChip';
 
@@ -48,7 +49,7 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
           {options.map(({ value, count, selected }) => (
             <FilterChip
               key={value}
-              label={value}
+              label={facet.id === 'statuses' ? t(statusTranslationKey(value)) : value}
               count={count}
               selected={selected}
               onClick={() => onToggleValue(value)}

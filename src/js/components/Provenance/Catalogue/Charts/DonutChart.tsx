@@ -1,6 +1,7 @@
 import { Card, Typography } from 'antd';
 import { useFormatNumber, useTranslationFn } from '@/hooks';
 import type { FacetId } from '@/features/catalogue/catalogue.store';
+import { statusTranslationKey } from '@/features/catalogue/hooks';
 import { COLOR_CHART_FALLBACK, COLOR_DONUT_TRACK } from '../constants';
 
 const { Text } = Typography;
@@ -9,6 +10,9 @@ const DEFAULT_COLOR = COLOR_CHART_FALLBACK;
 const SIZE = 116,
   R = 46,
   CIRC = 2 * Math.PI * R;
+
+const LABEL_WIDTH = 74;
+const LABEL_HEIGHT = 30;
 
 interface DonutChartProps {
   title: string;
@@ -74,12 +78,12 @@ const DonutChart = ({
               </title>
             </circle>
           ))}
-          <text x={c} y={c - 3} className="donut-num">
+          <text x={c} y={c - 6} className="donut-num">
             {fmt(total)}
           </text>
-          <text x={c} y={c + 13} className="donut-lbl">
-            {centerLabel}
-          </text>
+          <foreignObject x={c - LABEL_WIDTH / 2} y={c + 2} width={LABEL_WIDTH} height={LABEL_HEIGHT}>
+            <div className="donut-lbl">{centerLabel}</div>
+          </foreignObject>
         </svg>
         <div className="chart-legend">
           {data.map((entry) => {
@@ -91,7 +95,9 @@ const DonutChart = ({
                 onClick={() => onSegmentClick(facetId, entry.name)}
               >
                 <span className="dot" style={{ background: colors[entry.name] ?? DEFAULT_COLOR }} />
-                <span className="legend-lbl">{t(entry.name)}</span>
+                <span className="legend-lbl">
+                  {facetId === 'statuses' ? t(statusTranslationKey(entry.name)) : t(entry.name)}
+                </span>
                 <span className="legend-val">{fmt(entry.value)}</span>
               </div>
             );

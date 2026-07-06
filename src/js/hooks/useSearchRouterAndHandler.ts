@@ -104,9 +104,12 @@ export const useSearchRouterAndHandler = () => {
         const isComparison = /^([<>]|[≥≤])\s*-?\d+(\.\d+)?$/.test(value);
         return isRange || isComparison ? [field, true, value] : [field, false];
       }
-      // Date fields accept a range string, or a bin label (e.g. "Jan 2026" from a chart click) converted to a range.
+      // Date fields accept a range string, a single-sided comparison, or a bin label
+      // (e.g. "Jan 2026" from a chart click) converted to a range.
       if (queryDataPerm && field.definition.datatype === 'date') {
-        if (/^([[(][^,]+,[^,]+[\])])$/.test(value)) return [field, true, value];
+        const isRange = /^([[(][^,]+,[^,]+[\])])$/.test(value);
+        const isComparison = /^([<>]|[≥≤])\s*\d{4}-\d{2}-\d{2}$/.test(value);
+        if (isRange || isComparison) return [field, true, value];
         const rangeStr = parseDateBinAsRange(value);
         return rangeStr ? [field, true, rangeStr] : [field, false];
       }

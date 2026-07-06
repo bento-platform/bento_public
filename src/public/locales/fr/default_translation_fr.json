@@ -206,7 +206,8 @@
     "datasets": {
       "heading": "Jeux de données",
       "no_results": "Aucun jeu de données ne correspond à vos filtres",
-      "clear_filters": "Effacer tous les filtres"
+      "clear_filters": "Effacer tous les filtres",
+      "expand": "plus"
     },
     "status": {
       "ongoing": "En cours",
