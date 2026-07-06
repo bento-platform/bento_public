@@ -451,10 +451,11 @@ body {
 }
 
 #pcgl-footer {
-  background-color: var(--ant-color-primary, #054A74);
+  --pcgl-footer-bg: color-mix(in srgb, var(--ant-color-primary, #054A74) 80%, black);
+  background-color: var(--pcgl-footer-bg);
   /* Hacky box-shadow protection against really short content revealing page background below: */
-  box-shadow: 0 200px 0 var(--ant-color-primary, #054A74), 0 400px 0 var(--ant-color-primary, #054A74), 0 600px 0 var(--ant-color-primary, #054A74);
-  border-top: 1px solid #02253B;  /* HSL of above darkened by 6pp */
+  box-shadow: 0 200px 0 var(--pcgl-footer-bg), 0 400px 0 var(--pcgl-footer-bg), 0 600px 0 var(--pcgl-footer-bg);
+  border-top: 1px solid color-mix(in srgb, var(--ant-color-primary, #054A74) 60%, black);
   font-size: 13px;
 }
 #pcgl-footer img {
