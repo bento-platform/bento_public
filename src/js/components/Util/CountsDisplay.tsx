@@ -47,7 +47,6 @@ const CountsDisplay = ({ counts, totalCounts }: CountsDisplayProps) => {
           content={<div style={{ maxWidth: 360 }}>{t(`entities.${entity}_help`, { joinArrays: ' ' })}</div>}
         >
           <CountItem
-            className="cursor-pointer"
             icon={icon}
             value={
               isFiltered ? (

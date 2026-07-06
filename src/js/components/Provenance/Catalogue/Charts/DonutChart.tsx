@@ -1,12 +1,11 @@
 import { Card, Typography } from 'antd';
-import { useTranslationFn } from '@/hooks';
+import { useFormatNumber, useTranslationFn } from '@/hooks';
 import type { FacetId } from '@/features/catalogue/catalogue.store';
 import { COLOR_CHART_FALLBACK, COLOR_DONUT_TRACK } from '../constants';
 
 const { Text } = Typography;
 
 const DEFAULT_COLOR = COLOR_CHART_FALLBACK;
-const fmt = (n: number) => n.toLocaleString('en-US');
 const SIZE = 116,
   R = 46,
   CIRC = 2 * Math.PI * R;
@@ -35,6 +34,7 @@ const DonutChart = ({
   maxWidth = SIZE,
 }: DonutChartProps) => {
   const t = useTranslationFn();
+  const fmt = useFormatNumber();
   if (data.length === 0) return null;
 
   const segments = data.reduce<{ entry: { name: string; value: number }; len: number; dashOffset: number }[]>(

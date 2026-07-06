@@ -1,29 +1,32 @@
 import { useMemo } from 'react';
 import { useAppSelector } from '@/hooks';
-import type { Dataset } from '@/types/dataset';
-import type { Project } from '@/types/metadata';
-import type { FacetId } from './catalogue.store';
+import { FACET_IDS, FACET_ORDER, SORT_FNS, type DatasetWithProject, type FacetId } from './constants';
 
-export interface DatasetWithProject {
-  dataset: Dataset;
-  project: Project;
-}
+export type { DatasetWithProject } from './constants';
 
+/** Extracts a display string from a plain string or labelled object. */
 export const getLabel = (v: string | { label: string }) => (typeof v === 'string' ? v : v.label);
 
+/** Normalises raw study_status values to display strings. */
 export function normaliseStatus(raw: string | undefined | null): string {
   if (raw === 'ONGOING') return 'Ongoing';
   if (raw === 'COMPLETED') return 'Completed';
   return 'Unassigned';
 }
 
+/** Ordered colour palette used to assign a stable colour per project name. */
 export const PALETTE = ['#1677FF', '#13C2C2', '#722ED1', '#FA8C16', '#52C41A'];
 
+/**
+ * Assigns a deterministic colour from {@link PALETTE} to each project name.
+ * Names are sorted alphabetically before assignment so order is stable across renders.
+ */
 export function assignColors(names: string[]): Record<string, string> {
   const sorted = [...names].sort((a, b) => a.localeCompare(b));
   return Object.fromEntries(sorted.map((name, i) => [name, PALETTE[i % PALETTE.length]]));
 }
 
+/** Returns the filterable string values for each facet dimension of a dataset. */
 export function getDatasetFacetValues({ dataset, project }: DatasetWithProject): Record<FacetId, string[]> {
   return {
     projects: [project.title],
@@ -36,15 +39,21 @@ export function getDatasetFacetValues({ dataset, project }: DatasetWithProject):
   };
 }
 
-const FACET_ORDER: Partial<Record<FacetId, string[]>> = {
-  statuses: ['Ongoing', 'Completed', 'Unassigned'],
-  access: ['Open', 'Registered', 'Controlled'],
-};
-
+/** Selects the full catalogue slice from the Redux store. */
 export function useCatalogueState() {
   return useAppSelector((state) => state.catalogue);
 }
 
+/**
+ * Filters, sorts, and computes facet option counts for a list of datasets.
+ *
+ * Returns:
+ * - `filtered` — datasets matching the current search query and all active facet selections, sorted by `sort`.
+ * - `facetOptions(facetId)` — for each facet, the available values with their counts and selected state.
+ *   Counts reflect items matching every *other* active filter (excluding the queried facet), so options
+ *   stay live as the user drills down. Already-selected values are always included even if their count
+ *   drops to zero so they can be deselected.
+ */
 export function useCatalogueFilter(items: DatasetWithProject[]): {
   filtered: DatasetWithProject[];
   facetOptions: (facetId: FacetId) => { value: string; count: number; selected: boolean }[];
@@ -54,7 +63,12 @@ export function useCatalogueFilter(items: DatasetWithProject[]): {
   return useMemo(() => {
     const lowerQ = q.toLowerCase();
 
-    function matchesItem(item: DatasetWithProject, skipFacet: FacetId | null): boolean {
+    /**
+     * Returns true if `item` passes the current text query and all facet filters.
+     * Pass `skipFacet` to exclude one facet from the check — used when computing
+     * that facet's own option counts.
+     */
+    function matchesQuery(item: DatasetWithProject, skipFacet: FacetId | null): boolean {
       const { dataset } = item;
       if (lowerQ) {
         const kw = (dataset.keywords ?? []).map(getLabel).join(' ');
@@ -62,8 +76,7 @@ export function useCatalogueFilter(items: DatasetWithProject[]): {
         const hay = [dataset.title, dataset.description, dom, kw].join(' ').toLowerCase();
         if (!hay.includes(lowerQ)) return false;
       }
-      const facetIds: FacetId[] = ['projects', 'dataTypes', 'taxa', 'access', 'licenses', 'statuses', 'keywords'];
-      for (const fid of facetIds) {
+      for (const fid of FACET_IDS) {
         if (fid === skipFacet) continue;
         const selected = sets[fid];
         if (selected.length === 0) continue;
@@ -73,29 +86,12 @@ export function useCatalogueFilter(items: DatasetWithProject[]): {
       return true;
     }
 
-    const filtered = items.filter((item) => matchesItem(item, null));
+    const filtered = items.filter((item) => matchesQuery(item, null));
+    const sortedFiltered = [...filtered].sort(SORT_FNS[sort]);
 
-    const sortedFiltered = [...filtered].sort((a, b) => {
-      const da = a.dataset;
-      const db = b.dataset;
-      if (sort === 'updated_desc') return (db.last_modified ?? '').localeCompare(da.last_modified ?? '');
-      if (sort === 'created_desc') return (db.release_date ?? '').localeCompare(da.release_date ?? '');
-      if (sort === 'title_az') return da.title.localeCompare(db.title);
-      if (sort === 'individuals_desc') {
-        const ai = typeof da.counts_by_entity?.individual === 'number' ? da.counts_by_entity.individual : 0;
-        const bi = typeof db.counts_by_entity?.individual === 'number' ? db.counts_by_entity.individual : 0;
-        return bi - ai;
-      }
-      if (sort === 'biosamples_desc') {
-        const ab = typeof da.counts_by_entity?.biosample === 'number' ? da.counts_by_entity.biosample : 0;
-        const bb = typeof db.counts_by_entity?.biosample === 'number' ? db.counts_by_entity.biosample : 0;
-        return bb - ab;
-      }
-      return 0;
-    });
-
+    /** Computes display options for a single facet, respecting all other active filters. */
     function facetOptions(facetId: FacetId) {
-      const base = items.filter((item) => matchesItem(item, facetId));
+      const base = items.filter((item) => matchesQuery(item, facetId));
       const countMap = new Map<string, number>();
       for (const item of base) {
         for (const v of getDatasetFacetValues(item)[facetId]) {

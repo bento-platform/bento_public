@@ -1,13 +1,11 @@
 import { Card, Typography } from 'antd';
-import { useTranslationFn } from '@/hooks';
+import { useFormatNumber, useTranslationFn } from '@/hooks';
 import type { FacetId } from '@/features/catalogue/catalogue.store';
 import { COLOR_BAR_DEFAULT } from '../constants';
 
 const { Text } = Typography;
 
 const DEFAULT_COLOR = COLOR_BAR_DEFAULT;
-const fmt = (n: number) => n.toLocaleString('en-US');
-
 interface BarChartProps {
   title: string;
   data: { name: string; value: number }[];
@@ -28,6 +26,7 @@ const BarChart = ({
   onSegmentClick,
 }: BarChartProps) => {
   const t = useTranslationFn();
+  const fmt = useFormatNumber();
   if (data.length === 0) return null;
 
   const max = Math.max(1, ...data.map((d) => d.value));

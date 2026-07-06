@@ -2,11 +2,10 @@ import { useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAppDispatch } from '@/hooks';
 import { useCatalogueState } from './hooks';
-import { hydrateFromUrl, type SortKey, type ViewMode, type CatalogueFilterSets } from './catalogue.store';
+import { hydrateFromUrl, FACET_IDS, type SortKey, type ViewMode, type CatalogueFilterSets } from './catalogue.store';
 
 const VALID_SORTS: SortKey[] = ['updated_desc', 'created_desc', 'title_az', 'individuals_desc', 'biosamples_desc'];
 const VALID_VIEWS: ViewMode[] = ['grid', 'list'];
-const FACET_IDS = ['projects', 'dataTypes', 'taxa', 'access', 'licenses', 'statuses', 'keywords'] as const;
 
 function splitParam(v: string | null): string[] {
   return v ? v.split(',').filter(Boolean) : [];
@@ -22,15 +21,9 @@ export function useCatalogueUrlSync() {
   useEffect(() => {
     const rawSort = searchParams.get('sort');
     const rawView = searchParams.get('view');
-    const sets: CatalogueFilterSets = {
-      projects: splitParam(searchParams.get('projects')),
-      dataTypes: splitParam(searchParams.get('dataTypes')),
-      taxa: splitParam(searchParams.get('taxa')),
-      access: splitParam(searchParams.get('access')),
-      licenses: splitParam(searchParams.get('licenses')),
-      statuses: splitParam(searchParams.get('statuses')),
-      keywords: splitParam(searchParams.get('keywords')),
-    };
+    const sets = Object.fromEntries(
+      FACET_IDS.map((facet) => [facet, splitParam(searchParams.get(facet))])
+    ) as unknown as CatalogueFilterSets;
     dispatch(
       hydrateFromUrl({
         q: searchParams.get('q') ?? '',

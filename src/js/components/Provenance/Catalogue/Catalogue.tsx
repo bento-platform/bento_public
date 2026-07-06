@@ -1,4 +1,5 @@
-import { useEffect, useMemo, type CSSProperties } from 'react';
+import { useEffect, useMemo } from 'react';
+import clsx from 'clsx';
 import { Divider, Empty, Button, Flex, Typography } from 'antd';
 import { useMetadata } from '@/features/metadata/hooks';
 import { useCatalogueFilter, useCatalogueState } from '@/features/catalogue/hooks';
@@ -36,11 +37,6 @@ const Catalogue = () => {
     const names = [...new Set(allDatasets.map(({ project }) => project.title))];
     dispatch(setProjectColors(assignColors(names)));
   }, [allDatasets, dispatch]);
-
-  const gridStyle: CSSProperties =
-    view === 'grid'
-      ? { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(290px, 1fr))', gap: 14 }
-      : { display: 'flex', flexDirection: 'column', gap: 14 };
 
   return (
     <div className="pb-content max-w-catalogue mx-auto w-full">
@@ -81,7 +77,7 @@ const Catalogue = () => {
               </Button>
             </Empty>
           ) : (
-            <div style={gridStyle}>
+            <div className={clsx('catalogue-grid', view !== 'grid' && 'catalogue-grid--single-col')}>
               {filtered.map(({ dataset, project }) => (
                 <Dataset
                   key={dataset.identifier}

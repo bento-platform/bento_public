@@ -6,45 +6,11 @@ import SiteHeader from '@/components/SiteHeader';
 import SiteSider from '@/components/SiteSider';
 import SiteFooter from '@/components/SiteFooter';
 import PcglFooter from '@/components/Pcgl/PcglFooter';
-import ScopeBreadcrumb from '@/components/Scope/ScopeBreadcrumb';
+import ScopeHeader from '@/components/Scope/ScopeHeader';
 import { useSelectedScope, useScopeHasData } from '@/features/metadata/hooks';
 import { useIsInCatalogueMode, useSidebarMenuItems } from '@/hooks/navigation';
 import { useTitleBreadcrumbItems } from '@/hooks/useTitleBreadcrumbItems';
 import { PCGL_MODE } from '@/config';
-
-// TODO: temporary dev-only toggle — remove before merging to main
-declare const process: { env: { NODE_ENV: string } };
-const IS_DEV = process.env.NODE_ENV === 'development';
-
-const DevPcglToggle = () => {
-  const toggle = () => {
-    localStorage.setItem('dev_pcgl_mode', String(!PCGL_MODE));
-    window.location.reload();
-  };
-  return (
-    <button
-      onClick={toggle}
-      title="Dev: toggle PCGL mode"
-      style={{
-        position: 'fixed',
-        bottom: 12,
-        left: 12,
-        zIndex: 9999,
-        fontSize: 11,
-        fontFamily: 'monospace',
-        padding: '3px 8px',
-        borderRadius: 4,
-        border: '1px solid #aaa',
-        background: PCGL_MODE ? '#054A74' : '#f5f5f5',
-        color: PCGL_MODE ? '#fff' : '#333',
-        cursor: 'pointer',
-        opacity: 0.75,
-      }}
-    >
-      PCGL {PCGL_MODE ? 'ON' : 'OFF'}
-    </button>
-  );
-};
 import { BentoRoute } from '@/types/routes';
 import { getCurrentPage } from '@/utils/router';
 
@@ -73,7 +39,7 @@ const DefaultLayout = () => {
   const showSidebarToggle = sidebarOverlay && page === 'overview';
 
   const breadcrumbItems = useTitleBreadcrumbItems();
-  const titleHidden = !isCatalogue && !breadcrumbItems.length && !showSidebarToggle; // ScopedTitle not shown
+  const titleHidden = !isCatalogue && !breadcrumbItems.length && !showSidebarToggle;
 
   return (
     <Layout
@@ -85,7 +51,7 @@ const DefaultLayout = () => {
       <SiteHeader menuItems={menuItems} />
       <Layout id="content-layout">
         {!isCatalogue && !titleHidden && (
-          <ScopeBreadcrumb
+          <ScopeHeader
             showSidebarToggle={showSidebarToggle}
             sidebarOverlayShown={sidebarOverlayShown}
             onToggleSidebar={() => setCollapsed((c) => !c)}
@@ -117,7 +83,6 @@ const DefaultLayout = () => {
           ) : null}
         </Layout>
       </Layout>
-      {IS_DEV && <DevPcglToggle />}
     </Layout>
   );
 };
