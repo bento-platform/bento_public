@@ -110,7 +110,7 @@ const Dataset = ({
             ellipsis={{
               rows: 3,
               expandable: true,
-              symbol: <span className="catalogue-card__expand-symbol">more</span>,
+              symbol: <span className="catalogue-card__expand-symbol">{t('more', { count: 1 })}</span>,
             }}
             className="catalogue-card__description"
           >

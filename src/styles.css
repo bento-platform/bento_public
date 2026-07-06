@@ -570,7 +570,7 @@ body {
 .donut-wrap { display: flex; align-items: center; gap: 12px; }
 .donut { flex: none; }
 .donut-num { font-size: 18px; font-weight: 700; fill: rgba(0,0,0,0.88); text-anchor: middle; }
-.donut-lbl { font-size: 8px; fill: var(--text-muted); text-anchor: middle; text-transform: uppercase; letter-spacing: 0.05em; }
+.donut-lbl { font-size: 7px; fill: var(--text-muted); text-anchor: middle; text-transform: uppercase; letter-spacing: 0.04em; }
 .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 .provenance-tag {
   font-size: 11px;
@@ -600,7 +600,7 @@ body {
 /* BEGIN catalogue toolbar */
 .catalogue-search-input { flex-grow: 1; min-width: 200px; border-radius: 6px; }
 .catalogue-sort-select { width: 180px; }
-.catalogue-count-highlight { color: var(--ant-color-primary, #054A74); font-weight: 600; }
+.catalogue-count-highlight { color: rgba(0, 0, 0, 0.88); font-weight: 600; }
 .catalogue-filter-tag { border-radius: 13px !important; margin: 0 !important; }
 .catalogue-filter-tag__facet-label { color: var(--text-muted); font-size: 11px; margin-right: 3px; }
 .catalogue-clear-tag { border-radius: 13px !important; margin: 0 !important; cursor: pointer; border-style: dashed; }
