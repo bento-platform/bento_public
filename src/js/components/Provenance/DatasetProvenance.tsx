@@ -191,7 +191,7 @@ export const DatasetProvenanceContent = ({
         <Title level={2} className="mb-0" style={{ fontWeight: 500, fontSize: '1.5rem' }}>
           {dataset.title}
         </Title>
-        {!!dataset.study_status && <StatusBadge status={dataset.study_status} />}
+        {!!dataset.study_status && <StatusBadge status={dataset.study_status} className="self-center" />}
       </Flex>
       <ul className="attributes">
         {subtitleItems

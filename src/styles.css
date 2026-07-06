@@ -91,7 +91,8 @@ body {
 .p-0 { padding: 0; }
 .pb-content { padding-bottom: var(--content-padding-v); }
 .flex-1 { flex: 1; }
-.self-start { align-self: start; }
+.self-start { align-self: flex-start; }
+.self-center { align-self: center; }
 .min-w-0 { min-width: 0; }
 .float-right { float: right; }
 .absolute { position: absolute; }
@@ -123,7 +124,6 @@ body {
 .pt-2 { padding-top: 8px; }
 .pt-5 { padding-top: 20px; }
 .z-0 { z-index: 0; }
-.self-start { align-self: flex-start; }
 
 /* custom, tailwind-esque */
 .max-w-half-cmw { max-width: calc(var(--content-max-width) / 2); }
@@ -788,7 +788,7 @@ body {
 .catalogue-card__title { margin: 0 !important; font-size: 16px; font-weight: 600; flex: 1; }
 .status-badge {
   flex-shrink: 0;
-  align-self: center;
+  align-self: flex-start;
   font-size: 11px;
   font-weight: 600;
   padding: 1px 8px;
