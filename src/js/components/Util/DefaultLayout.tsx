@@ -1,15 +1,12 @@
 import { useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
-import { Button, Flex, FloatButton, Grid, Layout } from 'antd';
-import { FilterOutlined } from '@ant-design/icons';
-import AboutContent from '@/components/AboutContent';
+import { FloatButton, Grid, Layout } from 'antd';
 import SiteHeader from '@/components/SiteHeader';
 import SiteSider from '@/components/SiteSider';
 import SiteFooter from '@/components/SiteFooter';
-import PageHeader from '@/components/PageHeader';
 import PcglFooter from '@/components/Pcgl/PcglFooter';
-import ScopedTitle from '@/components/Scope/ScopedTitle';
+import ScopeHeader from '@/components/Scope/ScopeHeader';
 import { useSelectedScope, useScopeHasData } from '@/features/metadata/hooks';
 import { useIsInCatalogueMode, useSidebarMenuItems } from '@/hooks/navigation';
 import { useTitleBreadcrumbItems } from '@/hooks/useTitleBreadcrumbItems';
@@ -42,7 +39,7 @@ const DefaultLayout = () => {
   const showSidebarToggle = sidebarOverlay && page === 'overview';
 
   const breadcrumbItems = useTitleBreadcrumbItems();
-  const titleHidden = !isCatalogue && !breadcrumbItems.length && !showSidebarToggle; // ScopedTitle not shown
+  const titleHidden = !isCatalogue && !breadcrumbItems.length && !showSidebarToggle;
 
   return (
     <Layout
@@ -53,31 +50,14 @@ const DefaultLayout = () => {
     >
       <SiteHeader menuItems={menuItems} />
       <Layout id="content-layout">
-        <PageHeader catalogue={isCatalogue}>
-          {isCatalogue ? (
-            <AboutContent />
-          ) : (
-            <Flex
-              style={{
-                paddingLeft: showSidebarToggle ? undefined : 'var(--content-padding-h)',
-                paddingRight: 'var(--content-padding-h)',
-              }}
-            >
-              {showSidebarToggle && (
-                <Button
-                  id="page-header__sidebar-toggle"
-                  className={sidebarOverlayShown ? 'active' : ''}
-                  icon={<FilterOutlined />}
-                  color="default"
-                  variant="filled"
-                  size="large"
-                  onMouseDown={() => setCollapsed((c) => !c)}
-                />
-              )}
-              <ScopedTitle breadcrumbItems={breadcrumbItems} />
-            </Flex>
-          )}
-        </PageHeader>
+        {!isCatalogue && !titleHidden && (
+          <ScopeHeader
+            showSidebarToggle={showSidebarToggle}
+            sidebarOverlayShown={sidebarOverlayShown}
+            onToggleSidebar={() => setCollapsed((c) => !c)}
+            breadcrumbItems={breadcrumbItems}
+          />
+        )}
         <Layout>
           <Layout>
             {!sidebarHidden && <SiteSider collapsed={collapsed} overlay={sidebarOverlay} />}
