@@ -11,12 +11,12 @@ import type { Dataset } from '@/types/dataset';
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
 import CountsDisplay from './CountsDisplay';
 import FundingDisplay from './FundingDisplay';
+import KeywordList from './KeywordList';
 import LinksDisplay from './LinksDisplay';
 import ParticipantCriteriaDisplay from './ParticipantCriteriaDisplay';
 import PersonOrOrganizationDisplay from './PersonOrOrganizationDisplay';
 import PublicationsDisplay from './PublicationsDisplay';
 import SpatialCoverageDisplay from './SpatialCoverageDisplay';
-import TagDisplay from './TagDisplay';
 import StatusBadge from '@Util/StatusBadge';
 
 const { Item } = Descriptions;
@@ -85,7 +85,7 @@ export const DatasetProvenanceContent = ({
     keywordLikeItems.push({
       span: 'filled',
       label: <DescLabel title={t('dataset.domain', { count: domains.length })} />,
-      children: <TagDisplay tags={domains} color="purple" />,
+      children: <KeywordList keywords={domains} />,
     } as DescriptionsItemType);
   }
 
@@ -93,7 +93,7 @@ export const DatasetProvenanceContent = ({
     keywordLikeItems.push({
       span: 'filled',
       label: <DescLabel title={t('dataset.keywords')} />,
-      children: <TagDisplay tags={keywords} color="cyan" />,
+      children: <KeywordList keywords={keywords} />,
     } as DescriptionsItemType);
   }
 
@@ -102,9 +102,8 @@ export const DatasetProvenanceContent = ({
       span: 'filled',
       label: <DescLabel title={t('dataset.taxon', { count: taxa.length })} />,
       children: (
-        <TagDisplay
-          tags={taxa}
-          color="blue"
+        <KeywordList
+          keywords={taxa}
           tagClass={(k) => {
             const label = typeof k === 'string' ? k : k.label;
             // Make taxon label italic only if it looks like a species/species+subspecies name (X y or X y z)
