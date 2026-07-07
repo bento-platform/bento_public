@@ -624,9 +624,9 @@ body {
 .catalogue-insights__hint { font-size: 12px; color: var(--text-muted); }
 /* END catalogue insights */
 
-/* BEGIN catalogue rail */
+/* BEGIN sidebar + catalogue rail */
 
-.catalogue-rail {
+.sidebar {
   width: 236px;
   flex-shrink: 0;
   position: sticky;
@@ -641,20 +641,21 @@ body {
   overflow-x: hidden;
 }
 
-.catalogue-rail__header {
+.sidebar__header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
 }
 
-.catalogue-rail__title {
-  font-size: 13px;
+.ant-typography.sidebar__title {
+  font-size: 16px;
   font-weight: 600;
+  margin: 0;
 }
 
-.catalogue-rail__count {
-  font-size: 12px;
+.sidebar__status {
+  font-size: 14px;
   color: var(--text-muted);
 }
 

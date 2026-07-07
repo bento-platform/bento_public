@@ -6,6 +6,7 @@ import { useTranslationFn } from '@/hooks';
 import { statusTranslationKey } from '@/features/catalogue/hooks';
 import { CaretDownOutlined, CaretRightOutlined } from '@ant-design/icons';
 import FilterChip from '@/components/Util/FilterChip';
+import Sidebar from '@/components/Sidebar/Sidebar';
 
 interface FacetConfig {
   id: FacetId;
@@ -72,26 +73,25 @@ const CatalogueRail = ({ totalCount, facetOptions }: CatalogueRailProps) => {
   const { collapsedFacets } = useCatalogueState();
 
   return (
-    <div className="catalogue-rail">
-      <div className="catalogue-rail__header">
-        <span className="catalogue-rail__title">{t('catalogue.rail.title')}</span>
-        <span className="catalogue-rail__count">
+    <Sidebar
+      title={t('catalogue.rail.title')}
+      statusText={
+        <>
           {totalCount} {t('entities.dataset', { count: totalCount }).toLowerCase()}
-        </span>
-      </div>
-      <div>
-        {FACETS.map((facet) => (
-          <FacetSection
-            key={facet.id}
-            facet={facet}
-            options={facetOptions(facet.id)}
-            collapsed={collapsedFacets.includes(facet.id)}
-            onToggleCollapse={() => dispatch(toggleFacetCollapse(facet.id))}
-            onToggleValue={(value) => dispatch(toggleFacetValue({ facet: facet.id, value }))}
-          />
-        ))}
-      </div>
-    </div>
+        </>
+      }
+    >
+      {FACETS.map((facet) => (
+        <FacetSection
+          key={facet.id}
+          facet={facet}
+          options={facetOptions(facet.id)}
+          collapsed={collapsedFacets.includes(facet.id)}
+          onToggleCollapse={() => dispatch(toggleFacetCollapse(facet.id))}
+          onToggleValue={(value) => dispatch(toggleFacetValue({ facet: facet.id, value }))}
+        />
+      ))}
+    </Sidebar>
   );
 };
 
