@@ -1,7 +1,9 @@
-import { type ReactNode, useMemo } from 'react';
+import { type HTMLAttributes, type ReactNode, useMemo } from 'react';
 import type { DescriptionsItemType } from 'antd/es/descriptions';
 import { Button, Card, Descriptions, Flex, Typography } from 'antd';
 import { CalendarOutlined, DownOutlined, FileProtectOutlined, TagOutlined, UpOutlined } from '@ant-design/icons';
+
+import clsx from 'clsx';
 
 import { useTranslationFn } from '@/hooks';
 import type { Dataset } from '@/types/dataset';
@@ -28,6 +30,18 @@ const SectionTitle = ({ title }: { title: string }) => {
   const t = useTranslationFn();
   return <Title level={4}>{t(title)}</Title>;
 };
+
+const ProvenanceSection = ({
+  title,
+  className,
+  children,
+  ...props
+}: HTMLAttributes<HTMLDivElement> & { title: string }) => (
+  <section className={clsx('provenance-section', className)} {...props}>
+    <SectionTitle title={title} />
+    <div className="provenance-section__content">{children}</div>
+  </section>
+);
 
 const DescLabel = ({ title }: { title: string }) => <strong>{title}</strong>;
 
@@ -251,20 +265,18 @@ export const DatasetProvenanceContent = ({
       )}
 
       {!!links.length && (
-        <section style={{ marginTop: 20 }}>
-          <SectionTitle title="Links" />
+        <ProvenanceSection title="Links" style={{ marginTop: 20 }}>
           <LinksDisplay links={links} />
-        </section>
+        </ProvenanceSection>
       )}
 
       {fullViewSections.length > 0 &&
         (!collapsed ? (
           <Flex vertical gap={20} style={{ marginTop: 20 }}>
             {fullViewSections.map(({ title, children }) => (
-              <section key={title}>
-                <SectionTitle title={title} />
+              <ProvenanceSection title={title} key={title}>
                 {children}
-              </section>
+              </ProvenanceSection>
             ))}
 
             {onToggleCollapsed ? (
