@@ -35,7 +35,6 @@ interface FacetSectionProps {
 
 const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleValue }: FacetSectionProps) => {
   const t = useTranslationFn();
-
   if (options.length === 0) return null;
 
   return (

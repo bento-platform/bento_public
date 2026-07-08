@@ -966,17 +966,6 @@ body {
 
 /* BEGIN search */
 
-.search-sub-form {
-  flex: 1;
-}
-
-h3.search-sub-form-title {
-  font-size: 1.1rem;
-  margin-top: 0;
-  display: flex;
-  gap: 1rem;
-}
-
 .search-results-pane {
   display: flex;
   justify-content: center;

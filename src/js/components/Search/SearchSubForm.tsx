@@ -1,5 +1,4 @@
 import type { CSSProperties, ReactNode } from 'react';
-import clsx from 'clsx';
 import { useTranslationFn } from '@/hooks';
 import { SidebarSection } from '@/components/Sidebar/Sidebar';
 
@@ -37,7 +36,7 @@ const SearchSubForm = ({
         </span>
       }
       extra={extra}
-      className={clsx('search-sub-form', className)}
+      className={className}
       style={style}
     >
       {children}
