@@ -1,7 +1,8 @@
 import clsx from 'clsx';
 import { useAppDispatch } from '@/hooks';
 import { useCatalogueState } from '@/features/catalogue/hooks';
-import { toggleFacetValue, toggleFacetCollapse, type FacetId } from '@/features/catalogue/catalogue.store';
+import { toggleFacetCollapse, type FacetId } from '@/features/catalogue/catalogue.store';
+import { useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
 import { useTranslationFn } from '@/hooks';
 import { statusTranslationKey } from '@/features/catalogue/hooks';
 import { CaretDownOutlined, CaretRightOutlined } from '@ant-design/icons';
@@ -70,6 +71,7 @@ const CatalogueRail = ({ totalCount, facetOptions }: CatalogueRailProps) => {
   const t = useTranslationFn();
   const dispatch = useAppDispatch();
   const { collapsedFacets } = useCatalogueState();
+  const { toggleFacetValue } = useCatalogueUrlActions();
 
   return (
     <div className="catalogue-rail">
@@ -87,7 +89,7 @@ const CatalogueRail = ({ totalCount, facetOptions }: CatalogueRailProps) => {
             options={facetOptions(facet.id)}
             collapsed={collapsedFacets.includes(facet.id)}
             onToggleCollapse={() => dispatch(toggleFacetCollapse(facet.id))}
-            onToggleValue={(value) => dispatch(toggleFacetValue({ facet: facet.id, value }))}
+            onToggleValue={(value) => toggleFacetValue(facet.id, value)}
           />
         ))}
       </div>

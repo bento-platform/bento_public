@@ -5,8 +5,8 @@ import { useMetadata } from '@/features/metadata/hooks';
 import { useCatalogueFilter, useCatalogueState } from '@/features/catalogue/hooks';
 import { useAppDispatch } from '@/hooks';
 import { useTranslationFn } from '@/hooks';
-import { clearAll, setProjectColors } from '@/features/catalogue/catalogue.store';
-import { useCatalogueUrlSync } from '@/features/catalogue/useCatalogueUrlSync';
+import { setProjectColors } from '@/features/catalogue/catalogue.store';
+import { useCatalogueUrlSync, useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
 import { assignColors } from '@/features/catalogue/hooks';
 import { RequestStatus } from '@/types/requests';
 import Error from '@Util/Error';
@@ -23,6 +23,7 @@ const Catalogue = () => {
 
   const t = useTranslationFn();
   const dispatch = useAppDispatch();
+  const { clearAll } = useCatalogueUrlActions();
   const { projects, projectsStatus, projectsError } = useMetadata();
   const { view, insightsOpen } = useCatalogueState();
 
@@ -72,7 +73,7 @@ const Catalogue = () => {
 
           {filtered.length === 0 ? (
             <Empty description={t('catalogue.datasets.empty')}>
-              <Button type="primary" onClick={() => dispatch(clearAll())}>
+              <Button type="primary" onClick={clearAll}>
                 {t('catalogue.datasets.reset_filters')}
               </Button>
             </Empty>

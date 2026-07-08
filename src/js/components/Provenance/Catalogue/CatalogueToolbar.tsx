@@ -2,16 +2,8 @@ import { useAppDispatch } from '@/hooks';
 import { Button, Flex, Input, Select, Segmented, Typography } from 'antd';
 import { AppstoreOutlined, BarsOutlined, BarChartOutlined, SearchOutlined } from '@ant-design/icons';
 import { useCatalogueState } from '@/features/catalogue/hooks';
-import {
-  setSearch,
-  setSort,
-  setView,
-  toggleInsights,
-  toggleFacetValue,
-  clearAll,
-  type SortKey,
-  type FacetId,
-} from '@/features/catalogue/catalogue.store';
+import { toggleInsights, type SortKey, type FacetId } from '@/features/catalogue/catalogue.store';
+import { useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
 import { useTranslationFn } from '@/hooks';
 import ActiveFilterTags from '@/components/Util/ActiveFilterTags';
 
@@ -43,6 +35,7 @@ const CatalogueToolbar = ({ filteredCount }: CatalogueToolbarProps) => {
   const t = useTranslationFn();
   const dispatch = useAppDispatch();
   const { q, sets, sort, view, insightsOpen } = useCatalogueState();
+  const { setSearch, setSort, setView, toggleFacetValue, clearAll } = useCatalogueUrlActions();
 
   const pills: { key: string; facetLabel: string; label: string; onClose: () => void }[] = [];
   (Object.entries(sets) as [FacetId, string[]][]).forEach(([facet, values]) => {
@@ -51,7 +44,7 @@ const CatalogueToolbar = ({ filteredCount }: CatalogueToolbarProps) => {
         key: `${facet}-${v}`,
         facetLabel: FACET_LABELS[facet],
         label: v,
-        onClose: () => dispatch(toggleFacetValue({ facet, value: v })),
+        onClose: () => toggleFacetValue(facet, v),
       })
     );
   });
@@ -61,7 +54,7 @@ const CatalogueToolbar = ({ filteredCount }: CatalogueToolbarProps) => {
       key: 'keywords-__q__',
       facetLabel: FACET_LABELS['keywords'],
       label: `"${q}"`,
-      onClose: () => dispatch(setSearch('')),
+      onClose: () => setSearch(''),
     });
   }
 
@@ -73,19 +66,19 @@ const CatalogueToolbar = ({ filteredCount }: CatalogueToolbarProps) => {
           prefix={<SearchOutlined />}
           placeholder={t('catalogue.toolbar.search_placeholder')}
           value={q}
-          onChange={(e) => dispatch(setSearch(e.target.value))}
+          onChange={(e) => setSearch(e.target.value)}
           className="catalogue-search-input"
           allowClear
         />
         <Select<SortKey>
           value={sort}
-          onChange={(v) => dispatch(setSort(v))}
+          onChange={(v) => setSort(v)}
           className="catalogue-sort-select"
           options={SORT_OPTIONS.map((o) => ({ value: o.value, label: t(o.label) }))}
         />
         <Segmented
           value={view}
-          onChange={(v) => dispatch(setView(v as 'grid' | 'list'))}
+          onChange={(v) => setView(v as 'grid' | 'list')}
           options={[
             { value: 'grid', icon: <AppstoreOutlined /> },
             { value: 'list', icon: <BarsOutlined /> },
@@ -111,7 +104,7 @@ const CatalogueToolbar = ({ filteredCount }: CatalogueToolbarProps) => {
       </Flex>
 
       {/* Row 3: active filter pills */}
-      <ActiveFilterTags pills={pills} onClearAll={() => dispatch(clearAll())} />
+      <ActiveFilterTags pills={pills} onClearAll={clearAll} />
     </Flex>
   );
 };
