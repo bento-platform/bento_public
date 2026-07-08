@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactNode } from 'react';
-import { Typography } from 'antd';
 import clsx from 'clsx';
 import { useTranslationFn } from '@/hooks';
+import { SidebarSection } from '@/components/Sidebar/Sidebar';
 
 export type SearchSubFormProps = {
   titleKey: string;
@@ -27,18 +27,21 @@ const SearchSubForm = ({
   const t = useTranslationFn();
 
   return (
-    <div className={clsx('search-sub-form', className)} style={style}>
-      <Typography.Title level={3} className="search-sub-form-title">
+    <SidebarSection
+      sectionTitle={
         <span style={{ flex: 1 }}>
           {icon}{' '}
           <span className="should-underline-if-unfocused">
             {t(`search.${titleKey}`, titleKeyCount !== undefined ? { count: titleKeyCount } : {})}
           </span>
         </span>
-        {extra}
-      </Typography.Title>
+      }
+      extra={extra}
+      className={clsx('search-sub-form', className)}
+      style={style}
+    >
       {children}
-    </div>
+    </SidebarSection>
   );
 };
 

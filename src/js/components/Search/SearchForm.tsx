@@ -10,19 +10,17 @@ const SearchForm = () => {
   const isSmallScreen = useSmallScreen();
   const { hasPermission: queryDataPerm } = useScopeQueryData();
 
-  const subFormStyle = { padding: isSmallScreen ? 10 : 12 };
-
   return (
-    <Flex justify="space-between" className="w-full" vertical>
+    <Flex justify="space-between" className="w-full" vertical gap={isSmallScreen ? 2 : 4}>
       {queryDataPerm && (
         // If we have the query:data permission on the current scope, we're allowed to run free-text searches on
         // the data, so show the free-text search form:
         <>
-          <SearchFreeText style={subFormStyle} />
+          <SearchFreeText />
           <Divider className="m-0" />
         </>
       )}
-      <SearchFilters className="max-w-half-cmw" style={subFormStyle} />
+      <SearchFilters className="max-w-half-cmw" />
     </Flex>
   );
 };
