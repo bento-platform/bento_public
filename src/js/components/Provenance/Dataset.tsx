@@ -31,6 +31,7 @@ const Dataset = ({
   project,
   selected,
   filteredCounts,
+  fromProject,
 }: {
   parentProjectID: string;
   dataset: Dataset;
@@ -38,6 +39,9 @@ const Dataset = ({
   project?: Project;
   selected?: boolean;
   filteredCounts?: KatsuEntityCountsOrBooleans;
+  // Whether this dataset is being linked to from within its parent project's own page - used to inform the
+  // dataset scope's back button (in PCGL mode, it otherwise defaults to going back to the catalogue).
+  fromProject?: boolean;
 }) => {
   const language = useLanguage();
   const navigateToScope = useNavigateToScope();
@@ -53,9 +57,19 @@ const Dataset = ({
     () => ({ project: parentProjectID, dataset: identifier }),
     [parentProjectID, identifier]
   );
+  const navigateOptions = useMemo(
+    () => (fromProject ? { state: { fromProjectScope: true } } : undefined),
+    [fromProject]
+  );
 
-  const onNavigateCurrent = useCallback(() => navigateToScope(scope, page), [navigateToScope, scope, page]);
-  const onNavigateOverview = useCallback(() => navigateToScope(scope, BentoRoute.Overview), [navigateToScope, scope]);
+  const onNavigateCurrent = useCallback(
+    () => navigateToScope(scope, page, false, navigateOptions),
+    [navigateToScope, scope, page, navigateOptions]
+  );
+  const onNavigateOverview = useCallback(
+    () => navigateToScope(scope, BentoRoute.Overview, false, navigateOptions),
+    [navigateToScope, scope, navigateOptions]
+  );
 
   const openProvenanceModal = useCallback(() => setProvenanceModalOpen(true), []);
   const closeProvenanceModal = useCallback(() => setProvenanceModalOpen(false), []);
@@ -110,7 +124,7 @@ const Dataset = ({
             ellipsis={{
               rows: 3,
               expandable: true,
-              symbol: <span className="catalogue-card__expand-symbol">more</span>,
+              symbol: <span className="catalogue-card__expand-symbol">{t('catalogue.datasets.expand')}</span>,
             }}
             className="catalogue-card__description"
           >

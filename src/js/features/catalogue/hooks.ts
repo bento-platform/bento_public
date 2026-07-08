@@ -14,6 +14,9 @@ export function normaliseStatus(raw: string | undefined | null): string {
   return 'Unassigned';
 }
 
+/** Builds the i18n key for a normalised status value, e.g., "Unassigned" -> "catalogue.status.unassigned". */
+export const statusTranslationKey = (status: string): string => `catalogue.status.${status.toLowerCase()}`;
+
 /** Ordered colour palette used to assign a stable colour per project name. */
 export const PALETTE = ['#1677FF', '#13C2C2', '#722ED1', '#FA8C16', '#52C41A'];
 
