@@ -1228,6 +1228,7 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   --pm-sep: rgba(5,5,5,0.06);
   --pm-tag-bg: rgba(5,74,116,0.08);
   --pm-mono: "SF Mono", ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
+  --pm-nav-width: 240px;
 }
 
 .pm-scrim {
@@ -1343,11 +1344,11 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
 /* ── Body layout ── */
 .pm-body {
   flex: 1; min-height: 0; overflow: auto;
-  display: grid; grid-template-columns: 212px 1fr;
+  display: grid; grid-template-columns: var(--pm-nav-width) 1fr;
   scroll-behavior: smooth; position: relative;
 }
 .pm-body::before {
-  content: ""; position: absolute; left: 212px; top: 0; bottom: 0;
+  content: ""; position: absolute; left: var(--pm-nav-width); top: 0; bottom: 0;
   width: 1px; background: var(--pm-border); pointer-events: none;
 }
 
@@ -1368,6 +1369,11 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   transition: background 0.12s, color 0.12s;
 }
 .pm-nav-link .anticon { font-size: 14px; color: var(--pm-ink-45); transition: color 0.12s; }
+.pm-nav-link .pm-nav-label {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 .pm-nav-link .pm-nav-count {
   margin-left: auto; font-size: 11px;
   color: var(--pm-ink-30); font-variant-numeric: tabular-nums;
