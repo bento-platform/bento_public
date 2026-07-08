@@ -39,7 +39,7 @@ const DefaultLayout = () => {
   const showSidebarToggle = sidebarOverlay && page === 'overview';
 
   const breadcrumbItems = useTitleBreadcrumbItems();
-  const scopeHeaderHidden = !isCatalogue && !breadcrumbItems.length && !showSidebarToggle;
+  const scopeHeaderHidden = isCatalogue || (!isCatalogue && !breadcrumbItems.length && !showSidebarToggle);
 
   return (
     <Layout
