@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import clsx from 'clsx';
 import { BookOutlined, DownOutlined, ExportOutlined } from '@ant-design/icons';
 
 import type { Publication } from '@/types/dataset';
@@ -10,13 +11,15 @@ export const PublicationCard = ({
   idx,
   copiedKey,
   onCopy,
+  alwaysExpanded,
 }: {
   pub: Publication;
   idx: number;
   copiedKey: string | null;
   onCopy: (value: string, id: string) => void;
+  alwaysExpanded?: boolean; // Whether the publication is always expanded and thus not collapsible
 }) => {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState<boolean>(alwaysExpanded ?? false);
   const hasAuthors = !!pub.authors?.length;
   const hasDetail = !!(pub.publication_venue || pub.doi || pub.url);
 
@@ -24,10 +27,12 @@ export const PublicationCard = ({
     <div className="pm-pub">
       <button
         type="button"
-        className={`pm-pub-row${expanded ? ' expanded' : ''}`}
+        className={clsx('pm-pub-row', { expanded, 'always-expanded': alwaysExpanded })}
         onClick={() => setExpanded((e) => !e)}
       >
-        <DownOutlined className="pm-pub-chevron" style={!expanded ? { transform: 'rotate(-90deg)' } : undefined} />
+        {!alwaysExpanded && (
+          <DownOutlined className="pm-pub-chevron" style={!expanded ? { transform: 'rotate(-90deg)' } : undefined} />
+        )}
         {pub.publication_date && <span className="pm-pub-year">{pub.publication_date.slice(0, 4)}</span>}
         {expanded ? (
           <div className="pm-pub-full">

@@ -1579,6 +1579,7 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   border-radius: 5px; padding: 1px 6px; flex: none;
 }
 .pm-pub-detail { padding: 0 12px 12px 34px; display: flex; flex-direction: column; gap: 7px; }
+.pm-pub.always-expanded .pm-pub-detail { padding-left: 14px; }
 .pm-pub-venue {
   font-size: 12.5px; color: var(--pm-ink-45);
   display: flex; align-items: center; gap: 7px;
