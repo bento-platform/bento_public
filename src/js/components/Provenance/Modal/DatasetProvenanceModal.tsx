@@ -20,7 +20,7 @@ import { useTranslationFn } from '@/hooks';
 import type { Dataset } from '@/types/dataset';
 import { FundingCard, LinkTile, LicenseTile, PersonCard, PublicationCard, ProvenanceSection } from './cards';
 import IdentifiersSectionContent from './IdentifiersSectionContent';
-import ModalHeader from './ModalHeader';
+import ProvenanceHeader from './ProvenanceHeader';
 import ParticipantCriteriaSectionContent from './ParticipantCriteriaSectionContent';
 import SideNav from './SideNav';
 import SpatialCoverageSection from './SpatialCoverageSection';
@@ -308,29 +308,31 @@ const DatasetProvenanceModal = ({ dataset, open, onCancel }: DatasetProvenanceMo
   const modal = (
     <div className="pm-scrim" onClick={onCancel}>
       <div className="pm-modal" role="dialog" aria-label="Dataset provenance" onClick={(e) => e.stopPropagation()}>
-        <ModalHeader dataset={dataset} copiedKey={copiedKey} onCopy={handleCopy} onClose={onCancel} />
+        <div className="prov-container">
+          <ProvenanceHeader dataset={dataset} copiedKey={copiedKey} onCopy={handleCopy} onClose={onCancel} />
 
-        <div className="pm-body" ref={bodyRef}>
-          <SideNav navEntries={provenanceEntries} activeSection={activeSection} onJump={jumpToSection} />
+          <div className="pm-body" ref={bodyRef}>
+            <SideNav navEntries={provenanceEntries} activeSection={activeSection} onJump={jumpToSection} />
 
-          <div className="pm-content">
-            {provenanceEntries.map(({ id, count, children }) => (
-              <ProvenanceSection
-                key={id}
-                sectionId={id}
-                collapsed={isCollapsed(id)}
-                onToggle={() => toggleCollapse(id)}
-                count={count}
-              >
-                {children}
-              </ProvenanceSection>
-            ))}
+            <div className="pm-content">
+              {provenanceEntries.map(({ id, count, children }) => (
+                <ProvenanceSection
+                  key={id}
+                  sectionId={id}
+                  collapsed={isCollapsed(id)}
+                  onToggle={() => toggleCollapse(id)}
+                  count={count}
+                >
+                  {children}
+                </ProvenanceSection>
+              ))}
+            </div>
           </div>
-        </div>
 
-        <div className={`pm-toast${toast.show ? ' show' : ''}`}>
-          <CheckOutlined style={{ color: '#73D13D' }} />
-          {toast.text}
+          <div className={`pm-toast${toast.show ? ' show' : ''}`}>
+            <CheckOutlined style={{ color: '#73D13D' }} />
+            {toast.text}
+          </div>
         </div>
       </div>
     </div>

@@ -19,7 +19,7 @@ type ModalHeaderProps = {
   onClose: () => void;
 };
 
-const ModalHeader = ({ dataset, copiedKey, onCopy, onClose }: ModalHeaderProps) => {
+const ProvenanceHeader = ({ dataset, copiedKey, onCopy, onClose }: ModalHeaderProps) => {
   const t = useTranslationFn();
   return (
     <div className="pm-head">
@@ -84,4 +84,4 @@ const ModalHeader = ({ dataset, copiedKey, onCopy, onClose }: ModalHeaderProps) 
   );
 };
 
-export default ModalHeader;
+export default ProvenanceHeader;
