@@ -6,6 +6,7 @@ import {
   UnorderedListOutlined,
 } from '@ant-design/icons';
 
+import { T_SINGULAR_COUNT } from '@/constants/i18n';
 import { useTranslationFn } from '@/hooks';
 import type { Dataset } from '@/types/dataset';
 import { CopyButton } from './cards';
@@ -28,7 +29,8 @@ const ModalHeader = ({ dataset, copiedKey, onCopy, onClose }: ModalHeaderProps) 
         <div className="pm-head-main">
           <div className="pm-eyebrow">
             <UnorderedListOutlined style={{ fontSize: 12 }} />
-            Dataset Provenance{dataset.program_name ? ` · ${dataset.program_name}` : ''}
+            {t('entities.dataset', T_SINGULAR_COUNT)}
+            {dataset.program_name ? ` · ${dataset.program_name}` : ''}
           </div>
           <div className="pm-title-row">
             <h1>{t(dataset.title)}</h1>
