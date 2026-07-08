@@ -6,11 +6,11 @@ import { CaretDownOutlined, CaretRightOutlined } from '@ant-design/icons';
 /*
  * Structure:
  *   Sidebar
- *     SidebarSection
+ *     SidebarSection (with title and possible extra header content)
  *       SidebarFacet
  *       SidebarFacet
  *       ...
- *     SidebarSection
+ *     SidebarSection (with title and possible extra header content)
  *       ...
  */
 
