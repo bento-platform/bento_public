@@ -1247,7 +1247,6 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   background: #fff;
   border-radius: 16px;
   box-shadow: 0 24px 70px rgba(2,37,59,0.30), 0 6px 22px rgba(2,37,59,0.18);
-  display: flex; flex-direction: column; overflow: hidden;
   animation: pm-rise 0.28s cubic-bezier(.2,.7,.3,1);
 }
 .pm-modal.fullscreen {
@@ -1257,6 +1256,12 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
 @keyframes pm-rise {
   from { opacity: 0; transform: translateY(14px) scale(.99); }
   to   { opacity: 1; transform: none; }
+}
+
+.prov-container {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 /* ── Header ── */
