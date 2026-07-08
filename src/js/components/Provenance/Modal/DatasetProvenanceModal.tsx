@@ -15,15 +15,17 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 
+import { useTranslationFn } from '@/hooks';
+
 import type { Dataset } from '@/types/dataset';
-import { FundingCard, LinkTile, LicenseTile, PersonCard, PublicationCard, SectionHead } from './cards';
-import IdentifiersSection from './IdentifiersSection';
+import { FundingCard, LinkTile, LicenseTile, PersonCard, PublicationCard, ProvenanceSection } from './cards';
+import IdentifiersSectionContent from './IdentifiersSectionContent';
 import ModalHeader from './ModalHeader';
-import ParticipantCriteriaSection from './ParticipantCriteriaSection';
+import ParticipantCriteriaSectionContent from './ParticipantCriteriaSectionContent';
 import SideNav from './SideNav';
 import SpatialCoverageSection from './SpatialCoverageSection';
-import SummarySection from './SummarySection';
-import type { NavEntry, SectionId } from './types';
+import SummarySectionContent from './SummarySectionContent';
+import type { ProvenanceEntry, SectionId } from './types';
 
 type DatasetProvenanceModalProps = {
   dataset: Dataset | null | undefined;
@@ -36,6 +38,8 @@ const DatasetProvenanceModal = ({ dataset, open, onCancel }: DatasetProvenanceMo
   const [activeSection, setActiveSection] = useState<SectionId>('summary');
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [toast, setToast] = useState<{ text: string; show: boolean }>({ text: '', show: false });
+
+  const t = useTranslationFn();
 
   // Reset state when dataset changes (React "adjust state during render" pattern, avoids an effect)
   const [lastDatasetId, setLastDatasetId] = useState(dataset?.identifier);
@@ -144,38 +148,162 @@ const DatasetProvenanceModal = ({ dataset, open, onCancel }: DatasetProvenanceMo
   const hasCriteria = criteria.length > 0;
   const hasCounts = counts.length > 0;
 
-  const navEntries: NavEntry[] = [
-    { id: 'summary', label: 'Summary', icon: <UnorderedListOutlined /> },
+  const isCollapsed = (id: SectionId) => collapsed.has(id);
+
+  const provenanceEntries: ProvenanceEntry[] = [
+    {
+      id: 'summary',
+      icon: <UnorderedListOutlined />,
+      children: <SummarySectionContent dataset={dataset} />,
+    },
     ...(hasLinks
-      ? [{ id: 'links' as SectionId, label: 'Links & Resources', icon: <LinkOutlined />, count: links.length }]
+      ? [
+          {
+            id: 'links' as SectionId,
+            icon: <LinkOutlined />,
+            count: links.length,
+            children: (
+              <div className="pm-links-grid">
+                {links.map((link, i) => (
+                  <LinkTile key={i} link={link} />
+                ))}
+              </div>
+            ),
+          },
+        ]
       : []),
-    ...(hasContact ? [{ id: 'contact' as SectionId, label: 'Primary Contact', icon: <UserOutlined /> }] : []),
+    ...(hasContact
+      ? [
+          {
+            id: 'primary_contact' as SectionId,
+            icon: <UserOutlined />,
+            children: (
+              <div className="pm-pgrid">
+                <PersonCard person={dataset.primary_contact} idx={0} lead copiedKey={copiedKey} onCopy={handleCopy} />
+              </div>
+            ),
+          },
+        ]
+      : []),
     ...(hasStakeholders
-      ? [{ id: 'stakeholders' as SectionId, label: 'Stakeholders', icon: <TeamOutlined />, count: stakeholders.length }]
+      ? [
+          {
+            id: 'stakeholders' as SectionId,
+            icon: <TeamOutlined />,
+            count: stakeholders.length,
+            children: (
+              <div className="pm-pgrid">
+                {stakeholders.map((s, i) => (
+                  <PersonCard key={i} person={s} idx={i + 1} copiedKey={copiedKey} onCopy={handleCopy} />
+                ))}
+              </div>
+            ),
+          },
+        ]
       : []),
     ...(hasPubs
-      ? [{ id: 'publications' as SectionId, label: 'Publications', icon: <BookOutlined />, count: publications.length }]
+      ? [
+          {
+            id: 'publications' as SectionId,
+            icon: <BookOutlined />,
+            count: publications.length,
+            children: (
+              <div className="pm-publist">
+                {publications.map((pub, i) => (
+                  <PublicationCard key={i} pub={pub} idx={i} copiedKey={copiedKey} onCopy={handleCopy} />
+                ))}
+              </div>
+            ),
+          },
+        ]
       : []),
-    ...(hasFunding ? [{ id: 'funding' as SectionId, label: 'Funding', icon: <DollarOutlined /> }] : []),
-    ...(hasAccess ? [{ id: 'access' as SectionId, label: 'Access & License', icon: <AuditOutlined /> }] : []),
-    ...(hasSpatial ? [{ id: 'spatial' as SectionId, label: 'Spatial Coverage', icon: <EnvironmentOutlined /> }] : []),
+    ...(hasFunding
+      ? [
+          {
+            id: 'funding' as SectionId,
+            icon: <DollarOutlined />,
+            children:
+              typeof dataset.funding_sources === 'string' ? (
+                <p>{dataset.funding_sources}</p>
+              ) : (
+                <div className="pm-fgrid">
+                  {fundingSources.map((fs, i) => (
+                    <FundingCard key={i} source={fs} />
+                  ))}
+                </div>
+              ),
+          },
+        ]
+      : []),
+    ...(hasAccess
+      ? [
+          {
+            id: 'access' as SectionId,
+            icon: <AuditOutlined />,
+            children: (
+              <div className="pm-meta-grid">
+                {dataset.license && (
+                  <div className="pm-field">
+                    <span className="pm-field-k">{t('provenance.license')}</span>
+                    <LicenseTile license={dataset.license} />
+                  </div>
+                )}
+                {dataset.privacy && (
+                  <div className="pm-field">
+                    <span className="pm-field-k">{t('provenance.privacy')}</span>
+                    <span className="pm-field-v">{dataset.privacy}</span>
+                  </div>
+                )}
+              </div>
+            ),
+          },
+        ]
+      : []),
+    ...(hasSpatial
+      ? [
+          {
+            id: 'spatial' as SectionId,
+            icon: <EnvironmentOutlined />,
+            children: <SpatialCoverageSection spatialCoverage={dataset.spatial_coverage!} />,
+          },
+        ]
+      : []),
     ...(hasCriteria
       ? [
           {
             id: 'criteria' as SectionId,
-            label: 'Participant Criteria',
             icon: <InfoCircleOutlined />,
             count: criteria.length,
+            children: <ParticipantCriteriaSectionContent criteria={criteria} />,
           },
         ]
       : []),
     ...(hasCounts
-      ? [{ id: 'counts' as SectionId, label: 'Counts', icon: <NumberOutlined />, count: counts.length }]
+      ? [
+          {
+            id: 'counts' as SectionId,
+            icon: <NumberOutlined />,
+            count: counts.length,
+            children: (
+              <div className="pm-countgrid">
+                {counts.map((c, i) => (
+                  <div key={i} className="pm-countcard">
+                    <div className="pm-cc-num">{c.value.toLocaleString()}</div>
+                    <div className="pm-cc-ent">{c.count_entity}</div>
+                    {c.description && <div className="pm-cc-desc">{c.description}</div>}
+                  </div>
+                ))}
+              </div>
+            ),
+          },
+        ]
       : []),
-    { id: 'identifiers', label: 'Identifiers', icon: <TagOutlined /> },
+    {
+      id: 'identifiers',
+      icon: <TagOutlined />,
+      children: <IdentifiersSectionContent dataset={dataset} copiedKey={copiedKey} onCopy={handleCopy} />,
+    },
   ];
-
-  const isCollapsed = (id: SectionId) => collapsed.has(id);
 
   const modal = (
     <div className="pm-scrim" onClick={onCancel}>
@@ -183,180 +311,20 @@ const DatasetProvenanceModal = ({ dataset, open, onCancel }: DatasetProvenanceMo
         <ModalHeader dataset={dataset} copiedKey={copiedKey} onCopy={handleCopy} onClose={onCancel} />
 
         <div className="pm-body" ref={bodyRef}>
-          <SideNav navEntries={navEntries} activeSection={activeSection} onJump={jumpToSection} />
+          <SideNav navEntries={provenanceEntries} activeSection={activeSection} onJump={jumpToSection} />
 
           <div className="pm-content">
-            <SummarySection
-              dataset={dataset}
-              collapsed={isCollapsed('summary')}
-              onToggle={() => toggleCollapse('summary')}
-            />
-
-            {hasLinks && (
-              <section id="links" className={`pm-sec${isCollapsed('links') ? ' collapsed' : ''}`}>
-                <SectionHead
-                  title="Links & Resources"
-                  count={links.length}
-                  collapsed={isCollapsed('links')}
-                  onToggle={() => toggleCollapse('links')}
-                />
-                <div className="pm-sec-body">
-                  <div className="pm-links-grid">
-                    {links.map((link, i) => (
-                      <LinkTile key={i} link={link} />
-                    ))}
-                  </div>
-                </div>
-              </section>
-            )}
-
-            {hasContact && (
-              <section id="contact" className={`pm-sec${isCollapsed('contact') ? ' collapsed' : ''}`}>
-                <SectionHead
-                  title="Primary Contact"
-                  collapsed={isCollapsed('contact')}
-                  onToggle={() => toggleCollapse('contact')}
-                />
-                <div className="pm-sec-body">
-                  <div className="pm-pgrid">
-                    <PersonCard
-                      person={dataset.primary_contact}
-                      idx={0}
-                      lead
-                      copiedKey={copiedKey}
-                      onCopy={handleCopy}
-                    />
-                  </div>
-                </div>
-              </section>
-            )}
-
-            {hasStakeholders && (
-              <section id="stakeholders" className={`pm-sec${isCollapsed('stakeholders') ? ' collapsed' : ''}`}>
-                <SectionHead
-                  title="Stakeholders"
-                  count={stakeholders.length}
-                  collapsed={isCollapsed('stakeholders')}
-                  onToggle={() => toggleCollapse('stakeholders')}
-                />
-                <div className="pm-sec-body">
-                  <div className="pm-pgrid">
-                    {stakeholders.map((s, i) => (
-                      <PersonCard key={i} person={s} idx={i + 1} copiedKey={copiedKey} onCopy={handleCopy} />
-                    ))}
-                  </div>
-                </div>
-              </section>
-            )}
-
-            {hasPubs && (
-              <section id="publications" className={`pm-sec${isCollapsed('publications') ? ' collapsed' : ''}`}>
-                <SectionHead
-                  title="Publications"
-                  count={publications.length}
-                  collapsed={isCollapsed('publications')}
-                  onToggle={() => toggleCollapse('publications')}
-                />
-                <div className="pm-sec-body">
-                  <div className="pm-publist">
-                    {publications.map((pub, i) => (
-                      <PublicationCard key={i} pub={pub} idx={i} copiedKey={copiedKey} onCopy={handleCopy} />
-                    ))}
-                  </div>
-                </div>
-              </section>
-            )}
-
-            {hasFunding && (
-              <section id="funding" className={`pm-sec${isCollapsed('funding') ? ' collapsed' : ''}`}>
-                <SectionHead
-                  title="Funding"
-                  collapsed={isCollapsed('funding')}
-                  onToggle={() => toggleCollapse('funding')}
-                />
-                <div className="pm-sec-body">
-                  {typeof dataset.funding_sources === 'string' ? (
-                    <p>{dataset.funding_sources}</p>
-                  ) : (
-                    <div className="pm-fgrid">
-                      {fundingSources.map((fs, i) => (
-                        <FundingCard key={i} source={fs} />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </section>
-            )}
-
-            {hasAccess && (
-              <section id="access" className={`pm-sec${isCollapsed('access') ? ' collapsed' : ''}`}>
-                <SectionHead
-                  title="Access & License"
-                  collapsed={isCollapsed('access')}
-                  onToggle={() => toggleCollapse('access')}
-                />
-                <div className="pm-sec-body">
-                  <div className="pm-meta-grid">
-                    {dataset.license && (
-                      <div className="pm-field">
-                        <span className="pm-field-k">License</span>
-                        <LicenseTile license={dataset.license} />
-                      </div>
-                    )}
-                    {dataset.privacy && (
-                      <div className="pm-field">
-                        <span className="pm-field-k">Privacy</span>
-                        <span className="pm-field-v">{dataset.privacy}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </section>
-            )}
-
-            {hasSpatial && (
-              <SpatialCoverageSection
-                spatialCoverage={dataset.spatial_coverage!}
-                collapsed={isCollapsed('spatial')}
-                onToggle={() => toggleCollapse('spatial')}
-              />
-            )}
-
-            {hasCriteria && (
-              <ParticipantCriteriaSection
-                criteria={criteria}
-                collapsed={isCollapsed('criteria')}
-                onToggle={() => toggleCollapse('criteria')}
-              />
-            )}
-
-            {hasCounts && (
-              <section id="counts" className={`pm-sec${isCollapsed('counts') ? ' collapsed' : ''}`}>
-                <SectionHead
-                  title="Counts"
-                  count={counts.length}
-                  collapsed={isCollapsed('counts')}
-                  onToggle={() => toggleCollapse('counts')}
-                />
-                <div className="pm-sec-body">
-                  <div className="pm-countgrid">
-                    {counts.map((c, i) => (
-                      <div key={i} className="pm-countcard">
-                        <div className="pm-cc-num">{c.value.toLocaleString()}</div>
-                        <div className="pm-cc-ent">{c.count_entity}</div>
-                        {c.description && <div className="pm-cc-desc">{c.description}</div>}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </section>
-            )}
-
-            <IdentifiersSection
-              dataset={dataset}
-              collapsed={isCollapsed('identifiers')}
-              onToggle={() => toggleCollapse('identifiers')}
-            />
+            {provenanceEntries.map(({ id, count, children }) => (
+              <ProvenanceSection
+                key={id}
+                sectionId={id}
+                collapsed={isCollapsed(id)}
+                onToggle={() => toggleCollapse(id)}
+                count={count}
+              >
+                {children}
+              </ProvenanceSection>
+            ))}
           </div>
         </div>
 

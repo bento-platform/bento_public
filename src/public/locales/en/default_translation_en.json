@@ -472,7 +472,7 @@
     "study_type": "Study Type",
     "molecule": "Molecule",
     "molecule_ontology": "Molecule ($t(general.ontology_class))",
-    "library_id" : "Library ID",
+    "library_id": "Library ID",
     "library_description": "Library Description",
     "library_strategy": "Library Strategy",
     "library_source": "Library Source",
@@ -579,6 +579,24 @@
       "completed": "Completed",
       "unassigned": "Unassigned"
     }
+  },
+  "provenance": {
+    "sections": {
+      "summary": "Summary",
+      "links": "Links",
+      "primary_contact": "Primary Contact",
+      "stakeholders": "Stakeholders",
+      "publications": "Publications",
+      "funding": "Funding",
+      "access": "Access & License",
+      "spatial": "Spatial Coverage",
+      "identifiers": "Identifiers & Technical"
+    },
+    "domain": "Domain",
+    "keywords": "Keywords",
+    "license": "License",
+    "privacy": "Privacy",
+    "taxa": "Taxa"
   },
   "pcgl": {
     "banner": {

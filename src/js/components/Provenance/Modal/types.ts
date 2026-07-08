@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 export type SectionId =
   | 'summary'
   | 'links'
-  | 'contact'
+  | 'primary_contact'
   | 'stakeholders'
   | 'publications'
   | 'funding'
@@ -13,4 +13,4 @@ export type SectionId =
   | 'counts'
   | 'identifiers';
 
-export type NavEntry = { id: SectionId; label: string; icon: ReactNode; count?: number };
+export type ProvenanceEntry = { id: SectionId; icon: ReactNode; count?: number; children?: ReactNode };

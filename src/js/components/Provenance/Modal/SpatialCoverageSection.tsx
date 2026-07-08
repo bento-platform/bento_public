@@ -2,12 +2,9 @@ import { EnvironmentOutlined } from '@ant-design/icons';
 import { PointMap } from 'bento-charts/dist/maps';
 
 import type { SpatialCoverageFeature } from '@/types/dataset';
-import { SectionHead } from './cards';
 
 type SpatialCoverageSectionProps = {
   spatialCoverage: string | SpatialCoverageFeature;
-  collapsed: boolean;
-  onToggle: () => void;
 };
 
 const GeoSpatialContent = ({ sc }: { sc: SpatialCoverageFeature }) => {
@@ -38,20 +35,14 @@ const GeoSpatialContent = ({ sc }: { sc: SpatialCoverageFeature }) => {
   );
 };
 
-const SpatialCoverageSection = ({ spatialCoverage, collapsed, onToggle }: SpatialCoverageSectionProps) => (
-  <section id="spatial" className={`pm-sec${collapsed ? ' collapsed' : ''}`}>
-    <SectionHead title="Spatial Coverage" collapsed={collapsed} onToggle={onToggle} />
-    <div className="pm-sec-body">
-      {typeof spatialCoverage === 'string' ? (
-        <div className="pm-cover-place">
-          <EnvironmentOutlined />
-          {spatialCoverage}
-        </div>
-      ) : (
-        <GeoSpatialContent sc={spatialCoverage} />
-      )}
+const SpatialCoverageSection = ({ spatialCoverage }: SpatialCoverageSectionProps) =>
+  typeof spatialCoverage === 'string' ? (
+    <div className="pm-cover-place">
+      <EnvironmentOutlined />
+      {spatialCoverage}
     </div>
-  </section>
-);
+  ) : (
+    <GeoSpatialContent sc={spatialCoverage} />
+  );
 
 export default SpatialCoverageSection;

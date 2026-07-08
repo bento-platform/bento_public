@@ -213,6 +213,24 @@
       "unassigned": "Non assigné"
     }
   },
+  "provenance": {
+    "sections": {
+      "summary": "Résumé",
+      "links": "Liens",
+      "primary_contact": "Interlocuteur principal",
+      "stakeholders": "Parties prenantes",
+      "publications": "Publications",
+      "funding": "Financement",
+      "access": "Accès et licence",
+      "spatial": "Couverture géographique",
+      "identifiers": "Identifiants et informations techniques"
+    },
+    "domain": "Domaine",
+    "keywords": "Mots-clés",
+    "license": "License",
+    "privacy": "Confidentialité",
+    "taxa": "Taxons"
+  },
   "Back to project": "Retourner au $t(entities.project_one, lowercase)",
   "Back to dataset": "Retourner au $t(entities.dataset_one, lowercase)",
   "beacon": {
