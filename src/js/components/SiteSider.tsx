@@ -6,7 +6,7 @@ import Sidebar from '@/components/Sidebar/Sidebar';
 const SiteSider = ({ collapsed, overlay }: { collapsed: boolean; overlay: boolean }) => {
   return (
     <Layout.Sider width="auto" id="site-sider" className={clsx({ overlay: overlay, collapsed: overlay && collapsed })}>
-      <Sidebar className="shadow">
+      <Sidebar className="shadow" id="site-sider__inner">
         <SearchForm />
       </Sidebar>
     </Layout.Sider>
