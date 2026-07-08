@@ -1310,7 +1310,15 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   color: var(--pm-ink-65); background: #F5F5F5; border: 1px solid var(--pm-border-2);
   margin-top: 4px;
 }
-.pm-meta-strip { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 14px; align-items: center; }
+.pm-meta-strip {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  gap: 6px 22px;
+  margin: 14px 0 0 0;
+  padding: 0;
+  align-items: center;
+}
 .pm-id-pill {
   display: inline-flex; align-items: center; gap: 8px;
   font-family: var(--pm-mono); font-size: 12px; color: var(--pm-ink-65);

@@ -8,6 +8,7 @@ import {
 
 import { T_SINGULAR_COUNT } from '@/constants/i18n';
 import { useTranslationFn } from '@/hooks';
+import { statusTranslationKey } from '@/features/catalogue/hooks';
 import type { Dataset } from '@/types/dataset';
 import { CopyButton } from './cards';
 
@@ -37,7 +38,7 @@ const ModalHeader = ({ dataset, copiedKey, onCopy, onClose }: ModalHeaderProps) 
             {dataset.study_status && (
               <span className={`pm-status pm-status-${dataset.study_status.toLowerCase()}`}>
                 <span className="pm-dot" />
-                {dataset.study_status === 'ONGOING' ? 'Ongoing' : 'Completed'}
+                {t(statusTranslationKey(dataset.study_status))}
               </span>
             )}
             {dataset.study_context && (
@@ -52,33 +53,33 @@ const ModalHeader = ({ dataset, copiedKey, onCopy, onClose }: ModalHeaderProps) 
         </div>
       </div>
 
-      <div className="pm-meta-strip">
+      <ul className="pm-meta-strip">
         <span className="pm-id-pill">
           {dataset.identifier}
           <CopyButton value={dataset.identifier} id="identifier" copiedKey={copiedKey} onCopy={onCopy} />
         </span>
         {dataset.version && (
-          <span className="pm-meta-item">
+          <li className="pm-meta-item">
             <TagOutlined />
-            <span className="pm-meta-lbl">Version</span>
+            <span className="pm-meta-lbl">{t('provenance.version')}</span>
             {dataset.version}
-          </span>
+          </li>
         )}
         {dataset.release_date && (
-          <span className="pm-meta-item">
+          <li className="pm-meta-item">
             <CalendarOutlined />
-            <span className="pm-meta-lbl">Released</span>
+            <span className="pm-meta-lbl">{t('provenance.released')}</span>
             {dataset.release_date}
-          </span>
+          </li>
         )}
         {dataset.last_modified && (
-          <span className="pm-meta-item">
+          <li className="pm-meta-item">
             <CalendarOutlined />
-            <span className="pm-meta-lbl">Modified</span>
+            <span className="pm-meta-lbl">{t('provenance.modified')}</span>
             {dataset.last_modified}
-          </span>
+          </li>
         )}
-      </div>
+      </ul>
     </div>
   );
 };

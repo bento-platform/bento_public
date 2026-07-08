@@ -573,11 +573,6 @@
       "empty": "No datasets match your filters",
       "reset_filters": "Clear all filters",
       "expand": "more"
-    },
-    "status": {
-      "ongoing": "Ongoing",
-      "completed": "Completed",
-      "unassigned": "Unassigned"
     }
   },
   "provenance": {
@@ -592,11 +587,19 @@
       "spatial": "Spatial Coverage",
       "identifiers": "Identifiers & Technical"
     },
+    "status": {
+      "ongoing": "Ongoing",
+      "completed": "Completed",
+      "unassigned": "Unassigned"
+    },
     "domain": "Domain",
     "keywords": "Keywords",
     "license": "License",
+    "modified": "Modified",
     "privacy": "Privacy",
-    "taxa": "Taxa"
+    "released": "Released",
+    "taxa": "Taxa",
+    "version": "Version"
   },
   "pcgl": {
     "banner": {

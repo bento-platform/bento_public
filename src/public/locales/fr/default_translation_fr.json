@@ -206,11 +206,6 @@
       "no_results": "Aucun jeu de données ne correspond à vos filtres",
       "clear_filters": "Effacer tous les filtres",
       "expand": "plus"
-    },
-    "status": {
-      "ongoing": "En cours",
-      "completed": "Complété",
-      "unassigned": "Non assigné"
     }
   },
   "provenance": {
@@ -225,11 +220,19 @@
       "spatial": "Couverture géographique",
       "identifiers": "Identifiants et informations techniques"
     },
+    "status": {
+      "ongoing": "En cours",
+      "completed": "Complété",
+      "unassigned": "Non assigné"
+    },
     "domain": "Domaine",
     "keywords": "Mots-clés",
     "license": "License",
+    "modified": "Modifié",
     "privacy": "Confidentialité",
-    "taxa": "Taxons"
+    "released": "Publié",
+    "taxa": "Taxons",
+    "version": "Version"
   },
   "Back to project": "Retourner au $t(entities.project_one, lowercase)",
   "Back to dataset": "Retourner au $t(entities.dataset_one, lowercase)",
