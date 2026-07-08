@@ -1242,6 +1242,7 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
 
 .pm-modal {
   position: relative;
+  display: flex;
   width: min(1120px, 100%);
   max-height: calc(100vh - 80px);
   background: #fff;

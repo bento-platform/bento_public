@@ -16,7 +16,7 @@ type ModalHeaderProps = {
   dataset: Dataset;
   copiedKey: string | null;
   onCopy: (value: string, id: string) => void;
-  onClose: () => void;
+  onClose?: () => void;
 };
 
 const ProvenanceHeader = ({ dataset, copiedKey, onCopy, onClose }: ModalHeaderProps) => {
@@ -47,9 +47,11 @@ const ProvenanceHeader = ({ dataset, copiedKey, onCopy, onClose }: ModalHeaderPr
           </div>
         </div>
         <div className="pm-head-tools">
-          <button type="button" className="pm-icon-btn bare" title="Close" onClick={onClose}>
-            <CloseOutlined />
-          </button>
+          {onClose && (
+            <button type="button" className="pm-icon-btn bare" title="Close" onClick={onClose}>
+              <CloseOutlined />
+            </button>
+          )}
         </div>
       </div>
 

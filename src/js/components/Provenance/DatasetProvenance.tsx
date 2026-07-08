@@ -15,6 +15,7 @@ import type {
   Publication,
 } from '@/types/dataset';
 import KeywordList from './KeywordList';
+import DatasetProvenance2 from './Modal/DatasetProvenance';
 
 const { Item } = Descriptions;
 const { Paragraph, Text, Title } = Typography;
@@ -495,9 +496,10 @@ const DatasetProvenance = ({ dataset, loading, showTitle = true }: DatasetProven
         extra={showTitle && version ? [version] : undefined}
         className="shadow rounded-xl"
         loading={loading}
+        styles={{ body: { padding: 0 } }}
       >
-        {!showTitle && version ? version : null}
-        <DatasetProvenanceContent dataset={dataset} />
+        {/*{!showTitle && version ? version : null}*/}
+        <DatasetProvenance2 dataset={dataset} />
       </Card>
     </div>
   );
