@@ -39,18 +39,18 @@ const DefaultLayout = () => {
   const showSidebarToggle = sidebarOverlay && page === 'overview';
 
   const breadcrumbItems = useTitleBreadcrumbItems();
-  const titleHidden = !isCatalogue && !breadcrumbItems.length && !showSidebarToggle;
+  const scopeHeaderHidden = isCatalogue || (!isCatalogue && !breadcrumbItems.length && !showSidebarToggle);
 
   return (
     <Layout
       id="default-layout"
       className={clsx('sidebar-hidden', `page-${isCatalogue ? 'catalogue' : page}`, {
-        'title-hidden': titleHidden,
+        'scope-header-hidden': scopeHeaderHidden,
       })}
     >
       <SiteHeader menuItems={menuItems} />
       <Layout id="content-layout">
-        {!isCatalogue && !titleHidden && (
+        {!isCatalogue && !scopeHeaderHidden && (
           <ScopeHeader
             showSidebarToggle={showSidebarToggle}
             sidebarOverlayShown={sidebarOverlayShown}
