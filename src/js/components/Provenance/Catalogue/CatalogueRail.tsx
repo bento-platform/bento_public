@@ -5,8 +5,9 @@ import { toggleFacetCollapse, type FacetId } from '@/features/catalogue/catalogu
 import { useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
 import { useTranslationFn } from '@/hooks';
 import { statusTranslationKey, facetTranslationKey } from '@/features/catalogue/hooks';
+import { CloseOutlined } from '@ant-design/icons';
 import FilterChip from '@/components/Util/FilterChip';
-import FacetSider, { type FacetSiderSection } from '@/components/Util/FacetSider';
+import Sidebar, { SidebarFacet, SidebarSection } from '@/components/Sidebar/Sidebar';
 
 interface FacetConfig {
   id: FacetId;
@@ -22,6 +23,35 @@ const FACETS: FacetConfig[] = [
   { id: 'statuses' },
   { id: 'keywords', scroll: true },
 ];
+
+interface FacetSectionProps {
+  facet: FacetConfig;
+  options: { value: string; count: number; selected: boolean }[];
+  collapsed: boolean;
+  onToggleCollapse: () => void;
+  onToggleValue: (value: string) => void;
+}
+
+const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleValue }: FacetSectionProps) => {
+  const t = useTranslationFn();
+  if (options.length === 0) return null;
+
+  return (
+    <SidebarFacet label={t(facetTranslationKey(facet.id))} collapsed={collapsed} onToggleCollapse={onToggleCollapse}>
+      <div className={clsx('facet-chips', facet.scroll && 'facet-chips--scroll')}>
+        {options.map(({ value, count, selected }) => (
+          <FilterChip
+            key={value}
+            label={facet.id === 'statuses' ? t(statusTranslationKey(value)) : value}
+            count={count}
+            selected={selected}
+            onClick={() => onToggleValue(value)}
+          />
+        ))}
+      </div>
+    </SidebarFacet>
+  );
+};
 
 interface CatalogueRailProps {
   totalCount: number;
@@ -39,39 +69,34 @@ const CatalogueRail = ({ totalCount, facetOptions, overlay, open, onClose }: Cat
   const { collapsedFacets } = useCatalogueState();
   const { toggleFacetValue } = useCatalogueUrlActions();
 
-  const sections: FacetSiderSection[] = FACETS.map((facet) => ({ facet, options: facetOptions(facet.id) }))
-    .filter(({ options }) => options.length > 0)
-    .map(({ facet, options }) => ({
-      id: facet.id,
-      label: t(facetTranslationKey(facet.id)),
-      collapsed: collapsedFacets.includes(facet.id),
-      onToggleCollapse: () => dispatch(toggleFacetCollapse(facet.id)),
-      render: () => (
-        <div className={clsx('facet-chips', facet.scroll && 'facet-chips--scroll')}>
-          {options.map(({ value, count, selected }) => (
-            <FilterChip
-              key={value}
-              label={facet.id === 'statuses' ? t(statusTranslationKey(value)) : value}
-              count={count}
-              selected={selected}
-              onClick={() => toggleFacetValue(facet.id, value)}
-            />
-          ))}
-        </div>
-      ),
-    }));
-
   return (
-    <FacetSider
-      title={t('catalogue.rail.title')}
-      countLabel={`${totalCount} ${t('entities.dataset', { count: totalCount }).toLowerCase()}`}
-      closeLabel={t('catalogue.rail.close')}
-      overlay={overlay}
-      open={open}
-      onClose={onClose}
-      sections={sections}
-      classPrefix="catalogue-rail"
-    />
+    <Sidebar style={{ width: 236 }} overlay={overlay} open={open} onClose={onClose}>
+      <SidebarSection
+        sectionTitle={t('catalogue.rail.title')}
+        extra={
+          overlay ? (
+            <button className="sidebar__close" onClick={onClose} aria-label={t('catalogue.rail.close')}>
+              <CloseOutlined />
+            </button>
+          ) : (
+            <span>
+              {totalCount} {t('entities.dataset', { count: totalCount }).toLowerCase()}
+            </span>
+          )
+        }
+      >
+        {FACETS.map((facet) => (
+          <FacetSection
+            key={facet.id}
+            facet={facet}
+            options={facetOptions(facet.id)}
+            collapsed={collapsedFacets.includes(facet.id)}
+            onToggleCollapse={() => dispatch(toggleFacetCollapse(facet.id))}
+            onToggleValue={(value) => toggleFacetValue(facet.id, value)}
+          />
+        ))}
+      </SidebarSection>
+    </Sidebar>
   );
 };
 

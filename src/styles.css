@@ -377,46 +377,22 @@ body {
   position: fixed;
   box-shadow: 3px 0 10px rgba(0, 0, 0, 0.06);
   padding: 0;
+  height: calc(100vh - var(--header-height) - var(--content-scoped-title-height));
 }
 #site-sider.overlay.collapsed {
   left: calc(-1 * var(--sidebar-width-full) - 1px);
   box-shadow: none;
 }
 
-#site-sider__inner {
-  position: sticky;
-  top: calc(var(--content-scoped-title-height) + var(--content-padding-v));
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  background-color: rgba(255, 255, 255, 0.88);
-  box-sizing: border-box;
-  border: 1px solid #f0f0f0;
-  border-radius: 12px;
-  width: calc(var(--sidebar-width-full) - var(--content-padding-h));
-  overflow-y: auto;
-  height: 100%;
-  max-height: calc(100vh - var(--header-height) - var(--content-scoped-title-height) - (2 * var(--content-padding-v)));
-}
-#site-sider.overlay #site-sider__inner {
+#site-sider.overlay .sidebar {
   background: none;
   border: none;
+  box-shadow: none;
 }
 
 #default-layout.page-catalogue #site-sider__inner {
   top: 0;
   padding: var(--content-padding-v) var(--content-padding-h);
-}
-
-#default-layout.title-hidden #site-sider__inner {
-  top: var(--content-padding-v);
-  max-height: calc(100vh - var(--header-height) - (2 * var(--content-padding-v)));
-}
-
-.site-sider-shell__header {
-  display: flex;
-  gap: 1rem;
-}
-.site-sider-shell__title {
-  font-size: 1.1rem;
 }
 
 #content-layout {
@@ -633,45 +609,58 @@ body {
 .catalogue-insights__hint { font-size: 12px; color: var(--text-muted); }
 /* END catalogue insights */
 
-/* BEGIN catalogue rail */
+/* BEGIN sidebar + catalogue rail */
 
-.catalogue-rail {
-  width: 236px;
-  flex-shrink: 0;
+.sidebar {
   position: sticky;
-  top: var(--content-padding-v);
+  top: calc(var(--content-scoped-title-height) + var(--content-padding-v));
+
+  height: 100%;
+  max-height: calc(100vh - var(--header-height) - var(--content-scoped-title-height) - (2 * var(--content-padding-v)));
+  width: calc(var(--sidebar-width-full) - var(--content-padding-h));
+  flex-shrink: 0;
   align-self: flex-start;
-  background: #fff;
-  border-radius: 10px;
-  border: 1px solid var(--border-subtle);
-  padding: 12px 14px;
-  max-height: calc(100vh - var(--header-height) - var(--content-padding-v) * 2);
+
   overflow-y: auto;
   overflow-x: hidden;
+
+  background: rgba(255, 255, 255, 0.88);
+  border-radius: 10px;
+  border: 1px solid var(--border-subtle);
 }
 
-.catalogue-rail__header {
+#default-layout.scope-header-hidden .sidebar {
+  top: var(--content-padding-v);
+  max-height: calc(100vh - var(--header-height) - var(--content-padding-v) * 2);
+}
+
+.sidebar-section {
+  padding: 12px 14px;
+}
+
+.sidebar-section__header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
 }
 
-.catalogue-rail__title {
-  font-size: 13px;
+.ant-typography.sidebar-section__header__title {
+  font-size: 16px;
   font-weight: 600;
+  margin: 0;
 }
 
-.catalogue-rail__count {
-  font-size: 12px;
+.sidebar-section__header__extra {
+  font-size: 14px;
   color: var(--text-muted);
 }
 
-.facet-section {
+.sidebar-facet {
   border-bottom: 1px solid var(--border-subtle);
 }
 
-.facet-section--expanded {
+.sidebar-facet--expanded {
   padding-bottom: 8px;
 }
 
@@ -770,14 +759,14 @@ body {
   color: var(--cat-chip-count-selected);
 }
 
-.catalogue-rail-backdrop {
+.sidebar-backdrop {
   position: fixed;
   inset: 0;
   z-index: 18;
   backdrop-filter: blur(10px);
 }
 
-.catalogue-rail--overlay {
+.sidebar--overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -790,11 +779,11 @@ body {
   transition: transform 0.2s ease-out;
 }
 
-.catalogue-rail--overlay.catalogue-rail--open {
+.sidebar--overlay.sidebar--open {
   transform: translateX(0);
 }
 
-.catalogue-rail__close {
+.sidebar__close {
   background: none;
   border: none;
   cursor: pointer;
@@ -804,7 +793,7 @@ body {
   line-height: 1;
 }
 
-/* END catalogue rail */
+/* END sidebar + catalogue rail */
 
 /* BEGIN catalogue card */
 .catalogue-card {
@@ -1011,17 +1000,6 @@ body {
 
 
 /* BEGIN search */
-
-.search-sub-form {
-  flex: 1;
-}
-
-h3.search-sub-form-title {
-  font-size: 1.1rem;
-  margin-top: 0;
-  display: flex;
-  gap: 1rem;
-}
 
 .search-results-pane {
   display: flex;
