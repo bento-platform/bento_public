@@ -8,7 +8,7 @@ import {
   SearchOutlined,
   SwapOutlined,
 } from '@ant-design/icons';
-import { useCatalogueState } from '@/features/catalogue/hooks';
+import { useCatalogueState, facetTranslationKey } from '@/features/catalogue/hooks';
 import { toggleInsights, type SortKey, type FacetId } from '@/features/catalogue/catalogue.store';
 import { useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
 import { useTranslationFn } from '@/hooks';
@@ -23,16 +23,6 @@ const SORT_OPTIONS: { value: SortKey; label: string }[] = [
   { value: 'individuals_desc', label: 'catalogue.toolbar.sort.most_individuals' },
   { value: 'biosamples_desc', label: 'catalogue.toolbar.sort.most_biosamples' },
 ];
-
-const FACET_LABELS: Record<FacetId, string> = {
-  projects: 'catalogue.facets.projects',
-  dataTypes: 'catalogue.facets.dataTypes',
-  taxa: 'catalogue.facets.taxa',
-  access: 'catalogue.facets.access',
-  licenses: 'catalogue.facets.licenses',
-  statuses: 'catalogue.facets.statuses',
-  keywords: 'catalogue.facets.keywords',
-};
 
 interface CatalogueToolbarProps {
   filteredCount: number;
@@ -52,7 +42,7 @@ const CatalogueToolbar = ({ filteredCount, isMobile, onOpenFilters }: CatalogueT
     values.forEach((v) =>
       pills.push({
         key: `${facet}-${v}`,
-        facetLabel: FACET_LABELS[facet],
+        facetLabel: facetTranslationKey(facet),
         label: v,
         onClose: () => toggleFacetValue(facet, v),
       })
@@ -62,7 +52,7 @@ const CatalogueToolbar = ({ filteredCount, isMobile, onOpenFilters }: CatalogueT
   if (q) {
     pills.push({
       key: 'keywords-__q__',
-      facetLabel: FACET_LABELS['keywords'],
+      facetLabel: facetTranslationKey('keywords'),
       label: `"${q}"`,
       onClose: () => setSearch(''),
     });

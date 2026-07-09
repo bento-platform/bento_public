@@ -4,7 +4,7 @@ import { useCatalogueState } from '@/features/catalogue/hooks';
 import { toggleFacetCollapse, type FacetId } from '@/features/catalogue/catalogue.store';
 import { useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
 import { useTranslationFn } from '@/hooks';
-import { statusTranslationKey } from '@/features/catalogue/hooks';
+import { statusTranslationKey, facetTranslationKey } from '@/features/catalogue/hooks';
 import FilterChip from '@/components/Util/FilterChip';
 import FacetSider, { type FacetSiderSection } from '@/components/Util/FacetSider';
 
@@ -43,7 +43,7 @@ const CatalogueRail = ({ totalCount, facetOptions, overlay, open, onClose }: Cat
     .filter(({ options }) => options.length > 0)
     .map(({ facet, options }) => ({
       id: facet.id,
-      label: t(`catalogue.facets.${facet.id}`),
+      label: t(facetTranslationKey(facet.id)),
       collapsed: collapsedFacets.includes(facet.id),
       onToggleCollapse: () => dispatch(toggleFacetCollapse(facet.id)),
       render: () => (
