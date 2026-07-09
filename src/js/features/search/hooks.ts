@@ -71,7 +71,7 @@ export const useSearchQueryParams = (): QueryParamEntries => {
 export const useActiveFilterPills = (): { pills: ActiveFilterPill[]; clearAll: () => void } => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const { filters } = useSearchQuery();
+  const { filters, textQuery } = useSearchQuery();
   const fields = useSearchFilterFields();
   const entityAndTextQueryParams = useEntityAndTextQueryParams();
 
@@ -109,8 +109,27 @@ export const useActiveFilterPills = (): { pills: ActiveFilterPill[]; clearAll: (
     [filters, entityAndTextQueryParams, pathname, navigate]
   );
 
+  const clearTextQuery = useCallback(() => {
+    const filtersQP = filtersStateToQueryParamEntries(filters, true);
+    const resetPage = entityAndTextQueryParams.find(([k, _]) => k === TABLE_PAGE_QUERY_PARAM)
+      ? ([[TABLE_PAGE_QUERY_PARAM, '0']] as QueryParamEntries)
+      : [];
+    const url = buildQueryParamsUrl(
+      pathname,
+      combineQueryParamsWithoutKey(
+        filtersQP,
+        [...entityAndTextQueryParams, ...resetPage],
+        [TEXT_QUERY_PARAM, TEXT_QUERY_TYPE_PARAM]
+      )
+    );
+    navigate(url, { replace: true });
+  }, [filters, entityAndTextQueryParams, pathname, navigate]);
+
   const pills = useMemo(() => {
     const p: ActiveFilterPill[] = [];
+    if (textQuery) {
+      p.push({ key: '__text_query__', facetLabel: 'search.text_search', label: textQuery, onClose: clearTextQuery });
+    }
     Object.entries(filters).forEach(([field, value]) => {
       if (value === null || value === undefined) return;
       const facetLabel = fields.find((f) => f.id === field)?.definition.title ?? field;
@@ -121,7 +140,7 @@ export const useActiveFilterPills = (): { pills: ActiveFilterPill[]; clearAll: (
       });
     });
     return p;
-  }, [filters, fields, removeFilterValue]);
+  }, [textQuery, clearTextQuery, filters, fields, removeFilterValue]);
 
   return { pills, clearAll };
 };
