@@ -549,6 +549,7 @@
     },
     "toolbar": {
       "search_placeholder": "Search datasets, keywords, assays…",
+      "sort_label": "Sort",
       "sort": {
         "recently_updated": "Recently updated",
         "newest_created": "Newest created",

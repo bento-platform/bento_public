@@ -181,6 +181,7 @@
     },
     "toolbar": {
       "search_placeholder": "Rechercher des jeux de données, mots-clés, dosages …",
+      "sort_label": "Trier",
       "sort": {
         "recently_updated": "Récemment mis à jour",
         "newest_created": "Tout récemment créé",

@@ -1,6 +1,13 @@
 import { useAppDispatch } from '@/hooks';
-import { Badge, Button, Flex, Input, Select, Segmented, Typography } from 'antd';
-import { AppstoreOutlined, BarsOutlined, BarChartOutlined, FilterOutlined, SearchOutlined } from '@ant-design/icons';
+import { Badge, Button, Dropdown, Flex, Input, Select, Segmented, Typography } from 'antd';
+import {
+  AppstoreOutlined,
+  BarsOutlined,
+  BarChartOutlined,
+  FilterOutlined,
+  SearchOutlined,
+  SwapOutlined,
+} from '@ant-design/icons';
 import { useCatalogueState } from '@/features/catalogue/hooks';
 import { toggleInsights, type SortKey, type FacetId } from '@/features/catalogue/catalogue.store';
 import { useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
@@ -29,12 +36,12 @@ const FACET_LABELS: Record<FacetId, string> = {
 
 interface CatalogueToolbarProps {
   filteredCount: number;
-  /** Whether the rail is a slide-over drawer (below the `lg` breakpoint) rather than always-visible inline. */
-  showFilterToggle: boolean;
+  /** Below the `lg` breakpoint: the rail is a slide-over drawer, sort collapses to an icon button, and the grid/list switch is hidden. */
+  isMobile: boolean;
   onOpenFilters: () => void;
 }
 
-const CatalogueToolbar = ({ filteredCount, showFilterToggle, onOpenFilters }: CatalogueToolbarProps) => {
+const CatalogueToolbar = ({ filteredCount, isMobile, onOpenFilters }: CatalogueToolbarProps) => {
   const t = useTranslationFn();
   const dispatch = useAppDispatch();
   const { q, sets, sort, view, insightsOpen } = useCatalogueState();
@@ -65,7 +72,7 @@ const CatalogueToolbar = ({ filteredCount, showFilterToggle, onOpenFilters }: Ca
     <Flex vertical gap={8}>
       {/* Row 1: search + sort + view */}
       <Flex gap={8} align="center">
-        {showFilterToggle && (
+        {isMobile && (
           <Badge count={pills.length} size="small" offset={[-4, 4]} className="catalogue-toolbar-fixed">
             <Button icon={<FilterOutlined />} onClick={onOpenFilters}>
               {t('catalogue.rail.title')}
@@ -80,21 +87,40 @@ const CatalogueToolbar = ({ filteredCount, showFilterToggle, onOpenFilters }: Ca
           className="catalogue-search-input"
           allowClear
         />
-        <Select<SortKey>
-          value={sort}
-          onChange={(v) => setSort(v)}
-          className="catalogue-sort-select"
-          options={SORT_OPTIONS.map((o) => ({ value: o.value, label: t(o.label) }))}
-        />
-        <Segmented
-          className="catalogue-toolbar-fixed"
-          value={view}
-          onChange={(v) => setView(v as 'grid' | 'list')}
-          options={[
-            { value: 'grid', icon: <AppstoreOutlined /> },
-            { value: 'list', icon: <BarsOutlined /> },
-          ]}
-        />
+        {isMobile ? (
+          <Dropdown
+            trigger={['click']}
+            menu={{
+              selectedKeys: [sort],
+              items: SORT_OPTIONS.map((o) => ({ key: o.value, label: t(o.label) })),
+              onClick: ({ key }) => setSort(key as SortKey),
+            }}
+          >
+            <Button
+              className="catalogue-toolbar-fixed"
+              icon={<SwapOutlined rotate={90} />}
+              aria-label={t('catalogue.toolbar.sort_label')}
+            />
+          </Dropdown>
+        ) : (
+          <Select<SortKey>
+            value={sort}
+            onChange={(v) => setSort(v)}
+            className="catalogue-sort-select"
+            options={SORT_OPTIONS.map((o) => ({ value: o.value, label: t(o.label) }))}
+          />
+        )}
+        {!isMobile && (
+          <Segmented
+            className="catalogue-toolbar-fixed"
+            value={view}
+            onChange={(v) => setView(v as 'grid' | 'list')}
+            options={[
+              { value: 'grid', icon: <AppstoreOutlined /> },
+              { value: 'list', icon: <BarsOutlined /> },
+            ]}
+          />
+        )}
       </Flex>
 
       {/* Row 2: result count + insights toggle */}
