@@ -64,9 +64,9 @@ const CatalogueToolbar = ({ filteredCount, showFilterToggle, onOpenFilters }: Ca
   return (
     <Flex vertical gap={8}>
       {/* Row 1: search + sort + view */}
-      <Flex gap={8} align="center" wrap>
+      <Flex gap={8} align="center">
         {showFilterToggle && (
-          <Badge count={pills.length} size="small" offset={[-4, 4]}>
+          <Badge count={pills.length} size="small" offset={[-4, 4]} className="catalogue-toolbar-fixed">
             <Button icon={<FilterOutlined />} onClick={onOpenFilters}>
               {t('catalogue.rail.title')}
             </Button>
@@ -87,6 +87,7 @@ const CatalogueToolbar = ({ filteredCount, showFilterToggle, onOpenFilters }: Ca
           options={SORT_OPTIONS.map((o) => ({ value: o.value, label: t(o.label) }))}
         />
         <Segmented
+          className="catalogue-toolbar-fixed"
           value={view}
           onChange={(v) => setView(v as 'grid' | 'list')}
           options={[
