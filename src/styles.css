@@ -411,6 +411,14 @@ body {
   max-height: calc(100vh - var(--header-height) - (2 * var(--content-padding-v)));
 }
 
+.site-sider-shell__header {
+  display: flex;
+  gap: 1rem;
+}
+.site-sider-shell__title {
+  font-size: 1.1rem;
+}
+
 #content-layout {
   position: fixed;
   top: var(--header-height);

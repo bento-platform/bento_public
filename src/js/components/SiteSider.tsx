@@ -1,7 +1,8 @@
 import clsx from 'clsx';
-import { Divider, Input, Layout, Typography } from 'antd';
+import { Divider, Input, Layout } from 'antd';
 import { FormOutlined } from '@ant-design/icons';
 import SearchForm from '@/components/Search/SearchForm';
+import FacetSider from '@/components/Util/FacetSider';
 import { useSelectedScope } from '@/features/metadata/hooks';
 import { useTranslationFn } from '@/hooks';
 
@@ -17,7 +18,19 @@ const SiteSider = ({ collapsed, overlay }: { collapsed: boolean; overlay: boolea
         minHeight: scope.project ? 'calc(100vh - var(--header-height) - var(--content-scoped-title-height))' : 0,
       }}
     >
-      <div id="site-sider__inner">
+      <FacetSider
+        id="site-sider__inner"
+        classPrefix="site-sider-shell"
+        overlay={false}
+        open
+        title={
+          scope.project ? undefined : (
+            <>
+              <FormOutlined /> {t('search.text_search')}
+            </>
+          )
+        }
+      >
         {scope.project ? (
           <>
             <SearchForm />
@@ -25,14 +38,9 @@ const SiteSider = ({ collapsed, overlay }: { collapsed: boolean; overlay: boolea
           </>
         ) : (
           // TODO: hook up catalogue search
-          <>
-            <Typography.Title level={3} className="search-sub-form-title">
-              <FormOutlined /> {t('search.text_search')}
-            </Typography.Title>
-            <Input.Search />
-          </>
+          <Input.Search />
         )}
-      </div>
+      </FacetSider>
     </Layout.Sider>
   );
 };
