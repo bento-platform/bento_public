@@ -98,7 +98,7 @@ const OverviewChartDashboard = () => {
           ) : null}
         </div>
 
-        <ActiveFilterTags pills={pills} onClearAll={clearAll} />
+        <ActiveFilterTags pills={pills} onClearAll={clearAll} tagClassName="overview-filter-tag" />
 
         {/*
             If we're in a scope with no data at all, don't bother rendering the

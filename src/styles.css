@@ -598,6 +598,17 @@ body {
 .catalogue-clear-tag { border-radius: 13px !important; margin: 0 !important; cursor: pointer; border-style: dashed; }
 /* END catalogue toolbar */
 
+/* Bigger active-filter-tag variant used on the overview page (between the About section and count cards) */
+.overview-filter-tag {
+  font-size: 14px !important;
+  padding: 4px 10px !important;
+  height: auto !important;
+  line-height: 1.4 !important;
+}
+.overview-filter-tag .catalogue-filter-tag__facet-label {
+  font-size: 12.5px;
+}
+
 /* BEGIN catalogue insights */
 .catalogue-insights {
   background: var(--cat-insights-bg);
