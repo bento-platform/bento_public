@@ -1,6 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAppDispatch } from '@/hooks';
+import { queryParamsWithoutKey, type QueryParamEntries } from '@/utils/queryParams';
 import {
   hydrateFromUrl,
   FACET_IDS,
@@ -12,10 +13,6 @@ import {
 
 const VALID_SORTS: SortKey[] = ['updated_desc', 'created_desc', 'title_az', 'individuals_desc', 'biosamples_desc'];
 const VALID_VIEWS: ViewMode[] = ['grid', 'list'];
-
-function splitParam(v: string | null): string[] {
-  return v ? v.split(',').filter(Boolean) : [];
-}
 
 /**
  * The URL is the source of truth for catalogue filters. This hydrates Redux from it on mount
@@ -30,7 +27,7 @@ export function useCatalogueUrlSync() {
     const rawSort = searchParams.get('sort');
     const rawView = searchParams.get('view');
     const sets = Object.fromEntries(
-      FACET_IDS.map((facet) => [facet, splitParam(searchParams.get(facet))])
+      FACET_IDS.map((facet) => [facet, searchParams.getAll(facet)])
     ) as unknown as CatalogueFilterSets;
     dispatch(
       hydrateFromUrl({
@@ -46,6 +43,9 @@ export function useCatalogueUrlSync() {
 /**
  * Actions that mutate catalogue filter state by navigating the URL. useCatalogueUrlSync reflects
  * the resulting URL change back into Redux, so components never dispatch filter changes directly.
+ *
+ * Facet values use repeated-key query params (?statuses=Ongoing&statuses=Completed), same encoding
+ * as the Search feature, sharing queryParamsWithoutKey from @/utils/queryParams.
  */
 export function useCatalogueUrlActions() {
   const [, setSearchParams] = useSearchParams();
@@ -54,10 +54,8 @@ export function useCatalogueUrlActions() {
     (q: string) => {
       setSearchParams(
         (prev) => {
-          const next = new URLSearchParams(prev);
-          if (q) next.set('q', q);
-          else next.delete('q');
-          return next;
+          const without = queryParamsWithoutKey([...prev.entries()], 'q');
+          return q ? [...without, ['q', q]] : without;
         },
         { replace: true }
       );
@@ -69,10 +67,8 @@ export function useCatalogueUrlActions() {
     (sort: SortKey) => {
       setSearchParams(
         (prev) => {
-          const next = new URLSearchParams(prev);
-          if (sort !== 'updated_desc') next.set('sort', sort);
-          else next.delete('sort');
-          return next;
+          const without = queryParamsWithoutKey([...prev.entries()], 'sort');
+          return sort !== 'updated_desc' ? [...without, ['sort', sort]] : without;
         },
         { replace: true }
       );
@@ -84,10 +80,8 @@ export function useCatalogueUrlActions() {
     (view: ViewMode) => {
       setSearchParams(
         (prev) => {
-          const next = new URLSearchParams(prev);
-          if (view !== 'grid') next.set('view', view);
-          else next.delete('view');
-          return next;
+          const without = queryParamsWithoutKey([...prev.entries()], 'view');
+          return view !== 'grid' ? [...without, ['view', view]] : without;
         },
         { replace: true }
       );
@@ -99,12 +93,9 @@ export function useCatalogueUrlActions() {
     (facet: FacetId, value: string) => {
       setSearchParams(
         (prev) => {
-          const next = new URLSearchParams(prev);
-          const current = splitParam(next.get(facet));
-          const updated = current.includes(value) ? current.filter((v) => v !== value) : [...current, value];
-          if (updated.length > 0) next.set(facet, updated.join(','));
-          else next.delete(facet);
-          return next;
+          const entries = [...prev.entries()] as QueryParamEntries;
+          const has = entries.some(([k, v]) => k === facet && v === value);
+          return has ? entries.filter(([k, v]) => !(k === facet && v === value)) : [...entries, [facet, value]];
         },
         { replace: true }
       );
@@ -113,15 +104,7 @@ export function useCatalogueUrlActions() {
   );
 
   const clearAll = useCallback(() => {
-    setSearchParams(
-      (prev) => {
-        const next = new URLSearchParams(prev);
-        next.delete('q');
-        for (const facet of FACET_IDS) next.delete(facet);
-        return next;
-      },
-      { replace: true }
-    );
+    setSearchParams((prev) => queryParamsWithoutKey([...prev.entries()], ['q', ...FACET_IDS]), { replace: true });
   }, [setSearchParams]);
 
   return { setSearch, setSort, setView, toggleFacetValue, clearAll };
