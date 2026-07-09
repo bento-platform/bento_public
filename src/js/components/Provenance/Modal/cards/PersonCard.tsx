@@ -1,5 +1,7 @@
+import { useId } from 'react';
 import { BankOutlined, EnvironmentOutlined, GlobalOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
 
+import { useTranslationFn } from '@/hooks';
 import type { Organization, Person, PersonOrOrganization } from '@/types/dataset';
 import { CopyButton } from './CopyButton';
 
@@ -16,6 +18,10 @@ export const PersonCard = ({
   copiedKey: string | null;
   onCopy: (value: string, id: string) => void;
 }) => {
+  const t = useTranslationFn();
+
+  const typeId = useId();
+
   const isPerson = person.type === 'person';
   const p = person as Person;
   const org = person as Organization;
@@ -39,8 +45,12 @@ export const PersonCard = ({
     <div className={`pm-pcard${lead ? ' lead' : ''}`}>
       <div className="pm-pc-top">
         <div className="pm-pc-id">
-          <div className="pm-pc-type">{isPerson ? 'Person' : 'Organization'}</div>
-          <div className="pm-pc-name">{displayName}</div>
+          <div className="pm-pc-type" id={typeId}>
+            {t(isPerson ? 'provenance.person' : 'provenance.organization')}
+          </div>
+          <div className="pm-pc-name" aria-labelledby={typeId}>
+            {displayName}
+          </div>
           {affiliationLine && (
             <div className="pm-pc-affil">
               <BankOutlined />

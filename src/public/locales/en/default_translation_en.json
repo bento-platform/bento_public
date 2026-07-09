@@ -593,14 +593,22 @@
       "unassigned": "Unassigned"
     },
     "domain": "Domain",
+    "grant_number_one": "Grant Number",
+    "grant_number_other": "Grant Numbers",
     "keywords": "Keywords",
     "license": "License",
     "modified": "Modified",
     "on_this_page": "On this page",
+    "organization": "Organization",
+    "person": "Person",
     "privacy": "Privacy",
+    "program_name": "Program name",
+    "project_id": "Project ID",
     "released": "Released",
+    "schema_version": "Schema version",
     "taxa": "Taxa",
-    "version": "Version"
+    "version": "Version",
+    "view_publication": "View publication"
   },
   "pcgl": {
     "banner": {

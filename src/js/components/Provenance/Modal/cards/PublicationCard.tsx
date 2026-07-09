@@ -2,6 +2,7 @@ import { useState } from 'react';
 import clsx from 'clsx';
 import { BookOutlined, DownOutlined, ExportOutlined } from '@ant-design/icons';
 
+import { useTranslationFn } from '@/hooks';
 import type { Publication } from '@/types/dataset';
 import { CopyButton } from './CopyButton';
 import { personName, pubTypeLabel } from './helpers';
@@ -19,6 +20,8 @@ export const PublicationCard = ({
   onCopy: (value: string, id: string) => void;
   alwaysExpanded?: boolean; // Whether the publication is always expanded and thus not collapsible (i.e., w/ only 1 pub)
 }) => {
+  const t = useTranslationFn();
+
   const [expanded, setExpanded] = useState<boolean>(alwaysExpanded ?? false);
   const hasAuthors = !!pub.authors?.length;
   const hasDetail = !!(pub.publication_venue || pub.doi || pub.url);
@@ -74,7 +77,7 @@ export const PublicationCard = ({
               )}
               {pub.url && (
                 <a className="pm-pub-view" href={pub.url} target="_blank" rel="noreferrer">
-                  View publication <ExportOutlined />
+                  {t('provenance.view_publication')} <ExportOutlined />
                 </a>
               )}
             </div>

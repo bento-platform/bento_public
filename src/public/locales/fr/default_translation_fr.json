@@ -226,14 +226,22 @@
       "unassigned": "Non assigné"
     },
     "domain": "Domaine",
+    "grant_number_one": "Numéro de bourse",
+    "grant_number_other": "Numéros de bourses",
     "keywords": "Mots-clés",
     "license": "License",
     "modified": "Modifié",
     "on_this_page": "Sur cette page",
+    "organization": "Organisation",
+    "person": "Individu",
     "privacy": "Confidentialité",
+    "program_name": "Nom du programme",
+    "project_id": "Identifiant du projet",
     "released": "Publié",
+    "schema_version": "Version du schéma",
     "taxa": "Taxons",
-    "version": "Version"
+    "version": "Version",
+    "view_publication": "Voir la publication"
   },
   "Back to project": "Retourner au $t(entities.project_one, lowercase)",
   "Back to dataset": "Retourner au $t(entities.dataset_one, lowercase)",

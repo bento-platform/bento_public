@@ -25,7 +25,9 @@ export const LinkTile = ({ link }: { link: Link }) => {
   const icon = (typeStr && LINK_TYPE_ICONS[typeStr]) ?? <LinkOutlined />;
   return (
     <a className="pm-link-tile" href={link.url} target="_blank" rel="noreferrer">
-      <span className="pm-lt-ic">{icon}</span>
+      <span className="pm-lt-ic" aria-hidden>
+        {icon}
+      </span>
       <span className="pm-lt-main">
         {typeStr && <span className="pm-lt-type">{typeStr}</span>}
         <span className="pm-lt-label">{link.label}</span>

@@ -10,7 +10,7 @@ export const LicenseTile = ({ license }: { license: License }) => (
     rel="noreferrer"
     style={{ maxWidth: 330, textDecoration: 'none' }}
   >
-    <span className="pm-lt-ic">
+    <span className="pm-lt-ic" aria-hidden>
       <AuditOutlined />
     </span>
     <span className="pm-lt-main">

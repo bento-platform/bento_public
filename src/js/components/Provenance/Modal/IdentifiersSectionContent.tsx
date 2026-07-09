@@ -1,3 +1,4 @@
+import { useTranslationFn } from '@/hooks';
 import type { Dataset } from '@/types/dataset';
 import { CopyButton } from './cards';
 
@@ -8,12 +9,14 @@ type IdentifiersSectionContentProps = {
 };
 
 const IdentifiersSectionContent = ({ dataset, copiedKey, onCopy }: IdentifiersSectionContentProps) => {
+  const t = useTranslationFn();
+
   const resources = dataset.resources ?? [];
 
   return (
     <div className="pm-kv">
       <div className="pm-kv-row">
-        <div className="pm-kv-k">Identifier</div>
+        <div className="pm-kv-k">{t('Identifier')}</div>
         <div className="pm-kv-v mono">
           {dataset.identifier}{' '}
           <CopyButton
@@ -25,16 +28,16 @@ const IdentifiersSectionContent = ({ dataset, copiedKey, onCopy }: IdentifiersSe
         </div>
       </div>
       <div className="pm-kv-row">
-        <div className="pm-kv-k">Schema version</div>
+        <div className="pm-kv-k">{t('provenance.schema_version')}</div>
         <div className="pm-kv-v">{dataset.schema_version}</div>
       </div>
       <div className="pm-kv-row">
-        <div className="pm-kv-k">Project UUID</div>
+        <div className="pm-kv-k">{t('provenance.project_id')}</div>
         <div className="pm-kv-v mono">{dataset.project}</div>
       </div>
       {dataset.program_name && (
         <div className="pm-kv-row">
-          <div className="pm-kv-k">Program</div>
+          <div className="pm-kv-k">{t('provenance.program_name')}</div>
           <div className="pm-kv-v">{dataset.program_name}</div>
         </div>
       )}
