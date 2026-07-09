@@ -477,10 +477,11 @@ export const DatasetProvenanceContent = ({ dataset }: { dataset: Dataset }) => {
 export type DatasetProvenanceProps = {
   dataset: Dataset;
   loading?: boolean;
+  hideHeader?: boolean;
   showTitle?: boolean;
 };
 
-const DatasetProvenance = ({ dataset, loading, showTitle = true }: DatasetProvenanceProps) => {
+const DatasetProvenance = ({ dataset, loading, hideHeader, showTitle = true }: DatasetProvenanceProps) => {
   const t = useTranslationFn();
 
   const version = dataset.version ? (
@@ -499,7 +500,7 @@ const DatasetProvenance = ({ dataset, loading, showTitle = true }: DatasetProven
         styles={{ body: { padding: 0 } }}
       >
         {/*{!showTitle && version ? version : null}*/}
-        <DatasetProvenance2 dataset={dataset} />
+        <DatasetProvenance2 dataset={dataset} hideHeader={hideHeader} mode="page" />
       </Card>
     </div>
   );

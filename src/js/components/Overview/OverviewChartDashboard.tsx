@@ -1,6 +1,7 @@
-import { useCallback, useMemo, useState } from 'react';
-import { Flex, FloatButton, Tabs, type TabsProps } from 'antd';
-import { AppstoreAddOutlined, FileTextOutlined, SolutionOutlined } from '@ant-design/icons';
+import { useCallback, useState } from 'react';
+import { Card, Flex, FloatButton, Typography } from 'antd';
+import { AppstoreAddOutlined } from '@ant-design/icons';
+const { Paragraph } = Typography;
 
 import clsx from 'clsx';
 import { convertSequenceAndDisplayData, generateLSChartDataKey, saveValue } from '@/utils/localStorage';
@@ -33,7 +34,7 @@ const OverviewChartDashboard = () => {
 
   const [drawerVisible, setDrawerVisible] = useState(false);
 
-  const { scope } = useSelectedScope();
+  const { scope, fixedDataset } = useSelectedScope();
   const selectedProject = useSelectedProject();
   const selectedDataset = useSelectedDataset();
   const catalogueMode = useIsInCatalogueMode();
@@ -63,38 +64,22 @@ const OverviewChartDashboard = () => {
 
   // ---
 
-  const [pageTab, setPageTab] = useState('about');
-
-  const pageTabItems: TabsProps['items'] = useMemo(
-    () => [
-      { key: 'about', label: t('About'), icon: <FileTextOutlined /> },
-      ...(scope.dataset ? [{ key: 'provenance', label: t('Provenance'), icon: <SolutionOutlined /> }] : []),
-    ],
-    [t, scope.dataset]
-  );
-
   const loadingNewData = WAITING_STATES.includes(discoveryStatus);
 
   return (
     <>
       <Flex vertical={true} gap={24} className={clsx('container', { 'margin-auto': !scopeHasData })}>
-        <div className="dashboard-tabs">
-          {pageTabItems.length > 1 && (
-            <Tabs
-              type="card"
-              size="large"
-              activeKey={pageTab}
-              onChange={setPageTab}
-              items={pageTabItems}
-              id="dashboard-tabs"
-              tabBarStyle={{ marginBottom: -1, zIndex: 1 }}
-            />
-          )}
-          {pageTab === 'about' ? <AboutBox /> : null}
-          {pageTab === 'provenance' && selectedDataset ? (
-            <DatasetProvenance dataset={selectedDataset} showTitle={false} />
-          ) : null}
-        </div>
+        {selectedDataset ? (
+          <DatasetProvenance dataset={selectedDataset} showTitle={false} hideHeader={fixedDataset} />
+        ) : selectedProject ? (
+          selectedProject.description ? (
+            <Card className="container shadow rounded-xl">
+              <Paragraph className="mb-0">{t(selectedProject.description)}</Paragraph>
+            </Card>
+          ) : null
+        ) : (
+          <AboutBox />
+        )}
 
         {/*
             If we're in a scope with no data at all, don't bother rendering the
