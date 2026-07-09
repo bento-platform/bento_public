@@ -19,7 +19,6 @@ import type { QueryParamEntries, QueryParamEntry } from '@/features/search/types
 import SearchFilterInput, { type FilterInputValue, SearchFilterInputSkeleton } from './SearchFilterInput';
 import SearchSubForm, { type DefinedSearchSubFormProps } from '@/components/Search/SearchSubForm';
 import FiltersAppliedTag from '@/components/Search/FiltersAppliedTag';
-import ActiveFilterTags, { type ActiveFilterPill } from '@/components/Util/ActiveFilterTags';
 const { Text } = Typography;
 
 const buildValueToEntry =
@@ -38,48 +37,6 @@ const SearchFilters = (props: DefinedSearchSubFormProps) => {
   const entityAndTextQueryParams = useEntityAndTextQueryParams();
 
   const nSearchFilters = useMemo(() => filterSections.flatMap((s) => s.fields).length, [filterSections]);
-
-  const clearAllFilters = () => {
-    const url = buildQueryParamsUrl(pathname, entityAndTextQueryParams);
-    navigate(url, { replace: true });
-  };
-
-  const removeFilterValue = (field: string, value: string) => {
-    const oldValue = filters[field];
-    const remaining = Array.isArray(oldValue) ? oldValue.filter((v) => v !== value) : [];
-    const resetPage = entityAndTextQueryParams.find(([k, _]) => k === TABLE_PAGE_QUERY_PARAM)
-      ? ([[TABLE_PAGE_QUERY_PARAM, '0']] as QueryParamEntries)
-      : [];
-
-    if (Array.isArray(oldValue) && remaining.length > 0) {
-      // Keep the field, drop just this one value.
-      const existingFiltersQP = filtersStateToQueryParamEntries(filters, true).filter(
-        ([k, v]) => k !== field || remaining.includes(v)
-      );
-      const url = buildQueryParamsUrl(pathname, [...existingFiltersQP, ...entityAndTextQueryParams, ...resetPage]);
-      navigate(url, { replace: true });
-      return;
-    }
-
-    // Single value, or the last remaining array value: drop the field entirely.
-    const filtersStateAsQueryParams = filtersStateToQueryParamEntries(filters, true);
-    const url = buildQueryParamsUrl(
-      pathname,
-      combineQueryParamsWithoutKey(filtersStateAsQueryParams, [...entityAndTextQueryParams, ...resetPage], [field])
-    );
-    navigate(url, { replace: true });
-  };
-
-  const pills: ActiveFilterPill[] = [];
-  Object.entries(filters).forEach(([field, value]) => {
-    if (value === null || value === undefined) return;
-    const facetLabel = fields.find((f) => f.id === field)?.definition.title ?? field;
-    const values = Array.isArray(value) ? value : value ? [value] : [];
-    values.forEach((v) => {
-      if (!v) return;
-      pills.push({ key: `${field}-${v}`, facetLabel, label: v, onClose: () => removeFilterValue(field, v) });
-    });
-  });
 
   const [filterInputs, usedFields] = useMemo(() => {
     const filterInputs_: FilterInputValue[] = Object.entries(filters).map(([k, v]) => ({
@@ -108,7 +65,6 @@ const SearchFilters = (props: DefinedSearchSubFormProps) => {
       {...props}
     >
       <Space direction="vertical" size={8} className="w-full">
-        <ActiveFilterTags pills={pills} onClearAll={clearAllFilters} />
         {WAITING_STATES.includes(configStatus) || WAITING_STATES.includes(fieldsStatus) ? (
           <SearchFilterInputSkeleton />
         ) : (
