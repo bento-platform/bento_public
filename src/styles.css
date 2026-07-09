@@ -98,6 +98,7 @@ body {
 .sticky { position: sticky; }
 .block { display: block; }
 .none { display: none; }
+.overflow-hidden { overflow: hidden; }
 .rounded-lg { border-radius: 8px; } /* also consistent with --ant-border-radius-lg */
 .rounded-xl { border-radius: 12px; }
 .rounded-e-none { border-start-end-radius: 0; border-end-end-radius: 0; }

@@ -494,7 +494,7 @@ const DatasetProvenance = ({ dataset, loading, showTitle = true }: DatasetProven
       <Card
         title={showTitle ? <Title level={3}>{t(dataset.title)}</Title> : undefined}
         extra={showTitle && version ? [version] : undefined}
-        className="shadow rounded-xl"
+        className="shadow rounded-xl overflow-hidden"
         loading={loading}
         styles={{ body: { padding: 0 } }}
       >
