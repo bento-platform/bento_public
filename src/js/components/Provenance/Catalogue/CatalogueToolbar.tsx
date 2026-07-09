@@ -1,6 +1,6 @@
 import { useAppDispatch } from '@/hooks';
-import { Button, Flex, Input, Select, Segmented, Typography } from 'antd';
-import { AppstoreOutlined, BarsOutlined, BarChartOutlined, SearchOutlined } from '@ant-design/icons';
+import { Badge, Button, Flex, Input, Select, Segmented, Typography } from 'antd';
+import { AppstoreOutlined, BarsOutlined, BarChartOutlined, FilterOutlined, SearchOutlined } from '@ant-design/icons';
 import { useCatalogueState } from '@/features/catalogue/hooks';
 import { toggleInsights, type SortKey, type FacetId } from '@/features/catalogue/catalogue.store';
 import { useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
@@ -29,9 +29,12 @@ const FACET_LABELS: Record<FacetId, string> = {
 
 interface CatalogueToolbarProps {
   filteredCount: number;
+  /** Whether the rail is a slide-over drawer (below the `lg` breakpoint) rather than always-visible inline. */
+  showFilterToggle: boolean;
+  onOpenFilters: () => void;
 }
 
-const CatalogueToolbar = ({ filteredCount }: CatalogueToolbarProps) => {
+const CatalogueToolbar = ({ filteredCount, showFilterToggle, onOpenFilters }: CatalogueToolbarProps) => {
   const t = useTranslationFn();
   const dispatch = useAppDispatch();
   const { q, sets, sort, view, insightsOpen } = useCatalogueState();
@@ -61,7 +64,14 @@ const CatalogueToolbar = ({ filteredCount }: CatalogueToolbarProps) => {
   return (
     <Flex vertical gap={8}>
       {/* Row 1: search + sort + view */}
-      <Flex gap={8} align="center">
+      <Flex gap={8} align="center" wrap>
+        {showFilterToggle && (
+          <Badge count={pills.length} size="small" offset={[-4, 4]}>
+            <Button icon={<FilterOutlined />} onClick={onOpenFilters}>
+              {t('catalogue.rail.title')}
+            </Button>
+          </Badge>
+        )}
         <Input
           prefix={<SearchOutlined />}
           placeholder={t('catalogue.toolbar.search_placeholder')}

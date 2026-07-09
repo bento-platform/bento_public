@@ -535,7 +535,8 @@
   },
   "catalogue": {
     "rail": {
-      "title": "Filters"
+      "title": "Filters",
+      "close": "Close filters"
     },
     "facets": {
       "projects": "Project",

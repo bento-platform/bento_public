@@ -761,6 +761,40 @@ body {
   color: var(--cat-chip-count-selected);
 }
 
+.catalogue-rail-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 18;
+  backdrop-filter: blur(10px);
+}
+
+.catalogue-rail--overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 19;
+  width: min(320px, 90vw);
+  max-height: 100vh;
+  border-radius: 0;
+  box-shadow: 3px 0 10px rgba(0, 0, 0, 0.06);
+  transform: translateX(-100%);
+  transition: transform 0.2s ease-out;
+}
+
+.catalogue-rail--overlay.catalogue-rail--open {
+  transform: translateX(0);
+}
+
+.catalogue-rail__close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-secondary);
+  padding: 2px;
+  line-height: 1;
+}
+
 /* END catalogue rail */
 
 /* BEGIN catalogue card */

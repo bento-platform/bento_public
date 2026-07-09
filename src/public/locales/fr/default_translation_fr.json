@@ -167,7 +167,8 @@
   "Back to catalogue": "Retourner au catalogue",
   "catalogue": {
     "rail": {
-      "title": "Filtres"
+      "title": "Filtres",
+      "close": "Fermer les filtres"
     },
     "facets": {
       "projects": "Projet",

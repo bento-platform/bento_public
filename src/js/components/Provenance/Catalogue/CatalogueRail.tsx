@@ -5,7 +5,7 @@ import { toggleFacetCollapse, type FacetId } from '@/features/catalogue/catalogu
 import { useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
 import { useTranslationFn } from '@/hooks';
 import { statusTranslationKey } from '@/features/catalogue/hooks';
-import { CaretDownOutlined, CaretRightOutlined } from '@ant-design/icons';
+import { CaretDownOutlined, CaretRightOutlined, CloseOutlined } from '@ant-design/icons';
 import FilterChip from '@/components/Util/FilterChip';
 
 interface FacetConfig {
@@ -65,35 +65,49 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
 interface CatalogueRailProps {
   totalCount: number;
   facetOptions: (facetId: FacetId) => { value: string; count: number; selected: boolean }[];
+  /** Below the `lg` breakpoint, the rail renders as a slide-over drawer instead of an inline sticky column. */
+  overlay: boolean;
+  /** Ignored when `overlay` is false (the rail is always visible inline on desktop). */
+  open: boolean;
+  onClose: () => void;
 }
 
-const CatalogueRail = ({ totalCount, facetOptions }: CatalogueRailProps) => {
+const CatalogueRail = ({ totalCount, facetOptions, overlay, open, onClose }: CatalogueRailProps) => {
   const t = useTranslationFn();
   const dispatch = useAppDispatch();
   const { collapsedFacets } = useCatalogueState();
   const { toggleFacetValue } = useCatalogueUrlActions();
 
   return (
-    <div className="catalogue-rail">
-      <div className="catalogue-rail__header">
-        <span className="catalogue-rail__title">{t('catalogue.rail.title')}</span>
-        <span className="catalogue-rail__count">
-          {totalCount} {t('entities.dataset', { count: totalCount }).toLowerCase()}
-        </span>
+    <>
+      {overlay && open && <div className="catalogue-rail-backdrop" onClick={onClose} aria-hidden />}
+      <div className={clsx('catalogue-rail', overlay && 'catalogue-rail--overlay', open && 'catalogue-rail--open')}>
+        <div className="catalogue-rail__header">
+          <span className="catalogue-rail__title">{t('catalogue.rail.title')}</span>
+          {overlay ? (
+            <button className="catalogue-rail__close" onClick={onClose} aria-label={t('catalogue.rail.close')}>
+              <CloseOutlined />
+            </button>
+          ) : (
+            <span className="catalogue-rail__count">
+              {totalCount} {t('entities.dataset', { count: totalCount }).toLowerCase()}
+            </span>
+          )}
+        </div>
+        <div>
+          {FACETS.map((facet) => (
+            <FacetSection
+              key={facet.id}
+              facet={facet}
+              options={facetOptions(facet.id)}
+              collapsed={collapsedFacets.includes(facet.id)}
+              onToggleCollapse={() => dispatch(toggleFacetCollapse(facet.id))}
+              onToggleValue={(value) => toggleFacetValue(facet.id, value)}
+            />
+          ))}
+        </div>
       </div>
-      <div>
-        {FACETS.map((facet) => (
-          <FacetSection
-            key={facet.id}
-            facet={facet}
-            options={facetOptions(facet.id)}
-            collapsed={collapsedFacets.includes(facet.id)}
-            onToggleCollapse={() => dispatch(toggleFacetCollapse(facet.id))}
-            onToggleValue={(value) => toggleFacetValue(facet.id, value)}
-          />
-        ))}
-      </div>
-    </div>
+    </>
   );
 };
 
