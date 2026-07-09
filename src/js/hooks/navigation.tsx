@@ -5,7 +5,7 @@ import { BookOutlined, PieChartOutlined, ShareAltOutlined, SolutionOutlined } fr
 import BeaconLogo from '@/components/Beacon/BeaconLogo';
 
 import { FORCE_CATALOGUE } from '@/config';
-import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
+import { useMetadata, useScopeHasData, useSelectedScope } from '@/features/metadata/hooks';
 import { type DiscoveryScope, selectScope } from '@/features/metadata/metadata.store';
 import type { MenuItem } from '@/types/navigation';
 import { BentoRoute } from '@/types/routes';
@@ -119,6 +119,8 @@ export const useSidebarMenuItems = (): MenuItem[] => {
   const t = useTranslationFn();
   const { fixedProject, scope } = useSelectedScope();
 
+  const scopeHasData = useScopeHasData();
+
   const createMenuItem = useCallback(
     (key: string, label: string, icon?: ReactNode, children?: MenuItem[]): MenuItem => ({
       key,
@@ -134,7 +136,7 @@ export const useSidebarMenuItems = (): MenuItem[] => {
   return useMemo(() => {
     const items = [createMenuItem(BentoRoute.Overview, ...getRouteTitleAndIcon(BentoRoute.Overview))];
 
-    if (BentoRoute.Beacon) {
+    if (BentoRoute.Beacon && scopeHasData) {
       items.push(createMenuItem(BentoRoute.Beacon, ...getRouteTitleAndIcon(BentoRoute.Beacon)));
     }
 
@@ -143,5 +145,5 @@ export const useSidebarMenuItems = (): MenuItem[] => {
     }
 
     return items;
-  }, [getRouteTitleAndIcon, createMenuItem, scope, fixedProject]);
+  }, [getRouteTitleAndIcon, createMenuItem, scope, fixedProject, scopeHasData]);
 };
