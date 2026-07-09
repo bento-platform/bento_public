@@ -17,36 +17,43 @@ export const PublicationCard = ({
   idx: number;
   copiedKey: string | null;
   onCopy: (value: string, id: string) => void;
-  alwaysExpanded?: boolean; // Whether the publication is always expanded and thus not collapsible
+  alwaysExpanded?: boolean; // Whether the publication is always expanded and thus not collapsible (i.e., w/ only 1 pub)
 }) => {
   const [expanded, setExpanded] = useState<boolean>(alwaysExpanded ?? false);
   const hasAuthors = !!pub.authors?.length;
   const hasDetail = !!(pub.publication_venue || pub.doi || pub.url);
 
+  const rowClassName = clsx('pm-pub-row', { expanded, 'always-expanded': alwaysExpanded });
+  const rowContent = (
+    <>
+      {!alwaysExpanded && (
+        <DownOutlined className="pm-pub-chevron" style={!expanded ? { transform: 'rotate(-90deg)' } : undefined} />
+      )}
+      {pub.publication_date && <span className="pm-pub-year">{pub.publication_date.slice(0, 4)}</span>}
+      {expanded ? (
+        <div className="pm-pub-full">
+          <div className="pm-pub-title-full">{pub.title}</div>
+          {hasAuthors && <div className="pm-pub-authors-full">{pub.authors!.map(personName).join(', ')}</div>}
+        </div>
+      ) : (
+        <>
+          <span className="pm-pub-title-inline">{pub.title}</span>
+          {hasAuthors && <span className="pm-pub-authors-inline">{pub.authors!.map(personName).join(', ')}</span>}
+        </>
+      )}
+      <span className="pm-pub-type-mini">{pubTypeLabel(pub.publication_type)}</span>
+    </>
+  );
+
   return (
     <div className="pm-pub">
-      <button
-        type="button"
-        className={clsx('pm-pub-row', { expanded, 'always-expanded': alwaysExpanded })}
-        onClick={() => setExpanded((e) => !e)}
-      >
-        {!alwaysExpanded && (
-          <DownOutlined className="pm-pub-chevron" style={!expanded ? { transform: 'rotate(-90deg)' } : undefined} />
-        )}
-        {pub.publication_date && <span className="pm-pub-year">{pub.publication_date.slice(0, 4)}</span>}
-        {expanded ? (
-          <div className="pm-pub-full">
-            <div className="pm-pub-title-full">{pub.title}</div>
-            {hasAuthors && <div className="pm-pub-authors-full">{pub.authors!.map(personName).join(', ')}</div>}
-          </div>
-        ) : (
-          <>
-            <span className="pm-pub-title-inline">{pub.title}</span>
-            {hasAuthors && <span className="pm-pub-authors-inline">{pub.authors!.map(personName).join(', ')}</span>}
-          </>
-        )}
-        <span className="pm-pub-type-mini">{pubTypeLabel(pub.publication_type)}</span>
-      </button>
+      {rowContent ? (
+        <button type="button" className={rowClassName} onClick={() => setExpanded((e) => !e)}>
+          {rowContent}
+        </button>
+      ) : (
+        <div className={rowClassName}>{rowContent}</div>
+      )}
 
       {expanded && hasDetail && (
         <div className="pm-pub-detail">

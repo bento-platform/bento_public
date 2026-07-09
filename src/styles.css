@@ -1556,9 +1556,10 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
 .pm-pub:last-child { border-bottom: none; }
 .pm-pub-row {
   width: 100%; display: flex; align-items: center; gap: 10px;
-  padding: 9px 12px; background: none; border: none; cursor: pointer; text-align: left;
+  padding: 9px 12px; background: none; border: none; text-align: left;
 }
-.pm-pub-row:hover { background: #FAFAFA; }
+.pm-pub-row:not(.always-expanded) { cursor: pointer; }
+.pm-pub-row:not(.always-expanded):hover { background: #FAFAFA; }
 .pm-pub-row.expanded { align-items: flex-start; }
 .pm-pub-chevron { font-size: 10px; color: var(--pm-ink-45); flex: none; margin-top: 4px; }
 .pm-pub-year { font-family: var(--pm-mono); font-size: 11.5px; color: var(--pm-ink-45); flex: none; width: 34px; margin-top: 1px; }
