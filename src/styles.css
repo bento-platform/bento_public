@@ -1405,8 +1405,9 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
 .pm-sec-head {
   display: flex; align-items: center; gap: 10px;
   width: 100%; background: none; border: none; padding: 0; text-align: left;
-  cursor: pointer; margin-bottom: 15px;
+  margin-bottom: 15px;
 }
+button.pm-sec-head { cursor: pointer; }
 .pm-sec-head h2 { font-size: 16.5px; font-weight: 600; letter-spacing: -0.3px; color: var(--pm-ink); margin: 0; flex: 1; }
 .pm-sec-chevron { font-size: 14px; color: var(--pm-ink-45); transition: transform 0.15s; }
 .pm-sec.collapsed .pm-sec-head { margin-bottom: 0; }

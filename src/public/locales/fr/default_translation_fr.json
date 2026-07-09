@@ -46,6 +46,12 @@
     "view": "Afficher",
     "url": "URL"
   },
+  "navigation": {
+    "nav_cap": {
+      "scroll": "Sur cette page",
+      "page": "Sections"
+    }
+  },
   "errors": {
     "project_fetch": "Erreur lors du chargement des projets",
     "search_fetch": "Erreur lors du chargement des résultats de recherche"

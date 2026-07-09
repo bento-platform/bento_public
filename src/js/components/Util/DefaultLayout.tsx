@@ -72,7 +72,9 @@ const DefaultLayout = () => {
                 aria-hidden
               />
             ) : null}
-            <Content style={{ minHeight: 500 }}>
+            <Content
+              style={{ minHeight: 'calc(100vh - 210px - var(--content-scoped-title-height) - var(--header-height))' }}
+            >
               <Outlet />
             </Content>
           </Layout>

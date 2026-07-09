@@ -45,6 +45,12 @@
     "url": "URL",
     "extra_properties": "$t(Extra Properties)"
   },
+  "navigation": {
+    "nav_cap": {
+      "scroll": "On this page",
+      "page": "Sections"
+    }
+  },
   "errors": {
     "project_fetch": "Error fetching projects",
     "search_fetch": "Error fetching search results"

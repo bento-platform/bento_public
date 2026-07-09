@@ -26,81 +26,14 @@ import SpatialCoverageSection from './SpatialCoverageSection';
 import SummarySectionContent from './SummarySectionContent';
 import type { ProvenanceEntry, SectionId } from './types';
 
-const DatasetProvenance = ({ dataset, onClose }: { dataset?: Dataset | null; onClose?: () => void }) => {
-  const [collapsed, setCollapsed] = useState<Set<SectionId>>(new Set());
-  const [activeSection, setActiveSection] = useState<SectionId>('summary');
-  const [copiedKey, setCopiedKey] = useState<string | null>(null);
-  const [toast, setToast] = useState<{ text: string; show: boolean }>({ text: '', show: false });
-
+const useProvenanceEntries = (
+  dataset: Dataset | null | undefined,
+  copiedKey: string | null,
+  handleCopy: (value: string, id: string) => void
+): ProvenanceEntry[] => {
   const t = useTranslationFn();
 
-  // Reset state when dataset changes (React "adjust state during render" pattern, avoids an effect)
-  const [lastDatasetId, setLastDatasetId] = useState(dataset?.identifier);
-  if (dataset?.identifier !== lastDatasetId) {
-    setLastDatasetId(dataset?.identifier);
-    setCollapsed(new Set());
-    setActiveSection('summary');
-  }
-
-  const bodyRef = useRef<HTMLDivElement>(null);
-
-  // Scrollspy
-  useEffect(() => {
-    if (!bodyRef.current) return;
-    const body = bodyRef.current;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id as SectionId);
-          }
-        }
-      },
-      { root: body, rootMargin: '-8% 0px -72% 0px' }
-    );
-    const secs = body.querySelectorAll<HTMLElement>('.pm-sec[id]');
-    secs.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, [dataset?.identifier]);
-
-  const toggleCollapse = useCallback((id: SectionId) => {
-    setCollapsed((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      return next;
-    });
-  }, []);
-
-  const handleCopy = useCallback((value: string, id: string) => {
-    navigator.clipboard.writeText(value).then(() => {
-      setCopiedKey(id);
-      setToast({ text: `Copied: ${value}`, show: true });
-      setTimeout(() => setCopiedKey(null), 1300);
-      setTimeout(() => setToast((p) => ({ ...p, show: false })), 1600);
-    });
-  }, []);
-
-  const jumpToSection = useCallback((id: SectionId) => {
-    const body = bodyRef.current;
-    if (!body) return;
-    setCollapsed((prev) => {
-      const next = new Set(prev);
-      next.delete(id);
-      return next;
-    });
-    const el = body.querySelector<HTMLElement>(`#${id}`);
-    if (el) {
-      setTimeout(() => {
-        body.scrollTo({ top: el.offsetTop - 6, behavior: 'smooth' });
-      }, 0);
-    }
-  }, []);
-
-  if (!dataset) return null;
+  if (!dataset) return [];
 
   const links = dataset.links ?? [];
   const stakeholders = dataset.stakeholders ?? [];
@@ -119,9 +52,7 @@ const DatasetProvenance = ({ dataset, onClose }: { dataset?: Dataset | null; onC
   const hasCriteria = criteria.length > 0;
   const hasCounts = counts.length > 0;
 
-  const isCollapsed = (id: SectionId) => collapsed.has(id);
-
-  const provenanceEntries: ProvenanceEntry[] = [
+  return [
     {
       id: 'summary',
       icon: <UnorderedListOutlined />,
@@ -282,26 +213,128 @@ const DatasetProvenance = ({ dataset, onClose }: { dataset?: Dataset | null; onC
       children: <IdentifiersSectionContent dataset={dataset} copiedKey={copiedKey} onCopy={handleCopy} />,
     },
   ];
+};
+
+const DatasetProvenance = ({
+  dataset,
+  onClose,
+  hideHeader,
+  mode = 'scroll',
+}: {
+  dataset?: Dataset | null;
+  onClose?: () => void;
+  hideHeader?: boolean;
+  mode?: 'scroll' | 'page';
+}) => {
+  const [collapsed, setCollapsed] = useState<Set<SectionId>>(new Set());
+  const [activeSection, setActiveSection] = useState<SectionId>('summary');
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ text: string; show: boolean }>({ text: '', show: false });
+
+  // Reset state when dataset changes (React "adjust state during render" pattern, avoids an effect)
+  const [lastDatasetId, setLastDatasetId] = useState(dataset?.identifier);
+  if (dataset?.identifier !== lastDatasetId) {
+    setLastDatasetId(dataset?.identifier);
+    setCollapsed(new Set());
+    setActiveSection('summary');
+  }
+
+  const bodyRef = useRef<HTMLDivElement>(null);
+
+  // Scrollspy
+  useEffect(() => {
+    if (!bodyRef.current || mode !== 'scroll') return;
+    const body = bodyRef.current;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id as SectionId);
+          }
+        }
+      },
+      { root: body, rootMargin: '-8% 0px -72% 0px' }
+    );
+    const secs = body.querySelectorAll<HTMLElement>('.pm-sec[id]');
+    secs.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [mode, dataset?.identifier]);
+
+  const toggleCollapse = useCallback((id: SectionId) => {
+    setCollapsed((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  }, []);
+
+  const handleCopy = useCallback((value: string, id: string) => {
+    navigator.clipboard.writeText(value).then(() => {
+      setCopiedKey(id);
+      setToast({ text: `Copied: ${value}`, show: true });
+      setTimeout(() => setCopiedKey(null), 1300);
+      setTimeout(() => setToast((p) => ({ ...p, show: false })), 1600);
+    });
+  }, []);
+
+  const jumpToSection = useCallback(
+    (id: SectionId) => {
+      const body = bodyRef.current;
+      if (!body) return;
+      if (mode === 'scroll') {
+        setCollapsed((prev) => {
+          const next = new Set(prev);
+          next.delete(id);
+          return next;
+        });
+        const el = body.querySelector<HTMLElement>(`#${id}`);
+        if (el) {
+          setTimeout(() => {
+            body.scrollTo({ top: el.offsetTop - 6, behavior: 'smooth' });
+          }, 0);
+        }
+      } else {
+        setActiveSection(id);
+      }
+    },
+    [mode]
+  );
+
+  const provenanceEntries = useProvenanceEntries(dataset, copiedKey, handleCopy);
+
+  if (!dataset) return null;
+
+  const isCollapsed = (id: SectionId) => collapsed.has(id);
+
+  const renderProvenanceEntry = ({ id, count, children }: ProvenanceEntry) => (
+    <ProvenanceSection
+      key={id}
+      sectionId={id}
+      collapsed={isCollapsed(id)}
+      onToggle={mode === 'scroll' ? () => toggleCollapse(id) : undefined}
+      count={count}
+    >
+      {children}
+    </ProvenanceSection>
+  );
 
   return (
     <div className="prov-container">
-      <ProvenanceHeader dataset={dataset} copiedKey={copiedKey} onCopy={handleCopy} onClose={onClose} />
+      {!hideHeader && (
+        <ProvenanceHeader dataset={dataset} copiedKey={copiedKey} onCopy={handleCopy} onClose={onClose} />
+      )}
 
       <div className="pm-body" ref={bodyRef}>
-        <SideNav navEntries={provenanceEntries} activeSection={activeSection} onJump={jumpToSection} />
+        <SideNav navEntries={provenanceEntries} activeSection={activeSection} onJump={jumpToSection} mode={mode} />
 
         <div className="pm-content">
-          {provenanceEntries.map(({ id, count, children }) => (
-            <ProvenanceSection
-              key={id}
-              sectionId={id}
-              collapsed={isCollapsed(id)}
-              onToggle={() => toggleCollapse(id)}
-              count={count}
-            >
-              {children}
-            </ProvenanceSection>
-          ))}
+          {mode === 'scroll'
+            ? provenanceEntries.map(renderProvenanceEntry)
+            : renderProvenanceEntry(provenanceEntries.find((e) => e.id === activeSection)!)}
         </div>
       </div>
 

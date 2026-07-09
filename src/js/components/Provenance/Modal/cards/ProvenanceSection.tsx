@@ -7,16 +7,25 @@ export type SectionHeadProps = {
   title: string;
   count?: number;
   collapsed: boolean;
-  onToggle: () => void;
+  onToggle?: () => void;
 };
 
-export const SectionHead = ({ title, count, collapsed, onToggle }: SectionHeadProps) => (
-  <button type="button" className="pm-sec-head" onClick={onToggle}>
-    <DownOutlined className="pm-sec-chevron" style={collapsed ? { transform: 'rotate(-90deg)' } : undefined} />
-    <h2>{title}</h2>
-    {count !== undefined && <span className="pm-sec-cnt">{count}</span>}
-  </button>
-);
+export const SectionHead = ({ title, count, collapsed, onToggle }: SectionHeadProps) => {
+  const content = (
+    <>
+      <h2>{title}</h2>
+      {count !== undefined && <span className="pm-sec-cnt">{count}</span>}
+    </>
+  );
+  return onToggle ? (
+    <button type="button" className="pm-sec-head" onClick={onToggle}>
+      <DownOutlined className="pm-sec-chevron" style={collapsed ? { transform: 'rotate(-90deg)' } : undefined} />
+      {content}
+    </button>
+  ) : (
+    <header className="pm-sec-head">{content}</header>
+  );
+};
 
 export type ProvenanceSectionProps = Omit<SectionHeadProps, 'title'> & { sectionId: SectionId; children: ReactNode };
 
