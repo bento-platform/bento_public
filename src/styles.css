@@ -1497,7 +1497,6 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   background: #fff; display: flex; flex-direction: column; gap: 12px;
   transition: border-color 0.15s, box-shadow 0.15s;
 }
-.pm-pcard:hover { border-color: #C9DBE8; box-shadow: 0 3px 12px rgba(5,74,116,0.06); }
 .pm-pcard.lead { border-color: #A9CCE0; background: linear-gradient(180deg, #FAFCFE, #fff); }
 .pm-pc-top { display: flex; gap: 12px; align-items: flex-start; }
 .pm-avatar {
