@@ -1,0 +1,89 @@
+import { useEffect, useMemo, useState } from 'react';
+import { Checkbox, Divider, Flex, Modal, Space, Spin } from 'antd';
+
+import { useTranslationFn } from '@/hooks';
+import { useDiscoveryMatchExportFields } from '@/hooks/useDiscoveryMatchExportFields';
+import type { ResultsDataEntity } from '@/types/entities';
+
+const ExportFieldsModal = ({
+  open,
+  entity,
+  exporting,
+  onCancel,
+  onExport,
+}: {
+  open: boolean;
+  entity: ResultsDataEntity;
+  exporting: boolean;
+  onCancel: () => void;
+  onExport: (fields: string[] | undefined) => void;
+}) => {
+  const t = useTranslationFn();
+  const { fields, fetching, fetchFields } = useDiscoveryMatchExportFields();
+
+  // null = every field selected (the default, and what "select all" resets to).
+  const [deselectedKeys, setDeselectedKeys] = useState<Set<string> | null>(null);
+
+  useEffect(() => {
+    if (open) fetchFields(entity);
+  }, [open, entity, fetchFields]);
+
+  const selectedKeys = useMemo(
+    () => new Set((fields ?? []).map((f) => f.key).filter((k) => !deselectedKeys?.has(k))),
+    [fields, deselectedKeys]
+  );
+  const allSelected = deselectedKeys === null || deselectedKeys.size === 0;
+
+  const toggleAll = (checked: boolean) => setDeselectedKeys(checked ? null : new Set(fields?.map((f) => f.key)));
+
+  const toggleKey = (key: string, checked: boolean) =>
+    setDeselectedKeys((dk) => {
+      const next = new Set(dk ?? []);
+      if (checked) {
+        next.delete(key);
+      } else {
+        next.add(key);
+      }
+      return next;
+    });
+
+  return (
+    <Modal
+      open={open}
+      onCancel={onCancel}
+      title={t('search.export_csv')}
+      okText={t('search.export_csv')}
+      onOk={() => onExport(allSelected ? undefined : [...selectedKeys])}
+      okButtonProps={{ disabled: fetching || selectedKeys.size === 0, loading: exporting }}
+    >
+      {fetching || !fields ? (
+        <Spin />
+      ) : (
+        <>
+          <Flex justify="space-between" align="center">
+            <Checkbox
+              checked={allSelected}
+              indeterminate={!allSelected && selectedKeys.size > 0}
+              onChange={(e) => toggleAll(e.target.checked)}
+            >
+              {t('search.select_all_fields')}
+            </Checkbox>
+            <span className="text-secondary">
+              {selectedKeys.size} / {fields.length}
+            </span>
+          </Flex>
+          <Divider className="my-3" />
+          <Space direction="vertical">
+            {fields.map(({ key, label }) => (
+              <Checkbox key={key} checked={selectedKeys.has(key)} onChange={(e) => toggleKey(key, e.target.checked)}>
+                {label}
+              </Checkbox>
+            ))}
+          </Space>
+        </>
+      )}
+    </Modal>
+  );
+};
+
+export default ExportFieldsModal;

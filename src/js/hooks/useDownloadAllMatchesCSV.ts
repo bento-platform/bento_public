@@ -15,12 +15,13 @@ export const useDownloadAllMatchesCSV = () => {
   const selectedScope = useSelectedScope();
 
   return useCallback(
-    async (entity: ResultsDataEntity, filename: string) => {
+    async (entity: ResultsDataEntity, filename: string, fields?: string[]) => {
       const config = scopedAuthorizedRequestConfigFromParts(auth, selectedScope, [
         ...searchQueryParamsFromState(query),
         ['_entity', entity],
         ['_format', 'csv'],
         ['_page_size', '0'], // 0 means export all results
+        ...(fields && fields.length > 0 ? [['_fields', fields.join(',')] as [string, string]] : []),
       ]);
 
       const res = await axios.get(katsuDiscoveryMatchesUrl, {

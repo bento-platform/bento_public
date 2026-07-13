@@ -39,6 +39,7 @@ import {
 import { setEquals } from '@/utils/sets';
 
 import DatasetProvenanceModal from '@/components/Provenance/DatasetProvenanceModal';
+import ExportFieldsModal from './ExportFieldsModal';
 import ProjectTitle from '@Util/ProjectTitle';
 import DatasetTitle from '@Util/DatasetTitle';
 import ExperimentReferences from '@Util/ClinPhen/ExperimentReferences';
@@ -318,6 +319,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
 
   const [exporting, setExporting] = useState<boolean>(false);
   const [columnModalOpen, setColumnModalOpen] = useState<boolean>(false);
+  const [exportModalOpen, setExportModalOpen] = useState<boolean>(false);
 
   // We translate an "individual" entity to "phenopacket" because TODO.
   // TODO: maybe we can make Katsu good enough that we can just simply return individuals rather than phenopackets
@@ -419,13 +421,19 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
     [page, pageSize, totalMatches, isSmallScreen, navigateToSameScopeUrl, allQueryParams]
   );
 
-  const onExport = useCallback(() => {
-    setExporting(true);
-    const filename = `${t(`entities.${entity}_other`)}.csv`;
-    downloadAllMatchesCSV(rdEntity, filename).finally(() => setExporting(false));
-  }, [t, entity, downloadAllMatchesCSV, rdEntity]);
+  const onExport = useCallback(
+    (fields: string[] | undefined) => {
+      setExporting(true);
+      const filename = `${t(`entities.${entity}_other`)}.csv`;
+      downloadAllMatchesCSV(rdEntity, filename, fields)
+        .then(() => setExportModalOpen(false))
+        .finally(() => setExporting(false));
+    },
+    [t, entity, downloadAllMatchesCSV, rdEntity]
+  );
 
   const openColumnModal = useCallback(() => setColumnModalOpen(true), []);
+  const openExportModal = useCallback(() => setExportModalOpen(true), []);
 
   if (!shown) return null;
 
@@ -462,8 +470,8 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
             {fetchingCanDownload || canDownload ? (
               <Button
                 icon={<ExportOutlined />}
-                loading={fetchingCanDownload || exporting}
-                onClick={onExport}
+                loading={fetchingCanDownload}
+                onClick={openExportModal}
                 disabled={fetchingCanDownload || !totalMatches}
               >
                 {isSmallScreen ? t('search.csv') : t('search.export_csv')}
@@ -507,6 +515,13 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
             ))}
         </Space>
       </Modal>
+      <ExportFieldsModal
+        open={exportModalOpen}
+        entity={rdEntity}
+        exporting={exporting}
+        onCancel={() => setExportModalOpen(false)}
+        onExport={onExport}
+      />
     </>
   );
 };

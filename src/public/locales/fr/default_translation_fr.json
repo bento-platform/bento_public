@@ -67,6 +67,7 @@
     "showing_entities_short": "{{start}}-{{end}} / {{total}}",
     "manage_columns": "Gérer les colonnes",
     "export_csv": "Exporter en CSV",
+    "select_all_fields": "Tout sélectionner",
     "csv": "CSV",
     "fts": {
       "plain": "Mot",

@@ -65,6 +65,7 @@
     "showing_entities_short": "{{start}}-{{end}} / {{total}}",
     "manage_columns": "Manage Columns",
     "export_csv": "Export as CSV",
+    "select_all_fields": "Select all",
     "csv": "CSV",
     "fts": {
       "plain": "Word",
