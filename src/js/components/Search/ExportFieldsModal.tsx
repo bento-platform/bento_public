@@ -3,17 +3,19 @@ import { Checkbox, Divider, Flex, Modal, Space, Spin } from 'antd';
 
 import { useTranslationFn } from '@/hooks';
 import { useDiscoveryMatchExportFields } from '@/hooks/useDiscoveryMatchExportFields';
-import type { ResultsDataEntity } from '@/types/entities';
+import type { ExportFormat, ResultsDataEntity } from '@/types/entities';
 
 const ExportFieldsModal = ({
   open,
   entity,
+  format,
   exporting,
   onCancel,
   onExport,
 }: {
   open: boolean;
   entity: ResultsDataEntity;
+  format: ExportFormat;
   exporting: boolean;
   onCancel: () => void;
   onExport: (fields: string[] | undefined) => void;
@@ -51,8 +53,8 @@ const ExportFieldsModal = ({
     <Modal
       open={open}
       onCancel={onCancel}
-      title={t('search.export_csv')}
-      okText={t('search.export_csv')}
+      title={`${t('search.export_data')} (${t(`search.${format}`)})`}
+      okText={t('search.export')}
       onOk={() => onExport(allSelected ? undefined : [...selectedKeys])}
       okButtonProps={{ disabled: fetching || selectedKeys.size === 0, loading: exporting }}
     >
