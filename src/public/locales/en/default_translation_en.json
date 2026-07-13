@@ -46,7 +46,7 @@
     "extra_properties": "$t(Extra Properties)"
   },
   "errors": {
-    "project_fetch": "Error fetching projects",
+    "project_fetch": "Error fetching $t(entities.project_other, lowercase)",
     "search_fetch": "Error fetching search results"
   },
   "search": {
@@ -226,16 +226,21 @@
   "Help for": "Help for",
   "page_help": {
     "overview": [
-      "The $t(Overview) page shows counts and charts for data stored in the selected project/$t(entities.dataset_one, lowercase) (the 'scope').",
+      "The $t(Overview) page shows counts and charts for data stored in the selected",
+      "$t(entities.project_one, lowercase)/$t(entities.dataset_one, lowercase) (the 'scope').",
       "Charts can be shown/hidden or their width altered via the '$t(Manage Charts)' button."
     ],
     "search": [
-      "The $t(Search) page lets you query either counts or full records for data stored in a specific project/$t(entities.dataset_one, lowercase)",
+      "The $t(Search) page lets you query either counts or full records for data stored in a specific",
+      "$t(entities.project_one, lowercase)/$t(entities.dataset_one, lowercase)",
       "or the entire instance (the 'scope'), depending on your level of authorization.\n",
       "Select filters and specify values to narrow down data of interest within the selected scope.",
       "If a small number of records match your query, the count may be censored to prevent re-identification."
     ],
-    "provenance": ["Detailed provenance data for a $t(entities.dataset_one, lowercase) or all $t(entities.dataset_other, lowercase) in a project."],
+    "provenance": [
+      "Detailed provenance data for a $t(entities.dataset_one, lowercase) or all $t(entities.dataset_other, lowercase)",
+      "in a $t(entities.project_one, lowercase)."
+    ],
     "beacon": [
       "Beacon allows you to query data by the position of genetic variants, and filter the results by various clinical",
       "or experimental metadata properties. You can also query by variants or metadata alone."
@@ -538,7 +543,7 @@
       "title": "Filters"
     },
     "facets": {
-      "projects": "Project",
+      "projects": "$(entities.project_one)",
       "dataTypes": "Data type",
       "taxa": "Taxa",
       "access": "Access",
@@ -567,7 +572,7 @@
       "by_status": "By status",
       "by_data_type": "By data type",
       "by_keyword": "By keyword",
-      "by_project": "By project"
+      "by_project": "By $t(entities.project_one, lowercase)"
     },
     "datasets": {
       "empty": "No datasets match your filters",
