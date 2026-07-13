@@ -533,7 +533,59 @@
     "checksums": "Checksums",
     "access_methods": "Access Methods"
   },
+  "catalogue": {
+    "rail": {
+      "title": "Filters"
+    },
+    "facets": {
+      "projects": "Project",
+      "dataTypes": "Data type",
+      "taxa": "Taxa",
+      "access": "Access",
+      "licenses": "Data use",
+      "statuses": "Status",
+      "keywords": "Keyword"
+    },
+    "toolbar": {
+      "search_placeholder": "Search datasets, keywords, assays…",
+      "sort": {
+        "recently_updated": "Recently updated",
+        "newest_created": "Newest created",
+        "title_az": "Title A–Z",
+        "most_individuals": "Most individuals",
+        "most_biosamples": "Most biosamples"
+      },
+      "dataset_found_one": "dataset found",
+      "dataset_found_other": "datasets found",
+      "show_insights": "Show insights",
+      "hide_insights": "Hide insights",
+      "clear_all": "Clear all"
+    },
+    "insights": {
+      "title": "Dataset insights",
+      "hint": "Select a segment to filter",
+      "by_status": "By status",
+      "by_data_type": "By data type",
+      "by_keyword": "By keyword",
+      "by_project": "By project"
+    },
+    "datasets": {
+      "empty": "No datasets match your filters",
+      "reset_filters": "Clear all filters",
+      "expand": "more"
+    },
+    "status": {
+      "ongoing": "Ongoing",
+      "completed": "Completed",
+      "unassigned": "Unassigned"
+    }
+  },
   "pcgl": {
+    "banner": {
+      "eyebrow": "PAN-CANADIAN GENOME LIBRARY",
+      "title": "Data Catalogue",
+      "subtitle": "Explore datasets from the Pan-Canadian Genome Library"
+    },
     "footer": {
       "logo_alt": "Pan-Canadian Genome Library logo",
       "cihr_logo_alt": "Canadian Institutes of Health Research logo",

@@ -80,6 +80,7 @@ const RootApp = () => {
               <ConfigProvider
                 locale={antdLocale}
                 theme={{
+                  cssVar: true,
                   components: {
                     Button: { algorithm: !PCGL_MODE },
                     Menu: { iconSize: 20 },
