@@ -80,13 +80,13 @@ const RootApp = () => {
               <ConfigProvider
                 locale={antdLocale}
                 theme={{
-                  cssVar: true,
+                  cssVar: { key: 'bento-theme' },
                   components: {
                     Button: { algorithm: !PCGL_MODE },
                     Menu: { iconSize: 20 },
                     Table: { borderColor: 'rgba(0, 0, 0, 0.08)' },
                   },
-                  cssVar: { key: 'default-theme' },
+                  token: PCGL_MODE ? { colorPrimary: '#2B7AAD' } : {},
                 }}
               >
                 <NotificationProvider>

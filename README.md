@@ -36,14 +36,17 @@ To customize the theme of a running instance of Bento Public, override the
 [`/(src|dist)/public/styles/instance.css`](./src/public/styles/instance.css) file with a custom stylesheet.
 
 Overrides to [Ant Design's theming tokens](https://ant.design/docs/react/customize-theme#design-token) via CSS variable
-should be done in the `.default-theme` class, e.g.:
+and other Bento theming variables (see [`src/styles.css`](./src/styles.css)) should be done in the `.bento-theme` class,
+e.g.:
 
 ```css
-.default-theme {
-    --ant-color-primary: #2B7AAD;
+.bento-theme {
     --ant-font-family: "Futura", sans-serif;
 }
 ```
+
+**Note:** DO NOT override the `--ant-color-primary` design token, since then Ant is unable to calculate shading 
+variations of the primary colour correctly.
 
 
 ## LICENSE
