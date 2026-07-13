@@ -275,7 +275,7 @@
     "material_sample": "Material Sample",
     "sample_processing": "Sample Processing",
     "sample_storage": "Sample Storage",
-    "files": "$t(entities.experiment_result_other)"
+    "files": "Files"
   },
   "geo_location": {
     "label": "Label",

@@ -329,7 +329,8 @@
     "tumor_grade": "Grade tumoral",
     "material_sample": "Nature de l'échantillon",
     "sample_processing": "Traitement de l'échantillon",
-    "sample_storage": "Stockage de l'échantillon"
+    "sample_storage": "Stockage de l'échantillon",
+    "files": "Fichiers"
   },
   "geo_location": {
     "label": "Étiquette",
