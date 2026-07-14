@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react';
+import { type KeyboardEventHandler, memo, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Alert, Card, Flex, Skeleton, Space, Statistic } from 'antd';
@@ -49,6 +49,15 @@ const CountCardPlaceholder = ({ loading }: { loading: boolean }) => {
 const CountCardShowHide = memo(({ selected, onClear }: { selected: boolean; onClear: () => void }) => {
   const t = useTranslationFn();
 
+  const handleKeyDown = useCallback<KeyboardEventHandler<HTMLDivElement>>(
+    (e) => {
+      if (e.key === 'Enter') {
+        onClear();
+      }
+    },
+    [onClear]
+  );
+
   return (
     <div
       className="count-card__show-hide cursor-pointer antd-gray-7"
@@ -56,7 +65,9 @@ const CountCardShowHide = memo(({ selected, onClear }: { selected: boolean; onCl
         backgroundColor: selected ? 'rgba(255, 255, 255, 1.0)' : 'rgba(255, 255, 255, 0.0)',
         bottom: selected ? -8 : 0,
       }}
+      tabIndex={selected ? 0 : undefined}
       onClick={selected ? onClear : undefined}
+      onKeyDown={handleKeyDown}
     >
       <DownOutlined
         style={{
@@ -155,6 +166,9 @@ const CountsAndResults = () => {
         const selected = selectedEntity === entity;
         const canSelect = hasQueryData && !selected;
         const showDenominator = !!nFilters && !!entityCounts && windowInnerWidth >= COUNT_CARD_DENOMINATOR_BREAKPOINT;
+        // If the user hovers over/focuses on the count card, start a pre-fetch to improve responsivity from the user's
+        // perspective if they decide to click on it.
+        const prefetch = () => dispatch(fetchDiscoveryMatches(entity));
         return (
           <Card
             key={i}
@@ -164,12 +178,19 @@ const CountsAndResults = () => {
               (canSelect ? ' count-card-clickable' : '') +
               (selected ? ' count-card-selected' : '')
             }
-            onMouseOver={
-              // If the user hovers over the count card, start a pre-fetch to improve responsivity from the user's
-              // perspective if they decide to click on it.
-              canSelect ? () => dispatch(fetchDiscoveryMatches(entity)) : undefined
-            }
+            onFocus={canSelect ? prefetch : undefined}
+            onMouseOver={canSelect ? prefetch : undefined}
+            tabIndex={canSelect ? 0 : undefined}
             onClick={canSelect ? () => setSelectedEntity(entity) : undefined}
+            onKeyDown={
+              canSelect
+                ? (e) => {
+                    if (e.key === 'Enter') {
+                      setSelectedEntity(entity);
+                    }
+                  }
+                : undefined
+            }
             style={{ height: COUNT_CARD_BASE_HEIGHT + (hasQueryData ? 12 : 0) + (selected ? 12 : 0) }}
           >
             <Statistic
