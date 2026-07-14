@@ -45,9 +45,9 @@ export const useTitleBreadcrumbItems = (): BreadcrumbItemType[] => {
     if (scope.dataset && !fixedDataset) {
       // If we have a dataset selected, and we don't have just a single project+dataset, we should show the dataset
       // context in the navigation.
-      if (PCGL_MODE || (scope.project && fixedProject)) {
-        // If we additionally have a fixed project (or aren't showing projects in the breadcrumb [PCGL_MODE]), we can
-        // "anchor" the dataset visually vs. the root page using a home icon:
+      if (scope.project && fixedProject) {
+        // If we additionally have a fixed project, we can "anchor" the dataset visually vs. the root page using a
+        // home icon/link:
         items.push({
           title: <HomeOutlined />,
           path: `/${language}/`,
