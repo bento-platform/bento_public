@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { type CSSProperties, useCallback, useEffect, useRef, useState } from 'react';
 import {
   AuditOutlined,
   BookOutlined,
@@ -217,13 +217,13 @@ const useProvenanceEntries = (
 
 const DatasetProvenance = ({
   dataset,
-  onClose,
   hideHeader,
+  style,
   mode = 'scroll',
 }: {
   dataset?: Dataset | null;
-  onClose?: () => void;
   hideHeader?: boolean;
+  style?: CSSProperties;
   mode?: 'scroll' | 'page';
 }) => {
   const [collapsed, setCollapsed] = useState<Set<SectionId>>(new Set());
@@ -323,10 +323,8 @@ const DatasetProvenance = ({
   );
 
   return (
-    <div className="prov-container">
-      {!hideHeader && (
-        <ProvenanceHeader dataset={dataset} copiedKey={copiedKey} onCopy={handleCopy} onClose={onClose} />
-      )}
+    <div className="prov-container" style={style}>
+      {!hideHeader && <ProvenanceHeader dataset={dataset} copiedKey={copiedKey} onCopy={handleCopy} />}
 
       <div className="pm-body" ref={bodyRef}>
         <SideNav navEntries={provenanceEntries} activeSection={activeSection} onJump={jumpToSection} mode={mode} />

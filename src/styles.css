@@ -1223,7 +1223,7 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   }
 }
 
-/* ── Provenance Modal (pm-) ──────────────────────────────────────────── */
+/* ── Provenance (pm-) ────────────────────────────────────────────────── */
 :root {
   /*--pm-blue: #054A74;*/
   --pm-blue-hov: #06598C;
@@ -1236,35 +1236,6 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   --pm-sep: rgba(5,5,5,0.06);
   --pm-tag-bg: rgba(5,74,116,0.08);
   --pm-nav-width: 240px;
-}
-
-.pm-scrim {
-  position: fixed; inset: 0; z-index: 1000;
-  background: rgba(2,18,30,0.46);
-  backdrop-filter: blur(2px);
-  display: flex; align-items: flex-start; justify-content: center;
-  padding: 40px 24px;
-}
-.pm-scrim.fullscreen { padding: 18px; }
-
-.pm-modal {
-  position: relative;
-  display: flex;
-  overflow: hidden;
-  width: min(1120px, 100%);
-  max-height: calc(100vh - 80px);
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 24px 70px rgba(2,37,59,0.30), 0 6px 22px rgba(2,37,59,0.18);
-  animation: pm-rise 0.28s cubic-bezier(.2,.7,.3,1);
-}
-.pm-modal.fullscreen {
-  width: min(1320px, 100%);
-  max-height: calc(100vh - 36px);
-}
-@keyframes pm-rise {
-  from { opacity: 0; transform: translateY(14px) scale(.99); }
-  to   { opacity: 1; transform: none; }
 }
 
 .prov-container {

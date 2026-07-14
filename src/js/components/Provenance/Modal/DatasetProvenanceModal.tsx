@@ -1,8 +1,7 @@
-import { useEffect } from 'react';
-import { createPortal } from 'react-dom';
-
+import { Modal } from 'antd';
 import type { Dataset } from '@/types/dataset';
 import DatasetProvenance from './DatasetProvenance';
+import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
 type DatasetProvenanceModalProps = {
   dataset: Dataset | null | undefined;
@@ -11,39 +10,24 @@ type DatasetProvenanceModalProps = {
 };
 
 const DatasetProvenanceModal = ({ dataset, open, onCancel }: DatasetProvenanceModalProps) => {
-  // Esc to close
-  useEffect(() => {
-    if (!open) return;
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onCancel();
-    };
-    document.addEventListener('keydown', handler);
-    return () => document.removeEventListener('keydown', handler);
-  }, [open, onCancel]);
+  // if (!open) return null;
+  const isSmallScreen = useSmallScreen();
 
-  // Prevent body scroll while open
-  useEffect(() => {
-    if (open) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [open]);
+  const margin = isSmallScreen ? 16 : 40;
 
-  if (!open) return null;
-
-  const modal = (
-    <div className="pm-scrim" onClick={onCancel}>
-      <div className="pm-modal" role="dialog" aria-label="Dataset provenance" onClick={(e) => e.stopPropagation()}>
-        <DatasetProvenance dataset={dataset} onClose={onCancel} />
-      </div>
-    </div>
+  return (
+    <Modal
+      open={open}
+      onCancel={onCancel}
+      width="min(1120px, 100%)"
+      style={{ top: margin }}
+      styles={{ content: { overflow: 'hidden', padding: 0 } }}
+      footer={null}
+    >
+      {/* max height: 100vh - 2 * top margin - (minimal antd modal margin == 16px) */}
+      <DatasetProvenance dataset={dataset} style={{ maxHeight: `calc(100vh - 2 * ${margin}px - 16px)` }} />
+    </Modal>
   );
-
-  return createPortal(modal, document.body);
 };
 
 export default DatasetProvenanceModal;
