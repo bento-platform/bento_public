@@ -1,6 +1,9 @@
+import { Flex } from 'antd';
+import KeyValueDisplay, { type KeyValueItem } from '@Util/KeyValueDisplay';
+import { CopyButton } from './cards';
+
 import { useTranslationFn } from '@/hooks';
 import type { Dataset } from '@/types/dataset';
-import { CopyButton } from './cards';
 
 type IdentifiersSectionContentProps = {
   dataset: Dataset;
@@ -13,11 +16,11 @@ const IdentifiersSectionContent = ({ dataset, copiedKey, onCopy }: IdentifiersSe
 
   const resources = dataset.resources ?? [];
 
-  return (
-    <div className="pm-kv">
-      <div className="pm-kv-row">
-        <div className="pm-kv-k">{t('Identifier')}</div>
-        <div className="pm-kv-v mono">
+  const kvItems: KeyValueItem[] = [
+    {
+      label: t('Identifier'),
+      value: (
+        <>
           {dataset.identifier}{' '}
           <CopyButton
             value={dataset.identifier}
@@ -25,50 +28,60 @@ const IdentifiersSectionContent = ({ dataset, copiedKey, onCopy }: IdentifiersSe
             copiedKey={copiedKey}
             onCopy={onCopy}
           />
-        </div>
-      </div>
-      <div className="pm-kv-row">
-        <div className="pm-kv-k">{t('provenance.schema_version')}</div>
-        <div className="pm-kv-v">{dataset.schema_version}</div>
-      </div>
-      <div className="pm-kv-row">
-        <div className="pm-kv-k">{t('provenance.project_id')}</div>
-        <div className="pm-kv-v mono">{dataset.project}</div>
-      </div>
-      {dataset.program_name && (
-        <div className="pm-kv-row">
-          <div className="pm-kv-k">{t('provenance.program_name')}</div>
-          <div className="pm-kv-v">{dataset.program_name}</div>
-        </div>
-      )}
-      {resources.length > 0 && (
-        <div className="pm-kv-row span">
-          <div className="pm-kv-k">Ontology resources</div>
-          <div className="pm-kv-v">
-            {resources.map((r, i) => (
-              <div key={i} className="pm-res-row">
-                <span className="pm-pfx">{r.namespace_prefix}</span>
-                <span>{r.name}</span>
-                <span className="pm-res-ver">· {r.version}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-      {dataset.extra_properties && Object.keys(dataset.extra_properties).length > 0 && (
-        <div className="pm-kv-row span">
-          <div className="pm-kv-k">Extra properties</div>
-          <div className="pm-kv-v" style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 4 }}>
-            {Object.entries(dataset.extra_properties).map(([k, v]) => (
-              <span key={k} className="pm-grant">
-                {k} · {String(v ?? '')}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
+        </>
+      ),
+      valueClassName: 'mono',
+    },
+    {
+      label: t('provenance.schema_version'),
+      value: dataset.schema_version,
+    },
+    {
+      label: t('provenance.project_id'),
+      value: dataset.project,
+      valueClassName: 'mono',
+    },
+  ];
+
+  if (dataset.program_name) {
+    kvItems.push({ label: t('provenance.program_name'), value: dataset.program_name });
+  }
+
+  if (resources.length > 0) {
+    kvItems.push({
+      label: t('provenance.ontology_resources'),
+      value: (
+        <>
+          {resources.map((r, i) => (
+            <div key={i} className="pm-res-row">
+              <span className="pm-pfx">{r.namespace_prefix}</span>
+              <span>{r.name}</span>
+              <span className="pm-res-ver">· {r.version}</span>
+            </div>
+          ))}
+        </>
+      ),
+      span: true,
+    });
+  }
+
+  if (dataset.extra_properties && Object.keys(dataset.extra_properties).length > 0) {
+    kvItems.push({
+      label: t('general.extra_properties'),
+      value: (
+        <Flex wrap gap={6} style={{ marginTop: 6 }}>
+          {Object.entries(dataset.extra_properties).map(([k, v]) => (
+            <span key={k} className="pm-grant">
+              {k} · {String(v ?? '')}
+            </span>
+          ))}
+        </Flex>
+      ),
+      span: true,
+    });
+  }
+
+  return <KeyValueDisplay items={kvItems} />;
 };
 
 export default IdentifiersSectionContent;
