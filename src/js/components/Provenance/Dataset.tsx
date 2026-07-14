@@ -12,6 +12,7 @@ import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
 import { getCurrentPage } from '@/utils/router';
 import { useLanguage, useTranslationFn } from '@/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
+import { nonEmptyCounts } from '@/utils/counts';
 import { isoDateToString } from '@/utils/strings';
 import StatusBadge from '@/components/Util/StatusBadge';
 import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
@@ -75,11 +76,8 @@ const Dataset = ({
   const closeProvenanceModal = useCallback(() => setProvenanceModalOpen(false), []);
 
   const counts = filteredCounts ?? dataset.counts_by_entity;
-  const faded =
-    filteredCounts &&
-    dataset.counts_by_entity &&
-    Object.values(filteredCounts).every((c) => !c) &&
-    Object.values(dataset.counts_by_entity).some((c) => !!c);
+  const hasData = nonEmptyCounts(dataset.counts_by_entity);
+  const faded = filteredCounts && Object.values(filteredCounts).every((c) => !c) && hasData;
 
   let inner: ReactNode;
 
@@ -143,9 +141,11 @@ const Dataset = ({
         )}
 
         <Flex gap={8} className="mt-3">
-          <Button type="primary" icon={<PieChartOutlined />} className="flex-1" onClick={onNavigateOverview}>
-            {t('Explore')}
-          </Button>
+          {hasData && (
+            <Button type="primary" icon={<PieChartOutlined />} className="flex-1" onClick={onNavigateOverview}>
+              {t('Explore')}
+            </Button>
+          )}
           <Button icon={<SolutionOutlined />} className="flex-1" onClick={openProvenanceModal}>
             {t('Provenance')}
           </Button>
