@@ -3,7 +3,7 @@ import { makeProjectDatasetResource, makeProjectResource, type Resource, RESOURC
 import { useAppSelector } from '@/hooks';
 import type { Project } from '@/types/metadata';
 import type { Dataset } from '@/types/dataset';
-import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
+import { nonEmptyCounts } from '@/utils/counts';
 
 export const useMetadata = () => useAppSelector((state) => state.metadata);
 
@@ -57,20 +57,14 @@ export const useSelectedScopeTitles = () => {
   );
 };
 
-const _nonEmptyCounts = (c: KatsuEntityCountsOrBooleans | null | undefined) => {
-  const values = Object.values(c ?? {});
-  if (values.length === 0) return false;
-  return values.some((c) => !!c);
-};
-
 export const useScopeHasData = () => {
   const selectedProject = useSelectedProject();
   const selectedDataset = useSelectedDataset();
 
   return useMemo(
     () =>
-      (!!selectedDataset && _nonEmptyCounts(selectedDataset.counts_by_entity)) ||
-      (!!selectedProject && !selectedDataset && _nonEmptyCounts(selectedProject.counts)),
+      (!!selectedDataset && nonEmptyCounts(selectedDataset.counts_by_entity)) ||
+      (!!selectedProject && !selectedDataset && nonEmptyCounts(selectedProject.counts)),
     [selectedProject, selectedDataset]
   );
 };
