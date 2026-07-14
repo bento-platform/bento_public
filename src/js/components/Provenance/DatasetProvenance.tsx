@@ -478,32 +478,14 @@ export type DatasetProvenanceProps = {
   dataset: Dataset;
   loading?: boolean;
   hideHeader?: boolean;
-  showTitle?: boolean;
 };
 
-const DatasetProvenance = ({ dataset, loading, hideHeader, showTitle = true }: DatasetProvenanceProps) => {
-  const t = useTranslationFn();
-
-  const version = dataset.version ? (
-    <Title key="version" level={4} type="secondary" italic>
-      {dataset.version}
-    </Title>
-  ) : null;
-
-  return (
-    <div className="container margin-auto">
-      <Card
-        title={showTitle ? <Title level={3}>{t(dataset.title)}</Title> : undefined}
-        extra={showTitle && version ? [version] : undefined}
-        className="shadow rounded-xl overflow-hidden"
-        loading={loading}
-        styles={{ body: { padding: 0 } }}
-      >
-        {/*{!showTitle && version ? version : null}*/}
-        <DatasetProvenance2 dataset={dataset} hideHeader={hideHeader} mode="page" />
-      </Card>
-    </div>
-  );
-};
+const DatasetProvenance = ({ dataset, loading, hideHeader }: DatasetProvenanceProps) => (
+  <div className="container margin-auto">
+    <Card className="shadow rounded-xl overflow-hidden" loading={loading} styles={{ body: { padding: 0 } }}>
+      <DatasetProvenance2 dataset={dataset} hideHeader={hideHeader} mode="page" />
+    </Card>
+  </div>
+);
 
 export default DatasetProvenance;

@@ -140,6 +140,11 @@ export const useSidebarMenuItems = (): MenuItem[] => {
       items.push(createMenuItem(BentoRoute.Beacon, ...getRouteTitleAndIcon(BentoRoute.Beacon)));
     }
 
+    if (scope.project && scopeHasData) {
+      // Only create standalone menu item if we have data, otherwise the overview page will display provenance data.
+      items.push(createMenuItem(BentoRoute.Provenance, ...getRouteTitleAndIcon(BentoRoute.Provenance)));
+    }
+
     if (BentoRoute.BeaconNetwork && (!scope.project || (scope.project && fixedProject))) {
       items.push(createMenuItem(BentoRoute.BeaconNetwork, ...getRouteTitleAndIcon(BentoRoute.BeaconNetwork)));
     }

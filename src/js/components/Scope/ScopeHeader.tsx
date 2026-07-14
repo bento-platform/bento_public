@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Breadcrumb, type BreadcrumbProps, Button, Flex, Tooltip } from 'antd';
+import { Breadcrumb, type BreadcrumbProps, Button, Flex, Menu, Tooltip } from 'antd';
 import { ArrowLeftOutlined, FilterOutlined, QuestionOutlined } from '@ant-design/icons';
 import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
+import type { MenuItem } from '@/types/navigation';
 
 import CurrentPageHelpModal from '@/components/Util/CurrentPageHelpModal';
 import { useSelectedScope } from '@/features/metadata/hooks';
@@ -70,6 +71,7 @@ type ScopeHeaderProps = {
   sidebarOverlayShown: boolean;
   onToggleSidebar: () => void;
   breadcrumbItems: BreadcrumbItemType[];
+  menuItems?: MenuItem[];
 };
 
 const ScopeHeader = ({
@@ -77,9 +79,11 @@ const ScopeHeader = ({
   sidebarOverlayShown,
   onToggleSidebar,
   breadcrumbItems,
+  menuItems,
 }: ScopeHeaderProps) => {
   const t = useTranslationFn();
   const currentPage = getCurrentPage();
+  const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
   const [helpModalOpen, setHelpModalOpen] = useState(false);
   const [backClickText, onBackClick] = useBackButtonInfo();
 
@@ -131,6 +135,18 @@ const ScopeHeader = ({
                 </Tooltip>
               ) : null}
               <Breadcrumb className="scoped-title__breadcrumb" items={breadcrumbItems} itemRender={breadcrumbRender} />
+              {!!menuItems && menuItems.length > 1 && (
+                <Menu
+                  mode="horizontal"
+                  className="flex-1"
+                  style={{ background: 'none', border: 'none', marginLeft: 24 }}
+                  items={menuItems}
+                  selectedKeys={[currentPage]}
+                  onClick={(item) => {
+                    navigateToSameScopeUrl(item.key);
+                  }}
+                />
+              )}
             </Flex>
             {currentPageHasHelp && (
               <Tooltip title={t('Help')} placement="bottom">

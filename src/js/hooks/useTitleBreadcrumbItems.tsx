@@ -60,7 +60,7 @@ export const useTitleBreadcrumbItems = (): BreadcrumbItemType[] => {
     }
 
     // We treat the overview as the "default" page, meaning we won't show the page name in the breadcrumb bar.
-    if (currentPage !== BentoRoute.Overview) {
+    if (currentPage === BentoRoute.BeaconNetwork || currentPage === BentoRoute.Phenopackets) {
       items.push({ title: currentPageTitle });
     }
 

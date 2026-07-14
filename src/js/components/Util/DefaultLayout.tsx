@@ -48,7 +48,7 @@ const DefaultLayout = () => {
         'scope-header-hidden': scopeHeaderHidden,
       })}
     >
-      <SiteHeader menuItems={menuItems} />
+      <SiteHeader menuItems={!scope.project ? menuItems : []} />
       <Layout id="content-layout">
         {!isCatalogue && !scopeHeaderHidden && (
           <ScopeHeader
@@ -56,6 +56,8 @@ const DefaultLayout = () => {
             sidebarOverlayShown={sidebarOverlayShown}
             onToggleSidebar={() => setCollapsed((c) => !c)}
             breadcrumbItems={breadcrumbItems}
+            // TODO: figure out conditional logic
+            menuItems={scope.project && page !== BentoRoute.Phenopackets ? menuItems : []}
           />
         )}
         <Layout>

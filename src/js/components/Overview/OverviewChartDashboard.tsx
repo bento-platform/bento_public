@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react';
-import { Card, Flex, FloatButton, Typography } from 'antd';
+import { Flex, FloatButton } from 'antd';
 import { AppstoreAddOutlined } from '@ant-design/icons';
-const { Paragraph } = Typography;
 
 import clsx from 'clsx';
 import { convertSequenceAndDisplayData, generateLSChartDataKey, saveValue } from '@/utils/localStorage';
@@ -11,17 +10,16 @@ import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 
 import { WAITING_STATES } from '@/constants/requests';
 
-import AboutBox from './AboutBox';
+import ProvenancePage from '@/components/Provenance/ProvenancePage';
 import OverviewSection from './OverviewSection';
 import OverviewDatasets from './OverviewDatasets';
 import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
 import CountsAndResults from './CountsAndResults';
 import LastIngestionInfo from './LastIngestion';
-import DatasetProvenance from '@/components/Provenance/DatasetProvenance';
 
 import { useTranslationFn } from '@/hooks';
 import { useSearchRouterAndHandler } from '@/hooks/useSearchRouterAndHandler';
-import { useSelectedDataset, useSelectedProject, useSelectedScope, useScopeHasData } from '@/features/metadata/hooks';
+import { useSelectedProject, useSelectedScope, useScopeHasData } from '@/features/metadata/hooks';
 import { useSearchQuery, useSearchableFields } from '@/features/search/hooks';
 import { useIsInCatalogueMode } from '@/hooks/navigation';
 
@@ -34,9 +32,8 @@ const OverviewChartDashboard = () => {
 
   const [drawerVisible, setDrawerVisible] = useState(false);
 
-  const { scope, fixedDataset } = useSelectedScope();
+  const { scope } = useSelectedScope();
   const selectedProject = useSelectedProject();
-  const selectedDataset = useSelectedDataset();
   const catalogueMode = useIsInCatalogueMode();
 
   // This is essentially a large effect hook with a few dependencies, which processes (and rewrites if needed) the query
@@ -48,13 +45,6 @@ const OverviewChartDashboard = () => {
   // Lazy-loading hooks means this is loaded only if OverviewChartDashboard is rendered:
   const searchableFields = useSearchableFields();
 
-  const scopeHasData = useScopeHasData();
-
-  // If we have no entities with data confirmed, don't bother showing charts (or last ingested details)
-  const displayedSections = scopeHasData
-    ? sections.filter(({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1)
-    : [];
-
   const onManageChartsOpen = useCallback(() => setDrawerVisible(true), []);
   const onManageChartsClose = useCallback(() => {
     setDrawerVisible(false);
@@ -62,25 +52,20 @@ const OverviewChartDashboard = () => {
     saveScopeOverviewToLS(scope, sections);
   }, [scope, sections]);
 
+  const scopeHasData = useScopeHasData();
+
   // ---
 
+  // If we don't have any data to display, render the provenance page as the entire overview for the scope rather than
+  // bothering to show a chart dashboard.
+  if (!scopeHasData) return <ProvenancePage />;
+
   const loadingNewData = WAITING_STATES.includes(discoveryStatus);
+  const displayedSections = sections.filter(({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1);
 
   return (
     <>
       <Flex vertical={true} gap={24} className={clsx('container', { 'margin-auto': !scopeHasData })}>
-        {selectedDataset ? (
-          <DatasetProvenance dataset={selectedDataset} showTitle={false} hideHeader={fixedDataset} />
-        ) : selectedProject ? (
-          selectedProject.description ? (
-            <Card className="container shadow rounded-xl">
-              <Paragraph className="mb-0">{t(selectedProject.description)}</Paragraph>
-            </Card>
-          ) : null
-        ) : (
-          <AboutBox />
-        )}
-
         {/*
             If we're in a scope with no data at all, don't bother rendering the
             "NOT ENOUGH DATA" message / "NO DATA" empty component. This way, we get a sort of "catalogue detail" view,
@@ -103,21 +88,19 @@ const OverviewChartDashboard = () => {
           </div>
         ))}
 
-        {scopeHasData && !catalogueMode && <LastIngestionInfo />}
+        {!catalogueMode && <LastIngestionInfo />}
       </Flex>
 
       <ManageChartsDrawer onManageDrawerClose={onManageChartsClose} manageDrawerVisible={drawerVisible} />
 
       <FloatButton.Group className="float-btn-pos">
         <FloatButton.BackTop target={() => document.getElementById('content-layout')!} />
-        {scopeHasData && (
-          <FloatButton
-            type="primary"
-            icon={<AppstoreAddOutlined rotate={270} />}
-            tooltip={t('Manage Charts')}
-            onClick={onManageChartsOpen}
-          />
-        )}
+        <FloatButton
+          type="primary"
+          icon={<AppstoreAddOutlined rotate={270} />}
+          tooltip={t('Manage Charts')}
+          onClick={onManageChartsOpen}
+        />
       </FloatButton.Group>
     </>
   );
