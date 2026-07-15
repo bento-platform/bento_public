@@ -38,17 +38,6 @@ const ExportFieldsModal = ({
 
   const toggleAll = (checked: boolean) => setDeselectedKeys(checked ? null : new Set(fields?.map((f) => f.key)));
 
-  const toggleKey = (key: string, checked: boolean) =>
-    setDeselectedKeys((dk) => {
-      const next = new Set(dk ?? []);
-      if (checked) {
-        next.delete(key);
-      } else {
-        next.add(key);
-      }
-      return next;
-    });
-
   return (
     <Modal
       open={open}
@@ -75,13 +64,18 @@ const ExportFieldsModal = ({
             </span>
           </Flex>
           <Divider className="my-3" />
-          <Space direction="vertical">
-            {fields.map(({ key, label }) => (
-              <Checkbox key={key} checked={selectedKeys.has(key)} onChange={(e) => toggleKey(key, e.target.checked)}>
-                {label}
-              </Checkbox>
-            ))}
-          </Space>
+          <Checkbox.Group
+            value={[...selectedKeys]}
+            onChange={(checked) => setDeselectedKeys(new Set(fields.map((f) => f.key).filter((k) => !checked.includes(k))))}
+          >
+            <Space direction="vertical">
+              {fields.map(({ key, label }) => (
+                <Checkbox key={key} value={key}>
+                  {label}
+                </Checkbox>
+              ))}
+            </Space>
+          </Checkbox.Group>
         </>
       )}
     </Modal>
