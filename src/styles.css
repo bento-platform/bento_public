@@ -9,11 +9,12 @@
   --sidebar-width-collapsed: 64px;
 
   --content-padding-v: 24px;
-  --content-padding-h: 24px;
+  --content-padding-h: 48px;
   --content-max-width: 1400px;
 
-  --content-scoped-title-height: 48px;
-  --content-scoped-title-margin-bottom: 24px;
+  --scoped-title-height: 48px;
+  --scoped-title-margin-bottom: 24px;
+  --scoped-title-breadcrumb-font-size: 1.2rem;
 
   /* 90% opacity white */
   --white-90: rgba(255, 255, 255, 0.9);
@@ -283,33 +284,48 @@ body {
 
 .scoped-title {
   box-sizing: border-box;
-  height: var(--content-scoped-title-height);
+  height: var(--scoped-title-height);
+  overflow: hidden;
 }
 
 .scoped-title__back {
   margin-right: 12px;
 
-  font-size: 1.2rem;
+  font-size: var(--scoped-title-breadcrumb-font-size);
   color: rgba(0, 0, 0, 0.45);
 }
 
 .scoped-title__breadcrumb {
-  font-size: 1.2rem;
-  line-height: var(--content-scoped-title-height);
+  font-size: var(--scoped-title-breadcrumb-font-size);
+  line-height: var(--scoped-title-height);
+  overflow: hidden;
 }
 
 .scoped-title__breadcrumb a {
-  height: calc(var(--content-scoped-title-height) - 8px);
+  height: calc(var(--scoped-title-height) - 8px);
   margin-top: 4px;
-  line-height: calc(var(--content-scoped-title-height) - 8px);
+  line-height: calc(var(--scoped-title-height) - 8px);
 }
 
 .scoped-title__breadcrumb .anticon {
   font-size: 0.9em;
 }
 
+.scoped-title__breadcrumb .ant-breadcrumb-item {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .scoped-title__breadcrumb .ant-breadcrumb-item a {
   height: 40px;
+}
+
+#scope-header__menu {
+  flex: 1;
+  background: none;
+  border: none;
+  margin-left: 24px;
 }
 
 
@@ -345,9 +361,8 @@ body {
   z-index: 100;
   top: 0;
 
-  /* Header padding is reduced to 24px to provide more breathing room for buttons at small screen sizes and grid-align
-     logo with sidebar icons. */
-  padding: 0 24px;
+  /* Header padding is grid-aligned to content padding */
+  padding: 0 var(--content-padding-h);
 }
 
 #site-header h1.ant-typography {
@@ -381,7 +396,7 @@ body {
   position: fixed;
   box-shadow: 3px 0 10px rgba(0, 0, 0, 0.06);
   padding: 0;
-  height: calc(100vh - var(--header-height) - var(--content-scoped-title-height));
+  height: calc(100vh - var(--header-height) - var(--scoped-title-height));
 }
 #site-sider.overlay.collapsed {
   left: calc(-1 * var(--sidebar-width-full) - 1px);
@@ -421,6 +436,9 @@ body {
 
 #content-layout > .ant-layout .ant-layout-content {
   padding: var(--content-padding-v) var(--content-padding-h);
+}
+#content-layout > .ant-layout .ant-layout-has-sider .ant-layout-content {
+  padding: var(--content-padding-v) var(--content-padding-h) var(--content-padding-v) calc(var(--content-padding-h) / 2);
 }
 
 .page-phenopackets #content-layout main.ant-layout-content {
@@ -616,10 +634,10 @@ body {
 
 .sidebar {
   position: sticky;
-  top: calc(var(--content-scoped-title-height) + var(--content-padding-v));
+  top: calc(var(--scoped-title-height) + var(--content-padding-v));
 
   height: 100%;
-  max-height: calc(100vh - var(--header-height) - var(--content-scoped-title-height) - (2 * var(--content-padding-v)));
+  max-height: calc(100vh - var(--header-height) - var(--scoped-title-height) - (2 * var(--content-padding-v)));
   width: calc(var(--sidebar-width-full) - var(--content-padding-h));
   flex-shrink: 0;
   align-self: flex-start;
@@ -1152,6 +1170,7 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
 /* END phenopackets/other clinical+phenotypic metadata views */
 
 @media (min-width: 1200px) {
+  /* Same breakpoint as Ant xxl+ */
   #pcgl-footer__links {
     column-gap: 40px;
     text-align: left;
@@ -1169,6 +1188,14 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   }
 }
 
+@media (max-width: 1200px) {
+  /* Same breakpoint as Ant xxl -> xl */
+  :root {
+    --content-padding-h: 24px;
+    --scoped-title-breadcrumb-font-size: 1.1rem;
+  }
+}
+
 @media (max-width: 768px) {
   /* Same breakpoint as constants/deviceBreakpoints DeviceBreakpoints.TABLET & Ant md -> sm */
 
@@ -1176,7 +1203,8 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
     --content-padding-v: 10px;
     --content-padding-h: 10px;
 
-    --content-scoped-title-margin-bottom: 10px;
+    --scoped-title-margin-bottom: 10px;
+    --scoped-title-breadcrumb-font-size: 1rem;
   }
 
   .ant-layout-footer {
@@ -1188,7 +1216,6 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   }
 
   .scoped-title__breadcrumb {
-    font-size: 1.2rem;
     line-height: 46px;
   }
 

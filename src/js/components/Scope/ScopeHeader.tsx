@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Breadcrumb, type BreadcrumbProps, Button, Flex, Menu, Tooltip } from 'antd';
 import { ArrowLeftOutlined, FilterOutlined, QuestionOutlined } from '@ant-design/icons';
@@ -9,6 +9,7 @@ import CurrentPageHelpModal from '@/components/Util/CurrentPageHelpModal';
 import { useSelectedScope } from '@/features/metadata/hooks';
 import { useSearchQueryParams } from '@/features/search/hooks';
 import { useTranslationFn } from '@/hooks';
+import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { useNavigateToRoot, useNavigateToSameScopeUrl, useNavigateToScope } from '@/hooks/navigation';
 import { BentoRoute } from '@/types/routes';
 import { getCurrentPage } from '@/utils/router';
@@ -82,6 +83,7 @@ const ScopeHeader = ({
   menuItems,
 }: ScopeHeaderProps) => {
   const t = useTranslationFn();
+  const isSmallScreen = useSmallScreen();
   const currentPage = getCurrentPage();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
   const [helpModalOpen, setHelpModalOpen] = useState(false);
@@ -102,6 +104,11 @@ const ScopeHeader = ({
     return () => observer.disconnect();
   }, []);
 
+  const onMenuClick = useCallback(
+    (item: { key: string }) => navigateToSameScopeUrl(item.key),
+    [navigateToSameScopeUrl]
+  );
+
   if (!breadcrumbItems.length && !showSidebarToggle) return null;
 
   return (
@@ -121,7 +128,7 @@ const ScopeHeader = ({
         )}
         {breadcrumbItems.length > 0 && (
           <Flex className="scoped-title flex-1" align="center">
-            <Flex className="flex-1" align="center">
+            <Flex className="flex-1 overflow-hidden" align="center">
               {backClickText !== undefined && onBackClick !== undefined ? (
                 <Tooltip title={backClickText}>
                   <Button
@@ -137,14 +144,12 @@ const ScopeHeader = ({
               <Breadcrumb className="scoped-title__breadcrumb" items={breadcrumbItems} itemRender={breadcrumbRender} />
               {!!menuItems && menuItems.length > 1 && (
                 <Menu
+                  id="scope-header__menu"
                   mode="horizontal"
-                  className="flex-1"
-                  style={{ background: 'none', border: 'none', marginLeft: 24 }}
                   items={menuItems}
                   selectedKeys={[currentPage]}
-                  onClick={(item) => {
-                    navigateToSameScopeUrl(item.key);
-                  }}
+                  onClick={onMenuClick}
+                  style={{ width: isSmallScreen ? 52 : undefined }}
                 />
               )}
             </Flex>
