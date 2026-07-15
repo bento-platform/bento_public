@@ -62,7 +62,9 @@ const ExportFieldsModal = ({
           <Divider className="my-3" />
           <Checkbox.Group
             value={[...selectedKeys]}
-            onChange={(checked) => setDeselectedKeys(new Set(fields.map((f) => f.key).filter((k) => !checked.includes(k))))}
+            onChange={(checked) =>
+              setDeselectedKeys(new Set(fields.map((f) => f.key).filter((k) => !checked.includes(k))))
+            }
           >
             <Space direction="vertical">
               {fields.map(({ key, label }) => (
