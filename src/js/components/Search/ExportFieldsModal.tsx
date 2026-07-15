@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Checkbox, Divider, Flex, Modal, Space, Spin } from 'antd';
 
 import { useTranslationFn } from '@/hooks';
@@ -21,14 +21,10 @@ const ExportFieldsModal = ({
   onExport: (fields: string[] | undefined) => void;
 }) => {
   const t = useTranslationFn();
-  const { fields, fetching, fetchFields } = useDiscoveryMatchExportFields();
+  const { fields, fetching } = useDiscoveryMatchExportFields(entity, open);
 
   // null = every field selected (the default, and what "select all" resets to).
   const [deselectedKeys, setDeselectedKeys] = useState<Set<string> | null>(null);
-
-  useEffect(() => {
-    if (open) fetchFields(entity);
-  }, [open, entity, fetchFields]);
 
   const selectedKeys = useMemo(
     () => new Set((fields ?? []).map((f) => f.key).filter((k) => !deselectedKeys?.has(k))),
