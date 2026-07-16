@@ -60,6 +60,7 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable }: ChartCard
             id={id}
             key={id}
             isClickable={!!searchable}
+            dateBinned={datatype === 'date'}
           />
         ) : (
           <Row style={ROW_EMPTY_STYLE} justify="center" align="middle">
