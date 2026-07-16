@@ -810,7 +810,7 @@ body {
   font-size: 11px;
   font-weight: 600;
   padding: 1px 8px;
-  border-radius: 10px;
+  border-radius: 500px;
   white-space: nowrap;
   border: 1px solid transparent;
 }
@@ -1325,14 +1325,9 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
 .pm-icon-btn.bare { border-color: transparent; }
 .pm-icon-btn.bare:hover { background: #F0F0F0; border-color: transparent; color: var(--text-primary); }
 
-.pm-status {
-  display: inline-flex; align-items: center; gap: 6px; flex: none;
-  font-size: var(--p-fs-xsmall); font-weight: 600; padding: 2px 10px; border-radius: 11px;
-  border: 1px solid; white-space: nowrap; margin-top: 4px;
+.pm-title-row .status-badge {
+  padding: 2px 10px; margin-top: 4px; font-size: var(--p-fs-xsmall);
 }
-.pm-status .pm-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-.pm-status-ongoing  { color: #389E0D; background: #F6FFED; border-color: #B7EB8F; }
-.pm-status-completed { color: var(--pm-primary); background: var(--pm-tag-bg); border-color: #91CAFF; }
 .pm-ctx-chip {
   display: inline-flex; align-items: center;
   font-size: var(--p-fs-xsmall); font-weight: 600; padding: 2px 10px; border-radius: 11px;

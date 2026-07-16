@@ -8,9 +8,10 @@ import {
 
 import { T_SINGULAR_COUNT } from '@/constants/i18n';
 import { useTranslationFn } from '@/hooks';
-import { statusTranslationKey, studyContextTranslationKey } from '@/features/catalogue/hooks';
+import { studyContextTranslationKey } from '@/features/catalogue/hooks';
 import type { Dataset } from '@/types/dataset';
 import { CopyButton } from './cards';
+import StatusBadge from '@Util/StatusBadge';
 
 type ModalHeaderProps = {
   dataset: Dataset;
@@ -35,12 +36,7 @@ const ProvenanceHeader = ({ dataset, copiedKey, onCopy, onClose }: ModalHeaderPr
           </div>
           <div className="pm-title-row">
             <h1>{t(dataset.title)}</h1>
-            {dataset.study_status && (
-              <span className={`pm-status pm-status-${dataset.study_status.toLowerCase()}`}>
-                <span className="pm-dot" />
-                {t(statusTranslationKey(dataset.study_status))}
-              </span>
-            )}
+            {dataset.study_status && <StatusBadge status={dataset.study_status} />}
             {dataset.study_context && (
               <span className="pm-ctx-chip">{t(studyContextTranslationKey(dataset.study_context))}</span>
             )}
