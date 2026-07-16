@@ -1,5 +1,5 @@
 import { Flex } from 'antd';
-import { ExportOutlined } from '@ant-design/icons';
+import { CodeOutlined, GlobalOutlined } from '@ant-design/icons';
 import KeyValueDisplay, { type KeyValueItem } from '@Util/KeyValueDisplay';
 import { CopyButton } from './cards';
 
@@ -60,12 +60,12 @@ const IdentifiersSectionContent = ({ dataset, copiedKey, onCopy }: IdentifiersSe
               <span className="pm-res-ver">· {r.version}</span>
               {r.url && (
                 <a href={r.url} target="_blank" rel="noreferrer" title={t('provenance.ontology_resources')}>
-                  <ExportOutlined style={{ fontSize: 11 }} />
+                  <GlobalOutlined style={{ fontSize: 11 }} />
                 </a>
               )}
               {r.repository_url && (
                 <a href={r.repository_url} target="_blank" rel="noreferrer" title={t('provenance.repository')}>
-                  <ExportOutlined style={{ fontSize: 11 }} />
+                  <CodeOutlined style={{ fontSize: 11 }} />
                 </a>
               )}
             </div>
