@@ -266,6 +266,7 @@
     "project_id": "Identifiant du projet",
     "protocol": "Protocole",
     "released": "Publié",
+    "repository": "Dépôt",
     "schema_version": "Version du schéma",
     "study_context": "Contexte de l'étude",
     "study_status": "Statut de l'étude",

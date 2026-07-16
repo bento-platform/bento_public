@@ -633,6 +633,7 @@
     "project_id": "Project ID",
     "protocol": "Protocol",
     "released": "Released",
+    "repository": "Repository",
     "schema_version": "Schema version",
     "study_context": "Study context",
     "study_status": "Study status",
