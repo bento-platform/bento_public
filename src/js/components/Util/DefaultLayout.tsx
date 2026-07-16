@@ -75,7 +75,7 @@ const DefaultLayout = () => {
               />
             ) : null}
             <Content
-              style={{ minHeight: 'calc(100vh - 210px - var(--content-scoped-title-height) - var(--header-height))' }}
+              style={{ minHeight: 'calc(100vh - 210px - var(--scoped-title-height) - var(--header-height))' }}
             >
               <Outlet />
             </Content>
