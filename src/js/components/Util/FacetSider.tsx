@@ -26,9 +26,10 @@ export interface FacetSiderProps {
   /** Renders as collapsible facet sections. Omit and use `children` for a non-sectioned body (e.g. a form). */
   sections?: FacetSiderSection[];
   children?: ReactNode;
-  /** BEM-style class prefix, e.g. "catalogue-rail" — drives `{prefix}`, `{prefix}-backdrop`,
-   *  `{prefix}--overlay`, `{prefix}--open`, and `{prefix}__*` header classes. */
-  classPrefix: string;
+  /** Extra class(es) on the outer wrapper. Callers scope/override the fixed `facet-sider` BEM
+   *  classes via CSS descendant selectors on this, e.g. `.catalogue-rail .facet-sider__header`,
+   *  rather than the shell computing per-caller class names. */
+  className?: string;
   /** Applied to the outer wrapper div, for callers with existing id-keyed CSS. */
   id?: string;
 }
@@ -49,21 +50,24 @@ const FacetSider = ({
   onClose,
   sections,
   children,
-  classPrefix,
+  className,
   id,
 }: FacetSiderProps) => (
   <>
-    {overlay && open && <div className={`${classPrefix}-backdrop`} onClick={onClose} aria-hidden />}
-    <div id={id} className={clsx(classPrefix, overlay && `${classPrefix}--overlay`, open && `${classPrefix}--open`)}>
+    {overlay && open && <div className={clsx('facet-sider__backdrop', className)} onClick={onClose} aria-hidden />}
+    <div
+      id={id}
+      className={clsx('facet-sider', className, overlay && 'facet-sider--overlay', open && 'facet-sider--open')}
+    >
       {title !== undefined && (
-        <div className={`${classPrefix}__header`}>
-          <span className={`${classPrefix}__title`}>{title}</span>
+        <div className="facet-sider__header">
+          <span className="facet-sider__title">{title}</span>
           {overlay ? (
-            <button className={`${classPrefix}__close`} onClick={onClose} aria-label={closeLabel}>
+            <button className="facet-sider__close" onClick={onClose} aria-label={closeLabel}>
               <CloseOutlined />
             </button>
           ) : (
-            countLabel !== undefined && <span className={`${classPrefix}__count`}>{countLabel}</span>
+            countLabel !== undefined && <span className="facet-sider__count">{countLabel}</span>
           )}
         </div>
       )}
