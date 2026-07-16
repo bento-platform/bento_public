@@ -1678,7 +1678,7 @@ button.pm-sec-head { cursor: pointer; }
 .pm-cc-desc { font-size: 11.5px; color: var(--text-muted); margin-top: 3px; line-height: 1.4; }
 
 /* ── Spatial coverage ── */
-.pm-coverwrap { display: grid; grid-template-columns: 1fr 240px; gap: 16px; align-items: stretch; }
+.pm-coverwrap { display: grid; grid-template-columns: 1fr 460px; gap: 16px; align-items: stretch; }
 .pm-cover-info { display: flex; flex-direction: column; gap: 12px; }
 .pm-cover-place { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 500; color: var(--text-primary); }
 .pm-cover-place .anticon { font-size: 18px; color: var(--pm-primary); }
