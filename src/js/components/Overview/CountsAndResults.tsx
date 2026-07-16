@@ -173,6 +173,7 @@ const CountsAndResults = () => {
           <Card
             key={i}
             aria-selected={hasQueryData ? selected : undefined}
+            role={canSelect ? 'button' : undefined}
             className={
               'shadow count-card' +
               (canSelect ? ' count-card-clickable' : '') +

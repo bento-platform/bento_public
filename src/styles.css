@@ -907,6 +907,7 @@ body {
     height 0.3s ease-in-out,
     margin-bottom 0.3s ease-in-out,
     box-shadow 0.15s ease-in-out,
+    border-color 0.15s ease-in-out,
     opacity 0.15s ease-in-out;
 }
 .count-card .ant-statistic .ant-statistic-content {
@@ -921,7 +922,11 @@ body {
 }
 .count-card.shadow.count-card-clickable:hover {
   box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+  border-color: var(--ant-color-primary-hover);
   opacity: 1;
+}
+.count-card.shadow.count-card-clickable:active {
+  border-color: var(--ant-color-primary-active);
 }
 .count-card.shadow.count-card-clickable .counts-title {
   text-decoration: underline;
