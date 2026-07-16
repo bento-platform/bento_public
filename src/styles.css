@@ -599,11 +599,11 @@ body {
 /* END catalogue toolbar */
 
 /* Bigger active-filter-tag variant used on the overview page (between the About section and count cards) */
-.overview-filter-tag {
-  font-size: 14px !important;
-  padding: 4px 10px !important;
-  height: auto !important;
-  line-height: 1.4 !important;
+.ant-tag.overview-filter-tag {
+  font-size: 14px;
+  padding: 4px 10px;
+  height: auto;
+  line-height: 1.4;
 }
 .overview-filter-tag .catalogue-filter-tag__facet-label {
   font-size: 12.5px;
