@@ -47,7 +47,9 @@
     "type": "Type",
     "source": "Source",
     "copy": "Copy",
-    "copied": "Copied"
+    "copied": "Copied",
+    "show_less": "Show less",
+    "show_more": "Show more"
   },
   "navigation": {
     "nav_cap": {

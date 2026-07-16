@@ -1,8 +1,6 @@
-import { useState } from 'react';
-import { DownOutlined } from '@ant-design/icons';
-
 import { useTranslationFn } from '@/hooks';
 import type { Dataset } from '@/types/dataset';
+import LongDescription from '@Util/LongDescription';
 import { OntologyChip } from './cards';
 import { statusTranslationKey, studyContextTranslationKey } from '@/features/catalogue/hooks';
 
@@ -10,32 +8,19 @@ type SummarySectionProps = { dataset: Dataset };
 
 const SummarySectionContent = ({ dataset }: SummarySectionProps) => {
   const t = useTranslationFn();
-  const [longDescExpanded, setLongDescExpanded] = useState(false);
 
   const keywords = dataset.keywords ?? [];
   const taxa = dataset.taxa ?? [];
 
   return (
     <>
-      <p className="pm-lede">{t(dataset.description)}</p>
-      {dataset.long_description && (
-        <>
-          <div className={`pm-longdesc${longDescExpanded ? '' : ' clipped'}`}>
-            {dataset.long_description.content_type === 'text/html' ? (
-              <div dangerouslySetInnerHTML={{ __html: dataset.long_description.content }} />
-            ) : (
-              <p>{dataset.long_description.content}</p>
-            )}
-          </div>
-          <button
-            type="button"
-            className={`pm-expand-btn${longDescExpanded ? ' open' : ''}`}
-            onClick={() => setLongDescExpanded((v) => !v)}
-          >
-            {longDescExpanded ? 'Show less' : 'Show full description'}
-            <DownOutlined />
-          </button>
-        </>
+      {dataset.long_description ? (
+        <LongDescription
+          content={dataset.long_description.content}
+          contentType={dataset.long_description.content_type}
+        />
+      ) : (
+        <p className="pm-lede">{t(dataset.description)}</p>
       )}
       {(keywords.length > 0 ||
         taxa.length > 0 ||

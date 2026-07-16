@@ -896,6 +896,27 @@ body {
   height: auto;
 }
 
+/* Long expandable description for long about text/similar */
+
+.long-desc__content {
+  font-size: 14px; line-height: 1.65; max-width: 74ch; margin: 0;
+}
+.long-desc:not(.expanded) .long-desc__content {
+  max-height: 144px; overflow: hidden;
+  -webkit-mask-image: linear-gradient(180deg, #000 56px, transparent);
+  mask-image: linear-gradient(180deg, #000 56px, transparent);
+}
+.long-desc__content p { margin: 0 0 9px; }
+.long-desc__expand-btn {
+  background: none; border: none; color: var(--pm-link); font-size: 13px;
+  font-weight: 500; padding: 0; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 5px; margin-top: 8px;
+}
+.long-desc__expand-btn:hover { color: var(--pm-link-hover); }
+.long-desc__expand-btn:active { color: var(--pm-link-active); }
+.long-desc__expand-btn .anticon { transition: transform 0.15s; }
+.long-desc__expand-btn.open .anticon { transform: rotate(180deg); }
+
 /* END about HTML styling */
 
 
@@ -1439,24 +1460,6 @@ button.pm-sec-head { cursor: pointer; }
   font-size: 15px; line-height: 1.55; color: var(--text-primary);
   max-width: 74ch; margin: 0 0 10px;
 }
-.pm-longdesc {
-  font-size: 14px; line-height: 1.65; max-width: 74ch; margin: 0;
-}
-.pm-longdesc.clipped {
-  max-height: 144px; overflow: hidden;
-  -webkit-mask-image: linear-gradient(180deg, #000 56px, transparent);
-  mask-image: linear-gradient(180deg, #000 56px, transparent);
-}
-.pm-longdesc p { margin: 0 0 9px; }
-.pm-expand-btn {
-  background: none; border: none; color: var(--pm-link); font-size: 13px;
-  font-weight: 500; padding: 0; cursor: pointer;
-  display: inline-flex; align-items: center; gap: 5px; margin-top: 8px;
-}
-.pm-expand-btn:hover { color: var(--pm-link-hover); }
-.pm-expand-btn:active { color: var(--pm-link-active); }
-.pm-expand-btn .anticon { transition: transform 0.15s; }
-.pm-expand-btn.open .anticon { transform: rotate(180deg); }
 
 /* ── Meta grid (field rows) ── */
 .pm-meta-grid { display: flex; flex-direction: column; gap: 14px; margin-top: 18px; }

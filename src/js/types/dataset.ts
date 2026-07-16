@@ -7,6 +7,8 @@ export type { StringOrOntologyClass };
 /** ISO 639-1 two-letter language code, e.g. "en" or "fr". */
 export type LanguageAlpha2 = string;
 
+export type TextContentType = 'text/html' | 'text/markdown' | 'text/plain';
+
 // ---- String literal unions (from Python TranslatedLiteral definitions) ----
 
 export type StudyContext = 'CLINICAL' | 'RESEARCH';
@@ -234,7 +236,7 @@ export interface FundingSource {
 
 export interface LongDescription {
   content: string;
-  content_type: 'text/html' | 'text/markdown' | 'text/plain';
+  content_type: TextContentType;
 }
 
 // ---- Ontology types (from bento_lib.ontologies.models) ----
