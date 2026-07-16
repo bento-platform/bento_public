@@ -230,6 +230,8 @@
       "funding": "Financement",
       "access": "Accès et licence",
       "spatial": "Couverture géographique",
+      "criteria": "Critères des participants",
+      "counts": "$t(Counts)",
       "identifiers": "Identifiants et informations techniques"
     },
     "context": {

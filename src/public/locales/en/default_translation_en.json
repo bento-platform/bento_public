@@ -597,6 +597,8 @@
       "funding": "Funding",
       "access": "Access & License",
       "spatial": "Spatial Coverage",
+      "criteria": "Participant Criteria",
+      "counts": "$t(Counts)",
       "identifiers": "Identifiers & Technical"
     },
     "context": {
