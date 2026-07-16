@@ -242,6 +242,8 @@ const DatasetProvenance = ({
   }
 
   const bodyRef = useRef<HTMLDivElement>(null);
+  // Set true on click-to-jump; blocks scrollspy recalculation until a real user scroll gesture.
+  const suppressSpyRef = useRef(false);
 
   // Scrollspy
   useEffect(() => {
@@ -249,6 +251,7 @@ const DatasetProvenance = ({
     const body = bodyRef.current;
     const observer = new IntersectionObserver(
       (entries) => {
+        if (suppressSpyRef.current) return;
         for (const entry of entries) {
           if (entry.isIntersecting) {
             setActiveSection(entry.target.id as SectionId);
@@ -259,7 +262,20 @@ const DatasetProvenance = ({
     );
     const secs = body.querySelectorAll<HTMLElement>('.pm-sec[id]');
     secs.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
+
+    const clearSuppress = () => {
+      suppressSpyRef.current = false;
+    };
+    body.addEventListener('wheel', clearSuppress, { passive: true });
+    body.addEventListener('touchmove', clearSuppress, { passive: true });
+    body.addEventListener('keydown', clearSuppress);
+
+    return () => {
+      observer.disconnect();
+      body.removeEventListener('wheel', clearSuppress);
+      body.removeEventListener('touchmove', clearSuppress);
+      body.removeEventListener('keydown', clearSuppress);
+    };
   }, [mode, dataset?.identifier]);
 
   const toggleCollapse = useCallback((id: SectionId) => {
@@ -291,6 +307,8 @@ const DatasetProvenance = ({
       const body = bodyRef.current;
       if (!body) return;
       if (mode === 'scroll') {
+        suppressSpyRef.current = true;
+        setActiveSection(id);
         setCollapsed((prev) => {
           const next = new Set(prev);
           next.delete(id);
