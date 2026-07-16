@@ -43,7 +43,11 @@
     "ontology_class": "Ontology Class",
     "view": "View",
     "url": "URL",
-    "extra_properties": "$t(Extra Properties)"
+    "extra_properties": "$t(Extra Properties)",
+    "type": "Type",
+    "source": "Source",
+    "copy": "Copy",
+    "copied": "Copied"
   },
   "navigation": {
     "nav_cap": {
@@ -593,6 +597,18 @@
       "spatial": "Spatial Coverage",
       "identifiers": "Identifiers & Technical"
     },
+    "context": {
+      "clinical": "Clinical",
+      "research": "Research"
+    },
+    "link_type": {
+      "Downloadable Artifact": "Downloadable Artifact",
+      "Data Management Plan": "Data Management Plan",
+      "Schema": "Schema",
+      "External Reference": "External Reference",
+      "Data Access": "Data Access",
+      "Data Request Form": "Data Request Form"
+    },
     "status": {
       "ongoing": "Ongoing",
       "completed": "Completed",
@@ -605,13 +621,17 @@
     "license": "License",
     "modified": "Modified",
     "on_this_page": "On this page",
+    "ontology_resources": "Ontology resources",
     "organization": "Organization",
     "person": "Person",
     "privacy": "Privacy",
     "program_name": "Program name",
     "project_id": "Project ID",
+    "protocol": "Protocol",
     "released": "Released",
     "schema_version": "Schema version",
+    "study_context": "Study context",
+    "study_status": "Study status",
     "taxa": "Taxa",
     "version": "Version",
     "view_publication": "View publication"

@@ -226,6 +226,8 @@ const DatasetProvenance = ({
   style?: CSSProperties;
   mode?: 'scroll' | 'page';
 }) => {
+  const t = useTranslationFn();
+
   const [collapsed, setCollapsed] = useState<Set<SectionId>>(new Set());
   const [activeSection, setActiveSection] = useState<SectionId>('summary');
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
@@ -272,14 +274,17 @@ const DatasetProvenance = ({
     });
   }, []);
 
-  const handleCopy = useCallback((value: string, id: string) => {
-    navigator.clipboard.writeText(value).then(() => {
-      setCopiedKey(id);
-      setToast({ text: `Copied: ${value}`, show: true });
-      setTimeout(() => setCopiedKey(null), 1300);
-      setTimeout(() => setToast((p) => ({ ...p, show: false })), 1600);
-    });
-  }, []);
+  const handleCopy = useCallback(
+    (value: string, id: string) => {
+      navigator.clipboard.writeText(value).then(() => {
+        setCopiedKey(id);
+        setToast({ text: `${t('general.copied')}: ${value}`, show: true });
+        setTimeout(() => setCopiedKey(null), 1300);
+        setTimeout(() => setToast((p) => ({ ...p, show: false })), 1600);
+      });
+    },
+    [t]
+  );
 
   const jumpToSection = useCallback(
     (id: SectionId) => {

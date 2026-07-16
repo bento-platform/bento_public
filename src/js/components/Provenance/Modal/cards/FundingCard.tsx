@@ -12,7 +12,7 @@ export const FundingCard = ({ source }: { source: FundingSource | Link }) => {
     return (
       <div className="pm-fcard">
         <div className="pm-fc-top">
-          <span className="pm-fc-ic">
+          <span className="pm-fc-ic" aria-hidden>
             <LinkOutlined />
           </span>
           <div>

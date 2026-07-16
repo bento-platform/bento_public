@@ -44,7 +44,11 @@
     "ontology_class": "Classe ontologique",
     "actions": "Actions",
     "view": "Afficher",
-    "url": "URL"
+    "url": "URL",
+    "type": "Type",
+    "source": "Source",
+    "copy": "Copier",
+    "copied": "Copié"
   },
   "navigation": {
     "nav_cap": {
@@ -226,6 +230,18 @@
       "spatial": "Couverture géographique",
       "identifiers": "Identifiants et informations techniques"
     },
+    "context": {
+      "clinical": "Clinique",
+      "research": "Recherche"
+    },
+    "link_type": {
+      "Downloadable Artifact": "Artéfact téléchargeable",
+      "Data Management Plan": "Plan de gestion des données",
+      "Schema": "Schéma",
+      "External Reference": "Référence externe",
+      "Data Access": "Accès aux données",
+      "Data Request Form": "Formulaire de demande de données"
+    },
     "status": {
       "ongoing": "En cours",
       "completed": "Complété",
@@ -238,13 +254,17 @@
     "license": "License",
     "modified": "Modifié",
     "on_this_page": "Sur cette page",
+    "ontology_resources": "Ressources ontologiques",
     "organization": "Organisation",
     "person": "Individu",
     "privacy": "Confidentialité",
     "program_name": "Nom du programme",
     "project_id": "Identifiant du projet",
+    "protocol": "Protocole",
     "released": "Publié",
     "schema_version": "Version du schéma",
+    "study_context": "Contexte de l'étude",
+    "study_status": "Statut de l'étude",
     "taxa": "Taxons",
     "version": "Version",
     "view_publication": "Voir la publication"

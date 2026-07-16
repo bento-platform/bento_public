@@ -4,6 +4,7 @@ import { DownOutlined } from '@ant-design/icons';
 import { useTranslationFn } from '@/hooks';
 import type { Dataset } from '@/types/dataset';
 import { OntologyChip } from './cards';
+import { statusTranslationKey, studyContextTranslationKey } from '@/features/catalogue/hooks';
 
 type SummarySectionProps = { dataset: Dataset };
 
@@ -77,20 +78,20 @@ const SummarySectionContent = ({ dataset }: SummarySectionProps) => {
           )}
           {dataset.program_name && (
             <div className="pm-field">
-              <span className="pm-field-k">Program</span>
+              <span className="pm-field-k">{t('provenance.program_name')}</span>
               <span className="pm-field-v">{dataset.program_name}</span>
             </div>
           )}
           {dataset.study_status && (
             <div className="pm-field">
-              <span className="pm-field-k">Study status</span>
-              <span className="pm-field-v">{dataset.study_status === 'ONGOING' ? 'Ongoing' : 'Completed'}</span>
+              <span className="pm-field-k">{t('provenance.study_status')}</span>
+              <span className="pm-field-v">{t(statusTranslationKey(dataset.study_status))}</span>
             </div>
           )}
           {dataset.study_context && (
             <div className="pm-field">
-              <span className="pm-field-k">Study context</span>
-              <span className="pm-field-v">{dataset.study_context === 'CLINICAL' ? 'Clinical' : 'Research'}</span>
+              <span className="pm-field-k">{t('provenance.study_context')}</span>
+              <span className="pm-field-v">{t(studyContextTranslationKey(dataset.study_context))}</span>
             </div>
           )}
         </div>

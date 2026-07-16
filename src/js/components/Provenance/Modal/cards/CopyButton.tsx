@@ -1,4 +1,5 @@
 import { CheckOutlined, CopyOutlined } from '@ant-design/icons';
+import { useTranslationFn } from '@/hooks';
 
 export const CopyButton = ({
   value,
@@ -11,13 +12,14 @@ export const CopyButton = ({
   copiedKey: string | null;
   onCopy: (value: string, id: string) => void;
 }) => {
+  const t = useTranslationFn();
   const copied = copiedKey === id;
   return (
     <button
       type="button"
       className={`pm-copy-btn${copied ? ' copied' : ''}`}
       onClick={() => onCopy(value, id)}
-      title="Copy"
+      title={t('general.copy')}
     >
       {copied ? <CheckOutlined /> : <CopyOutlined />}
     </button>

@@ -8,7 +8,7 @@ import {
 
 import { T_SINGULAR_COUNT } from '@/constants/i18n';
 import { useTranslationFn } from '@/hooks';
-import { statusTranslationKey } from '@/features/catalogue/hooks';
+import { statusTranslationKey, studyContextTranslationKey } from '@/features/catalogue/hooks';
 import type { Dataset } from '@/types/dataset';
 import { CopyButton } from './cards';
 
@@ -42,7 +42,7 @@ const ProvenanceHeader = ({ dataset, copiedKey, onCopy, onClose }: ModalHeaderPr
               </span>
             )}
             {dataset.study_context && (
-              <span className="pm-ctx-chip">{dataset.study_context === 'CLINICAL' ? 'Clinical' : 'Research'}</span>
+              <span className="pm-ctx-chip">{t(studyContextTranslationKey(dataset.study_context))}</span>
             )}
           </div>
         </div>

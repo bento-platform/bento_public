@@ -9,6 +9,9 @@ export type LanguageAlpha2 = string;
 
 // ---- String literal unions (from Python TranslatedLiteral definitions) ----
 
+export type StudyContext = 'CLINICAL' | 'RESEARCH';
+export type StudyStatus = 'ONGOING' | 'COMPLETED';
+
 export type Role =
   | 'Principal Investigator'
   | 'Co-Investigator'
@@ -293,8 +296,8 @@ export interface Dataset {
 
   participant_criteria?: ParticipantCriteria[] | null;
 
-  study_status?: 'ONGOING' | 'COMPLETED' | null;
-  study_context?: 'CLINICAL' | 'RESEARCH' | null;
+  study_status?: StudyStatus | null;
+  study_context?: StudyContext | null;
 
   /** List of specific scientific or clinical domains addressed by the study. */
   domain?: string[] | null;
