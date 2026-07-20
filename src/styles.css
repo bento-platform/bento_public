@@ -1427,7 +1427,7 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
 }
 
 /* ── Content ── */
-.pm-content { padding: 6px 30px 40px; min-width: 0; }
+.pm-content { padding: 6px 30px 40px; min-width: 0; min-height: 260px; /* rough height of identifiers page */ }
 
 /* ── Section ── */
 .pm-sec {
