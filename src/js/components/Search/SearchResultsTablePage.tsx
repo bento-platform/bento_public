@@ -23,7 +23,7 @@ import { useAppDispatch, useAppSelector, useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { useScopeDownloadData } from '@/hooks/censorship';
 import { useDownloadAllMatches } from '@/hooks/useDownloadAllMatches';
-import { useDownloadSelectedMatchesCSV } from '@/hooks/useDownloadSelectedMatchesCSV';
+import { useDownloadSelectedMatches } from '@/hooks/useDownloadSelectedMatches';
 import { useSearchQuery, useSearchQueryParams } from '@/features/search/hooks';
 import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
 import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
@@ -327,7 +327,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   const { resultCountsOrBools, pageSize, matchData } = useSearchQuery();
   const { fetchingPermission: fetchingCanDownload, hasPermission: canDownload } = useScopeDownloadData();
   const downloadAllMatches = useDownloadAllMatches();
-  const downloadSelectedMatchesCSV = useDownloadSelectedMatchesCSV();
+  const downloadSelectedMatches = useDownloadSelectedMatches();
   const isSmallScreen = useSmallScreen();
 
   const allQueryParams = useSearchQueryParams();
@@ -477,16 +477,13 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   const onExport = useCallback(
     (fields: string[] | undefined) => {
       setExporting(true);
-      // batch export (used when rows are selected) only supports CSV - the export format dropdown only offers CSV
-      // while a selection is active, so exportFormat is guaranteed to be 'csv' whenever hasSelection is true here.
-      const format = hasSelection ? 'csv' : exportFormat;
-      const filename = `${t(`entities.${entity}_other`)}.${format}`;
+      const filename = `${t(`entities.${entity}_other`)}.${exportFormat}`;
       const download = hasSelection
-        ? downloadSelectedMatchesCSV(rdEntity, selectedExportIds, filename, fields)
+        ? downloadSelectedMatches(rdEntity, selectedExportIds, exportFormat, filename, fields)
         : downloadAllMatches(rdEntity, exportFormat, filename, fields);
       download.then(() => setExportModalOpen(false)).finally(() => setExporting(false));
     },
-    [t, entity, rdEntity, hasSelection, selectedExportIds, downloadSelectedMatchesCSV, downloadAllMatches, exportFormat]
+    [t, entity, rdEntity, hasSelection, selectedExportIds, downloadSelectedMatches, downloadAllMatches, exportFormat]
   );
 
   const openColumnModal = useCallback(() => setColumnModalOpen(true), []);
@@ -497,13 +494,12 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
 
   const exportMenuItems = useMemo(
     () =>
-      // batch export (used when rows are selected) doesn't support XLSX yet - only offer CSV in that case.
-      ((hasSelection ? ['csv'] : ['csv', 'xlsx']) as ExportFormat[]).map((format) => ({
+      (['csv', 'xlsx'] as ExportFormat[]).map((format) => ({
         key: format,
         label: t(`search.${format}`),
         onClick: () => openExportModal(format),
       })),
-    [t, openExportModal, hasSelection]
+    [t, openExportModal]
   );
 
   if (!shown) return null;

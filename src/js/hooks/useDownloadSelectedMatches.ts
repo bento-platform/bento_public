@@ -10,7 +10,7 @@ import {
   experimentResultBatchUrl,
   individualBatchUrl,
 } from '@/constants/configConstants';
-import type { ResultsDataEntity } from '@/types/entities';
+import type { ExportFormat, ResultsDataEntity } from '@/types/entities';
 
 const BATCH_URL_BY_ENTITY: Record<ResultsDataEntity, string> = {
   phenopacket: individualBatchUrl,
@@ -19,11 +19,11 @@ const BATCH_URL_BY_ENTITY: Record<ResultsDataEntity, string> = {
   experiment_result: experimentResultBatchUrl,
 };
 
-export const useDownloadSelectedMatchesCSV = () => {
+export const useDownloadSelectedMatches = () => {
   const auth = useAppSelector((state) => state.auth);
 
   return useCallback(
-    async (entity: ResultsDataEntity, ids: string[], filename: string, fields?: string[]) => {
+    async (entity: ResultsDataEntity, ids: string[], format: ExportFormat, filename: string, fields?: string[]) => {
       const url = BATCH_URL_BY_ENTITY[entity];
 
       // batch/experimentresults IDs are integers, not strings - sending a stringified ID errors rather than being
@@ -32,7 +32,7 @@ export const useDownloadSelectedMatchesCSV = () => {
 
       const res = await axios.post(
         url,
-        { id, format: 'csv', ...(fields && fields.length > 0 ? { fields } : {}) },
+        { id, format, ...(fields && fields.length > 0 ? { fields } : {}) },
         {
           headers: { ...makeAuthorizationHeader(auth.accessToken) },
           responseType: 'blob',
