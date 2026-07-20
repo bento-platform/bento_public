@@ -1,4 +1,4 @@
-import { type ReactNode, useCallback, useMemo, useState } from 'react';
+import { type Key, type ReactNode, useCallback, useMemo, useState } from 'react';
 
 import {
   Button,
@@ -19,10 +19,11 @@ import { MIN_PAGE_SIZE, PAGE_SIZE_OPTIONS } from '@/constants/pagination';
 import { WAITING_STATES } from '@/constants/requests';
 import { TABLE_PAGE_QUERY_PARAM, TABLE_PAGE_SIZE_QUERY_PARAM } from '@/features/search/constants';
 
-import { useTranslationFn } from '@/hooks';
+import { useAppDispatch, useAppSelector, useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { useScopeDownloadData } from '@/hooks/censorship';
 import { useDownloadAllMatches } from '@/hooks/useDownloadAllMatches';
+import { useDownloadSelectedMatchesCSV } from '@/hooks/useDownloadSelectedMatchesCSV';
 import { useSearchQuery, useSearchQueryParams } from '@/features/search/hooks';
 import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
 import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
@@ -31,7 +32,7 @@ import type { BentoKatsuEntity } from '@/types/entities';
 import type { Project } from '@/types/metadata';
 import type { Dataset } from '@/types/dataset';
 import type { DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
-import type { QueryResultMatchData } from '@/features/search/query.store';
+import { setSelectedRows, type QueryResultMatchData, type SelectedRowMap } from '@/features/search/query.store';
 import type {
   DiscoveryMatchBiosample,
   DiscoveryMatchExperiment,
@@ -101,6 +102,9 @@ type ResultsTableSpec<T extends ViewableDiscoveryMatchObject> = {
   availableColumns: Record<string, ResultsTableColumn<T>>;
   defaultColumns: string[];
   expandedRowRender?: (record: T) => ReactNode;
+  // Field to use as the ID sent to the batch export endpoint for a selected row, if it differs from the row's `id`
+  // (e.g. the phenopacket table's row key is the phenopacket ID, but batch/individuals needs the subject ID).
+  exportIdField?: keyof T;
 };
 
 const commonSearchTableColumns = <T extends ViewableDiscoveryMatchObject>() =>
@@ -208,6 +212,7 @@ const TABLE_SPEC_PHENOPACKET: ResultsTableSpec<DiscoveryMatchPhenopacket> = {
   availableColumns: PHENOPACKET_SEARCH_TABLE_COLUMNS,
   defaultColumns: ['biosamples', 'project', 'dataset'],
   expandedRowRender: (rec) => (rec.subject ? <IndividualRowDetail id={rec.subject} /> : null),
+  exportIdField: 'subject',
 };
 
 const TABLE_SPEC_BIOSAMPLE: ResultsTableSpec<DiscoveryMatchBiosample> = {
@@ -317,10 +322,12 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   shown: boolean;
 }) => {
   const t = useTranslationFn();
+  const dispatch = useAppDispatch();
 
   const { resultCountsOrBools, pageSize, matchData } = useSearchQuery();
   const { fetchingPermission: fetchingCanDownload, hasPermission: canDownload } = useScopeDownloadData();
   const downloadAllMatches = useDownloadAllMatches();
+  const downloadSelectedMatchesCSV = useDownloadSelectedMatchesCSV();
   const isSmallScreen = useSmallScreen();
 
   const allQueryParams = useSearchQueryParams();
@@ -345,6 +352,43 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
 
   const currentStart = totalMatches > 0 ? page * pageSize + 1 : 0;
   const currentEnd = Math.min((page + 1) * pageSize, totalMatches);
+
+  // -------------------------------------------------------------------------------------------------------------------
+  // Row selection, for exporting a subset of results. Selection is keyed by entity in Redux so that it persists
+  // across pagination (only the current page's matches are loaded into memory at any given time).
+
+  const selectedRowMap = useAppSelector((state) => state.query.selectedRows[rdEntity]);
+  const selectedRowKeys = useMemo<Key[]>(() => Object.keys(selectedRowMap), [selectedRowMap]);
+
+  // experiment_result has no batch export endpoint, so selection is shown for UI consistency but export always
+  // falls back to "export everything" for that table.
+  const canExportSelection = rdEntity !== 'experiment_result';
+
+  const selectedExportIds = useMemo<string[]>(
+    () => Object.values(selectedRowMap).filter((v): v is string => Boolean(v)),
+    [selectedRowMap]
+  );
+  const hasSelection = canExportSelection && selectedRowKeys.length > 0;
+
+  const clearSelection = useCallback(() => dispatch(setSelectedRows([rdEntity, {}])), [dispatch, rdEntity]);
+
+  const onSelectionChange = useCallback(
+    (keys: Key[], rows: (T | undefined)[]) => {
+      const newMap: SelectedRowMap = {};
+      keys.forEach((k, i) => {
+        const key = String(k);
+        const row = rows[i];
+        const exportId = row
+          ? spec.exportIdField
+            ? (row[spec.exportIdField] as unknown as string | undefined)
+            : String(row.id)
+          : selectedRowMap[key]; // fall back to the previously-known mapping if row data isn't available
+        newMap[key] = exportId;
+      });
+      dispatch(setSelectedRows([rdEntity, newMap]));
+    },
+    [dispatch, rdEntity, spec.exportIdField, selectedRowMap]
+  );
 
   // -------------------------------------------------------------------------------------------------------------------
 
@@ -437,12 +481,16 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   const onExport = useCallback(
     (fields: string[] | undefined) => {
       setExporting(true);
-      const filename = `${t(`entities.${entity}_other`)}.${exportFormat}`;
-      downloadAllMatches(rdEntity, exportFormat, filename, fields)
-        .then(() => setExportModalOpen(false))
-        .finally(() => setExporting(false));
+      // batch export (used when rows are selected) only supports CSV - the export format dropdown only offers CSV
+      // while a selection is active, so exportFormat is guaranteed to be 'csv' whenever hasSelection is true here.
+      const format = hasSelection ? 'csv' : exportFormat;
+      const filename = `${t(`entities.${entity}_other`)}.${format}`;
+      const download = hasSelection
+        ? downloadSelectedMatchesCSV(rdEntity, selectedExportIds, filename, fields)
+        : downloadAllMatches(rdEntity, exportFormat, filename, fields);
+      download.then(() => setExportModalOpen(false)).finally(() => setExporting(false));
     },
-    [t, entity, downloadAllMatches, rdEntity, exportFormat]
+    [t, entity, rdEntity, hasSelection, selectedExportIds, downloadSelectedMatchesCSV, downloadAllMatches, exportFormat]
   );
 
   const openColumnModal = useCallback(() => setColumnModalOpen(true), []);
@@ -453,12 +501,13 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
 
   const exportMenuItems = useMemo(
     () =>
-      (['csv', 'xlsx'] as ExportFormat[]).map((format) => ({
+      // batch export (used when rows are selected) doesn't support XLSX yet - only offer CSV in that case.
+      ((hasSelection ? ['csv'] : ['csv', 'xlsx']) as ExportFormat[]).map((format) => ({
         key: format,
         label: t(`search.${format}`),
         onClick: () => openExportModal(format),
       })),
-    [t, openExportModal]
+    [t, openExportModal, hasSelection]
   );
 
   if (!shown) return null;
@@ -490,6 +539,16 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
             })}
           </span>
           <Space>
+            {selectedRowKeys.length > 0 && (
+              <Space size="small">
+                <Typography.Text className="antd-gray-7">
+                  {t('search.selected_count', { count: selectedRowKeys.length })}
+                </Typography.Text>
+                <Button type="link" size="small" style={{ padding: 0 }} onClick={clearSelection}>
+                  {t('search.clear_selection')}
+                </Button>
+              </Space>
+            )}
             <Tooltip title={t('search.manage_columns')}>
               <Button icon={<TableOutlined />} onClick={openColumnModal} />
             </Tooltip>
@@ -516,6 +575,14 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
           expandedRowRender={spec.expandedRowRender}
           isRowExpandable={(_) => true} // TODO
           urlAware={false}
+          rowSelection={{
+            selectedRowKeys,
+            onChange: onSelectionChange,
+            preserveSelectedRowKeys: true,
+            getCheckboxProps: spec.exportIdField
+              ? (record) => ({ disabled: !record[spec.exportIdField as keyof T] })
+              : undefined,
+          }}
         />
       </Col>
       <Modal

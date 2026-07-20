@@ -71,6 +71,9 @@
     "select_all_fields": "Tout sélectionner",
     "csv": "CSV",
     "xlsx": "XLSX",
+    "selected_count_one": "{{count}} ligne sélectionnée",
+    "selected_count_other": "{{count}} lignes sélectionnées",
+    "clear_selection": "Effacer la sélection",
     "fts": {
       "plain": "Mot",
       "plain_help": "Récupère les enregistrements qui correspondent exactement aux mots de la requête (sans distinction de casse).",
@@ -564,7 +567,9 @@
   },
   "table": {
     "invalid_row_keys_title": "Référence de ligne invalide",
-    "invalid_row_keys_description": "Certaines lignes référencées dans l'URL n'existent pas. Correction automatique aux entrées valides."
+    "invalid_row_keys_description": "Certaines lignes référencées dans l'URL n'existent pas. Correction automatique aux entrées valides.",
+    "expand_row": "Développer la ligne",
+    "collapse_row": "Réduire la ligne"
   },
   "drs": {
     "self_uri": "URI",
