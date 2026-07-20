@@ -1,7 +1,7 @@
 import { useTranslationFn } from '@/hooks';
 import type { Dataset } from '@/types/dataset';
-import LongDescription from '@Util/LongDescription';
 import { OntologyChip } from './cards';
+import DatasetDescription from './DatasetDescription';
 import { statusTranslationKey, studyContextTranslationKey } from '@/features/catalogue/hooks';
 
 type SummarySectionProps = { dataset: Dataset };
@@ -14,14 +14,7 @@ const SummarySectionContent = ({ dataset }: SummarySectionProps) => {
 
   return (
     <>
-      {dataset.long_description ? (
-        <LongDescription
-          content={dataset.long_description.content}
-          contentType={dataset.long_description.content_type}
-        />
-      ) : (
-        <p className="pm-lede">{t(dataset.description)}</p>
-      )}
+      <DatasetDescription dataset={dataset} />
       {(keywords.length > 0 ||
         taxa.length > 0 ||
         dataset.domain?.length ||

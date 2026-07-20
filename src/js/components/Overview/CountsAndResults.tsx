@@ -18,7 +18,7 @@ import { useEntityAndTextQueryParams, useSearchQuery } from '@/features/search/h
 import { useAppDispatch, useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
 import { useRenderCount } from '@/hooks/counts';
-import { useInnerWidth } from '@/hooks/useResponsiveContext';
+import { useInnerWidth, useSmallScreen } from '@/hooks/useResponsiveContext';
 
 import { fetchDiscoveryMatches } from '@/features/search/fetchDiscoveryMatches.thunk';
 
@@ -31,12 +31,17 @@ import {
   filtersStateToQueryParamEntries,
 } from '@/features/search/utils';
 
-const COUNT_CARD_BASE_HEIGHT = 114;
 const COUNT_CARD_DENOMINATOR_BREAKPOINT = 1180;
 
+const useCountCardBaseHeight = () => {
+  const isSmallScreen = useSmallScreen();
+  return isSmallScreen ? 102 : 114;
+};
+
 const CountCardPlaceholder = ({ loading }: { loading: boolean }) => {
+  const countCardBaseHeight = useCountCardBaseHeight();
   return (
-    <Card className="shadow count-card" style={{ height: loading ? COUNT_CARD_BASE_HEIGHT : 'inherit' }}>
+    <Card className="shadow count-card" style={{ height: loading ? countCardBaseHeight : 'inherit' }}>
       {loading ? (
         <Skeleton active={true} paragraph={{ rows: 1 }} style={{ marginTop: 5 }} />
       ) : (
@@ -91,6 +96,7 @@ const CountsAndResults = () => {
   const dispatch = useAppDispatch();
 
   const windowInnerWidth = useInnerWidth();
+  const countCardBaseHeight = useCountCardBaseHeight();
 
   const selectedProject = useSelectedProject();
   const selectedDataset = useSelectedDataset();
@@ -192,7 +198,7 @@ const CountsAndResults = () => {
                   }
                 : undefined
             }
-            style={{ height: COUNT_CARD_BASE_HEIGHT + (hasQueryData ? 12 : 0) + (selected ? 12 : 0) }}
+            style={{ height: countCardBaseHeight + (hasQueryData ? 12 : 0) + (selected ? 12 : 0) }}
           >
             <Statistic
               title={<CountsTitleWithHelp entity={entity} />}

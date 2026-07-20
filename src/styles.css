@@ -498,20 +498,6 @@ body {
 
 /* END layout HTML styling */
 
-#dashboard-tabs {
-  margin: 0 12px;
-}
-
-#dashboard-tabs.ant-tabs-card > .ant-tabs-nav .ant-tabs-tab {
-  /* by default, antd card-style tab borders are too subtle. make them "pop" a bit more :-) */
-}
-#dashboard-tabs.ant-tabs-card > .ant-tabs-nav .ant-tabs-tab:not(.ant-tabs-tab-active) {
-  /* by default, antd card-style unselected tabs are too subtle. make them "pop" a bit more :-) */
-  border: 1px solid #e9e9e9;
-  background: rgba(0, 0, 0, 0.03);
-}
-
-
 /* BEGIN catalogue banner */
 
 .catalogue-banner {
@@ -896,6 +882,12 @@ body {
   height: auto;
 }
 
+/* Summary description */
+.lede {
+  font-size: 14px; line-height: 1.55; color: var(--text-primary);
+  max-width: 74ch; margin: 0;
+}
+
 /* Long expandable description for long about text/similar */
 
 .long-desc__content {
@@ -921,6 +913,10 @@ body {
 
 
 /* BEGIN overview */
+
+.overview-description {
+  max-width: min(var(--content-max-width), calc(74ch + 2 * var(--ant-card-body-padding)))
+}
 
 .count-card {
   min-width: 150px;
@@ -1246,6 +1242,10 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
     line-height: 46px;
   }
 
+  .count-card {
+    min-width: 122px;
+  }
+
   .float-btn-pos {
     /* For small screens */
     bottom: 1.5em;
@@ -1450,12 +1450,6 @@ button.pm-sec-head { cursor: pointer; }
 .pm-sec-cnt {
   font-size: var(--p-fs-xxsmall); font-weight: 600; color: var(--text-muted);
   background: #F2F2F2; border-radius: 9px; padding: 1px 8px;
-}
-
-/* ── Summary prose ── */
-.pm-lede {
-  font-size: var(--p-fs-normal); line-height: 1.55; color: var(--text-primary);
-  max-width: 74ch; margin: 0 0 10px;
 }
 
 /* ── Meta grid (field rows) ── */

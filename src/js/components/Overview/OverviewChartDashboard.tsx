@@ -11,6 +11,7 @@ import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import { WAITING_STATES } from '@/constants/requests';
 
 import ProvenancePage from '@/components/Provenance/ProvenancePage';
+import OverviewDescription from './OverviewDescription';
 import OverviewSection from './OverviewSection';
 import OverviewDatasets from './OverviewDatasets';
 import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
@@ -66,6 +67,12 @@ const OverviewChartDashboard = () => {
   return (
     <>
       <Flex vertical={true} gap={24} className={clsx('container', { 'margin-auto': !scopeHasData })}>
+        {/*
+            Show a general description of the current scope, pulled from the about content (instance-level), the project
+            description, or the dataset long description (falling back to the short description.)
+        */}
+        <OverviewDescription />
+
         {/*
             If we're in a scope with no data at all, don't bother rendering the
             "NOT ENOUGH DATA" message / "NO DATA" empty component. This way, we get a sort of "catalogue detail" view,
