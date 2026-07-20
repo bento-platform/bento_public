@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { useTranslationFn } from '@/hooks';
 import type { ProvenanceEntry, SectionId } from './types';
 
@@ -8,12 +9,13 @@ type SideNavProps = {
   activeSection: SectionId;
   onJump: (id: SectionId) => void;
   mode: NavMode;
+  hidden?: boolean;
 };
 
-const SideNav = ({ navEntries, activeSection, onJump, mode }: SideNavProps) => {
+const SideNav = ({ navEntries, activeSection, onJump, mode, hidden }: SideNavProps) => {
   const t = useTranslationFn();
   return (
-    <nav className={`pm-nav ${mode}`}>
+    <nav className={clsx('pm-nav', mode, { hidden })} aria-hidden={hidden}>
       <div className="pm-nav-cap">{t(`navigation.nav_cap.${mode}`)}</div>
       {navEntries.map(({ id, icon, count }) => {
         const label = t(`provenance.sections.${id}`);

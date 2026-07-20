@@ -15,6 +15,7 @@ import {
 } from '@ant-design/icons';
 
 import { useTranslationFn } from '@/hooks';
+import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
 import type { Dataset } from '@/types/dataset';
 import { FundingCard, LinkTile, LicenseTile, PersonCard, PublicationCard, ProvenanceSection } from './bits';
@@ -219,7 +220,7 @@ const DatasetProvenance = ({
   dataset,
   hideHeader,
   style,
-  mode = 'scroll',
+  mode: modeParam = 'scroll',
 }: {
   dataset?: Dataset | null;
   hideHeader?: boolean;
@@ -227,11 +228,19 @@ const DatasetProvenance = ({
   mode?: 'scroll' | 'page';
 }) => {
   const t = useTranslationFn();
+  const isSmallScreen = useSmallScreen();
 
   const [collapsed, setCollapsed] = useState<Set<SectionId>>(new Set());
   const [activeSection, setActiveSection] = useState<SectionId>('summary');
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [toast, setToast] = useState<{ text: string; show: boolean }>({ text: '', show: false });
+
+  const mode = isSmallScreen ? 'scroll' : modeParam;
+
+  if (mode === 'page') {
+    // No section should be collapsed in page mode
+    setCollapsed(new Set());
+  }
 
   // Reset state when dataset changes (React "adjust state during render" pattern, avoids an effect)
   const [lastDatasetId, setLastDatasetId] = useState(dataset?.identifier);
@@ -306,7 +315,9 @@ const DatasetProvenance = ({
     (id: SectionId) => {
       const body = bodyRef.current;
       if (!body) return;
-      if (mode === 'scroll') {
+      // Explicitly only alter state if the actual mode param is scroll, not if the client has a small screen which has
+      // forced a scroll mode.
+      if (modeParam === 'scroll') {
         suppressSpyRef.current = true;
         setActiveSection(id);
         setCollapsed((prev) => {
@@ -324,7 +335,7 @@ const DatasetProvenance = ({
         setActiveSection(id);
       }
     },
-    [mode]
+    [modeParam]
   );
 
   const provenanceEntries = useProvenanceEntries(dataset, copiedKey, handleCopy);
@@ -350,7 +361,13 @@ const DatasetProvenance = ({
       {!hideHeader && <ProvenanceHeader dataset={dataset} copiedKey={copiedKey} onCopy={handleCopy} />}
 
       <div className="pm-body" ref={bodyRef}>
-        <SideNav navEntries={provenanceEntries} activeSection={activeSection} onJump={jumpToSection} mode={mode} />
+        <SideNav
+          navEntries={provenanceEntries}
+          activeSection={activeSection}
+          onJump={jumpToSection}
+          mode={mode}
+          hidden={isSmallScreen}
+        />
 
         <div className="pm-content">
           {mode === 'scroll'

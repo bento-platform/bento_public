@@ -1397,6 +1397,7 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   position: sticky; top: 0; align-self: start;
   padding: 18px 12px 18px 22px;
 }
+.pm-nav.hidden { display: none; }
 .pm-nav-cap {
   font-size: var(--p-fs-xxsmall); font-weight: 700; letter-spacing: 0.1em;
   text-transform: uppercase; color: var(--text-muted); padding: 0 10px 8px;
@@ -1718,10 +1719,11 @@ button.pm-sec-head { cursor: pointer; }
 
 /* ── Responsive ── */
 @media (max-width: 880px) {
-  .pm-body { grid-template-columns: 1fr; }
-  .pm-nav { display: none; }
-  .pm-body::before { display: none; }
+  .kv { grid-template-columns: 1fr; }
   .pm-coverwrap { grid-template-columns: 1fr; }
-  .pm-kv { grid-template-columns: 1fr; }
   .pm-field { grid-template-columns: 1fr; gap: 5px; }
+}
+@media (max-width: 768px) {
+  .pm-body { grid-template-columns: 1fr; }
+  .pm-body::before { display: none; }
 }

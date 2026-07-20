@@ -52,7 +52,7 @@ export const PublicationCard = ({
 
   return (
     <div className="pm-pub">
-      {rowContent ? (
+      {rowContent && !alwaysExpanded ? (
         <button type="button" className={rowClassName} onClick={() => setExpanded((e) => !e)}>
           {rowContent}
         </button>
