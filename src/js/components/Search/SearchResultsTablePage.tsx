@@ -360,15 +360,11 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   const selectedRowMap = useAppSelector((state) => state.query.selectedRows[rdEntity]);
   const selectedRowKeys = useMemo<Key[]>(() => Object.keys(selectedRowMap), [selectedRowMap]);
 
-  // experiment_result has no batch export endpoint, so selection is shown for UI consistency but export always
-  // falls back to "export everything" for that table.
-  const canExportSelection = rdEntity !== 'experiment_result';
-
   const selectedExportIds = useMemo<string[]>(
     () => Object.values(selectedRowMap).filter((v): v is string => Boolean(v)),
     [selectedRowMap]
   );
-  const hasSelection = canExportSelection && selectedRowKeys.length > 0;
+  const hasSelection = selectedRowKeys.length > 0;
 
   const clearSelection = useCallback(() => dispatch(setSelectedRows([rdEntity, {}])), [dispatch, rdEntity]);
 
