@@ -899,7 +899,7 @@ body {
 /* Long expandable description for long about text/similar */
 
 .long-desc__content {
-  font-size: 14px; line-height: 1.65; max-width: 74ch; margin: 0;
+  font-size: 14px; line-height: 1.55; max-width: 74ch; margin: 0;
 }
 .long-desc:not(.expanded) .long-desc__content {
   max-height: 144px; overflow: hidden;
@@ -1300,8 +1300,11 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   --pm-link-hover: var(--ant-color-link-hover, #69B1FF);
   --pm-link-active: var(--ant-color-link-active, #0958d9);
 
-  --p-fs-xsmall: 0.72rem;
+  --p-fs-xsmall: 0.72rem; /* ~11.5 px */
+  --p-fs-small: 0.81rem; /* ~13 px */
+  --p-fs-normal: 0.875rem; /* 14 px */
   --p-fs-h1: 1.5rem;
+  --p-fs-h2: 1.05rem; /* ~16.5 px */
 }
 
 /* ── Header ── */
@@ -1457,7 +1460,7 @@ button.pm-sec-head { cursor: pointer; }
 
 /* ── Summary prose ── */
 .pm-lede {
-  font-size: 15px; line-height: 1.55; color: var(--text-primary);
+  font-size: var(--p-fs-normal); line-height: 1.55; color: var(--text-primary);
   max-width: 74ch; margin: 0 0 10px;
 }
 
