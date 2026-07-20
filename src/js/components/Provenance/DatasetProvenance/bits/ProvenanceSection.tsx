@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { DownOutlined } from '@ant-design/icons';
-import type { SectionId } from '@/components/Provenance/Modal/types';
+import type { SectionId } from '@/components/Provenance/DatasetProvenance/types';
 import { useTranslationFn } from '@/hooks';
 
 export type SectionHeadProps = {

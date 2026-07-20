@@ -1,6 +1,6 @@
 import { Card } from 'antd';
 import type { Dataset } from '@/types/dataset';
-import DatasetProvenance from './Modal/DatasetProvenance';
+import DatasetProvenance from './DatasetProvenance';
 
 // ---- Card wrapper (used on dedicated provenance page) ----
 

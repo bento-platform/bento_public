@@ -38,7 +38,7 @@ import {
 } from '@/features/search/utils';
 import { setEquals } from '@/utils/sets';
 
-import DatasetProvenanceModal from '@/components/Provenance/Modal/DatasetProvenanceModal';
+import DatasetProvenanceModal from '@/components/Provenance/DatasetProvenance/DatasetProvenanceModal';
 import ProjectTitle from '@Util/ProjectTitle';
 import DatasetTitle from '@Util/DatasetTitle';
 import ExperimentReferences from '@Util/ClinPhen/ExperimentReferences';

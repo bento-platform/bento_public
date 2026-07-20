@@ -3,7 +3,7 @@ import { Card, Typography } from 'antd';
 import { useTranslationFn } from '@/hooks';
 import { useSelectedDataset, useSelectedProject } from '@/features/metadata/hooks';
 
-import DatasetDescription from '@/components/Provenance/Modal/DatasetDescription';
+import DatasetDescription from '@/components/Provenance/DatasetProvenance/DatasetDescription';
 import AboutContent from '@/components/AboutContent';
 
 const OverviewDescription = () => {
