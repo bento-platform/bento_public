@@ -4,7 +4,7 @@ import { T_SINGULAR_COUNT } from '@/constants/i18n';
 import { useTranslationFn } from '@/hooks';
 import { studyContextTranslationKey } from '@/features/catalogue/hooks';
 import type { Dataset } from '@/types/dataset';
-import { CopyButton } from './cards';
+import { CopyButton } from './bits';
 import StatusBadge from '@Util/StatusBadge';
 
 type ModalHeaderProps = {

@@ -4,7 +4,7 @@ import { useTranslationFn } from '@/hooks';
 import { useSelectedDataset, useSelectedProject } from '@/features/metadata/hooks';
 
 import AboutBox from '@/components/Overview/AboutBox';
-import DatasetProvenance from '@/components/Provenance/DatasetProvenance';
+import DatasetProvenanceCard from '@/components/Provenance/DatasetProvenanceCard';
 
 const ProvenancePage = () => {
   const t = useTranslationFn();
@@ -13,7 +13,7 @@ const ProvenancePage = () => {
   const selectedDataset = useSelectedDataset();
 
   if (selectedDataset) {
-    return <DatasetProvenance dataset={selectedDataset} />;
+    return <DatasetProvenanceCard dataset={selectedDataset} />;
   }
 
   if (selectedProject) {

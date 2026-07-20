@@ -1,6 +1,6 @@
 import { useTranslationFn } from '@/hooks';
 import type { Dataset } from '@/types/dataset';
-import { OntologyChip } from './cards';
+import { OntologyChip } from './bits';
 import DatasetDescription from './DatasetDescription';
 import { statusTranslationKey, studyContextTranslationKey } from '@/features/catalogue/hooks';
 

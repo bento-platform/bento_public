@@ -17,7 +17,7 @@ import {
 import { useTranslationFn } from '@/hooks';
 
 import type { Dataset } from '@/types/dataset';
-import { FundingCard, LinkTile, LicenseTile, PersonCard, PublicationCard, ProvenanceSection } from './cards';
+import { FundingCard, LinkTile, LicenseTile, PersonCard, PublicationCard, ProvenanceSection } from './bits';
 import IdentifiersSectionContent from './IdentifiersSectionContent';
 import ProvenanceHeader from './ProvenanceHeader';
 import ParticipantCriteriaSectionContent from './ParticipantCriteriaSectionContent';

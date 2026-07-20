@@ -1,7 +1,7 @@
 import { Flex } from 'antd';
 import { CodeOutlined, GlobalOutlined } from '@ant-design/icons';
 import KeyValueDisplay, { type KeyValueItem } from '@Util/KeyValueDisplay';
-import { CopyButton } from './cards';
+import { CopyButton } from './bits';
 
 import { useTranslationFn } from '@/hooks';
 import type { Dataset } from '@/types/dataset';
