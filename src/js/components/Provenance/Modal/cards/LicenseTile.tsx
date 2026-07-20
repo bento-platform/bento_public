@@ -13,14 +13,14 @@ export const LicenseTile = ({ license }: { license: License }) => {
       rel="noreferrer"
       style={{ maxWidth: 330, textDecoration: 'none' }}
     >
-      <span className="pm-lt-ic" aria-hidden>
+      <span className="pm-link-tile-ic" aria-hidden>
         <AuditOutlined />
       </span>
-      <span className="pm-lt-main" aria-label={t('provenance.license')}>
-        {license.type && <span className="pm-lt-type">{license.type}</span>}
-        <span className="pm-lt-label">{license.label}</span>
+      <span className="pm-link-tile-main" aria-label={t('provenance.license')}>
+        {license.type && <span className="pm-link-tile-type">{license.type}</span>}
+        <span className="pm-link-tile-label">{license.label}</span>
       </span>
-      {license.url && <ExportOutlined className="pm-lt-ext" />}
+      {license.url && <ExportOutlined className="pm-link-tile-ext" />}
     </a>
   );
 };

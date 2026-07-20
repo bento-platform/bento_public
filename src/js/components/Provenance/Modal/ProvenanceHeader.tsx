@@ -1,10 +1,4 @@
-import {
-  CalendarOutlined,
-  CloseOutlined,
-  FileDoneOutlined,
-  TagOutlined,
-  UnorderedListOutlined,
-} from '@ant-design/icons';
+import { CalendarOutlined, FileDoneOutlined, TagOutlined, UnorderedListOutlined } from '@ant-design/icons';
 
 import { T_SINGULAR_COUNT } from '@/constants/i18n';
 import { useTranslationFn } from '@/hooks';
@@ -17,10 +11,9 @@ type ModalHeaderProps = {
   dataset: Dataset;
   copiedKey: string | null;
   onCopy: (value: string, id: string) => void;
-  onClose?: () => void;
 };
 
-const ProvenanceHeader = ({ dataset, copiedKey, onCopy, onClose }: ModalHeaderProps) => {
+const ProvenanceHeader = ({ dataset, copiedKey, onCopy }: ModalHeaderProps) => {
   const t = useTranslationFn();
   return (
     <div className="pm-head">
@@ -41,13 +34,6 @@ const ProvenanceHeader = ({ dataset, copiedKey, onCopy, onClose }: ModalHeaderPr
               <span className="pm-ctx-chip">{t(studyContextTranslationKey(dataset.study_context))}</span>
             )}
           </div>
-        </div>
-        <div className="pm-head-tools">
-          {onClose && (
-            <button type="button" className="pm-icon-btn bare" title="Close" onClick={onClose}>
-              <CloseOutlined />
-            </button>
-          )}
         </div>
       </div>
 

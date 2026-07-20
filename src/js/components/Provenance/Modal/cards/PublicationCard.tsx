@@ -40,7 +40,9 @@ export const PublicationCard = ({
         </div>
       ) : (
         <>
-          <span className="pm-pub-title-inline">{pub.title}</span>
+          <span className="pm-pub-title-inline" title={pub.title}>
+            {pub.title}
+          </span>
           {hasAuthors && <span className="pm-pub-authors-inline">{pub.authors!.map(personName).join(', ')}</span>}
         </>
       )}
