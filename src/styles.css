@@ -320,6 +320,7 @@ body {
 
 .scoped-title__breadcrumb .ant-breadcrumb-item a {
   height: 40px;
+  margin-inline: 0; /* remove Ant negative margins */
 }
 
 #scope-header__menu {
