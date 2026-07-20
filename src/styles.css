@@ -50,8 +50,6 @@
   /* catalogue insights — kept explicit; color-mix() from --ant-color-primary produced inconsistent results */
   --cat-insights-bg: #EEF3F7;
   --cat-insights-border: #E0E9F0;
-  --cat-insights-row-hover: rgba(5,74,116,0.07);
-  --cat-insights-row-selected: rgba(5,74,116,0.10);
   /* catalogue misc */
   --cat-chip-count-selected: rgba(255,255,255,0.80);
   --cat-banner-gradient: linear-gradient(90deg, rgba(4,30,48,0.80), rgba(4,30,48,0.34));
@@ -554,18 +552,6 @@ body {
   color: var(--text-secondary);
   margin-bottom: 12px;
 }
-.donut-wrap { display: flex; align-items: center; gap: 12px; }
-.donut { flex: none; }
-.donut-num { font-size: 18px; font-weight: 700; fill: rgba(0,0,0,0.88); text-anchor: middle; }
-.donut-lbl {
-  font-size: 8px;
-  color: var(--text-muted);
-  text-align: center;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  line-height: 1.2;
-}
-.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 .provenance-tag {
   font-size: 11px;
   border-radius: 4px;
@@ -574,20 +560,6 @@ body {
   color: var(--ant-color-primary) !important;
   border: 1px solid var(--ant-color-primary-border) !important;
 }
-.chart-legend { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0; }
-.legend-row { display: flex; align-items: center; gap: 7px; font-size: 12px; }
-.legend-lbl { flex: 1; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.legend-val { font-weight: 600; font-variant-numeric: tabular-nums; }
-.bars { display: flex; flex-direction: column; gap: 8px; }
-.bar-row { display: flex; align-items: center; gap: 8px; font-size: 12px; }
-.bar-label { width: 84px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: none; }
-.bar-track { flex: 1; height: 7px; background: var(--border-subtle); border-radius: 5px; overflow: hidden; }
-.bar-fill { display: block; height: 100%; border-radius: 5px; min-width: 2px; transition: width 0.35s ease; }
-.bar-value { width: 42px; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; flex: none; }
-.legend-row.clk, .bar-row.clk { cursor: pointer; border-radius: 6px; padding: 3px 6px; margin: -3px -6px; transition: background 0.12s; }
-.legend-row.clk:hover, .bar-row.clk:hover { background: var(--cat-insights-row-hover); }
-.legend-row.sel, .bar-row.sel { background: var(--cat-insights-row-selected); font-weight: 600; }
-.legend-row.sel .legend-lbl, .bar-row.sel .bar-label { color: var(--ant-color-primary, #054A74); }
 
 /* END catalogue charts */
 
