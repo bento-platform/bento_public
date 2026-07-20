@@ -257,6 +257,7 @@
     "keywords": "Mots-clés",
     "license": "License",
     "modified": "Modifié",
+    "namespace_prefix": "Préfixe d'espace de noms",
     "on_this_page": "Sur cette page",
     "ontology_resources": "Ressources ontologiques",
     "organization": "Organisation",

@@ -55,9 +55,14 @@ const IdentifiersSectionContent = ({ dataset, copiedKey, onCopy }: IdentifiersSe
         <>
           {resources.map((r, i) => (
             <div key={i} className="pm-res-row">
-              <span className="pm-pfx">{r.namespace_prefix}</span>
-              <span>{r.name}</span>
-              <span className="pm-res-ver">· {r.version}</span>
+              <span className="pm-pfx" aria-label={t('provenance.namespace_prefix')}>
+                {r.namespace_prefix}
+              </span>
+              <span aria-label={t('general.name')}>{r.name}</span>
+              <span aria-hidden>·</span>
+              <span className="pm-res-ver" aria-label={t('provenance.version')}>
+                {r.version}
+              </span>
               {r.url && (
                 <a href={r.url} target="_blank" rel="noreferrer" title={t('provenance.ontology_resources')}>
                   <GlobalOutlined style={{ fontSize: 11 }} />

@@ -624,6 +624,7 @@
     "keywords": "Keywords",
     "license": "License",
     "modified": "Modified",
+    "namespace_prefix": "Namespace prefix",
     "on_this_page": "On this page",
     "ontology_resources": "Ontology resources",
     "organization": "Organization",
