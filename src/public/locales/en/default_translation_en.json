@@ -294,7 +294,7 @@
   "file": {
     "filename": "Filename",
     "download": "Download",
-    "individual_to_file_identifiers": "$t(entities.individual_one) to File Identifiers",
+    "individual_to_file_identifiers": "Individual to File Identifiers",
     "file_attributes": "File Attributes",
     "download_alert": "This will download a file from an external site. Are you sure you want to do this?"
   },
