@@ -24,6 +24,8 @@ export const experimentResultUrl = `${katsuBaseUrl}/api/experimentresults`;
 
 export const referenceGenomesUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/reference/genomes`;
 
+export const igvGenomesUrl = 'https://igv.org/genomes/genomes3.json';
+
 export const CUSTOMIZABLE_TRANSLATION = 'translation';
 
 export const SUPPORTED_LNGS = {

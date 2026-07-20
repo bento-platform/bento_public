@@ -18,6 +18,7 @@ import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
 import { useMetadata } from '@/features/metadata/hooks';
 import { getProjects, markScopeSet, resetProjects, selectScope } from '@/features/metadata/metadata.store';
 import { getGenomes } from '@/features/reference/reference.store';
+import { getIgvGenomes } from '@/features/igv/igv.store';
 import {
   fetchSearchFields,
   fetchDiscoveryUIHints,
@@ -175,6 +176,7 @@ const BentoAppRouter = () => {
     dispatch(makeGetAboutRequest());
     dispatch(makeGetServiceInfoRequest());
     dispatch(getGenomes());
+    dispatch(getIgvGenomes()) // or could do this conditionally elsewhere
   }, [dispatch]);
 
   useEffect(() => {

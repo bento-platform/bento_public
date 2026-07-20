@@ -7,10 +7,14 @@ import OntologiesView from '@/components/ClinPhen/PhenopacketDisplay/OntologiesV
 import Overview, { type CollapseHandle } from '@/components/ClinPhen/PhenopacketDisplay/PhenopacketOverview';
 import PhenopacketMetaData from '@/components/ClinPhen/PhenopacketDisplay/PhenopacketMetaData';
 import JsonView from '@Util/JsonView';
+import TracksView from '@/components/ClinPhen/TracksDisplay/TracksView';
 
 import { TabKeys } from '@/types/PhenopacketView.types';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
 import { useTranslationFn } from '@/hooks';
+import { useScopeDownloadData } from '@/hooks/censorship';
+import { assemblyIdsForExperiments, phenopacketExperimentResults } from '@/utils/experiments';
+import { useBentoOrIgvReferencesById, viewableTracks } from './igv';
 
 export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
   const t = useTranslationFn();
@@ -24,6 +28,14 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
     [navigate]
   );
 
+  const experimentResults = phenopacket ? phenopacketExperimentResults(phenopacket) : [];
+  const tracks = viewableTracks(experimentResults)
+  const requestedAssemblies = assemblyIdsForExperiments(tracks);
+  const referencesById = useBentoOrIgvReferencesById(requestedAssemblies);
+
+  const { hasAttempted: attemptedCanDownload, hasPermission: canDownload } = useScopeDownloadData();
+
+  // TODO: Add Experiments
   const items: TabsProps['items'] = useMemo(() => {
     if (!phenopacket) return [];
     const allItems = [
@@ -32,6 +44,12 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
         label: t('Overview'),
         children: <Overview ref={collapseRef} phenopacket={phenopacket} />,
         disabled: false,
+      },
+      {
+        key: TabKeys.TRACKS,
+        label: t('Tracks'),
+        children: <TracksView tracks={tracks} references={referencesById} />,
+        disabled: !(attemptedCanDownload && canDownload && tracks.length > 0 && Object.keys(referencesById).length > 0),
       },
       {
         key: TabKeys.ONTOLOGIES,
@@ -52,7 +70,7 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
       },
     ];
     return allItems.filter((item) => !item.disabled);
-  }, [phenopacket, t]);
+  }, [phenopacket, t, tracks, referencesById]);
 
   const activeTabs = useMemo(() => {
     return items.map((item) => item.key as TabKeys);
