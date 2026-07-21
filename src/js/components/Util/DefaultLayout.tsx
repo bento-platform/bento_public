@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
-import { FloatButton, Grid, Layout } from 'antd';
+import { Alert, FloatButton, Grid, Layout } from 'antd';
+import { ErrorBoundary, getErrorMessage } from 'react-error-boundary';
 import SiteHeader from '@/components/SiteHeader';
 import SiteSider from '@/components/SiteSider';
 import SiteFooter from '@/components/SiteFooter';
@@ -73,7 +74,11 @@ const DefaultLayout = () => {
               />
             ) : null}
             <Content style={{ minHeight: 'calc(100vh - 210px - var(--scoped-title-height) - var(--header-height))' }}>
-              <Outlet />
+              <ErrorBoundary
+                fallbackRender={({ error }) => <Alert type="error" description={getErrorMessage(error)} />}
+              >
+                <Outlet />
+              </ErrorBoundary>
             </Content>
           </Layout>
           {PCGL_MODE ? <PcglFooter /> : <SiteFooter />}
