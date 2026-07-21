@@ -26,11 +26,11 @@
     ],
     "experiment_one": "Expérience",
     "experiment_other": "Expériences",
-    "experiment_specific": "Une éxperience",
+    "experiment_specific": "Une expérience",
     "experiment_of_one": "d'expérience",
     "experiment_of_other": "d'expériences",
     "experiment_help": [
-      "Les $t(entities.experiment_other, lowercase) sont des processus effectué sur $t(entities.experiment_specific, lowercase) spécifique, par exemple le séquençage du génome entier.",
+      "Les $t(entities.experiment_other, lowercase) sont des processus effectués sur $t(entities.experiment_specific, lowercase) spécifique, par exemple le séquençage du génome entier.",
       "Une expérience par un laboratoire peut donner lieu à plusieurs enregistrements $t(entities.experiment_of_one) dans le portail, par exemple avec des échantillons multiplexés."
     ],
     "experiment_result_one": "Fichier",
