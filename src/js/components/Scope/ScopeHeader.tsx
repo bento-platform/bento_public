@@ -130,7 +130,7 @@ const ScopeHeader = ({
           <Flex className="scoped-title flex-1" align="center">
             <Flex className="flex-1 overflow-hidden" align="center">
               {backClickText !== undefined && onBackClick !== undefined ? (
-                <Tooltip title={backClickText}>
+                <Tooltip title={t(backClickText)}>
                   <Button
                     className="scoped-title__back"
                     icon={<ArrowLeftOutlined />}
