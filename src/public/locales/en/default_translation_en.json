@@ -24,7 +24,7 @@
     "experiment_one": "Experiment",
     "experiment_other": "Experiments",
     "experiment_help": [
-      "$t(entities.experiment_other) are a process done to a specific sample, e.g., whole-genome sequencing.",
+      "$t(entities.experiment_other) are processes done to a specific sample, e.g., whole-genome sequencing.",
       "One lab experiment may result in multiple $t(entities.experiment_one) records inside the portal, such as with multiplexed samples."
     ],
     "experiment_result_one": "File",
@@ -543,7 +543,7 @@
       "title": "Filters"
     },
     "facets": {
-      "projects": "$(entities.project_one)",
+      "projects": "$t(entities.project_one)",
       "dataTypes": "Data type",
       "taxa": "Taxa",
       "access": "Access",
