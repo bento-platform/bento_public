@@ -8,7 +8,7 @@ import SiteFooter from '@/components/SiteFooter';
 import PcglFooter from '@/components/Pcgl/PcglFooter';
 import ScopeHeader from '@/components/Scope/ScopeHeader';
 import { useSelectedScope, useScopeHasData } from '@/features/metadata/hooks';
-import { useIsInCatalogueMode, useSidebarMenuItems } from '@/hooks/navigation';
+import { useIsInCatalogueMode, useSiteMenuItems } from '@/hooks/navigation';
 import { useTitleBreadcrumbItems } from '@/hooks/useTitleBreadcrumbItems';
 import { PCGL_MODE } from '@/config';
 import { BentoRoute } from '@/types/routes';
@@ -25,7 +25,7 @@ const DefaultLayout = () => {
   const { scopeSet, scope } = useSelectedScope();
   const scopeHasData = useScopeHasData();
 
-  const menuItems = useSidebarMenuItems();
+  const [siteHeaderMenuItems, scopeHeaderMenuItems] = useSiteMenuItems();
   const [collapsed, setCollapsed] = useState(true);
 
   const breakpoints = useBreakpoint();
@@ -33,7 +33,6 @@ const DefaultLayout = () => {
   const isCatalogue = scopeSet && !scope.project && catalogueMode && page === 'overview';
   const sidebarOverlay = !breakpoints.lg;
   const sidebarOverlayShown = sidebarOverlay && !collapsed;
-  // TODO: enable sidebar with catalogue when catalogue filtering/search is hooked up
   const sidebarHidden = page !== 'overview' || isCatalogue || (!isCatalogue && !scopeHasData);
 
   const showSidebarToggle = sidebarOverlay && page === 'overview';
@@ -48,7 +47,7 @@ const DefaultLayout = () => {
         'scope-header-hidden': scopeHeaderHidden,
       })}
     >
-      <SiteHeader menuItems={!scope.project ? menuItems : []} />
+      <SiteHeader menuItems={siteHeaderMenuItems} />
       <Layout id="content-layout">
         {!isCatalogue && !scopeHeaderHidden && (
           <ScopeHeader
@@ -56,8 +55,7 @@ const DefaultLayout = () => {
             sidebarOverlayShown={sidebarOverlayShown}
             onToggleSidebar={() => setCollapsed((c) => !c)}
             breadcrumbItems={breadcrumbItems}
-            // TODO: figure out conditional logic
-            menuItems={scope.project && page !== BentoRoute.Phenopackets ? menuItems : []}
+            menuItems={scopeHeaderMenuItems}
           />
         )}
         <Layout>

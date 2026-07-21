@@ -10,7 +10,7 @@ import { type DiscoveryScope, selectScope } from '@/features/metadata/metadata.s
 import type { MenuItem } from '@/types/navigation';
 import { BentoRoute } from '@/types/routes';
 import { useAppDispatch, useLanguage, useTranslationFn } from '@/hooks';
-import { langAndScopeSelectionToUrl, scopeToUrl } from '@/utils/router';
+import { getCurrentPage, langAndScopeSelectionToUrl, scopeToUrl } from '@/utils/router';
 
 /** Prefixes a path with the currently-selected i18n language. */
 export const useLangPrefixedUrl = (path: string): string => {
@@ -115,9 +115,15 @@ export const useGetRouteTitleAndIcon = () => {
   );
 };
 
-export const useSidebarMenuItems = (): MenuItem[] => {
+/**
+ * Hook returning a 'tuple' of [site header menu items, scope header menu items]. Menu item arrays with only one entry
+ * should not be displayed by the UI.
+ */
+export const useSiteMenuItems = (): [MenuItem[], MenuItem[]] => {
   const t = useTranslationFn();
   const { fixedProject, scope } = useSelectedScope();
+  const location = useLocation();
+  const page = getCurrentPage(location);
 
   const scopeHasData = useScopeHasData();
 
@@ -134,21 +140,29 @@ export const useSidebarMenuItems = (): MenuItem[] => {
   const getRouteTitleAndIcon = useGetRouteTitleAndIcon();
 
   return useMemo(() => {
-    const items = [createMenuItem(BentoRoute.Overview, ...getRouteTitleAndIcon(BentoRoute.Overview))];
+    // Serves weird overloaded purpose as both catalogue and data overview route:
+    const overviewItem = createMenuItem(BentoRoute.Overview, ...getRouteTitleAndIcon(BentoRoute.Overview));
 
-    if (BentoRoute.Beacon && scopeHasData) {
-      items.push(createMenuItem(BentoRoute.Beacon, ...getRouteTitleAndIcon(BentoRoute.Beacon)));
-    }
+    const topBarItems: MenuItem[] = [overviewItem];
+    const scopeItems: MenuItem[] = [];
 
-    if (scope.project && scopeHasData) {
-      // Only create standalone menu item if we have data, otherwise the overview page will display provenance data.
-      items.push(createMenuItem(BentoRoute.Provenance, ...getRouteTitleAndIcon(BentoRoute.Provenance)));
+    if (page !== BentoRoute.Phenopackets) {
+      scopeItems.push(overviewItem);
+
+      if (BentoRoute.Beacon && scopeHasData) {
+        scopeItems.push(createMenuItem(BentoRoute.Beacon, ...getRouteTitleAndIcon(BentoRoute.Beacon)));
+      }
+
+      if (scope.project && scopeHasData) {
+        // Only create standalone menu item if we have data, otherwise the overview page will display provenance data.
+        scopeItems.push(createMenuItem(BentoRoute.Provenance, ...getRouteTitleAndIcon(BentoRoute.Provenance)));
+      }
     }
 
     if (BentoRoute.BeaconNetwork && (!scope.project || (scope.project && fixedProject))) {
-      items.push(createMenuItem(BentoRoute.BeaconNetwork, ...getRouteTitleAndIcon(BentoRoute.BeaconNetwork)));
+      topBarItems.push(createMenuItem(BentoRoute.BeaconNetwork, ...getRouteTitleAndIcon(BentoRoute.BeaconNetwork)));
     }
 
-    return items;
-  }, [getRouteTitleAndIcon, createMenuItem, scope, fixedProject, scopeHasData]);
+    return [topBarItems, scopeItems] as [MenuItem[], MenuItem[]];
+  }, [getRouteTitleAndIcon, createMenuItem, scope, fixedProject, scopeHasData, page]);
 };
