@@ -1,4 +1,7 @@
 :root {
+  /* Variables can be overridden in /public/styles/instance.css, either on :root or on .bento-theme (for consistency
+     with Ant Design theme tokens, which must be set on .bento-theme */
+
   /* sync with NAVBAR_HEIGHT in common.ts */
   --header-height: 64px;
 
