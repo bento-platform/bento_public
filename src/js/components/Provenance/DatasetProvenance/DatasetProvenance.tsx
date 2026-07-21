@@ -237,7 +237,7 @@ const DatasetProvenance = ({
 
   const mode = isSmallScreen ? 'scroll' : modeParam;
 
-  if (mode === 'page') {
+  if (mode === 'page' && collapsed.size > 0) {
     // No section should be collapsed in page mode
     setCollapsed(new Set());
   }
