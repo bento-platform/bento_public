@@ -8,6 +8,8 @@ BENTO_PUBLIC_CONFIG = {
   PORTAL_URL: null,
   // Display flags
   TRANSLATED: null,
+  TRANSLATED_LOGO: null,
+  LOGO_HEIGHT: null,
   SHOW_HEADER_TITLE: null,
   SHOW_PORTAL_LINK: null,
   SHOW_SIGN_IN: null,

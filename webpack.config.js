@@ -70,6 +70,7 @@ const makeConfig = (mode) => ({
       // Display flags
       BENTO_PUBLIC_TRANSLATED: null,
       BENTO_PUBLIC_TRANSLATED_LOGO: null,
+      BENTO_PUBLIC_LOGO_HEIGHT: null,
       BENTO_PUBLIC_SHOW_HEADER_TITLE: null,
       BENTO_PUBLIC_SHOW_PORTAL_LINK: null,
       BENTO_PUBLIC_SHOW_SIGN_IN: null,
