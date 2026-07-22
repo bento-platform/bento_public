@@ -719,6 +719,11 @@ body {
   overflow: hidden;
 }
 
+.fchip:focus-within {
+  outline: auto 2px;
+  outline: -webkit-focus-ring-color auto 2px;
+}
+
 .fchip:hover:not(:disabled) {
   border-color: var(--ant-color-primary, #054A74);
   color: var(--ant-color-primary, #054A74);
@@ -755,6 +760,14 @@ body {
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
   flex-shrink: 0;
+}
+
+.fchip__input {
+  width: 0;
+}
+
+.fchip__input:focus {
+  outline: none;
 }
 
 .fchip--on .fchip__count {
