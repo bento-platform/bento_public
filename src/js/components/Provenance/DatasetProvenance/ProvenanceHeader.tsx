@@ -38,10 +38,12 @@ const ProvenanceHeader = ({ dataset, copiedKey, onCopy }: ModalHeaderProps) => {
       </div>
 
       <ul className="pm-meta-strip">
-        <span className="pm-id-pill">
-          {dataset.identifier}
-          <CopyButton value={dataset.identifier} id="identifier" copiedKey={copiedKey} onCopy={onCopy} />
-        </span>
+        <li>
+          <span className="pm-id-pill">
+            {dataset.identifier}
+            <CopyButton value={dataset.identifier} id="identifier" copiedKey={copiedKey} onCopy={onCopy} />
+          </span>
+        </li>
         {dataset.version && (
           <li className="pm-meta-item">
             <TagOutlined />
