@@ -4,6 +4,7 @@ import { BookOutlined, PieChartOutlined, ShareAltOutlined, SolutionOutlined } fr
 
 import BeaconLogo from '@/components/Beacon/BeaconLogo';
 
+import { CATALOGUE_SEARCH_STORAGE_KEY } from '@/features/catalogue/useCatalogueUrlSync';
 import { FORCE_CATALOGUE } from '@/config';
 import { useMetadata, useScopeHasData, useSelectedScope } from '@/features/metadata/hooks';
 import { type DiscoveryScope, selectScope } from '@/features/metadata/metadata.store';
@@ -25,6 +26,27 @@ export const useNavigateToRoot = () => {
   const navigate = useNavigate();
   const rootUrl = useLangPrefixedUrl('');
   return useCallback(() => navigate(rootUrl), [navigate, rootUrl]);
+};
+
+/**
+ * Like useNavigateToRoot, but for "back to catalogue" links: restores the catalogue's last query
+ * string (facet filters, search, sort, view) from sessionStorage, since this is a fresh navigation
+ * rather than a browser-history pop and would otherwise land on the catalogue with no filters applied.
+ *
+ * Dispatches the blank scope synchronously before navigating, same as useNavigateToScope: otherwise
+ * ScopedRoute's URL/scope reconciliation effect briefly sees the *old* (dataset/project) scope next to
+ * the new blank-scope URL, decides they mismatch, and replaces the URL back to the old scoped path -
+ * clobbering the restored query string.
+ */
+export const useNavigateToCatalogue = () => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const rootUrl = useLangPrefixedUrl('');
+  return useCallback(() => {
+    dispatch(selectScope({}));
+    const search = sessionStorage.getItem(CATALOGUE_SEARCH_STORAGE_KEY) ?? '';
+    navigate(rootUrl + search);
+  }, [dispatch, navigate, rootUrl]);
 };
 
 /**

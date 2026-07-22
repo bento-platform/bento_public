@@ -1,8 +1,13 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useAppDispatch } from '@/hooks';
 import { useUrlFacetSync, type ScalarParam } from '@/hooks/useUrlFacetSync';
 import { useUrlFacetActions } from '@/hooks/useUrlFacetActions';
 import { hydrateFromUrl, FACET_IDS, type SortKey, type ViewMode, type CatalogueFilterSets } from './catalogue.store';
+
+/** sessionStorage key holding the catalogue's last query string, so in-app "back to catalogue" links
+ *  (which navigate to a bare URL rather than popping browser history) can restore applied filters. */
+export const CATALOGUE_SEARCH_STORAGE_KEY = 'catalogue:lastSearch';
 
 const SORT_PARAM: ScalarParam<SortKey> = {
   key: 'sort',
@@ -19,6 +24,11 @@ const SCALARS = { sort: SORT_PARAM, view: VIEW_PARAM };
  */
 export function useCatalogueUrlSync() {
   const dispatch = useAppDispatch();
+  const location = useLocation();
+
+  useEffect(() => {
+    sessionStorage.setItem(CATALOGUE_SEARCH_STORAGE_KEY, location.search);
+  }, [location.search]);
 
   const onHydrate = useCallback(
     ({ q, sets, scalars }: { q: string; sets: CatalogueFilterSets; scalars: Record<string, string> }) => {

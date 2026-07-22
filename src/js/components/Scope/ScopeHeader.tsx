@@ -8,7 +8,7 @@ import CurrentPageHelpModal from '@/components/Util/CurrentPageHelpModal';
 import { useSelectedScope } from '@/features/metadata/hooks';
 import { useSearchQueryParams } from '@/features/search/hooks';
 import { useTranslationFn } from '@/hooks';
-import { useNavigateToRoot, useNavigateToSameScopeUrl, useNavigateToScope } from '@/hooks/navigation';
+import { useNavigateToCatalogue, useNavigateToSameScopeUrl, useNavigateToScope } from '@/hooks/navigation';
 import { BentoRoute } from '@/types/routes';
 import { getCurrentPage } from '@/utils/router';
 import { buildQueryParamsUrl } from '@/features/search/utils';
@@ -21,7 +21,7 @@ const useBackButtonInfo = () => {
   const overviewQueryParams = useSearchQueryParams();
   const currentPage = getCurrentPage(location);
 
-  const navigateToRoot = useNavigateToRoot();
+  const navigateToCatalogue = useNavigateToCatalogue();
   const navigateToScope = useNavigateToScope();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
   const { scope, scopeSet, fixedProject, fixedDataset } = useSelectedScope();
@@ -38,10 +38,10 @@ const useBackButtonInfo = () => {
         if (fixedDataset) return NO_BACK_BUTTON;
         const cameFromProject = (location.state as { fromProjectScope?: boolean } | null)?.fromProjectScope;
         return PCGL_MODE && !cameFromProject
-          ? ['Back to catalogue', navigateToRoot]
+          ? ['Back to catalogue', navigateToCatalogue]
           : ['Back to project', () => navigateToScope({ project: scope.project }, BentoRoute.Overview)];
       } else if (scope.project) {
-        return fixedProject ? NO_BACK_BUTTON : ['Back to catalogue', navigateToRoot];
+        return fixedProject ? NO_BACK_BUTTON : ['Back to catalogue', navigateToCatalogue];
       } else {
         return NO_BACK_BUTTON;
       }
@@ -49,7 +49,7 @@ const useBackButtonInfo = () => {
   }, [
     currentPage,
     location.state,
-    navigateToRoot,
+    navigateToCatalogue,
     navigateToScope,
     navigateToSameScopeUrl,
     overviewQueryParams,
