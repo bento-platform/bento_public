@@ -62,7 +62,8 @@
   },
   "errors": {
     "project_fetch": "Error fetching $t(entities.project_other, lowercase)",
-    "search_fetch": "Error fetching search results"
+    "search_fetch": "Error fetching search results",
+    "page_not_found": "Page not found"
   },
   "search": {
     "filters_one": "filter",

@@ -67,7 +67,8 @@
   },
   "errors": {
     "project_fetch": "Erreur lors du chargement des $t(entities.project_other, lowercase)",
-    "search_fetch": "Erreur lors du chargement des résultats de recherche"
+    "search_fetch": "Erreur lors du chargement des résultats de recherche",
+    "page_not_found": "Page introuvable"
   },
   "search": {
     "filters_one": "filtre",

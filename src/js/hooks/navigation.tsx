@@ -1,6 +1,12 @@
 import { type ReactNode, useCallback, useMemo } from 'react';
 import { type NavigateOptions, useLocation, useNavigate } from 'react-router-dom';
-import { BookOutlined, PieChartOutlined, ShareAltOutlined, SolutionOutlined } from '@ant-design/icons';
+import {
+  BookOutlined,
+  CloseCircleOutlined,
+  PieChartOutlined,
+  ShareAltOutlined,
+  SolutionOutlined,
+} from '@ant-design/icons';
 
 import BeaconLogo from '@/components/Beacon/BeaconLogo';
 
@@ -105,6 +111,8 @@ export const useGetRouteTitleAndIcon = () => {
           return ['Beacon Network', <ShareAltOutlined />];
         case BentoRoute.Phenopackets:
           return ['entities.phenopacket_other', <SolutionOutlined />];
+        case BentoRoute.NotFound: // should not be used, but not unknown
+          return ['errors.page_not_found', <CloseCircleOutlined />];
         default:
           console.error('Unknown page', routeId);
           return ['', null];
