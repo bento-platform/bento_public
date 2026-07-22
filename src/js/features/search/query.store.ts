@@ -43,6 +43,11 @@ export type QueryResultMatchData<T extends DiscoveryMatchObject> = {
   invalid: boolean;
 };
 
+// Maps a selected row's table key to the ID value that should be sent to the batch export endpoints. The two differ
+// for the phenopacket/individual table, where the row key is the phenopacket ID but exports need the subject/individual
+// ID. The value is undefined if the row doesn't have an exportable ID (e.g., a phenopacket without a linked subject).
+export type SelectedRowMap = Record<string, string | undefined>;
+
 export type QueryState = {
   defaultLayout: Sections;
   sections: Sections;
@@ -79,6 +84,9 @@ export type QueryState = {
     experiment: QueryResultMatchData<DiscoveryMatchExperiment>;
     experiment_result: QueryResultMatchData<DiscoveryMatchExperimentResult>;
   };
+  // Rows selected for export, per entity table, keyed by table row key. Persists across pagination since it's
+  // independent of which page's matches are currently loaded.
+  selectedRows: Record<ResultsDataEntity, SelectedRowMap>;
 
   // export fields available per entity, cached once fetched
   exportFields: Record<ResultsDataEntity, { status: RequestStatus; fields: ExportField[] | undefined }>;
@@ -132,6 +140,12 @@ const initialState: QueryState = {
     experiment: INITIAL_MATCH_DATA_STATE,
     experiment_result: INITIAL_MATCH_DATA_STATE,
   },
+  selectedRows: {
+    phenopacket: {},
+    biosample: {},
+    experiment: {},
+    experiment_result: {},
+  },
   // ----
   exportFields: {
     phenopacket: INITIAL_EXPORT_FIELDS_STATE,
@@ -163,6 +177,8 @@ const invalidateMatchData = (state: Draft<QueryState>) => {
       // current page upon invalidation:
       state.matchData[entity].page = 0;
     }
+    // The query changed, so previously-selected rows may no longer be part of the result set - clear selections:
+    state.selectedRows[entity] = {};
   });
 };
 
@@ -267,6 +283,10 @@ const query = createSlice({
       md.page = payload[1];
       // Invalidate current match data page contents if the page changes:
       md.invalid = md.status !== RequestStatus.Idle;
+    },
+    setSelectedRows: (state, { payload }: PayloadAction<[ResultsDataEntity, SelectedRowMap]>) => {
+      const [entity, map] = payload;
+      state.selectedRows[entity] = map;
     },
     setMatchesPageSize: (state, { payload }: PayloadAction<number>) => {
       if (isNaN(payload) || !PAGE_SIZE_OPTIONS.includes(payload)) {
@@ -416,6 +436,7 @@ export const {
   setSelectedEntity,
   setMatchesPage,
   setMatchesPageSize,
+  setSelectedRows,
   resetAllQueryState,
 } = query.actions;
 export { performKatsuDiscovery, fetchSearchFields, fetchDiscoveryMatchExportFields, fetchDiscoveryUIHints };

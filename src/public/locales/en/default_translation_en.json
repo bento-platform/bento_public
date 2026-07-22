@@ -69,6 +69,9 @@
     "select_all_fields": "Select all",
     "csv": "CSV",
     "xlsx": "XLSX",
+    "selected_count_one": "{{count}} row selected",
+    "selected_count_other": "{{count}} rows selected",
+    "clear_selection": "Clear selection",
     "fts": {
       "plain": "Word",
       "plain_help": "Retrieves records which exactly match words in the query (case-insensitive).",
@@ -520,7 +523,9 @@
   },
   "table": {
     "invalid_row_keys_title": "Invalid Row Reference",
-    "invalid_row_keys_description": "Some rows referenced in the URL do not exist. Adjusting to valid entries."
+    "invalid_row_keys_description": "Some rows referenced in the URL do not exist. Adjusting to valid entries.",
+    "expand_row": "Expand row",
+    "collapse_row": "Collapse row"
   },
   "drs": {
     "id": "$t(general.id)",
