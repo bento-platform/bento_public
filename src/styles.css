@@ -5,7 +5,7 @@
   /* sync with NAVBAR_HEIGHT in common.ts */
   --header-height: 64px;
 
-  --sidebar-width-full: 360px;
+  --sidebar-width-full: 380px;
   --sidebar-width-collapsed: 64px;
 
   --content-padding-v: 24px;
@@ -781,7 +781,7 @@ body {
   top: calc(var(--header-height) + var(--scoped-title-height));
   left: 0;
   z-index: 19;
-  width: min(320px, 90vw);
+  width: min(340px, 90vw);
   max-height: calc(100vh - var(--header-height));
   border-radius: 0;
   box-shadow: 3px 0 10px rgba(0, 0, 0, 0.06);
