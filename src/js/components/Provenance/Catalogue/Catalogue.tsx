@@ -29,7 +29,7 @@ const Catalogue = () => {
   const { view, insightsOpen } = useCatalogueState();
 
   // Below the `lg` breakpoint the rail becomes a slide-over drawer instead of an inline sticky column,
-  // mirroring the overlay/collapsed pattern SiteSider uses for the Search feature's sidebar.
+  // via the same overlay/open Sidebar props SiteSider uses for the Search feature's sidebar.
   const breakpoints = useBreakpoint();
   const railOverlay = !breakpoints.lg;
   const [railOpen, setRailOpen] = useState(false);

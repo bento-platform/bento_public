@@ -374,23 +374,10 @@ body {
   background: none;
 }
 #site-sider.overlay {
-  background-color: rgba(255, 255, 255, 0.88);
-  border-right: 1px solid #f0f0f0;
-  backdrop-filter: blur(10px);
-  position: fixed;
-  box-shadow: 3px 0 10px rgba(0, 0, 0, 0.06);
+  /* The overlay/open animation itself lives on the inner .sidebar--overlay (shared with the catalogue
+     rail); this just keeps the outer Layout.Sider from reserving flow space it no longer occupies. */
+  width: 0;
   padding: 0;
-  height: calc(100vh - var(--header-height) - var(--content-scoped-title-height));
-}
-#site-sider.overlay.collapsed {
-  left: calc(-1 * var(--sidebar-width-full) - 1px);
-  box-shadow: none;
-}
-
-#site-sider.overlay .sidebar {
-  background: none;
-  border: none;
-  box-shadow: none;
 }
 
 #default-layout.page-catalogue #site-sider__inner {
