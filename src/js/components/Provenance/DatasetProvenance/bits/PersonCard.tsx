@@ -1,5 +1,5 @@
 import { useId } from 'react';
-import { BankOutlined, EnvironmentOutlined, GlobalOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
+import { BankOutlined, EnvironmentOutlined, GlobalOutlined, MailOutlined, PhoneOutlined, UserOutlined } from '@ant-design/icons';
 
 import { useTranslationFn } from '@/hooks';
 import type { Organization, Person, PersonOrOrganization } from '@/types/dataset';
@@ -46,6 +46,7 @@ export const PersonCard = ({
       <div className="pm-pc-top">
         <div className="pm-pc-id">
           <div className="pm-pc-type" id={typeId}>
+            {isPerson ? <UserOutlined /> : <BankOutlined />}{' '}
             {t(isPerson ? 'provenance.person' : 'provenance.organization')}
           </div>
           <div className="pm-pc-name" aria-labelledby={typeId}>
