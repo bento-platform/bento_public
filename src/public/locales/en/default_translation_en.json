@@ -53,8 +53,7 @@
   },
   "navigation": {
     "nav_cap": {
-      "scroll": "On this page",
-      "page": "Sections"
+      "sections": "Sections"
     }
   },
   "errors": {
@@ -630,7 +629,6 @@
     "license": "License",
     "modified": "Modified",
     "namespace_prefix": "Namespace prefix",
-    "on_this_page": "On this page",
     "ontology_resources": "Ontology resources",
     "organization": "Organization",
     "person": "Person",

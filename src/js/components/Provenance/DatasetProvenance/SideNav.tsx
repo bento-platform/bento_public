@@ -16,7 +16,7 @@ const SideNav = ({ navEntries, activeSection, onJump, mode, hidden }: SideNavPro
   const t = useTranslationFn();
   return (
     <nav className={clsx('pm-nav', mode, { hidden })} aria-hidden={hidden}>
-      <div className="pm-nav-cap">{t(`navigation.nav_cap.${mode}`)}</div>
+      <div className="pm-nav-cap">{t('navigation.nav_cap.sections')}</div>
       {navEntries.map(({ id, icon, count }) => {
         const label = t(`provenance.sections.${id}`);
         return (
