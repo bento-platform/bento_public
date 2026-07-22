@@ -20,7 +20,7 @@ import { WAITING_STATES } from '@/constants/requests';
 import { TABLE_PAGE_QUERY_PARAM, TABLE_PAGE_SIZE_QUERY_PARAM } from '@/features/search/constants';
 
 import { useAppDispatch, useAppSelector, useTranslationFn } from '@/hooks';
-import { useSmallScreen } from '@/hooks/useResponsiveContext';
+import { useResponsiveMobileContext, useSmallScreen } from '@/hooks/useResponsiveContext';
 import { useScopeDownloadData } from '@/hooks/censorship';
 import { useDownloadAllMatches } from '@/hooks/useDownloadAllMatches';
 import { useDownloadSelectedMatches } from '@/hooks/useDownloadSelectedMatches';
@@ -329,6 +329,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   const downloadAllMatches = useDownloadAllMatches();
   const downloadSelectedMatches = useDownloadSelectedMatches();
   const isSmallScreen = useSmallScreen();
+  const isMobile = useResponsiveMobileContext();
 
   const allQueryParams = useSearchQueryParams();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
@@ -507,7 +508,13 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   return (
     <>
       <Col flex={1}>
-        <Flex justify="space-between" align="center" style={{ marginBottom: 12 }}>
+        <Flex
+          justify={isMobile ? 'center' : 'space-between'}
+          align="center"
+          gap="small"
+          style={{ marginBottom: 12 }}
+          wrap
+        >
           {onBack ? (
             <Button
               icon={<LeftOutlined />}
