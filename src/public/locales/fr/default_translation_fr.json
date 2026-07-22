@@ -171,7 +171,8 @@
   "Back to catalogue": "Retourner au catalogue",
   "catalogue": {
     "rail": {
-      "title": "Filtres"
+      "title": "Filtres",
+      "close": "Fermer les filtres"
     },
     "facets": {
       "projects": "$t(entities.project_one)",
@@ -184,6 +185,7 @@
     },
     "toolbar": {
       "search_placeholder": "Rechercher des jeux de données, mots-clés, dosages …",
+      "sort_label": "Trier",
       "sort": {
         "recently_updated": "Récemment mis à jour",
         "newest_created": "Tout récemment créé",

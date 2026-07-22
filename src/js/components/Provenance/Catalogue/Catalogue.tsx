@@ -1,12 +1,12 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
-import { Divider, Empty, Button, Flex, Typography } from 'antd';
+import { Divider, Empty, Button, Flex, Grid, Typography } from 'antd';
 import { useMetadata } from '@/features/metadata/hooks';
 import { useCatalogueFilter, useCatalogueState } from '@/features/catalogue/hooks';
 import { useAppDispatch } from '@/hooks';
 import { useTranslationFn } from '@/hooks';
-import { clearAll, setProjectColors } from '@/features/catalogue/catalogue.store';
-import { useCatalogueUrlSync } from '@/features/catalogue/useCatalogueUrlSync';
+import { setProjectColors } from '@/features/catalogue/catalogue.store';
+import { useCatalogueUrlSync, useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
 import { assignColors } from '@/features/catalogue/hooks';
 import { RequestStatus } from '@/types/requests';
 import Error from '@Util/Error';
@@ -17,14 +17,22 @@ import CatalogueInsights from './CatalogueInsights';
 import Dataset from '@/components/Provenance/Dataset';
 
 const { Text } = Typography;
+const { useBreakpoint } = Grid;
 
 const Catalogue = () => {
   useCatalogueUrlSync();
 
   const t = useTranslationFn();
   const dispatch = useAppDispatch();
+  const { clearAll } = useCatalogueUrlActions();
   const { projects, projectsStatus, projectsError } = useMetadata();
   const { view, insightsOpen } = useCatalogueState();
+
+  // Below the `lg` breakpoint the rail becomes a slide-over drawer instead of an inline sticky column,
+  // via the same overlay/open Sidebar props SiteSider uses for the Search feature's sidebar.
+  const breakpoints = useBreakpoint();
+  const railOverlay = !breakpoints.lg;
+  const [railOpen, setRailOpen] = useState(false);
 
   const allDatasets = useMemo(
     () => projects.flatMap((p) => (p.datasets ?? []).map((d) => ({ dataset: d, project: p }))),
@@ -52,11 +60,21 @@ const Catalogue = () => {
       {/* Body: rail + main */}
       <Flex gap={20} align="flex-start">
         {/* Left: facet rail */}
-        <CatalogueRail totalCount={filtered.length} facetOptions={facetOptions} />
+        <CatalogueRail
+          totalCount={filtered.length}
+          facetOptions={facetOptions}
+          overlay={railOverlay}
+          open={!railOverlay || railOpen}
+          onClose={() => setRailOpen(false)}
+        />
 
         {/* Right: toolbar + insights + grid */}
         <div className="flex-1 min-w-0">
-          <CatalogueToolbar filteredCount={filtered.length} />
+          <CatalogueToolbar
+            filteredCount={filtered.length}
+            isMobile={railOverlay}
+            onOpenFilters={() => setRailOpen(true)}
+          />
 
           {insightsOpen && (
             <div className="catalogue-insights-container">
@@ -72,7 +90,7 @@ const Catalogue = () => {
 
           {filtered.length === 0 ? (
             <Empty description={t('catalogue.datasets.empty')}>
-              <Button type="primary" onClick={() => dispatch(clearAll())}>
+              <Button type="primary" onClick={clearAll}>
                 {t('catalogue.datasets.reset_filters')}
               </Button>
             </Empty>

@@ -540,7 +540,8 @@
   },
   "catalogue": {
     "rail": {
-      "title": "Filters"
+      "title": "Filters",
+      "close": "Close filters"
     },
     "facets": {
       "projects": "$t(entities.project_one)",
@@ -553,6 +554,7 @@
     },
     "toolbar": {
       "search_placeholder": "Search datasets, keywords, assays…",
+      "sort_label": "Sort",
       "sort": {
         "recently_updated": "Recently updated",
         "newest_created": "Newest created",
