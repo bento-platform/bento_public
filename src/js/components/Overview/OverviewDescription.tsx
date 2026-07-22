@@ -12,6 +12,13 @@ const OverviewDescription = () => {
   const selectedProject = useSelectedProject();
   const selectedDataset = useSelectedDataset();
 
+  if (
+    (selectedDataset && !selectedDataset.description && !selectedDataset.long_description) ||
+    (selectedProject && !selectedDataset && !selectedProject.description)
+  ) {
+    return null;
+  }
+
   return (
     <Card className="overview-description shadow rounded-xl">
       {selectedDataset ? (
