@@ -105,7 +105,7 @@ const Dataset = ({
           <Title level={5} className="catalogue-card__title">
             {t(title)}
           </Title>
-          <StatusBadge status={dataset.study_status} />
+          {dataset.study_status && <StatusBadge status={dataset.study_status} />}
         </Flex>
 
         {updatedStr && (
