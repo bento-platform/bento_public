@@ -94,6 +94,8 @@ body {
 .p-0 { padding: 0; }
 .pb-content { padding-bottom: var(--content-padding-v); }
 .flex-1 { flex: 1; }
+.self-start { align-self: flex-start; }
+.self-center { align-self: center; }
 .min-w-0 { min-width: 0; }
 .float-right { float: right; }
 .absolute { position: absolute; }
@@ -125,7 +127,6 @@ body {
 .pt-2 { padding-top: 8px; }
 .pt-5 { padding-top: 20px; }
 .z-0 { z-index: 0; }
-.self-start { align-self: flex-start; }
 
 /* custom, tailwind-esque */
 .max-w-half-cmw { max-width: calc(var(--content-max-width) / 2); }
@@ -787,6 +788,7 @@ body {
 .catalogue-card__title { margin: 0 !important; font-size: 16px; font-weight: 600; flex: 1; }
 .status-badge {
   flex-shrink: 0;
+  align-self: flex-start;
   font-size: 11px;
   font-weight: 600;
   padding: 1px 8px;
@@ -877,6 +879,39 @@ body {
 }
 
 /* END about HTML styling */
+
+
+/* BEGIN dataset provenance */
+
+.dataset-provenance-card:last-child {
+  /* If nothing else (counts, etc) is displayed, add a larger margin to the bottom of dataset provenance cards on their
+     own page */
+  margin-bottom: calc(2 * var(--content-padding-v));
+}
+
+.dataset-provenance .attributes {
+  margin: 0 0 16px 0;
+  padding: 0;
+  list-style: none;
+}
+.dataset-provenance .attributes li {
+  list-style: none;
+  display: inline-block;
+}
+.dataset-provenance .attributes li strong {
+  color: rgba(0, 0, 0, 0.65);
+}
+.dataset-provenance .attributes li:not(:last-child)::after {
+  content: "\2022";
+  margin-left: 0.7em;
+  margin-right: 0.7em;
+}
+
+.provenance-person, .provenance-organization {
+  display: inline-flex;
+}
+
+/* END dataset provenance */
 
 
 /* BEGIN overview */
