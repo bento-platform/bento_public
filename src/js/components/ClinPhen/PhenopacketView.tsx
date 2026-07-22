@@ -43,15 +43,15 @@ const PhenopacketView = () => {
 
   const invalidEndpointRedirectNotification = useCallback(() => {
     api.error({
-      message: t('phenopacket_view.invalid_endpoint_title', notificationFillIns),
-      description: t('phenopacket_view.invalid_endpoint_description', notificationFillIns),
+      message: t('navigation.invalid_endpoint_title', notificationFillIns),
+      description: t('navigation.invalid_endpoint_description', notificationFillIns),
     });
   }, [api, t, notificationFillIns]);
 
   const notAvailableRedirectNotification = useCallback(() => {
     api.warning({
-      message: t('phenopacket_view.not_available_title', notificationFillIns),
-      description: t('phenopacket_view.not_available_description', notificationFillIns),
+      message: t('navigation.not_available_title', notificationFillIns),
+      description: t('navigation.not_available_description', notificationFillIns),
     });
   }, [api, t, notificationFillIns]);
 

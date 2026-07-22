@@ -67,8 +67,8 @@ const OverviewChartDashboard = () => {
   if (scopeSet && !scopeHasData) {
     if (!hasNotified) {
       notify.error({
-        message: t('phenopacket_view.not_available_title', { endpoint: BentoRoute.Overview }),
-        description: t('phenopacket_view.not_available_description', { target: BentoRoute.Provenance }),
+        message: t('navigation.not_available_title', { endpoint: BentoRoute.Overview }),
+        description: t('navigation.not_available_description', { target: BentoRoute.Provenance }),
       });
       setHasNotified(true);
     }
