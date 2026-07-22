@@ -1,5 +1,4 @@
 // React and ReactDOM imports
-import { useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 
 // Redux and routing imports
@@ -8,7 +7,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 // i18n and constants imports
 import { useTranslation } from 'react-i18next';
-import { NEW_BENTO_PUBLIC_THEME, OLD_LOCALSTORAGE_CHARTS_KEY } from '@/constants/overviewConstants';
+import { NEW_BENTO_PUBLIC_THEME } from '@/constants/overviewConstants';
 import { SUPPORTED_LNGS } from '@/constants/configConstants';
 
 // Component imports
@@ -83,33 +82,26 @@ const InnerRootApp = () => {
   );
 };
 
-const RootApp = () => {
-  // TODO: Remove this in the future (v20?), once we are sure no one is using the old localStorage key
-  useEffect(() => {
-    localStorage.removeItem(OLD_LOCALSTORAGE_CHARTS_KEY);
-  }, []);
-
-  return (
-    <Provider store={store}>
-      <BrowserRouter>
-        <ResponsiveProvider>
-          <BentoAuthContextProvider
-            value={{
-              applicationUrl: PUBLIC_URL_NO_TRAILING_SLASH,
-              openIdConfigUrl: OPENID_CONFIG_URL,
-              clientId: CLIENT_ID,
-              scope: 'openid email',
-              postSignOutUrl: `${PUBLIC_URL_NO_TRAILING_SLASH}/`,
-              authCallbackUrl: AUTH_CALLBACK_URL,
-            }}
-          >
-            <InnerRootApp />
-          </BentoAuthContextProvider>
-        </ResponsiveProvider>
-      </BrowserRouter>
-    </Provider>
-  );
-};
+const RootApp = () => (
+  <Provider store={store}>
+    <BrowserRouter>
+      <ResponsiveProvider>
+        <BentoAuthContextProvider
+          value={{
+            applicationUrl: PUBLIC_URL_NO_TRAILING_SLASH,
+            openIdConfigUrl: OPENID_CONFIG_URL,
+            clientId: CLIENT_ID,
+            scope: 'openid email',
+            postSignOutUrl: `${PUBLIC_URL_NO_TRAILING_SLASH}/`,
+            authCallbackUrl: AUTH_CALLBACK_URL,
+          }}
+        >
+          <InnerRootApp />
+        </BentoAuthContextProvider>
+      </ResponsiveProvider>
+    </BrowserRouter>
+  </Provider>
+);
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(<RootApp />);
