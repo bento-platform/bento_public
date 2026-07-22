@@ -9,8 +9,8 @@ import type { Sections } from '@/types/data';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 
 import { WAITING_STATES } from '@/constants/requests';
+import { BentoRoute } from '@/types/routes';
 
-import ProvenancePage from '@/components/Provenance/ProvenancePage';
 import OverviewDescription from './OverviewDescription';
 import OverviewSection from './OverviewSection';
 import OverviewDatasets from './OverviewDatasets';
@@ -22,7 +22,7 @@ import { useTranslationFn } from '@/hooks';
 import { useSearchRouterAndHandler } from '@/hooks/useSearchRouterAndHandler';
 import { useSelectedProject, useSelectedScope, useScopeHasData } from '@/features/metadata/hooks';
 import { useSearchQuery, useSearchableFields } from '@/features/search/hooks';
-import { useIsInCatalogueMode } from '@/hooks/navigation';
+import { useIsInCatalogueMode, useNavigateToSameScopeUrl } from '@/hooks/navigation';
 
 const saveScopeOverviewToLS = (scope: DiscoveryScope, sections: Sections) => {
   saveValue(generateLSChartDataKey(scope), convertSequenceAndDisplayData(sections));
@@ -36,6 +36,7 @@ const OverviewChartDashboard = () => {
   const { scope } = useSelectedScope();
   const selectedProject = useSelectedProject();
   const catalogueMode = useIsInCatalogueMode();
+  const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
 
   // This is essentially a large effect hook with a few dependencies, which processes (and rewrites if needed) the query
   // URL and dispatches discovery actions for fetching overview/query response data.
@@ -57,9 +58,12 @@ const OverviewChartDashboard = () => {
 
   // ---
 
-  // If we don't have any data to display, render the provenance page as the entire overview for the scope rather than
-  // bothering to show a chart dashboard.
-  if (!scopeHasData) return <ProvenancePage />;
+  // If we don't have any data to display, redirect to the provenance page - behaving as basically a 'metadata-only'
+  // display. This is primarily for some kind of possible 'metadata-only' mode where we don't ingest any data.
+  if (!scopeHasData) {
+    navigateToSameScopeUrl(BentoRoute.Provenance, true);
+    return null;
+  }
 
   const loadingNewData = WAITING_STATES.includes(discoveryStatus);
   const displayedSections = sections.filter(({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1);

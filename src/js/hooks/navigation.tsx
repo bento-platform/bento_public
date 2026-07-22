@@ -147,14 +147,15 @@ export const useSiteMenuItems = (): [MenuItem[], MenuItem[]] => {
     const scopeItems: MenuItem[] = [];
 
     if (page !== BentoRoute.Phenopackets) {
-      scopeItems.push(overviewItem);
+      if (scopeHasData) {
+        scopeItems.push(overviewItem);
+      }
 
       if (BentoRoute.Beacon && scopeHasData) {
         scopeItems.push(createMenuItem(BentoRoute.Beacon, ...getRouteTitleAndIcon(BentoRoute.Beacon)));
       }
 
-      if (scope.project && scopeHasData) {
-        // Only create standalone menu item if we have data, otherwise the overview page will display provenance data.
+      if (scope.project) {
         scopeItems.push(createMenuItem(BentoRoute.Provenance, ...getRouteTitleAndIcon(BentoRoute.Provenance)));
       }
     }
