@@ -1020,7 +1020,7 @@ body {
 .kv-row { background: #fff; padding: 11px 14px; display: flex; flex-direction: column; gap: 3px; }
 .kv-row.span { grid-column: 1 / -1; }
 .kv-k {
-  font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em;
   text-transform: uppercase; color: var(--text-muted);
 }
 .kv-v { font-size: 13px; color: var(--text-primary); word-break: break-word; }
