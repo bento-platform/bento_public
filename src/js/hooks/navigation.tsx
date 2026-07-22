@@ -155,7 +155,8 @@ export const useSiteMenuItems = (): [MenuItem[], MenuItem[]] => {
         scopeItems.push(createMenuItem(BentoRoute.Beacon, ...getRouteTitleAndIcon(BentoRoute.Beacon)));
       }
 
-      if (scope.project) {
+      // TODO: can enable for project if we get a more extensive project model
+      if (scope.dataset) {
         scopeItems.push(createMenuItem(BentoRoute.Provenance, ...getRouteTitleAndIcon(BentoRoute.Provenance)));
       }
     }

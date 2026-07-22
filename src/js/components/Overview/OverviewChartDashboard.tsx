@@ -64,7 +64,7 @@ const OverviewChartDashboard = () => {
 
   // If we don't have any data to display, redirect to the provenance page - behaving as basically a 'metadata-only'
   // display. This is primarily for some kind of possible 'metadata-only' mode where we don't ingest any data.
-  if (scopeSet && !scopeHasData) {
+  if (scopeSet && !scopeHasData && scope.dataset) {
     if (!hasNotified) {
       notify.error({
         message: t('navigation.not_available_title', { endpoint: BentoRoute.Overview }),
