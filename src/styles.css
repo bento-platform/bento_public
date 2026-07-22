@@ -596,9 +596,9 @@ body {
 .catalogue-sort-select { width: 180px; flex-shrink: 1; min-width: 70px; }
 .catalogue-toolbar-fixed { flex-shrink: 0; }
 .catalogue-count-highlight { color: rgba(0, 0, 0, 0.88); font-weight: 600; }
-.catalogue-filter-tag { border-radius: 13px !important; margin: 0 !important; }
+.catalogue-filter-tag { border-radius: 15px !important; margin: 0 !important; }
 .catalogue-filter-tag__facet-label { color: var(--text-muted); font-size: 11px; margin-right: 3px; }
-.catalogue-clear-tag { border-radius: 13px !important; margin: 0 !important; cursor: pointer; border-style: dashed; }
+.catalogue-clear-tag { border-radius: 15px !important; margin: 0 !important; cursor: pointer; border-style: dashed; }
 /* END catalogue toolbar */
 
 /* Bigger active-filter-tag variant used on the overview page (between the About section and count cards) */
