@@ -782,11 +782,13 @@ body {
 
 .sidebar--overlay {
   position: fixed;
-  top: 0;
+  /* Below the fixed site header (z-index: 100), which would otherwise render on top of the drawer's
+     title/close button since the drawer's own z-index (19) loses to it. */
+  top: var(--header-height);
   left: 0;
   z-index: 19;
   width: min(320px, 90vw);
-  max-height: 100vh;
+  max-height: calc(100vh - var(--header-height));
   border-radius: 0;
   box-shadow: 3px 0 10px rgba(0, 0, 0, 0.06);
   transform: translateX(-100%);
