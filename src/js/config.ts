@@ -46,10 +46,7 @@ export const SHOW_PORTAL_LINK =
 export const SHOW_SIGN_IN = BENTO_PUBLIC_CONFIG.SHOW_SIGN_IN ?? stringToBoolean(process.env.BENTO_PUBLIC_SHOW_SIGN_IN);
 export const FORCE_CATALOGUE =
   BENTO_PUBLIC_CONFIG.FORCE_CATALOGUE ?? stringToBoolean(process.env.BENTO_PUBLIC_FORCE_CATALOGUE);
-// TODO: temporary dev override — remove before merging to main
-declare const process: { env: { NODE_ENV: string; [key: string]: string | undefined } };
-const _devPcglOverride = process.env.NODE_ENV === 'development' ? localStorage.getItem('dev_pcgl_mode') : null;
-export const PCGL_MODE = _devPcglOverride !== null ? _devPcglOverride === 'true' : true;
+export const PCGL_MODE = BENTO_PUBLIC_CONFIG.PCGL_MODE ?? stringToBoolean(process.env.BENTO_PUBLIC_PCGL_MODE);
 
 // Beacon configuration and flags
 export const BEACON_URL = BENTO_PUBLIC_CONFIG.BEACON_URL ?? process.env.BEACON_URL;
