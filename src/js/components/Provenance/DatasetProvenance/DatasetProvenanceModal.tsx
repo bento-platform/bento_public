@@ -10,7 +10,6 @@ type DatasetProvenanceModalProps = {
 };
 
 const DatasetProvenanceModal = ({ dataset, open, onCancel }: DatasetProvenanceModalProps) => {
-  // if (!open) return null;
   const isSmallScreen = useSmallScreen();
 
   const margin = isSmallScreen ? 16 : 40;
