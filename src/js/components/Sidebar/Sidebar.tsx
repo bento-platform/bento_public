@@ -25,7 +25,7 @@ export const SidebarFacet = ({
   onToggleCollapse?: () => void;
   children: ReactNode;
 }) => (
-  <div className={'sidebar-facet' + (collapsed ? ' sidebar-facet--collapsed' : '')}>
+  <div className={clsx('sidebar-facet', !collapsed && 'sidebar-facet--expanded')}>
     <button className="facet-head" onClick={onToggleCollapse}>
       <span className="facet-head__label">{label}</span>
       {collapsed ? (
@@ -55,14 +55,22 @@ export const SidebarSection = ({ sectionTitle, extra, children, className, ...pr
   </section>
 );
 
-export type SidebarProps = HTMLAttributes<HTMLElement> & { width?: string | number };
+export type SidebarProps = HTMLAttributes<HTMLElement> & {
+  width?: string | number;
+  /** Below some breakpoint, the sidebar renders as a fixed slide-over drawer instead of an inline sticky column. */
+  overlay?: boolean;
+  /** Ignored when `overlay` is falsy (the sidebar is always visible inline). */
+  open?: boolean;
+  onClose?: () => void;
+};
 
-const Sidebar = ({ children, className, ...props }: SidebarProps) => {
-  return (
-    <aside className={clsx('sidebar', className)} {...props}>
+const Sidebar = ({ children, className, overlay, open, onClose, ...props }: SidebarProps) => (
+  <>
+    {overlay && open && <div className="sidebar-backdrop" onClick={onClose} aria-hidden />}
+    <aside className={clsx('sidebar', overlay && 'sidebar--overlay', open && 'sidebar--open', className)} {...props}>
       <div className="sidebar__content">{children}</div>
     </aside>
-  );
-};
+  </>
+);
 
 export default Sidebar;

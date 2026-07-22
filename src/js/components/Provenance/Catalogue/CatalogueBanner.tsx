@@ -65,7 +65,7 @@ const CatalogueBanner = ({ filteredDatasets }: CatalogueBannerProps) => {
             <AboutContent />
           </div>
         )}
-        <Space size={28} wrap>
+        <Space size={[28, 6]} wrap>
           <StatItem
             icon={<DatabaseOutlined />}
             value={fmt(datasetCount)}

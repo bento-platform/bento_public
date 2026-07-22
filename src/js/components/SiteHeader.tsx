@@ -86,8 +86,8 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
   } = theme.useToken();
 
   useEffect(() => {
-    document.title = CLIENT_NAME && CLIENT_NAME.trim() ? `Bento: ${CLIENT_NAME}` : 'Bento';
-  }, []);
+    document.title = CLIENT_NAME && CLIENT_NAME.trim() ? t(CLIENT_NAME) : 'Bento';
+  }, [t]);
 
   const changeLanguage = () => {
     const newLang = LNG_CHANGE[language];

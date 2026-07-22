@@ -17,11 +17,12 @@ import OverviewDatasets from './OverviewDatasets';
 import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
 import CountsAndResults from './CountsAndResults';
 import LastIngestionInfo from './LastIngestion';
+import ActiveFilterTags from '@/components/Util/ActiveFilterTags';
 
 import { useTranslationFn } from '@/hooks';
 import { useSearchRouterAndHandler } from '@/hooks/useSearchRouterAndHandler';
 import { useSelectedProject, useSelectedScope, useScopeHasData } from '@/features/metadata/hooks';
-import { useSearchQuery, useSearchableFields } from '@/features/search/hooks';
+import { useActiveFilterPills, useSearchQuery, useSearchableFields } from '@/features/search/hooks';
 import { useIsInCatalogueMode, useNavigateToSameScopeUrl } from '@/hooks/navigation';
 import { useNotify } from '@/hooks/notifications';
 
@@ -50,6 +51,8 @@ const OverviewChartDashboard = () => {
 
   // Lazy-loading hooks means this is loaded only if OverviewChartDashboard is rendered:
   const searchableFields = useSearchableFields();
+
+  const { pills, clearAll } = useActiveFilterPills();
 
   const onManageChartsOpen = useCallback(() => setDrawerVisible(true), []);
   const onManageChartsClose = useCallback(() => {
@@ -87,6 +90,8 @@ const OverviewChartDashboard = () => {
             description, or the dataset long description (falling back to the short description.)
         */}
         <OverviewDescription />
+
+        <ActiveFilterTags pills={pills} onClearAll={clearAll} tagClassName="overview-filter-tag" />
 
         {/*
             If we're in a scope with no data at all, don't bother rendering the

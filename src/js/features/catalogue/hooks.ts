@@ -22,6 +22,9 @@ export const statusTranslationKey = (status: string): string => `provenance.stat
 export const studyContextTranslationKey = (context: StudyContext): string =>
   `provenance.context.${context.toLowerCase()}`;
 
+/** Builds the i18n key for a facet's label, e.g., "dataTypes" -> "catalogue.facets.dataTypes". */
+export const facetTranslationKey = (facet: FacetId): string => `catalogue.facets.${facet}`;
+
 /** Ordered colour palette used to assign a stable colour per project name. */
 export const PALETTE = ['#1677FF', '#13C2C2', '#722ED1', '#FA8C16', '#52C41A'];
 

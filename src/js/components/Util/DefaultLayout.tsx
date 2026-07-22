@@ -61,18 +61,9 @@ const DefaultLayout = () => {
         )}
         <Layout>
           <Layout>
-            {!sidebarHidden && <SiteSider collapsed={collapsed} overlay={sidebarOverlay} />}
-            {sidebarOverlayShown ? (
-              <div
-                style={{ position: 'fixed', inset: 0, zIndex: 18, backdropFilter: 'blur(10px)' }}
-                onClick={(e) => {
-                  setCollapsed(true);
-                  e.preventDefault();
-                  e.stopPropagation();
-                }}
-                aria-hidden
-              />
-            ) : null}
+            {!sidebarHidden && (
+              <SiteSider overlay={sidebarOverlay} open={sidebarOverlayShown} onClose={() => setCollapsed(true)} />
+            )}
             <Content style={{ minHeight: 'calc(100vh - 210px - var(--scoped-title-height) - var(--header-height))' }}>
               <ErrorBoundary
                 fallbackRender={({ error }) => <Alert type="error" description={getErrorMessage(error)} />}
