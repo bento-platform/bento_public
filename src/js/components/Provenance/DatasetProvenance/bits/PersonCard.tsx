@@ -1,5 +1,12 @@
 import { useId } from 'react';
-import { BankOutlined, EnvironmentOutlined, GlobalOutlined, MailOutlined, PhoneOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  BankOutlined,
+  EnvironmentOutlined,
+  GlobalOutlined,
+  MailOutlined,
+  PhoneOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 
 import { useTranslationFn } from '@/hooks';
 import type { Organization, Person, PersonOrOrganization } from '@/types/dataset';
