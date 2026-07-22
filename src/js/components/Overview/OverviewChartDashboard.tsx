@@ -23,6 +23,7 @@ import { useSearchRouterAndHandler } from '@/hooks/useSearchRouterAndHandler';
 import { useSelectedProject, useSelectedScope, useScopeHasData } from '@/features/metadata/hooks';
 import { useSearchQuery, useSearchableFields } from '@/features/search/hooks';
 import { useIsInCatalogueMode, useNavigateToSameScopeUrl } from '@/hooks/navigation';
+import { useNotify } from '@/hooks/notifications';
 
 const saveScopeOverviewToLS = (scope: DiscoveryScope, sections: Sections) => {
   saveValue(generateLSChartDataKey(scope), convertSequenceAndDisplayData(sections));
@@ -33,10 +34,13 @@ const OverviewChartDashboard = () => {
 
   const [drawerVisible, setDrawerVisible] = useState(false);
 
-  const { scope } = useSelectedScope();
+  const { scope, scopeSet } = useSelectedScope();
   const selectedProject = useSelectedProject();
   const catalogueMode = useIsInCatalogueMode();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
+
+  const notify = useNotify();
+  const [hasNotified, setHasNotified] = useState(false);
 
   // This is essentially a large effect hook with a few dependencies, which processes (and rewrites if needed) the query
   // URL and dispatches discovery actions for fetching overview/query response data.
@@ -60,7 +64,14 @@ const OverviewChartDashboard = () => {
 
   // If we don't have any data to display, redirect to the provenance page - behaving as basically a 'metadata-only'
   // display. This is primarily for some kind of possible 'metadata-only' mode where we don't ingest any data.
-  if (!scopeHasData) {
+  if (scopeSet && !scopeHasData) {
+    if (!hasNotified) {
+      notify.error({
+        message: t('phenopacket_view.not_available_title', { endpoint: BentoRoute.Overview }),
+        description: t('phenopacket_view.not_available_description', { target: BentoRoute.Provenance }),
+      });
+      setHasNotified(true);
+    }
     navigateToSameScopeUrl(BentoRoute.Provenance, true);
     return null;
   }
