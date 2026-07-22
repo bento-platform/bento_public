@@ -778,7 +778,7 @@ body {
   position: fixed;
   /* Below the fixed site header (z-index: 100), which would otherwise render on top of the drawer's
      title/close button since the drawer's own z-index (19) loses to it. */
-  top: var(--header-height);
+  top: calc(var(--header-height) + var(--scoped-title-height));
   left: 0;
   z-index: 19;
   width: min(320px, 90vw);
@@ -787,6 +787,11 @@ body {
   box-shadow: 3px 0 10px rgba(0, 0, 0, 0.06);
   transform: translateX(-100%);
   transition: transform 0.2s ease-out;
+}
+
+#default-layout.scope-header-hidden .sidebar--overlay {
+  top: var(--header-height);
+  max-height: calc(100vh - var(--header-height) - var(--scoped-title-height));
 }
 
 .sidebar--overlay.sidebar--open {
