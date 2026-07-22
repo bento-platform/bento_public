@@ -643,7 +643,7 @@ body {
   border: 1px solid var(--border-subtle);
 }
 
-#default-layout.scope-header-hidden .sidebar {
+#default-layout.scope-header-hidden .sidebar:not(.sidebar--overlay) {
   top: var(--content-padding-v);
   max-height: calc(100vh - var(--header-height) - var(--content-padding-v) * 2);
 }
