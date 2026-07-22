@@ -18,7 +18,15 @@ import { useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
 import type { Dataset } from '@/types/dataset';
-import { FundingCard, LinkTile, LicenseTile, PersonCard, PublicationCard, ProvenanceSection } from './bits';
+import {
+  FundingCard,
+  LinkTile,
+  LicenseTile,
+  PersonCard,
+  PublicationCard,
+  ProvenanceSection,
+  htmlSectionId,
+} from './bits';
 import IdentifiersSectionContent from './IdentifiersSectionContent';
 import ProvenanceHeader from './ProvenanceHeader';
 import ParticipantCriteriaSectionContent from './ParticipantCriteriaSectionContent';
@@ -263,7 +271,7 @@ const DatasetProvenance = ({
         if (suppressSpyRef.current) return;
         for (const entry of entries) {
           if (entry.isIntersecting) {
-            setActiveSection(entry.target.id as SectionId);
+            setActiveSection((entry.target as HTMLElement).dataset.section as SectionId);
           }
         }
       },
@@ -325,7 +333,7 @@ const DatasetProvenance = ({
           next.delete(id);
           return next;
         });
-        const el = body.querySelector<HTMLElement>(`#${id}`);
+        const el = body.querySelector<HTMLElement>(`#${htmlSectionId(id)}`);
         if (el) {
           setTimeout(() => {
             body.scrollTo({ top: el.offsetTop - 6, behavior: 'smooth' });

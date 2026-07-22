@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import clsx from 'clsx';
 import { DownOutlined } from '@ant-design/icons';
 import type { SectionId } from '@/components/Provenance/DatasetProvenance/types';
 import { useTranslationFn } from '@/hooks';
@@ -9,6 +10,8 @@ export type SectionHeadProps = {
   collapsed: boolean;
   onToggle?: () => void;
 };
+
+export const htmlSectionId = (sectionId: SectionId) => `prov-sec-${sectionId}`;
 
 export const SectionHead = ({ title, count, collapsed, onToggle }: SectionHeadProps) => {
   const content = (
@@ -33,7 +36,7 @@ const ProvenanceSection = ({ count, collapsed, onToggle, sectionId, children }: 
   const t = useTranslationFn();
   const title = t(`provenance.sections.${sectionId}`);
   return (
-    <section id={sectionId} className={`pm-sec${collapsed ? ' collapsed' : ''}`}>
+    <section id={htmlSectionId(sectionId)} data-section={sectionId} className={clsx('pm-sec', { collapsed })}>
       <SectionHead title={title} count={count} collapsed={collapsed} onToggle={onToggle} />
       <div className="pm-sec-body">{children}</div>
     </section>
