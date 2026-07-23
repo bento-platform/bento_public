@@ -25,14 +25,6 @@ export const parseBrackets = (value: string | null): RangeState => {
 export const formatDateBinKey = (key: string, language: string): string =>
   new Date(key).toLocaleString(language, { year: 'numeric', month: 'short' });
 
-/** Formats a "yyyy-mm" date bin key (e.g. "2021-01") as a compact "MMMYY" label, e.g. "Jan21". */
-export const formatDateBinKeyCompact = (key: string, language: string): string =>
-  new Intl.DateTimeFormat(language, { year: '2-digit', month: 'short' })
-    .formatToParts(new Date(key))
-    .filter((p) => p.type === 'month' || p.type === 'year')
-    .map((p) => p.value)
-    .join('');
-
 export const buildRangeString = (
   lowerStr: string,
   upperStr: string,

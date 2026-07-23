@@ -12,7 +12,7 @@ import OptionDescription from '@/components/Search/OptionDescription';
 import DateRangeFilterInput from '@/components/Search/DateRangeFilterInput';
 import NumberRangeFilterInput from '@/components/Search/NumberRangeFilterInput';
 import EnumFilterInput from '@/components/Search/EnumFilterInput';
-import { formatDateBinKeyCompact } from '@/utils/rangeFilterUtils';
+import { formatDateBinKey } from '@/utils/rangeFilterUtils';
 
 export type FilterInputValue = { field: string | null; value: FilterValue };
 
@@ -69,9 +69,8 @@ const SearchFilterInput = ({
             f.options.map((o) => ({
               value: o,
               // Unauthenticated users pick date filters from a fixed list of bins rather than a range picker
-              // (see isRangeField below), so bin keys ("2021-01") need to be formatted here; use a compact
-              // "MMMYY" label since space in the checkbox/select list is tight.
-              label: f.definition.datatype === 'date' && o !== 'missing' ? formatDateBinKeyCompact(o, language) : t(o),
+              // (see isRangeField below), so bin keys ("2021-01") need to be formatted here.
+              label: f.definition.datatype === 'date' && o !== 'missing' ? formatDateBinKey(o, language) : t(o),
             })),
           ])
         )
