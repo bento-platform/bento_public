@@ -4,6 +4,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type {
   BentoCountEntity,
   BentoKatsuEntity,
+  ExportField,
   KatsuEntityCountsOrBooleans,
   ResultsDataEntity,
 } from '@/types/entities';
@@ -30,6 +31,7 @@ import { discoveryChartProcessingAndLocalStorage } from './discoveryChartProcess
 import { performKatsuDiscovery, STALE_DISCOVERY_REJECTION } from './performKatsuDiscovery.thunk';
 import { fetchSearchFields } from './fetchSearchFields.thunk';
 import { fetchDiscoveryMatches } from './fetchDiscoveryMatches.thunk';
+import { fetchDiscoveryMatchExportFields } from './fetchDiscoveryMatchExportFields.thunk';
 import { fetchDiscoveryUIHints } from './fetchDiscoveryUIHints.thunk';
 import { bentoKatsuEntityToResultsDataEntity, checkFiltersStatesEqual } from './utils';
 
@@ -78,6 +80,9 @@ export type QueryState = {
     experiment_result: QueryResultMatchData<DiscoveryMatchExperimentResult>;
   };
 
+  // export fields available per entity, cached once fetched
+  exportFields: Record<ResultsDataEntity, { status: RequestStatus; fields: ExportField[] | undefined }>;
+
   // UI hints
   uiHints: {
     status: RequestStatus;
@@ -92,6 +97,8 @@ const INITIAL_MATCH_DATA_STATE = {
   matches: undefined,
   invalid: false,
 };
+
+const INITIAL_EXPORT_FIELDS_STATE = { status: RequestStatus.Idle, fields: undefined };
 
 const initialState: QueryState = {
   defaultLayout: [],
@@ -124,6 +131,13 @@ const initialState: QueryState = {
     biosample: INITIAL_MATCH_DATA_STATE,
     experiment: INITIAL_MATCH_DATA_STATE,
     experiment_result: INITIAL_MATCH_DATA_STATE,
+  },
+  // ----
+  exportFields: {
+    phenopacket: INITIAL_EXPORT_FIELDS_STATE,
+    biosample: INITIAL_EXPORT_FIELDS_STATE,
+    experiment: INITIAL_EXPORT_FIELDS_STATE,
+    experiment_result: INITIAL_EXPORT_FIELDS_STATE,
   },
   // ----
   uiHints: {
@@ -361,6 +375,17 @@ const query = createSlice({
       state.matchData[bentoKatsuEntityToResultsDataEntity(meta.arg)].status = RequestStatus.Rejected;
     });
     // -----
+    builder.addCase(fetchDiscoveryMatchExportFields.pending, (state, { meta }) => {
+      state.exportFields[meta.arg].status = RequestStatus.Pending;
+    });
+    builder.addCase(fetchDiscoveryMatchExportFields.fulfilled, (state, { meta, payload }) => {
+      state.exportFields[meta.arg].status = RequestStatus.Fulfilled;
+      state.exportFields[meta.arg].fields = payload;
+    });
+    builder.addCase(fetchDiscoveryMatchExportFields.rejected, (state, { meta }) => {
+      state.exportFields[meta.arg].status = RequestStatus.Rejected;
+    });
+    // -----
     builder.addCase(fetchDiscoveryUIHints.pending, (state) => {
       state.uiHints.status = RequestStatus.Pending;
     });
@@ -393,5 +418,5 @@ export const {
   setMatchesPageSize,
   resetAllQueryState,
 } = query.actions;
-export { performKatsuDiscovery, fetchSearchFields, fetchDiscoveryUIHints };
+export { performKatsuDiscovery, fetchSearchFields, fetchDiscoveryMatchExportFields, fetchDiscoveryUIHints };
 export default query.reducer;

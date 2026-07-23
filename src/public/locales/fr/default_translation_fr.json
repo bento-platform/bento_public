@@ -70,8 +70,11 @@
     "showing_entities": "Affichage des {{entity, lowercase}} {{start}}-{{end}} sur {{total}}",
     "showing_entities_short": "{{start}}-{{end}} / {{total}}",
     "manage_columns": "Gérer les colonnes",
-    "export_csv": "Exporter en CSV",
+    "export": "Exporter",
+    "export_data": "Exporter les données",
+    "select_all_fields": "Tout sélectionner",
     "csv": "CSV",
+    "xlsx": "XLSX",
     "fts": {
       "plain": "Mot",
       "plain_help": "Récupère les enregistrements qui correspondent exactement aux mots de la requête (sans distinction de casse).",
