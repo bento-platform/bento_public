@@ -45,7 +45,7 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
             label={facet.id === 'statuses' ? t(statusTranslationKey(value)) : value}
             count={count}
             selected={selected}
-            onClick={() => onToggleValue(value)}
+            onChange={() => onToggleValue(value)}
           />
         ))}
       </div>
