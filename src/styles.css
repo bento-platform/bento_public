@@ -969,10 +969,6 @@ body {
 
 /* BEGIN overview */
 
-.overview-description {
-  max-width: min(var(--content-max-width), calc(74ch + 2 * var(--ant-card-body-padding)))
-}
-
 .count-card {
   min-width: 150px;
   transition:
