@@ -1252,6 +1252,13 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   }
 }
 
+@media (max-width: 1600px) {
+  /* Same breakpoint as Ant xxxl -> xxl as of Ant 6.3.0 */
+  :root {
+    --content-padding-h: 36px;
+  }
+}
+
 @media (max-width: 1200px) {
   /* Same breakpoint as Ant xxl -> xl */
   :root {
