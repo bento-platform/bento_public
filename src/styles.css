@@ -1274,10 +1274,16 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   }
 }
 
+/* 14" MacBook Pro width */
+@media (max-width: 1512px) {
+  :root {
+    --content-padding-h: 24px;
+  }
+}
+
 @media (max-width: 1200px) {
   /* Same breakpoint as Ant xxl -> xl */
   :root {
-    --content-padding-h: 24px;
     --scoped-title-breadcrumb-font-size: 1.1rem;
   }
 }
