@@ -53,8 +53,10 @@
     "source": "Source",
     "copy": "Copier",
     "copied": "Copié",
+    "show": "Afficher",
     "show_less": "Afficher moins",
-    "show_more": "Afficher plus"
+    "show_more": "Afficher plus",
+    "hide": "Masquer"
   },
   "navigation": {
     "nav_cap": {

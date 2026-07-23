@@ -48,8 +48,10 @@
     "source": "Source",
     "copy": "Copy",
     "copied": "Copied",
+    "show": "Show",
     "show_less": "Show less",
-    "show_more": "Show more"
+    "show_more": "Show more",
+    "hide": "Hide"
   },
   "navigation": {
     "nav_cap": {

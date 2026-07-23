@@ -80,7 +80,7 @@ const CountCardShowHide = memo(({ selected, onClear }: { selected: boolean; onCl
           transition: 'transform 0.15s ease-in-out',
         }}
       />{' '}
-      {t(selected ? 'HIDE' : 'SHOW')}
+      {t(selected ? 'general.hide' : 'general.show')}
     </div>
   );
 });

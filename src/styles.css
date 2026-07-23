@@ -1029,6 +1029,7 @@ body {
   width: 100%;
 
   text-align: center;
+  text-transform: uppercase;
   font-size: 12px;
 
   transition: bottom 0.3s ease-in-out;
