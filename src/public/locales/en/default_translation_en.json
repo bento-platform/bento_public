@@ -43,11 +43,29 @@
     "ontology_class": "Ontology Class",
     "view": "View",
     "url": "URL",
-    "extra_properties": "$t(Extra Properties)"
+    "extra_properties": "$t(Extra Properties)",
+    "type": "Type",
+    "source": "Source",
+    "copy": "Copy",
+    "copied": "Copied",
+    "show": "Show",
+    "show_less": "Show less",
+    "show_more": "Show more",
+    "hide": "Hide"
+  },
+  "navigation": {
+    "nav_cap": {
+      "sections": "Sections"
+    },
+    "invalid_endpoint_title": "Invalid Endpoint: /{{endpoint}}",
+    "invalid_endpoint_description": "The endpoint you are trying to access is not valid. Redirected to {{target}}.",
+    "not_available_title": "/{{endpoint}} Tab Not Available",
+    "not_available_description": "The requested tab is not available. Redirected to {{target}}."
   },
   "errors": {
     "project_fetch": "Error fetching $t(entities.project_other, lowercase)",
-    "search_fetch": "Error fetching search results"
+    "search_fetch": "Error fetching search results",
+    "page_not_found": "Page not found"
   },
   "search": {
     "filters_one": "filter",
@@ -477,7 +495,7 @@
     "study_type": "Study Type",
     "molecule": "Molecule",
     "molecule_ontology": "Molecule ($t(general.ontology_class))",
-    "library_id" : "Library ID",
+    "library_id": "Library ID",
     "library_description": "Library Description",
     "library_strategy": "Library Strategy",
     "library_source": "Library Source",
@@ -513,12 +531,6 @@
   },
   "auth": {
     "unauthorized_message": "You are not authorized to access this resource."
-  },
-  "phenopacket_view": {
-    "invalid_endpoint_title": "Invalid Endpoint: /{{endpoint}}",
-    "invalid_endpoint_description": "The endpoint you are trying to access is not valid. Redirected to {{target}}.",
-    "not_available_title": "/{{endpoint}} Tab Not Available",
-    "not_available_description": "The requested tab is not available. Redirected to {{target}}."
   },
   "table": {
     "invalid_row_keys_title": "Invalid Row Reference",
@@ -580,12 +592,61 @@
       "empty": "No datasets match your filters",
       "reset_filters": "Clear all filters",
       "expand": "more"
+    }
+  },
+  "provenance": {
+    "sections": {
+      "summary": "Summary",
+      "links": "Links",
+      "primary_contact": "Primary Contact",
+      "stakeholders": "Stakeholders",
+      "publications": "Publications",
+      "funding": "Funding",
+      "access": "Access & License",
+      "spatial": "Spatial Coverage",
+      "criteria": "Participant Criteria",
+      "counts": "$t(Counts)",
+      "identifiers": "Identifiers & Technical"
+    },
+    "context": {
+      "clinical": "Clinical",
+      "research": "Research"
+    },
+    "link_type": {
+      "Downloadable Artifact": "Downloadable Artifact",
+      "Data Management Plan": "Data Management Plan",
+      "Schema": "Schema",
+      "External Reference": "External Reference",
+      "Data Access": "Data Access",
+      "Data Request Form": "Data Request Form"
     },
     "status": {
       "ongoing": "Ongoing",
       "completed": "Completed",
       "unassigned": "Unassigned"
-    }
+    },
+    "domain": "Domain",
+    "grant_number_one": "Grant Number",
+    "grant_number_other": "Grant Numbers",
+    "keywords": "Keywords",
+    "license": "License",
+    "modified": "Modified",
+    "namespace_prefix": "Namespace prefix",
+    "ontology_resources": "Ontology resources",
+    "organization": "Organization",
+    "person": "Person",
+    "privacy": "Privacy",
+    "program_name": "Program name",
+    "project_id": "Project ID",
+    "protocol": "Protocol",
+    "released": "Released",
+    "repository": "Repository",
+    "schema_version": "Schema version",
+    "study_context": "Study context",
+    "study_status": "Study status",
+    "taxa": "Taxa",
+    "version": "Version",
+    "view_publication": "View publication"
   },
   "pcgl": {
     "banner": {

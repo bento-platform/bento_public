@@ -48,11 +48,29 @@
     "ontology_class": "Classe ontologique",
     "actions": "Actions",
     "view": "Afficher",
-    "url": "URL"
+    "url": "URL",
+    "type": "Type",
+    "source": "Source",
+    "copy": "Copier",
+    "copied": "Copié",
+    "show": "Afficher",
+    "show_less": "Afficher moins",
+    "show_more": "Afficher plus",
+    "hide": "Masquer"
+  },
+  "navigation": {
+    "nav_cap": {
+      "sections": "Sections"
+    },
+    "invalid_endpoint_title": "Point de terminaison invalide : /{{endpoint}}",
+    "invalid_endpoint_description": "Le point de terminaison que vous essayez d’accéder n’est pas valide. Redirigé vers {{target}}.",
+    "not_available_title": "Onglet /{{endpoint}} non disponible",
+    "not_available_description": "Les onglets demandés ne sont pas disponibles. Redirigé vers {{target}}."
   },
   "errors": {
     "project_fetch": "Erreur lors du chargement des $t(entities.project_other, lowercase)",
-    "search_fetch": "Erreur lors du chargement des résultats de recherche"
+    "search_fetch": "Erreur lors du chargement des résultats de recherche",
+    "page_not_found": "Page introuvable"
   },
   "search": {
     "filters_one": "filtre",
@@ -212,12 +230,61 @@
       "no_results": "Aucun jeu de données ne correspond à vos filtres",
       "clear_filters": "Effacer tous les filtres",
       "expand": "plus"
+    }
+  },
+  "provenance": {
+    "sections": {
+      "summary": "Résumé",
+      "links": "Liens",
+      "primary_contact": "Contact principal",
+      "stakeholders": "Intervenants",
+      "publications": "Publications",
+      "funding": "Financement",
+      "access": "Accès et licence",
+      "spatial": "Couverture géographique",
+      "criteria": "Critères de participation",
+      "counts": "$t(Counts)",
+      "identifiers": "Identifiants et informations techniques"
+    },
+    "context": {
+      "clinical": "Clinique",
+      "research": "Recherche"
+    },
+    "link_type": {
+      "Downloadable Artifact": "Artéfact téléchargeable",
+      "Data Management Plan": "Plan de gestion des données",
+      "Schema": "Schéma",
+      "External Reference": "Référence externe",
+      "Data Access": "Accès aux données",
+      "Data Request Form": "Formulaire de demande de données"
     },
     "status": {
       "ongoing": "En cours",
       "completed": "Complété",
       "unassigned": "Non assigné"
-    }
+    },
+    "domain": "Domaine",
+    "grant_number_one": "Numéro de subvention",
+    "grant_number_other": "Numéros de subventions",
+    "keywords": "Mots-clés",
+    "license": "Licence",
+    "modified": "Modifié",
+    "namespace_prefix": "Préfixe d'espace de noms",
+    "ontology_resources": "Ressources ontologiques",
+    "organization": "Organisation",
+    "person": "Individu",
+    "privacy": "Confidentialité",
+    "program_name": "Nom du programme",
+    "project_id": "Identifiant du projet",
+    "protocol": "Protocole",
+    "released": "Publié",
+    "repository": "Dépôt",
+    "schema_version": "Version du schéma",
+    "study_context": "Contexte de l'étude",
+    "study_status": "Statut de l'étude",
+    "taxa": "Taxons",
+    "version": "Version",
+    "view_publication": "Voir la publication"
   },
   "Back to project": "Retourner au $t(entities.project_one, lowercase)",
   "Back to dataset": "Retourner au $t(entities.dataset_one, lowercase)",
@@ -558,12 +625,6 @@
   },
   "auth": {
     "unauthorized_message": "Vous n'êtes pas autorisé à accéder à cette ressource."
-  },
-  "phenopacket_view": {
-    "invalid_endpoint_title": "Point de terminaison invalide : /{{endpoint}}",
-    "invalid_endpoint_description": "Le point de terminaison que vous essayez d’accéder n’est pas valide. Redirigé vers {{target}}.",
-    "not_available_title": "Onglet /{{endpoint}} non disponible",
-    "not_available_description": "Les onglets demandés ne sont pas disponibles. Redirigé vers {{target}}."
   },
   "table": {
     "invalid_row_keys_title": "Référence de ligne invalide",

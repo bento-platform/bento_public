@@ -1,6 +1,6 @@
-import { useCallback, useMemo, useState } from 'react';
-import { Flex, FloatButton, Tabs, type TabsProps } from 'antd';
-import { AppstoreAddOutlined, FileTextOutlined, SolutionOutlined } from '@ant-design/icons';
+import { useCallback, useState } from 'react';
+import { Flex, FloatButton } from 'antd';
+import { AppstoreAddOutlined } from '@ant-design/icons';
 
 import clsx from 'clsx';
 import { convertSequenceAndDisplayData, generateLSChartDataKey, saveValue } from '@/utils/localStorage';
@@ -9,21 +9,22 @@ import type { Sections } from '@/types/data';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 
 import { WAITING_STATES } from '@/constants/requests';
+import { BentoRoute } from '@/types/routes';
 
-import AboutBox from './AboutBox';
+import OverviewDescription from './OverviewDescription';
 import OverviewSection from './OverviewSection';
 import OverviewDatasets from './OverviewDatasets';
 import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
 import CountsAndResults from './CountsAndResults';
 import LastIngestionInfo from './LastIngestion';
-import DatasetProvenance from '@/components/Provenance/DatasetProvenance';
+import ActiveFilterTags from '@/components/Util/ActiveFilterTags';
 
 import { useTranslationFn } from '@/hooks';
 import { useSearchRouterAndHandler } from '@/hooks/useSearchRouterAndHandler';
-import { useSelectedDataset, useSelectedProject, useSelectedScope, useScopeHasData } from '@/features/metadata/hooks';
+import { useSelectedProject, useSelectedScope, useScopeHasData } from '@/features/metadata/hooks';
 import { useActiveFilterPills, useSearchQuery, useSearchableFields } from '@/features/search/hooks';
-import { useIsInCatalogueMode } from '@/hooks/navigation';
-import ActiveFilterTags from '@/components/Util/ActiveFilterTags';
+import { useIsInCatalogueMode, useNavigateToSameScopeUrl } from '@/hooks/navigation';
+import { useNotify } from '@/hooks/notifications';
 
 const saveScopeOverviewToLS = (scope: DiscoveryScope, sections: Sections) => {
   saveValue(generateLSChartDataKey(scope), convertSequenceAndDisplayData(sections));
@@ -34,10 +35,13 @@ const OverviewChartDashboard = () => {
 
   const [drawerVisible, setDrawerVisible] = useState(false);
 
-  const { scope } = useSelectedScope();
+  const { scope, scopeSet } = useSelectedScope();
   const selectedProject = useSelectedProject();
-  const selectedDataset = useSelectedDataset();
   const catalogueMode = useIsInCatalogueMode();
+  const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
+
+  const notify = useNotify();
+  const [hasNotified, setHasNotified] = useState(false);
 
   // This is essentially a large effect hook with a few dependencies, which processes (and rewrites if needed) the query
   // URL and dispatches discovery actions for fetching overview/query response data.
@@ -48,13 +52,7 @@ const OverviewChartDashboard = () => {
   // Lazy-loading hooks means this is loaded only if OverviewChartDashboard is rendered:
   const searchableFields = useSearchableFields();
 
-  const scopeHasData = useScopeHasData();
   const { pills, clearAll } = useActiveFilterPills();
-
-  // If we have no entities with data confirmed, don't bother showing charts (or last ingested details)
-  const displayedSections = scopeHasData
-    ? sections.filter(({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1)
-    : [];
 
   const onManageChartsOpen = useCallback(() => setDrawerVisible(true), []);
   const onManageChartsClose = useCallback(() => {
@@ -63,40 +61,35 @@ const OverviewChartDashboard = () => {
     saveScopeOverviewToLS(scope, sections);
   }, [scope, sections]);
 
+  const scopeHasData = useScopeHasData();
+
   // ---
 
-  const [pageTab, setPageTab] = useState('about');
-
-  const pageTabItems: TabsProps['items'] = useMemo(
-    () => [
-      { key: 'about', label: t('About'), icon: <FileTextOutlined /> },
-      ...(scope.dataset ? [{ key: 'provenance', label: t('Provenance'), icon: <SolutionOutlined /> }] : []),
-    ],
-    [t, scope.dataset]
-  );
+  // If we don't have any data to display, redirect to the provenance page - behaving as basically a 'metadata-only'
+  // display. This is primarily for some kind of possible 'metadata-only' mode where we don't ingest any data.
+  if (scopeSet && !scopeHasData && scope.dataset) {
+    if (!hasNotified) {
+      notify.error({
+        message: t('navigation.not_available_title', { endpoint: BentoRoute.Overview }),
+        description: t('navigation.not_available_description', { target: BentoRoute.Provenance }),
+      });
+      setHasNotified(true);
+    }
+    navigateToSameScopeUrl(BentoRoute.Provenance, true);
+    return null;
+  }
 
   const loadingNewData = WAITING_STATES.includes(discoveryStatus);
+  const displayedSections = sections.filter(({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1);
 
   return (
     <>
       <Flex vertical={true} gap={24} className={clsx('container', { 'margin-auto': !scopeHasData })}>
-        <div className="dashboard-tabs">
-          {pageTabItems.length > 1 && (
-            <Tabs
-              type="card"
-              size="large"
-              activeKey={pageTab}
-              onChange={setPageTab}
-              items={pageTabItems}
-              id="dashboard-tabs"
-              tabBarStyle={{ marginBottom: -1, zIndex: 1 }}
-            />
-          )}
-          {pageTab === 'about' ? <AboutBox /> : null}
-          {pageTab === 'provenance' && selectedDataset ? (
-            <DatasetProvenance dataset={selectedDataset} showTitle={false} />
-          ) : null}
-        </div>
+        {/*
+            Show a general description of the current scope, pulled from the about content (instance-level), the project
+            description, or the dataset long description (falling back to the short description.)
+        */}
+        <OverviewDescription />
 
         <ActiveFilterTags pills={pills} onClearAll={clearAll} tagClassName="overview-filter-tag" />
 
@@ -122,21 +115,19 @@ const OverviewChartDashboard = () => {
           </div>
         ))}
 
-        {scopeHasData && !catalogueMode && <LastIngestionInfo />}
+        {!catalogueMode && <LastIngestionInfo />}
       </Flex>
 
       <ManageChartsDrawer onManageDrawerClose={onManageChartsClose} manageDrawerVisible={drawerVisible} />
 
       <FloatButton.Group className="float-btn-pos">
         <FloatButton.BackTop target={() => document.getElementById('content-layout')!} />
-        {scopeHasData && (
-          <FloatButton
-            type="primary"
-            icon={<AppstoreAddOutlined rotate={270} />}
-            tooltip={t('Manage Charts')}
-            onClick={onManageChartsOpen}
-          />
-        )}
+        <FloatButton
+          type="primary"
+          icon={<AppstoreAddOutlined rotate={270} />}
+          tooltip={t('Manage Charts')}
+          onClick={onManageChartsOpen}
+        />
       </FloatButton.Group>
     </>
   );

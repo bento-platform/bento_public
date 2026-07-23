@@ -49,7 +49,7 @@ const Catalogue = () => {
   return (
     <div className="pb-content max-w-catalogue mx-auto w-full">
       {projectsStatus === RequestStatus.Rejected && (
-        <Error message="project_fetch" description={projectsError || undefined} />
+        <Error message="project_fetch" description={projectsError || undefined} className="mb-4" />
       )}
 
       {/* Banner */}

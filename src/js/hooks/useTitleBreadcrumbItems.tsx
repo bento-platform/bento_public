@@ -46,8 +46,8 @@ export const useTitleBreadcrumbItems = (): BreadcrumbItemType[] => {
       // If we have a dataset selected, and we don't have just a single project+dataset, we should show the dataset
       // context in the navigation.
       if (scope.project && fixedProject) {
-        // If we additionally have a fixed project, we can "anchor" the dataset visually vs. the root page (which isn't
-        // the catalogue, but rather the project) using a home icon:
+        // If we additionally have a fixed project, we can "anchor" the dataset visually vs. the root page using a
+        // home icon/link:
         items.push({
           title: <HomeOutlined />,
           path: `/${language}/`,
@@ -60,7 +60,7 @@ export const useTitleBreadcrumbItems = (): BreadcrumbItemType[] => {
     }
 
     // We treat the overview as the "default" page, meaning we won't show the page name in the breadcrumb bar.
-    if (currentPage !== BentoRoute.Overview) {
+    if (currentPage === BentoRoute.BeaconNetwork || currentPage === BentoRoute.Phenopackets) {
       items.push({ title: currentPageTitle });
     }
 
