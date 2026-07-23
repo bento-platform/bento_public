@@ -13,12 +13,9 @@ const FilterChip = ({ label, count, selected, disabled, onClick }: FilterChipPro
   const id = useId();
 
   return (
-    <label
-      htmlFor={id}
-      className={clsx('fchip', selected && 'fchip--on')}
-    >
+    <label htmlFor={id} className={clsx('fchip', selected && 'fchip--on')}>
       <input
-        className='fchip__input'
+        className="fchip__input"
         id={id}
         type="checkbox"
         checked={selected}
@@ -28,7 +25,7 @@ const FilterChip = ({ label, count, selected, disabled, onClick }: FilterChipPro
       <span className="fchip__label">{label}</span>
       <span className="fchip__count">{count}</span>
     </label>
-  )
+  );
 };
 
 export default FilterChip;
