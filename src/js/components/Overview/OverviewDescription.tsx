@@ -20,7 +20,7 @@ const OverviewDescription = () => {
   }
 
   return (
-    <Card className="overview-description shadow rounded-xl">
+    <Card className="overview-description shadow rounded-xl distinguished">
       {selectedDataset ? (
         <DatasetDescription dataset={selectedDataset} />
       ) : selectedProject ? (

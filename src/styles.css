@@ -164,6 +164,20 @@ body {
   color: #f5222d;  /* https://ant.design/docs/spec/colors red-6 */
 }
 
+/* For distinguished cards/block elements -- a little flair on the left-hand side.
+   e.g., provenance header, dataset/project descriptions */
+.distinguished {
+  overflow: hidden;
+}
+.distinguished::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+  background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--ant-color-primary), black 30%),
+      color-mix(in srgb, var(--ant-color-primary), black 20%)
+  );
+}
+
 .visually-hidden {
   /*
   For accessibility; visually hidden but available to screen readers. Taken from Bootstrap.
@@ -1362,14 +1376,6 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   position: relative; flex: none;
   padding: 22px 26px 16px;
   border-bottom: 1px solid var(--pm-border);
-}
-.pm-head::before {
-  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
-  background: linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--pm-primary), black 30%),
-      color-mix(in srgb, var(--pm-primary), black 20%)
-  );
 }
 .pm-head-top { display: flex; gap: 14px; align-items: flex-start; }
 .pm-head-mark {

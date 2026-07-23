@@ -16,7 +16,7 @@ type ModalHeaderProps = {
 const ProvenanceHeader = ({ dataset, copiedKey, onCopy }: ModalHeaderProps) => {
   const t = useTranslationFn();
   return (
-    <div className="pm-head">
+    <div className="pm-head distinguished">
       <div className="pm-head-top">
         <div className="pm-head-mark">
           <FileDoneOutlined />
