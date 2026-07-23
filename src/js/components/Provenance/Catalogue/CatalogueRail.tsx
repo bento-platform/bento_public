@@ -39,14 +39,18 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
 
   return (
     <SidebarFacet label={t(`catalogue.facets.${facet.id}`)} collapsed={collapsed} onToggleCollapse={onToggleCollapse}>
-      <div className={clsx('facet-chips', facet.scroll && 'facet-chips--scroll')}>
+      <div
+        className={clsx('facet-chips', facet.scroll && 'facet-chips--scroll')}
+        role="region"
+        aria-labelledby={t(`catalogue.facets.${facet.id}`)}
+      >
         {options.map(({ value, count, selected }) => (
           <FilterChip
             key={value}
             label={facet.id === 'statuses' ? t(statusTranslationKey(value)) : value}
             count={count}
             selected={selected}
-            onClick={() => onToggleValue(value)}
+            onChange={() => onToggleValue(value)}
           />
         ))}
       </div>

@@ -26,14 +26,16 @@ export const SidebarFacet = ({
   children: ReactNode;
 }) => (
   <div className={'sidebar-facet' + (collapsed ? ' sidebar-facet--collapsed' : '')}>
-    <button className="facet-head" onClick={onToggleCollapse}>
-      <span className="facet-head__label">{label}</span>
-      {collapsed ? (
-        <CaretRightOutlined className="facet-head__icon" />
-      ) : (
-        <CaretDownOutlined className="facet-head__icon" />
-      )}
-    </button>
+    <Typography.Title level={4}>
+      <button className="facet-head" onClick={onToggleCollapse} aria-expanded={!collapsed} id={label}>
+        <span className="facet-head__label">{label}</span>
+        {collapsed ? (
+          <CaretRightOutlined className="facet-head__icon" aria-hidden="true" />
+        ) : (
+          <CaretDownOutlined className="facet-head__icon" aria-hidden="true" />
+        )}
+      </button>
+    </Typography.Title>
     {!collapsed && children}
   </div>
 );
