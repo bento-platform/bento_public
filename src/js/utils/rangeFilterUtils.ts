@@ -1,12 +1,6 @@
-import dayjs from 'dayjs';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
-
-dayjs.extend(customParseFormat);
-
 export const RANGE_RE = /^([[(])([^,]*),([^,]*)([\])])$/;
 export const COMPARISON_RE = /^([<>]|[≥≤])\s*(.+)$/;
 export const DATE_FORMAT = 'YYYY-MM-DD';
-const DATE_BIN_FORMAT = 'MMM YYYY';
 
 export type RangeState = { lowerStr: string; upperStr: string; lowerOpen: boolean; upperOpen: boolean };
 
@@ -27,14 +21,9 @@ export const parseBrackets = (value: string | null): RangeState => {
   return EMPTY_RANGE;
 };
 
-/** Converts a "MMM YYYY" date bin label (e.g. "Jan 2026") to a closed monthly range string, or null if unparseable. */
-export const parseDateBinAsRange = (value: string): string | null => {
-  const d = dayjs(value, DATE_BIN_FORMAT, true);
-  if (!d.isValid()) return null;
-  const start = d.startOf('month').format(DATE_FORMAT);
-  const end = d.endOf('month').format(DATE_FORMAT);
-  return `[${start},${end}]`;
-};
+/** Formats a "yyyy-mm" date bin key (e.g. "2021-01") for display in the given language, e.g. "Jan 2021" / "janv. 2021". */
+export const formatDateBinKey = (key: string, language: string): string =>
+  new Date(key).toLocaleString(language, { year: 'numeric', month: 'short' });
 
 export const buildRangeString = (
   lowerStr: string,

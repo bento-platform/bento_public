@@ -15,6 +15,8 @@ import { SUPPORTED_LNGS } from '@/constants/configConstants';
 import { ConfigProvider } from 'antd';
 import enUS from 'antd/locale/en_US';
 import frCA from 'antd/locale/fr_CA';
+import dayjs from 'dayjs';
+import 'dayjs/locale/fr-ca';
 import { ChartConfigProvider } from 'bento-charts';
 import Loader from '@/components/Loader';
 import BentoAppRouter from '@/components/BentoAppRouter';
@@ -56,6 +58,12 @@ const BaseRoutes = () => {
 const RootApp = () => {
   const { i18n } = useTranslation();
   const antdLocale = i18n.language === SUPPORTED_LNGS.FRENCH ? frCA : enUS;
+
+  // antd's ConfigProvider locale only translates UI text (buttons, placeholders); the DatePicker's
+  // month/day names come from dayjs's own locale, which must be set separately or it stays English.
+  useEffect(() => {
+    dayjs.locale(i18n.language === SUPPORTED_LNGS.FRENCH ? 'fr-ca' : 'en');
+  }, [i18n.language]);
 
   // TODO: Remove this in the future (v20?), once we are sure no one is using the old localStorage key
   useEffect(() => {

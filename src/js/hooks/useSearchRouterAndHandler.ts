@@ -44,7 +44,6 @@ import {
 } from '@/features/search/query.store';
 
 import { buildQueryParamsUrl, filtersStateToQueryParamEntries, queryParamsWithoutKey } from '@/features/search/utils';
-import { parseDateBinAsRange } from '@/utils/rangeFilterUtils';
 import { getCurrentPage } from '@/utils/router';
 
 // Internal type for useSearchRouterAndHandler hook
@@ -104,14 +103,13 @@ export const useSearchRouterAndHandler = () => {
         const isComparison = /^([<>]|[≥≤])\s*-?\d+(\.\d+)?$/.test(value);
         return isRange || isComparison ? [field, true, value] : [field, false];
       }
-      // Date fields accept a range string, a single-sided comparison, or a bin label
-      // (e.g. "Jan 2026" from a chart click) converted to a range.
+      // Date fields accept a range string, a single-sided comparison, or a raw "yyyy-mm" bin key
+      // (e.g. "2021-01" from a chart click).
       if (queryDataPerm && field.definition.datatype === 'date') {
         const isRange = /^([[(][^,]+,[^,]+[\])])$/.test(value);
         const isComparison = /^([<>]|[≥≤])\s*\d{4}-\d{2}-\d{2}$/.test(value);
-        if (isRange || isComparison) return [field, true, value];
-        const rangeStr = parseDateBinAsRange(value);
-        return rangeStr ? [field, true, rangeStr] : [field, false];
+        const isBinKey = /^\d{4}-\d{2}$/.test(value);
+        return isRange || isComparison || isBinKey ? [field, true, value] : [field, false];
       }
       return field.options.includes(value) ? [field, true, value] : [field, false];
     };
