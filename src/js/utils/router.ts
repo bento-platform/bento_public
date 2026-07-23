@@ -25,9 +25,10 @@ export const getCurrentPage = (location?: RouterLocation | Location): string => 
   const pageIdx = getPathPageIndex(pathArray);
   const pathPage = pathArray[pageIdx];
 
-  if (validPages.includes(pathPage)) {
+  if (pathPage && validPages.includes(pathPage)) {
     return pathPage;
-  } else if (pathPage === '') {
+  } else if (pathPage === '' || pathPage === undefined) {
+    // '/(p|d)/<uuid>/' or '/(p|d)/<uuid>'
     return BentoRoute.Overview;
   } else {
     // quasi-page used to indicate an unknown path
