@@ -151,7 +151,7 @@ export const useGetRouteTitleAndIcon = () => {
  */
 export const useSiteMenuItems = (): [MenuItem[], MenuItem[]] => {
   const t = useTranslationFn();
-  const { fixedProject, scope } = useSelectedScope();
+  const { fixedProject, fixedDataset, scope } = useSelectedScope();
   const location = useLocation();
   const page = getCurrentPage(location);
 
@@ -176,18 +176,20 @@ export const useSiteMenuItems = (): [MenuItem[], MenuItem[]] => {
     const topBarItems: MenuItem[] = [overviewItem];
     const scopeItems: MenuItem[] = [];
 
-    if (page !== BentoRoute.Phenopackets && page !== BentoRoute.BeaconNetwork) {
-      if (scopeHasData) {
-        scopeItems.push(overviewItem);
+    if (page !== BentoRoute.Phenopackets && (page !== BentoRoute.BeaconNetwork || fixedDataset)) {
+      const itemsRef = fixedDataset ? topBarItems : scopeItems;
+
+      if (scopeHasData && !fixedDataset) {
+        itemsRef.push(overviewItem);
       }
 
       if (BentoRoute.Beacon && scopeHasData) {
-        scopeItems.push(createMenuItem(BentoRoute.Beacon, ...getRouteTitleAndIcon(BentoRoute.Beacon)));
+        itemsRef.push(createMenuItem(BentoRoute.Beacon, ...getRouteTitleAndIcon(BentoRoute.Beacon)));
       }
 
       // TODO: can enable for project if we get a more extensive project model
       if (scope.dataset) {
-        scopeItems.push(createMenuItem(BentoRoute.Provenance, ...getRouteTitleAndIcon(BentoRoute.Provenance)));
+        itemsRef.push(createMenuItem(BentoRoute.Provenance, ...getRouteTitleAndIcon(BentoRoute.Provenance)));
       }
     }
 
@@ -196,5 +198,5 @@ export const useSiteMenuItems = (): [MenuItem[], MenuItem[]] => {
     }
 
     return [topBarItems, scopeItems] as [MenuItem[], MenuItem[]];
-  }, [getRouteTitleAndIcon, createMenuItem, scope, fixedProject, scopeHasData, page]);
+  }, [getRouteTitleAndIcon, createMenuItem, scope, fixedProject, fixedDataset, scopeHasData, page]);
 };
