@@ -176,7 +176,7 @@ export const useSiteMenuItems = (): [MenuItem[], MenuItem[]] => {
     const topBarItems: MenuItem[] = [overviewItem];
     const scopeItems: MenuItem[] = [];
 
-    if (page !== BentoRoute.Phenopackets) {
+    if (page !== BentoRoute.Phenopackets && page !== BentoRoute.BeaconNetwork) {
       if (scopeHasData) {
         scopeItems.push(overviewItem);
       }
