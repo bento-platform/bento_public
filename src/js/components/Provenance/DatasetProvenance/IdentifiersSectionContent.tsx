@@ -39,7 +39,12 @@ const IdentifiersSectionContent = ({ dataset, copiedKey, onCopy }: IdentifiersSe
     },
     {
       label: t('provenance.project_id'),
-      value: dataset.project,
+      value: (
+        <>
+          {dataset.project}{' '}
+          <CopyButton value={dataset.project} id={`project-${dataset.project}`} copiedKey={copiedKey} onCopy={onCopy} />
+        </>
+      ),
       valueClassName: 'mono',
     },
   ];
