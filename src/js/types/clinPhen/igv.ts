@@ -1,5 +1,5 @@
 import type { Tracks, TrackLoad, CreateOpt, ReferenceGenome } from 'igv';
-import { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
+import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
 
 export type TrackFormats =
   | Tracks.AlignmentFormat

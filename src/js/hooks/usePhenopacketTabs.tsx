@@ -29,7 +29,7 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
   );
 
   const experimentResults = phenopacket ? phenopacketExperimentResults(phenopacket) : [];
-  const tracks = viewableTracks(experimentResults)
+  const tracks = viewableTracks(experimentResults);
   const requestedAssemblies = assemblyIdsForExperiments(tracks);
   const referencesById = useBentoOrIgvReferencesById(requestedAssemblies);
 
@@ -70,7 +70,7 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
       },
     ];
     return allItems.filter((item) => !item.disabled);
-  }, [phenopacket, t, tracks, referencesById]);
+  }, [phenopacket, t, tracks, referencesById, attemptedCanDownload, canDownload]);
 
   const activeTabs = useMemo(() => {
     return items.map((item) => item.key as TabKeys);

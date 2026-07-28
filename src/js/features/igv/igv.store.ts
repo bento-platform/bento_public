@@ -6,7 +6,7 @@ import type { RootState } from '@/store';
 import { RequestStatus } from '@/types/requests';
 import { printAPIError } from '@/utils/error.util';
 
-import { IgvReferenceDetails } from '@/types/clinPhen/igv';
+import type { IgvReferenceDetails } from '@/types/clinPhen/igv';
 
 const storeName = 'igv';
 

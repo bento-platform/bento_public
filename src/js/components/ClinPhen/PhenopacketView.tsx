@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Button, Empty, Space, Tabs } from 'antd';
 import { CompressOutlined, DownloadOutlined, ExpandOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -56,33 +56,6 @@ const PhenopacketView = () => {
       description: t('phenopacket_view.not_available_description', notificationFillIns),
     });
   }, [api, t, notificationFillIns]);
-
-  useEffect(() => {
-    if (status === RequestStatus.Fulfilled && phenopacket) {
-      if (tab && activeTabs.includes(tab as TabKeys)) {
-        setActiveKey(tab as TabKeys);
-      } else {
-        if (tab && Object.values(TabKeys).includes(tab as TabKeys)) {
-          notAvailableRedirectNotification();
-        } else if (tab && !['', '/'].includes(tab)) {
-          // Don't show a notification if we have some variation of an empty current tab; just redirect to the default.
-          // Otherwise, show an invalid tab notification:
-          invalidEndpointRedirectNotification();
-        }
-        navigate(`${tab ? '..' : '.'}/${defaultTabKey}`, { relative: 'path', replace: true });
-      }
-    }
-  }, [
-    navigate,
-    tab,
-    status,
-    phenopacket,
-    activeTabs,
-    defaultTabKey,
-    invalidEndpointRedirectNotification,
-    notAvailableRedirectNotification,
-    api,
-  ]);
 
   const biosamples = phenopacket?.biosamples ?? [];
 

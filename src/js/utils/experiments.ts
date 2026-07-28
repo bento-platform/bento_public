@@ -3,7 +3,6 @@ import type { Phenopacket } from '@/types/clinPhen/phenopacket';
 import type { Experiment } from '@/types/clinPhen/experiments/experiment';
 import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
 import type { Genome } from '@/features/reference/types';
-import { viewableFormatsLower } from './igv';
 // import { useReference } from '@/features/reference/hooks';
 // import { Genome } from '@/features/reference/types';
 
@@ -98,8 +97,6 @@ export const phenopacketExperimentResults = (p: Phenopacket): ExperimentResult[]
 
   return Object.values(experimentResults);
 };
-
-export const experimentResults = (experiments: Experiment[]) => {};
 
 export const assemblyIdsForExperiments = (experiments: ExperimentResult[]): string[] => [
   ...new Set(experiments.map((e) => e.genome_assembly_id as string)),

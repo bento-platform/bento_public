@@ -2,7 +2,7 @@ import { store } from '@/store';
 import { RequestStatus } from '@/types/requests';
 
 import { getDrsRecord } from '@/features/drs/getDrsRecord.thunk';
-import { DrsRecord } from './types';
+import type { DrsRecord } from './types';
 
 export const getDrsAccessMethods = async (url: string | undefined): Promise<string | null> => {
   return getDrsObjectOrPassThrough(url).then(

@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { useReference } from '@/features/reference/hooks';
 import { useAppSelector } from '@/hooks';
-import { assemblyIdsForExperiments } from '@/utils/experiments';
 import { viewableFormatsLower } from '@/utils/igv';
 import { caseInsensitiveObjectAccess } from '@/utils/objects';
 import type { CreateOpt } from 'igv';
@@ -24,7 +23,7 @@ const IGV_JS_ANNOTATION_ALIASES = {
 // get references in IGV format, preferring ones from bento when present
 export const useBentoOrIgvReferencesById = (requestedReferenceIds: string[]): IgvReferenceById => {
   const { genomesStatus: bentoGenomeStatus, genomesByID: bentoReferenceGenomes } = useReference();
-  const { igvGenomesStatus, igvGenomesByID } = useIgvReference();
+  const {igvGenomesByID } = useIgvReference();
 
   return useMemo(() => {
     if (bentoGenomeStatus !== RequestStatus.Fulfilled) return {};
@@ -86,7 +85,7 @@ export const useBentoOrIgvReferencesById = (requestedReferenceIds: string[]): Ig
     });
 
     return availableReferences;
-  }, [requestedReferenceIds, bentoGenomeStatus, bentoReferenceGenomes, igvGenomesStatus, igvGenomesByID]);
+  }, [requestedReferenceIds, bentoGenomeStatus, bentoReferenceGenomes, igvGenomesByID]);
 };
 
 // file is viewable if it's ingested and a viewable track type

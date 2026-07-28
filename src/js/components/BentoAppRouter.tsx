@@ -176,7 +176,7 @@ const BentoAppRouter = () => {
     dispatch(makeGetAboutRequest());
     dispatch(makeGetServiceInfoRequest());
     dispatch(getGenomes());
-    dispatch(getIgvGenomes()) // or could do this conditionally elsewhere
+    dispatch(getIgvGenomes()); // or could do this conditionally elsewhere
   }, [dispatch]);
 
   useEffect(() => {
