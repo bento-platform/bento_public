@@ -1554,8 +1554,8 @@ button.pm-sec-head { cursor: pointer; }
   letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); line-height: 1.3;
 }
 .pm-link-tile-label {
-  display: block; font-size: var(--p-fs-normal); font-weight: 500; color: var(--text-primary);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px;
+  display: -webkit-box; font-size: var(--p-fs-normal); font-weight: 500; color: var(--text-primary);
+  overflow: hidden; -webkit-line-clamp: 2; -webkit-box-orient: vertical; margin-top: 1px;
 }
 .pm-link-tile-ext { flex: none; font-size: var(--p-fs-small); color: var(--text-muted); transition: color 0.15s; }
 .pm-link-tile:hover .pm-link-tile-ext { color: var(--pm-primary); }
