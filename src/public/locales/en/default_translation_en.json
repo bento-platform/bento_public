@@ -64,8 +64,11 @@
     "showing_entities": "Showing {{entity, lowercase}} {{start}}-{{end}} of {{total}}",
     "showing_entities_short": "{{start}}-{{end}} / {{total}}",
     "manage_columns": "Manage Columns",
-    "export_csv": "Export as CSV",
+    "export": "Export",
+    "export_data": "Export Data",
+    "select_all_fields": "Select all",
     "csv": "CSV",
+    "xlsx": "XLSX",
     "fts": {
       "plain": "Word",
       "plain_help": "Retrieves records which exactly match words in the query (case-insensitive).",
