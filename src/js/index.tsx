@@ -80,6 +80,7 @@ const RootApp = () => {
               <ConfigProvider
                 locale={antdLocale}
                 theme={{
+                  cssVar: { key: 'bento-theme' },
                   components: {
                     Button: { algorithm: !PCGL_MODE },
                     Menu: { iconSize: 20 },

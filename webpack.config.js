@@ -4,6 +4,7 @@ const path = require('path');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { EnvironmentPlugin } = require('webpack');
 
 const createServiceInfo = require('./create_service_info');
@@ -30,7 +31,7 @@ const makeConfig = (mode) => ({
       { test: /\.[tj](sx|s)?$/, use: { loader: 'ts-loader' }, exclude: /node_modules/ },
       {
         test: /\.(sass|less|css)$/,
-        use: [{ loader: 'style-loader' }, { loader: 'css-loader' }, { loader: 'less-loader' }],
+        use: [{ loader: MiniCssExtractPlugin.loader }, { loader: 'css-loader' }, { loader: 'less-loader' }],
       },
       {
         test: /\.(png|jpe?g|gif|svg)$/i,
@@ -56,6 +57,9 @@ const makeConfig = (mode) => ({
     }),
     new CopyWebpackPlugin({
       patterns: [{ from: 'src/public', to: 'public' }],
+    }),
+    new MiniCssExtractPlugin({
+      filename: mode === 'production' ? '[name][chunkhash].css' : '[name].css',
     }),
     new EnvironmentPlugin({
       // Default environment variables to null if not set

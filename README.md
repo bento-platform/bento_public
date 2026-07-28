@@ -30,6 +30,25 @@ Add your English to French translations in `dist/public/locales/fr/translation_f
 website.
 
 
+## Theming 
+
+To customize the theme of a running instance of Bento Public, override the 
+[`/(src|dist)/public/styles/instance.css`](./src/public/styles/instance.css) file with a custom stylesheet.
+
+Overrides to [Ant Design's theming tokens](https://ant.design/docs/react/customize-theme#design-token) via CSS variable
+and other Bento theming variables (see [`src/styles.css`](./src/styles.css)) should be done in the `.bento-theme` class,
+e.g.:
+
+```css
+.bento-theme {
+    --ant-font-family: "Futura", sans-serif;
+}
+```
+
+**Note:** DO NOT override the `--ant-color-primary` design token, since then Ant is unable to calculate shading 
+variations of the primary colour correctly.
+
+
 ## LICENSE
 
 The code in this repository is licensed under the terms of the [GNU Lesser General Public License v3](./LICENSE) and is 

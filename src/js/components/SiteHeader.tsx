@@ -33,8 +33,6 @@ const { Header } = Layout;
 // dummy theme variable; in the future this could be used to do a 'dark mode' in combination with Ant's support
 const THEME: 'light' | 'dark' = 'light';
 
-const openPortalWindow = () => window.open(PORTAL_URL, '_blank');
-
 type OnClick = MenuProps['onClick'];
 type SiteHeaderProps = {
   menuItems?: MenuItem[];
@@ -88,8 +86,8 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
   } = theme.useToken();
 
   useEffect(() => {
-    document.title = CLIENT_NAME && CLIENT_NAME.trim() ? `Bento: ${CLIENT_NAME}` : 'Bento';
-  }, []);
+    document.title = CLIENT_NAME && CLIENT_NAME.trim() ? t(CLIENT_NAME) : 'Bento';
+  }, [t]);
 
   const changeLanguage = () => {
     const newLang = LNG_CHANGE[language];
@@ -167,6 +165,20 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
         </Flex>
 
         <Space size={isSmallScreen ? 4 : 'small'}>
+          {SHOW_PORTAL_LINK && (
+            <Button
+              type="text"
+              className="header-button"
+              icon={<LinkOutlined />}
+              onClick={() => window.open(PORTAL_URL, '_blank')}
+            >
+              {isSmallScreen ? null : (
+                <>
+                  {t('Portal')} <ExportOutlined />
+                </>
+              )}
+            </Button>
+          )}
           {TRANSLATED && (
             <Button
               type="text"
@@ -175,15 +187,6 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
               onClick={changeLanguage}
             >
               {isSmallScreen ? '' : LNGS_FULL_NAMES[LNG_CHANGE[language]]}
-            </Button>
-          )}
-          {SHOW_PORTAL_LINK && (
-            <Button type="text" className="header-button" icon={<LinkOutlined />} onClick={openPortalWindow}>
-              {isSmallScreen ? null : (
-                <>
-                  {t('Portal')} <ExportOutlined />
-                </>
-              )}
             </Button>
           )}
           {SHOW_SIGN_IN &&

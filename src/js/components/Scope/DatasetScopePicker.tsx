@@ -58,6 +58,7 @@ const DatasetScopePicker = ({ parentProject }: DatasetScopePickerProps) => {
             dataset={d}
             format="list-item"
             selected={scopeObj.dataset === d.identifier}
+            fromProject
           />
         )}
       />

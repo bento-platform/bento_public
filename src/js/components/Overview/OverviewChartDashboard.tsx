@@ -21,8 +21,9 @@ import DatasetProvenance from '@/components/Provenance/DatasetProvenance';
 import { useTranslationFn } from '@/hooks';
 import { useSearchRouterAndHandler } from '@/hooks/useSearchRouterAndHandler';
 import { useSelectedDataset, useSelectedProject, useSelectedScope, useScopeHasData } from '@/features/metadata/hooks';
-import { useSearchQuery, useSearchableFields } from '@/features/search/hooks';
+import { useActiveFilterPills, useSearchQuery, useSearchableFields } from '@/features/search/hooks';
 import { useIsInCatalogueMode } from '@/hooks/navigation';
+import ActiveFilterTags from '@/components/Util/ActiveFilterTags';
 
 const saveScopeOverviewToLS = (scope: DiscoveryScope, sections: Sections) => {
   saveValue(generateLSChartDataKey(scope), convertSequenceAndDisplayData(sections));
@@ -48,6 +49,7 @@ const OverviewChartDashboard = () => {
   const searchableFields = useSearchableFields();
 
   const scopeHasData = useScopeHasData();
+  const { pills, clearAll } = useActiveFilterPills();
 
   // If we have no entities with data confirmed, don't bother showing charts (or last ingested details)
   const displayedSections = scopeHasData
@@ -95,6 +97,8 @@ const OverviewChartDashboard = () => {
             <DatasetProvenance dataset={selectedDataset} showTitle={false} />
           ) : null}
         </div>
+
+        <ActiveFilterTags pills={pills} onClearAll={clearAll} tagClassName="overview-filter-tag" />
 
         {/*
             If we're in a scope with no data at all, don't bother rendering the

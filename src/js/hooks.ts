@@ -25,6 +25,11 @@ export const useLanguage = (): string => {
   return language;
 };
 
+export const useFormatNumber = (): ((n: number) => string) => {
+  const language = useLanguage();
+  return (n: number) => n.toLocaleString(language);
+};
+
 export const useTranslationFn = (): NamespaceTranslationFunction => {
   const { t } = useTranslation(CUSTOMIZABLE_TRANSLATION);
 

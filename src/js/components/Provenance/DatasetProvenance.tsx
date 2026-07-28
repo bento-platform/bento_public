@@ -1,7 +1,8 @@
-import { Card, Descriptions, Flex, Tag, Typography } from 'antd';
+import { Card, Descriptions, Flex, Typography } from 'antd';
 import { PointMap } from 'bento-charts/dist/maps';
 
 import BaseProvenanceTable from './Tables/BaseProvenanceTable';
+import ProvenanceTag from '@/components/Util/ProvenanceTag';
 import { useTranslationFn } from '@/hooks';
 import type {
   Count,
@@ -13,19 +14,15 @@ import type {
   PersonOrOrganization,
   Publication,
 } from '@/types/dataset';
-import type { OntologyTerm } from '@/types/ontology';
+import KeywordList from './KeywordList';
 
 const { Item } = Descriptions;
 const { Paragraph, Text, Title } = Typography;
 
-// ---- Helpers ----
-
-const keywordLabel = (k: string | OntologyTerm): string => (typeof k === 'string' ? k : k.label);
-
 const SectionTitle = ({ title }: { title: string }) => {
   const t = useTranslationFn();
   return (
-    <Title level={4} style={{ paddingTop: '20px' }}>
+    <Title level={4} className="pt-5">
       {t(title)}
     </Title>
   );
@@ -39,7 +36,7 @@ const LongDescriptionBlock = ({ content, content_type }: Dataset['long_descripti
   if (content_type === 'text/html') {
     return <div dangerouslySetInnerHTML={{ __html: content }} />;
   }
-  return <Paragraph>{content}</Paragraph>;
+  return <Paragraph ellipsis={{ rows: 5, expandable: true, symbol: 'more' }}>{content}</Paragraph>;
 };
 
 // ---- PersonOrOrganization display ----
@@ -60,7 +57,7 @@ const StakeholdersTable = ({ stakeholders }: { stakeholders: PersonOrOrganizatio
             <>
               {personName(row)}
               {row.type === 'person' && (row as Person).orcid && (
-                <Text type="secondary" style={{ marginLeft: 8, fontSize: '0.85em' }}>
+                <Text type="secondary" className="ml-2 text-sm">
                   ORCID: {(row as Person).orcid}
                 </Text>
               )}
@@ -75,12 +72,7 @@ const StakeholdersTable = ({ stakeholders }: { stakeholders: PersonOrOrganizatio
         {
           title: t('Roles'),
           key: 'roles',
-          render: (_, row) =>
-            row.roles.map((r, i) => (
-              <Tag key={i} color="cyan">
-                {t(r)}
-              </Tag>
-            )),
+          render: (_, row) => row.roles.map((r, i) => <ProvenanceTag key={i}>{t(r)}</ProvenanceTag>),
         },
       ]}
     />
@@ -239,7 +231,7 @@ const SpatialCoverageSection = ({ spatialCoverage }: { spatialCoverage: NonNulla
 
   if (typeof spatialCoverage === 'string') {
     return (
-      <Descriptions style={{ paddingTop: '8px' }}>
+      <Descriptions className="pt-2">
         <Item span={24} label={<DescLabel title={t('Spatial Coverage')} />}>
           {spatialCoverage}
         </Item>
@@ -253,13 +245,13 @@ const SpatialCoverageSection = ({ spatialCoverage }: { spatialCoverage: NonNulla
 
   return (
     <>
-      <Descriptions style={{ paddingTop: '8px' }}>
+      <Descriptions className="pt-2">
         <Item span={24} label={<DescLabel title={t('Spatial Coverage')} />}>
           {name}
         </Item>
       </Descriptions>
       {isPoint && (
-        <div style={{ position: 'relative', zIndex: 0 }}>
+        <div className="relative z-0">
           <PointMap
             data={[{ coordinates: geometry.coordinates as [number, number], title: name }]}
             center={[geometry.coordinates[1], geometry.coordinates[0]]}
@@ -310,7 +302,9 @@ export const DatasetProvenanceContent = ({ dataset }: { dataset: Dataset }) => {
       {dataset.long_description ? (
         <LongDescriptionBlock {...dataset.long_description} />
       ) : (
-        <Text italic>{t(dataset.description)}</Text>
+        <Paragraph ellipsis={{ rows: 5, expandable: true, symbol: 'more' }} className="italic m-0">
+          {t(dataset.description)}
+        </Paragraph>
       )}
 
       {/* Quick-facts descriptions block */}
@@ -321,10 +315,12 @@ export const DatasetProvenanceContent = ({ dataset }: { dataset: Dataset }) => {
         dataset.study_context ||
         keywords.length > 0 ||
         taxa.length > 0) && (
-        <Descriptions style={{ paddingTop: '20px' }}>
+        <Descriptions className="pt-5">
           {dataset.privacy && (
             <Item span={12} label={<DescLabel title={t('Privacy')} />}>
-              {t(dataset.privacy)}
+              <Paragraph ellipsis={{ rows: 2, expandable: true, symbol: 'more' }} className="m-0">
+                {t(dataset.privacy)}
+              </Paragraph>
             </Item>
           )}
           {dataset.version && (
@@ -364,21 +360,13 @@ export const DatasetProvenanceContent = ({ dataset }: { dataset: Dataset }) => {
             </Item>
           ) : null}
           {taxa.length > 0 && (
-            <Item span={24} label={<DescLabel title={t('Taxa')} />}>
-              {taxa.map((k, i) => (
-                <Tag key={i} color="geekblue">
-                  {t(keywordLabel(k))}
-                </Tag>
-              ))}
+            <Item span={24} label={<DescLabel title={t('catalogue.facets.taxa')} />}>
+              <KeywordList keywords={taxa} />
             </Item>
           )}
           {keywords.length > 0 && (
             <Item span={24} label={<DescLabel title={t('Keywords')} />}>
-              {keywords.map((k, i) => (
-                <Tag key={i} color="cyan">
-                  {t(keywordLabel(k))}
-                </Tag>
-              ))}
+              <KeywordList keywords={keywords} />
             </Item>
           )}
         </Descriptions>
@@ -386,7 +374,7 @@ export const DatasetProvenanceContent = ({ dataset }: { dataset: Dataset }) => {
 
       {/* Release / modified dates */}
       {(dataset.release_date || dataset.last_modified) && (
-        <Descriptions style={{ paddingTop: '8px' }}>
+        <Descriptions className="pt-2">
           {dataset.release_date && (
             <Item span={12} label={<DescLabel title={t('Release Date')} />}>
               {dataset.release_date}
@@ -462,7 +450,7 @@ export const DatasetProvenanceContent = ({ dataset }: { dataset: Dataset }) => {
       {links.length > 0 && (
         <>
           <SectionTitle title="Links" />
-          <Flex wrap gap={8} style={{ paddingTop: 8 }}>
+          <Flex wrap gap={8} className="pt-2">
             {links.map((l, i) => (
               <a key={i} href={l.url} target="_blank" rel="noreferrer">
                 {l.label}
