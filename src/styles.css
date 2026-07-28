@@ -16,6 +16,8 @@
   --scoped-title-margin-bottom: 24px;
   --scoped-title-breadcrumb-font-size: 1.2rem;
 
+  --chart-grid-max-width: max(min(var(--content-max-width), 100%), 1200px);
+
   /* 90% opacity white */
   --white-90: rgba(255, 255, 255, 0.9);
   /* 80% opacity white */
@@ -1053,7 +1055,7 @@ body {
 
   display: grid;
   /* 690 * 2 + 20 (gap) = 1400 */
-  grid-template-columns: repeat(auto-fit, minmax(250px, calc((var(--content-max-width) - var(--dataset-grid-gap)) / 2)));
+  grid-template-columns: repeat(auto-fit, minmax(250px, calc((var(--chart-grid-max-width) - var(--dataset-grid-gap)) / 2)));
   gap: var(--dataset-grid-gap);
 }
 

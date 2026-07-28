@@ -5,11 +5,12 @@ import { disableChart } from '@/features/search/query.store';
 import { useAppDispatch } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
-import { CHART_WIDTH, GRID_GAP } from '@/constants/overviewConstants';
+import { GRID_GAP } from '@/constants/overviewConstants';
 
 import ChartCard from './ChartCard';
 
 import type { ChartDataField } from '@/types/data';
+import { getChartCssWidth } from '@/utils/chart';
 
 const OverviewDisplayData = ({ section, allCharts, searchableFields }: OverviewDisplayDataProps) => {
   const dispatch = useAppDispatch();
@@ -18,7 +19,7 @@ const OverviewDisplayData = ({ section, allCharts, searchableFields }: OverviewD
   const containerStyle = {
     display: 'grid',
     gap: `${GRID_GAP}px`,
-    gridTemplateColumns: `repeat(auto-fit, ${CHART_WIDTH}px)`,
+    gridTemplateColumns: `repeat(auto-fit, calc(${getChartCssWidth(3, GRID_GAP)}))`,
   };
 
   const displayedCharts = useMemo(() => allCharts.filter((e) => e.isDisplayed), [allCharts]);
