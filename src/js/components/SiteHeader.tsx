@@ -20,6 +20,7 @@ import {
   SHOW_SIGN_IN,
   TRANSLATED,
   TRANSLATED_LOGO,
+  LOGO_HEIGHT,
 } from '@/config';
 
 import type { MenuItem } from '@/types/navigation';
@@ -116,7 +117,7 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
               type="image/png"
               data={logo}
               aria-hidden
-              style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-3px)', paddingRight: '26px' }}
+              style={{ height: LOGO_HEIGHT, verticalAlign: 'middle', transform: 'translateY(-3px)', paddingRight: 3 }}
               onClick={navigateToRoot}
             >
               <img
@@ -125,10 +126,9 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
                 aria-hidden
                 className="cursor-pointer"
                 style={{
-                  height: '32px',
+                  height: LOGO_HEIGHT,
                   verticalAlign: 'middle',
                   transform: 'translateY(-3px)',
-                  paddingLeft: '23px',
                 }}
                 onClick={navigateToRoot}
               />
@@ -139,7 +139,12 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
               alt="logo"
               aria-hidden
               className="cursor-pointer"
-              style={{ height: '32px', verticalAlign: 'middle', transform: 'translateY(-3px)', paddingLeft: '4px' }}
+              style={{
+                height: LOGO_HEIGHT,
+                verticalAlign: 'middle',
+                transform: 'translateY(-3px)',
+                paddingLeft: '4px',
+              }}
               onClick={navigateToRoot}
             />
           )}
@@ -151,7 +156,7 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
             className={SHOW_HEADER_TITLE ? '' : 'visually-hidden'}
             style={{ whiteSpace: 'nowrap' }}
           >
-            {CLIENT_NAME}
+            {t(CLIENT_NAME)}
           </Typography.Title>
           {(menuItems?.length ?? 0) > 1 ? (
             <Menu
