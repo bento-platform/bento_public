@@ -14,6 +14,7 @@ BENTO_PUBLIC_CONFIG = {
   SHOW_PORTAL_LINK: null,
   SHOW_SIGN_IN: null,
   FORCE_CATALOGUE: null, // Show data catalogue even with 1 project
+  PCGL_MODE: null,
   // Beacon configuration and flags,
   BEACON_URL: null,
   BEACON_UI_ENABLED: null,
