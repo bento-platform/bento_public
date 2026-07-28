@@ -720,8 +720,8 @@ body {
 }
 
 .fchip:focus-within {
-  outline: auto 2px;
-  outline: -webkit-focus-ring-color auto 2px;
+  outline: var(--ant-line-width-focus) solid var(--ant-color-primary-border);
+  outline-offset: 1px;
 }
 
 .fchip:hover:not(:disabled) {
