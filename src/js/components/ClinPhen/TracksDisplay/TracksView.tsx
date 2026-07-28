@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { Drawer, FloatButton } from 'antd';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Drawer, FloatButton, Select } from 'antd';
 import { BarsOutlined } from '@ant-design/icons';
 import { useTranslationFn } from '@/hooks';
 import { useAccessToken } from 'bento-auth-js';
@@ -34,27 +34,23 @@ const TracksView = ({
   const igvCreatingRef = useRef<boolean>(false);
   const [selectedAssemblyID, setSelectedAssemblyID] = useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [accessUrlsPromises, setAccessUrlsPromises] = useState<IgvAccessUrlPromisesById>({});
+  const accessUrlsPromises = getIgvFileAndIndexAccessUrls(tracks)
   const [tracksWithView, setTracksWithView] = useState<ExperimentResultWithView[]>(
     tracks.map((t) => ({ ...t, viewInIgv: true }))
   );
 
   const t = useTranslationFn();
 
-  useEffect(() => {
-    setAccessUrlsPromises(getIgvFileAndIndexAccessUrls(tracks));
-  }, [tracks]);
-
   const assembliesRequested = assemblyIdsForExperiments(tracks);
-  const availableAssemblies = Object.keys(references);
+  const availableAssemblies = useMemo(() => Object.keys(references), [references]);
 
   useEffect(() => {
-    if (availableAssemblies.length) {
+    if (availableAssemblies.length && availableAssemblies[0] !== selectedAssemblyID) {
       // can we do better than auto-selecting the first one?
       setSelectedAssemblyID(availableAssemblies[0]);
       console.debug('auto-selected assembly ID:', availableAssemblies[0]);
     }
-  }, [availableAssemblies]);
+  }, [availableAssemblies, selectedAssemblyID]);
 
   const accessToken: string | undefined = useAccessToken();
 
@@ -128,7 +124,7 @@ const TracksView = ({
         igvBrowserRef.current.loadTrack(buildIgvTrack(track) as IgvTrack).catch(console.error);
       }
     },
-    [tracks, accessUrlsPromises]
+    [tracks, accessUrlsPromises, buildIgvTrack]
   );
 
   // -------------------------- igv init --------------------------
@@ -196,14 +192,14 @@ const TracksView = ({
       {tracks.length > 0 && <div ref={igvDivRef} />}
       <FloatButton type="primary" icon={<BarsOutlined />} tooltip={t('Manage Tracks')} onClick={showDrawer} />
       <Drawer title={t('Manage Tracks')} placement="right" onClose={closeDrawer} open={drawerOpen}>
-        {/* <>
-          Assembly:{' '}
+        { availableAssemblies.length > 1 && <>
+          Assembly:
           <Select
             value={selectedAssemblyID}
             onChange={(v) => setSelectedAssemblyID(v)}
-            options={trackAssemblyIDsMemoized.map((a) => ({ value: a, label: a }))}
+            options={availableAssemblies.map((a) => ({ value: a, label: a }))}
           />
-        </> */}
+        </>}
 
         <TrackControlTable toggleView={toggleView} experimentResults={tracksWithView} />
       </Drawer>
