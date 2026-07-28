@@ -1,7 +1,7 @@
-import { useAppDispatch } from '@/hooks';
 import { Flex, Typography } from 'antd';
 import { useCatalogueState } from '@/features/catalogue/hooks';
-import { toggleFacetValue, type FacetId } from '@/features/catalogue/catalogue.store';
+import type { FacetId } from '@/features/catalogue/catalogue.store';
+import { useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
 import { useTranslationFn } from '@/hooks';
 import { BarChartOutlined } from '@ant-design/icons';
 import type { DatasetWithProject } from '@/features/catalogue/hooks';
@@ -34,8 +34,8 @@ interface CatalogueInsightsProps {
 
 const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
   const t = useTranslationFn();
-  const dispatch = useAppDispatch();
   const { sets, projectColors } = useCatalogueState();
+  const { toggleFacetValue } = useCatalogueUrlActions();
 
   const statusData = buildCounts(filteredDatasets, ({ dataset }) => [normaliseStatus(dataset.study_status)]);
   const typeData = buildCounts(filteredDatasets, ({ dataset }) => dataset.domain ?? []);
@@ -46,7 +46,7 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
   const keywordColors = assignColors(keywordData.slice(0, 5).map((d) => d.name));
 
   const handleClick = (facetId: FacetId, value: string) => {
-    dispatch(toggleFacetValue({ facet: facetId, value }));
+    toggleFacetValue(facetId, value);
   };
 
   return (

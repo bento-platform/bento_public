@@ -4,6 +4,10 @@ export type BentoCountEntity = Exclude<BentoKatsuEntity, 'phenopacket'>;
 export type ResultsDataEntity = Exclude<BentoKatsuEntity, 'individual'>;
 export type BentoUICountEntity = BentoCountEntity | 'dataset'; // extended definition for other UI count elements
 
+export type ExportField = { key: string; label: string };
+
+export type ExportFormat = 'csv' | 'xlsx';
+
 // If boolean, it means we have data above the threshold but don't have permissions to view the exact count.
 export type KatsuEntityCountsOrBooleans = Record<BentoKatsuEntity, number | boolean>;
 export type BentoCountEntityCountsOrBooleans = Record<BentoCountEntity, number | boolean>;

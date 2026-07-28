@@ -14,20 +14,24 @@ import { CaretDownOutlined, CaretRightOutlined } from '@ant-design/icons';
  *       ...
  */
 
-export const SidebarFacet = ({
-  label,
-  collapsed,
-  onToggleCollapse,
-  children,
-}: {
+type SidebarFacetProps = {
+  id: string;
   label: string;
   collapsed?: boolean;
   onToggleCollapse?: () => void;
   children: ReactNode;
-}) => (
+};
+
+export const SidebarFacet = ({ id, label, collapsed, onToggleCollapse, children }: SidebarFacetProps) => (
   <div className={'sidebar-facet' + (collapsed ? ' sidebar-facet--collapsed' : '')}>
     <Typography.Title level={4}>
-      <button className="facet-head" onClick={onToggleCollapse} aria-expanded={!collapsed} id={label}>
+      <button
+        className="facet-head focus-ring"
+        onClick={onToggleCollapse}
+        aria-expanded={!collapsed}
+        id={`catalogue-facet-${id}`}
+        aria-controls={`catalogue-region-${id}`}
+      >
         <span className="facet-head__label">{label}</span>
         {collapsed ? (
           <CaretRightOutlined className="facet-head__icon" aria-hidden="true" />
@@ -57,14 +61,22 @@ export const SidebarSection = ({ sectionTitle, extra, children, className, ...pr
   </section>
 );
 
-export type SidebarProps = HTMLAttributes<HTMLElement> & { width?: string | number };
+export type SidebarProps = HTMLAttributes<HTMLElement> & {
+  width?: string | number;
+  /** Below some breakpoint, the sidebar renders as a fixed slide-over drawer instead of an inline sticky column. */
+  overlay?: boolean;
+  /** Ignored when `overlay` is falsy (the sidebar is always visible inline). */
+  open?: boolean;
+  onClose?: () => void;
+};
 
-const Sidebar = ({ children, className, ...props }: SidebarProps) => {
-  return (
-    <aside className={clsx('sidebar', className)} {...props}>
+const Sidebar = ({ children, className, overlay, open, onClose, ...props }: SidebarProps) => (
+  <>
+    {overlay && open && <div className="sidebar-backdrop" onClick={onClose} aria-hidden />}
+    <aside className={clsx('sidebar', overlay && 'sidebar--overlay', open && 'sidebar--open', className)} {...props}>
       <div className="sidebar__content">{children}</div>
     </aside>
-  );
-};
+  </>
+);
 
 export default Sidebar;

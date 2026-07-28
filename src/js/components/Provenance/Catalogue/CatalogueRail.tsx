@@ -1,12 +1,11 @@
 import clsx from 'clsx';
-
 import { useAppDispatch } from '@/hooks';
 import { useCatalogueState } from '@/features/catalogue/hooks';
+import { toggleFacetCollapse, type FacetId } from '@/features/catalogue/catalogue.store';
+import { useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
 import { useTranslationFn } from '@/hooks';
-
-import { toggleFacetValue, toggleFacetCollapse, type FacetId } from '@/features/catalogue/catalogue.store';
-import { statusTranslationKey } from '@/features/catalogue/hooks';
-
+import { statusTranslationKey, facetTranslationKey } from '@/features/catalogue/hooks';
+import { CloseOutlined } from '@ant-design/icons';
 import FilterChip from '@/components/Util/FilterChip';
 import Sidebar, { SidebarFacet, SidebarSection } from '@/components/Sidebar/Sidebar';
 
@@ -35,14 +34,23 @@ interface FacetSectionProps {
 
 const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleValue }: FacetSectionProps) => {
   const t = useTranslationFn();
+  const facetId = `catalogue-facet-${facet.id}`;
+  const regionId = `catalogue-region-${facet.id}`;
+
   if (options.length === 0) return null;
 
   return (
-    <SidebarFacet label={t(`catalogue.facets.${facet.id}`)} collapsed={collapsed} onToggleCollapse={onToggleCollapse}>
+    <SidebarFacet
+      id={facet.id}
+      label={t(facetTranslationKey(facet.id))}
+      collapsed={collapsed}
+      onToggleCollapse={onToggleCollapse}
+    >
       <div
         className={clsx('facet-chips', facet.scroll && 'facet-chips--scroll')}
         role="region"
-        aria-labelledby={t(`catalogue.facets.${facet.id}`)}
+        aria-labelledby={facetId}
+        id={regionId}
       >
         {options.map(({ value, count, selected }) => (
           <FilterChip
@@ -61,21 +69,33 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
 interface CatalogueRailProps {
   totalCount: number;
   facetOptions: (facetId: FacetId) => { value: string; count: number; selected: boolean }[];
+  /** Below the `lg` breakpoint, the rail renders as a slide-over drawer instead of an inline sticky column. */
+  overlay: boolean;
+  /** Ignored when `overlay` is false (the rail is always visible inline on desktop). */
+  open: boolean;
+  onClose: () => void;
 }
 
-const CatalogueRail = ({ totalCount, facetOptions }: CatalogueRailProps) => {
+const CatalogueRail = ({ totalCount, facetOptions, overlay, open, onClose }: CatalogueRailProps) => {
   const t = useTranslationFn();
   const dispatch = useAppDispatch();
   const { collapsedFacets } = useCatalogueState();
+  const { toggleFacetValue } = useCatalogueUrlActions();
 
   return (
-    <Sidebar style={{ width: 236 }}>
+    <Sidebar style={{ width: 236 }} overlay={overlay} open={open} onClose={onClose}>
       <SidebarSection
         sectionTitle={t('catalogue.rail.title')}
         extra={
-          <span>
-            {totalCount} {t('entities.dataset', { count: totalCount }).toLowerCase()}
-          </span>
+          overlay ? (
+            <button className="sidebar__close" onClick={onClose} aria-label={t('catalogue.rail.close')}>
+              <CloseOutlined />
+            </button>
+          ) : (
+            <span>
+              {totalCount} {t('entities.dataset', { count: totalCount }).toLowerCase()}
+            </span>
+          )
         }
       >
         {FACETS.map((facet) => (
@@ -85,7 +105,7 @@ const CatalogueRail = ({ totalCount, facetOptions }: CatalogueRailProps) => {
             options={facetOptions(facet.id)}
             collapsed={collapsedFacets.includes(facet.id)}
             onToggleCollapse={() => dispatch(toggleFacetCollapse(facet.id))}
-            onToggleValue={(value) => dispatch(toggleFacetValue({ facet: facet.id, value }))}
+            onToggleValue={(value) => toggleFacetValue(facet.id, value)}
           />
         ))}
       </SidebarSection>

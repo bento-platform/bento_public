@@ -1,14 +1,16 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Breadcrumb, type BreadcrumbProps, Button, Flex, Tooltip } from 'antd';
+import { Breadcrumb, type BreadcrumbProps, Button, Flex, Menu, Tooltip } from 'antd';
 import { ArrowLeftOutlined, FilterOutlined, QuestionOutlined } from '@ant-design/icons';
 import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
+import type { MenuItem } from '@/types/navigation';
 
 import CurrentPageHelpModal from '@/components/Util/CurrentPageHelpModal';
 import { useSelectedScope } from '@/features/metadata/hooks';
 import { useSearchQueryParams } from '@/features/search/hooks';
 import { useTranslationFn } from '@/hooks';
-import { useNavigateToRoot, useNavigateToSameScopeUrl, useNavigateToScope } from '@/hooks/navigation';
+import { useSmallScreen } from '@/hooks/useResponsiveContext';
+import { useNavigateToCatalogue, useNavigateToSameScopeUrl, useNavigateToScope } from '@/hooks/navigation';
 import { BentoRoute } from '@/types/routes';
 import { getCurrentPage } from '@/utils/router';
 import { buildQueryParamsUrl } from '@/features/search/utils';
@@ -21,7 +23,7 @@ const useBackButtonInfo = () => {
   const overviewQueryParams = useSearchQueryParams();
   const currentPage = getCurrentPage(location);
 
-  const navigateToRoot = useNavigateToRoot();
+  const navigateToCatalogue = useNavigateToCatalogue();
   const navigateToScope = useNavigateToScope();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
   const { scope, scopeSet, fixedProject, fixedDataset } = useSelectedScope();
@@ -38,10 +40,10 @@ const useBackButtonInfo = () => {
         if (fixedDataset) return NO_BACK_BUTTON;
         const cameFromProject = (location.state as { fromProjectScope?: boolean } | null)?.fromProjectScope;
         return PCGL_MODE && !cameFromProject
-          ? ['Back to catalogue', navigateToRoot]
+          ? ['Back to catalogue', navigateToCatalogue]
           : ['Back to project', () => navigateToScope({ project: scope.project }, BentoRoute.Overview)];
       } else if (scope.project) {
-        return fixedProject ? NO_BACK_BUTTON : ['Back to catalogue', navigateToRoot];
+        return fixedProject ? NO_BACK_BUTTON : ['Back to catalogue', navigateToCatalogue];
       } else {
         return NO_BACK_BUTTON;
       }
@@ -49,7 +51,7 @@ const useBackButtonInfo = () => {
   }, [
     currentPage,
     location.state,
-    navigateToRoot,
+    navigateToCatalogue,
     navigateToScope,
     navigateToSameScopeUrl,
     overviewQueryParams,
@@ -70,6 +72,7 @@ type ScopeHeaderProps = {
   sidebarOverlayShown: boolean;
   onToggleSidebar: () => void;
   breadcrumbItems: BreadcrumbItemType[];
+  menuItems?: MenuItem[];
 };
 
 const ScopeHeader = ({
@@ -77,9 +80,12 @@ const ScopeHeader = ({
   sidebarOverlayShown,
   onToggleSidebar,
   breadcrumbItems,
+  menuItems,
 }: ScopeHeaderProps) => {
   const t = useTranslationFn();
+  const isSmallScreen = useSmallScreen();
   const currentPage = getCurrentPage();
+  const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
   const [helpModalOpen, setHelpModalOpen] = useState(false);
   const [backClickText, onBackClick] = useBackButtonInfo();
 
@@ -97,6 +103,11 @@ const ScopeHeader = ({
     if (el) observer.observe(el);
     return () => observer.disconnect();
   }, []);
+
+  const onMenuClick = useCallback(
+    (item: { key: string }) => navigateToSameScopeUrl(item.key),
+    [navigateToSameScopeUrl]
+  );
 
   if (!breadcrumbItems.length && !showSidebarToggle) return null;
 
@@ -117,7 +128,7 @@ const ScopeHeader = ({
         )}
         {breadcrumbItems.length > 0 && (
           <Flex className="scoped-title flex-1" align="center">
-            <Flex className="flex-1" align="center">
+            <Flex className="flex-1 overflow-hidden" align="center">
               {backClickText !== undefined && onBackClick !== undefined ? (
                 <Tooltip title={t(backClickText)}>
                   <Button
@@ -131,6 +142,16 @@ const ScopeHeader = ({
                 </Tooltip>
               ) : null}
               <Breadcrumb className="scoped-title__breadcrumb" items={breadcrumbItems} itemRender={breadcrumbRender} />
+              {!!menuItems && menuItems.length > 1 && (
+                <Menu
+                  id="scope-header__menu"
+                  mode="horizontal"
+                  items={menuItems}
+                  selectedKeys={[currentPage]}
+                  onClick={onMenuClick}
+                  style={{ width: isSmallScreen ? 52 : undefined }}
+                />
+              )}
             </Flex>
             {currentPageHasHelp && (
               <Tooltip title={t('Help')} placement="bottom">

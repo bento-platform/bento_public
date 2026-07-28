@@ -6,8 +6,7 @@ import type { JSONType } from '@/types/json';
 
 export type FtsQueryType = 'plain' | 'phrase' | 'websearch' | 'trigram';
 
-export type QueryParamEntry = [string, string];
-export type QueryParamEntries = QueryParamEntry[];
+export type { QueryParamEntry, QueryParamEntries } from '@/utils/queryParams';
 
 export type FilterValue = string | string[] | null;
 export type FiltersState = Record<string, FilterValue>;

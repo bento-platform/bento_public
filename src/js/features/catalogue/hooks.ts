@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useAppSelector } from '@/hooks';
+import type { StudyContext } from '@/types/dataset';
 import { FACET_IDS, FACET_ORDER, SORT_FNS, type DatasetWithProject, type FacetId } from './constants';
 
 export type { DatasetWithProject } from './constants';
@@ -14,8 +15,15 @@ export function normaliseStatus(raw: string | undefined | null): string {
   return 'Unassigned';
 }
 
-/** Builds the i18n key for a normalised status value, e.g., "Unassigned" -> "catalogue.status.unassigned". */
-export const statusTranslationKey = (status: string): string => `catalogue.status.${status.toLowerCase()}`;
+/** Builds the i18n key for a normalised status value, e.g., "Unassigned" -> "provenance.status.unassigned". */
+export const statusTranslationKey = (status: string): string => `provenance.status.${status.toLowerCase()}`;
+
+/** Builds the i18n key for a normalised study context value, e.g., "Clinical" -> "provenance.context.clinical". */
+export const studyContextTranslationKey = (context: StudyContext): string =>
+  `provenance.context.${context.toLowerCase()}`;
+
+/** Builds the i18n key for a facet's label, e.g., "dataTypes" -> "catalogue.facets.dataTypes". */
+export const facetTranslationKey = (facet: FacetId): string => `catalogue.facets.${facet}`;
 
 /** Ordered colour palette used to assign a stable colour per project name. */
 export const PALETTE = ['#1677FF', '#13C2C2', '#722ED1', '#FA8C16', '#52C41A'];
