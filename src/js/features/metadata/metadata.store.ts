@@ -1,12 +1,14 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
-import type { PaginatedResponse, Project, Dataset } from '@/types/metadata';
+import type { PaginatedResponse, Project } from '@/types/metadata';
+import type { Dataset } from '@/types/dataset';
 import { RequestStatus } from '@/types/requests';
 import type { RootState } from '@/store';
 import { printAPIError } from '@/utils/error.util';
 import { authorizedRequestConfig } from '@/utils/requests';
 import { validProjectDataset } from '@/utils/router';
+import { scopeSelectionEqual } from './utils';
 import { projectsUrl } from '@/constants/configConstants';
 
 export type DiscoveryScope = { project?: string; dataset?: string };
@@ -22,7 +24,9 @@ export interface MetadataState {
   projects: Project[];
   projectsByID: Record<string, Project>;
   datasetsByID: Record<string, Dataset>;
+  datasetToProjectMap: Record<string, string>;
   projectsStatus: RequestStatus;
+  projectsError: string;
   selectedScope: DiscoveryScopeSelection;
 }
 
@@ -30,7 +34,9 @@ const initialState: MetadataState = {
   projects: [],
   projectsByID: {},
   datasetsByID: {},
+  datasetToProjectMap: {},
   projectsStatus: RequestStatus.Idle,
+  projectsError: '',
   selectedScope: {
     scope: { project: undefined, dataset: undefined },
     // Whether scope has been set from URL/action yet. If it hasn't, we need to wait before fetching scoped data.
@@ -42,19 +48,20 @@ const initialState: MetadataState = {
 
 export const getProjects = createAsyncThunk<
   PaginatedResponse<Project>,
-  void,
+  string,
   { state: RootState; rejectValue: string }
 >(
   'metadata/getProjects',
-  (_, { rejectWithValue, getState }) => {
+  (language, { rejectWithValue, getState }) => {
+    const config = authorizedRequestConfig(getState());
+    config.headers = { ...config.headers, 'Accept-Language': language };
     return axios
-      .get(projectsUrl, authorizedRequestConfig(getState()))
+      .get(projectsUrl, config)
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue));
   },
   {
     condition(_, { getState }) {
-      // Only need to fetch projects once - if the projects are being/have already been fetched, don't re-execute.
       const { projectsStatus } = getState().metadata;
       const cond = projectsStatus === RequestStatus.Idle;
       if (!cond) {
@@ -69,13 +76,18 @@ const metadata = createSlice({
   name: 'metadata',
   initialState,
   reducers: {
+    resetProjects: (state) => {
+      state.projectsStatus = RequestStatus.Idle;
+    },
     selectScope: (state, { payload }: PayloadAction<DiscoveryScope>) => {
       // Defaults to the narrowest possible scope if there is only 1 project and only 1 dataset.
       // This forces Katsu to resolve the Discovery config with fallbacks from the bottom-up:
       // dataset -> project -> whole node
       const newScope = validProjectDataset(state.projectsByID, payload);
-      console.debug('Selecting scope', newScope);
-      state.selectedScope = newScope;
+      if (!scopeSelectionEqual(state.selectedScope, newScope)) {
+        console.debug('Selecting scope', newScope);
+        state.selectedScope = newScope;
+      }
     },
     markScopeSet: (state) => {
       state.selectedScope.scopeSet = true;
@@ -90,13 +102,20 @@ const metadata = createSlice({
       state.projects = projects;
       state.projectsByID = Object.fromEntries(projects.map((p) => [p.identifier, p]));
       state.datasetsByID = Object.fromEntries(projects.flatMap((p) => p.datasets.map((d) => [d.identifier, d])));
+      state.datasetToProjectMap = Object.fromEntries(
+        projects.flatMap((p) => p.datasets.map((d) => [d.identifier, p.identifier]))
+      );
       state.projectsStatus = RequestStatus.Fulfilled;
+      state.projectsError = '';
     });
-    builder.addCase(getProjects.rejected, (state) => {
+    builder.addCase(getProjects.rejected, (state, { payload }) => {
       state.projectsStatus = RequestStatus.Rejected;
+      if (typeof payload === 'string') {
+        state.projectsError = payload;
+      }
     });
   },
 });
 
-export const { selectScope, markScopeSet } = metadata.actions;
+export const { resetProjects, selectScope, markScopeSet } = metadata.actions;
 export default metadata.reducer;

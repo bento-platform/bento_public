@@ -39,7 +39,6 @@ const BeaconQueryFormUi = ({
   const t = useTranslationFn();
   const [form] = Form.useForm();
   const [filters, setFilters] = useState<FormFilter[]>([STARTER_FILTER]);
-  const [hasVariants, setHasVariants] = useState<boolean>(false);
   const [hasFormError, setHasFormError] = useState<boolean>(false);
   const [formErrorMessage, setFormErrorMessage] = useState<string>('');
 
@@ -57,6 +56,7 @@ const BeaconQueryFormUi = ({
     }),
     [beaconAssemblyIds]
   );
+  const hasVariants = scopeSet && (beaconAssemblyIds.length > 0 || isNetworkQuery);
   const uiInstructions = hasVariants ? 'Search by genomic variants, clinical metadata or both.' : '';
 
   const hasError = hasFormError || !!apiErrorMessage;
@@ -96,7 +96,6 @@ const BeaconQueryFormUi = ({
       return;
     }
     launchEmptyQuery();
-    setHasVariants(beaconAssemblyIds.length > 0 || isNetworkQuery);
 
     // set assembly id options matching what's in gohan (for local beacon) or in network
     form.setFieldsValue(formInitialValues);
@@ -155,6 +154,35 @@ const BeaconQueryFormUi = ({
     [packageFilters, requestPayload]
   );
 
+  const variantsFormValid = (formValues: FormValues) => {
+    // valid variant form states:
+    // empty except possibly autofilled assemblyID (no variant query)
+    // chrom, start, assemblyID, end (range query)
+    // chrom, start, assemblyID, alt, ref (sequence query)
+    // https://docs.genomebeacons.org/variant-queries/
+
+    // as an alternative, we could require "end" always, then form logic would be less convoluted
+    // just set start=end to search for SNPs
+
+    const empty = !(
+      formValues['Chromosome'] ||
+      formValues['Variant start'] ||
+      formValues['Variant end'] ||
+      formValues['Reference base(s)'] ||
+      formValues['Alternate base(s)']
+    );
+    const rangeQuery =
+      formValues['Chromosome'] && formValues['Variant start'] && formValues['Variant end'] && formValues['Assembly ID'];
+
+    const sequenceQuery =
+      formValues['Chromosome'] &&
+      formValues['Variant start'] &&
+      formValues['Assembly ID'] &&
+      formValues['Reference base(s)'] &&
+      formValues['Alternate base(s)'];
+    return empty || rangeQuery || sequenceQuery;
+  };
+
   const handleFinish = useCallback(
     (formValues: FormValues) => {
       // if bad form, block submit and show user error
@@ -191,35 +219,6 @@ const BeaconQueryFormUi = ({
       clearFormError();
     }
     // can also check filter values here (to e.g. avoid offering duplicate options)
-  };
-
-  const variantsFormValid = (formValues: FormValues) => {
-    // valid variant form states:
-    // empty except possibly autofilled assemblyID (no variant query)
-    // chrom, start, assemblyID, end (range query)
-    // chrom, start, assemblyID, alt, ref (sequence query)
-    // https://docs.genomebeacons.org/variant-queries/
-
-    // as an alternative, we could require "end" always, then form logic would be less convoluted
-    // just set start=end to search for SNPs
-
-    const empty = !(
-      formValues['Chromosome'] ||
-      formValues['Variant start'] ||
-      formValues['Variant end'] ||
-      formValues['Reference base(s)'] ||
-      formValues['Alternate base(s)']
-    );
-    const rangeQuery =
-      formValues['Chromosome'] && formValues['Variant start'] && formValues['Variant end'] && formValues['Assembly ID'];
-
-    const sequenceQuery =
-      formValues['Chromosome'] &&
-      formValues['Variant start'] &&
-      formValues['Assembly ID'] &&
-      formValues['Reference base(s)'] &&
-      formValues['Alternate base(s)'];
-    return empty || rangeQuery || sequenceQuery;
   };
 
   const searchButtonText = t(`beacon.${isNetworkQuery ? 'search_network' : 'search_beacon'}`);

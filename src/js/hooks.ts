@@ -25,6 +25,11 @@ export const useLanguage = (): string => {
   return language;
 };
 
+export const useFormatNumber = (): ((n: number) => string) => {
+  const language = useLanguage();
+  return (n: number) => n.toLocaleString(language);
+};
+
 export const useTranslationFn = (): NamespaceTranslationFunction => {
   const { t } = useTranslation(CUSTOMIZABLE_TRANSLATION);
 
@@ -75,8 +80,6 @@ export const useHasScopePermission = (permission: string) => {
   const scopeResource = useSelectedScopeAsResource();
   return useHasResourcePermissionWrapper(scopeResource, permission);
 };
-
-export const useHasScopeQueryData = () => useHasScopePermission(queryData);
 
 export const useQueryWithAuthIfAllowed = () => {
   const dispatch = useAppDispatch();

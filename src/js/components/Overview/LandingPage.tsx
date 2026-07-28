@@ -1,4 +1,3 @@
-import AboutBox from './AboutBox';
 import OverviewChartDashboard from './OverviewChartDashboard';
 import Catalogue from '@/components/Provenance/Catalogue/Catalogue';
 
@@ -14,14 +13,7 @@ const PublicOverview = () => {
 
   // TODO: in the future, maybe a chart overview should still be viewable for a whole node?
   //  In which case this can be reverted.
-  return showCatalogue ? (
-    <>
-      <AboutBox style={{ margin: 'auto' }} bottomDivider={true} />
-      <Catalogue />
-    </>
-  ) : (
-    <OverviewChartDashboard />
-  );
+  return showCatalogue ? <Catalogue /> : <OverviewChartDashboard />;
 };
 
 export default PublicOverview;

@@ -20,10 +20,7 @@ export interface TypedQuantity {
   quantity: Quantity;
 }
 
-export interface Value {
-  quantity?: Quantity;
-  ontology_class?: OntologyTerm;
-}
+export type Value = { quantity: Quantity } | { ontology_class: OntologyTerm };
 
 export interface ComplexValue {
   typed_quantities: TypedQuantity[];

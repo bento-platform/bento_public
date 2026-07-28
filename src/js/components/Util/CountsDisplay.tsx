@@ -1,21 +1,20 @@
 import { useMemo } from 'react';
 
-import { Popover, Space, Typography } from 'antd';
+import { Popover, Space } from 'antd';
 
 import type { BentoCountEntityCountsOrBooleans } from '@/types/entities';
 import { COUNT_ENTITY_ORDER, COUNT_ENTITY_REGISTRY } from '@/constants/countEntities';
 import { useTranslationFn } from '@/hooks';
 import { useRenderCount } from '@/hooks/counts';
 import { NO_RESULTS_DASHES } from '@/features/search/constants';
-
-const { Text } = Typography;
+import CountItem from './CountItem';
 
 interface CountsDisplayProps {
   counts?: BentoCountEntityCountsOrBooleans;
-  fontSize?: string;
+  totalCounts?: BentoCountEntityCountsOrBooleans;
 }
 
-const CountsDisplay = ({ counts, fontSize = '1rem' }: CountsDisplayProps) => {
+const CountsDisplay = ({ counts, totalCounts }: CountsDisplayProps) => {
   const t = useTranslationFn();
   const renderCount = useRenderCount();
 
@@ -23,30 +22,44 @@ const CountsDisplay = ({ counts, fontSize = '1rem' }: CountsDisplayProps) => {
     if (!counts) return null;
     const items = COUNT_ENTITY_ORDER.map((entity) => {
       const renderedValue = renderCount(counts[entity]);
+      const renderedTotal = totalCounts ? renderCount(totalCounts[entity]) : undefined;
+      const isFiltered = totalCounts ? counts[entity] !== totalCounts[entity] : false;
       return {
         entity,
         label: t(`entities.${entity}_other`),
         value: renderedValue,
+        total: renderedTotal,
+        isFiltered,
         icon: COUNT_ENTITY_REGISTRY[entity].icon,
       };
-    }).filter((item) => item.value !== NO_RESULTS_DASHES && item.value !== 0);
+    }).filter((item) => item.isFiltered || (item.value !== NO_RESULTS_DASHES && item.value !== 0));
     return items.length > 0 ? items : null;
-  }, [counts, t, renderCount]);
+  }, [counts, totalCounts, t, renderCount]);
 
   if (!countsDisplay) return null;
 
   return (
     <Space size={[16, 8]} wrap align="center">
-      {countsDisplay.map(({ entity, label, value, icon }) => (
+      {countsDisplay.map(({ entity, label, icon, value, total, isFiltered }) => (
         <Popover
           key={entity}
           title={label}
           content={<div style={{ maxWidth: 360 }}>{t(`entities.${entity}_help`, { joinArrays: ' ' })}</div>}
         >
-          <Space size={4} align="center" className="cursor-pointer">
-            {icon}
-            <Text style={{ fontSize }}>{typeof value === 'number' ? value.toLocaleString() : value}</Text>
-          </Space>
+          <CountItem
+            icon={icon}
+            value={
+              isFiltered ? (
+                <>
+                  <span style={{ fontWeight: 600 }}>{value}</span>
+                  {' / '}
+                  <span>{total}</span>
+                </>
+              ) : (
+                value
+              )
+            }
+          />
         </Popover>
       ))}
     </Space>

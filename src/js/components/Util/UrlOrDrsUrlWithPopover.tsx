@@ -100,6 +100,10 @@ const UrlOrDrsUrlWithPopover = ({ url }: { url?: string }) => {
     >
       <span className="cursor-pointer underline">{url}</span> <Button size="small" icon={<UnorderedListOutlined />} />
     </Popover>
+  ) : url && url.startsWith('http') ? (
+    <a href={url} target="_blank" rel="noreferrer">
+      {url}
+    </a>
   ) : (
     url
   );

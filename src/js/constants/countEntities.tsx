@@ -1,10 +1,11 @@
 import type { ReactNode } from 'react';
-import { ExperimentOutlined, FileOutlined, TeamOutlined } from '@ant-design/icons';
+import { DatabaseOutlined, ExperimentOutlined, FileOutlined, TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
 
-import type { BentoCountEntity } from '@/types/entities';
+import type { BentoCountEntity, BentoUICountEntity } from '@/types/entities';
 
-export const COUNT_ENTITY_REGISTRY: Record<BentoCountEntity, { icon: ReactNode }> = {
+export const COUNT_ENTITY_REGISTRY: Record<BentoUICountEntity, { icon: ReactNode }> = {
+  dataset: { icon: <DatabaseOutlined /> },
   individual: { icon: <TeamOutlined /> },
   biosample: { icon: <BiDna /> },
   experiment: { icon: <ExperimentOutlined /> },

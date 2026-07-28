@@ -58,11 +58,11 @@ const SearchResultsPane = ({
   results,
   resultsTitle,
   resultsExtra,
-  page,
+  page: page_,
   onPageChange,
   style,
 }: SearchResultsPaneProps) => {
-  page = page ?? 'charts';
+  const page = page_ ?? 'charts';
 
   const { hasAttempted: hasAttemptedQDP, hasPermission: queryDataPerm } = useScopeQueryData();
   useEffect(() => {

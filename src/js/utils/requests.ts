@@ -1,7 +1,8 @@
 import type { AxiosRequestConfig } from 'axios';
 import { makeAuthorizationHeader } from 'bento-auth-js';
 import type { RootState } from '@/store';
-import type { DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
+import type { DiscoveryScope, DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
+import type { QueryParamEntries } from '@/features/search/types';
 
 type AuthState = RootState['auth'];
 
@@ -9,19 +10,22 @@ export const authorizedRequestConfig = (state: RootState): AxiosRequestConfig =>
   headers: { ...makeAuthorizationHeader(state.auth.accessToken) },
 });
 
+const _scopeEntries = (scope: DiscoveryScope): QueryParamEntries =>
+  Object.entries(scope).filter(([_, v]) => v !== undefined);
+
 export const scopedAuthorizedRequestConfig = (
   state: RootState,
-  extraParams: Record<string, string | undefined> | undefined = undefined
+  extraParams?: QueryParamEntries
 ): AxiosRequestConfig => ({
   ...authorizedRequestConfig(state),
-  params: { ...state.metadata.selectedScope.scope, ...extraParams },
+  params: new URLSearchParams([..._scopeEntries(state.metadata.selectedScope.scope), ...(extraParams ?? [])]),
 });
 
 export const scopedAuthorizedRequestConfigFromParts = (
   auth: AuthState,
   selectedScope: DiscoveryScopeSelection,
-  extraParams: Record<string, string | undefined> | undefined = undefined
+  extraParams?: QueryParamEntries
 ): AxiosRequestConfig => ({
   headers: { ...makeAuthorizationHeader(auth.accessToken) },
-  params: { ...selectedScope.scope, ...extraParams },
+  params: new URLSearchParams([..._scopeEntries(selectedScope.scope), ...(extraParams ?? [])]),
 });

@@ -15,23 +15,27 @@
     "phenopacket_other": "Données cliniques",
     "individual_one": "Participant",
     "individual_other": "Participants",
+    "individual_specific": "Un participant",
     "individual_help": [
-      "Les participants représentent une personne/un organisme spécifique et peuvent avoir un ou plusieurs échantillons biologiques associés, chacun avec des expériences associées."
+      "Les $t(entities.individual_other) représentent une personne/un organisme spécifique et peuvent avoir un ou plusieurs $t(entities.biosample_other, lowercase) associés, chacun avec des $t(entities.experiment_other, lowercase) associées."
     ],
     "biosample_one": "Échantillon biologique",
     "biosample_other": "Échantillons biologiques",
     "biosample_help": [
-      "Les échantillons biologiques sont généralement du matériel biologique extrait d’un participant spécifique."
+      "Les $t(entities.biosample_other, lowercase) sont généralement du matériel biologique extrait d’$t(entities.individual_specific, lowercase) spécifique."
     ],
     "experiment_one": "Expérience",
     "experiment_other": "Expériences",
+    "experiment_specific": "Une expérience",
+    "experiment_of_one": "d'expérience",
+    "experiment_of_other": "d'expériences",
     "experiment_help": [
-      "Les expériences sont un processus effectué sur un échantillon spécifique, par exemple le séquençage du génome entier.",
-      "Une expérience par un laboratoire peut donner lieu à plusieurs enregistrements d'expériences dans le portail, par exemple avec des échantillons multiplexés."
+      "Les $t(entities.experiment_other, lowercase) sont des processus effectués sur $t(entities.experiment_specific, lowercase) spécifique, par exemple le séquençage du génome entier.",
+      "Une expérience par un laboratoire peut donner lieu à plusieurs enregistrements $t(entities.experiment_of_one) dans le portail, par exemple avec des échantillons multiplexés."
     ],
     "experiment_result_one": "Fichier",
     "experiment_result_other": "Fichiers",
-    "experiment_result_help": "Les fichiers sont générés à la suite d'expériences.",
+    "experiment_result_help": "Les $t(entities.experiment_result_other, lowercase) sont générés à la suite $t(entities.experiment_of_other).",
     "variant_one": "Variant",
     "variant_other": "Variants"
   },
@@ -46,17 +50,41 @@
     "view": "Afficher",
     "url": "URL"
   },
+  "errors": {
+    "project_fetch": "Erreur lors du chargement des $t(entities.project_other, lowercase)",
+    "search_fetch": "Erreur lors du chargement des résultats de recherche"
+  },
   "search": {
-    "filters": "Filtres",
-    "filters_applied_one": "{{count}} filtre appliqué",
-    "filters_applied_other": "{{count}} filtres appliqués",
+    "filters_one": "filtre",
+    "filters_other": "filtres",
+    "filters_title_one": "Filtre",
+    "filters_title_other": "Filtres",
+    "filters_applied_one": "{{count}} $t(search.filters, {\"count\": {{count}} }) appliqué",
+    "filters_applied_other": "{{count}} $t(search.filters, {\"count\": {{count}} }) appliqués",
     "text_search": "Recherche de texte",
     "filter_placeholder": "Sélectionner un champ à filtrer \u2026",
+    "filter_value_placeholder_one": "Choisir une valeur \u2026",
+    "filter_value_placeholder_other": "Choisir une/des valeur(s) \u2026",
+    "filters_apply_up_to": "Vous pouvez appliquer jusqu'à {{nFilters}} $t(search.filters, {\"count\": {{nFilters}} }).",
+    "filters_max_help": "Les utilisateurs non autorisés sont limités dans les filtres qu'ils peuvent appliquer.",
     "showing_entities": "Affichage des {{entity, lowercase}} {{start}}-{{end}} sur {{total}}",
     "showing_entities_short": "{{start}}-{{end}} / {{total}}",
     "manage_columns": "Gérer les colonnes",
     "export_csv": "Exporter en CSV",
-    "csv": "CSV"
+    "csv": "CSV",
+    "fts": {
+      "plain": "Mot",
+      "plain_help": "Récupère les enregistrements qui correspondent exactement aux mots de la requête (sans distinction de casse).",
+      "trigram": "Fuzzy",
+      "trigram_help": "Récupère les enregistrements dont le texte est similaire (mais pas nécessairement identique) à la requête."
+    },
+    "range": {
+      "lower_inclusive": "Borne inférieure incluse",
+      "lower_exclusive": "Borne inférieure exclue",
+      "upper_inclusive": "Borne supérieure incluse",
+      "upper_exclusive": "Borne supérieure exclue",
+      "click_to_switch": "Cliquer pour changer"
+    }
   },
   "OR": "OU",
   "in": "en",
@@ -141,7 +169,58 @@
   "Created": "Créé",
   "Updated": "Mis à jour",
   "Back to catalogue": "Retourner au catalogue",
-  "Back to project": "Retourner au projet",
+  "catalogue": {
+    "rail": {
+      "title": "Filtres",
+      "close": "Fermer les filtres"
+    },
+    "facets": {
+      "projects": "$t(entities.project_one)",
+      "dataTypes": "Type de données",
+      "taxa": "Taxons",
+      "access": "Accès",
+      "licenses": "Utilisation des données",
+      "statuses": "Statut",
+      "keywords": "Mot-clé"
+    },
+    "toolbar": {
+      "search_placeholder": "Rechercher des jeux de données, mots-clés, dosages …",
+      "sort_label": "Trier",
+      "sort": {
+        "recently_updated": "Récemment mis à jour",
+        "newest_created": "Tout récemment créé",
+        "title_az": "Titre A–Z",
+        "most_individuals": "Le plus de participants",
+        "most_biosamples": "Le plus d'échantillons biologiques"
+      },
+      "dataset_found_one": "jeu de données trouvé",
+      "dataset_found_other": "jeux de données trouvés",
+      "show_insights": "Afficher les aperçus",
+      "hide_insights": "Masquer les aperçus",
+      "clear_all": "Tout effacer"
+    },
+    "insights": {
+      "title": "Aperçu des jeux de données",
+      "hint": "Sélectionner un segment pour filtrer",
+      "by_status": "Par statut",
+      "by_data_type": "Par type de données",
+      "by_keyword": "Par mot-clé",
+      "by_project": "Par $t(entities.project_one, lowercase)"
+    },
+    "datasets": {
+      "heading": "Jeux de données",
+      "no_results": "Aucun jeu de données ne correspond à vos filtres",
+      "clear_filters": "Effacer tous les filtres",
+      "expand": "plus"
+    },
+    "status": {
+      "ongoing": "En cours",
+      "completed": "Complété",
+      "unassigned": "Non assigné"
+    }
+  },
+  "Back to project": "Retourner au $t(entities.project_one, lowercase)",
+  "Back to dataset": "Retourner au $t(entities.dataset_one, lowercase)",
   "beacon": {
     "search_beacon": "Recherche sur le Beacon",
     "search_network": "Recherche sur le réseau",
@@ -196,7 +275,7 @@
   "footer": {
     "powered_by": "Propulsé par",
     "copyright": "©",
-    "c3g": "le Centre canadien de génomique computationnelle",
+    "c3g": "le Centre canadien de génomique computationnelle à l'université McGill",
     "licensed_under": "Bento est sous licence",
     "source_available": "Le code source est disponible sur",
     "terms_of_use": "Conditions d'utilisation (en anglais)"
@@ -441,15 +520,20 @@
   },
   "experiment": {
     "experiment_id": "Identifiant de l'expérience",
+    "protocol_url": "URL du protocole",
     "experiment_type": "Type d'expérience",
     "experiment_ontology": "Type d'expérience ($t(general.ontology_class, lowercase))",
     "study_type": "Type d'étude",
     "molecule": "Molécule",
     "molecule_ontology": "Molécule ($t(general.ontology_class, lowercase))",
+    "library_id": "Identifiant de génothèque",
+    "library_description": "Description de génothèque",
     "library_strategy": "Stratégie de génothèque",
     "library_source": "Source de génothèque",
     "library_selection": "Sélection de génothèque",
     "library_layout": "Disposition de génothèque",
+    "library_extract_id": "Identifiant de l'extrait de génothèque",
+    "insert_size": "Taille de l'insert",
     "extraction_protocol": "Protocole d'extraction",
     "reference_registry_id": "Identifiant de registre de référence",
     "qc_flags": "Indicateurs QC"
@@ -462,8 +546,11 @@
   "experiment_result": {
     "identifier": "Identifiant",
     "indices": "Indices",
-    "genome_assembly_id": "Assemblage génomique",
-    "file_format": "Format de fichier",
+    "storage": "Stockage",
+    "storage_path": "Chemin d'accès",
+    "storage_server": "Serveur",
+    "genome_assembly_id": "Assemblage",
+    "file_format": "Format",
     "data_output_type": "Type de sortie des données",
     "usage": "Utilisation",
     "creation_date": "Date de création",
@@ -492,5 +579,37 @@
     "mime_type": "Type MIME",
     "checksums": "Sommes de contrôle",
     "access_methods": "Méthodes d'accès"
+  },
+  "pcgl": {
+    "banner": {
+      "eyebrow": "BIBLIOTHÈQUE GÉNOMIQUE PANCANADIENNE",
+      "title": "Catalogue de données",
+      "subtitle": "Explorez les ensembles de données de la Bibliothèque génomique pancanadienne"
+    },
+    "footer": {
+      "logo_alt": "Logo de la Bibliothèque génomique pancanadienne",
+      "cihr_logo_alt": "Logo des Instituts de recherche en santé du Canada",
+      "cihr_support": "La BGPC est soutenu par les Instituts de recherche en santé du Canada (IRSC).",
+      "powered_by": "Le portail de recherche de la BGPC est propulsé par",
+      "bento": "la plateform Bento"
+    },
+    "links": {
+      "policies": "Politiques et directives",
+      "helpGuides": "Guides d'aide (en anglais)",
+      "controlledDataUsers": "Utilisateurs de données contrôlées",
+      "apply": "Demander l'accès",
+      "privacy": "Politique de confidentialité",
+      "termsConditions": "Conditions d'utilisation",
+      "publicationPolicy": "Politique de publication",
+      "contact": "Contactez-nous",
+      "contactHref": "https://genomelibrary.ca/fr/nous-joindre/",
+      "pcglWebsite": "Site web de la BGP",
+      "pcglWebsiteHref": "https://genomelibrary.ca/fr/",
+      "dataPlatform": "Plateforme de données",
+      "myApplications": "Mes demandes",
+      "manageApplications": "Gérer les demandes",
+      "admin": "Tableau de bord administrateur",
+      "cihrHref": "https://cihr-irsc.gc.ca/f/193.html"
+    }
   }
 }

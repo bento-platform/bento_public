@@ -4,13 +4,14 @@ const path = require('path');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { EnvironmentPlugin } = require('webpack');
 
 const createServiceInfo = require('./create_service_info');
 
 // noinspection JSUnusedGlobalSymbols
 const makeConfig = (mode) => ({
-  mode: 'development',
+  mode,
   entry: './src/js/index.tsx',
   output: {
     path: path.join(__dirname, 'dist'),
@@ -22,17 +23,19 @@ const makeConfig = (mode) => ({
     filename: mode === 'production' ? 'js/[name][chunkhash].js' : 'js/[name].js',
     clean: true,
   },
-  ...(mode === 'development' ? { devtool: 'inline-source-map' } : {}),
+
+  devtool: mode === 'development' ? 'inline-source-map' : 'source-map',
+
   module: {
     rules: [
       { test: /\.[tj](sx|s)?$/, use: { loader: 'ts-loader' }, exclude: /node_modules/ },
       {
         test: /\.(sass|less|css)$/,
-        use: [{ loader: 'style-loader' }, { loader: 'css-loader' }, { loader: 'less-loader' }],
+        use: [{ loader: MiniCssExtractPlugin.loader }, { loader: 'css-loader' }, { loader: 'less-loader' }],
       },
       {
         test: /\.(png|jpe?g|gif|svg)$/i,
-        use: [{ loader: 'file-loader' }],
+        type: 'asset/resource',
       },
       {
         test: /\.html$/i,
@@ -40,11 +43,13 @@ const makeConfig = (mode) => ({
       },
     ],
   },
+
   watchOptions: {
     aggregateTimeout: 200,
     poll: 1000,
     ignored: /node_modules/,
   },
+
   plugins: [
     new HtmlWebpackPlugin({
       title: 'Development',
@@ -52,6 +57,9 @@ const makeConfig = (mode) => ({
     }),
     new CopyWebpackPlugin({
       patterns: [{ from: 'src/public', to: 'public' }],
+    }),
+    new MiniCssExtractPlugin({
+      filename: mode === 'production' ? '[name][chunkhash].css' : '[name].css',
     }),
     new EnvironmentPlugin({
       // Default environment variables to null if not set
@@ -61,9 +69,16 @@ const makeConfig = (mode) => ({
       BENTO_PUBLIC_URL: null,
       // Display flags
       BENTO_PUBLIC_TRANSLATED: null,
+      BENTO_PUBLIC_TRANSLATED_LOGO: null,
+      BENTO_PUBLIC_LOGO_HEIGHT: null,
+      BENTO_PUBLIC_SHOW_HEADER_TITLE: null,
       BENTO_PUBLIC_SHOW_PORTAL_LINK: null,
       BENTO_PUBLIC_SHOW_SIGN_IN: null,
       BENTO_PUBLIC_FORCE_CATALOGUE: null, // Show data catalogue even with 1 project
+      BENTO_PUBLIC_PCGL_MODE: null, // Puts Bento Public in "PCGL mode", turning it into the PCGL research portal
+      // Theme variables
+      BENTO_PUBLIC_CATALOGUE_HEADER_BACKGROUND: null,
+      BENTO_PUBLIC_CATALOGUE_HEADER_TEXT_COLOR: null,
       // Beacon configuration and flags
       BEACON_URL: null,
       BENTO_BEACON_UI_ENABLED: null,
@@ -73,10 +88,11 @@ const makeConfig = (mode) => ({
       OPENID_CONFIG_URL: null,
     }),
   ],
+
   optimization: {
     runtimeChunk: 'single',
   },
-  devtool: 'source-map',
+
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src/js'),
@@ -85,6 +101,7 @@ const makeConfig = (mode) => ({
     },
     extensions: ['.tsx', '.ts', '.js'],
   },
+
   devServer: {
     compress: true,
     historyApiFallback: {
@@ -123,4 +140,4 @@ const makeConfig = (mode) => ({
   },
 });
 
-module.exports = (_env, argv) => makeConfig(argv.mode);
+module.exports = (_env, argv) => makeConfig(argv.mode ?? 'development');

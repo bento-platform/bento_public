@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Card, Empty, Flex, Space } from 'antd';
+import { useCallback, useMemo, useState } from 'react';
+import { Button, Empty, Space, Tabs } from 'antd';
 import { CompressOutlined, DownloadOutlined, ExpandOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -15,6 +15,7 @@ import { useSetExtraBreadcrumb } from '@/features/ui/hooks';
 import { useTranslationFn } from '@/hooks';
 import { useNotify } from '@/hooks/notifications';
 import { usePhenopacketTabs } from '@/hooks/usePhenopacketTabs';
+import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
 export interface RouteParams {
   packetId: string;
@@ -26,6 +27,7 @@ const PhenopacketView = () => {
   const { packetId, tab } = useParams<RouteParams>();
   const navigate = useNavigate();
   const t = useTranslationFn();
+  const isSmallScreen = useSmallScreen();
 
   const api = useNotify();
 
@@ -53,33 +55,6 @@ const PhenopacketView = () => {
     });
   }, [api, t, notificationFillIns]);
 
-  useEffect(() => {
-    if (status === RequestStatus.Fulfilled && phenopacket) {
-      if (tab && activeTabs.includes(tab as TabKeys)) {
-        setActiveKey(tab as TabKeys);
-      } else {
-        if (tab && Object.values(TabKeys).includes(tab as TabKeys)) {
-          notAvailableRedirectNotification();
-        } else if (tab && !['', '/'].includes(tab)) {
-          // Don't show a notification if we have some variation of an empty current tab; just redirect to the default.
-          // Otherwise, show an invalid tab notification:
-          invalidEndpointRedirectNotification();
-        }
-        navigate(`${tab ? '..' : '.'}/${defaultTab.key}`, { relative: 'path', replace: true });
-      }
-    }
-  }, [
-    navigate,
-    tab,
-    status,
-    phenopacket,
-    activeTabs,
-    defaultTab,
-    invalidEndpointRedirectNotification,
-    notAvailableRedirectNotification,
-    api,
-  ]);
-
   const biosamples = phenopacket?.biosamples ?? [];
 
   const title = phenopacket
@@ -97,8 +72,41 @@ const PhenopacketView = () => {
     saveAs(blob, `phenopacket_${phenopacket.id}.json`);
   }, [phenopacket]);
 
-  // Extra action buttons for the current tab key context:
-  const tabBarExtra = useMemo(() => {
+  // -------------------------------------------------------------------------------------------------------------------
+  // Early returns for handling loading/errors
+
+  // tab param --> active key handling
+  if (status === RequestStatus.Fulfilled && phenopacket && activeKey !== tab) {
+    if (tab && activeTabs.includes(tab as TabKeys)) {
+      setActiveKey(tab as TabKeys);
+    } else {
+      if (tab && Object.values(TabKeys).includes(tab as TabKeys)) {
+        notAvailableRedirectNotification();
+      } else if (tab && !['', '/'].includes(tab)) {
+        // Don't show a notification if we have some variation of an empty current tab; just redirect to the default.
+        // Otherwise, show an invalid tab notification:
+        invalidEndpointRedirectNotification();
+      }
+      navigate(`${tab ? '..' : '.'}/${defaultTab.key}`, { relative: 'path', replace: true });
+      // Temporary loading render while navigation occurs. This navigation is to a valid key (the default), so we won't
+      // get any more error notifications after this navigation occurs.
+      return <Loader fullHeight={false} />;
+    }
+  }
+
+  if (isAuthorized.hasAttempted && !isAuthorized.hasPermission) {
+    return <Empty description={t('auth.unauthorized_message')} />;
+  }
+
+  if (status === RequestStatus.Pending || !phenopacket || !isAuthorized.hasAttempted) {
+    return <Loader fullHeight={false} />;
+  }
+
+  // -------------------------------------------------------------------------------------------------------------------
+
+  // Extra action buttons for the current tab key context.
+  // Must come after tab param --> active key handling
+  const tabBarExtra = (() => {
     if (activeKey === TabKeys.OVERVIEW) {
       return (
         <Space>
@@ -110,7 +118,7 @@ const PhenopacketView = () => {
             size="small"
             icon={<ExpandOutlined />}
           >
-            {t('general.expand_all')}
+            {!isSmallScreen && t('general.expand_all')}
           </Button>
           <Button
             onClick={() => {
@@ -119,7 +127,7 @@ const PhenopacketView = () => {
             size="small"
             icon={<CompressOutlined />}
           >
-            {t('general.collapse_all')}
+            {!isSmallScreen && t('general.collapse_all')}
           </Button>
         </Space>
       );
@@ -130,29 +138,20 @@ const PhenopacketView = () => {
         </Button>
       );
     }
-  }, [t, collapseRef, activeKey, savePhenopacket]);
-
-  if (isAuthorized.hasAttempted && !isAuthorized.hasPermission) {
-    return <Empty description={t('auth.unauthorized_message')} />; // Temporary: removed once phenopacket view is integrated with search
-  }
-
-  if (status === RequestStatus.Pending || !phenopacket || !isAuthorized.hasAttempted) {
-    return <Loader fullHeight={false} />;
-  }
+  })();
 
   return (
-    <Flex justify="center">
-      <Card
-        className="container"
-        activeTabKey={activeKey}
-        tabList={tabs}
-        tabProps={{ destroyOnHidden: true, size: 'middle' }}
-        onTabChange={handleTabChange}
+    <div className="container margin-auto">
+      <Tabs
+        activeKey={activeKey}
+        items={tabs}
+        destroyOnHidden={true}
+        size="middle"
+        onChange={handleTabChange}
         tabBarExtraContent={tabBarExtra}
-      >
-        {tabContent[activeKey]}
-      </Card>
-    </Flex>
+      />
+      {tabContent[activeKey]}
+    </div>
   );
 };
 

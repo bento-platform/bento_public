@@ -1,12 +1,18 @@
-import type { PayloadAction } from '@reduxjs/toolkit';
+import type { Draft, PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
-import type { BentoKatsuEntity, KatsuEntityCountsOrBooleans, ResultsDataEntity } from '@/types/entities';
+import type {
+  BentoCountEntity,
+  BentoKatsuEntity,
+  KatsuEntityCountsOrBooleans,
+  ResultsDataEntity,
+} from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
 import type { DiscoveryResponseOrMessage } from '@/types/discovery/response';
-import type { DiscoveryScope } from '@/features/metadata/metadata.store';
+import type { DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
 import type {
-  QueryParams,
+  FiltersState,
+  FtsQueryType,
   SearchFieldResponse,
   DiscoveryMatchObject,
   DiscoveryMatchPhenopacket,
@@ -17,23 +23,23 @@ import type {
 } from '@/features/search/types';
 import type { Sections } from '@/types/data';
 
-import { MIN_PAGE_SIZE } from '@/constants/pagination';
+import { MIN_PAGE_SIZE, PAGE_SIZE_OPTIONS } from '@/constants/pagination';
+import { DEFAULT_TEXT_QUERY_TYPE, EMPTY_KATSU_ENTITY_COUNTS } from './constants';
 
 import { discoveryChartProcessingAndLocalStorage } from './discoveryChartProcessingAndLocalStorage';
-import { performKatsuDiscovery } from './performKatsuDiscovery.thunk';
+import { performKatsuDiscovery, STALE_DISCOVERY_REJECTION } from './performKatsuDiscovery.thunk';
 import { fetchSearchFields } from './fetchSearchFields.thunk';
 import { fetchDiscoveryMatches } from './fetchDiscoveryMatches.thunk';
 import { fetchDiscoveryUIHints } from './fetchDiscoveryUIHints.thunk';
+import { bentoKatsuEntityToResultsDataEntity, checkFiltersStatesEqual } from './utils';
 
 export type QueryResultMatchData<T extends DiscoveryMatchObject> = {
   status: RequestStatus;
   page: number;
   totalMatches: number;
   matches: T[] | undefined;
+  invalid: boolean;
 };
-
-export const bentoKatsuEntityToResultsDataEntity = (x: BentoKatsuEntity): ResultsDataEntity =>
-  x === 'individual' ? 'phenopacket' : x;
 
 export type QueryState = {
   defaultLayout: Sections;
@@ -41,21 +47,29 @@ export type QueryState = {
   // -------------------------------------
   fieldsStatus: RequestStatus;
   discoveryStatus: RequestStatus;
+  discoveryError: string;
   // ----
   filterSections: SearchFieldResponse['sections'];
-  filterQueryParams: QueryParams;
+  filters: FiltersState;
   // ----
   textQuery: string;
+  textQueryType: FtsQueryType;
   // ----
   // Whether the first search has been executed; can't be reset on 'search mode' (filter/text) change the way
   // (filter|text)QueryStatus can. This is instead only reset when the complete query state is reset.
   doneFirstLoad: boolean;
   message: string;
 
-  entity: BentoKatsuEntity | null;
+  selectedEntity: BentoCountEntity | null;
+
+  // node-level data cache
+  nodeCountsOrBools: KatsuEntityCountsOrBooleans;
+  nodeCountsOrBoolsFetched: boolean;
 
   // results
   resultCountsOrBools: KatsuEntityCountsOrBooleans;
+  resultCountsInvalid: boolean;
+  resultCountsByDataset: Record<string, KatsuEntityCountsOrBooleans> | undefined;
   pageSize: number;
   matchData: {
     phenopacket: QueryResultMatchData<DiscoveryMatchPhenopacket>;
@@ -76,6 +90,7 @@ const INITIAL_MATCH_DATA_STATE = {
   page: 0,
   totalMatches: 0,
   matches: undefined,
+  invalid: false,
 };
 
 const initialState: QueryState = {
@@ -84,24 +99,25 @@ const initialState: QueryState = {
   // -------------------------------------
   fieldsStatus: RequestStatus.Idle,
   discoveryStatus: RequestStatus.Idle,
+  discoveryError: '',
   // ----
   filterSections: [],
-  filterQueryParams: {},
+  filters: {},
   // ----
   textQuery: '',
+  textQueryType: DEFAULT_TEXT_QUERY_TYPE,
   // ----
   doneFirstLoad: false,
   message: '',
   // ----
-  entity: null,
+  selectedEntity: null,
   // ----
-  resultCountsOrBools: {
-    phenopacket: 0,
-    individual: 0,
-    biosample: 0,
-    experiment: 0,
-    experiment_result: 0,
-  },
+  nodeCountsOrBools: EMPTY_KATSU_ENTITY_COUNTS,
+  nodeCountsOrBoolsFetched: false,
+  // ----
+  resultCountsOrBools: EMPTY_KATSU_ENTITY_COUNTS,
+  resultCountsByDataset: undefined,
+  resultCountsInvalid: false,
   pageSize: MIN_PAGE_SIZE,
   matchData: {
     phenopacket: INITIAL_MATCH_DATA_STATE,
@@ -116,6 +132,24 @@ const initialState: QueryState = {
       entities_with_data: [],
     },
   },
+};
+
+/**
+ * Helper utility to invalidate all match data when a relevant parameter changes (and naturally invalidates the results,
+ * which we need to reflect in the state in order to re-fetch.)
+ * @param state - Draft of QueryState
+ */
+const invalidateMatchData = (state: Draft<QueryState>) => {
+  Object.keys(state.matchData).forEach((e) => {
+    const entity: ResultsDataEntity = e as ResultsDataEntity;
+    if (state.matchData[entity].status === RequestStatus.Idle) return; // Not fetched yet, don't bother invalidating
+    state.matchData[entity].invalid = true;
+    if (e !== state.selectedEntity) {
+      // For all not currently-visible pages, Redux is the source of truth rather than the URL, so reset the
+      // current page upon invalidation:
+      state.matchData[entity].page = 0;
+    }
+  });
 };
 
 const query = createSlice({
@@ -171,30 +205,74 @@ const query = createSlice({
       state.sections = state.defaultLayout;
     },
     // -----------------------------------------------------------------------------------------------------------------
-    setFilterQueryParams: (state, { payload }: PayloadAction<QueryParams>) => {
-      state.filterQueryParams = payload;
+    setFilters: (state, { payload }: PayloadAction<FiltersState>) => {
+      // Don't update unnecessarily - but there's a difference between a UI state update (possibly with an empty filter,
+      // for instance), and state that invalidates results (a new empty filter does not invalidate results).
+      // eqStateSet implies eqInvalidate.
+      const [eqStateSet, eqInvalidate] = checkFiltersStatesEqual(state.filters, payload);
+      if (eqStateSet) return;
+      console.debug('setting filters state', payload);
+      state.filters = payload;
+      if (eqInvalidate) return;
+      // search filters have changed; invalidate existing counts and match data pages if necessary:
+      state.resultCountsInvalid = true;
+      invalidateMatchData(state);
     },
     setTextQuery: (state, { payload }: PayloadAction<string>) => {
+      if (state.textQuery === payload) return;
       state.textQuery = payload;
+      // text query has changed; invalidate existing counts and match data pages if necessary:
+      state.resultCountsInvalid = true;
+      invalidateMatchData(state);
+    },
+    setTextQueryType: (state, { payload }: PayloadAction<FtsQueryType>) => {
+      if (state.textQueryType === payload) return;
+      state.textQueryType = payload;
+      // text query type has changed; invalidate existing counts and match data pages if necessary:
+      state.resultCountsInvalid = true;
+      invalidateMatchData(state);
     },
     setDoneFirstLoad: (state) => {
       state.doneFirstLoad = true;
     },
-    setEntity: (state, { payload }: PayloadAction<BentoKatsuEntity | null>) => {
-      state.entity = payload;
+    preSeedCounts: (state, { payload }: PayloadAction<KatsuEntityCountsOrBooleans>) => {
+      state.resultCountsOrBools = payload;
+      state.doneFirstLoad = true;
     },
-    setMatchesPage: (state, { payload }: PayloadAction<[BentoKatsuEntity, number]>) => {
-      state.matchData[bentoKatsuEntityToResultsDataEntity(payload[0])].page = payload[1];
+    setSelectedEntity: (state, { payload }: PayloadAction<BentoCountEntity | null>) => {
+      state.selectedEntity = payload;
     },
-    resetMatchesPage: (state) => {
-      Object.keys(state.matchData).forEach((k) => {
-        state.matchData[k as ResultsDataEntity].page = 0;
-      });
+    setMatchesPage: (state, { payload }: PayloadAction<[BentoKatsuEntity | BentoCountEntity, number]>) => {
+      const rdEntity = bentoKatsuEntityToResultsDataEntity(payload[0]);
+      const md = state.matchData[rdEntity];
+      if (isNaN(payload[1]) || payload[1] < 0) {
+        console.error(`setMatchesPage invalid page: ${payload}`);
+        return;
+      }
+      if (md.page === payload[1]) return;
+      md.page = payload[1];
+      // Invalidate current match data page contents if the page changes:
+      md.invalid = md.status !== RequestStatus.Idle;
     },
     setMatchesPageSize: (state, { payload }: PayloadAction<number>) => {
+      if (isNaN(payload) || !PAGE_SIZE_OPTIONS.includes(payload)) {
+        console.error(`setMatchesPageSize invalid page size: ${payload}`);
+        return;
+      }
+      if (payload === state.pageSize) return state;
       state.pageSize = payload;
+      // Page size is a bit special since it's shared state across all match data, so special care has to be taken to
+      // reset all pages and invalidate entities' match data if page state changes.
+      invalidateMatchData(state);
     },
-    resetAllQueryState: () => initialState,
+    resetAllQueryState: (state, { payload }: PayloadAction<{ resetNodeCounts: boolean } | undefined>) =>
+      payload?.resetNodeCounts
+        ? initialState
+        : {
+            ...initialState,
+            nodeCountsOrBools: state.nodeCountsOrBools,
+            nodeCountsOrBoolsFetched: state.nodeCountsOrBoolsFetched,
+          },
   },
   extraReducers: (builder) => {
     builder.addCase(performKatsuDiscovery.pending, (state) => {
@@ -202,8 +280,10 @@ const query = createSlice({
     });
     builder.addCase(
       performKatsuDiscovery.fulfilled,
-      (state, { payload: [scope, response] }: PayloadAction<[DiscoveryScope, DiscoveryResponseOrMessage]>) => {
+      (state, { payload: [scope, response] }: PayloadAction<[DiscoveryScopeSelection, DiscoveryResponseOrMessage]>) => {
         state.discoveryStatus = RequestStatus.Fulfilled;
+        state.discoveryError = '';
+        state.resultCountsInvalid = false;
 
         if (!response) {
           return;
@@ -216,17 +296,43 @@ const query = createSlice({
         }
 
         if ('counts' in response) {
+          if (
+            ((!scope.scope.project && !scope.scope.dataset) || (scope.fixedProject && scope.fixedDataset)) &&
+            !Object.keys(state.filters).length &&
+            !state.textQuery.length
+          ) {
+            // Cache whole-instance counts when no filters are applied. Used for showing counts in the data catalogue.
+            state.nodeCountsOrBools = response.counts;
+            state.nodeCountsOrBoolsFetched = true;
+          }
+
+          // Populate scope / filter results:
+
           state.resultCountsOrBools = response.counts;
 
+          state.resultCountsByDataset = response.counts_by_dataset;
+
           // Side effects: saving/loading layout from local storage
-          const { defaultLayout, sectionData } = discoveryChartProcessingAndLocalStorage(scope, response);
+          const { defaultLayout, sectionData } = discoveryChartProcessingAndLocalStorage(scope.scope, response);
           state.defaultLayout = defaultLayout;
           state.sections = sectionData;
         }
       }
     );
-    builder.addCase(performKatsuDiscovery.rejected, (state) => {
+    builder.addCase(performKatsuDiscovery.rejected, (state, { payload }) => {
+      if (payload === STALE_DISCOVERY_REJECTION) {
+        // Scope changed while the request was in flight. Reset to Idle so a new search
+        // for the correct scope will be triggered rather than storing stale results.
+        state.discoveryStatus = RequestStatus.Idle;
+        return;
+      }
       state.discoveryStatus = RequestStatus.Rejected;
+      // maybe a bit counterintuitive, but a rejected status is a "valid" count response insofar as it reflects the
+      // query made, and we don't want to attempt a re-fetch.
+      state.resultCountsInvalid = false;
+      if (typeof payload === 'string') {
+        state.discoveryError = payload;
+      }
     });
     // -----
     builder.addCase(fetchSearchFields.pending, (state) => {
@@ -245,9 +351,11 @@ const query = createSlice({
     });
     builder.addCase(fetchDiscoveryMatches.fulfilled, (state, { meta, payload }) => {
       const entity: ResultsDataEntity = bentoKatsuEntityToResultsDataEntity(meta.arg);
-      state.matchData[entity].status = RequestStatus.Fulfilled;
-      state.matchData[entity].matches = payload.results;
-      state.matchData[entity].totalMatches = payload.pagination.total;
+      const md = state.matchData[entity];
+      md.status = RequestStatus.Fulfilled;
+      md.matches = payload.results;
+      md.totalMatches = payload.pagination.total;
+      md.invalid = false;
     });
     builder.addCase(fetchDiscoveryMatches.rejected, (state, { meta }) => {
       state.matchData[bentoKatsuEntityToResultsDataEntity(meta.arg)].status = RequestStatus.Rejected;
@@ -275,11 +383,13 @@ export const {
   hideAllSectionCharts,
   resetLayout,
   // ------------------------------------------------------------------
-  setFilterQueryParams,
+  setFilters,
   setTextQuery,
+  setTextQueryType,
   setDoneFirstLoad,
+  preSeedCounts,
+  setSelectedEntity,
   setMatchesPage,
-  resetMatchesPage,
   setMatchesPageSize,
   resetAllQueryState,
 } = query.actions;

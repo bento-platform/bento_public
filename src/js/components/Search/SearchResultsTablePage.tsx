@@ -1,4 +1,4 @@
-import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { type ReactNode, useCallback, useMemo, useState } from 'react';
 
 import { Button, Checkbox, Col, Flex, Modal, Space, type TablePaginationConfig, Tooltip, Typography } from 'antd';
 import { ExportOutlined, LeftOutlined, TableOutlined } from '@ant-design/icons';
@@ -6,23 +6,21 @@ import { ExportOutlined, LeftOutlined, TableOutlined } from '@ant-design/icons';
 import { T_PLURAL_COUNT, T_SINGULAR_COUNT } from '@/constants/i18n';
 import { MIN_PAGE_SIZE, PAGE_SIZE_OPTIONS } from '@/constants/pagination';
 import { WAITING_STATES } from '@/constants/requests';
+import { TABLE_PAGE_QUERY_PARAM, TABLE_PAGE_SIZE_QUERY_PARAM } from '@/features/search/constants';
 
-import { useAppDispatch, useTranslationFn } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { useScopeDownloadData } from '@/hooks/censorship';
 import { useDownloadAllMatchesCSV } from '@/hooks/useDownloadAllMatchesCSV';
-import { useSearchQuery } from '@/features/search/hooks';
+import { useSearchQuery, useSearchQueryParams } from '@/features/search/hooks';
+import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
+import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
 
 import type { BentoKatsuEntity } from '@/types/entities';
-import type { Project, Dataset } from '@/types/metadata';
-import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
-import { fetchDiscoveryMatches } from '@/features/search/fetchDiscoveryMatches.thunk';
-import {
-  bentoKatsuEntityToResultsDataEntity,
-  type QueryResultMatchData,
-  setMatchesPage,
-  setMatchesPageSize,
-} from '@/features/search/query.store';
+import type { Project } from '@/types/metadata';
+import type { Dataset } from '@/types/dataset';
+import type { DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
+import type { QueryResultMatchData } from '@/features/search/query.store';
 import type {
   DiscoveryMatchBiosample,
   DiscoveryMatchExperiment,
@@ -30,24 +28,35 @@ import type {
   DiscoveryMatchPhenopacket,
   ViewableDiscoveryMatchObject,
 } from '@/features/search/types';
+import { BentoRoute } from '@/types/routes';
 
+import { scopeSelectionEqual } from '@/features/metadata/utils';
+import {
+  bentoKatsuEntityToResultsDataEntity,
+  buildQueryParamsUrl,
+  queryParamsWithoutKey,
+} from '@/features/search/utils';
 import { setEquals } from '@/utils/sets';
 
 import DatasetProvenanceModal from '@/components/Provenance/DatasetProvenanceModal';
 import ProjectTitle from '@Util/ProjectTitle';
 import DatasetTitle from '@Util/DatasetTitle';
+import ExperimentReferences from '@Util/ClinPhen/ExperimentReferences';
 import CustomTable, { type CustomTableColumn, type CustomTableColumns } from '@Util/CustomTable';
 import IndividualRowDetail from './IndividualRowDetail';
-import BiosampleRowDetail from './BiosampleRowDetail';
+import BiosampleDetailView from './BiosampleDetailView';
 import ExperimentRowDetail from './ExperimentRowDetail';
 import ExperimentResultRowDetail from './ExperimentResultRowDetail';
 import PhenopacketLink from '@/components/ClinPhen/PhenopacketLink';
 import { ExperimentResultFileTypeCounts } from '@/components/ClinPhen/ExperimentDisplay/ExperimentView';
 import {
   ExperimentResultActions,
-  experimentResultViewable,
   type ExperimentResultActionsProps,
+  experimentResultViewable,
 } from '@/components/ClinPhen/ExperimentDisplay/ExperimentResultView';
+import ReferenceGenomePopoverField from '../Util/ClinPhen/ReferenceGenomePopoverField';
+import FreeTextAndOrOntologyClass from '../Util/ClinPhen/FreeTextAndOrOntologyClass';
+import { RequestStatus } from '@/types/requests';
 
 type SearchColRenderContext = {
   onProjectClick: (id: string) => void;
@@ -104,7 +113,7 @@ const PHENOPACKET_SEARCH_TABLE_COLUMNS = {
     title: 'entities.biosample_other',
     dataIndex: 'biosamples',
     render: (_ctx: SearchColRenderContext) => (b: DiscoveryMatchBiosample[], p: DiscoveryMatchPhenopacket) => (
-      <PhenopacketLink.Biosamples packetId={p.id} biosamples={b.map((bb) => bb.id)} />
+      <PhenopacketLink.Biosamples packetId={p.id} biosamples={b.map((bb) => bb.id)} enablePopover />
     ),
   },
   ...commonSearchTableColumns<DiscoveryMatchPhenopacket>(),
@@ -121,8 +130,8 @@ const BIOSAMPLE_SEARCH_TABLE_COLUMNS = {
   experiments: {
     title: 'entities.experiment_other',
     dataIndex: 'experiments',
-    render: (_ctx) => (experiments: DiscoveryMatchExperiment[] | undefined, b) => (
-      <PhenopacketLink.Experiments packetId={b.phenopacket} experiments={experiments?.map((e) => e.id) ?? []} />
+    render: (_ctx) => (experiments: DiscoveryMatchExperiment[], b) => (
+      <ExperimentReferences packetId={b.phenopacket} experiments={experiments} />
     ),
   } as ResultsTableColumn<DiscoveryMatchBiosample>,
   ...commonSearchTableColumns<DiscoveryMatchBiosample>(),
@@ -137,7 +146,7 @@ const EXPERIMENT_SEARCH_TABLE_COLUMNS = {
     title: 'entities.biosample_one',
     dataIndex: 'biosample',
     render: (_ctx) => (biosampleId: string, e) => (
-      <PhenopacketLink.Biosample packetId={e?.phenopacket} sampleId={biosampleId} />
+      <PhenopacketLink.Biosample packetId={e?.phenopacket} sampleId={biosampleId} enablePopover />
     ),
   } as ResultsTableColumn<DiscoveryMatchExperiment>,
   experiment_results: {
@@ -158,6 +167,7 @@ const EXPERIMENT_RESULT_SEARCH_TABLE_COLUMNS = {
   genome_assembly_id: {
     title: 'experiment_result.genome_assembly_id',
     dataIndex: 'genome_assembly_id',
+    render: (_ctx) => (gaId: string) => <ReferenceGenomePopoverField referenceGenomeId={gaId} />,
   } as ResultsTableColumn<DiscoveryMatchExperimentResult>,
   file_format: {
     title: 'experiment_result.file_format',
@@ -198,7 +208,7 @@ const TABLE_SPEC_BIOSAMPLE: ResultsTableSpec<DiscoveryMatchBiosample> = {
   ],
   availableColumns: BIOSAMPLE_SEARCH_TABLE_COLUMNS,
   defaultColumns: ['individual', 'experiments', 'project', 'dataset'],
-  expandedRowRender: (rec) => <BiosampleRowDetail id={rec.id} />,
+  expandedRowRender: (rec) => <BiosampleDetailView id={rec.id} mode="search-row" />,
 };
 
 const TABLE_SPEC_EXPERIMENT: ResultsTableSpec<DiscoveryMatchExperiment> = {
@@ -211,6 +221,9 @@ const TABLE_SPEC_EXPERIMENT: ResultsTableSpec<DiscoveryMatchExperiment> = {
     {
       dataIndex: 'experiment_type',
       title: 'experiment.experiment_type',
+      render: (_: string, e: DiscoveryMatchExperiment) => (
+        <FreeTextAndOrOntologyClass text={e.experiment_type} ontologyClass={e.experiment_ontology} mode="experiment" />
+      ),
     } as ResultsTableFixedColumn<DiscoveryMatchExperiment>,
   ],
   availableColumns: EXPERIMENT_SEARCH_TABLE_COLUMNS,
@@ -292,12 +305,16 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
 }) => {
   const t = useTranslationFn();
 
-  const dispatch = useAppDispatch();
-  const { filterQueryParams, textQuery, resultCountsOrBools, pageSize, matchData } = useSearchQuery();
+  const { resultCountsOrBools, pageSize, matchData } = useSearchQuery();
   const { fetchingPermission: fetchingCanDownload, hasPermission: canDownload } = useScopeDownloadData();
   const downloadAllMatchesCSV = useDownloadAllMatchesCSV();
-  const selectedScope = useSelectedScope();
   const isSmallScreen = useSmallScreen();
+
+  const allQueryParams = useSearchQueryParams();
+  const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
+
+  const selectedScope = useSelectedScope();
+  const [oldSelectedScope, setOldSelectedScope] = useState<DiscoveryScopeSelection>(selectedScope);
 
   const [exporting, setExporting] = useState<boolean>(false);
   const [columnModalOpen, setColumnModalOpen] = useState<boolean>(false);
@@ -313,35 +330,6 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
 
   const currentStart = totalMatches > 0 ? page * pageSize + 1 : 0;
   const currentEnd = Math.min((page + 1) * pageSize, totalMatches);
-
-  // -------------------------------------------------------------------------------------------------------------------
-
-  const [shouldRefetch, setShouldRefetch] = useState<boolean>(true);
-
-  // Order of the below two effects is important - we want to first flag whether we should refetch based on a set of
-  // dependencies, and then (if we've flagged, or on initial load) run the refetch.
-  // Note: These two are decoupled to reduce needless re-fetches based on `shown` changing.
-
-  useEffect(() => {
-    console.debug('flagging should-refetch for entity:', rdEntity, {
-      page,
-      pageSize,
-      rdEntity,
-      filterQueryParams,
-      textQuery,
-    });
-    setShouldRefetch(true);
-    // Dependencies on page/page size, filterQueryParams, and textQuery to trigger re-fetch when these change.
-  }, [selectedScope, page, pageSize, rdEntity, filterQueryParams, textQuery]);
-
-  useEffect(() => {
-    if (!shown || !shouldRefetch) return;
-    // TODO: in the future, move this to the useSearchRouterAndHandler query if we have which page is being shown in the
-    //  URL or in Redux. Then, we can clean up the dispatch logic to have everything dispatched at once.
-    console.debug('fetching discovery match page for entity:', rdEntity);
-    dispatch(fetchDiscoveryMatches(rdEntity));
-    setShouldRefetch(false);
-  }, [dispatch, rdEntity, shown, shouldRefetch]);
 
   // -------------------------------------------------------------------------------------------------------------------
 
@@ -361,15 +349,17 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
     () => new Set<string>(spec.defaultColumns.filter((c) => allowedColumns.has(c)))
   );
 
-  useEffect(() => {
-    // If the selected scope changes, some of the currently-shown columns may no longer be valid:
+  if (!scopeSelectionEqual(selectedScope, oldSelectedScope)) {
+    // If the selected scope changes, some of the currently-shown columns may no longer be valid, so we eliminate any
+    // currently-shown columns that are no longer allowed:
     setShownColumns((oldSet) => {
       const newSet = new Set<string>([...oldSet].filter((v) => allowedColumns.has(v)));
 
-      // Don't change object if our newly-computed object is equivalent:
+      // Don't change object identity if our newly-computed object is equivalent:
       return setEquals(oldSet, newSet) ? oldSet : newSet;
     });
-  }, [selectedScope, allowedColumns, shownColumns]);
+    setOldSelectedScope(selectedScope);
+  }
 
   const columns = useMemo<CustomTableColumns<T>>(
     () => [
@@ -408,20 +398,32 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
             position: (isSmallScreen ? ['bottomCenter'] : ['bottomRight']) as TablePaginationConfig['position'],
             size: (isSmallScreen ? 'small' : 'default') as TablePaginationConfig['size'],
             showSizeChanger: true,
-            onChange(page, pageSize) {
-              dispatch(setMatchesPage([rdEntity, page - 1])); // AntD page is 1-indexed, discovery match page is 0-indexed
-              dispatch(setMatchesPageSize(pageSize));
+            onChange(newPage, newPageSize) {
+              // Update page/pageSize using navigation, since we sync Redux from the URL uni-directionally most times.
+              if (newPageSize !== pageSize) {
+                newPage = 1; // Reset page if we change the page size
+              }
+              navigateToSameScopeUrl(
+                buildQueryParamsUrl(BentoRoute.Overview, [
+                  ...queryParamsWithoutKey(allQueryParams, [TABLE_PAGE_QUERY_PARAM, TABLE_PAGE_SIZE_QUERY_PARAM]),
+
+                  // AntD page is 1-indexed, discovery match page is 0-indexed:
+                  [TABLE_PAGE_QUERY_PARAM, (newPage - 1).toString()],
+                  [TABLE_PAGE_SIZE_QUERY_PARAM, newPageSize.toString()],
+                ])
+              );
             },
+            style: { marginTop: 12, marginBottom: 0 }, // Already have bottom padding in search results card
           }
         : undefined,
-    [dispatch, rdEntity, page, pageSize, totalMatches, isSmallScreen]
+    [page, pageSize, totalMatches, isSmallScreen, navigateToSameScopeUrl, allQueryParams]
   );
 
   const onExport = useCallback(() => {
     setExporting(true);
     const filename = `${t(`entities.${entity}_other`)}.csv`;
-    downloadAllMatchesCSV(filterQueryParams, textQuery, rdEntity, filename).finally(() => setExporting(false));
-  }, [t, entity, downloadAllMatchesCSV, filterQueryParams, textQuery, rdEntity]);
+    downloadAllMatchesCSV(rdEntity, filename).finally(() => setExporting(false));
+  }, [t, entity, downloadAllMatchesCSV, rdEntity]);
 
   const openColumnModal = useCallback(() => setColumnModalOpen(true), []);
 
@@ -430,7 +432,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   return (
     <>
       <Col flex={1}>
-        <Flex justify="space-between" align="center" style={{ marginBottom: 8 }}>
+        <Flex justify="space-between" align="center" style={{ marginBottom: 12 }}>
           {onBack ? (
             <Button
               icon={<LeftOutlined />}
@@ -472,6 +474,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
         <CustomTable<T>
           columns={columns}
           dataSource={matches}
+          showHeader={!(status === RequestStatus.Fulfilled && matches.length === 0)}
           loading={WAITING_STATES.includes(status)}
           rowKey="id"
           pagination={pagination}

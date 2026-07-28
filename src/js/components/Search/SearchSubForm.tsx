@@ -1,20 +1,24 @@
 import type { CSSProperties, ReactNode } from 'react';
-import { Typography } from 'antd';
 import { useTranslationFn } from '@/hooks';
+import { SidebarSection } from '@/components/Sidebar/Sidebar';
 
 export type SearchSubFormProps = {
   titleKey: string;
+  titleKeyCount?: number;
   icon: ReactNode;
+  extra?: ReactNode;
   className?: string;
   style?: CSSProperties;
 };
 
 // Version of SearchSubFormProps type for specific search sub-forms, which define their own title/icon.
-export type DefinedSearchSubFormProps = Omit<SearchSubFormProps, 'titleKey' | 'icon'>;
+export type DefinedSearchSubFormProps = Omit<SearchSubFormProps, 'titleKey' | 'icon' | 'extra'>;
 
 const SearchSubForm = ({
   titleKey,
+  titleKeyCount,
   icon,
+  extra,
   className,
   style,
   children,
@@ -22,12 +26,21 @@ const SearchSubForm = ({
   const t = useTranslationFn();
 
   return (
-    <div className={'search-sub-form' + (className ? ' ' + className : '')} style={style}>
-      <Typography.Title level={3} className="search-sub-form-title">
-        {icon} <span className="should-underline-if-unfocused">{t(`search.${titleKey}`)}</span>
-      </Typography.Title>
+    <SidebarSection
+      sectionTitle={
+        <span style={{ flex: 1 }}>
+          {icon}{' '}
+          <span className="should-underline-if-unfocused">
+            {t(`search.${titleKey}`, titleKeyCount !== undefined ? { count: titleKeyCount } : {})}
+          </span>
+        </span>
+      }
+      extra={extra}
+      className={className}
+      style={style}
+    >
       {children}
-    </div>
+    </SidebarSection>
   );
 };
 

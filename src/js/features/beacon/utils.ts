@@ -11,7 +11,8 @@ import type {
 import type { SearchFieldAndOptions, SearchFieldSection } from '@/features/search/types';
 import type { ChartData, DiscoveryResults, OptionalDiscoveryResults } from '@/types/data';
 import type { NetworkBeacon } from '@/types/beaconNetwork';
-import type { Dataset, Project } from '@/types/metadata';
+import type { Project } from '@/types/metadata';
+import type { Dataset } from '@/types/dataset';
 import { RequestStatus } from '@/types/requests';
 import { serializeChartData } from '@/utils/chart';
 
@@ -52,7 +53,7 @@ export const computeNetworkResults = (responses: BeaconNetworkResponses) => {
 
   Object.values(responses).forEach(({ results }) => {
     overview.individualCount += results.individualCount ?? 0;
-    overview.biosampleCount += results.experimentCount ?? 0;
+    overview.biosampleCount += results.biosampleCount ?? 0;
     overview.experimentCount += results.experimentCount ?? 0;
     overview.biosampleChartData = mergeCharts(overview.biosampleChartData, results.biosampleChartData ?? []);
     overview.experimentChartData = mergeCharts(overview.experimentChartData, results.experimentChartData ?? []);
