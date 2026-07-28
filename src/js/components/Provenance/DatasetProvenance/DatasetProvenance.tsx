@@ -366,7 +366,7 @@ const DatasetProvenance = ({
 
   return (
     <div className="prov-container" style={style}>
-      {!hideHeader && <ProvenanceHeader dataset={dataset} copiedKey={copiedKey} onCopy={handleCopy} />}
+      {!hideHeader && <ProvenanceHeader dataset={dataset} />}
 
       <div className="pm-body" ref={bodyRef}>
         <SideNav
