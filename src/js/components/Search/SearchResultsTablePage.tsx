@@ -50,12 +50,12 @@ import {
 } from '@/features/search/utils';
 import { setEquals } from '@/utils/sets';
 
-import DatasetProvenanceModal from '@/components/Provenance/DatasetProvenanceModal';
-import ExportFieldsModal from './ExportFieldsModal';
+import DatasetProvenanceModal from '@/components/Provenance/DatasetProvenance/DatasetProvenanceModal';
 import ProjectTitle from '@Util/ProjectTitle';
 import DatasetTitle from '@Util/DatasetTitle';
 import ExperimentReferences from '@Util/ClinPhen/ExperimentReferences';
 import CustomTable, { type CustomTableColumn, type CustomTableColumns } from '@Util/CustomTable';
+import ExportFieldsModal from './ExportFieldsModal';
 import IndividualRowDetail from './IndividualRowDetail';
 import BiosampleDetailView from './BiosampleDetailView';
 import ExperimentRowDetail from './ExperimentRowDetail';

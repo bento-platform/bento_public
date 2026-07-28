@@ -8,6 +8,7 @@ export interface BentoRoutes {
   BeaconNetwork?: string;
   Provenance: string;
   Phenopackets: string;
+  NotFound: string;
 }
 
 const BentoRoute: BentoRoutes = {
@@ -15,6 +16,7 @@ const BentoRoute: BentoRoutes = {
   Search: 'search',
   Provenance: 'provenance',
   Phenopackets: 'phenopackets',
+  NotFound: 'not_found',
 };
 
 const TOP_LEVEL_ONLY_ROUTES: string[] = [];

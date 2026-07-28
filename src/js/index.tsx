@@ -1,5 +1,4 @@
 // React and ReactDOM imports
-import { useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 
 // Redux and routing imports
@@ -8,7 +7,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 // i18n and constants imports
 import { useTranslation } from 'react-i18next';
-import { NEW_BENTO_PUBLIC_THEME, OLD_LOCALSTORAGE_CHARTS_KEY } from '@/constants/overviewConstants';
+import { NEW_BENTO_PUBLIC_THEME } from '@/constants/overviewConstants';
 import { SUPPORTED_LNGS } from '@/constants/configConstants';
 
 // Component imports
@@ -24,7 +23,8 @@ import ResponsiveProvider from '@/components/Util/ResponsiveProvider';
 
 // Hooks and utilities imports
 import { BentoAuthContextProvider } from 'bento-auth-js';
-import { NotificationProvider } from './hooks/notifications';
+import { NotificationProvider } from '@/hooks/notifications';
+import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
 // Store and configuration imports
 import { store } from './store';
@@ -53,53 +53,55 @@ const BaseRoutes = () => {
   );
 };
 
-const RootApp = () => {
+/** Inner root app component with responsive context for screen-size-aware theming and more hook access */
+const InnerRootApp = () => {
   const { i18n } = useTranslation();
   const antdLocale = i18n.language === SUPPORTED_LNGS.FRENCH ? frCA : enUS;
-
-  // TODO: Remove this in the future (v20?), once we are sure no one is using the old localStorage key
-  useEffect(() => {
-    localStorage.removeItem(OLD_LOCALSTORAGE_CHARTS_KEY);
-  }, []);
+  const isSmallScreen = useSmallScreen();
 
   return (
-    <Provider store={store}>
-      <BrowserRouter>
-        <ResponsiveProvider>
-          <BentoAuthContextProvider
-            value={{
-              applicationUrl: PUBLIC_URL_NO_TRAILING_SLASH,
-              openIdConfigUrl: OPENID_CONFIG_URL,
-              clientId: CLIENT_ID,
-              scope: 'openid email',
-              postSignOutUrl: `${PUBLIC_URL_NO_TRAILING_SLASH}/`,
-              authCallbackUrl: AUTH_CALLBACK_URL,
-            }}
-          >
-            <ChartConfigProvider Lng={i18n.language ?? SUPPORTED_LNGS.ENGLISH} theme={NEW_BENTO_PUBLIC_THEME}>
-              <ConfigProvider
-                locale={antdLocale}
-                theme={{
-                  cssVar: { key: 'bento-theme' },
-                  components: {
-                    Button: { algorithm: !PCGL_MODE },
-                    Menu: { iconSize: 20 },
-                    Table: { borderColor: 'rgba(0, 0, 0, 0.08)' },
-                  },
-                  token: PCGL_MODE ? { colorPrimary: '#2B7AAD' } : {},
-                }}
-              >
-                <NotificationProvider>
-                  <BaseRoutes />
-                </NotificationProvider>
-              </ConfigProvider>
-            </ChartConfigProvider>
-          </BentoAuthContextProvider>
-        </ResponsiveProvider>
-      </BrowserRouter>
-    </Provider>
+    <ChartConfigProvider Lng={i18n.language ?? SUPPORTED_LNGS.ENGLISH} theme={NEW_BENTO_PUBLIC_THEME}>
+      <ConfigProvider
+        locale={antdLocale}
+        theme={{
+          cssVar: { key: 'bento-theme' },
+          components: {
+            Button: { algorithm: !PCGL_MODE },
+            Card: { bodyPadding: isSmallScreen ? 10 : 24 },
+            Menu: { iconSize: 20 },
+            Table: { borderColor: 'rgba(0, 0, 0, 0.08)' },
+          },
+          token: PCGL_MODE ? { colorPrimary: '#2B7AAD' } : {},
+        }}
+      >
+        <NotificationProvider>
+          <BaseRoutes />
+        </NotificationProvider>
+      </ConfigProvider>
+    </ChartConfigProvider>
   );
 };
+
+const RootApp = () => (
+  <Provider store={store}>
+    <BrowserRouter>
+      <ResponsiveProvider>
+        <BentoAuthContextProvider
+          value={{
+            applicationUrl: PUBLIC_URL_NO_TRAILING_SLASH,
+            openIdConfigUrl: OPENID_CONFIG_URL,
+            clientId: CLIENT_ID,
+            scope: 'openid email',
+            postSignOutUrl: `${PUBLIC_URL_NO_TRAILING_SLASH}/`,
+            authCallbackUrl: AUTH_CALLBACK_URL,
+          }}
+        >
+          <InnerRootApp />
+        </BentoAuthContextProvider>
+      </ResponsiveProvider>
+    </BrowserRouter>
+  </Provider>
+);
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(<RootApp />);
