@@ -22,7 +22,7 @@ export const statusTranslationKey = (status: string): string => `provenance.stat
 export const studyContextTranslationKey = (context: StudyContext): string =>
   `provenance.context.${context.toLowerCase()}`;
 
-/** Builds the i18n key for a facet's label, e.g., "dataTypes" -> "catalogue.facets.dataTypes". */
+/** Builds the i18n key for a facet's label, e.g., "domains" -> "catalogue.facets.domains". */
 export const facetTranslationKey = (facet: FacetId): string => `catalogue.facets.${facet}`;
 
 /** Ordered colour palette used to assign a stable colour per project name. */
@@ -41,7 +41,7 @@ export function assignColors(names: string[]): Record<string, string> {
 export function getDatasetFacetValues({ dataset, project }: DatasetWithProject): Record<FacetId, string[]> {
   return {
     projects: [project.title],
-    dataTypes: dataset.domain ?? [],
+    domains: dataset.domain ?? [],
     taxa: (dataset.taxa ?? []).map(getLabel),
     access: dataset.privacy ? [dataset.privacy] : [],
     licenses: dataset.license?.type ? [dataset.license.type] : [],

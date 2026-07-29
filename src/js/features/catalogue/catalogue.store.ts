@@ -19,7 +19,7 @@ export interface CatalogueState {
 
 const EMPTY_SETS: CatalogueFilterSets = {
   projects: [],
-  dataTypes: [],
+  domains: [],
   taxa: [],
   access: [],
   licenses: [],

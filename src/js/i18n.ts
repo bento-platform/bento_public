@@ -3,6 +3,7 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import HttpApi from 'i18next-http-backend';
+import { PCGL_MODE, TRANSLATED } from '@/config';
 import { SUPPORTED_LNGS } from './constants/configConstants';
 
 const languageDetector = new LanguageDetector(null, {
@@ -14,11 +15,11 @@ const options: InitOptions = {
   fallbackLng: SUPPORTED_LNGS.ENGLISH,
 
   // have a common namespace used around the full app
-  ns: ['translation', 'default_translation'],
+  ns: ['translation', ...(PCGL_MODE ? ['pcgl_translation'] : []), 'default_translation'],
   defaultNS: 'translation',
-  fallbackNS: 'default_translation',
+  fallbackNS: PCGL_MODE ? ['pcgl_translation', 'default_translation'] : 'default_translation',
 
-  supportedLngs: Object.values(SUPPORTED_LNGS),
+  supportedLngs: TRANSLATED ? Object.values(SUPPORTED_LNGS) : ['en'],
   load: 'all',
   preload: [SUPPORTED_LNGS.ENGLISH, SUPPORTED_LNGS.FRENCH],
 

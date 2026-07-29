@@ -1,7 +1,7 @@
 import type { Dataset } from '@/types/dataset';
 import type { Project } from '@/types/metadata';
 
-export const FACET_IDS = ['projects', 'dataTypes', 'taxa', 'access', 'licenses', 'statuses', 'keywords'] as const;
+export const FACET_IDS = ['projects', 'domains', 'taxa', 'access', 'licenses', 'statuses', 'keywords'] as const;
 export type FacetId = (typeof FACET_IDS)[number];
 
 export const FACET_ORDER: Partial<Record<FacetId, string[]>> = {

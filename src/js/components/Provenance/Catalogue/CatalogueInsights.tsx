@@ -38,11 +38,11 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
   const { toggleFacetValue } = useCatalogueUrlActions();
 
   const statusData = buildCounts(filteredDatasets, ({ dataset }) => [normaliseStatus(dataset.study_status)]);
-  const typeData = buildCounts(filteredDatasets, ({ dataset }) => dataset.domain ?? []);
+  const domainData = buildCounts(filteredDatasets, ({ dataset }) => dataset.domain ?? []);
   const programData = buildCounts(filteredDatasets, ({ project }) => [project.title]);
   const keywordData = buildCounts(filteredDatasets, ({ dataset }) => (dataset.keywords ?? []).map(getLabel));
 
-  const typeColors = assignColors(typeData.map((d) => d.name));
+  const domainColors = assignColors(domainData.map((d) => d.name));
   const keywordColors = assignColors(keywordData.slice(0, 5).map((d) => d.name));
 
   const handleClick = (facetId: FacetId, value: string) => {
@@ -71,11 +71,11 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
         />
         {PCGL_MODE ? (
           <BarChart
-            title={t('catalogue.insights.by_data_type')}
-            data={typeData.slice(0, 5)}
-            colors={typeColors}
-            facetId="dataTypes"
-            selectedValues={sets.dataTypes}
+            title={t('catalogue.insights.by_domain')}
+            data={domainData.slice(0, 5)}
+            colors={domainColors}
+            facetId="domains"
+            selectedValues={sets.domains}
             onSegmentClick={handleClick}
           />
         ) : (
