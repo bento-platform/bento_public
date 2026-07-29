@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { PCGL_MODE } from '@/config';
 import { useAppDispatch } from '@/hooks';
 import { useCatalogueState } from '@/features/catalogue/hooks';
 import { toggleFacetCollapse, type FacetId } from '@/features/catalogue/catalogue.store';
@@ -15,11 +16,12 @@ interface FacetConfig {
 }
 
 const FACETS: FacetConfig[] = [
-  { id: 'projects' },
+  ...(PCGL_MODE ? [] : ([{ id: 'projects' }] as FacetConfig[])),
   { id: 'domains', scroll: true },
   { id: 'taxa' },
   { id: 'access' },
   { id: 'licenses' },
+  { id: 'contexts' },
   { id: 'statuses' },
   { id: 'keywords', scroll: true },
 ];

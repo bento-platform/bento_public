@@ -564,6 +564,7 @@
       "taxa": "Taxa",
       "access": "Access",
       "licenses": "Data use",
+      "contexts": "Context",
       "statuses": "Status",
       "keywords": "Keywords"
     },

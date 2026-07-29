@@ -23,6 +23,7 @@ const EMPTY_SETS: CatalogueFilterSets = {
   taxa: [],
   access: [],
   licenses: [],
+  contexts: [],
   statuses: [],
   keywords: [],
 };

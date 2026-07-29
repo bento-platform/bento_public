@@ -5,7 +5,7 @@ import { useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync
 import { useTranslationFn } from '@/hooks';
 import { BarChartOutlined } from '@ant-design/icons';
 import type { DatasetWithProject } from '@/features/catalogue/hooks';
-import { getLabel, normaliseStatus } from '@/features/catalogue/hooks';
+import { getLabel, normaliseStatus } from '@/features/catalogue/utils';
 import DonutChart from './Charts/DonutChart';
 import BarChart from './Charts/BarChart';
 import { PCGL_MODE } from '@/config';
@@ -39,7 +39,7 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
 
   const statusData = buildCounts(filteredDatasets, ({ dataset }) => [normaliseStatus(dataset.study_status)]);
   const domainData = buildCounts(filteredDatasets, ({ dataset }) => dataset.domain ?? []);
-  const programData = buildCounts(filteredDatasets, ({ project }) => [project.title]);
+  const projectData = buildCounts(filteredDatasets, ({ project }) => [project.title]);
   const keywordData = buildCounts(filteredDatasets, ({ dataset }) => (dataset.keywords ?? []).map(getLabel));
 
   const domainColors = assignColors(domainData.map((d) => d.name));
@@ -79,23 +79,23 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
             onSegmentClick={handleClick}
           />
         ) : (
-          <BarChart
-            title={t('catalogue.insights.by_keyword')}
-            data={keywordData.slice(0, 5)}
-            colors={keywordColors}
-            facetId="keywords"
-            selectedValues={sets.keywords}
+          <DonutChart
+            title={t('catalogue.insights.by_project')}
+            data={projectData}
+            colors={projectColors}
+            total={filteredDatasets.length}
+            centerLabel={t('entities.dataset', { count: filteredDatasets.length }).toLowerCase()}
+            facetId="projects"
+            selectedValues={sets.projects}
             onSegmentClick={handleClick}
           />
         )}
-        <DonutChart
-          title={t('catalogue.insights.by_project')}
-          data={programData}
-          colors={projectColors}
-          total={filteredDatasets.length}
-          centerLabel={t('entities.dataset', { count: filteredDatasets.length }).toLowerCase()}
-          facetId="projects"
-          selectedValues={sets.projects}
+        <BarChart
+          title={t('catalogue.insights.by_keyword')}
+          data={keywordData.slice(0, 5)}
+          colors={keywordColors}
+          facetId="keywords"
+          selectedValues={sets.keywords}
           onSegmentClick={handleClick}
         />
       </Flex>

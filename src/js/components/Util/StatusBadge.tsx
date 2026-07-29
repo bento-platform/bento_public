@@ -1,4 +1,5 @@
-import { normaliseStatus, statusTranslationKey } from '@/features/catalogue/hooks';
+import { statusTranslationKey } from '@/features/catalogue/hooks';
+import { normaliseStatus } from '@/features/catalogue/utils';
 import { useTranslationFn } from '@/hooks';
 
 const StatusBadge = ({ status }: { status?: string | null }) => {
