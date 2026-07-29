@@ -28,6 +28,7 @@
 
   --antd-blue-5: #1677ff;
   --antd-gray-7: #595959;
+  --antd-danger-6: #FF4D4F;
 
   /* shared design tokens */
   /* Note: --ant-color-primary is intentionally NOT proxied here. antd injects its CSS vars scoped to
@@ -605,9 +606,39 @@ body {
 .catalogue-sort-select { width: 180px; flex-shrink: 1; min-width: 70px; }
 .catalogue-toolbar-fixed { flex-shrink: 0; }
 .catalogue-count-highlight { color: var(--text-primary); font-weight: 600; }
-.catalogue-filter-tag { border-radius: 15px !important; margin: 0 !important; }
+.catalogue-filter-tag { 
+  align-items: center;
+  background: #fff;
+  border: 1px solid var(--border-base);
+  border-radius: 15px !important;
+  color: var(--text-secondary);
+  display: flex;
+  margin: 0 !important;
+  padding-left: 8px;
+}
+.catalogue-filter-button {
+  background: transparent;
+  border: transparent;
+  border-radius: 12px;
+  color: var(--antd-danger-6);
+  font-size: 12px;
+  height: 24px;
+  cursor: pointer;
+  width: 24px;
+}
+.catalogue-filter-tag__label { margin: 0; color: var(--text-primary); font-size: 12px;}
 .catalogue-filter-tag__facet-label { color: var(--text-muted); font-size: 11px; margin-right: 3px; }
-.catalogue-clear-tag { border-radius: 15px !important; margin: 0 !important; cursor: pointer; border-style: dashed; }
+.catalogue-clear-tag {
+  background: #fff;
+  border: 1px solid var(--antd-danger-6);
+  border-radius: 15px !important;
+  border-style: dashed;
+  color: var(--antd-danger-6);
+  cursor: pointer;
+  font-size: 12px;
+  height: 24px;
+  margin: 0 !important;
+}
 /* END catalogue toolbar */
 
 /* Bigger active-filter-tag variant used on the overview page (between the About section and count cards) */

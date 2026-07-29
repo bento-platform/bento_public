@@ -218,7 +218,8 @@
       "dataset_found_other": "jeux de données trouvés",
       "show_insights": "Afficher les aperçus",
       "hide_insights": "Masquer les aperçus",
-      "clear_all": "Tout effacer"
+      "clear_all": "Tout effacer",
+      "clear_filter": "Effacer le filtre par"
     },
     "insights": {
       "title": "Aperçu des jeux de données",
