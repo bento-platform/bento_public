@@ -37,24 +37,13 @@ const initialState: CatalogueState = {
   projectColors: {},
 };
 
+// q, sort, view, and sets are URL-driven: the URL is the source of truth, and useCatalogueUrlSync
+// is the only place that writes them into Redux (via hydrateFromUrl), reacting to navigation.
+// Components mutate them by navigating (see useCatalogueUrlActions), never by dispatching directly.
 const catalogueSlice = createSlice({
   name: 'catalogue',
   initialState,
   reducers: {
-    toggleFacetValue(state, action: PayloadAction<{ facet: FacetId; value: string }>) {
-      const { facet, value } = action.payload;
-      const current = state.sets[facet];
-      state.sets[facet] = current.includes(value) ? current.filter((v) => v !== value) : [...current, value];
-    },
-    setSearch(state, action: PayloadAction<string>) {
-      state.q = action.payload;
-    },
-    setSort(state, action: PayloadAction<SortKey>) {
-      state.sort = action.payload;
-    },
-    setView(state, action: PayloadAction<ViewMode>) {
-      state.view = action.payload;
-    },
     toggleInsights(state) {
       state.insightsOpen = !state.insightsOpen;
     },
@@ -76,22 +65,8 @@ const catalogueSlice = createSlice({
     setProjectColors(state, action: PayloadAction<Record<string, string>>) {
       state.projectColors = action.payload;
     },
-    clearAll(state) {
-      state.q = '';
-      state.sets = { ...EMPTY_SETS };
-    },
   },
 });
 
-export const {
-  toggleFacetValue,
-  setSearch,
-  setSort,
-  setView,
-  toggleInsights,
-  toggleFacetCollapse,
-  hydrateFromUrl,
-  setProjectColors,
-  clearAll,
-} = catalogueSlice.actions;
+export const { toggleInsights, toggleFacetCollapse, hydrateFromUrl, setProjectColors } = catalogueSlice.actions;
 export default catalogueSlice.reducer;

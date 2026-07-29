@@ -1,54 +1,64 @@
-import { useEffect, useRef } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useCallback, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useAppDispatch } from '@/hooks';
-import { useCatalogueState } from './hooks';
+import { useUrlFacetSync, type ScalarParam } from '@/hooks/useUrlFacetSync';
+import { useUrlFacetActions } from '@/hooks/useUrlFacetActions';
 import { hydrateFromUrl, FACET_IDS, type SortKey, type ViewMode, type CatalogueFilterSets } from './catalogue.store';
 
-const VALID_SORTS: SortKey[] = ['updated_desc', 'created_desc', 'title_az', 'individuals_desc', 'biosamples_desc'];
-const VALID_VIEWS: ViewMode[] = ['grid', 'list'];
+/** sessionStorage key holding the catalogue's last query string, so in-app "back to catalogue" links
+ *  (which navigate to a bare URL rather than popping browser history) can restore applied filters. */
+export const CATALOGUE_SEARCH_STORAGE_KEY = 'catalogue:lastSearch';
 
-function splitParam(v: string | null): string[] {
-  return v ? v.split(',').filter(Boolean) : [];
-}
+const SORT_PARAM: ScalarParam<SortKey> = {
+  key: 'sort',
+  defaultValue: 'updated_desc',
+  validValues: ['updated_desc', 'created_desc', 'title_az', 'individuals_desc', 'biosamples_desc'],
+};
+const VIEW_PARAM: ScalarParam<ViewMode> = { key: 'view', defaultValue: 'grid', validValues: ['grid', 'list'] };
+const SCALARS = { sort: SORT_PARAM, view: VIEW_PARAM };
 
+/**
+ * The URL is the source of truth for catalogue filters. This hydrates Redux from it on mount
+ * and on every subsequent navigation (including browser back/forward), via the generic
+ * useUrlFacetSync, mirroring the pattern used by useSearchRouterAndHandler for the Search feature.
+ */
 export function useCatalogueUrlSync() {
   const dispatch = useAppDispatch();
-  const state = useCatalogueState();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const skipFirstSync = useRef(true);
+  const location = useLocation();
 
-  // Mount: read URL → hydrate Redux
   useEffect(() => {
-    const rawSort = searchParams.get('sort');
-    const rawView = searchParams.get('view');
-    const sets = Object.fromEntries(
-      FACET_IDS.map((facet) => [facet, splitParam(searchParams.get(facet))])
-    ) as unknown as CatalogueFilterSets;
-    dispatch(
-      hydrateFromUrl({
-        q: searchParams.get('q') ?? '',
-        sort: VALID_SORTS.includes(rawSort as SortKey) ? (rawSort as SortKey) : 'updated_desc',
-        view: VALID_VIEWS.includes(rawView as ViewMode) ? (rawView as ViewMode) : 'grid',
-        sets,
-      })
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    sessionStorage.setItem(CATALOGUE_SEARCH_STORAGE_KEY, location.search);
+  }, [location.search]);
 
-  // Redux → URL (skip initial render to avoid wiping URL before hydration completes)
-  useEffect(() => {
-    if (skipFirstSync.current) {
-      skipFirstSync.current = false;
-      return;
-    }
-    const params: Record<string, string> = {};
-    if (state.q) params['q'] = state.q;
-    if (state.sort !== 'updated_desc') params['sort'] = state.sort;
-    if (state.view !== 'grid') params['view'] = state.view;
-    for (const facet of FACET_IDS) {
-      const vals = state.sets[facet];
-      if (vals.length > 0) params[facet] = vals.join(',');
-    }
-    setSearchParams(params, { replace: true });
-  }, [state.q, state.sort, state.view, state.sets, setSearchParams]);
+  const onHydrate = useCallback(
+    ({ q, sets, scalars }: { q: string; sets: CatalogueFilterSets; scalars: Record<string, string> }) => {
+      dispatch(hydrateFromUrl({ q, sets, sort: scalars.sort as SortKey, view: scalars.view as ViewMode }));
+    },
+    [dispatch]
+  );
+
+  useUrlFacetSync(FACET_IDS, SCALARS, onHydrate);
+}
+
+/**
+ * Actions that mutate catalogue filter state by navigating the URL. useCatalogueUrlSync reflects
+ * the resulting URL change back into Redux, so components never dispatch filter changes directly.
+ *
+ * Facet values use repeated-key query params (?statuses=Ongoing&statuses=Completed), same encoding
+ * as the Search feature, sharing queryParamsWithoutKey from @/utils/queryParams.
+ */
+export function useCatalogueUrlActions() {
+  const { setParam, toggleFacetValue, clearAll } = useUrlFacetActions(FACET_IDS);
+
+  const setSearch = useCallback((q: string) => setParam('q', q), [setParam]);
+  const setSort = useCallback((sort: SortKey) => setParam('sort', sort, SORT_PARAM.defaultValue), [setParam]);
+  const setView = useCallback((view: ViewMode) => setParam('view', view, VIEW_PARAM.defaultValue), [setParam]);
+
+  return {
+    setSearch,
+    setSort,
+    setView,
+    toggleFacetValue,
+    clearAll: useCallback(() => clearAll(['q']), [clearAll]),
+  };
 }

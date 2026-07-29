@@ -1,6 +1,6 @@
 {
   "name": "bento_public",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A publicly accessible portal for clinical datasets, where users are able to see high-level statistics of the data available through predefined variables of interest and search the data using limited variables at a time. This portal allows users to gain a generic understanding of the data available (secure and firewalled) without the need to access it directly.",
   "main": "index.js",
   "scripts": {
@@ -37,15 +37,18 @@
     "less": "^4.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-error-boundary": "^6.1.2",
     "react-i18next": "^16.5.4",
     "react-icons": "^5.5.0",
     "react-leaflet": "^4.2.1",
+    "react-markdown": "^9.1.0",
     "react-redux": "^8.1.3",
     "react-router-dom": "^6.30.0",
     "react18-json-view": "^0.2.9",
     "recharts": "^3.7.0",
     "redux": "^4.2.1",
-    "redux-thunk": "^2.4.1"
+    "redux-thunk": "^2.4.1",
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
