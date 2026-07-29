@@ -1,5 +1,8 @@
+import dayjs from 'dayjs';
+
 export const RANGE_RE = /^([[(])([^,]*),([^,]*)([\])])$/;
 export const COMPARISON_RE = /^([<>]|[≥≤])\s*(.+)$/;
+export const DATE_BIN_KEY_RE = /^\d{4}-\d{2}$/;
 export const DATE_FORMAT = 'YYYY-MM-DD';
 
 export type RangeState = { lowerStr: string; upperStr: string; lowerOpen: boolean; upperOpen: boolean };
@@ -24,6 +27,18 @@ export const parseBrackets = (value: string | null): RangeState => {
 /** Formats a "yyyy-mm" date bin key (e.g. "2021-01") for display in the given language, e.g. "Jan 2021" / "janv. 2021". */
 export const formatDateBinKey = (key: string, language: string): string =>
   new Date(key).toLocaleString(language, { year: 'numeric', month: 'short' });
+
+/**
+ * Expands a raw "yyyy-mm" date bin key (as produced by clicking a date-binned chart bar, see Chart.tsx) into the
+ * [start, end] of that month, formatted as DATE_FORMAT strings, so a range picker can display it. Returns null if
+ * the key isn't a valid bin key.
+ */
+export const dateBinKeyToRange = (key: string): { lowerStr: string; upperStr: string } | null => {
+  if (!DATE_BIN_KEY_RE.test(key)) return null;
+  const month = dayjs(key);
+  if (!month.isValid()) return null;
+  return { lowerStr: month.startOf('month').format(DATE_FORMAT), upperStr: month.endOf('month').format(DATE_FORMAT) };
+};
 
 export const buildRangeString = (
   lowerStr: string,
