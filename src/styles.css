@@ -602,7 +602,7 @@ body {
 
 /* BEGIN catalogue toolbar */
 .catalogue-search-input { flex-grow: 1; flex-shrink: 1; min-width: 70px; border-radius: 6px; }
-.catalogue-sort-select { width: 180px; flex-shrink: 1; min-width: 70px; }
+.catalogue-sort-select { width: 250px; flex-shrink: 1; min-width: 70px; }
 .catalogue-toolbar-fixed { flex-shrink: 0; }
 .catalogue-count-highlight { color: var(--text-primary); font-weight: 600; }
 .catalogue-filter-tag { border-radius: 15px !important; margin: 0 !important; }
