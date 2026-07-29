@@ -196,13 +196,13 @@
       "close": "Fermer les filtres"
     },
     "facets": {
-      "projects": "$t(entities.project_one)",
+      "projects": "$t(entities.project_other)",
       "domains": "Domaines",
       "taxa": "Taxons",
       "access": "Accès",
       "licenses": "Utilisation des données",
       "statuses": "Statut",
-      "keywords": "Mot-clé"
+      "keywords": "Mots-clés"
     },
     "toolbar": {
       "search_placeholder": "Rechercher des $t(entities.dataset_other, lowercase), mots-clés, dosages …",

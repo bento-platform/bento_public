@@ -559,13 +559,13 @@
       "close": "Close filters"
     },
     "facets": {
-      "projects": "$t(entities.project_one)",
-      "domains": "Domain",
+      "projects": "$t(entities.project_other)",
+      "domains": "Domains",
       "taxa": "Taxa",
       "access": "Access",
       "licenses": "Data use",
       "statuses": "Status",
-      "keywords": "Keyword"
+      "keywords": "Keywords"
     },
     "toolbar": {
       "search_placeholder": "Search $t(entities.dataset_other, lowercase), keywords, assays…",
