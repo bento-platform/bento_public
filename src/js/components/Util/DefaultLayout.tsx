@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
-import { FloatButton, Grid, Layout } from 'antd';
+import { Alert, FloatButton, Grid, Layout } from 'antd';
+import { ErrorBoundary, getErrorMessage } from 'react-error-boundary';
 import SiteHeader from '@/components/SiteHeader';
 import SiteSider from '@/components/SiteSider';
 import SiteFooter from '@/components/SiteFooter';
 import PcglFooter from '@/components/Pcgl/PcglFooter';
 import ScopeHeader from '@/components/Scope/ScopeHeader';
 import { useSelectedScope, useScopeHasData } from '@/features/metadata/hooks';
-import { useIsInCatalogueMode, useSidebarMenuItems } from '@/hooks/navigation';
+import { useIsInCatalogueMode, useSiteMenuItems } from '@/hooks/navigation';
 import { useTitleBreadcrumbItems } from '@/hooks/useTitleBreadcrumbItems';
 import { PCGL_MODE } from '@/config';
 import { BentoRoute } from '@/types/routes';
@@ -25,7 +26,7 @@ const DefaultLayout = () => {
   const { scopeSet, scope } = useSelectedScope();
   const scopeHasData = useScopeHasData();
 
-  const menuItems = useSidebarMenuItems();
+  const [siteHeaderMenuItems, scopeHeaderMenuItems] = useSiteMenuItems();
   const [collapsed, setCollapsed] = useState(true);
 
   const breakpoints = useBreakpoint();
@@ -33,7 +34,6 @@ const DefaultLayout = () => {
   const isCatalogue = scopeSet && !scope.project && catalogueMode && page === 'overview';
   const sidebarOverlay = !breakpoints.lg;
   const sidebarOverlayShown = sidebarOverlay && !collapsed;
-  // TODO: enable sidebar with catalogue when catalogue filtering/search is hooked up
   const sidebarHidden = page !== 'overview' || isCatalogue || (!isCatalogue && !scopeHasData);
 
   const showSidebarToggle = sidebarOverlay && page === 'overview';
@@ -48,7 +48,7 @@ const DefaultLayout = () => {
         'scope-header-hidden': scopeHeaderHidden,
       })}
     >
-      <SiteHeader menuItems={menuItems} />
+      <SiteHeader menuItems={siteHeaderMenuItems} />
       <Layout id="content-layout">
         {!isCatalogue && !scopeHeaderHidden && (
           <ScopeHeader
@@ -56,24 +56,20 @@ const DefaultLayout = () => {
             sidebarOverlayShown={sidebarOverlayShown}
             onToggleSidebar={() => setCollapsed((c) => !c)}
             breadcrumbItems={breadcrumbItems}
+            menuItems={scopeHeaderMenuItems}
           />
         )}
         <Layout>
           <Layout>
-            {!sidebarHidden && <SiteSider collapsed={collapsed} overlay={sidebarOverlay} />}
-            {sidebarOverlayShown ? (
-              <div
-                style={{ position: 'fixed', inset: 0, zIndex: 18, backdropFilter: 'blur(10px)' }}
-                onClick={(e) => {
-                  setCollapsed(true);
-                  e.preventDefault();
-                  e.stopPropagation();
-                }}
-                aria-hidden
-              />
-            ) : null}
-            <Content style={{ minHeight: 500 }}>
-              <Outlet />
+            {!sidebarHidden && (
+              <SiteSider overlay={sidebarOverlay} open={sidebarOverlayShown} onClose={() => setCollapsed(true)} />
+            )}
+            <Content style={{ minHeight: 'calc(100vh - 210px - var(--scoped-title-height) - var(--header-height))' }}>
+              <ErrorBoundary
+                fallbackRender={({ error }) => <Alert type="error" description={getErrorMessage(error)} />}
+              >
+                <Outlet />
+              </ErrorBoundary>
             </Content>
           </Layout>
           {PCGL_MODE ? <PcglFooter /> : <SiteFooter />}

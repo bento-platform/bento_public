@@ -8,6 +8,7 @@ interface PublicConfig {
   // Display flags
   TRANSLATED: boolean; // Whether to show a language toggle
   TRANSLATED_LOGO: boolean; // Whether a translated version of the header logo is available/relevant
+  LOGO_HEIGHT: string; // String representation of a logo height in pixels as an integer with no suffix: e.g., '32'
   SHOW_HEADER_TITLE: boolean; // Whether to show the CLIENT_NAME title text
   SHOW_PORTAL_LINK: boolean;
   SHOW_SIGN_IN: boolean;
@@ -39,6 +40,7 @@ export const PUBLIC_URL = PUBLIC_URL_NO_TRAILING_SLASH + '/';
 export const TRANSLATED = BENTO_PUBLIC_CONFIG.TRANSLATED ?? stringToBoolean(process.env.BENTO_PUBLIC_TRANSLATED);
 export const TRANSLATED_LOGO =
   BENTO_PUBLIC_CONFIG.TRANSLATED_LOGO ?? stringToBoolean(process.env.BENTO_PUBLIC_TRANSLATED_LOGO);
+export const LOGO_HEIGHT = parseInt((BENTO_PUBLIC_CONFIG.LOGO_HEIGHT ?? process.env.BENTO_PUBLIC_LOGO_HEIGHT) || '32');
 export const SHOW_HEADER_TITLE =
   BENTO_PUBLIC_CONFIG.SHOW_HEADER_TITLE ?? stringToBoolean(process.env.BENTO_PUBLIC_SHOW_HEADER_TITLE, 'true');
 export const SHOW_PORTAL_LINK =
@@ -46,10 +48,7 @@ export const SHOW_PORTAL_LINK =
 export const SHOW_SIGN_IN = BENTO_PUBLIC_CONFIG.SHOW_SIGN_IN ?? stringToBoolean(process.env.BENTO_PUBLIC_SHOW_SIGN_IN);
 export const FORCE_CATALOGUE =
   BENTO_PUBLIC_CONFIG.FORCE_CATALOGUE ?? stringToBoolean(process.env.BENTO_PUBLIC_FORCE_CATALOGUE);
-// TODO: temporary dev override — remove before merging to main
-declare const process: { env: { NODE_ENV: string; [key: string]: string | undefined } };
-const _devPcglOverride = process.env.NODE_ENV === 'development' ? localStorage.getItem('dev_pcgl_mode') : null;
-export const PCGL_MODE = _devPcglOverride !== null ? _devPcglOverride === 'true' : true;
+export const PCGL_MODE = BENTO_PUBLIC_CONFIG.PCGL_MODE ?? stringToBoolean(process.env.BENTO_PUBLIC_PCGL_MODE);
 
 // Beacon configuration and flags
 export const BEACON_URL = BENTO_PUBLIC_CONFIG.BEACON_URL ?? process.env.BEACON_URL;

@@ -23,11 +23,16 @@ export const getCurrentPage = (location?: RouterLocation | Location): string => 
   const validPages = Object.values(BentoRoute);
 
   const pageIdx = getPathPageIndex(pathArray);
+  const pathPage = pathArray[pageIdx];
 
-  if (validPages.includes(pathArray[pageIdx])) {
-    return pathArray[pageIdx];
-  } else {
+  if (pathPage && validPages.includes(pathPage)) {
+    return pathPage;
+  } else if (pathPage === '' || pathPage === undefined) {
+    // '/(p|d)/<uuid>/' or '/(p|d)/<uuid>'
     return BentoRoute.Overview;
+  } else {
+    // quasi-page used to indicate an unknown path
+    return BentoRoute.NotFound;
   }
 };
 

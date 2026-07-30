@@ -9,10 +9,12 @@ const siteConfig = {
   // Bento Public display flags
   TRANSLATED: parseBoolean(process.env.BENTO_PUBLIC_TRANSLATED),
   TRANSLATED_LOGO: parseBoolean(process.env.BENTO_PUBLIC_TRANSLATED_LOGO),
+  LOGO_HEIGHT: process.env.BENTO_PUBLIC_LOGO_HEIGHT || '32',
   SHOW_HEADER_TITLE: parseBoolean(process.env.BENTO_PUBLIC_SHOW_HEADER_TITLE),
   SHOW_PORTAL_LINK: parseBoolean(process.env.BENTO_PUBLIC_SHOW_PORTAL_LINK),
   SHOW_SIGN_IN: parseBoolean(process.env.BENTO_PUBLIC_SHOW_SIGN_IN),
   FORCE_CATALOGUE: parseBoolean(process.env.BENTO_PUBLIC_FORCE_CATALOGUE), // Show data catalogue even with 1 project
+  PCGL_MODE: parseBoolean(process.env.BENTO_PUBLIC_PCGL_MODE),
 
   // Theme variables
   CATALOGUE_HEADER_BACKGROUND: process.env.BENTO_PUBLIC_CATALOGUE_HEADER_BACKGROUND,

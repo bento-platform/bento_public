@@ -16,20 +16,20 @@
     "individual_one": "Individual",
     "individual_other": "Individuals",
     "individual_help": [
-      "Individuals represent a specific person / organism, and may have one or multiple associated biosamples, each with associated experiments."
+      "$t(entities.individual_other) represent a specific person / organism, and may have one or multiple associated $t(entities.biosample_other, lowercase), each with associated $t(entities.experiment_other)."
     ],
     "biosample_one": "Biosample",
     "biosample_other": "Biosamples",
-    "biosample_help": ["Biosamples are usually biological material extracted from a specific individual."],
+    "biosample_help": ["$t(entities.biosample_other) are usually biological material extracted from a specific $t(entities.individual_one, lowercase)."],
     "experiment_one": "Experiment",
     "experiment_other": "Experiments",
     "experiment_help": [
-      "Experiments are a process done to a specific sample, e.g., whole-genome sequencing.",
-      "One lab experiment may result in multiple experiment records inside the portal, such as with multiplexed samples."
+      "$t(entities.experiment_other) are processes done to a specific sample, e.g., whole-genome sequencing.",
+      "One lab experiment may result in multiple $t(entities.experiment_one) records inside the portal, such as with multiplexed samples."
     ],
     "experiment_result_one": "File",
     "experiment_result_other": "Files",
-    "experiment_result_help": "Files are generated as the result of experiments.",
+    "experiment_result_help": "$t(entities.experiment_result_other) are generated as the result of $t(entities.experiment_other).",
     "variant_one": "Variant",
     "variant_other": "Variants"
   },
@@ -43,11 +43,29 @@
     "ontology_class": "Ontology Class",
     "view": "View",
     "url": "URL",
-    "extra_properties": "$t(Extra Properties)"
+    "extra_properties": "$t(Extra Properties)",
+    "type": "Type",
+    "source": "Source",
+    "copy": "Copy",
+    "copied": "Copied",
+    "show": "Show",
+    "show_less": "Show less",
+    "show_more": "Show more",
+    "hide": "Hide"
+  },
+  "navigation": {
+    "nav_cap": {
+      "sections": "Sections"
+    },
+    "invalid_endpoint_title": "Invalid Endpoint: /{{endpoint}}",
+    "invalid_endpoint_description": "The endpoint you are trying to access is not valid. Redirected to {{target}}.",
+    "not_available_title": "/{{endpoint}} Tab Not Available",
+    "not_available_description": "The requested tab is not available. Redirected to {{target}}."
   },
   "errors": {
-    "project_fetch": "Error fetching projects",
-    "search_fetch": "Error fetching search results"
+    "project_fetch": "Error fetching $t(entities.project_other, lowercase)",
+    "search_fetch": "Error fetching search results",
+    "page_not_found": "Page not found"
   },
   "search": {
     "filters_one": "filter",
@@ -64,8 +82,11 @@
     "showing_entities": "Showing {{entity, lowercase}} {{start}}-{{end}} of {{total}}",
     "showing_entities_short": "{{start}}-{{end}} / {{total}}",
     "manage_columns": "Manage Columns",
-    "export_csv": "Export as CSV",
+    "export": "Export",
+    "export_data": "Export Data",
+    "select_all_fields": "Select all",
     "csv": "CSV",
+    "xlsx": "XLSX",
     "fts": {
       "plain": "Word",
       "plain_help": "Retrieves records which exactly match words in the query (case-insensitive).",
@@ -226,16 +247,21 @@
   "Help for": "Help for",
   "page_help": {
     "overview": [
-      "The $t(Overview) page shows counts and charts for data stored in the selected project/dataset (the 'scope').",
+      "The $t(Overview) page shows counts and charts for data stored in the selected",
+      "$t(entities.project_one, lowercase)/$t(entities.dataset_one, lowercase) (the 'scope').",
       "Charts can be shown/hidden or their width altered via the '$t(Manage Charts)' button."
     ],
     "search": [
-      "The $t(Search) page lets you query either counts or full records for data stored in a specific project/dataset",
+      "The $t(Search) page lets you query either counts or full records for data stored in a specific",
+      "$t(entities.project_one, lowercase)/$t(entities.dataset_one, lowercase)",
       "or the entire instance (the 'scope'), depending on your level of authorization.\n",
       "Select filters and specify values to narrow down data of interest within the selected scope.",
       "If a small number of records match your query, the count may be censored to prevent re-identification."
     ],
-    "provenance": ["Detailed provenance data for a dataset or all datasets in a project."],
+    "provenance": [
+      "Detailed provenance data for a $t(entities.dataset_one, lowercase) or all $t(entities.dataset_other, lowercase)",
+      "in a $t(entities.project_one, lowercase)."
+    ],
     "beacon": [
       "Beacon allows you to query data by the position of genetic variants, and filter the results by various clinical",
       "or experimental metadata properties. You can also query by variants or metadata alone."
@@ -254,8 +280,8 @@
     "code": "Code"
   },
   "biosample": {
-    "biosample_id": "Biosample ID",
-    "individual_id": "Individual ID",
+    "biosample_id": "$t(entities.biosample_one) ID",
+    "individual_id": "$t(entities.individual_one) ID",
     "sampled_tissue": "Sampled Tissue",
     "description": "$t(general.description)",
     "derived_from_id": "Derived From",
@@ -420,6 +446,7 @@
     "vital_status": "Vital Status",
     "sex": "Sex",
     "karyotypic_sex": "Karyotypic Sex",
+    "gender": "Gender",
     "taxonomy": "Taxonomy",
     "ALIVE": "ALIVE",
     "DECEASED": "DECEASED",
@@ -464,7 +491,7 @@
     "UNSOLVED": "Unsolved"
   },
   "experiment": {
-    "experiment_id": "Experiment ID",
+    "experiment_id": "$t(entities.experiment_one) ID",
     "description": "$t(general.description)",
     "protocol_url": "Protocol URL",
     "experiment_type": "Experiment Type",
@@ -472,7 +499,7 @@
     "study_type": "Study Type",
     "molecule": "Molecule",
     "molecule_ontology": "Molecule ($t(general.ontology_class))",
-    "library_id" : "Library ID",
+    "library_id": "Library ID",
     "library_description": "Library Description",
     "library_strategy": "Library Strategy",
     "library_source": "Library Source",
@@ -509,12 +536,6 @@
   "auth": {
     "unauthorized_message": "You are not authorized to access this resource."
   },
-  "phenopacket_view": {
-    "invalid_endpoint_title": "Invalid Endpoint: /{{endpoint}}",
-    "invalid_endpoint_description": "The endpoint you are trying to access is not valid. Redirected to {{target}}.",
-    "not_available_title": "/{{endpoint}} Tab Not Available",
-    "not_available_description": "The requested tab is not available. Redirected to {{target}}."
-  },
   "table": {
     "invalid_row_keys_title": "Invalid Row Reference",
     "invalid_row_keys_description": "Some rows referenced in the URL do not exist. Adjusting to valid entries."
@@ -535,10 +556,11 @@
   },
   "catalogue": {
     "rail": {
-      "title": "Filters"
+      "title": "Filters",
+      "close": "Close filters"
     },
     "facets": {
-      "projects": "Project",
+      "projects": "$t(entities.project_one)",
       "dataTypes": "Data type",
       "taxa": "Taxa",
       "access": "Access",
@@ -548,6 +570,7 @@
     },
     "toolbar": {
       "search_placeholder": "Search datasets, keywords, assays…",
+      "sort_label": "Sort",
       "sort": {
         "recently_updated": "Recently updated",
         "newest_created": "Newest created",
@@ -567,18 +590,67 @@
       "by_status": "By status",
       "by_data_type": "By data type",
       "by_keyword": "By keyword",
-      "by_project": "By project"
+      "by_project": "By $t(entities.project_one, lowercase)"
     },
     "datasets": {
       "empty": "No datasets match your filters",
       "reset_filters": "Clear all filters",
       "expand": "more"
+    }
+  },
+  "provenance": {
+    "sections": {
+      "summary": "Summary",
+      "links": "Links",
+      "primary_contact": "Primary Contact",
+      "stakeholders": "Stakeholders",
+      "publications": "Publications",
+      "funding": "Funding",
+      "access": "Access & License",
+      "spatial": "Spatial Coverage",
+      "criteria": "Participant Criteria",
+      "counts": "$t(Counts)",
+      "identifiers": "Identifiers & Technical"
+    },
+    "context": {
+      "clinical": "Clinical",
+      "research": "Research"
+    },
+    "link_type": {
+      "Downloadable Artifact": "Downloadable Artifact",
+      "Data Management Plan": "Data Management Plan",
+      "Schema": "Schema",
+      "External Reference": "External Reference",
+      "Data Access": "Data Access",
+      "Data Request Form": "Data Request Form"
     },
     "status": {
       "ongoing": "Ongoing",
       "completed": "Completed",
       "unassigned": "Unassigned"
-    }
+    },
+    "domain": "Domain",
+    "grant_number_one": "Grant Number",
+    "grant_number_other": "Grant Numbers",
+    "keywords": "Keywords",
+    "license": "License",
+    "modified": "Modified",
+    "namespace_prefix": "Namespace prefix",
+    "ontology_resources": "Ontology resources",
+    "organization": "Organization",
+    "person": "Person",
+    "privacy": "Privacy",
+    "program_name": "Program name",
+    "project_id": "Project ID",
+    "protocol": "Protocol",
+    "released": "Released",
+    "repository": "Repository",
+    "schema_version": "Schema version",
+    "study_context": "Study context",
+    "study_status": "Study status",
+    "taxa": "Taxa",
+    "version": "Version",
+    "view_publication": "View publication"
   },
   "pcgl": {
     "banner": {
