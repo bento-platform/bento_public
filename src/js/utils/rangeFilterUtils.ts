@@ -26,7 +26,9 @@ export const parseBrackets = (value: string | null): RangeState => {
 
 /** Formats a "yyyy-mm" date bin key (e.g. "2021-01") for display in the given language, e.g. "Jan 2021" / "janv. 2021". */
 export const formatDateBinKey = (key: string, language: string): string =>
-  new Date(key).toLocaleString(language, { year: 'numeric', month: 'short' });
+  // Native `new Date("yyyy-mm")` parses date-only strings as UTC, which shifts the displayed month back by one in
+  // any UTC-negative timezone once re-rendered in local time. dayjs parses the same string as local time instead.
+  dayjs(key).toDate().toLocaleString(language, { year: 'numeric', month: 'short' });
 
 /**
  * Expands a raw "yyyy-mm" date bin key (as produced by clicking a date-binned chart bar, see Chart.tsx) into the
