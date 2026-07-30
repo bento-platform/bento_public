@@ -19,10 +19,13 @@ const PROJECT_FACET_CONFIG: FacetConfig = {
   getValues: ({ project }) => [project.title],
 };
 
+// TODO: turn this into a JSON-compatible configuration file that doesn't use PCGL_MODE conditional
 export const FACETS: FacetConfig[] = [
   ...[PCGL_MODE ? PROGRAM_FACET_CONFIG : PROJECT_FACET_CONFIG],
   { id: 'domains', getValues: ({ dataset }) => dataset.domain ?? [], scroll: true },
-  { id: 'taxa', getValues: ({ dataset }) => (dataset.taxa ?? []).map(getLabel) },
+  ...(PCGL_MODE
+    ? []
+    : ([{ id: 'taxa', getValues: ({ dataset }) => (dataset.taxa ?? []).map(getLabel) }] as FacetConfig[])),
   {
     id: 'access',
     getValues: ({ dataset }) => (dataset.privacy ? [dataset.privacy] : []),
