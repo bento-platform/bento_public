@@ -647,7 +647,7 @@
   },
   "pcgl": {
     "banner": {
-      "eyebrow": "BIBLIOTHÈQUE GÉNOMIQUE PANCANADIENNE",
+      "eyebrow": "Bibliothèque génomique pancanadienne",
       "title": "Catalogue de données",
       "subtitle": "Explorez les $t(entities.dataset_other, lowercase) de la Bibliothèque génomique pancanadienne"
     },

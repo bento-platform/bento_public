@@ -655,7 +655,7 @@
   },
   "pcgl": {
     "banner": {
-      "eyebrow": "PAN-CANADIAN GENOME LIBRARY",
+      "eyebrow": "Pan-Canadian Genome Library",
       "title": "Data Catalogue",
       "subtitle": "Explore $t(entities.dataset_other, lowercase) from the Pan-Canadian Genome Library"
     },
