@@ -3,7 +3,7 @@ import { Checkbox, Divider, Flex, Modal, Space, Spin } from 'antd';
 
 import { useTranslationFn } from '@/hooks';
 import { useDiscoveryMatchExportFields } from '@/hooks/useDiscoveryMatchExportFields';
-import type { ExportFormat, ResultsDataEntity } from '@/types/entities';
+import type { ExportDataEntity, ExportFormat } from '@/types/entities';
 
 const ExportFieldsModal = ({
   open,
@@ -14,7 +14,7 @@ const ExportFieldsModal = ({
   onExport,
 }: {
   open: boolean;
-  entity: ResultsDataEntity;
+  entity: ExportDataEntity;
   format: ExportFormat;
   exporting: boolean;
   onCancel: () => void;

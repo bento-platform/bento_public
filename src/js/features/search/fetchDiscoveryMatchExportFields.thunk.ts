@@ -3,13 +3,13 @@ import axios from 'axios';
 import { katsuDiscoveryMatchesExportFieldsUrl } from '@/constants/configConstants';
 import type { RootState } from '@/store';
 import { RequestStatus } from '@/types/requests';
-import type { ExportField, ResultsDataEntity } from '@/types/entities';
+import type { ExportDataEntity, ExportField } from '@/types/entities';
 import { printAPIError } from '@/utils/error.util';
 import { scopedAuthorizedRequestConfig } from '@/utils/requests';
 
 export const fetchDiscoveryMatchExportFields = createAsyncThunk<
   ExportField[],
-  ResultsDataEntity,
+  ExportDataEntity,
   { rejectValue: string; state: RootState }
 >(
   'query/fetchDiscoveryMatchExportFields',

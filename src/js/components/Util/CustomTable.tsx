@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState, type ReactNode } from 'react';
+import { useCallback, useMemo, useState, type Key, type ReactNode } from 'react';
 import { Table, type TablePaginationConfig } from 'antd';
 import type { TableColumnType } from 'antd';
 import { useSearchParams, useLocation } from 'react-router-dom';
@@ -18,6 +18,14 @@ export interface CustomTableColumn<T> extends TableColumnType<T> {
 export type CustomTableColumns<T> = CustomTableColumn<T>[];
 
 type RowKeyFn<T> = (record: T, index?: number) => string;
+
+export interface CustomTableRowSelection<T> {
+  selectedRowKeys: Key[];
+  onChange: (selectedRowKeys: Key[], selectedRows: (T | undefined)[]) => void;
+  // Keep selections made on other pages when the table's dataSource changes (e.g. due to pagination).
+  preserveSelectedRowKeys?: boolean;
+  getCheckboxProps?: (record: T) => { disabled?: boolean };
+}
 
 function serializeExpandedKeys(keys: string[]): string {
   return keys.join(',');
@@ -49,6 +57,7 @@ interface CustomTableProps<T> {
   showHeader?: boolean;
   queryKey?: string;
   urlAware?: boolean;
+  rowSelection?: CustomTableRowSelection<T>;
 }
 
 const CustomTable = <T extends object>({
@@ -62,6 +71,7 @@ const CustomTable = <T extends object>({
   showHeader,
   queryKey = EXPANDED_QUERY_PARAM_KEY,
   urlAware = true,
+  rowSelection,
 }: CustomTableProps<T>) => {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -166,10 +176,46 @@ const CustomTable = <T extends object>({
     [expandedKeys, queryKey, urlAware, rowKeyFn, setSearchParams]
   );
 
+  const hasExpandableRows = visibleData.some((r) => r.isVisible);
+
+  // antd doesn't cleanly support ordering its auto-inserted expand column after a rowSelection checkbox column when
+  // using expandedRowRender (non-nested) expansion - expandIconColumnIndex either puts it before the checkbox or in
+  // the middle of the data columns. So when both are present, render our own expand toggle as a normal column
+  // (placed right after the checkbox), styled to match antd's own expand icon, and disable antd's built-in one.
+  const useCustomExpandColumn = Boolean(rowSelection) && Boolean(expandedRowRender) && hasExpandableRows;
+
+  const finalColumns = useMemo(() => {
+    if (!useCustomExpandColumn) return processedColumns;
+    const expandColumn: CustomTableColumn<WithVisible<T>> = {
+      key: '__expand__',
+      title: '',
+      width: 47,
+      onCell: () => ({ className: 'ant-table-row-expand-icon-cell' }),
+      render: (_: unknown, record: WithVisible<T>) => {
+        if (!record.isVisible) return null;
+        const key = rowKeyFn(record);
+        const expanded = expandedKeys.includes(key);
+        return (
+          <button
+            type="button"
+            className={`ant-table-row-expand-icon ant-table-row-expand-icon-${expanded ? 'expanded' : 'collapsed'}`}
+            aria-label={t(expanded ? 'table.collapse_row' : 'table.expand_row')}
+            aria-expanded={expanded}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleExpand(!expanded, record);
+            }}
+          />
+        );
+      },
+    };
+    return [expandColumn, ...processedColumns];
+  }, [useCustomExpandColumn, processedColumns, expandedKeys, rowKeyFn, handleExpand, t]);
+
   return (
     <Table<WithVisible<T>>
       className="compact"
-      columns={processedColumns}
+      columns={finalColumns}
       loading={loading}
       showHeader={showHeader}
       dataSource={visibleData}
@@ -177,7 +223,7 @@ const CustomTable = <T extends object>({
         expandedRowRender,
         // Here, isVisible means "is expandable", we're just using the WithVisible type internally:
         rowExpandable: (record) => record.isVisible,
-        showExpandColumn: visibleData.some((r) => r.isVisible),
+        showExpandColumn: useCustomExpandColumn ? false : hasExpandableRows,
         expandedRowKeys: expandedKeys,
         onExpand: handleExpand,
       }}
@@ -185,6 +231,17 @@ const CustomTable = <T extends object>({
       rowKey={rowKeyFn} // Need to pass rowKeyFn here since we are casting to string in the case of int keys.
       pagination={pagination ?? false}
       bordered={true}
+      rowSelection={
+        rowSelection
+          ? {
+              type: 'checkbox',
+              selectedRowKeys: rowSelection.selectedRowKeys,
+              onChange: rowSelection.onChange,
+              preserveSelectedRowKeys: rowSelection.preserveSelectedRowKeys,
+              getCheckboxProps: rowSelection.getCheckboxProps,
+            }
+          : undefined
+      }
     />
   );
 };
