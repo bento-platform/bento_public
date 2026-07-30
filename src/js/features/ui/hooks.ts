@@ -16,3 +16,5 @@ export const useSetExtraBreadcrumb = (title: string | undefined) => {
     };
   }, [dispatch, title]);
 };
+
+export const useUISettings = () => useAppSelector((state) => state.ui.settings);

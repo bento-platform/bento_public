@@ -56,7 +56,7 @@ export const SidebarSection = ({ sectionTitle, extra, children, className, ...pr
 );
 
 export type SidebarProps = HTMLAttributes<HTMLElement> & {
-  width?: string | number;
+  footer?: ReactNode;
   /** Below some breakpoint, the sidebar renders as a fixed slide-over drawer instead of an inline sticky column. */
   overlay?: boolean;
   /** Ignored when `overlay` is falsy (the sidebar is always visible inline). */
@@ -64,11 +64,12 @@ export type SidebarProps = HTMLAttributes<HTMLElement> & {
   onClose?: () => void;
 };
 
-const Sidebar = ({ children, className, overlay, open, onClose, ...props }: SidebarProps) => (
+const Sidebar = ({ children, footer, className, overlay, open, onClose, ...props }: SidebarProps) => (
   <>
     {overlay && open && <div className="sidebar-backdrop" onClick={onClose} aria-hidden />}
     <aside className={clsx('sidebar', overlay && 'sidebar--overlay', open && 'sidebar--open', className)} {...props}>
       <div className="sidebar__content">{children}</div>
+      {footer && <footer className="sidebar__footer">{footer}</footer>}
     </aside>
   </>
 );

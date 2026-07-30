@@ -38,5 +38,5 @@ const ui = createSlice({
   },
 });
 
-export const { setExtraBreadcrumb } = ui.actions;
+export const { setExtraBreadcrumb, setOverviewChartMode } = ui.actions;
 export default ui.reducer;

@@ -7,12 +7,13 @@ import CustomEmpty from '../Util/CustomEmpty';
 import { CHART_HEIGHT } from '@/constants/overviewConstants';
 import { useTranslationFn } from '@/hooks';
 import type { ChartDataField } from '@/types/data';
+import type { ChartSizeMode } from '@/features/ui/types';
 import SmallChartCardTitle from '@/components/Util/SmallChartCardTitle';
 
 const CARD_STYLE: CSSProperties = { height: '415px' };
 const ROW_EMPTY_STYLE: CSSProperties = { height: `${CHART_HEIGHT}px` };
 
-const ChartCard = memo(({ section, chart, onRemoveChart, searchable }: ChartCardProps) => {
+const ChartCard = memo(({ section, chart, onRemoveChart, searchable, mode }: ChartCardProps) => {
   const t = useTranslationFn();
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -33,20 +34,36 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable }: ChartCard
     },
   ];
 
+  const compact = mode === 'compact';
+
+  const tTitle = t(title);
+  const tDesc = description !== title ? t(description) : '';
+
   return (
     <div ref={containerRef} key={id} style={{ gridColumn: `span ${chart.width}` }}>
       <Card
         title={
-          <SmallChartCardTitle title={t(title)} description={t(description)} descriptionStyle={{ width: '375px' }} />
+          <SmallChartCardTitle
+            title={tTitle}
+            description={tDesc}
+            descriptionStyle={compact ? undefined : { width: '375px' }}
+            compact={compact}
+          />
         }
-        className="shadow rounded-xl"
+        className={compact ? 'rounded-none' : 'shadow rounded-xl'}
         style={CARD_STYLE}
         size="small"
         extra={
           <Space size="small">
             {extraOptionsData.map((opt, index) => (
               <Tooltip key={index} title={opt.description}>
-                <Button shape="circle" icon={opt.icon} onClick={opt.onClick} />
+                <Button
+                  shape="circle"
+                  color="default"
+                  variant={compact ? 'text' : undefined}
+                  icon={opt.icon}
+                  onClick={opt.onClick}
+                />
               </Tooltip>
             ))}
           </Space>
@@ -78,6 +95,7 @@ export interface ChartCardProps {
   chart: ChartDataField;
   onRemoveChart: (arg: { section: string; id: string }) => void;
   searchable?: boolean;
+  mode?: ChartSizeMode;
 }
 
 export default ChartCard;
