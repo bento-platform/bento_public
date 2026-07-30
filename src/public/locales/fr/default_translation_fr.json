@@ -68,6 +68,7 @@
     "manage_columns": "Gérer les colonnes",
     "export": "Exporter",
     "export_data": "Exporter les données",
+    "export_error": "Échec de l'exportation. Veuillez réessayer.",
     "select_all_fields": "Tout sélectionner",
     "csv": "CSV",
     "xlsx": "XLSX",

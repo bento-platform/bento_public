@@ -6,6 +6,7 @@ import {
   Col,
   Dropdown,
   Flex,
+  message,
   Modal,
   Space,
   type TablePaginationConfig,
@@ -487,7 +488,10 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
       const download = hasSelection
         ? downloadSelectedMatches(exportEntity, selectedExportIds, exportFormat, filename, fields)
         : downloadAllMatches(exportEntity, exportFormat, filename, fields);
-      download.then(() => setExportModalOpen(false)).finally(() => setExporting(false));
+      download
+        .then(() => setExportModalOpen(false))
+        .catch(() => message.error(t('search.export_error')))
+        .finally(() => setExporting(false));
     },
     [
       t,
