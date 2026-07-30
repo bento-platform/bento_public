@@ -548,6 +548,7 @@
     "vital_status": "Statut vital",
     "sex": "Sexe",
     "karyotypic_sex": "Sexe caryotypique",
+    "gender": "Genre",
     "taxonomy": "Taxonomie",
     "ALIVE": "VIVANT",
     "DECEASED": "DÉCÉDÉ",
