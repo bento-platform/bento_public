@@ -22,8 +22,6 @@ export const STATUS_CHART_COLORS: Record<string, string> = {
 
 // Chart defaults
 export const COLOR_CHART_FALLBACK = '#8C8C8C'; // SVG stroke — cannot use CSS var
-export const COLOR_BAR_DEFAULT = 'var(--antd-blue-5)';
-export const COLOR_DONUT_TRACK = '#EEE'; // SVG stroke — cannot use CSS var
 
 // PCGL banner overlay
 export const BANNER_GRADIENT = 'var(--cat-banner-gradient)';
