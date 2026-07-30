@@ -63,6 +63,7 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable, mode }: Cha
                   variant={compact ? 'text' : undefined}
                   icon={opt.icon}
                   onClick={opt.onClick}
+                  style={{ marginRight: compact ? -8 : 0 }}
                 />
               </Tooltip>
             ))}

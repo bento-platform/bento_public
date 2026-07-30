@@ -23,8 +23,11 @@ import { useTranslationFn } from '@/hooks';
 import { useSearchRouterAndHandler } from '@/hooks/useSearchRouterAndHandler';
 import { useSelectedProject, useSelectedScope, useScopeHasData } from '@/features/metadata/hooks';
 import { useActiveFilterPills, useSearchQuery, useSearchableFields } from '@/features/search/hooks';
+import { useUISettings } from '@/features/ui/hooks';
 import { useIsInCatalogueMode, useNavigateToSameScopeUrl } from '@/hooks/navigation';
 import { useNotify } from '@/hooks/notifications';
+
+const OVERVIEW_GAP = 24;
 
 const saveScopeOverviewToLS = (scope: DiscoveryScope, sections: Sections) => {
   saveValue(generateLSChartDataKey(scope), convertSequenceAndDisplayData(sections));
@@ -42,6 +45,8 @@ const OverviewChartDashboard = () => {
 
   const notify = useNotify();
   const [hasNotified, setHasNotified] = useState(false);
+
+  const { overviewChartMode } = useUISettings();
 
   // This is essentially a large effect hook with a few dependencies, which processes (and rewrites if needed) the query
   // URL and dispatches discovery actions for fetching overview/query response data.
@@ -84,7 +89,7 @@ const OverviewChartDashboard = () => {
 
   return (
     <>
-      <Flex vertical={true} gap={24} className={clsx('container', { 'margin-auto': !scopeHasData })}>
+      <Flex vertical={true} gap={OVERVIEW_GAP} className={clsx('container', { 'margin-auto': !scopeHasData })}>
         {/*
             Show a general description of the current scope, pulled from the about content (instance-level), the project
             description, or the dataset long description (falling back to the short description.)
@@ -109,11 +114,21 @@ const OverviewChartDashboard = () => {
           />
         ) : null}
 
-        {displayedSections.map(({ sectionTitle, charts }, i) => (
-          <div key={i} className={clsx('overview', loadingNewData && 'loading')}>
-            <OverviewSection title={sectionTitle} chartData={charts} searchableFields={searchableFields} />
-          </div>
-        ))}
+        <Flex
+          vertical
+          className={clsx('overview-charts', overviewChartMode, loadingNewData && 'loading')}
+          gap={OVERVIEW_GAP}
+        >
+          {displayedSections.map(({ sectionTitle, charts }, i) => (
+            <OverviewSection
+              key={i}
+              title={sectionTitle}
+              chartData={charts}
+              searchableFields={searchableFields}
+              chartMode={overviewChartMode}
+            />
+          ))}
+        </Flex>
 
         {!catalogueMode && <LastIngestionInfo />}
       </Flex>

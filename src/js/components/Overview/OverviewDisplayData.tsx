@@ -9,20 +9,19 @@ import { GRID_GAP } from '@/constants/overviewConstants';
 
 import ChartCard from './ChartCard';
 
+import type { ChartSizeMode } from '@/features/ui/types';
 import type { ChartDataField } from '@/types/data';
 // import { getChartCssWidth } from '@/utils/chart';
-import { useUISettings } from '@/features/ui/hooks';
 
-const OverviewDisplayData = ({ section, allCharts, searchableFields }: OverviewDisplayDataProps) => {
+const OverviewDisplayData = ({ section, allCharts, searchableFields, chartMode }: OverviewDisplayDataProps) => {
   const dispatch = useAppDispatch();
   const isSmallScreen = useSmallScreen();
-  const { overviewChartMode } = useUISettings();
 
   const containerStyle = {
     display: 'grid',
-    gap: overviewChartMode === 'compact' ? '1px' : `${GRID_GAP}px`,
+    gap: chartMode === 'compact' ? '1px' : `${GRID_GAP}px`,
     // gridTemplateColumns: `repeat(auto-fit, calc(${getChartCssWidth(3, GRID_GAP)}))`,
-    gridTemplateColumns: `repeat(auto-fill, minmax(${overviewChartMode === 'compact' ? '300' : '350'}px, 1fr))`,
+    gridTemplateColumns: `repeat(auto-fill, minmax(${chartMode === 'compact' ? '300' : '350'}px, 1fr))`,
   };
 
   const displayedCharts = useMemo(() => allCharts.filter((e) => e.isDisplayed), [allCharts]);
@@ -42,7 +41,7 @@ const OverviewDisplayData = ({ section, allCharts, searchableFields }: OverviewD
         section={section}
         onRemoveChart={onRemoveChart}
         searchable={searchableFields.has(chart.id)}
-        mode={overviewChartMode}
+        mode={chartMode}
       />
     );
   };
@@ -62,6 +61,7 @@ export interface OverviewDisplayDataProps {
   section: string;
   allCharts: ChartDataField[];
   searchableFields: Set<string>;
+  chartMode: ChartSizeMode;
 }
 
 export default OverviewDisplayData;

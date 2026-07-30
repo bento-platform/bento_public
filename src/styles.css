@@ -1080,14 +1080,18 @@ body {
   background-color: black !important; /* override slick-dots color */
 }
 
-.overview {
+.overview-charts {
   transition: opacity 0.2s ease-in-out;
 }
-.overview.loading {
+.overview-charts.loading {
   opacity: 0.2;
 }
 
-/* END overview */
+.overview-charts.compact h3.bento-theme.ant-typography {
+  font-size: 1.25rem;
+}
+
+  /* END overview */
 
 
 /* BEGIN key-value display */
