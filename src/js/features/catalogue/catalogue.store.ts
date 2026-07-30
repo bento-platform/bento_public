@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { FacetId, SortKey } from './constants';
+import { FACET_IDS, type FacetId, type SortKey } from './constants';
 export { FACET_IDS } from './constants';
 export type { FacetId, SortKey } from './constants';
 
@@ -17,16 +17,9 @@ export interface CatalogueState {
   projectColors: Record<string, string>;
 }
 
-const EMPTY_SETS: CatalogueFilterSets = {
-  projects: [],
-  domains: [],
-  taxa: [],
-  access: [],
-  licenses: [],
-  contexts: [],
-  statuses: [],
-  keywords: [],
-};
+const EMPTY_SETS: CatalogueFilterSets = Object.fromEntries(
+  FACET_IDS.map((fId) => [fId, [] as string[]])
+) as CatalogueFilterSets;
 
 const initialState: CatalogueState = {
   q: '',

@@ -9,8 +9,18 @@ interface FacetConfig {
   scroll?: boolean;
 }
 
+const PROGRAM_FACET_CONFIG: FacetConfig = {
+  id: 'programs',
+  getValues: ({ dataset }) => (dataset.program_name ? [dataset.program_name] : []),
+};
+
+const PROJECT_FACET_CONFIG: FacetConfig = {
+  id: 'projects',
+  getValues: ({ project }) => [project.title],
+};
+
 export const FACETS: FacetConfig[] = [
-  ...(PCGL_MODE ? [] : ([{ id: 'projects', getValues: ({ project }) => [project.title] }] as FacetConfig[])),
+  ...[PCGL_MODE ? PROGRAM_FACET_CONFIG : PROJECT_FACET_CONFIG],
   { id: 'domains', getValues: ({ dataset }) => dataset.domain ?? [], scroll: true },
   { id: 'taxa', getValues: ({ dataset }) => (dataset.taxa ?? []).map(getLabel) },
   {

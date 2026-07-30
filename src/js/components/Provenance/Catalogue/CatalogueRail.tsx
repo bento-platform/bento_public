@@ -1,5 +1,4 @@
 import clsx from 'clsx';
-import { PCGL_MODE } from '@/config';
 import { useAppDispatch } from '@/hooks';
 import { useCatalogueState } from '@/features/catalogue/hooks';
 import { toggleFacetCollapse, type FacetId } from '@/features/catalogue/catalogue.store';
@@ -9,22 +8,12 @@ import { statusTranslationKey, facetTranslationKey } from '@/features/catalogue/
 import { CloseOutlined } from '@ant-design/icons';
 import FilterChip from '@/components/Util/FilterChip';
 import Sidebar, { SidebarFacet, SidebarSection } from '@/components/Sidebar/Sidebar';
+import { FACETS } from '@/features/catalogue/facetRegistry';
 
 interface FacetConfig {
   id: FacetId;
   scroll?: boolean;
 }
-
-const FACETS: FacetConfig[] = [
-  ...(PCGL_MODE ? [] : ([{ id: 'projects' }] as FacetConfig[])),
-  { id: 'domains', scroll: true },
-  { id: 'taxa' },
-  { id: 'access' },
-  { id: 'licenses' },
-  { id: 'contexts' },
-  { id: 'statuses' },
-  { id: 'keywords', scroll: true },
-];
 
 interface FacetSectionProps {
   facet: FacetConfig;

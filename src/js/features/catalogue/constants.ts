@@ -2,6 +2,7 @@ import type { Dataset } from '@/types/dataset';
 import type { Project } from '@/types/metadata';
 
 export const FACET_IDS = [
+  'programs',
   'projects',
   'domains',
   'taxa',

@@ -196,6 +196,7 @@
       "close": "Fermer les filtres"
     },
     "facets": {
+      "programs": "Programmes",
       "projects": "$t(entities.project_other)",
       "domains": "Domaines",
       "taxa": "Taxons",
