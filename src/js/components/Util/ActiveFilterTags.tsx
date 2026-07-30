@@ -23,12 +23,16 @@ const ActiveFilterTags = ({ pills, onClearAll, tagClassName }: ActiveFilterTagsP
   return (
     <Flex wrap gap={4} align="center">
       {pills.map(({ key, facetLabel, label, onClose }) => (
-        <div className={ clsx('catalogue-filter-tag', tagClassName)}>
+        <div key={key} className={clsx('catalogue-filter-tag', tagClassName)}>
           <span className="catalogue-filter-tag__facet-label">{t(facetLabel)}:</span>
-          <p className="catalogue-filter-tag__label">
-            {label}
-          </p>
-          <button aria-label={`${t('catalogue.toolbar.clear_filter')} ${t(facetLabel)} ${label}`} data-id={key} type="button" onClick={onClose} className="catalogue-filter-button focus-ring" >
+          <p className="catalogue-filter-tag__label">{label}</p>
+          <button
+            aria-label={`${t('catalogue.toolbar.clear_filter')} ${t(facetLabel)} ${label}`}
+            data-id={key}
+            type="button"
+            onClick={onClose}
+            className="catalogue-filter-button focus-ring"
+          >
             <CloseOutlined aria-hidden="true" />
           </button>
         </div>

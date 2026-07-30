@@ -28,7 +28,10 @@
 
   --antd-blue-5: #1677ff;
   --antd-gray-7: #595959;
-  --antd-danger-6: #FF4D4F;
+  --antd-red-0: #FFF1F0;
+  --antd-red-1: #FFCCC7;
+  --antd-red-4: #FF4D4F;
+  --antd-red-5: #F5222D;
 
   /* shared design tokens */
   /* Note: --ant-color-primary is intentionally NOT proxied here. antd injects its CSS vars scoped to
@@ -620,24 +623,32 @@ body {
   background: transparent;
   border: transparent;
   border-radius: 12px;
-  color: var(--antd-danger-6);
+  color: var(--text-primary);
   font-size: 12px;
   height: 24px;
   cursor: pointer;
   width: 24px;
 }
+.catalogue-filter-button:hover {
+  background: var(--antd-red-0);
+  color: var(--antd-red-4);
+}
 .catalogue-filter-tag__label { margin: 0; color: var(--text-primary); font-size: 12px;}
 .catalogue-filter-tag__facet-label { color: var(--text-muted); font-size: 11px; margin-right: 3px; }
 .catalogue-clear-tag {
   background: #fff;
-  border: 1px solid var(--antd-danger-6);
+  border: 1px solid var(--antd-red-4);
   border-radius: 15px !important;
   border-style: dashed;
-  color: var(--antd-danger-6);
+  color: var(--antd-red-4);
   cursor: pointer;
   font-size: 12px;
   height: 24px;
   margin: 0 !important;
+}
+.catalogue-clear-tag:hover {
+  background: var(--antd-red-0);
+  color: var(--antd-red-4);
 }
 /* END catalogue toolbar */
 

@@ -1,5 +1,5 @@
 import { useAppDispatch } from '@/hooks';
-import { Badge, Button, Dropdown, Flex, Input, Select, Segmented, Typography } from 'antd';
+import { Badge, Button, Dropdown, Flex, Input, Select, Segmented, Typography, Switch } from 'antd';
 import {
   AppstoreOutlined,
   BarsOutlined,
@@ -119,15 +119,25 @@ const CatalogueToolbar = ({ filteredCount, isMobile, onOpenFilters }: CatalogueT
           <span className="catalogue-count-highlight">{filteredCount}</span>{' '}
           {t('catalogue.toolbar.dataset_found', { count: filteredCount })}
         </Text>
-        <Button
-          size="small"
-          icon={<BarChartOutlined />}
-          onClick={() => dispatch(toggleInsights())}
-          type={insightsOpen ? 'primary' : 'default'}
-          ghost={insightsOpen}
-        >
-          {insightsOpen ? t('catalogue.toolbar.hide_insights') : t('catalogue.toolbar.show_insights')}
-        </Button>
+        <label htmlFor="catalogue-insights-toggle">
+          <p className="visually-hidden">{t('catalogue.toolbar.show_insights')}</p>
+          <Switch
+            checked={insightsOpen}
+            aria-checked={insightsOpen}
+            id="catalogue-insights-toggle"
+            onChange={() => dispatch(toggleInsights())}
+            checkedChildren={
+              <div aria-hidden="true">
+                <BarChartOutlined /> {t('catalogue.toolbar.show_insights')}
+              </div>
+            }
+            unCheckedChildren={
+              <div aria-hidden="true">
+                <BarChartOutlined /> {t('catalogue.toolbar.hide_insights')}
+              </div>
+            }
+          />
+        </label>
       </Flex>
 
       {/* Row 3: active filter pills */}
