@@ -1,8 +1,8 @@
-import type { DrawerProps } from 'antd';
-import { Button, Drawer, Flex, Space, Typography } from 'antd';
+import { Button, Divider, type DrawerProps, Drawer, Flex, Space, Typography } from 'antd';
 const { Title } = Typography;
 
 import ChartTree from './ChartTree';
+import OverviewChartSizeControl from '@/components/Overview/Util/OverviewChartSizeControl';
 
 import type { ChartDataField } from '@/types/data';
 import { useAppDispatch, useTranslationFn } from '@/hooks';
@@ -77,6 +77,8 @@ const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: Manage
           <ChartTree charts={charts} section={sectionTitle} />
         </div>
       ))}
+      <Divider />
+      <OverviewChartSizeControl />
     </Drawer>
   );
 };
