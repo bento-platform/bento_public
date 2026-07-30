@@ -40,7 +40,7 @@ import type {
   DiscoveryMatchPhenopacket,
   ViewableDiscoveryMatchObject,
 } from '@/features/search/types';
-import type { ExportFormat } from '@/types/entities';
+import type { ExportDataEntity, ExportFormat } from '@/types/entities';
 import { BentoRoute } from '@/types/routes';
 
 import { scopeSelectionEqual } from '@/features/metadata/utils';
@@ -346,6 +346,11 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   // TODO: maybe we can make Katsu good enough that we can just simply return individuals rather than phenopackets
   const rdEntity = bentoKatsuEntityToResultsDataEntity(entity);
 
+  // For export purposes only, this table is always backed by katsu's "individual" entity (IndividualCSVRenderer /
+  // the individual batch endpoint), not "phenopacket" - the two are distinct entities on the katsu side, unlike the
+  // display/matches querying above which intentionally treats them as one.
+  const exportEntity: ExportDataEntity = rdEntity === 'phenopacket' ? 'individual' : rdEntity;
+
   const entityMatchData = matchData[rdEntity] as QueryResultMatchData<T>;
   const { status, page, totalMatches } = entityMatchData;
   let { matches } = entityMatchData;
@@ -480,11 +485,20 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
       setExporting(true);
       const filename = `${t(`entities.${entity}_other`)}.${exportFormat}`;
       const download = hasSelection
-        ? downloadSelectedMatches(rdEntity, selectedExportIds, exportFormat, filename, fields)
-        : downloadAllMatches(rdEntity, exportFormat, filename, fields);
+        ? downloadSelectedMatches(exportEntity, selectedExportIds, exportFormat, filename, fields)
+        : downloadAllMatches(exportEntity, exportFormat, filename, fields);
       download.then(() => setExportModalOpen(false)).finally(() => setExporting(false));
     },
-    [t, entity, rdEntity, hasSelection, selectedExportIds, downloadSelectedMatches, downloadAllMatches, exportFormat]
+    [
+      t,
+      entity,
+      exportEntity,
+      hasSelection,
+      selectedExportIds,
+      downloadSelectedMatches,
+      downloadAllMatches,
+      exportFormat,
+    ]
   );
 
   const openColumnModal = useCallback(() => setColumnModalOpen(true), []);
@@ -610,7 +624,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
       </Modal>
       <ExportFieldsModal
         open={exportModalOpen}
-        entity={rdEntity}
+        entity={exportEntity}
         format={exportFormat}
         exporting={exporting}
         onCancel={() => setExportModalOpen(false)}

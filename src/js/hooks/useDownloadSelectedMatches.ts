@@ -10,10 +10,11 @@ import {
   experimentResultBatchUrl,
   individualBatchUrl,
 } from '@/constants/configConstants';
-import type { ExportFormat, ResultsDataEntity } from '@/types/entities';
+import type { ExportDataEntity, ExportFormat } from '@/types/entities';
 
-const BATCH_URL_BY_ENTITY: Record<ResultsDataEntity, string> = {
+const BATCH_URL_BY_ENTITY: Record<ExportDataEntity, string> = {
   phenopacket: individualBatchUrl,
+  individual: individualBatchUrl,
   biosample: biosampleBatchUrl,
   experiment: experimentBatchUrl,
   experiment_result: experimentResultBatchUrl,
@@ -23,7 +24,7 @@ export const useDownloadSelectedMatches = () => {
   const auth = useAppSelector((state) => state.auth);
 
   return useCallback(
-    async (entity: ResultsDataEntity, ids: string[], format: ExportFormat, filename: string, fields?: string[]) => {
+    async (entity: ExportDataEntity, ids: string[], format: ExportFormat, filename: string, fields?: string[]) => {
       const url = BATCH_URL_BY_ENTITY[entity];
 
       // batch/experimentresults IDs are integers, not strings - sending a stringified ID errors rather than being

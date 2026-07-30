@@ -4,6 +4,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type {
   BentoCountEntity,
   BentoKatsuEntity,
+  ExportDataEntity,
   ExportField,
   KatsuEntityCountsOrBooleans,
   ResultsDataEntity,
@@ -89,7 +90,7 @@ export type QueryState = {
   selectedRows: Record<ResultsDataEntity, SelectedRowMap>;
 
   // export fields available per entity, cached once fetched
-  exportFields: Record<ResultsDataEntity, { status: RequestStatus; fields: ExportField[] | undefined }>;
+  exportFields: Record<ExportDataEntity, { status: RequestStatus; fields: ExportField[] | undefined }>;
 
   // UI hints
   uiHints: {
@@ -149,6 +150,7 @@ const initialState: QueryState = {
   // ----
   exportFields: {
     phenopacket: INITIAL_EXPORT_FIELDS_STATE,
+    individual: INITIAL_EXPORT_FIELDS_STATE,
     biosample: INITIAL_EXPORT_FIELDS_STATE,
     experiment: INITIAL_EXPORT_FIELDS_STATE,
     experiment_result: INITIAL_EXPORT_FIELDS_STATE,
