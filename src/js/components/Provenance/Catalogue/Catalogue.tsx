@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import { Divider, Empty, Button, Flex, Grid, Typography } from 'antd';
+
+import { PCGL_MODE } from '@/config';
 import { useMetadata } from '@/features/metadata/hooks';
 import { useCatalogueFilter, useCatalogueState } from '@/features/catalogue/hooks';
 import { useAppDispatch } from '@/hooks';
@@ -42,8 +44,11 @@ const Catalogue = () => {
   const { filtered, facetOptions } = useCatalogueFilter(allDatasets);
 
   useEffect(() => {
-    const names = [...new Set(allDatasets.map(({ project }) => project.title))];
-    dispatch(setProjectColors(assignColors(names)));
+    // In PCGL mode, assign colours to programs instead of projects for now.
+    const projectNames = PCGL_MODE
+      ? [...(new Set(allDatasets.map(({ dataset }) => dataset.program_name).filter((pn) => !!pn)) as Set<string>)]
+      : [...new Set(allDatasets.map(({ project }) => project.title))];
+    dispatch(setProjectColors(assignColors(projectNames)));
   }, [allDatasets, dispatch]);
 
   return (

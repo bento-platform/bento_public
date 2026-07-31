@@ -642,6 +642,7 @@
     "organization": "Organization",
     "person": "Person",
     "privacy": "Privacy",
+    "program": "Program",
     "program_name": "Program name",
     "project_id": "Project ID",
     "protocol": "Protocol",
