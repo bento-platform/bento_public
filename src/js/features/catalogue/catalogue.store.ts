@@ -1,4 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import type { HexColor } from 'bento-charts';
 import { FACET_IDS, type FacetId, type SortKey } from './constants';
 export { FACET_IDS } from './constants';
 export type { FacetId, SortKey } from './constants';
@@ -14,7 +15,7 @@ export interface CatalogueState {
   view: ViewMode;
   insightsOpen: boolean;
   collapsedFacets: string[];
-  projectColors: Record<string, string>;
+  projectColors: Record<string, HexColor>;
 }
 
 const EMPTY_SETS: CatalogueFilterSets = Object.fromEntries(
@@ -56,7 +57,7 @@ const catalogueSlice = createSlice({
       state.view = action.payload.view;
       state.sets = action.payload.sets;
     },
-    setProjectColors(state, action: PayloadAction<Record<string, string>>) {
+    setProjectColors(state, action: PayloadAction<Record<string, HexColor>>) {
       state.projectColors = action.payload;
     },
   },

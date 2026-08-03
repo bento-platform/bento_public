@@ -46,29 +46,57 @@ const useTranslatedEntries = (datasets: DatasetWithProject[], facetId: FacetId):
   }, [t, datasets, facetId]);
 };
 
+interface CatalogueInsightCardProps {
+  datasets: DatasetWithProject[];
+  facet: FacetId;
+  kind: 'bar' | 'donut';
+  colors?: Record<string, HexColor>;
+}
+
+const CatalogueInsightCard = ({ datasets, facet, kind, colors }: CatalogueInsightCardProps) => {
+  const t = useTranslationFn();
+  const fmt = useFormatNumber();
+
+  const { sets } = useCatalogueState();
+  const { toggleFacetValue } = useCatalogueUrlActions();
+
+  const centerLabel = t('entities.dataset', { count: datasets.length }).toLowerCase();
+  let data = useTranslatedEntries(datasets, facet);
+  if (kind === 'bar') {
+    data = data.slice(0, 5);
+  }
+
+  const handleClick = (facetId: FacetId) => (id: string) => {
+    toggleFacetValue(facetId, id);
+  };
+
+  const commonProps = {
+    data,
+    colorsById: colors ?? (assignColors(data.map((d) => d.id ?? d.x)) as Record<string, HexColor>),
+    selectedIds: sets[facet],
+    formatValue: fmt,
+    onClick: handleClick(facet),
+  };
+
+  return (
+    <Card size="small" className="chart-card">
+      <Text className="chart-card__title">{t(`catalogue.insights.by_${facet}`)}</Text>
+      {kind === 'donut' ? (
+        <CategoryDonut {...commonProps} centerLabel={centerLabel} />
+      ) : (
+        <CategoryBarList {...commonProps} />
+      )}
+    </Card>
+  );
+};
+
 interface CatalogueInsightsProps {
   filteredDatasets: DatasetWithProject[];
 }
 
 const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
   const t = useTranslationFn();
-  const fmt = useFormatNumber();
-  const { sets, projectColors } = useCatalogueState();
-  const { toggleFacetValue } = useCatalogueUrlActions();
-
-  const statusData = useTranslatedEntries(filteredDatasets, 'status');
-  const domainData = useTranslatedEntries(filteredDatasets, 'domain');
-  const projectData = useTranslatedEntries(filteredDatasets, 'project');
-  const keywordData = useTranslatedEntries(filteredDatasets, 'keyword');
-
-  const domainColors = assignColors(domainData.map((d) => d.id ?? d.x)) as Record<string, HexColor>;
-  const keywordColors = assignColors(keywordData.slice(0, 5).map((d) => d.id ?? d.x)) as Record<string, HexColor>;
-
-  const handleClick = (facetId: FacetId) => (id: string) => {
-    toggleFacetValue(facetId, id);
-  };
-
-  const centerLabel = t('entities.dataset', { count: filteredDatasets.length }).toLowerCase();
+  const { projectColors } = useCatalogueState();
 
   return (
     <div className="catalogue-insights">
@@ -80,51 +108,13 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
         <Text className="catalogue-insights__hint">{t('catalogue.insights.hint')}</Text>
       </Flex>
       <Flex gap={12} wrap className="items-stretch">
-        <Card size="small" className="chart-card">
-          <Text className="chart-card__title">{t('catalogue.insights.by_status')}</Text>
-          <CategoryDonut
-            data={statusData}
-            colorsById={STATUS_CHART_COLORS as Record<string, HexColor>}
-            selectedIds={sets.status}
-            centerLabel={centerLabel}
-            formatValue={fmt}
-            onClick={handleClick('status')}
-          />
-        </Card>
+        <CatalogueInsightCard datasets={filteredDatasets} facet="status" kind="donut" colors={STATUS_CHART_COLORS} />
         {PCGL_MODE ? (
-          <Card size="small" className="chart-card">
-            <Text className="chart-card__title">{t('catalogue.insights.by_domain')}</Text>
-            <CategoryBarList
-              data={domainData.slice(0, 5)}
-              colorsById={domainColors}
-              selectedIds={sets.domain}
-              formatValue={fmt}
-              onClick={handleClick('domain')}
-            />
-          </Card>
+          <CatalogueInsightCard datasets={filteredDatasets} facet="domain" kind="bar" />
         ) : (
-          <Card size="small" className="chart-card">
-            <Text className="chart-card__title">{t('catalogue.insights.by_project')}</Text>
-            <CategoryDonut
-              data={projectData}
-              colorsById={projectColors as Record<string, HexColor>}
-              selectedIds={sets.project}
-              centerLabel={centerLabel}
-              formatValue={fmt}
-              onClick={handleClick('project')}
-            />
-          </Card>
+          <CatalogueInsightCard datasets={filteredDatasets} facet="project" kind="donut" colors={projectColors} />
         )}
-        <Card size="small" className="chart-card">
-          <Text className="chart-card__title">{t('catalogue.insights.by_keyword')}</Text>
-          <CategoryBarList
-            data={keywordData.slice(0, 5)}
-            colorsById={keywordColors}
-            selectedIds={sets.keyword}
-            formatValue={fmt}
-            onClick={handleClick('keyword')}
-          />
-        </Card>
+        <CatalogueInsightCard datasets={filteredDatasets} facet="keyword" kind="bar" />
       </Flex>
     </div>
   );

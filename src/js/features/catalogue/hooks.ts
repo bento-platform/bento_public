@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import type { HexColor } from 'bento-charts';
 import { useAppSelector, useTranslationFn } from '@/hooks';
 import type { FacetOption } from '@/features/catalogue/types';
 import type { StudyContext } from '@/types/dataset';
@@ -19,13 +20,13 @@ export const studyContextTranslationKey = (context: StudyContext): string =>
 export const facetTranslationKey = (facet: FacetId): string => `catalogue.facets.${facet}`;
 
 /** Ordered colour palette used to assign a stable colour per project name. */
-export const PALETTE = ['#1677FF', '#13C2C2', '#722ED1', '#FA8C16', '#52C41A'];
+export const PALETTE: HexColor[] = ['#1677FF', '#13C2C2', '#722ED1', '#FA8C16', '#52C41A'];
 
 /**
  * Assigns a deterministic colour from {@link PALETTE} to each project name.
  * Names are sorted alphabetically before assignment so order is stable across renders.
  */
-export function assignColors(names: string[]): Record<string, string> {
+export function assignColors(names: string[]): Record<string, HexColor> {
   const sorted = [...names].sort((a, b) => a.localeCompare(b));
   return Object.fromEntries(sorted.map((name, i) => [name, PALETTE[i % PALETTE.length]]));
 }

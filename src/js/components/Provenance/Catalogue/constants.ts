@@ -1,6 +1,7 @@
+import type { HexColor } from 'bento-charts';
 
 // Status chart colours (insights donut) — kept as hex: used as SVG stroke attributes
-export const STATUS_CHART_COLORS: Record<string, string> = {
+export const STATUS_CHART_COLORS: Record<string, HexColor> = {
   ONGOING: '#52C41A',
   COMPLETED: '#1677FF',
   UNASSIGNED: '#8C8C8C',
