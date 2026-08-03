@@ -119,25 +119,23 @@ const CatalogueToolbar = ({ filteredCount, isMobile, onOpenFilters }: CatalogueT
           <span className="catalogue-count-highlight">{filteredCount}</span>{' '}
           {t('catalogue.toolbar.dataset_found', { count: filteredCount })}
         </Text>
-        <label htmlFor="catalogue-insights-toggle">
-          <p className="visually-hidden">{t('catalogue.toolbar.show_insights')}</p>
-          <Switch
-            checked={insightsOpen}
-            aria-checked={insightsOpen}
-            id="catalogue-insights-toggle"
-            onChange={() => dispatch(toggleInsights())}
-            checkedChildren={
-              <div aria-hidden="true">
-                <BarChartOutlined /> {t('catalogue.toolbar.show_insights')}
-              </div>
-            }
-            unCheckedChildren={
-              <div aria-hidden="true">
-                <BarChartOutlined /> {t('catalogue.toolbar.hide_insights')}
-              </div>
-            }
-          />
-        </label>
+        <Switch
+          checked={insightsOpen}
+          aria-checked={insightsOpen}
+          aria-label={insightsOpen ? t('catalogue.toolbar.show_insights') : t('catalogue.toolbar.hide_insights')}
+          id="catalogue-insights-toggle"
+          onChange={() => dispatch(toggleInsights())}
+          checkedChildren={
+            <div aria-hidden="true">
+              <BarChartOutlined /> {t('catalogue.toolbar.show_insights')}
+            </div>
+          }
+          unCheckedChildren={
+            <div aria-hidden="true">
+              <BarChartOutlined /> {t('catalogue.toolbar.hide_insights')}
+            </div>
+          }
+        />
       </Flex>
 
       {/* Row 3: active filter pills */}
