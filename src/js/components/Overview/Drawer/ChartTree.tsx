@@ -5,6 +5,7 @@ import { Flex, InputNumber, Tree } from 'antd';
 
 import { rearrange, setDisplayedCharts, setChartWidth } from '@/features/search/query.store';
 import { useAppDispatch, useTranslationFn } from '@/hooks';
+import { useResponsiveMobileContext } from '@/hooks/useResponsiveContext';
 import type { ChartDataField } from '@/types/data';
 
 interface MappedChartItem {
@@ -16,6 +17,7 @@ const ChartTree = ({ charts, section }: ChartTreeProps) => {
   const dispatch = useAppDispatch();
 
   const t = useTranslationFn();
+  const isMobile = useResponsiveMobileContext();
 
   const allCharts: MappedChartItem[] = useMemo(
     () =>
@@ -23,27 +25,29 @@ const ChartTree = ({ charts, section }: ChartTreeProps) => {
         title: (
           <Flex>
             <span className="flex-1">{t(title)}</span>
-            <span>
-              {t('Width')}:{' '}
-              <InputNumber
-                size="small"
-                min={1}
-                max={3}
-                value={width}
-                onChange={(v) => {
-                  if (v) {
-                    dispatch(setChartWidth({ section, chart: id, width: v }));
-                  }
-                }}
-                controls={true}
-                style={{ width: 50 }}
-              />
-            </span>
+            {!isMobile && (
+              <span>
+                {t('Width')}:{' '}
+                <InputNumber
+                  size="small"
+                  min={1}
+                  max={3}
+                  value={width}
+                  onChange={(v) => {
+                    if (v) {
+                      dispatch(setChartWidth({ section, chart: id, width: v }));
+                    }
+                  }}
+                  controls={true}
+                  style={{ width: 50 }}
+                />
+              </span>
+            )}
           </Flex>
         ),
         key: id,
       })),
-    [charts, dispatch, section, t]
+    [charts, dispatch, section, t, isMobile]
   );
 
   const onChartDrop: TreeProps['onDrop'] = useMemo(() => {
