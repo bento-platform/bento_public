@@ -790,7 +790,7 @@ body {
   left: 0;
   z-index: 19;
   width: min(340px, 90vw);
-  max-height: calc(100vh - var(--header-height));
+  max-height: calc(100vh - var(--header-height) - var(--scoped-title-height));
   border-radius: 0;
   box-shadow: 3px 0 10px rgba(0, 0, 0, 0.06);
   transform: translateX(-100%);
@@ -799,7 +799,7 @@ body {
 
 #default-layout.scope-header-hidden .sidebar--overlay {
   top: var(--header-height);
-  max-height: calc(100vh - var(--header-height) - var(--scoped-title-height));
+  max-height: calc(100vh - var(--header-height));
 }
 
 .sidebar--overlay.sidebar--open {
