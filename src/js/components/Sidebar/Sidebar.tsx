@@ -15,22 +15,22 @@ import { CaretDownOutlined, CaretRightOutlined } from '@ant-design/icons';
  */
 
 type SidebarFacetProps = {
-  id: string;
+  headerId: string;
   label: string;
   collapsed?: boolean;
   onToggleCollapse?: () => void;
   children: ReactNode;
 };
 
-export const SidebarFacet = ({ id, label, collapsed, onToggleCollapse, children }: SidebarFacetProps) => (
+export const SidebarFacet = ({ headerId, label, collapsed, onToggleCollapse, children }: SidebarFacetProps) => (
   <div className={'sidebar-facet' + (collapsed ? ' sidebar-facet--collapsed' : '')}>
     <Typography.Title level={4}>
       <button
         className="facet-head focus-ring"
         onClick={onToggleCollapse}
         aria-expanded={!collapsed}
-        id={`catalogue-facet-${id}`}
-        aria-controls={`catalogue-region-${id}`}
+        id={`catalogue-facet-${headerId}`}
+        aria-controls={`catalogue-region-${headerId}`}
       >
         <span className="facet-head__label">{label}</span>
         {collapsed ? (

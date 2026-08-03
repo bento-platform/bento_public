@@ -41,7 +41,7 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
 
   return (
     <SidebarFacet
-      id={facet.id}
+      headerId={facet.id}
       label={t(facetTranslationKey(facet.id))}
       collapsed={collapsed}
       onToggleCollapse={onToggleCollapse}
