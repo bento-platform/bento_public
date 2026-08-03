@@ -1,21 +1,22 @@
-import type { CSSProperties } from 'react';
 import { memo, useRef } from 'react';
 import { Button, Card, Row, Space, Tooltip } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import Chart from './Chart';
 import CustomEmpty from '../Util/CustomEmpty';
-import { CHART_HEIGHT } from '@/constants/overviewConstants';
+import { CHART_SIZES } from '@/constants/overviewConstants';
 import { useTranslationFn } from '@/hooks';
 import type { ChartDataField } from '@/types/data';
 import type { ChartSizeMode } from '@/features/ui/types';
 import SmallChartCardTitle from '@/components/Util/SmallChartCardTitle';
 
-const CARD_STYLE: CSSProperties = { height: '415px' };
-const ROW_EMPTY_STYLE: CSSProperties = { height: `${CHART_HEIGHT}px` };
-
-const ChartCard = memo(({ section, chart, onRemoveChart, searchable, mode }: ChartCardProps) => {
+const ChartCard = memo(({ section, chart, onRemoveChart, searchable, mode: mode_ }: ChartCardProps) => {
   const t = useTranslationFn();
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const mode: ChartSizeMode = mode_ ?? 'normal';
+
+  const { chartHeight, fontSize: chartFontSize } = CHART_SIZES[mode];
+  const compact = mode === 'compact';
 
   const {
     id,
@@ -34,8 +35,6 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable, mode }: Cha
     },
   ];
 
-  const compact = mode === 'compact';
-
   const tTitle = t(title);
   const tDesc = description !== title ? t(description) : '';
 
@@ -51,7 +50,8 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable, mode }: Cha
           />
         }
         className={compact ? 'rounded-none' : 'shadow rounded-xl'}
-        style={CARD_STYLE}
+        style={{ height: chartHeight + (compact ? 40 : 65) }}
+        styles={{ body: { paddingTop: 0, paddingBottom: 0, fontSize: chartFontSize } }}
         size="small"
         extra={
           <Space size="small">
@@ -78,9 +78,10 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable, mode }: Cha
             id={id}
             key={id}
             isClickable={!!searchable}
+            mode={mode}
           />
         ) : (
-          <Row style={ROW_EMPTY_STYLE} justify="center" align="middle">
+          <Row style={{ height: chartHeight }} justify="center" align="middle">
             <CustomEmpty text="No Data" />
           </Row>
         )}

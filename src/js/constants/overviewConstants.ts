@@ -16,19 +16,21 @@ export const GRID_GAP = 12;
 // pie charts are rendered slightly smaller since labels can clip
 export const CHART_SIZES: Record<
   ChartSizeMode,
-  { minWidth: number; gridGap: number; chartHeight: number; pieChartHeight: number }
+  { minWidth: number; gridGap: number; chartHeight: number; pieChartHeight: number; fontSize: number; }
 > = {
   normal: {
     minWidth: 350,
     gridGap: 12,
     chartHeight: 350,
     pieChartHeight: 300,
+    fontSize: 14,
   },
   compact: {
     minWidth: 300,
     gridGap: 1,
     chartHeight: 300,
     pieChartHeight: 265,
+    fontSize: 13,
   },
 };
 
