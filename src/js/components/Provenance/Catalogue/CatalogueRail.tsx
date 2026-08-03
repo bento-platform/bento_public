@@ -8,6 +8,7 @@ import { statusTranslationKey, facetTranslationKey } from '@/features/catalogue/
 import { CloseOutlined } from '@ant-design/icons';
 import FilterChip from '@/components/Util/FilterChip';
 import Sidebar, { SidebarFacet, SidebarSection } from '@/components/Sidebar/Sidebar';
+import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { FACETS } from '@/features/catalogue/facetRegistry';
 
 interface FacetConfig {
@@ -28,12 +29,16 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
   if (options.length === 0) return null;
 
   return (
-    <SidebarFacet label={t(facetTranslationKey(facet.id))} collapsed={collapsed} onToggleCollapse={onToggleCollapse}>
+    <SidebarFacet
+      label={t(facetTranslationKey(facet.id), T_PLURAL_COUNT)}
+      collapsed={collapsed}
+      onToggleCollapse={onToggleCollapse}
+    >
       <div className={clsx('facet-chips', facet.scroll && 'facet-chips--scroll')}>
         {options.map(({ value, count, selected }) => (
           <FilterChip
             key={value}
-            label={facet.id === 'statuses' ? t(statusTranslationKey(value)) : value}
+            label={facet.id === 'status' ? t(statusTranslationKey(value)) : value}
             count={count}
             selected={selected}
             onChange={() => onToggleValue(value)}

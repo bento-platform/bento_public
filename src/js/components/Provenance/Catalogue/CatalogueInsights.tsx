@@ -86,10 +86,10 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
           <CategoryDonut
             data={statusData}
             colorsById={STATUS_CHART_COLORS as Record<string, HexColor>}
-            selectedIds={sets.statuses}
+            selectedIds={sets.status}
             centerLabel={centerLabel}
             formatValue={fmt}
-            onClick={handleClick('statuses')}
+            onClick={handleClick('status')}
           />
         </Card>
         {PCGL_MODE ? (
@@ -98,9 +98,9 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
             <CategoryBarList
               data={domainData.slice(0, 5)}
               colorsById={domainColors}
-              selectedIds={sets.domains}
+              selectedIds={sets.domain}
               formatValue={fmt}
-              onClick={handleClick('domains')}
+              onClick={handleClick('domain')}
             />
           </Card>
         ) : (
@@ -109,10 +109,10 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
             <CategoryDonut
               data={programData}
               colorsById={projectColors as Record<string, HexColor>}
-              selectedIds={sets.projects}
+              selectedIds={sets.project}
               centerLabel={centerLabel}
               formatValue={fmt}
-              onClick={handleClick('projects')}
+              onClick={handleClick('project')}
             />
           </Card>
         )}
@@ -121,9 +121,9 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
           <CategoryBarList
             data={keywordData.slice(0, 5)}
             colorsById={keywordColors}
-            selectedIds={sets.keywords}
+            selectedIds={sets.keyword}
             formatValue={fmt}
-            onClick={handleClick('keywords')}
+            onClick={handleClick('keyword')}
           />
         </Card>
       </Flex>

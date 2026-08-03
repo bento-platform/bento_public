@@ -52,7 +52,7 @@ const CatalogueToolbar = ({ filteredCount, isMobile, onOpenFilters }: CatalogueT
   if (q) {
     pills.push({
       key: 'keywords-__q__',
-      facetLabel: facetTranslationKey('keywords'),
+      facetLabel: facetTranslationKey('keyword'),
       label: `"${q}"`,
       onClose: () => setSearch(''),
     });

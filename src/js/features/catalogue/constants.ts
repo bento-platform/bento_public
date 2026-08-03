@@ -2,15 +2,15 @@ import type { Dataset } from '@/types/dataset';
 import type { Project } from '@/types/metadata';
 
 export const FACET_IDS = [
-  'programs',
-  'projects',
-  'domains',
-  'taxa',
+  'program',
+  'project',
+  'domain',
+  'taxon',
   'access',
-  'licenses',
-  'contexts',
-  'statuses',
-  'keywords',
+  'license',
+  'context',
+  'status',
+  'keyword',
 ] as const;
 export type FacetId = (typeof FACET_IDS)[number];
 

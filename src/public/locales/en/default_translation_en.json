@@ -560,15 +560,24 @@
       "close": "Close filters"
     },
     "facets": {
-      "programs": "Programs",
-      "projects": "$t(entities.project_other)",
-      "domains": "Domains",
-      "taxa": "Taxa",
-      "access": "Access",
-      "licenses": "Data use",
-      "contexts": "Context",
-      "statuses": "Status",
-      "keywords": "Keywords"
+      "program_one": "Program",
+      "program_other": "Programs",
+      "project_one": "$t(entities.project_one)",
+      "project_other": "$t(entities.project_other)",
+      "domain_one": "Domain",
+      "domain_other": "Domains",
+      "taxon_one": "Taxon",
+      "taxon_other": "Taxa",
+      "access_one": "Access",
+      "access_other": "Access",
+      "license_one": "Data use",
+      "license_other": "Data use",
+      "context_one": "Context",
+      "context_other": "Context",
+      "status_one": "Status",
+      "status_other": "Status",
+      "keyword_one": "Keyword",
+      "keyword_other": "Keywords"
     },
     "toolbar": {
       "search_placeholder": "Search $t(entities.dataset_other, lowercase), keywords, assays…",

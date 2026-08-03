@@ -16,7 +16,7 @@ const ProgramPill = ({ program }: { program: string }) => {
         title={program}
         onClick={(e) => {
           e.stopPropagation();
-          toggleFacetValue('programs', program);
+          toggleFacetValue('program', program);
         }}
       >
         <span className="project-pill__dot" style={{ background: projectColors[program] ?? COLOR_CHART_FALLBACK }} />

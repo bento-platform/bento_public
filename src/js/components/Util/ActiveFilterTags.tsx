@@ -1,5 +1,6 @@
 import { Flex, Tag } from 'antd';
 import clsx from 'clsx';
+import { T_SINGULAR_COUNT } from '@/constants/i18n';
 import { useTranslationFn } from '@/hooks';
 
 export interface ActiveFilterPill {
@@ -23,7 +24,7 @@ const ActiveFilterTags = ({ pills, onClearAll, tagClassName }: ActiveFilterTagsP
     <Flex wrap gap={4} align="center">
       {pills.map(({ key, facetLabel, label, onClose }) => (
         <Tag key={key} closable onClose={onClose} className={clsx('catalogue-filter-tag', tagClassName)}>
-          <span className="catalogue-filter-tag__facet-label">{t(facetLabel)}:</span>
+          <span className="catalogue-filter-tag__facet-label">{t(facetLabel, T_SINGULAR_COUNT)}:</span>
           {label}
         </Tag>
       ))}
