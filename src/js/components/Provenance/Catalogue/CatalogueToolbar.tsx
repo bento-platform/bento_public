@@ -1,13 +1,8 @@
 import { useAppDispatch } from '@/hooks';
 import { Badge, Button, Dropdown, Flex, Input, Select, Segmented, Typography } from 'antd';
-import {
-  AppstoreOutlined,
-  BarsOutlined,
-  BarChartOutlined,
-  FilterOutlined,
-  SearchOutlined,
-  SwapOutlined,
-} from '@ant-design/icons';
+import { BarChartOutlined, FilterOutlined, SearchOutlined, SwapOutlined } from '@ant-design/icons';
+import { BsGrid, BsViewStacked } from 'react-icons/bs';
+
 import { useCatalogueState, facetTranslationKey } from '@/features/catalogue/hooks';
 import { toggleInsights, type SortKey, type FacetId } from '@/features/catalogue/catalogue.store';
 import { useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
@@ -103,11 +98,22 @@ const CatalogueToolbar = ({ filteredCount, isMobile, onOpenFilters }: CatalogueT
         {!isMobile && (
           <Segmented
             className="catalogue-toolbar-fixed"
+            style={{ backgroundColor: 'rgb(240, 240, 240)' }}
             value={view}
             onChange={(v) => setView(v as 'grid' | 'list')}
             options={[
-              { value: 'grid', icon: <AppstoreOutlined /> },
-              { value: 'list', icon: <BarsOutlined /> },
+              {
+                value: 'grid',
+                label: t('catalogue.toolbar.grid'),
+                title: t('catalogue.toolbar.view_as_grid'),
+                icon: <BsGrid className="align-top" style={{ marginTop: 7 }} />,
+              },
+              {
+                value: 'list',
+                label: t('catalogue.toolbar.list'),
+                title: t('catalogue.toolbar.view_as_list'),
+                icon: <BsViewStacked className="align-top" style={{ marginTop: 7 }} />,
+              },
             ]}
           />
         )}
