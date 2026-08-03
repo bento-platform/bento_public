@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
-import { useAppSelector } from '@/hooks';
+import { useAppSelector, useTranslationFn } from '@/hooks';
+import type { FacetOption } from '@/features/catalogue/types';
 import type { StudyContext } from '@/types/dataset';
 import { FACET_IDS, SORT_FNS, type DatasetWithProject, type FacetId } from './constants';
 import { FACET_CONFIG_BY_ID } from './facetRegistry';
-import { getLabel } from './utils';
+import { facetLabelI18nKey, getLabel } from './utils';
 
 export type { DatasetWithProject } from './constants';
 
@@ -46,8 +47,9 @@ export function useCatalogueState() {
  */
 export function useCatalogueFilter(items: DatasetWithProject[]): {
   filtered: DatasetWithProject[];
-  facetOptions: (facetId: FacetId) => { value: string; count: number; selected: boolean }[];
+  facetOptions: (facetId: FacetId) => FacetOption[];
 } {
+  const t = useTranslationFn();
   const { q, sets, sort } = useCatalogueState();
 
   return useMemo(() => {
@@ -81,18 +83,22 @@ export function useCatalogueFilter(items: DatasetWithProject[]): {
 
     /** Computes display options for a single facet, respecting all other active filters. */
     function facetOptions(facetId: FacetId) {
+      const facetConfig = FACET_CONFIG_BY_ID[facetId];
+
       const base = items.filter((item) => matchesQuery(item, facetId));
       const countMap = new Map<string, number>();
       for (const item of base) {
-        for (const v of FACET_CONFIG_BY_ID[facetId].getValues(item)) {
+        for (const v of facetConfig.getValues(item)) {
           countMap.set(v, (countMap.get(v) ?? 0) + 1);
         }
       }
+
       const selected = sets[facetId];
       // include already-selected values even if count 0
       const allValues = new Set([...countMap.keys(), ...selected]);
+
       const values = [...allValues];
-      const order = FACET_CONFIG_BY_ID[facetId].order;
+      const order = facetConfig.order;
       if (order) {
         values.sort((a, b) => {
           const ai = order.indexOf(a);
@@ -105,13 +111,15 @@ export function useCatalogueFilter(items: DatasetWithProject[]): {
       } else {
         values.sort((a, b) => (countMap.get(b) ?? 0) - (countMap.get(a) ?? 0) || a.localeCompare(b));
       }
+
       return values.map((v) => ({
         value: v,
+        label: t(facetLabelI18nKey(facetConfig.i18nKeyPrefix, v)),
         count: countMap.get(v) ?? 0,
         selected: selected.includes(v),
       }));
     }
 
     return { filtered: sortedFiltered, facetOptions };
-  }, [items, q, sets, sort]);
+  }, [t, items, q, sets, sort]);
 }

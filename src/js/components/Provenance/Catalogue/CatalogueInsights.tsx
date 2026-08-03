@@ -1,27 +1,30 @@
+import { useMemo } from 'react';
+
 import { Card, Flex, Typography } from 'antd';
-import { useCatalogueState } from '@/features/catalogue/hooks';
-import type { FacetId } from '@/features/catalogue/catalogue.store';
-import { useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
-import { useFormatNumber, useTranslationFn } from '@/hooks';
 import { BarChartOutlined } from '@ant-design/icons';
-import type { DatasetWithProject } from '@/features/catalogue/hooks';
-import { statusTranslationKey } from '@/features/catalogue/hooks';
-import { getLabel, normaliseStatus } from '@/features/catalogue/utils';
-import { CategoryDonut, CategoryBarList, type HexColor, type CategoricalChartDataItem } from 'bento-charts';
-import { PCGL_MODE } from '@/config';
-import { STATUS_CHART_COLORS } from './constants';
 
 const { Text } = Typography;
 
-import { assignColors } from '@/features/catalogue/hooks';
+import { useCatalogueState } from '@/features/catalogue/hooks';
+import { useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
+import { useFormatNumber, useTranslationFn } from '@/hooks';
 
-function buildCounts(
-  datasets: DatasetWithProject[],
-  getValue: (d: DatasetWithProject) => string[]
-): CategoricalChartDataItem[] {
+import type { FacetId } from '@/features/catalogue/catalogue.store';
+import type { DatasetWithProject } from '@/features/catalogue/hooks';
+
+import { CategoryDonut, CategoryBarList, type HexColor, type CategoricalChartDataItem } from 'bento-charts';
+
+import { FACET_CONFIG_BY_ID, type FacetConfig } from '@/features/catalogue/facetRegistry';
+import { PCGL_MODE } from '@/config';
+import { STATUS_CHART_COLORS } from './constants';
+
+import { assignColors } from '@/features/catalogue/hooks';
+import { facetLabelI18nKey } from '@/features/catalogue/utils';
+
+function buildCounts(datasets: DatasetWithProject[], facet: FacetConfig): CategoricalChartDataItem[] {
   const map = new Map<string, number>();
   for (const d of datasets) {
-    for (const v of getValue(d)) {
+    for (const v of facet.getValues(d)) {
       if (v) map.set(v, (map.get(v) ?? 0) + 1);
     }
   }
@@ -30,10 +33,18 @@ function buildCounts(
 
 // buildCounts keeps `id` as the raw facet value (needed for toggleFacetValue/colorsById lookups); this applies
 // a display translation to `x` only, so labels shown in the chart/legend are localized without losing that key.
-const translateEntries = (
-  data: CategoricalChartDataItem[],
-  toLabel: (id: string) => string
-): CategoricalChartDataItem[] => data.map((d) => ({ ...d, x: toLabel(d.id ?? d.x) }));
+const useTranslatedEntries = (datasets: DatasetWithProject[], facetId: FacetId): CategoricalChartDataItem[] => {
+  const t = useTranslationFn();
+  return useMemo<CategoricalChartDataItem[]>(() => {
+    const facetConfig = FACET_CONFIG_BY_ID[facetId];
+    if (facetConfig) {
+      const data = buildCounts(datasets, facetConfig);
+      return data.map((d) => ({ ...d, x: t(facetLabelI18nKey(facetConfig.i18nKeyPrefix, d.id ?? d.x)) }));
+    } else {
+      return []; // If facet config is disabled (e.g., project for PCGL)
+    }
+  }, [t, datasets, facetId]);
+};
 
 interface CatalogueInsightsProps {
   filteredDatasets: DatasetWithProject[];
@@ -45,22 +56,10 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
   const { sets, projectColors } = useCatalogueState();
   const { toggleFacetValue } = useCatalogueUrlActions();
 
-  const statusData = translateEntries(
-    buildCounts(filteredDatasets, ({ dataset }) => [normaliseStatus(dataset.study_status)]),
-    (id) => t(statusTranslationKey(id))
-  );
-  const domainData = translateEntries(
-    buildCounts(filteredDatasets, ({ dataset }) => dataset.domain ?? []),
-    (id) => t(id)
-  );
-  const programData = translateEntries(
-    buildCounts(filteredDatasets, ({ project }) => [project.title]),
-    (id) => t(id)
-  );
-  const keywordData = translateEntries(
-    buildCounts(filteredDatasets, ({ dataset }) => (dataset.keywords ?? []).map(getLabel)),
-    (id) => t(id)
-  );
+  const statusData = useTranslatedEntries(filteredDatasets, 'status');
+  const domainData = useTranslatedEntries(filteredDatasets, 'domain');
+  const projectData = useTranslatedEntries(filteredDatasets, 'project');
+  const keywordData = useTranslatedEntries(filteredDatasets, 'keyword');
 
   const domainColors = assignColors(domainData.map((d) => d.id ?? d.x)) as Record<string, HexColor>;
   const keywordColors = assignColors(keywordData.slice(0, 5).map((d) => d.id ?? d.x)) as Record<string, HexColor>;
@@ -107,7 +106,7 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
           <Card size="small" className="chart-card">
             <Text className="chart-card__title">{t('catalogue.insights.by_project')}</Text>
             <CategoryDonut
-              data={programData}
+              data={projectData}
               colorsById={projectColors as Record<string, HexColor>}
               selectedIds={sets.project}
               centerLabel={centerLabel}

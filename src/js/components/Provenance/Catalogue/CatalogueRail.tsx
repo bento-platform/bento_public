@@ -1,10 +1,11 @@
 import clsx from 'clsx';
+import type { FacetOption } from '@/features/catalogue/types';
 import { useAppDispatch } from '@/hooks';
 import { useCatalogueState } from '@/features/catalogue/hooks';
 import { toggleFacetCollapse, type FacetId } from '@/features/catalogue/catalogue.store';
 import { useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
 import { useTranslationFn } from '@/hooks';
-import { statusTranslationKey, facetTranslationKey } from '@/features/catalogue/hooks';
+import { facetTranslationKey } from '@/features/catalogue/hooks';
 import { CloseOutlined } from '@ant-design/icons';
 import FilterChip from '@/components/Util/FilterChip';
 import Sidebar, { SidebarFacet, SidebarSection } from '@/components/Sidebar/Sidebar';
@@ -18,7 +19,7 @@ interface FacetConfig {
 
 interface FacetSectionProps {
   facet: FacetConfig;
-  options: { value: string; count: number; selected: boolean }[];
+  options: FacetOption[];
   collapsed: boolean;
   onToggleCollapse: () => void;
   onToggleValue: (value: string) => void;
@@ -35,10 +36,10 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
       onToggleCollapse={onToggleCollapse}
     >
       <div className={clsx('facet-chips', facet.scroll && 'facet-chips--scroll')}>
-        {options.map(({ value, count, selected }) => (
+        {options.map(({ value, label, count, selected }) => (
           <FilterChip
             key={value}
-            label={facet.id === 'status' ? t(statusTranslationKey(value)) : value}
+            label={label}
             count={count}
             selected={selected}
             onChange={() => onToggleValue(value)}
@@ -51,7 +52,7 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
 
 interface CatalogueRailProps {
   totalCount: number;
-  facetOptions: (facetId: FacetId) => { value: string; count: number; selected: boolean }[];
+  facetOptions: (facetId: FacetId) => { value: string; label: string; count: number; selected: boolean }[];
   /** Below the `lg` breakpoint, the rail renders as a slide-over drawer instead of an inline sticky column. */
   overlay: boolean;
   /** Ignored when `overlay` is false (the rail is always visible inline on desktop). */

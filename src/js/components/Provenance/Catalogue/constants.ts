@@ -15,9 +15,9 @@ export const STATUS_STYLE: Record<string, { color: string; bg: string; border: s
 
 // Status chart colours (insights donut) — kept as hex: used as SVG stroke attributes
 export const STATUS_CHART_COLORS: Record<string, string> = {
-  Ongoing: '#52C41A',
-  Completed: '#1677FF',
-  Unassigned: '#8C8C8C',
+  ONGOING: '#52C41A',
+  COMPLETED: '#1677FF',
+  UNASSIGNED: '#8C8C8C',
 };
 
 // Chart defaults

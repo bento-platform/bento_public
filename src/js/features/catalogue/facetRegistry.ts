@@ -2,11 +2,12 @@ import type { DatasetWithProject, FacetId } from '@/features/catalogue/constants
 import { PCGL_MODE } from '@/config';
 import { getLabel, normaliseStatus } from './utils';
 
-interface FacetConfig {
+export interface FacetConfig {
   id: FacetId;
   getValues: (datasetWithProject: DatasetWithProject) => string[];
   order?: string[];
   scroll?: boolean;
+  i18nKeyPrefix?: string;
 }
 
 const PROGRAM_FACET_CONFIG: FacetConfig = {
@@ -35,12 +36,14 @@ export const FACETS: FacetConfig[] = [
   {
     id: 'context',
     getValues: ({ dataset }) => (dataset.study_context ? [dataset.study_context] : []),
-    order: ['Clinical', 'Research'],
+    order: ['CLINICAL', 'RESEARCH'],
+    i18nKeyPrefix: 'provenance.context.',
   },
   {
     id: 'status',
     getValues: ({ dataset }) => [normaliseStatus(dataset.study_status)],
-    order: ['Ongoing', 'Completed', 'Unassigned'],
+    order: ['ONGOING', 'COMPLETED', 'UNASSIGNED'],
+    i18nKeyPrefix: 'provenance.status.',
   },
   { id: 'keyword', getValues: ({ dataset }) => (dataset.keywords ?? []).map(getLabel), scroll: true },
 ];
