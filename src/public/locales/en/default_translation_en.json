@@ -67,6 +67,14 @@
     "search_fetch": "Error fetching search results",
     "page_not_found": "Page not found"
   },
+  "overview": {
+    "chart_size_label": "Chart size:",
+    "compact": "Compact",
+    "normal": "Normal",
+    "chart_size_help": "Control chart display size and how many charts can fit on-screen.",
+    "alter_shown_charts": "To alter which charts are shown,",
+    "manage_charts_link": "manage charts"
+  },
   "search": {
     "filters_one": "filter",
     "filters_other": "filters",
