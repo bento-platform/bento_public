@@ -24,7 +24,7 @@ type SidebarFacetProps = {
 
 export const SidebarFacet = ({ headerId, label, collapsed, onToggleCollapse, children }: SidebarFacetProps) => (
   <div className={'sidebar-facet' + (collapsed ? ' sidebar-facet--collapsed' : '')}>
-    <Typography.Title level={4}>
+    <Typography.Title level={4} className="facet-head__title">
       <button
         className="facet-head focus-ring"
         onClick={onToggleCollapse}
