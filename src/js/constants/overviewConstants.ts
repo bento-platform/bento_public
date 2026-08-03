@@ -13,11 +13,16 @@ export const DEFAULT_CHART_WIDTH = 1;
 export const CHART_WIDTH = 454;
 export const GRID_GAP = 12;
 
+export type ChartSizeConfig = {
+  minWidth: number;
+  gridGap: number;
+  chartHeight: number;
+  pieChartHeight: number;
+  fontSize: number;
+};
+
 // pie charts are rendered slightly smaller since labels can clip
-export const CHART_SIZES: Record<
-  ChartSizeMode,
-  { minWidth: number; gridGap: number; chartHeight: number; pieChartHeight: number; fontSize: number; }
-> = {
+export const CHART_SIZES: Record<ChartSizeMode, ChartSizeConfig> = {
   normal: {
     minWidth: 350,
     gridGap: 12,
