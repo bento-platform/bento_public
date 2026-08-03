@@ -66,16 +66,14 @@ const CatalogueInsightCard = ({ datasets, facet, kind, colors }: CatalogueInsigh
     data = data.slice(0, 5);
   }
 
-  const handleClick = (facetId: FacetId) => (id: string) => {
-    toggleFacetValue(facetId, id);
-  };
+  if (data.length === 0) return null;
 
   const commonProps = {
     data,
     colorsById: colors ?? (assignColors(data.map((d) => d.id ?? d.x)) as Record<string, HexColor>),
     selectedIds: sets[facet],
     formatValue: fmt,
-    onClick: handleClick(facet),
+    onClick: (id: string) => toggleFacetValue(facet, id),
   };
 
   return (
