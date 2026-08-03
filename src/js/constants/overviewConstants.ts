@@ -1,5 +1,5 @@
 import type { HexColor } from 'bento-charts';
-import { ChartSizeMode } from '@/features/ui/types';
+import type { ChartSizeMode } from '@/features/ui/types';
 
 export const COUNTS_FILL = '#75787a';
 
