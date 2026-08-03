@@ -4,7 +4,7 @@ import { useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync
 
 const ProgramPill = ({ program }: { program: string }) => {
   const { projectColors } = useCatalogueState();
-  const { toggleFacetValue } = useCatalogueUrlActions();
+  const { setFacetValue } = useCatalogueUrlActions();
 
   if (!program) return null;
 
@@ -16,7 +16,7 @@ const ProgramPill = ({ program }: { program: string }) => {
         title={program}
         onClick={(e) => {
           e.stopPropagation();
-          toggleFacetValue('program', program);
+          setFacetValue('program', program);
         }}
       >
         <span className="project-pill__dot" style={{ background: projectColors[program] ?? COLOR_CHART_FALLBACK }} />
