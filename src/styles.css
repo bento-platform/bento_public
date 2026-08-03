@@ -16,8 +16,6 @@
   --scoped-title-margin-bottom: 24px;
   --scoped-title-breadcrumb-font-size: 1.2rem;
 
-  --chart-grid-max-width: max(min(var(--content-max-width), 100%), 1200px);
-
   /* 90% opacity white */
   --white-90: rgba(255, 255, 255, 0.9);
   /* 80% opacity white */
@@ -414,18 +412,13 @@ body {
   padding: 0;
 }
 
-#site-sider__inner {
-  display: flex;
-  flex-direction: column;
-}
+#site-sider__inner { display: flex; flex-direction: column; }
 #default-layout.page-catalogue #site-sider__inner {
   top: 0;
   padding: var(--content-padding-v) var(--content-padding-h);
 }
 
-#site-sider__inner .sidebar__content {
-  flex: 1;
-}
+#site-sider__inner .sidebar__content { flex: 1; }
 
 #content-layout {
   position: fixed;
@@ -1040,7 +1033,7 @@ body {
 
   display: grid;
   /* 690 * 2 + 20 (gap) = 1400 */
-  grid-template-columns: repeat(auto-fit, minmax(250px, calc((var(--chart-grid-max-width) - var(--dataset-grid-gap)) / 2)));
+  grid-template-columns: repeat(auto-fit, minmax(250px, calc((var(--content-max-width) - var(--dataset-grid-gap)) / 2)));
   gap: var(--dataset-grid-gap);
 }
 
@@ -1059,11 +1052,9 @@ body {
   opacity: 0.2;
 }
 
-.overview-charts.compact h3.bento-theme.ant-typography {
-  font-size: 1.25rem;
-}
+.overview-charts.compact h3.bento-theme.ant-typography { font-size: 1.25rem; }
 
-  /* END overview */
+/* END overview */
 
 
 /* BEGIN key-value display */
