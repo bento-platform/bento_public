@@ -55,13 +55,7 @@ export type DiscoveryMatchExperimentResult = DiscoveryMatchObject & {
 };
 
 export type MatchIncludedFieldsFromExperiments =
-  | 'id'
-  | 'description'
-  | 'experiment_type'
-  | 'experiment_ontology'
-  | 'study_type'
-  | 'molecule'
-  | 'molecule_ontology';
+  'id' | 'description' | 'experiment_type' | 'experiment_ontology' | 'study_type' | 'molecule' | 'molecule_ontology';
 export type DiscoveryMatchExperiment = DiscoveryMatchObject &
   Pick<Experiment, MatchIncludedFieldsFromExperiments> & {
     results: DiscoveryMatchExperimentResult[];
@@ -83,10 +77,7 @@ export type DiscoveryMatchPhenopacket = DiscoveryMatchObject & {
 };
 
 export type ViewableDiscoveryMatchObject =
-  | DiscoveryMatchBiosample
-  | DiscoveryMatchExperiment
-  | DiscoveryMatchPhenopacket
-  | DiscoveryMatchExperimentResult;
+  DiscoveryMatchBiosample | DiscoveryMatchExperiment | DiscoveryMatchPhenopacket | DiscoveryMatchExperimentResult;
 
 export type SearchResultsUIPage = 'individuals' | 'charts';
 
