@@ -10,7 +10,7 @@ interface PublicConfig {
   TRANSLATED_LOGO: boolean; // Whether a translated version of the header logo is available/relevant
   LOGO_HEIGHT: string; // String representation of a logo height in pixels as an integer with no suffix: e.g., '32'
   SHOW_HEADER_TITLE: boolean; // Whether to show the CLIENT_NAME title text
-  SHOW_PORTAL_LINK: boolean;
+  SHOW_ADMIN_LINK: boolean;
   SHOW_SIGN_IN: boolean;
   FORCE_CATALOGUE: boolean; // Show data catalogue even with 1 project
   PCGL_MODE: boolean; // Puts Bento Public in "PCGL mode", turning it into the PCGL research portal
@@ -43,8 +43,9 @@ export const TRANSLATED_LOGO =
 export const LOGO_HEIGHT = parseInt((BENTO_PUBLIC_CONFIG.LOGO_HEIGHT ?? process.env.BENTO_PUBLIC_LOGO_HEIGHT) || '32');
 export const SHOW_HEADER_TITLE =
   BENTO_PUBLIC_CONFIG.SHOW_HEADER_TITLE ?? stringToBoolean(process.env.BENTO_PUBLIC_SHOW_HEADER_TITLE, 'true');
-export const SHOW_PORTAL_LINK =
-  BENTO_PUBLIC_CONFIG.SHOW_PORTAL_LINK ?? stringToBoolean(process.env.BENTO_PUBLIC_SHOW_PORTAL_LINK);
+export const SHOW_ADMIN_LINK =
+  BENTO_PUBLIC_CONFIG.SHOW_ADMIN_LINK ??
+  stringToBoolean(process.env.BENTO_PUBLIC_SHOW_ADMIN_LINK || process.env.BENTO_PUBLIC_SHOW_PORTAL_LINK);
 export const SHOW_SIGN_IN = BENTO_PUBLIC_CONFIG.SHOW_SIGN_IN ?? stringToBoolean(process.env.BENTO_PUBLIC_SHOW_SIGN_IN);
 export const FORCE_CATALOGUE =
   BENTO_PUBLIC_CONFIG.FORCE_CATALOGUE ?? stringToBoolean(process.env.BENTO_PUBLIC_FORCE_CATALOGUE);

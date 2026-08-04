@@ -2,10 +2,12 @@ import { Flex, Grid, Layout } from 'antd';
 import { useTranslationFn } from '@/hooks';
 import clsx from 'clsx';
 
+import { PORTAL_URL, SHOW_ADMIN_LINK } from '@/config';
+
 const { Footer } = Layout;
 const { useBreakpoint } = Grid;
 
-const PCGL_LINKS = [
+const PCGL_LINKS: { key: string; href?: string }[] = [
   {
     key: 'contact',
     href: 'contactHref',
@@ -38,6 +40,14 @@ const PCGL_LINKS = [
   {
     key: 'publicationPolicy',
   },
+  ...(SHOW_ADMIN_LINK
+    ? [
+        {
+          key: 'admin',
+          href: PORTAL_URL,
+        },
+      ]
+    : []),
 ];
 
 const PcglFooter = () => {
@@ -81,7 +91,7 @@ const PcglFooter = () => {
               key={link.key}
               className={clsx({ disabled: !link.href })}
               aria-hidden={!link.href}
-              href={link.href ? t(`pcgl.links.${link.href}`) : undefined}
+              href={link.href ? (link.href.startsWith('http') ? link.href : t(`pcgl.links.${link.href}`)) : undefined}
               rel="noreferrer"
               target="_blank"
             >

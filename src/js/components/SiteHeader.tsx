@@ -16,7 +16,6 @@ import {
   CLIENT_NAME,
   PORTAL_URL,
   SHOW_HEADER_TITLE,
-  SHOW_PORTAL_LINK,
   SHOW_SIGN_IN,
   TRANSLATED,
   TRANSLATED_LOGO,
@@ -170,20 +169,6 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
         </Flex>
 
         <Space size={isSmallScreen ? 4 : 'small'}>
-          {SHOW_PORTAL_LINK && (
-            <Button
-              type="text"
-              className="header-button"
-              icon={<LinkOutlined />}
-              onClick={() => window.open(PORTAL_URL, '_blank')}
-            >
-              {isSmallScreen ? null : (
-                <>
-                  {t('Portal')} <ExportOutlined />
-                </>
-              )}
-            </Button>
-          )}
           {TRANSLATED && (
             <Button
               type="text"

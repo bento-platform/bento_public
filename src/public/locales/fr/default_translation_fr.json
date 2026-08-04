@@ -4,7 +4,6 @@
   "Explore": "Explorer",
   "Provenance": "Provenance",
   "Count": "Observations",
-  "Portal": "Portail",
   "missing": "manquant(s)",
   "entities": {
     "project_one": "Projet",
@@ -348,7 +347,8 @@
     "c3g": "le Centre canadien de génomique computationnelle à l'université McGill",
     "licensed_under": "Bento est sous licence",
     "source_available": "Le code source est disponible sur",
-    "terms_of_use": "Conditions d'utilisation (en anglais)"
+    "terms_of_use": "Conditions d'utilisation (en anglais)",
+    "admin_link": "Tableau de bord administrateur"
   },
   "Help": "Aide",
   "Help for": "Aide pour",
@@ -673,7 +673,6 @@
       "dataPlatform": "Plateforme de données",
       "myApplications": "Mes demandes",
       "manageApplications": "Gérer les demandes",
-      "admin": "Tableau de bord administrateur",
       "cihrHref": "https://cihr-irsc.gc.ca/f/193.html"
     }
   }
