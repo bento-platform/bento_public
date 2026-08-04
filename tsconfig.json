@@ -24,8 +24,9 @@
     "paths": {
       "@/*": ["./src/js/*"],
       "@public/*": ["./src/public/*"],
-      "@Util/*": ["./src/js/components/Util/*"]
-    },
+      "@Util/*": ["./src/js/components/Util/*"],
+      "igv/dist/igv.esm": ["./node_modules/igv/dist/igv.d.ts"]
+    }
   },
   "include": ["src", "src/custom.d.ts"]
 }
