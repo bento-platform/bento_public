@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { useAppSelector } from '@/hooks';
 import type { StudyContext } from '@/types/dataset';
 import { FACET_IDS, FACET_ORDER, SORT_FNS, type DatasetWithProject, type FacetId } from './constants';
+import { stripDiacritics, stripRichText } from '@/utils/strings';
 
 export type { DatasetWithProject } from './constants';
 
@@ -72,7 +73,7 @@ export function useCatalogueFilter(items: DatasetWithProject[]): {
   const { q, sets, sort } = useCatalogueState();
 
   return useMemo(() => {
-    const lowerQ = q.toLowerCase();
+    const lowerQ = stripDiacritics(q.toLowerCase());
 
     /**
      * Returns true if `item` passes the current text query and all facet filters.
@@ -84,7 +85,10 @@ export function useCatalogueFilter(items: DatasetWithProject[]): {
       if (lowerQ) {
         const kw = (dataset.keywords ?? []).map(getLabel).join(' ');
         const dom = (dataset.domain ?? []).join(' ');
-        const hay = [dataset.title, dataset.description, dom, kw].join(' ').toLowerCase();
+        const longDesc = dataset.long_description
+          ? stripRichText(dataset.long_description.content, dataset.long_description.content_type)
+          : '';
+        const hay = stripDiacritics([dataset.title, dataset.description, longDesc, dom, kw].join(' ').toLowerCase());
         if (!hay.includes(lowerQ)) return false;
       }
       for (const fid of FACET_IDS) {
