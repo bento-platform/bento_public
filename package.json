@@ -24,7 +24,7 @@
     "axios": "^1.8.4",
     "bento-auth-js": "^7.2.0",
     "bento-charts": "^3.2.0",
-    "bento-file-display": "https://github.com/bento-platform/bento-file-display/releases/download/v0.4.0/bento-file-display-v0.4.0.tgz",
+    "bento-file-display": "https://github.com/bento-platform/bento-file-display/releases/download/v0.5.0/bento-file-display-v0.5.0.tgz",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.20",
     "dotenv": "^17.3.1",
