@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Drawer, FloatButton, Select } from 'antd';
+import { Drawer, FloatButton } from 'antd';
 import { BarsOutlined } from '@ant-design/icons';
 import { useTranslationFn } from '@/hooks';
+import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { useAccessToken } from 'bento-auth-js';
 import igv from 'igv/dist/igv.esm';
 import type { Browser, CreateOpt } from 'igv';
@@ -14,7 +15,6 @@ import type {
 } from '@/types/clinPhen/igv';
 import { PUBLIC_URL } from '@/config';
 import { caseInsensitiveIgvFileInfoLookup, getIgvFileAndIndexAccessUrls } from '@/utils/igv';
-import { assemblyIdsForExperiments } from '@/utils/experiments';
 import TrackControlTable from './TrackControlTable';
 
 const SQUISHED_CALL_HEIGHT = 10;
@@ -29,28 +29,25 @@ const TracksView = ({
   tracks: ExperimentResult[];
   references: IgvReferenceById; //references in IGV format
 }) => {
-  const igvDivRef = useRef<HTMLDivElement>(null);
-  const igvBrowserRef = useRef<Browser | null>(null);
-  const igvCreatingRef = useRef<boolean>(false);
-  const [selectedAssemblyID, setSelectedAssemblyID] = useState<string | null>(null);
+  const igvContainerRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const igvBrowserRefs = useRef<Record<string, Browser | null>>({});
+  const igvCreatingByAssemblyRef = useRef<Record<string, boolean>>({});
+  const activeCreateRequestByAssemblyRef = useRef<Record<string, number>>({});
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const accessUrlsPromises = getIgvFileAndIndexAccessUrls(tracks)
+  const [accessUrlsPromises, setAccessUrlsPromises] = useState<IgvAccessUrlPromisesById>({});
   const [tracksWithView, setTracksWithView] = useState<ExperimentResultWithView[]>(
     tracks.map((t) => ({ ...t, viewInIgv: true }))
   );
 
   const t = useTranslationFn();
-
-  const assembliesRequested = assemblyIdsForExperiments(tracks);
-  const availableAssemblies = useMemo(() => Object.keys(references), [references]);
+  const isSmallScreen = useSmallScreen();
 
   useEffect(() => {
-    if (availableAssemblies.length && availableAssemblies[0] !== selectedAssemblyID) {
-      // can we do better than auto-selecting the first one?
-      setSelectedAssemblyID(availableAssemblies[0]);
-      console.debug('auto-selected assembly ID:', availableAssemblies[0]);
-    }
-  }, [availableAssemblies, selectedAssemblyID]);
+    setAccessUrlsPromises(getIgvFileAndIndexAccessUrls(tracks));
+  }, [tracks]);
+
+  const availableAssemblies = useMemo(() => Object.keys(references), [references]);
+  const hasMultipleAssemblies = availableAssemblies.length > 1;
 
   const accessToken: string | undefined = useAccessToken();
 
@@ -112,96 +109,149 @@ const TracksView = ({
 
   const toggleView = useCallback(
     (track: ExperimentResultWithView) => {
-      if (!igvBrowserRef.current) return;
       if (!track) return;
+
+      const assemblyId = track.genome_assembly_id;
+      if (!assemblyId) return;
+
+      const browser = igvBrowserRefs.current[assemblyId];
+      if (!browser) return;
 
       const wasViewing = track.viewInIgv;
       setTracksWithView((ts) => ts.map((t) => (t.filename === track.filename ? { ...t, viewInIgv: !wasViewing } : t)));
 
       if (wasViewing) {
-        igvBrowserRef.current.removeTrackByName(track.filename);
+        browser.removeTrackByName(track.filename);
       } else {
-        igvBrowserRef.current.loadTrack(buildIgvTrack(track) as IgvTrack).catch(console.error);
+        browser.loadTrack(buildIgvTrack(track) as IgvTrack).catch(console.error);
       }
     },
-    [tracks, accessUrlsPromises, buildIgvTrack]
+    [accessUrlsPromises, buildIgvTrack]
   );
 
   // -------------------------- igv init --------------------------
 
-  useEffect(() => {
-    const cleanup = () => {
-      if (igvBrowserRef.current) {
+  const cleanupAllBrowsers = useCallback(() => {
+    Object.values(igvBrowserRefs.current).forEach((browser) => {
+      if (browser) {
         console.debug('removing igv.js browser instance');
-        igv.removeBrowser(igvBrowserRef.current);
-        igvBrowserRef.current = null;
+        igv.removeBrowser(browser);
       }
-    };
+    });
+    igvBrowserRefs.current = {};
+    igvCreatingByAssemblyRef.current = {};
+    activeCreateRequestByAssemblyRef.current = {};
+  }, []);
 
-    if (!igvDivRef.current) return;
-    if (!selectedAssemblyID) return;
-    if (Object.keys(accessUrlsPromises).length === 0) return;
-    if (igvBrowserRef.current !== null) {
-      console.log('igv browser already created');
+  useEffect(() => {
+    return () => {
+      cleanupAllBrowsers();
+    };
+  }, [cleanupAllBrowsers]);
+
+  useEffect(() => {
+    // don't launch igv if no tracks
+    if (Object.keys(accessUrlsPromises).length === 0) {
       return;
     }
 
-    if (igvCreatingRef.current) return;
+    // remove any stale browsers
+    Object.entries(igvBrowserRefs.current).forEach(([assemblyId, browser]) => {
+      if (!availableAssemblies.includes(assemblyId)) {
+        if (browser) {
+          igv.removeBrowser(browser);
+        }
+        delete igvBrowserRefs.current[assemblyId];
+      }
+    });
 
-    const initialIgvTracks: IgvTrack[] = tracksWithView
-      .map((t) => buildIgvTrack(t) as IgvTrack)
-      .filter((t) => t !== null);
+    // create an igv instance for each reference in the tracks (typically only one)
+    availableAssemblies.forEach((assemblyId) => {
+      if (igvBrowserRefs.current[assemblyId] || igvCreatingByAssemblyRef.current[assemblyId]) {
+        return;
+      }
 
-    const referenceForSelectedAssembly = references[selectedAssemblyID];
+      const igvContainer = igvContainerRefs.current[assemblyId];
+      if (!igvContainer) {
+        return;
+      }
 
-    const igvOptions = {
-      ...(referenceForSelectedAssembly as CreateOpt),
-      tracks: initialIgvTracks,
-    };
+      const initialIgvTracks: IgvTrack[] = tracksWithView
+        .filter((t) => t.genome_assembly_id === assemblyId)
+        .map((t) => buildIgvTrack(t) as IgvTrack)
+        .filter((t) => t !== null);
 
-    console.debug('creating igv.js browser with options:', igvOptions, '; tracks:', initialIgvTracks);
+      const referenceForAssembly = references[assemblyId];
+      if (!referenceForAssembly) {
+        return;
+      }
 
-    igvCreatingRef.current = true;
+      const igvOptions = {
+        ...(referenceForAssembly as CreateOpt),
+        tracks: initialIgvTracks,
+      };
 
-    igv
-      .createBrowser(igvDivRef.current as HTMLElement, igvOptions as CreateOpt)
-      .then((browser: Browser) => {
-        // browser.on(
-        //   "locuschange",
-        //   debounce((referenceFrame) => {
-        //     storeIgvPosition(referenceFrame);
-        //   }, DEBOUNCE_WAIT),
-        // );
-        igvBrowserRef.current = browser;
-        // setHasCreatedBrowser(true);
-        igvCreatingRef.current = false;
-        console.debug('created igv.js browser instance:', browser);
-      })
-      .catch((err) => {
-        console.error(err);
-        igvBrowserRef.current = null;
-        igvCreatingRef.current = false;
-        cleanup();
-      });
-  }, [accessUrlsPromises, buildIgvTrack, tracks, references]);
+      console.debug('creating igv.js browser with options:', igvOptions, '; tracks:', initialIgvTracks);
+
+      igvCreatingByAssemblyRef.current[assemblyId] = true;
+      const createRequestId = (activeCreateRequestByAssemblyRef.current[assemblyId] ?? 0) + 1;
+      activeCreateRequestByAssemblyRef.current[assemblyId] = createRequestId;
+
+      igv
+        .createBrowser(igvContainer, igvOptions as CreateOpt)
+        .then((browser: Browser) => {
+          if ((activeCreateRequestByAssemblyRef.current[assemblyId] ?? 0) !== createRequestId) {
+            console.debug('ignoring stale igv.js browser creation result');
+            igv.removeBrowser(browser);
+            return;
+          }
+
+          igvBrowserRefs.current[assemblyId] = browser;
+          igvCreatingByAssemblyRef.current[assemblyId] = false;
+          console.debug('created igv.js browser instance:', browser);
+        })
+        .catch((err) => {
+          console.error(err);
+          igvBrowserRefs.current[assemblyId] = null;
+          igvCreatingByAssemblyRef.current[assemblyId] = false;
+        });
+    });
+  }, [accessUrlsPromises, availableAssemblies, buildIgvTrack, references, tracksWithView]);
 
   // -------------------------- end igv init --------------------------
 
   return (
     <>
-      {tracks.length > 0 && <div ref={igvDivRef} />}
+      {(tracks.length > 0 || availableAssemblies.length > 0) && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {availableAssemblies.map((assemblyId) => (
+            <div key={assemblyId} style={{ minHeight: 400 }}>
+              <div
+                ref={(node) => {
+                  igvContainerRefs.current[assemblyId] = node;
+                }}
+              />
+            </div>
+          ))}
+        </div>
+      )}
       <FloatButton type="primary" icon={<BarsOutlined />} tooltip={t('Manage Tracks')} onClick={showDrawer} />
-      <Drawer title={t('Manage Tracks')} placement="right" onClose={closeDrawer} open={drawerOpen}>
-        { availableAssemblies.length > 1 && <>
-          Assembly:
-          <Select
-            value={selectedAssemblyID}
-            onChange={(v) => setSelectedAssemblyID(v)}
-            options={availableAssemblies.map((a) => ({ value: a, label: a }))}
-          />
-        </>}
-
-        <TrackControlTable toggleView={toggleView} experimentResults={tracksWithView} />
+      <Drawer
+        title={t('Manage Tracks')}
+        placement="right"
+        onClose={closeDrawer}
+        open={drawerOpen}
+        width={isSmallScreen ? '100vw' : 500}
+      >
+        {availableAssemblies.map((assemblyId) => (
+          <div key={assemblyId} style={{ marginTop: '1rem' }}>
+            {hasMultipleAssemblies && <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>{assemblyId}</div>}
+            <TrackControlTable
+              toggleView={toggleView}
+              tracks={tracksWithView.filter((t) => t.genome_assembly_id == assemblyId)}
+            />
+          </div>
+        ))}
       </Drawer>
     </>
   );

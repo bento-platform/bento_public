@@ -3,10 +3,10 @@ import type { ExperimentResultWithView } from '@/types/clinPhen/igv';
 
 const TrackControlTable = ({
   toggleView,
-  experimentResults,
+  tracks,
 }: {
   toggleView: (track: ExperimentResultWithView) => void;
-  experimentResults: ExperimentResultWithView[];
+  tracks: ExperimentResultWithView[];
 }) => {
   const trackTableColumns = [
     {
@@ -30,15 +30,9 @@ const TrackControlTable = ({
       ),
     },
   ];
+
   return (
-    <Table
-      bordered
-      size="small"
-      pagination={false}
-      columns={trackTableColumns}
-      rowKey="filename"
-      dataSource={experimentResults}
-    />
+    <Table bordered size="small" pagination={false} columns={trackTableColumns} rowKey="filename" dataSource={tracks} />
   );
 };
 
