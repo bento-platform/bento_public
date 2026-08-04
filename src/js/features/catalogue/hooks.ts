@@ -1,35 +1,11 @@
 import { useMemo } from 'react';
-import type { HexColor } from 'bento-charts';
 import { useAppSelector, useTranslationFn } from '@/hooks';
 import type { FacetOption } from '@/features/catalogue/types';
-import type { StudyContext } from '@/types/dataset';
 import { FACET_IDS, SORT_FNS, type DatasetWithProject, type FacetId } from './constants';
 import { FACET_CONFIG_BY_ID } from './facetRegistry';
-import { facetLabelI18nKey, getLabel } from './utils';
+import { facetValueTranslationKey, getLabel } from './utils';
 
 export type { DatasetWithProject } from './constants';
-
-/** Builds the i18n key for a normalised status value, e.g., "Unassigned" -> "provenance.status.unassigned". */
-export const statusTranslationKey = (status: string): string => `provenance.status.${status.toLowerCase()}`;
-
-/** Builds the i18n key for a normalised study context value, e.g., "Clinical" -> "provenance.context.clinical". */
-export const studyContextTranslationKey = (context: StudyContext): string =>
-  `provenance.context.${context.toLowerCase()}`;
-
-/** Builds the i18n key for a facet's label, e.g., "domains" -> "catalogue.facets.domains". */
-export const facetTranslationKey = (facet: FacetId): string => `catalogue.facets.${facet}`;
-
-/** Ordered colour palette used to assign a stable colour per project name. */
-export const PALETTE: HexColor[] = ['#1677FF', '#13C2C2', '#722ED1', '#FA8C16', '#52C41A'];
-
-/**
- * Assigns a deterministic colour from {@link PALETTE} to each project name.
- * Names are sorted alphabetically before assignment so order is stable across renders.
- */
-export function assignColors(names: string[]): Record<string, HexColor> {
-  const sorted = [...names].sort((a, b) => a.localeCompare(b));
-  return Object.fromEntries(sorted.map((name, i) => [name, PALETTE[i % PALETTE.length]]));
-}
 
 /** Selects the full catalogue slice from the Redux store. */
 export function useCatalogueState() {
@@ -115,7 +91,7 @@ export function useCatalogueFilter(items: DatasetWithProject[]): {
 
       return values.map((v) => ({
         value: v,
-        label: t(facetLabelI18nKey(facetConfig.i18nKeyPrefix, v)),
+        label: t(facetValueTranslationKey(facetConfig.i18nKeyPrefix, v)),
         count: countMap.get(v) ?? 0,
         selected: selected.includes(v),
       }));

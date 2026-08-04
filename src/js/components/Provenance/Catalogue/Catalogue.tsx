@@ -9,7 +9,7 @@ import { useAppDispatch } from '@/hooks';
 import { useTranslationFn } from '@/hooks';
 import { setProjectColors } from '@/features/catalogue/catalogue.store';
 import { useCatalogueUrlSync, useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
-import { assignColors } from '@/features/catalogue/hooks';
+import { assignColors } from '@/features/catalogue/utils';
 import { RequestStatus } from '@/types/requests';
 import Error from '@Util/Error';
 import CatalogueBanner from './CatalogueBanner';

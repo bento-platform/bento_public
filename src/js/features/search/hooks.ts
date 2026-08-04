@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useAppSelector } from '@/hooks';
+import { useAppSelector, useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
 import type { ActiveFilterPill } from '@/components/Util/ActiveFilterTags';
 import {
@@ -69,6 +69,7 @@ export const useSearchQueryParams = (): QueryParamEntries => {
  * with SearchFilters (the sidebar's own filter-editing form) so both surfaces navigate the URL the same way.
  */
 export const useActiveFilterPills = (): { pills: ActiveFilterPill[]; clearAll: () => void } => {
+  const t = useTranslationFn();
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { filters, textQuery } = useSearchQuery();
@@ -136,11 +137,11 @@ export const useActiveFilterPills = (): { pills: ActiveFilterPill[]; clearAll: (
       const values = Array.isArray(value) ? value : value ? [value] : [];
       values.forEach((v) => {
         if (!v) return;
-        p.push({ key: `${field}-${v}`, facetLabel, label: v, onClose: () => removeFilterValue(field, v) });
+        p.push({ key: `${field}-${v}`, facetLabel, label: t(v), onClose: () => removeFilterValue(field, v) });
       });
     });
     return p;
-  }, [textQuery, clearTextQuery, filters, fields, removeFilterValue]);
+  }, [t, textQuery, clearTextQuery, filters, fields, removeFilterValue]);
 
   return { pills, clearAll };
 };

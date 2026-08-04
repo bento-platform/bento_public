@@ -18,8 +18,7 @@ import { FACET_CONFIG_BY_ID, type FacetConfig } from '@/features/catalogue/facet
 import { PCGL_MODE } from '@/config';
 import { STATUS_CHART_COLORS } from './constants';
 
-import { assignColors } from '@/features/catalogue/hooks';
-import { facetLabelI18nKey } from '@/features/catalogue/utils';
+import { assignColors, facetValueTranslationKey } from '@/features/catalogue/utils';
 
 function buildCounts(datasets: DatasetWithProject[], facet: FacetConfig): CategoricalChartDataItem[] {
   const map = new Map<string, number>();
@@ -39,7 +38,7 @@ const useTranslatedEntries = (datasets: DatasetWithProject[], facetId: FacetId):
     const facetConfig = FACET_CONFIG_BY_ID[facetId];
     if (facetConfig) {
       const data = buildCounts(datasets, facetConfig);
-      return data.map((d) => ({ ...d, x: t(facetLabelI18nKey(facetConfig.i18nKeyPrefix, d.id ?? d.x)) }));
+      return data.map((d) => ({ ...d, x: t(facetValueTranslationKey(facetConfig.i18nKeyPrefix, d.id ?? d.x)) }));
     } else {
       return []; // If facet config is disabled (e.g., project for PCGL)
     }

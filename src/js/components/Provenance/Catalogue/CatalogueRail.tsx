@@ -5,7 +5,7 @@ import { useCatalogueState } from '@/features/catalogue/hooks';
 import { toggleFacetCollapse, type FacetId } from '@/features/catalogue/catalogue.store';
 import { useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
 import { useTranslationFn } from '@/hooks';
-import { facetTranslationKey } from '@/features/catalogue/hooks';
+import { facetTranslationKey } from '@/features/catalogue/utils';
 import { CloseOutlined } from '@ant-design/icons';
 import FilterChip from '@/components/Util/FilterChip';
 import Sidebar, { SidebarFacet, SidebarSection } from '@/components/Sidebar/Sidebar';
