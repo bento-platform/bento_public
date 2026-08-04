@@ -34,8 +34,6 @@ interface FacetSectionProps {
 
 const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleValue }: FacetSectionProps) => {
   const t = useTranslationFn();
-  const facetId = `catalogue-facet-${facet.id}`;
-  const regionId = `catalogue-region-${facet.id}`;
 
   if (options.length === 0) return null;
 
@@ -47,10 +45,10 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
       onToggleCollapse={onToggleCollapse}
     >
       <div
-        className={clsx('facet-chips', facet.scroll && 'facet-chips--scroll')}
-        role="region"
-        aria-labelledby={facetId}
-        id={regionId}
+        tabIndex={facet.scroll ? 0 : undefined}
+        role={facet.scroll ? 'group' : undefined}
+        aria-labelledby={facet.scroll ? `catalogue-facet-${facet.id}` : undefined}
+        className={clsx('facet-chips', facet.scroll && 'facet-chips--scroll focus-ring')}
       >
         {options.map(({ value, count, selected }) => (
           <FilterChip

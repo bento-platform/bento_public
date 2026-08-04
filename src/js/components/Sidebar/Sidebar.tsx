@@ -40,7 +40,14 @@ export const SidebarFacet = ({ headerId, label, collapsed, onToggleCollapse, chi
         )}
       </button>
     </Typography.Title>
-    {!collapsed && children}
+    <div
+      className={clsx('facet-chips-container', !collapsed && 'facet-chips-container--open')}
+      role="region"
+      aria-labelledby={`catalogue-facet-${headerId}`}
+      id={`catalogue-region-${headerId}`}
+    >
+      {children}
+    </div>
   </div>
 );
 
