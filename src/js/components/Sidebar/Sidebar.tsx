@@ -14,27 +14,40 @@ import { CaretDownOutlined, CaretRightOutlined } from '@ant-design/icons';
  *       ...
  */
 
-export const SidebarFacet = ({
-  label,
-  collapsed,
-  onToggleCollapse,
-  children,
-}: {
+type SidebarFacetProps = {
+  headerId: string;
   label: string;
   collapsed?: boolean;
   onToggleCollapse?: () => void;
   children: ReactNode;
-}) => (
+};
+
+export const SidebarFacet = ({ headerId, label, collapsed, onToggleCollapse, children }: SidebarFacetProps) => (
   <div className={clsx('sidebar-facet', !collapsed && 'sidebar-facet--expanded')}>
-    <button className="facet-head" onClick={onToggleCollapse}>
-      <span className="facet-head__label">{label}</span>
-      {collapsed ? (
-        <CaretRightOutlined className="facet-head__icon" />
-      ) : (
-        <CaretDownOutlined className="facet-head__icon" />
-      )}
-    </button>
-    {!collapsed && children}
+    <Typography.Title level={4} className="facet-head__title">
+      <button
+        className="facet-head focus-ring"
+        onClick={onToggleCollapse}
+        aria-expanded={!collapsed}
+        id={`catalogue-facet-${headerId}`}
+        aria-controls={`catalogue-facet-region-${headerId}`}
+      >
+        <span className="facet-head__label">{label}</span>
+        {collapsed ? (
+          <CaretRightOutlined className="facet-head__icon" aria-hidden="true" />
+        ) : (
+          <CaretDownOutlined className="facet-head__icon" aria-hidden="true" />
+        )}
+      </button>
+    </Typography.Title>
+    <div
+      className={clsx('facet-chips-container', !collapsed && 'facet-chips-container--open')}
+      role="region"
+      aria-labelledby={`catalogue-facet-${headerId}`}
+      id={`catalogue-facet-region-${headerId}`}
+    >
+      {children}
+    </div>
   </div>
 );
 
