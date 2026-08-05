@@ -1052,7 +1052,7 @@ body {
   opacity: 0.2;
 }
 
-.overview-charts.compact h3.bento-theme.ant-typography { font-size: 1.25rem; }
+.overview-charts.compact .bento-theme { --ant-font-size-heading-3: 1.25rem; }
 
 /* END overview */
 
