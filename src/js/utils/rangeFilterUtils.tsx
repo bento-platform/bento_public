@@ -1,4 +1,6 @@
+import { SwapRightOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
+import type { ReactNode } from 'react';
 
 export const RANGE_RE = /^([[(])([^,]*),([^,]*)([\])])$/;
 export const COMPARISON_RE = /^([<>]|[≥≤])\s*(.+)$/;
@@ -30,29 +32,36 @@ export const formatDateBinKey = (key: string, language: string): string =>
   // any UTC-negative timezone once re-rendered in local time. dayjs parses the same string as local time instead.
   dayjs(key).toDate().toLocaleString(language, { year: 'numeric', month: 'short' });
 
-const formatDateValueForDisplay = (dateStr: string, language: string): string => {
+const formatDateValueForDisplay = (dateStr: string): string => {
   const d = dayjs(dateStr, DATE_FORMAT);
-  return d.isValid() ? d.toDate().toLocaleDateString(language) : dateStr;
+  return d.isValid() ? d.format(DATE_FORMAT) : dateStr;
 };
 
 /**
  * Formats a raw date filter value (a "yyyy-mm" bin key, a "[lower,upper]"/"(lower,upper)" bracket range, or a
- * "&gt;"/"&lt;"/"≥"/"≤" comparison string) into a human-readable, localized string for display — e.g. in filter pills.
+ * "&gt;"/"&lt;"/"≥"/"≤" comparison string) into a human-readable node for display — e.g. in filter pills.
  * Shared with SearchFilterInput (the sidebar's own filter-editing form) so both surfaces show the same labels.
+ * Bin keys are localized (e.g. "Jan 2021"); ranges/comparisons use ISO (YYYY-MM-DD) dates for unambiguous display.
  */
-export const formatDateFilterValue = (value: string, language: string): string => {
+export const formatDateFilterValue = (value: string, language: string): ReactNode => {
   if (DATE_BIN_KEY_RE.test(value)) return formatDateBinKey(value, language);
 
   const rangeMatch = value.match(RANGE_RE);
   if (rangeMatch) {
     const [, , lower, upper] = rangeMatch;
-    return `${formatDateValueForDisplay(lower, language)} – ${formatDateValueForDisplay(upper, language)}`;
+    return (
+      <>
+        {formatDateValueForDisplay(lower)}
+        <SwapRightOutlined style={{ marginInline: 4 }} />
+        {formatDateValueForDisplay(upper)}
+      </>
+    );
   }
 
   const comparisonMatch = value.match(COMPARISON_RE);
   if (comparisonMatch) {
     const [, op, date] = comparisonMatch;
-    return `${op} ${formatDateValueForDisplay(date, language)}`;
+    return `${op} ${formatDateValueForDisplay(date)}`;
   }
 
   return value;
