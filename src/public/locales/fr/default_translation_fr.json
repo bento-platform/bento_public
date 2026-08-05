@@ -214,6 +214,10 @@
         "most_individuals": "Le plus de participants",
         "most_biosamples": "Le plus d'échantillons biologiques"
       },
+      "grid": "Grille",
+      "list": "Liste",
+      "view_as_grid": "Afficher sous forme de grille",
+      "view_as_list": "Afficher sous forme de liste",
       "dataset_found_one": "jeu de données trouvé",
       "dataset_found_other": "jeux de données trouvés",
       "show_insights": "Afficher les aperçus",
