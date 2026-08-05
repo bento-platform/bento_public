@@ -15,14 +15,22 @@ const defaultInitialSettings: UIUserSettings = {
   overviewChartMode: 'normal',
 };
 
+const VALID_CHART_MODES = ['compact', 'normal'];
+
+/** Validates UI settings loaded from LocalStorage. */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const validateUiSettings = (data: any): boolean => {
+  if (typeof data !== 'object') return false;
+  const keys = Object.keys(data);
+  if (JSON.stringify([...keys].sort()) !== JSON.stringify(Object.keys(defaultInitialSettings).sort())) return false;
+  // Validation logic - right now just validating chart mode
+  return VALID_CHART_MODES.includes(data.overviewChartMode);
+};
+
 const initialState: UIState = {
   extraBreadcrumb: null,
-  settings: getValue(LOCALSTORAGE_UI_SETTINGS_KEY, defaultInitialSettings, (data) => {
-    if (typeof data !== 'object') return false;
-    const keys = Object.keys(data);
-    if (JSON.stringify([...keys].sort()) !== JSON.stringify(Object.keys(defaultInitialSettings).sort())) return false;
-    return ['compact', 'normal'].includes(data.overviewChartMode);
-  }),
+  // Load from LocalStorage if set. The corresponding persist-to-LS logic is handled by an observer in /src/js/store.ts.
+  settings: getValue(LOCALSTORAGE_UI_SETTINGS_KEY, defaultInitialSettings, validateUiSettings),
 };
 
 const ui = createSlice({
