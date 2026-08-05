@@ -1,5 +1,5 @@
 import { useAppDispatch } from '@/hooks';
-import { Badge, Button, Dropdown, Flex, Input, Select, Segmented, Typography } from 'antd';
+import { Badge, Button, Dropdown, Flex, Input, Select, Segmented, Typography, Switch } from 'antd';
 import {
   AppstoreOutlined,
   BarsOutlined,
@@ -119,17 +119,16 @@ const CatalogueToolbar = ({ filteredCount, isMobile, onOpenFilters }: CatalogueT
           <span className="catalogue-count-highlight">{filteredCount}</span>{' '}
           {t('catalogue.toolbar.dataset_found', { count: filteredCount })}
         </Text>
-        <Button
-          size="small"
-          icon={<BarChartOutlined />}
-          onClick={() => dispatch(toggleInsights())}
-          type={insightsOpen ? 'primary' : 'default'}
-          ghost={insightsOpen}
-        >
-          {insightsOpen ? t('catalogue.toolbar.hide_insights') : t('catalogue.toolbar.show_insights')}
-        </Button>
+        <label className="insights-toggle insights-toggle-mobile">
+          <div className="insights-toggle-label">
+            <BarChartOutlined aria-hidden="true" />
+            <div className="visually-hidden-mobile">
+              {insightsOpen ? t('catalogue.toolbar.hide_insights') : t('catalogue.toolbar.show_insights')}
+            </div>
+          </div>
+          <Switch checked={insightsOpen} aria-checked={insightsOpen} onChange={() => dispatch(toggleInsights())} />
+        </label>
       </Flex>
-
       {/* Row 3: active filter pills */}
       <ActiveFilterTags pills={pills} onClearAll={clearAll} />
     </Flex>

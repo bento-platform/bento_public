@@ -582,7 +582,9 @@
       "dataset_found_other": "datasets found",
       "show_insights": "Show insights",
       "hide_insights": "Hide insights",
-      "clear_all": "Clear all"
+      "clear_all": "Clear all",
+      "clear_filter": "Clear filter by",
+      "active_filters": "Active filters"
     },
     "insights": {
       "title": "Dataset insights",
