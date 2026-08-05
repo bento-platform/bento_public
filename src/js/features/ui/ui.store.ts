@@ -8,6 +8,7 @@ const storeName = 'ui';
 
 export type UIState = {
   extraBreadcrumb: BreadcrumbItemType | null;
+  manageChartsVisible: boolean;
   settings: UIUserSettings;
 };
 
@@ -29,6 +30,7 @@ const validateUiSettings = (data: any): boolean => {
 
 const initialState: UIState = {
   extraBreadcrumb: null,
+  manageChartsVisible: false,
   // Load from LocalStorage if set. The corresponding persist-to-LS logic is handled by an observer in /src/js/store.ts.
   settings: getValue(LOCALSTORAGE_UI_SETTINGS_KEY, defaultInitialSettings, validateUiSettings),
 };
@@ -40,11 +42,14 @@ const ui = createSlice({
     setExtraBreadcrumb: (state, { payload }: PayloadAction<BreadcrumbItemType | null>) => {
       return { ...state, extraBreadcrumb: payload };
     },
+    setManageChartsVisible: (state, { payload }: PayloadAction<boolean>) => {
+      state.manageChartsVisible = payload;
+    },
     setOverviewChartMode: (state, { payload }: PayloadAction<ChartSizeMode>) => {
       state.settings.overviewChartMode = payload;
     },
   },
 });
 
-export const { setExtraBreadcrumb, setOverviewChartMode } = ui.actions;
+export const { setExtraBreadcrumb, setManageChartsVisible, setOverviewChartMode } = ui.actions;
 export default ui.reducer;

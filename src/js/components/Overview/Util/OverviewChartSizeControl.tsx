@@ -1,18 +1,23 @@
-import { useId } from 'react';
+import { useCallback, useId } from 'react';
 
 import { Button, Flex, Segmented, Typography } from 'antd';
 import { BsGrid, BsGrid3X3Gap } from 'react-icons/bs';
 
 import type { ChartSizeMode } from '@/features/ui/types';
-import { setOverviewChartMode } from '@/features/ui/ui.store';
+import { setManageChartsVisible, setOverviewChartMode } from '@/features/ui/ui.store';
 import { useAppDispatch, useTranslationFn } from '@/hooks';
-import { useUISettings } from '@/features/ui/hooks';
+import { useUiSettings } from '@/features/ui/hooks';
 
 const OverviewChartSizeControl = ({ showManageCharts }: { showManageCharts?: boolean }) => {
   const dispatch = useAppDispatch();
   const t = useTranslationFn();
-  const { overviewChartMode } = useUISettings();
+
+  const { overviewChartMode } = useUiSettings();
+
   const labelId = useId();
+
+  const onManageChartsOpen = useCallback(() => dispatch(setManageChartsVisible(true)), [dispatch]);
+
   return (
     <Flex vertical gap={4}>
       <Flex gap={12} align="center">
@@ -34,7 +39,7 @@ const OverviewChartSizeControl = ({ showManageCharts }: { showManageCharts?: boo
         {showManageCharts ? (
           <>
             {t('overview.alter_shown_charts')}{' '}
-            <Button type="link" className="p-0 h-auto" style={{ fontSize: '0.81rem' }}>
+            <Button type="link" className="p-0 h-auto" style={{ fontSize: '0.81rem' }} onClick={onManageChartsOpen}>
               {t('overview.manage_charts_link')}
             </Button>
             .
