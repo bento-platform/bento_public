@@ -119,25 +119,16 @@ const CatalogueToolbar = ({ filteredCount, isMobile, onOpenFilters }: CatalogueT
           <span className="catalogue-count-highlight">{filteredCount}</span>{' '}
           {t('catalogue.toolbar.dataset_found', { count: filteredCount })}
         </Text>
-        <Switch
-          checked={insightsOpen}
-          aria-checked={insightsOpen}
-          aria-label={insightsOpen ? t('catalogue.toolbar.show_insights') : t('catalogue.toolbar.hide_insights')}
-          id="catalogue-insights-toggle"
-          onChange={() => dispatch(toggleInsights())}
-          checkedChildren={
-            <div aria-hidden="true">
-              <BarChartOutlined /> {t('catalogue.toolbar.show_insights')}
+        <label className="insights-toggle insights-toggle-mobile">
+          <div className="insights-toggle-label">
+            <BarChartOutlined aria-hidden="true" />
+            <div className="visually-hidden-mobile">
+              {insightsOpen ? t('catalogue.toolbar.hide_insights') : t('catalogue.toolbar.show_insights')}
             </div>
-          }
-          unCheckedChildren={
-            <div aria-hidden="true">
-              <BarChartOutlined /> {t('catalogue.toolbar.hide_insights')}
-            </div>
-          }
-        />
+          </div>
+          <Switch checked={insightsOpen} aria-checked={insightsOpen} onChange={() => dispatch(toggleInsights())} />
+        </label>
       </Flex>
-
       {/* Row 3: active filter pills */}
       <ActiveFilterTags pills={pills} onClearAll={clearAll} />
     </Flex>

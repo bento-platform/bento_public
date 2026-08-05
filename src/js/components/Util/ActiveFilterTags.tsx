@@ -21,7 +21,13 @@ const ActiveFilterTags = ({ pills, onClearAll, tagClassName }: ActiveFilterTagsP
   const t = useTranslationFn();
   if (pills.length === 0) return null;
   return (
-    <Flex wrap gap={4} align="center">
+    <Flex
+      wrap
+      gap={4}
+      align="center"
+      role="group"
+      aria-label={`${pills.length} ${t('catalogue.toolbar.active_filters')}`}
+    >
       {pills.map(({ key, facetLabel, label, onClose }) => (
         <div key={key} className={clsx('catalogue-filter-tag', tagClassName)}>
           <span className="catalogue-filter-tag__facet-label">{t(facetLabel)}:</span>

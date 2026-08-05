@@ -219,7 +219,8 @@
       "show_insights": "Afficher les aperçus",
       "hide_insights": "Masquer les aperçus",
       "clear_all": "Tout effacer",
-      "clear_filter": "Effacer le filtre par"
+      "clear_filter": "Effacer le filtre par",
+      "active_filters": "Filtres actifs"
     },
     "insights": {
       "title": "Aperçu des jeux de données",
