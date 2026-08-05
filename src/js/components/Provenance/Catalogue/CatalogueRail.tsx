@@ -1,32 +1,25 @@
 import clsx from 'clsx';
+import type { FacetOption } from '@/features/catalogue/types';
 import { useAppDispatch } from '@/hooks';
 import { useCatalogueState } from '@/features/catalogue/hooks';
 import { toggleFacetCollapse, type FacetId } from '@/features/catalogue/catalogue.store';
 import { useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
 import { useTranslationFn } from '@/hooks';
-import { statusTranslationKey, facetTranslationKey } from '@/features/catalogue/hooks';
+import { facetTranslationKey } from '@/features/catalogue/utils';
 import { CloseOutlined } from '@ant-design/icons';
 import FilterChip from '@/components/Util/FilterChip';
 import Sidebar, { SidebarFacet, SidebarSection } from '@/components/Sidebar/Sidebar';
+import { T_PLURAL_COUNT } from '@/constants/i18n';
+import { FACETS } from '@/features/catalogue/facetRegistry';
 
 interface FacetConfig {
   id: FacetId;
   scroll?: boolean;
 }
 
-const FACETS: FacetConfig[] = [
-  { id: 'projects' },
-  { id: 'dataTypes', scroll: true },
-  { id: 'taxa' },
-  { id: 'access' },
-  { id: 'licenses' },
-  { id: 'statuses' },
-  { id: 'keywords', scroll: true },
-];
-
 interface FacetSectionProps {
   facet: FacetConfig;
-  options: { value: string; count: number; selected: boolean }[];
+  options: FacetOption[];
   collapsed: boolean;
   onToggleCollapse: () => void;
   onToggleValue: (value: string) => void;
@@ -37,12 +30,16 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
   if (options.length === 0) return null;
 
   return (
-    <SidebarFacet label={t(facetTranslationKey(facet.id))} collapsed={collapsed} onToggleCollapse={onToggleCollapse}>
+    <SidebarFacet
+      label={t(facetTranslationKey(facet.id), T_PLURAL_COUNT)}
+      collapsed={collapsed}
+      onToggleCollapse={onToggleCollapse}
+    >
       <div className={clsx('facet-chips', facet.scroll && 'facet-chips--scroll')}>
-        {options.map(({ value, count, selected }) => (
+        {options.map(({ value, label, count, selected }) => (
           <FilterChip
             key={value}
-            label={facet.id === 'statuses' ? t(statusTranslationKey(value)) : value}
+            label={label}
             count={count}
             selected={selected}
             onChange={() => onToggleValue(value)}
@@ -55,7 +52,7 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
 
 interface CatalogueRailProps {
   totalCount: number;
-  facetOptions: (facetId: FacetId) => { value: string; count: number; selected: boolean }[];
+  facetOptions: (facetId: FacetId) => { value: string; label: string; count: number; selected: boolean }[];
   /** Below the `lg` breakpoint, the rail renders as a slide-over drawer instead of an inline sticky column. */
   overlay: boolean;
   /** Ignored when `overlay` is false (the rail is always visible inline on desktop). */

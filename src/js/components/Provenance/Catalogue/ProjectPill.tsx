@@ -16,13 +16,14 @@ const ProjectPill = ({ project }: { project: Project }) => {
       <button
         type="button"
         className="project-pill"
+        title={title}
         onClick={(e) => {
           e.stopPropagation();
           navigateToScope({ project: identifier }, BentoRoute.Overview);
         }}
       >
         <span className="project-pill__dot" style={{ background: projectColors[title] ?? COLOR_CHART_FALLBACK }} />
-        {title}
+        <span className="project-pill__label">{title}</span>
       </button>
     </div>
   );

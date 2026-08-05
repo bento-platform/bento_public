@@ -1,13 +1,18 @@
 import type { Dataset } from '@/types/dataset';
 import type { Project } from '@/types/metadata';
 
-export const FACET_IDS = ['projects', 'dataTypes', 'taxa', 'access', 'licenses', 'statuses', 'keywords'] as const;
+export const FACET_IDS = [
+  'program',
+  'project',
+  'domain',
+  'taxon',
+  'access',
+  'license',
+  'context',
+  'status',
+  'keyword',
+] as const;
 export type FacetId = (typeof FACET_IDS)[number];
-
-export const FACET_ORDER: Partial<Record<FacetId, string[]>> = {
-  statuses: ['Ongoing', 'Completed', 'Unassigned'],
-  access: ['Open', 'Registered', 'Controlled'],
-};
 
 export type SortKey = 'updated_desc' | 'created_desc' | 'title_az' | 'individuals_desc' | 'biosamples_desc';
 
