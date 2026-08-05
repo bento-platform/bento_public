@@ -6,6 +6,7 @@ import remarkGfm from 'remark-gfm';
 
 import { useTranslationFn } from '@/hooks';
 import type { TextContentType } from '@/types/dataset';
+import { stripRichText } from '@/utils/strings';
 
 const REMARK_PLUGINS = [remarkGfm];
 const MINIMUM_CHARS_FOR_EXPANDABLE = 400;
@@ -25,15 +26,7 @@ const LongDescription = ({ content, contentType }: LongDescriptionProps) => {
   const t = useTranslationFn();
   const [expanded, setExpanded] = useState(false);
 
-  const textContentLength = useMemo(() => {
-    if (contentType === 'text/html') {
-      const tmp = document.createElement('div');
-      tmp.innerHTML = content;
-      return tmp.innerText.length;
-    } else {
-      return content.length;
-    }
-  }, [content, contentType]);
+  const textContentLength = useMemo(() => stripRichText(content, contentType).length, [content, contentType]);
 
   const isExpandable = textContentLength >= MINIMUM_CHARS_FOR_EXPANDABLE;
 
