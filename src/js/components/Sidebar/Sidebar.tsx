@@ -30,7 +30,7 @@ export const SidebarFacet = ({ headerId, label, collapsed, onToggleCollapse, chi
         onClick={onToggleCollapse}
         aria-expanded={!collapsed}
         id={`catalogue-facet-${headerId}`}
-        aria-controls={`catalogue-region-${headerId}`}
+        aria-controls={`catalogue-facet-region-${headerId}`}
       >
         <span className="facet-head__label">{label}</span>
         {collapsed ? (
@@ -44,7 +44,7 @@ export const SidebarFacet = ({ headerId, label, collapsed, onToggleCollapse, chi
       className={clsx('facet-chips-container', !collapsed && 'facet-chips-container--open')}
       role="region"
       aria-labelledby={`catalogue-facet-${headerId}`}
-      id={`catalogue-region-${headerId}`}
+      id={`catalogue-facet-region-${headerId}`}
     >
       {children}
     </div>
