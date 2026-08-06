@@ -31,6 +31,7 @@ const OverviewDescription = () => {
           <DatasetDescription dataset={selectedDataset} />
           {PCGL_MODE && !fetchingPermission && !queryDataPerm && (
             <div className="inline-flex">
+              {/* TODO: link out to DACO */}
               <LinkTile link={{ url: '#', label: t('dataset.apply_for_access') }} />
             </div>
           )}
