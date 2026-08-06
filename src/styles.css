@@ -59,6 +59,25 @@
   --cat-banner-subtitle: rgba(255,255,255,0.78);
 }
 
+.bento-theme {
+  /* re-usable alias variables for provenance content */
+
+  --pm-primary: var(--ant-color-primary, #054A74);
+  --pm-mono: var(--ant-font-family-code);
+
+  --pm-link: var(--ant-color-link, #1677FF);
+  --pm-link-hover: var(--ant-color-link-hover, #69B1FF);
+  --pm-link-active: var(--ant-color-link-active, #0958d9);
+
+  --p-fs-xxsmall: 0.72rem; /* ~11.5 px */
+  --p-fs-xsmall: 0.75rem; /* ~12 px */
+  --p-fs-small: 0.81rem; /* ~13 px */
+  --p-fs-normal: 0.875rem; /* 14 px */
+  --p-fs-large: 1rem; /* 16 px */
+  --p-fs-h1: 1.5rem;
+  --p-fs-h2: 1.05rem; /* ~16.5 px */
+}
+
 .range-separator {
   display: flex;
   align-items: center;
@@ -100,6 +119,7 @@ body {
 .relative { position: relative; }
 .sticky { position: sticky; }
 .block { display: block; }
+.inline-flex { display: inline-flex; }
 .none { display: none; }
 .overflow-hidden { overflow: hidden; }
 .rounded-lg { border-radius: 8px; } /* also consistent with --ant-border-radius-lg */
@@ -889,6 +909,11 @@ body {
 .catalogue-card__counts-row { border-top: 1px solid var(--border-subtle); margin-top: 12px; padding-top: 10px; }
 .count-item__icon { color: var(--text-muted); font-size: 13px; }
 .count-item__text { font-size: 13px; }
+.catalogue-card__actions .bento-theme.ant-btn {
+  --ant-button-padding-inline: 8px;
+  --ant-button-icon-gap: 7px;
+  --ant-button-content-font-size: 13px;
+}
 /* END catalogue card */
 
 .catalogue-section-label {
@@ -1341,23 +1366,6 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   display: flex;
   flex-direction: column;
   overflow: hidden;
-
-  /* re-usable alias variables for provenance content */
-
-  --pm-primary: var(--ant-color-primary, #054A74);
-  --pm-mono: var(--ant-font-family-code);
-
-  --pm-link: var(--ant-color-link, #1677FF);
-  --pm-link-hover: var(--ant-color-link-hover, #69B1FF);
-  --pm-link-active: var(--ant-color-link-active, #0958d9);
-
-  --p-fs-xxsmall: 0.72rem; /* ~11.5 px */
-  --p-fs-xsmall: 0.75rem; /* ~12 px */
-  --p-fs-small: 0.81rem; /* ~13 px */
-  --p-fs-normal: 0.875rem; /* 14 px */
-  --p-fs-large: 1rem; /* 16 px */
-  --p-fs-h1: 1.5rem;
-  --p-fs-h2: 1.05rem; /* ~16.5 px */
 }
 
 /* ── Header ── */
