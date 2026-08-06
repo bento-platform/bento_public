@@ -1,9 +1,10 @@
 import { type ReactNode, useCallback, useMemo, useState } from 'react';
 
 import { Avatar, Button, Card, Flex, List, Typography } from 'antd';
-import { PieChartOutlined, SolutionOutlined } from '@ant-design/icons';
+import { AuditOutlined, PieChartOutlined, SolutionOutlined } from '@ant-design/icons';
 import { FaDatabase } from 'react-icons/fa';
 
+import { PCGL_MODE } from '@/config';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type { Dataset } from '@/types/dataset';
 import type { Project } from '@/types/metadata';
@@ -149,6 +150,11 @@ const Dataset = ({
           <Button icon={<SolutionOutlined />} className="flex-1" onClick={openProvenanceModal}>
             {t('dataset.about')}
           </Button>
+          {PCGL_MODE && (
+            <Button icon={<AuditOutlined />} className="flex-1" disabled>
+              {t('dataset.apply_for_access')}
+            </Button>
+          )}
         </Flex>
       </Card>
     );
