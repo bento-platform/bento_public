@@ -42,11 +42,19 @@ export const hasIndex = (track: ExperimentResult) => {
 //  ---------------------------------------------
 // async equivalents of igv hooks
 
-const getIndexAccessUrl = async (track: ExperimentResult): Promise<string | null> => {
+const getDeferredDrsAccessMethod = (url: string | undefined): Promise<string | null> => {
+  return new Promise((resolve) => {
+    // defer DRS store actions until after render
+    setTimeout(() => {
+      void getDrsAccessMethods(url).then(resolve);
+    }, 0);
+  });
+};
+
+const getIndexAccessUrl = (track: ExperimentResult): string | undefined => {
   const igVTrackTypeInfo = caseInsensitiveIgvFileInfoLookup(track.file_format);
   const acceptedIndicesThisType = igVTrackTypeInfo?.indexFormats;
-  const index = track.indices.find((i) => acceptedIndicesThisType?.includes(i.format));
-  return getDrsAccessMethods(index?.url || '');
+  return track.indices.find((i) => acceptedIndicesThisType?.includes(i.format))?.url;
 };
 
 export const getIgvFileAndIndexAccessUrls = (tracks: ExperimentResult[]): IgvAccessUrlPromisesById => {
@@ -55,9 +63,9 @@ export const getIgvFileAndIndexAccessUrls = (tracks: ExperimentResult[]): IgvAcc
 
   tracks.forEach((t) => {
     if (!t.url) return;
-    const fileUrl = getDrsAccessMethods(t.url);
+    const fileUrl = getDeferredDrsAccessMethod(t.url);
     const trackHasIndex = hasIndex(t);
-    const indexUrl = trackHasIndex ? getIndexAccessUrl(t) : null;
+    const indexUrl = trackHasIndex ? getDeferredDrsAccessMethod(getIndexAccessUrl(t)) : null;
 
     drsUrls[t.url] = { fileAccessUrl: fileUrl };
     if (indexUrl) {

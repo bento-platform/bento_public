@@ -57,7 +57,7 @@ export const getDrsObjectOrPassThrough = async (uri: string | undefined): Promis
   try {
     const record = await store.dispatch(getDrsRecord(uri)).unwrap();
     return record;
-  } catch (err) {
+  } catch {
     const finalState = store.getState().drs.byUri[uri];
     if (finalState?.status === RequestStatus.Fulfilled) {
       return finalState.record ?? null;

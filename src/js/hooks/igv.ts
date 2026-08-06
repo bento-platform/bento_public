@@ -23,7 +23,7 @@ const IGV_JS_ANNOTATION_ALIASES = {
 // get references in IGV format, preferring ones from bento when present
 export const useBentoOrIgvReferencesById = (requestedReferenceIds: string[]): IgvReferenceById => {
   const { genomesStatus: bentoGenomeStatus, genomesByID: bentoReferenceGenomes } = useReference();
-  const {igvGenomesByID } = useIgvReference();
+  const { igvGenomesByID } = useIgvReference();
 
   return useMemo(() => {
     if (bentoGenomeStatus !== RequestStatus.Fulfilled) return {};
@@ -65,7 +65,7 @@ export const useBentoOrIgvReferencesById = (requestedReferenceIds: string[]): Ig
                 search: {
                   url: `${referenceGenomesUrl}/$GENOME$/igv-js-features?q=$FEATURE$`,
 
-                  // erroneous required fields, igv typescript is incorrect
+                  // erroneous required fields, igv typescript is incorrect. Fixed in igv >= 3.8.3
                   chromosomeField: 'chromosome', // already the default for this value
                   displayName: '', // this value isn't even read anywhere
                 },

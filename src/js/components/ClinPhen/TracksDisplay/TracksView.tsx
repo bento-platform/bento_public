@@ -7,12 +7,7 @@ import { useAccessToken } from 'bento-auth-js';
 import igv from 'igv/dist/igv.esm';
 import type { Browser, CreateOpt } from 'igv';
 import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
-import type {
-  IgvTrack,
-  ExperimentResultWithView,
-  IgvReferenceById,
-  IgvAccessUrlPromisesById,
-} from '@/types/clinPhen/igv';
+import type { IgvTrack, ExperimentResultWithView, IgvReferenceById } from '@/types/clinPhen/igv';
 import { PUBLIC_URL } from '@/config';
 import { caseInsensitiveIgvFileInfoLookup, getIgvFileAndIndexAccessUrls } from '@/utils/igv';
 import TrackControlTable from './TrackControlTable';
@@ -34,17 +29,16 @@ const TracksView = ({
   const igvCreatingByAssemblyRef = useRef<Record<string, boolean>>({});
   const activeCreateRequestByAssemblyRef = useRef<Record<string, number>>({});
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [accessUrlsPromises, setAccessUrlsPromises] = useState<IgvAccessUrlPromisesById>({});
+
   const [tracksWithView, setTracksWithView] = useState<ExperimentResultWithView[]>(
     tracks.map((t) => ({ ...t, viewInIgv: true }))
   );
 
+  // remove all the checks from useMemo(), are they even needed?
+  const accessUrlsPromises = useMemo(() => getIgvFileAndIndexAccessUrls(tracks), [tracks]);
+
   const t = useTranslationFn();
   const isSmallScreen = useSmallScreen();
-
-  useEffect(() => {
-    setAccessUrlsPromises(getIgvFileAndIndexAccessUrls(tracks));
-  }, [tracks]);
 
   const availableAssemblies = useMemo(() => Object.keys(references), [references]);
   const hasMultipleAssemblies = availableAssemblies.length > 1;
@@ -126,7 +120,7 @@ const TracksView = ({
         browser.loadTrack(buildIgvTrack(track) as IgvTrack).catch(console.error);
       }
     },
-    [accessUrlsPromises, buildIgvTrack]
+    [buildIgvTrack]
   );
 
   // -------------------------- igv init --------------------------
@@ -265,6 +259,4 @@ export default TracksView;
 // short-term todos
 // - store igv position
 // - testing with crams, bigwigs, multiple vcfs...
-// - put back "selected assembly" pulldown... this is easy once the reference stuff is written
 // - translations
-// - what if no reference for track
