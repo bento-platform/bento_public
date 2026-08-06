@@ -6,7 +6,7 @@ export interface BentoRoutes {
   Search: string;
   Beacon?: string;
   BeaconNetwork?: string;
-  Provenance: string;
+  About: string;
   Phenopackets: string;
   NotFound: string;
 }
@@ -14,7 +14,7 @@ export interface BentoRoutes {
 const BentoRoute: BentoRoutes = {
   Overview: 'overview',
   Search: 'search',
-  Provenance: 'provenance',
+  About: 'about',
   Phenopackets: 'phenopackets',
   NotFound: 'not_found',
 };

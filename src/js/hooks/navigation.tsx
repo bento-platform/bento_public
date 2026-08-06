@@ -125,8 +125,8 @@ export const useGetRouteTitleAndIcon = () => {
       switch (routeId) {
         case BentoRoute.Overview:
           return overviewIsCatalogue ? ['Catalogue', <BookOutlined />] : ['Overview', <PieChartOutlined />];
-        case BentoRoute.Provenance:
-          return ['Provenance', <SolutionOutlined />];
+        case BentoRoute.About:
+          return ['About', <SolutionOutlined />];
         case BentoRoute.Beacon:
           return ['Beacon', <BeaconLogo />];
         case BentoRoute.BeaconNetwork:
@@ -189,7 +189,7 @@ export const useSiteMenuItems = (): [MenuItem[], MenuItem[]] => {
 
       // TODO: can enable for project if we get a more extensive project model
       if (scope.dataset) {
-        itemsRef.push(createMenuItem(BentoRoute.Provenance, ...getRouteTitleAndIcon(BentoRoute.Provenance)));
+        itemsRef.push(createMenuItem(BentoRoute.About, ...getRouteTitleAndIcon(BentoRoute.About)));
       }
     }
 
