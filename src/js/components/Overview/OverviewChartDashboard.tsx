@@ -71,11 +71,11 @@ const OverviewChartDashboard = () => {
     if (!hasNotified) {
       notify.error({
         message: t('navigation.not_available_title', { endpoint: BentoRoute.Overview }),
-        description: t('navigation.not_available_description', { target: BentoRoute.Provenance }),
+        description: t('navigation.not_available_description', { target: BentoRoute.About }),
       });
       setHasNotified(true);
     }
-    navigateToSameScopeUrl(BentoRoute.Provenance, true);
+    navigateToSameScopeUrl(BentoRoute.About, true);
     return null;
   }
 
