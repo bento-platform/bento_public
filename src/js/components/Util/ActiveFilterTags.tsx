@@ -31,7 +31,7 @@ const ActiveFilterTags = ({ pills, onClearAll, tagClassName }: ActiveFilterTagsP
       {pills.map(({ key, facetLabel, label, onClose }) => (
         <div key={key} className={clsx('catalogue-filter-tag', tagClassName)}>
           <span className="catalogue-filter-tag__facet-label">{t(facetLabel)}:</span>
-          <p className="catalogue-filter-tag__label">{label}</p>
+          <span className="catalogue-filter-tag__label">{label}</span>
           <button
             aria-label={`${t('catalogue.toolbar.clear_filter')} ${t(facetLabel)} ${label}`}
             data-id={key}
