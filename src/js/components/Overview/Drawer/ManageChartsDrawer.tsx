@@ -1,5 +1,7 @@
-import { Button, Divider, type DrawerProps, Drawer, Flex, Space, Typography } from 'antd';
+import { Button, Divider, type DrawerProps, Drawer, Flex, Grid, Space, Typography } from 'antd';
+
 const { Title } = Typography;
+const { useBreakpoint } = Grid;
 
 import ChartTree from './ChartTree';
 import OverviewChartSizeControl from '@/components/Overview/Util/OverviewChartSizeControl';
@@ -15,6 +17,7 @@ const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: Manage
 
   const dispatch = useAppDispatch();
 
+  const breakpoints = useBreakpoint();
   const isSmallScreen = useSmallScreen();
 
   const { sections } = useSearchQuery();
@@ -22,7 +25,11 @@ const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: Manage
   return (
     <Drawer
       title={t('Manage Charts')}
-      placement="right"
+      placement={
+        // If we're on a larger screen, the sidebar 'Manage Charts' button will be used from the left.
+        // Otherwise, it'll be the float button from the right.
+        breakpoints.lg ? 'left' : 'right'
+      }
       onClose={onManageDrawerClose}
       open={manageDrawerVisible}
       // If we're on a small device, make the drawer full-screen width instead of a fixed width.

@@ -71,9 +71,8 @@
     "chart_size_label": "Chart size:",
     "compact": "Compact",
     "normal": "Normal",
-    "chart_size_help": "Control chart display size and how many charts can fit on-screen.",
-    "alter_shown_charts": "To alter which charts are shown,",
-    "manage_charts_link": "manage charts"
+    "manage_charts_help": "Control which charts are shown, in what order, and their display size.",
+    "chart_size_help": "Control chart display size and how many charts can fit on-screen."
   },
   "search": {
     "filters_one": "filter",

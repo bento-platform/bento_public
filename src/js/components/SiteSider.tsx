@@ -1,9 +1,15 @@
+import { useCallback } from 'react';
 import clsx from 'clsx';
-import { Layout } from 'antd';
+import { Button, Flex, Grid, Layout, Typography } from 'antd';
+import { AppstoreAddOutlined } from '@ant-design/icons';
+
+import { useAppDispatch, useTranslationFn } from '@/hooks';
+import { setManageChartsVisible } from '@/features/ui/ui.store';
 
 import SearchForm from '@/components/Search/SearchForm';
 import Sidebar from '@/components/Sidebar/Sidebar';
-import OverviewChartSizeControl from '@/components/Overview/Util/OverviewChartSizeControl';
+
+const { useBreakpoint } = Grid;
 
 const SiteSider = ({
   overlay,
@@ -15,19 +21,39 @@ const SiteSider = ({
   /** Ignored when `overlay` is falsy (the sider is always visible inline). */
   open: boolean;
   onClose: () => void;
-}) => (
-  <Layout.Sider width="auto" id="site-sider" className={clsx({ overlay })}>
-    <Sidebar
-      className="shadow"
-      id="site-sider__inner"
-      overlay={overlay}
-      open={open}
-      onClose={onClose}
-      footer={<OverviewChartSizeControl showManageCharts />}
-    >
-      <SearchForm />
-    </Sidebar>
-  </Layout.Sider>
-);
+}) => {
+  const dispatch = useAppDispatch();
+  const t = useTranslationFn();
+
+  const breakpoints = useBreakpoint();
+
+  const onManageChartsOpen = useCallback(() => dispatch(setManageChartsVisible(true)), [dispatch]);
+
+  return (
+    <Layout.Sider width="auto" id="site-sider" className={clsx({ overlay })}>
+      <Sidebar
+        className="shadow"
+        id="site-sider__inner"
+        overlay={overlay}
+        open={open}
+        onClose={onClose}
+        footer={
+          breakpoints.lg && (
+            <Flex vertical gap={8}>
+              <Button icon={<AppstoreAddOutlined rotate={270} />} onClick={onManageChartsOpen} className="w-full">
+                {t('Manage Charts')}
+              </Button>
+              <Typography.Text type="secondary" style={{ fontSize: '0.81rem' }}>
+                {t('overview.manage_charts_help')}
+              </Typography.Text>
+            </Flex>
+          )
+        }
+      >
+        <SearchForm />
+      </Sidebar>
+    </Layout.Sider>
+  );
+};
 
 export default SiteSider;
