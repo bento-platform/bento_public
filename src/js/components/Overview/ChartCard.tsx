@@ -1,20 +1,22 @@
-import type { CSSProperties } from 'react';
 import { memo, useRef } from 'react';
 import { Button, Card, Row, Space, Tooltip } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import Chart from './Chart';
 import CustomEmpty from '../Util/CustomEmpty';
-import { CHART_HEIGHT } from '@/constants/overviewConstants';
+import { CHART_SIZES } from '@/constants/overviewConstants';
 import { useTranslationFn } from '@/hooks';
 import type { ChartDataField } from '@/types/data';
+import type { ChartSizeMode } from '@/features/ui/types';
 import SmallChartCardTitle from '@/components/Util/SmallChartCardTitle';
 
-const CARD_STYLE: CSSProperties = { height: '415px' };
-const ROW_EMPTY_STYLE: CSSProperties = { height: `${CHART_HEIGHT}px` };
-
-const ChartCard = memo(({ section, chart, onRemoveChart, searchable }: ChartCardProps) => {
+const ChartCard = memo(({ section, chart, onRemoveChart, searchable, mode: mode_ }: ChartCardProps) => {
   const t = useTranslationFn();
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const mode: ChartSizeMode = mode_ ?? 'normal';
+
+  const { chartHeight, fontSize: chartFontSize } = CHART_SIZES[mode];
+  const compact = mode === 'compact';
 
   const {
     id,
@@ -33,20 +35,36 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable }: ChartCard
     },
   ];
 
+  const tTitle = t(title);
+  const tDesc = description !== title ? t(description) : '';
+
   return (
     <div ref={containerRef} key={id} style={{ gridColumn: `span ${chart.width}` }}>
       <Card
         title={
-          <SmallChartCardTitle title={t(title)} description={t(description)} descriptionStyle={{ width: '375px' }} />
+          <SmallChartCardTitle
+            title={tTitle}
+            description={tDesc}
+            descriptionStyle={compact ? undefined : { width: '375px' }}
+            compact={compact}
+          />
         }
-        className="shadow rounded-xl"
-        style={CARD_STYLE}
+        className={compact ? 'rounded-none' : 'shadow rounded-xl'}
+        style={{ height: chartHeight + (compact ? 40 : 65) }}
+        styles={{ body: { paddingTop: 0, paddingBottom: 0, fontSize: chartFontSize } }}
         size="small"
         extra={
           <Space size="small">
             {extraOptionsData.map((opt, index) => (
               <Tooltip key={index} title={opt.description}>
-                <Button shape="circle" icon={opt.icon} onClick={opt.onClick} />
+                <Button
+                  shape="circle"
+                  color="default"
+                  variant={compact ? 'text' : undefined}
+                  icon={opt.icon}
+                  onClick={opt.onClick}
+                  style={{ marginRight: compact ? -8 : 0 }}
+                />
               </Tooltip>
             ))}
           </Space>
@@ -60,9 +78,10 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable }: ChartCard
             id={id}
             key={id}
             isClickable={!!searchable}
+            mode={mode}
           />
         ) : (
-          <Row style={ROW_EMPTY_STYLE} justify="center" align="middle">
+          <Row style={{ height: chartHeight }} justify="center" align="middle">
             <CustomEmpty text="No Data" />
           </Row>
         )}
@@ -78,6 +97,7 @@ export interface ChartCardProps {
   chart: ChartDataField;
   onRemoveChart: (arg: { section: string; id: string }) => void;
   searchable?: boolean;
+  mode?: ChartSizeMode;
 }
 
 export default ChartCard;

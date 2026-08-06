@@ -1,4 +1,5 @@
 import type { HexColor } from 'bento-charts';
+import type { ChartSizeMode } from '@/features/ui/types';
 
 export const COUNTS_FILL = '#75787a';
 
@@ -10,7 +11,33 @@ export const DEFAULT_CHART_WIDTH = 1;
 
 // 1400px max width: 454*3 + 19*2 = 1399
 export const CHART_WIDTH = 454;
-export const GRID_GAP = 19;
+export const GRID_GAP = 12;
+
+export type ChartSizeConfig = {
+  minWidth: number;
+  gridGap: number;
+  chartHeight: number;
+  pieChartHeight: number;
+  fontSize: number;
+};
+
+// pie charts are rendered slightly smaller since labels can clip
+export const CHART_SIZES: Record<ChartSizeMode, ChartSizeConfig> = {
+  normal: {
+    minWidth: 350,
+    gridGap: 12,
+    chartHeight: 350,
+    pieChartHeight: 300,
+    fontSize: 14,
+  },
+  compact: {
+    minWidth: 300,
+    gridGap: 1,
+    chartHeight: 300,
+    pieChartHeight: 265,
+    fontSize: 13,
+  },
+};
 
 const NEW_CHART_COLORS: HexColor[] = ['#90BE6D', '#F8961E', '#F3722C', '#2D9CDB', '#F94144', '#F9C74F'];
 const BAR_CHART_FILL: HexColor = '#2D9CDB';

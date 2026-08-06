@@ -72,6 +72,13 @@
     "search_fetch": "Erreur lors du chargement des résultats de recherche",
     "page_not_found": "Page introuvable"
   },
+  "overview": {
+    "chart_size_label": "Taille des tableaux:",
+    "compact": "Compacte",
+    "normal": "Normale",
+    "manage_charts_help": "Contrôler les tableaux affichés, leur ordre d'affichage et leur taille.\n",
+    "chart_size_help": "Définir la taille d'affichage des tableaux et le nombre de tableaux pouvant s'afficher à l'écran."
+  },
   "search": {
     "filters_one": "filtre",
     "filters_other": "filtres",

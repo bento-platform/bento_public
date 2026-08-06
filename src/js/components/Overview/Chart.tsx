@@ -6,10 +6,11 @@ import { useTranslationFn } from '@/hooks';
 import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
 
 import type { BarChartProps } from 'bento-charts';
+import type { ChartSizeMode } from '@/features/ui/types';
 import type { ChartData } from '@/types/data';
 import type { ChartConfig } from '@/types/discovery/chartConfig';
 
-import { CHART_HEIGHT, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
+import { CHART_SIZES } from '@/constants/overviewConstants';
 import {
   CHART_TYPE_BAR,
   CHART_TYPE_CHOROPLETH,
@@ -23,7 +24,7 @@ interface PieChartEvent {
   payload?: { name: string; id?: string };
 }
 
-const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) => {
+const Chart = memo(({ chartConfig, data, units, id, isClickable, mode }: ChartProps) => {
   const t = useTranslationFn();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
 
@@ -43,6 +44,8 @@ const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) =
     goToSearch(id, payload?.id ?? payload.name);
   };
 
+  const { chartHeight, pieChartHeight } = CHART_SIZES[mode];
+
   const { chart_type: type } = chartConfig;
   units = t(units); // Units can be a word, like "years". Make sure this word gets translated.
 
@@ -51,7 +54,7 @@ const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) =
       return (
         <BarChart
           data={data}
-          height={CHART_HEIGHT}
+          height={chartHeight}
           units={units}
           preFilter={removeMissing}
           dataMap={translateMap}
@@ -67,7 +70,7 @@ const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) =
       return (
         <Histogram
           units={units}
-          height={CHART_HEIGHT}
+          height={chartHeight}
           data={data}
           preFilter={removeMissing}
           dataMap={translateMap}
@@ -84,7 +87,7 @@ const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) =
       return (
         <PieChart
           data={data}
-          height={PIE_CHART_HEIGHT}
+          height={pieChartHeight}
           preFilter={removeMissing}
           dataMap={translateMap}
           onClick={pieChartOnClickHandler}
@@ -95,7 +98,7 @@ const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) =
       return (
         <ChoroplethMap
           data={data}
-          height={CHART_HEIGHT}
+          height={chartHeight}
           preFilter={removeMissing}
           dataMap={translateMap}
           categoryProp={categoryProp}
@@ -127,6 +130,7 @@ export interface ChartProps {
   units: string;
   id: string;
   isClickable: boolean;
+  mode: ChartSizeMode;
 }
 
 export default Chart;

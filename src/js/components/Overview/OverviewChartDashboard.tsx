@@ -19,12 +19,17 @@ import CountsAndResults from './CountsAndResults';
 import LastIngestionInfo from './LastIngestion';
 import ActiveFilterTags from '@/components/Util/ActiveFilterTags';
 
-import { useTranslationFn } from '@/hooks';
+import { setManageChartsVisible } from '@/features/ui/ui.store';
+
+import { useAppDispatch, useTranslationFn } from '@/hooks';
 import { useSearchRouterAndHandler } from '@/hooks/useSearchRouterAndHandler';
 import { useSelectedProject, useSelectedScope, useScopeHasData } from '@/features/metadata/hooks';
 import { useActiveFilterPills, useSearchQuery, useSearchableFields } from '@/features/search/hooks';
+import { useUiSettings, useUiState } from '@/features/ui/hooks';
 import { useIsInCatalogueMode, useNavigateToSameScopeUrl } from '@/hooks/navigation';
 import { useNotify } from '@/hooks/notifications';
+
+const OVERVIEW_GAP = 24;
 
 const saveScopeOverviewToLS = (scope: DiscoveryScope, sections: Sections) => {
   saveValue(generateLSChartDataKey(scope), convertSequenceAndDisplayData(sections));
@@ -32,8 +37,9 @@ const saveScopeOverviewToLS = (scope: DiscoveryScope, sections: Sections) => {
 
 const OverviewChartDashboard = () => {
   const t = useTranslationFn();
+  const dispatch = useAppDispatch();
 
-  const [drawerVisible, setDrawerVisible] = useState(false);
+  const { manageChartsVisible } = useUiState();
 
   const { scope, scopeSet } = useSelectedScope();
   const selectedProject = useSelectedProject();
@@ -42,6 +48,8 @@ const OverviewChartDashboard = () => {
 
   const notify = useNotify();
   const [hasNotified, setHasNotified] = useState(false);
+
+  const { overviewChartMode } = useUiSettings();
 
   // This is essentially a large effect hook with a few dependencies, which processes (and rewrites if needed) the query
   // URL and dispatches discovery actions for fetching overview/query response data.
@@ -54,12 +62,12 @@ const OverviewChartDashboard = () => {
 
   const { pills, clearAll } = useActiveFilterPills();
 
-  const onManageChartsOpen = useCallback(() => setDrawerVisible(true), []);
+  const onManageChartsOpen = useCallback(() => dispatch(setManageChartsVisible(true)), [dispatch]);
   const onManageChartsClose = useCallback(() => {
-    setDrawerVisible(false);
+    dispatch(setManageChartsVisible(false));
     // When we close the drawer, save any changes to localStorage. This helps ensure width gets saved:
     saveScopeOverviewToLS(scope, sections);
-  }, [scope, sections]);
+  }, [dispatch, scope, sections]);
 
   const scopeHasData = useScopeHasData();
 
@@ -84,7 +92,7 @@ const OverviewChartDashboard = () => {
 
   return (
     <>
-      <Flex vertical={true} gap={24} className={clsx('container', { 'margin-auto': !scopeHasData })}>
+      <Flex vertical={true} gap={OVERVIEW_GAP} className={clsx('container', { 'margin-auto': !scopeHasData })}>
         {/*
             Show a general description of the current scope, pulled from the about content (instance-level), the project
             description, or the dataset long description (falling back to the short description.)
@@ -109,16 +117,26 @@ const OverviewChartDashboard = () => {
           />
         ) : null}
 
-        {displayedSections.map(({ sectionTitle, charts }, i) => (
-          <div key={i} className={clsx('overview', loadingNewData && 'loading')}>
-            <OverviewSection title={sectionTitle} chartData={charts} searchableFields={searchableFields} />
-          </div>
-        ))}
+        <Flex
+          vertical
+          className={clsx('overview-charts', overviewChartMode, loadingNewData && 'loading')}
+          gap={OVERVIEW_GAP}
+        >
+          {displayedSections.map(({ sectionTitle, charts }, i) => (
+            <OverviewSection
+              key={i}
+              title={sectionTitle}
+              chartData={charts}
+              searchableFields={searchableFields}
+              chartMode={overviewChartMode}
+            />
+          ))}
+        </Flex>
 
         {!catalogueMode && <LastIngestionInfo />}
       </Flex>
 
-      <ManageChartsDrawer onManageDrawerClose={onManageChartsClose} manageDrawerVisible={drawerVisible} />
+      <ManageChartsDrawer onManageDrawerClose={onManageChartsClose} manageDrawerVisible={manageChartsVisible} />
 
       <FloatButton.Group className="float-btn-pos">
         <FloatButton.BackTop target={() => document.getElementById('content-layout')!} />
