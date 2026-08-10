@@ -5,22 +5,14 @@ import { Button, Flex, Layout, Menu, type MenuProps, Space, Typography, theme } 
 import { useAuthState, useIsAuthenticated, useOpenIdConfig, usePerformAuth, usePerformSignOut } from 'bento-auth-js';
 
 import { RiTranslate } from 'react-icons/ri';
-import { ExportOutlined, LinkOutlined, LoginOutlined, LogoutOutlined } from '@ant-design/icons';
+import { LoginOutlined, LogoutOutlined } from '@ant-design/icons';
 
 import { useNavigateToRoot } from '@/hooks/navigation';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { getCurrentPage } from '@/utils/router';
 
 import { LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
-import {
-  CLIENT_NAME,
-  PORTAL_URL,
-  SHOW_HEADER_TITLE,
-  SHOW_SIGN_IN,
-  TRANSLATED,
-  TRANSLATED_LOGO,
-  LOGO_HEIGHT,
-} from '@/config';
+import { CLIENT_NAME, SHOW_HEADER_TITLE, SHOW_SIGN_IN, TRANSLATED, TRANSLATED_LOGO, LOGO_HEIGHT } from '@/config';
 
 import type { MenuItem } from '@/types/navigation';
 import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
