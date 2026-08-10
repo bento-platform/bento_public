@@ -18,6 +18,7 @@ import { useEntityAndTextQueryParams, useSearchQuery } from '@/features/search/h
 import { useAppDispatch, useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
 import { useRenderCount } from '@/hooks/counts';
+import { useHaveEntityData } from '@/hooks/useHaveEntityData';
 import { useInnerWidth, useSmallScreen } from '@/hooks/useResponsiveContext';
 
 import { fetchDiscoveryMatches } from '@/features/search/fetchDiscoveryMatches.thunk';
@@ -30,7 +31,6 @@ import {
   combineQueryParamsWithoutKey,
   filtersStateToQueryParamEntries,
 } from '@/features/search/utils';
-import { useHaveEntityData } from '@/hooks/useHaveEntityData';
 
 const COUNT_CARD_DENOMINATOR_BREAKPOINT = 1180;
 
