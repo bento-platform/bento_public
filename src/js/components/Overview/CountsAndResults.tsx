@@ -30,6 +30,7 @@ import {
   combineQueryParamsWithoutKey,
   filtersStateToQueryParamEntries,
 } from '@/features/search/utils';
+import { useHaveEntityData } from '@/hooks/useHaveEntityData';
 
 const COUNT_CARD_DENOMINATOR_BREAKPOINT = 1180;
 
@@ -103,6 +104,8 @@ const CountsAndResults = () => {
 
   const entityCounts = selectedDataset?.counts_by_entity ?? selectedProject?.counts;
 
+  const haveEntityData = useHaveEntityData();
+
   const {
     message,
     resultCountsOrBools: counts,
@@ -114,7 +117,6 @@ const CountsAndResults = () => {
     doneFirstLoad,
     matchData,
     pageSize,
-    uiHints,
   } = useSearchQuery();
   const entityAndTextQueryParams = useEntityAndTextQueryParams();
 
@@ -160,7 +162,7 @@ const CountsAndResults = () => {
     ? []
     : COUNT_ENTITY_ORDER.filter((entity) => {
         // hide counts if no filters applied and we have no data
-        if (uiHints.status === RequestStatus.Fulfilled && !uiHints.data.entities_with_data.includes(entity)) {
+        if (!haveEntityData(entity)) {
           // If we have a UI hint indicating that we have none of this entity in the scope at all, don't bother even
           // showing a loading card for the count.
           return false;
