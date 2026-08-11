@@ -1,12 +1,13 @@
 import { Flex, Tag } from 'antd';
 import clsx from 'clsx';
 import { T_SINGULAR_COUNT } from '@/constants/i18n';
+import type { ReactNode } from 'react';
 import { useTranslationFn } from '@/hooks';
 
 export interface ActiveFilterPill {
   key: string;
   facetLabel: string;
-  label: string;
+  label: ReactNode;
   onClose: () => void;
 }
 

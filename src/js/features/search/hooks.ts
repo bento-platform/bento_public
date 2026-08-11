@@ -1,8 +1,9 @@
 import { useCallback, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useAppSelector, useTranslationFn } from '@/hooks';
+import { useAppSelector, useLanguage, useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
 import type { ActiveFilterPill } from '@/components/Util/ActiveFilterTags';
+import { formatDateFilterValue } from '@/utils/rangeFilterUtils';
 import {
   ENTITY_QUERY_PARAM,
   TABLE_PAGE_QUERY_PARAM,
@@ -69,9 +70,10 @@ export const useSearchQueryParams = (): QueryParamEntries => {
  * with SearchFilters (the sidebar's own filter-editing form) so both surfaces navigate the URL the same way.
  */
 export const useActiveFilterPills = (): { pills: ActiveFilterPill[]; clearAll: () => void } => {
-  const t = useTranslationFn();
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const t = useTranslationFn();
+  const language = useLanguage();
   const { filters, textQuery } = useSearchQuery();
   const fields = useSearchFilterFields();
   const entityAndTextQueryParams = useEntityAndTextQueryParams();
@@ -133,15 +135,20 @@ export const useActiveFilterPills = (): { pills: ActiveFilterPill[]; clearAll: (
     }
     Object.entries(filters).forEach(([field, value]) => {
       if (value === null || value === undefined) return;
-      const facetLabel = fields.find((f) => f.id === field)?.definition.title ?? field;
+      const facetDef = fields.find((f) => f.id === field)?.definition;
+      const facetLabel = facetDef?.title ?? field;
+      const isDate = facetDef?.datatype === 'date';
       const values = Array.isArray(value) ? value : value ? [value] : [];
       values.forEach((v) => {
         if (!v) return;
-        p.push({ key: `${field}-${v}`, facetLabel, label: t(v), onClose: () => removeFilterValue(field, v) });
+        // Date filter values are wire-format bin keys/ranges (e.g. "2021-01", "[2021-01-01,2021-01-31]") — format
+        // them the same way SearchFilterInput does for the sidebar, so pills show human-readable, localized labels.
+        const label = isDate ? (v === 'missing' ? t(v) : formatDateFilterValue(v, language)) : t(v);
+        p.push({ key: `${field}-${v}`, facetLabel, label, onClose: () => removeFilterValue(field, v) });
       });
     });
     return p;
-  }, [t, textQuery, clearTextQuery, filters, fields, removeFilterValue]);
+  }, [textQuery, clearTextQuery, filters, fields, removeFilterValue, t, language]);
 
   return { pills, clearAll };
 };

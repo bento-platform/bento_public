@@ -1,4 +1,5 @@
 // React and ReactDOM imports
+import { useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 
 // Redux and routing imports
@@ -14,6 +15,8 @@ import { SUPPORTED_LNGS } from '@/constants/configConstants';
 import { ConfigProvider } from 'antd';
 import enUS from 'antd/locale/en_US';
 import frCA from 'antd/locale/fr_CA';
+import dayjs from 'dayjs';
+import 'dayjs/locale/fr-ca';
 import { ChartConfigProvider } from 'bento-charts';
 import Loader from '@/components/Loader';
 import BentoAppRouter from '@/components/BentoAppRouter';
@@ -58,6 +61,12 @@ const InnerRootApp = () => {
   const { i18n } = useTranslation();
   const antdLocale = i18n.language === SUPPORTED_LNGS.FRENCH ? frCA : enUS;
   const isSmallScreen = useSmallScreen();
+
+  // antd's ConfigProvider locale only translates UI text (buttons, placeholders); the DatePicker's
+  // month/day names come from dayjs's own locale, which must be set separately or it stays English.
+  useEffect(() => {
+    dayjs.locale(i18n.language === SUPPORTED_LNGS.FRENCH ? 'fr-ca' : 'en');
+  }, [i18n.language]);
 
   return (
     <ChartConfigProvider Lng={i18n.language ?? SUPPORTED_LNGS.ENGLISH} theme={NEW_BENTO_PUBLIC_THEME}>
