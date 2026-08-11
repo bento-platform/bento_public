@@ -335,6 +335,9 @@ body {
   height: 40px;
   margin-inline: 0; /* remove Ant negative margins */
 }
+.scoped-title__breadcrumb .ant-breadcrumb-item:first-child a {
+  padding-left: 0; /* Consistent left justification alignment when non-link becomes link in breadcrumb */
+}
 
 #scope-header__menu {
   flex: 1;
