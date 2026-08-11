@@ -74,7 +74,7 @@ const SearchResultsCounts = ({
             value={hasInsufficientData ? renderCount(undefined) : renderCount(biosampleCount)}
             valueStyle={STAT_STYLE}
             // Slight fixup for alignment of non-Antd icon:
-            prefix={<BiDna className="align-top" style={{ marginTop: 6 }} />}
+            prefix={<BiDna className="align-top mt-6px" />}
           />
           <Statistic
             title={<CountsTitleWithHelp entity="experiment" showHelp={!isBeaconNetwork} />}
