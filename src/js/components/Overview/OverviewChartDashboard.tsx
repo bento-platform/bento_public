@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { Flex, FloatButton } from 'antd';
+import { Flex, FloatButton, Grid } from 'antd';
 import { AppstoreAddOutlined } from '@ant-design/icons';
 
 import clsx from 'clsx';
@@ -29,6 +29,8 @@ import { useUiSettings, useUiState } from '@/features/ui/hooks';
 import { useIsInCatalogueMode, useNavigateToSameScopeUrl } from '@/hooks/navigation';
 import { useNotify } from '@/hooks/notifications';
 
+const { useBreakpoint } = Grid;
+
 const OVERVIEW_GAP = 24;
 
 const saveScopeOverviewToLS = (scope: DiscoveryScope, sections: Sections) => {
@@ -38,6 +40,8 @@ const saveScopeOverviewToLS = (scope: DiscoveryScope, sections: Sections) => {
 const OverviewChartDashboard = () => {
   const t = useTranslationFn();
   const dispatch = useAppDispatch();
+
+  const breakpoints = useBreakpoint();
 
   const { manageChartsVisible } = useUiState();
 
@@ -140,12 +144,16 @@ const OverviewChartDashboard = () => {
 
       <FloatButton.Group className="float-btn-pos">
         <FloatButton.BackTop target={() => document.getElementById('content-layout')!} />
-        <FloatButton
-          type="primary"
-          icon={<AppstoreAddOutlined rotate={270} />}
-          tooltip={t('Manage Charts')}
-          onClick={onManageChartsOpen}
-        />
+        {!breakpoints.lg && (
+          /* >= breakpoints.lg, we can use the fixed search sidebar to open the manage charts drawer.
+              < breakpoints.lg, (mobile-ish), we use a Material-esque floating button. */
+          <FloatButton
+            type="primary"
+            icon={<AppstoreAddOutlined rotate={270} />}
+            tooltip={t('Manage Charts')}
+            onClick={onManageChartsOpen}
+          />
+        )}
       </FloatButton.Group>
     </>
   );
