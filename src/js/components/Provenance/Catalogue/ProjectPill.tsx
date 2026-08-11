@@ -1,8 +1,9 @@
 import type { Project } from '@/types/metadata';
 import { BentoRoute } from '@/types/routes';
+import { COLOR_CHART_FALLBACK } from './constants';
 import { useNavigateToScope } from '@/hooks/navigation';
 import { useCatalogueState } from '@/features/catalogue/hooks';
-import { COLOR_CHART_FALLBACK } from './constants';
+import ClickablePill from '@Util/ClickablePill';
 
 const ProjectPill = ({ project }: { project: Project }) => {
   const navigateToScope = useNavigateToScope();
@@ -12,20 +13,14 @@ const ProjectPill = ({ project }: { project: Project }) => {
   if (!title) return null;
 
   return (
-    <div className="mt-2 self-start">
-      <button
-        type="button"
-        className="project-pill"
-        title={title}
-        onClick={(e) => {
-          e.stopPropagation();
-          navigateToScope({ project: identifier }, BentoRoute.Overview);
-        }}
-      >
-        <span className="project-pill__dot" style={{ background: projectColors[title] ?? COLOR_CHART_FALLBACK }} />
-        <span className="project-pill__label">{title}</span>
-      </button>
-    </div>
+    <ClickablePill
+      pillColor={projectColors[title] ?? COLOR_CHART_FALLBACK}
+      label={title}
+      onClick={(e) => {
+        e.stopPropagation();
+        navigateToScope({ project: identifier }, BentoRoute.Overview);
+      }}
+    />
   );
 };
 
