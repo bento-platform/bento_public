@@ -83,6 +83,13 @@ body {
   margin-top: 0 !important;
 }
 
+/* These two duplicate real Tailwind utility names, but need the extra compound-selector specificity
+   to reliably beat antd's own component defaults (Typography's margin-bottom, Text/Link's
+   text-decoration) -- Tailwind's plain .mb-0/.underline utilities lose that fight since antd's cssinjs
+   output isn't layered. */
+.mb-0, .ant-typography.mb-0 { margin-bottom: 0; }
+.underline, a.underline { text-decoration-line: underline; }
+
 /* custom, tailwind-esque */
 .pb-content { padding-bottom: var(--content-padding-v); }
 .max-w-half-cmw { max-width: calc(var(--content-max-width) / 2); }

@@ -1,10 +1,8 @@
 /* Tailwind entry point. Kept separate from styles.css so it can skip less-loader (which would
    otherwise try to resolve `@import "tailwindcss"` as a Less file import) -- see webpack.config.js.
 
-   The `antd` layer sits between Ant Design's cssinjs output (wrapped via <StyleProvider layer> in
-   index.tsx) and Tailwind's own layers, so plain Tailwind utility classes reliably override antd
-   component defaults without needing !important or extra specificity hacks.
-   https://ant.design/docs/react/compatible-style */
-@layer theme, base, antd, components, utilities;
-
+   Ant Design's cssinjs output is unlayered, so it always wins over Tailwind's (layered) utilities
+   regardless of source order or specificity -- that's normal/expected and matches how antd renders
+   without any special setup. A couple of places in styles.css that need to beat a specific antd
+   default (e.g. .mb-0, .underline) do so the standard way: an unlayered, specificity-boosted rule. */
 @import 'tailwindcss';
