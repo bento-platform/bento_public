@@ -8,11 +8,13 @@ import {
   SearchOutlined,
   SwapOutlined,
 } from '@ant-design/icons';
-import { useCatalogueState, facetTranslationKey } from '@/features/catalogue/hooks';
+import { useCatalogueState } from '@/features/catalogue/hooks';
 import { toggleInsights, type SortKey, type FacetId } from '@/features/catalogue/catalogue.store';
 import { useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
 import { useTranslationFn } from '@/hooks';
 import ActiveFilterTags from '@/components/Util/ActiveFilterTags';
+import { FACET_CONFIG_BY_ID } from '@/features/catalogue/facetRegistry';
+import { facetTranslationKey, facetValueTranslationKey } from '@/features/catalogue/utils';
 
 const { Text } = Typography;
 
@@ -43,7 +45,7 @@ const CatalogueToolbar = ({ filteredCount, isMobile, onOpenFilters }: CatalogueT
       pills.push({
         key: `${facet}-${v}`,
         facetLabel: facetTranslationKey(facet),
-        label: v,
+        label: t(facetValueTranslationKey(FACET_CONFIG_BY_ID[facet].i18nKeyPrefix, v)),
         onClose: () => toggleFacetValue(facet, v),
       })
     );
@@ -52,7 +54,7 @@ const CatalogueToolbar = ({ filteredCount, isMobile, onOpenFilters }: CatalogueT
   if (q) {
     pills.push({
       key: 'keywords-__q__',
-      facetLabel: facetTranslationKey('keywords'),
+      facetLabel: facetTranslationKey('keyword'),
       label: `"${q}"`,
       onClose: () => setSearch(''),
     });

@@ -143,7 +143,7 @@ export const useActiveFilterPills = (): { pills: ActiveFilterPill[]; clearAll: (
         if (!v) return;
         // Date filter values are wire-format bin keys/ranges (e.g. "2021-01", "[2021-01-01,2021-01-31]") — format
         // them the same way SearchFilterInput does for the sidebar, so pills show human-readable, localized labels.
-        const label = isDate ? (v === 'missing' ? t(v) : formatDateFilterValue(v, language)) : v;
+        const label = isDate ? (v === 'missing' ? t(v) : formatDateFilterValue(v, language)) : t(v);
         p.push({ key: `${field}-${v}`, facetLabel, label, onClose: () => removeFilterValue(field, v) });
       });
     });
