@@ -182,10 +182,10 @@ const CustomTable = <T extends object>({
   // using expandedRowRender (non-nested) expansion - expandIconColumnIndex either puts it before the checkbox or in
   // the middle of the data columns. So when both are present, render our own expand toggle as a normal column
   // (placed right after the checkbox), styled to match antd's own expand icon, and disable antd's built-in one.
-  const useCustomExpandColumn = Boolean(rowSelection) && Boolean(expandedRowRender) && hasExpandableRows;
+  const isCustomExpandColumn = Boolean(rowSelection) && Boolean(expandedRowRender) && hasExpandableRows;
 
   const finalColumns = useMemo(() => {
-    if (!useCustomExpandColumn) return processedColumns;
+    if (!isCustomExpandColumn) return processedColumns;
     const expandColumn: CustomTableColumn<WithVisible<T>> = {
       key: '__expand__',
       title: '',
@@ -210,7 +210,7 @@ const CustomTable = <T extends object>({
       },
     };
     return [expandColumn, ...processedColumns];
-  }, [useCustomExpandColumn, processedColumns, expandedKeys, rowKeyFn, handleExpand, t]);
+  }, [isCustomExpandColumn, processedColumns, expandedKeys, rowKeyFn, handleExpand, t]);
 
   return (
     <Table<WithVisible<T>>
@@ -223,7 +223,7 @@ const CustomTable = <T extends object>({
         expandedRowRender,
         // Here, isVisible means "is expandable", we're just using the WithVisible type internally:
         rowExpandable: (record) => record.isVisible,
-        showExpandColumn: useCustomExpandColumn ? false : hasExpandableRows,
+        showExpandColumn: isCustomExpandColumn ? false : hasExpandableRows,
         expandedRowKeys: expandedKeys,
         onExpand: handleExpand,
       }}
