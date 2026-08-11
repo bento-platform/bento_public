@@ -56,9 +56,11 @@ const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: Manage
         </Space>
       }
     >
+      <OverviewChartSizeControl />
+      <Divider />
       {sections.map(({ sectionTitle, charts }: { sectionTitle: string; charts: ChartDataField[] }, i: number) => (
         <div key={i}>
-          <Flex justify="space-between" align="center" style={{ padding: '10px 0' }}>
+          <Flex justify="space-between" align="center" className={i === 0 ? 'mb-3' : 'my-3'}>
             <Title level={5} style={{ margin: '0' }}>
               {t(sectionTitle)}
             </Title>
@@ -84,8 +86,6 @@ const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: Manage
           <ChartTree charts={charts} section={sectionTitle} />
         </div>
       ))}
-      <Divider />
-      <OverviewChartSizeControl />
     </Drawer>
   );
 };
