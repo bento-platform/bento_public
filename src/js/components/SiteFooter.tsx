@@ -1,7 +1,7 @@
 import { Layout, Row, Typography, Space } from 'antd';
+import { ExportOutlined } from '@ant-design/icons';
 const { Footer } = Layout;
 const { Title, Text, Link } = Typography;
-import { FaExternalLinkAlt } from 'react-icons/fa';
 
 import { ADMIN_URL, SHOW_ADMIN_LINK } from '@/config';
 import { useTranslationFn } from '@/hooks';
@@ -51,7 +51,7 @@ const SiteFooter = () => {
               <>
                 {' • '}
                 <Link href={ADMIN_URL} target="_blank">
-                  {t('footer.admin_link')} <FaExternalLinkAlt />
+                  {t('footer.admin_link')} <ExportOutlined style={{ fontSize: '0.81rem' }} />
                 </Link>
               </>
             )}
