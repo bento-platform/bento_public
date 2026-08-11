@@ -32,6 +32,7 @@ const Catalogue = () => {
   // via the same overlay/open Sidebar props SiteSider uses for the Search feature's sidebar.
   const breakpoints = useBreakpoint();
   const railOverlay = !breakpoints.lg;
+  const singleCol = view !== 'grid' || !breakpoints.md;
   const [railOpen, setRailOpen] = useState(false);
 
   const allDatasets = useMemo(
@@ -72,7 +73,8 @@ const Catalogue = () => {
         <div className="flex-1 min-w-0">
           <CatalogueToolbar
             filteredCount={filtered.length}
-            isMobile={railOverlay}
+            overlay={railOverlay}
+            isMobile={!breakpoints.md}
             onOpenFilters={() => setRailOpen(true)}
           />
 
@@ -95,7 +97,7 @@ const Catalogue = () => {
               </Button>
             </Empty>
           ) : (
-            <div className={clsx('catalogue-grid', view !== 'grid' && 'catalogue-grid--single-col')}>
+            <div className={clsx('catalogue-grid', singleCol && 'catalogue-grid--single-col')}>
               {filtered.map(({ dataset, project }) => (
                 <Dataset
                   key={dataset.identifier}

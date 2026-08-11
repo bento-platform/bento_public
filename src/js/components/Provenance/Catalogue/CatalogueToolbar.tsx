@@ -22,11 +22,12 @@ const SORT_OPTIONS: { value: SortKey; label: string }[] = [
 interface CatalogueToolbarProps {
   filteredCount: number;
   /** Below the `lg` breakpoint: the rail is a slide-over drawer, sort collapses to an icon button, and the grid/list switch is hidden. */
+  overlay: boolean;
   isMobile: boolean;
   onOpenFilters: () => void;
 }
 
-const CatalogueToolbar = ({ filteredCount, isMobile, onOpenFilters }: CatalogueToolbarProps) => {
+const CatalogueToolbar = ({ filteredCount, overlay, isMobile, onOpenFilters }: CatalogueToolbarProps) => {
   const t = useTranslationFn();
   const dispatch = useAppDispatch();
   const { q, sets, sort, view, insightsOpen } = useCatalogueState();
@@ -57,7 +58,7 @@ const CatalogueToolbar = ({ filteredCount, isMobile, onOpenFilters }: CatalogueT
     <Flex vertical gap={8}>
       {/* Row 1: search + sort + view */}
       <Flex gap={8} align="center">
-        {isMobile && (
+        {overlay && (
           <Badge count={pills.length} size="small" offset={[-4, 4]} className="catalogue-toolbar-fixed">
             <Button icon={<FilterOutlined />} onClick={onOpenFilters}>
               {t('catalogue.rail.title')}
