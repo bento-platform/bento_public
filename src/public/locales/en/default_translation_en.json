@@ -2,7 +2,6 @@
   "Overview": "Overview",
   "Search": "Search",
   "Explore": "Explore",
-  "Provenance": "Provenance",
   "Count": "Count",
   "Portal": "Portal",
   "missing": "missing",
@@ -258,9 +257,9 @@
       "Select filters and specify values to narrow down data of interest within the selected scope.",
       "If a small number of records match your query, the count may be censored to prevent re-identification."
     ],
-    "provenance": [
-      "Detailed provenance data for a $t(entities.dataset_one, lowercase) or all $t(entities.dataset_other, lowercase)",
-      "in a $t(entities.project_one, lowercase)."
+    "about": [
+      "Detailed provenance metadata for a $t(entities.dataset_one, lowercase) or all ",
+      "$t(entities.dataset_other, lowercase) in a $t(entities.project_one, lowercase)."
     ],
     "beacon": [
       "Beacon allows you to query data by the position of genetic variants, and filter the results by various clinical",
@@ -594,9 +593,13 @@
     },
     "datasets": {
       "empty": "No datasets match your filters",
-      "reset_filters": "Clear all filters",
-      "expand": "more"
+      "reset_filters": "Clear all filters"
     }
+  },
+  "dataset": {
+    "about": "$t(About)",
+    "expand": "more",
+    "apply_for_access": "Apply for access"
   },
   "provenance": {
     "sections": {
