@@ -90,9 +90,7 @@ export const useSearchRouterAndHandler = () => {
     const query = new URLSearchParams(location.search);
 
     const validateFilterQueryParam = ([key, value]: QueryParamEntry):
-      | [undefined, false]
-      | [SearchFieldAndOptions, false]
-      | [SearchFieldAndOptions, true, string] => {
+      [undefined, false] | [SearchFieldAndOptions, false] | [SearchFieldAndOptions, true, string] => {
       const field = filterFields.find((e) => e.id === key);
       if (!field) return [undefined, false];
       // special case for blank value, meaning we should show a field filter with a blank value.
