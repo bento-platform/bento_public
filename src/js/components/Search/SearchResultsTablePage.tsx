@@ -530,7 +530,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
           justify={isMobile ? 'center' : 'space-between'}
           align="center"
           gap="small"
-          style={{ marginBottom: 12 }}
+          className="mb-3"
           wrap
         >
           {onBack ? (
@@ -561,7 +561,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
                 <Typography.Text className="antd-gray-7">
                   {t('search.selected_count', { count: selectedRowKeys.length })}
                 </Typography.Text>
-                <Button type="link" size="small" style={{ padding: 0 }} onClick={clearSelection}>
+                <Button type="link" size="small" className="p-0" onClick={clearSelection}>
                   {t('search.clear_selection')}
                 </Button>
               </Space>
