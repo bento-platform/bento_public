@@ -86,13 +86,7 @@ export type PublicationType =
   | 'Patent';
 
 export type PublicationVenueType =
-  | 'Journal'
-  | 'Conference'
-  | 'Workshop'
-  | 'Repository'
-  | 'Publisher'
-  | 'University'
-  | 'Data Repository';
+  'Journal' | 'Conference' | 'Workshop' | 'Repository' | 'Publisher' | 'University' | 'Data Repository';
 
 export type ParticipantCriterionType = 'Inclusion' | 'Exclusion' | 'Other';
 
