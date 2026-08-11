@@ -21,8 +21,9 @@ const SORT_OPTIONS: { value: SortKey; label: string }[] = [
 
 interface CatalogueToolbarProps {
   filteredCount: number;
-  /** Below the `lg` breakpoint: the rail is a slide-over drawer, sort collapses to an icon button, and the grid/list switch is hidden. */
+  /** Below the `lg` breakpoint: the rail is a slide-over drawer. */
   overlay: boolean;
+  /** Below the `md` breakpoint: sort collapses to an icon button and the grid/list switch is hidden. */
   isMobile: boolean;
   onOpenFilters: () => void;
 }
