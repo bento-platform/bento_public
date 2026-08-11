@@ -91,6 +91,8 @@ const PcglFooter = () => {
               key={link.key}
               className={clsx({ disabled: !link.href })}
               aria-hidden={!link.href}
+              // If the link href is an actual URL rather than a translation key, render the href directly.
+              // Otherwise, look up the href using the translation function.
               href={link.href ? (link.href.startsWith('http') ? link.href : t(`pcgl.links.${link.href}`)) : undefined}
               rel="noreferrer"
               target="_blank"
