@@ -526,13 +526,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   return (
     <>
       <Col flex={1}>
-        <Flex
-          justify={isMobile ? 'center' : 'space-between'}
-          align="center"
-          gap="small"
-          className="mb-3"
-          wrap
-        >
+        <Flex justify={isMobile ? 'center' : 'space-between'} align="center" gap="small" className="mb-3" wrap>
           {onBack ? (
             <Button
               icon={<LeftOutlined />}
