@@ -19,7 +19,8 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable }: ChartCard
   const {
     id,
     data,
-    field: { datatype, description, title, config },
+    field,
+    field: { description, title },
     chartConfig,
   } = chart;
 
@@ -56,11 +57,10 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable }: ChartCard
           <Chart
             chartConfig={chartConfig}
             data={data}
-            units={datatype === 'number' ? (config.units ?? '') : ''}
+            field={field}
             id={id}
             key={id}
             isClickable={!!searchable}
-            dateBinned={datatype === 'date'}
           />
         ) : (
           <Row style={ROW_EMPTY_STYLE} justify="center" align="middle">

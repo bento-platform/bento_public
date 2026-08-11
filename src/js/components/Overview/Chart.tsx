@@ -8,6 +8,7 @@ import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
 import type { BarChartProps } from 'bento-charts';
 import type { ChartData } from '@/types/data';
 import type { ChartConfig } from '@/types/discovery/chartConfig';
+import type { Field } from '@/types/discovery/fieldDefinition';
 
 import { CHART_HEIGHT, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
 import {
@@ -24,10 +25,14 @@ interface PieChartEvent {
   payload?: { name: string; id?: string };
 }
 
-const Chart = memo(({ chartConfig, data, units, id, isClickable, dateBinned }: ChartProps) => {
+const Chart = memo(({ chartConfig, data, field, id, isClickable }: ChartProps) => {
   const t = useTranslationFn();
   const language = useLanguage();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
+
+  const dateBinned = field.datatype === 'date';
+  // Units can be a word, like "years". Make sure this word gets translated.
+  const units = t(field.datatype === 'number' ? (field.config.units ?? '') : '');
 
   // For date-binned fields, x is the raw "yyyy-mm" bin key from the API; format it for display, but keep the raw
   // key around as `id` so clicks can submit it as-is (Katsu's filter parser expects "yyyy-mm", not the display label).
@@ -63,7 +68,6 @@ const Chart = memo(({ chartConfig, data, units, id, isClickable, dateBinned }: C
   };
 
   const { chart_type: type } = chartConfig;
-  units = t(units); // Units can be a word, like "years". Make sure this word gets translated.
 
   switch (type) {
     case CHART_TYPE_BAR:
@@ -143,10 +147,9 @@ Chart.displayName = 'Chart';
 export interface ChartProps {
   chartConfig: ChartConfig;
   data: ChartData[];
-  units: string;
+  field: Field;
   id: string;
   isClickable: boolean;
-  dateBinned?: boolean;
 }
 
 export default Chart;
