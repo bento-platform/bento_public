@@ -19,7 +19,8 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable }: ChartCard
   const {
     id,
     data,
-    field: { datatype, description, title, config },
+    field,
+    field: { description, title },
     chartConfig,
   } = chart;
 
@@ -53,14 +54,7 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable }: ChartCard
         }
       >
         {data.filter((e) => !(e.x === 'missing')).reduce((acc, cur) => acc + cur.y, 0) !== 0 ? (
-          <Chart
-            chartConfig={chartConfig}
-            data={data}
-            units={datatype === 'number' ? (config.units ?? '') : ''}
-            id={id}
-            key={id}
-            isClickable={!!searchable}
-          />
+          <Chart chartConfig={chartConfig} data={data} field={field} id={id} key={id} isClickable={!!searchable} />
         ) : (
           <Row style={ROW_EMPTY_STYLE} justify="center" align="middle">
             <CustomEmpty text="No Data" />
