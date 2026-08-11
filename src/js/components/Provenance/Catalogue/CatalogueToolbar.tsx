@@ -94,6 +94,7 @@ const CatalogueToolbar = ({ filteredCount, overlay, isMobile, onOpenFilters }: C
             onChange={(v) => setSort(v)}
             className="catalogue-sort-select"
             options={SORT_OPTIONS.map((o) => ({ value: o.value, label: t(o.label) }))}
+            popupMatchSelectWidth={false}
           />
         )}
         {!isMobile && (
