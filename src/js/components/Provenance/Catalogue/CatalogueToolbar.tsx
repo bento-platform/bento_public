@@ -98,7 +98,7 @@ const CatalogueToolbar = ({ filteredCount, isMobile, onOpenFilters }: CatalogueT
         {!isMobile && (
           <Segmented
             className="catalogue-toolbar-fixed"
-            style={{ backgroundColor: 'rgb(240, 240, 240)' }}
+            style={{ backgroundColor: 'var(--antd-gray-4)' }}
             value={view}
             onChange={(v) => setView(v as 'grid' | 'list')}
             options={[

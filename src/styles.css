@@ -27,7 +27,8 @@
   --black-90: rgba(0, 0, 0, 0.9);
 
   --antd-blue-5: #1677ff;
-  --antd-gray-7: #595959;
+  --antd-gray-4: #f0f0f0; /* not set in actual ant for some reason */
+  --antd-gray-7: #595959; /* idem */
 
   /* shared design tokens */
   /* Note: --ant-color-primary is intentionally NOT proxied here. antd injects its CSS vars scoped to
