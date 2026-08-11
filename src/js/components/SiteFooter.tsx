@@ -3,7 +3,7 @@ const { Footer } = Layout;
 const { Title, Text, Link } = Typography;
 import { FaExternalLinkAlt } from 'react-icons/fa';
 
-import { PORTAL_URL, SHOW_ADMIN_LINK } from '@/config';
+import { ADMIN_URL, SHOW_ADMIN_LINK } from '@/config';
 import { useTranslationFn } from '@/hooks';
 import bentoLogo from '@public/assets/bento.svg';
 
@@ -50,7 +50,7 @@ const SiteFooter = () => {
             {SHOW_ADMIN_LINK && (
               <>
                 {' • '}
-                <Link href={PORTAL_URL} target="_blank">
+                <Link href={ADMIN_URL} target="_blank">
                   {t('footer.admin_link')} <FaExternalLinkAlt />
                 </Link>
               </>

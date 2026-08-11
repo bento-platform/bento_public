@@ -3,7 +3,8 @@ const parseBoolean = (value) => ['true', 't', '1', 'yes'].includes((value || '')
 const siteConfig = {
   // General branding and configuration
   CLIENT_NAME: process.env.BENTO_PUBLIC_CLIENT_NAME || null,
-  PORTAL_URL: process.env.BENTO_PUBLIC_PORTAL_URL || null,
+  // TODO: next version: remove deprecated env var
+  ADMIN_URL: process.env.BENTO_PUBLIC_ADMIN_URL || process.env.BENTO_PUBLIC_PORTAL_URL || null,
   PUBLIC_URL: process.env.BENTO_PUBLIC_URL || null,
 
   // Bento Public display flags

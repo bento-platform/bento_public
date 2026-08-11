@@ -5,7 +5,7 @@
 BENTO_PUBLIC_CONFIG = {
   // General
   CLIENT_NAME: null,
-  PORTAL_URL: null,
+  ADMIN_URL: null,
   // Display flags
   TRANSLATED: null,
   TRANSLATED_LOGO: null,

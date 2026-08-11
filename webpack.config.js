@@ -65,7 +65,8 @@ const makeConfig = (mode) => ({
       // Default environment variables to null if not set
       // General
       BENTO_PUBLIC_CLIENT_NAME: null,
-      BENTO_PUBLIC_PORTAL_URL: null,
+      BENTO_PUBLIC_ADMIN_URL: null,
+      BENTO_PUBLIC_PORTAL_URL: null, // DEPRECATED, replaced by BENTO_PUBLIC_ADMIN_URL
       BENTO_PUBLIC_URL: null,
       // Display flags
       BENTO_PUBLIC_TRANSLATED: null,

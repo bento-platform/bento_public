@@ -2,7 +2,7 @@ import { Flex, Grid, Layout } from 'antd';
 import { useTranslationFn } from '@/hooks';
 import clsx from 'clsx';
 
-import { PORTAL_URL, SHOW_ADMIN_LINK } from '@/config';
+import { ADMIN_URL, SHOW_ADMIN_LINK } from '@/config';
 
 const { Footer } = Layout;
 const { useBreakpoint } = Grid;
@@ -44,7 +44,7 @@ const PCGL_LINKS: { key: string; href?: string }[] = [
     ? [
         {
           key: 'admin',
-          href: PORTAL_URL,
+          href: ADMIN_URL,
         },
       ]
     : []),
