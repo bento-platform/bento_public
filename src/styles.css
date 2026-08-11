@@ -103,6 +103,7 @@ body {
 .block { display: block; }
 .none { display: none; }
 .overflow-hidden { overflow: hidden; }
+.overflow-y-auto { overflow-y: auto; }
 .rounded-none { border-radius: 0; }
 .rounded-lg { border-radius: 8px; } /* also consistent with --ant-border-radius-lg */
 .rounded-xl { border-radius: 12px; }
@@ -135,6 +136,8 @@ body {
 .max-w-half-cmw { max-width: calc(var(--content-max-width) / 2); }
 .text-cat-primary { color: var(--ant-color-primary, #054A74); }
 .text-secondary { color: var(--text-secondary); }
+.p-ant { padding: var(--ant-padding); }
+.p-ant-lg { padding: var(--ant-padding-lg); }
 
 .shadow {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
