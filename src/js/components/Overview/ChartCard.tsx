@@ -53,8 +53,15 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable, mode: mode_
           />
         }
         className={compact ? 'rounded-none' : 'shadow rounded-xl'}
-        style={{ height: chartHeight + (compact ? 40 : 65) + CHART_CARD_BOTTOM_PADDING }}
-        styles={{ body: { paddingTop: 0, paddingBottom: CHART_CARD_BOTTOM_PADDING, fontSize: chartFontSize } }}
+        styles={{
+          body: {
+            display: 'flex',
+            height: chartHeight + CHART_CARD_BOTTOM_PADDING,
+            paddingTop: 0,
+            paddingBottom: CHART_CARD_BOTTOM_PADDING,
+            fontSize: chartFontSize,
+          },
+        }}
         size="small"
         extra={
           <Space size="small">
@@ -74,15 +81,17 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable, mode: mode_
         }
       >
         {data.filter((e) => !(e.x === 'missing')).reduce((acc, cur) => acc + cur.y, 0) !== 0 ? (
-          <Chart
-            chartConfig={chartConfig}
-            data={data}
-            field={field}
-            id={id}
-            key={id}
-            isClickable={!!searchable}
-            mode={mode}
-          />
+          <div className="flex-1 content-center">
+            <Chart
+              chartConfig={chartConfig}
+              data={data}
+              field={field}
+              id={id}
+              key={id}
+              isClickable={!!searchable}
+              mode={mode}
+            />
+          </div>
         ) : (
           <Row style={{ height: chartHeight }} justify="center" align="middle">
             <CustomEmpty text="No Data" />
