@@ -15,6 +15,8 @@ import {
   verifyData,
 } from '@/utils/localStorage';
 
+const _asSlug = (x: string): string => x.normalize('NFKD').toLowerCase().trim().replace(/\s+/g, '-');
+
 export const discoveryChartProcessingAndLocalStorage = (
   scope: DiscoveryScope,
   { layout: sections, fields }: DiscoveryResponse
@@ -37,7 +39,8 @@ export const discoveryChartProcessingAndLocalStorage = (
     };
   };
 
-  const sectionData: Sections = sections.map(({ section_title, charts }) => ({
+  const sectionData: Sections = sections.map(({ section_title, charts }, idx) => ({
+    sectionId: `sec-${idx}-${_asSlug(section_title)}`,
     sectionTitle: section_title,
     // Filter out charts where field data is missing due to missing counts permissions for the field's data type
     charts: charts.filter((c) => !!fields[c.field]).map(normalizeChart),
@@ -49,8 +52,8 @@ export const discoveryChartProcessingAndLocalStorage = (
   let convertedData = convertSequenceAndDisplayData(sectionData);
   const lsKey = generateLSChartDataKey(scope);
   const localValue = getValue(lsKey, convertedData, (val: LocalStorageChartData) => verifyData(val, convertedData));
-  sectionData.forEach(({ sectionTitle, charts }, i, arr) => {
-    arr[i].charts = localValue[sectionTitle].map(({ id, isDisplayed, width }) => ({
+  sectionData.forEach(({ sectionId, charts }, i, arr) => {
+    arr[i].charts = localValue[sectionId].map(({ id, isDisplayed, width }) => ({
       ...charts.find((c) => c.id === id)!,
       isDisplayed,
       width,

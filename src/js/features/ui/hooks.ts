@@ -2,7 +2,9 @@ import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@/hooks';
 import { setExtraBreadcrumb } from './ui.store';
 
-export const useExtraBreadcrumb = () => useAppSelector((state) => state.ui.extraBreadcrumb);
+export const useUiState = () => useAppSelector((state) => state.ui);
+
+export const useExtraBreadcrumb = () => useUiState().extraBreadcrumb;
 
 export const useSetExtraBreadcrumb = (title: string | undefined) => {
   const dispatch = useAppDispatch();
@@ -16,3 +18,5 @@ export const useSetExtraBreadcrumb = (title: string | undefined) => {
     };
   }, [dispatch, title]);
 };
+
+export const useUiSettings = () => useUiState().settings;
