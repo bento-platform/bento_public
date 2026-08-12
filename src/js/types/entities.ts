@@ -2,6 +2,9 @@ export type BentoEntity = 'phenopacket' | 'individual' | 'biosample' | 'experime
 export type BentoKatsuEntity = Exclude<BentoEntity, 'variant'>;
 export type BentoCountEntity = Exclude<BentoKatsuEntity, 'phenopacket'>;
 export type ResultsDataEntity = Exclude<BentoKatsuEntity, 'individual'>;
+// Entity type for export-related plumbing (field choices, CSV/XLSX download) - unlike ResultsDataEntity, this keeps
+// "individual" distinct from "phenopacket" since katsu's export endpoints/renderers treat them as separate entities.
+export type ExportDataEntity = BentoKatsuEntity;
 export type BentoUICountEntity = BentoCountEntity | 'dataset'; // extended definition for other UI count elements
 
 export type ExportField = { key: string; label: string };
