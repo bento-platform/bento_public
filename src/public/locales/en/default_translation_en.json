@@ -241,7 +241,8 @@
     "licensed_under": "Bento is licensed under the",
     "source_available": "The source code is available on",
     "terms_of_use": "Terms of Use",
-    "admin_link": "Admin"
+    "admin_link": "Admin",
+    "admin_link_tooltip": "Manage data and access"
   },
   "Help": "Help",
   "Help for": "Help for",

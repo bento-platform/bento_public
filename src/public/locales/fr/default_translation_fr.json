@@ -359,7 +359,8 @@
     "licensed_under": "Bento est sous licence",
     "source_available": "Le code source est disponible sur",
     "terms_of_use": "Conditions d'utilisation (en anglais)",
-    "admin_link": "Admin"
+    "admin_link": "Admin",
+    "admin_link_tooltip": "Gérer les données et les accès"
   },
   "Help": "Aide",
   "Help for": "Aide pour",

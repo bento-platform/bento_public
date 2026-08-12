@@ -1,4 +1,4 @@
-import { Layout, Row, Typography, Space } from 'antd';
+import { Layout, Row, Typography, Space, Tooltip } from 'antd';
 import { ExportOutlined } from '@ant-design/icons';
 const { Footer } = Layout;
 const { Title, Text, Link } = Typography;
@@ -50,9 +50,11 @@ const SiteFooter = () => {
             {SHOW_ADMIN_LINK && (
               <>
                 {' • '}
-                <Link href={ADMIN_URL} target="_blank">
-                  {t('footer.admin_link')} <ExportOutlined style={{ fontSize: '0.81rem' }} />
-                </Link>
+                <Tooltip title={t('footer.admin_link_tooltip')}>
+                  <Link href={ADMIN_URL} target="_blank">
+                    {t('footer.admin_link')} <ExportOutlined style={{ fontSize: '0.81rem' }} />
+                  </Link>
+                </Tooltip>
               </>
             )}
           </div>
