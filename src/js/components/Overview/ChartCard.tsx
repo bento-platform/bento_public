@@ -9,6 +9,8 @@ import type { ChartDataField } from '@/types/data';
 import type { ChartSizeMode } from '@/features/ui/types';
 import SmallChartCardTitle from '@/components/Util/SmallChartCardTitle';
 
+const CHART_CARD_BOTTOM_PADDING = 12;
+
 const ChartCard = memo(({ section, chart, onRemoveChart, searchable, mode: mode_ }: ChartCardProps) => {
   const t = useTranslationFn();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -51,8 +53,8 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable, mode: mode_
           />
         }
         className={compact ? 'rounded-none' : 'shadow rounded-xl'}
-        style={{ height: chartHeight + (compact ? 40 : 65) }}
-        styles={{ body: { paddingTop: 0, paddingBottom: 0, fontSize: chartFontSize } }}
+        style={{ height: chartHeight + (compact ? 40 : 65) + CHART_CARD_BOTTOM_PADDING }}
+        styles={{ body: { paddingTop: 0, paddingBottom: CHART_CARD_BOTTOM_PADDING, fontSize: chartFontSize } }}
         size="small"
         extra={
           <Space size="small">
