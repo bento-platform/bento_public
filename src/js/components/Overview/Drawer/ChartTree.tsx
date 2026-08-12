@@ -33,9 +33,9 @@ const ChartTree = ({ charts, section }: ChartTreeProps) => {
                   min={1}
                   max={3}
                   value={width}
-                  onChange={(v) => {
-                    if (v) {
-                      dispatch(setChartWidth({ section, chart: id, width: v }));
+                  onChange={(newWidth) => {
+                    if (newWidth) {
+                      dispatch(setChartWidth({ section, chart: id, width: newWidth }));
                     }
                   }}
                   controls={true}
