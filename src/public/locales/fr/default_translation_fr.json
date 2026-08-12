@@ -76,7 +76,7 @@
     "chart_size_label": "Taille des tableaux:",
     "compact": "Compacte",
     "normal": "Normale",
-    "manage_charts_help": "Contrôler les tableaux affichés, leur ordre d'affichage et leur taille.\n",
+    "manage_charts_help": "Contrôler les tableaux affichés, leur ordre d'affichage et leur taille.",
     "chart_size_help": "Définir la taille d'affichage des tableaux et le nombre de tableaux pouvant s'afficher à l'écran."
   },
   "search": {
