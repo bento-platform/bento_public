@@ -40,7 +40,12 @@ const SiteSider = ({
         footer={
           breakpoints.lg && (
             <Flex vertical gap={8}>
-              <Button icon={<AppstoreAddOutlined rotate={270} />} onClick={onManageChartsOpen} className="w-full">
+              <Button
+                icon={<AppstoreAddOutlined aria-hidden rotate={270} />}
+                onClick={onManageChartsOpen}
+                className="w-full"
+                htmlType="button"
+              >
                 {t('Manage Charts')}
               </Button>
               <Typography.Text type="secondary" style={{ fontSize: '0.81rem' }}>
