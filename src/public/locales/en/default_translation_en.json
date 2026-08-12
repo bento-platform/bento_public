@@ -446,6 +446,7 @@
     "vital_status": "Vital Status",
     "sex": "Sex",
     "karyotypic_sex": "Karyotypic Sex",
+    "gender": "Gender",
     "taxonomy": "Taxonomy",
     "ALIVE": "ALIVE",
     "DECEASED": "DECEASED",

@@ -1,11 +1,12 @@
 import { Flex, Tag } from 'antd';
 import clsx from 'clsx';
+import type { ReactNode } from 'react';
 import { useTranslationFn } from '@/hooks';
 
 export interface ActiveFilterPill {
   key: string;
   facetLabel: string;
-  label: string;
+  label: ReactNode;
   onClose: () => void;
 }
 
