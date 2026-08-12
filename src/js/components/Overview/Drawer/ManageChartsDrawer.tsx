@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import { Button, type DrawerProps, Drawer, Flex, Grid, Space, Typography } from 'antd';
 
 const { Title } = Typography;
@@ -10,9 +12,8 @@ import OverviewChartSizeControl from '@/components/Overview/Util/OverviewChartSi
 
 import { useAppDispatch, useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
+import { useVisibleChartSections } from '@/features/search/hooks';
 import { hideAllSectionCharts, setAllDisplayedCharts, resetLayout } from '@/features/search/query.store';
-import { useSearchQuery } from '@/features/search/hooks';
-import { useCallback } from 'react';
 
 const ManageChartsSectionHeader = ({
   section: { sectionId, sectionTitle },
@@ -59,7 +60,7 @@ const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: Manage
   const breakpoints = useBreakpoint();
   const isSmallScreen = useSmallScreen();
 
-  const { sections } = useSearchQuery();
+  const visibleChartSections = useVisibleChartSections();
 
   const showAll = useCallback(() => {
     dispatch(setAllDisplayedCharts({}));
@@ -95,17 +96,15 @@ const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: Manage
       }
     >
       <div className="p-ant-lg overflow-y-auto">
-        {sections
-          .filter(({ charts }) => charts.length > 0)
-          .map((section, i) => {
-            const { sectionId, charts } = section;
-            return (
-              <div key={sectionId}>
-                <ManageChartsSectionHeader section={section} first={i === 0} />
-                <ChartTree charts={charts} section={sectionId} />
-              </div>
-            );
-          })}
+        {visibleChartSections.map((section, i) => {
+          const { sectionId, charts } = section;
+          return (
+            <div key={sectionId}>
+              <ManageChartsSectionHeader section={section} first={i === 0} />
+              <ChartTree charts={charts} section={sectionId} />
+            </div>
+          );
+        })}
       </div>
       <div
         style={{

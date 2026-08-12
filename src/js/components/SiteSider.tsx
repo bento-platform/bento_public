@@ -4,6 +4,7 @@ import { Button, Flex, Grid, Layout, Typography } from 'antd';
 import { AppstoreAddOutlined } from '@ant-design/icons';
 
 import { useAppDispatch, useTranslationFn } from '@/hooks';
+import { useVisibleChartSections } from '@/features/search/hooks';
 import { setManageChartsVisible } from '@/features/ui/ui.store';
 
 import SearchForm from '@/components/Search/SearchForm';
@@ -27,6 +28,8 @@ const SiteSider = ({
 
   const breakpoints = useBreakpoint();
 
+  const visibleChartSections = useVisibleChartSections();
+
   const onManageChartsOpen = useCallback(() => dispatch(setManageChartsVisible(true)), [dispatch]);
 
   return (
@@ -38,7 +41,8 @@ const SiteSider = ({
         open={open}
         onClose={onClose}
         footer={
-          breakpoints.lg && (
+          breakpoints.lg &&
+          visibleChartSections.length > 0 && (
             <Flex vertical gap={8}>
               <Button
                 icon={<AppstoreAddOutlined aria-hidden rotate={270} />}

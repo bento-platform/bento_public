@@ -24,7 +24,12 @@ import { setManageChartsVisible } from '@/features/ui/ui.store';
 import { useAppDispatch, useTranslationFn } from '@/hooks';
 import { useSearchRouterAndHandler } from '@/hooks/useSearchRouterAndHandler';
 import { useSelectedProject, useSelectedScope, useScopeHasData } from '@/features/metadata/hooks';
-import { useActiveFilterPills, useSearchQuery, useSearchableFields } from '@/features/search/hooks';
+import {
+  useActiveFilterPills,
+  useSearchQuery,
+  useSearchableFields,
+  useVisibleChartSections,
+} from '@/features/search/hooks';
 import { useUiSettings, useUiState } from '@/features/ui/hooks';
 import { useIsInCatalogueMode, useNavigateToSameScopeUrl } from '@/hooks/navigation';
 import { useNotify } from '@/hooks/notifications';
@@ -60,6 +65,7 @@ const OverviewChartDashboard = () => {
   useSearchRouterAndHandler();
 
   const { discoveryStatus, sections, resultCountsByDataset } = useSearchQuery();
+  const visibleChartSections = useVisibleChartSections();
 
   // Lazy-loading hooks means this is loaded only if OverviewChartDashboard is rendered:
   const searchableFields = useSearchableFields();
@@ -144,7 +150,7 @@ const OverviewChartDashboard = () => {
 
       <FloatButton.Group className="float-btn-pos">
         <FloatButton.BackTop target={() => document.getElementById('content-layout')!} />
-        {!breakpoints.lg && (
+        {!breakpoints.lg && visibleChartSections.length > 0 && (
           /* >= breakpoints.lg, we can use the fixed search sidebar to open the manage charts drawer.
               < breakpoints.lg, (mobile-ish), we use a Material-esque floating button. */
           <FloatButton

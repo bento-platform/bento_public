@@ -21,6 +21,11 @@ import {
 
 export const useSearchQuery = () => useAppSelector((state) => state.query);
 
+export const useVisibleChartSections = () => {
+  const { sections } = useSearchQuery();
+  return useMemo(() => sections.filter(({ charts }) => charts.length > 0), [sections]);
+};
+
 export const useSearchFilterFields = (): SearchFieldAndOptions[] => {
   const { filterSections } = useSearchQuery();
   return useMemo(() => filterSections.flatMap(({ fields }) => fields), [filterSections]);
