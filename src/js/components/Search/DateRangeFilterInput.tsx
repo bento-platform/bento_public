@@ -8,11 +8,20 @@ import {
   parseBrackets,
   buildRangeString,
   buildComparisonString,
+  dateBinKeyToRange,
   DATE_FORMAT,
   type RangeState,
 } from '@/utils/rangeFilterUtils';
 
 type Props = { value: FilterValue; onChange: (v: FilterValue) => void };
+
+// Chart bar clicks (see Chart.tsx) submit date filters as a raw "yyyy-mm" bin key rather than a bracket range —
+// Katsu accepts that as a filter value directly, so we keep it as-is on the wire and only expand it to a
+// start/end-of-month range for display in the picker.
+const parseValue = (rawValue: string | null): RangeState => {
+  const parsed = (rawValue && dateBinKeyToRange(rawValue)) || parseBrackets(rawValue);
+  return { ...parsed, lowerOpen: false, upperOpen: false };
+};
 
 const DateRangeFilterInput = ({ value, onChange }: Props) => {
   const rawValue = Array.isArray(value) ? (value[0] ?? null) : value;
@@ -20,10 +29,7 @@ const DateRangeFilterInput = ({ value, onChange }: Props) => {
   // Local state buffers what the user is typing. We can't derive from rawValue directly because
   // when only one bound is filled, buildRangeString returns null and the prop resets to null —
   // which would wipe the typed value if we re-derived on every render.
-  const [rangeState, setRangeState] = useState<RangeState>(() => {
-    const parsed = parseBrackets(rawValue);
-    return { ...parsed, lowerOpen: false, upperOpen: false };
-  });
+  const [rangeState, setRangeState] = useState<RangeState>(() => parseValue(rawValue));
   const { lowerStr, upperStr } = rangeState;
 
   // Track the last value we emitted and the last rawValue we saw, so we can distinguish
@@ -36,8 +42,7 @@ const DateRangeFilterInput = ({ value, onChange }: Props) => {
   if (rawValue !== prevRawValueRef.current) {
     prevRawValueRef.current = rawValue;
     if (rawValue !== lastEmittedRef.current) {
-      const parsed = parseBrackets(rawValue);
-      setRangeState({ ...parsed, lowerOpen: false, upperOpen: false });
+      setRangeState(parseValue(rawValue));
     }
   }
 

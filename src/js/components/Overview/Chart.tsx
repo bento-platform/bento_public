@@ -1,13 +1,14 @@
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 import { BarChart, Histogram, PieChart } from 'bento-charts';
 import { ChoroplethMap } from 'bento-charts/dist/maps';
 
-import { useTranslationFn } from '@/hooks';
+import { useLanguage, useTranslationFn } from '@/hooks';
 import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
 
 import type { BarChartProps } from 'bento-charts';
 import type { ChartData } from '@/types/data';
 import type { ChartConfig } from '@/types/discovery/chartConfig';
+import type { Field } from '@/types/discovery/fieldDefinition';
 
 import { CHART_HEIGHT, PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
 import {
@@ -18,17 +19,36 @@ import {
 } from '@/types/discovery/chartConfig';
 
 import { noop } from '@/utils/chart';
+import { formatDateBinKey } from '@/utils/rangeFilterUtils';
 
 interface PieChartEvent {
   payload?: { name: string; id?: string };
 }
 
-const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) => {
+const Chart = memo(({ chartConfig, data, field, id, isClickable }: ChartProps) => {
   const t = useTranslationFn();
+  const language = useLanguage();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
 
-  const translateMap = ({ x, y }: { x: string; y: number }) => ({ x: t(x), y, id: x });
+  const dateBinned = field.datatype === 'date';
+  // Units can be a word, like "years". Make sure this word gets translated.
+  const units = t(field.datatype === 'number' ? (field.config.units ?? '') : '');
+
+  // For date-binned fields, x is the raw "yyyy-mm" bin key from the API; format it for display, but keep the raw
+  // key around as `id` so clicks can submit it as-is (Katsu's filter parser expects "yyyy-mm", not the display label).
+  const translateMap = ({ x, y }: { x: string; y: number }) => ({
+    x: dateBinned ? formatDateBinKey(x, language) : t(x),
+    y,
+    id: x,
+  });
   const removeMissing = ({ x }: { x: string }) => x !== 'missing';
+
+  // Bar/histogram click events only give us the displayed (possibly locale-formatted) axis label, not the raw bin
+  // key, so build a reverse lookup from display label back to raw key rather than re-parsing the formatted string.
+  const dateBinKeyByLabel = useMemo(
+    () => (dateBinned ? new Map(data.map(({ x }) => [formatDateBinKey(x, language), x])) : null),
+    [dateBinned, data, language]
+  );
 
   const goToSearch = (id: string, val: string | number | undefined) => {
     if (val === undefined) return;
@@ -36,7 +56,11 @@ const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) =
   };
 
   const barChartOnChartClickHandler: BarChartProps['onChartClick'] = (e) => {
-    goToSearch(id, e.activeLabel); // activeLabel is the "value" for filtering (for bar charts)
+    // activeLabel is the "value" for filtering (for bar charts); for date-binned fields it's the display label
+    // (e.g. "Jan 2021"), so it needs to be mapped back to the raw "yyyy-mm" key before being used as a filter.
+    const val =
+      dateBinKeyByLabel && typeof e.activeLabel === 'string' ? dateBinKeyByLabel.get(e.activeLabel) : e.activeLabel;
+    goToSearch(id, val);
   };
   const pieChartOnClickHandler = ({ payload }: PieChartEvent) => {
     if (!payload) return;
@@ -44,7 +68,6 @@ const Chart = memo(({ chartConfig, data, units, id, isClickable }: ChartProps) =
   };
 
   const { chart_type: type } = chartConfig;
-  units = t(units); // Units can be a word, like "years". Make sure this word gets translated.
 
   switch (type) {
     case CHART_TYPE_BAR:
@@ -124,7 +147,7 @@ Chart.displayName = 'Chart';
 export interface ChartProps {
   chartConfig: ChartConfig;
   data: ChartData[];
-  units: string;
+  field: Field;
   id: string;
   isClickable: boolean;
 }

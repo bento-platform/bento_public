@@ -3,7 +3,14 @@ import { useLocation } from 'react-router-dom';
 import { useAppDispatch } from '@/hooks';
 import { useUrlFacetSync, type ScalarParam } from '@/hooks/useUrlFacetSync';
 import { useUrlFacetActions } from '@/hooks/useUrlFacetActions';
-import { hydrateFromUrl, FACET_IDS, type SortKey, type ViewMode, type CatalogueFilterSets } from './catalogue.store';
+import {
+  hydrateFromUrl,
+  FACET_IDS,
+  type SortKey,
+  type ViewMode,
+  type CatalogueFilterSets,
+  type FacetId,
+} from './catalogue.store';
 
 /** sessionStorage key holding the catalogue's last query string, so in-app "back to catalogue" links
  *  (which navigate to a bare URL rather than popping browser history) can restore applied filters. */
@@ -53,11 +60,13 @@ export function useCatalogueUrlActions() {
   const setSearch = useCallback((q: string) => setParam('q', q), [setParam]);
   const setSort = useCallback((sort: SortKey) => setParam('sort', sort, SORT_PARAM.defaultValue), [setParam]);
   const setView = useCallback((view: ViewMode) => setParam('view', view, VIEW_PARAM.defaultValue), [setParam]);
+  const setFacetValue = useCallback((facet: FacetId, value: string) => setParam(facet, value), [setParam]);
 
   return {
     setSearch,
     setSort,
     setView,
+    setFacetValue,
     toggleFacetValue,
     clearAll: useCallback(() => clearAll(['q']), [clearAll]),
   };

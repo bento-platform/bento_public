@@ -6,7 +6,7 @@ import type { FilterValue } from '@/features/search/types';
 import type { Field, NumberField } from '@/types/discovery/fieldDefinition';
 import type { BentoKatsuEntity } from '@/types/entities';
 
-import { useTranslationFn } from '@/hooks';
+import { useLanguage, useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
 import { useSearchQuery } from '@/features/search/hooks';
 import { useHaveEntityData } from '@/hooks/useHaveEntityData';
@@ -14,6 +14,7 @@ import OptionDescription from '@/components/Search/OptionDescription';
 import DateRangeFilterInput from '@/components/Search/DateRangeFilterInput';
 import NumberRangeFilterInput from '@/components/Search/NumberRangeFilterInput';
 import EnumFilterInput from '@/components/Search/EnumFilterInput';
+import { formatDateBinKey } from '@/utils/rangeFilterUtils';
 
 export type FilterInputValue = { field: string | null; value: FilterValue };
 
@@ -41,6 +42,7 @@ const SearchFilterInput = ({
   disabledFields: Set<string>;
 }) => {
   const t = useTranslationFn();
+  const language = useLanguage();
   const { hasPermission: hasQueryData } = useScopeQueryData();
 
   const { filterSections } = useSearchQuery();
@@ -73,10 +75,18 @@ const SearchFilterInput = ({
     () =>
       Object.fromEntries(
         filterSections.flatMap(({ fields }) =>
-          fields.map((f) => [f.id, f.options.map((o) => ({ value: o, label: t(o) }))])
+          fields.map((f) => [
+            f.id,
+            f.options.map((o) => ({
+              value: o,
+              // Unauthenticated users pick date filters from a fixed list of bins rather than a range picker
+              // (see isRangeField below), so bin keys ("2021-01") need to be formatted here.
+              label: f.definition.datatype === 'date' && o !== 'missing' ? formatDateBinKey(o, language) : t(o),
+            })),
+          ])
         )
       ),
-    [t, filterSections]
+    [t, filterSections, language]
   );
 
   const fieldDefinitionMap = useMemo(
