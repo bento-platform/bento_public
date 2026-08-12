@@ -65,14 +65,16 @@ const makeConfig = (mode) => ({
       // Default environment variables to null if not set
       // General
       BENTO_PUBLIC_CLIENT_NAME: null,
-      BENTO_PUBLIC_PORTAL_URL: null,
+      BENTO_PUBLIC_ADMIN_URL: null,
+      BENTO_PUBLIC_PORTAL_URL: null, // DEPRECATED, replaced by BENTO_PUBLIC_ADMIN_URL
       BENTO_PUBLIC_URL: null,
       // Display flags
       BENTO_PUBLIC_TRANSLATED: null,
       BENTO_PUBLIC_TRANSLATED_LOGO: null,
       BENTO_PUBLIC_LOGO_HEIGHT: null,
       BENTO_PUBLIC_SHOW_HEADER_TITLE: null,
-      BENTO_PUBLIC_SHOW_PORTAL_LINK: null,
+      BENTO_PUBLIC_SHOW_PORTAL_LINK: null, // DEPRECATED, replaced by BENTO_PUBLIC_SHOW_ADMIN_LINK
+      BENTO_PUBLIC_SHOW_ADMIN_LINK: null,
       BENTO_PUBLIC_SHOW_SIGN_IN: null,
       BENTO_PUBLIC_FORCE_CATALOGUE: null, // Show data catalogue even with 1 project
       BENTO_PUBLIC_PCGL_MODE: null, // Puts Bento Public in "PCGL mode", turning it into the PCGL research portal

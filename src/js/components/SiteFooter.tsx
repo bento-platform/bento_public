@@ -1,7 +1,9 @@
-import { Layout, Row, Typography, Space } from 'antd';
+import { Layout, Row, Typography, Space, Tooltip } from 'antd';
+import { ExportOutlined } from '@ant-design/icons';
 const { Footer } = Layout;
 const { Title, Text, Link } = Typography;
 
+import { ADMIN_URL, SHOW_ADMIN_LINK } from '@/config';
 import { useTranslationFn } from '@/hooks';
 import bentoLogo from '@public/assets/bento.svg';
 
@@ -45,6 +47,16 @@ const SiteFooter = () => {
             <Link href="/public/terms.html" target="_blank">
               {t('footer.terms_of_use')}
             </Link>
+            {SHOW_ADMIN_LINK && (
+              <>
+                {' • '}
+                <Tooltip title={t('footer.admin_link_tooltip')}>
+                  <Link href={ADMIN_URL} target="_blank">
+                    {t('footer.admin_link')} <ExportOutlined style={{ fontSize: '0.81rem' }} />
+                  </Link>
+                </Tooltip>
+              </>
+            )}
           </div>
         </Space>
       </Row>

@@ -60,7 +60,8 @@ const DefaultLayout = () => {
           />
         )}
         <Layout>
-          <Layout>
+          {/* Make sure the hasSider class is precisely synced with our own logic to prevent momentary visual glitch */}
+          <Layout hasSider={!sidebarHidden}>
             {!sidebarHidden && (
               <SiteSider overlay={sidebarOverlay} open={sidebarOverlayShown} onClose={() => setCollapsed(true)} />
             )}

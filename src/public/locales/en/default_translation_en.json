@@ -4,7 +4,6 @@
   "Explore": "Explore",
   "Provenance": "Provenance",
   "Count": "Count",
-  "Portal": "Portal",
   "missing": "missing",
   "entities": {
     "project_one": "Project",
@@ -241,7 +240,9 @@
     "c3g": "the Canadian Centre for Computational Genomics at McGill University",
     "licensed_under": "Bento is licensed under the",
     "source_available": "The source code is available on",
-    "terms_of_use": "Terms of Use"
+    "terms_of_use": "Terms of Use",
+    "admin_link": "Admin",
+    "admin_link_tooltip": "Manage data and access"
   },
   "Help": "Help",
   "Help for": "Help for",
@@ -560,16 +561,27 @@
       "close": "Close filters"
     },
     "facets": {
-      "projects": "$t(entities.project_one)",
-      "dataTypes": "Data type",
-      "taxa": "Taxa",
-      "access": "Access",
-      "licenses": "Data use",
-      "statuses": "Status",
-      "keywords": "Keyword"
+      "program_one": "Program",
+      "program_other": "Programs",
+      "project_one": "$t(entities.project_one)",
+      "project_other": "$t(entities.project_other)",
+      "domain_one": "Domain",
+      "domain_other": "Domains",
+      "taxon_one": "Taxon",
+      "taxon_other": "Taxa",
+      "access_one": "Access",
+      "access_other": "Access",
+      "license_one": "Data use",
+      "license_other": "Data use",
+      "context_one": "Context",
+      "context_other": "Context",
+      "status_one": "Status",
+      "status_other": "Status",
+      "keyword_one": "Keyword",
+      "keyword_other": "Keywords"
     },
     "toolbar": {
-      "search_placeholder": "Search datasets, keywords, assays…",
+      "search_placeholder": "Search $t(entities.dataset_other, lowercase), keywords, assays…",
       "sort_label": "Sort",
       "sort": {
         "recently_updated": "Recently updated",
@@ -578,22 +590,22 @@
         "most_individuals": "Most individuals",
         "most_biosamples": "Most biosamples"
       },
-      "dataset_found_one": "dataset found",
-      "dataset_found_other": "datasets found",
+      "dataset_found_one": "$t(entities.dataset, {\"count\": {{count}} }, lowercase) found",
+      "dataset_found_other": "$t(entities.dataset, {\"count\": {{count}} }, lowercase) found",
       "show_insights": "Show insights",
       "hide_insights": "Hide insights",
       "clear_all": "Clear all"
     },
     "insights": {
-      "title": "Dataset insights",
+      "title": "$t(entities.dataset_one) insights",
       "hint": "Select a segment to filter",
       "by_status": "By status",
-      "by_data_type": "By data type",
+      "by_domain": "By domain",
       "by_keyword": "By keyword",
       "by_project": "By $t(entities.project_one, lowercase)"
     },
     "datasets": {
-      "empty": "No datasets match your filters",
+      "empty": "No $t(entities.dataset_other) match your filters",
       "reset_filters": "Clear all filters",
       "expand": "more"
     }
@@ -640,6 +652,7 @@
     "organization": "Organization",
     "person": "Person",
     "privacy": "Privacy",
+    "program": "Program",
     "program_name": "Program name",
     "project_id": "Project ID",
     "protocol": "Protocol",
@@ -654,9 +667,9 @@
   },
   "pcgl": {
     "banner": {
-      "eyebrow": "PAN-CANADIAN GENOME LIBRARY",
+      "eyebrow": "Pan-Canadian Genome Library",
       "title": "Data Catalogue",
-      "subtitle": "Explore datasets from the Pan-Canadian Genome Library"
+      "subtitle": "Explore $t(entities.dataset_other, lowercase) from the Pan-Canadian Genome Library"
     },
     "footer": {
       "logo_alt": "Pan-Canadian Genome Library logo",
@@ -683,7 +696,7 @@
       "dataPlatform": "Data Platform",
       "myApplications": "My Applications",
       "manageApplications": "Manage Applications",
-      "admin": "Admin Dashboard",
+      "admin": "$t(footer.admin_link)",
       "cihrHref": "https://cihr-irsc.gc.ca/e/193.html"
     }
   }
