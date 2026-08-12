@@ -95,15 +95,17 @@ const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: Manage
       }
     >
       <div className="p-ant-lg overflow-y-auto">
-        {sections.map((section, i) => {
-          const { sectionId, charts } = section;
-          return (
-            <div key={sectionId}>
-              <ManageChartsSectionHeader section={section} first={i === 0} />
-              <ChartTree charts={charts} section={sectionId} />
-            </div>
-          );
-        })}
+        {sections
+          .filter(({ charts }) => charts.length > 0)
+          .map((section, i) => {
+            const { sectionId, charts } = section;
+            return (
+              <div key={sectionId}>
+                <ManageChartsSectionHeader section={section} first={i === 0} />
+                <ChartTree charts={charts} section={sectionId} />
+              </div>
+            );
+          })}
       </div>
       <div
         style={{
