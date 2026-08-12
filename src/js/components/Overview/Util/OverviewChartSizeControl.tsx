@@ -1,5 +1,3 @@
-import { useId } from 'react';
-
 import { Flex, Segmented, Typography } from 'antd';
 import { BsGrid, BsGrid3X3Gap } from 'react-icons/bs';
 
@@ -14,16 +12,13 @@ const OverviewChartSizeControl = () => {
 
   const { overviewChartMode } = useUiSettings();
 
-  const labelId = useId();
-
   return (
     <Flex vertical gap={4}>
       <Flex gap={12} align="center">
-        <label className="flex-1" id={labelId}>
+        <Typography.Title level={5} className="flex-1 mb-0">
           {t('overview.chart_size_label')}
-        </label>
+        </Typography.Title>
         <Segmented<ChartSizeMode>
-          aria-labelledby={labelId}
           value={overviewChartMode}
           onChange={(value) => dispatch(setOverviewChartMode(value))}
           options={[
@@ -32,9 +27,7 @@ const OverviewChartSizeControl = () => {
           ]}
         />
       </Flex>
-      <Typography.Text type="secondary" style={{ fontSize: '0.81rem' }}>
-        {t('overview.chart_size_help')}
-      </Typography.Text>
+      <Typography.Text style={{ fontSize: '0.81rem' }}>{t('overview.chart_size_help')}</Typography.Text>
     </Flex>
   );
 };
