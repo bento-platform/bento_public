@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { type ReactNode, useId } from 'react';
 import { useMemo } from 'react';
 import type { TreeProps } from 'antd';
 import { Flex, InputNumber, Tree } from 'antd';
@@ -13,6 +13,33 @@ interface MappedChartItem {
   key: string;
 }
 
+const ChartWidth = ({ id, width, section }: { id: string; width: number; section: string }) => {
+  const dispatch = useAppDispatch();
+  const t = useTranslationFn();
+
+  const fieldId = useId();
+
+  return (
+    <span>
+      <label htmlFor={fieldId}>{t('Width')}:</label>{' '}
+      <InputNumber
+        id={fieldId}
+        size="small"
+        min={1}
+        max={3}
+        value={width}
+        onChange={(newWidth) => {
+          if (newWidth) {
+            dispatch(setChartWidth({ section, chart: id, width: newWidth }));
+          }
+        }}
+        controls={true}
+        style={{ width: 50 }}
+      />
+    </span>
+  );
+};
+
 const ChartTree = ({ charts, section }: ChartTreeProps) => {
   const dispatch = useAppDispatch();
 
@@ -25,29 +52,12 @@ const ChartTree = ({ charts, section }: ChartTreeProps) => {
         title: (
           <Flex>
             <span className="flex-1">{t(title)}</span>
-            {!isMobile && (
-              <span>
-                {t('Width')}:{' '}
-                <InputNumber
-                  size="small"
-                  min={1}
-                  max={3}
-                  value={width}
-                  onChange={(newWidth) => {
-                    if (newWidth) {
-                      dispatch(setChartWidth({ section, chart: id, width: newWidth }));
-                    }
-                  }}
-                  controls={true}
-                  style={{ width: 50 }}
-                />
-              </span>
-            )}
+            {!isMobile && <ChartWidth id={id} width={width} section={section} />}
           </Flex>
         ),
         key: id,
       })),
-    [charts, dispatch, section, t, isMobile]
+    [charts, section, t, isMobile]
   );
 
   const onChartDrop: TreeProps['onDrop'] = useMemo(() => {
