@@ -4,7 +4,6 @@
   "Explore": "Explorer",
   "Provenance": "Provenance",
   "Count": "Observations",
-  "Portal": "Portail",
   "missing": "manquant(s)",
   "entities": {
     "project_one": "Projet",
@@ -72,6 +71,13 @@
     "search_fetch": "Erreur lors du chargement des résultats de recherche",
     "page_not_found": "Page introuvable"
   },
+  "overview": {
+    "chart_size_label": "Taille des tableaux:",
+    "compact": "Compacte",
+    "normal": "Normale",
+    "manage_charts_help": "Contrôler les tableaux affichés, leur ordre d'affichage et leur taille.",
+    "chart_size_help": "Définir la taille d'affichage des tableaux et le nombre de tableaux pouvant s'afficher à l'écran."
+  },
   "search": {
     "filters_one": "filtre",
     "filters_other": "filtres",
@@ -90,9 +96,13 @@
     "manage_columns": "Gérer les colonnes",
     "export": "Exporter",
     "export_data": "Exporter les données",
+    "export_error": "Échec de l'exportation. Veuillez réessayer.",
     "select_all_fields": "Tout sélectionner",
     "csv": "CSV",
     "xlsx": "XLSX",
+    "selected_count_one": "{{count}} ligne sélectionnée",
+    "selected_count_other": "{{count}} lignes sélectionnées",
+    "clear_selection": "Effacer la sélection",
     "fts": {
       "plain": "Mot",
       "plain_help": "Récupère les enregistrements qui correspondent exactement aux mots de la requête (sans distinction de casse).",
@@ -359,7 +369,9 @@
     "c3g": "le Centre canadien de génomique computationnelle à l'université McGill",
     "licensed_under": "Bento est sous licence",
     "source_available": "Le code source est disponible sur",
-    "terms_of_use": "Conditions d'utilisation (en anglais)"
+    "terms_of_use": "Conditions d'utilisation (en anglais)",
+    "admin_link": "Admin",
+    "admin_link_tooltip": "Gérer les données et les accès"
   },
   "Help": "Aide",
   "Help for": "Aide pour",
@@ -643,7 +655,9 @@
   },
   "table": {
     "invalid_row_keys_title": "Référence de ligne invalide",
-    "invalid_row_keys_description": "Certaines lignes référencées dans l'URL n'existent pas. Correction automatique aux entrées valides."
+    "invalid_row_keys_description": "Certaines lignes référencées dans l'URL n'existent pas. Correction automatique aux entrées valides.",
+    "expand_row": "Développer la ligne",
+    "collapse_row": "Réduire la ligne"
   },
   "drs": {
     "self_uri": "URI",
@@ -684,7 +698,6 @@
       "dataPlatform": "Plateforme de données",
       "myApplications": "Mes demandes",
       "manageApplications": "Gérer les demandes",
-      "admin": "Tableau de bord administrateur",
       "cihrHref": "https://cihr-irsc.gc.ca/f/193.html"
     }
   }
