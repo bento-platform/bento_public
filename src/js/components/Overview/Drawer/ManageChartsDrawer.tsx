@@ -12,7 +12,7 @@ import OverviewChartSizeControl from '@/components/Overview/Util/OverviewChartSi
 
 import { useAppDispatch, useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
-import { useVisibleChartSections } from '@/features/search/hooks';
+import { useAvailableChartSections } from '@/features/search/hooks';
 import { hideAllSectionCharts, setAllDisplayedCharts, resetLayout } from '@/features/search/query.store';
 
 const ManageChartsSectionHeader = ({
@@ -60,7 +60,7 @@ const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: Manage
   const breakpoints = useBreakpoint();
   const isSmallScreen = useSmallScreen();
 
-  const visibleChartSections = useVisibleChartSections();
+  const availableChartSections = useAvailableChartSections();
 
   const showAll = useCallback(() => {
     dispatch(setAllDisplayedCharts({}));
@@ -96,7 +96,7 @@ const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: Manage
       }
     >
       <div className="p-ant-lg overflow-y-auto">
-        {visibleChartSections.map((section, i) => {
+        {availableChartSections.map((section, i) => {
           const { sectionId, charts } = section;
           return (
             <div key={sectionId}>

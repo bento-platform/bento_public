@@ -28,7 +28,7 @@ import {
   useActiveFilterPills,
   useSearchQuery,
   useSearchableFields,
-  useVisibleChartSections,
+  useAvailableChartSections,
 } from '@/features/search/hooks';
 import { useUiSettings, useUiState } from '@/features/ui/hooks';
 import { useIsInCatalogueMode, useNavigateToSameScopeUrl } from '@/hooks/navigation';
@@ -40,6 +40,39 @@ const OVERVIEW_GAP = 24;
 
 const saveScopeOverviewToLS = (scope: DiscoveryScope, sections: Sections) => {
   saveValue(generateLSChartDataKey(scope), convertSequenceAndDisplayData(sections));
+};
+
+const OverviewChartSections = () => {
+  const { discoveryStatus } = useSearchQuery();
+  const { overviewChartMode } = useUiSettings();
+  const loadingNewData = WAITING_STATES.includes(discoveryStatus);
+
+  const availableChartSections = useAvailableChartSections();
+  const displayedSections = availableChartSections.filter(
+    ({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1
+  );
+
+  // Lazy-loading hooks means this is loaded only if OverviewChartDashboard is rendered:
+  const searchableFields = useSearchableFields();
+
+  if (!displayedSections.length) return null;
+
+  return (
+    <Flex
+      vertical
+      className={clsx('overview-charts', overviewChartMode, loadingNewData && 'loading')}
+      gap={OVERVIEW_GAP}
+    >
+      {displayedSections.map((section) => (
+        <OverviewSection
+          key={section.sectionId}
+          section={section}
+          searchableFields={searchableFields}
+          chartMode={overviewChartMode}
+        />
+      ))}
+    </Flex>
+  );
 };
 
 const OverviewChartDashboard = () => {
@@ -58,17 +91,12 @@ const OverviewChartDashboard = () => {
   const notify = useNotify();
   const [hasNotified, setHasNotified] = useState(false);
 
-  const { overviewChartMode } = useUiSettings();
-
   // This is essentially a large effect hook with a few dependencies, which processes (and rewrites if needed) the query
   // URL and dispatches discovery actions for fetching overview/query response data.
   useSearchRouterAndHandler();
 
-  const { discoveryStatus, sections, resultCountsByDataset } = useSearchQuery();
-  const visibleChartSections = useVisibleChartSections();
-
-  // Lazy-loading hooks means this is loaded only if OverviewChartDashboard is rendered:
-  const searchableFields = useSearchableFields();
+  const { sections, resultCountsByDataset } = useSearchQuery();
+  const availableChartSections = useAvailableChartSections();
 
   const { pills, clearAll } = useActiveFilterPills();
 
@@ -97,9 +125,6 @@ const OverviewChartDashboard = () => {
     return null;
   }
 
-  const loadingNewData = WAITING_STATES.includes(discoveryStatus);
-  const displayedSections = sections.filter(({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1);
-
   return (
     <>
       <Flex vertical={true} gap={OVERVIEW_GAP} className={clsx('container', { 'margin-auto': !scopeHasData })}>
@@ -127,20 +152,7 @@ const OverviewChartDashboard = () => {
           />
         ) : null}
 
-        <Flex
-          vertical
-          className={clsx('overview-charts', overviewChartMode, loadingNewData && 'loading')}
-          gap={OVERVIEW_GAP}
-        >
-          {displayedSections.map((section) => (
-            <OverviewSection
-              key={section.sectionId}
-              section={section}
-              searchableFields={searchableFields}
-              chartMode={overviewChartMode}
-            />
-          ))}
-        </Flex>
+        <OverviewChartSections />
 
         {!catalogueMode && <LastIngestionInfo />}
       </Flex>
@@ -149,7 +161,7 @@ const OverviewChartDashboard = () => {
 
       <FloatButton.Group className="float-btn-pos">
         <FloatButton.BackTop target={() => document.getElementById('content-layout')!} />
-        {!breakpoints.lg && visibleChartSections.length > 0 && (
+        {!breakpoints.lg && availableChartSections.length > 0 && (
           /* >= breakpoints.lg, we can use the fixed search sidebar to open the manage charts drawer.
               < breakpoints.lg, (mobile-ish), we use a Material-esque floating button. */
           <FloatButton

@@ -21,7 +21,7 @@ import {
 
 export const useSearchQuery = () => useAppSelector((state) => state.query);
 
-export const useVisibleChartSections = () => {
+export const useAvailableChartSections = () => {
   const { sections } = useSearchQuery();
   return useMemo(() => sections.filter(({ charts }) => charts.length > 0), [sections]);
 };
