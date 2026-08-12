@@ -3,6 +3,7 @@ import { useSelectedDataset, useSelectedProject } from '@/features/metadata/hook
 import { useSearchQuery } from '@/features/search/hooks';
 import { RequestStatus } from '@/types/requests';
 import type { BentoKatsuEntity } from '@/types/entities';
+import type { Field } from '@/types/discovery/fieldDefinition';
 
 export const useHaveEntityData = () => {
   const selectedProject = useSelectedProject();
@@ -17,5 +18,16 @@ export const useHaveEntityData = () => {
       (uiHints.status === RequestStatus.Fulfilled && uiHints.data.entities_with_data.includes(entity)) ||
       (!!scopeCounts && !!scopeCounts[entity]),
     [scopeCounts, uiHints]
+  );
+};
+
+export const useHaveEntityDataForField = () => {
+  const haveEntityData = useHaveEntityData();
+  return useCallback(
+    (f: Field) => {
+      const entity = f.mapping.split('/')[0] as BentoKatsuEntity;
+      return haveEntityData(entity);
+    },
+    [haveEntityData]
   );
 };

@@ -4,12 +4,11 @@ import { CloseOutlined } from '@ant-design/icons';
 
 import type { FilterValue } from '@/features/search/types';
 import type { Field, NumberField } from '@/types/discovery/fieldDefinition';
-import type { BentoKatsuEntity } from '@/types/entities';
 
 import { useLanguage, useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
 import { useSearchQuery } from '@/features/search/hooks';
-import { useHaveEntityData } from '@/hooks/useHaveEntityData';
+import { useHaveEntityDataForField } from '@/hooks/useHaveEntityData';
 import OptionDescription from '@/components/Search/OptionDescription';
 import DateRangeFilterInput from '@/components/Search/DateRangeFilterInput';
 import NumberRangeFilterInput from '@/components/Search/NumberRangeFilterInput';
@@ -47,7 +46,7 @@ const SearchFilterInput = ({
 
   const { filterSections } = useSearchQuery();
 
-  const haveEntityData = useHaveEntityData();
+  const haveEntityDataForField = useHaveEntityDataForField();
 
   const filterOptions = useMemo(
     () =>
@@ -56,10 +55,7 @@ const SearchFilterInput = ({
           label: t(label),
           title: t(label),
           options: fields
-            .filter((f) => {
-              const entity = f.definition.mapping.split('/')[0] as BentoKatsuEntity;
-              return haveEntityData(entity);
-            })
+            .filter((f) => haveEntityDataForField(f.definition))
             .map((f) => ({
               value: f.id,
               // Disabled if: field is in disabled set AND it isn't the currently selected field (so we allow re-selection of
@@ -68,7 +64,7 @@ const SearchFilterInput = ({
             })),
         }))
         .filter((fs) => fs.options.length > 0),
-    [t, haveEntityData, filterSections, field, disabledFields]
+    [t, haveEntityDataForField, filterSections, field, disabledFields]
   );
 
   const fieldFilterOptions = useMemo(
