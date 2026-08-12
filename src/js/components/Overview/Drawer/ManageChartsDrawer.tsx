@@ -106,12 +106,7 @@ const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: Manage
           );
         })}
       </div>
-      <div
-        style={{
-          padding: 'var(--ant-padding) var(--ant-padding-lg) var(--ant-padding-lg) var(--ant-padding-lg)',
-          borderTop: '1px solid var(--ant-color-split)',
-        }}
-      >
+      <div className="manage-charts__chart-size-control-container">
         <OverviewChartSizeControl />
       </div>
     </Drawer>

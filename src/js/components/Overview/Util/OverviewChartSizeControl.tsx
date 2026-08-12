@@ -22,8 +22,8 @@ const OverviewChartSizeControl = () => {
           value={overviewChartMode}
           onChange={(value) => dispatch(setOverviewChartMode(value))}
           options={[
-            { value: 'normal', icon: <BsGrid />, label: t('overview.normal') },
-            { value: 'compact', icon: <BsGrid3X3Gap />, label: t('overview.compact') },
+            { value: 'normal', icon: <BsGrid aria-hidden />, label: t('overview.normal') },
+            { value: 'compact', icon: <BsGrid3X3Gap aria-hidden />, label: t('overview.compact') },
           ]}
         />
       </Flex>
