@@ -4,7 +4,6 @@
   "Explore": "Explore",
   "Provenance": "Provenance",
   "Count": "Count",
-  "Portal": "Portal",
   "missing": "missing",
   "entities": {
     "project_one": "Project",
@@ -67,6 +66,13 @@
     "search_fetch": "Error fetching search results",
     "page_not_found": "Page not found"
   },
+  "overview": {
+    "chart_size_label": "Chart size:",
+    "compact": "Compact",
+    "normal": "Normal",
+    "manage_charts_help": "Control which charts are shown, in what order, and their display size.",
+    "chart_size_help": "Control chart display size and how many charts can fit on-screen."
+  },
   "search": {
     "filters_one": "filter",
     "filters_other": "filters",
@@ -84,9 +90,13 @@
     "manage_columns": "Manage Columns",
     "export": "Export",
     "export_data": "Export Data",
+    "export_error": "Export failed. Please try again.",
     "select_all_fields": "Select all",
     "csv": "CSV",
     "xlsx": "XLSX",
+    "selected_count_one": "{{count}} row selected",
+    "selected_count_other": "{{count}} rows selected",
+    "clear_selection": "Clear selection",
     "fts": {
       "plain": "Word",
       "plain_help": "Retrieves records which exactly match words in the query (case-insensitive).",
@@ -241,7 +251,9 @@
     "c3g": "the Canadian Centre for Computational Genomics at McGill University",
     "licensed_under": "Bento is licensed under the",
     "source_available": "The source code is available on",
-    "terms_of_use": "Terms of Use"
+    "terms_of_use": "Terms of Use",
+    "admin_link": "Admin",
+    "admin_link_tooltip": "Manage data and access"
   },
   "Help": "Help",
   "Help for": "Help for",
@@ -538,7 +550,9 @@
   },
   "table": {
     "invalid_row_keys_title": "Invalid Row Reference",
-    "invalid_row_keys_description": "Some rows referenced in the URL do not exist. Adjusting to valid entries."
+    "invalid_row_keys_description": "Some rows referenced in the URL do not exist. Adjusting to valid entries.",
+    "expand_row": "Expand row",
+    "collapse_row": "Collapse row"
   },
   "drs": {
     "id": "$t(general.id)",
@@ -695,7 +709,7 @@
       "dataPlatform": "Data Platform",
       "myApplications": "My Applications",
       "manageApplications": "Manage Applications",
-      "admin": "Admin Dashboard",
+      "admin": "$t(footer.admin_link)",
       "cihrHref": "https://cihr-irsc.gc.ca/e/193.html"
     }
   }

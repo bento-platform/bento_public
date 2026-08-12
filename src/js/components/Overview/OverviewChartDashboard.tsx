@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { Flex, FloatButton } from 'antd';
+import { Flex, FloatButton, Grid } from 'antd';
 import { AppstoreAddOutlined } from '@ant-design/icons';
 
 import clsx from 'clsx';
@@ -19,21 +19,69 @@ import CountsAndResults from './CountsAndResults';
 import LastIngestionInfo from './LastIngestion';
 import ActiveFilterTags from '@/components/Util/ActiveFilterTags';
 
-import { useTranslationFn } from '@/hooks';
+import { setManageChartsVisible } from '@/features/ui/ui.store';
+
+import { useAppDispatch, useTranslationFn } from '@/hooks';
 import { useSearchRouterAndHandler } from '@/hooks/useSearchRouterAndHandler';
 import { useSelectedProject, useSelectedScope, useScopeHasData } from '@/features/metadata/hooks';
-import { useActiveFilterPills, useSearchQuery, useSearchableFields } from '@/features/search/hooks';
+import {
+  useActiveFilterPills,
+  useSearchQuery,
+  useSearchableFields,
+  useAvailableChartSections,
+} from '@/features/search/hooks';
+import { useUiSettings, useUiState } from '@/features/ui/hooks';
 import { useIsInCatalogueMode, useNavigateToSameScopeUrl } from '@/hooks/navigation';
 import { useNotify } from '@/hooks/notifications';
+
+const { useBreakpoint } = Grid;
+
+const OVERVIEW_GAP = 24;
 
 const saveScopeOverviewToLS = (scope: DiscoveryScope, sections: Sections) => {
   saveValue(generateLSChartDataKey(scope), convertSequenceAndDisplayData(sections));
 };
 
+const OverviewChartSections = () => {
+  const { discoveryStatus } = useSearchQuery();
+  const { overviewChartMode } = useUiSettings();
+  const loadingNewData = WAITING_STATES.includes(discoveryStatus);
+
+  const availableChartSections = useAvailableChartSections();
+  const displayedSections = availableChartSections.filter(
+    ({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1
+  );
+
+  // Lazy-loading hooks means this is loaded only if OverviewChartDashboard is rendered:
+  const searchableFields = useSearchableFields();
+
+  if (!displayedSections.length) return null;
+
+  return (
+    <Flex
+      vertical
+      className={clsx('overview-charts', overviewChartMode, loadingNewData && 'loading')}
+      gap={OVERVIEW_GAP}
+    >
+      {displayedSections.map((section) => (
+        <OverviewSection
+          key={section.sectionId}
+          section={section}
+          searchableFields={searchableFields}
+          chartMode={overviewChartMode}
+        />
+      ))}
+    </Flex>
+  );
+};
+
 const OverviewChartDashboard = () => {
   const t = useTranslationFn();
+  const dispatch = useAppDispatch();
 
-  const [drawerVisible, setDrawerVisible] = useState(false);
+  const breakpoints = useBreakpoint();
+
+  const { manageChartsVisible } = useUiState();
 
   const { scope, scopeSet } = useSelectedScope();
   const selectedProject = useSelectedProject();
@@ -47,19 +95,17 @@ const OverviewChartDashboard = () => {
   // URL and dispatches discovery actions for fetching overview/query response data.
   useSearchRouterAndHandler();
 
-  const { discoveryStatus, sections, resultCountsByDataset } = useSearchQuery();
-
-  // Lazy-loading hooks means this is loaded only if OverviewChartDashboard is rendered:
-  const searchableFields = useSearchableFields();
+  const { sections, resultCountsByDataset } = useSearchQuery();
+  const availableChartSections = useAvailableChartSections();
 
   const { pills, clearAll } = useActiveFilterPills();
 
-  const onManageChartsOpen = useCallback(() => setDrawerVisible(true), []);
+  const onManageChartsOpen = useCallback(() => dispatch(setManageChartsVisible(true)), [dispatch]);
   const onManageChartsClose = useCallback(() => {
-    setDrawerVisible(false);
+    dispatch(setManageChartsVisible(false));
     // When we close the drawer, save any changes to localStorage. This helps ensure width gets saved:
     saveScopeOverviewToLS(scope, sections);
-  }, [scope, sections]);
+  }, [dispatch, scope, sections]);
 
   const scopeHasData = useScopeHasData();
 
@@ -79,12 +125,9 @@ const OverviewChartDashboard = () => {
     return null;
   }
 
-  const loadingNewData = WAITING_STATES.includes(discoveryStatus);
-  const displayedSections = sections.filter(({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1);
-
   return (
     <>
-      <Flex vertical={true} gap={24} className={clsx('container', { 'margin-auto': !scopeHasData })}>
+      <Flex vertical={true} gap={OVERVIEW_GAP} className={clsx('container', { 'margin-auto': !scopeHasData })}>
         {/*
             Show a general description of the current scope, pulled from the about content (instance-level), the project
             description, or the dataset long description (falling back to the short description.)
@@ -109,25 +152,25 @@ const OverviewChartDashboard = () => {
           />
         ) : null}
 
-        {displayedSections.map(({ sectionTitle, charts }, i) => (
-          <div key={i} className={clsx('overview', loadingNewData && 'loading')}>
-            <OverviewSection title={sectionTitle} chartData={charts} searchableFields={searchableFields} />
-          </div>
-        ))}
+        <OverviewChartSections />
 
         {!catalogueMode && <LastIngestionInfo />}
       </Flex>
 
-      <ManageChartsDrawer onManageDrawerClose={onManageChartsClose} manageDrawerVisible={drawerVisible} />
+      <ManageChartsDrawer onManageDrawerClose={onManageChartsClose} manageDrawerVisible={manageChartsVisible} />
 
       <FloatButton.Group className="float-btn-pos">
         <FloatButton.BackTop target={() => document.getElementById('content-layout')!} />
-        <FloatButton
-          type="primary"
-          icon={<AppstoreAddOutlined rotate={270} />}
-          tooltip={t('Manage Charts')}
-          onClick={onManageChartsOpen}
-        />
+        {!breakpoints.lg && availableChartSections.length > 0 && (
+          /* >= breakpoints.lg, we can use the fixed search sidebar to open the manage charts drawer.
+              < breakpoints.lg, (mobile-ish), we use a Material-esque floating button. */
+          <FloatButton
+            type="primary"
+            icon={<AppstoreAddOutlined rotate={270} />}
+            tooltip={t('Manage Charts')}
+            onClick={onManageChartsOpen}
+          />
+        )}
       </FloatButton.Group>
     </>
   );
