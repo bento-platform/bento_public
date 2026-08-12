@@ -3,14 +3,53 @@ import { Button, type DrawerProps, Drawer, Flex, Grid, Space, Typography } from 
 const { Title } = Typography;
 const { useBreakpoint } = Grid;
 
+import type { Section } from '@/types/data';
+
 import ChartTree from './ChartTree';
 import OverviewChartSizeControl from '@/components/Overview/Util/OverviewChartSizeControl';
 
-import type { ChartDataField } from '@/types/data';
 import { useAppDispatch, useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { hideAllSectionCharts, setAllDisplayedCharts, resetLayout } from '@/features/search/query.store';
 import { useSearchQuery } from '@/features/search/hooks';
+import { useCallback } from 'react';
+
+const ManageChartsSectionHeader = ({
+  section: { sectionId, sectionTitle },
+  first,
+}: {
+  section: Section;
+  first: boolean;
+}) => {
+  const t = useTranslationFn();
+  const dispatch = useAppDispatch();
+
+  return (
+    <Flex justify="space-between" align="center" className={first ? 'mb-3' : 'my-3'}>
+      <Title level={5} style={{ margin: '0' }}>
+        {t(sectionTitle)}
+      </Title>
+      <Space>
+        <Button
+          size="small"
+          onClick={() => {
+            dispatch(setAllDisplayedCharts({ section: sectionId }));
+          }}
+        >
+          {t('Show All')}
+        </Button>
+        <Button
+          size="small"
+          onClick={() => {
+            dispatch(hideAllSectionCharts({ section: sectionId }));
+          }}
+        >
+          {t('Hide All')}
+        </Button>
+      </Space>
+    </Flex>
+  );
+};
 
 const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: ManageChartsDrawerProps) => {
   const t = useTranslationFn();
@@ -21,6 +60,14 @@ const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: Manage
   const isSmallScreen = useSmallScreen();
 
   const { sections } = useSearchQuery();
+
+  const showAll = useCallback(() => {
+    dispatch(setAllDisplayedCharts({}));
+  }, [dispatch]);
+
+  const reset = useCallback(() => {
+    dispatch(resetLayout());
+  }, [dispatch]);
 
   return (
     <Drawer
@@ -38,54 +85,25 @@ const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: Manage
       styles={{ body: { padding: 0, display: 'grid', gridTemplateRows: 'auto min-content' } }}
       extra={
         <Space>
-          <Button
-            size="small"
-            onClick={() => {
-              dispatch(setAllDisplayedCharts({}));
-            }}
-          >
+          <Button size="small" onClick={showAll}>
             {t('Show All')}
           </Button>
-          <Button
-            size="small"
-            onClick={() => {
-              dispatch(resetLayout());
-            }}
-          >
+          <Button size="small" onClick={reset}>
             {t('Reset')}
           </Button>
         </Space>
       }
     >
       <div className="p-ant-lg overflow-y-auto">
-        {sections.map(({ sectionTitle, charts }: { sectionTitle: string; charts: ChartDataField[] }, i: number) => (
-          <div key={i}>
-            <Flex justify="space-between" align="center" className={i === 0 ? 'mb-3' : 'my-3'}>
-              <Title level={5} style={{ margin: '0' }}>
-                {t(sectionTitle)}
-              </Title>
-              <Space>
-                <Button
-                  size="small"
-                  onClick={() => {
-                    dispatch(setAllDisplayedCharts({ section: sectionTitle }));
-                  }}
-                >
-                  {t('Show All')}
-                </Button>
-                <Button
-                  size="small"
-                  onClick={() => {
-                    dispatch(hideAllSectionCharts({ section: sectionTitle }));
-                  }}
-                >
-                  {t('Hide All')}
-                </Button>
-              </Space>
-            </Flex>
-            <ChartTree charts={charts} section={sectionTitle} />
-          </div>
-        ))}
+        {sections.map((section, i) => {
+          const { sectionId, charts } = section;
+          return (
+            <div key={sectionId}>
+              <ManageChartsSectionHeader section={section} first={i === 0} />
+              <ChartTree charts={charts} section={sectionId} />
+            </div>
+          );
+        })}
       </div>
       <div
         style={{

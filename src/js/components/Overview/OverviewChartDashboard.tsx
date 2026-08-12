@@ -126,9 +126,9 @@ const OverviewChartDashboard = () => {
           className={clsx('overview-charts', overviewChartMode, loadingNewData && 'loading')}
           gap={OVERVIEW_GAP}
         >
-          {displayedSections.map(({ sectionTitle, charts }, i) => (
+          {displayedSections.map(({ sectionId, sectionTitle, charts }) => (
             <OverviewSection
-              key={i}
+              key={sectionId}
               title={sectionTitle}
               chartData={charts}
               searchableFields={searchableFields}

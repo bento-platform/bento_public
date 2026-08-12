@@ -60,8 +60,8 @@ export const getValue = <T>(key: string, defaultVal: T, verifyFunc: (arg: any) =
 
 export const convertSequenceAndDisplayData = (sections: Sections) => {
   const temp: LocalStorageChartData = {};
-  sections.forEach(({ sectionTitle, charts }) => {
-    temp[sectionTitle] = charts.map(({ id, isDisplayed, width }) => ({ id, isDisplayed, width }));
+  sections.forEach(({ sectionId, charts }) => {
+    temp[sectionId] = charts.map(({ id, isDisplayed, width }) => ({ id, isDisplayed, width }));
   });
   return temp;
 };
@@ -71,6 +71,5 @@ export const generateLSChartDataKey = (scope: DiscoveryScope) => {
   const scopeString = p ? (d ?? p) : '';
 
   // Relies on the fact that project and dataset ids are unique
-  const lsKey = `${LOCALSTORAGE_CHARTS_KEY_PREFIX}${scopeString}`;
-  return lsKey;
+  return `${LOCALSTORAGE_CHARTS_KEY_PREFIX}${scopeString}`;
 };
