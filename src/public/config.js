@@ -10,6 +10,7 @@ BENTO_PUBLIC_CONFIG = {
   TRANSLATED: null,
   TRANSLATED_LOGO: null,
   LOGO_HEIGHT: null,
+  SHOW_LOGO: null,
   SHOW_HEADER_TITLE: null,
   SHOW_ADMIN_LINK: null,
   SHOW_SIGN_IN: null,
