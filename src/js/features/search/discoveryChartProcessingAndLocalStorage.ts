@@ -1,6 +1,6 @@
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type { DiscoveryResponse } from '@/types/discovery/response';
-import type { ChartConfig } from '@/types/discovery/chartConfig';
+import type { ChartConfig, ChartLayoutSection } from '@/types/discovery/chartConfig';
 import type { ChartDataField, LocalStorageChartData, Sections } from '@/types/data';
 
 import { MAX_CHARTS } from '@/constants/configConstants';
@@ -26,24 +26,34 @@ export const discoveryChartProcessingAndLocalStorage = (
   // + displayed boolean - whether this chart is shown
   // + field definition (from config.field)
   // + the fields' relevant data.
-  const normalizeChart = (chart: ChartConfig, i: number): ChartDataField => {
+  const normalizeChart = (
+    chart: ChartConfig,
+    i: number,
+    defaultCharts: ChartLayoutSection['default_charts']
+  ): ChartDataField => {
     const { data, definition } = fields[chart.field];
+    const initialIsDisplayed =
+      defaultCharts === null
+        ? i < MAX_CHARTS
+        : typeof defaultCharts === 'number'
+          ? i < defaultCharts
+          : defaultCharts.includes(chart.field);
     return {
       id: chart.field,
       chartConfig: chart,
       field: definition,
       data: serializeChartData(data),
       // Initial display state
-      isDisplayed: i < MAX_CHARTS,
+      isDisplayed: initialIsDisplayed,
       width: chart.width ?? DEFAULT_CHART_WIDTH, // initial configured width; users can change it from here
     };
   };
 
-  const sectionData: Sections = sections.map(({ section_title, charts }, idx) => ({
+  const sectionData: Sections = sections.map(({ section_title, charts, default_charts }, idx) => ({
     sectionId: `sec-${idx}-${_asSlug(section_title)}`,
     sectionTitle: section_title,
     // Filter out charts where field data is missing due to missing counts permissions for the field's data type
-    charts: charts.filter((c) => !!fields[c.field]).map(normalizeChart),
+    charts: charts.filter((c) => !!fields[c.field]).map((chart, i) => normalizeChart(chart, i, default_charts)),
   }));
 
   const defaultLayout = JSON.parse(JSON.stringify(sectionData));
