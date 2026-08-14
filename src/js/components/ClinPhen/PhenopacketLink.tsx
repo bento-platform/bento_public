@@ -74,7 +74,10 @@ const BiosampleLink = ({
     </Link>
   );
   return enablePopover ? (
-    <Popover content={<BiosampleDetailView id={sampleId} mode="popover" style={{ width: 'min(540px, 90vw)' }} />}>
+    <Popover
+      content={<BiosampleDetailView id={sampleId} mode="popover" style={{ width: 'min(540px, 90vw)' }} />}
+      styles={{ body: { maxHeight: 'min(400px, 80vh)', overflowY: 'auto' } }}
+    >
       {link}
     </Popover>
   ) : (
