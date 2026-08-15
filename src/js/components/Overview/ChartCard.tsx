@@ -93,7 +93,7 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable, mode: mode_
             />
           </div>
         ) : (
-          <Row style={{ height: chartHeight }} justify="center" align="middle">
+          <Row style={{ height: chartHeight }} className="w-full" justify="center" align="middle">
             <CustomEmpty text="No Data" />
           </Row>
         )}
