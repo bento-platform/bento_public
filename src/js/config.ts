@@ -31,7 +31,7 @@ const stripTrailingSlash = (x: string): string => x.replace(/\/$/g, '');
 
 // General
 export const CLIENT_NAME = BENTO_PUBLIC_CONFIG.CLIENT_NAME ?? process.env.BENTO_PUBLIC_CLIENT_NAME;
-const _ADMIN_URL = BENTO_PUBLIC_CONFIG.ADMIN_URL ?? process.env.BENTO_PUBLIC_PORTAL_URL;
+const _ADMIN_URL = BENTO_PUBLIC_CONFIG.ADMIN_URL ?? process.env.BENTO_PUBLIC_ADMIN_URL;
 export const ADMIN_URL = stripTrailingSlash(_ADMIN_URL) + '/';
 const _PUBLIC_URL = BENTO_PUBLIC_CONFIG.PUBLIC_URL ?? process.env.BENTO_PUBLIC_URL ?? '';
 export const PUBLIC_URL_NO_TRAILING_SLASH = stripTrailingSlash(_PUBLIC_URL);
