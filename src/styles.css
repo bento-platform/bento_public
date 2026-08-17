@@ -97,8 +97,13 @@ body {
    style and its variant styles inside the shared `antd` layer, so `.ant-btn`'s base `color` rule can
    end up after (and beat) `.ant-btn-variant-solid`'s, leaving solid-variant buttons with the default
    text color instead of their variant color. Confirmed via https://github.com/ant-design/ant-design/issues/57359
-   (same bug class, different component, still open as of antd v6.3.1) that this isn't fixed upstream. */
-.ant-btn-variant-solid { color: var(--ant-button-primary-color); }
+   (same bug class, different component, still open as of antd v6.3.1) that this isn't fixed upstream.
+   Excludes `-background-ghost` buttons: antd gives those their own higher-specificity color rule
+   (`.ant-btn-color-primary.ant-btn-background-ghost`, see node_modules/antd/es/button/style/index.js)
+   that correctly wins over `.ant-btn-variant-solid` *within* antd's own layer -- since this override
+   is unlayered, it would otherwise beat that higher-specificity rule too (unlayered beats layered
+   regardless of specificity) and force white text onto a ghost button's transparent background. */
+.ant-btn-variant-solid:not(.ant-btn-background-ghost) { color: var(--ant-button-primary-color); }
 
 /* custom, tailwind-esque */
 .pb-content { padding-bottom: var(--content-padding-v); }
