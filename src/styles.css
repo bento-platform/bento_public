@@ -596,24 +596,10 @@ body {
 .catalogue-sort-select { width: 250px; flex-shrink: 1; min-width: 70px; }
 .catalogue-toolbar-fixed { flex-shrink: 0; }
 .insights-toggle {
-  display: flex;
-  align-items: center;
-  border: var(--ant-line-width) var(--ant-line-type) var(--ant-color-border);
-  border-radius: 6px;
-  gap: 4px;
-  height: 32px;
-  min-width: 216px;
-  background: #FFF;
-  justify-content: space-around;
+  min-width: 184px;
 }
-.insights-toggle-label {
-  display: flex;
-  color: var(--text-secondary);
-}
-.insights-toggle:has([aria-checked="true"]) .insights-toggle-label {
-  color: var(--ant-color-primary);
-  transition: color 200ms ease;
-
+.insights-toggle:lang(en) {
+  min-width: 144px;
 }
 
 .catalogue-count-highlight { color: var(--text-primary); font-weight: 600; }
