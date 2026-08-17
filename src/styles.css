@@ -83,11 +83,6 @@ body {
   margin-top: 0 !important;
 }
 
-/* As of the `antd` CSS layer (see ../js/index.tsx's <StyleProvider layer> and ../tailwind.css's layer
-   order statement), Tailwind utility classes reliably beat antd component defaults on their own --
-   these unlayered duplicates are no longer load-bearing for their own listed cases, but are kept as a
-   defensive backstop (verified harmless: they set the same value Tailwind would anyway) in case the
-   layer setup ever regresses. */
 .mb-0, .ant-typography.mb-0 { margin-bottom: 0; }
 .underline, a.underline { text-decoration-line: underline; }
 .m-0 { margin: 0; }
