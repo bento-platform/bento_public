@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import { useAppDispatch } from '@/hooks';
 import { Badge, Button, Dropdown, Flex, Input, Select, Segmented, Typography, Switch } from 'antd';
 import {
@@ -8,11 +9,13 @@ import {
   SearchOutlined,
   SwapOutlined,
 } from '@ant-design/icons';
-import { useCatalogueState, facetTranslationKey } from '@/features/catalogue/hooks';
+import { useCatalogueState } from '@/features/catalogue/hooks';
 import { toggleInsights, type SortKey, type FacetId } from '@/features/catalogue/catalogue.store';
 import { useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
 import { useTranslationFn } from '@/hooks';
 import ActiveFilterTags from '@/components/Util/ActiveFilterTags';
+import { FACET_CONFIG_BY_ID } from '@/features/catalogue/facetRegistry';
+import { facetTranslationKey, facetValueTranslationKey } from '@/features/catalogue/utils';
 
 const { Text } = Typography;
 
@@ -37,13 +40,35 @@ const CatalogueToolbar = ({ filteredCount, isMobile, onOpenFilters }: CatalogueT
   const { q, sets, sort, view, insightsOpen } = useCatalogueState();
   const { setSearch, setSort, setView, toggleFacetValue, clearAll } = useCatalogueUrlActions();
 
+  // The Input needs its own local state so typing updates the DOM synchronously (preserving
+  // cursor position); `q` itself only catches up later via a URL round trip (setSearch navigates,
+  // and useCatalogueUrlSync reflects the URL back into Redux on a subsequent render), which is too
+  // late for the browser to keep the caret in place. `lastSentQ` distinguishes our own round-tripped
+  // updates from external ones (browser back/forward, clearing a filter pill, `clearAll`), so only
+  // the latter re-sync `searchInput` from `q`.
+  const [searchInput, setSearchInput] = useState(q);
+  const lastSentQ = useRef(q);
+
+  useEffect(() => {
+    if (q !== lastSentQ.current) {
+      lastSentQ.current = q;
+      setSearchInput(q);
+    }
+  }, [q]);
+
+  const handleSearchChange = (value: string) => {
+    setSearchInput(value);
+    lastSentQ.current = value;
+    setSearch(value);
+  };
+
   const pills: { key: string; facetLabel: string; label: string; onClose: () => void }[] = [];
   (Object.entries(sets) as [FacetId, string[]][]).forEach(([facet, values]) => {
     values.forEach((v) =>
       pills.push({
         key: `${facet}-${v}`,
         facetLabel: facetTranslationKey(facet),
-        label: v,
+        label: t(facetValueTranslationKey(FACET_CONFIG_BY_ID[facet].i18nKeyPrefix, v)),
         onClose: () => toggleFacetValue(facet, v),
       })
     );
@@ -52,7 +77,7 @@ const CatalogueToolbar = ({ filteredCount, isMobile, onOpenFilters }: CatalogueT
   if (q) {
     pills.push({
       key: 'keywords-__q__',
-      facetLabel: facetTranslationKey('keywords'),
+      facetLabel: facetTranslationKey('keyword'),
       label: `"${q}"`,
       onClose: () => setSearch(''),
     });
@@ -72,8 +97,8 @@ const CatalogueToolbar = ({ filteredCount, isMobile, onOpenFilters }: CatalogueT
         <Input
           prefix={<SearchOutlined />}
           placeholder={t('catalogue.toolbar.search_placeholder')}
-          value={q}
-          onChange={(e) => setSearch(e.target.value)}
+          value={searchInput}
+          onChange={(e) => handleSearchChange(e.target.value)}
           className="catalogue-search-input"
           allowClear
         />

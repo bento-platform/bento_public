@@ -13,7 +13,7 @@ const FilterChip = ({ label, count, selected, disabled, onChange }: FilterChipPr
   const id = useId();
 
   return (
-    <label htmlFor={id} className={clsx('fchip', selected && 'fchip--on')}>
+    <label htmlFor={id} className={clsx('fchip', selected && 'fchip--on')} title={label}>
       <input
         className="fchip__input"
         id={id}

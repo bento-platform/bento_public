@@ -4,6 +4,7 @@ import { Avatar, Button, Card, Flex, List, Typography } from 'antd';
 import { PieChartOutlined, SolutionOutlined } from '@ant-design/icons';
 import { FaDatabase } from 'react-icons/fa';
 
+import { PCGL_MODE } from '@/config';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type { Dataset } from '@/types/dataset';
 import type { Project } from '@/types/metadata';
@@ -19,6 +20,7 @@ import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
 import CountsDisplay from '@/components/Util/CountsDisplay';
 import DatasetProvenanceModal from './DatasetProvenance/DatasetProvenanceModal';
 import KeywordList from './KeywordList';
+import ProgramPill from './Catalogue/ProgramPill';
 import ProjectPill from './Catalogue/ProjectPill';
 
 const { Title, Text, Paragraph } = Typography;
@@ -51,7 +53,7 @@ const Dataset = ({
 
   const [provenanceModalOpen, setProvenanceModalOpen] = useState(false);
 
-  const { identifier, title, description } = dataset;
+  const { identifier, title, description, program_name: program } = dataset;
   const keywords = dataset.keywords ?? [];
 
   const scope: DiscoveryScope = useMemo(
@@ -115,7 +117,7 @@ const Dataset = ({
           </Text>
         )}
 
-        {project && <ProjectPill project={project} />}
+        {PCGL_MODE ? program && <ProgramPill program={program} /> : project && <ProjectPill project={project} />}
 
         {description && (
           <Paragraph

@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useAppSelector } from '@/hooks';
 import { useSelectedScope } from '@/features/metadata/hooks';
 import { useSearchQuery } from '@/features/search/hooks';
-import type { ExportFormat, ResultsDataEntity } from '@/types/entities';
+import type { ExportDataEntity, ExportFormat } from '@/types/entities';
 import { scopedAuthorizedRequestConfigFromParts } from '@/utils/requests';
 import { searchQueryParamsFromState } from '@/features/search/utils';
 import axios from 'axios';
@@ -15,7 +15,7 @@ export const useDownloadAllMatches = () => {
   const selectedScope = useSelectedScope();
 
   return useCallback(
-    async (entity: ResultsDataEntity, format: ExportFormat, filename: string, fields?: string[]) => {
+    async (entity: ExportDataEntity, format: ExportFormat, filename: string, fields?: string[]) => {
       const config = scopedAuthorizedRequestConfigFromParts(auth, selectedScope, [
         ...searchQueryParamsFromState(query),
         ['_entity', entity],
