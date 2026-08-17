@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useAppDispatch } from '@/hooks';
 import { Badge, Button, Dropdown, Flex, Input, Select, Segmented, Typography } from 'antd';
 import {
@@ -39,6 +40,26 @@ const CatalogueToolbar = ({ filteredCount, isMobile, onOpenFilters }: CatalogueT
   const { q, sets, sort, view, insightsOpen } = useCatalogueState();
   const { setSearch, setSort, setView, toggleFacetValue, clearAll } = useCatalogueUrlActions();
 
+  // The Input needs its own local state so typing updates the DOM synchronously (preserving
+  // cursor position); `q` itself only catches up later via a URL round trip (setSearch navigates,
+  // and useCatalogueUrlSync reflects the URL back into Redux on a subsequent render), which is too
+  // late for the browser to keep the caret in place. `prevQ` mirrors the last `q` this render loop
+  // has already accounted for (React's documented "adjust state when a prop changes" pattern), so
+  // `searchInput` only gets overwritten when `q` itself moves to a value we haven't seen yet -- i.e.
+  // an external change (browser back/forward, clearing a filter pill, `clearAll`) -- and never on the
+  // render that immediately follows our own keystroke, where `q` hasn't caught up yet.
+  const [searchInput, setSearchInput] = useState(q);
+  const [prevQ, setPrevQ] = useState(q);
+  if (q !== prevQ) {
+    setPrevQ(q);
+    setSearchInput(q);
+  }
+
+  const handleSearchChange = (value: string) => {
+    setSearchInput(value);
+    setSearch(value);
+  };
+
   const pills: { key: string; facetLabel: string; label: string; onClose: () => void }[] = [];
   (Object.entries(sets) as [FacetId, string[]][]).forEach(([facet, values]) => {
     values.forEach((v) =>
@@ -74,8 +95,8 @@ const CatalogueToolbar = ({ filteredCount, isMobile, onOpenFilters }: CatalogueT
         <Input
           prefix={<SearchOutlined />}
           placeholder={t('catalogue.toolbar.search_placeholder')}
-          value={q}
-          onChange={(e) => setSearch(e.target.value)}
+          value={searchInput}
+          onChange={(e) => handleSearchChange(e.target.value)}
           className="catalogue-search-input"
           allowClear
         />
