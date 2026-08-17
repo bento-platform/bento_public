@@ -12,6 +12,7 @@ import { NEW_BENTO_PUBLIC_THEME } from '@/constants/overviewConstants';
 import { SUPPORTED_LNGS } from '@/constants/configConstants';
 
 // Component imports
+import { StyleProvider } from '@ant-design/cssinjs';
 import { ConfigProvider } from 'antd';
 import enUS from 'antd/locale/en_US';
 import frCA from 'antd/locale/fr_CA';
@@ -71,23 +72,30 @@ const InnerRootApp = () => {
 
   return (
     <ChartConfigProvider Lng={i18n.language ?? SUPPORTED_LNGS.ENGLISH} theme={NEW_BENTO_PUBLIC_THEME}>
-      <ConfigProvider
-        locale={antdLocale}
-        theme={{
-          cssVar: { key: 'bento-theme' },
-          components: {
-            Button: { algorithm: !PCGL_MODE },
-            Card: { bodyPadding: isSmallScreen ? 10 : 24 },
-            Menu: { iconSize: 20 },
-            Table: { borderColor: 'rgba(0, 0, 0, 0.08)' },
-          },
-          token: PCGL_MODE ? { colorPrimary: '#2B7AAD' } : {},
-        }}
-      >
-        <NotificationProvider>
-          <BaseRoutes />
-        </NotificationProvider>
-      </ConfigProvider>
+      {/* `layer` puts antd's cssinjs output into the `antd` CSS layer (see ../tailwind.css for where
+          that layer is ordered relative to Tailwind's), so Tailwind utility classes reliably override
+          antd component styles without !important hacks. Known gap: antd's own base-vs-variant rule
+          order isn't preserved inside the `antd` layer, which silently drops solid-variant buttons'
+          text color -- patched explicitly in styles.css (search .ant-btn-variant-solid). */}
+      <StyleProvider layer>
+        <ConfigProvider
+          locale={antdLocale}
+          theme={{
+            cssVar: { key: 'bento-theme' },
+            components: {
+              Button: { algorithm: !PCGL_MODE },
+              Card: { bodyPadding: isSmallScreen ? 10 : 24 },
+              Menu: { iconSize: 20 },
+              Table: { borderColor: 'rgba(0, 0, 0, 0.08)' },
+            },
+            token: PCGL_MODE ? { colorPrimary: '#2B7AAD' } : {},
+          }}
+        >
+          <NotificationProvider>
+            <BaseRoutes />
+          </NotificationProvider>
+        </ConfigProvider>
+      </StyleProvider>
     </ChartConfigProvider>
   );
 };

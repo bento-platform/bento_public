@@ -83,12 +83,22 @@ body {
   margin-top: 0 !important;
 }
 
-/* These two duplicate real Tailwind utility names, but need the extra compound-selector specificity
-   to reliably beat antd's own component defaults (Typography's margin-bottom, Text/Link's
-   text-decoration) -- Tailwind's plain .mb-0/.underline utilities lose that fight since antd's cssinjs
-   output isn't layered. */
+/* As of the `antd` CSS layer (see ../js/index.tsx's <StyleProvider layer> and ../tailwind.css's layer
+   order statement), Tailwind utility classes reliably beat antd component defaults on their own --
+   these unlayered duplicates are no longer load-bearing for their own listed cases, but are kept as a
+   defensive backstop (verified harmless: they set the same value Tailwind would anyway) in case the
+   layer setup ever regresses. */
 .mb-0, .ant-typography.mb-0 { margin-bottom: 0; }
 .underline, a.underline { text-decoration-line: underline; }
+.m-0 { margin: 0; }
+.min-w-0 { min-width: 0; }
+
+/* Known gap in antd's `layer` support: cssinjs doesn't preserve rule order between a component's base
+   style and its variant styles inside the shared `antd` layer, so `.ant-btn`'s base `color` rule can
+   end up after (and beat) `.ant-btn-variant-solid`'s, leaving solid-variant buttons with the default
+   text color instead of their variant color. Confirmed via https://github.com/ant-design/ant-design/issues/57359
+   (same bug class, different component, still open as of antd v6.3.1) that this isn't fixed upstream. */
+.ant-btn-variant-solid { color: var(--ant-button-primary-color); }
 
 /* custom, tailwind-esque */
 .pb-content { padding-bottom: var(--content-padding-v); }

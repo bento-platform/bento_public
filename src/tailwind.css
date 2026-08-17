@@ -1,4 +1,13 @@
 /* Tailwind entry point. Kept separate from styles.css so it can skip less-loader (which would
    otherwise try to resolve `@import "tailwindcss"` as a Less file import) -- see webpack.config.js.
  */
+
+/* Explicitly registers the full layer order before Tailwind's own `@layer theme, base, components,
+   utilities;` statement (emitted by the import below) has a chance to run -- CSS layer order is fixed
+   by first appearance, so this wins. Places `antd` (see ../js/index.tsx's <StyleProvider layer>) above
+   `base` (so antd's component styles still beat Tailwind's Preflight resets, e.g.
+   `button { background-color: transparent }`) but below `components`/`utilities` (so explicit Tailwind
+   utility classes still beat antd component defaults). */
+@layer theme, base, antd, components, utilities;
+
 @import 'tailwindcss';
