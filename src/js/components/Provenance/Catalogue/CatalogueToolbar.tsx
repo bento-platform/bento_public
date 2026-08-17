@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useAppDispatch } from '@/hooks';
 import { Badge, Button, Dropdown, Flex, Input, Select, Segmented, Typography } from 'antd';
 import {
@@ -43,22 +43,20 @@ const CatalogueToolbar = ({ filteredCount, isMobile, onOpenFilters }: CatalogueT
   // The Input needs its own local state so typing updates the DOM synchronously (preserving
   // cursor position); `q` itself only catches up later via a URL round trip (setSearch navigates,
   // and useCatalogueUrlSync reflects the URL back into Redux on a subsequent render), which is too
-  // late for the browser to keep the caret in place. `lastSentQ` distinguishes our own round-tripped
-  // updates from external ones (browser back/forward, clearing a filter pill, `clearAll`), so only
-  // the latter re-sync `searchInput` from `q`.
+  // late for the browser to keep the caret in place. `prevQ` mirrors the last `q` this render loop
+  // has already accounted for (React's documented "adjust state when a prop changes" pattern), so
+  // `searchInput` only gets overwritten when `q` itself moves to a value we haven't seen yet -- i.e.
+  // an external change (browser back/forward, clearing a filter pill, `clearAll`) -- and never on the
+  // render that immediately follows our own keystroke, where `q` hasn't caught up yet.
   const [searchInput, setSearchInput] = useState(q);
-  const lastSentQ = useRef(q);
-
-  useEffect(() => {
-    if (q !== lastSentQ.current) {
-      lastSentQ.current = q;
-      setSearchInput(q);
-    }
-  }, [q]);
+  const [prevQ, setPrevQ] = useState(q);
+  if (q !== prevQ) {
+    setPrevQ(q);
+    setSearchInput(q);
+  }
 
   const handleSearchChange = (value: string) => {
     setSearchInput(value);
-    lastSentQ.current = value;
     setSearch(value);
   };
 
