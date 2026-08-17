@@ -4,10 +4,17 @@
 
 /* Explicitly registers the full layer order before Tailwind's own `@layer theme, base, components,
    utilities;` statement (emitted by the import below) has a chance to run -- CSS layer order is fixed
-   by first appearance, so this wins. Places `antd` (see ../js/index.tsx's <StyleProvider layer>) above
-   `base` (so antd's component styles still beat Tailwind's Preflight resets, e.g.
-   `button { background-color: transparent }`) but below `components`/`utilities` (so explicit Tailwind
-   utility classes still beat antd component defaults). */
-@layer theme, base, antd, components, utilities;
+   by first appearance, so this wins. `reset` (antd's own generic browser-normalize stylesheet, imported
+   below) sits lowest so it never fights antd's actual component styles or Tailwind's utilities for the
+   same property. `antd` (see ../js/index.tsx's <StyleProvider layer>) sits above `base` (so antd's
+   component styles still beat Tailwind's Preflight resets, e.g. `button { background-color: transparent
+   }`) but below `components`/`utilities` (so explicit Tailwind utility classes still beat antd). */
+@layer reset, theme, base, antd, components, utilities;
+
+/* antd's reset.css is a plain, unlayered stylesheet by default; importing it here (rather than directly
+   in index.tsx) puts it in the `reset` layer instead, so it no longer permanently wins property fights
+   against antd's own (now layered, see <StyleProvider layer>) cssinjs component output -- e.g. this
+   file's own `color: inherit` on buttons/inputs was beating antd's Button color styles outright. */
+@import 'antd/dist/reset.css' layer(reset);
 
 @import 'tailwindcss';

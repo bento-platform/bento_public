@@ -35,7 +35,8 @@ import { store } from './store';
 import { AUTH_CALLBACK_URL, CLIENT_ID, OPENID_CONFIG_URL, PCGL_MODE, PUBLIC_URL_NO_TRAILING_SLASH } from './config';
 
 // Styles imports
-import 'antd/dist/reset.css';
+// antd/dist/reset.css is imported from within ../tailwind.css instead, so it can be put in the
+// `reset` CSS layer (see the comment there) rather than loading as plain unlayered CSS.
 import 'leaflet/dist/leaflet.css';
 import 'react18-json-view/src/style.css';
 import 'bento-charts/src/styles.css';
