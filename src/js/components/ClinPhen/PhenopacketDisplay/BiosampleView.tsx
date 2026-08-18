@@ -98,7 +98,7 @@ const BiosampleLocationCollected = ({ biosample, simpleView }: { biosample: Bios
         style={{ top: 8, right: 0, zIndex: 999 }}
       />
       <div
-        className={locationView === 'map' ? 'block' : 'none'}
+        className={locationView === 'map' ? 'block' : 'hidden'}
         style={{ width: MAP_WIDTH, position: 'relative', zIndex: 0 }}
       >
         <PointMap
@@ -119,7 +119,7 @@ const BiosampleLocationCollected = ({ biosample, simpleView }: { biosample: Bios
           }}
         />
       </div>
-      <div className={locationView === 'json' ? 'block' : 'none'}>
+      <div className={locationView === 'json' ? 'block' : 'hidden'}>
         <JsonView src={biosample.location_collected} collapsed={3} />
       </div>
     </div>
