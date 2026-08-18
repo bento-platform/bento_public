@@ -5,20 +5,23 @@ import { disableChart } from '@/features/search/query.store';
 import { useAppDispatch } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
-import { CHART_WIDTH, GRID_GAP } from '@/constants/overviewConstants';
+import { CHART_SIZES } from '@/constants/overviewConstants';
 
 import ChartCard from './ChartCard';
 
+import type { ChartSizeMode } from '@/features/ui/types';
 import type { ChartDataField } from '@/types/data';
 
-const OverviewDisplayData = ({ section, allCharts, searchableFields }: OverviewDisplayDataProps) => {
+const OverviewDisplayData = ({ section, allCharts, searchableFields, chartMode }: OverviewDisplayDataProps) => {
   const dispatch = useAppDispatch();
   const isSmallScreen = useSmallScreen();
 
+  const chartSizes = CHART_SIZES[chartMode];
+
   const containerStyle = {
     display: 'grid',
-    gap: `${GRID_GAP}px`,
-    gridTemplateColumns: `repeat(auto-fit, ${CHART_WIDTH}px)`,
+    gap: `${chartSizes.gridGap}px`,
+    gridTemplateColumns: `repeat(auto-fill, minmax(${chartSizes.minWidth}px, 1fr))`,
   };
 
   const displayedCharts = useMemo(() => allCharts.filter((e) => e.isDisplayed), [allCharts]);
@@ -38,6 +41,7 @@ const OverviewDisplayData = ({ section, allCharts, searchableFields }: OverviewD
         section={section}
         onRemoveChart={onRemoveChart}
         searchable={searchableFields.has(chart.id)}
+        mode={chartMode}
       />
     );
   };
@@ -57,6 +61,7 @@ export interface OverviewDisplayDataProps {
   section: string;
   allCharts: ChartDataField[];
   searchableFields: Set<string>;
+  chartMode: ChartSizeMode;
 }
 
 export default OverviewDisplayData;

@@ -4,7 +4,7 @@ import { CalendarOutlined, FileDoneOutlined, TagOutlined, UnorderedListOutlined 
 
 import { T_SINGULAR_COUNT } from '@/constants/i18n';
 import { useTranslationFn } from '@/hooks';
-import { studyContextTranslationKey } from '@/features/catalogue/hooks';
+import { studyContextTranslationKey } from '@/features/catalogue/utils';
 import type { Dataset } from '@/types/dataset';
 import StatusBadge from '@Util/StatusBadge';
 

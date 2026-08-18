@@ -5,7 +5,7 @@ import { Button, Flex, Layout, Menu, type MenuProps, Space, Typography, theme } 
 import { useAuthState, useIsAuthenticated, useOpenIdConfig, usePerformAuth, usePerformSignOut } from 'bento-auth-js';
 
 import { RiTranslate } from 'react-icons/ri';
-import { ExportOutlined, LinkOutlined, LoginOutlined, LogoutOutlined } from '@ant-design/icons';
+import { LoginOutlined, LogoutOutlined } from '@ant-design/icons';
 
 import { useNavigateToRoot } from '@/hooks/navigation';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
@@ -14,9 +14,8 @@ import { getCurrentPage } from '@/utils/router';
 import { LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
 import {
   CLIENT_NAME,
-  PORTAL_URL,
+  SHOW_LOGO,
   SHOW_HEADER_TITLE,
-  SHOW_PORTAL_LINK,
   SHOW_SIGN_IN,
   TRANSLATED,
   TRANSLATED_LOGO,
@@ -112,14 +111,29 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
     >
       <Flex align="center" justify="space-between">
         <Flex align="center" gap={isSmallScreen ? 'small' : 'middle'} className="flex-1">
-          {isSmallScreen ? (
-            <object
-              type="image/png"
-              data={logo}
-              aria-hidden
-              style={{ height: LOGO_HEIGHT, verticalAlign: 'middle', transform: 'translateY(-3px)', paddingRight: 3 }}
-              onClick={navigateToRoot}
-            >
+          {SHOW_LOGO &&
+            (isSmallScreen ? (
+              <object
+                type="image/png"
+                data={logo}
+                aria-hidden
+                style={{ height: LOGO_HEIGHT, verticalAlign: 'middle', transform: 'translateY(-3px)', paddingRight: 3 }}
+                onClick={navigateToRoot}
+              >
+                <img
+                  src={logo}
+                  alt="logo"
+                  aria-hidden
+                  className="cursor-pointer"
+                  style={{
+                    height: LOGO_HEIGHT,
+                    verticalAlign: 'middle',
+                    transform: 'translateY(-3px)',
+                  }}
+                  onClick={navigateToRoot}
+                />
+              </object>
+            ) : (
               <img
                 src={logo}
                 alt="logo"
@@ -129,25 +143,11 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
                   height: LOGO_HEIGHT,
                   verticalAlign: 'middle',
                   transform: 'translateY(-3px)',
+                  paddingLeft: '4px',
                 }}
                 onClick={navigateToRoot}
               />
-            </object>
-          ) : (
-            <img
-              src={logo}
-              alt="logo"
-              aria-hidden
-              className="cursor-pointer"
-              style={{
-                height: LOGO_HEIGHT,
-                verticalAlign: 'middle',
-                transform: 'translateY(-3px)',
-                paddingLeft: '4px',
-              }}
-              onClick={navigateToRoot}
-            />
-          )}
+            ))}
           {/* If SHOW_HEADER_TITLE is false, assume we have text in the logo. We should still have some kind of level-1
               header for accessibility/semantic markup, so render it but visually hidden in this case. */}
           <Typography.Title
@@ -170,20 +170,6 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
         </Flex>
 
         <Space size={isSmallScreen ? 4 : 'small'}>
-          {SHOW_PORTAL_LINK && (
-            <Button
-              type="text"
-              className="header-button"
-              icon={<LinkOutlined />}
-              onClick={() => window.open(PORTAL_URL, '_blank')}
-            >
-              {isSmallScreen ? null : (
-                <>
-                  {t('Portal')} <ExportOutlined />
-                </>
-              )}
-            </Button>
-          )}
           {TRANSLATED && (
             <Button
               type="text"

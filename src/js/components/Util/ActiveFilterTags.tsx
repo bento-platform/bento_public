@@ -1,11 +1,13 @@
 import { Flex, Tag } from 'antd';
 import clsx from 'clsx';
+import { T_SINGULAR_COUNT } from '@/constants/i18n';
+import type { ReactNode } from 'react';
 import { useTranslationFn } from '@/hooks';
 
 export interface ActiveFilterPill {
   key: string;
   facetLabel: string;
-  label: string;
+  label: ReactNode;
   onClose: () => void;
 }
 
@@ -23,7 +25,9 @@ const ActiveFilterTags = ({ pills, onClearAll, tagClassName }: ActiveFilterTagsP
     <Flex wrap gap={4} align="center">
       {pills.map(({ key, facetLabel, label, onClose }) => (
         <Tag key={key} closable onClose={onClose} className={clsx('catalogue-filter-tag', tagClassName)}>
-          <span className="catalogue-filter-tag__facet-label">{t(facetLabel)}:</span>
+          <span className="catalogue-filter-tag__facet-label">{t(facetLabel, T_SINGULAR_COUNT)}:</span>
+          {/* Don't translate the label here to allow pill providers to decide on whether a pill gets translated
+              (known filter values) or not, e.g., free text search. */}
           {label}
         </Tag>
       ))}

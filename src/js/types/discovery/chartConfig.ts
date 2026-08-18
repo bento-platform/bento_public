@@ -43,4 +43,5 @@ export type ChartConfig = ChartConfigPie | ChartConfigBar | ChartConfigHistogram
 export interface ChartLayoutSection {
   charts: ChartConfig[];
   section_title: string;
+  default_charts: string[] | number | null;
 }
