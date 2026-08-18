@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useReference } from '@/features/reference/hooks';
 import { useAppSelector } from '@/hooks';
-import { viewableFormatsLower } from '@/utils/igv';
+import { viewableFormatsLower, IGV_JS_ANNOTATION_ALIASES } from '@/utils/igv';
 import { caseInsensitiveObjectAccess } from '@/utils/objects';
 import type { CreateOpt } from 'igv';
 import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
@@ -11,13 +11,6 @@ import { RequestStatus } from '@/types/requests';
 
 export const useIgvReference = () => {
   return useAppSelector((state) => state.igv);
-};
-
-// igv-provided assemblies, there are lots more but these are the only ones that support feature lookup
-const IGV_JS_ANNOTATION_ALIASES = {
-  GRCh37: 'hg19',
-  GRCh38: 'hg38',
-  GRCm38: 'mm10',
 };
 
 // get references in IGV format, preferring ones from bento when present
