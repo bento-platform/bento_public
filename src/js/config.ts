@@ -9,6 +9,7 @@ interface PublicConfig {
   TRANSLATED: boolean; // Whether to show a language toggle
   TRANSLATED_LOGO: boolean; // Whether a translated version of the header logo is available/relevant
   LOGO_HEIGHT: string; // String representation of a logo height in pixels as an integer with no suffix: e.g., '32'
+  SHOW_LOGO: boolean;
   SHOW_HEADER_TITLE: boolean; // Whether to show the CLIENT_NAME title text
   SHOW_ADMIN_LINK: boolean;
   SHOW_SIGN_IN: boolean;
@@ -30,7 +31,7 @@ const stripTrailingSlash = (x: string): string => x.replace(/\/$/g, '');
 
 // General
 export const CLIENT_NAME = BENTO_PUBLIC_CONFIG.CLIENT_NAME ?? process.env.BENTO_PUBLIC_CLIENT_NAME;
-const _ADMIN_URL = BENTO_PUBLIC_CONFIG.ADMIN_URL ?? process.env.BENTO_PUBLIC_PORTAL_URL;
+const _ADMIN_URL = BENTO_PUBLIC_CONFIG.ADMIN_URL ?? process.env.BENTO_PUBLIC_ADMIN_URL;
 export const ADMIN_URL = stripTrailingSlash(_ADMIN_URL) + '/';
 const _PUBLIC_URL = BENTO_PUBLIC_CONFIG.PUBLIC_URL ?? process.env.BENTO_PUBLIC_URL ?? '';
 export const PUBLIC_URL_NO_TRAILING_SLASH = stripTrailingSlash(_PUBLIC_URL);
@@ -41,6 +42,7 @@ export const TRANSLATED = BENTO_PUBLIC_CONFIG.TRANSLATED ?? stringToBoolean(proc
 export const TRANSLATED_LOGO =
   BENTO_PUBLIC_CONFIG.TRANSLATED_LOGO ?? stringToBoolean(process.env.BENTO_PUBLIC_TRANSLATED_LOGO);
 export const LOGO_HEIGHT = parseInt((BENTO_PUBLIC_CONFIG.LOGO_HEIGHT ?? process.env.BENTO_PUBLIC_LOGO_HEIGHT) || '32');
+export const SHOW_LOGO = BENTO_PUBLIC_CONFIG.SHOW_LOGO ?? stringToBoolean(process.env.BENTO_PUBLIC_SHOW_LOGO, 'true');
 export const SHOW_HEADER_TITLE =
   BENTO_PUBLIC_CONFIG.SHOW_HEADER_TITLE ?? stringToBoolean(process.env.BENTO_PUBLIC_SHOW_HEADER_TITLE, 'true');
 export const SHOW_ADMIN_LINK =

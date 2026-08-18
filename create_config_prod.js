@@ -1,4 +1,5 @@
-const parseBoolean = (value) => ['true', 't', '1', 'yes'].includes((value || '').toLocaleLowerCase());
+const parseBoolean = (value, defaultValue = '') =>
+  ['true', 't', '1', 'yes'].includes((value || defaultValue).toLocaleLowerCase());
 
 const siteConfig = {
   // General branding and configuration
@@ -11,7 +12,8 @@ const siteConfig = {
   TRANSLATED: parseBoolean(process.env.BENTO_PUBLIC_TRANSLATED),
   TRANSLATED_LOGO: parseBoolean(process.env.BENTO_PUBLIC_TRANSLATED_LOGO),
   LOGO_HEIGHT: process.env.BENTO_PUBLIC_LOGO_HEIGHT || '32',
-  SHOW_HEADER_TITLE: parseBoolean(process.env.BENTO_PUBLIC_SHOW_HEADER_TITLE),
+  SHOW_LOGO: parseBoolean(process.env.BENTO_PUBLIC_SHOW_LOGO, 'true'),
+  SHOW_HEADER_TITLE: parseBoolean(process.env.BENTO_PUBLIC_SHOW_HEADER_TITLE, 'true'),
   SHOW_ADMIN_LINK: parseBoolean(process.env.BENTO_PUBLIC_SHOW_ADMIN_LINK || process.env.BENTO_PUBLIC_SHOW_PORTAL_LINK),
   SHOW_SIGN_IN: parseBoolean(process.env.BENTO_PUBLIC_SHOW_SIGN_IN),
   FORCE_CATALOGUE: parseBoolean(process.env.BENTO_PUBLIC_FORCE_CATALOGUE), // Show data catalogue even with 1 project
