@@ -607,7 +607,9 @@
       "dataset_found_other": "$t(entities.dataset, {\"count\": {{count}} }, lowercase) found",
       "show_insights": "Show insights",
       "hide_insights": "Hide insights",
-      "clear_all": "Clear all"
+      "clear_all": "Clear all",
+      "clear_filter": "Clear filter by",
+      "active_filters": "Active filters"
     },
     "insights": {
       "title": "$t(entities.dataset_one) insights",

@@ -28,6 +28,11 @@
 
   --antd-blue-5: #1677ff;
   --antd-gray-7: #595959;
+  --antd-red-0: #FFF1F0;
+  --antd-red-1: #FFCCC7;
+  --antd-red-4: #FF4D4F;
+  --antd-red-5: #F5222D;
+  --antd-red-8: #A8071A;
 
   /* shared design tokens */
   /* Note: --ant-color-primary is intentionally NOT proxied here. antd injects its CSS vars scoped to
@@ -172,6 +177,11 @@ a.underline { text-decoration-line: underline; }
   clip: rect(0, 0, 0, 0) !important;
   white-space: nowrap !important;
   border: 0 !important;
+}
+
+.focus-ring:focus-visible {
+  outline: var(--ant-line-width-focus) solid var(--ant-color-primary-border);
+  outline-offset: 1px;
 }
 
 /* END utility classes */
@@ -543,10 +553,55 @@ a.underline { text-decoration-line: underline; }
 .catalogue-search-input { flex-grow: 1; flex-shrink: 1; min-width: 70px; border-radius: 6px; }
 .catalogue-sort-select { width: 250px; flex-shrink: 1; min-width: 70px; }
 .catalogue-toolbar-fixed { flex-shrink: 0; }
+.insights-toggle {
+  min-width: 184px;
+}
+.insights-toggle:lang(en) {
+  min-width: 144px;
+}
+
 .catalogue-count-highlight { color: var(--text-primary); font-weight: 600; }
-.catalogue-filter-tag { border-radius: 15px !important; margin: 0 !important; }
+.catalogue-filter-tag { 
+  align-items: center;
+  background: #fff;
+  border: 1px solid var(--border-base);
+  border-radius: 15px !important;
+  color: var(--text-secondary);
+  display: flex;
+  margin: 0 !important;
+  padding-left: 8px;
+}
+.catalogue-filter-button {
+  background: transparent;
+  border: transparent;
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-size: 12px;
+  height: 24px;
+  cursor: pointer;
+  width: 24px;
+}
+.catalogue-filter-button:hover {
+  background: var(--antd-red-0);
+  color: var(--antd-red-4);
+}
+.catalogue-filter-tag__label { margin: 0; color: var(--text-primary); font-size: 12px;}
 .catalogue-filter-tag__facet-label { color: var(--text-muted); font-size: 11px; margin-right: 3px; }
-.catalogue-clear-tag { border-radius: 15px !important; margin: 0 !important; cursor: pointer; border-style: dashed; }
+.catalogue-clear-tag {
+  background: #fff;
+  border: 1px solid var(--antd-red-4);
+  border-radius: 15px !important;
+  border-style: dashed;
+  color: var(--antd-red-8);
+  cursor: pointer;
+  font-size: 12px;
+  height: 24px;
+  margin: 0 !important;
+}
+.catalogue-clear-tag:hover {
+  background: var(--antd-red-0);
+  color: var(--antd-red-8);
+}
 /* END catalogue toolbar */
 
 /* Bigger active-filter-tag variant used on the overview page (between the About section and count cards) */
@@ -1298,6 +1353,22 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
 
   #pcgl-footer__links {
     grid-template-columns: auto auto;
+  }
+
+  .visually-hidden-mobile {
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+
+  .insights-toggle-mobile {
+    min-width: 80px;
+    font-size: 1rem;
   }
 }
 

@@ -239,7 +239,9 @@
       "dataset_found_other": "$t(entities.dataset, {\"count\": {{count}} }, lowercase) trouvés",
       "show_insights": "Afficher les aperçus",
       "hide_insights": "Masquer les aperçus",
-      "clear_all": "Tout effacer"
+      "clear_all": "Tout effacer",
+      "clear_filter": "Effacer le filtre par",
+      "active_filters": "Filtres actifs"
     },
     "insights": {
       "title": "Aperçu des $t(entities.dataset_other, lowercase)",
