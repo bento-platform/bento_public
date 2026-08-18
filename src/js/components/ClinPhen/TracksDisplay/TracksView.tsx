@@ -1,6 +1,4 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Drawer, FloatButton } from 'antd';
-import { BarsOutlined } from '@ant-design/icons';
 import { useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { useAccessToken } from 'bento-auth-js';
@@ -28,7 +26,6 @@ const TracksView = ({
   const igvBrowserRefs = useRef<Record<string, Browser | null>>({});
   const igvCreatingByAssemblyRef = useRef<Record<string, boolean>>({});
   const activeCreateRequestByAssemblyRef = useRef<Record<string, number>>({});
-  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const [tracksWithView, setTracksWithView] = useState<ExperimentResultWithView[]>(
     tracks.map((t) => ({ ...t, viewInIgv: true }))
@@ -54,14 +51,6 @@ const TracksView = ({
     }
     igv.setOauthToken(accessToken, new URL(PUBLIC_URL).host);
   }, [accessToken]);
-
-  const showDrawer = useCallback(() => {
-    setDrawerOpen(true);
-  }, []);
-
-  const closeDrawer = useCallback(() => {
-    setDrawerOpen(false);
-  }, []);
 
   const buildIgvTrack = useCallback(
     (track: ExperimentResult): IgvTrack | null => {
@@ -217,7 +206,7 @@ const TracksView = ({
   return (
     <>
       {(tracks.length > 0 || availableAssemblies.length > 0) && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {availableAssemblies.map((assemblyId) => (
             <div key={assemblyId} style={{ minHeight: 400 }}>
               <div
@@ -229,24 +218,15 @@ const TracksView = ({
           ))}
         </div>
       )}
-      <FloatButton type="primary" icon={<BarsOutlined />} tooltip={t('Manage Tracks')} onClick={showDrawer} />
-      <Drawer
-        title={t('Manage Tracks')}
-        placement="right"
-        onClose={closeDrawer}
-        open={drawerOpen}
-        width={isSmallScreen ? '100vw' : 500}
-      >
-        {availableAssemblies.map((assemblyId) => (
-          <div key={assemblyId} style={{ marginTop: '1rem' }}>
-            {hasMultipleAssemblies && <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>{assemblyId}</div>}
-            <TrackControlTable
-              toggleView={toggleView}
-              tracks={tracksWithView.filter((t) => t.genome_assembly_id == assemblyId)}
-            />
-          </div>
-        ))}
-      </Drawer>
+      {availableAssemblies.map((assemblyId) => (
+        <div key={assemblyId} style={{ marginTop: 10 }}>
+          {hasMultipleAssemblies && <div style={{ fontWeight: 600, marginBottom: 5, marginTop: 15 }}>{assemblyId}</div>}
+          <TrackControlTable
+            toggleView={toggleView}
+            tracks={tracksWithView.filter((t) => t.genome_assembly_id == assemblyId)}
+          />
+        </div>
+      ))}
     </>
   );
 };

@@ -14,6 +14,10 @@ const TrackControlTable = ({
       dataIndex: 'filename',
     },
     {
+      title: 'Description',
+      dataIndex: 'description',
+    },
+    {
       title: 'Format',
       dataIndex: 'file_format',
     },
@@ -31,9 +35,7 @@ const TrackControlTable = ({
     },
   ];
 
-  return (
-    <Table bordered size="small" pagination={false} columns={trackTableColumns} rowKey="filename" dataSource={tracks} />
-  );
+  return <Table bordered pagination={false} columns={trackTableColumns} rowKey="filename" dataSource={tracks} />;
 };
 
 export default TrackControlTable;
