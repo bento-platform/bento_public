@@ -83,10 +83,9 @@ body {
   margin-top: 0 !important;
 }
 
-.mb-0, .ant-typography.mb-0 { margin-bottom: 0; }
-.underline, a.underline { text-decoration-line: underline; }
-.m-0 { margin: 0; }
-.min-w-0 { min-width: 0; }
+.ant-typography.mb-0 { margin-bottom: 0; }
+a.underline { text-decoration-line: underline; }
+
 
 /* custom, tailwind-esque */
 .pb-content { padding-bottom: var(--content-padding-v); }
