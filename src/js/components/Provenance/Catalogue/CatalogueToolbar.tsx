@@ -145,6 +145,8 @@ const CatalogueToolbar = ({ filteredCount, isMobile, onOpenFilters }: CatalogueT
           {t('catalogue.toolbar.dataset_found', { count: filteredCount })}
         </Text>
         <Button
+          color="primary"
+          variant="outlined"
           className="insights-toggle"
           htmlType="button"
           aria-pressed={insightsOpen}
