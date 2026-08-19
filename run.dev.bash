@@ -6,13 +6,10 @@
 : "${BENTO_PUBLIC_PORT:=80}"
 export BENTO_PUBLIC_PORT
 
-# ----- Begin /service-info creation ----------------------------------
-echo "[bento_public] [entrypoint] creating service-info file"
-node ./create_service_info.js > dist/public/service-info.json
-# ----- End -----------------------------------------------------------
+cd next-app || exit 1
 
 echo "[bento_public] [entrypoint] running npm install"
 npm install
 
 echo "[bento_public] [entrypoint] starting"
-npm run start
+npm run dev

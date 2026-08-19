@@ -1,5 +1,5 @@
 .github
-build
-dist
+next-app/node_modules
+next-app/.next
 node_modules
 www
