@@ -183,7 +183,7 @@ export const useSiteMenuItems = (): [MenuItem[], MenuItem[]] => {
         itemsRef.push(overviewItem);
       }
 
-      if (BentoRoute.Beacon && scopeHasData) {
+      if (BentoRoute.Beacon && scopeHasData && !!scope.project) {
         itemsRef.push(createMenuItem(BentoRoute.Beacon, ...getRouteTitleAndIcon(BentoRoute.Beacon)));
       }
 
@@ -191,6 +191,10 @@ export const useSiteMenuItems = (): [MenuItem[], MenuItem[]] => {
       if (scope.dataset) {
         itemsRef.push(createMenuItem(BentoRoute.Provenance, ...getRouteTitleAndIcon(BentoRoute.Provenance)));
       }
+    }
+
+    if (BentoRoute.Beacon && scopeHasData && (!scope.project || (scope.project && fixedProject))) {
+      topBarItems.push(createMenuItem(BentoRoute.Beacon, ...getRouteTitleAndIcon(BentoRoute.Beacon)));
     }
 
     if (BentoRoute.BeaconNetwork && (!scope.project || (scope.project && fixedProject))) {

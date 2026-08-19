@@ -4,10 +4,10 @@ import { Badge, Button, Dropdown, Flex, Input, Select, Segmented, Typography } f
 import {
   AppstoreOutlined,
   BarsOutlined,
-  BarChartOutlined,
   FilterOutlined,
   SearchOutlined,
   SwapOutlined,
+  PieChartOutlined,
 } from '@ant-design/icons';
 import { useCatalogueState } from '@/features/catalogue/hooks';
 import { toggleInsights, type SortKey, type FacetId } from '@/features/catalogue/catalogue.store';
@@ -143,16 +143,17 @@ const CatalogueToolbar = ({ filteredCount, isMobile, onOpenFilters }: CatalogueT
           {t('catalogue.toolbar.dataset_found', { count: filteredCount })}
         </Text>
         <Button
-          size="small"
-          icon={<BarChartOutlined />}
+          color="primary"
+          variant="outlined"
+          className="insights-toggle"
+          htmlType="button"
+          aria-pressed={insightsOpen}
+          icon={<PieChartOutlined aria-hidden="true" />}
           onClick={() => dispatch(toggleInsights())}
-          type={insightsOpen ? 'primary' : 'default'}
-          ghost={insightsOpen}
         >
           {insightsOpen ? t('catalogue.toolbar.hide_insights') : t('catalogue.toolbar.show_insights')}
         </Button>
       </Flex>
-
       {/* Row 3: active filter pills */}
       <ActiveFilterTags pills={pills} onClearAll={clearAll} />
     </Flex>

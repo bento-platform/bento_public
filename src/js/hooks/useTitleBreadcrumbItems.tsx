@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { HomeOutlined } from '@ant-design/icons';
 import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
 
+import type { MenuItem } from '@/types/navigation';
 import { BentoRoute } from '@/types/routes';
 import { useLanguage, useTranslationFn } from '@/hooks';
 import { useSelectedScope, useSelectedScopeTitles } from '@/features/metadata/hooks';
@@ -12,7 +13,7 @@ import { useExtraBreadcrumb } from '@/features/ui/hooks';
 import { getCurrentPage } from '@/utils/router';
 import { PCGL_MODE } from '@/config';
 
-export const useTitleBreadcrumbItems = (): BreadcrumbItemType[] => {
+export const useTitleBreadcrumbItems = (scopeHeaderMenuItems: MenuItem[]): BreadcrumbItemType[] => {
   const t = useTranslationFn();
   const language = useLanguage();
   const isSmallScreen = useSmallScreen();
@@ -59,8 +60,13 @@ export const useTitleBreadcrumbItems = (): BreadcrumbItemType[] => {
       });
     }
 
-    // We only show the page name in the breadcrumb bar in the case of Beacon Network
-    if (currentPage === BentoRoute.BeaconNetwork) {
+    // We only show the page name in the breadcrumb bar in the case of:
+    //  - Beacon Network
+    //  - Beacon, but only if it's not in the scope header menu items (i.e., it's an instance-level Beacon)
+    if (
+      currentPage === BentoRoute.BeaconNetwork ||
+      (currentPage === BentoRoute.Beacon && !scopeHeaderMenuItems.find((mi) => mi?.key === BentoRoute.Beacon))
+    ) {
       items.push({ title: currentPageTitle });
     }
 
@@ -82,5 +88,6 @@ export const useTitleBreadcrumbItems = (): BreadcrumbItemType[] => {
     getRouteTitleAndIcon,
     extraBreadcrumb,
     isSmallScreen,
+    scopeHeaderMenuItems,
   ]);
 };
