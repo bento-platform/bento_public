@@ -32,7 +32,12 @@ interface ChartConfigHistogram extends BaseChartConfig {
 interface ChartConfigChoropleth extends BaseChartConfig {
   chart_type: typeof CHART_TYPE_CHOROPLETH;
   category_prop: ChoroplethMapProps['categoryProp'];
-  color_mode: ChoroplethMapProps['colorMode'];
+  color_mode: {
+    // discrete mode not available yet in the actual config file
+    mode: 'continuous';
+    min_color: string;
+    max_color: string;
+  };
   features: ChoroplethMapProps['features'];
   center: ChoroplethMapProps['center'];
   zoom: ChoroplethMapProps['zoom'];

@@ -128,7 +128,11 @@ const Chart = memo(({ chartConfig, data, field, id, isClickable, mode }: ChartPr
           features={features}
           center={center}
           zoom={zoom}
-          colorMode={colorMode}
+          colorMode={{
+            mode: colorMode.mode,
+            minColor: colorMode.min_color,
+            maxColor: colorMode.max_color,
+          }}
           onClick={(d) => {
             goToSearch(id, d.properties?.[categoryProp]);
           }}
