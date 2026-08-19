@@ -201,6 +201,6 @@ export const useSiteMenuItems = (): [MenuItem[], MenuItem[]] => {
       topBarItems.push(createMenuItem(BentoRoute.BeaconNetwork, ...getRouteTitleAndIcon(BentoRoute.BeaconNetwork)));
     }
 
-    return [topBarItems, scopeItems] as [MenuItem[], MenuItem[]];
+    return [scopeItems.length > 1 ? [] : topBarItems, scopeItems] as [MenuItem[], MenuItem[]];
   }, [getRouteTitleAndIcon, createMenuItem, scope, fixedProject, fixedDataset, scopeHasData, page]);
 };
