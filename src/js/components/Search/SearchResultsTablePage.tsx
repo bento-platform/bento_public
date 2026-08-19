@@ -60,7 +60,7 @@ import CustomTable, { type CustomTableColumn, type CustomTableColumns } from '@U
 import ExportFieldsModal from './ExportFieldsModal';
 import IndividualDetailView from './IndividualDetailView';
 import BiosampleDetailView from './BiosampleDetailView';
-import ExperimentRowDetail from './ExperimentRowDetail';
+import ExperimentDetailView from './ExperimentDetailView';
 import ExperimentResultRowDetail from './ExperimentResultRowDetail';
 import PhenopacketLink from '@/components/ClinPhen/PhenopacketLink';
 import { ExperimentResultFileTypeCounts } from '@/components/ClinPhen/ExperimentDisplay/ExperimentView';
@@ -195,7 +195,7 @@ const EXPERIMENT_RESULT_SEARCH_TABLE_COLUMNS = {
     title: 'experiment_result.experiments',
     dataIndex: 'experiments',
     render: (_ctx) => (experiments: string[], er) => (
-      <PhenopacketLink.Experiments packetId={er?.phenopacket} experiments={experiments} />
+      <PhenopacketLink.Experiments packetId={er?.phenopacket} experiments={experiments} enablePopover />
     ),
   } as ResultsTableColumn<DiscoveryMatchExperimentResult>,
   ...commonSearchTableColumns<DiscoveryMatchExperimentResult>(),
@@ -247,7 +247,7 @@ const TABLE_SPEC_EXPERIMENT: ResultsTableSpec<DiscoveryMatchExperiment> = {
   ],
   availableColumns: EXPERIMENT_SEARCH_TABLE_COLUMNS,
   defaultColumns: ['biosample', 'project', 'dataset'],
-  expandedRowRender: (rec) => <ExperimentRowDetail id={rec.id} />,
+  expandedRowRender: (rec) => <ExperimentDetailView id={rec.id} mode="search-row" />,
 };
 
 const _erActionProps = ({

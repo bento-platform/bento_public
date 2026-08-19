@@ -19,15 +19,15 @@ import InstrumentDisplay from './InstrumentDisplay';
 import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { objectToBoolean } from '@/utils/boolean';
 
-type ExperimentExpandedRowProps = {
+export type ExperimentExpandedRowProps = {
   packetId?: string;
   experiment: Experiment;
-  searchRow?: boolean; // undefined implies false
+  mode: 'search-row' | 'popover' | 'full-detail';
 };
 
 const XXL_THREE_COLUMN = { xl: 1, xxl: 3 };
 
-export const ExperimentExpandedRow = ({ packetId, experiment, searchRow }: ExperimentExpandedRowProps) => {
+export const ExperimentExpandedRow = ({ packetId, experiment, mode }: ExperimentExpandedRowProps) => {
   const t = useTranslationFn();
 
   const items: ConditionalDescriptionItem[] = [
@@ -83,7 +83,13 @@ export const ExperimentExpandedRow = ({ packetId, experiment, searchRow }: Exper
 
   return (
     <Space direction="vertical" className="w-full">
-      <TDescriptions bordered size="compact" column={XXL_THREE_COLUMN} items={items} defaultI18nPrefix="experiment." />
+      <TDescriptions
+        bordered
+        size="compact"
+        column={mode === 'popover' ? 1 : XXL_THREE_COLUMN}
+        items={items}
+        defaultI18nPrefix="experiment."
+      />
       <ExtraPropertiesDisplay extraProperties={experiment.extra_properties} />
       {experiment.instrument && (
         <>
@@ -91,24 +97,25 @@ export const ExperimentExpandedRow = ({ packetId, experiment, searchRow }: Exper
           <InstrumentDisplay instrument={experiment.instrument} />
         </>
       )}
-      {(experiment.experiment_results ?? []).length ? (
-        <>
-          <Divider style={{ margin: '8px 0 4px 0' }} />
-          <Typography.Title level={4} style={{ fontSize: 14 }}>
-            {t('entities.experiment_result', T_PLURAL_COUNT)}
-          </Typography.Title>
-          {/*
+      {mode !== 'popover' &&
+        ((experiment.experiment_results ?? []).length ? (
+          <>
+            <Divider style={{ margin: '8px 0 4px 0' }} />
+            <Typography.Title level={4} style={{ fontSize: 14 }}>
+              {t('entities.experiment_result', T_PLURAL_COUNT)}
+            </Typography.Title>
+            {/*
             Cannot use query key row expansion in this nested view, so we force ExperimentResultView to use local state.
             */}
-          <ExperimentResultView
-            packetId={packetId}
-            currentExperiment={experiment.id}
-            experimentResults={experiment.experiment_results!}
-            urlAware={false}
-            searchRow={searchRow}
-          />
-        </>
-      ) : null}
+            <ExperimentResultView
+              packetId={packetId}
+              currentExperiment={experiment.id}
+              experimentResults={experiment.experiment_results!}
+              urlAware={false}
+              searchRow={mode === 'search-row'}
+            />
+          </>
+        ) : null)}
     </Space>
   );
 };
@@ -192,7 +199,7 @@ const ExperimentView = ({ packetId, experiments }: ExperimentViewProps) => {
     <CustomTable<Experiment>
       dataSource={experiments}
       columns={columns}
-      expandedRowRender={(record) => <ExperimentExpandedRow experiment={record} />}
+      expandedRowRender={(record) => <ExperimentExpandedRow experiment={record} mode="full-detail" />}
       rowKey="id"
       queryKey="experiment"
       isRowExpandable={isExperimentRowExpandable}
