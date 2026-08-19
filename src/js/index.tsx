@@ -12,7 +12,6 @@ import { NEW_BENTO_PUBLIC_THEME } from '@/constants/overviewConstants';
 import { SUPPORTED_LNGS } from '@/constants/configConstants';
 
 // Component imports
-import { StyleProvider } from '@ant-design/cssinjs';
 import { ConfigProvider } from 'antd';
 import enUS from 'antd/locale/en_US';
 import frCA from 'antd/locale/fr_CA';
@@ -35,14 +34,12 @@ import { store } from './store';
 import { AUTH_CALLBACK_URL, CLIENT_ID, OPENID_CONFIG_URL, PCGL_MODE, PUBLIC_URL_NO_TRAILING_SLASH } from './config';
 
 // Styles imports
-// antd/dist/reset.css is imported from within ../tailwind.css instead, so it can be put in the
-// `reset` CSS layer (see the comment there) rather than loading as plain unlayered CSS.
+import 'antd/dist/reset.css';
 import 'leaflet/dist/leaflet.css';
 import 'react18-json-view/src/style.css';
 import 'bento-charts/src/styles.css';
 import 'bento-file-display/dist/style.css';
 import './i18n';
-import '../tailwind.css';
 import '../styles.css';
 
 const BaseRoutes = () => {
@@ -73,30 +70,23 @@ const InnerRootApp = () => {
 
   return (
     <ChartConfigProvider Lng={i18n.language ?? SUPPORTED_LNGS.ENGLISH} theme={NEW_BENTO_PUBLIC_THEME}>
-      {/* `layer` puts antd's cssinjs output into the `antd` CSS layer (see ../tailwind.css for where
-          that layer is ordered relative to Tailwind's), so Tailwind utility classes reliably override
-          antd component styles without !important hacks. Known gap: antd's own base-vs-variant rule
-          order isn't preserved inside the `antd` layer, which silently drops solid-variant buttons'
-          text color -- patched explicitly in styles.css (search .ant-btn-variant-solid). */}
-      <StyleProvider layer>
-        <ConfigProvider
-          locale={antdLocale}
-          theme={{
-            cssVar: { key: 'bento-theme' },
-            components: {
-              Button: { algorithm: !PCGL_MODE },
-              Card: { bodyPadding: isSmallScreen ? 10 : 24 },
-              Menu: { iconSize: 20 },
-              Table: { borderColor: 'rgba(0, 0, 0, 0.08)' },
-            },
-            token: PCGL_MODE ? { colorPrimary: '#2B7AAD' } : {},
-          }}
-        >
-          <NotificationProvider>
-            <BaseRoutes />
-          </NotificationProvider>
-        </ConfigProvider>
-      </StyleProvider>
+      <ConfigProvider
+        locale={antdLocale}
+        theme={{
+          cssVar: { key: 'bento-theme' },
+          components: {
+            Button: { algorithm: !PCGL_MODE },
+            Card: { bodyPadding: isSmallScreen ? 10 : 24 },
+            Menu: { iconSize: 20 },
+            Table: { borderColor: 'rgba(0, 0, 0, 0.08)' },
+          },
+          token: PCGL_MODE ? { colorPrimary: '#2B7AAD' } : {},
+        }}
+      >
+        <NotificationProvider>
+          <BaseRoutes />
+        </NotificationProvider>
+      </ConfigProvider>
     </ChartConfigProvider>
   );
 };
