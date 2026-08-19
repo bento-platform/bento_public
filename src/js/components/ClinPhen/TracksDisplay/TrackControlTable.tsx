@@ -1,5 +1,6 @@
 import { Switch, Table } from 'antd';
 import type { ExperimentResultWithView } from '@/types/clinPhen/igv';
+import { useTranslationFn } from '@/hooks';
 
 const TrackControlTable = ({
   toggleView,
@@ -8,25 +9,26 @@ const TrackControlTable = ({
   toggleView: (track: ExperimentResultWithView) => void;
   tracks: ExperimentResultWithView[];
 }) => {
+  const t = useTranslationFn();
   const trackTableColumns = [
     {
-      title: 'File',
+      title: t('entities.experiment_result_one'),
       dataIndex: 'filename',
     },
     {
-      title: 'Description',
+      title: t('experiment_result.description'),
       dataIndex: 'description',
     },
     {
-      title: 'Format',
+      title: t('experiment_result.file_format'),
       dataIndex: 'file_format',
     },
     {
-      title: 'Assembly ID',
+      title: t('experiment_result.genome_assembly_id'),
       dataIndex: 'genome_assembly_id',
     },
     {
-      title: 'View track',
+      title: t('general.view'),
       key: 'view',
       align: 'center' as const,
       render: (_: unknown, track: ExperimentResultWithView) => (
