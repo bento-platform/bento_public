@@ -14,6 +14,7 @@
   "catalogue": {
     "toolbar": {
       "sort": {
+        "most_individuals": "Le plus de participants",
         "most_biosamples": "Le plus de specimens"
       }
     }
