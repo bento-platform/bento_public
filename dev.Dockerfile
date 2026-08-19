@@ -1,9 +1,9 @@
 FROM --platform=$BUILDPLATFORM node:24-trixie-slim AS install
 
-WORKDIR /bento-public/next-app
+WORKDIR /bento-public
 
-COPY next-app/package.json .
-COPY next-app/package-lock.json .
+COPY package.json .
+COPY package-lock.json .
 
 RUN npm ci
 
@@ -15,10 +15,10 @@ WORKDIR /bento-public
 
 COPY entrypoint.bash .
 COPY run.dev.bash .
-COPY next-app/package.json next-app/package.json
-COPY next-app/package-lock.json next-app/package-lock.json
+COPY package.json package.json
+COPY package-lock.json package-lock.json
 
-COPY --from=install /bento-public/next-app/node_modules ./next-app/node_modules
+COPY --from=install /bento-public/node_modules ./node_modules
 
 ENTRYPOINT [ "/bin/bash", "./entrypoint.bash" ]
 CMD [ "/bin/bash", "./run.dev.bash" ]

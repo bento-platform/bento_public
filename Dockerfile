@@ -4,21 +4,20 @@ FROM --platform=$BUILDPLATFORM node:24-trixie-slim AS build
 #  - Use BUILDPLATFORM for running the build, since it should perform a lot better.
 #  - Then, the resulting standalone server bundle will be copied to a TARGETPLATFORM-based final image.
 
-WORKDIR /bento-public/next-app
+WORKDIR /bento-public
 
-COPY next-app/package.json .
-COPY next-app/package-lock.json .
+COPY package.json .
+COPY package-lock.json .
 
 RUN npm ci
 
 # Explicitly choose what to copy to speed up builds
 #  - Copy in build requirements
-COPY next-app/next.config.ts .
-COPY next-app/tsconfig.json .
-COPY next-app/postcss.config.js .
+COPY next.config.ts .
+COPY tsconfig.json .
 #  - Copy in source code
-COPY next-app/src src
-COPY next-app/public public
+COPY src src
+COPY public public
 
 RUN npm run build
 
@@ -38,8 +37,8 @@ COPY run.bash .
 #   stage, plus the static assets/public files that standalone output deliberately excludes
 #    - copy this last, since it changes more often than everything above it
 #    - this way we can cache layers
-COPY --from=build /bento-public/next-app/.next/standalone ./
-COPY --from=build /bento-public/next-app/.next/static ./.next/static
-COPY --from=build /bento-public/next-app/public ./public
+COPY --from=build /bento-public/.next/standalone ./
+COPY --from=build /bento-public/.next/static ./.next/static
+COPY --from=build /bento-public/public ./public
 
 CMD [ "/bin/bash", "./run.bash" ]

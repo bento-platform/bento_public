@@ -7,9 +7,6 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: next-app
     steps:
       - uses: actions/checkout@v6
       - name: Install modules

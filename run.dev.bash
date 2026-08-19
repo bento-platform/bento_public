@@ -6,8 +6,6 @@
 : "${BENTO_PUBLIC_PORT:=80}"
 export BENTO_PUBLIC_PORT
 
-cd next-app || exit 1
-
 echo "[bento_public] [entrypoint] running npm install"
 npm install
 

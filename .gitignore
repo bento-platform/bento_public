@@ -13,3 +13,26 @@ core
 
 CLAUDE.md
 .claude/*
+
+# next.js
+/.next/
+/out/
+next-env.d.ts
+
+# testing
+/coverage
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+
+# debug
+npm-debug.log*
+
+# misc
+*.pem

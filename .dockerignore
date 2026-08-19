@@ -1,5 +1,4 @@
 .github
-next-app/node_modules
-next-app/.next
 node_modules
+.next
 www
