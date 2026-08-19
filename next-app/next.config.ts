@@ -5,6 +5,11 @@ const nextConfig: NextConfig = {
   // so the production Docker image doesn't need a full `npm ci` in its final stage.
   output: 'standalone',
 
+  // The bento dev stack (bentoctl) fronts this container at bentov2.local, not localhost, so `next
+  // dev`'s default same-origin check on dev-only asset requests (HMR, _next/static chunks) blocks it
+  // unless the host is explicitly allowlisted here.
+  allowedDevOrigins: ['bentov2.local'],
+
   // The old nginx `try_files $uri $uri/ /index.html` never redirected based on a trailing slash --
   // it just served index.html either way. react-router-dom's own routes rely on both forms (e.g. the
   // `/:lang/*` catch-all's fallback navigates to `/en/`, with a trailing slash). Keep that exact
