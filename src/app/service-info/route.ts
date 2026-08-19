@@ -15,10 +15,8 @@ const git = (cmd: string): string => execSync(`git ${cmd}`).toString().trim();
 
 const hasGit = (() => {
   try {
-    // Note: preserved as-is from create_service_info.js -- `which git` never actually returns an
-    // empty string when git is present, so this is effectively always false; not "fixed" here since
-    // this is a straight port, not a behavior change.
-    return execSync('which git').toString().trim() === '';
+    execSync('which git');
+    return true;
   } catch (_e) {
     return false;
   }
