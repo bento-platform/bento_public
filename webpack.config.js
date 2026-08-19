@@ -30,18 +30,8 @@ const makeConfig = (mode) => ({
     rules: [
       { test: /\.[tj](sx|s)?$/, use: { loader: 'ts-loader' }, exclude: /node_modules/ },
       {
-        oneOf: [
-          {
-            // Tailwind's entry point: needs postcss-loader to expand `@import "tailwindcss"`, and must
-            // skip less-loader, which otherwise treats `@import` as its own (non-Tailwind) file import.
-            test: /tailwind\.css$/,
-            use: [{ loader: MiniCssExtractPlugin.loader }, { loader: 'css-loader' }, { loader: 'postcss-loader' }],
-          },
-          {
-            test: /\.(sass|less|css)$/,
-            use: [{ loader: MiniCssExtractPlugin.loader }, { loader: 'css-loader' }, { loader: 'less-loader' }],
-          },
-        ],
+        test: /\.(sass|less|css)$/,
+        use: [{ loader: MiniCssExtractPlugin.loader }, { loader: 'css-loader' }, { loader: 'less-loader' }],
       },
       {
         test: /\.(png|jpe?g|gif|svg)$/i,
