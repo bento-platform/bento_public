@@ -17,4 +17,4 @@
    file's own `color: inherit` on buttons/inputs was beating antd's Button color styles outright. */
 @import 'antd/dist/reset.css' layer(reset);
 
-@import 'tailwindcss';
+@import 'tailwindcss' important;
