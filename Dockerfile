@@ -1,8 +1,8 @@
 FROM --platform=$BUILDPLATFORM node:24-trixie-slim AS build
 
-# Build bento_public with NodeJS + Webpack
-#  - Use BUILDPLATFORM for running webpack, since it should perform a lot better.
-#  - Then, the resulting built files will be copied to a TARGETPLATFORM-based final image.
+# Build bento_public with Next.js
+#  - Use BUILDPLATFORM for running the build, since it should perform a lot better.
+#  - Then, the resulting standalone server bundle will be copied to a TARGETPLATFORM-based final image.
 
 WORKDIR /bento-public
 
@@ -13,23 +13,17 @@ RUN npm ci
 
 # Explicitly choose what to copy to speed up builds
 #  - Copy in build requirements
-COPY create_service_info.js .
-COPY webpack.config.js .
+COPY next.config.ts .
 COPY tsconfig.json .
 #  - Copy in source code
 COPY src src
+COPY public public
 
 RUN npm run build
 
-FROM nginx:1.31
+FROM --platform=$TARGETPLATFORM node:24-trixie-slim
 
-# Install node so that we can run the create_config_prod.js & create_service_info.js scripts
-RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - && \
-    apt-get install -y nodejs && \
-    rm -rf /var/lib/apt/lists/*
-
-# Serve bento_public with NGINX; copy in configuration
-COPY nginx.conf /etc/nginx/nginx.conf
+LABEL org.opencontainers.image.description="Bento Public: a publicly accessible portal for clinical datasets."
 
 WORKDIR /bento-public
 
@@ -37,17 +31,14 @@ WORKDIR /bento-public
 
 # - Copy in LICENSE so that people can see it if they explore the image contents
 COPY LICENSE .
-# - Copy in the production config generation script
-COPY create_config_prod.js .
-# - Copy in the service info generator
-COPY create_service_info.js .
-# - Copy in the run.bash, which writes the config file and starts NGINX
+# - Copy in the run.bash, which starts the Next.js server
 COPY run.bash .
-# - Copy in package.json to provide version to scripts
-COPY package.json .
-# - Copy webpack-built source code from the build stage to the final image
+# - Copy the Next.js standalone server bundle (includes its own minimal node_modules) from the build
+#   stage, plus the static assets/public files that standalone output deliberately excludes
 #    - copy this last, since it changes more often than everything above it
 #    - this way we can cache layers
-COPY --from=build /bento-public/dist ./dist
+COPY --from=build /bento-public/.next/standalone ./
+COPY --from=build /bento-public/.next/static ./.next/static
+COPY --from=build /bento-public/public ./public
 
 CMD [ "/bin/bash", "./run.bash" ]
