@@ -2,8 +2,9 @@ import { Fragment, type ReactNode } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { useCurrentScopePrefixedUrl } from '@/hooks/navigation';
 
-import { Popover } from 'antd';
-import BiosampleDetailView from '../Search/BiosampleDetailView';
+import { Popover, type PopoverProps } from 'antd';
+import BiosampleDetailView from '@/components/Search/BiosampleDetailView';
+import IndividualDetailView from '@/components/Search/IndividualDetailView';
 
 import { highlightState } from '@/utils/router';
 
@@ -12,6 +13,12 @@ import { TabKeys } from '@/types/PhenopacketView.types';
 import type { SectionKey } from '@/components/ClinPhen/PhenopacketDisplay/phenopacketOverview.registry';
 
 import { PHENOPACKET_EXPANDED_URL_QUERY_KEY } from './PhenopacketDisplay/PhenopacketOverview';
+
+const EntityPopover = ({ children, ...props }: Omit<PopoverProps, 'styles'>) => (
+  <Popover styles={{ body: { maxHeight: 'min(400px, 80vh)', overflowY: 'auto' } }} {...props}>
+    {children}
+  </Popover>
+);
 
 const usePhenopacketOverviewLink = (
   packetId: string | undefined,
@@ -48,13 +55,20 @@ const usePhenopacketOverviewLink = (
 
 type BaseLinkProps = { packetId?: string; replace?: boolean; preserveQueryParams?: boolean; children?: ReactNode };
 
-type SubjectLinkProps = BaseLinkProps;
-const SubjectLink = ({ children, packetId, preserveQueryParams }: SubjectLinkProps) => {
+type SubjectLinkProps = BaseLinkProps & { subjectId: string; enablePopover?: boolean };
+const SubjectLink = ({ packetId, subjectId, preserveQueryParams, enablePopover, children }: SubjectLinkProps) => {
   const url = usePhenopacketOverviewLink(packetId, 'subject', undefined, preserveQueryParams);
-  return (
+  const link = (
     <Link to={url} state={highlightState('subject')}>
-      {children}
+      {children ?? subjectId}
     </Link>
+  );
+  return enablePopover ? (
+    <EntityPopover content={<IndividualDetailView id={subjectId} style={{ width: 'min(540px, 90vw)' }} />}>
+      {link}
+    </EntityPopover>
+  ) : (
+    link
   );
 };
 
@@ -74,12 +88,9 @@ const BiosampleLink = ({
     </Link>
   );
   return enablePopover ? (
-    <Popover
-      content={<BiosampleDetailView id={sampleId} mode="popover" style={{ width: 'min(540px, 90vw)' }} />}
-      styles={{ body: { maxHeight: 'min(400px, 80vh)', overflowY: 'auto' } }}
-    >
+    <EntityPopover content={<BiosampleDetailView id={sampleId} mode="popover" style={{ width: 'min(540px, 90vw)' }} />}>
       {link}
-    </Popover>
+    </EntityPopover>
   ) : (
     link
   );

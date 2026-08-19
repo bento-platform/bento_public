@@ -58,7 +58,7 @@ import DatasetTitle from '@Util/DatasetTitle';
 import ExperimentReferences from '@Util/ClinPhen/ExperimentReferences';
 import CustomTable, { type CustomTableColumn, type CustomTableColumns } from '@Util/CustomTable';
 import ExportFieldsModal from './ExportFieldsModal';
-import IndividualRowDetail from './IndividualRowDetail';
+import IndividualDetailView from './IndividualDetailView';
 import BiosampleDetailView from './BiosampleDetailView';
 import ExperimentRowDetail from './ExperimentRowDetail';
 import ExperimentResultRowDetail from './ExperimentResultRowDetail';
@@ -139,10 +139,10 @@ const PHENOPACKET_SEARCH_TABLE_COLUMNS = {
 
 const BIOSAMPLE_SEARCH_TABLE_COLUMNS = {
   individual: {
-    title: 'biosample.individual_id',
+    title: 'entities.individual_one',
     dataIndex: 'individual_id',
     render: (_ctx) => (individualId: string, b) => (
-      <PhenopacketLink.Subject packetId={b.phenopacket}>{individualId}</PhenopacketLink.Subject>
+      <PhenopacketLink.Subject packetId={b.phenopacket} subjectId={individualId} enablePopover />
     ),
   } as ResultsTableColumn<DiscoveryMatchBiosample>,
   experiments: {
@@ -207,12 +207,12 @@ const TABLE_SPEC_PHENOPACKET: ResultsTableSpec<DiscoveryMatchPhenopacket> = {
       dataIndex: 'subject',
       title: 'subject.subject_id',
       render: (s: string | undefined, rec) =>
-        s ? <PhenopacketLink.Subject packetId={rec.id}>{s}</PhenopacketLink.Subject> : null,
+        s !== undefined ? <PhenopacketLink.Subject packetId={rec.id} subjectId={s} /> : null,
     } as ResultsTableFixedColumn<DiscoveryMatchPhenopacket>,
   ],
   availableColumns: PHENOPACKET_SEARCH_TABLE_COLUMNS,
   defaultColumns: ['biosamples', 'project', 'dataset'],
-  expandedRowRender: (rec) => (rec.subject ? <IndividualRowDetail id={rec.subject} /> : null),
+  expandedRowRender: (rec) => (rec.subject ? <IndividualDetailView id={rec.subject} /> : null),
   exportIdField: 'subject',
 };
 
