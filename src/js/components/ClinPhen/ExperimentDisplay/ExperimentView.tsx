@@ -86,6 +86,7 @@ export const ExperimentExpandedRow = ({ packetId, experiment, mode }: Experiment
       <TDescriptions
         bordered
         size="compact"
+        className={mode === 'popover' ? 'fixed-item-label-width' : ''}
         column={mode === 'popover' ? 1 : XXL_THREE_COLUMN}
         items={items}
         defaultI18nPrefix="experiment."
