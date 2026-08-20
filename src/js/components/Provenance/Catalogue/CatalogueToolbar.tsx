@@ -1,12 +1,13 @@
+import { useState } from 'react';
 import { useAppDispatch } from '@/hooks';
 import { Badge, Button, Dropdown, Flex, Input, Select, Segmented, Typography } from 'antd';
 import {
   AppstoreOutlined,
   BarsOutlined,
-  BarChartOutlined,
   FilterOutlined,
   SearchOutlined,
   SwapOutlined,
+  PieChartOutlined,
 } from '@ant-design/icons';
 import { useCatalogueState } from '@/features/catalogue/hooks';
 import { toggleInsights, type SortKey, type FacetId } from '@/features/catalogue/catalogue.store';
@@ -38,6 +39,26 @@ const CatalogueToolbar = ({ filteredCount, isMobile, onOpenFilters }: CatalogueT
   const dispatch = useAppDispatch();
   const { q, sets, sort, view, insightsOpen } = useCatalogueState();
   const { setSearch, setSort, setView, toggleFacetValue, clearAll } = useCatalogueUrlActions();
+
+  // The Input needs its own local state so typing updates the DOM synchronously (preserving
+  // cursor position); `q` itself only catches up later via a URL round trip (setSearch navigates,
+  // and useCatalogueUrlSync reflects the URL back into Redux on a subsequent render), which is too
+  // late for the browser to keep the caret in place. `prevQ` mirrors the last `q` this render loop
+  // has already accounted for (React's documented "adjust state when a prop changes" pattern), so
+  // `searchInput` only gets overwritten when `q` itself moves to a value we haven't seen yet -- i.e.
+  // an external change (browser back/forward, clearing a filter pill, `clearAll`) -- and never on the
+  // render that immediately follows our own keystroke, where `q` hasn't caught up yet.
+  const [searchInput, setSearchInput] = useState(q);
+  const [prevQ, setPrevQ] = useState(q);
+  if (q !== prevQ) {
+    setPrevQ(q);
+    setSearchInput(q);
+  }
+
+  const handleSearchChange = (value: string) => {
+    setSearchInput(value);
+    setSearch(value);
+  };
 
   const pills: { key: string; facetLabel: string; label: string; onClose: () => void }[] = [];
   (Object.entries(sets) as [FacetId, string[]][]).forEach(([facet, values]) => {
@@ -74,8 +95,8 @@ const CatalogueToolbar = ({ filteredCount, isMobile, onOpenFilters }: CatalogueT
         <Input
           prefix={<SearchOutlined />}
           placeholder={t('catalogue.toolbar.search_placeholder')}
-          value={q}
-          onChange={(e) => setSearch(e.target.value)}
+          value={searchInput}
+          onChange={(e) => handleSearchChange(e.target.value)}
           className="catalogue-search-input"
           allowClear
         />
@@ -122,16 +143,17 @@ const CatalogueToolbar = ({ filteredCount, isMobile, onOpenFilters }: CatalogueT
           {t('catalogue.toolbar.dataset_found', { count: filteredCount })}
         </Text>
         <Button
-          size="small"
-          icon={<BarChartOutlined />}
+          color="primary"
+          variant="outlined"
+          className="insights-toggle"
+          htmlType="button"
+          aria-pressed={insightsOpen}
+          icon={<PieChartOutlined aria-hidden="true" />}
           onClick={() => dispatch(toggleInsights())}
-          type={insightsOpen ? 'primary' : 'default'}
-          ghost={insightsOpen}
         >
           {insightsOpen ? t('catalogue.toolbar.hide_insights') : t('catalogue.toolbar.show_insights')}
         </Button>
       </Flex>
-
       {/* Row 3: active filter pills */}
       <ActiveFilterTags pills={pills} onClearAll={clearAll} />
     </Flex>

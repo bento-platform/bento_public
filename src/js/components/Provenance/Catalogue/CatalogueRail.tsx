@@ -27,15 +27,22 @@ interface FacetSectionProps {
 
 const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleValue }: FacetSectionProps) => {
   const t = useTranslationFn();
+
   if (options.length === 0) return null;
 
   return (
     <SidebarFacet
+      headerId={facet.id}
       label={t(facetTranslationKey(facet.id), T_PLURAL_COUNT)}
       collapsed={collapsed}
       onToggleCollapse={onToggleCollapse}
     >
-      <div className={clsx('facet-chips', facet.scroll && 'facet-chips--scroll')}>
+      <div
+        tabIndex={facet.scroll ? 0 : undefined}
+        role={facet.scroll ? 'group' : undefined}
+        aria-labelledby={facet.scroll ? `catalogue-facet-${facet.id}` : undefined}
+        className={clsx('facet-chips', facet.scroll && 'facet-chips--scroll focus-ring')}
+      >
         {options.map(({ value, label, count, selected }) => (
           <FilterChip
             key={value}
