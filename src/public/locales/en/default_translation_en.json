@@ -571,7 +571,11 @@
   "catalogue": {
     "rail": {
       "title": "Filters",
-      "close": "Close filters"
+      "close": "Close filters",
+      "show_section": "Show section",
+      "hide_section": "Hide section",
+      "filter_by": "Filter by",
+      "clear_filter": "Clear filter by"
     },
     "facets": {
       "program_one": "Program",
