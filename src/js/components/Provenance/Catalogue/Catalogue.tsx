@@ -51,12 +51,12 @@ const Catalogue = () => {
     dispatch(setProjectColors(assignColors(projectNames)));
   }, [allDatasets, dispatch]);
 
+  if (projectsStatus === RequestStatus.Rejected) {
+    return <Error message="project_fetch" description={projectsError || undefined} className="mb-4" />;
+  }
+
   return (
     <div className="pb-content max-w-catalogue mx-auto w-full">
-      {projectsStatus === RequestStatus.Rejected && (
-        <Error message="project_fetch" description={projectsError || undefined} className="mb-4" />
-      )}
-
       {/* Banner */}
       <div className="mb-4">
         <CatalogueBanner filteredDatasets={filtered} />
