@@ -1,9 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from '@/hooks';
-
 import type { DrsRecordState } from './drs.store';
 import { RequestStatus } from '@/types/requests';
-
 import { getDrsRecord } from '@/features/drs/getDrsRecord.thunk';
 
 export const useDrsObjectOrPassThrough = (uri: string | undefined): DrsRecordState | null => {
