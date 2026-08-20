@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
 import { igvGenomesUrl } from '@/constants/configConstants';
 import type { RootState } from '@/store';
@@ -14,12 +14,14 @@ export type IgvGenomesState = {
   igvGenomesStatus: RequestStatus;
   igvGenomes: IgvReferenceDetails[];
   igvGenomesByID: Record<string, IgvReferenceDetails>;
+  igvPosition: string[];
 };
 
 const initialState: IgvGenomesState = {
   igvGenomesStatus: RequestStatus.Idle,
   igvGenomes: [],
   igvGenomesByID: {},
+  igvPosition: [],
 };
 
 export const getIgvGenomes = createAsyncThunk<IgvReferenceDetails[], void, { state: RootState }>(
@@ -38,10 +40,14 @@ export const getIgvGenomes = createAsyncThunk<IgvReferenceDetails[], void, { sta
   }
 );
 
-const igvReference = createSlice({
+const igvState = createSlice({
   name: storeName,
   initialState,
-  reducers: {},
+  reducers: {
+    saveIgvPosition: (state, { payload }: PayloadAction<string[]>) => {
+      state.igvPosition = payload;
+    },
+  },
   extraReducers(builder) {
     builder.addCase(getIgvGenomes.pending, (state) => {
       state.igvGenomesStatus = RequestStatus.Pending;
@@ -58,4 +64,6 @@ const igvReference = createSlice({
   },
 });
 
-export default igvReference.reducer;
+export const { saveIgvPosition } = igvState.actions;
+
+export default igvState.reducer;

@@ -26,3 +26,10 @@ export type IgvAccessUrlPromisesById = Record<
     indexAccessUrl?: Promise<string | null>;
   }
 >;
+
+export interface IgvPosition {
+  chr: string; 
+  start: number; 
+  end: number; 
+  getLocusString: () => string
+}

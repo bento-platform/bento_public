@@ -1,19 +1,21 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useTranslationFn } from '@/hooks';
-import { useSmallScreen } from '@/hooks/useResponsiveContext';
+import { useAppDispatch, useAppSelector, useTranslationFn } from '@/hooks';
 import { useAccessToken } from 'bento-auth-js';
 import igv from 'igv/dist/igv.esm';
 import type { Browser, CreateOpt } from 'igv';
+import { saveIgvPosition } from '@/features/igv/igv.store';
 import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
-import type { IgvTrack, ExperimentResultWithView, IgvReferenceById } from '@/types/clinPhen/igv';
+import type { IgvTrack, ExperimentResultWithView, IgvPosition, IgvReferenceById } from '@/types/clinPhen/igv';
 import { PUBLIC_URL } from '@/config';
 import { caseInsensitiveIgvFileInfoLookup, getIgvFileAndIndexAccessUrls } from '@/utils/igv';
 import TrackControlTable from './TrackControlTable';
+import { useDebounce } from '@/utils/debounce';
 
 const SQUISHED_CALL_HEIGHT = 10;
 const EXPANDED_CALL_HEIGHT = 100;
 const DISPLAY_MODE = 'expanded';
 const VISIBILITY_WINDOW = 600000;
+const DEBOUNCE_WAIT_MS = 1000;
 
 const TracksView = ({
   tracks,
@@ -26,6 +28,7 @@ const TracksView = ({
   const igvBrowserRefs = useRef<Record<string, Browser | null>>({});
   const igvCreatingByAssemblyRef = useRef<Record<string, boolean>>({});
   const activeCreateRequestByAssemblyRef = useRef<Record<string, number>>({});
+  const dispatch = useAppDispatch();
 
   const [tracksWithView, setTracksWithView] = useState<ExperimentResultWithView[]>(
     tracks.map((t) => ({ ...t, viewInIgv: true }))
@@ -35,12 +38,15 @@ const TracksView = ({
   const accessUrlsPromises = useMemo(() => getIgvFileAndIndexAccessUrls(tracks), [tracks]);
 
   const t = useTranslationFn();
-  const isSmallScreen = useSmallScreen();
 
   const availableAssemblies = useMemo(() => Object.keys(references), [references]);
   const hasMultipleAssemblies = availableAssemblies.length > 1;
 
   const accessToken: string | undefined = useAccessToken();
+  const igvPosition = useAppSelector(
+    (state) => state.igv.igvPosition,
+    () => true // don't re-render when position changes
+  );
 
   // update access token whenever necessary
   // can change to per-track tokens in the future,
@@ -112,6 +118,18 @@ const TracksView = ({
     [buildIgvTrack]
   );
 
+  const storeIgvPosition = useCallback((referenceFrame: IgvPosition[]) => {
+    // typically a singleton array, but "multi-locus" view has multiple positions
+    const positions = referenceFrame.map((r) => r.getLocusString());
+    dispatch(saveIgvPosition(positions));
+    console.log(`saved position: ${JSON.stringify(positions)}`);
+  }, []);
+
+  const debouncedStoreIgvPosition = useDebounce(
+    (referenceFrame: IgvPosition[]) => storeIgvPosition(referenceFrame),
+    DEBOUNCE_WAIT_MS
+  );
+
   // -------------------------- igv init --------------------------
 
   const cleanupAllBrowsers = useCallback(() => {
@@ -171,6 +189,7 @@ const TracksView = ({
 
       const igvOptions = {
         ...(referenceForAssembly as CreateOpt),
+        locus: igvPosition,
         tracks: initialIgvTracks,
       };
 
@@ -188,9 +207,11 @@ const TracksView = ({
             igv.removeBrowser(browser);
             return;
           }
-
           igvBrowserRefs.current[assemblyId] = browser;
           igvCreatingByAssemblyRef.current[assemblyId] = false;
+          browser.on('locuschange', (referenceFrame: IgvPosition[]) => {
+            debouncedStoreIgvPosition(referenceFrame);
+          });
           console.debug('created igv.js browser instance:', browser);
         })
         .catch((err) => {
@@ -233,10 +254,6 @@ const TracksView = ({
 
 export default TracksView;
 
-// Notes:
-// - permissions checks done elsewhere (component is not rendered if permissions missing)
-
 // short-term todos
 // - store igv position
 // - testing with crams, bigwigs, multiple vcfs...
-// - translations
