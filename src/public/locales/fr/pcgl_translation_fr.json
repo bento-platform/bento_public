@@ -10,5 +10,19 @@
     "biosample_help": [
       "Les $t(entities.biosample_other, lowercase) sont du matériel biologique extrait d’$t(entities.individual_specific, lowercase) spécifique."
     ]
+  },
+  "catalogue": {
+    "toolbar": {
+      "sort": {
+        "most_individuals": "Le plus de participants",
+        "most_biosamples": "Le plus de specimens"
+      }
+    }
+  },
+  "biosample": {
+    "biosample_id": "Identifiant du specimen"
+  },
+  "interpretations": {
+    "subject_or_biosample_id": "Identifiant du participant ou du specimen"
   }
 }
