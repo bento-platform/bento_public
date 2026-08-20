@@ -43,7 +43,7 @@ export const caseInsensitiveIgvFileInfoLookup = (filetype: ExperimentResult['fil
 };
 
 export const hasIndex = (track: ExperimentResult) => {
-  // index currently optional, ExperimentResult type needs fixing
+  // index currently required but should probably be optional
   return (track.indices ?? '').length > 0;
 };
 
