@@ -1,32 +1,91 @@
-import { Flex, Typography } from 'antd';
-import { useCatalogueState } from '@/features/catalogue/hooks';
-import type { FacetId } from '@/features/catalogue/catalogue.store';
-import { useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
-import { useTranslationFn } from '@/hooks';
-import { BarChartOutlined } from '@ant-design/icons';
-import type { DatasetWithProject } from '@/features/catalogue/hooks';
-import { getLabel, normaliseStatus } from '@/features/catalogue/hooks';
-import DonutChart from './Charts/DonutChart';
-import BarChart from './Charts/BarChart';
-import { PCGL_MODE } from '@/config';
-import { STATUS_CHART_COLORS } from './constants';
+import { useMemo } from 'react';
+
+import { Card, Flex, Typography } from 'antd';
+import { PieChartOutlined } from '@ant-design/icons';
 
 const { Text } = Typography;
 
-import { assignColors } from '@/features/catalogue/hooks';
+import { useCatalogueState } from '@/features/catalogue/hooks';
+import { useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
+import { useFormatNumber, useTranslationFn } from '@/hooks';
 
-function buildCounts(
-  datasets: DatasetWithProject[],
-  getValue: (d: DatasetWithProject) => string[]
-): { name: string; value: number }[] {
+import type { FacetId } from '@/features/catalogue/catalogue.store';
+import type { DatasetWithProject } from '@/features/catalogue/hooks';
+
+import { CategoryDonut, CategoryBarList, type HexColor, type CategoricalChartDataItem } from 'bento-charts';
+
+import { FACET_CONFIG_BY_ID, type FacetConfig } from '@/features/catalogue/facetRegistry';
+import { PCGL_MODE } from '@/config';
+import { STATUS_CHART_COLORS } from './constants';
+
+import { assignColors, facetValueTranslationKey } from '@/features/catalogue/utils';
+
+function buildCounts(datasets: DatasetWithProject[], facet: FacetConfig): CategoricalChartDataItem[] {
   const map = new Map<string, number>();
   for (const d of datasets) {
-    for (const v of getValue(d)) {
+    for (const v of facet.getValues(d)) {
       if (v) map.set(v, (map.get(v) ?? 0) + 1);
     }
   }
-  return [...map.entries()].map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value);
+  return [...map.entries()].map(([x, y]) => ({ x, y, id: x })).sort((a, b) => b.y - a.y);
 }
+
+// buildCounts keeps `id` as the raw facet value (needed for toggleFacetValue/colorsById lookups); this applies
+// a display translation to `x` only, so labels shown in the chart/legend are localized without losing that key.
+const useTranslatedEntries = (datasets: DatasetWithProject[], facetId: FacetId): CategoricalChartDataItem[] => {
+  const t = useTranslationFn();
+  return useMemo<CategoricalChartDataItem[]>(() => {
+    const facetConfig = FACET_CONFIG_BY_ID[facetId];
+    if (facetConfig) {
+      const data = buildCounts(datasets, facetConfig);
+      return data.map((d) => ({ ...d, x: t(facetValueTranslationKey(facetConfig.i18nKeyPrefix, d.id ?? d.x)) }));
+    } else {
+      return []; // If facet config is disabled (e.g., project for PCGL)
+    }
+  }, [t, datasets, facetId]);
+};
+
+interface CatalogueInsightCardProps {
+  datasets: DatasetWithProject[];
+  facet: FacetId;
+  kind: 'bar' | 'donut';
+  colors?: Record<string, HexColor>;
+}
+
+const CatalogueInsightCard = ({ datasets, facet, kind, colors }: CatalogueInsightCardProps) => {
+  const t = useTranslationFn();
+  const fmt = useFormatNumber();
+
+  const { sets } = useCatalogueState();
+  const { toggleFacetValue } = useCatalogueUrlActions();
+
+  const centerLabel = t('entities.dataset', { count: datasets.length }).toLowerCase();
+  let data = useTranslatedEntries(datasets, facet);
+  if (kind === 'bar') {
+    data = data.slice(0, 5);
+  }
+
+  if (data.length === 0) return null;
+
+  const commonProps = {
+    data,
+    colorsById: colors ?? (assignColors(data.map((d) => d.id ?? d.x)) as Record<string, HexColor>),
+    selectedIds: sets[facet],
+    formatValue: fmt,
+    onClick: (id: string) => toggleFacetValue(facet, id),
+  };
+
+  return (
+    <Card size="small" className="chart-card">
+      <Text className="chart-card__title">{t(`catalogue.insights.by_${facet}`)}</Text>
+      {kind === 'donut' ? (
+        <CategoryDonut {...commonProps} centerLabel={centerLabel} />
+      ) : (
+        <CategoryBarList {...commonProps} />
+      )}
+    </Card>
+  );
+};
 
 interface CatalogueInsightsProps {
   filteredDatasets: DatasetWithProject[];
@@ -34,70 +93,25 @@ interface CatalogueInsightsProps {
 
 const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
   const t = useTranslationFn();
-  const { sets, projectColors } = useCatalogueState();
-  const { toggleFacetValue } = useCatalogueUrlActions();
-
-  const statusData = buildCounts(filteredDatasets, ({ dataset }) => [normaliseStatus(dataset.study_status)]);
-  const typeData = buildCounts(filteredDatasets, ({ dataset }) => dataset.domain ?? []);
-  const programData = buildCounts(filteredDatasets, ({ project }) => [project.title]);
-  const keywordData = buildCounts(filteredDatasets, ({ dataset }) => (dataset.keywords ?? []).map(getLabel));
-
-  const typeColors = assignColors(typeData.map((d) => d.name));
-  const keywordColors = assignColors(keywordData.slice(0, 5).map((d) => d.name));
-
-  const handleClick = (facetId: FacetId, value: string) => {
-    toggleFacetValue(facetId, value);
-  };
+  const { projectColors } = useCatalogueState();
 
   return (
     <div className="catalogue-insights">
       <Flex justify="space-between" align="center" className="mb-3">
         <Flex align="center" gap={6}>
-          <BarChartOutlined className="text-secondary" />
+          <PieChartOutlined className="text-secondary" />
           <Text className="catalogue-insights__header-title">{t('catalogue.insights.title')}</Text>
         </Flex>
         <Text className="catalogue-insights__hint">{t('catalogue.insights.hint')}</Text>
       </Flex>
       <Flex gap={12} wrap className="items-stretch">
-        <DonutChart
-          title={t('catalogue.insights.by_status')}
-          data={statusData}
-          colors={STATUS_CHART_COLORS}
-          total={filteredDatasets.length}
-          centerLabel={t('entities.dataset', { count: filteredDatasets.length }).toLowerCase()}
-          facetId="statuses"
-          selectedValues={sets.statuses}
-          onSegmentClick={handleClick}
-        />
+        <CatalogueInsightCard datasets={filteredDatasets} facet="status" kind="donut" colors={STATUS_CHART_COLORS} />
         {PCGL_MODE ? (
-          <BarChart
-            title={t('catalogue.insights.by_data_type')}
-            data={typeData.slice(0, 5)}
-            colors={typeColors}
-            facetId="dataTypes"
-            selectedValues={sets.dataTypes}
-            onSegmentClick={handleClick}
-          />
+          <CatalogueInsightCard datasets={filteredDatasets} facet="domain" kind="bar" />
         ) : (
-          <BarChart
-            title={t('catalogue.insights.by_keyword')}
-            data={keywordData.slice(0, 5)}
-            colors={keywordColors}
-            facetId="keywords"
-            selectedValues={sets.keywords}
-            onSegmentClick={handleClick}
-          />
+          <CatalogueInsightCard datasets={filteredDatasets} facet="project" kind="donut" colors={projectColors} />
         )}
-        <DonutChart
-          title={t('catalogue.insights.by_project')}
-          data={programData}
-          colors={projectColors}
-          total={filteredDatasets.length}
-          centerLabel={t('entities.dataset', { count: filteredDatasets.length }).toLowerCase()}
-          facetId="projects"
-          selectedValues={sets.projects}
-          onSegmentClick={handleClick}
-        />
+        <CatalogueInsightCard datasets={filteredDatasets} facet="keyword" kind="bar" />
       </Flex>
     </div>
   );

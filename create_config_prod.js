@@ -1,18 +1,23 @@
-const parseBoolean = (value) => ['true', 't', '1', 'yes'].includes((value || '').toLocaleLowerCase());
+const parseBoolean = (value, defaultValue = '') =>
+  ['true', 't', '1', 'yes'].includes((value || defaultValue).toLocaleLowerCase());
 
 const siteConfig = {
   // General branding and configuration
   CLIENT_NAME: process.env.BENTO_PUBLIC_CLIENT_NAME || null,
-  PORTAL_URL: process.env.BENTO_PUBLIC_PORTAL_URL || null,
+  // TODO: next version: remove deprecated env var
+  ADMIN_URL: process.env.BENTO_PUBLIC_ADMIN_URL || process.env.BENTO_PUBLIC_PORTAL_URL || null,
   PUBLIC_URL: process.env.BENTO_PUBLIC_URL || null,
 
   // Bento Public display flags
   TRANSLATED: parseBoolean(process.env.BENTO_PUBLIC_TRANSLATED),
   TRANSLATED_LOGO: parseBoolean(process.env.BENTO_PUBLIC_TRANSLATED_LOGO),
-  SHOW_HEADER_TITLE: parseBoolean(process.env.BENTO_PUBLIC_SHOW_HEADER_TITLE),
-  SHOW_PORTAL_LINK: parseBoolean(process.env.BENTO_PUBLIC_SHOW_PORTAL_LINK),
+  LOGO_HEIGHT: process.env.BENTO_PUBLIC_LOGO_HEIGHT || '32',
+  SHOW_LOGO: parseBoolean(process.env.BENTO_PUBLIC_SHOW_LOGO, 'true'),
+  SHOW_HEADER_TITLE: parseBoolean(process.env.BENTO_PUBLIC_SHOW_HEADER_TITLE, 'true'),
+  SHOW_ADMIN_LINK: parseBoolean(process.env.BENTO_PUBLIC_SHOW_ADMIN_LINK || process.env.BENTO_PUBLIC_SHOW_PORTAL_LINK),
   SHOW_SIGN_IN: parseBoolean(process.env.BENTO_PUBLIC_SHOW_SIGN_IN),
   FORCE_CATALOGUE: parseBoolean(process.env.BENTO_PUBLIC_FORCE_CATALOGUE), // Show data catalogue even with 1 project
+  PCGL_MODE: parseBoolean(process.env.BENTO_PUBLIC_PCGL_MODE),
 
   // Theme variables
   CATALOGUE_HEADER_BACKGROUND: process.env.BENTO_PUBLIC_CATALOGUE_HEADER_BACKGROUND,

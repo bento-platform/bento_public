@@ -4,7 +4,6 @@
   "Explore": "Explore",
   "Provenance": "Provenance",
   "Count": "Count",
-  "Portal": "Portal",
   "missing": "missing",
   "entities": {
     "project_one": "Project",
@@ -43,11 +42,36 @@
     "ontology_class": "Ontology Class",
     "view": "View",
     "url": "URL",
-    "extra_properties": "$t(Extra Properties)"
+    "extra_properties": "$t(Extra Properties)",
+    "type": "Type",
+    "source": "Source",
+    "copy": "Copy",
+    "copied": "Copied",
+    "show": "Show",
+    "show_less": "Show less",
+    "show_more": "Show more",
+    "hide": "Hide"
+  },
+  "navigation": {
+    "nav_cap": {
+      "sections": "Sections"
+    },
+    "invalid_endpoint_title": "Invalid Endpoint: /{{endpoint}}",
+    "invalid_endpoint_description": "The endpoint you are trying to access is not valid. Redirected to {{target}}.",
+    "not_available_title": "/{{endpoint}} Tab Not Available",
+    "not_available_description": "The requested tab is not available. Redirected to {{target}}."
   },
   "errors": {
     "project_fetch": "Error fetching $t(entities.project_other, lowercase)",
-    "search_fetch": "Error fetching search results"
+    "search_fetch": "Error fetching search results",
+    "page_not_found": "Page not found"
+  },
+  "overview": {
+    "chart_size_label": "Chart size:",
+    "compact": "Compact",
+    "normal": "Normal",
+    "manage_charts_help": "Control which charts are shown, in what order, and their display size.",
+    "chart_size_help": "Control chart display size and how many charts can fit on-screen."
   },
   "search": {
     "filters_one": "filter",
@@ -64,8 +88,15 @@
     "showing_entities": "Showing {{entity, lowercase}} {{start}}-{{end}} of {{total}}",
     "showing_entities_short": "{{start}}-{{end}} / {{total}}",
     "manage_columns": "Manage Columns",
-    "export_csv": "Export as CSV",
+    "export": "Export",
+    "export_data": "Export Data",
+    "export_error": "Export failed. Please try again.",
+    "select_all_fields": "Select all",
     "csv": "CSV",
+    "xlsx": "XLSX",
+    "selected_count_one": "{{count}} row selected",
+    "selected_count_other": "{{count}} rows selected",
+    "clear_selection": "Clear selection",
     "fts": {
       "plain": "Word",
       "plain_help": "Retrieves records which exactly match words in the query (case-insensitive).",
@@ -220,7 +251,9 @@
     "c3g": "the Canadian Centre for Computational Genomics at McGill University",
     "licensed_under": "Bento is licensed under the",
     "source_available": "The source code is available on",
-    "terms_of_use": "Terms of Use"
+    "terms_of_use": "Terms of Use",
+    "admin_link": "Admin",
+    "admin_link_tooltip": "Manage data and access"
   },
   "Help": "Help",
   "Help for": "Help for",
@@ -317,7 +350,7 @@
     "disease_diagnosis": "Disease Diagnosis",
     "variant_interpretation": "Variant Interpretation",
     "gene_descriptor": "Gene Descriptor",
-    "subject_or_biosample_id": "Subject or Biosample ID",
+    "subject_or_biosample_id": "Subject or $t(entities.biosample_one) ID",
     "interpretation_status": "Interpretation Status",
     "diagnosis": "Diagnosis",
     "no_diagnosis": "No diagnosis",
@@ -425,6 +458,7 @@
     "vital_status": "Vital Status",
     "sex": "Sex",
     "karyotypic_sex": "Karyotypic Sex",
+    "gender": "Gender",
     "taxonomy": "Taxonomy",
     "ALIVE": "ALIVE",
     "DECEASED": "DECEASED",
@@ -477,7 +511,7 @@
     "study_type": "Study Type",
     "molecule": "Molecule",
     "molecule_ontology": "Molecule ($t(general.ontology_class))",
-    "library_id" : "Library ID",
+    "library_id": "Library ID",
     "library_description": "Library Description",
     "library_strategy": "Library Strategy",
     "library_source": "Library Source",
@@ -514,15 +548,11 @@
   "auth": {
     "unauthorized_message": "You are not authorized to access this resource."
   },
-  "phenopacket_view": {
-    "invalid_endpoint_title": "Invalid Endpoint: /{{endpoint}}",
-    "invalid_endpoint_description": "The endpoint you are trying to access is not valid. Redirected to {{target}}.",
-    "not_available_title": "/{{endpoint}} Tab Not Available",
-    "not_available_description": "The requested tab is not available. Redirected to {{target}}."
-  },
   "table": {
     "invalid_row_keys_title": "Invalid Row Reference",
-    "invalid_row_keys_description": "Some rows referenced in the URL do not exist. Adjusting to valid entries."
+    "invalid_row_keys_description": "Some rows referenced in the URL do not exist. Adjusting to valid entries.",
+    "expand_row": "Expand row",
+    "collapse_row": "Collapse row"
   },
   "drs": {
     "id": "$t(general.id)",
@@ -541,19 +571,34 @@
   "catalogue": {
     "rail": {
       "title": "Filters",
-      "close": "Close filters"
+      "close": "Close filters",
+      "show_section": "Show section",
+      "hide_section": "Hide section",
+      "filter_by": "Filter by",
+      "clear_filter": "Clear filter by"
     },
     "facets": {
-      "projects": "$t(entities.project_one)",
-      "dataTypes": "Data type",
-      "taxa": "Taxa",
-      "access": "Access",
-      "licenses": "Data use",
-      "statuses": "Status",
-      "keywords": "Keyword"
+      "program_one": "Program",
+      "program_other": "Programs",
+      "project_one": "$t(entities.project_one)",
+      "project_other": "$t(entities.project_other)",
+      "domain_one": "Domain",
+      "domain_other": "Domains",
+      "taxon_one": "Taxon",
+      "taxon_other": "Taxa",
+      "access_one": "Access",
+      "access_other": "Access",
+      "license_one": "Data use",
+      "license_other": "Data use",
+      "context_one": "Context",
+      "context_other": "Context",
+      "status_one": "Status",
+      "status_other": "Status",
+      "keyword_one": "Keyword",
+      "keyword_other": "Keywords"
     },
     "toolbar": {
-      "search_placeholder": "Search datasets, keywords, assays…",
+      "search_placeholder": "Search $t(entities.dataset_other, lowercase), keywords, assays…",
       "sort_label": "Sort",
       "sort": {
         "recently_updated": "Recently updated",
@@ -562,36 +607,88 @@
         "most_individuals": "Most individuals",
         "most_biosamples": "Most biosamples"
       },
-      "dataset_found_one": "dataset found",
-      "dataset_found_other": "datasets found",
+      "dataset_found_one": "$t(entities.dataset, {\"count\": {{count}} }, lowercase) found",
+      "dataset_found_other": "$t(entities.dataset, {\"count\": {{count}} }, lowercase) found",
       "show_insights": "Show insights",
       "hide_insights": "Hide insights",
-      "clear_all": "Clear all"
+      "clear_all": "Clear all",
+      "clear_filter": "Clear filter by",
+      "active_filters": "Active filters"
     },
     "insights": {
-      "title": "Dataset insights",
+      "title": "$t(entities.dataset_one) insights",
       "hint": "Select a segment to filter",
       "by_status": "By status",
-      "by_data_type": "By data type",
+      "by_domain": "By domain",
       "by_keyword": "By keyword",
       "by_project": "By $t(entities.project_one, lowercase)"
     },
     "datasets": {
-      "empty": "No datasets match your filters",
+      "empty": "No $t(entities.dataset_other) match your filters",
       "reset_filters": "Clear all filters",
       "expand": "more"
+    }
+  },
+  "provenance": {
+    "sections": {
+      "summary": "Summary",
+      "links": "Links",
+      "primary_contact": "Primary Contact",
+      "stakeholders": "Stakeholders",
+      "publications": "Publications",
+      "funding": "Funding",
+      "access": "Access & License",
+      "spatial": "Spatial Coverage",
+      "criteria": "Participant Criteria",
+      "counts": "$t(Counts)",
+      "identifiers": "Identifiers & Technical"
+    },
+    "context": {
+      "clinical": "Clinical",
+      "research": "Research"
+    },
+    "link_type": {
+      "Downloadable Artifact": "Downloadable Artifact",
+      "Data Management Plan": "Data Management Plan",
+      "Schema": "Schema",
+      "External Reference": "External Reference",
+      "Data Access": "Data Access",
+      "Data Request Form": "Data Request Form"
     },
     "status": {
       "ongoing": "Ongoing",
       "completed": "Completed",
       "unassigned": "Unassigned"
-    }
+    },
+    "domain": "Domain",
+    "grant_number_one": "Grant Number",
+    "grant_number_other": "Grant Numbers",
+    "keywords": "Keywords",
+    "license": "License",
+    "modified": "Modified",
+    "namespace_prefix": "Namespace prefix",
+    "ontology_resources": "Ontology resources",
+    "organization": "Organization",
+    "person": "Person",
+    "privacy": "Privacy",
+    "program": "Program",
+    "program_name": "Program name",
+    "project_id": "Project ID",
+    "protocol": "Protocol",
+    "released": "Released",
+    "repository": "Repository",
+    "schema_version": "Schema version",
+    "study_context": "Study context",
+    "study_status": "Study status",
+    "taxa": "Taxa",
+    "version": "Version",
+    "view_publication": "View publication"
   },
   "pcgl": {
     "banner": {
-      "eyebrow": "PAN-CANADIAN GENOME LIBRARY",
+      "eyebrow": "Pan-Canadian Genome Library",
       "title": "Data Catalogue",
-      "subtitle": "Explore datasets from the Pan-Canadian Genome Library"
+      "subtitle": "Explore $t(entities.dataset_other, lowercase) from the Pan-Canadian Genome Library"
     },
     "footer": {
       "logo_alt": "Pan-Canadian Genome Library logo",
@@ -618,7 +715,7 @@
       "dataPlatform": "Data Platform",
       "myApplications": "My Applications",
       "manageApplications": "Manage Applications",
-      "admin": "Admin Dashboard",
+      "admin": "$t(footer.admin_link)",
       "cihrHref": "https://cihr-irsc.gc.ca/e/193.html"
     }
   }

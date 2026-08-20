@@ -4,7 +4,6 @@
   "Explore": "Explorer",
   "Provenance": "Provenance",
   "Count": "Observations",
-  "Portal": "Portail",
   "missing": "manquant(s)",
   "entities": {
     "project_one": "Projet",
@@ -48,11 +47,36 @@
     "ontology_class": "Classe ontologique",
     "actions": "Actions",
     "view": "Afficher",
-    "url": "URL"
+    "url": "URL",
+    "type": "Type",
+    "source": "Source",
+    "copy": "Copier",
+    "copied": "Copié",
+    "show": "Afficher",
+    "show_less": "Afficher moins",
+    "show_more": "Afficher plus",
+    "hide": "Masquer"
+  },
+  "navigation": {
+    "nav_cap": {
+      "sections": "Sections"
+    },
+    "invalid_endpoint_title": "Point de terminaison invalide : /{{endpoint}}",
+    "invalid_endpoint_description": "Le point de terminaison que vous essayez d’accéder n’est pas valide. Redirigé vers {{target}}.",
+    "not_available_title": "Onglet /{{endpoint}} non disponible",
+    "not_available_description": "Les onglets demandés ne sont pas disponibles. Redirigé vers {{target}}."
   },
   "errors": {
     "project_fetch": "Erreur lors du chargement des $t(entities.project_other, lowercase)",
-    "search_fetch": "Erreur lors du chargement des résultats de recherche"
+    "search_fetch": "Erreur lors du chargement des résultats de recherche",
+    "page_not_found": "Page introuvable"
+  },
+  "overview": {
+    "chart_size_label": "Taille des tableaux:",
+    "compact": "Compacte",
+    "normal": "Normale",
+    "manage_charts_help": "Contrôler les tableaux affichés, leur ordre d'affichage et leur taille.",
+    "chart_size_help": "Définir la taille d'affichage des tableaux et le nombre de tableaux pouvant s'afficher à l'écran."
   },
   "search": {
     "filters_one": "filtre",
@@ -70,8 +94,15 @@
     "showing_entities": "Affichage des {{entity, lowercase}} {{start}}-{{end}} sur {{total}}",
     "showing_entities_short": "{{start}}-{{end}} / {{total}}",
     "manage_columns": "Gérer les colonnes",
-    "export_csv": "Exporter en CSV",
+    "export": "Exporter",
+    "export_data": "Exporter les données",
+    "export_error": "Échec de l'exportation. Veuillez réessayer.",
+    "select_all_fields": "Tout sélectionner",
     "csv": "CSV",
+    "xlsx": "XLSX",
+    "selected_count_one": "{{count}} ligne sélectionnée",
+    "selected_count_other": "{{count}} lignes sélectionnées",
+    "clear_selection": "Effacer la sélection",
     "fts": {
       "plain": "Mot",
       "plain_help": "Récupère les enregistrements qui correspondent exactement aux mots de la requête (sans distinction de casse).",
@@ -172,19 +203,34 @@
   "catalogue": {
     "rail": {
       "title": "Filtres",
-      "close": "Fermer les filtres"
+      "close": "Fermer les filtres",
+      "show_section": "Afficher section",
+      "hide_section": "Masquer section",
+      "filter_by": "Filtrer par",
+      "clear_filter": "Effacer le filtre par"
     },
     "facets": {
-      "projects": "$t(entities.project_one)",
-      "dataTypes": "Type de données",
-      "taxa": "Taxons",
-      "access": "Accès",
-      "licenses": "Utilisation des données",
-      "statuses": "Statut",
-      "keywords": "Mot-clé"
+      "program_one": "Programmes",
+      "program_other": "Programmes",
+      "project_one": "$t(entities.project_one)",
+      "project_other": "$t(entities.project_other)",
+      "domain_one": "Domaine",
+      "domain_other": "Domaines",
+      "taxon_one": "Taxon",
+      "taxon_other": "Taxons",
+      "access_one": "Accès",
+      "access_other": "Accès",
+      "license_one": "Utilisation des données",
+      "license_other": "Utilisation des données",
+      "context_one": "Contexte",
+      "context_other": "Contexte",
+      "status_one": "Statut",
+      "status_other": "Statut",
+      "keyword_one": "Mot-clé",
+      "keyword_other": "Mots-clés"
     },
     "toolbar": {
-      "search_placeholder": "Rechercher des jeux de données, mots-clés, dosages …",
+      "search_placeholder": "Rechercher des $t(entities.dataset_other, lowercase), mots-clés, dosages …",
       "sort_label": "Trier",
       "sort": {
         "recently_updated": "Récemment mis à jour",
@@ -193,31 +239,82 @@
         "most_individuals": "Le plus de participants",
         "most_biosamples": "Le plus d'échantillons biologiques"
       },
-      "dataset_found_one": "jeu de données trouvé",
-      "dataset_found_other": "jeux de données trouvés",
+      "dataset_found_one": "$t(entities.dataset, {\"count\": {{count}} }, lowercase) trouvé",
+      "dataset_found_other": "$t(entities.dataset, {\"count\": {{count}} }, lowercase) trouvés",
       "show_insights": "Afficher les aperçus",
       "hide_insights": "Masquer les aperçus",
-      "clear_all": "Tout effacer"
+      "clear_all": "Tout effacer",
+      "clear_filter": "Effacer le filtre par",
+      "active_filters": "Filtres actifs"
     },
     "insights": {
-      "title": "Aperçu des jeux de données",
+      "title": "Aperçu des $t(entities.dataset_other, lowercase)",
       "hint": "Sélectionner un segment pour filtrer",
       "by_status": "Par statut",
-      "by_data_type": "Par type de données",
+      "by_domain": "Par domaine",
       "by_keyword": "Par mot-clé",
       "by_project": "Par $t(entities.project_one, lowercase)"
     },
     "datasets": {
-      "heading": "Jeux de données",
-      "no_results": "Aucun jeu de données ne correspond à vos filtres",
+      "no_results": "Aucun $t(entities.dataset_one, lowercase) ne correspond à vos filtres",
       "clear_filters": "Effacer tous les filtres",
       "expand": "plus"
+    }
+  },
+  "provenance": {
+    "sections": {
+      "summary": "Résumé",
+      "links": "Liens",
+      "primary_contact": "Contact principal",
+      "stakeholders": "Intervenants",
+      "publications": "Publications",
+      "funding": "Financement",
+      "access": "Accès et licence",
+      "spatial": "Couverture géographique",
+      "criteria": "Critères de participation",
+      "counts": "$t(Counts)",
+      "identifiers": "Identifiants et informations techniques"
+    },
+    "context": {
+      "clinical": "Clinique",
+      "research": "Recherche"
+    },
+    "link_type": {
+      "Downloadable Artifact": "Artéfact téléchargeable",
+      "Data Management Plan": "Plan de gestion des données",
+      "Schema": "Schéma",
+      "External Reference": "Référence externe",
+      "Data Access": "Accès aux données",
+      "Data Request Form": "Formulaire de demande de données"
     },
     "status": {
       "ongoing": "En cours",
       "completed": "Complété",
       "unassigned": "Non assigné"
-    }
+    },
+    "domain": "Domaine",
+    "grant_number_one": "Numéro de subvention",
+    "grant_number_other": "Numéros de subventions",
+    "keywords": "Mots-clés",
+    "license": "Licence",
+    "modified": "Modifié",
+    "namespace_prefix": "Préfixe d'espace de noms",
+    "ontology_resources": "Ressources ontologiques",
+    "organization": "Organisation",
+    "person": "Individu",
+    "privacy": "Confidentialité",
+    "program": "Programme",
+    "program_name": "Nom du programme",
+    "project_id": "Identifiant du projet",
+    "protocol": "Protocole",
+    "released": "Publié",
+    "repository": "Dépôt",
+    "schema_version": "Version du schéma",
+    "study_context": "Contexte de l'étude",
+    "study_status": "Statut de l'étude",
+    "taxa": "Taxons",
+    "version": "Version",
+    "view_publication": "Voir la publication"
   },
   "Back to project": "Retourner au $t(entities.project_one, lowercase)",
   "Back to dataset": "Retourner au $t(entities.dataset_one, lowercase)",
@@ -278,7 +375,9 @@
     "c3g": "le Centre canadien de génomique computationnelle à l'université McGill",
     "licensed_under": "Bento est sous licence",
     "source_available": "Le code source est disponible sur",
-    "terms_of_use": "Conditions d'utilisation (en anglais)"
+    "terms_of_use": "Conditions d'utilisation (en anglais)",
+    "admin_link": "Admin",
+    "admin_link_tooltip": "Gérer les données et les accès"
   },
   "Help": "Aide",
   "Help for": "Aide pour",
@@ -477,6 +576,7 @@
     "vital_status": "Statut vital",
     "sex": "Sexe",
     "karyotypic_sex": "Sexe caryotypique",
+    "gender": "Genre",
     "taxonomy": "Taxonomie",
     "ALIVE": "VIVANT",
     "DECEASED": "DÉCÉDÉ",
@@ -559,15 +659,11 @@
   "auth": {
     "unauthorized_message": "Vous n'êtes pas autorisé à accéder à cette ressource."
   },
-  "phenopacket_view": {
-    "invalid_endpoint_title": "Point de terminaison invalide : /{{endpoint}}",
-    "invalid_endpoint_description": "Le point de terminaison que vous essayez d’accéder n’est pas valide. Redirigé vers {{target}}.",
-    "not_available_title": "Onglet /{{endpoint}} non disponible",
-    "not_available_description": "Les onglets demandés ne sont pas disponibles. Redirigé vers {{target}}."
-  },
   "table": {
     "invalid_row_keys_title": "Référence de ligne invalide",
-    "invalid_row_keys_description": "Certaines lignes référencées dans l'URL n'existent pas. Correction automatique aux entrées valides."
+    "invalid_row_keys_description": "Certaines lignes référencées dans l'URL n'existent pas. Correction automatique aux entrées valides.",
+    "expand_row": "Développer la ligne",
+    "collapse_row": "Réduire la ligne"
   },
   "drs": {
     "self_uri": "URI",
@@ -582,9 +678,9 @@
   },
   "pcgl": {
     "banner": {
-      "eyebrow": "BIBLIOTHÈQUE GÉNOMIQUE PANCANADIENNE",
+      "eyebrow": "Bibliothèque génomique pancanadienne",
       "title": "Catalogue de données",
-      "subtitle": "Explorez les ensembles de données de la Bibliothèque génomique pancanadienne"
+      "subtitle": "Explorez les $t(entities.dataset_other, lowercase) de la Bibliothèque génomique pancanadienne"
     },
     "footer": {
       "logo_alt": "Logo de la Bibliothèque génomique pancanadienne",
@@ -608,7 +704,6 @@
       "dataPlatform": "Plateforme de données",
       "myApplications": "Mes demandes",
       "manageApplications": "Gérer les demandes",
-      "admin": "Tableau de bord administrateur",
       "cihrHref": "https://cihr-irsc.gc.ca/f/193.html"
     }
   }

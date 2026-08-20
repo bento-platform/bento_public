@@ -9,6 +9,7 @@ export const katsuDiscoveryRulesUrl = `${katsuBaseUrl}/api/discovery_rules`;
 export const katsuDiscoverySearchFieldsUrl = `${katsuBaseUrl}/api/discovery_search_fields`;
 export const katsuDiscoveryUrl = `${katsuBaseUrl}/api/discovery`;
 export const katsuDiscoveryMatchesUrl = `${katsuBaseUrl}/api/discovery_matches`;
+export const katsuDiscoveryMatchesExportFieldsUrl = `${katsuBaseUrl}/api/discovery_matches_export_fields`;
 export const katsuDiscoveryUIHintsUrl = `${katsuBaseUrl}/api/discovery_ui_hints`;
 
 // Katsu entity API (Django Rest Framework) base URLs
@@ -21,6 +22,7 @@ export const biosampleBatchUrl = `${katsuBaseUrl}/api/batch/biosamples`;
 export const experimentUrl = `${katsuBaseUrl}/api/experiments`;
 export const experimentBatchUrl = `${katsuBaseUrl}/api/batch/experiments`;
 export const experimentResultUrl = `${katsuBaseUrl}/api/experimentresults`;
+export const experimentResultBatchUrl = `${katsuBaseUrl}/api/batch/experimentresults`;
 
 export const referenceGenomesUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/reference/genomes`;
 

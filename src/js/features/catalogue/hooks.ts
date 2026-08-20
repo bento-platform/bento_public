@@ -1,49 +1,12 @@
 import { useMemo } from 'react';
-import { useAppSelector } from '@/hooks';
-import { FACET_IDS, FACET_ORDER, SORT_FNS, type DatasetWithProject, type FacetId } from './constants';
+import { useAppSelector, useTranslationFn } from '@/hooks';
+import type { FacetOption } from '@/features/catalogue/types';
+import { FACET_IDS, SORT_FNS, type DatasetWithProject, type FacetId } from './constants';
+import { FACET_CONFIG_BY_ID } from './facetRegistry';
+import { stripDiacritics, stripRichText } from '@/utils/strings';
+import { facetValueTranslationKey, getLabel } from './utils';
 
 export type { DatasetWithProject } from './constants';
-
-/** Extracts a display string from a plain string or labelled object. */
-export const getLabel = (v: string | { label: string }) => (typeof v === 'string' ? v : v.label);
-
-/** Normalises raw study_status values to display strings. */
-export function normaliseStatus(raw: string | undefined | null): string {
-  if (raw === 'ONGOING') return 'Ongoing';
-  if (raw === 'COMPLETED') return 'Completed';
-  return 'Unassigned';
-}
-
-/** Builds the i18n key for a normalised status value, e.g., "Unassigned" -> "catalogue.status.unassigned". */
-export const statusTranslationKey = (status: string): string => `catalogue.status.${status.toLowerCase()}`;
-
-/** Builds the i18n key for a facet's label, e.g., "dataTypes" -> "catalogue.facets.dataTypes". */
-export const facetTranslationKey = (facet: FacetId): string => `catalogue.facets.${facet}`;
-
-/** Ordered colour palette used to assign a stable colour per project name. */
-export const PALETTE = ['#1677FF', '#13C2C2', '#722ED1', '#FA8C16', '#52C41A'];
-
-/**
- * Assigns a deterministic colour from {@link PALETTE} to each project name.
- * Names are sorted alphabetically before assignment so order is stable across renders.
- */
-export function assignColors(names: string[]): Record<string, string> {
-  const sorted = [...names].sort((a, b) => a.localeCompare(b));
-  return Object.fromEntries(sorted.map((name, i) => [name, PALETTE[i % PALETTE.length]]));
-}
-
-/** Returns the filterable string values for each facet dimension of a dataset. */
-export function getDatasetFacetValues({ dataset, project }: DatasetWithProject): Record<FacetId, string[]> {
-  return {
-    projects: [project.title],
-    dataTypes: dataset.domain ?? [],
-    taxa: (dataset.taxa ?? []).map(getLabel),
-    access: dataset.privacy ? [dataset.privacy] : [],
-    licenses: dataset.license?.type ? [dataset.license.type] : [],
-    statuses: [normaliseStatus(dataset.study_status)],
-    keywords: (dataset.keywords ?? []).map(getLabel),
-  };
-}
 
 /** Selects the full catalogue slice from the Redux store. */
 export function useCatalogueState() {
@@ -62,12 +25,13 @@ export function useCatalogueState() {
  */
 export function useCatalogueFilter(items: DatasetWithProject[]): {
   filtered: DatasetWithProject[];
-  facetOptions: (facetId: FacetId) => { value: string; count: number; selected: boolean }[];
+  facetOptions: (facetId: FacetId) => FacetOption[];
 } {
+  const t = useTranslationFn();
   const { q, sets, sort } = useCatalogueState();
 
   return useMemo(() => {
-    const lowerQ = q.toLowerCase();
+    const lowerQ = stripDiacritics(q.toLowerCase());
 
     /**
      * Returns true if `item` passes the current text query and all facet filters.
@@ -79,14 +43,17 @@ export function useCatalogueFilter(items: DatasetWithProject[]): {
       if (lowerQ) {
         const kw = (dataset.keywords ?? []).map(getLabel).join(' ');
         const dom = (dataset.domain ?? []).join(' ');
-        const hay = [dataset.title, dataset.description, dom, kw].join(' ').toLowerCase();
+        const longDesc = dataset.long_description
+          ? stripRichText(dataset.long_description.content, dataset.long_description.content_type)
+          : '';
+        const hay = stripDiacritics([dataset.title, dataset.description, longDesc, dom, kw].join(' ').toLowerCase());
         if (!hay.includes(lowerQ)) return false;
       }
       for (const fid of FACET_IDS) {
         if (fid === skipFacet) continue;
         const selected = sets[fid];
         if (selected.length === 0) continue;
-        const vals = getDatasetFacetValues(item)[fid];
+        const vals = FACET_CONFIG_BY_ID[fid].getValues(item);
         if (!vals.some((v) => selected.includes(v))) return false;
       }
       return true;
@@ -97,18 +64,22 @@ export function useCatalogueFilter(items: DatasetWithProject[]): {
 
     /** Computes display options for a single facet, respecting all other active filters. */
     function facetOptions(facetId: FacetId) {
+      const facetConfig = FACET_CONFIG_BY_ID[facetId];
+
       const base = items.filter((item) => matchesQuery(item, facetId));
       const countMap = new Map<string, number>();
       for (const item of base) {
-        for (const v of getDatasetFacetValues(item)[facetId]) {
+        for (const v of facetConfig.getValues(item)) {
           countMap.set(v, (countMap.get(v) ?? 0) + 1);
         }
       }
+
       const selected = sets[facetId];
       // include already-selected values even if count 0
       const allValues = new Set([...countMap.keys(), ...selected]);
+
       const values = [...allValues];
-      const order = FACET_ORDER[facetId];
+      const order = facetConfig.order;
       if (order) {
         values.sort((a, b) => {
           const ai = order.indexOf(a);
@@ -121,13 +92,15 @@ export function useCatalogueFilter(items: DatasetWithProject[]): {
       } else {
         values.sort((a, b) => (countMap.get(b) ?? 0) - (countMap.get(a) ?? 0) || a.localeCompare(b));
       }
+
       return values.map((v) => ({
         value: v,
+        label: t(facetValueTranslationKey(facetConfig.i18nKeyPrefix, v)),
         count: countMap.get(v) ?? 0,
         selected: selected.includes(v),
       }));
     }
 
     return { filtered: sortedFiltered, facetOptions };
-  }, [items, q, sets, sort]);
+  }, [t, items, q, sets, sort]);
 }

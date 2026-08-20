@@ -4,6 +4,8 @@ import { createSlice } from '@reduxjs/toolkit';
 import type {
   BentoCountEntity,
   BentoKatsuEntity,
+  ExportDataEntity,
+  ExportField,
   KatsuEntityCountsOrBooleans,
   ResultsDataEntity,
 } from '@/types/entities';
@@ -30,6 +32,7 @@ import { discoveryChartProcessingAndLocalStorage } from './discoveryChartProcess
 import { performKatsuDiscovery, STALE_DISCOVERY_REJECTION } from './performKatsuDiscovery.thunk';
 import { fetchSearchFields } from './fetchSearchFields.thunk';
 import { fetchDiscoveryMatches } from './fetchDiscoveryMatches.thunk';
+import { fetchDiscoveryMatchExportFields } from './fetchDiscoveryMatchExportFields.thunk';
 import { fetchDiscoveryUIHints } from './fetchDiscoveryUIHints.thunk';
 import { bentoKatsuEntityToResultsDataEntity, checkFiltersStatesEqual } from './utils';
 
@@ -40,6 +43,11 @@ export type QueryResultMatchData<T extends DiscoveryMatchObject> = {
   matches: T[] | undefined;
   invalid: boolean;
 };
+
+// Maps a selected row's table key to the ID value that should be sent to the batch export endpoints. The two differ
+// for the phenopacket/individual table, where the row key is the phenopacket ID but exports need the subject/individual
+// ID. The value is undefined if the row doesn't have an exportable ID (e.g., a phenopacket without a linked subject).
+export type SelectedRowMap = Record<string, string | undefined>;
 
 export type QueryState = {
   defaultLayout: Sections;
@@ -77,6 +85,12 @@ export type QueryState = {
     experiment: QueryResultMatchData<DiscoveryMatchExperiment>;
     experiment_result: QueryResultMatchData<DiscoveryMatchExperimentResult>;
   };
+  // Rows selected for export, per entity table, keyed by table row key. Persists across pagination since it's
+  // independent of which page's matches are currently loaded.
+  selectedRows: Record<ResultsDataEntity, SelectedRowMap>;
+
+  // export fields available per entity, cached once fetched
+  exportFields: Record<ExportDataEntity, { status: RequestStatus; fields: ExportField[] | undefined }>;
 
   // UI hints
   uiHints: {
@@ -92,6 +106,8 @@ const INITIAL_MATCH_DATA_STATE = {
   matches: undefined,
   invalid: false,
 };
+
+const INITIAL_EXPORT_FIELDS_STATE = { status: RequestStatus.Idle, fields: undefined };
 
 const initialState: QueryState = {
   defaultLayout: [],
@@ -125,6 +141,20 @@ const initialState: QueryState = {
     experiment: INITIAL_MATCH_DATA_STATE,
     experiment_result: INITIAL_MATCH_DATA_STATE,
   },
+  selectedRows: {
+    phenopacket: {},
+    biosample: {},
+    experiment: {},
+    experiment_result: {},
+  },
+  // ----
+  exportFields: {
+    phenopacket: INITIAL_EXPORT_FIELDS_STATE,
+    individual: INITIAL_EXPORT_FIELDS_STATE,
+    biosample: INITIAL_EXPORT_FIELDS_STATE,
+    experiment: INITIAL_EXPORT_FIELDS_STATE,
+    experiment_result: INITIAL_EXPORT_FIELDS_STATE,
+  },
   // ----
   uiHints: {
     status: RequestStatus.Idle,
@@ -149,6 +179,8 @@ const invalidateMatchData = (state: Draft<QueryState>) => {
       // current page upon invalidation:
       state.matchData[entity].page = 0;
     }
+    // The query changed, so previously-selected rows may no longer be part of the result set - clear selections:
+    state.selectedRows[entity] = {};
   });
 };
 
@@ -158,31 +190,31 @@ const query = createSlice({
   reducers: {
     rearrange: (state, { payload }: PayloadAction<{ section: string; arrangement: string[] }>) => {
       const { section, arrangement } = payload;
-      const sectionObj = state.sections.find((e) => e.sectionTitle === section)!;
+      const sectionObj = state.sections.find((e) => e.sectionId === section)!;
       const chartsCopy = [...sectionObj.charts];
       sectionObj.charts = arrangement.map((e) => chartsCopy.find((i) => e === i.id)!);
     },
     disableChart: (state, { payload }: PayloadAction<{ section: string; id: string }>) => {
       const { section, id } = payload;
-      state.sections.find((e) => e.sectionTitle === section)!.charts.find((e) => e.id === id)!.isDisplayed = false;
+      state.sections.find((e) => e.sectionId === section)!.charts.find((e) => e.id === id)!.isDisplayed = false;
     },
     setDisplayedCharts: (state, { payload }: PayloadAction<{ section: string; charts: string[] }>) => {
       const { section, charts } = payload;
       state.sections
-        .find((e) => e.sectionTitle === section)!
+        .find((e) => e.sectionId === section)!
         .charts.forEach((val, ind, arr) => {
           arr[ind].isDisplayed = charts.includes(val.id);
         });
     },
     setChartWidth: (state, { payload }: PayloadAction<{ section: string; chart: string; width: number }>) => {
       const { section, chart, width } = payload;
-      const chartObj = state.sections.find((e) => e.sectionTitle === section)!.charts.find((c) => c.id === chart)!;
+      const chartObj = state.sections.find((e) => e.sectionId === section)!.charts.find((c) => c.id === chart)!;
       chartObj.width = width;
     },
     setAllDisplayedCharts: (state, { payload }: PayloadAction<{ section?: string }>) => {
       if (payload.section) {
         state.sections
-          .find((e) => e.sectionTitle === payload.section)!
+          .find((e) => e.sectionId === payload.section)!
           .charts.forEach((_, ind, arr) => {
             arr[ind].isDisplayed = true;
           });
@@ -196,7 +228,7 @@ const query = createSlice({
     },
     hideAllSectionCharts: (state, { payload }: PayloadAction<{ section: string }>) => {
       state.sections
-        .find((e) => e.sectionTitle === payload.section)!
+        .find((e) => e.sectionId === payload.section)!
         .charts.forEach((_, ind, arr) => {
           arr[ind].isDisplayed = false;
         });
@@ -253,6 +285,10 @@ const query = createSlice({
       md.page = payload[1];
       // Invalidate current match data page contents if the page changes:
       md.invalid = md.status !== RequestStatus.Idle;
+    },
+    setSelectedRows: (state, { payload }: PayloadAction<[ResultsDataEntity, SelectedRowMap]>) => {
+      const [entity, map] = payload;
+      state.selectedRows[entity] = map;
     },
     setMatchesPageSize: (state, { payload }: PayloadAction<number>) => {
       if (isNaN(payload) || !PAGE_SIZE_OPTIONS.includes(payload)) {
@@ -361,6 +397,17 @@ const query = createSlice({
       state.matchData[bentoKatsuEntityToResultsDataEntity(meta.arg)].status = RequestStatus.Rejected;
     });
     // -----
+    builder.addCase(fetchDiscoveryMatchExportFields.pending, (state, { meta }) => {
+      state.exportFields[meta.arg].status = RequestStatus.Pending;
+    });
+    builder.addCase(fetchDiscoveryMatchExportFields.fulfilled, (state, { meta, payload }) => {
+      state.exportFields[meta.arg].status = RequestStatus.Fulfilled;
+      state.exportFields[meta.arg].fields = payload;
+    });
+    builder.addCase(fetchDiscoveryMatchExportFields.rejected, (state, { meta }) => {
+      state.exportFields[meta.arg].status = RequestStatus.Rejected;
+    });
+    // -----
     builder.addCase(fetchDiscoveryUIHints.pending, (state) => {
       state.uiHints.status = RequestStatus.Pending;
     });
@@ -391,7 +438,8 @@ export const {
   setSelectedEntity,
   setMatchesPage,
   setMatchesPageSize,
+  setSelectedRows,
   resetAllQueryState,
 } = query.actions;
-export { performKatsuDiscovery, fetchSearchFields, fetchDiscoveryUIHints };
+export { performKatsuDiscovery, fetchSearchFields, fetchDiscoveryMatchExportFields, fetchDiscoveryUIHints };
 export default query.reducer;

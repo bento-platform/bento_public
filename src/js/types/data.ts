@@ -5,6 +5,7 @@ import type { Field } from '@/types/discovery/fieldDefinition';
 export type Sections = Section[];
 
 export type Section = {
+  sectionId: string;
   sectionTitle: string;
   charts: ChartDataField[];
 };

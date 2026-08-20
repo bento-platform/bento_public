@@ -7,7 +7,12 @@ export type { StringOrOntologyClass };
 /** ISO 639-1 two-letter language code, e.g. "en" or "fr". */
 export type LanguageAlpha2 = string;
 
+export type TextContentType = 'text/html' | 'text/markdown' | 'text/plain';
+
 // ---- String literal unions (from Python TranslatedLiteral definitions) ----
+
+export type StudyContext = 'CLINICAL' | 'RESEARCH';
+export type StudyStatus = 'ONGOING' | 'COMPLETED';
 
 export type Role =
   | 'Principal Investigator'
@@ -81,13 +86,7 @@ export type PublicationType =
   | 'Patent';
 
 export type PublicationVenueType =
-  | 'Journal'
-  | 'Conference'
-  | 'Workshop'
-  | 'Repository'
-  | 'Publisher'
-  | 'University'
-  | 'Data Repository';
+  'Journal' | 'Conference' | 'Workshop' | 'Repository' | 'Publisher' | 'University' | 'Data Repository';
 
 export type ParticipantCriterionType = 'Inclusion' | 'Exclusion' | 'Other';
 
@@ -231,7 +230,7 @@ export interface FundingSource {
 
 export interface LongDescription {
   content: string;
-  content_type: 'text/html' | 'text/markdown' | 'text/plain';
+  content_type: TextContentType;
 }
 
 // ---- Ontology types (from bento_lib.ontologies.models) ----
@@ -293,8 +292,8 @@ export interface Dataset {
 
   participant_criteria?: ParticipantCriteria[] | null;
 
-  study_status?: 'ONGOING' | 'COMPLETED' | null;
-  study_context?: 'CLINICAL' | 'RESEARCH' | null;
+  study_status?: StudyStatus | null;
+  study_context?: StudyContext | null;
 
   /** List of specific scientific or clinical domains addressed by the study. */
   domain?: string[] | null;

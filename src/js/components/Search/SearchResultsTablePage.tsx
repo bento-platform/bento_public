@@ -1,17 +1,30 @@
-import { type ReactNode, useCallback, useMemo, useState } from 'react';
+import { type Key, type ReactNode, useCallback, useMemo, useState } from 'react';
 
-import { Button, Checkbox, Col, Flex, Modal, Space, type TablePaginationConfig, Tooltip, Typography } from 'antd';
-import { ExportOutlined, LeftOutlined, TableOutlined } from '@ant-design/icons';
+import {
+  Button,
+  Checkbox,
+  Col,
+  Dropdown,
+  Flex,
+  message,
+  Modal,
+  Space,
+  type TablePaginationConfig,
+  Tooltip,
+  Typography,
+} from 'antd';
+import { DownloadOutlined, DownOutlined, LeftOutlined, TableOutlined } from '@ant-design/icons';
 
 import { T_PLURAL_COUNT, T_SINGULAR_COUNT } from '@/constants/i18n';
 import { MIN_PAGE_SIZE, PAGE_SIZE_OPTIONS } from '@/constants/pagination';
 import { WAITING_STATES } from '@/constants/requests';
 import { TABLE_PAGE_QUERY_PARAM, TABLE_PAGE_SIZE_QUERY_PARAM } from '@/features/search/constants';
 
-import { useTranslationFn } from '@/hooks';
-import { useSmallScreen } from '@/hooks/useResponsiveContext';
+import { useAppDispatch, useAppSelector, useTranslationFn } from '@/hooks';
+import { useResponsiveMobileContext, useSmallScreen } from '@/hooks/useResponsiveContext';
 import { useScopeDownloadData } from '@/hooks/censorship';
-import { useDownloadAllMatchesCSV } from '@/hooks/useDownloadAllMatchesCSV';
+import { useDownloadAllMatches } from '@/hooks/useDownloadAllMatches';
+import { useDownloadSelectedMatches } from '@/hooks/useDownloadSelectedMatches';
 import { useSearchQuery, useSearchQueryParams } from '@/features/search/hooks';
 import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
 import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
@@ -20,7 +33,7 @@ import type { BentoKatsuEntity } from '@/types/entities';
 import type { Project } from '@/types/metadata';
 import type { Dataset } from '@/types/dataset';
 import type { DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
-import type { QueryResultMatchData } from '@/features/search/query.store';
+import { setSelectedRows, type QueryResultMatchData, type SelectedRowMap } from '@/features/search/query.store';
 import type {
   DiscoveryMatchBiosample,
   DiscoveryMatchExperiment,
@@ -28,6 +41,7 @@ import type {
   DiscoveryMatchPhenopacket,
   ViewableDiscoveryMatchObject,
 } from '@/features/search/types';
+import type { ExportDataEntity, ExportFormat } from '@/types/entities';
 import { BentoRoute } from '@/types/routes';
 
 import { scopeSelectionEqual } from '@/features/metadata/utils';
@@ -38,11 +52,12 @@ import {
 } from '@/features/search/utils';
 import { setEquals } from '@/utils/sets';
 
-import DatasetProvenanceModal from '@/components/Provenance/DatasetProvenanceModal';
+import DatasetProvenanceModal from '@/components/Provenance/DatasetProvenance/DatasetProvenanceModal';
 import ProjectTitle from '@Util/ProjectTitle';
 import DatasetTitle from '@Util/DatasetTitle';
 import ExperimentReferences from '@Util/ClinPhen/ExperimentReferences';
 import CustomTable, { type CustomTableColumn, type CustomTableColumns } from '@Util/CustomTable';
+import ExportFieldsModal from './ExportFieldsModal';
 import IndividualRowDetail from './IndividualRowDetail';
 import BiosampleDetailView from './BiosampleDetailView';
 import ExperimentRowDetail from './ExperimentRowDetail';
@@ -88,6 +103,9 @@ type ResultsTableSpec<T extends ViewableDiscoveryMatchObject> = {
   availableColumns: Record<string, ResultsTableColumn<T>>;
   defaultColumns: string[];
   expandedRowRender?: (record: T) => ReactNode;
+  // Field to use as the ID sent to the batch export endpoint for a selected row, if it differs from the row's `id`
+  // (e.g. the phenopacket table's row key is the phenopacket ID, but batch/individuals needs the subject ID).
+  exportIdField?: keyof T;
 };
 
 const commonSearchTableColumns = <T extends ViewableDiscoveryMatchObject>() =>
@@ -195,6 +213,7 @@ const TABLE_SPEC_PHENOPACKET: ResultsTableSpec<DiscoveryMatchPhenopacket> = {
   availableColumns: PHENOPACKET_SEARCH_TABLE_COLUMNS,
   defaultColumns: ['biosamples', 'project', 'dataset'],
   expandedRowRender: (rec) => (rec.subject ? <IndividualRowDetail id={rec.subject} /> : null),
+  exportIdField: 'subject',
 };
 
 const TABLE_SPEC_BIOSAMPLE: ResultsTableSpec<DiscoveryMatchBiosample> = {
@@ -304,11 +323,14 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   shown: boolean;
 }) => {
   const t = useTranslationFn();
+  const dispatch = useAppDispatch();
 
   const { resultCountsOrBools, pageSize, matchData } = useSearchQuery();
   const { fetchingPermission: fetchingCanDownload, hasPermission: canDownload } = useScopeDownloadData();
-  const downloadAllMatchesCSV = useDownloadAllMatchesCSV();
+  const downloadAllMatches = useDownloadAllMatches();
+  const downloadSelectedMatches = useDownloadSelectedMatches();
   const isSmallScreen = useSmallScreen();
+  const isMobile = useResponsiveMobileContext();
 
   const allQueryParams = useSearchQueryParams();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
@@ -318,10 +340,17 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
 
   const [exporting, setExporting] = useState<boolean>(false);
   const [columnModalOpen, setColumnModalOpen] = useState<boolean>(false);
+  const [exportModalOpen, setExportModalOpen] = useState<boolean>(false);
+  const [exportFormat, setExportFormat] = useState<ExportFormat>('csv');
 
   // We translate an "individual" entity to "phenopacket" because TODO.
   // TODO: maybe we can make Katsu good enough that we can just simply return individuals rather than phenopackets
   const rdEntity = bentoKatsuEntityToResultsDataEntity(entity);
+
+  // For export purposes only, this table is always backed by katsu's "individual" entity (IndividualCSVRenderer /
+  // the individual batch endpoint), not "phenopacket" - the two are distinct entities on the katsu side, unlike the
+  // display/matches querying above which intentionally treats them as one.
+  const exportEntity: ExportDataEntity = rdEntity === 'phenopacket' ? 'individual' : rdEntity;
 
   const entityMatchData = matchData[rdEntity] as QueryResultMatchData<T>;
   const { status, page, totalMatches } = entityMatchData;
@@ -330,6 +359,39 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
 
   const currentStart = totalMatches > 0 ? page * pageSize + 1 : 0;
   const currentEnd = Math.min((page + 1) * pageSize, totalMatches);
+
+  // -------------------------------------------------------------------------------------------------------------------
+  // Row selection, for exporting a subset of results. Selection is keyed by entity in Redux so that it persists
+  // across pagination (only the current page's matches are loaded into memory at any given time).
+
+  const selectedRowMap = useAppSelector((state) => state.query.selectedRows[rdEntity]);
+  const selectedRowKeys = useMemo<Key[]>(() => Object.keys(selectedRowMap), [selectedRowMap]);
+
+  const selectedExportIds = useMemo<string[]>(
+    () => Object.values(selectedRowMap).filter((v): v is string => Boolean(v)),
+    [selectedRowMap]
+  );
+  const hasSelection = selectedRowKeys.length > 0;
+
+  const clearSelection = useCallback(() => dispatch(setSelectedRows([rdEntity, {}])), [dispatch, rdEntity]);
+
+  const onSelectionChange = useCallback(
+    (keys: Key[], rows: (T | undefined)[]) => {
+      const newMap: SelectedRowMap = {};
+      keys.forEach((k, i) => {
+        const key = String(k);
+        const row = rows[i];
+        const exportId = row
+          ? spec.exportIdField
+            ? (row[spec.exportIdField] as unknown as string | undefined)
+            : String(row.id)
+          : selectedRowMap[key]; // fall back to the previously-known mapping if row data isn't available
+        newMap[key] = exportId;
+      });
+      dispatch(setSelectedRows([rdEntity, newMap]));
+    },
+    [dispatch, rdEntity, spec.exportIdField, selectedRowMap]
+  );
 
   // -------------------------------------------------------------------------------------------------------------------
 
@@ -419,20 +481,52 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
     [page, pageSize, totalMatches, isSmallScreen, navigateToSameScopeUrl, allQueryParams]
   );
 
-  const onExport = useCallback(() => {
-    setExporting(true);
-    const filename = `${t(`entities.${entity}_other`)}.csv`;
-    downloadAllMatchesCSV(rdEntity, filename).finally(() => setExporting(false));
-  }, [t, entity, downloadAllMatchesCSV, rdEntity]);
+  const onExport = useCallback(
+    (fields: string[] | undefined) => {
+      setExporting(true);
+      const filename = `${t(`entities.${entity}_other`)}.${exportFormat}`;
+      const download = hasSelection
+        ? downloadSelectedMatches(exportEntity, selectedExportIds, exportFormat, filename, fields)
+        : downloadAllMatches(exportEntity, exportFormat, filename, fields);
+      download
+        .then(() => setExportModalOpen(false))
+        .catch(() => message.error(t('search.export_error')))
+        .finally(() => setExporting(false));
+    },
+    [
+      t,
+      entity,
+      exportEntity,
+      hasSelection,
+      selectedExportIds,
+      downloadSelectedMatches,
+      downloadAllMatches,
+      exportFormat,
+    ]
+  );
 
   const openColumnModal = useCallback(() => setColumnModalOpen(true), []);
+  const openExportModal = useCallback((format: ExportFormat) => {
+    setExportFormat(format);
+    setExportModalOpen(true);
+  }, []);
+
+  const exportMenuItems = useMemo(
+    () =>
+      (['csv', 'xlsx'] as ExportFormat[]).map((format) => ({
+        key: format,
+        label: t(`search.${format}`),
+        onClick: () => openExportModal(format),
+      })),
+    [t, openExportModal]
+  );
 
   if (!shown) return null;
 
   return (
     <>
       <Col flex={1}>
-        <Flex justify="space-between" align="center" style={{ marginBottom: 12 }}>
+        <Flex justify={isMobile ? 'center' : 'space-between'} align="center" gap="small" className="mb-3" wrap>
           {onBack ? (
             <Button
               icon={<LeftOutlined />}
@@ -456,18 +550,29 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
             })}
           </span>
           <Space>
+            {selectedRowKeys.length > 0 && (
+              <Space size="small">
+                <Typography.Text className="antd-gray-7">
+                  {t('search.selected_count', { count: selectedRowKeys.length })}
+                </Typography.Text>
+                <Button type="link" size="small" className="p-0" onClick={clearSelection}>
+                  {t('search.clear_selection')}
+                </Button>
+              </Space>
+            )}
             <Tooltip title={t('search.manage_columns')}>
               <Button icon={<TableOutlined />} onClick={openColumnModal} />
             </Tooltip>
             {fetchingCanDownload || canDownload ? (
-              <Button
-                icon={<ExportOutlined />}
-                loading={fetchingCanDownload || exporting}
-                onClick={onExport}
-                disabled={fetchingCanDownload || !totalMatches}
-              >
-                {isSmallScreen ? t('search.csv') : t('search.export_csv')}
-              </Button>
+              <Dropdown menu={{ items: exportMenuItems }} disabled={fetchingCanDownload || !totalMatches}>
+                <Button
+                  icon={<DownloadOutlined />}
+                  loading={fetchingCanDownload}
+                  disabled={fetchingCanDownload || !totalMatches}
+                >
+                  {t('search.export')} <DownOutlined />
+                </Button>
+              </Dropdown>
             ) : null}
           </Space>
         </Flex>
@@ -481,6 +586,14 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
           expandedRowRender={spec.expandedRowRender}
           isRowExpandable={(_) => true} // TODO
           urlAware={false}
+          rowSelection={{
+            selectedRowKeys,
+            onChange: onSelectionChange,
+            preserveSelectedRowKeys: true,
+            getCheckboxProps: spec.exportIdField
+              ? (record) => ({ disabled: !record[spec.exportIdField as keyof T] })
+              : undefined,
+          }}
         />
       </Col>
       <Modal
@@ -507,6 +620,14 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
             ))}
         </Space>
       </Modal>
+      <ExportFieldsModal
+        open={exportModalOpen}
+        entity={exportEntity}
+        format={exportFormat}
+        exporting={exporting}
+        onCancel={() => setExportModalOpen(false)}
+        onExport={onExport}
+      />
     </>
   );
 };

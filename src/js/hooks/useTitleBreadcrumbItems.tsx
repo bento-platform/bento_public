@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { HomeOutlined } from '@ant-design/icons';
 import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
 
+import type { MenuItem } from '@/types/navigation';
 import { BentoRoute } from '@/types/routes';
 import { useLanguage, useTranslationFn } from '@/hooks';
 import { useSelectedScope, useSelectedScopeTitles } from '@/features/metadata/hooks';
@@ -12,7 +13,7 @@ import { useExtraBreadcrumb } from '@/features/ui/hooks';
 import { getCurrentPage } from '@/utils/router';
 import { PCGL_MODE } from '@/config';
 
-export const useTitleBreadcrumbItems = (): BreadcrumbItemType[] => {
+export const useTitleBreadcrumbItems = (scopeHeaderMenuItems: MenuItem[]): BreadcrumbItemType[] => {
   const t = useTranslationFn();
   const language = useLanguage();
   const isSmallScreen = useSmallScreen();
@@ -46,8 +47,8 @@ export const useTitleBreadcrumbItems = (): BreadcrumbItemType[] => {
       // If we have a dataset selected, and we don't have just a single project+dataset, we should show the dataset
       // context in the navigation.
       if (scope.project && fixedProject) {
-        // If we additionally have a fixed project, we can "anchor" the dataset visually vs. the root page (which isn't
-        // the catalogue, but rather the project) using a home icon:
+        // If we additionally have a fixed project, we can "anchor" the dataset visually vs. the root page using a
+        // home icon/link:
         items.push({
           title: <HomeOutlined />,
           path: `/${language}/`,
@@ -59,8 +60,13 @@ export const useTitleBreadcrumbItems = (): BreadcrumbItemType[] => {
       });
     }
 
-    // We treat the overview as the "default" page, meaning we won't show the page name in the breadcrumb bar.
-    if (currentPage !== BentoRoute.Overview) {
+    // We only show the page name in the breadcrumb bar in the case of:
+    //  - Beacon Network
+    //  - Beacon, but only if it's not in the scope header menu items (i.e., it's an instance-level Beacon)
+    if (
+      currentPage === BentoRoute.BeaconNetwork ||
+      (currentPage === BentoRoute.Beacon && !scopeHeaderMenuItems.find((mi) => mi?.key === BentoRoute.Beacon))
+    ) {
       items.push({ title: currentPageTitle });
     }
 
@@ -82,5 +88,6 @@ export const useTitleBreadcrumbItems = (): BreadcrumbItemType[] => {
     getRouteTitleAndIcon,
     extraBreadcrumb,
     isSmallScreen,
+    scopeHeaderMenuItems,
   ]);
 };

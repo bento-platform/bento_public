@@ -1,6 +1,6 @@
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type { DiscoveryResponse } from '@/types/discovery/response';
-import type { ChartConfig } from '@/types/discovery/chartConfig';
+import type { ChartConfig, ChartLayoutSection } from '@/types/discovery/chartConfig';
 import type { ChartDataField, LocalStorageChartData, Sections } from '@/types/data';
 
 import { MAX_CHARTS } from '@/constants/configConstants';
@@ -15,6 +15,8 @@ import {
   verifyData,
 } from '@/utils/localStorage';
 
+const _asSlug = (x: string): string => x.normalize('NFKD').toLowerCase().trim().replace(/\s+/g, '-');
+
 export const discoveryChartProcessingAndLocalStorage = (
   scope: DiscoveryScope,
   { layout: sections, fields }: DiscoveryResponse
@@ -24,23 +26,34 @@ export const discoveryChartProcessingAndLocalStorage = (
   // + displayed boolean - whether this chart is shown
   // + field definition (from config.field)
   // + the fields' relevant data.
-  const normalizeChart = (chart: ChartConfig, i: number): ChartDataField => {
+  const normalizeChart = (
+    chart: ChartConfig,
+    i: number,
+    defaultCharts: ChartLayoutSection['default_charts']
+  ): ChartDataField => {
     const { data, definition } = fields[chart.field];
+    const initialIsDisplayed =
+      defaultCharts === null
+        ? i < MAX_CHARTS
+        : typeof defaultCharts === 'number'
+          ? i < defaultCharts
+          : defaultCharts.includes(chart.field);
     return {
       id: chart.field,
       chartConfig: chart,
       field: definition,
       data: serializeChartData(data),
       // Initial display state
-      isDisplayed: i < MAX_CHARTS,
+      isDisplayed: initialIsDisplayed,
       width: chart.width ?? DEFAULT_CHART_WIDTH, // initial configured width; users can change it from here
     };
   };
 
-  const sectionData: Sections = sections.map(({ section_title, charts }) => ({
+  const sectionData: Sections = sections.map(({ section_title, charts, default_charts }, idx) => ({
+    sectionId: `sec-${idx}-${_asSlug(section_title)}`,
     sectionTitle: section_title,
     // Filter out charts where field data is missing due to missing counts permissions for the field's data type
-    charts: charts.filter((c) => !!fields[c.field]).map(normalizeChart),
+    charts: charts.filter((c) => !!fields[c.field]).map((chart, i) => normalizeChart(chart, i, default_charts)),
   }));
 
   const defaultLayout = JSON.parse(JSON.stringify(sectionData));
@@ -49,8 +62,8 @@ export const discoveryChartProcessingAndLocalStorage = (
   let convertedData = convertSequenceAndDisplayData(sectionData);
   const lsKey = generateLSChartDataKey(scope);
   const localValue = getValue(lsKey, convertedData, (val: LocalStorageChartData) => verifyData(val, convertedData));
-  sectionData.forEach(({ sectionTitle, charts }, i, arr) => {
-    arr[i].charts = localValue[sectionTitle].map(({ id, isDisplayed, width }) => ({
+  sectionData.forEach(({ sectionId, charts }, i, arr) => {
+    arr[i].charts = localValue[sectionId].map(({ id, isDisplayed, width }) => ({
       ...charts.find((c) => c.id === id)!,
       isDisplayed,
       width,

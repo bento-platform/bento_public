@@ -4,6 +4,7 @@ import { Avatar, Button, Card, Flex, List, Typography } from 'antd';
 import { PieChartOutlined, SolutionOutlined } from '@ant-design/icons';
 import { FaDatabase } from 'react-icons/fa';
 
+import { PCGL_MODE } from '@/config';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type { Dataset } from '@/types/dataset';
 import type { Project } from '@/types/metadata';
@@ -12,12 +13,14 @@ import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
 import { getCurrentPage } from '@/utils/router';
 import { useLanguage, useTranslationFn } from '@/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
+import { nonEmptyCounts } from '@/utils/counts';
 import { isoDateToString } from '@/utils/strings';
 import StatusBadge from '@/components/Util/StatusBadge';
 import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
 import CountsDisplay from '@/components/Util/CountsDisplay';
-import DatasetProvenanceModal from './DatasetProvenanceModal';
+import DatasetProvenanceModal from './DatasetProvenance/DatasetProvenanceModal';
 import KeywordList from './KeywordList';
+import ProgramPill from './Catalogue/ProgramPill';
 import ProjectPill from './Catalogue/ProjectPill';
 
 const { Title, Text, Paragraph } = Typography;
@@ -50,7 +53,7 @@ const Dataset = ({
 
   const [provenanceModalOpen, setProvenanceModalOpen] = useState(false);
 
-  const { identifier, title, description } = dataset;
+  const { identifier, title, description, program_name: program } = dataset;
   const keywords = dataset.keywords ?? [];
 
   const scope: DiscoveryScope = useMemo(
@@ -75,11 +78,8 @@ const Dataset = ({
   const closeProvenanceModal = useCallback(() => setProvenanceModalOpen(false), []);
 
   const counts = filteredCounts ?? dataset.counts_by_entity;
-  const faded =
-    filteredCounts &&
-    dataset.counts_by_entity &&
-    Object.values(filteredCounts).every((c) => !c) &&
-    Object.values(dataset.counts_by_entity).some((c) => !!c);
+  const hasData = nonEmptyCounts(dataset.counts_by_entity);
+  const faded = filteredCounts && Object.values(filteredCounts).every((c) => !c) && hasData;
 
   let inner: ReactNode;
 
@@ -107,7 +107,7 @@ const Dataset = ({
           <Title level={5} className="catalogue-card__title">
             {t(title)}
           </Title>
-          <StatusBadge status={dataset.study_status} />
+          {dataset.study_status && <StatusBadge status={dataset.study_status} />}
         </Flex>
 
         {updatedStr && (
@@ -117,7 +117,7 @@ const Dataset = ({
           </Text>
         )}
 
-        {project && <ProjectPill project={project} />}
+        {PCGL_MODE ? program && <ProgramPill program={program} /> : project && <ProjectPill project={project} />}
 
         {description && (
           <Paragraph
@@ -143,9 +143,11 @@ const Dataset = ({
         )}
 
         <Flex gap={8} className="mt-3">
-          <Button type="primary" icon={<PieChartOutlined />} className="flex-1" onClick={onNavigateOverview}>
-            {t('Explore')}
-          </Button>
+          {hasData && (
+            <Button type="primary" icon={<PieChartOutlined />} className="flex-1" onClick={onNavigateOverview}>
+              {t('Explore')}
+            </Button>
+          )}
           <Button icon={<SolutionOutlined />} className="flex-1" onClick={openProvenanceModal}>
             {t('Provenance')}
           </Button>

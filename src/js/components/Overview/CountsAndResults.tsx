@@ -18,7 +18,8 @@ import { useEntityAndTextQueryParams, useSearchQuery } from '@/features/search/h
 import { useAppDispatch, useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
 import { useRenderCount } from '@/hooks/counts';
-import { useInnerWidth } from '@/hooks/useResponsiveContext';
+import { useHaveEntityData } from '@/hooks/useHaveEntityData';
+import { useInnerWidth, useSmallScreen } from '@/hooks/useResponsiveContext';
 
 import { fetchDiscoveryMatches } from '@/features/search/fetchDiscoveryMatches.thunk';
 
@@ -31,12 +32,17 @@ import {
   filtersStateToQueryParamEntries,
 } from '@/features/search/utils';
 
-const COUNT_CARD_BASE_HEIGHT = 114;
 const COUNT_CARD_DENOMINATOR_BREAKPOINT = 1180;
 
+const useCountCardBaseHeight = () => {
+  const isSmallScreen = useSmallScreen();
+  return isSmallScreen ? 102 : 114;
+};
+
 const CountCardPlaceholder = ({ loading }: { loading: boolean }) => {
+  const countCardBaseHeight = useCountCardBaseHeight();
   return (
-    <Card className="shadow count-card" style={{ height: loading ? COUNT_CARD_BASE_HEIGHT : 'inherit' }}>
+    <Card className="shadow count-card" style={{ height: loading ? countCardBaseHeight : 'inherit' }}>
       {loading ? (
         <Skeleton active={true} paragraph={{ rows: 1 }} style={{ marginTop: 5 }} />
       ) : (
@@ -75,7 +81,7 @@ const CountCardShowHide = memo(({ selected, onClear }: { selected: boolean; onCl
           transition: 'transform 0.15s ease-in-out',
         }}
       />{' '}
-      {t(selected ? 'HIDE' : 'SHOW')}
+      {t(selected ? 'general.hide' : 'general.show')}
     </div>
   );
 });
@@ -91,11 +97,14 @@ const CountsAndResults = () => {
   const dispatch = useAppDispatch();
 
   const windowInnerWidth = useInnerWidth();
+  const countCardBaseHeight = useCountCardBaseHeight();
 
   const selectedProject = useSelectedProject();
   const selectedDataset = useSelectedDataset();
 
   const entityCounts = selectedDataset?.counts_by_entity ?? selectedProject?.counts;
+
+  const haveEntityData = useHaveEntityData();
 
   const {
     message,
@@ -108,7 +117,6 @@ const CountsAndResults = () => {
     doneFirstLoad,
     matchData,
     pageSize,
-    uiHints,
   } = useSearchQuery();
   const entityAndTextQueryParams = useEntityAndTextQueryParams();
 
@@ -154,7 +162,7 @@ const CountsAndResults = () => {
     ? []
     : COUNT_ENTITY_ORDER.filter((entity) => {
         // hide counts if no filters applied and we have no data
-        if (uiHints.status === RequestStatus.Fulfilled && !uiHints.data.entities_with_data.includes(entity)) {
+        if (!haveEntityData(entity)) {
           // If we have a UI hint indicating that we have none of this entity in the scope at all, don't bother even
           // showing a loading card for the count.
           return false;
@@ -173,6 +181,7 @@ const CountsAndResults = () => {
           <Card
             key={i}
             aria-selected={hasQueryData ? selected : undefined}
+            role={canSelect ? 'button' : undefined}
             className={
               'shadow count-card' +
               (canSelect ? ' count-card-clickable' : '') +
@@ -191,7 +200,7 @@ const CountsAndResults = () => {
                   }
                 : undefined
             }
-            style={{ height: COUNT_CARD_BASE_HEIGHT + (hasQueryData ? 12 : 0) + (selected ? 12 : 0) }}
+            style={{ height: countCardBaseHeight + (hasQueryData ? 12 : 0) + (selected ? 12 : 0) }}
           >
             <Statistic
               title={<CountsTitleWithHelp entity={entity} />}

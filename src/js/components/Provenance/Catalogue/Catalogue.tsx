@@ -1,13 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import { Divider, Empty, Button, Flex, Grid, Typography } from 'antd';
+
+import { PCGL_MODE } from '@/config';
 import { useMetadata } from '@/features/metadata/hooks';
 import { useCatalogueFilter, useCatalogueState } from '@/features/catalogue/hooks';
 import { useAppDispatch } from '@/hooks';
 import { useTranslationFn } from '@/hooks';
 import { setProjectColors } from '@/features/catalogue/catalogue.store';
 import { useCatalogueUrlSync, useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
-import { assignColors } from '@/features/catalogue/hooks';
+import { assignColors } from '@/features/catalogue/utils';
 import { RequestStatus } from '@/types/requests';
 import Error from '@Util/Error';
 import CatalogueBanner from './CatalogueBanner';
@@ -42,14 +44,17 @@ const Catalogue = () => {
   const { filtered, facetOptions } = useCatalogueFilter(allDatasets);
 
   useEffect(() => {
-    const names = [...new Set(allDatasets.map(({ project }) => project.title))];
-    dispatch(setProjectColors(assignColors(names)));
+    // In PCGL mode, assign colours to programs instead of projects for now.
+    const projectNames = PCGL_MODE
+      ? [...(new Set(allDatasets.map(({ dataset }) => dataset.program_name).filter((pn) => !!pn)) as Set<string>)]
+      : [...new Set(allDatasets.map(({ project }) => project.title))];
+    dispatch(setProjectColors(assignColors(projectNames)));
   }, [allDatasets, dispatch]);
 
   return (
     <div className="pb-content max-w-catalogue mx-auto w-full">
       {projectsStatus === RequestStatus.Rejected && (
-        <Error message="project_fetch" description={projectsError || undefined} />
+        <Error message="project_fetch" description={projectsError || undefined} className="mb-4" />
       )}
 
       {/* Banner */}
