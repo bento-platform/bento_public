@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Card, Empty, Skeleton, Space, Typography } from 'antd';
+import { Card, Skeleton, Space, Typography } from 'antd';
 import { CalendarOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 
@@ -7,7 +7,6 @@ import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { WAITING_STATES } from '@/constants/requests';
 import { useDataTypes } from '@/features/dataTypes/hooks';
 import type { BentoServiceDataType } from '@/types/dataTypes';
-import { useTranslationFn } from '@/hooks';
 
 import OverviewCollapsibleSection from './Util/OverviewCollapsibleSection';
 
@@ -62,29 +61,28 @@ const LastIngestionDataType = ({ dataType }: { dataType: BentoServiceDataType })
 };
 
 const LastIngestionInfo = () => {
-  const t = useTranslationFn();
-
   const { status: dataTypesStatus, dataTypesById } = useDataTypes();
 
-  const queryableDataTypes = useMemo(
+  const availableDataTypes = useMemo(
     () =>
       Object.values(dataTypesById)
         .sort((a, b) => a.label.localeCompare(b.label))
-        .filter((dataType) => dataType.queryable), // Filter to only include the queryable data types
+        // Filter to only include the queryable data types that have at least one ingested object
+        .filter((dataType) => dataType.queryable && !!dataType.count),
     [dataTypesById]
   );
 
-  const hasData = queryableDataTypes.length > 0;
+  const hasData = availableDataTypes.length > 0;
+
+  if (!hasData) return null;
 
   return (
     <OverviewCollapsibleSection title="Latest Data Ingestion">
       <Space wrap>
         {WAITING_STATES.includes(dataTypesStatus) ? (
           <LastIngestionSkeleton />
-        ) : hasData ? (
-          queryableDataTypes.map((dataType) => <LastIngestionDataType dataType={dataType} key={dataType.id} />)
         ) : (
-          <Empty description={t('Ingestion History Is Empty')} />
+          availableDataTypes.map((dataType) => <LastIngestionDataType dataType={dataType} key={dataType.id} />)
         )}
       </Space>
     </OverviewCollapsibleSection>
