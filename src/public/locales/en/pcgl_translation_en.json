@@ -12,5 +12,16 @@
     "biosample_help": [
       "$t(entities.biosample_other) are biological material extracted from a specific $t(entities.individual_one, lowercase)."
     ]
+  },
+  "catalogue": {
+    "toolbar": {
+      "sort": {
+        "most_individuals": "Most participants",
+        "most_biosamples": "Most specimens"
+      }
+    }
+  },
+  "interpretations": {
+    "subject_or_biosample_id": "Participant or Specimen ID"
   }
 }

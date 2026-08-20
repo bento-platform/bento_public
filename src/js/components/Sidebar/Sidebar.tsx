@@ -2,6 +2,7 @@ import type { HTMLAttributes, ReactNode } from 'react';
 import { Typography } from 'antd';
 import clsx from 'clsx';
 import { CaretDownOutlined, CaretRightOutlined } from '@ant-design/icons';
+import { useTranslationFn } from '@/hooks';
 
 /*
  * Structure:
@@ -14,29 +15,46 @@ import { CaretDownOutlined, CaretRightOutlined } from '@ant-design/icons';
  *       ...
  */
 
-export const SidebarFacet = ({
-  label,
-  collapsed,
-  onToggleCollapse,
-  children,
-}: {
+type SidebarFacetProps = {
+  headerId: string;
   label: string;
   collapsed?: boolean;
   onToggleCollapse?: () => void;
   children: ReactNode;
-}) => (
-  <div className={clsx('sidebar-facet', !collapsed && 'sidebar-facet--expanded')}>
-    <button className="facet-head" onClick={onToggleCollapse}>
-      <span className="facet-head__label">{label}</span>
-      {collapsed ? (
-        <CaretRightOutlined className="facet-head__icon" />
-      ) : (
-        <CaretDownOutlined className="facet-head__icon" />
-      )}
-    </button>
-    {!collapsed && children}
-  </div>
-);
+};
+
+export const SidebarFacet = ({ headerId, label, collapsed, onToggleCollapse, children }: SidebarFacetProps) => {
+  const t = useTranslationFn();
+
+  return (
+    <div className={clsx('sidebar-facet', !collapsed && 'sidebar-facet--expanded')}>
+      <Typography.Title level={4} className="facet-head__title">
+        <button
+          className="facet-head focus-ring"
+          onClick={onToggleCollapse}
+          aria-expanded={!collapsed}
+          id={`catalogue-facet-${headerId}`}
+          aria-controls={`catalogue-facet-region-${headerId}`}
+          aria-label={`${label} , ${collapsed ? t('catalogue.rail.show_section') : t('catalogue.rail.hide_section')}`}
+        >
+          <span className="facet-head__label">{label}</span>
+          {collapsed ? (
+            <CaretRightOutlined className="facet-head__icon" aria-hidden="true" />
+          ) : (
+            <CaretDownOutlined className="facet-head__icon" aria-hidden="true" />
+          )}
+        </button>
+      </Typography.Title>
+      <div
+        className={clsx('facet-chips-container', !collapsed && 'facet-chips-container--open')}
+        aria-labelledby={`catalogue-facet-${headerId}`}
+        id={`catalogue-facet-region-${headerId}`}
+      >
+        {children}
+      </div>
+    </div>
+  );
+};
 
 export type SidebarSectionProps = HTMLAttributes<HTMLElement> & {
   sectionTitle: ReactNode;

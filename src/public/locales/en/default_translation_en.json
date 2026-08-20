@@ -349,7 +349,7 @@
     "disease_diagnosis": "Disease Diagnosis",
     "variant_interpretation": "Variant Interpretation",
     "gene_descriptor": "Gene Descriptor",
-    "subject_or_biosample_id": "Subject or Biosample ID",
+    "subject_or_biosample_id": "Subject or $t(entities.biosample_one) ID",
     "interpretation_status": "Interpretation Status",
     "diagnosis": "Diagnosis",
     "no_diagnosis": "No diagnosis",
@@ -570,7 +570,11 @@
   "catalogue": {
     "rail": {
       "title": "Filters",
-      "close": "Close filters"
+      "close": "Close filters",
+      "show_section": "Show section",
+      "hide_section": "Hide section",
+      "filter_by": "Filter by",
+      "clear_filter": "Clear filter by"
     },
     "facets": {
       "program_one": "Program",
