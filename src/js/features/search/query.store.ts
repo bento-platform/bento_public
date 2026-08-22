@@ -10,18 +10,22 @@ import type {
   ResultsDataEntity,
 } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
-import type { DiscoveryResponseOrMessage } from '@/types/discovery/response';
+import {
+  DiscoveryFieldResponse,
+  DiscoveryFieldResponses,
+  DiscoveryResponseOrMessage,
+} from '@/types/discovery/response';
 import type { DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
 import type {
-  FiltersState,
-  FtsQueryType,
-  SearchFieldResponse,
-  DiscoveryMatchObject,
-  DiscoveryMatchPhenopacket,
   DiscoveryMatchBiosample,
   DiscoveryMatchExperiment,
   DiscoveryMatchExperimentResult,
+  DiscoveryMatchObject,
+  DiscoveryMatchPhenopacket,
   DiscoveryUIHints,
+  FiltersState,
+  FtsQueryType,
+  SearchFieldResponse,
 } from '@/features/search/types';
 import type { Sections } from '@/types/data';
 
@@ -73,6 +77,11 @@ export type QueryState = {
   // node-level data cache
   nodeCountsOrBools: KatsuEntityCountsOrBooleans;
   nodeCountsOrBoolsFetched: boolean;
+
+  // scope-level field data cache for rendering filtered charts in context of scope-level data
+  scopeFieldData: DiscoveryFieldResponses;
+  scopeFieldDataStatus: RequestStatus;
+  scopeFieldDataInvalid: boolean;
 
   // results
   resultCountsOrBools: KatsuEntityCountsOrBooleans;
@@ -130,6 +139,10 @@ const initialState: QueryState = {
   // ----
   nodeCountsOrBools: EMPTY_KATSU_ENTITY_COUNTS,
   nodeCountsOrBoolsFetched: false,
+  // ----
+  scopeFieldData: {},
+  scopeFieldDataStatus: RequestStatus.Idle,
+  scopeFieldDataInvalid: false,
   // ----
   resultCountsOrBools: EMPTY_KATSU_ENTITY_COUNTS,
   resultCountsByDataset: undefined,
@@ -312,14 +325,25 @@ const query = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(performKatsuDiscovery.pending, (state) => {
+      const haveQuery = Object.keys(state.filters).length || state.textQuery.length;
       state.discoveryStatus = RequestStatus.Pending;
+      if (!haveQuery) {
+        state.scopeFieldDataStatus = RequestStatus.Pending;
+      }
     });
     builder.addCase(
       performKatsuDiscovery.fulfilled,
       (state, { payload: [scope, response] }: PayloadAction<[DiscoveryScopeSelection, DiscoveryResponseOrMessage]>) => {
+        const haveQuery = Object.keys(state.filters).length || state.textQuery.length;
+
         state.discoveryStatus = RequestStatus.Fulfilled;
         state.discoveryError = '';
         state.resultCountsInvalid = false;
+
+        if (!haveQuery) {
+          state.scopeFieldDataStatus = RequestStatus.Fulfilled;
+          state.scopeFieldDataInvalid = false;
+        }
 
         if (!response) {
           return;
@@ -334,12 +358,16 @@ const query = createSlice({
         if ('counts' in response) {
           if (
             ((!scope.scope.project && !scope.scope.dataset) || (scope.fixedProject && scope.fixedDataset)) &&
-            !Object.keys(state.filters).length &&
-            !state.textQuery.length
+            !haveQuery
           ) {
             // Cache whole-instance counts when no filters are applied. Used for showing counts in the data catalogue.
             state.nodeCountsOrBools = response.counts;
             state.nodeCountsOrBoolsFetched = true;
+          }
+
+          // Populate scope-level field data if applicable
+          if (!haveQuery) {
+            state.scopeFieldData = response.fields;
           }
 
           // Populate scope / filter results:
@@ -349,7 +377,11 @@ const query = createSlice({
           state.resultCountsByDataset = response.counts_by_dataset;
 
           // Side effects: saving/loading layout from local storage
-          const { defaultLayout, sectionData } = discoveryChartProcessingAndLocalStorage(scope.scope, response);
+          const { defaultLayout, sectionData } = discoveryChartProcessingAndLocalStorage(
+            scope.scope,
+            response,
+            state.scopeFieldData
+          );
           state.defaultLayout = defaultLayout;
           state.sections = sectionData;
         }
