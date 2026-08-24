@@ -2,11 +2,7 @@ import type { Tracks, TrackLoad, CreateOpt, ReferenceGenome } from 'igv';
 import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
 
 export type TrackFormats =
-  | Tracks.AlignmentFormat
-  | Tracks.AnnotationFormat
-  | Tracks.MutationFormat
-  | Tracks.VariantFormat
-  | Tracks.WigFormat;
+  Tracks.AlignmentFormat | Tracks.AnnotationFormat | Tracks.MutationFormat | Tracks.VariantFormat | Tracks.WigFormat;
 
 // expand as needed
 export type SupportedTrackType = 'alignment' | 'annotation' | 'wig' | 'variant' | 'mut';
@@ -28,8 +24,8 @@ export type IgvAccessUrlPromisesById = Record<
 >;
 
 export interface IgvPosition {
-  chr: string; 
-  start: number; 
-  end: number; 
-  getLocusString: () => string
+  chr: string;
+  start: number;
+  end: number;
+  getLocusString: () => string;
 }

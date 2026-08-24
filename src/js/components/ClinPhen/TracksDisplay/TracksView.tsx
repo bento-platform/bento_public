@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useAppDispatch, useAppSelector, useTranslationFn } from '@/hooks';
+import { useAppDispatch, useAppSelector } from '@/hooks';
 import { useAccessToken } from 'bento-auth-js';
 import igv from 'igv/dist/igv.esm';
 import type { Browser, CreateOpt } from 'igv';
@@ -34,10 +34,7 @@ const TracksView = ({
     tracks.map((t) => ({ ...t, viewInIgv: true }))
   );
 
-  // remove all the checks from useMemo(), are they even needed?
   const accessUrlsPromises = useMemo(() => getIgvFileAndIndexAccessUrls(tracks), [tracks]);
-
-  const t = useTranslationFn();
 
   const availableAssemblies = useMemo(() => Object.keys(references), [references]);
   const hasMultipleAssemblies = availableAssemblies.length > 1;
@@ -118,12 +115,14 @@ const TracksView = ({
     [buildIgvTrack]
   );
 
-  const storeIgvPosition = useCallback((referenceFrame: IgvPosition[]) => {
-    // typically a singleton array, but "multi-locus" view has multiple positions
-    const positions = referenceFrame.map((r) => r.getLocusString());
-    dispatch(saveIgvPosition(positions));
-    console.log(`saved position: ${JSON.stringify(positions)}`);
-  }, []);
+  const storeIgvPosition = useCallback(
+    (referenceFrame: IgvPosition[]) => {
+      // typically a singleton array, but "multi-locus" view has multiple positions
+      const positions = referenceFrame.map((r) => r.getLocusString());
+      dispatch(saveIgvPosition(positions));
+    },
+    [dispatch]
+  );
 
   const debouncedStoreIgvPosition = useDebounce(
     (referenceFrame: IgvPosition[]) => storeIgvPosition(referenceFrame),
@@ -220,7 +219,15 @@ const TracksView = ({
           igvCreatingByAssemblyRef.current[assemblyId] = false;
         });
     });
-  }, [accessUrlsPromises, availableAssemblies, buildIgvTrack, references, tracksWithView]);
+  }, [
+    accessUrlsPromises,
+    availableAssemblies,
+    buildIgvTrack,
+    debouncedStoreIgvPosition,
+    igvPosition,
+    references,
+    tracksWithView,
+  ]);
 
   // -------------------------- end igv init --------------------------
 
