@@ -13,8 +13,10 @@ import { TabKeys } from '@/types/PhenopacketView.types';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
 import { useTranslationFn } from '@/hooks';
 import { useScopeDownloadData } from '@/hooks/censorship';
+import { useReference } from '@/features/reference/hooks';
 import { assemblyIdsForExperiments, phenopacketExperimentResults } from '@/utils/experiments';
 import { useBentoOrIgvReferencesById, viewableTracks } from './igv';
+import { RequestStatus } from '@/types/requests';
 
 export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
   const t = useTranslationFn();
@@ -34,6 +36,9 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
   const referencesById = useBentoOrIgvReferencesById(requestedAssemblies);
 
   const { hasAttempted: attemptedCanDownload, hasPermission: canDownload } = useScopeDownloadData();
+  const { genomesStatus } = useReference();
+
+  const tabsReady = attemptedCanDownload && (tracks.length === 0 || genomesStatus === RequestStatus.Fulfilled);
 
   // TODO: Add Experiments
   const items: TabsProps['items'] = useMemo(() => {
@@ -90,6 +95,7 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
     tabs,
     tabContent,
     activeTabs,
+    tabsReady,
     collapseRef,
   };
 };

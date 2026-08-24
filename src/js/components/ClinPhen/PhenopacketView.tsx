@@ -33,7 +33,7 @@ const PhenopacketView = () => {
 
   const { data: phenopacket, status, isAuthorized } = usePhenopacketData(packetId ?? '');
 
-  const { handleTabChange, activeTabs, tabs, tabContent, collapseRef } = usePhenopacketTabs(phenopacket);
+  const { handleTabChange, activeTabs, tabs, tabContent, tabsReady, collapseRef } = usePhenopacketTabs(phenopacket);
 
   // derive primitives instead of an object to avoid recreating defaultTab each render
   const defaultTabKey = useMemo(() => activeTabs[0], [activeTabs]);
@@ -78,7 +78,7 @@ const PhenopacketView = () => {
   // Early returns for handling loading/errors
 
   // tab param --> active key handling
-  if (status === RequestStatus.Fulfilled && phenopacket && activeKey !== tab) {
+  if (status === RequestStatus.Fulfilled && phenopacket && tabsReady && activeKey !== tab) {
     if (tab && activeTabs.includes(tab as TabKeys)) {
       setActiveKey(tab as TabKeys);
     } else {
