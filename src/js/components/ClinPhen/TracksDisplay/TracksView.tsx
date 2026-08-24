@@ -189,7 +189,7 @@ const TracksView = ({
 
       const igvOptions = {
         ...(referenceForAssembly as CreateOpt),
-        locus: igvPosition,
+        ...(igvPosition.length > 0 && { locus: igvPosition }),
         tracks: initialIgvTracks,
       };
 
