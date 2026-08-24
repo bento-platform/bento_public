@@ -575,7 +575,12 @@
       "show_section": "Show section",
       "hide_section": "Hide section",
       "filter_by": "Filter by",
-      "clear_filter": "Clear filter by"
+      "clear_filter": "Clear filter by",
+      "search_placeholder": "Search…",
+      "search_label": "Search {{facet}}",
+      "search_matches_one": "{{count}} match",
+      "search_matches_other": "{{count}} matches",
+      "search_no_matches": "No matches"
     },
     "facets": {
       "program_one": "Program",
