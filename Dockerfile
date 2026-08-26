@@ -6,6 +6,8 @@ FROM --platform=$BUILDPLATFORM node:24-trixie-slim AS build
 
 WORKDIR /bento-public
 
+ENV NEXT_TELEMETRY_DISABLED=1
+
 COPY package.json .
 COPY package-lock.json .
 
@@ -26,6 +28,8 @@ FROM --platform=$TARGETPLATFORM node:24-trixie-slim
 LABEL org.opencontainers.image.description="Bento Public: a publicly accessible portal for clinical datasets."
 
 WORKDIR /bento-public
+
+ENV NEXT_TELEMETRY_DISABLED=1
 
 # In general, we want to copy files in order of least -> most changed for layer caching reasons.
 
