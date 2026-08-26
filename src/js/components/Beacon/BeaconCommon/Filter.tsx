@@ -45,19 +45,23 @@ const Filter = ({
   // rerender default option when key changes
   useEffect(() => {
     form.setFieldsValue({
-      [`filterValue${filter.index}`]: valueOptions[0].value,
+      [`filterValue${filter.index}`]: valueOptions[0]?.value,
     });
   }, [filter.index, form, valueOptions]);
 
   const searchKeyOptions = (arr: BeaconFilterSection[]): FilterOption[] => {
     return arr.map((qs) => ({
       label: t(qs.section_title),
-      options: qs.fields.map((field) => ({
-        disabled: searchFieldInUse(field.id),
-        label: <FilterLabel filter={field} />,
-        value: field.id,
-        optionsThisKey: searchValueOptions(field.values),
-      })),
+      // Fields with no values to choose from would leave the value picker with nothing to select, so
+      // exclude them here rather than offering a search field that can't actually be filtered on.
+      options: qs.fields
+        .filter((field) => field.values.length > 0)
+        .map((field) => ({
+          disabled: searchFieldInUse(field.id),
+          label: <FilterLabel filter={field} />,
+          value: field.id,
+          optionsThisKey: searchValueOptions(field.values),
+        })),
     }));
   };
 
