@@ -13,6 +13,7 @@ import FilterChip from '@/components/Util/FilterChip';
 import Sidebar, { SidebarFacet, SidebarSection } from '@/components/Sidebar/Sidebar';
 import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { FACETS } from '@/features/catalogue/facetRegistry';
+import { stripDiacritics } from '@/utils/strings';
 
 interface FacetConfig {
   id: FacetId;
@@ -37,9 +38,11 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
   if (options.length === 0) return null;
 
   const searchable = !!facet.scroll;
-  const trimmedQuery = query.trim().toLowerCase();
+  const trimmedQuery = stripDiacritics(query.trim().toLowerCase());
   const filteredOptions =
-    searchable && trimmedQuery ? options.filter((o) => o.label.toLowerCase().includes(trimmedQuery)) : options;
+    searchable && trimmedQuery
+      ? options.filter((o) => stripDiacritics(o.label.toLowerCase()).includes(trimmedQuery))
+      : options;
 
   return (
     <SidebarFacet headerId={facet.id} label={label} collapsed={collapsed} onToggleCollapse={onToggleCollapse}>
