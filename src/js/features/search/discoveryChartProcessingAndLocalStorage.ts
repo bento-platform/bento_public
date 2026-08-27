@@ -55,8 +55,11 @@ export const discoveryChartProcessingAndLocalStorage = (
   const sectionData: Sections = sections.map(({ section_title, charts, default_charts }, idx) => ({
     sectionId: `sec-${idx}-${_asSlug(section_title)}`,
     sectionTitle: section_title,
-    // Filter out charts where field data is missing due to missing counts permissions for the field's data type
-    charts: charts.filter((c) => !!fields[c.field]).map((chart, i) => normalizeChart(chart, i, default_charts)),
+    // Filter out charts where field data is missing due to low cell counts _or_ missing counts permissions for the
+    // field's data type
+    charts: charts
+      .filter((c) => !!(scopeFieldData ?? fields)[c.field])
+      .map((chart, i) => normalizeChart(chart, i, default_charts)),
   }));
 
   const defaultLayout = JSON.parse(JSON.stringify(sectionData));
