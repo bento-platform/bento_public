@@ -58,7 +58,7 @@ export const discoveryChartProcessingAndLocalStorage = (
     // Filter out charts where field data is missing due to low cell counts _or_ missing counts permissions for the
     // field's data type
     charts: charts
-      .filter((c) => !!(scopeFieldData ?? fields)[c.field])
+      .filter((c) => !!(scopeFieldData?.[c.field] ?? fields[c.field]))
       .map((chart, i) => normalizeChart(chart, i, default_charts)),
   }));
 
