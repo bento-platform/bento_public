@@ -3,7 +3,7 @@ import { Card, Typography } from 'antd';
 import { useTranslationFn } from '@/hooks';
 import { useSelectedDataset, useSelectedProject } from '@/features/metadata/hooks';
 
-import AboutBox from '@/components/Overview/AboutBox';
+import AboutBox from './AboutBox';
 import DatasetProvenanceCard from '@/components/Provenance/DatasetProvenance/DatasetProvenanceCard';
 
 const AboutPage = () => {
