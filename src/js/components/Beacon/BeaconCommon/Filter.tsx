@@ -52,7 +52,7 @@ const Filter = ({
   const searchKeyOptions = (arr: BeaconFilterSection[]): FilterOption[] => {
     return arr.map((qs) => ({
       label: t(qs.section_title),
-      // Exclude fields with no values - nothing to filter on.
+      // Exclude fields with no values
       options: qs.fields
         .filter((field) => field.values.length > 0)
         .map((field) => ({

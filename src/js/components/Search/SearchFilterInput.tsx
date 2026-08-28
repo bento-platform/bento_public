@@ -57,7 +57,7 @@ const SearchFilterInput = ({
           options: fields
             .filter((f) => haveEntityDataForField(f.definition))
             .filter((f) => {
-              // Live range fields don't use the options list, so emptiness doesn't matter for them.
+              // Live range fields don't use the options list, emptiness isn;'t an issue for them
               const isLiveRangeField =
                 hasQueryData && (f.definition.datatype === 'number' || f.definition.datatype === 'date');
               return isLiveRangeField || f.options.length > 0;
