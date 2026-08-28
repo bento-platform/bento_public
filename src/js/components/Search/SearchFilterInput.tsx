@@ -57,10 +57,7 @@ const SearchFilterInput = ({
           options: fields
             .filter((f) => haveEntityDataForField(f.definition))
             .filter((f) => {
-              // Range fields backed by live query data don't use the pre-fetched options list, so an
-              // empty list doesn't make them unusable. Every other field (including range fields shown
-              // as binned options for users without query permission) needs at least one option to be
-              // usable - otherwise selecting it would leave the value picker with nothing to choose.
+              // Live range fields don't use the options list, so emptiness doesn't matter for them.
               const isLiveRangeField =
                 hasQueryData && (f.definition.datatype === 'number' || f.definition.datatype === 'date');
               return isLiveRangeField || f.options.length > 0;

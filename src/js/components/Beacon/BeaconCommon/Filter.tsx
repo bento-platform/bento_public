@@ -52,8 +52,7 @@ const Filter = ({
   const searchKeyOptions = (arr: BeaconFilterSection[]): FilterOption[] => {
     return arr.map((qs) => ({
       label: t(qs.section_title),
-      // Fields with no values to choose from would leave the value picker with nothing to select, so
-      // exclude them here rather than offering a search field that can't actually be filtered on.
+      // Exclude fields with no values - nothing to filter on.
       options: qs.fields
         .filter((field) => field.values.length > 0)
         .map((field) => ({
