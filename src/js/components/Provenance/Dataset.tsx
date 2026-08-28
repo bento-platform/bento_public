@@ -150,7 +150,7 @@ const Dataset = ({
             </Button>
           )}
           <Button icon={<SolutionOutlined />} className="flex-1" onClick={openProvenanceModal}>
-            {t('dataset.about')}
+            {t('About')}
           </Button>
         </Flex>
       </Card>

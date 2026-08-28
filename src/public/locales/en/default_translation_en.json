@@ -628,7 +628,6 @@
     }
   },
   "dataset": {
-    "about": "$t(About)",
     "expand": "more",
     "apply_for_access": "Apply for access"
   },
