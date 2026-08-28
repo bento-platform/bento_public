@@ -1,82 +1,114 @@
-import type { DrawerProps } from 'antd';
-import { Button, Drawer, Flex, Space, Typography } from 'antd';
+import { useCallback } from 'react';
+
+import { Button, type DrawerProps, Drawer, Flex, Grid, Space, Typography } from 'antd';
+
 const { Title } = Typography;
+const { useBreakpoint } = Grid;
+
+import type { Section } from '@/types/data';
 
 import ChartTree from './ChartTree';
+import OverviewChartSizeControl from '@/components/Overview/Util/OverviewChartSizeControl';
 
-import type { ChartDataField } from '@/types/data';
 import { useAppDispatch, useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
+import { useAvailableChartSections } from '@/features/search/hooks';
 import { hideAllSectionCharts, setAllDisplayedCharts, resetLayout } from '@/features/search/query.store';
-import { useSearchQuery } from '@/features/search/hooks';
+
+const ManageChartsSectionHeader = ({
+  section: { sectionId, sectionTitle },
+  first,
+}: {
+  section: Section;
+  first: boolean;
+}) => {
+  const t = useTranslationFn();
+  const dispatch = useAppDispatch();
+
+  return (
+    <Flex justify="space-between" align="center" className={first ? 'mb-3' : 'my-3'}>
+      <Title level={5} style={{ margin: '0' }}>
+        {t(sectionTitle)}
+      </Title>
+      <Space>
+        <Button
+          size="small"
+          onClick={() => {
+            dispatch(setAllDisplayedCharts({ section: sectionId }));
+          }}
+        >
+          {t('Show All')}
+        </Button>
+        <Button
+          size="small"
+          onClick={() => {
+            dispatch(hideAllSectionCharts({ section: sectionId }));
+          }}
+        >
+          {t('Hide All')}
+        </Button>
+      </Space>
+    </Flex>
+  );
+};
 
 const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: ManageChartsDrawerProps) => {
   const t = useTranslationFn();
 
   const dispatch = useAppDispatch();
 
+  const breakpoints = useBreakpoint();
   const isSmallScreen = useSmallScreen();
 
-  const { sections } = useSearchQuery();
+  const availableChartSections = useAvailableChartSections();
+
+  const showAll = useCallback(() => {
+    dispatch(setAllDisplayedCharts({}));
+  }, [dispatch]);
+
+  const reset = useCallback(() => {
+    dispatch(resetLayout());
+  }, [dispatch]);
 
   return (
     <Drawer
       title={t('Manage Charts')}
-      placement="right"
+      placement={
+        // If we're on a larger screen, the sidebar 'Manage Charts' button will be used from the left.
+        // Otherwise, it'll be the float button from the right.
+        breakpoints.lg ? 'left' : 'right'
+      }
       onClose={onManageDrawerClose}
       open={manageDrawerVisible}
       // If we're on a small device, make the drawer full-screen width instead of a fixed width.
       // The default value for Ant Design is 372.
       width={isSmallScreen ? '100vw' : 420}
+      styles={{ body: { padding: 0, display: 'grid', gridTemplateRows: 'auto min-content' } }}
       extra={
         <Space>
-          <Button
-            size="small"
-            onClick={() => {
-              dispatch(setAllDisplayedCharts({}));
-            }}
-          >
+          <Button size="small" onClick={showAll}>
             {t('Show All')}
           </Button>
-          <Button
-            size="small"
-            onClick={() => {
-              dispatch(resetLayout());
-            }}
-          >
+          <Button size="small" onClick={reset}>
             {t('Reset')}
           </Button>
         </Space>
       }
     >
-      {sections.map(({ sectionTitle, charts }: { sectionTitle: string; charts: ChartDataField[] }, i: number) => (
-        <div key={i}>
-          <Flex justify="space-between" align="center" style={{ padding: '10px 0' }}>
-            <Title level={5} style={{ margin: '0' }}>
-              {t(sectionTitle)}
-            </Title>
-            <Space>
-              <Button
-                size="small"
-                onClick={() => {
-                  dispatch(setAllDisplayedCharts({ section: sectionTitle }));
-                }}
-              >
-                {t('Show All')}
-              </Button>
-              <Button
-                size="small"
-                onClick={() => {
-                  dispatch(hideAllSectionCharts({ section: sectionTitle }));
-                }}
-              >
-                {t('Hide All')}
-              </Button>
-            </Space>
-          </Flex>
-          <ChartTree charts={charts} section={sectionTitle} />
-        </div>
-      ))}
+      <div className="p-ant-lg overflow-y-auto">
+        {availableChartSections.map((section, i) => {
+          const { sectionId, charts } = section;
+          return (
+            <div key={sectionId}>
+              <ManageChartsSectionHeader section={section} first={i === 0} />
+              <ChartTree charts={charts} section={sectionId} />
+            </div>
+          );
+        })}
+      </div>
+      <div className="manage-charts__chart-size-control-container">
+        <OverviewChartSizeControl />
+      </div>
     </Drawer>
   );
 };

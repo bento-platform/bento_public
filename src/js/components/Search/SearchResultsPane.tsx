@@ -3,7 +3,7 @@ import { Card, Col, Row, Typography } from 'antd';
 import { PieChart } from 'bento-charts';
 
 import { T_PLURAL_COUNT } from '@/constants/i18n';
-import { PIE_CHART_HEIGHT } from '@/constants/overviewConstants';
+import { CHART_SIZES } from '@/constants/overviewConstants';
 import { useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
 import type { DiscoveryResults } from '@/types/data';
@@ -25,6 +25,8 @@ const SRChartsPage = ({
 
   const { biosampleChartData, experimentChartData } = results;
 
+  const pieChartProps = { height: CHART_SIZES.normal.pieChartHeight, sort: true, dataMap: translateMap };
+
   return (
     <>
       <Col xs={24} lg={10}>
@@ -32,7 +34,7 @@ const SRChartsPage = ({
           {t('entities.biosample', T_PLURAL_COUNT)}
         </Typography.Title>
         {!hasInsufficientData && biosampleChartData.length ? (
-          <PieChart data={biosampleChartData} height={PIE_CHART_HEIGHT} sort={true} dataMap={translateMap} />
+          <PieChart data={biosampleChartData} {...pieChartProps} />
         ) : (
           <CustomEmpty text="No Results" />
         )}
@@ -42,7 +44,7 @@ const SRChartsPage = ({
           {t('entities.experiment', T_PLURAL_COUNT)}
         </Typography.Title>
         {!hasInsufficientData && experimentChartData.length ? (
-          <PieChart data={experimentChartData} height={PIE_CHART_HEIGHT} sort={true} dataMap={translateMap} />
+          <PieChart data={experimentChartData} {...pieChartProps} />
         ) : (
           <CustomEmpty text="No Results" />
         )}

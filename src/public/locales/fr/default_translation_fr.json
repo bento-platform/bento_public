@@ -3,7 +3,6 @@
   "Search": "Chercher",
   "Explore": "Explorer",
   "Count": "Observations",
-  "Portal": "Portail",
   "missing": "manquant(s)",
   "entities": {
     "project_one": "Projet",
@@ -71,6 +70,13 @@
     "search_fetch": "Erreur lors du chargement des résultats de recherche",
     "page_not_found": "Page introuvable"
   },
+  "overview": {
+    "chart_size_label": "Taille des tableaux:",
+    "compact": "Compacte",
+    "normal": "Normale",
+    "manage_charts_help": "Contrôler les tableaux affichés, leur ordre d'affichage et leur taille.",
+    "chart_size_help": "Définir la taille d'affichage des tableaux et le nombre de tableaux pouvant s'afficher à l'écran."
+  },
   "search": {
     "filters_one": "filtre",
     "filters_other": "filtres",
@@ -89,9 +95,13 @@
     "manage_columns": "Gérer les colonnes",
     "export": "Exporter",
     "export_data": "Exporter les données",
+    "export_error": "Échec de l'exportation. Veuillez réessayer.",
     "select_all_fields": "Tout sélectionner",
     "csv": "CSV",
     "xlsx": "XLSX",
+    "selected_count_one": "{{count}} ligne sélectionnée",
+    "selected_count_other": "{{count}} lignes sélectionnées",
+    "clear_selection": "Effacer la sélection",
     "fts": {
       "plain": "Mot",
       "plain_help": "Récupère les enregistrements qui correspondent exactement aux mots de la requête (sans distinction de casse).",
@@ -192,19 +202,34 @@
   "catalogue": {
     "rail": {
       "title": "Filtres",
-      "close": "Fermer les filtres"
+      "close": "Fermer les filtres",
+      "show_section": "Afficher section",
+      "hide_section": "Masquer section",
+      "filter_by": "Filtrer par",
+      "clear_filter": "Effacer le filtre par"
     },
     "facets": {
-      "projects": "$t(entities.project_one)",
-      "dataTypes": "Type de données",
-      "taxa": "Taxons",
-      "access": "Accès",
-      "licenses": "Utilisation des données",
-      "statuses": "Statut",
-      "keywords": "Mot-clé"
+      "program_one": "Programmes",
+      "program_other": "Programmes",
+      "project_one": "$t(entities.project_one)",
+      "project_other": "$t(entities.project_other)",
+      "domain_one": "Domaine",
+      "domain_other": "Domaines",
+      "taxon_one": "Taxon",
+      "taxon_other": "Taxons",
+      "access_one": "Accès",
+      "access_other": "Accès",
+      "license_one": "Utilisation des données",
+      "license_other": "Utilisation des données",
+      "context_one": "Contexte",
+      "context_other": "Contexte",
+      "status_one": "Statut",
+      "status_other": "Statut",
+      "keyword_one": "Mot-clé",
+      "keyword_other": "Mots-clés"
     },
     "toolbar": {
-      "search_placeholder": "Rechercher des jeux de données, mots-clés, dosages …",
+      "search_placeholder": "Rechercher des $t(entities.dataset_other, lowercase), mots-clés, dosages …",
       "sort_label": "Trier",
       "sort": {
         "recently_updated": "Récemment mis à jour",
@@ -213,23 +238,24 @@
         "most_individuals": "Le plus de participants",
         "most_biosamples": "Le plus d'échantillons biologiques"
       },
-      "dataset_found_one": "jeu de données trouvé",
-      "dataset_found_other": "jeux de données trouvés",
+      "dataset_found_one": "$t(entities.dataset, {\"count\": {{count}} }, lowercase) trouvé",
+      "dataset_found_other": "$t(entities.dataset, {\"count\": {{count}} }, lowercase) trouvés",
       "show_insights": "Afficher les aperçus",
       "hide_insights": "Masquer les aperçus",
-      "clear_all": "Tout effacer"
+      "clear_all": "Tout effacer",
+      "clear_filter": "Effacer le filtre par",
+      "active_filters": "Filtres actifs"
     },
     "insights": {
-      "title": "Aperçu des jeux de données",
+      "title": "Aperçu des $t(entities.dataset_other, lowercase)",
       "hint": "Sélectionner un segment pour filtrer",
       "by_status": "Par statut",
-      "by_data_type": "Par type de données",
+      "by_domain": "Par domaine",
       "by_keyword": "Par mot-clé",
       "by_project": "Par $t(entities.project_one, lowercase)"
     },
     "datasets": {
-      "heading": "Jeux de données",
-      "no_results": "Aucun jeu de données ne correspond à vos filtres",
+      "no_results": "Aucun $t(entities.dataset_one, lowercase) ne correspond à vos filtres",
       "clear_filters": "Effacer tous les filtres",
       "expand": "plus"
     }
@@ -280,6 +306,7 @@
     "organization": "Organisation",
     "person": "Individu",
     "privacy": "Confidentialité",
+    "program": "Programme",
     "program_name": "Nom du programme",
     "project_id": "Identifiant du projet",
     "protocol": "Protocole",
@@ -351,7 +378,9 @@
     "c3g": "le Centre canadien de génomique computationnelle à l'université McGill",
     "licensed_under": "Bento est sous licence",
     "source_available": "Le code source est disponible sur",
-    "terms_of_use": "Conditions d'utilisation (en anglais)"
+    "terms_of_use": "Conditions d'utilisation (en anglais)",
+    "admin_link": "Admin",
+    "admin_link_tooltip": "Gérer les données et les accès"
   },
   "Help": "Aide",
   "Help for": "Aide pour",
@@ -635,7 +664,9 @@
   },
   "table": {
     "invalid_row_keys_title": "Référence de ligne invalide",
-    "invalid_row_keys_description": "Certaines lignes référencées dans l'URL n'existent pas. Correction automatique aux entrées valides."
+    "invalid_row_keys_description": "Certaines lignes référencées dans l'URL n'existent pas. Correction automatique aux entrées valides.",
+    "expand_row": "Développer la ligne",
+    "collapse_row": "Réduire la ligne"
   },
   "drs": {
     "self_uri": "URI",
@@ -650,9 +681,9 @@
   },
   "pcgl": {
     "banner": {
-      "eyebrow": "BIBLIOTHÈQUE GÉNOMIQUE PANCANADIENNE",
+      "eyebrow": "Bibliothèque génomique pancanadienne",
       "title": "Catalogue de données",
-      "subtitle": "Explorez les ensembles de données de la Bibliothèque génomique pancanadienne"
+      "subtitle": "Explorez les $t(entities.dataset_other, lowercase) de la Bibliothèque génomique pancanadienne"
     },
     "footer": {
       "logo_alt": "Logo de la Bibliothèque génomique pancanadienne",
@@ -676,7 +707,6 @@
       "dataPlatform": "Plateforme de données",
       "myApplications": "Mes demandes",
       "manageApplications": "Gérer les demandes",
-      "admin": "Tableau de bord administrateur",
       "cihrHref": "https://cihr-irsc.gc.ca/f/193.html"
     }
   }

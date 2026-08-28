@@ -5,13 +5,15 @@ import { CloseOutlined } from '@ant-design/icons';
 import type { FilterValue } from '@/features/search/types';
 import type { Field, NumberField } from '@/types/discovery/fieldDefinition';
 
-import { useTranslationFn } from '@/hooks';
+import { useLanguage, useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
 import { useSearchQuery } from '@/features/search/hooks';
+import { useHaveEntityDataForField } from '@/hooks/useHaveEntityData';
 import OptionDescription from '@/components/Search/OptionDescription';
 import DateRangeFilterInput from '@/components/Search/DateRangeFilterInput';
 import NumberRangeFilterInput from '@/components/Search/NumberRangeFilterInput';
 import EnumFilterInput from '@/components/Search/EnumFilterInput';
+import { formatDateBinKey } from '@/utils/rangeFilterUtils';
 
 export type FilterInputValue = { field: string | null; value: FilterValue };
 
@@ -39,33 +41,48 @@ const SearchFilterInput = ({
   disabledFields: Set<string>;
 }) => {
   const t = useTranslationFn();
+  const language = useLanguage();
   const { hasPermission: hasQueryData } = useScopeQueryData();
 
   const { filterSections } = useSearchQuery();
 
+  const haveEntityDataForField = useHaveEntityDataForField();
+
   const filterOptions = useMemo(
     () =>
-      filterSections.map(({ section_title: label, fields }) => ({
-        label: t(label),
-        title: t(label),
-        options: fields.map((f) => ({
-          value: f.id,
-          // Disabled if: field is in disabled set AND it isn't the currently selected field (so we allow re-selection of
-          // the current field.)
-          disabled: disabledFields.has(f.id) && field !== f.id,
-        })),
-      })),
-    [t, filterSections, field, disabledFields]
+      filterSections
+        .map(({ section_title: label, fields }) => ({
+          label: t(label),
+          title: t(label),
+          options: fields
+            .filter((f) => haveEntityDataForField(f.definition))
+            .map((f) => ({
+              value: f.id,
+              // Disabled if: field is in disabled set AND it isn't the currently selected field (so we allow re-selection of
+              // the current field.)
+              disabled: disabledFields.has(f.id) && field !== f.id,
+            })),
+        }))
+        .filter((fs) => fs.options.length > 0),
+    [t, haveEntityDataForField, filterSections, field, disabledFields]
   );
 
   const fieldFilterOptions = useMemo(
     () =>
       Object.fromEntries(
         filterSections.flatMap(({ fields }) =>
-          fields.map((f) => [f.id, f.options.map((o) => ({ value: o, label: t(o) }))])
+          fields.map((f) => [
+            f.id,
+            f.options.map((o) => ({
+              value: o,
+              // Unauthenticated users pick date filters from a fixed list of bins rather than a range picker
+              // (see isRangeField below), so bin keys ("2021-01") need to be formatted here.
+              label: f.definition.datatype === 'date' && o !== 'missing' ? formatDateBinKey(o, language) : t(o),
+            })),
+          ])
         )
       ),
-    [t, filterSections]
+    [t, filterSections, language]
   );
 
   const fieldDefinitionMap = useMemo(

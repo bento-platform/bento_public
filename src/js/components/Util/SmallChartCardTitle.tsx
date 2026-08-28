@@ -5,17 +5,24 @@ type SmallChartCardTitleProps = {
   title: ReactNode;
   description?: ReactNode;
   descriptionStyle?: CSSProperties;
+  compact?: boolean;
 };
 
-const SmallChartCardTitle = ({ title, description, descriptionStyle }: SmallChartCardTitleProps) => (
+const SmallChartCardTitle = ({ title, description, descriptionStyle, compact }: SmallChartCardTitleProps) => (
   <Space.Compact
-    direction="vertical"
-    style={{ fontWeight: 'normal', padding: description ? '4px 4px' : '10px 4px', maxWidth: '100%' }}
+    direction={compact ? 'horizontal' : 'vertical'}
+    style={{
+      fontWeight: 'normal',
+      padding: description || compact ? '4px 4px' : '10px 4px',
+      maxWidth: '100%',
+      width: compact ? '100%' : 'auto',
+      gap: compact ? '8px' : '0',
+    }}
   >
     <Typography.Text
-      ellipsis={true}
+      ellipsis={!compact}
       style={{
-        fontSize: '20px',
+        fontSize: compact ? '14px' : '20px',
         fontWeight: '600',
       }}
     >
