@@ -4,9 +4,9 @@ import { useTranslationFn } from '@/hooks';
 import { useSelectedDataset, useSelectedProject } from '@/features/metadata/hooks';
 
 import AboutBox from '@/components/Overview/AboutBox';
-import DatasetProvenanceCard from './DatasetProvenance/DatasetProvenanceCard';
+import DatasetProvenanceCard from '@/components/Provenance/DatasetProvenance/DatasetProvenanceCard';
 
-const ProvenancePage = () => {
+const AboutPage = () => {
   const t = useTranslationFn();
 
   const selectedProject = useSelectedProject();
@@ -27,4 +27,4 @@ const ProvenancePage = () => {
   return <AboutBox />;
 };
 
-export default ProvenancePage;
+export default AboutPage;
