@@ -20,7 +20,7 @@ const FilterChip = ({ label, count, selected, disabled, onChange }: FilterChipPr
   return (
     <label htmlFor={id} className={clsx('fchip', selected && 'fchip--on')} title={labelTitle}>
       <input
-        className="fchip__input"
+        className="fchip__input visually-hidden"
         id={id}
         type="checkbox"
         checked={selected}
