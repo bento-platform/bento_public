@@ -125,7 +125,7 @@ const Dataset = ({
             ellipsis={{
               rows: 3,
               expandable: true,
-              symbol: <span className="catalogue-card__expand-symbol">{t('catalogue.datasets.expand')}</span>,
+              symbol: <span className="catalogue-card__expand-symbol">{t('dataset.expand')}</span>,
             }}
             className="catalogue-card__description"
           >
@@ -143,14 +143,14 @@ const Dataset = ({
           </div>
         )}
 
-        <Flex gap={8} className="mt-3">
+        <Flex gap={8} className="catalogue-card__actions mt-3" wrap>
           {hasData && (
             <Button type="primary" icon={<PieChartOutlined />} className="flex-1" onClick={onNavigateOverview}>
               {t('Explore')}
             </Button>
           )}
           <Button icon={<SolutionOutlined />} className="flex-1" onClick={openProvenanceModal}>
-            {t('Provenance')}
+            {t('About')}
           </Button>
         </Flex>
       </Card>

@@ -2,7 +2,6 @@
   "Overview": "Aperçu",
   "Search": "Chercher",
   "Explore": "Explorer",
-  "Provenance": "Provenance",
   "Count": "Observations",
   "missing": "manquant(s)",
   "entities": {
@@ -261,6 +260,10 @@
       "expand": "plus"
     }
   },
+  "dataset": {
+    "expand": "plus",
+    "apply_for_access": "Demande d'accès"
+  },
   "provenance": {
     "sections": {
       "summary": "Résumé",
@@ -392,7 +395,7 @@
       "Sélectionnez des filtres et spécifiez des valeurs pour restreindre les données d'intérêt dans le périmètre sélectionné.",
       "Si un petit nombre de records correspond à votre requête, le décompte peut être censuré pour éviter la ré-identification."
     ],
-    "provenance": ["Données de provenance détaillées pour un jeu de données ou tous les jeux de données d'un projet."],
+    "about": ["Données de provenance détaillées pour un jeu de données ou tous les jeux de données d'un projet."],
     "beacon": [
       "Beacon vous permet d'interroger les données en fonction de la position des variants génétiques et de filtrer les résultats en fonction de diverses propriétés de métadonnées cliniques",
       "ou expérimentales. Il est également possible d'effectuer des recherches uniquement à partir des variants ou des métadonnées."
