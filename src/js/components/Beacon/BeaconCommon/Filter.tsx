@@ -45,20 +45,25 @@ const Filter = ({
   // rerender default option when key changes
   useEffect(() => {
     form.setFieldsValue({
-      [`filterValue${filter.index}`]: valueOptions[0].value,
+      [`filterValue${filter.index}`]: valueOptions[0]?.value,
     });
   }, [filter.index, form, valueOptions]);
 
   const searchKeyOptions = (arr: BeaconFilterSection[]): FilterOption[] => {
-    return arr.map((qs) => ({
-      label: t(qs.section_title),
-      options: qs.fields.map((field) => ({
-        disabled: searchFieldInUse(field.id),
-        label: <FilterLabel filter={field} />,
-        value: field.id,
-        optionsThisKey: searchValueOptions(field.values),
-      })),
-    }));
+    return arr
+      .map((qs) => ({
+        label: t(qs.section_title),
+        // Exclude fields with no values
+        options: qs.fields
+          .filter((field) => field.values.length > 0)
+          .map((field) => ({
+            disabled: searchFieldInUse(field.id),
+            label: <FilterLabel filter={field} />,
+            value: field.id,
+            optionsThisKey: searchValueOptions(field.values),
+          })),
+      }))
+      .filter((section) => section.options.length > 0);
   };
 
   const searchValueOptions = (arr: BeaconFilterUiOptions['values']): FilterPullDownValue[] =>

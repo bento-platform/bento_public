@@ -56,6 +56,12 @@ const SearchFilterInput = ({
           title: t(label),
           options: fields
             .filter((f) => haveEntityDataForField(f.definition))
+            .filter((f) => {
+              // Live range fields don't use the options list, emptiness isn't an issue for them
+              const isLiveRangeField =
+                hasQueryData && (f.definition.datatype === 'number' || f.definition.datatype === 'date');
+              return isLiveRangeField || f.options.length > 0;
+            })
             .map((f) => ({
               value: f.id,
               // Disabled if: field is in disabled set AND it isn't the currently selected field (so we allow re-selection of
@@ -64,7 +70,7 @@ const SearchFilterInput = ({
             })),
         }))
         .filter((fs) => fs.options.length > 0),
-    [t, haveEntityDataForField, filterSections, field, disabledFields]
+    [t, haveEntityDataForField, filterSections, field, disabledFields, hasQueryData]
   );
 
   const fieldFilterOptions = useMemo(
