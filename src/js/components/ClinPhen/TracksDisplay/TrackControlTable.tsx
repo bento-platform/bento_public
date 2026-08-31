@@ -1,6 +1,7 @@
 import { Switch, Table } from 'antd';
 import type { ExperimentResultWithView } from '@/types/clinPhen/igv';
 import { useTranslationFn } from '@/hooks';
+import ReferenceGenomePopoverField from '@/components/Util/ClinPhen/ReferenceGenomePopoverField';
 
 const TrackControlTable = ({
   toggleView,
@@ -26,6 +27,9 @@ const TrackControlTable = ({
     {
       title: t('experiment_result.genome_assembly_id'),
       dataIndex: 'genome_assembly_id',
+      render: (_: unknown, track: ExperimentResultWithView) => (
+        <ReferenceGenomePopoverField referenceGenomeId={track.genome_assembly_id} />
+      ),
     },
     {
       title: t('general.view'),
@@ -37,7 +41,16 @@ const TrackControlTable = ({
     },
   ];
 
-  return <Table bordered pagination={false} columns={trackTableColumns} rowKey="filename" dataSource={tracks} />;
+  return (
+    <Table
+      className="compact"
+      bordered
+      pagination={false}
+      columns={trackTableColumns}
+      rowKey="filename"
+      dataSource={tracks}
+    />
+  );
 };
 
 export default TrackControlTable;
