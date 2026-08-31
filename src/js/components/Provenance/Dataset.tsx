@@ -98,7 +98,8 @@ const Dataset = ({
       </List.Item>
     );
   } else if (format === 'card') {
-    const updatedDate = dataset.last_modified ?? project?.updated;
+    // Fall back to database record update timestamp
+    const updatedDate = dataset.last_modified ?? dataset.updated_at;
     const updatedStr = updatedDate ? isoDateToString(updatedDate, language) : undefined;
 
     inner = (
