@@ -49,7 +49,7 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
       {isSearchable && (
         <div className="facet-search">
           <Input
-            type='search'
+            type="search"
             size="small"
             allowClear
             prefix={<SearchOutlined aria-hidden="true" />}
