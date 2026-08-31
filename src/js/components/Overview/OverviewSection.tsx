@@ -1,19 +1,27 @@
-import type { ChartDataField } from '@/types/data';
+import type { ChartSizeMode } from '@/features/ui/types';
+import type { Section } from '@/types/data';
 import OverviewDisplayData from './OverviewDisplayData';
 import OverviewCollapsibleSection from './Util/OverviewCollapsibleSection';
 
 const OverviewSection = ({
-  title,
-  chartData,
+  section: { sectionId, sectionTitle, charts },
   searchableFields,
-}: {
-  title: string;
-  chartData: ChartDataField[];
-  searchableFields: Set<string>;
-}) => (
-  <OverviewCollapsibleSection title={title}>
-    <OverviewDisplayData section={title} allCharts={chartData} searchableFields={searchableFields} />
+  chartMode,
+}: OverviewSectionProps) => (
+  <OverviewCollapsibleSection title={sectionTitle}>
+    <OverviewDisplayData
+      section={sectionId}
+      allCharts={charts}
+      searchableFields={searchableFields}
+      chartMode={chartMode}
+    />
   </OverviewCollapsibleSection>
 );
+
+export interface OverviewSectionProps {
+  section: Section;
+  searchableFields: Set<string>;
+  chartMode: ChartSizeMode;
+}
 
 export default OverviewSection;

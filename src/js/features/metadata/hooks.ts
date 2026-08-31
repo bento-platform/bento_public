@@ -58,13 +58,15 @@ export const useSelectedScopeTitles = () => {
 };
 
 export const useScopeHasData = () => {
+  const { projects } = useMetadata();
   const selectedProject = useSelectedProject();
   const selectedDataset = useSelectedDataset();
 
   return useMemo(
     () =>
       (!!selectedDataset && nonEmptyCounts(selectedDataset.counts_by_entity)) ||
-      (!!selectedProject && !selectedDataset && nonEmptyCounts(selectedProject.counts)),
-    [selectedProject, selectedDataset]
+      (!!selectedProject && !selectedDataset && nonEmptyCounts(selectedProject.counts)) ||
+      (!selectedProject && projects.some((p) => nonEmptyCounts(p.counts))),
+    [selectedProject, selectedDataset, projects]
   );
 };

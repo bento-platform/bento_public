@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAppSelector, useLanguage, useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
+import { useHaveEntityDataForField } from '@/hooks/useHaveEntityData';
 import type { ActiveFilterPill } from '@/components/Util/ActiveFilterTags';
 import { formatDateFilterValue } from '@/utils/rangeFilterUtils';
 import {
@@ -20,6 +21,23 @@ import {
 } from './utils';
 
 export const useSearchQuery = () => useAppSelector((state) => state.query);
+
+export const useAvailableChartSections = () => {
+  const { sections } = useSearchQuery();
+  const haveEntityDataForField = useHaveEntityDataForField();
+
+  return useMemo(
+    () =>
+      sections
+        .map((section) => ({
+          ...section,
+          // Filter out chart definitions which use entities without data in the current scope
+          charts: section.charts.filter((c) => haveEntityDataForField(c.field)),
+        }))
+        .filter(({ charts }) => charts.length > 0),
+    [sections, haveEntityDataForField]
+  );
+};
 
 export const useSearchFilterFields = (): SearchFieldAndOptions[] => {
   const { filterSections } = useSearchQuery();
@@ -143,7 +161,7 @@ export const useActiveFilterPills = (): { pills: ActiveFilterPill[]; clearAll: (
         if (!v) return;
         // Date filter values are wire-format bin keys/ranges (e.g. "2021-01", "[2021-01-01,2021-01-31]") — format
         // them the same way SearchFilterInput does for the sidebar, so pills show human-readable, localized labels.
-        const label = isDate ? (v === 'missing' ? t(v) : formatDateFilterValue(v, language)) : v;
+        const label = isDate ? (v === 'missing' ? t(v) : formatDateFilterValue(v, language)) : t(v);
         p.push({ key: `${field}-${v}`, facetLabel, label, onClose: () => removeFilterValue(field, v) });
       });
     });

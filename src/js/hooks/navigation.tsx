@@ -174,14 +174,12 @@ export const useSiteMenuItems = (): [MenuItem[], MenuItem[]] => {
     const overviewItem = createMenuItem(BentoRoute.Overview, ...getRouteTitleAndIcon(BentoRoute.Overview));
 
     const topBarItems: MenuItem[] = [overviewItem];
-    const scopeItems: MenuItem[] = [];
+    const scopeItems: MenuItem[] = [overviewItem];
 
-    if (page !== BentoRoute.Phenopackets && (page !== BentoRoute.BeaconNetwork || fixedDataset)) {
-      const itemsRef = fixedDataset ? topBarItems : scopeItems;
+    const putInTopBar = fixedDataset || (fixedProject && !scope.dataset) || !scope.project;
 
-      if (scopeHasData && !fixedDataset) {
-        itemsRef.push(overviewItem);
-      }
+    if (page !== BentoRoute.Phenopackets && (page !== BentoRoute.BeaconNetwork || putInTopBar)) {
+      const itemsRef = putInTopBar ? topBarItems : scopeItems;
 
       if (BentoRoute.Beacon && scopeHasData) {
         itemsRef.push(createMenuItem(BentoRoute.Beacon, ...getRouteTitleAndIcon(BentoRoute.Beacon)));
@@ -193,10 +191,10 @@ export const useSiteMenuItems = (): [MenuItem[], MenuItem[]] => {
       }
     }
 
-    if (BentoRoute.BeaconNetwork && (!scope.project || (scope.project && fixedProject))) {
+    if (BentoRoute.BeaconNetwork && putInTopBar) {
       topBarItems.push(createMenuItem(BentoRoute.BeaconNetwork, ...getRouteTitleAndIcon(BentoRoute.BeaconNetwork)));
     }
 
-    return [topBarItems, scopeItems] as [MenuItem[], MenuItem[]];
+    return (scopeItems.length > 1 ? [[], scopeItems] : [topBarItems, []]) as [MenuItem[], MenuItem[]];
   }, [getRouteTitleAndIcon, createMenuItem, scope, fixedProject, fixedDataset, scopeHasData, page]);
 };
