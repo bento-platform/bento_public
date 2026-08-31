@@ -78,7 +78,7 @@ const Catalogue = () => {
         <div className="flex-1 min-w-0">
           <CatalogueToolbar
             filteredCount={filtered.length}
-            overlay={railOverlay}
+            showFiltersButton={railOverlay}
             isMobile={!breakpoints.md}
             onOpenFilters={() => setRailOpen(true)}
           />
