@@ -37,18 +37,19 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
 
   if (options.length === 0) return null;
 
-  const searchable = !!facet.scroll;
+  const isSearchable = !!facet.scroll;
   const trimmedQuery = stripDiacritics(query.trim().toLowerCase());
   const filteredOptions =
-    searchable && trimmedQuery
+    isSearchable && trimmedQuery
       ? options.filter((o) => stripDiacritics(o.label.toLowerCase()).includes(trimmedQuery))
       : options;
 
   return (
     <SidebarFacet headerId={facet.id} label={label} collapsed={collapsed} onToggleCollapse={onToggleCollapse}>
-      {searchable && (
+      {isSearchable && (
         <div className="facet-search">
           <Input
+            type='search'
             size="small"
             allowClear
             prefix={<SearchOutlined aria-hidden="true" />}
@@ -74,7 +75,7 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
         aria-labelledby={facet.scroll ? `catalogue-facet-${facet.id}` : undefined}
         className={clsx('facet-chips', facet.scroll && 'facet-chips--scroll focus-ring')}
       >
-        {searchable && trimmedQuery && filteredOptions.length === 0 ? (
+        {isSearchable && trimmedQuery && filteredOptions.length === 0 ? (
           <span className="facet-chips__empty">{t('catalogue.rail.search_no_matches')}</span>
         ) : (
           filteredOptions.map(({ value, label: chipLabel, count, selected }) => (
