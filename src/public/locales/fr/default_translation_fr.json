@@ -238,6 +238,10 @@
         "most_individuals": "Le plus de participants",
         "most_biosamples": "Le plus d'échantillons biologiques"
       },
+      "grid": "Grille",
+      "list": "Liste",
+      "view_as_grid": "Afficher sous forme de grille",
+      "view_as_list": "Afficher sous forme de liste",
       "dataset_found_one": "$t(entities.dataset, {\"count\": {{count}} }, lowercase) trouvé",
       "dataset_found_other": "$t(entities.dataset, {\"count\": {{count}} }, lowercase) trouvés",
       "show_insights": "Afficher les aperçus",

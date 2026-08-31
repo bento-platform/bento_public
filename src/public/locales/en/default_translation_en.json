@@ -606,6 +606,10 @@
         "most_individuals": "Most individuals",
         "most_biosamples": "Most biosamples"
       },
+      "grid": "Grid",
+      "list": "List",
+      "view_as_grid": "View as grid",
+      "view_as_list": "View as list",
       "dataset_found_one": "$t(entities.dataset, {\"count\": {{count}} }, lowercase) found",
       "dataset_found_other": "$t(entities.dataset, {\"count\": {{count}} }, lowercase) found",
       "show_insights": "Show insights",
