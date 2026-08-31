@@ -87,13 +87,13 @@ const CatalogueToolbar = ({ filteredCount, showFiltersButton, isMobile, onOpenFi
       <Flex gap={8} align="center">
         {showFiltersButton && (
           <Badge count={pills.length} size="small" offset={[-4, 4]} className="catalogue-toolbar-fixed">
-            <Button icon={<FilterOutlined />} onClick={onOpenFilters}>
+            <Button icon={<FilterOutlined aria-hidden />} onClick={onOpenFilters}>
               {t('catalogue.rail.title')}
             </Button>
           </Badge>
         )}
         <Input
-          prefix={<SearchOutlined />}
+          prefix={<SearchOutlined aria-hidden />}
           placeholder={t('catalogue.toolbar.search_placeholder')}
           value={searchInput}
           onChange={(e) => handleSearchChange(e.target.value)}
@@ -111,7 +111,7 @@ const CatalogueToolbar = ({ filteredCount, showFiltersButton, isMobile, onOpenFi
           >
             <Button
               className="catalogue-toolbar-fixed"
-              icon={<SwapOutlined rotate={90} />}
+              icon={<SwapOutlined aria-hidden rotate={90} />}
               aria-label={t('catalogue.toolbar.sort_label')}
             />
           </Dropdown>
@@ -135,13 +135,13 @@ const CatalogueToolbar = ({ filteredCount, showFiltersButton, isMobile, onOpenFi
                 value: 'grid',
                 label: t('catalogue.toolbar.grid'),
                 title: t('catalogue.toolbar.view_as_grid'),
-                icon: <BsGrid className="align-top" style={{ marginTop: 7 }} />,
+                icon: <BsGrid aria-hidden className="align-top mt-7px" />,
               },
               {
                 value: 'list',
                 label: t('catalogue.toolbar.list'),
                 title: t('catalogue.toolbar.view_as_list'),
-                icon: <BsViewStacked className="align-top" style={{ marginTop: 7 }} />,
+                icon: <BsViewStacked aria-hidden className="align-top mt-7px" />,
               },
             ]}
           />
@@ -160,7 +160,7 @@ const CatalogueToolbar = ({ filteredCount, showFiltersButton, isMobile, onOpenFi
           className="insights-toggle"
           htmlType="button"
           aria-pressed={insightsOpen}
-          icon={<PieChartOutlined aria-hidden="true" />}
+          icon={<PieChartOutlined aria-hidden />}
           onClick={() => dispatch(toggleInsights())}
         >
           {insightsOpen ? t('catalogue.toolbar.hide_insights') : t('catalogue.toolbar.show_insights')}
