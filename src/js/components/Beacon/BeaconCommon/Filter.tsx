@@ -50,18 +50,20 @@ const Filter = ({
   }, [filter.index, form, valueOptions]);
 
   const searchKeyOptions = (arr: BeaconFilterSection[]): FilterOption[] => {
-    return arr.map((qs) => ({
-      label: t(qs.section_title),
-      // Exclude fields with no values
-      options: qs.fields
-        .filter((field) => field.values.length > 0)
-        .map((field) => ({
-          disabled: searchFieldInUse(field.id),
-          label: <FilterLabel filter={field} />,
-          value: field.id,
-          optionsThisKey: searchValueOptions(field.values),
-        })),
-    }));
+    return arr
+      .map((qs) => ({
+        label: t(qs.section_title),
+        // Exclude fields with no values
+        options: qs.fields
+          .filter((field) => field.values.length > 0)
+          .map((field) => ({
+            disabled: searchFieldInUse(field.id),
+            label: <FilterLabel filter={field} />,
+            value: field.id,
+            optionsThisKey: searchValueOptions(field.values),
+          })),
+      }))
+      .filter((section) => section.options.length > 0);
   };
 
   const searchValueOptions = (arr: BeaconFilterUiOptions['values']): FilterPullDownValue[] =>
