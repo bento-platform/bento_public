@@ -78,7 +78,7 @@ export const useBentoOrIgvReferencesById = (requestedReferenceIds: string[]): Ig
     });
 
     return availableReferences;
-  }, [requestedReferenceIds, bentoGenomeStatus, bentoReferenceGenomes, igvGenomesByID]);
+  }, [requestedReferenceIds, bentoGenomeStatus, bentoReferenceGenomes, igvGenomesByID, igvGenomesStatus]);
 };
 
 // file is viewable if it's ingested and a viewable track type
