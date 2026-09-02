@@ -2,7 +2,6 @@
   "Overview": "Overview",
   "Search": "Search",
   "Explore": "Explore",
-  "Provenance": "Provenance",
   "Count": "Count",
   "missing": "missing",
   "entities": {
@@ -270,9 +269,9 @@
       "Select filters and specify values to narrow down data of interest within the selected scope.",
       "If a small number of records match your query, the count may be censored to prevent re-identification."
     ],
-    "provenance": [
-      "Detailed provenance data for a $t(entities.dataset_one, lowercase) or all $t(entities.dataset_other, lowercase)",
-      "in a $t(entities.project_one, lowercase)."
+    "about": [
+      "Detailed provenance metadata for a $t(entities.dataset_one, lowercase) or all ",
+      "$t(entities.dataset_other, lowercase) in a $t(entities.project_one, lowercase)."
     ],
     "beacon": [
       "Beacon allows you to query data by the position of genetic variants, and filter the results by various clinical",
@@ -350,7 +349,7 @@
     "disease_diagnosis": "Disease Diagnosis",
     "variant_interpretation": "Variant Interpretation",
     "gene_descriptor": "Gene Descriptor",
-    "subject_or_biosample_id": "Subject or Biosample ID",
+    "subject_or_biosample_id": "Subject or $t(entities.biosample_one) ID",
     "interpretation_status": "Interpretation Status",
     "diagnosis": "Diagnosis",
     "no_diagnosis": "No diagnosis",
@@ -571,7 +570,16 @@
   "catalogue": {
     "rail": {
       "title": "Filters",
-      "close": "Close filters"
+      "close": "Close filters",
+      "show_section": "Show section",
+      "hide_section": "Hide section",
+      "filter_by": "Filter by",
+      "clear_filter": "Clear filter by",
+      "search_placeholder": "Search…",
+      "search_label": "Search {{facet}}",
+      "search_matches_one": "{{count}} match",
+      "search_matches_other": "{{count}} matches",
+      "search_no_matches": "No matches"
     },
     "facets": {
       "program_one": "Program",
@@ -603,6 +611,10 @@
         "most_individuals": "Most individuals",
         "most_biosamples": "Most biosamples"
       },
+      "grid": "Grid",
+      "list": "List",
+      "view_as_grid": "View as grid",
+      "view_as_list": "View as list",
       "dataset_found_one": "$t(entities.dataset, {\"count\": {{count}} }, lowercase) found",
       "dataset_found_other": "$t(entities.dataset, {\"count\": {{count}} }, lowercase) found",
       "show_insights": "Show insights",
@@ -621,9 +633,12 @@
     },
     "datasets": {
       "empty": "No $t(entities.dataset_other) match your filters",
-      "reset_filters": "Clear all filters",
-      "expand": "more"
+      "reset_filters": "Clear all filters"
     }
+  },
+  "dataset": {
+    "expand": "more",
+    "apply_for_access": "Apply for access"
   },
   "provenance": {
     "sections": {

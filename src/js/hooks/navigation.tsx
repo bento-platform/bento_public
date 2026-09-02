@@ -125,8 +125,8 @@ export const useGetRouteTitleAndIcon = () => {
       switch (routeId) {
         case BentoRoute.Overview:
           return overviewIsCatalogue ? ['Catalogue', <BookOutlined />] : ['Overview', <PieChartOutlined />];
-        case BentoRoute.Provenance:
-          return ['Provenance', <SolutionOutlined />];
+        case BentoRoute.About:
+          return ['About', <SolutionOutlined />];
         case BentoRoute.Beacon:
           return ['Beacon', <BeaconLogo />];
         case BentoRoute.BeaconNetwork:
@@ -174,33 +174,27 @@ export const useSiteMenuItems = (): [MenuItem[], MenuItem[]] => {
     const overviewItem = createMenuItem(BentoRoute.Overview, ...getRouteTitleAndIcon(BentoRoute.Overview));
 
     const topBarItems: MenuItem[] = [overviewItem];
-    const scopeItems: MenuItem[] = [];
+    const scopeItems: MenuItem[] = [overviewItem];
 
-    if (page !== BentoRoute.Phenopackets && (page !== BentoRoute.BeaconNetwork || fixedDataset)) {
-      const itemsRef = fixedDataset ? topBarItems : scopeItems;
+    const putInTopBar = fixedDataset || (fixedProject && !scope.dataset) || !scope.project;
 
-      if (scopeHasData && !fixedDataset) {
-        itemsRef.push(overviewItem);
-      }
+    if (page !== BentoRoute.Phenopackets && (page !== BentoRoute.BeaconNetwork || putInTopBar)) {
+      const itemsRef = putInTopBar ? topBarItems : scopeItems;
 
-      if (BentoRoute.Beacon && scopeHasData && !!scope.project) {
+      if (BentoRoute.Beacon && scopeHasData) {
         itemsRef.push(createMenuItem(BentoRoute.Beacon, ...getRouteTitleAndIcon(BentoRoute.Beacon)));
       }
 
       // TODO: can enable for project if we get a more extensive project model
       if (scope.dataset) {
-        itemsRef.push(createMenuItem(BentoRoute.Provenance, ...getRouteTitleAndIcon(BentoRoute.Provenance)));
+        itemsRef.push(createMenuItem(BentoRoute.About, ...getRouteTitleAndIcon(BentoRoute.About)));
       }
     }
 
-    if (BentoRoute.Beacon && scopeHasData && (!scope.project || (scope.project && fixedProject))) {
-      topBarItems.push(createMenuItem(BentoRoute.Beacon, ...getRouteTitleAndIcon(BentoRoute.Beacon)));
-    }
-
-    if (BentoRoute.BeaconNetwork && (!scope.project || (scope.project && fixedProject))) {
+    if (BentoRoute.BeaconNetwork && putInTopBar) {
       topBarItems.push(createMenuItem(BentoRoute.BeaconNetwork, ...getRouteTitleAndIcon(BentoRoute.BeaconNetwork)));
     }
 
-    return [topBarItems, scopeItems] as [MenuItem[], MenuItem[]];
+    return (scopeItems.length > 1 ? [[], scopeItems] : [topBarItems, []]) as [MenuItem[], MenuItem[]];
   }, [getRouteTitleAndIcon, createMenuItem, scope, fixedProject, fixedDataset, scopeHasData, page]);
 };

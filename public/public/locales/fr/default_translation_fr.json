@@ -2,7 +2,6 @@
   "Overview": "Aperçu",
   "Search": "Chercher",
   "Explore": "Explorer",
-  "Provenance": "Provenance",
   "Count": "Observations",
   "missing": "manquant(s)",
   "entities": {
@@ -203,7 +202,16 @@
   "catalogue": {
     "rail": {
       "title": "Filtres",
-      "close": "Fermer les filtres"
+      "close": "Fermer les filtres",
+      "show_section": "Afficher section",
+      "hide_section": "Masquer section",
+      "filter_by": "Filtrer par",
+      "clear_filter": "Effacer le filtre par",
+      "search_placeholder": "Rechercher…",
+      "search_label": "Rechercher {{facet}}",
+      "search_matches_one": "{{count}} résultat",
+      "search_matches_other": "{{count}} résultats",
+      "search_no_matches": "Aucun résultat"
     },
     "facets": {
       "program_one": "Programmes",
@@ -235,6 +243,10 @@
         "most_individuals": "Le plus de participants",
         "most_biosamples": "Le plus d'échantillons biologiques"
       },
+      "grid": "Grille",
+      "list": "Liste",
+      "view_as_grid": "Afficher sous forme de grille",
+      "view_as_list": "Afficher sous forme de liste",
       "dataset_found_one": "$t(entities.dataset, {\"count\": {{count}} }, lowercase) trouvé",
       "dataset_found_other": "$t(entities.dataset, {\"count\": {{count}} }, lowercase) trouvés",
       "show_insights": "Afficher les aperçus",
@@ -256,6 +268,10 @@
       "clear_filters": "Effacer tous les filtres",
       "expand": "plus"
     }
+  },
+  "dataset": {
+    "expand": "plus",
+    "apply_for_access": "Demande d'accès"
   },
   "provenance": {
     "sections": {
@@ -388,7 +404,7 @@
       "Sélectionnez des filtres et spécifiez des valeurs pour restreindre les données d'intérêt dans le périmètre sélectionné.",
       "Si un petit nombre de records correspond à votre requête, le décompte peut être censuré pour éviter la ré-identification."
     ],
-    "provenance": ["Données de provenance détaillées pour un jeu de données ou tous les jeux de données d'un projet."],
+    "about": ["Données de provenance détaillées pour un jeu de données ou tous les jeux de données d'un projet."],
     "beacon": [
       "Beacon vous permet d'interroger les données en fonction de la position des variants génétiques et de filtrer les résultats en fonction de diverses propriétés de métadonnées cliniques",
       "ou expérimentales. Il est également possible d'effectuer des recherches uniquement à partir des variants ou des métadonnées."
