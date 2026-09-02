@@ -8,7 +8,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 // i18n and constants imports
 import { useTranslation } from 'react-i18next';
-import { NEW_BENTO_PUBLIC_THEME } from '@/constants/overviewConstants';
+import { NEW_BENTO_PUBLIC_THEME } from '@/constants/exploreConstants';
 import { SUPPORTED_LNGS } from '@/constants/configConstants';
 
 // Component imports

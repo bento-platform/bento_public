@@ -70,7 +70,7 @@
     "search_fetch": "Erreur lors du chargement des résultats de recherche",
     "page_not_found": "Page introuvable"
   },
-  "overview": {
+  "explore": {
     "chart_size_label": "Taille des tableaux:",
     "compact": "Compacte",
     "normal": "Normale",
@@ -394,8 +394,8 @@
   "Help": "Aide",
   "Help for": "Aide pour",
   "page_help": {
-    "overview": [
-      "La page « $t(Overview) » d'ensemble affiche des comptes et des tableaux pour les données stockées dans le projet/jeu de données sélectionné (le « périmètre »).",
+    "explore": [
+      "La page « $t(Explore) » affiche des comptes et des tableaux pour les données stockées dans le projet/jeu de données sélectionné (le « périmètre »).",
       "Les tableaux peuvent être affichés/masqués ou leur largeur modifiée via le bouton « $t(Manage Charts) »."
     ],
     "search": [

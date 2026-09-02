@@ -2,9 +2,9 @@ import type { Dataset as DatasetType } from '@/types/dataset';
 import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
 import { EMPTY_KATSU_ENTITY_COUNTS } from '@/features/search/constants';
 import Dataset from '@/components/Provenance/Dataset';
-import OverviewCollapsibleSection from './Util/OverviewCollapsibleSection';
+import ExploreCollapsibleSection from './Util/ExploreCollapsibleSection';
 
-const OverviewDatasets = ({
+const ExploreDatasets = ({
   datasets,
   parentProjectID,
   countsByDataset,
@@ -14,7 +14,7 @@ const OverviewDatasets = ({
   countsByDataset?: Record<string, KatsuEntityCountsOrBooleans>;
 }) => {
   return (
-    <OverviewCollapsibleSection title="entities.dataset_other">
+    <ExploreCollapsibleSection title="entities.dataset_other">
       <div className="dataset-provenance-card-grid">
         {datasets.map((d) => (
           <div key={d.identifier}>
@@ -30,8 +30,8 @@ const OverviewDatasets = ({
           </div>
         ))}
       </div>
-    </OverviewCollapsibleSection>
+    </ExploreCollapsibleSection>
   );
 };
 
-export default OverviewDatasets;
+export default ExploreDatasets;

@@ -466,7 +466,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
                 newPage = 1; // Reset page if we change the page size
               }
               navigateToSameScopeUrl(
-                buildQueryParamsUrl(BentoRoute.Overview, [
+                buildQueryParamsUrl(BentoRoute.Explore, [
                   ...queryParamsWithoutKey(allQueryParams, [TABLE_PAGE_QUERY_PARAM, TABLE_PAGE_SIZE_QUERY_PARAM]),
 
                   // AntD page is 1-indexed, discovery match page is 0-indexed:

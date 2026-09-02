@@ -2,7 +2,7 @@ import { BEACON_UI_ENABLED } from '@/config';
 import { BEACON_NETWORK_ENABLED } from '@/config';
 
 export interface BentoRoutes {
-  Overview: string;
+  Explore: string;
   Search: string;
   Beacon?: string;
   BeaconNetwork?: string;
@@ -12,7 +12,7 @@ export interface BentoRoutes {
 }
 
 const BentoRoute: BentoRoutes = {
-  Overview: 'overview',
+  Explore: 'explore',
   Search: 'search',
   About: 'about',
   Phenopackets: 'phenopackets',
