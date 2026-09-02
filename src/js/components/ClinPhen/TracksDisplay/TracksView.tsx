@@ -63,7 +63,7 @@ const TracksView = ({
       if (!igvFileDetails) return null;
 
       if (!accessUrlsPromises) {
-        console.error('no access urls ');
+        console.error('no access urls');
         return null;
       }
 
@@ -260,7 +260,3 @@ const TracksView = ({
 };
 
 export default TracksView;
-
-// short-term todos
-// - store igv position
-// - testing with crams, bigwigs, multiple vcfs...
