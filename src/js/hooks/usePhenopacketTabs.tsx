@@ -15,7 +15,7 @@ import { useTranslationFn } from '@/hooks';
 import { useScopeDownloadData } from '@/hooks/censorship';
 import { useReference } from '@/features/reference/hooks';
 import { assemblyIdsForExperiments, phenopacketExperimentResults } from '@/utils/experiments';
-import { useBentoOrIgvReferencesById, viewableTracks } from './igv';
+import { useBentoOrIgvReferencesById, useIgvReference, viewableTracks } from './igv';
 import { RequestStatus } from '@/types/requests';
 
 export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
@@ -34,11 +34,13 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
   const tracks = viewableTracks(experimentResults);
   const requestedAssemblies = assemblyIdsForExperiments(tracks);
   const referencesById = useBentoOrIgvReferencesById(requestedAssemblies);
-
   const { hasAttempted: attemptedCanDownload, hasPermission: canDownload } = useScopeDownloadData();
   const { genomesStatus } = useReference();
+  const { igvGenomesStatus } = useIgvReference();
 
-  const tabsReady = attemptedCanDownload && (tracks.length === 0 || genomesStatus === RequestStatus.Fulfilled);
+  const tabsReady =
+    attemptedCanDownload &&
+    (tracks.length === 0 || genomesStatus === RequestStatus.Fulfilled || igvGenomesStatus === RequestStatus.Fulfilled);
 
   // TODO: Add Experiments
   const items: TabsProps['items'] = useMemo(() => {

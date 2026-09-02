@@ -16,10 +16,10 @@ export const useIgvReference = () => {
 // get references in IGV format, preferring ones from bento when present
 export const useBentoOrIgvReferencesById = (requestedReferenceIds: string[]): IgvReferenceById => {
   const { genomesStatus: bentoGenomeStatus, genomesByID: bentoReferenceGenomes } = useReference();
-  const { igvGenomesByID } = useIgvReference();
+  const { igvGenomesByID, igvGenomesStatus } = useIgvReference();
 
   return useMemo(() => {
-    if (bentoGenomeStatus !== RequestStatus.Fulfilled) return {};
+    if (bentoGenomeStatus !== RequestStatus.Fulfilled && igvGenomesStatus !== RequestStatus.Fulfilled) return {};
 
     const availableReferences: Record<string, CreateOpt> = {};
 
