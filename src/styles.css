@@ -783,12 +783,34 @@ body {
   padding: 4px 0 4px 4px;
 }
 
+.facet-search {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0 0 6px 4px;
+}
+
+.facet-search .ant-input-affix-wrapper {
+  border-radius: 6px;
+}
+
+.facet-search__count {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
 .facet-chips {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
   min-height: 0;
   overflow: hidden;
+}
+
+.facet-chips__empty {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  padding: 3px 0;
 }
 
 .facet-chips--scroll {

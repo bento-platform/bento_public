@@ -206,7 +206,12 @@
       "show_section": "Afficher section",
       "hide_section": "Masquer section",
       "filter_by": "Filtrer par",
-      "clear_filter": "Effacer le filtre par"
+      "clear_filter": "Effacer le filtre par",
+      "search_placeholder": "Rechercher…",
+      "search_label": "Rechercher {{facet}}",
+      "search_matches_one": "{{count}} résultat",
+      "search_matches_other": "{{count}} résultats",
+      "search_no_matches": "Aucun résultat"
     },
     "facets": {
       "program_one": "Programmes",

@@ -1,4 +1,6 @@
+import { useRef, useState } from 'react';
 import clsx from 'clsx';
+import { Input } from 'antd';
 import type { FacetOption } from '@/features/catalogue/types';
 import { useAppDispatch } from '@/hooks';
 import { useCatalogueState } from '@/features/catalogue/hooks';
@@ -6,11 +8,12 @@ import { toggleFacetCollapse, type FacetId } from '@/features/catalogue/catalogu
 import { useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
 import { useTranslationFn } from '@/hooks';
 import { facetTranslationKey } from '@/features/catalogue/utils';
-import { CloseOutlined } from '@ant-design/icons';
+import { CloseOutlined, SearchOutlined } from '@ant-design/icons';
 import FilterChip from '@/components/Util/FilterChip';
 import Sidebar, { SidebarFacet, SidebarSection } from '@/components/Sidebar/Sidebar';
 import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { FACETS } from '@/features/catalogue/facetRegistry';
+import { stripDiacritics } from '@/utils/strings';
 
 interface FacetConfig {
   id: FacetId;
@@ -27,31 +30,64 @@ interface FacetSectionProps {
 
 const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleValue }: FacetSectionProps) => {
   const t = useTranslationFn();
+  const label = t(facetTranslationKey(facet.id), T_PLURAL_COUNT);
+
+  const [query, setQuery] = useState('');
+  const chipsRef = useRef<HTMLDivElement>(null);
 
   if (options.length === 0) return null;
 
+  const isSearchable = !!facet.scroll;
+  const trimmedQuery = stripDiacritics(query.trim().toLowerCase());
+  const filteredOptions =
+    isSearchable && trimmedQuery
+      ? options.filter((o) => stripDiacritics(o.label.toLowerCase()).includes(trimmedQuery))
+      : options;
+
   return (
-    <SidebarFacet
-      headerId={facet.id}
-      label={t(facetTranslationKey(facet.id), T_PLURAL_COUNT)}
-      collapsed={collapsed}
-      onToggleCollapse={onToggleCollapse}
-    >
+    <SidebarFacet headerId={facet.id} label={label} collapsed={collapsed} onToggleCollapse={onToggleCollapse}>
+      {isSearchable && (
+        <div className="facet-search">
+          <Input
+            type="search"
+            size="small"
+            allowClear
+            prefix={<SearchOutlined aria-hidden="true" />}
+            placeholder={t('catalogue.rail.search_placeholder')}
+            aria-label={t('catalogue.rail.search_label', { facet: label })}
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              if (chipsRef.current) chipsRef.current.scrollTop = 0;
+            }}
+          />
+          {trimmedQuery && (
+            <span className="facet-search__count" aria-live="polite">
+              {t('catalogue.rail.search_matches', { count: filteredOptions.length })}
+            </span>
+          )}
+        </div>
+      )}
       <div
+        ref={chipsRef}
         tabIndex={facet.scroll ? 0 : undefined}
         role={facet.scroll ? 'group' : undefined}
         aria-labelledby={facet.scroll ? `catalogue-facet-${facet.id}` : undefined}
         className={clsx('facet-chips', facet.scroll && 'facet-chips--scroll focus-ring')}
       >
-        {options.map(({ value, label, count, selected }) => (
-          <FilterChip
-            key={value}
-            label={label}
-            count={count}
-            selected={selected}
-            onChange={() => onToggleValue(value)}
-          />
-        ))}
+        {isSearchable && trimmedQuery && filteredOptions.length === 0 ? (
+          <span className="facet-chips__empty">{t('catalogue.rail.search_no_matches')}</span>
+        ) : (
+          filteredOptions.map(({ value, label: chipLabel, count, selected }) => (
+            <FilterChip
+              key={value}
+              label={chipLabel}
+              count={count}
+              selected={selected}
+              onChange={() => onToggleValue(value)}
+            />
+          ))
+        )}
       </div>
     </SidebarFacet>
   );
