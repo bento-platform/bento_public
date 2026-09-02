@@ -1,8 +1,6 @@
 import { execSync } from 'child_process';
 import packageData from '../../../package.json';
 
-// Ports create_service_info.js: previously written to dist/public/service-info.json at container
-// start and served as a static file by nginx; now computed per-request instead.
 export const dynamic = 'force-dynamic';
 
 const serviceType = {

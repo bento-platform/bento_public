@@ -1,9 +1,4 @@
-// Ports create_config_prod.js: serves the same BENTO_PUBLIC_CONFIG global previously written to
-// dist/public/config.js at container start. As a route handler it's evaluated per-request against
-// the live process.env instead, so no build/entrypoint step needs to generate it.
-
-// Force this to be evaluated at request time (not baked in at `next build` time), since the whole
-// point is that the same built image is reconfigured per-deployment via env vars.
+// Evaluated at request time since the same built image is reconfigured per-deployment via env vars.
 export const dynamic = 'force-dynamic';
 
 const parseBoolean = (value: string | undefined, defaultValue = ''): boolean =>
