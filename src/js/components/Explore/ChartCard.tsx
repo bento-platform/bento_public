@@ -3,7 +3,7 @@ import { Button, Card, Row, Space, Tooltip } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import Chart from './Chart';
 import CustomEmpty from '../Util/CustomEmpty';
-import { CHART_SIZES } from '@/constants/overviewConstants';
+import { CHART_SIZES } from '@/constants/exploreConstants';
 import { useTranslationFn } from '@/hooks';
 import type { ChartDataField } from '@/types/data';
 import type { ChartSizeMode } from '@/features/ui/types';

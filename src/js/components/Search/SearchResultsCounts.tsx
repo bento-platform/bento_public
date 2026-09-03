@@ -5,7 +5,7 @@ import { BiDna } from 'react-icons/bi';
 import clsx from 'clsx';
 
 import CountsTitleWithHelp from '@/components/Util/CountsTitleWithHelp';
-import { COUNTS_FILL } from '@/constants/overviewConstants';
+import { COUNTS_FILL } from '@/constants/exploreConstants';
 import { useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
 import { useRenderCount } from '@/hooks/counts';

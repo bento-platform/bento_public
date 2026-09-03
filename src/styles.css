@@ -654,14 +654,14 @@ body {
 }
 /* END catalogue toolbar */
 
-/* Bigger active-filter-tag variant used on the overview page (between the About section and count cards) */
-.ant-tag.overview-filter-tag {
+/* Bigger active-filter-tag variant used on the explore page (between the About section and count cards) */
+.ant-tag.explore-filter-tag {
   font-size: 14px;
   padding: 4px 10px;
   height: auto;
   line-height: 1.4;
 }
-.overview-filter-tag .catalogue-filter-tag__facet-label {
+.explore-filter-tag .catalogue-filter-tag__facet-label {
   font-size: 12.5px;
 }
 
@@ -1087,7 +1087,7 @@ body {
 /* END about HTML styling */
 
 
-/* BEGIN overview */
+/* BEGIN explore */
 
 .count-card {
   min-width: 150px;
@@ -1171,21 +1171,21 @@ body {
   background-color: black !important; /* override slick-dots color */
 }
 
-.overview-charts {
+.explore-charts {
   transition: opacity 0.2s ease-in-out;
 }
-.overview-charts.loading {
+.explore-charts.loading {
   opacity: 0.2;
 }
 
-.overview-charts.compact .bento-theme { --ant-font-size-heading-3: 1.25rem; }
+.explore-charts.compact .bento-theme { --ant-font-size-heading-3: 1.25rem; }
 
 .manage-charts__chart-size-control-container {
   padding: var(--ant-padding) var(--ant-padding-lg) var(--ant-padding-lg);
   border: 1px solid var(--ant-color-split);
 }
 
-/* END overview */
+/* END explore */
 
 
 /* BEGIN key-value display */

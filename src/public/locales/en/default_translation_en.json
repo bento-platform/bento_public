@@ -65,7 +65,7 @@
     "search_fetch": "Error fetching search results",
     "page_not_found": "Page not found"
   },
-  "overview": {
+  "explore": {
     "chart_size_label": "Chart size:",
     "compact": "Compact",
     "normal": "Normal",
@@ -257,8 +257,8 @@
   "Help": "Help",
   "Help for": "Help for",
   "page_help": {
-    "overview": [
-      "The $t(Overview) page shows counts and charts for data stored in the selected",
+    "explore": [
+      "The $t(Explore) page shows counts and charts for data stored in the selected",
       "$t(entities.project_one, lowercase)/$t(entities.dataset_one, lowercase) (the 'scope').",
       "Charts can be shown/hidden or their width altered via the '$t(Manage Charts)' button."
     ],

@@ -11,9 +11,9 @@ import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import { WAITING_STATES } from '@/constants/requests';
 import { BentoRoute } from '@/types/routes';
 
-import OverviewDescription from './OverviewDescription';
-import OverviewSection from './OverviewSection';
-import OverviewDatasets from './OverviewDatasets';
+import ExploreDescription from './ExploreDescription';
+import ExploreSection from './ExploreSection';
+import ExploreDatasets from './ExploreDatasets';
 import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
 import CountsAndResults from './CountsAndResults';
 import LastIngestionInfo from './LastIngestion';
@@ -36,15 +36,15 @@ import { useNotify } from '@/hooks/notifications';
 
 const { useBreakpoint } = Grid;
 
-const OVERVIEW_GAP = 24;
+const EXPLORE_GAP = 24;
 
-const saveScopeOverviewToLS = (scope: DiscoveryScope, sections: Sections) => {
+const saveScopeExploreToLS = (scope: DiscoveryScope, sections: Sections) => {
   saveValue(generateLSChartDataKey(scope), convertSequenceAndDisplayData(sections));
 };
 
-const OverviewChartSections = () => {
+const ExploreChartSections = () => {
   const { discoveryStatus } = useSearchQuery();
-  const { overviewChartMode } = useUiSettings();
+  const { exploreChartMode } = useUiSettings();
   const loadingNewData = WAITING_STATES.includes(discoveryStatus);
 
   const availableChartSections = useAvailableChartSections();
@@ -52,30 +52,26 @@ const OverviewChartSections = () => {
     ({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1
   );
 
-  // Lazy-loading hooks means this is loaded only if OverviewChartDashboard is rendered:
+  // Lazy-loading hooks means this is loaded only if ExploreChartDashboard is rendered:
   const searchableFields = useSearchableFields();
 
   if (!displayedSections.length) return null;
 
   return (
-    <Flex
-      vertical
-      className={clsx('overview-charts', overviewChartMode, loadingNewData && 'loading')}
-      gap={OVERVIEW_GAP}
-    >
+    <Flex vertical className={clsx('explore-charts', exploreChartMode, loadingNewData && 'loading')} gap={EXPLORE_GAP}>
       {displayedSections.map((section) => (
-        <OverviewSection
+        <ExploreSection
           key={section.sectionId}
           section={section}
           searchableFields={searchableFields}
-          chartMode={overviewChartMode}
+          chartMode={exploreChartMode}
         />
       ))}
     </Flex>
   );
 };
 
-const OverviewChartDashboard = () => {
+const ExploreChartDashboard = () => {
   const t = useTranslationFn();
   const dispatch = useAppDispatch();
 
@@ -92,7 +88,7 @@ const OverviewChartDashboard = () => {
   const [hasNotified, setHasNotified] = useState(false);
 
   // This is essentially a large effect hook with a few dependencies, which processes (and rewrites if needed) the query
-  // URL and dispatches discovery actions for fetching overview/query response data.
+  // URL and dispatches discovery actions for fetching explore/query response data.
   useSearchRouterAndHandler();
 
   const { sections, resultCountsByDataset } = useSearchQuery();
@@ -104,7 +100,7 @@ const OverviewChartDashboard = () => {
   const onManageChartsClose = useCallback(() => {
     dispatch(setManageChartsVisible(false));
     // When we close the drawer, save any changes to localStorage. This helps ensure width gets saved:
-    saveScopeOverviewToLS(scope, sections);
+    saveScopeExploreToLS(scope, sections);
   }, [dispatch, scope, sections]);
 
   const scopeHasData = useScopeHasData();
@@ -116,7 +112,7 @@ const OverviewChartDashboard = () => {
   if (scopeSet && !scopeHasData && scope.dataset) {
     if (!hasNotified) {
       notify.error({
-        message: t('navigation.not_available_title', { endpoint: BentoRoute.Overview }),
+        message: t('navigation.not_available_title', { endpoint: BentoRoute.Explore }),
         description: t('navigation.not_available_description', { target: BentoRoute.About }),
       });
       setHasNotified(true);
@@ -127,14 +123,14 @@ const OverviewChartDashboard = () => {
 
   return (
     <>
-      <Flex vertical={true} gap={OVERVIEW_GAP} className={clsx('container', { 'margin-auto': !scopeHasData })}>
+      <Flex vertical={true} gap={EXPLORE_GAP} className={clsx('container', { 'margin-auto': !scopeHasData })}>
         {/*
             Show a general description of the current scope, pulled from the about content (instance-level), the project
             description, or the dataset long description (falling back to the short description.)
         */}
-        <OverviewDescription />
+        <ExploreDescription />
 
-        <ActiveFilterTags pills={pills} onClearAll={clearAll} tagClassName="overview-filter-tag" />
+        <ActiveFilterTags pills={pills} onClearAll={clearAll} tagClassName="explore-filter-tag" />
 
         {/*
             If we're in a scope with no data at all, don't bother rendering the
@@ -144,15 +140,15 @@ const OverviewChartDashboard = () => {
         {scopeHasData && <CountsAndResults />}
 
         {selectedProject && !scope.dataset && selectedProject.datasets.length ? (
-          // If we have a project with at least one dataset, show a dataset mini-catalogue in the project overview
-          <OverviewDatasets
+          // If we have a project with at least one dataset, show a dataset mini-catalogue in the project explore view
+          <ExploreDatasets
             datasets={selectedProject.datasets}
             parentProjectID={selectedProject.identifier}
             countsByDataset={resultCountsByDataset}
           />
         ) : null}
 
-        <OverviewChartSections />
+        <ExploreChartSections />
 
         {!catalogueMode && <LastIngestionInfo />}
       </Flex>
@@ -176,4 +172,4 @@ const OverviewChartDashboard = () => {
   );
 };
 
-export default OverviewChartDashboard;
+export default ExploreChartDashboard;
