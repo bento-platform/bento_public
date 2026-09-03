@@ -75,8 +75,8 @@ const Dataset = ({
     () => navigateToScope(scope, page, false, navigateOptions),
     [navigateToScope, scope, page, navigateOptions]
   );
-  const onNavigateOverview = useCallback(
-    () => navigateToScope(scope, BentoRoute.Overview, false, navigateOptions),
+  const onNavigateExplore = useCallback(
+    () => navigateToScope(scope, BentoRoute.Explore, false, navigateOptions),
     [navigateToScope, scope, navigateOptions]
   );
 
@@ -154,7 +154,7 @@ const Dataset = ({
 
         <Flex gap={8} className="catalogue-card__actions mt-3" wrap>
           {hasData && (
-            <Button type="primary" icon={<PieChartOutlined />} className="flex-1" onClick={onNavigateOverview}>
+            <Button type="primary" icon={<PieChartOutlined />} className="flex-1" onClick={onNavigateExplore}>
               {t('Explore')}
             </Button>
           )}

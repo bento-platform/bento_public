@@ -41,7 +41,7 @@ type SiteHeaderProps = {
 const useHandleMenuClick = (): OnClick => {
   const navigate = useNavigate();
   const location = useLocation();
-  const overviewQueryParams = useSearchQueryParams();
+  const exploreQueryParams = useSearchQueryParams();
 
   return useCallback(
     ({ key }: { key: string }) => {
@@ -58,10 +58,10 @@ const useHandleMenuClick = (): OnClick => {
       newPath.push(key);
       const newPathString = '/' + newPath.join('/');
       // Navigate to the menu item url
-      //  - only include filter/search/overview query params if we're navigating to the overview page
-      navigate(buildQueryParamsUrl(newPathString, key === BentoRoute.Overview ? overviewQueryParams : undefined));
+      //  - only include filter/search/explore query params if we're navigating to the explore page
+      navigate(buildQueryParamsUrl(newPathString, key === BentoRoute.Explore ? exploreQueryParams : undefined));
     },
-    [navigate, overviewQueryParams, location.pathname]
+    [navigate, exploreQueryParams, location.pathname]
   );
 };
 

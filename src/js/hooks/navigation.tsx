@@ -117,14 +117,14 @@ export const useGetRouteTitleAndIcon = () => {
 
   // Use location for catalogue page detection instead of selectedProject, since it gives us faster UI rendering at the
   // cost of only being wrong with a redirect edge case (and being slightly more brittle).
-  const overviewIsCatalogue = !location.pathname.includes('/p/') && !location.pathname.includes('/d/') && catalogueMode;
+  const exploreIsCatalogue = !location.pathname.includes('/p/') && !location.pathname.includes('/d/') && catalogueMode;
 
   return useCallback(
     (routeId: string): [string, ReactNode] => {
       /* eslint-disable react/jsx-key */
       switch (routeId) {
-        case BentoRoute.Overview:
-          return overviewIsCatalogue ? ['Catalogue', <BookOutlined />] : ['Overview', <PieChartOutlined />];
+        case BentoRoute.Explore:
+          return exploreIsCatalogue ? ['Catalogue', <BookOutlined />] : ['Explore', <PieChartOutlined />];
         case BentoRoute.About:
           return ['About', <SolutionOutlined />];
         case BentoRoute.Beacon:
@@ -141,7 +141,7 @@ export const useGetRouteTitleAndIcon = () => {
       }
       /* eslint-enable react/jsx-key */
     },
-    [overviewIsCatalogue]
+    [exploreIsCatalogue]
   );
 };
 
@@ -170,11 +170,11 @@ export const useSiteMenuItems = (): [MenuItem[], MenuItem[]] => {
   const getRouteTitleAndIcon = useGetRouteTitleAndIcon();
 
   return useMemo(() => {
-    // Serves weird overloaded purpose as both catalogue and data overview route:
-    const overviewItem = createMenuItem(BentoRoute.Overview, ...getRouteTitleAndIcon(BentoRoute.Overview));
+    // Serves weird overloaded purpose as both catalogue and data explore route:
+    const exploreItem = createMenuItem(BentoRoute.Explore, ...getRouteTitleAndIcon(BentoRoute.Explore));
 
-    const topBarItems: MenuItem[] = [overviewItem];
-    const scopeItems: MenuItem[] = [overviewItem];
+    const topBarItems: MenuItem[] = [exploreItem];
+    const scopeItems: MenuItem[] = [exploreItem];
 
     const putInTopBar = fixedDataset || (fixedProject && !scope.dataset) || !scope.project;
 

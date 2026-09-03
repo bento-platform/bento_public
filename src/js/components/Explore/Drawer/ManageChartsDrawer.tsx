@@ -8,7 +8,7 @@ const { useBreakpoint } = Grid;
 import type { Section } from '@/types/data';
 
 import ChartTree from './ChartTree';
-import OverviewChartSizeControl from '@/components/Overview/Util/OverviewChartSizeControl';
+import ExploreChartSizeControl from '@/components/Explore/Util/ExploreChartSizeControl';
 
 import { useAppDispatch, useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
@@ -107,7 +107,7 @@ const ManageChartsDrawer = ({ onManageDrawerClose, manageDrawerVisible }: Manage
         })}
       </div>
       <div className="manage-charts__chart-size-control-container">
-        <OverviewChartSizeControl />
+        <ExploreChartSizeControl />
       </div>
     </Drawer>
   );
