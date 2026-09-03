@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { lazy, Suspense, useCallback, useState } from 'react';
 import { Flex, FloatButton, Grid } from 'antd';
 import { AppstoreAddOutlined } from '@ant-design/icons';
 
@@ -14,7 +14,6 @@ import { BentoRoute } from '@/types/routes';
 import OverviewDescription from './OverviewDescription';
 import OverviewSection from './OverviewSection';
 import OverviewDatasets from './OverviewDatasets';
-import ManageChartsDrawer from './Drawer/ManageChartsDrawer';
 import CountsAndResults from './CountsAndResults';
 import LastIngestionInfo from './LastIngestion';
 import ActiveFilterTags from '@/components/Util/ActiveFilterTags';
@@ -41,6 +40,10 @@ const OVERVIEW_GAP = 24;
 const saveScopeOverviewToLS = (scope: DiscoveryScope, sections: Sections) => {
   saveValue(generateLSChartDataKey(scope), convertSequenceAndDisplayData(sections));
 };
+
+// Lazy-loaded: the "manage charts" drawer is opened rarely (via a FloatButton), so it shouldn't be part of the
+// bundle every overview-page visitor downloads up front.
+const ManageChartsDrawer = lazy(() => import('./Drawer/ManageChartsDrawer'));
 
 const OverviewChartSections = () => {
   const { discoveryStatus } = useSearchQuery();
@@ -82,6 +85,17 @@ const OverviewChartDashboard = () => {
   const breakpoints = useBreakpoint();
 
   const { manageChartsVisible } = useUiState();
+  // Latch whether the drawer has ever been opened so its (lazy-loaded) code is only fetched once actually
+  // needed, rather than on every overview page load. manageChartsVisible can flip to true from this component's
+  // own trigger *or* from the sidebar's "Manage Charts" button (SiteSider.tsx), so this derives from that single
+  // shared piece of state (rather than duplicating "opened" tracking per trigger) using React's supported
+  // "adjusting state during render" pattern: https://react.dev/learn/you-might-not-need-an-effect
+  const [prevManageChartsVisible, setPrevManageChartsVisible] = useState(manageChartsVisible);
+  const [hasOpenedManageCharts, setHasOpenedManageCharts] = useState(manageChartsVisible);
+  if (manageChartsVisible !== prevManageChartsVisible) {
+    setPrevManageChartsVisible(manageChartsVisible);
+    if (manageChartsVisible) setHasOpenedManageCharts(true);
+  }
 
   const { scope, scopeSet } = useSelectedScope();
   const selectedProject = useSelectedProject();
@@ -157,7 +171,11 @@ const OverviewChartDashboard = () => {
         {!catalogueMode && <LastIngestionInfo />}
       </Flex>
 
-      <ManageChartsDrawer onManageDrawerClose={onManageChartsClose} manageDrawerVisible={manageChartsVisible} />
+      {hasOpenedManageCharts && (
+        <Suspense fallback={null}>
+          <ManageChartsDrawer onManageDrawerClose={onManageChartsClose} manageDrawerVisible={manageChartsVisible} />
+        </Suspense>
+      )}
 
       <FloatButton.Group className="float-btn-pos">
         <FloatButton.BackTop target={() => document.getElementById('content-layout')!} />
