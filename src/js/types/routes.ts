@@ -3,7 +3,6 @@ import { BEACON_NETWORK_ENABLED } from '@/config';
 
 export interface BentoRoutes {
   Explore: string;
-  Search: string;
   Beacon?: string;
   BeaconNetwork?: string;
   About: string;
@@ -13,7 +12,6 @@ export interface BentoRoutes {
 
 const BentoRoute: BentoRoutes = {
   Explore: 'explore',
-  Search: 'search',
   About: 'about',
   Phenopackets: 'phenopackets',
   NotFound: 'not_found',
