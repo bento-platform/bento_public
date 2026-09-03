@@ -9,7 +9,8 @@
     "start": "next start -p ${BENTO_PUBLIC_PORT:-5000}",
     "lint": "eslint src",
     "lint-fix": "eslint --fix src",
-    "prettier": "prettier --write src"
+    "prettier": "prettier --write src",
+    "postinstall": "test -f node_modules/bento-auth-js/dist/index.js || npm run build --prefix node_modules/bento-auth-js"
   },
   "keywords": [],
   "author": "",
