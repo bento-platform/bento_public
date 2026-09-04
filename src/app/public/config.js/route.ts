@@ -1,42 +1,13 @@
+import type { PublicConfig } from '@/config';
+
 // Evaluated at request time since the same built image is reconfigured per-deployment via env vars.
 export const dynamic = 'force-dynamic';
 
 const parseBoolean = (value: string | undefined, defaultValue = ''): boolean =>
   ['true', 't', '1', 'yes'].includes((value || defaultValue).toLocaleLowerCase());
 
-interface SiteConfig {
-  // General branding and configuration
-  CLIENT_NAME: string | null;
-  ADMIN_URL: string | null;
-  PUBLIC_URL: string | null;
-
-  // Bento Public display flags
-  TRANSLATED: boolean;
-  TRANSLATED_LOGO: boolean;
-  LOGO_HEIGHT: string;
-  SHOW_LOGO: boolean;
-  SHOW_HEADER_TITLE: boolean;
-  SHOW_ADMIN_LINK: boolean;
-  SHOW_SIGN_IN: boolean;
-  FORCE_CATALOGUE: boolean;
-  PCGL_MODE: boolean;
-
-  // Theme variables
-  CATALOGUE_HEADER_BACKGROUND: string | undefined;
-  CATALOGUE_HEADER_TEXT_COLOR: string | undefined;
-
-  // Beacon configuration and flags
-  BEACON_URL: string | null;
-  BEACON_UI_ENABLED: boolean;
-  BEACON_NETWORK_ENABLED: boolean;
-
-  // Authentication
-  CLIENT_ID: string | null;
-  OPENID_CONFIG_URL: string | null;
-}
-
 export function GET() {
-  const siteConfig: SiteConfig = {
+  const siteConfig: PublicConfig = {
     // General branding and configuration
     CLIENT_NAME: process.env.BENTO_PUBLIC_CLIENT_NAME || null,
     // TODO: next version: remove deprecated env var
