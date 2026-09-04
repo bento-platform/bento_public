@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 import { Alert, FloatButton, Grid, Layout } from 'antd';
 import { ErrorBoundary, getErrorMessage } from 'react-error-boundary';
+import Loader from '@/components/Loader';
 import SiteHeader from '@/components/SiteHeader';
 import SiteSider from '@/components/SiteSider';
 import SiteFooter from '@/components/SiteFooter';
@@ -69,7 +70,9 @@ const DefaultLayout = () => {
               <ErrorBoundary
                 fallbackRender={({ error }) => <Alert type="error" description={getErrorMessage(error)} />}
               >
-                <Outlet />
+                <Suspense fallback={<Loader />}>
+                  <Outlet />
+                </Suspense>
               </ErrorBoundary>
             </Content>
           </Layout>

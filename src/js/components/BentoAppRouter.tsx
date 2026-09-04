@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from 'react';
+import { lazy, useEffect } from 'react';
 import { Routes, Route, useNavigate, useParams, Outlet } from 'react-router-dom';
 import { useAutoAuthenticate, useIsAuthenticated } from 'bento-auth-js';
 import { useAppDispatch, useLanguage } from '@/hooks';
@@ -193,40 +193,38 @@ const BentoAppRouter = () => {
   }
 
   return (
-    <Suspense fallback={<Loader fullHeight={true} />}>
-      <Routes>
-        <Route element={<DefaultLayout />}>
-          <Route path="/" element={<ScopedRoute />}>
-            <Route index element={<PublicExplore />} />
-            <Route path={BentoRoute.Explore} element={<PublicExplore />} />
-            <Route path={BentoRoute.About} element={<AboutPage />} />
-            <Route path={`${BentoRoute.Phenopackets}/:packetId/:tab?`} element={<PhenopacketView />} />
-            {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
-            {/* Beacon network is only available at the top level - scoping does not make sense for it. */}
-            {BentoRoute.BeaconNetwork && <Route path={BentoRoute.BeaconNetwork} element={<NetworkUi />} />}
-            <Route path="*" element={<NotFoundPage />} />
-          </Route>
-
-          <Route path="/p/:projectId" element={<ScopedRoute />}>
-            <Route index element={<PublicExplore />} />
-            <Route path={BentoRoute.Explore} element={<PublicExplore />} />
-            <Route path={BentoRoute.About} element={<AboutPage />} />
-            <Route path={`${BentoRoute.Phenopackets}/:packetId/:tab?`} element={<PhenopacketView />} />
-            {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
-            <Route path="*" element={<NotFoundPage />} />
-          </Route>
-
-          <Route path="/d/:datasetId" element={<ScopedRoute />}>
-            <Route index element={<PublicExplore />} />
-            <Route path={BentoRoute.Explore} element={<PublicExplore />} />
-            <Route path={BentoRoute.About} element={<AboutPage />} />
-            <Route path={`${BentoRoute.Phenopackets}/:packetId/:tab?`} element={<PhenopacketView />} />
-            {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
-            <Route path="*" element={<NotFoundPage />} />
-          </Route>
+    <Routes>
+      <Route element={<DefaultLayout />}>
+        <Route path="/" element={<ScopedRoute />}>
+          <Route index element={<PublicExplore />} />
+          <Route path={BentoRoute.Explore} element={<PublicExplore />} />
+          <Route path={BentoRoute.About} element={<AboutPage />} />
+          <Route path={`${BentoRoute.Phenopackets}/:packetId/:tab?`} element={<PhenopacketView />} />
+          {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
+          {/* Beacon network is only available at the top level - scoping does not make sense for it. */}
+          {BentoRoute.BeaconNetwork && <Route path={BentoRoute.BeaconNetwork} element={<NetworkUi />} />}
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
-      </Routes>
-    </Suspense>
+
+        <Route path="/p/:projectId" element={<ScopedRoute />}>
+          <Route index element={<PublicExplore />} />
+          <Route path={BentoRoute.Explore} element={<PublicExplore />} />
+          <Route path={BentoRoute.About} element={<AboutPage />} />
+          <Route path={`${BentoRoute.Phenopackets}/:packetId/:tab?`} element={<PhenopacketView />} />
+          {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>
+
+        <Route path="/d/:datasetId" element={<ScopedRoute />}>
+          <Route index element={<PublicExplore />} />
+          <Route path={BentoRoute.Explore} element={<PublicExplore />} />
+          <Route path={BentoRoute.About} element={<AboutPage />} />
+          <Route path={`${BentoRoute.Phenopackets}/:packetId/:tab?`} element={<PhenopacketView />} />
+          {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>
+      </Route>
+    </Routes>
   );
 };
 
