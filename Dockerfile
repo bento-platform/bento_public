@@ -23,7 +23,7 @@ COPY public public
 
 RUN npm run build
 
-FROM --platform=$TARGETPLATFORM node:24-trixie-slim
+FROM node:24-trixie-slim
 
 LABEL org.opencontainers.image.description="Bento Public: a publicly accessible portal for clinical datasets."
 
