@@ -17,8 +17,8 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 COPY entrypoint.bash .
 COPY run.dev.bash .
-COPY package.json package.json
-COPY package-lock.json package-lock.json
+COPY package.json .
+COPY package-lock.json .
 
 COPY --from=install /bento-public/node_modules ./node_modules
 
