@@ -3,7 +3,7 @@ import { Card, Col, Row, Typography } from 'antd';
 import { PieChart } from 'bento-charts';
 
 import { T_PLURAL_COUNT } from '@/constants/i18n';
-import { CHART_SIZES } from '@/constants/overviewConstants';
+import { CHART_SIZES } from '@/constants/exploreConstants';
 import { useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
 import type { DiscoveryResults } from '@/types/data';

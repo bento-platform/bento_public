@@ -11,7 +11,7 @@ import type { ChartData } from '@/types/data';
 import type { ChartConfig } from '@/types/discovery/chartConfig';
 import type { Field } from '@/types/discovery/fieldDefinition';
 
-import { CHART_SIZES } from '@/constants/overviewConstants';
+import { CHART_SIZES } from '@/constants/exploreConstants';
 import {
   CHART_TYPE_BAR,
   CHART_TYPE_CHOROPLETH,
@@ -53,7 +53,7 @@ const Chart = memo(({ chartConfig, data, field, id, isClickable, mode }: ChartPr
 
   const goToSearch = (id: string, val: string | number | undefined) => {
     if (val === undefined) return;
-    navigateToSameScopeUrl(`overview?${id}=${val}`);
+    navigateToSameScopeUrl(`explore?${id}=${val}`);
   };
 
   const barChartOnChartClickHandler: BarChartProps['onChartClick'] = (e) => {

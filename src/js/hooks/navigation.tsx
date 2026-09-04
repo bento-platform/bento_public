@@ -117,16 +117,16 @@ export const useGetRouteTitleAndIcon = () => {
 
   // Use location for catalogue page detection instead of selectedProject, since it gives us faster UI rendering at the
   // cost of only being wrong with a redirect edge case (and being slightly more brittle).
-  const overviewIsCatalogue = !location.pathname.includes('/p/') && !location.pathname.includes('/d/') && catalogueMode;
+  const exploreIsCatalogue = !location.pathname.includes('/p/') && !location.pathname.includes('/d/') && catalogueMode;
 
   return useCallback(
     (routeId: string): [string, ReactNode] => {
       /* eslint-disable react/jsx-key */
       switch (routeId) {
-        case BentoRoute.Overview:
-          return overviewIsCatalogue ? ['Catalogue', <BookOutlined />] : ['Overview', <PieChartOutlined />];
-        case BentoRoute.Provenance:
-          return ['Provenance', <SolutionOutlined />];
+        case BentoRoute.Explore:
+          return exploreIsCatalogue ? ['Catalogue', <BookOutlined />] : ['Explore', <PieChartOutlined />];
+        case BentoRoute.About:
+          return ['About', <SolutionOutlined />];
         case BentoRoute.Beacon:
           return ['Beacon', <BeaconLogo />];
         case BentoRoute.BeaconNetwork:
@@ -141,7 +141,7 @@ export const useGetRouteTitleAndIcon = () => {
       }
       /* eslint-enable react/jsx-key */
     },
-    [overviewIsCatalogue]
+    [exploreIsCatalogue]
   );
 };
 
@@ -170,37 +170,31 @@ export const useSiteMenuItems = (): [MenuItem[], MenuItem[]] => {
   const getRouteTitleAndIcon = useGetRouteTitleAndIcon();
 
   return useMemo(() => {
-    // Serves weird overloaded purpose as both catalogue and data overview route:
-    const overviewItem = createMenuItem(BentoRoute.Overview, ...getRouteTitleAndIcon(BentoRoute.Overview));
+    // Serves weird overloaded purpose as both catalogue and data explore route:
+    const exploreItem = createMenuItem(BentoRoute.Explore, ...getRouteTitleAndIcon(BentoRoute.Explore));
 
-    const topBarItems: MenuItem[] = [overviewItem];
-    const scopeItems: MenuItem[] = [];
+    const topBarItems: MenuItem[] = [exploreItem];
+    const scopeItems: MenuItem[] = [exploreItem];
 
-    if (page !== BentoRoute.Phenopackets && (page !== BentoRoute.BeaconNetwork || fixedDataset)) {
-      const itemsRef = fixedDataset ? topBarItems : scopeItems;
+    const putInTopBar = fixedDataset || (fixedProject && !scope.dataset) || !scope.project;
 
-      if (scopeHasData && !fixedDataset) {
-        itemsRef.push(overviewItem);
-      }
+    if (page !== BentoRoute.Phenopackets && (page !== BentoRoute.BeaconNetwork || putInTopBar)) {
+      const itemsRef = putInTopBar ? topBarItems : scopeItems;
 
-      if (BentoRoute.Beacon && scopeHasData && !!scope.project) {
+      if (BentoRoute.Beacon && scopeHasData) {
         itemsRef.push(createMenuItem(BentoRoute.Beacon, ...getRouteTitleAndIcon(BentoRoute.Beacon)));
       }
 
       // TODO: can enable for project if we get a more extensive project model
       if (scope.dataset) {
-        itemsRef.push(createMenuItem(BentoRoute.Provenance, ...getRouteTitleAndIcon(BentoRoute.Provenance)));
+        itemsRef.push(createMenuItem(BentoRoute.About, ...getRouteTitleAndIcon(BentoRoute.About)));
       }
     }
 
-    if (BentoRoute.Beacon && scopeHasData && (!scope.project || (scope.project && fixedProject))) {
-      topBarItems.push(createMenuItem(BentoRoute.Beacon, ...getRouteTitleAndIcon(BentoRoute.Beacon)));
-    }
-
-    if (BentoRoute.BeaconNetwork && (!scope.project || (scope.project && fixedProject))) {
+    if (BentoRoute.BeaconNetwork && putInTopBar) {
       topBarItems.push(createMenuItem(BentoRoute.BeaconNetwork, ...getRouteTitleAndIcon(BentoRoute.BeaconNetwork)));
     }
 
-    return [topBarItems, scopeItems] as [MenuItem[], MenuItem[]];
+    return (scopeItems.length > 1 ? [[], scopeItems] : [topBarItems, []]) as [MenuItem[], MenuItem[]];
   }, [getRouteTitleAndIcon, createMenuItem, scope, fixedProject, fixedDataset, scopeHasData, page]);
 };

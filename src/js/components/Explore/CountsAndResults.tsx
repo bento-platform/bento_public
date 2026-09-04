@@ -9,7 +9,7 @@ import CustomEmpty from '@Util/CustomEmpty';
 import Error from '@Util/Error';
 
 import { COUNT_ENTITY_ORDER, COUNT_ENTITY_REGISTRY } from '@/constants/countEntities';
-import { COUNTS_FILL } from '@/constants/overviewConstants';
+import { COUNTS_FILL } from '@/constants/exploreConstants';
 import { WAITING_STATES } from '@/constants/requests';
 import { ENTITY_QUERY_PARAM, TABLE_PAGE_QUERY_PARAM, TABLE_PAGE_SIZE_QUERY_PARAM } from '@/features/search/constants';
 
@@ -18,6 +18,7 @@ import { useEntityAndTextQueryParams, useSearchQuery } from '@/features/search/h
 import { useAppDispatch, useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
 import { useRenderCount } from '@/hooks/counts';
+import { useHaveEntityData } from '@/hooks/useHaveEntityData';
 import { useInnerWidth, useSmallScreen } from '@/hooks/useResponsiveContext';
 
 import { fetchDiscoveryMatches } from '@/features/search/fetchDiscoveryMatches.thunk';
@@ -103,6 +104,8 @@ const CountsAndResults = () => {
 
   const entityCounts = selectedDataset?.counts_by_entity ?? selectedProject?.counts;
 
+  const haveEntityData = useHaveEntityData();
+
   const {
     message,
     resultCountsOrBools: counts,
@@ -114,7 +117,6 @@ const CountsAndResults = () => {
     doneFirstLoad,
     matchData,
     pageSize,
-    uiHints,
   } = useSearchQuery();
   const entityAndTextQueryParams = useEntityAndTextQueryParams();
 
@@ -160,7 +162,7 @@ const CountsAndResults = () => {
     ? []
     : COUNT_ENTITY_ORDER.filter((entity) => {
         // hide counts if no filters applied and we have no data
-        if (uiHints.status === RequestStatus.Fulfilled && !uiHints.data.entities_with_data.includes(entity)) {
+        if (!haveEntityData(entity)) {
           // If we have a UI hint indicating that we have none of this entity in the scope at all, don't bother even
           // showing a loading card for the count.
           return false;

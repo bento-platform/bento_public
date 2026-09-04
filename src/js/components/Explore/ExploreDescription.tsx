@@ -6,7 +6,7 @@ import { useSelectedDataset, useSelectedProject } from '@/features/metadata/hook
 import DatasetDescription from '@/components/Provenance/DatasetProvenance/DatasetDescription';
 import AboutContent from '@/components/AboutContent';
 
-const OverviewDescription = () => {
+const ExploreDescription = () => {
   const t = useTranslationFn();
 
   const selectedProject = useSelectedProject();
@@ -20,7 +20,7 @@ const OverviewDescription = () => {
   }
 
   return (
-    <Card className="overview-description shadow rounded-xl distinguished">
+    <Card className="explore-description shadow rounded-xl distinguished">
       {selectedDataset ? (
         <DatasetDescription dataset={selectedDataset} />
       ) : selectedProject ? (
@@ -32,4 +32,4 @@ const OverviewDescription = () => {
   );
 };
 
-export default OverviewDescription;
+export default ExploreDescription;

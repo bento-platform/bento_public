@@ -5,7 +5,7 @@ import { BiDna } from 'react-icons/bi';
 import clsx from 'clsx';
 
 import CountsTitleWithHelp from '@/components/Util/CountsTitleWithHelp';
-import { COUNTS_FILL } from '@/constants/overviewConstants';
+import { COUNTS_FILL } from '@/constants/exploreConstants';
 import { useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
 import { useRenderCount } from '@/hooks/counts';
@@ -74,7 +74,7 @@ const SearchResultsCounts = ({
             value={hasInsufficientData ? renderCount(undefined) : renderCount(biosampleCount)}
             valueStyle={STAT_STYLE}
             // Slight fixup for alignment of non-Antd icon:
-            prefix={<BiDna style={{ marginTop: 6, verticalAlign: 'top' }} />}
+            prefix={<BiDna className="align-top mt-6px" />}
           />
           <Statistic
             title={<CountsTitleWithHelp entity="experiment" showHelp={!isBeaconNetwork} />}

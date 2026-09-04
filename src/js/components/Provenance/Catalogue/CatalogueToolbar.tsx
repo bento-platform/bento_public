@@ -1,20 +1,18 @@
 import { useState } from 'react';
 import { useAppDispatch } from '@/hooks';
 import { Badge, Button, Dropdown, Flex, Input, Select, Segmented, Typography } from 'antd';
-import {
-  AppstoreOutlined,
-  BarsOutlined,
-  FilterOutlined,
-  SearchOutlined,
-  SwapOutlined,
-  PieChartOutlined,
-} from '@ant-design/icons';
+import { FilterOutlined, SearchOutlined, SwapOutlined, PieChartOutlined } from '@ant-design/icons';
+import { BsGrid, BsViewStacked } from 'react-icons/bs';
+
 import { useCatalogueState } from '@/features/catalogue/hooks';
-import { toggleInsights, type SortKey, type FacetId } from '@/features/catalogue/catalogue.store';
 import { useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
 import { useTranslationFn } from '@/hooks';
+
 import ActiveFilterTags from '@/components/Util/ActiveFilterTags';
+
 import { FACET_CONFIG_BY_ID } from '@/features/catalogue/facetRegistry';
+
+import { toggleInsights, type SortKey, type FacetId } from '@/features/catalogue/catalogue.store';
 import { facetTranslationKey, facetValueTranslationKey } from '@/features/catalogue/utils';
 
 const { Text } = Typography;
@@ -29,12 +27,14 @@ const SORT_OPTIONS: { value: SortKey; label: string }[] = [
 
 interface CatalogueToolbarProps {
   filteredCount: number;
-  /** Below the `lg` breakpoint: the rail is a slide-over drawer, sort collapses to an icon button, and the grid/list switch is hidden. */
+  /** Below the `lg` breakpoint: the rail is a slide-over drawer. */
+  showFiltersButton: boolean;
+  /** Below the `md` breakpoint: sort collapses to an icon button and the grid/list switch is hidden. */
   isMobile: boolean;
   onOpenFilters: () => void;
 }
 
-const CatalogueToolbar = ({ filteredCount, isMobile, onOpenFilters }: CatalogueToolbarProps) => {
+const CatalogueToolbar = ({ filteredCount, showFiltersButton, isMobile, onOpenFilters }: CatalogueToolbarProps) => {
   const t = useTranslationFn();
   const dispatch = useAppDispatch();
   const { q, sets, sort, view, insightsOpen } = useCatalogueState();
@@ -85,15 +85,15 @@ const CatalogueToolbar = ({ filteredCount, isMobile, onOpenFilters }: CatalogueT
     <Flex vertical gap={8}>
       {/* Row 1: search + sort + view */}
       <Flex gap={8} align="center">
-        {isMobile && (
+        {showFiltersButton && (
           <Badge count={pills.length} size="small" offset={[-4, 4]} className="catalogue-toolbar-fixed">
-            <Button icon={<FilterOutlined />} onClick={onOpenFilters}>
+            <Button icon={<FilterOutlined aria-hidden />} onClick={onOpenFilters}>
               {t('catalogue.rail.title')}
             </Button>
           </Badge>
         )}
         <Input
-          prefix={<SearchOutlined />}
+          prefix={<SearchOutlined aria-hidden />}
           placeholder={t('catalogue.toolbar.search_placeholder')}
           value={searchInput}
           onChange={(e) => handleSearchChange(e.target.value)}
@@ -111,7 +111,7 @@ const CatalogueToolbar = ({ filteredCount, isMobile, onOpenFilters }: CatalogueT
           >
             <Button
               className="catalogue-toolbar-fixed"
-              icon={<SwapOutlined rotate={90} />}
+              icon={<SwapOutlined aria-hidden rotate={90} />}
               aria-label={t('catalogue.toolbar.sort_label')}
             />
           </Dropdown>
@@ -121,16 +121,28 @@ const CatalogueToolbar = ({ filteredCount, isMobile, onOpenFilters }: CatalogueT
             onChange={(v) => setSort(v)}
             className="catalogue-sort-select"
             options={SORT_OPTIONS.map((o) => ({ value: o.value, label: t(o.label) }))}
+            popupMatchSelectWidth={false}
           />
         )}
         {!isMobile && (
           <Segmented
             className="catalogue-toolbar-fixed"
+            style={{ backgroundColor: 'var(--antd-gray-4)' }}
             value={view}
             onChange={(v) => setView(v as 'grid' | 'list')}
             options={[
-              { value: 'grid', icon: <AppstoreOutlined /> },
-              { value: 'list', icon: <BarsOutlined /> },
+              {
+                value: 'grid',
+                label: t('catalogue.toolbar.grid'),
+                title: t('catalogue.toolbar.view_as_grid'),
+                icon: <BsGrid aria-hidden className="align-top mt-7px" />,
+              },
+              {
+                value: 'list',
+                label: t('catalogue.toolbar.list'),
+                title: t('catalogue.toolbar.view_as_list'),
+                icon: <BsViewStacked aria-hidden className="align-top mt-7px" />,
+              },
             ]}
           />
         )}
@@ -148,7 +160,7 @@ const CatalogueToolbar = ({ filteredCount, isMobile, onOpenFilters }: CatalogueT
           className="insights-toggle"
           htmlType="button"
           aria-pressed={insightsOpen}
-          icon={<PieChartOutlined aria-hidden="true" />}
+          icon={<PieChartOutlined aria-hidden />}
           onClick={() => dispatch(toggleInsights())}
         >
           {insightsOpen ? t('catalogue.toolbar.hide_insights') : t('catalogue.toolbar.show_insights')}
