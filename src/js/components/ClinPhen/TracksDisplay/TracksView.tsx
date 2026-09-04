@@ -9,7 +9,7 @@ import type { IgvTrack, ExperimentResultWithView, IgvPosition, IgvReferenceById 
 import { PUBLIC_URL } from '@/config';
 import { caseInsensitiveIgvFileInfoLookup, getIgvFileAndIndexAccessUrls } from '@/utils/igv';
 import TrackControlTable from './TrackControlTable';
-import { useDebounce } from '@/utils/debounce';
+import { useDebounce } from '@/hooks/debounce';
 
 const SQUISHED_CALL_HEIGHT = 10;
 const EXPANDED_CALL_HEIGHT = 100;
