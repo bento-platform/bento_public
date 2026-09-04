@@ -17,6 +17,11 @@ const DISPLAY_MODE = 'expanded';
 const VISIBILITY_WINDOW = 600000;
 const DEBOUNCE_WAIT_MS = 1000;
 
+type IgvBrowserState = {
+  browser?: Browser;
+  status: 'creating' | 'ready' | 'failed';
+};
+
 const TracksView = ({
   tracks,
   references,
@@ -25,9 +30,7 @@ const TracksView = ({
   references: IgvReferenceById; //references in IGV format
 }) => {
   const igvContainerRefs = useRef<Record<string, HTMLDivElement | null>>({});
-  const igvBrowserRefs = useRef<Record<string, Browser | null>>({});
-  const igvCreatingByAssemblyRef = useRef<Record<string, boolean>>({});
-  const activeCreateRequestByAssemblyRef = useRef<Record<string, number>>({});
+  const igvBrowserStateByAssemblyRef = useRef<Record<string, IgvBrowserState | undefined>>({});
   const dispatch = useAppDispatch();
 
   const [tracksWithView, setTracksWithView] = useState<ExperimentResultWithView[]>(
@@ -100,8 +103,9 @@ const TracksView = ({
       const assemblyId = track.genome_assembly_id;
       if (!assemblyId) return;
 
-      const browser = igvBrowserRefs.current[assemblyId];
-      if (!browser) return;
+      const browserState = igvBrowserStateByAssemblyRef.current[assemblyId];
+      if (!browserState?.browser || browserState.status !== 'ready') return;
+      const browser = browserState.browser;
 
       const wasViewing = track.viewInIgv;
       setTracksWithView((ts) => ts.map((t) => (t.filename === track.filename ? { ...t, viewInIgv: !wasViewing } : t)));
@@ -132,15 +136,12 @@ const TracksView = ({
   // -------------------------- igv init --------------------------
 
   const cleanupAllBrowsers = useCallback(() => {
-    Object.values(igvBrowserRefs.current).forEach((browser) => {
-      if (browser) {
-        console.debug('removing igv.js browser instance');
-        igv.removeBrowser(browser);
+    Object.entries(igvBrowserStateByAssemblyRef.current).forEach(([assemblyId, state]) => {
+      if (state?.browser) {
+        console.debug(`removing igv.js browser instance for assembly ${assemblyId}`);
+        igv.removeBrowser(state.browser);
       }
     });
-    igvBrowserRefs.current = {};
-    igvCreatingByAssemblyRef.current = {};
-    activeCreateRequestByAssemblyRef.current = {};
   }, []);
 
   useEffect(() => {
@@ -156,18 +157,18 @@ const TracksView = ({
     }
 
     // remove any stale browsers
-    Object.entries(igvBrowserRefs.current).forEach(([assemblyId, browser]) => {
+    Object.entries(igvBrowserStateByAssemblyRef.current).forEach(([assemblyId, state]) => {
       if (!availableAssemblies.includes(assemblyId)) {
-        if (browser) {
-          igv.removeBrowser(browser);
+        if (state?.browser) {
+          igv.removeBrowser(state.browser);
         }
-        delete igvBrowserRefs.current[assemblyId];
+        delete igvBrowserStateByAssemblyRef.current[assemblyId];
       }
     });
 
     // create an igv instance for each reference in the tracks (typically only one)
     availableAssemblies.forEach((assemblyId) => {
-      if (igvBrowserRefs.current[assemblyId] || igvCreatingByAssemblyRef.current[assemblyId]) {
+      if (igvBrowserStateByAssemblyRef.current[assemblyId]) {
         return;
       }
 
@@ -194,20 +195,19 @@ const TracksView = ({
 
       console.debug('creating igv.js browser with options:', igvOptions, '; tracks:', initialIgvTracks);
 
-      igvCreatingByAssemblyRef.current[assemblyId] = true;
-      const createRequestId = (activeCreateRequestByAssemblyRef.current[assemblyId] ?? 0) + 1;
-      activeCreateRequestByAssemblyRef.current[assemblyId] = createRequestId;
+      const state: IgvBrowserState = { status: 'creating' };
+      igvBrowserStateByAssemblyRef.current[assemblyId] = state;
 
       igv
         .createBrowser(igvContainer, igvOptions as CreateOpt)
         .then((browser: Browser) => {
-          if ((activeCreateRequestByAssemblyRef.current[assemblyId] ?? 0) !== createRequestId) {
+          if (igvBrowserStateByAssemblyRef.current[assemblyId] !== state) {
             console.debug('ignoring stale igv.js browser creation result');
             igv.removeBrowser(browser);
             return;
           }
-          igvBrowserRefs.current[assemblyId] = browser;
-          igvCreatingByAssemblyRef.current[assemblyId] = false;
+          state.browser = browser;
+          state.status = 'ready';
           browser.on('locuschange', (referenceFrame: IgvPosition[]) => {
             debouncedStoreIgvPosition(referenceFrame);
           });
@@ -215,8 +215,7 @@ const TracksView = ({
         })
         .catch((err) => {
           console.error(err);
-          igvBrowserRefs.current[assemblyId] = null;
-          igvCreatingByAssemblyRef.current[assemblyId] = false;
+          state.status = 'failed';
         });
     });
   }, [
