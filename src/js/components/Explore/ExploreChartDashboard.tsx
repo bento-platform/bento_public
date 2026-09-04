@@ -41,8 +41,7 @@ const saveScopeExploreToLS = (scope: DiscoveryScope, sections: Sections) => {
   saveValue(generateLSChartDataKey(scope), convertSequenceAndDisplayData(sections));
 };
 
-// Lazy-loaded: the "manage charts" drawer is opened rarely (via a FloatButton), so it shouldn't be part of the
-// bundle every explore-page visitor downloads up front.
+// Lazy-loaded: no need to frontload it as not seen by the viewer directly neither a commonly accessed component
 const ManageChartsDrawer = lazy(() => import('./Drawer/ManageChartsDrawer'));
 
 const ExploreChartSections = () => {
