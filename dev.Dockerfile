@@ -13,6 +13,8 @@ LABEL org.opencontainers.image.description="Local development image for Bento Pu
 
 WORKDIR /bento-public
 
+ENV NEXT_TELEMETRY_DISABLED=1
+
 COPY entrypoint.bash .
 COPY run.dev.bash .
 COPY package.json .
