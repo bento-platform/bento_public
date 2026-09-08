@@ -11,7 +11,7 @@ import { SessionProvider } from 'next-auth/react';
 // i18n and constants imports
 import { useTranslation } from 'react-i18next';
 import { NEW_BENTO_PUBLIC_THEME } from '@/constants/exploreConstants';
-import { SUPPORTED_LNGS } from '@/constants/configConstants';
+import { SESSION_REFETCH_INTERVAL_SECONDS, SUPPORTED_LNGS } from '@/constants/configConstants';
 
 // Component imports
 import { ConfigProvider } from 'antd';
@@ -91,9 +91,7 @@ const InnerRootApp = () => {
 };
 
 const RootApp = () => (
-  // refetchInterval matches bento-auth-js's old token-refresh-worker cadence; refetchOnWindowFocus (on by default)
-  // covers the case where that interval was throttled while the tab was in the background.
-  <SessionProvider refetchInterval={120}>
+  <SessionProvider refetchInterval={SESSION_REFETCH_INTERVAL_SECONDS}>
     <Provider store={store}>
       <BrowserRouter>
         <ResponsiveProvider>
