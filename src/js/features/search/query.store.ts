@@ -26,10 +26,11 @@ import type {
 import type { Sections } from '@/types/data';
 
 import { MIN_PAGE_SIZE, PAGE_SIZE_OPTIONS } from '@/constants/pagination';
-import { DEFAULT_TEXT_QUERY_TYPE, EMPTY_KATSU_ENTITY_COUNTS } from './constants';
+import { STALE_DISCOVERY_REJECTION, DEFAULT_TEXT_QUERY_TYPE, EMPTY_KATSU_ENTITY_COUNTS } from './constants';
 
 import { discoveryChartProcessingAndLocalStorage } from './discoveryChartProcessingAndLocalStorage';
-import { performKatsuDiscovery, STALE_DISCOVERY_REJECTION } from './performKatsuDiscovery.thunk';
+import { performKatsuDiscovery } from './performKatsuDiscovery.thunk';
+import { performKatsuScopeDiscovery } from './performKatsuScopeDiscovery.thunk';
 import { fetchSearchFields } from './fetchSearchFields.thunk';
 import { fetchDiscoveryMatches } from './fetchDiscoveryMatches.thunk';
 import { fetchDiscoveryMatchExportFields } from './fetchDiscoveryMatchExportFields.thunk';
@@ -182,6 +183,46 @@ const initialState: QueryState = {
 };
 
 /**
+ * Helper function to determine if a non-empty query is set in the QueryState instance.
+ * @param queryState - Query state instance
+ */
+const queryStateHasQuery = (queryState: QueryState) =>
+  Object.keys(queryState.filters).length || queryState.textQuery.length;
+
+/**
+ * Helper utility to handle a query-less scoped discovery response for the purposes of caching scope-level data.
+ * @param state - Draft of QueryState
+ * @param scopeSelection - Current selected scope + meta information
+ * @param response - Query-less discovery response
+ */
+const cacheWholeScopeDiscoveryData = (
+  state: Draft<QueryState>,
+  scopeSelection: DiscoveryScopeSelection,
+  response?: DiscoveryResponseOrMessage
+) => {
+  state.wholeScopeData.status = RequestStatus.Fulfilled;
+  state.wholeScopeData.invalid = false;
+
+  if (!response) return;
+
+  if (!('counts' in response)) {
+    return;
+  }
+
+  if (
+    (!scopeSelection.scope.project && !scopeSelection.scope.dataset) ||
+    (scopeSelection.fixedProject && scopeSelection.fixedDataset)
+  ) {
+    // Cache whole-instance counts. Used for showing counts in the data catalogue.
+    state.nodeCountsOrBools = response.counts;
+    state.nodeCountsOrBoolsFetched = true;
+  }
+
+  state.wholeScopeData.countsOrBools = response.counts;
+  state.wholeScopeData.fieldData = response.fields;
+};
+
+/**
  * Helper utility to invalidate all match data when a relevant parameter changes (and naturally invalidates the results,
  * which we need to reflect in the state in order to re-fetch.)
  * @param state - Draft of QueryState
@@ -329,24 +370,20 @@ const query = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(performKatsuDiscovery.pending, (state) => {
-      const haveQuery = Object.keys(state.filters).length || state.textQuery.length;
       state.discoveryStatus = RequestStatus.Pending;
-      if (!haveQuery) {
+      if (!queryStateHasQuery(state)) {
         state.wholeScopeData.status = RequestStatus.Pending;
       }
     });
     builder.addCase(
       performKatsuDiscovery.fulfilled,
       (state, { payload: [scope, response] }: PayloadAction<[DiscoveryScopeSelection, DiscoveryResponseOrMessage]>) => {
-        const haveQuery = Object.keys(state.filters).length || state.textQuery.length;
-
         state.discoveryStatus = RequestStatus.Fulfilled;
         state.discoveryError = '';
         state.resultCountsInvalid = false;
 
-        if (!haveQuery) {
-          state.wholeScopeData.status = RequestStatus.Fulfilled;
-          state.wholeScopeData.invalid = false;
+        if (!queryStateHasQuery(state)) {
+          cacheWholeScopeDiscoveryData(state, scope, response);
         }
 
         if (!response) {
@@ -360,21 +397,6 @@ const query = createSlice({
         }
 
         if ('counts' in response) {
-          if (
-            ((!scope.scope.project && !scope.scope.dataset) || (scope.fixedProject && scope.fixedDataset)) &&
-            !haveQuery
-          ) {
-            // Cache whole-instance counts when no filters are applied. Used for showing counts in the data catalogue.
-            state.nodeCountsOrBools = response.counts;
-            state.nodeCountsOrBoolsFetched = true;
-          }
-
-          // Populate scope-level field data if applicable
-          if (!haveQuery) {
-            state.wholeScopeData.countsOrBools = response.counts;
-            state.wholeScopeData.fieldData = response.fields;
-          }
-
           // Populate scope / filter results:
 
           state.resultCountsOrBools = response.counts;
@@ -397,6 +419,9 @@ const query = createSlice({
         // Scope changed while the request was in flight. Reset to Idle so a new search
         // for the correct scope will be triggered rather than storing stale results.
         state.discoveryStatus = RequestStatus.Idle;
+        if (!queryStateHasQuery(state)) {
+          state.wholeScopeData.status = RequestStatus.Idle;
+        }
         return;
       }
       state.discoveryStatus = RequestStatus.Rejected;
@@ -406,6 +431,28 @@ const query = createSlice({
       if (typeof payload === 'string') {
         state.discoveryError = payload;
       }
+    });
+    // -----
+    builder.addCase(performKatsuScopeDiscovery.pending, (state) => {
+      state.wholeScopeData.status = RequestStatus.Pending;
+    });
+    builder.addCase(
+      performKatsuScopeDiscovery.fulfilled,
+      (state, { payload: [scope, response] }: PayloadAction<[DiscoveryScopeSelection, DiscoveryResponseOrMessage]>) => {
+        cacheWholeScopeDiscoveryData(state, scope, response);
+      }
+    );
+    builder.addCase(performKatsuScopeDiscovery.rejected, (state, { payload }) => {
+      if (payload === STALE_DISCOVERY_REJECTION) {
+        // Scope changed while the request was in flight. Reset to Idle so a new search
+        // for the correct scope will be triggered rather than storing stale results.
+        state.wholeScopeData.status = RequestStatus.Idle;
+        return;
+      }
+      state.wholeScopeData.status = RequestStatus.Rejected;
+      // maybe a bit counterintuitive, but a rejected status is a "valid" count response insofar as it reflects the
+      // query made, and we don't want to attempt a re-fetch.
+      state.wholeScopeData.invalid = false;
     });
     // -----
     builder.addCase(fetchSearchFields.pending, (state) => {

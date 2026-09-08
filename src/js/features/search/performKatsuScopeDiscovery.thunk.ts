@@ -1,16 +1,15 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import type { DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
+import type { DiscoveryResponseOrMessage } from '@/types/discovery/response';
+import type { RootState } from '@/store';
 import { type AxiosError } from 'axios';
 import { STALE_DISCOVERY_REJECTION } from './constants';
-import type { RootState } from '@/store';
-import type { DiscoveryResponseOrMessage } from '@/types/discovery/response';
-import type { DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
 import { RequestStatus } from '@/types/requests';
 import { getDiscovery } from '@/features/search/api';
-import { printAPIError } from '@/utils/error.util';
 import { scopeEqual } from '@/utils/router';
-import { searchQueryParamsFromState } from './utils';
+import { printAPIError } from '@/utils/error.util';
 
-export const performKatsuDiscovery = createAsyncThunk<
+export const performKatsuScopeDiscovery = createAsyncThunk<
   [DiscoveryScopeSelection, DiscoveryResponseOrMessage],
   void,
   {
@@ -18,13 +17,13 @@ export const performKatsuDiscovery = createAsyncThunk<
     rejectValue: string;
   }
 >(
-  'query/performKatsuDiscovery',
+  'query/performKatsuScopeDiscovery',
   async (_, { rejectWithValue, getState }) => {
     const state = getState();
     const scopeSelectionAtDispatch = state.metadata.selectedScope;
 
     try {
-      const res = await getDiscovery(state, searchQueryParamsFromState(state.query));
+      const res = await getDiscovery(state);
 
       // Scope changed while the request was in flight — discard stale results
       if (!scopeEqual(scopeSelectionAtDispatch.scope, getState().metadata.selectedScope.scope)) {
@@ -38,10 +37,10 @@ export const performKatsuDiscovery = createAsyncThunk<
   },
   {
     condition(_, { getState }) {
-      const { discoveryStatus, resultCountsInvalid } = getState().query;
-      return (
-        discoveryStatus === RequestStatus.Idle || (discoveryStatus !== RequestStatus.Pending && resultCountsInvalid)
-      );
+      const queryState = getState().query;
+      const haveQuery = Boolean(Object.keys(queryState.filters).length || queryState.textQuery.length);
+      const { status, invalid } = queryState.wholeScopeData;
+      return haveQuery && (status === RequestStatus.Idle || (status !== RequestStatus.Pending && invalid));
     },
   }
 );

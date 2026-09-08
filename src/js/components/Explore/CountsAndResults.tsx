@@ -10,11 +10,10 @@ import Error from '@Util/Error';
 
 import { COUNT_ENTITY_ORDER, COUNT_ENTITY_REGISTRY } from '@/constants/countEntities';
 import { COUNTS_FILL } from '@/constants/exploreConstants';
-import { WAITING_STATES } from '@/constants/requests';
 import { ENTITY_QUERY_PARAM, TABLE_PAGE_QUERY_PARAM, TABLE_PAGE_SIZE_QUERY_PARAM } from '@/features/search/constants';
 
 import { useSelectedDataset, useSelectedProject } from '@/features/metadata/hooks';
-import { useEntityAndTextQueryParams, useSearchQuery } from '@/features/search/hooks';
+import { useEntityAndTextQueryParams, useSearchLoading, useSearchQuery } from '@/features/search/hooks';
 import { useAppDispatch, useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
 import { useRenderCount } from '@/hooks/counts';
@@ -120,7 +119,7 @@ const CountsAndResults = () => {
   } = useSearchQuery();
   const entityAndTextQueryParams = useEntityAndTextQueryParams();
 
-  const waitingForData = WAITING_STATES.includes(discoveryStatus);
+  const waitingForData = useSearchLoading();
   const doingFirstLoad = waitingForData && !doneFirstLoad;
 
   // TODO: per-data type permissions?
