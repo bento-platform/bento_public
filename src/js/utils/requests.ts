@@ -1,5 +1,5 @@
 import type { AxiosRequestConfig } from 'axios';
-import { makeAuthorizationHeader } from 'bento-auth-js';
+import { makeAuthorizationHeader } from '@/features/auth/utils';
 import type { RootState } from '@/store';
 import type { DiscoveryScope, DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
 import type { QueryParamEntries } from '@/features/search/types';

@@ -3,7 +3,7 @@ import { Modal, type ModalProps } from 'antd';
 
 import { FileDisplay } from 'bento-file-display';
 
-import { useAuthorizationHeader } from 'bento-auth-js';
+import { useAuthorizationHeader } from '@/features/auth/hooks';
 import { useDrsHttpsAccessOrPassThrough } from '@/features/drs/hooks';
 
 const MODAL_STYLE: CSSProperties = {

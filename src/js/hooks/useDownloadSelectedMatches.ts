@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 import axios from 'axios';
 import FileSaver from 'file-saver';
-import { makeAuthorizationHeader } from 'bento-auth-js';
+import { useAccessToken } from '@/features/auth/hooks';
+import { makeAuthorizationHeader } from '@/features/auth/utils';
 
-import { useAppSelector } from '@/hooks';
 import {
   biosampleBatchUrl,
   experimentBatchUrl,
@@ -21,7 +21,7 @@ const BATCH_URL_BY_ENTITY: Record<ExportDataEntity, string> = {
 };
 
 export const useDownloadSelectedMatches = () => {
-  const auth = useAppSelector((state) => state.auth);
+  const accessToken = useAccessToken();
 
   return useCallback(
     async (entity: ExportDataEntity, ids: string[], format: ExportFormat, filename: string, fields?: string[]) => {
@@ -35,13 +35,13 @@ export const useDownloadSelectedMatches = () => {
         url,
         { id, format, ...(fields && fields.length > 0 ? { fields } : {}) },
         {
-          headers: { ...makeAuthorizationHeader(auth.accessToken) },
+          headers: { ...makeAuthorizationHeader(accessToken) },
           responseType: 'blob',
         }
       );
 
       FileSaver.saveAs(res.data, filename);
     },
-    [auth]
+    [accessToken]
   );
 };

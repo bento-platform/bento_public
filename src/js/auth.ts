@@ -4,7 +4,7 @@ import type { OAuthConfig } from 'next-auth/providers';
 // without it, TS reports the augmentation target module as unresolvable even though it's a valid subpath.
 import type { JWT } from 'next-auth/jwt';
 
-const CLIENT_ID = process.env.CLIENT_ID ?? '';
+export const CLIENT_ID = process.env.CLIENT_ID ?? '';
 const OPENID_CONFIG_URL = process.env.OPENID_CONFIG_URL ?? '';
 
 type BentoTokenSet = {
@@ -28,20 +28,32 @@ const bentoProvider: OAuthConfig<Record<string, unknown>> = {
   authorization: { params: { scope: 'openid email' } },
 };
 
-// The discovered token_endpoint is cached the same way bento-auth-js cached OpenID configuration (a multi-hour TTL
-// is plenty - these documents change rarely, if ever, for a given deployment).
-let cachedTokenEndpoint: { url: string; expiry: number } | undefined;
+type OidcDiscoveryDocument = {
+  token_endpoint: string;
+  end_session_endpoint?: string;
+};
 
-const getTokenEndpoint = async (): Promise<string> => {
-  if (cachedTokenEndpoint && Date.now() < cachedTokenEndpoint.expiry) {
-    return cachedTokenEndpoint.url;
+// The discovery document is cached the same way bento-auth-js cached it (a multi-hour TTL is plenty - this changes
+// rarely, if ever, for a given deployment).
+let cachedDiscovery: { doc: OidcDiscoveryDocument; expiry: number } | undefined;
+
+const getDiscoveryDocument = async (): Promise<OidcDiscoveryDocument> => {
+  if (cachedDiscovery && Date.now() < cachedDiscovery.expiry) {
+    return cachedDiscovery.doc;
   }
   const res = await fetch(OPENID_CONFIG_URL);
   if (!res.ok) throw new Error('Could not fetch identity provider configuration');
-  const { token_endpoint: url } = (await res.json()) as { token_endpoint: string };
-  cachedTokenEndpoint = { url, expiry: Date.now() + 3 * 60 * 60 * 1000 };
-  return url;
+  const doc = (await res.json()) as OidcDiscoveryDocument;
+  cachedDiscovery = { doc, expiry: Date.now() + 3 * 60 * 60 * 1000 };
+  return doc;
 };
+
+const getTokenEndpoint = async (): Promise<string> => (await getDiscoveryDocument()).token_endpoint;
+
+// Used by /api/auth/end-session-url so the client can drive an RP-initiated logout (killing the identity
+// provider's session, not just this app's) without OPENID_CONFIG_URL itself needing to be client-exposed.
+export const getEndSessionEndpoint = async (): Promise<string | undefined> =>
+  (await getDiscoveryDocument()).end_session_endpoint;
 
 const refreshAccessToken = async (refreshToken: string): Promise<BentoTokenSet> => {
   const tokenEndpoint = await getTokenEndpoint();

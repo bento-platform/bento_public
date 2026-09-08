@@ -1,4 +1,4 @@
-import { downloadData, queryData } from 'bento-auth-js';
+import { downloadData, queryData } from '@/features/auth/permissions';
 import { useConfig } from '@/features/config/hooks';
 import { useHasScopePermission } from '@/hooks';
 

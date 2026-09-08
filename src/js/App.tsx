@@ -20,20 +20,18 @@ import frCA from 'antd/locale/fr_CA';
 import dayjs from 'dayjs';
 import 'dayjs/locale/fr-ca';
 import { ChartConfigProvider } from 'bento-charts';
-import Loader from '@/components/Loader';
 import BentoAppRouter from '@/components/BentoAppRouter';
 import LanguageHandler from '@/components/Util/LanguageHandler';
 import AuthOutlet from '@/components/Util/AuthOutlet';
 import ResponsiveProvider from '@/components/Util/ResponsiveProvider';
 
 // Hooks and utilities imports
-import { BentoAuthContextProvider } from 'bento-auth-js';
 import { NotificationProvider } from '@/hooks/notifications';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
 // Store and configuration imports
 import { store } from './store';
-import { AUTH_CALLBACK_URL, CLIENT_ID, OPENID_CONFIG_URL, PCGL_MODE, PUBLIC_URL_NO_TRAILING_SLASH } from './config';
+import { PCGL_MODE } from './config';
 
 // Styles imports
 import 'antd/dist/reset.css';
@@ -48,7 +46,6 @@ const BaseRoutes = () => {
   return (
     <Routes>
       <Route element={<AuthOutlet />}>
-        <Route path="/callback" element={<Loader fullHeight={true} />} />
         <Route element={<LanguageHandler />}>
           <Route path="/:lang/*" element={<BentoAppRouter />} />
           <Route path="*" element={<Navigate to="/en/" />} />
@@ -93,25 +90,12 @@ const InnerRootApp = () => {
   );
 };
 
-// TODO(authjs-migration): drop once every bento-auth-js consumer has moved to next-auth's useSession()/signIn()/
-//  signOut(); SessionProvider (below) is next-auth's equivalent and already covers the whole app.
 const RootApp = () => (
   <SessionProvider>
     <Provider store={store}>
       <BrowserRouter>
         <ResponsiveProvider>
-          <BentoAuthContextProvider
-            value={{
-              applicationUrl: PUBLIC_URL_NO_TRAILING_SLASH,
-              openIdConfigUrl: OPENID_CONFIG_URL,
-              clientId: CLIENT_ID,
-              scope: 'openid email',
-              postSignOutUrl: `${PUBLIC_URL_NO_TRAILING_SLASH}/`,
-              authCallbackUrl: AUTH_CALLBACK_URL,
-            }}
-          >
-            <InnerRootApp />
-          </BentoAuthContextProvider>
+          <InnerRootApp />
         </ResponsiveProvider>
       </BrowserRouter>
     </Provider>

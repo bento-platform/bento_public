@@ -1,6 +1,6 @@
 import { lazy, useEffect } from 'react';
 import { Routes, Route, useNavigate, useParams, Outlet } from 'react-router-dom';
-import { useAutoAuthenticate, useIsAuthenticated } from 'bento-auth-js';
+import { useIsAuthenticated } from '@/features/auth/hooks';
 import { useAppDispatch, useLanguage } from '@/hooks';
 
 import {
@@ -105,7 +105,6 @@ const BentoAppRouter = () => {
   const dispatch = useAppDispatch();
   const language = useLanguage();
 
-  const { isAutoAuthenticating } = useAutoAuthenticate();
   const isAuthenticated = useIsAuthenticated();
   const {
     selectedScope: { scope, scopeSet },
@@ -188,7 +187,7 @@ const BentoAppRouter = () => {
     dispatch(getProjects(language));
   }, [dispatch, language]);
 
-  if (isAutoAuthenticating || projectsStatus === RequestStatus.Pending) {
+  if (projectsStatus === RequestStatus.Pending) {
     return <Loader fullHeight={true} />;
   }
 

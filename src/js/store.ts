@@ -1,12 +1,6 @@
-import { configureStore, type Reducer, type UnknownAction } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 
-import type { OIDCSliceState } from 'bento-auth-js';
-import { LS_OPENID_CONFIG_KEY, AuthReducer as auth, OIDCReducer } from 'bento-auth-js';
-
-// bento-auth-js types its exported reducer's preloaded-state param as exactly `OIDCSliceState` rather than
-// `OIDCSliceState | undefined`, even though (like any createSlice reducer) it handles undefined state fine at
-// runtime. Recast so it satisfies configureStore's expectations alongside our optional preloadedState below.
-const openIdConfiguration = OIDCReducer as Reducer<OIDCSliceState, UnknownAction, OIDCSliceState | undefined>;
+import auth from '@/features/auth/authSlice';
 
 import { LOCALSTORAGE_UI_SETTINGS_KEY } from '@/constants/ui';
 import catalogueReducer from '@/features/catalogue/catalogue.store';
@@ -21,23 +15,11 @@ import beaconNetworkReducer from './features/beacon/network.store';
 import metadataReducer from '@/features/metadata/metadata.store';
 import reference from '@/features/reference/reference.store';
 import ui, { type UIState } from '@/features/ui/ui.store';
-import { getValue, saveValue } from './utils/localStorage';
-
-interface PersistedState {
-  openIdConfiguration?: OIDCSliceState;
-}
-
-const persistedState: PersistedState = {};
-const persistedOpenIDConfig = getValue(LS_OPENID_CONFIG_KEY, undefined, (value) => typeof value === 'object');
-if (persistedOpenIDConfig) {
-  console.debug('attempting to load OpenID configuration from localStorage');
-  persistedState.openIdConfiguration = persistedOpenIDConfig;
-}
+import { saveValue } from './utils/localStorage';
 
 export const store = configureStore({
   reducer: {
     auth,
-    openIdConfiguration,
     catalogue: catalogueReducer,
     clinPhen: clinPhenReducer,
     config: configReducer,
@@ -51,7 +33,6 @@ export const store = configureStore({
     reference,
     ui,
   },
-  preloadedState: persistedState,
 });
 
 export type RootState = ReturnType<typeof store.getState>;
@@ -87,18 +68,6 @@ const observeStore = <T>(
   handleChange();
   return unsubscribe;
 };
-
-// Persist OIDC config on state changes
-observeStore<OIDCSliceState>(
-  store,
-  (state) => state.openIdConfiguration,
-  (currentState) => {
-    const { data, expiry, isFetching } = currentState;
-    if (data && expiry && !isFetching) {
-      saveValue(LS_OPENID_CONFIG_KEY, { data, expiry, isFetching });
-    }
-  }
-);
 
 // Persist UI settings on state changes
 observeStore<UIState>(
