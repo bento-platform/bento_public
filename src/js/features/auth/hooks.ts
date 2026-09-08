@@ -4,9 +4,8 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 
 import { PUBLIC_URL_NO_TRAILING_SLASH } from '@/config';
 import type { AppDispatch, RootState } from '@/store';
-import { type Resource, makeResourceKey } from './resources';
+import { type Resource, makeResourceKey, makeAuthorizationHeader } from 'bento-auth-js';
 import { fetchResourcesPermissions, setAccessToken } from './authSlice';
-import { makeAuthorizationHeader } from './utils';
 
 const BENTO_OIDC_PROVIDER_ID = 'bento';
 

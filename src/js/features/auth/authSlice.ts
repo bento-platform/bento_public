@@ -1,7 +1,6 @@
 import { createAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import type { RootState } from '@/store';
-import { type Resource, makeResourceKey } from './resources';
-import { makeAuthorizationHeader } from './utils';
+import { type Resource, makeResourceKey, makeAuthorizationHeader } from 'bento-auth-js';
 
 // Auth.js's own JWT session cookie is the source of truth for the session (access/id/refresh tokens) - it's not
 // duplicated into localStorage here. `accessToken` below is a synchronous *mirror* of that session's access token

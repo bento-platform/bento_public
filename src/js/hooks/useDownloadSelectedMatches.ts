@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import axios from 'axios';
 import FileSaver from 'file-saver';
 import { useAccessToken } from '@/features/auth/hooks';
-import { makeAuthorizationHeader } from '@/features/auth/utils';
+import { makeAuthorizationHeader } from 'bento-auth-js';
 
 import {
   biosampleBatchUrl,

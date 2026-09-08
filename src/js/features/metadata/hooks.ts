@@ -1,10 +1,5 @@
 import { useMemo } from 'react';
-import {
-  makeProjectDatasetResource,
-  makeProjectResource,
-  type Resource,
-  RESOURCE_EVERYTHING,
-} from '@/features/auth/resources';
+import { makeProjectDatasetResource, makeProjectResource, type Resource, RESOURCE_EVERYTHING } from 'bento-auth-js';
 import { useAppSelector } from '@/hooks';
 import type { Project } from '@/types/metadata';
 import type { Dataset } from '@/types/dataset';
