@@ -84,7 +84,7 @@ export const useSearchQueryParams = (): QueryParamEntries => {
 
 /**
  * Active-filter pills (for display outside the sidebar, e.g. between the About section and the count
- * cards on the overview page) plus the actions to remove one filter value or clear all filters. Shared
+ * cards on the explore page) plus the actions to remove one filter value or clear all filters. Shared
  * with SearchFilters (the sidebar's own filter-editing form) so both surfaces navigate the URL the same way.
  */
 export const useActiveFilterPills = (): { pills: ActiveFilterPill[]; clearAll: () => void } => {

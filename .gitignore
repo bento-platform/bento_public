@@ -13,3 +13,8 @@ core
 
 CLAUDE.md
 .claude/*
+
+# next.js
+/.next/
+/out/
+next-env.d.ts

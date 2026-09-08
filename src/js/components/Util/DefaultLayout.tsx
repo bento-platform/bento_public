@@ -31,12 +31,12 @@ const DefaultLayout = () => {
 
   const breakpoints = useBreakpoint();
 
-  const isCatalogue = scopeSet && !scope.project && catalogueMode && page === 'overview';
+  const isCatalogue = scopeSet && !scope.project && catalogueMode && page === 'explore';
   const sidebarOverlay = !breakpoints.lg;
   const sidebarOverlayShown = sidebarOverlay && !collapsed;
-  const sidebarHidden = page !== 'overview' || isCatalogue || (!isCatalogue && !scopeHasData);
+  const sidebarHidden = page !== 'explore' || isCatalogue || (!isCatalogue && !scopeHasData);
 
-  const showSidebarToggle = sidebarOverlay && page === 'overview';
+  const showSidebarToggle = sidebarOverlay && page === 'explore';
 
   const breadcrumbItems = useTitleBreadcrumbItems(scopeHeaderMenuItems);
   const scopeHeaderHidden = isCatalogue || (!isCatalogue && !breadcrumbItems.length && !showSidebarToggle);
@@ -74,8 +74,8 @@ const DefaultLayout = () => {
             </Content>
           </Layout>
           {PCGL_MODE ? <PcglFooter /> : <SiteFooter />}
-          {/* Overview has its own way of rendering a back-to-top button, so we only render this if we're not on the overview page: */}
-          {page !== BentoRoute.Overview ? (
+          {/* Explore has its own way of rendering a back-to-top button, so we only render this if we're not on the explore page: */}
+          {page !== BentoRoute.Explore ? (
             <FloatButton.BackTop className="float-btn-pos" target={() => document.getElementById('content-layout')!} />
           ) : null}
         </Layout>

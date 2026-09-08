@@ -8,7 +8,7 @@ import { WAITING_STATES } from '@/constants/requests';
 import { useDataTypes } from '@/features/dataTypes/hooks';
 import type { BentoServiceDataType } from '@/types/dataTypes';
 
-import OverviewCollapsibleSection from './Util/OverviewCollapsibleSection';
+import ExploreCollapsibleSection from './Util/ExploreCollapsibleSection';
 
 const formatDate = (dateString: string, language: string) => {
   const date = new Date(dateString);
@@ -77,7 +77,7 @@ const LastIngestionInfo = () => {
   if (!hasData) return null;
 
   return (
-    <OverviewCollapsibleSection title="Latest Data Ingestion">
+    <ExploreCollapsibleSection title="Latest Data Ingestion">
       <Space wrap>
         {WAITING_STATES.includes(dataTypesStatus) ? (
           <LastIngestionSkeleton />
@@ -85,7 +85,7 @@ const LastIngestionInfo = () => {
           availableDataTypes.map((dataType) => <LastIngestionDataType dataType={dataType} key={dataType.id} />)
         )}
       </Space>
-    </OverviewCollapsibleSection>
+    </ExploreCollapsibleSection>
   );
 };
 

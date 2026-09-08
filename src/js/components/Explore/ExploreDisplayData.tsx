@@ -5,14 +5,14 @@ import { disableChart } from '@/features/search/query.store';
 import { useAppDispatch } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
-import { CHART_SIZES } from '@/constants/overviewConstants';
+import { CHART_SIZES } from '@/constants/exploreConstants';
 
 import ChartCard from './ChartCard';
 
 import type { ChartSizeMode } from '@/features/ui/types';
 import type { ChartDataField } from '@/types/data';
 
-const OverviewDisplayData = ({ section, allCharts, searchableFields, chartMode }: OverviewDisplayDataProps) => {
+const ExploreDisplayData = ({ section, allCharts, searchableFields, chartMode }: ExploreDisplayDataProps) => {
   const dispatch = useAppDispatch();
   const isSmallScreen = useSmallScreen();
 
@@ -57,11 +57,11 @@ const OverviewDisplayData = ({ section, allCharts, searchableFields, chartMode }
   return <div style={containerStyle}>{displayedCharts.map(renderItem)}</div>;
 };
 
-export interface OverviewDisplayDataProps {
+export interface ExploreDisplayDataProps {
   section: string;
   allCharts: ChartDataField[];
   searchableFields: Set<string>;
   chartMode: ChartSizeMode;
 }
 
-export default OverviewDisplayData;
+export default ExploreDisplayData;

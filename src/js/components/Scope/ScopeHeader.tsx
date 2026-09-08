@@ -20,7 +20,7 @@ const NO_BACK_BUTTON = [undefined, undefined] as const;
 
 const useBackButtonInfo = () => {
   const location = useLocation();
-  const overviewQueryParams = useSearchQueryParams();
+  const exploreQueryParams = useSearchQueryParams();
   const currentPage = getCurrentPage(location);
 
   const navigateToCatalogue = useNavigateToCatalogue();
@@ -33,7 +33,7 @@ const useBackButtonInfo = () => {
     if (currentPage === BentoRoute.Phenopackets) {
       return [
         scope.dataset ? 'Back to dataset' : 'Back to project',
-        () => navigateToSameScopeUrl(buildQueryParamsUrl(BentoRoute.Overview, overviewQueryParams), false),
+        () => navigateToSameScopeUrl(buildQueryParamsUrl(BentoRoute.Explore, exploreQueryParams), false),
       ];
     } else {
       if (scope.dataset) {
@@ -41,7 +41,7 @@ const useBackButtonInfo = () => {
         const cameFromProject = (location.state as { fromProjectScope?: boolean } | null)?.fromProjectScope;
         return PCGL_MODE && !cameFromProject
           ? ['Back to catalogue', navigateToCatalogue]
-          : ['Back to project', () => navigateToScope({ project: scope.project }, BentoRoute.Overview)];
+          : ['Back to project', () => navigateToScope({ project: scope.project }, BentoRoute.Explore)];
       } else if (scope.project) {
         return fixedProject ? NO_BACK_BUTTON : ['Back to catalogue', navigateToCatalogue];
       } else {
@@ -54,7 +54,7 @@ const useBackButtonInfo = () => {
     navigateToCatalogue,
     navigateToScope,
     navigateToSameScopeUrl,
-    overviewQueryParams,
+    exploreQueryParams,
     scope,
     fixedProject,
     fixedDataset,
