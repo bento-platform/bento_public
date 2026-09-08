@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 // Redux and routing imports
 import { Provider } from 'react-redux';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { SessionProvider } from 'next-auth/react';
 
 // i18n and constants imports
 import { useTranslation } from 'react-i18next';
@@ -92,25 +93,29 @@ const InnerRootApp = () => {
   );
 };
 
+// TODO(authjs-migration): drop once every bento-auth-js consumer has moved to next-auth's useSession()/signIn()/
+//  signOut(); SessionProvider (below) is next-auth's equivalent and already covers the whole app.
 const RootApp = () => (
-  <Provider store={store}>
-    <BrowserRouter>
-      <ResponsiveProvider>
-        <BentoAuthContextProvider
-          value={{
-            applicationUrl: PUBLIC_URL_NO_TRAILING_SLASH,
-            openIdConfigUrl: OPENID_CONFIG_URL,
-            clientId: CLIENT_ID,
-            scope: 'openid email',
-            postSignOutUrl: `${PUBLIC_URL_NO_TRAILING_SLASH}/`,
-            authCallbackUrl: AUTH_CALLBACK_URL,
-          }}
-        >
-          <InnerRootApp />
-        </BentoAuthContextProvider>
-      </ResponsiveProvider>
-    </BrowserRouter>
-  </Provider>
+  <SessionProvider>
+    <Provider store={store}>
+      <BrowserRouter>
+        <ResponsiveProvider>
+          <BentoAuthContextProvider
+            value={{
+              applicationUrl: PUBLIC_URL_NO_TRAILING_SLASH,
+              openIdConfigUrl: OPENID_CONFIG_URL,
+              clientId: CLIENT_ID,
+              scope: 'openid email',
+              postSignOutUrl: `${PUBLIC_URL_NO_TRAILING_SLASH}/`,
+              authCallbackUrl: AUTH_CALLBACK_URL,
+            }}
+          >
+            <InnerRootApp />
+          </BentoAuthContextProvider>
+        </ResponsiveProvider>
+      </BrowserRouter>
+    </Provider>
+  </SessionProvider>
 );
 
 export default RootApp;
