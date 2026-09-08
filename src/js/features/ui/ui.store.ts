@@ -13,7 +13,7 @@ export type UIState = {
 };
 
 const defaultInitialSettings: UIUserSettings = {
-  overviewChartMode: 'normal',
+  exploreChartMode: 'normal',
 };
 
 const VALID_CHART_MODES = ['compact', 'normal'];
@@ -25,7 +25,7 @@ const validateUiSettings = (data: any): boolean => {
   const keys = Object.keys(data);
   if (JSON.stringify([...keys].sort()) !== JSON.stringify(Object.keys(defaultInitialSettings).sort())) return false;
   // Validation logic - right now just validating chart mode
-  return VALID_CHART_MODES.includes(data.overviewChartMode);
+  return VALID_CHART_MODES.includes(data.exploreChartMode);
 };
 
 const initialState: UIState = {
@@ -45,11 +45,11 @@ const ui = createSlice({
     setManageChartsVisible: (state, { payload }: PayloadAction<boolean>) => {
       state.manageChartsVisible = payload;
     },
-    setOverviewChartMode: (state, { payload }: PayloadAction<ChartSizeMode>) => {
-      state.settings.overviewChartMode = payload;
+    setExploreChartMode: (state, { payload }: PayloadAction<ChartSizeMode>) => {
+      state.settings.exploreChartMode = payload;
     },
   },
 });
 
-export const { setExtraBreadcrumb, setManageChartsVisible, setOverviewChartMode } = ui.actions;
+export const { setExtraBreadcrumb, setManageChartsVisible, setExploreChartMode } = ui.actions;
 export default ui.reducer;

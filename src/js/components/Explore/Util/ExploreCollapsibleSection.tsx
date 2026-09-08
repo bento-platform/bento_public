@@ -3,7 +3,7 @@ import { Flex, Typography } from 'antd';
 import { useTranslationFn } from '@/hooks';
 import { DownOutlined } from '@ant-design/icons';
 
-const OverviewCollapsibleSection = ({ title, children }: { title: string; children: ReactNode }) => {
+const ExploreCollapsibleSection = ({ title, children }: { title: string; children: ReactNode }) => {
   const t = useTranslationFn();
 
   // TODO: move to LS if key provided?
@@ -25,4 +25,4 @@ const OverviewCollapsibleSection = ({ title, children }: { title: string; childr
   );
 };
 
-export default OverviewCollapsibleSection;
+export default ExploreCollapsibleSection;

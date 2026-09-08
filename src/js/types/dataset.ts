@@ -304,4 +304,8 @@ export interface Dataset {
   extra_properties?: Record<string, string | number | boolean | null> | null;
 
   counts_by_entity?: KatsuEntityCountsOrBooleans;
+
+  /* Katsu database record created/updated fields; confusingly similar to release_Data/last_modified */
+  created_at: string;
+  updated_at: string;
 }

@@ -9,7 +9,7 @@ import { useDataTypes } from '@/features/dataTypes/hooks';
 import type { BentoServiceDataType } from '@/types/dataTypes';
 import { useTranslationFn } from '@/hooks';
 
-import OverviewCollapsibleSection from './Util/OverviewCollapsibleSection';
+import ExploreCollapsibleSection from './Util/ExploreCollapsibleSection';
 
 const formatDate = (dateString: string, language: string) => {
   const date = new Date(dateString);
@@ -77,7 +77,7 @@ const LastIngestionInfo = () => {
   const hasData = queryableDataTypes.length > 0;
 
   return (
-    <OverviewCollapsibleSection title="Latest Data Ingestion">
+    <ExploreCollapsibleSection title="Latest Data Ingestion">
       <Space wrap>
         {WAITING_STATES.includes(dataTypesStatus) ? (
           <LastIngestionSkeleton />
@@ -87,7 +87,7 @@ const LastIngestionInfo = () => {
           <Empty description={t('Ingestion History Is Empty')} />
         )}
       </Space>
-    </OverviewCollapsibleSection>
+    </ExploreCollapsibleSection>
   );
 };
 

@@ -2,19 +2,17 @@ import { BEACON_UI_ENABLED } from '@/config';
 import { BEACON_NETWORK_ENABLED } from '@/config';
 
 export interface BentoRoutes {
-  Overview: string;
-  Search: string;
+  Explore: string;
   Beacon?: string;
   BeaconNetwork?: string;
-  Provenance: string;
+  About: string;
   Phenopackets: string;
   NotFound: string;
 }
 
 const BentoRoute: BentoRoutes = {
-  Overview: 'overview',
-  Search: 'search',
-  Provenance: 'provenance',
+  Explore: 'explore',
+  About: 'about',
   Phenopackets: 'phenopackets',
   NotFound: 'not_found',
 };
