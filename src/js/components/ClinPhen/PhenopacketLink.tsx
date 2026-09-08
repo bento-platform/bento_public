@@ -2,8 +2,10 @@ import { Fragment, type ReactNode } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { useCurrentScopePrefixedUrl } from '@/hooks/navigation';
 
-import { Popover } from 'antd';
-import BiosampleDetailView from '../Search/BiosampleDetailView';
+import { Popover, type PopoverProps } from 'antd';
+import BiosampleDetailView from '@/components/Search/BiosampleDetailView';
+import ExperimentDetailView from '@/components/Search/ExperimentDetailView';
+import IndividualDetailView from '@/components/Search/IndividualDetailView';
 
 import { highlightState } from '@/utils/router';
 
@@ -12,6 +14,12 @@ import { TabKeys } from '@/types/PhenopacketView.types';
 import type { SectionKey } from '@/components/ClinPhen/PhenopacketDisplay/phenopacketOverview.registry';
 
 import { PHENOPACKET_EXPANDED_URL_QUERY_KEY } from './PhenopacketDisplay/PhenopacketOverview';
+
+const EntityPopover = ({ children, ...props }: Omit<PopoverProps, 'styles'>) => (
+  <Popover styles={{ body: { maxHeight: 'min(400px, 80vh)', overflowY: 'auto' } }} {...props}>
+    {children}
+  </Popover>
+);
 
 const usePhenopacketOverviewLink = (
   packetId: string | undefined,
@@ -48,13 +56,20 @@ const usePhenopacketOverviewLink = (
 
 type BaseLinkProps = { packetId?: string; replace?: boolean; preserveQueryParams?: boolean; children?: ReactNode };
 
-type SubjectLinkProps = BaseLinkProps;
-const SubjectLink = ({ children, packetId, preserveQueryParams }: SubjectLinkProps) => {
+type SubjectLinkProps = BaseLinkProps & { subjectId: string; enablePopover?: boolean };
+const SubjectLink = ({ packetId, subjectId, preserveQueryParams, enablePopover, children }: SubjectLinkProps) => {
   const url = usePhenopacketOverviewLink(packetId, 'subject', undefined, preserveQueryParams);
-  return (
+  const link = (
     <Link to={url} state={highlightState('subject')}>
-      {children}
+      {children ?? subjectId}
     </Link>
+  );
+  return enablePopover ? (
+    <EntityPopover content={<IndividualDetailView id={subjectId} style={{ width: 'min(540px, 90vw)' }} />}>
+      {link}
+    </EntityPopover>
+  ) : (
+    link
   );
 };
 
@@ -74,9 +89,9 @@ const BiosampleLink = ({
     </Link>
   );
   return enablePopover ? (
-    <Popover content={<BiosampleDetailView id={sampleId} mode="popover" style={{ width: 'min(540px, 90vw)' }} />}>
+    <EntityPopover content={<BiosampleDetailView id={sampleId} mode="popover" style={{ width: 'min(540px, 90vw)' }} />}>
       {link}
-    </Popover>
+    </EntityPopover>
   ) : (
     link
   );
@@ -94,18 +109,40 @@ const BiosampleLinkList = ({ packetId, biosamples, replace, ...props }: Biosampl
   </>
 );
 
-type ExperimentLinkProps = BaseLinkProps & { experimentId: string };
-const ExperimentLink = ({ packetId, experimentId, replace, preserveQueryParams, children }: ExperimentLinkProps) => {
+type ExperimentLinkProps = BaseLinkProps & { experimentId: string; enablePopover?: boolean };
+const ExperimentLink = ({
+  packetId,
+  experimentId,
+  replace,
+  preserveQueryParams,
+  enablePopover,
+  children,
+}: ExperimentLinkProps) => {
   const url = usePhenopacketOverviewLink(packetId, 'experiments', { experiment: experimentId }, preserveQueryParams);
-  return (
+  const link = (
     <Link to={url} replace={replace} state={highlightState('experiments', experimentId)}>
       {children ?? experimentId}
     </Link>
   );
+  return enablePopover ? (
+    <EntityPopover
+      content={<ExperimentDetailView id={experimentId} mode="popover" style={{ width: 'min(540px, 90vw)' }} />}
+    >
+      {link}
+    </EntityPopover>
+  ) : (
+    link
+  );
 };
 
-type ExperimentLinkListProps = BaseLinkProps & { experiments: string[]; current?: string };
-const ExperimentLinkList = ({ packetId, experiments, replace, preserveQueryParams }: ExperimentLinkListProps) => (
+type ExperimentLinkListProps = BaseLinkProps & { experiments: string[]; current?: string; enablePopover?: boolean };
+const ExperimentLinkList = ({
+  packetId,
+  experiments,
+  replace,
+  preserveQueryParams,
+  enablePopover,
+}: ExperimentLinkListProps) => (
   <>
     {experiments.map((e, i) => (
       <Fragment key={e}>
@@ -114,6 +151,7 @@ const ExperimentLinkList = ({ packetId, experiments, replace, preserveQueryParam
           experimentId={e}
           replace={replace}
           preserveQueryParams={preserveQueryParams}
+          enablePopover={enablePopover}
         />
         {i < experiments.length - 1 ? ', ' : ''}
       </Fragment>
