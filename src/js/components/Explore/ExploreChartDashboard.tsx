@@ -48,9 +48,6 @@ const ExploreChartSections = () => {
   const loadingNewData = WAITING_STATES.includes(discoveryStatus);
 
   const availableChartSections = useAvailableChartSections();
-
-  console.log('availableChartSections', availableChartSections);
-
   const displayedSections = availableChartSections.filter(
     ({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1
   );
