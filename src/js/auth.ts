@@ -6,6 +6,9 @@ import type { JWT } from 'next-auth/jwt';
 
 export const CLIENT_ID = process.env.CLIENT_ID ?? '';
 const OPENID_CONFIG_URL = process.env.OPENID_CONFIG_URL ?? '';
+// OIDC discovery URLs are always `{issuer}/.well-known/openid-configuration` - Auth.js's own config validation
+// requires `issuer` to be set explicitly even though `wellKnown` (below) is what it actually fetches at request time.
+const ISSUER = OPENID_CONFIG_URL.replace(/\/\.well-known\/.*$/, '');
 
 type BentoTokenSet = {
   access_token: string;
@@ -21,6 +24,7 @@ const bentoProvider: OAuthConfig<Record<string, unknown>> = {
   id: 'bento',
   name: 'Bento',
   type: 'oidc',
+  issuer: ISSUER,
   wellKnown: OPENID_CONFIG_URL,
   clientId: CLIENT_ID,
   checks: ['pkce', 'state'],
