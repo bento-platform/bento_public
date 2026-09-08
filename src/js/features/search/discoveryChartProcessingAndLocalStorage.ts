@@ -1,6 +1,8 @@
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
-import type { DiscoveryResponse } from '@/types/discovery/response';
+import type { Datum } from '@/types/discovery';
+import type { DiscoveryFieldResponses, DiscoveryResponse } from '@/types/discovery/response';
 import type { ChartConfig, ChartLayoutSection } from '@/types/discovery/chartConfig';
+import type { Field } from '@/types/discovery/fieldDefinition';
 import type { ChartDataField, LocalStorageChartData, Sections } from '@/types/data';
 
 import { MAX_CHARTS } from '@/constants/configConstants';
@@ -19,7 +21,8 @@ const _asSlug = (x: string): string => x.normalize('NFKD').toLowerCase().trim().
 
 export const discoveryChartProcessingAndLocalStorage = (
   scope: DiscoveryScope,
-  { layout: sections, fields }: DiscoveryResponse
+  { layout: sections, fields }: DiscoveryResponse,
+  scopeFieldData: DiscoveryFieldResponses
 ) => {
   // Take chart configuration and create a combined state object with:
   //   the chart configuration
@@ -30,8 +33,15 @@ export const discoveryChartProcessingAndLocalStorage = (
     chart: ChartConfig,
     i: number,
     defaultCharts: ChartLayoutSection['default_charts']
-  ): ChartDataField => {
-    const { data, definition } = fields[chart.field];
+  ): ChartDataField | undefined => {
+    const definition: Field | undefined = fields[chart.field]?.definition ?? scopeFieldData[chart.field]?.definition;
+
+    // Filter out charts where the field definition is missing due to low cell counts _or_ missing counts permissions
+    // for the field's data type
+    if (!definition) return; // Field definition missing; we need to skip this field
+
+    const data: Datum[] = fields[chart.field]?.data ?? [];
+    const dataContext: Datum[] | undefined = scopeFieldData[chart.field]?.data;
     const initialIsDisplayed =
       defaultCharts === null
         ? i < MAX_CHARTS
@@ -43,6 +53,7 @@ export const discoveryChartProcessingAndLocalStorage = (
       chartConfig: chart,
       field: definition,
       data: serializeChartData(data),
+      dataContext: dataContext ? serializeChartData(dataContext) : undefined,
       // Initial display state
       isDisplayed: initialIsDisplayed,
       width: chart.width ?? DEFAULT_CHART_WIDTH, // initial configured width; users can change it from here
@@ -52,8 +63,7 @@ export const discoveryChartProcessingAndLocalStorage = (
   const sectionData: Sections = sections.map(({ section_title, charts, default_charts }, idx) => ({
     sectionId: `sec-${idx}-${_asSlug(section_title)}`,
     sectionTitle: section_title,
-    // Filter out charts where field data is missing due to missing counts permissions for the field's data type
-    charts: charts.filter((c) => !!fields[c.field]).map((chart, i) => normalizeChart(chart, i, default_charts)),
+    charts: charts.map((chart, i) => normalizeChart(chart, i, default_charts)).filter((chart) => chart !== undefined),
   }));
 
   const defaultLayout = JSON.parse(JSON.stringify(sectionData));

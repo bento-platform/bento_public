@@ -23,6 +23,7 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable, mode: mode_
   const {
     id,
     data,
+    dataContext,
     field,
     field: { description, title },
     chartConfig,
@@ -85,6 +86,7 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable, mode: mode_
             <Chart
               chartConfig={chartConfig}
               data={data}
+              dataContext={dataContext}
               field={field}
               id={id}
               key={id}

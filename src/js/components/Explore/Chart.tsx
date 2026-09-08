@@ -26,7 +26,7 @@ interface PieChartEvent {
   payload?: { name: string; id?: string };
 }
 
-const Chart = memo(({ chartConfig, data, field, id, isClickable, mode }: ChartProps) => {
+const Chart = memo(({ chartConfig, data, dataContext, field, id, isClickable, mode }: ChartProps) => {
   const t = useTranslationFn();
   const language = useLanguage();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
@@ -121,6 +121,7 @@ const Chart = memo(({ chartConfig, data, field, id, isClickable, mode }: ChartPr
       return (
         <ChoroplethMap
           data={data}
+          dataContext={dataContext}
           height={chartHeight}
           preFilter={removeMissing}
           dataMap={translateMap}
@@ -154,6 +155,7 @@ Chart.displayName = 'Chart';
 export interface ChartProps {
   chartConfig: ChartConfig;
   data: ChartData[];
+  dataContext?: ChartData[];
   field: Field;
   id: string;
   isClickable: boolean;
