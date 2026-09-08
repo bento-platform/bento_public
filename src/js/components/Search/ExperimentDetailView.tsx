@@ -14,7 +14,7 @@ const ExperimentDetailView = ({
   id,
   mode,
   ...props
-}: HTMLAttributes<HTMLDivElement> & { id: string; mode?: ExperimentExpandedRowProps['mode'] }) => {
+}: HTMLAttributes<HTMLDivElement> & { id: string; mode: ExperimentExpandedRowProps['mode'] }) => {
   const { data: experimentData, status } = useExperimentData(id);
   const isFetchingData = WAITING_STATES.includes(status);
 
