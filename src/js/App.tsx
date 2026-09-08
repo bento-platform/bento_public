@@ -91,7 +91,9 @@ const InnerRootApp = () => {
 };
 
 const RootApp = () => (
-  <SessionProvider>
+  // refetchInterval matches bento-auth-js's old token-refresh-worker cadence; refetchOnWindowFocus (on by default)
+  // covers the case where that interval was throttled while the tab was in the background.
+  <SessionProvider refetchInterval={120}>
     <Provider store={store}>
       <BrowserRouter>
         <ResponsiveProvider>
