@@ -54,7 +54,7 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
       },
       {
         key: TabKeys.TRACKS,
-        label: t('Tracks'),
+        label: t('tab_keys.tracks'),
         children: <TracksView tracks={tracks} references={referencesById} />,
         disabled: !(attemptedCanDownload && canDownload && tracks.length > 0 && Object.keys(referencesById).length > 0),
       },

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '@/hooks';
+import { useAppDispatch, useAppSelector, useTranslationFn } from '@/hooks';
 import { useAccessToken } from 'bento-auth-js';
 import igv from 'igv/dist/igv.esm';
 import type { Browser, CreateOpt } from 'igv';
@@ -10,6 +10,7 @@ import { PUBLIC_URL } from '@/config';
 import { caseInsensitiveIgvFileInfoLookup, getIgvFileAndIndexAccessUrls } from '@/utils/igv';
 import TrackControlTable from './TrackControlTable';
 import { useDebounce } from '@/hooks/debounce';
+import { useNotify } from '@/hooks/notifications';
 
 const SQUISHED_CALL_HEIGHT = 10;
 const EXPANDED_CALL_HEIGHT = 100;
@@ -32,6 +33,8 @@ const TracksView = ({
   const igvContainerRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const igvBrowserStateByAssemblyRef = useRef<Record<string, IgvBrowserState | undefined>>({});
   const dispatch = useAppDispatch();
+  const notify = useNotify();
+  const t = useTranslationFn();
 
   const [tracksWithView, setTracksWithView] = useState<ExperimentResultWithView[]>(
     tracks.map((t) => ({ ...t, viewInIgv: true }))
@@ -216,6 +219,10 @@ const TracksView = ({
         .catch((err) => {
           console.error(err);
           state.status = 'failed';
+          notify.error({
+            message: t('tracks.igv_error_title'),
+            description: t('tracks.igv_error_description', {assemblyId: assemblyId}),
+          });
         });
     });
   }, [
