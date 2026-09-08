@@ -77,6 +77,7 @@ const Chart = memo(({ chartConfig, data, dataContext, field, id, isClickable, mo
       return (
         <BarChart
           data={data}
+          dataContext={dataContext}
           height={chartHeight}
           units={units}
           preFilter={removeMissing}
@@ -95,6 +96,7 @@ const Chart = memo(({ chartConfig, data, dataContext, field, id, isClickable, mo
           units={units}
           height={chartHeight}
           data={data}
+          dataContext={dataContext}
           preFilter={removeMissing}
           dataMap={translateMap}
           removeEmpty={false} // Preserve the histogram's layout by showing empty bins
@@ -110,6 +112,7 @@ const Chart = memo(({ chartConfig, data, dataContext, field, id, isClickable, mo
       return (
         <PieChart
           data={data}
+          dataContext={dataContext}
           height={pieChartHeight}
           preFilter={removeMissing}
           dataMap={translateMap}
