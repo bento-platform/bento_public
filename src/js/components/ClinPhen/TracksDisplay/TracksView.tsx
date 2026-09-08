@@ -221,7 +221,7 @@ const TracksView = ({
           state.status = 'failed';
           notify.error({
             message: t('tracks.igv_error_title'),
-            description: t('tracks.igv_error_description', {assemblyId: assemblyId}),
+            description: t('tracks.igv_error_description', { assemblyId }),
           });
         });
     });
@@ -231,7 +231,9 @@ const TracksView = ({
     buildIgvTrack,
     debouncedStoreIgvPosition,
     igvPosition,
+    notify,
     references,
+    t,
     tracksWithView,
   ]);
 
