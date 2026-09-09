@@ -3,6 +3,15 @@ import packageData from '../../../package.json';
 
 export const dynamic = 'force-dynamic';
 
+const ADMIN_URL = (process.env.BENTO_PUBLIC_ADMIN_URL || '').replace(/\/$/, '');
+
+const corsHeaders: Record<string, string> = ADMIN_URL
+  ? {
+      'Access-Control-Allow-Origin': ADMIN_URL,
+      'Access-Control-Allow-Headers': 'authorization',
+    }
+  : {};
+
 const serviceType = {
   group: 'ca.c3g.bento',
   artifact: 'public',
@@ -54,5 +63,9 @@ export function GET() {
     console.warn('Could not get git information (missing git)');
   }
 
-  return Response.json(serviceInfo);
+  return Response.json(serviceInfo, { headers: corsHeaders });
+}
+
+export function OPTIONS() {
+  return new Response(null, { status: 204, headers: corsHeaders });
 }
