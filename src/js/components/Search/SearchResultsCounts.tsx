@@ -55,7 +55,18 @@ const SearchResultsCounts = ({
       ) : (
         <>
           <div
+            role={individualsClickable ? 'tab' : undefined}
+            tabIndex={individualsClickable ? 0 : undefined}
             onClick={individualsClickable ? () => setSelectedPage('individuals') : undefined}
+            onKeyDown={
+              individualsClickable
+                ? (e) => {
+                    if (e.key === 'Enter') {
+                      setSelectedPage('individuals');
+                    }
+                  }
+                : undefined
+            }
             className={clsx(
               'search-result-statistic',
               selectedPage === 'individuals' && 'selected',
