@@ -71,6 +71,7 @@ const CountCardShowHide = memo(({ selected, onClear }: { selected: boolean; onCl
         backgroundColor: selected ? 'rgba(255, 255, 255, 1.0)' : 'rgba(255, 255, 255, 0.0)',
         bottom: selected ? -8 : 0,
       }}
+      role={selected ? 'tab' : undefined}
       tabIndex={selected ? 0 : undefined}
       onClick={selected ? onClear : undefined}
       onKeyDown={handleKeyDown}

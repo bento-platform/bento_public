@@ -5,6 +5,7 @@ import js from '@eslint/js';
 import tsParser from '@typescript-eslint/parser';
 
 // Plugins
+import jsxA11y from 'eslint-plugin-jsx-a11y';
 import tsEsLint from 'typescript-eslint';
 import react from 'eslint-plugin-react';
 import reactHooksEsLint from 'eslint-plugin-react-hooks';
@@ -17,6 +18,7 @@ export default [
   react.configs.flat.recommended,
   react.configs.flat['jsx-runtime'],
   eslintPluginPrettierRecommended,
+  jsxA11y.flatConfigs.recommended,
   reactHooksEsLint.configs.flat.recommended,
   {
     languageOptions: {
