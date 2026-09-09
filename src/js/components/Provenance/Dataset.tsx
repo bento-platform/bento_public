@@ -1,4 +1,4 @@
-import { type ReactNode, useCallback, useMemo, useState } from 'react';
+import { lazy, Suspense, type ReactNode, useCallback, useMemo, useState } from 'react';
 
 import { Avatar, Button, Card, Flex, List, Typography } from 'antd';
 import { PieChartOutlined, SolutionOutlined } from '@ant-design/icons';
@@ -18,7 +18,6 @@ import { isoDateToString } from '@/utils/strings';
 import StatusBadge from '@/components/Util/StatusBadge';
 import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
 import CountsDisplay from '@/components/Util/CountsDisplay';
-import DatasetProvenanceModal from './DatasetProvenance/DatasetProvenanceModal';
 import KeywordList from './KeywordList';
 import ProgramPill from './Catalogue/ProgramPill';
 import ProjectPill from './Catalogue/ProjectPill';
@@ -26,6 +25,10 @@ import ProjectPill from './Catalogue/ProjectPill';
 const { Title, Text, Paragraph } = Typography;
 
 const MAX_KEYWORDS = 4;
+
+// Lazy-loaded: pulls in the Leaflet-based spatial coverage map, so it shouldn't be part of the bundle every
+// catalogue-page visitor downloads for what's a rarely-opened modal (one instance imported per Dataset card).
+const DatasetProvenanceModal = lazy(() => import('./DatasetProvenance/DatasetProvenanceModal'));
 
 const Dataset = ({
   parentProjectID,
@@ -52,6 +55,9 @@ const Dataset = ({
   const t = useTranslationFn();
 
   const [provenanceModalOpen, setProvenanceModalOpen] = useState(false);
+  // Track whether the modal has ever been opened so we only start fetching its (lazy-loaded) code once the
+  // user actually asks for it, rather than on every Dataset card render.
+  const [hasOpenedProvenanceModal, setHasOpenedProvenanceModal] = useState(false);
 
   const { identifier, title, description, program_name: program } = dataset;
   const keywords = dataset.keywords ?? [];
@@ -74,7 +80,10 @@ const Dataset = ({
     [navigateToScope, scope, navigateOptions]
   );
 
-  const openProvenanceModal = useCallback(() => setProvenanceModalOpen(true), []);
+  const openProvenanceModal = useCallback(() => {
+    setHasOpenedProvenanceModal(true);
+    setProvenanceModalOpen(true);
+  }, []);
   const closeProvenanceModal = useCallback(() => setProvenanceModalOpen(false), []);
 
   const counts = filteredCounts ?? dataset.counts_by_entity;
@@ -161,7 +170,11 @@ const Dataset = ({
 
   return (
     <>
-      <DatasetProvenanceModal dataset={dataset} open={provenanceModalOpen} onCancel={closeProvenanceModal} />
+      {hasOpenedProvenanceModal && (
+        <Suspense fallback={null}>
+          <DatasetProvenanceModal dataset={dataset} open={provenanceModalOpen} onCancel={closeProvenanceModal} />
+        </Suspense>
+      )}
       {inner}
     </>
   );

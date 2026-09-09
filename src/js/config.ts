@@ -1,10 +1,10 @@
 import { stringToBoolean } from '@/utils/strings';
 
-interface PublicConfig {
+export interface PublicConfig {
   // General
-  CLIENT_NAME: string;
-  ADMIN_URL: string;
-  PUBLIC_URL: string;
+  CLIENT_NAME: string | null;
+  ADMIN_URL: string | null;
+  PUBLIC_URL: string | null;
   // Display flags
   TRANSLATED: boolean; // Whether to show a language toggle
   TRANSLATED_LOGO: boolean; // Whether a translated version of the header logo is available/relevant
@@ -15,13 +15,16 @@ interface PublicConfig {
   SHOW_SIGN_IN: boolean;
   FORCE_CATALOGUE: boolean; // Show data catalogue even with 1 project
   PCGL_MODE: boolean; // Puts Bento Public in "PCGL mode", turning it into the PCGL research portal
+  // Theme variables
+  CATALOGUE_HEADER_BACKGROUND: string | undefined;
+  CATALOGUE_HEADER_TEXT_COLOR: string | undefined;
   // Beacon configuration and flags
-  BEACON_URL: string;
+  BEACON_URL: string | null;
   BEACON_UI_ENABLED: boolean;
   BEACON_NETWORK_ENABLED: boolean;
   // Authentication
-  CLIENT_ID: string;
-  OPENID_CONFIG_URL: string;
+  CLIENT_ID: string | null;
+  OPENID_CONFIG_URL: string | null;
 }
 
 // Declaration required for global config
@@ -31,7 +34,7 @@ const stripTrailingSlash = (x: string): string => x.replace(/\/$/g, '');
 
 // General
 export const CLIENT_NAME = BENTO_PUBLIC_CONFIG.CLIENT_NAME ?? process.env.BENTO_PUBLIC_CLIENT_NAME;
-const _ADMIN_URL = BENTO_PUBLIC_CONFIG.ADMIN_URL ?? process.env.BENTO_PUBLIC_ADMIN_URL;
+const _ADMIN_URL = BENTO_PUBLIC_CONFIG.ADMIN_URL ?? process.env.BENTO_PUBLIC_ADMIN_URL ?? '';
 export const ADMIN_URL = stripTrailingSlash(_ADMIN_URL) + '/';
 const _PUBLIC_URL = BENTO_PUBLIC_CONFIG.PUBLIC_URL ?? process.env.BENTO_PUBLIC_URL ?? '';
 export const PUBLIC_URL_NO_TRAILING_SLASH = stripTrailingSlash(_PUBLIC_URL);
