@@ -2,13 +2,6 @@ import { createAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import type { RootState } from '@/store';
 import { type Resource, makeResourceKey, makeAuthorizationHeader } from 'bento-auth-js';
 
-// Auth.js's own JWT session cookie is the source of truth for the session (access/id/refresh tokens) - it's not
-// duplicated into localStorage here. `accessToken` below is a synchronous *mirror* of that session's access token
-// (kept in sync by `useSyncAccessToken`, dispatched once near the app root), so that Redux thunks - which only have
-// `getState()`, not React hook access to `useSession()` - can still attach an Authorization header the same way
-// they did when bento-auth-js stored the token in Redux directly. This slice otherwise only caches Bento
-// authorization-service resource-permission lookups.
-
 type FetchPermissionsPayload = {
   result: string[][];
 };

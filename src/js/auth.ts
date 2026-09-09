@@ -1,13 +1,9 @@
 import NextAuth from 'next-auth';
 import type { OAuthConfig } from 'next-auth/providers';
-// Explicit import needed so `declare module 'next-auth/jwt'` below resolves under moduleResolution: "bundler" -
-// without it, TS reports the augmentation target module as unresolvable even though it's a valid subpath.
 import type { JWT } from 'next-auth/jwt';
 
 export const CLIENT_ID = process.env.CLIENT_ID ?? '';
 const OPENID_CONFIG_URL = process.env.OPENID_CONFIG_URL ?? '';
-// OIDC discovery URLs are always `{issuer}/.well-known/openid-configuration` - Auth.js's own config validation
-// requires `issuer` to be set explicitly even though `wellKnown` (below) is what it actually fetches at request time.
 const ISSUER = OPENID_CONFIG_URL.replace(/\/\.well-known\/.*$/, '');
 
 type BentoTokenSet = {
@@ -17,9 +13,6 @@ type BentoTokenSet = {
   expires_in: number;
 };
 
-// Bento's identity provider client is registered as a public client (PKCE, no secret) - the same client bento-auth-js
-// used to drive its hand-rolled authorization code + PKCE flow from the browser. Auth.js drives that flow itself
-// server-side now, so `token_endpoint_auth_method: "none"` tells it not to expect/send a client secret.
 const bentoProvider: OAuthConfig<Record<string, unknown>> = {
   id: 'bento',
   name: 'Bento',
@@ -37,8 +30,6 @@ type OidcDiscoveryDocument = {
   end_session_endpoint?: string;
 };
 
-// The discovery document is cached the same way bento-auth-js cached it (a multi-hour TTL is plenty - this changes
-// rarely, if ever, for a given deployment).
 let cachedDiscovery: { doc: OidcDiscoveryDocument; expiry: number } | undefined;
 
 const getDiscoveryDocument = async (): Promise<OidcDiscoveryDocument> => {
@@ -54,8 +45,6 @@ const getDiscoveryDocument = async (): Promise<OidcDiscoveryDocument> => {
 
 const getTokenEndpoint = async (): Promise<string> => (await getDiscoveryDocument()).token_endpoint;
 
-// Used by /api/auth/end-session-url so the client can drive an RP-initiated logout (killing the identity
-// provider's session, not just this app's) without OPENID_CONFIG_URL itself needing to be client-exposed.
 export const getEndSessionEndpoint = async (): Promise<string | undefined> =>
   (await getDiscoveryDocument()).end_session_endpoint;
 

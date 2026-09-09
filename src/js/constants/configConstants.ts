@@ -2,8 +2,7 @@ import { PUBLIC_URL_NO_TRAILING_SLASH } from '@/config';
 
 export const MAX_CHARTS = 3;
 
-// Mirrors the 2-minute interval bento-auth-js's tokenRefresh Web Worker used to ping on - SessionProvider's own
-// refetch re-enters the jwt callback and refreshes the access token when needed, without a dedicated worker.
+// Same as bento-auth-js
 export const SESSION_REFETCH_INTERVAL_SECONDS = 120;
 
 const katsuBaseUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata`;

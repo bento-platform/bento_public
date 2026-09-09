@@ -13,9 +13,7 @@ export const useIsAuthenticated = (): boolean => useSession().status === 'authen
 
 export const useAccessToken = (): string | undefined => useSession().data?.accessToken;
 
-// Mirrors the Auth.js session's access token into Redux, so `getState()`-only Redux thunks (which can't call
-// `useSession()` themselves) can still read it synchronously via `state.auth.accessToken`, the same way they did
-// when bento-auth-js stored the token in Redux directly. Call this once, near the app root.
+// Copies the Auth.js session's access token into Redux
 export const useSyncAccessToken = () => {
   const dispatch: AppDispatch = useDispatch();
   const accessToken = useAccessToken();
@@ -100,8 +98,6 @@ export const useHasResourcePermission = (
 
 export const usePerformAuth = () => useCallback(() => signIn(BENTO_OIDC_PROVIDER_ID), []);
 
-// Signs out of this app *and* the identity provider (RP-initiated logout), so a re-visit doesn't silently pick the
-// session back up. Falls back to a plain local sign-out if the provider doesn't support/expose end_session_endpoint.
 export const usePerformSignOut = () => {
   const { data: session } = useSession();
   const idToken = session?.idToken;
