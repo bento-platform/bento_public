@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic';
 
 const ADMIN_URL = (process.env.BENTO_PUBLIC_ADMIN_URL || '').replace(/\/$/, '');
 
-const corsHeaders = ADMIN_URL
+const corsHeaders: Record<string, string> = ADMIN_URL
   ? {
       'Access-Control-Allow-Origin': ADMIN_URL,
       'Access-Control-Allow-Headers': 'authorization',
