@@ -31,7 +31,7 @@ import { useHandleRefreshTokenError } from '@/features/auth/hooks';
 
 // Store and configuration imports
 import { store } from './store';
-import { PCGL_MODE } from './config';
+import { PCGL_MODE } from '@/config';
 
 // Styles imports
 import 'antd/dist/reset.css';

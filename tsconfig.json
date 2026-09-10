@@ -22,6 +22,7 @@
     "plugins": [{ "name": "next" }],
 
     "paths": {
+      "@/config": ["./src/config"],
       "@/*": ["./src/js/*"],
       "@Util/*": ["./src/js/components/Util/*"]
     }
