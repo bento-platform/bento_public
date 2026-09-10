@@ -25,6 +25,14 @@
     "subject_or_biosample_id": "Participant or Specimen ID"
   },
   "footer": {
+    "meta": {
+      "funding_title": "Acknowledgement of funding",
+      "logo_alt": "Pan-Canadian Genome Library logo",
+      "cihr_logo_alt": "Canadian Institutes of Health Research logo",
+      "cihr_support": "PCGL is supported by the Canadian Institutes of Health Research (CIHR).",
+      "powered_by": "The PCGL research portal is powered by",
+      "bento": "the Bento platform"
+    },
     "sections": {
       "about": "About PCGL",
       "resources": "Resources & Documentation",
@@ -39,7 +47,7 @@
       "helpGuides": "Help Guides",
       "controlledDataUsers": "Controlled Data Users",
       "dataPlatform": "Data Platform",
-      "researchPlatform": "Portail de recherche",
+      "researchPlatform": "Research Portal",
       "contact": "Contact Us",
       "subscribe": "Subscribe to our mailing list",
       "linkedin": "LinkedIn",

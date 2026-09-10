@@ -1,8 +1,10 @@
 import { Flex, Grid, Layout, Typography } from 'antd';
-import { useTranslationFn } from '@/hooks';
 import clsx from 'clsx';
+import { useTranslationFn } from '@/hooks';
 import { ADMIN_URL, SHOW_ADMIN_LINK, PCGL_MODE } from '@/config';
-import { useId } from 'react';
+
+import './styles.css';
+import PCGLLogo from './assets/PCGL.svg';
 
 const { Footer } = Layout;
 const { useBreakpoint } = Grid;
@@ -10,25 +12,32 @@ const { Title } = Typography;
 
 type FooterNavItem = { link: string; url: string };
 type FooterNavItems = { title: string; items: FooterNavItem[] };
+type FooterMetaItems = {
+  funding_title: string;
+  logo_alt: string;
+  cihr_logo_alt: string;
+  cihr_support: string;
+  powered_by: string;
+  bento: string;
+};
 
-const LinkHeader = ({ children }: { children: React.ReactNode }) => <Title level={3}>{children}</Title>;
+const LinkHeader = ({ children }: { children: React.ReactNode }) => <h3 className="visually-hidden">{children}</h3>;
 
 const LinkItem = ({ link, url }: { link: string; url: string }) => (
-  <a className="focus-ring" href={url} rel="noreferrer" target="_blank">
+  <a className="focus-ring link-item" href={url} rel="noreferrer" target="_blank">
     {link}
   </a>
 );
 
 const FooterView = ({ sections }: { sections: FooterNavItems[] }) => {
-  const key = useId();
   return (
-    <nav>
+    <nav className="container">
       {sections.map((section) => (
-        <div key={section.title}>
+        <div key={section.title} className="section">
           <LinkHeader>{section.title}</LinkHeader>
-          <ul>
+          <ul className="group">
             {section.items.map((item) => (
-              <li key={key}>
+              <li key={item.toString()} className="item">
                 <LinkItem link={item.link} url={item.url} />
               </li>
             ))}
@@ -40,7 +49,7 @@ const FooterView = ({ sections }: { sections: FooterNavItems[] }) => {
 };
 
 const FooterContainer = () => {
-  //TODO: FOOTER_DATA: Could we get it from an API?
+  //TODO: Could we get it from an API?
   const FOOTER_DATA = [
     {
       title: 'about',
@@ -75,14 +84,26 @@ const FooterContainer = () => {
   const t = useTranslationFn();
 
   const data = Array.from(FOOTER_DATA, (link) => ({
-    title: t(`pcgl.footer.sections.${link.title}`),
+    title: t(`footer.sections.${link.title}`),
     items: link.items.map((item) => ({
-      link: t(`pcgl.footer.urls.${item.link}`),
-      url: t(`pcgl.footer.links.${item.url}`),
+      link: t(`footer.links.${item.link}`),
+      url: t(`footer.urls.${item.url}`),
     })),
   }));
 
-  return <FooterView sections={data} />;
+  return (
+    <footer className="pcgl-footer">
+      <FooterView sections={data} />
+      <div className="meta">
+        <LinkHeader>{t('footer.meta.funding_title')}</LinkHeader>
+        <div className="meta-logos">
+          <img src="/public/assets/pcgl_logo_footer.png" role="presentation" alt="" width={737} height={261} />
+          <img src="/public/assets/cihr_logo_footer.png" role="presentation" alt="" width={423} height={99} />
+        </div>
+        <p>{t('footer.meta.cihr_support')}</p>
+      </div>
+    </footer>
+  );
 };
 
 const PCGL_LINKS: { key: string; href?: string }[] = [
@@ -148,6 +169,7 @@ const PcglFooter = () => {
               />
             </a>
           </Flex>
+          <h2>{t('pcgl.footer.meta.funding_title')}</h2>
           <p style={{ marginBottom: 0 }}>
             {t('pcgl.footer.cihr_support')}
             <br />
@@ -184,4 +206,4 @@ const PcglFooter = () => {
   );
 };
 
-export default PcglFooter;
+export default FooterContainer;
