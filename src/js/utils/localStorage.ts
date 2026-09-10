@@ -1,4 +1,4 @@
-import { LOCALSTORAGE_CHARTS_KEY_PREFIX } from '@/constants/overviewConstants';
+import { LOCALSTORAGE_CHARTS_KEY_PREFIX } from '@/constants/exploreConstants';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { LocalStorageChartData, Sections } from '@/types/data';

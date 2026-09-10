@@ -1,0 +1,240 @@
+import { type KeyboardEventHandler, memo, useCallback } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+
+import { Alert, Card, Flex, Skeleton, Space, Statistic } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
+import SearchResultsTablePage from '@/components/Search/SearchResultsTablePage';
+import CountsTitleWithHelp from '@Util/CountsTitleWithHelp';
+import CustomEmpty from '@Util/CustomEmpty';
+import Error from '@Util/Error';
+
+import { COUNT_ENTITY_ORDER, COUNT_ENTITY_REGISTRY } from '@/constants/countEntities';
+import { COUNTS_FILL } from '@/constants/exploreConstants';
+import { WAITING_STATES } from '@/constants/requests';
+import { ENTITY_QUERY_PARAM, TABLE_PAGE_QUERY_PARAM, TABLE_PAGE_SIZE_QUERY_PARAM } from '@/features/search/constants';
+
+import { useSelectedDataset, useSelectedProject } from '@/features/metadata/hooks';
+import { useEntityAndTextQueryParams, useSearchQuery } from '@/features/search/hooks';
+import { useAppDispatch, useTranslationFn } from '@/hooks';
+import { useScopeQueryData } from '@/hooks/censorship';
+import { useRenderCount } from '@/hooks/counts';
+import { useHaveEntityData } from '@/hooks/useHaveEntityData';
+import { useInnerWidth, useSmallScreen } from '@/hooks/useResponsiveContext';
+
+import { fetchDiscoveryMatches } from '@/features/search/fetchDiscoveryMatches.thunk';
+
+import type { BentoCountEntity } from '@/types/entities';
+import { RequestStatus } from '@/types/requests';
+import {
+  bentoKatsuEntityToResultsDataEntity,
+  buildQueryParamsUrl,
+  combineQueryParamsWithoutKey,
+  filtersStateToQueryParamEntries,
+} from '@/features/search/utils';
+
+const COUNT_CARD_DENOMINATOR_BREAKPOINT = 1180;
+
+const useCountCardBaseHeight = () => {
+  const isSmallScreen = useSmallScreen();
+  return isSmallScreen ? 102 : 114;
+};
+
+const CountCardPlaceholder = ({ loading }: { loading: boolean }) => {
+  const countCardBaseHeight = useCountCardBaseHeight();
+  return (
+    <Card className="shadow count-card" style={{ height: loading ? countCardBaseHeight : 'inherit' }}>
+      {loading ? (
+        <Skeleton active={true} paragraph={{ rows: 1 }} style={{ marginTop: 5 }} />
+      ) : (
+        <CustomEmpty text="No Data" />
+      )}
+    </Card>
+  );
+};
+
+const CountCardShowHide = memo(({ selected, onClear }: { selected: boolean; onClear: () => void }) => {
+  const t = useTranslationFn();
+
+  const handleKeyDown = useCallback<KeyboardEventHandler<HTMLDivElement>>(
+    (e) => {
+      if (e.key === 'Enter') {
+        onClear();
+      }
+    },
+    [onClear]
+  );
+
+  return (
+    <div
+      className="count-card__show-hide cursor-pointer antd-gray-7"
+      style={{
+        backgroundColor: selected ? 'rgba(255, 255, 255, 1.0)' : 'rgba(255, 255, 255, 0.0)',
+        bottom: selected ? -8 : 0,
+      }}
+      tabIndex={selected ? 0 : undefined}
+      onClick={selected ? onClear : undefined}
+      onKeyDown={handleKeyDown}
+    >
+      <DownOutlined
+        style={{
+          transform: `rotate(${selected ? '180deg' : '0deg'})`,
+          transition: 'transform 0.15s ease-in-out',
+        }}
+      />{' '}
+      {t(selected ? 'general.hide' : 'general.show')}
+    </div>
+  );
+});
+CountCardShowHide.displayName = 'CountCardShowHide';
+
+const CountsAndResults = () => {
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+
+  const t = useTranslationFn();
+  const renderCount = useRenderCount();
+
+  const dispatch = useAppDispatch();
+
+  const windowInnerWidth = useInnerWidth();
+  const countCardBaseHeight = useCountCardBaseHeight();
+
+  const selectedProject = useSelectedProject();
+  const selectedDataset = useSelectedDataset();
+
+  const entityCounts = selectedDataset?.counts_by_entity ?? selectedProject?.counts;
+
+  const haveEntityData = useHaveEntityData();
+
+  const {
+    message,
+    resultCountsOrBools: counts,
+    discoveryStatus,
+    discoveryError,
+    filters,
+    textQuery,
+    selectedEntity,
+    doneFirstLoad,
+    matchData,
+    pageSize,
+  } = useSearchQuery();
+  const entityAndTextQueryParams = useEntityAndTextQueryParams();
+
+  const waitingForData = WAITING_STATES.includes(discoveryStatus);
+  const doingFirstLoad = waitingForData && !doneFirstLoad;
+
+  // TODO: per-data type permissions?
+  const { hasPermission: hasQueryData } = useScopeQueryData();
+
+  const setSelectedEntity = useCallback(
+    (entity: BentoCountEntity | null) => {
+      const combinedParams = combineQueryParamsWithoutKey(
+        filtersStateToQueryParamEntries(filters),
+        entityAndTextQueryParams,
+        [
+          ENTITY_QUERY_PARAM,
+          TABLE_PAGE_QUERY_PARAM,
+          ...(entity ? [] : [TABLE_PAGE_SIZE_QUERY_PARAM]), // Clear the page size param if closing the table
+        ]
+      );
+      // Set the selected entity and reset the pagination via URL parameters
+      navigate(
+        buildQueryParamsUrl(
+          pathname,
+          entity
+            ? [
+                ...combinedParams,
+                [ENTITY_QUERY_PARAM, entity],
+                [TABLE_PAGE_QUERY_PARAM, matchData[bentoKatsuEntityToResultsDataEntity(entity)].page.toString()],
+                [TABLE_PAGE_SIZE_QUERY_PARAM, pageSize.toString()],
+              ]
+            : combinedParams
+        )
+      );
+    },
+    [navigate, pathname, filters, entityAndTextQueryParams, matchData, pageSize]
+  );
+  const clearSelectedEntity = useCallback(() => setSelectedEntity(null), [setSelectedEntity]);
+
+  const nFilters = Object.keys(filters).length + +!!textQuery;
+
+  const countElements = doingFirstLoad
+    ? []
+    : COUNT_ENTITY_ORDER.filter((entity) => {
+        // hide counts if no filters applied and we have no data
+        if (!haveEntityData(entity)) {
+          // If we have a UI hint indicating that we have none of this entity in the scope at all, don't bother even
+          // showing a loading card for the count.
+          return false;
+        }
+        return waitingForData || !!(counts[entity] || nFilters);
+      }).map((entity, i) => {
+        const { icon } = COUNT_ENTITY_REGISTRY[entity];
+        const count = renderCount(discoveryStatus === RequestStatus.Rejected ? undefined : counts[entity]);
+        const selected = selectedEntity === entity;
+        const canSelect = hasQueryData && !selected;
+        const showDenominator = !!nFilters && !!entityCounts && windowInnerWidth >= COUNT_CARD_DENOMINATOR_BREAKPOINT;
+        // If the user hovers over/focuses on the count card, start a pre-fetch to improve responsivity from the user's
+        // perspective if they decide to click on it.
+        const prefetch = () => dispatch(fetchDiscoveryMatches(entity));
+        return (
+          <Card
+            key={i}
+            aria-selected={hasQueryData ? selected : undefined}
+            role={canSelect ? 'button' : undefined}
+            className={
+              'shadow count-card' +
+              (canSelect ? ' count-card-clickable' : '') +
+              (selected ? ' count-card-selected' : '')
+            }
+            onFocus={canSelect ? prefetch : undefined}
+            onMouseOver={canSelect ? prefetch : undefined}
+            tabIndex={canSelect ? 0 : undefined}
+            onClick={canSelect ? () => setSelectedEntity(entity) : undefined}
+            onKeyDown={
+              canSelect
+                ? (e) => {
+                    if (e.key === 'Enter') {
+                      setSelectedEntity(entity);
+                    }
+                  }
+                : undefined
+            }
+            style={{ height: countCardBaseHeight + (hasQueryData ? 12 : 0) + (selected ? 12 : 0) }}
+          >
+            <Statistic
+              title={<CountsTitleWithHelp entity={entity} />}
+              value={count}
+              valueStyle={{ color: COUNTS_FILL }}
+              suffix={
+                showDenominator ? (
+                  <span className="text-base antd-gray-7">/ {entityCounts[entity].toLocaleString()}</span>
+                ) : undefined
+              }
+              prefix={icon}
+              loading={waitingForData}
+            />
+            {hasQueryData && <CountCardShowHide selected={selected} onClear={clearSelectedEntity} />}
+          </Card>
+        );
+      });
+
+  return (
+    <Flex vertical={true} gap={12}>
+      {discoveryError ? <Error message="search_fetch" description={discoveryError} /> : null}
+      {message ? <Alert message={t(message)} type="info" showIcon={true} style={{ fontSize: '1.1rem' }} /> : null}
+      {/* Can only wrap if we don't have the card show/hide button: */}
+      <Space size={12} wrap={!hasQueryData}>
+        {countElements.length ? countElements : <CountCardPlaceholder loading={doingFirstLoad} />}
+      </Space>
+      {countElements.length && selectedEntity ? (
+        // shrink vertical padding slightly for consistent header bar/pagination bar margins + space-saving
+        <Card className="shadow" styles={{ body: { padding: '12px 24px' } }}>
+          <SearchResultsTablePage entity={selectedEntity} />
+        </Card>
+      ) : null}
+    </Flex>
+  );
+};
+
+export default CountsAndResults;

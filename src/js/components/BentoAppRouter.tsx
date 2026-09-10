@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { lazy, useEffect } from 'react';
 import { Routes, Route, useNavigate, useParams, Outlet } from 'react-router-dom';
 import { useAutoAuthenticate, useIsAuthenticated } from 'bento-auth-js';
 import { useAppDispatch, useLanguage } from '@/hooks';
@@ -40,12 +40,16 @@ import {
   validProjectDataset,
 } from '@/utils/router';
 
-import PublicOverview from './Overview/LandingPage';
-import BeaconQueryUi from './Beacon/BeaconQueryUi';
-import NetworkUi from './Beacon/BeaconNetwork/NetworkUi';
-import PhenopacketView from './ClinPhen/PhenopacketView';
-import ProvenancePage from './Provenance/ProvenancePage';
+import PublicExplore from './Explore/LandingPage';
 import NotFoundPage from '@Util/NotFoundPage';
+
+// Code-split routes that aren't needed for the initial landing page (Explore). These pull in heavy,
+// page-specific dependencies (Leaflet maps, the phenopacket/file viewer stack, Markdown rendering) that
+// shouldn't be part of the bundle every visitor downloads just to load the overview/catalogue.
+const BeaconQueryUi = lazy(() => import('./Beacon/BeaconQueryUi'));
+const NetworkUi = lazy(() => import('./Beacon/BeaconNetwork/NetworkUi'));
+const PhenopacketView = lazy(() => import('./ClinPhen/PhenopacketView'));
+const AboutPage = lazy(() => import('./About/AboutPage'));
 
 const ScopedRoute = () => {
   const { projectId, datasetId } = useParams();
@@ -194,9 +198,9 @@ const BentoAppRouter = () => {
     <Routes>
       <Route element={<DefaultLayout />}>
         <Route path="/" element={<ScopedRoute />}>
-          <Route index element={<PublicOverview />} />
-          <Route path={BentoRoute.Overview} element={<PublicOverview />} />
-          <Route path={BentoRoute.Provenance} element={<ProvenancePage />} />
+          <Route index element={<PublicExplore />} />
+          <Route path={BentoRoute.Explore} element={<PublicExplore />} />
+          <Route path={BentoRoute.About} element={<AboutPage />} />
           <Route path={`${BentoRoute.Phenopackets}/:packetId/:tab?`} element={<PhenopacketView />} />
           {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
           {/* Beacon network is only available at the top level - scoping does not make sense for it. */}
@@ -205,18 +209,18 @@ const BentoAppRouter = () => {
         </Route>
 
         <Route path="/p/:projectId" element={<ScopedRoute />}>
-          <Route index element={<PublicOverview />} />
-          <Route path={BentoRoute.Overview} element={<PublicOverview />} />
-          <Route path={BentoRoute.Provenance} element={<ProvenancePage />} />
+          <Route index element={<PublicExplore />} />
+          <Route path={BentoRoute.Explore} element={<PublicExplore />} />
+          <Route path={BentoRoute.About} element={<AboutPage />} />
           <Route path={`${BentoRoute.Phenopackets}/:packetId/:tab?`} element={<PhenopacketView />} />
           {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
           <Route path="*" element={<NotFoundPage />} />
         </Route>
 
         <Route path="/d/:datasetId" element={<ScopedRoute />}>
-          <Route index element={<PublicOverview />} />
-          <Route path={BentoRoute.Overview} element={<PublicOverview />} />
-          <Route path={BentoRoute.Provenance} element={<ProvenancePage />} />
+          <Route index element={<PublicExplore />} />
+          <Route path={BentoRoute.Explore} element={<PublicExplore />} />
+          <Route path={BentoRoute.About} element={<AboutPage />} />
           <Route path={`${BentoRoute.Phenopackets}/:packetId/:tab?`} element={<PhenopacketView />} />
           {BentoRoute.Beacon && <Route path={BentoRoute.Beacon} element={<BeaconQueryUi />} />}
           <Route path="*" element={<NotFoundPage />} />

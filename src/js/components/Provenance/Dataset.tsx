@@ -1,4 +1,4 @@
-import { type ReactNode, useCallback, useMemo, useState } from 'react';
+import { lazy, Suspense, type ReactNode, useCallback, useMemo, useState } from 'react';
 
 import { Avatar, Button, Card, Flex, List, Typography } from 'antd';
 import { PieChartOutlined, SolutionOutlined } from '@ant-design/icons';
@@ -18,7 +18,6 @@ import { isoDateToString } from '@/utils/strings';
 import StatusBadge from '@/components/Util/StatusBadge';
 import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
 import CountsDisplay from '@/components/Util/CountsDisplay';
-import DatasetProvenanceModal from './DatasetProvenance/DatasetProvenanceModal';
 import KeywordList from './KeywordList';
 import ProgramPill from './Catalogue/ProgramPill';
 import ProjectPill from './Catalogue/ProjectPill';
@@ -26,6 +25,10 @@ import ProjectPill from './Catalogue/ProjectPill';
 const { Title, Text, Paragraph } = Typography;
 
 const MAX_KEYWORDS = 4;
+
+// Lazy-loaded: pulls in the Leaflet-based spatial coverage map, so it shouldn't be part of the bundle every
+// catalogue-page visitor downloads for what's a rarely-opened modal (one instance imported per Dataset card).
+const DatasetProvenanceModal = lazy(() => import('./DatasetProvenance/DatasetProvenanceModal'));
 
 const Dataset = ({
   parentProjectID,
@@ -52,6 +55,9 @@ const Dataset = ({
   const t = useTranslationFn();
 
   const [provenanceModalOpen, setProvenanceModalOpen] = useState(false);
+  // Track whether the modal has ever been opened so we only start fetching its (lazy-loaded) code once the
+  // user actually asks for it, rather than on every Dataset card render.
+  const [hasOpenedProvenanceModal, setHasOpenedProvenanceModal] = useState(false);
 
   const { identifier, title, description, program_name: program } = dataset;
   const keywords = dataset.keywords ?? [];
@@ -69,12 +75,15 @@ const Dataset = ({
     () => navigateToScope(scope, page, false, navigateOptions),
     [navigateToScope, scope, page, navigateOptions]
   );
-  const onNavigateOverview = useCallback(
-    () => navigateToScope(scope, BentoRoute.Overview, false, navigateOptions),
+  const onNavigateExplore = useCallback(
+    () => navigateToScope(scope, BentoRoute.Explore, false, navigateOptions),
     [navigateToScope, scope, navigateOptions]
   );
 
-  const openProvenanceModal = useCallback(() => setProvenanceModalOpen(true), []);
+  const openProvenanceModal = useCallback(() => {
+    setHasOpenedProvenanceModal(true);
+    setProvenanceModalOpen(true);
+  }, []);
   const closeProvenanceModal = useCallback(() => setProvenanceModalOpen(false), []);
 
   const counts = filteredCounts ?? dataset.counts_by_entity;
@@ -98,7 +107,8 @@ const Dataset = ({
       </List.Item>
     );
   } else if (format === 'card') {
-    const updatedDate = dataset.last_modified ?? project?.updated;
+    // Fall back to database record update timestamp
+    const updatedDate = dataset.last_modified ?? dataset.updated_at;
     const updatedStr = updatedDate ? isoDateToString(updatedDate, language) : undefined;
 
     inner = (
@@ -124,7 +134,7 @@ const Dataset = ({
             ellipsis={{
               rows: 3,
               expandable: true,
-              symbol: <span className="catalogue-card__expand-symbol">{t('catalogue.datasets.expand')}</span>,
+              symbol: <span className="catalogue-card__expand-symbol">{t('dataset.expand')}</span>,
             }}
             className="catalogue-card__description"
           >
@@ -142,14 +152,14 @@ const Dataset = ({
           </div>
         )}
 
-        <Flex gap={8} className="mt-3">
+        <Flex gap={8} className="catalogue-card__actions mt-3" wrap>
           {hasData && (
-            <Button type="primary" icon={<PieChartOutlined />} className="flex-1" onClick={onNavigateOverview}>
+            <Button type="primary" icon={<PieChartOutlined />} className="flex-1" onClick={onNavigateExplore}>
               {t('Explore')}
             </Button>
           )}
           <Button icon={<SolutionOutlined />} className="flex-1" onClick={openProvenanceModal}>
-            {t('Provenance')}
+            {t('About')}
           </Button>
         </Flex>
       </Card>
@@ -160,7 +170,11 @@ const Dataset = ({
 
   return (
     <>
-      <DatasetProvenanceModal dataset={dataset} open={provenanceModalOpen} onCancel={closeProvenanceModal} />
+      {hasOpenedProvenanceModal && (
+        <Suspense fallback={null}>
+          <DatasetProvenanceModal dataset={dataset} open={provenanceModalOpen} onCancel={closeProvenanceModal} />
+        </Suspense>
+      )}
       {inner}
     </>
   );
