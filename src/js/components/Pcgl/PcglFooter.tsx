@@ -4,7 +4,8 @@ import { useTranslationFn } from '@/hooks';
 import { ADMIN_URL, SHOW_ADMIN_LINK, PCGL_MODE } from '@/config';
 
 import './styles.css';
-import PCGLLogo from './assets/PCGL.svg';
+import PCGLLogo from './assets/logo-white.svg';
+import FundersLogo from './assets/funders.svg';
 
 const { Footer } = Layout;
 const { useBreakpoint } = Grid;
@@ -96,9 +97,9 @@ const FooterContainer = () => {
       <FooterView sections={data} />
       <div className="meta">
         <LinkHeader>{t('footer.meta.funding_title')}</LinkHeader>
-        <div className="meta-logos">
-          <img src="/public/assets/pcgl_logo_footer.png" role="presentation" alt="" width={737} height={261} />
-          <img src="/public/assets/cihr_logo_footer.png" role="presentation" alt="" width={423} height={99} />
+        <div className="meta-logos" aria-hidden="true">
+          <img src={PCGLLogo} role="presentation" alt="" width={515} height={185} />
+          <img src={FundersLogo} role="presentation" alt="" width={423} height={99} />
         </div>
         <p>{t('footer.meta.cihr_support')}</p>
       </div>
