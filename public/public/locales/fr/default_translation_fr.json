@@ -614,7 +614,8 @@
     "medical_actions": "Actions médicales",
     "ontologies": "Ontologies",
     "metadata": "Métadonnées",
-    "phenopacket_json": "JSON de phenopacket"
+    "phenopacket_json": "JSON de phenopacket",
+    "tracks": "Pistes"
   },
   "genomic_interpretation_status": {
     "UNKNOWN_STATUS": "Statut inconnu",
@@ -718,5 +719,9 @@
       "manageApplications": "Gérer les demandes",
       "cihrHref": "https://cihr-irsc.gc.ca/f/193.html"
     }
+  },
+  "tracks": {
+    "igv_error_title": "Erreur lors de la création du navigateur IGV",
+    "igv_error_description": "Erreur lors de la création du navigateur pour l'assemblage génomique {{assemblyId}}"
   }
 }

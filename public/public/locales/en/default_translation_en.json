@@ -18,7 +18,9 @@
     ],
     "biosample_one": "Biosample",
     "biosample_other": "Biosamples",
-    "biosample_help": ["$t(entities.biosample_other) are usually biological material extracted from a specific $t(entities.individual_one, lowercase)."],
+    "biosample_help": [
+      "$t(entities.biosample_other) are usually biological material extracted from a specific $t(entities.individual_one, lowercase)."
+    ],
     "experiment_one": "Experiment",
     "experiment_other": "Experiments",
     "experiment_help": [
@@ -485,7 +487,8 @@
     "ontologies": "Ontologies",
     "metadata": "Metadata",
     "phenopacket_json": "Phenopacket JSON",
-    "extra_properties": "$t(general.extra_properties)"
+    "extra_properties": "$t(general.extra_properties)",
+    "tracks": "Tracks"
   },
   "genomic_interpretation_status": {
     "UNKNOWN_STATUS": "Unknown Status",
@@ -729,5 +732,9 @@
       "admin": "$t(footer.admin_link)",
       "cihrHref": "https://cihr-irsc.gc.ca/e/193.html"
     }
+  },
+  "tracks": {
+    "igv_error_title": "Error creating IGV browser",
+    "igv_error_description": "Error creating browser for assembly {{assemblyId}}"
   }
 }
