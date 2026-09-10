@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import type { TypedUseSelectorHook } from 'react-redux';
 import { useDispatch, useSelector } from 'react-redux';
-import { useTranslation } from 'react-i18next';
+import { useT } from 'next-i18next/client';
 import type { Resource } from 'bento-auth-js';
 import { RESOURCE_EVERYTHING, queryData } from 'bento-auth-js';
 import { useHasResourcePermission } from '@/features/auth/hooks';
@@ -22,7 +22,7 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 export const useLanguage = (): string => {
   const {
     i18n: { language },
-  } = useTranslation(CUSTOMIZABLE_TRANSLATION);
+  } = useT(CUSTOMIZABLE_TRANSLATION);
   return language;
 };
 
@@ -32,7 +32,7 @@ export const useFormatNumber = (): ((n: number) => string) => {
 };
 
 export const useTranslationFn = (): NamespaceTranslationFunction => {
-  const { t } = useTranslation(CUSTOMIZABLE_TRANSLATION);
+  const { t } = useT(CUSTOMIZABLE_TRANSLATION);
 
   return t as NamespaceTranslationFunction;
 };

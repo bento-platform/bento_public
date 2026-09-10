@@ -9,7 +9,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { SessionProvider } from 'next-auth/react';
 
 // i18n and constants imports
-import { useTranslation } from 'react-i18next';
+import { useT } from 'next-i18next/client';
 import { NEW_BENTO_PUBLIC_THEME } from '@/constants/exploreConstants';
 import { SESSION_REFETCH_INTERVAL_SECONDS, SUPPORTED_LNGS } from '@/constants/configConstants';
 
@@ -40,7 +40,6 @@ import 'leaflet/dist/leaflet.css';
 import 'react18-json-view/src/style.css';
 import 'bento-charts/src/styles.css';
 import 'bento-file-display/dist/style.css';
-import './i18n';
 import '../styles.css';
 
 const BaseRoutes = () => {
@@ -48,8 +47,7 @@ const BaseRoutes = () => {
     <Routes>
       <Route element={<AuthOutlet />}>
         <Route element={<LanguageHandler />}>
-          <Route path="/:lang/*" element={<BentoAppRouter />} />
-          <Route path="*" element={<Navigate to="/en/" />} />
+          <Route element={<BentoAppRouter />} />
         </Route>
       </Route>
     </Routes>
@@ -58,7 +56,7 @@ const BaseRoutes = () => {
 
 /** Inner root app component with responsive context for screen-size-aware theming and more hook access */
 const InnerRootApp = () => {
-  const { i18n } = useTranslation();
+  const { i18n } = useT();
   const antdLocale = i18n.language === SUPPORTED_LNGS.FRENCH ? frCA : enUS;
   const isSmallScreen = useSmallScreen();
 

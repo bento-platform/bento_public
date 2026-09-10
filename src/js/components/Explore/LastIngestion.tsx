@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Card, Empty, Skeleton, Space, Typography } from 'antd';
 import { CalendarOutlined } from '@ant-design/icons';
-import { useTranslation } from 'react-i18next';
+import { useT } from 'next-i18next/client';
 
 import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { WAITING_STATES } from '@/constants/requests';
@@ -45,7 +45,7 @@ const LastIngestionSkeleton = () => (
 );
 
 const LastIngestionDataType = ({ dataType }: { dataType: BentoServiceDataType }) => {
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useT();
   return (
     <Card className="shadow" key={dataType.id}>
       <Space direction="vertical">
