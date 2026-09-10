@@ -5,7 +5,8 @@ const { Title, Text, Link } = Typography;
 
 import { ADMIN_URL, SHOW_ADMIN_LINK } from '@/config';
 import { useTranslationFn } from '@/hooks';
-import bentoLogo from '@public/assets/bento.svg';
+
+const bentoLogo = '/public/assets/bento.svg';
 
 const SiteFooter = () => {
   const t = useTranslationFn();
