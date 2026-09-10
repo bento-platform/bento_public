@@ -9,11 +9,10 @@ import {
   TEXT_QUERY_TYPE_PARAM,
   VALID_TEXT_QUERY_TYPES,
 } from '@/features/search/constants';
-import { useSearchQuery, useSearchQueryParams } from '@/features/search/hooks';
+import { useSearchLoading, useSearchQuery, useSearchQueryParams } from '@/features/search/hooks';
 import { buildQueryParamsUrl, queryParamsWithoutKey } from '@/features/search/utils';
 import { useTranslationFn } from '@/hooks';
 
-import { RequestStatus } from '@/types/requests';
 import type { FtsQueryType, QueryParamEntries } from '@/features/search/types';
 
 import SearchSubForm, { type DefinedSearchSubFormProps } from '@/components/Search/SearchSubForm';
@@ -25,8 +24,9 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { discoveryStatus, textQuery, textQueryType } = useSearchQuery();
+  const { textQuery, textQueryType } = useSearchQuery();
   const allQueryParams = useSearchQueryParams();
+  const searchLoading = useSearchLoading();
 
   const [form] = Form.useForm<FreeTextFormValues>();
 
@@ -97,7 +97,7 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
       icon={<FormOutlined />}
       extra={
         <Select<FtsQueryType>
-          disabled={discoveryStatus === RequestStatus.Pending}
+          disabled={searchLoading}
           variant="filled"
           size="small"
           className="flex-1"
@@ -113,11 +113,9 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
           <Form.Item name="q" initialValue={textQuery} noStyle={true}>
             <Input prefix={<SearchOutlined />} />
           </Form.Item>
-          {!!textQuery && (
-            <Button icon={<CloseOutlined />} onClick={onReset} disabled={discoveryStatus === RequestStatus.Pending} />
-          )}
+          {!!textQuery && <Button icon={<CloseOutlined />} onClick={onReset} disabled={searchLoading} />}
           <Form.Item name="qt" initialValue={textQueryType} noStyle={true} hidden />
-          <Button type="primary" htmlType="submit" loading={discoveryStatus === RequestStatus.Pending}>
+          <Button type="primary" htmlType="submit" loading={searchLoading}>
             {t('Search')}
           </Button>
         </Space.Compact>

@@ -26,7 +26,7 @@ interface PieChartEvent {
   payload?: { name: string; id?: string };
 }
 
-const Chart = memo(({ chartConfig, data, field, id, isClickable, mode }: ChartProps) => {
+const Chart = memo(({ chartConfig, data, dataContext, field, id, isClickable, mode }: ChartProps) => {
   const t = useTranslationFn();
   const language = useLanguage();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
@@ -77,6 +77,7 @@ const Chart = memo(({ chartConfig, data, field, id, isClickable, mode }: ChartPr
       return (
         <BarChart
           data={data}
+          dataContext={dataContext}
           height={chartHeight}
           units={units}
           preFilter={removeMissing}
@@ -95,6 +96,7 @@ const Chart = memo(({ chartConfig, data, field, id, isClickable, mode }: ChartPr
           units={units}
           height={chartHeight}
           data={data}
+          dataContext={dataContext}
           preFilter={removeMissing}
           dataMap={translateMap}
           removeEmpty={false} // Preserve the histogram's layout by showing empty bins
@@ -110,6 +112,7 @@ const Chart = memo(({ chartConfig, data, field, id, isClickable, mode }: ChartPr
       return (
         <PieChart
           data={data}
+          dataContext={dataContext}
           height={pieChartHeight}
           preFilter={removeMissing}
           dataMap={translateMap}
@@ -121,6 +124,7 @@ const Chart = memo(({ chartConfig, data, field, id, isClickable, mode }: ChartPr
       return (
         <ChoroplethMap
           data={data}
+          dataContext={dataContext}
           height={chartHeight}
           preFilter={removeMissing}
           dataMap={translateMap}
@@ -154,6 +158,7 @@ Chart.displayName = 'Chart';
 export interface ChartProps {
   chartConfig: ChartConfig;
   data: ChartData[];
+  dataContext?: ChartData[];
   field: Field;
   id: string;
   isClickable: boolean;
