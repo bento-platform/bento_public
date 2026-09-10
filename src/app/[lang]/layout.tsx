@@ -13,16 +13,16 @@ export default async function RootLayout({
   params,
 }: {
   children: React.ReactNode
-  params: Promise<{ lng: string }>
+  params: Promise<{ lang: string }>
 }) {
-  const { lng } = await params
+  const { lang } = await params
   const { i18n } = await getT()
   const resources = getResources(i18n)
 
   return (
-    <html lang={lng}>
+    <html lang={lang}>
       <body>
-        <I18nProvider language={lng} resources={resources}>
+        <I18nProvider language={lang} resources={resources}>
           {children}
         </I18nProvider>
       </body>
