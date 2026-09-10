@@ -24,7 +24,6 @@
     "paths": {
       "@/*": ["./src/js/*"],
       "@Util/*": ["./src/js/components/Util/*"],
-      "igv/dist/igv.esm": ["./node_modules/igv/dist/igv.d.ts"]
     }
   },
   "include": ["src", "next-env.d.ts", ".next/types/**/*.ts", ".next/dev/types/**/*.ts", "**/*.mts"],

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector, useTranslationFn } from '@/hooks';
 import { useAccessToken } from 'bento-auth-js';
-import igv from 'igv/dist/igv.esm';
+import igv from 'igv/dist/igv.esm.js';
 import type { Browser, CreateOpt } from 'igv';
 import { saveIgvPosition } from '@/features/igv/igv.store';
 import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
