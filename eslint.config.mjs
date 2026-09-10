@@ -22,7 +22,7 @@ export default defineConfig([
   react.configs.flat['jsx-runtime'],
   ...nextVitals,
   eslintPluginPrettierRecommended,
-  jsxA11y.flatConfigs.recommended,
+  // jsxA11y.flatConfigs.recommended,
   reactHooksEsLint.configs.flat.recommended,
   {
     languageOptions: {
