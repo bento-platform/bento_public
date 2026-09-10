@@ -21,7 +21,6 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/fr-ca';
 import { ChartConfigProvider } from 'bento-charts';
 import BentoAppRouter from '@/components/BentoAppRouter';
-import LanguageHandler from '@/components/Util/LanguageHandler';
 import AuthOutlet from '@/components/Util/AuthOutlet';
 import ResponsiveProvider from '@/components/Util/ResponsiveProvider';
 
@@ -46,9 +45,7 @@ const BaseRoutes = () => {
   return (
     <Routes>
       <Route element={<AuthOutlet />}>
-        <Route element={<LanguageHandler />}>
-          <Route element={<BentoAppRouter />} />
-        </Route>
+        <Route element={<BentoAppRouter />} />
       </Route>
     </Routes>
   );
