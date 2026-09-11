@@ -6,6 +6,7 @@ import { ADMIN_URL, SHOW_ADMIN_LINK, PCGL_MODE } from '@/config';
 import './styles.css';
 import PCGLLogo from './assets/logo-white.svg';
 import FundersLogo from './assets/funders.svg';
+import portalLogo from './assets/PCGL-BGPC.svg';
 
 const { Footer } = Layout;
 const { useBreakpoint } = Grid;
@@ -22,7 +23,7 @@ type FooterMetaItems = {
   bento: string;
 };
 
-const LinkHeader = ({ children }: { children: React.ReactNode }) => <h3 className="visually-hidden">{children}</h3>;
+const LinkHeader = ({ children }: { children: React.ReactNode }) => <h3>{children}</h3>;
 
 const LinkItem = ({ link, url }: { link: string; url: string }) => (
   <a className="focus-ring link-item" href={url} rel="noreferrer" target="_blank">
@@ -31,21 +32,24 @@ const LinkItem = ({ link, url }: { link: string; url: string }) => (
 );
 
 const FooterView = ({ sections }: { sections: FooterNavItems[] }) => {
+
   return (
-    <nav className="container">
+    <>
       {sections.map((section) => (
-        <div key={section.title} className="section">
-          <LinkHeader>{section.title}</LinkHeader>
-          <ul className="group">
-            {section.items.map((item) => (
-              <li key={item.toString()} className="item">
-                <LinkItem link={item.link} url={item.url} />
-              </li>
-            ))}
-          </ul>
-        </div>
+        <dl key={section.title} className="links-section">
+          <dt>{section.title}</dt>
+          <dd className="group">
+            <ul>
+              {section.items.map((item) => (
+                <li key={`${item.link}-${item.url}`} className="item">
+                  <LinkItem link={item.link} url={item.url} />
+                </li>
+              ))}
+            </ul>
+          </dd>
+        </dl>
       ))}
-    </nav>
+    </>
   );
 };
 
@@ -94,18 +98,65 @@ const FooterContainer = () => {
 
   return (
     <footer className="pcgl-footer">
-      <FooterView sections={data} />
-      <div className="meta">
-        <LinkHeader>{t('footer.meta.funding_title')}</LinkHeader>
-        <div className="meta-logos" aria-hidden="true">
-          <img src={PCGLLogo} role="presentation" alt="" width={515} height={185} />
-          <img src={FundersLogo} role="presentation" alt="" width={423} height={99} />
-        </div>
-        <p>{t('footer.meta.cihr_support')}</p>
+      <>{renderContextualBand()}</>
+      <div className="main-band">
+        <FooterView sections={data} />
+        <div className="meta">
+          <LinkHeader>{t('footer.meta.funding_title')}</LinkHeader>
+          <div className="meta-logos" aria-hidden="true">
+            <img src={PCGLLogo} role="presentation" alt="" width={515} height={185} />
+            <img src={FundersLogo} role="presentation" alt="" width={423} height={99} />
+          </div>
+          <p>{t('footer.meta.cihr_support')}</p>
       </div>
+      </div>
+      <>{renderBentoBand()}</>
     </footer>
   );
 };
+
+const renderContextualBand = () => {
+  return (
+    <div className="contextual-band">
+      <div className="contextual-logos" aria-hidden="true">
+        <img src={portalLogo} role="presentation" alt="" width={515} height={185} />
+      </div>
+    </div>
+  );
+}
+
+const renderBentoBand = () => {
+  const t = useTranslationFn();
+
+  return (
+    <div>
+      <div>
+        <div>
+          <h5>Powered by</h5>
+          <a href="https://bento-platform.github.io" target="_blank" rel="noopener noreferrer">
+            <img src="/30f9fc937de6d4ba1ff955bfb72a1b43.svg" alt="Bento" />
+          </a>
+        </div>
+        <div>
+          <span>
+            Copyright © 2019-2026 <a href="https://computationalgenomics.ca" target="_blank" rel="noopener noreferrer">
+              the Canadian Centre for Computational Genomics
+            </a>.
+          </span>
+          <br />
+          <span>
+            Bento is licensed under the <a href="https://github.com/bento-platform/bento_public/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">LGPLv3</a>. The source code is available on <a href="https://github.com/bento-platform" target="_blank" rel="noopener noreferrer">Github</a>.
+          </span>
+        </div>
+        <div>
+          <a href="/public/terms.html" target="_blank" rel="noopener noreferrer">
+            Terms of Use
+          </a>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 const PCGL_LINKS: { key: string; href?: string }[] = [
   {
@@ -142,11 +193,11 @@ const PCGL_LINKS: { key: string; href?: string }[] = [
   },
   ...(SHOW_ADMIN_LINK
     ? [
-        {
-          key: 'admin',
-          href: ADMIN_URL,
-        },
-      ]
+      {
+        key: 'admin',
+        href: ADMIN_URL,
+      },
+    ]
     : []),
 ];
 
