@@ -1,7 +1,7 @@
 import { initServerI18next, getT, getResources, generateI18nStaticParams } from 'next-i18next/server'
 import { I18nProvider } from 'next-i18next/client'
 import i18nConfig from '../../i18n.config'
-import AppShell from '@/components/AppShellClientOnly'
+import AppShell from '@/components/AppShell'
 
 // Styles imports
 import 'antd/dist/reset.css';
