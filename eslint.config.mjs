@@ -46,6 +46,7 @@ export default defineConfig([
       '@typescript-eslint/consistent-type-imports': 'error',
       'react/react-in-jsx-scope': 'off',
       'react-hooks/exhaustive-deps': ['error'],
+      ...jsxA11y.flatConfigs.strict.rules,
     },
     settings: {
       react: {
