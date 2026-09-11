@@ -57,7 +57,7 @@ const CountCardShowHide = memo(({ selected, onClear }: { selected: boolean; onCl
 
   const handleKeyDown = useCallback<KeyboardEventHandler<HTMLDivElement>>(
     (e) => {
-      if (e.key === 'Enter') {
+      if (e.key === 'Enter' || e.key === 'Space') {
         onClear();
       }
     },
@@ -71,6 +71,7 @@ const CountCardShowHide = memo(({ selected, onClear }: { selected: boolean; onCl
         backgroundColor: selected ? 'rgba(255, 255, 255, 1.0)' : 'rgba(255, 255, 255, 0.0)',
         bottom: selected ? -8 : 0,
       }}
+      role={selected ? 'button' : undefined}
       tabIndex={selected ? 0 : undefined}
       onClick={selected ? onClear : undefined}
       onKeyDown={handleKeyDown}

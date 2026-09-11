@@ -2,11 +2,13 @@ import { defineConfig, globalIgnores } from 'eslint/config';
 import globals from 'globals';
 import js from '@eslint/js';
 import nextVitals from 'eslint-config-next/core-web-vitals';
+import nextTs from 'eslint-config-next/typescript';
 
 // Parser
 import tsParser from '@typescript-eslint/parser';
 
 // Plugins
+import jsxA11y from 'eslint-plugin-jsx-a11y';
 import tsEsLint from 'typescript-eslint';
 import react from 'eslint-plugin-react';
 import reactHooksEsLint from 'eslint-plugin-react-hooks';
@@ -20,7 +22,9 @@ export default defineConfig([
   react.configs.flat.recommended,
   react.configs.flat['jsx-runtime'],
   ...nextVitals,
+  ...nextTs,
   eslintPluginPrettierRecommended,
+  // jsxA11y.flatConfigs.recommended,
   reactHooksEsLint.configs.flat.recommended,
   {
     languageOptions: {
@@ -42,6 +46,7 @@ export default defineConfig([
       '@typescript-eslint/consistent-type-imports': 'error',
       'react/react-in-jsx-scope': 'off',
       'react-hooks/exhaustive-deps': ['error'],
+      ...jsxA11y.flatConfigs.strict.rules,
     },
     settings: {
       react: {
