@@ -2,6 +2,14 @@ import { initServerI18next, getT, getResources, generateI18nStaticParams } from 
 import { I18nProvider } from 'next-i18next/client'
 import i18nConfig from '../../i18n.config'
 
+// Styles imports
+import 'antd/dist/reset.css';
+import 'leaflet/dist/leaflet.css';
+import 'react18-json-view/src/style.css';
+import 'bento-charts/src/styles.css';
+import 'bento-file-display/dist/style.css';
+import '../../styles.css';
+
 initServerI18next(i18nConfig)
 
 export async function generateStaticParams() {

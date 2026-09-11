@@ -34,14 +34,6 @@ import { useHandleRefreshTokenError } from '@/features/auth/hooks';
 import { store } from './store';
 import { PCGL_MODE } from '@/config';
 
-// Styles imports
-import 'antd/dist/reset.css';
-import 'leaflet/dist/leaflet.css';
-import 'react18-json-view/src/style.css';
-import 'bento-charts/src/styles.css';
-import 'bento-file-display/dist/style.css';
-import '../styles.css';
-
 const BaseRoutes = () => {
   return (
     <Routes>
