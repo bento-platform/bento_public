@@ -1,31 +1,39 @@
+'use client';
+
 import { useCallback, useMemo, useState } from 'react';
+import { useRouter, useParams } from 'next/navigation';
 import { Button, Empty, Space, Tabs } from 'antd';
 import { CompressOutlined, DownloadOutlined, ExpandOutlined } from '@ant-design/icons';
-import { useNavigate, useParams } from 'react-router-dom';
 
 import { saveAs } from 'file-saver';
 
 import Loader from '@/components/Loader';
 
+import { BentoRoute } from '@/types/routes';
 import { TabKeys } from '@/types/PhenopacketView.types';
 import { RequestStatus } from '@/types/requests';
 
 import { usePhenopacketData } from '@/features/clinPhen/hooks';
 import { useSetExtraBreadcrumb } from '@/features/ui/hooks';
 import { useTranslationFn } from '@/hooks';
+import { useCurrentScopePrefixedUrl } from '@/hooks/navigation';
 import { useNotify } from '@/hooks/notifications';
 import { usePhenopacketTabs } from '@/hooks/usePhenopacketTabs';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
 export interface RouteParams {
   packetId: string;
-  tab: string;
-  [key: string]: string | undefined;
+  // The [[...tab]] optional catch-all segment yields an array (0 or more path segments), unlike react-router's
+  // old single optional :tab? param - only the first segment is treated as the tab; PhenopacketView below
+  // resolves this down to a single `tab: string | undefined` before using it.
+  tab?: string[];
+  [key: string]: string | string[] | undefined;
 }
 
 const PhenopacketView = () => {
-  const { packetId, tab } = useParams<RouteParams>();
-  const navigate = useNavigate();
+  const { packetId, tab: tabSegments } = useParams<RouteParams>();
+  const tab = tabSegments?.[0];
+  const router = useRouter();
   const t = useTranslationFn();
   const isSmallScreen = useSmallScreen();
 
@@ -33,9 +41,10 @@ const PhenopacketView = () => {
 
   const { data: phenopacket, status, isAuthorized } = usePhenopacketData(packetId ?? '');
 
-  const { handleTabChange, activeTabs, tabs, tabContent, collapseRef } = usePhenopacketTabs(phenopacket);
+  const { handleTabChange, activeTabs, tabs, tabContent, collapseRef } = usePhenopacketTabs(phenopacket, packetId);
 
   const defaultTab = useMemo(() => ({ key: activeTabs[0], label: tabs[0]?.label }), [activeTabs, tabs]);
+  const defaultTabUrl = useCurrentScopePrefixedUrl(`${BentoRoute.Phenopackets}/${packetId}/${defaultTab.key}`);
 
   const [activeKey, setActiveKey] = useState<TabKeys>(defaultTab.key);
 
@@ -87,7 +96,7 @@ const PhenopacketView = () => {
         // Otherwise, show an invalid tab notification:
         invalidEndpointRedirectNotification();
       }
-      navigate(`${tab ? '..' : '.'}/${defaultTab.key}`, { relative: 'path', replace: true });
+      router.replace(defaultTabUrl);
       // Temporary loading render while navigation occurs. This navigation is to a valid key (the default), so we won't
       // get any more error notifications after this navigation occurs.
       return <Loader fullHeight={false} />;

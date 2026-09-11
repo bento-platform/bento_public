@@ -3,10 +3,11 @@ import { Collapse } from 'antd';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
 import type { SectionKey, SectionSpec } from './phenopacketOverview.registry';
 import { SECTION_SPECS } from './phenopacketOverview.registry';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParamsWriter } from '@/hooks/useSearchParamsWriter';
 import { useTranslationFn } from '@/hooks';
-import { useLocationState } from '@/hooks/useLocationState';
 import { BREAD_CRUMB_HEIGHT } from '@/constants/common';
+
+export const HIGHLIGHT_URL_QUERY_KEY = 'highlight';
 
 export const PHENOPACKET_EXPANDED_URL_QUERY_KEY = 'expanded';
 
@@ -53,9 +54,13 @@ interface PhenopacketOverviewProps {
 }
 
 const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>(({ phenopacket }, ref) => {
-  const [open, setOpen] = useSearchParams(serializeKeys(phenopacket.subject ? ['subject'] : ['biosamples']));
+  const [open, setOpen] = useSearchParamsWriter();
   const t = useTranslationFn();
-  const routerState = useLocationState();
+  const defaultOpenKeys = useMemo<SectionKey[]>(
+    () => (phenopacket.subject ? ['subject'] : ['biosamples']),
+    [phenopacket.subject]
+  );
+  const highlightRaw = open.get(HIGHLIGHT_URL_QUERY_KEY);
   const cleanupRef = useRef<null | (() => void)>(null);
   const pendingHighlightRef = useRef(false);
 
@@ -141,9 +146,8 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
   }, []);
 
   useEffect(() => {
-    const { sectionKey, rowId } =
-      (routerState as { highlight?: { sectionKey?: string; rowId?: string } })?.highlight ?? {};
-
+    if (!highlightRaw) return;
+    const [sectionKey, rowId] = highlightRaw.split(':');
     if (!sectionKey) return;
 
     const { renderSingleItemDetail, itemCount } = SECTION_SPECS[sectionKey as SectionKey];
@@ -189,6 +193,16 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
 
     el?.classList.add('highlight-boundary');
 
+    // One-shot: strip the highlight param now that we've consumed it, so e.g. a reload doesn't re-trigger it.
+    setOpen(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.delete(HIGHLIGHT_URL_QUERY_KEY);
+        return next;
+      },
+      { replace: true }
+    );
+
     return () => {
       cancelAnimationFrame(raf1);
       cleanupRef.current?.();
@@ -198,13 +212,13 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
       el?.classList.remove('highlight-boundary');
       el?.blur();
     };
-  }, [routerState, items, open, phenopacket, setOpen]);
+  }, [highlightRaw, items, phenopacket, setOpen]);
 
   return (
     <Collapse
       className="compact"
       items={items}
-      activeKey={deserializeKeys(open)}
+      activeKey={open.has(PHENOPACKET_EXPANDED_URL_QUERY_KEY) ? deserializeKeys(open) : defaultOpenKeys}
       onChange={handleCollapseChange}
       ghost
     />

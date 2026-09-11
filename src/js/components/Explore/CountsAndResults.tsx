@@ -1,5 +1,5 @@
 import { type KeyboardEventHandler, memo, useCallback } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { usePathname, useRouter } from 'next/navigation';
 
 import { Alert, Card, Flex, Skeleton, Space, Statistic } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
@@ -88,8 +88,8 @@ const CountCardShowHide = memo(({ selected, onClear }: { selected: boolean; onCl
 CountCardShowHide.displayName = 'CountCardShowHide';
 
 const CountsAndResults = () => {
-  const { pathname } = useLocation();
-  const navigate = useNavigate();
+  const pathname = usePathname();
+  const router = useRouter();
 
   const t = useTranslationFn();
   const renderCount = useRenderCount();
@@ -138,7 +138,7 @@ const CountsAndResults = () => {
         ]
       );
       // Set the selected entity and reset the pagination via URL parameters
-      navigate(
+      router.push(
         buildQueryParamsUrl(
           pathname,
           entity
@@ -152,7 +152,7 @@ const CountsAndResults = () => {
         )
       );
     },
-    [navigate, pathname, filters, entityAndTextQueryParams, matchData, pageSize]
+    [router, pathname, filters, entityAndTextQueryParams, matchData, pageSize]
   );
   const clearSelectedEntity = useCallback(() => setSelectedEntity(null), [setSelectedEntity]);
 

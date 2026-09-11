@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useSearchParams } from 'next/navigation';
 import { HomeOutlined } from '@ant-design/icons';
 import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
 
@@ -19,8 +19,8 @@ export const useTitleBreadcrumbItems = (scopeHeaderMenuItems: MenuItem[]): Bread
 
   const { scope, fixedProject, fixedDataset } = useSelectedScope();
   const { projectTitle, datasetTitle } = useSelectedScopeTitles();
-  const location = useLocation();
-  const cameFromProject = (location.state as { fromProjectScope?: boolean } | null)?.fromProjectScope;
+  const searchParams = useSearchParams();
+  const cameFromProject = searchParams.get('from') === 'project';
 
   const getRouteTitleAndIcon = useGetRouteTitleAndIcon();
 

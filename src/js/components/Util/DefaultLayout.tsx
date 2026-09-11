@@ -1,5 +1,4 @@
-import { Suspense, useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Suspense, useState, type ReactNode } from 'react';
 import clsx from 'clsx';
 import { Alert, FloatButton, Grid, Layout } from 'antd';
 import { ErrorBoundary, getErrorMessage } from 'react-error-boundary';
@@ -19,7 +18,7 @@ import { useCurrentPage } from '@/utils/router';
 const { Content } = Layout;
 const { useBreakpoint } = Grid;
 
-const DefaultLayout = () => {
+const DefaultLayout = ({ children }: { children: ReactNode }) => {
   const page = useCurrentPage();
 
   const catalogueMode = useIsInCatalogueMode();
@@ -69,9 +68,7 @@ const DefaultLayout = () => {
               <ErrorBoundary
                 fallbackRender={({ error }) => <Alert type="error" description={getErrorMessage(error)} />}
               >
-                <Suspense fallback={<Loader />}>
-                  <Outlet />
-                </Suspense>
+                <Suspense fallback={<Loader />}>{children}</Suspense>
               </ErrorBoundary>
             </Content>
           </Layout>

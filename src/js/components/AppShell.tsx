@@ -1,53 +1,33 @@
 'use client';
 
-// React imports
-import { useEffect } from 'react';
-
-// Redux and routing imports
-import { useParams } from 'next/navigation';
+import { useEffect, type ReactNode } from 'react';
 import { Provider } from 'react-redux';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { SessionProvider } from 'next-auth/react';
 
-// i18n and constants imports
 import { useT } from 'next-i18next/client';
 import { NEW_BENTO_PUBLIC_THEME } from '@/constants/exploreConstants';
 import { SESSION_REFETCH_INTERVAL_SECONDS, SUPPORTED_LNGS } from '@/constants/configConstants';
 
-// Component imports
 import { ConfigProvider } from 'antd';
 import enUS from 'antd/locale/en_US';
 import frCA from 'antd/locale/fr_CA';
 import dayjs from 'dayjs';
 import 'dayjs/locale/fr-ca';
 import { ChartConfigProvider } from 'bento-charts';
-import BentoAppRouter from '@/components/BentoAppRouter';
-import AuthOutlet from '@/components/Util/AuthOutlet';
+import AppEffects from '@/components/AppEffects';
+import AuthGuard from '@/components/Util/AuthGuard';
+import DefaultLayout from '@/components/Util/DefaultLayout';
 import ResponsiveProvider from '@/components/Util/ResponsiveProvider';
 
-// Hooks and utilities imports
 import { NotificationProvider } from '@/hooks/notifications';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { useHandleRefreshTokenError } from '@/features/auth/hooks';
 
-// Store and configuration imports
-import { store } from './store';
+import { store } from '@/store';
 import { PCGL_MODE } from '@/config';
 
-const BaseRoutes = () => {
-  return (
-    <Routes>
-      <Route element={<AuthOutlet />}>
-        {/* BentoAppRouter renders its own descendant <Routes> internally, which requires this wrapping route
-            to end in a splat - otherwise the outer router never defers matching to it. */}
-        <Route path="*" element={<BentoAppRouter />} />
-      </Route>
-    </Routes>
-  );
-};
-
 /** Inner root app component with responsive context for screen-size-aware theming and more hook access */
-const InnerRootApp = () => {
+const InnerAppShell = ({ children }: { children: ReactNode }) => {
   const { i18n } = useT();
   const antdLocale = i18n.language === SUPPORTED_LNGS.FRENCH ? frCA : enUS;
   const isSmallScreen = useSmallScreen();
@@ -76,29 +56,26 @@ const InnerRootApp = () => {
         }}
       >
         <NotificationProvider>
-          <BaseRoutes />
+          <AuthGuard>
+            <AppEffects>
+              <DefaultLayout>{children}</DefaultLayout>
+            </AppEffects>
+          </AuthGuard>
         </NotificationProvider>
       </ConfigProvider>
     </ChartConfigProvider>
   );
 };
 
-const RootApp = () => {
-  // The language segment (/en, /fr) is owned by Next.js's [lang] route; react-router only ever sees/generates
-  // paths below it. `key` forces a remount (and thus a fresh basename) when Next navigates to a new language.
-  const { lang } = useParams<{ lang: string }>();
+/** Providers/chrome shared by every route under the [lang] segment. Rendered from app/[lang]/layout.tsx. */
+const AppShell = ({ children }: { children: ReactNode }) => (
+  <SessionProvider refetchInterval={SESSION_REFETCH_INTERVAL_SECONDS}>
+    <Provider store={store}>
+      <ResponsiveProvider>
+        <InnerAppShell>{children}</InnerAppShell>
+      </ResponsiveProvider>
+    </Provider>
+  </SessionProvider>
+);
 
-  return (
-    <SessionProvider refetchInterval={SESSION_REFETCH_INTERVAL_SECONDS}>
-      <Provider store={store}>
-        <BrowserRouter basename={`/${lang}`} key={lang}>
-          <ResponsiveProvider>
-            <InnerRootApp />
-          </ResponsiveProvider>
-        </BrowserRouter>
-      </Provider>
-    </SessionProvider>
-  );
-};
-
-export default RootApp;
+export default AppShell;

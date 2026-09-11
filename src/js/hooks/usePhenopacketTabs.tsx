@@ -1,6 +1,6 @@
 import type { TabsProps } from 'antd';
 import { type ReactNode, useCallback, useMemo, useRef } from 'react';
-import { useNavigate } from 'react-router';
+import { useRouter } from 'next/navigation';
 import type { JSONType } from 'bento-file-display';
 
 import OntologiesView from '@/components/ClinPhen/PhenopacketDisplay/OntologiesView';
@@ -8,20 +8,27 @@ import Overview, { type CollapseHandle } from '@/components/ClinPhen/Phenopacket
 import PhenopacketMetaData from '@/components/ClinPhen/PhenopacketDisplay/PhenopacketMetaData';
 import JsonView from '@Util/JsonView';
 
+import { BentoRoute } from '@/types/routes';
 import { TabKeys } from '@/types/PhenopacketView.types';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
 import { useTranslationFn } from '@/hooks';
+import { useLangHref } from '@/hooks/useAppRouter';
+import { useSelectedScope } from '@/features/metadata/hooks';
+import { scopeSelectionToUrl } from '@/utils/router';
 
-export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
+export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined, packetId: string | undefined) => {
   const t = useTranslationFn();
-  const navigate = useNavigate();
+  const router = useRouter();
+  const selectedScope = useSelectedScope();
+  const toHref = useLangHref();
   const collapseRef = useRef<CollapseHandle>(null);
 
   const handleTabChange = useCallback(
     (key: string) => {
-      navigate(`../${key}`, { relative: 'path', replace: true });
+      const url = toHref(scopeSelectionToUrl(selectedScope, `${BentoRoute.Phenopackets}/${packetId}/${key}`));
+      router.replace(url);
     },
-    [navigate]
+    [router, toHref, selectedScope, packetId]
   );
 
   const items: TabsProps['items'] = useMemo(() => {

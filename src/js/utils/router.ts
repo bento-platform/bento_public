@@ -1,12 +1,20 @@
-import { useLocation } from 'react-router-dom';
+import { useParams, usePathname } from 'next/navigation';
 import { FORCE_CATALOGUE } from '@/config';
 import type { DiscoveryScope, DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
 import type { Project } from '@/types/metadata';
 import { BentoRoute } from '@/types/routes';
 
-// The language segment is owned by Next.js routing (the [lang] route param) and lives in BrowserRouter's
-// basename, so every path here - and everything react-router itself reports via useLocation() - is
-// lang-free/basename-relative.
+// The language segment is a real Next.js route param ([lang]), so next/navigation's usePathname() includes
+// it - unlike the old BrowserRouter-basename setup, where it was stripped before react-router ever saw it.
+// The functions/hooks below all operate on lang-free, scope-relative paths, so this hook strips it back off.
+export const usePathnameNoLang = (): string => {
+  const pathname = usePathname();
+  const { lang } = useParams<{ lang: string }>();
+  const prefix = `/${lang}`;
+  if (pathname === prefix) return '/';
+  return pathname.startsWith(`${prefix}/`) ? pathname.slice(prefix.length) : pathname;
+};
+
 export const pathParts = (pathName: string): string[] => pathName.split('/').slice(1);
 
 export const getPathPageIndex = (pathParts: string[]): number => {
@@ -22,8 +30,8 @@ export const getPathPageIndex = (pathParts: string[]): number => {
 };
 
 export const useCurrentPage = (): string => {
-  const location = useLocation();
-  const pathArray = pathParts(location.pathname);
+  const pathname = usePathnameNoLang();
+  const pathArray = pathParts(pathname);
   const validPages = Object.values(BentoRoute);
 
   const pageIdx = getPathPageIndex(pathArray);
@@ -106,7 +114,3 @@ export const scopeSelectionToUrl = (scopeSelection: DiscoveryScopeSelection, suf
 
 export const scopeEqual = (s1: DiscoveryScope, s2: DiscoveryScope): boolean =>
   s1.project === s2.project && s1.dataset === s2.dataset;
-
-export function highlightState(sectionKey?: string, rowId?: string) {
-  return { highlight: { sectionKey, rowId } };
-}

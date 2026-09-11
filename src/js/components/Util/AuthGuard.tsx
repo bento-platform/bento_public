@@ -1,12 +1,12 @@
+import type { ReactNode } from 'react';
 import { useQueryWithAuthIfAllowed } from '@/hooks';
 import { useSyncAccessToken } from '@/features/auth/hooks';
-import { Outlet } from 'react-router-dom';
 
-const AuthOutlet = () => {
+const AuthGuard = ({ children }: { children: ReactNode }) => {
   useSyncAccessToken();
   useQueryWithAuthIfAllowed();
 
-  return <Outlet />;
+  return <>{children}</>;
 };
 
-export default AuthOutlet;
+export default AuthGuard;

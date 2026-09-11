@@ -1,17 +1,21 @@
 import { Fragment, type ReactNode } from 'react';
-import { Link, useParams, useSearchParams } from 'react-router-dom';
+import Link from 'next/link';
+import { useParams, useSearchParams } from 'next/navigation';
 import { useCurrentScopePrefixedUrl } from '@/hooks/navigation';
 
 import { Popover } from 'antd';
 import BiosampleDetailView from '../Search/BiosampleDetailView';
 
-import { highlightState } from '@/utils/router';
-
 import { BentoRoute } from '@/types/routes';
 import { TabKeys } from '@/types/PhenopacketView.types';
 import type { SectionKey } from '@/components/ClinPhen/PhenopacketDisplay/phenopacketOverview.registry';
 
-import { PHENOPACKET_EXPANDED_URL_QUERY_KEY } from './PhenopacketDisplay/PhenopacketOverview';
+import { HIGHLIGHT_URL_QUERY_KEY, PHENOPACKET_EXPANDED_URL_QUERY_KEY } from './PhenopacketDisplay/PhenopacketOverview';
+
+// Encodes which row/section to scroll to & highlight on arrival, as a one-shot query param that
+// PhenopacketOverview reads once and strips - next/navigation's router has no history-state mechanism to
+// carry this ephemerally the way react-router's <Link state={...}> did.
+const highlightParam = (sectionKey: string, rowId?: string): string => (rowId ? `${sectionKey}:${rowId}` : sectionKey);
 
 const usePhenopacketOverviewLink = (
   packetId: string | undefined,
@@ -19,8 +23,8 @@ const usePhenopacketOverviewLink = (
   otherArgs: Record<string, string> | undefined = undefined,
   preserveQueryParams: boolean = false
 ) => {
-  const { packetId: urlPId } = useParams();
-  const [searchParams] = useSearchParams();
+  const { packetId: urlPId } = useParams<{ packetId?: string }>();
+  const searchParams = useSearchParams();
   const derivedPacketId = packetId ?? urlPId;
   const baseUrl = useCurrentScopePrefixedUrl(`${BentoRoute.Phenopackets}/${derivedPacketId}/${TabKeys.OVERVIEW}`);
 
@@ -50,12 +54,13 @@ type BaseLinkProps = { packetId?: string; replace?: boolean; preserveQueryParams
 
 type SubjectLinkProps = BaseLinkProps;
 const SubjectLink = ({ children, packetId, preserveQueryParams }: SubjectLinkProps) => {
-  const url = usePhenopacketOverviewLink(packetId, 'subject', undefined, preserveQueryParams);
-  return (
-    <Link to={url} state={highlightState('subject')}>
-      {children}
-    </Link>
+  const url = usePhenopacketOverviewLink(
+    packetId,
+    'subject',
+    { [HIGHLIGHT_URL_QUERY_KEY]: highlightParam('subject') },
+    preserveQueryParams
   );
+  return <Link href={url}>{children}</Link>;
 };
 
 type BiosampleLinkProps = BaseLinkProps & { sampleId: string; enablePopover?: boolean };
@@ -67,9 +72,14 @@ const BiosampleLink = ({
   enablePopover,
   children,
 }: BiosampleLinkProps) => {
-  const url = usePhenopacketOverviewLink(packetId, 'biosamples', { biosample: sampleId }, preserveQueryParams);
+  const url = usePhenopacketOverviewLink(
+    packetId,
+    'biosamples',
+    { biosample: sampleId, [HIGHLIGHT_URL_QUERY_KEY]: highlightParam('biosamples', sampleId) },
+    preserveQueryParams
+  );
   const link = (
-    <Link to={url} replace={replace} state={highlightState('biosamples', sampleId)}>
+    <Link href={url} replace={replace}>
       {children ?? sampleId}
     </Link>
   );
@@ -96,9 +106,14 @@ const BiosampleLinkList = ({ packetId, biosamples, replace, ...props }: Biosampl
 
 type ExperimentLinkProps = BaseLinkProps & { experimentId: string };
 const ExperimentLink = ({ packetId, experimentId, replace, preserveQueryParams, children }: ExperimentLinkProps) => {
-  const url = usePhenopacketOverviewLink(packetId, 'experiments', { experiment: experimentId }, preserveQueryParams);
+  const url = usePhenopacketOverviewLink(
+    packetId,
+    'experiments',
+    { experiment: experimentId, [HIGHLIGHT_URL_QUERY_KEY]: highlightParam('experiments', experimentId) },
+    preserveQueryParams
+  );
   return (
-    <Link to={url} replace={replace} state={highlightState('experiments', experimentId)}>
+    <Link href={url} replace={replace}>
       {children ?? experimentId}
     </Link>
   );
@@ -132,11 +147,14 @@ const ExperimentResultLink = ({
   const url = usePhenopacketOverviewLink(
     packetId,
     'experimentResults',
-    { experimentResult: experimentResultId.toString(10) },
+    {
+      experimentResult: experimentResultId.toString(10),
+      [HIGHLIGHT_URL_QUERY_KEY]: highlightParam('experimentResults', experimentResultId.toString()),
+    },
     preserveQueryParams
   );
   return (
-    <Link to={url} replace={replace} state={highlightState('experimentResults', experimentResultId.toString())}>
+    <Link href={url} replace={replace}>
       {children ?? experimentResultId}
     </Link>
   );

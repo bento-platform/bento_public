@@ -1,3 +1,5 @@
+'use client';
+
 import { Card, Typography } from 'antd';
 
 import { useTranslationFn } from '@/hooks';

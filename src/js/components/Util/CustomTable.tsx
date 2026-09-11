@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState, type Key, type ReactNode } from 'react';
 import { Table, type TablePaginationConfig } from 'antd';
 import type { TableColumnType } from 'antd';
-import { useSearchParams, useLocation } from 'react-router-dom';
+import { useSearchParamsWriter } from '@/hooks/useSearchParamsWriter';
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
 import { useNotify } from '@/hooks/notifications';
 import { useTranslationFn } from '@/hooks';
@@ -73,8 +73,7 @@ const CustomTable = <T extends object>({
   urlAware = true,
   rowSelection,
 }: CustomTableProps<T>) => {
-  const location = useLocation();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParamsWriter();
   const notify = useNotify();
   const t = useTranslationFn();
 
@@ -154,10 +153,7 @@ const CustomTable = <T extends object>({
       });
     }
     if (urlAware) {
-      setSearchParams((prev) => modifySearchParam(prev, queryKey, validExpandedKeys), {
-        replace: true,
-        state: location.state,
-      });
+      setSearchParams((prev) => modifySearchParam(prev, queryKey, validExpandedKeys), { replace: true });
     } else {
       setLocalExpandedKeys(validExpandedKeys);
     }

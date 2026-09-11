@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { Breadcrumb, type BreadcrumbProps, Button, Flex, Menu, Tooltip } from 'antd';
 import { ArrowLeftOutlined, FilterOutlined, QuestionOutlined } from '@ant-design/icons';
 import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
@@ -11,6 +12,7 @@ import { useSearchQueryParams } from '@/features/search/hooks';
 import { useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { useNavigateToCatalogue, useNavigateToSameScopeUrl, useNavigateToScope } from '@/hooks/navigation';
+import { useLangHref } from '@/hooks/useAppRouter';
 import { BentoRoute } from '@/types/routes';
 import { useCurrentPage } from '@/utils/router';
 import { buildQueryParamsUrl } from '@/features/search/utils';
@@ -19,7 +21,7 @@ import { PCGL_MODE } from '@/config';
 const NO_BACK_BUTTON = [undefined, undefined] as const;
 
 const useBackButtonInfo = () => {
-  const location = useLocation();
+  const searchParams = useSearchParams();
   const exploreQueryParams = useSearchQueryParams();
   const currentPage = useCurrentPage();
 
@@ -38,7 +40,7 @@ const useBackButtonInfo = () => {
     } else {
       if (scope.dataset) {
         if (fixedDataset) return NO_BACK_BUTTON;
-        const cameFromProject = (location.state as { fromProjectScope?: boolean } | null)?.fromProjectScope;
+        const cameFromProject = searchParams.get('from') === 'project';
         return PCGL_MODE && !cameFromProject
           ? ['Back to catalogue', navigateToCatalogue]
           : ['Back to project', () => navigateToScope({ project: scope.project }, BentoRoute.Explore)];
@@ -50,7 +52,7 @@ const useBackButtonInfo = () => {
     }
   }, [
     currentPage,
-    location.state,
+    searchParams,
     navigateToCatalogue,
     navigateToScope,
     navigateToSameScopeUrl,
@@ -60,11 +62,6 @@ const useBackButtonInfo = () => {
     fixedDataset,
     scopeSet,
   ]);
-};
-
-const breadcrumbRender: BreadcrumbProps['itemRender'] = (route, _params, routes, _paths) => {
-  const isLast = route?.path === routes[routes.length - 1]?.path;
-  return isLast || !route.path ? <span>{route.title}</span> : <Link to={{ pathname: route.path }}>{route.title}</Link>;
 };
 
 type ScopeHeaderProps = {
@@ -88,6 +85,15 @@ const ScopeHeader = ({
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
   const [helpModalOpen, setHelpModalOpen] = useState(false);
   const [backClickText, onBackClick] = useBackButtonInfo();
+  const toHref = useLangHref();
+
+  const breadcrumbRender = useCallback<NonNullable<BreadcrumbProps['itemRender']>>(
+    (route, _params, routes, _paths) => {
+      const isLast = route?.path === routes[routes.length - 1]?.path;
+      return isLast || !route.path ? <span>{route.title}</span> : <Link href={toHref(route.path)}>{route.title}</Link>;
+    },
+    [toHref]
+  );
 
   const currentPageHasHelp = useMemo(() => {
     const k = `page_help.${currentPage}`;

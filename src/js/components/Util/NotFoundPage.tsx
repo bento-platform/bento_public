@@ -1,3 +1,5 @@
+'use client';
+
 import { Empty } from 'antd';
 import { useTranslationFn } from '@/hooks';
 

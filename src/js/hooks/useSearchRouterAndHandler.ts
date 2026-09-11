@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useSearchParams } from 'next/navigation';
 
 import type {
   FiltersState,
@@ -61,7 +61,7 @@ export const useSearchRouterAndHandler = () => {
   // Tags for ctrl-F: execute search, perform search, run search
 
   const dispatch = useAppDispatch();
-  const location = useLocation();
+  const searchParams = useSearchParams();
   const navigateToScope = useNavigateToScope();
 
   const { scope, fixedProject, fixedDataset } = useSelectedScope();
@@ -85,9 +85,8 @@ export const useSearchRouterAndHandler = () => {
   const filterFields = useSearchFilterFields();
 
   const loadAndValidateQuery = useCallback((): QueryValidationResult => {
-    // We DO explicitly use the react-router location object here, so that this dependency changes when the search
-    // params change.
-    const query = new URLSearchParams(location.search);
+    // We DO explicitly use the URL's search params object here, so that this dependency changes when they do.
+    const query = searchParams;
 
     const validateFilterQueryParam = ([key, value]: QueryParamEntry):
       [undefined, false] | [SearchFieldAndOptions, false] | [SearchFieldAndOptions, true, string] => {
@@ -154,11 +153,11 @@ export const useSearchRouterAndHandler = () => {
     });
 
     return { valid, validFiltersState, otherQueryParams };
-  }, [maxQueryParameters, filterFields, location.search, queryDataPerm]);
+  }, [maxQueryParameters, filterFields, searchParams, queryDataPerm]);
 
   const setSearchUrl = useCallback(
     (filtersState: FiltersState, qp: QueryParamEntries) => {
-      // Don't use react-router location here - the goal is to not recreate this function when the path changes.
+      // Don't use the URL's pathname here - the goal is to not recreate this function when the path changes.
       const urlSuffix = buildQueryParamsUrl(BentoRoute.Explore, [
         ...filtersStateToQueryParamEntries(filtersState),
         ...qp,

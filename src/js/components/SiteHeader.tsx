@@ -1,5 +1,4 @@
 import { useCallback, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Button, Flex, Layout, Menu, type MenuProps, Space, Typography, theme } from 'antd';
 import { useSession } from 'next-auth/react';
@@ -9,8 +8,9 @@ import { RiTranslate } from 'react-icons/ri';
 import { LoginOutlined, LogoutOutlined } from '@ant-design/icons';
 
 import { useNavigateToRoot } from '@/hooks/navigation';
+import { useAppRouter } from '@/hooks/useAppRouter';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
-import { useCurrentPage } from '@/utils/router';
+import { useCurrentPage, usePathnameNoLang } from '@/utils/router';
 
 import { LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
 import {
@@ -40,13 +40,13 @@ type SiteHeaderProps = {
 };
 
 const useHandleMenuClick = (): OnClick => {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const router = useAppRouter();
+  const pathname = usePathnameNoLang();
   const exploreQueryParams = useSearchQueryParams();
 
   return useCallback(
     ({ key }: { key: string }) => {
-      const currentPath = location.pathname.split('/').filter(Boolean);
+      const currentPath = pathname.split('/').filter(Boolean);
       const newPath: string[] = [];
       if (!TOP_LEVEL_ONLY_ROUTES.includes(key)) {
         // Beacon network only works at the top scope level
@@ -60,9 +60,9 @@ const useHandleMenuClick = (): OnClick => {
       const newPathString = '/' + newPath.join('/');
       // Navigate to the menu item url
       //  - only include filter/search/explore query params if we're navigating to the explore page
-      navigate(buildQueryParamsUrl(newPathString, key === BentoRoute.Explore ? exploreQueryParams : undefined));
+      router.push(buildQueryParamsUrl(newPathString, key === BentoRoute.Explore ? exploreQueryParams : undefined));
     },
-    [navigate, exploreQueryParams, location.pathname]
+    [router, exploreQueryParams, pathname]
   );
 };
 
@@ -89,13 +89,8 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
 
   const changeLanguage = () => {
     const newLang = LNG_CHANGE[language];
-    // The language segment is owned by Next.js's [lang] route, not react-router (whose own location is
-    // basename-relative and has no lang segment to swap). A soft client-side navigation (router.push/replace)
-    // races react-router's BrowserRouter: react-router's `history` package monkey-patches window.history
-    // and notifies its listeners synchronously, so the still-mounted BrowserRouter (old basename) re-renders
-    // against the new URL before Next remounts it with the new basename, briefly rendering nothing and
-    // logging "<Router basename=...> is not able to match the URL...". A full navigation sidesteps this -
-    // the whole app (and BrowserRouter) is recreated fresh against the new URL, with no stale instance to race.
+    // A full navigation (rather than router.push/replace) so the [lang] server layout re-runs its i18n setup
+    // fresh against the new language, rather than relying on a soft client-side transition for it.
     // Can't rely on there being a trailing slash at the base page (.e.g, `/en` and `/en`/ are both valid), and can't
     // ensure project IDs don't begin with an `en` or `fr`. Thus, we use a RegExp with a `^` for language changing in
     // the URL.

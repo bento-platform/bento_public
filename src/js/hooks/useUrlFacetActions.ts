@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParamsWriter } from '@/hooks/useSearchParamsWriter';
 import { queryParamsWithoutKey, type QueryParamEntries } from '@/utils/queryParams';
 
 /**
@@ -9,7 +9,7 @@ import { queryParamsWithoutKey, type QueryParamEntries } from '@/utils/queryPara
  * own store. Components should call these instead of dispatching filter changes directly.
  */
 export function useUrlFacetActions<FacetId extends string>(facetIds: readonly FacetId[]) {
-  const [, setSearchParams] = useSearchParams();
+  const [, setSearchParams] = useSearchParamsWriter();
 
   const setParam = useCallback(
     (key: string, value: string, defaultValue = '') => {

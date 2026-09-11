@@ -1,6 +1,7 @@
 import { initServerI18next, getT, getResources, generateI18nStaticParams } from 'next-i18next/server'
 import { I18nProvider } from 'next-i18next/client'
 import i18nConfig from '../../i18n.config'
+import AppShell from '@/components/AppShellClientOnly'
 
 // Styles imports
 import 'antd/dist/reset.css';
@@ -36,7 +37,7 @@ export default async function RootLayout({
       supportedLngs={i18nConfig.supportedLngs}
       i18nextOptions={i18nConfig.i18nextOptions}
     >
-      {children}
+      <AppShell>{children}</AppShell>
     </I18nProvider>
   )
 }

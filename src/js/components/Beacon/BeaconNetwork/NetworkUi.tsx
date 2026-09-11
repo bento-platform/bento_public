@@ -1,3 +1,5 @@
+'use client';
+
 import { Flex } from 'antd';
 
 import Loader from '@/components/Loader';

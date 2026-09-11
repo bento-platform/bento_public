@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useSearchParams } from 'next/navigation';
 import { useAppDispatch } from '@/hooks';
 import { useUrlFacetSync, type ScalarParam } from '@/hooks/useUrlFacetSync';
 import { useUrlFacetActions } from '@/hooks/useUrlFacetActions';
@@ -31,11 +31,13 @@ const SCALARS = { sort: SORT_PARAM, view: VIEW_PARAM };
  */
 export function useCatalogueUrlSync() {
   const dispatch = useAppDispatch();
-  const location = useLocation();
+  const searchParams = useSearchParams();
+  const search = searchParams.toString();
 
   useEffect(() => {
-    sessionStorage.setItem(CATALOGUE_SEARCH_STORAGE_KEY, location.search);
-  }, [location.search]);
+    // Stored with a leading "?" (or blank if empty), matching what useNavigateToCatalogue concatenates back on.
+    sessionStorage.setItem(CATALOGUE_SEARCH_STORAGE_KEY, search ? `?${search}` : '');
+  }, [search]);
 
   const onHydrate = useCallback(
     ({ q, sets, scalars }: { q: string; sets: CatalogueFilterSets; scalars: Record<string, string> }) => {

@@ -1,5 +1,5 @@
 import { type ReactNode, useCallback, useMemo } from 'react';
-import { type NavigateOptions, useLocation, useNavigate } from 'react-router-dom';
+import { usePathname } from 'next/navigation';
 import {
   BookOutlined,
   CloseCircleOutlined,
@@ -18,10 +18,11 @@ import type { MenuItem } from '@/types/navigation';
 import { BentoRoute } from '@/types/routes';
 import { useAppDispatch, useTranslationFn } from '@/hooks';
 import { scopeSelectionToUrl, scopeToUrl, useCurrentPage } from '@/utils/router';
+import { useAppRouter, useLangHref } from '@/hooks/useAppRouter';
 
 export const useNavigateToRoot = () => {
-  const navigate = useNavigate();
-  return useCallback(() => navigate('/'), [navigate]);
+  const router = useAppRouter();
+  return useCallback(() => router.push('/'), [router]);
 };
 
 /**
@@ -35,14 +36,22 @@ export const useNavigateToRoot = () => {
  * clobbering the restored query string.
  */
 export const useNavigateToCatalogue = () => {
-  const navigate = useNavigate();
+  const router = useAppRouter();
   const dispatch = useAppDispatch();
   return useCallback(() => {
     dispatch(selectScope({}));
     const search = sessionStorage.getItem(CATALOGUE_SEARCH_STORAGE_KEY) ?? '';
-    navigate('/' + search);
-  }, [dispatch, navigate]);
+    router.push('/' + search);
+  }, [dispatch, router]);
 };
+
+export interface NavigateToScopeOptions {
+  replace?: boolean;
+  // Tags the destination URL so the scope's back button can tell it was reached from the parent project's own
+  // page (rather than from the catalogue), in which case it should go back there instead of to the catalogue.
+  // A query param rather than router history state, since next/navigation's router has no state mechanism.
+  fromProjectScope?: boolean;
+}
 
 /**
  * The purpose of useNavigateToScope is to provide a `navigate(...)`-like hook which goes to a possibly-new scope, and
@@ -50,7 +59,7 @@ export const useNavigateToCatalogue = () => {
  * with downstream search processing.
  */
 export const useNavigateToScope = () => {
-  const navigate = useNavigate();
+  const router = useAppRouter();
   const dispatch = useAppDispatch();
 
   return useCallback(
@@ -58,13 +67,15 @@ export const useNavigateToScope = () => {
       newScope: DiscoveryScope,
       suffix: string = '',
       fixedProjectAndDataset: boolean = false,
-      navigateOptions: NavigateOptions | undefined = undefined
+      options: NavigateToScopeOptions = {}
     ) => {
       // This action will internally handle already-equal scope selections to avoid accidental re-renders:
       dispatch(selectScope(newScope));
-      navigate(scopeToUrl(newScope, suffix, fixedProjectAndDataset), navigateOptions);
+      const url = scopeToUrl(newScope, suffix, fixedProjectAndDataset);
+      const finalUrl = options.fromProjectScope ? `${url}${url.includes('?') ? '&' : '?'}from=project` : url;
+      (options.replace ? router.replace : router.push)(finalUrl);
     },
-    [dispatch, navigate]
+    [dispatch, router]
   );
 };
 
@@ -73,7 +84,8 @@ export const useNavigateToScope = () => {
  */
 export const useCurrentScopePrefixedUrl = (suffix: string) => {
   const selectedScope = useSelectedScope();
-  return scopeSelectionToUrl(selectedScope, suffix);
+  const toHref = useLangHref();
+  return toHref(scopeSelectionToUrl(selectedScope, suffix));
 };
 
 /**
@@ -81,14 +93,15 @@ export const useCurrentScopePrefixedUrl = (suffix: string) => {
  * scope as the one currently in Redux.
  */
 export const useNavigateToSameScopeUrl = () => {
-  const navigate = useNavigate();
+  const router = useAppRouter();
   const selectedScope = useSelectedScope();
 
   return useCallback(
     (suffix: string, replace: boolean = true) => {
-      navigate(scopeSelectionToUrl(selectedScope, suffix), { replace });
+      const url = scopeSelectionToUrl(selectedScope, suffix);
+      (replace ? router.replace : router.push)(url);
     },
-    [navigate, selectedScope]
+    [router, selectedScope]
   );
 };
 
@@ -98,12 +111,12 @@ export const useIsInCatalogueMode = () => {
 };
 
 export const useGetRouteTitleAndIcon = () => {
-  const location = useLocation();
+  const pathname = usePathname();
   const catalogueMode = useIsInCatalogueMode();
 
-  // Use location for catalogue page detection instead of selectedProject, since it gives us faster UI rendering at the
-  // cost of only being wrong with a redirect edge case (and being slightly more brittle).
-  const exploreIsCatalogue = !location.pathname.includes('/p/') && !location.pathname.includes('/d/') && catalogueMode;
+  // Use the pathname for catalogue page detection instead of selectedProject, since it gives us faster UI rendering
+  // at the cost of only being wrong with a redirect edge case (and being slightly more brittle).
+  const exploreIsCatalogue = !pathname.includes('/p/') && !pathname.includes('/d/') && catalogueMode;
 
   return useCallback(
     (routeId: string): [string, ReactNode] => {

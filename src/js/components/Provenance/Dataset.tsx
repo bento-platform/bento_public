@@ -66,10 +66,7 @@ const Dataset = ({
     () => ({ project: parentProjectID, dataset: identifier }),
     [parentProjectID, identifier]
   );
-  const navigateOptions = useMemo(
-    () => (fromProject ? { state: { fromProjectScope: true } } : undefined),
-    [fromProject]
-  );
+  const navigateOptions = useMemo(() => (fromProject ? { fromProjectScope: true } : undefined), [fromProject]);
 
   const onNavigateCurrent = useCallback(
     () => navigateToScope(scope, page, false, navigateOptions),
