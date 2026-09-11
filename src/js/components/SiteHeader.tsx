@@ -1,4 +1,5 @@
 import { useCallback, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { Button, Flex, Layout, Menu, type MenuProps, Space, Typography, theme } from 'antd';
 import { useSession } from 'next-auth/react';
@@ -72,6 +73,7 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
   const isSmallScreen = useSmallScreen();
   const currentPage = useCurrentPage();
   const navigateToRoot = useNavigateToRoot();
+  const router = useRouter();
 
   const { status: sessionStatus } = useSession();
 
@@ -89,8 +91,9 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
 
   const changeLanguage = () => {
     const newLang = LNG_CHANGE[language];
-    // A full navigation (rather than router.push/replace) so the [lang] server layout re-runs its i18n setup
-    // fresh against the new language, rather than relying on a soft client-side transition for it.
+    // Soft client-side navigation: AppShell syncs the active i18next language (already fully preloaded for
+    // every supported language - see i18n.config.ts) and document.documentElement.lang from the URL's [lang]
+    // param on every route change, so this doesn't need a full page reload to take effect.
     // Can't rely on there being a trailing slash at the base page (.e.g, `/en` and `/en`/ are both valid), and can't
     // ensure project IDs don't begin with an `en` or `fr`. Thus, we use a RegExp with a `^` for language changing in
     // the URL.
@@ -98,7 +101,7 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
       new RegExp(`^/${language}`),
       `/${newLang}`
     );
-    window.location.assign(path);
+    router.push(path);
   };
 
   const logoLangPart = TRANSLATED_LOGO && language !== 'en' ? '.' + language : '';

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, type ReactNode } from 'react';
+import { useParams } from 'next/navigation';
 import { Provider } from 'react-redux';
 import { SessionProvider } from 'next-auth/react';
 
@@ -29,10 +30,31 @@ import { PCGL_MODE } from '@/config';
 /** Inner root app component with responsive context for screen-size-aware theming and more hook access */
 const InnerAppShell = ({ children }: { children: ReactNode }) => {
   const { i18n } = useT();
+  const { lang } = useParams<{ lang: string }>();
   const antdLocale = i18n.language === SUPPORTED_LNGS.FRENCH ? frCA : enUS;
   const isSmallScreen = useSmallScreen();
 
   useHandleRefreshTokenError();
+
+  // next-i18next's I18nProvider (in app/[lang]/layout.tsx) already reacts to its own `language` prop
+  // changing, but that depends on the [lang] layout segment actually re-rendering on a client-side
+  // transition - not something this app should have to rely on getting right. Driving the switch directly
+  // from the URL's own [lang] param here is a more direct, always-correct source of truth: every client
+  // route change updates this param, so this effect (and the instance's own resources, all fully preloaded -
+  // see i18n.config.ts) is all that's needed for SiteHeader's changeLanguage() soft-navigation to actually
+  // update the active language.
+  useEffect(() => {
+    if (lang && i18n.language !== lang) {
+      i18n.changeLanguage(lang);
+    }
+  }, [lang, i18n]);
+
+  // The <html lang> attribute is set server-side (from a request header) in the root layout, which is above
+  // the [lang] segment and isn't guaranteed to re-render on a client-side language switch. Keep it in sync
+  // from here instead, which - unlike that server render - reacts to every subsequent language change too.
+  useEffect(() => {
+    document.documentElement.lang = i18n.language;
+  }, [i18n.language]);
 
   // antd's ConfigProvider locale only translates UI text (buttons, placeholders); the DatePicker's
   // month/day names come from dayjs's own locale, which must be set separately or it stays English.
