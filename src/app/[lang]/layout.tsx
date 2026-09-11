@@ -22,7 +22,14 @@ export default async function RootLayout({
   return (
     <html lang={lang}>
       <body>
-        <I18nProvider language={lang} resources={resources}>
+        <I18nProvider
+          language={lang}
+          resources={resources}
+          defaultNS={i18nConfig.defaultNS}
+          fallbackLng={i18nConfig.fallbackLng}
+          supportedLngs={i18nConfig.supportedLngs}
+          i18nextOptions={i18nConfig.i18nextOptions}
+        >
           {children}
         </I18nProvider>
       </body>
