@@ -6,11 +6,10 @@ import { ADMIN_URL, SHOW_ADMIN_LINK, PCGL_MODE } from '@/config';
 import './styles.css';
 import PCGLLogo from './assets/logo-white.svg';
 import FundersLogo from './assets/funders.svg';
-import portalLogo from './assets/PCGL-BGPC.svg';
+import PortalIcon from './assets/PCGL-BGPC.svg?react';
 
 const { Footer } = Layout;
 const { useBreakpoint } = Grid;
-const { Title } = Typography;
 
 type FooterNavItem = { link: string; url: string };
 type FooterNavItems = { title: string; items: FooterNavItem[] };
@@ -119,15 +118,13 @@ const renderContextualBand = () => {
   return (
     <div className="contextual-band">
       <div className="contextual-logos" aria-hidden="true">
-        <img src={portalLogo} role="presentation" alt="" width={515} height={185} />
+        <PortalIcon className="contextual-logo" />
       </div>
     </div>
   );
-}
+};
 
 const renderBentoBand = () => {
-  const t = useTranslationFn();
-
   return (
     <div>
       <div>
@@ -155,8 +152,8 @@ const renderBentoBand = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 const PCGL_LINKS: { key: string; href?: string }[] = [
   {
@@ -195,7 +192,7 @@ const PCGL_LINKS: { key: string; href?: string }[] = [
     ? [
       {
         key: 'admin',
-        href: ADMIN_URL,
+          href: ADMIN_URL,
       },
     ]
     : []),

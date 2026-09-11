@@ -34,12 +34,24 @@ const makeConfig = (mode) => ({
         use: [{ loader: MiniCssExtractPlugin.loader }, { loader: 'css-loader' }, { loader: 'less-loader' }],
       },
       {
-        test: /\.(png|jpe?g|gif|svg)$/i,
+        test: /\.(png|jpe?g|gif)$/i,
         type: 'asset/resource',
       },
       {
         test: /\.html$/i,
         loader: 'html-loader',
+      },
+      {
+        test: /\.svg$/,
+        oneOf: [
+          {
+            resourceQuery: /react/,
+            use: ['@svgr/webpack'],
+          },
+          {
+            type: 'asset/resource',
+          },
+        ],
       },
     ],
   },

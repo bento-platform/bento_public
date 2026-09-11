@@ -15,6 +15,14 @@
   outline-offset: 1px;
 }
 
+.contextual-logo {
+  width: 192px;
+  height: auto;
+  path, text, tspan, rect {
+    fill: currentColor !important;
+  }
+}
+
 .pcgl-footer {
   background-color: #004b75;
   color: white;
