@@ -16,22 +16,12 @@ import { useMetadata, useScopeHasData, useSelectedScope } from '@/features/metad
 import { type DiscoveryScope, selectScope } from '@/features/metadata/metadata.store';
 import type { MenuItem } from '@/types/navigation';
 import { BentoRoute } from '@/types/routes';
-import { useAppDispatch, useLanguage, useTranslationFn } from '@/hooks';
-import { getCurrentPage, langAndScopeSelectionToUrl, scopeToUrl } from '@/utils/router';
-
-/** Prefixes a path with the currently-selected i18n language. */
-export const useLangPrefixedUrl = (path: string): string => {
-  const language = useLanguage();
-  if (path.length > 1) {
-    path = path.replace('^/', ''); // strip slash prefix if present
-  }
-  return `/${language}/${path}`;
-};
+import { useAppDispatch, useTranslationFn } from '@/hooks';
+import { scopeSelectionToUrl, scopeToUrl, useCurrentPage } from '@/utils/router';
 
 export const useNavigateToRoot = () => {
   const navigate = useNavigate();
-  const rootUrl = useLangPrefixedUrl('');
-  return useCallback(() => navigate(rootUrl), [navigate, rootUrl]);
+  return useCallback(() => navigate('/'), [navigate]);
 };
 
 /**
@@ -47,12 +37,11 @@ export const useNavigateToRoot = () => {
 export const useNavigateToCatalogue = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const rootUrl = useLangPrefixedUrl('');
   return useCallback(() => {
     dispatch(selectScope({}));
     const search = sessionStorage.getItem(CATALOGUE_SEARCH_STORAGE_KEY) ?? '';
-    navigate(rootUrl + search);
-  }, [dispatch, navigate, rootUrl]);
+    navigate('/' + search);
+  }, [dispatch, navigate]);
 };
 
 /**
@@ -61,7 +50,6 @@ export const useNavigateToCatalogue = () => {
  * with downstream search processing.
  */
 export const useNavigateToScope = () => {
-  const language = useLanguage();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -74,19 +62,18 @@ export const useNavigateToScope = () => {
     ) => {
       // This action will internally handle already-equal scope selections to avoid accidental re-renders:
       dispatch(selectScope(newScope));
-      navigate(scopeToUrl(newScope, language, suffix, fixedProjectAndDataset), navigateOptions);
+      navigate(scopeToUrl(newScope, suffix, fixedProjectAndDataset), navigateOptions);
     },
-    [dispatch, navigate, language]
+    [dispatch, navigate]
   );
 };
 
 /**
- * Hook which returns a URL suffix prefixed by the current language and selected scope.
+ * Hook which returns a URL suffix prefixed by the currently-selected scope.
  */
 export const useCurrentScopePrefixedUrl = (suffix: string) => {
-  const language = useLanguage();
   const selectedScope = useSelectedScope();
-  return langAndScopeSelectionToUrl(language, selectedScope, suffix);
+  return scopeSelectionToUrl(selectedScope, suffix);
 };
 
 /**
@@ -94,15 +81,14 @@ export const useCurrentScopePrefixedUrl = (suffix: string) => {
  * scope as the one currently in Redux.
  */
 export const useNavigateToSameScopeUrl = () => {
-  const language = useLanguage();
   const navigate = useNavigate();
   const selectedScope = useSelectedScope();
 
   return useCallback(
     (suffix: string, replace: boolean = true) => {
-      navigate(langAndScopeSelectionToUrl(language, selectedScope, suffix), { replace });
+      navigate(scopeSelectionToUrl(selectedScope, suffix), { replace });
     },
-    [language, navigate, selectedScope]
+    [navigate, selectedScope]
   );
 };
 
@@ -152,8 +138,7 @@ export const useGetRouteTitleAndIcon = () => {
 export const useSiteMenuItems = (): [MenuItem[], MenuItem[]] => {
   const t = useTranslationFn();
   const { fixedProject, fixedDataset, scope } = useSelectedScope();
-  const location = useLocation();
-  const page = getCurrentPage(location);
+  const page = useCurrentPage();
 
   const scopeHasData = useScopeHasData();
 

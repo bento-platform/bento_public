@@ -1,5 +1,5 @@
 import { Suspense, useState } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import clsx from 'clsx';
 import { Alert, FloatButton, Grid, Layout } from 'antd';
 import { ErrorBoundary, getErrorMessage } from 'react-error-boundary';
@@ -14,14 +14,13 @@ import { useIsInCatalogueMode, useSiteMenuItems } from '@/hooks/navigation';
 import { useTitleBreadcrumbItems } from '@/hooks/useTitleBreadcrumbItems';
 import { PCGL_MODE } from '@/config';
 import { BentoRoute } from '@/types/routes';
-import { getCurrentPage } from '@/utils/router';
+import { useCurrentPage } from '@/utils/router';
 
 const { Content } = Layout;
 const { useBreakpoint } = Grid;
 
 const DefaultLayout = () => {
-  const location = useLocation();
-  const page = getCurrentPage(location);
+  const page = useCurrentPage();
 
   const catalogueMode = useIsInCatalogueMode();
   const { scopeSet, scope } = useSelectedScope();

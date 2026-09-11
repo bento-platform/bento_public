@@ -1,7 +1,7 @@
 import { Modal, type ModalProps, Typography } from 'antd';
 import { useTranslationFn } from '@/hooks';
 import { useGetRouteTitleAndIcon } from '@/hooks/navigation';
-import { getCurrentPage } from '@/utils/router';
+import { useCurrentPage } from '@/utils/router';
 
 const { Paragraph } = Typography;
 
@@ -9,7 +9,7 @@ type CurrentPageHelpModalProps = Omit<ModalProps, 'title' | 'footer'>;
 
 const CurrentPageHelpModal = (props: CurrentPageHelpModalProps) => {
   const t = useTranslationFn();
-  const currentPage = getCurrentPage();
+  const currentPage = useCurrentPage();
   const getRouteTitleAndIcon = useGetRouteTitleAndIcon();
   const currentTitle = getRouteTitleAndIcon(currentPage)[0];
 

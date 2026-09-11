@@ -1,5 +1,5 @@
 import { lazy, useEffect } from 'react';
-import { Routes, Route, useNavigate, useParams, Outlet } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate, useParams, Outlet } from 'react-router-dom';
 import { useIsAuthenticated } from '@/features/auth/hooks';
 import { useAppDispatch, useLanguage } from '@/hooks';
 
@@ -31,13 +31,7 @@ import { BEACON_UI_ENABLED, BEACON_NETWORK_ENABLED } from '@/config';
 import { WAITING_STATES } from '@/constants/requests';
 import { RequestStatus } from '@/types/requests';
 import { BentoRoute } from '@/types/routes';
-import {
-  getPathPageIndex,
-  langAndScopeSelectionToUrl,
-  pathParts,
-  scopeEqual,
-  validProjectDataset,
-} from '@/utils/router';
+import { getPathPageIndex, pathParts, scopeEqual, scopeSelectionToUrl, validProjectDataset } from '@/utils/router';
 
 import PublicExplore from './Explore/LandingPage';
 import NotFoundPage from '@Util/NotFoundPage';
@@ -54,6 +48,7 @@ const ScopedRoute = () => {
   const { projectId, datasetId } = useParams();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const { selectedScope, projectsByID, datasetToProjectMap, projectsStatus } = useMetadata();
 
   useEffect(() => {
@@ -93,10 +88,20 @@ const ScopedRoute = () => {
     const oldPath = pathParts(location.pathname);
     const oldPathPageIdx = getPathPageIndex(oldPath);
     const newPathSuffix = oldPath.slice(oldPathPageIdx).join('/');
-    const newPath = langAndScopeSelectionToUrl(oldPath[0], valid, newPathSuffix);
+    const newPath = scopeSelectionToUrl(valid, newPathSuffix);
 
     navigate(newPath, { replace: true });
-  }, [projectsByID, datasetToProjectMap, projectsStatus, projectId, datasetId, dispatch, navigate, selectedScope]);
+  }, [
+    projectsByID,
+    datasetToProjectMap,
+    projectsStatus,
+    projectId,
+    datasetId,
+    dispatch,
+    navigate,
+    selectedScope,
+    location.pathname,
+  ]);
 
   return <Outlet />;
 };

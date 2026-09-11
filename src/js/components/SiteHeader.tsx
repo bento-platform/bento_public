@@ -1,4 +1,5 @@
 import { useCallback, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Button, Flex, Layout, Menu, type MenuProps, Space, Typography, theme } from 'antd';
@@ -10,7 +11,7 @@ import { LoginOutlined, LogoutOutlined } from '@ant-design/icons';
 
 import { useNavigateToRoot } from '@/hooks/navigation';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
-import { getCurrentPage } from '@/utils/router';
+import { useCurrentPage } from '@/utils/router';
 
 import { LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
 import {
@@ -47,13 +48,13 @@ const useHandleMenuClick = (): OnClick => {
   return useCallback(
     ({ key }: { key: string }) => {
       const currentPath = location.pathname.split('/').filter(Boolean);
-      const newPath = [currentPath[0]];
+      const newPath: string[] = [];
       if (!TOP_LEVEL_ONLY_ROUTES.includes(key)) {
         // Beacon network only works at the top scope level
-        if (currentPath[1] === 'p') {
-          newPath.push('p', currentPath[2]);
-        } else if (currentPath[1] === 'd') {
-          newPath.push('d', currentPath[2]);
+        if (currentPath[0] === 'p') {
+          newPath.push('p', currentPath[1]);
+        } else if (currentPath[0] === 'd') {
+          newPath.push('d', currentPath[1]);
         }
       }
       newPath.push(key);
@@ -69,10 +70,9 @@ const useHandleMenuClick = (): OnClick => {
 const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
   const t = useTranslationFn();
   const language = useLanguage();
-  const navigate = useNavigate();
-  const location = useLocation();
+  const router = useRouter();
   const isSmallScreen = useSmallScreen();
-  const currentPage = getCurrentPage(location);
+  const currentPage = useCurrentPage();
   const navigateToRoot = useNavigateToRoot();
 
   const { status: sessionStatus } = useSession();
@@ -91,11 +91,17 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
 
   const changeLanguage = () => {
     const newLang = LNG_CHANGE[language];
+    // The language segment is owned by Next.js's [lang] route, not react-router (whose own location is
+    // basename-relative and has no lang segment to swap), so we read/replace it on the real browser URL and
+    // hand off to Next's router - this is what remounts <BrowserRouter> with the new basename (see App.tsx).
     // Can't rely on there being a trailing slash at the base page (.e.g, `/en` and `/en`/ are both valid), and can't
     // ensure project IDs don't begin with an `en` or `fr`. Thus, we use a RegExp with a `^` for language changing in
     // the URL.
-    const path = (location.pathname + location.search).replace(new RegExp(`^/${language}`), `/${newLang}`);
-    navigate(path, { replace: true });
+    const path = (window.location.pathname + window.location.search).replace(
+      new RegExp(`^/${language}`),
+      `/${newLang}`
+    );
+    router.replace(path);
   };
 
   const logoLangPart = TRANSLATED_LOGO && language !== 'en' ? '.' + language : '';

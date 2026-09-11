@@ -10,7 +10,7 @@ import type { Dataset } from '@/types/dataset';
 import type { Project } from '@/types/metadata';
 import { BentoRoute } from '@/types/routes';
 import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
-import { getCurrentPage } from '@/utils/router';
+import { useCurrentPage } from '@/utils/router';
 import { useLanguage, useTranslationFn } from '@/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
 import { nonEmptyCounts } from '@/utils/counts';
@@ -51,7 +51,7 @@ const Dataset = ({
 }) => {
   const language = useLanguage();
   const navigateToScope = useNavigateToScope();
-  const page = getCurrentPage();
+  const page = useCurrentPage();
   const t = useTranslationFn();
 
   const [provenanceModalOpen, setProvenanceModalOpen] = useState(false);

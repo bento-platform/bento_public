@@ -5,7 +5,7 @@ import { T_SINGULAR_COUNT } from '@/constants/i18n';
 import Dataset from '@/components/Provenance/Dataset';
 import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
 import type { Project } from '@/types/metadata';
-import { getCurrentPage } from '@/utils/router';
+import { useCurrentPage } from '@/utils/router';
 import { useSelectedScope } from '@/features/metadata/hooks';
 import { useTranslationFn } from '@/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
@@ -16,7 +16,7 @@ type DatasetScopePickerProps = {
 
 const DatasetScopePicker = ({ parentProject }: DatasetScopePickerProps) => {
   const t = useTranslationFn();
-  const page = getCurrentPage();
+  const page = useCurrentPage();
   const navigateToScope = useNavigateToScope();
 
   const selectedScope = useSelectedScope();

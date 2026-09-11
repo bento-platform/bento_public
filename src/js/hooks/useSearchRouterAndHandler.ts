@@ -44,7 +44,7 @@ import {
 } from '@/features/search/query.store';
 
 import { buildQueryParamsUrl, filtersStateToQueryParamEntries, queryParamsWithoutKey } from '@/features/search/utils';
-import { getCurrentPage } from '@/utils/router';
+import { useCurrentPage } from '@/utils/router';
 
 // Internal type for useSearchRouterAndHandler hook
 type QueryValidationResult = {
@@ -169,7 +169,7 @@ export const useSearchRouterAndHandler = () => {
     [navigateToScope, scope, isFixedProjectAndDataset]
   );
 
-  const currentPage = getCurrentPage(location);
+  const currentPage = useCurrentPage();
 
   // +-------------------------------+
   // |                               |

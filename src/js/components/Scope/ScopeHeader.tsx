@@ -12,7 +12,7 @@ import { useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { useNavigateToCatalogue, useNavigateToSameScopeUrl, useNavigateToScope } from '@/hooks/navigation';
 import { BentoRoute } from '@/types/routes';
-import { getCurrentPage } from '@/utils/router';
+import { useCurrentPage } from '@/utils/router';
 import { buildQueryParamsUrl } from '@/features/search/utils';
 import { PCGL_MODE } from '@/config';
 
@@ -21,7 +21,7 @@ const NO_BACK_BUTTON = [undefined, undefined] as const;
 const useBackButtonInfo = () => {
   const location = useLocation();
   const exploreQueryParams = useSearchQueryParams();
-  const currentPage = getCurrentPage(location);
+  const currentPage = useCurrentPage();
 
   const navigateToCatalogue = useNavigateToCatalogue();
   const navigateToScope = useNavigateToScope();
@@ -84,7 +84,7 @@ const ScopeHeader = ({
 }: ScopeHeaderProps) => {
   const t = useTranslationFn();
   const isSmallScreen = useSmallScreen();
-  const currentPage = getCurrentPage();
+  const currentPage = useCurrentPage();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
   const [helpModalOpen, setHelpModalOpen] = useState(false);
   const [backClickText, onBackClick] = useBackButtonInfo();

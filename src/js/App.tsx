@@ -4,8 +4,9 @@
 import { useEffect } from 'react';
 
 // Redux and routing imports
+import { useParams } from 'next/navigation';
 import { Provider } from 'react-redux';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { SessionProvider } from 'next-auth/react';
 
 // i18n and constants imports
@@ -45,7 +46,9 @@ const BaseRoutes = () => {
   return (
     <Routes>
       <Route element={<AuthOutlet />}>
-        <Route element={<BentoAppRouter />} />
+        {/* BentoAppRouter renders its own descendant <Routes> internally, which requires this wrapping route
+            to end in a splat - otherwise the outer router never defers matching to it. */}
+        <Route path="*" element={<BentoAppRouter />} />
       </Route>
     </Routes>
   );
@@ -88,16 +91,22 @@ const InnerRootApp = () => {
   );
 };
 
-const RootApp = () => (
-  <SessionProvider refetchInterval={SESSION_REFETCH_INTERVAL_SECONDS}>
-    <Provider store={store}>
-      <BrowserRouter>
-        <ResponsiveProvider>
-          <InnerRootApp />
-        </ResponsiveProvider>
-      </BrowserRouter>
-    </Provider>
-  </SessionProvider>
-);
+const RootApp = () => {
+  // The language segment (/en, /fr) is owned by Next.js's [lang] route; react-router only ever sees/generates
+  // paths below it. `key` forces a remount (and thus a fresh basename) when Next navigates to a new language.
+  const { lang } = useParams<{ lang: string }>();
+
+  return (
+    <SessionProvider refetchInterval={SESSION_REFETCH_INTERVAL_SECONDS}>
+      <Provider store={store}>
+        <BrowserRouter basename={`/${lang}`} key={lang}>
+          <ResponsiveProvider>
+            <InnerRootApp />
+          </ResponsiveProvider>
+        </BrowserRouter>
+      </Provider>
+    </SessionProvider>
+  );
+};
 
 export default RootApp;

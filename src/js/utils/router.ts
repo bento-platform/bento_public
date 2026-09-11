@@ -1,25 +1,29 @@
-import { type Location as RouterLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { FORCE_CATALOGUE } from '@/config';
 import type { DiscoveryScope, DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
 import type { Project } from '@/types/metadata';
 import { BentoRoute } from '@/types/routes';
 
+// The language segment is owned by Next.js routing (the [lang] route param) and lives in BrowserRouter's
+// basename, so every path here - and everything react-router itself reports via useLocation() - is
+// lang-free/basename-relative.
 export const pathParts = (pathName: string): string[] => pathName.split('/').slice(1);
 
 export const getPathPageIndex = (pathParts: string[]): number => {
   // We can ascertain from the URL structure which item in the path array represents the current "page"
   // (explore/provenance/etc.)
-  //  /en/about --> ['en', 'about'] --> page is at index 1
-  //  /en/p/<uuid>/about --> ['en', 'p', '<uuid>', 'about'] --> page is at index 3
-  //  /en/d/<uuid>/about --> ['en', 'd', '<uuid>', 'about'] --> page is at index 3
-  if (pathParts[1] === 'p' || pathParts[1] === 'd') {
-    return 3;
+  //  /about --> ['about'] --> page is at index 0
+  //  /p/<uuid>/about --> ['p', '<uuid>', 'about'] --> page is at index 2
+  //  /d/<uuid>/about --> ['d', '<uuid>', 'about'] --> page is at index 2
+  if (pathParts[0] === 'p' || pathParts[0] === 'd') {
+    return 2;
   }
-  return 1;
+  return 0;
 };
 
-export const getCurrentPage = (location?: RouterLocation | Location): string => {
-  const pathArray = pathParts((location ?? window.location).pathname);
+export const useCurrentPage = (): string => {
+  const location = useLocation();
+  const pathArray = pathParts(location.pathname);
   const validPages = Object.values(BentoRoute);
 
   const pageIdx = getPathPageIndex(pathArray);
@@ -80,7 +84,6 @@ export const validProjectDataset = (
 
 export const scopeToUrl = (
   scope: DiscoveryScope,
-  lang: string,
   suffix: string = '',
   fixedProjectAndDataset: boolean = false
 ): string => {
@@ -88,21 +91,18 @@ export const scopeToUrl = (
   // Otherwise (with 1 dataset, i.e., fixedProjectAndDataset), keep URL as clean as possible - with no IDs present.
 
   if (fixedProjectAndDataset || (!scope.project && !scope.dataset)) {
-    return `/${lang}/${suffix}`;
+    return `/${suffix}`;
   } else if (scope.dataset) {
     // Dataset URLs no longer include project
-    return `/${lang}/d/${scope.dataset}/${suffix}`;
+    return `/d/${scope.dataset}/${suffix}`;
   } else {
     // scope.project && !scope.dataset
-    return `/${lang}/p/${scope.project}/${suffix}`;
+    return `/p/${scope.project}/${suffix}`;
   }
 };
 
-export const langAndScopeSelectionToUrl = (
-  lang: string,
-  scopeSelection: DiscoveryScopeSelection,
-  suffix: string
-): string => scopeToUrl(scopeSelection.scope, lang, suffix, scopeSelection.fixedProject && scopeSelection.fixedDataset);
+export const scopeSelectionToUrl = (scopeSelection: DiscoveryScopeSelection, suffix: string): string =>
+  scopeToUrl(scopeSelection.scope, suffix, scopeSelection.fixedProject && scopeSelection.fixedDataset);
 
 export const scopeEqual = (s1: DiscoveryScope, s2: DiscoveryScope): boolean =>
   s1.project === s2.project && s1.dataset === s2.dataset;

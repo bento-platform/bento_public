@@ -5,17 +5,16 @@ import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
 
 import type { MenuItem } from '@/types/navigation';
 import { BentoRoute } from '@/types/routes';
-import { useLanguage, useTranslationFn } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
 import { useSelectedScope, useSelectedScopeTitles } from '@/features/metadata/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { useGetRouteTitleAndIcon } from '@/hooks/navigation';
 import { useExtraBreadcrumb } from '@/features/ui/hooks';
-import { getCurrentPage } from '@/utils/router';
+import { useCurrentPage } from '@/utils/router';
 import { PCGL_MODE } from '@/config';
 
 export const useTitleBreadcrumbItems = (scopeHeaderMenuItems: MenuItem[]): BreadcrumbItemType[] => {
   const t = useTranslationFn();
-  const language = useLanguage();
   const isSmallScreen = useSmallScreen();
 
   const { scope, fixedProject, fixedDataset } = useSelectedScope();
@@ -25,7 +24,7 @@ export const useTitleBreadcrumbItems = (scopeHeaderMenuItems: MenuItem[]): Bread
 
   const getRouteTitleAndIcon = useGetRouteTitleAndIcon();
 
-  const currentPage = getCurrentPage();
+  const currentPage = useCurrentPage();
 
   const extraBreadcrumb = useExtraBreadcrumb();
 
@@ -39,7 +38,7 @@ export const useTitleBreadcrumbItems = (scopeHeaderMenuItems: MenuItem[]): Bread
       // show project context in the navigation:
       items.push({
         title: projectTitle,
-        path: `/${language}/p/${scope.project}`,
+        path: `/p/${scope.project}`,
       });
     }
 
@@ -51,12 +50,12 @@ export const useTitleBreadcrumbItems = (scopeHeaderMenuItems: MenuItem[]): Bread
         // home icon/link:
         items.push({
           title: <HomeOutlined />,
-          path: `/${language}/`,
+          path: '/',
         });
       }
       items.push({
         title: datasetTitle,
-        path: `/${language}/d/${scope.dataset}`,
+        path: `/d/${scope.dataset}`,
       });
     }
 
@@ -76,7 +75,6 @@ export const useTitleBreadcrumbItems = (scopeHeaderMenuItems: MenuItem[]): Bread
 
     return isSmallScreen && items.length ? [items.at(-1)!] : items;
   }, [
-    language,
     t,
     projectTitle,
     datasetTitle,
