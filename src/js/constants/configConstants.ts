@@ -2,6 +2,9 @@ import { PUBLIC_URL_NO_TRAILING_SLASH } from '@/config';
 
 export const MAX_CHARTS = 3;
 
+// Same as bento-auth-js
+export const SESSION_REFETCH_INTERVAL_SECONDS = 120;
+
 const katsuBaseUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata`;
 
 // Katsu discovery URLs
