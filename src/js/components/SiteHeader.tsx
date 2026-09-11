@@ -1,5 +1,4 @@
 import { useCallback, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Button, Flex, Layout, Menu, type MenuProps, Space, Typography, theme } from 'antd';
@@ -70,7 +69,6 @@ const useHandleMenuClick = (): OnClick => {
 const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
   const t = useTranslationFn();
   const language = useLanguage();
-  const router = useRouter();
   const isSmallScreen = useSmallScreen();
   const currentPage = useCurrentPage();
   const navigateToRoot = useNavigateToRoot();
@@ -92,8 +90,12 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
   const changeLanguage = () => {
     const newLang = LNG_CHANGE[language];
     // The language segment is owned by Next.js's [lang] route, not react-router (whose own location is
-    // basename-relative and has no lang segment to swap), so we read/replace it on the real browser URL and
-    // hand off to Next's router - this is what remounts <BrowserRouter> with the new basename (see App.tsx).
+    // basename-relative and has no lang segment to swap). A soft client-side navigation (router.push/replace)
+    // races react-router's BrowserRouter: react-router's `history` package monkey-patches window.history
+    // and notifies its listeners synchronously, so the still-mounted BrowserRouter (old basename) re-renders
+    // against the new URL before Next remounts it with the new basename, briefly rendering nothing and
+    // logging "<Router basename=...> is not able to match the URL...". A full navigation sidesteps this -
+    // the whole app (and BrowserRouter) is recreated fresh against the new URL, with no stale instance to race.
     // Can't rely on there being a trailing slash at the base page (.e.g, `/en` and `/en`/ are both valid), and can't
     // ensure project IDs don't begin with an `en` or `fr`. Thus, we use a RegExp with a `^` for language changing in
     // the URL.
@@ -101,7 +103,7 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
       new RegExp(`^/${language}`),
       `/${newLang}`
     );
-    router.replace(path);
+    window.location.assign(path);
   };
 
   const logoLangPart = TRANSLATED_LOGO && language !== 'en' ? '.' + language : '';
