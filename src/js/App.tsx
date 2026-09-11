@@ -28,6 +28,7 @@ import ResponsiveProvider from '@/components/Util/ResponsiveProvider';
 // Hooks and utilities imports
 import { NotificationProvider } from '@/hooks/notifications';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
+import { useHandleRefreshTokenError } from '@/features/auth/hooks';
 
 // Store and configuration imports
 import { store } from './store';
@@ -60,6 +61,8 @@ const InnerRootApp = () => {
   const { i18n } = useTranslation();
   const antdLocale = i18n.language === SUPPORTED_LNGS.FRENCH ? frCA : enUS;
   const isSmallScreen = useSmallScreen();
+
+  useHandleRefreshTokenError();
 
   // antd's ConfigProvider locale only translates UI text (buttons, placeholders); the DatePicker's
   // month/day names come from dayjs's own locale, which must be set separately or it stays English.

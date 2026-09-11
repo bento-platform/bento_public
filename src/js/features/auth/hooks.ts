@@ -98,6 +98,15 @@ export const useHasResourcePermission = (
 
 export const usePerformAuth = () => useCallback(() => signIn(BENTO_OIDC_PROVIDER_ID), []);
 
+export const useHandleRefreshTokenError = () => {
+  const { data: session } = useSession();
+  useEffect(() => {
+    if (session?.error === 'RefreshTokenError') {
+      signIn(BENTO_OIDC_PROVIDER_ID);
+    }
+  }, [session?.error]);
+};
+
 export const usePerformSignOut = () => {
   const { data: session } = useSession();
   const idToken = session?.idToken;
