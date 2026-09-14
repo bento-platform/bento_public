@@ -2,6 +2,7 @@ import { initServerI18next, getT, getResources, generateI18nStaticParams } from 
 import { I18nProvider } from 'next-i18next/client'
 import i18nConfig from '../../i18n.config'
 import AppShell from '@/components/AppShell'
+import { getBootstrapPreloadedState } from '@/store.server'
 
 // Styles imports
 import 'antd/dist/reset.css';
@@ -27,6 +28,7 @@ export default async function RootLayout({
   const { lang } = await params
   const { i18n } = await getT()
   const resources = getResources(i18n)
+  const preloadedState = await getBootstrapPreloadedState()
 
   return (
     <I18nProvider
@@ -37,7 +39,7 @@ export default async function RootLayout({
       supportedLngs={i18nConfig.supportedLngs}
       i18nextOptions={i18nConfig.i18nextOptions}
     >
-      <AppShell>{children}</AppShell>
+      <AppShell preloadedState={preloadedState}>{children}</AppShell>
     </I18nProvider>
   )
 }

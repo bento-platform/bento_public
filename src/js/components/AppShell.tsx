@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { useParams } from 'next/navigation';
 import { Provider } from 'react-redux';
 import { SessionProvider } from 'next-auth/react';
@@ -24,7 +24,7 @@ import { NotificationProvider } from '@/hooks/notifications';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { useHandleRefreshTokenError } from '@/features/auth/hooks';
 
-import { store } from '@/store';
+import { makeStore, type RootState } from '@/store';
 import { PCGL_MODE } from '@/config';
 
 /** Inner root app component with responsive context for screen-size-aware theming and more hook access */
@@ -89,15 +89,26 @@ const InnerAppShell = ({ children }: { children: ReactNode }) => {
   );
 };
 
+type AppShellProps = {
+  children: ReactNode;
+  /** State fetched server-side (see store.server.ts) to seed the store, avoiding a client-side fetch on mount. */
+  preloadedState?: Partial<RootState>;
+};
+
 /** Providers/chrome shared by every route under the [lang] segment. Rendered from app/[lang]/layout.tsx. */
-const AppShell = ({ children }: { children: ReactNode }) => (
-  <SessionProvider refetchInterval={SESSION_REFETCH_INTERVAL_SECONDS}>
-    <Provider store={store}>
-      <ResponsiveProvider>
-        <InnerAppShell>{children}</InnerAppShell>
-      </ResponsiveProvider>
-    </Provider>
-  </SessionProvider>
-);
+const AppShell = ({ children, preloadedState }: AppShellProps) => {
+  // Lazy initializer: only build the store once, on the first render of this component instance.
+  const [store] = useState(() => makeStore(preloadedState));
+
+  return (
+    <SessionProvider refetchInterval={SESSION_REFETCH_INTERVAL_SECONDS}>
+      <Provider store={store}>
+        <ResponsiveProvider>
+          <InnerAppShell>{children}</InnerAppShell>
+        </ResponsiveProvider>
+      </Provider>
+    </SessionProvider>
+  );
+};
 
 export default AppShell;

@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
+import type { Store } from 'redux';
 
 import auth from '@/features/auth/authSlice';
 
@@ -17,26 +18,23 @@ import reference from '@/features/reference/reference.store';
 import ui, { type UIState } from '@/features/ui/ui.store';
 import { saveValue } from './utils/localStorage';
 
-export const store = configureStore({
-  reducer: {
-    auth,
-    catalogue: catalogueReducer,
-    clinPhen: clinPhenReducer,
-    config: configReducer,
-    content: contentReducer,
-    drs,
-    dataTypes: dataTypesReducer,
-    query: queryReducer,
-    beacon: beaconReducer,
-    beaconNetwork: beaconNetworkReducer,
-    metadata: metadataReducer,
-    reference,
-    ui,
-  },
-});
+const rootReducer = {
+  auth,
+  catalogue: catalogueReducer,
+  clinPhen: clinPhenReducer,
+  config: configReducer,
+  content: contentReducer,
+  drs,
+  dataTypes: dataTypesReducer,
+  query: queryReducer,
+  beacon: beaconReducer,
+  beaconNetwork: beaconNetworkReducer,
+  metadata: metadataReducer,
+  reference,
+  ui,
+};
 
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+export type RootState = { [K in keyof typeof rootReducer]: ReturnType<(typeof rootReducer)[K]> };
 
 /**
  * Custom observeStore utility for enhanced 'store.subscribe' behaviour.
@@ -50,7 +48,7 @@ export type AppDispatch = typeof store.dispatch;
 
  */
 const observeStore = <T>(
-  observedStore: typeof store,
+  observedStore: Store<RootState>,
   select: (state: RootState) => T,
   onChange: (state: T) => void
 ) => {
@@ -69,11 +67,31 @@ const observeStore = <T>(
   return unsubscribe;
 };
 
-// Persist UI settings on state changes
-observeStore<UIState>(
-  store,
-  (state) => state.ui,
-  (currentState) => {
-    saveValue(LOCALSTORAGE_UI_SETTINGS_KEY, currentState.settings);
-  }
-);
+/**
+ * Builds the app's store, optionally seeded with a partial state (e.g. slices fetched during server rendering via
+ * store.server.ts, so the first client render already has that data instead of fetching it after mount).
+ */
+export const makeStore = (preloadedState?: Partial<RootState>) => {
+  const store = configureStore({
+    reducer: rootReducer,
+    // configureStore's inferred type for `rootReducer` only accepts a full RootState here, but a partial one (with
+    // some top-level slices missing) is fine at runtime - combineReducers falls back to each slice's own initial
+    // state for any key that isn't present.
+    preloadedState: preloadedState as RootState | undefined,
+  });
+
+  // Persist UI settings on state changes. Safe to set up even for a server-side/disposable store: saveValue()
+  // no-ops (via try/catch) when localStorage isn't available.
+  observeStore<UIState>(
+    store,
+    (state) => state.ui,
+    (currentState) => {
+      saveValue(LOCALSTORAGE_UI_SETTINGS_KEY, currentState.settings);
+    }
+  );
+
+  return store;
+};
+
+export type AppStore = ReturnType<typeof makeStore>;
+export type AppDispatch = AppStore['dispatch'];
