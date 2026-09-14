@@ -654,10 +654,6 @@
       "counts": "$t(Counts)",
       "identifiers": "Identifiers & Technical"
     },
-    "context": {
-      "clinical": "Clinical",
-      "research": "Research"
-    },
     "link_type": {
       "Downloadable Artifact": "Downloadable Artifact",
       "Data Management Plan": "Data Management Plan",

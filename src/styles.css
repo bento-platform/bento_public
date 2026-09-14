@@ -980,7 +980,8 @@ body {
   background: var(--ant-color-primary-bg, rgba(5, 74, 116, 0.10));
   border-color: var(--cat-status-completed-border);
 }
-.status-badge--unassigned {
+.status-badge--unassigned,
+.status-badge--other {
   color: var(--text-muted);
   background: var(--cat-surface-subtle);
   border-color: var(--border-base);

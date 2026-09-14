@@ -13,7 +13,7 @@ import ActiveFilterTags from '@/components/Util/ActiveFilterTags';
 import { FACET_CONFIG_BY_ID } from '@/features/catalogue/facetRegistry';
 
 import { toggleInsights, type SortKey, type FacetId } from '@/features/catalogue/catalogue.store';
-import { facetTranslationKey, facetValueTranslationKey } from '@/features/catalogue/utils';
+import { facetTranslationKey } from '@/features/catalogue/utils';
 
 const { Text } = Typography;
 
@@ -62,11 +62,12 @@ const CatalogueToolbar = ({ filteredCount, showFiltersButton, isMobile, onOpenFi
 
   const pills: { key: string; facetLabel: string; label: string; onClose: () => void }[] = [];
   (Object.entries(sets) as [FacetId, string[]][]).forEach(([facet, values]) => {
+    const facetConfig = FACET_CONFIG_BY_ID[facet];
     values.forEach((v) =>
       pills.push({
         key: `${facet}-${v}`,
         facetLabel: facetTranslationKey(facet),
-        label: t(facetValueTranslationKey(FACET_CONFIG_BY_ID[facet].i18nKeyPrefix, v)),
+        label: facetConfig.formatLabel ? facetConfig.formatLabel(v, t) : v,
         onClose: () => toggleFacetValue(facet, v),
       })
     );
