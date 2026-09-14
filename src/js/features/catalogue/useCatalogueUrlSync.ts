@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { useAppDispatch } from '@/hooks';
 import { useUrlFacetSync, type ScalarParam } from '@/hooks/useUrlFacetSync';
 import { useUrlFacetActions } from '@/hooks/useUrlFacetActions';
@@ -24,6 +24,13 @@ const SORT_PARAM: ScalarParam<SortKey> = {
 const VIEW_PARAM: ScalarParam<ViewMode> = { key: 'view', defaultValue: 'grid', validValues: ['grid', 'list'] };
 const SCALARS = { sort: SORT_PARAM, view: VIEW_PARAM };
 
+/** Parses `?page=`, defaulting to and clamping at 1 (page is open-ended, so it isn't a fixed-validValues
+ *  ScalarParam like sort/view). */
+function parsePage(raw: string | null): number {
+  const n = raw ? parseInt(raw, 10) : 1;
+  return Number.isFinite(n) && n >= 1 ? n : 1;
+}
+
 /**
  * The URL is the source of truth for catalogue filters. This hydrates Redux from it on mount
  * and on every subsequent navigation (including browser back/forward), via the generic
@@ -32,6 +39,8 @@ const SCALARS = { sort: SORT_PARAM, view: VIEW_PARAM };
 export function useCatalogueUrlSync() {
   const dispatch = useAppDispatch();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const page = parsePage(searchParams.get('page'));
 
   useEffect(() => {
     sessionStorage.setItem(CATALOGUE_SEARCH_STORAGE_KEY, location.search);
@@ -39,9 +48,9 @@ export function useCatalogueUrlSync() {
 
   const onHydrate = useCallback(
     ({ q, sets, scalars }: { q: string; sets: CatalogueFilterSets; scalars: Record<string, string> }) => {
-      dispatch(hydrateFromUrl({ q, sets, sort: scalars.sort as SortKey, view: scalars.view as ViewMode }));
+      dispatch(hydrateFromUrl({ q, sets, sort: scalars.sort as SortKey, view: scalars.view as ViewMode, page }));
     },
-    [dispatch]
+    [dispatch, page]
   );
 
   useUrlFacetSync(FACET_IDS, SCALARS, onHydrate);
@@ -57,17 +66,27 @@ export function useCatalogueUrlSync() {
 export function useCatalogueUrlActions() {
   const { setParam, toggleFacetValue, clearAll } = useUrlFacetActions(FACET_IDS);
 
-  const setSearch = useCallback((q: string) => setParam('q', q), [setParam]);
-  const setSort = useCallback((sort: SortKey) => setParam('sort', sort, SORT_PARAM.defaultValue), [setParam]);
+  // Changing the search text, sort, or any facet resets pagination back to page 1.
+  const setSearch = useCallback((q: string) => setParam('q', q, '', ['page']), [setParam]);
+  const setSort = useCallback((sort: SortKey) => setParam('sort', sort, SORT_PARAM.defaultValue, ['page']), [setParam]);
   const setView = useCallback((view: ViewMode) => setParam('view', view, VIEW_PARAM.defaultValue), [setParam]);
-  const setFacetValue = useCallback((facet: FacetId, value: string) => setParam(facet, value), [setParam]);
+  const setPage = useCallback((page: number) => setParam('page', page > 1 ? String(page) : '', ''), [setParam]);
+  const setFacetValue = useCallback(
+    (facet: FacetId, value: string) => setParam(facet, value, '', ['page']),
+    [setParam]
+  );
+  const toggleFacetValueAndResetPage = useCallback(
+    (facet: FacetId, value: string) => toggleFacetValue(facet, value, ['page']),
+    [toggleFacetValue]
+  );
 
   return {
     setSearch,
     setSort,
     setView,
+    setPage,
     setFacetValue,
-    toggleFacetValue,
-    clearAll: useCallback(() => clearAll(['q']), [clearAll]),
+    toggleFacetValue: toggleFacetValueAndResetPage,
+    clearAll: useCallback(() => clearAll(['q', 'page']), [clearAll]),
   };
 }

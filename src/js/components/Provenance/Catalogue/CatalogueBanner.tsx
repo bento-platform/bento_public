@@ -1,8 +1,8 @@
-import { useMemo, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { Flex, Space, Typography } from 'antd';
 import { DatabaseOutlined, ExperimentOutlined, TeamOutlined } from '@ant-design/icons';
 import clsx from 'clsx';
-import type { DatasetWithProject } from '@/features/catalogue/hooks';
+import type { DatasetSearchTotals } from '@/features/catalogue/types';
 import { useFormatNumber, useTranslationFn } from '@/hooks';
 import { PCGL_MODE } from '@/config';
 import AboutContent from '@/components/AboutContent';
@@ -20,27 +20,21 @@ const StatItem = ({ icon, value, label }: { icon: ReactNode; value: string; labe
 );
 
 interface CatalogueBannerProps {
-  filteredDatasets: DatasetWithProject[];
+  /** Total datasets matching the current search/filter scope (not just the current page). */
+  count: number;
+  /** Censored individual/biosample counts summed across that same scope (?include=totals), or null before
+   *  the first response lands. */
+  totals: DatasetSearchTotals | null;
 }
 
-const CatalogueBanner = ({ filteredDatasets }: CatalogueBannerProps) => {
+const CatalogueBanner = ({ count: datasetCount, totals }: CatalogueBannerProps) => {
   const t = useTranslationFn();
   const fmt = useFormatNumber();
 
-  const { datasetCount, individualCount, biosampleCount } = useMemo(() => {
-    let individualCount = 0;
-    let biosampleCount = 0;
-    for (const { dataset } of filteredDatasets) {
-      const counts = dataset.counts_by_entity;
-      if (counts) {
-        individualCount += typeof counts.individual === 'number' ? counts.individual : 0;
-        biosampleCount += typeof counts.biosample === 'number' ? counts.biosample : 0;
-        // TODO: PCGL need support from backend for this
-        // { count: nWGS, entity: 'whole_genome_sequence' }
-      }
-    }
-    return { datasetCount: filteredDatasets.length, individualCount, biosampleCount };
-  }, [filteredDatasets]);
+  // TODO: PCGL need support from backend for this
+  // { count: nWGS, entity: 'whole_genome_sequence' }
+  const individualCount = totals?.individual ?? 0;
+  const biosampleCount = totals?.biosample ?? 0;
 
   return (
     <div

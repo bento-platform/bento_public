@@ -1,12 +1,14 @@
-import { useMemo } from 'react';
-import { useAppSelector, useTranslationFn } from '@/hooks';
-import type { FacetOption } from '@/features/catalogue/types';
-import { FACET_IDS, SORT_FNS, type DatasetWithProject, type FacetId } from './constants';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector, useTranslationFn } from '@/hooks';
+import { useDebouncedValue } from '@/hooks/useDebouncedValue';
+import { useMetadata } from '@/features/metadata/hooks';
+import { FACET_IDS, type FacetId } from './constants';
 import { FACET_CONFIG_BY_ID } from './facetRegistry';
-import { stripDiacritics, stripRichText } from '@/utils/strings';
-import { facetValueTranslationKey, getLabel } from './utils';
+import { searchDatasets } from './catalogue.store';
+import { facetValueTranslationKey } from './utils';
+import type { FacetOption } from './types';
 
-export type { DatasetWithProject } from './constants';
+const SEARCH_DEBOUNCE_MS = 300;
 
 /** Selects the full catalogue slice from the Redux store. */
 export function useCatalogueState() {
@@ -14,93 +16,86 @@ export function useCatalogueState() {
 }
 
 /**
- * Filters, sorts, and computes facet option counts for a list of datasets.
- *
- * Returns:
- * - `filtered` — datasets matching the current search query and all active facet selections, sorted by `sort`.
- * - `facetOptions(facetId)` — for each facet, the available values with their counts and selected state.
- *   Counts reflect items matching every *other* active filter (excluding the queried facet), so options
- *   stay live as the user drills down. Already-selected values are always included even if their count
- *   drops to zero so they can be deselected.
+ * Drives the catalogue page's data from GET /api/datasets: debounces the free-text query, builds the
+ * request params from the current URL-derived filter/sort/page state, and (re)dispatches searchDatasets
+ * whenever any of them change — aborting a still-in-flight request if it's superseded before it resolves.
  */
-export function useCatalogueFilter(items: DatasetWithProject[]): {
-  filtered: DatasetWithProject[];
-  facetOptions: (facetId: FacetId) => FacetOption[];
-} {
+export function useCatalogueSearch() {
+  const dispatch = useAppDispatch();
+  const state = useCatalogueState();
+  const { q, sets, sort, page } = state;
+  const debouncedQ = useDebouncedValue(q, SEARCH_DEBOUNCE_MS);
+
+  const params = new URLSearchParams();
+  if (debouncedQ) params.set('q', debouncedQ);
+  for (const facetId of FACET_IDS) {
+    for (const value of sets[facetId]) params.append(facetId, value);
+  }
+  params.set('sort', sort);
+  params.set('page', String(page));
+  params.set('include', 'facets,totals');
+
+  // `sets` is a freshly-built object on every URL hydration (see useUrlFacetSync), even when its content
+  // hasn't changed (e.g. toggling grid/list view also re-hydrates it), so the effect keys off the serialized
+  // query string rather than object identity, to avoid refetching on unrelated URL changes.
+  const paramsKey = params.toString();
+
+  useEffect(() => {
+    const promise = dispatch(searchDatasets(new URLSearchParams(paramsKey)));
+    return () => promise.abort();
+  }, [dispatch, paramsKey]);
+
+  return state;
+}
+
+/**
+ * Turns a raw facet value into a display string. Every facet value doubles as its own label (translated via
+ * i18nKeyPrefix where one is configured) *except* `project`, whose value is the project's UUID identifier
+ * (see dataset_facets.py on the backend) rather than its title — that one needs a lookup against the
+ * already-loaded project list to show something human-readable.
+ */
+export function useFacetValueLabel() {
   const t = useTranslationFn();
-  const { q, sets, sort } = useCatalogueState();
+  const { projectsByID } = useMetadata();
 
-  return useMemo(() => {
-    const lowerQ = stripDiacritics(q.toLowerCase());
+  return (facetId: FacetId, value: string): string => {
+    if (facetId === 'project') return projectsByID[value]?.title ?? value;
+    return t(facetValueTranslationKey(FACET_CONFIG_BY_ID[facetId].i18nKeyPrefix, value));
+  };
+}
 
-    /**
-     * Returns true if `item` passes the current text query and all facet filters.
-     * Pass `skipFacet` to exclude one facet from the check — used when computing
-     * that facet's own option counts.
-     */
-    function matchesQuery(item: DatasetWithProject, skipFacet: FacetId | null): boolean {
-      const { dataset } = item;
-      if (lowerQ) {
-        const kw = (dataset.keywords ?? []).map(getLabel).join(' ');
-        const dom = (dataset.domain ?? []).join(' ');
-        const longDesc = dataset.long_description
-          ? stripRichText(dataset.long_description.content, dataset.long_description.content_type)
-          : '';
-        const hay = stripDiacritics([dataset.title, dataset.description, longDesc, dom, kw].join(' ').toLowerCase());
-        if (!hay.includes(lowerQ)) return false;
-      }
-      for (const fid of FACET_IDS) {
-        if (fid === skipFacet) continue;
-        const selected = sets[fid];
-        if (selected.length === 0) continue;
-        const vals = FACET_CONFIG_BY_ID[fid].getValues(item);
-        if (!vals.some((v) => selected.includes(v))) return false;
-      }
-      return true;
-    }
+/**
+ * Builds display-ready facet options from the server's raw `facets` response: applies each facet's fixed
+ * display `order` (falling back to the server's own count-desc order otherwise), resolves labels via
+ * {@link useFacetValueLabel}, and flags currently-selected values (the server already includes selected
+ * values at count 0 and excludes each facet's own active filter from its own counts — see compute_facets
+ * on the backend — so no re-filtering is needed here, only display formatting).
+ */
+export function useCatalogueFacetOptions(): (facetId: FacetId) => FacetOption[] {
+  const { sets, searchFacets } = useCatalogueState();
+  const getLabel = useFacetValueLabel();
 
-    const filtered = items.filter((item) => matchesQuery(item, null));
-    const sortedFiltered = [...filtered].sort(SORT_FNS[sort]);
+  return (facetId: FacetId) => {
+    const raw = searchFacets?.[facetId] ?? [];
+    const selected = sets[facetId];
+    const order = FACET_CONFIG_BY_ID[facetId].order;
 
-    /** Computes display options for a single facet, respecting all other active filters. */
-    function facetOptions(facetId: FacetId) {
-      const facetConfig = FACET_CONFIG_BY_ID[facetId];
-
-      const base = items.filter((item) => matchesQuery(item, facetId));
-      const countMap = new Map<string, number>();
-      for (const item of base) {
-        for (const v of facetConfig.getValues(item)) {
-          countMap.set(v, (countMap.get(v) ?? 0) + 1);
-        }
-      }
-
-      const selected = sets[facetId];
-      // include already-selected values even if count 0
-      const allValues = new Set([...countMap.keys(), ...selected]);
-
-      const values = [...allValues];
-      const order = facetConfig.order;
-      if (order) {
-        values.sort((a, b) => {
-          const ai = order.indexOf(a);
-          const bi = order.indexOf(b);
-          if (ai === -1 && bi === -1) return a.localeCompare(b);
+    const sorted = order
+      ? [...raw].sort((a, b) => {
+          const ai = order.indexOf(a.value);
+          const bi = order.indexOf(b.value);
+          if (ai === -1 && bi === -1) return a.value.localeCompare(b.value);
           if (ai === -1) return 1;
           if (bi === -1) return -1;
           return ai - bi;
-        });
-      } else {
-        values.sort((a, b) => (countMap.get(b) ?? 0) - (countMap.get(a) ?? 0) || a.localeCompare(b));
-      }
+        })
+      : raw;
 
-      return values.map((v) => ({
-        value: v,
-        label: t(facetValueTranslationKey(facetConfig.i18nKeyPrefix, v)),
-        count: countMap.get(v) ?? 0,
-        selected: selected.includes(v),
-      }));
-    }
-
-    return { filtered: sortedFiltered, facetOptions };
-  }, [t, items, q, sets, sort]);
+    return sorted.map((o) => ({
+      value: o.value,
+      label: getLabel(facetId, o.value),
+      count: o.count,
+      selected: selected.includes(o.value),
+    }));
+  };
 }

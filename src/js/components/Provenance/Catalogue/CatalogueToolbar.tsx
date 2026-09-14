@@ -4,16 +4,14 @@ import { Badge, Button, Dropdown, Flex, Input, Select, Segmented, Typography } f
 import { FilterOutlined, SearchOutlined, SwapOutlined, PieChartOutlined } from '@ant-design/icons';
 import { BsGrid, BsViewStacked } from 'react-icons/bs';
 
-import { useCatalogueState } from '@/features/catalogue/hooks';
+import { useCatalogueState, useFacetValueLabel } from '@/features/catalogue/hooks';
 import { useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
 import { useTranslationFn } from '@/hooks';
 
 import ActiveFilterTags from '@/components/Util/ActiveFilterTags';
 
-import { FACET_CONFIG_BY_ID } from '@/features/catalogue/facetRegistry';
-
 import { toggleInsights, type SortKey, type FacetId } from '@/features/catalogue/catalogue.store';
-import { facetTranslationKey, facetValueTranslationKey } from '@/features/catalogue/utils';
+import { facetTranslationKey } from '@/features/catalogue/utils';
 
 const { Text } = Typography;
 
@@ -39,6 +37,7 @@ const CatalogueToolbar = ({ filteredCount, showFiltersButton, isMobile, onOpenFi
   const dispatch = useAppDispatch();
   const { q, sets, sort, view, insightsOpen } = useCatalogueState();
   const { setSearch, setSort, setView, toggleFacetValue, clearAll } = useCatalogueUrlActions();
+  const getLabel = useFacetValueLabel();
 
   // The Input needs its own local state so typing updates the DOM synchronously (preserving
   // cursor position); `q` itself only catches up later via a URL round trip (setSearch navigates,
@@ -66,7 +65,7 @@ const CatalogueToolbar = ({ filteredCount, showFiltersButton, isMobile, onOpenFi
       pills.push({
         key: `${facet}-${v}`,
         facetLabel: facetTranslationKey(facet),
-        label: t(facetValueTranslationKey(FACET_CONFIG_BY_ID[facet].i18nKeyPrefix, v)),
+        label: getLabel(facet, v),
         onClose: () => toggleFacetValue(facet, v),
       })
     );

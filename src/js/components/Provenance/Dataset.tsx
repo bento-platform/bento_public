@@ -6,8 +6,7 @@ import { FaDatabase } from 'react-icons/fa';
 
 import { PCGL_MODE } from '@/config';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
-import type { Dataset } from '@/types/dataset';
-import type { Project } from '@/types/metadata';
+import type { Dataset, ProjectDetail } from '@/types/dataset';
 import { BentoRoute } from '@/types/routes';
 import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
 import { getCurrentPage } from '@/utils/router';
@@ -42,7 +41,7 @@ const Dataset = ({
   parentProjectID: string;
   dataset: Dataset;
   format: 'list-item' | 'card';
-  project?: Project;
+  project?: ProjectDetail;
   selected?: boolean;
   filteredCounts?: KatsuEntityCountsOrBooleans;
   // Whether this dataset is being linked to from within its parent project's own page - used to inform the

@@ -1,11 +1,11 @@
-import type { Project } from '@/types/metadata';
+import type { ProjectDetail } from '@/types/dataset';
 import { BentoRoute } from '@/types/routes';
 import { COLOR_CHART_FALLBACK } from './constants';
 import { useNavigateToScope } from '@/hooks/navigation';
 import { useCatalogueState } from '@/features/catalogue/hooks';
 import ClickablePill from '@Util/ClickablePill';
 
-const ProjectPill = ({ project }: { project: Project }) => {
+const ProjectPill = ({ project }: { project: ProjectDetail }) => {
   const navigateToScope = useNavigateToScope();
   const { projectColors } = useCatalogueState();
   const { title, identifier } = project;
@@ -14,7 +14,7 @@ const ProjectPill = ({ project }: { project: Project }) => {
 
   return (
     <ClickablePill
-      pillColor={projectColors[title] ?? COLOR_CHART_FALLBACK}
+      pillColor={projectColors[identifier] ?? COLOR_CHART_FALLBACK}
       label={title}
       onClick={(e) => {
         e.stopPropagation();

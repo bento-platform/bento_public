@@ -167,6 +167,12 @@ export interface License {
   url: string;
 }
 
+/** The owning project's identifier + title, appended to every dataset returned by GET /api/datasets. */
+export interface ProjectDetail {
+  identifier: string;
+  title: string;
+}
+
 // ---- Publications ----
 
 export interface PublicationVenue {
@@ -308,4 +314,7 @@ export interface Dataset {
   /* Katsu database record created/updated fields; confusingly similar to release_Data/last_modified */
   created_at: string;
   updated_at: string;
+
+  /** Present only on results from GET /api/datasets. */
+  project_detail?: ProjectDetail;
 }

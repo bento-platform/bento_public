@@ -12,10 +12,10 @@ export function useUrlFacetActions<FacetId extends string>(facetIds: readonly Fa
   const [, setSearchParams] = useSearchParams();
 
   const setParam = useCallback(
-    (key: string, value: string, defaultValue = '') => {
+    (key: string, value: string, defaultValue = '', alsoClear: string[] = []) => {
       setSearchParams(
         (prev) => {
-          const without = queryParamsWithoutKey([...prev.entries()], key);
+          const without = queryParamsWithoutKey([...prev.entries()], [key, ...alsoClear]);
           return value !== defaultValue && value !== '' ? [...without, [key, value]] : without;
         },
         { replace: true }
@@ -25,10 +25,10 @@ export function useUrlFacetActions<FacetId extends string>(facetIds: readonly Fa
   );
 
   const toggleFacetValue = useCallback(
-    (facet: FacetId, value: string) => {
+    (facet: FacetId, value: string, alsoClear: string[] = []) => {
       setSearchParams(
         (prev) => {
-          const entries = [...prev.entries()] as QueryParamEntries;
+          const entries = queryParamsWithoutKey([...prev.entries()] as QueryParamEntries, alsoClear);
           const has = entries.some(([k, v]) => k === facet && v === value);
           return has ? entries.filter(([k, v]) => !(k === facet && v === value)) : [...entries, [facet, value]];
         },

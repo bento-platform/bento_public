@@ -1,66 +1,41 @@
-import { useMemo } from 'react';
-
 import { Card, Flex, Typography } from 'antd';
 import { PieChartOutlined } from '@ant-design/icons';
 
 const { Text } = Typography;
 
-import { useCatalogueState } from '@/features/catalogue/hooks';
+import { useCatalogueState, useFacetValueLabel } from '@/features/catalogue/hooks';
 import { useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
 import { useFormatNumber, useTranslationFn } from '@/hooks';
 
 import type { FacetId } from '@/features/catalogue/catalogue.store';
-import type { DatasetWithProject } from '@/features/catalogue/hooks';
+import type { DatasetFacetOption } from '@/features/catalogue/types';
 
 import { CategoryDonut, CategoryBarList, type HexColor, type CategoricalChartDataItem } from 'bento-charts';
 
-import { FACET_CONFIG_BY_ID, type FacetConfig } from '@/features/catalogue/facetRegistry';
 import { PCGL_MODE } from '@/config';
 import { STATUS_CHART_COLORS } from './constants';
 
-import { assignColors, facetValueTranslationKey } from '@/features/catalogue/utils';
-
-function buildCounts(datasets: DatasetWithProject[], facet: FacetConfig): CategoricalChartDataItem[] {
-  const map = new Map<string, number>();
-  for (const d of datasets) {
-    for (const v of facet.getValues(d)) {
-      if (v) map.set(v, (map.get(v) ?? 0) + 1);
-    }
-  }
-  return [...map.entries()].map(([x, y]) => ({ x, y, id: x })).sort((a, b) => b.y - a.y);
-}
-
-// buildCounts keeps `id` as the raw facet value (needed for toggleFacetValue/colorsById lookups); this applies
-// a display translation to `x` only, so labels shown in the chart/legend are localized without losing that key.
-const useTranslatedEntries = (datasets: DatasetWithProject[], facetId: FacetId): CategoricalChartDataItem[] => {
-  const t = useTranslationFn();
-  return useMemo<CategoricalChartDataItem[]>(() => {
-    const facetConfig = FACET_CONFIG_BY_ID[facetId];
-    if (facetConfig) {
-      const data = buildCounts(datasets, facetConfig);
-      return data.map((d) => ({ ...d, x: t(facetValueTranslationKey(facetConfig.i18nKeyPrefix, d.id ?? d.x)) }));
-    } else {
-      return []; // If facet config is disabled (e.g., project for PCGL)
-    }
-  }, [t, datasets, facetId]);
-};
+import { assignColors } from '@/features/catalogue/utils';
 
 interface CatalogueInsightCardProps {
-  datasets: DatasetWithProject[];
+  options: DatasetFacetOption[];
   facet: FacetId;
   kind: 'bar' | 'donut';
+  centerLabel?: string;
   colors?: Record<string, HexColor>;
 }
 
-const CatalogueInsightCard = ({ datasets, facet, kind, colors }: CatalogueInsightCardProps) => {
+const CatalogueInsightCard = ({ options, facet, kind, centerLabel, colors }: CatalogueInsightCardProps) => {
   const t = useTranslationFn();
+  const getLabel = useFacetValueLabel();
   const fmt = useFormatNumber();
 
   const { sets } = useCatalogueState();
   const { toggleFacetValue } = useCatalogueUrlActions();
 
-  const centerLabel = t('entities.dataset', { count: datasets.length }).toLowerCase();
-  let data = useTranslatedEntries(datasets, facet);
+  // The server already sorts by count desc; `id` keeps the raw facet value (needed for
+  // toggleFacetValue/colorsById lookups) while `x` carries the translated display label.
+  let data: CategoricalChartDataItem[] = options.map((o) => ({ x: getLabel(facet, o.value), y: o.count, id: o.value }));
   if (kind === 'bar') {
     data = data.slice(0, 5);
   }
@@ -79,7 +54,7 @@ const CatalogueInsightCard = ({ datasets, facet, kind, colors }: CatalogueInsigh
     <Card size="small" className="chart-card">
       <Text className="chart-card__title">{t(`catalogue.insights.by_${facet}`)}</Text>
       {kind === 'donut' ? (
-        <CategoryDonut {...commonProps} centerLabel={centerLabel} />
+        <CategoryDonut {...commonProps} centerLabel={centerLabel ?? ''} />
       ) : (
         <CategoryBarList {...commonProps} />
       )}
@@ -88,12 +63,16 @@ const CatalogueInsightCard = ({ datasets, facet, kind, colors }: CatalogueInsigh
 };
 
 interface CatalogueInsightsProps {
-  filteredDatasets: DatasetWithProject[];
+  /** Total datasets matching the current search/filter scope, for the status donut's center label. */
+  totalCount: number;
 }
 
-const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
+const CatalogueInsights = ({ totalCount }: CatalogueInsightsProps) => {
   const t = useTranslationFn();
-  const { projectColors } = useCatalogueState();
+  const { projectColors, searchFacets } = useCatalogueState();
+
+  const optionsFor = (facet: FacetId) => searchFacets?.[facet] ?? [];
+  const centerLabel = t('entities.dataset', { count: totalCount }).toLowerCase();
 
   return (
     <div className="catalogue-insights">
@@ -105,13 +84,25 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
         <Text className="catalogue-insights__hint">{t('catalogue.insights.hint')}</Text>
       </Flex>
       <Flex gap={12} wrap className="items-stretch">
-        <CatalogueInsightCard datasets={filteredDatasets} facet="status" kind="donut" colors={STATUS_CHART_COLORS} />
+        <CatalogueInsightCard
+          options={optionsFor('status')}
+          facet="status"
+          kind="donut"
+          centerLabel={centerLabel}
+          colors={STATUS_CHART_COLORS}
+        />
         {PCGL_MODE ? (
-          <CatalogueInsightCard datasets={filteredDatasets} facet="domain" kind="bar" />
+          <CatalogueInsightCard options={optionsFor('domain')} facet="domain" kind="bar" />
         ) : (
-          <CatalogueInsightCard datasets={filteredDatasets} facet="project" kind="donut" colors={projectColors} />
+          <CatalogueInsightCard
+            options={optionsFor('project')}
+            facet="project"
+            kind="donut"
+            centerLabel={centerLabel}
+            colors={projectColors}
+          />
         )}
-        <CatalogueInsightCard datasets={filteredDatasets} facet="keyword" kind="bar" />
+        <CatalogueInsightCard options={optionsFor('keyword')} facet="keyword" kind="bar" />
       </Flex>
     </div>
   );
