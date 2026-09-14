@@ -54,6 +54,13 @@ const initialState: CatalogueState = {
   searchTotals: null,
 };
 
+export interface SearchDatasetsArgs {
+  params: URLSearchParams;
+  /** Current UI language, sent as Accept-Language so translated fields (e.g. title/description) come back
+   *  in the right language — same convention as metadata.store.ts's getProjects. */
+  language: string;
+}
+
 /**
  * Fetches the current page of search results (plus facet option counts and aggregate totals) from
  * GET /api/datasets, given the URLSearchParams built by useCatalogueSearch. Forwards the thunk's abort
@@ -61,10 +68,11 @@ const initialState: CatalogueState = {
  */
 export const searchDatasets = createAsyncThunk<
   DatasetSearchResponse,
-  URLSearchParams,
+  SearchDatasetsArgs,
   { state: RootState; rejectValue: string }
->('catalogue/searchDatasets', (params, { getState, signal, rejectWithValue }) => {
+>('catalogue/searchDatasets', ({ params, language }, { getState, signal, rejectWithValue }) => {
   const config: AxiosRequestConfig = { ...authorizedRequestConfig(getState()), params, signal };
+  config.headers = { ...config.headers, 'Accept-Language': language };
   return axios
     .get(datasetsUrl, config)
     .then((res) => res.data)

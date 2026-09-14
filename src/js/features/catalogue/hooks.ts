@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useAppDispatch, useAppSelector, useTranslationFn } from '@/hooks';
+import { useAppDispatch, useAppSelector, useLanguage, useTranslationFn } from '@/hooks';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 import { useMetadata } from '@/features/metadata/hooks';
 import { FACET_IDS, type FacetId } from './constants';
@@ -24,6 +24,7 @@ export function useCatalogueSearch() {
   const dispatch = useAppDispatch();
   const state = useCatalogueState();
   const { q, sets, sort, page } = state;
+  const language = useLanguage();
   const debouncedQ = useDebouncedValue(q, SEARCH_DEBOUNCE_MS);
 
   const params = new URLSearchParams();
@@ -37,13 +38,14 @@ export function useCatalogueSearch() {
 
   // `sets` is a freshly-built object on every URL hydration (see useUrlFacetSync), even when its content
   // hasn't changed (e.g. toggling grid/list view also re-hydrates it), so the effect keys off the serialized
-  // query string rather than object identity, to avoid refetching on unrelated URL changes.
+  // query string (plus language, which isn't part of the query string but does change the response) rather
+  // than object identity, to avoid refetching on unrelated URL changes.
   const paramsKey = params.toString();
 
   useEffect(() => {
-    const promise = dispatch(searchDatasets(new URLSearchParams(paramsKey)));
+    const promise = dispatch(searchDatasets({ params: new URLSearchParams(paramsKey), language }));
     return () => promise.abort();
-  }, [dispatch, paramsKey]);
+  }, [dispatch, paramsKey, language]);
 
   return state;
 }
