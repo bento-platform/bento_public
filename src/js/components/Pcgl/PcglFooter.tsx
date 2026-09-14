@@ -7,6 +7,9 @@ import './styles.css';
 import PCGLLogo from './assets/logo-white.svg';
 import FundersLogo from './assets/funders.svg';
 import PortalIcon from './assets/PCGL-BGPC.svg?react';
+import BentoLogo from '@public/assets/bento.svg?react';
+import GPLLogo from './assets/gpl-v3-black.svg?react';
+import C3GLogo from './assets/c3g.svg?react';
 
 const { Footer } = Layout;
 const { useBreakpoint } = Grid;
@@ -107,9 +110,9 @@ const FooterContainer = () => {
             <img src={FundersLogo} role="presentation" alt="" width={423} height={99} />
           </div>
           <p>{t('footer.meta.cihr_support')}</p>
+        </div>
       </div>
-      </div>
-      <>{renderBentoBand()}</>
+      <BentoBand />
     </footer>
   );
 };
@@ -124,32 +127,64 @@ const renderContextualBand = () => {
   );
 };
 
-const renderBentoBand = () => {
+const BentoBand = () => {
+  const t = useTranslationFn();
+
   return (
-    <div>
-      <div>
-        <div>
-          <h5>Powered by</h5>
-          <a href="https://bento-platform.github.io" target="_blank" rel="noopener noreferrer">
-            <img src="/30f9fc937de6d4ba1ff955bfb72a1b43.svg" alt="Bento" />
+    <div className="bento-footer">
+      <div className="logo">
+        <h3 className="title">{t('footer.title')}</h3>
+        <p>
+          {t('footer.powered_by')}
+          <a href="https://bento-platform.github.io" target="_blank" rel="noopener noreferrer" aria-label="Bento">
+            <BentoLogo className="bento-logo" />
           </a>
-        </div>
-        <div>
-          <span>
-            Copyright © 2019-2026 <a href="https://computationalgenomics.ca" target="_blank" rel="noopener noreferrer">
-              the Canadian Centre for Computational Genomics
-            </a>.
-          </span>
-          <br />
-          <span>
-            Bento is licensed under the <a href="https://github.com/bento-platform/bento_public/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">LGPLv3</a>. The source code is available on <a href="https://github.com/bento-platform" target="_blank" rel="noopener noreferrer">Github</a>.
-          </span>
-        </div>
-        <div>
+        </p>
+      </div>
+      <ul className="links">
+        <li>
           <a href="/public/terms.html" target="_blank" rel="noopener noreferrer">
-            Terms of Use
+            {t('footer.terms_of_use')}
           </a>
-        </div>
+        </li>
+        <li>
+          <a
+            href="https://computationalgenomics.ca"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={t('footer.c3g')}
+          >
+            C3G
+          </a>
+        </li>
+        {SHOW_ADMIN_LINK && (
+          <li>
+            <a href={ADMIN_URL} target="_blank" aria-label={t('footer.admin_link_tooltip')} rel="noreferrer">
+              {t('footer.admin_link')}
+            </a>
+          </li>
+        )}
+      </ul>
+      <div className="legal">
+        <p>
+          <GPLLogo className="gpl-logo" /> {t('footer.licensed_under')}{' '}
+          <a
+            href="https://github.com/bento-platform/bento_public/blob/main/LICENSE"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            LGPLv3
+          </a>
+          . {t('footer.source_available')}{' '}
+          <a href="https://github.com/bento-platform" target="_blank" rel="noopener noreferrer">
+            Github
+          </a>
+          .
+        </p>
+        <p>
+          <C3GLogo className="c3g-logo" />
+          <span>© C3G, {new Date().getFullYear()}</span>
+        </p>
       </div>
     </div>
   );
@@ -192,7 +227,7 @@ const PCGL_LINKS: { key: string; href?: string }[] = [
     ? [
       {
         key: 'admin',
-          href: ADMIN_URL,
+        href: ADMIN_URL,
       },
     ]
     : []),

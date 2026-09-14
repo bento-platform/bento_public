@@ -370,6 +370,8 @@
     "interval": "Intervalle"
   },
   "footer": {
+    "title": "À propos de Bento",
+    "c3g_copyright": "© C3G Copyright",
     "powered_by": "Propulsé par",
     "copyright": "©",
     "c3g": "le Centre canadien de génomique computationnelle à l'université McGill",
