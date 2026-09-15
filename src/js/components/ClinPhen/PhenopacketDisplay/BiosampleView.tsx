@@ -134,6 +134,10 @@ export type BiosampleDetailProps = {
 export const BiosampleDetail = ({ biosample, mode }: BiosampleDetailProps) => {
   // TODO: use full-detail record for showing single biosamples with no individual attached in a phenopacket context
   const popoverOrFullDetail = !!mode && ['popover', 'full-detail'].includes(mode);
+  // Full-row items ("span the whole line") must track whatever `column` resolves to at the
+  // current breakpoint -- a fixed `span: 3` would exceed `column` (and trip antd's "sum of
+  // column span" warning) whenever the layout collapses to a single column.
+  const descriptionsColumn = popoverOrFullDetail ? 1 : { lg: 1, xl: 3 };
   const items: ConditionalDescriptionItem[] = [
     ...(popoverOrFullDetail ? [{ key: 'biosample_id', children: biosample.id }] : []),
     ...(mode !== undefined
@@ -168,7 +172,7 @@ export const BiosampleDetail = ({ biosample, mode }: BiosampleDetailProps) => {
         <BiosampleLocationCollected biosample={biosample} simpleView={mode === 'popover'} />
       ),
       isVisible: biosample.location_collected,
-      span: 3,
+      span: descriptionsColumn,
     },
     ...(mode !== 'popover'
       ? [
@@ -178,13 +182,13 @@ export const BiosampleDetail = ({ biosample, mode }: BiosampleDetailProps) => {
               <PhenotypicFeaturesView features={biosample.phenotypic_features} />
             ),
             isVisible: biosample.phenotypic_features,
-            span: 3,
+            span: descriptionsColumn,
           },
           {
             key: 'measurements',
             children: biosample.measurements && <MeasurementsView measurements={biosample.measurements} />,
             isVisible: biosample.measurements,
-            span: 3,
+            span: descriptionsColumn,
           },
         ]
       : []),
@@ -256,7 +260,7 @@ export const BiosampleDetail = ({ biosample, mode }: BiosampleDetailProps) => {
         size="compact"
         className={popoverOrFullDetail ? 'fixed-item-label-width' : undefined}
         defaultI18nPrefix="biosample."
-        column={popoverOrFullDetail ? 1 : { lg: 1, xl: 3 }}
+        column={descriptionsColumn}
         items={items}
       />
       <ExtraPropertiesDisplay extraProperties={biosample.extra_properties} />
