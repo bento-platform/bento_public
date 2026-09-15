@@ -10,13 +10,13 @@ import JsonView from '@Util/JsonView';
 import TracksView from '@/components/ClinPhen/TracksDisplay/TracksView';
 
 import { TabKeys } from '@/types/PhenopacketView.types';
+import { RequestStatus } from '@/types/requests';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
 import { useTranslationFn } from '@/hooks';
 import { useScopeDownloadData } from '@/hooks/censorship';
 import { useReference } from '@/features/reference/hooks';
 import { assemblyIdsForExperiments, phenopacketExperimentResults } from '@/utils/experiments';
 import { useBentoOrIgvReferencesById, useIgvReference, viewableTracks } from './igv';
-import { RequestStatus } from '@/types/requests';
 
 export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
   const t = useTranslationFn();
