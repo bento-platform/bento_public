@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { type CSSProperties, useMemo } from 'react';
 import { useTranslationFn } from '@/hooks';
 
 import { Space, type SpaceProps } from 'antd';
@@ -51,7 +51,15 @@ const VitalStatusDisplay = ({ vitalStatus: vs }: { vitalStatus?: VitalStatus }) 
   );
 };
 
-const SubjectView = ({ subject, spaceSize }: { subject: Individual; spaceSize?: SpaceProps['size'] }) => {
+const SubjectView = ({
+  subject,
+  spaceSize,
+  style,
+}: {
+  subject: Individual;
+  spaceSize?: SpaceProps['size'];
+  style?: CSSProperties;
+}) => {
   const items: ConditionalDescriptionItem[] = useMemo(
     () => [
       {
@@ -104,7 +112,7 @@ const SubjectView = ({ subject, spaceSize }: { subject: Individual; spaceSize?: 
   );
 
   return (
-    <Space className="w-full" direction="vertical" size={spaceSize ?? 'middle'}>
+    <Space className="w-full" direction="vertical" size={spaceSize ?? 'middle'} style={style}>
       <TDescriptions className="fixed-item-label-width" items={items} column={1} bordered size="compact" />
       <ExtraPropertiesDisplay extraProperties={subject.extra_properties} />
     </Space>
