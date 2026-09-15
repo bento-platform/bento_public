@@ -205,7 +205,7 @@ const CountsAndResults = () => {
             <Statistic
               title={<CountsTitleWithHelp entity={entity} />}
               value={count}
-              valueStyle={{ color: COUNTS_FILL }}
+              styles={{ content: { color: COUNTS_FILL } }}
               suffix={
                 showDenominator ? (
                   <span className="text-base antd-gray-7">/ {entityCounts[entity].toLocaleString()}</span>
@@ -222,7 +222,7 @@ const CountsAndResults = () => {
   return (
     <Flex vertical={true} gap={12}>
       {discoveryError ? <Error message="search_fetch" description={discoveryError} /> : null}
-      {message ? <Alert message={t(message)} type="info" showIcon={true} style={{ fontSize: '1.1rem' }} /> : null}
+      {message ? <Alert title={t(message)} type="info" showIcon={true} style={{ fontSize: '1.1rem' }} /> : null}
       {/* Can only wrap if we don't have the card show/hide button: */}
       <Space size={12} wrap={!hasQueryData}>
         {countElements.length ? countElements : <CountCardPlaceholder loading={doingFirstLoad} />}

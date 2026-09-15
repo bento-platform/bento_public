@@ -250,7 +250,7 @@ export const BiosampleDetail = ({ biosample, mode }: BiosampleDetailProps) => {
   ];
 
   return (
-    <Space direction="vertical" className="w-full">
+    <Space orientation="vertical" className="w-full">
       <TDescriptions
         bordered
         size="compact"

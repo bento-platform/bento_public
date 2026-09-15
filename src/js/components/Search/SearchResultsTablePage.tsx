@@ -602,7 +602,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
         title={t('search.manage_columns')}
         footer={null}
       >
-        <Space direction="vertical">
+        <Space orientation="vertical">
           {/*
             TODO: filter by empty on entire result set somehow... i.e., filter out individual_id or something.
               Maybe we can just have a function based on available entities, although this doesn't cover other cases.
