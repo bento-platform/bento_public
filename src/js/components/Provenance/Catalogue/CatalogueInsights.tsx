@@ -16,7 +16,7 @@ import { CategoryDonut, CategoryBarList, type HexColor, type CategoricalChartDat
 
 import { FACET_CONFIG_BY_ID, type FacetConfig } from '@/features/catalogue/facetRegistry';
 import { PCGL_MODE } from '@/config';
-import { STATUS_CHART_COLORS } from './constants';
+import { COUNT_ENTITY_ORDER, COUNT_ENTITY_REGISTRY } from '@/constants/countEntities';
 
 import { assignColors, facetValueTranslationKey } from '@/features/catalogue/utils';
 
@@ -87,6 +87,41 @@ const CatalogueInsightCard = ({ datasets, facet, kind, colors }: CatalogueInsigh
   );
 };
 
+const CatalogueEntityCountsCard = ({ datasets }: { datasets: DatasetWithProject[] }) => {
+  const t = useTranslationFn();
+  const fmt = useFormatNumber();
+
+  const totals = useMemo(() => {
+    const sums = { individual: 0, biosample: 0, experiment: 0, experiment_result: 0 };
+    for (const { dataset } of datasets) {
+      const counts = dataset.counts_by_entity;
+      if (!counts) continue;
+      for (const entity of COUNT_ENTITY_ORDER) {
+        const v = counts[entity];
+        if (typeof v === 'number') sums[entity] += v;
+      }
+    }
+    return sums;
+  }, [datasets]);
+
+  return (
+    <Card size="small" className="chart-card">
+      <Text className="chart-card__title">{t('catalogue.insights.totals')}</Text>
+      <div className="catalogue-insights-stat-grid">
+        {COUNT_ENTITY_ORDER.map((entity) => (
+          <div key={entity} className="catalogue-insights-stat-cell">
+            <span className="catalogue-insights-stat-icon-row">
+              <span className="catalogue-insights-stat-icon">{COUNT_ENTITY_REGISTRY[entity].icon}</span>
+              <span className="catalogue-insights-stat-value">{fmt(totals[entity])}</span>
+            </span>
+            <span className="catalogue-insights-stat-label">{t(`entities.${entity}_other`)}</span>
+          </div>
+        ))}
+      </div>
+    </Card>
+  );
+};
+
 interface CatalogueInsightsProps {
   filteredDatasets: DatasetWithProject[];
 }
@@ -105,7 +140,7 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
         <Text className="catalogue-insights__hint">{t('catalogue.insights.hint')}</Text>
       </Flex>
       <Flex gap={12} wrap className="items-stretch">
-        <CatalogueInsightCard datasets={filteredDatasets} facet="status" kind="donut" colors={STATUS_CHART_COLORS} />
+        <CatalogueEntityCountsCard datasets={filteredDatasets} />
         {PCGL_MODE ? (
           <CatalogueInsightCard datasets={filteredDatasets} facet="domain" kind="bar" />
         ) : (

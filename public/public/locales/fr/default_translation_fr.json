@@ -258,7 +258,7 @@
     "insights": {
       "title": "Aperçu des $t(entities.dataset_other, lowercase)",
       "hint": "Sélectionner un segment pour filtrer",
-      "by_status": "Par statut",
+      "totals": "Couverture des données",
       "by_domain": "Par domaine",
       "by_keyword": "Par mot-clé",
       "by_project": "Par $t(entities.project_one, lowercase)"
