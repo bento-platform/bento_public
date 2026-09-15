@@ -60,7 +60,7 @@ const Catalogue = () => {
 
       {/* Banner */}
       <div className="mb-4">
-        <CatalogueBanner filteredDatasets={filtered} />
+        <CatalogueBanner datasets={allDatasets} />
       </div>
 
       {/* Body: rail + main */}
