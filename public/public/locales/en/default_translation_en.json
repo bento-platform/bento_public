@@ -686,6 +686,13 @@
     "program_name": "Program name",
     "project_id": "Project ID",
     "protocol": "Protocol",
+    "record": {
+      "title": "Record",
+      "last_modified": "Last modified",
+      "access": "Access",
+      "context": "Context",
+      "dac_id": "DAC ID"
+    },
     "released": "Released",
     "repository": "Repository",
     "schema_version": "Schema version",
