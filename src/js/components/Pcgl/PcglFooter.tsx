@@ -7,7 +7,7 @@ import './styles.css';
 import PCGLLogo from './assets/logo-white.svg';
 import FundersLogo from './assets/funders.svg';
 import PortalIcon from './assets/PCGL-BGPC.svg?react';
-import BentoLogo from '@public/assets/bento.svg?react';
+import BentoLogo from './assets/bento.svg?react';
 import GPLLogo from './assets/gpl-v3-black.svg?react';
 import C3GLogo from './assets/c3g.svg?react';
 
@@ -27,14 +27,13 @@ type FooterMetaItems = {
 
 const LinkHeader = ({ children }: { children: React.ReactNode }) => <h3>{children}</h3>;
 
-const LinkItem = ({ link, url }: { link: string; url: string }) => (
+const LinkItem = ({ children, url }: { children: React.ReactNode; url: string }) => (
   <a className="focus-ring link-item" href={url} rel="noreferrer" target="_blank">
-    {link}
+    {children}
   </a>
 );
 
 const FooterView = ({ sections }: { sections: FooterNavItems[] }) => {
-
   return (
     <>
       {sections.map((section) => (
@@ -44,7 +43,7 @@ const FooterView = ({ sections }: { sections: FooterNavItems[] }) => {
             <ul>
               {section.items.map((item) => (
                 <li key={`${item.link}-${item.url}`} className="item">
-                  <LinkItem link={item.link} url={item.url} />
+                  <LinkItem url={item.url}>{item.link}</LinkItem>
                 </li>
               ))}
             </ul>
@@ -132,161 +131,42 @@ const BentoBand = () => {
 
   return (
     <div className="bento-footer">
-      <div className="logo">
-        <h3 className="title">{t('footer.title')}</h3>
+      <div className="about">
+        <h3 className="title">{t('footer.bento.title')}</h3>
         <p>
-          {t('footer.powered_by')}
-          <a href="https://bento-platform.github.io" target="_blank" rel="noopener noreferrer" aria-label="Bento">
-            <BentoLogo className="bento-logo" />
-          </a>
+          {t('footer.bento.powered_by')}{' '}
+          <LinkItem url="https://bento-platform.github.io" aria-label={t('footer.bento.bento')}>
+            <BentoLogo className="bento-logo" aria-hidden />
+          </LinkItem>
         </p>
       </div>
       <ul className="links">
         <li>
-          <a href="/public/terms.html" target="_blank" rel="noopener noreferrer">
-            {t('footer.terms_of_use')}
-          </a>
+          <LinkItem url="/public/terms.html">{t('footer.bento.terms_of_use')}</LinkItem>
         </li>
         <li>
-          <a
-            href="https://computationalgenomics.ca"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={t('footer.c3g')}
-          >
+          <LinkItem url="https://computationalgenomics.ca" aria-label={t('footer.c3g')}>
             C3G
-          </a>
+          </LinkItem>
         </li>
         {SHOW_ADMIN_LINK && (
           <li>
-            <a href={ADMIN_URL} target="_blank" aria-label={t('footer.admin_link_tooltip')} rel="noreferrer">
-              {t('footer.admin_link')}
-            </a>
+            <LinkItem url={ADMIN_URL} aria-label={t('footer.admin_link_tooltip')}>
+              {t('footer.bento.admin_link')}
+            </LinkItem>
           </li>
         )}
       </ul>
-      <div className="legal">
-        <p>
-          <GPLLogo className="gpl-logo" /> {t('footer.licensed_under')}{' '}
-          <a
-            href="https://github.com/bento-platform/bento_public/blob/main/LICENSE"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            LGPLv3
-          </a>
-          . {t('footer.source_available')}{' '}
-          <a href="https://github.com/bento-platform" target="_blank" rel="noopener noreferrer">
-            Github
-          </a>
-          .
-        </p>
-        <p>
-          <C3GLogo className="c3g-logo" />
-          <span>© C3G, {new Date().getFullYear()}</span>
-        </p>
-      </div>
+      <p className="legal">
+        <GPLLogo className="gpl-logo" aria-hidden /> {t('footer.bento.licensed_under')}{' '}
+        <LinkItem url="https://github.com/bento-platform/bento_public/blob/main/LICENSE">LGPLv3</LinkItem> {'. '}
+        {t('footer.bento.source_available')} <LinkItem url="https://github.com/bento-platform">Github</LinkItem>.
+      </p>
+      <p className="c3g">
+        <C3GLogo className="c3g-logo" aria-hidden />
+        <span>© C3G, {new Date().getFullYear()}</span>
+      </p>
     </div>
-  );
-};
-
-const PCGL_LINKS: { key: string; href?: string }[] = [
-  {
-    key: 'contact',
-    href: 'contactHref',
-  },
-  {
-    key: 'policies',
-  },
-  {
-    key: 'helpGuides',
-    href: 'helpGuidesHref',
-  },
-  {
-    key: 'controlledDataUsers',
-  },
-  {
-    key: 'pcglWebsite',
-    href: 'pcglWebsiteHref',
-  },
-  {
-    key: 'dataPlatform',
-  },
-  {
-    key: 'privacy',
-    href: 'privacyHref',
-  },
-  {
-    key: 'termsConditions',
-    href: 'termsHref',
-  },
-  {
-    key: 'publicationPolicy',
-  },
-  ...(SHOW_ADMIN_LINK
-    ? [
-      {
-        key: 'admin',
-        href: ADMIN_URL,
-      },
-    ]
-    : []),
-];
-
-const PcglFooter = () => {
-  const t = useTranslationFn();
-  const breakpoints = useBreakpoint();
-
-  return (
-    <Footer id="pcgl-footer">
-      <Flex align="center" gap={breakpoints.xl ? 48 : 24} vertical={!breakpoints.xl}>
-        <Flex vertical={true} gap={16} className="flex-1">
-          <Flex gap={breakpoints.md ? 48 : 8} vertical={!breakpoints.md}>
-            <a href={t('pcgl.links.pcglWebsiteHref')} rel="noreferrer" target="_blank">
-              <img src="/public/assets/pcgl_logo_footer.png" alt={t('pcgl.footer.logo_alt')} style={{ width: 200 }} />
-            </a>
-            <a href={t('pcgl.links.cihrHref')} rel="noreferrer" target="_blank">
-              <img
-                src="/public/assets/cihr_logo_footer.png"
-                alt={t('pcgl.footer.cihr_logo_alt')}
-                style={{ width: 260 }}
-              />
-            </a>
-          </Flex>
-          <h2>{t('pcgl.footer.meta.funding_title')}</h2>
-          <p style={{ marginBottom: 0 }}>
-            {t('pcgl.footer.cihr_support')}
-            <br />
-            {t('pcgl.footer.powered_by')}{' '}
-            <a href="https://github.com/bento-platform/bento" rel="noreferrer" target="_blank">
-              {t('pcgl.footer.bento')}
-            </a>
-            .<br />
-            {t('footer.copyright')} 2019-{new Date().getFullYear()}{' '}
-            <a href="https://computationalgenomics.ca" rel="noreferrer" target="_blank">
-              {t('footer.c3g')}
-            </a>
-            .
-          </p>
-        </Flex>
-        <div id="pcgl-footer__links" className={clsx({ 'w-full': !breakpoints.xl })}>
-          {PCGL_LINKS.map((link) => (
-            <a
-              key={link.key}
-              className={clsx({ disabled: !link.href })}
-              aria-hidden={!link.href}
-              // If the link href is an actual URL rather than a translation key, render the href directly.
-              // Otherwise, look up the href using the translation function.
-              href={link.href ? (link.href.startsWith('http') ? link.href : t(`pcgl.links.${link.href}`)) : undefined}
-              rel="noreferrer"
-              target="_blank"
-            >
-              {t(`pcgl.links.${link.key}`)}
-            </a>
-          ))}
-        </div>
-      </Flex>
-    </Footer>
   );
 };
 

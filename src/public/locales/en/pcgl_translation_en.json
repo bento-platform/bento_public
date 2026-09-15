@@ -25,13 +25,22 @@
     "subject_or_biosample_id": "Participant or Specimen ID"
   },
   "footer": {
+    "bento": {
+      "title": "About Bento",
+      "c3g_copyright": "© C3G Copyright",
+      "powered_by": "The PCGL research portal is powered by",
+      "copyright": "©",
+      "bento": "the Bento platform",
+      "terms_of_use": "Terms of Use",
+      "licensed_under": "Bento is licensed under the",
+      "source_available": "The source code is available on",
+      "admin_link": "Admin"
+    },
     "meta": {
       "funding_title": "Acknowledgement of funding",
       "logo_alt": "Pan-Canadian Genome Library logo",
       "cihr_logo_alt": "Canadian Institutes of Health Research logo",
-      "cihr_support": "PCGL is supported by the Canadian Institutes of Health Research (CIHR).",
-      "powered_by": "The PCGL research portal is powered by",
-      "bento": "the Bento platform"
+      "cihr_support": "PCGL is supported by the Canadian Institutes of Health Research (CIHR)."
     },
     "sections": {
       "about": "About PCGL",
