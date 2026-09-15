@@ -81,7 +81,7 @@ const TracksView = ({
 
       const { trackType, fileFormat } = igvFileDetails;
 
-      const t = {
+      return {
         type: trackType,
         format: fileFormat,
         url: fileUrls.fileAccessUrl,
@@ -93,8 +93,6 @@ const TracksView = ({
           ? { squishedCallHeight: SQUISHED_CALL_HEIGHT, expandedCallHeight: EXPANDED_CALL_HEIGHT }
           : {}),
       } as IgvTrack;
-
-      return t;
     },
     [accessUrlsPromises]
   );
