@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Flex } from 'antd';
 import { useAppDispatch, useAppSelector, useTranslationFn } from '@/hooks';
 import { useAccessToken } from 'bento-auth-js';
 import igv from 'igv/dist/igv.esm.js';
@@ -240,7 +241,7 @@ const TracksView = ({
   return (
     <>
       {(tracks.length > 0 || availableAssemblies.length > 0) && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <Flex vertical gap="small">
           {availableAssemblies.map((assemblyId) => (
             <div key={assemblyId} style={{ minHeight: 400 }}>
               <div
@@ -250,7 +251,7 @@ const TracksView = ({
               />
             </div>
           ))}
-        </div>
+        </Flex>
       )}
       {availableAssemblies.map((assemblyId) => (
         <div key={assemblyId} style={{ marginTop: 10 }}>
