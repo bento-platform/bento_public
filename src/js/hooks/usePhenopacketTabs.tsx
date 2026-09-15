@@ -42,7 +42,6 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
     attemptedCanDownload &&
     (tracks.length === 0 || genomesStatus === RequestStatus.Fulfilled || igvGenomesStatus === RequestStatus.Fulfilled);
 
-  // TODO: Add Experiments
   const items: TabsProps['items'] = useMemo(() => {
     if (!phenopacket) return [];
     const allItems = [
