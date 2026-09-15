@@ -1,6 +1,7 @@
-// React and ReactDOM imports
+'use client';
+
+// React imports
 import { useEffect } from 'react';
-import ReactDOM from 'react-dom/client';
 
 // Redux and routing imports
 import { Provider } from 'react-redux';
@@ -112,5 +113,4 @@ const RootApp = () => (
   </Provider>
 );
 
-const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
-root.render(<RootApp />);
+export default RootApp;
