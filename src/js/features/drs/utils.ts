@@ -10,6 +10,17 @@ export const getDrsAccessMethods = async (url: string | undefined): Promise<stri
   );
 };
 
+export const isDrs = (uri: string | undefined) => {
+  if (!uri) return false;
+  try {
+    const parts = new URL(uri);
+    console.log('isDrs()');
+    return parts.protocol === 'drs:';
+  } catch {
+    return false;
+  }
+};
+
 // async equivalent of DRS hook useDrsHttpsAccessOrPassThrough()
 export const getDrsObjectOrPassThrough = async (uri: string | undefined): Promise<DrsRecord | null> => {
   /**
@@ -18,18 +29,7 @@ export const getDrsObjectOrPassThrough = async (uri: string | undefined): Promis
    */
 
   if (!uri) return null;
-
-  // deduplicate
-  const isDrs = (() => {
-    try {
-      const parts = new URL(uri);
-      return parts.protocol === 'drs:';
-    } catch {
-      return false;
-    }
-  })();
-
-  if (!isDrs) return null;
+  if (!isDrs(uri)) return null;
 
   const currentState = store.getState();
   const recordState = currentState.drs.byUri[uri];
