@@ -2,7 +2,6 @@ import { type CSSProperties, useCallback, useEffect, useRef, useState } from 're
 import {
   AuditOutlined,
   BookOutlined,
-  CheckOutlined,
   DollarOutlined,
   EnvironmentOutlined,
   InfoCircleOutlined,
@@ -35,11 +34,7 @@ import SpatialCoverageSection from './SpatialCoverageSection';
 import SummarySectionContent from './SummarySectionContent';
 import type { ProvenanceEntry, SectionId } from './types';
 
-const useProvenanceEntries = (
-  dataset: Dataset | null | undefined,
-  copiedKey: string | null,
-  handleCopy: (value: string, id: string) => void
-): ProvenanceEntry[] => {
+const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEntry[] => {
   const t = useTranslationFn();
 
   if (!dataset) return [];
@@ -90,7 +85,7 @@ const useProvenanceEntries = (
             icon: <UserOutlined />,
             children: (
               <div className="pm-pgrid">
-                <PersonCard person={dataset.primary_contact} idx={0} lead copiedKey={copiedKey} onCopy={handleCopy} />
+                <PersonCard person={dataset.primary_contact} lead />
               </div>
             ),
           },
@@ -105,7 +100,7 @@ const useProvenanceEntries = (
             children: (
               <div className="pm-pgrid">
                 {stakeholders.map((s, i) => (
-                  <PersonCard key={i} person={s} idx={i + 1} copiedKey={copiedKey} onCopy={handleCopy} />
+                  <PersonCard key={i} person={s} />
                 ))}
               </div>
             ),
@@ -121,14 +116,7 @@ const useProvenanceEntries = (
             children: (
               <div className="pm-publist">
                 {publications.map((pub, i) => (
-                  <PublicationCard
-                    key={i}
-                    pub={pub}
-                    idx={i}
-                    copiedKey={copiedKey}
-                    onCopy={handleCopy}
-                    alwaysExpanded={publications.length === 1}
-                  />
+                  <PublicationCard key={i} pub={pub} alwaysExpanded={publications.length === 1} />
                 ))}
               </div>
             ),
@@ -219,7 +207,7 @@ const useProvenanceEntries = (
     {
       id: 'identifiers',
       icon: <TagOutlined />,
-      children: <IdentifiersSectionContent dataset={dataset} copiedKey={copiedKey} onCopy={handleCopy} />,
+      children: <IdentifiersSectionContent dataset={dataset} />,
     },
   ];
 };
@@ -235,13 +223,10 @@ const DatasetProvenance = ({
   style?: CSSProperties;
   mode?: 'scroll' | 'page';
 }) => {
-  const t = useTranslationFn();
   const isSmallScreen = useSmallScreen();
 
   const [collapsed, setCollapsed] = useState<Set<SectionId>>(new Set());
   const [activeSection, setActiveSection] = useState<SectionId>('summary');
-  const [copiedKey, setCopiedKey] = useState<string | null>(null);
-  const [toast, setToast] = useState<{ text: string; show: boolean }>({ text: '', show: false });
 
   const mode = isSmallScreen ? 'scroll' : modeParam;
 
@@ -307,18 +292,6 @@ const DatasetProvenance = ({
     });
   }, []);
 
-  const handleCopy = useCallback(
-    (value: string, id: string) => {
-      navigator.clipboard.writeText(value).then(() => {
-        setCopiedKey(id);
-        setToast({ text: `${t('general.copied')}: ${value}`, show: true });
-        setTimeout(() => setCopiedKey(null), 1300);
-        setTimeout(() => setToast((p) => ({ ...p, show: false })), 1600);
-      });
-    },
-    [t]
-  );
-
   const jumpToSection = useCallback(
     (id: SectionId) => {
       const body = bodyRef.current;
@@ -346,7 +319,7 @@ const DatasetProvenance = ({
     [modeParam]
   );
 
-  const provenanceEntries = useProvenanceEntries(dataset, copiedKey, handleCopy);
+  const provenanceEntries = useProvenanceEntries(dataset);
 
   if (!dataset) return null;
 
@@ -382,11 +355,6 @@ const DatasetProvenance = ({
             ? provenanceEntries.map(renderProvenanceEntry)
             : renderProvenanceEntry(provenanceEntries.find((e) => e.id === activeSection)!)}
         </div>
-      </div>
-
-      <div className={`pm-toast${toast.show ? ' show' : ''}`}>
-        <CheckOutlined style={{ color: '#73D13D' }} />
-        {toast.text}
       </div>
     </div>
   );

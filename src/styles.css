@@ -1639,14 +1639,6 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
 }
 .pm-meta-item .anticon { font-size: var(--p-fs-small); color: var(--text-muted); }
 .pm-meta-lbl { font-weight: 400; color: var(--text-muted); }
-.pm-copy-btn {
-  width: 22px; height: 22px; border-radius: 5px; border: none; background: transparent;
-  color: var(--text-muted); cursor: pointer;
-  display: inline-flex; align-items: center; justify-content: center; flex: none;
-  transition: background 0.12s, color 0.12s;
-}
-.pm-copy-btn:hover { background: #ECECEC; color: var(--text-primary); }
-.pm-copy-btn.copied { color: #389E0D; }
 
 /* ── Body layout ── */
 .pm-body {
@@ -1971,18 +1963,6 @@ button.pm-sec-head { cursor: pointer; }
   border: 1px solid #BcD7E6; border-radius: 5px; padding: 1px 7px;
 }
 .pm-res-ver { color: var(--text-muted); }
-
-/* ── Toast ── */
-.pm-toast {
-  position: fixed; left: 50%; bottom: 28px;
-  transform: translateX(-50%) translateY(20px);
-  background: #1a1a1a; color: #fff;
-  font-size: var(--p-fs-small); padding: 9px 16px; border-radius: 9px;
-  display: flex; align-items: center; gap: 9px;
-  opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s;
-  z-index: 1010; box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-}
-.pm-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
 /* ── Responsive ── */
 @media (max-width: 880px) {
