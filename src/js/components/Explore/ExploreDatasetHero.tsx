@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react';
 import { Typography } from 'antd';
+import { Link } from 'react-router-dom';
 import {
+  ArrowRightOutlined,
   CalendarOutlined,
   DatabaseOutlined,
   SafetyOutlined,
@@ -10,8 +12,10 @@ import {
 } from '@ant-design/icons';
 
 import { useTranslationFn } from '@/hooks';
+import { useCurrentScopePrefixedUrl } from '@/hooks/navigation';
 import { normaliseStatus, statusTranslationKey, studyContextTranslationKey } from '@/features/catalogue/utils';
 import type { Dataset } from '@/types/dataset';
+import { BentoRoute } from '@/types/routes';
 
 import StatusBadge from '@Util/StatusBadge';
 import DatasetDescription from '@/components/Provenance/DatasetProvenance/DatasetDescription';
@@ -20,6 +24,7 @@ type RecordRow = { icon: ReactNode; label: string; value: ReactNode };
 
 const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
   const t = useTranslationFn();
+  const aboutUrl = useCurrentScopePrefixedUrl(BentoRoute.About);
 
   const contextValue = [
     dataset.study_context ? t(studyContextTranslationKey(dataset.study_context)) : null,
@@ -112,6 +117,11 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
             </div>
           ))}
         </dl>
+        <Link to={aboutUrl} className="explore-hero-record-more">
+          <SolutionOutlined aria-hidden="true" />
+          {t('About')}
+          <ArrowRightOutlined aria-hidden="true" />
+        </Link>
       </section>
     </div>
   );
