@@ -20,17 +20,17 @@ const StatItem = ({ icon, value, label }: { icon: ReactNode; value: string; labe
 );
 
 interface CatalogueBannerProps {
-  filteredDatasets: DatasetWithProject[];
+  datasets: DatasetWithProject[];
 }
 
-const CatalogueBanner = ({ filteredDatasets }: CatalogueBannerProps) => {
+const CatalogueBanner = ({ datasets }: CatalogueBannerProps) => {
   const t = useTranslationFn();
   const fmt = useFormatNumber();
 
   const { datasetCount, individualCount, biosampleCount } = useMemo(() => {
     let individualCount = 0;
     let biosampleCount = 0;
-    for (const { dataset } of filteredDatasets) {
+    for (const { dataset } of datasets) {
       const counts = dataset.counts_by_entity;
       if (counts) {
         individualCount += typeof counts.individual === 'number' ? counts.individual : 0;
@@ -39,8 +39,8 @@ const CatalogueBanner = ({ filteredDatasets }: CatalogueBannerProps) => {
         // { count: nWGS, entity: 'whole_genome_sequence' }
       }
     }
-    return { datasetCount: filteredDatasets.length, individualCount, biosampleCount };
-  }, [filteredDatasets]);
+    return { datasetCount: datasets.length, individualCount, biosampleCount };
+  }, [datasets]);
 
   return (
     <div
