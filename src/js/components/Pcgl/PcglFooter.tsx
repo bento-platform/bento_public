@@ -2,7 +2,6 @@ import Image from 'next/image';
 import { useTranslationFn } from '@/hooks';
 import { ADMIN_URL, SHOW_ADMIN_LINK } from '@/config';
 
-
 import PCGLLogo from './assets/logo-white.png';
 import FundersLogo from './assets/funders.png';
 import PortalIcon from './assets/PCGL-BGPC.png';
@@ -13,11 +12,12 @@ import './styles.css';
 
 type FooterNavItem = { link: string; url: string };
 type FooterNavItems = { title: string; items: FooterNavItem[] };
+type LinkItemProps = React.AnchorHTMLAttributes<HTMLAnchorElement> & { url: string };
 
 const LinkHeader = ({ children }: { children: React.ReactNode }) => <h3 className="title">{children}</h3>;
 
-const LinkItem = ({ children, url }: { children: React.ReactNode; url: string }) => (
-  <a className="focus-ring link-item" href={url} rel="noreferrer" target="_blank">
+const LinkItem = ({ children, url, ...props }: LinkItemProps) => (
+  <a className="focus-ring link-item" href={url} rel="noreferrer" target="_blank" {...props}>
     {children}
   </a>
 );
@@ -44,7 +44,7 @@ const FooterView = ({ sections }: { sections: FooterNavItems[] }) => {
 };
 
 const FooterContainer = () => {
-  //TODO: Could we get it from an API?
+  //TODO: Could we get it from an API and sanitized the urls?
   const FOOTER_DATA = [
     {
       title: 'about',
@@ -78,11 +78,16 @@ const FooterContainer = () => {
 
   const t = useTranslationFn();
 
+  const resolveUrl = (url: string) => {
+    const sanitizedUrl = url.startsWith('http') ? url : '#';
+    return sanitizedUrl;
+  };
+
   const data = Array.from(FOOTER_DATA, (link) => ({
     title: t(`footer.sections.${link.title}`),
     items: link.items.map((item) => ({
       link: t(`footer.links.${item.link}`),
-      url: t(`footer.urls.${item.url}`),
+      url: resolveUrl(t(`footer.urls.${item.url}`)),
     })),
   }));
 
@@ -93,8 +98,8 @@ const FooterContainer = () => {
         <FooterView sections={data} />
         <div className="meta">
           <LinkHeader>{t('footer.meta.funding_title')}</LinkHeader>
-          <div className="meta-logos" >
-            <Image src={PCGLLogo}  role="presentation" alt="" width={488} height={170} />
+          <div className="meta-logos">
+            <Image src={PCGLLogo} role="presentation" alt="" width={488} height={170} />
             <Image src={FundersLogo} role="presentation" alt="" width={423} height={95} />
           </div>
           <p>{t('footer.meta.cihr_support')}</p>
@@ -109,7 +114,7 @@ const renderContextualBand = () => {
   return (
     <div className="contextual-band">
       <div className="contextual-logos">
-        <Image src={PortalIcon} width={424} height={131} className="contextual-logo" alt ="" />
+        <Image src={PortalIcon} width={424} height={131} className="contextual-logo" alt="" />
       </div>
     </div>
   );

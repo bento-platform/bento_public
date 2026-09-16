@@ -32,13 +32,6 @@
 .contextual-logo {
   width: 144px;
   height: auto;
-
-  path,
-  text,
-  tspan,
-  rect {
-    fill: currentColor !important;
-  }
 }
 
 .pcgl-footer {
@@ -210,10 +203,6 @@
   .gpl-logo {
     max-width: 24px;
     height: auto;
-  }
-
-  .gpl-logo > path {
-    fill: #b1c0c9 !important;
   }
 
   .about {
