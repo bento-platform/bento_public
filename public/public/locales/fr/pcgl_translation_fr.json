@@ -24,5 +24,59 @@
   },
   "interpretations": {
     "subject_or_biosample_id": "Identifiant du participant ou du specimen"
+  },
+  "footer": {
+    "bento": {
+      "title": "À propos de Bento",
+      "c3g_copyright": "© C3G Copyright",
+      "powered_by": "Le portail de recherche de la BGPC est propulsé par",
+      "copyright": "©",
+      "bento": "la plateform Bento",
+      "terms_of_use": "Conditions d'utilisation (en anglais)",
+      "licensed_under": "Bento est sous licence",
+      "source_available": "Le code source est disponible sur",
+      "admin_link": "Admin"
+    },
+    "meta": {
+      "funding_title": "Reconnaissance du financement",
+      "logo_alt": "Logo de la Bibliothèque génomique pancanadienne",
+      "cihr_logo_alt": "Logo des Instituts de recherche en santé du Canada",
+      "cihr_support": "La BGPC est soutenu par les Instituts de recherche en santé du Canada (IRSC)."
+    },
+    "sections": {
+      "about": "À propos de la BGPC",
+      "resources": "Ressources et documentation",
+      "connect": "Restez en contact"
+    },
+    "links": {
+      "pcglWebsite": "Site web de la BGPC",
+      "policies": "Politiques et directives",
+      "privacy": "Politique de confidentialité",
+      "termsConditions": "Conditions d'utilisation",
+      "publicationPolicy": "Politique de publication",
+      "helpGuides": "Guides d'aide",
+      "controlledDataUsers": "Utilisateurs de données contrôlées",
+      "dataPlatform": "Plateforme de données",
+      "researchPlatform": "Portail de recherche",
+      "contact": "Contactez-nous",
+      "subscribe": "S'abonner",
+      "linkedin": "LinkedIn",
+      "github": "GitHub"
+    },
+    "urls": {
+      "pcglWebsite": "https://genomelibrary.ca/fr",
+      "policies": "https://genomelibrary.ca/fr",
+      "privacy": "https://genomelibrary.ca/fr",
+      "termsConditions": "https://genomelibrary.ca/fr",
+      "publicationPolicy": "https://pan-canadian-genome-library.github.io/fr/participant-public/resources",
+      "helpGuides": "https://pan-canadian-genome-library.github.io/fr/participant-public/docs",
+      "controlledDataUsers": "https://pan-canadian-genome-library.github.io/fr/participant-public/overview",
+      "dataPlatform": "https://genomelibrary.ca/fr/chercheurs/",
+      "researchPlatform": "https://genomelibrary.ca/fr/chercheurs/",
+      "contact": "https://genomelibrary.ca/fr/nous-joindre/",
+      "subscribe": "https://genomelibrary.ca/fr/abonnez-vous/",
+      "linkedin": "https://fr.linkedin.com/company/genome-library/",
+      "github": "https://github.com/Pan-Canadian-Genome-Library/?locale=fr-fr"
+    }
   }
 }
