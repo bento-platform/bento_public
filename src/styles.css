@@ -1257,23 +1257,7 @@ body {
   gap: 5px;
   align-items: center;
 }
-.explore-hero-record-more {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  width: 100%;
-  height: 32px;
-  margin-top: auto;
-  border: 1px solid var(--border-base);
-  border-radius: 7px;
-  background: #fff;
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--ant-color-primary, #054a74);
-}
-.explore-hero-record-more:hover { border-color: var(--ant-color-primary, #054a74); background: #F6F9FB; }
-.explore-hero-record-more .anticon { font-size: 13px; }
+.explore-hero-record-more { margin-top: auto; }
 
 .manage-charts__chart-size-control-container {
   padding: var(--ant-padding) var(--ant-padding-lg) var(--ant-padding-lg);

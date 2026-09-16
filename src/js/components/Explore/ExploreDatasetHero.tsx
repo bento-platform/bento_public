@@ -1,8 +1,6 @@
 import type { ReactNode } from 'react';
-import { Typography } from 'antd';
-import { Link } from 'react-router-dom';
+import { Button, Typography } from 'antd';
 import {
-  ArrowRightOutlined,
   CalendarOutlined,
   DatabaseOutlined,
   SafetyOutlined,
@@ -12,7 +10,7 @@ import {
 } from '@ant-design/icons';
 
 import { useTranslationFn } from '@/hooks';
-import { useCurrentScopePrefixedUrl } from '@/hooks/navigation';
+import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
 import { studyContextTranslationKey } from '@/features/catalogue/utils';
 import type { Dataset } from '@/types/dataset';
 import { BentoRoute } from '@/types/routes';
@@ -24,7 +22,7 @@ type RecordRow = { icon: ReactNode; label: string; value: ReactNode };
 
 const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
   const t = useTranslationFn();
-  const aboutUrl = useCurrentScopePrefixedUrl(BentoRoute.About);
+  const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
 
   const contextLabel = dataset.study_context ? t(studyContextTranslationKey(dataset.study_context)) : null;
 
@@ -97,7 +95,7 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
         <DatasetDescription dataset={dataset} />
       </section>
 
-      <section className="explore-hero-record shadow rounded-xl" aria-labelledby="explore-hero-record-cap">
+      <section className="explore-hero-record shadow rounded-xl">
         <dl className="explore-hero-record-list">
           {rows.map((row, i) => (
             <div className="explore-hero-record-row" key={i}>
@@ -107,11 +105,14 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
             </div>
           ))}
         </dl>
-        <Link to={aboutUrl} className="explore-hero-record-more">
-          <SolutionOutlined aria-hidden="true" />
+        <Button
+          icon={<SolutionOutlined aria-hidden="true" />}
+          block
+          className="explore-hero-record-more"
+          onClick={() => navigateToSameScopeUrl(BentoRoute.About, false)}
+        >
           {t('About')}
-          <ArrowRightOutlined aria-hidden="true" />
-        </Link>
+        </Button>
       </section>
     </div>
   );
