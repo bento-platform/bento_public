@@ -23,8 +23,8 @@
   &:hover {
     color: white;
 
-    svg {
-      color: #f3f0f0;
+    img {
+      filter: drop-shadow( white 1px 1px 4px);
     }
   }
 }
@@ -196,12 +196,9 @@
 
   .bento-logo {
     max-width: 96px;
+    height: auto;
     fill: currentColor;
     vertical-align: central;
-
-    ellipse {
-      fill: currentColor;
-    }
   }
 
   .c3g-logo {

@@ -1,12 +1,14 @@
+import Image from 'next/image';
 import { useTranslationFn } from '@/hooks';
 import { ADMIN_URL, SHOW_ADMIN_LINK } from '@/config';
 
+
 import PCGLLogo from './assets/logo-white.svg';
 import FundersLogo from './assets/funders.svg';
-import PortalIcon from './assets/PCGL-BGPC.svg?react';
-import BentoLogo from './assets/bento.svg?react';
-import GPLLogo from './assets/gpl-v3-black.svg?react';
-import C3GLogo from './assets/c3g.svg?react';
+import PortalIcon from './assets/PCGL-BGPC.svg';
+import BentoLogo from './assets/bento.png';
+import GPLLogo from './assets/gpl-v3-black.svg';
+import C3GLogo from './assets/c3g.svg';
 import './styles.css';
 
 type FooterNavItem = { link: string; url: string };
@@ -91,9 +93,9 @@ const FooterContainer = () => {
         <FooterView sections={data} />
         <div className="meta">
           <LinkHeader>{t('footer.meta.funding_title')}</LinkHeader>
-          <div className="meta-logos" aria-hidden="true">
-            <img src={PCGLLogo} role="presentation" alt="" width={515} height={185} />
-            <img src={FundersLogo} role="presentation" alt="" width={423} height={99} />
+          <div className="meta-logos" >
+            <Image src={PCGLLogo} role="presentation" alt="" width={515} height={185} />
+            <Image src={FundersLogo} role="presentation" alt="" width={423} height={99} />
           </div>
           <p>{t('footer.meta.cihr_support')}</p>
         </div>
@@ -107,7 +109,7 @@ const renderContextualBand = () => {
   return (
     <div className="contextual-band">
       <div className="contextual-logos">
-        <PortalIcon className="contextual-logo" aria-hidden />
+        <Image src={PortalIcon} className="contextual-logo" alt ="" />
       </div>
     </div>
   );
@@ -123,7 +125,7 @@ const BentoBand = () => {
         <p>
           {t('footer.bento.powered_by')}{' '}
           <LinkItem url="https://bento-platform.github.io">
-            <BentoLogo className="bento-logo" aria-label={t('footer.bento.bento')} />
+            <Image src={BentoLogo} width={288} height={68} className="bento-logo" alt={t('footer.bento.bento')} />
           </LinkItem>
         </p>
       </div>
@@ -145,13 +147,13 @@ const BentoBand = () => {
         )}
       </ul>
       <p className="legal">
-        <GPLLogo className="gpl-logo" aria-hidden /> {t('footer.bento.licensed_under')}{' '}
+        <Image src={GPLLogo} className="gpl-logo" alt="" /> {t('footer.bento.licensed_under')}{' '}
         <LinkItem url="https://github.com/bento-platform/bento_public/blob/main/LICENSE">LGPLv3</LinkItem>
         {'. '}
         {t('footer.bento.source_available')} <LinkItem url="https://github.com/bento-platform">Github</LinkItem>.
       </p>
       <p className="c3g">
-        <C3GLogo className="c3g-logo" aria-hidden />
+        <Image src={C3GLogo} className="c3g-logo" alt="" />
         <span>© C3G, {new Date().getFullYear()}</span>
       </p>
     </div>
