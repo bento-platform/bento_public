@@ -22,7 +22,7 @@ const IdentifiersSectionContent = ({ dataset }: IdentifiersSectionContentProps) 
           {dataset.identifier} <Typography.Text copyable={{ text: dataset.identifier }} />
         </>
       ),
-      valueClassName: 'mono',
+      valueClassName: 'font-mono text-xs',
     },
     {
       label: t('provenance.schema_version'),
@@ -35,7 +35,7 @@ const IdentifiersSectionContent = ({ dataset }: IdentifiersSectionContentProps) 
           {dataset.project} <Typography.Text copyable={{ text: dataset.project }} />
         </>
       ),
-      valueClassName: 'mono',
+      valueClassName: 'font-mono text-xs',
     },
   ];
 

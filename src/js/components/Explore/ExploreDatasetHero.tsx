@@ -56,7 +56,7 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
     icon: <DatabaseOutlined />,
     label: t('Identifier'),
     value: (
-      <Typography.Text className="xh-mono" copyable={{ text: dataset.identifier }}>
+      <Typography.Text className="font-mono text-xs break-all" copyable={{ text: dataset.identifier }}>
         {dataset.identifier}
       </Typography.Text>
     ),
@@ -67,7 +67,7 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
       icon: <UserOutlined />,
       label: t('provenance.record.dac_id'),
       value: (
-        <Typography.Text className="xh-mono" copyable={{ text: dacIdStr }}>
+        <Typography.Text className="font-mono text-xs break-all" copyable={{ text: dacIdStr }}>
           {dacIdStr}
         </Typography.Text>
       ),
