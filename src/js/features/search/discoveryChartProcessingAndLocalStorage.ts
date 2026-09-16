@@ -4,7 +4,7 @@ import type { ChartConfig, ChartLayoutSection } from '@/types/discovery/chartCon
 import type { ChartDataField, LocalStorageChartData, Sections } from '@/types/data';
 
 import { MAX_CHARTS } from '@/constants/configConstants';
-import { DEFAULT_CHART_WIDTH } from '@/constants/overviewConstants';
+import { DEFAULT_CHART_WIDTH } from '@/constants/exploreConstants';
 
 import { serializeChartData } from '@/utils/chart';
 import {

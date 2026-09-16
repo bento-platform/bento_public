@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 import { Alert, FloatButton, Grid, Layout } from 'antd';
 import { ErrorBoundary, getErrorMessage } from 'react-error-boundary';
+import Loader from '@/components/Loader';
 import SiteHeader from '@/components/SiteHeader';
 import SiteSider from '@/components/SiteSider';
 import SiteFooter from '@/components/SiteFooter';
@@ -31,12 +32,12 @@ const DefaultLayout = () => {
 
   const breakpoints = useBreakpoint();
 
-  const isCatalogue = scopeSet && !scope.project && catalogueMode && page === 'overview';
+  const isCatalogue = scopeSet && !scope.project && catalogueMode && page === 'explore';
   const sidebarOverlay = !breakpoints.lg;
   const sidebarOverlayShown = sidebarOverlay && !collapsed;
-  const sidebarHidden = page !== 'overview' || isCatalogue || (!isCatalogue && !scopeHasData);
+  const sidebarHidden = page !== 'explore' || isCatalogue || (!isCatalogue && !scopeHasData);
 
-  const showSidebarToggle = sidebarOverlay && page === 'overview';
+  const showSidebarToggle = sidebarOverlay && page === 'explore';
 
   const breadcrumbItems = useTitleBreadcrumbItems(scopeHeaderMenuItems);
   const scopeHeaderHidden = isCatalogue || (!isCatalogue && !breadcrumbItems.length && !showSidebarToggle);
@@ -69,13 +70,15 @@ const DefaultLayout = () => {
               <ErrorBoundary
                 fallbackRender={({ error }) => <Alert type="error" description={getErrorMessage(error)} />}
               >
-                <Outlet />
+                <Suspense fallback={<Loader />}>
+                  <Outlet />
+                </Suspense>
               </ErrorBoundary>
             </Content>
           </Layout>
           {PCGL_MODE ? <PcglFooter /> : <SiteFooter />}
-          {/* Overview has its own way of rendering a back-to-top button, so we only render this if we're not on the overview page: */}
-          {page !== BentoRoute.Overview ? (
+          {/* Explore has its own way of rendering a back-to-top button, so we only render this if we're not on the explore page: */}
+          {page !== BentoRoute.Explore ? (
             <FloatButton.BackTop className="float-btn-pos" target={() => document.getElementById('content-layout')!} />
           ) : null}
         </Layout>

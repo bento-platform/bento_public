@@ -64,7 +64,7 @@ const SearchFilters = (props: DefinedSearchSubFormProps) => {
       extra={<FiltersAppliedTag />}
       {...props}
     >
-      <Space direction="vertical" size={8} className="w-full">
+      <Space orientation="vertical" size={8} className="w-full">
         {WAITING_STATES.includes(configStatus) || WAITING_STATES.includes(fieldsStatus) ? (
           <SearchFilterInputSkeleton />
         ) : (

@@ -53,7 +53,7 @@ const SiteSider = ({
                 {t('Manage Charts')}
               </Button>
               <Typography.Text type="secondary" style={{ fontSize: '0.81rem' }}>
-                {t('overview.manage_charts_help')}
+                {t('explore.manage_charts_help')}
               </Typography.Text>
             </Flex>
           )

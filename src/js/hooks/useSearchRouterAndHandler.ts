@@ -159,7 +159,7 @@ export const useSearchRouterAndHandler = () => {
   const setSearchUrl = useCallback(
     (filtersState: FiltersState, qp: QueryParamEntries) => {
       // Don't use react-router location here - the goal is to not recreate this function when the path changes.
-      const urlSuffix = buildQueryParamsUrl(BentoRoute.Overview, [
+      const urlSuffix = buildQueryParamsUrl(BentoRoute.Explore, [
         ...filtersStateToQueryParamEntries(filtersState),
         ...qp,
       ]);
@@ -178,7 +178,7 @@ export const useSearchRouterAndHandler = () => {
   // +-------------------------------+
   // Synchronize Redux query params state from URL, or URL from Redux state in some cases.
   useEffect(() => {
-    if (currentPage !== BentoRoute.Overview) return;
+    if (currentPage !== BentoRoute.Explore) return;
 
     // Wait until:
     //  - we have loaded the max. # of query parameters we can query
