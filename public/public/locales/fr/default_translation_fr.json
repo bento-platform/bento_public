@@ -99,6 +99,7 @@
     "select_all_fields": "Tout sélectionner",
     "csv": "CSV",
     "xlsx": "XLSX",
+    "manifest": "Manifeste (TSV)",
     "selected_count_one": "{{count}} ligne sélectionnée",
     "selected_count_other": "{{count}} lignes sélectionnées",
     "clear_selection": "Effacer la sélection",
