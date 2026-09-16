@@ -79,7 +79,9 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
       <section className="explore-hero-main shadow rounded-xl distinguished">
         <div className="explore-hero-eyebrow">
           <DatabaseOutlined />
-          {t(dataset.title)}
+          <Typography.Title level={2} className="explore-hero-title">
+            {t(dataset.title)}
+          </Typography.Title>
           {dataset.study_status && <StatusBadge status={dataset.study_status} />}
         </div>
         <DatasetDescription dataset={dataset} />
