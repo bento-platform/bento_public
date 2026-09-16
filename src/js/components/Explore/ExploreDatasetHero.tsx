@@ -13,7 +13,7 @@ import {
 
 import { useTranslationFn } from '@/hooks';
 import { useCurrentScopePrefixedUrl } from '@/hooks/navigation';
-import { normaliseStatus, statusTranslationKey, studyContextTranslationKey } from '@/features/catalogue/utils';
+import { studyContextTranslationKey } from '@/features/catalogue/utils';
 import type { Dataset } from '@/types/dataset';
 import { BentoRoute } from '@/types/routes';
 
@@ -26,12 +26,7 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
   const t = useTranslationFn();
   const aboutUrl = useCurrentScopePrefixedUrl(BentoRoute.About);
 
-  const contextValue = [
-    dataset.study_context ? t(studyContextTranslationKey(dataset.study_context)) : null,
-    dataset.study_status ? t(statusTranslationKey(normaliseStatus(dataset.study_status))) : null,
-  ]
-    .filter(Boolean)
-    .join(' · ');
+  const contextLabel = dataset.study_context ? t(studyContextTranslationKey(dataset.study_context)) : null;
 
   // No dedicated schema field exists yet for a dataset's Data Access Committee identifier; it's carried
   // as a conventional `dac_id` extra property until the dataset schema grows a first-class field for it.
@@ -62,11 +57,16 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
       value: dataset.privacy,
     });
   }
-  if (contextValue) {
+  if (contextLabel || dataset.study_status) {
     rows.push({
       icon: <SolutionOutlined aria-hidden="true" />,
       label: t('provenance.record.context'),
-      value: contextValue,
+      value: (
+        <>
+          {contextLabel}
+          {dataset.study_status && <StatusBadge status={dataset.study_status} />}
+        </>
+      ),
     });
   }
   rows.push({
@@ -94,17 +94,10 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
   return (
     <div className="explore-hero">
       <section className="explore-hero-main shadow rounded-xl distinguished">
-        <div className="explore-hero-eyebrow">
-          <DatabaseOutlined />
-          {dataset.study_status && <StatusBadge status={dataset.study_status} />}
-        </div>
         <DatasetDescription dataset={dataset} />
       </section>
 
       <section className="explore-hero-record shadow rounded-xl" aria-labelledby="explore-hero-record-cap">
-        <div className="explore-hero-record-cap" id="explore-hero-record-cap">
-          {t('provenance.record.title')}
-        </div>
         <dl className="explore-hero-record-list">
           {rows.map((row, i) => (
             <div className="explore-hero-record-row" key={i}>
