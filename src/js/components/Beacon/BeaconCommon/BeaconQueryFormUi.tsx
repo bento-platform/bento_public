@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Card, Col, Flex, Form, Row } from 'antd';
-import { useIsAuthenticated } from 'bento-auth-js';
+import { useIsAuthenticated } from '@/features/auth/hooks';
 import { useAppDispatch, useQueryWithAuthIfAllowed, useTranslationFn } from '@/hooks';
 import { useSelectedScope } from '@/features/metadata/hooks';
 import VariantsForm from './VariantsForm';

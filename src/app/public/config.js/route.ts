@@ -35,10 +35,6 @@ export function GET() {
     BEACON_URL: process.env.BEACON_URL || null,
     BEACON_UI_ENABLED: parseBoolean(process.env.BENTO_BEACON_UI_ENABLED),
     BEACON_NETWORK_ENABLED: parseBoolean(process.env.BENTO_BEACON_NETWORK_ENABLED),
-
-    // Authentication
-    CLIENT_ID: process.env.CLIENT_ID || null,
-    OPENID_CONFIG_URL: process.env.OPENID_CONFIG_URL || null,
   };
 
   return new Response(`BENTO_PUBLIC_CONFIG = ${JSON.stringify(siteConfig, null, 2)};\n`, {

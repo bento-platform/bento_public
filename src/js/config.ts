@@ -22,9 +22,6 @@ export interface PublicConfig {
   BEACON_URL: string | null;
   BEACON_UI_ENABLED: boolean;
   BEACON_NETWORK_ENABLED: boolean;
-  // Authentication
-  CLIENT_ID: string | null;
-  OPENID_CONFIG_URL: string | null;
 }
 
 // Declaration required for global config
@@ -63,8 +60,3 @@ export const BEACON_UI_ENABLED =
   BENTO_PUBLIC_CONFIG.BEACON_UI_ENABLED ?? stringToBoolean(process.env.BENTO_BEACON_UI_ENABLED);
 export const BEACON_NETWORK_ENABLED =
   BENTO_PUBLIC_CONFIG.BEACON_NETWORK_ENABLED ?? stringToBoolean(process.env.BENTO_BEACON_NETWORK_ENABLED);
-
-// Authentication
-export const CLIENT_ID = BENTO_PUBLIC_CONFIG.CLIENT_ID ?? process.env.CLIENT_ID ?? '';
-export const OPENID_CONFIG_URL = BENTO_PUBLIC_CONFIG.OPENID_CONFIG_URL ?? process.env.OPENID_CONFIG_URL ?? '';
-export const AUTH_CALLBACK_URL = `${PUBLIC_URL_NO_TRAILING_SLASH}/callback`;

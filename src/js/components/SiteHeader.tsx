@@ -2,7 +2,8 @@ import { useCallback, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Button, Flex, Layout, Menu, type MenuProps, Space, Typography, theme } from 'antd';
-import { useAuthState, useIsAuthenticated, useOpenIdConfig, usePerformAuth, usePerformSignOut } from 'bento-auth-js';
+import { useSession } from 'next-auth/react';
+import { useIsAuthenticated, usePerformAuth, usePerformSignOut } from '@/features/auth/hooks';
 
 import { RiTranslate } from 'react-icons/ri';
 import { LoginOutlined, LogoutOutlined } from '@ant-design/icons';
@@ -74,8 +75,7 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
   const currentPage = getCurrentPage(location);
   const navigateToRoot = useNavigateToRoot();
 
-  const { isFetching: openIdConfigFetching } = useOpenIdConfig();
-  const { isHandingOffCodeForToken } = useAuthState();
+  const { status: sessionStatus } = useSession();
 
   const isAuthenticated = useIsAuthenticated();
   const performSignOut = usePerformSignOut();
@@ -194,7 +194,7 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
               </Button>
             ) : (
               <Button type="primary" shape="round" icon={<LoginOutlined />} onClick={performSignIn}>
-                {openIdConfigFetching || isHandingOffCodeForToken ? t('Loading...') : isSmallScreen ? '' : t('Sign In')}
+                {sessionStatus === 'loading' ? t('Loading...') : isSmallScreen ? '' : t('Sign In')}
               </Button>
             ))}
         </Space>
