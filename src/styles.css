@@ -1195,7 +1195,7 @@ body {
 .explore-hero-main {
   position: relative;
   background: #fff;
-  border: 1px solid #F0F0F0;
+  border: 1px solid var(--border-subtle);
   padding: 18px 22px 16px 24px;
   display: flex;
   flex-direction: column;
@@ -1216,7 +1216,7 @@ body {
 .explore-hero-eyebrow .status-badge { text-transform: none; letter-spacing: normal; }
 .explore-hero-record {
   background: #fff;
-  border: 1px solid #F0F0F0;
+  border: 1px solid var(--border-subtle);
   padding: 14px 16px 15px;
   display: flex;
   flex-direction: column;
