@@ -1247,8 +1247,17 @@ body {
   margin-top: 3px;
   flex: none;
 }
-.explore-hero-record-label { color: var(--text-muted); width: 86px; flex: none; }
-.explore-hero-record-value { flex: 1; min-width: 0; display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+.explore-hero-record-list { margin: 0; }
+.explore-hero-record-label { margin: 0; color: var(--text-muted); width: 86px; flex: none; }
+.explore-hero-record-value {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  align-items: center;
+}
 
 .manage-charts__chart-size-control-container {
   padding: var(--ant-padding) var(--ant-padding-lg) var(--ant-padding-lg);

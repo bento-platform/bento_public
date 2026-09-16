@@ -34,26 +34,38 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
 
   const rows: RecordRow[] = [];
   if (dataset.version) {
-    rows.push({ icon: <TagOutlined />, label: t('provenance.version'), value: dataset.version });
+    rows.push({ icon: <TagOutlined aria-hidden="true" />, label: t('provenance.version'), value: dataset.version });
   }
   if (dataset.release_date) {
-    rows.push({ icon: <CalendarOutlined />, label: t('provenance.released'), value: dataset.release_date });
+    rows.push({
+      icon: <CalendarOutlined aria-hidden="true" />,
+      label: t('provenance.released'),
+      value: dataset.release_date,
+    });
   }
   if (dataset.last_modified) {
     rows.push({
-      icon: <CalendarOutlined />,
+      icon: <CalendarOutlined aria-hidden="true" />,
       label: t('provenance.record.last_modified'),
       value: dataset.last_modified,
     });
   }
   if (dataset.privacy) {
-    rows.push({ icon: <SafetyOutlined />, label: t('provenance.record.access'), value: dataset.privacy });
+    rows.push({
+      icon: <SafetyOutlined aria-hidden="true" />,
+      label: t('provenance.record.access'),
+      value: dataset.privacy,
+    });
   }
   if (contextValue) {
-    rows.push({ icon: <SolutionOutlined />, label: t('provenance.record.context'), value: contextValue });
+    rows.push({
+      icon: <SolutionOutlined aria-hidden="true" />,
+      label: t('provenance.record.context'),
+      value: contextValue,
+    });
   }
   rows.push({
-    icon: <DatabaseOutlined />,
+    icon: <DatabaseOutlined aria-hidden="true" />,
     label: t('Identifier'),
     value: (
       <Typography.Text className="font-mono text-xs break-all" copyable={{ text: dataset.identifier }}>
@@ -64,7 +76,7 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
   if (dacId) {
     const dacIdStr = String(dacId);
     rows.push({
-      icon: <UserOutlined />,
+      icon: <UserOutlined aria-hidden="true" />,
       label: t('provenance.record.dac_id'),
       value: (
         <Typography.Text className="font-mono text-xs break-all" copyable={{ text: dacIdStr }}>
@@ -87,15 +99,19 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
         <DatasetDescription dataset={dataset} />
       </section>
 
-      <section className="explore-hero-record shadow rounded-xl">
-        <div className="explore-hero-record-cap">{t('provenance.record.title')}</div>
-        {rows.map((row, i) => (
-          <div className="explore-hero-record-row" key={i}>
-            {row.icon}
-            <span className="explore-hero-record-label">{row.label}</span>
-            <span className="explore-hero-record-value">{row.value}</span>
-          </div>
-        ))}
+      <section className="explore-hero-record shadow rounded-xl" aria-labelledby="explore-hero-record-cap">
+        <div className="explore-hero-record-cap" id="explore-hero-record-cap">
+          {t('provenance.record.title')}
+        </div>
+        <dl className="explore-hero-record-list">
+          {rows.map((row, i) => (
+            <div className="explore-hero-record-row" key={i}>
+              {row.icon}
+              <dt className="explore-hero-record-label">{row.label}</dt>
+              <dd className="explore-hero-record-value">{row.value}</dd>
+            </div>
+          ))}
+        </dl>
       </section>
     </div>
   );
