@@ -1213,7 +1213,6 @@ body {
   color: var(--text-muted);
 }
 .explore-hero-eyebrow .anticon { font-size: 12px; }
-.explore-hero-eyebrow .explore-hero-title.ant-typography { font: inherit; margin: 0; color: inherit; text-transform: inherit; letter-spacing: inherit; }
 .explore-hero-eyebrow .status-badge { text-transform: none; letter-spacing: normal; }
 .explore-hero-record {
   background: #fff;
