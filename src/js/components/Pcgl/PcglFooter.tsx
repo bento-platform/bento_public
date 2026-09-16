@@ -3,12 +3,12 @@ import { useTranslationFn } from '@/hooks';
 import { ADMIN_URL, SHOW_ADMIN_LINK } from '@/config';
 
 
-import PCGLLogo from './assets/logo-white.svg';
-import FundersLogo from './assets/funders.svg';
-import PortalIcon from './assets/PCGL-BGPC.svg';
+import PCGLLogo from './assets/logo-white.png';
+import FundersLogo from './assets/funders.png';
+import PortalIcon from './assets/PCGL-BGPC.png';
 import BentoLogo from './assets/bento.png';
-import GPLLogo from './assets/gpl-v3-black.svg';
-import C3GLogo from './assets/c3g.svg';
+import GPLLogo from './assets/gplv3.png';
+import C3GLogo from './assets/c3g.png';
 import './styles.css';
 
 type FooterNavItem = { link: string; url: string };
@@ -94,8 +94,8 @@ const FooterContainer = () => {
         <div className="meta">
           <LinkHeader>{t('footer.meta.funding_title')}</LinkHeader>
           <div className="meta-logos" >
-            <Image src={PCGLLogo} role="presentation" alt="" width={515} height={185} />
-            <Image src={FundersLogo} role="presentation" alt="" width={423} height={99} />
+            <Image src={PCGLLogo}  role="presentation" alt="" width={488} height={170} />
+            <Image src={FundersLogo} role="presentation" alt="" width={423} height={95} />
           </div>
           <p>{t('footer.meta.cihr_support')}</p>
         </div>
@@ -109,7 +109,7 @@ const renderContextualBand = () => {
   return (
     <div className="contextual-band">
       <div className="contextual-logos">
-        <Image src={PortalIcon} className="contextual-logo" alt ="" />
+        <Image src={PortalIcon} width={424} height={131} className="contextual-logo" alt ="" />
       </div>
     </div>
   );
