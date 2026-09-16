@@ -735,6 +735,8 @@
   },
   "tracks": {
     "igv_error_title": "Error creating IGV browser",
-    "igv_error_description": "Error creating browser for assembly {{assemblyId}}"
+    "igv_error_description": "Error creating browser for assembly {{assemblyId}}",
+    "track_controls": "Track controls",
+    "track_controls_per_assembly": "{{assemblyId}} track controls"
   }
 }

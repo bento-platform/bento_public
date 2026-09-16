@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Flex } from 'antd';
+import { Flex, Typography } from 'antd';
 import { useAppDispatch, useAppSelector, useTranslationFn } from '@/hooks';
 import { useAccessToken } from 'bento-auth-js';
 import igv from 'igv/dist/igv.esm.js';
@@ -12,6 +12,8 @@ import { caseInsensitiveIgvFileInfoLookup, getIgvFileAndIndexAccessUrls } from '
 import TrackControlTable from './TrackControlTable';
 import { useDebounce } from '@/hooks/debounce';
 import { useNotify } from '@/hooks/notifications';
+
+const { Title } = Typography;
 
 const SQUISHED_CALL_HEIGHT = 10;
 const EXPANDED_CALL_HEIGHT = 100;
@@ -255,7 +257,11 @@ const TracksView = ({
       )}
       {availableAssemblies.map((assemblyId) => (
         <div key={assemblyId} style={{ marginTop: 10 }}>
-          {hasMultipleAssemblies && <div style={{ fontWeight: 600, marginBottom: 5, marginTop: 15 }}>{assemblyId}</div>}
+          <Title level={5}>
+            {hasMultipleAssemblies
+              ? t('tracks.track_controls_per_assembly', { assemblyId })
+              : t('tracks.track_controls')}
+          </Title>
           <TrackControlTable
             toggleView={toggleView}
             tracks={tracksWithView.filter((t) => t.genome_assembly_id == assemblyId)}
