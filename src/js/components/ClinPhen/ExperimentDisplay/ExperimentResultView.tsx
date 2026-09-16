@@ -139,7 +139,7 @@ export const ExperimentResultExpandedRow = ({
   ];
 
   return (
-    <Space className="w-full" direction="vertical">
+    <Space className="w-full" orientation="vertical">
       <TDescriptions
         className="fixed-item-label-width"
         bordered
