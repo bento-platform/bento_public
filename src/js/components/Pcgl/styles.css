@@ -30,7 +30,7 @@
 }
 
 .contextual-logo {
-  width: 168px;
+  width: 144px;
   height: auto;
 
   path,
@@ -48,18 +48,21 @@
   font-size: 14px;
   container-type: inline-size;
   container-name: footer;
+  display: grid;
+  gap: 16px;
 
   & p {
     color: #b1c0c9;
     font-size: 14px;
     margin: 0;
-    padding: 16px 0;
+  }
+
+  & h3 {
+    margin: 0;
   }
 
   .contextual-band {
-    padding: 24px 0;
-    border-bottom: solid 1px;
-    margin-bottom: 16px;
+    padding: 8px 0;
 
     img {
       max-width: 160px;
@@ -84,12 +87,14 @@
 
 .main-band {
   align-items: start;
+  border-block: 1px solid currentColor;
   column-gap: 16px;
   display: grid;
   grid-template-areas:
     "section"
     "meta";
   grid-template-columns: 1fr;
+  padding: 24px 0;
   row-gap: 24px;
 
   dd,
@@ -98,6 +103,11 @@
     list-style-type: none;
     margin: 0;
     padding: 0;
+  }
+
+  .meta {
+    display: grid;
+    gap: 8px;
   }
 
   .links-section {
@@ -124,15 +134,17 @@
       "section section"
       "meta meta";
     grid-template-columns: 1fr 1fr;
-  }
-
-  .meta {
-    grid-area: meta;
+  
+    .meta {
+      grid-area: meta;
+      gap: unset;
+    }
   }
 
   .pcgl-footer .meta-logos {
-    max-width: 408px;
+    max-width: 360px;
     grid-auto-flow: column;
+    align-content: center;
   }
 }
 
@@ -162,7 +174,6 @@
 }
 
 .bento-footer {
-  border-block-start: 1px solid currentColor;
   column-gap: 24px;
   display: grid;
   grid-template-areas:
@@ -171,29 +182,20 @@
     "legal"
     "c3g";
   grid-template-columns: 1fr;
-  padding-top: 24px;
   row-gap: 16px;
+  font-size: 12px;
+  color: #d9d9d9;
 }
 
 .bento-footer {
-  font-size: 12px;
-  color: #d9d9d9;
-
   p,
   h3 {
     margin: 0;
     padding: 0;
   }
 
-  ul {
-    display: contents;
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-  }
-
   .bento-logo {
-    max-width: 120px;
+    max-width: 96px;
     fill: currentColor;
     vertical-align: central;
 
@@ -209,18 +211,25 @@
   }
 
   .gpl-logo {
-    max-width: 40px;
+    max-width: 24px;
     height: auto;
-    filter: grayscale(100%);
+  }
+
+  .gpl-logo > path {
+    fill: #b1c0c9 !important;
   }
 
   .about {
     display: grid;
     grid-area: about;
-    gap: 16px;
+    font-size: 12px;
+    gap: 8px;
   }
 
   .links {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
     grid-area: links;
     display: grid;
     gap: 12px;
@@ -228,12 +237,32 @@
 
   .legal {
     grid-area: legal;
+    align-self: end;
   }
 
   .c3g {
+    align-self: end;
+    gap: 6px;
     grid-area: c3g;
     display: grid;
     justify-items: center;
-    align-self: end;
+  }
+}
+
+@container (width > 640px) {
+  .bento-footer {
+    column-gap: 96px;
+    grid-template-areas:
+      "about links"
+      "legal c3g";
+    grid-template-columns: 1fr;
+  }
+
+  .about {
+    gap: unset;
+  }
+
+  .links {
+    grid-auto-flow: column;
   }
 }

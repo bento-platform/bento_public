@@ -159,7 +159,8 @@ const BentoBand = () => {
       </ul>
       <p className="legal">
         <GPLLogo className="gpl-logo" aria-hidden /> {t('footer.bento.licensed_under')}{' '}
-        <LinkItem url="https://github.com/bento-platform/bento_public/blob/main/LICENSE">LGPLv3</LinkItem> {'. '}
+        <LinkItem url="https://github.com/bento-platform/bento_public/blob/main/LICENSE">LGPLv3</LinkItem>
+        {'. '}
         {t('footer.bento.source_available')} <LinkItem url="https://github.com/bento-platform">Github</LinkItem>.
       </p>
       <p className="c3g">
