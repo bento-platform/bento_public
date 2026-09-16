@@ -4,7 +4,6 @@ import { CalendarOutlined, FileDoneOutlined, TagOutlined, UnorderedListOutlined 
 
 import { T_SINGULAR_COUNT } from '@/constants/i18n';
 import { useTranslationFn } from '@/hooks';
-import { studyContextTranslationKey } from '@/features/catalogue/utils';
 import type { Dataset } from '@/types/dataset';
 import StatusBadge from '@Util/StatusBadge';
 
@@ -46,9 +45,7 @@ const ProvenanceHeader = ({ dataset }: ProvenanceHeaderProps) => {
           <div className="pm-title-row">
             <h1>{t(dataset.title)}</h1>
             {dataset.study_status && <StatusBadge status={dataset.study_status} />}
-            {dataset.study_context && (
-              <span className="pm-ctx-chip">{t(studyContextTranslationKey(dataset.study_context))}</span>
-            )}
+            {dataset.study_context && <span className="pm-ctx-chip">{dataset.study_context}</span>}
           </div>
         </div>
       </div>

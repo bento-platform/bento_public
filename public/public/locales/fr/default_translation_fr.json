@@ -287,10 +287,6 @@
       "counts": "$t(Counts)",
       "identifiers": "Identifiants et informations techniques"
     },
-    "context": {
-      "clinical": "Clinique",
-      "research": "Recherche"
-    },
     "link_type": {
       "Downloadable Artifact": "Artéfact téléchargeable",
       "Data Management Plan": "Plan de gestion des données",

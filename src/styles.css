@@ -441,8 +441,6 @@ body {
   padding: var(--content-padding-v) var(--content-padding-h);
 }
 
-#site-sider__inner .sidebar__content { flex: 1; }
-
 #content-layout {
   position: fixed;
   top: var(--header-height);
@@ -688,8 +686,13 @@ body {
   flex-shrink: 0;
   align-self: flex-start;
 
-  overflow-y: auto;
-  overflow-x: hidden;
+  /* The element that scrolls (.sidebar__content, below) is deliberately not this one: a `position: sticky`
+     element that's also its own `overflow: auto` scroll container over-reports its scrollable area in
+     Chromium (its sticky travel range leaks into scrollHeight), producing a scrollbar much longer than the
+     actual content. */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 
   background: rgba(255, 255, 255, 0.88);
   border-radius: 10px;
@@ -699,6 +702,13 @@ body {
 #default-layout.scope-header-hidden .sidebar:not(.sidebar--overlay) {
   top: var(--content-padding-v);
   max-height: calc(100vh - var(--header-height) - var(--content-padding-v) * 2);
+}
+
+.sidebar__content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .sidebar-section, .sidebar__footer {
@@ -980,7 +990,8 @@ body {
   background: var(--ant-color-primary-bg, rgba(5, 74, 116, 0.10));
   border-color: var(--cat-status-completed-border);
 }
-.status-badge--unassigned {
+.status-badge--unassigned,
+.status-badge--other {
   color: var(--text-muted);
   background: var(--cat-surface-subtle);
   border-color: var(--border-base);
