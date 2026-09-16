@@ -11,7 +11,7 @@ const TruncatedParagraph = ({ maxRows, children, style }: TruncatedParagraphProp
         tooltip: {
           title: children,
           color: 'white',
-          styles: { root: { maxWidth: 560 }, body: { color: 'rgba(0, 0, 0, 0.88)' } },
+          styles: { root: { maxWidth: 560 }, container: { color: 'rgba(0, 0, 0, 0.88)' } },
         },
       }}
       className="mb-0"

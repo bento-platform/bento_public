@@ -125,7 +125,7 @@ const ExploreChartDashboard = () => {
   if (scopeSet && !scopeHasData && scope.dataset) {
     if (!hasNotified) {
       notify.error({
-        message: t('navigation.not_available_title', { endpoint: BentoRoute.Explore }),
+        title: t('navigation.not_available_title', { endpoint: BentoRoute.Explore }),
         description: t('navigation.not_available_description', { target: BentoRoute.About }),
       });
       setHasNotified(true);
