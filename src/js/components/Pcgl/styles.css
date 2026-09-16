@@ -190,7 +190,6 @@
   .bento-logo {
     max-width: 96px;
     height: auto;
-    fill: currentColor;
     vertical-align: central;
   }
 
@@ -242,10 +241,6 @@
       "about links"
       "legal c3g";
     grid-template-columns: 1fr;
-  }
-
-  .about {
-    gap: unset;
   }
 
   .links {

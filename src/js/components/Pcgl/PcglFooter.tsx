@@ -14,35 +14,6 @@ type FooterNavItem = { link: string; url: string };
 type FooterNavItems = { title: string; items: FooterNavItem[] };
 type LinkItemProps = React.AnchorHTMLAttributes<HTMLAnchorElement> & { url: string };
 
-const LinkHeader = ({ children }: { children: React.ReactNode }) => <h3 className="title">{children}</h3>;
-
-const LinkItem = ({ children, url, ...props }: LinkItemProps) => (
-  <a className="focus-ring link-item" href={url} rel="noreferrer" target="_blank" {...props}>
-    {children}
-  </a>
-);
-
-const FooterView = ({ sections }: { sections: FooterNavItems[] }) => {
-  return (
-    <>
-      {sections.map((section) => (
-        <dl key={section.title} className="links-section">
-          <dt>{section.title}</dt>
-          <dd className="group">
-            <ul>
-              {section.items.map((item) => (
-                <li key={`${item.link}-${item.url}`} className="item">
-                  <LinkItem url={item.url}>{item.link}</LinkItem>
-                </li>
-              ))}
-            </ul>
-          </dd>
-        </dl>
-      ))}
-    </>
-  );
-};
-
 const FooterContainer = () => {
   //TODO: Could we get it from an API and sanitized the urls?
   const FOOTER_DATA = [
@@ -78,16 +49,11 @@ const FooterContainer = () => {
 
   const t = useTranslationFn();
 
-  const resolveUrl = (url: string) => {
-    const sanitizedUrl = url.startsWith('http') ? url : '#';
-    return sanitizedUrl;
-  };
-
   const data = Array.from(FOOTER_DATA, (link) => ({
     title: t(`footer.sections.${link.title}`),
     items: link.items.map((item) => ({
       link: t(`footer.links.${item.link}`),
-      url: resolveUrl(t(`footer.urls.${item.url}`)),
+      url: t(`footer.urls.${item.url}`),
     })),
   }));
 
@@ -162,6 +128,45 @@ const BentoBand = () => {
         <span>© C3G, {new Date().getFullYear()}</span>
       </p>
     </div>
+  );
+};
+
+const LinkItem = ({ children, url, target, ...props }: LinkItemProps) => {
+  const isExternal = url.startsWith('http');
+  const linkTarget = target ?? (isExternal ? '_blank' : undefined);
+  return (
+    <a
+      className="focus-ring link-item"
+      href={url}
+      target={linkTarget}
+      rel={linkTarget === '_blank' ? 'noreferrer' : undefined}
+      {...props}
+    >
+      {children}
+    </a>
+  );
+};
+
+const LinkHeader = ({ children }: { children: React.ReactNode }) => <h3 className="title">{children}</h3>;
+
+const FooterView = ({ sections }: { sections: FooterNavItems[] }) => {
+  return (
+    <>
+      {sections.map((section) => (
+        <dl key={section.title} className="links-section">
+          <dt>{section.title}</dt>
+          <dd className="group">
+            <ul>
+              {section.items.map((item) => (
+                <li key={`${item.link}-${item.url}`} className="item">
+                  <LinkItem url={item.url}>{item.link}</LinkItem>
+                </li>
+              ))}
+            </ul>
+          </dd>
+        </dl>
+      ))}
+    </>
   );
 };
 
