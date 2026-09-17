@@ -13,7 +13,7 @@ import { COUNTS_FILL } from '@/constants/exploreConstants';
 import { ENTITY_QUERY_PARAM, TABLE_PAGE_QUERY_PARAM, TABLE_PAGE_SIZE_QUERY_PARAM } from '@/features/search/constants';
 
 import { useSelectedDataset, useSelectedProject } from '@/features/metadata/hooks';
-import { useEntityAndTextQueryParams, useSearchLoading, useSearchQuery } from '@/features/search/hooks';
+import { useEntityAndTextQueryParams, useIsSearchLoading, useSearchQuery } from '@/features/search/hooks';
 import { useAppDispatch, useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
 import { useRenderCount } from '@/hooks/counts';
@@ -119,7 +119,7 @@ const CountsAndResults = () => {
   } = useSearchQuery();
   const entityAndTextQueryParams = useEntityAndTextQueryParams();
 
-  const waitingForData = useSearchLoading();
+  const waitingForData = useIsSearchLoading();
   const doingFirstLoad = waitingForData && !doneFirstLoad;
 
   // TODO: per-data type permissions?

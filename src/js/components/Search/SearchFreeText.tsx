@@ -9,7 +9,7 @@ import {
   TEXT_QUERY_TYPE_PARAM,
   VALID_TEXT_QUERY_TYPES,
 } from '@/features/search/constants';
-import { useSearchLoading, useSearchQuery, useSearchQueryParams } from '@/features/search/hooks';
+import { useIsSearchLoading, useSearchQuery, useSearchQueryParams } from '@/features/search/hooks';
 import { buildQueryParamsUrl, queryParamsWithoutKey } from '@/features/search/utils';
 import { useTranslationFn } from '@/hooks';
 
@@ -26,7 +26,7 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
 
   const { textQuery, textQueryType } = useSearchQuery();
   const allQueryParams = useSearchQueryParams();
-  const searchLoading = useSearchLoading();
+  const searchLoading = useIsSearchLoading();
 
   const [form] = Form.useForm<FreeTextFormValues>();
 

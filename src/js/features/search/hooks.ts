@@ -184,7 +184,7 @@ export const useSearchableFields = () => {
   );
 };
 
-export const useSearchLoading = () => {
+export const useIsSearchLoading = () => {
   const {
     discoveryStatus,
     wholeScopeData: { status: wholeScopeStatus },
