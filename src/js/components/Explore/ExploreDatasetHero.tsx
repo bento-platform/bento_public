@@ -24,7 +24,7 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
   const t = useTranslationFn();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
 
-  const contextLabel = dataset.study_context ? t(studyContextTranslationKey(dataset.study_context)) : null;
+  const statusContextLabel = dataset.study_context ? t(studyContextTranslationKey(dataset.study_context)) : null;
 
   // No dedicated schema field exists yet for a dataset's Data Access Committee identifier; it's carried
   // as a conventional `dac_id` extra property until the dataset schema grows a first-class field for it.
@@ -55,13 +55,13 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
       value: dataset.privacy,
     });
   }
-  if (contextLabel || dataset.study_status) {
+  if (statusContextLabel || dataset.study_status) {
     rows.push({
       icon: <SolutionOutlined aria-hidden="true" />,
-      label: t('provenance.record.context'),
+      label: t('provenance.record.status'),
       value: (
         <>
-          {contextLabel}
+          {statusContextLabel}
           {dataset.study_status && <StatusBadge status={dataset.study_status} />}
         </>
       ),

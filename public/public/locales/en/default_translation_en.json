@@ -690,7 +690,7 @@
       "title": "Record",
       "last_modified": "Last modified",
       "access": "Access",
-      "context": "Context",
+      "status": "Status",
       "dac_id": "DAC ID"
     },
     "released": "Released",

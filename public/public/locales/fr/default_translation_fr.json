@@ -323,7 +323,7 @@
       "title": "Fiche",
       "last_modified": "Dernière modification",
       "access": "Accès",
-      "context": "Contexte",
+      "status": "Statut",
       "dac_id": "ID du CAD"
     },
     "released": "Publié",
