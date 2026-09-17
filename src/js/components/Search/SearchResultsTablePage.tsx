@@ -26,7 +26,7 @@ import { useResponsiveMobileContext, useSmallScreen } from '@/hooks/useResponsiv
 import { useScopeDownloadData } from '@/hooks/censorship';
 import { useDownloadAllMatches } from '@/hooks/useDownloadAllMatches';
 import { useDownloadSelectedMatches } from '@/hooks/useDownloadSelectedMatches';
-import { useDownloadExperimentResultManifest } from '@/hooks/useDownloadExperimentResultManifest';
+import { useDownloadExperimentResultPcglManifest } from '@/hooks/useDownloadExperimentResultManifest';
 import { useSearchQuery, useSearchQueryParams } from '@/features/search/hooks';
 import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
 import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
@@ -331,7 +331,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   const { fetchingPermission: fetchingCanDownload, hasPermission: canDownload } = useScopeDownloadData();
   const downloadAllMatches = useDownloadAllMatches();
   const downloadSelectedMatches = useDownloadSelectedMatches();
-  const downloadExperimentResultManifest = useDownloadExperimentResultManifest();
+  const downloadExperimentResultManifest = useDownloadExperimentResultPcglManifest();
   const isSmallScreen = useSmallScreen();
   const isMobile = useResponsiveMobileContext();
 

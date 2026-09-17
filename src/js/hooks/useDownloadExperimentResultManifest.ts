@@ -11,7 +11,7 @@ import { scopedAuthorizedRequestConfigFromParts } from '@/utils/requests';
 // PCGL-only download-manifest (TSV) export for experiment results. Unlike the CSV/XLSX exports, both "all search
 // results" and "selected rows" go through the same batch/experimentresults endpoint - GET (no id) for all results in
 // the current scope, POST with an id list for a selection - since katsu only exposes the manifest renderer there.
-export const useDownloadExperimentResultManifest = () => {
+export const useDownloadExperimentResultPcglManifest = () => {
   const auth = useAppSelector((state) => state.auth);
   const selectedScope = useSelectedScope();
 
