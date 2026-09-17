@@ -149,7 +149,7 @@ const CustomTable = <T extends object>({
         validExpandedKeys
       );
       notify.warning({
-        message: t('table.invalid_row_keys_title'),
+        title: t('table.invalid_row_keys_title'),
         description: t('table.invalid_row_keys_description'),
       });
     }
