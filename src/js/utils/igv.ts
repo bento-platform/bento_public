@@ -72,6 +72,10 @@ export const getIgvFileAndIndexAccessUrls = (tracks: ExperimentResult[]): IgvAcc
   tracks.forEach((t) => {
     if (!t.url) return;
     const fileUrl = getDeferredDrsAccessMethod(t.url);
+
+    // nothing returned from Drs
+    if (!fileUrl) return;
+
     const trackHasIndex = hasIndex(t);
     const indexUrl = trackHasIndex ? getDeferredDrsAccessMethod(getIndexAccessUrl(t)) : null;
 
