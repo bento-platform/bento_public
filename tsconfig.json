@@ -23,7 +23,7 @@
 
     "paths": {
       "@/*": ["./src/js/*"],
-      "@Util/*": ["./src/js/components/Util/*"]
+      "@Util/*": ["./src/js/components/Util/*"],
     }
   },
   "include": ["src", "next-env.d.ts", ".next/types/**/*.ts", ".next/dev/types/**/*.ts", "**/*.mts"],
