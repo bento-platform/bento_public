@@ -28,6 +28,7 @@ import {
   useSearchQuery,
   useSearchableFields,
   useAvailableChartSections,
+  useDisplayedChartSections,
 } from '@/features/search/hooks';
 import { useUiSettings, useUiState } from '@/features/ui/hooks';
 import { useIsInCatalogueMode, useNavigateToSameScopeUrl } from '@/hooks/navigation';
@@ -49,13 +50,10 @@ const ExploreChartSections = () => {
   const { exploreChartMode } = useUiSettings();
   const loadingNewData = WAITING_STATES.includes(discoveryStatus);
 
-  const availableChartSections = useAvailableChartSections();
-  const displayedSections = availableChartSections.filter(
-    ({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1
-  );
-
   // Lazy-loading hooks means this is loaded only if ExploreChartDashboard is rendered:
   const searchableFields = useSearchableFields();
+
+  const displayedSections = useDisplayedChartSections();
 
   if (!displayedSections.length) return null;
 

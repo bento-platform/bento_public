@@ -40,6 +40,14 @@ export const useAvailableChartSections = () => {
   );
 };
 
+export const useDisplayedChartSections = () => {
+  const availableChartSections = useAvailableChartSections();
+  return useMemo(
+    () => availableChartSections.filter(({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1),
+    [availableChartSections]
+  );
+};
+
 export const useSearchFilterFields = (): SearchFieldAndOptions[] => {
   const { filterSections } = useSearchQuery();
   return useMemo(() => filterSections.flatMap(({ fields }) => fields), [filterSections]);
