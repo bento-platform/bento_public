@@ -2,7 +2,6 @@ import Image from 'next/image';
 import { useTranslationFn } from '@/hooks';
 import { ADMIN_URL, SHOW_ADMIN_LINK } from '@/config';
 
-import PCGLLogo from './assets/logo-white.png';
 import FundersLogo from './assets/funders.png';
 import PortalIcon from './assets/PCGL-BGPC.png';
 import BentoLogo from './assets/bento.png';
@@ -64,10 +63,7 @@ const FooterContainer = () => {
         <FooterView sections={data} />
         <div className="meta">
           <LinkHeader>{t('footer.meta.funding_title')}</LinkHeader>
-          <div className="meta-logos">
-            <Image src={PCGLLogo} role="presentation" alt="" width={488} height={170} />
-            <Image src={FundersLogo} role="presentation" alt="" width={423} height={95} />
-          </div>
+          <Image className="meta-logo" src={FundersLogo} role="presentation" alt="" width={423} height={95} />
           <p>{t('footer.meta.cihr_support')}</p>
         </div>
       </div>
