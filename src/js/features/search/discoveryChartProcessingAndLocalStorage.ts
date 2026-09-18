@@ -24,7 +24,8 @@ export const discoveryChartProcessingAndLocalStorage = (
   { layout: sections, fields }: DiscoveryResponse,
   scopeFieldData: DiscoveryFieldResponses
 ) => {
-  // Take chart configuration and create a combined state object with:
+  // Take chart configuration and filter out charts which should not be rendered in this scope.
+  // Then, create a combined state object with:
   //   the chart configuration
   // + displayed boolean - whether this chart is shown
   // + field definition (from config.field)
@@ -38,10 +39,16 @@ export const discoveryChartProcessingAndLocalStorage = (
 
     // Filter out charts where the field definition is missing due to low cell counts _or_ missing counts permissions
     // for the field's data type
-    if (!definition) return; // Field definition missing; we need to skip this field
+    if (!definition) return undefined; // Field definition missing; we need to skip this field
 
     const data: Datum[] = fields[chart.field]?.data ?? [];
     const dataContext: Datum[] | undefined = scopeFieldData[chart.field]?.data;
+
+    // Filter out charts where the sum of all categories is 0 (excluding missing data) at the scope level.
+    if (dataContext && dataContext.filter((d) => d.label !== 'missing').reduce((acc, d) => acc + d.value, 0) === 0) {
+      return undefined; // No non-missing data at the root level; skip this chart
+    }
+
     const initialIsDisplayed =
       defaultCharts === null
         ? i < MAX_CHARTS
