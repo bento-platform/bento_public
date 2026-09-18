@@ -319,6 +319,13 @@
     "program_name": "Nom du programme",
     "project_id": "Identifiant du projet",
     "protocol": "Protocole",
+    "record": {
+      "title": "Fiche",
+      "last_modified": "Dernière modification",
+      "access": "Accès",
+      "status": "Statut",
+      "dac_id": "ID du CAD"
+    },
     "released": "Publié",
     "repository": "Dépôt",
     "schema_version": "Version du schéma",

@@ -1,4 +1,5 @@
 import { useId } from 'react';
+import { Typography } from 'antd';
 import {
   BankOutlined,
   EnvironmentOutlined,
@@ -10,21 +11,8 @@ import {
 
 import { useTranslationFn } from '@/hooks';
 import type { Organization, Person, PersonOrOrganization } from '@/types/dataset';
-import { CopyButton } from './CopyButton';
 
-export const PersonCard = ({
-  person,
-  idx,
-  lead,
-  copiedKey,
-  onCopy,
-}: {
-  person: PersonOrOrganization;
-  idx: number;
-  lead?: boolean;
-  copiedKey: string | null;
-  onCopy: (value: string, id: string) => void;
-}) => {
+export const PersonCard = ({ person, lead }: { person: PersonOrOrganization; lead?: boolean }) => {
   const t = useTranslationFn();
 
   const typeId = useId();
@@ -92,7 +80,7 @@ export const PersonCard = ({
               <span className="pm-cline-text">
                 <a href={`mailto:${email}`}>{email}</a>
               </span>
-              <CopyButton value={email} id={`email-${idx}-${i}`} copiedKey={copiedKey} onCopy={onCopy} />
+              <Typography.Text copyable={{ text: email }} />
             </div>
           ))}
           {contact?.website && (
@@ -127,7 +115,7 @@ export const PersonCard = ({
                 <span className="pm-orcid-badge">iD</span>
                 {p.orcid}
               </span>
-              <CopyButton value={p.orcid} id={`orcid-${idx}`} copiedKey={copiedKey} onCopy={onCopy} />
+              <Typography.Text copyable={{ text: p.orcid }} />
             </div>
           )}
         </div>
