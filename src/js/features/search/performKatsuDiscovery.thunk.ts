@@ -5,7 +5,7 @@ import type { RootState } from '@/store';
 import type { DiscoveryResponseOrMessage } from '@/types/discovery/response';
 import type { DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
 import { RequestStatus } from '@/types/requests';
-import { getDiscovery } from '@/features/search/api';
+import { fetchDiscovery } from '@/features/search/fetchDiscovery';
 import { printAPIError } from '@/utils/error.util';
 import { scopeEqual } from '@/utils/router';
 import { searchQueryParamsFromState } from './utils';
@@ -24,7 +24,7 @@ export const performKatsuDiscovery = createAsyncThunk<
     const scopeSelectionAtDispatch = state.metadata.selectedScope;
 
     try {
-      const res = await getDiscovery(state, searchQueryParamsFromState(state.query));
+      const res = await fetchDiscovery(state, searchQueryParamsFromState(state.query));
 
       // Scope changed while the request was in flight — discard stale results
       if (!scopeEqual(scopeSelectionAtDispatch.scope, getState().metadata.selectedScope.scope)) {

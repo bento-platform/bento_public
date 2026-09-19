@@ -24,7 +24,7 @@ const WRAPPER_STYLE: CSSProperties = {
 };
 
 const SearchFilterInputWrapper = ({ children }: { children: ReactNode }) => (
-  <Space direction="vertical" size="small" className="w-full" style={WRAPPER_STYLE}>
+  <Space orientation="vertical" size="small" className="w-full" style={WRAPPER_STYLE}>
     {children}
   </Space>
 );

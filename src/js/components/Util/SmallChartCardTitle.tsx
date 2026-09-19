@@ -10,7 +10,7 @@ type SmallChartCardTitleProps = {
 
 const SmallChartCardTitle = ({ title, description, descriptionStyle, compact }: SmallChartCardTitleProps) => (
   <Space.Compact
-    direction={compact ? 'horizontal' : 'vertical'}
+    orientation={compact ? 'horizontal' : 'vertical'}
     style={{
       fontWeight: 'normal',
       padding: description || compact ? '4px 4px' : '10px 4px',

@@ -457,8 +457,8 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
             pageSize,
             pageSizeOptions: PAGE_SIZE_OPTIONS, // increased a bit from default for better data density
             total: totalMatches,
-            position: (isSmallScreen ? ['bottomCenter'] : ['bottomRight']) as TablePaginationConfig['position'],
-            size: (isSmallScreen ? 'small' : 'default') as TablePaginationConfig['size'],
+            placement: (isSmallScreen ? ['bottomCenter'] : ['bottomRight']) as TablePaginationConfig['placement'],
+            size: (isSmallScreen ? 'small' : 'medium') as TablePaginationConfig['size'],
             showSizeChanger: true,
             onChange(newPage, newPageSize) {
               // Update page/pageSize using navigation, since we sync Redux from the URL uni-directionally most times.
@@ -602,7 +602,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
         title={t('search.manage_columns')}
         footer={null}
       >
-        <Space direction="vertical">
+        <Space orientation="vertical">
           {/*
             TODO: filter by empty on entire result set somehow... i.e., filter out individual_id or something.
               Maybe we can just have a function based on available entities, although this doesn't cover other cases.

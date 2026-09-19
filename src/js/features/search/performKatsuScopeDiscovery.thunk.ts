@@ -5,7 +5,7 @@ import type { RootState } from '@/store';
 import { type AxiosError } from 'axios';
 import { STALE_DISCOVERY_REJECTION } from './constants';
 import { RequestStatus } from '@/types/requests';
-import { getDiscovery } from '@/features/search/api';
+import { fetchDiscovery } from '@/features/search/fetchDiscovery';
 import { scopeEqual } from '@/utils/router';
 import { printAPIError } from '@/utils/error.util';
 
@@ -23,7 +23,7 @@ export const performKatsuScopeDiscovery = createAsyncThunk<
     const scopeSelectionAtDispatch = state.metadata.selectedScope;
 
     try {
-      const res = await getDiscovery(state);
+      const res = await fetchDiscovery(state);
 
       // Scope changed while the request was in flight — discard stale results
       if (!scopeEqual(scopeSelectionAtDispatch.scope, getState().metadata.selectedScope.scope)) {

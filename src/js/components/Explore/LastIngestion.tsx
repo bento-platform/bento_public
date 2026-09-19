@@ -26,7 +26,7 @@ const formatDate = (dateString: string, language: string) => {
 
 const LastIngestionSkeleton = () => (
   <Card className="shadow">
-    <Space direction="vertical">
+    <Space orientation="vertical">
       <Typography.Text style={{ color: 'rgba(0,0,0,0.45)' }}>
         <Skeleton active={true} title={{ width: 100, style: { margin: 0 } }} paragraph={false} />
       </Typography.Text>
@@ -47,7 +47,7 @@ const LastIngestionDataType = ({ dataType }: { dataType: BentoServiceDataType })
   const { t, i18n } = useTranslation();
   return (
     <Card className="shadow" key={dataType.id}>
-      <Space direction="vertical">
+      <Space orientation="vertical">
         <Typography.Text style={{ color: 'rgba(0,0,0,0.45)' }}>
           {t(`entities.${dataType.id}`, T_PLURAL_COUNT)}
         </Typography.Text>

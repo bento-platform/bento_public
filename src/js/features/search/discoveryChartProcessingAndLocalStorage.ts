@@ -24,6 +24,22 @@ export const discoveryChartProcessingAndLocalStorage = (
   { layout: sections, fields }: DiscoveryResponse,
   scopeFieldData: DiscoveryFieldResponses
 ) => {
+  // Filter out charts which should not be rendered in this scope.
+  const filterChart = (chart: ChartConfig): boolean => {
+    const definition: Field | undefined = fields[chart.field]?.definition ?? scopeFieldData[chart.field]?.definition;
+
+    // Filter out charts where the field definition is missing due to low cell counts _or_ missing counts permissions
+    // for the field's data type
+    if (!definition) return false; // Field definition missing; we need to skip this field
+
+    const dataContext: Datum[] | undefined = scopeFieldData[chart.field]?.data;
+
+    // Filter out charts where the sum of all categories is 0 (excluding missing data) at the scope level.
+    return !(
+      dataContext && dataContext.filter((d) => d.label !== 'missing').reduce((acc, d) => acc + d.value, 0) === 0
+    );
+  };
+
   // Take chart configuration and create a combined state object with:
   //   the chart configuration
   // + displayed boolean - whether this chart is shown
@@ -33,15 +49,12 @@ export const discoveryChartProcessingAndLocalStorage = (
     chart: ChartConfig,
     i: number,
     defaultCharts: ChartLayoutSection['default_charts']
-  ): ChartDataField | undefined => {
-    const definition: Field | undefined = fields[chart.field]?.definition ?? scopeFieldData[chart.field]?.definition;
-
-    // Filter out charts where the field definition is missing due to low cell counts _or_ missing counts permissions
-    // for the field's data type
-    if (!definition) return; // Field definition missing; we need to skip this field
+  ): ChartDataField => {
+    const definition: Field = fields[chart.field]?.definition ?? scopeFieldData[chart.field].definition;
 
     const data: Datum[] = fields[chart.field]?.data ?? [];
     const dataContext: Datum[] | undefined = scopeFieldData[chart.field]?.data;
+
     const initialIsDisplayed =
       defaultCharts === null
         ? i < MAX_CHARTS
@@ -63,7 +76,7 @@ export const discoveryChartProcessingAndLocalStorage = (
   const sectionData: Sections = sections.map(({ section_title, charts, default_charts }, idx) => ({
     sectionId: `sec-${idx}-${_asSlug(section_title)}`,
     sectionTitle: section_title,
-    charts: charts.map((chart, i) => normalizeChart(chart, i, default_charts)).filter((chart) => chart !== undefined),
+    charts: charts.filter(filterChart).map((chart, i) => normalizeChart(chart, i, default_charts)),
   }));
 
   const defaultLayout = JSON.parse(JSON.stringify(sectionData));
