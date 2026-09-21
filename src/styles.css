@@ -769,6 +769,7 @@ body {
 .facet-chips-container {
   display: grid;
   grid-template-rows: 0fr;
+  grid-template-columns: minmax(0, 1fr);
   opacity: 0;
   transition: grid-template-rows  200ms ease, opacity 200ms ease, visibility 200ms ease;
   visibility: hidden;
@@ -778,10 +779,19 @@ body {
   grid-template-rows: 1fr;
   opacity: 1;
   visibility: visible;
+}
+
+.facet-chips-container__inner {
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.facet-chips-container--open > .facet-chips-container__inner {
   overflow: visible;
 }
 
-.facet-chips-container--open > .facet-chips {
+.facet-chips-container--open .facet-chips {
   padding: 4px 0 4px 4px;
 }
 
