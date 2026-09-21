@@ -35,7 +35,7 @@ const SearchResultsCounts = ({
 
   return (
     <Space
-      direction={mode === 'normal' ? 'vertical' : 'horizontal'}
+      orientation={mode === 'normal' ? 'vertical' : 'horizontal'}
       size="middle"
       style={{
         display: 'flex',
@@ -76,21 +76,21 @@ const SearchResultsCounts = ({
             <Statistic
               title={<CountsTitleWithHelp entity="individual" showHelp={!isBeaconNetwork} />}
               value={hasInsufficientData ? t(message ?? '') : renderCount(individualCount)}
-              valueStyle={STAT_STYLE}
+              styles={{ content: STAT_STYLE }}
               prefix={<TeamOutlined />}
             />
           </div>
           <Statistic
             title={<CountsTitleWithHelp entity="biosample" showHelp={!isBeaconNetwork} />}
             value={hasInsufficientData ? renderCount(undefined) : renderCount(biosampleCount)}
-            valueStyle={STAT_STYLE}
+            styles={{ content: STAT_STYLE }}
             // Slight fixup for alignment of non-Antd icon:
             prefix={<BiDna className="align-top mt-6px" />}
           />
           <Statistic
             title={<CountsTitleWithHelp entity="experiment" showHelp={!isBeaconNetwork} />}
             value={hasInsufficientData ? renderCount(undefined) : renderCount(experimentCount)}
-            valueStyle={STAT_STYLE}
+            styles={{ content: STAT_STYLE }}
             prefix={<ExperimentOutlined />}
           />
         </>

@@ -1321,15 +1321,15 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   background-color: rgba(0, 0, 0, 0.04);
 }
 
-.ant-tooltip-inner a.iri-link {
+.ant-tooltip-container a.iri-link {
   text-decoration: underline;
   color: var(--white-90);
 }
-.ant-tooltip-inner a.iri-link:hover {
+.ant-tooltip-container a.iri-link:hover {
   text-decoration: none;
   color: var(--white-80);
 }
-.ant-tooltip-inner a.iri-link:active {
+.ant-tooltip-container a.iri-link:active {
   color: var(--white-70);
 }
 

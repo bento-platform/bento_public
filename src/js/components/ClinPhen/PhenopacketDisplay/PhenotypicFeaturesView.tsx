@@ -66,7 +66,7 @@ function PhenotypicFeatureExpandedRow({ feature }: { feature: PhenotypicFeature 
     },
   ];
   return (
-    <Space direction="vertical" className="w-full">
+    <Space orientation="vertical" className="w-full">
       <TDescriptions bordered size="compact" items={items} />
       <ExtraPropertiesDisplay extraProperties={feature.extra_properties} />
     </Space>

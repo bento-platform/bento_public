@@ -28,6 +28,7 @@ import {
   useSearchQuery,
   useSearchableFields,
   useAvailableChartSections,
+  useDisplayedChartSections,
 } from '@/features/search/hooks';
 import { useUiSettings, useUiState } from '@/features/ui/hooks';
 import { useIsInCatalogueMode, useNavigateToSameScopeUrl } from '@/hooks/navigation';
@@ -49,13 +50,10 @@ const ExploreChartSections = () => {
   const { exploreChartMode } = useUiSettings();
   const loadingNewData = WAITING_STATES.includes(discoveryStatus);
 
-  const availableChartSections = useAvailableChartSections();
-  const displayedSections = availableChartSections.filter(
-    ({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1
-  );
-
   // Lazy-loading hooks means this is loaded only if ExploreChartDashboard is rendered:
   const searchableFields = useSearchableFields();
+
+  const displayedSections = useDisplayedChartSections();
 
   if (!displayedSections.length) return null;
 
@@ -125,7 +123,7 @@ const ExploreChartDashboard = () => {
   if (scopeSet && !scopeHasData && scope.dataset) {
     if (!hasNotified) {
       notify.error({
-        message: t('navigation.not_available_title', { endpoint: BentoRoute.Explore }),
+        title: t('navigation.not_available_title', { endpoint: BentoRoute.Explore }),
         description: t('navigation.not_available_description', { target: BentoRoute.About }),
       });
       setHasNotified(true);

@@ -10,11 +10,10 @@ import Error from '@Util/Error';
 
 import { COUNT_ENTITY_ORDER, COUNT_ENTITY_REGISTRY } from '@/constants/countEntities';
 import { COUNTS_FILL } from '@/constants/exploreConstants';
-import { WAITING_STATES } from '@/constants/requests';
 import { ENTITY_QUERY_PARAM, TABLE_PAGE_QUERY_PARAM, TABLE_PAGE_SIZE_QUERY_PARAM } from '@/features/search/constants';
 
 import { useSelectedDataset, useSelectedProject } from '@/features/metadata/hooks';
-import { useEntityAndTextQueryParams, useSearchQuery } from '@/features/search/hooks';
+import { useEntityAndTextQueryParams, useIsSearchLoading, useSearchQuery } from '@/features/search/hooks';
 import { useAppDispatch, useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
 import { useRenderCount } from '@/hooks/counts';
@@ -121,7 +120,7 @@ const CountsAndResults = () => {
   } = useSearchQuery();
   const entityAndTextQueryParams = useEntityAndTextQueryParams();
 
-  const waitingForData = WAITING_STATES.includes(discoveryStatus);
+  const waitingForData = useIsSearchLoading();
   const doingFirstLoad = waitingForData && !doneFirstLoad;
 
   // TODO: per-data type permissions?
@@ -206,7 +205,7 @@ const CountsAndResults = () => {
             <Statistic
               title={<CountsTitleWithHelp entity={entity} />}
               value={count}
-              valueStyle={{ color: COUNTS_FILL }}
+              styles={{ content: { color: COUNTS_FILL } }}
               suffix={
                 showDenominator ? (
                   <span className="text-base antd-gray-7">/ {entityCounts[entity].toLocaleString()}</span>
@@ -223,7 +222,7 @@ const CountsAndResults = () => {
   return (
     <Flex vertical={true} gap={12}>
       {discoveryError ? <Error message="search_fetch" description={discoveryError} /> : null}
-      {message ? <Alert message={t(message)} type="info" showIcon={true} style={{ fontSize: '1.1rem' }} /> : null}
+      {message ? <Alert title={t(message)} type="info" showIcon={true} style={{ fontSize: '1.1rem' }} /> : null}
       {/* Can only wrap if we don't have the card show/hide button: */}
       <Space size={12} wrap={!hasQueryData}>
         {countElements.length ? countElements : <CountCardPlaceholder loading={doingFirstLoad} />}
