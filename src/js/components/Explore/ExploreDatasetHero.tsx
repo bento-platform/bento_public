@@ -1,22 +1,24 @@
 import type { ReactNode } from 'react';
-import { Button, Typography } from 'antd';
+import { Button, Popover, Typography } from 'antd';
 import {
   CalendarOutlined,
   DatabaseOutlined,
   SafetyOutlined,
   SolutionOutlined,
   TagOutlined,
+  TeamOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 
 import { useTranslationFn } from '@/hooks';
 import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
-import { studyContextTranslationKey } from '@/features/catalogue/utils';
+import { getLeads, studyContextTranslationKey } from '@/features/catalogue/utils';
 import type { Dataset } from '@/types/dataset';
 import { BentoRoute } from '@/types/routes';
 
 import StatusBadge from '@Util/StatusBadge';
 import DatasetDescription from '@/components/Provenance/DatasetProvenance/DatasetDescription';
+import { PersonCard } from '@/components/Provenance/DatasetProvenance/bits';
 
 type RecordRow = { icon: ReactNode; label: string; value: ReactNode };
 
@@ -30,7 +32,31 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
   // as a conventional `dac_id` extra property until the dataset schema grows a first-class field for it.
   const dacId = dataset.extra_properties?.dac_id;
 
+  const leads = getLeads(dataset);
+
   const rows: RecordRow[] = [];
+  if (leads.length) {
+    rows.push({
+      icon: <TeamOutlined aria-hidden="true" />,
+      label: t('provenance.record.lead', { count: leads.length }),
+      value: (
+        <>
+          {leads.map((lead, i) => (
+            <Popover
+              key={i}
+              placement="bottomLeft"
+              classNames={{ container: 'explore-hero-lead-popover' }}
+              content={<PersonCard person={lead} lead />}
+            >
+              <Button type="link" size="small" className="explore-hero-lead">
+                {lead.name}
+              </Button>
+            </Popover>
+          ))}
+        </>
+      ),
+    });
+  }
   if (dataset.version) {
     rows.push({ icon: <TagOutlined aria-hidden="true" />, label: t('provenance.version'), value: dataset.version });
   }

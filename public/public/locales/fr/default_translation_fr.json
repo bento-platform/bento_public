@@ -321,10 +321,16 @@
     "protocol": "Protocole",
     "record": {
       "title": "Fiche",
+      "lead_one": "Responsable",
+      "lead_other": "Responsables",
       "last_modified": "Dernière modification",
       "access": "Accès",
       "status": "Statut",
       "dac_id": "ID du CAD"
+    },
+    "role": {
+      "principal_investigator": "Chercheur principal ou chercheuse principale",
+      "project_lead": "Responsable de projet"
     },
     "released": "Publié",
     "repository": "Dépôt",

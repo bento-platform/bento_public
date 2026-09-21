@@ -10,6 +10,7 @@ import {
 } from '@ant-design/icons';
 
 import { useTranslationFn } from '@/hooks';
+import { roleTranslationKey } from '@/features/catalogue/utils';
 import type { Organization, Person, PersonOrOrganization } from '@/types/dataset';
 
 export const PersonCard = ({ person, lead }: { person: PersonOrOrganization; lead?: boolean }) => {
@@ -66,7 +67,7 @@ export const PersonCard = ({ person, lead }: { person: PersonOrOrganization; lea
         <div className="pm-pc-roles">
           {person.roles.map((r, i) => (
             <span key={i} className="pm-role">
-              {r}
+              {t(roleTranslationKey(r), { defaultValue: r })}
             </span>
           ))}
         </div>

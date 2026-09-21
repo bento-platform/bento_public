@@ -1261,6 +1261,9 @@ body {
   align-items: center;
 }
 .explore-hero-record-more { margin-top: auto; }
+.explore-hero-lead.ant-btn { padding: 0 2px; height: auto; font-size: inherit; }
+.explore-hero-lead-popover.ant-popover-container { padding: 0; }
+.explore-hero-lead-popover .pm-pcard { width: 320px; max-width: 100%; border: 0; }
 
 .manage-charts__chart-size-control-container {
   padding: var(--ant-padding) var(--ant-padding-lg) var(--ant-padding-lg);
