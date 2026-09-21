@@ -1261,6 +1261,7 @@ body {
   align-items: center;
 }
 .explore-hero-record-more { margin-top: auto; }
+.explore-hero-lead.ant-typography { font-size: inherit; line-height: inherit; }
 .explore-hero-lead-popover.ant-popover-container { padding: 0; }
 
 .manage-charts__chart-size-control-container {

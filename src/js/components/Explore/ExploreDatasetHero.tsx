@@ -50,7 +50,7 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
                 classNames={{ container: 'explore-hero-lead-popover' }}
                 content={<PersonCard person={lead} compact />}
               >
-                <InteractableText className="cursor-pointer" tabIndex={0}>
+                <InteractableText className="explore-hero-lead cursor-pointer" tabIndex={0}>
                   {lead.name}
                 </InteractableText>
               </Popover>
