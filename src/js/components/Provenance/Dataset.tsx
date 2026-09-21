@@ -1,7 +1,7 @@
 import { lazy, Suspense, type ReactNode, useCallback, useMemo, useState } from 'react';
 
 import { Avatar, Button, Card, Flex, List, Typography } from 'antd';
-import { AuditOutlined, PieChartOutlined, SolutionOutlined } from '@ant-design/icons';
+import { AuditOutlined, ExportOutlined, PieChartOutlined, SolutionOutlined } from '@ant-design/icons';
 import { FaDatabase } from 'react-icons/fa';
 
 import { PCGL_MODE } from '@/config';
@@ -153,17 +153,17 @@ const Dataset = ({
         )}
 
         <Flex gap={8} className="catalogue-card__actions mt-3" wrap>
+          <Button icon={<SolutionOutlined />} className="flex-1" onClick={openProvenanceModal}>
+            {t('About')}
+          </Button>
           {hasData && (
             <Button type="primary" icon={<PieChartOutlined />} className="flex-1" onClick={onNavigateExplore}>
               {t('Explore')}
             </Button>
           )}
-          <Button icon={<SolutionOutlined />} className="flex-1" onClick={openProvenanceModal}>
-            {t('About')}
-          </Button>
           {PCGL_MODE && (
             <Button icon={<AuditOutlined />} className="flex-1" disabled>
-              {t('dataset.apply_for_access')}
+              {t('dataset.apply_for_access')} <ExportOutlined />
             </Button>
           )}
         </Flex>
