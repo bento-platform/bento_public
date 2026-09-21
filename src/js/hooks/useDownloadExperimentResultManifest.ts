@@ -20,11 +20,11 @@ export const useDownloadExperimentResultPcglManifest = () => {
       const res = ids.length
         ? await axios.post(
             experimentResultBatchUrl,
-            { id: ids.map(Number), format: 'manifest' },
+            { id: ids.map(Number), format: 'pcgl_manifest' },
             { headers: { ...makeAuthorizationHeader(auth.accessToken) }, responseType: 'blob' }
           )
         : await axios.get(experimentResultBatchUrl, {
-            ...scopedAuthorizedRequestConfigFromParts(auth, selectedScope, [['format', 'manifest']]),
+            ...scopedAuthorizedRequestConfigFromParts(auth, selectedScope, [['format', 'pcgl_manifest']]),
             responseType: 'blob',
           });
 
