@@ -12,7 +12,7 @@ import {
 
 import { useTranslationFn } from '@/hooks';
 import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
-import { getLeads, studyContextTranslationKey } from '@/features/catalogue/utils';
+import { getLeads } from '@/features/catalogue/utils';
 import type { Dataset } from '@/types/dataset';
 import { BentoRoute } from '@/types/routes';
 
@@ -27,7 +27,7 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
   const t = useTranslationFn();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
 
-  const statusContextLabel = dataset.study_context ? t(studyContextTranslationKey(dataset.study_context)) : null;
+  const statusContextLabel = dataset.study_context ?? null;
 
   // No dedicated schema field exists yet for a dataset's Data Access Committee identifier; it's carried
   // as a conventional `dac_id` extra property until the dataset schema grows a first-class field for it.
