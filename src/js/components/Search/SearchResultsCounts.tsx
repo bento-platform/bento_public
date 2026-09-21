@@ -2,14 +2,11 @@ import type { CSSProperties } from 'react';
 import { Flex, Skeleton, Space, Statistic } from 'antd';
 import { ExperimentOutlined, TeamOutlined } from '@ant-design/icons';
 import { BiDna } from 'react-icons/bi';
-import clsx from 'clsx';
 
 import CountsTitleWithHelp from '@/components/Util/CountsTitleWithHelp';
 import { COUNTS_FILL } from '@/constants/exploreConstants';
 import { useTranslationFn } from '@/hooks';
-import { useScopeQueryData } from '@/hooks/censorship';
 import { useRenderCount } from '@/hooks/counts';
-import type { SearchResultsUIPage } from '@/features/search/types';
 import type { DiscoveryResults, OptionalDiscoveryResults } from '@/types/data';
 import { RequestStatus } from '@/types/requests';
 
@@ -19,8 +16,6 @@ const SearchResultsCounts = ({
   mode,
   results,
   queryStatus,
-  selectedPage,
-  setSelectedPage,
   hasInsufficientData,
   message,
 }: SearchResultsCountsProps) => {
@@ -28,8 +23,6 @@ const SearchResultsCounts = ({
   const renderCount = useRenderCount();
 
   const { individualCount, biosampleCount, experimentCount } = results;
-  const { hasPermission: queryDataPerm } = useScopeQueryData();
-  const individualsClickable = !!setSelectedPage && queryDataPerm;
 
   const isBeaconNetwork = mode === 'beacon-network';
 
@@ -54,21 +47,12 @@ const SearchResultsCounts = ({
         </Flex>
       ) : (
         <>
-          <div
-            onClick={individualsClickable ? () => setSelectedPage('individuals') : undefined}
-            className={clsx(
-              'search-result-statistic',
-              selectedPage === 'individuals' && 'selected',
-              individualsClickable && 'enabled'
-            )}
-          >
-            <Statistic
-              title={<CountsTitleWithHelp entity="individual" showHelp={!isBeaconNetwork} />}
-              value={hasInsufficientData ? t(message ?? '') : renderCount(individualCount)}
-              styles={{ content: STAT_STYLE }}
-              prefix={<TeamOutlined />}
-            />
-          </div>
+          <Statistic
+            title={<CountsTitleWithHelp entity="individual" showHelp={!isBeaconNetwork} />}
+            value={hasInsufficientData ? t(message ?? '') : renderCount(individualCount)}
+            styles={{ content: STAT_STYLE }}
+            prefix={<TeamOutlined />}
+          />
           <Statistic
             title={<CountsTitleWithHelp entity="biosample" showHelp={!isBeaconNetwork} />}
             value={hasInsufficientData ? renderCount(undefined) : renderCount(biosampleCount)}
@@ -94,8 +78,6 @@ type SearchResultsCountsProps = {
   mode: 'normal' | 'beacon-network';
   results: DiscoveryResults | OptionalDiscoveryResults;
   queryStatus?: RequestStatus;
-  selectedPage?: SearchResultsUIPage;
-  setSelectedPage?: (page: SearchResultsUIPage) => void;
   hasInsufficientData?: boolean;
   message?: string;
 };

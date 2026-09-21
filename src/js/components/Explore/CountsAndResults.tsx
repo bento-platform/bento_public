@@ -56,7 +56,8 @@ const CountCardShowHide = memo(({ selected, onClear }: { selected: boolean; onCl
 
   const handleKeyDown = useCallback<KeyboardEventHandler<HTMLDivElement>>(
     (e) => {
-      if (e.key === 'Enter') {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
         onClear();
       }
     },
@@ -64,12 +65,17 @@ const CountCardShowHide = memo(({ selected, onClear }: { selected: boolean; onCl
   );
 
   return (
+    // TODO: investigate correct a11y patterns for the count card - either as an accordion or as a tab.
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
       className="count-card__show-hide cursor-pointer antd-gray-7"
       style={{
         backgroundColor: selected ? 'rgba(255, 255, 255, 1.0)' : 'rgba(255, 255, 255, 0.0)',
         bottom: selected ? -8 : 0,
       }}
+      role={selected ? 'button' : undefined}
+      // TODO: remove this exception when we have a clear correct accessible interaction pattern for these.
+      /* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */
       tabIndex={selected ? 0 : undefined}
       onClick={selected ? onClear : undefined}
       onKeyDown={handleKeyDown}
@@ -193,7 +199,8 @@ const CountsAndResults = () => {
             onKeyDown={
               canSelect
                 ? (e) => {
-                    if (e.key === 'Enter') {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
                       setSelectedEntity(entity);
                     }
                   }
