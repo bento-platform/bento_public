@@ -1192,7 +1192,7 @@ body {
 @media (min-width: 1300px) {
   .explore-hero { grid-template-columns: minmax(0, 1fr) minmax(300px, 460px); }
 }
-@media (max-width: 860px) {
+@media (max-width: 1100) {
   .explore-hero { grid-template-columns: 1fr; }
 }
 .explore-hero-main {
