@@ -687,6 +687,19 @@
     "program_name": "Program name",
     "project_id": "Project ID",
     "protocol": "Protocol",
+    "record": {
+      "title": "Record",
+      "lead_one": "Lead",
+      "lead_other": "Leads",
+      "last_modified": "Last modified",
+      "access": "Access",
+      "status": "Status",
+      "dac_id": "DAC ID"
+    },
+    "role": {
+      "principal_investigator": "Principal Investigator",
+      "project_lead": "Project Lead"
+    },
     "released": "Released",
     "repository": "Repository",
     "schema_version": "Schema version",
