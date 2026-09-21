@@ -686,10 +686,6 @@ body {
   flex-shrink: 0;
   align-self: flex-start;
 
-  /* The element that scrolls (.sidebar__content, below) is deliberately not this one: a `position: sticky`
-     element that's also its own `overflow: auto` scroll container over-reports its scrollable area in
-     Chromium (its sticky travel range leaks into scrollHeight), producing a scrollbar much longer than the
-     actual content. */
   display: flex;
   flex-direction: column;
   overflow: hidden;
