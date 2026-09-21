@@ -1,0 +1,31 @@
+[
+  {
+    "title": "about",
+    "items": [
+      { "link": "pcglWebsite", "url": "pcglWebsite" },
+      { "link": "policies", "url": "policies" },
+      { "link": "privacy", "url": "privacy" },
+      { "link": "termsConditions", "url": "termsConditions" },
+      { "link": "publicationPolicy", "url": "publicationPolicy" }
+    ]
+  },
+  {
+    "title": "resources",
+    "items": [
+      { "link": "helpGuides", "url": "helpGuides" },
+      { "link": "dataSubmissionSystem", "url": "dataSubmissionSystem" },
+      { "link": "dacoPlatform", "url": "dacoPlatform" },
+      { "link": "researchPlatform", "url": "researchPlatform" },
+      { "link": "TRE", "url": "TRE" },
+      { "link": "participantPortal", "url": "participantPortal" }
+    ]
+  },
+  {
+    "title": "connect",
+    "items": [
+      { "link": "contact", "url": "contact" },
+      { "link": "subscribe", "url": "subscribe" },
+      { "link": "linkedin", "url": "linkedin" }
+    ]
+  }
+]

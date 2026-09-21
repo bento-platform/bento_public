@@ -55,13 +55,14 @@
       "termsConditions": "Conditions d'utilisation",
       "publicationPolicy": "Politique de publication",
       "helpGuides": "Guides d'aide",
-      "controlledDataUsers": "Utilisateurs de données contrôlées",
-      "dataPlatform": "Plateforme de données",
+      "dataSubmissionSystem": "Système de soumission de données",
+      "dacoPlatform": "Bureau de conformité d'accès aux données",
       "researchPlatform": "Portail de recherche",
+      "TRE": "Environnement de recherche de confiance",
+      "participantPortal": "Portail des participants",
       "contact": "Contactez-nous",
       "subscribe": "S'abonner",
-      "linkedin": "LinkedIn",
-      "github": "GitHub"
+      "linkedin": "LinkedIn"
     },
     "urls": {
       "pcglWebsite": "https://genomelibrary.ca/fr",
@@ -70,13 +71,14 @@
       "termsConditions": "https://genomelibrary.ca/fr",
       "publicationPolicy": "https://pan-canadian-genome-library.github.io/fr/participant-public/resources",
       "helpGuides": "https://pan-canadian-genome-library.github.io/fr/participant-public/docs",
-      "controlledDataUsers": "https://pan-canadian-genome-library.github.io/fr/participant-public/overview",
-      "dataPlatform": "https://genomelibrary.ca/fr/chercheurs/",
-      "researchPlatform": "https://genomelibrary.ca/fr/chercheurs/",
-      "contact": "https://genomelibrary.ca/fr/nous-joindre/",
-      "subscribe": "https://genomelibrary.ca/fr/abonnez-vous/",
-      "linkedin": "https://fr.linkedin.com/company/genome-library/",
-      "github": "https://github.com/Pan-Canadian-Genome-Library/?locale=fr-fr"
+      "dataSubmissionSystem": "https://submission-ui.submission.gateway.dev.k8s.pcgl.dev-sd4h.ca/fr",
+      "dacoPlatform": "https://daco.submission.gateway.dev.k8s.pcgl.dev-sd4h.ca/fr",
+      "researchPlatform": "https://pcgl.bento.sd4h.ca/fr",
+      "TRE": "https://genomelibrary.ca/fr/tre",
+      "participantPortal": "https://pcgl.uhndata.io/fr",
+      "contact": "https://genomelibrary.ca/fr/nous-joindre",
+      "subscribe": "https://genomelibrary.ca/fr/abonnez-vous",
+      "linkedin": "https://fr.linkedin.com/company/genome-library"
     }
   }
 }

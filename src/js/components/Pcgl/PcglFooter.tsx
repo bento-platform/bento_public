@@ -2,11 +2,12 @@ import Image from 'next/image';
 import { useTranslationFn } from '@/hooks';
 import { ADMIN_URL, SHOW_ADMIN_LINK } from '@/config';
 
-import FundersLogo from './assets/funders.png';
-import PortalIcon from './assets/PCGL-BGPC.png';
-import BentoLogo from './assets/bento.png';
-import GPLLogo from './assets/gplv3.png';
+import FundersLogo from './assets/funders.svg';
+import PortalIcon from './assets/PCGL-BGPC.svg';
+import BentoLogo from './assets/bento.svg';
+import GPLLogo from './assets/gplv3.svg';
 import C3GLogo from './assets/c3g.png';
+import FOOTER_DATA from './assets/footer_data.json';
 import './styles.css';
 
 type FooterNavItem = { link: string; url: string };
@@ -14,38 +15,6 @@ type FooterNavItems = { title: string; items: FooterNavItem[] };
 type LinkItemProps = React.AnchorHTMLAttributes<HTMLAnchorElement> & { url: string };
 
 const FooterContainer = () => {
-  //TODO: Could we get it from an API and sanitized the urls?
-  const FOOTER_DATA = [
-    {
-      title: 'about',
-      items: [
-        { link: 'pcglWebsite', url: 'pcglWebsite' },
-        { link: 'policies', url: 'policies' },
-        { link: 'privacy', url: 'privacy' },
-        { link: 'termsConditions', url: 'termsConditions' },
-        { link: 'publicationPolicy', url: 'publicationPolicy' },
-      ],
-    },
-    {
-      title: 'resources',
-      items: [
-        { link: 'helpGuides', url: 'helpGuides' },
-        { link: 'controlledDataUsers', url: 'controlledDataUsers' },
-        { link: 'dataPlatform', url: 'dataPlatform' },
-        { link: 'researchPlatform', url: 'researchPlatform' },
-      ],
-    },
-    {
-      title: 'connect',
-      items: [
-        { link: 'contact', url: 'contact' },
-        { link: 'subscribe', url: 'subscribe' },
-        { link: 'linkedin', url: 'linkedin' },
-        { link: 'github', url: 'github' },
-      ],
-    },
-  ];
-
   const t = useTranslationFn();
 
   const data = Array.from(FOOTER_DATA, (link) => ({
@@ -58,7 +27,7 @@ const FooterContainer = () => {
 
   return (
     <footer className="pcgl-footer">
-      <>{renderContextualBand()}</>
+      <ContextualBand />
       <div className="main-band">
         <FooterView sections={data} />
         <div className="meta">
@@ -72,7 +41,7 @@ const FooterContainer = () => {
   );
 };
 
-const renderContextualBand = () => {
+const ContextualBand = () => {
   return (
     <div className="contextual-band">
       <div className="contextual-logos">
@@ -89,12 +58,10 @@ const BentoBand = () => {
     <div className="bento-footer">
       <div className="about">
         <LinkHeader>{t('footer.bento.title')}</LinkHeader>
-        <p>
-          {t('footer.bento.powered_by')}{' '}
-          <LinkItem url="https://bento-platform.github.io">
-            <Image src={BentoLogo} width={288} height={68} className="bento-logo" alt={t('footer.bento.bento')} />
-          </LinkItem>
-        </p>
+        <p>{t('footer.bento.powered_by')} </p>
+        <LinkItem url="https://bento-platform.github.io">
+          <Image src={BentoLogo} width={288} height={68} className="bento-logo" alt={t('footer.bento.bento')} />
+        </LinkItem>
       </div>
       <ul className="links">
         <li>

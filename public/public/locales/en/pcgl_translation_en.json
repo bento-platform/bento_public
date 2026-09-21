@@ -54,28 +54,30 @@
       "termsConditions": "Terms & Conditions",
       "publicationPolicy": "Publication Policy",
       "helpGuides": "Help Guides",
-      "controlledDataUsers": "Controlled Data Users",
-      "dataPlatform": "Data Platform",
+      "dataSubmissionSystem": "Data Submission System",
+      "dacoPlatform": "Data Access Compliance Office",
       "researchPlatform": "Research Portal",
+      "TRE": "TRE (Trusted ResearchEnvironment)",
+      "participantPortal": "Participant Portal",
       "contact": "Contact Us",
       "subscribe": "Subscribe to our mailing list",
-      "linkedin": "LinkedIn",
-      "github": "GitHub"
+      "linkedin": "LinkedIn"
     },
     "urls": {
-      "pcglWebsite": "https://genomelibrary.ca/",
-      "policies": "https://genomelibrary.ca/",
-      "privacy": "https://genomelibrary.ca/",
-      "termsConditions": "https://genomelibrary.ca/about-us/",
+      "pcglWebsite": "https://genomelibrary.ca",
+      "policies": "https://genomelibrary.ca",
+      "privacy": "https://genomelibrary.ca",
+      "termsConditions": "https://genomelibrary.ca/about-us",
       "publicationPolicy": "https://pan-canadian-genome-library.github.io/participant-public/resources",
       "helpGuides": "https://pan-canadian-genome-library.github.io/researcher/docs",
-      "controlledDataUsers": "https://pan-canadian-genome-library.github.io/researcher/resources/data-governance",
-      "dataPlatform": "https://genomelibrary.ca/researchers/",
-      "researchPlatform": "https://genomelibrary.ca/researchers/",
-      "contact": "https://www.genomelibrary.ca/contact-us/",
-      "subscribe": "https://genomelibrary.ca/subscribe/",
-      "linkedin": "https://www.linkedin.com/company/genome-library/",
-      "github": "https://github.com/Pan-Canadian-Genome-Library"
+      "dataSubmissionSystem": "https://submission-ui.submission.gateway.dev.k8s.pcgl.dev-sd4h.ca",
+      "dacoPlatform": "https://daco.submission.gateway.dev.k8s.pcgl.dev-sd4h.ca",
+      "researchPlatform": "https://pcgl.bento.sd4h.ca",
+      "TRE": "https://genomelibrary.ca/tre",
+      "participantPortal": "https://pcgl.uhndata.io/",
+      "contact": "https://www.genomelibrary.ca/contact-us",
+      "subscribe": "https://genomelibrary.ca/subscribe",
+      "linkedin": "https://www.linkedin.com/company/genome-library"
     }
   }
 }

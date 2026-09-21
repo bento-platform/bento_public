@@ -15,34 +15,6 @@
   outline-offset: 1px;
 }
 
-.link-item {
-  font-size: 14px;
-  color: #d9d9d9;
-  text-decoration: underline;
-
-  &:hover {
-    color: white;
-
-    img {
-      filter: drop-shadow( white 1px 1px 4px);
-    }
-  }
-
-  &[href^="http"]::after {
-    color: currentColor;
-    content: "↗" / "";
-  }
-  
-  &[href^="http"]:has(> img)::after {
-    content: none;
-  }
-}
-
-.contextual-logo {
-  width: 144px;
-  height: auto;
-}
-
 .pcgl-footer {
   background-color: #004b75;
   color: white;
@@ -61,7 +33,37 @@
 
   & h3 {
     margin: 0;
-    font-size: 13.5px;
+    font-size: 14px;
+  }
+
+  .link-item {
+    font-size: 14px;
+    color: #d9d9d9;
+    text-decoration: underline;
+
+    &:hover {
+      color: white;
+
+      img {
+        filter: drop-shadow(white 1px 1px 4px);
+      }
+    }
+
+    &[href^="http"]::after {
+      color: currentColor;
+      content: "↗" / "";
+    }
+
+    &[href^="http"][href*="sd4h"]::after ,
+    &[href^="http"][href*="genomelibrary"]::after,
+    &[href^="http"]:has(> img)::after {
+      content: none;
+    }
+  }
+
+  .contextual-logo {
+    width: 144px;
+    height: auto;
   }
 
   .contextual-band {
@@ -82,7 +84,8 @@
 
 .main-band {
   align-items: start;
-  border-block: 1px solid color-mix(in srgb, currentColor 50%, transparent);;
+  border-block: 1px solid color-mix(in srgb, currentColor 50%, transparent);
+  ;
   column-gap: 16px;
   display: grid;
   grid-template-areas:
@@ -129,7 +132,7 @@
       "section section"
       "meta meta";
     grid-template-columns: 1fr 1fr;
-  
+
     .meta {
       grid-area: meta;
     }
@@ -175,6 +178,7 @@
 }
 
 .bento-footer {
+
   p,
   h3 {
     margin: 0;
@@ -236,7 +240,7 @@
     grid-template-columns: 1fr;
   }
 
-  .links {
+  .bento-footer .links {
     grid-auto-flow: column;
   }
 }
