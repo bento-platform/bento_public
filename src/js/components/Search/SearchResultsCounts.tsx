@@ -61,7 +61,8 @@ const SearchResultsCounts = ({
             onKeyDown={
               individualsClickable
                 ? (e) => {
-                    if (e.key === 'Enter') {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
                       setSelectedPage('individuals');
                     }
                   }
