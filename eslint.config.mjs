@@ -24,7 +24,6 @@ export default defineConfig([
   ...nextVitals,
   ...nextTs,
   eslintPluginPrettierRecommended,
-  // jsxA11y.flatConfigs.recommended,
   reactHooksEsLint.configs.flat.recommended,
   {
     languageOptions: {
@@ -46,6 +45,7 @@ export default defineConfig([
       '@typescript-eslint/consistent-type-imports': 'error',
       'react/react-in-jsx-scope': 'off',
       'react-hooks/exhaustive-deps': ['error'],
+      // Inject strict a11y rules rather than basic 'recommended' set
       ...jsxA11y.flatConfigs.strict.rules,
     },
     settings: {
