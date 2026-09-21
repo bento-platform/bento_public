@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { Fragment, type ReactNode } from 'react';
 import { Button, Popover, Typography } from 'antd';
 import {
   CalendarOutlined,
@@ -17,6 +17,7 @@ import type { Dataset } from '@/types/dataset';
 import { BentoRoute } from '@/types/routes';
 
 import StatusBadge from '@Util/StatusBadge';
+import InteractableText from '@Util/InteractableText';
 import DatasetDescription from '@/components/Provenance/DatasetProvenance/DatasetDescription';
 import { PersonCard } from '@/components/Provenance/DatasetProvenance/bits';
 
@@ -40,20 +41,22 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
       icon: <TeamOutlined aria-hidden="true" />,
       label: t('provenance.record.lead', { count: leads.length }),
       value: (
-        <>
+        <span>
           {leads.map((lead, i) => (
-            <Popover
-              key={i}
-              placement="bottomLeft"
-              classNames={{ container: 'explore-hero-lead-popover' }}
-              content={<PersonCard person={lead} lead />}
-            >
-              <Button type="link" size="small" className="explore-hero-lead">
-                {lead.name}
-              </Button>
-            </Popover>
+            <Fragment key={i}>
+              {i > 0 && ', '}
+              <Popover
+                placement="bottomLeft"
+                classNames={{ container: 'explore-hero-lead-popover' }}
+                content={<PersonCard person={lead} compact />}
+              >
+                <InteractableText className="cursor-pointer" tabIndex={0}>
+                  {lead.name}
+                </InteractableText>
+              </Popover>
+            </Fragment>
           ))}
-        </>
+        </span>
       ),
     });
   }

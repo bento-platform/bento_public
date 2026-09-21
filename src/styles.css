@@ -1261,9 +1261,7 @@ body {
   align-items: center;
 }
 .explore-hero-record-more { margin-top: auto; }
-.explore-hero-lead.ant-btn { padding: 0 2px; height: auto; font-size: inherit; }
 .explore-hero-lead-popover.ant-popover-container { padding: 0; }
-.explore-hero-lead-popover .pm-pcard { width: 320px; max-width: 100%; border: 0; }
 
 .manage-charts__chart-size-control-container {
   padding: var(--ant-padding) var(--ant-padding-lg) var(--ant-padding-lg);
@@ -1832,6 +1830,14 @@ button.pm-sec-head { cursor: pointer; }
   font-size: 8px; font-weight: 700; font-family: inherit;
   display: inline-flex; align-items: center; justify-content: center; flex: none;
 }
+.pm-pcard.compact { width: 280px; max-width: 100%; padding: 11px 13px; gap: 8px; border: 0; background: transparent; }
+.pm-pcard.compact .pm-pc-type { font-size: 10px; letter-spacing: 0.06em; }
+.pm-pcard.compact .pm-pc-name { font-size: var(--p-fs-normal); margin-top: 1px; }
+.pm-pcard.compact .pm-pc-affil { font-size: var(--p-fs-xsmall); margin-top: 2px; }
+.pm-pcard.compact .pm-pc-roles { gap: 4px; }
+.pm-pcard.compact .pm-role { font-size: 11px; padding: 0 6px; border-radius: 4px; }
+.pm-pcard.compact .pm-pc-contact { padding-top: 8px; gap: 5px; }
+.pm-pcard.compact .pm-cline { font-size: var(--p-fs-xsmall); gap: 7px; }
 
 /* ── Publications ── */
 .pm-publist {

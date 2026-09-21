@@ -13,7 +13,15 @@ import { useTranslationFn } from '@/hooks';
 import { roleTranslationKey } from '@/features/catalogue/utils';
 import type { Organization, Person, PersonOrOrganization } from '@/types/dataset';
 
-export const PersonCard = ({ person, lead }: { person: PersonOrOrganization; lead?: boolean }) => {
+export const PersonCard = ({
+  person,
+  lead,
+  compact,
+}: {
+  person: PersonOrOrganization;
+  lead?: boolean;
+  compact?: boolean;
+}) => {
   const t = useTranslationFn();
 
   const typeId = useId();
@@ -38,7 +46,7 @@ export const PersonCard = ({ person, lead }: { person: PersonOrOrganization; lea
       : person.name;
 
   return (
-    <div className={`pm-pcard${lead ? ' lead' : ''}`}>
+    <div className={`pm-pcard${lead ? ' lead' : ''}${compact ? ' compact' : ''}`}>
       <div className="pm-pc-top">
         <div className="pm-pc-id">
           <div className="pm-pc-type" id={typeId}>
