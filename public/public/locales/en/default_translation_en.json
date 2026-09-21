@@ -93,6 +93,7 @@
     "select_all_fields": "Select all",
     "csv": "CSV",
     "xlsx": "XLSX",
+    "manifest": "Manifest (TSV)",
     "selected_count_one": "{{count}} row selected",
     "selected_count_other": "{{count}} rows selected",
     "clear_selection": "Clear selection",
@@ -682,6 +683,19 @@
     "program_name": "Program name",
     "project_id": "Project ID",
     "protocol": "Protocol",
+    "record": {
+      "title": "Record",
+      "lead_one": "Lead",
+      "lead_other": "Leads",
+      "last_modified": "Last modified",
+      "access": "Access",
+      "status": "Status",
+      "dac_id": "DAC ID"
+    },
+    "role": {
+      "principal_investigator": "Principal Investigator",
+      "project_lead": "Project Lead"
+    },
     "released": "Released",
     "repository": "Repository",
     "schema_version": "Schema version",

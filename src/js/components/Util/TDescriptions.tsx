@@ -17,7 +17,10 @@ const TDescriptions = memo(
     const filteredItems = useMemo(() => hiddenDescriptions(items), [items]);
     const descriptionItems = useTranslatedDescriptionItems(filteredItems, defaultI18nPrefix);
     const classNames = [...(className ?? '').split(' ').filter((c) => !!c.length)];
-    let derivedSize: DescriptionsProps['size'] = 'default';
+    // antd v6 renamed the Descriptions default size from 'default' to 'large'; 'default' is now
+    // deprecated even though it still works. Our 'compact' size overrides the visual density via
+    // the `.compact` CSS class regardless of this base value.
+    let derivedSize: DescriptionsProps['size'] = 'large';
 
     if (!filteredItems?.length) return null;
 

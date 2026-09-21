@@ -73,7 +73,7 @@ export const OntologyTermStack = ({ terms }: OntologyTermStackProps) => {
   if (!terms || terms.length === 0) return EM_DASH;
 
   return (
-    <Space direction="vertical">
+    <Space orientation="vertical">
       {terms.map((term, index) => (
         <OntologyTerm key={index} term={term} />
       ))}

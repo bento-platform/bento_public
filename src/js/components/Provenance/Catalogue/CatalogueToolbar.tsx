@@ -136,13 +136,13 @@ const CatalogueToolbar = ({ filteredCount, showFiltersButton, isMobile, onOpenFi
                 value: 'grid',
                 label: t('catalogue.toolbar.grid'),
                 title: t('catalogue.toolbar.view_as_grid'),
-                icon: <BsGrid aria-hidden className="align-top mt-7px" />,
+                icon: <BsGrid aria-hidden />,
               },
               {
                 value: 'list',
                 label: t('catalogue.toolbar.list'),
                 title: t('catalogue.toolbar.view_as_list'),
-                icon: <BsViewStacked aria-hidden className="align-top mt-7px" />,
+                icon: <BsViewStacked aria-hidden />,
               },
             ]}
           />

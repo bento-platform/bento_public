@@ -14,7 +14,7 @@ const SiteFooter = () => {
   return (
     <Footer>
       <Row justify="center">
-        <Space size={8} direction="vertical" align="center">
+        <Space size={8} orientation="vertical" align="center">
           <div>
             <Title level={5} type="secondary" style={{ marginBottom: '0' }}>
               {t('footer.powered_by')}

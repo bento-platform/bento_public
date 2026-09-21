@@ -5,6 +5,7 @@ import { useScopeQueryData } from '@/hooks/censorship';
 import { useHaveEntityDataForField } from '@/hooks/useHaveEntityData';
 import type { ActiveFilterPill } from '@/components/Util/ActiveFilterTags';
 import { formatDateFilterValue } from '@/utils/rangeFilterUtils';
+import { WAITING_STATES } from '@/constants/requests';
 import {
   ENTITY_QUERY_PARAM,
   TABLE_PAGE_QUERY_PARAM,
@@ -36,6 +37,14 @@ export const useAvailableChartSections = () => {
         }))
         .filter(({ charts }) => charts.length > 0),
     [sections, haveEntityDataForField]
+  );
+};
+
+export const useDisplayedChartSections = () => {
+  const availableChartSections = useAvailableChartSections();
+  return useMemo(
+    () => availableChartSections.filter(({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1),
+    [availableChartSections]
   );
 };
 
@@ -181,4 +190,12 @@ export const useSearchableFields = () => {
     () => new Set(filterSections.flatMap((section) => section.fields).map((field) => field.id)),
     [filterSections]
   );
+};
+
+export const useIsSearchLoading = () => {
+  const {
+    discoveryStatus,
+    wholeScopeData: { status: wholeScopeStatus },
+  } = useSearchQuery();
+  return WAITING_STATES.includes(discoveryStatus) || WAITING_STATES.includes(wholeScopeStatus);
 };

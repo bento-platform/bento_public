@@ -61,7 +61,7 @@ const PhenopacketMetaData = ({ phenopacket }: { phenopacket: Phenopacket }) => {
       {
         key: 'updates',
         children: metaData.updates ? (
-          <Space direction="vertical">
+          <Space orientation="vertical">
             {[...metaData.updates]
               .sort(({ timestamp: a }, { timestamp: b }) => -1 * a.localeCompare(b))
               .map((update, uIdx) => (
@@ -74,7 +74,7 @@ const PhenopacketMetaData = ({ phenopacket }: { phenopacket: Phenopacket }) => {
       {
         key: 'external_references',
         children: metaData.external_references ? (
-          <Space direction="vertical">
+          <Space orientation="vertical">
             {metaData.external_references.map((reference) => (
               <ExternalReference key={reference.id} reference={reference} />
             ))}
@@ -87,7 +87,7 @@ const PhenopacketMetaData = ({ phenopacket }: { phenopacket: Phenopacket }) => {
   );
 
   return (
-    <Space direction="vertical" className="w-full">
+    <Space orientation="vertical" className="w-full">
       <TDescriptions
         bordered
         size="compact"
