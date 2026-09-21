@@ -90,7 +90,7 @@ const IdentifiersSectionContent = ({ dataset, copiedKey, onCopy }: IdentifiersSe
     kvItems.push({
       label: t('general.extra_properties'),
       value: (
-        <Flex wrap gap={6} style={{ marginTop: 6 }}>
+        <Flex wrap gap={6} className="mt-6px">
           {Object.entries(dataset.extra_properties).map(([k, v]) => (
             <span key={k} className="pm-grant">
               {k} · {String(v ?? '')}

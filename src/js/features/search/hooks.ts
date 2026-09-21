@@ -5,6 +5,7 @@ import { useScopeQueryData } from '@/hooks/censorship';
 import { useHaveEntityDataForField } from '@/hooks/useHaveEntityData';
 import type { ActiveFilterPill } from '@/components/Util/ActiveFilterTags';
 import { formatDateFilterValue } from '@/utils/rangeFilterUtils';
+import { WAITING_STATES } from '@/constants/requests';
 import {
   ENTITY_QUERY_PARAM,
   TABLE_PAGE_QUERY_PARAM,
@@ -36,6 +37,14 @@ export const useAvailableChartSections = () => {
         }))
         .filter(({ charts }) => charts.length > 0),
     [sections, haveEntityDataForField]
+  );
+};
+
+export const useDisplayedChartSections = () => {
+  const availableChartSections = useAvailableChartSections();
+  return useMemo(
+    () => availableChartSections.filter(({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1),
+    [availableChartSections]
   );
 };
 
@@ -84,7 +93,7 @@ export const useSearchQueryParams = (): QueryParamEntries => {
 
 /**
  * Active-filter pills (for display outside the sidebar, e.g. between the About section and the count
- * cards on the overview page) plus the actions to remove one filter value or clear all filters. Shared
+ * cards on the explore page) plus the actions to remove one filter value or clear all filters. Shared
  * with SearchFilters (the sidebar's own filter-editing form) so both surfaces navigate the URL the same way.
  */
 export const useActiveFilterPills = (): { pills: ActiveFilterPill[]; clearAll: () => void } => {
@@ -181,4 +190,12 @@ export const useSearchableFields = () => {
     () => new Set(filterSections.flatMap((section) => section.fields).map((field) => field.id)),
     [filterSections]
   );
+};
+
+export const useIsSearchLoading = () => {
+  const {
+    discoveryStatus,
+    wholeScopeData: { status: wholeScopeStatus },
+  } = useSearchQuery();
+  return WAITING_STATES.includes(discoveryStatus) || WAITING_STATES.includes(wholeScopeStatus);
 };

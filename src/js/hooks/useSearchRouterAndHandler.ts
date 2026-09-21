@@ -45,6 +45,7 @@ import {
 
 import { buildQueryParamsUrl, filtersStateToQueryParamEntries, queryParamsWithoutKey } from '@/features/search/utils';
 import { getCurrentPage } from '@/utils/router';
+import { performKatsuScopeDiscovery } from '@/features/search/performKatsuScopeDiscovery.thunk';
 
 // Internal type for useSearchRouterAndHandler hook
 type QueryValidationResult = {
@@ -74,6 +75,7 @@ export const useSearchRouterAndHandler = () => {
     filters,
     fieldsStatus: searchFieldsStatus,
     discoveryStatus,
+    wholeScopeData: { status: wholeScopeStatus },
     textQuery,
     textQueryType,
     selectedEntity,
@@ -159,7 +161,7 @@ export const useSearchRouterAndHandler = () => {
   const setSearchUrl = useCallback(
     (filtersState: FiltersState, qp: QueryParamEntries) => {
       // Don't use react-router location here - the goal is to not recreate this function when the path changes.
-      const urlSuffix = buildQueryParamsUrl(BentoRoute.Overview, [
+      const urlSuffix = buildQueryParamsUrl(BentoRoute.Explore, [
         ...filtersStateToQueryParamEntries(filtersState),
         ...qp,
       ]);
@@ -178,7 +180,7 @@ export const useSearchRouterAndHandler = () => {
   // +-------------------------------+
   // Synchronize Redux query params state from URL, or URL from Redux state in some cases.
   useEffect(() => {
-    if (currentPage !== BentoRoute.Overview) return;
+    if (currentPage !== BentoRoute.Explore) return;
 
     // Wait until:
     //  - we have loaded the max. # of query parameters we can query
@@ -190,6 +192,7 @@ export const useSearchRouterAndHandler = () => {
       configStatus !== RequestStatus.Fulfilled ||
       searchFieldsStatus !== RequestStatus.Fulfilled ||
       discoveryStatus === RequestStatus.Pending ||
+      wholeScopeStatus === RequestStatus.Pending ||
       !hasAttemptedQueryDataPerm
     ) {
       return;
@@ -288,8 +291,12 @@ export const useSearchRouterAndHandler = () => {
     // executed in the UI). We then get proper one-way traffic from the URL to the Redux state.
     dispatch(setFilters(validFiltersState));
 
-    // Finally, we can go ahead and execute the search:
-    dispatch(performKatsuDiscovery());
+    // Finally, we can go ahead and execute the search (two searches if the page loaded with search query parameters
+    // already set; one for scope-level data context and one for the search results):
+    // Will not actually fire if no query is set
+    dispatch(performKatsuScopeDiscovery()).finally(
+      () => dispatch(performKatsuDiscovery()) // Will populate scope-level data as well if no query is set
+    );
 
     if (qpEntity) {
       // If we have a search results table open right now (meaning the _e query param is set --> qpEntity is not null),
@@ -304,6 +311,7 @@ export const useSearchRouterAndHandler = () => {
     configStatus,
     searchFieldsStatus,
     discoveryStatus,
+    wholeScopeStatus,
     hasAttemptedQueryDataPerm,
     queryDataPerm,
     doneFirstLoad,
