@@ -70,6 +70,10 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
       )}
       <div
         ref={chipsRef}
+        /* TODO: tabindex is less-than-ideal for a11y on something that's just scrollable - we may need additional a11y
+         *   handling or a message to screen-reader users that this only gets focused for the purpose of screen-users to
+         *   scroll up/down. */
+        /* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */
         tabIndex={facet.scroll ? 0 : undefined}
         role={facet.scroll ? 'group' : undefined}
         aria-labelledby={facet.scroll ? `catalogue-facet-${facet.id}` : undefined}
