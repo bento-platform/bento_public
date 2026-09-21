@@ -60,7 +60,7 @@ const SearchFilters = (props: DefinedSearchSubFormProps) => {
     <SearchSubForm
       titleKey="filters_title"
       titleKeyCount={maxQueryParameters}
-      icon={<FilterOutlined />}
+      icon={<FilterOutlined aria-hidden />}
       extra={<FiltersAppliedTag />}
       {...props}
     >

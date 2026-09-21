@@ -59,14 +59,14 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
   return [
     {
       id: 'summary',
-      icon: <UnorderedListOutlined />,
+      icon: <UnorderedListOutlined aria-hidden />,
       children: <SummarySectionContent dataset={dataset} />,
     },
     ...(hasLinks
       ? [
           {
             id: 'links' as SectionId,
-            icon: <LinkOutlined />,
+            icon: <LinkOutlined aria-hidden />,
             count: links.length,
             children: (
               <div className="pm-links-grid">
@@ -82,7 +82,7 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
       ? [
           {
             id: 'primary_contact' as SectionId,
-            icon: <UserOutlined />,
+            icon: <UserOutlined aria-hidden />,
             children: (
               <div className="pm-pgrid">
                 <PersonCard person={dataset.primary_contact} lead />
@@ -95,7 +95,7 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
       ? [
           {
             id: 'stakeholders' as SectionId,
-            icon: <TeamOutlined />,
+            icon: <TeamOutlined aria-hidden />,
             count: stakeholders.length,
             children: (
               <div className="pm-pgrid">
@@ -111,7 +111,7 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
       ? [
           {
             id: 'publications' as SectionId,
-            icon: <BookOutlined />,
+            icon: <BookOutlined aria-hidden />,
             count: publications.length,
             children: (
               <div className="pm-publist">
@@ -127,7 +127,7 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
       ? [
           {
             id: 'funding' as SectionId,
-            icon: <DollarOutlined />,
+            icon: <DollarOutlined aria-hidden />,
             children:
               typeof dataset.funding_sources === 'string' ? (
                 <p>{dataset.funding_sources}</p>
@@ -145,7 +145,7 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
       ? [
           {
             id: 'access' as SectionId,
-            icon: <AuditOutlined />,
+            icon: <AuditOutlined aria-hidden />,
             children: (
               <div className="pm-meta-grid">
                 {dataset.license && (
@@ -169,7 +169,7 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
       ? [
           {
             id: 'spatial' as SectionId,
-            icon: <EnvironmentOutlined />,
+            icon: <EnvironmentOutlined aria-hidden />,
             children: <SpatialCoverageSection spatialCoverage={dataset.spatial_coverage!} />,
           },
         ]
@@ -178,7 +178,7 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
       ? [
           {
             id: 'criteria' as SectionId,
-            icon: <InfoCircleOutlined />,
+            icon: <InfoCircleOutlined aria-hidden />,
             count: criteria.length,
             children: <ParticipantCriteriaSectionContent criteria={criteria} />,
           },
@@ -188,7 +188,7 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
       ? [
           {
             id: 'counts' as SectionId,
-            icon: <NumberOutlined />,
+            icon: <NumberOutlined aria-hidden />,
             count: counts.length,
             children: (
               <div className="pm-countgrid">
@@ -206,7 +206,7 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
       : []),
     {
       id: 'identifiers',
-      icon: <TagOutlined />,
+      icon: <TagOutlined aria-hidden />,
       children: <IdentifiersSectionContent dataset={dataset} />,
     },
   ];

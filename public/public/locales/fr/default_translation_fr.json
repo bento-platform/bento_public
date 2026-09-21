@@ -82,6 +82,7 @@
     "filters_other": "filtres",
     "filters_title_one": "Filtre",
     "filters_title_other": "Filtres",
+    "remove_filter": "Supprimer ce $t(search.filters_one)",
     "filters_applied_one": "{{count}} $t(search.filters, {\"count\": {{count}} }) appliqué",
     "filters_applied_other": "{{count}} $t(search.filters, {\"count\": {{count}} }) appliqués",
     "text_search": "Recherche de texte",
@@ -434,6 +435,7 @@
   "clinphen_generic": {
     "excluded": "Exclu",
     "found_absent": "Trouvé absent",
+    "found_absent_link": "Voir la définition de « trouvé absent »",
     "code": "Code"
   },
   "biosample": {

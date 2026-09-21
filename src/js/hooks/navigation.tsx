@@ -124,17 +124,19 @@ export const useGetRouteTitleAndIcon = () => {
       /* eslint-disable react/jsx-key */
       switch (routeId) {
         case BentoRoute.Explore:
-          return exploreIsCatalogue ? ['Catalogue', <BookOutlined />] : ['Explore', <PieChartOutlined />];
+          return exploreIsCatalogue
+            ? ['Catalogue', <BookOutlined aria-hidden />]
+            : ['Explore', <PieChartOutlined aria-hidden />];
         case BentoRoute.About:
-          return ['About', <SolutionOutlined />];
+          return ['About', <SolutionOutlined aria-hidden />];
         case BentoRoute.Beacon:
-          return ['Beacon', <BeaconLogo />];
+          return ['Beacon', <BeaconLogo aria-hidden />];
         case BentoRoute.BeaconNetwork:
-          return ['Beacon Network', <ShareAltOutlined />];
+          return ['Beacon Network', <ShareAltOutlined aria-hidden />];
         case BentoRoute.Phenopackets:
-          return ['entities.phenopacket_other', <SolutionOutlined />];
+          return ['entities.phenopacket_other', <SolutionOutlined aria-hidden />];
         case BentoRoute.NotFound: // should not be used, but not unknown
-          return ['errors.page_not_found', <CloseCircleOutlined />];
+          return ['errors.page_not_found', <CloseCircleOutlined aria-hidden />];
         default:
           console.error('Unknown page', routeId);
           return ['', null];
