@@ -7,7 +7,7 @@ import { useAccessToken } from 'bento-auth-js';
 import { useTranslationFn } from '@/hooks';
 import { useDrsHttpsAccessOrPassThrough } from '@/features/drs/hooks';
 
-import { BROWSER_RENDERED_EXTENSIONS } from 'bento-file-display';
+import { BROWSER_RENDERED_EXTENSIONS } from 'bento-file-display/dist/constants';
 import { ADMIN_URL, PUBLIC_URL } from '@/config';
 
 interface DownloadButtonProps extends ButtonProps {
