@@ -1,4 +1,5 @@
 import { Flex, Grid, Layout } from 'antd';
+import { useMemo } from 'react';
 import { useTranslationFn } from '@/hooks';
 import clsx from 'clsx';
 
@@ -54,6 +55,8 @@ const PcglFooter = () => {
   const t = useTranslationFn();
   const breakpoints = useBreakpoint();
 
+  const currentYear = useMemo(() => new Date().getFullYear(), []);
+
   return (
     <Footer id="pcgl-footer">
       <Flex align="center" gap={breakpoints.xl ? 48 : 24} vertical={!breakpoints.xl}>
@@ -78,7 +81,7 @@ const PcglFooter = () => {
               {t('pcgl.footer.bento')}
             </a>
             .<br />
-            {t('footer.copyright')} 2019-{new Date().getFullYear()}{' '}
+            {t('footer.copyright')} 2019-{currentYear}{' '}
             <a href="https://computationalgenomics.ca" rel="noreferrer" target="_blank">
               {t('footer.c3g')}
             </a>
