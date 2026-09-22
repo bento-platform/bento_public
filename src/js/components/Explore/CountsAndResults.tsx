@@ -81,6 +81,7 @@ const CountCardShowHide = memo(({ selected, onClear }: { selected: boolean; onCl
       onKeyDown={handleKeyDown}
     >
       <DownOutlined
+        aria-hidden
         style={{
           transform: `rotate(${selected ? '180deg' : '0deg'})`,
           transition: 'transform 0.15s ease-in-out',

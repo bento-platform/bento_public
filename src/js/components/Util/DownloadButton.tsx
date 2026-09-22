@@ -76,7 +76,7 @@ const DownloadButton = ({
   return (
     <Button
       key="download"
-      icon={<DownloadOutlined />}
+      icon={<DownloadOutlined aria-hidden />}
       onClick={onClick}
       loading={loading}
       disabled={disabled}
