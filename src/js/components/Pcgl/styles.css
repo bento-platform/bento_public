@@ -1,0 +1,246 @@
+.visually-hidden {
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.focus-ring:focus,
+.focus-ring:focus-visible {
+  outline: var(--ant-line-width-focus) solid var(--ant-color-primary-border);
+  outline-offset: 1px;
+}
+
+.pcgl-footer {
+  background-color: #004b75;
+  color: white;
+  padding: 24px;
+  font-size: 14px;
+  container-type: inline-size;
+  container-name: footer;
+  display: grid;
+  gap: 16px;
+
+  & p {
+    color: #b1c0c9;
+    font-size: 14px;
+    margin: 0;
+  }
+
+  & h3 {
+    margin: 0;
+    font-size: 14px;
+  }
+
+  .link-item {
+    font-size: 14px;
+    color: #d9d9d9;
+    text-decoration: underline;
+
+    &:hover {
+      color: white;
+
+      img {
+        filter: drop-shadow(white 1px 1px 4px);
+      }
+    }
+
+    &[href^="http"]::after {
+      color: currentColor;
+      content: "↗" / "";
+    }
+
+    &[href^="http"][href*="sd4h"]::after ,
+    &[href^="http"][href*="genomelibrary"]::after,
+    &[href^="http"]:has(> img)::after {
+      content: none;
+    }
+  }
+
+  .contextual-logo {
+    width: 144px;
+    height: auto;
+  }
+
+  .contextual-band {
+    padding: 8px 0;
+
+    img {
+      max-width: 160px;
+    }
+  }
+
+  .contextual-logos,
+  .meta-logo {
+    height: auto;
+    max-width: 192px;
+    width: 100%;
+  }
+}
+
+.main-band {
+  align-items: start;
+  border-block: 1px solid color-mix(in srgb, currentColor 50%, transparent);
+  ;
+  column-gap: 16px;
+  display: grid;
+  grid-template-areas:
+    "section"
+    "meta";
+  grid-template-columns: 1fr;
+  padding: 24px 0;
+  row-gap: 24px;
+
+  dd,
+  ul {
+    display: contents;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .meta {
+    display: grid;
+    gap: 8px;
+  }
+
+  .links-section {
+    display: grid;
+    margin: 0;
+    row-gap: 12px;
+  }
+
+  .group {
+    margin: 0;
+    padding: 0;
+    text-indent: 0;
+  }
+
+  .item {
+    list-style: none;
+  }
+}
+
+@container (width > 480px) {
+  .main-band {
+    grid-template-areas:
+      "section section"
+      "section section"
+      "meta meta";
+    grid-template-columns: 1fr 1fr;
+
+    .meta {
+      grid-area: meta;
+    }
+  }
+}
+
+@container (width > 640px) {
+  .main-band {
+    grid-template-areas:
+      "section section section"
+      "meta meta meta";
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+@container (width > 1440px) {
+  .main-band {
+    grid-template-areas:
+      "section section section meta";
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+}
+
+@container (width > 992px) {
+  .pcgl-footer {
+    .contextual-logos {
+      max-width: 240px;
+    }
+  }
+}
+
+.bento-footer {
+  column-gap: 24px;
+  display: grid;
+  grid-template-areas:
+    "about"
+    "links"
+    "legal"
+    "c3g";
+  grid-template-columns: 1fr;
+  row-gap: 16px;
+  color: #d9d9d9;
+}
+
+.bento-footer {
+
+  p,
+  h3 {
+    margin: 0;
+    padding: 0;
+  }
+
+  .bento-logo {
+    max-width: 96px;
+    height: auto;
+    vertical-align: central;
+  }
+
+  .c3g-logo {
+    max-width: 40px;
+    height: auto;
+    filter: grayscale(100%);
+  }
+
+  .gpl-logo {
+    max-width: 24px;
+    height: auto;
+  }
+
+  .about {
+    display: grid;
+    grid-area: about;
+    gap: 8px;
+  }
+
+  .links {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    grid-area: links;
+    display: grid;
+    gap: 12px;
+  }
+
+  .legal {
+    grid-area: legal;
+    align-self: end;
+  }
+
+  .c3g {
+    align-self: end;
+    gap: 6px;
+    grid-area: c3g;
+    display: grid;
+    justify-items: center;
+  }
+}
+
+@container (width > 640px) {
+  .bento-footer {
+    column-gap: 96px;
+    grid-template-areas:
+      "about links"
+      "legal c3g";
+    grid-template-columns: 1fr;
+  }
+
+  .bento-footer .links {
+    grid-auto-flow: column;
+  }
+}

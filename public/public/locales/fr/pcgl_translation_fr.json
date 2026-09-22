@@ -24,5 +24,61 @@
   },
   "interpretations": {
     "subject_or_biosample_id": "Identifiant du participant ou du specimen"
+  },
+  "footer": {
+    "bento": {
+      "title": "À propos de Bento",
+      "c3g_copyright": "© C3G Copyright",
+      "powered_by": "Le portail de recherche de la BGPC est propulsé par",
+      "copyright": "©",
+      "bento": "la plateform Bento",
+      "terms_of_use": "Conditions d'utilisation (en anglais)",
+      "licensed_under": "Bento est sous licence",
+      "source_available": "Le code source est disponible sur",
+      "admin_link": "Admin"
+    },
+    "meta": {
+      "funding_title": "Reconnaissance du financement",
+      "logo_alt": "Logo de la Bibliothèque génomique pancanadienne",
+      "cihr_logo_alt": "Logo des Instituts de recherche en santé du Canada",
+      "cihr_support": "La BGPC est soutenu par les Instituts de recherche en santé du Canada (IRSC)."
+    },
+    "sections": {
+      "about": "À propos de la BGPC",
+      "resources": "Ressources et documentation",
+      "connect": "Restez en contact"
+    },
+    "links": {
+      "pcglWebsite": "Site web de la BGPC",
+      "policies": "Politiques et directives",
+      "privacy": "Politique de confidentialité",
+      "termsConditions": "Conditions d'utilisation",
+      "publicationPolicy": "Politique de publication",
+      "helpGuides": "Guides d'aide",
+      "dataSubmissionSystem": "Système de soumission de données",
+      "dacoPlatform": "Bureau de conformité d'accès aux données",
+      "researchPlatform": "Portail de recherche",
+      "TRE": "Environnement de recherche de confiance",
+      "participantPortal": "Portail des participants",
+      "contact": "Contactez-nous",
+      "subscribe": "S'abonner",
+      "linkedin": "LinkedIn"
+    },
+    "urls": {
+      "pcglWebsite": "https://genomelibrary.ca/fr",
+      "policies": "https://genomelibrary.ca/fr",
+      "privacy": "https://genomelibrary.ca/fr",
+      "termsConditions": "https://genomelibrary.ca/fr",
+      "publicationPolicy": "https://pan-canadian-genome-library.github.io/fr/participant-public/resources",
+      "helpGuides": "https://pan-canadian-genome-library.github.io/fr/participant-public/docs",
+      "dataSubmissionSystem": "https://submission-ui.submission.gateway.dev.k8s.pcgl.dev-sd4h.ca/fr",
+      "dacoPlatform": "https://daco.submission.gateway.dev.k8s.pcgl.dev-sd4h.ca/fr",
+      "researchPlatform": "https://pcgl.bento.sd4h.ca/fr",
+      "TRE": "https://genomelibrary.ca/fr/tre",
+      "participantPortal": "https://pcgl.uhndata.io/fr",
+      "contact": "https://genomelibrary.ca/fr/nous-joindre",
+      "subscribe": "https://genomelibrary.ca/fr/abonnez-vous",
+      "linkedin": "https://fr.linkedin.com/company/genome-library"
+    }
   }
 }
