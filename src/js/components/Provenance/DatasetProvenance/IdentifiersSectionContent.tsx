@@ -16,6 +16,7 @@ const IdentifiersSectionContent = ({ dataset }: IdentifiersSectionContentProps) 
 
   const kvItems: KeyValueItem[] = [
     {
+      itemKey: 'id',
       label: t('Identifier'),
       value: (
         <>
@@ -25,10 +26,12 @@ const IdentifiersSectionContent = ({ dataset }: IdentifiersSectionContentProps) 
       valueClassName: 'font-mono text-xs',
     },
     {
+      itemKey: 'schema_version',
       label: t('provenance.schema_version'),
       value: dataset.schema_version,
     },
     {
+      itemKey: 'project_id',
       label: t('provenance.project_id'),
       value: (
         <>
@@ -40,7 +43,7 @@ const IdentifiersSectionContent = ({ dataset }: IdentifiersSectionContentProps) 
   ];
 
   if (dataset.program_name) {
-    kvItems.push({ label: t('provenance.program_name'), value: dataset.program_name });
+    kvItems.push({ itemKey: 'program_name', label: t('provenance.program_name'), value: dataset.program_name });
   }
 
   if (resources.length > 0) {

@@ -2,6 +2,7 @@ import { type ReactNode, useId } from 'react';
 import clsx from 'clsx';
 
 export type KeyValueItem = {
+  itemKey?: string;
   label: string;
   value: ReactNode;
   valueClassName?: string;
@@ -25,8 +26,8 @@ const KeyValueItemDisplay = ({ label, value, valueClassName, span }: KeyValueIte
 const KeyValueDisplay = ({ items }: { items: KeyValueItem[] }) => {
   return (
     <div className="kv" role="grid">
-      {items.map((item, idx) => (
-        <KeyValueItemDisplay key={idx} {...item} />
+      {items.map((item) => (
+        <KeyValueItemDisplay key={item.itemKey ?? item.label} {...item} />
       ))}
     </div>
   );
