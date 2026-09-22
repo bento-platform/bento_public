@@ -12,7 +12,9 @@ const { Text } = Typography;
 
 const StatItem = ({ icon, value, label }: { icon: ReactNode; value: string; label: string }) => (
   <Space size={8} align="center" className="whitespace-nowrap">
-    <span className="catalogue-banner__stat-icon">{icon}</span>
+    <span className="catalogue-banner__stat-icon" aria-hidden>
+      {icon}
+    </span>
     <Text className="catalogue-banner__stat-value">
       {value} {label}
     </Text>
@@ -67,17 +69,17 @@ const CatalogueBanner = ({ filteredDatasets }: CatalogueBannerProps) => {
         )}
         <Space size={[28, 6]} wrap>
           <StatItem
-            icon={<DatabaseOutlined />}
+            icon={<DatabaseOutlined aria-hidden />}
             value={fmt(datasetCount)}
             label={t('entities.dataset', { count: datasetCount }).toLowerCase()}
           />
           <StatItem
-            icon={<TeamOutlined />}
+            icon={<TeamOutlined aria-hidden />}
             value={fmt(individualCount)}
             label={t('entities.individual', { count: individualCount }).toLowerCase()}
           />
           <StatItem
-            icon={<ExperimentOutlined />}
+            icon={<ExperimentOutlined aria-hidden />}
             value={fmt(biosampleCount)}
             label={t('entities.biosample', { count: biosampleCount }).toLowerCase()}
           />

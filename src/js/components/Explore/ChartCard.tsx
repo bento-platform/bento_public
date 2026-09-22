@@ -32,7 +32,7 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable, mode: mode_
   const extraOptionsData = [
     {
       key: 'close',
-      icon: <CloseOutlined />,
+      icon: <CloseOutlined aria-hidden />,
       description: t('Remove this chart'),
       onClick: () => {
         onRemoveChart({ section, id });

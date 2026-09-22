@@ -51,20 +51,20 @@ const SearchResultsCounts = ({
             title={<CountsTitleWithHelp entity="individual" showHelp={!isBeaconNetwork} />}
             value={hasInsufficientData ? t(message ?? '') : renderCount(individualCount)}
             styles={{ content: STAT_STYLE }}
-            prefix={<TeamOutlined />}
+            prefix={<TeamOutlined aria-hidden />}
           />
           <Statistic
             title={<CountsTitleWithHelp entity="biosample" showHelp={!isBeaconNetwork} />}
             value={hasInsufficientData ? renderCount(undefined) : renderCount(biosampleCount)}
             styles={{ content: STAT_STYLE }}
             // Slight fixup for alignment of non-Antd icon:
-            prefix={<BiDna className="align-top mt-6px" />}
+            prefix={<BiDna aria-hidden className="align-top mt-6px" />}
           />
           <Statistic
             title={<CountsTitleWithHelp entity="experiment" showHelp={!isBeaconNetwork} />}
             value={hasInsufficientData ? renderCount(undefined) : renderCount(experimentCount)}
             styles={{ content: STAT_STYLE }}
-            prefix={<ExperimentOutlined />}
+            prefix={<ExperimentOutlined aria-hidden />}
           />
         </>
       )}
