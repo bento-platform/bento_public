@@ -31,6 +31,7 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable, mode: mode_
 
   const extraOptionsData = [
     {
+      key: 'close',
       icon: <CloseOutlined />,
       description: t('Remove this chart'),
       onClick: () => {
@@ -66,8 +67,8 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable, mode: mode_
         size="small"
         extra={
           <Space size="small">
-            {extraOptionsData.map((opt, index) => (
-              <Tooltip key={index} title={opt.description}>
+            {extraOptionsData.map((opt) => (
+              <Tooltip key={opt.key} title={opt.description}>
                 <Button
                   shape="circle"
                   color="default"

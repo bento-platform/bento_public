@@ -48,8 +48,8 @@ const IdentifiersSectionContent = ({ dataset }: IdentifiersSectionContentProps) 
       label: t('provenance.ontology_resources'),
       value: (
         <>
-          {resources.map((r, i) => (
-            <div key={i} className="pm-res-row">
+          {resources.map((r) => (
+            <div key={r.id} className="pm-res-row">
               <span className="pm-pfx" aria-label={t('provenance.namespace_prefix')}>
                 {r.namespace_prefix}
               </span>
