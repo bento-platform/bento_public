@@ -55,6 +55,7 @@ const PcglFooter = () => {
   const t = useTranslationFn();
   const breakpoints = useBreakpoint();
 
+  // makes the function 'pure' as in same params/state --> same output (although this would only be a """bug""" on NYE.
   const currentYear = useMemo(() => new Date().getFullYear(), []);
 
   return (
