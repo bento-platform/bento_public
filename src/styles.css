@@ -736,6 +736,7 @@ body {
 }
 
 .sidebar-facet {
+  position: relative;
   border-bottom: 1px solid var(--border-subtle);
 }
 
@@ -834,6 +835,28 @@ body {
 .facet-chips--scroll {
   max-height: 128px;
   overflow-y: auto;
+}
+
+.facet-chips-scroll-overlay {
+  position: absolute;
+  left: 0; right: 0;
+  height: 128px;
+  pointer-events: none;
+
+  --fcso-op: 0.15;
+}
+.facet-chips-scroll-overlay.scroll-shadow-top {
+  background: local radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, var(--fcso-op)), rgba(0, 0, 0, 0)) no-repeat center top;
+  background-size: 100% 14px;
+}
+.facet-chips-scroll-overlay.scroll-shadow-bottom {
+  background: local radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, var(--fcso-op)), rgba(0, 0, 0, 0)) no-repeat center bottom;
+  background-size: 100% 14px;
+}
+.facet-chips-scroll-overlay.scroll-shadow-top.scroll-shadow-bottom {
+  background: local radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, var(--fcso-op)), rgba(0, 0, 0, 0)) no-repeat center top,
+              local radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, var(--fcso-op)), rgba(0, 0, 0, 0)) no-repeat center bottom;
+  background-size: 100% 14px, 100% 14px;
 }
 
 .fchip {

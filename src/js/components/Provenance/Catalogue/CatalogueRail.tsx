@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { Input } from 'antd';
 import type { FacetOption } from '@/features/catalogue/types';
@@ -34,6 +34,32 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
 
   const [query, setQuery] = useState('');
   const chipsRef = useRef<HTMLDivElement>(null);
+  const chipsScrollOverlayRef = useRef<HTMLDivElement>(null);
+
+  const onFacetChipsScroll = useCallback(() => {
+    // Use JS for this rather than the CSS hack to make the shadow actually appear on top of container contents,
+    // rather than underneath it.
+    const chipsContainer = chipsRef.current;
+    if (!chipsContainer) return;
+    const overlay = chipsScrollOverlayRef.current;
+    if (!overlay) return;
+    const st = chipsContainer.scrollTop;
+    if (st > 0) {
+      overlay.classList.add('scroll-shadow-top');
+    } else {
+      overlay.classList.remove('scroll-shadow-top');
+    }
+    if (st + chipsContainer.clientHeight < chipsContainer.scrollHeight) {
+      overlay.classList.add('scroll-shadow-bottom');
+    } else {
+      overlay.classList.remove('scroll-shadow-bottom');
+    }
+  }, []);
+
+  useEffect(() => {
+    // Initialize scroll shadow if needed at first render
+    if (facet.scroll) onFacetChipsScroll();
+  }, [facet.scroll, onFacetChipsScroll]);
 
   if (options.length === 0) return null;
 
@@ -68,6 +94,7 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
           )}
         </div>
       )}
+      {facet.scroll && <div className="facet-chips-scroll-overlay" aria-hidden ref={chipsScrollOverlayRef} />}
       <div
         ref={chipsRef}
         /* TODO: tabindex is less-than-ideal for a11y on something that's just scrollable - we may need additional a11y
@@ -79,6 +106,7 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
         role={facet.scroll ? 'group' : undefined}
         aria-labelledby={facet.scroll ? `catalogue-facet-${facet.id}` : undefined}
         className={clsx('facet-chips', facet.scroll && 'facet-chips--scroll focus-ring')}
+        onScroll={facet.scroll ? onFacetChipsScroll : undefined}
       >
         {isSearchable && trimmedQuery && filteredOptions.length === 0 ? (
           <span className="facet-chips__empty">{t('catalogue.rail.search_no_matches')}</span>
