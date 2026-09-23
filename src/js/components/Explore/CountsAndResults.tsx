@@ -174,7 +174,7 @@ const CountsAndResults = () => {
           return false;
         }
         return waitingForData || !!(counts[entity] || nFilters);
-      }).map((entity, i) => {
+      }).map((entity) => {
         const { icon } = COUNT_ENTITY_REGISTRY[entity];
         const count = renderCount(discoveryStatus === RequestStatus.Rejected ? undefined : counts[entity]);
         const selected = selectedEntity === entity;
@@ -185,7 +185,7 @@ const CountsAndResults = () => {
         const prefetch = () => dispatch(fetchDiscoveryMatches(entity));
         return (
           <Card
-            key={i}
+            key={entity}
             aria-selected={hasQueryData ? selected : undefined}
             role={canSelect ? 'button' : undefined}
             className={
