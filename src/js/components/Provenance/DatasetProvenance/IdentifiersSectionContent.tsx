@@ -48,6 +48,7 @@ const IdentifiersSectionContent = ({ dataset }: IdentifiersSectionContentProps) 
 
   if (resources.length > 0) {
     kvItems.push({
+      itemKey: 'ontology_resources',
       label: t('provenance.ontology_resources'),
       value: (
         <>
@@ -81,6 +82,7 @@ const IdentifiersSectionContent = ({ dataset }: IdentifiersSectionContentProps) 
 
   if (dataset.extra_properties && Object.keys(dataset.extra_properties).length > 0) {
     kvItems.push({
+      itemKey: 'extra_properties',
       label: t('general.extra_properties'),
       value: (
         <Flex wrap gap={6} className="mt-6px">
