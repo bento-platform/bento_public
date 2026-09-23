@@ -32,9 +32,9 @@ export const ExperimentResultIndices = ({ indices }: { indices: ExperimentResult
     </>
   ) : (
     <ul className="m-0" style={{ paddingLeft: 8 }}>
-      {indices.map((i) => (
-        <li key={i.url}>
-          <strong>{i.format}:</strong> <UrlOrDrsUrlWithPopover url={i.url} />
+      {indices.map((indexRecord) => (
+        <li key={indexRecord.url}>
+          <strong>{indexRecord.format}:</strong> <UrlOrDrsUrlWithPopover url={indexRecord.url} />
         </li>
       ))}
     </ul>
