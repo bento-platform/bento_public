@@ -25,6 +25,7 @@ import { VIEWABLE_FILE_EXTENSIONS } from 'bento-file-display';
 import { VIEWABLE_FILE_FORMATS } from '@/constants/files';
 
 export const ExperimentResultIndices = ({ indices }: { indices: ExperimentResult['indices'] }) => {
+  // indices will normally have >=1 entry because it is rendered conditionally in a TDescriptions as of time of writing.
   return indices.length === 1 ? (
     <>
       <strong>{indices[0].format}:</strong> <UrlOrDrsUrlWithPopover url={indices[0].url} />
