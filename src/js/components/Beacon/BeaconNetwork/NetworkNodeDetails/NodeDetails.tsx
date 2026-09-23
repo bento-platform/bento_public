@@ -75,11 +75,11 @@ const NodeDetails = ({ beacon, response }: NodeDetailsProps) => {
       }
       actions={[
         <Link key="homepage" href={organization.welcomeUrl} target="_blank" style={LINK_STYLE}>
-          <LinkOutlined style={{ marginRight: '5px' }} />
+          <LinkOutlined aria-hidden style={{ marginRight: '5px' }} />
           {t('beacon.home_page')}
         </Link>,
         <Link key="bentolink" href={bentoUrl} target="_blank" style={LINK_STYLE}>
-          <LinkOutlined style={{ marginRight: '5px' }} />
+          <LinkOutlined aria-hidden style={{ marginRight: '5px' }} />
           Bento
         </Link>,
       ]}

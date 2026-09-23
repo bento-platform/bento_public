@@ -16,9 +16,8 @@ import { CategoryDonut, CategoryBarList, type HexColor, type CategoricalChartDat
 
 import { FACET_CONFIG_BY_ID, type FacetConfig } from '@/features/catalogue/facetRegistry';
 import { PCGL_MODE } from '@/config';
-import { STATUS_CHART_COLORS } from './constants';
 
-import { assignColors, facetValueTranslationKey } from '@/features/catalogue/utils';
+import { assignColors } from '@/features/catalogue/utils';
 
 function buildCounts(datasets: DatasetWithProject[], facet: FacetConfig): CategoricalChartDataItem[] {
   const map = new Map<string, number>();
@@ -38,7 +37,7 @@ const useTranslatedEntries = (datasets: DatasetWithProject[], facetId: FacetId):
     const facetConfig = FACET_CONFIG_BY_ID[facetId];
     if (facetConfig) {
       const data = buildCounts(datasets, facetConfig);
-      return data.map((d) => ({ ...d, x: t(facetValueTranslationKey(facetConfig.i18nKeyPrefix, d.id ?? d.x)) }));
+      return data.map((d) => ({ ...d, x: facetConfig.formatLabel ? facetConfig.formatLabel(d.id ?? d.x, t) : d.x }));
     } else {
       return []; // If facet config is disabled (e.g., project for PCGL)
     }
@@ -105,7 +104,7 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
         <Text className="catalogue-insights__hint">{t('catalogue.insights.hint')}</Text>
       </Flex>
       <Flex gap={12} wrap className="items-stretch">
-        <CatalogueInsightCard datasets={filteredDatasets} facet="status" kind="donut" colors={STATUS_CHART_COLORS} />
+        <CatalogueInsightCard datasets={filteredDatasets} facet="status" kind="donut" />
         {PCGL_MODE ? (
           <CatalogueInsightCard datasets={filteredDatasets} facet="domain" kind="bar" />
         ) : (

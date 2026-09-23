@@ -26,6 +26,8 @@ const ParticipantCriteriaSectionContent = ({ criteria }: ParticipantCriteriaSect
       </thead>
       <tbody>
         {criteria.map((c, i) => (
+          // Deliberate - no natural key in data model, plus provenance data is more-or-less immutable in this context.
+          // eslint-disable-next-line react-x/no-array-index-key
           <tr key={i}>
             <td>
               <span className={`pm-crit-type ${CRIT_CLASS[c.type]}`}>{c.type}</span>

@@ -1,4 +1,4 @@
-import { useCallback, useImperativeHandle, forwardRef, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useImperativeHandle, useEffect, useMemo, useRef, type ForwardedRef } from 'react';
 import { Collapse } from 'antd';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
 import type { SectionKey, SectionSpec } from './phenopacketOverview.registry';
@@ -50,9 +50,10 @@ function getScrollParent(el: HTMLElement): HTMLElement {
 
 interface PhenopacketOverviewProps {
   phenopacket: Phenopacket;
+  ref: ForwardedRef<CollapseHandle>;
 }
 
-const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>(({ phenopacket }, ref) => {
+const PhenopacketOverview = ({ phenopacket, ref }: PhenopacketOverviewProps) => {
   const [open, setOpen] = useSearchParams(serializeKeys(phenopacket.subject ? ['subject'] : ['biosamples']));
   const t = useTranslationFn();
   const routerState = useLocationState();
@@ -209,7 +210,6 @@ const PhenopacketOverview = forwardRef<CollapseHandle, PhenopacketOverviewProps>
       ghost
     />
   );
-});
+};
 
-PhenopacketOverview.displayName = 'PhenopacketOverview';
 export default PhenopacketOverview;
