@@ -11,7 +11,7 @@ import { SessionProvider } from 'next-auth/react';
 // i18n and constants imports
 import { useTranslation } from 'react-i18next';
 import { NEW_BENTO_PUBLIC_THEME } from '@/constants/exploreConstants';
-import { SESSION_REFETCH_INTERVAL_SECONDS, SUPPORTED_LNGS } from '@/constants/configConstants';
+import { SUPPORTED_LNGS } from '@/constants/configConstants';
 
 // Component imports
 import { ConfigProvider } from 'antd';
@@ -32,7 +32,7 @@ import { useHandleRefreshTokenError } from '@/features/auth/hooks';
 
 // Store and configuration imports
 import { store } from './store';
-import { PCGL_MODE } from './config';
+import { PCGL_MODE, SESSION_REFETCH_INTERVAL_SECONDS } from './config';
 
 // Styles imports
 import 'antd/dist/reset.css';

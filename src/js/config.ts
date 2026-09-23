@@ -22,6 +22,8 @@ export interface PublicConfig {
   BEACON_URL: string | null;
   BEACON_UI_ENABLED: boolean;
   BEACON_NETWORK_ENABLED: boolean;
+  // Authentication
+  SESSION_REFETCH_INTERVAL_SECONDS: string; // Seconds between session refreshes, as an integer string: e.g., '120'
 }
 
 // Declaration required for global config
@@ -60,3 +62,9 @@ export const BEACON_UI_ENABLED =
   BENTO_PUBLIC_CONFIG.BEACON_UI_ENABLED ?? stringToBoolean(process.env.BENTO_BEACON_UI_ENABLED);
 export const BEACON_NETWORK_ENABLED =
   BENTO_PUBLIC_CONFIG.BEACON_NETWORK_ENABLED ?? stringToBoolean(process.env.BENTO_BEACON_NETWORK_ENABLED);
+
+// Authentication
+export const SESSION_REFETCH_INTERVAL_SECONDS = parseInt(
+  (BENTO_PUBLIC_CONFIG.SESSION_REFETCH_INTERVAL_SECONDS ?? process.env.BENTO_PUBLIC_SESSION_REFETCH_INTERVAL_SECONDS) ||
+    '120'
+);
