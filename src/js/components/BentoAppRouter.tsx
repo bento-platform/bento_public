@@ -1,6 +1,6 @@
 import { lazy, useEffect } from 'react';
 import { Routes, Route, useNavigate, useParams, Outlet } from 'react-router-dom';
-import { useIsAuthenticated } from '@/features/auth/hooks';
+import { useIsAuthenticated, useIsAuthReady } from '@/features/auth/hooks';
 import { useAppDispatch, useLanguage } from '@/hooks';
 
 import {
@@ -106,6 +106,7 @@ const BentoAppRouter = () => {
   const language = useLanguage();
 
   const isAuthenticated = useIsAuthenticated();
+  const isAuthReady = useIsAuthReady();
   const {
     selectedScope: { scope, scopeSet },
     projectsByID,
@@ -183,11 +184,13 @@ const BentoAppRouter = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    // Projects are fetched with the user's token, so wait for the session to resolve first.
+    if (!isAuthReady) return;
     dispatch(resetProjects());
     dispatch(getProjects(language));
-  }, [dispatch, language]);
+  }, [dispatch, language, isAuthReady]);
 
-  if (projectsStatus === RequestStatus.Pending) {
+  if (!isAuthReady || projectsStatus === RequestStatus.Pending) {
     return <Loader fullHeight={true} />;
   }
 

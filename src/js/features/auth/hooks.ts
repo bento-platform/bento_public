@@ -22,6 +22,13 @@ export const useSyncAccessToken = () => {
   }, [dispatch, accessToken]);
 };
 
+export const useIsAuthReady = (): boolean => {
+  const { status } = useSession();
+  const mirroredToken = useSelector((state: RootState) => state.auth.accessToken);
+  if (status === 'loading') return false;
+  return status !== 'authenticated' || !!mirroredToken;
+};
+
 export const useAuthorizationHeader = () => {
   const accessToken = useAccessToken();
   return useMemo(() => makeAuthorizationHeader(accessToken), [accessToken]);
