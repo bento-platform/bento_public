@@ -1,6 +1,7 @@
 import NextAuth from 'next-auth';
 import type { OAuthConfig } from 'next-auth/providers';
 import type { JWT } from 'next-auth/jwt';
+import { BENTO_OIDC_PROVIDER_ID } from '@/features/auth/constants';
 
 export const CLIENT_ID = process.env.CLIENT_ID ?? '';
 const OPENID_CONFIG_URL = process.env.OPENID_CONFIG_URL ?? '';
@@ -14,7 +15,7 @@ type BentoTokenSet = {
 };
 
 const bentoProvider: OAuthConfig<Record<string, unknown>> = {
-  id: 'bento',
+  id: BENTO_OIDC_PROVIDER_ID,
   name: 'Bento',
   type: 'oidc',
   issuer: ISSUER,
