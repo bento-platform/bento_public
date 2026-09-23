@@ -82,6 +82,7 @@
     "filters_other": "filtres",
     "filters_title_one": "Filtre",
     "filters_title_other": "Filtres",
+    "remove_filter": "Supprimer ce $t(search.filters_one)",
     "filters_applied_one": "{{count}} $t(search.filters, {\"count\": {{count}} }) appliqué",
     "filters_applied_other": "{{count}} $t(search.filters, {\"count\": {{count}} }) appliqués",
     "text_search": "Recherche de texte",
@@ -99,6 +100,7 @@
     "select_all_fields": "Tout sélectionner",
     "csv": "CSV",
     "xlsx": "XLSX",
+    "manifest": "Manifeste (TSV)",
     "selected_count_one": "{{count}} ligne sélectionnée",
     "selected_count_other": "{{count}} lignes sélectionnées",
     "clear_selection": "Effacer la sélection",
@@ -287,10 +289,6 @@
       "counts": "$t(Counts)",
       "identifiers": "Identifiants et informations techniques"
     },
-    "context": {
-      "clinical": "Clinique",
-      "research": "Recherche"
-    },
     "link_type": {
       "Downloadable Artifact": "Artéfact téléchargeable",
       "Data Management Plan": "Plan de gestion des données",
@@ -319,6 +317,19 @@
     "program_name": "Nom du programme",
     "project_id": "Identifiant du projet",
     "protocol": "Protocole",
+    "record": {
+      "title": "Fiche",
+      "lead_one": "Responsable",
+      "lead_other": "Responsables",
+      "last_modified": "Dernière modification",
+      "access": "Accès",
+      "status": "Statut",
+      "dac_id": "ID du CAD"
+    },
+    "role": {
+      "principal_investigator": "Chercheur principal ou chercheuse principale",
+      "project_lead": "Responsable de projet"
+    },
     "released": "Publié",
     "repository": "Dépôt",
     "schema_version": "Version du schéma",
@@ -420,6 +431,7 @@
   "clinphen_generic": {
     "excluded": "Exclu",
     "found_absent": "Trouvé absent",
+    "found_absent_link": "Voir la définition de « trouvé absent »",
     "code": "Code"
   },
   "biosample": {

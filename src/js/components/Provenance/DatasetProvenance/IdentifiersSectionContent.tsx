@@ -1,18 +1,15 @@
-import { Flex } from 'antd';
+import { Flex, Typography } from 'antd';
 import { CodeOutlined, GlobalOutlined } from '@ant-design/icons';
 import KeyValueDisplay, { type KeyValueItem } from '@Util/KeyValueDisplay';
-import { CopyButton } from './bits';
 
 import { useTranslationFn } from '@/hooks';
 import type { Dataset } from '@/types/dataset';
 
 type IdentifiersSectionContentProps = {
   dataset: Dataset;
-  copiedKey: string | null;
-  onCopy: (value: string, id: string) => void;
 };
 
-const IdentifiersSectionContent = ({ dataset, copiedKey, onCopy }: IdentifiersSectionContentProps) => {
+const IdentifiersSectionContent = ({ dataset }: IdentifiersSectionContentProps) => {
   const t = useTranslationFn();
 
   const resources = dataset.resources ?? [];
@@ -22,16 +19,10 @@ const IdentifiersSectionContent = ({ dataset, copiedKey, onCopy }: IdentifiersSe
       label: t('Identifier'),
       value: (
         <>
-          {dataset.identifier}{' '}
-          <CopyButton
-            value={dataset.identifier}
-            id={`dataset-${dataset.identifier}`}
-            copiedKey={copiedKey}
-            onCopy={onCopy}
-          />
+          {dataset.identifier} <Typography.Text copyable={{ text: dataset.identifier }} />
         </>
       ),
-      valueClassName: 'mono',
+      valueClassName: 'font-mono text-xs',
     },
     {
       label: t('provenance.schema_version'),
@@ -41,11 +32,10 @@ const IdentifiersSectionContent = ({ dataset, copiedKey, onCopy }: IdentifiersSe
       label: t('provenance.project_id'),
       value: (
         <>
-          {dataset.project}{' '}
-          <CopyButton value={dataset.project} id={`project-${dataset.project}`} copiedKey={copiedKey} onCopy={onCopy} />
+          {dataset.project} <Typography.Text copyable={{ text: dataset.project }} />
         </>
       ),
-      valueClassName: 'mono',
+      valueClassName: 'font-mono text-xs',
     },
   ];
 
