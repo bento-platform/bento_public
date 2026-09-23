@@ -59,19 +59,19 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
   return [
     {
       id: 'summary',
-      icon: <UnorderedListOutlined />,
+      icon: <UnorderedListOutlined aria-hidden />,
       children: <SummarySectionContent dataset={dataset} />,
     },
     ...(hasLinks
       ? [
           {
             id: 'links' as SectionId,
-            icon: <LinkOutlined />,
+            icon: <LinkOutlined aria-hidden />,
             count: links.length,
             children: (
               <div className="pm-links-grid">
-                {links.map((link, i) => (
-                  <LinkTile key={i} link={link} />
+                {links.map((link) => (
+                  <LinkTile key={link.url} link={link} />
                 ))}
               </div>
             ),
@@ -82,7 +82,7 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
       ? [
           {
             id: 'primary_contact' as SectionId,
-            icon: <UserOutlined />,
+            icon: <UserOutlined aria-hidden />,
             children: (
               <div className="pm-pgrid">
                 <PersonCard person={dataset.primary_contact} lead />
@@ -95,12 +95,12 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
       ? [
           {
             id: 'stakeholders' as SectionId,
-            icon: <TeamOutlined />,
+            icon: <TeamOutlined aria-hidden />,
             count: stakeholders.length,
             children: (
               <div className="pm-pgrid">
-                {stakeholders.map((s, i) => (
-                  <PersonCard key={i} person={s} />
+                {stakeholders.map((s) => (
+                  <PersonCard key={s.name} person={s} />
                 ))}
               </div>
             ),
@@ -111,12 +111,12 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
       ? [
           {
             id: 'publications' as SectionId,
-            icon: <BookOutlined />,
+            icon: <BookOutlined aria-hidden />,
             count: publications.length,
             children: (
               <div className="pm-publist">
-                {publications.map((pub, i) => (
-                  <PublicationCard key={i} pub={pub} alwaysExpanded={publications.length === 1} />
+                {publications.map((pub) => (
+                  <PublicationCard key={pub.url} pub={pub} alwaysExpanded={publications.length === 1} />
                 ))}
               </div>
             ),
@@ -127,13 +127,15 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
       ? [
           {
             id: 'funding' as SectionId,
-            icon: <DollarOutlined />,
+            icon: <DollarOutlined aria-hidden />,
             children:
               typeof dataset.funding_sources === 'string' ? (
                 <p>{dataset.funding_sources}</p>
               ) : (
                 <div className="pm-fgrid">
                   {fundingSources.map((fs, i) => (
+                    // Deliberate strategy - no easily-computable natural key for funding sources
+                    // eslint-disable-next-line react-x/no-array-index-key
                     <FundingCard key={i} source={fs} />
                   ))}
                 </div>
@@ -145,7 +147,7 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
       ? [
           {
             id: 'access' as SectionId,
-            icon: <AuditOutlined />,
+            icon: <AuditOutlined aria-hidden />,
             children: (
               <div className="pm-meta-grid">
                 {dataset.license && (
@@ -169,7 +171,7 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
       ? [
           {
             id: 'spatial' as SectionId,
-            icon: <EnvironmentOutlined />,
+            icon: <EnvironmentOutlined aria-hidden />,
             children: <SpatialCoverageSection spatialCoverage={dataset.spatial_coverage!} />,
           },
         ]
@@ -178,7 +180,7 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
       ? [
           {
             id: 'criteria' as SectionId,
-            icon: <InfoCircleOutlined />,
+            icon: <InfoCircleOutlined aria-hidden />,
             count: criteria.length,
             children: <ParticipantCriteriaSectionContent criteria={criteria} />,
           },
@@ -188,12 +190,12 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
       ? [
           {
             id: 'counts' as SectionId,
-            icon: <NumberOutlined />,
+            icon: <NumberOutlined aria-hidden />,
             count: counts.length,
             children: (
               <div className="pm-countgrid">
-                {counts.map((c, i) => (
-                  <div key={i} className="pm-countcard">
+                {counts.map((c) => (
+                  <div key={c.count_entity} className="pm-countcard">
                     <div className="pm-cc-num">{c.value.toLocaleString()}</div>
                     <div className="pm-cc-ent">{c.count_entity}</div>
                     {c.description && <div className="pm-cc-desc">{c.description}</div>}
@@ -206,7 +208,7 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
       : []),
     {
       id: 'identifiers',
-      icon: <TagOutlined />,
+      icon: <TagOutlined aria-hidden />,
       children: <IdentifiersSectionContent dataset={dataset} />,
     },
   ];
@@ -225,7 +227,7 @@ const DatasetProvenance = ({
 }) => {
   const isSmallScreen = useSmallScreen();
 
-  const [collapsed, setCollapsed] = useState<Set<SectionId>>(new Set());
+  const [collapsed, setCollapsed] = useState<Set<SectionId>>(() => new Set());
   const [activeSection, setActiveSection] = useState<SectionId>('summary');
 
   const mode = isSmallScreen ? 'scroll' : modeParam;

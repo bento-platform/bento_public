@@ -43,7 +43,7 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
       value: (
         <span>
           {leads.map((lead, i) => (
-            <Fragment key={i}>
+            <Fragment key={lead.name}>
               {i > 0 && ', '}
               <Popover
                 placement="bottomLeft"
@@ -126,8 +126,8 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
 
       <section className="explore-hero-record shadow rounded-xl">
         <dl className="explore-hero-record-list">
-          {rows.map((row, i) => (
-            <div className="explore-hero-record-row" key={i}>
+          {rows.map((row) => (
+            <div className="explore-hero-record-row" key={row.label}>
               {row.icon}
               <dt className="explore-hero-record-label">{row.label}</dt>
               <dd className="explore-hero-record-value">{row.value}</dd>

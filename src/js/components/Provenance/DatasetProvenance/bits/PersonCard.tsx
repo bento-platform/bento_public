@@ -73,8 +73,8 @@ export const PersonCard = ({
 
       {person.roles.length > 0 && (
         <div className="pm-pc-roles">
-          {person.roles.map((r, i) => (
-            <span key={i} className="pm-role">
+          {person.roles.map((r) => (
+            <span key={r} className="pm-role">
               {t(roleTranslationKey(r), { defaultValue: r })}
             </span>
           ))}
@@ -83,8 +83,8 @@ export const PersonCard = ({
 
       {hasContact && (
         <div className="pm-pc-contact">
-          {contact?.email?.map((email, i) => (
-            <div key={i} className="pm-cline">
+          {contact?.email?.map((email) => (
+            <div key={email} className="pm-cline">
               <MailOutlined />
               <span className="pm-cline-text">
                 <a href={`mailto:${email}`}>{email}</a>

@@ -121,7 +121,7 @@ const CatalogueRail = ({ totalCount, facetOptions, overlay, open, onClose }: Cat
         extra={
           overlay ? (
             <button className="sidebar__close focus-ring" onClick={onClose} aria-label={t('catalogue.rail.close')}>
-              <CloseOutlined aria-disabled />
+              <CloseOutlined aria-hidden />
             </button>
           ) : (
             <span>
