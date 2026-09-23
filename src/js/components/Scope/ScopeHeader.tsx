@@ -112,7 +112,7 @@ const ScopeHeader = ({
   if (!breadcrumbItems.length && !showSidebarToggle) return null;
 
   return (
-    <header id="scope-header" style={{ paddingLeft: showSidebarToggle ? undefined : 'var(--content-padding-h)' }}>
+    <div id="scope-header" style={{ paddingLeft: showSidebarToggle ? undefined : 'var(--content-padding-h)' }}>
       <CurrentPageHelpModal open={helpModalOpen} onCancel={() => setHelpModalOpen(false)} />
       <Flex>
         {showSidebarToggle && (
@@ -167,7 +167,7 @@ const ScopeHeader = ({
           </Flex>
         )}
       </Flex>
-    </header>
+    </div>
   );
 };
 

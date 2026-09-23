@@ -470,6 +470,13 @@ body {
   padding: var(--content-padding-v) var(--content-padding-h) var(--content-padding-v) calc(var(--content-padding-h) / 2);
 }
 
+.site-sider__header {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 16px 0;
+  align-items: center;
+}
+
 .page-phenopackets #content-layout main.ant-layout-content {
   padding: 0 var(--content-padding-h) var(--content-padding-v) var(--content-padding-h);
   background-color: white;
@@ -678,9 +685,10 @@ body {
 
 /* BEGIN sidebar + catalogue rail */
 
-.drawer {
-  background: rgba(255, 255, 255, 0.88);
+.drawer-content {
+  background: white;
   height: 100%;
+  padding-top: 64px;
   pointer-events: auto;
 }
 
@@ -717,6 +725,11 @@ body {
 
 .sidebar-section, .sidebar__footer {
   padding: 12px 14px;
+}
+
+.sidebar-section__content {
+  display: grid;
+  gap: 16px;
 }
 
 .sidebar__footer {
@@ -955,11 +968,19 @@ body {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 14px;
   color: var(--text-secondary);
   padding: 2px;
-  line-height: 1;
+  border-radius: 12px;
+  width: 24px;
+  height: 24px;
+
+  &:hover {
+    background: var(--antd-red-0);
+    color: var(--antd-red-4);
+    border: #0000;
+  }
 }
+
 
 /* END sidebar + catalogue rail */
 

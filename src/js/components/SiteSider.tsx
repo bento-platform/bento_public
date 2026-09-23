@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
-import clsx from 'clsx';
-import { Button, Flex, Grid, Layout, Typography } from 'antd';
-import { AppstoreAddOutlined } from '@ant-design/icons';
+import { Button, Flex, Grid, Typography } from 'antd';
+import { AppstoreAddOutlined, CloseOutlined } from '@ant-design/icons';
 
 import { useAppDispatch, useTranslationFn } from '@/hooks';
 import { useAvailableChartSections } from '@/features/search/hooks';
@@ -33,35 +32,41 @@ const SiteSider = ({
   const onManageChartsOpen = useCallback(() => dispatch(setManageChartsVisible(true)), [dispatch]);
 
   return (
-    <Layout.Sider width="auto" id="site-sider" className={clsx({ overlay })}>
-      <Sidebar
-        className="shadow"
-        id="site-sider__inner"
-        overlay={overlay}
-        open={open}
-        onClose={onClose}
-        footer={
-          breakpoints.lg &&
-          availableChartSections.length > 0 && (
-            <Flex vertical gap={8}>
-              <Button
-                icon={<AppstoreAddOutlined aria-hidden rotate={270} />}
-                onClick={onManageChartsOpen}
-                className="w-full"
-                htmlType="button"
-              >
-                {t('Manage Charts')}
-              </Button>
-              <Typography.Text type="secondary" style={{ fontSize: '0.81rem' }}>
-                {t('explore.manage_charts_help')}
-              </Typography.Text>
-            </Flex>
-          )
-        }
-      >
-        <SearchForm />
-      </Sidebar>
-    </Layout.Sider>
+    <Sidebar
+      className="shadow"
+      id="site-sider__inner"
+      overlay={overlay}
+      open={open}
+      onClose={onClose}
+      footer={
+        breakpoints.lg &&
+        availableChartSections.length > 0 && (
+          <Flex vertical gap={8}>
+            <Button
+              icon={<AppstoreAddOutlined aria-hidden rotate={270} />}
+              onClick={onManageChartsOpen}
+              className="w-full"
+              htmlType="button"
+            >
+              {t('Manage Charts')}
+            </Button>
+            <Typography.Text type="secondary" style={{ fontSize: '0.81rem' }}>
+              {t('explore.manage_charts_help')}
+            </Typography.Text>
+          </Flex>
+        )
+      }
+    >
+      {overlay && (
+        <div className="site-sider__header">
+          <h2>{t('catalogue.rail.title')}</h2>
+          <button className="sidebar__close focus-ring" onClick={onClose} aria-label={t('catalogue.rail.close')}>
+            <CloseOutlined aria-disabled />
+          </button>
+        </div>
+      )}
+      <SearchForm />
+    </Sidebar>
   );
 };
 

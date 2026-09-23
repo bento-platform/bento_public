@@ -120,8 +120,8 @@ const CatalogueRail = ({ totalCount, facetOptions, overlay, open, onClose }: Cat
         sectionTitle={t('catalogue.rail.title')}
         extra={
           overlay ? (
-            <button className="sidebar__close" onClick={onClose} aria-label={t('catalogue.rail.close')}>
-              <CloseOutlined />
+            <button className="sidebar__close focus-ring" onClick={onClose} aria-label={t('catalogue.rail.close')}>
+              <CloseOutlined aria-disabled />
             </button>
           ) : (
             <span>
@@ -130,6 +130,12 @@ const CatalogueRail = ({ totalCount, facetOptions, overlay, open, onClose }: Cat
           )
         }
       >
+        {overlay && (
+          <span>
+            <b>{totalCount}</b> {t('catalogue.toolbar.dataset_found', { count: totalCount })}
+          </span>
+        )}
+
         {FACETS.map((facet) => (
           <FacetSection
             key={facet.id}

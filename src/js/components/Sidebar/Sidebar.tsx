@@ -85,19 +85,21 @@ export type SidebarProps = HTMLAttributes<HTMLElement> & {
   extra?: ReactNode;
 };
 
-const Sidebar = ({ children, footer, className, overlay, open, onClose, ...props }: SidebarProps) => {
-
-  return (
-    <>
-      {overlay ?
-        <GenericDrawer open={open} onClose={onClose} drawerRender={()=> <div className="drawer">{children}</div>} />          
-        :
-        <aside className={clsx('sidebar', className)} {...props}>
-          <div className="sidebar__content">{children}</div>
-          {footer && <footer className="sidebar__footer">{footer}</footer>}
-        </aside>}
-    </>
-  );
-}
+const Sidebar = ({ children, footer, className, overlay, open, onClose, ...props }: SidebarProps) => (
+  <>
+    {overlay ? (
+      <GenericDrawer
+        open={open}
+        onClose={onClose}
+        drawerRender={() => <div className="drawer-content">{children}</div>}
+      />
+    ) : (
+      <aside className={clsx('sidebar', className)} {...props}>
+        <div className="sidebar__content">{children}</div>
+        {footer && <footer className="sidebar__footer">{footer}</footer>}
+      </aside>
+    )}
+  </>
+);
 
 export default Sidebar;
