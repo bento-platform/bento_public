@@ -123,7 +123,7 @@ const ScopeHeader = ({
             color="default"
             variant="filled"
             size="large"
-            onMouseDown={onToggleSidebar}
+            onClick={onToggleSidebar}
           />
         )}
         {breadcrumbItems.length > 0 && (

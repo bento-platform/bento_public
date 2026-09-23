@@ -678,6 +678,12 @@ body {
 
 /* BEGIN sidebar + catalogue rail */
 
+.drawer {
+  background: rgba(255, 255, 255, 0.88);
+  height: 100%;
+  pointer-events: auto;
+}
+
 .sidebar {
   position: sticky;
   top: calc(var(--scoped-title-height) + var(--content-padding-v));

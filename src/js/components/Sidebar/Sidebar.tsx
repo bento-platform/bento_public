@@ -3,6 +3,7 @@ import { Typography } from 'antd';
 import clsx from 'clsx';
 import { CaretDownOutlined, CaretRightOutlined } from '@ant-design/icons';
 import { useTranslationFn } from '@/hooks';
+import { GenericDrawer } from '@Util/GenericDrawer';
 
 /*
  * Structure:
@@ -81,16 +82,22 @@ export type SidebarProps = HTMLAttributes<HTMLElement> & {
   /** Ignored when `overlay` is falsy (the sidebar is always visible inline). */
   open?: boolean;
   onClose?: () => void;
+  extra?: ReactNode;
 };
 
-const Sidebar = ({ children, footer, className, overlay, open, onClose, ...props }: SidebarProps) => (
-  <>
-    {overlay && open && <div className="sidebar-backdrop" onClick={onClose} aria-hidden />}
-    <aside className={clsx('sidebar', overlay && 'sidebar--overlay', open && 'sidebar--open', className)} {...props}>
-      <div className="sidebar__content">{children}</div>
-      {footer && <footer className="sidebar__footer">{footer}</footer>}
-    </aside>
-  </>
-);
+const Sidebar = ({ children, footer, className, overlay, open, onClose, ...props }: SidebarProps) => {
+
+  return (
+    <>
+      {overlay ?
+        <GenericDrawer open={open} onClose={onClose} drawerRender={()=> <div className="drawer">{children}</div>} />          
+        :
+        <aside className={clsx('sidebar', className)} {...props}>
+          <div className="sidebar__content">{children}</div>
+          {footer && <footer className="sidebar__footer">{footer}</footer>}
+        </aside>}
+    </>
+  );
+}
 
 export default Sidebar;
