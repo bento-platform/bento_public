@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { type RefObject, useCallback, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { Input } from 'antd';
 import type { FacetOption } from '@/features/catalogue/types';
@@ -31,6 +31,22 @@ interface FacetSectionProps {
 const SCROLL_SHADOW_TOP_CLASS = 'scroll-shadow-top';
 const SCROLL_SHADOW_BOTTOM_CLASS = 'scroll-shadow-bottom';
 
+const handleScrollShadow = (
+  container: RefObject<HTMLDivElement | null>,
+  scrollOverlay: RefObject<HTMLDivElement | null>
+) => {
+  const containerCurrent = container.current;
+  if (!containerCurrent) return;
+  const scrollOverlayCurrent = scrollOverlay.current;
+  if (!scrollOverlayCurrent) return;
+  const st = containerCurrent.scrollTop;
+  scrollOverlayCurrent.classList.toggle(SCROLL_SHADOW_TOP_CLASS, st > 0);
+  scrollOverlayCurrent.classList.toggle(
+    SCROLL_SHADOW_BOTTOM_CLASS,
+    st + containerCurrent.clientHeight < containerCurrent.scrollHeight
+  );
+};
+
 const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleValue }: FacetSectionProps) => {
   const t = useTranslationFn();
   const label = t(facetTranslationKey(facet.id), T_PLURAL_COUNT);
@@ -42,16 +58,7 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
   const onFacetChipsScroll = useCallback(() => {
     // Use JS for this rather than the CSS hack to make the shadow actually appear on top of container contents,
     // rather than underneath it.
-    const chipsContainer = chipsRef.current;
-    if (!chipsContainer) return;
-    const overlay = chipsScrollOverlayRef.current;
-    if (!overlay) return;
-    const st = chipsContainer.scrollTop;
-    overlay.classList.toggle(SCROLL_SHADOW_TOP_CLASS, st > 0);
-    overlay.classList.toggle(
-      SCROLL_SHADOW_BOTTOM_CLASS,
-      st + chipsContainer.clientHeight < chipsContainer.scrollHeight
-    );
+    handleScrollShadow(chipsRef, chipsScrollOverlayRef);
   }, []);
 
   useEffect(() => {
