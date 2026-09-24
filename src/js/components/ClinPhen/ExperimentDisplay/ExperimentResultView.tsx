@@ -21,7 +21,7 @@ import { useTranslationFn } from '@/hooks';
 
 import { objectToBoolean } from '@/utils/boolean';
 
-import { VIEWABLE_FILE_EXTENSIONS } from 'bento-file-display';
+import { VIEWABLE_FILE_EXTENSIONS } from 'bento-file-display/dist/constants';
 import { VIEWABLE_FILE_FORMATS } from '@/constants/files';
 
 export const ExperimentResultIndices = ({ indices }: { indices: ExperimentResult['indices'] }) => {
