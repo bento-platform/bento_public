@@ -1,7 +1,7 @@
 import type { ExperimentResult, ExperimentResultIndex } from '@/types/clinPhen/experiments/experimentResult';
 import type { TrackType } from 'igv';
 import type { IgvAccessUrlPromisesById, TrackFormats } from '@/types/clinPhen/igv';
-import { getDrsAccessMethods } from '@/features/drs/utils';
+import { getDrsHttpsAccessOrPassThrough } from '@/features/drs/utils';
 
 // can add gff3, gtf, etc
 export const IGV_FILE_TYPE_INFO: Partial<
@@ -54,7 +54,7 @@ const getDeferredDrsAccessMethod = (url: string | undefined): Promise<string | n
   return new Promise((resolve) => {
     // defer DRS store actions until after render
     setTimeout(() => {
-      void getDrsAccessMethods(url).then(resolve);
+      void getDrsHttpsAccessOrPassThrough(url).then(resolve);
     }, 0);
   });
 };

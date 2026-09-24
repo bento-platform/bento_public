@@ -4,8 +4,11 @@ import { RequestStatus } from '@/types/requests';
 import { getDrsRecord } from '@/features/drs/getDrsRecord.thunk';
 import type { DrsRecord } from './types';
 
-export const getDrsAccessMethods = async (url: string | undefined): Promise<string | null> => {
-  return getDrsObjectOrPassThrough(url).then(
+// async equivalent of DRS hook useDrsHttpsAccessOrPassThrough()
+export const getDrsHttpsAccessOrPassThrough = async (url: string | undefined): Promise<string | null> => {
+  if (!url || !isDrs(url)) return url ?? null;
+
+  return getDrsObject(url).then(
     (record) => (record?.access_methods ?? []).find((am) => am.type === 'https')?.access_url?.url ?? null
   );
 };
@@ -14,23 +17,13 @@ export const isDrs = (uri: string | undefined) => {
   if (!uri) return false;
   try {
     const parts = new URL(uri);
-    console.log('isDrs()');
     return parts.protocol === 'drs:';
   } catch {
     return false;
   }
 };
 
-// async equivalent of DRS hook useDrsHttpsAccessOrPassThrough()
-export const getDrsObjectOrPassThrough = async (uri: string | undefined): Promise<DrsRecord | null> => {
-  /**
-   * If a record is returned, the URI is a DRS URI that has been fetched.
-   * If null is returned, the URI is not recognized as a DRS URI.
-   */
-
-  if (!uri) return null;
-  if (!isDrs(uri)) return null;
-
+const getDrsObject = async (uri: string): Promise<DrsRecord | null> => {
   const currentState = store.getState();
   const recordState = currentState.drs.byUri[uri];
 
