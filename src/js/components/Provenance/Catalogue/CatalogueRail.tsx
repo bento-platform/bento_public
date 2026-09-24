@@ -28,6 +28,9 @@ interface FacetSectionProps {
   onToggleValue: (value: string) => void;
 }
 
+const SCROLL_SHADOW_TOP_CLASS = 'scroll-shadow-top';
+const SCROLL_SHADOW_BOTTOM_CLASS = 'scroll-shadow-bottom';
+
 const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleValue }: FacetSectionProps) => {
   const t = useTranslationFn();
   const label = t(facetTranslationKey(facet.id), T_PLURAL_COUNT);
@@ -44,16 +47,11 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
     const overlay = chipsScrollOverlayRef.current;
     if (!overlay) return;
     const st = chipsContainer.scrollTop;
-    if (st > 0) {
-      overlay.classList.add('scroll-shadow-top');
-    } else {
-      overlay.classList.remove('scroll-shadow-top');
-    }
-    if (st + chipsContainer.clientHeight < chipsContainer.scrollHeight) {
-      overlay.classList.add('scroll-shadow-bottom');
-    } else {
-      overlay.classList.remove('scroll-shadow-bottom');
-    }
+    overlay.classList.toggle(SCROLL_SHADOW_TOP_CLASS, st > 0);
+    overlay.classList.toggle(
+      SCROLL_SHADOW_BOTTOM_CLASS,
+      st + chipsContainer.clientHeight < chipsContainer.scrollHeight
+    );
   }, []);
 
   useEffect(() => {
