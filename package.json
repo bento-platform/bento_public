@@ -10,7 +10,9 @@
     "lint": "eslint src",
     "lint-fix": "eslint --fix src",
     "prettier": "prettier --write src",
-    "postinstall": "test -f node_modules/bento-auth-js/dist/index.js || npm run build --prefix node_modules/bento-auth-js"
+    "postinstall": "test -f node_modules/bento-auth-js/dist/index.js || npm run build --prefix node_modules/bento-auth-js",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "keywords": [],
   "author": "",

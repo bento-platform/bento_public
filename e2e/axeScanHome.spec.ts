@@ -1,16 +1,30 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { API_PROJECTS } from './mocks';
 
 test.describe.configure({ mode: 'parallel' });
 
 test.describe('homepage', () => {
-  test('should not have any automatically detectable accessibility issues when load', async ({ page }) => {
-    await page.goto('https://bentov2.local/'); //TODO: Check for a variable in CI
-    await page.waitForSelector('#default-layout');
+  test.beforeEach(async ({ page }) => {
+    // Intercept projects API in CI (or if MOCK_API=true) so catalogue cards render cleanly
+    if (process.env.CI || process.env.MOCK_API === 'true') {
+      await page.route('**/api/metadata/api/projects*', async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(API_PROJECTS),
+        });
+      });
+    }
+  });
 
+  test('should not have any automatically detectable accessibility issues when load', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForSelector('#default-layout');
     await page.waitForSelector('#content-layout');
 
-    await page.waitForSelector('.catalogue-grid');
+    // Wait for the catalogue grid or fallback to empty state
+    await page.waitForSelector('.catalogue-grid, .catalogue-insights-container');
 
     const accessibilityScanResults = await new AxeBuilder({ page })
       .exclude('.catalogue-card__title')

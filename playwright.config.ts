@@ -11,6 +11,9 @@ import { defineConfig, devices } from '@playwright/test';
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
+const PORT = process.env.BENTO_PUBLIC_PORT || 5000;
+const baseURL = process.env.BASE_URL || (process.env.CI ? `http://localhost:${PORT}` : 'https://bentov2.local');
+
 export default defineConfig({
   timeout: 60000,
   testDir: './e2e',
@@ -26,11 +29,12 @@ export default defineConfig({
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    /* Base URL to use in actions like `await page.goto('')`. */
-    // baseURL: 'http://localhost:3000',
+    /* Base URL to use in actions like `await page.goto('/')`. */
+    baseURL,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+    /* Allow self-signed SSL certificates for https://bentov2.local */
     ignoreHTTPSErrors: true,
   },
 
@@ -72,10 +76,14 @@ export default defineConfig({
     // },
   ],
 
-  /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run start',
-  //   url: 'http://localhost:3000',
-  //   reuseExistingServer: !process.env.CI,
-  // },
+  /* Automatically run the production server during CI if no external BASE_URL is provided */
+  webServer:
+    process.env.CI && !process.env.BASE_URL
+      ? {
+          command: 'npm run start',
+          url: baseURL,
+          reuseExistingServer: !process.env.CI,
+          timeout: 120 * 1000,
+        }
+      : undefined,
 });
