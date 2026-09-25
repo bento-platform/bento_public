@@ -10,7 +10,9 @@
     "lint": "eslint src",
     "lint-fix": "eslint --fix src",
     "prettier": "prettier --write src",
-    "postinstall": "test -f node_modules/bento-auth-js/dist/index.js || npm run build --prefix node_modules/bento-auth-js"
+    "postinstall": "test -f node_modules/bento-auth-js/dist/index.js || npm run build --prefix node_modules/bento-auth-js",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "keywords": [],
   "author": "",
@@ -49,7 +51,9 @@
     "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@eslint/js": "^9.39.2",
+    "@playwright/test": "^1.63.0",
     "@types/file-saver": "^2.0.7",
     "@types/json-schema": "^7.0.15",
     "@types/node": "^24",

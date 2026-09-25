@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Breadcrumb, type BreadcrumbProps, Button, Flex, Menu, Tooltip } from 'antd';
+import { Badge, Breadcrumb, type BreadcrumbProps, Button, Flex, Menu, Tooltip } from 'antd';
 import { ArrowLeftOutlined, FilterOutlined, QuestionOutlined } from '@ant-design/icons';
 import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
 import type { MenuItem } from '@/types/navigation';
@@ -112,19 +112,21 @@ const ScopeHeader = ({
   if (!breadcrumbItems.length && !showSidebarToggle) return null;
 
   return (
-    <header id="scope-header" style={{ paddingLeft: showSidebarToggle ? undefined : 'var(--content-padding-h)' }}>
+    <div id="scope-header" style={{ paddingLeft: showSidebarToggle ? undefined : 'var(--content-padding-h)' }}>
       <CurrentPageHelpModal open={helpModalOpen} onCancel={() => setHelpModalOpen(false)} />
       <Flex>
         {showSidebarToggle && (
-          <Button
-            id="scope-header__sidebar-toggle"
-            className={sidebarOverlayShown ? 'active' : ''}
-            icon={<FilterOutlined />}
-            color="default"
-            variant="filled"
-            size="large"
-            onMouseDown={onToggleSidebar}
-          />
+          <Badge count={breadcrumbItems.length} size="small" offset={[-12, 12]} className="catalogue-toolbar-fixed">
+            <Button
+              id="scope-header__sidebar-toggle"
+              className={sidebarOverlayShown ? 'active' : ''}
+              icon={<FilterOutlined />}
+              color="default"
+              variant="filled"
+              size="large"
+              onClick={onToggleSidebar}
+            />
+          </Badge>
         )}
         {breadcrumbItems.length > 0 && (
           <Flex className="scoped-title flex-1" align="center">
@@ -167,7 +169,7 @@ const ScopeHeader = ({
           </Flex>
         )}
       </Flex>
-    </header>
+    </div>
   );
 };
 

@@ -88,7 +88,7 @@ const CatalogueToolbar = ({ filteredCount, showFiltersButton, isMobile, onOpenFi
       <Flex gap={8} align="center">
         {showFiltersButton && (
           <Badge count={pills.length} size="small" offset={[-4, 4]} className="catalogue-toolbar-fixed">
-            <Button icon={<FilterOutlined aria-hidden />} onClick={onOpenFilters}>
+            <Button data-testid="filters-button" icon={<FilterOutlined aria-hidden />} onClick={onOpenFilters}>
               {t('catalogue.rail.title')}
             </Button>
           </Badge>
