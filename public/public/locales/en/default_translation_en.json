@@ -79,6 +79,7 @@
     "filters_other": "filters",
     "filters_title_one": "Filter",
     "filters_title_other": "Filters",
+    "remove_filter": "Remove $t(filters_title_one)",
     "filters_applied": "{{count}} $t(search.filters, {\"count\": {{count}} }) applied",
     "text_search": "Text search",
     "filter_placeholder": "Select a field to filter by\u2026",
@@ -95,6 +96,7 @@
     "select_all_fields": "Select all",
     "csv": "CSV",
     "xlsx": "XLSX",
+    "manifest": "Manifest (TSV)",
     "selected_count_one": "{{count}} row selected",
     "selected_count_other": "{{count}} rows selected",
     "clear_selection": "Clear selection",
@@ -290,6 +292,7 @@
   "clinphen_generic": {
     "excluded": "Excluded",
     "found_absent": "Found to be absent",
+    "found_absent_link": "See the definition for 'found to be absent'",
     "code": "Code"
   },
   "biosample": {
@@ -657,10 +660,6 @@
       "counts": "$t(Counts)",
       "identifiers": "Identifiers & Technical"
     },
-    "context": {
-      "clinical": "Clinical",
-      "research": "Research"
-    },
     "link_type": {
       "Downloadable Artifact": "Downloadable Artifact",
       "Data Management Plan": "Data Management Plan",
@@ -689,6 +688,19 @@
     "program_name": "Program name",
     "project_id": "Project ID",
     "protocol": "Protocol",
+    "record": {
+      "title": "Record",
+      "lead_one": "Lead",
+      "lead_other": "Leads",
+      "last_modified": "Last modified",
+      "access": "Access",
+      "status": "Status",
+      "dac_id": "DAC ID"
+    },
+    "role": {
+      "principal_investigator": "Principal Investigator",
+      "project_lead": "Project Lead"
+    },
     "released": "Released",
     "repository": "Repository",
     "schema_version": "Schema version",

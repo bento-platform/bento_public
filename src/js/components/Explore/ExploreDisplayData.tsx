@@ -48,7 +48,7 @@ const ExploreDisplayData = ({ section, allCharts, searchableFields, chartMode }:
 
   if (isSmallScreen) {
     return (
-      <Space direction="vertical" className="w-full">
+      <Space orientation="vertical" className="w-full">
         {displayedCharts.map(renderItem)}
       </Space>
     );

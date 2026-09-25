@@ -5,6 +5,7 @@ import { useScopeQueryData } from '@/hooks/censorship';
 import { useHaveEntityDataForField } from '@/hooks/useHaveEntityData';
 import type { ActiveFilterPill } from '@/components/Util/ActiveFilterTags';
 import { formatDateFilterValue } from '@/utils/rangeFilterUtils';
+import { WAITING_STATES } from '@/constants/requests';
 import {
   ENTITY_QUERY_PARAM,
   TABLE_PAGE_QUERY_PARAM,
@@ -36,6 +37,14 @@ export const useAvailableChartSections = () => {
         }))
         .filter(({ charts }) => charts.length > 0),
     [sections, haveEntityDataForField]
+  );
+};
+
+export const useDisplayedChartSections = () => {
+  const availableChartSections = useAvailableChartSections();
+  return useMemo(
+    () => availableChartSections.filter(({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1),
+    [availableChartSections]
   );
 };
 
@@ -97,7 +106,12 @@ export const useActiveFilterPills = (): { pills: ActiveFilterPill[]; clearAll: (
   const entityAndTextQueryParams = useEntityAndTextQueryParams();
 
   const clearAll = useCallback(() => {
-    const url = buildQueryParamsUrl(pathname, entityAndTextQueryParams);
+    const url = buildQueryParamsUrl(
+      pathname,
+      // Filter out text query and table page from query params if set when clearing all filters, as we may also be
+      // clearing a text query (and either way, the page will be invalid.)
+      entityAndTextQueryParams.filter((e) => e[0] !== TEXT_QUERY_PARAM && e[0] !== TABLE_PAGE_QUERY_PARAM)
+    );
     navigate(url, { replace: true });
   }, [pathname, entityAndTextQueryParams, navigate]);
 
@@ -181,4 +195,12 @@ export const useSearchableFields = () => {
     () => new Set(filterSections.flatMap((section) => section.fields).map((field) => field.id)),
     [filterSections]
   );
+};
+
+export const useIsSearchLoading = () => {
+  const {
+    discoveryStatus,
+    wholeScopeData: { status: wholeScopeStatus },
+  } = useSearchQuery();
+  return WAITING_STATES.includes(discoveryStatus) || WAITING_STATES.includes(wholeScopeStatus);
 };

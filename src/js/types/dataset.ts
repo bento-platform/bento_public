@@ -9,10 +9,12 @@ export type LanguageAlpha2 = string;
 
 export type TextContentType = 'text/html' | 'text/markdown' | 'text/plain';
 
-// ---- String literal unions (from Python TranslatedLiteral definitions) ----
+// ---- Free-text fields translated server-side (from Python TranslatedLiteral definitions) ----
+// The API returns these already localized to the request's Accept-Language, so the frontend
+// renders them as-is rather than mapping a fixed set of codes to i18n keys.
 
-export type StudyContext = 'CLINICAL' | 'RESEARCH';
-export type StudyStatus = 'ONGOING' | 'COMPLETED';
+export type StudyContext = string;
+export type StudyStatus = string;
 
 export type Role =
   | 'Principal Investigator'

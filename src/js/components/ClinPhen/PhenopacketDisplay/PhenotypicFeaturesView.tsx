@@ -61,12 +61,14 @@ function PhenotypicFeatureExpandedRow({ feature }: { feature: PhenotypicFeature 
     {
       key: 'evidence',
       label: 'phenotypic_features.evidence',
-      children: feature.evidence?.length ? feature.evidence.map((e, i) => <Evidence key={i} evidence={e} />) : EM_DASH,
+      children: feature.evidence?.length
+        ? feature.evidence.map((e) => <Evidence key={`${e.evidence_code.id}`} evidence={e} />)
+        : EM_DASH,
       isVisible: feature.evidence?.length,
     },
   ];
   return (
-    <Space direction="vertical" className="w-full">
+    <Space orientation="vertical" className="w-full">
       <TDescriptions bordered size="compact" items={items} />
       <ExtraPropertiesDisplay extraProperties={feature.extra_properties} />
     </Space>
