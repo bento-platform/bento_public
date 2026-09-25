@@ -3,7 +3,7 @@ import { type MouseEventHandler, useCallback } from 'react';
 import { Button, type ButtonProps } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 
-import { useAccessToken } from 'bento-auth-js';
+import { useAccessToken } from '@/features/auth/hooks';
 import { useTranslationFn } from '@/hooks';
 import { useDrsHttpsAccessOrPassThrough } from '@/features/drs/hooks';
 

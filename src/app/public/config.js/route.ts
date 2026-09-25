@@ -37,8 +37,7 @@ export function GET() {
     BEACON_NETWORK_ENABLED: parseBoolean(process.env.BENTO_BEACON_NETWORK_ENABLED),
 
     // Authentication
-    CLIENT_ID: process.env.CLIENT_ID || null,
-    OPENID_CONFIG_URL: process.env.OPENID_CONFIG_URL || null,
+    SESSION_REFETCH_INTERVAL_SECONDS: process.env.BENTO_PUBLIC_SESSION_REFETCH_INTERVAL_SECONDS || '120',
   };
 
   return new Response(`BENTO_PUBLIC_CONFIG = ${JSON.stringify(siteConfig, null, 2)};\n`, {
