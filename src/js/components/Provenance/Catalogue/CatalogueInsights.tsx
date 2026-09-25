@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useId, useMemo } from 'react';
 
 import { Card, Flex, Typography } from 'antd';
 import { PieChartOutlined } from '@ant-design/icons';
@@ -90,6 +90,7 @@ const CatalogueInsightCard = ({ datasets, facet, kind, colors }: CatalogueInsigh
 const CatalogueEntityCountsCard = ({ datasets }: { datasets: DatasetWithProject[] }) => {
   const t = useTranslationFn();
   const fmt = useFormatNumber();
+  const titleId = useId();
 
   const totals = useMemo(() => {
     const sums = { individual: 0, biosample: 0, experiment: 0, experiment_result: 0 };
@@ -106,18 +107,22 @@ const CatalogueEntityCountsCard = ({ datasets }: { datasets: DatasetWithProject[
 
   return (
     <Card size="small" className="chart-card">
-      <Text className="chart-card__title">{t('catalogue.insights.totals')}</Text>
-      <div className="catalogue-insights-stat-grid">
+      <Text id={titleId} className="chart-card__title">
+        {t('catalogue.insights.totals')}
+      </Text>
+      <dl className="catalogue-insights-stat-grid" aria-labelledby={titleId}>
         {COUNT_ENTITY_ORDER.map((entity) => (
           <div key={entity} className="catalogue-insights-stat-cell">
-            <span className="catalogue-insights-stat-icon-row">
-              <span className="catalogue-insights-stat-icon">{COUNT_ENTITY_REGISTRY[entity].icon}</span>
+            <dt className="catalogue-insights-stat-label">{t(`entities.${entity}_other`)}</dt>
+            <dd className="catalogue-insights-stat-icon-row">
+              <span className="catalogue-insights-stat-icon" aria-hidden="true">
+                {COUNT_ENTITY_REGISTRY[entity].icon}
+              </span>
               <span className="catalogue-insights-stat-value">{fmt(totals[entity])}</span>
-            </span>
-            <span className="catalogue-insights-stat-label">{t(`entities.${entity}_other`)}</span>
+            </dd>
           </div>
         ))}
-      </div>
+      </dl>
     </Card>
   );
 };

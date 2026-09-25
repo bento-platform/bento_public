@@ -605,6 +605,7 @@ body {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-template-rows: repeat(2, minmax(0, 1fr));
   flex: 1;
+  margin: 0;
 }
 .catalogue-insights-stat-cell {
   display: flex;
@@ -618,7 +619,7 @@ body {
 .catalogue-insights-stat-cell:nth-child(1) { border-right: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle); }
 .catalogue-insights-stat-cell:nth-child(2) { border-bottom: 1px solid var(--border-subtle); }
 .catalogue-insights-stat-cell:nth-child(3) { border-right: 1px solid var(--border-subtle); }
-.catalogue-insights-stat-icon-row { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.catalogue-insights-stat-icon-row { display: flex; align-items: center; gap: 6px; min-width: 0; margin: 0; }
 .catalogue-insights-stat-icon { flex: none; color: var(--text-primary); font-size: 18px; display: flex; }
 .catalogue-insights-stat-value {
   font-size: 20px;
@@ -628,6 +629,8 @@ body {
   white-space: nowrap;
 }
 .catalogue-insights-stat-label {
+  /* <dt> precedes <dd> in the DOM; render the label beneath the value */
+  order: 1;
   font-size: 11px;
   color: var(--text-muted);
   white-space: nowrap;
