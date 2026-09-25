@@ -1,17 +1,17 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Flex, Typography } from 'antd';
-import { useAppDispatch, useAppSelector, useTranslationFn } from '@/hooks';
 import { useAccessToken } from 'bento-auth-js';
 import igv from 'igv/dist/igv.esm.js';
 import type { Browser, CreateOpt } from 'igv';
 import { saveIgvPosition } from '@/features/igv/igv.store';
 import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
 import type { IgvTrack, ExperimentResultWithView, IgvPosition, IgvReferenceById } from '@/types/clinPhen/igv';
-import { PUBLIC_URL } from '@/config';
 import { caseInsensitiveIgvFileInfoLookup, getIgvFileAndIndexAccessUrls } from '@/utils/igv';
-import TrackControlTable from './TrackControlTable';
+import { useAppDispatch, useAppSelector, useTranslationFn } from '@/hooks';
 import { useDebounce } from '@/hooks/debounce';
 import { useNotify } from '@/hooks/notifications';
+import TrackControlTable from './TrackControlTable';
+import { PUBLIC_URL } from '@/config';
 
 const { Title } = Typography;
 
