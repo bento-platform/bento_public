@@ -29,7 +29,7 @@ const SearchSubForm = ({
     <SidebarSection
       sectionTitle={
         <span style={{ flex: 1 }}>
-          {icon}{' '}
+          <span aria-hidden>{icon} </span> {/* add a visual space */}
           <span className="should-underline-if-unfocused">
             {t(`search.${titleKey}`, titleKeyCount !== undefined ? { count: titleKeyCount } : {})}
           </span>

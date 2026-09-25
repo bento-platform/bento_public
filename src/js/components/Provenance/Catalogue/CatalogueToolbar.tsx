@@ -13,7 +13,7 @@ import ActiveFilterTags from '@/components/Util/ActiveFilterTags';
 import { FACET_CONFIG_BY_ID } from '@/features/catalogue/facetRegistry';
 
 import { toggleInsights, type SortKey, type FacetId } from '@/features/catalogue/catalogue.store';
-import { facetTranslationKey, facetValueTranslationKey } from '@/features/catalogue/utils';
+import { facetTranslationKey } from '@/features/catalogue/utils';
 
 const { Text } = Typography;
 
@@ -62,11 +62,12 @@ const CatalogueToolbar = ({ filteredCount, showFiltersButton, isMobile, onOpenFi
 
   const pills: { key: string; facetLabel: string; label: string; onClose: () => void }[] = [];
   (Object.entries(sets) as [FacetId, string[]][]).forEach(([facet, values]) => {
+    const facetConfig = FACET_CONFIG_BY_ID[facet];
     values.forEach((v) =>
       pills.push({
         key: `${facet}-${v}`,
         facetLabel: facetTranslationKey(facet),
-        label: t(facetValueTranslationKey(FACET_CONFIG_BY_ID[facet].i18nKeyPrefix, v)),
+        label: facetConfig.formatLabel ? facetConfig.formatLabel(v, t) : v,
         onClose: () => toggleFacetValue(facet, v),
       })
     );
@@ -135,13 +136,13 @@ const CatalogueToolbar = ({ filteredCount, showFiltersButton, isMobile, onOpenFi
                 value: 'grid',
                 label: t('catalogue.toolbar.grid'),
                 title: t('catalogue.toolbar.view_as_grid'),
-                icon: <BsGrid aria-hidden className="align-top mt-7px" />,
+                icon: <BsGrid aria-hidden />,
               },
               {
                 value: 'list',
                 label: t('catalogue.toolbar.list'),
                 title: t('catalogue.toolbar.view_as_list'),
-                icon: <BsViewStacked aria-hidden className="align-top mt-7px" />,
+                icon: <BsViewStacked aria-hidden />,
               },
             ]}
           />

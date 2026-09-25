@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { Divider, Empty, Button, Flex, Grid, Typography } from 'antd';
 
 import { PCGL_MODE } from '@/config';
 import { useMetadata } from '@/features/metadata/hooks';
 import { useCatalogueFilter, useCatalogueState } from '@/features/catalogue/hooks';
-import { useAppDispatch } from '@/hooks';
+import { useAppDispatch, useLanguage } from '@/hooks';
 import { useTranslationFn } from '@/hooks';
 import { setProjectColors } from '@/features/catalogue/catalogue.store';
 import { useCatalogueUrlSync, useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
@@ -43,6 +43,16 @@ const Catalogue = () => {
   );
 
   const { filtered, facetOptions } = useCatalogueFilter(allDatasets);
+
+  // Clear filters on language change
+  const language = useLanguage();
+  const prevLanguageRef = useRef(language);
+  useEffect(() => {
+    if (prevLanguageRef.current !== language) {
+      prevLanguageRef.current = language;
+      clearAll();
+    }
+  }, [language, clearAll]);
 
   useEffect(() => {
     // In PCGL mode, assign colours to programs instead of projects for now.

@@ -19,7 +19,7 @@ import { PCGL_MODE } from '@/config';
 import { COUNT_ENTITY_ORDER, COUNT_ENTITY_REGISTRY } from '@/constants/countEntities';
 import StatList, { type StatItem } from '@/components/Util/StatList';
 
-import { assignColors, facetValueTranslationKey } from '@/features/catalogue/utils';
+import { assignColors } from '@/features/catalogue/utils';
 
 function buildCounts(datasets: DatasetWithProject[], facet: FacetConfig): CategoricalChartDataItem[] {
   const map = new Map<string, number>();
@@ -39,7 +39,7 @@ const useTranslatedEntries = (datasets: DatasetWithProject[], facetId: FacetId):
     const facetConfig = FACET_CONFIG_BY_ID[facetId];
     if (facetConfig) {
       const data = buildCounts(datasets, facetConfig);
-      return data.map((d) => ({ ...d, x: t(facetValueTranslationKey(facetConfig.i18nKeyPrefix, d.id ?? d.x)) }));
+      return data.map((d) => ({ ...d, x: facetConfig.formatLabel ? facetConfig.formatLabel(d.id ?? d.x, t) : d.x }));
     } else {
       return []; // If facet config is disabled (e.g., project for PCGL)
     }
