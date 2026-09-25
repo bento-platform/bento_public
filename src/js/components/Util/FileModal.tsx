@@ -1,10 +1,11 @@
 import type { CSSProperties, ReactNode } from 'react';
-import { Modal, type ModalProps } from 'antd';
-
-import { FileDisplay } from 'bento-file-display';
+import { lazy, Suspense } from 'react';
+import { Modal, Row, Spin, type ModalProps } from 'antd';
 
 import { useAuthorizationHeader } from '@/features/auth/hooks';
 import { useDrsHttpsAccessOrPassThrough } from '@/features/drs/hooks';
+
+const FileDisplay = lazy(() => import('bento-file-display').then((m) => ({ default: m.FileDisplay })));
 
 const MODAL_STYLE: CSSProperties = {
   // the flex display allows items which are less wide (e.g., portrait PDFs) to have a narrower modal
@@ -47,12 +48,20 @@ const FileModal = ({ title, open, onCancel, hasTriggered, url, fileName, loading
       destroyOnHidden={true}
     >
       {(hasTriggered ?? true) && (
-        <FileDisplay
-          uri={finalUrl ?? undefined}
-          fileName={fileName}
-          loading={loading ?? false}
-          authHeader={authHeader}
-        />
+        <Suspense
+          fallback={
+            <Row justify="center" align="middle" style={{ minHeight: 200 }}>
+              <Spin />
+            </Row>
+          }
+        >
+          <FileDisplay
+            uri={finalUrl ?? undefined}
+            fileName={fileName}
+            loading={loading ?? false}
+            authHeader={authHeader}
+          />
+        </Suspense>
       )}
     </Modal>
   );
