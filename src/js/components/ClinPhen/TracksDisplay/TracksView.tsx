@@ -55,8 +55,7 @@ const TracksView = ({
   );
 
   // update access token whenever necessary
-  // can change to per-track tokens in the future,
-  // but note that per-track tokens don't refresh, even if the tokens are provided by a function
+  // can change to per-track tokens in the future
   useEffect(() => {
     if (!accessToken) {
       return;
