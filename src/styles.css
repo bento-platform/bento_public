@@ -631,7 +631,7 @@ body {
 .catalogue-insights-stat-label {
   /* <dt> precedes <dd> in the DOM; render the label beneath the value */
   order: 1;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--text-muted);
   white-space: nowrap;
   overflow: hidden;
