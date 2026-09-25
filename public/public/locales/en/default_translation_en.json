@@ -629,7 +629,7 @@
     "insights": {
       "title": "$t(entities.dataset_one) insights",
       "hint": "Select a segment to filter",
-      "by_status": "By status",
+      "totals": "Data coverage",
       "by_domain": "By domain",
       "by_keyword": "By keyword",
       "by_project": "By $t(entities.project_one, lowercase)"

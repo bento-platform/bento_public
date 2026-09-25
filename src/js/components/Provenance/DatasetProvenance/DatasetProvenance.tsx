@@ -16,6 +16,7 @@ import {
 import { useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
+import StatList from '@/components/Util/StatList';
 import type { Dataset } from '@/types/dataset';
 import {
   FundingCard,
@@ -193,15 +194,16 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
             icon: <NumberOutlined aria-hidden />,
             count: counts.length,
             children: (
-              <div className="pm-countgrid">
-                {counts.map((c) => (
-                  <div key={c.count_entity} className="pm-countcard">
-                    <div className="pm-cc-num">{c.value.toLocaleString()}</div>
-                    <div className="pm-cc-ent">{c.count_entity}</div>
-                    {c.description && <div className="pm-cc-desc">{c.description}</div>}
-                  </div>
-                ))}
-              </div>
+              <StatList
+                variant="cards"
+                aria-label={t('provenance.sections.counts')}
+                items={counts.map((c) => ({
+                  key: c.count_entity,
+                  label: c.count_entity,
+                  value: c.value,
+                  description: c.description,
+                }))}
+              />
             ),
           },
         ]
