@@ -599,14 +599,6 @@ body {
   color: var(--text-secondary);
   margin-bottom: 12px;
 }
-.provenance-tag {
-  font-size: 11px;
-  border-radius: 4px;
-  margin: 0;
-  background: var(--ant-color-primary-bg) !important;
-  color: var(--ant-color-primary) !important;
-  border: 1px solid var(--ant-color-primary-border) !important;
-}
 
 /* END catalogue charts */
 

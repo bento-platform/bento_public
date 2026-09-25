@@ -29,7 +29,7 @@ export const SidebarFacet = ({ headerId, label, collapsed, onToggleCollapse, chi
 
   return (
     <div className={clsx('sidebar-facet', !collapsed && 'sidebar-facet--expanded')}>
-      <Typography.Title level={4} className="facet-head__title">
+      <Typography.Title level={3} className="facet-head__title">
         <button
           className="facet-head focus-ring"
           onClick={onToggleCollapse}
@@ -66,7 +66,7 @@ export type SidebarSectionProps = HTMLAttributes<HTMLElement> & {
 export const SidebarSection = ({ sectionTitle, extra, children, className, ...props }: SidebarSectionProps) => (
   <section className={clsx('sidebar-section', className)} {...props}>
     <header className="sidebar-section__header">
-      <Typography.Title level={3} className="sidebar-section__header__title">
+      <Typography.Title level={2} className="sidebar-section__header__title">
         {sectionTitle}
       </Typography.Title>
       {extra && <div className="sidebar-section__header__extra">{extra}</div>}
