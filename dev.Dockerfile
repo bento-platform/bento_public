@@ -7,11 +7,13 @@ COPY package-lock.json .
 
 RUN npm ci
 
-FROM ghcr.io/bento-platform/bento_base_image:node-debian-2026.08.01
+FROM ghcr.io/bento-platform/bento_base_image:node-debian-2026.09.01
 
 LABEL org.opencontainers.image.description="Local development image for Bento Public."
 
 WORKDIR /bento-public
+
+ENV NEXT_TELEMETRY_DISABLED=1
 
 COPY entrypoint.bash .
 COPY run.dev.bash .

@@ -82,7 +82,7 @@ export const ExperimentExpandedRow = ({ packetId, experiment, mode }: Experiment
   ];
 
   return (
-    <Space direction="vertical" className="w-full">
+    <Space orientation="vertical" className="w-full">
       <TDescriptions
         bordered
         size="compact"

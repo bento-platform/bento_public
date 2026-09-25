@@ -1,35 +1,35 @@
-import { type ReactNode, useId } from 'react';
+import type { ReactNode } from 'react';
 import clsx from 'clsx';
 
 export type KeyValueItem = {
+  itemKey: string;
+  icon?: ReactNode;
   label: string;
   value: ReactNode;
   valueClassName?: string;
   span?: boolean;
 };
 
-const KeyValueItemDisplay = ({ label, value, valueClassName, span }: KeyValueItem) => {
-  const keyId = useId();
-  return (
-    <div className={clsx('kv-row', { span })} role="row">
-      <div className="kv-k" id={keyId} role="rowheader">
-        {label}
-      </div>
-      <div className={clsx('kv-v', valueClassName)} role="gridcell" aria-labelledby={keyId}>
-        {value}
-      </div>
-    </div>
-  );
-};
+const KeyValueItemDisplay = ({ icon, label, value, valueClassName, span }: KeyValueItem) => (
+  <div className={clsx('kv-row', { span })}>
+    <dt className="kv-k">
+      {icon && (
+        <span className="kv-icon" aria-hidden>
+          {icon}
+        </span>
+      )}
+      {label}
+    </dt>
+    <dd className={clsx('kv-v', valueClassName)}>{value}</dd>
+  </div>
+);
 
-const KeyValueDisplay = ({ items }: { items: KeyValueItem[] }) => {
-  return (
-    <div className="kv" role="grid">
-      {items.map((item, idx) => (
-        <KeyValueItemDisplay key={idx} {...item} />
-      ))}
-    </div>
-  );
-};
+const KeyValueDisplay = ({ items }: { items: KeyValueItem[] }) => (
+  <dl className="kv">
+    {items.map((item) => (
+      <KeyValueItemDisplay key={item.itemKey} {...item} />
+    ))}
+  </dl>
+);
 
 export default KeyValueDisplay;

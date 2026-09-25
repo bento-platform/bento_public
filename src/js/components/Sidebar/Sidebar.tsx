@@ -50,7 +50,8 @@ export const SidebarFacet = ({ headerId, label, collapsed, onToggleCollapse, chi
         aria-labelledby={`catalogue-facet-${headerId}`}
         id={`catalogue-facet-region-${headerId}`}
       >
-        {children}
+        {/* Single grid item so the 0fr → 1fr collapse covers every child (e.g. search box + scrollable chips). */}
+        <div className="facet-chips-container__inner">{children}</div>
       </div>
     </div>
   );

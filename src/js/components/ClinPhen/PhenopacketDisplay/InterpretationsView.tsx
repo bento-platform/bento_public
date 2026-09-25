@@ -46,7 +46,7 @@ const GenomicInterpretationDetails = ({ genomicInterpretation }: { genomicInterp
   ];
 
   return (
-    <Space direction="vertical" className="w-full">
+    <Space orientation="vertical" className="w-full">
       <TDescriptions items={items} size="compact" column={1} bordered />
       <ExtraPropertiesDisplay extraProperties={genomicInterpretation.extra_properties} />
     </Space>
@@ -85,13 +85,13 @@ const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interp
   ];
 
   return (
-    <Space direction="vertical" size="large" className="w-full">
+    <Space orientation="vertical" size="large" className="w-full">
       <div>
         <Typography.Title level={4}>
-          <MedicineBoxOutlined /> {t('interpretations.diagnosis')}
+          <MedicineBoxOutlined aria-hidden /> {t('interpretations.diagnosis')}
         </Typography.Title>
         {interpretation?.diagnosis?.disease ? (
-          <Space direction="vertical" className="w-full">
+          <Space orientation="vertical" className="w-full">
             <TDescriptions items={diagnosisItems} size="compact" bordered />
             <ExtraPropertiesDisplay extraProperties={interpretation?.diagnosis?.extra_properties} />
           </Space>
@@ -101,7 +101,7 @@ const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interp
       </div>
       <div>
         <Typography.Title level={4}>
-          <ExperimentOutlined /> {t('interpretations.genomic_interpretations')}
+          <ExperimentOutlined aria-hidden /> {t('interpretations.genomic_interpretations')}
         </Typography.Title>
         {interpretation?.diagnosis?.genomic_interpretations?.length ? (
           <CustomTable<GenomicInterpretation>

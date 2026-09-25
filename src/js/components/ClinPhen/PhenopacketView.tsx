@@ -116,7 +116,7 @@ const PhenopacketView = () => {
               collapseRef.current?.expandAll();
             }}
             size="small"
-            icon={<ExpandOutlined />}
+            icon={<ExpandOutlined aria-hidden />}
           >
             {!isSmallScreen && t('general.expand_all')}
           </Button>
@@ -125,7 +125,7 @@ const PhenopacketView = () => {
               collapseRef.current?.collapseAll();
             }}
             size="small"
-            icon={<CompressOutlined />}
+            icon={<CompressOutlined aria-hidden />}
           >
             {!isSmallScreen && t('general.collapse_all')}
           </Button>
@@ -133,7 +133,7 @@ const PhenopacketView = () => {
       );
     } else if (activeKey === TabKeys.PHENOPACKET_JSON) {
       return (
-        <Button size="small" icon={<DownloadOutlined />} onClick={savePhenopacket}>
+        <Button size="small" icon={<DownloadOutlined aria-hidden />} onClick={savePhenopacket}>
           {t('file.download')}
         </Button>
       );

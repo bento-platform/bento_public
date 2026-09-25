@@ -112,7 +112,7 @@ const SubjectView = ({
   );
 
   return (
-    <Space className="w-full" direction="vertical" size={spaceSize ?? 'middle'} style={style}>
+    <Space className="w-full" orientation="vertical" size={spaceSize ?? 'middle'} style={style}>
       <TDescriptions className="fixed-item-label-width" items={items} column={1} bordered size="compact" />
       <ExtraPropertiesDisplay extraProperties={subject.extra_properties} />
     </Space>

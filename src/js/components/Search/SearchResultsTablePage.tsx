@@ -15,6 +15,7 @@ import {
 } from 'antd';
 import { DownloadOutlined, DownOutlined, LeftOutlined, TableOutlined } from '@ant-design/icons';
 
+import { PCGL_MODE } from '@/config';
 import { T_PLURAL_COUNT, T_SINGULAR_COUNT } from '@/constants/i18n';
 import { MIN_PAGE_SIZE, PAGE_SIZE_OPTIONS } from '@/constants/pagination';
 import { WAITING_STATES } from '@/constants/requests';
@@ -25,6 +26,7 @@ import { useResponsiveMobileContext, useSmallScreen } from '@/hooks/useResponsiv
 import { useScopeDownloadData } from '@/hooks/censorship';
 import { useDownloadAllMatches } from '@/hooks/useDownloadAllMatches';
 import { useDownloadSelectedMatches } from '@/hooks/useDownloadSelectedMatches';
+import { useDownloadExperimentResultPcglManifest } from '@/hooks/useDownloadExperimentResultManifest';
 import { useSearchQuery, useSearchQueryParams } from '@/features/search/hooks';
 import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
 import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
@@ -329,6 +331,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   const { fetchingPermission: fetchingCanDownload, hasPermission: canDownload } = useScopeDownloadData();
   const downloadAllMatches = useDownloadAllMatches();
   const downloadSelectedMatches = useDownloadSelectedMatches();
+  const downloadExperimentResultManifest = useDownloadExperimentResultPcglManifest();
   const isSmallScreen = useSmallScreen();
   const isMobile = useResponsiveMobileContext();
 
@@ -457,8 +460,8 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
             pageSize,
             pageSizeOptions: PAGE_SIZE_OPTIONS, // increased a bit from default for better data density
             total: totalMatches,
-            position: (isSmallScreen ? ['bottomCenter'] : ['bottomRight']) as TablePaginationConfig['position'],
-            size: (isSmallScreen ? 'small' : 'default') as TablePaginationConfig['size'],
+            placement: (isSmallScreen ? ['bottomCenter'] : ['bottomRight']) as TablePaginationConfig['placement'],
+            size: (isSmallScreen ? 'small' : 'medium') as TablePaginationConfig['size'],
             showSizeChanger: true,
             onChange(newPage, newPageSize) {
               // Update page/pageSize using navigation, since we sync Redux from the URL uni-directionally most times.
@@ -505,21 +508,36 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
     ]
   );
 
+  // Manifest (TSV) export - PCGL-only, experiment results only. Unlike CSV/XLSX, it has a fixed set of columns (no
+  // field-selection modal) and always goes through the batch/experimentresults endpoint, for both "all" and
+  // "selected" - see useDownloadExperimentResultManifest.
+  const onExportManifest = useCallback(() => {
+    setExporting(true);
+    const filename = `${t('entities.experiment_result_other')}.manifest.tsv`;
+    downloadExperimentResultManifest(hasSelection ? selectedExportIds : [], filename)
+      .catch(() => message.error(t('search.export_error')))
+      .finally(() => setExporting(false));
+  }, [t, hasSelection, selectedExportIds, downloadExperimentResultManifest]);
+
   const openColumnModal = useCallback(() => setColumnModalOpen(true), []);
   const openExportModal = useCallback((format: ExportFormat) => {
     setExportFormat(format);
     setExportModalOpen(true);
   }, []);
 
-  const exportMenuItems = useMemo(
-    () =>
-      (['csv', 'xlsx'] as ExportFormat[]).map((format) => ({
+  const exportMenuItems = useMemo(() => {
+    const items: { key: string; label: string; onClick: () => void }[] = (['csv', 'xlsx'] as ExportFormat[]).map(
+      (format) => ({
         key: format,
         label: t(`search.${format}`),
         onClick: () => openExportModal(format),
-      })),
-    [t, openExportModal]
-  );
+      })
+    );
+    if (entity === 'experiment_result' && PCGL_MODE) {
+      items.push({ key: 'manifest', label: t('search.manifest'), onClick: onExportManifest });
+    }
+    return items;
+  }, [t, entity, openExportModal, onExportManifest]);
 
   if (!shown) return null;
 
@@ -564,11 +582,11 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
               <Button icon={<TableOutlined />} onClick={openColumnModal} />
             </Tooltip>
             {fetchingCanDownload || canDownload ? (
-              <Dropdown menu={{ items: exportMenuItems }} disabled={fetchingCanDownload || !totalMatches}>
+              <Dropdown menu={{ items: exportMenuItems }} disabled={fetchingCanDownload || exporting || !totalMatches}>
                 <Button
                   icon={<DownloadOutlined />}
-                  loading={fetchingCanDownload}
-                  disabled={fetchingCanDownload || !totalMatches}
+                  loading={fetchingCanDownload || exporting}
+                  disabled={fetchingCanDownload || exporting || !totalMatches}
                 >
                   {t('search.export')} <DownOutlined />
                 </Button>
@@ -602,7 +620,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
         title={t('search.manage_columns')}
         footer={null}
       >
-        <Space direction="vertical">
+        <Space orientation="vertical">
           {/*
             TODO: filter by empty on entire result set somehow... i.e., filter out individual_id or something.
               Maybe we can just have a function based on available entities, although this doesn't cover other cases.

@@ -3,7 +3,7 @@ import { Card, Typography } from 'antd';
 import { useTranslationFn } from '@/hooks';
 import { useSelectedDataset, useSelectedProject } from '@/features/metadata/hooks';
 
-import DatasetDescription from '@/components/Provenance/DatasetProvenance/DatasetDescription';
+import ExploreDatasetHero from './ExploreDatasetHero';
 import AboutContent from '@/components/AboutContent';
 
 const ExploreDescription = () => {
@@ -19,11 +19,13 @@ const ExploreDescription = () => {
     return null;
   }
 
+  if (selectedDataset) {
+    return <ExploreDatasetHero dataset={selectedDataset} />;
+  }
+
   return (
     <Card className="explore-description shadow rounded-xl distinguished">
-      {selectedDataset ? (
-        <DatasetDescription dataset={selectedDataset} />
-      ) : selectedProject ? (
+      {selectedProject ? (
         <Typography.Paragraph className="mb-0">{t(selectedProject!.description)}</Typography.Paragraph>
       ) : (
         <AboutContent />
