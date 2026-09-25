@@ -1,10 +1,9 @@
 import { useEffect, useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from '@/hooks';
-
 import type { DrsRecordState } from './drs.store';
 import { RequestStatus } from '@/types/requests';
-
 import { getDrsRecord } from '@/features/drs/getDrsRecord.thunk';
+import { isDrs } from './utils';
 
 export const useDrsObjectOrPassThrough = (uri: string | undefined): DrsRecordState | null => {
   /**
@@ -12,26 +11,18 @@ export const useDrsObjectOrPassThrough = (uri: string | undefined): DrsRecordSta
    * If null is returned, the URI is not recognized as a DRS URI at all. This is handled here to ensure we can build
    * components which conditionally fetch DRS records.
    */
-
   const dispatch = useAppDispatch();
 
-  const isDrs = useMemo(() => {
-    if (uri) {
-      const parts = new URL(uri);
-      return parts.protocol === 'drs:';
-    } else {
-      return false;
-    }
-  }, [uri]);
+  const isDrsUri = useMemo(() => isDrs(uri), [uri]);
 
   useEffect(() => {
-    if (uri && isDrs) {
+    if (uri && isDrsUri) {
       dispatch(getDrsRecord(uri));
     }
-  }, [dispatch, uri, isDrs]);
+  }, [dispatch, uri, isDrsUri]);
 
   const { byUri } = useAppSelector((state) => state.drs);
-  return uri && isDrs ? byUri[uri] : null;
+  return uri && isDrsUri ? byUri[uri] : null;
 };
 
 export const useDrsHttpsAccessOrPassThrough = (url: string | undefined): string | null => {
