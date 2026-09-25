@@ -235,6 +235,10 @@ body {
   outline: var(--ant-line-width-focus) solid var(--ant-color-primary-border);
   outline-offset: 1px;
 }
+.focus-ring:focus-within {
+  outline: var(--ant-line-width-focus) solid var(--ant-color-primary-border);
+  outline-offset: 1px;
+}
 
 /* END utility classes */
 

@@ -47,14 +47,19 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
   return (
     <SidebarFacet headerId={facet.id} label={label} collapsed={collapsed} onToggleCollapse={onToggleCollapse}>
       {isSearchable && (
-        <div className="facet-search">
+        <label className="facet-search">
+          <span className="visually-hidden">{t('catalogue.rail.search_label', { facet: label })}</span>
           <Input
+            classNames={{
+              input: 'focus-ring',
+              root: 'focus-ring',
+            }}
+            name={`facet-search-${label}`}
             type="search"
             size="small"
             allowClear
-            prefix={<SearchOutlined aria-hidden="true" />}
+            prefix={<SearchOutlined aria-hidden />}
             placeholder={t('catalogue.rail.search_placeholder')}
-            aria-label={t('catalogue.rail.search_label', { facet: label })}
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
@@ -66,14 +71,14 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
               {t('catalogue.rail.search_matches', { count: filteredOptions.length })}
             </span>
           )}
-        </div>
+        </label>
       )}
       <div
         ref={chipsRef}
         /* TODO: tabindex is less-than-ideal for a11y on something that's just scrollable - we may need additional a11y
          *   handling or a message to screen-reader users that this only gets focused for the purpose of screen-users to
          *   scroll up/down.
-         * TODO: investigate alternate a11y patterns rather than just a group, since we have a search box too */
+         * TODO: investigate alternate a11y patterns rather than just a group, since we have a search box too https://react-aria.adobe.com/GridList */
         /* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */
         tabIndex={facet.scroll ? 0 : undefined}
         role={facet.scroll ? 'group' : undefined}
