@@ -17,6 +17,7 @@ import { CategoryDonut, CategoryBarList, type HexColor, type CategoricalChartDat
 import { FACET_CONFIG_BY_ID, type FacetConfig } from '@/features/catalogue/facetRegistry';
 import { PCGL_MODE } from '@/config';
 import { COUNT_ENTITY_ORDER, COUNT_ENTITY_REGISTRY } from '@/constants/countEntities';
+import StatList, { type StatItem } from '@/components/Util/StatList';
 
 import { assignColors, facetValueTranslationKey } from '@/features/catalogue/utils';
 
@@ -89,7 +90,6 @@ const CatalogueInsightCard = ({ datasets, facet, kind, colors }: CatalogueInsigh
 
 const CatalogueEntityCountsCard = ({ datasets }: { datasets: DatasetWithProject[] }) => {
   const t = useTranslationFn();
-  const fmt = useFormatNumber();
   const titleId = useId();
 
   const totals = useMemo(() => {
@@ -105,24 +105,19 @@ const CatalogueEntityCountsCard = ({ datasets }: { datasets: DatasetWithProject[
     return sums;
   }, [datasets]);
 
+  const items: StatItem[] = COUNT_ENTITY_ORDER.map((entity) => ({
+    key: entity,
+    label: t(`entities.${entity}_other`),
+    value: totals[entity],
+    icon: COUNT_ENTITY_REGISTRY[entity].icon,
+  }));
+
   return (
     <Card size="small" className="chart-card">
       <Text id={titleId} className="chart-card__title">
         {t('catalogue.insights.totals')}
       </Text>
-      <dl className="catalogue-insights-stat-grid" aria-labelledby={titleId}>
-        {COUNT_ENTITY_ORDER.map((entity) => (
-          <div key={entity} className="catalogue-insights-stat-cell">
-            <dt className="catalogue-insights-stat-label">{t(`entities.${entity}_other`)}</dt>
-            <dd className="catalogue-insights-stat-icon-row">
-              <span className="catalogue-insights-stat-icon" aria-hidden="true">
-                {COUNT_ENTITY_REGISTRY[entity].icon}
-              </span>
-              <span className="catalogue-insights-stat-value">{fmt(totals[entity])}</span>
-            </dd>
-          </div>
-        ))}
-      </dl>
+      <StatList items={items} variant="compact" aria-labelledby={titleId} />
     </Card>
   );
 };
