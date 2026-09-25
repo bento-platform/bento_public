@@ -201,7 +201,7 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
                   key: c.count_entity,
                   label: c.count_entity,
                   value: c.value,
-                  description: c.description || undefined,
+                  description: c.description,
                 }))}
               />
             ),
