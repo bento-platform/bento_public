@@ -72,7 +72,7 @@ export const useBentoOrIgvReferencesById = (requestedReferenceIds: string[]): Ig
         // else no bento reference genome for this assembly, fall back to IGV reference if any
         if (igvRef) {
           availableReferences[r] = { genome: igvRef.id as string }; // ... for string-only reference
-          // availableReferences[r] = { reference: igvRef }; // this throws errors, but igv doesn't like its own refseq reference
+          // availableReferences[r] = { reference: igvRef }; // this throws errors, igv doesn't like its own refseq reference
         }
       }
     });
