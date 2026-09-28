@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useId, useMemo } from 'react';
 
 import { Card, Flex, Typography } from 'antd';
 import { PieChartOutlined } from '@ant-design/icons';
@@ -16,6 +16,8 @@ import { CategoryDonut, CategoryBarList, type HexColor, type CategoricalChartDat
 
 import { FACET_CONFIG_BY_ID, type FacetConfig } from '@/features/catalogue/facetRegistry';
 import { PCGL_MODE } from '@/config';
+import { COUNT_ENTITY_ORDER, COUNT_ENTITY_REGISTRY } from '@/constants/countEntities';
+import StatList, { type StatItem } from '@/components/Util/StatList';
 
 import { assignColors } from '@/features/catalogue/utils';
 
@@ -86,6 +88,40 @@ const CatalogueInsightCard = ({ datasets, facet, kind, colors }: CatalogueInsigh
   );
 };
 
+const CatalogueEntityCountsCard = ({ datasets }: { datasets: DatasetWithProject[] }) => {
+  const t = useTranslationFn();
+  const titleId = useId();
+
+  const totals = useMemo(() => {
+    const sums = { individual: 0, biosample: 0, experiment: 0, experiment_result: 0 };
+    for (const { dataset } of datasets) {
+      const counts = dataset.counts_by_entity;
+      if (!counts) continue;
+      for (const entity of COUNT_ENTITY_ORDER) {
+        const v = counts[entity];
+        if (typeof v === 'number') sums[entity] += v;
+      }
+    }
+    return sums;
+  }, [datasets]);
+
+  const items: StatItem[] = COUNT_ENTITY_ORDER.map((entity) => ({
+    key: entity,
+    label: t(`entities.${entity}_other`),
+    value: totals[entity],
+    icon: COUNT_ENTITY_REGISTRY[entity].icon,
+  }));
+
+  return (
+    <Card size="small" className="chart-card">
+      <Text id={titleId} className="chart-card__title">
+        {t('catalogue.insights.totals')}
+      </Text>
+      <StatList items={items} variant="compact" aria-labelledby={titleId} />
+    </Card>
+  );
+};
+
 interface CatalogueInsightsProps {
   filteredDatasets: DatasetWithProject[];
 }
@@ -104,7 +140,7 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
         <Text className="catalogue-insights__hint">{t('catalogue.insights.hint')}</Text>
       </Flex>
       <Flex gap={12} wrap className="items-stretch">
-        <CatalogueInsightCard datasets={filteredDatasets} facet="status" kind="donut" />
+        <CatalogueEntityCountsCard datasets={filteredDatasets} />
         {PCGL_MODE ? (
           <CatalogueInsightCard datasets={filteredDatasets} facet="domain" kind="bar" />
         ) : (
