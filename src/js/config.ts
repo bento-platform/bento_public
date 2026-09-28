@@ -1,4 +1,5 @@
 import { stringToBoolean } from '@/utils/strings';
+import { LOCALSTORAGE_DEV_SETTINGS_KEY } from '@/constants/ui';
 
 export interface PublicConfig {
   // General
@@ -15,6 +16,7 @@ export interface PublicConfig {
   SHOW_SIGN_IN: boolean;
   FORCE_CATALOGUE: boolean; // Show data catalogue even with 1 project
   PCGL_MODE: boolean; // Puts Bento Public in "PCGL mode", turning it into the PCGL research portal
+  SHOW_DEV_SETTINGS: boolean; // Show a floating dev settings button for overriding config at runtime (testing only)
   // Theme variables
   CATALOGUE_HEADER_BACKGROUND: string | undefined;
   CATALOGUE_HEADER_TEXT_COLOR: string | undefined;
@@ -54,7 +56,28 @@ export const SHOW_ADMIN_LINK =
 export const SHOW_SIGN_IN = BENTO_PUBLIC_CONFIG.SHOW_SIGN_IN ?? stringToBoolean(process.env.BENTO_PUBLIC_SHOW_SIGN_IN);
 export const FORCE_CATALOGUE =
   BENTO_PUBLIC_CONFIG.FORCE_CATALOGUE ?? stringToBoolean(process.env.BENTO_PUBLIC_FORCE_CATALOGUE);
-export const PCGL_MODE = BENTO_PUBLIC_CONFIG.PCGL_MODE ?? stringToBoolean(process.env.BENTO_PUBLIC_PCGL_MODE);
+export const SHOW_DEV_SETTINGS =
+  BENTO_PUBLIC_CONFIG.SHOW_DEV_SETTINGS ?? stringToBoolean(process.env.BENTO_PUBLIC_SHOW_DEV_SETTINGS);
+
+// Runtime overrides set via the dev settings float button; only honoured when dev settings are enabled, so stale
+// localStorage values can't affect deployments without the flag.
+export interface DevSettings {
+  PCGL_MODE?: boolean;
+}
+const readDevSettings = (): DevSettings => {
+  if (!SHOW_DEV_SETTINGS) return {};
+  try {
+    const parsed = JSON.parse(localStorage.getItem(LOCALSTORAGE_DEV_SETTINGS_KEY) ?? '{}');
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch {
+    return {};
+  }
+};
+export const DEV_SETTINGS = readDevSettings();
+
+export const CONFIGURED_PCGL_MODE =
+  BENTO_PUBLIC_CONFIG.PCGL_MODE ?? stringToBoolean(process.env.BENTO_PUBLIC_PCGL_MODE);
+export const PCGL_MODE = DEV_SETTINGS.PCGL_MODE ?? CONFIGURED_PCGL_MODE;
 
 // Beacon configuration and flags
 export const BEACON_URL = BENTO_PUBLIC_CONFIG.BEACON_URL ?? process.env.BEACON_URL;

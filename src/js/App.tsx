@@ -24,6 +24,7 @@ import BentoAppRouter from '@/components/BentoAppRouter';
 import LanguageHandler from '@/components/Util/LanguageHandler';
 import AuthOutlet from '@/components/Util/AuthOutlet';
 import ResponsiveProvider from '@/components/Util/ResponsiveProvider';
+import DevSettingsFloatButton from '@/components/Util/DevSettingsFloatButton';
 
 // Hooks and utilities imports
 import { BentoAuthContext } from 'bento-auth-js';
@@ -32,7 +33,14 @@ import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
 // Store and configuration imports
 import { store } from './store';
-import { AUTH_CALLBACK_URL, CLIENT_ID, OPENID_CONFIG_URL, PCGL_MODE, PUBLIC_URL_NO_TRAILING_SLASH } from './config';
+import {
+  AUTH_CALLBACK_URL,
+  CLIENT_ID,
+  OPENID_CONFIG_URL,
+  PCGL_MODE,
+  PUBLIC_URL_NO_TRAILING_SLASH,
+  SHOW_DEV_SETTINGS,
+} from './config';
 
 // Styles imports
 import 'antd/dist/reset.css';
@@ -86,6 +94,7 @@ const InnerRootApp = () => {
       >
         <NotificationProvider>
           <BaseRoutes />
+          {SHOW_DEV_SETTINGS && <DevSettingsFloatButton />}
         </NotificationProvider>
       </ConfigProvider>
     </ChartConfigProvider>

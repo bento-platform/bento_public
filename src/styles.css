@@ -1986,3 +1986,10 @@ button.pm-sec-head { cursor: pointer; }
   .pm-body { grid-template-columns: 1fr; }
   .pm-body::before { display: none; }
 }
+
+.dev-settings-float-btn {
+  /* Sit above the Next.js dev indicator, which is also pinned bottom-left */
+  bottom: 6em;
+  left: 2em;
+  inset-inline-end: auto;
+}
