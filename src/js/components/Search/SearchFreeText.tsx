@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, Form, Input, Select, Space, Tooltip } from 'antd';
-import { CloseOutlined, FormOutlined, InfoCircleOutlined, SearchOutlined } from '@ant-design/icons';
+import { CloseOutlined, FormOutlined, InfoCircleOutlined, LoadingOutlined, SearchOutlined } from '@ant-design/icons';
 
 import {
   TABLE_PAGE_QUERY_PARAM,
@@ -12,12 +12,15 @@ import {
 import { useIsSearchLoading, useSearchQuery, useSearchQueryParams } from '@/features/search/hooks';
 import { buildQueryParamsUrl, queryParamsWithoutKey } from '@/features/search/utils';
 import { useTranslationFn } from '@/hooks';
+import { useDebounce } from '@/hooks/debounce';
 
 import type { FtsQueryType, QueryParamEntries } from '@/features/search/types';
 
 import SearchSubForm, { type DefinedSearchSubFormProps } from '@/components/Search/SearchSubForm';
 
 type FreeTextFormValues = { q: string; qt: FtsQueryType };
+
+const DEBOUNCE_WAIT_MS = 300;
 
 const SearchFreeText = (props: DefinedSearchSubFormProps) => {
   const t = useTranslationFn();
@@ -28,7 +31,7 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
   const allQueryParams = useSearchQueryParams();
   const searchLoading = useIsSearchLoading();
 
-  // Only show the loading spinner on the search button if the in-flight search was triggered by a text search, rather
+  // Only show the loading spinner in the search input if the in-flight search was triggered by a text search, rather
   // than (for example) a filter change.
   const [textSearchPending, setTextSearchPending] = useState(false);
   const textSearchStarted = useRef(false);
@@ -50,7 +53,8 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
 
   useEffect(() => {
     // If the textQuery state changes (from a URL parameter, presumably), then update the form value to sync them.
-    if (textQuery) {
+    // Skip if the form value already matches (ignoring whitespace), so we don't clobber what the user is typing.
+    if (textQuery && form.getFieldValue('q')?.trim() !== textQuery) {
       form.setFieldValue('q', textQuery);
     }
   }, [form, textQuery]);
@@ -96,6 +100,9 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
     [navigateToTextQuery]
   );
 
+  // Read the latest form values when the debounce fires, so a reset in the meantime isn't overwritten by a stale value.
+  const debouncedSubmit = useDebounce(() => onFinish(form.getFieldsValue()), DEBOUNCE_WAIT_MS);
+
   const ftsQueryTypeOptions = VALID_TEXT_QUERY_TYPES.map((value) => ({
     value,
     label: (
@@ -121,7 +128,10 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
           size="small"
           className="flex-1"
           value={qtValue}
-          onChange={(value) => form.setFieldValue('qt', value)}
+          onChange={(value) => {
+            form.setFieldValue('qt', value);
+            debouncedSubmit();
+          }}
           options={ftsQueryTypeOptions}
         />
       }
@@ -130,14 +140,15 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
       <Form form={form} onFinish={onFinish}>
         <Space.Compact className="w-full">
           <Form.Item name="q" initialValue={textQuery} noStyle={true}>
-            <Input prefix={<SearchOutlined />} />
+            <Input
+              prefix={<SearchOutlined />}
+              suffix={textSearchLoading ? <LoadingOutlined /> : <span />}
+              onChange={debouncedSubmit}
+            />
           </Form.Item>
           {!!textQuery && <Button icon={<CloseOutlined />} onClick={onReset} disabled={textSearchLoading} />}
-          <Form.Item name="qt" initialValue={textQueryType} noStyle={true} hidden />
-          <Button type="primary" htmlType="submit" loading={textSearchLoading}>
-            {t('Search')}
-          </Button>
         </Space.Compact>
+        <Form.Item name="qt" initialValue={textQueryType} noStyle={true} hidden />
       </Form>
     </SearchSubForm>
   );
