@@ -43,7 +43,6 @@ export const caseInsensitiveIgvFileInfoLookup = (filetype: ExperimentResult['fil
 };
 
 export const hasIndex = (track: ExperimentResult) => {
-  // index currently required but should probably be optional
   return (track.indices ?? '').length > 0;
 };
 
@@ -62,7 +61,7 @@ const getDeferredDrsAccessMethod = (url: string | undefined): Promise<string | n
 const getIndexAccessUrl = (track: ExperimentResult): string | undefined => {
   const igVTrackTypeInfo = caseInsensitiveIgvFileInfoLookup(track.file_format);
   const acceptedIndicesThisType = igVTrackTypeInfo?.indexFormats;
-  return track.indices.find((i) => acceptedIndicesThisType?.includes(i.format))?.url;
+  return track.indices?.find((i) => acceptedIndicesThisType?.includes(i.format))?.url;
 };
 
 export const getIgvFileAndIndexAccessUrls = (tracks: ExperimentResult[]): IgvAccessUrlPromisesById => {
