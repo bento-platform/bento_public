@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, Form, Input, Select, Space, Tooltip } from 'antd';
 import { CloseOutlined, FormOutlined, InfoCircleOutlined, SearchOutlined } from '@ant-design/icons';
@@ -28,6 +28,24 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
   const allQueryParams = useSearchQueryParams();
   const searchLoading = useIsSearchLoading();
 
+  // Only show the loading spinner on the search button if the in-flight search was triggered by a text search, rather
+  // than (for example) a filter change.
+  const [textSearchPending, setTextSearchPending] = useState(false);
+  const textSearchStarted = useRef(false);
+
+  useEffect(() => {
+    if (!textSearchPending) return;
+    if (searchLoading) {
+      textSearchStarted.current = true;
+    } else if (textSearchStarted.current) {
+      // The search triggered by the text query has finished.
+      textSearchStarted.current = false;
+      setTextSearchPending(false);
+    }
+  }, [textSearchPending, searchLoading]);
+
+  const textSearchLoading = textSearchPending && searchLoading;
+
   const [form] = Form.useForm<FreeTextFormValues>();
 
   useEffect(() => {
@@ -47,6 +65,7 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
   const navigateToTextQuery = useCallback(
     (query: string, queryType?: FtsQueryType) => {
       if (query === textQuery && queryType === textQueryType) return;
+      setTextSearchPending(true);
       navigate(
         // Build a query URL with the new text search value and navigate to it. It'll be handled by the search
         // router/handler effect (useSearchRouterAndHandler) elsewhere.
@@ -97,7 +116,7 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
       icon={<FormOutlined />}
       extra={
         <Select<FtsQueryType>
-          disabled={searchLoading}
+          disabled={textSearchLoading}
           variant="filled"
           size="small"
           className="flex-1"
@@ -113,9 +132,9 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
           <Form.Item name="q" initialValue={textQuery} noStyle={true}>
             <Input prefix={<SearchOutlined />} />
           </Form.Item>
-          {!!textQuery && <Button icon={<CloseOutlined />} onClick={onReset} disabled={searchLoading} />}
+          {!!textQuery && <Button icon={<CloseOutlined />} onClick={onReset} disabled={textSearchLoading} />}
           <Form.Item name="qt" initialValue={textQueryType} noStyle={true} hidden />
-          <Button type="primary" htmlType="submit" loading={searchLoading}>
+          <Button type="primary" htmlType="submit" loading={textSearchLoading}>
             {t('Search')}
           </Button>
         </Space.Compact>
