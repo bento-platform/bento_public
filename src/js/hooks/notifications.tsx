@@ -1,4 +1,4 @@
-import { createContext, useContext, type ReactNode } from 'react';
+import { createContext, use, type ReactNode } from 'react';
 import { notification } from 'antd';
 import type { NotificationInstance } from 'antd/es/notification/interface';
 import { NAVBAR_HEIGHT } from '@/constants/common';
@@ -16,15 +16,15 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
   });
 
   return (
-    <NotificationContext.Provider value={api}>
+    <NotificationContext value={api}>
       {contextHolder}
       {children}
-    </NotificationContext.Provider>
+    </NotificationContext>
   );
 };
 
 export function useNotify(): NotificationInstance {
-  const api = useContext(NotificationContext);
+  const api = use(NotificationContext);
   if (!api) {
     throw new Error('useNotify must be used within a NotificationProvider');
   }

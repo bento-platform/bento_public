@@ -16,6 +16,7 @@ import {
 import { useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
+import StatList from '@/components/Util/StatList';
 import type { Dataset } from '@/types/dataset';
 import {
   FundingCard,
@@ -70,8 +71,8 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
             count: links.length,
             children: (
               <div className="pm-links-grid">
-                {links.map((link, i) => (
-                  <LinkTile key={i} link={link} />
+                {links.map((link) => (
+                  <LinkTile key={link.url} link={link} />
                 ))}
               </div>
             ),
@@ -99,8 +100,8 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
             count: stakeholders.length,
             children: (
               <div className="pm-pgrid">
-                {stakeholders.map((s, i) => (
-                  <PersonCard key={i} person={s} />
+                {stakeholders.map((s) => (
+                  <PersonCard key={s.name} person={s} />
                 ))}
               </div>
             ),
@@ -115,8 +116,8 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
             count: publications.length,
             children: (
               <div className="pm-publist">
-                {publications.map((pub, i) => (
-                  <PublicationCard key={i} pub={pub} alwaysExpanded={publications.length === 1} />
+                {publications.map((pub) => (
+                  <PublicationCard key={pub.url} pub={pub} alwaysExpanded={publications.length === 1} />
                 ))}
               </div>
             ),
@@ -134,6 +135,8 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
               ) : (
                 <div className="pm-fgrid">
                   {fundingSources.map((fs, i) => (
+                    // Deliberate strategy - no easily-computable natural key for funding sources
+                    // eslint-disable-next-line react-x/no-array-index-key
                     <FundingCard key={i} source={fs} />
                   ))}
                 </div>
@@ -191,15 +194,16 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
             icon: <NumberOutlined aria-hidden />,
             count: counts.length,
             children: (
-              <div className="pm-countgrid">
-                {counts.map((c, i) => (
-                  <div key={i} className="pm-countcard">
-                    <div className="pm-cc-num">{c.value.toLocaleString()}</div>
-                    <div className="pm-cc-ent">{c.count_entity}</div>
-                    {c.description && <div className="pm-cc-desc">{c.description}</div>}
-                  </div>
-                ))}
-              </div>
+              <StatList
+                variant="cards"
+                aria-label={t('provenance.sections.counts')}
+                items={counts.map((c) => ({
+                  key: c.count_entity,
+                  label: c.count_entity,
+                  value: c.value,
+                  description: c.description,
+                }))}
+              />
             ),
           },
         ]
@@ -225,7 +229,7 @@ const DatasetProvenance = ({
 }) => {
   const isSmallScreen = useSmallScreen();
 
-  const [collapsed, setCollapsed] = useState<Set<SectionId>>(new Set());
+  const [collapsed, setCollapsed] = useState<Set<SectionId>>(() => new Set());
   const [activeSection, setActiveSection] = useState<SectionId>('summary');
 
   const mode = isSmallScreen ? 'scroll' : modeParam;

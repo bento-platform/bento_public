@@ -68,7 +68,7 @@ const SearchFilters = (props: DefinedSearchSubFormProps) => {
         {WAITING_STATES.includes(configStatus) || WAITING_STATES.includes(fieldsStatus) ? (
           <SearchFilterInputSkeleton />
         ) : (
-          filterInputs.map((fv, i) => {
+          filterInputs.map((fv) => {
             const onChange = ({ field, value }: FilterInputValue) => {
               if (field === null) return; // Force field to resolve as string type
               console.debug('[SearchFilters] SearchFilterInput onChange called; field =', field, 'value =', value);
@@ -155,7 +155,15 @@ const SearchFilters = (props: DefinedSearchSubFormProps) => {
             };
 
             return (
-              <SearchFilterInput key={i} onChange={onChange} onRemove={onRemove} disabledFields={usedFields} {...fv} />
+              <SearchFilterInput
+                // Right now only one empty filter input allowed per search form, so we can safely hard-code the key for
+                // an input without a field set.
+                key={fv.field ?? 'empty'}
+                onChange={onChange}
+                onRemove={onRemove}
+                disabledFields={usedFields}
+                {...fv}
+              />
             );
           })
         )}

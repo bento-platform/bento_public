@@ -26,7 +26,7 @@ import AuthOutlet from '@/components/Util/AuthOutlet';
 import ResponsiveProvider from '@/components/Util/ResponsiveProvider';
 
 // Hooks and utilities imports
-import { BentoAuthContextProvider } from 'bento-auth-js';
+import { BentoAuthContext } from 'bento-auth-js';
 import { NotificationProvider } from '@/hooks/notifications';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
@@ -96,7 +96,7 @@ const RootApp = () => (
   <Provider store={store}>
     <BrowserRouter>
       <ResponsiveProvider>
-        <BentoAuthContextProvider
+        <BentoAuthContext
           value={{
             applicationUrl: PUBLIC_URL_NO_TRAILING_SLASH,
             openIdConfigUrl: OPENID_CONFIG_URL,
@@ -107,7 +107,7 @@ const RootApp = () => (
           }}
         >
           <InnerRootApp />
-        </BentoAuthContextProvider>
+        </BentoAuthContext>
       </ResponsiveProvider>
     </BrowserRouter>
   </Provider>

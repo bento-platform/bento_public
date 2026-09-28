@@ -121,7 +121,8 @@ export const useGetRouteTitleAndIcon = () => {
 
   return useCallback(
     (routeId: string): [string, ReactNode] => {
-      /* eslint-disable react/jsx-key */
+      // Using arrays as tuples here; the icons do not actually need a key since we aren't rendering a list.Ω
+      /* eslint-disable react/jsx-key, react-x/no-missing-key */
       switch (routeId) {
         case BentoRoute.Explore:
           return exploreIsCatalogue

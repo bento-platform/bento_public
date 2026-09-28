@@ -52,8 +52,8 @@ const ProvenanceHeader = ({ dataset }: ProvenanceHeaderProps) => {
 
       {!!metaItems.length && (
         <ul className="pm-meta-strip">
-          {metaItems.map(({ icon, label, value }, idx) => (
-            <li className="pm-meta-item" key={idx}>
+          {metaItems.map(({ icon, label, value }) => (
+            <li className="pm-meta-item" key={label}>
               {icon}
               <span className="pm-meta-lbl">{label}</span>
               {value}

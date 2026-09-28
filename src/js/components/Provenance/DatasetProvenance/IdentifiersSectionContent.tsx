@@ -16,6 +16,7 @@ const IdentifiersSectionContent = ({ dataset }: IdentifiersSectionContentProps) 
 
   const kvItems: KeyValueItem[] = [
     {
+      itemKey: 'id',
       label: t('Identifier'),
       value: (
         <>
@@ -25,10 +26,12 @@ const IdentifiersSectionContent = ({ dataset }: IdentifiersSectionContentProps) 
       valueClassName: 'font-mono text-xs',
     },
     {
+      itemKey: 'schema_version',
       label: t('provenance.schema_version'),
       value: dataset.schema_version,
     },
     {
+      itemKey: 'project_id',
       label: t('provenance.project_id'),
       value: (
         <>
@@ -40,16 +43,17 @@ const IdentifiersSectionContent = ({ dataset }: IdentifiersSectionContentProps) 
   ];
 
   if (dataset.program_name) {
-    kvItems.push({ label: t('provenance.program_name'), value: dataset.program_name });
+    kvItems.push({ itemKey: 'program_name', label: t('provenance.program_name'), value: dataset.program_name });
   }
 
   if (resources.length > 0) {
     kvItems.push({
+      itemKey: 'ontology_resources',
       label: t('provenance.ontology_resources'),
       value: (
         <>
-          {resources.map((r, i) => (
-            <div key={i} className="pm-res-row">
+          {resources.map((r) => (
+            <div key={r.id} className="pm-res-row">
               <span className="pm-pfx" aria-label={t('provenance.namespace_prefix')}>
                 {r.namespace_prefix}
               </span>
@@ -78,6 +82,7 @@ const IdentifiersSectionContent = ({ dataset }: IdentifiersSectionContentProps) 
 
   if (dataset.extra_properties && Object.keys(dataset.extra_properties).length > 0) {
     kvItems.push({
+      itemKey: 'extra_properties',
       label: t('general.extra_properties'),
       value: (
         <Flex wrap gap={6} className="mt-6px">

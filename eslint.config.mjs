@@ -3,6 +3,7 @@ import globals from 'globals';
 import js from '@eslint/js';
 import nextVitals from 'eslint-config-next/core-web-vitals';
 import nextTs from 'eslint-config-next/typescript';
+import reactX from 'eslint-plugin-react-x';
 
 // Parser
 import tsParser from '@typescript-eslint/parser';
@@ -25,6 +26,7 @@ export default defineConfig([
   ...nextTs,
   eslintPluginPrettierRecommended,
   reactHooksEsLint.configs.flat.recommended,
+  reactX.configs.recommended,
   {
     languageOptions: {
       ecmaVersion: 2021,
@@ -37,14 +39,12 @@ export default defineConfig([
       '@typescript-eslint/explicit-module-boundary-types': 'off', // allow implicit return types
       '@typescript-eslint/no-empty-object-type': 'off', // allow empty object type
       'no-unused-vars': 'off', // disable no-unused-vars since @typescript-eslint/no-unused-vars does the same
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        { argsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' },
-      ], // enable @typescript-eslint/no-unused-vars
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' }], // enable @typescript-eslint/no-unused-vars
       '@typescript-eslint/no-non-null-assertion': 'off',
       '@typescript-eslint/consistent-type-imports': 'error',
       'react/react-in-jsx-scope': 'off',
       'react-hooks/exhaustive-deps': ['error'],
+      'react-x/no-array-index-key': 'error', // be strict about proper natural keys for array rendering
       // Inject strict a11y rules rather than basic 'recommended' set
       ...jsxA11y.flatConfigs.strict.rules,
     },
