@@ -53,8 +53,9 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
 
   useEffect(() => {
     // If the textQuery state changes (from a URL parameter, presumably), then update the form value to sync them.
-    // Skip if the form value already matches (ignoring whitespace), so we don't clobber what the user is typing.
-    if (textQuery && form.getFieldValue('q')?.trim() !== textQuery) {
+    // This includes clearing it (e.g. via "clear all"). Skip if the form value already matches (ignoring whitespace), so
+    // we don't clobber what the user is typing.
+    if ((form.getFieldValue('q') ?? '').trim() !== textQuery) {
       form.setFieldValue('q', textQuery);
     }
   }, [form, textQuery]);
