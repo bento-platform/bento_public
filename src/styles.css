@@ -577,12 +577,13 @@ body {
 
 /* BEGIN catalogue charts */
 
-.chart-card { flex: 1; min-width: 180px; }
+.catalogue-chart-card { flex: 1; min-width: 300px; }
 
-.chart-card__title {
+.catalogue-chart-card__title {
   display: block;
-  font-size: 11.5px;
+  font-size: 12.5px;
   font-weight: 700;
+  text-align: center;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--text-secondary);
@@ -597,8 +598,8 @@ body {
   border: 1px solid var(--ant-color-primary-border) !important;
 }
 
-.chart-card.ant-card { display: flex; flex-direction: column; }
-.chart-card .ant-card-body { flex: 1; display: flex; flex-direction: column; }
+.catalogue-chart-card.ant-card { display: flex; flex-direction: column; }
+.catalogue-chart-card .ant-card-body { flex: 1; display: flex; flex-direction: column; }
 
 
 /* END catalogue charts */
