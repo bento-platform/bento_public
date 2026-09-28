@@ -7,7 +7,7 @@ const { Text } = Typography;
 
 import { useCatalogueState } from '@/features/catalogue/hooks';
 import { useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
-import { useFormatNumber, useLanguage, useTranslationFn } from '@/hooks';
+import { useFormatNumber, useTranslationFn } from '@/hooks';
 
 import type { FacetId } from '@/features/catalogue/catalogue.store';
 import type { DatasetWithProject } from '@/features/catalogue/hooks';
