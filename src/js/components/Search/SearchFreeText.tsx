@@ -51,10 +51,17 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
 
   const [form] = Form.useForm<FreeTextFormValues>();
 
+  // The last text query submitted from this form, so we can tell our own URL updates apart from external ones.
+  const submittedTextQuery = useRef<string | undefined>(undefined);
+
   useEffect(() => {
     // If the textQuery state changes (from a URL parameter, presumably), then update the form value to sync them.
-    // This includes clearing it (e.g. via "clear all"). Skip if the form value already matches (ignoring whitespace), so
-    // we don't clobber what the user is typing.
+    // This includes clearing it (e.g. via "clear all").
+    if (textQuery === submittedTextQuery.current) {
+      // This change came from the form itself; don't sync back, or we'd clobber anything typed since submitting.
+      submittedTextQuery.current = undefined;
+      return;
+    }
     if ((form.getFieldValue('q') ?? '').trim() !== textQuery) {
       form.setFieldValue('q', textQuery);
     }
@@ -71,6 +78,7 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
     (query: string, queryType?: FtsQueryType) => {
       if (query === textQuery && queryType === textQueryType) return;
       setTextSearchPending(true);
+      submittedTextQuery.current = query;
       navigate(
         // Build a query URL with the new text search value and navigate to it. It'll be handled by the search
         // router/handler effect (useSearchRouterAndHandler) elsewhere.
