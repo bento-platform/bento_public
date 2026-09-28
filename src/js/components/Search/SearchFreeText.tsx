@@ -20,7 +20,7 @@ import SearchSubForm, { type DefinedSearchSubFormProps } from '@/components/Sear
 
 type FreeTextFormValues = { q: string; qt: FtsQueryType };
 
-const DEBOUNCE_WAIT_MS = 300;
+const DEBOUNCE_WAIT_MS = 500;
 
 const SearchFreeText = (props: DefinedSearchSubFormProps) => {
   const t = useTranslationFn();
