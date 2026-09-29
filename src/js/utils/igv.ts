@@ -42,7 +42,7 @@ export const caseInsensitiveIgvFileInfoLookup = (filetype: ExperimentResult['fil
 };
 
 export const hasIndex = (track: ExperimentResult) => {
-  return (track.indices ?? '').length > 0;
+  return (track.indices ?? []).length > 0;
 };
 
 //  ---------------------------------------------
