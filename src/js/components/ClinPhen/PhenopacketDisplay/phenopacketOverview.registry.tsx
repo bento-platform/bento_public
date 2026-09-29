@@ -1,7 +1,5 @@
 import type { ReactNode } from 'react';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
-import type { Experiment } from '@/types/clinPhen/experiments/experiment';
-import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
 
 import SubjectView from './SubjectView';
 import BiosampleView from './BiosampleView';
