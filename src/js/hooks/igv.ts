@@ -6,12 +6,49 @@ import { caseInsensitiveObjectAccess } from '@/utils/objects';
 import type { CreateOpt } from 'igv';
 import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
 import type { IgvReferenceById } from '@/types/clinPhen/igv';
+import type { Genome as BentoGenome } from '@/features/reference/types';
 import { referenceGenomesUrl } from '@/constants/configConstants';
 import { RequestStatus } from '@/types/requests';
 
 export const useIgvReference = () => {
   return useAppSelector((state) => state.igv);
 };
+
+const _makeIgvRefFromBentoRef = (bentoRef: BentoGenome, cytobandURL: string | undefined) => ({
+  reference: {
+    id: bentoRef.id,
+    fastaURL: bentoRef.fasta,
+    indexURL: bentoRef.fai,
+    cytobandURL,
+    tracks: bentoRef.gff3_gz
+      ? [
+          {
+            name: 'Features',
+            type: 'annotation',
+            format: 'gff3',
+            filterTypes: ['chromosome', 'region', 'gene', '3_utr', '5_utr', 'CDS'],
+            url: bentoRef.gff3_gz,
+            indexURL: bentoRef.gff3_gz_tbi,
+            nameField: 'transcript_name',
+            order: 1000000,
+            visibilityWindow: 5000000,
+            height: 200,
+          },
+        ]
+      : [],
+  },
+  ...(bentoRef?.gff3_gz
+    ? {
+        search: {
+          url: `${referenceGenomesUrl}/$GENOME$/igv-js-features?q=$FEATURE$`,
+
+          // erroneous required fields, igv typescript is incorrect. Fixed in igv >= 3.8.3
+          chromosomeField: 'chromosome', // already the default for this value
+          displayName: '', // this value isn't even read anywhere
+        },
+      }
+    : {}),
+});
 
 // get references in IGV format, preferring ones from bento when present
 export const useBentoOrIgvReferencesById = (requestedReferenceIds: string[]): IgvReferenceById => {
@@ -30,41 +67,7 @@ export const useBentoOrIgvReferencesById = (requestedReferenceIds: string[]): Ig
       const igvRef = igvRefAlias ? igvGenomesByID[igvRefAlias] : null;
 
       if (bentoRef) {
-        const ref = {
-          reference: {
-            id: bentoRef.id,
-            fastaURL: bentoRef.fasta,
-            indexURL: bentoRef.fai,
-            cytobandURL: igvRef?.cytobandURL,
-            tracks: bentoRef.gff3_gz
-              ? [
-                  {
-                    name: 'Features',
-                    type: 'annotation',
-                    format: 'gff3',
-                    filterTypes: ['chromosome', 'region', 'gene', '3_utr', '5_utr', 'CDS'],
-                    url: bentoRef.gff3_gz,
-                    indexURL: bentoRef.gff3_gz_tbi,
-                    nameField: 'transcript_name',
-                    order: 1000000,
-                    visibilityWindow: 5000000,
-                    height: 200,
-                  },
-                ]
-              : [],
-          },
-          ...(bentoRef?.gff3_gz
-            ? {
-                search: {
-                  url: `${referenceGenomesUrl}/$GENOME$/igv-js-features?q=$FEATURE$`,
-
-                  // erroneous required fields, igv typescript is incorrect. Fixed in igv >= 3.8.3
-                  chromosomeField: 'chromosome', // already the default for this value
-                  displayName: '', // this value isn't even read anywhere
-                },
-              }
-            : {}),
-        };
+        const ref = _makeIgvRefFromBentoRef(bentoRef, igvRef?.cytobandURL);
 
         // assigning directly without naming variable gives ts errors, groan
         availableReferences[r] = ref;
