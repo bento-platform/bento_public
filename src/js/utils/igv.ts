@@ -18,8 +18,7 @@ export const IGV_FILE_TYPE_INFO: Partial<
   wig: { trackType: 'wig' },
 };
 
-// igv-provided assemblies, there are lots more but these are the only ones that support feature lookup
-// see https://igv.org/doc/igvjs/#Reference-Genome/
+// more options at https://igv.org/doc/igvjs/#Reference-Genome/
 export const IGV_JS_ANNOTATION_ALIASES = {
   GRCh37: 'hg19',
   GRCh38: 'hg38',
