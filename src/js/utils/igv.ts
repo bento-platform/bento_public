@@ -41,7 +41,7 @@ export const caseInsensitiveIgvFileInfoLookup = (filetype: ExperimentResult['fil
   return { ...IGV_FILE_TYPE_INFO[casedFileFormat], fileFormat: casedFileFormat };
 };
 
-export const hasIndex = (track: ExperimentResult) => (track.indices ?? []).length > 0
+export const hasIndex = (track: ExperimentResult) => (track.indices ?? []).length > 0;
 
 //  ---------------------------------------------
 // async equivalents of igv hooks
