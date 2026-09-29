@@ -16,7 +16,7 @@ import ExperimentResultView from '@/components/ClinPhen/ExperimentDisplay/Experi
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
 
 import { objectToBoolean } from '@/utils/boolean';
-import { phenopacketExperiments } from '@/utils/experiments';
+import { phenopacketExperiments, phenopacketExperimentResults } from '@/utils/experiments';
 
 export type SectionKey =
   | 'subject'
@@ -47,21 +47,6 @@ export type SectionSpec = {
 };
 
 const has = <T,>(x?: T[] | null) => Array.isArray(x) && x.length > 0;
-
-const phenopacketExperimentResults = (p: Phenopacket): ExperimentResult[] => {
-  const experimentResults: Record<number, ExperimentResult> = {};
-
-  phenopacketExperiments(p).forEach((e: Experiment) => {
-    (e.experiment_results ?? []).forEach((er: ExperimentResult) => {
-      if (!(er.id in experimentResults)) {
-        experimentResults[er.id] = { ...er, experiments: [] };
-      }
-      experimentResults[er.id].experiments?.push(e.id);
-    });
-  });
-
-  return Object.values(experimentResults);
-};
 
 export const SECTION_SPECS: Record<SectionKey, SectionSpec> = {
   subject: {
