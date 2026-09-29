@@ -23,6 +23,9 @@ export const IGV_JS_ANNOTATION_ALIASES = {
   GRCh37: 'hg19',
   GRCh38: 'hg38',
   GRCm38: 'mm10',
+  'T2T-CHM13': 'hs1',
+  'T2T-CHM13v2': 'hs1',
+  'T2T-CHM13v2.0': 'hs1',
 };
 
 const viewableFormats: TrackFormats[] = Object.keys(IGV_FILE_TYPE_INFO) as TrackFormats[];
