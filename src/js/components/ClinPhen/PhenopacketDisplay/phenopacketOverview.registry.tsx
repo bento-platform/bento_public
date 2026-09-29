@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
-import type { Biosample } from '@/types/clinPhen/biosample';
 import type { Experiment } from '@/types/clinPhen/experiments/experiment';
 import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
 
@@ -17,6 +16,7 @@ import ExperimentResultView from '@/components/ClinPhen/ExperimentDisplay/Experi
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
 
 import { objectToBoolean } from '@/utils/boolean';
+import { phenopacketExperiments } from '@/utils/experiments';
 
 export type SectionKey =
   | 'subject'
@@ -47,9 +47,6 @@ export type SectionSpec = {
 };
 
 const has = <T,>(x?: T[] | null) => Array.isArray(x) && x.length > 0;
-
-const phenopacketExperiments = (p: Phenopacket): Experiment[] =>
-  (p.biosamples ?? []).flatMap((b: Biosample) => b?.experiments ?? []);
 
 const phenopacketExperimentResults = (p: Phenopacket): ExperimentResult[] => {
   const experimentResults: Record<number, ExperimentResult> = {};
