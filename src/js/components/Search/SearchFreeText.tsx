@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { startTransition, useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, Form, Input, Select, Space, Tooltip } from 'antd';
 import { CloseOutlined, FormOutlined, InfoCircleOutlined, LoadingOutlined, SearchOutlined } from '@ant-design/icons';
@@ -79,7 +79,7 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
       if (query === textQuery && queryType === textQueryType) return;
       setTextSearchPending(true);
       submittedTextQuery.current = query;
-      navigate(
+      const url =
         // Build a query URL with the new text search value and navigate to it. It'll be handled by the search
         // router/handler effect (useSearchRouterAndHandler) elsewhere.
         buildQueryParamsUrl(location.pathname, [
@@ -90,8 +90,9 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
           ...(allQueryParams.find(([k, _]) => k === TABLE_PAGE_QUERY_PARAM)
             ? ([[TABLE_PAGE_QUERY_PARAM, '0']] as QueryParamEntries)
             : []),
-        ])
-      );
+        ]);
+      // Mark the navigation as a transition, so the resulting page re-render doesn't block typing in the input.
+      startTransition(() => navigate(url));
     },
     [location.pathname, allQueryParams, textQuery, textQueryType, navigate]
   );
