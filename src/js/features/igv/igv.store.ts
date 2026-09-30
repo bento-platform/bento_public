@@ -14,14 +14,14 @@ export type IgvGenomesState = {
   igvGenomesStatus: RequestStatus;
   igvGenomes: IgvReferenceDetails[];
   igvGenomesByID: Record<string, IgvReferenceDetails>;
-  igvPosition: string[];
+  igvPositionByAssembly: Record<string, string[]>;
 };
 
 const initialState: IgvGenomesState = {
   igvGenomesStatus: RequestStatus.Idle,
   igvGenomes: [],
   igvGenomesByID: {},
-  igvPosition: [],
+  igvPositionByAssembly: {},
 };
 
 export const getIgvGenomes = createAsyncThunk<IgvReferenceDetails[], void, { state: RootState }>(
@@ -44,8 +44,8 @@ const igvState = createSlice({
   name: storeName,
   initialState,
   reducers: {
-    saveIgvPosition: (state, { payload }: PayloadAction<string[]>) => {
-      state.igvPosition = payload;
+    saveIgvPosition: (state, { payload }: PayloadAction<IgvGenomesState['igvPositionByAssembly']>) => {
+      Object.assign(state.igvPositionByAssembly, payload);
     },
   },
   extraReducers(builder) {

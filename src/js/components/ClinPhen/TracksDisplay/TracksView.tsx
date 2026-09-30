@@ -49,8 +49,8 @@ const TracksView = ({
   const hasMultipleAssemblies = availableAssemblies.length > 1;
 
   const accessToken: string | undefined = useAccessToken();
-  const igvPosition = useAppSelector(
-    (state) => state.igv.igvPosition,
+  const igvPositionByAssembly = useAppSelector(
+    (state) => state.igv.igvPositionByAssembly,
     () => true // don't re-render when position changes
   );
 
@@ -123,16 +123,18 @@ const TracksView = ({
   );
 
   const storeIgvPosition = useCallback(
-    (referenceFrame: IgvPosition[]) => {
-      // typically a singleton array, but "multi-locus" view has multiple positions
-      const positions = referenceFrame.map((r) => r.getLocusString());
-      dispatch(saveIgvPosition(positions));
+    (assemblyId: string, referenceFrame: IgvPosition[]) => {
+      // typically a singleton array, but "multi-locus" view has multiple positions in a single instance
+      const position = referenceFrame.map((r) => r.getLocusString());
+
+      // store position associated with its assembly
+      dispatch(saveIgvPosition({ [assemblyId]: position }));
     },
     [dispatch]
   );
 
   const debouncedStoreIgvPosition = useDebounce(
-    (referenceFrame: IgvPosition[]) => storeIgvPosition(referenceFrame),
+    (assemblyId: string, referenceFrame: IgvPosition[]) => storeIgvPosition(assemblyId, referenceFrame),
     DEBOUNCE_WAIT_MS
   );
 
@@ -190,9 +192,11 @@ const TracksView = ({
         return;
       }
 
+      const positionThisAssembly = igvPositionByAssembly[assemblyId];
+
       const igvOptions = {
         ...(referenceForAssembly as CreateOpt),
-        ...(igvPosition.length > 0 && { locus: igvPosition }),
+        ...(positionThisAssembly && positionThisAssembly.length > 0 && { locus: positionThisAssembly }),
         tracks: initialIgvTracks,
       };
 
@@ -212,7 +216,7 @@ const TracksView = ({
           state.browser = browser;
           state.status = 'ready';
           browser.on('locuschange', (referenceFrame: IgvPosition[]) => {
-            debouncedStoreIgvPosition(referenceFrame);
+            debouncedStoreIgvPosition(assemblyId, referenceFrame);
           });
           console.debug('created igv.js browser instance:', browser);
         })
@@ -230,7 +234,7 @@ const TracksView = ({
     availableAssemblies,
     buildIgvTrack,
     debouncedStoreIgvPosition,
-    igvPosition,
+    igvPositionByAssembly,
     notify,
     references,
     t,
