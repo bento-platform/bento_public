@@ -1,4 +1,4 @@
-import { type RefObject, useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 
 import { Input } from 'antd';
@@ -11,7 +11,6 @@ import { useAppDispatch } from '@/hooks';
 import { useCatalogueState } from '@/features/catalogue/hooks';
 import { useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
 import { useTranslationFn } from '@/hooks';
-import { useDebounce } from '@/hooks/debounce';
 
 import { facetTranslationKey } from '@/features/catalogue/utils';
 import { stripDiacritics } from '@/utils/strings';
@@ -38,20 +37,10 @@ interface FacetSectionProps {
 const SCROLL_SHADOW_TOP_CLASS = 'scroll-shadow-top';
 const SCROLL_SHADOW_BOTTOM_CLASS = 'scroll-shadow-bottom';
 
-const handleScrollShadow = (
-  container: RefObject<HTMLDivElement | null>,
-  scrollOverlay: RefObject<HTMLDivElement | null>
-) => {
-  const containerCurrent = container.current;
-  if (!containerCurrent) return;
-  const scrollOverlayCurrent = scrollOverlay.current;
-  if (!scrollOverlayCurrent) return;
-  const st = containerCurrent.scrollTop;
-  scrollOverlayCurrent.classList.toggle(SCROLL_SHADOW_TOP_CLASS, st > 0);
-  scrollOverlayCurrent.classList.toggle(
-    SCROLL_SHADOW_BOTTOM_CLASS,
-    st + containerCurrent.clientHeight < containerCurrent.scrollHeight
-  );
+const updateScrollShadow = (container: HTMLDivElement, scrollOverlay: HTMLDivElement) => {
+  const { scrollTop, clientHeight, scrollHeight } = container;
+  scrollOverlay.classList.toggle(SCROLL_SHADOW_TOP_CLASS, scrollTop > 0);
+  scrollOverlay.classList.toggle(SCROLL_SHADOW_BOTTOM_CLASS, scrollTop + clientHeight < scrollHeight);
 };
 
 const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleValue }: FacetSectionProps) => {
@@ -62,17 +51,32 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
   const chipsRef = useRef<HTMLDivElement>(null);
   const chipsScrollOverlayRef = useRef<HTMLDivElement>(null);
 
-  const _onFacetChipsScroll = useCallback(() => {
-    // Use JS for this rather than the CSS hack to make the shadow actually appear on top of container contents,
-    // rather than underneath it.
-    handleScrollShadow(chipsRef, chipsScrollOverlayRef);
+  const shadowFrame = useRef<number | null>(null);
+
+  const onFacetChipsScroll = useCallback(() => {
+    if (shadowFrame.current !== null) return; // an update is already queued for this frame
+    shadowFrame.current = requestAnimationFrame(() => {
+      shadowFrame.current = null;
+      // Use JS for this rather than the CSS hack to make the shadow actually appear on top of container contents,
+      // rather than underneath it.
+      if (chipsRef.current && chipsScrollOverlayRef.current) {
+        updateScrollShadow(chipsRef.current, chipsScrollOverlayRef.current);
+      }
+    });
   }, []);
-  const onFacetChipsScroll = useDebounce(_onFacetChipsScroll, 20, 50);
 
   useEffect(() => {
-    // Initialize scroll shadow if needed at first render
+    // Cancel any queued update on unmount
+    return () => {
+      if (shadowFrame.current !== null) cancelAnimationFrame(shadowFrame.current);
+      shadowFrame.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    // Recompute when the chip list changes without a scroll event (first render, late options, search narrowing)
     if (facet.scroll) onFacetChipsScroll();
-  }, [facet.scroll, onFacetChipsScroll]);
+  }, [facet.scroll, options.length, query, onFacetChipsScroll]);
 
   if (options.length === 0) return null;
 
