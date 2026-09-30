@@ -1,3 +1,6 @@
+// The resource-permission fetch/cache hooks below (useResourcesPermissions, useResourcePermissions,
+// useHasResourcePermission) are adapted from bento-auth-js's own hooks.ts, ported here to read the access token
+// from the Auth.js session instead of bento-auth-js's Redux auth slice.
 import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { signIn, signOut, useSession } from 'next-auth/react';
