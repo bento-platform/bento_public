@@ -41,7 +41,7 @@ export type DiscoveryMatchExperimentResult = DiscoveryMatchObject & {
   description?: string;
   filename?: string; // File name
   url?: string; // File URL
-  indices: ExperimentResult['indices'];
+  indices?: ExperimentResult['indices'];
   genome_assembly_id?: ExperimentResult['genome_assembly_id'];
   file_format?: ExperimentResult['file_format'];
   data_output_type?: string;

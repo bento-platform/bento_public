@@ -104,7 +104,6 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
 };
 
 interface CatalogueRailProps {
-  totalCount: number;
   facetOptions: (facetId: FacetId) => { value: string; label: string; count: number; selected: boolean }[];
   /** Below the `lg` breakpoint, the rail renders as a slide-over drawer instead of an inline sticky column. */
   overlay: boolean;
@@ -113,7 +112,7 @@ interface CatalogueRailProps {
   onClose: () => void;
 }
 
-const CatalogueRail = ({ totalCount, facetOptions, overlay, open, onClose }: CatalogueRailProps) => {
+const CatalogueRail = ({ facetOptions, overlay, open, onClose }: CatalogueRailProps) => {
   const t = useTranslationFn();
   const dispatch = useAppDispatch();
   const { collapsedFacets } = useCatalogueState();
@@ -128,11 +127,7 @@ const CatalogueRail = ({ totalCount, facetOptions, overlay, open, onClose }: Cat
             <button className="sidebar__close focus-ring" onClick={onClose} aria-label={t('catalogue.rail.close')}>
               <CloseOutlined aria-hidden />
             </button>
-          ) : (
-            <span>
-              {totalCount} {t('entities.dataset', { count: totalCount }).toLowerCase()}
-            </span>
-          )
+          ) : undefined
         }
       >
         {overlay && (
