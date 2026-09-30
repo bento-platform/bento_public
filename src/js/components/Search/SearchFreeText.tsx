@@ -156,17 +156,13 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
     >
       <Form form={form} onFinish={onFinish}>
         <Space.Compact className="w-full">
-<<<<<<< HEAD
           <Form.Item name="q" initialValue={textQuery} noStyle={true} label={t('search.text_search')}>
-            <Input prefix={<SearchOutlined />} className="focus-ring" />
-=======
-          <Form.Item name="q" initialValue={textQuery} noStyle={true}>
             <Input
+              className="focus-ring"
               prefix={<SearchOutlined />}
               suffix={textSearchLoading ? <LoadingOutlined /> : <span />}
               onChange={debouncedSubmit}
             />
->>>>>>> main
           </Form.Item>
           {!!textQuery && <Button icon={<CloseOutlined />} onClick={onReset} disabled={textSearchLoading} />}
         </Space.Compact>
