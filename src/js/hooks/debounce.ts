@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useRef } from 'react';
 
 /**
- * Debounce / throttle function creator hook.
+ * Debounce / throttle function creator hook, shared by useDebounce and useThrottle.
  * @param callback - The function to debounce.
  * @param delay - How long to delay the debounced call.
  * @param maxDelay - If set, turns the returned function into a throttled function (throttled to every maxDelay ms).
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const useDebounce = <T extends (...args: any[]) => void>(callback: T, delay: number, maxDelay?: number) => {
+const useDebounceOrThrottle = <T extends (...args: any[]) => void>(callback: T, delay: number, maxDelay?: number) => {
   const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const timeoutLastFired = useRef<number>(null);
   useEffect(() => {
@@ -37,3 +37,22 @@ export const useDebounce = <T extends (...args: any[]) => void>(callback: T, del
     [callback, delay, maxDelay]
   );
 };
+
+/**
+ * Debounce function creator hook.
+ * @param callback - The function to debounce.
+ * @param delay - How long to delay the debounced call.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const useDebounce = <T extends (...args: any[]) => void>(callback: T, delay: number) =>
+  useDebounceOrThrottle(callback, delay);
+
+/**
+ * Throttle function creator hook.
+ * @param callback - The function to throttle.
+ * @param delay - How long to delay the throttled call.
+ * @param maxDelay - Throttle the returned function to every maxDelay ms.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const useThrottle = <T extends (...args: any[]) => void>(callback: T, delay: number, maxDelay: number) =>
+  useDebounceOrThrottle(callback, delay, maxDelay);
