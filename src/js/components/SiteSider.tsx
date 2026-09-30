@@ -59,8 +59,7 @@ const SiteSider = ({
     >
       {overlay && (
         <div className="site-sider__header">
-          {/** TODO: check for a new title */}
-          <h2>{t('catalogue.rail.title')}</h2>
+          <Typography.Text type="secondary">{t('Explore')}</Typography.Text>
           <button className="sidebar__close focus-ring" onClick={onClose} aria-label={t('catalogue.rail.close')}>
             <CloseOutlined aria-hidden />
           </button>

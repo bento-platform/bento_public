@@ -7,7 +7,7 @@ import type { MenuItem } from '@/types/navigation';
 
 import CurrentPageHelpModal from '@/components/Util/CurrentPageHelpModal';
 import { useSelectedScope } from '@/features/metadata/hooks';
-import { useSearchQueryParams } from '@/features/search/hooks';
+import { useActiveFilterPills, useSearchQueryParams } from '@/features/search/hooks';
 import { useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { useNavigateToCatalogue, useNavigateToSameScopeUrl, useNavigateToScope } from '@/hooks/navigation';
@@ -89,6 +89,9 @@ const ScopeHeader = ({
   const [helpModalOpen, setHelpModalOpen] = useState(false);
   const [backClickText, onBackClick] = useBackButtonInfo();
 
+  const { pills } = useActiveFilterPills();
+  const filtersCount = pills.length;
+
   const currentPageHasHelp = useMemo(() => {
     const k = `page_help.${currentPage}`;
     return k !== t(k);
@@ -116,7 +119,7 @@ const ScopeHeader = ({
       <CurrentPageHelpModal open={helpModalOpen} onCancel={() => setHelpModalOpen(false)} />
       <Flex>
         {showSidebarToggle && (
-          <Badge count={breadcrumbItems.length} size="small" offset={[-12, 12]} className="catalogue-toolbar-fixed">
+          <Badge count={filtersCount} size="small" offset={[-12, 12]} className="catalogue-toolbar-fixed">
             <Button
               id="scope-header__sidebar-toggle"
               className={sidebarOverlayShown ? 'active' : ''}
