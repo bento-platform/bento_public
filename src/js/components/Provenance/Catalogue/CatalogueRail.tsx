@@ -67,7 +67,7 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
             }}
           />
           {trimmedQuery && (
-            <span className="facet-search__count" aria-live="polite">
+            <span className="facet-search__count" role="status">
               {t('catalogue.rail.search_matches', { count: filteredOptions.length })}
             </span>
           )}
@@ -104,6 +104,7 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
 };
 
 interface CatalogueRailProps {
+  totalCount: number;
   facetOptions: (facetId: FacetId) => { value: string; label: string; count: number; selected: boolean }[];
   /** Below the `lg` breakpoint, the rail renders as a slide-over drawer instead of an inline sticky column. */
   overlay: boolean;
@@ -112,7 +113,7 @@ interface CatalogueRailProps {
   onClose: () => void;
 }
 
-const CatalogueRail = ({ facetOptions, overlay, open, onClose }: CatalogueRailProps) => {
+const CatalogueRail = ({ totalCount, facetOptions, overlay, open, onClose }: CatalogueRailProps) => {
   const t = useTranslationFn();
   const dispatch = useAppDispatch();
   const { collapsedFacets } = useCatalogueState();
@@ -131,9 +132,9 @@ const CatalogueRail = ({ facetOptions, overlay, open, onClose }: CatalogueRailPr
         }
       >
         {overlay && (
-          <span>
+          <p role="status">
             <b>{totalCount}</b> {t('catalogue.toolbar.dataset_found', { count: totalCount })}
-          </span>
+          </p>
         )}
 
         {FACETS.map((facet) => (

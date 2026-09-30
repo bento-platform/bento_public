@@ -617,7 +617,6 @@ body {
   min-width: 144px;
 }
 
-.catalogue-count-highlight { color: var(--text-primary); font-weight: 600; }
 .catalogue-filter-tag { 
   align-items: center;
   background: #fff;
