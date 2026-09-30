@@ -126,6 +126,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
 });
 
+// Defines the shape of the session and JWT for Bento Public - without this, accessing session.accessToken,
+// token.access_token, etc. elsewhere would be a type error.
 declare module 'next-auth' {
   interface Session {
     accessToken?: string;
