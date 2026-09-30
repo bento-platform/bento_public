@@ -1,19 +1,26 @@
 import { type RefObject, useCallback, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
+
 import { Input } from 'antd';
+import { CloseOutlined, SearchOutlined } from '@ant-design/icons';
+
 import type { FacetOption } from '@/features/catalogue/types';
+import { toggleFacetCollapse, type FacetId } from '@/features/catalogue/catalogue.store';
+
 import { useAppDispatch } from '@/hooks';
 import { useCatalogueState } from '@/features/catalogue/hooks';
-import { toggleFacetCollapse, type FacetId } from '@/features/catalogue/catalogue.store';
 import { useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
 import { useTranslationFn } from '@/hooks';
+import { useDebounce } from '@/hooks/debounce';
+
 import { facetTranslationKey } from '@/features/catalogue/utils';
-import { CloseOutlined, SearchOutlined } from '@ant-design/icons';
+import { stripDiacritics } from '@/utils/strings';
+
 import FilterChip from '@/components/Util/FilterChip';
 import Sidebar, { SidebarFacet, SidebarSection } from '@/components/Sidebar/Sidebar';
+
 import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { FACETS } from '@/features/catalogue/facetRegistry';
-import { stripDiacritics } from '@/utils/strings';
 
 interface FacetConfig {
   id: FacetId;
@@ -55,11 +62,12 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
   const chipsRef = useRef<HTMLDivElement>(null);
   const chipsScrollOverlayRef = useRef<HTMLDivElement>(null);
 
-  const onFacetChipsScroll = useCallback(() => {
+  const _onFacetChipsScroll = useCallback(() => {
     // Use JS for this rather than the CSS hack to make the shadow actually appear on top of container contents,
     // rather than underneath it.
     handleScrollShadow(chipsRef, chipsScrollOverlayRef);
   }, []);
+  const onFacetChipsScroll = useDebounce(_onFacetChipsScroll, 50);
 
   useEffect(() => {
     // Initialize scroll shadow if needed at first render
