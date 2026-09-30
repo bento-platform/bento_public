@@ -23,6 +23,7 @@ jobs:
       run: npm run test:e2e
       env:
         CI: true
+        CLIENT_NAME: 'Playwright'
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
