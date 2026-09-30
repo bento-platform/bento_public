@@ -83,7 +83,7 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
       <span>
         {t(`search.fts.${value}`)}
         <Tooltip title={t(`search.fts.${value}_help`)}>
-          <InfoCircleOutlined style={{ marginLeft: '0.7em' }} />
+          <InfoCircleOutlined style={{ marginLeft: '0.7em' }} aria-hidden />
         </Tooltip>
       </span>
     ),
@@ -94,13 +94,19 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
   return (
     <SearchSubForm
       titleKey="text_search"
-      icon={<FormOutlined />}
+      icon={<FormOutlined aria-hidden />}
       extra={
         <Select<FtsQueryType>
+          classNames={{
+            popup: {
+              listItem: 'focus-ring',
+            },
+          }}
+          aria-label={t('search_type')}
           disabled={searchLoading}
           variant="filled"
           size="small"
-          className="flex-1"
+          className="flex-1 focus-ring"
           value={qtValue}
           onChange={(value) => form.setFieldValue('qt', value)}
           options={ftsQueryTypeOptions}
@@ -110,8 +116,8 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
     >
       <Form form={form} onFinish={onFinish}>
         <Space.Compact className="w-full">
-          <Form.Item name="q" initialValue={textQuery} noStyle={true}>
-            <Input prefix={<SearchOutlined />} />
+          <Form.Item name="q" initialValue={textQuery} noStyle={true} label={t('search.text_search')}>
+            <Input prefix={<SearchOutlined />} className="focus-ring" />
           </Form.Item>
           {!!textQuery && <Button icon={<CloseOutlined />} onClick={onReset} disabled={searchLoading} />}
           <Form.Item name="qt" initialValue={textQueryType} noStyle={true} hidden />

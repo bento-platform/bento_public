@@ -86,6 +86,7 @@
     "filters_applied_one": "{{count}} $t(search.filters, {\"count\": {{count}} }) appliqué",
     "filters_applied_other": "{{count}} $t(search.filters, {\"count\": {{count}} }) appliqués",
     "text_search": "Recherche de texte",
+    "search_type": "Type de recherche",
     "filter_placeholder": "Sélectionner un champ à filtrer \u2026",
     "filter_value_placeholder_one": "Choisir une valeur \u2026",
     "filter_value_placeholder_other": "Choisir une/des valeur(s) \u2026",
