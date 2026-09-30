@@ -110,7 +110,8 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
   );
 
   // Read the latest form values when the debounce fires, so a reset in the meantime isn't overwritten by a stale value.
-  const debouncedSubmit = useDebounce(() => onFinish(form.getFieldsValue()), DEBOUNCE_WAIT_MS);
+  const submitLatestValues = useCallback(() => onFinish(form.getFieldsValue()), [onFinish, form]);
+  const debouncedSubmit = useDebounce(submitLatestValues, DEBOUNCE_WAIT_MS);
 
   const ftsQueryTypeOptions = VALID_TEXT_QUERY_TYPES.map((value) => ({
     value,
