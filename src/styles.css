@@ -839,6 +839,7 @@ body {
 .facet-chips--scroll {
   max-height: 128px;
   overflow-y: auto;
+  overscroll-behavior: contain; /* prevent overscroll from scrolling the whole catalogue */
 }
 
 .facet-chips-scroll-overlay {
