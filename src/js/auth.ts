@@ -40,7 +40,7 @@ const getDiscoveryDocument = async (): Promise<OidcDiscoveryDocument> => {
   const res = await fetch(OPENID_CONFIG_URL);
   if (!res.ok) throw new Error('Could not fetch identity provider configuration');
   const doc = (await res.json()) as OidcDiscoveryDocument;
-  cachedDiscovery = { doc, expiry: Date.now() + 3 * 60 * 60 * 1000 };
+  cachedDiscovery = { doc, expiry: Date.now() + 3 * 60 * 60 * 1000 }; // cache for 3 hours
   return doc;
 };
 
