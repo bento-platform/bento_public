@@ -615,7 +615,7 @@ body {
 }
 
 .catalogue-count-highlight { color: var(--text-primary); font-weight: 600; }
-.catalogue-filter-tag { 
+.catalogue-filter-tag {
   align-items: center;
   background: #fff;
   border: 1px solid var(--border-base);
@@ -742,6 +742,8 @@ body {
 .sidebar-facet {
   position: relative;
   border-bottom: 1px solid var(--border-subtle);
+
+  --sidebar-facet-chips-scroll-max-height: 128px;
 }
 
 .sidebar-facet--expanded {
@@ -837,7 +839,7 @@ body {
 }
 
 .facet-chips--scroll {
-  max-height: 128px;
+  max-height: var(--sidebar-facet-chips-scroll-max-height);
   overflow-y: auto;
   overscroll-behavior: contain; /* prevent overscroll from scrolling the whole catalogue */
 }
@@ -845,22 +847,38 @@ body {
 .facet-chips-scroll-overlay {
   position: absolute;
   left: 0; right: 0;
-  height: 128px;
+  height: var(--sidebar-facet-chips-scroll-max-height);
   pointer-events: none;
 
-  --fcso-op: 0.15;
+  --sidebar-facet-chips-scroll-overlay-opacity: 0.15;
 }
 .facet-chips-scroll-overlay.scroll-shadow-top {
-  background: local radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, var(--fcso-op)), rgba(0, 0, 0, 0)) no-repeat center top;
+  background: local radial-gradient(
+    farthest-side at 50% 0,
+    rgba(0, 0, 0, var(--sidebar-facet-chips-scroll-overlay-opacity)),
+    rgba(0, 0, 0, 0)
+  ) no-repeat center top;
   background-size: 100% 14px;
 }
 .facet-chips-scroll-overlay.scroll-shadow-bottom {
-  background: local radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, var(--fcso-op)), rgba(0, 0, 0, 0)) no-repeat center bottom;
+  background: local radial-gradient(
+    farthest-side at 50% 100%,
+    rgba(0, 0, 0, var(--sidebar-facet-chips-scroll-overlay-opacity)),
+    rgba(0, 0, 0, 0)
+  ) no-repeat center bottom;
   background-size: 100% 14px;
 }
 .facet-chips-scroll-overlay.scroll-shadow-top.scroll-shadow-bottom {
-  background: local radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, var(--fcso-op)), rgba(0, 0, 0, 0)) no-repeat center top,
-              local radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, var(--fcso-op)), rgba(0, 0, 0, 0)) no-repeat center bottom;
+  background: local radial-gradient(
+                farthest-side at 50% 0,
+                rgba(0, 0, 0, var(--sidebar-facet-chips-scroll-overlay-opacity)),
+                rgba(0, 0, 0, 0)
+              ) no-repeat center top,
+              local radial-gradient(
+                farthest-side at 50% 100%,
+                rgba(0, 0, 0, var(--sidebar-facet-chips-scroll-overlay-opacity)),
+                rgba(0, 0, 0, 0)
+              ) no-repeat center bottom;
   background-size: 100% 14px, 100% 14px;
 }
 
