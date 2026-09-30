@@ -14,7 +14,7 @@ type BentoTokenSet = {
   expires_in: number;
 };
 
-const bentoProvider: OAuthConfig<Record<string, unknown>> = {
+const bentoOidcProvider: OAuthConfig<Record<string, unknown>> = {
   id: BENTO_OIDC_PROVIDER_ID,
   name: 'Bento',
   type: 'oidc',
@@ -70,7 +70,7 @@ const refreshAccessToken = async (refreshToken: string): Promise<BentoTokenSet> 
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
-  providers: [bentoProvider],
+  providers: [bentoOidcProvider],
   session: { strategy: 'jwt' },
   callbacks: {
     async jwt({ token, account }): Promise<JWT> {
