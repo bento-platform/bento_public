@@ -13,14 +13,13 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
+        cache: 'npm'
     - name: Install dependencies
       run: npm ci
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Build Next.js app
       run: npm run build
-      env:
-        BENTO_PUBLIC_CLIENT_NAME: 'Playwright'
     - name: Run Playwright tests
       run: npm run test:e2e
       env:

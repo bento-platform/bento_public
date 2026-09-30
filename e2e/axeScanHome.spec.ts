@@ -1,13 +1,14 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import { API_PROJECTS } from './mocks';
+import { API_PROJECTS, mockPublicConfig } from './mocks';
 
 test.describe.configure({ mode: 'parallel' });
 
 test.describe('homepage', () => {
   test.beforeEach(async ({ page }) => {
-    // Intercept projects API in CI (or if MOCK_API=true) so catalogue cards render cleanly
+    // Intercept config and projects API in CI (or if MOCK_API=true) so catalogue cards render cleanly
     if (process.env.CI || process.env.MOCK_API === 'true') {
+      await mockPublicConfig(page);
       await page.route('**/api/metadata/api/projects*', async (route) => {
         await route.fulfill({
           status: 200,

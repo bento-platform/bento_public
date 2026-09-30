@@ -1,3 +1,39 @@
+import type { Page } from '@playwright/test';
+import type { PublicConfig } from '../src/js/config';
+
+export const MOCK_CONFIG = {
+  CLIENT_NAME: 'Bento Public',
+  ADMIN_URL: null,
+  PUBLIC_URL: null,
+  TRANSLATED: false,
+  TRANSLATED_LOGO: false,
+  LOGO_HEIGHT: '32',
+  SHOW_LOGO: true,
+  SHOW_HEADER_TITLE: true,
+  SHOW_ADMIN_LINK: false,
+  SHOW_SIGN_IN: false,
+  FORCE_CATALOGUE: false,
+  PCGL_MODE: false,
+  CATALOGUE_HEADER_BACKGROUND: undefined,
+  CATALOGUE_HEADER_TEXT_COLOR: undefined,
+  BEACON_URL: null,
+  BEACON_UI_ENABLED: false,
+  BEACON_NETWORK_ENABLED: false,
+  CLIENT_ID: null,
+  OPENID_CONFIG_URL: null,
+};
+
+export async function mockPublicConfig(page: Page, overrides: Partial<PublicConfig> = {}) {
+  const config = { ...MOCK_CONFIG, ...overrides };
+  await page.route('**/public/config.js*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/javascript',
+      body: `BENTO_PUBLIC_CONFIG = ${JSON.stringify(config, null, 2)};\n`,
+    });
+  });
+}
+
 export const API_PROJECTS = {
   count: 5,
   next: null,
