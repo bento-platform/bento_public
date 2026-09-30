@@ -67,7 +67,7 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
     // rather than underneath it.
     handleScrollShadow(chipsRef, chipsScrollOverlayRef);
   }, []);
-  const onFacetChipsScroll = useDebounce(_onFacetChipsScroll, 50);
+  const onFacetChipsScroll = useDebounce(_onFacetChipsScroll, 20, 50);
 
   useEffect(() => {
     // Initialize scroll shadow if needed at first render
