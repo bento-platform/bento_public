@@ -157,7 +157,9 @@ const CatalogueToolbar = ({ filteredCount, showFiltersButton, isMobile, onOpenFi
         <Button
           color="primary"
           variant="outlined"
-          className="insights-toggle"
+          classNames={{
+            root: 'insights-toggle',
+          }}
           htmlType="button"
           aria-pressed={insightsOpen}
           icon={<PieChartOutlined aria-hidden />}

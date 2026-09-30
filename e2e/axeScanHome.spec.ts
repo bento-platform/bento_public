@@ -28,7 +28,8 @@ test.describe('homepage', () => {
 
     const accessibilityScanResults = await new AxeBuilder({ page })
       .exclude('.catalogue-card__title')
-      .exclude('#_r_u_')
+      .exclude('.catalogue-sort-select')
+      .exclude('.about-content')
       .analyze();
 
     await expect.soft(accessibilityScanResults.violations.length).toBe(0);

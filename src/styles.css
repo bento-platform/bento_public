@@ -616,6 +616,9 @@ body {
 .insights-toggle:lang(en) {
   min-width: 144px;
 }
+.insights-toggle__content {
+  color: #0D6EF6;
+}
 
 .catalogue-filter-tag { 
   align-items: center;
