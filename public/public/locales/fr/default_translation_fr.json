@@ -266,7 +266,7 @@
       "by_project": "Par $t(entities.project_one, lowercase)"
     },
     "datasets": {
-      "no_results": "Aucun $t(entities.dataset_one, lowercase) ne correspond à vos filtres",
+      "empty": "Aucun $t(entities.dataset_one, lowercase) ne correspond à vos filtres",
       "clear_filters": "Effacer tous les filtres",
       "expand": "plus"
     }
