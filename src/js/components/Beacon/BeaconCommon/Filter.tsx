@@ -90,8 +90,8 @@ const Filter = ({
       >
         <Select className="w-full" options={valueOptions.map(({ label, value }) => ({ label: t(label), value }))} />
       </Form.Item>
-      <Button onClick={() => removeFilter(filter)}>
-        <CloseOutlined />
+      <Button onClick={() => removeFilter(filter)} aria-label={t('search.remove_filter')}>
+        <CloseOutlined aria-hidden />
       </Button>
     </Space.Compact>
   );

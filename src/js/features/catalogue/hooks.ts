@@ -4,7 +4,7 @@ import type { FacetOption } from '@/features/catalogue/types';
 import { FACET_IDS, SORT_FNS, type DatasetWithProject, type FacetId } from './constants';
 import { FACET_CONFIG_BY_ID } from './facetRegistry';
 import { stripDiacritics, stripRichText } from '@/utils/strings';
-import { facetValueTranslationKey, getLabel } from './utils';
+import { getLabel } from './utils';
 
 export type { DatasetWithProject } from './constants';
 
@@ -95,7 +95,7 @@ export function useCatalogueFilter(items: DatasetWithProject[]): {
 
       return values.map((v) => ({
         value: v,
-        label: t(facetValueTranslationKey(facetConfig.i18nKeyPrefix, v)),
+        label: facetConfig.formatLabel ? facetConfig.formatLabel(v, t) : v,
         count: countMap.get(v) ?? 0,
         selected: selected.includes(v),
       }));

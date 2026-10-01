@@ -174,7 +174,7 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
             <Button
               type="text"
               className="header-button"
-              icon={<RiTranslate style={{ transform: 'translateY(1px)' }} />}
+              icon={<RiTranslate aria-hidden style={{ transform: 'translateY(1px)' }} />}
               onClick={changeLanguage}
             >
               {isSmallScreen ? '' : LNGS_FULL_NAMES[LNG_CHANGE[language]]}
@@ -185,7 +185,7 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
               <Button
                 color="default"
                 className="header-button"
-                icon={<LogoutOutlined />}
+                icon={<LogoutOutlined aria-hidden />}
                 shape="round"
                 variant="filled"
                 onClick={performSignOut}
@@ -193,7 +193,7 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
                 {isSmallScreen ? '' : t('Sign Out')}
               </Button>
             ) : (
-              <Button type="primary" shape="round" icon={<LoginOutlined />} onClick={performSignIn}>
+              <Button type="primary" shape="round" icon={<LoginOutlined aria-hidden />} onClick={performSignIn}>
                 {openIdConfigFetching || isHandingOffCodeForToken ? t('Loading...') : isSmallScreen ? '' : t('Sign In')}
               </Button>
             ))}

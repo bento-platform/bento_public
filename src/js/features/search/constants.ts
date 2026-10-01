@@ -2,6 +2,8 @@ import type { DiscoveryResults } from '@/types/data';
 import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
 import type { FtsQueryType } from '@/features/search/types';
 
+export const STALE_DISCOVERY_REJECTION = 'stale' as const;
+
 export const NO_RESULTS_DASHES = '———';
 
 export const EMPTY_KATSU_ENTITY_COUNTS: KatsuEntityCountsOrBooleans = {

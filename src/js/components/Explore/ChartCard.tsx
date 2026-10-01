@@ -23,6 +23,7 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable, mode: mode_
   const {
     id,
     data,
+    dataContext,
     field,
     field: { description, title },
     chartConfig,
@@ -30,7 +31,8 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable, mode: mode_
 
   const extraOptionsData = [
     {
-      icon: <CloseOutlined />,
+      key: 'close',
+      icon: <CloseOutlined aria-hidden />,
       description: t('Remove this chart'),
       onClick: () => {
         onRemoveChart({ section, id });
@@ -65,8 +67,8 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable, mode: mode_
         size="small"
         extra={
           <Space size="small">
-            {extraOptionsData.map((opt, index) => (
-              <Tooltip key={index} title={opt.description}>
+            {extraOptionsData.map((opt) => (
+              <Tooltip key={opt.key} title={opt.description}>
                 <Button
                   shape="circle"
                   color="default"
@@ -85,6 +87,7 @@ const ChartCard = memo(({ section, chart, onRemoveChart, searchable, mode: mode_
             <Chart
               chartConfig={chartConfig}
               data={data}
+              dataContext={dataContext}
               field={field}
               id={id}
               key={id}

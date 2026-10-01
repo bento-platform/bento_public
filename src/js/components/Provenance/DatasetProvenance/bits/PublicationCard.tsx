@@ -1,23 +1,17 @@
 import { useState } from 'react';
+import { Typography } from 'antd';
 import clsx from 'clsx';
 import { BookOutlined, DownOutlined, ExportOutlined } from '@ant-design/icons';
 
 import { useTranslationFn } from '@/hooks';
 import type { Publication } from '@/types/dataset';
-import { CopyButton } from './CopyButton';
 import { personName, pubTypeLabel } from './helpers';
 
 export const PublicationCard = ({
   pub,
-  idx,
-  copiedKey,
-  onCopy,
   alwaysExpanded,
 }: {
   pub: Publication;
-  idx: number;
-  copiedKey: string | null;
-  onCopy: (value: string, id: string) => void;
   alwaysExpanded?: boolean; // Whether the publication is always expanded and thus not collapsible (i.e., w/ only 1 pub)
 }) => {
   const t = useTranslationFn();
@@ -74,7 +68,7 @@ export const PublicationCard = ({
               {pub.doi && (
                 <span className="pm-doi">
                   {pub.doi}
-                  <CopyButton value={pub.doi} id={`doi-${idx}`} copiedKey={copiedKey} onCopy={onCopy} />
+                  <Typography.Text copyable={{ text: pub.doi }} />
                 </span>
               )}
               {pub.url && (

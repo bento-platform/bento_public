@@ -48,7 +48,7 @@ const LongDescription = ({ content, contentType }: LongDescriptionProps) => {
           onClick={() => setExpanded((v) => !v)}
         >
           {t(`general.${expanded ? 'show_less' : 'show_more'}`)}
-          <DownOutlined />
+          <DownOutlined aria-hidden />
         </button>
       )}
     </div>

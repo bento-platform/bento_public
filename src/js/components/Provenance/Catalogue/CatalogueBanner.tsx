@@ -12,7 +12,9 @@ const { Text } = Typography;
 
 const StatItem = ({ icon, value, label }: { icon: ReactNode; value: string; label: string }) => (
   <Space size={8} align="center" className="whitespace-nowrap">
-    <span className="catalogue-banner__stat-icon">{icon}</span>
+    <span className="catalogue-banner__stat-icon" aria-hidden>
+      {icon}
+    </span>
     <Text className="catalogue-banner__stat-value">
       {value} {label}
     </Text>
@@ -20,17 +22,17 @@ const StatItem = ({ icon, value, label }: { icon: ReactNode; value: string; labe
 );
 
 interface CatalogueBannerProps {
-  filteredDatasets: DatasetWithProject[];
+  datasets: DatasetWithProject[];
 }
 
-const CatalogueBanner = ({ filteredDatasets }: CatalogueBannerProps) => {
+const CatalogueBanner = ({ datasets }: CatalogueBannerProps) => {
   const t = useTranslationFn();
   const fmt = useFormatNumber();
 
   const { datasetCount, individualCount, biosampleCount } = useMemo(() => {
     let individualCount = 0;
     let biosampleCount = 0;
-    for (const { dataset } of filteredDatasets) {
+    for (const { dataset } of datasets) {
       const counts = dataset.counts_by_entity;
       if (counts) {
         individualCount += typeof counts.individual === 'number' ? counts.individual : 0;
@@ -39,8 +41,8 @@ const CatalogueBanner = ({ filteredDatasets }: CatalogueBannerProps) => {
         // { count: nWGS, entity: 'whole_genome_sequence' }
       }
     }
-    return { datasetCount: filteredDatasets.length, individualCount, biosampleCount };
-  }, [filteredDatasets]);
+    return { datasetCount: datasets.length, individualCount, biosampleCount };
+  }, [datasets]);
 
   return (
     <div
@@ -67,17 +69,17 @@ const CatalogueBanner = ({ filteredDatasets }: CatalogueBannerProps) => {
         )}
         <Space size={[28, 6]} wrap>
           <StatItem
-            icon={<DatabaseOutlined />}
+            icon={<DatabaseOutlined aria-hidden />}
             value={fmt(datasetCount)}
             label={t('entities.dataset', { count: datasetCount }).toLowerCase()}
           />
           <StatItem
-            icon={<TeamOutlined />}
+            icon={<TeamOutlined aria-hidden />}
             value={fmt(individualCount)}
             label={t('entities.individual', { count: individualCount }).toLowerCase()}
           />
           <StatItem
-            icon={<ExperimentOutlined />}
+            icon={<ExperimentOutlined aria-hidden />}
             value={fmt(biosampleCount)}
             label={t('entities.biosample', { count: biosampleCount }).toLowerCase()}
           />

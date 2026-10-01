@@ -2,11 +2,14 @@ import { defineConfig, globalIgnores } from 'eslint/config';
 import globals from 'globals';
 import js from '@eslint/js';
 import nextVitals from 'eslint-config-next/core-web-vitals';
+import nextTs from 'eslint-config-next/typescript';
+import reactX from 'eslint-plugin-react-x';
 
 // Parser
 import tsParser from '@typescript-eslint/parser';
 
 // Plugins
+import jsxA11y from 'eslint-plugin-jsx-a11y';
 import tsEsLint from 'typescript-eslint';
 import react from 'eslint-plugin-react';
 import reactHooksEsLint from 'eslint-plugin-react-hooks';
@@ -20,8 +23,10 @@ export default defineConfig([
   react.configs.flat.recommended,
   react.configs.flat['jsx-runtime'],
   ...nextVitals,
+  ...nextTs,
   eslintPluginPrettierRecommended,
   reactHooksEsLint.configs.flat.recommended,
+  reactX.configs.recommended,
   {
     languageOptions: {
       ecmaVersion: 2021,
@@ -34,14 +39,14 @@ export default defineConfig([
       '@typescript-eslint/explicit-module-boundary-types': 'off', // allow implicit return types
       '@typescript-eslint/no-empty-object-type': 'off', // allow empty object type
       'no-unused-vars': 'off', // disable no-unused-vars since @typescript-eslint/no-unused-vars does the same
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        { argsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' },
-      ], // enable @typescript-eslint/no-unused-vars
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' }], // enable @typescript-eslint/no-unused-vars
       '@typescript-eslint/no-non-null-assertion': 'off',
       '@typescript-eslint/consistent-type-imports': 'error',
       'react/react-in-jsx-scope': 'off',
       'react-hooks/exhaustive-deps': ['error'],
+      'react-x/no-array-index-key': 'error', // be strict about proper natural keys for array rendering
+      // Inject strict a11y rules rather than basic 'recommended' set
+      ...jsxA11y.flatConfigs.strict.rules,
     },
     settings: {
       react: {

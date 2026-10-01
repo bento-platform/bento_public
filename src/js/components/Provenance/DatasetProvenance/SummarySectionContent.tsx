@@ -2,7 +2,7 @@ import { useTranslationFn } from '@/hooks';
 import type { Dataset } from '@/types/dataset';
 import { OntologyChip } from './bits';
 import DatasetDescription from './DatasetDescription';
-import { statusTranslationKey, studyContextTranslationKey } from '@/features/catalogue/utils';
+import { strOrOntoNatKey } from '@/utils/ontologies';
 
 type SummarySectionProps = { dataset: Dataset };
 
@@ -26,8 +26,8 @@ const SummarySectionContent = ({ dataset }: SummarySectionProps) => {
             <div className="pm-field">
               <span className="pm-field-k">{t('provenance.keywords')}</span>
               <div className="pm-chips">
-                {keywords.map((k, i) => (
-                  <OntologyChip key={i} item={k} variant="kw" />
+                {keywords.map((k) => (
+                  <OntologyChip key={strOrOntoNatKey(k)} item={k} variant="kw" />
                 ))}
               </div>
             </div>
@@ -36,8 +36,8 @@ const SummarySectionContent = ({ dataset }: SummarySectionProps) => {
             <div className="pm-field">
               <span className="pm-field-k">{t('provenance.taxa')}</span>
               <div className="pm-chips">
-                {taxa.map((k, i) => (
-                  <OntologyChip key={i} item={k} variant="taxa" />
+                {taxa.map((k) => (
+                  <OntologyChip key={strOrOntoNatKey(k)} item={k} variant="taxa" />
                 ))}
               </div>
             </div>
@@ -46,8 +46,8 @@ const SummarySectionContent = ({ dataset }: SummarySectionProps) => {
             <div className="pm-field">
               <span className="pm-field-k">{t('provenance.domain')}</span>
               <div className="pm-chips">
-                {dataset.domain.map((d, i) => (
-                  <span key={i} className="pm-chip pm-chip-dom">
+                {dataset.domain.map((d) => (
+                  <span key={d} className="pm-chip pm-chip-dom">
                     {d}
                   </span>
                 ))}
@@ -63,13 +63,13 @@ const SummarySectionContent = ({ dataset }: SummarySectionProps) => {
           {dataset.study_status && (
             <div className="pm-field">
               <span className="pm-field-k">{t('provenance.study_status')}</span>
-              <span className="pm-field-v">{t(statusTranslationKey(dataset.study_status))}</span>
+              <span className="pm-field-v">{dataset.study_status}</span>
             </div>
           )}
           {dataset.study_context && (
             <div className="pm-field">
               <span className="pm-field-k">{t('provenance.study_context')}</span>
-              <span className="pm-field-v">{t(studyContextTranslationKey(dataset.study_context))}</span>
+              <span className="pm-field-v">{dataset.study_context}</span>
             </div>
           )}
         </div>

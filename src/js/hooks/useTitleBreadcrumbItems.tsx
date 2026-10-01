@@ -50,7 +50,7 @@ export const useTitleBreadcrumbItems = (scopeHeaderMenuItems: MenuItem[]): Bread
         // If we additionally have a fixed project, we can "anchor" the dataset visually vs. the root page using a
         // home icon/link:
         items.push({
-          title: <HomeOutlined />,
+          title: <HomeOutlined aria-label={t('Back to project')} />,
           path: `/${language}/`,
         });
       }
