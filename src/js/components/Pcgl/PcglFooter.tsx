@@ -57,7 +57,6 @@ const BentoBand = () => {
   return (
     <div className="bento-footer">
       <div className="about">
-        <LinkHeader>{t('footer.bento.title')}</LinkHeader>
         <p>{t('footer.bento.powered_by')} </p>
         <LinkItem url="https://bento-platform.github.io">
           <Image src={BentoLogo} width={288} height={68} className="bento-logo" alt={t('footer.bento.bento')} />
