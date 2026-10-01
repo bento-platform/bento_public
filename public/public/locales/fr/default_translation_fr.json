@@ -267,8 +267,7 @@
     },
     "datasets": {
       "empty": "Aucun $t(entities.dataset_one, lowercase) ne correspond à vos filtres",
-      "clear_filters": "Effacer tous les filtres",
-      "expand": "plus"
+      "reset_filters": "Effacer tous les filtres"
     }
   },
   "dataset": {
