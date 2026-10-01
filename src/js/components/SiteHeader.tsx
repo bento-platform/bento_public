@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Button, Flex, Layout, Menu, type MenuProps, Space, Typography, theme } from 'antd';
@@ -80,6 +80,15 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
   const isAuthenticated = useIsAuthenticated();
   const performSignOut = usePerformSignOut();
   const performSignIn = usePerformAuth();
+
+  // performSignOut() clears our session before it redirects to the identity provider to end its session too, so
+  // isAuthenticated flips to false mid-callback - without this, the button would flash to "Sign In" and back before
+  // the page actually navigates away.
+  const [isSigningOut, setIsSigningOut] = useState(false);
+  const handleSignOut = useCallback(() => {
+    setIsSigningOut(true);
+    performSignOut();
+  }, [performSignOut]);
 
   const {
     token: { colorBgContainer, colorBorderSecondary },
@@ -181,14 +190,15 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
             </Button>
           )}
           {SHOW_SIGN_IN &&
-            (isAuthenticated ? (
+            (isAuthenticated || isSigningOut ? (
               <Button
                 color="default"
                 className="header-button"
                 icon={<LogoutOutlined aria-hidden />}
                 shape="round"
                 variant="filled"
-                onClick={performSignOut}
+                loading={isSigningOut}
+                onClick={handleSignOut}
               >
                 {isSmallScreen ? '' : t('Sign Out')}
               </Button>
