@@ -111,7 +111,7 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
           )}
         </div>
       )}
-      {facet.scroll && <div className="facet-chips-scroll-overlay" aria-hidden ref={chipsScrollOverlayRef} />}
+      {facet.scroll && <div className="facet-chips-scroll-overlay" ref={chipsScrollOverlayRef} />}
       <div
         ref={chipsRef}
         /* TODO: tabindex is less-than-ideal for a11y on something that's just scrollable - we may need additional a11y
