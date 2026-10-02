@@ -73,6 +73,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [bentoOidcProvider],
   session: { strategy: 'jwt' },
   callbacks: {
+    // The returned token is the entire session, stored in an encrypted cookie sent to the frontend (wrapper JWT).
+    // See: https://github.com/nextauthjs/next-auth/blob/a1a16a5a7780488c7449feece410033f445d0b31/packages/core/src/index.ts#L424-L433
     async jwt({ token, account }): Promise<JWT> {
       if (account) {
         // First-time sign-in: seed the token from the just-completed authorization code exchange.
@@ -115,6 +117,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         return { ...token, error: 'RefreshTokenError' as const };
       }
     },
+    // SAFETY: the value returned here is what gets exposed to the client (via useSession / the /api/auth/session
+    // endpoint), so only put things in it that are safe to be visible in the browser. Never spread the whole `token`
+    // in - it holds the refresh token. Pick fields explicitly.
+    // TODO: stop sending the access token (and ID token) to the front end; make authenticated calls to the backend
+    //  from server-side code instead, where the token can be read from the JWT without leaving the server.
     async session({ session, token }) {
       return {
         ...session,
