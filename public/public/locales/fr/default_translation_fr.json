@@ -266,9 +266,8 @@
       "by_project": "Par $t(entities.project_one, lowercase)"
     },
     "datasets": {
-      "no_results": "Aucun $t(entities.dataset_one, lowercase) ne correspond à vos filtres",
-      "clear_filters": "Effacer tous les filtres",
-      "expand": "plus"
+      "empty": "Aucun $t(entities.dataset_one, lowercase) ne correspond à vos filtres",
+      "reset_filters": "Effacer tous les filtres"
     }
   },
   "dataset": {
@@ -626,7 +625,8 @@
     "medical_actions": "Actions médicales",
     "ontologies": "Ontologies",
     "metadata": "Métadonnées",
-    "phenopacket_json": "JSON de phenopacket"
+    "phenopacket_json": "JSON de phenopacket",
+    "tracks": "Pistes"
   },
   "genomic_interpretation_status": {
     "UNKNOWN_STATUS": "Statut inconnu",
@@ -730,5 +730,11 @@
       "manageApplications": "Gérer les demandes",
       "cihrHref": "https://cihr-irsc.gc.ca/f/193.html"
     }
+  },
+  "tracks": {
+    "igv_error_title": "Erreur lors de la création du navigateur IGV",
+    "igv_error_description": "Erreur lors de la création du navigateur pour l'assemblage génomique {{assemblyId}}",
+    "track_controls": "Paramétrage des pistes",
+    "track_controls_per_assembly": "Paramétrage des pistes {{assemblyId}}"
   }
 }
