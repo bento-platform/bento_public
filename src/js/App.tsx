@@ -24,6 +24,7 @@ import BentoAppRouter from '@/components/BentoAppRouter';
 import LanguageHandler from '@/components/Util/LanguageHandler';
 import AuthOutlet from '@/components/Util/AuthOutlet';
 import ResponsiveProvider from '@/components/Util/ResponsiveProvider';
+import DevSettingsFloatButton from '@/components/Util/DevSettingsFloatButton';
 
 // Hooks and utilities imports
 import { NotificationProvider } from '@/hooks/notifications';
@@ -32,7 +33,7 @@ import { useHandleRefreshTokenError } from '@/features/auth/hooks';
 
 // Store and configuration imports
 import { store } from './store';
-import { PCGL_MODE, SESSION_REFETCH_INTERVAL_SECONDS } from './config';
+import { PCGL_MODE, SESSION_REFETCH_INTERVAL_SECONDS, SHOW_DEV_SETTINGS } from './config';
 
 // Styles imports
 import 'antd/dist/reset.css';
@@ -87,6 +88,7 @@ const InnerRootApp = () => {
       >
         <NotificationProvider>
           <BaseRoutes />
+          {SHOW_DEV_SETTINGS && <DevSettingsFloatButton />}
         </NotificationProvider>
       </ConfigProvider>
     </ChartConfigProvider>

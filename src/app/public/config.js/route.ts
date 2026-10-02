@@ -26,6 +26,7 @@ export function GET() {
     SHOW_SIGN_IN: parseBoolean(process.env.BENTO_PUBLIC_SHOW_SIGN_IN),
     FORCE_CATALOGUE: parseBoolean(process.env.BENTO_PUBLIC_FORCE_CATALOGUE), // Show data catalogue even with 1 project
     PCGL_MODE: parseBoolean(process.env.BENTO_PUBLIC_PCGL_MODE),
+    SHOW_DEV_SETTINGS: parseBoolean(process.env.BENTO_PUBLIC_SHOW_DEV_SETTINGS), // Dev/staging testing only
 
     // Theme variables
     CATALOGUE_HEADER_BACKGROUND: process.env.BENTO_PUBLIC_CATALOGUE_HEADER_BACKGROUND,
