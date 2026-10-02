@@ -2,7 +2,7 @@ import type { CSSProperties, ReactNode } from 'react';
 import { lazy, Suspense } from 'react';
 import { Modal, Row, Spin, type ModalProps } from 'antd';
 
-import { useAuthorizationHeader } from 'bento-auth-js';
+import { useAuthorizationHeader } from '@/features/auth/hooks';
 import { useDrsHttpsAccessOrPassThrough } from '@/features/drs/hooks';
 
 const FileDisplay = lazy(() => import('bento-file-display').then((m) => ({ default: m.FileDisplay })));

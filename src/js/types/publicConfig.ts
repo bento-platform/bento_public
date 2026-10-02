@@ -14,6 +14,7 @@ export interface PublicConfig {
   SHOW_SIGN_IN: boolean;
   FORCE_CATALOGUE: boolean; // Show data catalogue even with 1 project
   PCGL_MODE: boolean; // Puts Bento Public in "PCGL mode", turning it into the PCGL research portal
+  SHOW_DEV_SETTINGS: boolean; // Show a floating dev settings button for overriding config at runtime (testing only)
   // Theme variables
   CATALOGUE_HEADER_BACKGROUND: string | null;
   CATALOGUE_HEADER_TEXT_COLOR: string | null;
@@ -22,6 +23,5 @@ export interface PublicConfig {
   BEACON_UI_ENABLED: boolean;
   BEACON_NETWORK_ENABLED: boolean;
   // Authentication
-  CLIENT_ID: string | null;
-  OPENID_CONFIG_URL: string | null;
+  SESSION_REFETCH_INTERVAL_SECONDS: number; // Seconds between session refreshes
 }

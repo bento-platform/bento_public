@@ -16,6 +16,13 @@ const parseLogoHeight = (value: string | null): number => {
   return height;
 };
 
+const parseSessionRefetchInterval = (value: string | null): number => {
+  const seconds = parseInt(value ?? '120', 10);
+  if (Number.isNaN(seconds))
+    throw new Error(`BENTO_PUBLIC_SESSION_REFETCH_INTERVAL_SECONDS must be an integer, got: ${value}`);
+  return seconds;
+};
+
 export const readPublicConfig = (): PublicConfig => ({
   // General
   CLIENT_NAME: env('BENTO_PUBLIC_CLIENT_NAME'),
@@ -34,6 +41,7 @@ export const readPublicConfig = (): PublicConfig => ({
   SHOW_SIGN_IN: flag('BENTO_PUBLIC_SHOW_SIGN_IN'),
   FORCE_CATALOGUE: flag('BENTO_PUBLIC_FORCE_CATALOGUE'),
   PCGL_MODE: flag('BENTO_PUBLIC_PCGL_MODE'),
+  SHOW_DEV_SETTINGS: flag('BENTO_PUBLIC_SHOW_DEV_SETTINGS'), // Dev/staging testing only
 
   // Theme variables
   CATALOGUE_HEADER_BACKGROUND: env('BENTO_PUBLIC_CATALOGUE_HEADER_BACKGROUND'),
@@ -45,6 +53,5 @@ export const readPublicConfig = (): PublicConfig => ({
   BEACON_NETWORK_ENABLED: flag('BENTO_BEACON_NETWORK_ENABLED'),
 
   // Authentication
-  CLIENT_ID: env('CLIENT_ID'),
-  OPENID_CONFIG_URL: env('OPENID_CONFIG_URL'),
+  SESSION_REFETCH_INTERVAL_SECONDS: parseSessionRefetchInterval(env('BENTO_PUBLIC_SESSION_REFETCH_INTERVAL_SECONDS')),
 });

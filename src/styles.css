@@ -615,7 +615,7 @@ body {
 }
 
 .catalogue-count-highlight { color: var(--text-primary); font-weight: 600; }
-.catalogue-filter-tag { 
+.catalogue-filter-tag {
   align-items: center;
   background: #fff;
   border: 1px solid var(--border-base);
@@ -740,7 +740,10 @@ body {
 }
 
 .sidebar-facet {
+  position: relative;
   border-bottom: 1px solid var(--border-subtle);
+
+  --sidebar-facet-chips-scroll-max-height: 128px;
 }
 
 .sidebar-facet--expanded {
@@ -836,8 +839,47 @@ body {
 }
 
 .facet-chips--scroll {
-  max-height: 128px;
+  max-height: var(--sidebar-facet-chips-scroll-max-height);
   overflow-y: auto;
+  overscroll-behavior: contain; /* prevent overscroll from scrolling the whole catalogue */
+}
+
+.facet-chips-scroll-overlay {
+  position: absolute;
+  left: 0; right: 0;
+  height: var(--sidebar-facet-chips-scroll-max-height);
+  pointer-events: none;
+
+  --sidebar-facet-chips-scroll-overlay-opacity: 0.15;
+}
+.facet-chips-scroll-overlay.scroll-shadow-top {
+  background: local radial-gradient(
+    farthest-side at 50% 0,
+    rgba(0, 0, 0, var(--sidebar-facet-chips-scroll-overlay-opacity)),
+    rgba(0, 0, 0, 0)
+  ) no-repeat center top;
+  background-size: 100% 14px;
+}
+.facet-chips-scroll-overlay.scroll-shadow-bottom {
+  background: local radial-gradient(
+    farthest-side at 50% 100%,
+    rgba(0, 0, 0, var(--sidebar-facet-chips-scroll-overlay-opacity)),
+    rgba(0, 0, 0, 0)
+  ) no-repeat center bottom;
+  background-size: 100% 14px;
+}
+.facet-chips-scroll-overlay.scroll-shadow-top.scroll-shadow-bottom {
+  background: local radial-gradient(
+                farthest-side at 50% 0,
+                rgba(0, 0, 0, var(--sidebar-facet-chips-scroll-overlay-opacity)),
+                rgba(0, 0, 0, 0)
+              ) no-repeat center top,
+              local radial-gradient(
+                farthest-side at 50% 100%,
+                rgba(0, 0, 0, var(--sidebar-facet-chips-scroll-overlay-opacity)),
+                rgba(0, 0, 0, 0)
+              ) no-repeat center bottom;
+  background-size: 100% 14px, 100% 14px;
 }
 
 .fchip {
@@ -2024,4 +2066,11 @@ button.pm-sec-head { cursor: pointer; }
 }
 .stat-list--cards .stat-list__description {
   font-size: var(--p-fs-xxsmall); color: var(--text-muted); margin-top: 3px; line-height: 1.4;
+}
+
+.dev-settings-float-btn {
+  /* Sit above the Next.js dev indicator, which is also pinned bottom-left */
+  bottom: 6em;
+  left: 2em;
+  inset-inline-end: auto;
 }
