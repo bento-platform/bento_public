@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Flex, Typography } from 'antd';
-import { useAccessToken } from 'bento-auth-js';
+import { useAccessToken } from '@/features/auth/hooks';
 import igv from 'igv/dist/igv.esm.js';
 import type { Browser, CreateOpt } from 'igv';
 import { saveIgvPosition } from '@/features/igv/igv.store';

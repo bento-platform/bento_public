@@ -23,8 +23,7 @@ export interface PublicConfig {
   BEACON_UI_ENABLED: boolean;
   BEACON_NETWORK_ENABLED: boolean;
   // Authentication
-  CLIENT_ID: string | null;
-  OPENID_CONFIG_URL: string | null;
+  SESSION_REFETCH_INTERVAL_SECONDS: string; // Seconds between session refreshes, as an integer string: e.g., '120'
 }
 
 // Declaration required for global config
@@ -65,6 +64,7 @@ export const BEACON_NETWORK_ENABLED =
   BENTO_PUBLIC_CONFIG.BEACON_NETWORK_ENABLED ?? stringToBoolean(process.env.BENTO_BEACON_NETWORK_ENABLED);
 
 // Authentication
-export const CLIENT_ID = BENTO_PUBLIC_CONFIG.CLIENT_ID ?? process.env.CLIENT_ID ?? '';
-export const OPENID_CONFIG_URL = BENTO_PUBLIC_CONFIG.OPENID_CONFIG_URL ?? process.env.OPENID_CONFIG_URL ?? '';
-export const AUTH_CALLBACK_URL = `${PUBLIC_URL_NO_TRAILING_SLASH}/callback`;
+export const SESSION_REFETCH_INTERVAL_SECONDS = parseInt(
+  (BENTO_PUBLIC_CONFIG.SESSION_REFETCH_INTERVAL_SECONDS ?? process.env.BENTO_PUBLIC_SESSION_REFETCH_INTERVAL_SECONDS) ||
+    '120'
+);

@@ -3,7 +3,8 @@ import type { TypedUseSelectorHook } from 'react-redux';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import type { Resource } from 'bento-auth-js';
-import { RESOURCE_EVERYTHING, queryData, useHasResourcePermission } from 'bento-auth-js';
+import { RESOURCE_EVERYTHING, queryData } from 'bento-auth-js';
+import { useHasResourcePermission } from '@/features/auth/hooks';
 import { filesize } from 'filesize';
 
 import { useSelectedScopeAsResource } from '@/features/metadata/hooks';
