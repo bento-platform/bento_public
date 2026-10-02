@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
   skipTrailingSlashRedirect: true,
 
   // No build-time `env` mapping: it would inline process.env.X everywhere, 
-  // breaking the live per-request reads in config.js/route.ts and service-info/route.ts.
+  // breaking the live per-request reads in config.json/route.ts and service-info/route.ts.
 };
 
 export default nextConfig;

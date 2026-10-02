@@ -1,62 +1,25 @@
-import { stringToBoolean } from '@/utils/strings';
 import { LOCALSTORAGE_DEV_SETTINGS_KEY } from '@/constants/ui';
+import { getLoadedPublicConfig } from '@/publicConfig';
 
-export interface PublicConfig {
-  // General
-  CLIENT_NAME: string | null;
-  ADMIN_URL: string | null;
-  PUBLIC_URL: string | null;
-  // Display flags
-  TRANSLATED: boolean; // Whether to show a language toggle
-  TRANSLATED_LOGO: boolean; // Whether a translated version of the header logo is available/relevant
-  LOGO_HEIGHT: string; // String representation of a logo height in pixels as an integer with no suffix: e.g., '32'
-  SHOW_LOGO: boolean;
-  SHOW_HEADER_TITLE: boolean; // Whether to show the CLIENT_NAME title text
-  SHOW_ADMIN_LINK: boolean;
-  SHOW_SIGN_IN: boolean;
-  FORCE_CATALOGUE: boolean; // Show data catalogue even with 1 project
-  PCGL_MODE: boolean; // Puts Bento Public in "PCGL mode", turning it into the PCGL research portal
-  SHOW_DEV_SETTINGS: boolean; // Show a floating dev settings button for overriding config at runtime (testing only)
-  // Theme variables
-  CATALOGUE_HEADER_BACKGROUND: string | undefined;
-  CATALOGUE_HEADER_TEXT_COLOR: string | undefined;
-  // Beacon configuration and flags
-  BEACON_URL: string | null;
-  BEACON_UI_ENABLED: boolean;
-  BEACON_NETWORK_ENABLED: boolean;
-  // Authentication
-  SESSION_REFETCH_INTERVAL_SECONDS: string; // Seconds between session refreshes, as an integer string: e.g., '120'
-}
-
-// Declaration required for global config
-declare let BENTO_PUBLIC_CONFIG: PublicConfig;
-
-const stripTrailingSlash = (x: string): string => x.replace(/\/$/g, '');
+// Evaluated once, after the page has fetched /public/config.json (see app/[[...slug]]/page.tsx)
+const config = getLoadedPublicConfig();
 
 // General
-export const CLIENT_NAME = BENTO_PUBLIC_CONFIG.CLIENT_NAME ?? process.env.BENTO_PUBLIC_CLIENT_NAME;
-const _ADMIN_URL = BENTO_PUBLIC_CONFIG.ADMIN_URL ?? process.env.BENTO_PUBLIC_ADMIN_URL ?? '';
-export const ADMIN_URL = stripTrailingSlash(_ADMIN_URL) + '/';
-const _PUBLIC_URL = BENTO_PUBLIC_CONFIG.PUBLIC_URL ?? process.env.BENTO_PUBLIC_URL ?? '';
-export const PUBLIC_URL_NO_TRAILING_SLASH = stripTrailingSlash(_PUBLIC_URL);
+export const CLIENT_NAME = config.CLIENT_NAME ?? undefined;
+export const ADMIN_URL = (config.ADMIN_URL ?? '') + '/';
+export const PUBLIC_URL_NO_TRAILING_SLASH = config.PUBLIC_URL ?? '';
 export const PUBLIC_URL = PUBLIC_URL_NO_TRAILING_SLASH + '/';
 
 // Bento Public display flags
-export const TRANSLATED = BENTO_PUBLIC_CONFIG.TRANSLATED ?? stringToBoolean(process.env.BENTO_PUBLIC_TRANSLATED);
-export const TRANSLATED_LOGO =
-  BENTO_PUBLIC_CONFIG.TRANSLATED_LOGO ?? stringToBoolean(process.env.BENTO_PUBLIC_TRANSLATED_LOGO);
-export const LOGO_HEIGHT = parseInt((BENTO_PUBLIC_CONFIG.LOGO_HEIGHT ?? process.env.BENTO_PUBLIC_LOGO_HEIGHT) || '32');
-export const SHOW_LOGO = BENTO_PUBLIC_CONFIG.SHOW_LOGO ?? stringToBoolean(process.env.BENTO_PUBLIC_SHOW_LOGO, 'true');
-export const SHOW_HEADER_TITLE =
-  BENTO_PUBLIC_CONFIG.SHOW_HEADER_TITLE ?? stringToBoolean(process.env.BENTO_PUBLIC_SHOW_HEADER_TITLE, 'true');
-export const SHOW_ADMIN_LINK =
-  BENTO_PUBLIC_CONFIG.SHOW_ADMIN_LINK ??
-  stringToBoolean(process.env.BENTO_PUBLIC_SHOW_ADMIN_LINK || process.env.BENTO_PUBLIC_SHOW_PORTAL_LINK);
-export const SHOW_SIGN_IN = BENTO_PUBLIC_CONFIG.SHOW_SIGN_IN ?? stringToBoolean(process.env.BENTO_PUBLIC_SHOW_SIGN_IN);
-export const FORCE_CATALOGUE =
-  BENTO_PUBLIC_CONFIG.FORCE_CATALOGUE ?? stringToBoolean(process.env.BENTO_PUBLIC_FORCE_CATALOGUE);
-export const SHOW_DEV_SETTINGS =
-  BENTO_PUBLIC_CONFIG.SHOW_DEV_SETTINGS ?? stringToBoolean(process.env.BENTO_PUBLIC_SHOW_DEV_SETTINGS);
+export const TRANSLATED = config.TRANSLATED;
+export const TRANSLATED_LOGO = config.TRANSLATED_LOGO;
+export const LOGO_HEIGHT = config.LOGO_HEIGHT;
+export const SHOW_LOGO = config.SHOW_LOGO;
+export const SHOW_HEADER_TITLE = config.SHOW_HEADER_TITLE;
+export const SHOW_ADMIN_LINK = config.SHOW_ADMIN_LINK;
+export const SHOW_SIGN_IN = config.SHOW_SIGN_IN;
+export const FORCE_CATALOGUE = config.FORCE_CATALOGUE;
+export const SHOW_DEV_SETTINGS = config.SHOW_DEV_SETTINGS;
 
 // Runtime overrides set via the dev settings float button; only honoured when dev settings are enabled, so stale
 // localStorage values can't affect deployments without the flag.
@@ -74,20 +37,14 @@ const readDevSettings = (): DevSettings => {
 };
 export const DEV_SETTINGS = readDevSettings();
 
-export const CONFIGURED_PCGL_MODE =
-  BENTO_PUBLIC_CONFIG.PCGL_MODE ?? stringToBoolean(process.env.BENTO_PUBLIC_PCGL_MODE);
+export const CONFIGURED_PCGL_MODE = config.PCGL_MODE;
 export const PCGL_MODE = DEV_SETTINGS.PCGL_MODE ?? CONFIGURED_PCGL_MODE;
 
 // Beacon configuration and flags
-export const BEACON_URL = BENTO_PUBLIC_CONFIG.BEACON_URL ?? process.env.BEACON_URL;
+export const BEACON_URL = config.BEACON_URL;
 export const BEACON_NETWORK_URL = BEACON_URL + '/network';
-export const BEACON_UI_ENABLED =
-  BENTO_PUBLIC_CONFIG.BEACON_UI_ENABLED ?? stringToBoolean(process.env.BENTO_BEACON_UI_ENABLED);
-export const BEACON_NETWORK_ENABLED =
-  BENTO_PUBLIC_CONFIG.BEACON_NETWORK_ENABLED ?? stringToBoolean(process.env.BENTO_BEACON_NETWORK_ENABLED);
+export const BEACON_UI_ENABLED = config.BEACON_UI_ENABLED;
+export const BEACON_NETWORK_ENABLED = config.BEACON_NETWORK_ENABLED;
 
 // Authentication
-export const SESSION_REFETCH_INTERVAL_SECONDS = parseInt(
-  (BENTO_PUBLIC_CONFIG.SESSION_REFETCH_INTERVAL_SECONDS ?? process.env.BENTO_PUBLIC_SESSION_REFETCH_INTERVAL_SECONDS) ||
-    '120'
-);
+export const SESSION_REFETCH_INTERVAL_SECONDS = config.SESSION_REFETCH_INTERVAL_SECONDS;
