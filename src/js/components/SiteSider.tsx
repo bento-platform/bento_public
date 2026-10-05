@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { Button, Flex, Grid, Typography } from 'antd';
-import { AppstoreAddOutlined, CloseOutlined } from '@ant-design/icons';
+import { AppstoreAddOutlined, CloseOutlined, PieChartOutlined } from '@ant-design/icons';
 
 import { useAppDispatch, useTranslationFn } from '@/hooks';
 import { useAvailableChartSections } from '@/features/search/hooks';
@@ -59,7 +59,9 @@ const SiteSider = ({
     >
       {overlay && (
         <div className="site-sider__header">
-          <Typography.Text type="secondary">{t('Explore')}</Typography.Text>
+          <Typography.Text>
+            <PieChartOutlined aria-hidden /> {t('Explore')}
+          </Typography.Text>
           <button className="sidebar__close focus-ring" onClick={onClose} aria-label={t('catalogue.rail.close')}>
             <CloseOutlined aria-hidden />
           </button>
