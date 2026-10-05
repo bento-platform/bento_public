@@ -96,13 +96,19 @@ export const useCurrentScopePrefixedUrl = (suffix: string) => {
 export const useNavigateToSameScopeUrl = () => {
   const language = useLanguage();
   const navigate = useNavigate();
+  const location = useLocation();
   const selectedScope = useSelectedScope();
 
   return useCallback(
     (suffix: string, replace: boolean = true) => {
-      navigate(langAndScopeSelectionToUrl(language, selectedScope, suffix), { replace });
+      // Carry the current history state over to a replacing navigation, so it doesn't lose where the user came from
+      // (see BackOrigin); a pushed navigation is a new history entry, so it starts fresh.
+      navigate(langAndScopeSelectionToUrl(language, selectedScope, suffix), {
+        replace,
+        state: replace ? location.state : undefined,
+      });
     },
-    [language, navigate, selectedScope]
+    [language, navigate, selectedScope, location.state]
   );
 };
 
