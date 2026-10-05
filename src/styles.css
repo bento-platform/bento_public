@@ -2092,3 +2092,10 @@ button.pm-sec-head { cursor: pointer; }
 .stat-list--cards .stat-list__description {
   font-size: var(--p-fs-xxsmall); color: var(--text-muted); margin-top: 3px; line-height: 1.4;
 }
+
+.dev-settings-float-btn {
+  /* Sit above the Next.js dev indicator, which is also pinned bottom-left */
+  bottom: 6em;
+  left: 2em;
+  inset-inline-end: auto;
+}

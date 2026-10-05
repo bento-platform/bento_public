@@ -177,7 +177,7 @@ const CatalogueRail = ({ totalCount, facetOptions, overlay, open, onClose }: Cat
         }
       >
         {overlay && (
-          <p role="status">
+          <p>
             <b>{totalCount}</b> {t('catalogue.toolbar.dataset_found', { count: totalCount })}
           </p>
         )}
