@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Breadcrumb, type BreadcrumbProps, Button, Flex, Menu, Tooltip } from 'antd';
 import { ArrowLeftOutlined, FilterOutlined, QuestionOutlined } from '@ant-design/icons';
 import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
-import type { MenuItem } from '@/types/navigation';
+import type { MenuItem, ScopeLocationState } from '@/types/navigation';
 
 import CurrentPageHelpModal from '@/components/Util/CurrentPageHelpModal';
 import { useSelectedScope } from '@/features/metadata/hooks';
@@ -23,6 +23,7 @@ const useBackButtonInfo = () => {
   const exploreQueryParams = useSearchQueryParams();
   const currentPage = getCurrentPage(location);
 
+  const navigate = useNavigate();
   const navigateToCatalogue = useNavigateToCatalogue();
   const navigateToScope = useNavigateToScope();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
@@ -38,8 +39,14 @@ const useBackButtonInfo = () => {
     } else {
       if (scope.dataset) {
         if (fixedDataset) return NO_BACK_BUTTON;
-        const cameFromProject = (location.state as { fromProjectScope?: boolean } | null)?.fromProjectScope;
-        return PCGL_MODE && !cameFromProject
+        const backOrigin = (location.state as ScopeLocationState)?.backOrigin;
+        if (backOrigin) {
+          // We got here by clicking a dataset card, so behave like the browser's back button: this returns to the
+          // exact page we came from, with its search terms / filters intact. The label just says where that is.
+          return [backOrigin === 'project' ? 'Back to project' : 'Back to catalogue', () => navigate(-1)];
+        }
+        // Landed here directly (link, reload in a new tab, etc.), so there's no page to go back to:
+        return PCGL_MODE
           ? ['Back to catalogue', navigateToCatalogue]
           : ['Back to project', () => navigateToScope({ project: scope.project }, BentoRoute.Explore)];
       } else if (scope.project) {
@@ -51,6 +58,7 @@ const useBackButtonInfo = () => {
   }, [
     currentPage,
     location.state,
+    navigate,
     navigateToCatalogue,
     navigateToScope,
     navigateToSameScopeUrl,

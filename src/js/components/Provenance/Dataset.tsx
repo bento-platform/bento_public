@@ -10,6 +10,7 @@ import type { Dataset } from '@/types/dataset';
 import type { Project } from '@/types/metadata';
 import { BentoRoute } from '@/types/routes';
 import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
+import type { ScopeLocationState } from '@/types/navigation';
 import { getCurrentPage } from '@/utils/router';
 import { useLanguage, useTranslationFn } from '@/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
@@ -45,8 +46,8 @@ const Dataset = ({
   project?: Project;
   selected?: boolean;
   filteredCounts?: KatsuEntityCountsOrBooleans;
-  // Whether this dataset is being linked to from within its parent project's own page - used to inform the
-  // dataset scope's back button (in PCGL mode, it otherwise defaults to going back to the catalogue).
+  // Whether this dataset is being linked to from within its parent project's own page (vs. the catalogue) - recorded
+  // in the navigation state to inform the dataset scope's back button.
   fromProject?: boolean;
 }) => {
   const language = useLanguage();
@@ -67,7 +68,7 @@ const Dataset = ({
     [parentProjectID, identifier]
   );
   const navigateOptions = useMemo(
-    () => (fromProject ? { state: { fromProjectScope: true } } : undefined),
+    () => ({ state: { backOrigin: fromProject ? 'project' : 'catalogue' } satisfies ScopeLocationState }),
     [fromProject]
   );
 

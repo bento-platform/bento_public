@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { HomeOutlined } from '@ant-design/icons';
 import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
 
-import type { MenuItem } from '@/types/navigation';
+import type { MenuItem, ScopeLocationState } from '@/types/navigation';
 import { BentoRoute } from '@/types/routes';
 import { useLanguage, useTranslationFn } from '@/hooks';
 import { useSelectedScope, useSelectedScopeTitles } from '@/features/metadata/hooks';
@@ -21,7 +21,7 @@ export const useTitleBreadcrumbItems = (scopeHeaderMenuItems: MenuItem[]): Bread
   const { scope, fixedProject, fixedDataset } = useSelectedScope();
   const { projectTitle, datasetTitle } = useSelectedScopeTitles();
   const location = useLocation();
-  const cameFromProject = (location.state as { fromProjectScope?: boolean } | null)?.fromProjectScope;
+  const cameFromProject = (location.state as ScopeLocationState)?.backOrigin === 'project';
 
   const getRouteTitleAndIcon = useGetRouteTitleAndIcon();
 
