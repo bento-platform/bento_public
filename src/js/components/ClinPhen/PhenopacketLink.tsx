@@ -1,11 +1,12 @@
-import { Fragment, type ReactNode } from 'react';
-import { Link, useParams, useSearchParams } from 'react-router-dom';
+import { Fragment, type ReactNode, useCallback } from 'react';
+import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { useCurrentScopePrefixedUrl } from '@/hooks/navigation';
 
 import { Popover } from 'antd';
 import BiosampleDetailView from '../Search/BiosampleDetailView';
 
-import { highlightState } from '@/utils/router';
+import { getCurrentPage, highlightState } from '@/utils/router';
+import { recordExploreBackEntry } from '@/utils/backNavigation';
 
 import { BentoRoute } from '@/types/routes';
 import { TabKeys } from '@/types/PhenopacketView.types';
@@ -46,13 +47,26 @@ const usePhenopacketOverviewLink = (
   return `${baseUrl}?${params.toString()}`;
 };
 
+/**
+ * Click handler for links to a phenopacket view: remembers the Explore page the user is leaving (with its search
+ * intact in the URL), so the phenopacket page's back button can pop back to it. Links between phenopacket views don't
+ * overwrite it, since the Explore page is then still the entry we want to get back to.
+ */
+const useRecordExploreOnClick = () => {
+  const location = useLocation();
+  return useCallback(() => {
+    if (getCurrentPage(location) !== BentoRoute.Phenopackets) recordExploreBackEntry();
+  }, [location]);
+};
+
 type BaseLinkProps = { packetId?: string; replace?: boolean; preserveQueryParams?: boolean; children?: ReactNode };
 
 type SubjectLinkProps = BaseLinkProps;
 const SubjectLink = ({ children, packetId, preserveQueryParams }: SubjectLinkProps) => {
   const url = usePhenopacketOverviewLink(packetId, 'subject', undefined, preserveQueryParams);
+  const onClick = useRecordExploreOnClick();
   return (
-    <Link to={url} state={highlightState('subject')}>
+    <Link to={url} state={highlightState('subject')} onClick={onClick}>
       {children}
     </Link>
   );
@@ -68,8 +82,9 @@ const BiosampleLink = ({
   children,
 }: BiosampleLinkProps) => {
   const url = usePhenopacketOverviewLink(packetId, 'biosamples', { biosample: sampleId }, preserveQueryParams);
+  const onClick = useRecordExploreOnClick();
   const link = (
-    <Link to={url} replace={replace} state={highlightState('biosamples', sampleId)}>
+    <Link to={url} replace={replace} state={highlightState('biosamples', sampleId)} onClick={onClick}>
       {children ?? sampleId}
     </Link>
   );
@@ -97,8 +112,9 @@ const BiosampleLinkList = ({ packetId, biosamples, replace, ...props }: Biosampl
 type ExperimentLinkProps = BaseLinkProps & { experimentId: string };
 const ExperimentLink = ({ packetId, experimentId, replace, preserveQueryParams, children }: ExperimentLinkProps) => {
   const url = usePhenopacketOverviewLink(packetId, 'experiments', { experiment: experimentId }, preserveQueryParams);
+  const onClick = useRecordExploreOnClick();
   return (
-    <Link to={url} replace={replace} state={highlightState('experiments', experimentId)}>
+    <Link to={url} replace={replace} state={highlightState('experiments', experimentId)} onClick={onClick}>
       {children ?? experimentId}
     </Link>
   );
@@ -135,8 +151,14 @@ const ExperimentResultLink = ({
     { experimentResult: experimentResultId.toString(10) },
     preserveQueryParams
   );
+  const onClick = useRecordExploreOnClick();
   return (
-    <Link to={url} replace={replace} state={highlightState('experimentResults', experimentResultId.toString())}>
+    <Link
+      to={url}
+      replace={replace}
+      state={highlightState('experimentResults', experimentResultId.toString())}
+      onClick={onClick}
+    >
       {children ?? experimentResultId}
     </Link>
   );

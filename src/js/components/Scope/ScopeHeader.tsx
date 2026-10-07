@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Breadcrumb, type BreadcrumbProps, Button, Flex, Menu, Tooltip } from 'antd';
 import { ArrowLeftOutlined, FilterOutlined, QuestionOutlined } from '@ant-design/icons';
 import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
@@ -10,7 +10,14 @@ import { useSelectedScope } from '@/features/metadata/hooks';
 import { useSearchQueryParams } from '@/features/search/hooks';
 import { useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
-import { useNavigateToCatalogue, useNavigateToSameScopeUrl, useNavigateToScope } from '@/hooks/navigation';
+import {
+  useDatasetBackEntry,
+  useExploreBackSteps,
+  useNavigateBackToDatasetOrigin,
+  useNavigateToCatalogue,
+  useNavigateToSameScopeUrl,
+  useNavigateToScope,
+} from '@/hooks/navigation';
 import { BentoRoute } from '@/types/routes';
 import { getCurrentPage } from '@/utils/router';
 import { buildQueryParamsUrl } from '@/features/search/utils';
@@ -23,9 +30,13 @@ const useBackButtonInfo = () => {
   const exploreQueryParams = useSearchQueryParams();
   const currentPage = getCurrentPage(location);
 
+  const navigate = useNavigate();
   const navigateToCatalogue = useNavigateToCatalogue();
   const navigateToScope = useNavigateToScope();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
+  const datasetBackEntry = useDatasetBackEntry();
+  const navigateBackToDatasetOrigin = useNavigateBackToDatasetOrigin();
+  const exploreBackSteps = useExploreBackSteps();
   const { scope, scopeSet, fixedProject, fixedDataset } = useSelectedScope();
 
   return useMemo<readonly [undefined, undefined] | [string, () => void]>(() => {
@@ -33,13 +44,26 @@ const useBackButtonInfo = () => {
     if (currentPage === BentoRoute.Phenopackets) {
       return [
         scope.dataset ? 'Back to dataset' : 'Back to project',
-        () => navigateToSameScopeUrl(buildQueryParamsUrl(BentoRoute.Explore, exploreQueryParams), false),
+        exploreBackSteps
+          ? // Pop back to the Explore page we came from, so its search is restored from the URL and the history
+            // doesn't grow a duplicate Explore entry (which would make later back clicks land on this phenopacket).
+            () => navigate(-exploreBackSteps)
+          : // Landed here directly, so rebuild the Explore URL from whatever search state we have:
+            () => navigateToSameScopeUrl(buildQueryParamsUrl(BentoRoute.Explore, exploreQueryParams), false),
       ];
     } else {
       if (scope.dataset) {
         if (fixedDataset) return NO_BACK_BUTTON;
-        const cameFromProject = (location.state as { fromProjectScope?: boolean } | null)?.fromProjectScope;
-        return PCGL_MODE && !cameFromProject
+        if (datasetBackEntry) {
+          // We got here by clicking a dataset card, so behave like the browser's back button: this returns to the
+          // exact page we came from, with its search terms / filters intact. The label just says where that is.
+          return [
+            datasetBackEntry.origin === 'project' ? 'Back to project' : 'Back to catalogue',
+            () => navigateBackToDatasetOrigin(datasetBackEntry),
+          ];
+        }
+        // Landed here directly (link, reload in a new tab, etc.), so there's no page to go back to:
+        return PCGL_MODE
           ? ['Back to catalogue', navigateToCatalogue]
           : ['Back to project', () => navigateToScope({ project: scope.project }, BentoRoute.Explore)];
       } else if (scope.project) {
@@ -50,7 +74,10 @@ const useBackButtonInfo = () => {
     }
   }, [
     currentPage,
-    location.state,
+    datasetBackEntry,
+    exploreBackSteps,
+    navigate,
+    navigateBackToDatasetOrigin,
     navigateToCatalogue,
     navigateToScope,
     navigateToSameScopeUrl,
