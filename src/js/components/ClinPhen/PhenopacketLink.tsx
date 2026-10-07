@@ -1,12 +1,13 @@
 import { Fragment, type ReactNode } from 'react';
-import { Link, useParams, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { useCurrentScopePrefixedUrl } from '@/hooks/navigation';
 
 import { Popover } from 'antd';
 import BiosampleDetailView from '../Search/BiosampleDetailView';
 
-import { highlightState } from '@/utils/router';
+import { getCurrentPage, highlightState } from '@/utils/router';
 
+import type { ScopeLocationState } from '@/types/navigation';
 import { BentoRoute } from '@/types/routes';
 import { TabKeys } from '@/types/PhenopacketView.types';
 import type { SectionKey } from '@/components/ClinPhen/PhenopacketDisplay/phenopacketOverview.registry';
@@ -46,13 +47,29 @@ const usePhenopacketOverviewLink = (
   return `${baseUrl}?${params.toString()}`;
 };
 
+/**
+ * Link state for navigating to a phenopacket view: the highlight, plus how far back in history the Explore page the
+ * user came from is, so the phenopacket page's back button can pop straight back to it (with its search intact)
+ * rather than pushing a fresh Explore entry on top of the history.
+ */
+const usePhenopacketLinkState = (highlight: ReturnType<typeof highlightState>, replace: boolean = false) => {
+  const location = useLocation();
+  const prevDepth = (location.state as ScopeLocationState)?.exploreHistoryDepth;
+  const onPhenopacketPage = getCurrentPage(location) === BentoRoute.Phenopackets;
+  // From elsewhere (i.e., Explore) the page we're leaving is 1 entry back; from within a phenopacket view, a pushed
+  // navigation adds an entry and a replaced one doesn't. If we landed on a phenopacket directly, there's no way back.
+  const exploreHistoryDepth = onPhenopacketPage ? (prevDepth ? prevDepth + (replace ? 0 : 1) : undefined) : 1;
+  return { ...highlight, exploreHistoryDepth };
+};
+
 type BaseLinkProps = { packetId?: string; replace?: boolean; preserveQueryParams?: boolean; children?: ReactNode };
 
 type SubjectLinkProps = BaseLinkProps;
 const SubjectLink = ({ children, packetId, preserveQueryParams }: SubjectLinkProps) => {
   const url = usePhenopacketOverviewLink(packetId, 'subject', undefined, preserveQueryParams);
+  const state = usePhenopacketLinkState(highlightState('subject'));
   return (
-    <Link to={url} state={highlightState('subject')}>
+    <Link to={url} state={state}>
       {children}
     </Link>
   );
@@ -68,8 +85,9 @@ const BiosampleLink = ({
   children,
 }: BiosampleLinkProps) => {
   const url = usePhenopacketOverviewLink(packetId, 'biosamples', { biosample: sampleId }, preserveQueryParams);
+  const state = usePhenopacketLinkState(highlightState('biosamples', sampleId), replace);
   const link = (
-    <Link to={url} replace={replace} state={highlightState('biosamples', sampleId)}>
+    <Link to={url} replace={replace} state={state}>
       {children ?? sampleId}
     </Link>
   );
@@ -97,8 +115,9 @@ const BiosampleLinkList = ({ packetId, biosamples, replace, ...props }: Biosampl
 type ExperimentLinkProps = BaseLinkProps & { experimentId: string };
 const ExperimentLink = ({ packetId, experimentId, replace, preserveQueryParams, children }: ExperimentLinkProps) => {
   const url = usePhenopacketOverviewLink(packetId, 'experiments', { experiment: experimentId }, preserveQueryParams);
+  const state = usePhenopacketLinkState(highlightState('experiments', experimentId), replace);
   return (
-    <Link to={url} replace={replace} state={highlightState('experiments', experimentId)}>
+    <Link to={url} replace={replace} state={state}>
       {children ?? experimentId}
     </Link>
   );
@@ -135,8 +154,9 @@ const ExperimentResultLink = ({
     { experimentResult: experimentResultId.toString(10) },
     preserveQueryParams
   );
+  const state = usePhenopacketLinkState(highlightState('experimentResults', experimentResultId.toString()), replace);
   return (
-    <Link to={url} replace={replace} state={highlightState('experimentResults', experimentResultId.toString())}>
+    <Link to={url} replace={replace} state={state}>
       {children ?? experimentResultId}
     </Link>
   );

@@ -7,4 +7,8 @@ export type MenuItem = Required<MenuProps>['items'][number];
 export type BackOrigin = 'catalogue' | 'project';
 
 /** Shape of the react-router history state used by dataset-scope navigation. */
-export type ScopeLocationState = { backOrigin?: BackOrigin } | null;
+export type ScopeLocationState = {
+  backOrigin?: BackOrigin;
+  /** On a phenopacket page: how many history entries back the Explore page (with its search) we came from is. */
+  exploreHistoryDepth?: number;
+} | null;

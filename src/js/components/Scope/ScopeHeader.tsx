@@ -32,9 +32,15 @@ const useBackButtonInfo = () => {
   return useMemo<readonly [undefined, undefined] | [string, () => void]>(() => {
     if (!scopeSet) return NO_BACK_BUTTON;
     if (currentPage === BentoRoute.Phenopackets) {
+      const exploreHistoryDepth = (location.state as ScopeLocationState)?.exploreHistoryDepth;
       return [
         scope.dataset ? 'Back to dataset' : 'Back to project',
-        () => navigateToSameScopeUrl(buildQueryParamsUrl(BentoRoute.Explore, exploreQueryParams), false),
+        exploreHistoryDepth
+          ? // Pop back to the Explore page we came from, so its search is restored from the URL and the history
+            // doesn't grow a duplicate Explore entry (which would make later back clicks land on this phenopacket).
+            () => navigate(-exploreHistoryDepth)
+          : // Landed here directly, so rebuild the Explore URL from whatever search state we have:
+            () => navigateToSameScopeUrl(buildQueryParamsUrl(BentoRoute.Explore, exploreQueryParams), false),
       ];
     } else {
       if (scope.dataset) {
