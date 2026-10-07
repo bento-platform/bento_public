@@ -28,6 +28,14 @@ Add your English to French translations in
 `public/public/locales/fr/translation_fr.json` for them to appear on the website.
 
 ### Automated Testing
+Check if you have Playwright by typing the command below::
+
+`npx playwright --version`
+
+If not, install it by typing the command below:
+
+`npx playwright install`
+
 You can create test cases inside the `/e2e` folder. At the moment, we are mocking `PublicConfig` and `/api/projects` to have something to test in the catalogue.
 
 > [!NOTE]

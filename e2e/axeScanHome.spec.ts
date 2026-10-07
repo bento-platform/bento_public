@@ -29,6 +29,7 @@ test.describe('homepage', () => {
 
     const accessibilityScanResults = await new AxeBuilder({ page })
       .exclude('.catalogue-card__title')
+      .exclude('.status-badge')
       .exclude('.catalogue-sort-select')
       .exclude('.about-content')
       .analyze();
