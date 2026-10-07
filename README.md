@@ -27,6 +27,16 @@ Any new environment / configuration variable must be registered in several place
 Add your English to French translations in
 `public/public/locales/fr/translation_fr.json` for them to appear on the website.
 
+### Automated Testing
+You can create test cases inside the `/e2e` folder. At the moment, we are mocking `PublicConfig` and `/api/projects` to have something to test in the catalogue.
+
+> [!NOTE]
+> `process.env.CI` Will only exist inside `.github/workflows/playwright.yml`, so we can switch the `baseURL` in [the config file](./playwright.config.ts).
+
+Running `npm run test:e2e` will execute all the tests automatically.
+
+Running `npm run test:e2e:ui` you will open the Playwright user interface.
+
 
 ## Theming 
 
