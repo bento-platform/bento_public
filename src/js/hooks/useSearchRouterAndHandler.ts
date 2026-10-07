@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import type {
@@ -64,13 +64,6 @@ export const useSearchRouterAndHandler = () => {
   const dispatch = useAppDispatch();
   const location = useLocation();
   const navigateToScope = useNavigateToScope();
-
-  // Kept in a ref so setSearchUrl can carry history state (see BackOrigin) across its replacing navigations without
-  // being recreated whenever the location changes.
-  const locationStateRef = useRef(location.state);
-  useEffect(() => {
-    locationStateRef.current = location.state;
-  }, [location.state]);
 
   const { scope, fixedProject, fixedDataset } = useSelectedScope();
   const isFixedProjectAndDataset = fixedProject && fixedDataset;
@@ -173,7 +166,7 @@ export const useSearchRouterAndHandler = () => {
         ...qp,
       ]);
       console.debug('[Search] Redirecting to:', urlSuffix, '| new scope:', scope);
-      navigateToScope(scope, urlSuffix, isFixedProjectAndDataset, { replace: true, state: locationStateRef.current });
+      navigateToScope(scope, urlSuffix, isFixedProjectAndDataset, { replace: true });
     },
     [navigateToScope, scope, isFixedProjectAndDataset]
   );

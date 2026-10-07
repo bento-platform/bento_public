@@ -17,6 +17,7 @@ import { type DiscoveryScope, selectScope } from '@/features/metadata/metadata.s
 import type { MenuItem } from '@/types/navigation';
 import { BentoRoute } from '@/types/routes';
 import { useAppDispatch, useLanguage, useTranslationFn } from '@/hooks';
+import { getDatasetBackSteps, getExploreBackSteps } from '@/utils/backNavigation';
 import { getCurrentPage, langAndScopeSelectionToUrl, scopeToUrl } from '@/utils/router';
 
 /** Prefixes a path with the currently-selected i18n language. */
@@ -81,6 +82,42 @@ export const useNavigateToScope = () => {
 };
 
 /**
+ * Where the selected dataset scope was entered from (and how many history steps back that is), if the user got here
+ * by clicking a dataset card and the history still has that entry. Re-evaluated on every navigation.
+ */
+export const useDatasetBackEntry = () => {
+  const { scope } = useSelectedScope();
+  useLocation(); // re-render (and so re-read the history index) on navigation
+  return scope.dataset ? getDatasetBackSteps(scope.dataset) : undefined;
+};
+
+/**
+ * Pops history back to where the selected dataset scope was entered from (see useDatasetBackEntry), restoring that
+ * page's search from its URL.
+ *
+ * As in useNavigateToCatalogue, popping back to the catalogue needs the blank scope dispatched first: otherwise
+ * ScopedRoute's URL/scope reconciliation sees the old dataset scope next to the catalogue URL and replaces the URL
+ * back to the dataset's path, clobbering the catalogue's search.
+ */
+export const useNavigateBackToDatasetOrigin = () => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  return useCallback(
+    ({ origin, steps }: NonNullable<ReturnType<typeof getDatasetBackSteps>>) => {
+      if (origin === 'catalogue') dispatch(selectScope({}));
+      navigate(-steps);
+    },
+    [dispatch, navigate]
+  );
+};
+
+/** How many history steps back the Explore page we entered a phenopacket view from is, if known. */
+export const useExploreBackSteps = () => {
+  useLocation(); // re-render (and so re-read the history index) on navigation
+  return getExploreBackSteps();
+};
+
+/**
  * Hook which returns a URL suffix prefixed by the current language and selected scope.
  */
 export const useCurrentScopePrefixedUrl = (suffix: string) => {
@@ -96,19 +133,13 @@ export const useCurrentScopePrefixedUrl = (suffix: string) => {
 export const useNavigateToSameScopeUrl = () => {
   const language = useLanguage();
   const navigate = useNavigate();
-  const location = useLocation();
   const selectedScope = useSelectedScope();
 
   return useCallback(
     (suffix: string, replace: boolean = true) => {
-      // Carry the current history state over to a replacing navigation, so it doesn't lose where the user came from
-      // (see BackOrigin); a pushed navigation is a new history entry, so it starts fresh.
-      navigate(langAndScopeSelectionToUrl(language, selectedScope, suffix), {
-        replace,
-        state: replace ? location.state : undefined,
-      });
+      navigate(langAndScopeSelectionToUrl(language, selectedScope, suffix), { replace });
     },
-    [language, navigate, selectedScope, location.state]
+    [language, navigate, selectedScope]
   );
 };
 

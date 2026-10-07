@@ -9,8 +9,8 @@ import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type { Dataset } from '@/types/dataset';
 import type { Project } from '@/types/metadata';
 import { BentoRoute } from '@/types/routes';
+import { recordDatasetBackEntry } from '@/utils/backNavigation';
 import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
-import type { ScopeLocationState } from '@/types/navigation';
 import { getCurrentPage } from '@/utils/router';
 import { useLanguage, useTranslationFn } from '@/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
@@ -47,7 +47,7 @@ const Dataset = ({
   selected?: boolean;
   filteredCounts?: KatsuEntityCountsOrBooleans;
   // Whether this dataset is being linked to from within its parent project's own page (vs. the catalogue) - recorded
-  // in the navigation state to inform the dataset scope's back button.
+  // to inform the dataset scope's back button.
   fromProject?: boolean;
 }) => {
   const language = useLanguage();
@@ -67,19 +67,17 @@ const Dataset = ({
     () => ({ project: parentProjectID, dataset: identifier }),
     [parentProjectID, identifier]
   );
-  const navigateOptions = useMemo(
-    () => ({ state: { backOrigin: fromProject ? 'project' : 'catalogue' } satisfies ScopeLocationState }),
-    [fromProject]
-  );
 
-  const onNavigateCurrent = useCallback(
-    () => navigateToScope(scope, page, false, navigateOptions),
-    [navigateToScope, scope, page, navigateOptions]
+  const navigateToDataset = useCallback(
+    (suffix: string) => {
+      // Remember where we're leaving from, so the dataset's back button can pop back to this exact page (and search):
+      recordDatasetBackEntry(fromProject ? 'project' : 'catalogue', identifier);
+      navigateToScope(scope, suffix);
+    },
+    [navigateToScope, scope, identifier, fromProject]
   );
-  const onNavigateExplore = useCallback(
-    () => navigateToScope(scope, BentoRoute.Explore, false, navigateOptions),
-    [navigateToScope, scope, navigateOptions]
-  );
+  const onNavigateCurrent = useCallback(() => navigateToDataset(page), [navigateToDataset, page]);
+  const onNavigateExplore = useCallback(() => navigateToDataset(BentoRoute.Explore), [navigateToDataset]);
 
   const openProvenanceModal = useCallback(() => {
     setHasOpenedProvenanceModal(true);

@@ -5,10 +5,3 @@ export type MenuItem = Required<MenuProps>['items'][number];
 
 /** Where a user was when they navigated into a dataset's scope from one of its cards (see ScopeHeader's back button). */
 export type BackOrigin = 'catalogue' | 'project';
-
-/** Shape of the react-router history state used by dataset-scope navigation. */
-export type ScopeLocationState = {
-  backOrigin?: BackOrigin;
-  /** On a phenopacket page: how many history entries back the Explore page (with its search) we came from is. */
-  exploreHistoryDepth?: number;
-} | null;
