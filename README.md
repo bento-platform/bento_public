@@ -45,6 +45,7 @@ Running `npm run test:e2e` will execute all the tests automatically.
 
 Running `npm run test:e2e:ui` you will open the Playwright user interface.
 
+Running `MOCK_API=true npm run test:e2e` will execute all the tests Local with mock.
 
 ## Theming 
 
