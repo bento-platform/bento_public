@@ -151,7 +151,7 @@ const CatalogueToolbar = ({ filteredCount, showFiltersButton, isMobile, onOpenFi
 
       {/* Row 2: result count + insights toggle */}
       <Flex justify="space-between" align="center">
-        <Text>
+        <Text role="status" aria-atomic>
           <span className="catalogue-count-highlight">{filteredCount}</span>{' '}
           {t('catalogue.toolbar.dataset_found', { count: filteredCount })}
         </Text>

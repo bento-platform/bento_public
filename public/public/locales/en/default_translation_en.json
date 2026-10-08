@@ -638,7 +638,7 @@
       "by_project": "By $t(entities.project_one, lowercase)"
     },
     "datasets": {
-      "empty": "No $t(entities.dataset_other) match your filters",
+      "empty": "No $t(entities.dataset_other, lowercase) match your filters",
       "reset_filters": "Clear all filters"
     }
   },
