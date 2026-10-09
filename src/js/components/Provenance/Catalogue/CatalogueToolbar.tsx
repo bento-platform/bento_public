@@ -88,7 +88,7 @@ const CatalogueToolbar = ({ filteredCount, showFiltersButton, isMobile, onOpenFi
       <Flex gap={8} align="center">
         {showFiltersButton && (
           <Badge count={pills.length} size="small" offset={[-4, 4]} className="catalogue-toolbar-fixed">
-            <Button icon={<FilterOutlined aria-hidden />} onClick={onOpenFilters}>
+            <Button data-testid="filters-button" icon={<FilterOutlined aria-hidden />} onClick={onOpenFilters}>
               {t('catalogue.rail.title')}
             </Button>
           </Badge>
@@ -152,13 +152,14 @@ const CatalogueToolbar = ({ filteredCount, showFiltersButton, isMobile, onOpenFi
       {/* Row 2: result count + insights toggle */}
       <Flex justify="space-between" align="center">
         <Text role="status" aria-atomic>
-          <span className="catalogue-count-highlight">{filteredCount}</span>{' '}
-          {t('catalogue.toolbar.dataset_found', { count: filteredCount })}
+          <b>{filteredCount}</b> {t('catalogue.toolbar.dataset_found', { count: filteredCount })}
         </Text>
         <Button
           color="primary"
           variant="outlined"
-          className="insights-toggle"
+          classNames={{
+            root: 'insights-toggle',
+          }}
           htmlType="button"
           aria-pressed={insightsOpen}
           icon={<PieChartOutlined aria-hidden />}

@@ -77,6 +77,7 @@ const Catalogue = () => {
       <Flex gap={20} align="flex-start">
         {/* Left: facet rail */}
         <CatalogueRail
+          totalCount={filtered.length}
           facetOptions={facetOptions}
           overlay={railOverlay}
           open={!railOverlay || railOpen}
