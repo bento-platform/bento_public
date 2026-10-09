@@ -729,11 +729,6 @@ body {
   padding: 12px 14px;
 }
 
-.sidebar-section__content {
-  display: grid;
-  gap: 16px;
-}
-
 .sidebar__footer {
   border-top: 1px solid var(--border-subtle);
 }
