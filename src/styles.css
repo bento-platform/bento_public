@@ -305,7 +305,7 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  padding-right: var(--content-padding-h);
+  padding: 0 var(--content-padding-h);
   background-color: rgba(250, 250, 250, 0.80);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgb(235, 235, 235);
@@ -313,9 +313,7 @@ body {
 }
 
 #scope-header__sidebar-toggle {
-  margin-top: 4px;
-  margin-left: 4px;
-  margin-right: 12px;
+  margin: 4px 12px 0 0;
   color: rgba(0, 0, 0, 0.64);
 }
 #scope-header__sidebar-toggle.active {
@@ -390,6 +388,10 @@ body {
 
 
 /* BEGIN layout HTML styling */
+.content-layout-wrapper {
+  padding: 23px var(--content-padding-h);
+  gap: var(--content-padding-v);
+}
 
 #default-layout {
   --sidebar-width: var(--sidebar-width-full);
@@ -426,12 +428,10 @@ body {
   position: relative;
   left: 0;
   z-index: 19;
-
   box-sizing: border-box;
   width: var(--sidebar-width-full);
   margin-top: -1px;
   padding: var(--content-padding-v) 0 var(--content-padding-v) var(--content-padding-h);
-
   background: none;
 }
 #site-sider.overlay {
@@ -440,8 +440,8 @@ body {
   width: 0;
   padding: 0;
 }
-
-#site-sider__inner { display: flex; flex-direction: column; }
+/* Only for the explore view */
+#site-sider__inner { height: 80vh; }
 #default-layout.page-catalogue #site-sider__inner {
   top: 0;
   padding: var(--content-padding-v) var(--content-padding-h);
@@ -453,25 +453,16 @@ body {
   left: var(--sidebar-width);
   right: 0;
   bottom: 0;
-
   display: block;
   width: calc(100% - var(--sidebar-width));
   overflow: auto;
   overscroll-behavior-y: none;
-
   transition: left 0.3s, width 0.3s;
 }
 
 #default-layout.sidebar-hidden #content-layout {
   left: 0;
   width: 100%;
-}
-
-#content-layout > .ant-layout .ant-layout-content {
-  padding: var(--content-padding-v) var(--content-padding-h);
-}
-#content-layout > .ant-layout .ant-layout-has-sider .ant-layout-content {
-  padding: var(--content-padding-v) var(--content-padding-h) var(--content-padding-v) calc(var(--content-padding-h) / 2);
 }
 
 .site-sider__header {
