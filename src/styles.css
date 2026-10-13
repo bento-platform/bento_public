@@ -389,7 +389,7 @@ body {
 
 /* BEGIN layout HTML styling */
 .content-layout-wrapper {
-  padding: 23px var(--content-padding-h);
+  padding: calc(var(--content-padding-h) - 1px) var(--content-padding-h);
   gap: var(--content-padding-v);
 }
 
@@ -424,22 +424,6 @@ body {
   color: var(--white-90);
 }
 
-#site-sider {
-  position: relative;
-  left: 0;
-  z-index: 19;
-  box-sizing: border-box;
-  width: var(--sidebar-width-full);
-  margin-top: -1px;
-  padding: var(--content-padding-v) 0 var(--content-padding-v) var(--content-padding-h);
-  background: none;
-}
-#site-sider.overlay {
-  /* The overlay/open animation itself lives on the inner .sidebar--overlay (shared with the catalogue
-     rail); this just keeps the outer Layout.Sider from reserving flow space it no longer occupies. */
-  width: 0;
-  padding: 0;
-}
 /* Only for the explore view */
 #site-sider__inner { height: 80vh; }
 #default-layout.page-catalogue #site-sider__inner {
