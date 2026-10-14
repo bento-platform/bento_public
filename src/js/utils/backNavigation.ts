@@ -71,3 +71,22 @@ export const getExploreBackSteps = (): number | undefined => {
   const steps = entry ? currentHistoryIdx() - entry.idx : 0;
   return steps > 0 ? steps : undefined;
 };
+
+/**
+ * A history pop is asynchronous: for a moment after calling navigate(-n), the URL still holds the page being left. If the
+ * destination scope was already dispatched, ScopedRoute's URL -> scope reconciliation would flip it back to the stale
+ * URL's scope (and trigger a round of scope-dependent fetches for it). While a pop is pending, it skips reconciliation.
+ */
+let backPopPending = false;
+let backPopTimeout: ReturnType<typeof setTimeout> | undefined;
+
+export const markBackPopPending = () => {
+  backPopPending = true;
+  clearTimeout(backPopTimeout);
+  backPopTimeout = setTimeout(clearBackPopPending, 1000); // safety net if the pop never lands
+};
+export const clearBackPopPending = () => {
+  backPopPending = false;
+  clearTimeout(backPopTimeout);
+};
+export const isBackPopPending = () => backPopPending;
