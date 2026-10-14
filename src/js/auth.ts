@@ -68,9 +68,7 @@ const refreshAccessToken = async (refreshToken: string): Promise<BentoTokenSet> 
   return body as BentoTokenSet;
 };
 
-// Refresh tokens are typically single-use (rotated). Concurrent session requests (several tabs, parallel RSC/API calls)
-// would otherwise all try to redeem the same refresh token; all but the first fail with invalid_grant. Share one
-// in-flight refresh per refresh token.
+// Refresh tokens are single-use: share one in-flight refresh so concurrent requests don't fail with invalid_grant.
 const inflightRefreshes = new Map<string, Promise<BentoTokenSet>>();
 
 const refreshAccessTokenOnce = (refreshToken: string): Promise<BentoTokenSet> => {
@@ -110,8 +108,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         return token;
       }
 
-      // A previous refresh already failed; the refresh token is dead, so don't retry it on every session request.
-      // The client reacts to this error by sending the user back through sign-in.
+      // A previous refresh already failed - don't retry the dead refresh token.
       if (token.error === 'RefreshTokenError') {
         return token;
       }
