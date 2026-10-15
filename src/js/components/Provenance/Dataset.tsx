@@ -11,8 +11,8 @@ import type { Dataset } from '@/types/dataset';
 import type { Project } from '@/types/metadata';
 import { BentoRoute } from '@/types/routes';
 import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
+import type { ResourcePermissionsState } from '@/features/auth/hooks';
 import { getCurrentPage } from '@/utils/router';
-import { type ResourcePermissionsState, useIsAuthenticated } from '@/features/auth/hooks';
 import { useLanguage, useTranslationFn } from '@/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
 import { nonEmptyCounts } from '@/utils/counts';
@@ -56,7 +56,6 @@ const Dataset = ({
   permissionsData?: ResourcePermissionsState;
 }) => {
   const language = useLanguage();
-  const isAuthenticated = useIsAuthenticated();
   const navigateToScope = useNavigateToScope();
   const page = getCurrentPage();
   const t = useTranslationFn();
