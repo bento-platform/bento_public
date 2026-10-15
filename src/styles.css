@@ -389,7 +389,7 @@ body {
 
 /* BEGIN layout HTML styling */
 .content-layout-wrapper {
-  padding: calc(var(--content-padding-h) - 1px) var(--content-padding-h);
+  padding: calc(var(--content-padding-v) - 1px) var(--content-padding-h);
   gap: var(--content-padding-v);
 }
 
