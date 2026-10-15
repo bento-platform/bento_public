@@ -1,7 +1,7 @@
 import { lazy, Suspense, type ReactNode, useCallback, useMemo, useState } from 'react';
 
 import { Avatar, Button, Card, Flex, List, Typography } from 'antd';
-import { AuditOutlined, ExportOutlined, PieChartOutlined, SolutionOutlined } from '@ant-design/icons';
+import { PieChartOutlined, SolutionOutlined } from '@ant-design/icons';
 import { FaDatabase } from 'react-icons/fa';
 
 import { downloadData, queryData } from 'bento-auth-js';
@@ -17,9 +17,10 @@ import { useLanguage, useTranslationFn } from '@/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
 import { nonEmptyCounts } from '@/utils/counts';
 import { isoDateToString } from '@/utils/strings';
-import StatusBadge from '@/components/Util/StatusBadge';
-import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
-import CountsDisplay from '@/components/Util/CountsDisplay';
+import CountsDisplay from '@Util/CountsDisplay';
+import DatasetApplyForAccessButton from '@Util/DatasetApplyForAccessButton';
+import StatusBadge from '@Util/StatusBadge';
+import TruncatedParagraph from '@Util/TruncatedParagraph';
 import KeywordList from './KeywordList';
 import ProgramPill from './Catalogue/ProgramPill';
 import ProjectPill from './Catalogue/ProjectPill';
@@ -170,24 +171,7 @@ const Dataset = ({
           {APPLY_FOR_ACCESS_URL &&
             permissionsData?.hasAttempted &&
             !permissionsData.permissions.includes(queryData) &&
-            !permissionsData.permissions.includes(downloadData) && (
-              <Button
-                icon={<AuditOutlined />}
-                className="flex-1"
-                onClick={() => {
-                  let accessUrl = APPLY_FOR_ACCESS_URL;
-                  // If we're in PCGL mode, already have a PCGL account, and are signed in, force the auth flow to occur
-                  // at the DACO side.
-                  if (PCGL_MODE && isAuthenticated) {
-                    // TODO: more systematic, less hard-coded version to force SSO & preserve state?
-                    accessUrl += '/api/auth/login';
-                  }
-                  window.open(accessUrl, '_blank');
-                }}
-              >
-                {t('dataset.apply_for_access')} <ExportOutlined />
-              </Button>
-            )}
+            !permissionsData.permissions.includes(downloadData) && <DatasetApplyForAccessButton className="flex-1" />}
         </Flex>
       </Card>
     );

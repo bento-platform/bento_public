@@ -1344,7 +1344,7 @@ body {
   gap: 5px;
   align-items: center;
 }
-.explore-hero-record-more { margin-top: auto; }
+.explore-hero-record-actions { margin-top: auto; padding-top: 8px; }
 .explore-hero-lead.ant-typography { font-size: inherit; line-height: inherit; }
 .explore-hero-lead-popover.ant-popover-container { padding: 0; }
 
