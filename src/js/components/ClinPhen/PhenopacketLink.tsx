@@ -142,7 +142,7 @@ const ExperimentResultLink = ({
   );
 };
 
-export default {
+const PhenopacketLink = {
   Subject: SubjectLink,
   Biosample: BiosampleLink,
   Biosamples: BiosampleLinkList,
@@ -150,3 +150,5 @@ export default {
   Experiments: ExperimentLinkList,
   ExperimentResult: ExperimentResultLink,
 };
+
+export default PhenopacketLink;

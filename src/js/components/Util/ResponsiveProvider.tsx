@@ -28,9 +28,9 @@ interface ResponsiveProviderProps {
 
 const ResponsiveProvider = ({ children }: ResponsiveProviderProps) => {
   // Use nearest 20px to prevent over-frequent updates
-  const [width, setWidth] = useState<number>(roundedInnerWidth());
-  const [isMobile, setIsMobile] = useState<boolean>(isMobileLogic(window.innerWidth));
-  const [isTablet, setIsTablet] = useState<boolean>(isTabletLogic(window.innerWidth));
+  const [width, setWidth] = useState<number>(() => roundedInnerWidth());
+  const [isMobile, setIsMobile] = useState<boolean>(() => isMobileLogic(window.innerWidth));
+  const [isTablet, setIsTablet] = useState<boolean>(() => isTabletLogic(window.innerWidth));
 
   useEffect(() => {
     const handleResize = () => {
@@ -42,7 +42,7 @@ const ResponsiveProvider = ({ children }: ResponsiveProviderProps) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  return <ResponsiveContext.Provider value={{ width, isMobile, isTablet }}>{children}</ResponsiveContext.Provider>;
+  return <ResponsiveContext value={{ width, isMobile, isTablet }}>{children}</ResponsiveContext>;
 };
 
 export default ResponsiveProvider;

@@ -65,7 +65,7 @@ const PhenopacketMetaData = ({ phenopacket }: { phenopacket: Phenopacket }) => {
             {[...metaData.updates]
               .sort(({ timestamp: a }, { timestamp: b }) => -1 * a.localeCompare(b))
               .map((update, uIdx) => (
-                <MetaDataUpdate key={uIdx} index={(metaData.updates ?? []).length - uIdx} update={update} />
+                <MetaDataUpdate key={update.timestamp} index={(metaData.updates ?? []).length - uIdx} update={update} />
               ))}
           </Space>
         ) : null,

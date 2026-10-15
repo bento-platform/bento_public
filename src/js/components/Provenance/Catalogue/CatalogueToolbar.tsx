@@ -13,7 +13,7 @@ import ActiveFilterTags from '@/components/Util/ActiveFilterTags';
 import { FACET_CONFIG_BY_ID } from '@/features/catalogue/facetRegistry';
 
 import { toggleInsights, type SortKey, type FacetId } from '@/features/catalogue/catalogue.store';
-import { facetTranslationKey, facetValueTranslationKey } from '@/features/catalogue/utils';
+import { facetTranslationKey } from '@/features/catalogue/utils';
 
 const { Text } = Typography;
 
@@ -62,11 +62,12 @@ const CatalogueToolbar = ({ filteredCount, showFiltersButton, isMobile, onOpenFi
 
   const pills: { key: string; facetLabel: string; label: string; onClose: () => void }[] = [];
   (Object.entries(sets) as [FacetId, string[]][]).forEach(([facet, values]) => {
+    const facetConfig = FACET_CONFIG_BY_ID[facet];
     values.forEach((v) =>
       pills.push({
         key: `${facet}-${v}`,
         facetLabel: facetTranslationKey(facet),
-        label: t(facetValueTranslationKey(FACET_CONFIG_BY_ID[facet].i18nKeyPrefix, v)),
+        label: facetConfig.formatLabel ? facetConfig.formatLabel(v, t) : v,
         onClose: () => toggleFacetValue(facet, v),
       })
     );
@@ -87,7 +88,7 @@ const CatalogueToolbar = ({ filteredCount, showFiltersButton, isMobile, onOpenFi
       <Flex gap={8} align="center">
         {showFiltersButton && (
           <Badge count={pills.length} size="small" offset={[-4, 4]} className="catalogue-toolbar-fixed">
-            <Button icon={<FilterOutlined aria-hidden />} onClick={onOpenFilters}>
+            <Button data-testid="filters-button" icon={<FilterOutlined aria-hidden />} onClick={onOpenFilters}>
               {t('catalogue.rail.title')}
             </Button>
           </Badge>
@@ -150,14 +151,15 @@ const CatalogueToolbar = ({ filteredCount, showFiltersButton, isMobile, onOpenFi
 
       {/* Row 2: result count + insights toggle */}
       <Flex justify="space-between" align="center">
-        <Text>
-          <span className="catalogue-count-highlight">{filteredCount}</span>{' '}
-          {t('catalogue.toolbar.dataset_found', { count: filteredCount })}
+        <Text role="status" aria-atomic>
+          <b>{filteredCount}</b> {t('catalogue.toolbar.dataset_found', { count: filteredCount })}
         </Text>
         <Button
           color="primary"
           variant="outlined"
-          className="insights-toggle"
+          classNames={{
+            root: 'insights-toggle',
+          }}
           htmlType="button"
           aria-pressed={insightsOpen}
           icon={<PieChartOutlined aria-hidden />}

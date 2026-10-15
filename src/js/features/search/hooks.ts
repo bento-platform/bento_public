@@ -106,7 +106,12 @@ export const useActiveFilterPills = (): { pills: ActiveFilterPill[]; clearAll: (
   const entityAndTextQueryParams = useEntityAndTextQueryParams();
 
   const clearAll = useCallback(() => {
-    const url = buildQueryParamsUrl(pathname, entityAndTextQueryParams);
+    const url = buildQueryParamsUrl(
+      pathname,
+      // Filter out text query and table page from query params if set when clearing all filters, as we may also be
+      // clearing a text query (and either way, the page will be invalid.)
+      entityAndTextQueryParams.filter((e) => e[0] !== TEXT_QUERY_PARAM && e[0] !== TABLE_PAGE_QUERY_PARAM)
+    );
     navigate(url, { replace: true });
   }, [pathname, entityAndTextQueryParams, navigate]);
 

@@ -75,6 +75,9 @@ export const OntologyTermStack = ({ terms }: OntologyTermStackProps) => {
   return (
     <Space orientation="vertical">
       {terms.map((term, index) => (
+        // Deliberate strategy since ontology term stacks could theoretically support >1 of the same term,
+        // and the vast majority of the time these will be immutable.
+        // eslint-disable-next-line react-x/no-array-index-key
         <OntologyTerm key={index} term={term} />
       ))}
     </Space>
