@@ -1,5 +1,5 @@
 import { type ReactNode, useCallback, useMemo } from 'react';
-import { type NavigateOptions, useLocation, useNavigate } from '@/hooks/router';
+import { useLocation, useNavigate } from '@/hooks/router';
 import {
   BookOutlined,
   CloseCircleOutlined,
@@ -18,6 +18,7 @@ import { type DiscoveryScope, selectScope } from '@/features/metadata/metadata.s
 import type { MenuItem } from '@/types/navigation';
 import { BentoRoute } from '@/types/routes';
 import { useAppDispatch, useLanguage, useTranslationFn } from '@/hooks';
+import { setCameFromProject } from '@/features/ui/ui.store';
 import { getCurrentPage, langAndScopeSelectionToUrl, scopeToUrl } from '@/utils/router';
 
 /** Prefixes a path with the currently-selected i18n language. */
@@ -71,11 +72,14 @@ export const useNavigateToScope = () => {
       newScope: DiscoveryScope,
       suffix: string = '',
       fixedProjectAndDataset: boolean = false,
-      navigateOptions: NavigateOptions | undefined = undefined
+      options: { replace?: boolean; fromProject?: boolean } = {}
     ) => {
       // This action will internally handle already-equal scope selections to avoid accidental re-renders:
       dispatch(selectScope(newScope));
-      navigate(scopeToUrl(newScope, language, suffix, fixedProjectAndDataset), navigateOptions);
+      // Entry points (e.g. dataset cards) say whether they came from the parent project's page; navigations which
+      // don't specify (e.g. search URL syncing) must leave the existing value alone.
+      if (options.fromProject !== undefined) dispatch(setCameFromProject(options.fromProject));
+      navigate(scopeToUrl(newScope, language, suffix, fixedProjectAndDataset), { replace: options.replace });
     },
     [dispatch, navigate, language]
   );

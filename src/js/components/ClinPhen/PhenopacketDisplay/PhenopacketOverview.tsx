@@ -5,7 +5,9 @@ import type { SectionKey, SectionSpec } from './phenopacketOverview.registry';
 import { SECTION_SPECS } from './phenopacketOverview.registry';
 import { useSearchParams } from '@/hooks/router';
 import { useTranslationFn } from '@/hooks';
-import { useLocationState } from '@/hooks/useLocationState';
+import { useAppDispatch } from '@/hooks';
+import { usePhenopacketHighlight } from '@/features/ui/hooks';
+import { setPhenopacketHighlight } from '@/features/ui/ui.store';
 import { BREAD_CRUMB_HEIGHT } from '@/constants/common';
 
 export const PHENOPACKET_EXPANDED_URL_QUERY_KEY = 'expanded';
@@ -56,7 +58,8 @@ interface PhenopacketOverviewProps {
 const PhenopacketOverview = ({ phenopacket, ref }: PhenopacketOverviewProps) => {
   const [open, setOpen] = useSearchParams(serializeKeys(phenopacket.subject ? ['subject'] : ['biosamples']));
   const t = useTranslationFn();
-  const routerState = useLocationState();
+  const dispatch = useAppDispatch();
+  const highlight = usePhenopacketHighlight();
   const cleanupRef = useRef<null | (() => void)>(null);
   const pendingHighlightRef = useRef(false);
 
@@ -142,10 +145,9 @@ const PhenopacketOverview = ({ phenopacket, ref }: PhenopacketOverviewProps) => 
   }, []);
 
   useEffect(() => {
-    const { sectionKey, rowId } =
-      (routerState as { highlight?: { sectionKey?: string; rowId?: string } })?.highlight ?? {};
-
-    if (!sectionKey) return;
+    // Ignore a highlight that was requested for a different phenopacket.
+    if (!highlight || highlight.packetId !== phenopacket.id) return;
+    const { sectionKey, rowId } = highlight;
 
     const { renderSingleItemDetail, itemCount } = SECTION_SPECS[sectionKey as SectionKey];
     const sectionCount = itemCount?.(phenopacket);
@@ -199,7 +201,10 @@ const PhenopacketOverview = ({ phenopacket, ref }: PhenopacketOverviewProps) => 
       el?.classList.remove('highlight-boundary');
       el?.blur();
     };
-  }, [routerState, items, open, phenopacket, setOpen]);
+  }, [highlight, items, open, phenopacket, setOpen]);
+
+  // Don't let a consumed highlight leak into later visits.
+  useEffect(() => () => void dispatch(setPhenopacketHighlight(null)), [dispatch]);
 
   return (
     <Collapse

@@ -27,47 +27,35 @@ export interface RouterLocation {
   pathname: string;
   search: string;
   hash: string;
-  /** Arbitrary state attached to the history entry by navigate(..., { state }) / <Link state>. */
-  state: unknown;
 }
 
 export interface NavigateOptions {
   replace?: boolean;
-  state?: unknown;
   /** Resolve a relative `to` against the current path's segments ('..' pops one segment). */
   relative?: 'path' | 'route';
 }
 
-// User state lives under this key so it doesn't collide with Next.js's own history state (__NA, ...).
-const STATE_KEY = 'usr';
-
-const SERVER_LOCATION: RouterLocation = { pathname: '/', search: '', hash: '', state: null };
+const SERVER_LOCATION: RouterLocation = { pathname: '/', search: '', hash: '' };
 
 const listeners = new Set<() => void>();
 const emit = () => listeners.forEach((l) => l());
 
 let cachedLocation: RouterLocation | null = null;
-let cachedStateJson = '';
 
 const getLocationSnapshot = (): RouterLocation => {
   const { pathname, search, hash } = window.location;
-  const raw = window.history.state as Record<string, unknown> | null;
-  const state = raw?.[STATE_KEY] ?? null;
-  const stateJson = JSON.stringify(state);
 
   // useSyncExternalStore needs a referentially-stable snapshot while nothing has changed.
   if (
     cachedLocation &&
     cachedLocation.pathname === pathname &&
     cachedLocation.search === search &&
-    cachedLocation.hash === hash &&
-    cachedStateJson === stateJson
+    cachedLocation.hash === hash
   ) {
     return cachedLocation;
   }
 
-  cachedStateJson = stateJson;
-  cachedLocation = { pathname, search, hash, state };
+  cachedLocation = { pathname, search, hash };
   return cachedLocation;
 };
 
@@ -98,13 +86,12 @@ const resolveUrl = (to: string): string => {
   return (segments.join('/') || '/') + m[2];
 };
 
-export const navigate = (to: string, { replace = false, state = null }: NavigateOptions = {}) => {
+export const navigate = (to: string, { replace = false }: NavigateOptions = {}) => {
   const url = resolveUrl(to);
-  const data = { [STATE_KEY]: state };
   if (replace) {
-    window.history.replaceState(data, '', url);
+    window.history.replaceState(null, '', url);
   } else {
-    window.history.pushState(data, '', url);
+    window.history.pushState(null, '', url);
   }
   emit();
 };
@@ -206,12 +193,11 @@ export const useRouteMatch = (): RouteMatch => {
 type LinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> & {
   to: string;
   replace?: boolean;
-  state?: unknown;
   children?: ReactNode;
 };
 
 /** Client-side-navigating anchor; falls through to normal browser behaviour for modified / non-left clicks. */
-export const Link = ({ to, replace, state, onClick, target, children, ...rest }: LinkProps) => {
+export const Link = ({ to, replace, onClick, target, children, ...rest }: LinkProps) => {
   const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
     onClick?.(e);
     if (
@@ -226,7 +212,7 @@ export const Link = ({ to, replace, state, onClick, target, children, ...rest }:
       return;
     }
     e.preventDefault();
-    navigate(to, { replace, state });
+    navigate(to, { replace });
   };
 
   return (

@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { useLocation } from '@/hooks/router';
 import { HomeOutlined } from '@ant-design/icons';
 import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
 
@@ -9,7 +8,7 @@ import { useLanguage, useTranslationFn } from '@/hooks';
 import { useSelectedScope, useSelectedScopeTitles } from '@/features/metadata/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { useGetRouteTitleAndIcon } from '@/hooks/navigation';
-import { useExtraBreadcrumb } from '@/features/ui/hooks';
+import { useCameFromProject, useExtraBreadcrumb } from '@/features/ui/hooks';
 import { getCurrentPage } from '@/utils/router';
 import { PCGL_MODE } from '@/config';
 
@@ -20,8 +19,7 @@ export const useTitleBreadcrumbItems = (scopeHeaderMenuItems: MenuItem[]): Bread
 
   const { scope, fixedProject, fixedDataset } = useSelectedScope();
   const { projectTitle, datasetTitle } = useSelectedScopeTitles();
-  const location = useLocation();
-  const cameFromProject = (location.state as { fromProjectScope?: boolean } | null)?.fromProjectScope;
+  const cameFromProject = useCameFromProject();
 
   const getRouteTitleAndIcon = useGetRouteTitleAndIcon();
 

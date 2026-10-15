@@ -105,7 +105,3 @@ export const langAndScopeSelectionToUrl = (
 
 export const scopeEqual = (s1: DiscoveryScope, s2: DiscoveryScope): boolean =>
   s1.project === s2.project && s1.dataset === s2.dataset;
-
-export function highlightState(sectionKey?: string, rowId?: string) {
-  return { highlight: { sectionKey, rowId } };
-}
