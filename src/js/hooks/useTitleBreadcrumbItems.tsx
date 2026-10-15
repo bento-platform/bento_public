@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from '@/hooks/router';
 import { HomeOutlined } from '@ant-design/icons';
 import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
 

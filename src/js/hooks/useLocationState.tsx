@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation } from '@/hooks/router';
 
 export const useLocationState = () => {
   const location = useLocation();

@@ -3,7 +3,7 @@ import { Collapse } from 'antd';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
 import type { SectionKey, SectionSpec } from './phenopacketOverview.registry';
 import { SECTION_SPECS } from './phenopacketOverview.registry';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from '@/hooks/router';
 import { useTranslationFn } from '@/hooks';
 import { useLocationState } from '@/hooks/useLocationState';
 import { BREAD_CRUMB_HEIGHT } from '@/constants/common';

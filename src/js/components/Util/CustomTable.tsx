@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState, type Key, type ReactNode } from 'react';
 import { Table, type TablePaginationConfig } from 'antd';
 import type { TableColumnType } from 'antd';
-import { useSearchParams, useLocation } from 'react-router-dom';
+import { useSearchParams, useLocation } from '@/hooks/router';
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
 import { useNotify } from '@/hooks/notifications';
 import { useTranslationFn } from '@/hooks';

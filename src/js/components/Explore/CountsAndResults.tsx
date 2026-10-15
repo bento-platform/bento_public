@@ -1,5 +1,5 @@
 import { type KeyboardEventHandler, memo, useCallback } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from '@/hooks/router';
 
 import { Alert, Card, Flex, Skeleton, Space, Statistic } from 'antd';
 import { DownOutlined } from '@ant-design/icons';

@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from '@/hooks/router';
 import { queryParamsWithoutKey, type QueryParamEntries } from '@/utils/queryParams';
 
 /**

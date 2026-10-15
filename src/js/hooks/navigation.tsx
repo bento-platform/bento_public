@@ -1,5 +1,5 @@
 import { type ReactNode, useCallback, useMemo } from 'react';
-import { type NavigateOptions, useLocation, useNavigate } from 'react-router-dom';
+import { type NavigateOptions, useLocation, useNavigate } from '@/hooks/router';
 import {
   BookOutlined,
   CloseCircleOutlined,

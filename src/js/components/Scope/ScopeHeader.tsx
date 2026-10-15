@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation } from '@/hooks/router';
 import { Badge, Breadcrumb, type BreadcrumbProps, Button, Flex, Menu, Tooltip } from 'antd';
 import { ArrowLeftOutlined, FilterOutlined, QuestionOutlined } from '@ant-design/icons';
 import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
@@ -64,7 +64,7 @@ const useBackButtonInfo = () => {
 
 const breadcrumbRender: BreadcrumbProps['itemRender'] = (route, _params, routes, _paths) => {
   const isLast = route?.path === routes[routes.length - 1]?.path;
-  return isLast || !route.path ? <span>{route.title}</span> : <Link to={{ pathname: route.path }}>{route.title}</Link>;
+  return isLast || !route.path ? <span>{route.title}</span> : <Link to={route.path}>{route.title}</Link>;
 };
 
 type ScopeHeaderProps = {

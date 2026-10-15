@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from '@/hooks/router';
 import { useAppDispatch } from '@/hooks';
 import { useUrlFacetSync, type ScalarParam } from '@/hooks/useUrlFacetSync';
 import { useUrlFacetActions } from '@/hooks/useUrlFacetActions';

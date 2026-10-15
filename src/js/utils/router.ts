@@ -1,4 +1,3 @@
-import { type Location as RouterLocation } from 'react-router-dom';
 import { FORCE_CATALOGUE } from '@/config';
 import type { DiscoveryScope, DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
 import type { Project } from '@/types/metadata';
@@ -18,7 +17,7 @@ export const getPathPageIndex = (pathParts: string[]): number => {
   return 1;
 };
 
-export const getCurrentPage = (location?: RouterLocation | Location): string => {
+export const getCurrentPage = (location?: { pathname: string }): string => {
   const pathArray = pathParts((location ?? window.location).pathname);
   const validPages = Object.values(BentoRoute);
 

@@ -1,5 +1,5 @@
 import { startTransition, useCallback, useEffect, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from '@/hooks/router';
 import { Button, Form, Input, Select, Space, Tooltip } from 'antd';
 import { CloseOutlined, FormOutlined, InfoCircleOutlined, LoadingOutlined, SearchOutlined } from '@ant-design/icons';
 

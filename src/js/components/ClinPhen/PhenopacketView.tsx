@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { Button, Empty, Space, Tabs } from 'antd';
 import { CompressOutlined, DownloadOutlined, ExpandOutlined } from '@ant-design/icons';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useRouteMatch } from '@/hooks/router';
 
 import { saveAs } from 'file-saver';
 
@@ -24,7 +24,7 @@ export interface RouteParams {
 }
 
 const PhenopacketView = () => {
-  const { packetId, tab } = useParams<RouteParams>();
+  const { packetId, tab } = useRouteMatch();
   const navigate = useNavigate();
   const t = useTranslationFn();
   const isSmallScreen = useSmallScreen();
