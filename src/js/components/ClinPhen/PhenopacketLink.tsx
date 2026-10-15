@@ -5,14 +5,11 @@ import { useCurrentScopePrefixedUrl } from '@/hooks/navigation';
 import { Popover } from 'antd';
 import BiosampleDetailView from '../Search/BiosampleDetailView';
 
-import { useAppDispatch } from '@/hooks';
-import { setPhenopacketHighlight } from '@/features/ui/ui.store';
-
 import { BentoRoute } from '@/types/routes';
 import { TabKeys } from '@/types/PhenopacketView.types';
 import type { SectionKey } from '@/components/ClinPhen/PhenopacketDisplay/phenopacketOverview.registry';
 
-import { PHENOPACKET_EXPANDED_URL_QUERY_KEY } from './PhenopacketDisplay/PhenopacketOverview';
+import { highlightHash, PHENOPACKET_EXPANDED_URL_QUERY_KEY } from './PhenopacketDisplay/PhenopacketOverview';
 
 const usePhenopacketOverviewLink = (
   packetId: string | undefined,
@@ -21,7 +18,6 @@ const usePhenopacketOverviewLink = (
   preserveQueryParams: boolean = false,
   highlightRowId: string | undefined = undefined
 ) => {
-  const dispatch = useAppDispatch();
   const { packetId: urlPId } = useRouteMatch();
   const [searchParams] = useSearchParams();
   const derivedPacketId = packetId ?? urlPId;
@@ -46,23 +42,16 @@ const usePhenopacketOverviewLink = (
       ])
     : new URLSearchParams(newParams);
 
-  // Which section/row to highlight on arrival is held in Redux (not router state) and set when the link is clicked.
-  const onClick = () =>
-    dispatch(setPhenopacketHighlight({ packetId: derivedPacketId ?? '', sectionKey: expanded, rowId: highlightRowId }));
-
-  return [`${baseUrl}?${params.toString()}`, onClick] as const;
+  // The section/row to highlight on arrival is carried in the URL hash.
+  return `${baseUrl}?${params.toString()}${highlightHash(expanded, highlightRowId)}`;
 };
 
 type BaseLinkProps = { packetId?: string; replace?: boolean; preserveQueryParams?: boolean; children?: ReactNode };
 
 type SubjectLinkProps = BaseLinkProps;
 const SubjectLink = ({ children, packetId, preserveQueryParams }: SubjectLinkProps) => {
-  const [url, onClick] = usePhenopacketOverviewLink(packetId, 'subject', undefined, preserveQueryParams);
-  return (
-    <Link to={url} onClick={onClick}>
-      {children}
-    </Link>
-  );
+  const url = usePhenopacketOverviewLink(packetId, 'subject', undefined, preserveQueryParams);
+  return <Link to={url}>{children}</Link>;
 };
 
 type BiosampleLinkProps = BaseLinkProps & { sampleId: string; enablePopover?: boolean };
@@ -74,7 +63,7 @@ const BiosampleLink = ({
   enablePopover,
   children,
 }: BiosampleLinkProps) => {
-  const [url, onClick] = usePhenopacketOverviewLink(
+  const url = usePhenopacketOverviewLink(
     packetId,
     'biosamples',
     { biosample: sampleId },
@@ -82,7 +71,7 @@ const BiosampleLink = ({
     sampleId
   );
   const link = (
-    <Link to={url} replace={replace} onClick={onClick}>
+    <Link to={url} replace={replace}>
       {children ?? sampleId}
     </Link>
   );
@@ -109,7 +98,7 @@ const BiosampleLinkList = ({ packetId, biosamples, replace, ...props }: Biosampl
 
 type ExperimentLinkProps = BaseLinkProps & { experimentId: string };
 const ExperimentLink = ({ packetId, experimentId, replace, preserveQueryParams, children }: ExperimentLinkProps) => {
-  const [url, onClick] = usePhenopacketOverviewLink(
+  const url = usePhenopacketOverviewLink(
     packetId,
     'experiments',
     { experiment: experimentId },
@@ -117,7 +106,7 @@ const ExperimentLink = ({ packetId, experimentId, replace, preserveQueryParams, 
     experimentId
   );
   return (
-    <Link to={url} replace={replace} onClick={onClick}>
+    <Link to={url} replace={replace}>
       {children ?? experimentId}
     </Link>
   );
@@ -148,7 +137,7 @@ const ExperimentResultLink = ({
   replace,
   preserveQueryParams,
 }: ExperimentResultLinkProps) => {
-  const [url, onClick] = usePhenopacketOverviewLink(
+  const url = usePhenopacketOverviewLink(
     packetId,
     'experimentResults',
     { experimentResult: experimentResultId.toString(10) },
@@ -156,7 +145,7 @@ const ExperimentResultLink = ({
     experimentResultId.toString()
   );
   return (
-    <Link to={url} replace={replace} onClick={onClick}>
+    <Link to={url} replace={replace}>
       {children ?? experimentResultId}
     </Link>
   );

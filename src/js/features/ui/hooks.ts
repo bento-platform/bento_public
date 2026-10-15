@@ -21,6 +21,4 @@ export const useSetExtraBreadcrumb = (title: string | undefined) => {
 
 export const useCameFromProject = () => useUiState().cameFromProject;
 
-export const usePhenopacketHighlight = () => useUiState().phenopacketHighlight;
-
 export const useUiSettings = () => useUiState().settings;
