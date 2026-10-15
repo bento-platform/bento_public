@@ -1,5 +1,4 @@
-import { useCallback, useEffect } from 'react';
-import { useLocation } from '@/hooks/router';
+import { useCallback } from 'react';
 import { useAppDispatch } from '@/hooks';
 import { useUrlFacetSync, type ScalarParam } from '@/hooks/useUrlFacetSync';
 import { useUrlFacetActions } from '@/hooks/useUrlFacetActions';
@@ -10,11 +9,8 @@ import {
   type ViewMode,
   type CatalogueFilterSets,
   type FacetId,
+  type CatalogueState,
 } from './catalogue.store';
-
-/** sessionStorage key holding the catalogue's last query string, so in-app "back to catalogue" links
- *  (which navigate to a bare URL rather than popping browser history) can restore applied filters. */
-export const CATALOGUE_SEARCH_STORAGE_KEY = 'catalogue:lastSearch';
 
 const SORT_PARAM: ScalarParam<SortKey> = {
   key: 'sort',
@@ -25,18 +21,26 @@ const VIEW_PARAM: ScalarParam<ViewMode> = { key: 'view', defaultValue: 'grid', v
 const SCALARS = { sort: SORT_PARAM, view: VIEW_PARAM };
 
 /**
+ * Builds the catalogue's URL query string ('' or '?...') from Redux catalogue state, using the same encoding
+ * useCatalogueUrlSync parses. Lets in-app "back to catalogue" links restore applied filters without history.
+ */
+export const catalogueStateToSearch = ({ q, sets, sort, view }: CatalogueState): string => {
+  const params = new URLSearchParams();
+  if (q) params.set('q', q);
+  FACET_IDS.forEach((id) => sets[id].forEach((v) => params.append(id, v)));
+  if (sort !== SORT_PARAM.defaultValue) params.set(SORT_PARAM.key, sort);
+  if (view !== VIEW_PARAM.defaultValue) params.set(VIEW_PARAM.key, view);
+  const s = params.toString();
+  return s ? `?${s}` : '';
+};
+
+/**
  * The URL is the source of truth for catalogue filters. This hydrates Redux from it on mount
  * and on every subsequent navigation (including browser back/forward), via the generic
  * useUrlFacetSync, mirroring the pattern used by useSearchRouterAndHandler for the Search feature.
  */
 export function useCatalogueUrlSync() {
   const dispatch = useAppDispatch();
-  const location = useLocation();
-
-  useEffect(() => {
-    sessionStorage.setItem(CATALOGUE_SEARCH_STORAGE_KEY, location.search);
-  }, [location.search]);
-
   const onHydrate = useCallback(
     ({ q, sets, scalars }: { q: string; sets: CatalogueFilterSets; scalars: Record<string, string> }) => {
       dispatch(hydrateFromUrl({ q, sets, sort: scalars.sort as SortKey, view: scalars.view as ViewMode }));
