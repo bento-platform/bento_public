@@ -16,6 +16,7 @@ export const MOCK_CONFIG = {
   PCGL_MODE: false,
   CATALOGUE_HEADER_BACKGROUND: undefined,
   CATALOGUE_HEADER_TEXT_COLOR: undefined,
+  APPLY_FOR_ACCESS_URL: null,
   BEACON_URL: null,
   BEACON_UI_ENABLED: false,
   BEACON_NETWORK_ENABLED: false,

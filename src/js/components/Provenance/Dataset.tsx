@@ -4,13 +4,15 @@ import { Avatar, Button, Card, Flex, List, Typography } from 'antd';
 import { AuditOutlined, ExportOutlined, PieChartOutlined, SolutionOutlined } from '@ant-design/icons';
 import { FaDatabase } from 'react-icons/fa';
 
-import { PCGL_MODE } from '@/config';
+import { downloadData, queryData } from 'bento-auth-js';
+import { APPLY_FOR_ACCESS_URL, PCGL_MODE } from '@/config';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type { Dataset } from '@/types/dataset';
 import type { Project } from '@/types/metadata';
 import { BentoRoute } from '@/types/routes';
 import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
 import { getCurrentPage } from '@/utils/router';
+import { type ResourcePermissionsState, useIsAuthenticated } from '@/features/auth/hooks';
 import { useLanguage, useTranslationFn } from '@/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
 import { nonEmptyCounts } from '@/utils/counts';
@@ -38,6 +40,7 @@ const Dataset = ({
   selected,
   filteredCounts,
   fromProject,
+  permissionsData,
 }: {
   parentProjectID: string;
   dataset: Dataset;
@@ -48,8 +51,11 @@ const Dataset = ({
   // Whether this dataset is being linked to from within its parent project's own page - used to inform the
   // dataset scope's back button (in PCGL mode, it otherwise defaults to going back to the catalogue).
   fromProject?: boolean;
+  // Permissions data injected from bulk fetch. TODO: move to some kind of BFF shared cache state to avoid re-fetching.
+  permissionsData?: ResourcePermissionsState;
 }) => {
   const language = useLanguage();
+  const isAuthenticated = useIsAuthenticated();
   const navigateToScope = useNavigateToScope();
   const page = getCurrentPage();
   const t = useTranslationFn();
@@ -161,11 +167,27 @@ const Dataset = ({
               {t('Explore')}
             </Button>
           )}
-          {PCGL_MODE && (
-            <Button icon={<AuditOutlined />} className="flex-1" disabled>
-              {t('dataset.apply_for_access')} <ExportOutlined />
-            </Button>
-          )}
+          {APPLY_FOR_ACCESS_URL &&
+            permissionsData?.hasAttempted &&
+            !permissionsData.permissions.includes(queryData) &&
+            !permissionsData.permissions.includes(downloadData) && (
+              <Button
+                icon={<AuditOutlined />}
+                className="flex-1"
+                onClick={() => {
+                  let accessUrl = APPLY_FOR_ACCESS_URL;
+                  // If we're in PCGL mode, already have a PCGL account, and are signed in, force the auth flow to occur
+                  // at the DACO side.
+                  if (PCGL_MODE && isAuthenticated) {
+                    // TODO: more systematic, less hard-coded version to force SSO & preserve state?
+                    accessUrl += '/api/auth/login';
+                  }
+                  window.open(accessUrl, '_blank');
+                }}
+              >
+                {t('dataset.apply_for_access')} <ExportOutlined />
+              </Button>
+            )}
         </Flex>
       </Card>
     );
