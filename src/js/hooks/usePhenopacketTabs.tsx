@@ -25,7 +25,7 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
 
   const handleTabChange = useCallback(
     (key: string) => {
-      navigate(`../${key}`, { relative: 'path', replace: true });
+      navigate(`../${key}`, { replace: true });
     },
     [navigate]
   );

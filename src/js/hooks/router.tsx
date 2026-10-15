@@ -31,8 +31,6 @@ export interface RouterLocation {
 
 export interface NavigateOptions {
   replace?: boolean;
-  /** Resolve a relative `to` against the current path's segments ('..' pops one segment). */
-  relative?: 'path' | 'route';
 }
 
 const SERVER_LOCATION: RouterLocation = { pathname: '/', search: '', hash: '' };
@@ -73,10 +71,8 @@ export const useLocation = (): RouterLocation =>
 
 const resolveUrl = (to: string): string => {
   if (to.startsWith('/')) return to;
-  if (to.startsWith('?')) return window.location.pathname + to;
-  if (to.startsWith('#')) return window.location.pathname + window.location.search + to;
 
-  // Relative path: resolve against the current path's segments, ignoring any trailing slash.
+  // Relative path: resolve against the current path's segments ('..' pops one), ignoring any trailing slash.
   const m = /^([^?#]*)(.*)$/.exec(to)!;
   const segments = window.location.pathname.replace(/\/+$/, '').split('/');
   for (const part of m[1].split('/')) {

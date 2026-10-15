@@ -89,7 +89,7 @@ const PhenopacketView = () => {
         // Otherwise, show an invalid tab notification:
         invalidEndpointRedirectNotification();
       }
-      navigate(`${tab ? '..' : '.'}/${defaultTabKey}`, { relative: 'path', replace: true });
+      navigate(`${tab ? '..' : '.'}/${defaultTabKey}`, { replace: true });
       // Temporary loading render while navigation occurs. This navigation is to a valid key (the default), so we won't
       // get any more error notifications after this navigation occurs.
       return <Loader fullHeight={false} />;
