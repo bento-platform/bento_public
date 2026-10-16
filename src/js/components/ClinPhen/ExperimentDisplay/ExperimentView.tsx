@@ -82,7 +82,7 @@ export const ExperimentExpandedRow = ({ packetId, experiment, searchRow }: Exper
   ];
 
   return (
-    <Space direction="vertical" className="w-full">
+    <Space orientation="vertical" className="w-full">
       <TDescriptions bordered size="compact" column={XXL_THREE_COLUMN} items={items} defaultI18nPrefix="experiment." />
       <ExtraPropertiesDisplay extraProperties={experiment.extra_properties} />
       {experiment.instrument && (

@@ -1,0 +1,27 @@
+{
+  "entities": {
+    "dataset_one": "Study",
+    "dataset_other": "Studies",
+    "individual_one": "Participant",
+    "individual_other": "Participants",
+    "individual_help": [
+      "$t(entities.individual_other) represent a specific person, and may have one or multiple associated $t(entities.biosample_other, lowercase), each with associated $t(entities.experiment_other)."
+    ],
+    "biosample_one": "Specimen",
+    "biosample_other": "Specimens",
+    "biosample_help": [
+      "$t(entities.biosample_other) are biological material extracted from a specific $t(entities.individual_one, lowercase)."
+    ]
+  },
+  "catalogue": {
+    "toolbar": {
+      "sort": {
+        "most_individuals": "Most participants",
+        "most_biosamples": "Most specimens"
+      }
+    }
+  },
+  "interpretations": {
+    "subject_or_biosample_id": "Participant or Specimen ID"
+  }
+}

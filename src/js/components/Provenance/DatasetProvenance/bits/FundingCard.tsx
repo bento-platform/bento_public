@@ -45,8 +45,8 @@ export const FundingCard = ({ source }: { source: FundingSource | Link }) => {
       {fs.grant_numbers && fs.grant_numbers.length > 0 && (
         <div className="pm-grants">
           <span className="pm-grant-k">{t('provenance.grant_number', { count: fs.grant_numbers.length })}</span>
-          {fs.grant_numbers.map((g, i) => (
-            <span key={i} className="pm-grant">
+          {fs.grant_numbers.map((g) => (
+            <span key={g} className="pm-grant">
               {g}
             </span>
           ))}

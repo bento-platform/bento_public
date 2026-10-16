@@ -5,7 +5,8 @@ const { Title, Text, Link } = Typography;
 
 import { ADMIN_URL, SHOW_ADMIN_LINK } from '@/config';
 import { useTranslationFn } from '@/hooks';
-import bentoLogo from '@public/assets/bento.svg';
+
+const bentoLogo = '/public/assets/bento.svg';
 
 const SiteFooter = () => {
   const t = useTranslationFn();
@@ -13,7 +14,7 @@ const SiteFooter = () => {
   return (
     <Footer>
       <Row justify="center">
-        <Space size={8} direction="vertical" align="center">
+        <Space size={8} orientation="vertical" align="center">
           <div>
             <Title level={5} type="secondary" style={{ marginBottom: '0' }}>
               {t('footer.powered_by')}

@@ -66,7 +66,7 @@ const ExportFieldsModal = ({
               setDeselectedKeys(new Set(fields.map((f) => f.key).filter((k) => !checked.includes(k))))
             }
           >
-            <Space direction="vertical">
+            <Space orientation="vertical">
               {fields.map(({ key, label }) => (
                 <Checkbox key={key} value={key}>
                   {label}

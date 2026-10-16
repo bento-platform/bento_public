@@ -1,8 +1,9 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Button, Flex, Layout, Menu, type MenuProps, Space, Typography, theme } from 'antd';
-import { useAuthState, useIsAuthenticated, useOpenIdConfig, usePerformAuth, usePerformSignOut } from 'bento-auth-js';
+import { useSession } from 'next-auth/react';
+import { useIsAuthenticated, usePerformAuth, usePerformSignOut } from '@/features/auth/hooks';
 
 import { RiTranslate } from 'react-icons/ri';
 import { LoginOutlined, LogoutOutlined } from '@ant-design/icons';
@@ -12,7 +13,15 @@ import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { getCurrentPage } from '@/utils/router';
 
 import { LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
-import { CLIENT_NAME, SHOW_HEADER_TITLE, SHOW_SIGN_IN, TRANSLATED, TRANSLATED_LOGO, LOGO_HEIGHT } from '@/config';
+import {
+  CLIENT_NAME,
+  SHOW_LOGO,
+  SHOW_HEADER_TITLE,
+  SHOW_SIGN_IN,
+  TRANSLATED,
+  TRANSLATED_LOGO,
+  LOGO_HEIGHT,
+} from '@/config';
 
 import type { MenuItem } from '@/types/navigation';
 import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
@@ -33,7 +42,7 @@ type SiteHeaderProps = {
 const useHandleMenuClick = (): OnClick => {
   const navigate = useNavigate();
   const location = useLocation();
-  const overviewQueryParams = useSearchQueryParams();
+  const exploreQueryParams = useSearchQueryParams();
 
   return useCallback(
     ({ key }: { key: string }) => {
@@ -50,10 +59,10 @@ const useHandleMenuClick = (): OnClick => {
       newPath.push(key);
       const newPathString = '/' + newPath.join('/');
       // Navigate to the menu item url
-      //  - only include filter/search/overview query params if we're navigating to the overview page
-      navigate(buildQueryParamsUrl(newPathString, key === BentoRoute.Overview ? overviewQueryParams : undefined));
+      //  - only include filter/search/explore query params if we're navigating to the explore page
+      navigate(buildQueryParamsUrl(newPathString, key === BentoRoute.Explore ? exploreQueryParams : undefined));
     },
-    [navigate, overviewQueryParams, location.pathname]
+    [navigate, exploreQueryParams, location.pathname]
   );
 };
 
@@ -66,12 +75,20 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
   const currentPage = getCurrentPage(location);
   const navigateToRoot = useNavigateToRoot();
 
-  const { isFetching: openIdConfigFetching } = useOpenIdConfig();
-  const { isHandingOffCodeForToken } = useAuthState();
+  const { status: sessionStatus } = useSession();
 
   const isAuthenticated = useIsAuthenticated();
   const performSignOut = usePerformSignOut();
   const performSignIn = usePerformAuth();
+
+  // performSignOut() clears our session before it redirects to the identity provider to end its session too, so
+  // isAuthenticated flips to false mid-callback - without this, the button would flash to "Sign In" and back before
+  // the page actually navigates away.
+  const [isSigningOut, setIsSigningOut] = useState(false);
+  const handleSignOut = useCallback(() => {
+    setIsSigningOut(true);
+    performSignOut();
+  }, [performSignOut]);
 
   const {
     token: { colorBgContainer, colorBorderSecondary },
@@ -103,14 +120,29 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
     >
       <Flex align="center" justify="space-between">
         <Flex align="center" gap={isSmallScreen ? 'small' : 'middle'} className="flex-1">
-          {isSmallScreen ? (
-            <object
-              type="image/png"
-              data={logo}
-              aria-hidden
-              style={{ height: LOGO_HEIGHT, verticalAlign: 'middle', transform: 'translateY(-3px)', paddingRight: 3 }}
-              onClick={navigateToRoot}
-            >
+          {SHOW_LOGO &&
+            (isSmallScreen ? (
+              <object
+                type="image/png"
+                data={logo}
+                aria-hidden
+                style={{ height: LOGO_HEIGHT, verticalAlign: 'middle', transform: 'translateY(-3px)', paddingRight: 3 }}
+                onClick={navigateToRoot}
+              >
+                <img
+                  src={logo}
+                  alt="logo"
+                  aria-hidden
+                  className="cursor-pointer"
+                  style={{
+                    height: LOGO_HEIGHT,
+                    verticalAlign: 'middle',
+                    transform: 'translateY(-3px)',
+                  }}
+                  onClick={navigateToRoot}
+                />
+              </object>
+            ) : (
               <img
                 src={logo}
                 alt="logo"
@@ -120,25 +152,11 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
                   height: LOGO_HEIGHT,
                   verticalAlign: 'middle',
                   transform: 'translateY(-3px)',
+                  paddingLeft: '4px',
                 }}
                 onClick={navigateToRoot}
               />
-            </object>
-          ) : (
-            <img
-              src={logo}
-              alt="logo"
-              aria-hidden
-              className="cursor-pointer"
-              style={{
-                height: LOGO_HEIGHT,
-                verticalAlign: 'middle',
-                transform: 'translateY(-3px)',
-                paddingLeft: '4px',
-              }}
-              onClick={navigateToRoot}
-            />
-          )}
+            ))}
           {/* If SHOW_HEADER_TITLE is false, assume we have text in the logo. We should still have some kind of level-1
               header for accessibility/semantic markup, so render it but visually hidden in this case. */}
           <Typography.Title
@@ -165,27 +183,28 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
             <Button
               type="text"
               className="header-button"
-              icon={<RiTranslate style={{ transform: 'translateY(1px)' }} />}
+              icon={<RiTranslate aria-hidden style={{ transform: 'translateY(1px)' }} />}
               onClick={changeLanguage}
             >
               {isSmallScreen ? '' : LNGS_FULL_NAMES[LNG_CHANGE[language]]}
             </Button>
           )}
           {SHOW_SIGN_IN &&
-            (isAuthenticated ? (
+            (isAuthenticated || isSigningOut ? (
               <Button
                 color="default"
                 className="header-button"
-                icon={<LogoutOutlined />}
+                icon={<LogoutOutlined aria-hidden />}
                 shape="round"
                 variant="filled"
-                onClick={performSignOut}
+                loading={isSigningOut}
+                onClick={handleSignOut}
               >
                 {isSmallScreen ? '' : t('Sign Out')}
               </Button>
             ) : (
-              <Button type="primary" shape="round" icon={<LoginOutlined />} onClick={performSignIn}>
-                {openIdConfigFetching || isHandingOffCodeForToken ? t('Loading...') : isSmallScreen ? '' : t('Sign In')}
+              <Button type="primary" shape="round" icon={<LoginOutlined aria-hidden />} onClick={performSignIn}>
+                {sessionStatus === 'loading' ? t('Loading...') : isSmallScreen ? '' : t('Sign In')}
               </Button>
             ))}
         </Space>

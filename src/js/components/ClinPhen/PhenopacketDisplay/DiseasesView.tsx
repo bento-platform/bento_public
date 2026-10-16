@@ -38,7 +38,7 @@ const DiseaseExpandedRow = ({ disease }: { disease: Disease }) => {
   ];
 
   return (
-    <Space direction="vertical" className="w-full">
+    <Space orientation="vertical" className="w-full">
       <TDescriptions bordered size="compact" items={items} />
       <ExtraPropertiesDisplay extraProperties={disease.extra_properties} />
     </Space>

@@ -20,7 +20,7 @@ const DatasetProvenanceModal = ({ dataset, open, onCancel }: DatasetProvenanceMo
       onCancel={onCancel}
       width="min(1120px, 100%)"
       style={{ top: margin }}
-      styles={{ content: { overflow: 'hidden', padding: 0 } }}
+      styles={{ container: { overflow: 'hidden', padding: 0 } }}
       footer={null}
       afterOpenChange={(isOpen) => {
         // Leaflet maps inside the modal init while the modal is still animating in and cache

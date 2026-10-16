@@ -22,8 +22,9 @@ const Excluded = ({ model }: { model: ExcludedModel }) => {
         href={`https://phenopacket-schema.readthedocs.io/en/2.0.0/${model}.html#excluded`}
         target="_blank"
         rel="noopener noreferrer"
+        aria-label={t('clinphen_generic.found_absent_link')}
       >
-        <LinkOutlined />
+        <LinkOutlined aria-hidden />
       </Link>
       )
     </Text>

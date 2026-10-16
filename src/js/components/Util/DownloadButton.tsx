@@ -3,11 +3,11 @@ import { type MouseEventHandler, useCallback } from 'react';
 import { Button, type ButtonProps } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 
-import { useAccessToken } from 'bento-auth-js';
+import { useAccessToken } from '@/features/auth/hooks';
 import { useTranslationFn } from '@/hooks';
 import { useDrsHttpsAccessOrPassThrough } from '@/features/drs/hooks';
 
-import { BROWSER_RENDERED_EXTENSIONS } from 'bento-file-display';
+import { BROWSER_RENDERED_EXTENSIONS } from 'bento-file-display/dist/constants';
 import { ADMIN_URL, PUBLIC_URL } from '@/config';
 
 interface DownloadButtonProps extends ButtonProps {
@@ -76,7 +76,7 @@ const DownloadButton = ({
   return (
     <Button
       key="download"
-      icon={<DownloadOutlined />}
+      icon={<DownloadOutlined aria-hidden />}
       onClick={onClick}
       loading={loading}
       disabled={disabled}

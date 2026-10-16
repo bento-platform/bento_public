@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Breadcrumb, type BreadcrumbProps, Button, Flex, Menu, Tooltip } from 'antd';
+import { Badge, Breadcrumb, type BreadcrumbProps, Button, Flex, Menu, Tooltip } from 'antd';
 import { ArrowLeftOutlined, FilterOutlined, QuestionOutlined } from '@ant-design/icons';
 import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
 import type { MenuItem } from '@/types/navigation';
 
 import CurrentPageHelpModal from '@/components/Util/CurrentPageHelpModal';
 import { useSelectedScope } from '@/features/metadata/hooks';
-import { useSearchQueryParams } from '@/features/search/hooks';
+import { useActiveFilterPills, useSearchQueryParams } from '@/features/search/hooks';
 import { useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { useNavigateToCatalogue, useNavigateToSameScopeUrl, useNavigateToScope } from '@/hooks/navigation';
@@ -20,7 +20,7 @@ const NO_BACK_BUTTON = [undefined, undefined] as const;
 
 const useBackButtonInfo = () => {
   const location = useLocation();
-  const overviewQueryParams = useSearchQueryParams();
+  const exploreQueryParams = useSearchQueryParams();
   const currentPage = getCurrentPage(location);
 
   const navigateToCatalogue = useNavigateToCatalogue();
@@ -33,7 +33,7 @@ const useBackButtonInfo = () => {
     if (currentPage === BentoRoute.Phenopackets) {
       return [
         scope.dataset ? 'Back to dataset' : 'Back to project',
-        () => navigateToSameScopeUrl(buildQueryParamsUrl(BentoRoute.Overview, overviewQueryParams), false),
+        () => navigateToSameScopeUrl(buildQueryParamsUrl(BentoRoute.Explore, exploreQueryParams), false),
       ];
     } else {
       if (scope.dataset) {
@@ -41,7 +41,7 @@ const useBackButtonInfo = () => {
         const cameFromProject = (location.state as { fromProjectScope?: boolean } | null)?.fromProjectScope;
         return PCGL_MODE && !cameFromProject
           ? ['Back to catalogue', navigateToCatalogue]
-          : ['Back to project', () => navigateToScope({ project: scope.project }, BentoRoute.Overview)];
+          : ['Back to project', () => navigateToScope({ project: scope.project }, BentoRoute.Explore)];
       } else if (scope.project) {
         return fixedProject ? NO_BACK_BUTTON : ['Back to catalogue', navigateToCatalogue];
       } else {
@@ -54,7 +54,7 @@ const useBackButtonInfo = () => {
     navigateToCatalogue,
     navigateToScope,
     navigateToSameScopeUrl,
-    overviewQueryParams,
+    exploreQueryParams,
     scope,
     fixedProject,
     fixedDataset,
@@ -89,6 +89,9 @@ const ScopeHeader = ({
   const [helpModalOpen, setHelpModalOpen] = useState(false);
   const [backClickText, onBackClick] = useBackButtonInfo();
 
+  const { pills } = useActiveFilterPills();
+  const filtersCount = pills.length;
+
   const currentPageHasHelp = useMemo(() => {
     const k = `page_help.${currentPage}`;
     return k !== t(k);
@@ -112,19 +115,21 @@ const ScopeHeader = ({
   if (!breadcrumbItems.length && !showSidebarToggle) return null;
 
   return (
-    <header id="scope-header" style={{ paddingLeft: showSidebarToggle ? undefined : 'var(--content-padding-h)' }}>
+    <div id="scope-header" style={{ paddingLeft: showSidebarToggle ? undefined : 'var(--content-padding-h)' }}>
       <CurrentPageHelpModal open={helpModalOpen} onCancel={() => setHelpModalOpen(false)} />
       <Flex>
         {showSidebarToggle && (
-          <Button
-            id="scope-header__sidebar-toggle"
-            className={sidebarOverlayShown ? 'active' : ''}
-            icon={<FilterOutlined />}
-            color="default"
-            variant="filled"
-            size="large"
-            onMouseDown={onToggleSidebar}
-          />
+          <Badge count={filtersCount} size="small" offset={[-12, 12]} className="catalogue-toolbar-fixed">
+            <Button
+              id="scope-header__sidebar-toggle"
+              className={sidebarOverlayShown ? 'active' : ''}
+              icon={<FilterOutlined />}
+              color="default"
+              variant="filled"
+              size="large"
+              onClick={onToggleSidebar}
+            />
+          </Badge>
         )}
         {breadcrumbItems.length > 0 && (
           <Flex className="scoped-title flex-1" align="center">
@@ -167,7 +172,7 @@ const ScopeHeader = ({
           </Flex>
         )}
       </Flex>
-    </header>
+    </div>
   );
 };
 

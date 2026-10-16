@@ -12,7 +12,7 @@ const HELP_LINES = 4;
 const VariantsInstructions = () => {
   const t = useTranslationFn();
   return (
-    <Space direction="vertical" style={{ minWidth: '510px' }}>
+    <Space orientation="vertical" style={{ minWidth: '510px' }}>
       <Title level={4} style={{ color: 'white', marginTop: '10px' }}>
         {t('beacon.variants_help_title')}
       </Title>

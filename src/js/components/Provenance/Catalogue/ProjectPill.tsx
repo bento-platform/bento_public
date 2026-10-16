@@ -18,7 +18,7 @@ const ProjectPill = ({ project }: { project: Project }) => {
       label={title}
       onClick={(e) => {
         e.stopPropagation();
-        navigateToScope({ project: identifier }, BentoRoute.Overview);
+        navigateToScope({ project: identifier }, BentoRoute.Explore);
       }}
     />
   );

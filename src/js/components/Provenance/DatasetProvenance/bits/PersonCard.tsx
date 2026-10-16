@@ -1,4 +1,5 @@
 import { useId } from 'react';
+import { Typography } from 'antd';
 import {
   BankOutlined,
   EnvironmentOutlined,
@@ -9,21 +10,17 @@ import {
 } from '@ant-design/icons';
 
 import { useTranslationFn } from '@/hooks';
+import { roleTranslationKey } from '@/features/catalogue/utils';
 import type { Organization, Person, PersonOrOrganization } from '@/types/dataset';
-import { CopyButton } from './CopyButton';
 
 export const PersonCard = ({
   person,
-  idx,
   lead,
-  copiedKey,
-  onCopy,
+  compact,
 }: {
   person: PersonOrOrganization;
-  idx: number;
   lead?: boolean;
-  copiedKey: string | null;
-  onCopy: (value: string, id: string) => void;
+  compact?: boolean;
 }) => {
   const t = useTranslationFn();
 
@@ -49,7 +46,7 @@ export const PersonCard = ({
       : person.name;
 
   return (
-    <div className={`pm-pcard${lead ? ' lead' : ''}`}>
+    <div className={`pm-pcard${lead ? ' lead' : ''}${compact ? ' compact' : ''}`}>
       <div className="pm-pc-top">
         <div className="pm-pc-id">
           <div className="pm-pc-type" id={typeId}>
@@ -76,9 +73,9 @@ export const PersonCard = ({
 
       {person.roles.length > 0 && (
         <div className="pm-pc-roles">
-          {person.roles.map((r, i) => (
-            <span key={i} className="pm-role">
-              {r}
+          {person.roles.map((r) => (
+            <span key={r} className="pm-role">
+              {t(roleTranslationKey(r), { defaultValue: r })}
             </span>
           ))}
         </div>
@@ -86,13 +83,13 @@ export const PersonCard = ({
 
       {hasContact && (
         <div className="pm-pc-contact">
-          {contact?.email?.map((email, i) => (
-            <div key={i} className="pm-cline">
+          {contact?.email?.map((email) => (
+            <div key={email} className="pm-cline">
               <MailOutlined />
               <span className="pm-cline-text">
                 <a href={`mailto:${email}`}>{email}</a>
               </span>
-              <CopyButton value={email} id={`email-${idx}-${i}`} copiedKey={copiedKey} onCopy={onCopy} />
+              <Typography.Text copyable={{ text: email }} />
             </div>
           ))}
           {contact?.website && (
@@ -127,7 +124,7 @@ export const PersonCard = ({
                 <span className="pm-orcid-badge">iD</span>
                 {p.orcid}
               </span>
-              <CopyButton value={p.orcid} id={`orcid-${idx}`} copiedKey={copiedKey} onCopy={onCopy} />
+              <Typography.Text copyable={{ text: p.orcid }} />
             </div>
           )}
         </div>

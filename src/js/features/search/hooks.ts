@@ -2,8 +2,10 @@ import { useCallback, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAppSelector, useLanguage, useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
+import { useHaveEntityDataForField } from '@/hooks/useHaveEntityData';
 import type { ActiveFilterPill } from '@/components/Util/ActiveFilterTags';
 import { formatDateFilterValue } from '@/utils/rangeFilterUtils';
+import { WAITING_STATES } from '@/constants/requests';
 import {
   ENTITY_QUERY_PARAM,
   TABLE_PAGE_QUERY_PARAM,
@@ -23,7 +25,27 @@ export const useSearchQuery = () => useAppSelector((state) => state.query);
 
 export const useAvailableChartSections = () => {
   const { sections } = useSearchQuery();
-  return useMemo(() => sections.filter(({ charts }) => charts.length > 0), [sections]);
+  const haveEntityDataForField = useHaveEntityDataForField();
+
+  return useMemo(
+    () =>
+      sections
+        .map((section) => ({
+          ...section,
+          // Filter out chart definitions which use entities without data in the current scope
+          charts: section.charts.filter((c) => haveEntityDataForField(c.field)),
+        }))
+        .filter(({ charts }) => charts.length > 0),
+    [sections, haveEntityDataForField]
+  );
+};
+
+export const useDisplayedChartSections = () => {
+  const availableChartSections = useAvailableChartSections();
+  return useMemo(
+    () => availableChartSections.filter(({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1),
+    [availableChartSections]
+  );
 };
 
 export const useSearchFilterFields = (): SearchFieldAndOptions[] => {
@@ -71,7 +93,7 @@ export const useSearchQueryParams = (): QueryParamEntries => {
 
 /**
  * Active-filter pills (for display outside the sidebar, e.g. between the About section and the count
- * cards on the overview page) plus the actions to remove one filter value or clear all filters. Shared
+ * cards on the explore page) plus the actions to remove one filter value or clear all filters. Shared
  * with SearchFilters (the sidebar's own filter-editing form) so both surfaces navigate the URL the same way.
  */
 export const useActiveFilterPills = (): { pills: ActiveFilterPill[]; clearAll: () => void } => {
@@ -84,7 +106,12 @@ export const useActiveFilterPills = (): { pills: ActiveFilterPill[]; clearAll: (
   const entityAndTextQueryParams = useEntityAndTextQueryParams();
 
   const clearAll = useCallback(() => {
-    const url = buildQueryParamsUrl(pathname, entityAndTextQueryParams);
+    const url = buildQueryParamsUrl(
+      pathname,
+      // Filter out text query and table page from query params if set when clearing all filters, as we may also be
+      // clearing a text query (and either way, the page will be invalid.)
+      entityAndTextQueryParams.filter((e) => e[0] !== TEXT_QUERY_PARAM && e[0] !== TABLE_PAGE_QUERY_PARAM)
+    );
     navigate(url, { replace: true });
   }, [pathname, entityAndTextQueryParams, navigate]);
 
@@ -168,4 +195,12 @@ export const useSearchableFields = () => {
     () => new Set(filterSections.flatMap((section) => section.fields).map((field) => field.id)),
     [filterSections]
   );
+};
+
+export const useIsSearchLoading = () => {
+  const {
+    discoveryStatus,
+    wholeScopeData: { status: wholeScopeStatus },
+  } = useSearchQuery();
+  return WAITING_STATES.includes(discoveryStatus) || WAITING_STATES.includes(wholeScopeStatus);
 };

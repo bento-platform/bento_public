@@ -4,7 +4,7 @@ import { InfoCircleOutlined } from '@ant-design/icons';
 
 const SearchToolTip = ({ children }: { children: ReactNode }) => {
   return (
-    <Tooltip title={children} styles={{ body: { display: 'inline-block' } }}>
+    <Tooltip title={children} styles={{ container: { display: 'inline-block' } }}>
       <InfoCircleOutlined />
     </Tooltip>
   );

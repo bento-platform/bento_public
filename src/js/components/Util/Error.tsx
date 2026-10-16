@@ -2,7 +2,7 @@ import { Alert, type AlertProps } from 'antd';
 import clsx from 'clsx';
 import { useTranslationFn } from '@/hooks';
 
-export type ErrorProps = { message: string } & Omit<AlertProps, 'type' | 'showIcon' | 'message'>;
+export type ErrorProps = { message: string } & Omit<AlertProps, 'type' | 'showIcon' | 'title'>;
 
 const Error = ({ message, className, ...props }: ErrorProps) => {
   const t = useTranslationFn();
@@ -11,7 +11,7 @@ const Error = ({ message, className, ...props }: ErrorProps) => {
       className={clsx('container rounded-xl mx-auto shadow', className)}
       type="error"
       showIcon={true}
-      message={t(`errors.${message}`)}
+      title={t(`errors.${message}`)}
       {...props}
     />
   );
