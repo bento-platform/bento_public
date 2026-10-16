@@ -2,11 +2,11 @@ import { useCallback, useEffect } from 'react';
 import type { TypedUseSelectorHook } from 'react-redux';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import type { Resource } from 'bento-auth-js';
+import { type Resource } from 'bento-auth-js';
 import { RESOURCE_EVERYTHING, queryData } from 'bento-auth-js';
-import { useHasResourcePermission } from '@/features/auth/hooks';
 import { filesize } from 'filesize';
 
+import { useHasResourcePermission, useResourcesPermissions } from '@/features/auth/hooks';
 import { useSelectedScopeAsResource } from '@/features/metadata/hooks';
 import type { RootState, AppDispatch } from '@/store';
 import { CUSTOMIZABLE_TRANSLATION } from '@/constants/configConstants';
@@ -61,8 +61,15 @@ export const useLocaleFileSize = () => {
 
 // ################### AUTH/AUTHZ HOOKS ###################
 
+const _authzUrlSelector = (state: RootState) => state.config.serviceInfo.auth;
+
+export const useResourcesPermissionsWrapper = (resources: Resource[]) => {
+  const authzUrl = useAppSelector(_authzUrlSelector);
+  return useResourcesPermissions(resources, authzUrl);
+};
+
 export const useHasResourcePermissionWrapper = (resource: Resource, permission: string) => {
-  const authzUrl = useAppSelector((state) => state.config.serviceInfo.auth);
+  const authzUrl = useAppSelector(_authzUrlSelector);
 
   const {
     isFetching: fetchingPermission,

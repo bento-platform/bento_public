@@ -5,7 +5,7 @@ import { Divider, Empty, Button, Flex, Grid, Typography } from 'antd';
 import { PCGL_MODE } from '@/config';
 import { useMetadata } from '@/features/metadata/hooks';
 import { useCatalogueFilter, useCatalogueState } from '@/features/catalogue/hooks';
-import { useAppDispatch, useLanguage } from '@/hooks';
+import { useAppDispatch, useLanguage, useResourcesPermissionsWrapper } from '@/hooks';
 import { useTranslationFn } from '@/hooks';
 import { setProjectColors } from '@/features/catalogue/catalogue.store';
 import { useCatalogueUrlSync, useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
@@ -17,6 +17,7 @@ import CatalogueRail from './CatalogueRail';
 import CatalogueToolbar from './CatalogueToolbar';
 import CatalogueInsights from './CatalogueInsights';
 import Dataset from '@/components/Provenance/Dataset';
+import { makeResourceKey } from 'bento-auth-js';
 
 const { Text } = Typography;
 const { useBreakpoint } = Grid;
@@ -41,6 +42,15 @@ const Catalogue = () => {
     () => projects.flatMap((p) => (p.datasets ?? []).map((d) => ({ dataset: d, project: p }))),
     [projects]
   );
+
+  const datasetResources = useMemo(
+    () => allDatasets.map(({ project, dataset }) => ({ project: project.identifier, dataset: dataset.identifier })),
+    [allDatasets]
+  );
+
+  // TODO: use specific evaluate matrix on desired permissions instead of fetching all permissions?
+  const datasetPermissions = useResourcesPermissionsWrapper(datasetResources);
+  console.log(datasetPermissions);
 
   const { filtered, facetOptions } = useCatalogueFilter(allDatasets);
 
@@ -120,6 +130,9 @@ const Catalogue = () => {
                   parentProjectID={project.identifier}
                   dataset={dataset}
                   project={project}
+                  permissionsData={
+                    datasetPermissions[makeResourceKey({ project: project.identifier, dataset: dataset.identifier })]
+                  }
                 />
               ))}
             </div>

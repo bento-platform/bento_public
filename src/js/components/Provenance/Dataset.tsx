@@ -4,20 +4,23 @@ import { Avatar, Button, Card, Flex, List, Typography } from 'antd';
 import { PieChartOutlined, SolutionOutlined } from '@ant-design/icons';
 import { FaDatabase } from 'react-icons/fa';
 
-import { PCGL_MODE } from '@/config';
+import { downloadData, queryData } from 'bento-auth-js';
+import { APPLY_FOR_ACCESS_URL, PCGL_MODE } from '@/config';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type { Dataset } from '@/types/dataset';
 import type { Project } from '@/types/metadata';
 import { BentoRoute } from '@/types/routes';
 import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
+import type { ResourcePermissionsState } from '@/features/auth/hooks';
 import { getCurrentPage } from '@/utils/router';
 import { useLanguage, useTranslationFn } from '@/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
 import { nonEmptyCounts } from '@/utils/counts';
 import { isoDateToString } from '@/utils/strings';
-import StatusBadge from '@/components/Util/StatusBadge';
-import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
-import CountsDisplay from '@/components/Util/CountsDisplay';
+import CountsDisplay from '@Util/CountsDisplay';
+import DatasetApplyForAccessButton from '@Util/DatasetApplyForAccessButton';
+import StatusBadge from '@Util/StatusBadge';
+import TruncatedParagraph from '@Util/TruncatedParagraph';
 import KeywordList from './KeywordList';
 import ProgramPill from './Catalogue/ProgramPill';
 import ProjectPill from './Catalogue/ProjectPill';
@@ -38,6 +41,7 @@ const Dataset = ({
   selected,
   filteredCounts,
   fromProject,
+  permissionsData,
 }: {
   parentProjectID: string;
   dataset: Dataset;
@@ -48,6 +52,8 @@ const Dataset = ({
   // Whether this dataset is being linked to from within its parent project's own page - used to inform the
   // dataset scope's back button (in PCGL mode, it otherwise defaults to going back to the catalogue).
   fromProject?: boolean;
+  // Permissions data injected from bulk fetch. TODO: move to some kind of BFF shared cache state to avoid re-fetching.
+  permissionsData?: ResourcePermissionsState;
 }) => {
   const language = useLanguage();
   const navigateToScope = useNavigateToScope();
@@ -153,14 +159,18 @@ const Dataset = ({
         )}
 
         <Flex gap={8} className="catalogue-card__actions mt-3" wrap>
+          <Button icon={<SolutionOutlined />} className="flex-1" onClick={openProvenanceModal}>
+            {t('About')}
+          </Button>
           {hasData && (
             <Button type="primary" icon={<PieChartOutlined />} className="flex-1" onClick={onNavigateExplore}>
               {t('Explore')}
             </Button>
           )}
-          <Button icon={<SolutionOutlined />} className="flex-1" onClick={openProvenanceModal}>
-            {t('About')}
-          </Button>
+          {APPLY_FOR_ACCESS_URL &&
+            permissionsData?.hasAttempted &&
+            !permissionsData.permissions.includes(queryData) &&
+            !permissionsData.permissions.includes(downloadData) && <DatasetApplyForAccessButton className="flex-1" />}
         </Flex>
       </Card>
     );

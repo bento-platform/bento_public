@@ -1,5 +1,5 @@
 import { Fragment, type ReactNode } from 'react';
-import { Button, Popover, Typography } from 'antd';
+import { Button, Flex, Popover, Typography } from 'antd';
 import {
   CalendarOutlined,
   DatabaseOutlined,
@@ -10,7 +10,10 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 
+import { PCGL_MODE } from '@/config';
+
 import { useTranslationFn } from '@/hooks';
+import { useScopeQueryData, useScopeDownloadData } from '@/hooks/censorship';
 import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
 import { getLeads } from '@/features/catalogue/utils';
 import type { Dataset } from '@/types/dataset';
@@ -20,12 +23,16 @@ import StatusBadge from '@Util/StatusBadge';
 import InteractableText from '@Util/InteractableText';
 import DatasetDescription from '@/components/Provenance/DatasetProvenance/DatasetDescription';
 import { PersonCard } from '@/components/Provenance/DatasetProvenance/bits';
+import DatasetApplyForAccessButton from '@Util/DatasetApplyForAccessButton';
 
 type RecordRow = { icon: ReactNode; label: string; value: ReactNode };
 
 const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
   const t = useTranslationFn();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
+
+  const { hasPermission: queryDataPerm, fetchingPermission: fetchingQueryDataPerm } = useScopeQueryData();
+  const { hasPermission: downloadDataPerm, fetchingPermission: fetchingDownloadDataPerm } = useScopeDownloadData();
 
   const statusContextLabel = dataset.study_context ?? null;
 
@@ -134,14 +141,19 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
             </div>
           ))}
         </dl>
-        <Button
-          icon={<SolutionOutlined aria-hidden="true" />}
-          block
-          className="explore-hero-record-more"
-          onClick={() => navigateToSameScopeUrl(BentoRoute.About, false)}
-        >
-          {t('About')}
-        </Button>
+        <Flex gap="medium" className="explore-hero-record-actions">
+          <Button
+            icon={<SolutionOutlined aria-hidden="true" />}
+            block
+            className="flex-1"
+            onClick={() => navigateToSameScopeUrl(BentoRoute.About, false)}
+          >
+            {t('About')}
+          </Button>
+          {PCGL_MODE && !fetchingQueryDataPerm && !fetchingDownloadDataPerm && !queryDataPerm && !downloadDataPerm && (
+            <DatasetApplyForAccessButton className="flex-1" type="primary" />
+          )}
+        </Flex>
       </section>
     </div>
   );
