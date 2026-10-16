@@ -26,6 +26,7 @@ export function GET() {
     SHOW_SIGN_IN: parseBoolean(process.env.BENTO_PUBLIC_SHOW_SIGN_IN),
     FORCE_CATALOGUE: parseBoolean(process.env.BENTO_PUBLIC_FORCE_CATALOGUE), // Show data catalogue even with 1 project
     PCGL_MODE: parseBoolean(process.env.BENTO_PUBLIC_PCGL_MODE),
+    SHOW_DEV_SETTINGS: parseBoolean(process.env.BENTO_PUBLIC_SHOW_DEV_SETTINGS), // Dev/staging testing only
 
     // Theme variables
     CATALOGUE_HEADER_BACKGROUND: process.env.BENTO_PUBLIC_CATALOGUE_HEADER_BACKGROUND,
@@ -37,8 +38,7 @@ export function GET() {
     BEACON_NETWORK_ENABLED: parseBoolean(process.env.BENTO_BEACON_NETWORK_ENABLED),
 
     // Authentication
-    CLIENT_ID: process.env.CLIENT_ID || null,
-    OPENID_CONFIG_URL: process.env.OPENID_CONFIG_URL || null,
+    SESSION_REFETCH_INTERVAL_SECONDS: process.env.BENTO_PUBLIC_SESSION_REFETCH_INTERVAL_SECONDS || '120',
   };
 
   return new Response(`BENTO_PUBLIC_CONFIG = ${JSON.stringify(siteConfig, null, 2)};\n`, {

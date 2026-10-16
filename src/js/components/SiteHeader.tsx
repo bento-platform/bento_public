@@ -1,8 +1,9 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Button, Flex, Layout, Menu, type MenuProps, Space, Typography, theme } from 'antd';
-import { useAuthState, useIsAuthenticated, useOpenIdConfig, usePerformAuth, usePerformSignOut } from 'bento-auth-js';
+import { useSession } from 'next-auth/react';
+import { useIsAuthenticated, usePerformAuth, usePerformSignOut } from '@/features/auth/hooks';
 
 import { RiTranslate } from 'react-icons/ri';
 import { LoginOutlined, LogoutOutlined } from '@ant-design/icons';
@@ -74,12 +75,20 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
   const currentPage = getCurrentPage(location);
   const navigateToRoot = useNavigateToRoot();
 
-  const { isFetching: openIdConfigFetching } = useOpenIdConfig();
-  const { isHandingOffCodeForToken } = useAuthState();
+  const { status: sessionStatus } = useSession();
 
   const isAuthenticated = useIsAuthenticated();
   const performSignOut = usePerformSignOut();
   const performSignIn = usePerformAuth();
+
+  // performSignOut() clears our session before it redirects to the identity provider to end its session too, so
+  // isAuthenticated flips to false mid-callback - without this, the button would flash to "Sign In" and back before
+  // the page actually navigates away.
+  const [isSigningOut, setIsSigningOut] = useState(false);
+  const handleSignOut = useCallback(() => {
+    setIsSigningOut(true);
+    performSignOut();
+  }, [performSignOut]);
 
   const {
     token: { colorBgContainer, colorBorderSecondary },
@@ -181,20 +190,21 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
             </Button>
           )}
           {SHOW_SIGN_IN &&
-            (isAuthenticated ? (
+            (isAuthenticated || isSigningOut ? (
               <Button
                 color="default"
                 className="header-button"
                 icon={<LogoutOutlined aria-hidden />}
                 shape="round"
                 variant="filled"
-                onClick={performSignOut}
+                loading={isSigningOut}
+                onClick={handleSignOut}
               >
                 {isSmallScreen ? '' : t('Sign Out')}
               </Button>
             ) : (
               <Button type="primary" shape="round" icon={<LoginOutlined aria-hidden />} onClick={performSignIn}>
-                {openIdConfigFetching || isHandingOffCodeForToken ? t('Loading...') : isSmallScreen ? '' : t('Sign In')}
+                {sessionStatus === 'loading' ? t('Loading...') : isSmallScreen ? '' : t('Sign In')}
               </Button>
             ))}
         </Space>
