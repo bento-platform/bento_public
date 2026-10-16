@@ -1,6 +1,6 @@
 import { lazy, useEffect } from 'react';
 import { Routes, Route, useNavigate, useParams, Outlet } from 'react-router-dom';
-import { useAutoAuthenticate, useIsAuthenticated } from 'bento-auth-js';
+import { useIsAuthenticated, useIsAuthReady } from '@/features/auth/hooks';
 import { useAppDispatch, useLanguage } from '@/hooks';
 
 import {
@@ -18,6 +18,7 @@ import { makeGetDataTypes } from '@/features/dataTypes/dataTypes.store';
 import { useMetadata } from '@/features/metadata/hooks';
 import { getProjects, markScopeSet, resetProjects, selectScope } from '@/features/metadata/metadata.store';
 import { getGenomes } from '@/features/reference/reference.store';
+import { getIgvGenomes } from '@/features/igv/igv.store';
 import {
   fetchSearchFields,
   fetchDiscoveryUIHints,
@@ -105,8 +106,8 @@ const BentoAppRouter = () => {
   const dispatch = useAppDispatch();
   const language = useLanguage();
 
-  const { isAutoAuthenticating } = useAutoAuthenticate();
   const isAuthenticated = useIsAuthenticated();
+  const isAuthReady = useIsAuthReady();
   const {
     selectedScope: { scope, scopeSet },
     projectsByID,
@@ -181,14 +182,17 @@ const BentoAppRouter = () => {
     dispatch(makeGetAboutRequest());
     dispatch(makeGetServiceInfoRequest());
     dispatch(getGenomes());
+    dispatch(getIgvGenomes());
   }, [dispatch]);
 
   useEffect(() => {
+    // Projects are fetched with the user's token, so wait for the session to resolve first.
+    if (!isAuthReady) return;
     dispatch(resetProjects());
     dispatch(getProjects(language));
-  }, [dispatch, language]);
+  }, [dispatch, language, isAuthReady]);
 
-  if (isAutoAuthenticating || projectsStatus === RequestStatus.Pending) {
+  if (!isAuthReady || projectsStatus === RequestStatus.Pending) {
     return <Loader fullHeight={true} />;
   }
 
