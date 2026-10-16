@@ -1,113 +1,75 @@
-import { Flex, Grid, Layout } from 'antd';
-import { useMemo } from 'react';
+import Image from 'next/image';
 import { useTranslationFn } from '@/hooks';
-import clsx from 'clsx';
-
 import { ADMIN_URL, SHOW_ADMIN_LINK } from '@/config';
+import { FooterContainer } from '@repo/ui/footer';
+import BentoLogo from './assets/bento.svg';
+import GPLLogo from './assets/gplv3.svg';
+import C3GLogo from './assets/c3g.png';
+import './styles.css';
 
-const { Footer } = Layout;
-const { useBreakpoint } = Grid;
+type LinkItemProps = React.AnchorHTMLAttributes<HTMLAnchorElement> & { url: string };
 
-const PCGL_LINKS: { key: string; href?: string }[] = [
-  {
-    key: 'contact',
-    href: 'contactHref',
-  },
-  {
-    key: 'policies',
-  },
-  {
-    key: 'helpGuides',
-    href: 'helpGuidesHref',
-  },
-  {
-    key: 'controlledDataUsers',
-  },
-  {
-    key: 'pcglWebsite',
-    href: 'pcglWebsiteHref',
-  },
-  {
-    key: 'dataPlatform',
-  },
-  {
-    key: 'privacy',
-    href: 'privacyHref',
-  },
-  {
-    key: 'termsConditions',
-    href: 'termsHref',
-  },
-  {
-    key: 'publicationPolicy',
-  },
-  ...(SHOW_ADMIN_LINK
-    ? [
-        {
-          key: 'admin',
-          href: ADMIN_URL,
-        },
-      ]
-    : []),
-];
-
-const PcglFooter = () => {
+export const Footer = () => {
   const t = useTranslationFn();
-  const breakpoints = useBreakpoint();
+  return <FooterContainer translator={t} PortalBand={<BentoBand />} />;
+};
 
-  // makes the function 'pure' as in same params/state --> same output (although this would only be a """bug""" on NYE.
-  const currentYear = useMemo(() => new Date().getFullYear(), []);
+const BentoBand = () => {
+  const t = useTranslationFn();
 
   return (
-    <Footer id="pcgl-footer">
-      <Flex align="center" gap={breakpoints.xl ? 48 : 24} vertical={!breakpoints.xl}>
-        <Flex vertical={true} gap={16} className="flex-1">
-          <Flex gap={breakpoints.md ? 48 : 8} vertical={!breakpoints.md}>
-            <a href={t('pcgl.links.pcglWebsiteHref')} rel="noreferrer" target="_blank">
-              <img src="/public/assets/pcgl_logo_footer.png" alt={t('pcgl.footer.logo_alt')} style={{ width: 200 }} />
-            </a>
-            <a href={t('pcgl.links.cihrHref')} rel="noreferrer" target="_blank">
-              <img
-                src="/public/assets/cihr_logo_footer.png"
-                alt={t('pcgl.footer.cihr_logo_alt')}
-                style={{ width: 260 }}
-              />
-            </a>
-          </Flex>
-          <p style={{ marginBottom: 0 }}>
-            {t('pcgl.footer.cihr_support')}
-            <br />
-            {t('pcgl.footer.powered_by')}{' '}
-            <a href="https://github.com/bento-platform/bento" rel="noreferrer" target="_blank">
-              {t('pcgl.footer.bento')}
-            </a>
-            .<br />
-            {t('footer.copyright')} 2019-{currentYear}{' '}
-            <a href="https://computationalgenomics.ca" rel="noreferrer" target="_blank">
-              {t('footer.c3g')}
-            </a>
-            .
-          </p>
-        </Flex>
-        <div id="pcgl-footer__links" className={clsx({ 'w-full': !breakpoints.xl })}>
-          {PCGL_LINKS.map((link) => (
-            <a
-              key={link.key}
-              className={clsx({ disabled: !link.href })}
-              aria-hidden={!link.href}
-              // If the link href is an actual URL rather than a translation key, render the href directly.
-              // Otherwise, look up the href using the translation function.
-              href={link.href ? (link.href.startsWith('http') ? link.href : t(`pcgl.links.${link.href}`)) : undefined}
-              rel="noreferrer"
-              target="_blank"
-            >
-              {t(`pcgl.links.${link.key}`)}
-            </a>
-          ))}
-        </div>
-      </Flex>
-    </Footer>
+    <div className="bento-footer">
+      <div className="about">
+        <p>{t('footer.bento.powered_by')} </p>
+        <LinkItem url="https://bento-platform.github.io">
+          <Image src={BentoLogo} width={288} height={68} className="bento-logo" alt={t('footer.bento.bento')} />
+        </LinkItem>
+      </div>
+      <ul className="links">
+        <li>
+          <LinkItem url="/public/terms.html">{t('footer.bento.terms_of_use')}</LinkItem>
+        </li>
+        <li>
+          <LinkItem url="https://computationalgenomics.ca" aria-label={t('footer.c3g')}>
+            C3G
+          </LinkItem>
+        </li>
+        {SHOW_ADMIN_LINK && (
+          <li>
+            <LinkItem url={ADMIN_URL} aria-label={t('footer.admin_link_tooltip')}>
+              {t('footer.bento.admin_link')}
+            </LinkItem>
+          </li>
+        )}
+      </ul>
+      <p className="legal">
+        <Image src={GPLLogo} className="gpl-logo" alt="" /> {t('footer.bento.licensed_under')}{' '}
+        <LinkItem url="https://github.com/bento-platform/bento_public/blob/main/LICENSE">LGPLv3</LinkItem>
+        {'. '}
+        {t('footer.bento.source_available')} <LinkItem url="https://github.com/bento-platform">Github</LinkItem>.
+      </p>
+      <p className="c3g">
+        <Image src={C3GLogo} className="c3g-logo" alt="" />
+        <span>© C3G, {new Date().getFullYear()}</span>
+      </p>
+    </div>
   );
 };
 
-export default PcglFooter;
+const LinkItem = ({ children, url, target, ...props }: LinkItemProps) => {
+  const isExternal = url.startsWith('http');
+  const linkTarget = target ?? (isExternal ? '_blank' : undefined);
+  return (
+    <a
+      className="focus-ring link-item"
+      href={url}
+      target={linkTarget}
+      rel={linkTarget === '_blank' ? 'noreferrer' : undefined}
+      {...props}
+    >
+      {children}
+    </a>
+  );
+};
+
+export default Footer;
