@@ -16,7 +16,7 @@ import type { BackOrigin } from '@/types/navigation';
 const STORAGE_KEY = 'bento:backEntries';
 
 type DatasetBackEntry = { idx: number; origin: BackOrigin; dataset: string };
-type BackEntries = { dataset?: DatasetBackEntry; explore?: { idx: number } };
+type BackEntries = { dataset?: DatasetBackEntry };
 
 const isBrowser = () => typeof window !== 'undefined';
 
@@ -54,22 +54,12 @@ export const currentHistoryIdx = (): number => (isBrowser() ? ((window.history.s
 export const recordDatasetBackEntry = (origin: BackOrigin, dataset: string) =>
   writeEntries({ ...readEntries(), dataset: { idx: currentHistoryIdx(), origin, dataset } });
 
-/** Call just before navigating from an Explore page to a phenopacket view, while Explore is still current. */
-export const recordExploreBackEntry = () => writeEntries({ ...readEntries(), explore: { idx: currentHistoryIdx() } });
-
 /** How to get back to where the user entered `dataset` from, if the history still lets us: the origin and # of steps. */
 export const getDatasetBackSteps = (dataset: string): { origin: BackOrigin; steps: number } | undefined => {
   const entry = readEntries().dataset;
   if (!entry || entry.dataset !== dataset) return undefined;
   const steps = currentHistoryIdx() - entry.idx;
   return steps > 0 ? { origin: entry.origin, steps } : undefined;
-};
-
-/** How many steps back the Explore page the user entered a phenopacket view from is, if the history still has it. */
-export const getExploreBackSteps = (): number | undefined => {
-  const entry = readEntries().explore;
-  const steps = entry ? currentHistoryIdx() - entry.idx : 0;
-  return steps > 0 ? steps : undefined;
 };
 
 /**

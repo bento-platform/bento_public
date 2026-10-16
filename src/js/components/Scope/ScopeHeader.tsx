@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Badge, Breadcrumb, type BreadcrumbProps, Button, Flex, Menu, Tooltip } from 'antd';
 import { ArrowLeftOutlined, FilterOutlined, QuestionOutlined } from '@ant-design/icons';
 import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
@@ -12,7 +12,6 @@ import { useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import {
   useDatasetBackEntry,
-  useExploreBackSteps,
   useNavigateBackToDatasetOrigin,
   useNavigateToCatalogue,
   useNavigateToSameScopeUrl,
@@ -20,7 +19,6 @@ import {
 } from '@/hooks/navigation';
 import { BentoRoute } from '@/types/routes';
 import { getCurrentPage } from '@/utils/router';
-import { markKeepLanguageOnPop } from '@/utils/backNavigation';
 import { buildQueryParamsUrl } from '@/features/search/utils';
 import { PCGL_MODE } from '@/config';
 
@@ -31,13 +29,11 @@ const useBackButtonInfo = () => {
   const exploreQueryParams = useSearchQueryParams();
   const currentPage = getCurrentPage(location);
 
-  const navigate = useNavigate();
   const navigateToCatalogue = useNavigateToCatalogue();
   const navigateToScope = useNavigateToScope();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
   const datasetBackEntry = useDatasetBackEntry();
   const navigateBackToDatasetOrigin = useNavigateBackToDatasetOrigin();
-  const exploreBackSteps = useExploreBackSteps();
   const { scope, scopeSet, fixedProject, fixedDataset } = useSelectedScope();
 
   return useMemo<readonly [undefined, undefined] | [string, () => void]>(() => {
@@ -45,15 +41,7 @@ const useBackButtonInfo = () => {
     if (currentPage === BentoRoute.Phenopackets) {
       return [
         scope.dataset ? 'Back to dataset' : 'Back to project',
-        exploreBackSteps
-          ? // Pop back to the Explore page we came from, so its search is restored from the URL and the history
-            // doesn't grow a duplicate Explore entry (which would make later back clicks land on this phenopacket).
-            () => {
-              markKeepLanguageOnPop();
-              navigate(-exploreBackSteps);
-            }
-          : // Landed here directly, so rebuild the Explore URL from whatever search state we have:
-            () => navigateToSameScopeUrl(buildQueryParamsUrl(BentoRoute.Explore, exploreQueryParams), false),
+        () => navigateToSameScopeUrl(buildQueryParamsUrl(BentoRoute.Explore, exploreQueryParams), false),
       ];
     } else {
       if (scope.dataset) {
@@ -79,8 +67,6 @@ const useBackButtonInfo = () => {
   }, [
     currentPage,
     datasetBackEntry,
-    exploreBackSteps,
-    navigate,
     navigateBackToDatasetOrigin,
     navigateToCatalogue,
     navigateToScope,

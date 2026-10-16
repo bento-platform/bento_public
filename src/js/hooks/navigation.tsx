@@ -17,12 +17,7 @@ import { type DiscoveryScope, selectScope } from '@/features/metadata/metadata.s
 import type { MenuItem } from '@/types/navigation';
 import { BentoRoute } from '@/types/routes';
 import { useAppDispatch, useLanguage, useTranslationFn } from '@/hooks';
-import {
-  getDatasetBackSteps,
-  getExploreBackSteps,
-  markBackPopPending,
-  markKeepLanguageOnPop,
-} from '@/utils/backNavigation';
+import { getDatasetBackSteps, markBackPopPending, markKeepLanguageOnPop } from '@/utils/backNavigation';
 import { getCurrentPage, langAndScopeSelectionToUrl, scopeToUrl } from '@/utils/router';
 
 /** Prefixes a path with the currently-selected i18n language. */
@@ -116,12 +111,6 @@ export const useNavigateBackToDatasetOrigin = () => {
     },
     [dispatch, navigate]
   );
-};
-
-/** How many history steps back the Explore page we entered a phenopacket view from is, if known. */
-export const useExploreBackSteps = () => {
-  useLocation(); // re-render (and so re-read the history index) on navigation
-  return getExploreBackSteps();
 };
 
 /**
