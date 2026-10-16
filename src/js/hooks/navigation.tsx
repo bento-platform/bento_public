@@ -17,7 +17,12 @@ import { type DiscoveryScope, selectScope } from '@/features/metadata/metadata.s
 import type { MenuItem } from '@/types/navigation';
 import { BentoRoute } from '@/types/routes';
 import { useAppDispatch, useLanguage, useTranslationFn } from '@/hooks';
-import { getDatasetBackSteps, getExploreBackSteps, markBackPopPending } from '@/utils/backNavigation';
+import {
+  getDatasetBackSteps,
+  getExploreBackSteps,
+  markBackPopPending,
+  markKeepLanguageOnPop,
+} from '@/utils/backNavigation';
 import { getCurrentPage, langAndScopeSelectionToUrl, scopeToUrl } from '@/utils/router';
 
 /** Prefixes a path with the currently-selected i18n language. */
@@ -104,6 +109,7 @@ export const useNavigateBackToDatasetOrigin = () => {
   const dispatch = useAppDispatch();
   return useCallback(
     ({ origin, steps }: NonNullable<ReturnType<typeof getDatasetBackSteps>>) => {
+      markKeepLanguageOnPop();
       markBackPopPending(); // keeps ScopedRoute from flipping the scope back while the pop is in flight
       if (origin === 'catalogue') dispatch(selectScope({}));
       navigate(-steps);

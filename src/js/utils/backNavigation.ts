@@ -90,3 +90,23 @@ export const clearBackPopPending = () => {
   clearTimeout(backPopTimeout);
 };
 export const isBackPopPending = () => backPopPending;
+
+/**
+ * The language switcher only rewrites the current history entry, so popping back to an older entry would revert the
+ * language. The scope header's back buttons flag their pop so LanguageHandler restores the user's language
+ * (the browser's own back button is left alone).
+ */
+let keepLanguageOnPop = false;
+let keepLanguageTimeout: ReturnType<typeof setTimeout> | undefined;
+
+export const markKeepLanguageOnPop = () => {
+  keepLanguageOnPop = true;
+  clearTimeout(keepLanguageTimeout);
+  keepLanguageTimeout = setTimeout(() => (keepLanguageOnPop = false), 1000); // safety net if the pop never lands
+};
+export const consumeKeepLanguageOnPop = (): boolean => {
+  const flagged = keepLanguageOnPop;
+  keepLanguageOnPop = false;
+  clearTimeout(keepLanguageTimeout);
+  return flagged;
+};

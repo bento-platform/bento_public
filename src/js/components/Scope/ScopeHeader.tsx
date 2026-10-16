@@ -20,6 +20,7 @@ import {
 } from '@/hooks/navigation';
 import { BentoRoute } from '@/types/routes';
 import { getCurrentPage } from '@/utils/router';
+import { markKeepLanguageOnPop } from '@/utils/backNavigation';
 import { buildQueryParamsUrl } from '@/features/search/utils';
 import { PCGL_MODE } from '@/config';
 
@@ -47,7 +48,10 @@ const useBackButtonInfo = () => {
         exploreBackSteps
           ? // Pop back to the Explore page we came from, so its search is restored from the URL and the history
             // doesn't grow a duplicate Explore entry (which would make later back clicks land on this phenopacket).
-            () => navigate(-exploreBackSteps)
+            () => {
+              markKeepLanguageOnPop();
+              navigate(-exploreBackSteps);
+            }
           : // Landed here directly, so rebuild the Explore URL from whatever search state we have:
             () => navigateToSameScopeUrl(buildQueryParamsUrl(BentoRoute.Explore, exploreQueryParams), false),
       ];
