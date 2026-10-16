@@ -16,7 +16,7 @@ import type { SectionKey } from '@/components/ClinPhen/PhenopacketDisplay/phenop
 import { PHENOPACKET_EXPANDED_URL_QUERY_KEY } from './PhenopacketDisplay/PhenopacketOverview';
 
 const EntityPopover = ({ children, ...props }: Omit<PopoverProps, 'styles'>) => (
-  <Popover styles={{ body: { maxHeight: 'min(400px, 80vh)', overflowY: 'auto' } }} {...props}>
+  <Popover styles={{ content: { maxHeight: 'min(400px, 80vh)', overflowY: 'auto' } }} {...props}>
     {children}
   </Popover>
 );
