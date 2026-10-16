@@ -3,12 +3,21 @@ import { Collapse } from 'antd';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
 import type { SectionKey, SectionSpec } from './phenopacketOverview.registry';
 import { SECTION_SPECS } from './phenopacketOverview.registry';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from '@/hooks/router';
 import { useTranslationFn } from '@/hooks';
-import { useLocationState } from '@/hooks/useLocationState';
 import { BREAD_CRUMB_HEIGHT } from '@/constants/common';
 
 export const PHENOPACKET_EXPANDED_URL_QUERY_KEY = 'expanded';
+
+/** URL hash naming the section/row to scroll to and highlight on arrival: `#<sectionKey>` or `#<sectionKey>:<rowId>`. */
+export const highlightHash = (sectionKey: SectionKey, rowId?: string): string =>
+  `#${sectionKey}${rowId ? `:${encodeURIComponent(rowId)}` : ''}`;
+
+const parseHighlightHash = (hash: string): { sectionKey: SectionKey; rowId?: string } | null => {
+  const [sectionKey, rowId] = hash.replace(/^#/, '').split(':');
+  if (!(sectionKey in SECTION_SPECS)) return null;
+  return { sectionKey: sectionKey as SectionKey, rowId: rowId ? decodeURIComponent(rowId) : undefined };
+};
 
 const serializeKeys = (keys: SectionKey[], prev: URLSearchParams | null = null): URLSearchParams => {
   const keyString = keys.join(',');
@@ -56,7 +65,11 @@ interface PhenopacketOverviewProps {
 const PhenopacketOverview = ({ phenopacket, ref }: PhenopacketOverviewProps) => {
   const [open, setOpen] = useSearchParams(serializeKeys(phenopacket.subject ? ['subject'] : ['biosamples']));
   const t = useTranslationFn();
-  const routerState = useLocationState();
+  const { hash } = useLocation();
+  const phenopacketRef = useRef(phenopacket);
+  useEffect(() => {
+    phenopacketRef.current = phenopacket;
+  });
   const cleanupRef = useRef<null | (() => void)>(null);
   const pendingHighlightRef = useRef(false);
 
@@ -142,10 +155,10 @@ const PhenopacketOverview = ({ phenopacket, ref }: PhenopacketOverviewProps) => 
   }, []);
 
   useEffect(() => {
-    const { sectionKey, rowId } =
-      (routerState as { highlight?: { sectionKey?: string; rowId?: string } })?.highlight ?? {};
-
-    if (!sectionKey) return;
+    const highlight = parseHighlightHash(hash);
+    if (!highlight) return;
+    const { sectionKey, rowId } = highlight;
+    const phenopacket = phenopacketRef.current;
 
     const { renderSingleItemDetail, itemCount } = SECTION_SPECS[sectionKey as SectionKey];
     const sectionCount = itemCount?.(phenopacket);
@@ -199,7 +212,9 @@ const PhenopacketOverview = ({ phenopacket, ref }: PhenopacketOverviewProps) => 
       el?.classList.remove('highlight-boundary');
       el?.blur();
     };
-  }, [routerState, items, open, phenopacket, setOpen]);
+    // Runs on mount and whenever the hash changes, not on every re-render - sections are force-rendered, so the target
+    // element exists before it is opened.
+  }, [hash]);
 
   return (
     <Collapse

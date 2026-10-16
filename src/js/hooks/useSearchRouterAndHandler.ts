@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from '@/hooks/router';
 
 import type {
   FiltersState,
@@ -87,7 +87,7 @@ export const useSearchRouterAndHandler = () => {
   const filterFields = useSearchFilterFields();
 
   const loadAndValidateQuery = useCallback((): QueryValidationResult => {
-    // We DO explicitly use the react-router location object here, so that this dependency changes when the search
+    // We DO explicitly use the router location object here, so that this dependency changes when the search
     // params change.
     const query = new URLSearchParams(location.search);
 
@@ -160,7 +160,7 @@ export const useSearchRouterAndHandler = () => {
 
   const setSearchUrl = useCallback(
     (filtersState: FiltersState, qp: QueryParamEntries) => {
-      // Don't use react-router location here - the goal is to not recreate this function when the path changes.
+      // Don't use router location here - the goal is to not recreate this function when the path changes.
       const urlSuffix = buildQueryParamsUrl(BentoRoute.Explore, [
         ...filtersStateToQueryParamEntries(filtersState),
         ...qp,

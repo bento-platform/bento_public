@@ -8,6 +8,8 @@ const storeName = 'ui';
 
 export type UIState = {
   extraBreadcrumb: BreadcrumbItemType | null;
+  /** Whether the current dataset scope was entered from its parent project's page (affects the back button). */
+  cameFromProject: boolean;
   manageChartsVisible: boolean;
   settings: UIUserSettings;
 };
@@ -30,6 +32,7 @@ const validateUiSettings = (data: any): boolean => {
 
 const initialState: UIState = {
   extraBreadcrumb: null,
+  cameFromProject: false,
   manageChartsVisible: false,
   // Load from LocalStorage if set. The corresponding persist-to-LS logic is handled by an observer in /src/js/store.ts.
   settings: getValue(LOCALSTORAGE_UI_SETTINGS_KEY, defaultInitialSettings, validateUiSettings),
@@ -42,6 +45,9 @@ const ui = createSlice({
     setExtraBreadcrumb: (state, { payload }: PayloadAction<BreadcrumbItemType | null>) => {
       return { ...state, extraBreadcrumb: payload };
     },
+    setCameFromProject: (state, { payload }: PayloadAction<boolean>) => {
+      state.cameFromProject = payload;
+    },
     setManageChartsVisible: (state, { payload }: PayloadAction<boolean>) => {
       state.manageChartsVisible = payload;
     },
@@ -51,5 +57,5 @@ const ui = createSlice({
   },
 });
 
-export const { setExtraBreadcrumb, setManageChartsVisible, setExploreChartMode } = ui.actions;
+export const { setExtraBreadcrumb, setCameFromProject, setManageChartsVisible, setExploreChartMode } = ui.actions;
 export default ui.reducer;

@@ -1,12 +1,12 @@
-import { useEffect } from 'react';
-import { Outlet, useNavigate, useParams } from 'react-router-dom';
+import { type ReactNode, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SUPPORTED_LNGS } from '@/constants/configConstants';
+import { useNavigate, useRouteMatch } from '@/hooks/router';
 
 const LNGS_ARRAY = Object.values(SUPPORTED_LNGS);
 
-const LanguageHandler = () => {
-  const { lang } = useParams<{ lang?: string }>();
+const LanguageHandler = ({ children }: { children: ReactNode }) => {
+  const { lang } = useRouteMatch();
   const navigate = useNavigate();
   const { i18n } = useTranslation();
 
@@ -27,7 +27,8 @@ const LanguageHandler = () => {
     }
   }, [lang, i18n, navigate]);
 
-  return <Outlet />;
+  // Until the URL carries a supported language, we're redirecting; don't render the app under a bogus language.
+  return lang && LNGS_ARRAY.includes(lang) ? <>{children}</> : null;
 };
 
 export default LanguageHandler;

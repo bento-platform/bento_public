@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from '@/hooks/router';
 
 import { Flex, Space, Tooltip, Typography } from 'antd';
 import { FilterOutlined, QuestionCircleOutlined } from '@ant-design/icons';

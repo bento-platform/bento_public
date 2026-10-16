@@ -1,6 +1,6 @@
 import type { TabsProps } from 'antd';
 import { type ReactNode, useCallback, useMemo, useRef } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate } from '@/hooks/router';
 import type { JSONType } from 'bento-file-display';
 
 import OntologiesView from '@/components/ClinPhen/PhenopacketDisplay/OntologiesView';
@@ -25,7 +25,7 @@ export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
 
   const handleTabChange = useCallback(
     (key: string) => {
-      navigate(`../${key}`, { relative: 'path', replace: true });
+      navigate(`../${key}`, { replace: true });
     },
     [navigate]
   );

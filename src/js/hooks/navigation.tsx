@@ -1,5 +1,5 @@
 import { type ReactNode, useCallback, useMemo } from 'react';
-import { type NavigateOptions, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from '@/hooks/router';
 import {
   BookOutlined,
   CloseCircleOutlined,
@@ -10,13 +10,15 @@ import {
 
 import BeaconLogo from '@/components/Beacon/BeaconLogo';
 
-import { CATALOGUE_SEARCH_STORAGE_KEY } from '@/features/catalogue/useCatalogueUrlSync';
+import { catalogueStateToSearch } from '@/features/catalogue/useCatalogueUrlSync';
+import { useCatalogueState } from '@/features/catalogue/hooks';
 import { FORCE_CATALOGUE } from '@/config';
 import { useMetadata, useScopeHasData, useSelectedScope } from '@/features/metadata/hooks';
 import { type DiscoveryScope, selectScope } from '@/features/metadata/metadata.store';
 import type { MenuItem } from '@/types/navigation';
 import { BentoRoute } from '@/types/routes';
 import { useAppDispatch, useLanguage, useTranslationFn } from '@/hooks';
+import { setCameFromProject } from '@/features/ui/ui.store';
 import { getCurrentPage, langAndScopeSelectionToUrl, scopeToUrl } from '@/utils/router';
 
 /** Prefixes a path with the currently-selected i18n language. */
@@ -35,9 +37,9 @@ export const useNavigateToRoot = () => {
 };
 
 /**
- * Like useNavigateToRoot, but for "back to catalogue" links: restores the catalogue's last query
- * string (facet filters, search, sort, view) from sessionStorage, since this is a fresh navigation
- * rather than a browser-history pop and would otherwise land on the catalogue with no filters applied.
+ * Like useNavigateToRoot, but for "back to catalogue" links: rebuilds the catalogue's query string (facet
+ * filters, search, sort, view) from Redux catalogue state, since this is a fresh navigation rather than a
+ * browser-history pop and would otherwise land on the catalogue with no filters applied.
  *
  * Dispatches the blank scope synchronously before navigating, same as useNavigateToScope: otherwise
  * ScopedRoute's URL/scope reconciliation effect briefly sees the *old* (dataset/project) scope next to
@@ -48,11 +50,11 @@ export const useNavigateToCatalogue = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const rootUrl = useLangPrefixedUrl('');
+  const catalogueState = useCatalogueState();
   return useCallback(() => {
     dispatch(selectScope({}));
-    const search = sessionStorage.getItem(CATALOGUE_SEARCH_STORAGE_KEY) ?? '';
-    navigate(rootUrl + search);
-  }, [dispatch, navigate, rootUrl]);
+    navigate(rootUrl + catalogueStateToSearch(catalogueState));
+  }, [dispatch, navigate, rootUrl, catalogueState]);
 };
 
 /**
@@ -70,11 +72,14 @@ export const useNavigateToScope = () => {
       newScope: DiscoveryScope,
       suffix: string = '',
       fixedProjectAndDataset: boolean = false,
-      navigateOptions: NavigateOptions | undefined = undefined
+      options: { replace?: boolean; fromProject?: boolean } = {}
     ) => {
       // This action will internally handle already-equal scope selections to avoid accidental re-renders:
       dispatch(selectScope(newScope));
-      navigate(scopeToUrl(newScope, language, suffix, fixedProjectAndDataset), navigateOptions);
+      // Entry points (e.g. dataset cards) say whether they came from the parent project's page; navigations which
+      // don't specify (e.g. search URL syncing) must leave the existing value alone.
+      if (options.fromProject !== undefined) dispatch(setCameFromProject(options.fromProject));
+      navigate(scopeToUrl(newScope, language, suffix, fixedProjectAndDataset), { replace: options.replace });
     },
     [dispatch, navigate, language]
   );

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from '@/hooks/router';
 
 export interface ScalarParam<T extends string> {
   /** Query-string key, e.g. "sort". */

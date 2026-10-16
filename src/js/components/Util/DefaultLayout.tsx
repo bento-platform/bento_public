@@ -1,5 +1,4 @@
-import { Suspense, useState } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { type ReactNode, Suspense, useState } from 'react';
 import clsx from 'clsx';
 import { Alert, FloatButton, Grid, Layout } from 'antd';
 import { ErrorBoundary, getErrorMessage } from 'react-error-boundary';
@@ -12,6 +11,7 @@ import ScopeHeader from '@/components/Scope/ScopeHeader';
 import { useSelectedScope, useScopeHasData } from '@/features/metadata/hooks';
 import { useIsInCatalogueMode, useSiteMenuItems } from '@/hooks/navigation';
 import { useTitleBreadcrumbItems } from '@/hooks/useTitleBreadcrumbItems';
+import { useLocation } from '@/hooks/router';
 import { PCGL_MODE } from '@/config';
 import { BentoRoute } from '@/types/routes';
 import { getCurrentPage } from '@/utils/router';
@@ -19,7 +19,7 @@ import { getCurrentPage } from '@/utils/router';
 const { Content } = Layout;
 const { useBreakpoint } = Grid;
 
-const DefaultLayout = () => {
+const DefaultLayout = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
   const page = getCurrentPage(location);
 
@@ -70,9 +70,7 @@ const DefaultLayout = () => {
               <ErrorBoundary
                 fallbackRender={({ error }) => <Alert type="error" description={getErrorMessage(error)} />}
               >
-                <Suspense fallback={<Loader />}>
-                  <Outlet />
-                </Suspense>
+                <Suspense fallback={<Loader />}>{children}</Suspense>
               </ErrorBoundary>
             </Content>
           </Layout>
