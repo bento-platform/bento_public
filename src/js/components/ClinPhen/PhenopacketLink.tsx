@@ -1,7 +1,6 @@
 import { Fragment, type ReactNode } from 'react';
-import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { useRouteMatch } from '@/hooks/router';
+import { Link, useRouteMatch } from '@/hooks/router';
 import { useCurrentScopePrefixedUrl } from '@/hooks/navigation';
 
 import { Popover } from 'antd';

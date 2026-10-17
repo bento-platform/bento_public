@@ -1,15 +1,45 @@
 'use client';
 
 /**
- * Route matching for the single [[...slug]] catch-all page. The app itself is rendered by the root layout (which Next.js
- * doesn't remount on navigation), so components navigate with next/navigation and next/link directly.
+ * Routing for the single [[...slug]] catch-all page. The app itself is rendered by the root layout (which Next.js
+ * doesn't remount on navigation); components read the URL with next/navigation's usePathname / useSearchParams.
+ *
+ * Navigation goes through the native History API rather than router.push / next/link: Next.js syncs pushState /
+ * replaceState with its hooks (see node_modules/next/dist/docs/01-app/01-getting-started/04-linking-and-navigating.md,
+ * "Native History API"), whereas router.push would fetch the [[...slug]] segment from the server on every navigation
+ * just to render nothing, then scroll to the top.
+ *
+ * TEMPORARY until the app moves to file-based routes, at which point next/link and router.push can be used directly.
  */
 
-import { useMemo } from 'react';
+import { type AnchorHTMLAttributes, type MouseEvent, useMemo } from 'react';
 import { usePathname } from 'next/navigation';
 
 import { getPathPageIndex, pathParts } from '@/utils/router';
 import { BentoRoute } from '@/types/routes';
+
+export const navigate = (url: string, { replace = false }: { replace?: boolean } = {}) => {
+  if (replace) window.history.replaceState(null, '', url);
+  else window.history.pushState(null, '', url);
+};
+
+type LinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & { href: string; replace?: boolean };
+
+/** Anchor that navigates client-side; modified / non-left clicks and other targets fall through to the browser. */
+export const Link = ({ href, replace, onClick, target, children, ...rest }: LinkProps) => {
+  const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
+    onClick?.(e);
+    if (e.defaultPrevented || e.button !== 0 || (target && target !== '_self')) return;
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+    navigate(href, { replace });
+  };
+  return (
+    <a {...rest} href={href} target={target} onClick={handleClick}>
+      {children}
+    </a>
+  );
+};
 
 export interface RouteMatch {
   lang?: string;

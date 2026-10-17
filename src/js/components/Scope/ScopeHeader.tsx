@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Link } from '@/hooks/router';
 import { Badge, Breadcrumb, type BreadcrumbProps, Button, Flex, Menu, Tooltip } from 'antd';
 import { ArrowLeftOutlined, FilterOutlined, QuestionOutlined } from '@ant-design/icons';
 import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';

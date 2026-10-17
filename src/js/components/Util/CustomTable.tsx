@@ -1,7 +1,8 @@
 import { useCallback, useMemo, useState, type Key, type ReactNode } from 'react';
 import { Table, type TablePaginationConfig } from 'antd';
 import type { TableColumnType } from 'antd';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { navigate } from '@/hooks/router';
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
 import { useNotify } from '@/hooks/notifications';
 import { useTranslationFn } from '@/hooks';
@@ -76,7 +77,6 @@ const CustomTable = <T extends object>({
 }: CustomTableProps<T>) => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const router = useRouter();
   const notify = useNotify();
   const t = useTranslationFn();
 
@@ -156,7 +156,9 @@ const CustomTable = <T extends object>({
       });
     }
     if (urlAware) {
-      router.replace(buildQueryParamsUrl(pathname, [...modifySearchParam(searchParams, queryKey, validExpandedKeys)]));
+      navigate(buildQueryParamsUrl(pathname, [...modifySearchParam(searchParams, queryKey, validExpandedKeys)]), {
+        replace: true,
+      });
     } else {
       setLocalExpandedKeys(validExpandedKeys);
     }
@@ -167,12 +169,14 @@ const CustomTable = <T extends object>({
       const key = rowKeyFn(record);
       const nextKeys = expanded ? Array.from(new Set([...expandedKeys, key])) : expandedKeys.filter((k) => k !== key);
       if (urlAware) {
-        router.replace(buildQueryParamsUrl(pathname, [...modifySearchParam(searchParams, queryKey, nextKeys)]));
+        navigate(buildQueryParamsUrl(pathname, [...modifySearchParam(searchParams, queryKey, nextKeys)]), {
+          replace: true,
+        });
       } else {
         setLocalExpandedKeys(nextKeys);
       }
     },
-    [expandedKeys, queryKey, urlAware, rowKeyFn, router, pathname, searchParams]
+    [expandedKeys, queryKey, urlAware, rowKeyFn, pathname, searchParams]
   );
 
   const hasExpandableRows = visibleData.some((r) => r.isVisible);

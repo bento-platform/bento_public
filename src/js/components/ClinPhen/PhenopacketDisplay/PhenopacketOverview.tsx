@@ -3,7 +3,8 @@ import { Collapse } from 'antd';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
 import type { SectionKey, SectionSpec } from './phenopacketOverview.registry';
 import { SECTION_SPECS } from './phenopacketOverview.registry';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { navigate } from '@/hooks/router';
 import { useTranslationFn } from '@/hooks';
 import { BREAD_CRUMB_HEIGHT } from '@/constants/common';
 import { buildQueryParamsUrl } from '@/utils/queryParams';
@@ -57,7 +58,6 @@ interface PhenopacketOverviewProps {
 const PhenopacketOverview = ({ phenopacket, ref }: PhenopacketOverviewProps) => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const router = useRouter();
   const t = useTranslationFn();
 
   const expandedParam = searchParams.get(PHENOPACKET_EXPANDED_URL_QUERY_KEY);
@@ -116,9 +116,9 @@ const PhenopacketOverview = ({ phenopacket, ref }: PhenopacketOverviewProps) => 
     (keys: string[]) => {
       const params = new URLSearchParams(searchParams);
       params.set(PHENOPACKET_EXPANDED_URL_QUERY_KEY, keys.join(','));
-      router.replace(buildQueryParamsUrl(pathname, [...params]));
+      navigate(buildQueryParamsUrl(pathname, [...params]), { replace: true });
     },
-    [searchParams, router, pathname]
+    [searchParams, pathname]
   );
 
   const expandAll = useCallback(() => setOpenKeys(items.map((i) => i.key)), [items, setOpenKeys]);

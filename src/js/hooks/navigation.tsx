@@ -1,5 +1,6 @@
 import { type ReactNode, useCallback, useMemo } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
+import { navigate } from '@/hooks/router';
 import {
   BookOutlined,
   CloseCircleOutlined,
@@ -31,9 +32,8 @@ export const useLangPrefixedUrl = (path: string): string => {
 };
 
 export const useNavigateToRoot = () => {
-  const router = useRouter();
   const rootUrl = useLangPrefixedUrl('');
-  return useCallback(() => router.push(rootUrl), [router, rootUrl]);
+  return useCallback(() => navigate(rootUrl), [rootUrl]);
 };
 
 /**
@@ -47,14 +47,13 @@ export const useNavigateToRoot = () => {
  * clobbering the restored query string.
  */
 export const useNavigateToCatalogue = () => {
-  const router = useRouter();
   const dispatch = useAppDispatch();
   const rootUrl = useLangPrefixedUrl('');
   const catalogueState = useCatalogueState();
   return useCallback(() => {
     dispatch(selectScope({}));
-    router.push(rootUrl + catalogueStateToSearch(catalogueState));
-  }, [dispatch, router, rootUrl, catalogueState]);
+    navigate(rootUrl + catalogueStateToSearch(catalogueState));
+  }, [dispatch, rootUrl, catalogueState]);
 };
 
 /**
@@ -64,7 +63,6 @@ export const useNavigateToCatalogue = () => {
  */
 export const useNavigateToScope = () => {
   const language = useLanguage();
-  const router = useRouter();
   const dispatch = useAppDispatch();
 
   return useCallback(
@@ -80,10 +78,9 @@ export const useNavigateToScope = () => {
       // don't specify (e.g. search URL syncing) must leave the existing value alone.
       if (options.fromProject !== undefined) dispatch(setCameFromProject(options.fromProject));
       const url = scopeToUrl(newScope, language, suffix, fixedProjectAndDataset);
-      if (options.replace) router.replace(url);
-      else router.push(url);
+      navigate(url, { replace: options.replace });
     },
-    [dispatch, router, language]
+    [dispatch, language]
   );
 };
 
@@ -102,16 +99,14 @@ export const useCurrentScopePrefixedUrl = (suffix: string) => {
  */
 export const useNavigateToSameScopeUrl = () => {
   const language = useLanguage();
-  const router = useRouter();
   const selectedScope = useSelectedScope();
 
   return useCallback(
     (suffix: string, replace: boolean = true) => {
       const url = langAndScopeSelectionToUrl(language, selectedScope, suffix);
-      if (replace) router.replace(url);
-      else router.push(url);
+      navigate(url, { replace });
     },
-    [language, router, selectedScope]
+    [language, selectedScope]
   );
 };
 

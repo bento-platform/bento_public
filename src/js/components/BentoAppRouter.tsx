@@ -1,6 +1,5 @@
 import { type ReactNode, lazy, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useRouteMatch } from '@/hooks/router';
+import { navigate, useRouteMatch } from '@/hooks/router';
 import { useIsAuthenticated, useIsAuthReady } from '@/features/auth/hooks';
 import { useAppDispatch, useLanguage } from '@/hooks';
 
@@ -55,7 +54,6 @@ const AboutPage = lazy(() => import('./About/AboutPage'));
 const ScopedRoute = ({ children }: { children: ReactNode }) => {
   const { projectId, datasetId } = useRouteMatch();
   const dispatch = useAppDispatch();
-  const router = useRouter();
   const { selectedScope, projectsByID, datasetToProjectMap, projectsStatus } = useMetadata();
 
   useEffect(() => {
@@ -97,8 +95,8 @@ const ScopedRoute = ({ children }: { children: ReactNode }) => {
     const newPathSuffix = oldPath.slice(oldPathPageIdx).join('/');
     const newPath = langAndScopeSelectionToUrl(oldPath[0], valid, newPathSuffix);
 
-    router.replace(newPath);
-  }, [projectsByID, datasetToProjectMap, projectsStatus, projectId, datasetId, dispatch, router, selectedScope]);
+    navigate(newPath, { replace: true });
+  }, [projectsByID, datasetToProjectMap, projectsStatus, projectId, datasetId, dispatch, selectedScope]);
 
   return <>{children}</>;
 };

@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
+import { navigate } from '@/hooks/router';
 
 import { Flex, Space, Tooltip, Typography } from 'antd';
 import { FilterOutlined, QuestionCircleOutlined } from '@ant-design/icons';
@@ -27,7 +28,6 @@ const buildValueToEntry =
 
 const SearchFilters = (props: DefinedSearchSubFormProps) => {
   const pathname = usePathname();
-  const router = useRouter();
   const t = useTranslationFn();
 
   const { configStatus, maxQueryParameters } = useConfig();
@@ -128,7 +128,7 @@ const SearchFilters = (props: DefinedSearchSubFormProps) => {
                   : []),
               ]);
               console.debug('[SearchFilters] Redirecting to:', url);
-              router.replace(url);
+              navigate(url, { replace: true });
               // Don't need to dispatch - the code handling the URL change will dispatch the fetch for us instead.
             };
 
@@ -151,7 +151,7 @@ const SearchFilters = (props: DefinedSearchSubFormProps) => {
                 )
               );
               console.debug('[SearchFilters] Redirecting to:', url);
-              router.replace(url);
+              navigate(url, { replace: true });
             };
 
             return (
