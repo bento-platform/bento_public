@@ -45,7 +45,6 @@ src/app/
   [lang]/
     layout.tsx                  app shell: providers, auth, DefaultLayout
     page.tsx                    explore / catalogue
-    explore/page.tsx
     about/page.tsx
     beacon/page.tsx
     network/page.tsx
@@ -103,8 +102,8 @@ completely:
   These copies are tiny because the pages render almost nothing, but the cache grows with the number of distinct
   URLs visited.
 
-**Recommendation:** make every page static with `generateStaticParams() { return [] }` and use `next/link`. This
-removes the main argument for keeping the History API workaround.
+**Decided:** make every page static with `generateStaticParams() { return [] }` and use `next/link`. This removes
+the main argument for keeping the History API workaround.
 
 ### 2. Duplicated scoped subtrees
 
@@ -117,7 +116,7 @@ Every page exists three times: top level, under `p/[projectId]`, and under `d/[d
   differ from the browser URL and the docs warn about hydration mismatches. We render client-only, so we would avoid
   the mismatch, but it hides routing in the proxy.
 
-**Recommendation:** (a). The files carry no logic, and the explicit tree is easiest to read.
+**Decided:** (a). The files carry no logic, and the explicit tree is easiest to read.
 
 ### 3. What remounts on navigation
 
@@ -157,8 +156,10 @@ falls through to `NotFoundPage`.
 - **Phenopacket tab.** A missing or invalid tab redirects to the first available tab, which depends on the loaded
   phenopacket. This stays in `PhenopacketView`, but uses `router.replace` in an effect instead of navigating during
   render.
-- **`/:lang/` and `/:lang/explore`.** Both are Explore today. This needs a decision: keep both routes, or redirect
-  one to the other.
+- **`/:lang/` and `/:lang/explore`.** Both are Explore today. **Decided:** drop the `explore` route. `.../explore`
+  redirects to the base path (`/:lang/`, `/:lang/p/:id/`, `/:lang/d/:id/`) in `proxy.ts`, so old links and bookmarks
+  keep working. The app builds explore URLs from `BentoRoute.Explore` in about 10 places (menu items, back buttons,
+  search URL syncing, dataset cards). Those should point at the base path, so they don't go through the redirect.
 
 ### 7. Existing route handlers
 
@@ -177,13 +178,13 @@ at a time:
 2. Migrate `about` at all three scope levels with `generateStaticParams() { return [] }` and `next/link`. Confirm
    finding 3 (what remounts on a scope change), and measure navigation in a production build behind the bentoctl
    stack.
-3. Migrate `beacon`, `network` and `explore`, then phenopackets.
+3. Migrate `beacon`, `network` and explore (the base path, plus the `.../explore` redirect and internal links), then
+   phenopackets.
 4. Delete the catch-all, `BentoAppRouter`'s switch, `matchRoute`, `LanguageHandler`, and the temporary
    `navigate`/`Link` from #477.
 
-## Decisions needed
+## Decisions
 
-- **Q1:** agree to make every page static with `generateStaticParams` returning `[]`.
-- **Q2:** how to handle the scoped subtrees: (a), (b) or (c). Recommended: (a).
-- **Q6:** for `/:lang/` and `/:lang/explore`, keep both routes or redirect one to the other.
-- Whether to go ahead with the step 2 spike.
+- **Q1:** every page is static, with `generateStaticParams` returning `[]`.
+- **Q2:** duplicate the one-line page files for each scope, option (a).
+- **Q6:** no `explore` route. `.../explore` redirects to the base path, and internal links point at the base path.
