@@ -3,24 +3,25 @@ import { Collapse } from 'antd';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
 import type { SectionKey, SectionSpec } from './phenopacketOverview.registry';
 import { SECTION_SPECS } from './phenopacketOverview.registry';
-import { useSearchParams } from 'react-router-dom';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslationFn } from '@/hooks';
-import { useLocationState } from '@/hooks/useLocationState';
 import { BREAD_CRUMB_HEIGHT } from '@/constants/common';
+import { buildQueryParamsUrl } from '@/utils/queryParams';
 
 export const PHENOPACKET_EXPANDED_URL_QUERY_KEY = 'expanded';
 
-const serializeKeys = (keys: SectionKey[], prev: URLSearchParams | null = null): URLSearchParams => {
-  const keyString = keys.join(',');
-  const previous = prev ? prev.toString() : '';
-  const returnVal = new URLSearchParams(previous);
-  returnVal.set(PHENOPACKET_EXPANDED_URL_QUERY_KEY, keyString);
-  return returnVal;
-};
+/** Query param naming the section/row to scroll to and highlight on arrival: `<sectionKey>` or `<sectionKey>:<rowId>`. */
+export const PHENOPACKET_HIGHLIGHT_URL_QUERY_KEY = 'highlight';
 
-const deserializeKeys = (params: URLSearchParams): SectionKey[] => {
-  const queryVals = params.get(PHENOPACKET_EXPANDED_URL_QUERY_KEY);
-  return (queryVals?.split(',') ?? []) as SectionKey[];
+export const highlightValue = (sectionKey: SectionKey, rowId?: string): string =>
+  rowId ? `${sectionKey}:${rowId}` : sectionKey;
+
+const parseHighlight = (value: string | null): { sectionKey: SectionKey; rowId?: string } | null => {
+  if (!value) return null;
+  const i = value.indexOf(':');
+  const sectionKey = i === -1 ? value : value.slice(0, i);
+  if (!(sectionKey in SECTION_SPECS)) return null;
+  return { sectionKey: sectionKey as SectionKey, rowId: i === -1 ? undefined : value.slice(i + 1) };
 };
 
 export type CollapseHandle = {
@@ -54,9 +55,20 @@ interface PhenopacketOverviewProps {
 }
 
 const PhenopacketOverview = ({ phenopacket, ref }: PhenopacketOverviewProps) => {
-  const [open, setOpen] = useSearchParams(serializeKeys(phenopacket.subject ? ['subject'] : ['biosamples']));
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
   const t = useTranslationFn();
-  const routerState = useLocationState();
+
+  const expandedParam = searchParams.get(PHENOPACKET_EXPANDED_URL_QUERY_KEY);
+  const openKeys = (
+    expandedParam === null ? [phenopacket.subject ? 'subject' : 'biosamples'] : expandedParam.split(',')
+  ) as SectionKey[];
+  const highlightParam = searchParams.get(PHENOPACKET_HIGHLIGHT_URL_QUERY_KEY);
+  const phenopacketRef = useRef(phenopacket);
+  useEffect(() => {
+    phenopacketRef.current = phenopacket;
+  });
   const cleanupRef = useRef<null | (() => void)>(null);
   const pendingHighlightRef = useRef(false);
 
@@ -100,26 +112,17 @@ const PhenopacketOverview = ({ phenopacket, ref }: PhenopacketOverviewProps) => 
     [sections, phenopacket, t]
   );
 
-  const handleCollapseChange = useCallback(
-    (e: string[]) => {
-      setOpen(serializeKeys(e as SectionKey[], open), { replace: true });
+  const setOpenKeys = useCallback(
+    (keys: string[]) => {
+      const params = new URLSearchParams(searchParams);
+      params.set(PHENOPACKET_EXPANDED_URL_QUERY_KEY, keys.join(','));
+      router.replace(buildQueryParamsUrl(pathname, [...params]));
     },
-    [open, setOpen]
+    [searchParams, router, pathname]
   );
 
-  const expandAll = useCallback(() => {
-    setOpen(
-      serializeKeys(
-        items.map((i) => i.key),
-        open
-      ),
-      { replace: true }
-    );
-  }, [items, open, setOpen]);
-
-  const collapseAll = useCallback(() => {
-    setOpen(serializeKeys([], open), { replace: true });
-  }, [open, setOpen]);
+  const expandAll = useCallback(() => setOpenKeys(items.map((i) => i.key)), [items, setOpenKeys]);
+  const collapseAll = useCallback(() => setOpenKeys([]), [setOpenKeys]);
 
   useImperativeHandle(ref, () => ({ expandAll, collapseAll }), [expandAll, collapseAll]);
 
@@ -142,10 +145,10 @@ const PhenopacketOverview = ({ phenopacket, ref }: PhenopacketOverviewProps) => 
   }, []);
 
   useEffect(() => {
-    const { sectionKey, rowId } =
-      (routerState as { highlight?: { sectionKey?: string; rowId?: string } })?.highlight ?? {};
-
-    if (!sectionKey) return;
+    const highlight = parseHighlight(highlightParam);
+    if (!highlight) return;
+    const { sectionKey, rowId } = highlight;
+    const phenopacket = phenopacketRef.current;
 
     const { renderSingleItemDetail, itemCount } = SECTION_SPECS[sectionKey as SectionKey];
     const sectionCount = itemCount?.(phenopacket);
@@ -199,17 +202,11 @@ const PhenopacketOverview = ({ phenopacket, ref }: PhenopacketOverviewProps) => 
       el?.classList.remove('highlight-boundary');
       el?.blur();
     };
-  }, [routerState, items, open, phenopacket, setOpen]);
+    // Runs on mount and whenever the highlight param changes, not on every re-render - sections are force-rendered, so
+    // the target element exists before it is opened.
+  }, [highlightParam]);
 
-  return (
-    <Collapse
-      className="compact"
-      items={items}
-      activeKey={deserializeKeys(open)}
-      onChange={handleCollapseChange}
-      ghost
-    />
-  );
+  return <Collapse className="compact" items={items} activeKey={openKeys} onChange={setOpenKeys} ghost />;
 };
 
 export default PhenopacketOverview;

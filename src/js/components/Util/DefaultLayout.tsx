@@ -1,5 +1,5 @@
-import { Suspense, useState } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { type ReactNode, Suspense, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { Alert, FloatButton, Grid, Layout } from 'antd';
 import { ErrorBoundary, getErrorMessage } from 'react-error-boundary';
@@ -19,9 +19,8 @@ import { getCurrentPage } from '@/utils/router';
 const { Content } = Layout;
 const { useBreakpoint } = Grid;
 
-const DefaultLayout = () => {
-  const location = useLocation();
-  const page = getCurrentPage(location);
+const DefaultLayout = ({ children }: { children: ReactNode }) => {
+  const page = getCurrentPage({ pathname: usePathname() });
 
   const catalogueMode = useIsInCatalogueMode();
   const { scopeSet, scope } = useSelectedScope();
@@ -70,9 +69,7 @@ const DefaultLayout = () => {
               <ErrorBoundary
                 fallbackRender={({ error }) => <Alert type="error" description={getErrorMessage(error)} />}
               >
-                <Suspense fallback={<Loader />}>
-                  <Outlet />
-                </Suspense>
+                <Suspense fallback={<Loader />}>{children}</Suspense>
               </ErrorBoundary>
             </Content>
           </Layout>

@@ -19,4 +19,6 @@ export const useSetExtraBreadcrumb = (title: string | undefined) => {
   }, [dispatch, title]);
 };
 
+export const useCameFromProject = () => useUiState().cameFromProject;
+
 export const useUiSettings = () => useUiState().settings;

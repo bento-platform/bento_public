@@ -66,18 +66,13 @@ const Dataset = ({
     () => ({ project: parentProjectID, dataset: identifier }),
     [parentProjectID, identifier]
   );
-  const navigateOptions = useMemo(
-    () => (fromProject ? { state: { fromProjectScope: true } } : undefined),
-    [fromProject]
-  );
-
   const onNavigateCurrent = useCallback(
-    () => navigateToScope(scope, page, false, navigateOptions),
-    [navigateToScope, scope, page, navigateOptions]
+    () => navigateToScope(scope, page, false, { fromProject: !!fromProject }),
+    [navigateToScope, scope, page, fromProject]
   );
   const onNavigateExplore = useCallback(
-    () => navigateToScope(scope, BentoRoute.Explore, false, navigateOptions),
-    [navigateToScope, scope, navigateOptions]
+    () => navigateToScope(scope, BentoRoute.Explore, false, { fromProject: !!fromProject }),
+    [navigateToScope, scope, fromProject]
   );
 
   const openProvenanceModal = useCallback(() => {

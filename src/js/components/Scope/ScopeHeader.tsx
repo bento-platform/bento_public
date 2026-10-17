@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Badge, Breadcrumb, type BreadcrumbProps, Button, Flex, Menu, Tooltip } from 'antd';
 import { ArrowLeftOutlined, FilterOutlined, QuestionOutlined } from '@ant-design/icons';
 import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
@@ -7,6 +8,7 @@ import type { MenuItem } from '@/types/navigation';
 
 import CurrentPageHelpModal from '@/components/Util/CurrentPageHelpModal';
 import { useSelectedScope } from '@/features/metadata/hooks';
+import { useCameFromProject } from '@/features/ui/hooks';
 import { useActiveFilterPills, useSearchQueryParams } from '@/features/search/hooks';
 import { useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
@@ -19,14 +21,14 @@ import { PCGL_MODE } from '@/config';
 const NO_BACK_BUTTON = [undefined, undefined] as const;
 
 const useBackButtonInfo = () => {
-  const location = useLocation();
   const exploreQueryParams = useSearchQueryParams();
-  const currentPage = getCurrentPage(location);
+  const currentPage = getCurrentPage({ pathname: usePathname() });
 
   const navigateToCatalogue = useNavigateToCatalogue();
   const navigateToScope = useNavigateToScope();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
   const { scope, scopeSet, fixedProject, fixedDataset } = useSelectedScope();
+  const cameFromProject = useCameFromProject();
 
   return useMemo<readonly [undefined, undefined] | [string, () => void]>(() => {
     if (!scopeSet) return NO_BACK_BUTTON;
@@ -38,7 +40,6 @@ const useBackButtonInfo = () => {
     } else {
       if (scope.dataset) {
         if (fixedDataset) return NO_BACK_BUTTON;
-        const cameFromProject = (location.state as { fromProjectScope?: boolean } | null)?.fromProjectScope;
         return PCGL_MODE && !cameFromProject
           ? ['Back to catalogue', navigateToCatalogue]
           : ['Back to project', () => navigateToScope({ project: scope.project }, BentoRoute.Explore)];
@@ -50,7 +51,7 @@ const useBackButtonInfo = () => {
     }
   }, [
     currentPage,
-    location.state,
+    cameFromProject,
     navigateToCatalogue,
     navigateToScope,
     navigateToSameScopeUrl,
@@ -64,7 +65,7 @@ const useBackButtonInfo = () => {
 
 const breadcrumbRender: BreadcrumbProps['itemRender'] = (route, _params, routes, _paths) => {
   const isLast = route?.path === routes[routes.length - 1]?.path;
-  return isLast || !route.path ? <span>{route.title}</span> : <Link to={{ pathname: route.path }}>{route.title}</Link>;
+  return isLast || !route.path ? <span>{route.title}</span> : <Link href={route.path}>{route.title}</Link>;
 };
 
 type ScopeHeaderProps = {
