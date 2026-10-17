@@ -1,5 +1,5 @@
 import { type ReactNode, useCallback, useMemo } from 'react';
-import { useLocation, useNavigate } from '@/hooks/router';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   BookOutlined,
   CloseCircleOutlined,
@@ -31,9 +31,9 @@ export const useLangPrefixedUrl = (path: string): string => {
 };
 
 export const useNavigateToRoot = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const rootUrl = useLangPrefixedUrl('');
-  return useCallback(() => navigate(rootUrl), [navigate, rootUrl]);
+  return useCallback(() => router.push(rootUrl), [router, rootUrl]);
 };
 
 /**
@@ -47,14 +47,14 @@ export const useNavigateToRoot = () => {
  * clobbering the restored query string.
  */
 export const useNavigateToCatalogue = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const rootUrl = useLangPrefixedUrl('');
   const catalogueState = useCatalogueState();
   return useCallback(() => {
     dispatch(selectScope({}));
-    navigate(rootUrl + catalogueStateToSearch(catalogueState));
-  }, [dispatch, navigate, rootUrl, catalogueState]);
+    router.push(rootUrl + catalogueStateToSearch(catalogueState));
+  }, [dispatch, router, rootUrl, catalogueState]);
 };
 
 /**
@@ -64,7 +64,7 @@ export const useNavigateToCatalogue = () => {
  */
 export const useNavigateToScope = () => {
   const language = useLanguage();
-  const navigate = useNavigate();
+  const router = useRouter();
   const dispatch = useAppDispatch();
 
   return useCallback(
@@ -79,9 +79,11 @@ export const useNavigateToScope = () => {
       // Entry points (e.g. dataset cards) say whether they came from the parent project's page; navigations which
       // don't specify (e.g. search URL syncing) must leave the existing value alone.
       if (options.fromProject !== undefined) dispatch(setCameFromProject(options.fromProject));
-      navigate(scopeToUrl(newScope, language, suffix, fixedProjectAndDataset), { replace: options.replace });
+      const url = scopeToUrl(newScope, language, suffix, fixedProjectAndDataset);
+      if (options.replace) router.replace(url);
+      else router.push(url);
     },
-    [dispatch, navigate, language]
+    [dispatch, router, language]
   );
 };
 
@@ -100,14 +102,16 @@ export const useCurrentScopePrefixedUrl = (suffix: string) => {
  */
 export const useNavigateToSameScopeUrl = () => {
   const language = useLanguage();
-  const navigate = useNavigate();
+  const router = useRouter();
   const selectedScope = useSelectedScope();
 
   return useCallback(
     (suffix: string, replace: boolean = true) => {
-      navigate(langAndScopeSelectionToUrl(language, selectedScope, suffix), { replace });
+      const url = langAndScopeSelectionToUrl(language, selectedScope, suffix);
+      if (replace) router.replace(url);
+      else router.push(url);
     },
-    [language, navigate, selectedScope]
+    [language, router, selectedScope]
   );
 };
 
@@ -117,12 +121,12 @@ export const useIsInCatalogueMode = () => {
 };
 
 export const useGetRouteTitleAndIcon = () => {
-  const location = useLocation();
+  const pathname = usePathname();
   const catalogueMode = useIsInCatalogueMode();
 
   // Use location for catalogue page detection instead of selectedProject, since it gives us faster UI rendering at the
   // cost of only being wrong with a redirect edge case (and being slightly more brittle).
-  const exploreIsCatalogue = !location.pathname.includes('/p/') && !location.pathname.includes('/d/') && catalogueMode;
+  const exploreIsCatalogue = !pathname.includes('/p/') && !pathname.includes('/d/') && catalogueMode;
 
   return useCallback(
     (routeId: string): [string, ReactNode] => {
@@ -160,8 +164,7 @@ export const useGetRouteTitleAndIcon = () => {
 export const useSiteMenuItems = (): [MenuItem[], MenuItem[]] => {
   const t = useTranslationFn();
   const { fixedProject, fixedDataset, scope } = useSelectedScope();
-  const location = useLocation();
-  const page = getCurrentPage(location);
+  const page = getCurrentPage({ pathname: usePathname() });
 
   const scopeHasData = useScopeHasData();
 

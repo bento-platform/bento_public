@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useSearchParams } from '@/hooks/router';
+import { useSearchParams } from 'next/navigation';
 
 export interface ScalarParam<T extends string> {
   /** Query-string key, e.g. "sort". */
@@ -29,9 +29,11 @@ export function useUrlFacetSync<FacetId extends string>(
   scalars: Record<string, ScalarParam<string>>,
   onHydrate: (parsed: UrlFacetHydrate<FacetId>) => void
 ) {
-  const [searchParams] = useSearchParams();
+  // Keyed on the string so pathname-only navigations don't re-hydrate.
+  const search = useSearchParams().toString();
 
   useEffect(() => {
+    const searchParams = new URLSearchParams(search);
     const sets = Object.fromEntries(facetIds.map((id) => [id, searchParams.getAll(id)])) as Record<FacetId, string[]>;
     const parsedScalars = Object.fromEntries(
       Object.entries(scalars).map(([name, cfg]) => {
@@ -40,5 +42,5 @@ export function useUrlFacetSync<FacetId extends string>(
       })
     );
     onHydrate({ q: searchParams.get('q') ?? '', sets, scalars: parsedScalars });
-  }, [searchParams, facetIds, scalars, onHydrate]);
+  }, [search, facetIds, scalars, onHydrate]);
 }

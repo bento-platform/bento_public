@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { useLocation } from '@/hooks/router';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 import type {
   FiltersState,
@@ -62,7 +62,8 @@ export const useSearchRouterAndHandler = () => {
   // Tags for ctrl-F: execute search, perform search, run search
 
   const dispatch = useAppDispatch();
-  const location = useLocation();
+  const pathname = usePathname();
+  const search = useSearchParams().toString();
   const navigateToScope = useNavigateToScope();
 
   const { scope, fixedProject, fixedDataset } = useSelectedScope();
@@ -87,9 +88,8 @@ export const useSearchRouterAndHandler = () => {
   const filterFields = useSearchFilterFields();
 
   const loadAndValidateQuery = useCallback((): QueryValidationResult => {
-    // We DO explicitly use the router location object here, so that this dependency changes when the search
-    // params change.
-    const query = new URLSearchParams(location.search);
+    // We DO explicitly use the router's search params here, so that this dependency changes when they change.
+    const query = new URLSearchParams(search);
 
     const validateFilterQueryParam = ([key, value]: QueryParamEntry):
       [undefined, false] | [SearchFieldAndOptions, false] | [SearchFieldAndOptions, true, string] => {
@@ -156,7 +156,7 @@ export const useSearchRouterAndHandler = () => {
     });
 
     return { valid, validFiltersState, otherQueryParams };
-  }, [maxQueryParameters, filterFields, location.search, queryDataPerm]);
+  }, [maxQueryParameters, filterFields, search, queryDataPerm]);
 
   const setSearchUrl = useCallback(
     (filtersState: FiltersState, qp: QueryParamEntries) => {
@@ -171,7 +171,7 @@ export const useSearchRouterAndHandler = () => {
     [navigateToScope, scope, isFixedProjectAndDataset]
   );
 
-  const currentPage = getCurrentPage(location);
+  const currentPage = getCurrentPage({ pathname });
 
   // +-------------------------------+
   // |                               |

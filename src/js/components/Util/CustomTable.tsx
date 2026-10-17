@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState, type Key, type ReactNode } from 'react';
 import { Table, type TablePaginationConfig } from 'antd';
 import type { TableColumnType } from 'antd';
-import { useSearchParams } from '@/hooks/router';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslatedTableColumnTitles } from '@/hooks/useTranslatedTableColumnTitles';
 import { useNotify } from '@/hooks/notifications';
 import { useTranslationFn } from '@/hooks';
@@ -9,6 +9,7 @@ import { useTranslationFn } from '@/hooks';
 import type { VisibilityFn, WithVisible } from '@/types/util';
 import { EXPANDED_QUERY_PARAM_KEY } from '@/constants/table';
 import { addVisibilityProperty } from '@/utils/tables';
+import { buildQueryParamsUrl } from '@/utils/queryParams';
 
 export interface CustomTableColumn<T> extends TableColumnType<T> {
   isEmpty?: (value: any, record?: T) => boolean; // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -73,7 +74,9 @@ const CustomTable = <T extends object>({
   urlAware = true,
   rowSelection,
 }: CustomTableProps<T>) => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
   const notify = useNotify();
   const t = useTranslationFn();
 
@@ -153,7 +156,7 @@ const CustomTable = <T extends object>({
       });
     }
     if (urlAware) {
-      setSearchParams((prev) => modifySearchParam(prev, queryKey, validExpandedKeys), { replace: true });
+      router.replace(buildQueryParamsUrl(pathname, [...modifySearchParam(searchParams, queryKey, validExpandedKeys)]));
     } else {
       setLocalExpandedKeys(validExpandedKeys);
     }
@@ -164,12 +167,12 @@ const CustomTable = <T extends object>({
       const key = rowKeyFn(record);
       const nextKeys = expanded ? Array.from(new Set([...expandedKeys, key])) : expandedKeys.filter((k) => k !== key);
       if (urlAware) {
-        setSearchParams((prev) => modifySearchParam(prev, queryKey, nextKeys), { replace: true });
+        router.replace(buildQueryParamsUrl(pathname, [...modifySearchParam(searchParams, queryKey, nextKeys)]));
       } else {
         setLocalExpandedKeys(nextKeys);
       }
     },
-    [expandedKeys, queryKey, urlAware, rowKeyFn, setSearchParams]
+    [expandedKeys, queryKey, urlAware, rowKeyFn, router, pathname, searchParams]
   );
 
   const hasExpandableRows = visibleData.some((r) => r.isVisible);

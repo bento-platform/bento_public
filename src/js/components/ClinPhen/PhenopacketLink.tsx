@@ -1,5 +1,7 @@
 import { Fragment, type ReactNode } from 'react';
-import { Link, useRouteMatch, useSearchParams } from '@/hooks/router';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import { useRouteMatch } from '@/hooks/router';
 import { useCurrentScopePrefixedUrl } from '@/hooks/navigation';
 
 import { Popover } from 'antd';
@@ -9,7 +11,11 @@ import { BentoRoute } from '@/types/routes';
 import { TabKeys } from '@/types/PhenopacketView.types';
 import type { SectionKey } from '@/components/ClinPhen/PhenopacketDisplay/phenopacketOverview.registry';
 
-import { highlightHash, PHENOPACKET_EXPANDED_URL_QUERY_KEY } from './PhenopacketDisplay/PhenopacketOverview';
+import {
+  highlightValue,
+  PHENOPACKET_EXPANDED_URL_QUERY_KEY,
+  PHENOPACKET_HIGHLIGHT_URL_QUERY_KEY,
+} from './PhenopacketDisplay/PhenopacketOverview';
 
 const usePhenopacketOverviewLink = (
   packetId: string | undefined,
@@ -19,7 +25,7 @@ const usePhenopacketOverviewLink = (
   highlightRowId: string | undefined = undefined
 ) => {
   const { packetId: urlPId } = useRouteMatch();
-  const [searchParams] = useSearchParams();
+  const searchParams = useSearchParams();
   const derivedPacketId = packetId ?? urlPId;
   const baseUrl = useCurrentScopePrefixedUrl(`${BentoRoute.Phenopackets}/${derivedPacketId}/${TabKeys.OVERVIEW}`);
 
@@ -32,6 +38,8 @@ const usePhenopacketOverviewLink = (
 
   const newParams: Record<string, string> = {
     [PHENOPACKET_EXPANDED_URL_QUERY_KEY]: expandedValue,
+    // The section/row to highlight on arrival.
+    [PHENOPACKET_HIGHLIGHT_URL_QUERY_KEY]: highlightValue(expanded, highlightRowId),
     ...(otherArgs ?? {}),
   };
 
@@ -42,8 +50,7 @@ const usePhenopacketOverviewLink = (
       ])
     : new URLSearchParams(newParams);
 
-  // The section/row to highlight on arrival is carried in the URL hash.
-  return `${baseUrl}?${params.toString()}${highlightHash(expanded, highlightRowId)}`;
+  return `${baseUrl}?${params.toString()}`;
 };
 
 type BaseLinkProps = { packetId?: string; replace?: boolean; preserveQueryParams?: boolean; children?: ReactNode };
@@ -51,7 +58,7 @@ type BaseLinkProps = { packetId?: string; replace?: boolean; preserveQueryParams
 type SubjectLinkProps = BaseLinkProps;
 const SubjectLink = ({ children, packetId, preserveQueryParams }: SubjectLinkProps) => {
   const url = usePhenopacketOverviewLink(packetId, 'subject', undefined, preserveQueryParams);
-  return <Link to={url}>{children}</Link>;
+  return <Link href={url}>{children}</Link>;
 };
 
 type BiosampleLinkProps = BaseLinkProps & { sampleId: string; enablePopover?: boolean };
@@ -71,7 +78,7 @@ const BiosampleLink = ({
     sampleId
   );
   const link = (
-    <Link to={url} replace={replace}>
+    <Link href={url} replace={replace}>
       {children ?? sampleId}
     </Link>
   );
@@ -106,7 +113,7 @@ const ExperimentLink = ({ packetId, experimentId, replace, preserveQueryParams, 
     experimentId
   );
   return (
-    <Link to={url} replace={replace}>
+    <Link href={url} replace={replace}>
       {children ?? experimentId}
     </Link>
   );
@@ -145,7 +152,7 @@ const ExperimentResultLink = ({
     experimentResultId.toString()
   );
   return (
-    <Link to={url} replace={replace}>
+    <Link href={url} replace={replace}>
       {children ?? experimentResultId}
     </Link>
   );

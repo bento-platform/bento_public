@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { Button, Empty, Space, Tabs } from 'antd';
 import { CompressOutlined, DownloadOutlined, ExpandOutlined } from '@ant-design/icons';
-import { useNavigate, useRouteMatch } from '@/hooks/router';
+import { useRouteMatch } from '@/hooks/router';
 
 import { saveAs } from 'file-saver';
 
@@ -25,7 +25,6 @@ export interface RouteParams {
 
 const PhenopacketView = () => {
   const { packetId, tab } = useRouteMatch();
-  const navigate = useNavigate();
   const t = useTranslationFn();
   const isSmallScreen = useSmallScreen();
 
@@ -89,7 +88,7 @@ const PhenopacketView = () => {
         // Otherwise, show an invalid tab notification:
         invalidEndpointRedirectNotification();
       }
-      navigate(`${tab ? '..' : '.'}/${defaultTabKey}`, { replace: true });
+      handleTabChange(defaultTabKey);
       // Temporary loading render while navigation occurs. This navigation is to a valid key (the default), so we won't
       // get any more error notifications after this navigation occurs.
       return <Loader fullHeight={false} />;

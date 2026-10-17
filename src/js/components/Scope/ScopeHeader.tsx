@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link, useLocation } from '@/hooks/router';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Badge, Breadcrumb, type BreadcrumbProps, Button, Flex, Menu, Tooltip } from 'antd';
 import { ArrowLeftOutlined, FilterOutlined, QuestionOutlined } from '@ant-design/icons';
 import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
@@ -20,9 +21,8 @@ import { PCGL_MODE } from '@/config';
 const NO_BACK_BUTTON = [undefined, undefined] as const;
 
 const useBackButtonInfo = () => {
-  const location = useLocation();
   const exploreQueryParams = useSearchQueryParams();
-  const currentPage = getCurrentPage(location);
+  const currentPage = getCurrentPage({ pathname: usePathname() });
 
   const navigateToCatalogue = useNavigateToCatalogue();
   const navigateToScope = useNavigateToScope();
@@ -65,7 +65,7 @@ const useBackButtonInfo = () => {
 
 const breadcrumbRender: BreadcrumbProps['itemRender'] = (route, _params, routes, _paths) => {
   const isLast = route?.path === routes[routes.length - 1]?.path;
-  return isLast || !route.path ? <span>{route.title}</span> : <Link to={route.path}>{route.title}</Link>;
+  return isLast || !route.path ? <span>{route.title}</span> : <Link href={route.path}>{route.title}</Link>;
 };
 
 type ScopeHeaderProps = {

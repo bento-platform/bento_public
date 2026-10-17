@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import Script from 'next/script';
 
+import ClientApp from './ClientApp';
+
 export const metadata: Metadata = {
   title: 'Bento',
 };
@@ -19,7 +21,11 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
         {/* eslint-disable-next-line @next/next/no-css-tags */}
         <link rel="stylesheet" href="/public/styles/instance.css" />
       </head>
-      <body>{children}</body>
+      <body>
+        {/* Rendered here rather than in the [[...slug]] page: layouts don't remount on navigation, pages do. */}
+        <ClientApp />
+        {children}
+      </body>
     </html>
   );
 }

@@ -1,6 +1,6 @@
 import type { TabsProps } from 'antd';
 import { type ReactNode, useCallback, useMemo, useRef } from 'react';
-import { useNavigate } from '@/hooks/router';
+import { useRouteMatch } from '@/hooks/router';
 import type { JSONType } from 'bento-file-display';
 
 import OntologiesView from '@/components/ClinPhen/PhenopacketDisplay/OntologiesView';
@@ -10,9 +10,11 @@ import JsonView from '@Util/JsonView';
 import TracksView from '@/components/ClinPhen/TracksDisplay/TracksView';
 
 import { TabKeys } from '@/types/PhenopacketView.types';
+import { BentoRoute } from '@/types/routes';
 import { RequestStatus } from '@/types/requests';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
 import { useTranslationFn } from '@/hooks';
+import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
 import { useScopeDownloadData } from '@/hooks/censorship';
 import { useReference } from '@/features/reference/hooks';
 import { assemblyIdsForExperiments, phenopacketExperimentResults } from '@/utils/experiments';
@@ -20,14 +22,13 @@ import { useBentoOrIgvReferencesById, useIgvReference, viewableTracks } from './
 
 export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
   const t = useTranslationFn();
-  const navigate = useNavigate();
+  const { packetId } = useRouteMatch();
+  const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
   const collapseRef = useRef<CollapseHandle>(null);
 
   const handleTabChange = useCallback(
-    (key: string) => {
-      navigate(`../${key}`, { replace: true });
-    },
-    [navigate]
+    (key: string) => navigateToSameScopeUrl(`${BentoRoute.Phenopackets}/${packetId}/${key}`),
+    [navigateToSameScopeUrl, packetId]
   );
 
   const experimentResults = phenopacket ? phenopacketExperimentResults(phenopacket) : [];

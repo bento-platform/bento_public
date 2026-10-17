@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
-import { useSearchParams } from '@/hooks/router';
-import { queryParamsWithoutKey, type QueryParamEntries } from '@/utils/queryParams';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { buildQueryParamsUrl, queryParamsWithoutKey, type QueryParamEntries } from '@/utils/queryParams';
 
 /**
  * Generic URL-navigation actions for a facet-filtered listing: toggling a value within a
@@ -9,42 +9,41 @@ import { queryParamsWithoutKey, type QueryParamEntries } from '@/utils/queryPara
  * own store. Components should call these instead of dispatching filter changes directly.
  */
 export function useUrlFacetActions<FacetId extends string>(facetIds: readonly FacetId[]) {
-  const [, setSearchParams] = useSearchParams();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const replaceParams = useCallback(
+    (update: (prev: QueryParamEntries) => QueryParamEntries) =>
+      router.replace(buildQueryParamsUrl(pathname, update([...searchParams.entries()]))),
+    [router, pathname, searchParams]
+  );
 
   const setParam = useCallback(
     (key: string, value: string, defaultValue = '') => {
-      setSearchParams(
-        (prev) => {
-          const without = queryParamsWithoutKey([...prev.entries()], key);
-          return value !== defaultValue && value !== '' ? [...without, [key, value]] : without;
-        },
-        { replace: true }
-      );
+      replaceParams((prev) => {
+        const without = queryParamsWithoutKey(prev, key);
+        return value !== defaultValue && value !== '' ? [...without, [key, value]] : without;
+      });
     },
-    [setSearchParams]
+    [replaceParams]
   );
 
   const toggleFacetValue = useCallback(
     (facet: FacetId, value: string) => {
-      setSearchParams(
-        (prev) => {
-          const entries = [...prev.entries()] as QueryParamEntries;
-          const has = entries.some(([k, v]) => k === facet && v === value);
-          return has ? entries.filter(([k, v]) => !(k === facet && v === value)) : [...entries, [facet, value]];
-        },
-        { replace: true }
-      );
+      replaceParams((prev) => {
+        const has = prev.some(([k, v]) => k === facet && v === value);
+        return has ? prev.filter(([k, v]) => !(k === facet && v === value)) : [...prev, [facet, value]];
+      });
     },
-    [setSearchParams]
+    [replaceParams]
   );
 
   const clearAll = useCallback(
     (extraKeys: string[] = []) => {
-      setSearchParams((prev) => queryParamsWithoutKey([...prev.entries()], [...extraKeys, ...facetIds]), {
-        replace: true,
-      });
+      replaceParams((prev) => queryParamsWithoutKey(prev, [...extraKeys, ...facetIds]));
     },
-    [setSearchParams, facetIds]
+    [replaceParams, facetIds]
   );
 
   return { setParam, toggleFacetValue, clearAll };
