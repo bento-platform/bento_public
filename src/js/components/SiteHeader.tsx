@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { navigate } from '@/hooks/router';
 
 import { Button, Flex, Layout, Menu, type MenuProps, Space, Typography, theme } from 'antd';
 import { useSession } from 'next-auth/react';
@@ -40,7 +41,6 @@ type SiteHeaderProps = {
 };
 
 const useHandleMenuClick = (): OnClick => {
-  const router = useRouter();
   const pathname = usePathname();
   const exploreQueryParams = useSearchQueryParams();
 
@@ -60,16 +60,15 @@ const useHandleMenuClick = (): OnClick => {
       const newPathString = '/' + newPath.join('/');
       // Navigate to the menu item url
       //  - only include filter/search/explore query params if we're navigating to the explore page
-      router.push(buildQueryParamsUrl(newPathString, key === BentoRoute.Explore ? exploreQueryParams : undefined));
+      navigate(buildQueryParamsUrl(newPathString, key === BentoRoute.Explore ? exploreQueryParams : undefined));
     },
-    [router, exploreQueryParams, pathname]
+    [exploreQueryParams, pathname]
   );
 };
 
 const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
   const t = useTranslationFn();
   const language = useLanguage();
-  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const isSmallScreen = useSmallScreen();
@@ -106,7 +105,7 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
     // the URL.
     const search = searchParams.toString();
     const path = (pathname + (search ? `?${search}` : '')).replace(new RegExp(`^/${language}`), `/${newLang}`);
-    router.replace(path);
+    navigate(path, { replace: true });
   };
 
   const logoLangPart = TRANSLATED_LOGO && language !== 'en' ? '.' + language : '';

@@ -1,5 +1,6 @@
 import { startTransition, useCallback, useEffect, useRef, useState } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
+import { navigate } from '@/hooks/router';
 import { Button, Form, Input, Select, Space, Tooltip } from 'antd';
 import { CloseOutlined, FormOutlined, InfoCircleOutlined, LoadingOutlined, SearchOutlined } from '@ant-design/icons';
 
@@ -25,7 +26,6 @@ const DEBOUNCE_WAIT_MS = 500;
 const SearchFreeText = (props: DefinedSearchSubFormProps) => {
   const t = useTranslationFn();
   const pathname = usePathname();
-  const router = useRouter();
 
   const { textQuery, textQueryType } = useSearchQuery();
   const allQueryParams = useSearchQueryParams();
@@ -92,9 +92,9 @@ const SearchFreeText = (props: DefinedSearchSubFormProps) => {
             : []),
         ]);
       // Mark the navigation as a transition, so the resulting page re-render doesn't block typing in the input.
-      startTransition(() => router.push(url));
+      startTransition(() => navigate(url));
     },
-    [pathname, allQueryParams, textQuery, textQueryType, router]
+    [pathname, allQueryParams, textQuery, textQueryType]
   );
 
   const onReset = useCallback(() => {

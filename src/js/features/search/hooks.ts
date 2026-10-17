@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
+import { navigate } from '@/hooks/router';
 import { useAppSelector, useLanguage, useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
 import { useHaveEntityDataForField } from '@/hooks/useHaveEntityData';
@@ -98,7 +99,6 @@ export const useSearchQueryParams = (): QueryParamEntries => {
  */
 export const useActiveFilterPills = (): { pills: ActiveFilterPill[]; clearAll: () => void } => {
   const pathname = usePathname();
-  const router = useRouter();
   const t = useTranslationFn();
   const language = useLanguage();
   const { filters, textQuery } = useSearchQuery();
@@ -112,8 +112,8 @@ export const useActiveFilterPills = (): { pills: ActiveFilterPill[]; clearAll: (
       // clearing a text query (and either way, the page will be invalid.)
       entityAndTextQueryParams.filter((e) => e[0] !== TEXT_QUERY_PARAM && e[0] !== TABLE_PAGE_QUERY_PARAM)
     );
-    router.replace(url);
-  }, [pathname, entityAndTextQueryParams, router]);
+    navigate(url, { replace: true });
+  }, [pathname, entityAndTextQueryParams]);
 
   const removeFilterValue = useCallback(
     (field: string, value: string) => {
@@ -129,7 +129,7 @@ export const useActiveFilterPills = (): { pills: ActiveFilterPill[]; clearAll: (
           ([k, v]) => k !== field || remaining.includes(v)
         );
         const url = buildQueryParamsUrl(pathname, [...existingFiltersQP, ...entityAndTextQueryParams, ...resetPage]);
-        router.replace(url);
+        navigate(url, { replace: true });
         return;
       }
 
@@ -139,9 +139,9 @@ export const useActiveFilterPills = (): { pills: ActiveFilterPill[]; clearAll: (
         pathname,
         combineQueryParamsWithoutKey(filtersStateAsQueryParams, [...entityAndTextQueryParams, ...resetPage], [field])
       );
-      router.replace(url);
+      navigate(url, { replace: true });
     },
-    [filters, entityAndTextQueryParams, pathname, router]
+    [filters, entityAndTextQueryParams, pathname]
   );
 
   const clearTextQuery = useCallback(() => {
@@ -157,8 +157,8 @@ export const useActiveFilterPills = (): { pills: ActiveFilterPill[]; clearAll: (
         [TEXT_QUERY_PARAM, TEXT_QUERY_TYPE_PARAM]
       )
     );
-    router.replace(url);
-  }, [filters, entityAndTextQueryParams, pathname, router]);
+    navigate(url, { replace: true });
+  }, [filters, entityAndTextQueryParams, pathname]);
 
   const pills = useMemo(() => {
     const p: ActiveFilterPill[] = [];

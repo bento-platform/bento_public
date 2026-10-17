@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { navigate } from '@/hooks/router';
 import { buildQueryParamsUrl, queryParamsWithoutKey, type QueryParamEntries } from '@/utils/queryParams';
 
 /**
@@ -11,12 +12,11 @@ import { buildQueryParamsUrl, queryParamsWithoutKey, type QueryParamEntries } fr
 export function useUrlFacetActions<FacetId extends string>(facetIds: readonly FacetId[]) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const router = useRouter();
 
   const replaceParams = useCallback(
     (update: (prev: QueryParamEntries) => QueryParamEntries) =>
-      router.replace(buildQueryParamsUrl(pathname, update([...searchParams.entries()]))),
-    [router, pathname, searchParams]
+      navigate(buildQueryParamsUrl(pathname, update([...searchParams.entries()])), { replace: true }),
+    [pathname, searchParams]
   );
 
   const setParam = useCallback(
