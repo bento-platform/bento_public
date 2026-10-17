@@ -61,7 +61,7 @@ const DefaultLayout = ({ children }: { children: ReactNode }) => {
         )}
         <Layout>
           {/* Make sure the hasSider class is precisely synced with our own logic to prevent momentary visual glitch */}
-          <Layout hasSider={!sidebarHidden}>
+          <Layout hasSider={!sidebarHidden} className="content-layout-wrapper">
             {!sidebarHidden && (
               <SiteSider overlay={sidebarOverlay} open={sidebarOverlayShown} onClose={() => setCollapsed(true)} />
             )}

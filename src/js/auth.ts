@@ -68,6 +68,18 @@ const refreshAccessToken = async (refreshToken: string): Promise<BentoTokenSet> 
   return body as BentoTokenSet;
 };
 
+// Refresh tokens are single-use: share one in-flight refresh so concurrent requests don't fail with invalid_grant.
+const inflightRefreshes = new Map<string, Promise<BentoTokenSet>>();
+
+const refreshAccessTokenOnce = (refreshToken: string): Promise<BentoTokenSet> => {
+  let p = inflightRefreshes.get(refreshToken);
+  if (!p) {
+    p = refreshAccessToken(refreshToken).finally(() => inflightRefreshes.delete(refreshToken));
+    inflightRefreshes.set(refreshToken, p);
+  }
+  return p;
+};
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
   providers: [bentoOidcProvider],
@@ -96,13 +108,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         return token;
       }
 
+      // A previous refresh already failed - don't retry the dead refresh token.
+      if (token.error === 'RefreshTokenError') {
+        return token;
+      }
+
       // Existing session, access token expired - attempt a refresh.
       if (!token.refresh_token) {
         return { ...token, error: 'RefreshTokenError' as const };
       }
 
       try {
-        const refreshed = await refreshAccessToken(token.refresh_token);
+        const refreshed = await refreshAccessTokenOnce(token.refresh_token);
         return {
           ...token,
           access_token: refreshed.access_token,
