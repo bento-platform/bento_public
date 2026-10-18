@@ -183,6 +183,35 @@ at a time:
 4. Delete the catch-all, `BentoAppRouter`'s switch, `matchRoute`, `LanguageHandler`, and the temporary
    `navigate`/`Link` from #477.
 
+## Spike results (steps 1–2, #479)
+
+Done:
+
+- `proxy.ts` handles the language redirect. With `Accept-Language: fr-CA`, `/`, `/de/about` and `/xyz` all redirect
+  to `/fr/`.
+- `.../explore` redirects to the scope's base path and keeps the query string.
+- `/public/config.js`, `/service-info` and `/api/auth/*` are unaffected.
+- The shell is in `[lang]/layout.tsx`, and the remaining pages render through `[lang]/[[...slug]]`.
+- `about` is a file-based route at all three scope levels.
+- The language now comes from the `[lang]` segment. `i18next-browser-languagedetector` is removed, and
+  `LanguageHandler` only syncs i18next and `<html lang>`.
+
+Confirmed in the dev stack:
+
+- Between `about` and the legacy pages, and on browser back/forward, the shell stays mounted. Navigation takes about
+  140 ms once a route has been compiled.
+- On a dataset switch (`/fr/d/A/about` → `/fr/d/B/about`), the shell stays mounted and only the page under the scope
+  layout remounts. This matches finding 3.
+- On a language switch, the shell remounts, as expected under `[lang]`.
+
+Still open:
+
+- Navigation hasn't been measured in a production build behind the bentoctl stack. The local production numbers in
+  finding 1 still stand.
+- Scope validation (`ScopedRoute`) still lives in the shell rather than in the scope layouts.
+- Every page component is loaded with `next/dynamic` and `ssr: false` (`src/app/client-pages.tsx`), because the
+  components import browser-only modules such as `@/config`. Each migrated page adds one line there.
+
 ## Decisions
 
 - **Q1:** every page is static, with `generateStaticParams` returning `[]`.
