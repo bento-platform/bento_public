@@ -1,6 +1,5 @@
-import { type ReactNode, lazy, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useRouteMatch } from '@/hooks/router';
+import { type ReactNode, useEffect } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import { useIsAuthenticated, useIsAuthReady } from '@/features/auth/hooks';
 import { useAppDispatch, useLanguage } from '@/hooks';
 
@@ -32,7 +31,6 @@ import DefaultLayout from '@/components/Util/DefaultLayout';
 import { BEACON_UI_ENABLED, BEACON_NETWORK_ENABLED } from '@/config';
 import { WAITING_STATES } from '@/constants/requests';
 import { RequestStatus } from '@/types/requests';
-import { BentoRoute } from '@/types/routes';
 import {
   getPathPageIndex,
   langAndScopeSelectionToUrl,
@@ -41,19 +39,8 @@ import {
   validProjectDataset,
 } from '@/utils/router';
 
-import PublicExplore from './Explore/LandingPage';
-import NotFoundPage from '@Util/NotFoundPage';
-
-// Code-split routes that aren't needed for the initial landing page (Explore). These pull in heavy,
-// page-specific dependencies (Leaflet maps, the phenopacket/file viewer stack, Markdown rendering) that
-// shouldn't be part of the bundle every visitor downloads just to load the overview/catalogue.
-const BeaconQueryUi = lazy(() => import('./Beacon/BeaconQueryUi'));
-const NetworkUi = lazy(() => import('./Beacon/BeaconNetwork/NetworkUi'));
-const PhenopacketView = lazy(() => import('./ClinPhen/PhenopacketView'));
-const AboutPage = lazy(() => import('./About/AboutPage'));
-
 const ScopedRoute = ({ children }: { children: ReactNode }) => {
-  const { projectId, datasetId } = useRouteMatch();
+  const { projectId, datasetId } = useParams<{ projectId?: string; datasetId?: string }>();
   const dispatch = useAppDispatch();
   const router = useRouter();
   const { selectedScope, projectsByID, datasetToProjectMap, projectsStatus } = useMetadata();
@@ -103,25 +90,7 @@ const ScopedRoute = ({ children }: { children: ReactNode }) => {
   return <>{children}</>;
 };
 
-const PageContent = ({ page }: { page: string }) => {
-  switch (page) {
-    case BentoRoute.Explore:
-      return <PublicExplore />;
-    case BentoRoute.About:
-      return <AboutPage />;
-    case BentoRoute.Phenopackets:
-      return <PhenopacketView />;
-    case BentoRoute.Beacon:
-      return <BeaconQueryUi />;
-    case BentoRoute.BeaconNetwork:
-      return <NetworkUi />;
-    default:
-      return <NotFoundPage />;
-  }
-};
-
-const BentoAppRouter = () => {
-  const { page } = useRouteMatch();
+const BentoAppRouter = ({ children }: { children: ReactNode }) => {
   const dispatch = useAppDispatch();
   const language = useLanguage();
 
@@ -217,9 +186,7 @@ const BentoAppRouter = () => {
 
   return (
     <DefaultLayout>
-      <ScopedRoute>
-        <PageContent page={page} />
-      </ScopedRoute>
+      <ScopedRoute>{children}</ScopedRoute>
     </DefaultLayout>
   );
 };

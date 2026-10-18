@@ -1,7 +1,7 @@
 'use client';
 
 // React imports
-import { useEffect } from 'react';
+import { type ReactNode, useEffect } from 'react';
 
 // Redux and routing imports
 import { Provider } from 'react-redux';
@@ -43,16 +43,16 @@ import 'bento-file-display/dist/style.css';
 import './i18n';
 import '../styles.css';
 
-const BaseRoutes = () => (
+const BaseRoutes = ({ children }: { children: ReactNode }) => (
   <AuthOutlet>
     <LanguageHandler>
-      <BentoAppRouter />
+      <BentoAppRouter>{children}</BentoAppRouter>
     </LanguageHandler>
   </AuthOutlet>
 );
 
 /** Inner root app component with responsive context for screen-size-aware theming and more hook access */
-const InnerRootApp = () => {
+const InnerRootApp = ({ children }: { children: ReactNode }) => {
   const { i18n } = useTranslation();
   const antdLocale = i18n.language === SUPPORTED_LNGS.FRENCH ? frCA : enUS;
   const isSmallScreen = useSmallScreen();
@@ -81,7 +81,7 @@ const InnerRootApp = () => {
         }}
       >
         <NotificationProvider>
-          <BaseRoutes />
+          <BaseRoutes>{children}</BaseRoutes>
           {SHOW_DEV_SETTINGS && <DevSettingsFloatButton />}
         </NotificationProvider>
       </ConfigProvider>
@@ -89,11 +89,11 @@ const InnerRootApp = () => {
   );
 };
 
-const RootApp = () => (
+const RootApp = ({ children }: { children: ReactNode }) => (
   <SessionProvider refetchInterval={SESSION_REFETCH_INTERVAL_SECONDS}>
     <Provider store={store}>
       <ResponsiveProvider>
-        <InnerRootApp />
+        <InnerRootApp>{children}</InnerRootApp>
       </ResponsiveProvider>
     </Provider>
   </SessionProvider>

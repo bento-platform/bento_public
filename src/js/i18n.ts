@@ -1,17 +1,14 @@
 import type { InitOptions } from 'i18next';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
 import HttpApi from 'i18next-http-backend';
 import { PCGL_MODE, TRANSLATED } from '@/config';
-import { SUPPORTED_LNGS } from './constants/configConstants';
-
-const languageDetector = new LanguageDetector(null, {
-  order: ['htmlTag', 'cookie', 'localStorage', 'path', 'subdomain'],
-  caches: ['cookie'],
-});
+import { SUPPORTED_LNGS, SUPPORTED_LNGS_ARRAY } from './constants/languages';
 
 const options: InitOptions = {
+  // The URL decides the language: start with the [lang] segment (proxy.ts guarantees one), and LanguageHandler keeps
+  // i18next in sync on navigation.
+  lng: SUPPORTED_LNGS_ARRAY.find((l) => l === window.location.pathname.split('/')[1]) ?? SUPPORTED_LNGS.ENGLISH,
   fallbackLng: SUPPORTED_LNGS.ENGLISH,
 
   // have a common namespace used around the full app
@@ -38,7 +35,7 @@ const options: InitOptions = {
   },
 };
 
-i18n.use(languageDetector).use(initReactI18next).use(HttpApi).init(options);
+i18n.use(initReactI18next).use(HttpApi).init(options);
 
 // Add lower-case formatter, originally for rendering entity names ("Individual") as lowercase in some situations.
 i18n.services.formatter?.add('lowercase', (value, _lng, _options) => value.toLocaleLowerCase());

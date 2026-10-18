@@ -30,10 +30,8 @@ export const igvGenomesUrl = 'https://igv.org/genomes/genomes3.json';
 
 export const CUSTOMIZABLE_TRANSLATION = 'translation';
 
-export const SUPPORTED_LNGS = {
-  ENGLISH: 'en',
-  FRENCH: 'fr',
-};
+import { SUPPORTED_LNGS } from './languages';
+export { SUPPORTED_LNGS };
 
 // Language change from eng to fr, and vice-versa
 export const LNG_CHANGE = {

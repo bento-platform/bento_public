@@ -53,7 +53,7 @@ const Chart = memo(({ chartConfig, data, dataContext, field, id, isClickable, mo
 
   const goToSearch = (id: string, val: string | number | undefined) => {
     if (val === undefined) return;
-    navigateToSameScopeUrl(`explore?${id}=${val}`);
+    navigateToSameScopeUrl(`?${id}=${val}`);
   };
 
   const barChartOnChartClickHandler: BarChartProps['onChartClick'] = (e) => {

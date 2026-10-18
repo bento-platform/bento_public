@@ -1,7 +1,7 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useParams } from 'next/navigation';
 import { Button, Empty, Space, Tabs } from 'antd';
 import { CompressOutlined, DownloadOutlined, ExpandOutlined } from '@ant-design/icons';
-import { useRouteMatch } from '@/hooks/router';
 
 import { saveAs } from 'file-saver';
 
@@ -24,7 +24,7 @@ export interface RouteParams {
 }
 
 const PhenopacketView = () => {
-  const { packetId, tab } = useRouteMatch();
+  const { packetId, tab } = useParams<{ packetId?: string; tab?: string }>();
   const t = useTranslationFn();
   const isSmallScreen = useSmallScreen();
 
@@ -56,6 +56,40 @@ const PhenopacketView = () => {
     });
   }, [api, t, notificationFillIns]);
 
+  const needsTabCheck = status === RequestStatus.Fulfilled && !!phenopacket && tabsReady && activeKey !== tab;
+  const tabIsValid = !!tab && activeTabs.includes(tab as TabKeys);
+  const needsRedirect = needsTabCheck && !tabIsValid;
+
+  // Redirect to the default tab (with a notification, if the tab was non-empty) when the tab param is missing/invalid.
+  // The ref guards against re-firing (and re-notifying) while the navigation to the default tab is in flight.
+  const redirectedFrom = useRef<string | undefined>(undefined);
+  useEffect(() => {
+    if (!needsRedirect) {
+      redirectedFrom.current = undefined;
+      return;
+    }
+    const key = `${packetId}/${tab ?? ''}`;
+    if (redirectedFrom.current === key) return;
+    redirectedFrom.current = key;
+
+    if (tab && Object.values(TabKeys).includes(tab as TabKeys)) {
+      notAvailableRedirectNotification();
+    } else if (tab && !['', '/'].includes(tab)) {
+      // Don't show a notification if we have some variation of an empty current tab; just redirect to the default.
+      // Otherwise, show an invalid tab notification:
+      invalidEndpointRedirectNotification();
+    }
+    handleTabChange(defaultTabKey);
+  }, [
+    needsRedirect,
+    packetId,
+    tab,
+    defaultTabKey,
+    handleTabChange,
+    notAvailableRedirectNotification,
+    invalidEndpointRedirectNotification,
+  ]);
+
   const biosamples = phenopacket?.biosamples ?? [];
 
   const title = phenopacket
@@ -77,22 +111,11 @@ const PhenopacketView = () => {
   // Early returns for handling loading/errors
 
   // tab param --> active key handling
-  if (status === RequestStatus.Fulfilled && phenopacket && tabsReady && activeKey !== tab) {
-    if (tab && activeTabs.includes(tab as TabKeys)) {
-      setActiveKey(tab as TabKeys);
-    } else {
-      if (tab && Object.values(TabKeys).includes(tab as TabKeys)) {
-        notAvailableRedirectNotification();
-      } else if (tab && !['', '/'].includes(tab)) {
-        // Don't show a notification if we have some variation of an empty current tab; just redirect to the default.
-        // Otherwise, show an invalid tab notification:
-        invalidEndpointRedirectNotification();
-      }
-      handleTabChange(defaultTabKey);
-      // Temporary loading render while navigation occurs. This navigation is to a valid key (the default), so we won't
-      // get any more error notifications after this navigation occurs.
-      return <Loader fullHeight={false} />;
-    }
+  if (needsTabCheck && tabIsValid) {
+    setActiveKey(tab as TabKeys);
+  } else if (needsRedirect) {
+    // Temporary loading render while the redirect effect navigates.
+    return <Loader fullHeight={false} />;
   }
 
   if (isAuthorized.hasAttempted && !isAuthorized.hasPermission) {

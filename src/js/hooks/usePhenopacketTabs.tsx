@@ -1,6 +1,6 @@
 import type { TabsProps } from 'antd';
 import { type ReactNode, useCallback, useMemo, useRef } from 'react';
-import { useRouteMatch } from '@/hooks/router';
+import { useParams } from 'next/navigation';
 import type { JSONType } from 'bento-file-display';
 
 import OntologiesView from '@/components/ClinPhen/PhenopacketDisplay/OntologiesView';
@@ -22,7 +22,7 @@ import { useBentoOrIgvReferencesById, useIgvReference, viewableTracks } from './
 
 export const usePhenopacketTabs = (phenopacket: Phenopacket | undefined) => {
   const t = useTranslationFn();
-  const { packetId } = useRouteMatch();
+  const { packetId } = useParams<{ packetId?: string }>();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
   const collapseRef = useRef<CollapseHandle>(null);
 

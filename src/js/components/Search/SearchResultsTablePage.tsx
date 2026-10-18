@@ -44,7 +44,6 @@ import type {
   ViewableDiscoveryMatchObject,
 } from '@/features/search/types';
 import type { ExportDataEntity, ExportFormat } from '@/types/entities';
-import { BentoRoute } from '@/types/routes';
 
 import { scopeSelectionEqual } from '@/features/metadata/utils';
 import {
@@ -469,7 +468,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
                 newPage = 1; // Reset page if we change the page size
               }
               navigateToSameScopeUrl(
-                buildQueryParamsUrl(BentoRoute.Explore, [
+                buildQueryParamsUrl('', [
                   ...queryParamsWithoutKey(allQueryParams, [TABLE_PAGE_QUERY_PARAM, TABLE_PAGE_SIZE_QUERY_PARAM]),
 
                   // AntD page is 1-indexed, discovery match page is 0-indexed:
