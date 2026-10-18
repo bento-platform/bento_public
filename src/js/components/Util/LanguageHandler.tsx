@@ -1,35 +1,18 @@
 import { type ReactNode, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SUPPORTED_LNGS } from '@/constants/configConstants';
-import { useRouter } from 'next/navigation';
-import { useRouteMatch } from '@/hooks/router';
+import { useParams } from 'next/navigation';
 
-const LNGS_ARRAY = Object.values(SUPPORTED_LNGS);
-
+/** Keeps i18next and <html lang> in sync with the [lang] route segment; proxy.ts guarantees it's supported. */
 const LanguageHandler = ({ children }: { children: ReactNode }) => {
-  const { lang } = useRouteMatch();
-  const router = useRouter();
+  const { lang } = useParams<{ lang: string }>();
   const { i18n } = useTranslation();
 
   useEffect(() => {
-    const setLanguage = (newLang: string) => {
-      i18n.changeLanguage(newLang);
-      if (lang !== newLang) {
-        router.replace(`/${newLang}/`);
-      }
-    };
+    i18n.changeLanguage(lang);
+    document.documentElement.lang = lang;
+  }, [lang, i18n]);
 
-    if (lang && LNGS_ARRAY.includes(lang)) {
-      setLanguage(lang);
-    } else {
-      const browserLang = navigator.language.split('-')[0];
-      const defaultLang = LNGS_ARRAY.includes(browserLang) ? browserLang : SUPPORTED_LNGS.ENGLISH;
-      setLanguage(defaultLang);
-    }
-  }, [lang, i18n, router]);
-
-  // Until the URL carries a supported language, we're redirecting; don't render the app under a bogus language.
-  return lang && LNGS_ARRAY.includes(lang) ? <>{children}</> : null;
+  return <>{children}</>;
 };
 
 export default LanguageHandler;

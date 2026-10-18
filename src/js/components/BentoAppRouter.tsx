@@ -50,7 +50,6 @@ import NotFoundPage from '@Util/NotFoundPage';
 const BeaconQueryUi = lazy(() => import('./Beacon/BeaconQueryUi'));
 const NetworkUi = lazy(() => import('./Beacon/BeaconNetwork/NetworkUi'));
 const PhenopacketView = lazy(() => import('./ClinPhen/PhenopacketView'));
-const AboutPage = lazy(() => import('./About/AboutPage'));
 
 const ScopedRoute = ({ children }: { children: ReactNode }) => {
   const { projectId, datasetId } = useRouteMatch();
@@ -103,12 +102,12 @@ const ScopedRoute = ({ children }: { children: ReactNode }) => {
   return <>{children}</>;
 };
 
-const PageContent = ({ page }: { page: string }) => {
+/** Page switch for the routes not yet moved to file-based routes; rendered by the [lang]/[[...slug]] catch-all page. */
+export const LegacyPageContent = () => {
+  const { page } = useRouteMatch();
   switch (page) {
     case BentoRoute.Explore:
       return <PublicExplore />;
-    case BentoRoute.About:
-      return <AboutPage />;
     case BentoRoute.Phenopackets:
       return <PhenopacketView />;
     case BentoRoute.Beacon:
@@ -120,8 +119,7 @@ const PageContent = ({ page }: { page: string }) => {
   }
 };
 
-const BentoAppRouter = () => {
-  const { page } = useRouteMatch();
+const BentoAppRouter = ({ children }: { children: ReactNode }) => {
   const dispatch = useAppDispatch();
   const language = useLanguage();
 
@@ -217,9 +215,7 @@ const BentoAppRouter = () => {
 
   return (
     <DefaultLayout>
-      <ScopedRoute>
-        <PageContent page={page} />
-      </ScopedRoute>
+      <ScopedRoute>{children}</ScopedRoute>
     </DefaultLayout>
   );
 };
