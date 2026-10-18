@@ -1,7 +1,6 @@
 import { Fragment, type ReactNode } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import { useRouteMatch } from '@/hooks/router';
+import { useParams, useSearchParams } from 'next/navigation';
 import { useCurrentScopePrefixedUrl } from '@/hooks/navigation';
 
 import { Popover } from 'antd';
@@ -24,7 +23,7 @@ const usePhenopacketOverviewLink = (
   preserveQueryParams: boolean = false,
   highlightRowId: string | undefined = undefined
 ) => {
-  const { packetId: urlPId } = useRouteMatch();
+  const { packetId: urlPId } = useParams<{ packetId?: string }>();
   const searchParams = useSearchParams();
   const derivedPacketId = packetId ?? urlPId;
   const baseUrl = useCurrentScopePrefixedUrl(`${BentoRoute.Phenopackets}/${derivedPacketId}/${TabKeys.OVERVIEW}`);

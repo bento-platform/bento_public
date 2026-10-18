@@ -56,7 +56,8 @@ const useHandleMenuClick = (): OnClick => {
           newPath.push('d', currentPath[2]);
         }
       }
-      newPath.push(key);
+      // Explore lives at the scope base path (trailing slash, no segment)
+      newPath.push(key === BentoRoute.Explore ? '' : key);
       const newPathString = '/' + newPath.join('/');
       // Navigate to the menu item url
       //  - only include filter/search/explore query params if we're navigating to the explore page

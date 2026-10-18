@@ -8,7 +8,6 @@ import { PCGL_MODE } from '@/config';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type { Dataset } from '@/types/dataset';
 import type { Project } from '@/types/metadata';
-import { BentoRoute } from '@/types/routes';
 import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
 import { getCurrentPage } from '@/utils/router';
 import { useLanguage, useTranslationFn } from '@/hooks';
@@ -71,7 +70,7 @@ const Dataset = ({
     [navigateToScope, scope, page, fromProject]
   );
   const onNavigateExplore = useCallback(
-    () => navigateToScope(scope, BentoRoute.Explore, false, { fromProject: !!fromProject }),
+    () => navigateToScope(scope, '', false, { fromProject: !!fromProject }),
     [navigateToScope, scope, fromProject]
   );
 

@@ -1,7 +1,7 @@
 import { Space, Tooltip, Typography } from 'antd';
 import { LinkOutlined } from '@ant-design/icons';
 
-import { useRouteMatch } from '@/hooks/router';
+import { useParams } from 'next/navigation';
 
 import { usePhenopacketResources } from '@/features/clinPhen/hooks';
 import { useTranslationFn } from '@/hooks';
@@ -34,7 +34,7 @@ interface OntologyTermProps {
 
 const OntologyTerm = ({ term, suffix, style, hideLinkIcon = false, italic = false }: OntologyTermProps) => {
   const t = useTranslationFn();
-  const { packetId } = useRouteMatch();
+  const { packetId } = useParams<{ packetId?: string }>();
   const resources = usePhenopacketResources(packetId);
 
   if (!term) return EM_DASH;

@@ -35,14 +35,14 @@ const useBackButtonInfo = () => {
     if (currentPage === BentoRoute.Phenopackets) {
       return [
         scope.dataset ? 'Back to dataset' : 'Back to project',
-        () => navigateToSameScopeUrl(buildQueryParamsUrl(BentoRoute.Explore, exploreQueryParams), false),
+        () => navigateToSameScopeUrl(buildQueryParamsUrl('', exploreQueryParams), false),
       ];
     } else {
       if (scope.dataset) {
         if (fixedDataset) return NO_BACK_BUTTON;
         return PCGL_MODE && !cameFromProject
           ? ['Back to catalogue', navigateToCatalogue]
-          : ['Back to project', () => navigateToScope({ project: scope.project }, BentoRoute.Explore)];
+          : ['Back to project', () => navigateToScope({ project: scope.project })];
       } else if (scope.project) {
         return fixedProject ? NO_BACK_BUTTON : ['Back to catalogue', navigateToCatalogue];
       } else {
@@ -109,7 +109,7 @@ const ScopeHeader = ({
   }, []);
 
   const onMenuClick = useCallback(
-    (item: { key: string }) => navigateToSameScopeUrl(item.key),
+    (item: { key: string }) => navigateToSameScopeUrl(item.key === BentoRoute.Explore ? '' : item.key),
     [navigateToSameScopeUrl]
   );
 

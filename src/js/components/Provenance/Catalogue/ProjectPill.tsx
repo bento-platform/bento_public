@@ -1,5 +1,4 @@
 import type { Project } from '@/types/metadata';
-import { BentoRoute } from '@/types/routes';
 import { COLOR_CHART_FALLBACK } from './constants';
 import { useNavigateToScope } from '@/hooks/navigation';
 import { useCatalogueState } from '@/features/catalogue/hooks';
@@ -18,7 +17,7 @@ const ProjectPill = ({ project }: { project: Project }) => {
       label={title}
       onClick={(e) => {
         e.stopPropagation();
-        navigateToScope({ project: identifier }, BentoRoute.Explore);
+        navigateToScope({ project: identifier });
       }}
     />
   );
