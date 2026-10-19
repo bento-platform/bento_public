@@ -77,12 +77,12 @@ const CatalogueInsightCard = ({ datasets, facet, kind, colors }: CatalogueInsigh
   };
 
   return (
-    <Card size="small" className="chart-card">
-      <Text className="chart-card__title">{t(`catalogue.insights.by_${facet}`)}</Text>
+    <Card size="small" className="catalogue-chart-card">
+      <Text className="catalogue-chart-card__title">{t(`catalogue.insights.by_${facet}`)}</Text>
       {kind === 'donut' ? (
         <CategoryDonut {...commonProps} centerLabel={centerLabel} />
       ) : (
-        <CategoryBarList {...commonProps} />
+        <CategoryBarList {...commonProps} labelWidth={150} />
       )}
     </Card>
   );
@@ -113,8 +113,8 @@ const CatalogueEntityCountsCard = ({ datasets }: { datasets: DatasetWithProject[
   }));
 
   return (
-    <Card size="small" className="chart-card">
-      <Text id={titleId} className="chart-card__title">
+    <Card size="small" className="catalogue-chart-card">
+      <Text id={titleId} className="catalogue-chart-card__title">
         {t('catalogue.insights.totals')}
       </Text>
       <StatList items={items} variant="compact" aria-labelledby={titleId} />
@@ -141,12 +141,15 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
       </Flex>
       <Flex gap={12} wrap className="items-stretch">
         <CatalogueEntityCountsCard datasets={filteredDatasets} />
+        {/* TODO: make insight charts configurable using some kind of catalogue config rather than hard-coded. */}
         {PCGL_MODE ? (
           <CatalogueInsightCard datasets={filteredDatasets} facet="domain" kind="bar" />
         ) : (
-          <CatalogueInsightCard datasets={filteredDatasets} facet="project" kind="donut" colors={projectColors} />
+          <>
+            <CatalogueInsightCard datasets={filteredDatasets} facet="project" kind="donut" colors={projectColors} />
+            <CatalogueInsightCard datasets={filteredDatasets} facet="keyword" kind="bar" />
+          </>
         )}
-        <CatalogueInsightCard datasets={filteredDatasets} facet="keyword" kind="bar" />
       </Flex>
     </div>
   );
