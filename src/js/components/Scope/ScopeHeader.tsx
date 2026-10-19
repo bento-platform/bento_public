@@ -11,9 +11,9 @@ import { useActiveFilterPills, useSearchQueryParams } from '@/features/search/ho
 import { useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import {
-  useDatasetBackEntry,
-  useNavigateBackToDatasetOrigin,
+  useDatasetBackTarget,
   useNavigateToCatalogue,
+  useNavigateToDatasetBackTarget,
   useNavigateToSameScopeUrl,
   useNavigateToScope,
 } from '@/hooks/navigation';
@@ -32,8 +32,8 @@ const useBackButtonInfo = () => {
   const navigateToCatalogue = useNavigateToCatalogue();
   const navigateToScope = useNavigateToScope();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
-  const datasetBackEntry = useDatasetBackEntry();
-  const navigateBackToDatasetOrigin = useNavigateBackToDatasetOrigin();
+  const datasetBackTarget = useDatasetBackTarget();
+  const navigateToDatasetBackTarget = useNavigateToDatasetBackTarget();
   const { scope, scopeSet, fixedProject, fixedDataset } = useSelectedScope();
 
   return useMemo<readonly [undefined, undefined] | [string, () => void]>(() => {
@@ -46,15 +46,15 @@ const useBackButtonInfo = () => {
     } else {
       if (scope.dataset) {
         if (fixedDataset) return NO_BACK_BUTTON;
-        if (datasetBackEntry) {
-          // We got here by clicking a dataset card, so behave like the browser's back button: this returns to the
-          // exact page we came from, with its search terms / filters intact. The label just says where that is.
+        if (datasetBackTarget) {
+          // We got here by clicking a dataset card, so return to the page we came from, with the search terms /
+          // filters it had (rebuilt from Redux).
           return [
-            datasetBackEntry.origin === 'project' ? 'Back to project' : 'Back to catalogue',
-            () => navigateBackToDatasetOrigin(datasetBackEntry),
+            datasetBackTarget.origin === 'project' ? 'Back to project' : 'Back to catalogue',
+            () => navigateToDatasetBackTarget(datasetBackTarget),
           ];
         }
-        // Landed here directly (link, reload in a new tab, etc.), so there's no page to go back to:
+        // Landed here directly (link, reload, etc.), so we don't know where the user came from:
         return PCGL_MODE
           ? ['Back to catalogue', navigateToCatalogue]
           : ['Back to project', () => navigateToScope({ project: scope.project }, BentoRoute.Explore)];
@@ -66,8 +66,8 @@ const useBackButtonInfo = () => {
     }
   }, [
     currentPage,
-    datasetBackEntry,
-    navigateBackToDatasetOrigin,
+    datasetBackTarget,
+    navigateToDatasetBackTarget,
     navigateToCatalogue,
     navigateToScope,
     navigateToSameScopeUrl,

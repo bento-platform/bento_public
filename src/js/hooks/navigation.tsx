@@ -10,14 +10,17 @@ import {
 
 import BeaconLogo from '@/components/Beacon/BeaconLogo';
 
-import { CATALOGUE_SEARCH_STORAGE_KEY } from '@/features/catalogue/useCatalogueUrlSync';
+import { catalogueStateToQueryParams } from '@/features/catalogue/useCatalogueUrlSync';
+import { useCatalogueState } from '@/features/catalogue/hooks';
 import { FORCE_CATALOGUE } from '@/config';
 import { useMetadata, useScopeHasData, useSelectedScope } from '@/features/metadata/hooks';
 import { type DiscoveryScope, selectScope } from '@/features/metadata/metadata.store';
+import { useDatasetBackTargetState } from '@/features/ui/hooks';
+import type { DatasetBackTarget } from '@/features/ui/ui.store';
 import type { MenuItem } from '@/types/navigation';
 import { BentoRoute } from '@/types/routes';
 import { useAppDispatch, useLanguage, useTranslationFn } from '@/hooks';
-import { getDatasetBackSteps, markBackPopPending, markKeepLanguageOnPop } from '@/utils/backNavigation';
+import { buildQueryParamsUrl } from '@/utils/queryParams';
 import { getCurrentPage, langAndScopeSelectionToUrl, scopeToUrl } from '@/utils/router';
 
 /** Prefixes a path with the currently-selected i18n language. */
@@ -36,9 +39,9 @@ export const useNavigateToRoot = () => {
 };
 
 /**
- * Like useNavigateToRoot, but for "back to catalogue" links: restores the catalogue's last query
- * string (facet filters, search, sort, view) from sessionStorage, since this is a fresh navigation
- * rather than a browser-history pop and would otherwise land on the catalogue with no filters applied.
+ * Like useNavigateToRoot, but for "back to catalogue" links: rebuilds the catalogue's query string
+ * (facet filters, search, sort, view) from its Redux state, since this is a fresh navigation rather
+ * than a browser-history pop and would otherwise land on the catalogue with no filters applied.
  *
  * Dispatches the blank scope synchronously before navigating, same as useNavigateToScope: otherwise
  * ScopedRoute's URL/scope reconciliation effect briefly sees the *old* (dataset/project) scope next to
@@ -49,11 +52,11 @@ export const useNavigateToCatalogue = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const rootUrl = useLangPrefixedUrl('');
+  const { q, sets, sort, view } = useCatalogueState();
   return useCallback(() => {
     dispatch(selectScope({}));
-    const search = sessionStorage.getItem(CATALOGUE_SEARCH_STORAGE_KEY) ?? '';
-    navigate(rootUrl + search);
-  }, [dispatch, navigate, rootUrl]);
+    navigate(buildQueryParamsUrl(rootUrl, catalogueStateToQueryParams({ q, sets, sort, view })));
+  }, [dispatch, navigate, rootUrl, q, sets, sort, view]);
 };
 
 /**
@@ -81,35 +84,32 @@ export const useNavigateToScope = () => {
   );
 };
 
-/**
- * Where the selected dataset scope was entered from (and how many history steps back that is), if the user got here
- * by clicking a dataset card and the history still has that entry. Re-evaluated on every navigation.
- */
-export const useDatasetBackEntry = () => {
+/** Where the selected dataset scope was entered from, if the user got here by clicking one of its dataset cards. */
+export const useDatasetBackTarget = (): DatasetBackTarget | undefined => {
   const { scope } = useSelectedScope();
-  useLocation(); // re-render (and so re-read the history index) on navigation
-  return scope.dataset ? getDatasetBackSteps(scope.dataset) : undefined;
+  const target = useDatasetBackTargetState();
+  return scope.dataset && target?.dataset === scope.dataset ? target : undefined;
 };
 
 /**
- * Pops history back to where the selected dataset scope was entered from (see useDatasetBackEntry), restoring that
- * page's search from its URL.
- *
- * As in useNavigateToCatalogue, popping back to the catalogue needs the blank scope dispatched first: otherwise
- * ScopedRoute's URL/scope reconciliation sees the old dataset scope next to the catalogue URL and replaces the URL
- * back to the dataset's path, clobbering the catalogue's search.
+ * Navigates to where the selected dataset scope was entered from (see useDatasetBackTarget), rebuilding that page's
+ * URL from the search / filters held in Redux.
  */
-export const useNavigateBackToDatasetOrigin = () => {
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+export const useNavigateToDatasetBackTarget = () => {
+  const navigateToCatalogue = useNavigateToCatalogue();
+  const navigateToScope = useNavigateToScope();
   return useCallback(
-    ({ origin, steps }: NonNullable<ReturnType<typeof getDatasetBackSteps>>) => {
-      markKeepLanguageOnPop();
-      markBackPopPending(); // keeps ScopedRoute from flipping the scope back while the pop is in flight
-      if (origin === 'catalogue') dispatch(selectScope({}));
-      navigate(-steps);
+    (target: DatasetBackTarget) => {
+      if (target.origin === 'catalogue') {
+        navigateToCatalogue();
+      } else {
+        navigateToScope(
+          { project: target.project },
+          buildQueryParamsUrl(BentoRoute.Explore, target.exploreQueryParams)
+        );
+      }
     },
-    [dispatch, navigate]
+    [navigateToCatalogue, navigateToScope]
   );
 };
 

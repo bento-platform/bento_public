@@ -7,7 +7,7 @@ import { BentoRoute } from '@/types/routes';
 import { useLanguage, useTranslationFn } from '@/hooks';
 import { useSelectedScope, useSelectedScopeTitles } from '@/features/metadata/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
-import { useDatasetBackEntry, useGetRouteTitleAndIcon } from '@/hooks/navigation';
+import { useDatasetBackTarget, useGetRouteTitleAndIcon } from '@/hooks/navigation';
 import { useExtraBreadcrumb } from '@/features/ui/hooks';
 import { getCurrentPage } from '@/utils/router';
 import { PCGL_MODE } from '@/config';
@@ -19,7 +19,7 @@ export const useTitleBreadcrumbItems = (scopeHeaderMenuItems: MenuItem[]): Bread
 
   const { scope, fixedProject, fixedDataset } = useSelectedScope();
   const { projectTitle, datasetTitle } = useSelectedScopeTitles();
-  const cameFromProject = useDatasetBackEntry()?.origin === 'project';
+  const cameFromProject = useDatasetBackTarget()?.origin === 'project';
 
   const getRouteTitleAndIcon = useGetRouteTitleAndIcon();
 

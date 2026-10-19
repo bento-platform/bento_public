@@ -9,10 +9,10 @@ import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type { Dataset } from '@/types/dataset';
 import type { Project } from '@/types/metadata';
 import { BentoRoute } from '@/types/routes';
-import { recordDatasetBackEntry } from '@/utils/backNavigation';
+import { recordDatasetBackTarget } from '@/features/ui/recordDatasetBackTarget.thunk';
 import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
 import { getCurrentPage } from '@/utils/router';
-import { useLanguage, useTranslationFn } from '@/hooks';
+import { useAppDispatch, useLanguage, useTranslationFn } from '@/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
 import { nonEmptyCounts } from '@/utils/counts';
 import { isoDateToString } from '@/utils/strings';
@@ -51,6 +51,7 @@ const Dataset = ({
   fromProject?: boolean;
 }) => {
   const language = useLanguage();
+  const dispatch = useAppDispatch();
   const navigateToScope = useNavigateToScope();
   const page = getCurrentPage();
   const t = useTranslationFn();
@@ -70,11 +71,11 @@ const Dataset = ({
 
   const navigateToDataset = useCallback(
     (suffix: string) => {
-      // Remember where we're leaving from, so the dataset's back button can pop back to this exact page (and search):
-      recordDatasetBackEntry(fromProject ? 'project' : 'catalogue', identifier);
+      // Remember where we're leaving from (and its search), so the dataset's back button can return there:
+      dispatch(recordDatasetBackTarget(fromProject ? 'project' : 'catalogue', parentProjectID, identifier));
       navigateToScope(scope, suffix);
     },
-    [navigateToScope, scope, identifier, fromProject]
+    [dispatch, navigateToScope, scope, parentProjectID, identifier, fromProject]
   );
   const onNavigateCurrent = useCallback(() => navigateToDataset(page), [navigateToDataset, page]);
   const onNavigateExplore = useCallback(() => navigateToDataset(BentoRoute.Explore), [navigateToDataset]);

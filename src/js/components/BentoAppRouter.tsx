@@ -1,6 +1,5 @@
 import { lazy, useEffect } from 'react';
-import { Routes, Route, useLocation, useNavigate, useParams, Outlet } from 'react-router-dom';
-import { clearBackPopPending, isBackPopPending } from '@/utils/backNavigation';
+import { Routes, Route, useNavigate, useParams, Outlet } from 'react-router-dom';
 import { useIsAuthenticated, useIsAuthReady } from '@/features/auth/hooks';
 import { useAppDispatch, useLanguage } from '@/hooks';
 
@@ -58,16 +57,8 @@ const ScopedRoute = () => {
   const navigate = useNavigate();
   const { selectedScope, projectsByID, datasetToProjectMap, projectsStatus } = useMetadata();
 
-  const { key: locationKey } = useLocation();
-  useEffect(() => {
-    // The URL changed, so any pending back-navigation pop has landed and URL/scope reconciliation is meaningful again.
-    clearBackPopPending();
-  }, [locationKey]);
-
   useEffect(() => {
     if (WAITING_STATES.includes(projectsStatus)) return; // Wait for projects to load first
-    // A back-navigation pop is in flight: the URL is stale relative to the scope we've already selected.
-    if (isBackPopPending()) return;
 
     // Derive project from dataset when only datasetId is in URL (new /d/:datasetId routes)
     const effectiveProjectId = projectId ?? (datasetId ? datasetToProjectMap[datasetId] : undefined);
