@@ -4,6 +4,8 @@ import type { JWT } from 'next-auth/jwt';
 import { BENTO_OIDC_PROVIDER_ID } from '@/features/auth/constants';
 
 export const CLIENT_ID = process.env.CLIENT_ID ?? '';
+// Optional: when set, authenticate to the token endpoint as a confidential client. Server-side only - never expose.
+const CLIENT_SECRET = process.env.CLIENT_SECRET || undefined;
 const OPENID_CONFIG_URL = process.env.OPENID_CONFIG_URL ?? '';
 const ISSUER = OPENID_CONFIG_URL.replace(/\/\.well-known\/.*$/, '');
 
@@ -21,8 +23,9 @@ const bentoOidcProvider: OAuthConfig<Record<string, unknown>> = {
   issuer: ISSUER,
   wellKnown: OPENID_CONFIG_URL,
   clientId: CLIENT_ID,
+  clientSecret: CLIENT_SECRET,
   checks: ['pkce', 'state'],
-  client: { token_endpoint_auth_method: 'none' },
+  client: { token_endpoint_auth_method: CLIENT_SECRET ? 'client_secret_post' : 'none' },
   authorization: { params: { scope: 'openid email' } },
 };
 
@@ -58,6 +61,7 @@ const refreshAccessToken = async (refreshToken: string): Promise<BentoTokenSet> 
       grant_type: 'refresh_token',
       client_id: CLIENT_ID,
       refresh_token: refreshToken,
+      ...(CLIENT_SECRET ? { client_secret: CLIENT_SECRET } : {}),
     }),
   });
   const body = await res.json();
