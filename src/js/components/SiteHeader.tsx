@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Button, Flex, Layout, Menu, type MenuProps, Space, Typography, theme } from 'antd';
 import { useSession } from 'next-auth/react';
-import { useIsAuthenticated, usePerformAuth, usePerformSignOut } from '@/features/auth/hooks';
+import { useIsAuthenticated, usePerformAuth, usePerformSignOut, useUserEmail } from '@/features/auth/hooks';
 
 import { RiTranslate } from 'react-icons/ri';
 import { LoginOutlined, LogoutOutlined } from '@ant-design/icons';
@@ -78,6 +78,7 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
   const { status: sessionStatus } = useSession();
 
   const isAuthenticated = useIsAuthenticated();
+  const userEmail = useUserEmail();
   const performSignOut = usePerformSignOut();
   const performSignIn = usePerformAuth();
 
@@ -188,6 +189,9 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
             >
               {isSmallScreen ? '' : LNGS_FULL_NAMES[LNG_CHANGE[language]]}
             </Button>
+          )}
+          {SHOW_SIGN_IN && isAuthenticated && userEmail && !isSmallScreen && (
+            <Typography.Text type="secondary">{userEmail}</Typography.Text>
           )}
           {SHOW_SIGN_IN &&
             (isAuthenticated || isSigningOut ? (
