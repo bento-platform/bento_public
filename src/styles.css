@@ -1669,7 +1669,7 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   text-transform: uppercase; color: var(--text-muted); margin-bottom: 5px;
 }
 .pm-title-row { display: flex; align-items: flex-start; flex-wrap: wrap; gap: 10px; }
-.pm-title-row h1 {
+.pm-title-row h2 {
   font-size: var(--p-fs-h1); font-weight: 600; line-height: 1.18;
   letter-spacing: -0.5px; color: var(--text-primary); margin: 0 2px 0 0;
 }
@@ -1760,7 +1760,7 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   margin-bottom: 15px;
 }
 button.pm-sec-head { cursor: pointer; }
-.pm-sec-head h2 {
+.pm-sec-head h3 {
   font-size: var(--p-fs-h2); font-weight: 600; letter-spacing: -0.3px; color: var(--text-primary); margin: 0; flex: 1;
 }
 .pm-sec-chevron { font-size: var(--p-fs-normal); color: var(--text-muted); transition: transform 0.15s; }

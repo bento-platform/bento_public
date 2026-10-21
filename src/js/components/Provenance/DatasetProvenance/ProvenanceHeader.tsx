@@ -43,7 +43,7 @@ const ProvenanceHeader = ({ dataset }: ProvenanceHeaderProps) => {
             {dataset.program_name ? ` · ${dataset.program_name}` : ''}
           </div>
           <div className="pm-title-row">
-            <h1>{t(dataset.title)}</h1>
+            <h2>{t(dataset.title)}</h2>
             {dataset.study_status && <StatusBadge status={dataset.study_status} />}
             {dataset.study_context && <span className="pm-ctx-chip">{dataset.study_context}</span>}
           </div>
