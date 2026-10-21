@@ -101,6 +101,8 @@ body {
 .ant-typography.h-as-3 { font-size: 24px; line-height: 1.33; }
 .ant-typography.h-as-4 { font-size: 20px; line-height: 1.4; }
 .ant-typography.h-as-5 { font-size: 16px; line-height: 1.5; }
+/* A heading rendered inside an antd Card title: inherit the card header typography. */
+.ant-typography.card-heading { margin: 0; font-size: inherit; font-weight: inherit; line-height: inherit; color: inherit; }
 .heading-btn { background: none; border: none; padding: 0; font: inherit; color: inherit; text-align: left; cursor: pointer; }
 .mb-4 { margin-bottom: 16px; }
 .p-0 { padding: 0; }
