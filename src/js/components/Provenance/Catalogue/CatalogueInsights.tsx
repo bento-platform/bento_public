@@ -78,7 +78,9 @@ const CatalogueInsightCard = ({ datasets, facet, kind, colors }: CatalogueInsigh
 
   return (
     <Card size="small" className="catalogue-chart-card">
-      <Text className="catalogue-chart-card__title">{t(`catalogue.insights.by_${facet}`)}</Text>
+      <Typography.Title level={3} className="catalogue-chart-card__title">
+        {t(`catalogue.insights.by_${facet}`)}
+      </Typography.Title>
       {kind === 'donut' ? (
         <CategoryDonut {...commonProps} centerLabel={centerLabel} />
       ) : (
@@ -114,9 +116,9 @@ const CatalogueEntityCountsCard = ({ datasets }: { datasets: DatasetWithProject[
 
   return (
     <Card size="small" className="catalogue-chart-card">
-      <Text id={titleId} className="catalogue-chart-card__title">
+      <Typography.Title level={3} id={titleId} className="catalogue-chart-card__title">
         {t('catalogue.insights.totals')}
-      </Text>
+      </Typography.Title>
       <StatList items={items} variant="compact" aria-labelledby={titleId} />
     </Card>
   );

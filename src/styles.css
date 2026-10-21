@@ -570,7 +570,9 @@ body {
 
 .catalogue-chart-card { flex: 1; min-width: 300px; }
 
-.catalogue-chart-card__title {
+.ant-typography.catalogue-chart-card__title {
+  margin: 0;
+  line-height: inherit;
   display: block;
   font-size: 12.5px;
   font-weight: 700;
