@@ -135,7 +135,9 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
       <Flex justify="space-between" align="center" className="mb-3">
         <Flex align="center" gap={6}>
           <PieChartOutlined className="text-secondary" />
-          <Text className="catalogue-insights__header-title">{t('catalogue.insights.title')}</Text>
+          <Typography.Title level={2} className="catalogue-insights__header-title">
+            {t('catalogue.insights.title')}
+          </Typography.Title>
         </Flex>
         <Text className="catalogue-insights__hint">{t('catalogue.insights.hint')}</Text>
       </Flex>

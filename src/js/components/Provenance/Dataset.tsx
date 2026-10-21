@@ -114,7 +114,7 @@ const Dataset = ({
     inner = (
       <Card className="catalogue-card" style={{ opacity: faded ? 0.5 : undefined }}>
         <Flex justify="space-between" align="flex-start" gap={8}>
-          <Title level={5} className="catalogue-card__title">
+          <Title level={3} className="h-as-5 catalogue-card__title">
             {t(title)}
           </Title>
           {dataset.study_status && <StatusBadge status={dataset.study_status} />}
