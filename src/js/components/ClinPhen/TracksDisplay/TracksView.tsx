@@ -260,7 +260,7 @@ const TracksView = ({
       )}
       {availableAssemblies.map((assemblyId) => (
         <div key={assemblyId} style={{ marginTop: 10 }}>
-          <Title level={5}>
+          <Title level={3} className="h-as-5">
             {hasMultipleAssemblies
               ? t('tracks.track_controls_per_assembly', { assemblyId })
               : t('tracks.track_controls')}
