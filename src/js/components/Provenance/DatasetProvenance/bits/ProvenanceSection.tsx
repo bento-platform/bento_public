@@ -16,7 +16,7 @@ export const htmlSectionId = (sectionId: SectionId) => `prov-sec-${sectionId}`;
 export const SectionHead = ({ title, count, collapsed, onToggle }: SectionHeadProps) => {
   const content = (
     <>
-      <h2>{title}</h2>
+      <h3>{title}</h3>
       {count !== undefined && <span className="pm-sec-cnt">{count}</span>}
     </>
   );

@@ -555,7 +555,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
               {isSmallScreen ? '' : t('Charts')}
             </Button>
           ) : (
-            <Typography.Title level={4} className="mb-0">
+            <Typography.Title level={2} className="h-as-4 mb-0">
               {t(`entities.${entity}`, T_PLURAL_COUNT)}
             </Typography.Title>
           )}
