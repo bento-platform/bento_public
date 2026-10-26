@@ -116,6 +116,13 @@ body {
 .m-0 { margin: 0; }
 .mx-auto { margin-left: auto; margin-right: auto; }
 .mb-0, .ant-typography.mb-0 { margin-bottom: 0; }
+/* Heading level reflects document outline; these keep the visual size of the level the heading used to have. */
+.ant-typography.h-as-3 { font-size: 24px; line-height: 1.33; }
+.ant-typography.h-as-4 { font-size: 20px; line-height: 1.4; }
+.ant-typography.h-as-5 { font-size: 16px; line-height: 1.5; }
+/* A heading rendered inside an antd Card title: inherit the card header typography. */
+.ant-typography.card-heading { margin: 0; font-size: inherit; font-weight: inherit; line-height: inherit; color: inherit; }
+.heading-btn { background: none; border: none; padding: 0; font: inherit; color: inherit; text-align: left; cursor: pointer; }
 .mb-4 { margin-bottom: 16px; }
 .p-0 { padding: 0; }
 .pb-content { padding-bottom: var(--content-padding-v); }
@@ -585,7 +592,9 @@ body {
 
 .catalogue-chart-card { flex: 1; min-width: 300px; }
 
-.catalogue-chart-card__title {
+.ant-typography.catalogue-chart-card__title {
+  margin: 0;
+  line-height: inherit;
   display: block;
   font-size: 12.5px;
   font-weight: 700;
@@ -677,7 +686,9 @@ body {
   border-radius: 12px;
   padding: 14px 16px;
 }
-.catalogue-insights__header-title { color: var(--text-secondary); font-weight: 600; font-size: 14px; }
+.ant-typography.catalogue-insights__header-title {
+  margin: 0; color: var(--text-secondary); font-weight: 600; font-size: 14px; line-height: inherit;
+}
 .catalogue-insights__hint { font-size: 12px; color: var(--text-muted); }
 /* END catalogue insights */
 
@@ -1112,7 +1123,9 @@ body {
 }
 /* END catalogue card */
 
-.catalogue-section-label {
+.ant-typography.catalogue-section-label {
+  margin: 0;
+  line-height: inherit;
   font-size: 13px;
   font-weight: 700;
   text-transform: uppercase;
@@ -1665,7 +1678,7 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   text-transform: uppercase; color: var(--text-muted); margin-bottom: 5px;
 }
 .pm-title-row { display: flex; align-items: flex-start; flex-wrap: wrap; gap: 10px; }
-.pm-title-row h1 {
+.pm-title-row h2 {
   font-size: var(--p-fs-h1); font-weight: 600; line-height: 1.18;
   letter-spacing: -0.5px; color: var(--text-primary); margin: 0 2px 0 0;
 }
@@ -1756,7 +1769,7 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   margin-bottom: 15px;
 }
 button.pm-sec-head { cursor: pointer; }
-.pm-sec-head h2 {
+.pm-sec-head h3 {
   font-size: var(--p-fs-h2); font-weight: 600; letter-spacing: -0.3px; color: var(--text-primary); margin: 0; flex: 1;
 }
 .pm-sec-chevron { font-size: var(--p-fs-normal); color: var(--text-muted); transition: transform 0.15s; }

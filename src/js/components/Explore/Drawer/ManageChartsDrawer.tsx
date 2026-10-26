@@ -27,7 +27,7 @@ const ManageChartsSectionHeader = ({
 
   return (
     <Flex justify="space-between" align="center" className={first ? 'mb-3' : 'my-3'}>
-      <Title level={5} style={{ margin: '0' }}>
+      <Title level={2} className="h-as-5" style={{ margin: '0' }}>
         {t(sectionTitle)}
       </Title>
       <Space>

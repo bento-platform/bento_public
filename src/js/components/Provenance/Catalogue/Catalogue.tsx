@@ -19,7 +19,6 @@ import CatalogueInsights from './CatalogueInsights';
 import Dataset from '@/components/Provenance/Dataset';
 import { makeResourceKey } from 'bento-auth-js';
 
-const { Text } = Typography;
 const { useBreakpoint } = Grid;
 
 const Catalogue = () => {
@@ -111,7 +110,9 @@ const Catalogue = () => {
 
           {/* DATASETS separator */}
           <Flex align="center" gap={8} className="catalogue-datasets-separator">
-            <Text className="catalogue-section-label">{t('entities.dataset_other')}</Text>
+            <Typography.Title level={2} className="catalogue-section-label">
+              {t('entities.dataset_other')}
+            </Typography.Title>
             <Divider className="m-0 flex-1 min-w-0" />
           </Flex>
 
