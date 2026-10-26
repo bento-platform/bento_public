@@ -4,6 +4,8 @@ import type { DrsRecordState } from './drs.store';
 import { RequestStatus } from '@/types/requests';
 import { getDrsRecord } from '@/features/drs/getDrsRecord.thunk';
 import { isDrs } from './utils';
+import { toBffUrl } from '@/constants/bff';
+import { PUBLIC_URL_NO_TRAILING_SLASH } from '@/config';
 
 export const useDrsObjectOrPassThrough = (uri: string | undefined): DrsRecordState | null => {
   /**
@@ -28,9 +30,9 @@ export const useDrsObjectOrPassThrough = (uri: string | undefined): DrsRecordSta
 export const useDrsHttpsAccessOrPassThrough = (url: string | undefined): string | null => {
   const drsRec = useDrsObjectOrPassThrough(url);
   if (drsRec) {
-    return drsRec.status !== RequestStatus.Fulfilled
-      ? null
-      : ((drsRec.record?.access_methods ?? []).find((am) => am.type === 'https')?.access_url?.url ?? url ?? null);
+    if (drsRec.status !== RequestStatus.Fulfilled) return null;
+    const accessUrl = (drsRec.record?.access_methods ?? []).find((am) => am.type === 'https')?.access_url?.url;
+    return accessUrl ? toBffUrl(accessUrl, PUBLIC_URL_NO_TRAILING_SLASH) : (url ?? null);
   } else {
     return url ?? null;
   }

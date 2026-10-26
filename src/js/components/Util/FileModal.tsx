@@ -2,7 +2,6 @@ import type { CSSProperties, ReactNode } from 'react';
 import { lazy, Suspense } from 'react';
 import { Modal, Row, Spin, type ModalProps } from 'antd';
 
-import { useAuthorizationHeader } from '@/features/auth/hooks';
 import { useDrsHttpsAccessOrPassThrough } from '@/features/drs/hooks';
 
 const FileDisplay = lazy(() => import('bento-file-display').then((m) => ({ default: m.FileDisplay })));
@@ -33,7 +32,6 @@ type FileModalProps = {
 
 // Ported from Bento Web
 const FileModal = ({ title, open, onCancel, hasTriggered, url, fileName, loading }: FileModalProps) => {
-  const authHeader = useAuthorizationHeader();
   const finalUrl = useDrsHttpsAccessOrPassThrough(url);
   return (
     <Modal
@@ -55,12 +53,7 @@ const FileModal = ({ title, open, onCancel, hasTriggered, url, fileName, loading
             </Row>
           }
         >
-          <FileDisplay
-            uri={finalUrl ?? undefined}
-            fileName={fileName}
-            loading={loading ?? false}
-            authHeader={authHeader}
-          />
+          <FileDisplay uri={finalUrl ?? undefined} fileName={fileName} loading={loading ?? false} />
         </Suspense>
       )}
     </Modal>

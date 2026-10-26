@@ -1,6 +1,6 @@
-import { createAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import type { RootState } from '@/store';
-import { type Resource, makeResourceKey, makeAuthorizationHeader } from 'bento-auth-js';
+import { type Resource, makeResourceKey } from 'bento-auth-js';
 
 type FetchPermissionsPayload = {
   result: string[][];
@@ -8,7 +8,6 @@ type FetchPermissionsPayload = {
 type FetchPermissionsParams = {
   resources: Resource[];
   authzUrl: string;
-  accessToken: string | undefined;
 };
 
 export const fetchResourcesPermissions = createAsyncThunk<
@@ -17,11 +16,11 @@ export const fetchResourcesPermissions = createAsyncThunk<
   { state: RootState }
 >(
   'auth/FETCH_RESOURCES_PERMISSIONS',
-  async ({ resources, authzUrl, accessToken }) => {
+  async ({ resources, authzUrl }) => {
     const url = `${authzUrl}/policy/permissions`;
     const response = await fetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...makeAuthorizationHeader(accessToken) },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ resources }),
     });
     return await response.json();
@@ -40,7 +39,6 @@ export const fetchResourcesPermissions = createAsyncThunk<
 );
 
 export type AuthSliceState = {
-  accessToken?: string;
   resourcePermissions: {
     [name: string]: {
       isFetching: boolean;
@@ -54,17 +52,12 @@ const initialState: AuthSliceState = {
   resourcePermissions: {},
 };
 
-export const setAccessToken = createAction<string | undefined>('auth/SET_ACCESS_TOKEN');
-
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(setAccessToken, (state, { payload }) => {
-        state.accessToken = payload;
-      })
       .addCase(fetchResourcesPermissions.pending, (state, { meta }) => {
         for (const resource of meta.arg.resources) {
           const key = makeResourceKey(resource);
