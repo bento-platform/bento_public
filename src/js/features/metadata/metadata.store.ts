@@ -6,7 +6,6 @@ import type { Dataset } from '@/types/dataset';
 import { RequestStatus } from '@/types/requests';
 import type { RootState } from '@/store';
 import { printAPIError } from '@/utils/error.util';
-import { authorizedRequestConfig } from '@/utils/requests';
 import { validProjectDataset } from '@/utils/router';
 import { scopeSelectionEqual } from './utils';
 import { projectsUrl } from '@/constants/configConstants';
@@ -52,11 +51,9 @@ export const getProjects = createAsyncThunk<
   { state: RootState; rejectValue: string }
 >(
   'metadata/getProjects',
-  (language, { rejectWithValue, getState }) => {
-    const config = authorizedRequestConfig(getState());
-    config.headers = { ...config.headers, 'Accept-Language': language };
+  (language, { rejectWithValue }) => {
     return axios
-      .get(projectsUrl, config)
+      .get(projectsUrl, { headers: { 'Accept-Language': language } })
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue));
   },
