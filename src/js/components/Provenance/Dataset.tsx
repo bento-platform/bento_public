@@ -24,6 +24,7 @@ import TruncatedParagraph from '@Util/TruncatedParagraph';
 import KeywordList from './KeywordList';
 import ProgramPill from './Catalogue/ProgramPill';
 import ProjectPill from './Catalogue/ProjectPill';
+import DatasetGetManifestButton from '@Util/DatasetGetManifestButton';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -94,7 +95,8 @@ const Dataset = ({
 
   const counts = filteredCounts ?? dataset.counts_by_entity;
   const hasData = nonEmptyCounts(dataset.counts_by_entity);
-  const faded = filteredCounts && Object.values(filteredCounts).every((c) => !c) && hasData;
+  const faded = !!filteredCounts && Object.values(filteredCounts).every((c) => !c) && hasData;
+  const canDownloadData = permissionsData?.permissions.includes(downloadData) ?? false;
 
   let inner: ReactNode;
 
@@ -170,7 +172,11 @@ const Dataset = ({
           {APPLY_FOR_ACCESS_URL &&
             permissionsData?.hasAttempted &&
             !permissionsData.permissions.includes(queryData) &&
-            !permissionsData.permissions.includes(downloadData) && <DatasetApplyForAccessButton className="flex-1" />}
+            !canDownloadData && <DatasetApplyForAccessButton />}
+          {PCGL_MODE &&
+            permissionsData?.hasAttempted &&
+            canDownloadData &&
+            !!dataset.counts_by_entity?.experiment_result && <DatasetGetManifestButton />}
         </Flex>
       </Card>
     );

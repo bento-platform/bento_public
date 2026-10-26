@@ -10,7 +10,7 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 
-import { PCGL_MODE } from '@/config';
+import { APPLY_FOR_ACCESS_URL, PCGL_MODE } from '@/config';
 
 import { useTranslationFn } from '@/hooks';
 import { useScopeQueryData, useScopeDownloadData } from '@/hooks/censorship';
@@ -24,6 +24,7 @@ import InteractableText from '@Util/InteractableText';
 import DatasetDescription from '@/components/Provenance/DatasetProvenance/DatasetDescription';
 import { PersonCard } from '@/components/Provenance/DatasetProvenance/bits';
 import DatasetApplyForAccessButton from '@Util/DatasetApplyForAccessButton';
+import DatasetGetManifestButton from '@Util/DatasetGetManifestButton';
 
 type RecordRow = { icon: ReactNode; label: string; value: ReactNode };
 
@@ -150,8 +151,13 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
           >
             {t('About')}
           </Button>
-          {PCGL_MODE && !fetchingQueryDataPerm && !fetchingDownloadDataPerm && !queryDataPerm && !downloadDataPerm && (
-            <DatasetApplyForAccessButton className="flex-1" type="primary" />
+          {APPLY_FOR_ACCESS_URL &&
+            !fetchingQueryDataPerm &&
+            !fetchingDownloadDataPerm &&
+            !queryDataPerm &&
+            !downloadDataPerm && <DatasetApplyForAccessButton type="primary" />}
+          {PCGL_MODE && downloadDataPerm && !!dataset.counts_by_entity?.experiment_result && (
+            <DatasetGetManifestButton />
           )}
         </Flex>
       </section>

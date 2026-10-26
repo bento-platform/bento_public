@@ -273,7 +273,8 @@
   },
   "dataset": {
     "expand": "plus",
-    "apply_for_access": "Demande d'accès"
+    "apply_for_access": "Demande d'accès",
+    "get_manifest": "Obtenir le manifeste des fichiers"
   },
   "provenance": {
     "sections": {

@@ -4,7 +4,7 @@ import { APPLY_FOR_ACCESS_URL, PCGL_MODE } from '@/config';
 import { useIsAuthenticated } from '@/features/auth/hooks';
 import { useTranslationFn } from '@/hooks';
 
-const DatasetApplyForAccessButton = (props: Omit<ButtonProps, 'icon' | 'onClick'>) => {
+const DatasetApplyForAccessButton = (props: Omit<ButtonProps, 'className' | 'icon' | 'onClick'>) => {
   const isAuthenticated = useIsAuthenticated();
   const t = useTranslationFn();
   return (

@@ -645,7 +645,8 @@
   },
   "dataset": {
     "expand": "more",
-    "apply_for_access": "Apply for access"
+    "apply_for_access": "Apply For Access",
+    "get_manifest": "Get File Manifest"
   },
   "provenance": {
     "sections": {
