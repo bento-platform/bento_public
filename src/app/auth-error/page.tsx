@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { signIn } from '@/auth';
 import { BENTO_OIDC_PROVIDER_ID } from '@/features/auth/constants';
 
@@ -29,7 +30,7 @@ export default async function AuthErrorPage({ searchParams }: PageProps<'/auth-e
           await signIn(BENTO_OIDC_PROVIDER_ID, { redirectTo: '/' });
         }}
       >
-        <button type="submit">Try again</button> <a href="/">Back to home</a>
+        <button type="submit">Try again</button> <Link href="/">Back to home</Link>
       </form>
     </main>
   );
