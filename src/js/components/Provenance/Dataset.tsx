@@ -165,6 +165,9 @@ const Dataset = ({
             {t('About')}
           </Button>
           {hasData && (
+            // hasData checks counts_by_entity, which is a proxy for having dataset-level counts permissions, but we
+            // load them earlier than permissions so we 'cheat' a little (don't explicitly check permissions) to avoid
+            // rendering flicker.
             <Button type="primary" icon={<PieChartOutlined />} className="flex-1" onClick={onNavigateExplore}>
               {t('Explore')}
             </Button>
