@@ -1,5 +1,5 @@
 import { useCallback, useImperativeHandle, useEffect, useMemo, useRef, type ForwardedRef } from 'react';
-import { Collapse } from 'antd';
+import { Collapse, Typography } from 'antd';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
 import type { SectionKey, SectionSpec } from './phenopacketOverview.registry';
 import { SECTION_SPECS } from './phenopacketOverview.registry';
@@ -82,10 +82,14 @@ const PhenopacketOverview = ({ phenopacket, ref }: PhenopacketOverviewProps) => 
           return {
             key,
             label: (
-              <strong style={{ fontSize: '16px', borderTop: '10px' }}>
+              <Typography.Title
+                level={3}
+                className="card-heading"
+                style={{ display: 'inline', fontSize: '16px', fontWeight: 700 }}
+              >
                 {t(spec.titleTranslationKey, titleTranslationOptions)}
                 {showItemCount ? ` (${itemCount})` : null}
-              </strong>
+              </Typography.Title>
             ),
             children: (
               <div id={`phenopacket-${key}`} data-pp-section={key}>
