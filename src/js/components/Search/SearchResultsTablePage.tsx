@@ -507,10 +507,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
     ]
   );
 
-  // Manifest (TSV) export - PCGL-only, experiment results only. Unlike CSV/XLSX, it has a fixed set of columns (no
-  // field-selection modal) and always goes through the batch/experimentresults endpoint, for both "all" and
-  // "selected" - see useDownloadExperimentResultManifest.
-  const onExportManifest = useExportFileManifest(hasSelection, selectedExportIds, setExporting);
+  const onExportManifest = useExportFileManifest(selectedScope.scope, hasSelection, selectedExportIds, setExporting);
 
   const openColumnModal = useCallback(() => setColumnModalOpen(true), []);
   const openExportModal = useCallback((format: ExportFormat) => {

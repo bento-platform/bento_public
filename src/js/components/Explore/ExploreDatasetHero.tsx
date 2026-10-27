@@ -32,7 +32,7 @@ type RecordRow = { icon: ReactNode; label: string; value: ReactNode };
 const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
   const t = useTranslationFn();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
-  const { fixedDataset } = useSelectedScope();
+  const { scope, fixedDataset } = useSelectedScope();
 
   const { hasPermission: queryDataPerm, fetchingPermission: fetchingQueryDataPerm } = useScopeQueryData();
   const { hasPermission: downloadDataPerm, fetchingPermission: fetchingDownloadDataPerm } = useScopeDownloadData();
@@ -162,7 +162,7 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
             !queryDataPerm &&
             !downloadDataPerm && <DatasetApplyForAccessButton type="primary" />}
           {PCGL_MODE && downloadDataPerm && !!dataset.counts_by_entity?.experiment_result && (
-            <DatasetGetManifestButton />
+            <DatasetGetManifestButton scope={scope} />
           )}
         </Flex>
       </section>

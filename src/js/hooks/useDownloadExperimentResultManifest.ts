@@ -3,17 +3,16 @@ import axios from 'axios';
 import FileSaver from 'file-saver';
 import { makeAuthorizationHeader } from 'bento-auth-js';
 
+import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import { useAppSelector } from '@/hooks';
-import { useSelectedScope } from '@/features/metadata/hooks';
 import { experimentResultBatchUrl } from '@/constants/configConstants';
 import { scopedAuthorizedRequestConfigFromParts } from '@/utils/requests';
 
 // PCGL-only download-manifest (TSV) export for experiment results. Unlike the CSV/XLSX exports, both "all search
 // results" and "selected rows" go through the same batch/experimentresults endpoint - GET (no id) for all results in
 // the current scope, POST with an id list for a selection - since katsu only exposes the manifest renderer there.
-export const useDownloadExperimentResultPcglManifest = () => {
+export const useDownloadExperimentResultPcglManifest = (scope: DiscoveryScope) => {
   const auth = useAppSelector((state) => state.auth);
-  const selectedScope = useSelectedScope();
 
   return useCallback(
     async (ids: string[], filename: string) => {
@@ -24,12 +23,12 @@ export const useDownloadExperimentResultPcglManifest = () => {
             { headers: { ...makeAuthorizationHeader(auth.accessToken) }, responseType: 'blob' }
           )
         : await axios.get(experimentResultBatchUrl, {
-            ...scopedAuthorizedRequestConfigFromParts(auth, selectedScope, [['format', 'pcgl_manifest']]),
+            ...scopedAuthorizedRequestConfigFromParts(auth, scope, [['format', 'pcgl_manifest']]),
             responseType: 'blob',
           });
 
       FileSaver.saveAs(res.data, filename);
     },
-    [auth, selectedScope]
+    [auth, scope]
   );
 };

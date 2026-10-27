@@ -183,7 +183,7 @@ const Dataset = ({
           {PCGL_MODE &&
             permissionsData?.hasAttempted &&
             canDownloadData &&
-            !!dataset.counts_by_entity?.experiment_result && <DatasetGetManifestButton />}
+            !!dataset.counts_by_entity?.experiment_result && <DatasetGetManifestButton scope={scope} />}
         </Flex>
       </Card>
     );

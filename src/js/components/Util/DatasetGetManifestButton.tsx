@@ -3,16 +3,21 @@ import { Button, type ButtonProps } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import { useTranslationFn } from '@/hooks';
 import { useExportFileManifest } from '@/hooks/useExportFileManifest';
+import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 
-const DatasetGetManifestButton = (props: Omit<ButtonProps, 'className' | 'icon' | 'onClick'>) => {
+const DatasetGetManifestButton = ({
+  scope,
+  loading,
+  ...props
+}: Omit<ButtonProps, 'className' | 'icon' | 'onClick'> & { scope: DiscoveryScope }) => {
   const t = useTranslationFn();
   const [exporting, setExporting] = useState(false);
-  const onExportManifest = useExportFileManifest(false, [], setExporting);
+  const onExportManifest = useExportFileManifest(scope, false, [], setExporting);
   return (
     <Button
       icon={<DownloadOutlined />}
       className="flex-1"
-      loading={exporting || props.loading}
+      loading={exporting || loading}
       onClick={onExportManifest}
       {...props}
     >
