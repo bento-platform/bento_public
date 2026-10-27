@@ -452,7 +452,7 @@ body {
 }
 
 /* Only for the explore view */
-#site-sider__inner { height: 80vh; }
+#site-sider__inner { height: 100vh; /* will be overridden by max-height on .sidebar class */ }
 #default-layout.page-catalogue #site-sider__inner {
   top: 0;
   padding: var(--content-padding-v) var(--content-padding-h);
