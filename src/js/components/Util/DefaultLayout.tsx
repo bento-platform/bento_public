@@ -67,7 +67,10 @@ const DefaultLayout = () => {
             {!sidebarHidden && (
               <SiteSider overlay={sidebarOverlay} open={sidebarOverlayShown} onClose={() => setCollapsed(true)} />
             )}
-            <Content style={{ minHeight: 'calc(100vh - 210px - var(--scoped-title-height) - var(--header-height))' }}>
+            <Content
+              id="main-content"
+              style={{ minHeight: 'calc(100vh - 210px - var(--scoped-title-height) - var(--header-height))' }}
+            >
               <ErrorBoundary
                 fallbackRender={({ error }) => <Alert type="error" description={getErrorMessage(error)} />}
               >
