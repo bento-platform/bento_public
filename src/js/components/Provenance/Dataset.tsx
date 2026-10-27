@@ -157,9 +157,6 @@ const Dataset = ({
         )}
 
         <Flex gap={8} className="catalogue-card__actions mt-3" wrap>
-          <Button icon={<SolutionOutlined />} className="flex-1" onClick={openProvenanceModal}>
-            {t('About')}
-          </Button>
           {hasData && (
             // hasData checks counts_by_entity, which is a proxy for having dataset-level counts permissions, but we
             // load them earlier than permissions so we 'cheat' a little (don't explicitly check permissions) to avoid
@@ -168,6 +165,9 @@ const Dataset = ({
               {t('Explore')}
             </Button>
           )}
+          <Button icon={<SolutionOutlined />} className="flex-1" onClick={openProvenanceModal}>
+            {t('About')}
+          </Button>
         </Flex>
       </Card>
     );

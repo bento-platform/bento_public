@@ -1115,12 +1115,6 @@ body {
 .catalogue-card__counts-row { border-top: 1px solid var(--border-subtle); margin-top: 12px; padding-top: 10px; }
 .count-item__icon { color: var(--text-muted); font-size: 13px; }
 .count-item__text { font-size: 13px; }
-.catalogue-card__actions .bento-theme.ant-btn {
-  font-size: 12.5px; /* down from 13px default */
-  --ant-button-padding-inline: 8px;
-  --ant-button-icon-gap: 7px;
-  --ant-button-content-font-size: 13px;
-}
 /* END catalogue card */
 
 .ant-typography.catalogue-section-label {
