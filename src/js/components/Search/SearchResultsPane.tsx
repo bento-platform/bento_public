@@ -1,17 +1,15 @@
-import { type CSSProperties, type ReactElement, useCallback, useEffect } from 'react';
+import { type CSSProperties, type ReactElement, useCallback } from 'react';
 import { Card, Col, Row, Typography } from 'antd';
 import { PieChart } from 'bento-charts';
 
 import { T_PLURAL_COUNT } from '@/constants/i18n';
 import { CHART_SIZES } from '@/constants/exploreConstants';
 import { useTranslationFn } from '@/hooks';
-import { useScopeQueryData } from '@/hooks/censorship';
 import type { DiscoveryResults } from '@/types/data';
 import type { SearchResultsUIPage } from '@/features/search/types';
 
 import CustomEmpty from '@/components/Util/CustomEmpty';
 import SearchResultsCounts from './SearchResultsCounts';
-import SearchResultsTablePage from '@/components/Search/SearchResultsTablePage';
 
 const SRChartsPage = ({
   hasInsufficientData,
@@ -60,33 +58,8 @@ const SearchResultsPane = ({
   results,
   resultsTitle,
   resultsExtra,
-  page: page_,
-  onPageChange,
   style,
 }: SearchResultsPaneProps) => {
-  const page = page_ ?? 'charts';
-
-  const { hasAttempted: hasAttemptedQDP, hasPermission: queryDataPerm } = useScopeQueryData();
-  useEffect(() => {
-    if (page === 'individuals' && hasAttemptedQDP && !queryDataPerm && onPageChange) {
-      onPageChange('charts');
-    }
-  }, [page, onPageChange, hasAttemptedQDP, queryDataPerm]);
-
-  let pageElement = <div />;
-  if (page === 'charts') {
-    pageElement = <SRChartsPage hasInsufficientData={hasInsufficientData} results={results} />;
-  } else if (page === 'individuals') {
-    pageElement = (
-      <SearchResultsTablePage
-        entity="phenopacket"
-        onBack={() => {
-          if (onPageChange) onPageChange('charts');
-        }}
-      />
-    );
-  }
-
   return (
     <div className="container margin-auto search-results-pane" style={style}>
       <Card
@@ -110,14 +83,12 @@ const SearchResultsPane = ({
           <Col xs={24} lg={4}>
             <SearchResultsCounts
               mode="normal"
-              selectedPage={page}
-              setSelectedPage={onPageChange}
               results={results}
               hasInsufficientData={hasInsufficientData}
               message={message}
             />
           </Col>
-          {pageElement}
+          <SRChartsPage hasInsufficientData={hasInsufficientData} results={results} />
         </Row>
       </Card>
     </div>
@@ -132,7 +103,6 @@ export interface SearchResultsPaneProps {
   resultsTitle?: string;
   resultsExtra?: ReactElement;
   page?: SearchResultsUIPage;
-  onPageChange?: (page: SearchResultsUIPage) => void;
   style?: CSSProperties;
 }
 

@@ -56,7 +56,8 @@ const CountCardShowHide = memo(({ selected, onClear }: { selected: boolean; onCl
 
   const handleKeyDown = useCallback<KeyboardEventHandler<HTMLDivElement>>(
     (e) => {
-      if (e.key === 'Enter') {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
         onClear();
       }
     },
@@ -64,17 +65,23 @@ const CountCardShowHide = memo(({ selected, onClear }: { selected: boolean; onCl
   );
 
   return (
+    // TODO: investigate correct a11y patterns for the count card - either as an accordion or as a tab.
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
       className="count-card__show-hide cursor-pointer antd-gray-7"
       style={{
         backgroundColor: selected ? 'rgba(255, 255, 255, 1.0)' : 'rgba(255, 255, 255, 0.0)',
         bottom: selected ? -8 : 0,
       }}
+      role={selected ? 'button' : undefined}
+      // TODO: remove this exception when we have a clear correct accessible interaction pattern for these.
+      /* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */
       tabIndex={selected ? 0 : undefined}
       onClick={selected ? onClear : undefined}
       onKeyDown={handleKeyDown}
     >
       <DownOutlined
+        aria-hidden
         style={{
           transform: `rotate(${selected ? '180deg' : '0deg'})`,
           transition: 'transform 0.15s ease-in-out',
@@ -167,7 +174,7 @@ const CountsAndResults = () => {
           return false;
         }
         return waitingForData || !!(counts[entity] || nFilters);
-      }).map((entity, i) => {
+      }).map((entity) => {
         const { icon } = COUNT_ENTITY_REGISTRY[entity];
         const count = renderCount(discoveryStatus === RequestStatus.Rejected ? undefined : counts[entity]);
         const selected = selectedEntity === entity;
@@ -178,7 +185,7 @@ const CountsAndResults = () => {
         const prefetch = () => dispatch(fetchDiscoveryMatches(entity));
         return (
           <Card
-            key={i}
+            key={entity}
             aria-selected={hasQueryData ? selected : undefined}
             role={canSelect ? 'button' : undefined}
             className={
@@ -193,7 +200,8 @@ const CountsAndResults = () => {
             onKeyDown={
               canSelect
                 ? (e) => {
-                    if (e.key === 'Enter') {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
                       setSelectedEntity(entity);
                     }
                   }

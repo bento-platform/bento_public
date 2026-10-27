@@ -5,11 +5,11 @@ import { BiDna } from 'react-icons/bi';
 import type { BentoCountEntity, BentoUICountEntity } from '@/types/entities';
 
 export const COUNT_ENTITY_REGISTRY: Record<BentoUICountEntity, { icon: ReactNode }> = {
-  dataset: { icon: <DatabaseOutlined /> },
-  individual: { icon: <TeamOutlined /> },
-  biosample: { icon: <BiDna /> },
-  experiment: { icon: <ExperimentOutlined /> },
-  experiment_result: { icon: <FileOutlined /> },
+  dataset: { icon: <DatabaseOutlined aria-hidden /> },
+  individual: { icon: <TeamOutlined aria-hidden /> },
+  biosample: { icon: <BiDna aria-hidden /> },
+  experiment: { icon: <ExperimentOutlined aria-hidden /> },
+  experiment_result: { icon: <FileOutlined aria-hidden /> },
 };
 
 export const COUNT_ENTITY_ORDER: BentoCountEntity[] = ['individual', 'biosample', 'experiment', 'experiment_result'];
