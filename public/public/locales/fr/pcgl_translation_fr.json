@@ -24,5 +24,11 @@
   },
   "interpretations": {
     "subject_or_biosample_id": "Identifiant du participant ou du specimen"
+  },
+  "header": {
+    "skip_links": {
+      "main": "Passer au contenu principal",
+      "footer": "Passer à « Au sujet du BGPC »"
+    }
   }
 }

@@ -410,6 +410,13 @@ body {
 
   /* Header padding is grid-aligned to content padding */
   padding: 0 var(--content-padding-h);
+
+  & .pcgl-header {
+    padding-block: unset;
+  }
+  & .pcgl-header-end {
+    margin-left: unset;
+  }
 }
 
 #site-header h1.ant-typography {

@@ -23,5 +23,11 @@
   },
   "interpretations": {
     "subject_or_biosample_id": "Participant or Specimen ID"
+  },
+  "header": {
+    "skip_links": {
+      "main": "Skip to main content",
+      "footer": "Skip to 'About PCGL'"
+    }
   }
 }
