@@ -172,6 +172,10 @@ const Dataset = ({
               {t('Explore')}
             </Button>
           )}
+          {/* mutually-exclusive buttons; either:
+               - applying for access (if the instance provides an application URL), or
+               - downloading a PCGL-formatted file manifest (if PCGL_MODE is on, and we have download:data permissions)
+            */}
           {APPLY_FOR_ACCESS_URL &&
             permissionsData?.hasAttempted &&
             !permissionsData.permissions.includes(queryData) &&
