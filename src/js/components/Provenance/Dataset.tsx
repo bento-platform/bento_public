@@ -4,8 +4,7 @@ import { Avatar, Button, Card, Flex, List, Typography } from 'antd';
 import { PieChartOutlined, SolutionOutlined } from '@ant-design/icons';
 import { FaDatabase } from 'react-icons/fa';
 
-import { downloadData, queryData } from 'bento-auth-js';
-import { APPLY_FOR_ACCESS_URL, PCGL_MODE } from '@/config';
+import { PCGL_MODE } from '@/config';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type { Dataset } from '@/types/dataset';
 import type { Project } from '@/types/metadata';
@@ -19,13 +18,11 @@ import { useNavigateToScope } from '@/hooks/navigation';
 import { nonEmptyCounts } from '@/utils/counts';
 import { isoDateToString } from '@/utils/strings';
 import CountsDisplay from '@Util/CountsDisplay';
-import DatasetApplyForAccessButton from '@Util/DatasetApplyForAccessButton';
 import StatusBadge from '@Util/StatusBadge';
 import TruncatedParagraph from '@Util/TruncatedParagraph';
 import KeywordList from './KeywordList';
 import ProgramPill from './Catalogue/ProgramPill';
 import ProjectPill from './Catalogue/ProjectPill';
-import DatasetGetManifestButton from '@Util/DatasetGetManifestButton';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -43,7 +40,7 @@ const Dataset = ({
   selected,
   filteredCounts,
   fromProject,
-  permissionsData,
+  // permissionsData,  TODO: render a locked/unlocked icon for access based on permissions
 }: {
   parentProjectID: string;
   dataset: Dataset;
@@ -96,7 +93,6 @@ const Dataset = ({
   const counts = filteredCounts ?? dataset.counts_by_entity;
   const hasData = nonEmptyCounts(dataset.counts_by_entity);
   const faded = !!filteredCounts && Object.values(filteredCounts).every((c) => !c) && hasData;
-  const canDownloadData = permissionsData?.permissions.includes(downloadData) ?? false;
 
   let inner: ReactNode;
 
@@ -172,18 +168,6 @@ const Dataset = ({
               {t('Explore')}
             </Button>
           )}
-          {/* mutually-exclusive buttons; either:
-               - applying for access (if the instance provides an application URL), or
-               - downloading a PCGL-formatted file manifest (if PCGL_MODE is on, and we have download:data permissions)
-            */}
-          {APPLY_FOR_ACCESS_URL &&
-            permissionsData?.hasAttempted &&
-            !permissionsData.permissions.includes(queryData) &&
-            !canDownloadData && <DatasetApplyForAccessButton />}
-          {PCGL_MODE &&
-            permissionsData?.hasAttempted &&
-            canDownloadData &&
-            !!dataset.counts_by_entity?.experiment_result && <DatasetGetManifestButton scope={scope} />}
         </Flex>
       </Card>
     );
