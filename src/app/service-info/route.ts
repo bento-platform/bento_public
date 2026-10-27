@@ -1,9 +1,10 @@
 import { execSync } from 'child_process';
 import packageData from '../../../package.json';
+import { readPublicConfig } from '../../server/publicConfig';
 
 export const dynamic = 'force-dynamic';
 
-const ADMIN_URL = (process.env.BENTO_PUBLIC_ADMIN_URL || '').replace(/\/$/, '');
+const { ADMIN_URL } = readPublicConfig();
 
 const corsHeaders: Record<string, string> = ADMIN_URL
   ? {

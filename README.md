@@ -14,14 +14,13 @@ it directly.
 
 ### Adding a new environment configuration variable
 
-Any new environment / configuration variable must be registered in several places:
+Environment variables are read on the server at request time and served to the client as JSON from
+`/public/config.json`, which the page fetches before loading the app. A new variable must be registered in:
 
-1. [`./src/app/public/config.js/route.ts`](./src/app/public/config.js/route.ts):
-   mapping the environment variable to a config object entry, read live at request time.
-2. [`./next.config.ts`](./next.config.ts): setting a build-time default value for the
-   environment variable, used as a fallback in local `next dev`.
-3. [`./src/js/config.ts`](./src/js/config.ts): loading from the global config object
-   (via key from 1.) or from the environment variable directly (via key from 2., as a fallback).
+1. [`./src/js/types/publicConfig.ts`](./src/js/types/publicConfig.ts): adding a key to the `PublicConfig` type.
+2. [`./src/server/publicConfig.ts`](./src/server/publicConfig.ts): mapping the environment variable to that key,
+   including parsing and defaults.
+3. [`./src/js/config.ts`](./src/js/config.ts): exporting it as a constant for the rest of the app.
 
 ### Translations in dev mode
 Add your English to French translations in
