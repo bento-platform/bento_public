@@ -49,7 +49,6 @@ const Catalogue = () => {
 
   // TODO: use specific evaluate matrix on desired permissions instead of fetching all permissions?
   const datasetPermissions = useResourcesPermissionsWrapper(datasetResources);
-  console.log(datasetPermissions);
 
   const { filtered, facetOptions } = useCatalogueFilter(allDatasets);
 
