@@ -239,11 +239,11 @@
       "search_placeholder": "Rechercher des $t(entities.dataset_other, lowercase), mots-clés, dosages …",
       "sort_label": "Trier",
       "sort": {
-        "recently_updated": "Récemment mis à jour",
-        "newest_created": "Tout récemment créé",
+        "recently_updated": "Date de mise à jour",
+        "newest_created": "Date de création",
         "title_az": "Titre A–Z",
-        "most_individuals": "Le plus de participants",
-        "most_biosamples": "Le plus d'échantillons biologiques"
+        "most_individuals": "Nombre de participants",
+        "most_biosamples": "Nombre d'échantillons biologiques"
       },
       "grid": "Grille",
       "list": "Liste",
