@@ -92,7 +92,9 @@ const useProvenanceEntries = (
                     </div>
                   )}
                 </div>
-                {canApplyForDatasetAccess && <DatasetApplyForAccessButton style={{ marginTop: 18 }} />}
+                {canApplyForDatasetAccess && (
+                  <DatasetApplyForAccessButton type="primary" size="large" style={{ marginTop: 18 }} />
+                )}
               </div>
             ),
           },
