@@ -19,7 +19,6 @@ import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
 import StatList from '@/components/Util/StatList';
 import type { Dataset } from '@/types/dataset';
-import type { ResourcePermissionsState } from '@/features/auth/hooks';
 import {
   FundingCard,
   LinkTile,
@@ -38,13 +37,10 @@ import SummarySectionContent from './SummarySectionContent';
 import type { ProvenanceEntry, SectionId } from './types';
 import DatasetApplyForAccessButton from '@Util/DatasetApplyForAccessButton';
 
-const useProvenanceEntries = (
-  dataset: Dataset | null | undefined,
-  permissionsData?: ResourcePermissionsState
-): ProvenanceEntry[] => {
+const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEntry[] => {
   const t = useTranslationFn();
 
-  const canApplyForDatasetAccess = useCanApplyForDatasetAccess({ permissionsList: permissionsData?.permissions });
+  const canApplyForDatasetAccess = useCanApplyForDatasetAccess();
 
   if (!dataset) return [];
 
