@@ -41,6 +41,17 @@ const Catalogue = () => {
     [projects]
   );
 
+  // TODO: fetch per-dataset permissions here (and pass them to <Dataset permissionsData={...} />) using a specific
+  //  evaluate matrix on only the desired permissions (e.g. download:data) instead of fetching all permissions, and only
+  //  when a feature needs them (APPLY_FOR_ACCESS_URL set or PCGL_MODE on). Previously:
+  // const datasetResources = useMemo(
+  //   () => allDatasets.map(({ project, dataset }) => ({ project: project.identifier, dataset: dataset.identifier })),
+  //   [allDatasets]
+  // );
+  // const datasetPermissions = useResourcesPermissionsWrapper(datasetResources);
+  // ...and in the <Dataset> props:
+  // permissionsData={datasetPermissions[makeResourceKey({ project: project.identifier, dataset: dataset.identifier })]}
+
   const { filtered, facetOptions } = useCatalogueFilter(allDatasets);
 
   // Clear filters on language change

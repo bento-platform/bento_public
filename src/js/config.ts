@@ -20,6 +20,8 @@ export interface PublicConfig {
   // Theme variables
   CATALOGUE_HEADER_BACKGROUND: string | undefined;
   CATALOGUE_HEADER_TEXT_COLOR: string | undefined;
+  // Apply-for-access configuration and flags
+  APPLY_FOR_ACCESS_URL: string | null;
   // Beacon configuration and flags
   BEACON_URL: string | null;
   BEACON_UI_ENABLED: boolean;
@@ -77,6 +79,11 @@ export const DEV_SETTINGS = readDevSettings();
 export const CONFIGURED_PCGL_MODE =
   BENTO_PUBLIC_CONFIG.PCGL_MODE ?? stringToBoolean(process.env.BENTO_PUBLIC_PCGL_MODE);
 export const PCGL_MODE = DEV_SETTINGS.PCGL_MODE ?? CONFIGURED_PCGL_MODE;
+
+// Apply-for-access configuration
+export const APPLY_FOR_ACCESS_URL = stripTrailingSlash(
+  BENTO_PUBLIC_CONFIG.APPLY_FOR_ACCESS_URL ?? process.env.APPLY_FOR_ACCESS_URL ?? ''
+);
 
 // Beacon configuration and flags
 export const BEACON_URL = BENTO_PUBLIC_CONFIG.BEACON_URL ?? process.env.BEACON_URL;
