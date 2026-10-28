@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Card, Col, Flex, Form, Row } from 'antd';
+import { Button, Card, Col, Form, Row, Typography } from 'antd';
 import { useIsAuthenticated } from '@/features/auth/hooks';
 import { useAppDispatch, useQueryWithAuthIfAllowed, useTranslationFn } from '@/hooks';
 import { useSelectedScope } from '@/features/metadata/hooks';
@@ -225,7 +225,15 @@ const BeaconQueryFormUi = ({
 
   return (
     <div className="container margin-auto" style={{ paddingBottom: 8 }}>
-      <Card title={t('Search')} className="w-full shadow rounded-xl" styles={CARD_STYLES}>
+      <Card
+        title={
+          <Typography.Title level={2} className="card-heading">
+            {t('Search')}
+          </Typography.Title>
+        }
+        className="w-full shadow rounded-xl"
+        styles={CARD_STYLES}
+      >
         <p className="p-0" style={{ margin: '-8px 0 8px 0', color: 'grey' }}>
           {t(uiInstructions)}
         </p>
@@ -234,7 +242,11 @@ const BeaconQueryFormUi = ({
             {hasVariants && (
               <Col xs={24} lg={12}>
                 <Card
-                  title={t('entities.variant', T_PLURAL_COUNT)}
+                  title={
+                    <Typography.Title level={3} className="card-heading">
+                      {t('entities.variant', T_PLURAL_COUNT)}
+                    </Typography.Title>
+                  }
                   className="shadow h-full"
                   styles={CARD_STYLES}
                   extra={
@@ -249,7 +261,11 @@ const BeaconQueryFormUi = ({
             )}
             <Col xs={24} lg={hasVariants ? 12 : 24}>
               <Card
-                title={<Flex justify="space-between">{t('Metadata')}</Flex>}
+                title={
+                  <Typography.Title level={3} className="card-heading">
+                    {t('Metadata')}
+                  </Typography.Title>
+                }
                 className="shadow h-full"
                 styles={CARD_STYLES}
                 extra={
