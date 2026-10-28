@@ -507,13 +507,15 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
     ]
   );
 
-  const onExportManifest = useExportFileManifest(selectedScope.scope, hasSelection, selectedExportIds, setExporting);
+  const { exportFileManifest: onExportManifest, isExportingFileManifest } = useExportFileManifest(false);
 
   const openColumnModal = useCallback(() => setColumnModalOpen(true), []);
   const openExportModal = useCallback((format: ExportFormat) => {
     setExportFormat(format);
     setExportModalOpen(true);
   }, []);
+
+  const anyExporting = exporting || isExportingFileManifest;
 
   const exportMenuItems = useMemo(() => {
     const items: { key: string; label: string; onClick: () => void }[] = (['csv', 'xlsx'] as ExportFormat[]).map(
@@ -572,11 +574,14 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
               <Button icon={<TableOutlined />} onClick={openColumnModal} />
             </Tooltip>
             {fetchingCanDownload || canDownload ? (
-              <Dropdown menu={{ items: exportMenuItems }} disabled={fetchingCanDownload || exporting || !totalMatches}>
+              <Dropdown
+                menu={{ items: exportMenuItems }}
+                disabled={fetchingCanDownload || anyExporting || !totalMatches}
+              >
                 <Button
                   icon={<DownloadOutlined />}
-                  loading={fetchingCanDownload || exporting}
-                  disabled={fetchingCanDownload || exporting || !totalMatches}
+                  loading={fetchingCanDownload || anyExporting}
+                  disabled={fetchingCanDownload || anyExporting || !totalMatches}
                 >
                   {t('search.export')} <DownOutlined />
                 </Button>

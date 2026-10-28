@@ -1,32 +1,71 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import axios from 'axios';
+import FileSaver from 'file-saver';
 import { message } from 'antd';
-import { useTranslationFn } from '@/hooks';
-import { useDownloadExperimentResultPcglManifest } from '@/hooks/useDownloadExperimentResultManifest';
-import type { DiscoveryScope } from '@/features/metadata/metadata.store';
+import { makeAuthorizationHeader } from 'bento-auth-js';
+
+import { useAppSelector, useTranslationFn } from '@/hooks';
+import { useSelectedScope } from '@/features/metadata/hooks';
+import { useSearchQuery } from '@/features/search/hooks';
+import { searchQueryParamsFromState } from '@/features/search/utils';
+import { experimentResultBatchUrl, katsuDiscoveryMatchesUrl } from '@/constants/configConstants';
+import { scopedAuthorizedRequestConfigFromParts } from '@/utils/requests';
 
 /**
  * Manifest (TSV) export - PCGL-only, experiment results only. Unlike CSV/XLSX, it has a fixed set of columns (no
- * field-selection modal) and always goes through the batch/experimentresults endpoint, for both "all" and
- * "selected" - see useDownloadExperimentResultManifest.
- * @param scope - Scope from which to download a file manifest for
- * @param hasSelection - Whether any specific IDs are selected
- * @param selectedIds - Which IDs are selected
- * @param setExporting - A state-update function
+ * field-selection modal). What gets exported depends on the arguments and the row selection in Redux:
+ *  - exportWholeScope: every result in the current scope, ignoring the search (GET batch/experimentresults)
+ *  - rows selected in the experiment results table: just those (POST batch/experimentresults)
+ *  - otherwise: all matches of the current search (GET discovery/matches with _format=pcgl_manifest)
+ * @param exportWholeScope - Export every result in the scope, ignoring any search and row selection
+ * @returns The export callback, and whether an export is in progress
  */
-export const useExportFileManifest = (
-  scope: DiscoveryScope,
-  hasSelection: boolean,
-  selectedIds: string[],
-  setExporting: (exporting: boolean) => void
-) => {
+export const useExportFileManifest = (exportWholeScope: boolean) => {
+  const [isExportingFileManifest, setIsExportingFileManifest] = useState(false);
   const t = useTranslationFn();
-  const downloadExperimentResultManifest = useDownloadExperimentResultPcglManifest(scope);
+  const auth = useAppSelector((state) => state.auth);
+  const { scope } = useSelectedScope();
+  const query = useSearchQuery();
+  const selectedRowMap = useAppSelector((state) => state.query.selectedRows.experiment_result);
+  const selectedIds = useMemo(
+    () => Object.values(selectedRowMap).filter((v): v is string => Boolean(v)),
+    [selectedRowMap]
+  );
 
-  return useCallback(() => {
-    setExporting(true);
+  const exportFileManifest = useCallback(async () => {
+    setIsExportingFileManifest(true);
     const filename = `${t('entities.experiment_result_other')}.manifest.tsv`;
-    downloadExperimentResultManifest(hasSelection ? selectedIds : [], filename)
-      .catch(() => message.error(t('search.export_error')))
-      .finally(() => setExporting(false));
-  }, [t, hasSelection, selectedIds, downloadExperimentResultManifest, setExporting]);
+    try {
+      let res;
+      if (exportWholeScope) {
+        res = await axios.get(experimentResultBatchUrl, {
+          ...scopedAuthorizedRequestConfigFromParts(auth, scope, [['format', 'pcgl_manifest']]),
+          responseType: 'blob',
+        });
+      } else if (selectedIds.length) {
+        res = await axios.post(
+          experimentResultBatchUrl,
+          { id: selectedIds.map(Number), format: 'pcgl_manifest' },
+          { headers: { ...makeAuthorizationHeader(auth.accessToken) }, responseType: 'blob' }
+        );
+      } else {
+        res = await axios.get(katsuDiscoveryMatchesUrl, {
+          ...scopedAuthorizedRequestConfigFromParts(auth, scope, [
+            ...searchQueryParamsFromState(query),
+            ['_entity', 'experiment_result'],
+            ['_format', 'pcgl_manifest'],
+            ['_page_size', '0'], // 0 means export all results
+          ]),
+          responseType: 'blob',
+        });
+      }
+      FileSaver.saveAs(res.data, filename);
+    } catch {
+      message.error(t('search.export_error'));
+    } finally {
+      setIsExportingFileManifest(false);
+    }
+  }, [t, auth, scope, query, exportWholeScope, selectedIds]);
+
+  return { exportFileManifest, isExportingFileManifest };
 };
