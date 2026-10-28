@@ -37,6 +37,7 @@ import SpatialCoverageSection from './SpatialCoverageSection';
 import SummarySectionContent from './SummarySectionContent';
 import type { ProvenanceEntry, SectionId } from './types';
 import DatasetApplyForAccessButton from '@Util/DatasetApplyForAccessButton';
+import { Flex } from 'antd';
 
 const useProvenanceEntries = (
   dataset: Dataset | null | undefined,
@@ -77,25 +78,29 @@ const useProvenanceEntries = (
             id: 'access' as SectionId,
             icon: <AuditOutlined aria-hidden />,
             children: (
-              <div>
-                <div className="pm-meta-grid">
-                  {dataset.license && (
-                    <div className="pm-field">
-                      <span className="pm-field-k">{t('provenance.license')}</span>
-                      <LicenseTile license={dataset.license} />
-                    </div>
-                  )}
-                  {dataset.privacy && (
-                    <div className="pm-field">
-                      <span className="pm-field-k">{t('provenance.privacy')}</span>
-                      <span className="pm-field-v">{dataset.privacy}</span>
-                    </div>
-                  )}
-                </div>
-                {canApplyForDatasetAccess && (
-                  <DatasetApplyForAccessButton type="primary" size="large" style={{ marginTop: 18 }} />
+              <Flex gap={18} vertical>
+                {!!(dataset.license || dataset.privacy) && (
+                  <div className="pm-meta-grid">
+                    {dataset.license && (
+                      <div className="pm-field">
+                        <span className="pm-field-k">{t('provenance.license')}</span>
+                        <LicenseTile license={dataset.license} />
+                      </div>
+                    )}
+                    {dataset.privacy && (
+                      <div className="pm-field">
+                        <span className="pm-field-k">{t('provenance.privacy')}</span>
+                        <span className="pm-field-v">{dataset.privacy}</span>
+                      </div>
+                    )}
+                  </div>
                 )}
-              </div>
+                {canApplyForDatasetAccess && (
+                  <div>
+                    <DatasetApplyForAccessButton type="primary" size="large" />
+                  </div>
+                )}
+              </Flex>
             ),
           },
         ]
