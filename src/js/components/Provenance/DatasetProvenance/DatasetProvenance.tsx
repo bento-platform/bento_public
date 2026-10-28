@@ -14,10 +14,12 @@ import {
 } from '@ant-design/icons';
 
 import { useTranslationFn } from '@/hooks';
+import { useCanApplyForDatasetAccess } from '@/hooks/useCanApplyForDatasetAccess';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
 import StatList from '@/components/Util/StatList';
 import type { Dataset } from '@/types/dataset';
+import type { ResourcePermissionsState } from '@/features/auth/hooks';
 import {
   FundingCard,
   LinkTile,
@@ -34,9 +36,15 @@ import SideNav from './SideNav';
 import SpatialCoverageSection from './SpatialCoverageSection';
 import SummarySectionContent from './SummarySectionContent';
 import type { ProvenanceEntry, SectionId } from './types';
+import DatasetApplyForAccessButton from '@Util/DatasetApplyForAccessButton';
 
-const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEntry[] => {
+const useProvenanceEntries = (
+  dataset: Dataset | null | undefined,
+  permissionsData?: ResourcePermissionsState
+): ProvenanceEntry[] => {
   const t = useTranslationFn();
+
+  const canApplyForDatasetAccess = useCanApplyForDatasetAccess({ permissionsList: permissionsData?.permissions });
 
   if (!dataset) return [];
 
@@ -52,7 +60,7 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
   const hasStakeholders = stakeholders.length > 0;
   const hasPubs = publications.length > 0;
   const hasFunding = fundingSources.length > 0 || typeof dataset.funding_sources === 'string';
-  const hasAccess = !!(dataset.license || dataset.privacy);
+  const hasAccess = !!(dataset.license || dataset.privacy) || canApplyForDatasetAccess;
   const hasSpatial = !!dataset.spatial_coverage;
   const hasCriteria = criteria.length > 0;
   const hasCounts = counts.length > 0;
@@ -63,6 +71,33 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
       icon: <UnorderedListOutlined aria-hidden />,
       children: <SummarySectionContent dataset={dataset} />,
     },
+    ...(hasAccess
+      ? [
+          {
+            id: 'access' as SectionId,
+            icon: <AuditOutlined aria-hidden />,
+            children: (
+              <div>
+                {canApplyForDatasetAccess && <DatasetApplyForAccessButton size="large" style={{ marginBottom: 12 }} />}
+                <div className="pm-meta-grid">
+                  {dataset.license && (
+                    <div className="pm-field">
+                      <span className="pm-field-k">{t('provenance.license')}</span>
+                      <LicenseTile license={dataset.license} />
+                    </div>
+                  )}
+                  {dataset.privacy && (
+                    <div className="pm-field">
+                      <span className="pm-field-k">{t('provenance.privacy')}</span>
+                      <span className="pm-field-v">{dataset.privacy}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ),
+          },
+        ]
+      : []),
     ...(hasLinks
       ? [
           {
@@ -141,30 +176,6 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
                   ))}
                 </div>
               ),
-          },
-        ]
-      : []),
-    ...(hasAccess
-      ? [
-          {
-            id: 'access' as SectionId,
-            icon: <AuditOutlined aria-hidden />,
-            children: (
-              <div className="pm-meta-grid">
-                {dataset.license && (
-                  <div className="pm-field">
-                    <span className="pm-field-k">{t('provenance.license')}</span>
-                    <LicenseTile license={dataset.license} />
-                  </div>
-                )}
-                {dataset.privacy && (
-                  <div className="pm-field">
-                    <span className="pm-field-k">{t('provenance.privacy')}</span>
-                    <span className="pm-field-v">{dataset.privacy}</span>
-                  </div>
-                )}
-              </div>
-            ),
           },
         ]
       : []),

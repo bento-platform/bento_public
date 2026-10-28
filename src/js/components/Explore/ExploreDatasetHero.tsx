@@ -10,12 +10,13 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 
-import { APPLY_FOR_ACCESS_URL, PCGL_MODE } from '@/config';
+import { PCGL_MODE } from '@/config';
 
 import { useTranslationFn } from '@/hooks';
-import { useScopeQueryData, useScopeDownloadData } from '@/hooks/censorship';
+import { useScopeDownloadData } from '@/hooks/censorship';
 import { useSelectedScope } from '@/features/metadata/hooks';
 import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
+import { useCanApplyForDatasetAccess } from '@/hooks/useCanApplyForDatasetAccess';
 import { getLeads } from '@/features/catalogue/utils';
 import type { Dataset } from '@/types/dataset';
 import { BentoRoute } from '@/types/routes';
@@ -34,8 +35,9 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
   const { scope, fixedDataset } = useSelectedScope();
 
-  const { hasPermission: queryDataPerm, fetchingPermission: fetchingQueryDataPerm } = useScopeQueryData();
-  const { hasPermission: downloadDataPerm, fetchingPermission: fetchingDownloadDataPerm } = useScopeDownloadData();
+  const canApplyForDatasetAccess = useCanApplyForDatasetAccess({ useScope: true });
+
+  const { hasPermission: downloadDataPerm } = useScopeDownloadData();
 
   const statusContextLabel = dataset.study_context ?? null;
 
@@ -156,11 +158,7 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
           >
             {t('About')}
           </Button>
-          {APPLY_FOR_ACCESS_URL &&
-            !fetchingQueryDataPerm &&
-            !fetchingDownloadDataPerm &&
-            !queryDataPerm &&
-            !downloadDataPerm && <DatasetApplyForAccessButton type="primary" />}
+          {canApplyForDatasetAccess && <DatasetApplyForAccessButton type="primary" />}
           {PCGL_MODE && downloadDataPerm && !!dataset.counts_by_entity?.experiment_result && (
             <DatasetGetManifestButton scope={scope} />
           )}
