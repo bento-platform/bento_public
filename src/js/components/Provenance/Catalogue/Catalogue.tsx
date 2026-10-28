@@ -5,7 +5,7 @@ import { Divider, Empty, Button, Flex, Grid, Typography } from 'antd';
 import { PCGL_MODE } from '@/config';
 import { useMetadata } from '@/features/metadata/hooks';
 import { useCatalogueFilter, useCatalogueState } from '@/features/catalogue/hooks';
-import { useAppDispatch, useLanguage, useResourcesPermissionsWrapper } from '@/hooks';
+import { useAppDispatch, useLanguage } from '@/hooks';
 import { useTranslationFn } from '@/hooks';
 import { setProjectColors } from '@/features/catalogue/catalogue.store';
 import { useCatalogueUrlSync, useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
@@ -17,7 +17,6 @@ import CatalogueRail from './CatalogueRail';
 import CatalogueToolbar from './CatalogueToolbar';
 import CatalogueInsights from './CatalogueInsights';
 import Dataset from '@/components/Provenance/Dataset';
-import { makeResourceKey } from 'bento-auth-js';
 
 const { useBreakpoint } = Grid;
 
@@ -42,13 +41,16 @@ const Catalogue = () => {
     [projects]
   );
 
-  const datasetResources = useMemo(
-    () => allDatasets.map(({ project, dataset }) => ({ project: project.identifier, dataset: dataset.identifier })),
-    [allDatasets]
-  );
-
-  // TODO: use specific evaluate matrix on desired permissions instead of fetching all permissions?
-  const datasetPermissions = useResourcesPermissionsWrapper(datasetResources);
+  // TODO: fetch per-dataset permissions here (and pass them to <Dataset permissionsData={...} />) using a specific
+  //  evaluate matrix on only the desired permissions (e.g. download:data) instead of fetching all permissions, and only
+  //  when a feature needs them (APPLY_FOR_ACCESS_URL set or PCGL_MODE on). Previously:
+  // const datasetResources = useMemo(
+  //   () => allDatasets.map(({ project, dataset }) => ({ project: project.identifier, dataset: dataset.identifier })),
+  //   [allDatasets]
+  // );
+  // const datasetPermissions = useResourcesPermissionsWrapper(datasetResources);
+  // ...and in the <Dataset> props:
+  // permissionsData={datasetPermissions[makeResourceKey({ project: project.identifier, dataset: dataset.identifier })]}
 
   const { filtered, facetOptions } = useCatalogueFilter(allDatasets);
 
@@ -130,9 +132,6 @@ const Catalogue = () => {
                   parentProjectID={project.identifier}
                   dataset={dataset}
                   project={project}
-                  permissionsData={
-                    datasetPermissions[makeResourceKey({ project: project.identifier, dataset: dataset.identifier })]
-                  }
                 />
               ))}
             </div>
