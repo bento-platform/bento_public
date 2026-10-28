@@ -78,7 +78,6 @@ const useProvenanceEntries = (
             icon: <AuditOutlined aria-hidden />,
             children: (
               <div>
-                {canApplyForDatasetAccess && <DatasetApplyForAccessButton size="large" style={{ marginBottom: 12 }} />}
                 <div className="pm-meta-grid">
                   {dataset.license && (
                     <div className="pm-field">
@@ -93,6 +92,7 @@ const useProvenanceEntries = (
                     </div>
                   )}
                 </div>
+                {canApplyForDatasetAccess && <DatasetApplyForAccessButton style={{ marginTop: 18 }} />}
               </div>
             ),
           },
