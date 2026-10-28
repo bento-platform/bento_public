@@ -179,7 +179,12 @@ const Dataset = ({
     <>
       {hasOpenedProvenanceModal && (
         <Suspense fallback={null}>
-          <DatasetProvenanceModal dataset={dataset} open={provenanceModalOpen} onCancel={closeProvenanceModal} />
+          <DatasetProvenanceModal
+            dataset={dataset}
+            scope={scope}
+            open={provenanceModalOpen}
+            onCancel={closeProvenanceModal}
+          />
         </Suspense>
       )}
       {inner}

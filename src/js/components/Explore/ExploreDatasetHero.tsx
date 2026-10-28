@@ -35,7 +35,7 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
   const { fixedDataset } = useSelectedScope();
 
-  const canApplyForDatasetAccess = useCanApplyForDatasetAccess({ useScope: true });
+  const canApplyForDatasetAccess = useCanApplyForDatasetAccess();
 
   const { hasPermission: downloadDataPerm } = useScopeDownloadData();
 

@@ -34,13 +34,14 @@ import ParticipantCriteriaSectionContent from './ParticipantCriteriaSectionConte
 import SideNav from './SideNav';
 import SpatialCoverageSection from './SpatialCoverageSection';
 import SummarySectionContent from './SummarySectionContent';
+import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type { ProvenanceEntry, SectionId } from './types';
 import DatasetApplyForAccessButton from '@Util/DatasetApplyForAccessButton';
 
-const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEntry[] => {
+const useProvenanceEntries = (dataset: Dataset | null | undefined, scope?: DiscoveryScope): ProvenanceEntry[] => {
   const t = useTranslationFn();
 
-  const canApplyForDatasetAccess = useCanApplyForDatasetAccess();
+  const canApplyForDatasetAccess = useCanApplyForDatasetAccess(scope);
 
   if (!dataset) return [];
 
@@ -227,11 +228,14 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
 
 const DatasetProvenance = ({
   dataset,
+  scope,
   hideHeader,
   style,
   mode: modeParam = 'scroll',
 }: {
   dataset?: Dataset | null;
+  // Scope of the dataset, if it differs from the selected scope (e.g. opened from the catalogue)
+  scope?: DiscoveryScope;
   hideHeader?: boolean;
   style?: CSSProperties;
   mode?: 'scroll' | 'page';
@@ -332,7 +336,7 @@ const DatasetProvenance = ({
     [modeParam]
   );
 
-  const provenanceEntries = useProvenanceEntries(dataset);
+  const provenanceEntries = useProvenanceEntries(dataset, scope);
 
   if (!dataset) return null;
 
