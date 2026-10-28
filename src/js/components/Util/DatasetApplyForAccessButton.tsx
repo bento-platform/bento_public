@@ -11,16 +11,20 @@ const DatasetApplyForAccessButton = (props: Omit<ButtonProps, 'className' | 'ico
     <Button
       icon={<AuditOutlined />}
       className="flex-1"
-      onClick={() => {
-        let accessUrl = APPLY_FOR_ACCESS_URL;
-        // If we're in PCGL mode, already have a PCGL account, and are signed in, force the auth flow to occur
-        // at the DACO side.
-        if (PCGL_MODE && isAuthenticated) {
-          // TODO: more systematic, less hard-coded version to force SSO & preserve state?
-          accessUrl += '/api/auth/login';
-        }
-        window.open(accessUrl, '_blank');
-      }}
+      onClick={
+        APPLY_FOR_ACCESS_URL
+          ? () => {
+              let accessUrl = APPLY_FOR_ACCESS_URL;
+              // If we're in PCGL mode, already have a PCGL account, and are signed in, force the auth flow to occur
+              // at the DACO side.
+              if (PCGL_MODE && isAuthenticated) {
+                // TODO: more systematic, less hard-coded version to force SSO & preserve state?
+                accessUrl += '/api/auth/login';
+              }
+              window.open(accessUrl, '_blank');
+            }
+          : undefined
+      }
       {...props}
     >
       {t('dataset.apply_for_access')} <ExportOutlined />

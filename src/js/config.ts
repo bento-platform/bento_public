@@ -81,7 +81,9 @@ export const CONFIGURED_PCGL_MODE =
 export const PCGL_MODE = DEV_SETTINGS.PCGL_MODE ?? CONFIGURED_PCGL_MODE;
 
 // Apply-for-access configuration
-export const APPLY_FOR_ACCESS_URL = BENTO_PUBLIC_CONFIG.APPLY_FOR_ACCESS_URL ?? process.env.APPLY_FOR_ACCESS_URL;
+export const APPLY_FOR_ACCESS_URL = stripTrailingSlash(
+  BENTO_PUBLIC_CONFIG.APPLY_FOR_ACCESS_URL ?? process.env.APPLY_FOR_ACCESS_URL ?? ''
+);
 
 // Beacon configuration and flags
 export const BEACON_URL = BENTO_PUBLIC_CONFIG.BEACON_URL ?? process.env.BEACON_URL;
