@@ -57,8 +57,8 @@ const DEFAULT_MESSAGES: Messages = {
 };
 
 const LABELS = {
-  en: { retry: 'Try again', home: 'Go back', code: 'Error code' },
-  fr: { retry: 'Réessayer', home: 'Retour', code: 'Code d’erreur' },
+  en: { retry: 'Try again', back: 'Go back', code: 'Error code' },
+  fr: { retry: 'Réessayer', back: 'Retour', code: 'Code d’erreur' },
 };
 
 const GAP = 24; // same vertical gap between the icon, the English block and the French block
@@ -88,7 +88,7 @@ const AuthErrorView = ({
             {LABELS[lang].retry}
           </Button>
         </form>
-        <Button href={backHrefs[lang]}>{LABELS[lang].home}</Button>
+        <Button href={backHrefs[lang]}>{LABELS[lang].back}</Button>
       </Flex>
     </Flex>
   );
