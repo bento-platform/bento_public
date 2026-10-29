@@ -14,6 +14,7 @@ import {
 } from '@ant-design/icons';
 
 import { useTranslationFn } from '@/hooks';
+import { useCanApplyForDatasetAccess } from '@/hooks/useCanApplyForDatasetAccess';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
 import StatList from '@/components/Util/StatList';
@@ -33,10 +34,15 @@ import ParticipantCriteriaSectionContent from './ParticipantCriteriaSectionConte
 import SideNav from './SideNav';
 import SpatialCoverageSection from './SpatialCoverageSection';
 import SummarySectionContent from './SummarySectionContent';
+import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type { ProvenanceEntry, SectionId } from './types';
+import DatasetApplyForAccessButton from '@Util/DatasetApplyForAccessButton';
+import { Flex } from 'antd';
 
-const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEntry[] => {
+const useProvenanceEntries = (dataset: Dataset | null | undefined, scope?: DiscoveryScope): ProvenanceEntry[] => {
   const t = useTranslationFn();
+
+  const canApplyForDatasetAccess = useCanApplyForDatasetAccess(scope);
 
   if (!dataset) return [];
 
@@ -52,7 +58,7 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
   const hasStakeholders = stakeholders.length > 0;
   const hasPubs = publications.length > 0;
   const hasFunding = fundingSources.length > 0 || typeof dataset.funding_sources === 'string';
-  const hasAccess = !!(dataset.license || dataset.privacy);
+  const hasAccess = !!(dataset.license || dataset.privacy) || canApplyForDatasetAccess;
   const hasSpatial = !!dataset.spatial_coverage;
   const hasCriteria = criteria.length > 0;
   const hasCounts = counts.length > 0;
@@ -63,6 +69,39 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
       icon: <UnorderedListOutlined aria-hidden />,
       children: <SummarySectionContent dataset={dataset} />,
     },
+    ...(hasAccess
+      ? [
+          {
+            id: 'access' as SectionId,
+            icon: <AuditOutlined aria-hidden />,
+            children: (
+              <Flex gap={18} vertical>
+                {!!(dataset.license || dataset.privacy) && (
+                  <div className="pm-meta-grid">
+                    {dataset.license && (
+                      <div className="pm-field">
+                        <span className="pm-field-k">{t('provenance.license')}</span>
+                        <LicenseTile license={dataset.license} />
+                      </div>
+                    )}
+                    {dataset.privacy && (
+                      <div className="pm-field">
+                        <span className="pm-field-k">{t('provenance.privacy')}</span>
+                        <span className="pm-field-v">{dataset.privacy}</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+                {canApplyForDatasetAccess && (
+                  <div>
+                    <DatasetApplyForAccessButton type="primary" size="large" />
+                  </div>
+                )}
+              </Flex>
+            ),
+          },
+        ]
+      : []),
     ...(hasLinks
       ? [
           {
@@ -144,30 +183,6 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
           },
         ]
       : []),
-    ...(hasAccess
-      ? [
-          {
-            id: 'access' as SectionId,
-            icon: <AuditOutlined aria-hidden />,
-            children: (
-              <div className="pm-meta-grid">
-                {dataset.license && (
-                  <div className="pm-field">
-                    <span className="pm-field-k">{t('provenance.license')}</span>
-                    <LicenseTile license={dataset.license} />
-                  </div>
-                )}
-                {dataset.privacy && (
-                  <div className="pm-field">
-                    <span className="pm-field-k">{t('provenance.privacy')}</span>
-                    <span className="pm-field-v">{dataset.privacy}</span>
-                  </div>
-                )}
-              </div>
-            ),
-          },
-        ]
-      : []),
     ...(hasSpatial
       ? [
           {
@@ -218,11 +233,14 @@ const useProvenanceEntries = (dataset: Dataset | null | undefined): ProvenanceEn
 
 const DatasetProvenance = ({
   dataset,
+  scope,
   hideHeader,
   style,
   mode: modeParam = 'scroll',
 }: {
   dataset?: Dataset | null;
+  // Scope of the dataset, if it differs from the selected scope (e.g. opened from the catalogue)
+  scope?: DiscoveryScope;
   hideHeader?: boolean;
   style?: CSSProperties;
   mode?: 'scroll' | 'page';
@@ -323,7 +341,7 @@ const DatasetProvenance = ({
     [modeParam]
   );
 
-  const provenanceEntries = useProvenanceEntries(dataset);
+  const provenanceEntries = useProvenanceEntries(dataset, scope);
 
   if (!dataset) return null;
 

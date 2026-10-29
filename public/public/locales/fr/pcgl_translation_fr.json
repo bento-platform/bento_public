@@ -16,7 +16,9 @@
       "sort": {
         "most_individuals": "Le plus de participants",
         "most_biosamples": "Le plus de specimens"
-      }
+      },
+      "dataset_found_one": "étude trouvée",
+      "dataset_found_other": "études trouvées"
     }
   },
   "biosample": {

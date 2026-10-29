@@ -1,5 +1,5 @@
 import { Fragment, type ReactNode } from 'react';
-import { Button, Popover, Typography } from 'antd';
+import { Button, Flex, Popover, Typography } from 'antd';
 import {
   CalendarOutlined,
   DatabaseOutlined,
@@ -10,8 +10,13 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 
+import { PCGL_MODE } from '@/config';
+
 import { useTranslationFn } from '@/hooks';
+import { useScopeDownloadData } from '@/hooks/censorship';
+import { useSelectedScope } from '@/features/metadata/hooks';
 import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
+import { useCanApplyForDatasetAccess } from '@/hooks/useCanApplyForDatasetAccess';
 import { getLeads } from '@/features/catalogue/utils';
 import type { Dataset } from '@/types/dataset';
 import { BentoRoute } from '@/types/routes';
@@ -20,12 +25,19 @@ import StatusBadge from '@Util/StatusBadge';
 import InteractableText from '@Util/InteractableText';
 import DatasetDescription from '@/components/Provenance/DatasetProvenance/DatasetDescription';
 import { PersonCard } from '@/components/Provenance/DatasetProvenance/bits';
+import DatasetApplyForAccessButton from '@Util/DatasetApplyForAccessButton';
+import DatasetGetManifestButton from '@Util/DatasetGetManifestButton';
 
 type RecordRow = { icon: ReactNode; label: string; value: ReactNode };
 
 const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
   const t = useTranslationFn();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
+  const { fixedDataset } = useSelectedScope();
+
+  const canApplyForDatasetAccess = useCanApplyForDatasetAccess();
+
+  const { hasPermission: downloadDataPerm } = useScopeDownloadData();
 
   const statusContextLabel = dataset.study_context ?? null;
 
@@ -96,15 +108,18 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
       ),
     });
   }
-  rows.push({
-    icon: <DatabaseOutlined aria-hidden="true" />,
-    label: t('Identifier'),
-    value: (
-      <Typography.Text className="font-mono text-xs break-all" copyable={{ text: dataset.identifier }}>
-        {dataset.identifier}
-      </Typography.Text>
-    ),
-  });
+  if (!fixedDataset) {
+    // If we have a fixed dataset, don't bother showing the dataset internal identifier as the user won't need it.
+    rows.push({
+      icon: <DatabaseOutlined aria-hidden="true" />,
+      label: t('Identifier'),
+      value: (
+        <Typography.Text className="font-mono text-xs break-all" copyable={{ text: dataset.identifier }}>
+          {dataset.identifier}
+        </Typography.Text>
+      ),
+    });
+  }
   if (dacId) {
     const dacIdStr = String(dacId);
     rows.push({
@@ -134,14 +149,20 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
             </div>
           ))}
         </dl>
-        <Button
-          icon={<SolutionOutlined aria-hidden="true" />}
-          block
-          className="explore-hero-record-more"
-          onClick={() => navigateToSameScopeUrl(BentoRoute.About, false)}
-        >
-          {t('About')}
-        </Button>
+        <Flex gap="medium" className="explore-hero-record-actions">
+          <Button
+            icon={<SolutionOutlined aria-hidden="true" />}
+            block
+            className="flex-1"
+            onClick={() => navigateToSameScopeUrl(BentoRoute.About, false)}
+          >
+            {t('About')}
+          </Button>
+          {canApplyForDatasetAccess && <DatasetApplyForAccessButton type="primary" />}
+          {PCGL_MODE && downloadDataPerm && !!dataset.counts_by_entity?.experiment_result && (
+            <DatasetGetManifestButton />
+          )}
+        </Flex>
       </section>
     </div>
   );
