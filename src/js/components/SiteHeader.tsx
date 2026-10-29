@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import clsx from 'clsx';
 import { Button, Flex, Layout, Menu, type MenuProps, Space, Typography, theme } from 'antd';
 import { useSession } from 'next-auth/react';
 import { useIsAuthenticated, usePerformAuth, usePerformSignOut } from '@/features/auth/hooks';
@@ -91,7 +92,7 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
   }, [performSignOut]);
 
   const {
-    token: { colorBgContainer, colorBorderSecondary, fontSizeHeading1 },
+    token: { colorBgContainer, colorBorderSecondary },
   } = theme.useToken();
 
   useEffect(() => {
@@ -159,8 +160,8 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
             ))}
           <Typography.Text
             type="secondary"
-            className={SHOW_HEADER_TITLE ? '' : 'visually-hidden'}
-            style={{ whiteSpace: 'nowrap', fontSize: fontSizeHeading1, fontWeight: 600 }}
+            className={clsx('site-header__title', !SHOW_HEADER_TITLE && 'visually-hidden')}
+            style={{ whiteSpace: 'nowrap' }}
           >
             {t(CLIENT_NAME)}
           </Typography.Text>
