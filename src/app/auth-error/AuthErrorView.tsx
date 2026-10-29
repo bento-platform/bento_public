@@ -16,6 +16,19 @@ const CONTACT_EN =
 const CONTACT_FR =
   'Si le problème persiste, veuillez communiquer avec l’administrateur de ce portail et mentionner le code ci-dessous.';
 
+// Only errors that can actually happen with our OIDC-only setup. Auth.js's AccessDenied (needs a custom signIn callback
+// returning false) and Verification (email magic links) can't occur here, so they fall through to the default message.
+const OIDC_FAILURE: Messages = {
+  en: {
+    title: 'We couldn’t complete your sign-in',
+    description: `The sign-in didn’t finish. Please try again. ${CONTACT_EN}`,
+  },
+  fr: {
+    title: 'Nous n’avons pas pu terminer votre connexion',
+    description: `La connexion n’a pas abouti. Veuillez réessayer. ${CONTACT_FR}`,
+  },
+};
+
 const MESSAGES: Record<string, Messages> = {
   Configuration: {
     en: {
@@ -27,28 +40,9 @@ const MESSAGES: Record<string, Messages> = {
       description: `Le problème vient de notre côté, et non de votre compte. Veuillez réessayer dans quelques minutes. ${CONTACT_FR}`,
     },
   },
-  AccessDenied: {
-    en: {
-      title: 'Access denied',
-      description:
-        'Your account doesn’t have permission to sign in to this portal. Contact the administrator if you think this is a mistake.',
-    },
-    fr: {
-      title: 'Accès refusé',
-      description:
-        'Votre compte n’a pas la permission de se connecter à ce portail. Communiquez avec l’administrateur si vous pensez qu’il s’agit d’une erreur.',
-    },
-  },
-  Verification: {
-    en: {
-      title: 'Your sign-in link has expired',
-      description: 'Please try signing in again.',
-    },
-    fr: {
-      title: 'Votre lien de connexion a expiré',
-      description: 'Veuillez essayer de vous connecter à nouveau.',
-    },
-  },
+  OAuthSignin: OIDC_FAILURE,
+  OAuthCallbackError: OIDC_FAILURE,
+  Callback: OIDC_FAILURE,
 };
 
 const DEFAULT_MESSAGES: Messages = {
@@ -69,7 +63,7 @@ const LABELS = {
 
 const GAP = 24; // same vertical gap between the icon, the English block and the French block
 
-const AuthErrorView = ({ code, retry }: { code?: string; retry: () => Promise<void> }) => {
+const AuthErrorView = ({ code, retry }: { code?: string; retry: (lang: string) => Promise<void> }) => {
   const messages = (code && MESSAGES[code]) || DEFAULT_MESSAGES;
   const isError = code === 'Configuration';
   const Icon = isError ? CloseCircleFilled : ExclamationCircleFilled;
@@ -81,7 +75,7 @@ const AuthErrorView = ({ code, retry }: { code?: string; retry: () => Promise<vo
       </Typography.Title>
       <Typography.Text type="secondary">{messages[lang].description}</Typography.Text>
       <Flex gap={8} wrap justify="center">
-        <form action={retry}>
+        <form action={retry.bind(null, lang)}>
           <Button type="primary" htmlType="submit" icon={<LoginOutlined aria-hidden />}>
             {LABELS[lang].retry}
           </Button>
