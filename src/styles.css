@@ -484,6 +484,9 @@ body {
   align-items: center;
 }
 
+.page-phenopackets #content-layout .content-layout-wrapper {
+  padding: 0;
+}
 .page-phenopackets #content-layout main.ant-layout-content {
   padding: 0 var(--content-padding-h) var(--content-padding-v) var(--content-padding-h);
   background-color: white;
