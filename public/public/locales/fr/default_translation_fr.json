@@ -68,26 +68,7 @@
   "errors": {
     "project_fetch": "Erreur lors du chargement des $t(entities.project_other, lowercase)",
     "search_fetch": "Erreur lors du chargement des résultats de recherche",
-    "page_not_found": "Page introuvable",
-    "auth_error": {
-      "title_default": "Erreur de connexion",
-      "description_default": "Une erreur inattendue s'est produite lors de la connexion.",
-      "Configuration": {
-        "title": "L'authentification est mal configurée",
-        "description": "Le serveur n'a pas pu terminer la connexion. Les causes courantes sont un AUTH_SECRET ou CLIENT_SECRET manquant, ou un fournisseur d'identité inaccessible. Consultez les journaux du serveur pour la ligne « [auth] » indiquant la cause exacte."
-      },
-      "AccessDenied": {
-        "title": "Accès refusé",
-        "description": "Vous n'avez pas la permission de vous connecter."
-      },
-      "Verification": {
-        "title": "Lien de connexion expiré",
-        "description": "Le lien de connexion n'est plus valide."
-      },
-      "try_again": "Réessayer",
-      "back_home": "Retour à l'accueil",
-      "error_code": "Code d'erreur"
-    }
+    "page_not_found": "Page introuvable"
   },
   "explore": {
     "chart_size_label": "Taille des tableaux:",

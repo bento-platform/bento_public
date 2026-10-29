@@ -65,26 +65,7 @@
   "errors": {
     "project_fetch": "Error fetching $t(entities.project_other, lowercase)",
     "search_fetch": "Error fetching search results",
-    "page_not_found": "Page not found",
-    "auth_error": {
-      "title_default": "Sign-in error",
-      "description_default": "An unexpected error occurred during sign-in.",
-      "Configuration": {
-        "title": "Authentication is misconfigured",
-        "description": "The server could not complete sign-in. Common causes are a missing AUTH_SECRET or CLIENT_SECRET, or an unreachable identity provider. Check the server logs for the \"[auth]\" line with the exact cause."
-      },
-      "AccessDenied": {
-        "title": "Access denied",
-        "description": "You do not have permission to sign in."
-      },
-      "Verification": {
-        "title": "Sign-in link expired",
-        "description": "The sign-in link is no longer valid."
-      },
-      "try_again": "Try again",
-      "back_home": "Back to home",
-      "error_code": "Error code"
-    }
+    "page_not_found": "Page not found"
   },
   "explore": {
     "chart_size_label": "Chart size:",

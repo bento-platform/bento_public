@@ -1,29 +1,95 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Button, Card, ConfigProvider, Flex, Result, Typography } from 'antd';
-import { LoginOutlined } from '@ant-design/icons';
+import { Button, Card, ConfigProvider, Flex, Typography } from 'antd';
+import { CloseCircleFilled, ExclamationCircleFilled, LoginOutlined } from '@ant-design/icons';
 
 import 'antd/dist/reset.css';
 import '../../styles.css';
-import i18n from '@/i18n';
-import { SUPPORTED_LNGS } from '@/constants/configConstants';
 
-const KNOWN_CODES = ['Configuration', 'AccessDenied', 'Verification'];
+// This page lives outside the /:lang router and the app doesn't persist its language, so rather than detecting one
+// we show English and French together.
+type Message = { title: string; description: string };
+type Messages = { en: Message; fr: Message };
+
+const CONTACT_EN =
+  'If this keeps happening, please contact the administrator of this portal and mention the code below.';
+const CONTACT_FR =
+  'Si le problème persiste, veuillez communiquer avec l’administrateur de ce portail et mentionner le code ci-dessous.';
+
+const MESSAGES: Record<string, Messages> = {
+  Configuration: {
+    en: {
+      title: 'We couldn’t sign you in',
+      description: `This is a problem on our side, not with your account. Please try again in a few minutes. ${CONTACT_EN}`,
+    },
+    fr: {
+      title: 'Nous n’avons pas pu vous connecter',
+      description: `Le problème vient de notre côté, et non de votre compte. Veuillez réessayer dans quelques minutes. ${CONTACT_FR}`,
+    },
+  },
+  AccessDenied: {
+    en: {
+      title: 'Access denied',
+      description:
+        'Your account doesn’t have permission to sign in to this portal. Contact the administrator if you think this is a mistake.',
+    },
+    fr: {
+      title: 'Accès refusé',
+      description:
+        'Votre compte n’a pas la permission de se connecter à ce portail. Communiquez avec l’administrateur si vous pensez qu’il s’agit d’une erreur.',
+    },
+  },
+  Verification: {
+    en: {
+      title: 'Your sign-in link has expired',
+      description: 'Please try signing in again.',
+    },
+    fr: {
+      title: 'Votre lien de connexion a expiré',
+      description: 'Veuillez essayer de vous connecter à nouveau.',
+    },
+  },
+};
+
+const DEFAULT_MESSAGES: Messages = {
+  en: {
+    title: 'Something went wrong while signing you in',
+    description: `Please try again. ${CONTACT_EN}`,
+  },
+  fr: {
+    title: 'Une erreur s’est produite lors de votre connexion',
+    description: `Veuillez réessayer. ${CONTACT_FR}`,
+  },
+};
+
+const LABELS = {
+  en: { retry: 'Try again', home: 'Back to home', code: 'Error code' },
+  fr: { retry: 'Réessayer', home: 'Retour à l’accueil', code: 'Code d’erreur' },
+};
+
+const GAP = 24; // same vertical gap between the icon, the English block and the French block
 
 const AuthErrorView = ({ code, retry }: { code?: string; retry: () => Promise<void> }) => {
-  const { t } = useTranslation();
-  const known = code && KNOWN_CODES.includes(code) ? code : undefined;
-  const title = t(known ? `errors.auth_error.${known}.title` : 'errors.auth_error.title_default');
-  const description = t(known ? `errors.auth_error.${known}.description` : 'errors.auth_error.description_default');
+  const messages = (code && MESSAGES[code]) || DEFAULT_MESSAGES;
+  const isError = code === 'Configuration';
+  const Icon = isError ? CloseCircleFilled : ExclamationCircleFilled;
 
-  // The root <html lang> is hardcoded, so the detector always picks English. This page lives outside the
-  // /:lang router and the app doesn't persist its language, so use ?lng=, else the browser's language (like LanguageHandler).
-  useEffect(() => {
-    const lng = new URLSearchParams(window.location.search).get('lng') ?? navigator.language.split('-')[0];
-    if (Object.values(SUPPORTED_LNGS).includes(lng)) i18n.changeLanguage(lng);
-  }, []);
+  const renderLanguage = (lang: 'en' | 'fr') => (
+    <Flex vertical align="center" gap={12} style={{ textAlign: 'center' }} lang={lang}>
+      <Typography.Title level={4} style={{ margin: 0 }}>
+        {messages[lang].title}
+      </Typography.Title>
+      <Typography.Text type="secondary">{messages[lang].description}</Typography.Text>
+      <Flex gap={8} wrap justify="center">
+        <form action={retry}>
+          <Button type="primary" htmlType="submit" icon={<LoginOutlined aria-hidden />}>
+            {LABELS[lang].retry}
+          </Button>
+        </form>
+        <Button href="/">{LABELS[lang].home}</Button>
+      </Flex>
+    </Flex>
+  );
 
   return (
     <ConfigProvider theme={{ cssVar: { key: 'bento-theme' }, token: { colorPrimary: '#0958D9' } }}>
@@ -36,28 +102,16 @@ const AuthErrorView = ({ code, retry }: { code?: string; retry: () => Promise<vo
           onError={(e) => (e.currentTarget.style.display = 'none')}
         />
         <Card className="rounded-xl shadow" style={{ maxWidth: 640, width: '100%' }}>
-          <Result
-            status={code === 'Configuration' ? 'error' : 'warning'}
-            title={title}
-            subTitle={description}
-            extra={
-              <Flex vertical align="center" gap={16}>
-                <Flex gap={8}>
-                  <form action={retry}>
-                    <Button type="primary" htmlType="submit" icon={<LoginOutlined aria-hidden />}>
-                      {t('errors.auth_error.try_again')}
-                    </Button>
-                  </form>
-                  <Button href="/">{t('errors.auth_error.back_home')}</Button>
-                </Flex>
-                {code && (
-                  <Typography.Text type="secondary">
-                    {t('errors.auth_error.error_code')}: <Typography.Text code>{code}</Typography.Text>
-                  </Typography.Text>
-                )}
-              </Flex>
-            }
-          />
+          <Flex vertical align="center" gap={GAP}>
+            <Icon aria-hidden style={{ fontSize: 56, color: isError ? '#ff4d4f' : '#faad14' }} />
+            {renderLanguage('en')}
+            {renderLanguage('fr')}
+            {code && (
+              <Typography.Text type="secondary">
+                {LABELS.en.code} / {LABELS.fr.code}: <Typography.Text code>{code}</Typography.Text>
+              </Typography.Text>
+            )}
+          </Flex>
         </Card>
       </Flex>
     </ConfigProvider>
