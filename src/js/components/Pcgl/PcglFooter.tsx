@@ -7,7 +7,7 @@ import GPLLogo from './assets/gplv3.svg';
 import C3GLogo from './assets/c3g.png';
 import './styles.css';
 
-// Given that we don't have some of the data in the moment we define a temporary data
+// TODO: missing data will be appended as it arrives.
 const footerItems = [
   {
     title: 'about',
