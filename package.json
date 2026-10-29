@@ -20,7 +20,7 @@
   "dependencies": {
     "@ant-design/icons": "^6.3.4",
     "@reduxjs/toolkit": "^2.12.0",
-    "@pcgl-components/ui": "https://github.com/Pan-Canadian-Genome-Library/pcgl-common-react-components/releases/download/0.0.2/pcgl-ui-0.0.2.tgz",
+    "@pcgl-components/ui": "https://github.com/Pan-Canadian-Genome-Library/pcgl-common-react-components/releases/download/v0.0.2/repo-ui-0.0.3.tgz",
     "@types/geojson": "^7946.0.16",
     "antd": "^6.6.4",
     "axios": "^1.8.4",

@@ -29,7 +29,9 @@ const footerItems = [
 
 export const Footer = () => {
   const t = useTranslationFn();
-  return <FooterContainer translator={t} PortalBand={<BentoBand />} footerItems={footerItems} />;
+  return (
+    <FooterContainer className="pcgl-layout-wrap" translator={t} PortalBand={<BentoBand />} footerItems={footerItems} />
+  );
 };
 
 const BentoBand = () => {

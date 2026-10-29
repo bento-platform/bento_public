@@ -15,6 +15,10 @@
   outline-offset: 1px;
 }
 
+.pcgl-layout-wrap {
+  padding: calc(var(--content-padding-v) - 1px) var(--content-padding-h);
+}
+
 .bento-footer {
   column-gap: 24px;
   display: grid;
