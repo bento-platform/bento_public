@@ -91,7 +91,7 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
   }, [performSignOut]);
 
   const {
-    token: { colorBgContainer, colorBorderSecondary },
+    token: { colorBgContainer, colorBorderSecondary, fontSizeHeading1 },
   } = theme.useToken();
 
   useEffect(() => {
@@ -157,16 +157,13 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
                 onClick={navigateToRoot}
               />
             ))}
-          {/* If SHOW_HEADER_TITLE is false, assume we have text in the logo. We should still have some kind of level-1
-              header for accessibility/semantic markup, so render it but visually hidden in this case. */}
-          <Typography.Title
-            level={1}
+          <Typography.Text
             type="secondary"
             className={SHOW_HEADER_TITLE ? '' : 'visually-hidden'}
-            style={{ whiteSpace: 'nowrap' }}
+            style={{ whiteSpace: 'nowrap', fontSize: fontSizeHeading1, fontWeight: 600 }}
           >
             {t(CLIENT_NAME)}
-          </Typography.Title>
+          </Typography.Text>
           {(menuItems?.length ?? 0) > 1 ? (
             <Menu
               mode="horizontal"
