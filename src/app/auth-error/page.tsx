@@ -22,18 +22,24 @@ const getOriginalPath = async (): Promise<string | undefined> => {
   }
 };
 
+// The page the user was on, but in the given language (or that language's root if we don't know where they were).
+const getTargetPath = (original: string | undefined, lang: string): string => {
+  const lng = LNGS.includes(lang) ? lang : 'en';
+  return original?.match(LANG_PREFIX) ? original.replace(LANG_PREFIX, `/${lng}`) : `/${lng}/`;
+};
+
 export default async function AuthErrorPage({ searchParams }: PageProps<'/auth-error'>) {
   const { error } = await searchParams;
   const code = Array.isArray(error) ? error[0] : error;
+  const original = await getOriginalPath();
 
   const retry = async (lang: string) => {
     'use server';
-    const lng = LNGS.includes(lang) ? lang : 'en';
-    const original = await getOriginalPath();
-    // Keep the page the user was on, but in the language of the button they clicked.
-    const redirectTo = original?.match(LANG_PREFIX) ? original.replace(LANG_PREFIX, `/${lng}`) : `/${lng}/`;
-    await signIn(BENTO_OIDC_PROVIDER_ID, { redirectTo });
+    // Cookie is read again here: the action runs in a later request.
+    await signIn(BENTO_OIDC_PROVIDER_ID, { redirectTo: getTargetPath(await getOriginalPath(), lang) });
   };
 
-  return <AuthErrorClient code={code} retry={retry} />;
+  const backHrefs = Object.fromEntries(LNGS.map((lang) => [lang, getTargetPath(original, lang)]));
+
+  return <AuthErrorClient code={code} retry={retry} backHrefs={backHrefs} />;
 }

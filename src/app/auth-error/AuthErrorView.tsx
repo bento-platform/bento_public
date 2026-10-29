@@ -57,13 +57,21 @@ const DEFAULT_MESSAGES: Messages = {
 };
 
 const LABELS = {
-  en: { retry: 'Try again', home: 'Back to home', code: 'Error code' },
-  fr: { retry: 'Réessayer', home: 'Retour à l’accueil', code: 'Code d’erreur' },
+  en: { retry: 'Try again', home: 'Go back', code: 'Error code' },
+  fr: { retry: 'Réessayer', home: 'Retour', code: 'Code d’erreur' },
 };
 
 const GAP = 24; // same vertical gap between the icon, the English block and the French block
 
-const AuthErrorView = ({ code, retry }: { code?: string; retry: (lang: string) => Promise<void> }) => {
+const AuthErrorView = ({
+  code,
+  retry,
+  backHrefs,
+}: {
+  code?: string;
+  retry: (lang: string) => Promise<void>;
+  backHrefs: Record<string, string>;
+}) => {
   const messages = (code && MESSAGES[code]) || DEFAULT_MESSAGES;
   const isError = code === 'Configuration';
   const Icon = isError ? CloseCircleFilled : ExclamationCircleFilled;
@@ -80,7 +88,7 @@ const AuthErrorView = ({ code, retry }: { code?: string; retry: (lang: string) =
             {LABELS[lang].retry}
           </Button>
         </form>
-        <Button href="/">{LABELS[lang].home}</Button>
+        <Button href={backHrefs[lang]}>{LABELS[lang].home}</Button>
       </Flex>
     </Flex>
   );
