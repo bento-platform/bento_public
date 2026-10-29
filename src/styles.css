@@ -363,6 +363,7 @@ body {
 }
 
 .scoped-title__breadcrumb {
+  font-family: var(--heading-font-family, inherit);
   font-size: var(--scoped-title-breadcrumb-font-size);
   line-height: var(--scoped-title-height);
   overflow: hidden;
@@ -440,15 +441,17 @@ body {
   padding: 0 var(--content-padding-h);
 }
 
-#site-header h1.ant-typography {
+#site-header .site-header__title.ant-typography {
   margin: 0;
+  font-family: var(--heading-font-family, inherit);
   font-size: 1.5em;
+  font-weight: 600;
   line-height: var(--header-height);
 }
-#site-header.light h1.ant-typography {
+#site-header.light .site-header__title.ant-typography {
   color: var(--black-90);
 }
-#site-header.dark h1.ant-typography {
+#site-header.dark .site-header__title.ant-typography {
   color: var(--white-90);
 }
 
