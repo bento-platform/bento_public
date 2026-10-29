@@ -363,6 +363,7 @@ body {
 }
 
 .scoped-title__breadcrumb {
+  font-family: var(--heading-font-family, inherit);
   font-size: var(--scoped-title-breadcrumb-font-size);
   line-height: var(--scoped-title-height);
   overflow: hidden;
