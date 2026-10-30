@@ -13,6 +13,8 @@ import { BENTO_OIDC_PROVIDER_ID } from './constants';
 
 export const useIsAuthenticated = (): boolean => useSession().status === 'authenticated';
 
+export const useUserEmail = (): string | undefined => useSession().data?.user?.email ?? undefined;
+
 export const useAccessToken = (): string | undefined => useSession().data?.accessToken;
 
 // Copies the Auth.js session's access token into Redux
