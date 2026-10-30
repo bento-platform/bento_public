@@ -501,6 +501,94 @@ body {
   max-width: var(--content-max-width);
 }
 
+/* BENTO band for PCGL */
+
+.pcgl-layout-wrap {
+  padding: calc(var(--content-padding-v) - 1px) var(--content-padding-h);
+}
+
+.bento-footer {
+  column-gap: 24px;
+  display: grid;
+  grid-template-areas:
+    "about"
+    "links"
+    "legal"
+    "c3g";
+  grid-template-columns: 1fr;
+  row-gap: 16px;
+  color: #d9d9d9;
+}
+
+.bento-footer {
+
+  p,
+  h3 {
+    margin: 0;
+    padding: 0;
+  }
+
+  .bento-logo {
+    max-width: 98px;
+    height: auto;
+    vertical-align: middle;
+  }
+
+  .c3g-logo {
+    max-width: 45px;
+    height: auto;
+    filter: grayscale(100%);
+  }
+
+  .gpl-logo {
+    max-width: 24px;
+    height: auto;
+  }
+
+  .about {
+    display: grid;
+    grid-area: about;
+    gap: 8px;
+    justify-items: start;
+  }
+
+  .links {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    grid-area: links;
+    display: grid;
+    gap: 12px;
+  }
+
+  .legal {
+    grid-area: legal;
+    align-self: end;
+  }
+
+  .c3g {
+    align-self: end;
+    gap: 6px;
+    grid-area: c3g;
+    display: grid;
+    justify-items: center;
+  }
+}
+
+@container (width > 640px) {
+  .bento-footer {
+    column-gap: 96px;
+    grid-template-areas:
+      "about links"
+      "legal c3g";
+    grid-template-columns: 1fr auto;
+  }
+
+  .bento-footer .links {
+    grid-auto-flow: column;
+  }
+}
+
 /* END layout HTML styling */
 
 /* BEGIN catalogue banner */
