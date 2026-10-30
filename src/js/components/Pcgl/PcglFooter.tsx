@@ -5,7 +5,6 @@ import { FooterContainer, LinkItem } from '@pcgl-components/ui/footer';
 import BentoLogo from './assets/bento.svg';
 import GPLLogo from './assets/gplv3.svg';
 import C3GLogo from './assets/c3g.png';
-import './styles.css';
 
 // TODO: missing data will be appended as it arrives.
 const footerItems = [
