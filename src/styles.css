@@ -504,44 +504,92 @@ body {
   max-width: var(--content-max-width);
 }
 
-#pcgl-footer {
-  --pcgl-footer-bg: color-mix(in srgb, var(--ant-color-primary, #054A74) 60%, black);
-  background-color: var(--pcgl-footer-bg);
-  /* Hacky box-shadow protection against really short content revealing page background below: */
-  box-shadow: 0 200px 0 var(--pcgl-footer-bg), 0 400px 0 var(--pcgl-footer-bg), 0 600px 0 var(--pcgl-footer-bg);
-  border-top: 1px solid color-mix(in srgb, var(--ant-color-primary, #054A74) 60%, black);
-  font-size: 13px;
+/* BENTO band for PCGL */
+
+.pcgl-layout-wrap {
+  padding: calc(var(--content-padding-v) - 1px) var(--content-padding-h);
 }
-#pcgl-footer img {
-  margin-bottom: 12px;
-  object-fit: contain;
-}
-#pcgl-footer p {
-  color: rgba(255, 255, 255, 0.88);
-  line-height: 1.4em;
-}
-#pcgl-footer a {
-  text-decoration: underline;
-  color: white;
-  transition: color 0.15s ease-in-out;
-}
-#pcgl-footer a:hover {
-  color: rgba(255, 255, 255, 0.84);
-}
-#pcgl-footer a:active {
-  color: rgba(255, 255, 255, 0.76);
-}
-#pcgl-footer a.disabled {
-  cursor: not-allowed;
-  color: rgba(255, 255, 255, 0.4);
-  text-decoration: none;
-}
-#pcgl-footer__links {
+
+.bento-footer {
+  column-gap: 24px;
   display: grid;
-  grid-template-columns: auto auto auto;
-  column-gap: 12px;
-  row-gap: 18px;
-  text-align: center;
+  grid-template-areas:
+    "about"
+    "links"
+    "legal"
+    "c3g";
+  grid-template-columns: 1fr;
+  row-gap: 16px;
+  color: #d9d9d9;
+}
+
+.bento-footer {
+
+  p,
+  h3 {
+    margin: 0;
+    padding: 0;
+  }
+
+  .bento-logo {
+    max-width: 98px;
+    height: auto;
+    vertical-align: middle;
+  }
+
+  .c3g-logo {
+    max-width: 45px;
+    height: auto;
+    filter: grayscale(100%);
+  }
+
+  .gpl-logo {
+    max-width: 24px;
+    height: auto;
+  }
+
+  .about {
+    display: grid;
+    grid-area: about;
+    gap: 8px;
+    justify-items: start;
+  }
+
+  .links {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    grid-area: links;
+    display: grid;
+    gap: 12px;
+  }
+
+  .legal {
+    grid-area: legal;
+    align-self: end;
+  }
+
+  .c3g {
+    align-self: end;
+    gap: 6px;
+    grid-area: c3g;
+    display: grid;
+    justify-items: center;
+  }
+}
+
+@container (width > 640px) {
+  .bento-footer {
+    column-gap: 96px;
+    grid-template-areas:
+      "about links"
+      "legal c3g";
+    grid-template-columns: 1fr auto;
+  }
+
+  .bento-footer .links {
+    grid-auto-flow: column;
+  }
 }
 
 /* END layout HTML styling */
@@ -1531,18 +1579,6 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
 
 /* END phenopackets/other clinical+phenotypic metadata views */
 
-@media (min-width: 1200px) {
-  /* Same breakpoint as Ant xxl+ */
-  #pcgl-footer__links {
-    column-gap: 40px;
-    text-align: left;
-  }
-}
-
-@media (min-width: 1400px) {
-  #pcgl-footer__links { column-gap: 70px; }
-}
-
 @media (min-width: 1050px) and (max-width: 1550px) {
   .dataset-provenance-card-grid {
     /* This looks better at an intermediate screen width */
@@ -1614,10 +1650,6 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
     gap: 16px;
   }
 
-  #pcgl-footer__links {
-    grid-template-columns: auto auto;
-  }
-
   .visually-hidden-mobile {
     width: 1px !important;
     height: 1px !important;
@@ -1632,16 +1664,6 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   .insights-toggle-mobile {
     min-width: 80px;
     font-size: 1rem;
-  }
-}
-
-@media (max-width: 576px) {
-  /* Same breakpoint as constants/deviceBreakpoints DeviceBreakpoints.MOBILE & Ant sm -> xs */
-
-  #pcgl-footer__links {
-    grid-template-columns: auto;
-    grid-row-gap: 8px;
-    text-align: left;
   }
 }
 
