@@ -518,12 +518,8 @@ body {
   grid-template-columns: 1fr;
   row-gap: 16px;
   color: #d9d9d9;
-}
 
-.bento-footer {
-
-  p,
-  h3 {
+  p {
     margin: 0;
     padding: 0;
   }
