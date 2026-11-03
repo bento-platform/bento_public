@@ -14,8 +14,8 @@
   "catalogue": {
     "toolbar": {
       "sort": {
-        "most_individuals": "Le plus de participants",
-        "most_biosamples": "Le plus de specimens"
+        "most_individuals": "Nombre de participants",
+        "most_biosamples": "Nombre de spécimens"
       },
       "dataset_found_one": "étude trouvée",
       "dataset_found_other": "études trouvées"
