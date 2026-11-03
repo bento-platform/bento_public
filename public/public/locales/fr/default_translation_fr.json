@@ -707,30 +707,6 @@
       "eyebrow": "Bibliothèque génomique pancanadienne",
       "title": "Catalogue de données",
       "subtitle": "Explorez les $t(entities.dataset_other, lowercase) de la Bibliothèque génomique pancanadienne"
-    },
-    "footer": {
-      "logo_alt": "Logo de la Bibliothèque génomique pancanadienne",
-      "cihr_logo_alt": "Logo des Instituts de recherche en santé du Canada",
-      "cihr_support": "La BGPC est soutenu par les Instituts de recherche en santé du Canada (IRSC).",
-      "powered_by": "Le portail de recherche de la BGPC est propulsé par",
-      "bento": "la plateform Bento"
-    },
-    "links": {
-      "policies": "Politiques et directives",
-      "helpGuides": "Guides d'aide (en anglais)",
-      "controlledDataUsers": "Utilisateurs de données contrôlées",
-      "apply": "Demander l'accès",
-      "privacy": "Politique de confidentialité",
-      "termsConditions": "Conditions d'utilisation",
-      "publicationPolicy": "Politique de publication",
-      "contact": "Contactez-nous",
-      "contactHref": "https://genomelibrary.ca/fr/nous-joindre/",
-      "pcglWebsite": "Site web de la BGP",
-      "pcglWebsiteHref": "https://genomelibrary.ca/fr/",
-      "dataPlatform": "Plateforme de données",
-      "myApplications": "Mes demandes",
-      "manageApplications": "Gérer les demandes",
-      "cihrHref": "https://cihr-irsc.gc.ca/f/193.html"
     }
   },
   "tracks": {
