@@ -164,6 +164,8 @@ const ScopeHeader = ({
                 </Tooltip>
               ) : null}
               <Breadcrumb className="scoped-title__breadcrumb" items={breadcrumbItems} itemRender={breadcrumbRender} />
+              {/* Since we should not use the Breadcrumb as header we will instead use it text but hidden */}
+              <h1 className="visually-hidden">{breadcrumbItems[breadcrumbItems.length - 1].title}</h1>
               {!!menuItems && menuItems.length > 1 && (
                 <Menu
                   id="scope-header__menu"
