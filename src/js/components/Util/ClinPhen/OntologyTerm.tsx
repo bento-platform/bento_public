@@ -1,7 +1,7 @@
 import { Space, Tooltip, Typography } from 'antd';
 import { LinkOutlined } from '@ant-design/icons';
 
-import { useParams } from 'react-router-dom';
+import { useRouteMatch } from '@/hooks/router';
 
 import { usePhenopacketResources } from '@/features/clinPhen/hooks';
 import { useTranslationFn } from '@/hooks';
@@ -13,7 +13,6 @@ import clsx from 'clsx';
 import type { CSSProperties, ReactNode } from 'react';
 import type { LinkProps } from 'antd/es/typography/Link';
 import type { OntologyTerm as OntologyTermType } from '@/types/ontology';
-import type { RouteParams } from '../../ClinPhen/PhenopacketView';
 
 const { Link } = Typography;
 
@@ -35,7 +34,7 @@ interface OntologyTermProps {
 
 const OntologyTerm = ({ term, suffix, style, hideLinkIcon = false, italic = false }: OntologyTermProps) => {
   const t = useTranslationFn();
-  const { packetId } = useParams<RouteParams>();
+  const { packetId } = useRouteMatch();
   const resources = usePhenopacketResources(packetId);
 
   if (!term) return EM_DASH;
