@@ -32,6 +32,9 @@ export function GET() {
     CATALOGUE_HEADER_BACKGROUND: process.env.BENTO_PUBLIC_CATALOGUE_HEADER_BACKGROUND,
     CATALOGUE_HEADER_TEXT_COLOR: process.env.BENTO_PUBLIC_CATALOGUE_HEADER_TEXT_COLOR,
 
+    // Apply-for-access configuration
+    APPLY_FOR_ACCESS_URL: process.env.BENTO_PUBLIC_APPLY_FOR_ACCESS_URL || null,
+
     // Beacon configuration and flags
     BEACON_URL: process.env.BEACON_URL || null,
     BEACON_UI_ENABLED: parseBoolean(process.env.BENTO_BEACON_UI_ENABLED),

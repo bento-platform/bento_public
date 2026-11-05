@@ -65,6 +65,25 @@
   --cat-banner-subtitle: rgba(255,255,255,0.78);
 }
 
+.bento-theme {
+  /* re-usable alias variables for provenance content */
+
+  --pm-primary: var(--ant-color-primary, #054A74);
+  --pm-mono: var(--ant-font-family-code);
+
+  --pm-link: var(--ant-color-link, #1677FF);
+  --pm-link-hover: var(--ant-color-link-hover, #69B1FF);
+  --pm-link-active: var(--ant-color-link-active, #0958d9);
+
+  --p-fs-xxsmall: 0.72rem; /* ~11.5 px */
+  --p-fs-xsmall: 0.75rem; /* ~12 px */
+  --p-fs-small: 0.81rem; /* ~13 px */
+  --p-fs-normal: 0.875rem; /* 14 px */
+  --p-fs-large: 1rem; /* 16 px */
+  --p-fs-h1: 1.5rem;
+  --p-fs-h2: 1.05rem; /* ~16.5 px */
+}
+
 .range-separator {
   display: flex;
   align-items: center;
@@ -97,6 +116,13 @@ body {
 .m-0 { margin: 0; }
 .mx-auto { margin-left: auto; margin-right: auto; }
 .mb-0, .ant-typography.mb-0 { margin-bottom: 0; }
+/* Heading level reflects document outline; these keep the visual size of the level the heading used to have. */
+.ant-typography.h-as-3 { font-size: 24px; line-height: 1.33; }
+.ant-typography.h-as-4 { font-size: 20px; line-height: 1.4; }
+.ant-typography.h-as-5 { font-size: 16px; line-height: 1.5; }
+/* A heading rendered inside an antd Card title: inherit the card header typography. */
+.ant-typography.card-heading { margin: 0; font-size: inherit; font-weight: inherit; line-height: inherit; color: inherit; }
+.heading-btn { background: none; border: none; padding: 0; font: inherit; color: inherit; text-align: left; cursor: pointer; }
 .mb-4 { margin-bottom: 16px; }
 .p-0 { padding: 0; }
 .pb-content { padding-bottom: var(--content-padding-v); }
@@ -107,6 +133,7 @@ body {
 .relative { position: relative; }
 .sticky { position: sticky; }
 .block { display: block; }
+.inline-flex { display: inline-flex; }
 .none { display: none; }
 .overflow-hidden { overflow: hidden; }
 .overflow-y-auto { overflow-y: auto; }
@@ -136,6 +163,7 @@ body {
 .mt-7px { margin-top: 7px; } /* TODO: porting to tailwind: should be mt-[7px] */
 .mt-2 { margin-top: 8px; }
 .mt-3 { margin-top: 12px; }
+.mt-4 { margin-top: 16px; }
 .my-3 { margin-top: 12px; margin-bottom: 12px; }
 .ml-2 { margin-left: 8px; }
 .pt-2 { padding-top: 8px; }
@@ -335,6 +363,7 @@ body {
 }
 
 .scoped-title__breadcrumb {
+  font-family: var(--heading-font-family, inherit);
   font-size: var(--scoped-title-breadcrumb-font-size);
   line-height: var(--scoped-title-height);
   overflow: hidden;
@@ -412,20 +441,22 @@ body {
   padding: 0 var(--content-padding-h);
 }
 
-#site-header h1.ant-typography {
+#site-header .site-header__title.ant-typography {
   margin: 0;
+  font-family: var(--heading-font-family, inherit);
   font-size: 1.5em;
+  font-weight: 600;
   line-height: var(--header-height);
 }
-#site-header.light h1.ant-typography {
+#site-header.light .site-header__title.ant-typography {
   color: var(--black-90);
 }
-#site-header.dark h1.ant-typography {
+#site-header.dark .site-header__title.ant-typography {
   color: var(--white-90);
 }
 
 /* Only for the explore view */
-#site-sider__inner { height: 80vh; }
+#site-sider__inner { height: 100vh; /* will be overridden by max-height on .sidebar class */ }
 #default-layout.page-catalogue #site-sider__inner {
   top: 0;
   padding: var(--content-padding-v) var(--content-padding-h);
@@ -456,6 +487,9 @@ body {
   align-items: center;
 }
 
+.page-phenopackets #content-layout .content-layout-wrapper {
+  padding: 0;
+}
 .page-phenopackets #content-layout main.ant-layout-content {
   padding: 0 var(--content-padding-h) var(--content-padding-v) var(--content-padding-h);
   background-color: white;
@@ -470,44 +504,88 @@ body {
   max-width: var(--content-max-width);
 }
 
-#pcgl-footer {
-  --pcgl-footer-bg: color-mix(in srgb, var(--ant-color-primary, #054A74) 60%, black);
-  background-color: var(--pcgl-footer-bg);
-  /* Hacky box-shadow protection against really short content revealing page background below: */
-  box-shadow: 0 200px 0 var(--pcgl-footer-bg), 0 400px 0 var(--pcgl-footer-bg), 0 600px 0 var(--pcgl-footer-bg);
-  border-top: 1px solid color-mix(in srgb, var(--ant-color-primary, #054A74) 60%, black);
-  font-size: 13px;
+/* BENTO band for PCGL */
+
+.pcgl-layout-wrap {
+  padding: calc(var(--content-padding-v) - 1px) var(--content-padding-h);
 }
-#pcgl-footer img {
-  margin-bottom: 12px;
-  object-fit: contain;
-}
-#pcgl-footer p {
-  color: rgba(255, 255, 255, 0.88);
-  line-height: 1.4em;
-}
-#pcgl-footer a {
-  text-decoration: underline;
-  color: white;
-  transition: color 0.15s ease-in-out;
-}
-#pcgl-footer a:hover {
-  color: rgba(255, 255, 255, 0.84);
-}
-#pcgl-footer a:active {
-  color: rgba(255, 255, 255, 0.76);
-}
-#pcgl-footer a.disabled {
-  cursor: not-allowed;
-  color: rgba(255, 255, 255, 0.4);
-  text-decoration: none;
-}
-#pcgl-footer__links {
+
+.bento-footer {
+  column-gap: 24px;
   display: grid;
-  grid-template-columns: auto auto auto;
-  column-gap: 12px;
-  row-gap: 18px;
-  text-align: center;
+  grid-template-areas:
+    "about"
+    "links"
+    "legal"
+    "c3g";
+  grid-template-columns: 1fr;
+  row-gap: 16px;
+  color: #d9d9d9;
+
+  p {
+    margin: 0;
+    padding: 0;
+  }
+
+  .bento-logo {
+    max-width: 98px;
+    height: auto;
+    vertical-align: middle;
+  }
+
+  .c3g-logo {
+    max-width: 45px;
+    height: auto;
+    filter: grayscale(100%);
+  }
+
+  .gpl-logo {
+    max-width: 24px;
+    height: auto;
+  }
+
+  .about {
+    display: grid;
+    grid-area: about;
+    gap: 8px;
+    justify-items: start;
+  }
+
+  .links {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    grid-area: links;
+    display: grid;
+    gap: 12px;
+  }
+
+  .legal {
+    grid-area: legal;
+    align-self: end;
+  }
+
+  .c3g {
+    align-self: end;
+    gap: 6px;
+    grid-area: c3g;
+    display: grid;
+    justify-items: center;
+  }
+}
+
+@container (width > 640px) {
+  .bento-footer {
+    column-gap: 96px;
+    grid-template-areas:
+      "about links"
+      "legal c3g";
+    grid-template-columns: 1fr auto;
+  }
+
+  .bento-footer .links {
+    grid-auto-flow: column;
+  }
 }
 
 /* END layout HTML styling */
@@ -565,7 +643,9 @@ body {
 
 .catalogue-chart-card { flex: 1; min-width: 300px; }
 
-.catalogue-chart-card__title {
+.ant-typography.catalogue-chart-card__title {
+  margin: 0;
+  line-height: inherit;
   display: block;
   font-size: 12.5px;
   font-weight: 700;
@@ -657,7 +737,9 @@ body {
   border-radius: 12px;
   padding: 14px 16px;
 }
-.catalogue-insights__header-title { color: var(--text-secondary); font-weight: 600; font-size: 14px; }
+.ant-typography.catalogue-insights__header-title {
+  margin: 0; color: var(--text-secondary); font-weight: 600; font-size: 14px; line-height: inherit;
+}
 .catalogue-insights__hint { font-size: 12px; color: var(--text-muted); }
 /* END catalogue insights */
 
@@ -1086,7 +1168,9 @@ body {
 .count-item__text { font-size: 13px; }
 /* END catalogue card */
 
-.catalogue-section-label {
+.ant-typography.catalogue-section-label {
+  margin: 0;
+  line-height: inherit;
   font-size: 13px;
   font-weight: 700;
   text-transform: uppercase;
@@ -1319,7 +1403,7 @@ body {
   gap: 5px;
   align-items: center;
 }
-.explore-hero-record-more { margin-top: auto; }
+.explore-hero-record-actions { margin-top: auto; padding-top: 8px; }
 .explore-hero-lead.ant-typography { font-size: inherit; line-height: inherit; }
 .explore-hero-lead-popover.ant-popover-container { padding: 0; }
 
@@ -1491,18 +1575,6 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
 
 /* END phenopackets/other clinical+phenotypic metadata views */
 
-@media (min-width: 1200px) {
-  /* Same breakpoint as Ant xxl+ */
-  #pcgl-footer__links {
-    column-gap: 40px;
-    text-align: left;
-  }
-}
-
-@media (min-width: 1400px) {
-  #pcgl-footer__links { column-gap: 70px; }
-}
-
 @media (min-width: 1050px) and (max-width: 1550px) {
   .dataset-provenance-card-grid {
     /* This looks better at an intermediate screen width */
@@ -1574,10 +1646,6 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
     gap: 16px;
   }
 
-  #pcgl-footer__links {
-    grid-template-columns: auto auto;
-  }
-
   .visually-hidden-mobile {
     width: 1px !important;
     height: 1px !important;
@@ -1595,16 +1663,6 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   }
 }
 
-@media (max-width: 576px) {
-  /* Same breakpoint as constants/deviceBreakpoints DeviceBreakpoints.MOBILE & Ant sm -> xs */
-
-  #pcgl-footer__links {
-    grid-template-columns: auto;
-    grid-row-gap: 8px;
-    text-align: left;
-  }
-}
-
 /* ── Provenance (pm-) ────────────────────────────────────────────────── */
 :root {
   --pm-border: #F0F0F0;
@@ -1618,23 +1676,6 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   display: flex;
   flex-direction: column;
   overflow: hidden;
-
-  /* re-usable alias variables for provenance content */
-
-  --pm-primary: var(--ant-color-primary, #054A74);
-  --pm-mono: var(--ant-font-family-code);
-
-  --pm-link: var(--ant-color-link, #1677FF);
-  --pm-link-hover: var(--ant-color-link-hover, #69B1FF);
-  --pm-link-active: var(--ant-color-link-active, #0958d9);
-
-  --p-fs-xxsmall: 0.72rem; /* ~11.5 px */
-  --p-fs-xsmall: 0.75rem; /* ~12 px */
-  --p-fs-small: 0.81rem; /* ~13 px */
-  --p-fs-normal: 0.875rem; /* 14 px */
-  --p-fs-large: 1rem; /* 16 px */
-  --p-fs-h1: 1.5rem;
-  --p-fs-h2: 1.05rem; /* ~16.5 px */
 }
 
 /* ── Header ── */
@@ -1656,7 +1697,7 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   text-transform: uppercase; color: var(--text-muted); margin-bottom: 5px;
 }
 .pm-title-row { display: flex; align-items: flex-start; flex-wrap: wrap; gap: 10px; }
-.pm-title-row h1 {
+.pm-title-row h2 {
   font-size: var(--p-fs-h1); font-weight: 600; line-height: 1.18;
   letter-spacing: -0.5px; color: var(--text-primary); margin: 0 2px 0 0;
 }
@@ -1747,7 +1788,7 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   margin-bottom: 15px;
 }
 button.pm-sec-head { cursor: pointer; }
-.pm-sec-head h2 {
+.pm-sec-head h3 {
   font-size: var(--p-fs-h2); font-weight: 600; letter-spacing: -0.3px; color: var(--text-primary); margin: 0; flex: 1;
 }
 .pm-sec-chevron { font-size: var(--p-fs-normal); color: var(--text-muted); transition: transform 0.15s; }
@@ -1760,7 +1801,7 @@ button.pm-sec-head { cursor: pointer; }
 }
 
 /* ── Meta grid (field rows) ── */
-.pm-meta-grid { display: flex; flex-direction: column; gap: 14px; margin-top: 18px; }
+.pm-meta-grid { display: flex; flex-direction: column; gap: 14px; }
 .pm-field { display: grid; grid-template-columns: 130px 1fr; gap: 14px; align-items: baseline; }
 .pm-field-k {
   font-size: var(--p-fs-xsmall); font-weight: 600; letter-spacing: 0.03em;

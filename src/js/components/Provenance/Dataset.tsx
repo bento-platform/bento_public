@@ -9,15 +9,17 @@ import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type { Dataset } from '@/types/dataset';
 import type { Project } from '@/types/metadata';
 import { BentoRoute } from '@/types/routes';
+import { recordDatasetBackTarget } from '@/features/ui/recordDatasetBackTarget.thunk';
 import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
+import type { ResourcePermissionsState } from '@/features/auth/hooks';
 import { getCurrentPage } from '@/utils/router';
-import { useLanguage, useTranslationFn } from '@/hooks';
+import { useAppDispatch, useLanguage, useTranslationFn } from '@/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
 import { nonEmptyCounts } from '@/utils/counts';
 import { isoDateToString } from '@/utils/strings';
-import StatusBadge from '@/components/Util/StatusBadge';
-import TruncatedParagraph from '@/components/Util/TruncatedParagraph';
-import CountsDisplay from '@/components/Util/CountsDisplay';
+import CountsDisplay from '@Util/CountsDisplay';
+import StatusBadge from '@Util/StatusBadge';
+import TruncatedParagraph from '@Util/TruncatedParagraph';
 import KeywordList from './KeywordList';
 import ProgramPill from './Catalogue/ProgramPill';
 import ProjectPill from './Catalogue/ProjectPill';
@@ -38,6 +40,7 @@ const Dataset = ({
   selected,
   filteredCounts,
   fromProject,
+  // permissionsData,  TODO: render a locked/unlocked icon for access based on permissions
 }: {
   parentProjectID: string;
   dataset: Dataset;
@@ -45,11 +48,14 @@ const Dataset = ({
   project?: Project;
   selected?: boolean;
   filteredCounts?: KatsuEntityCountsOrBooleans;
-  // Whether this dataset is being linked to from within its parent project's own page - used to inform the
-  // dataset scope's back button (in PCGL mode, it otherwise defaults to going back to the catalogue).
+  // Whether this dataset is being linked to from within its parent project's own page (vs. the catalogue) - recorded
+  // to inform the dataset scope's back button.
   fromProject?: boolean;
+  // Permissions data injected from bulk fetch. TODO: move to some kind of BFF shared cache state to avoid re-fetching.
+  permissionsData?: ResourcePermissionsState;
 }) => {
   const language = useLanguage();
+  const dispatch = useAppDispatch();
   const navigateToScope = useNavigateToScope();
   const page = getCurrentPage();
   const t = useTranslationFn();
@@ -66,14 +72,17 @@ const Dataset = ({
     () => ({ project: parentProjectID, dataset: identifier }),
     [parentProjectID, identifier]
   );
-  const onNavigateCurrent = useCallback(
-    () => navigateToScope(scope, page, false, { fromProject: !!fromProject }),
-    [navigateToScope, scope, page, fromProject]
+
+  const navigateToDataset = useCallback(
+    (suffix: string) => {
+      // Remember where we're leaving from (and its search), so the dataset's back button can return there:
+      dispatch(recordDatasetBackTarget(fromProject ? 'project' : 'catalogue', parentProjectID, identifier));
+      navigateToScope(scope, suffix);
+    },
+    [dispatch, navigateToScope, scope, parentProjectID, identifier, fromProject]
   );
-  const onNavigateExplore = useCallback(
-    () => navigateToScope(scope, BentoRoute.Explore, false, { fromProject: !!fromProject }),
-    [navigateToScope, scope, fromProject]
-  );
+  const onNavigateCurrent = useCallback(() => navigateToDataset(page), [navigateToDataset, page]);
+  const onNavigateExplore = useCallback(() => navigateToDataset(BentoRoute.Explore), [navigateToDataset]);
 
   const openProvenanceModal = useCallback(() => {
     setHasOpenedProvenanceModal(true);
@@ -83,7 +92,7 @@ const Dataset = ({
 
   const counts = filteredCounts ?? dataset.counts_by_entity;
   const hasData = nonEmptyCounts(dataset.counts_by_entity);
-  const faded = filteredCounts && Object.values(filteredCounts).every((c) => !c) && hasData;
+  const faded = !!filteredCounts && Object.values(filteredCounts).every((c) => !c) && hasData;
 
   let inner: ReactNode;
 
@@ -109,7 +118,7 @@ const Dataset = ({
     inner = (
       <Card className="catalogue-card" style={{ opacity: faded ? 0.5 : undefined }}>
         <Flex justify="space-between" align="flex-start" gap={8}>
-          <Title level={5} className="catalogue-card__title">
+          <Title level={3} className="h-as-5 catalogue-card__title">
             {t(title)}
           </Title>
           {dataset.study_status && <StatusBadge status={dataset.study_status} />}
@@ -149,6 +158,9 @@ const Dataset = ({
 
         <Flex gap={8} className="catalogue-card__actions mt-3" wrap>
           {hasData && (
+            // hasData checks counts_by_entity, which is a proxy for having dataset-level counts permissions, but we
+            // load them earlier than permissions so we 'cheat' a little (don't explicitly check permissions) to avoid
+            // rendering flicker.
             <Button type="primary" icon={<PieChartOutlined />} className="flex-1" onClick={onNavigateExplore}>
               {t('Explore')}
             </Button>
@@ -167,7 +179,12 @@ const Dataset = ({
     <>
       {hasOpenedProvenanceModal && (
         <Suspense fallback={null}>
-          <DatasetProvenanceModal dataset={dataset} open={provenanceModalOpen} onCancel={closeProvenanceModal} />
+          <DatasetProvenanceModal
+            dataset={dataset}
+            scope={scope}
+            open={provenanceModalOpen}
+            onCancel={closeProvenanceModal}
+          />
         </Suspense>
       )}
       {inner}

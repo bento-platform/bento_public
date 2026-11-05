@@ -41,7 +41,7 @@ type BaseResourcePermissionsState = {
   hasAttempted: boolean;
   error: string;
 };
-type ResourcePermissionsState = BaseResourcePermissionsState & { permissions: string[] };
+export type ResourcePermissionsState = BaseResourcePermissionsState & { permissions: string[] };
 type ResourceHasPermissionState = BaseResourcePermissionsState & { hasPermission: boolean };
 
 export const useResourcesPermissions = (
