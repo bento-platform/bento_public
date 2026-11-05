@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { Button, Empty, Space, Tabs } from 'antd';
+import { Button, Empty, Space, Tabs, Typography } from 'antd';
 import { CompressOutlined, DownloadOutlined, ExpandOutlined } from '@ant-design/icons';
 import { useRouteMatch } from '@/hooks/router';
 
@@ -151,6 +151,10 @@ const PhenopacketView = () => {
         onChange={handleTabChange}
         tabBarExtraContent={tabBarExtra}
       />
+      {/* Tab labels can't contain headings (role=tab), so the active tab's panel gets a heading for the outline. */}
+      <Typography.Title level={2} className="visually-hidden">
+        {tabs.find((tab) => tab.key === activeKey)?.label}
+      </Typography.Title>
       {tabContent[activeKey]}
     </div>
   );

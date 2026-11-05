@@ -87,7 +87,7 @@ const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interp
   return (
     <Space orientation="vertical" size="large" className="w-full">
       <div>
-        <Typography.Title level={4}>
+        <Typography.Title level={4} className="h-as-4">
           <MedicineBoxOutlined aria-hidden /> {t('interpretations.diagnosis')}
         </Typography.Title>
         {interpretation?.diagnosis?.disease ? (
@@ -100,7 +100,7 @@ const InterpretationsExpandedRow = ({ interpretation }: { interpretation: Interp
         )}
       </div>
       <div>
-        <Typography.Title level={4}>
+        <Typography.Title level={4} className="h-as-4">
           <ExperimentOutlined aria-hidden /> {t('interpretations.genomic_interpretations')}
         </Typography.Title>
         {interpretation?.diagnosis?.genomic_interpretations?.length ? (

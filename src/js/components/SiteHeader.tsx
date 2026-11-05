@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { navigate } from '@/hooks/router';
 
+import clsx from 'clsx';
 import { Button, Flex, Layout, Menu, type MenuProps, Space, Typography, theme } from 'antd';
 import { useSession } from 'next-auth/react';
 import { useIsAuthenticated, usePerformAuth, usePerformSignOut } from '@/features/auth/hooks';
@@ -158,16 +159,13 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
                 onClick={navigateToRoot}
               />
             ))}
-          {/* If SHOW_HEADER_TITLE is false, assume we have text in the logo. We should still have some kind of level-1
-              header for accessibility/semantic markup, so render it but visually hidden in this case. */}
-          <Typography.Title
-            level={1}
+          <Typography.Text
             type="secondary"
-            className={SHOW_HEADER_TITLE ? '' : 'visually-hidden'}
+            className={clsx('site-header__title', !SHOW_HEADER_TITLE && 'visually-hidden')}
             style={{ whiteSpace: 'nowrap' }}
           >
             {t(CLIENT_NAME)}
-          </Typography.Title>
+          </Typography.Text>
           {(menuItems?.length ?? 0) > 1 ? (
             <Menu
               mode="horizontal"

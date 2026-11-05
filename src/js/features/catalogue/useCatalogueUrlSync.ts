@@ -2,14 +2,15 @@ import { useCallback } from 'react';
 import { useAppDispatch } from '@/hooks';
 import { useUrlFacetSync, type ScalarParam } from '@/hooks/useUrlFacetSync';
 import { useUrlFacetActions } from '@/hooks/useUrlFacetActions';
+import type { QueryParamEntries } from '@/utils/queryParams';
 import {
   hydrateFromUrl,
   FACET_IDS,
+  type CatalogueState,
   type SortKey,
   type ViewMode,
   type CatalogueFilterSets,
   type FacetId,
-  type CatalogueState,
 } from './catalogue.store';
 
 const SORT_PARAM: ScalarParam<SortKey> = {
@@ -21,18 +22,20 @@ const VIEW_PARAM: ScalarParam<ViewMode> = { key: 'view', defaultValue: 'grid', v
 const SCALARS = { sort: SORT_PARAM, view: VIEW_PARAM };
 
 /**
- * Builds the catalogue's URL query string ('' or '?...') from Redux catalogue state, using the same encoding
- * useCatalogueUrlSync parses. Lets in-app "back to catalogue" links restore applied filters without history.
+ * Inverse of useCatalogueUrlSync's hydration: rebuilds the catalogue's query params from its Redux state, so in-app
+ * "back to catalogue" links (which navigate to a fresh URL) can restore the applied search, filters, sort and view.
  */
-export const catalogueStateToSearch = ({ q, sets, sort, view }: CatalogueState): string => {
-  const params = new URLSearchParams();
-  if (q) params.set('q', q);
-  FACET_IDS.forEach((id) => sets[id].forEach((v) => params.append(id, v)));
-  if (sort !== SORT_PARAM.defaultValue) params.set(SORT_PARAM.key, sort);
-  if (view !== VIEW_PARAM.defaultValue) params.set(VIEW_PARAM.key, view);
-  const s = params.toString();
-  return s ? `?${s}` : '';
-};
+export const catalogueStateToQueryParams = ({
+  q,
+  sets,
+  sort,
+  view,
+}: Pick<CatalogueState, 'q' | 'sets' | 'sort' | 'view'>): QueryParamEntries => [
+  ...(q ? ([['q', q]] as QueryParamEntries) : []),
+  ...FACET_IDS.flatMap((fId) => sets[fId].map((v): [string, string] => [fId, v])),
+  ...(sort !== SORT_PARAM.defaultValue ? ([[SORT_PARAM.key, sort]] as QueryParamEntries) : []),
+  ...(view !== VIEW_PARAM.defaultValue ? ([[VIEW_PARAM.key, view]] as QueryParamEntries) : []),
+];
 
 /**
  * The URL is the source of truth for catalogue filters. This hydrates Redux from it on mount
@@ -41,6 +44,7 @@ export const catalogueStateToSearch = ({ q, sets, sort, view }: CatalogueState):
  */
 export function useCatalogueUrlSync() {
   const dispatch = useAppDispatch();
+
   const onHydrate = useCallback(
     ({ q, sets, scalars }: { q: string; sets: CatalogueFilterSets; scalars: Record<string, string> }) => {
       dispatch(hydrateFromUrl({ q, sets, sort: scalars.sort as SortKey, view: scalars.view as ViewMode }));

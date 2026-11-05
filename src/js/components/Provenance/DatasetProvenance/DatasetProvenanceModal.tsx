@@ -1,15 +1,17 @@
 import { Modal } from 'antd';
+import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type { Dataset } from '@/types/dataset';
 import DatasetProvenance from './DatasetProvenance';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
 type DatasetProvenanceModalProps = {
   dataset: Dataset | null | undefined;
+  scope?: DiscoveryScope;
   open: boolean;
   onCancel: () => void;
 };
 
-const DatasetProvenanceModal = ({ dataset, open, onCancel }: DatasetProvenanceModalProps) => {
+const DatasetProvenanceModal = ({ dataset, scope, open, onCancel }: DatasetProvenanceModalProps) => {
   const isSmallScreen = useSmallScreen();
 
   const margin = isSmallScreen ? 16 : 40;
@@ -30,7 +32,11 @@ const DatasetProvenanceModal = ({ dataset, open, onCancel }: DatasetProvenanceMo
       }}
     >
       {/* max height: 100vh - 2 * top margin - (minimal antd modal margin == 16px) */}
-      <DatasetProvenance dataset={dataset} style={{ maxHeight: `calc(100vh - 2 * ${margin}px - 16px)` }} />
+      <DatasetProvenance
+        dataset={dataset}
+        scope={scope}
+        style={{ maxHeight: `calc(100vh - 2 * ${margin}px - 16px)` }}
+      />
     </Modal>
   );
 };

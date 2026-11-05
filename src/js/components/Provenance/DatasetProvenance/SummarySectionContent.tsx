@@ -21,7 +21,7 @@ const SummarySectionContent = ({ dataset }: SummarySectionProps) => {
         dataset.program_name ||
         dataset.study_status ||
         dataset.study_context) && (
-        <div className="pm-meta-grid">
+        <div className="pm-meta-grid mt-4">
           {keywords.length > 0 && (
             <div className="pm-field">
               <span className="pm-field-k">{t('provenance.keywords')}</span>
