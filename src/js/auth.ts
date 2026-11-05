@@ -86,6 +86,13 @@ const refreshAccessTokenOnce = (refreshToken: string): Promise<BentoTokenSet> =>
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
+  pages: { error: '/auth-error' },
+  logger: {
+    // Auth.js hides the underlying cause from the error page ("Configuration"), so surface it in the server log.
+    error(error) {
+      console.error('[auth]', error.name, error.cause ?? error.message);
+    },
+  },
   providers: [bentoOidcProvider],
   session: { strategy: 'jwt' },
   callbacks: {
