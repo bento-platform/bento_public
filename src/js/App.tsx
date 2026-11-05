@@ -5,7 +5,6 @@ import { useEffect } from 'react';
 
 // Redux and routing imports
 import { Provider } from 'react-redux';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { SessionProvider } from 'next-auth/react';
 
 // i18n and constants imports
@@ -44,18 +43,13 @@ import 'bento-file-display/dist/style.css';
 import './i18n';
 import '../styles.css';
 
-const BaseRoutes = () => {
-  return (
-    <Routes>
-      <Route element={<AuthOutlet />}>
-        <Route element={<LanguageHandler />}>
-          <Route path="/:lang/*" element={<BentoAppRouter />} />
-          <Route path="*" element={<Navigate to="/en/" />} />
-        </Route>
-      </Route>
-    </Routes>
-  );
-};
+const BaseRoutes = () => (
+  <AuthOutlet>
+    <LanguageHandler>
+      <BentoAppRouter />
+    </LanguageHandler>
+  </AuthOutlet>
+);
 
 /** Inner root app component with responsive context for screen-size-aware theming and more hook access */
 const InnerRootApp = () => {
@@ -98,11 +92,9 @@ const InnerRootApp = () => {
 const RootApp = () => (
   <SessionProvider refetchInterval={SESSION_REFETCH_INTERVAL_SECONDS}>
     <Provider store={store}>
-      <BrowserRouter>
-        <ResponsiveProvider>
-          <InnerRootApp />
-        </ResponsiveProvider>
-      </BrowserRouter>
+      <ResponsiveProvider>
+        <InnerRootApp />
+      </ResponsiveProvider>
     </Provider>
   </SessionProvider>
 );
