@@ -3,7 +3,6 @@ import axios from 'axios';
 import { biosampleUrl } from '@/constants/configConstants';
 import type { RootState } from '@/store';
 import { printAPIError } from '@/utils/error.util';
-import { authorizedRequestConfig } from '@/utils/requests';
 import type { Biosample } from '@/types/clinPhen/biosample';
 import { RequestStatus } from '@/types/requests';
 
@@ -16,9 +15,9 @@ export const makeGetBiosampleData = createAsyncThunk<
   }
 >(
   'query/makeGetBiosampleData',
-  (id, { rejectWithValue, getState }) => {
+  (id, { rejectWithValue }) => {
     return axios
-      .get(`${biosampleUrl}/${id}`, authorizedRequestConfig(getState()))
+      .get(`${biosampleUrl}/${id}`)
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue));
   },

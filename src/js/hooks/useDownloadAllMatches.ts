@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import { useAppSelector } from '@/hooks';
 import { useSelectedScope } from '@/features/metadata/hooks';
 import { useSearchQuery } from '@/features/search/hooks';
 import type { ExportDataEntity, ExportFormat } from '@/types/entities';
@@ -10,13 +9,12 @@ import { katsuDiscoveryMatchesUrl } from '@/constants/configConstants';
 import FileSaver from 'file-saver';
 
 export const useDownloadAllMatches = () => {
-  const auth = useAppSelector((state) => state.auth);
   const query = useSearchQuery();
   const selectedScope = useSelectedScope();
 
   return useCallback(
     async (entity: ExportDataEntity, format: ExportFormat, filename: string, fields?: string[]) => {
-      const config = scopedAuthorizedRequestConfigFromParts(auth, selectedScope, [
+      const config = scopedAuthorizedRequestConfigFromParts(selectedScope, [
         ...searchQueryParamsFromState(query),
         ['_entity', entity],
         ['_format', format],
@@ -31,6 +29,6 @@ export const useDownloadAllMatches = () => {
 
       FileSaver.saveAs(res.data, filename);
     },
-    [auth, query, selectedScope]
+    [query, selectedScope]
   );
 };

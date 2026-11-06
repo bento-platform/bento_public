@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { authorizedRequestConfig } from '@/utils/requests';
 
 import { BEACON_INFO_ENDPOINT } from '@/features/beacon/constants';
 import { EMPTY_DISCOVERY_RESULTS } from '@/features/search/constants';
@@ -50,7 +49,7 @@ export const getBeaconFilters = createAsyncThunk<
   (_, { getState, rejectWithValue }) => {
     const { project, dataset } = getState().metadata.selectedScope.scope;
     return axios
-      .get(scopedBeaconFilteringTermsUrl(project, dataset), authorizedRequestConfig(getState()))
+      .get(scopedBeaconFilteringTermsUrl(project, dataset))
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue));
   },
@@ -68,7 +67,7 @@ export const makeBeaconQuery = createAsyncThunk<
 >('beacon/makeBeaconQuery', async (payload, { getState, rejectWithValue }) => {
   const projectId = getState().metadata.selectedScope.scope.project;
   return axios
-    .post(scopedBeaconIndividualsUrl(projectId), payload, authorizedRequestConfig(getState()))
+    .post(scopedBeaconIndividualsUrl(projectId), payload)
     .then((res) => res.data)
     .catch(beaconApiError(rejectWithValue));
 });
