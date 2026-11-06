@@ -42,7 +42,7 @@ const DefaultLayout = () => {
 
   const breadcrumbItems = useTitleBreadcrumbItems(scopeHeaderMenuItems);
   const scopeHeaderHidden = isCatalogue || (!isCatalogue && !breadcrumbItems.length && !showSidebarToggle);
-
+  const shouldShowH1 = breadcrumbItems.length > 0 && !isCatalogue && !scopeHeaderHidden;
   return (
     <Layout
       id="default-layout"
@@ -62,6 +62,8 @@ const DefaultLayout = () => {
           />
         )}
         <Layout>
+          {/* Since we should not wrap the Breadcrumb in a header tag, we will instead use its text as a visually hidden H1. */}
+          {shouldShowH1 && <h1 className="visually-hidden">{breadcrumbItems[breadcrumbItems.length - 1].title}</h1>}
           {/* Make sure the hasSider class is precisely synced with our own logic to prevent momentary visual glitch */}
           <Layout hasSider={!sidebarHidden} className="content-layout-wrapper">
             {!sidebarHidden && (

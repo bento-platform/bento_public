@@ -26,7 +26,7 @@ import { useResponsiveMobileContext, useSmallScreen } from '@/hooks/useResponsiv
 import { useScopeDownloadData } from '@/hooks/censorship';
 import { useDownloadAllMatches } from '@/hooks/useDownloadAllMatches';
 import { useDownloadSelectedMatches } from '@/hooks/useDownloadSelectedMatches';
-import { useDownloadExperimentResultPcglManifest } from '@/hooks/useDownloadExperimentResultManifest';
+import { useExportFileManifest } from '@/hooks/useExportFileManifest';
 import { useSearchQuery, useSearchQueryParams } from '@/features/search/hooks';
 import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
 import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
@@ -331,7 +331,6 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   const { fetchingPermission: fetchingCanDownload, hasPermission: canDownload } = useScopeDownloadData();
   const downloadAllMatches = useDownloadAllMatches();
   const downloadSelectedMatches = useDownloadSelectedMatches();
-  const downloadExperimentResultManifest = useDownloadExperimentResultPcglManifest();
   const isSmallScreen = useSmallScreen();
   const isMobile = useResponsiveMobileContext();
 
@@ -508,22 +507,15 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
     ]
   );
 
-  // Manifest (TSV) export - PCGL-only, experiment results only. Unlike CSV/XLSX, it has a fixed set of columns (no
-  // field-selection modal) and always goes through the batch/experimentresults endpoint, for both "all" and
-  // "selected" - see useDownloadExperimentResultManifest.
-  const onExportManifest = useCallback(() => {
-    setExporting(true);
-    const filename = `${t('entities.experiment_result_other')}.manifest.tsv`;
-    downloadExperimentResultManifest(hasSelection ? selectedExportIds : [], filename)
-      .catch(() => message.error(t('search.export_error')))
-      .finally(() => setExporting(false));
-  }, [t, hasSelection, selectedExportIds, downloadExperimentResultManifest]);
+  const { exportFileManifest: onExportManifest, isExportingFileManifest } = useExportFileManifest(false);
 
   const openColumnModal = useCallback(() => setColumnModalOpen(true), []);
   const openExportModal = useCallback((format: ExportFormat) => {
     setExportFormat(format);
     setExportModalOpen(true);
   }, []);
+
+  const anyExporting = exporting || isExportingFileManifest;
 
   const exportMenuItems = useMemo(() => {
     const items: { key: string; label: string; onClick: () => void }[] = (['csv', 'xlsx'] as ExportFormat[]).map(
@@ -582,11 +574,14 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
               <Button icon={<TableOutlined />} onClick={openColumnModal} />
             </Tooltip>
             {fetchingCanDownload || canDownload ? (
-              <Dropdown menu={{ items: exportMenuItems }} disabled={fetchingCanDownload || exporting || !totalMatches}>
+              <Dropdown
+                menu={{ items: exportMenuItems }}
+                disabled={fetchingCanDownload || anyExporting || !totalMatches}
+              >
                 <Button
                   icon={<DownloadOutlined />}
-                  loading={fetchingCanDownload || exporting}
-                  disabled={fetchingCanDownload || exporting || !totalMatches}
+                  loading={fetchingCanDownload || anyExporting}
+                  disabled={fetchingCanDownload || anyExporting || !totalMatches}
                 >
                   {t('search.export')} <DownOutlined />
                 </Button>
