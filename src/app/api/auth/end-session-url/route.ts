@@ -2,8 +2,6 @@ import { CLIENT_ID, getEndSessionEndpoint, getServerJwt } from '@/auth';
 
 const PUBLIC_URL_NO_TRAILING_SLASH = (process.env.BENTO_PUBLIC_URL ?? '').replace(/\/$/, '');
 
-export const dynamic = 'force-dynamic';
-
 // Builds the identity provider's RP-initiated logout URL server-side.
 export async function GET(request: Request) {
   try {
