@@ -4,8 +4,7 @@ const PUBLIC_URL_NO_TRAILING_SLASH = (process.env.BENTO_PUBLIC_URL ?? '').replac
 
 export const dynamic = 'force-dynamic';
 
-// Builds the identity provider's RP-initiated logout URL server-side, since the ID token (for id_token_hint) is not
-// available to the browser.
+// Builds the identity provider's RP-initiated logout URL server-side.
 export async function GET(request: Request) {
   try {
     const endSessionEndpoint = await getEndSessionEndpoint();
