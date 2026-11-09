@@ -24,6 +24,19 @@
   "interpretations": {
     "subject_or_biosample_id": "Participant or Specimen ID"
   },
+  "header": {
+    "skip_links": {
+      "main": "Skip to main content",
+      "footer": "Skip to $t(footer.section.about)"
+    },
+    "menu": {
+      "open": "Open menu",
+      "close": "Close menu"
+    },
+    "userMenu": {
+      "label": "Account menu"
+    }
+  },
   "footer": {
     "bento": {
       "c3g_copyright": "© C3G Copyright",

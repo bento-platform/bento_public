@@ -443,8 +443,9 @@ body {
   & .pcgl-header {
     padding-block: unset;
   }
-  & .pcgl-header-end {
-    margin-left: unset;
+  
+  & .pcgl-header-bar {
+      padding-inline: 0;
   }
 }
 

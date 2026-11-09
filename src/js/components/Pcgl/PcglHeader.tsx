@@ -1,8 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
-import { Header, type HeaderProps } from '@repo/ui/header';
-import { Button, Flex, Menu, type MenuProps, Space, Typography, theme } from 'antd';
+import { useCallback, useEffect, useState, type ReactNode } from 'react';
+import { Header, HeaderLanguageToggle, HeaderUserMenu, HeaderNavLink, type HeaderProps } from '@repo/ui/header';
+import { Button, theme } from 'antd';
 import { LoginOutlined, LogoutOutlined } from '@ant-design/icons';
-import { RiTranslate } from 'react-icons/ri';
 import Image from 'next/image';
 import type { MenuItem } from '@/types/navigation';
 
@@ -10,39 +9,28 @@ import { useTranslationFn, useLanguage } from '@/hooks';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSearchQueryParams } from '@/features/search/hooks';
 import { useIsAuthenticated, usePerformAuth, usePerformSignOut } from '@/features/auth/hooks';
-import '@repo/ui/styles.css';
+import '@repo/ui/header/styles.css';
 
 import { LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
-import {
-  CLIENT_NAME,
-  SHOW_LOGO,
-  SHOW_HEADER_TITLE,
-  SHOW_SIGN_IN,
-  TRANSLATED,
-  TRANSLATED_LOGO,
-  LOGO_HEIGHT,
-} from '@/config';
+import { CLIENT_NAME, SHOW_LOGO, SHOW_SIGN_IN, TRANSLATED_LOGO, LOGO_HEIGHT, TRANSLATED } from '@/config';
 
 import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
 import { buildQueryParamsUrl } from '@/features/search/utils';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { getCurrentPage } from '@/utils/router';
-import { useNavigateToRoot } from '@/hooks/navigation';
 import { useSession } from 'next-auth/react';
 
 export interface PCGLHeaderProps extends HeaderProps {
   menuItems: MenuItem[];
 }
+type NavMenuItem = { key: string | number; label?: ReactNode; icon?: ReactNode };
 
-type OnClick = MenuProps['onClick'];
-
-const useHandleMenuClick = (): OnClick => {
-  const navigate = useNavigate();
+const useBuildMenuHref = () => {
   const location = useLocation();
   const exploreQueryParams = useSearchQueryParams();
 
   return useCallback(
-    ({ key }: { key: string }) => {
+    (key: string) => {
       const currentPath = location.pathname.split('/').filter(Boolean);
       const newPath = [currentPath[0]];
       if (!TOP_LEVEL_ONLY_ROUTES.includes(key)) {
@@ -54,121 +42,116 @@ const useHandleMenuClick = (): OnClick => {
         }
       }
       newPath.push(key);
-      const newPathString = '/' + newPath.join('/');
-      // Navigate to the menu item url
-      //  - only include filter/search/explore query params if we're navigating to the explore page
-      navigate(buildQueryParamsUrl(newPathString, key === BentoRoute.Explore ? exploreQueryParams : undefined));
+      // only include filter/search/explore query params if we're navigating to the explore page
+      return buildQueryParamsUrl('/' + newPath.join('/'), key === BentoRoute.Explore ? exploreQueryParams : undefined);
     },
-    [navigate, exploreQueryParams, location.pathname]
+    [exploreQueryParams, location.pathname]
   );
 };
 
+const isNavMenuItem = (item: MenuItem): item is MenuItem & NavMenuItem =>
+  !!item && 'key' in item && item.key != null && item.type !== 'divider';
+
 export const PCGLHeader = (props: PCGLHeaderProps) => {
   const t = useTranslationFn();
+  const navigate = useNavigate();
   const language = useLanguage();
   const location = useLocation();
-  const isSmallScreen = useSmallScreen();
+  const buildMenuHref = useBuildMenuHref();
   const currentPage = getCurrentPage(location);
-  const navigateToRoot = useNavigateToRoot();
 
   const { menuItems } = props;
 
   const {
-    token: { colorBgContainer, colorBorderSecondary },
+    token: { colorPrimary, colorBgContainer, colorBorderSecondary },
   } = theme.useToken();
 
   useEffect(() => {
     document.title = CLIENT_NAME && CLIENT_NAME.trim() ? t(CLIENT_NAME) : 'Bento';
   }, [t]);
 
+  const changeLanguage = () => {
+    const newLang = LNG_CHANGE[language];
+    // Can't rely on there being a trailing slash at the base page (.e.g, `/en` and `/en`/ are both valid), and can't
+    // ensure project IDs don't begin with an `en` or `fr`. Thus, we use a RegExp with a `^` for language changing in
+    // the URL.
+    const path = (location.pathname + location.search).replace(new RegExp(`^/${language}`), `/${newLang}`);
+    navigate(path, { replace: true });
+  };
+  const shortLanguageLabel = language == 'en' ? 'FR' : 'EN';
+
   const logoLangPart = TRANSLATED_LOGO && language !== 'en' ? '.' + language : '';
   const logo = `/public/assets/branding.lightbg${logoLangPart}.png`;
-
-  const handleMenuClick = useHandleMenuClick();
+  // TODO: create LOGO_WIDTH env
+  const LOGO_WIDTH = 240;
 
   return (
     <Header
+      brand={colorPrimary}
+      translator={t}
       id="site-header"
-      style={{
-        backgroundColor: colorBgContainer,
-        borderBottom: `1px solid ${colorBorderSecondary}`,
-      }}
+      className="pcgl-header"
+      style={{ backgroundColor: colorBgContainer, borderBottom: `1px solid ${colorBorderSecondary}` }}
       skipLinks={[
         { href: '#main-content', label: t('header.skip_links.main') },
         { href: '#pcgl-footer', label: t('header.skip_links.footer') },
       ]}
-      ImageLogo={
-        <Flex align="center" gap={isSmallScreen ? 'small' : 'middle'} className="flex-1">
-          {SHOW_LOGO &&
-            (isSmallScreen ? (
-              <object
-                type="image/png"
-                data={logo}
-                aria-hidden
-                style={{ height: LOGO_HEIGHT, verticalAlign: 'middle', transform: 'translateY(-3px)', paddingRight: 3 }}
-                onClick={navigateToRoot}
-              >
-                <Image
-                  src={logo}
-                  alt="logo"
-                  aria-hidden
-                  className="cursor-pointer"
-                  height={LOGO_HEIGHT}
-                  width={300}
-                  style={{
-                    height: LOGO_HEIGHT,
-                    verticalAlign: 'middle',
-                    transform: 'translateY(-3px)',
-                  }}
-                  onClick={navigateToRoot}
-                />
-              </object>
-            ) : (
-              <Image
-                src={logo}
-                alt="logo"
-                aria-hidden
-                className="cursor-pointer"
-                height={LOGO_HEIGHT}
-                width={180}
-                style={{
-                  height: LOGO_HEIGHT,
-                  verticalAlign: 'middle',
-                  transform: 'translateY(-3px)',
-                  paddingLeft: '4px',
-                }}
-                onClick={navigateToRoot}
-              />
-            ))}
-          {/* If SHOW_HEADER_TITLE is false, assume we have text in the logo. We should still have some kind of level-1
-              header for accessibility/semantic markup, so render it but visually hidden in this case. */}
-          <Typography.Title
-            level={1}
-            type="secondary"
-            className={SHOW_HEADER_TITLE ? '' : 'visually-hidden'}
-            style={{ whiteSpace: 'nowrap' }}
-          >
-            {t(CLIENT_NAME)}
-          </Typography.Title>
-        </Flex>
-      }
-      MenuOptions={
-        (menuItems?.length ?? 0) > 1 ? (
-          <Menu
-            mode="horizontal"
-            items={menuItems}
-            selectedKeys={[currentPage]}
-            onClick={handleMenuClick}
-            className="flex-1"
+      logo={
+        SHOW_LOGO ? (
+          <Image
+            src={logo}
+            alt={CLIENT_NAME || 'Logo'}
+            height={LOGO_HEIGHT}
+            width={LOGO_WIDTH}
+            style={{ height: LOGO_HEIGHT, width: 'auto' }}
+            priority
           />
         ) : null
       }
-      AuthenticationComponent={HeaderTail}
+      nav={
+        (menuItems?.length ?? 0) > 1 ? (
+          <>
+            {menuItems.filter(isNavMenuItem).map(({ key, label, icon }) => {
+              const k = String(key);
+              const href = buildMenuHref(k);
+              return (
+                <HeaderNavLink
+                  key={k}
+                  href={href}
+                  current={k === currentPage}
+                  onClick={(e) => {
+                    // let ctrl/cmd/shift/middle-click open a new tab normally
+                    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+                    e.preventDefault();
+                    navigate(href);
+                  }}
+                >
+                  {icon}
+                  {label}
+                </HeaderNavLink>
+              );
+            })}
+          </>
+        ) : undefined
+      }
+      language={
+        TRANSLATED && (
+          <HeaderLanguageToggle
+            className="focus-ring"
+            lang={language}
+            shortLabel={shortLanguageLabel}
+            onClick={changeLanguage}
+          >
+            {LNGS_FULL_NAMES[LNG_CHANGE[language]]}
+          </HeaderLanguageToggle>
+        )
+      }
+      account={<HeaderAuth />}
     />
   );
 };
 
-const HeaderTail = () => {
+const HeaderAuth = () => {
   const t = useTranslationFn();
   const isSmallScreen = useSmallScreen();
   const isAuthenticated = useIsAuthenticated();
@@ -178,69 +161,48 @@ const HeaderTail = () => {
   // performSignOut() clears our session before it redirects to the identity provider to end its session too, so
   // isAuthenticated flips to false mid-callback - without this, the button would flash to "Sign In" and back before
   // the page actually navigates away.
+  const userPlaceholder = { name: 'Nyan Cat', email: '' };
   const [isSigningOut, setIsSigningOut] = useState(false);
   const { status: sessionStatus, data: sessionData } = useSession();
-  const sessionUser = sessionData?.user;
+  const sessionUser = sessionData?.user ?? userPlaceholder;
 
   const handleSignOut = useCallback(() => {
     setIsSigningOut(true);
     performSignOut();
   }, [performSignOut]);
 
-  const navigate = useNavigate();
-  const language = useLanguage();
-  const changeLanguage = () => {
-    const newLang = LNG_CHANGE[language];
-    // Can't rely on there being a trailing slash at the base page (.e.g, `/en` and `/en`/ are both valid), and can't
-    // ensure project IDs don't begin with an `en` or `fr`. Thus, we use a RegExp with a `^` for language changing in
-    // the URL.
-    const path = (location.pathname + location.search).replace(new RegExp(`^/${language}`), `/${newLang}`);
-    navigate(path, { replace: true });
-  };
+  if (!SHOW_SIGN_IN) return null;
 
-  return (
-    <Flex align="center" justify="space-between">
-      <Space size={isSmallScreen ? 4 : 'small'}>
-        {TRANSLATED && (
-          <Button
-            type="text"
-            className="header-button"
-            icon={<RiTranslate aria-hidden style={{ transform: 'translateY(1px)' }} />}
-            onClick={changeLanguage}
-          >
-            {isSmallScreen ? '' : LNGS_FULL_NAMES[LNG_CHANGE[language]]}
-          </Button>
-        )}
-        {SHOW_SIGN_IN &&
-          (isAuthenticated || isSigningOut ? (
-            <>
-              <div>{sessionUser?.name}</div>
-              <Button
-                htmlType="button"
-                color="default"
-                className="header-button"
-                icon={<LogoutOutlined aria-hidden />}
-                shape="round"
-                variant="filled"
-                loading={isSigningOut}
-                onClick={handleSignOut}
-              >
-                {isSmallScreen ? '' : t('Sign Out')}
-              </Button>
-            </>
-          ) : (
-            <Button
-              htmlType="button"
-              type="primary"
-              shape="round"
-              icon={<LoginOutlined aria-hidden />}
-              onClick={performSignIn}
-            >
-              {sessionStatus === 'loading' ? t('Loading...') : isSmallScreen ? '' : t('Sign In')}
-            </Button>
-          ))}
-      </Space>
-    </Flex>
+  return isAuthenticated || isSigningOut ? (
+    <HeaderUserMenu
+      className="focus-ring"
+      name={sessionUser.name ?? userPlaceholder.name}
+      email={sessionUser.email ?? userPlaceholder.email}
+    >
+      <Button
+        htmlType="button"
+        color="default"
+        className="header-button"
+        icon={<LogoutOutlined aria-hidden />}
+        shape="round"
+        variant="filled"
+        loading={isSigningOut}
+        onClick={handleSignOut}
+      >
+        {t('Sign Out')}
+      </Button>
+    </HeaderUserMenu>
+  ) : (
+    <Button
+      aria-label={sessionStatus === 'loading' ? t('Loading...') : t('Sign In')}
+      htmlType="button"
+      type="primary"
+      shape="round"
+      icon={<LoginOutlined aria-hidden />}
+      onClick={performSignIn}
+    >
+      <span aria-hidden>{sessionStatus === 'loading' ? t('Loading...') : isSmallScreen ? '' : t('Sign In')}</span>
+    </Button>
   );
 };
 
