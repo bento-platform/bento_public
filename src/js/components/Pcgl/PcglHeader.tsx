@@ -197,11 +197,13 @@ const HeaderAuth = () => {
       aria-label={sessionStatus === 'loading' ? t('Loading...') : t('Sign In')}
       htmlType="button"
       type="primary"
-      shape="round"
+      shape={isSmallScreen && sessionStatus != 'loading' ? 'circle' : 'round'}
       icon={<LoginOutlined aria-hidden />}
       onClick={performSignIn}
     >
-      <span aria-hidden>{sessionStatus === 'loading' ? t('Loading...') : isSmallScreen ? '' : t('Sign In')}</span>
+      <span hidden={isSmallScreen} aria-hidden>
+        {sessionStatus === 'loading' ? t('Loading...') : t('Sign In')}
+      </span>
     </Button>
   );
 };
