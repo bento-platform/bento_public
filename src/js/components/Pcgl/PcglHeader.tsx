@@ -1,11 +1,5 @@
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
-import {
-  Header,
-  HeaderLanguageToggle,
-  HeaderUserMenu,
-  HeaderNavLink,
-  type HeaderProps,
-} from '@pcgl-components/ui/header';
+import { Header, HeaderLanguageToggle, HeaderUserMenu, HeaderNavLink } from '@pcgl-components/ui/header';
 import { Button, theme } from 'antd';
 import { LoginOutlined, LogoutOutlined } from '@ant-design/icons';
 import Image from 'next/image';
@@ -26,7 +20,7 @@ import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { getCurrentPage } from '@/utils/router';
 import { useSession } from 'next-auth/react';
 
-export interface PCGLHeaderProps extends HeaderProps {
+export interface PCGLHeaderProps {
   menuItems: MenuItem[];
 }
 type NavMenuItem = { key: string | number; label?: ReactNode; icon?: ReactNode };
