@@ -120,7 +120,6 @@ export const PCGLHeader = (props: PCGLHeaderProps) => {
                   href={href}
                   current={k === currentPage}
                   onClick={(e) => {
-                    // let ctrl/cmd/shift/middle-click open a new tab normally
                     if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
                     e.preventDefault();
                     navigate(href);
@@ -158,9 +157,6 @@ const HeaderAuth = () => {
   const performSignIn = usePerformAuth();
   const performSignOut = usePerformSignOut();
 
-  // performSignOut() clears our session before it redirects to the identity provider to end its session too, so
-  // isAuthenticated flips to false mid-callback - without this, the button would flash to "Sign In" and back before
-  // the page actually navigates away.
   const userPlaceholder = { name: 'Nyan Cat', email: '' };
   const [isSigningOut, setIsSigningOut] = useState(false);
   const { status: sessionStatus, data: sessionData } = useSession();
@@ -182,10 +178,9 @@ const HeaderAuth = () => {
       <Button
         htmlType="button"
         color="default"
-        className="header-button"
         icon={<LogoutOutlined aria-hidden />}
-        shape="round"
-        variant="filled"
+        variant="text"
+        block
         loading={isSigningOut}
         onClick={handleSignOut}
       >

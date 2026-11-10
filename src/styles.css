@@ -443,6 +443,15 @@ body {
   & .pcgl-header {
     padding-block: unset;
   }
+
+  & .pcgl-header-nav .pcgl-header-nav-link {
+    gap: 10px;
+    position: relative;
+
+    &[aria-current="page"] {
+      font-weight: inherit;
+    }
+  }
   
   & .pcgl-header-bar {
       padding-inline: 0;
