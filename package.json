@@ -19,9 +19,8 @@
   "license": "LGPL-3.0-only",
   "dependencies": {
     "@ant-design/icons": "^6.3.4",
-    "@pcgl-components/ui": "https://github.com/Pan-Canadian-Genome-Library/pcgl-common-react-components/releases/download/v0.0.3/repo-ui-0.0.3.tgz",
+    "@pcgl-components/ui": "https://github.com/Pan-Canadian-Genome-Library/pcgl-common-react-components/releases/download/v0.1.0/repo-ui-0.1.0.tgz",
     "@reduxjs/toolkit": "^2.12.0",
-    "@repo/ui": "file:../../../genomelibrary/research-portal/packages/ui/repo-ui-0.0.0-bulbasaur-20261110141853.tgz",
     "@types/geojson": "^7946.0.16",
     "antd": "^6.6.4",
     "axios": "^1.8.4",

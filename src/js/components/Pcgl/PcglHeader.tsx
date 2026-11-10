@@ -1,5 +1,11 @@
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
-import { Header, HeaderLanguageToggle, HeaderUserMenu, HeaderNavLink, type HeaderProps } from '@repo/ui/header';
+import {
+  Header,
+  HeaderLanguageToggle,
+  HeaderUserMenu,
+  HeaderNavLink,
+  type HeaderProps,
+} from '@pcgl-components/ui/header';
 import { Button, theme } from 'antd';
 import { LoginOutlined, LogoutOutlined } from '@ant-design/icons';
 import Image from 'next/image';
@@ -9,7 +15,7 @@ import { useTranslationFn, useLanguage } from '@/hooks';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSearchQueryParams } from '@/features/search/hooks';
 import { useIsAuthenticated, usePerformAuth, usePerformSignOut } from '@/features/auth/hooks';
-import '@repo/ui/header/styles.css';
+import '@pcgl-components/ui/header/styles.css';
 
 import { LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
 import { CLIENT_NAME, SHOW_LOGO, SHOW_SIGN_IN, TRANSLATED_LOGO, LOGO_HEIGHT, TRANSLATED } from '@/config';
