@@ -13,10 +13,10 @@ import {
 import { PCGL_MODE } from '@/config';
 
 import { useTranslationFn } from '@/hooks';
-import { useScopeDownloadData } from '@/hooks/censorship';
 import { useSelectedScope } from '@/features/metadata/hooks';
 import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
 import { useCanApplyForDatasetAccess } from '@/hooks/useCanApplyForDatasetAccess';
+import { useDatasetManifestPermission } from '@/hooks/useDatasetManifestPermission';
 import { getLeads } from '@/features/catalogue/utils';
 import type { Dataset } from '@/types/dataset';
 import { BentoRoute } from '@/types/routes';
@@ -37,13 +37,12 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
 
   const canApplyForDatasetAccess = useCanApplyForDatasetAccess();
 
-  const { hasPermission: downloadDataPerm } = useScopeDownloadData();
+  const { canGetManifest } = useDatasetManifestPermission();
 
   const statusContextLabel = dataset.study_context ?? null;
 
-  // No dedicated schema field exists yet for a dataset's Data Access Committee identifier; it's carried
-  // as a conventional `dac_id` extra property until the dataset schema grows a first-class field for it.
-  const dacId = dataset.extra_properties?.dac_id;
+  // PCGL Data Access Committee identifier; falls back to the older `dac_id` extra property convention.
+  const dacId = dataset.pcgl_dac_id ?? dataset.extra_properties?.dac_id;
 
   const leads = getLeads(dataset);
 
@@ -159,9 +158,8 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
             {t('About')}
           </Button>
           {canApplyForDatasetAccess && <DatasetApplyForAccessButton type="primary" />}
-          {PCGL_MODE && downloadDataPerm && !!dataset.counts_by_entity?.experiment_result && (
-            <DatasetGetManifestButton />
-          )}
+          {/* No experiment_result count check: counts are censored for anonymous-level (PCGL-only) users. */}
+          {PCGL_MODE && canGetManifest && <DatasetGetManifestButton />}
         </Flex>
       </section>
     </div>
