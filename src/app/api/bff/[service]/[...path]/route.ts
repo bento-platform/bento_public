@@ -14,6 +14,8 @@ const FORWARDED_REQUEST_HEADERS = [
   'if-none-match',
   'if-modified-since',
   'if-range',
+  // Set by the gateway in front of us; keeps the client IP visible to downstream services.
+  'x-forwarded-for',
 ];
 
 // Not forwarded back: content-encoding/length describe the upstream's wire format, which fetch() has already decoded.
