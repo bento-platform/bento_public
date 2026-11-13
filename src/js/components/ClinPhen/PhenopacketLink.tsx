@@ -1,26 +1,31 @@
 import { Fragment, type ReactNode } from 'react';
-import { Link, useParams, useSearchParams } from 'react-router-dom';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import { useRouteMatch } from '@/hooks/router';
 import { useCurrentScopePrefixedUrl } from '@/hooks/navigation';
 
 import { Popover } from 'antd';
 import BiosampleDetailView from '../Search/BiosampleDetailView';
 
-import { highlightState } from '@/utils/router';
-
 import { BentoRoute } from '@/types/routes';
 import { TabKeys } from '@/types/PhenopacketView.types';
 import type { SectionKey } from '@/components/ClinPhen/PhenopacketDisplay/phenopacketOverview.registry';
 
-import { PHENOPACKET_EXPANDED_URL_QUERY_KEY } from './PhenopacketDisplay/PhenopacketOverview';
+import {
+  highlightValue,
+  PHENOPACKET_EXPANDED_URL_QUERY_KEY,
+  PHENOPACKET_HIGHLIGHT_URL_QUERY_KEY,
+} from './PhenopacketDisplay/PhenopacketOverview';
 
 const usePhenopacketOverviewLink = (
   packetId: string | undefined,
   expanded: SectionKey,
   otherArgs: Record<string, string> | undefined = undefined,
-  preserveQueryParams: boolean = false
+  preserveQueryParams: boolean = false,
+  highlightRowId: string | undefined = undefined
 ) => {
-  const { packetId: urlPId } = useParams();
-  const [searchParams] = useSearchParams();
+  const { packetId: urlPId } = useRouteMatch();
+  const searchParams = useSearchParams();
   const derivedPacketId = packetId ?? urlPId;
   const baseUrl = useCurrentScopePrefixedUrl(`${BentoRoute.Phenopackets}/${derivedPacketId}/${TabKeys.OVERVIEW}`);
 
@@ -33,6 +38,8 @@ const usePhenopacketOverviewLink = (
 
   const newParams: Record<string, string> = {
     [PHENOPACKET_EXPANDED_URL_QUERY_KEY]: expandedValue,
+    // The section/row to highlight on arrival.
+    [PHENOPACKET_HIGHLIGHT_URL_QUERY_KEY]: highlightValue(expanded, highlightRowId),
     ...(otherArgs ?? {}),
   };
 
@@ -51,11 +58,7 @@ type BaseLinkProps = { packetId?: string; replace?: boolean; preserveQueryParams
 type SubjectLinkProps = BaseLinkProps;
 const SubjectLink = ({ children, packetId, preserveQueryParams }: SubjectLinkProps) => {
   const url = usePhenopacketOverviewLink(packetId, 'subject', undefined, preserveQueryParams);
-  return (
-    <Link to={url} state={highlightState('subject')}>
-      {children}
-    </Link>
-  );
+  return <Link href={url}>{children}</Link>;
 };
 
 type BiosampleLinkProps = BaseLinkProps & { sampleId: string; enablePopover?: boolean };
@@ -67,9 +70,15 @@ const BiosampleLink = ({
   enablePopover,
   children,
 }: BiosampleLinkProps) => {
-  const url = usePhenopacketOverviewLink(packetId, 'biosamples', { biosample: sampleId }, preserveQueryParams);
+  const url = usePhenopacketOverviewLink(
+    packetId,
+    'biosamples',
+    { biosample: sampleId },
+    preserveQueryParams,
+    sampleId
+  );
   const link = (
-    <Link to={url} replace={replace} state={highlightState('biosamples', sampleId)}>
+    <Link href={url} replace={replace}>
       {children ?? sampleId}
     </Link>
   );
@@ -96,9 +105,15 @@ const BiosampleLinkList = ({ packetId, biosamples, replace, ...props }: Biosampl
 
 type ExperimentLinkProps = BaseLinkProps & { experimentId: string };
 const ExperimentLink = ({ packetId, experimentId, replace, preserveQueryParams, children }: ExperimentLinkProps) => {
-  const url = usePhenopacketOverviewLink(packetId, 'experiments', { experiment: experimentId }, preserveQueryParams);
+  const url = usePhenopacketOverviewLink(
+    packetId,
+    'experiments',
+    { experiment: experimentId },
+    preserveQueryParams,
+    experimentId
+  );
   return (
-    <Link to={url} replace={replace} state={highlightState('experiments', experimentId)}>
+    <Link href={url} replace={replace}>
       {children ?? experimentId}
     </Link>
   );
@@ -133,10 +148,11 @@ const ExperimentResultLink = ({
     packetId,
     'experimentResults',
     { experimentResult: experimentResultId.toString(10) },
-    preserveQueryParams
+    preserveQueryParams,
+    experimentResultId.toString()
   );
   return (
-    <Link to={url} replace={replace} state={highlightState('experimentResults', experimentResultId.toString())}>
+    <Link href={url} replace={replace}>
       {children ?? experimentResultId}
     </Link>
   );
