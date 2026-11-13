@@ -41,8 +41,8 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
 
   const statusContextLabel = dataset.study_context ?? null;
 
-  // PCGL Data Access Committee identifier; falls back to the older `dac_id` extra property convention.
-  const dacId = dataset.pcgl_dac_id ?? dataset.extra_properties?.dac_id;
+  // PCGL Data Access Committee identifier
+  const dacId = dataset.pcgl_dac_id;
 
   const leads = getLeads(dataset);
 
@@ -120,13 +120,12 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
     });
   }
   if (dacId) {
-    const dacIdStr = String(dacId);
     rows.push({
       icon: <UserOutlined aria-hidden="true" />,
       label: t('provenance.record.dac_id'),
       value: (
-        <Typography.Text className="font-mono text-xs break-all" copyable={{ text: dacIdStr }}>
-          {dacIdStr}
+        <Typography.Text className="font-mono text-xs break-all" copyable={{ text: dacId }}>
+          {dacId}
         </Typography.Text>
       ),
     });
