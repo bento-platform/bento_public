@@ -10,13 +10,12 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 
-import { PCGL_MODE } from '@/config';
+import { APPLY_FOR_ACCESS_URL, PCGL_MODE } from '@/config';
 
 import { useTranslationFn } from '@/hooks';
-import { useScopeDownloadData } from '@/hooks/censorship';
 import { useSelectedScope } from '@/features/metadata/hooks';
 import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
-import { useCanApplyForDatasetAccess } from '@/hooks/useCanApplyForDatasetAccess';
+import { useDatasetAccess } from '@/hooks/useDatasetAccess';
 import { getLeads } from '@/features/catalogue/utils';
 import type { Dataset } from '@/types/dataset';
 import { BentoRoute } from '@/types/routes';
@@ -35,15 +34,14 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
   const { fixedDataset } = useSelectedScope();
 
-  const canApplyForDatasetAccess = useCanApplyForDatasetAccess();
-
-  const { hasPermission: downloadDataPerm } = useScopeDownloadData();
+  // In PCGL mode (always a dataset scope here), hasAccess means download:metadata, i.e. the user can get the manifest.
+  const { hasAccess, hasAttempted } = useDatasetAccess();
+  const canApplyForAccess = !!APPLY_FOR_ACCESS_URL && hasAttempted && !hasAccess;
 
   const statusContextLabel = dataset.study_context ?? null;
 
-  // No dedicated schema field exists yet for a dataset's Data Access Committee identifier; it's carried
-  // as a conventional `dac_id` extra property until the dataset schema grows a first-class field for it.
-  const dacId = dataset.extra_properties?.dac_id;
+  // PCGL Data Access Committee identifier
+  const dacId = dataset.pcgl_dac_id;
 
   const leads = getLeads(dataset);
 
@@ -121,13 +119,12 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
     });
   }
   if (dacId) {
-    const dacIdStr = String(dacId);
     rows.push({
       icon: <UserOutlined aria-hidden="true" />,
       label: t('provenance.record.dac_id'),
       value: (
-        <Typography.Text className="font-mono text-xs break-all" copyable={{ text: dacIdStr }}>
-          {dacIdStr}
+        <Typography.Text className="font-mono text-xs break-all" copyable={{ text: dacId }}>
+          {dacId}
         </Typography.Text>
       ),
     });
@@ -158,9 +155,12 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
           >
             {t('About')}
           </Button>
-          {canApplyForDatasetAccess && <DatasetApplyForAccessButton type="primary" />}
-          {PCGL_MODE && downloadDataPerm && !!dataset.counts_by_entity?.experiment_result && (
-            <DatasetGetManifestButton />
+          {/* Mutually exclusive: apply when the user lacks access, otherwise (PCGL) offer the manifest.
+              No experiment_result count check: counts are censored for anonymous-level (PCGL-only) users. */}
+          {canApplyForAccess ? (
+            <DatasetApplyForAccessButton type="primary" />
+          ) : (
+            PCGL_MODE && hasAccess && <DatasetGetManifestButton />
           )}
         </Flex>
       </section>
