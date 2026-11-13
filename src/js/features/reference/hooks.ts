@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useAuthorizationHeader } from '@/features/auth/hooks';
 import { referenceGenomesUrl } from '@/constants/configConstants';
 import { useAppSelector } from '@/hooks';
 import { RequestStatus } from '@/types/requests';
@@ -10,8 +9,6 @@ export const useReference = () => {
 };
 
 export const useGeneNameSearch = (referenceGenomeID: string | undefined, nameQuery: string | null | undefined) => {
-  const authHeader = useAuthorizationHeader();
-
   const [status, setStatus] = useState<RequestStatus>(RequestStatus.Idle);
   const [data, setData] = useState<GenomeFeature[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -27,7 +24,7 @@ export const useGeneNameSearch = (referenceGenomeID: string | undefined, nameQue
       setStatus(RequestStatus.Pending);
 
       try {
-        const res = await fetch(searchUrl, { headers: { Accept: 'application/json', ...authHeader } });
+        const res = await fetch(searchUrl, { headers: { Accept: 'application/json' } });
         const resData = await res.json();
         if (res.ok) {
           console.debug('Genome feature search - got results:', resData.results);
@@ -43,7 +40,7 @@ export const useGeneNameSearch = (referenceGenomeID: string | undefined, nameQue
         setStatus(RequestStatus.Rejected);
       }
     })();
-  }, [referenceGenomeID, nameQuery, authHeader]);
+  }, [referenceGenomeID, nameQuery]);
 
   return { status, data, error };
 };

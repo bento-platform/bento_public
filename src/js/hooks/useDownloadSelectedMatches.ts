@@ -1,8 +1,6 @@
 import { useCallback } from 'react';
 import axios from 'axios';
 import FileSaver from 'file-saver';
-import { useAccessToken } from '@/features/auth/hooks';
-import { makeAuthorizationHeader } from 'bento-auth-js';
 
 import {
   biosampleBatchUrl,
@@ -21,8 +19,6 @@ const BATCH_URL_BY_ENTITY: Record<ExportDataEntity, string> = {
 };
 
 export const useDownloadSelectedMatches = () => {
-  const accessToken = useAccessToken();
-
   return useCallback(
     async (entity: ExportDataEntity, ids: string[], format: ExportFormat, filename: string, fields?: string[]) => {
       const url = BATCH_URL_BY_ENTITY[entity];
@@ -34,14 +30,11 @@ export const useDownloadSelectedMatches = () => {
       const res = await axios.post(
         url,
         { id, format, ...(fields && fields.length > 0 ? { fields } : {}) },
-        {
-          headers: { ...makeAuthorizationHeader(accessToken) },
-          responseType: 'blob',
-        }
+        { responseType: 'blob' }
       );
 
       FileSaver.saveAs(res.data, filename);
     },
-    [accessToken]
+    []
   );
 };

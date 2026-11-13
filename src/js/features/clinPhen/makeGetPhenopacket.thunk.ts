@@ -3,7 +3,6 @@ import axios from 'axios';
 import { phenopacketUrl } from '@/constants/configConstants';
 import type { RootState } from '@/store';
 import { printAPIError } from '@/utils/error.util';
-import { authorizedRequestConfig } from '@/utils/requests';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
 import { RequestStatus } from '@/types/requests';
 
@@ -16,9 +15,9 @@ export const makeGetPhenopacketData = createAsyncThunk<
   }
 >(
   'query/makeGetPhenopacketData',
-  (id, { rejectWithValue, getState }) => {
+  (id, { rejectWithValue }) => {
     return axios
-      .get(`${phenopacketUrl}/${id}`, authorizedRequestConfig(getState()))
+      .get(`${phenopacketUrl}/${id}`)
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue));
   },

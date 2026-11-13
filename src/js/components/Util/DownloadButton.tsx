@@ -3,12 +3,11 @@ import { type MouseEventHandler, useCallback } from 'react';
 import { Button, type ButtonProps } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 
-import { useAccessToken } from '@/features/auth/hooks';
 import { useTranslationFn } from '@/hooks';
 import { useDrsHttpsAccessOrPassThrough } from '@/features/drs/hooks';
 
 import { BROWSER_RENDERED_EXTENSIONS } from 'bento-file-display/dist/constants';
-import { ADMIN_URL, PUBLIC_URL } from '@/config';
+import { PUBLIC_URL } from '@/config';
 
 interface DownloadButtonProps extends ButtonProps {
   url: string;
@@ -16,6 +15,8 @@ interface DownloadButtonProps extends ButtonProps {
 }
 
 // Ported from Bento Web with some modifications (removal of a WES special case, addition of i18n)
+// Rendered as a plain link: the browser sends the session cookie to the same-origin proxy, which adds the token, and
+// streams the file straight to disk.
 const DownloadButton = ({
   url,
   fileName,
@@ -25,58 +26,37 @@ const DownloadButton = ({
   disabled,
   ...props
 }: DownloadButtonProps) => {
-  const accessToken = useAccessToken();
   const t = useTranslationFn();
 
   const finalUrl = useDrsHttpsAccessOrPassThrough(url);
   disabled = disabled || finalUrl === null;
   loading = loading || finalUrl === null;
 
+  // In Firefox, if we open, e.g., a PDF; it'll open in the PDF viewer instead of downloading.
+  // Here, we force it to open in a new tab if it's render-able by the browser (although Chrome will actually
+  // download the PDF file, so it'll flash a new tab - this is a compromise solution for viewable file types.)
+  const openInNewTab = !!fileName && BROWSER_RENDERED_EXTENSIONS.some((ext) => fileName.toLowerCase().endsWith(ext));
+
   const onClick = useCallback<MouseEventHandler<HTMLElement>>(
     (e) => {
-      if (!finalUrl) return;
-
-      const form = document.createElement('form');
-      if (fileName && BROWSER_RENDERED_EXTENSIONS.find((ext) => fileName.toLowerCase().endsWith(ext))) {
-        // In Firefox, if we open, e.g., a PDF; it'll open in the PDF viewer instead of downloading.
-        // Here, we force it to open in a new tab if it's render-able by the browser (although Chrome will actually
-        // download the PDF file, so it'll flash a new tab - this is a compromise solution for viewable file types.)
-        form.target = '_blank';
-      }
-      form.method = 'post';
-      form.action = finalUrl;
-
-      // SECURITY: If the URL is within the Bento instance, we can submit a form to include a token for authentication.
-      //   Otherwise, we cannot do this and need to just treat the URL as a normal URL.
-      if (finalUrl.startsWith(ADMIN_URL) || finalUrl.startsWith(PUBLIC_URL)) {
-        const tokenInput = document.createElement('input');
-        tokenInput.setAttribute('type', 'hidden');
-        tokenInput.setAttribute('name', 'token');
-        if (accessToken) tokenInput.setAttribute('value', accessToken);
-        form.appendChild(tokenInput);
-      } else {
+      // SECURITY: URLs within this Bento Public instance go through the same-origin proxy, which authenticates them
+      //   with the session cookie. Any other URL is treated as a normal URL, with no authentication.
+      if (finalUrl && !finalUrl.startsWith(PUBLIC_URL)) {
         alert(t('file.download_alert'));
       }
 
-      document.body.appendChild(form);
-
-      try {
-        form.submit();
-      } finally {
-        // Even if submit raises for some reason, we still need to clean this up; it has a token in it!
-        document.body.removeChild(form);
-      }
-
-      // Call the props-passed onClick event handler after hijacking the event and doing our own thing
       if (propsOnClick) propsOnClick(e);
     },
-    [fileName, finalUrl, accessToken, propsOnClick, t]
+    [finalUrl, propsOnClick, t]
   );
 
   return (
     <Button
       key="download"
       icon={<DownloadOutlined aria-hidden />}
+      href={finalUrl ?? undefined}
+      target={openInNewTab ? '_blank' : undefined}
+      rel={openInNewTab ? 'noopener' : undefined}
       onClick={onClick}
       loading={loading}
       disabled={disabled}
