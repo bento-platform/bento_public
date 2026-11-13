@@ -13,6 +13,7 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 
+import { APPLY_FOR_ACCESS_URL } from '@/config';
 import { useTranslationFn } from '@/hooks';
 import { useDatasetAccess } from '@/hooks/useDatasetAccess';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
@@ -42,7 +43,8 @@ import { Flex } from 'antd';
 const useProvenanceEntries = (dataset: Dataset | null | undefined, scope?: DiscoveryScope): ProvenanceEntry[] => {
   const t = useTranslationFn();
 
-  const { canApplyForAccess: canApplyForDatasetAccess } = useDatasetAccess(scope);
+  const { hasAccess: hasDatasetAccess, hasAttempted } = useDatasetAccess(scope);
+  const canApplyForDatasetAccess = !!APPLY_FOR_ACCESS_URL && hasAttempted && !hasDatasetAccess;
 
   if (!dataset) return [];
 

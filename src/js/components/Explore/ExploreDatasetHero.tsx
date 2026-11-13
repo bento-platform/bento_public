@@ -10,7 +10,7 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 
-import { PCGL_MODE } from '@/config';
+import { APPLY_FOR_ACCESS_URL, PCGL_MODE } from '@/config';
 
 import { useTranslationFn } from '@/hooks';
 import { useSelectedScope } from '@/features/metadata/hooks';
@@ -35,7 +35,8 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
   const { fixedDataset } = useSelectedScope();
 
   // In PCGL mode (always a dataset scope here), hasAccess means download:metadata, i.e. the user can get the manifest.
-  const { hasAccess, canApplyForAccess } = useDatasetAccess();
+  const { hasAccess, hasAttempted } = useDatasetAccess();
+  const canApplyForAccess = !!APPLY_FOR_ACCESS_URL && hasAttempted && !hasAccess;
 
   const statusContextLabel = dataset.study_context ?? null;
 
