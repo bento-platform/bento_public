@@ -15,8 +15,7 @@ import { PCGL_MODE } from '@/config';
 import { useTranslationFn } from '@/hooks';
 import { useSelectedScope } from '@/features/metadata/hooks';
 import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
-import { useCanApplyForDatasetAccess } from '@/hooks/useCanApplyForDatasetAccess';
-import { useDatasetManifestPermission } from '@/hooks/useDatasetManifestPermission';
+import { useDatasetAccess } from '@/hooks/useDatasetAccess';
 import { getLeads } from '@/features/catalogue/utils';
 import type { Dataset } from '@/types/dataset';
 import { BentoRoute } from '@/types/routes';
@@ -35,9 +34,8 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
   const { fixedDataset } = useSelectedScope();
 
-  const canApplyForDatasetAccess = useCanApplyForDatasetAccess();
-
-  const { canGetManifest } = useDatasetManifestPermission();
+  // In PCGL mode (always a dataset scope here), hasAccess means download:metadata, i.e. the user can get the manifest.
+  const { hasAccess, canApplyForAccess } = useDatasetAccess();
 
   const statusContextLabel = dataset.study_context ?? null;
 
@@ -156,9 +154,13 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
           >
             {t('About')}
           </Button>
-          {canApplyForDatasetAccess && <DatasetApplyForAccessButton type="primary" />}
-          {/* No experiment_result count check: counts are censored for anonymous-level (PCGL-only) users. */}
-          {PCGL_MODE && canGetManifest && <DatasetGetManifestButton />}
+          {/* Mutually exclusive: apply when the user lacks access, otherwise (PCGL) offer the manifest.
+              No experiment_result count check: counts are censored for anonymous-level (PCGL-only) users. */}
+          {canApplyForAccess ? (
+            <DatasetApplyForAccessButton type="primary" />
+          ) : (
+            PCGL_MODE && hasAccess && <DatasetGetManifestButton />
+          )}
         </Flex>
       </section>
     </div>

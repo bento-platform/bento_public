@@ -14,7 +14,7 @@ import {
 } from '@ant-design/icons';
 
 import { useTranslationFn } from '@/hooks';
-import { useCanApplyForDatasetAccess } from '@/hooks/useCanApplyForDatasetAccess';
+import { useDatasetAccess } from '@/hooks/useDatasetAccess';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
 import StatList from '@/components/Util/StatList';
@@ -42,7 +42,7 @@ import { Flex } from 'antd';
 const useProvenanceEntries = (dataset: Dataset | null | undefined, scope?: DiscoveryScope): ProvenanceEntry[] => {
   const t = useTranslationFn();
 
-  const canApplyForDatasetAccess = useCanApplyForDatasetAccess(scope);
+  const { canApplyForAccess: canApplyForDatasetAccess } = useDatasetAccess(scope);
 
   if (!dataset) return [];
 
