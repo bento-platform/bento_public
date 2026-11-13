@@ -8,6 +8,7 @@ import SiteHeader from '@/components/SiteHeader';
 import SiteSider from '@/components/SiteSider';
 import SiteFooter from '@/components/SiteFooter';
 import PcglFooter from '@/components/Pcgl/PcglFooter';
+import PcglHeader from '@/components/Pcgl/PcglHeader';
 import ScopeHeader from '@/components/Scope/ScopeHeader';
 import { useSelectedScope, useScopeHasData } from '@/features/metadata/hooks';
 import { useIsInCatalogueMode, useSiteMenuItems } from '@/hooks/navigation';
@@ -49,7 +50,7 @@ const DefaultLayout = () => {
         'scope-header-hidden': scopeHeaderHidden,
       })}
     >
-      <SiteHeader menuItems={siteHeaderMenuItems} />
+      {PCGL_MODE ? <PcglHeader menuItems={siteHeaderMenuItems} /> : <SiteHeader menuItems={siteHeaderMenuItems} />}
       <Layout id="content-layout">
         {!isCatalogue && !scopeHeaderHidden && (
           <ScopeHeader
@@ -68,7 +69,10 @@ const DefaultLayout = () => {
             {!sidebarHidden && (
               <SiteSider overlay={sidebarOverlay} open={sidebarOverlayShown} onClose={() => setCollapsed(true)} />
             )}
-            <Content style={{ minHeight: 'calc(100vh - 210px - var(--scoped-title-height) - var(--header-height))' }}>
+            <Content
+              id="main-content"
+              style={{ minHeight: 'calc(100vh - 210px - var(--scoped-title-height) - var(--header-height))' }}
+            >
               <ErrorBoundary
                 fallbackRender={({ error }) => <Alert type="error" description={getErrorMessage(error)} />}
               >
