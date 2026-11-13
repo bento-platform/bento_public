@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { usePathname } from 'next/navigation';
+import { navigate } from '@/hooks/router';
 import { useAppSelector, useLanguage, useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
 import { useHaveEntityDataForField } from '@/hooks/useHaveEntityData';
@@ -97,8 +98,7 @@ export const useSearchQueryParams = (): QueryParamEntries => {
  * with SearchFilters (the sidebar's own filter-editing form) so both surfaces navigate the URL the same way.
  */
 export const useActiveFilterPills = (): { pills: ActiveFilterPill[]; clearAll: () => void } => {
-  const { pathname } = useLocation();
-  const navigate = useNavigate();
+  const pathname = usePathname();
   const t = useTranslationFn();
   const language = useLanguage();
   const { filters, textQuery } = useSearchQuery();
@@ -113,7 +113,7 @@ export const useActiveFilterPills = (): { pills: ActiveFilterPill[]; clearAll: (
       entityAndTextQueryParams.filter((e) => e[0] !== TEXT_QUERY_PARAM && e[0] !== TABLE_PAGE_QUERY_PARAM)
     );
     navigate(url, { replace: true });
-  }, [pathname, entityAndTextQueryParams, navigate]);
+  }, [pathname, entityAndTextQueryParams]);
 
   const removeFilterValue = useCallback(
     (field: string, value: string) => {
@@ -141,7 +141,7 @@ export const useActiveFilterPills = (): { pills: ActiveFilterPill[]; clearAll: (
       );
       navigate(url, { replace: true });
     },
-    [filters, entityAndTextQueryParams, pathname, navigate]
+    [filters, entityAndTextQueryParams, pathname]
   );
 
   const clearTextQuery = useCallback(() => {
@@ -158,7 +158,7 @@ export const useActiveFilterPills = (): { pills: ActiveFilterPill[]; clearAll: (
       )
     );
     navigate(url, { replace: true });
-  }, [filters, entityAndTextQueryParams, pathname, navigate]);
+  }, [filters, entityAndTextQueryParams, pathname]);
 
   const pills = useMemo(() => {
     const p: ActiveFilterPill[] = [];

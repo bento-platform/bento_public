@@ -1,5 +1,6 @@
 import { type ReactNode, useCallback, useMemo } from 'react';
-import { type NavigateOptions, useLocation, useNavigate } from 'react-router-dom';
+import { usePathname } from 'next/navigation';
+import { navigate } from '@/hooks/router';
 import {
   BookOutlined,
   CloseCircleOutlined,
@@ -33,9 +34,8 @@ export const useLangPrefixedUrl = (path: string): string => {
 };
 
 export const useNavigateToRoot = () => {
-  const navigate = useNavigate();
   const rootUrl = useLangPrefixedUrl('');
-  return useCallback(() => navigate(rootUrl), [navigate, rootUrl]);
+  return useCallback(() => navigate(rootUrl), [rootUrl]);
 };
 
 /**
@@ -49,14 +49,13 @@ export const useNavigateToRoot = () => {
  * clobbering the restored query string.
  */
 export const useNavigateToCatalogue = () => {
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const rootUrl = useLangPrefixedUrl('');
   const { q, sets, sort, view } = useCatalogueState();
   return useCallback(() => {
     dispatch(selectScope({}));
     navigate(buildQueryParamsUrl(rootUrl, catalogueStateToQueryParams({ q, sets, sort, view })));
-  }, [dispatch, navigate, rootUrl, q, sets, sort, view]);
+  }, [dispatch, rootUrl, q, sets, sort, view]);
 };
 
 /**
@@ -66,7 +65,6 @@ export const useNavigateToCatalogue = () => {
  */
 export const useNavigateToScope = () => {
   const language = useLanguage();
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   return useCallback(
@@ -74,13 +72,14 @@ export const useNavigateToScope = () => {
       newScope: DiscoveryScope,
       suffix: string = '',
       fixedProjectAndDataset: boolean = false,
-      navigateOptions: NavigateOptions | undefined = undefined
+      options: { replace?: boolean } = {}
     ) => {
       // This action will internally handle already-equal scope selections to avoid accidental re-renders:
       dispatch(selectScope(newScope));
-      navigate(scopeToUrl(newScope, language, suffix, fixedProjectAndDataset), navigateOptions);
+      const url = scopeToUrl(newScope, language, suffix, fixedProjectAndDataset);
+      navigate(url, { replace: options.replace });
     },
-    [dispatch, navigate, language]
+    [dispatch, language]
   );
 };
 
@@ -128,14 +127,14 @@ export const useCurrentScopePrefixedUrl = (suffix: string) => {
  */
 export const useNavigateToSameScopeUrl = () => {
   const language = useLanguage();
-  const navigate = useNavigate();
   const selectedScope = useSelectedScope();
 
   return useCallback(
     (suffix: string, replace: boolean = true) => {
-      navigate(langAndScopeSelectionToUrl(language, selectedScope, suffix), { replace });
+      const url = langAndScopeSelectionToUrl(language, selectedScope, suffix);
+      navigate(url, { replace });
     },
-    [language, navigate, selectedScope]
+    [language, selectedScope]
   );
 };
 
@@ -145,12 +144,12 @@ export const useIsInCatalogueMode = () => {
 };
 
 export const useGetRouteTitleAndIcon = () => {
-  const location = useLocation();
+  const pathname = usePathname();
   const catalogueMode = useIsInCatalogueMode();
 
   // Use location for catalogue page detection instead of selectedProject, since it gives us faster UI rendering at the
   // cost of only being wrong with a redirect edge case (and being slightly more brittle).
-  const exploreIsCatalogue = !location.pathname.includes('/p/') && !location.pathname.includes('/d/') && catalogueMode;
+  const exploreIsCatalogue = !pathname.includes('/p/') && !pathname.includes('/d/') && catalogueMode;
 
   return useCallback(
     (routeId: string): [string, ReactNode] => {
@@ -188,8 +187,7 @@ export const useGetRouteTitleAndIcon = () => {
 export const useSiteMenuItems = (): [MenuItem[], MenuItem[]] => {
   const t = useTranslationFn();
   const { fixedProject, fixedDataset, scope } = useSelectedScope();
-  const location = useLocation();
-  const page = getCurrentPage(location);
+  const page = getCurrentPage({ pathname: usePathname() });
 
   const scopeHasData = useScopeHasData();
 

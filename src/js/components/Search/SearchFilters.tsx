@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { usePathname } from 'next/navigation';
+import { navigate } from '@/hooks/router';
 
 import { Flex, Space, Tooltip, Typography } from 'antd';
 import { FilterOutlined, QuestionCircleOutlined } from '@ant-design/icons';
@@ -26,8 +27,7 @@ const buildValueToEntry =
   (v: string | null | undefined): QueryParamEntry => [f, v || ''];
 
 const SearchFilters = (props: DefinedSearchSubFormProps) => {
-  const { pathname } = useLocation();
-  const navigate = useNavigate();
+  const pathname = usePathname();
   const t = useTranslationFn();
 
   const { configStatus, maxQueryParameters } = useConfig();

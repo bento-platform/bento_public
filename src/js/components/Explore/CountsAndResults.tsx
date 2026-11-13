@@ -1,5 +1,6 @@
 import { type KeyboardEventHandler, memo, useCallback } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { usePathname } from 'next/navigation';
+import { navigate } from '@/hooks/router';
 
 import { Alert, Card, Flex, Skeleton, Space, Statistic } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
@@ -94,8 +95,7 @@ const CountCardShowHide = memo(({ selected, onClear }: { selected: boolean; onCl
 CountCardShowHide.displayName = 'CountCardShowHide';
 
 const CountsAndResults = () => {
-  const { pathname } = useLocation();
-  const navigate = useNavigate();
+  const pathname = usePathname();
 
   const t = useTranslationFn();
   const renderCount = useRenderCount();
@@ -158,7 +158,7 @@ const CountsAndResults = () => {
         )
       );
     },
-    [navigate, pathname, filters, entityAndTextQueryParams, matchData, pageSize]
+    [pathname, filters, entityAndTextQueryParams, matchData, pageSize]
   );
   const clearSelectedEntity = useCallback(() => setSelectedEntity(null), [setSelectedEntity]);
 

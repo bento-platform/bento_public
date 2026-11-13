@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { navigate } from '@/hooks/router';
 
 import clsx from 'clsx';
 import { Button, Flex, Layout, Menu, type MenuProps, Space, Typography, theme } from 'antd';
@@ -41,13 +42,12 @@ type SiteHeaderProps = {
 };
 
 const useHandleMenuClick = (): OnClick => {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const pathname = usePathname();
   const exploreQueryParams = useSearchQueryParams();
 
   return useCallback(
     ({ key }: { key: string }) => {
-      const currentPath = location.pathname.split('/').filter(Boolean);
+      const currentPath = pathname.split('/').filter(Boolean);
       const newPath = [currentPath[0]];
       if (!TOP_LEVEL_ONLY_ROUTES.includes(key)) {
         // Beacon network only works at the top scope level
@@ -63,17 +63,17 @@ const useHandleMenuClick = (): OnClick => {
       //  - only include filter/search/explore query params if we're navigating to the explore page
       navigate(buildQueryParamsUrl(newPathString, key === BentoRoute.Explore ? exploreQueryParams : undefined));
     },
-    [navigate, exploreQueryParams, location.pathname]
+    [exploreQueryParams, pathname]
   );
 };
 
 const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
   const t = useTranslationFn();
   const language = useLanguage();
-  const navigate = useNavigate();
-  const location = useLocation();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const isSmallScreen = useSmallScreen();
-  const currentPage = getCurrentPage(location);
+  const currentPage = getCurrentPage({ pathname });
   const navigateToRoot = useNavigateToRoot();
 
   const { status: sessionStatus } = useSession();
@@ -104,7 +104,8 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
     // Can't rely on there being a trailing slash at the base page (.e.g, `/en` and `/en`/ are both valid), and can't
     // ensure project IDs don't begin with an `en` or `fr`. Thus, we use a RegExp with a `^` for language changing in
     // the URL.
-    const path = (location.pathname + location.search).replace(new RegExp(`^/${language}`), `/${newLang}`);
+    const search = searchParams.toString();
+    const path = (pathname + (search ? `?${search}` : '')).replace(new RegExp(`^/${language}`), `/${newLang}`);
     navigate(path, { replace: true });
   };
 
