@@ -73,12 +73,12 @@ export const useNavigateToScope = () => {
     (
       newScope: DiscoveryScope,
       suffix: string = '',
-      fixedProjectAndDataset: boolean = false,
+      isSoleProjectAndDataset: boolean = false,
       navigateOptions: NavigateOptions | undefined = undefined
     ) => {
       // This action will internally handle already-equal scope selections to avoid accidental re-renders:
       dispatch(selectScope(newScope));
-      navigate(scopeToUrl(newScope, language, suffix, fixedProjectAndDataset), navigateOptions);
+      navigate(scopeToUrl(newScope, language, suffix, isSoleProjectAndDataset), navigateOptions);
     },
     [dispatch, navigate, language]
   );
@@ -187,7 +187,7 @@ export const useGetRouteTitleAndIcon = () => {
  */
 export const useSiteMenuItems = (): [MenuItem[], MenuItem[]] => {
   const t = useTranslationFn();
-  const { fixedProject, fixedDataset, scope } = useSelectedScope();
+  const { isSoleProject, isSoleDataset, scope } = useSelectedScope();
   const location = useLocation();
   const page = getCurrentPage(location);
 
@@ -212,7 +212,7 @@ export const useSiteMenuItems = (): [MenuItem[], MenuItem[]] => {
     const topBarItems: MenuItem[] = [exploreItem];
     const scopeItems: MenuItem[] = [exploreItem];
 
-    const putInTopBar = fixedDataset || (fixedProject && !scope.dataset) || !scope.project;
+    const putInTopBar = isSoleDataset || (isSoleProject && !scope.dataset) || !scope.project;
 
     if (page !== BentoRoute.Phenopackets && (page !== BentoRoute.BeaconNetwork || putInTopBar)) {
       const itemsRef = putInTopBar ? topBarItems : scopeItems;
@@ -232,5 +232,5 @@ export const useSiteMenuItems = (): [MenuItem[], MenuItem[]] => {
     }
 
     return (scopeItems.length > 1 ? [[], scopeItems] : [topBarItems, []]) as [MenuItem[], MenuItem[]];
-  }, [getRouteTitleAndIcon, createMenuItem, scope, fixedProject, fixedDataset, scopeHasData, page]);
+  }, [getRouteTitleAndIcon, createMenuItem, scope, isSoleProject, isSoleDataset, scopeHasData, page]);
 };

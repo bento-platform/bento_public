@@ -16,8 +16,8 @@ export type DiscoveryScope = { project?: string; dataset?: string };
 export type DiscoveryScopeSelection = {
   scope: DiscoveryScope;
   scopeSet: boolean;
-  fixedProject: boolean;
-  fixedDataset: boolean;
+  isSoleProject: boolean;
+  isSoleDataset: boolean;
 };
 
 export interface MetadataState {
@@ -41,8 +41,8 @@ const initialState: MetadataState = {
     scope: { project: undefined, dataset: undefined },
     // Whether scope has been set from URL/action yet. If it hasn't, we need to wait before fetching scoped data.
     scopeSet: false,
-    fixedProject: false,
-    fixedDataset: false,
+    isSoleProject: false,
+    isSoleDataset: false,
   },
 };
 
