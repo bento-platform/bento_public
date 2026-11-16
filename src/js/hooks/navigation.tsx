@@ -198,46 +198,46 @@ export const useSiteMenuItems = (): SiteMenuItems => {
 
   const scopeHasData = useScopeHasData();
 
-  const createMenuItem = useCallback(
-    (key: string, label: string, icon?: ReactNode, children?: MenuItem[]): MenuItem => ({
-      key,
-      icon,
-      children,
-      label: t(label),
-    }),
-    [t]
-  );
-
   const getRouteTitleAndIcon = useGetRouteTitleAndIcon();
+
+  const createMenuItem = useCallback(
+    (route: string): MenuItem => {
+      const [label, icon] = getRouteTitleAndIcon(route);
+      return { key: route, icon, label: t(label) };
+    },
+    [t, getRouteTitleAndIcon]
+  );
 
   return useMemo(() => {
     // Serves weird overloaded purpose as both catalogue and data explore route:
-    const exploreItem = createMenuItem(BentoRoute.Explore, ...getRouteTitleAndIcon(BentoRoute.Explore));
+    const exploreItem = createMenuItem(BentoRoute.Explore);
 
-    const topBarItems: MenuItem[] = [exploreItem];
-    const scopeItems: MenuItem[] = [exploreItem];
+    const siteHeaderItems: MenuItem[] = [exploreItem];
+    const scopeHeaderItems: MenuItem[] = [exploreItem];
 
     const putInSiteHeader = isSoleDataset || (isSoleProject && !scope.dataset) || !scope.project;
+    const pageAllowsExtraItems =
+      page !== BentoRoute.Phenopackets && (page !== BentoRoute.BeaconNetwork || putInSiteHeader);
 
-    if (page !== BentoRoute.Phenopackets && (page !== BentoRoute.BeaconNetwork || putInSiteHeader)) {
-      const itemsRef = putInSiteHeader ? topBarItems : scopeItems;
+    if (pageAllowsExtraItems) {
+      const itemsRef = putInSiteHeader ? siteHeaderItems : scopeHeaderItems;
 
       if (BEACON_UI_ENABLED && scopeHasData) {
-        itemsRef.push(createMenuItem(BentoRoute.Beacon!, ...getRouteTitleAndIcon(BentoRoute.Beacon!)));
+        itemsRef.push(createMenuItem(BentoRoute.Beacon!));
       }
 
       // TODO: can enable for project if we get a more extensive project model
       if (scope.dataset) {
-        itemsRef.push(createMenuItem(BentoRoute.About, ...getRouteTitleAndIcon(BentoRoute.About)));
+        itemsRef.push(createMenuItem(BentoRoute.About));
       }
     }
 
     if (BEACON_NETWORK_ENABLED && putInSiteHeader) {
-      topBarItems.push(createMenuItem(BentoRoute.BeaconNetwork!, ...getRouteTitleAndIcon(BentoRoute.BeaconNetwork!)));
+      siteHeaderItems.push(createMenuItem(BentoRoute.BeaconNetwork!));
     }
 
-    return scopeItems.length > 1
-      ? { siteHeaderMenuItems: [], scopeHeaderMenuItems: scopeItems }
-      : { siteHeaderMenuItems: topBarItems, scopeHeaderMenuItems: [] };
-  }, [getRouteTitleAndIcon, createMenuItem, scope, isSoleProject, isSoleDataset, scopeHasData, page]);
+    return scopeHeaderItems.length > 1
+      ? { siteHeaderMenuItems: [], scopeHeaderMenuItems: scopeHeaderItems }
+      : { siteHeaderMenuItems: siteHeaderItems, scopeHeaderMenuItems: [] };
+  }, [createMenuItem, scope, isSoleProject, isSoleDataset, scopeHasData, page]);
 };
