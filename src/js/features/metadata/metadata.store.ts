@@ -1,7 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
-import type { PaginatedResponse, Project } from '@/types/metadata';
+import type { Project, ProjectsWithPermissionsResponse } from '@/types/metadata';
 import type { Dataset } from '@/types/dataset';
 import { RequestStatus } from '@/types/requests';
 import type { RootState } from '@/store';
@@ -46,7 +46,7 @@ const initialState: MetadataState = {
 };
 
 export const getProjects = createAsyncThunk<
-  PaginatedResponse<Project>,
+  ProjectsWithPermissionsResponse,
   string,
   { state: RootState; rejectValue: string }
 >(

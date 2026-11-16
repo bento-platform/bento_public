@@ -192,7 +192,9 @@ const BentoAppRouter = () => {
     dispatch(getProjects(language));
   }, [dispatch, language, isAuthReady]);
 
-  if (!isAuthReady || projectsStatus === RequestStatus.Pending) {
+  // Also wait while Idle (before the effect above dispatches): routes mounted early would fire their own permission
+  // checks before getProjects can seed them.
+  if (!isAuthReady || projectsStatus === RequestStatus.Idle || projectsStatus === RequestStatus.Pending) {
     return <Loader fullHeight={true} />;
   }
 
