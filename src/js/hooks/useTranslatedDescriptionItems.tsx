@@ -16,7 +16,7 @@ export const useTranslatedDescriptionItems = (
     ..._,
     label:
       key !== undefined && label === undefined
-        ? t(`${defaultI18nPrefix}${key}`)
+        ? t(`${defaultI18nPrefix}${String(key)}`)
         : typeof label === 'string'
           ? t(label)
           : label,

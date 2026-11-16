@@ -42,7 +42,7 @@ export const GeneDescriptor = ({ geneDescriptor }: { geneDescriptor: GeneDescrip
   ];
 
   return (
-    <Space direction="vertical" className="w-full">
+    <Space orientation="vertical" className="w-full">
       <TDescriptions items={items} size="compact" column={1} bordered />
       <ExtraPropertiesDisplay extraProperties={geneDescriptor.extra_properties} />
     </Space>
@@ -166,7 +166,7 @@ export const VariantInterpretation = ({
   ];
 
   return (
-    <Space direction="vertical">
+    <Space orientation="vertical">
       <TDescriptions items={items} size="compact" bordered />
       <TDescriptions items={variantDescriptorItems} column={2} size="compact" bordered />
     </Space>

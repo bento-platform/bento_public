@@ -6,8 +6,7 @@ import type { JSONType } from '@/types/json';
 
 export type FtsQueryType = 'plain' | 'phrase' | 'websearch' | 'trigram';
 
-export type QueryParamEntry = [string, string];
-export type QueryParamEntries = QueryParamEntry[];
+export type { QueryParamEntry, QueryParamEntries } from '@/utils/queryParams';
 
 export type FilterValue = string | string[] | null;
 export type FiltersState = Record<string, FilterValue>;
@@ -42,7 +41,7 @@ export type DiscoveryMatchExperimentResult = DiscoveryMatchObject & {
   description?: string;
   filename?: string; // File name
   url?: string; // File URL
-  indices: ExperimentResult['indices'];
+  indices?: ExperimentResult['indices'];
   genome_assembly_id?: ExperimentResult['genome_assembly_id'];
   file_format?: ExperimentResult['file_format'];
   data_output_type?: string;
@@ -56,13 +55,7 @@ export type DiscoveryMatchExperimentResult = DiscoveryMatchObject & {
 };
 
 export type MatchIncludedFieldsFromExperiments =
-  | 'id'
-  | 'description'
-  | 'experiment_type'
-  | 'experiment_ontology'
-  | 'study_type'
-  | 'molecule'
-  | 'molecule_ontology';
+  'id' | 'description' | 'experiment_type' | 'experiment_ontology' | 'study_type' | 'molecule' | 'molecule_ontology';
 export type DiscoveryMatchExperiment = DiscoveryMatchObject &
   Pick<Experiment, MatchIncludedFieldsFromExperiments> & {
     results: DiscoveryMatchExperimentResult[];
@@ -84,10 +77,7 @@ export type DiscoveryMatchPhenopacket = DiscoveryMatchObject & {
 };
 
 export type ViewableDiscoveryMatchObject =
-  | DiscoveryMatchBiosample
-  | DiscoveryMatchExperiment
-  | DiscoveryMatchPhenopacket
-  | DiscoveryMatchExperimentResult;
+  DiscoveryMatchBiosample | DiscoveryMatchExperiment | DiscoveryMatchPhenopacket | DiscoveryMatchExperimentResult;
 
 export type SearchResultsUIPage = 'individuals' | 'charts';
 

@@ -1,0 +1,162 @@
+import { useId, useMemo } from 'react';
+
+import { Card, Flex, Typography } from 'antd';
+import { PieChartOutlined } from '@ant-design/icons';
+
+const { Text } = Typography;
+
+import { useCatalogueState } from '@/features/catalogue/hooks';
+import { useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
+import { useFormatNumber, useTranslationFn } from '@/hooks';
+
+import type { FacetId } from '@/features/catalogue/catalogue.store';
+import type { DatasetWithProject } from '@/features/catalogue/hooks';
+
+import { CategoryDonut, CategoryBarList, type HexColor, type CategoricalChartDataItem } from 'bento-charts';
+
+import { FACET_CONFIG_BY_ID, type FacetConfig } from '@/features/catalogue/facetRegistry';
+import { PCGL_MODE } from '@/config';
+import { COUNT_ENTITY_ORDER, COUNT_ENTITY_REGISTRY } from '@/constants/countEntities';
+import StatList, { type StatItem } from '@/components/Util/StatList';
+
+import { assignColors } from '@/features/catalogue/utils';
+
+function buildCounts(datasets: DatasetWithProject[], facet: FacetConfig): CategoricalChartDataItem[] {
+  const map = new Map<string, number>();
+  for (const d of datasets) {
+    for (const v of facet.getValues(d)) {
+      if (v) map.set(v, (map.get(v) ?? 0) + 1);
+    }
+  }
+  return [...map.entries()].map(([x, y]) => ({ x, y, id: x })).sort((a, b) => b.y - a.y);
+}
+
+// buildCounts keeps `id` as the raw facet value (needed for toggleFacetValue/colorsById lookups); this applies
+// a display translation to `x` only, so labels shown in the chart/legend are localized without losing that key.
+const useTranslatedEntries = (datasets: DatasetWithProject[], facetId: FacetId): CategoricalChartDataItem[] => {
+  const t = useTranslationFn();
+  return useMemo<CategoricalChartDataItem[]>(() => {
+    const facetConfig = FACET_CONFIG_BY_ID[facetId];
+    if (facetConfig) {
+      const data = buildCounts(datasets, facetConfig);
+      return data.map((d) => ({ ...d, x: facetConfig.formatLabel ? facetConfig.formatLabel(d.id ?? d.x, t) : d.x }));
+    } else {
+      return []; // If facet config is disabled (e.g., project for PCGL)
+    }
+  }, [t, datasets, facetId]);
+};
+
+interface CatalogueInsightCardProps {
+  datasets: DatasetWithProject[];
+  facet: FacetId;
+  kind: 'bar' | 'donut';
+  colors?: Record<string, HexColor>;
+}
+
+const CatalogueInsightCard = ({ datasets, facet, kind, colors }: CatalogueInsightCardProps) => {
+  const t = useTranslationFn();
+  const fmt = useFormatNumber();
+
+  const { sets } = useCatalogueState();
+  const { toggleFacetValue } = useCatalogueUrlActions();
+
+  const centerLabel = t('entities.dataset', { count: datasets.length }).toLowerCase();
+  let data = useTranslatedEntries(datasets, facet);
+  if (kind === 'bar') {
+    data = data.slice(0, 5);
+  }
+
+  if (data.length === 0) return null;
+
+  const commonProps = {
+    data,
+    colorsById: colors ?? (assignColors(data.map((d) => d.id ?? d.x)) as Record<string, HexColor>),
+    selectedIds: sets[facet],
+    formatValue: fmt,
+    onClick: (id: string) => toggleFacetValue(facet, id),
+  };
+
+  return (
+    <Card size="small" className="catalogue-chart-card">
+      <Typography.Title level={3} className="catalogue-chart-card__title">
+        {t(`catalogue.insights.by_${facet}`)}
+      </Typography.Title>
+      {kind === 'donut' ? (
+        <CategoryDonut {...commonProps} centerLabel={centerLabel} />
+      ) : (
+        <CategoryBarList {...commonProps} labelWidth={150} />
+      )}
+    </Card>
+  );
+};
+
+const CatalogueEntityCountsCard = ({ datasets }: { datasets: DatasetWithProject[] }) => {
+  const t = useTranslationFn();
+  const titleId = useId();
+
+  const totals = useMemo(() => {
+    const sums = { individual: 0, biosample: 0, experiment: 0, experiment_result: 0 };
+    for (const { dataset } of datasets) {
+      const counts = dataset.counts_by_entity;
+      if (!counts) continue;
+      for (const entity of COUNT_ENTITY_ORDER) {
+        const v = counts[entity];
+        if (typeof v === 'number') sums[entity] += v;
+      }
+    }
+    return sums;
+  }, [datasets]);
+
+  const items: StatItem[] = COUNT_ENTITY_ORDER.map((entity) => ({
+    key: entity,
+    label: t(`entities.${entity}_other`),
+    value: totals[entity],
+    icon: COUNT_ENTITY_REGISTRY[entity].icon,
+  }));
+
+  return (
+    <Card size="small" className="catalogue-chart-card">
+      <Typography.Title level={3} id={titleId} className="catalogue-chart-card__title">
+        {t('catalogue.insights.totals')}
+      </Typography.Title>
+      <StatList items={items} variant="compact" aria-labelledby={titleId} />
+    </Card>
+  );
+};
+
+interface CatalogueInsightsProps {
+  filteredDatasets: DatasetWithProject[];
+}
+
+const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
+  const t = useTranslationFn();
+  const { projectColors } = useCatalogueState();
+
+  return (
+    <div className="catalogue-insights">
+      <Flex justify="space-between" align="center" className="mb-3">
+        <Flex align="center" gap={6}>
+          <PieChartOutlined className="text-secondary" />
+          <Typography.Title level={2} className="catalogue-insights__header-title">
+            {t('catalogue.insights.title')}
+          </Typography.Title>
+        </Flex>
+        <Text className="catalogue-insights__hint">{t('catalogue.insights.hint')}</Text>
+      </Flex>
+      <Flex gap={12} wrap className="items-stretch">
+        <CatalogueEntityCountsCard datasets={filteredDatasets} />
+        {/* TODO: make insight charts configurable using some kind of catalogue config rather than hard-coded. */}
+        {PCGL_MODE ? (
+          <CatalogueInsightCard datasets={filteredDatasets} facet="domain" kind="bar" />
+        ) : (
+          <>
+            <CatalogueInsightCard datasets={filteredDatasets} facet="project" kind="donut" colors={projectColors} />
+            <CatalogueInsightCard datasets={filteredDatasets} facet="keyword" kind="bar" />
+          </>
+        )}
+      </Flex>
+    </div>
+  );
+};
+
+export default CatalogueInsights;

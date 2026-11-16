@@ -17,8 +17,7 @@ const VariantInput = ({ field, disabled, mode }: VariantInputProps) => {
             placeholder={field.placeholder}
             disabled={disabled}
             options={mode.options}
-            showSearch={true}
-            optionFilterProp="value"
+            showSearch={{ optionFilterProp: 'value' }}
           />
         )}
       </Form.Item>

@@ -1,17 +1,16 @@
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
-import { Button, Flex, FloatButton, Grid, Layout } from 'antd';
-import { FilterOutlined } from '@ant-design/icons';
-import AboutContent from '@/components/AboutContent';
+import { Alert, FloatButton, Grid, Layout } from 'antd';
+import { ErrorBoundary, getErrorMessage } from 'react-error-boundary';
+import Loader from '@/components/Loader';
 import SiteHeader from '@/components/SiteHeader';
 import SiteSider from '@/components/SiteSider';
 import SiteFooter from '@/components/SiteFooter';
-import PageHeader from '@/components/PageHeader';
 import PcglFooter from '@/components/Pcgl/PcglFooter';
-import ScopedTitle from '@/components/Scope/ScopedTitle';
+import ScopeHeader from '@/components/Scope/ScopeHeader';
 import { useSelectedScope, useScopeHasData } from '@/features/metadata/hooks';
-import { useIsInCatalogueMode, useSidebarMenuItems } from '@/hooks/navigation';
+import { useIsInCatalogueMode, useSiteMenuItems } from '@/hooks/navigation';
 import { useTitleBreadcrumbItems } from '@/hooks/useTitleBreadcrumbItems';
 import { PCGL_MODE } from '@/config';
 import { BentoRoute } from '@/types/routes';
@@ -28,77 +27,58 @@ const DefaultLayout = () => {
   const { scopeSet, scope } = useSelectedScope();
   const scopeHasData = useScopeHasData();
 
-  const menuItems = useSidebarMenuItems();
+  const [siteHeaderMenuItems, scopeHeaderMenuItems] = useSiteMenuItems();
   const [collapsed, setCollapsed] = useState(true);
 
   const breakpoints = useBreakpoint();
 
-  const isCatalogue = scopeSet && !scope.project && catalogueMode && page === 'overview';
+  const isCatalogue = scopeSet && !scope.project && catalogueMode && page === 'explore';
   const sidebarOverlay = !breakpoints.lg;
   const sidebarOverlayShown = sidebarOverlay && !collapsed;
-  // TODO: enable sidebar with catalogue when catalogue filtering/search is hooked up
-  const sidebarHidden = page !== 'overview' || isCatalogue || (!isCatalogue && !scopeHasData);
+  const sidebarHidden = page !== 'explore' || isCatalogue || (!isCatalogue && !scopeHasData);
 
-  const showSidebarToggle = sidebarOverlay && page === 'overview';
+  const showSidebarToggle = sidebarOverlay && page === 'explore';
 
-  const breadcrumbItems = useTitleBreadcrumbItems();
-  const titleHidden = !isCatalogue && !breadcrumbItems.length && !showSidebarToggle; // ScopedTitle not shown
+  const breadcrumbItems = useTitleBreadcrumbItems(scopeHeaderMenuItems);
+  const scopeHeaderHidden = isCatalogue || (!isCatalogue && !breadcrumbItems.length && !showSidebarToggle);
 
   return (
     <Layout
       id="default-layout"
       className={clsx('sidebar-hidden', `page-${isCatalogue ? 'catalogue' : page}`, {
-        'title-hidden': titleHidden,
+        'scope-header-hidden': scopeHeaderHidden,
       })}
     >
-      <SiteHeader menuItems={menuItems} />
+      <SiteHeader menuItems={siteHeaderMenuItems} />
       <Layout id="content-layout">
-        <PageHeader catalogue={isCatalogue}>
-          {isCatalogue ? (
-            <AboutContent />
-          ) : (
-            <Flex
-              style={{
-                paddingLeft: showSidebarToggle ? undefined : 'var(--content-padding-h)',
-                paddingRight: 'var(--content-padding-h)',
-              }}
-            >
-              {showSidebarToggle && (
-                <Button
-                  id="page-header__sidebar-toggle"
-                  className={sidebarOverlayShown ? 'active' : ''}
-                  icon={<FilterOutlined />}
-                  color="default"
-                  variant="filled"
-                  size="large"
-                  onMouseDown={() => setCollapsed((c) => !c)}
-                />
-              )}
-              <ScopedTitle breadcrumbItems={breadcrumbItems} />
-            </Flex>
-          )}
-        </PageHeader>
+        {!isCatalogue && !scopeHeaderHidden && (
+          <ScopeHeader
+            showSidebarToggle={showSidebarToggle}
+            sidebarOverlayShown={sidebarOverlayShown}
+            onToggleSidebar={() => setCollapsed((c) => !c)}
+            breadcrumbItems={breadcrumbItems}
+            menuItems={scopeHeaderMenuItems}
+          />
+        )}
         <Layout>
-          <Layout>
-            {!sidebarHidden && <SiteSider collapsed={collapsed} overlay={sidebarOverlay} />}
-            {sidebarOverlayShown ? (
-              <div
-                style={{ position: 'fixed', inset: 0, zIndex: 18, backdropFilter: 'blur(10px)' }}
-                onClick={(e) => {
-                  setCollapsed(true);
-                  e.preventDefault();
-                  e.stopPropagation();
-                }}
-                aria-hidden
-              />
-            ) : null}
-            <Content style={{ minHeight: 500 }}>
-              <Outlet />
+          {/* Make sure the hasSider class is precisely synced with our own logic to prevent momentary visual glitch */}
+          <Layout hasSider={!sidebarHidden} className="content-layout-wrapper">
+            {!sidebarHidden && (
+              <SiteSider overlay={sidebarOverlay} open={sidebarOverlayShown} onClose={() => setCollapsed(true)} />
+            )}
+            <Content style={{ minHeight: 'calc(100vh - 210px - var(--scoped-title-height) - var(--header-height))' }}>
+              <ErrorBoundary
+                fallbackRender={({ error }) => <Alert type="error" description={getErrorMessage(error)} />}
+              >
+                <Suspense fallback={<Loader />}>
+                  <Outlet />
+                </Suspense>
+              </ErrorBoundary>
             </Content>
           </Layout>
           {PCGL_MODE ? <PcglFooter /> : <SiteFooter />}
-          {/* Overview has its own way of rendering a back-to-top button, so we only render this if we're not on the overview page: */}
-          {page !== BentoRoute.Overview ? (
+          {/* Explore has its own way of rendering a back-to-top button, so we only render this if we're not on the explore page: */}
+          {page !== BentoRoute.Explore ? (
             <FloatButton.BackTop className="float-btn-pos" target={() => document.getElementById('content-layout')!} />
           ) : null}
         </Layout>

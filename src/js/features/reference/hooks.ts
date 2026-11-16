@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useAuthorizationHeader } from 'bento-auth-js';
+import { useAuthorizationHeader } from '@/features/auth/hooks';
 import { referenceGenomesUrl } from '@/constants/configConstants';
 import { useAppSelector } from '@/hooks';
 import { RequestStatus } from '@/types/requests';

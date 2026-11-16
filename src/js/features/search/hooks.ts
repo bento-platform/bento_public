@@ -1,6 +1,11 @@
-import { useMemo } from 'react';
-import { useAppSelector } from '@/hooks';
+import { useCallback, useMemo } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useAppSelector, useLanguage, useTranslationFn } from '@/hooks';
 import { useScopeQueryData } from '@/hooks/censorship';
+import { useHaveEntityDataForField } from '@/hooks/useHaveEntityData';
+import type { ActiveFilterPill } from '@/components/Util/ActiveFilterTags';
+import { formatDateFilterValue } from '@/utils/rangeFilterUtils';
+import { WAITING_STATES } from '@/constants/requests';
 import {
   ENTITY_QUERY_PARAM,
   TABLE_PAGE_QUERY_PARAM,
@@ -9,9 +14,39 @@ import {
   TEXT_QUERY_TYPE_PARAM,
 } from './constants';
 import type { QueryParamEntries, SearchFieldAndOptions } from './types';
-import { bentoKatsuEntityToResultsDataEntity, filtersStateToQueryParamEntries } from './utils';
+import {
+  bentoKatsuEntityToResultsDataEntity,
+  buildQueryParamsUrl,
+  combineQueryParamsWithoutKey,
+  filtersStateToQueryParamEntries,
+} from './utils';
 
 export const useSearchQuery = () => useAppSelector((state) => state.query);
+
+export const useAvailableChartSections = () => {
+  const { sections } = useSearchQuery();
+  const haveEntityDataForField = useHaveEntityDataForField();
+
+  return useMemo(
+    () =>
+      sections
+        .map((section) => ({
+          ...section,
+          // Filter out chart definitions which use entities without data in the current scope
+          charts: section.charts.filter((c) => haveEntityDataForField(c.field)),
+        }))
+        .filter(({ charts }) => charts.length > 0),
+    [sections, haveEntityDataForField]
+  );
+};
+
+export const useDisplayedChartSections = () => {
+  const availableChartSections = useAvailableChartSections();
+  return useMemo(
+    () => availableChartSections.filter(({ charts }) => charts.findIndex(({ isDisplayed }) => isDisplayed) !== -1),
+    [availableChartSections]
+  );
+};
 
 export const useSearchFilterFields = (): SearchFieldAndOptions[] => {
   const { filterSections } = useSearchQuery();
@@ -56,6 +91,100 @@ export const useSearchQueryParams = (): QueryParamEntries => {
   return useMemo(() => [...filtersStateToQueryParamEntries(filters), ...otherQueryParams], [filters, otherQueryParams]);
 };
 
+/**
+ * Active-filter pills (for display outside the sidebar, e.g. between the About section and the count
+ * cards on the explore page) plus the actions to remove one filter value or clear all filters. Shared
+ * with SearchFilters (the sidebar's own filter-editing form) so both surfaces navigate the URL the same way.
+ */
+export const useActiveFilterPills = (): { pills: ActiveFilterPill[]; clearAll: () => void } => {
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const t = useTranslationFn();
+  const language = useLanguage();
+  const { filters, textQuery } = useSearchQuery();
+  const fields = useSearchFilterFields();
+  const entityAndTextQueryParams = useEntityAndTextQueryParams();
+
+  const clearAll = useCallback(() => {
+    const url = buildQueryParamsUrl(
+      pathname,
+      // Filter out text query and table page from query params if set when clearing all filters, as we may also be
+      // clearing a text query (and either way, the page will be invalid.)
+      entityAndTextQueryParams.filter((e) => e[0] !== TEXT_QUERY_PARAM && e[0] !== TABLE_PAGE_QUERY_PARAM)
+    );
+    navigate(url, { replace: true });
+  }, [pathname, entityAndTextQueryParams, navigate]);
+
+  const removeFilterValue = useCallback(
+    (field: string, value: string) => {
+      const oldValue = filters[field];
+      const remaining = Array.isArray(oldValue) ? oldValue.filter((v) => v !== value) : [];
+      const resetPage = entityAndTextQueryParams.find(([k, _]) => k === TABLE_PAGE_QUERY_PARAM)
+        ? ([[TABLE_PAGE_QUERY_PARAM, '0']] as QueryParamEntries)
+        : [];
+
+      if (Array.isArray(oldValue) && remaining.length > 0) {
+        // Keep the field, drop just this one value.
+        const existingFiltersQP = filtersStateToQueryParamEntries(filters, true).filter(
+          ([k, v]) => k !== field || remaining.includes(v)
+        );
+        const url = buildQueryParamsUrl(pathname, [...existingFiltersQP, ...entityAndTextQueryParams, ...resetPage]);
+        navigate(url, { replace: true });
+        return;
+      }
+
+      // Single value, or the last remaining array value: drop the field entirely.
+      const filtersStateAsQueryParams = filtersStateToQueryParamEntries(filters, true);
+      const url = buildQueryParamsUrl(
+        pathname,
+        combineQueryParamsWithoutKey(filtersStateAsQueryParams, [...entityAndTextQueryParams, ...resetPage], [field])
+      );
+      navigate(url, { replace: true });
+    },
+    [filters, entityAndTextQueryParams, pathname, navigate]
+  );
+
+  const clearTextQuery = useCallback(() => {
+    const filtersQP = filtersStateToQueryParamEntries(filters, true);
+    const resetPage = entityAndTextQueryParams.find(([k, _]) => k === TABLE_PAGE_QUERY_PARAM)
+      ? ([[TABLE_PAGE_QUERY_PARAM, '0']] as QueryParamEntries)
+      : [];
+    const url = buildQueryParamsUrl(
+      pathname,
+      combineQueryParamsWithoutKey(
+        filtersQP,
+        [...entityAndTextQueryParams, ...resetPage],
+        [TEXT_QUERY_PARAM, TEXT_QUERY_TYPE_PARAM]
+      )
+    );
+    navigate(url, { replace: true });
+  }, [filters, entityAndTextQueryParams, pathname, navigate]);
+
+  const pills = useMemo(() => {
+    const p: ActiveFilterPill[] = [];
+    if (textQuery) {
+      p.push({ key: '__text_query__', facetLabel: 'search.text_search', label: textQuery, onClose: clearTextQuery });
+    }
+    Object.entries(filters).forEach(([field, value]) => {
+      if (value === null || value === undefined) return;
+      const facetDef = fields.find((f) => f.id === field)?.definition;
+      const facetLabel = facetDef?.title ?? field;
+      const isDate = facetDef?.datatype === 'date';
+      const values = Array.isArray(value) ? value : value ? [value] : [];
+      values.forEach((v) => {
+        if (!v) return;
+        // Date filter values are wire-format bin keys/ranges (e.g. "2021-01", "[2021-01-01,2021-01-31]") — format
+        // them the same way SearchFilterInput does for the sidebar, so pills show human-readable, localized labels.
+        const label = isDate ? (v === 'missing' ? t(v) : formatDateFilterValue(v, language)) : t(v);
+        p.push({ key: `${field}-${v}`, facetLabel, label, onClose: () => removeFilterValue(field, v) });
+      });
+    });
+    return p;
+  }, [textQuery, clearTextQuery, filters, fields, removeFilterValue, t, language]);
+
+  return { pills, clearAll };
+};
+
 export const useSearchableFields = () => {
   /**
    * Hook which calculates a set of searchable fields (which share IDs with charts), which can be used, for example, to
@@ -66,4 +195,12 @@ export const useSearchableFields = () => {
     () => new Set(filterSections.flatMap((section) => section.fields).map((field) => field.id)),
     [filterSections]
   );
+};
+
+export const useIsSearchLoading = () => {
+  const {
+    discoveryStatus,
+    wholeScopeData: { status: wholeScopeStatus },
+  } = useSearchQuery();
+  return WAITING_STATES.includes(discoveryStatus) || WAITING_STATES.includes(wholeScopeStatus);
 };

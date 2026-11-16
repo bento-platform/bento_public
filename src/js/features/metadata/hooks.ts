@@ -1,20 +1,20 @@
 import { useMemo } from 'react';
 import { makeProjectDatasetResource, makeProjectResource, type Resource, RESOURCE_EVERYTHING } from 'bento-auth-js';
 import { useAppSelector } from '@/hooks';
+import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type { Project } from '@/types/metadata';
 import type { Dataset } from '@/types/dataset';
-import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
+import { nonEmptyCounts } from '@/utils/counts';
 
 export const useMetadata = () => useAppSelector((state) => state.metadata);
 
 export const useSelectedScope = () => useMetadata().selectedScope;
-export const useSelectedScopeAsResource = (): Resource => {
-  const { scope } = useSelectedScope();
-
+export const scopeToResource = (scope: DiscoveryScope): Resource => {
   if (!scope.project) return RESOURCE_EVERYTHING;
   if (!scope.dataset) return makeProjectResource(scope.project);
   return makeProjectDatasetResource(scope.project, scope.dataset);
 };
+export const useSelectedScopeAsResource = (): Resource => scopeToResource(useSelectedScope().scope);
 
 export const useSelectedProject = (): Project | undefined => {
   const {
@@ -57,20 +57,16 @@ export const useSelectedScopeTitles = () => {
   );
 };
 
-const _nonEmptyCounts = (c: KatsuEntityCountsOrBooleans | null | undefined) => {
-  const values = Object.values(c ?? {});
-  if (values.length === 0) return false;
-  return values.some((c) => !!c);
-};
-
 export const useScopeHasData = () => {
+  const { projects } = useMetadata();
   const selectedProject = useSelectedProject();
   const selectedDataset = useSelectedDataset();
 
   return useMemo(
     () =>
-      (!!selectedDataset && _nonEmptyCounts(selectedDataset.counts_by_entity)) ||
-      (!!selectedProject && !selectedDataset && _nonEmptyCounts(selectedProject.counts)),
-    [selectedProject, selectedDataset]
+      (!!selectedDataset && nonEmptyCounts(selectedDataset.counts_by_entity)) ||
+      (!!selectedProject && !selectedDataset && nonEmptyCounts(selectedProject.counts)) ||
+      (!selectedProject && projects.some((p) => nonEmptyCounts(p.counts))),
+    [selectedProject, selectedDataset, projects]
   );
 };

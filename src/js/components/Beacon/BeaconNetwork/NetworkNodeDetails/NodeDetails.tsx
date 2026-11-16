@@ -38,7 +38,9 @@ const NodeDetails = ({ beacon, response }: NodeDetailsProps) => {
     />
   );
 
-  const orgName = <h4 style={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>{organization.name}</h4>;
+  const orgName = (
+    <h2 style={{ fontSize: '1em', textOverflow: 'ellipsis', overflow: 'hidden' }}>{organization.name}</h2>
+  );
 
   const logoAndName = (
     <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 16 }}>
@@ -75,11 +77,11 @@ const NodeDetails = ({ beacon, response }: NodeDetailsProps) => {
       }
       actions={[
         <Link key="homepage" href={organization.welcomeUrl} target="_blank" style={LINK_STYLE}>
-          <LinkOutlined style={{ marginRight: '5px' }} />
+          <LinkOutlined aria-hidden style={{ marginRight: '5px' }} />
           {t('beacon.home_page')}
         </Link>,
         <Link key="bentolink" href={bentoUrl} target="_blank" style={LINK_STYLE}>
-          <LinkOutlined style={{ marginRight: '5px' }} />
+          <LinkOutlined aria-hidden style={{ marginRight: '5px' }} />
           Bento
         </Link>,
       ]}

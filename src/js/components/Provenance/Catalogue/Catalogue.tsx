@@ -1,32 +1,144 @@
-import { Space } from 'antd';
-import { SPACE_ITEM_WIDTH_100P_STYLES } from '@/constants/common';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import clsx from 'clsx';
+import { Divider, Empty, Button, Flex, Grid, Typography } from 'antd';
+
+import { PCGL_MODE } from '@/config';
 import { useMetadata } from '@/features/metadata/hooks';
-import { useSmallScreen } from '@/hooks/useResponsiveContext';
-import Error from '@Util/Error';
-import CatalogueCard from './CatalogueCard';
+import { useCatalogueFilter, useCatalogueState } from '@/features/catalogue/hooks';
+import { useAppDispatch, useLanguage } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
+import { setProjectColors } from '@/features/catalogue/catalogue.store';
+import { useCatalogueUrlSync, useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
+import { assignColors } from '@/features/catalogue/utils';
 import { RequestStatus } from '@/types/requests';
+import Error from '@Util/Error';
+import CatalogueBanner from './CatalogueBanner';
+import CatalogueRail from './CatalogueRail';
+import CatalogueToolbar from './CatalogueToolbar';
+import CatalogueInsights from './CatalogueInsights';
+import Dataset from '@/components/Provenance/Dataset';
+
+const { useBreakpoint } = Grid;
 
 const Catalogue = () => {
-  const isSmallScreen = useSmallScreen();
+  useCatalogueUrlSync();
+
+  const t = useTranslationFn();
+  const dispatch = useAppDispatch();
+  const { clearAll } = useCatalogueUrlActions();
   const { projects, projectsStatus, projectsError } = useMetadata();
+  const { view, insightsOpen } = useCatalogueState();
+
+  // Below the `lg` breakpoint the rail becomes a slide-over drawer instead of an inline sticky column,
+  // via the same overlay/open Sidebar props SiteSider uses for the Search feature's sidebar.
+  const breakpoints = useBreakpoint();
+  const railOverlay = !breakpoints.lg;
+  const singleCol = view !== 'grid' || !breakpoints.md;
+  const [railOpen, setRailOpen] = useState(false);
+
+  const allDatasets = useMemo(
+    () => projects.flatMap((p) => (p.datasets ?? []).map((d) => ({ dataset: d, project: p }))),
+    [projects]
+  );
+
+  // TODO: fetch per-dataset permissions here (and pass them to <Dataset permissionsData={...} />) using a specific
+  //  evaluate matrix on only the desired permissions (e.g. download:data) instead of fetching all permissions, and only
+  //  when a feature needs them (APPLY_FOR_ACCESS_URL set or PCGL_MODE on). Previously:
+  // const datasetResources = useMemo(
+  //   () => allDatasets.map(({ project, dataset }) => ({ project: project.identifier, dataset: dataset.identifier })),
+  //   [allDatasets]
+  // );
+  // const datasetPermissions = useResourcesPermissionsWrapper(datasetResources);
+  // ...and in the <Dataset> props:
+  // permissionsData={datasetPermissions[makeResourceKey({ project: project.identifier, dataset: dataset.identifier })]}
+
+  const { filtered, facetOptions } = useCatalogueFilter(allDatasets);
+
+  // Clear filters on language change
+  const language = useLanguage();
+  const prevLanguageRef = useRef(language);
+  useEffect(() => {
+    if (prevLanguageRef.current !== language) {
+      prevLanguageRef.current = language;
+      clearAll();
+    }
+  }, [language, clearAll]);
+
+  useEffect(() => {
+    // In PCGL mode, assign colours to programs instead of projects for now.
+    const projectNames = PCGL_MODE
+      ? [...(new Set(allDatasets.map(({ dataset }) => dataset.program_name).filter((pn) => !!pn)) as Set<string>)]
+      : [...new Set(allDatasets.map(({ project }) => project.title))];
+    dispatch(setProjectColors(assignColors(projectNames)));
+  }, [allDatasets, dispatch]);
+
   return (
-    <Space
-      align="center"
-      direction="vertical"
-      size={isSmallScreen ? 'small' : 'large'}
-      className="w-full"
-      /* Double-up on space between content + footer since the solid colour block (with PCGL footer) looks congested
-         otherwise: */
-      style={{ paddingBottom: 'var(--content-padding-v)' }}
-      styles={SPACE_ITEM_WIDTH_100P_STYLES}
-    >
-      {projectsStatus === RequestStatus.Rejected ? (
-        <Error message="project_fetch" description={projectsError || undefined} />
-      ) : null}
-      {projects.map((project) => (
-        <CatalogueCard project={project} key={project.identifier} />
-      ))}
-    </Space>
+    <div className="pb-content max-w-catalogue mx-auto w-full">
+      {projectsStatus === RequestStatus.Rejected && (
+        <Error message="project_fetch" description={projectsError || undefined} className="mb-4" />
+      )}
+
+      {/* Banner */}
+      <div className="mb-4">
+        <CatalogueBanner datasets={allDatasets} />
+      </div>
+
+      {/* Body: rail + main */}
+      <Flex gap={20} align="flex-start">
+        {/* Left: facet rail */}
+        <CatalogueRail
+          totalCount={filtered.length}
+          facetOptions={facetOptions}
+          overlay={railOverlay}
+          open={!railOverlay || railOpen}
+          onClose={() => setRailOpen(false)}
+        />
+
+        {/* Right: toolbar + insights + grid */}
+        <div className="flex-1 min-w-0">
+          <CatalogueToolbar
+            filteredCount={filtered.length}
+            showFiltersButton={railOverlay}
+            isMobile={!breakpoints.md}
+            onOpenFilters={() => setRailOpen(true)}
+          />
+
+          {insightsOpen && (
+            <div className="catalogue-insights-container">
+              <CatalogueInsights filteredDatasets={filtered} />
+            </div>
+          )}
+
+          {/* DATASETS separator */}
+          <Flex align="center" gap={8} className="catalogue-datasets-separator">
+            <Typography.Title level={2} className="catalogue-section-label">
+              {t('entities.dataset_other')}
+            </Typography.Title>
+            <Divider className="m-0 flex-1 min-w-0" />
+          </Flex>
+
+          {filtered.length === 0 ? (
+            <Empty description={t('catalogue.datasets.empty')}>
+              <Button type="primary" onClick={clearAll}>
+                {t('catalogue.datasets.reset_filters')}
+              </Button>
+            </Empty>
+          ) : (
+            <div className={clsx('catalogue-grid', singleCol && 'catalogue-grid--single-col')}>
+              {filtered.map(({ dataset, project }) => (
+                <Dataset
+                  key={dataset.identifier}
+                  format="card"
+                  parentProjectID={project.identifier}
+                  dataset={dataset}
+                  project={project}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </Flex>
+    </div>
   );
 };
 

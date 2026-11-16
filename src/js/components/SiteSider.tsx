@@ -1,39 +1,74 @@
-import clsx from 'clsx';
-import { Divider, Input, Layout, Typography } from 'antd';
-import { FormOutlined } from '@ant-design/icons';
-import SearchForm from '@/components/Search/SearchForm';
-import { useSelectedScope } from '@/features/metadata/hooks';
-import { useTranslationFn } from '@/hooks';
+import { useCallback } from 'react';
+import { Button, Flex, Grid, Typography } from 'antd';
+import { AppstoreAddOutlined, CloseOutlined, PieChartOutlined } from '@ant-design/icons';
 
-const SiteSider = ({ collapsed, overlay }: { collapsed: boolean; overlay: boolean }) => {
+import { useAppDispatch, useTranslationFn } from '@/hooks';
+import { useAvailableChartSections } from '@/features/search/hooks';
+import { setManageChartsVisible } from '@/features/ui/ui.store';
+
+import SearchForm from '@/components/Search/SearchForm';
+import Sidebar from '@/components/Sidebar/Sidebar';
+
+const { useBreakpoint } = Grid;
+
+const SiteSider = ({
+  overlay,
+  open,
+  onClose,
+}: {
+  /** Below some breakpoint, the sider renders as a fixed slide-over drawer instead of an inline sticky column. */
+  overlay: boolean;
+  /** Ignored when `overlay` is falsy (the sider is always visible inline). */
+  open: boolean;
+  onClose: () => void;
+}) => {
+  const dispatch = useAppDispatch();
   const t = useTranslationFn();
-  const { scope } = useSelectedScope();
+
+  const breakpoints = useBreakpoint();
+
+  const availableChartSections = useAvailableChartSections();
+
+  const onManageChartsOpen = useCallback(() => dispatch(setManageChartsVisible(true)), [dispatch]);
+
   return (
-    <Layout.Sider
-      width="auto"
-      id="site-sider"
-      className={clsx({ overlay: overlay, collapsed: overlay && collapsed })}
-      style={{
-        minHeight: scope.project ? 'calc(100vh - var(--header-height) - var(--content-scoped-title-height))' : 0,
-      }}
+    <Sidebar
+      className="shadow"
+      id="site-sider__inner"
+      overlay={overlay}
+      open={open}
+      onClose={onClose}
+      footer={
+        breakpoints.lg &&
+        availableChartSections.length > 0 && (
+          <Flex vertical gap={8}>
+            <Button
+              icon={<AppstoreAddOutlined aria-hidden rotate={270} />}
+              onClick={onManageChartsOpen}
+              className="w-full"
+              htmlType="button"
+            >
+              {t('Manage Charts')}
+            </Button>
+            <Typography.Text type="secondary" style={{ fontSize: '0.81rem' }}>
+              {t('explore.manage_charts_help')}
+            </Typography.Text>
+          </Flex>
+        )
+      }
     >
-      <div id="site-sider__inner">
-        {scope.project ? (
-          <>
-            <SearchForm />
-            <Divider className="m-0" />
-          </>
-        ) : (
-          // TODO: hook up catalogue search
-          <>
-            <Typography.Title level={3} className="search-sub-form-title">
-              <FormOutlined /> {t('search.text_search')}
-            </Typography.Title>
-            <Input.Search />
-          </>
-        )}
-      </div>
-    </Layout.Sider>
+      {overlay && (
+        <div className="site-sider__header">
+          <Typography.Text>
+            <PieChartOutlined aria-hidden /> {t('Explore')}
+          </Typography.Text>
+          <button className="sidebar__close focus-ring" onClick={onClose} aria-label={t('catalogue.rail.close')}>
+            <CloseOutlined aria-hidden />
+          </button>
+        </div>
+      )}
+      <SearchForm />
+    </Sidebar>
   );
 };
 

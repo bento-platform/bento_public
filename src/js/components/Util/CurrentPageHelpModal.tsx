@@ -18,6 +18,8 @@ const CurrentPageHelpModal = (props: CurrentPageHelpModalProps) => {
   return (
     <Modal {...props} title={`${t('Help for')} '${t(currentTitle)}'`} footer={null} width={960}>
       {pageHelp.map((para, pk) => (
+        // Deliberate - page help is an ordered immutable array.
+        // eslint-disable-next-line react-x/no-array-index-key
         <Paragraph key={pk} className={pk === pageHelp.length - 1 ? 'mb-0' : ''}>
           {para}
         </Paragraph>

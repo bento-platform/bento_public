@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { Button, Empty, Space, Tabs } from 'antd';
+import { Button, Empty, Space, Tabs, Typography } from 'antd';
 import { CompressOutlined, DownloadOutlined, ExpandOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -33,25 +33,27 @@ const PhenopacketView = () => {
 
   const { data: phenopacket, status, isAuthorized } = usePhenopacketData(packetId ?? '');
 
-  const { handleTabChange, activeTabs, tabs, tabContent, collapseRef } = usePhenopacketTabs(phenopacket);
+  const { handleTabChange, activeTabs, tabs, tabContent, tabsReady, collapseRef } = usePhenopacketTabs(phenopacket);
 
-  const defaultTab = useMemo(() => ({ key: activeTabs[0], label: tabs[0]?.label }), [activeTabs, tabs]);
+  // derive primitives instead of an object to avoid recreating defaultTab each render
+  const defaultTabKey = useMemo(() => activeTabs[0], [activeTabs]);
+  const defaultTabLabel = useMemo(() => tabs[0]?.label, [tabs]);
 
-  const [activeKey, setActiveKey] = useState<TabKeys>(defaultTab.key);
+  const [activeKey, setActiveKey] = useState<TabKeys>(defaultTabKey);
 
-  const notificationFillIns = useMemo(() => ({ endpoint: tab, target: defaultTab.label }), [tab, defaultTab.label]);
+  const notificationFillIns = useMemo(() => ({ endpoint: tab, target: defaultTabLabel }), [tab, defaultTabLabel]);
 
   const invalidEndpointRedirectNotification = useCallback(() => {
     api.error({
-      message: t('phenopacket_view.invalid_endpoint_title', notificationFillIns),
-      description: t('phenopacket_view.invalid_endpoint_description', notificationFillIns),
+      message: t('navigation.invalid_endpoint_title', notificationFillIns),
+      description: t('navigation.invalid_endpoint_description', notificationFillIns),
     });
   }, [api, t, notificationFillIns]);
 
   const notAvailableRedirectNotification = useCallback(() => {
     api.warning({
-      message: t('phenopacket_view.not_available_title', notificationFillIns),
-      description: t('phenopacket_view.not_available_description', notificationFillIns),
+      message: t('navigation.not_available_title', notificationFillIns),
+      description: t('navigation.not_available_description', notificationFillIns),
     });
   }, [api, t, notificationFillIns]);
 
@@ -76,7 +78,7 @@ const PhenopacketView = () => {
   // Early returns for handling loading/errors
 
   // tab param --> active key handling
-  if (status === RequestStatus.Fulfilled && phenopacket && activeKey !== tab) {
+  if (status === RequestStatus.Fulfilled && phenopacket && tabsReady && activeKey !== tab) {
     if (tab && activeTabs.includes(tab as TabKeys)) {
       setActiveKey(tab as TabKeys);
     } else {
@@ -87,7 +89,7 @@ const PhenopacketView = () => {
         // Otherwise, show an invalid tab notification:
         invalidEndpointRedirectNotification();
       }
-      navigate(`${tab ? '..' : '.'}/${defaultTab.key}`, { relative: 'path', replace: true });
+      navigate(`${tab ? '..' : '.'}/${defaultTabKey}`, { relative: 'path', replace: true });
       // Temporary loading render while navigation occurs. This navigation is to a valid key (the default), so we won't
       // get any more error notifications after this navigation occurs.
       return <Loader fullHeight={false} />;
@@ -116,7 +118,7 @@ const PhenopacketView = () => {
               collapseRef.current?.expandAll();
             }}
             size="small"
-            icon={<ExpandOutlined />}
+            icon={<ExpandOutlined aria-hidden />}
           >
             {!isSmallScreen && t('general.expand_all')}
           </Button>
@@ -125,7 +127,7 @@ const PhenopacketView = () => {
               collapseRef.current?.collapseAll();
             }}
             size="small"
-            icon={<CompressOutlined />}
+            icon={<CompressOutlined aria-hidden />}
           >
             {!isSmallScreen && t('general.collapse_all')}
           </Button>
@@ -133,7 +135,7 @@ const PhenopacketView = () => {
       );
     } else if (activeKey === TabKeys.PHENOPACKET_JSON) {
       return (
-        <Button size="small" icon={<DownloadOutlined />} onClick={savePhenopacket}>
+        <Button size="small" icon={<DownloadOutlined aria-hidden />} onClick={savePhenopacket}>
           {t('file.download')}
         </Button>
       );
@@ -150,6 +152,10 @@ const PhenopacketView = () => {
         onChange={handleTabChange}
         tabBarExtraContent={tabBarExtra}
       />
+      {/* Tab labels can't contain headings (role=tab), so the active tab's panel gets a heading for the outline. */}
+      <Typography.Title level={2} className="visually-hidden">
+        {tabs.find((tab) => tab.key === activeKey)?.label}
+      </Typography.Title>
       {tabContent[activeKey]}
     </div>
   );

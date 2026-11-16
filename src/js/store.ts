@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import type { ToolkitStore } from '@reduxjs/toolkit/dist/configureStore';
 
-import type { OIDCSliceState } from 'bento-auth-js';
-import { LS_OPENID_CONFIG_KEY, AuthReducer as auth, OIDCReducer as openIdConfiguration } from 'bento-auth-js';
+import auth from '@/features/auth/authSlice';
 
+import { LOCALSTORAGE_UI_SETTINGS_KEY } from '@/constants/ui';
+import catalogueReducer from '@/features/catalogue/catalogue.store';
 import clinPhenReducer from '@/features/clinPhen/clinPhen.store';
 import configReducer from '@/features/config/config.store';
 import contentReducer from '@/features/content/content.store';
@@ -14,24 +14,14 @@ import beaconReducer from './features/beacon/beacon.store';
 import beaconNetworkReducer from './features/beacon/network.store';
 import metadataReducer from '@/features/metadata/metadata.store';
 import reference from '@/features/reference/reference.store';
-import ui from '@/features/ui/ui.store';
-import { getValue, saveValue } from './utils/localStorage';
-
-interface PersistedState {
-  openIdConfiguration?: OIDCSliceState;
-}
-
-const persistedState: PersistedState = {};
-const persistedOpenIDConfig = getValue(LS_OPENID_CONFIG_KEY, undefined, (value) => typeof value === 'object');
-if (persistedOpenIDConfig) {
-  console.debug('attempting to load OpenID configuration from localStorage');
-  persistedState.openIdConfiguration = persistedOpenIDConfig;
-}
+import igvState from './features/igv/igv.store';
+import ui, { type UIState } from '@/features/ui/ui.store';
+import { saveValue } from './utils/localStorage';
 
 export const store = configureStore({
   reducer: {
     auth,
-    openIdConfiguration,
+    catalogue: catalogueReducer,
     clinPhen: clinPhenReducer,
     config: configReducer,
     content: contentReducer,
@@ -42,9 +32,9 @@ export const store = configureStore({
     beaconNetwork: beaconNetworkReducer,
     metadata: metadataReducer,
     reference,
+    igv: igvState,
     ui,
   },
-  preloadedState: persistedState,
 });
 
 export type RootState = ReturnType<typeof store.getState>;
@@ -61,30 +51,31 @@ export type AppDispatch = typeof store.dispatch;
  * See Redux store.subscribe doc: https://redux.js.org/api/store#subscribelistener
 
  */
-const observeStore = <T>(store: ToolkitStore, select: (state: RootState) => T, onChange: (state: T) => void) => {
+const observeStore = <T>(
+  observedStore: typeof store,
+  select: (state: RootState) => T,
+  onChange: (state: T) => void
+) => {
   let currentState: T;
 
   const handleChange = () => {
-    const nextState = select(store.getState());
+    const nextState = select(observedStore.getState());
     if (nextState !== currentState) {
       currentState = nextState;
       onChange(currentState);
     }
   };
 
-  const unsubscribe = store.subscribe(handleChange);
+  const unsubscribe = observedStore.subscribe(handleChange);
   handleChange();
   return unsubscribe;
 };
 
-// Persist OIDC config on state changes
-observeStore<OIDCSliceState>(
+// Persist UI settings on state changes
+observeStore<UIState>(
   store,
-  (state) => state.openIdConfiguration,
+  (state) => state.ui,
   (currentState) => {
-    const { data, expiry, isFetching } = currentState;
-    if (data && expiry && !isFetching) {
-      saveValue(LS_OPENID_CONFIG_KEY, { data, expiry, isFetching });
-    }
+    saveValue(LOCALSTORAGE_UI_SETTINGS_KEY, currentState.settings);
   }
 );

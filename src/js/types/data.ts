@@ -5,6 +5,7 @@ import type { Field } from '@/types/discovery/fieldDefinition';
 export type Sections = Section[];
 
 export type Section = {
+  sectionId: string;
   sectionTitle: string;
   charts: ChartDataField[];
 };
@@ -18,6 +19,7 @@ This represents a chart's "state", since it also has the isDisplayed property - 
 export interface ChartDataField {
   id: string; // taken from field definition
   data: ChartData[];
+  dataContext?: ChartData[]; // Scope-level data context
   field: Field;
   chartConfig: ChartConfig;
   // display options:

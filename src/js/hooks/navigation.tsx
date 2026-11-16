@@ -1,16 +1,27 @@
 import { type ReactNode, useCallback, useMemo } from 'react';
 import { type NavigateOptions, useLocation, useNavigate } from 'react-router-dom';
-import { BookOutlined, PieChartOutlined, ShareAltOutlined, SolutionOutlined } from '@ant-design/icons';
+import {
+  BookOutlined,
+  CloseCircleOutlined,
+  PieChartOutlined,
+  ShareAltOutlined,
+  SolutionOutlined,
+} from '@ant-design/icons';
 
 import BeaconLogo from '@/components/Beacon/BeaconLogo';
 
+import { catalogueStateToQueryParams } from '@/features/catalogue/useCatalogueUrlSync';
+import { useCatalogueState } from '@/features/catalogue/hooks';
 import { FORCE_CATALOGUE } from '@/config';
-import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
+import { useMetadata, useScopeHasData, useSelectedScope } from '@/features/metadata/hooks';
 import { type DiscoveryScope, selectScope } from '@/features/metadata/metadata.store';
+import { useDatasetBackTargetState } from '@/features/ui/hooks';
+import type { DatasetBackTarget } from '@/features/ui/ui.store';
 import type { MenuItem } from '@/types/navigation';
 import { BentoRoute } from '@/types/routes';
 import { useAppDispatch, useLanguage, useTranslationFn } from '@/hooks';
-import { langAndScopeSelectionToUrl, scopeToUrl } from '@/utils/router';
+import { buildQueryParamsUrl } from '@/utils/queryParams';
+import { getCurrentPage, langAndScopeSelectionToUrl, scopeToUrl } from '@/utils/router';
 
 /** Prefixes a path with the currently-selected i18n language. */
 export const useLangPrefixedUrl = (path: string): string => {
@@ -25,6 +36,27 @@ export const useNavigateToRoot = () => {
   const navigate = useNavigate();
   const rootUrl = useLangPrefixedUrl('');
   return useCallback(() => navigate(rootUrl), [navigate, rootUrl]);
+};
+
+/**
+ * Like useNavigateToRoot, but for "back to catalogue" links: rebuilds the catalogue's query string
+ * (facet filters, search, sort, view) from its Redux state, since this is a fresh navigation rather
+ * than a browser-history pop and would otherwise land on the catalogue with no filters applied.
+ *
+ * Dispatches the blank scope synchronously before navigating, same as useNavigateToScope: otherwise
+ * ScopedRoute's URL/scope reconciliation effect briefly sees the *old* (dataset/project) scope next to
+ * the new blank-scope URL, decides they mismatch, and replaces the URL back to the old scoped path -
+ * clobbering the restored query string.
+ */
+export const useNavigateToCatalogue = () => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const rootUrl = useLangPrefixedUrl('');
+  const { q, sets, sort, view } = useCatalogueState();
+  return useCallback(() => {
+    dispatch(selectScope({}));
+    navigate(buildQueryParamsUrl(rootUrl, catalogueStateToQueryParams({ q, sets, sort, view })));
+  }, [dispatch, navigate, rootUrl, q, sets, sort, view]);
 };
 
 /**
@@ -49,6 +81,35 @@ export const useNavigateToScope = () => {
       navigate(scopeToUrl(newScope, language, suffix, fixedProjectAndDataset), navigateOptions);
     },
     [dispatch, navigate, language]
+  );
+};
+
+/** Where the selected dataset scope was entered from, if the user got here by clicking one of its dataset cards. */
+export const useDatasetBackTarget = (): DatasetBackTarget | undefined => {
+  const { scope } = useSelectedScope();
+  const target = useDatasetBackTargetState();
+  return scope.dataset && target?.dataset === scope.dataset ? target : undefined;
+};
+
+/**
+ * Navigates to where the selected dataset scope was entered from (see useDatasetBackTarget), rebuilding that page's
+ * URL from the search / filters held in Redux.
+ */
+export const useNavigateToDatasetBackTarget = () => {
+  const navigateToCatalogue = useNavigateToCatalogue();
+  const navigateToScope = useNavigateToScope();
+  return useCallback(
+    (target: DatasetBackTarget) => {
+      if (target.origin === 'catalogue') {
+        navigateToCatalogue();
+      } else {
+        navigateToScope(
+          { project: target.project },
+          buildQueryParamsUrl(BentoRoute.Explore, target.exploreQueryParams)
+        );
+      }
+    },
+    [navigateToCatalogue, navigateToScope]
   );
 };
 
@@ -89,35 +150,48 @@ export const useGetRouteTitleAndIcon = () => {
 
   // Use location for catalogue page detection instead of selectedProject, since it gives us faster UI rendering at the
   // cost of only being wrong with a redirect edge case (and being slightly more brittle).
-  const overviewIsCatalogue = !location.pathname.includes('/p/') && !location.pathname.includes('/d/') && catalogueMode;
+  const exploreIsCatalogue = !location.pathname.includes('/p/') && !location.pathname.includes('/d/') && catalogueMode;
 
   return useCallback(
     (routeId: string): [string, ReactNode] => {
-      /* eslint-disable react/jsx-key */
+      // Using arrays as tuples here; the icons do not actually need a key since we aren't rendering a list.Ω
+      /* eslint-disable react/jsx-key, react-x/no-missing-key */
       switch (routeId) {
-        case BentoRoute.Overview:
-          return overviewIsCatalogue ? ['Catalogue', <BookOutlined />] : ['Overview', <PieChartOutlined />];
-        case BentoRoute.Provenance:
-          return ['Provenance', <SolutionOutlined />];
+        case BentoRoute.Explore:
+          return exploreIsCatalogue
+            ? ['Catalogue', <BookOutlined aria-hidden />]
+            : ['Explore', <PieChartOutlined aria-hidden />];
+        case BentoRoute.About:
+          return ['About', <SolutionOutlined aria-hidden />];
         case BentoRoute.Beacon:
-          return ['Beacon', <BeaconLogo />];
+          return ['Beacon', <BeaconLogo aria-hidden />];
         case BentoRoute.BeaconNetwork:
-          return ['Beacon Network', <ShareAltOutlined />];
+          return ['Beacon Network', <ShareAltOutlined aria-hidden />];
         case BentoRoute.Phenopackets:
-          return ['entities.phenopacket_other', <SolutionOutlined />];
+          return ['entities.phenopacket_other', <SolutionOutlined aria-hidden />];
+        case BentoRoute.NotFound: // should not be used, but not unknown
+          return ['errors.page_not_found', <CloseCircleOutlined aria-hidden />];
         default:
           console.error('Unknown page', routeId);
           return ['', null];
       }
       /* eslint-enable react/jsx-key */
     },
-    [overviewIsCatalogue]
+    [exploreIsCatalogue]
   );
 };
 
-export const useSidebarMenuItems = (): MenuItem[] => {
+/**
+ * Hook returning a 'tuple' of [site header menu items, scope header menu items]. Menu item arrays with only one entry
+ * should not be displayed by the UI.
+ */
+export const useSiteMenuItems = (): [MenuItem[], MenuItem[]] => {
   const t = useTranslationFn();
-  const { fixedProject, scope } = useSelectedScope();
+  const { fixedProject, fixedDataset, scope } = useSelectedScope();
+  const location = useLocation();
+  const page = getCurrentPage(location);
+
+  const scopeHasData = useScopeHasData();
 
   const createMenuItem = useCallback(
     (key: string, label: string, icon?: ReactNode, children?: MenuItem[]): MenuItem => ({
@@ -132,16 +206,31 @@ export const useSidebarMenuItems = (): MenuItem[] => {
   const getRouteTitleAndIcon = useGetRouteTitleAndIcon();
 
   return useMemo(() => {
-    const items = [createMenuItem(BentoRoute.Overview, ...getRouteTitleAndIcon(BentoRoute.Overview))];
+    // Serves weird overloaded purpose as both catalogue and data explore route:
+    const exploreItem = createMenuItem(BentoRoute.Explore, ...getRouteTitleAndIcon(BentoRoute.Explore));
 
-    if (BentoRoute.Beacon) {
-      items.push(createMenuItem(BentoRoute.Beacon, ...getRouteTitleAndIcon(BentoRoute.Beacon)));
+    const topBarItems: MenuItem[] = [exploreItem];
+    const scopeItems: MenuItem[] = [exploreItem];
+
+    const putInTopBar = fixedDataset || (fixedProject && !scope.dataset) || !scope.project;
+
+    if (page !== BentoRoute.Phenopackets && (page !== BentoRoute.BeaconNetwork || putInTopBar)) {
+      const itemsRef = putInTopBar ? topBarItems : scopeItems;
+
+      if (BentoRoute.Beacon && scopeHasData) {
+        itemsRef.push(createMenuItem(BentoRoute.Beacon, ...getRouteTitleAndIcon(BentoRoute.Beacon)));
+      }
+
+      // TODO: can enable for project if we get a more extensive project model
+      if (scope.dataset) {
+        itemsRef.push(createMenuItem(BentoRoute.About, ...getRouteTitleAndIcon(BentoRoute.About)));
+      }
     }
 
-    if (BentoRoute.BeaconNetwork && (!scope.project || (scope.project && fixedProject))) {
-      items.push(createMenuItem(BentoRoute.BeaconNetwork, ...getRouteTitleAndIcon(BentoRoute.BeaconNetwork)));
+    if (BentoRoute.BeaconNetwork && putInTopBar) {
+      topBarItems.push(createMenuItem(BentoRoute.BeaconNetwork, ...getRouteTitleAndIcon(BentoRoute.BeaconNetwork)));
     }
 
-    return items;
-  }, [getRouteTitleAndIcon, createMenuItem, scope, fixedProject]);
+    return (scopeItems.length > 1 ? [[], scopeItems] : [topBarItems, []]) as [MenuItem[], MenuItem[]];
+  }, [getRouteTitleAndIcon, createMenuItem, scope, fixedProject, fixedDataset, scopeHasData, page]);
 };

@@ -1,8 +1,5 @@
 import type { ReactNode } from 'react';
 import type { Phenopacket } from '@/types/clinPhen/phenopacket';
-import type { Biosample } from '@/types/clinPhen/biosample';
-import type { Experiment } from '@/types/clinPhen/experiments/experiment';
-import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
 
 import SubjectView from './SubjectView';
 import BiosampleView from './BiosampleView';
@@ -17,6 +14,7 @@ import ExperimentResultView from '@/components/ClinPhen/ExperimentDisplay/Experi
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
 
 import { objectToBoolean } from '@/utils/boolean';
+import { phenopacketExperiments, phenopacketExperimentResults } from '@/utils/experiments';
 
 export type SectionKey =
   | 'subject'
@@ -33,6 +31,9 @@ export type SectionKey =
 export type SectionSpec = {
   /** translation title label */
   titleTranslationKey: string;
+  /** whether this section renders single items differently (with a detail view) - also means we use use itemCount for
+   *  title pluralization */
+  renderSingleItemDetail?: boolean;
   /** list item count (optional) */
   itemCount?: (p: Phenopacket) => number | undefined;
   /** should this section render? can be a boolean or predicate fn */
@@ -45,24 +46,6 @@ export type SectionSpec = {
 
 const has = <T,>(x?: T[] | null) => Array.isArray(x) && x.length > 0;
 
-const phenopacketExperiments = (p: Phenopacket): Experiment[] =>
-  (p.biosamples ?? []).flatMap((b: Biosample) => b?.experiments ?? []);
-
-const phenopacketExperimentResults = (p: Phenopacket): ExperimentResult[] => {
-  const experimentResults: Record<number, ExperimentResult> = {};
-
-  phenopacketExperiments(p).forEach((e: Experiment) => {
-    (e.experiment_results ?? []).forEach((er: ExperimentResult) => {
-      if (!(er.id in experimentResults)) {
-        experimentResults[er.id] = { ...er, experiments: [] };
-      }
-      experimentResults[er.id].experiments?.push(e.id);
-    });
-  });
-
-  return Object.values(experimentResults);
-};
-
 export const SECTION_SPECS: Record<SectionKey, SectionSpec> = {
   subject: {
     titleTranslationKey: 'subject.subject',
@@ -74,7 +57,8 @@ export const SECTION_SPECS: Record<SectionKey, SectionSpec> = {
     order: 0,
   },
   biosamples: {
-    titleTranslationKey: 'entities.biosample_other',
+    titleTranslationKey: 'entities.biosample',
+    renderSingleItemDetail: true,
     enabled: (p) => has(p.biosamples),
     itemCount: (p) => p.biosamples?.length,
     render: (p) => <BiosampleView biosamples={p.biosamples!} />,

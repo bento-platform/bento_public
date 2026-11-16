@@ -70,7 +70,7 @@ const MeasurementDetail = ({ measurement, expanded }: { measurement: Measurement
       }
     } else if (measurement.complex_value) {
       return (
-        <Space direction="vertical" size={0}>
+        <Space orientation="vertical" size={0}>
           {complexValueTypedQuantities.map((typedQuantity) => (
             <span key={typedQuantity.id}>
               <OntologyTermComponent term={typedQuantity.type} suffix=":" hideLinkIcon /> {typedQuantity.quantity.value}{' '}

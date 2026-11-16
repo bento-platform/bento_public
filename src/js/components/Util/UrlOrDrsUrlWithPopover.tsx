@@ -84,12 +84,15 @@ const UrlOrDrsUrlWithPopover = ({ url }: { url?: string }) => {
               key: 'access_methods',
               children: (
                 <ul className="m-0 p-0 list-none">
-                  {(record.access_methods ?? []).map((am, idx) => (
-                    <li key={idx}>
-                      <strong>{DRS_ACCESS_METHOD_LABELS[am.type] ?? am.type}:</strong>{' '}
-                      <span style={{ fontSize: 12 }}>{am.access_url?.url ?? am.access_id}</span>
-                    </li>
-                  ))}
+                  {(record.access_methods ?? []).map((am) => {
+                    const access = am.access_url?.url ?? am.access_id;
+                    return (
+                      <li key={`${am.type}-${access}`}>
+                        <strong>{DRS_ACCESS_METHOD_LABELS[am.type] ?? am.type}:</strong>{' '}
+                        <span style={{ fontSize: 12 }}>{access}</span>
+                      </li>
+                    );
+                  })}
                 </ul>
               ),
               isVisible: !!(record.access_methods ?? []).length,

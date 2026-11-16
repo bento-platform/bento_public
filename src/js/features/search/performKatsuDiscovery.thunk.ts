@@ -1,16 +1,14 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios, { type AxiosError } from 'axios';
-import { katsuDiscoveryUrl } from '@/constants/configConstants';
+import { type AxiosError } from 'axios';
+import { STALE_DISCOVERY_REJECTION } from './constants';
 import type { RootState } from '@/store';
 import type { DiscoveryResponseOrMessage } from '@/types/discovery/response';
 import type { DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
 import { RequestStatus } from '@/types/requests';
+import { fetchDiscovery } from '@/features/search/fetchDiscovery';
 import { printAPIError } from '@/utils/error.util';
-import { scopedAuthorizedRequestConfig } from '@/utils/requests';
 import { scopeEqual } from '@/utils/router';
 import { searchQueryParamsFromState } from './utils';
-
-export const STALE_DISCOVERY_REJECTION = 'stale' as const;
 
 export const performKatsuDiscovery = createAsyncThunk<
   [DiscoveryScopeSelection, DiscoveryResponseOrMessage],
@@ -26,9 +24,7 @@ export const performKatsuDiscovery = createAsyncThunk<
     const scopeSelectionAtDispatch = state.metadata.selectedScope;
 
     try {
-      const res = await axios
-        .get(katsuDiscoveryUrl, scopedAuthorizedRequestConfig(state, searchQueryParamsFromState(state.query)))
-        .then((res) => res.data);
+      const res = await fetchDiscovery(state, searchQueryParamsFromState(state.query));
 
       // Scope changed while the request was in flight — discard stale results
       if (!scopeEqual(scopeSelectionAtDispatch.scope, getState().metadata.selectedScope.scope)) {

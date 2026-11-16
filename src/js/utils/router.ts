@@ -8,7 +8,7 @@ export const pathParts = (pathName: string): string[] => pathName.split('/').sli
 
 export const getPathPageIndex = (pathParts: string[]): number => {
   // We can ascertain from the URL structure which item in the path array represents the current "page"
-  // (overview/provenance/etc.)
+  // (explore/provenance/etc.)
   //  /en/about --> ['en', 'about'] --> page is at index 1
   //  /en/p/<uuid>/about --> ['en', 'p', '<uuid>', 'about'] --> page is at index 3
   //  /en/d/<uuid>/about --> ['en', 'd', '<uuid>', 'about'] --> page is at index 3
@@ -23,11 +23,16 @@ export const getCurrentPage = (location?: RouterLocation | Location): string => 
   const validPages = Object.values(BentoRoute);
 
   const pageIdx = getPathPageIndex(pathArray);
+  const pathPage = pathArray[pageIdx];
 
-  if (validPages.includes(pathArray[pageIdx])) {
-    return pathArray[pageIdx];
+  if (pathPage && validPages.includes(pathPage)) {
+    return pathPage;
+  } else if (pathPage === '' || pathPage === undefined) {
+    // '/(p|d)/<uuid>/' or '/(p|d)/<uuid>'
+    return BentoRoute.Explore;
   } else {
-    return BentoRoute.Overview;
+    // quasi-page used to indicate an unknown path
+    return BentoRoute.NotFound;
   }
 };
 

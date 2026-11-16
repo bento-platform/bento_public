@@ -2,7 +2,7 @@ import { Space, Typography } from 'antd';
 import { useTranslationFn } from '@/hooks';
 import { range } from '@/utils/arrays';
 
-const { Title } = Typography;
+const { Text } = Typography;
 
 import { ToolTipText } from './ToolTipText';
 
@@ -12,10 +12,10 @@ const HELP_LINES = 4;
 const VariantsInstructions = () => {
   const t = useTranslationFn();
   return (
-    <Space direction="vertical" style={{ minWidth: '510px' }}>
-      <Title level={4} style={{ color: 'white', marginTop: '10px' }}>
+    <Space orientation="vertical" style={{ minWidth: '510px' }}>
+      <Text strong style={{ display: 'block', color: 'white', marginTop: '10px', fontSize: 20 }}>
         {t('beacon.variants_help_title')}
-      </Title>
+      </Text>
       {range(HELP_LINES).map((x) => (
         <ToolTipText key={x}>{t(`beacon.variants_help_${x + 1}`, { joinArrays: ' ' })}</ToolTipText>
       ))}

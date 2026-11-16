@@ -44,8 +44,8 @@ import {
 } from '@/features/search/query.store';
 
 import { buildQueryParamsUrl, filtersStateToQueryParamEntries, queryParamsWithoutKey } from '@/features/search/utils';
-import { parseDateBinAsRange } from '@/utils/rangeFilterUtils';
 import { getCurrentPage } from '@/utils/router';
+import { performKatsuScopeDiscovery } from '@/features/search/performKatsuScopeDiscovery.thunk';
 
 // Internal type for useSearchRouterAndHandler hook
 type QueryValidationResult = {
@@ -75,6 +75,7 @@ export const useSearchRouterAndHandler = () => {
     filters,
     fieldsStatus: searchFieldsStatus,
     discoveryStatus,
+    wholeScopeData: { status: wholeScopeStatus },
     textQuery,
     textQueryType,
     selectedEntity,
@@ -91,9 +92,7 @@ export const useSearchRouterAndHandler = () => {
     const query = new URLSearchParams(location.search);
 
     const validateFilterQueryParam = ([key, value]: QueryParamEntry):
-      | [undefined, false]
-      | [SearchFieldAndOptions, false]
-      | [SearchFieldAndOptions, true, string] => {
+      [undefined, false] | [SearchFieldAndOptions, false] | [SearchFieldAndOptions, true, string] => {
       const field = filterFields.find((e) => e.id === key);
       if (!field) return [undefined, false];
       // special case for blank value, meaning we should show a field filter with a blank value.
@@ -104,11 +103,13 @@ export const useSearchRouterAndHandler = () => {
         const isComparison = /^([<>]|[≥≤])\s*-?\d+(\.\d+)?$/.test(value);
         return isRange || isComparison ? [field, true, value] : [field, false];
       }
-      // Date fields accept a range string, or a bin label (e.g. "Jan 2026" from a chart click) converted to a range.
+      // Date fields accept a range string, a single-sided comparison, or a raw "yyyy-mm" bin key
+      // (e.g. "2021-01" from a chart click).
       if (queryDataPerm && field.definition.datatype === 'date') {
-        if (/^([[(][^,]+,[^,]+[\])])$/.test(value)) return [field, true, value];
-        const rangeStr = parseDateBinAsRange(value);
-        return rangeStr ? [field, true, rangeStr] : [field, false];
+        const isRange = /^([[(][^,]+,[^,]+[\])])$/.test(value);
+        const isComparison = /^([<>]|[≥≤])\s*\d{4}-\d{2}-\d{2}$/.test(value);
+        const isBinKey = /^\d{4}-\d{2}$/.test(value);
+        return isRange || isComparison || isBinKey ? [field, true, value] : [field, false];
       }
       return field.options.includes(value) ? [field, true, value] : [field, false];
     };
@@ -160,7 +161,7 @@ export const useSearchRouterAndHandler = () => {
   const setSearchUrl = useCallback(
     (filtersState: FiltersState, qp: QueryParamEntries) => {
       // Don't use react-router location here - the goal is to not recreate this function when the path changes.
-      const urlSuffix = buildQueryParamsUrl(BentoRoute.Overview, [
+      const urlSuffix = buildQueryParamsUrl(BentoRoute.Explore, [
         ...filtersStateToQueryParamEntries(filtersState),
         ...qp,
       ]);
@@ -179,7 +180,7 @@ export const useSearchRouterAndHandler = () => {
   // +-------------------------------+
   // Synchronize Redux query params state from URL, or URL from Redux state in some cases.
   useEffect(() => {
-    if (currentPage !== BentoRoute.Overview) return;
+    if (currentPage !== BentoRoute.Explore) return;
 
     // Wait until:
     //  - we have loaded the max. # of query parameters we can query
@@ -191,6 +192,7 @@ export const useSearchRouterAndHandler = () => {
       configStatus !== RequestStatus.Fulfilled ||
       searchFieldsStatus !== RequestStatus.Fulfilled ||
       discoveryStatus === RequestStatus.Pending ||
+      wholeScopeStatus === RequestStatus.Pending ||
       !hasAttemptedQueryDataPerm
     ) {
       return;
@@ -289,8 +291,12 @@ export const useSearchRouterAndHandler = () => {
     // executed in the UI). We then get proper one-way traffic from the URL to the Redux state.
     dispatch(setFilters(validFiltersState));
 
-    // Finally, we can go ahead and execute the search:
-    dispatch(performKatsuDiscovery());
+    // Finally, we can go ahead and execute the search (two searches if the page loaded with search query parameters
+    // already set; one for scope-level data context and one for the search results):
+    // Will not actually fire if no query is set
+    dispatch(performKatsuScopeDiscovery()).finally(
+      () => dispatch(performKatsuDiscovery()) // Will populate scope-level data as well if no query is set
+    );
 
     if (qpEntity) {
       // If we have a search results table open right now (meaning the _e query param is set --> qpEntity is not null),
@@ -305,6 +311,7 @@ export const useSearchRouterAndHandler = () => {
     configStatus,
     searchFieldsStatus,
     discoveryStatus,
+    wholeScopeStatus,
     hasAttemptedQueryDataPerm,
     queryDataPerm,
     doneFirstLoad,

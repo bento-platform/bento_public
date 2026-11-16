@@ -1,0 +1,177 @@
+import { useState } from 'react';
+import { useAppDispatch } from '@/hooks';
+import { Badge, Button, Dropdown, Flex, Input, Select, Segmented, Typography } from 'antd';
+import { FilterOutlined, SearchOutlined, SwapOutlined, PieChartOutlined } from '@ant-design/icons';
+import { BsGrid, BsViewStacked } from 'react-icons/bs';
+
+import { useCatalogueState } from '@/features/catalogue/hooks';
+import { useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
+import { useTranslationFn } from '@/hooks';
+
+import ActiveFilterTags from '@/components/Util/ActiveFilterTags';
+
+import { FACET_CONFIG_BY_ID } from '@/features/catalogue/facetRegistry';
+
+import { toggleInsights, type SortKey, type FacetId } from '@/features/catalogue/catalogue.store';
+import { facetTranslationKey } from '@/features/catalogue/utils';
+
+const { Text } = Typography;
+
+const SORT_OPTIONS: { value: SortKey; label: string }[] = [
+  { value: 'updated_desc', label: 'catalogue.toolbar.sort.recently_updated' },
+  { value: 'created_desc', label: 'catalogue.toolbar.sort.newest_created' },
+  { value: 'title_az', label: 'catalogue.toolbar.sort.title_az' },
+  { value: 'individuals_desc', label: 'catalogue.toolbar.sort.most_individuals' },
+  { value: 'biosamples_desc', label: 'catalogue.toolbar.sort.most_biosamples' },
+];
+
+interface CatalogueToolbarProps {
+  filteredCount: number;
+  /** Below the `lg` breakpoint: the rail is a slide-over drawer. */
+  showFiltersButton: boolean;
+  /** Below the `md` breakpoint: sort collapses to an icon button and the grid/list switch is hidden. */
+  isMobile: boolean;
+  onOpenFilters: () => void;
+}
+
+const CatalogueToolbar = ({ filteredCount, showFiltersButton, isMobile, onOpenFilters }: CatalogueToolbarProps) => {
+  const t = useTranslationFn();
+  const dispatch = useAppDispatch();
+  const { q, sets, sort, view, insightsOpen } = useCatalogueState();
+  const { setSearch, setSort, setView, toggleFacetValue, clearAll } = useCatalogueUrlActions();
+
+  // The Input needs its own local state so typing updates the DOM synchronously (preserving
+  // cursor position); `q` itself only catches up later via a URL round trip (setSearch navigates,
+  // and useCatalogueUrlSync reflects the URL back into Redux on a subsequent render), which is too
+  // late for the browser to keep the caret in place. `prevQ` mirrors the last `q` this render loop
+  // has already accounted for (React's documented "adjust state when a prop changes" pattern), so
+  // `searchInput` only gets overwritten when `q` itself moves to a value we haven't seen yet -- i.e.
+  // an external change (browser back/forward, clearing a filter pill, `clearAll`) -- and never on the
+  // render that immediately follows our own keystroke, where `q` hasn't caught up yet.
+  const [searchInput, setSearchInput] = useState(q);
+  const [prevQ, setPrevQ] = useState(q);
+  if (q !== prevQ) {
+    setPrevQ(q);
+    setSearchInput(q);
+  }
+
+  const handleSearchChange = (value: string) => {
+    setSearchInput(value);
+    setSearch(value);
+  };
+
+  const pills: { key: string; facetLabel: string; label: string; onClose: () => void }[] = [];
+  (Object.entries(sets) as [FacetId, string[]][]).forEach(([facet, values]) => {
+    const facetConfig = FACET_CONFIG_BY_ID[facet];
+    values.forEach((v) =>
+      pills.push({
+        key: `${facet}-${v}`,
+        facetLabel: facetTranslationKey(facet),
+        label: facetConfig.formatLabel ? facetConfig.formatLabel(v, t) : v,
+        onClose: () => toggleFacetValue(facet, v),
+      })
+    );
+  });
+
+  if (q) {
+    pills.push({
+      key: 'keywords-__q__',
+      facetLabel: facetTranslationKey('keyword'),
+      label: `"${q}"`,
+      onClose: () => setSearch(''),
+    });
+  }
+
+  return (
+    <Flex vertical gap={8}>
+      {/* Row 1: search + sort + view */}
+      <Flex gap={8} align="center">
+        {showFiltersButton && (
+          <Badge count={pills.length} size="small" offset={[-4, 4]} className="catalogue-toolbar-fixed">
+            <Button data-testid="filters-button" icon={<FilterOutlined aria-hidden />} onClick={onOpenFilters}>
+              {t('catalogue.rail.title')}
+            </Button>
+          </Badge>
+        )}
+        <Input
+          prefix={<SearchOutlined aria-hidden />}
+          placeholder={t('catalogue.toolbar.search_placeholder')}
+          value={searchInput}
+          onChange={(e) => handleSearchChange(e.target.value)}
+          className="catalogue-search-input"
+          allowClear
+        />
+        {isMobile ? (
+          <Dropdown
+            trigger={['click']}
+            menu={{
+              selectedKeys: [sort],
+              items: SORT_OPTIONS.map((o) => ({ key: o.value, label: t(o.label) })),
+              onClick: ({ key }) => setSort(key as SortKey),
+            }}
+          >
+            <Button
+              className="catalogue-toolbar-fixed"
+              icon={<SwapOutlined aria-hidden rotate={90} />}
+              aria-label={t('catalogue.toolbar.sort_label')}
+            />
+          </Dropdown>
+        ) : (
+          <Select<SortKey>
+            value={sort}
+            onChange={(v) => setSort(v)}
+            className="catalogue-sort-select"
+            options={SORT_OPTIONS.map((o) => ({ value: o.value, label: t(o.label) }))}
+            popupMatchSelectWidth={false}
+          />
+        )}
+        {!isMobile && (
+          <Segmented
+            className="catalogue-toolbar-fixed"
+            style={{ backgroundColor: 'var(--antd-gray-4)' }}
+            value={view}
+            onChange={(v) => setView(v as 'grid' | 'list')}
+            options={[
+              {
+                value: 'grid',
+                label: t('catalogue.toolbar.grid'),
+                title: t('catalogue.toolbar.view_as_grid'),
+                icon: <BsGrid aria-hidden />,
+              },
+              {
+                value: 'list',
+                label: t('catalogue.toolbar.list'),
+                title: t('catalogue.toolbar.view_as_list'),
+                icon: <BsViewStacked aria-hidden />,
+              },
+            ]}
+          />
+        )}
+      </Flex>
+
+      {/* Row 2: result count + insights toggle */}
+      <Flex justify="space-between" align="center">
+        <Text role="status" aria-atomic>
+          <b>{filteredCount}</b> {t('catalogue.toolbar.dataset_found', { count: filteredCount })}
+        </Text>
+        <Button
+          color="primary"
+          variant="outlined"
+          classNames={{
+            root: 'insights-toggle',
+          }}
+          htmlType="button"
+          aria-pressed={insightsOpen}
+          icon={<PieChartOutlined aria-hidden />}
+          onClick={() => dispatch(toggleInsights())}
+        >
+          {insightsOpen ? t('catalogue.toolbar.hide_insights') : t('catalogue.toolbar.show_insights')}
+        </Button>
+      </Flex>
+      {/* Row 3: active filter pills */}
+      <ActiveFilterTags pills={pills} onClearAll={clearAll} />
+    </Flex>
+  );
+};
+
+export default CatalogueToolbar;
