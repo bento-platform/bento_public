@@ -12,7 +12,7 @@ import BeaconLogo from '@/components/Beacon/BeaconLogo';
 
 import { catalogueStateToQueryParams } from '@/features/catalogue/useCatalogueUrlSync';
 import { useCatalogueState } from '@/features/catalogue/hooks';
-import { FORCE_CATALOGUE } from '@/config';
+import { BEACON_NETWORK_ENABLED, BEACON_UI_ENABLED, FORCE_CATALOGUE } from '@/config';
 import { useMetadata, useScopeHasData, useSelectedScope } from '@/features/metadata/hooks';
 import { type DiscoveryScope, selectScope } from '@/features/metadata/metadata.store';
 import { useDatasetBackTargetState } from '@/features/ui/hooks';
@@ -181,11 +181,16 @@ export const useGetRouteTitleAndIcon = () => {
   );
 };
 
+export type SiteMenuItems = {
+  siteHeaderMenuItems: MenuItem[];
+  scopeHeaderMenuItems: MenuItem[];
+};
+
 /**
- * Hook returning a 'tuple' of [site header menu items, scope header menu items]. Menu item arrays with only one entry
- * should not be displayed by the UI.
+ * Hook returning the site header and scope header menu items. Menu item arrays with only one entry should not be
+ * displayed by the UI.
  */
-export const useSiteMenuItems = (): [MenuItem[], MenuItem[]] => {
+export const useSiteMenuItems = (): SiteMenuItems => {
   const t = useTranslationFn();
   const { isSoleProject, isSoleDataset, scope } = useSelectedScope();
   const location = useLocation();
@@ -212,13 +217,13 @@ export const useSiteMenuItems = (): [MenuItem[], MenuItem[]] => {
     const topBarItems: MenuItem[] = [exploreItem];
     const scopeItems: MenuItem[] = [exploreItem];
 
-    const putInTopBar = isSoleDataset || (isSoleProject && !scope.dataset) || !scope.project;
+    const putInSiteHeader = isSoleDataset || (isSoleProject && !scope.dataset) || !scope.project;
 
-    if (page !== BentoRoute.Phenopackets && (page !== BentoRoute.BeaconNetwork || putInTopBar)) {
-      const itemsRef = putInTopBar ? topBarItems : scopeItems;
+    if (page !== BentoRoute.Phenopackets && (page !== BentoRoute.BeaconNetwork || putInSiteHeader)) {
+      const itemsRef = putInSiteHeader ? topBarItems : scopeItems;
 
-      if (BentoRoute.Beacon && scopeHasData) {
-        itemsRef.push(createMenuItem(BentoRoute.Beacon, ...getRouteTitleAndIcon(BentoRoute.Beacon)));
+      if (BEACON_UI_ENABLED && scopeHasData) {
+        itemsRef.push(createMenuItem(BentoRoute.Beacon!, ...getRouteTitleAndIcon(BentoRoute.Beacon!)));
       }
 
       // TODO: can enable for project if we get a more extensive project model
@@ -227,10 +232,12 @@ export const useSiteMenuItems = (): [MenuItem[], MenuItem[]] => {
       }
     }
 
-    if (BentoRoute.BeaconNetwork && putInTopBar) {
-      topBarItems.push(createMenuItem(BentoRoute.BeaconNetwork, ...getRouteTitleAndIcon(BentoRoute.BeaconNetwork)));
+    if (BEACON_NETWORK_ENABLED && putInSiteHeader) {
+      topBarItems.push(createMenuItem(BentoRoute.BeaconNetwork!, ...getRouteTitleAndIcon(BentoRoute.BeaconNetwork!)));
     }
 
-    return (scopeItems.length > 1 ? [[], scopeItems] : [topBarItems, []]) as [MenuItem[], MenuItem[]];
+    return scopeItems.length > 1
+      ? { siteHeaderMenuItems: [], scopeHeaderMenuItems: scopeItems }
+      : { siteHeaderMenuItems: topBarItems, scopeHeaderMenuItems: [] };
   }, [getRouteTitleAndIcon, createMenuItem, scope, isSoleProject, isSoleDataset, scopeHasData, page]);
 };

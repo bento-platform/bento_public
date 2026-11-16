@@ -27,7 +27,7 @@ const DefaultLayout = () => {
   const { scopeSet, scope } = useSelectedScope();
   const scopeHasData = useScopeHasData();
 
-  const [siteHeaderMenuItems, scopeHeaderMenuItems] = useSiteMenuItems();
+  const { siteHeaderMenuItems, scopeHeaderMenuItems } = useSiteMenuItems();
   const [collapsed, setCollapsed] = useState(true);
 
   const breakpoints = useBreakpoint();
