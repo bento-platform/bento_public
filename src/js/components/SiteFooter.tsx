@@ -1,7 +1,7 @@
 import { Layout, Row, Typography, Space, Tooltip } from 'antd';
 import { ExportOutlined } from '@ant-design/icons';
 const { Footer } = Layout;
-const { Title, Text, Link } = Typography;
+const { Text, Link } = Typography;
 
 import { ADMIN_URL, SHOW_ADMIN_LINK } from '@/config';
 import { useTranslationFn } from '@/hooks';
@@ -16,9 +16,9 @@ const SiteFooter = () => {
       <Row justify="center">
         <Space size={8} orientation="vertical" align="center">
           <div>
-            <Title level={5} type="secondary" style={{ marginBottom: '0' }}>
+            <Text type="secondary" strong style={{ display: 'block', fontSize: 16 }}>
               {t('footer.powered_by')}
-            </Title>
+            </Text>
             <Link href="https://bento-platform.github.io" target="_blank">
               <img style={{ height: '36px' }} src={bentoLogo} alt="Bento" />
             </Link>

@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { makeProjectDatasetResource, makeProjectResource, type Resource, RESOURCE_EVERYTHING } from 'bento-auth-js';
 import { useAppSelector } from '@/hooks';
+import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type { Project } from '@/types/metadata';
 import type { Dataset } from '@/types/dataset';
 import { nonEmptyCounts } from '@/utils/counts';
@@ -8,13 +9,12 @@ import { nonEmptyCounts } from '@/utils/counts';
 export const useMetadata = () => useAppSelector((state) => state.metadata);
 
 export const useSelectedScope = () => useMetadata().selectedScope;
-export const useSelectedScopeAsResource = (): Resource => {
-  const { scope } = useSelectedScope();
-
+export const scopeToResource = (scope: DiscoveryScope): Resource => {
   if (!scope.project) return RESOURCE_EVERYTHING;
   if (!scope.dataset) return makeProjectResource(scope.project);
   return makeProjectDatasetResource(scope.project, scope.dataset);
 };
+export const useSelectedScopeAsResource = (): Resource => scopeToResource(useSelectedScope().scope);
 
 export const useSelectedProject = (): Project | undefined => {
   const {

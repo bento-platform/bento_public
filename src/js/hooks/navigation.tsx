@@ -10,13 +10,17 @@ import {
 
 import BeaconLogo from '@/components/Beacon/BeaconLogo';
 
-import { CATALOGUE_SEARCH_STORAGE_KEY } from '@/features/catalogue/useCatalogueUrlSync';
+import { catalogueStateToQueryParams } from '@/features/catalogue/useCatalogueUrlSync';
+import { useCatalogueState } from '@/features/catalogue/hooks';
 import { FORCE_CATALOGUE } from '@/config';
 import { useMetadata, useScopeHasData, useSelectedScope } from '@/features/metadata/hooks';
 import { type DiscoveryScope, selectScope } from '@/features/metadata/metadata.store';
+import { useDatasetBackTargetState } from '@/features/ui/hooks';
+import type { DatasetBackTarget } from '@/features/ui/ui.store';
 import type { MenuItem } from '@/types/navigation';
 import { BentoRoute } from '@/types/routes';
 import { useAppDispatch, useLanguage, useTranslationFn } from '@/hooks';
+import { buildQueryParamsUrl } from '@/utils/queryParams';
 import { getCurrentPage, langAndScopeSelectionToUrl, scopeToUrl } from '@/utils/router';
 
 /** Prefixes a path with the currently-selected i18n language. */
@@ -35,9 +39,9 @@ export const useNavigateToRoot = () => {
 };
 
 /**
- * Like useNavigateToRoot, but for "back to catalogue" links: restores the catalogue's last query
- * string (facet filters, search, sort, view) from sessionStorage, since this is a fresh navigation
- * rather than a browser-history pop and would otherwise land on the catalogue with no filters applied.
+ * Like useNavigateToRoot, but for "back to catalogue" links: rebuilds the catalogue's query string
+ * (facet filters, search, sort, view) from its Redux state, since this is a fresh navigation rather
+ * than a browser-history pop and would otherwise land on the catalogue with no filters applied.
  *
  * Dispatches the blank scope synchronously before navigating, same as useNavigateToScope: otherwise
  * ScopedRoute's URL/scope reconciliation effect briefly sees the *old* (dataset/project) scope next to
@@ -48,11 +52,11 @@ export const useNavigateToCatalogue = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const rootUrl = useLangPrefixedUrl('');
+  const { q, sets, sort, view } = useCatalogueState();
   return useCallback(() => {
     dispatch(selectScope({}));
-    const search = sessionStorage.getItem(CATALOGUE_SEARCH_STORAGE_KEY) ?? '';
-    navigate(rootUrl + search);
-  }, [dispatch, navigate, rootUrl]);
+    navigate(buildQueryParamsUrl(rootUrl, catalogueStateToQueryParams({ q, sets, sort, view })));
+  }, [dispatch, navigate, rootUrl, q, sets, sort, view]);
 };
 
 /**
@@ -77,6 +81,35 @@ export const useNavigateToScope = () => {
       navigate(scopeToUrl(newScope, language, suffix, fixedProjectAndDataset), navigateOptions);
     },
     [dispatch, navigate, language]
+  );
+};
+
+/** Where the selected dataset scope was entered from, if the user got here by clicking one of its dataset cards. */
+export const useDatasetBackTarget = (): DatasetBackTarget | undefined => {
+  const { scope } = useSelectedScope();
+  const target = useDatasetBackTargetState();
+  return scope.dataset && target?.dataset === scope.dataset ? target : undefined;
+};
+
+/**
+ * Navigates to where the selected dataset scope was entered from (see useDatasetBackTarget), rebuilding that page's
+ * URL from the search / filters held in Redux.
+ */
+export const useNavigateToDatasetBackTarget = () => {
+  const navigateToCatalogue = useNavigateToCatalogue();
+  const navigateToScope = useNavigateToScope();
+  return useCallback(
+    (target: DatasetBackTarget) => {
+      if (target.origin === 'catalogue') {
+        navigateToCatalogue();
+      } else {
+        navigateToScope(
+          { project: target.project },
+          buildQueryParamsUrl(BentoRoute.Explore, target.exploreQueryParams)
+        );
+      }
+    },
+    [navigateToCatalogue, navigateToScope]
   );
 };
 

@@ -20,3 +20,5 @@ export const useSetExtraBreadcrumb = (title: string | undefined) => {
 };
 
 export const useUiSettings = () => useUiState().settings;
+
+export const useDatasetBackTargetState = () => useUiState().datasetBackTarget;

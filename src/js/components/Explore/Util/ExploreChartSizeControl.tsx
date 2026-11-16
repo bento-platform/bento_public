@@ -15,7 +15,7 @@ const ExploreChartSizeControl = () => {
   return (
     <Flex vertical gap={4}>
       <Flex gap={12} align="center">
-        <Typography.Title level={5} className="flex-1 mb-0">
+        <Typography.Title level={2} className="h-as-5 flex-1 mb-0">
           {t('explore.chart_size_label')}
         </Typography.Title>
         <Segmented<ChartSizeMode>

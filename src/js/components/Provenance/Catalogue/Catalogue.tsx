@@ -18,7 +18,6 @@ import CatalogueToolbar from './CatalogueToolbar';
 import CatalogueInsights from './CatalogueInsights';
 import Dataset from '@/components/Provenance/Dataset';
 
-const { Text } = Typography;
 const { useBreakpoint } = Grid;
 
 const Catalogue = () => {
@@ -41,6 +40,17 @@ const Catalogue = () => {
     () => projects.flatMap((p) => (p.datasets ?? []).map((d) => ({ dataset: d, project: p }))),
     [projects]
   );
+
+  // TODO: fetch per-dataset permissions here (and pass them to <Dataset permissionsData={...} />) using a specific
+  //  evaluate matrix on only the desired permissions (e.g. download:data) instead of fetching all permissions, and only
+  //  when a feature needs them (APPLY_FOR_ACCESS_URL set or PCGL_MODE on). Previously:
+  // const datasetResources = useMemo(
+  //   () => allDatasets.map(({ project, dataset }) => ({ project: project.identifier, dataset: dataset.identifier })),
+  //   [allDatasets]
+  // );
+  // const datasetPermissions = useResourcesPermissionsWrapper(datasetResources);
+  // ...and in the <Dataset> props:
+  // permissionsData={datasetPermissions[makeResourceKey({ project: project.identifier, dataset: dataset.identifier })]}
 
   const { filtered, facetOptions } = useCatalogueFilter(allDatasets);
 
@@ -101,7 +111,9 @@ const Catalogue = () => {
 
           {/* DATASETS separator */}
           <Flex align="center" gap={8} className="catalogue-datasets-separator">
-            <Text className="catalogue-section-label">{t('entities.dataset_other')}</Text>
+            <Typography.Title level={2} className="catalogue-section-label">
+              {t('entities.dataset_other')}
+            </Typography.Title>
             <Divider className="m-0 flex-1 min-w-0" />
           </Flex>
 

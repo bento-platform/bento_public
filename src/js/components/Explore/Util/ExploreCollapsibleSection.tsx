@@ -12,13 +12,16 @@ const ExploreCollapsibleSection = ({ title, children }: { title: string; childre
 
   return (
     <Flex vertical={true} style={{ maxHeight: collapsed ? 32 : 99999, overflow: collapsed ? 'hidden' : 'visible' }}>
-      <Typography.Title level={3} className="cursor-pointer select-none" onClick={toggleCollapse}>
-        <span style={{ color: '#bfbfbf', fontSize: '0.8em' }}>
-          <DownOutlined
-            style={{ transform: `rotate(${collapsed ? '-90' : '0'}deg)`, transition: 'transform 0.1s ease-in-out' }}
-          />
-        </span>{' '}
-        {t(title)}
+      <Typography.Title level={2} className="h-as-3 select-none">
+        <button type="button" className="heading-btn" onClick={toggleCollapse} aria-expanded={!collapsed}>
+          <span style={{ color: '#bfbfbf', fontSize: '0.8em' }}>
+            <DownOutlined
+              aria-hidden
+              style={{ transform: `rotate(${collapsed ? '-90' : '0'}deg)`, transition: 'transform 0.1s ease-in-out' }}
+            />
+          </span>{' '}
+          {t(title)}
+        </button>
       </Typography.Title>
       {children}
     </Flex>

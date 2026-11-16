@@ -1,6 +1,6 @@
 import type { AxiosRequestConfig } from 'axios';
 import type { RootState } from '@/store';
-import type { DiscoveryScope, DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
+import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import type { QueryParamEntries } from '@/features/search/types';
 
 const _scopeEntries = (scope: DiscoveryScope): QueryParamEntries =>
@@ -14,8 +14,8 @@ export const scopedAuthorizedRequestConfig = (
 });
 
 export const scopedAuthorizedRequestConfigFromParts = (
-  selectedScope: DiscoveryScopeSelection,
+  scope: DiscoveryScope,
   extraParams?: QueryParamEntries
 ): AxiosRequestConfig => ({
-  params: new URLSearchParams([..._scopeEntries(selectedScope.scope), ...(extraParams ?? [])]),
+  params: new URLSearchParams([..._scopeEntries(scope), ...(extraParams ?? [])]),
 });

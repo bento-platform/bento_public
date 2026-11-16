@@ -10,7 +10,13 @@ import { useSelectedScope } from '@/features/metadata/hooks';
 import { useActiveFilterPills, useSearchQueryParams } from '@/features/search/hooks';
 import { useTranslationFn } from '@/hooks';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
-import { useNavigateToCatalogue, useNavigateToSameScopeUrl, useNavigateToScope } from '@/hooks/navigation';
+import {
+  useDatasetBackTarget,
+  useNavigateToCatalogue,
+  useNavigateToDatasetBackTarget,
+  useNavigateToSameScopeUrl,
+  useNavigateToScope,
+} from '@/hooks/navigation';
 import { BentoRoute } from '@/types/routes';
 import { getCurrentPage } from '@/utils/router';
 import { buildQueryParamsUrl } from '@/features/search/utils';
@@ -26,6 +32,8 @@ const useBackButtonInfo = () => {
   const navigateToCatalogue = useNavigateToCatalogue();
   const navigateToScope = useNavigateToScope();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
+  const datasetBackTarget = useDatasetBackTarget();
+  const navigateToDatasetBackTarget = useNavigateToDatasetBackTarget();
   const { scope, scopeSet, fixedProject, fixedDataset } = useSelectedScope();
 
   return useMemo<readonly [undefined, undefined] | [string, () => void]>(() => {
@@ -38,8 +46,16 @@ const useBackButtonInfo = () => {
     } else {
       if (scope.dataset) {
         if (fixedDataset) return NO_BACK_BUTTON;
-        const cameFromProject = (location.state as { fromProjectScope?: boolean } | null)?.fromProjectScope;
-        return PCGL_MODE && !cameFromProject
+        if (datasetBackTarget) {
+          // We got here by clicking a dataset card, so return to the page we came from, with the search terms /
+          // filters it had (rebuilt from Redux).
+          return [
+            datasetBackTarget.origin === 'project' ? 'Back to project' : 'Back to catalogue',
+            () => navigateToDatasetBackTarget(datasetBackTarget),
+          ];
+        }
+        // Landed here directly (link, reload, etc.), so we don't know where the user came from:
+        return PCGL_MODE
           ? ['Back to catalogue', navigateToCatalogue]
           : ['Back to project', () => navigateToScope({ project: scope.project }, BentoRoute.Explore)];
       } else if (scope.project) {
@@ -50,7 +66,8 @@ const useBackButtonInfo = () => {
     }
   }, [
     currentPage,
-    location.state,
+    datasetBackTarget,
+    navigateToDatasetBackTarget,
     navigateToCatalogue,
     navigateToScope,
     navigateToSameScopeUrl,

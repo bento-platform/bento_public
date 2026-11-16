@@ -10,11 +10,11 @@ import FileSaver from 'file-saver';
 
 export const useDownloadAllMatches = () => {
   const query = useSearchQuery();
-  const selectedScope = useSelectedScope();
+  const { scope } = useSelectedScope();
 
   return useCallback(
     async (entity: ExportDataEntity, format: ExportFormat, filename: string, fields?: string[]) => {
-      const config = scopedAuthorizedRequestConfigFromParts(selectedScope, [
+      const config = scopedAuthorizedRequestConfigFromParts(scope, [
         ...searchQueryParamsFromState(query),
         ['_entity', entity],
         ['_format', format],
@@ -29,6 +29,6 @@ export const useDownloadAllMatches = () => {
 
       FileSaver.saveAs(res.data, filename);
     },
-    [query, selectedScope]
+    [query, scope]
   );
 };

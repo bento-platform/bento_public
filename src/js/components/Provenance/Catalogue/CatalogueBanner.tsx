@@ -59,7 +59,7 @@ const CatalogueBanner = ({ datasets }: CatalogueBannerProps) => {
         {PCGL_MODE ? (
           <Flex vertical gap={4}>
             <Text className="catalogue-banner__eyebrow">{t('pcgl.banner.eyebrow')}</Text>
-            <Text className="catalogue-banner__title">{t('pcgl.banner.title')}</Text>
+            <h1 className="catalogue-banner__title m-0">{t('pcgl.banner.title')}</h1>
             <Text className="catalogue-banner__subtitle">{t('pcgl.banner.subtitle')}</Text>
           </Flex>
         ) : (
