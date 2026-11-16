@@ -440,10 +440,6 @@ body {
   /* Header padding is grid-aligned to content padding */
   padding: 0 var(--content-padding-h);
 
-  & .pcgl-header {
-    padding-block: unset;
-  }
-
   & .pcgl-header-nav .pcgl-header-nav-link {
     gap: 10px;
     position: relative;
@@ -452,9 +448,31 @@ body {
       font-weight: inherit;
     }
   }
-  
+
+  & .pcgl-header-bar .pcgl-header-nav-link {
+    height: var(--header-height);
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset-inline: 0;
+      bottom: 0;
+      border-bottom: 2px solid transparent;
+      transition: border-color 0.3s;
+    }
+
+    &:hover::after,
+    &[aria-current="page"]::after {
+      border-bottom-color: var(--pcgl-header-brand);
+    }
+  }
+
   & .pcgl-header-bar {
-      padding-inline: 0;
+    padding-inline: 0;
+  }
+
+  & .pcgl-header-user-menu-toggle > span {
+    max-width: 18rem;
   }
 }
 

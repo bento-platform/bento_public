@@ -1,8 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import Image from 'next/image';
 
 import clsx from 'clsx';
-import { Button, Flex, Layout, Menu, type MenuProps, Space, Typography, theme } from 'antd';
+import { Button, Flex, Layout, Menu, Space, Typography, theme } from 'antd';
+import { Header as PcglHeader, HeaderLanguageToggle, HeaderNavLink, HeaderUserMenu } from '@pcgl-components/ui/header';
 import { useSession } from 'next-auth/react';
 import { useIsAuthenticated, usePerformAuth, usePerformSignOut } from '@/features/auth/hooks';
 
@@ -16,6 +18,7 @@ import { getCurrentPage } from '@/utils/router';
 import { LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
 import {
   CLIENT_NAME,
+  PCGL_MODE,
   SHOW_LOGO,
   SHOW_HEADER_TITLE,
   SHOW_SIGN_IN,
@@ -30,23 +33,30 @@ import { buildQueryParamsUrl } from '@/features/search/utils';
 import { useSearchQueryParams } from '@/features/search/hooks';
 import { useLanguage, useTranslationFn } from '@/hooks';
 
+import '@pcgl-components/ui/header/styles.css';
+
 const { Header } = Layout;
 
 // dummy theme variable; in the future this could be used to do a 'dark mode' in combination with Ant's support
 const THEME: 'light' | 'dark' = 'light';
 
-type OnClick = MenuProps['onClick'];
+// TODO: create LOGO_WIDTH env
+const LOGO_WIDTH = 240;
+
 type SiteHeaderProps = {
   menuItems?: MenuItem[];
 };
+type NavMenuItem = { key: string | number; label?: ReactNode; icon?: ReactNode };
 
-const useHandleMenuClick = (): OnClick => {
-  const navigate = useNavigate();
+const isNavMenuItem = (item: MenuItem): item is MenuItem & NavMenuItem =>
+  !!item && 'key' in item && item.key != null && item.type !== 'divider';
+
+const useBuildMenuHref = () => {
   const location = useLocation();
   const exploreQueryParams = useSearchQueryParams();
 
   return useCallback(
-    ({ key }: { key: string }) => {
+    (key: string) => {
       const currentPath = location.pathname.split('/').filter(Boolean);
       const newPath = [currentPath[0]];
       if (!TOP_LEVEL_ONLY_ROUTES.includes(key)) {
@@ -58,12 +68,10 @@ const useHandleMenuClick = (): OnClick => {
         }
       }
       newPath.push(key);
-      const newPathString = '/' + newPath.join('/');
-      // Navigate to the menu item url
-      //  - only include filter/search/explore query params if we're navigating to the explore page
-      navigate(buildQueryParamsUrl(newPathString, key === BentoRoute.Explore ? exploreQueryParams : undefined));
+      // only include filter/search/explore query params if we're navigating to the explore page
+      return buildQueryParamsUrl('/' + newPath.join('/'), key === BentoRoute.Explore ? exploreQueryParams : undefined);
     },
-    [navigate, exploreQueryParams, location.pathname]
+    [exploreQueryParams, location.pathname]
   );
 };
 
@@ -75,24 +83,10 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
   const isSmallScreen = useSmallScreen();
   const currentPage = getCurrentPage(location);
   const navigateToRoot = useNavigateToRoot();
-
-  const { status: sessionStatus } = useSession();
-
-  const isAuthenticated = useIsAuthenticated();
-  const performSignOut = usePerformSignOut();
-  const performSignIn = usePerformAuth();
-
-  // performSignOut() clears our session before it redirects to the identity provider to end its session too, so
-  // isAuthenticated flips to false mid-callback - without this, the button would flash to "Sign In" and back before
-  // the page actually navigates away.
-  const [isSigningOut, setIsSigningOut] = useState(false);
-  const handleSignOut = useCallback(() => {
-    setIsSigningOut(true);
-    performSignOut();
-  }, [performSignOut]);
+  const buildMenuHref = useBuildMenuHref();
 
   const {
-    token: { colorBgContainer, colorBorderSecondary },
+    token: { colorPrimary, colorBgContainer, colorBorderSecondary },
   } = theme.useToken();
 
   useEffect(() => {
@@ -111,14 +105,77 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
   const logoLangPart = TRANSLATED_LOGO && language !== 'en' ? '.' + language : '';
   const logo = `/public/assets/branding${THEME === 'light' ? '.lightbg' : ''}${logoLangPart}.png`;
 
-  const handleMenuClick = useHandleMenuClick();
+  const hasMenu = (menuItems?.length ?? 0) > 1;
+  const headerStyle = { backgroundColor: colorBgContainer, borderBottom: `1px solid ${colorBorderSecondary}` };
+
+  if (PCGL_MODE) {
+    return (
+      <PcglHeader
+        brand={colorPrimary}
+        translator={t}
+        id="site-header"
+        className={THEME}
+        style={headerStyle}
+        skipLinks={[
+          { href: '#main-content', label: t('header.skip_links.main') },
+          { href: '#pcgl-footer', label: t('header.skip_links.footer') },
+        ]}
+        logo={
+          SHOW_LOGO ? (
+            <Image
+              src={logo}
+              alt={CLIENT_NAME || 'Logo'}
+              height={LOGO_HEIGHT}
+              width={LOGO_WIDTH}
+              style={{ height: LOGO_HEIGHT, width: 'auto' }}
+              priority
+            />
+          ) : null
+        }
+        nav={
+          hasMenu ? (
+            <>
+              {(menuItems ?? []).filter(isNavMenuItem).map(({ key, label, icon }) => {
+                const k = String(key);
+                const href = buildMenuHref(k);
+                return (
+                  <HeaderNavLink
+                    key={k}
+                    href={href}
+                    current={k === currentPage}
+                    onClick={(e) => {
+                      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+                      e.preventDefault();
+                      navigate(href);
+                    }}
+                  >
+                    {icon}
+                    {label}
+                  </HeaderNavLink>
+                );
+              })}
+            </>
+          ) : undefined
+        }
+        language={
+          TRANSLATED && (
+            <HeaderLanguageToggle
+              className="focus-ring"
+              lang={language}
+              shortLabel={LNG_CHANGE[language].toUpperCase()}
+              onClick={changeLanguage}
+            >
+              {LNGS_FULL_NAMES[LNG_CHANGE[language]]}
+            </HeaderLanguageToggle>
+          )
+        }
+        account={<HeaderAuth />}
+      />
+    );
+  }
 
   return (
-    <Header
-      id="site-header"
-      className={THEME}
-      style={{ backgroundColor: colorBgContainer, borderBottom: `1px solid ${colorBorderSecondary}` }}
-    >
+    <Header id="site-header" className={THEME} style={headerStyle}>
       <Flex align="center" justify="space-between">
         <Flex align="center" gap={isSmallScreen ? 'small' : 'middle'} className="flex-1">
           {SHOW_LOGO &&
@@ -165,12 +222,12 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
           >
             {t(CLIENT_NAME)}
           </Typography.Text>
-          {(menuItems?.length ?? 0) > 1 ? (
+          {hasMenu ? (
             <Menu
               mode="horizontal"
               items={menuItems}
               selectedKeys={[currentPage]}
-              onClick={handleMenuClick}
+              onClick={({ key }) => navigate(buildMenuHref(key))}
               className="flex-1"
             />
           ) : null}
@@ -179,6 +236,7 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
         <Space size={isSmallScreen ? 4 : 'small'}>
           {TRANSLATED && (
             <Button
+              htmlType="button"
               type="text"
               className="header-button"
               icon={<RiTranslate aria-hidden style={{ transform: 'translateY(1px)' }} />}
@@ -187,27 +245,106 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
               {isSmallScreen ? '' : LNGS_FULL_NAMES[LNG_CHANGE[language]]}
             </Button>
           )}
-          {SHOW_SIGN_IN &&
-            (isAuthenticated || isSigningOut ? (
-              <Button
-                color="default"
-                className="header-button"
-                icon={<LogoutOutlined aria-hidden />}
-                shape="round"
-                variant="filled"
-                loading={isSigningOut}
-                onClick={handleSignOut}
-              >
-                {isSmallScreen ? '' : t('Sign Out')}
-              </Button>
-            ) : (
-              <Button type="primary" shape="round" icon={<LoginOutlined aria-hidden />} onClick={performSignIn}>
-                {sessionStatus === 'loading' ? t('Loading...') : isSmallScreen ? '' : t('Sign In')}
-              </Button>
-            ))}
+          <HeaderAuth />
         </Space>
       </Flex>
     </Header>
+  );
+};
+
+const HeaderAuth = () => {
+  const t = useTranslationFn();
+  const isSmallScreen = useSmallScreen();
+  const isAuthenticated = useIsAuthenticated();
+  const performSignIn = usePerformAuth();
+  const performSignOut = usePerformSignOut();
+
+  const { status: sessionStatus, data: sessionData } = useSession();
+  const userName = sessionData?.user?.name?.trim() || undefined;
+  const userEmail = sessionData?.user?.email?.trim() || undefined;
+
+  // performSignOut() clears our session before it redirects to the identity provider to end its session too, so
+  // isAuthenticated flips to false mid-callback - without this, the button would flash to "Sign In" and back before
+  // the page actually navigates away.
+  const [isSigningOut, setIsSigningOut] = useState(false);
+  const handleSignOut = useCallback(() => {
+    setIsSigningOut(true);
+    performSignOut();
+  }, [performSignOut]);
+
+  if (!SHOW_SIGN_IN) return null;
+
+  if (!PCGL_MODE) {
+    return isAuthenticated || isSigningOut ? (
+      <Button
+        htmlType="button"
+        color="default"
+        className="header-button"
+        icon={<LogoutOutlined aria-hidden />}
+        shape="round"
+        variant="filled"
+        loading={isSigningOut}
+        onClick={handleSignOut}
+      >
+        {isSmallScreen ? '' : t('Sign Out')}
+      </Button>
+    ) : (
+      <Button type="primary" shape="round" icon={<LoginOutlined aria-hidden />} onClick={performSignIn}>
+        {sessionStatus === 'loading' ? t('Loading...') : isSmallScreen ? '' : t('Sign In')}
+      </Button>
+    );
+  }
+
+  if (isAuthenticated || isSigningOut) {
+    const primaryLabel = userName ?? userEmail;
+
+    if (!primaryLabel) {
+      return (
+        <Button
+          aria-label={t('Sign Out')}
+          htmlType="button"
+          shape={isSmallScreen && !isSigningOut ? 'circle' : 'round'}
+          icon={<LogoutOutlined aria-hidden />}
+          loading={isSigningOut}
+          onClick={handleSignOut}
+        >
+          <span hidden={isSmallScreen} aria-hidden>
+            {t('Sign Out')}
+          </span>
+        </Button>
+      );
+    }
+
+    return (
+      <HeaderUserMenu className="focus-ring" name={primaryLabel} email={userName ? userEmail : undefined}>
+        <Button
+          htmlType="button"
+          color="default"
+          icon={<LogoutOutlined aria-hidden />}
+          variant="text"
+          block
+          loading={isSigningOut}
+          onClick={handleSignOut}
+        >
+          {t('Sign Out')}
+        </Button>
+      </HeaderUserMenu>
+    );
+  }
+
+  return (
+    <Button
+      aria-label={sessionStatus === 'loading' ? t('Loading...') : t('Sign In')}
+      htmlType="button"
+      type="primary"
+      shape={isSmallScreen && sessionStatus != 'loading' ? 'circle' : 'round'}
+      icon={<LoginOutlined aria-hidden />}
+      onClick={performSignIn}
+    >
+      <span hidden={isSmallScreen} aria-hidden>
+        {sessionStatus === 'loading' ? t('Loading...') : t('Sign In')}
+      </span>
+    </Button>
   );
 };
 

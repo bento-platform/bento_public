@@ -8,7 +8,6 @@ import SiteHeader from '@/components/SiteHeader';
 import SiteSider from '@/components/SiteSider';
 import SiteFooter from '@/components/SiteFooter';
 import PcglFooter from '@/components/Pcgl/PcglFooter';
-import PcglHeader from '@/components/Pcgl/PcglHeader';
 import ScopeHeader from '@/components/Scope/ScopeHeader';
 import { useSelectedScope, useScopeHasData } from '@/features/metadata/hooks';
 import { useIsInCatalogueMode, useSiteMenuItems } from '@/hooks/navigation';
@@ -50,7 +49,7 @@ const DefaultLayout = () => {
         'scope-header-hidden': scopeHeaderHidden,
       })}
     >
-      {PCGL_MODE ? <PcglHeader menuItems={siteHeaderMenuItems} /> : <SiteHeader menuItems={siteHeaderMenuItems} />}
+      <SiteHeader menuItems={siteHeaderMenuItems} />
       <Layout id="content-layout">
         {!isCatalogue && !scopeHeaderHidden && (
           <ScopeHeader
