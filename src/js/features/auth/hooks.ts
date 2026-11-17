@@ -84,6 +84,7 @@ export const useHasResourcePermission = (
 
 export const usePerformAuth = () => useCallback(() => signIn(BENTO_OIDC_PROVIDER_ID), []);
 
+const AUTH_RETRY_PARAM = 'auth_retry';
 const SIGN_IN_LOCK = 'bento-auto-signin';
 const SIGN_IN_STARTED_KEY = 'bento-auto-signin-started-at';
 // How long a started sign-in blocks other tabs from starting their own. Long enough for a user to type credentials.
@@ -110,9 +111,9 @@ const writeSignInStartedAt = (value: number | undefined) => {
 // the same time, the second flow overwrites the cookie and the first callback fails with InvalidCheck. So only one
 // auto sign-in may start at a time. The Web Lock makes the check-and-set atomic across tabs; the localStorage
 // timestamp remembers that a sign-in is in progress after the lock is released (the page navigates away).
-const startAutoSignIn = async () => {
+const startAutoSignIn = async (force: boolean) => {
   const start = () => {
-    if (Date.now() - readSignInStartedAt() < SIGN_IN_IN_PROGRESS_MS) return;
+    if (!force && Date.now() - readSignInStartedAt() < SIGN_IN_IN_PROGRESS_MS) return;
     writeSignInStartedAt(Date.now());
     return signIn(BENTO_OIDC_PROVIDER_ID);
   };
@@ -131,7 +132,20 @@ export const useHandleRefreshTokenError = () => {
 
   useEffect(() => {
     if (error === 'RefreshTokenError') {
-      startAutoSignIn();
+      // The auth error route sends users back with this param after a failed callback (e.g. the state cookie expired
+      // while the Keycloak login page was open). The previous sign-in is over, so retry despite the in-progress guard.
+      const params = new URLSearchParams(window.location.search);
+      const force = params.has(AUTH_RETRY_PARAM);
+      if (force) {
+        params.delete(AUTH_RETRY_PARAM);
+        const query = params.toString();
+        window.history.replaceState(
+          null,
+          '',
+          `${window.location.pathname}${query ? `?${query}` : ''}${window.location.hash}`
+        );
+      }
+      startAutoSignIn(force);
     } else if (status === 'authenticated') {
       // Signed in with a healthy session (possibly via another tab): the next expiry may auto sign in again.
       writeSignInStartedAt(undefined);
