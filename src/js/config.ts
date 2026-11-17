@@ -1,5 +1,6 @@
 import { stringToBoolean } from '@/utils/strings';
 import { LOCALSTORAGE_DEV_SETTINGS_KEY } from '@/constants/ui';
+import { toBffUrl } from '@/constants/bff';
 
 export interface PublicConfig {
   // General
@@ -86,7 +87,9 @@ export const APPLY_FOR_ACCESS_URL = stripTrailingSlash(
 );
 
 // Beacon configuration and flags
-export const BEACON_URL = BENTO_PUBLIC_CONFIG.BEACON_URL ?? process.env.BEACON_URL;
+const _BEACON_URL = BENTO_PUBLIC_CONFIG.BEACON_URL ?? process.env.BEACON_URL;
+// Routed through the same-origin proxy (which adds the user's token) when it's a Bento service on this instance
+export const BEACON_URL = _BEACON_URL ? toBffUrl(_BEACON_URL, PUBLIC_URL_NO_TRAILING_SLASH) : _BEACON_URL;
 export const BEACON_NETWORK_URL = BEACON_URL + '/network';
 export const BEACON_UI_ENABLED =
   BENTO_PUBLIC_CONFIG.BEACON_UI_ENABLED ?? stringToBoolean(process.env.BENTO_BEACON_UI_ENABLED);

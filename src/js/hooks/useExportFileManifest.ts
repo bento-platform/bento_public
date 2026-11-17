@@ -2,7 +2,6 @@ import { useCallback, useMemo, useState } from 'react';
 import axios from 'axios';
 import FileSaver from 'file-saver';
 import { message } from 'antd';
-import { makeAuthorizationHeader } from 'bento-auth-js';
 
 import { useAppSelector, useTranslationFn } from '@/hooks';
 import { useSelectedScope } from '@/features/metadata/hooks';
@@ -23,7 +22,6 @@ import { scopedAuthorizedRequestConfigFromParts } from '@/utils/requests';
 export const useExportFileManifest = (exportWholeScope: boolean) => {
   const [isExportingFileManifest, setIsExportingFileManifest] = useState(false);
   const t = useTranslationFn();
-  const auth = useAppSelector((state) => state.auth);
   const { scope } = useSelectedScope();
   const query = useSearchQuery();
   const selectedRowMap = useAppSelector((state) => state.query.selectedRows.experiment_result);
@@ -39,18 +37,18 @@ export const useExportFileManifest = (exportWholeScope: boolean) => {
       let res;
       if (exportWholeScope) {
         res = await axios.get(experimentResultBatchUrl, {
-          ...scopedAuthorizedRequestConfigFromParts(auth, scope, [['format', 'pcgl_manifest']]),
+          ...scopedAuthorizedRequestConfigFromParts(scope, [['format', 'pcgl_manifest']]),
           responseType: 'blob',
         });
       } else if (selectedIds.length) {
         res = await axios.post(
           experimentResultBatchUrl,
           { id: selectedIds.map(Number), format: 'pcgl_manifest' },
-          { headers: { ...makeAuthorizationHeader(auth.accessToken) }, responseType: 'blob' }
+          { responseType: 'blob' }
         );
       } else {
         res = await axios.get(katsuDiscoveryMatchesUrl, {
-          ...scopedAuthorizedRequestConfigFromParts(auth, scope, [
+          ...scopedAuthorizedRequestConfigFromParts(scope, [
             ...searchQueryParamsFromState(query),
             ['_entity', 'experiment_result'],
             ['_format', 'pcgl_manifest'],
@@ -65,7 +63,7 @@ export const useExportFileManifest = (exportWholeScope: boolean) => {
     } finally {
       setIsExportingFileManifest(false);
     }
-  }, [t, auth, scope, query, exportWholeScope, selectedIds]);
+  }, [t, scope, query, exportWholeScope, selectedIds]);
 
   return { exportFileManifest, isExportingFileManifest };
 };

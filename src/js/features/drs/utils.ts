@@ -2,15 +2,18 @@ import { store } from '@/store';
 import { RequestStatus } from '@/types/requests';
 
 import { getDrsRecord } from '@/features/drs/getDrsRecord.thunk';
+import { toBffUrl } from '@/constants/bff';
+import { PUBLIC_URL_NO_TRAILING_SLASH } from '@/config';
 import type { DrsRecord } from './types';
 
 // async equivalent of DRS hook useDrsHttpsAccessOrPassThrough()
 export const getDrsHttpsAccessOrPassThrough = async (url: string | undefined): Promise<string | null> => {
   if (!url || !isDrs(url)) return url ?? null;
 
-  return getDrsObject(url).then(
-    (record) => (record?.access_methods ?? []).find((am) => am.type === 'https')?.access_url?.url ?? null
-  );
+  return getDrsObject(url).then((record) => {
+    const accessUrl = (record?.access_methods ?? []).find((am) => am.type === 'https')?.access_url?.url;
+    return accessUrl ? toBffUrl(accessUrl, PUBLIC_URL_NO_TRAILING_SLASH) : null;
+  });
 };
 
 export const isDrs = (uri: string | undefined) => {

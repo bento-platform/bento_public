@@ -6,9 +6,9 @@ import type { DrsRecord } from './types';
 import { RequestStatus } from '@/types/requests';
 
 import { PUBLIC_URL_NO_TRAILING_SLASH } from '@/config';
+import { toBffUrl } from '@/constants/bff';
 
 import { printAPIError } from '@/utils/error.util';
-import { authorizedRequestConfig } from '@/utils/requests';
 
 const decodeDrsUri = (drsUri: string): string => {
   const drsUriParts = new URL(drsUri);
@@ -24,12 +24,11 @@ export const getDrsRecord = createAsyncThunk<
   }
 >(
   'drs/getDrsRecord',
-  (drsUri, { getState, rejectWithValue }) => {
-    const state = getState();
-    const decodedUri = decodeDrsUri(drsUri);
-    // Security: MUST only pass tokens to local DRS instance
+  (drsUri, { rejectWithValue }) => {
+    // Security: only the local DRS instance gets the proxy (and so the user's token); other hosts are called directly.
+    const decodedUri = toBffUrl(decodeDrsUri(drsUri), PUBLIC_URL_NO_TRAILING_SLASH);
     return axios
-      .get(decodedUri, decodedUri.startsWith(PUBLIC_URL_NO_TRAILING_SLASH) ? authorizedRequestConfig(state) : undefined)
+      .get(decodedUri)
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue));
   },

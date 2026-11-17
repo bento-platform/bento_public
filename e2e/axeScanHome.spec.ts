@@ -9,7 +9,7 @@ test.describe('homepage', () => {
     // Intercept config and projects API in CI (or if MOCK_API=true) so catalogue cards render cleanly
     if (process.env.CI || process.env.MOCK_API === 'true') {
       await mockPublicConfig(page);
-      await page.route('**/api/metadata/api/projects*', async (route) => {
+      await page.route('**/api/bff/metadata/api/projects*', async (route) => {
         await route.fulfill({
           status: 200,
           contentType: 'application/json',

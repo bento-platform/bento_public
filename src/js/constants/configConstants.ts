@@ -1,8 +1,9 @@
 import { PUBLIC_URL_NO_TRAILING_SLASH } from '@/config';
+import { BFF_PREFIX } from '@/constants/bff';
 
 export const MAX_CHARTS = 3;
 
-const katsuBaseUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/metadata`;
+const katsuBaseUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}${BFF_PREFIX}/metadata`;
 
 // Katsu discovery URLs
 export const katsuDiscoveryRulesUrl = `${katsuBaseUrl}/api/discovery_rules`;
@@ -24,7 +25,7 @@ export const experimentBatchUrl = `${katsuBaseUrl}/api/batch/experiments`;
 export const experimentResultUrl = `${katsuBaseUrl}/api/experimentresults`;
 export const experimentResultBatchUrl = `${katsuBaseUrl}/api/batch/experimentresults`;
 
-export const referenceGenomesUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/reference/genomes`;
+export const referenceGenomesUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}${BFF_PREFIX}/reference/genomes`;
 
 export const igvGenomesUrl = 'https://igv.org/genomes/genomes3.json';
 
