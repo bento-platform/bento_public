@@ -12,7 +12,7 @@ const SiteFooter = () => {
   const t = useTranslationFn();
 
   return (
-    <Footer>
+    <Footer id="site-footer">
       <Row justify="center">
         <Space size={8} orientation="vertical" align="center">
           <div>

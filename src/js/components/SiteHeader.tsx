@@ -1,20 +1,15 @@
-import { useCallback, useEffect, useState, type ReactNode } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import Image from 'next/image';
-
+import { Button, Divider, Flex, Layout, Menu, Space, Typography, theme } from 'antd';
+import { UserOutlined, LoginOutlined, LogoutOutlined } from '@ant-design/icons';
 import clsx from 'clsx';
-import { Button, Flex, Layout, Menu, Space, Typography, theme } from 'antd';
-import { Header as PcglHeader, HeaderLanguageToggle, HeaderNavLink, HeaderUserMenu } from '@pcgl-components/ui/header';
+import { useCallback, useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import Image from 'next/image';
 import { useSession } from 'next-auth/react';
+
 import { useIsAuthenticated, usePerformAuth, usePerformSignOut } from '@/features/auth/hooks';
-
-import { RiTranslate } from 'react-icons/ri';
-import { LoginOutlined, LogoutOutlined } from '@ant-design/icons';
-
-import { useNavigateToRoot } from '@/hooks/navigation';
+import { useLangPrefixedUrl } from '@/hooks/navigation';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { getCurrentPage } from '@/utils/router';
-
 import { LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
 import {
   CLIENT_NAME,
@@ -26,14 +21,11 @@ import {
   TRANSLATED_LOGO,
   LOGO_HEIGHT,
 } from '@/config';
-
 import type { MenuItem } from '@/types/navigation';
 import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
 import { buildQueryParamsUrl } from '@/features/search/utils';
 import { useSearchQueryParams } from '@/features/search/hooks';
 import { useLanguage, useTranslationFn } from '@/hooks';
-
-import '@pcgl-components/ui/header/styles.css';
 
 const { Header } = Layout;
 
@@ -46,10 +38,6 @@ const LOGO_WIDTH = 240;
 type SiteHeaderProps = {
   menuItems?: MenuItem[];
 };
-type NavMenuItem = { key: string | number; label?: ReactNode; icon?: ReactNode };
-
-const isNavMenuItem = (item: MenuItem): item is MenuItem & NavMenuItem =>
-  !!item && 'key' in item && item.key != null && item.type !== 'divider';
 
 const useBuildMenuHref = () => {
   const location = useLocation();
@@ -82,11 +70,11 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
   const location = useLocation();
   const isSmallScreen = useSmallScreen();
   const currentPage = getCurrentPage(location);
-  const navigateToRoot = useNavigateToRoot();
+  const rootUrl = useLangPrefixedUrl('');
   const buildMenuHref = useBuildMenuHref();
 
   const {
-    token: { colorPrimary, colorBgContainer, colorBorderSecondary },
+    token: { colorBgContainer, colorBorderSecondary },
   } = theme.useToken();
 
   useEffect(() => {
@@ -106,146 +94,77 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
   const logo = `/public/assets/branding${THEME === 'light' ? '.lightbg' : ''}${logoLangPart}.png`;
 
   const hasMenu = (menuItems?.length ?? 0) > 1;
-  const headerStyle = { backgroundColor: colorBgContainer, borderBottom: `1px solid ${colorBorderSecondary}` };
 
-  if (PCGL_MODE) {
-    return (
-      <PcglHeader
-        brand={colorPrimary}
-        translator={t}
-        id="site-header"
-        className={THEME}
-        style={headerStyle}
-        skipLinks={[
-          { href: '#main-content', label: t('header.skip_links.main') },
-          { href: '#pcgl-footer', label: t('header.skip_links.footer') },
-        ]}
-        logo={
-          SHOW_LOGO ? (
-            <Image
-              src={logo}
-              alt={CLIENT_NAME || 'Logo'}
-              height={LOGO_HEIGHT}
-              width={LOGO_WIDTH}
-              style={{ height: LOGO_HEIGHT, width: 'auto' }}
-              priority
-            />
-          ) : null
-        }
-        nav={
-          hasMenu ? (
-            <>
-              {(menuItems ?? []).filter(isNavMenuItem).map(({ key, label, icon }) => {
-                const k = String(key);
-                const href = buildMenuHref(k);
-                return (
-                  <HeaderNavLink
-                    key={k}
-                    href={href}
-                    current={k === currentPage}
-                    onClick={(e) => {
-                      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
-                      e.preventDefault();
-                      navigate(href);
-                    }}
-                  >
-                    {icon}
-                    {label}
-                  </HeaderNavLink>
-                );
-              })}
-            </>
-          ) : undefined
-        }
-        language={
-          TRANSLATED && (
-            <HeaderLanguageToggle
-              className="focus-ring"
-              lang={language}
-              shortLabel={LNG_CHANGE[language].toUpperCase()}
-              onClick={changeLanguage}
-            >
-              {LNGS_FULL_NAMES[LNG_CHANGE[language]]}
-            </HeaderLanguageToggle>
-          )
-        }
-        account={<HeaderAuth />}
-      />
-    );
-  }
+  const navItems = hasMenu
+    ? (menuItems ?? []).map((item) =>
+        item && 'key' in item && item.key != null && item.type !== 'divider' && 'label' in item
+          ? { ...item, label: <Link to={buildMenuHref(String(item.key))}>{item.label}</Link> }
+          : item
+      )
+    : [];
+
+  const newLang = LNG_CHANGE[language];
 
   return (
-    <Header id="site-header" className={THEME} style={headerStyle}>
-      <Flex align="center" justify="space-between">
-        <Flex align="center" gap={isSmallScreen ? 'small' : 'middle'} className="flex-1">
-          {SHOW_LOGO &&
-            (isSmallScreen ? (
-              <object
-                type="image/png"
-                data={logo}
-                aria-hidden
-                style={{ height: LOGO_HEIGHT, verticalAlign: 'middle', transform: 'translateY(-3px)', paddingRight: 3 }}
-                onClick={navigateToRoot}
-              >
-                <img
-                  src={logo}
-                  alt="logo"
-                  aria-hidden
-                  className="cursor-pointer"
-                  style={{
-                    height: LOGO_HEIGHT,
-                    verticalAlign: 'middle',
-                    transform: 'translateY(-3px)',
-                  }}
-                  onClick={navigateToRoot}
-                />
-              </object>
-            ) : (
-              <img
+    <Header
+      id="site-header"
+      className={THEME}
+      style={{ backgroundColor: colorBgContainer, borderBottom: `1px solid ${colorBorderSecondary}` }}
+    >
+      {/* Skip links */}
+      <a className="site-header__skip-link" href="#main-content">
+        {t('header.skip_links.main')}
+      </a>
+      <a className="site-header__skip-link" href="#site-footer">
+        {t('header.skip_links.footer')}
+      </a>
+
+      <Flex align="center" justify="space-between" gap={isSmallScreen ? 'small' : 'large'} className="h-full">
+        <Flex align="center" gap={isSmallScreen ? 'small' : 'large'} className="flex-1" style={{ minWidth: 0 }}>
+          <Link to={rootUrl} aria-label={t('header.home')} className="site-header__home focus-ring">
+            {SHOW_LOGO && (
+              <Image
                 src={logo}
-                alt="logo"
+                alt=""
                 aria-hidden
-                className="cursor-pointer"
-                style={{
-                  height: LOGO_HEIGHT,
-                  verticalAlign: 'middle',
-                  transform: 'translateY(-3px)',
-                  paddingLeft: '4px',
-                }}
-                onClick={navigateToRoot}
+                className="site-header__logo"
+                height={LOGO_HEIGHT}
+                width={LOGO_WIDTH}
+                style={{ height: LOGO_HEIGHT, width: 'auto' }}
+                priority
               />
-            ))}
-          <Typography.Text
-            type="secondary"
-            className={clsx('site-header__title', !SHOW_HEADER_TITLE && 'visually-hidden')}
-            style={{ whiteSpace: 'nowrap' }}
-          >
-            {t(CLIENT_NAME)}
-          </Typography.Text>
+            )}
+            <Typography.Text
+              className={clsx('site-header__title', !SHOW_HEADER_TITLE && 'visually-hidden')}
+              aria-hidden
+            >
+              {t(CLIENT_NAME)}
+            </Typography.Text>
+          </Link>
           {hasMenu ? (
-            <Menu
-              mode="horizontal"
-              items={menuItems}
-              selectedKeys={[currentPage]}
-              onClick={({ key }) => navigate(buildMenuHref(key))}
-              className="flex-1"
-            />
+            <nav aria-label={t('header.nav')} className="flex-1" style={{ minWidth: 0 }}>
+              <Menu mode="horizontal" className="site-header__nav" items={navItems} selectedKeys={[currentPage]} />
+            </nav>
           ) : null}
         </Flex>
 
-        <Space size={isSmallScreen ? 4 : 'small'}>
+        <Space
+          size={isSmallScreen ? 4 : 'middle'}
+          separator={<Divider orientation="vertical" className="site-header__divider" aria-hidden />}
+        >
           {TRANSLATED && (
             <Button
               htmlType="button"
-              type="text"
-              className="header-button"
-              icon={<RiTranslate aria-hidden style={{ transform: 'translateY(1px)' }} />}
+              size="small"
+              className="site-header__lang"
+              lang={newLang}
+              aria-label={LNGS_FULL_NAMES[newLang]}
               onClick={changeLanguage}
             >
-              {isSmallScreen ? '' : LNGS_FULL_NAMES[LNG_CHANGE[language]]}
+              {isSmallScreen ? newLang.toUpperCase() : LNGS_FULL_NAMES[newLang]}
             </Button>
           )}
-          <HeaderAuth />
+          {SHOW_SIGN_IN && <HeaderAuth />}
         </Space>
       </Flex>
     </Header>
@@ -272,38 +191,15 @@ const HeaderAuth = () => {
     performSignOut();
   }, [performSignOut]);
 
-  if (!SHOW_SIGN_IN) return null;
-
-  if (!PCGL_MODE) {
-    return isAuthenticated || isSigningOut ? (
-      <Button
-        htmlType="button"
-        color="default"
-        className="header-button"
-        icon={<LogoutOutlined aria-hidden />}
-        shape="round"
-        variant="filled"
-        loading={isSigningOut}
-        onClick={handleSignOut}
-      >
-        {isSmallScreen ? '' : t('Sign Out')}
-      </Button>
-    ) : (
-      <Button type="primary" shape="round" icon={<LoginOutlined aria-hidden />} onClick={performSignIn}>
-        {sessionStatus === 'loading' ? t('Loading...') : isSmallScreen ? '' : t('Sign In')}
-      </Button>
-    );
-  }
-
   if (isAuthenticated || isSigningOut) {
     const primaryLabel = userName ?? userEmail;
 
-    if (!primaryLabel) {
+    if (!primaryLabel || isSigningOut) {
       return (
         <Button
           aria-label={t('Sign Out')}
           htmlType="button"
-          shape={isSmallScreen && !isSigningOut ? 'circle' : 'round'}
+          shape={isSmallScreen ? 'circle' : 'round'}
           icon={<LogoutOutlined aria-hidden />}
           loading={isSigningOut}
           onClick={handleSignOut}
@@ -315,20 +211,39 @@ const HeaderAuth = () => {
       );
     }
 
+    const secondaryLabel = userName ? userEmail : undefined;
+
+    const headerAuthItems: MenuItem[] = [
+      {
+        key: 'user',
+        label: (
+          <span className={clsx('site-header__user-text', isSmallScreen && 'visually-hidden')} aria-hidden>
+            <span className="site-header__user-name">{primaryLabel}</span>
+            {secondaryLabel && <span className="site-header__user-email">{secondaryLabel}</span>}
+          </span>
+        ),
+        icon: <UserOutlined aria-hidden />,
+        children: [
+          {
+            key: 'sign-out',
+            icon: <LogoutOutlined aria-hidden />,
+            label: <span aria-label={t('Sign Out')}>{t('Sign Out')}</span>,
+          },
+        ],
+      },
+    ];
+
     return (
-      <HeaderUserMenu className="focus-ring" name={primaryLabel} email={userName ? userEmail : undefined}>
-        <Button
-          htmlType="button"
-          color="default"
-          icon={<LogoutOutlined aria-hidden />}
-          variant="text"
-          block
-          loading={isSigningOut}
-          onClick={handleSignOut}
-        >
-          {t('Sign Out')}
-        </Button>
-      </HeaderUserMenu>
+      <Menu
+        aria-label={t('header.userMenu.label')}
+        mode="horizontal"
+        className="site-header__user-menu"
+        items={headerAuthItems}
+        selectable={false}
+        disabledOverflow
+        triggerSubMenuAction="click"
+        onClick={({ key }) => key === 'sign-out' && handleSignOut()}
+      />
     );
   }
 
@@ -337,7 +252,7 @@ const HeaderAuth = () => {
       aria-label={sessionStatus === 'loading' ? t('Loading...') : t('Sign In')}
       htmlType="button"
       type="primary"
-      shape={isSmallScreen && sessionStatus != 'loading' ? 'circle' : 'round'}
+      shape={isSmallScreen ? 'circle' : 'round'}
       icon={<LoginOutlined aria-hidden />}
       onClick={performSignIn}
     >

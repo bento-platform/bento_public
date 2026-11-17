@@ -30,7 +30,7 @@ export const Footer = () => {
   const t = useTranslationFn();
   return (
     <FooterContainer
-      id="pcgl-footer"
+      id="site-footer"
       className="pcgl-layout-wrap"
       translator={t}
       PortalBand={<BentoBand />}
