@@ -1,12 +1,8 @@
-'use client';
+import ClientApp from './ClientApp';
 
-import dynamic from 'next/dynamic';
-
-// ssr: false because the legacy app relies on browser-only APIs
-// (Leaflet, antd's cssinjs, react-router-dom's BrowserRouter).
+// Server component on purpose: Next passes `params`/`searchParams` Promises to page components. In a client page,
+// dev tooling enumerates those props in the browser and logs sync-dynamic-apis warnings.
 // TODO: Adapt paths to static routes
-const App = dynamic(() => import('@/App'), { ssr: false });
-
 export default function Page() {
-  return <App />;
+  return <ClientApp />;
 }
