@@ -84,13 +84,59 @@ export const useHasResourcePermission = (
 
 export const usePerformAuth = () => useCallback(() => signIn(BENTO_OIDC_PROVIDER_ID), []);
 
+const SIGN_IN_LOCK = 'bento-auto-signin';
+const SIGN_IN_STARTED_KEY = 'bento-auto-signin-started-at';
+// How long a started sign-in blocks other tabs from starting their own. Long enough for a user to type credentials.
+const SIGN_IN_IN_PROGRESS_MS = 2 * 60 * 1000;
+
+const readSignInStartedAt = (): number => {
+  try {
+    return Number(localStorage.getItem(SIGN_IN_STARTED_KEY)) || 0;
+  } catch {
+    return 0;
+  }
+};
+
+const writeSignInStartedAt = (value: number | undefined) => {
+  try {
+    if (value === undefined) localStorage.removeItem(SIGN_IN_STARTED_KEY);
+    else localStorage.setItem(SIGN_IN_STARTED_KEY, String(value));
+  } catch {
+    // Storage is unavailable: tabs cannot coordinate, so each one signs in on its own.
+  }
+};
+
+// Auth.js stores its OAuth `state` in one cookie shared by every tab. If two tabs (or two effects) start sign-in at
+// the same time, the second flow overwrites the cookie and the first callback fails with InvalidCheck. So only one
+// auto sign-in may start at a time. The Web Lock makes the check-and-set atomic across tabs; the localStorage
+// timestamp remembers that a sign-in is in progress after the lock is released (the page navigates away).
+const startAutoSignIn = async () => {
+  const start = () => {
+    if (Date.now() - readSignInStartedAt() < SIGN_IN_IN_PROGRESS_MS) return;
+    writeSignInStartedAt(Date.now());
+    return signIn(BENTO_OIDC_PROVIDER_ID);
+  };
+  if (typeof navigator !== 'undefined' && navigator.locks) {
+    await navigator.locks.request(SIGN_IN_LOCK, async () => {
+      await start();
+    });
+  } else {
+    await start();
+  }
+};
+
 export const useHandleRefreshTokenError = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+  const error = session?.error;
+
   useEffect(() => {
-    if (session?.error === 'RefreshTokenError') {
-      signIn(BENTO_OIDC_PROVIDER_ID);
+    if (error === 'RefreshTokenError') {
+      startAutoSignIn();
+    } else if (status === 'authenticated') {
+      // Signed in with a healthy session (possibly via another tab): the next expiry may auto sign in again.
+      writeSignInStartedAt(undefined);
     }
-  }, [session?.error]);
+  }, [error, status]);
 };
 
 export const usePerformSignOut = () =>
