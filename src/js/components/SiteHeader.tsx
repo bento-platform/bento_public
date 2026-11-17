@@ -13,7 +13,6 @@ import { getCurrentPage } from '@/utils/router';
 import { LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
 import {
   CLIENT_NAME,
-  PCGL_MODE,
   SHOW_LOGO,
   SHOW_HEADER_TITLE,
   SHOW_SIGN_IN,
@@ -149,7 +148,7 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
         </Flex>
 
         <Space
-          size={isSmallScreen ? 4 : 'middle'}
+          size={isSmallScreen ? 12 : 'middle'}
           separator={<Divider orientation="vertical" className="site-header__divider" aria-hidden />}
         >
           {TRANSLATED && (
