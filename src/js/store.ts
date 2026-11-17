@@ -35,6 +35,8 @@ export const store = configureStore({
     igv: igvState,
     ui,
   },
+  // Redux DevTools only outside production builds.
+  devTools: process.env.NODE_ENV !== 'production',
 });
 
 export type RootState = ReturnType<typeof store.getState>;
