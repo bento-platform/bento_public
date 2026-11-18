@@ -716,7 +716,6 @@
     "track_controls_per_assembly": "Paramétrage des pistes {{assemblyId}}"
   },
   "header": {
-    "home": "Accueil",
     "nav": "Navigation principale",
     "skip_links": {
       "main": "Aller au contenu principal",

@@ -120,7 +120,7 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
 
       <Flex align="center" justify="space-between" gap={isSmallScreen ? 'small' : 'large'} className="h-full">
         <Flex align="center" gap={isSmallScreen ? 'small' : 'large'} className="flex-1" style={{ minWidth: 0 }}>
-          <Link to={rootUrl} aria-label={t('header.home')} className="site-header__home focus-ring">
+          <Link to={rootUrl} className="site-header__home focus-ring">
             {SHOW_LOGO && (
               <Image
                 src={logo}
@@ -132,10 +132,7 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
                 priority
               />
             )}
-            <Typography.Text
-              className={clsx('site-header__title', !SHOW_HEADER_TITLE && 'visually-hidden')}
-              aria-hidden
-            >
+            <Typography.Text className={clsx('site-header__title', !SHOW_HEADER_TITLE && 'visually-hidden')}>
               {t(CLIENT_NAME)}
             </Typography.Text>
           </Link>

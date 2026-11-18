@@ -726,7 +726,6 @@
     "track_controls_per_assembly": "{{assemblyId}} track controls"
   },
   "header": {
-    "home": "Home",
     "nav": "Main navigation",
     "skip_links": {
       "main": "Skip to main content",
