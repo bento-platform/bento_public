@@ -2,7 +2,7 @@ import { store } from '@/store';
 import { RequestStatus } from '@/types/requests';
 
 import { getDrsRecord } from '@/features/drs/getDrsRecord.thunk';
-import { toBffUrl } from '@/constants/bff';
+import { toBffUrl } from '@/utils/bff';
 import { PUBLIC_URL_NO_TRAILING_SLASH } from '@/config';
 import type { DrsRecord } from './types';
 

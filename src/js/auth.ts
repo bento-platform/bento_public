@@ -164,7 +164,7 @@ export const getServerAccessToken = async (req: Request): Promise<string | undef
   return token.access_token;
 };
 
-// Defines the shape of the session and JWT for Bento Public - without this, accessing session.accessToken,
+// Defines the shape of the session and JWT for Bento Public - without this, accessing session.error,
 // token.access_token, etc. elsewhere would be a type error.
 declare module 'next-auth' {
   interface Session {

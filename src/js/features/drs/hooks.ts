@@ -4,7 +4,7 @@ import type { DrsRecordState } from './drs.store';
 import { RequestStatus } from '@/types/requests';
 import { getDrsRecord } from '@/features/drs/getDrsRecord.thunk';
 import { isDrs } from './utils';
-import { toBffUrl } from '@/constants/bff';
+import { toBffUrl } from '@/utils/bff';
 import { PUBLIC_URL_NO_TRAILING_SLASH } from '@/config';
 
 export const useDrsObjectOrPassThrough = (uri: string | undefined): DrsRecordState | null => {

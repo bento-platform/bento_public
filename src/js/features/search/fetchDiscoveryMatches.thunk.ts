@@ -6,7 +6,7 @@ import type { DiscoveryMatchPhenopacket } from '@/features/search/types';
 import { bentoKatsuEntityToResultsDataEntity, searchQueryParamsFromState } from '@/features/search/utils';
 import type { BentoKatsuEntity } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
-import { scopedAuthorizedRequestConfig } from '@/utils/requests';
+import { scopedRequestConfig } from '@/utils/requests';
 import { printAPIError } from '@/utils/error.util';
 
 type DiscoveryMatchPagination = {
@@ -36,7 +36,7 @@ export const fetchDiscoveryMatches = createAsyncThunk<
     return axios
       .get(
         katsuDiscoveryMatchesUrl,
-        scopedAuthorizedRequestConfig(state, [
+        scopedRequestConfig(state, [
           ...searchQueryParamsFromState(state.query),
           ['_entity', queryEntity],
           ['_page', state.query.matchData[queryEntity].page.toString()],

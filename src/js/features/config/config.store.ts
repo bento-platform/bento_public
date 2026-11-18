@@ -1,7 +1,8 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { BFF_PREFIX, toBffUrl } from '@/constants/bff';
+import { BFF_PREFIX } from '@/constants/bff';
+import { toBffUrl } from '@/utils/bff';
 import { PUBLIC_URL_NO_TRAILING_SLASH } from '@/config';
 import { katsuDiscoveryRulesUrl } from '@/constants/configConstants';
 import type { ServiceInfoStore, ServicesResponse } from '@/types/services';
@@ -9,13 +10,13 @@ import type { RootState } from '@/store';
 import type { DiscoveryRules } from '@/types/discovery/rules';
 import { RequestStatus } from '@/types/requests';
 import { printAPIError } from '@/utils/error.util';
-import { scopedAuthorizedRequestConfig } from '@/utils/requests';
+import { scopedRequestConfig } from '@/utils/requests';
 
 export const makeGetConfigRequest = createAsyncThunk<DiscoveryRules, void, { rejectValue: string; state: RootState }>(
   'config/getConfigData',
   (_, { rejectWithValue, getState }) => {
     return axios
-      .get(katsuDiscoveryRulesUrl, scopedAuthorizedRequestConfig(getState()))
+      .get(katsuDiscoveryRulesUrl, scopedRequestConfig(getState()))
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue));
   },

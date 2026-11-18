@@ -8,7 +8,7 @@ import { useSelectedScope } from '@/features/metadata/hooks';
 import { useSearchQuery } from '@/features/search/hooks';
 import { searchQueryParamsFromState } from '@/features/search/utils';
 import { experimentResultBatchUrl, katsuDiscoveryMatchesUrl } from '@/constants/configConstants';
-import { scopedAuthorizedRequestConfigFromParts } from '@/utils/requests';
+import { scopedRequestConfigFromParts } from '@/utils/requests';
 
 /**
  * Manifest (TSV) export - PCGL-only, experiment results only. Unlike CSV/XLSX, it has a fixed set of columns (no
@@ -37,7 +37,7 @@ export const useExportFileManifest = (exportWholeScope: boolean) => {
       let res;
       if (exportWholeScope) {
         res = await axios.get(experimentResultBatchUrl, {
-          ...scopedAuthorizedRequestConfigFromParts(scope, [['format', 'pcgl_manifest']]),
+          ...scopedRequestConfigFromParts(scope, [['format', 'pcgl_manifest']]),
           responseType: 'blob',
         });
       } else if (selectedIds.length) {
@@ -48,7 +48,7 @@ export const useExportFileManifest = (exportWholeScope: boolean) => {
         );
       } else {
         res = await axios.get(katsuDiscoveryMatchesUrl, {
-          ...scopedAuthorizedRequestConfigFromParts(scope, [
+          ...scopedRequestConfigFromParts(scope, [
             ...searchQueryParamsFromState(query),
             ['_entity', 'experiment_result'],
             ['_format', 'pcgl_manifest'],

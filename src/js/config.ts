@@ -1,6 +1,6 @@
 import { stringToBoolean } from '@/utils/strings';
 import { LOCALSTORAGE_DEV_SETTINGS_KEY } from '@/constants/ui';
-import { toBffUrl } from '@/constants/bff';
+import { toBffUrl } from '@/utils/bff';
 
 export interface PublicConfig {
   // General
