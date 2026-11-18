@@ -17,7 +17,7 @@ export const useTitleBreadcrumbItems = (scopeHeaderMenuItems: MenuItem[]): Bread
   const language = useLanguage();
   const isSmallScreen = useSmallScreen();
 
-  const { scope, fixedProject, fixedDataset } = useSelectedScope();
+  const { scope, isSoleProject, isSoleDataset } = useSelectedScope();
   const { projectTitle, datasetTitle } = useSelectedScopeTitles();
   const cameFromProject = useDatasetBackTarget()?.origin === 'project';
 
@@ -32,8 +32,8 @@ export const useTitleBreadcrumbItems = (scopeHeaderMenuItems: MenuItem[]): Bread
 
     const items: BreadcrumbItemType[] = [];
 
-    if (scope.project && !fixedProject && !(PCGL_MODE && scope.dataset && !cameFromProject)) {
-      // If we have more than one project (or we're in catalogue mode), fixedProject will be false, meaning we should
+    if (scope.project && !isSoleProject && !(PCGL_MODE && scope.dataset && !cameFromProject)) {
+      // If we have more than one project (or we're in catalogue mode), isSoleProject will be false, meaning we should
       // show project context in the navigation:
       items.push({
         title: projectTitle,
@@ -41,11 +41,11 @@ export const useTitleBreadcrumbItems = (scopeHeaderMenuItems: MenuItem[]): Bread
       });
     }
 
-    if (scope.dataset && !fixedDataset) {
+    if (scope.dataset && !isSoleDataset) {
       // If we have a dataset selected, and we don't have just a single project+dataset, we should show the dataset
       // context in the navigation.
-      if (scope.project && fixedProject) {
-        // If we additionally have a fixed project, we can "anchor" the dataset visually vs. the root page using a
+      if (scope.project && isSoleProject) {
+        // If we additionally have a sole project, we can "anchor" the dataset visually vs. the root page using a
         // home icon/link:
         items.push({
           title: <HomeOutlined aria-label={t('Back to project')} />,
@@ -80,8 +80,8 @@ export const useTitleBreadcrumbItems = (scopeHeaderMenuItems: MenuItem[]): Bread
     datasetTitle,
     cameFromProject,
     scope,
-    fixedProject,
-    fixedDataset,
+    isSoleProject,
+    isSoleDataset,
     currentPage,
     getRouteTitleAndIcon,
     extraBreadcrumb,

@@ -12,7 +12,7 @@ import BeaconLogo from '@/components/Beacon/BeaconLogo';
 
 import { catalogueStateToQueryParams } from '@/features/catalogue/useCatalogueUrlSync';
 import { useCatalogueState } from '@/features/catalogue/hooks';
-import { FORCE_CATALOGUE } from '@/config';
+import { BEACON_NETWORK_ENABLED, BEACON_UI_ENABLED, FORCE_CATALOGUE } from '@/config';
 import { useMetadata, useScopeHasData, useSelectedScope } from '@/features/metadata/hooks';
 import { type DiscoveryScope, selectScope } from '@/features/metadata/metadata.store';
 import { useDatasetBackTargetState } from '@/features/ui/hooks';
@@ -73,12 +73,12 @@ export const useNavigateToScope = () => {
     (
       newScope: DiscoveryScope,
       suffix: string = '',
-      fixedProjectAndDataset: boolean = false,
+      isSoleProjectAndDataset: boolean = false,
       navigateOptions: NavigateOptions | undefined = undefined
     ) => {
       // This action will internally handle already-equal scope selections to avoid accidental re-renders:
       dispatch(selectScope(newScope));
-      navigate(scopeToUrl(newScope, language, suffix, fixedProjectAndDataset), navigateOptions);
+      navigate(scopeToUrl(newScope, language, suffix, isSoleProjectAndDataset), navigateOptions);
     },
     [dispatch, navigate, language]
   );
@@ -181,56 +181,63 @@ export const useGetRouteTitleAndIcon = () => {
   );
 };
 
+export type SiteMenuItems = {
+  siteHeaderMenuItems: MenuItem[];
+  scopeHeaderMenuItems: MenuItem[];
+};
+
 /**
- * Hook returning a 'tuple' of [site header menu items, scope header menu items]. Menu item arrays with only one entry
- * should not be displayed by the UI.
+ * Hook returning the site header and scope header menu items. Menu item arrays with only one entry should not be
+ * displayed by the UI.
  */
-export const useSiteMenuItems = (): [MenuItem[], MenuItem[]] => {
+export const useSiteMenuItems = (): SiteMenuItems => {
   const t = useTranslationFn();
-  const { fixedProject, fixedDataset, scope } = useSelectedScope();
+  const { isSoleProject, isSoleDataset, scope } = useSelectedScope();
   const location = useLocation();
   const page = getCurrentPage(location);
 
   const scopeHasData = useScopeHasData();
 
-  const createMenuItem = useCallback(
-    (key: string, label: string, icon?: ReactNode, children?: MenuItem[]): MenuItem => ({
-      key,
-      icon,
-      children,
-      label: t(label),
-    }),
-    [t]
-  );
-
   const getRouteTitleAndIcon = useGetRouteTitleAndIcon();
+
+  const createMenuItem = useCallback(
+    (route: string): MenuItem => {
+      const [label, icon] = getRouteTitleAndIcon(route);
+      return { key: route, icon, label: t(label) };
+    },
+    [t, getRouteTitleAndIcon]
+  );
 
   return useMemo(() => {
     // Serves weird overloaded purpose as both catalogue and data explore route:
-    const exploreItem = createMenuItem(BentoRoute.Explore, ...getRouteTitleAndIcon(BentoRoute.Explore));
+    const exploreItem = createMenuItem(BentoRoute.Explore);
 
-    const topBarItems: MenuItem[] = [exploreItem];
-    const scopeItems: MenuItem[] = [exploreItem];
+    const siteHeaderItems: MenuItem[] = [exploreItem];
+    const scopeHeaderItems: MenuItem[] = [exploreItem];
 
-    const putInTopBar = fixedDataset || (fixedProject && !scope.dataset) || !scope.project;
+    const putInSiteHeader = isSoleDataset || (isSoleProject && !scope.dataset) || !scope.project;
+    const pageAllowsExtraItems =
+      page !== BentoRoute.Phenopackets && (page !== BentoRoute.BeaconNetwork || putInSiteHeader);
 
-    if (page !== BentoRoute.Phenopackets && (page !== BentoRoute.BeaconNetwork || putInTopBar)) {
-      const itemsRef = putInTopBar ? topBarItems : scopeItems;
+    if (pageAllowsExtraItems) {
+      const itemsRef = putInSiteHeader ? siteHeaderItems : scopeHeaderItems;
 
-      if (BentoRoute.Beacon && scopeHasData) {
-        itemsRef.push(createMenuItem(BentoRoute.Beacon, ...getRouteTitleAndIcon(BentoRoute.Beacon)));
+      if (BEACON_UI_ENABLED && scopeHasData) {
+        itemsRef.push(createMenuItem(BentoRoute.Beacon!));
       }
 
       // TODO: can enable for project if we get a more extensive project model
       if (scope.dataset) {
-        itemsRef.push(createMenuItem(BentoRoute.About, ...getRouteTitleAndIcon(BentoRoute.About)));
+        itemsRef.push(createMenuItem(BentoRoute.About));
       }
     }
 
-    if (BentoRoute.BeaconNetwork && putInTopBar) {
-      topBarItems.push(createMenuItem(BentoRoute.BeaconNetwork, ...getRouteTitleAndIcon(BentoRoute.BeaconNetwork)));
+    if (BEACON_NETWORK_ENABLED && putInSiteHeader) {
+      siteHeaderItems.push(createMenuItem(BentoRoute.BeaconNetwork!));
     }
 
-    return (scopeItems.length > 1 ? [[], scopeItems] : [topBarItems, []]) as [MenuItem[], MenuItem[]];
-  }, [getRouteTitleAndIcon, createMenuItem, scope, fixedProject, fixedDataset, scopeHasData, page]);
+    return scopeHeaderItems.length > 1
+      ? { siteHeaderMenuItems: [], scopeHeaderMenuItems: scopeHeaderItems }
+      : { siteHeaderMenuItems: siteHeaderItems, scopeHeaderMenuItems: [] };
+  }, [createMenuItem, scope, isSoleProject, isSoleDataset, scopeHasData, page]);
 };

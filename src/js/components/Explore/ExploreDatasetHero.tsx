@@ -32,7 +32,7 @@ type RecordRow = { icon: ReactNode; label: string; value: ReactNode };
 const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
   const t = useTranslationFn();
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
-  const { fixedDataset } = useSelectedScope();
+  const { isSoleDataset } = useSelectedScope();
 
   // In PCGL mode (always a dataset scope here), hasAccess means download:metadata, i.e. the user can get the manifest.
   const { hasAccess, hasAttempted } = useDatasetAccess();
@@ -106,7 +106,7 @@ const ExploreDatasetHero = ({ dataset }: { dataset: Dataset }) => {
       ),
     });
   }
-  if (!fixedDataset) {
+  if (!isSoleDataset) {
     // If we have a fixed dataset, don't bother showing the dataset internal identifier as the user won't need it.
     rows.push({
       icon: <DatabaseOutlined aria-hidden="true" />,

@@ -45,8 +45,8 @@ export const validProjectDataset = (
   const valid: DiscoveryScopeSelection = {
     scope: { project: undefined, dataset: undefined },
     scopeSet: true,
-    fixedProject: false,
-    fixedDataset: false,
+    isSoleProject: false,
+    isSoleDataset: false,
   };
 
   const projects = Object.values(projectsByID);
@@ -56,12 +56,12 @@ export const validProjectDataset = (
     //  - if there is only one project, it should be auto-selected, since it contains the same set of data as the node.
     const defaultProj = projects[0];
     valid.scope.project = defaultProj.identifier;
-    valid.fixedProject = true;
+    valid.isSoleProject = true;
     if (defaultProj.datasets.length === 1) {
       // TODO: only if the dataset-level permissions equal the project-level ones...
       // automatic dataset scoping if only 1
       valid.scope.dataset = defaultProj.datasets[0].identifier;
-      valid.fixedDataset = true;
+      valid.isSoleDataset = true;
       // early return to ignore redundant projectId and datasetId
       return valid;
     }
@@ -82,12 +82,12 @@ export const scopeToUrl = (
   scope: DiscoveryScope,
   lang: string,
   suffix: string = '',
-  fixedProjectAndDataset: boolean = false
+  isSoleProjectAndDataset: boolean = false
 ): string => {
   // If we have >1 dataset, we need the URL to match the validated scope, so we create a new path and go there.
-  // Otherwise (with 1 dataset, i.e., fixedProjectAndDataset), keep URL as clean as possible - with no IDs present.
+  // Otherwise (with 1 dataset, i.e., isSoleProjectAndDataset), keep URL as clean as possible - with no IDs present.
 
-  if (fixedProjectAndDataset || (!scope.project && !scope.dataset)) {
+  if (isSoleProjectAndDataset || (!scope.project && !scope.dataset)) {
     return `/${lang}/${suffix}`;
   } else if (scope.dataset) {
     // Dataset URLs no longer include project
@@ -102,7 +102,8 @@ export const langAndScopeSelectionToUrl = (
   lang: string,
   scopeSelection: DiscoveryScopeSelection,
   suffix: string
-): string => scopeToUrl(scopeSelection.scope, lang, suffix, scopeSelection.fixedProject && scopeSelection.fixedDataset);
+): string =>
+  scopeToUrl(scopeSelection.scope, lang, suffix, scopeSelection.isSoleProject && scopeSelection.isSoleDataset);
 
 export const scopeEqual = (s1: DiscoveryScope, s2: DiscoveryScope): boolean =>
   s1.project === s2.project && s1.dataset === s2.dataset;
