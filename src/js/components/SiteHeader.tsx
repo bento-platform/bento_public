@@ -196,7 +196,7 @@ const HeaderAuth = () => {
   const [isSigningOut, setIsSigningOut] = useState(false);
   const handleSignOut = useCallback(() => {
     setIsSigningOut(true);
-    performSignOut();
+    performSignOut().catch(() => setIsSigningOut(false));
   }, [performSignOut]);
 
   // Authenticated case: show user info and menu or sing out button
@@ -226,7 +226,7 @@ const HeaderAuth = () => {
       {
         key: 'user',
         label: (
-          <span className={clsx('site-header__user-text', isSmallScreen && 'visually-hidden')} aria-hidden>
+          <span className={clsx('site-header__user-text', isSmallScreen && 'visually-hidden')}>
             <span className="site-header__user-name">{primaryLabel}</span>
             {secondaryLabel && <span className="site-header__user-email">{secondaryLabel}</span>}
           </span>
@@ -236,7 +236,8 @@ const HeaderAuth = () => {
           {
             key: 'sign-out',
             icon: <LogoutOutlined aria-hidden />,
-            label: <span aria-label={t('Sign Out')}>{t('Sign Out')}</span>,
+            label: t('Sign Out'),
+            danger: true,
           },
         ],
       },
