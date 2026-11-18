@@ -483,9 +483,8 @@ body {
     background: transparent;
     line-height: calc(var(--header-height) - 1px);
 
-    & .ant-menu-item-selected,
-    & .ant-menu-item-selected a {
-      color: inherit;
+    & .ant-menu-item-selected {
+      color: var(--ant-color-primary)
     }
   }
 
