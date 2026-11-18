@@ -26,6 +26,9 @@ const permissionResources = (projects: ProjectsResponse['results']): Resource[] 
   ]),
 ];
 
+// The response depends on the user's session, so shared caches must never store it.
+const json = (body: unknown, status = 200) => Response.json(body, { status, headers: { 'Cache-Control': 'no-store' } });
+
 const fetchPermissions = async (resources: Resource[], upstreamHeaders: Headers): Promise<Record<string, string[]>> => {
   const headers = new Headers(upstreamHeaders);
   headers.set('Content-Type', 'application/json');
@@ -46,7 +49,7 @@ const fetchPermissions = async (resources: Resource[], upstreamHeaders: Headers)
 export async function GET(request: NextRequest) {
   if (!KATSU_URL || !AUTHZ_URL) {
     console.error('KATSU_URL and BENTO_AUTHZ_SERVICE_URL must be set to list projects');
-    return Response.json({ message: 'Projects endpoint is not configured' }, { status: 500 });
+    return json({ message: 'Projects endpoint is not configured' }, 500);
   }
 
   const upstreamHeaders = await makeUpstreamHeaders(request);
@@ -54,7 +57,7 @@ export async function GET(request: NextRequest) {
   const katsuRes = await fetch(`${KATSU_URL}/api/projects`, { headers: upstreamHeaders });
   if (!katsuRes.ok) {
     console.error(`Katsu responded with ${katsuRes.status} when listing projects`);
-    return Response.json({ message: 'Could not fetch projects' }, { status: katsuRes.status });
+    return json({ message: 'Could not fetch projects' }, katsuRes.status);
   }
   const projects = (await katsuRes.json()) as ProjectsResponse;
 
@@ -69,5 +72,5 @@ export async function GET(request: NextRequest) {
   }
 
   const body: ProjectsWithPermissionsResponse = { ...projects, permissions, permissionsError };
-  return Response.json(body);
+  return json(body);
 }
