@@ -24,7 +24,7 @@
     "@types/geojson": "^7946.0.16",
     "antd": "^6.6.4",
     "axios": "^1.8.4",
-    "bento-auth-js": "^8.0.0",
+    "bento-auth-js": "github:bento-platform/bento_auth_js#feat/core-entrypoint",
     "bento-charts": "^4.3.1",
     "bento-file-display": "https://github.com/bento-platform/bento-file-display/releases/download/v0.5.2/bento-file-display-v0.5.2.tgz",
     "clsx": "^2.1.1",

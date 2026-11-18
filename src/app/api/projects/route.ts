@@ -1,14 +1,12 @@
-// Deep imports: bento-auth-js's main entry also loads its React contexts, which call createContext at module load.
-// That throws in the server React build used by Route Handlers. These two modules have no React dependency.
 import {
   type Resource,
   RESOURCE_EVERYTHING,
+  makeAuthorizationHeader,
   makeProjectDatasetDataTypeResource,
   makeProjectDatasetResource,
   makeProjectResource,
   makeResourceKey,
-} from 'bento-auth-js/dist/resources';
-import { makeAuthorizationHeader } from 'bento-auth-js/dist/utils';
+} from 'bento-auth-js';
 import type { NextRequest } from 'next/server';
 import { getServerAccessToken } from '@/auth';
 import { AUTHZ_URL, KATSU_URL } from '@/env.server';
