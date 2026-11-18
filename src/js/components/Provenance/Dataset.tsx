@@ -1,7 +1,7 @@
 import { lazy, Suspense, type ReactNode, useCallback, useMemo, useState } from 'react';
 
-import { Avatar, Button, Card, Flex, List, Typography } from 'antd';
-import { PieChartOutlined, SolutionOutlined } from '@ant-design/icons';
+import { Avatar, Button, Card, Flex, List, Tooltip, Typography } from 'antd';
+import { LockOutlined, PieChartOutlined, SolutionOutlined } from '@ant-design/icons';
 import { FaDatabase } from 'react-icons/fa';
 
 import { PCGL_MODE } from '@/config';
@@ -15,6 +15,7 @@ import type { ResourcePermissionsState } from '@/features/auth/hooks';
 import { getCurrentPage } from '@/utils/router';
 import { useAppDispatch, useLanguage, useTranslationFn } from '@/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
+import { useIsPcglDatasetLocked } from '@/hooks/useDatasetAccess';
 import { nonEmptyCounts } from '@/utils/counts';
 import { isoDateToString } from '@/utils/strings';
 import CountsDisplay from '@Util/CountsDisplay';
@@ -32,6 +33,18 @@ const MAX_KEYWORDS = 4;
 // catalogue-page visitor downloads for what's a rarely-opened modal (one instance imported per Dataset card).
 const DatasetProvenanceModal = lazy(() => import('./DatasetProvenance/DatasetProvenanceModal'));
 
+// A separate component, so the permission hooks only run when the parent renders it (in PCGL mode).
+const PcglDatasetLockIcon = ({ project, dataset }: { project: string; dataset: string }) => {
+  const t = useTranslationFn();
+  const locked = useIsPcglDatasetLocked(project, dataset);
+  if (!locked) return null;
+  return (
+    <Tooltip title={t('dataset.locked')}>
+      <LockOutlined className="catalogue-card__lock" aria-label={t('dataset.locked')} />
+    </Tooltip>
+  );
+};
+
 const Dataset = ({
   parentProjectID,
   dataset,
@@ -40,7 +53,6 @@ const Dataset = ({
   selected,
   filteredCounts,
   fromProject,
-  // permissionsData,  TODO: render a locked/unlocked icon for access based on permissions
 }: {
   parentProjectID: string;
   dataset: Dataset;
@@ -119,6 +131,7 @@ const Dataset = ({
       <Card className="catalogue-card" style={{ opacity: faded ? 0.5 : undefined }}>
         <Flex justify="space-between" align="flex-start" gap={8}>
           <Title level={3} className="h-as-5 catalogue-card__title">
+            {PCGL_MODE && <PcglDatasetLockIcon project={parentProjectID} dataset={identifier} />}
             {t(title)}
           </Title>
           {dataset.study_status && <StatusBadge status={dataset.study_status} />}

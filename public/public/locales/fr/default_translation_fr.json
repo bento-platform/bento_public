@@ -274,7 +274,8 @@
   "dataset": {
     "expand": "plus",
     "apply_for_access": "Demande d'accès",
-    "get_manifest": "Obtenir le manifeste des fichiers"
+    "get_manifest": "Obtenir le manifeste des fichiers",
+    "locked": "Vous n'avez pas accès à cet ensemble de données"
   },
   "provenance": {
     "sections": {

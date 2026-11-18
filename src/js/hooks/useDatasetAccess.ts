@@ -1,5 +1,11 @@
 import { useMemo } from 'react';
-import { downloadData, downloadMetadata, makeProjectDatasetDataTypeResource } from 'bento-auth-js';
+import {
+  downloadData,
+  downloadMetadata,
+  makeProjectDatasetDataTypeResource,
+  makeProjectDatasetResource,
+  queryData,
+} from 'bento-auth-js';
 import { PCGL_MODE } from '@/config';
 import { scopeToResource, useSelectedScope } from '@/features/metadata/hooks';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
@@ -30,4 +36,23 @@ export const useDatasetAccess = (scope?: DiscoveryScope) => {
   const { hasPermission, hasAttempted } = useHasResourcePermissionWrapper(resource, permission);
 
   return { hasAccess: hasAttempted && hasPermission, hasAttempted };
+};
+
+/**
+ * Whether a dataset is locked for the user in PCGL mode: the user has neither download:metadata on the dataset's
+ * experiment data type nor query:data on the dataset. The projects route prefetches both resources' permissions in
+ * PCGL mode, so this hook does not send new requests in the normal case.
+ * @returns false until both permission checks have been attempted, so the lock icon does not flash on load.
+ */
+export const useIsPcglDatasetLocked = (project: string, dataset: string): boolean => {
+  const experimentResource = useMemo(
+    () => makeProjectDatasetDataTypeResource(project, dataset, 'experiment'),
+    [project, dataset]
+  );
+  const datasetResource = useMemo(() => makeProjectDatasetResource(project, dataset), [project, dataset]);
+
+  const metadata = useHasResourcePermissionWrapper(experimentResource, downloadMetadata);
+  const query = useHasResourcePermissionWrapper(datasetResource, queryData);
+
+  return metadata.hasAttempted && query.hasAttempted && !metadata.hasPermission && !query.hasPermission;
 };
