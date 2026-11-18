@@ -125,7 +125,6 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
               <Image
                 src={logo}
                 alt=""
-                aria-hidden
                 className="site-header__logo"
                 height={LOGO_HEIGHT}
                 width={LOGO_WIDTH}
@@ -140,6 +139,7 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
               {t(CLIENT_NAME)}
             </Typography.Text>
           </Link>
+
           {hasMenu ? (
             <nav aria-label={t('header.nav')} className="flex-1" style={{ minWidth: 0 }}>
               <Menu mode="horizontal" className="site-header__nav" items={navItems} selectedKeys={[currentPage]} />
@@ -163,6 +163,7 @@ const SiteHeader = ({ menuItems }: SiteHeaderProps) => {
               {isSmallScreen ? newLang.toUpperCase() : LNGS_FULL_NAMES[newLang]}
             </Button>
           )}
+
           {SHOW_SIGN_IN && <HeaderAuth />}
         </Space>
       </Flex>
@@ -177,9 +178,17 @@ const HeaderAuth = () => {
   const performSignIn = usePerformAuth();
   const performSignOut = usePerformSignOut();
 
-  const { status: sessionStatus, data: sessionData } = useSession();
+  const { data: sessionData } = useSession();
   const userName = sessionData?.user?.name?.trim() || undefined;
   const userEmail = sessionData?.user?.email?.trim() || undefined;
+
+  // fancy session loader
+  const [isSigningIn, setIsSigningIn] = useState(false);
+  const signInLabel = isSigningIn ? t('Loading...') : t('Sign In');
+  const handleSignIn = useCallback(() => {
+    setIsSigningIn(true);
+    performSignIn().catch(() => setIsSigningIn(false));
+  }, [performSignIn]);
 
   // performSignOut() clears our session before it redirects to the identity provider to end its session too, so
   // isAuthenticated flips to false mid-callback - without this, the button would flash to "Sign In" and back before
@@ -190,6 +199,7 @@ const HeaderAuth = () => {
     performSignOut();
   }, [performSignOut]);
 
+  // Authenticated case: show user info and menu or sing out button
   if (isAuthenticated || isSigningOut) {
     const primaryLabel = userName ?? userEmail;
 
@@ -248,15 +258,17 @@ const HeaderAuth = () => {
 
   return (
     <Button
-      aria-label={sessionStatus === 'loading' ? t('Loading...') : t('Sign In')}
+      aria-label={signInLabel}
       htmlType="button"
       type="primary"
       shape={isSmallScreen ? 'circle' : 'round'}
       icon={<LoginOutlined aria-hidden />}
-      onClick={performSignIn}
+      onClick={handleSignIn}
+      loading={isSigningIn}
+      disabled={isSigningIn}
     >
       <span hidden={isSmallScreen} aria-hidden>
-        {sessionStatus === 'loading' ? t('Loading...') : t('Sign In')}
+        {signInLabel}
       </span>
     </Button>
   );
