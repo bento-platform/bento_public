@@ -11,10 +11,8 @@ import {
 import { makeAuthorizationHeader } from 'bento-auth-js/dist/utils';
 import type { NextRequest } from 'next/server';
 import { getServerAccessToken } from '@/auth';
+import { AUTHZ_URL, KATSU_URL } from '@/env.server';
 import type { ProjectsResponse, ProjectsWithPermissionsResponse } from '@/types/metadata';
-
-const KATSU_URL = (process.env.KATSU_URL ?? '').replace(/\/$/, '');
-const AUTHZ_URL = (process.env.BENTO_AUTHZ_SERVICE_URL ?? '').replace(/\/$/, '');
 
 /**
  * Every resource the frontend checks permissions on for the given projects (see useDatasetAccess and

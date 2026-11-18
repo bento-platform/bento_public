@@ -1,4 +1,4 @@
-import { stringToBoolean } from '@/utils/strings';
+import { stringToBoolean, stripTrailingSlash } from '@/utils/env';
 import { LOCALSTORAGE_DEV_SETTINGS_KEY } from '@/constants/ui';
 import { toBffUrl } from '@/utils/bff';
 
@@ -33,8 +33,6 @@ export interface PublicConfig {
 
 // Declaration required for global config
 declare let BENTO_PUBLIC_CONFIG: PublicConfig;
-
-const stripTrailingSlash = (x: string): string => x.replace(/\/$/g, '');
 
 // General
 export const CLIENT_NAME = BENTO_PUBLIC_CONFIG.CLIENT_NAME ?? process.env.BENTO_PUBLIC_CLIENT_NAME;

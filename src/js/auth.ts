@@ -2,12 +2,9 @@ import NextAuth from 'next-auth';
 import { getToken } from 'next-auth/jwt';
 import type { OAuthConfig } from 'next-auth/providers';
 import type { JWT } from 'next-auth/jwt';
+import { AUTH_SECRET, CLIENT_ID, CLIENT_SECRET, OPENID_CONFIG_URL, PUBLIC_URL } from '@/env.server';
 import { BENTO_OIDC_PROVIDER_ID } from '@/features/auth/constants';
 
-export const CLIENT_ID = process.env.CLIENT_ID ?? '';
-// Confidential client secret. Server-side only - never expose to the browser.
-const CLIENT_SECRET = process.env.CLIENT_SECRET ?? '';
-const OPENID_CONFIG_URL = process.env.OPENID_CONFIG_URL ?? '';
 const ISSUER = OPENID_CONFIG_URL.replace(/\/\.well-known\/.*$/, '');
 
 type BentoTokenSet = {
@@ -154,8 +151,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 export const getServerJwt = (req: Request) =>
   getToken({
     req,
-    secret: process.env.AUTH_SECRET,
-    secureCookie: (process.env.BENTO_PUBLIC_URL ?? '').startsWith('https:'),
+    secret: AUTH_SECRET,
+    secureCookie: PUBLIC_URL.startsWith('https:'),
   });
 
 export const getServerAccessToken = async (req: Request): Promise<string | undefined> => {
