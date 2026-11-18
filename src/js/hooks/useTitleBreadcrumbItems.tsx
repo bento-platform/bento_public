@@ -45,7 +45,7 @@ export const useTitleBreadcrumbItems = (scopeHeaderMenuItems: MenuItem[]): Bread
       // If we have a dataset selected, and we don't have just a single project+dataset, we should show the dataset
       // context in the navigation.
       if (scope.project && isSoleProject) {
-        // If we additionally have a fixed project, we can "anchor" the dataset visually vs. the root page using a
+        // If we additionally have a sole project, we can "anchor" the dataset visually vs. the root page using a
         // home icon/link:
         items.push({
           title: <HomeOutlined aria-label={t('Back to project')} />,
