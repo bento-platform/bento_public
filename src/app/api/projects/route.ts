@@ -13,9 +13,6 @@ import type { NextRequest } from 'next/server';
 import { getServerAccessToken } from '@/auth';
 import type { ProjectsResponse, ProjectsWithPermissionsResponse } from '@/types/metadata';
 
-// Evaluated at request time: the response depends on the session, and URLs come from per-deployment env vars.
-export const dynamic = 'force-dynamic';
-
 const KATSU_URL = (process.env.KATSU_URL ?? '').replace(/\/$/, '');
 const AUTHZ_URL = (process.env.BENTO_AUTHZ_SERVICE_URL ?? '').replace(/\/$/, '');
 
