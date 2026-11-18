@@ -3,6 +3,10 @@ import { getServerAccessToken } from '@/auth';
 import { BFF_PREFIX } from '@/constants/bff';
 import { isBffService } from '@/utils/bff';
 
+// TODO: This proxy is a temporary solution. Ideally, the BFF app itself would handle service proxying, so that URLs
+//  (e.g., DRS access URLs) would not need to be rewritten to /api/bff/..., and standard GA4GH DRS URLs could be passed
+//  through directly.
+
 // The gateway the proxy forwards to; the Next server reaches the Bento services the same way browsers do.
 const UPSTREAM_URL = (process.env.BENTO_PUBLIC_URL ?? '').replace(/\/$/, '');
 
