@@ -2,7 +2,7 @@ import { store } from '@/store';
 import { RequestStatus } from '@/types/requests';
 
 import { getDrsRecord } from '@/features/drs/getDrsRecord.thunk';
-import { toBffUrl } from '@/constants/bff';
+import { toBffUrl } from '@/utils/bff';
 import { PUBLIC_URL_NO_TRAILING_SLASH } from '@/config';
 import type { DrsRecord } from './types';
 
@@ -12,6 +12,8 @@ export const getDrsHttpsAccessOrPassThrough = async (url: string | undefined): P
 
   return getDrsObject(url).then((record) => {
     const accessUrl = (record?.access_methods ?? []).find((am) => am.type === 'https')?.access_url?.url;
+    // TODO: stop rewriting access URLs here. Pass standard GA4GH DRS URLs through unchanged, and have the BFF app
+    //  proxy services itself so that URLs do not need to be rewritten.
     return accessUrl ? toBffUrl(accessUrl, PUBLIC_URL_NO_TRAILING_SLASH) : null;
   });
 };

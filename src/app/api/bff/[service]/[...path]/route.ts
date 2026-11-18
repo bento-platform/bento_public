@@ -1,6 +1,7 @@
 import type { NextRequest } from 'next/server';
 import { getServerAccessToken } from '@/auth';
-import { BFF_PREFIX, isBffService } from '@/constants/bff';
+import { BFF_PREFIX } from '@/constants/bff';
+import { isBffService } from '@/utils/bff';
 
 // The gateway the proxy forwards to; the Next server reaches the Bento services the same way browsers do.
 const UPSTREAM_URL = (process.env.BENTO_PUBLIC_URL ?? '').replace(/\/$/, '');

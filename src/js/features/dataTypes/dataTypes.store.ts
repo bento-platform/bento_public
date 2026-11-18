@@ -5,7 +5,7 @@ import type { RootState } from '@/store';
 import type { BentoServiceDataType } from '@/types/dataTypes';
 import { BFF_PREFIX } from '@/constants/bff';
 import { RequestStatus } from '@/types/requests';
-import { scopedAuthorizedRequestConfig } from '@/utils/requests';
+import { scopedRequestConfig } from '@/utils/requests';
 
 export const makeGetDataTypes = createAsyncThunk<
   BentoServiceDataType[],
@@ -19,7 +19,7 @@ export const makeGetDataTypes = createAsyncThunk<
   async (_, { getState }) => {
     // Service registry handles scoping here, although having the data types endpoint be the same as the
     // counts/last-ingested endpoint is odd and should be re-thought in the future.
-    const res = await axios.get(`${BFF_PREFIX}/service-registry/data-types`, scopedAuthorizedRequestConfig(getState()));
+    const res = await axios.get(`${BFF_PREFIX}/service-registry/data-types`, scopedRequestConfig(getState()));
     return res.data;
   },
   {

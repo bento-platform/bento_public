@@ -6,7 +6,7 @@ import type { DrsRecord } from './types';
 import { RequestStatus } from '@/types/requests';
 
 import { PUBLIC_URL_NO_TRAILING_SLASH } from '@/config';
-import { toBffUrl } from '@/constants/bff';
+import { toBffUrl } from '@/utils/bff';
 
 import { printAPIError } from '@/utils/error.util';
 

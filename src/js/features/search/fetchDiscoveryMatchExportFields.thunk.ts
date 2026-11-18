@@ -5,7 +5,7 @@ import type { RootState } from '@/store';
 import { RequestStatus } from '@/types/requests';
 import type { ExportDataEntity, ExportField } from '@/types/entities';
 import { printAPIError } from '@/utils/error.util';
-import { scopedAuthorizedRequestConfig } from '@/utils/requests';
+import { scopedRequestConfig } from '@/utils/requests';
 
 export const fetchDiscoveryMatchExportFields = createAsyncThunk<
   ExportField[],
@@ -15,7 +15,7 @@ export const fetchDiscoveryMatchExportFields = createAsyncThunk<
   'query/fetchDiscoveryMatchExportFields',
   (entity, { rejectWithValue, getState }) => {
     return axios
-      .get(katsuDiscoveryMatchesExportFieldsUrl, scopedAuthorizedRequestConfig(getState(), [['_entity', entity]]))
+      .get(katsuDiscoveryMatchesExportFieldsUrl, scopedRequestConfig(getState(), [['_entity', entity]]))
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue));
   },

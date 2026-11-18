@@ -6,14 +6,11 @@ import type { QueryParamEntries } from '@/features/search/types';
 const _scopeEntries = (scope: DiscoveryScope): QueryParamEntries =>
   Object.entries(scope).filter(([_, v]) => v !== undefined);
 
-export const scopedAuthorizedRequestConfig = (
-  state: RootState,
-  extraParams?: QueryParamEntries
-): AxiosRequestConfig => ({
+export const scopedRequestConfig = (state: RootState, extraParams?: QueryParamEntries): AxiosRequestConfig => ({
   params: new URLSearchParams([..._scopeEntries(state.metadata.selectedScope.scope), ...(extraParams ?? [])]),
 });
 
-export const scopedAuthorizedRequestConfigFromParts = (
+export const scopedRequestConfigFromParts = (
   scope: DiscoveryScope,
   extraParams?: QueryParamEntries
 ): AxiosRequestConfig => ({
