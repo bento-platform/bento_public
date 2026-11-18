@@ -2,8 +2,6 @@ import { execSync } from 'child_process';
 import packageData from '../../../package.json';
 import { ADMIN_URL, SERVICE_ID } from '@/env.server';
 
-export const dynamic = 'force-dynamic';
-
 const corsHeaders: Record<string, string> = ADMIN_URL
   ? {
       'Access-Control-Allow-Origin': ADMIN_URL,
