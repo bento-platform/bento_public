@@ -9,7 +9,9 @@ import { stringToBoolean, stripTrailingSlash } from '@/utils/env';
 // built image can be reconfigured per deployment.
 const env = (...names: string[]): string | undefined => names.map((n) => process.env[n]).find(Boolean);
 const url = (...names: string[]): string => stripTrailingSlash(env(...names) ?? '');
-const bool = (name: string, defaultValue = ''): boolean => stringToBoolean(env(name), defaultValue);
+// Takes several names (the current one first, then deprecated aliases) as an array, so the default stays separate.
+const bool = (names: string | string[], defaultValue = ''): boolean =>
+  stringToBoolean(env(...[names].flat()), defaultValue);
 
 // All URLs below have no trailing slash, or are '' when unset.
 export const PUBLIC_URL = url('BENTO_PUBLIC_URL');
@@ -47,7 +49,7 @@ export const PUBLIC_CONFIG: PublicConfig = {
   SHOW_LOGO: bool('BENTO_PUBLIC_SHOW_LOGO', 'true'),
   SHOW_HEADER_TITLE: bool('BENTO_PUBLIC_SHOW_HEADER_TITLE', 'true'),
   // TODO: next version: remove deprecated BENTO_PUBLIC_SHOW_PORTAL_LINK
-  SHOW_ADMIN_LINK: stringToBoolean(env('BENTO_PUBLIC_SHOW_ADMIN_LINK', 'BENTO_PUBLIC_SHOW_PORTAL_LINK')),
+  SHOW_ADMIN_LINK: bool(['BENTO_PUBLIC_SHOW_ADMIN_LINK', 'BENTO_PUBLIC_SHOW_PORTAL_LINK']),
   SHOW_SIGN_IN: bool('BENTO_PUBLIC_SHOW_SIGN_IN'),
   FORCE_CATALOGUE: bool('BENTO_PUBLIC_FORCE_CATALOGUE'), // Show data catalogue even with 1 project
   PCGL_MODE: bool('BENTO_PUBLIC_PCGL_MODE'),
