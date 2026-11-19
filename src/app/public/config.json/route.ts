@@ -4,7 +4,11 @@ import { PUBLIC_CONFIG } from '@/env.server';
 // PUBLIC_CONFIG comes from env vars read at server start (see env.server.ts), so the same built image can be
 // reconfigured per deployment.
 export function GET() {
-  return new Response(`BENTO_PUBLIC_CONFIG = ${JSON.stringify(PUBLIC_CONFIG, null, 2)};\n`, {
-    headers: { 'Content-Type': 'application/javascript' },
-  });
+  if (!/^\d+$/.test(PUBLIC_CONFIG.LOGO_HEIGHT)) {
+    return Response.json(
+      { error: `BENTO_PUBLIC_LOGO_HEIGHT must be an integer number of pixels, got '${PUBLIC_CONFIG.LOGO_HEIGHT}'` },
+      { status: 500 }
+    );
+  }
+  return Response.json(PUBLIC_CONFIG);
 }

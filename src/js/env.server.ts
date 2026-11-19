@@ -2,7 +2,7 @@
 // server-only fails the build if a Client Component imports this module; browser code uses @/config instead.
 import 'server-only';
 
-import type { PublicConfig } from '@/config';
+import type { PublicConfig } from '@/types/publicConfig';
 import { stringToBoolean, stripTrailingSlash } from '@/utils/env';
 
 // Read at server start, not inlined at build time (no NEXT_PUBLIC_ prefix, no next.config `env` mapping), so the same
@@ -34,7 +34,7 @@ export const OPENID_CONFIG_URL = env('OPENID_CONFIG_URL') ?? '';
 // Session cookie encryption key. Left undefined when unset, so next-auth reports the missing secret itself.
 export const AUTH_SECRET = env('AUTH_SECRET');
 
-// Browser config, served as the BENTO_PUBLIC_CONFIG global by /public/config.js and read in @/config.
+// Browser config, served as JSON by /public/config.json, fetched before the app loads and read in @/config.
 // Everything here is public: never add a secret.
 export const PUBLIC_CONFIG: PublicConfig = {
   // General branding and configuration

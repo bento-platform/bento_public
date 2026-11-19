@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test';
-import type { PublicConfig } from '../src/js/config';
+import type { PublicConfig } from '../src/js/types/publicConfig';
 
 export const MOCK_CONFIG = {
   CLIENT_NAME: 'Bento Public',
@@ -26,12 +26,8 @@ export const MOCK_CONFIG = {
 
 export async function mockPublicConfig(page: Page, overrides: Partial<PublicConfig> = {}) {
   const config = { ...MOCK_CONFIG, ...overrides };
-  await page.route('**/public/config.js*', async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/javascript',
-      body: `BENTO_PUBLIC_CONFIG = ${JSON.stringify(config, null, 2)};\n`,
-    });
+  await page.route('**/public/config.json*', async (route) => {
+    await route.fulfill({ status: 200, json: config });
   });
 }
 
