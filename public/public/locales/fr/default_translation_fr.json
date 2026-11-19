@@ -714,5 +714,19 @@
     "igv_error_description": "Erreur lors de la création du navigateur pour l'assemblage génomique {{assemblyId}}",
     "track_controls": "Paramétrage des pistes",
     "track_controls_per_assembly": "Paramétrage des pistes {{assemblyId}}"
+  },
+  "header": {
+    "nav": "Navigation principale",
+    "skip_links": {
+      "main": "Aller au contenu principal",
+      "footer": "Aller à « À propos »"
+    },
+    "menu": {
+      "open": "Ouvrir le menu",
+      "close": "Fermer le menu"
+    },
+    "userMenu": {
+      "label": "Menu du compte"
+    }
   }
 }
