@@ -39,12 +39,11 @@ export const useDatasetAccess = (scope?: DiscoveryScope) => {
 };
 
 /**
- * Whether a dataset is locked for the user in PCGL mode: the user has neither download:metadata on the dataset's
- * experiment data type nor query:data on the dataset. The projects route prefetches both resources' permissions in
- * PCGL mode, so this hook does not send new requests in the normal case.
+ * Whether a dataset is locked for the user: the user has neither download:metadata on the dataset's
+ * experiment data type nor query:data on the dataset. The projects route prefetches both resources' permissions, so this hook does not send new requests in the normal case.
  * @returns false until both permission checks have been attempted, so the lock icon does not flash on load.
  */
-export const useIsPcglDatasetLocked = (project: string, dataset: string): boolean => {
+export const useIsDatasetLocked = (project: string, dataset: string): boolean => {
   const experimentResource = useMemo(
     () => makeProjectDatasetDataTypeResource(project, dataset, 'experiment'),
     [project, dataset]

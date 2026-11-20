@@ -647,7 +647,7 @@
     "expand": "more",
     "apply_for_access": "Apply For Access",
     "get_manifest": "Get File Manifest",
-    "locked": "You do not have access to this dataset"
+    "locked": "Record-level data is restricted for this $t(entities.dataset_one, lowercase)"
   },
   "provenance": {
     "sections": {

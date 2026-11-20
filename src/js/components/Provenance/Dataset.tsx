@@ -15,7 +15,7 @@ import type { ResourcePermissionsState } from '@/features/auth/hooks';
 import { getCurrentPage } from '@/utils/router';
 import { useAppDispatch, useLanguage, useTranslationFn } from '@/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
-import { useIsPcglDatasetLocked } from '@/hooks/useDatasetAccess';
+import { useIsDatasetLocked } from '@/hooks/useDatasetAccess';
 import { nonEmptyCounts } from '@/utils/counts';
 import { isoDateToString } from '@/utils/strings';
 import CountsDisplay from '@Util/CountsDisplay';
@@ -33,10 +33,10 @@ const MAX_KEYWORDS = 4;
 // catalogue-page visitor downloads for what's a rarely-opened modal (one instance imported per Dataset card).
 const DatasetProvenanceModal = lazy(() => import('./DatasetProvenance/DatasetProvenanceModal'));
 
-// A separate component, so the permission hooks only run when the parent renders it (in PCGL mode).
-const PcglDatasetLockIcon = ({ project, dataset }: { project: string; dataset: string }) => {
+// A separate component, so the permission hooks stay out of the main Dataset component.
+const DatasetLockIcon = ({ project, dataset }: { project: string; dataset: string }) => {
   const t = useTranslationFn();
-  const locked = useIsPcglDatasetLocked(project, dataset);
+  const locked = useIsDatasetLocked(project, dataset);
   if (!locked) return null;
   return (
     <Tooltip title={t('dataset.locked')}>
@@ -131,10 +131,12 @@ const Dataset = ({
       <Card className="catalogue-card" style={{ opacity: faded ? 0.5 : undefined }}>
         <Flex justify="space-between" align="flex-start" gap={8}>
           <Title level={3} className="h-as-5 catalogue-card__title">
-            {PCGL_MODE && <PcglDatasetLockIcon project={parentProjectID} dataset={identifier} />}
             {t(title)}
           </Title>
-          {dataset.study_status && <StatusBadge status={dataset.study_status} />}
+          <Flex align="center" gap={8} className="catalogue-card__corner">
+            <DatasetLockIcon project={parentProjectID} dataset={identifier} />
+            {dataset.study_status && <StatusBadge status={dataset.study_status} />}
+          </Flex>
         </Flex>
 
         {updatedStr && (

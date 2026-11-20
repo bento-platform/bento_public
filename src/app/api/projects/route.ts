@@ -7,15 +7,14 @@ import {
   makeResourceKey,
 } from 'bento-auth-js';
 import type { NextRequest } from 'next/server';
-import { AUTHZ_URL, KATSU_URL, PUBLIC_CONFIG } from '@/env.server';
+import { AUTHZ_URL, KATSU_URL } from '@/env.server';
 import type { ProjectsResponse, ProjectsWithPermissionsResponse } from '@/types/metadata';
 import { makeUpstreamHeaders } from '@/utils/upstream';
 
 /**
  * Every resource the frontend checks permissions on for the given projects (see useDatasetAccess and
- * useHasScopePermission): the whole node, each project, each dataset, and, in PCGL mode only, each dataset's
- * experiment data type. If the dev settings turn PCGL mode on in the browser only, the frontend checks the experiment
- * resources one by one instead.
+ * useHasScopePermission): the whole node, each project, each dataset, and each dataset's experiment
+ * data type.
  */
 const permissionResources = (projects: ProjectsResponse['results']): Resource[] => [
   RESOURCE_EVERYTHING,
@@ -23,9 +22,7 @@ const permissionResources = (projects: ProjectsResponse['results']): Resource[] 
     makeProjectResource(p.identifier),
     ...p.datasets.flatMap((d) => [
       makeProjectDatasetResource(p.identifier, d.identifier),
-      ...(PUBLIC_CONFIG.PCGL_MODE
-        ? [makeProjectDatasetDataTypeResource(p.identifier, d.identifier, 'experiment')]
-        : []),
+      makeProjectDatasetDataTypeResource(p.identifier, d.identifier, 'experiment'),
     ]),
   ]),
 ];
