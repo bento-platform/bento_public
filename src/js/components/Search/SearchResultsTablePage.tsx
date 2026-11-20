@@ -222,7 +222,7 @@ const TABLE_SPEC_INDIVIDUAL: ResultsTableSpec<DiscoveryMatchIndividual> = {
     } as ResultsTableFixedColumn<DiscoveryMatchIndividual>,
   ],
   availableColumns: INDIVIDUAL_SEARCH_TABLE_COLUMNS,
-  defaultColumns: ['biosamples', 'project', 'dataset'],
+  defaultColumns: ['biosamples', 'links', 'project', 'dataset'],
   expandedRowRender: (rec) => <IndividualRowDetail id={rec.id} />,
 };
 
@@ -236,7 +236,7 @@ const TABLE_SPEC_BIOSAMPLE: ResultsTableSpec<DiscoveryMatchBiosample> = {
     } as ResultsTableFixedColumn<DiscoveryMatchBiosample>,
   ],
   availableColumns: BIOSAMPLE_SEARCH_TABLE_COLUMNS,
-  defaultColumns: ['individual', 'experiments', 'project', 'dataset'],
+  defaultColumns: ['individual', 'experiments', 'links', 'project', 'dataset'],
   expandedRowRender: (rec) => <BiosampleDetailView id={rec.id} mode="search-row" />,
 };
 
