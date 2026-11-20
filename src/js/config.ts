@@ -1,4 +1,4 @@
-import { stringToBoolean } from '@/utils/strings';
+import { stringToBoolean, stripTrailingSlash } from '@/utils/env';
 import { LOCALSTORAGE_DEV_SETTINGS_KEY } from '@/constants/ui';
 import { toBffUrl } from '@/utils/bff';
 
@@ -34,8 +34,6 @@ export interface PublicConfig {
 // Declaration required for global config
 declare let BENTO_PUBLIC_CONFIG: PublicConfig;
 
-const stripTrailingSlash = (x: string): string => x.replace(/\/$/g, '');
-
 // General
 export const CLIENT_NAME = BENTO_PUBLIC_CONFIG.CLIENT_NAME ?? process.env.BENTO_PUBLIC_CLIENT_NAME;
 const _ADMIN_URL = BENTO_PUBLIC_CONFIG.ADMIN_URL ?? process.env.BENTO_PUBLIC_ADMIN_URL ?? '';
@@ -53,8 +51,7 @@ export const SHOW_LOGO = BENTO_PUBLIC_CONFIG.SHOW_LOGO ?? stringToBoolean(proces
 export const SHOW_HEADER_TITLE =
   BENTO_PUBLIC_CONFIG.SHOW_HEADER_TITLE ?? stringToBoolean(process.env.BENTO_PUBLIC_SHOW_HEADER_TITLE, 'true');
 export const SHOW_ADMIN_LINK =
-  BENTO_PUBLIC_CONFIG.SHOW_ADMIN_LINK ??
-  stringToBoolean(process.env.BENTO_PUBLIC_SHOW_ADMIN_LINK || process.env.BENTO_PUBLIC_SHOW_PORTAL_LINK);
+  BENTO_PUBLIC_CONFIG.SHOW_ADMIN_LINK ?? stringToBoolean(process.env.BENTO_PUBLIC_SHOW_ADMIN_LINK);
 export const SHOW_SIGN_IN = BENTO_PUBLIC_CONFIG.SHOW_SIGN_IN ?? stringToBoolean(process.env.BENTO_PUBLIC_SHOW_SIGN_IN);
 export const FORCE_CATALOGUE =
   BENTO_PUBLIC_CONFIG.FORCE_CATALOGUE ?? stringToBoolean(process.env.BENTO_PUBLIC_FORCE_CATALOGUE);

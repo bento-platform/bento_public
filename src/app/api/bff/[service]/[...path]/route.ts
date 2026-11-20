@@ -1,6 +1,7 @@
 import type { NextRequest } from 'next/server';
 import { getServerAccessToken } from '@/auth';
 import { BFF_PREFIX } from '@/constants/bff';
+import { PUBLIC_URL } from '@/env.server';
 import { isBffService } from '@/utils/bff';
 
 // TODO: This proxy is a temporary solution. Ideally, the BFF app itself would handle service proxying, so that URLs
@@ -8,7 +9,7 @@ import { isBffService } from '@/utils/bff';
 //  through directly.
 
 // The gateway the proxy forwards to; the Next server reaches the Bento services the same way browsers do.
-const UPSTREAM_URL = (process.env.BENTO_PUBLIC_URL ?? '').replace(/\/$/, '');
+const UPSTREAM_URL = PUBLIC_URL;
 
 const FORWARDED_REQUEST_HEADERS = [
   'accept',

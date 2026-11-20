@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
-import { downloadData, makeProjectDatasetDataTypeResource } from 'bento-auth-js';
+import { downloadData, downloadMetadata, makeProjectDatasetDataTypeResource } from 'bento-auth-js';
 import { PCGL_MODE } from '@/config';
-import { downloadMetadata } from '@/features/auth/constants';
 import { scopeToResource, useSelectedScope } from '@/features/metadata/hooks';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
 import { useHasResourcePermissionWrapper } from '@/hooks';
