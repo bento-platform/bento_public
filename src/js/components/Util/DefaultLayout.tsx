@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { Alert, FloatButton, Grid, Layout } from 'antd';
 import { ErrorBoundary, getErrorMessage } from 'react-error-boundary';
 import Loader from '@/components/Loader';
-import SiteHeader from '@/components/SiteHeader';
+import SiteHeader from '@/components/Header/SiteHeader';
 import SiteSider from '@/components/SiteSider';
 import SiteFooter from '@/components/SiteFooter';
 import PcglFooter from '@/components/Pcgl/PcglFooter';
@@ -27,7 +27,7 @@ const DefaultLayout = () => {
   const { scopeSet, scope } = useSelectedScope();
   const scopeHasData = useScopeHasData();
 
-  const [siteHeaderMenuItems, scopeHeaderMenuItems] = useSiteMenuItems();
+  const [, scopeHeaderMenuItems] = useSiteMenuItems();
   const [collapsed, setCollapsed] = useState(true);
 
   const breakpoints = useBreakpoint();
@@ -49,7 +49,7 @@ const DefaultLayout = () => {
         'scope-header-hidden': scopeHeaderHidden,
       })}
     >
-      <SiteHeader menuItems={siteHeaderMenuItems} />
+      <SiteHeader />
       <Layout id="content-layout">
         {!isCatalogue && !scopeHeaderHidden && (
           <ScopeHeader

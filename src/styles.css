@@ -526,6 +526,21 @@ body {
     & > .ant-menu-submenu::after {
       display: none;
     }
+
+    & .ant-menu-submenu-arrow {
+      display: flex;
+      transform: rotate(90deg) translateY(-32px);
+    }
+
+    & .ant-menu-submenu-open .ant-menu-submenu-arrow {
+      transform: rotate(90deg) translateY(-32px) translateX(calc(calc(var(--ant-font-size) / 7 * 5) * .2 * -1));
+      &::before {
+        transform: rotate(135deg) translateX(calc(calc(var(--ant-font-size) / 7 * 5) * .25 * -1));
+      }
+      &::after {
+        transform: rotate(-135deg) translateX(calc(calc(var(--ant-font-size) / 7 * 5) * .25 * -1));
+      }
+    }
   }
 
   & .site-header__user-text {
