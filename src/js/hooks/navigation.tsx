@@ -17,7 +17,7 @@ import { useMetadata, useScopeHasData, useSelectedScope } from '@/features/metad
 import { type DiscoveryScope, selectScope } from '@/features/metadata/metadata.store';
 import { useDatasetBackTargetState } from '@/features/ui/hooks';
 import type { DatasetBackTarget } from '@/features/ui/ui.store';
-import type { MenuItem } from '@/types/navigation';
+import type { SiteMenuItem } from '@/types/navigation';
 import { BentoRoute } from '@/types/routes';
 import { useAppDispatch, useLanguage, useTranslationFn } from '@/hooks';
 import { buildQueryParamsUrl } from '@/utils/queryParams';
@@ -185,7 +185,7 @@ export const useGetRouteTitleAndIcon = () => {
  * Hook returning a 'tuple' of [site header menu items, scope header menu items]. Menu item arrays with only one entry
  * should not be displayed by the UI.
  */
-export const useSiteMenuItems = (): [MenuItem[], MenuItem[]] => {
+export const useSiteMenuItems = (): [SiteMenuItem[], SiteMenuItem[]] => {
   const t = useTranslationFn();
   const { fixedProject, fixedDataset, scope } = useSelectedScope();
   const location = useLocation();
@@ -194,7 +194,7 @@ export const useSiteMenuItems = (): [MenuItem[], MenuItem[]] => {
   const scopeHasData = useScopeHasData();
 
   const createMenuItem = useCallback(
-    (key: string, label: string, icon?: ReactNode, children?: MenuItem[]): MenuItem => ({
+    (key: string, label: string, icon?: ReactNode, children?: SiteMenuItem[]): SiteMenuItem => ({
       key,
       icon,
       children,
@@ -209,8 +209,8 @@ export const useSiteMenuItems = (): [MenuItem[], MenuItem[]] => {
     // Serves weird overloaded purpose as both catalogue and data explore route:
     const exploreItem = createMenuItem(BentoRoute.Explore, ...getRouteTitleAndIcon(BentoRoute.Explore));
 
-    const topBarItems: MenuItem[] = [exploreItem];
-    const scopeItems: MenuItem[] = [exploreItem];
+    const topBarItems: SiteMenuItem[] = [exploreItem];
+    const scopeItems: SiteMenuItem[] = [exploreItem];
 
     const putInTopBar = fixedDataset || (fixedProject && !scope.dataset) || !scope.project;
 
@@ -231,6 +231,6 @@ export const useSiteMenuItems = (): [MenuItem[], MenuItem[]] => {
       topBarItems.push(createMenuItem(BentoRoute.BeaconNetwork, ...getRouteTitleAndIcon(BentoRoute.BeaconNetwork)));
     }
 
-    return (scopeItems.length > 1 ? [[], scopeItems] : [topBarItems, []]) as [MenuItem[], MenuItem[]];
+    return (scopeItems.length > 1 ? [[], scopeItems] : [topBarItems, []]) as [SiteMenuItem[], SiteMenuItem[]];
   }, [getRouteTitleAndIcon, createMenuItem, scope, fixedProject, fixedDataset, scopeHasData, page]);
 };

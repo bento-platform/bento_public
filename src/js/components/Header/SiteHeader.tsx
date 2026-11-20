@@ -72,11 +72,7 @@ const SiteHeader = () => {
   const hasMenu = (menuItems?.length ?? 0) > 1;
 
   const navItems = hasMenu
-    ? (menuItems ?? []).map((item) =>
-        item && 'key' in item && item.key != null && item.type !== 'divider' && 'label' in item
-          ? { ...item, label: <Link to={buildMenuHref(String(item.key))}>{item.label}</Link> }
-          : item
-      )
+    ? menuItems.map((item) => ({ ...item, label: <Link to={buildMenuHref(item.key)}>{item.label}</Link> }))
     : [];
 
   const newLang = LNG_CHANGE[language];
