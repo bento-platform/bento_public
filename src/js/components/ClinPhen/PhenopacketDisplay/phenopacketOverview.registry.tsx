@@ -12,7 +12,8 @@ import PhenotypicFeaturesView from './PhenotypicFeaturesView';
 import ExperimentView from '@/components/ClinPhen/ExperimentDisplay/ExperimentView';
 import ExperimentResultView from '@/components/ClinPhen/ExperimentDisplay/ExperimentResultView';
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
-import LinksList from '@Util/LinksList';
+
+import { LinkTile } from '@/components/Provenance/DatasetProvenance/bits';
 
 import { objectToBoolean } from '@/utils/boolean';
 import { phenopacketExperiments, phenopacketExperimentResults } from '@/utils/experiments';
@@ -119,7 +120,13 @@ export const SECTION_SPECS: Record<SectionKey, SectionSpec> = {
     titleTranslationKey: 'general.links',
     enabled: (p) => has(p.links),
     itemCount: (p) => p.links.length,
-    render: (p) => <LinksList links={p.links} />,
+    render: (p) => (
+      <div className="pm-links-grid">
+        {p.links.map((link) => (
+          <LinkTile key={link.url} link={{ label: link.label ?? link.url, url: link.url }} />
+        ))}
+      </div>
+    ),
     order: 9,
   },
   extraProperties: {
