@@ -274,7 +274,8 @@
   "dataset": {
     "expand": "plus",
     "apply_for_access": "Demande d'accès",
-    "get_manifest": "Obtenir le manifeste des fichiers"
+    "get_manifest": "Obtenir le manifeste des fichiers",
+    "locked": "Les données individuelles sont restreintes pour ce(tte) $t(entities.dataset_one, lowercase)"
   },
   "provenance": {
     "sections": {
