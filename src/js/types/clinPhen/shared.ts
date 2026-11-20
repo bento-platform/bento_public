@@ -17,6 +17,12 @@ export type TimeElement =
 
 export type DateTime = string;
 
+/** A link to an external web resource. Non-standard Bento field. The label key is absent (not null) if unset. */
+export interface ExternalLink {
+  label?: string;
+  url: string;
+}
+
 interface GestationalAge {
   days: number;
   weeks: number;

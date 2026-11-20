@@ -14,12 +14,7 @@ import {
   TEXT_QUERY_TYPE_PARAM,
 } from './constants';
 import type { QueryParamEntries, SearchFieldAndOptions } from './types';
-import {
-  bentoKatsuEntityToResultsDataEntity,
-  buildQueryParamsUrl,
-  combineQueryParamsWithoutKey,
-  filtersStateToQueryParamEntries,
-} from './utils';
+import { buildQueryParamsUrl, combineQueryParamsWithoutKey, filtersStateToQueryParamEntries } from './utils';
 
 export const useSearchQuery = () => useAppSelector((state) => state.query);
 
@@ -62,7 +57,7 @@ export const useEntityAndTextQueryParams = (): QueryParamEntries => {
     if (selectedEntity) {
       qp.push(
         [ENTITY_QUERY_PARAM, selectedEntity],
-        [TABLE_PAGE_QUERY_PARAM, matchData[bentoKatsuEntityToResultsDataEntity(selectedEntity)].page.toString()]
+        [TABLE_PAGE_QUERY_PARAM, matchData[selectedEntity].page.toString()]
       );
     }
 

@@ -1,4 +1,5 @@
 import type { ExtraPropertiesEntity } from '@/types/util';
+import type { ExternalLink } from '../shared';
 
 export interface ExperimentResultIndex {
   url: string;
@@ -60,6 +61,7 @@ export interface ExperimentResult extends ExtraPropertiesEntity {
   usage?: string;
   creation_date?: string;
   created_by?: string;
+  links: ExternalLink[]; // Non-standard Bento field
   // Can be added in front end:
   experiments?: string[];
 }

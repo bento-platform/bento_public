@@ -10,6 +10,7 @@ import type { ConditionalDescriptionItem } from '@/types/descriptions';
 
 import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
 import TDescriptions from '@Util/TDescriptions';
+import LinksList from '@Util/LinksList';
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
 import FreeTextAndOrOntologyClass from '@Util/ClinPhen/FreeTextAndOrOntologyClass';
 import ExperimentResultView from '@/components/ClinPhen/ExperimentDisplay/ExperimentResultView';
@@ -79,6 +80,12 @@ export const ExperimentExpandedRow = ({ packetId, experiment, searchRow }: Exper
       children: (experiment.qc_flags ?? []).join(', '),
       isVisible: objectToBoolean(experiment.qc_flags),
     },
+    {
+      key: 'links',
+      children: <LinksList links={experiment.links} />,
+      isVisible: experiment.links.length > 0,
+      span: XXL_THREE_COLUMN,
+    },
   ];
 
   return (
@@ -132,6 +139,7 @@ export const isExperimentRowExpandable = (r: Experiment) =>
     r.extraction_protocol ||
     r.reference_registry_id ||
     r.qc_flags?.length ||
+    r.links.length ||
     r.experiment_results?.length ||
     objectToBoolean(r.instrument) ||
     objectToBoolean(r.extra_properties)
