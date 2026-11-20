@@ -31,7 +31,9 @@ import { useSearchQuery, useSearchQueryParams } from '@/features/search/hooks';
 import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
 import { useMetadata, useSelectedScope } from '@/features/metadata/hooks';
 
-import type { BentoKatsuEntity } from '@/types/entities';
+import type { ExternalLink } from '@/types/clinPhen/shared';
+import LinksList from '@/components/Util/LinksList';
+import type { ResultsDataEntity } from '@/types/entities';
 import type { Project } from '@/types/metadata';
 import type { Dataset } from '@/types/dataset';
 import type { DiscoveryScopeSelection } from '@/features/metadata/metadata.store';
@@ -40,18 +42,14 @@ import type {
   DiscoveryMatchBiosample,
   DiscoveryMatchExperiment,
   DiscoveryMatchExperimentResult,
-  DiscoveryMatchPhenopacket,
+  DiscoveryMatchIndividual,
   ViewableDiscoveryMatchObject,
 } from '@/features/search/types';
-import type { ExportDataEntity, ExportFormat } from '@/types/entities';
+import type { ExportFormat } from '@/types/entities';
 import { BentoRoute } from '@/types/routes';
 
 import { scopeSelectionEqual } from '@/features/metadata/utils';
-import {
-  bentoKatsuEntityToResultsDataEntity,
-  buildQueryParamsUrl,
-  queryParamsWithoutKey,
-} from '@/features/search/utils';
+import { buildQueryParamsUrl, queryParamsWithoutKey } from '@/features/search/utils';
 import { setEquals } from '@/utils/sets';
 
 import DatasetProvenanceModal from '@/components/Provenance/DatasetProvenance/DatasetProvenanceModal';
@@ -105,9 +103,6 @@ type ResultsTableSpec<T extends ViewableDiscoveryMatchObject> = {
   availableColumns: Record<string, ResultsTableColumn<T>>;
   defaultColumns: string[];
   expandedRowRender?: (record: T) => ReactNode;
-  // Field to use as the ID sent to the batch export endpoint for a selected row, if it differs from the row's `id`
-  // (e.g. the phenopacket table's row key is the phenopacket ID, but batch/individuals needs the subject ID).
-  exportIdField?: keyof T;
 };
 
 const commonSearchTableColumns = <T extends ViewableDiscoveryMatchObject>() =>
@@ -128,16 +123,24 @@ const commonSearchTableColumns = <T extends ViewableDiscoveryMatchObject>() =>
     } as ResultsTableColumn<ViewableDiscoveryMatchObject>,
   }) as Record<string, ResultsTableColumn<T>>;
 
-const PHENOPACKET_SEARCH_TABLE_COLUMNS = {
+// An individual can have several phenopackets; links into the phenopacket view use the first one.
+const firstPhenopacketId = (ind: DiscoveryMatchIndividual): string | undefined => ind.phenopackets[0]?.id;
+
+const INDIVIDUAL_SEARCH_TABLE_COLUMNS = {
   biosamples: {
     title: 'entities.biosample_other',
     dataIndex: 'biosamples',
-    render: (_ctx: SearchColRenderContext) => (b: DiscoveryMatchBiosample[], p: DiscoveryMatchPhenopacket) => (
-      <PhenopacketLink.Biosamples packetId={p.id} biosamples={b.map((bb) => bb.id)} enablePopover />
+    render: (_ctx: SearchColRenderContext) => (b: DiscoveryMatchBiosample[], ind: DiscoveryMatchIndividual) => (
+      <PhenopacketLink.Biosamples packetId={firstPhenopacketId(ind)} biosamples={b.map((bb) => bb.id)} enablePopover />
     ),
   },
-  ...commonSearchTableColumns<DiscoveryMatchPhenopacket>(),
-} as Record<string, ResultsTableColumn<DiscoveryMatchPhenopacket>>;
+  links: {
+    title: 'general.links',
+    dataIndex: 'links',
+    render: (_ctx: SearchColRenderContext) => (links: ExternalLink[]) => <LinksList links={links} />,
+  },
+  ...commonSearchTableColumns<DiscoveryMatchIndividual>(),
+} as Record<string, ResultsTableColumn<DiscoveryMatchIndividual>>;
 
 const BIOSAMPLE_SEARCH_TABLE_COLUMNS = {
   individual: {
@@ -153,6 +156,11 @@ const BIOSAMPLE_SEARCH_TABLE_COLUMNS = {
     render: (_ctx) => (experiments: DiscoveryMatchExperiment[], b) => (
       <ExperimentReferences packetId={b.phenopacket} experiments={experiments} />
     ),
+  } as ResultsTableColumn<DiscoveryMatchBiosample>,
+  links: {
+    title: 'general.links',
+    dataIndex: 'links',
+    render: (_ctx) => (links: ExternalLink[]) => <LinksList links={links} />,
   } as ResultsTableColumn<DiscoveryMatchBiosample>,
   ...commonSearchTableColumns<DiscoveryMatchBiosample>(),
 };
@@ -203,19 +211,19 @@ const EXPERIMENT_RESULT_SEARCH_TABLE_COLUMNS = {
   ...commonSearchTableColumns<DiscoveryMatchExperimentResult>(),
 };
 
-const TABLE_SPEC_PHENOPACKET: ResultsTableSpec<DiscoveryMatchPhenopacket> = {
+const TABLE_SPEC_INDIVIDUAL: ResultsTableSpec<DiscoveryMatchIndividual> = {
   fixedColumns: [
     {
-      dataIndex: 'subject',
+      dataIndex: 'id',
       title: 'subject.subject_id',
-      render: (s: string | undefined, rec) =>
-        s ? <PhenopacketLink.Subject packetId={rec.id}>{s}</PhenopacketLink.Subject> : null,
-    } as ResultsTableFixedColumn<DiscoveryMatchPhenopacket>,
+      render: (id: string, rec) => (
+        <PhenopacketLink.Subject packetId={firstPhenopacketId(rec)}>{id}</PhenopacketLink.Subject>
+      ),
+    } as ResultsTableFixedColumn<DiscoveryMatchIndividual>,
   ],
-  availableColumns: PHENOPACKET_SEARCH_TABLE_COLUMNS,
+  availableColumns: INDIVIDUAL_SEARCH_TABLE_COLUMNS,
   defaultColumns: ['biosamples', 'project', 'dataset'],
-  expandedRowRender: (rec) => (rec.subject ? <IndividualRowDetail id={rec.subject} /> : null),
-  exportIdField: 'subject',
+  expandedRowRender: (rec) => <IndividualRowDetail id={rec.id} />,
 };
 
 const TABLE_SPEC_BIOSAMPLE: ResultsTableSpec<DiscoveryMatchBiosample> = {
@@ -318,7 +326,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   onBack,
   shown,
 }: {
-  entity: BentoKatsuEntity;
+  entity: ResultsDataEntity;
   spec: ResultsTableSpec<T>;
   searchContext: SearchColRenderContext;
   onBack?: () => void;
@@ -344,16 +352,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   const [exportModalOpen, setExportModalOpen] = useState<boolean>(false);
   const [exportFormat, setExportFormat] = useState<ExportFormat>('csv');
 
-  // We translate an "individual" entity to "phenopacket" because TODO.
-  // TODO: maybe we can make Katsu good enough that we can just simply return individuals rather than phenopackets
-  const rdEntity = bentoKatsuEntityToResultsDataEntity(entity);
-
-  // For export purposes only, this table is always backed by katsu's "individual" entity (IndividualCSVRenderer /
-  // the individual batch endpoint), not "phenopacket" - the two are distinct entities on the katsu side, unlike the
-  // display/matches querying above which intentionally treats them as one.
-  const exportEntity: ExportDataEntity = rdEntity === 'phenopacket' ? 'individual' : rdEntity;
-
-  const entityMatchData = matchData[rdEntity] as QueryResultMatchData<T>;
+  const entityMatchData = matchData[entity] as QueryResultMatchData<T>;
   const { status, page, totalMatches } = entityMatchData;
   let { matches } = entityMatchData;
   matches = matches ?? [];
@@ -365,7 +364,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   // Row selection, for exporting a subset of results. Selection is keyed by entity in Redux so that it persists
   // across pagination (only the current page's matches are loaded into memory at any given time).
 
-  const selectedRowMap = useAppSelector((state) => state.query.selectedRows[rdEntity]);
+  const selectedRowMap = useAppSelector((state) => state.query.selectedRows[entity]);
   const selectedRowKeys = useMemo<Key[]>(() => Object.keys(selectedRowMap), [selectedRowMap]);
 
   const selectedExportIds = useMemo<string[]>(
@@ -374,7 +373,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   );
   const hasSelection = selectedRowKeys.length > 0;
 
-  const clearSelection = useCallback(() => dispatch(setSelectedRows([rdEntity, {}])), [dispatch, rdEntity]);
+  const clearSelection = useCallback(() => dispatch(setSelectedRows([entity, {}])), [dispatch, entity]);
 
   const onSelectionChange = useCallback(
     (keys: Key[], rows: (T | undefined)[]) => {
@@ -382,16 +381,12 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
       keys.forEach((k, i) => {
         const key = String(k);
         const row = rows[i];
-        const exportId = row
-          ? spec.exportIdField
-            ? (row[spec.exportIdField] as unknown as string | undefined)
-            : String(row.id)
-          : selectedRowMap[key]; // fall back to the previously-known mapping if row data isn't available
+        const exportId = row ? String(row.id) : selectedRowMap[key]; // fall back to the previously-known mapping if row data isn't available
         newMap[key] = exportId;
       });
-      dispatch(setSelectedRows([rdEntity, newMap]));
+      dispatch(setSelectedRows([entity, newMap]));
     },
-    [dispatch, rdEntity, spec.exportIdField, selectedRowMap]
+    [dispatch, entity, selectedRowMap]
   );
 
   // -------------------------------------------------------------------------------------------------------------------
@@ -487,14 +482,14 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
       setExporting(true);
       const filename = `${t(`entities.${entity}_other`)}.${exportFormat}`;
       const download = hasSelection
-        ? downloadSelectedMatches(exportEntity, selectedExportIds, exportFormat, filename, fields)
-        : downloadAllMatches(exportEntity, exportFormat, filename, fields);
+        ? downloadSelectedMatches(entity, selectedExportIds, exportFormat, filename, fields)
+        : downloadAllMatches(entity, exportFormat, filename, fields);
       download
         .then(() => setExportModalOpen(false))
         .catch(() => message.error(t('search.export_error')))
         .finally(() => setExporting(false));
     },
-    [t, entity, exportEntity, hasSelection, selectedExportIds, downloadAllMatches, exportFormat]
+    [t, entity, hasSelection, selectedExportIds, downloadAllMatches, exportFormat]
   );
 
   const { exportFileManifest: onExportManifest, isExportingFileManifest } = useExportFileManifest(false);
@@ -593,9 +588,6 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
             selectedRowKeys,
             onChange: onSelectionChange,
             preserveSelectedRowKeys: true,
-            getCheckboxProps: spec.exportIdField
-              ? (record) => ({ disabled: !record[spec.exportIdField as keyof T] })
-              : undefined,
           }}
         />
       </Col>
@@ -625,7 +617,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
       </Modal>
       <ExportFieldsModal
         open={exportModalOpen}
-        entity={exportEntity}
+        entity={entity}
         format={exportFormat}
         exporting={exporting}
         onCancel={() => setExportModalOpen(false)}
@@ -635,7 +627,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   );
 };
 
-const SearchResultsTablePage = ({ entity, onBack }: { entity: BentoKatsuEntity; onBack?: () => void }) => {
+const SearchResultsTablePage = ({ entity, onBack }: { entity: ResultsDataEntity; onBack?: () => void }) => {
   const t = useTranslationFn();
 
   const { projectsByID, datasetsByID } = useMetadata();
@@ -664,10 +656,10 @@ const SearchResultsTablePage = ({ entity, onBack }: { entity: BentoKatsuEntity; 
   return (
     // We have all tables here to avoid re-rendering, but we only show them if the selected entity matches their entity.
     <>
-      <SearchResultsTable<DiscoveryMatchPhenopacket>
-        spec={TABLE_SPEC_PHENOPACKET}
-        shown={entity === 'phenopacket' || entity === 'individual'}
-        entity="individual" // Even though we are working with phenopacket matches, present it as individuals
+      <SearchResultsTable<DiscoveryMatchIndividual>
+        spec={TABLE_SPEC_INDIVIDUAL}
+        shown={entity === 'individual'}
+        entity="individual"
         {...common}
       />
       <SearchResultsTable<DiscoveryMatchBiosample>

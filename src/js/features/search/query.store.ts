@@ -3,7 +3,6 @@ import { createSlice } from '@reduxjs/toolkit';
 
 import type {
   BentoCountEntity,
-  BentoKatsuEntity,
   ExportDataEntity,
   ExportField,
   KatsuEntityCountsOrBooleans,
@@ -17,7 +16,7 @@ import type {
   DiscoveryMatchExperiment,
   DiscoveryMatchExperimentResult,
   DiscoveryMatchObject,
-  DiscoveryMatchPhenopacket,
+  DiscoveryMatchIndividual,
   DiscoveryUIHints,
   FiltersState,
   FtsQueryType,
@@ -35,7 +34,7 @@ import { fetchSearchFields } from './fetchSearchFields.thunk';
 import { fetchDiscoveryMatches } from './fetchDiscoveryMatches.thunk';
 import { fetchDiscoveryMatchExportFields } from './fetchDiscoveryMatchExportFields.thunk';
 import { fetchDiscoveryUIHints } from './fetchDiscoveryUIHints.thunk';
-import { bentoKatsuEntityToResultsDataEntity, checkFiltersStatesEqual } from './utils';
+import { checkFiltersStatesEqual } from './utils';
 
 export type QueryResultMatchData<T extends DiscoveryMatchObject> = {
   status: RequestStatus;
@@ -45,9 +44,8 @@ export type QueryResultMatchData<T extends DiscoveryMatchObject> = {
   invalid: boolean;
 };
 
-// Maps a selected row's table key to the ID value that should be sent to the batch export endpoints. The two differ
-// for the phenopacket/individual table, where the row key is the phenopacket ID but exports need the subject/individual
-// ID. The value is undefined if the row doesn't have an exportable ID (e.g., a phenopacket without a linked subject).
+// Maps a selected row's table key to the ID value that should be sent to the batch export endpoints. The value is
+// undefined if the row's data isn't available to derive an ID from.
 export type SelectedRowMap = Record<string, string | undefined>;
 
 export type QueryState = {
@@ -91,7 +89,7 @@ export type QueryState = {
   resultCountsByDataset: Record<string, KatsuEntityCountsOrBooleans> | undefined;
   pageSize: number;
   matchData: {
-    phenopacket: QueryResultMatchData<DiscoveryMatchPhenopacket>;
+    individual: QueryResultMatchData<DiscoveryMatchIndividual>;
     biosample: QueryResultMatchData<DiscoveryMatchBiosample>;
     experiment: QueryResultMatchData<DiscoveryMatchExperiment>;
     experiment_result: QueryResultMatchData<DiscoveryMatchExperimentResult>;
@@ -154,20 +152,19 @@ const initialState: QueryState = {
   resultCountsInvalid: false,
   pageSize: MIN_PAGE_SIZE,
   matchData: {
-    phenopacket: INITIAL_MATCH_DATA_STATE,
+    individual: INITIAL_MATCH_DATA_STATE,
     biosample: INITIAL_MATCH_DATA_STATE,
     experiment: INITIAL_MATCH_DATA_STATE,
     experiment_result: INITIAL_MATCH_DATA_STATE,
   },
   selectedRows: {
-    phenopacket: {},
+    individual: {},
     biosample: {},
     experiment: {},
     experiment_result: {},
   },
   // ----
   exportFields: {
-    phenopacket: INITIAL_EXPORT_FIELDS_STATE,
     individual: INITIAL_EXPORT_FIELDS_STATE,
     biosample: INITIAL_EXPORT_FIELDS_STATE,
     experiment: INITIAL_EXPORT_FIELDS_STATE,
@@ -332,9 +329,8 @@ const query = createSlice({
     setSelectedEntity: (state, { payload }: PayloadAction<BentoCountEntity | null>) => {
       state.selectedEntity = payload;
     },
-    setMatchesPage: (state, { payload }: PayloadAction<[BentoKatsuEntity | BentoCountEntity, number]>) => {
-      const rdEntity = bentoKatsuEntityToResultsDataEntity(payload[0]);
-      const md = state.matchData[rdEntity];
+    setMatchesPage: (state, { payload }: PayloadAction<[ResultsDataEntity, number]>) => {
+      const md = state.matchData[payload[0]];
       if (isNaN(payload[1]) || payload[1] < 0) {
         console.error(`setMatchesPage invalid page: ${payload}`);
         return;
@@ -467,10 +463,10 @@ const query = createSlice({
     });
     // -----
     builder.addCase(fetchDiscoveryMatches.pending, (state, { meta }) => {
-      state.matchData[bentoKatsuEntityToResultsDataEntity(meta.arg)].status = RequestStatus.Pending;
+      state.matchData[meta.arg].status = RequestStatus.Pending;
     });
     builder.addCase(fetchDiscoveryMatches.fulfilled, (state, { meta, payload }) => {
-      const entity: ResultsDataEntity = bentoKatsuEntityToResultsDataEntity(meta.arg);
+      const entity = meta.arg;
       const md = state.matchData[entity];
       md.status = RequestStatus.Fulfilled;
       md.matches = payload.results;
@@ -478,7 +474,7 @@ const query = createSlice({
       md.invalid = false;
     });
     builder.addCase(fetchDiscoveryMatches.rejected, (state, { meta }) => {
-      state.matchData[bentoKatsuEntityToResultsDataEntity(meta.arg)].status = RequestStatus.Rejected;
+      state.matchData[meta.arg].status = RequestStatus.Rejected;
     });
     // -----
     builder.addCase(fetchDiscoveryMatchExportFields.pending, (state, { meta }) => {
