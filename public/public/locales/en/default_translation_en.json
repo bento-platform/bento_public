@@ -35,6 +35,7 @@
   },
   "general": {
     "id": "ID",
+    "links": "Links",
     "name": "Name",
     "description": "Description",
     "collapse_all": "Collapse All",
@@ -297,6 +298,7 @@
     "code": "Code"
   },
   "biosample": {
+    "links": "$t(general.links)",
     "biosample_id": "$t(entities.biosample_one) ID",
     "individual_id": "$t(entities.individual_one) ID",
     "sampled_tissue": "Sampled Tissue",

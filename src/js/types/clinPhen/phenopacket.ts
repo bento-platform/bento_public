@@ -12,6 +12,7 @@ import type { Measurement } from './measurement';
 import type { MetaData } from './metaData';
 import type { MedicalAction } from './medicalAction';
 import type { File } from './file';
+import type { ExternalLink } from './shared';
 
 export interface Phenopacket extends ExtraPropertiesEntity, TimestampedEntity {
   id: string;
@@ -24,6 +25,7 @@ export interface Phenopacket extends ExtraPropertiesEntity, TimestampedEntity {
   medical_actions?: MedicalAction[];
   files?: File[];
   meta_data: MetaData;
+  links: ExternalLink[]; // Non-standard Bento field
   // Non-standard field for back-link to dataset:
   dataset?: string;
 }

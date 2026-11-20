@@ -39,6 +39,7 @@
   },
   "general": {
     "id": "Identifiant",
+    "links": "Liens",
     "name": "Nom",
     "description": "Description",
     "collapse_all": "Tout réduire",
@@ -436,6 +437,7 @@
     "code": "Code"
   },
   "biosample": {
+    "links": "$t(general.links)",
     "biosample_id": "Identifiant de l'échantillon biologique",
     "individual_id": "Identifiant du participant",
     "sampled_tissue": "Tissu échantillonné",

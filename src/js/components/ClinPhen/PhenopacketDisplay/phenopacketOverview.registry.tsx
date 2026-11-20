@@ -12,6 +12,7 @@ import PhenotypicFeaturesView from './PhenotypicFeaturesView';
 import ExperimentView from '@/components/ClinPhen/ExperimentDisplay/ExperimentView';
 import ExperimentResultView from '@/components/ClinPhen/ExperimentDisplay/ExperimentResultView';
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
+import LinksList from '@Util/LinksList';
 
 import { objectToBoolean } from '@/utils/boolean';
 import { phenopacketExperiments, phenopacketExperimentResults } from '@/utils/experiments';
@@ -26,6 +27,7 @@ export type SectionKey =
   | 'phenotypicFeatures'
   | 'experiments'
   | 'experimentResults'
+  | 'links'
   | 'extraProperties';
 
 export type SectionSpec = {
@@ -113,10 +115,17 @@ export const SECTION_SPECS: Record<SectionKey, SectionSpec> = {
     render: (p) => <ExperimentResultView packetId={p.id} experimentResults={phenopacketExperimentResults(p)} />,
     order: 8,
   },
+  links: {
+    titleTranslationKey: 'general.links',
+    enabled: (p) => has(p.links),
+    itemCount: (p) => p.links.length,
+    render: (p) => <LinksList links={p.links} />,
+    order: 9,
+  },
   extraProperties: {
     titleTranslationKey: 'tab_keys.extra_properties',
     enabled: (p) => objectToBoolean(p.extra_properties),
     render: (p) => <ExtraPropertiesDisplay extraProperties={p.extra_properties} />,
-    order: 9,
+    order: 10,
   },
 };
