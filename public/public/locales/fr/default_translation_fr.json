@@ -647,6 +647,7 @@
     "UNSOLVED": "Non résolu"
   },
   "experiment": {
+    "links": "$t(general.links)",
     "experiment_id": "Identifiant de l'expérience",
     "protocol_url": "URL du protocole",
     "experiment_type": "Type d'expérience",
@@ -672,6 +673,7 @@
     "device_ontology": "Appareil ($t(general.ontology_class, lowercase))"
   },
   "experiment_result": {
+    "links": "$t(general.links)",
     "identifier": "Identifiant",
     "indices": "Indices",
     "storage": "Stockage",

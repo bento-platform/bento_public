@@ -2,6 +2,7 @@ import type { OntologyTerm } from '@/types/ontology';
 import type { ExtraPropertiesEntity } from '@/types/util';
 import type { ExperimentResult } from './experimentResult';
 import type { Instrument } from './instrument';
+import type { ExternalLink } from '../shared';
 
 export interface Experiment extends ExtraPropertiesEntity {
   id: string;
@@ -106,6 +107,7 @@ export interface Experiment extends ExtraPropertiesEntity {
   qc_flags?: string[];
   experiment_results?: ExperimentResult[];
   instrument?: Instrument;
+  links: ExternalLink[]; // Non-standard Bento field
   // Back-links
   biosample?: string;
   dataset?: string;

@@ -511,6 +511,7 @@
     "UNSOLVED": "Unsolved"
   },
   "experiment": {
+    "links": "$t(general.links)",
     "experiment_id": "$t(entities.experiment_one) ID",
     "description": "$t(general.description)",
     "protocol_url": "Protocol URL",
@@ -537,6 +538,7 @@
     "device_ontology": "Device ($t(general.ontology_class))"
   },
   "experiment_result": {
+    "links": "$t(general.links)",
     "identifier": "Identifier",
     "description": "$t(general.description)",
     "filename": "$t(file.filename)",

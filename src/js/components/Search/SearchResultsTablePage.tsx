@@ -184,6 +184,11 @@ const EXPERIMENT_SEARCH_TABLE_COLUMNS = {
       <ExperimentResultFileTypeCounts results={results} />
     ),
   } as ResultsTableColumn<DiscoveryMatchExperiment>,
+  links: {
+    title: 'general.links',
+    dataIndex: 'links',
+    render: (_ctx) => (links: ExternalLink[]) => <LinksList links={links} />,
+  } as ResultsTableColumn<DiscoveryMatchExperiment>,
   ...commonSearchTableColumns<DiscoveryMatchExperiment>(),
 };
 
@@ -207,6 +212,11 @@ const EXPERIMENT_RESULT_SEARCH_TABLE_COLUMNS = {
     render: (_ctx) => (experiments: string[], er) => (
       <PhenopacketLink.Experiments packetId={er?.phenopacket} experiments={experiments} />
     ),
+  } as ResultsTableColumn<DiscoveryMatchExperimentResult>,
+  links: {
+    title: 'general.links',
+    dataIndex: 'links',
+    render: (_ctx) => (links: ExternalLink[]) => <LinksList links={links} />,
   } as ResultsTableColumn<DiscoveryMatchExperimentResult>,
   ...commonSearchTableColumns<DiscoveryMatchExperimentResult>(),
 };
@@ -256,7 +266,7 @@ const TABLE_SPEC_EXPERIMENT: ResultsTableSpec<DiscoveryMatchExperiment> = {
     } as ResultsTableFixedColumn<DiscoveryMatchExperiment>,
   ],
   availableColumns: EXPERIMENT_SEARCH_TABLE_COLUMNS,
-  defaultColumns: ['biosample', 'project', 'dataset'],
+  defaultColumns: ['biosample', 'links', 'project', 'dataset'],
   expandedRowRender: (rec) => <ExperimentRowDetail id={rec.id} />,
 };
 
@@ -289,7 +299,7 @@ const TABLE_SPEC_EXPERIMENT_RESULT: ResultsTableSpec<DiscoveryMatchExperimentRes
     } as ResultsTableFixedColumn<DiscoveryMatchExperimentResult>,
   ],
   availableColumns: EXPERIMENT_RESULT_SEARCH_TABLE_COLUMNS,
-  defaultColumns: ['genome_assembly_id', 'file_format', 'experiments', 'project', 'dataset'],
+  defaultColumns: ['genome_assembly_id', 'file_format', 'experiments', 'links', 'project', 'dataset'],
   expandedRowRender: (rec) => <ExperimentResultRowDetail id={rec.id} />,
 };
 

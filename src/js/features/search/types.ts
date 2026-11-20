@@ -49,6 +49,7 @@ export type DiscoveryMatchExperimentResult = DiscoveryMatchObject & {
   usage?: string;
   creation_date?: string;
   created_by?: string;
+  links: ExternalLink[];
   extra_properties?: JSONType;
   // ---
   experiments: string[];
@@ -60,6 +61,7 @@ export type MatchIncludedFieldsFromExperiments =
 export type DiscoveryMatchExperiment = DiscoveryMatchObject &
   Pick<Experiment, MatchIncludedFieldsFromExperiments> & {
     results: DiscoveryMatchExperimentResult[];
+    links: ExternalLink[];
     biosample?: string;
     phenopacket?: string;
   };
