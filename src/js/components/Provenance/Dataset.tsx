@@ -134,8 +134,8 @@ const Dataset = ({
             {t(title)}
           </Title>
           <Flex align="center" gap={8} className="catalogue-card__corner">
-            <DatasetLockIcon project={parentProjectID} dataset={identifier} />
             {dataset.study_status && <StatusBadge status={dataset.study_status} />}
+            <DatasetLockIcon project={parentProjectID} dataset={identifier} />
           </Flex>
         </Flex>
 
