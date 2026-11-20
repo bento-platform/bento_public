@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useAppSelector, useTranslationFn } from '@/hooks';
 import type { FacetOption } from '@/features/catalogue/types';
-import { FACET_IDS, SORT_FNS, type DatasetWithProject, type FacetId } from './constants';
+import { FACET_IDS, SORT_FNS, type DatasetAccessLookup, type DatasetWithProject, type FacetId } from './constants';
 import { FACET_CONFIG_BY_ID } from './facetRegistry';
 import { stripDiacritics, stripRichText } from '@/utils/strings';
 import { getLabel } from './utils';
@@ -23,7 +23,11 @@ export function useCatalogueState() {
  *   stay live as the user drills down. Already-selected values are always included even if their count
  *   drops to zero so they can be deselected.
  */
-export function useCatalogueFilter(items: DatasetWithProject[]): {
+export function useCatalogueFilter(
+  items: DatasetWithProject[],
+  hasAccess: DatasetAccessLookup,
+  myAccessEnabled: boolean
+): {
   filtered: DatasetWithProject[];
   facetOptions: (facetId: FacetId) => FacetOption[];
 } {
@@ -51,9 +55,11 @@ export function useCatalogueFilter(items: DatasetWithProject[]): {
       }
       for (const fid of FACET_IDS) {
         if (fid === skipFacet) continue;
+        // The "my access" switch is hidden when unavailable, so a leftover URL value must not filter invisibly.
+        if (fid === 'my_access' && !myAccessEnabled) continue;
         const selected = sets[fid];
         if (selected.length === 0) continue;
-        const vals = FACET_CONFIG_BY_ID[fid].getValues(item);
+        const vals = FACET_CONFIG_BY_ID[fid].getValues(item, hasAccess);
         if (!vals.some((v) => selected.includes(v))) return false;
       }
       return true;
@@ -69,7 +75,7 @@ export function useCatalogueFilter(items: DatasetWithProject[]): {
       const base = items.filter((item) => matchesQuery(item, facetId));
       const countMap = new Map<string, number>();
       for (const item of base) {
-        for (const v of facetConfig.getValues(item)) {
+        for (const v of facetConfig.getValues(item, hasAccess)) {
           countMap.set(v, (countMap.get(v) ?? 0) + 1);
         }
       }
@@ -102,5 +108,5 @@ export function useCatalogueFilter(items: DatasetWithProject[]): {
     }
 
     return { filtered: sortedFiltered, facetOptions };
-  }, [t, items, q, sets, sort]);
+  }, [t, items, hasAccess, myAccessEnabled, q, sets, sort]);
 }
