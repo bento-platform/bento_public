@@ -10,6 +10,8 @@ import { useTranslationFn } from '@/hooks';
 import { setProjectColors } from '@/features/catalogue/catalogue.store';
 import { useCatalogueUrlSync, useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
 import { assignColors } from '@/features/catalogue/utils';
+import { useIsAuthenticated } from '@/features/auth/hooks';
+import { useDatasetsAccess } from '@/hooks/useDatasetAccess';
 import { RequestStatus } from '@/types/requests';
 import Error from '@Util/Error';
 import CatalogueBanner from './CatalogueBanner';
@@ -52,7 +54,11 @@ const Catalogue = () => {
   // ...and in the <Dataset> props:
   // permissionsData={datasetPermissions[makeResourceKey({ project: project.identifier, dataset: dataset.identifier })]}
 
-  const { filtered, facetOptions } = useCatalogueFilter(allDatasets);
+  const hasAccess = useDatasetsAccess(allDatasets);
+  // Only useful when there is something to narrow down, and only once signed in (permissions are per-user).
+  const isAuthenticated = useIsAuthenticated();
+  const showMyAccess = isAuthenticated && allDatasets.length > 1;
+  const { filtered, facetOptions } = useCatalogueFilter(allDatasets, hasAccess, showMyAccess);
 
   // Clear filters on language change
   const language = useLanguage();
@@ -89,6 +95,7 @@ const Catalogue = () => {
         <CatalogueRail
           totalCount={filtered.length}
           facetOptions={facetOptions}
+          showMyAccess={showMyAccess}
           overlay={railOverlay}
           open={!railOverlay || railOpen}
           onClose={() => setRailOpen(false)}

@@ -1,11 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import clsx from 'clsx';
 
-import { Input } from 'antd';
+import { Input, Switch } from 'antd';
 import { CloseOutlined, SearchOutlined } from '@ant-design/icons';
 
 import type { FacetOption } from '@/features/catalogue/types';
 import { toggleFacetCollapse, type FacetId } from '@/features/catalogue/catalogue.store';
+import { MY_ACCESS_GRANTED } from '@/features/catalogue/constants';
 
 import { useAppDispatch } from '@/hooks';
 import { useCatalogueState } from '@/features/catalogue/hooks';
@@ -151,6 +152,8 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
 interface CatalogueRailProps {
   totalCount: number;
   facetOptions: (facetId: FacetId) => { value: string; label: string; count: number; selected: boolean }[];
+  /** Whether to show the "my accessible datasets" switch (signed in, and more than one dataset). */
+  showMyAccess: boolean;
   /** Below the `lg` breakpoint, the rail renders as a slide-over drawer instead of an inline sticky column. */
   overlay: boolean;
   /** Ignored when `overlay` is false (the rail is always visible inline on desktop). */
@@ -158,10 +161,26 @@ interface CatalogueRailProps {
   onClose: () => void;
 }
 
-const CatalogueRail = ({ totalCount, facetOptions, overlay, open, onClose }: CatalogueRailProps) => {
+const MyAccessToggle = ({ count, selected, onChange }: { count: number; selected: boolean; onChange: () => void }) => {
+  const t = useTranslationFn();
+  const id = useId();
+  return (
+    <div className="my-access-toggle">
+      <Switch id={id} size="small" checked={selected} disabled={count === 0 && !selected} onChange={onChange} />
+      <label htmlFor={id} className="my-access-toggle__label">
+        {t('catalogue.rail.my_access_toggle')}
+      </label>
+      <span className="my-access-toggle__count" aria-hidden>
+        {count}
+      </span>
+    </div>
+  );
+};
+
+const CatalogueRail = ({ totalCount, facetOptions, showMyAccess, overlay, open, onClose }: CatalogueRailProps) => {
   const t = useTranslationFn();
   const dispatch = useAppDispatch();
-  const { collapsedFacets } = useCatalogueState();
+  const { collapsedFacets, sets } = useCatalogueState();
   const { toggleFacetValue } = useCatalogueUrlActions();
 
   return (
@@ -182,7 +201,15 @@ const CatalogueRail = ({ totalCount, facetOptions, overlay, open, onClose }: Cat
           </p>
         )}
 
-        {FACETS.map((facet) => (
+        {showMyAccess && (
+          <MyAccessToggle
+            count={facetOptions('my_access').find((o) => o.value === MY_ACCESS_GRANTED)?.count ?? 0}
+            selected={sets.my_access.includes(MY_ACCESS_GRANTED)}
+            onChange={() => toggleFacetValue('my_access', MY_ACCESS_GRANTED)}
+          />
+        )}
+
+        {FACETS.filter((facet) => facet.id !== 'my_access').map((facet) => (
           <FacetSection
             key={facet.id}
             facet={facet}

@@ -1,11 +1,16 @@
-import type { DatasetWithProject, FacetId } from '@/features/catalogue/constants';
+import {
+  MY_ACCESS_GRANTED,
+  type DatasetAccessLookup,
+  type DatasetWithProject,
+  type FacetId,
+} from '@/features/catalogue/constants';
 import { PCGL_MODE } from '@/config';
 import type { NamespaceTranslationFunction } from '@/types/translation';
 import { getLabel, normaliseStatus, UNASSIGNED_STATUS } from './utils';
 
 export interface FacetConfig {
   id: FacetId;
-  getValues: (datasetWithProject: DatasetWithProject) => string[];
+  getValues: (datasetWithProject: DatasetWithProject, hasAccess?: DatasetAccessLookup) => string[];
   order?: string[];
   scroll?: boolean;
   /** Optional override for how a facet value is displayed. Values are otherwise rendered as-is,
@@ -26,6 +31,11 @@ const PROJECT_FACET_CONFIG: FacetConfig = {
 
 // TODO: turn this into a JSON-compatible configuration file that doesn't use PCGL_MODE conditional
 export const FACETS: FacetConfig[] = [
+  {
+    id: 'my_access',
+    // No value unless the permission check has finished and granted access, so unknown datasets are filtered out.
+    getValues: (item, hasAccess) => (hasAccess?.(item) ? [MY_ACCESS_GRANTED] : []),
+  },
   ...[PCGL_MODE ? PROGRAM_FACET_CONFIG : PROJECT_FACET_CONFIG],
   { id: 'domain', getValues: ({ dataset }) => dataset.domain ?? [], scroll: true },
   ...(PCGL_MODE

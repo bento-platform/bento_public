@@ -586,7 +586,8 @@
       "search_label": "Search {{facet}}",
       "search_matches_one": "{{count}} match",
       "search_matches_other": "{{count}} matches",
-      "search_no_matches": "No matches"
+      "search_no_matches": "No matches",
+      "my_access_toggle": "My accessible $t(entities.dataset_other, lowercase)"
     },
     "facets": {
       "program_one": "Program",
