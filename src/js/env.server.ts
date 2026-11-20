@@ -15,8 +15,7 @@ const bool = (names: string | string[], defaultValue = ''): boolean =>
 
 // All URLs below have no trailing slash, or are '' when unset.
 export const PUBLIC_URL = url('BENTO_PUBLIC_URL');
-// TODO: next version: remove deprecated BENTO_PUBLIC_PORTAL_URL
-export const ADMIN_URL = url('BENTO_PUBLIC_ADMIN_URL', 'BENTO_PUBLIC_PORTAL_URL');
+export const ADMIN_URL = url('BENTO_PUBLIC_ADMIN_URL');
 export const KATSU_URL = url('KATSU_URL');
 export const AUTHZ_URL = url('BENTO_AUTHZ_SERVICE_URL');
 export const BEACON_URL = url('BEACON_URL');
@@ -48,8 +47,7 @@ export const PUBLIC_CONFIG: PublicConfig = {
   LOGO_HEIGHT: env('BENTO_PUBLIC_LOGO_HEIGHT') || '32',
   SHOW_LOGO: bool('BENTO_PUBLIC_SHOW_LOGO', 'true'),
   SHOW_HEADER_TITLE: bool('BENTO_PUBLIC_SHOW_HEADER_TITLE', 'true'),
-  // TODO: next version: remove deprecated BENTO_PUBLIC_SHOW_PORTAL_LINK
-  SHOW_ADMIN_LINK: bool(['BENTO_PUBLIC_SHOW_ADMIN_LINK', 'BENTO_PUBLIC_SHOW_PORTAL_LINK']),
+  SHOW_ADMIN_LINK: bool('BENTO_PUBLIC_SHOW_ADMIN_LINK'),
   SHOW_SIGN_IN: bool('BENTO_PUBLIC_SHOW_SIGN_IN'),
   FORCE_CATALOGUE: bool('BENTO_PUBLIC_FORCE_CATALOGUE'), // Show data catalogue even with 1 project
   PCGL_MODE: bool('BENTO_PUBLIC_PCGL_MODE'),
