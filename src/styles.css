@@ -498,19 +498,22 @@ body {
   }
 
   & .site-header__user-menu.ant-menu-horizontal {
-    border-bottom: none;
+    border: none;
     line-height: normal;
 
     & > .ant-menu-submenu {
-      & [aria-expanded ="true"] {
-        background: var(--ant-menu-item-active-bg);
-      }
-      & :hover {
-        background: var(--ant-menu-item-active-bg);
+      border: 1px  solid transparent;
+      border-radius: var(--ant-border-radius);
+      padding-left: 0;
+      min-height: 32px;
+
+      &:hover {
+        border: 1px solid var(--ant-color-primary);
       }
     }
 
     & > .ant-menu-submenu > .ant-menu-submenu-title {
+      border: none;
       align-items: center;
       display: flex;
       height: auto;
@@ -529,11 +532,12 @@ body {
 
     & .ant-menu-submenu-arrow {
       display: flex;
-      transform: rotate(90deg) translateY(-32px);
+      transform: rotate(90deg) translateY(-40px) translateX(-18px);
+      padding: 14px 20px;
     }
 
     & .ant-menu-submenu-open .ant-menu-submenu-arrow {
-      transform: rotate(90deg) translateY(-32px) translateX(calc(calc(var(--ant-font-size) / 7 * 5) * .2 * -1));
+      transform: rotate(90deg) translateY(-40px) translateX(-16px) translateX(calc(calc(var(--ant-font-size) / 7 * 5) * .2 * -1));
       &::before {
         transform: rotate(135deg) translateX(calc(calc(var(--ant-font-size) / 7 * 5) * .25 * -1));
       }

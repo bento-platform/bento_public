@@ -1,19 +1,18 @@
 import clsx from 'clsx';
-import { RiTranslate } from 'react-icons/ri';
-import { Button, Divider, Flex, Layout, Menu, Space, Typography, theme } from 'antd';
+import { Divider, Flex, Layout, Menu, Space, Typography, theme } from 'antd';
 import { useCallback, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useLangPrefixedUrl, useSiteMenuItems } from '@/hooks/navigation';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { getCurrentPage } from '@/utils/router';
-import { LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
-import { CLIENT_NAME, SHOW_HEADER_TITLE, TRANSLATED } from '@/config';
+import { CLIENT_NAME, SHOW_HEADER_TITLE } from '@/config';
 import { BentoRoute, TOP_LEVEL_ONLY_ROUTES } from '@/types/routes';
 import { buildQueryParamsUrl } from '@/features/search/utils';
 import { useSearchQueryParams } from '@/features/search/hooks';
-import { useLanguage, useTranslationFn } from '@/hooks';
+import { useTranslationFn } from '@/hooks';
 import { BrandLogo } from './BrandLogo';
 import { HeaderAuth } from './HeaderAuth';
+import { LanguageControl } from './Translate';
 
 const { Header } = Layout;
 
@@ -43,8 +42,6 @@ const useBuildMenuHref = () => {
 
 const SiteHeader = () => {
   const t = useTranslationFn();
-  const language = useLanguage();
-  const navigate = useNavigate();
   const location = useLocation();
   const isSmallScreen = useSmallScreen();
   const currentPage = getCurrentPage(location);
@@ -60,17 +57,8 @@ const SiteHeader = () => {
     document.title = CLIENT_NAME && CLIENT_NAME.trim() ? t(CLIENT_NAME) : 'Bento';
   }, [t]);
 
-  const changeLanguage = () => {
-    const newLang = LNG_CHANGE[language];
-    // Can't rely on there being a trailing slash at the base page (.e.g, `/en` and `/en`/ are both valid), and can't
-    // ensure project IDs don't begin with an `en` or `fr`. Thus, we use a RegExp with a `^` for language changing in
-    // the URL.
-    const path = (location.pathname + location.search).replace(new RegExp(`^/${language}`), `/${newLang}`);
-    navigate(path, { replace: true });
-  };
-
+  // TODO fix navItems type
   const hasMenu = (menuItems?.length ?? 0) > 1;
-
   const navItems = hasMenu
     ? (menuItems ?? []).map((item) =>
         item && 'key' in item && item.key != null && item.type !== 'divider' && 'label' in item
@@ -78,8 +66,6 @@ const SiteHeader = () => {
           : item
       )
     : [];
-
-  const newLang = LNG_CHANGE[language];
 
   return (
     <Header
@@ -114,19 +100,7 @@ const SiteHeader = () => {
           size={isSmallScreen ? 12 : 'middle'}
           separator={<Divider orientation="vertical" className="site-header__divider" aria-hidden />}
         >
-          {TRANSLATED && (
-            <Button
-              htmlType="button"
-              icon={<RiTranslate aria-hidden style={{ transform: 'translateY(1px)' }} />}
-              className="site-header__lang"
-              lang={newLang}
-              aria-label={LNGS_FULL_NAMES[newLang]}
-              onClick={changeLanguage}
-            >
-              {isSmallScreen ? newLang.toUpperCase() : LNGS_FULL_NAMES[newLang]}
-            </Button>
-          )}
-
+          <LanguageControl />
           <HeaderAuth />
         </Space>
       </Flex>
