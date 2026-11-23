@@ -57,14 +57,12 @@ const SiteHeader = () => {
     document.title = CLIENT_NAME && CLIENT_NAME.trim() ? t(CLIENT_NAME) : 'Bento';
   }, [t]);
 
-  // TODO fix navItems type
-  const hasMenu = (siteHeaderMenuItems?.length ?? 0) > 1;
+  const hasMenu = siteHeaderMenuItems.length > 1;
   const navItems = hasMenu
-    ? (siteHeaderMenuItems ?? []).map((item) =>
-        item && 'key' in item && item.key != null && item.type !== 'divider' && 'label' in item
-          ? { ...item, label: <Link to={buildMenuHref(String(item.key))}>{item.label}</Link> }
-          : item
-      )
+    ? siteHeaderMenuItems.map((item) => ({
+        ...item,
+        label: <Link to={buildMenuHref(item.key)}>{item.label}</Link>,
+      }))
     : [];
 
   return (

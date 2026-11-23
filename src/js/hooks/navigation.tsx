@@ -17,7 +17,7 @@ import { useMetadata, useScopeHasData, useSelectedScope } from '@/features/metad
 import { type DiscoveryScope, selectScope } from '@/features/metadata/metadata.store';
 import { useDatasetBackTargetState } from '@/features/ui/hooks';
 import type { DatasetBackTarget } from '@/features/ui/ui.store';
-import type { MenuItem } from '@/types/navigation';
+import type { SiteMenuItem } from '@/types/navigation';
 import { BentoRoute } from '@/types/routes';
 import { useAppDispatch, useLanguage, useTranslationFn } from '@/hooks';
 import { buildQueryParamsUrl } from '@/utils/queryParams';
@@ -182,8 +182,8 @@ export const useGetRouteTitleAndIcon = () => {
 };
 
 export type SiteMenuItems = {
-  siteHeaderMenuItems: MenuItem[];
-  scopeHeaderMenuItems: MenuItem[];
+  siteHeaderMenuItems: SiteMenuItem[];
+  scopeHeaderMenuItems: SiteMenuItem[];
 };
 
 /**
@@ -201,7 +201,7 @@ export const useSiteMenuItems = (): SiteMenuItems => {
   const getRouteTitleAndIcon = useGetRouteTitleAndIcon();
 
   const createMenuItem = useCallback(
-    (route: string): MenuItem => {
+    (route: string): SiteMenuItem => {
       const [label, icon] = getRouteTitleAndIcon(route);
       return { key: route, icon, label: t(label) };
     },
@@ -212,8 +212,8 @@ export const useSiteMenuItems = (): SiteMenuItems => {
     // Serves weird overloaded purpose as both catalogue and data explore route:
     const exploreItem = createMenuItem(BentoRoute.Explore);
 
-    const siteHeaderItems: MenuItem[] = [exploreItem];
-    const scopeHeaderItems: MenuItem[] = [exploreItem];
+    const siteHeaderItems: SiteMenuItem[] = [exploreItem];
+    const scopeHeaderItems: SiteMenuItem[] = [exploreItem];
 
     const putInSiteHeader = isSoleDataset || (isSoleProject && !scope.dataset) || !scope.project;
     const pageAllowsExtraItems =
