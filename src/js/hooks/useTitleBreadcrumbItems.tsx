@@ -58,7 +58,13 @@ export const useTitleBreadcrumbItems = (scopeHeaderMenuItems: MenuItem[]): Bread
           <>
             {datasetTitle}
             {scope.project && (
-              <DatasetLockIcon project={scope.project} dataset={scope.dataset} className="scoped-title__lock" />
+              <DatasetLockIcon
+                project={scope.project}
+                dataset={scope.dataset}
+                // Only the dataset's Explore page (hero) has an Apply for Access button below the breadcrumb.
+                applyVia={currentPage === BentoRoute.Explore ? 'button' : 'link'}
+                className="scoped-title__lock"
+              />
             )}
           </>
         ),

@@ -123,7 +123,12 @@ const Dataset = ({
           </Title>
           <Flex align="center" gap={8} className="catalogue-card__corner">
             {dataset.study_status && <StatusBadge status={dataset.study_status} />}
-            <DatasetLockIcon project={parentProjectID} dataset={identifier} className="catalogue-card__lock" />
+            <DatasetLockIcon
+              project={parentProjectID}
+              dataset={identifier}
+              applyVia="link"
+              className="catalogue-card__lock"
+            />
           </Flex>
         </Flex>
 
