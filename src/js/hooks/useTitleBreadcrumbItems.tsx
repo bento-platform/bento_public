@@ -11,6 +11,7 @@ import { useDatasetBackTarget, useGetRouteTitleAndIcon } from '@/hooks/navigatio
 import { useExtraBreadcrumb } from '@/features/ui/hooks';
 import { getCurrentPage } from '@/utils/router';
 import { PCGL_MODE } from '@/config';
+import DatasetLockIcon from '@Util/DatasetLockIcon';
 
 export const useTitleBreadcrumbItems = (scopeHeaderMenuItems: MenuItem[]): BreadcrumbItemType[] => {
   const t = useTranslationFn();
@@ -53,7 +54,14 @@ export const useTitleBreadcrumbItems = (scopeHeaderMenuItems: MenuItem[]): Bread
         });
       }
       items.push({
-        title: datasetTitle,
+        title: (
+          <>
+            {datasetTitle}
+            {scope.project && (
+              <DatasetLockIcon project={scope.project} dataset={scope.dataset} className="scoped-title__lock" />
+            )}
+          </>
+        ),
         path: `/${language}/d/${scope.dataset}`,
       });
     }
