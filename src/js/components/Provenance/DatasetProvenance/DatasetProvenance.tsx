@@ -18,11 +18,11 @@ import { useTranslationFn } from '@/hooks';
 import { useDatasetAccess } from '@/hooks/useDatasetAccess';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
 
+import { LinkTile } from '@/components/Util/LinkTile';
 import StatList from '@/components/Util/StatList';
 import type { Dataset } from '@/types/dataset';
 import {
   FundingCard,
-  LinkTile,
   LicenseTile,
   PersonCard,
   PublicationCard,

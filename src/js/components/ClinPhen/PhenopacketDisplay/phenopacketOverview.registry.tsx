@@ -13,7 +13,7 @@ import ExperimentView from '@/components/ClinPhen/ExperimentDisplay/ExperimentVi
 import ExperimentResultView from '@/components/ClinPhen/ExperimentDisplay/ExperimentResultView';
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
 
-import { LinkTile } from '@/components/Provenance/DatasetProvenance/bits';
+import { LinkTile } from '@/components/Util/LinkTile';
 
 import { objectToBoolean } from '@/utils/boolean';
 import { phenopacketExperiments, phenopacketExperimentResults } from '@/utils/experiments';
