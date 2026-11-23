@@ -1,9 +1,6 @@
 import { execSync } from 'child_process';
 import packageData from '../../../package.json';
-
-export const dynamic = 'force-dynamic';
-
-const ADMIN_URL = (process.env.BENTO_PUBLIC_ADMIN_URL || '').replace(/\/$/, '');
+import { ADMIN_URL, SERVICE_ID } from '@/env.server';
 
 const corsHeaders: Record<string, string> = ADMIN_URL
   ? {
@@ -33,7 +30,7 @@ export function GET() {
   const nodeEnv = process.env.NODE_ENV || 'production';
 
   const serviceInfo: Record<string, unknown> = {
-    id: process.env.SERVICE_ID || `${serviceType.group}:${serviceType.artifact}`,
+    id: SERVICE_ID || `${serviceType.group}:${serviceType.artifact}`,
     name: 'Bento Public',
     description: 'Public web interface for the Bento platform.',
     type: serviceType,

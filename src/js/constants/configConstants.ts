@@ -13,8 +13,10 @@ export const katsuDiscoveryMatchesUrl = `${katsuBaseUrl}/api/discovery_matches`;
 export const katsuDiscoveryMatchesExportFieldsUrl = `${katsuBaseUrl}/api/discovery_matches_export_fields`;
 export const katsuDiscoveryUIHintsUrl = `${katsuBaseUrl}/api/discovery_ui_hints`;
 
+// Bento Public's own route: Katsu projects plus the user's permissions on them, fetched server-side.
+export const projectsUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/projects`;
+
 // Katsu entity API (Django Rest Framework) base URLs
-export const projectsUrl = `${katsuBaseUrl}/api/projects`;
 export const individualUrl = `${katsuBaseUrl}/api/individuals`;
 export const individualBatchUrl = `${katsuBaseUrl}/api/batch/individuals`;
 export const phenopacketUrl = `${katsuBaseUrl}/api/phenopackets`;

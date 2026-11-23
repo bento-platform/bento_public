@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import type { RootState } from '@/store';
 import { type Resource, makeResourceKey } from 'bento-auth-js';
+import { getProjects } from '@/features/metadata/metadata.store';
 
 type FetchPermissionsPayload = {
   result: string[][];
@@ -80,6 +81,15 @@ export const authSlice = createSlice({
             hasAttempted: true,
             permissions: payload?.result?.[r] ?? [],
           };
+        }
+      })
+      // The projects route returns the user's permissions on every project/dataset resource. Seed the cache with them
+      // so the per-resource permission hooks see hasAttempted and skip their own authz requests.
+      // If the route could not get permissions, leave the cache alone so those hooks fetch them as before.
+      .addCase(getProjects.fulfilled, (state, { payload }) => {
+        if (payload?.permissionsError) return;
+        for (const [key, permissions] of Object.entries(payload?.permissions ?? {})) {
+          state.resourcePermissions[key] = { isFetching: false, hasAttempted: true, error: '', permissions };
         }
       })
       .addCase(fetchResourcesPermissions.rejected, (state, { meta, error }) => {
