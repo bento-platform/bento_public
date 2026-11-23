@@ -47,7 +47,7 @@ const SiteHeader = () => {
   const currentPage = getCurrentPage(location);
   const rootUrl = useLangPrefixedUrl('');
   const buildMenuHref = useBuildMenuHref();
-  const [menuItems] = useSiteMenuItems();
+  const { siteHeaderMenuItems } = useSiteMenuItems();
 
   const {
     token: { colorBgContainer, colorBorderSecondary },
@@ -58,9 +58,9 @@ const SiteHeader = () => {
   }, [t]);
 
   // TODO fix navItems type
-  const hasMenu = (menuItems?.length ?? 0) > 1;
+  const hasMenu = (siteHeaderMenuItems?.length ?? 0) > 1;
   const navItems = hasMenu
-    ? (menuItems ?? []).map((item) =>
+    ? (siteHeaderMenuItems ?? []).map((item) =>
         item && 'key' in item && item.key != null && item.type !== 'divider' && 'label' in item
           ? { ...item, label: <Link to={buildMenuHref(String(item.key))}>{item.label}</Link> }
           : item

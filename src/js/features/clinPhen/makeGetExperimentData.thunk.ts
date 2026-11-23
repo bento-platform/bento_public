@@ -3,7 +3,6 @@ import axios from 'axios';
 import { experimentUrl } from '@/constants/configConstants';
 import type { RootState } from '@/store';
 import { printAPIError } from '@/utils/error.util';
-import { authorizedRequestConfig } from '@/utils/requests';
 import type { Experiment } from '@/types/clinPhen/experiments/experiment';
 import { RequestStatus } from '@/types/requests';
 
@@ -16,9 +15,9 @@ export const makeGetExperimentData = createAsyncThunk<
   }
 >(
   'query/makeGetExperimentData',
-  (id, { rejectWithValue, getState }) => {
+  (id, { rejectWithValue }) => {
     return axios
-      .get(`${experimentUrl}/${id}`, authorizedRequestConfig(getState()))
+      .get(`${experimentUrl}/${id}`)
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue));
   },

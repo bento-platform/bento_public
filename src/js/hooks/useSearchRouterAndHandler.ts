@@ -65,8 +65,8 @@ export const useSearchRouterAndHandler = () => {
   const location = useLocation();
   const navigateToScope = useNavigateToScope();
 
-  const { scope, fixedProject, fixedDataset } = useSelectedScope();
-  const isFixedProjectAndDataset = fixedProject && fixedDataset;
+  const { scope, isSoleProject, isSoleDataset } = useSelectedScope();
+  const isSoleProjectAndDataset = isSoleProject && isSoleDataset;
 
   const { hasAttempted: hasAttemptedQueryDataPerm, hasPermission: queryDataPerm } = useScopeQueryData();
 
@@ -166,9 +166,9 @@ export const useSearchRouterAndHandler = () => {
         ...qp,
       ]);
       console.debug('[Search] Redirecting to:', urlSuffix, '| new scope:', scope);
-      navigateToScope(scope, urlSuffix, isFixedProjectAndDataset, { replace: true });
+      navigateToScope(scope, urlSuffix, isSoleProjectAndDataset, { replace: true });
     },
-    [navigateToScope, scope, isFixedProjectAndDataset]
+    [navigateToScope, scope, isSoleProjectAndDataset]
   );
 
   const currentPage = getCurrentPage(location);

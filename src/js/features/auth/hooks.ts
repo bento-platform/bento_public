@@ -5,36 +5,14 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { signIn, signOut, useSession } from 'next-auth/react';
 
-import { PUBLIC_URL_NO_TRAILING_SLASH } from '@/config';
 import type { AppDispatch, RootState } from '@/store';
-import { type Resource, makeResourceKey, makeAuthorizationHeader } from 'bento-auth-js';
-import { fetchResourcesPermissions, setAccessToken } from './authSlice';
+import { type Resource, makeResourceKey } from 'bento-auth-js';
+import { fetchResourcesPermissions } from './authSlice';
 import { BENTO_OIDC_PROVIDER_ID } from './constants';
 
 export const useIsAuthenticated = (): boolean => useSession().status === 'authenticated';
 
-export const useAccessToken = (): string | undefined => useSession().data?.accessToken;
-
-// Copies the Auth.js session's access token into Redux
-export const useSyncAccessToken = () => {
-  const dispatch: AppDispatch = useDispatch();
-  const accessToken = useAccessToken();
-  useEffect(() => {
-    dispatch(setAccessToken(accessToken));
-  }, [dispatch, accessToken]);
-};
-
-export const useIsAuthReady = (): boolean => {
-  const { status } = useSession();
-  const mirroredToken = useSelector((state: RootState) => state.auth.accessToken);
-  if (status === 'loading') return false;
-  return status !== 'authenticated' || !!mirroredToken;
-};
-
-export const useAuthorizationHeader = () => {
-  const accessToken = useAccessToken();
-  return useMemo(() => makeAuthorizationHeader(accessToken), [accessToken]);
-};
+export const useIsAuthReady = (): boolean => useSession().status !== 'loading';
 
 type BaseResourcePermissionsState = {
   isFetching: boolean;
@@ -50,8 +28,7 @@ export const useResourcesPermissions = (
 ): Record<string, ResourcePermissionsState> => {
   const dispatch: AppDispatch = useDispatch();
 
-  const { status: sessionStatus, data: session } = useSession();
-  const accessToken = session?.accessToken;
+  const { status: sessionStatus } = useSession();
 
   const keys = useMemo(() => resources.map((resource) => makeResourceKey(resource)), [resources]);
 
@@ -66,8 +43,8 @@ export const useResourcesPermissions = (
     // already been tried/returned, we don't need to dispatch the fetch action:
     if (!authzUrl || sessionStatus === 'loading' || anyFetching || allHavePermissions || allAttempted) return;
 
-    dispatch(fetchResourcesPermissions({ resources, authzUrl, accessToken }));
-  }, [dispatch, keys, resources, resourcePermissions, authzUrl, sessionStatus, accessToken]);
+    dispatch(fetchResourcesPermissions({ resources, authzUrl }));
+  }, [dispatch, keys, resources, resourcePermissions, authzUrl, sessionStatus]);
 
   // Construct an object with resource keys yielding an object containing the permissions on the object
   return useMemo(
@@ -116,26 +93,16 @@ export const useHandleRefreshTokenError = () => {
   }, [session?.error]);
 };
 
-export const usePerformSignOut = () => {
-  const { data: session } = useSession();
-  const idToken = session?.idToken;
-
-  return useCallback(async () => {
+export const usePerformSignOut = () =>
+  useCallback(async () => {
     try {
+      // The server builds the end-session URL, since only it can read the ID token (for id_token_hint).
       const res = await fetch('/api/auth/end-session-url');
       if (res.ok) {
-        const { endSessionEndpoint, clientId } = (await res.json()) as {
-          endSessionEndpoint: string | null;
-          clientId: string | null;
-        };
-        if (endSessionEndpoint) {
-          const url = new URL(endSessionEndpoint);
-          if (idToken) url.searchParams.set('id_token_hint', idToken);
-          if (clientId) url.searchParams.set('client_id', clientId);
-          url.searchParams.set('post_logout_redirect_uri', `${PUBLIC_URL_NO_TRAILING_SLASH}/`);
-
-          await signOut({ redirect: false }); // clear our own session first - we've already captured idToken above
-          window.location.href = url.toString(); // ...then hand off to the identity provider to end its session too
+        const { endSessionUrl } = (await res.json()) as { endSessionUrl: string | null };
+        if (endSessionUrl) {
+          await signOut({ redirect: false }); // clear our own session first - the URL has been built already
+          window.location.href = endSessionUrl; // ...then hand off to the identity provider to end its session too
           return;
         }
       }
@@ -144,5 +111,4 @@ export const usePerformSignOut = () => {
     }
     // Fallback: provider doesn't support RP-initiated logout, or discovery failed.
     await signOut();
-  }, [idToken]);
-};
+  }, []);

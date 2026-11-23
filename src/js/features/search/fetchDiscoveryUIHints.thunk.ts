@@ -8,7 +8,7 @@ import { katsuDiscoveryUIHintsUrl } from '@/constants/configConstants';
 import { RequestStatus } from '@/types/requests';
 
 import { printAPIError } from '@/utils/error.util';
-import { scopedAuthorizedRequestConfig } from '@/utils/requests';
+import { scopedRequestConfig } from '@/utils/requests';
 
 export const fetchDiscoveryUIHints = createAsyncThunk<
   DiscoveryUIHints,
@@ -22,7 +22,7 @@ export const fetchDiscoveryUIHints = createAsyncThunk<
   (_, { rejectWithValue, getState }) => {
     const state = getState();
     return axios
-      .get(katsuDiscoveryUIHintsUrl, scopedAuthorizedRequestConfig(state)) // Doesn't change based on query, just scope
+      .get(katsuDiscoveryUIHintsUrl, scopedRequestConfig(state)) // Doesn't change based on query, just scope
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue));
   },

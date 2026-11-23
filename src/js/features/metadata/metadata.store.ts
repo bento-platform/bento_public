@@ -1,12 +1,11 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
-import type { PaginatedResponse, Project } from '@/types/metadata';
+import type { Project, ProjectsWithPermissionsResponse } from '@/types/metadata';
 import type { Dataset } from '@/types/dataset';
 import { RequestStatus } from '@/types/requests';
 import type { RootState } from '@/store';
 import { printAPIError } from '@/utils/error.util';
-import { authorizedRequestConfig } from '@/utils/requests';
 import { validProjectDataset } from '@/utils/router';
 import { scopeSelectionEqual } from './utils';
 import { projectsUrl } from '@/constants/configConstants';
@@ -16,8 +15,8 @@ export type DiscoveryScope = { project?: string; dataset?: string };
 export type DiscoveryScopeSelection = {
   scope: DiscoveryScope;
   scopeSet: boolean;
-  fixedProject: boolean;
-  fixedDataset: boolean;
+  isSoleProject: boolean;
+  isSoleDataset: boolean;
 };
 
 export interface MetadataState {
@@ -41,22 +40,20 @@ const initialState: MetadataState = {
     scope: { project: undefined, dataset: undefined },
     // Whether scope has been set from URL/action yet. If it hasn't, we need to wait before fetching scoped data.
     scopeSet: false,
-    fixedProject: false,
-    fixedDataset: false,
+    isSoleProject: false,
+    isSoleDataset: false,
   },
 };
 
 export const getProjects = createAsyncThunk<
-  PaginatedResponse<Project>,
+  ProjectsWithPermissionsResponse,
   string,
   { state: RootState; rejectValue: string }
 >(
   'metadata/getProjects',
-  (language, { rejectWithValue, getState }) => {
-    const config = authorizedRequestConfig(getState());
-    config.headers = { ...config.headers, 'Accept-Language': language };
+  (language, { rejectWithValue }) => {
     return axios
-      .get(projectsUrl, config)
+      .get(projectsUrl, { headers: { 'Accept-Language': language } })
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue));
   },

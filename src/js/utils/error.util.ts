@@ -42,7 +42,8 @@ export const printAPIError = (rejectWithValue: (value: string) => any) => (error
   } else if (error.request) {
     // The request was made but no response was received
     console.log(error.request);
-    return rejectWithValue(error.request);
+    // Reject with a string, not the XMLHttpRequest: it is non-serializable and crashes Redux DevTools.
+    return rejectWithValue(error.message);
   } else {
     // Something happened in setting up the request that triggered an Error
     console.log('Error', error.message);

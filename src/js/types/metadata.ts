@@ -21,3 +21,10 @@ export interface PaginatedResponse<T> {
 }
 
 export type ProjectsResponse = PaginatedResponse<Project>;
+
+/** Response of Bento Public's own /api/projects route: Katsu's projects plus the user's permissions on them. */
+export type ProjectsWithPermissionsResponse = ProjectsResponse & {
+  /** The user's permissions, keyed by bento-auth-js makeResourceKey(resource). Empty if permissionsError is set. */
+  permissions: Record<string, string[]>;
+  permissionsError?: string;
+};

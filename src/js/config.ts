@@ -1,5 +1,6 @@
-import { stringToBoolean } from '@/utils/strings';
+import { stringToBoolean, stripTrailingSlash } from '@/utils/env';
 import { LOCALSTORAGE_DEV_SETTINGS_KEY } from '@/constants/ui';
+import { toBffUrl } from '@/utils/bff';
 
 export interface PublicConfig {
   // General
@@ -33,8 +34,6 @@ export interface PublicConfig {
 // Declaration required for global config
 declare let BENTO_PUBLIC_CONFIG: PublicConfig;
 
-const stripTrailingSlash = (x: string): string => x.replace(/\/$/g, '');
-
 // General
 export const CLIENT_NAME = BENTO_PUBLIC_CONFIG.CLIENT_NAME ?? process.env.BENTO_PUBLIC_CLIENT_NAME;
 const _ADMIN_URL = BENTO_PUBLIC_CONFIG.ADMIN_URL ?? process.env.BENTO_PUBLIC_ADMIN_URL ?? '';
@@ -52,8 +51,7 @@ export const SHOW_LOGO = BENTO_PUBLIC_CONFIG.SHOW_LOGO ?? stringToBoolean(proces
 export const SHOW_HEADER_TITLE =
   BENTO_PUBLIC_CONFIG.SHOW_HEADER_TITLE ?? stringToBoolean(process.env.BENTO_PUBLIC_SHOW_HEADER_TITLE, 'true');
 export const SHOW_ADMIN_LINK =
-  BENTO_PUBLIC_CONFIG.SHOW_ADMIN_LINK ??
-  stringToBoolean(process.env.BENTO_PUBLIC_SHOW_ADMIN_LINK || process.env.BENTO_PUBLIC_SHOW_PORTAL_LINK);
+  BENTO_PUBLIC_CONFIG.SHOW_ADMIN_LINK ?? stringToBoolean(process.env.BENTO_PUBLIC_SHOW_ADMIN_LINK);
 export const SHOW_SIGN_IN = BENTO_PUBLIC_CONFIG.SHOW_SIGN_IN ?? stringToBoolean(process.env.BENTO_PUBLIC_SHOW_SIGN_IN);
 export const FORCE_CATALOGUE =
   BENTO_PUBLIC_CONFIG.FORCE_CATALOGUE ?? stringToBoolean(process.env.BENTO_PUBLIC_FORCE_CATALOGUE);
@@ -86,7 +84,9 @@ export const APPLY_FOR_ACCESS_URL = stripTrailingSlash(
 );
 
 // Beacon configuration and flags
-export const BEACON_URL = BENTO_PUBLIC_CONFIG.BEACON_URL ?? process.env.BEACON_URL;
+const _BEACON_URL = BENTO_PUBLIC_CONFIG.BEACON_URL ?? process.env.BEACON_URL;
+// Routed through the same-origin proxy (which adds the user's token) when it's a Bento service on this instance
+export const BEACON_URL = _BEACON_URL ? toBffUrl(_BEACON_URL, PUBLIC_URL_NO_TRAILING_SLASH) : _BEACON_URL;
 export const BEACON_NETWORK_URL = BEACON_URL + '/network';
 export const BEACON_UI_ENABLED =
   BENTO_PUBLIC_CONFIG.BEACON_UI_ENABLED ?? stringToBoolean(process.env.BENTO_BEACON_UI_ENABLED);

@@ -5,13 +5,13 @@ import type { RootState } from '@/store';
 import { RequestStatus } from '@/types/requests';
 import type { SearchFieldResponse } from '@/features/search/types';
 import { printAPIError } from '@/utils/error.util';
-import { scopedAuthorizedRequestConfig } from '@/utils/requests';
+import { scopedRequestConfig } from '@/utils/requests';
 
 export const fetchSearchFields = createAsyncThunk<SearchFieldResponse, void, { rejectValue: string; state: RootState }>(
   'query/fetchSearchFields',
   (_, { rejectWithValue, getState }) => {
     return axios
-      .get(katsuDiscoverySearchFieldsUrl, scopedAuthorizedRequestConfig(getState()))
+      .get(katsuDiscoverySearchFieldsUrl, scopedRequestConfig(getState()))
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue));
   },
