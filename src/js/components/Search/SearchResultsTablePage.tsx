@@ -25,7 +25,7 @@ import { useAppDispatch, useAppSelector, useTranslationFn } from '@/hooks';
 import { useResponsiveMobileContext, useSmallScreen } from '@/hooks/useResponsiveContext';
 import { useScopeDownloadData } from '@/hooks/censorship';
 import { useDownloadAllMatches } from '@/hooks/useDownloadAllMatches';
-import { useDownloadSelectedMatches } from '@/hooks/useDownloadSelectedMatches';
+import { downloadSelectedMatches } from '@/utils/downloadSelectedMatches';
 import { useExportFileManifest } from '@/hooks/useExportFileManifest';
 import { useSearchQuery, useSearchQueryParams } from '@/features/search/hooks';
 import { useNavigateToSameScopeUrl } from '@/hooks/navigation';
@@ -330,7 +330,6 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
   const { resultCountsOrBools, pageSize, matchData } = useSearchQuery();
   const { fetchingPermission: fetchingCanDownload, hasPermission: canDownload } = useScopeDownloadData();
   const downloadAllMatches = useDownloadAllMatches();
-  const downloadSelectedMatches = useDownloadSelectedMatches();
   const isSmallScreen = useSmallScreen();
   const isMobile = useResponsiveMobileContext();
 
@@ -495,16 +494,7 @@ const SearchResultsTable = <T extends ViewableDiscoveryMatchObject>({
         .catch(() => message.error(t('search.export_error')))
         .finally(() => setExporting(false));
     },
-    [
-      t,
-      entity,
-      exportEntity,
-      hasSelection,
-      selectedExportIds,
-      downloadSelectedMatches,
-      downloadAllMatches,
-      exportFormat,
-    ]
+    [t, entity, exportEntity, hasSelection, selectedExportIds, downloadAllMatches, exportFormat]
   );
 
   const { exportFileManifest: onExportManifest, isExportingFileManifest } = useExportFileManifest(false);

@@ -1,12 +1,10 @@
 import NextAuth from 'next-auth';
+import { getToken } from 'next-auth/jwt';
 import type { OAuthConfig } from 'next-auth/providers';
 import type { JWT } from 'next-auth/jwt';
+import { AUTH_SECRET, CLIENT_ID, CLIENT_SECRET, OPENID_CONFIG_URL, PUBLIC_URL } from '@/env.server';
 import { BENTO_OIDC_PROVIDER_ID } from '@/features/auth/constants';
 
-export const CLIENT_ID = process.env.CLIENT_ID ?? '';
-// Confidential client secret. Server-side only - never expose to the browser.
-const CLIENT_SECRET = process.env.CLIENT_SECRET ?? '';
-const OPENID_CONFIG_URL = process.env.OPENID_CONFIG_URL ?? '';
 const ISSUER = OPENID_CONFIG_URL.replace(/\/\.well-known\/.*$/, '');
 
 type BentoTokenSet = {
@@ -86,6 +84,13 @@ const refreshAccessTokenOnce = (refreshToken: string): Promise<BentoTokenSet> =>
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
+  pages: { error: '/auth-error' },
+  logger: {
+    // Auth.js hides the underlying cause from the error page ("Configuration"), so surface it in the server log.
+    error(error) {
+      console.error('[auth]', error.name, error.cause ?? error.message);
+    },
+  },
   providers: [bentoOidcProvider],
   session: { strategy: 'jwt' },
   callbacks: {
@@ -139,27 +144,34 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
     },
     // SAFETY: the value returned here is what gets exposed to the client (via useSession / the /api/auth/session
-    // endpoint), so only put things in it that are safe to be visible in the browser. Never spread the whole `token`
-    // in - it holds the refresh token. Pick fields explicitly.
-    // TODO: stop sending the access token (and ID token) to the front end; make authenticated calls to the backend
-    //  from server-side code instead, where the token can be read from the JWT without leaving the server.
+    // endpoint), so only put things in it that are safe to be visible in the browser. Never put the access, ID or
+    // refresh tokens in it: the server reads those straight from the cookie (see getServerJwt).
     async session({ session, token }) {
-      return {
-        ...session,
-        accessToken: token.access_token,
-        idToken: token.id_token,
-        error: token.error,
-      };
+      return { ...session, error: token.error };
     },
   },
 });
 
-// Defines the shape of the session and JWT for Bento Public - without this, accessing session.accessToken,
+// Server-only: reads the access token straight from the encrypted session cookie, without exposing it to the browser.
+// This deliberately does not refresh an expired token - refresh tokens are single-use, and a refresh here couldn't
+// persist the rotated token back to the cookie. Refreshing happens when the session endpoint is polled instead.
+export const getServerJwt = (req: Request) =>
+  getToken({
+    req,
+    secret: AUTH_SECRET,
+    secureCookie: PUBLIC_URL.startsWith('https:'),
+  });
+
+export const getServerAccessToken = async (req: Request): Promise<string | undefined> => {
+  const token = await getServerJwt(req);
+  if (!token?.access_token || token.error || Date.now() >= token.expires_at * 1000) return undefined;
+  return token.access_token;
+};
+
+// Defines the shape of the session and JWT for Bento Public - without this, accessing session.error,
 // token.access_token, etc. elsewhere would be a type error.
 declare module 'next-auth' {
   interface Session {
-    accessToken?: string;
-    idToken?: string;
     error?: 'RefreshTokenError';
   }
 }

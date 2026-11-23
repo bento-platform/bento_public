@@ -1,22 +1,20 @@
 import { useCallback } from 'react';
-import { useAppSelector } from '@/hooks';
 import { useSelectedScope } from '@/features/metadata/hooks';
 import { useSearchQuery } from '@/features/search/hooks';
 import type { ExportDataEntity, ExportFormat } from '@/types/entities';
-import { scopedAuthorizedRequestConfigFromParts } from '@/utils/requests';
+import { scopedRequestConfigFromParts } from '@/utils/requests';
 import { searchQueryParamsFromState } from '@/features/search/utils';
 import axios from 'axios';
 import { katsuDiscoveryMatchesUrl } from '@/constants/configConstants';
 import FileSaver from 'file-saver';
 
 export const useDownloadAllMatches = () => {
-  const auth = useAppSelector((state) => state.auth);
   const query = useSearchQuery();
   const { scope } = useSelectedScope();
 
   return useCallback(
     async (entity: ExportDataEntity, format: ExportFormat, filename: string, fields?: string[]) => {
-      const config = scopedAuthorizedRequestConfigFromParts(auth, scope, [
+      const config = scopedRequestConfigFromParts(scope, [
         ...searchQueryParamsFromState(query),
         ['_entity', entity],
         ['_format', format],
@@ -31,6 +29,6 @@ export const useDownloadAllMatches = () => {
 
       FileSaver.saveAs(res.data, filename);
     },
-    [auth, query, scope]
+    [query, scope]
   );
 };

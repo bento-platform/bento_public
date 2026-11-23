@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Flex, Typography } from 'antd';
-import { useAccessToken } from '@/features/auth/hooks';
 import igv from 'igv/dist/igv.esm.js';
 import type { Browser, CreateOpt } from 'igv';
 import { saveIgvPosition } from '@/features/igv/igv.store';
@@ -11,7 +10,6 @@ import { useAppDispatch, useAppSelector, useTranslationFn } from '@/hooks';
 import { useDebounce } from '@/hooks/debounce';
 import { useNotify } from '@/hooks/notifications';
 import TrackControlTable from './TrackControlTable';
-import { PUBLIC_URL } from '@/config';
 
 const { Title } = Typography;
 
@@ -48,20 +46,10 @@ const TracksView = ({
   const availableAssemblies = useMemo(() => Object.keys(references), [references]);
   const hasMultipleAssemblies = availableAssemblies.length > 1;
 
-  const accessToken: string | undefined = useAccessToken();
   const igvPositionByAssembly = useAppSelector(
     (state) => state.igv.igvPositionByAssembly,
     () => true // don't re-render when position changes
   );
-
-  // update access token whenever necessary
-  // can change to per-track tokens in the future
-  useEffect(() => {
-    if (!accessToken) {
-      return;
-    }
-    igv.setOauthToken(accessToken, new URL(PUBLIC_URL).host);
-  }, [accessToken]);
 
   const buildIgvTrack = useCallback(
     (track: ExperimentResult): IgvTrack | null => {

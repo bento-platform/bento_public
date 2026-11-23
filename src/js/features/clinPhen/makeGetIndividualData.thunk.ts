@@ -3,7 +3,6 @@ import axios from 'axios';
 import { individualUrl } from '@/constants/configConstants';
 import type { RootState } from '@/store';
 import { printAPIError } from '@/utils/error.util';
-import { authorizedRequestConfig } from '@/utils/requests';
 import type { Individual } from '@/types/clinPhen/individual';
 import { RequestStatus } from '@/types/requests';
 
@@ -16,9 +15,9 @@ export const makeGetIndividualData = createAsyncThunk<
   }
 >(
   'query/makeGetIndividualData',
-  (id, { rejectWithValue, getState }) => {
+  (id, { rejectWithValue }) => {
     return axios
-      .get(`${individualUrl}/${id}`, authorizedRequestConfig(getState()))
+      .get(`${individualUrl}/${id}`)
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue));
   },

@@ -211,7 +211,7 @@ const cacheWholeScopeDiscoveryData = (
 
   if (
     (!scopeSelection.scope.project && !scopeSelection.scope.dataset) ||
-    (scopeSelection.fixedProject && scopeSelection.fixedDataset)
+    (scopeSelection.isSoleProject && scopeSelection.isSoleDataset)
   ) {
     // Cache whole-instance counts. Used for showing counts in the data catalogue.
     state.nodeCountsOrBools = response.counts;

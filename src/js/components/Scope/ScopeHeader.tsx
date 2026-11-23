@@ -34,7 +34,7 @@ const useBackButtonInfo = () => {
   const navigateToSameScopeUrl = useNavigateToSameScopeUrl();
   const datasetBackTarget = useDatasetBackTarget();
   const navigateToDatasetBackTarget = useNavigateToDatasetBackTarget();
-  const { scope, scopeSet, fixedProject, fixedDataset } = useSelectedScope();
+  const { scope, scopeSet, isSoleProject, isSoleDataset } = useSelectedScope();
 
   return useMemo<readonly [undefined, undefined] | [string, () => void]>(() => {
     if (!scopeSet) return NO_BACK_BUTTON;
@@ -45,7 +45,7 @@ const useBackButtonInfo = () => {
       ];
     } else {
       if (scope.dataset) {
-        if (fixedDataset) return NO_BACK_BUTTON;
+        if (isSoleDataset) return NO_BACK_BUTTON;
         if (datasetBackTarget) {
           // We got here by clicking a dataset card, so return to the page we came from, with the search terms /
           // filters it had (rebuilt from Redux).
@@ -59,7 +59,7 @@ const useBackButtonInfo = () => {
           ? ['Back to catalogue', navigateToCatalogue]
           : ['Back to project', () => navigateToScope({ project: scope.project }, BentoRoute.Explore)];
       } else if (scope.project) {
-        return fixedProject ? NO_BACK_BUTTON : ['Back to catalogue', navigateToCatalogue];
+        return isSoleProject ? NO_BACK_BUTTON : ['Back to catalogue', navigateToCatalogue];
       } else {
         return NO_BACK_BUTTON;
       }
@@ -73,8 +73,8 @@ const useBackButtonInfo = () => {
     navigateToSameScopeUrl,
     exploreQueryParams,
     scope,
-    fixedProject,
-    fixedDataset,
+    isSoleProject,
+    isSoleDataset,
     scopeSet,
   ]);
 };

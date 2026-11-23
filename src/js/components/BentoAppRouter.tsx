@@ -74,7 +74,7 @@ const ScopedRoute = () => {
       return;
     }
 
-    const isFixedProjectAndDataset = valid.fixedProject && valid.fixedDataset;
+    const isSoleProjectAndDataset = valid.isSoleProject && valid.isSoleDataset;
 
     // If the URL scope is valid, store the scope in the Redux store.
     // We have two subcases here:
@@ -83,7 +83,7 @@ const ScopedRoute = () => {
     //    / blank URL to avoid visual clutter.
     if (
       (datasetId === valid.scope.dataset && effectiveProjectId === valid.scope.project) ||
-      (!effectiveProjectId && !datasetId && isFixedProjectAndDataset)
+      (!effectiveProjectId && !datasetId && isSoleProjectAndDataset)
     ) {
       dispatch(selectScope(valid.scope)); // Also marks scope as set
       return;
@@ -192,7 +192,9 @@ const BentoAppRouter = () => {
     dispatch(getProjects(language));
   }, [dispatch, language, isAuthReady]);
 
-  if (!isAuthReady || projectsStatus === RequestStatus.Pending) {
+  // Also wait while Idle (before the effect above dispatches): routes mounted early would fire their own permission
+  // checks before getProjects can seed them.
+  if (!isAuthReady || projectsStatus === RequestStatus.Idle || projectsStatus === RequestStatus.Pending) {
     return <Loader fullHeight={true} />;
   }
 

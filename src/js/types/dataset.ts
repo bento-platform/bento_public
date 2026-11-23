@@ -297,6 +297,9 @@ export interface Dataset {
   study_status?: StudyStatus | null;
   study_context?: StudyContext | null;
 
+  /** PCGL-specific: identifier of the Data Access Committee (DAC) the study is assigned to. */
+  pcgl_dac_id?: string | null;
+
   /** List of specific scientific or clinical domains addressed by the study. */
   domain?: string[] | null;
   /** The overarching program the study belongs to, if applicable. */

@@ -1,6 +1,8 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { BFF_PREFIX } from '@/constants/bff';
+import { toBffUrl } from '@/utils/bff';
 import { PUBLIC_URL_NO_TRAILING_SLASH } from '@/config';
 import { katsuDiscoveryRulesUrl } from '@/constants/configConstants';
 import type { ServiceInfoStore, ServicesResponse } from '@/types/services';
@@ -8,13 +10,13 @@ import type { RootState } from '@/store';
 import type { DiscoveryRules } from '@/types/discovery/rules';
 import { RequestStatus } from '@/types/requests';
 import { printAPIError } from '@/utils/error.util';
-import { scopedAuthorizedRequestConfig } from '@/utils/requests';
+import { scopedRequestConfig } from '@/utils/requests';
 
 export const makeGetConfigRequest = createAsyncThunk<DiscoveryRules, void, { rejectValue: string; state: RootState }>(
   'config/getConfigData',
   (_, { rejectWithValue, getState }) => {
     return axios
-      .get(katsuDiscoveryRulesUrl, scopedAuthorizedRequestConfig(getState()))
+      .get(katsuDiscoveryRulesUrl, scopedRequestConfig(getState()))
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue));
   },
@@ -46,7 +48,7 @@ export const makeGetServiceInfoRequest = createAsyncThunk<
   'config/getServiceInfo',
   (_, { rejectWithValue }) =>
     axios
-      .get(`${PUBLIC_URL_NO_TRAILING_SLASH}/api/service-registry/services`)
+      .get(`${PUBLIC_URL_NO_TRAILING_SLASH}${BFF_PREFIX}/service-registry/services`)
       .then((res) => res.data)
       .catch(printAPIError(rejectWithValue)),
   {
@@ -106,8 +108,8 @@ const configStore = createSlice({
     builder.addCase(
       makeGetServiceInfoRequest.fulfilled,
       (state, { payload }: PayloadAction<ServicesResponse[] | undefined>) => {
-        state.serviceInfo.auth =
-          (payload ?? []).find((service) => service.bento.serviceKind === 'authorization')?.url || '';
+        const authzUrl = (payload ?? []).find((service) => service.bento.serviceKind === 'authorization')?.url;
+        state.serviceInfo.auth = authzUrl ? toBffUrl(authzUrl, PUBLIC_URL_NO_TRAILING_SLASH) : '';
         state.serviceInfoStatus = RequestStatus.Fulfilled;
       }
     );

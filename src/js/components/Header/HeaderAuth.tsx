@@ -38,10 +38,11 @@ export const HeaderAuth = () => {
 
   if (!SHOW_SIGN_IN) return null;
 
-  // Authenticated case: show user info and menu or sing out button
+  // Authenticated case
   if (isAuthenticated || isSigningOut) {
     const primaryLabel = userName ?? userEmail;
 
+    // If there is no user info, the menu falls back to a button.
     if (!primaryLabel || isSigningOut) {
       return (
         <Button
@@ -51,6 +52,7 @@ export const HeaderAuth = () => {
           icon={<LogoutOutlined aria-hidden />}
           loading={isSigningOut}
           onClick={handleSignOut}
+          aria-busy={isSigningOut}
         >
           <span hidden={isSmallScreen} aria-hidden>
             {t('Sign Out')}
@@ -59,8 +61,8 @@ export const HeaderAuth = () => {
       );
     }
 
+    // Authenticated status and user info component
     const secondaryLabel = userName ? userEmail : undefined;
-
     const headerAuthItems: MenuItem[] = [
       {
         key: 'user',
@@ -96,6 +98,7 @@ export const HeaderAuth = () => {
     );
   }
 
+  // Non Authenticated case
   return (
     <Button
       aria-label={t('Sign In')}
@@ -105,7 +108,6 @@ export const HeaderAuth = () => {
       icon={<LoginOutlined aria-hidden />}
       onClick={handleSignIn}
       loading={isSigningIn}
-      disabled={isSigningIn}
       aria-busy={isSigningIn}
     >
       <span hidden={isSmallScreen} aria-hidden>
