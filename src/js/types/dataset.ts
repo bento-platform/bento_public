@@ -1,4 +1,5 @@
 import type { Feature, Geometry } from 'geojson';
+import type { DiscoveryConfig } from '@/types/discovery/config';
 import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
 import type { StringOrOntologyClass } from '@/types/ontology';
 
@@ -309,6 +310,9 @@ export interface Dataset {
   extra_properties?: Record<string, string | number | boolean | null> | null;
 
   counts_by_entity?: KatsuEntityCountsOrBooleans;
+
+  /** Dataset-level discovery config. If not set, Katsu falls back to the project config, then the node config. */
+  discovery?: DiscoveryConfig | null;
 
   /* Katsu database record created/updated fields; confusingly similar to release_Data/last_modified */
   created_at: string;

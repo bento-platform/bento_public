@@ -21,6 +21,8 @@ export type UIState = {
   manageChartsVisible: boolean;
   settings: UIUserSettings;
   datasetBackTarget: DatasetBackTarget | null;
+  // In memory only: the notice comes back after a page reload.
+  roundedCountsNoticeDismissed: boolean;
 };
 
 const defaultInitialSettings: UIUserSettings = {
@@ -45,6 +47,7 @@ const initialState: UIState = {
   // Load from LocalStorage if set. The corresponding persist-to-LS logic is handled by an observer in /src/js/store.ts.
   settings: getValue(LOCALSTORAGE_UI_SETTINGS_KEY, defaultInitialSettings, validateUiSettings),
   datasetBackTarget: null,
+  roundedCountsNoticeDismissed: false,
 };
 
 const ui = createSlice({
@@ -63,8 +66,17 @@ const ui = createSlice({
     setDatasetBackTarget: (state, { payload }: PayloadAction<DatasetBackTarget | null>) => {
       state.datasetBackTarget = payload;
     },
+    dismissRoundedCountsNotice: (state) => {
+      state.roundedCountsNoticeDismissed = true;
+    },
   },
 });
 
-export const { setExtraBreadcrumb, setManageChartsVisible, setExploreChartMode, setDatasetBackTarget } = ui.actions;
+export const {
+  setExtraBreadcrumb,
+  setManageChartsVisible,
+  setExploreChartMode,
+  setDatasetBackTarget,
+  dismissRoundedCountsNotice,
+} = ui.actions;
 export default ui.reducer;

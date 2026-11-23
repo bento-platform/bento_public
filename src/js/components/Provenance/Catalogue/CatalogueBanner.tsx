@@ -4,6 +4,8 @@ import { DatabaseOutlined, ExperimentOutlined, TeamOutlined } from '@ant-design/
 import clsx from 'clsx';
 import type { DatasetWithProject } from '@/features/catalogue/hooks';
 import { useFormatNumber, useTranslationFn } from '@/hooks';
+import { useCatalogueCountsAreRounded } from '@/hooks/censorship';
+import RoundedCountsInfo from '@Util/RoundedCountsInfo';
 import { PCGL_MODE } from '@/config';
 import AboutContent from '@/components/AboutContent';
 import { BANNER_GRADIENT } from './constants';
@@ -28,6 +30,9 @@ interface CatalogueBannerProps {
 const CatalogueBanner = ({ datasets }: CatalogueBannerProps) => {
   const t = useTranslationFn();
   const fmt = useFormatNumber();
+
+  // The totals add up every dataset's counts, so they are approximate if any dataset's shown counts are rounded.
+  const countsAreRounded = useCatalogueCountsAreRounded(datasets);
 
   const { datasetCount, individualCount, biosampleCount } = useMemo(() => {
     let individualCount = 0;
@@ -83,6 +88,7 @@ const CatalogueBanner = ({ datasets }: CatalogueBannerProps) => {
             value={fmt(biosampleCount)}
             label={t('entities.biosample', { count: biosampleCount }).toLowerCase()}
           />
+          {countsAreRounded && <RoundedCountsInfo className="catalogue-banner__stat-icon" />}
         </Space>
       </Flex>
     </div>

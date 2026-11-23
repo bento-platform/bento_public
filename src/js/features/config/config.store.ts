@@ -69,6 +69,7 @@ export const makeGetServiceInfoRequest = createAsyncThunk<
 export interface ConfigState {
   configStatus: RequestStatus;
   countThreshold: number;
+  countRounding: number;
   maxQueryParameters: number;
   // ----------------------------------------------------
   serviceInfoStatus: RequestStatus;
@@ -78,6 +79,7 @@ export interface ConfigState {
 const initialState: ConfigState = {
   configStatus: RequestStatus.Idle,
   countThreshold: 0,
+  countRounding: 0,
   maxQueryParameters: 0,
   // ----------------------------------------------------
   serviceInfoStatus: RequestStatus.Idle,
@@ -96,6 +98,7 @@ const configStore = createSlice({
     });
     builder.addCase(makeGetConfigRequest.fulfilled, (state, { payload }: PayloadAction<DiscoveryRules>) => {
       state.countThreshold = payload.count_threshold;
+      state.countRounding = payload.count_rounding ?? 0;
       state.maxQueryParameters = payload.max_query_parameters;
       state.configStatus = RequestStatus.Fulfilled;
     });

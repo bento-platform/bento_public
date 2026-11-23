@@ -67,6 +67,13 @@
     "search_fetch": "Error fetching search results",
     "page_not_found": "Page not found"
   },
+  "rounded_counts": {
+    "notice": "Counts on this page are approximate.",
+    "help_title": "Approximate counts",
+    "help": "To protect privacy, counts are rounded to the nearest multiple of {{rounding}}. Users with permission to query the data see exact counts.",
+    "help_mixed": "These counts are approximate. To protect privacy, counts are rounded, and the rounding can differ between $t(entities.dataset_other, lowercase). Users with permission to query the data see exact counts.",
+    "dismiss": "Dismiss"
+  },
   "explore": {
     "chart_size_label": "Chart size:",
     "compact": "Compact",
@@ -272,7 +279,8 @@
       "$t(entities.project_one, lowercase)/$t(entities.dataset_one, lowercase)",
       "or the entire instance (the 'scope'), depending on your level of authorization.\n",
       "Select filters and specify values to narrow down data of interest within the selected scope.",
-      "If a small number of records match your query, the count may be censored to prevent re-identification."
+      "If a small number of records match your query, the count may be censored to prevent re-identification.",
+      "Counts may also be rounded, in which case they are approximate."
     ],
     "about": [
       "Detailed provenance metadata for a $t(entities.dataset_one, lowercase) or all ",
