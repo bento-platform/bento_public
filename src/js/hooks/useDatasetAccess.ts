@@ -1,10 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import {
-  downloadData,
-  downloadMetadata,
-  makeProjectDatasetDataTypeResource,
-  makeResourceKey,
-} from 'bento-auth-js';
+import { downloadData, downloadMetadata, makeProjectDatasetDataTypeResource, makeResourceKey } from 'bento-auth-js';
 import { PCGL_MODE } from '@/config';
 import { scopeToResource, useSelectedScope } from '@/features/metadata/hooks';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
