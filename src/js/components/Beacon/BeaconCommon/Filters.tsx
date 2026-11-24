@@ -4,7 +4,6 @@ import type { FormInstance } from 'antd/es/form';
 
 import { useBeaconNetwork } from '@/features/beacon/hooks';
 import { toggleQuerySectionsUnionOrIntersection } from '@/features/beacon/network.store';
-import { useConfig } from '@/features/config/hooks';
 import { useAppDispatch, useTranslationFn } from '@/hooks';
 import type { BeaconFilterSection, FormFilter } from '@/types/beacon';
 
@@ -31,12 +30,21 @@ const NetworkFilterToggle = () => {
 
 const BUTTON_STYLE = { margin: '10px 0' };
 
-const Filters = ({ filters, setFilters, filtersDirty, form, beaconFiltersBySection, isNetworkQuery }: FiltersProps) => {
+const Filters = ({
+  filters,
+  setFilters,
+  filtersDirty,
+  form,
+  beaconFiltersBySection,
+  isNetworkQuery,
+  usedParameters,
+  maxParameters,
+}: FiltersProps) => {
   const t = useTranslationFn();
   const [filterIndex, setFilterIndex] = useState<number>(1);
 
-  const { maxQueryParameters: maxFilters } = useConfig();
-  const hasMaxFilters = filters.length >= maxFilters;
+  // max is 0 until config loads; treat 0 as "unknown", not "none allowed"
+  const hasMaxFilters = maxParameters > 0 && usedParameters >= maxParameters;
 
   // don't need to pull filters from state
   // we only need to know *which* state we are in, so it can be shown in the switch
@@ -68,7 +76,7 @@ const Filters = ({ filters, setFilters, filtersDirty, form, beaconFiltersBySecti
   return (
     <Form.Item>
       <Space className="p-0" style={{ display: 'flex' }}>
-        <Tooltip title={hasMaxFilters ? `${t('maximum of')} ${maxFilters} ${t('filters permitted')}` : null}>
+        <Tooltip title={hasMaxFilters ? t('beacon.parameters_max_remove', { max: maxParameters }) : null}>
           <Button style={BUTTON_STYLE} onClick={handleAddFilter} disabled={hasMaxFilters}>
             {t('Add Filter')}
           </Button>
@@ -100,6 +108,8 @@ export interface FiltersProps {
   form: FormInstance;
   beaconFiltersBySection: BeaconFilterSection[];
   isNetworkQuery: boolean;
+  usedParameters: number;
+  maxParameters: number;
 }
 
 export default Filters;

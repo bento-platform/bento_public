@@ -212,6 +212,9 @@
     "network_filter_toggle_help": "Choose all search filters across the network, or only those common to all beacons.",
     "home_page": "Home Page",
     "select_asm": "Select an assembly",
+    "parameters_limit_note": "A query can include at most {{max}} filter(s). The variant search counts as 1 filter.",
+    "parameters_max_remove": "Maximum of {{max}} query parameters reached. Remove a variant search or a filter to add another.",
+    "parameters_over_limit": "This query uses {{used}} parameters. The maximum is {{max}}. Remove a variant search or a filter.",
     "variants_form_error": "Variants form should include a chromosome and either an end position or both reference and alternate bases",
     "variants_help_title": "Variant search",
     "variants_help_1": [
