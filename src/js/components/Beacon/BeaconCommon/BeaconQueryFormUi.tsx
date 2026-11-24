@@ -115,12 +115,9 @@ const BeaconQueryFormUi = ({
 
   const filtersDirty = !(filters.length === 1 && filters[0].index == 0 && filters[0].searchFieldId === null);
 
-  // beacon limits the total number of query parameters: each filter counts as 1,
-  // and the whole variant (g_variant) block counts as 1
   const watchedValues: FormValues | undefined = Form.useWatch([], form);
   const hasVariantInput = VARIANT_FIELDS.some((k) => !!watchedValues?.[k]);
   const usedParameters = (filtersDirty ? filters.length : 0) + (hasVariantInput ? 1 : 0);
-  // variant block is locked when other filters use the whole quota (a variant already entered keeps its own slot)
   const variantQuotaReached = maxQueryParameters > 0 && !hasVariantInput && usedParameters >= maxQueryParameters;
 
   const packageFilters = useCallback(
