@@ -12,8 +12,8 @@ import type { ProjectsResponse, ProjectsWithPermissionsResponse } from '@/types/
 import { makeUpstreamHeaders } from '@/utils/upstream';
 
 /**
- * Every resource the frontend checks permissions on for the given projects (see useDatasetAccess and
- * useHasScopePermission): the whole node, each project, each dataset, and, in PCGL mode only, each dataset's
+ * Every resource the frontend checks permissions on for the given projects (see useDatasetAccess, useIsDatasetLocked
+ * and useHasScopePermission): the whole node, each project, each dataset, and, in PCGL mode only, each dataset's
  * experiment data type. If the dev settings turn PCGL mode on in the browser only, the frontend checks the experiment
  * resources one by one instead.
  */

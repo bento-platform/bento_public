@@ -82,6 +82,8 @@ export const PCGL_MODE = DEV_SETTINGS.PCGL_MODE ?? CONFIGURED_PCGL_MODE;
 export const APPLY_FOR_ACCESS_URL = stripTrailingSlash(
   BENTO_PUBLIC_CONFIG.APPLY_FOR_ACCESS_URL ?? process.env.APPLY_FOR_ACCESS_URL ?? ''
 );
+// The dataset lock icon tells users how to apply for access, so it is only shown if they can apply somewhere.
+export const DATASET_LOCK_ICON_ENABLED = !!APPLY_FOR_ACCESS_URL;
 
 // Beacon configuration and flags
 const _BEACON_URL = BENTO_PUBLIC_CONFIG.BEACON_URL ?? process.env.BEACON_URL;

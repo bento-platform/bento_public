@@ -31,3 +31,21 @@ export const useDatasetAccess = (scope?: DiscoveryScope) => {
 
   return { hasAccess: hasAttempted && hasPermission, hasAttempted };
 };
+
+/**
+ * Whether a dataset is locked for the user: the user does not have download:metadata on the dataset's experiment data
+ * type in PCGL mode, or on the dataset itself otherwise. The projects route prefetches this resource's permissions, so
+ * this hook does not send new requests in the normal case.
+ * @returns false until the permission check has been attempted, so the lock icon does not flash on load.
+ */
+export const useIsDatasetLocked = (project: string, dataset: string): boolean => {
+  const resource = useMemo(
+    () =>
+      PCGL_MODE
+        ? makeProjectDatasetDataTypeResource(project, dataset, 'experiment')
+        : scopeToResource({ project, dataset }),
+    [project, dataset]
+  );
+  const { hasAttempted, hasPermission } = useHasResourcePermissionWrapper(resource, downloadMetadata);
+  return hasAttempted && !hasPermission;
+};

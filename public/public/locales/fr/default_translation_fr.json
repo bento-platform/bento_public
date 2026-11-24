@@ -274,7 +274,11 @@
   "dataset": {
     "expand": "plus",
     "apply_for_access": "Demande d'accès",
-    "get_manifest": "Obtenir le manifeste des fichiers"
+    "get_manifest": "Obtenir le manifeste des fichiers",
+    "locked": "Les données individuelles sont restreintes pour ce(tte) $t(entities.dataset_one, lowercase)",
+    "locked_apply_below": "$t(dataset.locked). Vous pouvez demander l'accès en cliquant sur le bouton ci-dessous.",
+    "locked_sentence": "$t(dataset.locked).",
+    "apply_for_access_link": "Demander l'accès"
   },
   "provenance": {
     "sections": {

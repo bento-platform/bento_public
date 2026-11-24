@@ -1103,6 +1103,10 @@ body {
   gap: 0;
 }
 .catalogue-card__title { margin: 0 !important; font-size: 16px; font-weight: 600; flex: 1; }
+.catalogue-card__lock { color: var(--text-muted); }
+.scoped-title__lock { margin-left: 8px; color: var(--text-muted); }
+.dataset-lock-tooltip__link { color: inherit !important; text-decoration: underline; }
+.catalogue-card__corner { flex-shrink: 0; }
 .status-badge {
   flex-shrink: 0;
   font-size: 11px;
