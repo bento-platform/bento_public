@@ -649,8 +649,8 @@
     "get_manifest": "Get File Manifest",
     "locked": "Record-level data is restricted for this $t(entities.dataset_one, lowercase)",
     "locked_apply_below": "$t(dataset.locked). You can apply for access by clicking the button below.",
-    "locked_apply_here": "$t(dataset.locked). You can apply for access",
-    "locked_apply_here_link": "here"
+    "locked_sentence": "$t(dataset.locked).",
+    "apply_for_access_link": "Apply for access"
   },
   "provenance": {
     "sections": {

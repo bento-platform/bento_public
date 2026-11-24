@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { Tooltip } from 'antd';
-import { LockOutlined } from '@ant-design/icons';
+import { ExportOutlined, LockOutlined } from '@ant-design/icons';
 
 import { useTranslationFn } from '@/hooks';
 import { useApplyForAccessUrl } from '@/hooks/useApplyForAccessUrl';
@@ -35,7 +35,7 @@ const DatasetLockIcon = ({
         t('dataset.locked_apply_below')
       ) : (
         <>
-          {t('dataset.locked_apply_here')}{' '}
+          {t('dataset.locked_sentence')}{' '}
           <a
             href={applyForAccessUrl}
             target="_blank"
@@ -44,9 +44,8 @@ const DatasetLockIcon = ({
             // React events bubble through the tooltip portal: don't trigger a parent link (e.g. a breadcrumb item).
             onClick={(e) => e.stopPropagation()}
           >
-            {t('dataset.locked_apply_here_link')}
+            {t('dataset.apply_for_access_link')} <ExportOutlined aria-hidden="true" />
           </a>
-          .
         </>
       );
   }

@@ -277,8 +277,8 @@
     "get_manifest": "Obtenir le manifeste des fichiers",
     "locked": "Les données individuelles sont restreintes pour ce(tte) $t(entities.dataset_one, lowercase)",
     "locked_apply_below": "$t(dataset.locked). Vous pouvez demander l'accès en cliquant sur le bouton ci-dessous.",
-    "locked_apply_here": "$t(dataset.locked). Vous pouvez demander l'accès",
-    "locked_apply_here_link": "ici"
+    "locked_sentence": "$t(dataset.locked).",
+    "apply_for_access_link": "Demander l'accès"
   },
   "provenance": {
     "sections": {
