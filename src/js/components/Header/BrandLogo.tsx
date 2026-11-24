@@ -30,8 +30,6 @@ export const BrandLogo = ({ theme = 'light', ...props }: BrandLogoProps) => {
 
   const logo = BRANDING_REGISTRY[theme][TRANSLATED_LOGO ? language : 'en'];
 
-  console.log(theme, language, logo);
-
   return (
     <Image
       {...props}
