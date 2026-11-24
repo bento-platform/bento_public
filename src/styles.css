@@ -468,6 +468,7 @@ body {
   & .site-header__logo {
     width: auto;
     vertical-align: middle;
+    transform: translateY(-3px);
   }
 
   & .site-header__title.ant-typography {
