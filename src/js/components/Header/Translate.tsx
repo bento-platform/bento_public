@@ -1,33 +1,10 @@
 import { Button } from 'antd';
-import { type SVGProps } from 'react';
 import { LNG_CHANGE, LNGS_FULL_NAMES } from '@/constants/configConstants';
 import { TRANSLATED } from '@/config';
 import { useLanguage } from '@/hooks';
+import { RiTranslate } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 import { useSmallScreen } from '@/hooks/useResponsiveContext';
-
-const TranslateIcon = (props: SVGProps<SVGSVGElement>) => (
-  <svg
-    aria-hidden
-    focusable={false}
-    fill="none"
-    stroke="currentColor"
-    strokeWidth={2}
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    viewBox="0 0 24 24"
-    width="1em"
-    height="1em"
-    {...props}
-  >
-    <path d="m5 8 6 6" />
-    <path d="m4 14 6-6 2-3" />
-    <path d="M2 5h12" />
-    <path d="M7 2h1" />
-    <path d="m22 22-5-10-5 10" />
-    <path d="M14 18h6" />
-  </svg>
-);
 
 export const LanguageControl = () => {
   const language = useLanguage();
@@ -47,7 +24,7 @@ export const LanguageControl = () => {
   return TRANSLATED ? (
     <Button
       htmlType="button"
-      icon={<TranslateIcon />}
+      icon={<RiTranslate aria-hidden />}
       className="site-header__lang"
       lang={newLang}
       aria-label={LNGS_FULL_NAMES[newLang]}
