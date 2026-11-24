@@ -1,11 +1,6 @@
-import Image, { /* type StaticImageData,*/ type ImageProps } from 'next/image';
+import Image, { type ImageProps } from 'next/image';
 import { useLanguage } from '@/hooks';
 import { LOGO_HEIGHT, SHOW_LOGO, TRANSLATED_LOGO } from '@/config';
-
-// import darkEnBranding from '/public/public/assets/branding.png';
-// import darkFrBranding from '/public/public/assets/branding.fr.png';
-// import lightEnBranding from '/public/public/assets/branding.lightbg.png';
-// import lightFrBranding from '/public/public/assets/branding.lightbg.fr.png';
 
 type Theme = 'light' | 'dark';
 type BrandingRegistry = Record<Theme, Record<string, string>>;
