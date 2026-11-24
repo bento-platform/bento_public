@@ -81,7 +81,7 @@ const SiteHeader = () => {
       <Flex align="center" justify="space-between" gap={isSmallScreen ? 'small' : 'large'} className="h-full">
         <Flex align="center" gap={isSmallScreen ? 'small' : 'large'} className="flex-1" style={{ minWidth: 0 }}>
           <Link to={rootUrl} className="site-header__home focus-ring">
-            <BrandLogo src={''} alt={''} />
+            <BrandLogo />
             <Typography.Text className={clsx('site-header__title', !SHOW_HEADER_TITLE && 'visually-hidden')}>
               {t(CLIENT_NAME)}
             </Typography.Text>

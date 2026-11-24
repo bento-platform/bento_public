@@ -468,6 +468,7 @@ body {
   & .site-header__logo {
     width: auto;
     vertical-align: middle;
+    transform: translateY(-3px); /* default Bento and PCGL logo text are slightly misaligned */
   }
 
   & .site-header__title.ant-typography {
