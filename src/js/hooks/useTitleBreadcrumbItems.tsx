@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { HomeOutlined } from '@ant-design/icons';
 import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
 
-import type { MenuItem } from '@/types/navigation';
+import type { SiteMenuItem } from '@/types/navigation';
 import { BentoRoute } from '@/types/routes';
 import { useLanguage, useTranslationFn } from '@/hooks';
 import { useSelectedScope, useSelectedScopeTitles } from '@/features/metadata/hooks';
@@ -13,7 +13,7 @@ import { getCurrentPage } from '@/utils/router';
 import { PCGL_MODE } from '@/config';
 import DatasetLockIcon from '@Util/DatasetLockIcon';
 
-export const useTitleBreadcrumbItems = (scopeHeaderMenuItems: MenuItem[]): BreadcrumbItemType[] => {
+export const useTitleBreadcrumbItems = (scopeHeaderMenuItems: SiteMenuItem[]): BreadcrumbItemType[] => {
   const t = useTranslationFn();
   const language = useLanguage();
   const isSmallScreen = useSmallScreen();

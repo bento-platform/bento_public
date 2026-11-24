@@ -728,5 +728,19 @@
     "igv_error_description": "Error creating browser for assembly {{assemblyId}}",
     "track_controls": "Track controls",
     "track_controls_per_assembly": "{{assemblyId}} track controls"
+  },
+  "header": {
+    "nav": "Main navigation",
+    "skip_links": {
+      "main": "Skip to main content",
+      "footer": "Skip to about us"
+    },
+    "menu": {
+      "open": "Open menu",
+      "close": "Close menu"
+    },
+    "userMenu": {
+      "label": "Account menu"
+    }
   }
 }
