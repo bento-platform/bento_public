@@ -43,8 +43,9 @@ const Filters = ({
   const t = useTranslationFn();
   const [filterIndex, setFilterIndex] = useState<number>(1);
 
-  // max is 0 until config loads; treat 0 as "unknown", not "none allowed"
-  const hasMaxFilters = maxParameters > 0 && usedParameters >= maxParameters;
+  // max is 0 until config loads, so the button stays disabled until then
+  const configLoaded = maxParameters > 0;
+  const hasMaxFilters = !configLoaded || usedParameters >= maxParameters;
 
   // don't need to pull filters from state
   // we only need to know *which* state we are in, so it can be shown in the switch
@@ -76,7 +77,9 @@ const Filters = ({
   return (
     <Form.Item>
       <Space className="p-0" style={{ display: 'flex' }}>
-        <Tooltip title={hasMaxFilters ? t('beacon.parameters_max_remove', { max: maxParameters }) : null}>
+        <Tooltip
+          title={configLoaded && hasMaxFilters ? t('beacon.parameters_max_remove', { max: maxParameters }) : null}
+        >
           <Button style={BUTTON_STYLE} onClick={handleAddFilter} disabled={hasMaxFilters}>
             {t('Add Filter')}
           </Button>

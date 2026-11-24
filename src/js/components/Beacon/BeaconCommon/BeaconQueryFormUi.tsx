@@ -122,7 +122,6 @@ const BeaconQueryFormUi = ({
   const usedParameters = (filtersDirty ? filters.length : 0) + (hasVariantInput ? 1 : 0);
   // variant block is locked when other filters use the whole quota (a variant already entered keeps its own slot)
   const variantQuotaReached = maxQueryParameters > 0 && !hasVariantInput && usedParameters >= maxQueryParameters;
-  const overParameterLimit = maxQueryParameters > 0 && usedParameters > maxQueryParameters;
 
   const packageFilters = useCallback(
     (values: FormValues): BeaconPayloadFilter[] => {
@@ -206,20 +205,13 @@ const BeaconQueryFormUi = ({
         return;
       }
 
-      if (overParameterLimit) {
-        setHasFormError(true);
-        setErrorAlertClosed(false);
-        setFormErrorMessage(t('beacon.parameters_over_limit', { used: usedParameters, max: maxQueryParameters }));
-        return;
-      }
-
       clearFormError();
       setErrorAlertClosed(false);
       const jsonPayload = packageBeaconJSON(formValues);
 
       dispatch(launchQuery(jsonPayload));
     },
-    [dispatch, t, launchQuery, packageBeaconJSON, overParameterLimit, usedParameters, maxQueryParameters]
+    [dispatch, t, launchQuery, packageBeaconJSON]
   );
 
   const handleClearForm = () => {
