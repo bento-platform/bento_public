@@ -7,6 +7,8 @@ export interface StatItem {
   key: string;
   label: ReactNode;
   value: number;
+  /** Optional denominator. When set, the item renders as `value / total` with a lighter total. */
+  total?: number;
   icon?: ReactNode;
   description?: ReactNode;
 }
@@ -23,7 +25,7 @@ const StatList = ({ items, variant, ...ariaProps }: StatListProps) => {
   const fmt = useFormatNumber();
   return (
     <dl className={clsx('stat-list', `stat-list--${variant}`)} {...ariaProps}>
-      {items.map(({ key, label, value, icon, description }) => (
+      {items.map(({ key, label, value, total, icon, description }) => (
         <div key={key} className="stat-list__item">
           <dt className="stat-list__label">{label}</dt>
           <dd className="stat-list__value">
@@ -33,6 +35,7 @@ const StatList = ({ items, variant, ...ariaProps }: StatListProps) => {
               </span>
             )}
             {fmt(value)}
+            {total !== undefined && <span className="stat-list__total">{` / ${fmt(total)}`}</span>}
           </dd>
           {description && <dd className="stat-list__description">{description}</dd>}
         </div>
