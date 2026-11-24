@@ -21,14 +21,7 @@ import { useSmallScreen } from '@/hooks/useResponsiveContext';
 import { LinkTile } from '@/components/Util/LinkTile';
 import StatList from '@/components/Util/StatList';
 import type { Dataset } from '@/types/dataset';
-import {
-  FundingCard,
-  LicenseTile,
-  PersonCard,
-  PublicationCard,
-  ProvenanceSection,
-  htmlSectionId,
-} from './bits';
+import { FundingCard, LicenseTile, PersonCard, PublicationCard, ProvenanceSection, htmlSectionId } from './bits';
 import IdentifiersSectionContent from './IdentifiersSectionContent';
 import ProvenanceHeader from './ProvenanceHeader';
 import ParticipantCriteriaSectionContent from './ParticipantCriteriaSectionContent';
