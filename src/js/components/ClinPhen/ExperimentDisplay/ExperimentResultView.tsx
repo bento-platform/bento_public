@@ -10,6 +10,7 @@ import PhenopacketLink from '@/components/ClinPhen/PhenopacketLink';
 import CustomTable, { type CustomTableColumns } from '@Util/CustomTable';
 import FileModal from '@Util/FileModal';
 import TDescriptions from '@Util/TDescriptions';
+import LinksList from '@Util/LinksList';
 import DownloadButton from '@Util/DownloadButton';
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
 import UrlOrDrsUrlWithPopover from '@Util/UrlOrDrsUrlWithPopover';
@@ -122,6 +123,11 @@ export const ExperimentResultExpandedRow = ({
     { key: 'usage', children: experimentResult.usage },
     { key: 'creation_date', children: experimentResult.creation_date },
     { key: 'created_by', children: experimentResult.created_by },
+    {
+      key: 'links',
+      children: <LinksList links={experimentResult.links} />,
+      isVisible: experimentResult.links.length > 0,
+    },
     // Not in the true Experiment Result schema, but can be added by the front end for linking purposes:
     {
       key: 'experiments',
@@ -171,6 +177,7 @@ export const isExperimentResultRowExpandable = (r: ExperimentResult) =>
     r.usage ||
     r.creation_date ||
     r.created_by ||
+    r.links.length ||
     objectToBoolean(r.extra_properties)
   );
 

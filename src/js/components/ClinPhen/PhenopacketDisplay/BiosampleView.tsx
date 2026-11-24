@@ -10,6 +10,7 @@ import Procedure from '@Util/ClinPhen/Procedure';
 import FileTable from '@Util/FileTable';
 import JsonView from '@Util/JsonView';
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
+import LinksList from '@Util/LinksList';
 import ExperimentReferences from '@Util/ClinPhen/ExperimentReferences';
 import PhenotypicFeaturesView from './PhenotypicFeaturesView';
 import MeasurementsView from './MeasurementsView';
@@ -241,6 +242,11 @@ export const BiosampleDetail = ({ biosample, mode }: BiosampleDetailProps) => {
       key: 'procedure',
       children: <Procedure procedure={biosample.procedure} />,
       isVisible: objectToBoolean(biosample.procedure),
+    },
+    {
+      key: 'links',
+      children: <LinksList links={biosample.links} />,
+      isVisible: biosample.links.length > 0,
     },
     ...(mode !== 'popover'
       ? [

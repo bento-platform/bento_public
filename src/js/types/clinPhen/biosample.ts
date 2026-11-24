@@ -7,6 +7,7 @@ import type { Measurement } from './measurement';
 import type { Procedure } from './procedure';
 import type { File } from './file';
 import type { Experiment } from './experiments/experiment';
+import type { ExternalLink } from './shared';
 
 export interface Biosample extends ExtraPropertiesEntity, TimestampedEntity {
   id: string;
@@ -31,6 +32,7 @@ export interface Biosample extends ExtraPropertiesEntity, TimestampedEntity {
   sample_processing?: OntologyTerm;
   sample_storage?: OntologyTerm;
   // Non-Phenopacket-standard fields:
+  links: ExternalLink[];
   location_collected?: GeoLocation;
   is_control_sample?: boolean;
   experiments?: Experiment[];

@@ -17,6 +17,9 @@ export interface CustomTableColumn<T> extends TableColumnType<T> {
 
 export type CustomTableColumns<T> = CustomTableColumn<T>[];
 
+// An empty array counts as "no value" (unlike a plain Boolean() check, which treats [] as truthy).
+const hasValue = (v: unknown): boolean => (Array.isArray(v) ? v.length > 0 : Boolean(v));
+
 type RowKeyFn<T> = (record: T, index?: number) => string;
 
 export interface CustomTableRowSelection<T> {
@@ -109,7 +112,7 @@ const CustomTable = <T extends object>({
             : visibleData.some((record) =>
                 col.isEmpty
                   ? !col.isEmpty(record[col.dataIndex as keyof T], record)
-                  : Boolean(record[col.dataIndex as keyof T])
+                  : hasValue(record[col.dataIndex as keyof T])
               ));
         return { ...col, hidden: !hasData };
       }),

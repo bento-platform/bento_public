@@ -25,7 +25,6 @@ import { fetchDiscoveryMatches } from '@/features/search/fetchDiscoveryMatches.t
 import type { BentoCountEntity } from '@/types/entities';
 import { RequestStatus } from '@/types/requests';
 import {
-  bentoKatsuEntityToResultsDataEntity,
   buildQueryParamsUrl,
   combineQueryParamsWithoutKey,
   filtersStateToQueryParamEntries,
@@ -151,7 +150,7 @@ const CountsAndResults = () => {
             ? [
                 ...combinedParams,
                 [ENTITY_QUERY_PARAM, entity],
-                [TABLE_PAGE_QUERY_PARAM, matchData[bentoKatsuEntityToResultsDataEntity(entity)].page.toString()],
+                [TABLE_PAGE_QUERY_PARAM, matchData[entity].page.toString()],
                 [TABLE_PAGE_SIZE_QUERY_PARAM, pageSize.toString()],
               ]
             : combinedParams
