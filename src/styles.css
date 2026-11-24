@@ -562,7 +562,7 @@ body {
   }
 
   & .site-header__user-email {
-    color: var(--ant-color-primary);
+    color: var(--text-muted);
   }
 }
 
