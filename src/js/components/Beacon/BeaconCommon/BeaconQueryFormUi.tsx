@@ -269,7 +269,7 @@ const BeaconQueryFormUi = ({
                   extra={
                     <>
                       <Button type="link" size="small" onClick={handleClearVariants} disabled={!hasVariantInput}>
-                        {t('Clear Variants')}
+                        {t('Clear Variant Form')}
                       </Button>
                       <SearchToolTip>
                         <VariantsInstructions />

@@ -172,7 +172,7 @@
   "Search by genomic variants, clinical metadata or both.": "Recherche par variant génomique, métadonnées cliniques ou les deux.",
   "Metadata": "Métadonnées",
   "Clear Form": "Effacer le formulaire",
-  "Clear Variants": "Effacer les variants",
+  "Clear Variant Form": "Effacer le formulaire de variants",
   "Search over clinical or phenotypic properties.": "Recherche sur les propriétés cliniques ou phénotypiques.",
   "Chromosome": "Chromosome",
   "Variant start": "Début du variant",
