@@ -29,12 +29,20 @@ interface CatalogueToolbarProps {
   filteredCount: number;
   /** Below the `lg` breakpoint: the rail is a slide-over drawer. */
   showFiltersButton: boolean;
+  /** Whether the "my accessible datasets" filter applies; when false, its selection gets no pill. */
+  showMyAccess: boolean;
   /** Below the `md` breakpoint: sort collapses to an icon button and the grid/list switch is hidden. */
   isMobile: boolean;
   onOpenFilters: () => void;
 }
 
-const CatalogueToolbar = ({ filteredCount, showFiltersButton, isMobile, onOpenFilters }: CatalogueToolbarProps) => {
+const CatalogueToolbar = ({
+  filteredCount,
+  showFiltersButton,
+  showMyAccess,
+  isMobile,
+  onOpenFilters,
+}: CatalogueToolbarProps) => {
   const t = useTranslationFn();
   const dispatch = useAppDispatch();
   const { q, sets, sort, view, insightsOpen } = useCatalogueState();
@@ -62,6 +70,8 @@ const CatalogueToolbar = ({ filteredCount, showFiltersButton, isMobile, onOpenFi
 
   const pills: { key: string; facetLabel: string; label: string; onClose: () => void }[] = [];
   (Object.entries(sets) as [FacetId, string[]][]).forEach(([facet, values]) => {
+    // The catalogue ignores this filter while its switch is hidden, so it gets no pill either.
+    if (facet === 'my_access' && !showMyAccess) return;
     const facetConfig = FACET_CONFIG_BY_ID[facet];
     values.forEach((v) =>
       pills.push({

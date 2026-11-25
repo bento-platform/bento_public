@@ -587,7 +587,8 @@
       "search_matches_one": "{{count}} match",
       "search_matches_other": "{{count}} matches",
       "search_no_matches": "No matches",
-      "my_access_toggle": "My accessible $t(entities.dataset_other, lowercase)"
+      "my_access_toggle": "My accessible $t(entities.dataset_other, lowercase)",
+      "my_access_granted": "Granted"
     },
     "facets": {
       "program_one": "Program",
@@ -598,6 +599,8 @@
       "domain_other": "Domains",
       "taxon_one": "Taxon",
       "taxon_other": "Taxa",
+      "my_access_one": "My access",
+      "my_access_other": "My access",
       "access_one": "Access",
       "access_other": "Access",
       "license_one": "Data use",

@@ -35,6 +35,8 @@ export const FACETS: FacetConfig[] = [
     id: 'my_access',
     // No value unless the permission check has finished and granted access, so unknown datasets are filtered out.
     getValues: (item, hasAccess) => (hasAccess?.(item) ? [MY_ACCESS_GRANTED] : []),
+    // Only used for the active-filter pill; the rail shows this facet as a switch instead of a list of options.
+    formatLabel: (_value, t) => t('catalogue.rail.my_access_granted'),
   },
   ...[PCGL_MODE ? PROGRAM_FACET_CONFIG : PROJECT_FACET_CONFIG],
   { id: 'domain', getValues: ({ dataset }) => dataset.domain ?? [], scroll: true },

@@ -106,6 +106,7 @@ const Catalogue = () => {
           <CatalogueToolbar
             filteredCount={filtered.length}
             showFiltersButton={railOverlay}
+            showMyAccess={showMyAccess}
             isMobile={!breakpoints.md}
             onOpenFilters={() => setRailOpen(true)}
           />
