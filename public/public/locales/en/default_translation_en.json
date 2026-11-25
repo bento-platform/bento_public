@@ -37,6 +37,7 @@
     "id": "ID",
     "name": "Name",
     "description": "Description",
+    "of": "of",
     "collapse_all": "Collapse All",
     "expand_all": "Expand All",
     "actions": "Actions",

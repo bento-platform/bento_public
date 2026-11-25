@@ -41,6 +41,7 @@
     "id": "Identifiant",
     "name": "Nom",
     "description": "Description",
+    "of": "sur",
     "collapse_all": "Tout réduire",
     "expand_all": "Tout développer",
     "ontology_class": "Classe ontologique",
