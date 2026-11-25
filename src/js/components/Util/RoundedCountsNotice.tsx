@@ -9,8 +9,8 @@ import RoundedCountsInfo from './RoundedCountsInfo';
 
 /**
  * Tells the user that the counts on the page are approximate, when Katsu rounds them in the current scope
- * (count_rounding > 1 and no query:data permission). Renders nothing otherwise. Once closed, it stays closed until the
- * page reloads.
+ * (count_rounding > 1 and no query:data permission). Renders nothing otherwise. Once closed, it stays closed (saved in
+ * LocalStorage).
  */
 const RoundedCountsNotice = ({ className }: { className?: string }) => {
   const t = useTranslationFn();
