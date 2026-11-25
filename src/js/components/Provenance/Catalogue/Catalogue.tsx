@@ -43,17 +43,6 @@ const Catalogue = () => {
     [projects]
   );
 
-  // TODO: fetch per-dataset permissions here (and pass them to <Dataset permissionsData={...} />) using a specific
-  //  evaluate matrix on only the desired permissions (e.g. download:data) instead of fetching all permissions, and only
-  //  when a feature needs them (APPLY_FOR_ACCESS_URL set or PCGL_MODE on). Previously:
-  // const datasetResources = useMemo(
-  //   () => allDatasets.map(({ project, dataset }) => ({ project: project.identifier, dataset: dataset.identifier })),
-  //   [allDatasets]
-  // );
-  // const datasetPermissions = useResourcesPermissionsWrapper(datasetResources);
-  // ...and in the <Dataset> props:
-  // permissionsData={datasetPermissions[makeResourceKey({ project: project.identifier, dataset: dataset.identifier })]}
-
   const hasAccess = useDatasetsAccess(allDatasets);
   // Only useful when there is something to narrow down. Signed-in users always see it. Anonymous users see it only if
   // they already have access to at least one dataset (e.g., open-access datasets).
