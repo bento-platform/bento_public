@@ -16,6 +16,10 @@ export function useCatalogueState() {
 /**
  * Filters, sorts, and computes facet option counts for a list of datasets.
  *
+ * `hasAccess` says whether the user has access to a dataset (undefined while unknown); it feeds the `my_access` facet.
+ * `myAccessEnabled` says whether that facet applies at all: when false, any `my_access` selection (e.g., left over in
+ * the URL while its switch is hidden) is ignored.
+ *
  * Returns:
  * - `filtered` — datasets matching the current search query and all active facet selections, sorted by `sort`.
  * - `facetOptions(facetId)` — for each facet, the available values with their counts and selected state.

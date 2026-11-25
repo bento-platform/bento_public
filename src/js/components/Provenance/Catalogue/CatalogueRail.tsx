@@ -152,7 +152,7 @@ const FacetSection = ({ facet, options, collapsed, onToggleCollapse, onToggleVal
 interface CatalogueRailProps {
   totalCount: number;
   facetOptions: (facetId: FacetId) => { value: string; label: string; count: number; selected: boolean }[];
-  /** Whether to show the "my accessible datasets" switch (signed in, and more than one dataset). */
+  /** Whether to show the "my accessible datasets" switch (see showMyAccess in Catalogue). */
   showMyAccess: boolean;
   /** Below the `lg` breakpoint, the rail renders as a slide-over drawer instead of an inline sticky column. */
   overlay: boolean;
