@@ -39,6 +39,7 @@
   },
   "general": {
     "id": "Identifiant",
+    "links": "Liens",
     "name": "Nom",
     "description": "Description",
     "collapse_all": "Tout réduire",
@@ -278,7 +279,11 @@
   "dataset": {
     "expand": "plus",
     "apply_for_access": "Demande d'accès",
-    "get_manifest": "Obtenir le manifeste des fichiers"
+    "get_manifest": "Obtenir le manifeste des fichiers",
+    "locked": "Les données individuelles sont restreintes pour ce(tte) $t(entities.dataset_one, lowercase)",
+    "locked_apply_below": "$t(dataset.locked). Vous pouvez demander l'accès en cliquant sur le bouton ci-dessous.",
+    "locked_sentence": "$t(dataset.locked).",
+    "apply_for_access_link": "Demander l'accès"
   },
   "provenance": {
     "sections": {
@@ -440,6 +445,7 @@
     "code": "Code"
   },
   "biosample": {
+    "links": "$t(general.links)",
     "biosample_id": "Identifiant de l'échantillon biologique",
     "individual_id": "Identifiant du participant",
     "sampled_tissue": "Tissu échantillonné",
@@ -649,6 +655,7 @@
     "UNSOLVED": "Non résolu"
   },
   "experiment": {
+    "links": "$t(general.links)",
     "experiment_id": "Identifiant de l'expérience",
     "protocol_url": "URL du protocole",
     "experiment_type": "Type d'expérience",
@@ -674,6 +681,7 @@
     "device_ontology": "Appareil ($t(general.ontology_class, lowercase))"
   },
   "experiment_result": {
+    "links": "$t(general.links)",
     "identifier": "Identifiant",
     "indices": "Indices",
     "storage": "Stockage",
@@ -718,5 +726,19 @@
     "igv_error_description": "Erreur lors de la création du navigateur pour l'assemblage génomique {{assemblyId}}",
     "track_controls": "Paramétrage des pistes",
     "track_controls_per_assembly": "Paramétrage des pistes {{assemblyId}}"
+  },
+  "header": {
+    "nav": "Navigation principale",
+    "skip_links": {
+      "main": "Aller au contenu principal",
+      "footer": "Aller à « À propos »"
+    },
+    "menu": {
+      "open": "Ouvrir le menu",
+      "close": "Fermer le menu"
+    },
+    "userMenu": {
+      "label": "Menu du compte"
+    }
   }
 }

@@ -10,7 +10,6 @@ import {
 import type { ExportDataEntity, ExportFormat } from '@/types/entities';
 
 const BATCH_URL_BY_ENTITY: Record<ExportDataEntity, string> = {
-  phenopacket: individualBatchUrl,
   individual: individualBatchUrl,
   biosample: biosampleBatchUrl,
   experiment: experimentBatchUrl,

@@ -35,6 +35,7 @@
   },
   "general": {
     "id": "ID",
+    "links": "Links",
     "name": "Name",
     "description": "Description",
     "collapse_all": "Collapse All",
@@ -297,6 +298,7 @@
     "code": "Code"
   },
   "biosample": {
+    "links": "$t(general.links)",
     "biosample_id": "$t(entities.biosample_one) ID",
     "individual_id": "$t(entities.individual_one) ID",
     "sampled_tissue": "Sampled Tissue",
@@ -509,6 +511,7 @@
     "UNSOLVED": "Unsolved"
   },
   "experiment": {
+    "links": "$t(general.links)",
     "experiment_id": "$t(entities.experiment_one) ID",
     "description": "$t(general.description)",
     "protocol_url": "Protocol URL",
@@ -535,6 +538,7 @@
     "device_ontology": "Device ($t(general.ontology_class))"
   },
   "experiment_result": {
+    "links": "$t(general.links)",
     "identifier": "Identifier",
     "description": "$t(general.description)",
     "filename": "$t(file.filename)",
@@ -650,7 +654,11 @@
   "dataset": {
     "expand": "more",
     "apply_for_access": "Apply For Access",
-    "get_manifest": "Get File Manifest"
+    "get_manifest": "Get File Manifest",
+    "locked": "Record-level data is restricted for this $t(entities.dataset_one, lowercase)",
+    "locked_apply_below": "$t(dataset.locked). You can apply for access by clicking the button below.",
+    "locked_sentence": "$t(dataset.locked).",
+    "apply_for_access_link": "Apply for access"
   },
   "provenance": {
     "sections": {
@@ -728,5 +736,19 @@
     "igv_error_description": "Error creating browser for assembly {{assemblyId}}",
     "track_controls": "Track controls",
     "track_controls_per_assembly": "{{assemblyId}} track controls"
+  },
+  "header": {
+    "nav": "Main navigation",
+    "skip_links": {
+      "main": "Skip to main content",
+      "footer": "Skip to about us"
+    },
+    "menu": {
+      "open": "Open menu",
+      "close": "Close menu"
+    },
+    "userMenu": {
+      "label": "Account menu"
+    }
   }
 }

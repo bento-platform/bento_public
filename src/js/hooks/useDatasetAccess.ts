@@ -34,31 +34,53 @@ export const useDatasetAccess = (scope?: DiscoveryScope) => {
 };
 
 /**
- * Access lookup for many datasets at once, using the same check as useDatasetAccess but with one batched request.
- * @returns A stable function giving, per dataset, whether the user has access, or undefined until the check has been
+ * The resource whose download:metadata permission decides whether a dataset is locked: the dataset's experiment data
+ * type in PCGL mode, or the dataset itself otherwise. The projects route prefetches these resources' permissions, so
+ * the hooks below do not send new requests in the normal case.
+ */
+const datasetLockResource = (project: string, dataset: string) =>
+  PCGL_MODE
+    ? makeProjectDatasetDataTypeResource(project, dataset, 'experiment')
+    : scopeToResource({ project, dataset });
+
+/**
+ * Whether a dataset is locked for the user: the user does not have download:metadata on the dataset's lock resource
+ * (see datasetLockResource).
+ * @returns false until the permission check has been attempted, so the lock icon does not flash on load.
+ */
+export const useIsDatasetLocked = (project: string, dataset: string): boolean => {
+  const resource = useMemo(() => datasetLockResource(project, dataset), [project, dataset]);
+  const { hasAttempted, hasPermission } = useHasResourcePermissionWrapper(resource, downloadMetadata);
+  return hasAttempted && !hasPermission;
+};
+
+/**
+ * Access lookup for many datasets at once, using the same check as useIsDatasetLocked (a dataset is accessible when it
+ * is not locked) but in one batched request.
+ * @returns A function giving, per dataset, whether the user has access, or undefined until the check has been
  *          attempted (to distinguish "no access" from "unknown"). It changes identity when permissions change.
  */
 export const useDatasetsAccess = (items: DatasetWithProject[]) => {
-  const checks = useMemo(
+  const resourcesByDataset = useMemo(
     () =>
       new Map(
         items.map(({ project, dataset }) => [
           dataset.identifier,
-          datasetAccessCheck({ project: project.identifier, dataset: dataset.identifier }),
+          datasetLockResource(project.identifier, dataset.identifier),
         ])
       ),
     [items]
   );
-  const resources = useMemo(() => [...checks.values()].map(({ resource }) => resource), [checks]);
+  const resources = useMemo(() => [...resourcesByDataset.values()], [resourcesByDataset]);
   const permissionsByResource = useResourcesPermissionsWrapper(resources);
 
   return useCallback(
     ({ dataset }: DatasetWithProject): boolean | undefined => {
-      const check = checks.get(dataset.identifier);
-      if (!check) return undefined;
-      const state = permissionsByResource[makeResourceKey(check.resource)];
-      return state?.hasAttempted ? state.permissions.includes(check.permission) : undefined;
+      const resource = resourcesByDataset.get(dataset.identifier);
+      if (!resource) return undefined;
+      const state = permissionsByResource[makeResourceKey(resource)];
+      return state?.hasAttempted ? state.permissions.includes(downloadMetadata) : undefined;
     },
-    [checks, permissionsByResource]
+    [resourcesByDataset, permissionsByResource]
   );
 };

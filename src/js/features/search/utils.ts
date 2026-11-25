@@ -1,4 +1,3 @@
-import type { BentoCountEntity, BentoKatsuEntity, ResultsDataEntity } from '@/types/entities';
 import type { QueryState } from './query.store';
 import type { FiltersState, QueryParamEntries } from './types';
 
@@ -44,9 +43,6 @@ export const filtersStateToQueryParamEntries = (fs: FiltersState, includeEmpty: 
   });
   return entries;
 };
-
-export const bentoKatsuEntityToResultsDataEntity = (x: BentoKatsuEntity | BentoCountEntity): ResultsDataEntity =>
-  x === 'individual' ? 'phenopacket' : x;
 
 export const searchQueryParamsFromState = (state: QueryState): QueryParamEntries => {
   const { filters, textQuery, textQueryType } = state;
