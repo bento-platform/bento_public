@@ -2226,6 +2226,7 @@ button.pm-sec-head { cursor: pointer; }
 .stat-list--compact .stat-list__value {
   gap: 6px; font-size: 20px; font-weight: 700; color: var(--text-primary); white-space: nowrap;
 }
+.stat-list--compact .stat-list__total { font-size: 14px; font-weight: 400; color: var(--text-muted); }
 .stat-list--compact .stat-list__icon { font-size: 18px; color: var(--text-primary); }
 .stat-list--compact .stat-list__label {
   font-size: 13px; color: var(--text-muted);

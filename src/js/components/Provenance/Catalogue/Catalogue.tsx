@@ -104,7 +104,7 @@ const Catalogue = () => {
 
           {insightsOpen && (
             <div className="catalogue-insights-container">
-              <CatalogueInsights filteredDatasets={filtered} />
+              <CatalogueInsights filteredDatasets={filtered} allDatasets={allDatasets} />
             </div>
           )}
 
