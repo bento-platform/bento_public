@@ -97,4 +97,5 @@ export const useQueryWithAuthIfAllowed = () => {
       console.log('Beacon | Search: user authorized for query:data.');
     }
   }, [dispatch, hasPermission]);
+  return hasPermission;
 };
