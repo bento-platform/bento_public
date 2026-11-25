@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { downloadData, downloadMetadata, makeProjectDatasetDataTypeResource, makeResourceKey } from 'bento-auth-js';
+import { downloadMetadata, makeProjectDatasetDataTypeResource, makeResourceKey } from 'bento-auth-js';
 import { PCGL_MODE } from '@/config';
 import { scopeToResource, useSelectedScope } from '@/features/metadata/hooks';
 import type { DiscoveryScope } from '@/features/metadata/metadata.store';
@@ -7,20 +7,30 @@ import type { DatasetWithProject } from '@/features/catalogue/constants';
 import { useHasResourcePermissionWrapper, useResourcesPermissionsWrapper } from '@/hooks';
 
 /**
- * The resource and permission that define "access" to a scope. In PCGL mode, for a dataset scope, it is
- * download:metadata on the dataset's experiment data type (granted by PCGL on DACO approval; allows getting the file
- * manifest). Otherwise it is download:data on the scope.
+ * The resource whose download:metadata permission decides whether a dataset is locked: the dataset's experiment data
+ * type in PCGL mode, or the dataset itself otherwise. The projects route prefetches these resources' permissions, so
+ * the hooks below do not send new requests in the normal case.
  */
-const datasetAccessCheck = ({ project, dataset }: DiscoveryScope) =>
-  PCGL_MODE && project && dataset
-    ? { resource: makeProjectDatasetDataTypeResource(project, dataset, 'experiment'), permission: downloadMetadata }
-    : { resource: scopeToResource({ project, dataset }), permission: downloadData };
+const datasetLockResource = (project: string, dataset: string) =>
+  PCGL_MODE
+    ? makeProjectDatasetDataTypeResource(project, dataset, 'experiment')
+    : scopeToResource({ project, dataset });
+
+/**
+ * The resource and permission that define "access" to a scope: download:metadata on the scope's lock resource (see
+ * datasetLockResource) for a dataset scope, or on the scope itself otherwise. In PCGL mode, download:metadata on a
+ * dataset's experiment data type is granted by PCGL on DACO approval, and allows getting the file manifest.
+ */
+const datasetAccessCheck = ({ project, dataset }: DiscoveryScope) => ({
+  resource: project && dataset ? datasetLockResource(project, dataset) : scopeToResource({ project, dataset }),
+  permission: downloadMetadata,
+});
 
 /**
  * Access state for a scope, from a single permission check (see datasetAccessCheck).
  * @param scope - Scope to check; defaults to the currently selected scope.
- * @returns hasAccess: the user has access (in PCGL mode for a dataset: can get the file manifest); false until the
- *          permission check has been attempted.
+ * @returns hasAccess: the user has access (for a dataset: it is not locked); false until the permission check has
+ *          been attempted.
  *          hasAttempted: whether the permission check has been attempted, to distinguish "no access" from "unknown".
  */
 export const useDatasetAccess = (scope?: DiscoveryScope) => {
@@ -32,16 +42,6 @@ export const useDatasetAccess = (scope?: DiscoveryScope) => {
 
   return { hasAccess: hasAttempted && hasPermission, hasAttempted };
 };
-
-/**
- * The resource whose download:metadata permission decides whether a dataset is locked: the dataset's experiment data
- * type in PCGL mode, or the dataset itself otherwise. The projects route prefetches these resources' permissions, so
- * the hooks below do not send new requests in the normal case.
- */
-const datasetLockResource = (project: string, dataset: string) =>
-  PCGL_MODE
-    ? makeProjectDatasetDataTypeResource(project, dataset, 'experiment')
-    : scopeToResource({ project, dataset });
 
 /**
  * Whether a dataset is locked for the user: the user does not have download:metadata on the dataset's lock resource
