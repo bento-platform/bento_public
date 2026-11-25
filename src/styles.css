@@ -930,6 +930,8 @@ body {
 
 .sidebar-facet {
   position: relative;
+  /* The absolutely-positioned scroll-shadow overlay has a fixed height; clip it so it can't add scroll length. */
+  overflow: clip;
   border-bottom: 1px solid var(--border-subtle);
 
   --sidebar-facet-chips-scroll-max-height: 128px;
