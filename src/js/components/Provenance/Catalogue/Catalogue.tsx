@@ -55,9 +55,11 @@ const Catalogue = () => {
   // permissionsData={datasetPermissions[makeResourceKey({ project: project.identifier, dataset: dataset.identifier })]}
 
   const hasAccess = useDatasetsAccess(allDatasets);
-  // Only useful when there is something to narrow down, and only once signed in (permissions are per-user).
+  // Only useful when there is something to narrow down. Signed-in users always see it. Anonymous users see it only if
+  // they already have access to at least one dataset (e.g., open-access datasets).
   const isAuthenticated = useIsAuthenticated();
-  const showMyAccess = isAuthenticated && allDatasets.length > 1;
+  const hasAnyAccess = useMemo(() => allDatasets.some((item) => hasAccess(item) === true), [allDatasets, hasAccess]);
+  const showMyAccess = (isAuthenticated || hasAnyAccess) && allDatasets.length > 1;
   const { filtered, facetOptions } = useCatalogueFilter(allDatasets, hasAccess, showMyAccess);
 
   // Clear filters on language change
