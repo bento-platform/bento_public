@@ -10,6 +10,8 @@ import { useTranslationFn } from '@/hooks';
 import { setProjectColors } from '@/features/catalogue/catalogue.store';
 import { useCatalogueUrlSync, useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
 import { assignColors } from '@/features/catalogue/utils';
+import { useIsAuthenticated } from '@/features/auth/hooks';
+import { useDatasetsAccess } from '@/hooks/useDatasetAccess';
 import { RequestStatus } from '@/types/requests';
 import Error from '@Util/Error';
 import CatalogueBanner from './CatalogueBanner';
@@ -41,18 +43,13 @@ const Catalogue = () => {
     [projects]
   );
 
-  // TODO: fetch per-dataset permissions here (and pass them to <Dataset permissionsData={...} />) using a specific
-  //  evaluate matrix on only the desired permissions (e.g. download:data) instead of fetching all permissions, and only
-  //  when a feature needs them (APPLY_FOR_ACCESS_URL set or PCGL_MODE on). Previously:
-  // const datasetResources = useMemo(
-  //   () => allDatasets.map(({ project, dataset }) => ({ project: project.identifier, dataset: dataset.identifier })),
-  //   [allDatasets]
-  // );
-  // const datasetPermissions = useResourcesPermissionsWrapper(datasetResources);
-  // ...and in the <Dataset> props:
-  // permissionsData={datasetPermissions[makeResourceKey({ project: project.identifier, dataset: dataset.identifier })]}
-
-  const { filtered, facetOptions } = useCatalogueFilter(allDatasets);
+  const hasAccess = useDatasetsAccess(allDatasets);
+  // Only useful when there is something to narrow down. Signed-in users always see it. Anonymous users see it only if
+  // they already have access to at least one dataset (e.g., open-access datasets).
+  const isAuthenticated = useIsAuthenticated();
+  const hasAnyAccess = useMemo(() => allDatasets.some((item) => hasAccess(item) === true), [allDatasets, hasAccess]);
+  const showMyAccess = (isAuthenticated || hasAnyAccess) && allDatasets.length > 1;
+  const { filtered, facetOptions } = useCatalogueFilter(allDatasets, hasAccess, showMyAccess);
 
   // Clear filters on language change
   const language = useLanguage();
@@ -89,6 +86,7 @@ const Catalogue = () => {
         <CatalogueRail
           totalCount={filtered.length}
           facetOptions={facetOptions}
+          showMyAccess={showMyAccess}
           overlay={railOverlay}
           open={!railOverlay || railOpen}
           onClose={() => setRailOpen(false)}
@@ -99,6 +97,7 @@ const Catalogue = () => {
           <CatalogueToolbar
             filteredCount={filtered.length}
             showFiltersButton={railOverlay}
+            showMyAccess={showMyAccess}
             isMobile={!breakpoints.md}
             onOpenFilters={() => setRailOpen(true)}
           />

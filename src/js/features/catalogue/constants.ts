@@ -11,6 +11,7 @@ export const FACET_IDS = [
   'domain',
   'taxon',
   'access',
+  'my_access',
   'license',
   'context',
   'status',
@@ -25,6 +26,13 @@ export interface DatasetWithProject {
   dataset: Dataset;
   project: Project;
 }
+
+/** Whether the current user has been granted access to a dataset; undefined while that is still unknown. */
+export type DatasetAccessLookup = (item: DatasetWithProject) => boolean | undefined;
+
+/** Value of the "my access" facet, which filters on the user's granted permissions rather than dataset metadata.
+ *  It is shown as a switch in the rail, not as a list of options. */
+export const MY_ACCESS_GRANTED = 'granted';
 
 type DatasetSortFn = (a: DatasetWithProject, b: DatasetWithProject) => number;
 

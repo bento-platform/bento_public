@@ -1149,6 +1149,27 @@ body {
   color: var(--cat-chip-count-selected);
 }
 
+.my-access-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.my-access-toggle__label {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.my-access-toggle__count {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
 .sidebar-backdrop {
   position: fixed;
   inset: 0;

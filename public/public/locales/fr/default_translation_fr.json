@@ -215,7 +215,9 @@
       "search_label": "Rechercher {{facet}}",
       "search_matches_one": "{{count}} résultat",
       "search_matches_other": "{{count}} résultats",
-      "search_no_matches": "Aucun résultat"
+      "search_no_matches": "Aucun résultat",
+      "my_access_toggle": "Mes $t(entities.dataset_other, lowercase) accessibles",
+      "my_access_granted": "Accordé"
     },
     "facets": {
       "program_one": "Programmes",
@@ -226,6 +228,8 @@
       "domain_other": "Domaines",
       "taxon_one": "Taxon",
       "taxon_other": "Taxons",
+      "my_access_one": "Mon accès",
+      "my_access_other": "Mon accès",
       "access_one": "Accès",
       "access_other": "Accès",
       "license_one": "Utilisation des données",

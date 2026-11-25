@@ -11,7 +11,6 @@ import type { Project } from '@/types/metadata';
 import { BentoRoute } from '@/types/routes';
 import { recordDatasetBackTarget } from '@/features/ui/recordDatasetBackTarget.thunk';
 import type { KatsuEntityCountsOrBooleans } from '@/types/entities';
-import type { ResourcePermissionsState } from '@/features/auth/hooks';
 import { getCurrentPage } from '@/utils/router';
 import { useAppDispatch, useLanguage, useTranslationFn } from '@/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
@@ -51,8 +50,6 @@ const Dataset = ({
   // Whether this dataset is being linked to from within its parent project's own page (vs. the catalogue) - recorded
   // to inform the dataset scope's back button.
   fromProject?: boolean;
-  // Permissions data injected from bulk fetch. TODO: move to some kind of BFF shared cache state to avoid re-fetching.
-  permissionsData?: ResourcePermissionsState;
 }) => {
   const language = useLanguage();
   const dispatch = useAppDispatch();
