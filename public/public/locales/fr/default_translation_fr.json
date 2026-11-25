@@ -182,8 +182,6 @@
   "select a search field": "sélectionner un champ de recherche",
   "search field required": "champ de recherche requis",
   "value required": "valeur requise",
-  "maximum of": "maximum de",
-  "filters permitted": "filtres autorisés",
   "Enter a position number, e.g. \"100\"": "Entrer un numéro de position, par exemple \"100\"",
   "Enter a position number, e.g. \"200\"": "Entrer un numéro de position, par exemple \"200\"",
   "Enter any combination of A, C, G, T, or N": "Entrer une combinaison quelconque de A, C, G, T, ou N",
@@ -363,6 +361,8 @@
     "network_filter_toggle_help": "Choisissez tous les filtres de recherche du réseau ou seulement ceux qui sont communs à tous les Beacons.",
     "home_page": "Page d'accueil",
     "select_asm": "Sélectionner un assemblage génomique",
+    "parameters_limit_note": "Une recherche peut inclure au plus {{max}} filtre(s). La recherche de variant compte pour 1 filtre.",
+    "parameters_max_remove": "Maximum de {{max}} paramètres de recherche atteint. Retirez une recherche de variant ou un filtre pour en ajouter un autre.",
     "variants_form_error": "Le formulaire de recherche de variants doit inclure un chromosome et soit la position de fin, ou les bases de référence et les bases alternatives.",
     "variants_help_title": "Chercher un variant",
     "variants_help_1": [
