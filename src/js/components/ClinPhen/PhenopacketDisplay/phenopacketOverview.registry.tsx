@@ -13,6 +13,8 @@ import ExperimentView from '@/components/ClinPhen/ExperimentDisplay/ExperimentVi
 import ExperimentResultView from '@/components/ClinPhen/ExperimentDisplay/ExperimentResultView';
 import ExtraPropertiesDisplay from '@Util/ClinPhen/ExtraPropertiesDisplay';
 
+import { LinkTile } from '@/components/Util/LinkTile';
+
 import { objectToBoolean } from '@/utils/boolean';
 import { phenopacketExperiments, phenopacketExperimentResults } from '@/utils/experiments';
 
@@ -26,6 +28,7 @@ export type SectionKey =
   | 'phenotypicFeatures'
   | 'experiments'
   | 'experimentResults'
+  | 'links'
   | 'extraProperties';
 
 export type SectionSpec = {
@@ -113,10 +116,23 @@ export const SECTION_SPECS: Record<SectionKey, SectionSpec> = {
     render: (p) => <ExperimentResultView packetId={p.id} experimentResults={phenopacketExperimentResults(p)} />,
     order: 8,
   },
+  links: {
+    titleTranslationKey: 'general.links',
+    enabled: (p) => has(p.links),
+    itemCount: (p) => p.links.length,
+    render: (p) => (
+      <div className="pm-links-grid">
+        {p.links.map((link) => (
+          <LinkTile key={link.url} link={{ label: link.label ?? link.url, url: link.url }} />
+        ))}
+      </div>
+    ),
+    order: 9,
+  },
   extraProperties: {
     titleTranslationKey: 'tab_keys.extra_properties',
     enabled: (p) => objectToBoolean(p.extra_properties),
     render: (p) => <ExtraPropertiesDisplay extraProperties={p.extra_properties} />,
-    order: 9,
+    order: 10,
   },
 };

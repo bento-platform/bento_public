@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Badge, Breadcrumb, type BreadcrumbProps, Button, Flex, Menu, Tooltip } from 'antd';
 import { ArrowLeftOutlined, FilterOutlined, QuestionOutlined } from '@ant-design/icons';
 import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
-import type { MenuItem } from '@/types/navigation';
+import type { SiteMenuItem } from '@/types/navigation';
 
 import CurrentPageHelpModal from '@/components/Util/CurrentPageHelpModal';
 import { useSelectedScope } from '@/features/metadata/hooks';
@@ -89,7 +89,7 @@ type ScopeHeaderProps = {
   sidebarOverlayShown: boolean;
   onToggleSidebar: () => void;
   breadcrumbItems: BreadcrumbItemType[];
-  menuItems?: MenuItem[];
+  menuItems?: SiteMenuItem[];
 };
 
 const ScopeHeader = ({

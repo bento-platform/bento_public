@@ -1,3 +1,4 @@
+import type { ExternalLink } from '@/types/clinPhen/shared';
 import type { Experiment } from '@/types/clinPhen/experiments/experiment';
 import type { ExperimentResult } from '@/types/clinPhen/experiments/experimentResult';
 import type { Field } from '@/types/discovery/fieldDefinition';
@@ -48,6 +49,7 @@ export type DiscoveryMatchExperimentResult = DiscoveryMatchObject & {
   usage?: string;
   creation_date?: string;
   created_by?: string;
+  links: ExternalLink[];
   extra_properties?: JSONType;
   // ---
   experiments: string[];
@@ -59,6 +61,7 @@ export type MatchIncludedFieldsFromExperiments =
 export type DiscoveryMatchExperiment = DiscoveryMatchObject &
   Pick<Experiment, MatchIncludedFieldsFromExperiments> & {
     results: DiscoveryMatchExperimentResult[];
+    links: ExternalLink[];
     biosample?: string;
     phenopacket?: string;
   };
@@ -67,17 +70,26 @@ export type DiscoveryMatchBiosample = DiscoveryMatchObject & {
   id: string;
   individual_id?: string; // Individual ID
   phenopacket?: string; // Phenopacket ID
+  links: ExternalLink[];
   experiments: DiscoveryMatchExperiment[];
 };
 
 export type DiscoveryMatchPhenopacket = DiscoveryMatchObject & {
   id: string;
   subject?: string; // Subject ID
+  links: ExternalLink[];
   biosamples: DiscoveryMatchBiosample[]; // Biosample records
 };
 
+export type DiscoveryMatchIndividual = DiscoveryMatchObject & {
+  id: string; // Individual ID
+  links: ExternalLink[];
+  biosamples: DiscoveryMatchBiosample[]; // All of the individual's biosamples (also nested under phenopackets)
+  phenopackets: DiscoveryMatchPhenopacket[];
+};
+
 export type ViewableDiscoveryMatchObject =
-  DiscoveryMatchBiosample | DiscoveryMatchExperiment | DiscoveryMatchPhenopacket | DiscoveryMatchExperimentResult;
+  DiscoveryMatchBiosample | DiscoveryMatchExperiment | DiscoveryMatchIndividual | DiscoveryMatchExperimentResult;
 
 export type SearchResultsUIPage = 'individuals' | 'charts';
 

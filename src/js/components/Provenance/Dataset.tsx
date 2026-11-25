@@ -20,6 +20,7 @@ import { isoDateToString } from '@/utils/strings';
 import { useDatasetCountRounding } from '@/hooks/censorship';
 import CountsDisplay from '@Util/CountsDisplay';
 import RoundedCountsInfo from '@Util/RoundedCountsInfo';
+import DatasetLockIcon from '@Util/DatasetLockIcon';
 import StatusBadge from '@Util/StatusBadge';
 import TruncatedParagraph from '@Util/TruncatedParagraph';
 import KeywordList from './KeywordList';
@@ -42,7 +43,6 @@ const Dataset = ({
   selected,
   filteredCounts,
   fromProject,
-  // permissionsData,  TODO: render a locked/unlocked icon for access based on permissions
 }: {
   parentProjectID: string;
   dataset: Dataset;
@@ -124,7 +124,15 @@ const Dataset = ({
           <Title level={3} className="h-as-5 catalogue-card__title">
             {t(title)}
           </Title>
-          {dataset.study_status && <StatusBadge status={dataset.study_status} />}
+          <Flex align="center" gap={8} className="catalogue-card__corner">
+            {dataset.study_status && <StatusBadge status={dataset.study_status} />}
+            <DatasetLockIcon
+              project={parentProjectID}
+              dataset={identifier}
+              applyVia="link"
+              className="catalogue-card__lock"
+            />
+          </Flex>
         </Flex>
 
         {updatedStr && (
