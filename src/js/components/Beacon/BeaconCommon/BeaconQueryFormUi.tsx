@@ -106,7 +106,7 @@ const BeaconQueryFormUi = ({
   }, [scopeSet, beaconAssemblyIds.length, form, formInitialValues, isAuthenticated, isNetworkQuery, launchEmptyQuery]);
 
   // Disables max query param if user is authenticated and authorized
-  useQueryWithAuthIfAllowed();
+  const hasQueryDataPermission = useQueryWithAuthIfAllowed();
 
   // following GA4GH recommendations, UI is one-based, but API is zero-based, "half-open"
   // so to convert to zero-based, we only modify the start value
@@ -220,6 +220,14 @@ const BeaconQueryFormUi = ({
     launchEmptyQuery();
   };
 
+  const handleClearVariants = () => {
+    // Clear the variant inputs only. Keep the assembly ID and the metadata filters.
+    form.setFieldsValue(Object.fromEntries(VARIANT_FIELDS.map((k) => [k, ''])));
+    form.setFields(VARIANT_FIELDS.map((name) => ({ name, errors: [] })));
+    clearFormError();
+    setErrorAlertClosed(false);
+  };
+
   const handleValuesChange = (_: Partial<FormValues>, allValues: FormValues) => {
     form.validateFields(['Chromosome', 'Variant start', 'Variant end', 'Reference base(s)', 'Alternate base(s)']);
 
@@ -259,9 +267,14 @@ const BeaconQueryFormUi = ({
                   className="shadow h-full"
                   styles={CARD_STYLES}
                   extra={
-                    <SearchToolTip>
-                      <VariantsInstructions />
-                    </SearchToolTip>
+                    <>
+                      <Button type="link" size="small" onClick={handleClearVariants} disabled={!hasVariantInput}>
+                        {t('Clear Variant Form')}
+                      </Button>
+                      <SearchToolTip>
+                        <VariantsInstructions />
+                      </SearchToolTip>
+                    </>
                   }
                 >
                   <VariantsForm
@@ -302,7 +315,7 @@ const BeaconQueryFormUi = ({
           </Row>
           <Row>
             <Col span={24}>
-              {maxQueryParameters > 0 && (
+              {maxQueryParameters > 0 && !hasQueryDataPermission && (
                 <p className="p-0" style={{ margin: '8px 0', color: 'grey' }}>
                   {t('beacon.parameters_limit_note', { max: maxQueryParameters })}
                 </p>

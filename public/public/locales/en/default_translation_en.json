@@ -168,6 +168,7 @@
   "Search by genomic variants, clinical metadata or both.": "Search by genomic variants, clinical metadata or both.",
   "Metadata": "Metadata",
   "Clear Form": "Clear Form",
+  "Clear Variant Form": "Clear Variant Form",
   "Search over clinical or phenotypic properties.": "Search over clinical or phenotypic properties.",
   "Chromosome": "Chromosome",
   "Variant start": "Variant start",
