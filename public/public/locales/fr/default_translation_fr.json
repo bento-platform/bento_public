@@ -42,6 +42,7 @@
     "links": "Liens",
     "name": "Nom",
     "description": "Description",
+    "of": "sur",
     "collapse_all": "Tout réduire",
     "expand_all": "Tout développer",
     "ontology_class": "Classe ontologique",
@@ -178,6 +179,7 @@
   "Search by genomic variants, clinical metadata or both.": "Recherche par variant génomique, métadonnées cliniques ou les deux.",
   "Metadata": "Métadonnées",
   "Clear Form": "Effacer le formulaire",
+  "Clear Variant Form": "Effacer le formulaire de variants",
   "Search over clinical or phenotypic properties.": "Recherche sur les propriétés cliniques ou phénotypiques.",
   "Chromosome": "Chromosome",
   "Variant start": "Début du variant",
@@ -189,8 +191,6 @@
   "select a search field": "sélectionner un champ de recherche",
   "search field required": "champ de recherche requis",
   "value required": "valeur requise",
-  "maximum of": "maximum de",
-  "filters permitted": "filtres autorisés",
   "Enter a position number, e.g. \"100\"": "Entrer un numéro de position, par exemple \"100\"",
   "Enter a position number, e.g. \"200\"": "Entrer un numéro de position, par exemple \"200\"",
   "Enter any combination of A, C, G, T, or N": "Entrer une combinaison quelconque de A, C, G, T, ou N",
@@ -222,7 +222,9 @@
       "search_label": "Rechercher {{facet}}",
       "search_matches_one": "{{count}} résultat",
       "search_matches_other": "{{count}} résultats",
-      "search_no_matches": "Aucun résultat"
+      "search_no_matches": "Aucun résultat",
+      "my_access_toggle": "Mes $t(entities.dataset_other, lowercase) accessibles",
+      "my_access_granted": "Accordé"
     },
     "facets": {
       "program_one": "Programmes",
@@ -233,6 +235,8 @@
       "domain_other": "Domaines",
       "taxon_one": "Taxon",
       "taxon_other": "Taxons",
+      "my_access_one": "Mon accès",
+      "my_access_other": "Mon accès",
       "access_one": "Accès",
       "access_other": "Accès",
       "license_one": "Utilisation des données",
@@ -366,6 +370,8 @@
     "network_filter_toggle_help": "Choisissez tous les filtres de recherche du réseau ou seulement ceux qui sont communs à tous les Beacons.",
     "home_page": "Page d'accueil",
     "select_asm": "Sélectionner un assemblage génomique",
+    "parameters_limit_note": "Une recherche peut inclure au plus {{max}} filtre(s). La recherche de variant compte pour 1 filtre.",
+    "parameters_max_remove": "Maximum de {{max}} paramètres de recherche atteint. Retirez une recherche de variant ou un filtre pour en ajouter un autre.",
     "variants_form_error": "Le formulaire de recherche de variants doit inclure un chromosome et soit la position de fin, ou les bases de référence et les bases alternatives.",
     "variants_help_title": "Chercher un variant",
     "variants_help_1": [

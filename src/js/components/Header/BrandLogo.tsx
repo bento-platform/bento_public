@@ -1,4 +1,4 @@
-import Image, { type ImageProps } from 'next/image';
+import type { ImgHTMLAttributes } from 'react';
 import { useLanguage } from '@/hooks';
 import { LOGO_HEIGHT, SHOW_LOGO, TRANSLATED_LOGO } from '@/config';
 
@@ -16,7 +16,7 @@ const BRANDING_REGISTRY: BrandingRegistry = {
   },
 };
 
-type BrandLogoProps = Omit<ImageProps, 'src' | 'alt'> & { theme?: Theme };
+type BrandLogoProps = Omit<ImgHTMLAttributes<HTMLImageElement>, 'src' | 'alt'> & { theme?: Theme };
 
 export const BrandLogo = ({ theme = 'light', ...props }: BrandLogoProps) => {
   const language = useLanguage();
@@ -26,14 +26,16 @@ export const BrandLogo = ({ theme = 'light', ...props }: BrandLogoProps) => {
   const logo = BRANDING_REGISTRY[theme][TRANSLATED_LOGO ? language : 'en'];
 
   return (
-    <Image
+    // The logo files are supplied by each deployment, so their size is unknown. next/image requires a size.
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
       {...props}
       className="site-header__logo"
       style={{ height: LOGO_HEIGHT, width: 'auto' }}
       src={logo}
       alt=""
       onError={(e) => console.error(e.target)}
-      priority
+      fetchPriority="high"
     />
   );
 };
