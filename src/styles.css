@@ -5,6 +5,11 @@
   /* sync with NAVBAR_HEIGHT in common.ts */
   --header-height: 64px;
 
+  /* Height of the announcement banner limited to 1 line  */
+  --banner-height-shown: 94px;
+  --banner-height: 0px;
+  --top-offset: calc(var(--header-height) + var(--banner-height));
+
   --sidebar-width-full: 380px;
   --sidebar-width-collapsed: 64px;
 
@@ -430,12 +435,24 @@ body {
   --sidebar-width: var(--sidebar-width-collapsed);
 }
 
+:root:has(#site-banner .ant-alert[data-show="true"]) {
+  --banner-height: var(--banner-height-shown);
+}
+
+#site-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 101;
+}
+
 #site-header {
   position: fixed;
   height: var(--header-height);
   width: 100%;
   z-index: 100;
-  top: 0;
+  top: var(--banner-height);
 
   /* Header padding is grid-aligned to content padding */
   padding: 0 var(--content-padding-h);
@@ -583,7 +600,7 @@ body {
 
 #content-layout {
   position: fixed;
-  top: var(--header-height);
+  top: var(--top-offset);
   left: var(--sidebar-width);
   right: 0;
   bottom: 0;
@@ -867,7 +884,7 @@ body {
 .drawer-content {
   background: white;
   height: 100%;
-  padding-top: 64px;
+  padding-top: var(--top-offset);
   pointer-events: auto;
 }
 
@@ -876,7 +893,7 @@ body {
   top: calc(var(--scoped-title-height) + var(--content-padding-v));
 
   height: 100%;
-  max-height: calc(100vh - var(--header-height) - var(--scoped-title-height) - (2 * var(--content-padding-v)));
+  max-height: calc(100vh - var(--top-offset) - var(--scoped-title-height) - (2 * var(--content-padding-v)));
   width: calc(var(--sidebar-width-full) - var(--content-padding-h));
   flex-shrink: 0;
   align-self: flex-start;
@@ -892,7 +909,7 @@ body {
 
 #default-layout.scope-header-hidden .sidebar:not(.sidebar--overlay) {
   top: var(--content-padding-v);
-  max-height: calc(100vh - var(--header-height) - var(--content-padding-v) * 2);
+  max-height: calc(100vh - var(--top-offset) - var(--content-padding-v) * 2);
 }
 
 .sidebar__content {
@@ -1181,11 +1198,11 @@ body {
   position: fixed;
   /* Below the fixed site header (z-index: 100), which would otherwise render on top of the drawer's
      title/close button since the drawer's own z-index (19) loses to it. */
-  top: calc(var(--header-height) + var(--scoped-title-height));
+  top: calc(var(--top-offset) + var(--scoped-title-height));
   left: 0;
   z-index: 19;
   width: min(340px, 90vw);
-  max-height: calc(100vh - var(--header-height) - var(--scoped-title-height));
+  max-height: calc(100vh - var(--top-offset) - var(--scoped-title-height));
   border-radius: 0;
   box-shadow: 3px 0 10px rgba(0, 0, 0, 0.06);
   transform: translateX(-100%);
@@ -1193,8 +1210,8 @@ body {
 }
 
 #default-layout.scope-header-hidden .sidebar--overlay {
-  top: var(--header-height);
-  max-height: calc(100vh - var(--header-height));
+  top: var(--top-offset);
+  max-height: calc(100vh - var(--top-offset));
 }
 
 .sidebar--overlay.sidebar--open {
