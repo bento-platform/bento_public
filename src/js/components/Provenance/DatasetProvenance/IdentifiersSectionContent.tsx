@@ -2,6 +2,8 @@ import { Flex, Typography } from 'antd';
 import { CodeOutlined, GlobalOutlined } from '@ant-design/icons';
 import KeyValueDisplay, { type KeyValueItem } from '@Util/KeyValueDisplay';
 
+import { PCGL_MODE } from '@/config';
+import { useSelectedScope } from '@/features/metadata/hooks';
 import { useTranslationFn } from '@/hooks';
 import type { Dataset } from '@/types/dataset';
 
@@ -11,6 +13,7 @@ type IdentifiersSectionContentProps = {
 
 const IdentifiersSectionContent = ({ dataset }: IdentifiersSectionContentProps) => {
   const t = useTranslationFn();
+  const { isSoleProject } = useSelectedScope();
 
   const resources = dataset.resources ?? [];
 
@@ -30,7 +33,12 @@ const IdentifiersSectionContent = ({ dataset }: IdentifiersSectionContentProps) 
       label: t('provenance.schema_version'),
       value: dataset.schema_version,
     },
-    {
+  ];
+
+  if (!PCGL_MODE && !isSoleProject) {
+    // Project ID is not currently meaningful in the PCGL context
+    // If we only have one project in the entire instance, it's not meaningful provenance data to show
+    kvItems.push({
       itemKey: 'project_id',
       label: t('provenance.project_id'),
       value: (
@@ -39,8 +47,8 @@ const IdentifiersSectionContent = ({ dataset }: IdentifiersSectionContentProps) 
         </>
       ),
       valueClassName: 'font-mono text-xs',
-    },
-  ];
+    });
+  }
 
   if (dataset.program_name) {
     kvItems.push({ itemKey: 'program_name', label: t('provenance.program_name'), value: dataset.program_name });

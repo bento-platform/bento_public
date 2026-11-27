@@ -253,6 +253,7 @@ body {
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
   */
+  position: absolute !important; /* take the element out of flex/grid flow, so it adds no gap and no negative-margin shift */
   width: 1px !important;
   height: 1px !important;
   padding: 0 !important;
@@ -1808,6 +1809,7 @@ tr.ant-table-expanded-row .ant-descriptions-item-content .ant-descriptions > .an
   }
 
   .visually-hidden-mobile {
+    position: absolute !important;
     width: 1px !important;
     height: 1px !important;
     padding: 0 !important;
@@ -2243,6 +2245,7 @@ button.pm-sec-head { cursor: pointer; }
 .stat-list--compact .stat-list__value {
   gap: 6px; font-size: 20px; font-weight: 700; color: var(--text-primary); white-space: nowrap;
 }
+.stat-list--compact .stat-list__total { font-size: 14px; font-weight: 400; color: var(--text-muted); }
 .stat-list--compact .stat-list__icon { font-size: 18px; color: var(--text-primary); }
 .stat-list--compact .stat-list__label {
   font-size: 13px; color: var(--text-muted);

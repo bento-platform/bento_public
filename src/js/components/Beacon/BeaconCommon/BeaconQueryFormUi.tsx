@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Card, Col, Form, Row, Typography } from 'antd';
+import { useConfig } from '@/features/config/hooks';
 import { useIsAuthenticated } from '@/features/auth/hooks';
 import { useAppDispatch, useQueryWithAuthIfAllowed, useTranslationFn } from '@/hooks';
 import { useSelectedScope } from '@/features/metadata/hooks';
@@ -21,6 +22,8 @@ import type {
 } from '@/types/beacon';
 import { FORM_ROW_GUTTERS, BUTTON_AREA_STYLE, BUTTON_STYLE, CARD_STYLES } from '@/constants/beaconConstants';
 import { T_PLURAL_COUNT } from '@/constants/i18n';
+
+const VARIANT_FIELDS = ['Chromosome', 'Variant start', 'Variant end', 'Reference base(s)', 'Alternate base(s)'];
 
 const STARTER_FILTER = { index: 0, searchFieldId: null };
 
@@ -49,6 +52,7 @@ const BeaconQueryFormUi = ({
   const isAuthenticated = useIsAuthenticated();
 
   const { scope, scopeSet } = useSelectedScope();
+  const { maxQueryParameters } = useConfig();
 
   const formInitialValues = useMemo(
     () => ({
@@ -102,7 +106,7 @@ const BeaconQueryFormUi = ({
   }, [scopeSet, beaconAssemblyIds.length, form, formInitialValues, isAuthenticated, isNetworkQuery, launchEmptyQuery]);
 
   // Disables max query param if user is authenticated and authorized
-  useQueryWithAuthIfAllowed();
+  const hasQueryDataPermission = useQueryWithAuthIfAllowed();
 
   // following GA4GH recommendations, UI is one-based, but API is zero-based, "half-open"
   // so to convert to zero-based, we only modify the start value
@@ -110,6 +114,11 @@ const BeaconQueryFormUi = ({
   const convertToZeroBased = (start: string) => Number(start) - 1;
 
   const filtersDirty = !(filters.length === 1 && filters[0].index == 0 && filters[0].searchFieldId === null);
+
+  const watchedValues: FormValues | undefined = Form.useWatch([], form);
+  const hasVariantInput = VARIANT_FIELDS.some((k) => !!watchedValues?.[k]);
+  const usedParameters = (filtersDirty ? filters.length : 0) + (hasVariantInput ? 1 : 0);
+  const variantQuotaReached = maxQueryParameters > 0 && !hasVariantInput && usedParameters >= maxQueryParameters;
 
   const packageFilters = useCallback(
     (values: FormValues): BeaconPayloadFilter[] => {
@@ -211,6 +220,14 @@ const BeaconQueryFormUi = ({
     launchEmptyQuery();
   };
 
+  const handleClearVariants = () => {
+    // Clear the variant inputs only. Keep the assembly ID and the metadata filters.
+    form.setFieldsValue(Object.fromEntries(VARIANT_FIELDS.map((k) => [k, ''])));
+    form.setFields(VARIANT_FIELDS.map((name) => ({ name, errors: [] })));
+    clearFormError();
+    setErrorAlertClosed(false);
+  };
+
   const handleValuesChange = (_: Partial<FormValues>, allValues: FormValues) => {
     form.validateFields(['Chromosome', 'Variant start', 'Variant end', 'Reference base(s)', 'Alternate base(s)']);
 
@@ -250,12 +267,21 @@ const BeaconQueryFormUi = ({
                   className="shadow h-full"
                   styles={CARD_STYLES}
                   extra={
-                    <SearchToolTip>
-                      <VariantsInstructions />
-                    </SearchToolTip>
+                    <>
+                      <Button type="link" size="small" onClick={handleClearVariants} disabled={!hasVariantInput}>
+                        {t('Clear Variant Form')}
+                      </Button>
+                      <SearchToolTip>
+                        <VariantsInstructions />
+                      </SearchToolTip>
+                    </>
                   }
                 >
-                  <VariantsForm isNetworkQuery={isNetworkQuery} beaconAssemblyIds={beaconAssemblyIds} />
+                  <VariantsForm
+                    isNetworkQuery={isNetworkQuery}
+                    beaconAssemblyIds={beaconAssemblyIds}
+                    quotaReached={variantQuotaReached}
+                  />
                 </Card>
               </Col>
             )}
@@ -281,12 +307,19 @@ const BeaconQueryFormUi = ({
                   form={form}
                   beaconFiltersBySection={beaconFiltersBySection}
                   isNetworkQuery={isNetworkQuery}
+                  usedParameters={usedParameters}
+                  maxParameters={maxQueryParameters}
                 />
               </Card>
             </Col>
           </Row>
           <Row>
             <Col span={24}>
+              {maxQueryParameters > 0 && !hasQueryDataPermission && (
+                <p className="p-0" style={{ margin: '8px 0', color: 'grey' }}>
+                  {t('beacon.parameters_limit_note', { max: maxQueryParameters })}
+                </p>
+              )}
               {showError && (
                 <BeaconErrorMessage
                   message={`${t('beacon.beacon_error')}: ${errorMessage}`}

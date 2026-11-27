@@ -59,7 +59,7 @@ const filterOutHumanLikeExtraContigs = (opt: ContigOptionType) => !opt.value.mat
 const FORM_ROW_GUTTER: [number, number] = [12, 0];
 const EMPTY_CONTIGS: ContigOptionType[] = [];
 
-const VariantsForm = ({ isNetworkQuery, beaconAssemblyIds }: VariantsFormProps) => {
+const VariantsForm = ({ isNetworkQuery, beaconAssemblyIds, quotaReached }: VariantsFormProps) => {
   const { genomesByID } = useReference();
 
   // Pick up form context from outside
@@ -122,7 +122,7 @@ const VariantsForm = ({ isNetworkQuery, beaconAssemblyIds }: VariantsFormProps) 
     assemblyId: { name: 'Assembly ID', placeholder: '', initialValue: '' },
   };
 
-  const variantsError = beaconAssemblyIds.includes('error');
+  const variantsError = beaconAssemblyIds.includes('error') || !!quotaReached;
 
   return (
     <Flex vertical={true}>
@@ -161,6 +161,7 @@ const VariantsForm = ({ isNetworkQuery, beaconAssemblyIds }: VariantsFormProps) 
 export interface VariantsFormProps {
   isNetworkQuery?: boolean;
   beaconAssemblyIds: BeaconAssemblyIds;
+  quotaReached?: boolean;
 }
 
 export default VariantsForm;

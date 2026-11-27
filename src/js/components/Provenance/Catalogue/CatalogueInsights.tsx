@@ -90,27 +90,42 @@ const CatalogueInsightCard = ({ datasets, facet, kind, colors }: CatalogueInsigh
   );
 };
 
-const CatalogueEntityCountsCard = ({ datasets }: { datasets: DatasetWithProject[] }) => {
+type EntityTotals = Record<(typeof COUNT_ENTITY_ORDER)[number], number>;
+
+// Only numeric counts are summed, so censored (boolean) counts never contribute to the totals.
+const sumEntityCounts = (datasets: DatasetWithProject[]): EntityTotals => {
+  const sums = { individual: 0, biosample: 0, experiment: 0, experiment_result: 0 };
+  for (const { dataset } of datasets) {
+    const counts = dataset.counts_by_entity;
+    if (!counts) continue;
+    for (const entity of COUNT_ENTITY_ORDER) {
+      const v = counts[entity];
+      if (typeof v === 'number') sums[entity] += v;
+    }
+  }
+  return sums;
+};
+
+interface CatalogueEntityCountsCardProps {
+  datasets: DatasetWithProject[];
+  allDatasets: DatasetWithProject[];
+}
+
+const CatalogueEntityCountsCard = ({ datasets, allDatasets }: CatalogueEntityCountsCardProps) => {
   const t = useTranslationFn();
   const titleId = useId();
+  const { q, sets } = useCatalogueState();
+  const isFiltered = q.trim() !== '' || Object.values(sets).some((values) => values.length > 0);
 
-  const totals = useMemo(() => {
-    const sums = { individual: 0, biosample: 0, experiment: 0, experiment_result: 0 };
-    for (const { dataset } of datasets) {
-      const counts = dataset.counts_by_entity;
-      if (!counts) continue;
-      for (const entity of COUNT_ENTITY_ORDER) {
-        const v = counts[entity];
-        if (typeof v === 'number') sums[entity] += v;
-      }
-    }
-    return sums;
-  }, [datasets]);
+  const totals = useMemo(() => sumEntityCounts(datasets), [datasets]);
+  const overallTotals = useMemo(() => sumEntityCounts(allDatasets), [allDatasets]);
 
   const items: StatItem[] = COUNT_ENTITY_ORDER.map((entity) => ({
     key: entity,
     label: t(`entities.${entity}_other`),
     value: totals[entity],
+    // Show the denominator whenever a filter or search query is active, even if the count is unchanged.
+    total: isFiltered ? overallTotals[entity] : undefined,
     icon: COUNT_ENTITY_REGISTRY[entity].icon,
   }));
 
@@ -126,9 +141,10 @@ const CatalogueEntityCountsCard = ({ datasets }: { datasets: DatasetWithProject[
 
 interface CatalogueInsightsProps {
   filteredDatasets: DatasetWithProject[];
+  allDatasets: DatasetWithProject[];
 }
 
-const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
+const CatalogueInsights = ({ filteredDatasets, allDatasets }: CatalogueInsightsProps) => {
   const t = useTranslationFn();
   const { projectColors } = useCatalogueState();
 
@@ -144,7 +160,7 @@ const CatalogueInsights = ({ filteredDatasets }: CatalogueInsightsProps) => {
         <Text className="catalogue-insights__hint">{t('catalogue.insights.hint')}</Text>
       </Flex>
       <Flex gap={12} wrap className="items-stretch">
-        <CatalogueEntityCountsCard datasets={filteredDatasets} />
+        <CatalogueEntityCountsCard datasets={filteredDatasets} allDatasets={allDatasets} />
         {/* TODO: make insight charts configurable using some kind of catalogue config rather than hard-coded. */}
         {PCGL_MODE ? (
           <CatalogueInsightCard datasets={filteredDatasets} facet="domain" kind="bar" />
