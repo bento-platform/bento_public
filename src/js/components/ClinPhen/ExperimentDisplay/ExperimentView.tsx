@@ -83,7 +83,7 @@ export const ExperimentExpandedRow = ({ packetId, experiment, searchRow }: Exper
     {
       key: 'links',
       children: <LinksList links={experiment.links} />,
-      isVisible: experiment.links.length > 0,
+      isVisible: !!experiment.links?.length,
       span: XXL_THREE_COLUMN,
     },
   ];
@@ -139,7 +139,7 @@ export const isExperimentRowExpandable = (r: Experiment) =>
     r.extraction_protocol ||
     r.reference_registry_id ||
     r.qc_flags?.length ||
-    r.links.length ||
+    r.links?.length ||
     r.experiment_results?.length ||
     objectToBoolean(r.instrument) ||
     objectToBoolean(r.extra_properties)

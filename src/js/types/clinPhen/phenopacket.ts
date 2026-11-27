@@ -25,7 +25,7 @@ export interface Phenopacket extends ExtraPropertiesEntity, TimestampedEntity {
   medical_actions?: MedicalAction[];
   files?: File[];
   meta_data: MetaData;
-  links: ExternalLink[]; // Non-standard Bento field
+  links?: ExternalLink[]; // Non-standard Bento field
   // Non-standard field for back-link to dataset:
   dataset?: string;
 }

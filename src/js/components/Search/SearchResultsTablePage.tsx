@@ -137,7 +137,7 @@ const INDIVIDUAL_SEARCH_TABLE_COLUMNS = {
   links: {
     title: 'general.links',
     dataIndex: 'links',
-    render: (_ctx: SearchColRenderContext) => (links: ExternalLink[]) => <LinksList links={links} />,
+    render: (_ctx: SearchColRenderContext) => (links: ExternalLink[] | undefined) => <LinksList links={links} />,
   },
   ...commonSearchTableColumns<DiscoveryMatchIndividual>(),
 } as Record<string, ResultsTableColumn<DiscoveryMatchIndividual>>;
@@ -160,7 +160,7 @@ const BIOSAMPLE_SEARCH_TABLE_COLUMNS = {
   links: {
     title: 'general.links',
     dataIndex: 'links',
-    render: (_ctx) => (links: ExternalLink[]) => <LinksList links={links} />,
+    render: (_ctx) => (links: ExternalLink[] | undefined) => <LinksList links={links} />,
   } as ResultsTableColumn<DiscoveryMatchBiosample>,
   ...commonSearchTableColumns<DiscoveryMatchBiosample>(),
 };
@@ -187,7 +187,7 @@ const EXPERIMENT_SEARCH_TABLE_COLUMNS = {
   links: {
     title: 'general.links',
     dataIndex: 'links',
-    render: (_ctx) => (links: ExternalLink[]) => <LinksList links={links} />,
+    render: (_ctx) => (links: ExternalLink[] | undefined) => <LinksList links={links} />,
   } as ResultsTableColumn<DiscoveryMatchExperiment>,
   ...commonSearchTableColumns<DiscoveryMatchExperiment>(),
 };
@@ -216,7 +216,7 @@ const EXPERIMENT_RESULT_SEARCH_TABLE_COLUMNS = {
   links: {
     title: 'general.links',
     dataIndex: 'links',
-    render: (_ctx) => (links: ExternalLink[]) => <LinksList links={links} />,
+    render: (_ctx) => (links: ExternalLink[] | undefined) => <LinksList links={links} />,
   } as ResultsTableColumn<DiscoveryMatchExperimentResult>,
   ...commonSearchTableColumns<DiscoveryMatchExperimentResult>(),
 };

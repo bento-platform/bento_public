@@ -5,15 +5,15 @@ import { ExportOutlined } from '@ant-design/icons';
 import type { ExternalLink } from '@/types/clinPhen/shared';
 
 type LinksListProps = {
-  links: ExternalLink[];
+  links?: ExternalLink[];
 };
 
 /**
  * Renders a list of external links as a comma-separated, wrapping run of text. Each link has an external link icon.
- * Renders nothing for an empty list.
+ * Renders nothing for an empty or missing list.
  */
 const LinksList = ({ links }: LinksListProps) => {
-  if (!links.length) return null;
+  if (!links?.length) return null;
 
   return (
     <Typography.Paragraph className="mb-0">
