@@ -126,7 +126,7 @@ export const ExperimentResultExpandedRow = ({
     {
       key: 'links',
       children: <LinksList links={experimentResult.links} />,
-      isVisible: experimentResult.links.length > 0,
+      isVisible: !!experimentResult.links?.length,
     },
     // Not in the true Experiment Result schema, but can be added by the front end for linking purposes:
     {
@@ -177,7 +177,7 @@ export const isExperimentResultRowExpandable = (r: ExperimentResult) =>
     r.usage ||
     r.creation_date ||
     r.created_by ||
-    r.links.length ||
+    r.links?.length ||
     objectToBoolean(r.extra_properties)
   );
 

@@ -61,7 +61,7 @@ export interface ExperimentResult extends ExtraPropertiesEntity {
   usage?: string;
   creation_date?: string;
   created_by?: string;
-  links: ExternalLink[]; // Non-standard Bento field
+  links?: ExternalLink[]; // Non-standard Bento field
   // Can be added in front end:
   experiments?: string[];
 }

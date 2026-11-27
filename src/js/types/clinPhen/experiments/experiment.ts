@@ -107,7 +107,7 @@ export interface Experiment extends ExtraPropertiesEntity {
   qc_flags?: string[];
   experiment_results?: ExperimentResult[];
   instrument?: Instrument;
-  links: ExternalLink[]; // Non-standard Bento field
+  links?: ExternalLink[]; // Non-standard Bento field
   // Back-links
   biosample?: string;
   dataset?: string;

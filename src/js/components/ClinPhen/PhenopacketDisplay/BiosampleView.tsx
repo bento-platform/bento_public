@@ -246,7 +246,7 @@ export const BiosampleDetail = ({ biosample, mode }: BiosampleDetailProps) => {
     {
       key: 'links',
       children: <LinksList links={biosample.links} />,
-      isVisible: biosample.links.length > 0,
+      isVisible: !!biosample.links?.length,
     },
     ...(mode !== 'popover'
       ? [

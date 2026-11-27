@@ -32,7 +32,7 @@ export interface Biosample extends ExtraPropertiesEntity, TimestampedEntity {
   sample_processing?: OntologyTerm;
   sample_storage?: OntologyTerm;
   // Non-Phenopacket-standard fields:
-  links: ExternalLink[];
+  links?: ExternalLink[];
   location_collected?: GeoLocation;
   is_control_sample?: boolean;
   experiments?: Experiment[];

@@ -119,10 +119,10 @@ export const SECTION_SPECS: Record<SectionKey, SectionSpec> = {
   links: {
     titleTranslationKey: 'general.links',
     enabled: (p) => has(p.links),
-    itemCount: (p) => p.links.length,
+    itemCount: (p) => p.links?.length ?? 0,
     render: (p) => (
       <div className="pm-links-grid">
-        {p.links.map((link) => (
+        {p.links?.map((link) => (
           <LinkTile key={link.url} link={{ label: link.label ?? link.url, url: link.url }} />
         ))}
       </div>
