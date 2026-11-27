@@ -33,6 +33,13 @@ export const OPENID_CONFIG_URL = env('OPENID_CONFIG_URL') ?? '';
 // Session cookie encryption key. Left undefined when unset, so next-auth reports the missing secret itself.
 export const AUTH_SECRET = env('AUTH_SECRET');
 
+// Announcement banner, read only by /api/announcements.
+// GitHub API issues URL, e.g. 'https://api.github.com/repos/owner/repo/issues'; '' when unset.
+export const BANNER_REPO = url('BENTO_PUBLIC_BANNER_REPO');
+// Seconds the GitHub response stays in Next's data cache.
+const bannerCacheLife = parseInt(env('BENTO_PUBLIC_BANNER_CACHE_LIFE') ?? '', 10);
+export const BANNER_CACHE_LIFE = bannerCacheLife >= 0 ? bannerCacheLife : 3600;
+
 // Browser config, served as the BENTO_PUBLIC_CONFIG global by /public/config.js and read in @/config.
 // Everything here is public: never add a secret.
 export const PUBLIC_CONFIG: PublicConfig = {

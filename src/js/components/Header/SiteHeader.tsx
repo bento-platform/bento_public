@@ -13,6 +13,7 @@ import { useTranslationFn } from '@/hooks';
 import { BrandLogo } from './BrandLogo';
 import { HeaderAuth } from './HeaderAuth';
 import { LanguageControl } from './Translate';
+import { AnnouncementBanner } from './Banner/GitHubBanner';
 
 const { Header } = Layout;
 
@@ -77,7 +78,7 @@ const SiteHeader = () => {
       <a className="site-header__skip-link" href="#site-footer">
         {t('header.skip_links.footer')}
       </a>
-
+      <AnnouncementBanner />
       <Flex align="center" justify="space-between" gap={isSmallScreen ? 'small' : 'large'} className="h-full">
         <Flex align="center" gap={isSmallScreen ? 'small' : 'large'} className="flex-1" style={{ minWidth: 0 }}>
           <Link to={rootUrl} className="site-header__home focus-ring">

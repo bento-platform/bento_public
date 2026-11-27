@@ -15,6 +15,7 @@ export const katsuDiscoveryUIHintsUrl = `${katsuBaseUrl}/api/discovery_ui_hints`
 
 // Bento Public's own route: Katsu projects plus the user's permissions on them, fetched server-side.
 export const projectsUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/projects`;
+export const announcementsUrl = `${PUBLIC_URL_NO_TRAILING_SLASH}/api/announcements`;
 
 // Katsu entity API (Django Rest Framework) base URLs
 export const individualUrl = `${katsuBaseUrl}/api/individuals`;
