@@ -93,6 +93,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   providers: [bentoOidcProvider],
   session: { strategy: 'jwt' },
+  // Custom handler at src/app/api/auth/error/route.ts: redirects back to the app if another tab already signed in.
+  pages: { error: '/api/auth/error' },
   callbacks: {
     // The returned token is the entire session, stored in an encrypted cookie sent to the frontend (wrapper JWT).
     // See: https://github.com/nextauthjs/next-auth/blob/a1a16a5a7780488c7449feece410033f445d0b31/packages/core/src/index.ts#L424-L433
