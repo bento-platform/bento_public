@@ -1,7 +1,7 @@
 import { useAppSelector } from '@/hooks';
 
 export const useConfig = () => {
-  const { configStatus, countThreshold, maxQueryParameters } = useAppSelector((state) => state.config);
+  const { configStatus, countThreshold, countRounding, maxQueryParameters } = useAppSelector((state) => state.config);
 
-  return { configStatus, countThreshold, maxQueryParameters };
+  return { configStatus, countThreshold, countRounding, maxQueryParameters };
 };

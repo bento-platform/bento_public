@@ -2,7 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 
 import auth from '@/features/auth/authSlice';
 
-import { LOCALSTORAGE_UI_SETTINGS_KEY } from '@/constants/ui';
+import { LOCALSTORAGE_ROUNDED_COUNTS_NOTICE_DISMISSED_KEY, LOCALSTORAGE_UI_SETTINGS_KEY } from '@/constants/ui';
 import catalogueReducer from '@/features/catalogue/catalogue.store';
 import clinPhenReducer from '@/features/clinPhen/clinPhen.store';
 import configReducer from '@/features/config/config.store';
@@ -79,5 +79,6 @@ observeStore<UIState>(
   (state) => state.ui,
   (currentState) => {
     saveValue(LOCALSTORAGE_UI_SETTINGS_KEY, currentState.settings);
+    saveValue(LOCALSTORAGE_ROUNDED_COUNTS_NOTICE_DISMISSED_KEY, currentState.roundedCountsNoticeDismissed);
   }
 );

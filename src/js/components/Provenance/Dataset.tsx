@@ -16,7 +16,9 @@ import { useAppDispatch, useLanguage, useTranslationFn } from '@/hooks';
 import { useNavigateToScope } from '@/hooks/navigation';
 import { nonEmptyCounts } from '@/utils/counts';
 import { isoDateToString } from '@/utils/strings';
+import { useDatasetCountRounding } from '@/hooks/censorship';
 import CountsDisplay from '@Util/CountsDisplay';
+import RoundedCountsInfo from '@Util/RoundedCountsInfo';
 import DatasetLockIcon from '@Util/DatasetLockIcon';
 import StatusBadge from '@Util/StatusBadge';
 import TruncatedParagraph from '@Util/TruncatedParagraph';
@@ -88,6 +90,7 @@ const Dataset = ({
   const closeProvenanceModal = useCallback(() => setProvenanceModalOpen(false), []);
 
   const counts = filteredCounts ?? dataset.counts_by_entity;
+  const countRounding = useDatasetCountRounding(dataset, project);
   const hasData = nonEmptyCounts(dataset.counts_by_entity);
   const faded = !!filteredCounts && Object.values(filteredCounts).every((c) => !c) && hasData;
 
@@ -156,9 +159,10 @@ const Dataset = ({
         <div className="flex-1" />
 
         {counts && (
-          <div className="catalogue-card__counts-row">
+          <Flex align="center" justify="space-between" gap={16} wrap className="catalogue-card__counts-row">
             <CountsDisplay counts={counts} totalCounts={filteredCounts ? dataset.counts_by_entity : undefined} />
-          </div>
+            {countRounding !== null && <RoundedCountsInfo rounding={countRounding} className="count-item__icon" />}
+          </Flex>
         )}
 
         <Flex gap={8} className="catalogue-card__actions mt-3" wrap>

@@ -1,7 +1,7 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
 import type { ChartSizeMode, UIUserSettings } from './types';
-import { LOCALSTORAGE_UI_SETTINGS_KEY } from '@/constants/ui';
+import { LOCALSTORAGE_ROUNDED_COUNTS_NOTICE_DISMISSED_KEY, LOCALSTORAGE_UI_SETTINGS_KEY } from '@/constants/ui';
 import { getValue } from '@/utils/localStorage';
 import type { QueryParamEntries } from '@/utils/queryParams';
 
@@ -21,6 +21,8 @@ export type UIState = {
   manageChartsVisible: boolean;
   settings: UIUserSettings;
   datasetBackTarget: DatasetBackTarget | null;
+  // Persisted to LocalStorage by an observer in /src/js/store.ts.
+  roundedCountsNoticeDismissed: boolean;
 };
 
 const defaultInitialSettings: UIUserSettings = {
@@ -45,6 +47,11 @@ const initialState: UIState = {
   // Load from LocalStorage if set. The corresponding persist-to-LS logic is handled by an observer in /src/js/store.ts.
   settings: getValue(LOCALSTORAGE_UI_SETTINGS_KEY, defaultInitialSettings, validateUiSettings),
   datasetBackTarget: null,
+  roundedCountsNoticeDismissed: getValue(
+    LOCALSTORAGE_ROUNDED_COUNTS_NOTICE_DISMISSED_KEY,
+    false,
+    (data) => typeof data === 'boolean'
+  ),
 };
 
 const ui = createSlice({
@@ -63,8 +70,17 @@ const ui = createSlice({
     setDatasetBackTarget: (state, { payload }: PayloadAction<DatasetBackTarget | null>) => {
       state.datasetBackTarget = payload;
     },
+    dismissRoundedCountsNotice: (state) => {
+      state.roundedCountsNoticeDismissed = true;
+    },
   },
 });
 
-export const { setExtraBreadcrumb, setManageChartsVisible, setExploreChartMode, setDatasetBackTarget } = ui.actions;
+export const {
+  setExtraBreadcrumb,
+  setManageChartsVisible,
+  setExploreChartMode,
+  setDatasetBackTarget,
+  dismissRoundedCountsNotice,
+} = ui.actions;
 export default ui.reducer;

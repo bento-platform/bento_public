@@ -8,6 +8,7 @@ const { Text } = Typography;
 import { useCatalogueState } from '@/features/catalogue/hooks';
 import { useCatalogueUrlActions } from '@/features/catalogue/useCatalogueUrlSync';
 import { useFormatNumber, useTranslationFn } from '@/hooks';
+import { useCatalogueCountsAreRounded } from '@/hooks/censorship';
 
 import type { FacetId } from '@/features/catalogue/catalogue.store';
 import type { DatasetWithProject } from '@/features/catalogue/hooks';
@@ -18,6 +19,7 @@ import { FACET_CONFIG_BY_ID, type FacetConfig } from '@/features/catalogue/facet
 import { PCGL_MODE } from '@/config';
 import { COUNT_ENTITY_ORDER, COUNT_ENTITY_REGISTRY } from '@/constants/countEntities';
 import StatList, { type StatItem } from '@/components/Util/StatList';
+import RoundedCountsInfo from '@/components/Util/RoundedCountsInfo';
 
 import { assignColors } from '@/features/catalogue/utils';
 
@@ -117,6 +119,9 @@ const CatalogueEntityCountsCard = ({ datasets, allDatasets }: CatalogueEntityCou
   const { q, sets } = useCatalogueState();
   const isFiltered = q.trim() !== '' || Object.values(sets).some((values) => values.length > 0);
 
+  // The totals add up the filtered datasets' counts, so they are approximate if any of those counts are rounded.
+  const countsAreRounded = useCatalogueCountsAreRounded(datasets);
+
   const totals = useMemo(() => sumEntityCounts(datasets), [datasets]);
   const overallTotals = useMemo(() => sumEntityCounts(allDatasets), [allDatasets]);
 
@@ -131,8 +136,15 @@ const CatalogueEntityCountsCard = ({ datasets, allDatasets }: CatalogueEntityCou
 
   return (
     <Card size="small" className="catalogue-chart-card">
-      <Typography.Title level={3} id={titleId} className="catalogue-chart-card__title">
-        {t('catalogue.insights.totals')}
+      <Typography.Title level={3} className="catalogue-chart-card__title">
+        {/* id on the text only, so aria-labelledby below does not include the info icon's label */}
+        <span id={titleId}>{t('catalogue.insights.totals')}</span>
+        {countsAreRounded && (
+          <>
+            {' '}
+            <RoundedCountsInfo className="count-item__icon" />
+          </>
+        )}
       </Typography.Title>
       <StatList items={items} variant="compact" aria-labelledby={titleId} />
     </Card>

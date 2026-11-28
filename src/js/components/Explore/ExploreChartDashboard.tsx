@@ -17,6 +17,7 @@ import ExploreDatasets from './ExploreDatasets';
 import CountsAndResults from './CountsAndResults';
 import LastIngestionInfo from './LastIngestion';
 import ActiveFilterTags from '@/components/Util/ActiveFilterTags';
+import RoundedCountsNotice from '@/components/Util/RoundedCountsNotice';
 
 import { setManageChartsVisible } from '@/features/ui/ui.store';
 
@@ -140,6 +141,8 @@ const ExploreChartDashboard = () => {
             description, or the dataset long description (falling back to the short description.)
         */}
         <ExploreDescription />
+
+        {scopeHasData && <RoundedCountsNotice />}
 
         <ActiveFilterTags pills={pills} onClearAll={clearAll} tagClassName="explore-filter-tag" />
 

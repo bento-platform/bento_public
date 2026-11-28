@@ -72,6 +72,13 @@
     "search_fetch": "Erreur lors du chargement des résultats de recherche",
     "page_not_found": "Page introuvable"
   },
+  "rounded_counts": {
+    "notice": "Les décomptes sur cette page sont approximatifs.",
+    "help_title": "Décomptes approximatifs",
+    "help": "Pour protéger la vie privée, les décomptes sont arrondis au multiple de {{rounding}} le plus proche. Les utilisateurs autorisés à interroger les données voient les décomptes exacts.",
+    "help_mixed": "Ces décomptes sont approximatifs. Pour protéger la vie privée, les décomptes sont arrondis, et l'arrondi peut varier d'un jeu de données à l'autre. Les utilisateurs autorisés à interroger les données voient les décomptes exacts.",
+    "dismiss": "Fermer"
+  },
   "explore": {
     "chart_size_label": "Taille des tableaux:",
     "compact": "Compacte",
@@ -425,7 +432,8 @@
       "La page « $t(Search) » vous permet d'interroger des comptes ou des records complets pour les données stockées dans un projet/jeu de données spécifique",
       "ou l'instance entière (le « périmètre »), en fonction de votre niveau d'autorisation.\n",
       "Sélectionnez des filtres et spécifiez des valeurs pour restreindre les données d'intérêt dans le périmètre sélectionné.",
-      "Si un petit nombre de records correspond à votre requête, le décompte peut être censuré pour éviter la ré-identification."
+      "Si un petit nombre de records correspond à votre requête, le décompte peut être censuré pour éviter la ré-identification.",
+      "Les décomptes peuvent aussi être arrondis; ils sont alors approximatifs."
     ],
     "about": ["Données de provenance détaillées pour un jeu de données ou tous les jeux de données d'un projet."],
     "beacon": [
